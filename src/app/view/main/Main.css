@@ -1,0 +1,40 @@
+/* styles.css or another CSS file */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  .main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .header, .footer {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure header and footer are above other content */
+    background-color: #f1f1f1;
+    padding: 30px;
+  }
+  
+  .header {
+    top: 0;
+  }
+  
+  .footer {
+    bottom: 0;
+  }
+  
+  .content {
+    margin-top: 50px; /* Adjust based on header height */
+    margin-bottom: 50px; /* Adjust based on footer height */
+    padding: 10px;
+    flex: 1; /* Ensures the content takes up the remaining space */
+    overflow-y: auto; /* Enables vertical scrolling for the content */
+    font-size: 720px;
+  }
+  
