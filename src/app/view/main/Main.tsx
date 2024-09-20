@@ -4,11 +4,12 @@ import SearchBoard from './content/searchboard/SearchBoard'
 import Footer from './footer/Footer'
 import HomeFeed from './content/HomeFeed'
 import ChatPage from './content/ChatPage'
+import BottomNav from './bottom-nav/bottom-nav'
 
 import './Main.css';
 import { Container } from '@mui/material'
 
-const Main: React.FC = () => {  
+const Main: React.FC = () => {
   return (
     <div id='main' className="main">
       <Header />
@@ -16,7 +17,8 @@ const Main: React.FC = () => {
       {/* <SearchBoard /> */}
       {/* <ChatPage /> */} {/* 채팅 페이지는 Modal로 작업 */}
       {/*<SideBar /> */}  {/* SideBar는 기획쪽에서 논의할 내용이 있어서 일단 보류*/}
-      <Footer />
+      {/* <Footer /> */}
+      <BottomNav></BottomNav>
     </div>
   )
 }
