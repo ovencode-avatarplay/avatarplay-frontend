@@ -21,7 +21,6 @@ return (
       </Box>
 
       {/* Search Board Content */}
-      <div>Search Board Content</div>
     </div>
   );
 }

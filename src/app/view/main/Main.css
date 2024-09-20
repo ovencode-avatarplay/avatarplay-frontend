@@ -21,10 +21,12 @@ html, body {
   }
   
   #main > header {
+    height: 5rem;
     top: 0;
   }
   
   #main > footer {
+    height: 5rem;
     bottom: 0;
   }
   
