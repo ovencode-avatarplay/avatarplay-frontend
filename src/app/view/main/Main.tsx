@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from './header/Header'
-import SearchBoard from './content/SearchBoard'
+import SearchBoard from './content/searchboard/SearchBoard'
 import Footer from './footer/Footer'
 import HomeFeed from './content/HomeFeed'
 import ChatPage from './content/ChatPage'
@@ -9,7 +9,7 @@ import './Main.css';
 
 const Main: React.FC = () => {  
   return (
-    <div className="main">
+    <div id='main' className="main">
       <Header />
       {/* <HomeFeed /> */}
       {/* <SearchBoard /> */}
