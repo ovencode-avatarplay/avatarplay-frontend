@@ -1,0 +1,35 @@
+.header-nav-bar {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px 20px; 
+    background-color: #fff; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .logo {
+    font-size: 24px; 
+    font-weight: bold; 
+  }
+  
+  .right-section {
+    display: flex;
+    align-items: center; 
+  }
+  
+  .user-profile {
+    position: relative; 
+    margin-left: 15px; 
+  }
+  
+  .notification-dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10px; 
+    height: 10px; 
+    background-color: green; 
+    border-radius: 50%; 
+    border: 2px solid white; 
+  }
+  
