@@ -4,5 +4,6 @@
     overflow-y: scroll;
     height: 100vh;
     scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */
+    height: calc(100vh - 56px - 60px);
   }
   

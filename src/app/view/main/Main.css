@@ -4,31 +4,26 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
+    overflow: hidden;
   }
   
   #main {
-    display: flex;
     flex-direction: column;
     min-height: 100vh;
   }
   
   #main > header, #main > footer {
-    position: fixed;
+    
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* 헤더가 전체 너비를 차지하도록 설정 */
+    box-sizing: border-box; /* 패딩과 테두리를 포함하여 전체 너비를 계산 */
     left: 0;
     width: 100%;
     z-index: 1000; /* Ensure header and footer are above other content */
     background-color: #f1f1f1;
   }
   
-  #main > header {
-    height: 5rem;
-    top: 0;
-  }
-  
-  #main > footer {
-    height: 5rem;
-    bottom: 0;
-  }
   
   #main > .content {
     padding: 10px;
