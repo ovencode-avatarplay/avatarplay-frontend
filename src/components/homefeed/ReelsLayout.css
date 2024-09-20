@@ -1,0 +1,8 @@
+.reels-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 100vh;
+    scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */
+  }
+  
