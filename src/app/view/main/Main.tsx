@@ -7,13 +7,14 @@ import ChatPage from './content/ChatPage'
 
 import './Main.css';
 
-const Main: React.FC = () => {
+const Main: React.FC = () => {  
   return (
     <div className="main">
       <Header />
       {/* <HomeFeed /> */}
       {/* <SearchBoard /> */}
       {/* <ChatPage /> */} {/* 채팅 페이지는 Modal로 작업 */}
+      {/*<SideBar /> */}  {/* SideBar는 기획쪽에서 논의할 내용이 있어서 일단 보류*/}
       <Footer />
     </div>
   )

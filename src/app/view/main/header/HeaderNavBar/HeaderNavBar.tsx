@@ -14,7 +14,7 @@ const HeaderNavBar = () => {
         <Button>
           <NotificationsIcon />
         </Button>
-        <div className="user-profile">
+        <div className="user-profile">  {/* 원래는 SideBar를 여는 역할이지만 SideBar가 기획쪽에서 논의할 내용이 있기 때문에 임시처리로 UserDataEdit 로 넘김 */}
           <Avatar alt="User Profile" src="/path/to/user/image.jpg" />
           <div className="notification-dot"></div>
         </div>
