@@ -1,65 +1,52 @@
 .reel {
-  scroll-snap-align: center; /* 각 콘텐츠가 중앙에서 스냅됨 */
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   width: 100%;
-  height: 95%; /* 개별 콘텐츠가 화면 전체 높이를 차지 */
-  padding-bottom: 5%;
-  color: rgb(255, 255, 255);
+  height: 100%;
+  justify-content: center;
 }
 
 .box-group {
-  width: 100%;        /* 부모 컨테이너의 너비를 100%로 설정 */
-  height: 100%;      /* 고정된 높이 설정 (필요에 따라 조정) */
-  overflow: hidden;   /* 자식 요소가 범위를 벗어나면 숨김 처리 */
-  position: relative; /* 자식 요소의 위치 기준 */
-  border-radius: 10px; /* 모서리 둥글게 처리 */
-  background-color: black; /* 빈 공간을 검은색으로 채우기 */
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: black;
 }
 
-.post-header {
-  position: absolute; /* 이미지 위에 위치하도록 설정 */
-  top: 20px;         /* 원하는 위치 조정 */
-  left: 20px;        /* 원하는 위치 조정 */
-  width: calc(100% - 40px); /* 좌우 여백을 고려하여 너비 조정 */
+.image-scroll-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 1;        /* 이미지 위에 표시되도록 설정 */
-  color: #fff;       /* 텍스트 색상 */
+  overflow-x: auto; /* 가로 스크롤 활성화 */
+  scroll-snap-type: x mandatory; /* 스크롤 스냅 적용 */
+  gap: 10px; /* 이미지 사이 간격 */
 }
 
 .post-image {
-  width: 100%;        /* 부모 컨테이너의 너비에 맞춰 100% */
-  height: 100%;       /* 부모 컨테이너의 높이에 맞춰 100% */
-  object-fit: cover;  /* 이미지가 박스를 꽉 채우되 비율 유지 */
+  flex: 0 0 auto;
+  width: 100%; /* 이미지가 부모 컨테이너에 맞게 채워짐 */
+  height: 100%;
+  object-fit: cover;
+  scroll-snap-align: center; /* 이미지가 스크롤할 때 중앙에서 멈추도록 설정 */
 }
 
 .post-icons {
-  position: absolute; /* 이미지 위에 위치하도록 설정 */
-  bottom: 20px;       /* 원하는 위치 조정 */
-  left: 20px;         /* 원하는 위치 조정 */
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
   display: flex;
   justify-content: flex-start;
-  width: auto;
-  z-index: 1;        /* 이미지 위에 표시되도록 설정 */
-}
-
-.post-icons-space {
-  flex-grow: 1; /* 아이콘 사이의 공간을 차지 */
+  z-index: 1;
 }
 
 .post-details {
-  position: absolute; /* 이미지 위에 위치하도록 설정 */
-  bottom: 60px;       /* 아이콘 아래에 위치하도록 조정 */
-  left: 20px;         /* 원하는 위치 조정 */
-  width: calc(100% - 40px); /* 좌우 여백을 고려하여 너비 조정 */
+  position: absolute;
+  bottom: 60px;
+  left: 20px;
   padding: 10px 20px;
-  background-color: rgba(255, 255, 255, 0.8); /* 반투명 배경으로 가독성 높이기 */
+  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
-  z-index: 1;        /* 이미지 위에 표시되도록 설정 */
+  z-index: 1;
 }
 
 .post-text {
