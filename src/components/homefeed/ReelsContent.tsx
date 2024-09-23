@@ -22,9 +22,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({ item, index }) => {
             <Container className="box-group">
 
                 <Box className="post-header">
-                    <Typography variant="body1" className="post-text">
-                        가나다
-                    </Typography>
+                    나중에 버튼 등 뭐 그러넉
                 </Box>
 
                 {/* 게시물 이미지 */}
