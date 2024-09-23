@@ -1,0 +1,27 @@
+[
+    {
+        "label": "All",
+        "icon": "WhatshotIcon",
+        "title" : "All"
+    },
+    {
+        "label": "Trending",
+        "icon": "WhatshotIcon",
+        "title" : "Now Trending!"
+    },
+    {
+        "label": "HashTag",
+        "icon": "TagIcon",
+        "title" : "Taged"
+    },
+    {
+        "label": "Continue",
+        "icon": "WhatshotIcon",
+        "title" : "Continue to Play"
+    },
+    {
+        "label": "Recommendation",
+        "icon": "WhatshotIcon",
+        "title" : "Recommend to you"
+    }
+]

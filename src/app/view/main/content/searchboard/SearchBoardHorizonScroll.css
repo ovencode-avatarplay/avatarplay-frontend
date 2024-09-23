@@ -1,0 +1,31 @@
+.horizontal-scroll-box {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory; /* 가로 스냅 스크롤 */
+    padding: 16px 0;
+  }
+  
+  .horizontal-scroll-box::-webkit-scrollbar {
+    display: none; 
+  }
+  
+  .story-card {
+    min-width: 45%; 
+    height: 200px; 
+    margin-right: 16px; 
+    flex-shrink: 0; /* Prevent cards from shrinking in the scrollable container */
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: start; /* 각 카드의 시작 부분이 스냅 기준 */
+  }
+  
+  @media (max-width: 600px) {
+    .story-card {
+      min-width: 45%; 
+    }
+  }
+  

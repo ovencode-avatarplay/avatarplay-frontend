@@ -6,6 +6,7 @@ import { fetchCharacterInfo } from '@/app/NetWork/MyNetWork';
 import { addNewCharacter, clearChatList } from '@/redux-store/slices/chat';
 import Header from './searchboard-header/SearchBoardHeader';
 import './SearchBoard.css'
+import SearchBoardHorizonScroll from './SearchBoardHorizonScroll';
 
 const SearchBoard: React.FC = () => {
 
@@ -41,28 +42,11 @@ const SearchBoard: React.FC = () => {
         <>
         <div className="content">
             <Header></Header>
-            <main >
-                <p>
-                    c
-                </p>
-                <p>
-                    o
-                </p>
-                <p>
-                    n
-                </p>
-                <p>
-                    t
-                </p>
-                <p>
-                    e
-                </p>
-                <p>
-                    n
-                </p>
-                <p>
-                    t
-                </p>
+            <main className='search-board-container'>
+                <SearchBoardHorizonScroll />
+                <SearchBoardHorizonScroll />
+                <SearchBoardHorizonScroll />
+                <SearchBoardHorizonScroll />
             </main>
         </div>
         </>
