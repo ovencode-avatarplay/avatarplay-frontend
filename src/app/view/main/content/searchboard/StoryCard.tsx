@@ -2,13 +2,7 @@ import React from 'react';
 import './StoryCard.css'; // CSS 파일 임포트
 import MovieIcon from '@mui/icons-material/Movie';
 import ImageIcon from '@mui/icons-material/Image';
-
-interface StoryCardProps {
-  title: string;
-  number1: number;
-  number2: number;
-  imageUrl: string;
-}
+import { StoryCardProps } from '@/types/apps/story-card-type';
 
 const StoryCard: React.FC<StoryCardProps> = ({ title, number1, number2, imageUrl }) => {
   return (

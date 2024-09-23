@@ -2,14 +2,14 @@ import React from 'react';
 import { Box, Typography} from '@mui/material';
 import './SearchBoardHorizonScroll.css'; // 스타일 파일 임포트
 import StoryCard from './StoryCard'
-
+import StoryData from '@/data/story-cards.json'
+import { parse } from 'path';
+import { number } from 'valibot';
 
 
 const SearchBoardHorizonScroll: React.FC = () => {
 
     const DefaultImage = '/Images/001.png'
-  // Sample story data
-  const stories = ['Story 1', 'Story 2', 'Story 3', 'Story 4', 'Story 5'];
 
   return (
     <Box sx={{ padding: '16px' }}>
@@ -20,13 +20,13 @@ const SearchBoardHorizonScroll: React.FC = () => {
 
       {/* Horizontal scrollable StoryCard list */}
       <Box className="horizontal-scroll-box">
-        {stories.map((story, index) => (
+        {StoryData.map((story, index) => (
             <StoryCard 
             key={index}
-             title = {story}
-            number1={1}
-            number2={2}
-            imageUrl={DefaultImage}
+             title = {story.title}
+            number1={parseInt(story.Count1, 10)}
+            number2={parseInt(story.Count2, 10)}
+            imageUrl={story.ImageUrl}
             />
         ))}
       </Box>
