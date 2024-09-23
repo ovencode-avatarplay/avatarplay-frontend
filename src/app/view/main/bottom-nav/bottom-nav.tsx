@@ -31,7 +31,7 @@ export default function SimpleBottomNavigation() {
                     }}
                 >
                     {buttons.map((button, index) => (
-                        <BottomNavigationAction label={button.label} icon={button.icon} />
+                        <BottomNavigationAction key={index} label={button.label} icon={button.icon} />
                     ))}
                 </BottomNavigation>
             </Box>
