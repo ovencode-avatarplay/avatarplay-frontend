@@ -143,13 +143,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({ item }) => {
                         <div className='typo-type3'>100k</div>
                     </IconButton>
                 </Box>
-
-<<<<<<< Updated upstream
-
                 <Card variant="outlined" sx={{ borderRadius: '16px', display: 'flex', alignItems: 'center', padding: 2, justifyContent: 'space-between' }} onClick={handleOpenDrawer}>
-=======
-                <Card variant="outlined" sx={{ borderRadius: '16px', display: 'flex', alignItems: 'center', padding: 2, justifyContent: 'space-between' }}>
->>>>>>> Stashed changes
                     <Avatar sx={{ width: 30, height: 30, borderRadius: '10px' }} />
                     <span style={{ flexGrow: 1, textAlign: 'center' }}>Go swimming with her</span>
                     <ArrowForwardIos />
