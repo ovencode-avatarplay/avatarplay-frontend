@@ -1,34 +1,16 @@
 .search-board
 {
     margin-top: 0;
-    /* header와의 간격을 없애기 */
+    height: 120px;
 }
 
-.search-board>.search-board-header
+ 
+.search-board-container
 {
+    margin-top: 5px;
+    height: calc(100vh - 56px - 60px);
     display: flex;
-    align-items: center;
-    scrollbar-width: none;
-    /* Firefox */
-    -ms-overflow-style: none;
-    /* Internet Explorer 10+ */
-
-    width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-    padding: 10px;
-    margin-top: 5rem;
-    z-index: 999;
-    position: fixed;
-    top: 0;
-    background-color: white;
-    /* 배경색 설정 (필요 시) */
-    z-index: 2;
-    /* header보다 위에 위치하게 설정 */
-}
-
-.search-board>.search-board-header::-webkit-scrollbar
-{
-    display: none;
-    /* Webkit 브라우저 (Chrome, Safari) */
+    flex-direction: column;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */
 }

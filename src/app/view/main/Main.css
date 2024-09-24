@@ -16,19 +16,18 @@ html, body {
     
     justify-content: space-between;
     align-items: center;
-    width: 100%; /* 헤더가 전체 너비를 차지하도록 설정 */
-    box-sizing: border-box; /* 패딩과 테두리를 포함하여 전체 너비를 계산 */
+    width: 100%; 
+    box-sizing: border-box; 
     left: 0;
     width: 100%;
-    z-index: 1000; /* Ensure header and footer are above other content */
+    z-index: 1000; 
     background-color: #f1f1f1;
   }
   
   
   #main > .content {
     padding: 10px;
-    flex: 1; /* Ensures the content takes up the remaining space */
-    overflow-y: auto; /* Enables vertical scrolling for the content */
-    font-size: 720px;
+    flex: 1; 
+    overflow-y: auto; 
   }
   

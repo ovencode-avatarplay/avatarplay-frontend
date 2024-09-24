@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import ReelsContent from './ReelsContent';
+import { sendGetHomeFeedShorts } from '@/app/NetWork/MyNetWork';
 import './ReelsLayout.css';
 
 // ReelData 인터페이스 정의
 interface ReelData {
-    image: string;
+    images: string[]; // 여러 이미지를 처리할 수 있게 수정
     text: string;
     link: string;
 }
@@ -16,23 +17,33 @@ const ReelsLayout = () => {
     const [content, setContent] = useState<ReelData[]>([]);
 
     useEffect(() => {
-        fetch('/ReelsTempData.json') // public 폴더에 있는 JSON 파일 경로
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+        const fetchData = async () => {
+            try {
+                const response = await sendGetHomeFeedShorts();
+
+                if (response.resultCode === 0 && response.data) {
+                    const mappedData: ReelData[] = response.data.map(short => ({
+                        images: Array.isArray(short.thumbnailList) ? short.thumbnailList : [],
+                        text: short.summary || "",
+                        link: `link_to_shorts/${short.shortsId}`,
+                    }));
+
+                    setContent(mappedData);
+                } else {
+                    console.error(`Error: ${response.resultMessage}`);
                 }
-                return response.json();
-            })
-            .then((data: ReelData[]) => {
-                setContent(data);
-            })
-            .catch((error) => console.error('Error fetching JSON data:', error));
+            } catch (error) {
+                console.error('Error fetching shorts data:', error);
+            }
+        };
+
+        fetchData();
     }, []);
 
     return (
         <Box className="reels-container">
             {content.map((item, index) => (
-                <ReelsContent key={index} item={item} index={index} />
+                <ReelsContent key={index} item={item} />
             ))}
         </Box>
     );

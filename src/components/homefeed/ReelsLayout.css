@@ -1,8 +1,33 @@
 .reels-container {
-    display: flex;
-    flex-direction: column;
-    overflow-y: scroll;
-    scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */
-    height: 100%;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* 스크롤을 활성화 */
+  scroll-snap-type: y mandatory; /* 스냅 스크롤 */
+  height: 100%; /* 부모 컨테이너에 맞게 100% 높이 설정 */
+  -webkit-overflow-scrolling: touch; /* iOS 스크롤 성능 향상 */
+}
+
+html, body {
+  height: 100%; /* 전체 화면이 100% 높이를 가지도록 설정 */
+}
+
+.reel {
+  scroll-snap-align: center; /* 각 콘텐츠가 중앙에서 스냅됨 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 95%; /* 개별 콘텐츠가 화면 전체 높이를 차지 */
+  padding-bottom: 5%;
+  color: rgb(255, 255, 255);
+}
+
+.box-group {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: 10px;
+  background-color: black;
+}

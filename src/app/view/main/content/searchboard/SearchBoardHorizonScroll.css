@@ -1,0 +1,11 @@
+.horizontal-scroll-box {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory; /* 가로 스냅 스크롤 */
+    padding: 16px 0;
+  }
+  
+  .horizontal-scroll-box::-webkit-scrollbar {
+    display: none; 
+  }

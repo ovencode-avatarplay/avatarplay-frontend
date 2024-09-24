@@ -1,62 +1,84 @@
 .reel {
-    scroll-snap-align: center; /* 각 콘텐츠가 중앙에서 스냅됨 */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%; /* 개별 콘텐츠가 화면 전체 높이를 차지 */
-    padding: 20px 0;
-    color: rgb(255, 255, 255);
-  }
-  
-  .box-group {
-    background-color: yellow;
-  }
-  
-  .post-header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .post-image {
-    width: 100%;
-    height: 100%; /* 이미지가 화면을 꽉 채움 */
-    max-height: 60vh;
-    object-fit: cover;
-    border-radius: 10px;
-  }
-  
-  .post-icons {
-    display: flex;
-    justify-content: flex-start;
-    padding: 10px 0;
-    width: 100%;
-  }
-  
-  .post-icons-space {
-    flex-grow: 1; /* 아이콘 사이의 공간을 차지 */
-  }
-  
-  .post-details {
-    width: 100%;
-    padding: 10px 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-  }
-  
-  .post-text {
-    color: #fff;
-  }
-  
-  .post-link a {
-    color: #0095f6;
-    text-decoration: none;
-  }
-  
-  .post-link a:hover {
-    text-decoration: underline;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+}
+
+.box-group {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: black;
+}
+
+.image-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 10px;
+}
+
+.post-image {
+  flex: 0 0 auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  scroll-snap-align: center;
+}
+
+.image-index {
+  position: absolute;
+  bottom: 40px; /* 인덱스 위치 */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px; /* 원 사이 간격 */
+  font-size: 24px; /* 원 크기 */
+  color: white;
+}
+.dot {
+  font-size: 20px;  /* 점들의 크기 */
+  padding: 0 0px;  /* 점들 사이의 간격을 padding으로 조절 */
+  transition: color 0.3s ease;
+}
+
+.dot.active {
+  color: blue; /* 활성화된 점의 색상 */
+}
+
+
+.post-icons {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  justify-content: flex-start;
+  z-index: 1;
+}
+
+.post-details {
+  position: absolute;
+  bottom: 60px;
+  left: 20px;
+  padding: 10px 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  z-index: 1;
+}
+
+.post-text {
+  color: #fff;
+}
+
+.post-link a {
+  color: #0095f6;
+  text-decoration: none;
+}
+
+.post-link a:hover {
+  text-decoration: underline;
+}

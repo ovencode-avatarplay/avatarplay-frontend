@@ -467,3 +467,104 @@ export const sendChatPromptTemplateData = async (payload: ChatPromptTemplateData
     throw new Error('Failed to send character data. Please try again.'); // 에러 처리
   }
 };
+
+//==== Get 쇼츠 정보 =======================================================================================================
+interface ReqHomeFeedShorts {
+  // 요청할 때 필요한 데이터가 있다면 여기에 정의
+}
+
+interface ShortsInfo {
+  characterId: number;
+  shortsId: string;
+  summary : string
+  thumbnailList: string[];
+}
+
+interface ResponseHomeFeedShorts {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    shortsInfoList: ShortsInfo[];
+  };
+}
+
+export const sendGetHomeFeedShorts = async (): Promise<{
+  resultCode: number;
+  resultMessage: string;
+  data: ShortsInfo[] | null; // 변경된 부분
+}> => {
+  try {
+    // GET 요청을 보내기 위한 기본적인 정의
+    const response = await api.get<ResponseHomeFeedShorts>('/Home'); // GET 요청으로 수정
+
+    const { resultCode, resultMessage, data } = response.data;
+
+    if (resultCode === 0) {
+      return { resultCode, resultMessage, data: data.shortsInfoList }; // shortsInfoList를 반환
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return { resultCode, resultMessage, data: null };
+    }
+  } catch (error: any) {
+    console.error('Failed to fetch shorts info:', error);
+    return { resultCode: -1, resultMessage: 'Failed to fetch shorts info', data: null };
+  }
+};
+
+
+
+//==== Get Explore 정보 =======================================================================================================
+interface ReqExploreSearch {
+  search : string,
+  onlyAdults : boolean
+}
+
+export interface ExploreInfo {
+  characterId: number;
+  shortsId: string;
+  thumbnail: string;
+}
+
+interface ResponseExplore {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    playingList: ExploreInfo[];
+    recommendationList: ExploreInfo[];
+    searchOptionList: string[];
+  };
+}
+
+export const sendGetExplore = async (search : string, onlyAdults : boolean): Promise<{
+  resultCode: number;
+  resultMessage: string;
+  searchOptionList: string[] | null;
+  playingListData: ExploreInfo[] | null; 
+  recommendationListData: ExploreInfo[] | null; 
+}> => {
+  try {
+
+    const reqData: ReqExploreSearch = { search: search, onlyAdults: onlyAdults }
+
+    // GET 요청을 보내기 위한 기본적인 정의
+    const response = await api.get<ResponseExplore>('/Explore', { params: reqData }); // GET 요청으로 수정
+
+    const { resultCode, resultMessage, data } = response.data;
+
+    if (resultCode === 0) {
+      return { // 결과를 반환
+        resultCode,
+        resultMessage,
+        searchOptionList: data.searchOptionList || [],
+        playingListData: data.playingList || []
+        , recommendationListData: data.recommendationList || []
+      }; 
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return { resultCode, resultMessage, searchOptionList: null, playingListData: null, recommendationListData: null };
+    }
+  } catch (error: unknown) {
+    console.error('Failed to fetch shorts info:', error);
+    return { resultCode: -1, resultMessage: 'Failed to fetch shorts info', searchOptionList: null, playingListData: null, recommendationListData: null };
+  }
+};
