@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Box, Typography, IconButton, Container, Avatar, Card, CardContent, } from '@mui/material';
-import { FavoriteBorder, ChatBubbleOutline, Send, MoreHoriz, ArrowForward, ArrowForwardIos } from '@mui/icons-material';
+import { Box, Typography, IconButton, Container, Avatar, Card, CardContent } from '@mui/material';
+import { FavoriteBorder, ChatBubbleOutline, Send, MoreHoriz, ArrowForwardIos } from '@mui/icons-material';
 import './ReelsContent.css';
 import MoreVert from '@mui/icons-material/MoreVert';
 import { useDispatch } from 'react-redux';
@@ -21,6 +21,7 @@ interface ReelsContentProps {
 
 const ReelsContent: React.FC<ReelsContentProps> = ({ item }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [isTextExpanded, setIsTextExpanded] = useState(false); // 텍스트 펼침 여부
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
     const hasImages = item.images && item.images.length > 0;
@@ -49,12 +50,16 @@ const ReelsContent: React.FC<ReelsContentProps> = ({ item }) => {
         }
     }, [hasImages]);
 
+    // 'Read more' 클릭 시 텍스트 펼치기/접기
+    const toggleTextExpansion = () => {
+        setIsTextExpanded(prevState => !prevState);
+    };
+
     const renderDots = () => {
         return item.images.map((_, index) => (
             <span
                 key={index}
                 className={index === currentIndex ? 'dot active' : 'dot'}
-
             >
                 {index === currentIndex ? '●' : '○'}
             </span>
@@ -65,11 +70,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({ item }) => {
         <Box className="reel">
             <Container className="box-group">
 
-
                 <Box className='top-box'>
                     <Avatar></Avatar>
                     <Box className='info-box'>
-                        <div className='typo-type1' >
+                        <div className='typo-type1'>
                             0.01% Alpha Male Simulator
                         </div>
                         <div className='typo-type2'>
@@ -77,41 +81,58 @@ const ReelsContent: React.FC<ReelsContentProps> = ({ item }) => {
                         </div>
                     </Box>
                     <IconButton>
-                        <MoreVert sx={{ fontSize: 35 }}></MoreVert>
+                        <MoreVert sx={{ fontSize: 35 }} />
                     </IconButton>
                 </Box>
 
-
-                <Typography color='black' fontSize={14} variant="body1">
-                    My first uni's outing become extremely excited when I was bumping into her...{' '}
-                    <Typography fontSize={14} component="span" variant="body1" color="primary">
-                        Read more
-                    </Typography>
+                {/* 텍스트 표시 및 'Read more' 버튼 */}
+                <Typography
+                    className={`post-text ${isTextExpanded ? 'expanded' : ''}`}
+                    color='black'
+                    fontSize={14}
+                    variant="body1"
+                >
+                    {item.text}
                 </Typography>
+
+                {/* 텍스트가 길 경우 Read more 표시 */}
+                {item.text.length > 100 && (
+                    <Typography
+                        fontSize={14}
+                        component="span"
+                        variant="body1"
+                        color="primary"
+                        onClick={toggleTextExpansion}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        {isTextExpanded ? 'Read less' : 'Read more'}
+                    </Typography>
+                )}
+
                 {/* 이미지가 있을 경우 가로 스크롤을 사용하여 배치 */}
-                {
-                    hasImages ? (
-                        <Box className="image-scroll-container" ref={scrollContainerRef}>
-                            {item.images.map((image, index) => (
-                                <Box
-                                    key={index}
-                                    component="img"
-                                    src={image}
-                                    alt={`Reel ${index}`}
-                                    className="post-image"
-                                />
-                            ))}
-                        </Box>
-                    ) : (
-                        <Typography variant="body2" className="no-image-text">
-                            이미지가 없습니다.
-                        </Typography>
-                    )
-                }
+                {hasImages ? (
+                    <Box className="image-scroll-container" ref={scrollContainerRef}>
+                        {item.images.map((image, index) => (
+                            <Box
+                                key={index}
+                                component="img"
+                                src={image}
+                                alt={`Reel ${index}`}
+                                className="post-image"
+                            />
+                        ))}
+                    </Box>
+                ) : (
+                    <Typography variant="body2" className="no-image-text">
+                        이미지가 없습니다.
+                    </Typography>
+                )}
+
                 {/* 이미지 인덱스를 ●○로 표시 */}
                 <Box className="image-index">
                     {renderDots()}
                 </Box>
+
                 <Box className="post-icons">
                     <IconButton>
                         <FavoriteBorder />
@@ -121,25 +142,20 @@ const ReelsContent: React.FC<ReelsContentProps> = ({ item }) => {
                         <ChatBubbleOutline />
                         <div className='typo-type3'>100k</div>
                     </IconButton>
-                    {/* <IconButton>
-                        <Send />
-                    </IconButton>
-                    <Box className="post-icons-space"></Box>
-                    <IconButton>
-                        <MoreHoriz />
-                    </IconButton> */}
                 </Box>
 
+<<<<<<< Updated upstream
 
                 <Card variant="outlined" sx={{ borderRadius: '16px', display: 'flex', alignItems: 'center', padding: 2, justifyContent: 'space-between' }} onClick={handleOpenDrawer}>
+=======
+                <Card variant="outlined" sx={{ borderRadius: '16px', display: 'flex', alignItems: 'center', padding: 2, justifyContent: 'space-between' }}>
+>>>>>>> Stashed changes
                     <Avatar sx={{ width: 30, height: 30, borderRadius: '10px' }} />
                     <span style={{ flexGrow: 1, textAlign: 'center' }}>Go swimming with her</span>
                     <ArrowForwardIos />
                 </Card>
-
-
-            </Container >
-        </Box >
+            </Container>
+        </Box>
     );
 };
 

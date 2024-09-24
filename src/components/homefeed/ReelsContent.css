@@ -58,7 +58,14 @@
 }
 
 .post-text {
-  color: #fff;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* 기본적으로 3줄까지만 보이도록 설정 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-text.expanded {
+  -webkit-line-clamp: unset; /* expanded 상태일 때 제한 해제 */
 }
 
 .post-link a {
