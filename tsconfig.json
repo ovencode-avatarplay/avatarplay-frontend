@@ -40,6 +40,9 @@
       ],
       "@views/*": [
         "./views/*"
+      ],
+      "@chats/*": [
+        "./app/view/main/content/Chat/*"
       ]
     }
   },
