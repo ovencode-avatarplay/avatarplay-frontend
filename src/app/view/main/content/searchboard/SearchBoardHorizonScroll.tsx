@@ -26,7 +26,6 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({ title ,data }) => {
         thumbnail: explore.thumbnail,
         shortsId: explore.shortsId || "",
       }));
-      console.log(mappedData);
       setContent(mappedData);
     }
   }, [data]);

@@ -1,0 +1,11 @@
+.bottom-navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 120000;
+  }
+ 
+  .bottom-navigation-box {
+    width: 100%;
+  }

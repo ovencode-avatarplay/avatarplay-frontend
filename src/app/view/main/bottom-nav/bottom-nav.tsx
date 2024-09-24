@@ -12,15 +12,42 @@ import GameIcon from '@mui/icons-material/SportsEsports';
 import { useNavigate } from 'react-router-dom';
 
 import BottomNav from 'data/navigation/bottom-nav.json'
+import DrawerCreate from '../content/create/DrawerCreate';
+
+import './bottom-nav.css';
 
 export default function SimpleBottomNavigation() {
     const [selectedIndex, setSelectedIndex] = React.useState(0);
-    const navigate = useNavigate(); // 
+    const [drawerOpen, setDrawerOpen] = React.useState(false);
+    const navigate = useNavigate(); 
+
+    const toggleDrawer = (open: boolean) => {
+        setDrawerOpen(open);
+    };
     
     const handleNavigationChange = (event: React.SyntheticEvent, newValue: number) => {
-        setSelectedIndex(newValue);
-        navigate(BottomNav[newValue].link); // 선택된 index에 맞는 링크로 이동
+        if (newValue !== 2)
+        {
+            setSelectedIndex(newValue);
+            navigate(BottomNav[newValue].link); // 선택된 index에 맞는 링크로 이동
+        }
+        else
+        {
+            toggleDrawer(!drawerOpen)
+        }
     };
+
+    React.useEffect(() => {
+        if (selectedIndex === 2)
+        {
+            toggleDrawer(true)
+        }
+        else 
+        { 
+            toggleDrawer(false) 
+        }
+    }, [selectedIndex]);
+
 
     // 아이콘 문자열을 JSX.Element로 변환하는 함수
     const getIconComponent = (iconName: string) => {
@@ -41,8 +68,9 @@ export default function SimpleBottomNavigation() {
     };
     
     return (
-        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
-            <Box sx={{ width: '100%' }}>
+        <>
+        <Paper className ="bottom-navigation" elevation={3}>
+            <Box className ="bottom-navigation-box">
                 <BottomNavigation
                     showLabels
                     value={selectedIndex}
@@ -54,5 +82,7 @@ export default function SimpleBottomNavigation() {
                 </BottomNavigation>
             </Box>
         </Paper>
+        <DrawerCreate open={drawerOpen} onClose={()=> toggleDrawer(false)} />
+        </>
     );
 }

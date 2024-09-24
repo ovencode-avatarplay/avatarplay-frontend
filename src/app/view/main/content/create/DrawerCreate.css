@@ -1,0 +1,20 @@
+.drawer-create {
+    position: absolute;
+    bottom: 72px; /* BottomNavigation의 높이만큼 여백 */
+    z-index: 50; /* BottomNavigation보다 낮은 zIndex */
+  }
+  
+  .drawer-create-backdrop {
+    background-color: transparent;
+  }
+  
+  .drawer-create-box {
+    display: flex;
+    justify-content: space-around;
+    padding: 16px;
+  }
+  
+  .drawer-create-item {
+    text-align: center;
+  }
+  

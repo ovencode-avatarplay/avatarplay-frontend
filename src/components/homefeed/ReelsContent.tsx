@@ -5,6 +5,8 @@ import { Box, Typography, IconButton, Container, Avatar, Card, CardContent, } fr
 import { FavoriteBorder, ChatBubbleOutline, Send, MoreHoriz, ArrowForward, ArrowForwardIos } from '@mui/icons-material';
 import './ReelsContent.css';
 import MoreVert from '@mui/icons-material/MoreVert';
+import { useDispatch } from 'react-redux';
+import { openDrawerContentDesc } from '@/redux-store/slices/drawerContentDescSlice';
 
 interface ReelData {
     images: string[];
@@ -16,11 +18,18 @@ interface ReelsContentProps {
     item: ReelData;
 }
 
+
 const ReelsContent: React.FC<ReelsContentProps> = ({ item }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
     const hasImages = item.images && item.images.length > 0;
+
+    const dispatch = useDispatch();
+
+    const handleOpenDrawer = () => {
+        dispatch(openDrawerContentDesc(String(item.link))); // ID 값을 전달하여 Drawer 열기
+    };
 
     // 스크롤 이벤트로 현재 보고 있는 이미지 인덱스를 계산
     const handleScroll = () => {
@@ -122,7 +131,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({ item }) => {
                 </Box>
 
 
-                <Card variant="outlined" sx={{ borderRadius: '16px', display: 'flex', alignItems: 'center', padding: 2, justifyContent: 'space-between' }}>
+                <Card variant="outlined" sx={{ borderRadius: '16px', display: 'flex', alignItems: 'center', padding: 2, justifyContent: 'space-between' }} onClick={handleOpenDrawer}>
                     <Avatar sx={{ width: 30, height: 30, borderRadius: '10px' }} />
                     <span style={{ flexGrow: 1, textAlign: 'center' }}>Go swimming with her</span>
                     <ArrowForwardIos />

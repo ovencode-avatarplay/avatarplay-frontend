@@ -7,6 +7,7 @@ import storage from 'redux-persist/lib/storage' // localStorage를 사용
 // Sliced Imports
 import sampleReducer from '@/redux-store/slices/ReduxSample'
 import chatReducer from '@/redux-store/slices/chat'
+import drawerContentDescReducer from '@/redux-store/slices/drawerContentDescSlice'
 
 
 // redux-persist (간단 요약 : 새로고침 해도 데이터 유지)   https://www.codenary.co.kr/discoveries/9170
@@ -23,6 +24,7 @@ const reducers = combineReducers({
     // 사용할 모든 Slicer 추가
     sample : sampleReducer,
     chat : chatReducer,
+    drawerContentDesc : drawerContentDescReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, reducers)
