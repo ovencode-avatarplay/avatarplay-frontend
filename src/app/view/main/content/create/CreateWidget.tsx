@@ -4,6 +4,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import './CreateWidget.css'
+import { useNavigate } from 'react-router-dom';
 
 
 interface Props {
@@ -11,7 +12,14 @@ interface Props {
     onClose: () => void;
   }
 
-const CreateWidget: React.FC<Props> = ({open, onClose}) => {
+const CreateWidget: React.FC<Props> = ({ open, onClose }) => {
+
+  const navigate = useNavigate();
+
+  const handleNavigation = (path: string) => {
+      navigate(path);
+      onClose(); // Drawer를 닫습니다.
+  };
 
   return (
     <>
@@ -27,32 +35,25 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               zIndex: 50, // BottomNavigation보다 낮은 zIndex
             },
         }}>
-        <Box className="drawer-create-box"
-        >
-          {/* Character Button */}
-          <Box className="drawer-create-item">
-            <Button>
-              <PersonIcon fontSize="large" />
-            </Button>
-            <Typography>Character</Typography>
-          </Box>
+        <Box className="drawer-create-box">
+                    {/* Character Navigation */}
+                    <Box className="drawer-create-item" onClick={() => handleNavigation("/create")}>
+                        <PersonIcon fontSize="large" />
+                        <Typography>Character</Typography>
+                    </Box>
 
-          {/* Story Button */}
-          <Box className="drawer-create-item">
-            <Button>
-              <BookIcon fontSize="large" />
-            </Button>
-            <Typography>Story</Typography>
-          </Box>
+                    {/* Story Navigation */}
+                    <Box className="drawer-create-item" onClick={() => handleNavigation("/create")}>
+                        <BookIcon fontSize="large" />
+                        <Typography>Story</Typography>
+                    </Box>
 
-          {/* Post Button */}
-          <Box className="drawer-create-item">
-            <Button>
-              <PostAddIcon fontSize="large" />
-            </Button>
-            <Typography>Post</Typography>
-          </Box>
-        </Box>
+                    {/* Post Navigation */}
+                    <Box className="drawer-create-item" onClick={() => handleNavigation("/create")}>
+                        <PostAddIcon fontSize="large" />
+                        <Typography>Post</Typography>
+                    </Box>
+                </Box>
       </Drawer>
     </>
   );
