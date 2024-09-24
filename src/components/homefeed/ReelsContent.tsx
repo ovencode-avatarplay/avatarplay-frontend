@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Box, Typography, IconButton, Container } from '@mui/material';
-import { FavoriteBorder, ChatBubbleOutline, Send, MoreHoriz } from '@mui/icons-material';
+import { Box, Typography, IconButton, Container, Avatar, Card, CardContent, } from '@mui/material';
+import { FavoriteBorder, ChatBubbleOutline, Send, MoreHoriz, ArrowForward, ArrowForwardIos } from '@mui/icons-material';
 import './ReelsContent.css';
+import MoreVert from '@mui/icons-material/MoreVert';
 
 interface ReelData {
     images: string[];
@@ -54,60 +55,82 @@ const ReelsContent: React.FC<ReelsContentProps> = ({ item }) => {
     return (
         <Box className="reel">
             <Container className="box-group">
-                <Box className="post-header">
-                    {/* 헤더 내용 */}
+
+
+                <Box className='top-box'>
+                    <Avatar></Avatar>
+                    <Box className='info-box'>
+                        <div className='typo-type1' >
+                            0.01% Alpha Male Simulator
+                        </div>
+                        <div className='typo-type2'>
+                            5 Days ago
+                        </div>
+                    </Box>
+                    <IconButton>
+                        <MoreVert sx={{ fontSize: 35 }}></MoreVert>
+                    </IconButton>
                 </Box>
 
-                {/* 이미지가 있을 경우 가로 스크롤을 사용하여 배치 */}
-                {hasImages ? (
-                    <Box className="image-scroll-container" ref={scrollContainerRef}>
-                        {item.images.map((image, index) => (
-                            <Box
-                                key={index}
-                                component="img"
-                                src={image}
-                                alt={`Reel ${index}`}
-                                className="post-image"
-                            />
-                        ))}
-                    </Box>
-                ) : (
-                    <Typography variant="body2" className="no-image-text">
-                        이미지가 없습니다.
-                    </Typography>
-                )}
 
+                <Typography color='black' fontSize={14} variant="body1">
+                    My first uni's outing become extremely excited when I was bumping into her...{' '}
+                    <Typography fontSize={14} component="span" variant="body1" color="primary">
+                        Read more
+                    </Typography>
+                </Typography>
+                {/* 이미지가 있을 경우 가로 스크롤을 사용하여 배치 */}
+                {
+                    hasImages ? (
+                        <Box className="image-scroll-container" ref={scrollContainerRef}>
+                            {item.images.map((image, index) => (
+                                <Box
+                                    key={index}
+                                    component="img"
+                                    src={image}
+                                    alt={`Reel ${index}`}
+                                    className="post-image"
+                                />
+                            ))}
+                        </Box>
+                    ) : (
+                        <Typography variant="body2" className="no-image-text">
+                            이미지가 없습니다.
+                        </Typography>
+                    )
+                }
+                {/* 이미지 인덱스를 ●○로 표시 */}
+                <Box className="image-index">
+                    {renderDots()}
+                </Box>
                 <Box className="post-icons">
                     <IconButton>
                         <FavoriteBorder />
+                        <div className='typo-type3'>100k</div>
                     </IconButton>
                     <IconButton>
                         <ChatBubbleOutline />
+                        <div className='typo-type3'>100k</div>
                     </IconButton>
-                    <IconButton>
+                    {/* <IconButton>
                         <Send />
                     </IconButton>
                     <Box className="post-icons-space"></Box>
                     <IconButton>
                         <MoreHoriz />
-                    </IconButton>
+                    </IconButton> */}
                 </Box>
 
-                {/* 이미지 인덱스를 ●○로 표시 */}
-                <Box className="image-index">
-                    {renderDots()}
-                </Box>
 
-                <Box className="post-details">
-                    <Typography variant="body1" className="post-text">
-                        {item.text}
-                    </Typography>
-                    <Typography variant="body2" className="post-link">
-                        <a href={item.link}>더 알아보기</a>
-                    </Typography>
-                </Box>
-            </Container>
-        </Box>
+                <Card variant="outlined" sx={{ borderRadius: '16px', display: 'flex', alignItems: 'center', padding: 2, justifyContent: 'space-between' }}>
+                    <Avatar sx={{ width: 30, height: 30, borderRadius: '10px' }} />
+                    <span style={{ flexGrow: 1, textAlign: 'center' }}>Go swimming with her</span>
+                    <ArrowForwardIos />
+                </Card>
+
+
+            </Container >
+        </Box >
     );
 };
 

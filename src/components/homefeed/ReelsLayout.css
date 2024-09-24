@@ -1,8 +1,8 @@
 .reels-container {
-  display: flex;
+  
   flex-direction: column;
   overflow-y: auto; /* 스크롤을 활성화 */
-  scroll-snap-type: y mandatory; /* 스냅 스크롤 */
+  
   height: 100%; /* 부모 컨테이너에 맞게 100% 높이 설정 */
   -webkit-overflow-scrolling: touch; /* iOS 스크롤 성능 향상 */
 }
@@ -18,16 +18,16 @@ html, body {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 95%; /* 개별 콘텐츠가 화면 전체 높이를 차지 */
+  
   padding-bottom: 5%;
   color: rgb(255, 255, 255);
 }
 
 .box-group {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
+  width: 100%;  
   border-radius: 10px;
-  background-color: black;
+  background-color: rgb(255, 255, 255);
+}
+.customIcon1 {
+  font-size: 40px;
 }
