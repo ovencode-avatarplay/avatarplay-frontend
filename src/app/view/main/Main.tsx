@@ -11,7 +11,7 @@ import DrawerContentDesc from './content/DrawerContentDesc';
 
 import './Main.css';
 import { Container } from '@mui/material'
-import DrawerCreate from './content/create/DrawerCreate';
+import DrawerCreate from './content/create/CreateWidget';
 
 const Main: React.FC = () => {
   const location = useLocation();

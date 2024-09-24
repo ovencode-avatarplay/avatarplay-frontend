@@ -1,0 +1,1 @@
+// Story 생성의 가장 Main이 되는 Component. ContentMain에서 항상 켜져있습니다.

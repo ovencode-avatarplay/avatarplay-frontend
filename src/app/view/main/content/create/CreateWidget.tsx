@@ -3,7 +3,7 @@ import { Drawer, Button, Box, Typography } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
 import PostAddIcon from '@mui/icons-material/PostAdd';
-import './DrawerCreate.css'
+import './CreateWidget.css'
 
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
     onClose: () => void;
   }
 
-const DrawerCreate: React.FC<Props> = ({open, onClose}) => {
+const CreateWidget: React.FC<Props> = ({open, onClose}) => {
 
   return (
     <>
@@ -58,4 +58,4 @@ const DrawerCreate: React.FC<Props> = ({open, onClose}) => {
   );
 };
 
-export default DrawerCreate;
+export default CreateWidget;

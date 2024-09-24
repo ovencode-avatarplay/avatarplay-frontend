@@ -12,7 +12,7 @@ import GameIcon from '@mui/icons-material/SportsEsports';
 import { useNavigate } from 'react-router-dom';
 
 import BottomNav from 'data/navigation/bottom-nav.json'
-import DrawerCreate from '../content/create/DrawerCreate';
+import DrawerCreate from '../content/create/CreateWidget';
 
 import './bottom-nav.css';
 
