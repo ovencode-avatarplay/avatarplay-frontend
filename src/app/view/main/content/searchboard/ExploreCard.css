@@ -1,5 +1,5 @@
-/* StoryCard.css */
-.story-card
+/* ExploreCard.css */
+.explore-card
 {
   position: relative;
   min-width: 45%;
@@ -20,12 +20,12 @@
 }
 
 @media (max-width: 600px) {
-  .story-card {
+  .explore-card {
     min-width: 45%; 
   }
 }
 
-.story-image
+.explore-image
 {
   width: 100%;
   height: 80%;
@@ -33,7 +33,7 @@
   resize: none;
 }
 
-.story-overlay
+.explore-overlay
 {
   position: absolute;
   bottom: 25%;
@@ -48,13 +48,13 @@
   padding: 10px;
 }
 
-.story-info
+.explore-info
 {
   color: white;
   /* 텍스트 색상 */
 }
 
-.story-icons
+.explore-icons
 {
   display: flex;
   justify-content: space-between;
@@ -68,7 +68,7 @@
   /* 아이콘과 텍스트 정렬 */
 }
 
-.story-textarea
+.explore-textarea
 {
   width: 100%;
   height: 80%; 
