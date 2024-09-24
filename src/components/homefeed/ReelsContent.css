@@ -17,18 +17,39 @@
 
 .image-scroll-container {
   display: flex;
-  overflow-x: auto; /* 가로 스크롤 활성화 */
-  scroll-snap-type: x mandatory; /* 스크롤 스냅 적용 */
-  gap: 10px; /* 이미지 사이 간격 */
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 10px;
 }
 
 .post-image {
   flex: 0 0 auto;
-  width: 100%; /* 이미지가 부모 컨테이너에 맞게 채워짐 */
+  width: 100%;
   height: 100%;
   object-fit: cover;
-  scroll-snap-align: center; /* 이미지가 스크롤할 때 중앙에서 멈추도록 설정 */
+  scroll-snap-align: center;
 }
+
+.image-index {
+  position: absolute;
+  bottom: 40px; /* 인덱스 위치 */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px; /* 원 사이 간격 */
+  font-size: 24px; /* 원 크기 */
+  color: white;
+}
+.dot {
+  font-size: 20px;  /* 점들의 크기 */
+  padding: 0 0px;  /* 점들 사이의 간격을 padding으로 조절 */
+  transition: color 0.3s ease;
+}
+
+.dot.active {
+  color: blue; /* 활성화된 점의 색상 */
+}
+
 
 .post-icons {
   position: absolute;
