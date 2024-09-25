@@ -4,6 +4,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import StudioIcon from '@mui/icons-material/VideoLibrary'; // 'Studio' 버튼에 사용할 아이콘
 import Style from './ContentHeader.module.css';
+import Link from 'next/link';
 
 interface ContentHeaderProps {
     onBack: () => void; // 뒤로가기 버튼 클릭 시 호출될 함수
@@ -15,9 +16,11 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({ onBack, onOpenDrawer }) =
 
     return (
         <Box className={Style.contentHeader}>
-            <IconButton onClick={onBack}>
+        <Link href="./homefeed" passHref>
+            <IconButton>
                 <ArrowBackIcon />
             </IconButton>
+        </Link>
             <Box className={Style.titleContainer}>
                 <TextField
                     variant="standard"

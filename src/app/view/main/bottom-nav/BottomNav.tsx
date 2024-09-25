@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -9,17 +11,18 @@ import ExploreIcon from '@mui/icons-material/Explore';
 import CreateIcon from '@mui/icons-material/AddCircleOutline';
 import ContentIcon from '@mui/icons-material/DynamicFeed';
 import GameIcon from '@mui/icons-material/SportsEsports';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 import BottomNav from 'data/navigation/bottom-nav.json'
 import DrawerCreate from '../content/create/CreateWidget';
 
 import Style from './BottomNav.module.css';
+import Link from 'next/link';
 
 export default function SimpleBottomNavigation() {
     const [selectedIndex, setSelectedIndex] = React.useState(0);
     const [drawerOpen, setDrawerOpen] = React.useState(false);
-    const navigate = useNavigate(); 
+    // const navigate = useNavigate(); 
 
     const toggleDrawer = (open: boolean) => {
         setDrawerOpen(open);
@@ -29,11 +32,19 @@ export default function SimpleBottomNavigation() {
         if (newValue !== 2)
         {
             setSelectedIndex(newValue);
-            navigate(BottomNav[newValue].link); // 선택된 index에 맞는 링크로 이동
+            // navigate(BottomNav[newValue].link); // 선택된 index에 맞는 링크로 이동
         }
         else
         {
             toggleDrawer(!drawerOpen)
+        }
+    };
+
+    const handleClick = (index: number) => {
+        if (index === 2) {
+            toggleDrawer(!drawerOpen); // 인덱스가 2일 때 드로어 열기/닫기
+        } else {
+            setSelectedIndex(index);
         }
     };
 
@@ -76,9 +87,24 @@ export default function SimpleBottomNavigation() {
                     value={selectedIndex}
                     onChange={handleNavigationChange}
                 >
-                    {BottomNav.map((button, index) => (
-                        <BottomNavigationAction key={index} label={button.label} icon={getIconComponent(button.icon)} />
-                    ))}
+                        {BottomNav.map((button, index) => (
+                            index !== 2 ? (
+                                <BottomNavigationAction
+                                    key={index}
+                                    label={button.label}
+                                    icon={getIconComponent(button.icon)}
+                                    component={Link} // Link 컴포넌트로 설정
+                                    href={button.link} // Next.js 링크를 href로 설정
+                                />
+                            ) : (
+                                <BottomNavigationAction
+                                    key={index}
+                                    label={button.label}
+                                    icon={getIconComponent(button.icon)}
+                                    onClick={() => handleClick(index)} // 클릭 시 handleClick 호출
+                                />
+                            )
+                        ))}
                 </BottomNavigation>
             </Box>
         </Paper>
