@@ -3,7 +3,7 @@ import { Box, TextField, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import StudioIcon from '@mui/icons-material/VideoLibrary'; // 'Studio' 버튼에 사용할 아이콘
-import './ContentHeader.css';
+import Style from './ContentHeader.module.css';
 
 interface ContentHeaderProps {
     onBack: () => void; // 뒤로가기 버튼 클릭 시 호출될 함수
@@ -14,11 +14,11 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({ onBack, onOpenDrawer }) =
     const [title, setTitle] = useState('Content Title Text'); // 수정 가능한 텍스트 상태
 
     return (
-        <Box className="content-header">
+        <Box className={Style.contentHeader}>
             <IconButton onClick={onBack}>
                 <ArrowBackIcon />
             </IconButton>
-            <Box className="title-container">
+            <Box className={Style.titleContainer}>
                 <TextField
                     variant="standard"
                     value={title}
@@ -34,7 +34,7 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({ onBack, onOpenDrawer }) =
                     fullWidth
                 />
             </Box>
-            <div className="studio-button">
+            <div className={Style.studioButton}>
             <IconButton onClick={onOpenDrawer} >
                 <StudioIcon />
             </IconButton>

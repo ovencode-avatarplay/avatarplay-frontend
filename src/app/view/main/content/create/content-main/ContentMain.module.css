@@ -1,0 +1,19 @@
+.contentMain {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; 
+  }
+  
+  .contentHeader {
+    height: 20%; 
+  }
+  
+  .content {
+    height: 60%; 
+    overflow-y: auto; 
+  }
+  
+  .contentBottom {
+    height: 30%; 
+  }
+  

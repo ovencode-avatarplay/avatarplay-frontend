@@ -1,4 +1,4 @@
-.header-nav-bar {
+.navbar {
     display: flex;
     justify-content: space-between; 
     align-items: center; 
@@ -12,17 +12,17 @@
     font-weight: bold; 
   }
   
-  .right-section {
+  .right {
     display: flex;
     align-items: center; 
   }
   
-  .user-profile {
+  .userProfile {
     position: relative; 
     margin-left: 15px; 
   }
   
-  .notification-dot {
+  .dot {
     position: absolute;
     bottom: 0;
     right: 0;

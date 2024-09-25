@@ -6,7 +6,7 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 
 import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
 
-import './ContentBottom.css';
+import Style from './ContentBottom.module.css';
 
 const ContentBottom: React.FC = () => {
   const handleDrawerOpen = () => {
@@ -14,8 +14,8 @@ const ContentBottom: React.FC = () => {
   };
 
   return (
-      <Box className="content-bottom">
-          <div className="setup-buttons">
+      <Box className={Style.contentBottom}>
+          <div className={Style.setupButtons}>
               <Box>
                   <ButtonSetupDrawer icon={<PersonIcon />} label="Setup 1" onClick={handleDrawerOpen} />
                   <ButtonSetupDrawer icon={<BookIcon />} label="Setup 2" onClick={handleDrawerOpen} />
@@ -23,16 +23,16 @@ const ContentBottom: React.FC = () => {
           </div>
 
       {/* ButtonBox */}
-      <Box className="button-box">
-        <Button className="action-button">
+      <Box className={Style.buttonBox}>
+        <Button className={Style.actionButton}>
           <PostAddIcon />
           <Typography>Action 1</Typography>
         </Button>
-        <Button className="action-button">
+        <Button className={Style.actionButton}>
           <PostAddIcon />
           <Typography>Action 2</Typography>
         </Button>
-        <Button className="action-button">
+        <Button className={Style.actionButton}>
           <PostAddIcon />
           <Typography>Action 3</Typography>
         </Button>

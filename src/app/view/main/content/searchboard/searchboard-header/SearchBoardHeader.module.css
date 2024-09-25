@@ -1,4 +1,4 @@
-.search-board>.search-board-tags
+.searchBoard> .tags
 {
   display: flex;
   align-items: center;
@@ -21,7 +21,7 @@
   z-index: 2;
 }
 
-.search-board>.search-board-tags::-webkit-scrollbar
+.searchBoard> .tags::-webkit-scrollbar
 {
   display: none;
   /* Webkit 브라우저 (Chrome, Safari) */
@@ -39,7 +39,7 @@
 }
 
 
-.search-board> .search-board-search
+.searchBoard> .search
 {
   justify-content: space-between;
   display: flex;
@@ -48,13 +48,13 @@
   height: inherit;
 }
 
-.search-board> .search-board-search >.search-input
+.searchBoard> .search >.input
 {
   width: 60%;
   font-size: 18px;
 }
 
-.search-board> .search-board-search >.nsfw-toggle
+.searchBoard> .search >.nsfwToggle
 {
   display: flex;
   align-items: center;

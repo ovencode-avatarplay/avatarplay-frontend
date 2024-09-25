@@ -1,11 +1,16 @@
-.search-board
+.content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.searchBoard
 {
     margin-top: 0;
     height: 120px;
 }
 
  
-.search-board-container
+.container
 {
     margin-top: 5px;
     height: calc(100vh - 56px - 60px);

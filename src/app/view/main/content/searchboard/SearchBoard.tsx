@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { ExploreInfo, fetchCharacterInfo, sendGetExplore } from '@/app/NetWork/MyNetWork';
 import { addNewCharacter, clearChatList } from '@/redux-store/slices/chat';
 import Header from './searchboard-header/SearchBoardHeader';
-import './SearchBoard.css'
+import Style from './SearchBoard.module.css'
 import SearchBoardHorizonScroll from './SearchBoardHorizonScroll';
 
 const SearchBoard: React.FC = () => {
@@ -75,9 +75,9 @@ const SearchBoard: React.FC = () => {
 
     return (
         <>
-            <div className="content">
+            <div className={Style.content}>
                 <Header></Header>
-                <main className='search-board-container'>
+                <main className={Style.container}>
                     {playingList &&
                         <SearchBoardHorizonScroll title='playingList' data={playingList} />}
                     {recommendationList &&

@@ -9,7 +9,7 @@ import EighteenUpRatingIcon from '@mui/icons-material/EighteenUpRating';
 
 import TagData from 'data/search-board-tags.json';
 
-import './SearchBoardHeader.css'
+import Style from './SearchBoardHeader.module.css'
 
 import SearchField from 'components/layout/shared/SearchComponent';
 import { Switch } from '@mui/material';
@@ -30,11 +30,11 @@ const getIconComponent = (iconName: string) => {
 
 const SearchBoardHeader: React.FC = () => {
   return (
-    <div className="search-board">
-      <Box className="search-board-tags">
+    <div className={Style.searchBoard}>
+      <Box className={Style.tags}>
         {TagData.map((tag, index) => {
           const tmpIcon = getIconComponent(tag.icon);
-          return (<Chip className='chip'
+          return (<Chip className={Style.chip}
             key={index}
             icon={tmpIcon ? tmpIcon : undefined}
             label={tag.label}
@@ -42,9 +42,9 @@ const SearchBoardHeader: React.FC = () => {
           );
         })}
       </Box>
-      <div className='search-board-search'>
+      <div className={Style.search}>
         <SearchField />
-        <span className='nsfw-toggle'>
+        <span className={Style.nsfwToggle}>
           <EighteenUpRatingIcon />
           <Switch />
         </span>

@@ -1,0 +1,24 @@
+.episodeSetup {
+    display: flex;
+    flex-direction: column; 
+    width: 100%; 
+    height: 100vh; 
+    scroll-snap-type: y mandatory; 
+  }
+  
+  .imageArea {
+    height: 70%; 
+  }
+  
+  .setupImage {
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+  }
+  
+  .setupButtons {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    margin-top: 16px; 
+  } 

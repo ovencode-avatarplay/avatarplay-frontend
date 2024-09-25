@@ -1,4 +1,4 @@
-.horizontal-scroll-box {
+.scrollBox {
     display: flex;
     overflow-x: auto;
     scroll-behavior: smooth;
@@ -6,6 +6,6 @@
     padding: 16px 0;
   }
   
-  .horizontal-scroll-box::-webkit-scrollbar {
+  .scrollBox::-webkit-scrollbar {
     display: none; 
   }

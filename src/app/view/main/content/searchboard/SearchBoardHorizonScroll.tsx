@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography} from '@mui/material';
-import './SearchBoardHorizonScroll.css'; // 스타일 파일 임포트
+import Style from './SearchBoardHorizonScroll.module.css'; // 스타일 파일 임포트
 import ExploreCard from './ExploreCard'
 import ExploreData from '@/data/explore-cards.json';
 import { parse } from 'path';
@@ -37,7 +37,7 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({ title ,data }) => {
       </Typography>
 
       {/* Horizontal scrollable ExploreCard list */}
-      <Box className="horizontal-scroll-box">
+      <Box className={Style.scrollBox}>
         {content.map((explore, index) => (
             <ExploreCard 
             key={index}

@@ -3,7 +3,7 @@ import { Drawer, Button, Box, Typography } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
 import PostAddIcon from '@mui/icons-material/PostAdd';
-import './CreateWidget.css'
+import Style from './CreateWidget.module.css'
 import { useNavigate } from 'react-router-dom';
 
 
@@ -35,21 +35,21 @@ const CreateWidget: React.FC<Props> = ({ open, onClose }) => {
               zIndex: 50, // BottomNavigation보다 낮은 zIndex
             },
         }}>
-        <Box className="drawer-create-box">
+        <Box className={Style.drawerBox}>
                     {/* Character Navigation */}
-                    <Box className="drawer-create-item" onClick={() => handleNavigation("/create")}>
+                    <Box className={Style.drawerItem} onClick={() => handleNavigation("/create")}>
                         <PersonIcon fontSize="large" />
                         <Typography>Character</Typography>
                     </Box>
 
                     {/* Story Navigation */}
-                    <Box className="drawer-create-item" onClick={() => handleNavigation("/create")}>
+                    <Box className={Style.drawerItem} onClick={() => handleNavigation("/create")}>
                         <BookIcon fontSize="large" />
                         <Typography>Story</Typography>
                     </Box>
 
                     {/* Post Navigation */}
-                    <Box className="drawer-create-item" onClick={() => handleNavigation("/create")}>
+                    <Box className={Style.drawerItem} onClick={() => handleNavigation("/create")}>
                         <PostAddIcon fontSize="large" />
                         <Typography>Post</Typography>
                     </Box>

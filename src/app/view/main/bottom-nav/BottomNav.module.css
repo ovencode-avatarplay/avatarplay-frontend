@@ -1,4 +1,4 @@
-.bottom-navigation {
+.bottomNav {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -6,6 +6,6 @@
     z-index: 120000;
   }
  
-  .bottom-navigation-box {
+  .bottomNavBox {
     width: 100%;
   }

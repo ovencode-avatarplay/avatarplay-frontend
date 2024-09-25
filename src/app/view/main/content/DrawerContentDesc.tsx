@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Drawer, Button, Box, Typography, Select, MenuItem } from '@mui/material';
 import { closeDrawerContentDesc } from '@/redux-store/slices/drawerContentDescSlice';
 
+import Style from './DrawerContentDesc.module.css'
+
 const DrawerContentDesc = () => {
   const [selectedOption, setSelectedOption] = useState('');
 
@@ -13,40 +15,42 @@ const DrawerContentDesc = () => {
 
 
   return (
-      <Drawer
-        anchor="bottom"
-        open={open}
-        onClose={() => dispatch(closeDrawerContentDesc())}
-        PaperProps={{
-          sx: {
-            height: '90vh', // Set drawer height
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
-            overflow: 'hidden',
-          }
+    <Drawer
+      anchor="bottom"
+      open={open}
+      onClose={() => dispatch(closeDrawerContentDesc())}
+      PaperProps={{
+        sx: {
+          height: '90vh', // Set drawer height
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          overflow: 'hidden',
+        }
+      }}
+    >
+      <div className={Style.header}>
+        <Typography>
+          TODO 일단 아무 정보나 집어넣었음 {id}
+        </Typography>
+        <button>
+          upload
+        </button>
+        <button>
+          close
+        </button>
+      </div>
+      <Box
+        sx={{
+          height: '100%',
+          backgroundImage: 'url(/Images/001.png)', // Replace with your image
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          position: 'relative'
         }}
       >
-        <div className='top-area'>
-          <Typography>
-            TODO 일단 아무 정보나 집어넣었음 {id}
-          </Typography>
-          <button>
-            upload
-          </button>
-          <button>
-            close
-          </button>          
-        </div>
-        <Box
-          sx={{
-            height: '100%',
-            backgroundImage: 'url(/Images/001.png)', // Replace with your image
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            position: 'relative'
-          }}
-        >
-        </Box><Box sx={{ padding: 3, }}>
+      </Box>
+      <main className={Style.content}>
+        <Box sx={{ padding: 3, }}>
           {/* Title */}
           <Typography variant="h6" sx={{ marginBottom: 2 }}>
             Chapter
@@ -88,7 +92,8 @@ const DrawerContentDesc = () => {
             Submit
           </Button>
         </Box>
-      </Drawer>
+      </main>
+    </Drawer>
   );
 };
 

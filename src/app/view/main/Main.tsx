@@ -6,7 +6,7 @@ import SearchBoard from './content/searchboard/SearchBoard'
 import Footer from './footer/Footer'
 import HomeFeed from './content/HomeFeed'
 import ChatPage from './content/ChatPage'
-import BottomNav from './bottom-nav/bottom-nav'
+import BottomNav from './bottom-nav/BottomNav'
 import DrawerContentDesc from './content/DrawerContentDesc';
 import ContentMain from './content/create/content-main/ContentMain';
 

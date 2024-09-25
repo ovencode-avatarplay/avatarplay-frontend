@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import BottomNav from 'data/navigation/bottom-nav.json'
 import DrawerCreate from '../content/create/CreateWidget';
 
-import './bottom-nav.css';
+import Style from './BottomNav.module.css';
 
 export default function SimpleBottomNavigation() {
     const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -69,8 +69,8 @@ export default function SimpleBottomNavigation() {
     
     return (
         <>
-        <Paper className ="bottom-navigation" elevation={3}>
-            <Box className ="bottom-navigation-box">
+        <Paper className={Style.bottomNav} elevation={3}>
+            <Box className={Style.bottomNavBox}>
                 <BottomNavigation
                     showLabels
                     value={selectedIndex}
