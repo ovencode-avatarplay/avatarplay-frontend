@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import ReelsContent from './ReelsContent';
 import { sendGetHomeFeedShorts } from '@/app/NetWork/MyNetWork';
-import './ReelsLayout.css';
+import styles from './ReelsLayout.module.css'; // CSS 모듈로 변경
 
 // ReelData 인터페이스 정의
 interface ReelData {
@@ -41,7 +41,7 @@ const ReelsLayout = () => {
     }, []);
 
     return (
-        <Box className="reels-container">
+        <Box className={styles.reels_container}> {/* 수정된 부분 */}
             {content.map((item, index) => (
                 <ReelsContent key={index} item={item} />
             ))}

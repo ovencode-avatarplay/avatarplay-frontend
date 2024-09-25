@@ -6,12 +6,12 @@
   justify-content: center;
 }
 
-.box-group {
+.box_group {
   width: 100%;
   background-color: rgb(255, 255, 255);
 }
 
-.image-scroll-container {
+.image_scroll_container {
   display: flex;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -20,13 +20,13 @@
 }
 
 
-.post-image {
+.post_image {
   width: 100%;  
   object-fit: cover;
   scroll-snap-align: center;
 }
 
-.image-index {
+.image_index {
   display: flex;
   justify-content: center;
   gap: 5px; /* 원 사이 간격 */
@@ -45,39 +45,39 @@
   color: rgb(0, 0, 0); /* 활성화된 점의 색상 */
 }
 
-.post-icons {
+.post_icons {
   display: flex;
   justify-content: flex-start;
 }
 
-.post-details {
+.post_details {
   margin-top: 10px; /* 이미지 아래에 여백 추가 */
   padding: 10px 20px;
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
 }
 
-.post-text {
+.post_text {
   display: -webkit-box;
   -webkit-line-clamp: 3; /* 기본적으로 3줄까지만 보이도록 설정 */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.post-text.expanded {
+.post_text.expanded {
   -webkit-line-clamp: unset; /* expanded 상태일 때 제한 해제 */
 }
 
-.post-link a {
+.post_link a {
   color: #0095f6;
   text-decoration: none;
 }
 
-.post-link a:hover {
+.post_link a:hover {
   text-decoration: underline;
 }
 
-.top-box
+.top_box
 {
   padding-top: 15px;
   display: flex;
@@ -85,7 +85,7 @@
   align-items: flex-start; 
 }
 
-.info-box
+.info_box
 {
   display: flex;
   flex-direction: column;
@@ -93,20 +93,20 @@
   padding-left: 15px;
 }
 
-.typo-type1
+.typo_type1
 {
   font-size: 17px;
   font-weight: bold; 
   color: black;
 }
 
-.typo-type2
+.typo_type2
 {
   font-size: 12px;
   color: gray;
 }
 
-.typo-type3
+.typo_type3
 {
   font-size: 15px;
   color: gray;
