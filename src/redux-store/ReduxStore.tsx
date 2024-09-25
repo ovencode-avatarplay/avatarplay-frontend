@@ -1,5 +1,5 @@
 // Third-party Imports
-import {combineReducers, configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 // Slice Imports
 import storage from 'redux-persist/lib/storage' // localStorage를 사용
@@ -8,7 +8,7 @@ import storage from 'redux-persist/lib/storage' // localStorage를 사용
 import sampleReducer from '@/redux-store/slices/ReduxSample'
 import chatReducer from '@/redux-store/slices/chat'
 import drawerContentDescReducer from '@/redux-store/slices/drawerContentDescSlice'
-
+import craeteReducer from '@/redux-store/slices/createContent'
 
 // redux-persist (간단 요약 : 새로고침 해도 데이터 유지)   https://www.codenary.co.kr/discoveries/9170
 import { persistStore, persistReducer } from 'redux-persist'
@@ -22,9 +22,10 @@ const persistConfig = {
 
 const reducers = combineReducers({
     // 사용할 모든 Slicer 추가
-    sample : sampleReducer,
-    chat : chatReducer,
-    drawerContentDesc : drawerContentDescReducer,
+    sample: sampleReducer,
+    chat: chatReducer,
+    drawerContentDesc: drawerContentDescReducer,
+    create: craeteReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, reducers)

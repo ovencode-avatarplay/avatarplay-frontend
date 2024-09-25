@@ -35,3 +35,8 @@ export const triggerSetupSlice = createSlice({
         },
     },
 });
+
+// 액션 및 리듀서 내보내기
+export const { addDataPair, updateDataPair, removeDataPair } = triggerSetupSlice.actions;
+export const triggerSetupReducer = triggerSetupSlice.reducer;
+export default triggerSetupSlice.reducer;
