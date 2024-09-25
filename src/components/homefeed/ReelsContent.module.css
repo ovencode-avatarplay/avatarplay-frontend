@@ -4,6 +4,8 @@
   align-items: center;
   width: 100%;  
   justify-content: center;
+  max-width: 500px;
+  margin: 0 auto; /* 수평 중앙 정렬 */
 }
 
 .box_group {
@@ -17,6 +19,7 @@
   scroll-snap-type: x mandatory;
   gap: 10px;
   scroll-behavior: smooth; /* 부드러운 스크롤 */
+  overscroll-behavior: auto;
 }
 
 
@@ -83,6 +86,7 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start; 
+  justify-content: space-between;
 }
 
 .info_box
