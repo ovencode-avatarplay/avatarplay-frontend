@@ -37,6 +37,7 @@ export interface SainData1 {
 export interface SainData2 {
     type: 2;
     details: string;
+    desc:string;
     // 추가 필드들
 }
 
