@@ -1,20 +1,16 @@
 'use client'
 
 import React, { useState } from 'react';
-import { RootState } from '@/redux-store/ReduxStore'
-
+import { RootState } from '@/redux-store/ReduxStore';
 import { useDispatch, useSelector } from 'react-redux';
 import { Drawer, Button, Box, Typography, Select, MenuItem } from '@mui/material';
 import { closeDrawerContentDesc } from '@/redux-store/slices/drawerContentDescSlice';
-
-import Style from './DrawerContentDesc.module.css'
+import Style from './DrawerContentDesc.module.css';
 
 const DrawerContentDesc = () => {
   const [selectedOption, setSelectedOption] = useState('');
-
   const dispatch = useDispatch();
-  const { open, id } = useSelector((state: RootState) => state.drawerContentDesc); // RootState 타입 사용
-
+  const { open, id } = useSelector((state: RootState) => state.drawerContentDesc); 
 
   return (
     <Drawer
@@ -23,7 +19,7 @@ const DrawerContentDesc = () => {
       onClose={() => dispatch(closeDrawerContentDesc())}
       PaperProps={{
         sx: {
-          height: '90vh', // Set drawer height
+          height: '90vh',
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           overflow: 'hidden',
@@ -32,39 +28,44 @@ const DrawerContentDesc = () => {
     >
       <div className={Style.header}>
         <Typography>
-          TODO 일단 아무 정보나 집어넣었음 {id}
+          컨텐츠 제목 {id}
         </Typography>
-        <button>
-          upload
-        </button>
-        <button>
-          close
-        </button>
+        <div>
+          <Button variant="outlined" onClick={() => {/* Add upload functionality */}}>Upload</Button>
+          <Button variant="outlined" onClick={() => dispatch(closeDrawerContentDesc())}>Close</Button>
+        </div>
       </div>
-      <Box
-        sx={{
-          height: '100%',
-          backgroundImage: 'url(/Images/001.png)', // Replace with your image
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          position: 'relative'
-        }}
-      >
-      </Box>
       <main className={Style.content}>
-        <Box sx={{ padding: 3, }}>
-          {/* Title */}
-          <Typography variant="h6" sx={{ marginBottom: 2 }}>
+        <Box className={Style.imageBackground}>
+
+        </Box>
+        
+        <Box className={Style.descriptionBox}>
+            제작자 ID, 채팅 횟수, 채팅 사용자 수
+          </Box>
+          
+          <Box className={Style.descriptionBox}>
+            퍼블리싱태그
+          </Box>
+          
+          <Box className={Style.descriptionBox}>
+            퍼블리싱 설명
+          </Box>
+          
+          <Box className={Style.descriptionBox}>
+            연관 컨텐츠 추천
+          </Box>
+      </main>
+      <main className={Style.chatingControlPanel}>  
+        <Box>
+          <Typography variant="h6" >
             Chapter
           </Typography>
-
-          {/* ComboBox */}
           <Select
             value={selectedOption}
             onChange={(e) => setSelectedOption(e.target.value as string)}
             displayEmpty
             fullWidth
-            sx={{ marginBottom: 2 }}
           >
             <MenuItem value="">
               <em>None</em>
@@ -73,25 +74,13 @@ const DrawerContentDesc = () => {
             <MenuItem value={2}>Day 2</MenuItem>
             <MenuItem value={3}>Day 3</MenuItem>
           </Select>
-
-          {/* Box */}
-          <Box
-            sx={{
-              height: '100px',
-              border: '1px solid #ccc',
-              borderRadius: 4,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: 2
-            }}
-          >
-            <Typography>Some content here</Typography>
+          <Box className={Style.episodeList}>
+            <Typography>
+              에피소드 리스트 (가로 스크롤)
+            </Typography>
           </Box>
-
-          {/* Button */}
           <Button variant="contained" fullWidth>
-            Submit
+            Start new chat
           </Button>
         </Box>
       </main>

@@ -1,10 +1,9 @@
-// Drawer
-
-import React from 'react';
-import { Drawer, Box, IconButton, Typography, Button, Select, MenuItem } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Style from './ContentDashboard.module.css';
+import React, { useEffect, useRef, useState } from 'react';
+import { Drawer, Box, Button, Select, MenuItem } from '@mui/material';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import ContentItem from './ContentItem';
+import ContentItemData from '@/data/content-items.json';
+import Style from './ContentDashboard.module.css';
 
 interface Props {
     open: boolean;
@@ -12,12 +11,28 @@ interface Props {
 }
 
 const ContentDashboard: React.FC<Props> = ({ open, onClose }) => {
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const listRef = useRef<HTMLDivElement | null>(null);
+
+    const handleItemClick = (index: number) => {
+        setSelectedIndex(index);
+    };
+
+    useEffect(() => {
+        if (selectedIndex !== null && open && listRef.current) {
+            const selectedItem = listRef.current.children[selectedIndex];
+            if (selectedItem) {
+                selectedItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }, [selectedIndex, open]);
+
     return (
         <Drawer anchor="right" open={open} onClose={onClose} PaperProps={{
             sx: { width: '100vw', height: '100vh' }, 
         }}>
             <Box className={Style.drawerContainer}>
-                <CreateDrawerHeader title='Content Dashboard' onClose={onClose}/>
+                <CreateDrawerHeader title='Content Dashboard' onClose={onClose} />
                 
                 <Box className={Style.filterContainer}>
                     <Select className={Style.filterSelect}>
@@ -30,8 +45,23 @@ const ContentDashboard: React.FC<Props> = ({ open, onClose }) => {
                     </Button>
                 </Box>
                 
-                <Box className={Style.list}>
-                    {/* 나중에 리스트 내용 추가 */}
+                <Box className={Style.list} ref={listRef}>
+                    {ContentItemData.map((item, index) => (
+                        <div 
+                            key={index}
+                            onClick={() => handleItemClick(index)}
+                        >
+                            <ContentItem
+                                thumbnailSrc={item.thumbnailSrc}
+                                createdDate={item.createdDate}
+                                buttonShareText={item.buttonShareText}
+                                title={item.title}
+                                talkCount={item.talkCount}
+                                peopleCount={item.peopleCount}
+                                isSelected={selectedIndex === index} 
+                            />
+                        </div>
+                    ))}
                 </Box>
 
                 <Box className={Style.buttonContainer}>

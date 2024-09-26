@@ -1,0 +1,64 @@
+.container {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    height: 20vh;
+    overflow: hidden;
+    margin: 10px;
+}
+
+.thumbnail {
+    flex: 0 0 150px;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: auto;
+}
+
+.description {
+    padding: 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.topRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    margin: 10px 0;
+}
+
+.bottomRow {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+.createdDate {
+    font-size: 14px;
+    color: #666;
+}
+
+.buttonShare {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.buttonShare:hover {
+    background-color: #0056b3;
+}
+
+.talkCount,
+.people {
+    font-size: 14px;
+    color: #666;
+}

@@ -1,9 +1,52 @@
-.header
-{
-    display: flex;
-}
+/* DrawerContentDesc.module.css */
 
-.content
-{
-    margin-bottom: 20%;
-}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+  }
+  
+  
+  .content {
+    height: 100%; 
+    overflow-y: auto;
+    margin-bottom: 25px;
+  }
+  
+  .chatingControlPanel {
+    height: calc(90vh - 72px); 
+    overflow-y: hidden;
+    margin-bottom: 25px;
+    background-color: red;
+  }
+  
+  .imageBackground {
+    height: 100%;
+    background-image: url('/Images/001.png'); /* Replace with your image */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .descriptionBox {
+    height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  
+  .episodeList {
+    height: 60px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
