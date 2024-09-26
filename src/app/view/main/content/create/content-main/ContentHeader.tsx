@@ -11,12 +11,12 @@ interface ContentHeaderProps {
     onOpenDrawer: () => void; // 스튜디오 버튼 클릭 시 호출될 함수
 }
 
-const ContentHeader: React.FC<ContentHeaderProps> = ({ onBack, onOpenDrawer }) => {
+const ContentHeader: React.FC<ContentHeaderProps> = ({ onOpenDrawer }) => {
     const [title, setTitle] = useState('Content Title Text'); // 수정 가능한 텍스트 상태
 
     return (
         <Box className={Style.contentHeader}>
-        <Link href="./homefeed" passHref>
+        <Link href="./main/homefeed" passHref>
             <IconButton>
                 <ArrowBackIcon />
             </IconButton>

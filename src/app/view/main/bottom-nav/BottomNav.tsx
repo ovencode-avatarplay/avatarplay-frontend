@@ -13,16 +13,15 @@ import ContentIcon from '@mui/icons-material/DynamicFeed';
 import GameIcon from '@mui/icons-material/SportsEsports';
 // import { useNavigate } from 'react-router-dom';
 
-import BottomNav from 'data/navigation/bottom-nav.json'
+import BottomNavData from 'data/navigation/bottom-nav.json'
 import DrawerCreate from '../content/create/CreateWidget';
 
 import Style from './BottomNav.module.css';
 import Link from 'next/link';
 
-export default function SimpleBottomNavigation() {
+export default function BottomNav() {
     const [selectedIndex, setSelectedIndex] = React.useState(0);
     const [drawerOpen, setDrawerOpen] = React.useState(false);
-    // const navigate = useNavigate(); 
 
     const toggleDrawer = (open: boolean) => {
         setDrawerOpen(open);
@@ -32,7 +31,6 @@ export default function SimpleBottomNavigation() {
         if (newValue !== 2)
         {
             setSelectedIndex(newValue);
-            // navigate(BottomNav[newValue].link); // 선택된 index에 맞는 링크로 이동
         }
         else
         {
@@ -74,12 +72,12 @@ export default function SimpleBottomNavigation() {
             case '<GameIcon />':
                 return <GameIcon />;
             default:
-                return <HomeIcon />; // 정의되지 않은 아이콘은 null로 반환
+                return <HomeIcon />; 
         }
     };
     
     return (
-        <>
+        <footer>
         <Paper className={Style.bottomNav} elevation={3}>
             <Box className={Style.bottomNavBox}>
                 <BottomNavigation
@@ -87,7 +85,7 @@ export default function SimpleBottomNavigation() {
                     value={selectedIndex}
                     onChange={handleNavigationChange}
                 >
-                        {BottomNav.map((button, index) => (
+                        {BottomNavData.map((button, index) => (
                             index !== 2 ? (
                                 <BottomNavigationAction
                                     key={index}
@@ -109,6 +107,6 @@ export default function SimpleBottomNavigation() {
             </Box>
         </Paper>
         <DrawerCreate open={drawerOpen} onClose={()=> toggleDrawer(false)} />
-        </>
+        </footer>
     );
 }

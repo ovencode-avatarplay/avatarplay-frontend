@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
 import HeaderNavBar from "@/app/view/main/header/header-nav-bar/HeaderNavBar";
-import SimpleBottomNavigation from "@/app/view/main/bottom-nav/BottomNav";
+import BottomNav from "@/app/view/main/bottom-nav/BottomNav";
+import DrawerContentDesc from "@/app/view/main/content/DrawerContentDesc";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
         <HeaderNavBar />
         {children}
-        <SimpleBottomNavigation />
+        <BottomNav />
     </html>
   );
 }
