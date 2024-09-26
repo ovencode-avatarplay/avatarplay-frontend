@@ -13,12 +13,12 @@ const Main = ({ children }: { children: ReactNode }) => {
 
   return (
     <Provider store={store}>
-      <body className={Style.body}>
+      <div className={Style.body}>
         <HeaderNavBar />
         {children}
         <BottomNav />
         <DrawerContentDesc />
-      </body>
+      </div>
     </Provider>
   )
 }

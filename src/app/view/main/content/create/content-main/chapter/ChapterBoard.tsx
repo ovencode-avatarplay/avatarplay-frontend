@@ -4,6 +4,7 @@ import React from 'react';
 import { Drawer, Box, Button, Typography } from '@mui/material';
 import Style from './ChapterBoard.module.css';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import HomeIcon from '@mui/icons-material/Home';
 
 interface Props {
     open: boolean;
@@ -27,7 +28,7 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
                 {/* Create Chapter 이미지 버튼 */}
                 <Box className={Style.imageButtonContainer}>
                     <Button className={Style.imageButton}>
-                        <img src="/Images/create-chapter.png" alt="Create Chapter" className={Style.buttonImage} />
+                        <HomeIcon />
                         <Typography>Create Chapter</Typography>
                     </Button>
                 </Box>
@@ -39,7 +40,7 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
                 {/* Create Episode 이미지 버튼 */}
                 <Box className={Style.imageButtonContainer}>
                     <Button className={Style.imageButton}>
-                        <img src="/Images/create-episode.png" alt="Create Episode" className={Style.buttonImage} />
+                        <HomeIcon />
                         <Typography>Create Episode</Typography>
                     </Button>
                 </Box>
