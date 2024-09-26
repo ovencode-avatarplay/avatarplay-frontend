@@ -1,39 +1,25 @@
-import React from 'react'
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+'use client'
 
-import Header from './header/Header'
-import SearchBoard from './content/searchboard/SearchBoard'
-import Footer from './footer/Footer'
-import HomeFeed from './content/HomeFeed'
-import ChatPage from './content/ChatPage'
-import BottomNav from './bottom-nav/BottomNav'
-import DrawerContentDesc from './content/DrawerContentDesc';
-import ContentMain from './content/create/content-main/ContentMain';
+import React, { ReactNode } from 'react'
 
-import './Main.css';
-import { Container } from '@mui/material'
-import DrawerCreate from './content/create/CreateWidget';
+import HeaderNavBar from "@/app/view/main/header/header-nav-bar/HeaderNavBar";
+import BottomNav from "@/app/view/main/bottom-nav/BottomNav";
+import DrawerContentDesc from "@/app/view/main/content/DrawerContentDesc";
+import { Provider } from 'react-redux';
+import { store } from '@/redux-store/ReduxStore';
+import Style from './Main.module.css'
 
-const Main: React.FC = () => {
-  const location = useLocation();
-
-  // /chat 경로에서는 BottomNav 숨기기
-  const hideComponents = location.pathname === '/chat' || location.pathname === '/create';
+const Main = ({ children }: { children: ReactNode }) => {
 
   return (
-    <div id='main' className="main">
-      {!hideComponents && <Header />}
-      <Routes>
-        <Route path='/' element={<HomeFeed />} />
-        <Route path='/explore' element={<SearchBoard />} />
-        <Route path='/chat' element={<ChatPage />} />
-        <Route path='/create' element={<ContentMain />} />
-      </Routes>
-      {/*<SideBar /> */}  {/* SideBar는 기획쪽에서 논의할 내용이 있어서 일단 보류*/}
-      {/* <Footer /> */}
-      {!hideComponents && <DrawerContentDesc />}
-      {!hideComponents && <BottomNav />}
-    </div>
+    <Provider store={store}>
+      <body className={Style.body}>
+        <HeaderNavBar />
+        {children}
+        <BottomNav />
+        <DrawerContentDesc />
+      </body>
+    </Provider>
   )
 }
 

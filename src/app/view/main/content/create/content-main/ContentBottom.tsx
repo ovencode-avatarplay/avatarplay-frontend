@@ -8,17 +8,18 @@ import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
 
 import Style from './ContentBottom.module.css';
 
-const ContentBottom: React.FC = () => {
-  const handleDrawerOpen = () => {
-    // Drawer 열기 로직
-  };
+interface Props{
+  onGimmickOpen : () => void;
+  onPublishingOpen : () => void;
+}
 
+
+const ContentBottom: React.FC<Props> = ({onGimmickOpen, onPublishingOpen}) => {
   return (
       <Box className={Style.contentBottom}>
           <div className={Style.setupButtons}>
               <Box>
-                  <ButtonSetupDrawer icon={<PersonIcon />} label="Setup 1" onClick={handleDrawerOpen} />
-                  <ButtonSetupDrawer icon={<BookIcon />} label="Setup 2" onClick={handleDrawerOpen} />
+                  <ButtonSetupDrawer icon={<PersonIcon />} label="Gimmick Setup" onClick={onGimmickOpen} />
               </Box>
           </div>
 
@@ -26,15 +27,15 @@ const ContentBottom: React.FC = () => {
       <Box className={Style.buttonBox}>
         <Button className={Style.actionButton}>
           <PostAddIcon />
-          <Typography>Action 1</Typography>
+          <Typography>Save Draft</Typography>
         </Button>
         <Button className={Style.actionButton}>
           <PostAddIcon />
-          <Typography>Action 2</Typography>
+          <Typography>Preview</Typography>
         </Button>
-        <Button className={Style.actionButton}>
+        <Button className={Style.actionButton} onClick={onPublishingOpen}>
           <PostAddIcon />
-          <Typography>Action 3</Typography>
+          <Typography>Submit</Typography>
         </Button>
       </Box>
     </Box>

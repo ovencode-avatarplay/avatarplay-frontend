@@ -1,7 +1,7 @@
 [
-    { "label": "Home", "icon": "<HomeIcon />" , "link" : "./homefeed"},
-    { "label": "Explore", "icon": "<ExploreIcon />" , "link" : "./explore"},
-    { "label": "Create", "icon": "<CreateIcon />" , "link" : "./create"},
-    { "label": "Content", "icon": "<ContentIcon />" , "link" : "./chat"},
-    { "label": "Game", "icon": "<GameIcon />" , "link" : "./game"}
+    { "label": "Home", "icon": "<HomeIcon />" , "link" : "/:lang/main/homefeed"},
+    { "label": "Explore", "icon": "<ExploreIcon />" , "link" : "/:lang/main/explore"},
+    { "label": "Create", "icon": "<CreateIcon />" , "link" : "/:lang/create"},
+    { "label": "Content", "icon": "<ContentIcon />" , "link" : "/:lang/chat"},
+    { "label": "Game", "icon": "<GameIcon />" , "link" : "/:lang/main/game"}
 ]

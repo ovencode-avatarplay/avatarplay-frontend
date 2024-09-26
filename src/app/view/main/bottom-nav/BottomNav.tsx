@@ -87,13 +87,18 @@ export default function BottomNav() {
                 >
                         {BottomNavData.map((button, index) => (
                             index !== 2 ? (
-                                <BottomNavigationAction
+                                <Link
                                     key={index}
-                                    label={button.label}
-                                    icon={getIconComponent(button.icon)}
-                                    component={Link} // Link 컴포넌트로 설정
-                                    href={button.link} // Next.js 링크를 href로 설정
-                                />
+                                    href={button.link}
+                                    passHref
+                                    onClick={() => handleClick(index)}
+                                >
+                                    <BottomNavigationAction
+                                        key={index}
+                                        label={button.label}
+                                        icon={getIconComponent(button.icon)}
+                                    />
+                                </Link>
                             ) : (
                                 <BottomNavigationAction
                                     key={index}

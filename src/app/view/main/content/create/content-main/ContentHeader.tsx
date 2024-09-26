@@ -7,16 +7,17 @@ import Style from './ContentHeader.module.css';
 import Link from 'next/link';
 
 interface ContentHeaderProps {
-    onBack: () => void; // 뒤로가기 버튼 클릭 시 호출될 함수
+    lastUrl? : string
     onOpenDrawer: () => void; // 스튜디오 버튼 클릭 시 호출될 함수
 }
 
-const ContentHeader: React.FC<ContentHeaderProps> = ({ onOpenDrawer }) => {
-    const [title, setTitle] = useState('Content Title Text'); // 수정 가능한 텍스트 상태
+const ContentHeader: React.FC<ContentHeaderProps> = ({ lastUrl, onOpenDrawer }) => {
+    const [title, setTitle] = useState(''); 
+    const defaultUrl = "./main/homefeed";
 
     return (
         <Box className={Style.contentHeader}>
-        <Link href="./main/homefeed" passHref>
+        <Link href={lastUrl ? lastUrl : defaultUrl} passHref>
             <IconButton>
                 <ArrowBackIcon />
             </IconButton>
@@ -25,9 +26,10 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({ onOpenDrawer }) => {
                 <TextField
                     variant="standard"
                     value={title}
+                    aria-placeholder='Content Title Text'
                     onChange={(e) => setTitle(e.target.value)}
                     InputProps={{
-                        startAdornment: (
+                        endAdornment: (
                             <IconButton>
                                 <EditIcon />
                             </IconButton>

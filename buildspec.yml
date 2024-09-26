@@ -1,0 +1,37 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Installing dependencies...
+      - apt-get update -y
+      - apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+      - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+      - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+      - apt-get update -y
+      - apt-get install -y docker-ce
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${ECR_URL}
+      - echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> .env
+      - echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> .env
+      - echo "GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET" >> .env
+      - echo "DATABASE_URL=$DATABASE_URL" >> .env
+      - echo "NEXTAUTH_URL=$NEXTAUTH_URL" >> .env
+  build:
+    commands:
+      - echo Building the project...
+      - docker-compose -f docker-compose.dev.yml build
+
+  post_build:
+    commands:
+      - echo Pushing the Docker image to Amazon ECR...
+      - docker push ${REPOSITORY} ${ECR_URL}/${IMAGE_NAME}:latest
+      - aws eks update-kubeconfig --region ap-northeast-2 --name ovencode
+      - kubectl create configmap my-app-config --from-env-file=.env --namespace ${NAMESPACE}
+      - kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${ECR_URL}/${IMAGE_NAME}:latest --namespace ${NAMESPACE}
+
+artifacts:
+  files:
+    - '**/*'
