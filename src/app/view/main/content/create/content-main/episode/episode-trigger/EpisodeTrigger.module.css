@@ -1,8 +1,6 @@
 .modal-body {
     display: flex;
-    flex-direction: column; /* 세로 정렬 */
-    justify-content: center; /* 가로 정렬 */
-    height: 100%; /* 높이 100% */
+    flex-direction: column; /* 세로 정렬 */    
 }
 
 .modal-header {
@@ -14,7 +12,7 @@
 }
 
 .modal-title {    
-    font-size: 1.2em; /* 제목 크기 조정 */    
+    font-size: 1.em; /* 제목 크기 조정 */    
 }
 
 .close-button {
@@ -23,12 +21,30 @@
     font-size: 1.5em;
     cursor: pointer;
 }
+.card-box
+{
+    padding: 5%;
+    height: 100%;
+}
+.card-body
+{   
+    height: 100%;
+}
 
-.modal-content {
+.box-button
+{
     display: flex;
     align-items: center; /* 세로 정렬 */
-    justify-content: center; /* 가로 정렬 */
-    padding: 20px; /* 패딩 조정 */
-    overflow-y: auto; /* 내용이 길어질 경우 스크롤 추가 */
-    height: calc(100% - 64px); /* DialogTitle 높이를 제외한 100% */
+    justify-content: center; /* 가로 정렬 */    
+    height: 10%;
+    padding-bottom: 5%;
+
+}
+
+.button-add
+{
+    border-radius: 10px;
+    height: 50px;
+    width: 120px;
+    
 }
