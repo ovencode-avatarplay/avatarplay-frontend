@@ -9,7 +9,6 @@ export default function ExplorePage() {
     return (
         <Provider store={store}>
             <Explore />
-            <DrawerContentDesc />
         </Provider>
     );
 }

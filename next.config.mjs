@@ -8,21 +8,21 @@ const nextConfig = {
           source: '/',
           destination: '/en/main/homefeed',
           permanent: true,
-          locale: false
+          locale: false 
         },
         {
-          source: '/:lang(en|fr|ar)',
+          source: '/:lang(en|ko|ar)',
           destination: '/:lang/main/homefeed',
           permanent: true,
-          locale: false
+          locale: false 
         },
+        
         {
-          source: '/((?!(?:en|fr|ar|front-pages|favicon.ico)\\b)):path',
+          source: '/((?!(?:en|ko|ar|front-pages|favicon.ico)\\b)):path',
           destination: '/en/:path',
           permanent: true,
-          locale: false
+          locale: false 
         }
       ]
     }};
-
 export default nextConfig;

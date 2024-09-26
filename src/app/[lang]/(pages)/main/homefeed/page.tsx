@@ -9,7 +9,6 @@ export default function HomeFeedPage() {
     return (
         <Provider store={store}>
             <HomeFeed />
-            <DrawerContentDesc />
         </Provider>
     );
 }
