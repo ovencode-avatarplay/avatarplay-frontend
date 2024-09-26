@@ -91,8 +91,10 @@ export default function BottomNav() {
                                     key={index}
                                     href={button.link}
                                     passHref
+                                    onClick={() => handleClick(index)}
                                 >
                                     <BottomNavigationAction
+                                        key={index}
                                         label={button.label}
                                         icon={getIconComponent(button.icon)}
                                     />
