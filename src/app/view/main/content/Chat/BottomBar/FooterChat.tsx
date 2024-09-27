@@ -14,7 +14,7 @@ interface BottomBarProps {
 const BottomBar: React.FC<BottomBarProps> = ({ onSend }) => {
   const [message, setMessage] = React.useState('');
   const [isExpanded, setIsExpanded] = React.useState(false);
-  const inputRef = useRef<HTMLDivElement | null>(null); // ref 추가
+  const inputRef = useRef<HTMLInputElement | null>(null); // inputRef의 타입을 HTMLInputElement로 수정
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -28,7 +28,7 @@ const BottomBar: React.FC<BottomBarProps> = ({ onSend }) => {
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault(); // 기본 Enter 키 동작 방지 (줄바꿈 방지)
       handleSend();
@@ -38,7 +38,12 @@ const BottomBar: React.FC<BottomBarProps> = ({ onSend }) => {
   return (
     <Box className={`${styles.bottomBar} ${isExpanded ? styles.expanded : styles.collapsed}`}>
       <Box display="flex" alignItems="center" padding={1}>
-        <Button variant="outlined" sx={{ marginRight: 1, marginBottom: 1, width: '40px', height: '40px', minWidth: '40px', whiteSpace: 'nowrap' }}>+</Button>
+        <Button
+          variant="outlined"
+          sx={{ marginRight: 1, marginBottom: 1, width: '40px', height: '40px', minWidth: '40px', whiteSpace: 'nowrap' }}
+        >
+          +
+        </Button>
         <TextField
           variant="outlined"
           placeholder="채팅 입력"
@@ -48,7 +53,12 @@ const BottomBar: React.FC<BottomBarProps> = ({ onSend }) => {
           inputRef={inputRef} // ref 추가
           sx={{ flex: 1, marginRight: 1 }}
         />
-        <Button variant="contained" color="primary" sx={{ marginRight: 1, marginBottom: 1, width: '40px', height: '40px', minWidth: '50px', whiteSpace: 'nowrap' }} onClick={handleSend}>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ marginRight: 1, marginBottom: 1, width: '40px', height: '40px', minWidth: '50px', whiteSpace: 'nowrap' }}
+          onClick={handleSend}
+        >
           보내기
         </Button>
         <IconButton onClick={toggleExpand} sx={{ marginLeft: 1, marginBottom: 1 }}>
@@ -58,9 +68,15 @@ const BottomBar: React.FC<BottomBarProps> = ({ onSend }) => {
 
       {isExpanded && (
         <Box display="flex" marginTop={1} gap={1}>
-          <Button variant="outlined" startIcon={<CameraIcon />}>캡처</Button>
-          <Button variant="outlined" startIcon={<EmojiEmotionsIcon />}>스티커</Button>
-          <Button variant="outlined" startIcon={<CardGiftcardIcon />}>선물</Button>
+          <Button variant="outlined" startIcon={<CameraIcon />}>
+            캡처
+          </Button>
+          <Button variant="outlined" startIcon={<EmojiEmotionsIcon />}>
+            스티커
+          </Button>
+          <Button variant="outlined" startIcon={<CardGiftcardIcon />}>
+            선물
+          </Button>
         </Box>
       )}
     </Box>
