@@ -12,6 +12,9 @@ import ContentPreviewChat from './content-preview-chat/ContentPreviewChat';
 import ContentPublishing from './content-publishing/ContentPublishing';
 import ContentDashboard from './content-dashboard/ContentDashboard';
 import ChapterBoard from './chapter/ChapterBoard';
+import {sendContentSave, SaveContentReq, SaveContentRes} from '@/app/NetWork/MyNetWork'
+import { contentInfo } from '@/types/apps/content/contentInfo';
+import { publishInfo } from '@/types/apps/content/chapter/publishInfo';
 
 const ContentMain: React.FC = () => {
     const [isDashboardOpen, setIsDashboardOpen] = useState(false);
@@ -40,8 +43,31 @@ const ContentMain: React.FC = () => {
     const handleCloseGimmick = () => {
         setIsGimmickOpen(false);
     };
-    
+
+    const defaultContentInfo = (): contentInfo => ({
+        id: 1111,
+        chapterInfoList: [], // TODO 기본값 설정
+        publishInfo: defaultPublishInfo()
+    });
+    const defaultPublishInfo = (): publishInfo => ({
+        languageType: 0,
+        contentName: 'test name',
+        thumbnail: 'test thumbnail',
+        contentDescription: 'test desc',
+        authorComment: 'test comment',
+        visibilityType: 0,
+        monetization: true,
+        nsfw: 0
+    });
+
+    const defaultSaveContentReq = (): SaveContentReq => ({
+        userID: 7,                  // 7번 유저가 테스트 가능
+        contentInfo: defaultContentInfo(),  // contentInfo의 디폴트 값 사용
+    });
+
+    const [saveData, setSaveData] = useState<SaveContentReq>(defaultSaveContentReq);
     const handleOpenPublishing = () => {
+        sendContentSave(saveData);
         setIsPublishingOpen(true);
     };
     const handleClosePublishing = () => {

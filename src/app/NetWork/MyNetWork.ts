@@ -8,6 +8,7 @@ import { number } from 'valibot';
 
 // interface
 import {PayloadChat} from './network-interface/payloadChat'
+import { contentInfo } from '@/types/apps/content/contentInfo';
 
 
 // Axios 인스턴스 생성
@@ -566,5 +567,40 @@ export const sendGetExplore = async (search : string, onlyAdults : boolean): Pro
   } catch (error: unknown) {
     console.error('Failed to fetch shorts info:', error);
     return { resultCode: -1, resultMessage: 'Failed to fetch shorts info', searchOptionList: null, playingListData: null, recommendationListData: null };
+  }
+};
+
+
+//==== Content Save 정보 =======================================================================================================
+
+export interface SaveContentReq {
+  userID: number;
+  contentInfo: contentInfo;
+}
+
+
+export interface SaveContentRes {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    userID: number;
+    contentInfo: contentInfo;
+  };
+}
+
+export const sendContentSave = async (payload: SaveContentReq): Promise<ResponseAPI<SaveContentRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<SaveContentRes>>('Content/save', payload);
+    
+    if (response.data.resultCode === 0) {
+      console.log('제출 결과 성공');
+
+      return response.data; 
+    } else {
+      throw new Error("SaveContentRes" + response.data.resultCode); // 실패 메시지 처리
+    }
+  } catch (error: any) {
+    console.error('Error sending content data:', error);
+    throw new Error('Failed to send content data. Please try again.'); // 에러 처리
   }
 };
