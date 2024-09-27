@@ -49,8 +49,8 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({ item, handleToggle, i
                 </IconButton>
             </ListItem>
 
-            {/* ChangeBehaviour 모달 */}
-            <ChangeBehaviour open={isModalOpen} onClose={handleModalClose} />
+            {/* ChangeBehaviour 모달에 item 데이터 전달 */}
+            <ChangeBehaviour open={isModalOpen} onClose={handleModalClose} item={item} />
         </>
     );
 };
