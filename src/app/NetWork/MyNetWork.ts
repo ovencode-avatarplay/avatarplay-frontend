@@ -144,7 +144,7 @@ export interface SetCharacterRes {
 // 캐릭터 데이터를 전송하는 새로운 POST 요청 함수 정의
 export const sendCharacterData = async (payload: PayloadCharacterData): Promise<ResponseAPI<SetCharacterRes>> => {
   try {
-    const response = await api.post<ResponseAPI<SetCharacterRes>>('Chat/setCharacter', payload); // '/character' 엔드포인트로 POST 요청 전송
+    const response = await api.post<ResponseAPI<SetCharacterRes>>('DemoChat/setCharacter', payload); // '/character' 엔드포인트로 POST 요청 전송
     
     if (response.data.resultCode === 0) {
       //console.log('제출 결과 성공');
@@ -187,7 +187,7 @@ export interface UpdateCharacterRes {
 export const updateCharacterData = async (payload: UpdateCharacterReq): Promise<ResponseAPI<UpdateCharacterRes>> => {
   try {
     console.error('update sending character data:', payload);
-    const response = await api.post<ResponseAPI<UpdateCharacterRes>>('Chat/updateCharacter', payload); // '/character' 엔드포인트로 POST 요청 전송
+    const response = await api.post<ResponseAPI<UpdateCharacterRes>>('DemoChat/updateCharacter', payload); // '/character' 엔드포인트로 POST 요청 전송
     
     if (response.data.resultCode === 0) {
       //console.log('제출 결과 성공');
@@ -216,7 +216,7 @@ export interface DeleteCharacterRes {
 export const deleteCharacterData = async (payload: DeleteCharacterReq): Promise<ResponseAPI<UpdateCharacterRes>> => {
   try {
     //console.log('캐릭터 삭제 요청2');
-    const response = await api.post<ResponseAPI<UpdateCharacterRes>>('Chat/deleteCharacter', payload); // '/character' 엔드포인트로 POST 요청 전송
+    const response = await api.post<ResponseAPI<UpdateCharacterRes>>('DemoChat/deleteCharacter', payload); // '/character' 엔드포인트로 POST 요청 전송
     
     if (response.data.resultCode === 0) {
       //console.log('제출 결과 성공');
@@ -258,7 +258,7 @@ export const fetchCharacterInfo = async (): Promise<{
     // POST 요청을 보내기 위한 기본적인 payload 정의
     const payload = {}; // 필요한 경우 이곳에 payload를 정의
 
-    const response = await api.post<ResponseAPI<ResponseCharactersInfo>>('Chat/getCharacters', payload); // POST 요청
+    const response = await api.post<ResponseAPI<ResponseCharactersInfo>>('DemoChat/getCharacters', payload); // POST 요청
 
     const { resultCode, resultMessage, data } = response.data;
 
@@ -320,7 +320,7 @@ export const sendCharacterInfoDetail = async (charaterID: number): Promise<{
     //const payload = {}; // 필요한 경우 이곳에 payload를 정의
 
     //console.log('reqdata ',ReqData)
-    const response = await api.post<ResponseCharacterInfoDetail>('Chat/getCharacter', ReqData ); // POST 요청
+    const response = await api.post<ResponseCharacterInfoDetail>('DemoChat/getCharacter', ReqData ); // POST 요청
 
     const { resultCode, resultMessage, data, thumbnail } = response.data;
 
@@ -370,7 +370,7 @@ export const sendChatInfoDetail = async (chatID: number): Promise<{
     const ReqData: ReqChatPrompt = { chatID };
 
     // POST 요청을 보내기 위한 기본적인 payload 정의
-    const response = await api.post<ResponseChatInfoDetail>('Chat/getChatPrompt', ReqData); // POST 요청
+    const response = await api.post<ResponseChatInfoDetail>('DemoChat/getChatPrompt', ReqData); // POST 요청
 
     const { resultCode, resultMessage, data} = response.data;
 
@@ -415,7 +415,7 @@ export const sendGetPromptTemplate = async (): Promise<{
     const ReqData: ReqPromptTemplate = {  };
 
     // POST 요청을 보내기 위한 기본적인 payload 정의
-    const response = await api.post<ResponsePromptTemplate>('Chat/getPromptTemplate', ReqData); // POST 요청
+    const response = await api.post<ResponsePromptTemplate>('DemoChat/getPromptTemplate', ReqData); // POST 요청
 
     const { resultCode, resultMessage, data,  } = response.data;
 
@@ -453,7 +453,7 @@ export interface SetChatPromptTemplateRes {
 // 캐릭터 데이터를 전송하는 새로운 POST 요청 함수 정의
 export const sendChatPromptTemplateData = async (payload: ChatPromptTemplateData): Promise<ResponseAPI<SetChatPromptTemplateRes>> => {
   try {
-    const response = await api.post<ResponseAPI<SetChatPromptTemplateRes>>('Chat/updatePromptTemplate', payload); // '/character' 엔드포인트로 POST 요청 전송
+    const response = await api.post<ResponseAPI<SetChatPromptTemplateRes>>('DemoChat/updatePromptTemplate', payload); // '/character' 엔드포인트로 POST 요청 전송
     
     if (response.data.resultCode === 0) {
       //console.log('제출 결과 성공');
@@ -495,7 +495,7 @@ export const sendGetHomeFeedShorts = async (): Promise<{
 }> => {
   try {
     // GET 요청을 보내기 위한 기본적인 정의
-    const response = await api.get<ResponseHomeFeedShorts>('/Home'); // GET 요청으로 수정
+    const response = await api.get<ResponseHomeFeedShorts>('/Home/shorts'); // GET 요청으로 수정
 
     const { resultCode, resultMessage, data } = response.data;
 
