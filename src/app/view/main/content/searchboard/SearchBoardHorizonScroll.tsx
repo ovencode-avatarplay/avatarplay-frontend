@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography} from '@mui/material';
 import Style from './SearchBoardHorizonScroll.module.css'; // 스타일 파일 임포트
 import ExploreCard from './ExploreCard'
-import ExploreData from '@/data/explore-cards.json';
 import { parse } from 'path';
 import { number } from 'valibot';
 import { ExploreInfo } from '@/app/NetWork/MyNetWork';

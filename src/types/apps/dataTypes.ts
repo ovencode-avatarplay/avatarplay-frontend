@@ -1,59 +1,55 @@
-// MainDataA 타입 정의
 export interface MainDataA {
-    id: 'A';
-    name: string;
-    // 추가 필드들
-}
-
-// MainDataB 타입 정의
-export interface MainDataB {
-    id: 'B';
-    description: string;
-    // 추가 필드들
-}
-
-// MainDataV 타입 정의
-export interface MainDataV {
-    id: 'V';
+    key: 'triggerValueIntimacy';
     value: number;
-    // 추가 필드들
+}
+export interface MainDataB {
+    key: 'triggerValueKeyword';
+    value: string[];
 }
 
-// MainDataD 타입 정의
+export interface MainDataC {
+    key: 'triggerValueChatCount';
+    value: number;
+}
+
 export interface MainDataD {
-    id: 'D';
-    date: Date;
-    // 추가 필드들
+    key: 'triggerValueTimeMinute';
+    value: number;
 }
 
-// SainData1 타입 정의
-export interface SainData1 {
-    type: 1;
-    info: string;
-    // 추가 필드들
+export interface SubDataA {
+    key: 'actionEpisodeChangeId';
+    value: number;
 }
 
-// SainData2 타입 정의
-export interface SainData2 {
-    type: 2;
-    details: string;
-    desc:string;
-    // 추가 필드들
+
+export interface SubDataB {
+    key: 'ChangePrompt';
+    value: string;
+    coversationDataList:CoversationData[];
 }
 
-// SainData3 타입 정의
-export interface SainData3 {
-    type: 3;
-    meta: string;
-    // 추가 필드들
+export interface CoversationData
+{
+    question: string;
+    answer: string;
 }
 
-// MainData와 SainData의 유니온 타입
-export type MainData = MainDataA | MainDataB | MainDataV | MainDataD;
-export type SainData = SainData1 | SainData2 | SainData3;
+export interface SubDataC {
+    key: 'actionIntimacyPoint';
+    value: number;
+    max_value: number;
+}
 
-// 메인 데이터와 서브 데이터의 페어 타입 정의
+
+
+
+export type MainData = MainDataA | MainDataB | MainDataC | MainDataD;
+export type SubData = SubDataA | SubDataB | SubDataC;
+
 export interface DataPair {
+    id: number;
+    name:string
     main: MainData;
-    sub: SainData;
+    sub: SubData;
 }

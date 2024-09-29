@@ -2,8 +2,8 @@
 .exploreCard
 {
   position: relative;
-  min-width: 45%;
-  height: 200px;
+  min-width: 55%;
+  height: 20vh;
   margin-right: 16px;
   flex-shrink: 0;
   /* Prevent cards from shrinking in the scrollable container */

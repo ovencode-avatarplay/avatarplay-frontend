@@ -78,38 +78,38 @@ export default function BottomNav() {
     
     return (
         <footer>
-        <Paper className={Style.bottomNav} elevation={3}>
-            <Box className={Style.bottomNavBox}>
-                <BottomNavigation
-                    showLabels
-                    value={selectedIndex}
-                    onChange={handleNavigationChange}
-                >
+            <Paper className={Style.bottomNav} elevation={3}>
+                <Box className={Style.bottomNavBox}>
+                    <BottomNavigation
+                        showLabels
+                        value={selectedIndex}
+                        onChange={handleNavigationChange}
+                    >
                         {BottomNavData.map((button, index) => (
                             index !== 2 ? (
-                                <Link
+                                <BottomNavigationAction
                                     key={index}
-                                    href={button.link}
-                                    passHref
-                                >
-                                    <BottomNavigationAction
-                                        label={button.label}
-                                        icon={getIconComponent(button.icon)}
-                                    />
-                                </Link>
+                                    label={button.label}
+                                    icon={getIconComponent(button.icon)}
+                                    component={Link} // Link 컴포넌트를 component prop으로 전달
+                                    href={button.link} // Link에서 href 사용
+                                    onClick={() => handleClick(index)}
+                                    showLabel
+                                />
                             ) : (
                                 <BottomNavigationAction
                                     key={index}
                                     label={button.label}
                                     icon={getIconComponent(button.icon)}
                                     onClick={() => handleClick(index)} // 클릭 시 handleClick 호출
+                                    showLabel
                                 />
                             )
                         ))}
-                </BottomNavigation>
-            </Box>
-        </Paper>
-        <DrawerCreate open={drawerOpen} onClose={()=> toggleDrawer(false)} />
+                    </BottomNavigation>
+                </Box>
+            </Paper>
+            <DrawerCreate open={drawerOpen} onClose={() => toggleDrawer(false)} />
         </footer>
     );
 }

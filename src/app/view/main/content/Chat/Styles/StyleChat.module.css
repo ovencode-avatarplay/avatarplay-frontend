@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column; /* 세로 방향으로 요소를 배치 */
   height: 100vh; /* 전체 화면 높이 */
-  overflow: hidden; /* 자식 요소가 벗어나는 것 방지 */
+  /*overflow: hidden; /* 자식 요소가 벗어나는 것 방지 */
 }
 
 .topBar {
@@ -17,9 +17,13 @@
 }
 
 .chatArea {
-  flex: 1; /* 남은 공간을 모두 차지 */
-  overflow-y: auto; /* 세로 스크롤 가능 */
-  background-color: #f9f9f9; /* 연한 회색 배경 */
+  flex: 1; /* 남은 공간을 차지하도록 설정 */
+  padding: 16px; /* 채팅 영역 패딩 */
+  max-height: calc(100vh - 120px); /* 하단바와 상단바를 제외한 최대 높이 */
+  overflow-y: auto; /* 수직 스크롤 가능 */
+  border: 1px solid #ccc; /* 선택 사항: 테두리 추가 */
+  border-radius: 8px; /* 선택 사항: 모서리 둥글게 */
+  background-color: #ffffff; /* 배경색 설정 */
 }
 
 /* 하단바 설정 */
@@ -47,15 +51,6 @@
 .expanded {
   max-height: 200px; /* 펼쳤을 때 높이 */
   padding: 16px; /* 전체 패딩 */
-}
-
-/* 채팅 영역 설정 */
-.chatArea {
-  flex: 1;           /* 남은 공간을 모두 차지 */
-  overflow-y: auto;  /* 세로 스크롤 가능 */
-  padding: 10px;
-  background-color: #f9f9f9; /* 연한 회색 배경 */
-  margin-bottom: 60px; /* 하단바 높이 만큼 마진 추가 */
 }
 
 /* 메시지 설정 */

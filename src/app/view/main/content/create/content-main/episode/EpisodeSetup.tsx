@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client'; // react-dom/client에서 import
-import { Box } from '@mui/material';
+import { Box, Icon } from '@mui/material';
 import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
@@ -9,8 +9,16 @@ import ImageIcon from '@mui/icons-material/Image';
 
 import Style from './EpisodeSetup.module.css';
 import EpisodeTrigger from './episode-trigger/EpisodeTrigger'; // EpisodeTrigger import
+import ButtonEpisodeInfo from './ButtonEpisodeInfo';
+import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
+import EpisodeImageUpload from './EpisodeImageUpload';
 
-const EpisodeSetup: React.FC = () => {
+interface Props {
+  onDrawerOpen: () => void;
+
+}
+
+const EpisodeSetup: React.FC<Props> = ({onDrawerOpen}) => {
   const [modalOpen, setModalOpen] = useState(false); // 모달 열림 상태
 
   const openModal = () => {
@@ -23,10 +31,11 @@ const EpisodeSetup: React.FC = () => {
 
   return (
     <main className={Style.episodeSetup}>
-      <ButtonSetupDrawer icon={<PersonIcon />} label="Setup" onClick={() => { }} />
+      <ButtonEpisodeInfo chapterName='Chapter.1' episodeName='Ep.1 FirstDay' onDrawerOpen={onDrawerOpen} />
+
       {/* 이미지 영역 */}
       <Box className={Style.imageArea}>
-        <img src="/Images/001.png" alt="Episode Setup" className={Style.setupImage} />
+        <EpisodeImageUpload />
       </Box>
 
       {/* SetupButton 4개 */}

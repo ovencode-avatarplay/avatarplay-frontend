@@ -1,0 +1,36 @@
+/* 파일 경로: styles/TriggerListItem.module.css */
+
+/* ListItem에 밑줄을 추가 */
+.listItem {
+    border-bottom: 1px solid #e0e0e0; /* 밑줄 */
+    padding: 10px 16px; /* 기본 패딩 */
+  }
+  
+  /* 마지막 아이템에는 밑줄 제거 */
+  .listItem:last-child {
+    border-bottom: none; /* 마지막 아이템의 밑줄 제거 */
+  }
+  
+  /* 선택된 아이템 스타일 */
+  .selected {
+    background-color: #f5f5f5; /* 선택된 상태일 때의 배경색 */
+  }
+  
+  .iconButton {
+    margin-left: auto; /* 아이콘 버튼을 오른쪽 끝으로 정렬 */
+  }
+  
+  .listItemText {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .primaryText {
+    font-weight: bold; /* Main key 텍스트 굵게 */
+  }
+  
+  .secondaryText {
+    font-size: 0.875rem; /* Sub key 텍스트 크기 조정 */
+    color: #757575; /* Sub key 텍스트 색상 */
+  }
+  
