@@ -28,7 +28,6 @@ phases:
     commands:
       - echo Pushing the Docker image to Amazon ECR...
       - docker push ${REPOSITORY} ${ECR_URL}/${IMAGE_NAME}:latest
-      - aws eks update-kubeconfig --region ap-northeast-2 --name ovencode
       - kubectl create configmap my-app-config --from-env-file=.env --namespace ${NAMESPACE}
       - kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${ECR_URL}/${IMAGE_NAME}:latest --namespace ${NAMESPACE}
 
