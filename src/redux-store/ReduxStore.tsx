@@ -17,7 +17,7 @@ const persistConfig = {
     key: 'root',
     storage,
     // 새로고침해도 데이터 유지 하고싶은 Slice 만 추가
-    whitelist: ['sampleReducer', 'chatReducer']
+    whitelist: ['sampleReducer', 'chatReducer', 'triggerContent']
 }
 
 const reducers = combineReducers({

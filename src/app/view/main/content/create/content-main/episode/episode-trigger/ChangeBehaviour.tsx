@@ -75,6 +75,36 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item, 
         console.log('Updated Item:', updatedItem); // 필요하면 Redux로 바로 저장할 수 있음
     };
 
+    // MainData에 따라 SubData 옵션을 동적으로 변경하는 함수
+    const getSubDataOptions = () => {
+        switch (selectedMainData.key) {
+            case 'triggerValueIntimacy':
+                return [
+                    { key: 'actionEpisodeChangeId', label: 'Episode Change' },
+                    { key: 'ChangePrompt', label: 'Change Prompt' }
+                ];
+            case 'triggerValueChatCount':
+                return [
+                    { key: 'actionEpisodeChangeId', label: 'Episode Change' },
+                    { key: 'ChangePrompt', label: 'Change Prompt' },
+                    { key: 'actionIntimacyPoint', label: 'Get Intimacy Point' }
+                ];
+            case 'triggerValueKeyword':
+                return [
+                    { key: 'actionEpisodeChangeId', label: 'Episode Change' },
+                    { key: 'ChangePrompt', label: 'Change Prompt' },
+                    { key: 'actionIntimacyPoint', label: 'Get Intimacy Point' }
+                ];
+            case 'triggerValueTimeMinute':
+                return [
+                    { key: 'ChangePrompt', label: 'Change Prompt' },
+                    { key: 'actionIntimacyPoint', label: 'Get Intimacy Point' }
+                ];
+            default:
+                return [];
+        }
+    };
+
     // 닫기 버튼 클릭 시 상태 업데이트 후 닫기
     const handleClose = () => {
         const updatedPair = {
@@ -137,9 +167,12 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item, 
                                 onChange={handleSubDataChange}
                                 variant="outlined"
                             >
-                                <MenuItem value="actionEpisodeChangeId">Episode Change</MenuItem>
-                                <MenuItem value="actionIntimacyPoint">Get Intimacy Point</MenuItem>
-                                <MenuItem value="ChangePrompt">Change Prompt</MenuItem>
+                                {/* MainData에 따른 SubData 옵션들을 렌더링 */}
+                                {getSubDataOptions().map(option => (
+                                    <MenuItem key={option.key} value={option.key}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
                             </Select>
                             <IconButton className={styles.rightButton}>
                                 <ArrowForwardIos />
