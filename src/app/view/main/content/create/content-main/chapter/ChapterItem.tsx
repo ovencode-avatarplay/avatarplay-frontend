@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Button, Collapse, IconButton, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HomeIcon from '@mui/icons-material/Home';
+import EditIcon from '@mui/icons-material/Edit'; 
 import EpisodeItem from './EpisodeItem';
 import Style from './ChapterBoard.module.css';
 import { Chapter } from '@/types/apps/chapterCardType';
@@ -11,7 +12,9 @@ interface ChapterItemProps {
   onDelete: (chapterId: number) => void;
   onToggle: (chapterId: number) => void;
   onDeleteEpisode: (chapterId: number, episodeId: number) => void;
-  onSelect: (chapterId: number) => void; // 선택된 Chapter 처리
+  onSelect: (chapterId: number) => void;
+  onSelectEpisode : (chapterID : number, episodeID : number) => void;
+  onEdit: (id: number, type: 'chapter' | 'episode') => void;
   isSelected: boolean; // 선택 여부
   disableDelete: boolean;
 }
@@ -22,6 +25,8 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   onToggle,
   onDeleteEpisode,
   onSelect,
+  onSelectEpisode,
+  onEdit,
   isSelected,
   disableDelete,
 }) => {
@@ -30,9 +35,6 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
       {/* Chapter Header */}
       <Box
         className={Style.chapterHeader}
-        sx={{
-          backgroundColor: isSelected ? 'green' : 'transparent', // 선택된 경우 초록색 배경
-        }}
       >
         <Button
           className={Style.chapterButton}
@@ -45,6 +47,9 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
           <Typography>{chapter.title}</Typography>
         </Button>
 
+        <IconButton onClick={() => onEdit(chapter.id, 'chapter')}>
+          <EditIcon />
+        </IconButton>
         {/* Chapter 삭제 버튼 */}
         {!disableDelete && (
           <IconButton className={Style.deleteButton} onClick={() => onDelete(chapter.id)}>
@@ -61,10 +66,11 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
               key={episode.id}
               episode={episode}
               chapterId={chapter.id}
+              onEditEpisode={onEdit}
               onDeleteEpisode={onDeleteEpisode}
-              disableDelete={chapter.episodes.length <= 1} // Episode가 1개일 때는 삭제 비활성화
-              onSelect={onSelect} // Episode 선택 시 호출
-              isSelected={isSelected} // 선택된 경우 스타일 적용
+              disableDelete={chapter.episodes.length <= 1} 
+              onSelect={onSelectEpisode} 
+              isSelected={isSelected} 
             />
           ))}
         </Box>
