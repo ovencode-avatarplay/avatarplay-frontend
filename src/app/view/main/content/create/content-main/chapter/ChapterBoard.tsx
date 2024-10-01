@@ -1,7 +1,5 @@
-// Drawer
-
 import React, { useState } from 'react';
-import { Drawer, Box, Button, Typography } from '@mui/material';
+import { Drawer, Box, Button, Typography, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import ChapterItem from './ChapterItem';
 import Style from './ChapterBoard.module.css';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
@@ -15,8 +13,11 @@ interface Props {
 
 const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
-  const [selectedChapter, setSelectedChapter] = useState<number | null>(null); // 선택된 Chapter ID
-  const [selectedEpisode, setSelectedEpisode] = useState<{ chapterId: number; episodeId: number } | null>(null); // 선택된 Episode ID
+  const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
+  const [selectedEpisode, setSelectedEpisode] = useState<{ chapterId: number; episodeId: number } | null>(null);
+  const [editItem, setEditItem] = useState<{ id: number | null; type: 'chapter' | 'episode' | null }>({ id: null, type: null });
+  const [newName, setNewName] = useState<string>('');
+
 
   // Chapter 추가 (Episode 1 자동 추가)
   const handleCreateChapter = () => {
@@ -36,12 +37,12 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
         prevChapters.map((chapter) =>
           chapter.id === selectedChapter
             ? {
-                ...chapter,
-                episodes: [
-                  ...chapter.episodes,
-                  { id: chapter.episodes.length + 1, title: `Episode ${chapter.episodes.length + 1}` },
-                ],
-              }
+              ...chapter,
+              episodes: [
+                ...chapter.episodes,
+                { id: chapter.episodes.length + 1, title: `Episode ${chapter.episodes.length + 1}` },
+              ],
+            }
             : chapter
         )
       );
@@ -82,13 +83,43 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
   // Chapter 선택
   const handleChapterSelect = (chapterId: number) => {
     setSelectedChapter(chapterId);
-    setSelectedEpisode(null); // Chapter 선택 시 Episode 선택 해제
+    setSelectedEpisode(null);
   };
 
   // Episode 선택
   const handleEpisodeSelect = (chapterId: number, episodeId: number) => {
     setSelectedEpisode({ chapterId, episodeId });
-    setSelectedChapter(chapterId); // 해당 Episode의 Chapter도 선택
+    setSelectedChapter(chapterId);
+  };
+
+  // Chapter 또는 Episode 이름 변경
+  const handleChangeName = (id: number, type: 'chapter' | 'episode', newName: string) => {
+    setChapters((prevChapters) =>
+      prevChapters.map((chapter) => {
+        if (type === 'chapter' && chapter.id === id) {
+          return { ...chapter, title: newName };
+        } 
+        else 
+        if (type === 'episode' && editItem.type === 'episode') {
+          if (selectedEpisode && chapter.id === selectedEpisode.chapterId) {
+            return {
+              ...chapter,
+              episodes: chapter.episodes.map((episode) =>
+                episode.id === id ? { ...episode, title: newName } : episode
+              ),
+            };
+          }
+        }
+        return chapter;
+      })
+    );
+    setEditItem({ id: null, type: null });
+  };
+
+  // Edit 팝업 열기
+  const handleEditClick = (id: number, type: 'chapter' | 'episode') => {
+    setEditItem({ id, type });
+    setNewName('');
   };
 
   return (
@@ -122,7 +153,9 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
               onToggle={handleChapterToggle}
               onDeleteEpisode={handleDeleteEpisode}
               onSelect={handleChapterSelect}
-              isSelected={selectedChapter === chapter.id} // 선택된 Chapter인지 확인
+              onSelectEpisode={handleEpisodeSelect}
+              onEdit={handleEditClick}
+              isSelected={selectedChapter === chapter.id} 
               disableDelete={chapters.length <= 1}
             />
           ))}
@@ -136,6 +169,33 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
           </Button>
         </Box>
       </Box>
+
+      {/* 이름 변경을 위한 Dialog */}
+      <Dialog open={editItem.id !== null} onClose={() => setEditItem({ id: null, type: null })}>
+        <DialogTitle>Edit {editItem.type === 'chapter' ? 'Chapter' : 'Episode'} Name</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="New Name"
+            fullWidth
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditItem({ id: null, type: null })}>Cancel</Button>
+          <Button
+            onClick={() => {
+              if (editItem.id && editItem.type) {
+                handleChangeName(editItem.id, editItem.type, newName);
+              }
+            }}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Drawer>
   );
 };
