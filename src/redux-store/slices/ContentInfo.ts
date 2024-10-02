@@ -24,6 +24,10 @@ export const contentInfoSlice = createSlice({
             }
         },
         
+        setContentInfo: (state, action: PayloadAction<ContentInfo[]>) => {
+            state.contentInfo = action.payload;
+        },
+
         removeContentInfo: (state) => {
             state.contentInfo = [];
         },
@@ -40,5 +44,5 @@ export const contentInfoSlice = createSlice({
 });
 
 // 액션과 리듀서 export
-export const { addContentInfo, removeContentInfo, updateContentInfo } = contentInfoSlice.actions;
+export const { addContentInfo, setContentInfo, removeContentInfo, updateContentInfo } = contentInfoSlice.actions;
 export default contentInfoSlice.reducer;

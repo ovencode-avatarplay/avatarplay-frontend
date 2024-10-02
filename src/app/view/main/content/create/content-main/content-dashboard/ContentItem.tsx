@@ -4,7 +4,6 @@ import styles from './ContentItem.module.css';
 interface ContentItemProps {
     thumbnailSrc: string;
     createdDate: string;
-    buttonShareText: string;
     title: string;
     talkCount: number;
     peopleCount: number;
@@ -14,7 +13,6 @@ interface ContentItemProps {
 const ContentItem: React.FC<ContentItemProps> = ({
     thumbnailSrc,
     createdDate,
-    buttonShareText,
     title,
     talkCount,
     peopleCount,
@@ -23,12 +21,12 @@ const ContentItem: React.FC<ContentItemProps> = ({
     return (
         <div className={styles.container} style={{ backgroundColor: isSelected ? 'red' : 'blue' }}>
             <div className={styles.thumbnail}>
-                <img src={thumbnailSrc} alt="Thumbnail" />
+                <img src={thumbnailSrc} alt={thumbnailSrc} />
             </div>
             <div className={styles.description}>
                 <div className={styles.topRow}>
                     <span className={styles.createdDate}>{createdDate}</span>
-                    <button className={styles.buttonShare}>{buttonShareText}</button>
+                    <button className={styles.buttonShare}>Share</button>
                 </div>
                 <h2 className={styles.title}>{title}</h2>
                 <div className={styles.bottomRow}>

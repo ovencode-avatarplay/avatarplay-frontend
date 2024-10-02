@@ -16,7 +16,7 @@ const ButtonEpisodeInfo: React.FC<Props> = ({ chapterName, episodeName, onDrawer
         <PersonIcon fontSize="large" />
 
         <Box display="flex" flexDirection="column" className={Style.chapterDetails}>
-            <Typography variant="subtitle1">Chapter No: {chapterName}</Typography>
+            <Typography variant="subtitle1">{chapterName}</Typography>
             <Typography variant="h6">{episodeName}</Typography>
         </Box>
 

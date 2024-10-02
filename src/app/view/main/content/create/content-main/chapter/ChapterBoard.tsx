@@ -1,23 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Drawer, Box, Button, Typography, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import ChapterItem from './ChapterItem';
 import Style from './ChapterBoard.module.css';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import HomeIcon from '@mui/icons-material/Home';
 import { Chapter } from '@/types/apps/chapterCardType';
+import { ChapterInfo } from '@/types/apps/content/chapter/chapterInfo';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux-store/ReduxStore';
+import { setSelectedChapter, setSelectedEpisode } from '@/redux-store/slices/ContentSelection'
+
 
 interface Props {
   open: boolean;
   onClose: () => void;
+  initialChapters: ChapterInfo[];
+  onChapterNameChanged : (name : string) => void;
+  onEpisodeNameChanged : (name : string) => void;
 }
 
-const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
+const ChapterBoard: React.FC<Props> = ({ open, onClose , initialChapters, onChapterNameChanged, onEpisodeNameChanged}) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
-  const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
-  const [selectedEpisode, setSelectedEpisode] = useState<{ chapterId: number; episodeId: number } | null>(null);
+  const selectedChapter = useSelector((state: RootState) => state.contentselection.selectedChapter);
+  const selectedEpisode = useSelector((state: RootState) => state.contentselection.selectedEpisode);
   const [editItem, setEditItem] = useState<{ id: number | null; type: 'chapter' | 'episode' | null }>({ id: null, type: null });
   const [newName, setNewName] = useState<string>('');
+  const dispatch = useDispatch();
 
+  // ChapterInfo를 Chapter로 변환하는 함수
+  const transformChapterInfoToChapter = (chapterInfoList: ChapterInfo[]): Chapter[] => {
+    return chapterInfoList.map(chapterInfo => ({
+      id: chapterInfo.id,
+      title: chapterInfo.name,
+      episodes: chapterInfo.episodeInfoList.map(episodeInfo => ({
+        id: episodeInfo.id,
+        title: episodeInfo.name,
+      })),
+      expanded: false,
+    }));
+  };
+
+  useEffect(() => {
+    setChapters(transformChapterInfoToChapter(initialChapters)); // 변환된 데이터를 상태에 설정
+  }, [initialChapters]);
 
   // Chapter 추가 (Episode 1 자동 추가)
   const handleCreateChapter = () => {
@@ -33,16 +58,16 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
   // Episode 추가
   const handleCreateEpisode = () => {
     if (selectedChapter !== null) {
-      setChapters((prevChapters) =>
-        prevChapters.map((chapter) =>
+      setChapters(prevChapters =>
+        prevChapters.map(chapter =>
           chapter.id === selectedChapter
             ? {
-              ...chapter,
-              episodes: [
-                ...chapter.episodes,
-                { id: chapter.episodes.length + 1, title: `Episode ${chapter.episodes.length + 1}` },
-              ],
-            }
+                ...chapter,
+                episodes: [
+                  ...chapter.episodes,
+                  { id: chapter.episodes.length + 1, title: `Episode ${chapter.episodes.length + 1}` },
+                ],
+              }
             : chapter
         )
       );
@@ -52,18 +77,18 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
   // Chapter 삭제
   const handleDeleteChapter = (chapterId: number) => {
     if (chapters.length > 1) {
-      setChapters(chapters.filter((chapter) => chapter.id !== chapterId));
+      setChapters(chapters.filter(chapter => chapter.id !== chapterId));
     }
   };
 
   // Episode 삭제
   const handleDeleteEpisode = (chapterId: number, episodeId: number) => {
-    setChapters((prevChapters) =>
-      prevChapters.map((chapter) => {
+    setChapters(prevChapters =>
+      prevChapters.map(chapter => {
         if (chapter.id === chapterId && chapter.episodes.length > 1) {
           return {
             ...chapter,
-            episodes: chapter.episodes.filter((episode) => episode.id !== episodeId),
+            episodes: chapter.episodes.filter(episode => episode.id !== episodeId),
           };
         }
         return chapter;
@@ -73,8 +98,8 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
 
   // Chapter 펼치기/접기
   const handleChapterToggle = (chapterId: number) => {
-    setChapters((prevChapters) =>
-      prevChapters.map((chapter) =>
+    setChapters(prevChapters =>
+      prevChapters.map(chapter =>
         chapter.id === chapterId ? { ...chapter, expanded: !chapter.expanded } : chapter
       )
     );
@@ -82,14 +107,14 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
 
   // Chapter 선택
   const handleChapterSelect = (chapterId: number) => {
-    setSelectedChapter(chapterId);
-    setSelectedEpisode(null);
+    dispatch(setSelectedChapter(chapterId));
+    dispatch(setSelectedEpisode(null));
   };
 
   // Episode 선택
   const handleEpisodeSelect = (chapterId: number, episodeId: number) => {
-    setSelectedEpisode({ chapterId, episodeId });
-    setSelectedChapter(chapterId);
+    dispatch(setSelectedEpisode({ chapterId, episodeId }));
+    dispatch(setSelectedChapter(chapterId));
   };
 
   // Chapter 또는 Episode 이름 변경
@@ -97,23 +122,26 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
     setChapters((prevChapters) =>
       prevChapters.map((chapter) => {
         if (type === 'chapter' && chapter.id === id) {
-          return { ...chapter, title: newName };
-        } 
-        else 
-        if (type === 'episode' && editItem.type === 'episode') {
-          if (selectedEpisode && chapter.id === selectedEpisode.chapterId) {
-            return {
-              ...chapter,
-              episodes: chapter.episodes.map((episode) =>
-                episode.id === id ? { ...episode, title: newName } : episode
-              ),
-            };
+          {
+            onChapterNameChanged(newName);
+            return { ...chapter, title: newName };
           }
         }
+        else
+          if (type === 'episode' && selectedEpisode && chapter.id === selectedEpisode.chapterId) {
+            {
+              onEpisodeNameChanged(newName);
+              return {
+                ...chapter,
+                episodes: chapter.episodes.map((episode) =>
+                  episode.id === id ? { ...episode, title: newName } : episode
+                ),
+              };
+            }
+          }
         return chapter;
       })
     );
-    setEditItem({ id: null, type: null });
   };
 
   // Edit 팝업 열기
@@ -189,6 +217,7 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose }) => {
             onClick={() => {
               if (editItem.id && editItem.type) {
                 handleChangeName(editItem.id, editItem.type, newName);
+                setEditItem({ id: null, type: null }); // 에디트 상태 초기화
               }
             }}
           >

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, TextField, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,11 +9,16 @@ import Link from 'next/link';
 interface ContentHeaderProps {
     lastUrl? : string
     onOpenDrawer: () => void; // 스튜디오 버튼 클릭 시 호출될 함수
+    contentTitle : string
 }
 
-const ContentHeader: React.FC<ContentHeaderProps> = ({ lastUrl, onOpenDrawer }) => {
-    const [title, setTitle] = useState(''); 
+const ContentHeader: React.FC<ContentHeaderProps> = ({ lastUrl, onOpenDrawer, contentTitle}) => {
+    const [title, setTitle] = useState(contentTitle); 
     const defaultUrl = "./main/homefeed";
+
+    useEffect(() => {
+        setTitle(contentTitle);
+    },[contentTitle])
 
     return (
         <Box className={Style.contentHeader}>

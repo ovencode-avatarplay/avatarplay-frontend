@@ -1,45 +1,50 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client'; // react-dom/client에서 import
-import { Box, Icon } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux-store/ReduxStore'; // Redux Store의 RootState 가져오기
+import { Box } from '@mui/material';
 import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import ImageIcon from '@mui/icons-material/Image';
-
 import Style from './EpisodeSetup.module.css';
-import EpisodeTrigger from './episode-trigger/EpisodeTrigger'; // EpisodeTrigger import
+import EpisodeTrigger from './episode-trigger/EpisodeTrigger';
 import ButtonEpisodeInfo from './ButtonEpisodeInfo';
-import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 import EpisodeImageUpload from './EpisodeImageUpload';
 import EpisodeDescription from './episode-description/EpisodeDescription';
-import { number } from 'valibot';
+import { ContentInfo } from '@/types/apps/content/contentInfo';
+import { ChapterInfo } from '@/types/apps/content/chapter/chapterInfo';
+import { EpisodeInfo } from '@/types/apps/content/episode/episodeInfo';
 
+import { number } from 'valibot';
 import { sendCharacterInfoDetail } from '@/app/NetWork/MyNetWork';
 import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
 
 interface Props {
   onDrawerOpen: () => void;
+  contentId : number;
+  chapterIndex: number;
+  episodeIndex?: number;
+
 }
 
-// 캐릭터 팝업창 열때 해당 내용을 채워서 열기 위한 
-interface UpdateUserDetail {
-  characterID: number;
-  secrets: string;
-  char_name: string;
-  first_mes: string;
-  char_persona: string;
-  world_scenario: string;
-  thumbnail: string;
-}
+  // 캐릭터 팝업창 열때 해당 내용을 채워서 열기 위한 
+  interface UpdateUserDetail {
+    characterID: number,
+    secrets: string,
+    char_name: string,
+    first_mes: string,
+    char_persona: string,
+    world_scenario: string,
+    thumbnail: string
+  }
+  let updateUserDetail: UpdateUserDetail;
+  const EpisodeSetup: React.FC<Props> = ({ onDrawerOpen, contentId, chapterIndex = 0, episodeIndex = 0 }) => { // episodeIndex 기본값 0
 
-let updateUserDetail: UpdateUserDetail;
-
-const EpisodeSetup: React.FC<Props> = ({ onDrawerOpen }) => {
   const [isTriggerModalOpen, setTriggerModalOpen] = useState(false); // Trigger 모달 열림 상태
   const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
-  const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false); // Episode 모달 열림 상태
-
+  const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false); 
+ 
   // **상태 추가**: 팝업 열림 상태를 관리
   const [isPopupOpen, setPopupOpen] = useState<boolean>(false);
 
@@ -67,6 +72,37 @@ const EpisodeSetup: React.FC<Props> = ({ onDrawerOpen }) => {
     setEpisodeModalOpen(false); // Episode 모달 닫기
   };
 
+  const [contentData, setContentData] = useState<ContentInfo>();
+  const [chapterData, setChapterData] = useState<ChapterInfo>();
+  const [episodeData, setEpisodeData] = useState<EpisodeInfo>();
+
+
+  // Redux에서 contentInfo 데이터 가져오기
+  const contentInfo = useSelector((state: RootState) => state.content.contentInfo ?? []); // contentInfo 가져오기
+
+  useEffect(() => {
+    const content = contentInfo.find(item => item.id === contentId);
+    setContentData(content);
+    if (content) {
+      const chapter = content.chapterInfoList[chapterIndex];
+      if (chapter) {
+        setChapterData(chapter);
+
+        const episode = chapter.episodeInfoList[episodeIndex];
+        if (episode) {
+          setEpisodeData(episode);
+        }
+        else {
+          console.log(`Episode at index ${episodeIndex} not found in Content ${contentId}`);
+        }
+      }
+      else {
+        console.log(`Chapter With Index ${chapterIndex} not found in ${contentId}`);
+      }
+    } else {
+      console.log(`Content with ID ${contentId} not found`);
+    }
+  }, [contentInfo, contentId, chapterIndex, episodeIndex]);
   // **팝업 열기**: 버튼 클릭 시 호출
   const handleOpenPopup = async () => {
     if (!isPopupOpen) {
@@ -74,39 +110,30 @@ const EpisodeSetup: React.FC<Props> = ({ onDrawerOpen }) => {
     }
   };
 
-  // **팝업 닫기**: 팝업을 닫기 위해 호출
   const handleClosePopup = () => {
     if (isPopupOpen) {
       setPopupOpen(false);
     }
   };
 
-  // **팝업 제출 처리**: 팝업에서 제출된 데이터를 처리
-  const handleSubmitPopup = (data: {
-    /*characterName: string;
-    characterDescription: string;
-    worldview: string;
-    introduction: string;
-    secret: string;*/
-  }) => {
+  const handleSubmitPopup = (data: any) => {
     console.log('Submitted data:', data);
     // 필요한 처리를 여기에 추가
+
   };
 
   return (
     <main className={Style.episodeSetup}>
-      <ButtonEpisodeInfo chapterName='Chapter.1' episodeName='Ep.1 FirstDay' onDrawerOpen={onDrawerOpen} />
+      <ButtonEpisodeInfo chapterName={chapterData?.name ?? "Chapter.1"} episodeName={episodeData?.name ?? "Ep.1 FirstDay"} onDrawerOpen={onDrawerOpen} />
 
-      {/* 이미지 영역 */}
       <Box className={Style.imageArea}>
         <EpisodeImageUpload />
       </Box>
 
-      {/* SetupButton 4개 */}
       <Box className={Style.setupButtons}>
-        <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
+      <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
         <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
-        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />
+        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />        
         <ButtonSetupDrawer icon={<ImageIcon />} label="AI Model Setup" onClick={() => { }} />
       </Box>
 
@@ -115,7 +142,7 @@ const EpisodeSetup: React.FC<Props> = ({ onDrawerOpen }) => {
       <EpisodeConversationTemplate open={isConversationModalOpen} closeModal={closeConversationModal} /> {/* 모달 상태 전달 */}
 
       {/* Episode Description 모달 */}
-      {isEpisodeModalOpen &&
+      {isEpisodeModalOpen && 
         <EpisodeDescription
           dataDefault={{
             userId: updateUserDetail?.characterID,
@@ -130,7 +157,8 @@ const EpisodeSetup: React.FC<Props> = ({ onDrawerOpen }) => {
           open={isEpisodeModalOpen}
           onClose={closeEpisodeModal}
           onSubmit={handleSubmitPopup}
-        />}
+      />}
+      
     </main>
   );
 };
