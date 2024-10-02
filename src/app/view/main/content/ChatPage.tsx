@@ -1,20 +1,21 @@
+'use client'
+
 import React from 'react'
 import TopBar from '@chats/TopBar/HeaderChat';
 import BottomBar from '@chats/BottomBar/FooterChat';
 import ChatArea from '@chats/MainChat/ChatArea';
 import styles from '@chats/Styles/StyleChat.module.css'
 import { Style } from '@mui/icons-material';
+//import { useRouter } from 'next/navigation';
+import {useBackHandler}  from 'utils/util-1';
 
 const ChatPage: React.FC = () => {
     const [messages, setMessages] = React.useState<{ text: string; sender: 'user' | 'partner' }[]>([]);
 
+    const handleBackClick = useBackHandler();
+
     const handleSendMessage = (message: string) => {
         setMessages((prev) => [...prev, { text: message, sender: 'user' }]);
-    };
-
-    // 2. 대화 상대 정보와 이벤트 핸들러 정의
-    const handleBackClick = () => {
-        console.log('뒤로 가기 버튼 클릭');
     };
 
     const handleMoreClick = () => {
