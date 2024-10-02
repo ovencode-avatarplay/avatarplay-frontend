@@ -15,65 +15,69 @@ import EpisodeImageUpload from './EpisodeImageUpload';
 import EpisodeDescription from './episode-description/EpisodeDescription';
 import { number } from 'valibot';
 
-import { sendCharacterInfoDetail } from '@/app/NetWork/MyNetWork'
+import { sendCharacterInfoDetail } from '@/app/NetWork/MyNetWork';
+import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
 
 interface Props {
   onDrawerOpen: () => void;
-
 }
 
-  // 캐릭터 팝업창 열때 해당 내용을 채워서 열기 위한 
-  interface UpdateUserDetail {
-    characterID: number,
-    secrets: string,
-    char_name: string,
-    first_mes: string,
-    char_persona: string,
-    world_scenario: string,
-    thumbnail: string
-  }
-  let updateUserDetail: UpdateUserDetail;
-  
-const EpisodeSetup: React.FC<Props> = ({onDrawerOpen}) => {
-  const [modalOpen, setModalOpen] = useState(false); // 모달 열림 상태
-  const [modalOpenEpisode, setModalOpenEpisode] = useState(false ); // 애피소드 모달 열림 상태
- 
+// 캐릭터 팝업창 열때 해당 내용을 채워서 열기 위한 
+interface UpdateUserDetail {
+  characterID: number;
+  secrets: string;
+  char_name: string;
+  first_mes: string;
+  char_persona: string;
+  world_scenario: string;
+  thumbnail: string;
+}
+
+let updateUserDetail: UpdateUserDetail;
+
+const EpisodeSetup: React.FC<Props> = ({ onDrawerOpen }) => {
+  const [isTriggerModalOpen, setTriggerModalOpen] = useState(false); // Trigger 모달 열림 상태
+  const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
+  const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false); // Episode 모달 열림 상태
+
   // **상태 추가**: 팝업 열림 상태를 관리
   const [isPopupOpen, setPopupOpen] = useState<boolean>(false);
 
-  const openModal = () => {
-    setModalOpen(true); // 모달 열기
+  const openTriggerModal = () => {
+    setTriggerModalOpen(true); // Trigger 모달 열기
   };
 
-  const closeModal = () => {
-    setModalOpen(false); // 모달 닫기
+  const closeTriggerModal = () => {
+    setTriggerModalOpen(false); // Trigger 모달 닫기
   };
 
-  const openModalEpisode = () => {
-    setModalOpenEpisode(true); // 모달열기
+  const openConversationModal = () => {
+    setConversationModalOpen(true); // Conversation 모달 열기
   };
 
-  const closeModalEpisode = () => {
-    setModalOpenEpisode(false); // 모달열기
+  const closeConversationModal = () => {
+    setConversationModalOpen(false); // Conversation 모달 닫기
+  };
+
+  const openEpisodeModal = () => {
+    setEpisodeModalOpen(true); // Episode 모달 열기
+  };
+
+  const closeEpisodeModal = () => {
+    setEpisodeModalOpen(false); // Episode 모달 닫기
   };
 
   // **팝업 열기**: 버튼 클릭 시 호출
   const handleOpenPopup = async () => {
     if (!isPopupOpen) {
-      //console.log("fetchCharacterInfoDetail 호출");
-      //await fetchCharacterInfoDetail();
-
       setPopupOpen(true);
-      //console.log("팝업 열렸다!!");
     }
-
   };
 
   // **팝업 닫기**: 팝업을 닫기 위해 호출
   const handleClosePopup = () => {
     if (isPopupOpen) {
       setPopupOpen(false);
-      //console.log("팝업 닫았다");
     }
   };
 
@@ -87,10 +91,8 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen}) => {
   }) => {
     console.log('Submitted data:', data);
     // 필요한 처리를 여기에 추가
-
   };
 
-  
   return (
     <main className={Style.episodeSetup}>
       <ButtonEpisodeInfo chapterName='Chapter.1' episodeName='Ep.1 FirstDay' onDrawerOpen={onDrawerOpen} />
@@ -102,22 +104,18 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen}) => {
 
       {/* SetupButton 4개 */}
       <Box className={Style.setupButtons}>
-        <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openModalEpisode} />
-        <ButtonSetupDrawer
-          icon={<BookIcon />}
-          label="TriggerSetup"
-          onClick={openModal}
-        />
-
-        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={() => { }} />
+        <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
+        <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
+        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />
         <ButtonSetupDrawer icon={<ImageIcon />} label="AI Model Setup" onClick={() => { }} />
       </Box>
 
       {/* EpisodeTrigger 모달 */}
-      <EpisodeTrigger open={modalOpen} closeModal={closeModal} /> {/* 모달 상태 전달 */}
+      <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} /> {/* 모달 상태 전달 */}
+      <EpisodeConversationTemplate open={isConversationModalOpen} closeModal={closeConversationModal} /> {/* 모달 상태 전달 */}
 
       {/* Episode Description 모달 */}
-      {modalOpenEpisode && 
+      {isEpisodeModalOpen &&
         <EpisodeDescription
           dataDefault={{
             userId: updateUserDetail?.characterID,
@@ -128,13 +126,11 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen}) => {
             secret: updateUserDetail?.secrets,
             thumbnail: updateUserDetail?.thumbnail
           }}
-
           isModify={true}
-          open={modalOpenEpisode}
-          onClose={closeModalEpisode}
+          open={isEpisodeModalOpen}
+          onClose={closeEpisodeModal}
           onSubmit={handleSubmitPopup}
-      />}
-      
+        />}
     </main>
   );
 };
