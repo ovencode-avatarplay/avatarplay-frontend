@@ -23,6 +23,7 @@ const WriteTriggerName: React.FC<WriteTriggerNameProps> = ({ open, onClose, onSa
 
     return (
         <Dialog
+            closeAfterTransition={false}
             open={open}
             onClose={(event, reason) => {
                 if (reason !== 'backdropClick') {

@@ -77,6 +77,7 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({ open, onClose, tr
 
     return (
         <Dialog
+            closeAfterTransition={false}
             open={open}
             onClose={onClose}
 

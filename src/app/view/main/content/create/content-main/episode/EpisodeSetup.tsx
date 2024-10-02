@@ -18,7 +18,7 @@ interface Props {
 
 }
 
-const EpisodeSetup: React.FC<Props> = ({onDrawerOpen}) => {
+const EpisodeSetup: React.FC<Props> = ({ onDrawerOpen }) => {
   const [modalOpen, setModalOpen] = useState(false); // 모달 열림 상태
 
   const openModal = () => {
@@ -41,7 +41,12 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen}) => {
       {/* SetupButton 4개 */}
       <Box className={Style.setupButtons}>
         <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={() => { }} />
-        <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openModal} /> {/* openModal 호출 */}
+        <ButtonSetupDrawer
+          icon={<BookIcon />}
+          label="TriggerSetup"
+          onClick={openModal}
+        />
+
         <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={() => { }} />
         <ButtonSetupDrawer icon={<ImageIcon />} label="AI Model Setup" onClick={() => { }} />
       </Box>

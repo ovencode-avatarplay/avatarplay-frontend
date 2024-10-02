@@ -47,17 +47,20 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({ open, closeModal }) => 
 
     return (
         <Dialog
+            closeAfterTransition={false}
             open={open}
             onClose={closeModal}
             fullScreen
             classes={{ paper: styles['modal-body'] }}
             disableAutoFocus={true}
-            disableEnforceFocus={true} // disableAutoFocus 대신 사용
+            disableEnforceFocus={true} // disableEnforceFocus 속성 사용
         >
+
             <DialogTitle className={styles['modal-header']}>
                 <Button onClick={closeModal} className={styles['close-button']}>
-                    <ArrowBackIosIcon />
+                    <ArrowBackIosIcon /> {/* 포커스 가능 아이콘에서는 aria-hidden="false"로 설정 */}
                 </Button>
+
                 <span className={styles['modal-title']}>Trigger Setup</span>
             </DialogTitle>
             <Box className={styles['card-box']}>
@@ -72,6 +75,7 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({ open, closeModal }) => 
                 <Button className={styles['button-add']} variant="outlined" onClick={handleOpenWriteTriggerName}>
                     Primary
                 </Button>
+
             </Box>
 
             {/* WriteTriggerName 모달 */}
@@ -88,6 +92,7 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({ open, closeModal }) => 
                 triggerName={triggerName} // 전달된 name을 SelectTriggerType으로 전달
             />
         </Dialog>
+
     );
 };
 
