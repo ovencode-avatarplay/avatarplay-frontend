@@ -45,7 +45,8 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({dataDefault, 
     // States
     const chatStore = useSelector((state: RootState) => state.chat)
   
-    const [userId, setUserId] = useState<number>(dataDefault?.userId || chatStore.profileUser.id);
+    const userId = useSelector((state: RootState) => state.user.userId);
+    //const [userId, setUserId] = useState<number>(dataDefault?.userId || chatStore.profileUser.id);
     const [characterName, setCharacterName] = useState<string>(dataDefault?.characterName || "");
     const [characterDescription, setCharacterDescription] = useState<string>(dataDefault?.characterDescription || "");
     const [worldScenario, setWorldScenario] = useState<string>(dataDefault?.worldScenario || "");
@@ -213,7 +214,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({dataDefault, 
             margin="normal"
             type="number"
             value={userId}
-            onChange={(e) => setUserId(Number(e.target.value))}
+            //onChange={(e) => setUserId(Number(e.target.value))}
             disabled
           />
           <TextField

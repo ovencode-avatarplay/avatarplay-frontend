@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // UserState 인터페이스에 유저 이미지와 설명 추가
 export interface UserState {
-  userId: string;
+  userId: number;
   name: string;
   userImage: string; // 유저 이미지 (URL 또는 경로)
   userDescription: string; // 유저 설명
@@ -10,7 +10,7 @@ export interface UserState {
 
 // 초기 상태 설정
 const initialState: UserState = {
-  userId: '1',
+  userId: 1,
   name: '이름은몇글자',
   userImage: '/path/to/default/image.jpg', // 기본 유저 이미지
   userDescription: `  사용자 ID 1 : 범수
@@ -29,7 +29,10 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserId: (state, action: PayloadAction<string>) => {
-      state.userId = action.payload;
+      if( action.payload.length > 0 )
+        state.userId = parseInt( action.payload, 10 );
+      else
+        state.userId = 0;
     },
     setUserName: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
