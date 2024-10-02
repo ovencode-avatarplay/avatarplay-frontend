@@ -30,6 +30,8 @@ const WriteTriggerName: React.FC<WriteTriggerNameProps> = ({ open, onClose, onSa
                 }
             }}
             disableEscapeKeyDown
+            disableAutoFocus={true}
+            disableEnforceFocus={true} // disableAutoFocus 대신 사용
         >
             <DialogTitle>Write Trigger Name</DialogTitle>
             <DialogContent>

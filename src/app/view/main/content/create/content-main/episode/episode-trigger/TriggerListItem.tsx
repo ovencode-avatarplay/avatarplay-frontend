@@ -6,13 +6,13 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import { ArrowForwardIos } from '@mui/icons-material';
-import { DataPair } from '@/types/apps/dataTypes'; // DataPair 타입 가져오기
+import { DataPair, TriggerMainDataType } from '@/types/apps/dataTypes'; // DataPair 타입 가져오기
 import ChangeBehaviour from './ChangeBehaviour'; // ChangeBehaviour 모달 임포트
 import styles from './TriggerListItem.module.css'; // CSS 모듈 임포트
 
 interface TriggerListItemProps {
     item: DataPair; // Redux에서 가져온 DataPair 타입의 데이터
-    handleToggle: (key: string) => () => void;
+    handleToggle: (key: TriggerMainDataType) => () => void;
     isSelected: boolean; // 선택 여부 확인
 }
 

@@ -51,6 +51,8 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({ open, closeModal }) => 
             onClose={closeModal}
             fullScreen
             classes={{ paper: styles['modal-body'] }}
+            disableAutoFocus={true}
+            disableEnforceFocus={true} // disableAutoFocus 대신 사용
         >
             <DialogTitle className={styles['modal-header']}>
                 <Button onClick={closeModal} className={styles['close-button']}>
