@@ -1,11 +1,10 @@
-import { chapterInfo } from "./chapter/chapterInfo";
+import { ChapterInfo } from "./chapter/chapterInfo";
 import { gimmickInfo } from "./chapter/gimmickInfo";
-import { publishInfo } from "./chapter/publishInfo";
+import { PublishInfo } from "./chapter/publishInfo";
 
-export interface contentInfo
-{
+export interface ContentInfo {
     id: number;
-    chapterInfoList? : chapterInfo[];   // TODO null 이면 안됨
-    gimmickInfo? : gimmickInfo;
-    publishInfo : publishInfo;
+    userId: number;
+    chapterInfoList: ChapterInfo[];
+    publishInfo: PublishInfo;
 }

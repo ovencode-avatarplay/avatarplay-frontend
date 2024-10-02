@@ -1,0 +1,480 @@
+{
+    "contentInfo": [
+      {
+        "id": 1,
+        "userId": 1001,
+        "chapterInfoList": [
+          {
+            "id": 1,
+            "name": "Chapter 1: The Beginning",
+            "episodeInfoList": [
+              {
+                "id": 1,
+                "name": "Episode 1: The Awakening",
+                "thumbnail": "https://example.com/content1.jpg",
+                "episodeDescription": {
+                  "characterName": "John",
+                  "characterDescription": "A brave young warrior with an unknown destiny.",
+                  "scenarioDescription": "John wakes up in a mysterious world.",
+                  "introDescription": "The journey begins as John discovers his new powers.",
+                  "secret": "Johns true identity is hidden."
+                },
+                "triggerInfoList": [
+                  {
+                    "id": 1,
+                    "triggerType": 1,
+                    "triggerValueIntimacy": 50,
+                    "triggerValueChatCount": 5,
+                    "triggerValueKeyword": "bravery",
+                    "triggerValueTimeMinute": 10,
+                    "triggerActionType": 1,
+                    "actionChangeEpisodeId": 2,
+                    "actionChangePrompt": "John must decide his next move.",
+                    "actionIntimacyPoint": 10,
+                    "actionCoversationList": [
+                      {
+                        "conversationType": 0,
+                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                      }
+                    ]
+                  }
+                ],
+                "conversationTemplateList": [
+                  {
+                    "conversationType": 0,
+                    "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                    "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                  }
+                ],
+                "llmSetupInfo": {
+                  "llmModel": 1,
+                  "customApi": "https://api.example.com/llm1"
+                }
+              },
+              {
+                "id": 2,
+                "name": "Episode 2: The First Challenge",
+                "thumbnail": "https://example.com/content2.jpg",
+                "episodeDescription": {
+                  "characterName": "John",
+                  "characterDescription": "A brave young warrior with an unknown destiny.",
+                  "scenarioDescription": "John faces his first challenge in the mysterious world.",
+                  "introDescription": "John encounters a powerful foe and must use his newfound powers.",
+                  "secret": "The enemy knows Johns hidden identity."
+                },
+                "triggerInfoList": [
+                  {
+                    "id": 2,
+                    "triggerType": 2,
+                    "triggerValueIntimacy": 60,
+                    "triggerValueChatCount": 10,
+                    "triggerValueKeyword": "courage",
+                    "triggerValueTimeMinute": 15,
+                    "triggerActionType": 2,
+                    "actionChangeEpisodeId": 3,
+                    "actionChangePrompt": "John prepares for the ultimate test.",
+                    "actionIntimacyPoint": 20,
+                    "actionCoversationList": [
+                      {
+                        "conversationType": 0,
+                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                      }
+                    ]
+                  }
+                ],
+                "conversationTemplateList": [
+                  {
+                    "conversationType": 0,
+                    "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                    "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                  }
+                ],
+                "llmSetupInfo": {
+                  "llmModel": 1,
+                  "customApi": "https://api.example.com/llm1"
+                }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Chapter 2: A New Ally",
+            "episodeInfoList": [
+              {
+                "id": 3,
+                "name": "Episode 1: The Mysterious Stranger",
+                "thumbnail": "https://example.com/content3.jpg",
+                "episodeDescription": {
+                  "characterName": "Lena",
+                  "characterDescription": "A skilled archer with a dark past.",
+                  "scenarioDescription": "Lena enters Johns life, offering help in his quest.",
+                  "introDescription": "Lena saves John from a deadly situation.",
+                  "secret": "Lena has her own hidden agenda."
+                },
+                "triggerInfoList": [
+                  {
+                    "id": 3,
+                    "triggerType": 3,
+                    "triggerValueIntimacy": 70,
+                    "triggerValueChatCount": 15,
+                    "triggerValueKeyword": "trust",
+                    "triggerValueTimeMinute": 20,
+                    "triggerActionType": 3,
+                    "actionChangeEpisodeId": 4,
+                    "actionChangePrompt": "John must decide whether to trust Lena.",
+                    "actionIntimacyPoint": 30,
+                    "actionCoversationList": [
+                      {
+                        "conversationType": 0,
+                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                      }
+                    ]
+                  }
+                ],
+                "conversationTemplateList": [
+                  {
+                    "conversationType": 0,
+                    "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                    "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                  }
+                ],
+                "llmSetupInfo": {
+                  "llmModel": 2,
+                  "customApi": "https://api.example.com/llm2"
+                }
+              },
+              {
+                "id": 4,
+                "name": "Episode 2: The Bond of Trust",
+                "thumbnail": "https://example.com/content4.jpg",
+                "episodeDescription": {
+                  "characterName": "John and Lena",
+                  "characterDescription": "A growing alliance between the two.",
+                  "scenarioDescription": "John and Lena grow closer as they face new challenges.",
+                  "introDescription": "They start working together to defeat their enemies.",
+                  "secret": "Lenas past is slowly revealed."
+                },
+                "triggerInfoList": [
+                  {
+                    "id": 4,
+                    "triggerType": 4,
+                    "triggerValueIntimacy": 80,
+                    "triggerValueChatCount": 20,
+                    "triggerValueKeyword": "loyalty",
+                    "triggerValueTimeMinute": 30,
+                    "triggerActionType": 4,
+                    "actionChangeEpisodeId": 5,
+                    "actionChangePrompt": "John and Lena face a critical choice.",
+                    "actionIntimacyPoint": 40,
+                    "actionCoversationList": [
+                      {
+                        "conversationType": 0,
+                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                      }
+                    ]
+                  }
+                ],
+                "conversationTemplateList": [
+                  {
+                    "conversationType": 0,
+                    "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                    "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                  }
+                ],
+                "llmSetupInfo": {
+                  "llmModel": 2,
+                  "customApi": "https://api.example.com/llm2"
+                }
+              },
+              {
+                "id": 5,
+                "name": "Episode 3: The Betrayal",
+                "thumbnail": "https://example.com/content5.jpg",
+                "episodeDescription": {
+                  "characterName": "Lena",
+                  "characterDescription": "The truth about Lenas past comes to light.",
+                  "scenarioDescription": "Lena betrays John to protect her own interests.",
+                  "introDescription": "Lenas past catches up with her, leading to a shocking betrayal.",
+                  "secret": "Lena was working with the enemy all along."
+                },
+                "triggerInfoList": [
+                  {
+                    "id": 5,
+                    "triggerType": 5,
+                    "triggerValueIntimacy": 90,
+                    "triggerValueChatCount": 25,
+                    "triggerValueKeyword": "betrayal",
+                    "triggerValueTimeMinute": 40,
+                    "triggerActionType": 5,
+                    "actionChangeEpisodeId": 6,
+                    "actionChangePrompt": "John must decide whether to forgive or fight Lena.",
+                    "actionIntimacyPoint": 50,
+                    "actionCoversationList": [
+                      {
+                        "conversationType": 0,
+                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                      }
+                    ]
+                  }
+                ],
+                "conversationTemplateList": [
+                  {
+                    "conversationType": 0,
+                    "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                    "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                  }
+                ],
+                "llmSetupInfo": {
+                  "llmModel": 2,
+                  "customApi": "https://api.example.com/llm2"
+                }
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Chapter 3: The Final Battle",
+            "episodeInfoList": [
+              {
+                "id": 6,
+                "name": "Episode 1: The Gathering Storm",
+                "thumbnail": "https://example.com/content6.jpg",
+                "episodeDescription": {
+                  "characterName": "John",
+                  "characterDescription": "John prepares for the final battle.",
+                  "scenarioDescription": "John gathers his allies for the final confrontation.",
+                  "introDescription": "The time has come to face the ultimate enemy.",
+                  "secret": "The enemy holds a deep connection to Johns past."
+                },
+                "triggerInfoList": [
+                  {
+                    "id": 6,
+                    "triggerType": 6,
+                    "triggerValueIntimacy": 100,
+                    "triggerValueChatCount": 30,
+                    "triggerValueKeyword": "revenge",
+                    "triggerValueTimeMinute": 50,
+                    "triggerActionType": 6,
+                    "actionChangeEpisodeId": 7,
+                    "actionChangePrompt": "The final battle begins.",
+                    "actionIntimacyPoint": 60,
+                    "actionCoversationList": [
+                      {
+                        "conversationType": 0,
+                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                      }
+                    ]
+                  }
+                ],
+                "conversationTemplateList": [
+                  {
+                    "conversationType": 0,
+                    "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                    "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                  }
+                ],
+                "llmSetupInfo": {
+                  "llmModel": 3,
+                  "customApi": "https://api.example.com/llm3"
+                }
+              },
+              {
+                "id": 7,
+                "name": "Episode 2: Victory or Defeat",
+                "thumbnail": "https://example.com/content7.jpg",
+                "episodeDescription": {
+                  "characterName": "John",
+                  "characterDescription": "The final battles outcome determines Johns fate.",
+                  "scenarioDescription": "John fights the ultimate enemy in a life-or-death struggle.",
+                  "introDescription": "Victory or defeat hangs in the balance.",
+                  "secret": "Johns true power is unlocked in this battle."
+                },
+                "triggerInfoList": [
+                  {
+                    "id": 7,
+                    "triggerType": 7,
+                    "triggerValueIntimacy": 110,
+                    "triggerValueChatCount": 35,
+                    "triggerValueKeyword": "sacrifice",
+                    "triggerValueTimeMinute": 60,
+                    "triggerActionType": 7,
+                    "actionChangeEpisodeId": 0,
+                    "actionChangePrompt": "The battle ends, but at what cost?",
+                    "actionIntimacyPoint": 70,
+                    "actionCoversationList": [
+                      {
+                        "conversationType": 0,
+                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                      }
+                    ]
+                  }
+                ],
+                "conversationTemplateList": [
+                  {
+                    "conversationType": 0,
+                    "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                    "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                  }
+                ],
+                "llmSetupInfo": {
+                  "llmModel": 3,
+                  "customApi": "https://api.example.com/llm3"
+                }
+              }
+            ]
+          }
+        ],
+        "publishInfo": {
+          "languageType": 0,
+          "contentName": "The Rise of Heroes",
+          "thumbnail": "https://example.com/content1.jpg",
+          "contentDescription": "A thrilling journey of a young warrior discovering his powers.",
+          "authorComment": "Inspired by classic hero tales.",
+          "visibilityType": 1,
+          "monetization": true,
+          "nsfw": 0
+        }
+      }
+      ,
+      {
+        "id": 2,
+        "userId": 1002,
+        "chapterInfoList": [
+          {
+            "id": 2,
+            "name": "Chapter 1: A New Dawn",
+            "episodeInfoList": [
+              {
+                "id": 1,
+                "name": "Episode 1: The Unknown Path",
+                "thumbnail": "https://example.com/thumbnail2.jpg",
+                "episodeDescription": {
+                  "characterName": "Lena",
+                  "characterDescription": "A skilled archer with a dark past.",
+                  "scenarioDescription": "Lena is forced to leave her village.",
+                  "introDescription": "The journey begins with Lenas escape.",
+                  "secret": "Lena is the last of her kind."
+                },
+                "triggerInfoList": [
+                  {
+                    "id": 2,
+                    "triggerType": 2,
+                    "triggerValueIntimacy": 40,
+                    "triggerValueChatCount": 3,
+                    "triggerValueKeyword": "revenge",
+                    "triggerValueTimeMinute": 20,
+                    "triggerActionType": 2,
+                    "actionChangeEpisodeId": 2,
+                    "actionChangePrompt": "Lena must confront her past.",
+                    "actionIntimacyPoint": 15,
+                    "actionCoversationList": [
+                      {
+                        "conversationType": 0,
+                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                      }
+                    ]
+                  }
+                ],
+                "conversationTemplateList": [
+                  {
+                    "conversationType": 0,
+                    "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                    "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                  }
+                ],
+                "llmSetupInfo": {
+                  "llmModel": 2,
+                  "customApi": "https://api.example.com/llm2"
+                }
+              }
+            ]
+          }
+        ],
+        "publishInfo": {
+          "languageType": 1,
+          "contentName": "The Last Archer",
+          "thumbnail": "https://example.com/content2.jpg",
+          "contentDescription": "A journey of survival and revenge.",
+          "authorComment": "Inspired by epic fantasy stories.",
+          "visibilityType": 1,
+          "monetization": true,
+          "nsfw": 0
+        }
+      },
+      {
+        "id": 3,
+        "userId": 1003,
+        "chapterInfoList": [
+          {
+            "id": 3,
+            "name": "Chapter 1: The Fallen Kingdom",
+            "episodeInfoList": [
+              {
+                "id": 1,
+                "name": "Episode 1: The Kings Fall",
+                "thumbnail": "https://example.com/thumbnail3.jpg",
+                "episodeDescription": {
+                  "characterName": "Arthur",
+                  "characterDescription": "The rightful heir to a fallen kingdom.",
+                  "scenarioDescription": "Arthur must reclaim his throne.",
+                  "introDescription": "The fall of the kingdom marks the beginning of Arthurs quest.",
+                  "secret": "Arthurs father was betrayed by a close ally."
+                },
+                "triggerInfoList": [
+                  {
+                    "id": 3,
+                    "triggerType": 3,
+                    "triggerValueIntimacy": 60,
+                    "triggerValueChatCount": 7,
+                    "triggerValueKeyword": "justice",
+                    "triggerValueTimeMinute": 15,
+                    "triggerActionType": 3,
+                    "actionChangeEpisodeId": 2,
+                    "actionChangePrompt": "Arthur must rally his allies.",
+                    "actionIntimacyPoint": 20,
+                    "actionCoversationList": [
+                      {
+                        "conversationType": 0,
+                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                      }
+                    ]
+                  }
+                ],
+                "conversationTemplateList": [
+                  {
+                    "conversationType": 0,
+                    "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                    "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                  }
+                ],
+                "llmSetupInfo": {
+                  "llmModel": 3,
+                  "customApi": "https://api.example.com/llm3"
+                }
+              }
+            ]
+          }
+        ],
+        "publishInfo": {
+          "languageType": 2,
+          "contentName": "The Heirs Return",
+          "thumbnail": "https://example.com/content3.jpg",
+          "contentDescription": "A tale of a fallen kingdom and its rightful heir.",
+          "authorComment": "Inspired by medieval legends.",
+          "visibilityType": 1,
+          "monetization": true,
+          "nsfw": 0
+        }
+      }
+    ]
+  }
+  

@@ -3,7 +3,8 @@ import { Drawer, Box, Typography } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
 import PostAddIcon from '@mui/icons-material/PostAdd';
-import Link from 'next/link'; // Next.js의 Link를 import합니다.
+import Link from 'next/link'; 
+
 import Style from './CreateWidget.module.css';
 
 interface Props {
@@ -19,14 +20,14 @@ const CreateWidget: React.FC<Props> = ({ open, onClose }) => {
             onClose={onClose} 
             ModalProps={{
                 BackdropProps: {
-                    style: { backgroundColor: 'transparent' }, // 배경을 투명하게 설정
+                    style: { backgroundColor: 'transparent' }, 
                 },
             }}
             PaperProps={{
                 sx: {
-                    position: 'absolute', // BottomNavigation 위로 올라오지 않도록
-                    bottom: 56, // BottomNavigation의 높이만큼 여백
-                    zIndex: 50, // BottomNavigation보다 낮은 zIndex
+                    position: 'absolute', 
+                    bottom: 56, 
+                    zIndex: 50, 
                 },
             }}
         >

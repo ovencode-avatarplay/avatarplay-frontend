@@ -8,7 +8,7 @@ import { number } from 'valibot';
 
 // interface
 import {PayloadChat} from './network-interface/payloadChat'
-import { contentInfo } from '@/types/apps/content/contentInfo';
+import { ContentInfo } from '@/types/apps/content/contentInfo';
 
 
 // Axios 인스턴스 생성
@@ -574,17 +574,15 @@ export const sendGetExplore = async (search : string, onlyAdults : boolean): Pro
 //==== Content Save 정보 =======================================================================================================
 
 export interface SaveContentReq {
-  userID: number;
-  contentInfo: contentInfo;
+  contentInfo: ContentInfo;
 }
-
 
 export interface SaveContentRes {
   resultCode: number;
   resultMessage: string;
   data: {
-    userID: number;
-    contentInfo: contentInfo;
+    contentId: number;
+    // contentInfo: ContentInfo;
   };
 }
 

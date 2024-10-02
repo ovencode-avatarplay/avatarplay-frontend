@@ -1,15 +1,15 @@
 import { ImageData } from "./imageData";
-import { episodeDescription } from "./episodeDescription";
-import { conversationTemplate } from "./conversationTemplate";
-import { llmSetupInfo } from "./llmSetupInfo";
+import { EpisodeDescription } from "./episodeDescription";
+import { LLMSetupInfo } from "./llmSetupInfo";
+import { TriggerInfo } from "./triggerInfo";
+import { Conversation } from "./conversation";
 
-export interface episodeInfo
-{
-    id : number;
-    name : string;
-    imageData : ImageData;
-    episodeDescription : episodeDescription;
-    // triggerInfo : triggerInfo;
-    conversationTemplate : conversationTemplate;
-    llmSetupInfo : llmSetupInfo;
+export interface EpisodeInfo {
+    id: number;
+    name: string;
+    thumbnail: string;
+    episodeDescription: EpisodeDescription;
+    triggerInfoList: TriggerInfo[];
+    conversationTemplateList: Conversation[];
+    llmSetupInfo: LLMSetupInfo;
 }
