@@ -10,6 +10,7 @@ import chatReducer from '@/redux-store/slices/chat'
 import drawerContentDescReducer from '@/redux-store/slices/drawerContentDescSlice'
 import triggerReducer from '@/redux-store/slices/triggerContent'
 import ContentInfoSlice from './slices/ContentInfo'
+import userInfo from './slices/userInfo'
 
 // redux-persist (간단 요약 : 새로고침 해도 데이터 유지)   https://www.codenary.co.kr/discoveries/9170
 import { persistStore, persistReducer } from 'redux-persist'
@@ -18,7 +19,7 @@ const persistConfig = {
     key: 'root',
     storage,
     // 새로고침해도 데이터 유지 하고싶은 Slice 만 추가
-    whitelist: ['sampleReducer', 'chatReducer', 'triggerContent', 'ContentInfoSlice']
+    whitelist: ['sampleReducer', 'chatReducer', 'triggerContent', 'ContentInfoSlice', 'user']
 }
 
 const reducers = combineReducers({
@@ -27,7 +28,8 @@ const reducers = combineReducers({
     chat: chatReducer,
     drawerContentDesc: drawerContentDescReducer,
     create: triggerReducer,
-    content : ContentInfoSlice
+    content : ContentInfoSlice,
+    user: userInfo
 })
 
 const persistedReducer = persistReducer(persistConfig, reducers)
