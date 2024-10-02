@@ -22,10 +22,9 @@ interface ChangeBehaviourProps {
     open: boolean;
     onClose: () => void;
     item: DataPair;
-    index: number;
 }
 
-const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item, index }) => {
+const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }) => {
     const dispatch = useDispatch();
     const [selectedMainData, setSelectedMainData] = useState<MainData>(
         item.main || { key: TriggerMainDataType.triggerValueIntimacy, value: 0 }  // 초기값 설정
@@ -140,7 +139,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item, 
             sub: selectedSubData,
         };
 
-        dispatch(updateDataPair({ index, pair: updatedPair }));
+        dispatch(updateDataPair({ index: updatedPair.id, pair: updatedPair }));
 
         onClose();
     };
@@ -188,7 +187,15 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item, 
 
 
     return (
-        <Dialog fullScreen open={open} onClose={onClose} classes={{ paper: styles.modal }}>
+        <Dialog
+            fullScreen
+            open={open}
+            onClose={onClose}
+            classes={{ paper: styles.modal }}
+
+            disableAutoFocus={true}
+            disableEnforceFocus={true} // disableAutoFocus 대신 사용
+        >
             <DialogTitle className={styles['modal-header']}>
                 <Button onClick={handleClose} className={styles['close-button']}>
                     <ArrowBackIos />

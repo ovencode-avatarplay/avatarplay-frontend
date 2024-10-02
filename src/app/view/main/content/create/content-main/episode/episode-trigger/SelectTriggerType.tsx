@@ -76,7 +76,13 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({ open, onClose, tr
     };
 
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog
+            open={open}
+            onClose={onClose}
+
+            disableAutoFocus={true}
+            disableEnforceFocus={true} // disableAutoFocus 대신 사용
+        >
             <DialogTitle>Select Trigger Type</DialogTitle>
             <DialogContent>
                 <Box sx={{ mb: 2 }}>
