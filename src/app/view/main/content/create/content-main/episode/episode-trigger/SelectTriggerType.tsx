@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux'; // Redux 디스패치를 사용
 import { Dialog, DialogTitle, DialogContent, RadioGroup, FormControlLabel, Radio, IconButton, Box, DialogActions, Button } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import { MainData, MainDataA, MainDataB, MainDataC, MainDataD, SubDataB, CoversationData } from '@/types/apps/dataTypes'; // MainData 및 SubDataB 타입들 임포트
+import { MainData, MainDataA, MainDataB, MainDataC, MainDataD, SubDataB, CoversationData, TriggerSubDataType } from '@/types/apps/dataTypes'; // MainData 및 SubDataB 타입들 임포트
 import { addDataPair } from '@/redux-store/slices/triggerContent';
 
 interface SelectTriggerTypeProps {
@@ -33,15 +33,15 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({ open, onClose, tr
     const createMainData = (): MainData => {
         switch (selectedTrigger) {
             case 'triggerValueIntimacy':
-                return { key: 'triggerValueIntimacy', value: 0 } as MainDataA; // Intimacy 타입 MainData
+                return { value: 0 } as MainDataA; // Intimacy 타입 MainData
             case 'triggerValueKeyword':
-                return { key: 'triggerValueKeyword', value: ['keyword1', 'keyword2'] } as MainDataB; // Keyword 타입 MainData
+                return { value: ['keyword1', 'keyword2'] } as MainDataB; // Keyword 타입 MainData
             case 'triggerValueChatCount':
-                return { key: 'triggerValueChatCount', value: 0 } as MainDataC; // Chat Count 타입 MainData
+                return { value: 0 } as MainDataC; // Chat Count 타입 MainData
             case 'triggerValueTimeMinute':
-                return { key: 'triggerValueTimeMinute', value: 0 } as MainDataD; // Idle Elapsed Time 타입 MainData
+                return { value: 0 } as MainDataD; // Idle Elapsed Time 타입 MainData
             default:
-                return { key: 'triggerValueIntimacy', value: 0 } as MainDataA; // 기본값 Intimacy
+                return { value: 0 } as MainDataA; // 기본값 Intimacy
         }
     };
 
@@ -54,7 +54,7 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({ open, onClose, tr
         ];
 
         return {
-            key: 'ChangePrompt',
+            key: TriggerSubDataType.ChangePrompt,
             value: 'Default Prompt',
             coversationDataList: defaultConversationData,
         };
