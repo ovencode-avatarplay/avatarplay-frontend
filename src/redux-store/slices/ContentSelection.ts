@@ -1,34 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-interface SelectedEpisode {
-    chapterId: number;
-    episodeId: number;
-}
-
 interface ReduxState {
-    selectedChapter: number | null;
-    selectedEpisode: SelectedEpisode | null;
-    contentID: number | null;
+    selectedChapter: number;
+    selectedEpisode: number;
+    contentID: number;
 }
 
 const initialState: ReduxState = {
-    selectedChapter: null,
-    selectedEpisode: null,
-    contentID: null,
+    selectedChapter: 0,
+    selectedEpisode: 0,
+    contentID: 0,
 };
 
 export const ContentSelectionSlice = createSlice({
     name: 'ContentSelection',
     initialState,
     reducers: {
-        setSelectedChapter: (state, action: PayloadAction<number | null>) => {
+        setSelectedChapter: (state, action: PayloadAction<number>) => {
             state.selectedChapter = action.payload;
         },
-        setSelectedEpisode: (state, action: PayloadAction<SelectedEpisode | null>) => {
+        setSelectedEpisode: (state, action: PayloadAction<number>) => {
             state.selectedEpisode = action.payload;
         },
-        setContentID: (state, action: PayloadAction<number | null>) => { 
+        setContentID: (state, action: PayloadAction<number>) => { 
             state.contentID = action.payload;
         },
     },

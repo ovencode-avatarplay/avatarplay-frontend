@@ -81,12 +81,11 @@ const ContentMain: React.FC = () => {
     const handleCloseGimmick = () => {
         setIsGimmickOpen(false);
     };
-
     
-    const foundContent = contentInfo.find(item => item.id === Number(contentID));
+    const curContent = contentInfo.find(item => item.id === Number(contentID));
 
     const defaultSaveContentReq = (): SaveContentReq => ({
-        contentInfo: foundContent ?? DefaultContentInfo.contentInfo[0],
+        contentInfo: curContent ?? DefaultContentInfo.contentInfo[0],
     });
 
     const [saveData, setSaveData] = useState<SaveContentReq>(defaultSaveContentReq);
@@ -102,28 +101,46 @@ const ContentMain: React.FC = () => {
 
     const handleItemSelect = (id: number) => {
         dispatch(setContentID(id));
+    
+        const content = contentInfo.find(item => item.id === id);
+
+        if (content) {
+            if (id < 0) {
+                console.error("Invalid content ID:", id);
+                return;
+            }
+            const chapterInfoList = content.chapterInfoList;
+
+            if (!chapterInfoList || chapterInfoList.length === 0) {
+                console.error("No chapters available for content ID:", id);
+                return;
+            }
+
+            let firstChapter = chapterInfoList[0].id;
+            dispatch(setSelectedChapter(firstChapter));
+
+            let firstEpisode = chapterInfoList[0].episodeInfoList[0]?.id; // Ensure episodes are available
+            if (firstEpisode) {
+                dispatch(setSelectedEpisode(firstEpisode));
+            } else {
+                console.error("No episodes available for the first chapter of content ID:", id);
+            }
+        }
     };
-    const handleChapterNameChange = (newName: string) => {
-
-    };
-
-    const handleEpisodeNameChange = (newName: string) => {
-
-    };
-
 
     return (
         <>
             <main className={Style.contentMain}>
-                <ContentInfoManager />
-                <>curChapterIndex {selectedChapter}</>
-                <>curEpisodeIndex {selectedEpisode}</>
-                <ContentHeader contentTitle={foundContent?.publishInfo.contentName ?? ''} onOpenDrawer={handleOpenDashboard} />
+                {/* <ContentInfoManager />
+                <p>curContentId {curContent?.id}</p>
+                <p>curChapterId {selectedChapter}</p>
+                <p>curEpisodeId {selectedEpisode}</p> */}
+                <ContentHeader contentTitle={curContent?.publishInfo.contentName ?? ''} onOpenDrawer={handleOpenDashboard} />
                 <div className={Style.content}>
                     <EpisodeSetup onDrawerOpen={handleOpenChapterboard} 
-                        contentId={foundContent?.id ?? 0}
-                        chapterIndex={selectedChapter ?? 0}
-                        episodeIndex={selectedEpisode?.episodeId ?? 0}
+                        contentId={curContent?.id ?? 0}
+                        chapterId={selectedChapter}
+                        episodeId={selectedEpisode}
                     />
 
                     <ContentDashboard
@@ -135,9 +152,9 @@ const ContentMain: React.FC = () => {
                     <ChapterBoard 
                     open={isChapterboardOpen} 
                     onClose={handleCloseChapterboard}
-                    initialChapters={foundContent?.chapterInfoList || []}
-                    onChapterNameChanged={handleChapterNameChange} 
-                    onEpisodeNameChanged={handleEpisodeNameChange} 
+                    initialChapters={curContent?.chapterInfoList || []}
+                    onChapterNameChanged={() => {}} 
+                    onEpisodeNameChanged={() => {}} 
                      />
                     <ContentGimmick open={isGimmickOpen} onClose={handleCloseGimmick} />
                     <ContentPreviewChat />

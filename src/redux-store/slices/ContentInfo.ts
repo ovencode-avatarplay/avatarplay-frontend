@@ -40,6 +40,7 @@ export const contentInfoSlice = createSlice({
                 }
             }
         },
+
     },
 });
 

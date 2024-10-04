@@ -9,18 +9,21 @@ import { ChapterInfo } from '@/types/apps/content/chapter/chapterInfo';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux-store/ReduxStore';
 import { setSelectedChapter, setSelectedEpisode } from '@/redux-store/slices/ContentSelection'
+import { setContentInfo, updateContentInfo } from '@/redux-store/slices/ContentInfo';
 
 
 interface Props {
   open: boolean;
   onClose: () => void;
   initialChapters: ChapterInfo[];
-  onChapterNameChanged : (name : string) => void;
-  onEpisodeNameChanged : (name : string) => void;
+  onChapterNameChanged: (name: string) => void;
+  onEpisodeNameChanged: (name: string) => void;
 }
 
-const ChapterBoard: React.FC<Props> = ({ open, onClose , initialChapters, onChapterNameChanged, onEpisodeNameChanged}) => {
+const ChapterBoard: React.FC<Props> = ({ open, onClose, initialChapters, onChapterNameChanged, onEpisodeNameChanged }) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const curContentId = useSelector((state: RootState) => state.contentselection.contentID);
+  const selectedContent = useSelector((state: RootState) => state.content.contentInfo.find(item => item.id === curContentId));
   const selectedChapter = useSelector((state: RootState) => state.contentselection.selectedChapter);
   const selectedEpisode = useSelector((state: RootState) => state.contentselection.selectedEpisode);
   const [editItem, setEditItem] = useState<{ id: number | null; type: 'chapter' | 'episode' | null }>({ id: null, type: null });
@@ -62,12 +65,12 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose , initialChapters, onChap
         prevChapters.map(chapter =>
           chapter.id === selectedChapter
             ? {
-                ...chapter,
-                episodes: [
-                  ...chapter.episodes,
-                  { id: chapter.episodes.length + 1, title: `Episode ${chapter.episodes.length + 1}` },
-                ],
-              }
+              ...chapter,
+              episodes: [
+                ...chapter.episodes,
+                { id: chapter.episodes.length + 1, title: `Episode ${chapter.episodes.length + 1}` },
+              ],
+            }
             : chapter
         )
       );
@@ -108,13 +111,13 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose , initialChapters, onChap
   // Chapter 선택
   const handleChapterSelect = (chapterId: number) => {
     dispatch(setSelectedChapter(chapterId));
-    dispatch(setSelectedEpisode(null));
+    dispatch(setSelectedEpisode(0));
   };
 
   // Episode 선택
   const handleEpisodeSelect = (chapterId: number, episodeId: number) => {
-    dispatch(setSelectedEpisode({ chapterId, episodeId }));
     dispatch(setSelectedChapter(chapterId));
+    dispatch(setSelectedEpisode(episodeId));
   };
 
   // Chapter 또는 Episode 이름 변경
@@ -122,23 +125,46 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose , initialChapters, onChap
     setChapters((prevChapters) =>
       prevChapters.map((chapter) => {
         if (type === 'chapter' && chapter.id === id) {
-          {
-            onChapterNameChanged(newName);
-            return { ...chapter, title: newName };
+          onChapterNameChanged(newName);
+          // 선택된 챕터의 이름이 변경되었을 때 Redux 상태 업데이트
+          if (selectedChapter === id) {
+            const updatedContent = {
+              ...selectedContent,
+              chapterInfoList: selectedContent?.chapterInfoList.map((chapterInfo) =>
+                chapterInfo.id === id ? { ...chapterInfo, name: newName } : chapterInfo
+              ),
+            };
+            dispatch(updateContentInfo(updatedContent)); // Redux 상태 반영
           }
+          return { ...chapter, title: newName };
+        } else if (type === 'episode' && selectedEpisode && chapter.id === selectedChapter) {
+          onEpisodeNameChanged(newName);
+          // 선택된 에피소드의 이름이 변경되었을 때 Redux 상태 업데이트
+          const updatedEpisodes = chapter.episodes.map((episode) =>
+            episode.id === id ? { ...episode, title: newName } : episode
+          );
+
+          if (selectedEpisode === id) {
+            const updatedContent = {
+              ...selectedContent,
+              chapterInfoList: selectedContent?.chapterInfoList.map((chapterInfo) =>
+                chapterInfo.id === selectedChapter
+                  ? {
+                    ...chapterInfo,
+                    episodeInfoList: chapterInfo.episodeInfoList.map((episodeInfo) =>
+                      episodeInfo.id === id ? { ...episodeInfo, name: newName } : episodeInfo
+                    ),
+                  }
+                  : chapterInfo
+              ),
+            };
+
+            dispatch(updateContentInfo(updatedContent));
+          }
+
+          // 에피소드 이름을 로컬 상태에도 반영
+          return { ...chapter, episodes: updatedEpisodes };
         }
-        else
-          if (type === 'episode' && selectedEpisode && chapter.id === selectedEpisode.chapterId) {
-            {
-              onEpisodeNameChanged(newName);
-              return {
-                ...chapter,
-                episodes: chapter.episodes.map((episode) =>
-                  episode.id === id ? { ...episode, title: newName } : episode
-                ),
-              };
-            }
-          }
         return chapter;
       })
     );
@@ -183,7 +209,7 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose , initialChapters, onChap
               onSelect={handleChapterSelect}
               onSelectEpisode={handleEpisodeSelect}
               onEdit={handleEditClick}
-              isSelected={selectedChapter === chapter.id} 
+              isSelected={selectedChapter === chapter.id}
               disableDelete={chapters.length <= 1}
             />
           ))}

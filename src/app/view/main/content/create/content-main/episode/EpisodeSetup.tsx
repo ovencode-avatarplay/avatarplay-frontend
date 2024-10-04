@@ -23,8 +23,8 @@ import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeC
 interface Props {
   onDrawerOpen: () => void;
   contentId : number;
-  chapterIndex: number;
-  episodeIndex?: number;
+  chapterId: number;
+  episodeId?: number;
 
 }
 
@@ -39,7 +39,7 @@ interface Props {
     thumbnail: string
   }
   let updateUserDetail: UpdateUserDetail;
-  const EpisodeSetup: React.FC<Props> = ({ onDrawerOpen, contentId, chapterIndex = 0, episodeIndex = 0 }) => { // episodeIndex 기본값 0
+  const EpisodeSetup: React.FC<Props> = ({ onDrawerOpen, contentId, chapterId = 0, episodeId = 0 }) => { // episodeIndex 기본값 0
 
   const [isTriggerModalOpen, setTriggerModalOpen] = useState(false); // Trigger 모달 열림 상태
   const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
@@ -84,30 +84,41 @@ interface Props {
     const content = contentInfo.find(item => item.id === contentId);
     setContentData(content);
     if (content) {
-      const chapter = content.chapterInfoList[chapterIndex];
+      const chapter = content.chapterInfoList.find(info => info.id === chapterId);
       if (chapter) {
         setChapterData(chapter);
 
-        const episode = chapter.episodeInfoList[episodeIndex];
+        const episode = chapter.episodeInfoList.find(info => info.id === episodeId);
         if (episode) {
           setEpisodeData(episode);
+          updateEpisodeData(episode);
         }
         else {
-          console.log(`Episode at index ${episodeIndex} not found in Content ${contentId}`);
+          console.log(`Episode at id ${episodeId} not found in Content ${contentId}`);
         }
       }
       else {
-        console.log(`Chapter With Index ${chapterIndex} not found in ${contentId}`);
+        console.log(`Chapter With Id ${chapterId} not found in ${contentId}`);
       }
     } else {
       console.log(`Content with ID ${contentId} not found`);
     }
-  }, [contentInfo, contentId, chapterIndex, episodeIndex]);
+  }, [contentInfo, contentId, chapterId, episodeId]);
   // **팝업 열기**: 버튼 클릭 시 호출
   const handleOpenPopup = async () => {
     if (!isPopupOpen) {
       setPopupOpen(true);
     }
+  };
+
+  useEffect(() => {
+    if (episodeData) {
+      console.log("Episode data has been updated:", episodeData);
+    }
+  }, [episodeData]);
+  
+  const updateEpisodeData = (newData: EpisodeInfo) => {
+    setEpisodeData(newData);
   };
 
   const handleClosePopup = () => {
@@ -124,7 +135,7 @@ interface Props {
 
   return (
     <main className={Style.episodeSetup}>
-      <ButtonEpisodeInfo chapterName={chapterData?.name ?? "Chapter.1"} episodeName={episodeData?.name ?? "Ep.1 FirstDay"} onDrawerOpen={onDrawerOpen} />
+      <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} />
 
       <Box className={Style.imageArea}>
         <EpisodeImageUpload />

@@ -9,7 +9,7 @@ import sampleReducer from '@/redux-store/slices/ReduxSample'
 import chatReducer from '@/redux-store/slices/chat'
 import drawerContentDescReducer from '@/redux-store/slices/drawerContentDescSlice'
 import triggerReducer from '@/redux-store/slices/triggerContent'
-import ContentInfoSlice, { contentInfoSlice } from './slices/ContentInfo'
+import ContentInfoSlice from './slices/ContentInfo'
 import userInfo from './slices/userInfo'
 import ContentSelection from './slices/ContentSelection'
 
