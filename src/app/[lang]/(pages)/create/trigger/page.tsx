@@ -6,8 +6,6 @@ import { store } from "@/redux-store/ReduxStore";
 
 export default function CreatePage() {
     return (
-        <Provider store={store}>
             <Create />
-        </Provider>
     );
 }

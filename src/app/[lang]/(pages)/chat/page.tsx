@@ -6,8 +6,6 @@ import { store } from "@/redux-store/ReduxStore";
 
 export default function ChatPage() {
     return (
-        <Provider store={store}>
             <Chat />
-        </Provider>
     );
 }
