@@ -12,14 +12,12 @@ import Style from './Main.module.css'
 const Main = ({ children }: { children: ReactNode }) => {
 
   return (
-    <Provider store={store}>
       <div className={Style.body}>
         <HeaderNavBar />
         {children}
         <BottomNav />
         <DrawerContentDesc />
       </div>
-    </Provider>
   )
 }
 
