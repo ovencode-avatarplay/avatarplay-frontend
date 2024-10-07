@@ -10,7 +10,7 @@ import ContentPreviewChat from './content-preview-chat/ContentPreviewChat';
 import ContentPublishing from './content-publishing/ContentPublishing';
 import ContentDashboard from './content-dashboard/ContentDashboard';
 import ChapterBoard from './chapter/ChapterBoard';
-import { sendContentSave, SaveContentReq, GetContentReq, sendContentGet } from '@/app/NetWork/MyNetWork';
+import { sendContentSave, SaveContentReq, GetContentReq, sendContentGet } from '@/app/NetWork/ContentNetwork';
 import ContentInfoManager from './ContentInfoManager';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux-store/ReduxStore';
@@ -34,7 +34,7 @@ const ContentMain: React.FC = () => {
 
     const fetchAndSetContentInfo = async () => {
         try {
-            const contentIds = [35,36,37];
+            const contentIds = [41,36,37];
     
             const contentPromises = contentIds.map(async (id) => {
                 const req: GetContentReq = { contentId: id };

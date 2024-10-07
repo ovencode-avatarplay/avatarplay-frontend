@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { ExploreInfo, fetchCharacterInfo, sendGetExplore } from '@/app/NetWork/MyNetWork';
+import { ExploreInfo, sendGetExplore } from '@/app/NetWork/exploreNetwork';
 import { addNewCharacter, clearChatList } from '@/redux-store/slices/chat';
 import Header from './searchboard-header/SearchBoardHeader';
 import Style from './SearchBoard.module.css'
@@ -19,33 +19,6 @@ const SearchBoard: React.FC = () => {
 
     // Hooks
     const dispatch = useDispatch();
-
-    //#region 채팅 연결 test용
-    useEffect(() => {
-        console.log('이 코드는 컴포넌트가 마운트될 때 한번만 실행됩니다.');
-        init();
-
-        return () => {
-        };
-    }, []);
-
-    const init = async () => {
-        const resCharacterInfo = await fetchCharacterInfo();
-
-        if (!resCharacterInfo?.data?.characterInfoList) return;
-
-        dispatch(clearChatList())
-
-        for (let i = 0; i < resCharacterInfo.data.characterInfoList.length; i++) {
-            const character = resCharacterInfo.data?.characterInfoList[i];
-
-            dispatch(addNewCharacter({
-                character,
-            }));
-            // Fake DB 변경해야 함.
-        }
-    }
-    //#endregion
         
     useEffect(() => {
         const fetchData = async () => {
