@@ -11,7 +11,7 @@ interface UserInfoModalProps {
 
 const UserInfoModal: React.FC<UserInfoModalProps> = ({ open, onClose }) => {
   const dispatch = useDispatch();
-  const { userId, name, userImage, userDescription } = useSelector((state: RootState) => state.user);
+  const { userId, profileName, profileDescription } = useSelector((state: RootState) => state.user);
 
   const handleUserIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newUserId = event.target.value;
@@ -46,9 +46,9 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({ open, onClose }) => {
       <DialogTitle>유저 정보</DialogTitle>
       <DialogContent>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-          <Avatar alt="User Profile" src={userImage} style={{ marginRight: '16px' }} />
+          <Avatar alt="User Profile" src={"임시이미지파일"} style={{ marginRight: '16px' }} />
           <div>
-            <h3>{name}</h3>
+            <h3>{profileName}</h3>
             <p style={{ whiteSpace: 'pre-line' }}>나에대한 짧막 설명</p>
           </div>
         </div>
@@ -62,7 +62,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({ open, onClose }) => {
         />
         <TextField
           label="유저 설명"
-          value={userDescription}
+          value={profileDescription}
           multiline
           rows={8}
           variant="outlined"

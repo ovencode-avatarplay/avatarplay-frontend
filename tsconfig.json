@@ -43,7 +43,11 @@
       ],
       "@chats/*": [
         "./app/view/main/content/Chat/*"
+      ],
+      "@content/*": [
+        "./types/apps/content/*"
       ]
+
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

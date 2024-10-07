@@ -5,3 +5,5 @@ export interface EpisodeDescription {
     introDescription: string;
     secret: string;
 }
+
+export default EpisodeDescription;

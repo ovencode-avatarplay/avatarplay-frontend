@@ -11,10 +11,15 @@
   .errorMessage {
     color: red;
   }
-  
+
   .dialogActions {
     display: flex;
-    justify-content: space-between;
-    padding: 16px; /* Adjust padding as needed */
+    justify-content: center; /* 버튼을 가운데 정렬 */
+    padding: 16px; /* 기본 여백 */
   }
   
+  .confirmButton {
+    font-size: 18px; /* 버튼 텍스트 크기 */
+    font-weight: bold;
+    padding: 12px 24px; /* 버튼 패딩을 조정하여 크기 조절 */
+  }
