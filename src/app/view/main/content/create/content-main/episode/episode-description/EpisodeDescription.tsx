@@ -6,7 +6,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, T
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux-store/ReduxStore';
 import { addNewCharacter, updateUserInfo, deleteCharacter, clearChatList, getActiveUserData } from '@/redux-store/slices/chat';
-import { sendCharacterData, updateCharacterData, deleteCharacterData, UpdateCharacterReq, fetchCharacterInfo, DeleteCharacterReq } from '@/app//NetWork/MyNetWork'; // 서버와의 통신을 위한 API 함수
+import { sendCharacterData, updateCharacterData, deleteCharacterData, UpdateCharacterReq, fetchCharacterInfo, DeleteCharacterReq } from '@/app/NetWork/CharacterNetwork'; // 서버와의 통신을 위한 API 함수
 import styles from './EpisodeDescription.module.css'; // CSS 모듈 import
 import { setUserName, setUserDescription, setUserScenarioDescription, setUserIntroDescription, setUserSecret } from '@/redux-store/slices/userInfo';
 import  episodeDesc   from "@content/episode/episodeDescription";

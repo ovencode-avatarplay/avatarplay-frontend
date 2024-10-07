@@ -17,7 +17,6 @@ import { ChapterInfo } from '@/types/apps/content/chapter/chapterInfo';
 import { EpisodeInfo } from '@/types/apps/content/episode/episodeInfo';
 
 import { number } from 'valibot';
-import { sendCharacterInfoDetail } from '@/app/NetWork/MyNetWork';
 import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
 
 interface Props {

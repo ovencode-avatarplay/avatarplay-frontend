@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { ExploreInfo, sendGetExplore } from '@/app/NetWork/exploreNetwork';
+import { ExploreInfo, sendGetExplore } from '@/app/NetWork/ExploreNetwork';
 import { addNewCharacter, clearChatList } from '@/redux-store/slices/chat';
 import Header from './searchboard-header/SearchBoardHeader';
 import Style from './SearchBoard.module.css'

@@ -4,7 +4,7 @@ import Style from './SearchBoardHorizonScroll.module.css'; // 스타일 파일 �
 import ExploreCard from './ExploreCard'
 import { parse } from 'path';
 import { number } from 'valibot';
-import { ExploreInfo } from '@/app/NetWork/exploreNetwork';
+import { ExploreInfo } from '@/app/NetWork/ExploreNetwork';
 import { ExploreCardProps } from '@/types/apps/explore-card-type';
 
 interface Props

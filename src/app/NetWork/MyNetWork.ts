@@ -21,6 +21,11 @@ const api: AxiosInstance = axios.create({
     rejectUnauthorized: false,
   }),
 })
+interface ResponseAPI<T> {
+  resultCode: number;        // 응답 코드
+  resultMessage: string;     // 응답 메시지
+  data: T;
+}
 
 //==== 채팅 =======================================================================================================
 

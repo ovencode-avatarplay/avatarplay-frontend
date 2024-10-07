@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import ReelsContent from './ReelsContent';
-import { sendGetHomeFeedShorts } from '@/app/NetWork/MyNetWork';
+import { sendGetHomeFeedShorts } from '@/app/NetWork/ShortsNetwork';
 import styles from './ReelsLayout.module.css'; // CSS 모듈로 변경
 
 // ReelData 인터페이스 정의
@@ -22,7 +22,7 @@ const ReelsLayout = () => {
                 const response = await sendGetHomeFeedShorts();
 
                 if (response.resultCode === 0 && response.data) {
-                    const mappedData: ReelData[] = response.data.map(short => ({
+                    const mappedData: ReelData[] = response.data.map((short) => ({
                         images: Array.isArray(short.thumbnailList) ? short.thumbnailList : [],
                         text: short.summary || "",
                         link: `link_to_shorts/${short.shortsId}`,
