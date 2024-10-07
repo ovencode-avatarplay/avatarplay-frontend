@@ -1,8 +1,9 @@
-// CardSlider.tsx
 import React, { useState } from 'react';
-import { Box, Button, Card, CardContent } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import styles from './CardSlider.module.css';
 import { ArrowForwardIos, ArrowBackIos } from '@mui/icons-material';
+import TalkCard from './TalkCard'; // TalkCard 컴포넌트 임포트
+import { SelectChangeEvent } from '@mui/material'; // SelectChangeEvent 임포트
 
 const CardSlider: React.FC = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -20,22 +21,30 @@ const CardSlider: React.FC = () => {
         setCurrentIndex((prevIndex) => (prevIndex - 1 + cards.length) % cards.length);
     };
 
+    const priorities = ['Mandatory', 'Depends on'];
+    const [selectedPriority, setSelectedPriority] = useState(priorities[0]);
+
+    const handleChange = (event: SelectChangeEvent<string>) => { // 수정된 부분
+        setSelectedPriority(event.target.value as string);
+    };
+
     return (
         <Box className={styles.cardSlider}>
-            <Button onClick={prevCard}><ArrowBackIos /></Button>
+            <Button className={styles.arrowButton} onClick={prevCard}><ArrowBackIos /></Button>
             <Box className={styles.cardsContainer}>
                 <Box className={styles.cardsWrapper} style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
                     {cards.map((card) => (
-                        <Card key={card.id} className={styles.card}>
-                            <CardContent>
-                                <h3>{card.title}</h3>
-                                <p>{card.description}</p>
-                            </CardContent>
-                        </Card>
+                        <TalkCard
+                            key={card.id}
+                            card={card}
+                            selectedPriority={selectedPriority}
+                            priorities={priorities}
+                            onChange={handleChange}
+                        />
                     ))}
                 </Box>
             </Box>
-            <Button onClick={nextCard}><ArrowForwardIos /></Button>
+            <Button className={styles.arrowButton} onClick={nextCard}><ArrowForwardIos /></Button>
         </Box>
     );
 };

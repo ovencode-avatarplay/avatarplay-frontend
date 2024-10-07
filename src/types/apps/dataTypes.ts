@@ -72,14 +72,18 @@ export interface DataPair {
     sub: SubData;
 }
 
-
+export interface ConversationTalkInfoList 
+{
+    data: ConversationTalkInfo[];
+}
 
 export interface ConversationTalkInfo {
 	
+        priortytype:ConversationPriortyType
 		/// <summary>
 		// 행동, 말 Type
 		/// </summary>
-		type: ConversationTalkType;
+		talktype: ConversationTalkType;
 		/// <summary>
 		// 대화 행동
 		/// </summary>
@@ -90,5 +94,11 @@ export enum ConversationTalkType{
 			
 		Action,		
 		Speech,
+}    
+
+export enum ConversationPriortyType{
+			
+    Mandatory,		
+    DependsOn,
 }    
 

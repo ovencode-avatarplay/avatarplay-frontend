@@ -30,13 +30,7 @@ const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = 
                 <span className={styles['modal-title']}>EpisodeConversationTemplate</span>
             </DialogTitle>
 
-            <Box className={styles['card-box']}>
-                <Card className={styles['card-body']}>
-
-                    <CardSlider /> {/* 카드 슬라이더 추가 */}
-
-                </Card>
-            </Box >
+            <CardSlider /> {/* 카드 슬라이더 추가 */}
 
             <Box className={styles['box-button']}>
                 <Button className={styles['button-add']} variant="outlined" onClick={() => { }}>

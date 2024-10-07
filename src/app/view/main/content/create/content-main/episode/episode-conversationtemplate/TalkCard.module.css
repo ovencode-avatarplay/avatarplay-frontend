@@ -1,0 +1,62 @@
+/* TalkCard.module.css */
+.card {
+    min-width: 100%; /* 각 카드가 화면의 100%를 차지하도록 설정 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start; /* 왼쪽 정렬 */
+    height: 60vh; /* 카드 높이 설정 */
+    background-color: aqua; /* 카드 배경색 */
+    padding: 16px; /* 내부 여백 설정 */
+}
+
+
+.topArea {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* 컨테이너의 너비를 설정 */
+    padding-bottom: 5%;
+}
+
+
+.formControl {
+    width: auto; /* 기본 너비 설정 */
+    
+}
+
+.button1
+{
+    background-color: aliceblue;
+    height: 30px;
+}
+
+.cardRect
+{
+    height: 100%;
+    width: 100%;
+}
+
+.cardTop
+{
+    display: flex;
+    flex-direction: row;
+    background-color: burlywood;
+    justify-content: space-between;   
+    align-items: center; 
+    padding: 5px;
+}
+
+.cardTopImage{
+width: 25px;
+height: 25px;
+}
+
+.cardTopText{
+}
+
+.cardTopButton{
+    width: 25px;
+    height: 25px;    
+}
