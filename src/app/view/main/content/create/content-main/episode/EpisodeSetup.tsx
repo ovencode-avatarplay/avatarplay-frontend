@@ -162,7 +162,7 @@ interface Props {
             worldScenario: updateUserDetail?.world_scenario,
             introduction: updateUserDetail?.first_mes,
             secret: updateUserDetail?.secrets,
-            thumbnail: updateUserDetail?.thumbnail
+            //thumbnail: updateUserDetail?.thumbnail
           }}
           isModify={true}
           open={isEpisodeModalOpen}
