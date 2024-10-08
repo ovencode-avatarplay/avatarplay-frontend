@@ -14,6 +14,7 @@ interface ChapterItemProps {
   onDeleteEpisode: (chapterId: number, episodeId: number) => void;
   onSelect: (chapterId: number) => void;
   onSelectEpisode : (chapterID : number, episodeID : number) => void;
+  onCloseChapterBoard : () => void;
   onEdit: (id: number, type: 'chapter' | 'episode') => void;
   isSelected: boolean; // 선택 여부
   disableDelete: boolean;
@@ -26,6 +27,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   onDeleteEpisode,
   onSelect,
   onSelectEpisode,
+  onCloseChapterBoard,
   onEdit,
   isSelected,
   disableDelete,
@@ -70,6 +72,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
               onDeleteEpisode={onDeleteEpisode}
               disableDelete={chapter.episodes.length <= 1} 
               onSelect={onSelectEpisode} 
+              onClose={onCloseChapterBoard}
               isSelected={isSelected} 
             />
           ))}

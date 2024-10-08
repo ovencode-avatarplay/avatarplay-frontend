@@ -172,6 +172,10 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose, initialChapters, onChapt
 
   // Edit 팝업 열기
   const handleEditClick = (id: number, type: 'chapter' | 'episode') => {
+    if (type === 'episode')
+    {
+      dispatch(setSelectedEpisode(id));
+    }
     setEditItem({ id, type });
     setNewName('');
   };
@@ -209,6 +213,7 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose, initialChapters, onChapt
               onSelect={handleChapterSelect}
               onSelectEpisode={handleEpisodeSelect}
               onEdit={handleEditClick}
+              onCloseChapterBoard={onClose}
               isSelected={selectedChapter === chapter.id}
               disableDelete={chapters.length <= 1}
             />

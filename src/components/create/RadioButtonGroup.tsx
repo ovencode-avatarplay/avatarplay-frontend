@@ -4,9 +4,9 @@ import { Box, Button, FormControl, FormControlLabel, Radio, RadioGroup, Typograp
 interface RadioButtonGroupProps {
     title: string;
     description: string;
-    options: { value: string; label: string }[];
-    selectedValue: string;
-    onChange: (value: string) => void;
+    options: { value: string | number | boolean; label: string }[];
+    selectedValue: string | number | boolean;
+    onChange: (value: string | number | boolean) => void; 
 }
 
 const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({ title, description, options, selectedValue, onChange }) => {
@@ -14,6 +14,19 @@ const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({ title, description,
 
     const handleInfoClick = () => {
         setShowDescription((prev) => !prev);
+    };
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+
+        // value가 boolean 또는 number일 수 있으므로, 기본 string을 파싱하여 처리
+        if (value === 'true' || value === 'false') {
+            onChange(value === 'true'); 
+        } else if (!isNaN(Number(value))) {
+            onChange(Number(value)); 
+        } else {
+            onChange(value);
+        }
     };
 
     return (
@@ -35,13 +48,13 @@ const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({ title, description,
 
             {/* 라디오 버튼 그룹 */}
             <FormControl component="fieldset" sx={{ marginTop: 2 }}>
-                <RadioGroup value={selectedValue} onChange={(e) => onChange(e.target.value)}>
+                <RadioGroup value={String(selectedValue)} onChange={handleChange}>
                     {options.map((option) => (
                         <FormControlLabel
-                            key={option.value}
+                            key={String(option.value)}
                             control={<Radio />}
                             label={option.label}
-                            value={option.value}
+                            value={String(option.value)}
                         />
                     ))}
                 </RadioGroup>
