@@ -1,0 +1,8 @@
+/* components/InputCard.module.css */
+.rowContent {
+    display: flex;
+    flex-direction: row;
+    background-color: rgb(138, 222, 135);
+    justify-content: space-between;
+    align-items: center;
+}

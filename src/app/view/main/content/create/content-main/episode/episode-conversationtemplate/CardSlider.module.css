@@ -23,3 +23,21 @@
   padding: 0;
   width: 50px;
 }
+
+.body{
+  display: flex;
+  height: 100%;
+  flex-direction: column;  
+  justify-content: space-between;
+  align-items: center;  
+  padding-bottom: 5%;
+}
+
+.buttonAdd
+{
+    border-radius: 10px;
+    height: 50px;
+    width: 120px;
+    background-color: blue;
+    
+}

@@ -31,12 +31,6 @@ const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = 
             </DialogTitle>
 
             <CardSlider /> {/* 카드 슬라이더 추가 */}
-
-            <Box className={styles['box-button']}>
-                <Button className={styles['button-add']} variant="outlined" onClick={() => { }}>
-                    Add Conversation
-                </Button>
-            </Box>
         </Dialog >
     );
 }
