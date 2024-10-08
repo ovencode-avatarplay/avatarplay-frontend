@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import ContentHeader from './ContentHeader';
 import EpisodeSetup from './episode/EpisodeSetup';
 
@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux-store/ReduxStore';
 import { setSelectedChapter, setSelectedEpisode, setContentID } from '@/redux-store/slices/ContentSelection'
 import DefaultContentInfo from '@/data/create/content-info-data.json';
-import {setContentInfo} from '@/redux-store/slices/ContentInfo';
+import { setContentInfo } from '@/redux-store/slices/ContentInfo';
 import { ContentInfo } from '@/types/apps/content/contentInfo';
 
 const ContentMain: React.FC = () => {
@@ -25,32 +25,37 @@ const ContentMain: React.FC = () => {
     const [isGimmickOpen, setIsGimmickOpen] = useState(false);
     const [isPublishingOpen, setIsPublishingOpen] = useState(false);
 
-    const dispatch = useDispatch(); 
-    
+    const dispatch = useDispatch();
+
     const contentInfo = useSelector((state: RootState) => state.content.contentInfo ?? []); // null이면 빈 배열로 대체
     const selectedChapter = useSelector((state: RootState) => state.contentselection.selectedChapter);
     const selectedEpisode = useSelector((state: RootState) => state.contentselection.selectedEpisode);
     const contentID = useSelector((state: RootState) => state.contentselection.contentID);
 
+
+    const defaultContentInfo: ContentInfo = DefaultContentInfo.contentInfo[0] as ContentInfo;
+    const editedContentInfo = useSelector((state:RootState) => state.content);
+    const editedPublishInfo = useSelector((state: RootState) => state.publish);
+
     const fetchAndSetContentInfo = async () => {
         try {
-            const contentIds = [41,36,37];
-    
+            const contentIds = [41, 36, 37];
+
             const contentPromises = contentIds.map(async (id) => {
                 const req: GetContentReq = { contentId: id };
                 const response = await sendContentGet(req);
-    
+
                 if (response?.data?.contentInfo) {
                     return response.data.contentInfo;
                 } else {
                     throw new Error("No contentInfo in response");
                 }
             });
-    
+
             const contentData: ContentInfo[] = await Promise.all(contentPromises);
-    
+
             dispatch(setContentInfo(contentData));
-    
+
         } catch (error) {
             console.error('Error fetching content info:', error);
         }
@@ -58,7 +63,7 @@ const ContentMain: React.FC = () => {
 
     useEffect(() => {
         fetchAndSetContentInfo();
-    },[])
+    }, [])
 
     const handleOpenDashboard = () => {
         setIsDashboardOpen(true);
@@ -81,17 +86,16 @@ const ContentMain: React.FC = () => {
     const handleCloseGimmick = () => {
         setIsGimmickOpen(false);
     };
-    
+
     const curContent = contentInfo.find(item => item.id === Number(contentID));
 
     const defaultSaveContentReq = (): SaveContentReq => ({
-        contentInfo: curContent ?? DefaultContentInfo.contentInfo[0],
+        contentInfo: curContent ?? defaultContentInfo,
     });
 
     const [saveData, setSaveData] = useState<SaveContentReq>(defaultSaveContentReq);
 
     const handleOpenPublishing = () => {
-        sendContentSave(saveData);
         setIsPublishingOpen(true);
     };
 
@@ -99,9 +103,36 @@ const ContentMain: React.FC = () => {
         setIsPublishingOpen(false);
     };
 
+    const handlePublish = () =>
+    {
+        if (!curContent) {
+            console.error("No content selected.");
+            return;
+        }
+
+        if (!editedPublishInfo) {
+            console.error("No editedPublishInfo available.");
+            return;
+        }
+
+        const targetContent = curContent ?? defaultContentInfo;
+        const updatedContent = {
+            ...targetContent, 
+            contentInfo: { ...editedContentInfo },
+            publishInfo: { ...editedPublishInfo },
+        };
+    
+        const tmp: SaveContentReq = {
+            contentInfo: updatedContent,
+        };    
+    
+        setSaveData(tmp);
+        sendContentSave(tmp);
+    }
+
     const handleItemSelect = (id: number) => {
         dispatch(setContentID(id));
-    
+
         const content = contentInfo.find(item => item.id === id);
 
         if (content) {
@@ -137,7 +168,7 @@ const ContentMain: React.FC = () => {
                 <p>curEpisodeId {selectedEpisode}</p> */}
                 <ContentHeader contentTitle={curContent?.publishInfo.contentName ?? ''} onOpenDrawer={handleOpenDashboard} />
                 <div className={Style.content}>
-                    <EpisodeSetup onDrawerOpen={handleOpenChapterboard} 
+                    <EpisodeSetup onDrawerOpen={handleOpenChapterboard}
                         contentId={curContent?.id ?? 0}
                         chapterId={selectedChapter}
                         episodeId={selectedEpisode}
@@ -146,19 +177,19 @@ const ContentMain: React.FC = () => {
                     <ContentDashboard
                         open={isDashboardOpen}
                         onClose={handleCloseDashboard}
-                        onSelectItem={handleItemSelect} 
-                        
+                        onSelectItem={handleItemSelect}
+
                     />
-                    <ChapterBoard 
-                    open={isChapterboardOpen} 
-                    onClose={handleCloseChapterboard}
-                    initialChapters={curContent?.chapterInfoList || []}
-                    onChapterNameChanged={() => {}} 
-                    onEpisodeNameChanged={() => {}} 
-                     />
+                    <ChapterBoard
+                        open={isChapterboardOpen}
+                        onClose={handleCloseChapterboard}
+                        initialChapters={curContent?.chapterInfoList || []}
+                        onChapterNameChanged={() => { }}
+                        onEpisodeNameChanged={() => { }}
+                    />
                     <ContentGimmick open={isGimmickOpen} onClose={handleCloseGimmick} />
                     <ContentPreviewChat />
-                    <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} />
+                    <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
                 </div>
                 <ContentBottom onGimmickOpen={handleOpenGimmick} onPublishingOpen={handleOpenPublishing} />
             </main>
