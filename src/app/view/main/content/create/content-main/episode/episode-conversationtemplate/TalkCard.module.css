@@ -5,7 +5,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start; /* 왼쪽 정렬 */
-    height: 60vh; /* 카드 높이 설정 */
+    height: 100%; /* 카드 높이 설정 */
     background-color: aqua; /* 카드 배경색 */
     padding: 16px; /* 내부 여백 설정 */
 }
@@ -36,6 +36,8 @@
 {
     height: 100%;
     width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .cardTop
@@ -46,6 +48,7 @@
     justify-content: space-between;   
     align-items: center; 
     padding: 5px;
+    width: 100%;
 }
 
 .cardTopImage{
@@ -53,10 +56,27 @@ width: 25px;
 height: 25px;
 }
 
-.cardTopText{
+.rowContent{
+    display: flex;
+    flex-direction: row;
+    background-color: rgb(138, 222, 135);
+    justify-content: space-between;   
+    align-items: center;     
 }
 
 .cardTopButton{
     width: 25px;
     height: 25px;    
+}
+
+.divBox{
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+    align-items: center; 
+}
+
+.innerBox{    
+    flex-direction: column;
+    display: flex;
 }
