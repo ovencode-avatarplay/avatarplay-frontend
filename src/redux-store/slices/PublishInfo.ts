@@ -2,6 +2,7 @@
 
 import { PublishInfo } from '@/types/apps/content/chapter/publishInfo';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { number } from 'valibot';
 
 const initialState: PublishInfo = {
     languageType: 0,
@@ -10,7 +11,8 @@ const initialState: PublishInfo = {
     contentDescription: "string",
     authorName: "string",
     authorComment: "string",
-    // selectedTags: [],
+    contentTag : ["string"],
+    selectContentTag: ["string"],
     visibilityType: 0,
     monetization: true,
     nsfw: 0,
@@ -20,6 +22,18 @@ export const PublishInfoSlice = createSlice({
     name: 'PublishInfo',
     initialState,
     reducers: {
+
+        setContentInfo: (state, action: PayloadAction<PublishInfo>) => {            
+            state.languageType = action.payload.languageType;
+            state.contentName = action.payload.contentName;
+            state.contentDescription = action.payload.contentDescription;
+            state.authorComment = action.payload.authorComment;
+            state.selectContentTag = action.payload.selectContentTag;
+            state.visibilityType = action.payload.visibilityType;
+            state.monetization = action.payload.monetization;
+            state.nsfw = action.payload.nsfw;
+        },
+
         setLanguageType: (state, action: PayloadAction<number>) => {
             state.languageType = action.payload;
         },
@@ -36,7 +50,7 @@ export const PublishInfoSlice = createSlice({
             state.authorComment = action.payload;
         },
         setSelectedTags: (state, action: PayloadAction<string[]>) => {
-            // state.selectedTags = action.payload;
+            state.selectContentTag = action.payload;
         },
         setVisibility: (state, action: PayloadAction<number>) => {
             state.visibilityType = action.payload;
@@ -51,6 +65,7 @@ export const PublishInfoSlice = createSlice({
 });
 
 export const {
+    setContentInfo,
     setLanguageType,
     setContentName,
     setContentDescription,

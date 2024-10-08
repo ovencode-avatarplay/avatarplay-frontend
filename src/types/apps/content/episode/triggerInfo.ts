@@ -11,5 +11,6 @@ export interface TriggerInfo {
     actionChangeEpisodeId: number;
     actionChangePrompt: string;
     actionIntimacyPoint: number;
+    maxIntimacyCount: number,
     actionCoversationList: Conversation[];
 }

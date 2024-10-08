@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux-store/ReduxStore';
+import { setCurrentEpisodeInfo, updateEpisodeDescription } from '@/redux-store/slices/EpisodeInfo'
+
 import { addNewCharacter, updateUserInfo, deleteCharacter, clearChatList, getActiveUserData } from '@/redux-store/slices/chat';
 import { sendCharacterData, updateCharacterData, deleteCharacterData, UpdateCharacterReq, fetchCharacterInfo, DeleteCharacterReq } from '@/app/NetWork/CharacterNetwork'; // 서버와의 통신을 위한 API 함수
 import styles from './EpisodeDescription.module.css'; // CSS 모듈 import
@@ -30,6 +32,8 @@ interface CharacterPopupProps {
 }
 
 export const EpisodeDescription: React.FC<CharacterPopupProps> = ({ dataDefault, isModify = false, open, onClose, onSubmit }) => {
+    const dispatch = useDispatch();
+
     //const chatStore = useSelector((state: RootState) => state.chat);
     const userId = useSelector((state: RootState) => state.user.userId);
 
@@ -39,16 +43,18 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({ dataDefault,
     const introductionStore = useSelector( (state: RootState) => state.user.episodeInfo.introDescription);
     const secretStore = useSelector( (state: RootState) => state.user.episodeInfo.secret);
     
-     const [characterName, setCharacterName] = useState<string>(characterNameStore || "");
-     const [characterDescription, setCharacterDescription] = useState<string>(characterDescriptionStore|| "");
-     const [worldScenario, setWorldScenario] = useState<string>(worldScenarioStore || "");
-     const [introduction, setIntroduction] = useState<string>(introductionStore || "");
-     const [secret, setSecret] = useState<string>(secretStore || "");
+    // 현재 에피소드 정보 가져오기
+    const currentEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
+    
+    // 상태 초기화
+    const [characterName, setCharacterName] = useState<string>(currentEpisodeInfo.episodeDescription.characterName || "");
+    const [characterDescription, setCharacterDescription] = useState<string>(currentEpisodeInfo.episodeDescription.characterDescription || "");
+    const [worldScenario, setWorldScenario] = useState<string>(currentEpisodeInfo.episodeDescription.scenarioDescription || "");
+    const [introduction, setIntroduction] = useState<string>(currentEpisodeInfo.episodeDescription.introDescription || "");
+    const [secret, setSecret] = useState<string>(currentEpisodeInfo.episodeDescription.secret || "");
+
      //const [thumbnail, setThumbnail] = useState<string>(dataDefault?.thumbnail || "");
     const [error, setError] = useState<string | null>(null);
-
-    
-    const dispatch = useDispatch();
 
     const updateChatList = async () => {
         const resCharacterInfo = await fetchCharacterInfo();
@@ -74,21 +80,19 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({ dataDefault,
         onClose(); // 제출 후 Dialog를 닫습니다.
     };
 
-    const handleSubmit = async () => {
-        // let response;
-        // try {
-        //     if (!isModify) {
-        //         response = await createCharacter();
-        //     } else {
-        //         response = await updateCharacter();
-        //     }
-        //     if (response?.resultCode != 0) {
-        //         setError(response?.resultMessage || "handleSubmit Error");
-        //     }
-        // } catch (error: any) {
-        //     setError(error.message);
-        // }
-        onClose(); // 제출 후 Dialog를 닫습니다.
+    // 정보 제출 처리
+    const handleSubmit = () => {
+        const updatedEpisodeDescription = {
+            characterName,
+            characterDescription,
+            scenarioDescription: worldScenario,
+            introDescription: introduction,
+            secret,
+        };
+
+        dispatch(updateEpisodeDescription(updatedEpisodeDescription)); // Redux에 정보 업데이트
+
+        onClose(); // 다이얼로그 닫기
     };
 
     // const onChangeName = () => {
@@ -204,11 +208,11 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({ dataDefault,
             </DialogContent>
             <DialogActions className={styles.dialogActions}>
                 {/* <div>
-                    <Button onClick={handleSubmit} color="primary">
+                <Button onClick={handleSubmit} color="primary">
                         {isModify ? "Modify" : "Create"}
                     </Button>
                 </div> */}
-                <Button onClick={onClose} color="primary" className={styles.confirmButton} >
+                <Button onClick={handleSubmit} color="primary" className={styles.confirmButton} >
                     확인
                 </Button>
             </DialogActions>

@@ -5,7 +5,8 @@ export interface PublishInfo {
     contentDescription: string;
     authorName: string;
     authorComment: string;
-    // selectedTags: string[];
+    contentTag: string[];
+    selectContentTag: string[];
     visibilityType: number;
     monetization: boolean;
     nsfw: number;

@@ -1,6 +1,6 @@
 //Drawer
 // ContentPublishing.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux-store/ReduxStore';
 import { setSelectedTags, setVisibility, setMonetization, setNSFW, setLanguageType, setContentDescription, setAuthorComment, setAuthorName } from '@/redux-store/slices/PublishInfo';
@@ -8,25 +8,35 @@ import { setSelectedTags, setVisibility, setMonetization, setNSFW, setLanguageTy
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import { Box, Drawer, Typography, TextField, Button, Select, MenuItem, Chip, Snackbar, Alert } from '@mui/material';
 import Style from './ContentPublishing.module.css';
-import tagsData from '@/data/publish-tags.json';
 import RadioButtonGroup from '@/components/create/RadioButtonGroup';
 
 interface Props {
     open: boolean;
     onClose: () => void;
     onPublish : () => void;
+    contentTag : string[];
 }
 
-const ContentPublishing: React.FC<Props> = ({ open, onClose , onPublish }) => {
+const ContentPublishing: React.FC<Props> = ({ open, onClose , onPublish , contentTag}) => {
     
     const dispatch = useDispatch();
-    const { visibilityType, monetization, nsfw,
-        //  selectedTags,      
-        languageType, contentDescription, authorName, authorComment } = useSelector((state: RootState) => state.publish);
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const { visibilityType, monetization, nsfw, selectContentTag, languageType, contentDescription, authorName, authorComment } = useSelector((state: RootState) => state.publish);
+    
     const [showMoreTags, setShowMoreTags] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [showTagCount, setShowTagCount] = useState(6);
+
+    useEffect(() => {
+        // contentTag의 길이에 따라 showTagCount 설정
+        if (contentTag.length >= 6) {
+            setShowTagCount(6);
+        } else if (contentTag.length > 1) {
+            setShowTagCount(Math.floor(contentTag.length / 2));
+        } else {
+            setShowTagCount(1);
+        }
+    }, [contentTag]);
+
 
     const handleContentDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(setContentDescription(e.target.value));
@@ -37,17 +47,15 @@ const ContentPublishing: React.FC<Props> = ({ open, onClose , onPublish }) => {
     };
 
     const handleTagSelect = (tag: string) => {
-        if (selectedTags.length >= 7) {
+        if (selectContentTag.length >= 7) {
             setOpenSnackbar(true); // 경고 메시지 표시
             return;
         }
-        setSelectedTags((prev) => [...prev, tag]);
-        // dispatch(setSelectedTags([...selectedTags, tag]));  
+        dispatch(setSelectedTags([...selectContentTag, tag]));  
     };
 
     const handleTagRemove = (tag: string) => {
-        setSelectedTags((prev) => prev.filter((t) => t !== tag));
-        // dispatch(setSelectedTags(selectedTags.filter((t) => t !== tag))); 
+        dispatch(setSelectedTags(selectContentTag.filter((t) => t !== tag))); 
     };
 
     const handleMoreTagsToggle = () => {
@@ -80,9 +88,9 @@ const ContentPublishing: React.FC<Props> = ({ open, onClose , onPublish }) => {
                         value={languageType}
                         onChange={(e) => dispatch(setLanguageType(e.target.value as number))}
                     >
-                        <MenuItem value="en">English</MenuItem>
-                        <MenuItem value="ko">Korean</MenuItem>
-                        <MenuItem value="ar">Arab</MenuItem>
+                        <MenuItem value={0}>English</MenuItem>
+                        <MenuItem value={1}>Korean</MenuItem>
+                        <MenuItem value={2}>Arab</MenuItem>
                         {/* TODO 언어 테이블 리스트 / enum 등 받아와서 설정*/}
                     </Select>
 
@@ -102,21 +110,18 @@ const ContentPublishing: React.FC<Props> = ({ open, onClose , onPublish }) => {
                     <Typography variant="h6">Content Tag</Typography>
 
                     <Box display="flex" alignItems="center" justifyContent="right" className={Style.tagContainer}>
-                        {selectedTags.length > 0 ? null : (
+                        {selectContentTag.length > 0 ? null : (
                             <Typography variant="body2" color="textSecondary" sx={{ padding: '8px' }}>
                                 Please Select 1~7 Tags
                             </Typography>
                         )}
-                        {/* <Button variant="contained" onClick={() => dispatch(setSelectedTags([]))} sx={{ marginLeft: '16px' }}>
-                            Reset
-                        </Button> */}
-                        <Button variant="contained" onClick={() => setSelectedTags([])} sx={{ marginLeft: '16px' }}>
+                        <Button variant="contained" onClick={() => dispatch(setSelectedTags([]))} sx={{ marginLeft: '16px' }}>
                             Reset
                         </Button>
                     </Box>
                     <Box display="flex" flexWrap="wrap" sx={{ flexGrow: 1 }}>
                         {
-                            selectedTags.map((tag) => (
+                            selectContentTag.map((tag) => (
                                 <Chip
                                     key={tag}
                                     label={tag}
@@ -128,12 +133,12 @@ const ContentPublishing: React.FC<Props> = ({ open, onClose , onPublish }) => {
                     </Box>
                     {/* 태그 선택 부분 */}
                     <Box className={Style.tagSelect}>
-                        {tagsData.slice(0, showTagCount).map((tag) => ( // 첫 6개 태그만 표시
+                        {contentTag.slice(0, showTagCount).map((tag) => ( // 첫 6개 태그만 표시
                             <Button
                                 key={tag}
                                 variant="outlined"
                                 onClick={() => handleTagSelect(tag)}
-                                disabled={selectedTags.includes(tag)}
+                                disabled={selectContentTag.includes(tag)}
                             >
                                 {tag}
                             </Button>
@@ -143,12 +148,12 @@ const ContentPublishing: React.FC<Props> = ({ open, onClose , onPublish }) => {
                     {/* 추가적인 태그 내용 */}
                     {showMoreTags && (
                         <Box className={Style.moreTags}>
-                            {tagsData.slice(showTagCount).map((tag) => ( // 6개 이후의 태그 표시
+                            {contentTag.slice(showTagCount).map((tag) => ( // 6개 이후의 태그 표시
                                 <Button
                                     key={tag}
                                     variant="outlined"
                                     onClick={() => handleTagSelect(tag)}
-                                    disabled={selectedTags.includes(tag)}
+                                    disabled={selectContentTag.includes(tag)}
                                 >
                                     {tag}
                                 </Button>

@@ -13,7 +13,9 @@ import ContentInfoSlice from './slices/ContentInfo'
 import userInfo from './slices/userInfo'
 import ContentSelection from './slices/ContentSelection'
 import conversationTalkReducer from './slices/conversationTalk'
-import PublishInfoSlice from './slices/PublishInfo'
+import publishInfoSlice from './slices/PublishInfo'
+import chapterBoardSlice from './slices/ChapterBoard'
+import episodeInfoSlice from './slices/EpisodeInfo'
 
 // redux-persist (간단 요약 : 새로고침 해도 데이터 유지)   https://www.codenary.co.kr/discoveries/9170
 import { persistStore, persistReducer } from 'redux-persist'
@@ -35,7 +37,10 @@ const reducers = combineReducers({
     user: userInfo,
     contentselection: ContentSelection,
     conversationTalk: conversationTalkReducer,
-    publish : PublishInfoSlice,
+    publish : publishInfoSlice,
+    chapterBoard : chapterBoardSlice,
+    episode : episodeInfoSlice,
+
 })
 
 const persistedReducer = persistReducer(persistConfig, reducers)
