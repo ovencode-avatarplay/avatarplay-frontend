@@ -15,7 +15,7 @@ import {
 import { ArrowBackIos } from '@mui/icons-material';
 import styles from './ChangeBehaviour.module.css';
 import { useDispatch } from 'react-redux';
-import { updateDataPair } from '@/redux-store/slices/triggerContent';
+import { updateDataPair } from '@/redux-store/slices/EpisodeInfo';
 import { DataPair, MainData, SubData, TriggerMainDataType, TriggerSubDataType } from '@/types/apps/dataTypes';
 
 interface ChangeBehaviourProps {

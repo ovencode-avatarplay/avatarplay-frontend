@@ -11,7 +11,8 @@ const TriggerList: React.FC = () => {
     const [selected, setSelected] = React.useState<TriggerMainDataType | null>(null); // 선택된 항목을 관리
 
     // Redux에서 dataPairs 배열을 가져옴
-    const dataPairs = useSelector((state: RootState) => state.create.dataPairs);
+    const dataPairs = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList);
+    const current = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
 
     const handleToggle = (key: TriggerMainDataType) => () => {
         // 선택한 항목의 key를 상태로 설정

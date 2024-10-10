@@ -9,7 +9,6 @@ import sampleReducer from '@/redux-store/slices/ReduxSample'
 import chatReducer from '@/redux-store/slices/chat'
 import chattingReducer from '@/redux-store/slices/chatting'
 import drawerContentDescReducer from '@/redux-store/slices/drawerContentDescSlice'
-import triggerReducer from '@/redux-store/slices/triggerContent'
 import ContentInfoSlice from './slices/ContentInfo'
 import userInfo from './slices/userInfo'
 import ContentSelection from './slices/ContentSelection'
@@ -34,14 +33,13 @@ const reducers = combineReducers({
     chat: chatReducer,
     chatting: chattingReducer,
     drawerContentDesc: drawerContentDescReducer,
-    create: triggerReducer,
     content: ContentInfoSlice,
     user: userInfo,
     contentselection: ContentSelection,
     conversationTalk: conversationTalkReducer,
-    publish : publishInfoSlice,
-    chapterBoard : chapterBoardSlice,
-    episode : episodeInfoSlice,
+    publish: publishInfoSlice,
+    chapterBoard: chapterBoardSlice,
+    episode: episodeInfoSlice,
 
 })
 
