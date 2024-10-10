@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'; // Redux 디스패치를 사용
 import { Dialog, DialogTitle, DialogContent, RadioGroup, FormControlLabel, Radio, IconButton, Box, DialogActions, Button } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import { MainData, MainDataA, MainDataB, MainDataC, MainDataD, SubDataB, CoversationData, TriggerSubDataType } from '@/types/apps/dataTypes'; // MainData 및 SubDataB 타입들 임포트
-import { addDataPair } from '@/redux-store/slices/triggerContent';
+import { addDataPair } from '@/redux-store/slices/EpisodeInfo';
 
 interface SelectTriggerTypeProps {
     open: boolean;
