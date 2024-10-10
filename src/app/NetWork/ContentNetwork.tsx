@@ -1,7 +1,9 @@
 // src/app/Network/ContentNetwork.tsx
 
+import { PublishInfo } from '@/types/apps/content/chapter/publishInfo';
 import api, { ResponseAPI } from './ApiInstance'; 
 import { ContentInfo } from '@/types/apps/content/contentInfo';
+import { ChapterInfo } from '@/types/apps/content/chapter/chapterInfo';
 
 
 export interface SaveContentReq {
@@ -42,7 +44,10 @@ export interface SaveContentReq {
     resultCode: number;
     resultMessage: string;
     data: {
-      contentInfo: ContentInfo;
+      chatCount : number;
+      chatUserCount : number
+      publishInfo: PublishInfo;
+      chapterInfoList: ChapterInfo[];
     };
   }
   

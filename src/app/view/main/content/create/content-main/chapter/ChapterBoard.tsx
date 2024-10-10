@@ -10,7 +10,7 @@ import Style from './ChapterBoard.module.css';
 
 // Slice
 import { setSelectedChapter, setSelectedEpisode } from '@/redux-store/slices/ContentSelection';
-import { addChapter, deleteChapter, addEpisode, deleteEpisode, updateChapterName, updateEpisodeName } from '@/redux-store/slices/ChapterBoard';
+import { addChapter, deleteChapter, addEpisode, deleteEpisode} from '@/redux-store/slices/ChapterBoard';
 import { updateContentInfo } from '@/redux-store/slices/ContentInfo';
 
 
@@ -31,9 +31,14 @@ interface Props {
   open: boolean;
   onClose: () => void;
   initialChapters: ChapterInfo[];
+  onAddChapter: (newChapter : ChapterInfo) => void;
+  onDeleteChapter: (chapterId: number) => void;
+  onAddEpisode: (newEpisode: EpisodeInfo) => void; 
+  onDeleteEpisode: (chapterId: number, episodeId: number) => void; 
+
 }
 
-const ChapterBoard: React.FC<Props> = ({ open, onClose, initialChapters }) => {
+const ChapterBoard: React.FC<Props> = ({ open, onClose, initialChapters, onAddChapter, onDeleteChapter, onAddEpisode, onDeleteEpisode }) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const curContentId = useSelector((state: RootState) => state.contentselection.contentID);
   const selectedContent = useSelector((state: RootState) => state.content.contentInfo.find(item => item.id === curContentId));
@@ -49,14 +54,19 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose, initialChapters }) => {
 
   // ChapterInfo를 Chapter로 변환하는 함수
   const transformChapterInfoToChapter = (chapterInfoList: ChapterInfo[]): Chapter[] => {
-    return chapterInfoList.map(chapterInfo => ({
+    return chapterInfoList.map((chapterInfo) => ({
       id: chapterInfo.id,
       title: chapterInfo.name,
-      episodes: chapterInfo.episodeInfoList.map(episodeInfo => ({
+      episodes: chapterInfo.episodeInfoList.map((episodeInfo) => ({
         id: episodeInfo.id,
         title: episodeInfo.name,
+        thumbnail: episodeInfo.thumbnail,
+        description: episodeInfo.episodeDescription,
+        triggerInfoList: episodeInfo.triggerInfoList,
+        conversationTemplateList: episodeInfo.conversationTemplateList,
+        llmSetupInfo: episodeInfo.llmSetupInfo,
       })),
-      expanded: false,
+      expanded: false, 
     }));
   };
 
@@ -78,74 +88,8 @@ const ChapterBoard: React.FC<Props> = ({ open, onClose, initialChapters }) => {
   })));
 }, [initialChapters]);
 
-// 새로운 Chapter 추가 (Redux에 반영)
-const handleCreateChapter = () => {
-  const newChapterInfo: ChapterInfo = { ...defaultChapterData, id: chapters.length + 1 }; // 새로운 Chapter의 고유 ID 설정
+//#region Chapter
 
-  const [newChapter] = transformChapterInfoToChapter([newChapterInfo]);
-
-  // Redux 상태 및 로컬 상태 업데이트
-  dispatch(addChapter(newChapterInfo));
-  setChapters([...chapters, newChapter]);
-};
-
-// 새로운 Episode 추가 (Redux에 반영)
-const handleCreateEpisode = () => {
-  if (selectedChapter !== null) {
-    const selectedChapterData = chapters.find(chapter => chapter.id === selectedChapter);
-    const newEpisodeInfo: EpisodeInfo = {
-      ...defaultEpisodeData,
-      id: (selectedChapterData?.episodes.length || 0) + 1, // 고유 에피소드 ID 설정
-    };
-
-    const newEpisode = {
-      id: newEpisodeInfo.id,
-      title: newEpisodeInfo.name,
-      thumbnail: newEpisodeInfo.thumbnail,
-      description: newEpisodeInfo.episodeDescription,
-      triggerInfoList: newEpisodeInfo.triggerInfoList,
-      conversationTemplateList: newEpisodeInfo.conversationTemplateList,
-      llmSetupInfo: newEpisodeInfo.llmSetupInfo,
-    };
-
-    // Redux 상태 업데이트
-    dispatch(addEpisode({ chapterId: selectedChapter, episode: newEpisodeInfo }));
-
-    // 로컬 상태 업데이트
-    setChapters(prevChapters =>
-      prevChapters.map(chapter =>
-        chapter.id === selectedChapter
-          ? { ...chapter, episodes: [...chapter.episodes, newEpisode] }
-          : chapter
-      )
-    );
-  }
-};
-// Chapter 삭제 (Redux에 반영)
-const handleDeleteChapter = (chapterId: number) => {
-  if (chapters.length > 1) {
-    dispatch(deleteChapter(chapterId));
-    setChapters(chapters.filter(chapter => chapter.id !== chapterId));
-  }
-};
-
-// Episode 삭제 (Redux에 반영)
-const handleDeleteEpisode = (chapterId: number, episodeId: number) => {
-  dispatch(deleteEpisode({ chapterId, episodeId }));
-  setChapters(prevChapters =>
-    prevChapters.map(chapter => {
-      if (chapter.id === chapterId && chapter.episodes.length > 1) {
-        return {
-          ...chapter,
-          episodes: chapter.episodes.filter(episode => episode.id !== episodeId),
-        };
-      }
-      return chapter;
-    })
-  );
-};
-
-  // Chapter 펼치기/접기
   const handleChapterToggle = (chapterId: number) => {
     setChapters(prevChapters =>
       prevChapters.map(chapter =>
@@ -154,19 +98,37 @@ const handleDeleteEpisode = (chapterId: number, episodeId: number) => {
     );
   };
 
-  // Chapter 선택
   const handleChapterSelect = (chapterId: number) => {
     dispatch(setSelectedChapter(chapterId));
     dispatch(setSelectedEpisode(0));
   };
 
-  // Episode 선택
+  const handleCreateChapter = () => {
+    const newChapter: ChapterInfo = {
+        id: chapters.length + 1,
+        name: 'New Chapter',
+        episodeInfoList: [],
+    };
+
+    // 새로운 챕터를 ContentMain으로 전달하여 추가
+    onAddChapter(newChapter);
+};
+const handleDeleteChapter = (chapterId: number) => {
+    if (chapters.length > 1) {
+        onDeleteChapter(chapterId); // Call the function passed via props
+        setChapters(prevChapters => prevChapters.filter(chapter => chapter.id !== chapterId));
+    }
+};
+//#endregion
+
+
+//#region Episode
+
   const handleEpisodeSelect = (chapterId: number, episodeId: number) => {
     dispatch(setSelectedChapter(chapterId));
     dispatch(setSelectedEpisode(episodeId));
   };
 
-  // Chapter 또는 Episode 이름 변경
   const handleChangeName = (id: number, type: 'chapter' | 'episode', newName: string) => {
     setChapters((prevChapters) =>
       prevChapters.map((chapter) => {
@@ -213,6 +175,98 @@ const handleDeleteEpisode = (chapterId: number, episodeId: number) => {
       })
     );
   };
+  
+  const handleCreateEpisode = () => {
+    if (selectedChapter !== null) {
+        const selectedChapterData = chapters.find(chapter => chapter.id === selectedChapter);
+        const newEpisodeInfo: EpisodeInfo = {
+            ...defaultEpisodeData,
+            id: (selectedChapterData?.episodes.length || 0) + 1,
+        };
+
+        const newEpisode = {
+            id: newEpisodeInfo.id,
+            title: newEpisodeInfo.name,
+            thumbnail: newEpisodeInfo.thumbnail,
+            description: newEpisodeInfo.episodeDescription,
+            triggerInfoList: newEpisodeInfo.triggerInfoList,
+            conversationTemplateList: newEpisodeInfo.conversationTemplateList,
+            llmSetupInfo: newEpisodeInfo.llmSetupInfo,
+        };
+
+        onAddEpisode(newEpisodeInfo); // Call the function passed via props
+
+        setChapters(prevChapters =>
+            prevChapters.map(chapter =>
+                chapter.id === selectedChapter
+                    ? { ...chapter, episodes: [...chapter.episodes, newEpisode] }
+                    : chapter
+            )
+        );
+    }
+};
+
+const handleDeleteEpisode = (chapterId: number, episodeId: number) => {
+    onDeleteEpisode(chapterId, episodeId); // Call the function passed via props
+    setChapters(prevChapters =>
+        prevChapters.map(chapter => {
+            if (chapter.id === chapterId && chapter.episodes.length > 1) {
+                return {
+                    ...chapter,
+                    episodes: chapter.episodes.filter(episode => episode.id !== episodeId),
+                };
+            }
+            return chapter;
+        })
+    );
+};
+
+// const handleCreateEpisode = () => {
+//   if (selectedChapter !== null) {
+//     const selectedChapterData = chapters.find(chapter => chapter.id === selectedChapter);
+//     const newEpisodeInfo: EpisodeInfo = {
+//       ...defaultEpisodeData,
+//       id: (selectedChapterData?.episodes.length || 0) + 1, // 고유 에피소드 ID 설정
+//     };
+
+//     const newEpisode = {
+//       id: newEpisodeInfo.id,
+//       title: newEpisodeInfo.name,
+//       thumbnail: newEpisodeInfo.thumbnail,
+//       description: newEpisodeInfo.episodeDescription,
+//       triggerInfoList: newEpisodeInfo.triggerInfoList,
+//       conversationTemplateList: newEpisodeInfo.conversationTemplateList,
+//       llmSetupInfo: newEpisodeInfo.llmSetupInfo,
+//     };
+
+//     dispatch(addEpisode({ chapterId: selectedChapter, episode: newEpisodeInfo }));
+
+//     setChapters(prevChapters =>
+//       prevChapters.map(chapter =>
+//         chapter.id === selectedChapter
+//           ? { ...chapter, episodes: [...chapter.episodes, newEpisode] }
+//           : chapter
+//       )
+//     );
+//   }
+// };
+
+// const handleDeleteEpisode = (chapterId: number, episodeId: number) => {
+//   dispatch(deleteEpisode({ chapterId, episodeId }));
+//   setChapters(prevChapters =>
+//     prevChapters.map(chapter => {
+//       if (chapter.id === chapterId && chapter.episodes.length > 1) {
+//         return {
+//           ...chapter,
+//           episodes: chapter.episodes.filter(episode => episode.id !== episodeId),
+//         };
+//       }
+//       return chapter;
+//     })
+//   );
+// };
+//#endregion
+
 
   // Edit 팝업 열기
   const handleEditClick = (id: number, type: 'chapter' | 'episode') => {

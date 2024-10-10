@@ -28,9 +28,9 @@ const ContentPublishing: React.FC<Props> = ({ open, onClose , onPublish , conten
 
     useEffect(() => {
         // contentTag의 길이에 따라 showTagCount 설정
-        if (contentTag.length >= 6) {
+        if (contentTag?.length >= 6) {
             setShowTagCount(6);
-        } else if (contentTag.length > 1) {
+        } else if (contentTag?.length > 1) {
             setShowTagCount(Math.floor(contentTag.length / 2));
         } else {
             setShowTagCount(1);
@@ -133,7 +133,7 @@ const ContentPublishing: React.FC<Props> = ({ open, onClose , onPublish , conten
                     </Box>
                     {/* 태그 선택 부분 */}
                     <Box className={Style.tagSelect}>
-                        {contentTag.slice(0, showTagCount).map((tag) => ( // 첫 6개 태그만 표시
+                        {contentTag?.slice(0, showTagCount).map((tag) => ( // 첫 6개 태그만 표시
                             <Button
                                 key={tag}
                                 variant="outlined"
@@ -148,7 +148,7 @@ const ContentPublishing: React.FC<Props> = ({ open, onClose , onPublish , conten
                     {/* 추가적인 태그 내용 */}
                     {showMoreTags && (
                         <Box className={Style.moreTags}>
-                            {contentTag.slice(showTagCount).map((tag) => ( // 6개 이후의 태그 표시
+                            {contentTag?.slice(showTagCount).map((tag) => ( // 6개 이후의 태그 표시
                                 <Button
                                     key={tag}
                                     variant="outlined"
