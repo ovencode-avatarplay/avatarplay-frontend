@@ -1,15 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+// 초기 상태 타입 정의
+export type ChattingState = {
+    contentName: string;
+    episodeName: string;
+    episodeId: number;
+  };
+
 // 초기 상태
-const initialState = {
-  contentName: '',
-  episodeName: '',
-  episodeId: 0,
+export const initialStateChatting: ChattingState = {
+  contentName: '컨텐츠네임',
+  episodeName: '에피소드네임',
+  episodeId: 18,
 };
 
 export const chattingSlice = createSlice({
   name: 'chatting',
-  initialState,
+  initialState: initialStateChatting,
   reducers: {
         setContentName: (state, action: PayloadAction<string>) => {
         state.contentName = action.payload;  // action.payload에서 contentName을 업데이트
@@ -19,10 +26,14 @@ export const chattingSlice = createSlice({
         },
         setEpisodeId: (state, action: PayloadAction<number>) => {
             state.episodeId = action.payload;  // episodeName을 업데이트하는 reducer
+        },
+        setStateChatting: (state, action: PayloadAction<ChattingState>) =>
+        {
+            state = action.payload; // 구조체단위로 업데이트
         }
     }
 });
 
 // 액션과 리듀서 내보내기
-export const { setContentName, setEpisodeName, setEpisodeId } = chattingSlice.actions;
+export const { setContentName, setEpisodeName, setEpisodeId, setStateChatting } = chattingSlice.actions;
 export default chattingSlice.reducer;
