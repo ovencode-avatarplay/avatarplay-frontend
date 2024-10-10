@@ -21,7 +21,7 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({ title ,data }) => {
   useEffect(() => {
     if (data) {
       const mappedData: ExploreCardProps[] = data.map(explore => ({
-        characterId: explore.characterId,
+        episodeId: explore.episodeId,
         thumbnail: explore.thumbnail,
         shortsId: explore.shortsId || "",
       }));
@@ -40,7 +40,7 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({ title ,data }) => {
         {content.map((explore, index) => (
             <ExploreCard 
             key={index}
-            characterId={explore.characterId}
+            episodeId={explore.episodeId}
             shortsId={explore.shortsId}
             thumbnail={explore.thumbnail}
             />

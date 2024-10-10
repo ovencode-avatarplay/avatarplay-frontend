@@ -7,11 +7,11 @@ import { useDispatch } from 'react-redux';
 import { openDrawerContentDesc } from '@/redux-store/slices/drawerContentDescSlice';
 import { string } from 'valibot';
 
-const ExploreCard: React.FC<ExploreCardProps> = ({ characterId,shortsId,thumbnail }) => {
+const ExploreCard: React.FC<ExploreCardProps> = ({ episodeId,shortsId,thumbnail }) => {
   const dispatch = useDispatch();
 
   const handleOpenDrawer = () => {
-    dispatch(openDrawerContentDesc(String(characterId))); // ID 값을 전달하여 Drawer 열기
+    dispatch(openDrawerContentDesc(String(episodeId))); // ID 값을 전달하여 Drawer 열기
   };
 
   return (
@@ -21,7 +21,7 @@ const ExploreCard: React.FC<ExploreCardProps> = ({ characterId,shortsId,thumbnai
         <div className={Style.exploreOverlay}>
           <div className={Style.exploreInfo}>
             <div className={Style.exploreIcons}>
-              <h3>{characterId}</h3>
+              <h3>{episodeId}</h3>
               <div className={Style.iconInfo}>
                 <MovieIcon />
                 <span>{shortsId}</span>

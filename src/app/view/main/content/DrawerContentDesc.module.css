@@ -50,3 +50,18 @@
     margin-bottom: 16px;
   }
   
+  .episodeListContainer {
+    width: 100%;
+    position: relative;
+    padding: 16px;
+  }
+  
+  .paginationContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  
+  .hiddenTabs {
+    display: none;
+  }

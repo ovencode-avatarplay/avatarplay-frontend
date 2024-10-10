@@ -1,5 +1,5 @@
 export interface ExploreCardProps {
-    characterId: number;
+    episodeId: number;
     shortsId: string;
     thumbnail: string;
   }

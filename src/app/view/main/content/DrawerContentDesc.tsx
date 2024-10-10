@@ -1,16 +1,35 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RootState } from '@/redux-store/ReduxStore';
 import { useDispatch, useSelector } from 'react-redux';
 import { Drawer, Button, Box, Typography, Select, MenuItem } from '@mui/material';
 import { closeDrawerContentDesc } from '@/redux-store/slices/drawerContentDescSlice';
 import Style from './DrawerContentDesc.module.css';
+import { setContentName, setEpisodeName, setEpisodeId, setStateChatting, ChattingState } from '@/redux-store/slices/chatting';
+import { number, string } from 'valibot';
+import Link from 'next/link';
 
 const DrawerContentDesc = () => {
   const [selectedOption, setSelectedOption] = useState('');
   const dispatch = useDispatch();
   const { open, id } = useSelector((state: RootState) => state.drawerContentDesc); 
+
+
+  useEffect(() => {
+
+    // 둘중 하나 사용
+    // setContentName(`content episode${id}`);
+    // setEpisodeName(`episode${id}`);
+    // setEpisodeId(Number(id));
+
+    const chattingState: ChattingState = {
+      contentName: `content episode${id}`,
+      episodeName: `episode${id}`,
+      episodeId: Number(id)
+    }
+    setStateChatting(chattingState);
+  }, [id])
 
   return (
     <Drawer
@@ -26,9 +45,10 @@ const DrawerContentDesc = () => {
         }
       }}
     >
+      {/* (TODO: 컨텐츠 정보 받아와야함)*/}
       <div className={Style.header}>
         <Typography>
-          컨텐츠 제목 {id}
+          에피소드 ID : {id} 
         </Typography>
         <div>
           <Button variant="outlined" onClick={() => {/* Add upload functionality */}}>Upload</Button>
@@ -79,9 +99,11 @@ const DrawerContentDesc = () => {
               에피소드 리스트 (가로 스크롤)
             </Typography>
           </Box>
-          <Button variant="contained" fullWidth>
-            Start new chat
-          </Button>
+          <Link href={`/:lang/chat`}>
+            <Button variant="contained" fullWidth>
+              Start new chat - episode : {id}
+            </Button>
+          </Link>
         </Box>
       </main>
     </Drawer>

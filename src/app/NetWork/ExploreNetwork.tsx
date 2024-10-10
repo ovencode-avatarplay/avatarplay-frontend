@@ -9,7 +9,7 @@ interface ReqExploreSearch {
   }
   
   export interface ExploreInfo {
-    characterId: number;
+    episodeId: number;
     shortsId: string;
     thumbnail: string;
   }
