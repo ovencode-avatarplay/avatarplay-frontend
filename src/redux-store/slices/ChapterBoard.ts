@@ -2,6 +2,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ChapterInfo } from '@/types/apps/content/chapter/chapterInfo';
 import { EpisodeInfo } from '@/types/apps/content/episode/episodeInfo';
+import { RootState } from '@/redux-store/ReduxStore';
+import { updateContentInfo } from '@/redux-store/slices/ContentInfo';
 
 interface ChapterBoardState {
     chapterBoard: ChapterInfo[];
@@ -24,16 +26,10 @@ const chapterBoardSlice = createSlice({
         deleteChapter(state, action: PayloadAction<number>) {
             state.chapterBoard = state.chapterBoard.filter(chapter => chapter.id !== action.payload);
         },
-        updateChapterName(state, action: PayloadAction<{ chapterId: number; newName: string }>) {
-            const chapter = state.chapterBoard.find(chapter => chapter.id === action.payload.chapterId);
-            if (chapter) {
-                chapter.name = action.payload.newName;
-            }
-        },
         addEpisode(state, action: PayloadAction<{ chapterId: number; episode: EpisodeInfo }>) {
             const chapter = state.chapterBoard.find(chapter => chapter.id === action.payload.chapterId);
             if (chapter) {
-                chapter.episodeInfoList.push(action.payload.episode);
+                chapter.episodeInfoList = [...chapter.episodeInfoList, action.payload.episode]; // 불변성 유지
             }
         },
         deleteEpisode(state, action: PayloadAction<{ chapterId: number; episodeId: number }>) {
@@ -42,25 +38,16 @@ const chapterBoardSlice = createSlice({
                 chapter.episodeInfoList = chapter.episodeInfoList.filter(episode => episode.id !== action.payload.episodeId);
             }
         },
-        updateEpisodeName(state, action: PayloadAction<{ chapterId: number; episodeId: number; newName: string }>) {
-            const chapter = state.chapterBoard.find(chapter => chapter.id === action.payload.chapterId);
-            if (chapter) {
-                const episode = chapter.episodeInfoList.find(episode => episode.id === action.payload.episodeId);
-                if (episode) {
-                    episode.name = action.payload.newName;
-                }
-            }
-        },    },
+    },
 });
 
 export const {
     setChapterBoard,
     addChapter,
     deleteChapter,
-    updateChapterName,
+
     addEpisode,
     deleteEpisode,
-    updateEpisodeName,
 } = chapterBoardSlice.actions;
 
 export default chapterBoardSlice.reducer;

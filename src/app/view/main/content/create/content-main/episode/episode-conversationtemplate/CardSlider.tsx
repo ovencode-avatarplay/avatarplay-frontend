@@ -3,25 +3,26 @@ import { Box, Button } from '@mui/material';
 import styles from './CardSlider.module.css';
 import { ArrowForwardIos, ArrowBackIos } from '@mui/icons-material';
 import TalkCard from './TalkCard';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '@/redux-store/ReduxStore';
+import { addConversationTalk, updateConversationTalk, removeConversationTalk } from '@/redux-store/slices/conversationTalk';
 import { SelectChangeEvent } from '@mui/material';
+import { ConversationTalkInfo, ConversationPriortyType, ConversationTalkType } from '@/types/apps/dataTypes';
 
 const CardSlider: React.FC = () => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [cards, setCards] = useState([
-        { id: 1, title: 'Card 1', description: 'Description for Card 1' },
-        { id: 2, title: 'Card 2', description: 'Description for Card 2' },
-        { id: 3, title: 'Card 3', description: 'Description for Card 3' },
-    ]);
+    const dispatch = useDispatch<AppDispatch>();
+    const conversationList = useSelector((state: RootState) => state.conversationTalk.conversationList);
 
+    const [currentIndex, setCurrentIndex] = useState(0);
     const priorities = ['Mandatory', 'Depends on'];
     const [selectedPriority, setSelectedPriority] = useState(priorities[0]);
 
     const nextCard = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % cards.length);
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % conversationList.length);
     };
 
     const prevCard = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + cards.length) % cards.length);
+        setCurrentIndex((prevIndex) => (prevIndex - 1 + conversationList.length) % conversationList.length);
     };
 
     const handleChange = (event: SelectChangeEvent<string>) => {
@@ -30,17 +31,35 @@ const CardSlider: React.FC = () => {
 
     const addTalkCard = () => {
         const newCard = {
-            id: cards.length + 1,
-            title: `Card ${cards.length + 1}`,
-            description: `Description for Card ${cards.length + 1}`,
+            user: [{ type: ConversationTalkType.Speech, talk: 'New User Talk' }],
+            character: [{ type: ConversationTalkType.Action, talk: 'New Character Talk' }],
+            conversationTpye: ConversationPriortyType.Mandatory,
         };
-        setCards((prevCards) => [...prevCards, newCard]);
+        dispatch(addConversationTalk(newCard));
+        setCurrentIndex(conversationList.length); // 새 카드를 추가하고 해당 카드로 이동
     };
 
     const deleteTalkCard = (id: number) => {
-        setCards((prevCards) => prevCards.filter((card) => card.id !== id));
-        // 현재 인덱스가 삭제된 카드의 인덱스와 같거나 큰 경우 이전 카드로 이동
-        setCurrentIndex((prevIndex) => Math.max(0, Math.min(prevIndex, cards.length - 2)));
+        dispatch(removeConversationTalk(id));
+        setCurrentIndex((prevIndex) => Math.max(0, Math.min(prevIndex, conversationList.length - 2)));
+    };
+
+    const updateUserTalk = (conversationIndex: number, itemIndex: number, value: string) => {
+        dispatch(updateConversationTalk({
+            conversationIndex,
+            itemIndex,
+            type: 'user',
+            newTalk: value,
+        }));
+    };
+
+    const updateCharacterTalk = (conversationIndex: number, itemIndex: number, value: string) => {
+        dispatch(updateConversationTalk({
+            conversationIndex,
+            itemIndex,
+            type: 'character',
+            newTalk: value,
+        }));
     };
 
     return (
@@ -49,21 +68,22 @@ const CardSlider: React.FC = () => {
                 <Button className={styles.arrowButton} onClick={prevCard}><ArrowBackIos /></Button>
                 <Box className={styles.cardsContainer}>
                     <Box className={styles.cardsWrapper} style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-                        {cards.map((card) => (
+                        {conversationList.map((card, index) => (
                             <TalkCard
                                 key={card.id}
-                                card={card}
+                                card={{ id: card.id, title: `Card ${card.id + 1}`, description: card.user[0]?.talk || '' }}
                                 selectedPriority={selectedPriority}
                                 priorities={priorities}
                                 onChange={handleChange}
-                                onDeleteInputCard={() => deleteTalkCard(card.id)} // TalkCard 삭제 함수 연결
+                                onDelete={() => deleteTalkCard(card.id)}
+                                updateUserTalk={(itemIndex: number, value: string) => updateUserTalk(card.id, itemIndex, value)}
+                                updateCharacterTalk={(itemIndex: number, value: string) => updateCharacterTalk(card.id, itemIndex, value)}
                             />
                         ))}
                     </Box>
                 </Box>
                 <Button className={styles.arrowButton} onClick={nextCard}><ArrowForwardIos /></Button>
             </Box>
-            <br></br>
             <Button className={styles.buttonAdd} onClick={addTalkCard}>Add Conversation</Button>
         </Box>
     );
