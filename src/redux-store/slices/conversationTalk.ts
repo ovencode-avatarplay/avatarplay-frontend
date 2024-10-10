@@ -1,44 +1,81 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ConversationTalkInfo } from '@/types/apps/dataTypes'; // 데이터 타입을 불러오기
+import { ConversationTalkInfoList, ConversationTalkInfo, ConversationPriortyType, ConversationTalkType } from '@/types/apps/dataTypes';
 
-// ReduxState 인터페이스
 interface ConversationTalkInfoState {
-    conversationList: ConversationTalkInfo[]; // 여러 개의 대화 정보를 저장하는 배열
+    conversationList: ConversationTalkInfoList[];
 }
 
-// 초기 상태 정의
 const initialState: ConversationTalkInfoState = {
-    conversationList: [], // 빈 배열로 초기화
+    conversationList: [],
 };
 
 export const conversationTalkSlice = createSlice({
     name: 'conversationTalk',
     initialState,
     reducers: {
-        // 대화 정보 추가
-        addConversationTalk: (state, action: PayloadAction<ConversationTalkInfo>) => {
-            state.conversationList.push(action.payload);
+        addConversationTalk: (state, action: PayloadAction<{ user: ConversationTalkInfo[], character: ConversationTalkInfo[], conversationTpye: ConversationPriortyType }>) => {
+            const newId = state.conversationList.length;
+            const newConversation: ConversationTalkInfoList = {
+                id: newId,
+                conversationTpye: action.payload.conversationTpye,
+                user: action.payload.user,
+                character: action.payload.character,
+            };
+            state.conversationList.push(newConversation);
         },
 
-        // 특정 대화 정보 수정
-        updateConversationTalk: (state, action: PayloadAction<{ index: number, talkInfo: ConversationTalkInfo }>) => {
-            const { index, talkInfo } = action.payload;
-            if (state.conversationList[index]) {
-                state.conversationList[index] = {
-                    ...state.conversationList[index], // 기존 정보 유지
-                    ...talkInfo, // 새로운 정보로 업데이트
-                }; 
+        addConversationTalkItem: (state, action: PayloadAction<{ conversationIndex: number, type: 'user' | 'character', newTalk: string }>) => {
+            const { conversationIndex, type, newTalk } = action.payload;
+            const conversation = state.conversationList[conversationIndex];
+
+            if (conversation) {
+                const newTalkItem: ConversationTalkInfo = {
+                    type: type === 'user' ? ConversationTalkType.Speech : ConversationTalkType.Action,
+                    talk: newTalk,
+                };
+
+                if (type === 'user') {
+                    conversation.user.push(newTalkItem);
+                } else if (type === 'character') {
+                    conversation.character.push(newTalkItem);
+                }
             }
         },
 
-        // 특정 대화 정보 삭제
+        updateConversationTalk: (state, action: PayloadAction<{ conversationIndex: number, itemIndex: number, type: 'user' | 'character', newTalk: string }>) => {
+            const { conversationIndex, itemIndex, type, newTalk } = action.payload;
+            const conversation = state.conversationList[conversationIndex];
+            if (conversation) {
+                if (type === 'user' && conversation.user[itemIndex]) {
+                    conversation.user[itemIndex].talk = newTalk;
+                } else if (type === 'character' && conversation.character[itemIndex]) {
+                    conversation.character[itemIndex].talk = newTalk;
+                }
+            }
+        },
+
+        removeConversationItem: (state, action: PayloadAction<{ conversationIndex: number, itemIndex: number, type: 'user' | 'character' }>) => {
+            const { conversationIndex, itemIndex, type } = action.payload;
+            const conversation = state.conversationList[conversationIndex];
+            if (conversation) {
+                if (type === 'user') {
+                    conversation.user.splice(itemIndex, 1);
+                } else if (type === 'character') {
+                    conversation.character.splice(itemIndex, 1);
+                }
+            }
+        },
+
         removeConversationTalk: (state, action: PayloadAction<number>) => {
-            state.conversationList.splice(action.payload, 1); // 해당 index의 대화 정보 삭제
+            const index = action.payload;
+            state.conversationList.splice(index, 1);
+            state.conversationList.forEach((conversation, idx) => {
+                conversation.id = idx;
+            });
         },
     },
 });
 
-// 액션 및 리듀서 내보내기
-export const { addConversationTalk, updateConversationTalk, removeConversationTalk } = conversationTalkSlice.actions;
+export const { addConversationTalk, addConversationTalkItem, updateConversationTalk, removeConversationItem, removeConversationTalk } = conversationTalkSlice.actions;
 export const conversationTalkReducer = conversationTalkSlice.reducer;
 export default conversationTalkSlice.reducer;

@@ -8,12 +8,12 @@ import styles from './InputCard.module.css';
 interface InputCardProps {
     defaultValue: string;
     onDelete: () => void;
+    onChange: (value: string) => void;  // 추가
 }
 
-const InputCard: React.FC<InputCardProps> = ({ defaultValue, onDelete }) => {
+const InputCard: React.FC<InputCardProps> = ({ defaultValue, onDelete, onChange }) => {
     const [isHeadset, setIsHeadset] = useState(false);
 
-    // 아이콘을 토글하는 함수
     const toggleIcon = () => {
         setIsHeadset((prev) => !prev);
     };
@@ -29,6 +29,7 @@ const InputCard: React.FC<InputCardProps> = ({ defaultValue, onDelete }) => {
                 defaultValue={defaultValue}
                 variant="filled"
                 size="small"
+                onChange={(e) => onChange(e.target.value)}  // 텍스트 변경 시 부모로 값 전달
             />
             <IconButton onClick={onDelete}>
                 <DeleteForeverIcon />

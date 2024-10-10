@@ -74,16 +74,18 @@ export interface DataPair {
 
 export interface ConversationTalkInfoList 
 {
-    data: ConversationTalkInfo[];
+    id: number;
+    conversationTpye: ConversationPriortyType;
+    user: ConversationTalkInfo[];
+    character: ConversationTalkInfo[];
 }
 
 export interface ConversationTalkInfo {
-	
-        priortytype:ConversationPriortyType
+	       
 		/// <summary>
 		// 행동, 말 Type
 		/// </summary>
-		talktype: ConversationTalkType;
+		type: ConversationTalkType;
 		/// <summary>
 		// 대화 행동
 		/// </summary>
