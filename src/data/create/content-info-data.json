@@ -20,26 +20,6 @@
                   "secret": "Johns true identity is hidden."
                 },
                 "triggerInfoList": [
-                  {
-                    "id": 1,
-                    "triggerType": 1,
-                    "triggerValueIntimacy": 50,
-                    "triggerValueChatCount": 5,
-                    "triggerValueKeyword": "bravery",
-                    "triggerValueTimeMinute": 10,
-                    "triggerActionType": 1,
-                    "actionChangeEpisodeId": 2,
-                    "actionChangePrompt": "John must decide his next move.",
-                    "actionIntimacyPoint": 10,
-                    "maxIntimacyCount": 0,
-                    "actionCoversationList": [
-                      {
-                        "conversationType": 0,
-                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
-                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
-                      }
-                    ]
-                  }
                 ],
                 "conversationTemplateList": [
                   {
@@ -65,26 +45,6 @@
                   "secret": "The enemy knows Johns hidden identity."
                 },
                 "triggerInfoList": [
-                  {
-                    "id": 2,
-                    "triggerType": 2,
-                    "triggerValueIntimacy": 60,
-                    "triggerValueChatCount": 10,
-                    "triggerValueKeyword": "courage",
-                    "triggerValueTimeMinute": 15,
-                    "triggerActionType": 2,
-                    "actionChangeEpisodeId": 3,
-                    "actionChangePrompt": "John prepares for the ultimate test.",
-                    "actionIntimacyPoint": 20,
-                    "maxIntimacyCount": 0,
-                    "actionCoversationList": [
-                      {
-                        "conversationType": 0,
-                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
-                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
-                      }
-                    ]
-                  }
                 ],
                 "conversationTemplateList": [
                   {
@@ -116,26 +76,6 @@
                   "secret": "Lena has her own hidden agenda."
                 },
                 "triggerInfoList": [
-                  {
-                    "id": 3,
-                    "triggerType": 3,
-                    "triggerValueIntimacy": 70,
-                    "triggerValueChatCount": 15,
-                    "triggerValueKeyword": "trust",
-                    "triggerValueTimeMinute": 20,
-                    "triggerActionType": 3,
-                    "actionChangeEpisodeId": 4,
-                    "actionChangePrompt": "John must decide whether to trust Lena.",
-                    "actionIntimacyPoint": 30,
-                    "maxIntimacyCount": 0,
-                    "actionCoversationList": [
-                      {
-                        "conversationType": 0,
-                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
-                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
-                      }
-                    ]
-                  }
                 ],
                 "conversationTemplateList": [
                   {
@@ -161,26 +101,6 @@
                   "secret": "Lenas past is slowly revealed."
                 },
                 "triggerInfoList": [
-                  {
-                    "id": 4,
-                    "triggerType": 4,
-                    "triggerValueIntimacy": 80,
-                    "triggerValueChatCount": 20,
-                    "triggerValueKeyword": "loyalty",
-                    "triggerValueTimeMinute": 30,
-                    "triggerActionType": 4,
-                    "actionChangeEpisodeId": 5,
-                    "actionChangePrompt": "John and Lena face a critical choice.",
-                    "actionIntimacyPoint": 40,
-                    "maxIntimacyCount": 0,
-                    "actionCoversationList": [
-                      {
-                        "conversationType": 0,
-                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
-                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
-                      }
-                    ]
-                  }
                 ],
                 "conversationTemplateList": [
                   {
@@ -206,26 +126,6 @@
                   "secret": "Lena was working with the enemy all along."
                 },
                 "triggerInfoList": [
-                  {
-                    "id": 5,
-                    "triggerType": 5,
-                    "triggerValueIntimacy": 90,
-                    "triggerValueChatCount": 25,
-                    "triggerValueKeyword": "betrayal",
-                    "triggerValueTimeMinute": 40,
-                    "triggerActionType": 5,
-                    "actionChangeEpisodeId": 6,
-                    "actionChangePrompt": "John must decide whether to forgive or fight Lena.",
-                    "actionIntimacyPoint": 50,
-                    "maxIntimacyCount": 0,
-                    "actionCoversationList": [
-                      {
-                        "conversationType": 0,
-                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
-                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
-                      }
-                    ]
-                  }
                 ],
                 "conversationTemplateList": [
                   {
@@ -257,26 +157,6 @@
                   "secret": "The enemy holds a deep connection to Johns past."
                 },
                 "triggerInfoList": [
-                  {
-                    "id": 6,
-                    "triggerType": 6,
-                    "triggerValueIntimacy": 100,
-                    "triggerValueChatCount": 30,
-                    "triggerValueKeyword": "revenge",
-                    "triggerValueTimeMinute": 50,
-                    "triggerActionType": 6,
-                    "actionChangeEpisodeId": 7,
-                    "actionChangePrompt": "The final battle begins.",
-                    "actionIntimacyPoint": 60,
-                    "maxIntimacyCount": 0,
-                    "actionCoversationList": [
-                      {
-                        "conversationType": 0,
-                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
-                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
-                      }
-                    ]
-                  }
                 ],
                 "conversationTemplateList": [
                   {
@@ -302,26 +182,6 @@
                   "secret": "Johns true power is unlocked in this battle."
                 },
                 "triggerInfoList": [
-                  {
-                    "id": 7,
-                    "triggerType": 7,
-                    "triggerValueIntimacy": 110,
-                    "triggerValueChatCount": 35,
-                    "triggerValueKeyword": "sacrifice",
-                    "triggerValueTimeMinute": 60,
-                    "triggerActionType": 7,
-                    "actionChangeEpisodeId": 0,
-                    "actionChangePrompt": "The battle ends, but at what cost?",
-                    "actionIntimacyPoint": 70,
-                    "maxIntimacyCount": 0,
-                    "actionCoversationList": [
-                      {
-                        "conversationType": 0,
-                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
-                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
-                      }
-                    ]
-                  }
                 ],
                 "conversationTemplateList": [
                   {
@@ -377,26 +237,6 @@
                   "secret": "Lena is the last of her kind."
                 },
                 "triggerInfoList": [
-                  {
-                    "id": 2,
-                    "triggerType": 2,
-                    "triggerValueIntimacy": 40,
-                    "triggerValueChatCount": 3,
-                    "triggerValueKeyword": "revenge",
-                    "triggerValueTimeMinute": 20,
-                    "triggerActionType": 2,
-                    "actionChangeEpisodeId": 2,
-                    "actionChangePrompt": "Lena must confront her past.",
-                    "actionIntimacyPoint": 15,
-                    "maxIntimacyCount": 0,
-                    "actionCoversationList": [
-                      {
-                        "conversationType": 0,
-                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
-                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
-                      }
-                    ]
-                  }
                 ],
                 "conversationTemplateList": [
                   {
@@ -451,26 +291,6 @@
                   "secret": "Arthurs father was betrayed by a close ally."
                 },
                 "triggerInfoList": [
-                  {
-                    "id": 3,
-                    "triggerType": 3,
-                    "triggerValueIntimacy": 60,
-                    "triggerValueChatCount": 7,
-                    "triggerValueKeyword": "justice",
-                    "triggerValueTimeMinute": 15,
-                    "triggerActionType": 3,
-                    "actionChangeEpisodeId": 2,
-                    "actionChangePrompt": "Arthur must rally his allies.",
-                    "actionIntimacyPoint": 20,
-                    "maxIntimacyCount": 0,
-                    "actionCoversationList": [
-                      {
-                        "conversationType": 0,
-                        "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
-                        "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
-                      }
-                    ]
-                  }
                 ],
                 "conversationTemplateList": [
                   {
