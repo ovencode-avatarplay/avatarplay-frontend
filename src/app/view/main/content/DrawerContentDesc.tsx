@@ -22,13 +22,12 @@ const DrawerContentDesc = () => {
     // setContentName(`content episode${id}`);
     // setEpisodeName(`episode${id}`);
     // setEpisodeId(Number(id));
-
     const chattingState: ChattingState = {
       contentName: `content episode${id}`,
       episodeName: `episode${id}`,
       episodeId: Number(id)
     }
-    setStateChatting(chattingState);
+    dispatch( setStateChatting(chattingState) );
   }, [id])
 
   return (
