@@ -155,7 +155,8 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }
                         variant="outlined"
                         label="Target Value"
                         type="number"
-                        value={typeof selectedMainData.value === 'number' ? selectedMainData.value : 0} // 숫자 값으로 처리
+                        // value={typeof selectedMainData.value === 'number' ? selectedMainData.value : 0} // 숫자 값으로 처리
+                        value={item.data.episodeValueChatCount} // 숫자 값으로 처리
                         onChange={(e) =>
                             setSelectedMainData({
                                 key: selectedMainData.key,

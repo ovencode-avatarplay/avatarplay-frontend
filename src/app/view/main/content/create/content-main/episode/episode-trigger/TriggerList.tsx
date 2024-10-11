@@ -18,17 +18,55 @@ const TriggerList: React.FC = () => {
         // 선택한 항목의 key를 상태로 설정
         setSelected(key === selected ? null : key);
     };
+    console.log(dataPairs)
+
+    
+
+    const data : DataPair = {
+        id: 0,
+        name: "123123123",
+        main: null,
+        sub: null,
+        data : {
+            "id": 0,
+            "triggerType2": 0,
+            "triggerValueIntimacy": 0,
+            "triggerValueChatCount": 99,
+            "triggerValueKeyword": "string",
+            "triggerValueTimeMinute": 0,
+            "triggerActionType": 0,
+            "actionChangeEpisodeId": 0,
+            "actionChangePrompt": "string",
+            "actionIntimacyPoint": 0,
+            "maxIntimacyCount": 0,
+            "actionCoversationList": [
+              {
+                "id": 0,
+                "conversationType": 0,
+                "user": "string",
+                "character": "string"
+              }
+            ]
+          }
+    }
+              
 
     return (
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-            {dataPairs.map((pair, index) => (
+                            <TriggerListItem
+                    key={0}
+                    item={data}
+                    handleToggle={handleToggle}
+                    isSelected={selected === 0} // 선택 여부를 확인
+                />
+            {/* {dataPairs.map((pair, index) => (
                 <TriggerListItem
                     key={index}
-                    item={pair}
+                    item={data}
                     handleToggle={handleToggle}
                     isSelected={selected === pair.main.key} // 선택 여부를 확인
                 />
-            ))}
+            ))} */}
         </List>
     );
 };

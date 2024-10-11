@@ -36,7 +36,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({ item, handleToggle, i
                 <ListItemIcon>
                     <ListItemText
                         className={styles.listItemText}
-                        primary={<span className={styles.primaryText}>{`${item.main.key}`}</span>}
+                        primary={<span className={styles.primaryText}>{`${item.data.triggerActionType}`}</span>}
                     />
 
                 </ListItemIcon>

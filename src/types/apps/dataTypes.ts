@@ -1,3 +1,4 @@
+import { TriggerInfo } from '@/model/data';
 import { string } from 'valibot';
 
 export enum TriggerMainDataType{
@@ -67,9 +68,10 @@ export type SubData = SubDataA | SubDataB | SubDataC;
 
 export interface DataPair {
     id: number;
-    name:string
+    name:string;
     main: MainData;
     sub: SubData;
+    data : TriggerInfo;
 }
 
 export interface ConversationTalkInfoList 

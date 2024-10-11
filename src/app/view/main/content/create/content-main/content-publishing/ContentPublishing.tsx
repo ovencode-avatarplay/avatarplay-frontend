@@ -86,7 +86,7 @@ const ContentPublishing: React.FC<Props> = ({ open, onClose , onPublish , conten
                         fullWidth
                         variant="outlined"
                         value={languageType}
-                        onChange={(e) => dispatch(setLanguageType(e.target.value as number))}
+                        onChange={(e) => dispatch(setContentInfo({languageType:e.target.value as number}))}
                     >
                         <MenuItem value={0}>English</MenuItem>
                         <MenuItem value={1}>Korean</MenuItem>
