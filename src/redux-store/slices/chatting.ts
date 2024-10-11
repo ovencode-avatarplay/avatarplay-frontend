@@ -29,7 +29,11 @@ export const chattingSlice = createSlice({
         },
         setStateChatting: (state, action: PayloadAction<ChattingState>) =>
         {
-            state = action.payload; // 구조체단위로 업데이트
+            // 전체 상태를 새롭게 업데이트
+            state.contentName = action.payload.contentName;
+            state.episodeName = action.payload.episodeName;
+            state.episodeId = action.payload.episodeId;
+            console.log( 'state ' , state );
         }
     }
 });

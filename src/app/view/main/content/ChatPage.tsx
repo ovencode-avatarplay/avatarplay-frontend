@@ -28,9 +28,7 @@ const ChatPage: React.FC = () => {
     
     return (
         <main className={styles.chatmodal}>
-            <TopBar username="아임 아이언맨~"
-                description="말을 잘하는 아이"
-                avatarUrl="https://example.com/avatar.jpg"
+            <TopBar 
                 onBackClick={handleBackClick}
                 onMoreClick={handleMoreClick}
                 onToggleBackground={handleToggleBackground}/>
