@@ -15,80 +15,53 @@ import {
 import { ArrowBackIos } from '@mui/icons-material';
 import styles from './ChangeBehaviour.module.css';
 import { useDispatch } from 'react-redux';
-import { updateDataPair } from '@/redux-store/slices/EpisodeInfo';
-import { DataPair, MainData, SubData, TriggerMainDataType, TriggerSubDataType } from '@/types/apps/dataTypes';
+import { updateTriggerInfo } from '@/redux-store/slices/EpisodeInfo';
+import { TriggerMainDataType, TriggerSubDataType } from '@/types/apps/dataTypes';
+import { TriggerInfo } from '@/types/apps/content/episode/triggerInfo';
 
 interface ChangeBehaviourProps {
     open: boolean;
     onClose: () => void;
-    item: DataPair;
+    item: TriggerInfo;
 }
 
 const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }) => {
     const dispatch = useDispatch();
-    const [selectedMainData, setSelectedMainData] = useState<MainData>(
-        item.main || { key: TriggerMainDataType.triggerValueIntimacy, value: 0 }  // 초기값 설정
-    );
+    const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>({
+        ...item,
+        triggerType: item.triggerType || TriggerMainDataType.triggerValueIntimacy,
+        actionChangePrompt: item.actionChangePrompt || '',
+        actionCoversationList: item.actionCoversationList || [],
+    });
 
-    const [selectedSubData, setSelectedSubData] = useState<SubData>(
-        item.sub || { key: TriggerSubDataType.ChangePrompt, value: '', coversationDataList: [] }  // 초기값 설정
-    );
+    const handleMainDataChange = (event: SelectChangeEvent<number>) => {
+        const selectedTriggerType = event.target.value as TriggerMainDataType;
+        setTriggerInfo((prev) => ({
+            ...prev,
+            triggerType: selectedTriggerType,
+        }));
 
-
-    // SubData 타입에 맞는 기본값을 반환하는 함수
-    const getInitialSubData = (key: TriggerSubDataType): SubData => {
-        switch (key) {
-            case TriggerSubDataType.actionEpisodeChangeId:
-                return { key: TriggerSubDataType.actionEpisodeChangeId, value: 0 };
-            case TriggerSubDataType.actionIntimacyPoint:
-                return { key: TriggerSubDataType.actionIntimacyPoint, value: 0, max_value: 0 };
-            case TriggerSubDataType.ChangePrompt:
-                return { key: TriggerSubDataType.ChangePrompt, value: '', coversationDataList: [] };
-            default:
-                throw new Error('Invalid SubData type');
+        // MainData 변경 시 SubData 유효성 검증 후 초기화
+        const subDataOptions = getSubDataOptionsForMainData(selectedTriggerType);
+        if (!subDataOptions.some(option => option.key === triggerInfo.triggerActionType)) {
+            setTriggerInfo((prev) => ({
+                ...prev,
+                triggerActionType: subDataOptions[0].key,
+                actionChangePrompt: '',
+                actionIntimacyPoint: 0,
+                actionCoversationList: [],
+            }));
         }
     };
 
-    // MainData 변경 핸들러
-    const handleMainDataChange = (event: SelectChangeEvent<TriggerMainDataType>) => {
-        const selectedKey = event.target.value as MainData['key'];
-        let updatedMainData: MainData;
-
-        switch (selectedKey) {
-            case TriggerMainDataType.triggerValueIntimacy:
-                updatedMainData = { key: TriggerMainDataType.triggerValueIntimacy, value: 0 };
-                break;
-            case TriggerMainDataType.triggerValueKeyword:
-                updatedMainData = { key: TriggerMainDataType.triggerValueKeyword, value: [] };
-                break;
-            case TriggerMainDataType.triggerValueChatCount:
-                updatedMainData = { key: TriggerMainDataType.triggerValueChatCount, value: 0 };
-                break;
-            case TriggerMainDataType.triggerValueTimeMinute:
-                updatedMainData = { key: TriggerMainDataType.triggerValueTimeMinute, value: 0 };
-                break;
-            default:
-                updatedMainData = selectedMainData;
-                break;
-        }
-
-        // MainData가 변경될 때 SubData가 유효하지 않으면 기본값으로 초기화
-        const subDataOptions = getSubDataOptionsForMainData(selectedKey);
-        if (!subDataOptions.some(option => option.key === selectedSubData.key)) {
-            setSelectedSubData(getInitialSubData(subDataOptions[0].key));
-        }
-
-        setSelectedMainData(updatedMainData);
+    const handleSubDataChange = (event: SelectChangeEvent<number>) => {
+        const selectedSubType = event.target.value as TriggerSubDataType;
+        setTriggerInfo((prev) => ({
+            ...prev,
+            triggerActionType: selectedSubType,
+        }));
     };
 
-    // SubData 변경 핸들러
-    const handleSubDataChange = (event: SelectChangeEvent<TriggerSubDataType>) => {
-        const newSubDataKey = event.target.value as SubData['key'];
-        const newSubData = getInitialSubData(newSubDataKey);
-        setSelectedSubData(newSubData);
-    };
-
-    // MainData에 따라 SubData 옵션을 동적으로 변경하는 함수 (이름 변경)
     const getSubDataOptionsForMainData = (mainDataKey: TriggerMainDataType) => {
         switch (mainDataKey) {
             case TriggerMainDataType.triggerValueIntimacy:
@@ -97,11 +70,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }
                     { key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt' },
                 ];
             case TriggerMainDataType.triggerValueChatCount:
-                return [
-                    { key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change' },
-                    { key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt' },
-                    { key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point' },
-                ];
             case TriggerMainDataType.triggerValueKeyword:
                 return [
                     { key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change' },
@@ -120,32 +88,24 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }
         }
     };
 
-    // SubData 초기값을 설정하는 useEffect
     useEffect(() => {
-        // if (!selectedSubData.key) {
-        //     const subDataOptions = getSubDataOptionsForMainData(selectedMainData.key);
-        //     if (subDataOptions.length > 0) {
-        //         setSelectedSubData(getInitialSubData(subDataOptions[0].key));
-        //     }
-        // }
-        setSelectedSubData(getInitialSubData(TriggerSubDataType.ChangePrompt));
-    }, [selectedMainData]);
+        // 트리거가 변경될 때 SubData 초기화
+        const subDataOptions = getSubDataOptionsForMainData(triggerInfo.triggerType);
+        if (subDataOptions.length > 0 && !subDataOptions.some(option => option.key === triggerInfo.triggerActionType)) {
+            setTriggerInfo((prev) => ({
+                ...prev,
+                triggerActionType: subDataOptions[0].key,
+            }));
+        }
+    }, [triggerInfo.triggerType]);
 
-    // 닫기 버튼 클릭 시 상태 업데이트 후 닫기
     const handleClose = () => {
-        const updatedPair = {
-            ...item,
-            main: selectedMainData,
-            sub: selectedSubData,
-        };
-
-        dispatch(updateDataPair({ index: updatedPair.id, pair: updatedPair }));
-
+        dispatch(updateTriggerInfo({ id: triggerInfo.id, info: { ...triggerInfo } }));
         onClose();
     };
 
-    const renderTargetValueField = (selectedKey: MainData['key']) => {
-        switch (selectedKey) {
+    const renderTargetValueField = (triggerType: TriggerMainDataType) => {
+        switch (triggerType) {
             case TriggerMainDataType.triggerValueIntimacy:
             case TriggerMainDataType.triggerValueChatCount:
             case TriggerMainDataType.triggerValueTimeMinute:
@@ -155,12 +115,12 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }
                         variant="outlined"
                         label="Target Value"
                         type="number"
-                        value={typeof selectedMainData.value === 'number' ? selectedMainData.value : 0} // 숫자 값으로 처리
+                        value={triggerInfo.triggerValueIntimacy || 0}
                         onChange={(e) =>
-                            setSelectedMainData({
-                                key: selectedMainData.key,
-                                value: Number(e.target.value), // 숫자로 변환
-                            } as MainData)
+                            setTriggerInfo((prev) => ({
+                                ...prev,
+                                triggerValueIntimacy: Number(e.target.value),
+                            }))
                         }
                     />
                 );
@@ -170,13 +130,12 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }
                         className={styles.input}
                         variant="outlined"
                         label="Target Keywords"
-                        value={Array.isArray(selectedMainData.value) ? selectedMainData.value.join(', ') : ''} // 문자열 배열로 처리
+                        value={triggerInfo.triggerValueKeyword || ''}
                         onChange={(e) => {
-                            const keywords = e.target.value.split(',').map((keyword) => keyword.trim());
-                            setSelectedMainData({
-                                key: selectedMainData.key,
-                                value: keywords, // 문자열 배열로 설정
-                            } as MainData);
+                            setTriggerInfo((prev) => ({
+                                ...prev,
+                                triggerValueKeyword: e.target.value,
+                            }));
                         }}
                     />
                 );
@@ -185,6 +144,75 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }
         }
     };
 
+    const renderSubDataFields = (triggerActionType: TriggerSubDataType) => {
+        switch (triggerActionType) {
+            case TriggerSubDataType.actionEpisodeChangeId:
+                return (
+                    <Box className={styles.destinationContainer}>
+                        <Typography className={styles.destinationLabel}>Destination Episode</Typography>
+                        <Box className={styles.destinationDetails}>
+                            <Box className={styles.destinationIcon} />
+                            <Box>
+                                <Typography className={styles.chapter}>Chapter.1</Typography>
+                                <Typography className={styles.episode}>Ep.2 Wanna go out?</Typography>
+                            </Box>
+                            <IconButton className={styles.rightButton}>
+                                <ArrowBackIos />
+                            </IconButton>
+                        </Box>
+                    </Box>
+                );
+            case TriggerSubDataType.actionIntimacyPoint:
+                return (
+                    <Box className={styles.intimacyContainer}>
+                        <Typography className={styles.label}>Get Point</Typography>
+                        <TextField
+                            className={styles.input}
+                            variant="outlined"
+                            value={triggerInfo.actionIntimacyPoint}
+                            onChange={(e) => setTriggerInfo((prev) => ({
+                                ...prev,
+                                actionIntimacyPoint: Number(e.target.value),
+                            }))}
+                        />
+                        <Typography className={styles.label}>Max Repetition Count</Typography>
+                        <TextField
+                            className={styles.input}
+                            variant="outlined"
+                            value={triggerInfo.maxIntimacyCount}
+                            onChange={(e) => setTriggerInfo((prev) => ({
+                                ...prev,
+                                maxIntimacyCount: Number(e.target.value),
+                            }))}
+                        />
+                    </Box>
+                );
+            case TriggerSubDataType.ChangePrompt:
+                return (
+                    <Box className={styles.promptContainer}>
+                        <Typography className={styles.label}>Prompt Description</Typography>
+                        <TextField
+                            className={styles.input}
+                            variant="outlined"
+                            value={triggerInfo.actionChangePrompt}
+                            onChange={(e) => setTriggerInfo((prev) => ({
+                                ...prev,
+                                actionChangePrompt: e.target.value,
+                            }))}
+                        />
+                        <Typography className={styles.label}>Guide Preset (Optional)</Typography>
+                        <Box className={styles.conversationTemplate}>
+                            <IconButton className={styles.rightButton}>
+                                <ArrowBackIos />
+                            </IconButton>
+                            <Typography className={styles.conversationLabel}>Conversation Template</Typography>
+                        </Box>
+                    </Box>
+                );
+            default:
+                return null;
+        }
+    };
 
     return (
         <Dialog
@@ -192,9 +220,8 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }
             open={open}
             onClose={onClose}
             classes={{ paper: styles.modal }}
-
-            disableAutoFocus={true}
-            disableEnforceFocus={true} // disableAutoFocus 대신 사용
+            disableAutoFocus
+            disableEnforceFocus
         >
             <DialogTitle className={styles['modal-header']}>
                 <Button onClick={handleClose} className={styles['close-button']}>
@@ -210,7 +237,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }
                             <Box className={styles.icon} />
                             <Select
                                 className={styles.selectBox}
-                                value={selectedMainData.key || TriggerMainDataType.triggerValueIntimacy}
+                                value={triggerInfo.triggerType}
                                 onChange={handleMainDataChange}
                                 variant="outlined"
                             >
@@ -223,7 +250,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }
                     </Box>
 
                     <Box className={styles.targetValueSection}>
-                        {renderTargetValueField(selectedMainData.key)}
+                        {renderTargetValueField(triggerInfo.triggerType)}
                     </Box>
                 </Box>
 
@@ -234,84 +261,21 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({ open, onClose, item }
                             <Box className={styles.icon} />
                             <Select
                                 className={styles.selectBox}
-                                value={selectedSubData.key || TriggerSubDataType.ChangePrompt}
+                                value={triggerInfo.triggerActionType}
                                 onChange={handleSubDataChange}
                                 variant="outlined"
                             >
-                                {getSubDataOptionsForMainData(selectedMainData.key).map(option => (
+                                {getSubDataOptionsForMainData(triggerInfo.triggerType).map(option => (
                                     <MenuItem key={option.key} value={option.key}>
                                         {option.label}
                                     </MenuItem>
                                 ))}
                             </Select>
-
                             <IconButton className={styles.rightButton}>
                                 <ArrowBackIos />
                             </IconButton>
                         </Box>
-
-                        <Box>
-                            {(() => {
-                                switch (selectedSubData.key) {
-                                    case TriggerSubDataType.actionEpisodeChangeId:
-                                        return (
-                                            <Box className={styles.destinationContainer}>
-                                                <Typography className={styles.destinationLabel}>Destination Episode</Typography>
-                                                <Box className={styles.destinationDetails}>
-                                                    <Box className={styles.destinationIcon} />
-                                                    <Box>
-                                                        <Typography className={styles.chapter}>Chapter.1</Typography>
-                                                        <Typography className={styles.episode}>Ep.2 Wanna go out?</Typography>
-                                                    </Box>
-                                                    <IconButton className={styles.rightButton}>
-                                                        <ArrowBackIos />
-                                                    </IconButton>
-                                                </Box>
-                                            </Box>
-                                        );
-                                    case TriggerSubDataType.actionIntimacyPoint:
-                                        return (
-                                            <Box className={styles.intimacyContainer}>
-                                                <Typography className={styles.label}>Get Point</Typography>
-                                                <TextField
-                                                    className={styles.input}
-                                                    variant="outlined"
-                                                    value={selectedSubData.value}
-                                                    onChange={(e) => setSelectedSubData({ ...selectedSubData, value: Number(e.target.value) })}
-                                                />
-                                                <Typography className={styles.label}>Max Repetition Count</Typography>
-                                                <TextField
-                                                    className={styles.input}
-                                                    variant="outlined"
-                                                    value={selectedSubData.max_value}
-                                                    onChange={(e) => setSelectedSubData({ ...selectedSubData, max_value: Number(e.target.value) })}
-                                                />
-                                            </Box>
-                                        );
-                                    case TriggerSubDataType.ChangePrompt:
-                                        return (
-                                            <Box className={styles.promptContainer}>
-                                                <Typography className={styles.label}>Prompt Description</Typography>
-                                                <TextField
-                                                    className={styles.input}
-                                                    variant="outlined"
-                                                    value={selectedSubData.value}
-                                                    onChange={(e) => setSelectedSubData({ ...selectedSubData, value: e.target.value })}
-                                                />
-                                                <Typography className={styles.label}>Guide Preset (Optional)</Typography>
-                                                <Box className={styles.conversationTemplate}>
-                                                    <IconButton className={styles.rightButton}>
-                                                        <ArrowBackIos />
-                                                    </IconButton>
-                                                    <Typography className={styles.conversationLabel}>Conversation Template</Typography>
-                                                </Box>
-                                            </Box>
-                                        );
-                                    default:
-                                        return null;
-                                }
-                            })()}
-                        </Box>
+                        {renderSubDataFields(triggerInfo.triggerActionType)}
                     </Box>
                 </Box>
             </DialogContent>

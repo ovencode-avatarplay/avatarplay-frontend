@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'; // Redux 상태를 가져오기 위�
 import { RootState } from '@/redux-store/ReduxStore'; // RootState 타입 가져오기
 import TriggerListItem from './TriggerListItem';
 
-import { DataPair, MainData, SubData, TriggerMainDataType, TriggerSubDataType } from '@/types/apps/dataTypes';
+import { TriggerMainDataType, TriggerSubDataType } from '@/types/apps/dataTypes';
 const TriggerList: React.FC = () => {
     const [selected, setSelected] = React.useState<TriggerMainDataType | null>(null); // 선택된 항목을 관리
 
@@ -26,7 +26,7 @@ const TriggerList: React.FC = () => {
                     key={index}
                     item={pair}
                     handleToggle={handleToggle}
-                    isSelected={selected === pair.main.key} // 선택 여부를 확인
+                    isSelected={selected === pair.triggerType} // 선택 여부를 확인
                 />
             ))}
         </List>
