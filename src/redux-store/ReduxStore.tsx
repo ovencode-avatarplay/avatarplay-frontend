@@ -23,24 +23,31 @@ import { persistStore, persistReducer } from 'redux-persist'
 const persistConfig = {
     key: 'root',
     storage,
-    // 새로고침해도 데이터 유지 하고싶은 Slice 만 추가
-    whitelist: ['sampleReducer', 'chatReducer', 'triggerReducer', 'ContentInfoSlice', 'userInfo', 'ContentSelection', 'conversationTalkReducer']
+    // 새로고침해도 데이터 유지하고 싶은 Slice만 추가
+    whitelist: [
+        'sample', 
+        'chat', 
+        'chatting',  // chatting 추가
+        'content', 
+        'user', 
+        'contentselection', 
+        'conversationTalk'
+    ]
 }
 
 const reducers = combineReducers({
     // 사용할 모든 Slicer 추가
     sample: sampleReducer,
     chat: chatReducer,
-    chatting: chattingReducer,
+    chatting: chattingReducer,  // chatting
     drawerContentDesc: drawerContentDescReducer,
-    content: ContentInfoSlice,
+    content: ContentInfoSlice, 
     user: userInfo,
-    contentselection: ContentSelection,
-    conversationTalk: conversationTalkReducer,
+    contentselection: ContentSelection, 
+    conversationTalk: conversationTalkReducer, 
     publish: publishInfoSlice,
-    chapterBoard: chapterBoardSlice,
+    chapterBoard: chapterBoardSlice, 
     episode: episodeInfoSlice,
-
 })
 
 const persistedReducer = persistReducer(persistConfig, reducers)
@@ -55,3 +62,4 @@ export const persistor = persistStore(store);
 // RootState와 AppDispatch 타입 정의
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+

@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
