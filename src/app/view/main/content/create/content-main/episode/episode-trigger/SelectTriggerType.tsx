@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux'; // Redux 디스패치를 사용
 import { Dialog, DialogTitle, DialogContent, RadioGroup, FormControlLabel, Radio, IconButton, Box, DialogActions, Button } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import { MainData, MainDataA, MainDataB, MainDataC, MainDataD, SubDataB, CoversationData, TriggerSubDataType } from '@/types/apps/dataTypes'; // MainData 및 SubDataB 타입들 임포트
-import { addDataPair } from '@/redux-store/slices/EpisodeInfo';
+import { CoversationData, TriggerSubDataType } from '@/types/apps/dataTypes'; // MainData 및 SubDataB 타입들 임포트
+import { addTriggerInfo } from '@/redux-store/slices/EpisodeInfo';
+import { TriggerInfo } from '@/types/apps/content/episode/triggerInfo';
 
 interface SelectTriggerTypeProps {
     open: boolean;
@@ -30,7 +31,7 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({ open, onClose, tr
 
     // MainData를 선택된 trigger에 따라 생성하는 함수
     // MainData를 선택된 trigger에 따라 생성하는 함수
-    const createMainData = (): MainData => {
+    const createTriggerType = (): MainData => {
         switch (selectedTrigger) {
             case 'triggerValueIntimacy':
                 return { value: 0 } as MainDataA; // Intimacy 타입 MainData
@@ -47,7 +48,7 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({ open, onClose, tr
 
 
     // SubDataB 기본값 생성
-    const createSubDataB = (): SubDataB => {
+    const createDefaultActionType = (): SubDataB => {
         const defaultConversationData: CoversationData[] = [
             { question: 'Default Question 1', answer: 'Default Answer 1' },
             { question: 'Default Question 2', answer: 'Default Answer 2' },
@@ -62,8 +63,8 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({ open, onClose, tr
 
     // Save 버튼 클릭 시 처리 로직
     const handleSave = () => {
-        const mainData = createMainData(); // 선택된 트리거에 맞는 MainData 생성
-        const subData = createSubDataB(); // 기본 SubDataB 생성
+        const mainData = createTriggerType(); // 선택된 트리거에 맞는 MainData 생성
+        const subData = createDefaultActionType(); // 기본 SubDataB 생성
 
         // Redux에 데이터 저장
         dispatch(addDataPair({

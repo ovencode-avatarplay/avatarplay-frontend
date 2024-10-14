@@ -6,7 +6,6 @@ import { EpisodeDescription } from "@/types/apps/content/episode/episodeDescript
 import { TriggerInfo } from '@/types/apps/content/episode/triggerInfo';
 import { Conversation } from '@/types/apps/content/episode/conversation';
 import { LLMSetupInfo } from '@/types/apps/content/episode/llmSetupInfo';
-import { DataPair } from '@/types/apps/dataTypes';
 import defaultContent from '@/data/create/content-info-data.json';
 
 
@@ -31,8 +30,8 @@ const episodeInfoSlice = createSlice({
             }
         },
         // 페어 추가 (name도 입력받도록 수정)
-        addDataPair: (state, action: PayloadAction<Omit<DataPair, 'id'>>) => {
-            const newDataPair: DataPair = { 
+        addTriggerInfo: (state, action: PayloadAction<Omit<TriggerInfo, 'id'>>) => {
+            const newDataPair: TriggerInfo = { 
                 ...action.payload, 
                 id: state.currentEpisodeInfo.triggerInfoList.length // 배열의 인덱스를 id로 사용
             };
@@ -40,15 +39,17 @@ const episodeInfoSlice = createSlice({
         },
 
         // 특정 페어 수정
-        updateDataPair: (state, action: PayloadAction<{ index: number, pair: Omit<DataPair, 'id'> }>) => {
-            const { index, pair } = action.payload;
-            if (state.currentEpisodeInfo.triggerInfoList[index]) {
-                state.currentEpisodeInfo.triggerInfoList[index] = { ...pair, id: index }; // 해당 index의 id 유지하면서 페어 수정
+        updateTriggerInfo: (state, action: PayloadAction<{ id: number, info: Omit<TriggerInfo, 'id'> }>) => {
+            const { id, info } = action.payload;
+            const triggerIndex = state.currentEpisodeInfo.triggerInfoList.findIndex(trigger => trigger.id === id);
+        
+            if (triggerIndex !== -1) {
+                state.currentEpisodeInfo.triggerInfoList[triggerIndex] = { ...info, id }; // id 유지하면서 정보 업데이트
             }
         },
 
         // 특정 페어 이름만 수정
-        updateDataPairName: (state, action: PayloadAction<{ id: number, name: string }>) => {
+        updateTriggerInfoName: (state, action: PayloadAction<{ id: number, name: string }>) => {
             const { id, name } = action.payload;
             const pair = state.currentEpisodeInfo.triggerInfoList.find(pair => pair.id === id); // id로 페어 찾기
             if (pair) {
@@ -57,7 +58,7 @@ const episodeInfoSlice = createSlice({
         },
 
         // 특정 페어 삭제 후 id 업데이트
-        removeDataPair: (state, action: PayloadAction<number>) => {
+        removeTriggerInfo: (state, action: PayloadAction<number>) => {
             state.currentEpisodeInfo.triggerInfoList.splice(action.payload, 1); // 해당 index의 페어 삭제
             
             // 삭제 이후 모든 항목의 id를 배열 인덱스와 맞춰서 재할당
@@ -95,7 +96,7 @@ const episodeInfoSlice = createSlice({
 export const {
     setCurrentEpisodeInfo,
     updateEpisodeDescription,
-    addDataPair, updateDataPair, updateDataPairName, removeDataPair,
+    addTriggerInfo: addTriggerInfo, updateTriggerInfo: updateTriggerInfo, updateTriggerInfoName: updateTriggerInfoName, removeTriggerInfo: removeTriggerInfo,
     addConversationTemplate,
     updateConversationTemplate,
     deleteConversationTemplate,

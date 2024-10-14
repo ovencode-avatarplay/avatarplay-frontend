@@ -1,4 +1,4 @@
-import { string } from 'valibot';
+
 
 export enum TriggerMainDataType{
 			
@@ -9,25 +9,6 @@ export enum TriggerMainDataType{
     actionEpisodeChangeId,
 }    
 
-export interface MainDataA {
-    key: TriggerMainDataType.triggerValueIntimacy;
-    value: number;
-}
-export interface MainDataB {
-    key: TriggerMainDataType.triggerValueKeyword;
-    value: string[];
-}
-
-export interface MainDataC {
-    key: TriggerMainDataType.triggerValueChatCount;
-    value: number;
-}
-
-export interface MainDataD {
-    key: TriggerMainDataType.triggerValueTimeMinute;
-    value: number;
-}
-
 export enum TriggerSubDataType{
 			
     actionEpisodeChangeId,
@@ -35,72 +16,42 @@ export enum TriggerSubDataType{
     actionIntimacyPoint,
 }    
 
-export interface SubDataA {
-    key: TriggerSubDataType.actionEpisodeChangeId;
-    value: number;
-}
-
-
-export interface SubDataB {
-    key: TriggerSubDataType.ChangePrompt;
-    value: string;
-    coversationDataList:CoversationData[];
-}
-
 export interface CoversationData
 {
     question: string;
     answer: string;
 }
 
-export interface SubDataC {
-    key: TriggerSubDataType.actionIntimacyPoint;
-    value: number;
-    max_value: number;
-}
 
+// export interface ConversationTalkInfoList 
+// {
+//     id: number;
+//     conversationTpye: ConversationPriortyType;
+//     user: ConversationTalkInfo[];
+//     character: ConversationTalkInfo[];
+// }
 
-
-
-export type MainData = MainDataA | MainDataB | MainDataC | MainDataD;
-export type SubData = SubDataA | SubDataB | SubDataC;
-
-export interface DataPair {
-    id: number;
-    name:string
-    main: MainData;
-    sub: SubData;
-}
-
-export interface ConversationTalkInfoList 
-{
-    id: number;
-    conversationTpye: ConversationPriortyType;
-    user: ConversationTalkInfo[];
-    character: ConversationTalkInfo[];
-}
-
-export interface ConversationTalkInfo {
+// export interface ConversationTalkInfo {
 	       
-		/// <summary>
-		// 행동, 말 Type
-		/// </summary>
-		type: ConversationTalkType;
-		/// <summary>
-		// 대화 행동
-		/// </summary>
-		talk:string;
-}
+// 		/// <summary>
+// 		// 행동, 말 Type
+// 		/// </summary>
+// 		type: ConversationTalkType;
+// 		/// <summary>
+// 		// 대화 행동
+// 		/// </summary>
+// 		talk:string;
+// }
 	
-export enum ConversationTalkType{
+// export enum ConversationTalkType{
 			
-		Action,		
-		Speech,
-}    
+// 		Action,		
+// 		Speech,
+// }    
 
-export enum ConversationPriortyType{
+// export enum ConversationPriortyType{
 			
-    Mandatory,		
-    DependsOn,
-}    
+//     Mandatory,		
+//     DependsOn,
+// }    
 
