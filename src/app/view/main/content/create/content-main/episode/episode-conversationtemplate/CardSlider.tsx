@@ -7,7 +7,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux-store/ReduxStore';
 import { addConversationTalk, updateConversationTalk, removeConversationTalk } from '@/redux-store/slices/conversationTalk';
 import { SelectChangeEvent } from '@mui/material';
-import { ConversationTalkInfo, ConversationPriortyType, ConversationTalkType } from '@/types/apps/dataTypes';
+import {  ConversationPriortyType, ConversationTalkType } from '@/types/apps/dataTypes';
+import { Conversation } from '@/types/apps/content/episode/conversation';
+
 
 const CardSlider: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();

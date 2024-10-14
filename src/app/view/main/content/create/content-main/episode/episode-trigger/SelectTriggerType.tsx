@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux'; // Redux 디스패치를 사용
 import { Dialog, DialogTitle, DialogContent, RadioGroup, FormControlLabel, Radio, IconButton, Box, DialogActions, Button } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import { CoversationData, TriggerSubDataType } from '@/types/apps/dataTypes'; // MainData 및 SubDataB 타입들 임포트
+import { TriggerMainDataType, TriggerSubDataType } from '@/types/apps/dataTypes'; // 타입들 임포트
 import { addTriggerInfo } from '@/redux-store/slices/EpisodeInfo';
 import { TriggerInfo } from '@/types/apps/content/episode/triggerInfo';
 
@@ -15,63 +15,96 @@ interface SelectTriggerTypeProps {
 }
 
 const triggerTypes = [
-    { label: 'Intimacy', value: 'triggerValueIntimacy' },
-    { label: 'Keyword', value: 'triggerValueKeyword' },
-    { label: 'Chat Count', value: 'triggerValueChatCount' },
-    { label: 'Idle Elapsed Time', value: 'triggerValueTimeMinute' },
+    { label: 'Intimacy', value: TriggerMainDataType.triggerValueIntimacy },
+    { label: 'Keyword', value: TriggerMainDataType.triggerValueKeyword },
+    { label: 'Chat Count', value: TriggerMainDataType.triggerValueChatCount },
+    { label: 'Idle Elapsed Time', value: TriggerMainDataType.triggerValueTimeMinute },
 ];
 
 const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({ open, onClose, triggerName }) => {
-    const [selectedTrigger, setSelectedTrigger] = useState<string>('triggerValueIntimacy'); // 초기 선택값
+    const [selectedTrigger, setSelectedTrigger] = useState<TriggerMainDataType>(TriggerMainDataType.triggerValueIntimacy); // 초기 선택값
     const dispatch = useDispatch(); // Redux dispatch 사용
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedTrigger(event.target.value); // 선택된 트리거 유형 업데이트
+        const value = event.target.value as unknown as TriggerMainDataType;
+        setSelectedTrigger(value); // 선택된 트리거 유형 업데이트
     };
 
-    // MainData를 선택된 trigger에 따라 생성하는 함수
-    // MainData를 선택된 trigger에 따라 생성하는 함수
-    const createTriggerType = (): MainData => {
+    // 선택된 trigger에 따라 MainData를 생성하는 함수
+    const createMainData = (): Partial<TriggerInfo> => {
         switch (selectedTrigger) {
-            case 'triggerValueIntimacy':
-                return { value: 0 } as MainDataA; // Intimacy 타입 MainData
-            case 'triggerValueKeyword':
-                return { value: ['keyword1', 'keyword2'] } as MainDataB; // Keyword 타입 MainData
-            case 'triggerValueChatCount':
-                return { value: 0 } as MainDataC; // Chat Count 타입 MainData
-            case 'triggerValueTimeMinute':
-                return { value: 0 } as MainDataD; // Idle Elapsed Time 타입 MainData
+            case TriggerMainDataType.triggerValueIntimacy:
+                return { triggerValueIntimacy: 0 };
+            case TriggerMainDataType.triggerValueKeyword:
+                return { triggerValueKeyword: '' };
+            case TriggerMainDataType.triggerValueChatCount:
+                return { triggerValueChatCount: 0 };
+            case TriggerMainDataType.triggerValueTimeMinute:
+                return { triggerValueTimeMinute: 0 };
             default:
-                return { value: 0 } as MainDataA; // 기본값 Intimacy
+                return { triggerValueIntimacy: 0 };
         }
     };
 
-
-    // SubDataB 기본값 생성
-    const createDefaultActionType = (): SubDataB => {
-        const defaultConversationData: CoversationData[] = [
-            { question: 'Default Question 1', answer: 'Default Answer 1' },
-            { question: 'Default Question 2', answer: 'Default Answer 2' },
+    // SubDataB 기본값 생성 시 Conversation 타입에 맞춰서 수정
+    const createDefaultSubData = (): Partial<TriggerInfo> => {
+        const defaultConversationData = [
+            {
+                question: 'Default Question 1',
+                answer: 'Default Answer 1',
+                conversationType: 1, // 필요한 기본값으로 설정
+                user: 'User1',       // 기본 사용자 이름
+                character: 'Character1', // 기본 캐릭터 이름
+            },
+            {
+                question: 'Default Question 2',
+                answer: 'Default Answer 2',
+                conversationType: 1,
+                user: 'User2',
+                character: 'Character2',
+            },
         ];
 
         return {
-            key: TriggerSubDataType.ChangePrompt,
-            value: 'Default Prompt',
-            coversationDataList: defaultConversationData,
+            triggerActionType: TriggerSubDataType.ChangePrompt,
+            actionChangePrompt: 'Default Prompt',
+            actionCoversationList: defaultConversationData, // Conversation 타입에 맞게 수정
         };
     };
 
     // Save 버튼 클릭 시 처리 로직
     const handleSave = () => {
-        const mainData = createTriggerType(); // 선택된 트리거에 맞는 MainData 생성
-        const subData = createDefaultActionType(); // 기본 SubDataB 생성
+        const mainData = createMainData();
+        const subData = createDefaultSubData();
 
         // Redux에 데이터 저장
-        dispatch(addDataPair({
-            name: triggerName, // 부모 컴포넌트에서 전달받은 트리거 이름
-            main: mainData,
-            sub: subData, // 기본값으로 SubDataB 사용
+        dispatch(addTriggerInfo({
+            triggerType: selectedTrigger,   // 트리거 유형
+            name: triggerName,              // 트리거 이름
+            triggerValueIntimacy: 0,        // 기본값 설정
+            triggerValueChatCount: 0,       // 기본값 설정
+            triggerValueKeyword: '',        // 기본값 설정
+            triggerValueTimeMinute: 0,      // 기본값 설정
+            triggerActionType: TriggerSubDataType.ChangePrompt,  // 기본 액션 타입
+            actionChangeEpisodeId: 0,       // 기본값 설정
+            actionChangePrompt: 'Default Prompt', // 기본 프롬프트
+            actionIntimacyPoint: 0,         // 기본값 설정
+            maxIntimacyCount: 0,            // 기본값 설정
+            actionCoversationList: [
+                {
+                    conversationType: 1,     // 필요한 기본값 설정
+                    user: 'User1',           // 기본 사용자 설정
+                    character: 'Character1', // 기본 캐릭터 설정
+                },
+                {
+                    conversationType: 2,
+                    user: 'User2',
+                    character: 'Character2',
+                },
+            ], // 기본 대화 리스트
         }));
+
+
 
         onClose(); // 모달 닫기
     };
@@ -81,9 +114,8 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({ open, onClose, tr
             closeAfterTransition={false}
             open={open}
             onClose={onClose}
-
-            disableAutoFocus={true}
-            disableEnforceFocus={true} // disableAutoFocus 대신 사용
+            disableAutoFocus
+            disableEnforceFocus
         >
             <DialogTitle>Select Trigger Type</DialogTitle>
             <DialogContent>

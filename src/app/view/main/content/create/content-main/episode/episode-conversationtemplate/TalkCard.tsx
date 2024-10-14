@@ -7,7 +7,7 @@ import { SelectChangeEvent } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux-store/ReduxStore';
 import { updateConversationTalk, addConversationTalkItem, removeConversationItem } from '@/redux-store/slices/conversationTalk';
-import { ConversationTalkType, ConversationTalkInfo } from '@/types/apps/dataTypes';
+import { Conversation } from '@/types/apps/content/episode/conversation';
 
 interface TalkCardProps {
     card: {
@@ -26,11 +26,13 @@ interface TalkCardProps {
 const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities, onChange, onDelete, updateUserTalk, updateCharacterTalk }) => {
     const dispatch = useDispatch<AppDispatch>();
     const [isExpanded, setIsExpanded] = useState(true);
-    const [userInputCards, setUserInputCards] = useState<ConversationTalkInfo[]>([
-        { type: ConversationTalkType.Speech, talk: "User Talk" }
+    
+    // Conversation 구조를 사용한 상태 관리
+    const [userInputCards, setUserInputCards] = useState<Conversation[]>([
+        { conversationType: 1, user: "User Talk", character: "" }
     ]);
-    const [characterInputCards, setCharacterInputCards] = useState<ConversationTalkInfo[]>([
-        { type: ConversationTalkType.Action, talk: "Character Talk" }
+    const [characterInputCards, setCharacterInputCards] = useState<Conversation[]>([
+        { conversationType: 2, user: "", character: "Character Talk" }
     ]);
 
     const toggleExpand = () => {
@@ -38,9 +40,10 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
     };
 
     const addUserInputCard = () => {
-        const newUserTalk: ConversationTalkInfo = {
-            type: ConversationTalkType.Speech,
-            talk: `New User Talk ${userInputCards.length + 1}`,
+        const newUserTalk: Conversation = {
+            conversationType: 1,
+            user: `New User Talk ${userInputCards.length + 1}`,
+            character: "",
         };
 
         // 로컬 상태 업데이트
@@ -50,14 +53,15 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
         dispatch(addConversationTalkItem({
             conversationIndex: card.id,
             type: 'user',
-            newTalk: newUserTalk.talk,
+            newTalk: newUserTalk.user,
         }));
     };
 
     const addCharacterInputCard = () => {
-        const newCharacterTalk: ConversationTalkInfo = {
-            type: ConversationTalkType.Action,
-            talk: `New Character Talk ${characterInputCards.length + 1}`,
+        const newCharacterTalk: Conversation = {
+            conversationType: 2,
+            user: "",
+            character: `New Character Talk ${characterInputCards.length + 1}`,
         };
 
         // 로컬 상태 업데이트
@@ -67,7 +71,7 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
         dispatch(addConversationTalkItem({
             conversationIndex: card.id,
             type: 'character',
-            newTalk: newCharacterTalk.talk,
+            newTalk: newCharacterTalk.character,
         }));
     };
 
@@ -75,7 +79,7 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
         if (type === 'user') {
             setUserInputCards((prev) => {
                 const updated = [...prev];
-                updated[index] = { ...updated[index], talk: value };
+                updated[index] = { ...updated[index], user: value };
                 return updated;
             });
             dispatch(updateConversationTalk({
@@ -87,7 +91,7 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
         } else {
             setCharacterInputCards((prev) => {
                 const updated = [...prev];
-                updated[index] = { ...updated[index], talk: value };
+                updated[index] = { ...updated[index], character: value };
                 return updated;
             });
             dispatch(updateConversationTalk({
@@ -103,7 +107,7 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
         if (type === 'user') {
             setUserInputCards((prev) => {
                 const updated = [...prev];
-                updated.splice(index, 1); // 해당 인덱스를 실제로 제거
+                updated.splice(index, 1); // 해당 인덱스를 제거
                 return updated;
             });
 
@@ -115,7 +119,7 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
         } else {
             setCharacterInputCards((prev) => {
                 const updated = [...prev];
-                updated.splice(index, 1); // 해당 인덱스를 실제로 제거
+                updated.splice(index, 1); // 해당 인덱스를 제거
                 return updated;
             });
 
@@ -166,7 +170,7 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
                                 {userInputCards.map((inputCard, index) => (
                                     <div key={index} style={{ paddingBottom: '10px' }}>
                                         <InputCard
-                                            defaultValue={inputCard.talk}
+                                            defaultValue={inputCard.user}
                                             onChange={(value) => handleUpdateInputCard('user', index, value)}
                                             onDelete={() => handleDeleteInputCard('user', index)}
                                         />
@@ -196,7 +200,7 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
                                 {characterInputCards.map((inputCard, index) => (
                                     <div key={index} style={{ paddingBottom: '10px' }}>
                                         <InputCard
-                                            defaultValue={inputCard.talk}
+                                            defaultValue={inputCard.character}
                                             onChange={(value) => handleUpdateInputCard('character', index, value)}
                                             onDelete={() => handleDeleteInputCard('character', index)}
                                         />

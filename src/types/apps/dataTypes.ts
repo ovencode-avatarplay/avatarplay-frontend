@@ -43,15 +43,15 @@ export interface CoversationData
 // 		talk:string;
 // }
 	
-// export enum ConversationTalkType{
+export enum ConversationTalkType{
 			
-// 		Action,		
-// 		Speech,
-// }    
+		Action,		
+		Speech,
+}    
 
-// export enum ConversationPriortyType{
+export enum ConversationPriortyType{
 			
-//     Mandatory,		
-//     DependsOn,
-// }    
+    Mandatory,		
+    DependsOn,
+}    
 
