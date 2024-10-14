@@ -6,9 +6,8 @@ import { EpisodeDescription } from "@/types/apps/content/episode/episodeDescript
 import { TriggerInfo } from '@/types/apps/content/episode/triggerInfo';
 import { Conversation } from '@/types/apps/content/episode/conversation';
 import { LLMSetupInfo } from '@/types/apps/content/episode/llmSetupInfo';
-import { DataPair } from '@/types/apps/dataTypes';
 import defaultContent from '@/data/create/content-info-data.json';
-
+import { ConversationTalkInfoList, ConversationTalkInfo, ConversationPriortyType, ConversationTalkType } from '@/types/apps/dataTypes';
 
 interface EpisodeInfoState {
     currentEpisodeInfo: EpisodeInfo; // 현재 선택된 EpisodeInfo
@@ -31,8 +30,8 @@ const episodeInfoSlice = createSlice({
             }
         },
         // 페어 추가 (name도 입력받도록 수정)
-        addDataPair: (state, action: PayloadAction<Omit<DataPair, 'id'>>) => {
-            const newDataPair: DataPair = { 
+        addTriggerInfo: (state, action: PayloadAction<Omit<TriggerInfo, 'id'>>) => {
+            const newDataPair: TriggerInfo = { 
                 ...action.payload, 
                 id: state.currentEpisodeInfo.triggerInfoList.length // 배열의 인덱스를 id로 사용
             };
@@ -40,15 +39,17 @@ const episodeInfoSlice = createSlice({
         },
 
         // 특정 페어 수정
-        updateDataPair: (state, action: PayloadAction<{ index: number, pair: Omit<DataPair, 'id'> }>) => {
-            const { index, pair } = action.payload;
-            if (state.currentEpisodeInfo.triggerInfoList[index]) {
-                state.currentEpisodeInfo.triggerInfoList[index] = { ...pair, id: index }; // 해당 index의 id 유지하면서 페어 수정
+        updateTriggerInfo: (state, action: PayloadAction<{ id: number, info: Omit<TriggerInfo, 'id'> }>) => {
+            const { id, info } = action.payload;
+            const triggerIndex = state.currentEpisodeInfo.triggerInfoList.findIndex(trigger => trigger.id === id);
+        
+            if (triggerIndex !== -1) {
+                state.currentEpisodeInfo.triggerInfoList[triggerIndex] = { ...info, id }; // id 유지하면서 정보 업데이트
             }
         },
 
         // 특정 페어 이름만 수정
-        updateDataPairName: (state, action: PayloadAction<{ id: number, name: string }>) => {
+        updateTriggerInfoName: (state, action: PayloadAction<{ id: number, name: string }>) => {
             const { id, name } = action.payload;
             const pair = state.currentEpisodeInfo.triggerInfoList.find(pair => pair.id === id); // id로 페어 찾기
             if (pair) {
@@ -57,7 +58,7 @@ const episodeInfoSlice = createSlice({
         },
 
         // 특정 페어 삭제 후 id 업데이트
-        removeDataPair: (state, action: PayloadAction<number>) => {
+        removeTriggerInfo: (state, action: PayloadAction<number>) => {
             state.currentEpisodeInfo.triggerInfoList.splice(action.payload, 1); // 해당 index의 페어 삭제
             
             // 삭제 이후 모든 항목의 id를 배열 인덱스와 맞춰서 재할당
@@ -65,29 +66,89 @@ const episodeInfoSlice = createSlice({
                 ...pair,
                 id: index, // 배열의 새로운 인덱스를 id로 재할당
             }));
-        },
-        addConversationTemplate(state, action: PayloadAction<Conversation>) {
-            if (state.currentEpisodeInfo) {
-                state.currentEpisodeInfo.conversationTemplateList.push(action.payload); // 대화 템플릿 추가
-            }
-        },
-        updateConversationTemplate(state, action: PayloadAction<Conversation>) {
-            // if (state.currentEpisodeInfo) {
-            //     const index = state.currentEpisodeInfo.conversationTemplateList.findIndex(template => template.id === action.payload.id);
-            //     if (index !== -1) {
-            //         state.currentEpisodeInfo.conversationTemplateList[index] = action.payload; // 대화 템플릿 업데이트
-            //     }
-            // }
-        },
-        deleteConversationTemplate(state, action: PayloadAction<number>) {
-            // if (state.currentEpisodeInfo) {
-            //     state.currentEpisodeInfo.conversationTemplateList = state.currentEpisodeInfo.conversationTemplateList.filter(template => template.id !== action.payload); // 대화 템플릿 삭제
-            // }
-        },
+        },   
         setLlmSetupInfo(state, action: PayloadAction<LLMSetupInfo>) {
             if (state.currentEpisodeInfo) {
                 state.currentEpisodeInfo.llmSetupInfo = action.payload; // LLM 설정 정보 업데이트
             }
+        },
+        addConversationTalk: (state, action: PayloadAction<{ user: ConversationTalkInfo[], character: ConversationTalkInfo[], conversationTpye: ConversationPriortyType }>) => {
+            const newId = state.currentEpisodeInfo.conversationTemplateList.length;
+            const newConversation: Conversation = {
+                id: newId,
+                conversationType: action.payload.conversationTpye,
+                user: JSON.stringify(action.payload.user),       // 직렬화
+                character: JSON.stringify(action.payload.character), // 직렬화
+            };
+            state.currentEpisodeInfo.conversationTemplateList.push(newConversation);
+        },
+
+        addConversationTalkItem: (state, action: PayloadAction<{ conversationIndex: number, type: 'user' | 'character', newTalk: string }>) => {
+            const { conversationIndex, type, newTalk } = action.payload;
+            const conversation = state.currentEpisodeInfo.conversationTemplateList[conversationIndex];
+
+            if (conversation) {
+                const newTalkItem: ConversationTalkInfo = {
+                    type: type === 'user' ? ConversationTalkType.Speech : ConversationTalkType.Action,
+                    talk: newTalk,
+                };
+
+                if (type === 'user') {
+                    const userArray = JSON.parse(conversation.user) as ConversationTalkInfo[];  // 역직렬화
+                    userArray.push(newTalkItem);
+                    conversation.user = JSON.stringify(userArray);  // 다시 직렬화하여 저장
+                } else if (type === 'character') {
+                    const characterArray = JSON.parse(conversation.character) as ConversationTalkInfo[];  // 역직렬화
+                    characterArray.push(newTalkItem);
+                    conversation.character = JSON.stringify(characterArray);  // 다시 직렬화하여 저장
+                }
+            }
+        },
+
+        updateConversationTalk: (state, action: PayloadAction<{ conversationIndex: number, itemIndex: number, type: 'user' | 'character', newTalk: string }>) => {
+            const { conversationIndex, itemIndex, type, newTalk } = action.payload;
+            const conversation = state.currentEpisodeInfo.conversationTemplateList[conversationIndex];
+
+            if (conversation) {
+                if (type === 'user') {
+                    const userArray = JSON.parse(conversation.user) as ConversationTalkInfo[];  // 역직렬화
+                    if (userArray[itemIndex]) {
+                        userArray[itemIndex].talk = newTalk;
+                        conversation.user = JSON.stringify(userArray);  // 다시 직렬화하여 저장
+                    }
+                } else if (type === 'character') {
+                    const characterArray = JSON.parse(conversation.character) as ConversationTalkInfo[];  // 역직렬화
+                    if (characterArray[itemIndex]) {
+                        characterArray[itemIndex].talk = newTalk;
+                        conversation.character = JSON.stringify(characterArray);  // 다시 직렬화하여 저장
+                    }
+                }
+            }
+        },
+
+        removeConversationItem: (state, action: PayloadAction<{ conversationIndex: number, itemIndex: number, type: 'user' | 'character' }>) => {
+            const { conversationIndex, itemIndex, type } = action.payload;
+            const conversation = state.currentEpisodeInfo.conversationTemplateList[conversationIndex];
+
+            if (conversation) {
+                if (type === 'user') {
+                    const userArray = JSON.parse(conversation.user) as ConversationTalkInfo[];  // 역직렬화
+                    userArray.splice(itemIndex, 1);  // 해당 인덱스를 제거
+                    conversation.user = JSON.stringify(userArray);  // 다시 직렬화하여 저장
+                } else if (type === 'character') {
+                    const characterArray = JSON.parse(conversation.character) as ConversationTalkInfo[];  // 역직렬화
+                    characterArray.splice(itemIndex, 1);  // 해당 인덱스를 제거
+                    conversation.character = JSON.stringify(characterArray);  // 다시 직렬화하여 저장
+                }
+            }
+        },
+
+        removeConversationTalk: (state, action: PayloadAction<number>) => {
+            const index = action.payload;
+            state.currentEpisodeInfo.conversationTemplateList.splice(index, 1);
+            state.currentEpisodeInfo.conversationTemplateList.forEach((conversation, idx) => {
+                conversation.id = idx;
+            });
         },
     },
 });
@@ -95,10 +156,8 @@ const episodeInfoSlice = createSlice({
 export const {
     setCurrentEpisodeInfo,
     updateEpisodeDescription,
-    addDataPair, updateDataPair, updateDataPairName, removeDataPair,
-    addConversationTemplate,
-    updateConversationTemplate,
-    deleteConversationTemplate,
+    addTriggerInfo: addTriggerInfo, updateTriggerInfo: updateTriggerInfo, updateTriggerInfoName: updateTriggerInfoName, removeTriggerInfo: removeTriggerInfo,
+    addConversationTalk, addConversationTalkItem, updateConversationTalk, removeConversationItem, removeConversationTalk,
     setLlmSetupInfo,
 } = episodeInfoSlice.actions;
 
