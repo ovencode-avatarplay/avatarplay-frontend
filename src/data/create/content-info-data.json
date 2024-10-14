@@ -35,6 +35,7 @@
                   "maxIntimacyCount": 0,
                   "actionCoversationList": [
                     {
+                      "id":0,
                       "conversationType": 0,
                       "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                       "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -44,6 +45,7 @@
               ],
               "conversationTemplateList": [
                 {
+                  "id":0,
                   "conversationType": 0,
                   "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                   "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -81,6 +83,7 @@
                   "maxIntimacyCount": 0,
                   "actionCoversationList": [
                     {
+                      "id":0,
                       "conversationType": 0,
                       "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                       "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -90,6 +93,7 @@
               ],
               "conversationTemplateList": [
                 {
+                  "id":0,
                   "conversationType": 0,
                   "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                   "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -133,6 +137,7 @@
                   "maxIntimacyCount": 0,
                   "actionCoversationList": [
                     {
+                      "id":0,
                       "conversationType": 0,
                       "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                       "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -142,6 +147,7 @@
               ],
               "conversationTemplateList": [
                 {
+                  "id":0,
                   "conversationType": 0,
                   "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                   "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -179,6 +185,7 @@
                   "maxIntimacyCount": 0,
                   "actionCoversationList": [
                     {
+                      "id":0,
                       "conversationType": 0,
                       "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                       "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -188,6 +195,7 @@
               ],
               "conversationTemplateList": [
                 {
+                  "id":0,
                   "conversationType": 0,
                   "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                   "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -225,6 +233,7 @@
                   "maxIntimacyCount": 0,
                   "actionCoversationList": [
                     {
+                      "id":0,
                       "conversationType": 0,
                       "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                       "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -234,6 +243,7 @@
               ],
               "conversationTemplateList": [
                 {
+                  "id":0,
                   "conversationType": 0,
                   "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                   "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -277,6 +287,7 @@
                   "maxIntimacyCount": 0,
                   "actionCoversationList": [
                     {
+                      "id":0,
                       "conversationType": 0,
                       "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                       "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -286,6 +297,7 @@
               ],
               "conversationTemplateList": [
                 {
+                  "id":0,
                   "conversationType": 0,
                   "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                   "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -323,6 +335,7 @@
                   "maxIntimacyCount": 0,
                   "actionCoversationList": [
                     {
+                      "id":0,
                       "conversationType": 0,
                       "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                       "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -332,6 +345,7 @@
               ],
               "conversationTemplateList": [
                 {
+                  "id":0,
                   "conversationType": 0,
                   "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                   "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -399,6 +413,7 @@
                   "maxIntimacyCount": 0,
                   "actionCoversationList": [
                     {
+                      "id":0,
                       "conversationType": 0,
                       "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                       "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -408,6 +423,7 @@
               ],
               "conversationTemplateList": [
                 {
+                  "id":0,
                   "conversationType": 0,
                   "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                   "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -474,6 +490,7 @@
                   "maxIntimacyCount": 0,
                   "actionCoversationList": [
                     {
+                      "id":0,
                       "conversationType": 0,
                       "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                       "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -483,6 +500,7 @@
               ],
               "conversationTemplateList": [
                 {
+                  "id":0,
                   "conversationType": 0,
                   "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                   "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"

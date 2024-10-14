@@ -5,7 +5,7 @@ import { ArrowForwardIos, ArrowBackIos } from '@mui/icons-material';
 import TalkCard from './TalkCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux-store/ReduxStore';
-import { addConversationTalk, updateConversationTalk, removeConversationTalk } from '@/redux-store/slices/conversationTalk';
+import {addConversationTalk, addConversationTalkItem, updateConversationTalk, removeConversationItem, removeConversationTalk} from '@/redux-store/slices/EpisodeInfo'
 import { SelectChangeEvent } from '@mui/material';
 import {  ConversationPriortyType, ConversationTalkType } from '@/types/apps/dataTypes';
 import { Conversation } from '@/types/apps/content/episode/conversation';
@@ -13,7 +13,7 @@ import { Conversation } from '@/types/apps/content/episode/conversation';
 
 const CardSlider: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const conversationList = useSelector((state: RootState) => state.conversationTalk.conversationList);
+    const conversationList = useSelector((state: RootState) => state.episode.currentEpisodeInfo.conversationTemplateList);
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const priorities = ['Mandatory', 'Depends on'];
@@ -73,7 +73,7 @@ const CardSlider: React.FC = () => {
                         {conversationList.map((card, index) => (
                             <TalkCard
                                 key={card.id}
-                                card={{ id: card.id, title: `Card ${card.id + 1}`, description: card.user[0]?.talk || '' }}
+                                card={{ id: card.id, title: `Card ${card.id + 1}`, description: card.user[0] || '' }}
                                 selectedPriority={selectedPriority}
                                 priorities={priorities}
                                 onChange={handleChange}

@@ -1,5 +1,6 @@
 export interface Conversation {
-    conversationType : number;
-    user: string;
-    character: string;
+  id: number;
+  conversationType: number;
+  user: string;
+  character: string;
 }

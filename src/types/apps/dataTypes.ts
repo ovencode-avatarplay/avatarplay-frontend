@@ -23,25 +23,25 @@ export interface CoversationData
 }
 
 
-// export interface ConversationTalkInfoList 
-// {
-//     id: number;
-//     conversationTpye: ConversationPriortyType;
-//     user: ConversationTalkInfo[];
-//     character: ConversationTalkInfo[];
-// }
+export interface ConversationTalkInfoList 
+{
+    id: number;
+    conversationTpye: ConversationPriortyType;
+    user: ConversationTalkInfo[];
+    character: ConversationTalkInfo[];
+}
 
-// export interface ConversationTalkInfo {
+export interface ConversationTalkInfo {
 	       
-// 		/// <summary>
-// 		// 행동, 말 Type
-// 		/// </summary>
-// 		type: ConversationTalkType;
-// 		/// <summary>
-// 		// 대화 행동
-// 		/// </summary>
-// 		talk:string;
-// }
+		/// <summary>
+		// 행동, 말 Type
+		/// </summary>
+		type: ConversationTalkType;
+		/// <summary>
+		// 대화 행동
+		/// </summary>
+		talk:string;
+}
 	
 export enum ConversationTalkType{
 			

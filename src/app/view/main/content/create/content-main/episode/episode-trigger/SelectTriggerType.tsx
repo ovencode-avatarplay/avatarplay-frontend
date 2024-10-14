@@ -50,16 +50,14 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({ open, onClose, tr
     const createDefaultSubData = (): Partial<TriggerInfo> => {
         const defaultConversationData = [
             {
-                question: 'Default Question 1',
-                answer: 'Default Answer 1',
-                conversationType: 1, // 필요한 기본값으로 설정
-                user: 'User1',       // 기본 사용자 이름
-                character: 'Character1', // 기본 캐릭터 이름
+                id: 0,
+                conversationType: 2,
+                user: 'User2',
+                character: 'Character2',
             },
             {
-                question: 'Default Question 2',
-                answer: 'Default Answer 2',
-                conversationType: 1,
+                id: 1,
+                conversationType: 2,
                 user: 'User2',
                 character: 'Character2',
             },
@@ -92,11 +90,13 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({ open, onClose, tr
             maxIntimacyCount: 0,            // 기본값 설정
             actionCoversationList: [
                 {
+                    id: 0,
                     conversationType: 1,     // 필요한 기본값 설정
                     user: 'User1',           // 기본 사용자 설정
                     character: 'Character1', // 기본 캐릭터 설정
                 },
                 {
+                    id: 1,
                     conversationType: 2,
                     user: 'User2',
                     character: 'Character2',

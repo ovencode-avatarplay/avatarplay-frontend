@@ -6,8 +6,9 @@ import InputCard from './InputCard';
 import { SelectChangeEvent } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux-store/ReduxStore';
-import { updateConversationTalk, addConversationTalkItem, removeConversationItem } from '@/redux-store/slices/conversationTalk';
+import {addConversationTalk, addConversationTalkItem, updateConversationTalk, removeConversationItem, removeConversationTalk} from '@/redux-store/slices/EpisodeInfo'
 import { Conversation } from '@/types/apps/content/episode/conversation';
+
 
 interface TalkCardProps {
     card: {
@@ -29,10 +30,10 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
     
     // Conversation 구조를 사용한 상태 관리
     const [userInputCards, setUserInputCards] = useState<Conversation[]>([
-        { conversationType: 1, user: "User Talk", character: "" }
+        { id:0, conversationType: 1, user: "User Talk", character: "" }
     ]);
     const [characterInputCards, setCharacterInputCards] = useState<Conversation[]>([
-        { conversationType: 2, user: "", character: "Character Talk" }
+        { id:1,conversationType: 2, user: "", character: "Character Talk" }
     ]);
 
     const toggleExpand = () => {
@@ -41,6 +42,7 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
 
     const addUserInputCard = () => {
         const newUserTalk: Conversation = {
+            id:0,
             conversationType: 1,
             user: `New User Talk ${userInputCards.length + 1}`,
             character: "",
@@ -59,6 +61,7 @@ const TalkCard: React.FC<TalkCardProps> = ({ card, selectedPriority, priorities,
 
     const addCharacterInputCard = () => {
         const newCharacterTalk: Conversation = {
+            id:0,
             conversationType: 2,
             user: "",
             character: `New Character Talk ${characterInputCards.length + 1}`,
