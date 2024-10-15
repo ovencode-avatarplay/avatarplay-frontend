@@ -92,7 +92,7 @@ export const sendElasticMessage = async (payload: any): Promise<ResponseChat> =>
 };
 
 // 채팅 Enter ##########################################
-export interface EnterEpisodeChttingReq {
+export interface EnterEpisodeChattingReq {
   userId: number;
   episodeId: number;
 }
@@ -105,13 +105,15 @@ export interface EnterEpisodeChttingReq {
 //   createAt: string;
 // }
 
-export interface EnterEpisodeChttingRes {
+export interface EnterEpisodeChattingRes {
   prevMessageInfoList: MessageInfo[];
 }
 
-export const sendChattingEnter = async (req: EnterEpisodeChttingReq): Promise<ResponseAPI<EnterEpisodeChttingRes>> => {
+export const sendChattingEnter = async (
+  req: EnterEpisodeChattingReq,
+): Promise<ResponseAPI<EnterEpisodeChattingRes>> => {
   try {
-    const response = await api.post<ResponseAPI<EnterEpisodeChttingRes>>('/Chatting/enter', req);
+    const response = await api.post<ResponseAPI<EnterEpisodeChattingRes>>('/Chatting/enter', req);
     if (response.data.resultCode === 0) {
       return response.data;
     } else {
