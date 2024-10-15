@@ -33,7 +33,7 @@
                   "actionChangePrompt": "John must decide his next move.",
                   "actionIntimacyPoint": 10,
                   "maxIntimacyCount": 0,
-                  "actionCoversationList": [
+                  "actionConversationList": [
                     {
                       "id":0,
                       "conversationType": 0,
@@ -81,7 +81,7 @@
                   "actionChangePrompt": "John prepares for the ultimate test.",
                   "actionIntimacyPoint": 20,
                   "maxIntimacyCount": 0,
-                  "actionCoversationList": [
+                  "actionConversationList": [
                     {
                       "id":0,
                       "conversationType": 0,
@@ -135,7 +135,7 @@
                   "actionChangePrompt": "John must decide whether to trust Lena.",
                   "actionIntimacyPoint": 30,
                   "maxIntimacyCount": 0,
-                  "actionCoversationList": [
+                  "actionConversationList": [
                     {
                       "id":0,
                       "conversationType": 0,
@@ -183,7 +183,7 @@
                   "actionChangePrompt": "John and Lena face a critical choice.",
                   "actionIntimacyPoint": 40,
                   "maxIntimacyCount": 0,
-                  "actionCoversationList": [
+                  "actionConversationList": [
                     {
                       "id":0,
                       "conversationType": 0,
@@ -231,7 +231,7 @@
                   "actionChangePrompt": "John must decide whether to forgive or fight Lena.",
                   "actionIntimacyPoint": 50,
                   "maxIntimacyCount": 0,
-                  "actionCoversationList": [
+                  "actionConversationList": [
                     {
                       "id":0,
                       "conversationType": 0,
@@ -285,7 +285,7 @@
                   "actionChangePrompt": "The final battle begins.",
                   "actionIntimacyPoint": 60,
                   "maxIntimacyCount": 0,
-                  "actionCoversationList": [
+                  "actionConversationList": [
                     {
                       "id":0,
                       "conversationType": 0,
@@ -333,7 +333,7 @@
                   "actionChangePrompt": "The battle ends, but at what cost?",
                   "actionIntimacyPoint": 70,
                   "maxIntimacyCount": 0,
-                  "actionCoversationList": [
+                  "actionConversationList": [
                     {
                       "id":0,
                       "conversationType": 0,
@@ -411,7 +411,7 @@
                   "actionChangePrompt": "Lena must confront her past.",
                   "actionIntimacyPoint": 15,
                   "maxIntimacyCount": 0,
-                  "actionCoversationList": [
+                  "actionConversationList": [
                     {
                       "id":0,
                       "conversationType": 0,
@@ -488,7 +488,7 @@
                   "actionChangePrompt": "Arthur must rally his allies.",
                   "actionIntimacyPoint": 20,
                   "maxIntimacyCount": 0,
-                  "actionCoversationList": [
+                  "actionConversationList": [
                     {
                       "id":0,
                       "conversationType": 0,
