@@ -1,6 +1,6 @@
 // src/app/Network/ChatNetwork.tsx
 
-import api, { ResponseAPI } from './ApiInstance'; 
+import api, {ResponseAPI} from './ApiInstance';
 
 // Chat Data Interfaces
 export interface SendChatMessageReq {
@@ -14,10 +14,12 @@ export interface SendChatMessageRes {
 }
 
 // Sending Chat Message
-export const sendMessageStream = async (sendChatMessageReq: SendChatMessageReq): Promise<ResponseAPI<SendChatMessageRes>> => {
+export const sendMessageStream = async (
+  sendChatMessageReq: SendChatMessageReq,
+): Promise<ResponseAPI<SendChatMessageRes>> => {
   try {
     const response = await api.post<ResponseAPI<SendChatMessageRes>>('Chat/send', sendChatMessageReq);
-    
+
     if (response.data.resultCode === 0) {
       return response.data; // Return on success
     } else {
@@ -51,7 +53,7 @@ export interface GetPrevChatMessageReq {
 export const getPrevChat = async (data: GetPrevChatMessageReq): Promise<ResponseAPI<GetPrevChatMessageRes>> => {
   try {
     const response = await api.post<ResponseAPI<GetPrevChatMessageRes>>('Chat/getPrevChat', data);
-    
+
     if (response.data.resultCode === 0) {
       return response.data; // Return on success
     } else {
@@ -65,18 +67,19 @@ export const getPrevChat = async (data: GetPrevChatMessageReq): Promise<Response
 
 // Sending Elastic Message Interfaces
 export interface ResponseChat {
-  resultCode: number;        // 응답 코드
-  resultMessage: string;     // 응답 메시지
+  resultCode: number; // 응답 코드
+  resultMessage: string; // 응답 메시지
   data: {
-    text: string;            // 서버에서 반환하는 데이터
+    text: string; // 서버에서 반환하는 데이터
   };
 }
 
 // Sending Elastic Message
-export const sendElasticMessage = async (payload: any): Promise<ResponseChat> => { // Change 'any' to the appropriate type
+export const sendElasticMessage = async (payload: any): Promise<ResponseChat> => {
+  // Change 'any' to the appropriate type
   try {
     const response = await api.post<ResponseChat>('/Bedrock/sendElastic', payload);
-    
+
     if (response.data.resultCode === 0) {
       return response.data; // Return on success
     } else {
@@ -84,6 +87,38 @@ export const sendElasticMessage = async (payload: any): Promise<ResponseChat> =>
     }
   } catch (error: any) {
     console.error('Error sending message:', error);
+    throw new Error('Failed to send message. Please try again.'); // Error handling
+  }
+};
+
+// 채팅 Enter ##########################################
+export interface EnterEpisodeChttingReq {
+  userId: number;
+  episodeId: number;
+}
+
+// export interface MessageInfo {
+//   id: number;
+//   userName: string;
+//   characterName: string;
+//   message: string;
+//   createAt: string;
+// }
+
+export interface EnterEpisodeChttingRes {
+  prevMessageInfoList: MessageInfo[];
+}
+
+export const sendChattingEnter = async (req: EnterEpisodeChttingReq): Promise<ResponseAPI<EnterEpisodeChttingRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<EnterEpisodeChttingRes>>('/Chatting/enter', req);
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(response.data.resultMessage); // Error handling
+    }
+  } catch (error) {
+    console.error('Error sending Enter:', error);
     throw new Error('Failed to send message. Please try again.'); // Error handling
   }
 };

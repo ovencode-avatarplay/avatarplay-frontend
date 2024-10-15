@@ -21,7 +21,7 @@ const TopBar: React.FC<ChatTopBarProps> = ({
     onToggleBackground
 }) => {
     const chattingState1: ChattingState = useSelector((state: RootState) => state.chatting);
-    console.log( 'chattingState ', chattingState1 );
+    //console.log( 'chattingState ', chattingState1 );
     return (
         <div className={styles.topBar}>
             <div className={styles.left}>

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Box } from '@mui/material';
+import React, {useEffect, useRef} from 'react';
+import {Box} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 
 interface Message {
@@ -11,12 +11,12 @@ interface ChatAreaProps {
   messages: Message[];
 }
 
-const ChatArea: React.FC<ChatAreaProps> = ({ messages }) => {
+const ChatArea: React.FC<ChatAreaProps> = ({messages}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null); // 스크롤 참조용 ref
 
   useEffect(() => {
     // 새로운 메시지가 추가될 때마다 스크롤을 마지막 메시지로 이동
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({behavior: 'smooth'});
   }, [messages]); // messages가 변경될 때마다 호출됨
 
   return (
