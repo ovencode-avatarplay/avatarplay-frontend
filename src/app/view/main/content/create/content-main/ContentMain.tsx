@@ -455,7 +455,7 @@ const ContentMain: React.FC = () => {
             open={isPublishingOpen}
             onClose={handleClosePublishing}
             onPublish={handlePublish}
-            contentTag={curContent.publishInfo.contentTag}
+            tagList={curContent.publishInfo.tagList}
           />
         </div>
         <ContentBottom onGimmickOpen={handleOpenGimmick} onPublishingOpen={handleOpenPublishing} />

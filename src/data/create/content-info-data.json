@@ -152,7 +152,15 @@
         "authorName": "bm",
         "authorComment": "사이버 시티 작가 코멘트",
         "tagList":  [
-          "string"
+          "string",
+          "tag1",
+          "tag2",
+          "tag3",
+          "tag4",
+          "tag5",
+          "tag6",
+          "tag7",
+          "tag8"
         ],
         "selectTagList":  [
           "string"
