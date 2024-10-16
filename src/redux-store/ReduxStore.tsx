@@ -1,5 +1,5 @@
 // Third-party Imports
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage'; // localStorage를 사용
 
 // Slice Imports
@@ -15,31 +15,25 @@ import chapterBoardSlice from './slices/ChapterBoard';
 import episodeInfoSlice from './slices/EpisodeInfo';
 
 // redux-persist
-import { persistStore, persistReducer } from 'redux-persist';
+import {persistStore, persistReducer} from 'redux-persist';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: [
-    'sample', 
-    'chat', 
-    'chatting',
-    'content', 
-    'user', 
-    'contentselection',
-  ],
+  whitelist: ['sample', 'chat', 'chatting', 'content', 'user', 'contentselection'],
 };
 
 const reducers = combineReducers({
   sample: sampleReducer,
   chat: chatReducer,
-  chatting: chattingReducer,
+  chatting: chattingReducer, // 서버데이터 Chatting/
   drawerContentDesc: drawerContentDescReducer,
-  content: ContentInfoSlice, 
+  content: ContentInfoSlice,
   user: userInfo,
-  contentselection: ContentSelection, 
+
+  contentselection: ContentSelection,
   publish: publishInfoSlice,
-  chapterBoard: chapterBoardSlice, 
+  chapterBoard: chapterBoardSlice,
   episode: episodeInfoSlice,
 });
 
@@ -47,9 +41,8 @@ const reducers = combineReducers({
 const persistedReducer = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
-  reducer: persistedReducer,  // Persisted reducer 사용
-  middleware: getDefaultMiddleware =>
-    getDefaultMiddleware({ serializableCheck: false }),
+  reducer: persistedReducer, // Persisted reducer 사용
+  middleware: getDefaultMiddleware => getDefaultMiddleware({serializableCheck: false}),
 });
 
 export const persistor = persistStore(store);
