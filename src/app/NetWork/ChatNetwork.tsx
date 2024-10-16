@@ -114,6 +114,7 @@ export const sendChattingEnter = async (
 ): Promise<ResponseAPI<EnterEpisodeChattingRes>> => {
   try {
     const response = await api.post<ResponseAPI<EnterEpisodeChattingRes>>('/Chatting/enter', req);
+    console.log('chatenter', response);
     if (response.data.resultCode === 0) {
       return response.data;
     } else {
