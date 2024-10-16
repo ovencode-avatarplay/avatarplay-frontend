@@ -18,6 +18,7 @@ import { EpisodeInfo } from '@/types/apps/content/episode/episodeInfo';
 
 import { number } from 'valibot';
 import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
+import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 
 interface Props {
   onDrawerOpen: () => void;
@@ -43,6 +44,7 @@ interface Props {
   const [isTriggerModalOpen, setTriggerModalOpen] = useState(false); // Trigger 모달 열림 상태
   const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
   const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false); 
+  const [isImageSetupModalOpen, setImageSetupModalOpen] = useState(false);
  
   // **상태 추가**: 팝업 열림 상태를 관리
   const [isPopupOpen, setPopupOpen] = useState<boolean>(false);
@@ -70,6 +72,14 @@ interface Props {
   const closeEpisodeModal = () => {
     setEpisodeModalOpen(false); // Episode 모달 닫기
   };
+
+  const openImageSetup = () => {
+    setImageSetupModalOpen(true);  // 이미지 생성 모달 열기
+  }
+  
+  const closeImageSetup = () => {
+    setImageSetupModalOpen(false);  // 이미지 생성 모달 닫기
+  }
 
   const [contentData, setContentData] = useState<ContentInfo>();
   const [chapterData, setChapterData] = useState<ChapterInfo>();
@@ -137,7 +147,11 @@ interface Props {
       <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} />
 
       <Box className={Style.imageArea}>
-        <EpisodeImageUpload />
+        <EpisodeImageUpload
+          onClickEasyCreate={openImageSetup}
+          onClickAdvanceCreate={openImageSetup}
+          onClickUploadImage={openImageSetup}
+        />
       </Box>
 
       <Box className={Style.setupButtons}>
@@ -168,7 +182,13 @@ interface Props {
           onClose={closeEpisodeModal}
           onSubmit={handleSubmitPopup}
       />}
-      
+
+      {/*이미지 생성 모달*/}
+      {isImageSetupModalOpen &&
+        <EpisodeImageSetup
+          open={isImageSetupModalOpen}
+          onClose={closeImageSetup}
+        />}
     </main>
   );
 };
