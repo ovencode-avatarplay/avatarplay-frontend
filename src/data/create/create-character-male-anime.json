@@ -1,0 +1,65 @@
+{
+    "styleOptions": [
+      { "label": "Realistic", "image": "/real.png", "prompt": "" },
+      { "label": "Anime", "image": "/anime.png", "prompt": "" }
+    ],
+    "raceOptions": [
+      { "label": "Caucasian", "image": "/race_caucasian.png", "prompt": "" },
+      { "label": "Asian", "image": "/race_asian.png", "prompt": "" },
+      { "label": "African", "image": "/race_african.png", "prompt": "" },
+      { "label": "Hispanic", "image": "/race_hispanic.png", "prompt": "" },
+      { "label": "Other", "image": "/race_other.png", "prompt": "" }
+    ],
+    "ageOptions": [
+      { "label": "Teen", "image": "/age_teen.png", "prompt": "" },
+      { "label": "Adult", "image": "/age_adult.png", "prompt": "" },
+      { "label": "Senior", "image": "/age_senior.png", "prompt": "" }
+    ],
+    "eyeColorOptions": [
+      { "label": "Brown", "image": "/eye_brown.png", "prompt": "" },
+      { "label": "Blue", "image": "/eye_blue.png", "prompt": "" },
+      { "label": "Green", "image": "/eye_green.png", "prompt": "" },
+      { "label": "Hazel", "image": "/eye_hazel.png", "prompt": "" }
+    ],
+    "hairStyles": [
+      { "label": "Style 1", "image": "/hair1.png", "prompt": "" },
+      { "label": "Style 2", "image": "/hair2.png", "prompt": "" },
+      { "label": "Style 3", "image": "/hair3.png", "prompt": "" },
+      { "label": "Style 4", "image": "/hair4.png", "prompt": "" },
+      { "label": "Style 5", "image": "/hair5.png", "prompt": "" },
+      { "label": "Style 6", "image": "/hair6.png", "prompt": "" },
+      { "label": "Style 7", "image": "/hair7.png", "prompt": "" },
+      { "label": "Style 8", "image": "/hair8.png", "prompt": "" },
+      { "label": "Style 9", "image": "/hair9.png", "prompt": "" }
+    ],
+    "hairColors": [
+      { "label": "Black", "image": "/hair_black.png", "prompt": "" },
+      { "label": "Brown", "image": "/hair_brown.png", "prompt": "" },
+      { "label": "Blonde", "image": "/hair_blonde.png", "prompt": "" },
+      { "label": "Red", "image": "/hair_red.png", "prompt": "" },
+      { "label": "Gray", "image": "/hair_gray.png", "prompt": "" },
+      { "label": "Other", "image": "/hair_other.png", "prompt": "" }
+    ],
+    "bodyTypes": [
+      { "label": "Slim", "image": "/body_slim.png", "prompt": "" },
+      { "label": "Athletic", "image": "/body_athletic.png", "prompt": "" },
+      { "label": "Average", "image": "/body_average.png", "prompt": "" },
+      { "label": "Curvy", "image": "/body_curvy.png", "prompt": "" },
+      { "label": "Heavy", "image": "/body_heavy.png", "prompt": "" }
+    ],
+    "topSizes": [
+      { "label": "XS", "image": "/top_xs.png", "prompt": "" },
+      { "label": "S", "image": "/top_s.png", "prompt": "" },
+      { "label": "M", "image": "/top_m.png", "prompt": "" },
+      { "label": "L", "image": "/top_l.png", "prompt": "" },
+      { "label": "XL", "image": "/top_xl.png", "prompt": "" }
+    ],
+    "bottomSizes": [
+      { "label": "XS", "image": "/bottom_xs.png", "prompt": "" },
+      { "label": "S", "image": "/bottom_s.png", "prompt": "" },
+      { "label": "M", "image": "/bottom_m.png", "prompt": "" },
+      { "label": "L", "image": "/bottom_l.png", "prompt": "" },
+      { "label": "XL", "image": "/bottom_xl.png", "prompt": "" }
+    ]
+  }
+  
