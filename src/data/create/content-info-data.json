@@ -24,6 +24,7 @@
               "triggerInfoList": [
                 {
                   "id": 14,
+                  "name": "",
                   "triggerType": 0,
                   "triggerValueIntimacy": 1,
                   "triggerValueChatCount": 0,
@@ -36,7 +37,7 @@
                   "maxIntimacyCount": 0,
                   "actionConversationList": [
                     {
-                      "id": 20,
+                      "id": 0,
                       "conversationType": 0,
                       "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                       "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
@@ -45,6 +46,7 @@
                 },
                 {
                   "id": 73,
+                  "name": "",
                   "triggerType": 0,
                   "triggerValueIntimacy": 0,
                   "triggerValueChatCount": 2,
@@ -66,6 +68,7 @@
                 },
                 {
                   "id": 74,
+                  "name": "",
                   "triggerType": 0,
                   "triggerValueIntimacy": 0,
                   "triggerValueChatCount": 0,
@@ -87,6 +90,7 @@
                 },
                 {
                   "id": 75,
+                  "name": "",
                   "triggerType": 0,
                   "triggerValueIntimacy": 0,
                   "triggerValueChatCount": 0,
@@ -108,6 +112,7 @@
                 },
                 {
                   "id": 76,
+                  "name": "",
                   "triggerType": 0,
                   "triggerValueIntimacy": 50,
                   "triggerValueChatCount": 0,
@@ -130,7 +135,7 @@
               ],
               "conversationTemplateList": [
                 {
-                  "id": 20,
+                  "id": 0,
                   "conversationType": 0,
                   "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                   "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
