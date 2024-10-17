@@ -9,6 +9,13 @@ import characterOptionsFeMaleReal from '@/data/create/create-character-female-an
 import characterOptionsMaleAnime from '@/data/create/create-character-male-anime.json';
 import characterOptionsFeMaleAnime from '@/data/create/create-character-female-anime.json';
 import CharacterCreateImageButton from './CharacterCreateImageButton';
+// Import Swiper React components
+import {Swiper, SwiperSlide} from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import {Pagination} from 'swiper/modules';
 
 interface Props {}
 
@@ -166,19 +173,30 @@ const CharacterCreate: React.FC<Props> = () => {
             <Box className={styles.ethnicityContent}>
               <div className={styles.createTitle}>Step 3: Select Ethnicity</div>
               <Typography variant="h6">Race</Typography>
-              <Box className={styles.scrollableContainer}>
+              <Swiper
+                slidesPerView={4}
+                spaceBetween={30}
+                centeredSlides={true}
+                pagination={{
+                  clickable: true,
+                }}
+                modules={[Pagination]}
+              >
                 {characterOptions.raceOptions.map((race, index) => (
-                  <CharacterCreateImageButton
-                    key={race.label}
-                    width={'40vw'}
-                    height={'40vw'}
-                    label={race.label}
-                    image={'/Images/001.png'}
-                    selected={selectedOptions.race === index}
-                    onClick={() => handleOptionSelect('race', index)}
-                  />
+                  <SwiperSlide>
+                    <CharacterCreateImageButton
+                      key={race.label}
+                      width={'100%'}
+                      height={'40vw'}
+                      label={race.label}
+                      image={'/Images/001.png'}
+                      selected={selectedOptions.race === index}
+                      onClick={() => handleOptionSelect('race', index)}
+                    />
+                  </SwiperSlide>
                 ))}
-              </Box>
+              </Swiper>
+
               <Typography variant="h6">Age</Typography>
               <Box className={styles.horizontalButtonGroup}>
                 {characterOptions.ageOptions.map((age, index) => (
