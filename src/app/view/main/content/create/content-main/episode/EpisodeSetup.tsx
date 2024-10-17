@@ -19,6 +19,8 @@ import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
 import {number} from 'valibot';
 import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
+
+import EpisodeLLMSetup from './episode-LLMsetup/EpisodeLLMsetup';
 import CharacterCreate from './episode-imagesetup/CharacterCreate';
 
 interface Props {
@@ -138,7 +140,15 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
     console.log('Submitted data:', data);
     // 필요한 처리를 여기에 추가
   };
+  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
 
+  const openLLMSetup = () => {
+    setLLMSetupOpen(true); // 모달 열기
+  };
+
+  const closeLLMSetup = () => {
+    setLLMSetupOpen(false); // 모달 닫기
+  };
   return (
     <main className={Style.episodeSetup}>
       <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} />
@@ -153,7 +163,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
         <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
         <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
         <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />
-        <ButtonSetupDrawer icon={<ImageIcon />} label="AI Model Setup" onClick={() => {}} />
+        <ButtonSetupDrawer icon={<ImageIcon />} label="AI Model Setup" onClick={openLLMSetup} />
       </Box>
       {/* EpisodeTrigger 모달 */}
       <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} /> {/* 모달 상태 전달 */}
@@ -179,6 +189,8 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
       )}
       {/*이미지 생성 모달*/}
       {isImageSetupModalOpen && <EpisodeImageSetup open={isImageSetupModalOpen} onClose={closeImageSetup} />}
+      {/* EpisodeLLMSetup 모달 */}
+      <EpisodeLLMSetup open={isLLMSetupOpen} onClose={closeLLMSetup} />
     </main>
   );
 };

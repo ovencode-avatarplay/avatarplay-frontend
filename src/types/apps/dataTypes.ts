@@ -50,3 +50,13 @@ export enum ConversationPriortyType {
   Mandatory,
   DependsOn,
 }
+
+export enum AiModelType {
+  GPT4o,
+  GPT4,
+  GPT35,
+  claude2,
+  claude3opus,
+  claude3sonnet,
+  customApi,
+}
