@@ -348,6 +348,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
       <EpisodeConversationTemplate
         open={isEpisodeConversationTemplateOpen}
         closeModal={handleCloseEpisodeConversationTemplate}
+        triggerId={triggerInfo.id}
       />
     </>
   );
