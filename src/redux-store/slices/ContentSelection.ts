@@ -17,21 +17,25 @@ export const ContentSelectionSlice = createSlice({
   name: 'ContentSelection',
   initialState,
   reducers: {
-    setSelectedChapter: (state, action: PayloadAction<number>) => {
+    setSelectedChapterId: (state, action: PayloadAction<number>) => {
       console.log(action.payload);
       state.selectedChapterId = action.payload;
     },
-    setSelectedEpisode: (state, action: PayloadAction<number>) => {
+    setSelectedEpisodeId: (state, action: PayloadAction<number>) => {
       console.log(action.payload);
       state.selectedEpisodeId = action.payload;
     },
-    setSelectedContentID: (state, action: PayloadAction<number>) => {
+    setSelectedContentId: (state, action: PayloadAction<number>) => {
       console.log(action.payload);
       state.selectedContentId = action.payload;
     },
   },
 });
 
-export const {setSelectedChapter, setSelectedEpisode, setSelectedContentID} = ContentSelectionSlice.actions;
+export const {
+  setSelectedChapterId,
+  setSelectedEpisodeId: setSelectedEpisodeId,
+  setSelectedContentId,
+} = ContentSelectionSlice.actions;
 export const ContentSelectionReducer = ContentSelectionSlice.reducer;
 export default ContentSelectionSlice.reducer;

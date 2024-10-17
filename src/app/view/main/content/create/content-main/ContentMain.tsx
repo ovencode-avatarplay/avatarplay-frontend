@@ -30,7 +30,7 @@ import {
 } from '@/app/NetWork/ContentNetwork';
 
 // Redux
-import {setSelectedChapter, setSelectedEpisode, setSelectedContentID} from '@/redux-store/slices/ContentSelection';
+import {setSelectedChapterId, setSelectedEpisodeId, setSelectedContentId} from '@/redux-store/slices/ContentSelection';
 import {setEditingContentInfo, updateEditingContentInfo} from '@/redux-store/slices/ContentInfo';
 import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
@@ -136,9 +136,9 @@ const ContentMain: React.FC = () => {
   };
 
   function Init() {
-    dispatch(setSelectedContentID(emptyContentInfo.id));
-    dispatch(setSelectedChapter(emptyContentInfo.chapterInfoList[0].id));
-    dispatch(setSelectedEpisode(emptyContentInfo.chapterInfoList[0].episodeInfoList[0].id));
+    dispatch(setSelectedContentId(emptyContentInfo.id));
+    dispatch(setSelectedChapterId(emptyContentInfo.chapterInfoList[0].id));
+    dispatch(setSelectedEpisodeId(emptyContentInfo.chapterInfoList[0].episodeInfoList[0].id));
     dispatch(setEditingContentInfo(emptyContentInfo));
 
     getContentsByUserId();
@@ -159,13 +159,13 @@ const ContentMain: React.FC = () => {
     if (isChapterboardOpen) {
       saveEpisodeData();
     }
-  }, [isChapterboardOpen, selectedChapterId, selectedEpisodeId, editedEpisodeInfo]);
+  }, [isChapterboardOpen]);
 
   //#region ChapterBoard에서 정보 수정
 
   // ChapterBoard에서 아이템 선택
   const handleItemSelect = (id: number) => {
-    dispatch(setSelectedContentID(id));
+    dispatch(setSelectedContentId(id));
 
     if (editingContentInfo) {
       if (id < 0) {
@@ -180,11 +180,11 @@ const ContentMain: React.FC = () => {
       }
 
       let firstChapter = chapterInfoList[0].id;
-      dispatch(setSelectedChapter(firstChapter));
+      dispatch(setSelectedChapterId(firstChapter));
 
       let firstEpisode = chapterInfoList[0].episodeInfoList[0]?.id;
       if (firstEpisode) {
-        dispatch(setSelectedEpisode(firstEpisode));
+        dispatch(setSelectedEpisodeId(firstEpisode));
       } else {
         console.error('No episodes available for the first chapter of content ID:', id);
       }
@@ -232,8 +232,8 @@ const ContentMain: React.FC = () => {
 
     // 새 챕터 추가 후 선택된 챕터와 에피소드를 업데이트
     const newSelectedChapterId = newChapter.id;
-    dispatch(setSelectedChapter(newSelectedChapterId));
-    dispatch(setSelectedEpisode(1));
+    dispatch(setSelectedEpisodeId(0));
+    dispatch(setSelectedChapterId(newSelectedChapterId));
   };
 
   const handleDeleteChapter = (chapterId: number) => {
@@ -254,12 +254,12 @@ const ContentMain: React.FC = () => {
     if (selectedChapterId === chapterId) {
       const remainingChapters = targetContent.chapterInfoList.filter(chapter => chapter.id !== chapterId);
       if (remainingChapters.length > 0) {
-        dispatch(setSelectedChapter(remainingChapters[0].id));
-        dispatch(setSelectedEpisode(remainingChapters[0].episodeInfoList[0]?.id || 0)); // 새 에피소드 선택
+        dispatch(setSelectedChapterId(remainingChapters[0].id));
+        dispatch(setSelectedEpisodeId(remainingChapters[0].episodeInfoList[0]?.id || 0)); // 새 에피소드 선택
       } else {
         // 챕터와 에피소드는 하나씩 반드시 남아있기 때문에 들어오면 에러
-        dispatch(setSelectedChapter(0));
-        dispatch(setSelectedEpisode(0));
+        dispatch(setSelectedChapterId(0));
+        dispatch(setSelectedEpisodeId(0));
       }
     }
   };
@@ -289,7 +289,7 @@ const ContentMain: React.FC = () => {
           chapterInfoList: updatedChapterList,
         }),
       );
-      dispatch(setSelectedEpisode(newEpisode.id));
+      dispatch(setSelectedEpisodeId(newEpisode.id));
     }
   };
 
@@ -324,7 +324,7 @@ const ContentMain: React.FC = () => {
 
       // 선택된 에피소드가 삭제된 경우, 첫 번째 에피소드를 선택
       if (selectedEpisodeId === episodeId) {
-        dispatch(setSelectedEpisode(0)); // 새 에피소드를 선택
+        dispatch(setSelectedEpisodeId(0)); // 새 에피소드를 선택
       }
     }
   };

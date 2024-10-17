@@ -18,7 +18,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import Style from './ChapterBoard.module.css';
 
 // Slice
-import {setSelectedChapter, setSelectedEpisode} from '@/redux-store/slices/ContentSelection';
+import {setSelectedChapterId, setSelectedEpisodeId} from '@/redux-store/slices/ContentSelection';
 import {updateEditingContentInfo} from '@/redux-store/slices/ContentInfo';
 
 // Components
@@ -99,8 +99,8 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleChapterSelect = (chapterId: number) => {
-    dispatch(setSelectedChapter(chapterId));
-    dispatch(setSelectedEpisode(0));
+    dispatch(setSelectedChapterId(chapterId));
+    dispatch(setSelectedEpisodeId(chapters.find(chapter => chapter.id === selectedChapterId)?.episodes[0].id ?? 0));
   };
 
   const handleCreateChapter = () => {
@@ -127,8 +127,8 @@ const ChapterBoard: React.FC<Props> = ({
   //#region Episode
 
   const handleEpisodeSelect = (chapterId: number, episodeId: number) => {
-    dispatch(setSelectedChapter(chapterId));
-    dispatch(setSelectedEpisode(episodeId));
+    dispatch(setSelectedChapterId(chapterId));
+    dispatch(setSelectedEpisodeId(episodeId));
   };
 
   const handleChangeName = (id: number, type: 'chapter' | 'episode', newName: string) => {
@@ -224,7 +224,7 @@ const ChapterBoard: React.FC<Props> = ({
   // Edit 팝업 열기
   const handleEditClick = (id: number, type: 'chapter' | 'episode') => {
     if (type === 'episode') {
-      dispatch(setSelectedEpisode(id));
+      dispatch(setSelectedEpisodeId(id));
     }
     setEditItem({id, type});
     setNewName('');
