@@ -1,8 +1,11 @@
 import React from 'react';
 import styles from './EpisodeConversationTemplate.module.css'; // CSS Module import
-import {Dialog, DialogTitle, Button} from '@mui/material';
+import {Dialog, DialogTitle, Button, IconButton} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CardSlider from './CardSlider'; // 카드 슬라이더 import
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import {useDispatch} from 'react-redux'; // Redux useDispatch import
+import {removeAllConversationTalk, removeAllActionConversationTalk} from '@/redux-store/slices/EpisodeInfo';
 
 interface EpisodeConversationTemplateProps {
   open: boolean; // 모달 열림 상태
@@ -15,6 +18,16 @@ const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = 
   closeModal,
   triggerId = -1, // 기본값은 -1
 }) => {
+  const dispatch = useDispatch(); // Redux dispatch hook 사용
+
+  const handleResetConversations = () => {
+    if (triggerId !== -1) {
+      dispatch(removeAllActionConversationTalk({triggerId}));
+    } else {
+      dispatch(removeAllConversationTalk());
+    }
+  };
+
   return (
     <Dialog
       closeAfterTransition={false}
@@ -30,6 +43,11 @@ const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = 
           <ArrowBackIosIcon />
         </Button>
         <span className={styles['modal-title']}>Episode Conversation Template</span>
+
+        {/* 리셋 버튼 클릭 시 전체 대화 제거 및 트리거별 대화 제거 */}
+        <IconButton onClick={handleResetConversations}>
+          <RestartAltIcon />
+        </IconButton>
       </DialogTitle>
 
       {/* CardSlider에 triggerId 전달 */}

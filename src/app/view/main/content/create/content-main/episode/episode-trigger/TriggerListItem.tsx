@@ -1,5 +1,3 @@
-// 파일 경로: components/TriggerListItem.tsx
-
 import React, {useState} from 'react';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -42,7 +40,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({item, handleToggle, is
         </ListItemIcon>
         <ListItemText
           className={styles.listItemText}
-          primary={<span className={styles.primaryText}>{`${item.name}`}</span>} // 이름 대신 id 표시 (TriggerInfo에는 name이 없으므로 적절한 필드 사용)
+          primary={<span className={styles.primaryText}>{`${item.name}`}</span>} // 트리거 이름 표시
         />
         <IconButton edge="end" aria-label="comments" className={styles.iconButton} onClick={handleModalOpen}>
           <ArrowForwardIos />
@@ -50,7 +48,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({item, handleToggle, is
       </ListItem>
 
       {/* ChangeBehaviour 모달에 item 데이터 전달 */}
-      <ChangeBehaviour open={isModalOpen} onClose={handleModalClose} item={item} />
+      <ChangeBehaviour open={isModalOpen} onClose={handleModalClose} item={item} triggerName={item.name} />
     </>
   );
 };
