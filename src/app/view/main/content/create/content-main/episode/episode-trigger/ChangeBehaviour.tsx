@@ -12,11 +12,11 @@ import {
   TextField,
   SelectChangeEvent,
 } from '@mui/material';
-import {ArrowBackIos} from '@mui/icons-material';
+import {ArrowBackIos, DeleteForever} from '@mui/icons-material';
 import styles from './ChangeBehaviour.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {updateTriggerInfo} from '@/redux-store/slices/EpisodeInfo';
+import {removeTriggerInfo, updateTriggerInfo} from '@/redux-store/slices/EpisodeInfo';
 import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/dataTypes';
 import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
 import EpisodeConversationTemplate from '../episode-conversationtemplate/EpisodeConversationTemplate';
@@ -147,6 +147,11 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
 
   const handleClose = () => {
     dispatch(updateTriggerInfo({id: triggerInfo.id, info: {...triggerInfo}}));
+    onClose();
+  };
+
+  const handleRemove = () => {
+    dispatch(removeTriggerInfo(triggerInfo.id));
     onClose();
   };
 
@@ -281,6 +286,10 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
             <ArrowBackIos />
           </Button>
           <span className={styles['modal-title']}>Change Behaviour</span>
+
+          <IconButton onClick={handleRemove}>
+            <DeleteForever></DeleteForever>
+          </IconButton>
         </DialogTitle>
         <DialogContent className={styles.dialogContent}>
           <Box className={styles.container}>

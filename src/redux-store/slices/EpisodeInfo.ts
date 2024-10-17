@@ -33,39 +33,43 @@ const episodeInfoSlice = createSlice({
       }
     },
 
-    // Trigger 관련 액션들 복구
+    // 새로운 TriggerInfo를 추가
     addTriggerInfo: (state, action: PayloadAction<Omit<TriggerInfo, 'id'>>) => {
       const newDataPair: TriggerInfo = {
         ...action.payload,
-        id: state.currentEpisodeInfo.triggerInfoList.length, // 배열의 인덱스를 id로 사용
+        id: state.currentEpisodeInfo.triggerInfoList.length, // 현재 배열 길이를 id로 설정 (새로운 트리거)
       };
-      state.currentEpisodeInfo.triggerInfoList.push(newDataPair);
+      state.currentEpisodeInfo.triggerInfoList.push(newDataPair); // 트리거 리스트에 새 트리거 추가
     },
 
+    // TriggerInfo 업데이트
     updateTriggerInfo: (state, action: PayloadAction<{id: number; info: Omit<TriggerInfo, 'id'>}>) => {
       const {id, info} = action.payload;
       const triggerIndex = state.currentEpisodeInfo.triggerInfoList.findIndex(trigger => trigger.id === id);
 
       if (triggerIndex !== -1) {
-        state.currentEpisodeInfo.triggerInfoList[triggerIndex] = {...info, id}; // id 유지하면서 정보 업데이트
+        state.currentEpisodeInfo.triggerInfoList[triggerIndex] = {...info, id}; // id 유지하며 정보 업데이트
       }
     },
 
+    // Trigger 이름 업데이트
     updateTriggerInfoName: (state, action: PayloadAction<{id: number; name: string}>) => {
       const {id, name} = action.payload;
       const pair = state.currentEpisodeInfo.triggerInfoList.find(pair => pair.id === id);
       if (pair) {
-        pair.name = name; // name 필드 업데이트
+        pair.name = name; // 이름 필드 업데이트
       }
     },
 
+    // Trigger 삭제 및 id 재할당
     removeTriggerInfo: (state, action: PayloadAction<number>) => {
-      state.currentEpisodeInfo.triggerInfoList.splice(action.payload, 1); // 해당 index의 트리거 삭제
+      const triggerId = action.payload;
+      const updatedTriggerList = state.currentEpisodeInfo.triggerInfoList.filter(trigger => trigger.id !== triggerId);
 
-      // 삭제 이후 모든 항목의 id를 배열 인덱스와 맞춰서 재할당
-      state.currentEpisodeInfo.triggerInfoList = state.currentEpisodeInfo.triggerInfoList.map((pair, index) => ({
-        ...pair,
-        id: index, // 배열의 새로운 인덱스를 id로 재할당
+      // id 재할당: 배열의 모든 트리거에 대해 id를 배열 인덱스에 맞게 다시 재할당
+      state.currentEpisodeInfo.triggerInfoList = updatedTriggerList.map((trigger, index) => ({
+        ...trigger,
+        id: index,
       }));
     },
 

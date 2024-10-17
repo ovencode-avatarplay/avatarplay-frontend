@@ -23,8 +23,8 @@
               },
               "triggerInfoList": [
                 {
-                  "id": 14,
-                  "name": "",
+                  "id": 0,
+                  "name": "가",
                   "triggerType": 0,
                   "triggerValueIntimacy": 1,
                   "triggerValueChatCount": 0,
@@ -45,8 +45,8 @@
                   ]
                 },
                 {
-                  "id": 73,
-                  "name": "",
+                  "id": 1,
+                  "name": "나",
                   "triggerType": 0,
                   "triggerValueIntimacy": 0,
                   "triggerValueChatCount": 2,
@@ -67,8 +67,8 @@
                   ]
                 },
                 {
-                  "id": 74,
-                  "name": "",
+                  "id": 2,
+                  "name": "다",
                   "triggerType": 0,
                   "triggerValueIntimacy": 0,
                   "triggerValueChatCount": 0,
@@ -89,8 +89,8 @@
                   ]
                 },
                 {
-                  "id": 75,
-                  "name": "",
+                  "id": 3,
+                  "name": "라",
                   "triggerType": 0,
                   "triggerValueIntimacy": 0,
                   "triggerValueChatCount": 0,
@@ -111,8 +111,8 @@
                   ]
                 },
                 {
-                  "id": 76,
-                  "name": "",
+                  "id": 4,
+                  "name": "마",
                   "triggerType": 0,
                   "triggerValueIntimacy": 50,
                   "triggerValueChatCount": 0,
