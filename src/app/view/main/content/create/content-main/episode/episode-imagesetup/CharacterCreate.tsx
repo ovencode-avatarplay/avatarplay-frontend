@@ -8,6 +8,7 @@ import characterOptionsMaleReal from '@/data/create/create-character-male-anime.
 import characterOptionsFeMaleReal from '@/data/create/create-character-female-anime.json';
 import characterOptionsMaleAnime from '@/data/create/create-character-male-anime.json';
 import characterOptionsFeMaleAnime from '@/data/create/create-character-female-anime.json';
+import CharacterCreateImageButton from './CharacterCreateImageButton';
 
 interface Props {}
 
@@ -62,6 +63,7 @@ const CharacterCreate: React.FC<Props> = () => {
     {key: 'topSize', label: 'Top Size', options: characterOptions.topSizes},
     {key: 'bottomSize', label: 'Bottom Size', options: characterOptions.bottomSizes},
   ];
+
   // Handler
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
@@ -73,6 +75,22 @@ const CharacterCreate: React.FC<Props> = () => {
     if (activeStep > 0) {
       setActiveStep(prev => prev - 1);
     }
+  };
+
+  const handleGenerate = () => {
+    const genderPrompt = selectedOptions.gender === 0 ? 'Male' : 'Female';
+    const prompts = [
+      genderPrompt,
+      ...summaryOptions.map(option => {
+        const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
+        const selectedOption = option.options[selectedIndex];
+
+        return selectedOption?.prompt || 'N/A';
+      }),
+      clothesInputValue || 'No clothes description provided',
+    ].join(', ');
+
+    console.log('Generated Prompt:', prompts);
   };
 
   const handleOptionSelect = (key: keyof typeof selectedOptions, index: number) => {
@@ -129,17 +147,15 @@ const CharacterCreate: React.FC<Props> = () => {
             <div className={styles.createTitle}>Step 2: Select Style</div>
             <Box className={styles.horizontalButtonGroup}>
               {characterOptions.styleOptions.map((option, index) => (
-                <Button
+                <CharacterCreateImageButton
                   key={option.label}
-                  variant={selectedOptions.style === index ? 'contained' : 'outlined'}
-                  className={styles.styleButton}
-                  style={{backgroundImage: `url(${option.image})`, backgroundSize: 'cover'}}
+                  width={'40vw'}
+                  height={'40vw'}
+                  label={option.label}
+                  image={'/Images/001.png'}
+                  selected={selectedOptions.style === index}
                   onClick={() => handleOptionSelect('style', index)}
-                >
-                  <Typography variant="h6" className={styles.buttonLabel}>
-                    {option.label}
-                  </Typography>
-                </Button>
+                />
               ))}
             </Box>
           </div>
@@ -150,16 +166,17 @@ const CharacterCreate: React.FC<Props> = () => {
             <Box className={styles.ethnicityContent}>
               <div className={styles.createTitle}>Step 3: Select Ethnicity</div>
               <Typography variant="h6">Race</Typography>
-              <Box className={styles.horizontalButtonGroup}>
+              <Box className={styles.scrollableContainer}>
                 {characterOptions.raceOptions.map((race, index) => (
-                  <Button
+                  <CharacterCreateImageButton
                     key={race.label}
-                    variant={selectedOptions.race === index ? 'contained' : 'outlined'}
-                    className={styles.ethnicityButton}
+                    width={'40vw'}
+                    height={'40vw'}
+                    label={race.label}
+                    image={'/Images/001.png'}
+                    selected={selectedOptions.race === index}
                     onClick={() => handleOptionSelect('race', index)}
-                  >
-                    {race.label}
-                  </Button>
+                  />
                 ))}
               </Box>
               <Typography variant="h6">Age</Typography>
@@ -199,15 +216,15 @@ const CharacterCreate: React.FC<Props> = () => {
               <Typography variant="h6">Hair Style</Typography>
               <Box className={styles.gridContainer}>
                 {characterOptions.hairStyles.map((style, index) => (
-                  <Button
+                  <CharacterCreateImageButton
                     key={style.label}
-                    variant={selectedOptions.hairStyle === index ? 'contained' : 'outlined'}
-                    className={styles.hairButton}
+                    width={'20vw'}
+                    height={'20vw'}
+                    label={style.label}
+                    image={'/Images/001.png'}
+                    selected={selectedOptions.hairStyle === index}
                     onClick={() => handleOptionSelect('hairStyle', index)}
-                    style={{backgroundImage: `url(${style.image})`, backgroundSize: 'cover'}}
-                  >
-                    <Typography className={styles.hairLabel}>{style.label}</Typography>
-                  </Button>
+                  />
                 ))}
               </Box>
               <Typography variant="h6" style={{marginTop: '16px'}}>
@@ -234,42 +251,45 @@ const CharacterCreate: React.FC<Props> = () => {
             <div className={styles.createTitle}>Step 5: Select Body Shape</div>
             <Box className={styles.bodyContent}>
               <Typography variant="h6">Body Type</Typography>
-              <Box className={styles.horizontalButtonGroup}>
-                {characterOptions.bodyTypes.map((type, index) => (
-                  <Button
-                    key={type.label}
-                    variant={selectedOptions.bodyType === index ? 'contained' : 'outlined'}
-                    className={styles.bodyButton}
+              <Box className={styles.scrollableContainer}>
+                {characterOptions.bodyTypes.map((style, index) => (
+                  <CharacterCreateImageButton
+                    key={style.label}
+                    width={'20vw'}
+                    height={'20vw'}
+                    label={style.label}
+                    image={'/Images/001.png'}
+                    selected={selectedOptions.bodyType === index}
                     onClick={() => handleOptionSelect('bodyType', index)}
-                  >
-                    {type.label}
-                  </Button>
+                  />
                 ))}
               </Box>
               <Typography variant="h6">Top Size</Typography>
-              <Box className={styles.horizontalButtonGroup}>
-                {characterOptions.topSizes.map((size, index) => (
-                  <Button
-                    key={size.label}
-                    variant={selectedOptions.topSize === index ? 'contained' : 'outlined'}
-                    className={styles.sizeButton}
+              <Box className={styles.scrollableContainer}>
+                {characterOptions.topSizes.map((style, index) => (
+                  <CharacterCreateImageButton
+                    key={style.label}
+                    width={'20vw'}
+                    height={'20vw'}
+                    label={style.label}
+                    image={'/Images/001.png'}
+                    selected={selectedOptions.topSize === index}
                     onClick={() => handleOptionSelect('topSize', index)}
-                  >
-                    {size.label}
-                  </Button>
+                  />
                 ))}
               </Box>
               <Typography variant="h6">Bottom Size</Typography>
-              <Box className={styles.horizontalButtonGroup}>
-                {characterOptions.bottomSizes.map((size, index) => (
-                  <Button
-                    key={size.label}
-                    variant={selectedOptions.bottomSize === index ? 'contained' : 'outlined'}
-                    className={styles.sizeButton}
+              <Box className={styles.scrollableContainer}>
+                {characterOptions.bottomSizes.map((style, index) => (
+                  <CharacterCreateImageButton
+                    key={style.label}
+                    width={'20vw'}
+                    height={'20vw'}
+                    label={style.label}
+                    image={'/Images/001.png'}
+                    selected={selectedOptions.bottomSize === index}
                     onClick={() => handleOptionSelect('bottomSize', index)}
-                  >
-                    {size.label}
-                  </Button>
+                  />
                 ))}
               </Box>
             </Box>
@@ -280,7 +300,7 @@ const CharacterCreate: React.FC<Props> = () => {
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 6: Select Outfit Clothes</div>
             <Box>
-              <Typography variant="h6">Write a short description</Typography>
+              <Typography variant="h6">Clothes</Typography>
               <TextField
                 fullWidth
                 multiline
@@ -355,7 +375,7 @@ const CharacterCreate: React.FC<Props> = () => {
             }
 
             return (
-              <Step key={label}>
+              <Step key={label} className={styles.stepItem}>
                 <StepLabel>{label}</StepLabel>
               </Step>
             );
@@ -363,24 +383,25 @@ const CharacterCreate: React.FC<Props> = () => {
         </Stepper>
       </Box>
 
-      <Box className={styles.progressBarContainer}>
+      {/* <Box className={styles.progressBarContainer}>
         <LinearProgress variant="determinate" value={(activeStep / (steps.length - 1)) * 100} />
-      </Box>
+      </Box> */}
 
       <Box className={styles.stepContent}>{getStepContent(activeStep)}</Box>
 
       <Box className={styles.buttonContainer}>
-        <Button className={styles.button} variant="outlined" onClick={handlePrev} disabled={activeStep === 0}>
+        <Button className={styles.stepButton} variant="outlined" onClick={handlePrev} disabled={activeStep === 0}>
           Prev
         </Button>
-        <Button
-          className={styles.button}
-          variant="contained"
-          onClick={handleNext}
-          disabled={activeStep === steps.length - 1}
-        >
-          Next
-        </Button>
+        {activeStep === steps.length - 1 ? (
+          <Button className={styles.stepButton} variant="contained" color="primary" onClick={handleGenerate}>
+            Generate
+          </Button>
+        ) : (
+          <Button className={styles.stepButton} variant="contained" onClick={handleNext}>
+            Next
+          </Button>
+        )}
       </Box>
     </Box>
   );
