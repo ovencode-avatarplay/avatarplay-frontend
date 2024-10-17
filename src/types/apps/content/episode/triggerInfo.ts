@@ -2,7 +2,7 @@ import {Conversation} from './conversation';
 
 export interface TriggerInfo {
   id: number;
-  // name: string;
+  name: string;
   triggerType: number;
   triggerValueIntimacy: number;
   triggerValueChatCount: number;
