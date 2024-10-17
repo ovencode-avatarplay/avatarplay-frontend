@@ -1,0 +1,80 @@
+{
+    "resultCode": 0,
+    "resultMessage": "",
+    "data": {
+      "contentInfo": {
+        "id": 0,
+        "userId": 0,
+        "chapterInfoList": [
+          {
+            "id": 0,
+            "name": "",
+            "episodeInfoList": [
+              {
+                "id": 0,
+                "name": "",
+                "thumbnail": "",
+                "episodeDescription": {
+                  "characterName": "",
+                  "characterDescription": "",
+                  "scenarioDescription": "",
+                  "introDescription": "",
+                  "secret": ""
+                },
+                "triggerInfoList": [
+                  {
+                    "id": 0,
+                    "name": "",
+                    "triggerType": 0,
+                    "triggerValueIntimacy": 0,
+                    "triggerValueChatCount": 0,
+                    "triggerValueKeyword": "",
+                    "triggerValueTimeMinute": 0,
+                    "triggerActionType": 0,
+                    "actionChangeEpisodeId": 0,
+                    "actionChangePrompt": "",
+                    "actionIntimacyPoint": 0,
+                    "maxIntimacyCount": 0,
+                    "actionConversationList": [
+                      {
+                        "id": 0,
+                        "conversationType": 0,
+                        "user": "",
+                        "character": ""
+                      }
+                    ]
+                  }
+                ],
+                "conversationTemplateList": [
+                  {
+                    "id": 0,
+                    "conversationType": 0,
+                    "user": "",
+                    "character": ""
+                  }
+                ],
+                "llmSetupInfo": {
+                  "llmModel": 0,
+                  "customApi": ""
+                }
+              }
+            ]
+          }
+        ],
+        "publishInfo": {
+          "languageType": 0,
+          "contentName": "",
+          "thumbnail": "",
+          "contentDescription": "",
+          "authorName": "",
+          "authorComment": "",
+          "tagList": [],
+          "selectTagList": [],
+          "visibilityType": 0,
+          "monetization": false,
+          "nsfw": 0
+        }
+      }
+    }
+  }
+  

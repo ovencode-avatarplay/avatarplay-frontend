@@ -22,7 +22,7 @@ export const PublishInfoSlice = createSlice({
   name: 'PublishInfo',
   initialState,
   reducers: {
-    setContentInfo: (state, action: PayloadAction<PublishInfo>) => {
+    setPublishInfo: (state, action: PayloadAction<PublishInfo>) => {
       state.languageType = action.payload.languageType;
       state.contentName = action.payload.contentName;
       state.contentDescription = action.payload.contentDescription;
@@ -64,7 +64,7 @@ export const PublishInfoSlice = createSlice({
 });
 
 export const {
-  setContentInfo,
+  setPublishInfo,
   setLanguageType,
   setContentName,
   setContentDescription,

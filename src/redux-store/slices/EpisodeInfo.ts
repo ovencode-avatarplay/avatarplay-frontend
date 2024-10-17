@@ -5,6 +5,8 @@ import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
 import {Conversation} from '@/types/apps/content/episode/conversation';
 import {LLMSetupInfo} from '@/types/apps/content/episode/llmSetupInfo';
 import defaultContent from '@/data/create/content-info-data.json';
+import emptyContent from '@/data/create/empty-content-info-data.json';
+
 import {
   ConversationTalkInfoList,
   ConversationTalkInfo,
@@ -17,7 +19,7 @@ interface EpisodeInfoState {
 }
 
 const initialState: EpisodeInfoState = {
-  currentEpisodeInfo: defaultContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
+  currentEpisodeInfo: emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
 };
 
 const episodeInfoSlice = createSlice({

@@ -47,9 +47,10 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
   const [isEditNameModalOpen, setIsEditNameModalOpen] = useState(false);
   const [newTriggerName, setNewTriggerName] = useState(item.name);
 
-  const contentInfo = useSelector((state: RootState) => state.content.contentInfo ?? []);
-  const curContentId = useSelector((state: RootState) => state.contentselection.contentID);
+  const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo);
+  const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId);
   const triggerInfoList = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList || []);
+
   const handleOpenEpisodeConversationTemplate = () => {
     setEpisodeConversationTemplateOpen(true);
   };
@@ -67,9 +68,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
   };
 
   const handleSelectEpisode = (chapterId: number, episodeId: number) => {
-    const selectedChapter = contentInfo.find(content =>
-      content.chapterInfoList.some(chapter => chapter.id === chapterId),
-    );
+    const selectedChapter = contentInfo;
     const selectedChapterInfo = selectedChapter?.chapterInfoList.find(chapter => chapter.id === chapterId);
     const selectedEpisode = selectedChapterInfo?.episodeInfoList.find(episode => episode.id === episodeId);
 
@@ -379,7 +378,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
       <ChapterBoardOnTrigger
         open={isChapterBoardOpen}
         onClose={handleCloseChapterBoard}
-        initialChapters={contentInfo.find(item => item.id === curContentId)?.chapterInfoList || []}
+        initialChapters={contentInfo?.chapterInfoList || []}
         onSelectEpisode={handleSelectEpisode}
         onAddChapter={() => {}}
         onDeleteChapter={() => {}}

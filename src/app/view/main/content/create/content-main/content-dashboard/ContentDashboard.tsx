@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Drawer, Box, Button, Select, MenuItem } from '@mui/material';
+import React, {useEffect, useRef, useState} from 'react';
+import {Drawer, Box, Button, Select, MenuItem} from '@mui/material';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import ContentItem from './ContentItem';
 import Style from './ContentDashboard.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux-store/ReduxStore';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
 
 interface Props {
   open: boolean;
@@ -12,11 +12,12 @@ interface Props {
   onSelectItem: (id: number) => void;
 }
 
-const ContentDashboard: React.FC<Props> = ({ open, onClose, onSelectItem }) => {
+const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
-  const contentInfo = useSelector((state: RootState) => state.content.contentInfo ?? []);
-  
+  // TODO Dashboard로 변경
+  // const contentInfo = useSelector((state: RootState) => state.content.contentInfo ?? []);
+
   const handleItemClick = (index: number) => {
     setSelectedIndex(index);
   };
@@ -27,17 +28,18 @@ const ContentDashboard: React.FC<Props> = ({ open, onClose, onSelectItem }) => {
     if (selectedIndex !== null && open && listRef.current) {
       const selectedItem = listRef.current.children[selectedIndex];
       if (selectedItem) {
-        selectedItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        selectedItem.scrollIntoView({behavior: 'smooth', block: 'center'});
       }
     }
   }, [selectedIndex, open]);
 
   const handleEditClick = () => {
     if (selectedIndex !== null) {
-      const selectedItemId = contentInfo[selectedIndex]?.id;
-      if (selectedItemId) {
-        onSelectItem(selectedItemId);
-      }
+      // ToDo Dashboard로 변경
+      // const selectedItemId = contentInfo[selectedIndex]?.id;
+      // if (selectedItemId) {
+      //   onSelectItem(selectedItemId);
+      // }
     }
     onClose();
   };
@@ -48,7 +50,7 @@ const ContentDashboard: React.FC<Props> = ({ open, onClose, onSelectItem }) => {
       open={open}
       onClose={onClose}
       PaperProps={{
-        sx: { width: '100vw', height: '100vh' },
+        sx: {width: '100vw', height: '100vh'},
       }}
     >
       <Box className={Style.drawerContainer}>
@@ -68,7 +70,8 @@ const ContentDashboard: React.FC<Props> = ({ open, onClose, onSelectItem }) => {
 
         {/* Content list */}
         <Box className={Style.list} ref={listRef}>
-          {contentInfo.map((item, index) => (
+          {/* TODO : DashBoard로 변경*/}
+          {/* {contentInfo.map((item, index) => (
             <div key={index} onClick={() => handleItemClick(index)}>
               <ContentItem
                 thumbnailSrc={item.publishInfo.thumbnail}
@@ -79,16 +82,12 @@ const ContentDashboard: React.FC<Props> = ({ open, onClose, onSelectItem }) => {
                 isSelected={selectedIndex === index}
               />
             </div>
-          ))}
+          ))} */}
         </Box>
 
         {/* Action buttons */}
         <Box className={Style.buttonContainer}>
-          <Button 
-            variant="outlined" 
-            onClick={handleEditClick} 
-            disabled={selectedIndex === null}
-          >
+          <Button variant="outlined" onClick={handleEditClick} disabled={selectedIndex === null}>
             Edit
           </Button>
           <Button variant="outlined">Preview</Button>

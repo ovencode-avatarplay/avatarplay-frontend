@@ -29,7 +29,7 @@ interface Props {
 const ChapterBoardOnTrigger: React.FC<Props> = ({open, onClose, initialChapters, onAddChapter, onSelectEpisode}) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
 
-  const selectedChapter = useSelector((state: RootState) => state.contentselection.selectedChapter);
+  const selectedChapter = useSelector((state: RootState) => state.contentselection.selectedChapterId);
 
   // ChapterInfo 배열을 컴포넌트 상태로 변환
   useEffect(() => {
