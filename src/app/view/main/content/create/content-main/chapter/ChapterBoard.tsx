@@ -18,9 +18,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import Style from './ChapterBoard.module.css';
 
 // Slice
-import {setSelectedChapter, setSelectedEpisode} from '@/redux-store/slices/ContentSelection';
-import {addChapter, deleteChapter, addEpisode, deleteEpisode} from '@/redux-store/slices/ChapterBoard';
-import {updateContentInfo} from '@/redux-store/slices/ContentInfo';
+import {setSelectedChapterId, setSelectedEpisodeId} from '@/redux-store/slices/ContentSelection';
+import {updateEditingContentInfo} from '@/redux-store/slices/ContentInfo';
 
 // Components
 import ChapterItem from './ChapterItem';
@@ -33,6 +32,7 @@ import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
 
 // Data
 import defaultData from '@/data/create/content-info-data.json';
+import emptyData from '@/data/create/empty-content-info-data.json';
 
 interface Props {
   open: boolean;
@@ -54,21 +54,16 @@ const ChapterBoard: React.FC<Props> = ({
   onDeleteEpisode,
 }) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
-  const curContentId = useSelector((state: RootState) => state.contentselection.contentID);
-  const selectedContent = useSelector((state: RootState) =>
-    state.content.contentInfo.find(item => item.id === curContentId),
-  );
-  const selectedChapter = useSelector((state: RootState) => state.contentselection.selectedChapter);
-  const selectedEpisode = useSelector((state: RootState) => state.contentselection.selectedEpisode);
+  const selectedContent = useSelector((state: RootState) => state.content.curEditingContentInfo);
+  const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId);
+  const selectedChapterId = useSelector((state: RootState) => state.contentselection.selectedChapterId);
+  const selectedEpisodeId = useSelector((state: RootState) => state.contentselection.selectedEpisodeId);
   const [editItem, setEditItem] = useState<{id: number | null; type: 'chapter' | 'episode' | null}>({
     id: null,
     type: null,
   });
   const [newName, setNewName] = useState<string>('');
   const dispatch = useDispatch();
-
-  const defaultChapterData = defaultData.data.contentInfo.chapterInfoList[0];
-  const defaultEpisodeData = defaultChapterData.episodeInfoList[0];
 
   // ChapterInfo를 Chapter로 변환하는 함수
   const transformChapterInfoToChapter = (chapterInfoList: ChapterInfo[]): Chapter[] => {
@@ -90,23 +85,10 @@ const ChapterBoard: React.FC<Props> = ({
 
   // ChapterInfo 배열을 컴포넌트 상태로 변환
   useEffect(() => {
-    setChapters(
-      initialChapters.map(chapterInfo => ({
-        id: chapterInfo.id,
-        title: chapterInfo.name,
-        episodes: chapterInfo.episodeInfoList.map(episodeInfo => ({
-          id: episodeInfo.id,
-          title: episodeInfo.name,
-          thumbnail: episodeInfo.thumbnail,
-          description: episodeInfo.episodeDescription,
-          triggerInfoList: episodeInfo.triggerInfoList,
-          conversationTemplateList: episodeInfo.conversationTemplateList,
-          llmSetupInfo: episodeInfo.llmSetupInfo,
-        })),
-        expanded: false,
-      })),
-    );
+    setChapters(transformChapterInfoToChapter(initialChapters));
   }, [initialChapters]);
+
+  const getMaxId = (items: {id: number}[]) => items.reduce((maxId, item) => Math.max(maxId, item.id), 0);
 
   //#region Chapter
 
@@ -117,13 +99,15 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleChapterSelect = (chapterId: number) => {
-    dispatch(setSelectedChapter(chapterId));
-    dispatch(setSelectedEpisode(0));
+    dispatch(setSelectedChapterId(chapterId));
+    dispatch(setSelectedEpisodeId(chapters.find(chapter => chapter.id === selectedChapterId)?.episodes[0].id ?? 0));
   };
 
   const handleCreateChapter = () => {
+    const newChapterId = getMaxId(chapters) + 1;
+
     const newChapter: ChapterInfo = {
-      id: chapters.length + 1,
+      id: newChapterId,
       name: 'New Chapter',
       episodeInfoList: [],
     };
@@ -131,6 +115,7 @@ const ChapterBoard: React.FC<Props> = ({
     // 새로운 챕터를 ContentMain으로 전달하여 추가
     onAddChapter(newChapter);
   };
+
   const handleDeleteChapter = (chapterId: number) => {
     if (chapters.length > 1) {
       onDeleteChapter(chapterId); // Call the function passed via props
@@ -142,34 +127,34 @@ const ChapterBoard: React.FC<Props> = ({
   //#region Episode
 
   const handleEpisodeSelect = (chapterId: number, episodeId: number) => {
-    dispatch(setSelectedChapter(chapterId));
-    dispatch(setSelectedEpisode(episodeId));
+    dispatch(setSelectedChapterId(chapterId));
+    dispatch(setSelectedEpisodeId(episodeId));
   };
 
   const handleChangeName = (id: number, type: 'chapter' | 'episode', newName: string) => {
     setChapters(prevChapters =>
       prevChapters.map(chapter => {
         if (type === 'chapter' && chapter.id === id) {
-          if (selectedChapter === id) {
+          if (selectedChapterId === id) {
             const updatedContent = {
               ...selectedContent,
               chapterInfoList: selectedContent?.chapterInfoList.map(chapterInfo =>
                 chapterInfo.id === id ? {...chapterInfo, name: newName} : chapterInfo,
               ),
             };
-            dispatch(updateContentInfo(updatedContent)); // Redux 상태 반영
+            dispatch(updateEditingContentInfo(updatedContent)); // Redux 상태 반영
           }
           return {...chapter, title: newName};
-        } else if (type === 'episode' && selectedEpisode && chapter.id === selectedChapter) {
+        } else if (type === 'episode' && selectedEpisodeId && chapter.id === selectedChapterId) {
           const updatedEpisodes = chapter.episodes.map(episode =>
             episode.id === id ? {...episode, title: newName} : episode,
           );
 
-          if (selectedEpisode === id) {
+          if (selectedEpisodeId === id) {
             const updatedContent = {
               ...selectedContent,
               chapterInfoList: selectedContent?.chapterInfoList.map(chapterInfo =>
-                chapterInfo.id === selectedChapter
+                chapterInfo.id === selectedChapterId
                   ? {
                       ...chapterInfo,
                       episodeInfoList: chapterInfo.episodeInfoList.map(episodeInfo =>
@@ -180,7 +165,7 @@ const ChapterBoard: React.FC<Props> = ({
               ),
             };
 
-            dispatch(updateContentInfo(updatedContent));
+            dispatch(updateEditingContentInfo(updatedContent));
           }
 
           // 에피소드 이름을 로컬 상태에도 반영
@@ -192,11 +177,13 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleCreateEpisode = () => {
-    if (selectedChapter !== null) {
-      const selectedChapterData = chapters.find(chapter => chapter.id === selectedChapter);
+    if (selectedChapterId !== null) {
+      const selectedChapterData = chapters.find(chapter => chapter.id === selectedChapterId);
+      const newEpisodeId = getMaxId(selectedChapterData?.episodes || []) + 1;
+
       const newEpisodeInfo: EpisodeInfo = {
-        ...defaultEpisodeData,
-        id: (selectedChapterData?.episodes.length || 0) + 1,
+        ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
+        id: newEpisodeId,
       };
 
       const newEpisode = {
@@ -209,11 +196,11 @@ const ChapterBoard: React.FC<Props> = ({
         llmSetupInfo: newEpisodeInfo.llmSetupInfo,
       };
 
-      onAddEpisode(newEpisodeInfo); // Call the function passed via props
+      onAddEpisode(newEpisodeInfo);
 
       setChapters(prevChapters =>
         prevChapters.map(chapter =>
-          chapter.id === selectedChapter ? {...chapter, episodes: [...chapter.episodes, newEpisode]} : chapter,
+          chapter.id === selectedChapterId ? {...chapter, episodes: [...chapter.episodes, newEpisode]} : chapter,
         ),
       );
     }
@@ -234,56 +221,10 @@ const ChapterBoard: React.FC<Props> = ({
     );
   };
 
-  // const handleCreateEpisode = () => {
-  //   if (selectedChapter !== null) {
-  //     const selectedChapterData = chapters.find(chapter => chapter.id === selectedChapter);
-  //     const newEpisodeInfo: EpisodeInfo = {
-  //       ...defaultEpisodeData,
-  //       id: (selectedChapterData?.episodes.length || 0) + 1, // 고유 에피소드 ID 설정
-  //     };
-
-  //     const newEpisode = {
-  //       id: newEpisodeInfo.id,
-  //       title: newEpisodeInfo.name,
-  //       thumbnail: newEpisodeInfo.thumbnail,
-  //       description: newEpisodeInfo.episodeDescription,
-  //       triggerInfoList: newEpisodeInfo.triggerInfoList,
-  //       conversationTemplateList: newEpisodeInfo.conversationTemplateList,
-  //       llmSetupInfo: newEpisodeInfo.llmSetupInfo,
-  //     };
-
-  //     dispatch(addEpisode({ chapterId: selectedChapter, episode: newEpisodeInfo }));
-
-  //     setChapters(prevChapters =>
-  //       prevChapters.map(chapter =>
-  //         chapter.id === selectedChapter
-  //           ? { ...chapter, episodes: [...chapter.episodes, newEpisode] }
-  //           : chapter
-  //       )
-  //     );
-  //   }
-  // };
-
-  // const handleDeleteEpisode = (chapterId: number, episodeId: number) => {
-  //   dispatch(deleteEpisode({ chapterId, episodeId }));
-  //   setChapters(prevChapters =>
-  //     prevChapters.map(chapter => {
-  //       if (chapter.id === chapterId && chapter.episodes.length > 1) {
-  //         return {
-  //           ...chapter,
-  //           episodes: chapter.episodes.filter(episode => episode.id !== episodeId),
-  //         };
-  //       }
-  //       return chapter;
-  //     })
-  //   );
-  // };
-  //#endregion
-
   // Edit 팝업 열기
   const handleEditClick = (id: number, type: 'chapter' | 'episode') => {
     if (type === 'episode') {
-      dispatch(setSelectedEpisode(id));
+      dispatch(setSelectedEpisodeId(id));
     }
     setEditItem({id, type});
     setNewName('');
@@ -323,7 +264,7 @@ const ChapterBoard: React.FC<Props> = ({
               onSelectEpisode={handleEpisodeSelect}
               onEdit={handleEditClick}
               onCloseChapterBoard={onClose}
-              isSelected={selectedChapter === chapter.id}
+              isSelected={selectedChapterId === chapter.id}
               disableDelete={chapters.length <= 1}
             />
           ))}

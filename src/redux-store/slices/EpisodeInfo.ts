@@ -5,6 +5,8 @@ import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
 import {Conversation} from '@/types/apps/content/episode/conversation';
 import {LLMSetupInfo} from '@/types/apps/content/episode/llmSetupInfo';
 import defaultContent from '@/data/create/content-info-data.json';
+import emptyContent from '@/data/create/empty-content-info-data.json';
+
 import {
   ConversationTalkInfoList,
   ConversationTalkInfo,
@@ -17,7 +19,7 @@ interface EpisodeInfoState {
 }
 
 const initialState: EpisodeInfoState = {
-  currentEpisodeInfo: defaultContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
+  currentEpisodeInfo: emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
 };
 
 const episodeInfoSlice = createSlice({
@@ -46,7 +48,7 @@ const episodeInfoSlice = createSlice({
     updateTriggerInfo: (state, action: PayloadAction<{id: number; info: Omit<TriggerInfo, 'id'>}>) => {
       const {id, info} = action.payload;
       const triggerIndex = state.currentEpisodeInfo.triggerInfoList.findIndex(trigger => trigger.id === id);
-
+      console.log(state.currentEpisodeInfo.triggerInfoList[triggerIndex].name);
       if (triggerIndex !== -1) {
         state.currentEpisodeInfo.triggerInfoList[triggerIndex] = {...info, id}; // id 유지하며 정보 업데이트
       }
@@ -55,10 +57,10 @@ const episodeInfoSlice = createSlice({
     // Trigger 이름 업데이트
     updateTriggerInfoName: (state, action: PayloadAction<{id: number; name: string}>) => {
       const {id, name} = action.payload;
-      const pair = state.currentEpisodeInfo.triggerInfoList.find(pair => pair.id === id);
-      if (pair) {
-        pair.name = name; // 이름 필드 업데이트
-      }
+      const updatedTriggerInfoList = state.currentEpisodeInfo.triggerInfoList.map(
+        pair => (pair.id === id ? {...pair, name} : pair), // 새로운 배열을 반환하며 id가 일치하면 이름을 업데이트
+      );
+      state.currentEpisodeInfo.triggerInfoList = updatedTriggerInfoList; // 새로운 배열로 상태 업데이트
     },
 
     // Trigger 삭제 및 id 재할당
@@ -211,6 +213,11 @@ const episodeInfoSlice = createSlice({
       state.currentEpisodeInfo.conversationTemplateList.forEach((conversation, idx) => {
         conversation.id = idx;
       });
+    },
+
+    removeAllConversationTalk: state => {
+      // conversationTemplateList 배열을 비움
+      state.currentEpisodeInfo.conversationTemplateList = [];
     },
 
     // 새로운 기능 - actionConversationList 관련 액션들 추가
@@ -373,6 +380,13 @@ const episodeInfoSlice = createSlice({
         });
       }
     },
+    removeAllActionConversationTalk: (state, action: PayloadAction<{triggerId: number}>) => {
+      const trigger = state.currentEpisodeInfo.triggerInfoList.find(trigger => trigger.id === action.payload.triggerId);
+      if (trigger) {
+        // actionConversationList 배열을 비움
+        trigger.actionConversationList = [];
+      }
+    },
   },
 });
 
@@ -394,6 +408,8 @@ export const {
   updateActionConversationTalk,
   removeActionConversationItem,
   removeActionConversationTalk,
+  removeAllConversationTalk,
+  removeAllActionConversationTalk,
 } = episodeInfoSlice.actions;
 
 export default episodeInfoSlice.reducer;

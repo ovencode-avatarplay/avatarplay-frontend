@@ -1,48 +1,38 @@
 // Imports
 import {ContentInfo} from '@/types/apps/content/contentInfo';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import defaultContent from '@/data/create/content-info-data.json'; // JSON 파일
 
-// JSON 데이터 타입 정의
+// JSON 파일
+import defaultContent from '@/data/create/content-info-data.json';
+import emptyContent from '@/data/create/empty-content-info-data.json';
+
+// 현재 수정 중인 Content 정보
 interface ContentInfoState {
-  contentInfo: ContentInfo[];
+  curEditingContentInfo: ContentInfo;
 }
 
 // 초기 상태
 const initialState: ContentInfoState = {
-  contentInfo: [defaultContent.data.contentInfo], // defaultContent가 배열인지 확인
+  curEditingContentInfo: emptyContent.data.contentInfo,
 };
 
 // Slice 생성
-export const contentInfoSlice = createSlice({
+export const curEditngContentInfoSlice = createSlice({
   name: 'contentInfo',
   initialState,
   reducers: {
-    addContentInfo: (state, action: PayloadAction<ContentInfo>) => {
-      if (state.contentInfo) {
-        state.contentInfo.push(action.payload);
-      }
+    setEditingContentInfo: (state, action: PayloadAction<ContentInfo>) => {
+      state.curEditingContentInfo = action.payload;
     },
 
-    setContentInfo: (state, action: PayloadAction<ContentInfo[]>) => {
-      state.contentInfo = action.payload;
-    },
-
-    removeContentInfo: state => {
-      state.contentInfo = [];
-    },
-
-    updateContentInfo: (state, action: PayloadAction<Partial<ContentInfo>>) => {
-      if (state.contentInfo) {
-        const index = state.contentInfo.findIndex(info => info.id === action.payload.id);
-        if (index !== -1) {
-          state.contentInfo[index] = {...state.contentInfo[index], ...action.payload};
-        }
+    updateEditingContentInfo: (state, action: PayloadAction<Partial<ContentInfo>>) => {
+      if (state.curEditingContentInfo) {
+        state.curEditingContentInfo = {...state.curEditingContentInfo, ...action.payload};
       }
     },
   },
 });
 
 // 액션과 리듀서 export
-export const {addContentInfo, setContentInfo, removeContentInfo, updateContentInfo} = contentInfoSlice.actions;
-export default contentInfoSlice.reducer;
+export const {setEditingContentInfo, updateEditingContentInfo} = curEditngContentInfoSlice.actions;
+export default curEditngContentInfoSlice.reducer;

@@ -25,7 +25,7 @@ const persistConfig = {
 
 const reducers = combineReducers({
   sample: sampleReducer,
-  chat: chatReducer,
+  // chat: chatReducer,
   chatting: chattingReducer, // 서버데이터 Chatting/
   drawerContentDesc: drawerContentDescReducer,
   content: ContentInfoSlice,
@@ -46,6 +46,9 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+
+// 스토리지 초기화 (Data 구조가 크게 바뀌었는데 persistor가 예전 Data로 복구를 해서 문제 일으키는 경우 수동으로 데이터 날리고 다시 확인하기)
+persistor.purge();
 
 // RootState와 AppDispatch 타입 정의
 export type RootState = ReturnType<typeof store.getState>;

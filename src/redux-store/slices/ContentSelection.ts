@@ -2,34 +2,40 @@ import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
 
 interface ReduxState {
-  selectedChapter: number;
-  selectedEpisode: number;
-  contentID: number;
+  selectedChapterId: number;
+  selectedEpisodeId: number;
+  selectedContentId: number;
 }
 
 const initialState: ReduxState = {
-  selectedChapter: 0,
-  selectedEpisode: 0,
-  contentID: 0,
+  selectedChapterId: 0,
+  selectedEpisodeId: 0,
+  selectedContentId: 0,
 };
 
 export const ContentSelectionSlice = createSlice({
   name: 'ContentSelection',
   initialState,
   reducers: {
-    setSelectedChapter: (state, action: PayloadAction<number>) => {
-      state.selectedChapter = action.payload;
+    setSelectedChapterId: (state, action: PayloadAction<number>) => {
+      console.log(action.payload);
+      state.selectedChapterId = action.payload;
     },
-    setSelectedEpisode: (state, action: PayloadAction<number>) => {
-      state.selectedEpisode = action.payload;
+    setSelectedEpisodeId: (state, action: PayloadAction<number>) => {
+      console.log(action.payload);
+      state.selectedEpisodeId = action.payload;
     },
-    setContentID: (state, action: PayloadAction<number>) => {
-      state.contentID = action.payload;
+    setSelectedContentId: (state, action: PayloadAction<number>) => {
+      console.log(action.payload);
+      state.selectedContentId = action.payload;
     },
   },
 });
 
-export const {setSelectedChapter, setSelectedEpisode, setContentID} =
-  ContentSelectionSlice.actions;
+export const {
+  setSelectedChapterId,
+  setSelectedEpisodeId: setSelectedEpisodeId,
+  setSelectedContentId,
+} = ContentSelectionSlice.actions;
 export const ContentSelectionReducer = ContentSelectionSlice.reducer;
 export default ContentSelectionSlice.reducer;

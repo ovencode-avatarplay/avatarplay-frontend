@@ -12,11 +12,11 @@ import {
   TextField,
   SelectChangeEvent,
 } from '@mui/material';
-import {ArrowBackIos, DeleteForever} from '@mui/icons-material';
+import {ArrowBackIos, DeleteForever, DriveFileRenameOutline} from '@mui/icons-material';
 import styles from './ChangeBehaviour.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {removeTriggerInfo, updateTriggerInfo} from '@/redux-store/slices/EpisodeInfo';
+import {removeTriggerInfo, updateTriggerInfo, updateTriggerInfoName} from '@/redux-store/slices/EpisodeInfo';
 import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/dataTypes';
 import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
 import EpisodeConversationTemplate from '../episode-conversationtemplate/EpisodeConversationTemplate';
@@ -26,26 +26,30 @@ interface ChangeBehaviourProps {
   open: boolean;
   onClose: () => void;
   item: TriggerInfo;
+  triggerName: string;
 }
 
 const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) => {
   const dispatch = useDispatch();
   const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>({
     ...item,
+    name: item.name || '', // name 필드를 추가하여 초기화
     triggerType: item.triggerType || TriggerMainDataType.triggerValueIntimacy,
-    actionChangeEpisodeId: item.actionChangeEpisodeId || 0, // 초기 값 설정
+    actionChangeEpisodeId: item.actionChangeEpisodeId || 0,
     actionChangePrompt: item.actionChangePrompt || '',
     actionConversationList: item.actionConversationList || [],
   });
 
   const [selectedChapter, setSelectedChapter] = useState<string>('Chapter.1');
   const [selectedEpisode, setSelectedEpisode] = useState<string>('Ep.2 Wanna go out?');
-
   const [isEpisodeConversationTemplateOpen, setEpisodeConversationTemplateOpen] = useState(false);
   const [isChapterBoardOpen, setIsChapterBoardOpen] = useState(false);
+  const [isEditNameModalOpen, setIsEditNameModalOpen] = useState(false);
+  const [newTriggerName, setNewTriggerName] = useState(item.name);
 
-  const contentInfo = useSelector((state: RootState) => state.content.contentInfo ?? []);
-  const curContentId = useSelector((state: RootState) => state.contentselection.contentID);
+  const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo);
+  const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId);
+  const triggerInfoList = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList || []);
 
   const handleOpenEpisodeConversationTemplate = () => {
     setEpisodeConversationTemplateOpen(true);
@@ -56,18 +60,15 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
   };
 
   const handleOpenChapterBoard = () => {
-    setIsChapterBoardOpen(true); // ChapterBoard 열기
+    setIsChapterBoardOpen(true);
   };
 
   const handleCloseChapterBoard = () => {
-    setIsChapterBoardOpen(false); // ChapterBoard 닫기
+    setIsChapterBoardOpen(false);
   };
 
   const handleSelectEpisode = (chapterId: number, episodeId: number) => {
-    // 선택한 챕터와 에피소드의 이름 업데이트
-    const selectedChapter = contentInfo.find(content =>
-      content.chapterInfoList.some(chapter => chapter.id === chapterId),
-    );
+    const selectedChapter = contentInfo;
     const selectedChapterInfo = selectedChapter?.chapterInfoList.find(chapter => chapter.id === chapterId);
     const selectedEpisode = selectedChapterInfo?.episodeInfoList.find(episode => episode.id === episodeId);
 
@@ -98,7 +99,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
         triggerActionType: subDataOptions[0].key,
         actionChangePrompt: '',
         actionIntimacyPoint: 0,
-        actionCoversationList: [],
+        actionConversationList: [],
       }));
     }
   };
@@ -146,6 +147,17 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
   }, [triggerInfo.triggerType]);
 
   const handleClose = () => {
+    // Keyword 타입이 이미 존재하는지 확인 (TriggerMainDataType.triggerValueKeyword = 1 이라고 가정)
+    const isKeywordTypeExists = triggerInfoList.some(
+      info => info.triggerType === TriggerMainDataType.triggerValueKeyword && info.id !== triggerInfo.id,
+    );
+
+    if (isKeywordTypeExists && triggerInfo.triggerType === TriggerMainDataType.triggerValueKeyword) {
+      alert('Keyword타입은 1개를 넘을 수 없습니다.');
+      return; // handleClose를 취소함
+    }
+
+    // 조건을 만족하지 않으면 트리거 정보 업데이트
     dispatch(updateTriggerInfo({id: triggerInfo.id, info: {...triggerInfo}}));
     onClose();
   };
@@ -153,6 +165,23 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
   const handleRemove = () => {
     dispatch(removeTriggerInfo(triggerInfo.id));
     onClose();
+  };
+
+  // 이름 변경 처리 함수
+  const handleOpenEditNameModal = () => {
+    setIsEditNameModalOpen(true);
+  };
+
+  const handleCloseEditNameModal = () => {
+    setIsEditNameModalOpen(false);
+  };
+
+  const handleSaveNewName = () => {
+    if (newTriggerName.trim()) {
+      dispatch(updateTriggerInfoName({id: triggerInfo.id, name: newTriggerName}));
+      triggerInfo.name = newTriggerName;
+      handleCloseEditNameModal();
+    }
   };
 
   const renderTargetValueField = (triggerType: TriggerMainDataType) => {
@@ -287,8 +316,12 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
           </Button>
           <span className={styles['modal-title']}>Change Behaviour</span>
 
+          <IconButton onClick={handleOpenEditNameModal}>
+            <DriveFileRenameOutline />
+          </IconButton>
+
           <IconButton onClick={handleRemove}>
-            <DeleteForever></DeleteForever>
+            <DeleteForever />
           </IconButton>
         </DialogTitle>
         <DialogContent className={styles.dialogContent}>
@@ -345,8 +378,8 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
       <ChapterBoardOnTrigger
         open={isChapterBoardOpen}
         onClose={handleCloseChapterBoard}
-        initialChapters={contentInfo.find(item => item.id === curContentId)?.chapterInfoList || []}
-        onSelectEpisode={handleSelectEpisode} // 선택된 에피소드에 대한 처리
+        initialChapters={contentInfo?.chapterInfoList || []}
+        onSelectEpisode={handleSelectEpisode}
         onAddChapter={() => {}}
         onDeleteChapter={() => {}}
         onAddEpisode={() => {}}
@@ -359,6 +392,27 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
         closeModal={handleCloseEpisodeConversationTemplate}
         triggerId={triggerInfo.id}
       />
+
+      {/* 이름 변경 모달 */}
+      <Dialog open={isEditNameModalOpen} onClose={handleCloseEditNameModal}>
+        <DialogTitle>Edit Trigger Name</DialogTitle>
+        <DialogContent>
+          <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
+            <TextField
+              label="New Trigger Name"
+              value={newTriggerName}
+              onChange={e => setNewTriggerName(e.target.value)}
+              fullWidth
+            />
+            <Button onClick={handleSaveNewName} variant="contained" color="primary">
+              Save
+            </Button>
+            <Button onClick={handleCloseEditNameModal} variant="outlined">
+              Cancel
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
