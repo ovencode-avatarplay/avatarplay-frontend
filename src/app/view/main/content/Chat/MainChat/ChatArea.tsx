@@ -16,11 +16,20 @@ const parseMessage = (message: string): Message | null => {
   try {
     const parsedMessage = JSON.parse(message);
 
+    console.log('parsedMessage', parsedMessage);
+
     // Answer가 있을 경우 partner 메시지
     if (parsedMessage.Answer) {
       return {
         text: parsedMessage.Answer,
         sender: 'partner',
+      };
+    }
+
+    if (parsedMessage.Question) {
+      return {
+        text: parsedMessage.Question,
+        sender: 'user',
       };
     }
 
@@ -52,11 +61,11 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null); // 스크롤 참조용 ref
   const parsedMessages = convertPrevMessages(messages); // 전달된 문자열을 파싱하여 메시지로 변환
 
-  console.log('messages1', messages);
+  console.log('parsedMessages', parsedMessages);
   useEffect(() => {
     // 새로운 메시지가 추가될 때마다 스크롤을 마지막 메시지로 이동
     bottomRef.current?.scrollIntoView({behavior: 'smooth'});
-    console.log('messages2', messages);
+    //console.log('messages2', messages);
   }, [messages]);
 
   return (
@@ -82,6 +91,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages}) => {
               fontStyle: msg.sender === 'narration' ? 'italic' : 'normal',
               wordWrap: 'break-word',
               whiteSpace: 'pre-wrap',
+              fontSize: msg.sender === 'narration' ? '1.1em' : 'inherit', // 나래이션 메시지 크기 조정
             }}
           >
             <div>{msg.text}</div>

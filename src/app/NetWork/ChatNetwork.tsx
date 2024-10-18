@@ -2,15 +2,17 @@
 
 import api, {ResponseAPI} from './ApiInstance';
 
+// 채팅 Send ##########################################
 // Chat Data Interfaces
 export interface SendChatMessageReq {
-  userID: number;
-  characterID: number;
+  userId: number;
+  episodeId: number;
   text: string;
 }
 
 export interface SendChatMessageRes {
   streamKey: string;
+  chatId: number;
 }
 
 // Sending Chat Message
@@ -18,7 +20,7 @@ export const sendMessageStream = async (
   sendChatMessageReq: SendChatMessageReq,
 ): Promise<ResponseAPI<SendChatMessageRes>> => {
   try {
-    const response = await api.post<ResponseAPI<SendChatMessageRes>>('Chat/send', sendChatMessageReq);
+    const response = await api.post<ResponseAPI<SendChatMessageRes>>('Chatting/send', sendChatMessageReq);
 
     if (response.data.resultCode === 0) {
       return response.data; // Return on success
@@ -32,6 +34,67 @@ export const sendMessageStream = async (
 };
 
 // Previous Chat Message Interfaces
+// export interface MessageInfo {
+//   id: number;
+//   userName: string;
+//   characterName: string;
+//   message: string;
+//   createAt: Date;
+// }
+
+// export interface GetPrevChatMessageRes {
+//   messageInfoList: MessageInfo[];
+// }
+
+// export interface GetPrevChatMessageReq {
+//   userID: number;
+//   characterID: number;
+// }
+
+// Getting Previous Chat Messages
+// export const getPrevChat = async (data: GetPrevChatMessageReq): Promise<ResponseAPI<GetPrevChatMessageRes>> => {
+//   try {
+//     const response = await api.post<ResponseAPI<GetPrevChatMessageRes>>('Chat/getPrevChat', data);
+
+//     if (response.data.resultCode === 0) {
+//       return response.data; // Return on success
+//     } else {
+//       throw new Error(response.data.resultMessage); // Error handling
+//     }
+//   } catch (error: any) {
+//     console.error('Error fetching previous chat:', error);
+//     throw new Error('Failed to fetch previous chat. Please try again.'); // Error handling
+//   }
+// };
+
+// // Sending Elastic Message Interfaces
+// export interface ResponseChat {
+//   resultCode: number; // 응답 코드
+//   resultMessage: string; // 응답 메시지
+//   data: {
+//     text: string; // 서버에서 반환하는 데이터
+//   };
+// }
+
+// // Sending Elastic Message
+// export const sendElasticMessage = async (payload: any): Promise<ResponseChat> => {
+//   // Change 'any' to the appropriate type
+//   try {
+//     const response = await api.post<ResponseChat>('/Bedrock/sendElastic', payload);
+
+//     if (response.data.resultCode === 0) {
+//       return response.data; // Return on success
+//     } else {
+//       throw new Error(response.data.resultMessage); // Error handling
+//     }
+//   } catch (error: any) {
+//     console.error('Error sending message:', error);
+//     throw new Error('Failed to send message. Please try again.'); // Error handling
+//   }
+// };
+
+// 채팅 Enter ##########################################
+
 export interface MessageInfo {
   id: number;
   userName: string;
@@ -40,58 +103,6 @@ export interface MessageInfo {
   createAt: Date;
 }
 
-export interface GetPrevChatMessageRes {
-  messageInfoList: MessageInfo[];
-}
-
-export interface GetPrevChatMessageReq {
-  userID: number;
-  characterID: number;
-}
-
-// Getting Previous Chat Messages
-export const getPrevChat = async (data: GetPrevChatMessageReq): Promise<ResponseAPI<GetPrevChatMessageRes>> => {
-  try {
-    const response = await api.post<ResponseAPI<GetPrevChatMessageRes>>('Chat/getPrevChat', data);
-
-    if (response.data.resultCode === 0) {
-      return response.data; // Return on success
-    } else {
-      throw new Error(response.data.resultMessage); // Error handling
-    }
-  } catch (error: any) {
-    console.error('Error fetching previous chat:', error);
-    throw new Error('Failed to fetch previous chat. Please try again.'); // Error handling
-  }
-};
-
-// Sending Elastic Message Interfaces
-export interface ResponseChat {
-  resultCode: number; // 응답 코드
-  resultMessage: string; // 응답 메시지
-  data: {
-    text: string; // 서버에서 반환하는 데이터
-  };
-}
-
-// Sending Elastic Message
-export const sendElasticMessage = async (payload: any): Promise<ResponseChat> => {
-  // Change 'any' to the appropriate type
-  try {
-    const response = await api.post<ResponseChat>('/Bedrock/sendElastic', payload);
-
-    if (response.data.resultCode === 0) {
-      return response.data; // Return on success
-    } else {
-      throw new Error(response.data.resultMessage); // Error handling
-    }
-  } catch (error: any) {
-    console.error('Error sending message:', error);
-    throw new Error('Failed to send message. Please try again.'); // Error handling
-  }
-};
-
-// 채팅 Enter ##########################################
 export interface EnterEpisodeChattingReq {
   userId: number;
   episodeId: number;
@@ -114,7 +125,7 @@ export const sendChattingEnter = async (
 ): Promise<ResponseAPI<EnterEpisodeChattingRes>> => {
   try {
     const response = await api.post<ResponseAPI<EnterEpisodeChattingRes>>('/Chatting/enter', req);
-    console.log('chatenter', response);
+    console.log('chatenter', req, response);
     if (response.data.resultCode === 0) {
       return response.data;
     } else {
