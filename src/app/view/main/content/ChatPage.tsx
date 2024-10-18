@@ -39,10 +39,10 @@ const ChatPage: React.FC = () => {
 
   // usePrevChatting 훅 사용
   const {prevMessages, error} = usePrevChatting(userId, episodeId);
-
+  //console.log('prevMessages', prevMessages);
   useEffect(() => {
     if (!isOpen) {
-      console.log('채팅창을 열어요', isOpen);
+      //console.log('채팅창을 열어요', isOpen);
     }
   }, [isOpen]);
 
@@ -55,7 +55,7 @@ const ChatPage: React.FC = () => {
   // 전체 메시지를 결합하여 string[]로 변환
   const allMessages: string[] = [...prevMessages.map(msg => msg.message), ...messages.map(msg => msg.text)];
 
-  console.log('allMessages', allMessages);
+  //console.log('allMessages', allMessages);
 
   return (
     <main className={styles.chatmodal}>

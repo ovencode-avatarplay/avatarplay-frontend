@@ -119,7 +119,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
 
   // 누적된 메시지를 출력
   useEffect(() => {
-    console.log('Accumulated message:', data.message);
+    console.log('누적된 메시지:', data);
     onSend(data.message); // 상태 업데이트 추가
   }, [data.message]);
 

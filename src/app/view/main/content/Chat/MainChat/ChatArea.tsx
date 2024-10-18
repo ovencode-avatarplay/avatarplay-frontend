@@ -12,60 +12,63 @@ interface Message {
 }
 
 // 메시지를 파싱하는 함수
-const parseMessage = (message: string): Message | null => {
+const parseMessage = (message: string | null): Message[] | null => {
+  if (!message) return null; // null 메시지는 무시
+
   try {
     const parsedMessage = JSON.parse(message);
+    const result: Message[] = [];
 
-    console.log('parsedMessage', parsedMessage);
-
-    // Answer가 있을 경우 partner 메시지
+    // Answer가 있으면 partner 메시지로 추가
     if (parsedMessage.Answer) {
-      return {
+      result.push({
         text: parsedMessage.Answer,
         sender: 'partner',
-      };
+      });
     }
 
+    // Question이 있으면 user 메시지로 추가
     if (parsedMessage.Question) {
-      return {
+      result.push({
         text: parsedMessage.Question,
         sender: 'user',
-      };
+      });
     }
 
-    // 따옴표로 묶여 있지 않거나 **로 묶여 있으면 narration 메시지
-    if (!message.startsWith('"') && !message.endsWith('"') && message.startsWith('**') && message.endsWith('**')) {
-      return {
-        text: message.replace(/\*\*/g, ''), // **를 제거
+    // 나레이션 처리 (특정 패턴으로 감싸진 부분을 처리)
+    const narrationPattern = /\*\*(.*?)\*\*/g;
+    let narrationMatch;
+    while ((narrationMatch = narrationPattern.exec(parsedMessage.Answer || parsedMessage.Question)) !== null) {
+      result.push({
+        text: narrationMatch[1], // ** 안의 내용 추출
         sender: 'narration',
-      };
+      });
     }
 
-    // 그 외에는 user 메시지
-    return {
-      text: message,
-      sender: 'user',
-    };
+    return result;
   } catch (error) {
     console.error('Failed to parse message:', error);
-    return null; // 파싱 실패 시 null 반환
+    return null;
   }
 };
 
 // 이전 메시지를 변환하는 함수
-const convertPrevMessages = (prevMessages: string[]): Message[] => {
-  return prevMessages.map(msg => parseMessage(msg) || {text: '', sender: 'narration'});
+const convertPrevMessages = (prevMessages: (string | null)[]): Message[] => {
+  return prevMessages
+    .filter(msg => msg !== null && msg !== '') // null 및 빈 문자열 메시지 필터링
+    .flatMap(msg => parseMessage(msg) || []); // 각 메시지를 파싱하고 배열로 병합
 };
 
+// ChatArea 컴포넌트
 const ChatArea: React.FC<ChatAreaProps> = ({messages}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null); // 스크롤 참조용 ref
   const parsedMessages = convertPrevMessages(messages); // 전달된 문자열을 파싱하여 메시지로 변환
 
   console.log('parsedMessages', parsedMessages);
+
   useEffect(() => {
     // 새로운 메시지가 추가될 때마다 스크롤을 마지막 메시지로 이동
     bottomRef.current?.scrollIntoView({behavior: 'smooth'});
-    //console.log('messages2', messages);
   }, [messages]);
 
   return (
