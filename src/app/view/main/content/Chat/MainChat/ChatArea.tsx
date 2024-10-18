@@ -11,6 +11,42 @@ interface Message {
   sender: 'user' | 'partner' | 'narration'; // 나래이션 타입 추가
 }
 
+// Answer 필드에서 나레이션과 파트너의 말을 분리하는 함수
+const parseAnswer = (answer: string): Message[] => {
+  const result: Message[] = [];
+  const narrationPattern = /\*(.*?)\*/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = narrationPattern.exec(answer)) !== null) {
+    // 나레이션이 나오기 전의 텍스트를 파트너 메시지로 추가
+    if (match.index > lastIndex) {
+      result.push({
+        text: answer.slice(lastIndex, match.index).trim(), // 나레이션 전까지의 텍스트
+        sender: 'partner',
+      });
+    }
+
+    // 나레이션을 추가
+    result.push({
+      text: match[1], // * * 안의 내용
+      sender: 'narration',
+    });
+
+    lastIndex = narrationPattern.lastIndex;
+  }
+
+  // 나레이션 후 남은 파트너의 메시지를 추가
+  if (lastIndex < answer.length) {
+    result.push({
+      text: answer.slice(lastIndex).trim(),
+      sender: 'partner',
+    });
+  }
+
+  return result;
+};
+
 // 메시지를 파싱하는 함수
 const parseMessage = (message: string | null): Message[] | null => {
   if (!message) return null; // null 메시지는 무시
@@ -18,14 +54,6 @@ const parseMessage = (message: string | null): Message[] | null => {
   try {
     const parsedMessage = JSON.parse(message);
     const result: Message[] = [];
-
-    // Answer가 있으면 partner 메시지로 추가
-    if (parsedMessage.Answer) {
-      result.push({
-        text: parsedMessage.Answer,
-        sender: 'partner',
-      });
-    }
 
     // Question이 있으면 user 메시지로 추가
     if (parsedMessage.Question) {
@@ -35,14 +63,9 @@ const parseMessage = (message: string | null): Message[] | null => {
       });
     }
 
-    // 나레이션 처리 (특정 패턴으로 감싸진 부분을 처리)
-    const narrationPattern = /\*\*(.*?)\*\*/g;
-    let narrationMatch;
-    while ((narrationMatch = narrationPattern.exec(parsedMessage.Answer || parsedMessage.Question)) !== null) {
-      result.push({
-        text: narrationMatch[1], // ** 안의 내용 추출
-        sender: 'narration',
-      });
+    // Answer가 있으면 partner 메시지로 추가하고, 나레이션도 포함
+    if (parsedMessage.Answer) {
+      result.push(...parseAnswer(parsedMessage.Answer)); // Answer 필드를 파싱하여 처리
     }
 
     return result;
