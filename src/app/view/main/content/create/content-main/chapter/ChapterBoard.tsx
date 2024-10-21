@@ -18,7 +18,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import Style from './ChapterBoard.module.css';
 
 // Slice
-import {setSelectedChapterId, setSelectedEpisodeId} from '@/redux-store/slices/ContentSelection';
+import {setSelectedChapterIdx, setSelectedEpisodeIdx} from '@/redux-store/slices/ContentSelection';
 import {updateEditingContentInfo} from '@/redux-store/slices/ContentInfo';
 
 // Components
@@ -33,6 +33,7 @@ import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
 // Data
 import defaultData from '@/data/create/content-info-data.json';
 import emptyData from '@/data/create/empty-content-info-data.json';
+import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 
 interface Props {
   open: boolean;
@@ -42,6 +43,7 @@ interface Props {
   onDeleteChapter: (chapterId: number) => void;
   onAddEpisode: (newEpisode: EpisodeInfo) => void;
   onDeleteEpisode: (chapterId: number, episodeId: number) => void;
+  onNameChange: () => void;
 }
 
 const ChapterBoard: React.FC<Props> = ({
@@ -52,14 +54,15 @@ const ChapterBoard: React.FC<Props> = ({
   onDeleteChapter,
   onAddEpisode,
   onDeleteEpisode,
+  onNameChange,
 }) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const selectedContent = useSelector((state: RootState) => state.content.curEditingContentInfo);
   const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId);
-  const selectedChapterId = useSelector((state: RootState) => state.contentselection.selectedChapterId);
-  const selectedEpisodeId = useSelector((state: RootState) => state.contentselection.selectedEpisodeId);
-  const [editItem, setEditItem] = useState<{id: number | null; type: 'chapter' | 'episode' | null}>({
-    id: null,
+  const selectedChapterIdx = useSelector((state: RootState) => state.contentselection.selectedChapterIdx);
+  const selectedEpisodeIdx = useSelector((state: RootState) => state.contentselection.selectedEpisodeIdx);
+  const [editItem, setEditItem] = useState<{idx: number | null; type: 'chapter' | 'episode' | null}>({
+    idx: null,
     type: null,
   });
   const [newName, setNewName] = useState<string>('');
@@ -92,15 +95,17 @@ const ChapterBoard: React.FC<Props> = ({
 
   //#region Chapter
 
-  const handleChapterToggle = (chapterId: number) => {
+  const handleChapterToggle = (chapterIdx: number) => {
     setChapters(prevChapters =>
-      prevChapters.map(chapter => (chapter.id === chapterId ? {...chapter, expanded: !chapter.expanded} : chapter)),
+      prevChapters.map((chapter, index) =>
+        index === chapterIdx ? {...chapter, expanded: !chapter.expanded} : chapter,
+      ),
     );
   };
 
-  const handleChapterSelect = (chapterId: number) => {
-    dispatch(setSelectedChapterId(chapterId));
-    dispatch(setSelectedEpisodeId(chapters.find(chapter => chapter.id === selectedChapterId)?.episodes[0].id ?? 0));
+  const handleChapterSelect = (chapterIdx: number) => {
+    dispatch(setSelectedChapterIdx(chapterIdx));
+    dispatch(setSelectedEpisodeIdx(0));
   };
 
   const handleCreateChapter = () => {
@@ -112,63 +117,58 @@ const ChapterBoard: React.FC<Props> = ({
       episodeInfoList: [],
     };
 
-    // 새로운 챕터를 ContentMain으로 전달하여 추가
     onAddChapter(newChapter);
   };
 
-  const handleDeleteChapter = (chapterId: number) => {
+  const handleDeleteChapter = (chapterIdx: number) => {
     if (chapters.length > 1) {
-      onDeleteChapter(chapterId); // Call the function passed via props
-      setChapters(prevChapters => prevChapters.filter(chapter => chapter.id !== chapterId));
+      onDeleteChapter(chapterIdx);
+      setChapters(prevChapters => prevChapters.filter((_, index) => index !== chapterIdx));
     }
   };
   //#endregion
 
   //#region Episode
 
-  const handleEpisodeSelect = (chapterId: number, episodeId: number) => {
-    dispatch(setSelectedChapterId(chapterId));
-    dispatch(setSelectedEpisodeId(episodeId));
+  const handleEpisodeSelect = (chapterIdx: number, episodeIdx: number) => {
+    dispatch(setSelectedChapterIdx(chapterIdx));
+    dispatch(setSelectedEpisodeIdx(episodeIdx));
   };
 
-  const handleChangeName = (id: number, type: 'chapter' | 'episode', newName: string) => {
+  const handleChangeName = (idx: number, type: 'chapter' | 'episode', newName: string) => {
     setChapters(prevChapters =>
-      prevChapters.map(chapter => {
-        if (type === 'chapter' && chapter.id === id) {
-          if (selectedChapterId === id) {
-            const updatedContent = {
-              ...selectedContent,
-              chapterInfoList: selectedContent?.chapterInfoList.map(chapterInfo =>
-                chapterInfo.id === id ? {...chapterInfo, name: newName} : chapterInfo,
-              ),
-            };
-            dispatch(updateEditingContentInfo(updatedContent)); // Redux 상태 반영
-          }
+      prevChapters.map((chapter, chapterIdx) => {
+        if (type === 'chapter' && chapterIdx === selectedChapterIdx) {
+          const updatedContent = {
+            ...selectedContent,
+            chapterInfoList: selectedContent?.chapterInfoList.map((chapterInfo, index) =>
+              index === chapterIdx ? {...chapterInfo, name: newName} : chapterInfo,
+            ),
+          };
+          dispatch(updateEditingContentInfo(updatedContent));
+          onNameChange();
           return {...chapter, title: newName};
-        } else if (type === 'episode' && selectedEpisodeId && chapter.id === selectedChapterId) {
-          const updatedEpisodes = chapter.episodes.map(episode =>
-            episode.id === id ? {...episode, title: newName} : episode,
+        } else if (type === 'episode' && chapterIdx === selectedChapterIdx) {
+          const updatedEpisodes = chapter.episodes.map((episode, episodeIdx) =>
+            episodeIdx === selectedEpisodeIdx ? {...episode, title: newName} : episode,
           );
 
-          if (selectedEpisodeId === id) {
-            const updatedContent = {
-              ...selectedContent,
-              chapterInfoList: selectedContent?.chapterInfoList.map(chapterInfo =>
-                chapterInfo.id === selectedChapterId
-                  ? {
-                      ...chapterInfo,
-                      episodeInfoList: chapterInfo.episodeInfoList.map(episodeInfo =>
-                        episodeInfo.id === id ? {...episodeInfo, name: newName} : episodeInfo,
-                      ),
-                    }
-                  : chapterInfo,
-              ),
-            };
+          const updatedContent = {
+            ...selectedContent,
+            chapterInfoList: selectedContent?.chapterInfoList.map((chapterInfo, index) =>
+              index === selectedChapterIdx
+                ? {
+                    ...chapterInfo,
+                    episodeInfoList: chapterInfo.episodeInfoList.map((episodeInfo, epIdx) =>
+                      epIdx === selectedEpisodeIdx ? {...episodeInfo, name: newName} : episodeInfo,
+                    ),
+                  }
+                : chapterInfo,
+            ),
+          };
 
-            dispatch(updateEditingContentInfo(updatedContent));
-          }
-
-          // 에피소드 이름을 로컬 상태에도 반영
+          dispatch(updateEditingContentInfo(updatedContent));
+          onNameChange();
           return {...chapter, episodes: updatedEpisodes};
         }
         return chapter;
@@ -177,8 +177,8 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleCreateEpisode = () => {
-    if (selectedChapterId !== null) {
-      const selectedChapterData = chapters.find(chapter => chapter.id === selectedChapterId);
+    if (selectedChapterIdx !== null) {
+      const selectedChapterData = chapters[selectedChapterIdx];
       const newEpisodeId = getMaxId(selectedChapterData?.episodes || []) + 1;
 
       const newEpisodeInfo: EpisodeInfo = {
@@ -199,21 +199,21 @@ const ChapterBoard: React.FC<Props> = ({
       onAddEpisode(newEpisodeInfo);
 
       setChapters(prevChapters =>
-        prevChapters.map(chapter =>
-          chapter.id === selectedChapterId ? {...chapter, episodes: [...chapter.episodes, newEpisode]} : chapter,
+        prevChapters.map((chapter, index) =>
+          index === selectedChapterIdx ? {...chapter, episodes: [...chapter.episodes, newEpisode]} : chapter,
         ),
       );
     }
   };
 
-  const handleDeleteEpisode = (chapterId: number, episodeId: number) => {
-    onDeleteEpisode(chapterId, episodeId); // Call the function passed via props
+  const handleDeleteEpisode = (chapterIdx: number, episodeIdx: number) => {
+    onDeleteEpisode(chapterIdx, episodeIdx);
     setChapters(prevChapters =>
-      prevChapters.map(chapter => {
-        if (chapter.id === chapterId && chapter.episodes.length > 1) {
+      prevChapters.map((chapter, index) => {
+        if (index === chapterIdx && chapter.episodes.length > 1) {
           return {
             ...chapter,
-            episodes: chapter.episodes.filter(episode => episode.id !== episodeId),
+            episodes: chapter.episodes.filter((_, epIdx) => epIdx !== episodeIdx),
           };
         }
         return chapter;
@@ -222,11 +222,11 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   // Edit 팝업 열기
-  const handleEditClick = (id: number, type: 'chapter' | 'episode') => {
+  const handleEditClick = (idx: number, type: 'chapter' | 'episode') => {
     if (type === 'episode') {
-      dispatch(setSelectedEpisodeId(id));
+      dispatch(setSelectedEpisodeIdx(idx));
     }
-    setEditItem({id, type});
+    setEditItem({idx, type});
     setNewName('');
   };
 
@@ -253,10 +253,11 @@ const ChapterBoard: React.FC<Props> = ({
 
         {/* Chapter 및 Episode 트리 구조 */}
         <Box className={Style.contentBox}>
-          {chapters.map(chapter => (
+          {chapters.map((chapter, index) => (
             <ChapterItem
-              key={chapter.id}
+              key={index}
               chapter={chapter}
+              chapterIdx={index}
               onDelete={handleDeleteChapter}
               onToggle={handleChapterToggle}
               onDeleteEpisode={handleDeleteEpisode}
@@ -264,7 +265,7 @@ const ChapterBoard: React.FC<Props> = ({
               onSelectEpisode={handleEpisodeSelect}
               onEdit={handleEditClick}
               onCloseChapterBoard={onClose}
-              isSelected={selectedChapterId === chapter.id}
+              isSelected={selectedChapterIdx === index}
               disableDelete={chapters.length <= 1}
             />
           ))}
@@ -280,7 +281,7 @@ const ChapterBoard: React.FC<Props> = ({
       </Box>
 
       {/* 이름 변경을 위한 Dialog */}
-      <Dialog open={editItem.id !== null} onClose={() => setEditItem({id: null, type: null})}>
+      <Dialog open={editItem.idx !== null} onClose={() => setEditItem({idx: null, type: null})}>
         <DialogTitle>Edit {editItem.type === 'chapter' ? 'Chapter' : 'Episode'} Name</DialogTitle>
         <DialogContent>
           <TextField
@@ -293,12 +294,12 @@ const ChapterBoard: React.FC<Props> = ({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditItem({id: null, type: null})}>Cancel</Button>
+          <Button onClick={() => setEditItem({idx: null, type: null})}>Cancel</Button>
           <Button
             onClick={() => {
-              if (editItem.id && editItem.type) {
-                handleChangeName(editItem.id, editItem.type, newName);
-                setEditItem({id: null, type: null}); // 에디트 상태 초기화
+              if (editItem.idx !== null && editItem.type) {
+                handleChangeName(editItem.idx, editItem.type, newName);
+                setEditItem({idx: null, type: null});
               }
             }}
           >

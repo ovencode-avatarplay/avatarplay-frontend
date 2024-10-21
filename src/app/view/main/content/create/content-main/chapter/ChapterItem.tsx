@@ -1,27 +1,29 @@
 import React from 'react';
-import { Box, Button, Collapse, IconButton, Typography } from '@mui/material';
+import {Box, Button, Collapse, IconButton, Typography} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HomeIcon from '@mui/icons-material/Home';
-import EditIcon from '@mui/icons-material/Edit'; 
+import EditIcon from '@mui/icons-material/Edit';
 import EpisodeItem from './EpisodeItem';
 import Style from './ChapterBoard.module.css';
-import { Chapter } from '@/types/apps/chapterCardType';
+import {Chapter} from '@/types/apps/chapterCardType';
 
 interface ChapterItemProps {
   chapter: Chapter;
-  onDelete: (chapterId: number) => void;
-  onToggle: (chapterId: number) => void;
-  onDeleteEpisode: (chapterId: number, episodeId: number) => void;
-  onSelect: (chapterId: number) => void;
-  onSelectEpisode : (chapterID : number, episodeID : number) => void;
-  onCloseChapterBoard : () => void;
-  onEdit: (id: number, type: 'chapter' | 'episode') => void;
+  chapterIdx: number; // 인덱스 추가
+  onDelete: (chapterIdx: number) => void;
+  onToggle: (chapterIdx: number) => void;
+  onDeleteEpisode: (chapterIdx: number, episodeIdx: number) => void;
+  onSelect: (chapterIdx: number) => void;
+  onSelectEpisode: (chapterIdx: number, episodeIdx: number) => void;
+  onCloseChapterBoard: () => void;
+  onEdit: (idx: number, type: 'chapter' | 'episode') => void;
   isSelected: boolean; // 선택 여부
   disableDelete: boolean;
 }
 
 const ChapterItem: React.FC<ChapterItemProps> = ({
   chapter,
+  chapterIdx,
   onDelete,
   onToggle,
   onDeleteEpisode,
@@ -35,26 +37,25 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   return (
     <Box className={Style.chapterBox}>
       {/* Chapter Header */}
-      <Box
-        className={Style.chapterHeader}
-      >
+      <Box className={Style.chapterHeader}>
         <Button
           className={Style.chapterButton}
           onClick={() => {
-            onSelect(chapter.id);
-            onToggle(chapter.id);
+            onSelect(chapterIdx); // 인덱스를 사용
+            onToggle(chapterIdx);
           }}
         >
           <HomeIcon />
           <Typography>{chapter.title}</Typography>
         </Button>
 
-        <IconButton onClick={() => onEdit(chapter.id, 'chapter')}>
+        <IconButton onClick={() => onEdit(chapterIdx, 'chapter')}>
           <EditIcon />
         </IconButton>
+
         {/* Chapter 삭제 버튼 */}
         {!disableDelete && (
-          <IconButton className={Style.deleteButton} onClick={() => onDelete(chapter.id)}>
+          <IconButton className={Style.deleteButton} onClick={() => onDelete(chapterIdx)}>
             <DeleteIcon />
           </IconButton>
         )}
@@ -63,17 +64,18 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
       {/* Chapter에 속한 Episode */}
       <Collapse in={chapter.expanded}>
         <Box className={Style.episodeContainer}>
-          {chapter.episodes.map((episode) => (
+          {chapter.episodes.map((episode, episodeIdx) => (
             <EpisodeItem
-              key={episode.id}
+              key={episodeIdx}
               episode={episode}
-              chapterId={chapter.id}
+              chapterIdx={chapterIdx}
+              episodeIdx={episodeIdx} // 인덱스를 전달
               onEditEpisode={onEdit}
               onDeleteEpisode={onDeleteEpisode}
-              disableDelete={chapter.episodes.length <= 1} 
-              onSelect={onSelectEpisode} 
+              disableDelete={chapter.episodes.length <= 1}
+              onSelect={onSelectEpisode}
               onClose={onCloseChapterBoard}
-              isSelected={isSelected} 
+              isSelected={isSelected}
             />
           ))}
         </Box>

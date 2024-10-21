@@ -2,8 +2,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {ChapterInfo} from '@/types/apps/content/chapter/chapterInfo';
 import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
-import {RootState} from '@/redux-store/ReduxStore';
-import {updateEditingContentInfo} from '@/redux-store/slices/ContentInfo';
 
 interface ChapterBoardState {
   chapterBoard: ChapterInfo[];
