@@ -25,11 +25,12 @@ import ChapterBoardOnTrigger from '@/app/view/main/content/create/content-main/c
 interface ChangeBehaviourProps {
   open: boolean;
   onClose: () => void;
-  item: TriggerInfo;
+  index: number;
   triggerName: string;
 }
 
-const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) => {
+const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index}) => {
+  const item = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList[index]);
   const dispatch = useDispatch();
   const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>({
     ...item,
@@ -149,7 +150,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
   const handleClose = () => {
     // Keyword 타입이 이미 존재하는지 확인 (TriggerMainDataType.triggerValueKeyword = 1 이라고 가정)
     const isKeywordTypeExists = triggerInfoList.some(
-      info => info.triggerType === TriggerMainDataType.triggerValueKeyword && info.id !== triggerInfo.id,
+      (info, idx) => info.triggerType === TriggerMainDataType.triggerValueKeyword && idx !== index, // idx를 사용하여 현재 인덱스와 비교
     );
 
     if (isKeywordTypeExists && triggerInfo.triggerType === TriggerMainDataType.triggerValueKeyword) {
@@ -158,12 +159,12 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
     }
 
     // 조건을 만족하지 않으면 트리거 정보 업데이트
-    dispatch(updateTriggerInfo({id: triggerInfo.id, info: {...triggerInfo}}));
+    dispatch(updateTriggerInfo({index: index, info: {...triggerInfo}}));
     onClose();
   };
 
   const handleRemove = () => {
-    dispatch(removeTriggerInfo(triggerInfo.id));
+    dispatch(removeTriggerInfo(index));
     onClose();
   };
 
@@ -178,7 +179,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
 
   const handleSaveNewName = () => {
     if (newTriggerName.trim()) {
-      dispatch(updateTriggerInfoName({id: triggerInfo.id, name: newTriggerName}));
+      dispatch(updateTriggerInfoName({index: index, name: newTriggerName}));
       triggerInfo.name = newTriggerName;
       handleCloseEditNameModal();
     }
@@ -390,7 +391,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, item}) 
       <EpisodeConversationTemplate
         open={isEpisodeConversationTemplateOpen}
         closeModal={handleCloseEpisodeConversationTemplate}
-        triggerId={triggerInfo.id}
+        triggerIndex={index}
       />
 
       {/* 이름 변경 모달 */}

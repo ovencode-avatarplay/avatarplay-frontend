@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Card, FormControl, Select, MenuItem, Button, Typography, Avatar, IconButton, Collapse} from '@mui/material';
 import styles from './TalkCard.module.css';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InputCard from './InputCard';
 import {SelectChangeEvent} from '@mui/material';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '@/redux-store/ReduxStore';
+import {useSelector, useDispatch} from 'react-redux';
+import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 import {
   addConversationTalkItem,
   updateConversationTalk,
@@ -14,6 +14,7 @@ import {
   updateActionConversationTalk,
   removeActionConversationItem,
 } from '@/redux-store/slices/EpisodeInfo';
+import {ConversationTalkInfo} from '@/types/apps/dataTypes';
 
 interface TalkCardProps {
   card: {
@@ -27,7 +28,7 @@ interface TalkCardProps {
   onDelete: (id: number) => void;
   updateUserTalk: (itemIndex: number, value: string) => void;
   updateCharacterTalk: (itemIndex: number, value: string) => void;
-  triggerId?: number; // triggerId를 받아서 처리 (optional)
+  triggerIndex?: number; // triggerId를 받아서 처리 (optional)
 }
 
 const TalkCard: React.FC<TalkCardProps> = ({
@@ -38,31 +39,57 @@ const TalkCard: React.FC<TalkCardProps> = ({
   onDelete,
   updateUserTalk,
   updateCharacterTalk,
-  triggerId = -1, // 기본값은 -1
+  triggerIndex: triggerIndex = -1, // 기본값은 -1
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const isFromChangeBehaviour = triggerId !== -1; // triggerId가 -1이 아니면 ChangeBehaviour에서 호출됨
+  const isFromChangeBehaviour = triggerIndex !== -1; // triggerId가 -1이 아니면 ChangeBehaviour에서 호출됨
   const [isExpanded, setIsExpanded] = useState(true);
 
-  // Conversation 구조를 사용한 상태 관리
-  const [userInputCards, setUserInputCards] = useState<string[]>(['User Talk']);
-  const [characterInputCards, setCharacterInputCards] = useState<string[]>(['Character Talk']);
+  // Redux에서 초기 값을 가져오기
+  const initialUserInputCards = useSelector((state: RootState) => {
+    const userString = isFromChangeBehaviour
+      ? state.episode.currentEpisodeInfo.triggerInfoList[triggerIndex]?.actionConversationList[card.id]?.user || '[]'
+      : state.episode.currentEpisodeInfo.conversationTemplateList[card.id]?.user || '[]';
+    return JSON.parse(userString) as ConversationTalkInfo[];
+  });
+
+  const initialCharacterInputCards = useSelector((state: RootState) => {
+    const characterString = isFromChangeBehaviour
+      ? state.episode.currentEpisodeInfo.triggerInfoList[triggerIndex]?.actionConversationList[card.id]?.character ||
+        '[]'
+      : state.episode.currentEpisodeInfo.conversationTemplateList[card.id]?.character || '[]';
+    return JSON.parse(characterString) as ConversationTalkInfo[];
+  });
+
+  // Redux 상태를 기반으로 로컬 상태 초기화
+  const [userInputCards, setUserInputCards] = useState<ConversationTalkInfo[]>([]);
+  const [characterInputCards, setCharacterInputCards] = useState<ConversationTalkInfo[]>([]);
+
+  useEffect(() => {
+    // 초기 상태와 가져온 상태가 다를 때만 업데이트
+    if (JSON.stringify(userInputCards) !== JSON.stringify(initialUserInputCards)) {
+      setUserInputCards(initialUserInputCards);
+    }
+    if (JSON.stringify(characterInputCards) !== JSON.stringify(initialCharacterInputCards)) {
+      setCharacterInputCards(initialCharacterInputCards);
+    }
+  }, [initialUserInputCards, initialCharacterInputCards]);
 
   const toggleExpand = () => {
     setIsExpanded(prev => !prev);
   };
 
   const addUserInputCard = () => {
-    const newUserTalk = `New User Talk ${userInputCards.length + 1}`;
+    const newUserTalk = {type: 1, talk: `New User Talk ${userInputCards.length + 1}`};
     setUserInputCards(prev => [...prev, newUserTalk]);
 
     if (isFromChangeBehaviour) {
       dispatch(
         addActionConversationTalkItem({
-          triggerId,
+          triggerIndex: triggerIndex,
           conversationIndex: card.id,
           type: 'user',
-          newTalk: newUserTalk,
+          newTalk: newUserTalk.talk,
         }),
       );
     } else {
@@ -70,23 +97,23 @@ const TalkCard: React.FC<TalkCardProps> = ({
         addConversationTalkItem({
           conversationIndex: card.id,
           type: 'user',
-          newTalk: newUserTalk,
+          newTalk: newUserTalk.talk,
         }),
       );
     }
   };
 
   const addCharacterInputCard = () => {
-    const newCharacterTalk = `New Character Talk ${characterInputCards.length + 1}`;
+    const newCharacterTalk = {type: 0, talk: `New Character Talk ${characterInputCards.length + 1}`};
     setCharacterInputCards(prev => [...prev, newCharacterTalk]);
 
     if (isFromChangeBehaviour) {
       dispatch(
         addActionConversationTalkItem({
-          triggerId,
+          triggerIndex: triggerIndex,
           conversationIndex: card.id,
           type: 'character',
-          newTalk: newCharacterTalk,
+          newTalk: newCharacterTalk.talk,
         }),
       );
     } else {
@@ -94,7 +121,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
         addConversationTalkItem({
           conversationIndex: card.id,
           type: 'character',
-          newTalk: newCharacterTalk,
+          newTalk: newCharacterTalk.talk,
         }),
       );
     }
@@ -104,14 +131,14 @@ const TalkCard: React.FC<TalkCardProps> = ({
     if (type === 'user') {
       setUserInputCards(prev => {
         const updated = [...prev];
-        updated[index] = value;
+        updated[index].talk = value;
         return updated;
       });
 
       if (isFromChangeBehaviour) {
         dispatch(
           updateActionConversationTalk({
-            triggerId,
+            triggerIndex: triggerIndex,
             conversationIndex: card.id,
             itemIndex: index,
             type: 'user',
@@ -131,14 +158,14 @@ const TalkCard: React.FC<TalkCardProps> = ({
     } else {
       setCharacterInputCards(prev => {
         const updated = [...prev];
-        updated[index] = value;
+        updated[index].talk = value;
         return updated;
       });
 
       if (isFromChangeBehaviour) {
         dispatch(
           updateActionConversationTalk({
-            triggerId,
+            triggerIndex: triggerIndex,
             conversationIndex: card.id,
             itemIndex: index,
             type: 'character',
@@ -162,14 +189,14 @@ const TalkCard: React.FC<TalkCardProps> = ({
     if (type === 'user') {
       setUserInputCards(prev => {
         const updated = [...prev];
-        updated.splice(index, 1); // 해당 인덱스를 제거
+        updated.splice(index, 1);
         return updated;
       });
 
       if (isFromChangeBehaviour) {
         dispatch(
           removeActionConversationItem({
-            triggerId,
+            triggerIndex: triggerIndex,
             conversationIndex: card.id,
             itemIndex: index,
             type: 'user',
@@ -187,14 +214,14 @@ const TalkCard: React.FC<TalkCardProps> = ({
     } else {
       setCharacterInputCards(prev => {
         const updated = [...prev];
-        updated.splice(index, 1); // 해당 인덱스를 제거
+        updated.splice(index, 1);
         return updated;
       });
 
       if (isFromChangeBehaviour) {
         dispatch(
           removeActionConversationItem({
-            triggerId,
+            triggerIndex: triggerIndex,
             conversationIndex: card.id,
             itemIndex: index,
             type: 'character',
@@ -258,7 +285,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
                 {userInputCards.map((inputCard, index) => (
                   <div key={index} style={{paddingBottom: '10px'}}>
                     <InputCard
-                      defaultValue={inputCard}
+                      defaultValue={inputCard.talk}
                       onChange={value => handleUpdateInputCard('user', index, value)}
                       onDelete={() => handleDeleteInputCard('user', index)}
                     />
@@ -293,7 +320,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
                 {characterInputCards.map((inputCard, index) => (
                   <div key={index} style={{paddingBottom: '10px'}}>
                     <InputCard
-                      defaultValue={inputCard}
+                      defaultValue={inputCard.talk}
                       onChange={value => handleUpdateInputCard('character', index, value)}
                       onDelete={() => handleDeleteInputCard('character', index)}
                     />

@@ -95,6 +95,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
       if (chapter) {
         const episode = chapter.episodeInfoList.find(info => info.id === episodeId);
         if (episode) {
+          console.log('Success!');
         } else {
           console.log(`Episode at id ${episodeId} not found in Content ${contentId}`);
         }

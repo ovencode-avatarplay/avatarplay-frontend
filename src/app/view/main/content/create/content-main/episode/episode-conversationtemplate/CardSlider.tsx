@@ -21,15 +21,15 @@ import {SelectChangeEvent} from '@mui/material';
 import {ConversationPriortyType, ConversationTalkType} from '@/types/apps/dataTypes';
 
 interface CardSliderProps {
-  triggerId: number; // 트리거 ID가 전달되며, -1이면 일반 conversationTemplateList를 사용
+  Index: number; // 트리거 ID가 전달되며, -1이면 일반 conversationTemplateList를 사용
 }
 
-const CardSlider: React.FC<CardSliderProps> = ({triggerId}) => {
+const CardSlider: React.FC<CardSliderProps> = ({Index: triggerIndex}) => {
   const dispatch = useDispatch<AppDispatch>();
   const currentEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
-  const isFromChangeBehaviour = triggerId !== -1; // triggerId가 -1이 아니면 ChangeBehaviour에서 시작됨
+  const isFromChangeBehaviour = triggerIndex !== -1; // triggerId가 -1이 아니면 ChangeBehaviour에서 시작됨
   const conversationList = isFromChangeBehaviour
-    ? currentEpisodeInfo.triggerInfoList.find(trigger => trigger.id === triggerId)?.actionConversationList || []
+    ? currentEpisodeInfo.triggerInfoList[triggerIndex]?.actionConversationList || []
     : currentEpisodeInfo.conversationTemplateList;
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -52,12 +52,12 @@ const CardSlider: React.FC<CardSliderProps> = ({triggerId}) => {
     const newCard = {
       user: [{type: ConversationTalkType.Speech, talk: 'New User Talk'}],
       character: [{type: ConversationTalkType.Action, talk: 'New Character Talk'}],
-      conversationTpye: ConversationPriortyType.Mandatory,
+      conversationType: ConversationPriortyType.Mandatory, // 'conversationTpye'를 'conversationType'으로 수정
     };
 
     if (isFromChangeBehaviour) {
       // ChangeBehaviour에서 시작된 경우 triggerInfoList[].actionConversationList에 저장
-      dispatch(addActionConversationTalk({triggerId, ...newCard}));
+      dispatch(addActionConversationTalk({triggerIndex, ...newCard}));
     } else {
       // 일반적인 경우 conversationTemplateList에 저장
       dispatch(addConversationTalk(newCard));
@@ -65,13 +65,13 @@ const CardSlider: React.FC<CardSliderProps> = ({triggerId}) => {
     setCurrentIndex(conversationList.length); // 새 카드를 추가하고 해당 카드로 이동
   };
 
-  const deleteTalkCard = (id: number) => {
+  const deleteTalkCard = (index: number) => {
     if (isFromChangeBehaviour) {
       // ChangeBehaviour에서 시작된 경우 triggerInfoList[].actionConversationList에서 삭제
-      dispatch(removeActionConversationTalk({triggerId, conversationIndex: id}));
+      dispatch(removeActionConversationTalk({triggerIndex: triggerIndex, conversationIndex: index}));
     } else {
       // 일반적인 경우 conversationTemplateList에서 삭제
-      dispatch(removeConversationTalk(id));
+      dispatch(removeConversationTalk(index));
     }
     setCurrentIndex(prevIndex => Math.max(0, Math.min(prevIndex, conversationList.length - 2)));
   };
@@ -80,7 +80,7 @@ const CardSlider: React.FC<CardSliderProps> = ({triggerId}) => {
     if (isFromChangeBehaviour) {
       dispatch(
         updateActionConversationTalk({
-          triggerId,
+          triggerIndex: triggerIndex,
           conversationIndex,
           itemIndex,
           type: 'user',
@@ -103,7 +103,7 @@ const CardSlider: React.FC<CardSliderProps> = ({triggerId}) => {
     if (isFromChangeBehaviour) {
       dispatch(
         updateActionConversationTalk({
-          triggerId,
+          triggerIndex: triggerIndex,
           conversationIndex,
           itemIndex,
           type: 'character',
@@ -132,17 +132,15 @@ const CardSlider: React.FC<CardSliderProps> = ({triggerId}) => {
           <Box className={styles.cardsWrapper} style={{transform: `translateX(-${currentIndex * 100}%)`}}>
             {conversationList.map((card, index) => (
               <TalkCard
-                key={card.id}
-                card={{id: card.id, title: `Card ${card.id + 1}`, description: card.user[0] || ''}}
+                key={index}
+                card={{id: index, title: `Card ${index + 1}`, description: card.user[0] || ''}}
                 selectedPriority={selectedPriority}
                 priorities={priorities}
                 onChange={handleChange}
-                onDelete={() => deleteTalkCard(card.id)}
-                updateUserTalk={(itemIndex: number, value: string) => updateUserTalk(card.id, itemIndex, value)}
-                updateCharacterTalk={(itemIndex: number, value: string) =>
-                  updateCharacterTalk(card.id, itemIndex, value)
-                }
-                triggerId={triggerId}
+                onDelete={() => deleteTalkCard(index)}
+                updateUserTalk={(itemIndex: number, value: string) => updateUserTalk(index, itemIndex, value)}
+                updateCharacterTalk={(itemIndex: number, value: string) => updateCharacterTalk(index, itemIndex, value)}
+                triggerIndex={triggerIndex}
               />
             ))}
           </Box>
