@@ -41,12 +41,12 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
   };
 
   const handleSend = async () => {
-    // if (message.trim()) {
-    // onSend(message);
-    // setMessage('');
-    // console.log('message', message);
-    // inputRef.current?.focus(); // 메시지 전송 후 포커스 유지
-    // }
+    if (message.trim()) {
+      onSend(message);
+      setMessage('');
+      console.log('message', message);
+      inputRef.current?.focus(); // 메시지 전송 후 포커스 유지
+    }
 
     if (message.trim()) {
       const reqSendChatMessage: SendChatMessageReq = {
