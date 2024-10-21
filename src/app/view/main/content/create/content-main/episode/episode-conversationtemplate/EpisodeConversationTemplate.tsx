@@ -10,19 +10,19 @@ import {removeAllConversationTalk, removeAllActionConversationTalk} from '@/redu
 interface EpisodeConversationTemplateProps {
   open: boolean; // 모달 열림 상태
   closeModal: () => void; // 모달 닫기 함수
-  triggerId?: number; // 트리거 ID (optional)
+  triggerIndex?: number; // 트리거 ID (optional)
 }
 
 const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = ({
   open,
   closeModal,
-  triggerId = -1, // 기본값은 -1
+  triggerIndex: triggerIndex = -1, // 기본값은 -1
 }) => {
   const dispatch = useDispatch(); // Redux dispatch hook 사용
 
   const handleResetConversations = () => {
-    if (triggerId !== -1) {
-      dispatch(removeAllActionConversationTalk({triggerId}));
+    if (triggerIndex !== -1) {
+      dispatch(removeAllActionConversationTalk({triggerIndex}));
     } else {
       dispatch(removeAllConversationTalk());
     }
@@ -51,7 +51,7 @@ const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = 
       </DialogTitle>
 
       {/* CardSlider에 triggerId 전달 */}
-      <CardSlider triggerId={triggerId} />
+      <CardSlider Index={triggerIndex} />
     </Dialog>
   );
 };

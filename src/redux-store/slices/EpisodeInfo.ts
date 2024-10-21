@@ -39,45 +39,38 @@ const episodeInfoSlice = createSlice({
     addTriggerInfo: (state, action: PayloadAction<Omit<TriggerInfo, 'id'>>) => {
       const newDataPair: TriggerInfo = {
         ...action.payload,
-        id: state.currentEpisodeInfo.triggerInfoList.length, // 현재 배열 길이를 id로 설정 (새로운 트리거)
+        id: 0, // id를 설정하지 않음
       };
-      state.currentEpisodeInfo.triggerInfoList.push(newDataPair); // 트리거 리스트에 새 트리거 추가
+      state.currentEpisodeInfo.triggerInfoList.push(newDataPair);
     },
 
     // TriggerInfo 업데이트
-    updateTriggerInfo: (state, action: PayloadAction<{id: number; info: Omit<TriggerInfo, 'id'>}>) => {
-      const {id, info} = action.payload;
-      const triggerIndex = state.currentEpisodeInfo.triggerInfoList.findIndex(trigger => trigger.id === id);
-      console.log(state.currentEpisodeInfo.triggerInfoList[triggerIndex].name);
-      if (triggerIndex !== -1) {
-        state.currentEpisodeInfo.triggerInfoList[triggerIndex] = {...info, id}; // id 유지하며 정보 업데이트
+    updateTriggerInfo: (state, action: PayloadAction<{index: number; info: Omit<TriggerInfo, 'id'>}>) => {
+      const {index, info} = action.payload;
+      if (index >= 0 && index < state.currentEpisodeInfo.triggerInfoList.length) {
+        state.currentEpisodeInfo.triggerInfoList[index] = {
+          ...info,
+          id: state.currentEpisodeInfo.triggerInfoList[index].id, // 기존 id 유지
+        };
       }
     },
 
     // Trigger 이름 업데이트
-    updateTriggerInfoName: (state, action: PayloadAction<{id: number; name: string}>) => {
-      const {id, name} = action.payload;
-      const updatedTriggerInfoList = state.currentEpisodeInfo.triggerInfoList.map(
-        pair => (pair.id === id ? {...pair, name} : pair), // 새로운 배열을 반환하며 id가 일치하면 이름을 업데이트
-      );
-      state.currentEpisodeInfo.triggerInfoList = updatedTriggerInfoList; // 새로운 배열로 상태 업데이트
+    updateTriggerInfoName: (state, action: PayloadAction<{index: number; name: string}>) => {
+      const {index, name} = action.payload;
+      if (index >= 0 && index < state.currentEpisodeInfo.triggerInfoList.length) {
+        state.currentEpisodeInfo.triggerInfoList[index] = {
+          ...state.currentEpisodeInfo.triggerInfoList[index],
+          name,
+        };
+      }
     },
 
-    // Trigger 삭제 및 id 재할당
+    // Trigger 삭제
     removeTriggerInfo: (state, action: PayloadAction<number>) => {
-      const triggerId = action.payload;
-      const updatedTriggerList = state.currentEpisodeInfo.triggerInfoList.filter(trigger => trigger.id !== triggerId);
-
-      // id 재할당: 배열의 모든 트리거에 대해 id를 배열 인덱스에 맞게 다시 재할당
-      state.currentEpisodeInfo.triggerInfoList = updatedTriggerList.map((trigger, index) => ({
-        ...trigger,
-        id: index,
-      }));
-    },
-
-    setLlmSetupInfo(state, action: PayloadAction<LLMSetupInfo>) {
-      if (state.currentEpisodeInfo) {
-        state.currentEpisodeInfo.llmSetupInfo = action.payload; // LLM 설정 정보 업데이트
+      const index = action.payload;
+      if (index >= 0 && index < state.currentEpisodeInfo.triggerInfoList.length) {
+        state.currentEpisodeInfo.triggerInfoList.splice(index, 1);
       }
     },
 
@@ -87,15 +80,14 @@ const episodeInfoSlice = createSlice({
       action: PayloadAction<{
         user: ConversationTalkInfo[];
         character: ConversationTalkInfo[];
-        conversationTpye: ConversationPriortyType;
+        conversationType: ConversationPriortyType;
       }>,
     ) => {
-      const newId = state.currentEpisodeInfo.conversationTemplateList.length;
       const newConversation: Conversation = {
-        id: newId,
-        conversationType: action.payload.conversationTpye,
-        user: JSON.stringify(action.payload.user), // 직렬화
-        character: JSON.stringify(action.payload.character), // 직렬화
+        id: 0, // id는 초기값 그대로 유지
+        conversationType: action.payload.conversationType,
+        user: JSON.stringify(action.payload.user),
+        character: JSON.stringify(action.payload.character),
       };
       state.currentEpisodeInfo.conversationTemplateList.push(newConversation);
     },
@@ -111,7 +103,6 @@ const episodeInfoSlice = createSlice({
           talk: action.payload.newTalk,
         };
 
-        // 안전하게 JSON.parse 호출
         let userArray: ConversationTalkInfo[] = [];
         let characterArray: ConversationTalkInfo[] = [];
 
@@ -129,10 +120,10 @@ const episodeInfoSlice = createSlice({
 
         if (action.payload.type === 'user') {
           userArray.push(newTalkItem);
-          conversation.user = JSON.stringify(userArray); // 다시 직렬화하여 저장
+          conversation.user = JSON.stringify(userArray);
         } else if (action.payload.type === 'character') {
           characterArray.push(newTalkItem);
-          conversation.character = JSON.stringify(characterArray); // 다시 직렬화하여 저장
+          conversation.character = JSON.stringify(characterArray);
         }
       }
     },
@@ -166,12 +157,12 @@ const episodeInfoSlice = createSlice({
         if (action.payload.type === 'user') {
           if (userArray[action.payload.itemIndex]) {
             userArray[action.payload.itemIndex].talk = action.payload.newTalk;
-            conversation.user = JSON.stringify(userArray); // 다시 직렬화하여 저장
+            conversation.user = JSON.stringify(userArray);
           }
         } else if (action.payload.type === 'character') {
           if (characterArray[action.payload.itemIndex]) {
             characterArray[action.payload.itemIndex].talk = action.payload.newTalk;
-            conversation.character = JSON.stringify(characterArray); // 다시 직렬화하여 저장
+            conversation.character = JSON.stringify(characterArray);
           }
         }
       }
@@ -199,24 +190,23 @@ const episodeInfoSlice = createSlice({
         }
 
         if (action.payload.type === 'user') {
-          userArray.splice(action.payload.itemIndex, 1); // 해당 인덱스를 제거
-          conversation.user = JSON.stringify(userArray); // 다시 직렬화하여 저장
+          userArray.splice(action.payload.itemIndex, 1);
+          conversation.user = JSON.stringify(userArray);
         } else if (action.payload.type === 'character') {
-          characterArray.splice(action.payload.itemIndex, 1); // 해당 인덱스를 제거
-          conversation.character = JSON.stringify(characterArray); // 다시 직렬화하여 저장
+          characterArray.splice(action.payload.itemIndex, 1);
+          conversation.character = JSON.stringify(characterArray);
         }
       }
     },
 
     removeConversationTalk: (state, action: PayloadAction<number>) => {
-      state.currentEpisodeInfo.conversationTemplateList.splice(action.payload, 1);
-      state.currentEpisodeInfo.conversationTemplateList.forEach((conversation, idx) => {
-        conversation.id = idx;
-      });
+      const index = action.payload;
+      if (index >= 0 && index < state.currentEpisodeInfo.conversationTemplateList.length) {
+        state.currentEpisodeInfo.conversationTemplateList.splice(index, 1);
+      }
     },
 
     removeAllConversationTalk: state => {
-      // conversationTemplateList 배열을 비움
       state.currentEpisodeInfo.conversationTemplateList = [];
     },
 
@@ -224,20 +214,19 @@ const episodeInfoSlice = createSlice({
     addActionConversationTalk: (
       state,
       action: PayloadAction<{
-        triggerId: number;
+        triggerIndex: number;
         user: ConversationTalkInfo[];
         character: ConversationTalkInfo[];
-        conversationTpye: ConversationPriortyType;
+        conversationType: ConversationPriortyType;
       }>,
     ) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList.find(trigger => trigger.id === action.payload.triggerId);
+      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
       if (trigger) {
-        const newId = trigger.actionConversationList.length;
         const newConversation: Conversation = {
-          id: newId,
-          conversationType: action.payload.conversationTpye,
-          user: JSON.stringify(action.payload.user), // 직렬화
-          character: JSON.stringify(action.payload.character), // 직렬화
+          id: 0,
+          conversationType: action.payload.conversationType,
+          user: JSON.stringify(action.payload.user),
+          character: JSON.stringify(action.payload.character),
         };
         trigger.actionConversationList.push(newConversation);
       }
@@ -246,13 +235,13 @@ const episodeInfoSlice = createSlice({
     addActionConversationTalkItem: (
       state,
       action: PayloadAction<{
-        triggerId: number;
+        triggerIndex: number;
         conversationIndex: number;
         type: 'user' | 'character';
         newTalk: string;
       }>,
     ) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList.find(trigger => trigger.id === action.payload.triggerId);
+      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
       if (trigger) {
         const conversation = trigger.actionConversationList[action.payload.conversationIndex];
         if (conversation) {
@@ -278,10 +267,10 @@ const episodeInfoSlice = createSlice({
 
           if (action.payload.type === 'user') {
             userArray.push(newTalkItem);
-            conversation.user = JSON.stringify(userArray); // 다시 직렬화하여 저장
+            conversation.user = JSON.stringify(userArray);
           } else if (action.payload.type === 'character') {
             characterArray.push(newTalkItem);
-            conversation.character = JSON.stringify(characterArray); // 다시 직렬화하여 저장
+            conversation.character = JSON.stringify(characterArray);
           }
         }
       }
@@ -290,18 +279,17 @@ const episodeInfoSlice = createSlice({
     updateActionConversationTalk: (
       state,
       action: PayloadAction<{
-        triggerId: number;
+        triggerIndex: number;
         conversationIndex: number;
         itemIndex: number;
         type: 'user' | 'character';
         newTalk: string;
       }>,
     ) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList.find(trigger => trigger.id === action.payload.triggerId);
+      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
       if (trigger) {
         const conversation = trigger.actionConversationList[action.payload.conversationIndex];
         if (conversation) {
-          // JSON 데이터가 올바른지 확인하고 기본값을 설정
           let userArray: ConversationTalkInfo[] = [];
           let characterArray: ConversationTalkInfo[] = [];
 
@@ -320,12 +308,12 @@ const episodeInfoSlice = createSlice({
           if (action.payload.type === 'user') {
             if (userArray[action.payload.itemIndex]) {
               userArray[action.payload.itemIndex].talk = action.payload.newTalk;
-              conversation.user = JSON.stringify(userArray); // 다시 직렬화하여 저장
+              conversation.user = JSON.stringify(userArray);
             }
           } else if (action.payload.type === 'character') {
             if (characterArray[action.payload.itemIndex]) {
               characterArray[action.payload.itemIndex].talk = action.payload.newTalk;
-              conversation.character = JSON.stringify(characterArray); // 다시 직렬화하여 저장
+              conversation.character = JSON.stringify(characterArray);
             }
           }
         }
@@ -335,13 +323,13 @@ const episodeInfoSlice = createSlice({
     removeActionConversationItem: (
       state,
       action: PayloadAction<{
-        triggerId: number;
+        triggerIndex: number;
         conversationIndex: number;
         itemIndex: number;
         type: 'user' | 'character';
       }>,
     ) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList.find(trigger => trigger.id === action.payload.triggerId);
+      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
       if (trigger) {
         const conversation = trigger.actionConversationList[action.payload.conversationIndex];
         if (conversation) {
@@ -361,30 +349,33 @@ const episodeInfoSlice = createSlice({
           }
 
           if (action.payload.type === 'user') {
-            userArray.splice(action.payload.itemIndex, 1); // 해당 인덱스를 제거
-            conversation.user = JSON.stringify(userArray); // 다시 직렬화하여 저장
+            userArray.splice(action.payload.itemIndex, 1);
+            conversation.user = JSON.stringify(userArray);
           } else if (action.payload.type === 'character') {
-            characterArray.splice(action.payload.itemIndex, 1); // 해당 인덱스를 제거
-            conversation.character = JSON.stringify(characterArray); // 다시 직렬화하여 저장
+            characterArray.splice(action.payload.itemIndex, 1);
+            conversation.character = JSON.stringify(characterArray);
           }
         }
       }
     },
 
-    removeActionConversationTalk: (state, action: PayloadAction<{triggerId: number; conversationIndex: number}>) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList.find(trigger => trigger.id === action.payload.triggerId);
+    removeActionConversationTalk: (state, action: PayloadAction<{triggerIndex: number; conversationIndex: number}>) => {
+      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
       if (trigger) {
         trigger.actionConversationList.splice(action.payload.conversationIndex, 1);
-        trigger.actionConversationList.forEach((conversation, idx) => {
-          conversation.id = idx;
-        });
       }
     },
-    removeAllActionConversationTalk: (state, action: PayloadAction<{triggerId: number}>) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList.find(trigger => trigger.id === action.payload.triggerId);
+
+    removeAllActionConversationTalk: (state, action: PayloadAction<{triggerIndex: number}>) => {
+      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
       if (trigger) {
-        // actionConversationList 배열을 비움
         trigger.actionConversationList = [];
+      }
+    },
+
+    setLlmSetupInfo(state, action: PayloadAction<LLMSetupInfo>) {
+      if (state.currentEpisodeInfo) {
+        state.currentEpisodeInfo.llmSetupInfo = action.payload; // LLM 설정 정보 업데이트
       }
     },
   },

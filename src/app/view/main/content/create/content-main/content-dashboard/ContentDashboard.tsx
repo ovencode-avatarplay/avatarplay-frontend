@@ -15,8 +15,7 @@ interface Props {
 const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
-  // TODO Dashboard로 변경
-  // const contentInfo = useSelector((state: RootState) => state.content.contentInfo ?? []);
+  const contentInfo = useSelector((state: RootState) => state.myContents.contentDashBoardList ?? []);
 
   const handleItemClick = (index: number) => {
     setSelectedIndex(index);
@@ -33,15 +32,24 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
     }
   }, [selectedIndex, open]);
 
-  const handleEditClick = () => {
+  const handleEditClick = async () => {
     if (selectedIndex !== null) {
-      // ToDo Dashboard로 변경
-      // const selectedItemId = contentInfo[selectedIndex]?.id;
-      // if (selectedItemId) {
-      //   onSelectItem(selectedItemId);
-      // }
+      const selectedItemId = contentInfo[selectedIndex]?.id;
+      if (selectedItemId) {
+        try {
+          // 비동기 호출이 5초 이상 걸리면 에러를 던지기 위한 타이머 설정
+          const timeout = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Loading took too long!')), 5000),
+          );
+
+          await Promise.race([onSelectItem(selectedItemId), timeout]);
+
+          onClose();
+        } catch (error) {}
+      }
+    } else {
+      onClose();
     }
-    onClose();
   };
 
   return (
@@ -70,19 +78,11 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
 
         {/* Content list */}
         <Box className={Style.list} ref={listRef}>
-          {/* TODO : DashBoard로 변경*/}
-          {/* {contentInfo.map((item, index) => (
+          {contentInfo.map((item, index) => (
             <div key={index} onClick={() => handleItemClick(index)}>
-              <ContentItem
-                thumbnailSrc={item.publishInfo.thumbnail}
-                createdDate=""
-                title={item.id + '/' + item.publishInfo.contentName}
-                talkCount={0}
-                peopleCount={0}
-                isSelected={selectedIndex === index}
-              />
+              <ContentItem dashboardItem={item} isSelected={selectedIndex === index} />
             </div>
-          ))} */}
+          ))}
         </Box>
 
         {/* Action buttons */}

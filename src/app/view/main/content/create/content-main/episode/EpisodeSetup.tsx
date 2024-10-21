@@ -12,16 +12,11 @@ import EpisodeTrigger from './episode-trigger/EpisodeTrigger';
 import ButtonEpisodeInfo from './ButtonEpisodeInfo';
 import EpisodeImageUpload from './EpisodeImageUpload';
 import EpisodeDescription from './episode-description/EpisodeDescription';
-import {ContentInfo} from '@/types/apps/content/contentInfo';
-import {ChapterInfo} from '@/types/apps/content/chapter/chapterInfo';
-import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
 
-import {number} from 'valibot';
 import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 
 import EpisodeLLMSetup from './episode-LLMsetup/EpisodeLLMsetup';
-import CharacterCreate from './episode-imagesetup/CharacterCreate';
 
 interface Props {
   onDrawerOpen: () => void;
@@ -48,9 +43,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
   const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
   const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false);
   const [isImageSetupModalOpen, setImageSetupModalOpen] = useState(false);
-
-  // **상태 추가**: 팝업 열림 상태를 관리
-  const [isPopupOpen, setPopupOpen] = useState<boolean>(false);
+  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
 
   const openTriggerModal = () => {
     setTriggerModalOpen(true); // Trigger 모달 열기
@@ -84,6 +77,14 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
     setImageSetupModalOpen(false); // 이미지 생성 모달 닫기
   };
 
+  const openLLMSetup = () => {
+    setLLMSetupOpen(true); // 모달 열기
+  };
+
+  const closeLLMSetup = () => {
+    setLLMSetupOpen(false); // 모달 닫기
+  };
+
   // Redux에서 contentInfo 데이터 가져오기
   const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // contentInfo 가져오기
 
@@ -94,6 +95,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
       if (chapter) {
         const episode = chapter.episodeInfoList.find(info => info.id === episodeId);
         if (episode) {
+          console.log('Success!');
         } else {
           console.log(`Episode at id ${episodeId} not found in Content ${contentId}`);
         }
@@ -104,31 +106,10 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
       console.log(`Content with ID ${contentId} not found`);
     }
   }, [contentInfo, contentId, chapterId, episodeId]);
-  // **팝업 열기**: 버튼 클릭 시 호출
-  const handleOpenPopup = async () => {
-    if (!isPopupOpen) {
-      setPopupOpen(true);
-    }
-  };
-
-  const handleClosePopup = () => {
-    if (isPopupOpen) {
-      setPopupOpen(false);
-    }
-  };
 
   const handleSubmitPopup = (data: any) => {
     console.log('Submitted data:', data);
     // 필요한 처리를 여기에 추가
-  };
-  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
-
-  const openLLMSetup = () => {
-    setLLMSetupOpen(true); // 모달 열기
-  };
-
-  const closeLLMSetup = () => {
-    setLLMSetupOpen(false); // 모달 닫기
   };
   return (
     <main className={Style.episodeSetup}>

@@ -4,6 +4,7 @@ import {PublishInfo} from '@/types/apps/content/chapter/publishInfo';
 import api, {ResponseAPI} from './ApiInstance';
 import {ContentInfo} from '@/types/apps/content/contentInfo';
 import {ChapterInfo} from '@/types/apps/content/chapter/chapterInfo';
+import {ContentDashboardItem} from '@/redux-store/slices/myContentDashboard';
 
 // Save Content
 export interface SaveContentReq {
@@ -39,15 +40,12 @@ export interface GetContentByIdReq {
 }
 
 export interface GetContentByIdRes {
-  chatCount: number;
-  chatUserCount: number;
-  publishInfo: PublishInfo;
-  chapterInfoList: ChapterInfo[];
+  contentInfo: ContentInfo;
 }
 
 export const sendContentByIdGet = async (payload: GetContentByIdReq): Promise<ResponseAPI<GetContentByIdRes>> => {
   try {
-    const response = await api.post<ResponseAPI<GetContentByIdRes>>('Content/get', payload);
+    const response = await api.post<ResponseAPI<GetContentByIdRes>>('Content/getTotal', payload);
 
     if (response.data.resultCode === 0) {
       console.log('제출 결과 성공');
@@ -66,15 +64,8 @@ export interface GetContentsByUserIdReq {
   userId: number;
 }
 
-export interface GetContentsByUserIdRes {
-  id: number;
-  name: string;
-  thumbnail: string;
-  messageCount: number;
-  followCount: number;
-  thumbnailCount: number;
-  videoCount: number;
-  createAt: string;
+export interface GetContentsByUserIdRes<> {
+  contentDashBoardList: ContentDashboardItem[];
 }
 
 export const sendContentByUserIdGet = async (

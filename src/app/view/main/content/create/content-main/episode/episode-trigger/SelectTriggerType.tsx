@@ -1,7 +1,8 @@
 // 파일 경로: components/SelectTriggerType.tsx
 
 import React, {useState} from 'react';
-import {useDispatch} from 'react-redux'; // Redux 디스패치를 사용
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
 import {
   Dialog,
   DialogTitle,
@@ -81,11 +82,19 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
     };
   };
 
+  const triggerInfoList = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList || []);
   // Save 버튼 클릭 시 처리 로직
   const handleSave = () => {
     const mainData = createMainData();
     const subData = createDefaultSubData();
+    const isKeywordTypeExists = triggerInfoList.some(
+      (info, idx) => info.triggerType === TriggerMainDataType.triggerValueKeyword, // idx를 사용하여 현재 인덱스와 비교
+    );
 
+    if (isKeywordTypeExists) {
+      alert('Keyword타입은 1개를 넘을 수 없습니다.');
+      return; // handleClose를 취소함
+    }
     // Redux에 데이터 저장
     dispatch(
       addTriggerInfo({
@@ -108,7 +117,7 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
             character: 'Character1', // 기본 캐릭터 설정
           },
           {
-            id: 1,
+            id: 0,
             conversationType: 2,
             user: 'User2',
             character: 'Character2',
