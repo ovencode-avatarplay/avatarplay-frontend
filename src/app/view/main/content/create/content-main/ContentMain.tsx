@@ -43,6 +43,7 @@ import {ChapterInfo} from '@/types/apps/content/chapter/chapterInfo';
 import DefaultContentInfo from '@/data/create/content-info-data.json';
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
+import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/myContentDashboard';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
@@ -97,8 +98,8 @@ const ContentMain: React.FC = () => {
       const response = await sendContentByUserIdGet(req);
 
       if (response?.data) {
-        const tmp = response.data;
-        return tmp;
+        const contentData: ContentDashboardItem[] = response.data.contentDashBoardList;
+        dispatch(setContentDashboardList(contentData));
       } else {
         throw new Error(`No contentInfo in response for ID: ${userId}`);
       }
@@ -110,26 +111,27 @@ const ContentMain: React.FC = () => {
   };
 
   // DashBoard 에서 선택한 컨텐츠를 Id로 가져옴 (CreateContent사이클 (Chapter, Episode 편집) 에서 사용하기 위함)
-  const GetContentByContentId = async (id: number) => {
+  const GetContentByContentId = async (contentId: number) => {
     setLoading(true);
 
     try {
-      const req: GetContentByIdReq = {contentId: id};
+      const req: GetContentByIdReq = {contentId: contentId};
       const response = await sendContentByIdGet(req);
 
       if (response?.data) {
-        const contentData: ContentInfo = {
-          id: id, // 컨텐츠 ID
-          userId: id, // TODO 만든 사람의 ID 또는 사용자의 ID
-          publishInfo: response.data.publishInfo,
-          chapterInfoList: response.data.chapterInfoList,
-        };
+        const contentData: ContentInfo = response.data.contentInfo;
+
+        // Redux 상태 업데이트
         dispatch(setEditingContentInfo(contentData));
+
+        // 아이템 선택 처리
+        handleItemSelect(contentId);
       } else {
-        throw new Error(`No contentInfo in response for ID: ${id}`);
+        throw new Error(`No contentInfo in response for ID: ${contentId}`);
       }
     } catch (error) {
       console.error('Error fetching content info:', error);
+      throw error; // 에러를 상위로 전달
     } finally {
       setLoading(false);
     }
@@ -143,6 +145,10 @@ const ContentMain: React.FC = () => {
 
     getContentsByUserId();
   }
+
+  const defaultSaveContentReq = (): SaveContentReq => ({
+    contentInfo: curContent ?? emptyContentInfo,
+  });
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
@@ -363,9 +369,6 @@ const ContentMain: React.FC = () => {
   //#endregion
 
   //#region SaveContent
-  const defaultSaveContentReq = (): SaveContentReq => ({
-    contentInfo: curContent ?? emptyContentInfo,
-  });
 
   const [saveData, setSaveData] = useState<SaveContentReq>(defaultSaveContentReq);
 
@@ -490,7 +493,11 @@ const ContentMain: React.FC = () => {
             episodeId={selectedEpisodeId}
           />
 
-          <ContentDashboard open={isDashboardOpen} onClose={handleCloseDashboard} onSelectItem={handleItemSelect} />
+          <ContentDashboard
+            open={isDashboardOpen}
+            onClose={handleCloseDashboard}
+            onSelectItem={GetContentByContentId}
+          />
           <ChapterBoard
             open={isChapterboardOpen}
             onClose={handleCloseChapterboard}

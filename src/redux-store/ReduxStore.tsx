@@ -13,6 +13,7 @@ import ContentSelection from './slices/ContentSelection';
 import publishInfoSlice from './slices/PublishInfo';
 import chapterBoardSlice from './slices/ChapterBoard';
 import episodeInfoSlice from './slices/EpisodeInfo';
+import myContentDashboardSlice from './slices/myContentDashboard';
 
 // redux-persist
 import {persistStore, persistReducer} from 'redux-persist';
@@ -26,15 +27,23 @@ const persistConfig = {
 const reducers = combineReducers({
   sample: sampleReducer,
   // chat: chatReducer,
-  chatting: chattingReducer, // 서버데이터 Chatting/
-  drawerContentDesc: drawerContentDescReducer,
-  content: ContentInfoSlice,
   user: userInfo,
 
-  contentselection: ContentSelection,
-  publish: publishInfoSlice,
-  chapterBoard: chapterBoardSlice,
-  episode: episodeInfoSlice,
+  chatting: chattingReducer, // 서버데이터 Chatting/
+
+  //#region  Explore
+  drawerContentDesc: drawerContentDescReducer, // 현재
+  //#endregion
+
+  //#region  Create
+  myContents: myContentDashboardSlice, // 내가 만든 컨텐츠들 (Dashboard 표시용)
+
+  content: ContentInfoSlice, // 현재 편집중인 컨텐츠 (서버와 데이터 교환 용)
+  contentselection: ContentSelection, // 현재 선택된 컨텐츠,챕터,에피소드 정보 (ChapterBoard 선택용)
+  chapterBoard: chapterBoardSlice, // 현재 편집중인 컨텐츠의 ChapterBoard 정부 (Chapter, Episode 수정용)
+  publish: publishInfoSlice, // 현재 편집중인 컨텐츠의 publish 정보 (Content 수정용)
+  episode: episodeInfoSlice, // 현재 편집중인 에피소드 정보 (Content 수정용)
+  //#endregion
 });
 
 // persistReducer로 reducers 감싸기
