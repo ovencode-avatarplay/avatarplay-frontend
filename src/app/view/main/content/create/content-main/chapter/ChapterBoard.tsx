@@ -58,7 +58,7 @@ const ChapterBoard: React.FC<Props> = ({
 }) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const selectedContent = useSelector((state: RootState) => state.content.curEditingContentInfo);
-  const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId);
+
   const selectedChapterIdx = useSelector((state: RootState) => state.contentselection.selectedChapterIdx);
   const selectedEpisodeIdx = useSelector((state: RootState) => state.contentselection.selectedEpisodeIdx);
   const [editItem, setEditItem] = useState<{idx: number | null; type: 'chapter' | 'episode' | null}>({
