@@ -1,0 +1,66 @@
+.episodeCard {
+    position: relative;
+    width: 90%;
+    height: 20vh;
+    margin-right: 16px;
+    flex-shrink: 0;
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: start;
+    border: 5px solid black;
+    overflow: hidden;
+  }
+  
+  @media (max-width: 600px) {
+    .episodeCard {
+      width: 90%;
+    }
+  }
+  
+  .episodeImage {
+    width: 100%;
+    height: 80%;
+    object-fit: cover;
+    resize: none;
+  }
+  
+  .episodeOverlay {
+    position: absolute;
+    bottom: 25%;
+    left: 0;
+    right: 0;
+    height: 20%;
+    background-color: rgba(0, 0, 255, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+  }
+  
+  .episodeInfo {
+    color: white;
+  }
+  
+  .episodeIcons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .iconInfo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .episodeDescription {
+    margin-top: 10px;
+    color: black;
+    width: 100%;
+    height: 80%;
+    background: transparent;
+    overflow-y: auto;
+  }
+  

@@ -2,16 +2,17 @@
 
 import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
-import {ExploreInfo, sendGetExplore} from '@/app/NetWork/ExploreNetwork';
+import {sendGetExplore} from '@/app/NetWork/ExploreNetwork';
 import {addNewCharacter, clearChatList} from '@/redux-store/slices/chat';
 import Header from './searchboard-header/SearchBoardHeader';
 import Style from './SearchBoard.module.css';
 import SearchBoardHorizonScroll from './SearchBoardHorizonScroll';
+import {ExploreCardProps} from '@/types/apps/explore-card-type';
 
 const SearchBoard: React.FC = () => {
   const [searchOptionList, setSearchOptionList] = useState<string[] | null>(null);
-  const [playingList, setPlayingList] = useState<ExploreInfo[] | null>(null);
-  const [recommendationList, setRecommendationList] = useState<ExploreInfo[] | null>(null);
+  const [playingList, setPlayingList] = useState<ExploreCardProps[] | null>(null);
+  const [recommendationList, setRecommendationList] = useState<ExploreCardProps[] | null>(null);
 
   const [search, setSearch] = useState('all');
   const [onlyAdults, setOnlyAdults] = useState(false);

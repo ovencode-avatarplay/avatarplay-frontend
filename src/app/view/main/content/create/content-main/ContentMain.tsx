@@ -23,8 +23,8 @@ import ChapterBoard from './chapter/ChapterBoard';
 import {
   sendContentSave,
   SaveContentReq,
-  GetContentByIdReq,
-  sendContentByIdGet,
+  GetTotalContentByIdReq,
+  sendContentByIdGetTotal,
   GetContentsByUserIdReq,
   sendContentByUserIdGet,
 } from '@/app/NetWork/ContentNetwork';
@@ -115,8 +115,8 @@ const ContentMain: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetContentByIdReq = {contentId: contentId};
-      const response = await sendContentByIdGet(req);
+      const req: GetTotalContentByIdReq = {contentId: contentId};
+      const response = await sendContentByIdGetTotal(req);
 
       if (response?.data) {
         const contentData: ContentInfo = response.data.contentInfo;

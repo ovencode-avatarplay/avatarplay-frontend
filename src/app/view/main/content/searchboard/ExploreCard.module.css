@@ -50,21 +50,18 @@
 .exploreInfo
 {
   color: white;
-  /* 텍스트 색상 */
 }
 
 .exploreIcons
 {
   display: flex;
   justify-content: space-between;
-  /* 아이콘과 숫자 정렬 */
 }
 
 .iconInfo
 {
   display: flex;
   align-items: center;
-  /* 아이콘과 텍스트 정렬 */
 }
 
 .exploreTextarea

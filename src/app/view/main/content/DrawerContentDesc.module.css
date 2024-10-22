@@ -13,22 +13,16 @@
     overflow-y: auto;
     margin-bottom: 25px;
   }
+
   
-  .chatingControlPanel {
-    height: calc(90vh - 72px); 
-    overflow-y: hidden;
-    margin-bottom: 25px;
-    background-color: red;
-  }
-  
-  .imageBackground {
-    height: 100%;
-    background-image: url('/Images/001.png'); /* Replace with your image */
-    background-size: cover;
-    background-position: center;
+  .imageThumbnail  {
+    width: '100%';
+    height: 'auto';
+    object-Fit: 'cover';
     position: relative;
-  }
-  
+ }
+
+
   .descriptionBox {
     height: 100px;
     border: 1px solid #ccc;
@@ -40,8 +34,40 @@
   }
 
   
+  .paginationContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  
+  .hiddenTabs {
+    display: none;
+  }
+
+  
+  
+  .chatingControlPanel {
+    height: calc(100vh); 
+    overflow-y: hidden;
+    margin-bottom: 25px;
+    background-color: red;
+  }
+  
+
+  .chapterBox
+  {
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .chapterSelect {
+        width: 50%;
+    
+  }
+  
   .episodeList {
-    height: 60px;
+    height: 200px;
     border: 1px solid #ccc;
     border-radius: 4px;
     display: flex;
@@ -55,13 +81,9 @@
     position: relative;
     padding: 16px;
   }
-  
-  .paginationContainer {
-    display: flex;
-    justify-content: center;
-    margin-top: 16px;
-  }
-  
-  .hiddenTabs {
-    display: none;
+
+  .startNewChatButton
+  {
+    height: 40px;
+    width: 80px;
   }

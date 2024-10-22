@@ -34,18 +34,27 @@ export const sendContentSave = async (payload: SaveContentReq): Promise<Response
 
 // Get Content
 
-// Get Content By ContentId
+// Get Content By ContnetId for ExploreItem
 export interface GetContentByIdReq {
   contentId: number;
 }
 
 export interface GetContentByIdRes {
-  contentInfo: ContentInfo;
+  chatCount: number;
+  chatUserCount: number;
+  publishInfo: PublishInfo;
+  chapterInfoList: ChapterInfo[];
+  recommandContentInfoList: recommendContentInfo[];
+}
+
+export interface recommendContentInfo {
+  contentId: number;
+  imageUrl: string;
 }
 
 export const sendContentByIdGet = async (payload: GetContentByIdReq): Promise<ResponseAPI<GetContentByIdRes>> => {
   try {
-    const response = await api.post<ResponseAPI<GetContentByIdRes>>('Content/getTotal', payload);
+    const response = await api.post<ResponseAPI<GetContentByIdRes>>('Content/get', payload);
 
     if (response.data.resultCode === 0) {
       console.log('제출 결과 성공');
@@ -56,6 +65,33 @@ export const sendContentByIdGet = async (payload: GetContentByIdReq): Promise<Re
   } catch (error: any) {
     console.error('Error sending get content data:', error);
     throw new Error('Failed to send get content data. Please try again.');
+  }
+};
+
+// Get TotalContent By ContentId
+export interface GetTotalContentByIdReq {
+  contentId: number;
+}
+
+export interface GetTotalContentByIdRes {
+  contentInfo: ContentInfo;
+}
+
+export const sendContentByIdGetTotal = async (
+  payload: GetTotalContentByIdReq,
+): Promise<ResponseAPI<GetTotalContentByIdRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetTotalContentByIdRes>>('Content/getTotal', payload);
+
+    if (response.data.resultCode === 0) {
+      console.log('제출 결과 성공');
+      return response.data;
+    } else {
+      throw new Error(`GetTotalContentByIdRes Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error sending get total content data:', error);
+    throw new Error('Failed to send get total content data. Please try again.');
   }
 };
 

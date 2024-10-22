@@ -1,5 +1,6 @@
 export interface ExploreCardProps {
-    episodeId: number;
-    shortsId: string;
-    thumbnail: string;
-  }
+  contentId: number;
+  episodeId: number;
+  shortsId: string;
+  thumbnail: string;
+}
