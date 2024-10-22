@@ -52,8 +52,8 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
           className={styles.listItemText}
           primary={<span className={styles.primaryText}>{`${item.name}`}</span>} // 트리거 이름 표시
         />
-        <IconButton edge="end" aria-label="comments" className={styles.iconButton} onClick={handleModalOpen}>
-          <ArrowForwardIos />
+        <IconButton edge="end" aria-label="comments" onClick={handleModalOpen}>
+          <ArrowForwardIos className={styles.iconButton} />
         </IconButton>
       </ListItem>
 
