@@ -17,6 +17,7 @@ import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeC
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 
 import EpisodeLLMSetup from './episode-LLMsetup/EpisodeLLMsetup';
+import ImageUploadDialog from './episode-imagesetup/EpisodeImageUpload';
 
 interface Props {
   onDrawerOpen: () => void;
@@ -43,6 +44,8 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
   const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
   const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false);
   const [isImageSetupModalOpen, setImageSetupModalOpen] = useState(false);
+  const [isAdvanceImageSetupModalOpen, setAdvanceImageSetupModalOpen] = useState(false);
+  const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
   const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
 
   const openTriggerModal = () => {
@@ -75,6 +78,22 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
 
   const closeImageSetup = () => {
     setImageSetupModalOpen(false); // 이미지 생성 모달 닫기
+  };
+
+  const openAdvanceImageSetup = () => {
+    setAdvanceImageSetupModalOpen(true);
+  };
+
+  const closeAdvanceImageSetup = () => {
+    setAdvanceImageSetupModalOpen(false);
+  };
+
+  const openUploadImageDialog = () => {
+    setUploadImageDialogOpen(true);
+  };
+
+  const closeUploadImageDialog = () => {
+    setUploadImageDialogOpen(false);
   };
 
   const openLLMSetup = () => {
@@ -121,8 +140,10 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
       <Box className={Style.imageArea}>
         <EpisodeImageUpload
           onClickEasyCreate={openImageSetup}
-          onClickAdvanceCreate={openImageSetup}
-          onClickUploadImage={openImageSetup}
+          onClickAdvanceCreate={openAdvanceImageSetup}
+          uploadImageState={isUploadImageDialogOpen}
+          onClickUploadImage={openUploadImageDialog}
+          onCloseUploadImage={closeUploadImageDialog}
         />
       </Box>
       <Box className={Style.setupButtons}>
@@ -155,6 +176,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
       )}
       {/*이미지 생성 모달*/}
       {isImageSetupModalOpen && <EpisodeImageSetup open={isImageSetupModalOpen} onClose={closeImageSetup} />}
+      {/* {isAdvanceImageSetupModalOpen && <EpisodeAdvanceImageSetup open ={isAdvanceImageSetupModalOpen} onClose={closeAdvanceImageSetup} />} */}
       {/* EpisodeLLMSetup 모달 */}
       <EpisodeLLMSetup open={isLLMSetupOpen} onClose={closeLLMSetup} />
     </main>
