@@ -70,10 +70,8 @@ const DrawerContentDesc = () => {
       setSelectedChapterIdx(0);
       setRecommendContentList(contentDesc.recommandContentInfoList);
       setSelectedEpisodeIdx(0);
-      setEpisodes(contentDesc.chapterInfoList[selectedChapterIdx].episodeInfoList);
-      dispatch(
-        setDrawerEpisodeId(contentDesc.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx].id),
-      );
+      setEpisodes(contentDesc.chapterInfoList[0].episodeInfoList);
+      dispatch(setDrawerEpisodeId(contentDesc.chapterInfoList[0].episodeInfoList[0].id));
     }
   }, [contentDesc]);
 
@@ -86,6 +84,7 @@ const DrawerContentDesc = () => {
   // chapter가 변경될 때 에피소드 리스트 업데이트
   useEffect(() => {
     if (contentDesc) {
+      setSelectedEpisodeIdx(0);
       const selectedChapter = contentDesc.chapterInfoList[selectedChapterIdx];
       const updatedEpisodeItems = selectedChapter.episodeInfoList.map(episode => ({
         episodeId: episode.id,
@@ -95,9 +94,8 @@ const DrawerContentDesc = () => {
         name: episode.name,
       }));
       setEpisodeItems(updatedEpisodeItems); // 에피소드 리스트 업데이트
-      setSelectedEpisodeIdx(0); // 에피소드 인덱스 초기화
     }
-  }, [selectedChapterIdx, contentDesc]);
+  }, [selectedChapterIdx]);
 
   // Explore 에서 선택한 컨텐츠를 Id로 가져옴 (Play사이클 채팅 진입에서 사용하기 위함)
   const GetContentByContentId = async (contentId: number) => {
