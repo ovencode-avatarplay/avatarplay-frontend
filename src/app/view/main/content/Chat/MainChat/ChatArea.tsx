@@ -39,7 +39,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages}) => {
               fontStyle: msg.sender === 'narration' ? 'italic' : 'normal',
               wordWrap: 'break-word',
               whiteSpace: 'pre-wrap',
-              fontSize: msg.sender === 'narration' ? '1.1em' : 'inherit', // 나래이션 메시지 크기 조정
+              fontSize: msg.sender === 'narration' ? '0.8em' : '0.9em', // 나래이션 메시지 크기 조정
             }}
           >
             <div>{msg.text}</div>
