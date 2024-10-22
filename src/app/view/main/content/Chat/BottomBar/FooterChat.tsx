@@ -12,7 +12,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {SendChatMessageReq, sendMessageStream} from '@/app/NetWork/ChatNetwork';
 
 interface BottomBarProps {
-  onSend: (message: string, parseMessage: boolean) => void; // 파싱 여부 추가
+  onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void; // 파싱 여부 추가
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
@@ -43,7 +43,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
     if (message.trim()) {
       const parseMessage = false; // 채팅 입력에서 보낼 때는 파싱 기능 끔
       console.log('parseMessage', parseMessage);
-      onSend(message, parseMessage); // 파싱 여부 전달
+      onSend(message, true, parseMessage); // 파싱 여부 전달
       setMessage('');
       inputRef.current?.focus();
 
@@ -74,7 +74,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
 
       // 스트리밍으로 받은 메시지일 때 파싱 기능 끔
       const parseMessage = false;
-      onSend(newMessage, parseMessage); // 파싱 여부 전달
+      onSend(newMessage, false, parseMessage); // 파싱 여부 전달
     };
 
     eventSource.onerror = () => {

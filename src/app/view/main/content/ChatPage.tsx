@@ -9,6 +9,7 @@ import {useBackHandler} from 'utils/util-1';
 import usePrevChatting from '@chats/MainChat/PrevChatting';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
+import {parseMessage} from '@chats/MainChat/MessageParser'; // 메시지 파서 불러오기
 
 interface Message {
   text: string;
@@ -16,20 +17,44 @@ interface Message {
 }
 
 const ChatPage: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [parsedMessages, setParsedMessages] = useState<Message[]>([]); // 파싱된 메시지 배열로 변경
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isParsing, setParsingState] = useState<boolean>(true);
+  const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false); // 이전 메시지 불러왔는지 여부 추가
 
   const userId = useSelector((state: RootState) => state.user.userId);
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
 
   const handleBackClick = useBackHandler();
 
-  const handleSendMessage = (message: string, isParsing: boolean) => {
-    const newMessage: Message = {text: isParsing ? `파싱된 메시지: ${message}` : message, sender: 'user'};
-    setMessages(prev => [...prev, newMessage]);
+  const handleSendMessage = (message: string, isMyMessage: boolean, isParsing: boolean) => {
+    // 새로 들어오는 메시지를 설정
+    const newMessage: Message = {
+      text: isParsing ? `파싱된 메시지: ${message}` : message,
+      sender: isMyMessage ? 'user' : 'partner',
+    };
+
+    console.log('new:', message, 'isMyMessage:', isMyMessage, 'parsing:', isParsing, newMessage);
+
+    // 새로운 메시지를 상태에 추가
+    setParsedMessages(prev => {
+      // 기존 메시지 배열 복사
+      const newMessages = [...prev];
+
+      // 만약 배열이 비어있지 않고 마지막 메시지가 'partner'인 경우
+      if (isMyMessage === false && newMessages.length > 0 && newMessages[newMessages.length - 1].sender === 'partner') {
+        // 마지막 메시지의 text에 새로운 메시지를 추가
+        newMessages[newMessages.length - 1].text += ` ${message}`;
+      } else {
+        // 그렇지 않은 경우 새로운 메시지를 추가
+        newMessages.push(newMessage);
+      }
+
+      return newMessages; // 업데이트된 메시지 배열 반환
+    });
+
+    // 파싱 상태 설정
     setParsingState(isParsing);
-    console.log('파싱상태 변경함 : ', isParsing);
   };
 
   const handleMoreClick = () => {
@@ -44,13 +69,16 @@ const ChatPage: React.FC = () => {
   const {prevMessages, error} = usePrevChatting(userId, episodeId);
 
   useEffect(() => {
-    if (error) {
-      console.error('Error fetching previous messages:', error);
+    if (!hasFetchedPrevMessages && !error && prevMessages.length > 0) {
+      // 이전 메시지를 한 번만 파싱하여 상태에 설정
+      const parsedPrevMessages = prevMessages.flatMap(msg => parseMessage(msg.message) || []);
+      setParsedMessages(parsedPrevMessages);
+      setHasFetchedPrevMessages(true); // 이전 메시지를 불러왔음을 표시
     }
-  }, [error]);
+  }, [error, prevMessages, hasFetchedPrevMessages]);
 
-  // 전체 메시지를 결합하여 string[]로 변환
-  const allMessages: string[] = [...prevMessages.map(msg => msg.message), ...messages.map(msg => msg.text)];
+  // 현재 메시지를 파싱하고 결합
+  const allMessages: Message[] = [...parsedMessages];
 
   return (
     <main className={styles.chatmodal}>
