@@ -7,7 +7,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import ImageUploadDialog from './episode-imagesetup/EpisodeImageUpload';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentEpisodeThumbnail} from '@/redux-store/slices/EpisodeInfo';
 import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
@@ -30,6 +30,8 @@ const EpisodeImageUpload: React.FC<Props> = ({
   onClickUploadImage,
   onCloseUploadImage,
 }) => {
+  const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
+
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const dispatch = useDispatch();
@@ -87,6 +89,10 @@ const EpisodeImageUpload: React.FC<Props> = ({
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setImagePreview(editedEpisodeInfo.currentEpisodeInfo.thumbnail);
+  }, [editedEpisodeInfo]);
 
   return (
     <Box className={Style.imageArea}>
