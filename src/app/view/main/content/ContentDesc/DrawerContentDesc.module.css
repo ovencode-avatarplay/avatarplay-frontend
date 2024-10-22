@@ -34,6 +34,20 @@
   }
 
   
+  .tagContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 0;
+  }
+  
+  .tagChip {
+    background-color: #e0e0e0;
+    color: #424242;
+    font-weight: bold;
+    pointer-events: none;
+  }
+  
   .paginationContainer {
     display: flex;
     justify-content: center;
@@ -50,7 +64,6 @@
     height: calc(100vh); 
     overflow-y: hidden;
     margin-bottom: 25px;
-    background-color: red;
   }
   
 

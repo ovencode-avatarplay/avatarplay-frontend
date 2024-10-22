@@ -5,7 +5,7 @@ import {Pagination} from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-import DrawerContentEpisodeItem from './DrawerContentEpisodeItem'; // 아이템 컴포넌트 임포트
+import ContentEpisodeItem from './ContentEpisodeItem'; // 아이템 컴포넌트 임포트
 import {EpisodeCardProps} from '@/types/apps/episode-card-type';
 
 interface DrawerContentEpisodeItemListProps {
@@ -20,7 +20,7 @@ const DrawerContentEpisodeItemList: React.FC<DrawerContentEpisodeItemListProps> 
       <Swiper modules={[Pagination]} pagination={{clickable: true}} spaceBetween={16} slidesPerView={1}>
         {episodes.map((episode, index) => (
           <SwiperSlide key={episode.episodeId} onClick={() => onEpisodeSelect(index)}>
-            <DrawerContentEpisodeItem
+            <ContentEpisodeItem
               episodeId={episode.episodeId}
               name={episodes[0].name}
               intimacy={11}

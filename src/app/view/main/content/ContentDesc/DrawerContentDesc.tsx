@@ -3,8 +3,26 @@
 import React, {useEffect, useState} from 'react';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useDispatch, useSelector} from 'react-redux';
-import {Drawer, Button, Box, Typography, Select, MenuItem} from '@mui/material';
-import {closeDrawerContentDesc, setDrawerEpisodeId} from '@/redux-store/slices/drawerContentDescSlice';
+import {
+  Drawer,
+  Button,
+  Box,
+  Typography,
+  Select,
+  MenuItem,
+  Chip,
+  Card,
+  CardContent,
+  Stack,
+  Avatar,
+  Divider,
+  CardMedia,
+} from '@mui/material';
+import {
+  closeDrawerContentDesc,
+  openDrawerContentId,
+  setDrawerEpisodeId,
+} from '@/redux-store/slices/drawerContentDescSlice';
 import Style from './DrawerContentDesc.module.css';
 import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
 import Link from 'next/link';
@@ -14,13 +32,16 @@ import {
   sendContentByIdGet,
   recommendContentInfo,
 } from '@/app/NetWork/ContentNetwork';
-import DrawerContentEpisodeItemList from './DrawerContentEpisodeList';
+import DrawerContentEpisodeItemList from './ContentEpisodeList';
 import {EpisodeCardProps} from '@/types/apps/episode-card-type';
+import ContentRecommendList from './ContentRecommendList';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import PeopleIcon from '@mui/icons-material/People';
 
 const DrawerContentDesc = () => {
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
-  const [selectedChapterIdx, setSelectedChapterIdx] = useState<number>(0);
-  const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number>(0);
+  const [selectedChapterIdx, setSelectedChapterIdx] = useState<number>(-1);
+  const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number>(-1);
 
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -31,10 +52,10 @@ const DrawerContentDesc = () => {
   const [contentName, setContentName] = useState('contentName');
   const [contentThumbnail, setContentThumbnail] = useState('/Images/001.png');
   const [authorName, setAuthorName] = useState('authorName');
-  const [authorComment, setAuthorComment] = useState('authorComment');
   const [chatCount, setChatCount] = useState(0);
   const [chatUserCount, setChatUserCount] = useState(0);
   const [tagList, setTaglist] = useState<string[]>(['tag1', 'tag2']);
+  const [authorComment, setAuthorComment] = useState('authorComment');
   const [recommendContentList, setRecommendContentList] = useState<recommendContentInfo[]>([]);
 
   const [chapters, setChapters] = useState<{id: number; name: string}[]>([]);
@@ -79,6 +100,10 @@ const DrawerContentDesc = () => {
     setSelectedEpisodeIdx(episodeIndex);
     const selectedEpisode = episodeItems[episodeIndex];
     dispatch(setDrawerEpisodeId(selectedEpisode.episodeId)); // Redux에 선택된 에피소드 ID 설정
+  };
+
+  const handleRecommendContentSelect = (contentId: number) => {
+    dispatch(openDrawerContentId(contentId));
   };
 
   // chapter가 변경될 때 에피소드 리스트 업데이트
@@ -138,7 +163,6 @@ const DrawerContentDesc = () => {
         },
       }}
     >
-      {/* (TODO: 컨텐츠 정보 받아와야함)*/}
       <div className={Style.header}>
         <Typography>{contentName}</Typography>
         <div>
@@ -156,18 +180,61 @@ const DrawerContentDesc = () => {
         </div>
       </div>
       <main className={Style.content}>
-        <img
-          src={contentThumbnail}
+        <CardMedia
+          component="img"
+          height="200"
+          image={contentThumbnail}
           alt={contentName}
           className={Style.imageThumbnail}
-          style={{width: '100%', height: 'auto', objectFit: 'cover'}}
         />
-        <Box className={Style.descriptionBox}>
-          제작자 ID {authorName}, 채팅 횟수 {chatCount}, 채팅 사용자 수{chatUserCount}
-        </Box>
-        <Box className={Style.descriptionBox}>퍼블리싱태그 {tagList}</Box>
-        <Box className={Style.descriptionBox}>퍼블리싱 설명 {authorComment}</Box>
-        <Box className={Style.descriptionBox}>연관 컨텐츠 추천</Box>{' '}
+        <Card elevation={3} sx={{borderRadius: 2, padding: 2}}>
+          <CardContent>
+            <Stack direction="row" alignItems="center" spacing={5}>
+              <Avatar sx={{bgcolor: 'primary.main', width: 48, height: 48}}>
+                {authorName.charAt(0).toUpperCase()}
+              </Avatar>
+              <Box>
+                <Typography variant="h6">{authorName}</Typography>
+              </Box>
+              <Box textAlign="center">
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <ChatBubbleIcon color="action" />
+                  <Typography variant="h6">{chatCount}</Typography>
+                </Stack>
+              </Box>
+              <Box textAlign="center">
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <PeopleIcon color="action" />
+                  <Typography variant="h6">{chatUserCount}</Typography>
+                </Stack>
+              </Box>
+            </Stack>
+          </CardContent>
+        </Card>
+
+        <Card className={Style.tagCard}>
+          <CardContent>
+            <Typography variant="h6">Publishing Tags</Typography>
+            <Box className={Style.tagContainer}>
+              {tagList.map((tag, index) => (
+                <Chip key={index} label={tag} className={Style.tagChip} />
+              ))}
+            </Box>
+
+            <Divider className={Style.divider} />
+            <Typography variant="h6">Author Comment</Typography>
+            <Box className={Style.descriptionBox}>{authorComment}</Box>
+
+            <Divider className={Style.divider} />
+            <Typography variant="h6">Content Recommend</Typography>
+            <Box className={Style.descriptionBox}>
+              <ContentRecommendList
+                recommendContents={recommendContentList}
+                onSelectContent={handleRecommendContentSelect}
+              />
+            </Box>
+          </CardContent>
+        </Card>
       </main>
       <main className={Style.chatingControlPanel}>
         <Box className={Style.chapterBox}>

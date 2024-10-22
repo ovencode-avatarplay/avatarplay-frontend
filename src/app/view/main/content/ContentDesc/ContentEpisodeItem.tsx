@@ -1,18 +1,12 @@
 import React, {useState} from 'react';
-import Style from './DrawerContentEpisodeItem.module.css'; // CSS 파일 임포트
+import Style from './ContentEpisodeItem.module.css'; // CSS 파일 임포트
 import MovieIcon from '@mui/icons-material/Movie';
 import ImageIcon from '@mui/icons-material/Image';
 import {EpisodeCardProps} from '@/types/apps/episode-card-type'; // 에피소드 타입 정의
 import {useDispatch} from 'react-redux';
 import {setDrawerEpisodeId} from '@/redux-store/slices/drawerContentDescSlice';
 
-const DrawerContentEpisodeItem: React.FC<EpisodeCardProps> = ({
-  episodeId,
-  intimacy,
-  imageCount,
-  thumbnail,
-  name: title,
-}) => {
+const ContentEpisodeItem: React.FC<EpisodeCardProps> = ({episodeId, intimacy, imageCount, thumbnail, name: title}) => {
   const dispatch = useDispatch();
   const [episodeDesc, setEpisodeDesc] = useState('Episode Description'); // 에피소드 설명
 
@@ -48,4 +42,4 @@ const DrawerContentEpisodeItem: React.FC<EpisodeCardProps> = ({
   );
 };
 
-export default DrawerContentEpisodeItem;
+export default ContentEpisodeItem;
