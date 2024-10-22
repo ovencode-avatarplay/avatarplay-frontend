@@ -1,0 +1,41 @@
+/* FooterChat.module.css */
+.footerChat {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+  transition: height 0.3s ease, transform 0.3s ease;
+  z-index: 1000; /* 다른 요소들 위에 나타나도록 설정 */
+}
+
+.footerChat.expanded {
+  height: 400px; /* 스티커 UI가 열렸을 때 높이 */
+}
+
+.footerChat.collapsed {
+  height: auto; /* 기본 높이 (자동) */
+}
+
+.footerChat .inputContainer {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+}
+
+.footerChat .inputContainer button,
+.footerChat .inputContainer .MuiIconButton-root {
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.footerChat .buttonGroup {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.hidden {
+  display: none; /* 숨겨야 할 요소에 사용 */
+}
