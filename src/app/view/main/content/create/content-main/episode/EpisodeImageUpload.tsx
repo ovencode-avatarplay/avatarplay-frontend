@@ -7,6 +7,9 @@ import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import ImageUploadDialog from './episode-imagesetup/EpisodeImageUpload';
+import {useDispatch} from 'react-redux';
+import {setCurrentEpisodeThumbnail} from '@/redux-store/slices/EpisodeInfo';
+import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
 const Input = styled('input')({
   display: 'none',
@@ -29,6 +32,7 @@ const EpisodeImageUpload: React.FC<Props> = ({
 }) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSpeedDialClick = () => {
     setDialogOpen(true);
@@ -72,6 +76,7 @@ const EpisodeImageUpload: React.FC<Props> = ({
       if (response?.data) {
         const imgUrl: string = response.data;
         setImagePreview(imgUrl);
+        dispatch(setCurrentEpisodeThumbnail(imgUrl));
       } else {
         throw new Error(`No response for file`);
       }

@@ -17,7 +17,6 @@ import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeC
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 
 import EpisodeLLMSetup from './episode-LLMsetup/EpisodeLLMsetup';
-import ImageUploadDialog from './episode-imagesetup/EpisodeImageUpload';
 
 interface Props {
   onDrawerOpen: () => void;

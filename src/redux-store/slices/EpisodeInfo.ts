@@ -35,6 +35,10 @@ const episodeInfoSlice = createSlice({
       }
     },
 
+    setCurrentEpisodeThumbnail(state, action: PayloadAction<string>) {
+      state.currentEpisodeInfo.thumbnail = action.payload;
+    },
+
     // 새로운 TriggerInfo를 추가
     addTriggerInfo: (state, action: PayloadAction<Omit<TriggerInfo, 'id'>>) => {
       const newDataPair: TriggerInfo = {
@@ -383,6 +387,7 @@ const episodeInfoSlice = createSlice({
 
 export const {
   setCurrentEpisodeInfo,
+  setCurrentEpisodeThumbnail,
   updateEpisodeDescription,
   addTriggerInfo,
   updateTriggerInfo,
