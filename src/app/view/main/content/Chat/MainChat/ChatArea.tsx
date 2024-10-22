@@ -4,6 +4,7 @@ import styles from '@chats/Styles/StyleChat.module.css';
 
 interface ChatAreaProps {
   messages: string[]; // 이제 문자열 배열을 받습니다.
+  isParsing: boolean;
 }
 
 interface Message {
@@ -82,10 +83,20 @@ const convertPrevMessages = (prevMessages: (string | null)[]): Message[] => {
     .flatMap(msg => parseMessage(msg) || []); // 각 메시지를 파싱하고 배열로 병합
 };
 
+// 문자열 배열을 Message 배열로 변환하는 함수
+const convertStringMessagesToMessages = (messages: string[]): Message[] => {
+  return messages.map(msg => ({
+    text: msg,
+    sender: 'partner', // 여기서는 모두 'partner'로 가정
+  }));
+};
+
 // ChatArea 컴포넌트
-const ChatArea: React.FC<ChatAreaProps> = ({messages}) => {
+const ChatArea: React.FC<ChatAreaProps> = ({messages, isParsing}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null); // 스크롤 참조용 ref
-  const parsedMessages = convertPrevMessages(messages); // 전달된 문자열을 파싱하여 메시지로 변환
+  let parsedMessages: Message[];
+  if (isParsing === true) parsedMessages = convertPrevMessages(messages); // 전달된 문자열을 파싱하여 메시지로 변환
+  else parsedMessages = convertStringMessagesToMessages(messages); // 문자열 배열을 메시지 배열로 변환
 
   console.log('parsedMessages', parsedMessages);
 

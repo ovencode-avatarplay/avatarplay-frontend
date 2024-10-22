@@ -12,7 +12,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {SendChatMessageReq, sendMessageStream} from '@/app/NetWork/ChatNetwork';
 
 interface BottomBarProps {
-  onSend: (message: string) => void;
+  onSend: (message: string, parseMessage: boolean) => void; // 파싱 여부 추가
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
@@ -30,9 +30,8 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
     isNewMessage: false,
   });
 
-  const inputRef = useRef<HTMLTextAreaElement | null>(null); // ref 타입을 HTMLTextAreaElement로 수정
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
-  // 현재 에피소드 정보 가져오기
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
 
@@ -42,13 +41,13 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
 
   const handleSend = async () => {
     if (message.trim()) {
-      onSend(message);
+      const parseMessage = false; // 채팅 입력에서 보낼 때는 파싱 기능 끔
+      console.log('parseMessage', parseMessage);
+      onSend(message, parseMessage); // 파싱 여부 전달
       setMessage('');
-      console.log('message', message);
-      inputRef.current?.focus(); // 메시지 전송 후 포커스 유지
-    }
+      inputRef.current?.focus();
 
-    if (message.trim()) {
+      // 메시지 전송 요청
       const reqSendChatMessage: SendChatMessageReq = {
         userId: UserId,
         episodeId: currentEpisodeId,
@@ -60,43 +59,22 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
       if (response.resultCode === 0) {
         setData(prev => ({...prev, streamKey: response.data.streamKey}));
       }
-      setMessage('');
-      inputRef.current?.focus(); // 메시지 전송 후 포커스 유지
     }
   };
 
   useEffect(() => {
-    if (data.streamKey == '') return;
-    //console.log('streamKey ', data.streamKey);
+    if (data.streamKey === '') return;
+
     const eventSource = new EventSource(
       `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${data.streamKey}`,
-    ); // 서버의 SSE 엔드포인트 URL
+    );
 
     eventSource.onmessage = event => {
       const newMessage = JSON.parse(event.data);
-      setData(prev => {
-        const updatedMessage = prev.message + newMessage;
-        // 메시지 상태를 업데이트하여 React가 변화 인식
-        // onSend(newMessage); // 상태 업데이트 추가
-        return {
-          ...prev,
-          message: updatedMessage,
-        };
-      });
 
-      // setData(prev => ({
-      //   ...prev,
-      //   message1: prev.message + newMessage,
-      // }));
-
-      //onSend(newMessage);
-
-      //if (newMessage.trim()) {
-      //onSend(newMessage);
-      //setMessage('');
-      //console.log('message::', message);
-      //inputRef.current?.focus(); // 메시지 전송 후 포커스 유지
-      //}
+      // 스트리밍으로 받은 메시지일 때 파싱 기능 끔
+      const parseMessage = false;
+      onSend(newMessage, parseMessage); // 파싱 여부 전달
     };
 
     eventSource.onerror = () => {
@@ -117,19 +95,12 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
     };
   }, [data.streamKey]);
 
-  // 누적된 메시지를 출력
-  useEffect(() => {
-    console.log('누적된 메시지:', data);
-    onSend(data.message); // 상태 업데이트 추가
-  }, [data.message]);
-
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter') {
       if (event.shiftKey) {
-        // Shift + Enter로 개행
         return; // 기본 동작을 방지하지 않음
       } else {
-        event.preventDefault(); // 기본 Enter 키 동작 방지 (줄바꿈 방지)
+        event.preventDefault(); // 기본 Enter 키 동작 방지
         handleSend();
       }
     }
@@ -149,13 +120,13 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
           placeholder="채팅 입력"
           value={message}
           onChange={e => setMessage(e.target.value)}
-          inputRef={inputRef} // ref 추가
-          multiline // 다중 행 지원
-          minRows={1} // 최소 행 수 설정
-          maxRows={4} // 최대 행 수 설정
-          sx={{flex: 1, marginRight: 1, overflow: 'auto'}} // 오버플로우 처리
+          inputRef={inputRef}
+          multiline
+          minRows={1}
+          maxRows={4}
+          sx={{flex: 1, marginRight: 1, overflow: 'auto'}}
           inputProps={{
-            onKeyDown: handleKeyDown, // KeyDown 이벤트 핸들러로 변경
+            onKeyDown: handleKeyDown,
           }}
         />
         <Button
