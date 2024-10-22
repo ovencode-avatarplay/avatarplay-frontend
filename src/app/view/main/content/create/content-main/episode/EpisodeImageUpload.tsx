@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Button, Dialog, DialogContent, MenuItem, Typography} from '@mui/material';
 import {styled} from '@mui/system';
 import Style from './EpisodeImageUpload.module.css';
 import SpeedDial from '@mui/material/SpeedDial';
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
+import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
+import ImageUploadDialog from './episode-imagesetup/EpisodeImageUpload';
 
 const Input = styled('input')({
   display: 'none',
@@ -13,25 +15,20 @@ const Input = styled('input')({
 interface Props {
   onClickEasyCreate: () => void;
   onClickAdvanceCreate: () => void;
+  uploadImageState: boolean;
   onClickUploadImage: () => void;
+  onCloseUploadImage: () => void;
 }
 
-const EpisodeImageUpload: React.FC<Props> = ({onClickEasyCreate, onClickAdvanceCreate, onClickUploadImage}) => {
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+const EpisodeImageUpload: React.FC<Props> = ({
+  onClickEasyCreate,
+  onClickAdvanceCreate,
+  uploadImageState: uploadImageOpen,
+  onClickUploadImage,
+  onCloseUploadImage,
+}) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleSpeedDialClick = () => {
     setDialogOpen(true);
@@ -54,6 +51,36 @@ const EpisodeImageUpload: React.FC<Props> = ({onClickEasyCreate, onClickAdvanceC
   const handleUploadImageClick = () => {
     onClickUploadImage();
     handleClose();
+  };
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [uploadImageList, setUploadImageList] = useState<File[]>([]);
+
+  const handleImageUpload = (images: File[]) => {
+    setUploadImageList(images);
+    const uploadImg: File = images[0];
+    GetImageUrlByFile(uploadImg);
+  };
+
+  const GetImageUrlByFile = async (image: File) => {
+    setLoading(true);
+
+    try {
+      const req: UploadImageReq = {file: image};
+      const response = await sendUploadImage(req);
+
+      if (response?.data) {
+        const imgUrl: string = response.data;
+        setImagePreview(imgUrl);
+      } else {
+        throw new Error(`No response for file`);
+      }
+    } catch (error) {
+      console.error('Error fetching content info:', error);
+      throw error; // 에러를 상위로 전달
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -86,6 +113,9 @@ const EpisodeImageUpload: React.FC<Props> = ({onClickEasyCreate, onClickAdvanceC
         icon={<CreateIcon />}
         onClick={handleSpeedDialClick}
       />
+      {uploadImageOpen && (
+        <ImageUploadDialog isOpen={uploadImageOpen} onClose={onCloseUploadImage} onUpload={handleImageUpload} />
+      )}
     </Box>
   );
 };
