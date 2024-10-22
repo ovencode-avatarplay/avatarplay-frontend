@@ -5,19 +5,20 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import CameraIcon from '@mui/icons-material/Camera';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
-import styles from '@chats/Styles/StyleChat.module.css';
-
+import styles from '@chats/BottomBar/FooterChat.module.css';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {SendChatMessageReq, sendMessageStream} from '@/app/NetWork/ChatNetwork';
+import Stiker from './Stiker';
 
 interface BottomBarProps {
-  onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void; // 파싱 여부 추가
+  onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
   const [message, setMessage] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isStickerOpen, setIsStickerOpen] = useState(false);
   const [data, setData] = useState<{
     streamKey: string;
     newMessageIndex: number;
@@ -31,7 +32,6 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
   });
 
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
-
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
 
@@ -41,13 +41,11 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
 
   const handleSend = async () => {
     if (message.trim()) {
-      const parseMessage = false; // 채팅 입력에서 보낼 때는 파싱 기능 끔
-      console.log('parseMessage', parseMessage);
-      onSend(message, true, parseMessage); // 파싱 여부 전달
+      const parseMessage = false;
+      onSend(message, true, parseMessage);
       setMessage('');
       inputRef.current?.focus();
 
-      // 메시지 전송 요청
       const reqSendChatMessage: SendChatMessageReq = {
         userId: UserId,
         episodeId: currentEpisodeId,
@@ -55,7 +53,6 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
       };
 
       const response = await sendMessageStream(reqSendChatMessage);
-      console.log(response);
       if (response.resultCode === 0) {
         setData(prev => ({...prev, streamKey: response.data.streamKey}));
       }
@@ -71,26 +68,17 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
 
     eventSource.onmessage = event => {
       const newMessage = JSON.parse(event.data);
-
-      // 스트리밍으로 받은 메시지일 때 파싱 기능 끔
       const parseMessage = false;
-      onSend(newMessage, false, parseMessage); // 파싱 여부 전달
+      onSend(newMessage, false, parseMessage);
     };
 
     eventSource.onerror = () => {
-      setData(prev => ({
-        ...prev,
-        message: '',
-      }));
-      console.error('Error occurred with SSE');
+      setData(prev => ({...prev, message: ''}));
       eventSource.close();
     };
 
     return () => {
-      setData(prev => ({
-        ...prev,
-        message: '',
-      }));
+      setData(prev => ({...prev, message: ''}));
       eventSource.close();
     };
   }, [data.streamKey]);
@@ -98,20 +86,47 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter') {
       if (event.shiftKey) {
-        return; // 기본 동작을 방지하지 않음
+        return;
       } else {
-        event.preventDefault(); // 기본 Enter 키 동작 방지
+        event.preventDefault();
         handleSend();
       }
     }
   };
 
+  const handleStickerToggle = () => {
+    setIsStickerOpen(!isStickerOpen);
+  };
+
+  const handleSelectEmoji = (emoji: string) => {
+    setMessage(prev => prev + emoji);
+    setIsStickerOpen(false);
+  };
+
   return (
-    <Box className={`${styles.bottomBar} ${isExpanded ? styles.expanded : styles.collapsed}`}>
+    <Box
+      className={`${styles.bottomBar} ${isExpanded ? styles.expanded : styles.collapsed}`}
+      sx={{
+        position: 'fixed',
+        bottom: 0,
+        width: '100%',
+        backgroundColor: 'white',
+        transition: 'height 0.3s',
+        height: isStickerOpen ? '400px' : 'auto', // 스티커가 열릴 때 높이 증가
+        boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)',
+      }}
+    >
       <Box display="flex" alignItems="center" padding={1}>
         <Button
           variant="outlined"
-          sx={{marginRight: 1, marginBottom: 1, width: '40px', height: '40px', minWidth: '40px', whiteSpace: 'nowrap'}}
+          sx={{
+            marginRight: 1,
+            marginBottom: 1,
+            width: '40px',
+            height: '40px',
+            minWidth: '40px',
+            whiteSpace: 'nowrap',
+          }}
         >
           +
         </Button>
@@ -132,7 +147,14 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
         <Button
           variant="contained"
           color="primary"
-          sx={{marginRight: 1, marginBottom: 1, width: '40px', height: '40px', minWidth: '50px', whiteSpace: 'nowrap'}}
+          sx={{
+            marginRight: 1,
+            marginBottom: 1,
+            width: '40px',
+            height: '40px',
+            minWidth: '50px',
+            whiteSpace: 'nowrap',
+          }}
           onClick={handleSend}
         >
           보내기
@@ -141,20 +163,21 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
           {isExpanded ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
         </IconButton>
       </Box>
-
-      {isExpanded && (
-        <Box display="flex" marginTop={1} gap={1}>
-          <Button variant="outlined" startIcon={<CameraIcon />}>
-            캡처
-          </Button>
-          <Button variant="outlined" startIcon={<EmojiEmotionsIcon />}>
-            스티커
-          </Button>
-          <Button variant="outlined" startIcon={<CardGiftcardIcon />}>
-            선물
-          </Button>
-        </Box>
-      )}
+      {isExpanded &&
+        !isStickerOpen && ( // 스티커가 열려 있지 않을 때만 버튼 표시
+          <Box display="flex" marginTop={1} gap={1}>
+            <Button variant="outlined" startIcon={<CameraIcon />}>
+              캡처
+            </Button>
+            <Button variant="outlined" startIcon={<EmojiEmotionsIcon />} onClick={handleStickerToggle}>
+              스티커
+            </Button>
+            <Button variant="outlined" startIcon={<CardGiftcardIcon />}>
+              선물
+            </Button>
+          </Box>
+        )}
+      {isExpanded && isStickerOpen && <Stiker onSelectEmoji={handleSelectEmoji} />}
     </Box>
   );
 };
