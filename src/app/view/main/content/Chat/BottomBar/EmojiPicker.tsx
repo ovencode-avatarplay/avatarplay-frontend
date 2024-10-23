@@ -9,7 +9,7 @@ const emojiCategories: Record<string, string[]> = {
   purchased: ['🤩', '😇', '🤠', '🥶', '🤯', '😵‍💫', '🤓'], // 구매한 이모티콘
 };
 
-const tabs = ['최근 사용', '기본 이모티콘', '구매한 이모티콘'];
+const tabs = ['recent', 'basic', 'purchased']; // 탭 이름을 emojiCategories의 키와 일치하게 변경
 
 interface EmojiPickerProps {
   onEmojiClick: (emoji: string) => void;
@@ -28,20 +28,20 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick}) => {
         {tabs.map((tab, index) => (
           <button
             key={index}
-            className={`${styles.tabButton} ${activeTab === tab.toLowerCase() ? styles.active : ''}`}
-            onClick={() => handleTabChange(tab.toLowerCase())}
+            className={`${styles.tabButton} ${activeTab === tab ? styles.active : ''}`}
+            onClick={() => handleTabChange(tab)}
           >
             {tab}
           </button>
         ))}
       </div>
       <div className={styles.emojiGrid}>
-        {emojiCategories[activeTab] ? ( // 유효성 검사 추가
+        {emojiCategories[activeTab] ? (
           emojiCategories[activeTab].map((emoji, index) => (
             <EmojiItem key={index} emoji={emoji} onEmojiClick={onEmojiClick} />
           ))
         ) : (
-          <p>이모티콘을 찾을 수 없습니다.</p> // 오류 방지를 위한 대체 메시지
+          <p>이모티콘을 찾을 수 없습니다.</p>
         )}
       </div>
     </div>
