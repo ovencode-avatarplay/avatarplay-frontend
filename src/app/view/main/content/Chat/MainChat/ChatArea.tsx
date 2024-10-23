@@ -42,7 +42,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages}) => {
               fontSize: msg.sender === 'narration' ? '0.8em' : '0.9em', // 나래이션 메시지 크기 조정
             }}
           >
-            <div>{msg.text}</div>
+            {/* 텍스트와 이미지를 포함한 메시지 렌더링 */}
+            <div dangerouslySetInnerHTML={{__html: msg.text}} />
           </Box>
         </Box>
       ))}
