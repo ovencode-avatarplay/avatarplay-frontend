@@ -36,6 +36,7 @@ export const sendContentSave = async (payload: SaveContentReq): Promise<Response
 
 // Get Content By ContnetId for ExploreItem
 export interface GetContentByIdReq {
+  userId: number;
   contentId: number;
 }
 

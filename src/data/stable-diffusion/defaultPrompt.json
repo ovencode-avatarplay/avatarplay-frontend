@@ -1,0 +1,4 @@
+{ 
+    "Positive" : "looking at viewer, closed mouth, ((best quality, high_resolution, distinct_image)), full body",
+    "Negative" :"(worst quality:1.2, low quality:1.2, bad anatomy:1.2, cropped hands, extra digit, fewer digit), text, error, jpeg artifacts, signature, watermark, username, artist name, verybadimagenegative_v1.3"
+}

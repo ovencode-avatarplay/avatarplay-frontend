@@ -16,12 +16,18 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
+import {GenerateImageReq, sendGenerateImageReq} from '@/app/NetWork/ImageNetwork';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
 
 interface Props {}
 
 const CharacterCreate: React.FC<Props> = () => {
   const [activeStep, setActiveStep] = useState(0);
   const stepperRef = useRef<HTMLDivElement | null>(null);
+  const [loading, setLoading] = useState(false);
+  const userId = useSelector((state: RootState) => state.user.userId);
+  const [characterOptions, setCharacterOptions] = useState(characterOptionsFeMaleReal);
 
   const steps = ['Gender', 'Style', 'Ethnicity', 'HairStyle', 'BodyShape', 'OutfitClothes', 'Summary'];
   const genderOptions = [
@@ -48,14 +54,22 @@ const CharacterCreate: React.FC<Props> = () => {
   });
 
   // gender 0 Male / 1 Female, style 0 Real / 1 Anime
-  const characterOptions =
-    selectedOptions.gender === 0
-      ? selectedOptions.style === 0
+
+  useEffect(() => {
+    // Define character options based on gender and style selection
+    const newCharacterOptions =
+      selectedOptions.gender === 0
+        ? selectedOptions.style === 0
+          ? characterOptionsFeMaleReal
+          : characterOptionsFeMaleAnime
+        : selectedOptions.style === 0
         ? characterOptionsMaleReal
-        : characterOptionsMaleAnime
-      : selectedOptions.style === 0
-      ? characterOptionsFeMaleReal
-      : characterOptionsFeMaleAnime;
+        : characterOptionsMaleAnime;
+
+    // Update character options
+    setCharacterOptions(newCharacterOptions);
+  }, [selectedOptions.gender, selectedOptions.style]);
+
   const [clothesInputValue, setClothesInputValue] = useState('');
   const maxLength = 200;
 
@@ -85,7 +99,7 @@ const CharacterCreate: React.FC<Props> = () => {
   };
 
   const handleGenerate = () => {
-    const genderPrompt = selectedOptions.gender === 0 ? 'Male' : 'Female';
+    const genderPrompt = selectedOptions.gender === 0 ? 'Female' : 'Male';
     const prompts = [
       genderPrompt,
       ...summaryOptions.map(option => {
@@ -98,6 +112,28 @@ const CharacterCreate: React.FC<Props> = () => {
     ].join(', ');
 
     console.log('Generated Prompt:', prompts);
+
+    GetImageGenerateImage(prompts);
+  };
+
+  const GetImageGenerateImage = async (prompt: string) => {
+    setLoading(true);
+
+    try {
+      const req: GenerateImageReq = {userId: userId, imagePrompt: prompt};
+      const response = await sendGenerateImageReq(req);
+
+      if (response?.data) {
+        const imgUrl: string = response.data;
+      } else {
+        throw new Error(`No response for file`);
+      }
+    } catch (error) {
+      console.error('Error fetching content info:', error);
+      throw error; // 에러를 상위로 전달
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOptionSelect = (key: keyof typeof selectedOptions, index: number) => {

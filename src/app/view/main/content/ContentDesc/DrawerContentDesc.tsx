@@ -42,6 +42,7 @@ const DrawerContentDesc = () => {
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
   const [selectedChapterIdx, setSelectedChapterIdx] = useState<number>(-1);
   const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number>(-1);
+  const userId = useSelector((state: RootState) => state.user.userId);
 
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -82,7 +83,7 @@ const DrawerContentDesc = () => {
       setChatUserCount(contentDesc.chatUserCount);
       setTaglist(contentDesc.publishInfo.tagList); // SelectTag가 맞음
       if (contentDesc.chapterInfoList) {
-        const chaptersData = contentDesc.chapterInfoList.map(chapter => ({
+        const chaptersData = contentDesc.chapterInfoList?.map(chapter => ({
           id: chapter.id,
           name: chapter.name,
         }));
@@ -106,12 +107,16 @@ const DrawerContentDesc = () => {
     dispatch(openDrawerContentId(contentId));
   };
 
+  const handleCloseDrawer = () => {
+    dispatch(closeDrawerContentDesc());
+  };
+
   // chapter가 변경될 때 에피소드 리스트 업데이트
   useEffect(() => {
     if (contentDesc) {
       setSelectedEpisodeIdx(0);
       const selectedChapter = contentDesc.chapterInfoList[selectedChapterIdx];
-      const updatedEpisodeItems = selectedChapter.episodeInfoList.map(episode => ({
+      const updatedEpisodeItems = selectedChapter.episodeInfoList?.map(episode => ({
         episodeId: episode.id,
         intimacy: 111,
         imageCount: 222,
@@ -120,14 +125,14 @@ const DrawerContentDesc = () => {
       }));
       setEpisodeItems(updatedEpisodeItems); // 에피소드 리스트 업데이트
     }
-  }, [selectedChapterIdx]);
+  }, [selectedChapterIdx, contentDesc]);
 
   // Explore 에서 선택한 컨텐츠를 Id로 가져옴 (Play사이클 채팅 진입에서 사용하기 위함)
   const GetContentByContentId = async (contentId: number) => {
     setLoading(true);
 
     try {
-      const req: GetContentByIdReq = {contentId: contentId};
+      const req: GetContentByIdReq = {userId: userId, contentId: contentId};
       const response = await sendContentByIdGet(req);
 
       if (response?.data) {
@@ -153,7 +158,7 @@ const DrawerContentDesc = () => {
     <Drawer
       anchor="bottom"
       open={open}
-      onClose={() => dispatch(closeDrawerContentDesc())}
+      onClose={() => handleCloseDrawer()}
       PaperProps={{
         sx: {
           height: '90vh',

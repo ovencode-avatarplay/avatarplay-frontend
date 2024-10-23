@@ -1,64 +1,62 @@
 {
   "styleOptions": [
-    { "label": "Realistic", "image": "/real.png", "prompt": "Prompt_styleOptions_Realistic" },
-    { "label": "Anime", "image": "/anime.png", "prompt": "Prompt_styleOptions_Anime" }
+    { "label": "Realistic", "image": "/real.png", "prompt": "Realistic"},
+    { "label": "Anime", "image": "/anime.png", "prompt": "Anime" }
   ],
   "raceOptions": [
-    { "label": "Caucasian", "image": "/race_caucasian.png", "prompt": "Prompt_raceOptions_Caucasian" },
-    { "label": "Asian", "image": "/race_asian.png", "prompt": "Prompt_raceOptions_Asian" },
-    { "label": "African", "image": "/race_african.png", "prompt": "Prompt_raceOptions_African" },
-    { "label": "Hispanic", "image": "/race_hispanic.png", "prompt": "Prompt_raceOptions_Hispanic" },
-    { "label": "Other", "image": "/race_other.png", "prompt": "Prompt_raceOptions_Other" }
+    { "label": "Caucasian", "image": "/race_caucasian.png", "prompt": "caucasian" },
+    { "label": "Latina", "image": "/race_latina.png", "prompt": "Latina" },
+    { "label": "Asian", "image": "/race_asian.png", "prompt": "Korean_idol" },
+    { "label": "Arab", "image": "/race_arab.png", "prompt": "Arabic" },
+    { "label": "Black/Afro", "image": "/race_black.png", "prompt": "black_girl" }
   ],
   "ageOptions": [
-    { "label": "Teen", "image": "/age_teen.png", "prompt": "Prompt_ageOptions_Teen" },
-    { "label": "Adult", "image": "/age_adult.png", "prompt": "Prompt_ageOptions_Adult" },
-    { "label": "Senior", "image": "/age_senior.png", "prompt": "Prompt_ageOptions_Senior" }
+    { "label": "Teen(18+)", "image": "/age_teen.png", "prompt": "teen" },
+    { "label": "20s", "image": "/age_20s.png", "prompt": "20 years old" },
+    { "label": "30s", "image": "/age_30s.png", "prompt": "30 years old" },
+    { "label": "40-55", "image": "/age_40-55.png", "prompt": "50 years old" }
   ],
   "eyeColorOptions": [
-    { "label": "Brown", "image": "/eye_brown.png", "prompt": "Prompt_eyeColorOptions_Brown" },
-    { "label": "Blue", "image": "/eye_blue.png", "prompt": "Prompt_eyeColorOptions_Blue" },
-    { "label": "Green", "image": "/eye_green.png", "prompt": "Prompt_eyeColorOptions_Green" },
-    { "label": "Hazel", "image": "/eye_hazel.png", "prompt": "Prompt_eyeColorOptions_Hazel" }
+    { "label": "Brown", "image": "/eye_brown.png", "prompt": "brown_eyes" },
+    { "label": "Blue", "image": "/eye_blue.png", "prompt": "blue_eyes" },
+    { "label": "Green", "image": "/eye_green.png", "prompt": "green_eyes" }
   ],
   "hairStyles": [
-    { "label": "Style 1", "image": "/hair1.png", "prompt": "Prompt_hairStyles_Style 1" },
-    { "label": "Style 2", "image": "/hair2.png", "prompt": "Prompt_hairStyles_Style 2" },
-    { "label": "Style 3", "image": "/hair3.png", "prompt": "Prompt_hairStyles_Style 3" },
-    { "label": "Style 4", "image": "/hair4.png", "prompt": "Prompt_hairStyles_Style 4" },
-    { "label": "Style 5", "image": "/hair5.png", "prompt": "Prompt_hairStyles_Style 5" },
-    { "label": "Style 6", "image": "/hair6.png", "prompt": "Prompt_hairStyles_Style 6" },
-    { "label": "Style 7", "image": "/hair7.png", "prompt": "Prompt_hairStyles_Style 7" },
-    { "label": "Style 8", "image": "/hair8.png", "prompt": "Prompt_hairStyles_Style 8" },
-    { "label": "Style 9", "image": "/hair9.png", "prompt": "Prompt_hairStyles_Style 9" }
+    { "label": "Buzz cut", "image": "/hair_buzzcut.png", "prompt": "buzz cut" },
+    { "label": "Long", "image": "/hair_long.png", "prompt": "long_hair" },
+    { "label": "Slicked Back", "image": "/hair_slicked_back.png", "prompt": "hair slicked back" },
+    { "label": "Short", "image": "/hair_short.png", "prompt": "short_hair" },
+    { "label": "Bun", "image": "/hair_bun.png", "prompt": "hair_bun" },
+    { "label": "Dreadlocks", "image": "/hair_dreadlocks.png", "prompt": "dreadlocks" },
+    { "label": "Curly", "image": "/hair_curly.png", "prompt": "ponytail" },
+    { "label": "Bald", "image": "/hair_bald.png", "prompt": "short twintails" }
   ],
   "hairColors": [
-    { "label": "Black", "image": "/hair_black.png", "prompt": "Prompt_hairColors_Black" },
-    { "label": "Brown", "image": "/hair_brown.png", "prompt": "Prompt_hairColors_Brown" },
-    { "label": "Blonde", "image": "/hair_blonde.png", "prompt": "Prompt_hairColors_Blonde" },
-    { "label": "Red", "image": "/hair_red.png", "prompt": "Prompt_hairColors_Red" },
-    { "label": "Gray", "image": "/hair_gray.png", "prompt": "Prompt_hairColors_Gray" },
-    { "label": "Other", "image": "/hair_other.png", "prompt": "Prompt_hairColors_Other" }
+    { "label": "Blonde", "image": "/hair_blonde.png", "prompt": "Blonde_hair" },
+    { "label": "Brown", "image": "/hair_brown.png", "prompt": "brown_hair" },
+    { "label": "Black", "image": "/hair_black.png", "prompt": "black_hair" },
+    { "label": "Ginger", "image": "/hair_ginger.png", "prompt": "red_hair" },
+    { "label": "Gray", "image": "/hair_gray.png", "prompt": "gray_hair" },
+    { "label": "White", "image": "/hair_white.png", "prompt": "white_hair" },
+    { "label": "Pink", "image": "/hair_pink.png", "prompt": "pink_hair" }
   ],
   "bodyTypes": [
-    { "label": "Slim", "image": "/body_slim.png", "prompt": "Prompt_bodyTypes_Slim" },
-    { "label": "Athletic", "image": "/body_athletic.png", "prompt": "Prompt_bodyTypes_Athletic" },
-    { "label": "Average", "image": "/body_average.png", "prompt": "Prompt_bodyTypes_Average" },
-    { "label": "Curvy", "image": "/body_curvy.png", "prompt": "Prompt_bodyTypes_Curvy" },
-    { "label": "Heavy", "image": "/body_heavy.png", "prompt": "Prompt_bodyTypes_Heavy" }
+    { "label": "Slim", "image": "/body_slim.png", "prompt": "skinny" },
+    { "label": "Muscular", "image": "/body_muscular.png", "prompt": "(slender), muscular" },
+    { "label": "Wide", "image": "/body_wide.png", "prompt": "Muscular man with broad shoulders, low body fat, defined muscles, ripped abs" }
   ],
   "topSizes": [
-    { "label": "XS", "image": "/top_xs.png", "prompt": "Prompt_topSizes_XS" },
-    { "label": "S", "image": "/top_s.png", "prompt": "Prompt_topSizes_S" },
-    { "label": "M", "image": "/top_m.png", "prompt": "Prompt_topSizes_M" },
-    { "label": "L", "image": "/top_l.png", "prompt": "Prompt_topSizes_L" },
-    { "label": "XL", "image": "/top_xl.png", "prompt": "Prompt_topSizes_XL" }
+    { "label": "Flat", "image": "/top_flat.png", "prompt": "A slim woman with a flat chest" },
+    { "label": "Small", "image": "/top_small.png", "prompt": "small_breasts" },
+    { "label": "Medium", "image": "/top_medium.png", "prompt": "medium_breasts" },
+    { "label": "Large", "image": "/top_large.png", "prompt": "huge_breasts" },
+    { "label": "Huge", "image": "/top_huge.png", "prompt": "(gigantic_breasts:1.2)" }
   ],
   "bottomSizes": [
-    { "label": "XS", "image": "/bottom_xs.png", "prompt": "Prompt_bottomSizes_XS" },
-    { "label": "S", "image": "/bottom_s.png", "prompt": "Prompt_bottomSizes_S" },
-    { "label": "M", "image": "/bottom_m.png", "prompt": "Prompt_bottomSizes_M" },
-    { "label": "L", "image": "/bottom_l.png", "prompt": "Prompt_bottomSizes_L" },
-    { "label": "XL", "image": "/bottom_xl.png", "prompt": "Prompt_bottomSizes_XL" }
+    { "label": "Small", "image": "/bottom_small.png", "prompt": "small buttocks" },
+    { "label": "Medium", "image": "/bottom_medium.png", "prompt": "well-proportioned buttocks" },
+    { "label": "Large", "image": "/bottom_large.png", "prompt": "huge ass" },
+    { "label": "Skinny", "image": "/bottom_skinny.png", "prompt": "modestly-sized buttocks" },
+    { "label": "Athletic", "image": "/bottom_athletic.png", "prompt": "muscular buttocks" }
   ]
 }
