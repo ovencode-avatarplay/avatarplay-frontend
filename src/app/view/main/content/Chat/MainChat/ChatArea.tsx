@@ -45,13 +45,24 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl}) => {
               padding: '8px',
               borderRadius: '8px',
               maxWidth: '70%',
-              backgroundColor: msg.sender === 'user' ? '#e1ffc7' : msg.sender === 'partner' ? '#f0f0f0' : 'transparent',
+              backgroundColor:
+                msg.sender === 'user'
+                  ? 'rgba(80, 80, 80, 0.8)' // 사용자 메시지: 회색(80% 불투명도)
+                  : msg.sender === 'partner'
+                  ? 'rgba(0, 0, 0, 0.8)' // 파트너 메시지: 검은색(80% 불투명도)
+                  : 'rgba(255, 255, 255, 0.5)', // 나레이션: 반투명 백색(50% 불투명도)
+              backdropFilter: msg.sender === 'narration' ? 'blur(20px)' : 'none', // 나레이션에만 블러 효과 추가
               textAlign: msg.sender === 'narration' ? 'center' : 'inherit',
-              color: msg.sender === 'narration' ? '#888' : 'inherit',
-              fontStyle: msg.sender === 'narration' ? 'italic' : 'normal',
+              color:
+                msg.sender === 'narration'
+                  ? '#FFFFFF' // 나레이션: 흰색
+                  : msg.sender === 'partner'
+                  ? '#FFFFFF' // 파트너: 흰색
+                  : '#FFFFFF', // 사용자: 검정색
+              fontSize: msg.sender === 'narration' ? '0.8em' : '0.9em', // 나레이션 메시지 크기 조정
+              fontWeight: 'bold', // 모든 메시지 볼드체
               wordWrap: 'break-word',
               whiteSpace: 'pre-wrap',
-              fontSize: msg.sender === 'narration' ? '0.8em' : '0.9em', // 나래이션 메시지 크기 조정
             }}
           >
             {/* 텍스트와 이미지를 포함한 메시지 렌더링 */}
