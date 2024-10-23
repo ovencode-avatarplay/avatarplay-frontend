@@ -41,7 +41,7 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({title, data}) => {
             contentId={explore.contentId}
             episodeId={explore.episodeId}
             shortsId={explore.shortsId}
-            thumbnail={`${explore.thumbnail}png`}
+            thumbnail={`${explore.thumbnail}`}
           />
         ))}
       </Box>

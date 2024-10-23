@@ -74,7 +74,7 @@ const DrawerContentDesc = () => {
   }, [episodeId]);
 
   useEffect(() => {
-    if (contentDesc != null) {
+    if (contentDesc) {
       setContentName(contentDesc.publishInfo.contentName);
       setContentThumbnail(contentDesc.publishInfo.thumbnail);
       setAuthorName(contentDesc.publishInfo.authorName);
@@ -113,11 +113,11 @@ const DrawerContentDesc = () => {
 
   // chapter가 변경될 때 에피소드 리스트 업데이트
   useEffect(() => {
+    setSelectedEpisodeIdx(0);
+
     if (contentDesc) {
-      // setSelectedChapterIdx(0);
-      setSelectedEpisodeIdx(0);
       const selectedChapter = contentDesc.chapterInfoList[selectedChapterIdx];
-      const updatedEpisodeItems = selectedChapter.episodeInfoList?.map(episode => ({
+      const updatedEpisodeItems = selectedChapter?.episodeInfoList?.map(episode => ({
         episodeId: episode.id,
         intimacy: 111,
         imageCount: 222,
@@ -126,7 +126,7 @@ const DrawerContentDesc = () => {
       }));
       setEpisodeItems(updatedEpisodeItems); // 에피소드 리스트 업데이트
     }
-  }, [selectedChapterIdx]);
+  }, [chapters, selectedChapterIdx]);
 
   // Explore 에서 선택한 컨텐츠를 Id로 가져옴 (Play사이클 채팅 진입에서 사용하기 위함)
   const GetContentByContentId = async (contentId: number) => {
