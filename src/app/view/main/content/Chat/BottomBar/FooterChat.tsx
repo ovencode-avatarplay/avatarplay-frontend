@@ -13,23 +13,13 @@ import Stiker from './Stiker';
 
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
+  streamKey: string; // streamKey를 props로 전달
+  setStreamKey: (key: string) => void; // 부모에서 streamKey 설정하는 함수
 }
 
-const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
+const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isStickerOpen, setIsStickerOpen] = useState(false);
-  const [data, setData] = useState<{
-    streamKey: string;
-    newMessageIndex: number;
-    message: string;
-    isNewMessage: boolean;
-  }>({
-    streamKey: '',
-    newMessageIndex: 0,
-    message: '',
-    isNewMessage: false,
-  });
-
   const inputRef = useRef<HTMLDivElement | null>(null);
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
@@ -54,17 +44,17 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
 
         const response = await sendMessageStream(reqSendChatMessage);
         if (response.resultCode === 0) {
-          setData(prev => ({...prev, streamKey: response.data.streamKey}));
+          setStreamKey(response.data.streamKey); // 부모 컴포넌트의 streamKey 상태 업데이트
         }
       }
     }
   };
 
   useEffect(() => {
-    if (data.streamKey === '') return;
+    if (streamKey === '') return;
 
     const eventSource = new EventSource(
-      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${data.streamKey}`,
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
     );
 
     eventSource.onmessage = event => {
@@ -74,15 +64,13 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend}) => {
     };
 
     eventSource.onerror = () => {
-      setData(prev => ({...prev, message: ''}));
       eventSource.close();
     };
 
     return () => {
-      setData(prev => ({...prev, message: ''}));
       eventSource.close();
     };
-  }, [data.streamKey]);
+  }, [streamKey]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter') {

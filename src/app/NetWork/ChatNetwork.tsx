@@ -117,6 +117,8 @@ export interface EnterEpisodeChattingReq {
 // }
 
 export interface EnterEpisodeChattingRes {
+  iconImageUrl: string;
+  episodeBgImageUrl: string;
   prevMessageInfoList: MessageInfo[];
 }
 
@@ -134,5 +136,40 @@ export const sendChattingEnter = async (
   } catch (error) {
     console.error('Error sending Enter:', error);
     throw new Error('Failed to send message. Please try again.'); // Error handling
+  }
+};
+
+// 결과 요청 및 응답 인터페이스 정의 ##########################################
+
+export interface ChattingResultReq {
+  streamKey: string;
+}
+
+export interface ChattingResultData {
+  nextChapterId: number;
+  nextEpisodeId: number;
+  nextEpisodeName: string;
+}
+
+export interface ChattingResultRes {
+  resultCode: number;
+  resultMessage: string;
+  data: ChattingResultData;
+}
+
+// ChattingResult API 호출 함수 ##########################################
+
+export const sendChattingResult = async (req: ChattingResultReq): Promise<ChattingResultRes> => {
+  try {
+    const response = await api.post<ChattingResultRes>('/Chatting/result', req);
+    console.log('Chatting result request:', req, response);
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(response.data.resultMessage); // 에러 핸들링
+    }
+  } catch (error) {
+    console.error('Error sending Chatting Result:', error);
+    throw new Error('Failed to send Chatting Result. Please try again.'); // 에러 핸들링
   }
 };

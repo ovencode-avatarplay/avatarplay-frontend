@@ -1,9 +1,15 @@
 import {useState, useEffect} from 'react';
-import {EnterEpisodeChattingReq, MessageInfo, sendChattingEnter} from '@/app/NetWork/ChatNetwork';
+import {
+  EnterEpisodeChattingReq,
+  EnterEpisodeChattingRes,
+  MessageInfo,
+  sendChattingEnter,
+} from '@/app/NetWork/ChatNetwork';
 
 const usePrevChatting = (userId: number, episodeId: number) => {
   // 이전 메시지 및 에러 상태값 정의
-  const [prevMessages, setPrevMessages] = useState<MessageInfo[]>([]);
+  const [prevMessages, setPrevMessages] = useState<EnterEpisodeChattingRes>();
+
   const [error, setError] = useState<string | null>(null);
 
   // API 요청 데이터 정의
@@ -19,7 +25,7 @@ const usePrevChatting = (userId: number, episodeId: number) => {
       const response = await sendChattingEnter(ReqData);
       if (response.resultCode === 0 && response.data) {
         // 가져온 데이터를 상태에 저장
-        setPrevMessages(response.data.prevMessageInfoList);
+        setPrevMessages(response.data);
       } else {
         setError('Failed to fetch previous messages.');
       }

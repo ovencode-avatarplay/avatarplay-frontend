@@ -1,6 +1,4 @@
-'use client';
-
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import TopBar from '@chats/TopBar/HeaderChat';
 import BottomBar from '@chats/BottomBar/FooterChat';
 import ChatArea from '@chats/MainChat/ChatArea';
@@ -10,6 +8,8 @@ import usePrevChatting from '@chats/MainChat/PrevChatting';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {parseMessage} from '@chats/MainChat/MessageParser';
+import PopUpYesOrNo from '@/components/popup/PopUpYesOrNo';
+import {sendChattingResult} from '@/app/NetWork/ChatNetwork';
 
 interface Message {
   text: string;
@@ -20,13 +20,15 @@ const ChatPage: React.FC = () => {
   const [parsedMessages, setParsedMessages] = useState<Message[]>([]);
   const [isParsing, setParsingState] = useState<boolean>(true);
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [popupTitle, setPopupTitle] = useState<string>('');
+  const [popupQuestion, setPopupQuestion] = useState<string>('');
+  const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
-  // let isNarrationActive = false;
 
   const userId = useSelector((state: RootState) => state.user.userId);
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
   const handleBackClick = useBackHandler();
-
   const cleanString = (input: string): string => {
     // 1. 개행 문자 제거
     let cleaned = input.replace(/\n/g, '');
@@ -38,10 +40,31 @@ const ChatPage: React.FC = () => {
 
     return cleaned;
   };
+  const handleSendMessage = async (message: string, isMyMessage: boolean, isParsing: boolean) => {
+    console.log('new:', message);
 
-  const handleSendMessage = (message: string, isMyMessage: boolean, isParsing: boolean) => {
-    console.log('new:' + message);
     if (!message || typeof message !== 'string') return;
+
+    // 메시지가 '#'을 포함할 경우 팝업 표시
+    if (message.includes('#')) {
+      const requestData = {
+        streamKey: streamKey, // streamKey 상태에서 가져오기
+      };
+
+      try {
+        const response = await sendChattingResult(requestData);
+        console.log('Result API Response:', response);
+
+        setPopupTitle('알림');
+        setPopupQuestion('이 작업을 수행하시겠습니까?');
+        setShowPopup(true);
+      } catch (error) {
+        console.error('Error calling Result API:', error);
+        alert('API 호출 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      }
+
+      return;
+    }
 
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
@@ -103,6 +126,16 @@ const ChatPage: React.FC = () => {
     };
   };
 
+  const handlePopupYes = () => {
+    console.log('Yes 클릭');
+    setShowPopup(false);
+  };
+
+  const handlePopupNo = () => {
+    console.log('No 클릭');
+    setShowPopup(false);
+  };
+
   const handleMoreClick = () => {
     console.log('더보기 버튼 클릭');
   };
@@ -111,22 +144,41 @@ const ChatPage: React.FC = () => {
     console.log('배경 보기/숨기기 버튼 클릭');
   };
 
-  // usePrevChatting 훅 사용
-  const {prevMessages, error} = usePrevChatting(userId, episodeId);
+  const {prevMessages: enterData, error} = usePrevChatting(userId, episodeId);
 
   useEffect(() => {
-    if (!hasFetchedPrevMessages && !error && prevMessages.length > 0) {
-      const parsedPrevMessages = prevMessages.flatMap(msg => parseMessage(msg.message) || []);
+    if (
+      !hasFetchedPrevMessages &&
+      !error &&
+      enterData?.prevMessageInfoList &&
+      enterData.prevMessageInfoList.length > 0
+    ) {
+      const parsedPrevMessages = enterData.prevMessageInfoList.flatMap(msg => parseMessage(msg.message) || []);
       setParsedMessages(parsedPrevMessages);
       setHasFetchedPrevMessages(true);
     }
-  }, [error, prevMessages, hasFetchedPrevMessages]);
+  }, [error, enterData, hasFetchedPrevMessages]);
 
   return (
     <main className={styles.chatmodal}>
-      <TopBar onBackClick={handleBackClick} onMoreClick={handleMoreClick} onToggleBackground={handleToggleBackground} />
-      <ChatArea messages={parsedMessages} isParsing={isParsing} />
-      <BottomBar onSend={handleSendMessage} />
+      <TopBar
+        onBackClick={handleBackClick}
+        onMoreClick={handleMoreClick}
+        onToggleBackground={handleToggleBackground}
+        iconUrl={enterData?.iconImageUrl ?? ''}
+      />
+      <ChatArea messages={parsedMessages} isParsing={isParsing} bgUrl={enterData?.episodeBgImageUrl ?? ''} />
+      <BottomBar onSend={handleSendMessage} streamKey={streamKey} setStreamKey={setStreamKey} />
+
+      {showPopup && (
+        <PopUpYesOrNo
+          title={popupTitle}
+          question={popupQuestion}
+          onYes={handlePopupYes}
+          onNo={handlePopupNo}
+          open={showPopup}
+        />
+      )}
     </main>
   );
 };

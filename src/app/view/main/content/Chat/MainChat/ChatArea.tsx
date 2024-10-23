@@ -5,10 +5,11 @@ import styles from '@chats/Styles/StyleChat.module.css';
 interface ChatAreaProps {
   messages: {text: string; sender: 'user' | 'partner' | 'narration'}[]; // Message 타입으로 수정
   isParsing: boolean; // isParsing은 유지, 하지만 사용하지는 않음
+  bgUrl: string;
 }
 
 // ChatArea 컴포넌트
-const ChatArea: React.FC<ChatAreaProps> = ({messages}) => {
+const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null); // 스크롤 참조용 ref
 
   useEffect(() => {
@@ -17,7 +18,18 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages}) => {
   }, [messages]);
 
   return (
-    <Box className={styles.chatArea}>
+    <Box
+      className={styles.chatArea}
+      sx={{
+        backgroundImage: `url(${bgUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        height: '100%', // 필요에 따라 높이 설정
+        width: '100%', // 필요에 따라 너비 설정
+        position: 'relative', // 내부의 메시지 배치를 위한 상대적 위치 설정
+      }}
+    >
       {messages.map((msg, index) => (
         <Box
           key={index}

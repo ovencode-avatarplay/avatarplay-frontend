@@ -13,9 +13,10 @@ interface ChatTopBarProps {
   onBackClick: () => void;
   onMoreClick: () => void;
   onToggleBackground: () => void;
+  iconUrl: string;
 }
 
-const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, onToggleBackground}) => {
+const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, onToggleBackground, iconUrl}) => {
   const chattingState1: ChattingState = useSelector((state: RootState) => state.chatting);
   //console.log('chattingState ', chattingState1);
   return (
@@ -25,7 +26,7 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, onToggleBa
           <ArrowBackIcon />
         </IconButton>
 
-        <Avatar src={'/default-avatar.png'} alt={chattingState1.contentName} className={styles.avatar} />
+        <Avatar src={iconUrl || '/default-avatar.png'} alt={chattingState1.contentName} className={styles.avatar} />
 
         <div className={styles.userInfo}>
           <span className={styles.username}>{chattingState1.contentName}</span>
