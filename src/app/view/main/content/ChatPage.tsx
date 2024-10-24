@@ -36,15 +36,18 @@ const ChatPage: React.FC = () => {
     let cleaned = input.replace(/\n/g, '');
 
     // 2. 마지막 글자가 '#'이면 제거
-    if (cleaned.endsWith('#')) {
-      cleaned = cleaned.slice(0, -1);
-    }
+    // if (cleaned.endsWith('#')) {
+    //   cleaned = cleaned.slice(0, -1);
+    // }
 
     return cleaned;
   };
 
   const handleSendMessage = async (message: string, isMyMessage: boolean, isParsing: boolean) => {
     console.log('new:', message);
+
+    // 유저의 메시지면 나레이션모드를 꺼주자.!!
+    if (isMyMessage) isNarrationActive.active = false;
 
     if (!message || typeof message !== 'string') return;
 
@@ -71,6 +74,12 @@ const ChatPage: React.FC = () => {
       return;
     }
 
+    // *가 포함되어 있으면 적절한 위치에서 isNarrationActive.active 상태를 갱신해줘야 한다.
+    // sender가 바뀌었어도 isNarrationActive.active 상태를 갱신해줘야 한다.
+    const isIncludeAsterisk: boolean = message.includes('*');
+
+    //if (isNewWordBallon) isNarrationActive.active = !isNarrationActive.active;
+
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
       text: isParsing ? `파싱된 메시지: ${message}` : message,
@@ -87,11 +96,10 @@ const ChatPage: React.FC = () => {
       const splitMessageLeft = splitMessage.beforeAsterisk;
       const splitMessageRight = splitMessage.afterAsterisk;
 
-      console.log('====' + newMessage.text + '====');
-      console.log('====' + splitMessageLeft + '====');
-      console.log('====' + splitMessageRight + '====');
+      console.log('전체====' + newMessage.text + '====' + '나레이션 상태: ' + isNarrationActive.active);
+      console.log('좌====' + splitMessageLeft + '====');
+      console.log('우====' + splitMessageRight + '====');
 
-      const isNewWordBallon: boolean = message.includes('*'); // *가 포함되어 있으면 적절한 위치에서 isNarrationActive.active 상태를 갱신해줘야 한다.
       // 내 메시지
       if (isMyMessage === true) {
         newMessages.push(newMessage);
@@ -101,7 +109,7 @@ const ChatPage: React.FC = () => {
         // 기존 말풍선에 추가
         newMessages[newMessages.length - 1].text += `${splitMessageLeft}`;
 
-        if (isNewWordBallon === true) {
+        if (isIncludeAsterisk === true) {
           isNarrationActive.active = !isNarrationActive.active;
           const newMessage2: Message = {
             text: isParsing ? `파싱된 메시지: ${splitMessageRight}` : splitMessageRight,
