@@ -58,9 +58,17 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey}) 
     );
 
     eventSource.onmessage = event => {
-      const newMessage = JSON.parse(event.data);
-      const parseMessage = false;
-      onSend(newMessage, false, parseMessage);
+      console.log('event.data====' + event.data + '==========');
+      if (event.data) {
+        try {
+          const newMessage = JSON.parse(event.data);
+          const parseMessage = false;
+          onSend(newMessage, false, parseMessage);
+        } catch (error) {
+          console.error('JSON parsing error:', error);
+          // 필요한 경우 추가 에러 처리 로직을 작성할 수 있습니다.
+        }
+      }
     };
 
     eventSource.onerror = () => {
