@@ -417,16 +417,16 @@ const ContentMain: React.FC = () => {
   // 에피소드 로드
   const loadEpisodeData = () => {
     if (selChapterIdx !== -1) {
-      const chapter = editingContentInfo.chapterInfoList[selChapterIdx];
+      const chapter = editingContentInfo.chapterInfoList[selectedChapterIdx];
 
-      const episode = chapter.episodeInfoList[selEpisodeIdx];
+      const episode = chapter.episodeInfoList[selectedEpisodeIdx];
       if (episode) {
         dispatch(setCurrentEpisodeInfo(episode));
       } else {
-        console.error('Episode not found with idx:', selEpisodeIdx);
+        console.error('Episode not found with idx:', selectedEpisodeIdx);
       }
     } else {
-      console.error('Chapter not found with idx:', selChapterIdx);
+      console.error('Chapter not found with idx:', selectedChapterIdx);
     }
   };
 
