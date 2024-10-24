@@ -64,7 +64,6 @@ const ContentMain: React.FC = () => {
     selectedContentId, // ChapterBoard에서 선택된 ContentId
     selectedChapterIdx, // ChapterBoard에서 선택된 ChapterId
     selectedEpisodeIdx, // ChapterBoard에서 선택된 EpisodeId
-    editedChapterBoard, // 저장하기 전에 수정사항을 올려놓는 ChapterBoard 정보
     editedPublishInfo, // 저장하기 전에 수정사항을 올려놓는 PublishInfo 정보
     editedEpisodeInfo, // 저장하기 전에 수정사항을 올려놓는 EpisodeInfo 정보
   } = useSelector((state: RootState) => ({
@@ -72,7 +71,6 @@ const ContentMain: React.FC = () => {
     selectedContentId: state.contentselection.selectedContentId,
     selectedChapterIdx: state.contentselection.selectedChapterIdx,
     selectedEpisodeIdx: state.contentselection.selectedEpisodeIdx,
-    editedChapterBoard: state.chapterBoard.chapterBoard,
     editedPublishInfo: state.publish,
     editedEpisodeInfo: state.episode,
   }));
@@ -220,8 +218,8 @@ const ContentMain: React.FC = () => {
 
   // chapterBoard가 변경될 때 episodeInfoList를 반영
   useEffect(() => {
-    if (editedChapterBoard.length > 0) {
-      const updatedChapterList = editedChapterBoard.map(chapter => ({
+    if (editingContentInfo.chapterInfoList.length > 0) {
+      const updatedChapterList = editingContentInfo.chapterInfoList.map(chapter => ({
         ...chapter,
         episodeInfoList: chapter.episodeInfoList,
       }));
@@ -234,7 +232,7 @@ const ContentMain: React.FC = () => {
         }),
       );
     }
-  }, [editedChapterBoard, selectedContentId, dispatch]);
+  }, [selectedContentId, dispatch]);
 
   const handleAddChapter = (newChapter: ChapterInfo) => {
     const updatedChapterList = [
@@ -301,7 +299,6 @@ const ContentMain: React.FC = () => {
         }),
       );
       dispatch(setSelectedEpisodeIdx(updatedChapter.episodeInfoList.length - 1));
-
       setCurEpisodeInfo();
     }
   };

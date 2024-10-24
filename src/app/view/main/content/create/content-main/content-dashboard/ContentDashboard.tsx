@@ -43,7 +43,6 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
           );
 
           await Promise.race([onSelectItem(selectedItemId), timeout]);
-
           onClose();
         } catch (error) {
           console.log('error');
