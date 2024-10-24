@@ -55,7 +55,7 @@ const ContentMain: React.FC = () => {
   // 컴포넌트 오픈 상태
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isChapterboardOpen, setIsChapterboardOpen] = useState(false);
-  const [isGimmickOpen, setIsGimmickOpen] = useState(false);
+  const [isLLMOpen, setIsLLMOpen] = useState(false);
   const [isPublishingOpen, setIsPublishingOpen] = useState(false);
 
   // Redux
@@ -236,7 +236,15 @@ const ContentMain: React.FC = () => {
   };
 
   const handleDeleteChapter = (chapterIdx: number) => {
-    const updatedChapterList = editingContentInfo.chapterInfoList;
+    const updatedChapterList = editingContentInfo.chapterInfoList.filter(
+      (_, index) => index !== chapterIdx, // chapterIdx 인덱스 번호 지우기
+    );
+
+    // 삭제한 챕터가 선택된 챕터라면 첫 번째 챕터를 선택
+    if (selectedChapterIdx === chapterIdx) {
+      dispatch(setSelectedChapterIdx(0));
+      dispatch(setSelectedEpisodeIdx(0));
+    }
 
     dispatch(
       updateEditingContentInfo({
@@ -245,13 +253,7 @@ const ContentMain: React.FC = () => {
       }),
     );
 
-    // 삭제한 챕터가 선택된 챕터라면 첫 번째 챕터를 선택
-    if (selectedChapterIdx === chapterIdx) {
-      dispatch(setSelectedChapterIdx(0));
-      dispatch(setSelectedEpisodeIdx(0));
-
-      setCurEpisodeInfo();
-    }
+    setCurEpisodeInfo();
   };
 
   const handleAddEpisode = (newEpisode: EpisodeInfo) => {
@@ -281,7 +283,9 @@ const ContentMain: React.FC = () => {
 
   const handleDeleteEpisode = (chapterIdx: number, episodeIdx: number) => {
     if (chapterIdx !== -1) {
-      const updatedEpisodeList = editingContentInfo.chapterInfoList[chapterIdx].episodeInfoList;
+      const updatedEpisodeList = editingContentInfo.chapterInfoList[chapterIdx].episodeInfoList.filter(
+        (_, index) => index !== episodeIdx, // episodeIdx 번호로 찾아서 지우기
+      );
 
       const updatedChapter = {
         ...editingContentInfo.chapterInfoList[chapterIdx],
@@ -294,6 +298,11 @@ const ContentMain: React.FC = () => {
         ...editingContentInfo.chapterInfoList.slice(chapterIdx + 1),
       ];
 
+      // 선택된 에피소드가 삭제된 경우, 첫 번째 에피소드를 선택
+      if (selectedEpisodeIdx === episodeIdx) {
+        dispatch(setSelectedEpisodeIdx(0));
+      }
+
       dispatch(
         updateEditingContentInfo({
           id: selectedContentId,
@@ -301,12 +310,7 @@ const ContentMain: React.FC = () => {
         }),
       );
 
-      // 선택된 에피소드가 삭제된 경우, 첫 번째 에피소드를 선택
-      if (selectedEpisodeIdx === episodeIdx) {
-        dispatch(setSelectedEpisodeIdx(0));
-
-        setCurEpisodeInfo();
-      }
+      setCurEpisodeInfo();
     }
   };
 
@@ -336,11 +340,11 @@ const ContentMain: React.FC = () => {
     setIsChapterboardOpen(false);
   };
 
-  const handleOpenGimmick = () => {
-    setIsGimmickOpen(true);
+  const handleOpenLLM = () => {
+    setIsLLMOpen(true);
   };
-  const handleCloseGimmick = () => {
-    setIsGimmickOpen(false);
+  const handleCloseLLM = () => {
+    setIsLLMOpen(false);
   };
 
   const handleOpenPublishing = () => {
@@ -458,10 +462,6 @@ const ContentMain: React.FC = () => {
   return (
     <>
       <main className={Style.contentMain}>
-        {/* <ContentInfoManager />
-                <p>curContentId {targetContent?.id}</p>
-                <p>curChapterId {selectedChapterId}</p>
-                <p>curEpisodeId {selectedEpisodeId}</p> */}
         <ContentHeader
           contentTitle={editingContentInfo?.publishInfo?.contentName ?? ''}
           onOpenDrawer={handleOpenDashboard}
@@ -470,13 +470,6 @@ const ContentMain: React.FC = () => {
           }}
         />
         <div className={Style.content}>
-          <EpisodeSetup
-            onDrawerOpen={handleOpenChapterboard}
-            contentId={editingContentInfo?.id ?? 0}
-            chapterId={selectedChapterIdx}
-            episodeId={selectedEpisodeIdx}
-          />
-
           <ContentDashboard
             open={isDashboardOpen}
             onClose={handleCloseDashboard}
@@ -492,16 +485,20 @@ const ContentMain: React.FC = () => {
             onDeleteEpisode={handleDeleteEpisode}
             onNameChange={handleNameChange}
           />
-          <ContentGimmick open={isGimmickOpen} onClose={handleCloseGimmick} />
-          <ContentPreviewChat />
           <ContentPublishing
             open={isPublishingOpen}
             onClose={handleClosePublishing}
             onPublish={handlePublish}
             tagList={editingContentInfo?.publishInfo?.tagList}
           />
+          <EpisodeSetup
+            onDrawerOpen={handleOpenChapterboard}
+            contentId={editingContentInfo?.id ?? 0}
+            chapterIdx={selectedChapterIdx}
+            episodeIdx={selectedEpisodeIdx}
+          />
         </div>
-        <ContentBottom onGimmickOpen={handleOpenGimmick} onPublishingOpen={handleOpenPublishing} />
+        <ContentBottom onLLMOpen={handleOpenLLM} onPublishingOpen={handleOpenPublishing} />
       </main>
     </>
   );

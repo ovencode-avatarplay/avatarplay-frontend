@@ -21,8 +21,8 @@ import EpisodeLLMSetup from './episode-LLMsetup/EpisodeLLMsetup';
 interface Props {
   onDrawerOpen: () => void;
   contentId: number;
-  chapterId: number;
-  episodeId?: number;
+  chapterIdx: number;
+  episodeIdx: number;
 }
 
 // 캐릭터 팝업창 열때 해당 내용을 채워서 열기 위한
@@ -36,8 +36,10 @@ interface UpdateUserDetail {
   thumbnail: string;
 }
 let updateUserDetail: UpdateUserDetail;
-const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, episodeId = 0}) => {
+const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0, episodeIdx = 0}) => {
   // episodeIndex 기본값 0
+  // Redux에서 contentInfo 데이터 가져오기
+  const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // contentInfo 가져오기
 
   const [isTriggerModalOpen, setTriggerModalOpen] = useState(false); // Trigger 모달 열림 상태
   const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
@@ -46,6 +48,9 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
   const [isAdvanceImageSetupModalOpen, setAdvanceImageSetupModalOpen] = useState(false);
   const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
   const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
+
+  const [chapterName, setChapterName] = useState('chapterName');
+  const [episodeName, setEpisodeName] = useState('episodeName');
 
   const openTriggerModal = () => {
     setTriggerModalOpen(true); // Trigger 모달 열기
@@ -103,27 +108,26 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
     setLLMSetupOpen(false); // 모달 닫기
   };
 
-  // Redux에서 contentInfo 데이터 가져오기
-  const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // contentInfo 가져오기
-
   useEffect(() => {
     if (contentInfo) {
-      const chapter = contentInfo.chapterInfoList.find(info => info.id === chapterId);
+      const chapter = contentInfo.chapterInfoList[chapterIdx];
 
       if (chapter) {
-        const episode = chapter.episodeInfoList.find(info => info.id === episodeId);
+        setChapterName(chapter.name);
+        const episode = chapter.episodeInfoList[episodeIdx];
         if (episode) {
           console.log('Success!');
+          setEpisodeName(episode.name);
         } else {
-          console.log(`Episode at id ${episodeId} not found in Content ${contentId}`);
+          console.log(`Episode at idx ${episodeIdx} not found in Content ${contentId}`);
         }
       } else {
-        console.log(`Chapter With Id ${chapterId} not found in ${contentId}`);
+        console.log(`Chapter With Idx ${chapterIdx} not found in ${contentId}`);
       }
     } else {
       console.log(`Content with ID ${contentId} not found`);
     }
-  }, [contentInfo, contentId, chapterId, episodeId]);
+  }, [contentInfo, contentId, chapterIdx, episodeIdx]);
 
   const handleSubmitPopup = (data: any) => {
     console.log('Submitted data:', data);
@@ -131,11 +135,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
   };
   return (
     <main className={Style.episodeSetup}>
-      <ButtonEpisodeInfo
-        onDrawerOpen={onDrawerOpen}
-        chapterName={contentInfo.chapterInfoList[chapterId]?.name ?? ''}
-        episodeName={contentInfo.chapterInfoList[chapterId]?.episodeInfoList[episodeId].name ?? ''}
-      />
+      <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} chapterName={chapterName ?? ''} episodeName={episodeName ?? ''} />
       <Box className={Style.imageArea}>
         <EpisodeImageUpload
           onClickEasyCreate={openImageSetup}
@@ -148,8 +148,10 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterId = 0, 
       <Box className={Style.setupButtons}>
         <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
         <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
-        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />
+        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />{' '}
+        {/*TODO : Move This into Trigger Setup */}
         <ButtonSetupDrawer icon={<ImageIcon />} label="AI Model Setup" onClick={openLLMSetup} />
+        {/*TODO : Move This to ContentBottom - LLM Setup*/}
       </Box>
       {/* EpisodeTrigger 모달 */}
       <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} /> {/* 모달 상태 전달 */}
