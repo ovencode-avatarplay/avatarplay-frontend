@@ -46,9 +46,6 @@ const ChatPage: React.FC = () => {
   const handleSendMessage = async (message: string, isMyMessage: boolean, isParsing: boolean) => {
     console.log('new:', message);
 
-    // 유저의 메시지면 나레이션모드를 꺼주자.!!
-    if (isMyMessage) isNarrationActive.active = false;
-
     if (!message || typeof message !== 'string') return;
 
     // 메시지가 '$'을 포함할 경우 팝업 표시
@@ -87,6 +84,9 @@ const ChatPage: React.FC = () => {
     };
 
     setParsedMessages(prev => {
+      // 유저의 메시지면 나레이션모드를 초기화 하자!!
+      if (isMyMessage) isNarrationActive.active = false;
+
       const newMessages = [...prev];
 
       // 문자열을 split 해서 따로 처리해야 하는지 확인
@@ -163,6 +163,7 @@ const ChatPage: React.FC = () => {
   };
 
   const {prevMessages: enterData, error} = usePrevChatting(userId, episodeId);
+  console.log('usePrevChatting ', {enterData, error});
 
   useEffect(() => {
     if (
