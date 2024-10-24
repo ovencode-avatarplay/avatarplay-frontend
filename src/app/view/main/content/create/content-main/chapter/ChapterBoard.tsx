@@ -266,6 +266,7 @@ const ChapterBoard: React.FC<Props> = ({
               onEdit={handleEditClick}
               onCloseChapterBoard={onClose}
               isSelected={selectedChapterIdx === index}
+              selectedEpisodeIdx={selectedEpisodeIdx}
               disableDelete={chapters.length <= 1}
             />
           ))}

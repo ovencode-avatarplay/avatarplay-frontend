@@ -86,6 +86,9 @@ const ContentMain: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const [selChapterIdx, setSelChapterIdx] = useState(selectedChapterIdx);
+  const [selEpisodeIdx, setSelEpisodeIdx] = useState(selectedEpisodeIdx);
+
   // 현재 유저가 가진 컨텐츠를 불러오기 위함.
   const userId = useSelector((state: RootState) => state.user.userId);
 
@@ -166,11 +169,31 @@ const ContentMain: React.FC = () => {
     }
   }, [isChapterboardOpen]);
 
+  useEffect(() => {
+    setSelChapterIdx(selectedChapterIdx);
+  }, [selectedChapterIdx]);
+
+  useEffect(() => {
+    setSelEpisodeIdx(selectedEpisodeIdx);
+  }, [selectedEpisodeIdx]);
+
   //#region ChapterBoard에서 정보 수정
   function setCurEpisodeInfo() {
-    dispatch(
-      setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]),
-    );
+    try {
+      console.log(`chap ${selChapterIdx}, epi ${selEpisodeIdx}`);
+
+      const chapter = editingContentInfo.chapterInfoList?.[selChapterIdx];
+      const episode = chapter?.episodeInfoList?.[selEpisodeIdx];
+
+      if (!chapter || !episode) {
+        throw new Error('Invalid chapter or episode selection');
+      }
+
+      dispatch(setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[selChapterIdx].episodeInfoList[selEpisodeIdx]));
+    } catch (error) {
+      console.error('Error setting episode info:', error);
+      alert('plz select episode');
+    }
   }
 
   // ChapterBoard에서 아이템 선택
@@ -241,9 +264,11 @@ const ContentMain: React.FC = () => {
     );
 
     // 삭제한 챕터가 선택된 챕터라면 첫 번째 챕터를 선택
-    if (selectedChapterIdx === chapterIdx) {
+    if (selChapterIdx === chapterIdx) {
       dispatch(setSelectedChapterIdx(0));
       dispatch(setSelectedEpisodeIdx(0));
+      setSelChapterIdx(0);
+      setSelEpisodeIdx(0);
     }
 
     dispatch(
@@ -253,20 +278,26 @@ const ContentMain: React.FC = () => {
       }),
     );
 
+    if (selChapterIdx === chapterIdx) {
+      dispatch(setSelectedChapterIdx(0));
+      dispatch(setSelectedEpisodeIdx(0));
+      setSelChapterIdx(0);
+      setSelEpisodeIdx(0);
+    }
     setCurEpisodeInfo();
   };
 
   const handleAddEpisode = (newEpisode: EpisodeInfo) => {
-    if (selectedChapterIdx !== -1) {
+    if (selChapterIdx !== -1) {
       const updatedChapter = {
-        ...editingContentInfo.chapterInfoList[selectedChapterIdx],
-        episodeInfoList: [...editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList, newEpisode],
+        ...editingContentInfo.chapterInfoList[selChapterIdx],
+        episodeInfoList: [...editingContentInfo.chapterInfoList[selChapterIdx].episodeInfoList, newEpisode],
       };
 
       const updatedChapterList = [
-        ...editingContentInfo.chapterInfoList.slice(0, selectedChapterIdx),
+        ...editingContentInfo.chapterInfoList.slice(0, selChapterIdx),
         updatedChapter,
-        ...editingContentInfo.chapterInfoList.slice(selectedChapterIdx + 1),
+        ...editingContentInfo.chapterInfoList.slice(selChapterIdx + 1),
       ];
 
       dispatch(
@@ -299,7 +330,7 @@ const ContentMain: React.FC = () => {
       ];
 
       // 선택된 에피소드가 삭제된 경우, 첫 번째 에피소드를 선택
-      if (selectedEpisodeIdx === episodeIdx) {
+      if (selEpisodeIdx === episodeIdx) {
         dispatch(setSelectedEpisodeIdx(0));
       }
 
@@ -310,6 +341,9 @@ const ContentMain: React.FC = () => {
         }),
       );
 
+      if (selEpisodeIdx === episodeIdx) {
+        dispatch(setSelectedEpisodeIdx(0));
+      }
       setCurEpisodeInfo();
     }
   };
@@ -391,46 +425,46 @@ const ContentMain: React.FC = () => {
 
   // 에피소드 로드
   const loadEpisodeData = () => {
-    if (selectedChapterIdx !== -1) {
-      const chapter = editingContentInfo.chapterInfoList[selectedChapterIdx];
+    if (selChapterIdx !== -1) {
+      const chapter = editingContentInfo.chapterInfoList[selChapterIdx];
 
-      const episode = chapter.episodeInfoList[selectedEpisodeIdx];
+      const episode = chapter.episodeInfoList[selEpisodeIdx];
       if (episode) {
         dispatch(setCurrentEpisodeInfo(episode));
       } else {
-        console.error('Episode not found with idx:', selectedEpisodeIdx);
+        console.error('Episode not found with idx:', selEpisodeIdx);
       }
     } else {
-      console.error('Chapter not found with idx:', selectedChapterIdx);
+      console.error('Chapter not found with idx:', selChapterIdx);
     }
   };
 
   useEffect(() => {
-    const isChapterIdxValid = selectedChapterIdx !== null && selectedChapterIdx >= 0;
-    const isEpisodeIdxValid = selectedEpisodeIdx !== null && selectedEpisodeIdx >= 0;
+    const isChapterIdxValid = selChapterIdx !== null && selChapterIdx >= 0;
+    const isEpisodeIdxValid = selEpisodeIdx !== null && selEpisodeIdx >= 0;
 
     if (
-      (selectedChapterIdx !== prevChapterRef.current || selectedEpisodeIdx !== prevEpisodeRef.current) &&
+      (selChapterIdx !== prevChapterRef.current || selEpisodeIdx !== prevEpisodeRef.current) &&
       isChapterIdxValid &&
       isEpisodeIdxValid
     ) {
       loadEpisodeData(); // 에피소드 데이터를 불러옴
-      prevChapterRef.current = selectedChapterIdx;
-      prevEpisodeRef.current = selectedEpisodeIdx;
+      prevChapterRef.current = selChapterIdx;
+      prevEpisodeRef.current = selEpisodeIdx;
     }
-  }, [selectedChapterIdx, selectedEpisodeIdx]);
+  }, [selChapterIdx, selEpisodeIdx]);
 
   function saveEpisodeData() {
     // selectedChapter와 일치하는 챕터를 찾기
-    if (selectedChapterIdx !== -1) {
-      const chapter = editingContentInfo.chapterInfoList[selectedChapterIdx];
+    if (selChapterIdx !== -1) {
+      const chapter = editingContentInfo.chapterInfoList[selChapterIdx];
 
       // selectedEpisode와 일치하는 에피소드를 찾기
-      if (selectedEpisodeIdx !== -1) {
+      if (selEpisodeIdx !== -1) {
         const updatedEpisodeList = [
-          ...chapter.episodeInfoList.slice(0, selectedEpisodeIdx),
+          ...chapter.episodeInfoList.slice(0, selEpisodeIdx),
           {...editedEpisodeInfo.currentEpisodeInfo},
-          ...chapter.episodeInfoList.slice(selectedEpisodeIdx + 1),
+          ...chapter.episodeInfoList.slice(selEpisodeIdx + 1),
         ];
 
         const updatedChapter = {
@@ -440,9 +474,9 @@ const ContentMain: React.FC = () => {
 
         // chapterInfoList 배열도 불변성을 유지하면서 새로운 배열로 업데이트
         const updatedChapterList = [
-          ...editingContentInfo.chapterInfoList.slice(0, selectedChapterIdx),
+          ...editingContentInfo.chapterInfoList.slice(0, selChapterIdx),
           updatedChapter,
-          ...editingContentInfo.chapterInfoList.slice(selectedChapterIdx + 1),
+          ...editingContentInfo.chapterInfoList.slice(selChapterIdx + 1),
         ];
 
         dispatch(
@@ -452,10 +486,10 @@ const ContentMain: React.FC = () => {
           }),
         );
       } else {
-        console.error('Episode not found with id:', selectedEpisodeIdx);
+        console.error('Episode not found with id:', selEpisodeIdx);
       }
     } else {
-      console.error('Chapter not found with id:', selectedChapterIdx);
+      console.error('Chapter not found with id:', selChapterIdx);
     }
   }
 
@@ -485,6 +519,16 @@ const ContentMain: React.FC = () => {
             onDeleteEpisode={handleDeleteEpisode}
             onNameChange={handleNameChange}
           />
+          {/* <AccodionChapterBoard
+            open={isChapterboardOpen}
+            onClose={handleCloseChapterboard}
+            initialChapters={editingContentInfo?.chapterInfoList || []}
+            onAddChapter={handleAddChapter}
+            onDeleteChapter={handleDeleteChapter}
+            // onAddEpisode={handleAddEpisode}
+            // onDeleteEpisode={handleDeleteEpisode}
+            onNameChange={handleNameChange}
+          /> */}
           <ContentPublishing
             open={isPublishingOpen}
             onClose={handleClosePublishing}
@@ -494,8 +538,8 @@ const ContentMain: React.FC = () => {
           <EpisodeSetup
             onDrawerOpen={handleOpenChapterboard}
             contentId={editingContentInfo?.id ?? 0}
-            chapterIdx={selectedChapterIdx}
-            episodeIdx={selectedEpisodeIdx}
+            chapterIdx={selChapterIdx}
+            episodeIdx={selEpisodeIdx}
           />
         </div>
         <ContentBottom onLLMOpen={handleOpenLLM} onPublishingOpen={handleOpenPublishing} />
