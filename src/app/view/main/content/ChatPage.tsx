@@ -25,10 +25,12 @@ const ChatPage: React.FC = () => {
   const [popupQuestion, setPopupQuestion] = useState<string>('');
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
+  const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
 
   const userId = useSelector((state: RootState) => state.user.userId);
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
   const handleBackClick = useBackHandler();
+
   const cleanString = (input: string): string => {
     // 1. 개행 문자 제거
     let cleaned = input.replace(/\n/g, '');
@@ -40,13 +42,14 @@ const ChatPage: React.FC = () => {
 
     return cleaned;
   };
+
   const handleSendMessage = async (message: string, isMyMessage: boolean, isParsing: boolean) => {
     console.log('new:', message);
 
     if (!message || typeof message !== 'string') return;
 
-    // 메시지가 '#'을 포함할 경우 팝업 표시
-    if (message.includes('#')) {
+    // 메시지가 '$'을 포함할 경우 팝업 표시
+    if (message.includes('$')) {
       const requestData = {
         streamKey: streamKey, // streamKey 상태에서 가져오기
       };
@@ -54,10 +57,12 @@ const ChatPage: React.FC = () => {
       try {
         const response = await sendChattingResult(requestData);
         console.log('Result API Response:', response);
-
-        setPopupTitle('알림');
-        setPopupQuestion('이 작업을 수행하시겠습니까?');
-        setShowPopup(true);
+        if (response.data.nextEpisodeId !== 0) {
+          setNextEpisodeId(response.data.nextEpisodeId); // 다음 에피소드 ID 저장
+          setPopupTitle('알림');
+          setPopupQuestion('이 작업을 수행하시겠습니까?');
+          setShowPopup(true);
+        }
       } catch (error) {
         console.error('Error calling Result API:', error);
         alert('API 호출 중 오류가 발생했습니다. 다시 시도해 주세요.');
@@ -75,7 +80,7 @@ const ChatPage: React.FC = () => {
     setParsedMessages(prev => {
       const newMessages = [...prev];
 
-      // 문자열을 slpit 해서 따로 처리해야하는지 확인
+      // 문자열을 split 해서 따로 처리해야 하는지 확인
       newMessage.text = cleanString(newMessage.text); // 없앨 부분 없애줌
 
       const splitMessage = splitByAsterisk(newMessage.text);
@@ -91,7 +96,7 @@ const ChatPage: React.FC = () => {
       if (isMyMessage === true) {
         newMessages.push(newMessage);
       }
-      // 상대 매시지
+      // 상대 메시지
       else {
         // 기존 말풍선에 추가
         newMessages[newMessages.length - 1].text += `${splitMessageLeft}`;
@@ -112,7 +117,6 @@ const ChatPage: React.FC = () => {
 
     // 파싱 상태 설정
     setParsingState(isParsing);
-    //setIsNarrationActive({...isNarrationActive});
   };
 
   const splitByAsterisk = (splitMessage: string) => {
@@ -128,6 +132,12 @@ const ChatPage: React.FC = () => {
 
   const handlePopupYes = () => {
     console.log('Yes 클릭');
+    // 특정 행동 수행
+    if (nextEpisodeId !== null) {
+      console.log(`에피소드 ID에 대한 행동 수행: ${nextEpisodeId}`);
+      // 예: 다음 에피소드로 이동하는 함수 호출
+      // navigateToNextEpisode(nextEpisodeId);
+    }
     setShowPopup(false);
   };
 
