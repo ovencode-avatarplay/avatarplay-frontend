@@ -122,8 +122,16 @@ const ChapterBoard: React.FC<Props> = ({
 
   const handleDeleteChapter = (chapterIdx: number) => {
     if (chapters.length > 1) {
+      const validChapterIdx = chapterIdx >= chapters.length ? 0 : chapterIdx;
+
       onDeleteChapter(chapterIdx);
-      setChapters(prevChapters => prevChapters.filter((_, index) => index !== chapterIdx));
+
+      setChapters(prevChapters => prevChapters.filter((_, index) => index !== validChapterIdx));
+
+      if (validChapterIdx >= chapters.length - 1) {
+        dispatch(setSelectedEpisodeIdx(0));
+        dispatch(setSelectedChapterIdx(0));
+      }
     }
   };
   //#endregion
@@ -258,6 +266,8 @@ const ChapterBoard: React.FC<Props> = ({
               key={index}
               chapter={chapter}
               chapterIdx={index}
+              chapterLength={chapters.length}
+              episodeLength={chapters[index].episodes.length}
               onDelete={handleDeleteChapter}
               onToggle={handleChapterToggle}
               onDeleteEpisode={handleDeleteEpisode}

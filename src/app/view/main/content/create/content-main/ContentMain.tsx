@@ -264,14 +264,6 @@ const ContentMain: React.FC = () => {
       (_, index) => index !== chapterIdx, // chapterIdx 인덱스 번호 지우기
     );
 
-    // 삭제한 챕터가 선택된 챕터라면 첫 번째 챕터를 선택
-    if (selChapterIdx === chapterIdx) {
-      dispatch(setSelectedChapterIdx(0));
-      dispatch(setSelectedEpisodeIdx(0));
-      setSelChapterIdx(0);
-      setSelEpisodeIdx(0);
-    }
-
     dispatch(
       updateEditingContentInfo({
         id: selectedContentId,
@@ -279,11 +271,12 @@ const ContentMain: React.FC = () => {
       }),
     );
 
+    // 삭제한 챕터가 선택된 챕터라면 첫 번째 챕터를 선택
     if (selChapterIdx === chapterIdx) {
-      dispatch(setSelectedChapterIdx(0));
       dispatch(setSelectedEpisodeIdx(0));
-      setSelChapterIdx(0);
+      dispatch(setSelectedChapterIdx(0));
       setSelEpisodeIdx(0);
+      setSelChapterIdx(0);
     }
     setCurEpisodeInfo();
   };
@@ -330,11 +323,6 @@ const ContentMain: React.FC = () => {
         ...editingContentInfo.chapterInfoList.slice(chapterIdx + 1),
       ];
 
-      // 선택된 에피소드가 삭제된 경우, 첫 번째 에피소드를 선택
-      if (selEpisodeIdx === episodeIdx) {
-        dispatch(setSelectedEpisodeIdx(0));
-      }
-
       dispatch(
         updateEditingContentInfo({
           id: selectedContentId,
@@ -342,8 +330,10 @@ const ContentMain: React.FC = () => {
         }),
       );
 
+      // 선택된 에피소드가 삭제된 경우, 첫 번째 에피소드를 선택
       if (selEpisodeIdx === episodeIdx) {
         dispatch(setSelectedEpisodeIdx(0));
+        setSelEpisodeIdx(0);
       }
       setCurEpisodeInfo();
     }
@@ -453,7 +443,7 @@ const ContentMain: React.FC = () => {
       prevChapterRef.current = selChapterIdx;
       prevEpisodeRef.current = selEpisodeIdx;
     }
-  }, [selChapterIdx, selEpisodeIdx]);
+  }, [selectedChapterIdx, selectedEpisodeIdx]);
 
   function saveEpisodeData() {
     // selectedChapter와 일치하는 챕터를 찾기
@@ -520,16 +510,6 @@ const ContentMain: React.FC = () => {
             onDeleteEpisode={handleDeleteEpisode}
             onNameChange={handleNameChange}
           />
-          {/* <AccodionChapterBoard
-            open={isChapterboardOpen}
-            onClose={handleCloseChapterboard}
-            initialChapters={editingContentInfo?.chapterInfoList || []}
-            onAddChapter={handleAddChapter}
-            onDeleteChapter={handleDeleteChapter}
-            // onAddEpisode={handleAddEpisode}
-            // onDeleteEpisode={handleDeleteEpisode}
-            onNameChange={handleNameChange}
-          /> */}
           <ContentPublishing
             open={isPublishingOpen}
             onClose={handleClosePublishing}

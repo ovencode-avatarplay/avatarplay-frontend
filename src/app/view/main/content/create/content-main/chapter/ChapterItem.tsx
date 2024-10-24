@@ -16,11 +16,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import EpisodeItem from './EpisodeItem';
 import Style from './ChapterBoard.module.css';
 import {Chapter} from '@/types/apps/chapterCardType';
-import {setSelectedEpisodeIdx} from '@/redux-store/slices/ContentSelection';
+import {setSelectedChapterIdx, setSelectedEpisodeIdx} from '@/redux-store/slices/ContentSelection';
+import {useDispatch} from 'react-redux';
 
 interface ChapterItemProps {
   chapter: Chapter;
   chapterIdx: number; // 인덱스 추가
+  chapterLength: number;
+  episodeLength: number;
   onDelete: (chapterIdx: number) => void;
   onToggle: (chapterIdx: number) => void;
   onDeleteEpisode: (chapterIdx: number, episodeIdx: number) => void;
@@ -36,6 +39,8 @@ interface ChapterItemProps {
 const ChapterItem: React.FC<ChapterItemProps> = ({
   chapter,
   chapterIdx,
+  chapterLength,
+  episodeLength,
   onDelete,
   onToggle,
   onDeleteEpisode,
@@ -47,6 +52,17 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   selectedEpisodeIdx,
   disableDelete,
 }) => {
+  const dispatch = useDispatch();
+
+  const handleDeleteChapter = (chapterIdx: number, chapterLength: number) => {
+    onDelete(chapterIdx);
+
+    if (chapterIdx >= chapterLength - 1) {
+      dispatch(setSelectedChapterIdx(0));
+      dispatch(setSelectedEpisodeIdx(0));
+    }
+  };
+
   return (
     <>
       <Accordion
@@ -76,7 +92,10 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
 
               {/* Chapter 삭제 버튼 */}
               {!disableDelete && (
-                <IconButton className={Style.deleteButton} onClick={() => onDelete(chapterIdx)}>
+                <IconButton
+                  className={Style.deleteButton}
+                  onClick={() => handleDeleteChapter(chapterIdx, chapterLength)}
+                >
                   <DeleteIcon />
                 </IconButton>
               )}
