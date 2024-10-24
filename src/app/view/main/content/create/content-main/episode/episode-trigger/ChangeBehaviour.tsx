@@ -40,6 +40,18 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     actionChangePrompt: item.actionChangePrompt || '',
     actionConversationList: item.actionConversationList || [],
   });
+  useEffect(() => {
+    if (item) {
+      setTriggerInfo({
+        ...item,
+        name: item.name || '',
+        triggerType: item.triggerType || TriggerMainDataType.triggerValueIntimacy,
+        actionChangeEpisodeId: item.actionChangeEpisodeId || 0,
+        actionChangePrompt: item.actionChangePrompt || '',
+        actionConversationList: item.actionConversationList || [],
+      });
+    }
+  }, [item]); // item이 변경될 때마다 실행
 
   const [selectedChapter, setSelectedChapter] = useState<string>('Chapter.1');
   const [selectedEpisode, setSelectedEpisode] = useState<string>('Ep.2 Wanna go out?');
@@ -121,6 +133,11 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
           {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
         ];
       case TriggerMainDataType.triggerValueChatCount:
+        return [
+          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
+          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
+          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
+        ];
       case TriggerMainDataType.triggerValueKeyword:
         return [
           {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
@@ -186,15 +203,14 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   };
 
   const renderTargetValueField = (triggerType: TriggerMainDataType) => {
+    console.log('Current triggerType:', triggerInfo.triggerType);
     switch (triggerType) {
       case TriggerMainDataType.triggerValueIntimacy:
-      case TriggerMainDataType.triggerValueChatCount:
-      case TriggerMainDataType.triggerValueTimeMinute:
         return (
           <TextField
             className={styles.input}
             variant="outlined"
-            label="Target Value"
+            label="Target Value (Intimacy)"
             type="number"
             value={triggerInfo.triggerValueIntimacy || 0}
             onChange={e =>
@@ -205,6 +221,41 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
             }
           />
         );
+
+      case TriggerMainDataType.triggerValueChatCount:
+        return (
+          <TextField
+            className={styles.input}
+            variant="outlined"
+            label="Target Value (Chat Count)"
+            type="number"
+            value={triggerInfo.triggerValueChatCount || 0}
+            onChange={e =>
+              setTriggerInfo(prev => ({
+                ...prev,
+                triggerValueChatCount: Number(e.target.value),
+              }))
+            }
+          />
+        );
+
+      case TriggerMainDataType.triggerValueTimeMinute:
+        return (
+          <TextField
+            className={styles.input}
+            variant="outlined"
+            label="Target Value (Time Minute)"
+            type="number"
+            value={triggerInfo.triggerValueTimeMinute || 0}
+            onChange={e =>
+              setTriggerInfo(prev => ({
+                ...prev,
+                triggerValueTimeMinute: Number(e.target.value),
+              }))
+            }
+          />
+        );
+
       case TriggerMainDataType.triggerValueKeyword:
         return (
           <TextField
@@ -220,6 +271,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
             }}
           />
         );
+
       default:
         return null;
     }

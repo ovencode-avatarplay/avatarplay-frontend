@@ -103,7 +103,7 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
     // Redux에 데이터 저장
     dispatch(
       addTriggerInfo({
-        triggerType: selectedTrigger, // 트리거 유형
+        triggerType: Number(selectedTrigger), // 트리거 유형
         name: triggerName, // 트리거 이름
         triggerValueIntimacy: 0, // 기본값 설정
         triggerValueChatCount: 0, // 기본값 설정

@@ -58,16 +58,19 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey}) 
     );
 
     eventSource.onmessage = event => {
-      console.log('event.data====' + event.data + '==========');
-      if (event.data) {
-        try {
-          const newMessage = JSON.parse(event.data);
-          const parseMessage = false;
-          onSend(newMessage, false, parseMessage);
-        } catch (error) {
-          console.error('JSON parsing error:', error);
-          // 필요한 경우 추가 에러 처리 로직을 작성할 수 있습니다.
+      try {
+        // event.data가 null 또는 빈 문자열인지 확인
+        if (!event.data) {
+          throw new Error('Received null or empty data');
         }
+
+        const newMessage = JSON.parse(event.data);
+        const parseMessage = false;
+        onSend(newMessage, false, parseMessage);
+      } catch (error) {
+        console.error('Error processing message:', error);
+        console.error('Received data:', event.data);
+        // 추가적인 오류 처리 로직 (필요한 경우)
       }
     };
 
