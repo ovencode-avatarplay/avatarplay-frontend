@@ -1,8 +1,8 @@
 export enum TriggerMainDataType {
-  triggerValueIntimacy,
-  triggerValueKeyword,
-  triggerValueChatCount,
-  triggerValueTimeMinute,
+  triggerValueIntimacy = 0,
+  triggerValueKeyword = 1,
+  triggerValueChatCount = 2,
+  triggerValueTimeMinute = 3,
 }
 
 export enum TriggerTypeNames {

@@ -19,6 +19,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/dataTypes'; // 타입들 임포트
 import {addTriggerInfo} from '@/redux-store/slices/EpisodeInfo';
 import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
+import select from '@/@core/theme/overrides/select';
 
 interface SelectTriggerTypeProps {
   open: boolean;
@@ -87,11 +88,15 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
   const handleSave = () => {
     const mainData = createMainData();
     const subData = createDefaultSubData();
-    const isKeywordTypeExists = triggerInfoList.some(
-      (info, idx) => info.triggerType === TriggerMainDataType.triggerValueKeyword, // idx를 사용하여 현재 인덱스와 비교
-    );
+    const isKeywordTypeExists = triggerInfoList.some(info => Number(info.triggerType) === 1);
 
-    if (isKeywordTypeExists) {
+    console.log('isKeywordTypeExists:', isKeywordTypeExists);
+
+    console.log('isKeywordTypeExists:', isKeywordTypeExists);
+    console.log('selectedTrigger:', selectedTrigger);
+    console.log('Expected Trigger Value:', TriggerMainDataType.triggerValueKeyword);
+
+    if (isKeywordTypeExists && Number(selectedTrigger) === 1) {
       alert('Keyword타입은 1개를 넘을 수 없습니다.');
       return; // handleClose를 취소함
     }
