@@ -61,8 +61,8 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey}) 
       console.log('event.data====' + event.data + '==========');
       if (event.data) {
         try {
-          //const newMessage = JSON.parse(event.data);
-          const newMessage = event.data;
+          const newMessage = JSON.parse(event.data);
+          //const newMessage = event.data;
           const parseMessage = false;
           onSend(newMessage, false, parseMessage);
         } catch (error) {

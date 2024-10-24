@@ -13,7 +13,7 @@ import {sendChattingResult} from '@/app/NetWork/ChatNetwork';
 
 interface Message {
   text: string;
-  sender: 'user' | 'partner' | 'narration';
+  sender: 'user' | 'partner' | 'narration' | 'system';
 }
 
 const ChatPage: React.FC = () => {
@@ -100,8 +100,27 @@ const ChatPage: React.FC = () => {
       console.log('좌====' + splitMessageLeft + '====');
       console.log('우====' + splitMessageRight + '====');
 
+      // 시스템 메시지
+      const systemMessageSignCount = (newMessage.text.match(/%/g) || []).length;
+      console.log(
+        '========================시스템 메시지인가> ===================',
+        newMessage.text,
+        '   ',
+        systemMessageSignCount,
+      );
+      if (systemMessageSignCount && systemMessageSignCount >= 2) {
+        console.log('========================시스템 메시지 ===================');
+        // 시스템 메시지로 출력해주고 빠져나가자.
+        const newMessageSystem: Message = {
+          text: isParsing ? `파싱된 메시지: ${newMessage.text}` : newMessage.text,
+          sender: 'system',
+        };
+        newMessages.push(newMessageSystem);
+        return newMessages; // 업데이트된 메시지 배열 반환
+      }
       // 내 메시지
       if (isMyMessage === true) {
+        console.log('========================새 말풍선1 ===================');
         newMessages.push(newMessage);
       }
       // 상대 메시지
@@ -111,11 +130,16 @@ const ChatPage: React.FC = () => {
 
         if (isIncludeAsterisk === true) {
           isNarrationActive.active = !isNarrationActive.active;
+
+          // 근데 *표가 또 있다면 나레이션 상태를 한번 더 바꾼다.
+          if (splitMessageRight.includes('*')) isNarrationActive.active = !isNarrationActive.active;
+
           const newMessage2: Message = {
             text: isParsing ? `파싱된 메시지: ${splitMessageRight}` : splitMessageRight,
             sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
           };
 
+          console.log('========================새 말풍선2 ===================');
           newMessages.push(newMessage2);
         }
       }
