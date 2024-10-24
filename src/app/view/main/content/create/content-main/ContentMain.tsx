@@ -131,6 +131,7 @@ const ContentMain: React.FC = () => {
         handleItemSelect(contentId);
 
         dispatch(setCurrentEpisodeInfo(contentData.chapterInfoList[0].episodeInfoList[0]));
+        console.log(contentId);
         dispatch(setPublishInfo(contentData.publishInfo));
       } else {
         throw new Error(`No contentInfo in response for ID: ${contentId}`);
