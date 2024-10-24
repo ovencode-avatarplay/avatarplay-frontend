@@ -5,11 +5,12 @@ import ChatArea from '@chats/MainChat/ChatArea';
 import styles from '@chats/Styles/StyleChat.module.css';
 import {useBackHandler} from 'utils/util-1';
 import usePrevChatting from '@chats/MainChat/PrevChatting';
-import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {parseMessage} from '@chats/MainChat/MessageParser';
 import PopUpYesOrNo from '@/components/popup/PopUpYesOrNo';
-import {sendChattingResult} from '@/app/NetWork/ChatNetwork';
+import {sendChattingResult, sendChattingEnter, EnterEpisodeChattingReq} from '@/app/NetWork/ChatNetwork';
+import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
+import {useDispatch, useSelector} from 'react-redux';
 
 interface Message {
   text: string;
@@ -30,7 +31,7 @@ const ChatPage: React.FC = () => {
   const userId = useSelector((state: RootState) => state.user.userId);
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
   const handleBackClick = useBackHandler();
-
+  const dispatch = useDispatch();
   const cleanString = (input: string): string => {
     // 1. 개행 문자 제거
     let cleaned = input.replace(/\n/g, '');
@@ -137,14 +138,52 @@ const ChatPage: React.FC = () => {
       afterAsterisk: parts.slice(1).join('*'), // '*' 뒤의 문자열 (여러 개의 '*'이 있을 수 있음)
     };
   };
+  const navigateToNextEpisode = async (episodeId: number) => {
+    console.log(`Navigating to episode ID: ${episodeId}`);
+
+    const requestData: EnterEpisodeChattingReq = {
+      userId: userId,
+      episodeId: episodeId,
+    };
+
+    try {
+      const response = await sendChattingEnter(requestData);
+
+      if (response.resultCode === 0 && response.data) {
+        console.log('Successfully entered episode:', response.data);
+
+        const parsedPrevMessages = response.data.prevMessageInfoList.flatMap(msg => parseMessage(msg.message) || []);
+        setParsedMessages(parsedPrevMessages);
+        setHasFetchedPrevMessages(true);
+
+        const chattingState: ChattingState = {
+          contentName: `content episode${episodeId}`,
+          episodeName: `episode${episodeId}`,
+          episodeId: Number(episodeId),
+        };
+        dispatch(setStateChatting(chattingState));
+      } else {
+        console.error('Failed to enter episode:', response.resultMessage);
+        alert('에피소드 진입에 실패했습니다: ' + response.resultMessage);
+      }
+    } catch (error) {
+      console.error('Error entering episode:', error);
+
+      // error 타입 확인
+      if (error instanceof Error) {
+        alert('에피소드 진입 중 오류가 발생했습니다: ' + error.message);
+      } else {
+        alert('에피소드 진입 중 알 수 없는 오류가 발생했습니다.');
+      }
+    }
+  };
 
   const handlePopupYes = () => {
     console.log('Yes 클릭');
     // 특정 행동 수행
     if (nextEpisodeId !== null) {
       console.log(`에피소드 ID에 대한 행동 수행: ${nextEpisodeId}`);
-      // 예: 다음 에피소드로 이동하는 함수 호출
-      // navigateToNextEpisode(nextEpisodeId);
+      navigateToNextEpisode(nextEpisodeId); // 다음 에피소드로 이동하는 함수 호출
     }
     setShowPopup(false);
   };
@@ -164,7 +203,8 @@ const ChatPage: React.FC = () => {
 
   const {prevMessages: enterData, error} = usePrevChatting(userId, episodeId);
   console.log('usePrevChatting ', {enterData, error});
-
+  console.log('curEpId ', {episodeId});
+  episodeId;
   useEffect(() => {
     if (
       !hasFetchedPrevMessages &&
