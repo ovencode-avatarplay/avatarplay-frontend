@@ -1,3 +1,28 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "plugins": ["react-hooks"],
+  "rules": {
+    // 모든 ESLint 규칙을 비활성화
+    "no-unused-vars": "off", // 사용하지 않는 변수
+    "@typescript-eslint/no-unused-vars": "off", // TypeScript에서 사용하지 않는 변수
+    "prefer-const": "off", // const 선호
+    "react-hooks/exhaustive-deps": "off", // react-hooks 의존성 배열 검사
+    "@typescript-eslint/no-explicit-any": "off", // any 타입 사용 허용
+    "@typescript-eslint/no-unused-expressions": "off", // 사용하지 않는 표현식
+    "@typescript-eslint/no-empty-interface": "off", // 빈 인터페이스 허용
+    "no-extra-boolean-cast": "off", // 불필요한 불리언 호출
+    "no-case-declarations": "off", // switch-case 블록 내의 선언 허용
+    "@typescript-eslint/no-require-imports": "off", // require() 스타일의 import 허용
+    "no-extra-semi": "off", // 불필요한 세미콜론 허용
+    "@typescript-eslint/no-empty-object-type": "off", // 빈 객체 타입 허용
+    "no-mixed-spaces-and-tabs": "off" // Mixed spaces and tabs 비활성화
+  }
 }

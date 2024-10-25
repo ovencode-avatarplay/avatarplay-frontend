@@ -1,53 +1,185 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client'; // react-dom/client에서 import
-import { Box, Icon } from '@mui/material';
+import React, {useState, useEffect} from 'react';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore'; // Redux Store의 RootState 가져오기
+import {Box} from '@mui/material';
 import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import ImageIcon from '@mui/icons-material/Image';
-
 import Style from './EpisodeSetup.module.css';
-import EpisodeTrigger from './episode-trigger/EpisodeTrigger'; // EpisodeTrigger import
+import EpisodeTrigger from './episode-trigger/EpisodeTrigger';
 import ButtonEpisodeInfo from './ButtonEpisodeInfo';
-import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 import EpisodeImageUpload from './EpisodeImageUpload';
+import EpisodeDescription from './episode-description/EpisodeDescription';
+
+import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
+import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
+
+import EpisodeLLMSetup from './episode-LLMsetup/EpisodeLLMsetup';
 
 interface Props {
   onDrawerOpen: () => void;
-
+  contentId: number;
+  chapterIdx: number;
+  episodeIdx: number;
 }
 
-const EpisodeSetup: React.FC<Props> = ({onDrawerOpen}) => {
-  const [modalOpen, setModalOpen] = useState(false); // 모달 열림 상태
+// 캐릭터 팝업창 열때 해당 내용을 채워서 열기 위한
+interface UpdateUserDetail {
+  characterID: number;
+  secrets: string;
+  char_name: string;
+  first_mes: string;
+  char_persona: string;
+  world_scenario: string;
+  thumbnail: string;
+}
+let updateUserDetail: UpdateUserDetail;
+const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0, episodeIdx = 0}) => {
+  // episodeIndex 기본값 0
+  // Redux에서 contentInfo 데이터 가져오기
+  const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // contentInfo 가져오기
 
-  const openModal = () => {
-    setModalOpen(true); // 모달 열기
+  const [isTriggerModalOpen, setTriggerModalOpen] = useState(false); // Trigger 모달 열림 상태
+  const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
+  const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false);
+  const [isImageSetupModalOpen, setImageSetupModalOpen] = useState(false);
+  const [isAdvanceImageSetupModalOpen, setAdvanceImageSetupModalOpen] = useState(false);
+  const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
+  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
+
+  const [chapterName, setChapterName] = useState('chapterName');
+  const [episodeName, setEpisodeName] = useState('episodeName');
+
+  const openTriggerModal = () => {
+    setTriggerModalOpen(true); // Trigger 모달 열기
   };
 
-  const closeModal = () => {
-    setModalOpen(false); // 모달 닫기
+  const closeTriggerModal = () => {
+    setTriggerModalOpen(false); // Trigger 모달 닫기
   };
 
+  const openConversationModal = () => {
+    setConversationModalOpen(true); // Conversation 모달 열기
+  };
+
+  const closeConversationModal = () => {
+    setConversationModalOpen(false); // Conversation 모달 닫기
+  };
+
+  const openEpisodeModal = () => {
+    setEpisodeModalOpen(true); // Episode 모달 열기
+  };
+
+  const closeEpisodeModal = () => {
+    setEpisodeModalOpen(false); // Episode 모달 닫기
+  };
+
+  const openImageSetup = () => {
+    setImageSetupModalOpen(true); // 이미지 생성 모달 열기
+  };
+
+  const closeImageSetup = () => {
+    setImageSetupModalOpen(false); // 이미지 생성 모달 닫기
+  };
+
+  const openAdvanceImageSetup = () => {
+    setAdvanceImageSetupModalOpen(true);
+  };
+
+  const closeAdvanceImageSetup = () => {
+    setAdvanceImageSetupModalOpen(false);
+  };
+
+  const openUploadImageDialog = () => {
+    setUploadImageDialogOpen(true);
+  };
+
+  const closeUploadImageDialog = () => {
+    setUploadImageDialogOpen(false);
+  };
+
+  const openLLMSetup = () => {
+    setLLMSetupOpen(true); // 모달 열기
+  };
+
+  const closeLLMSetup = () => {
+    setLLMSetupOpen(false); // 모달 닫기
+  };
+
+  useEffect(() => {
+    if (contentInfo) {
+      const chapter = contentInfo.chapterInfoList[chapterIdx];
+
+      if (chapter) {
+        setChapterName(chapter.name);
+        const episode = chapter.episodeInfoList[episodeIdx];
+        if (episode) {
+          console.log('Success!');
+          setEpisodeName(episode.name);
+        } else {
+          console.log(`Episode at idx ${episodeIdx} not found in Content ${contentId}`);
+        }
+      } else {
+        console.log(`Chapter With Idx ${chapterIdx} not found in ${contentId}`);
+      }
+    } else {
+      console.log(`Content with ID ${contentId} not found`);
+    }
+  }, [contentInfo, contentId, chapterIdx, episodeIdx]);
+
+  const handleSubmitPopup = (data: any) => {
+    console.log('Submitted data:', data);
+    // 필요한 처리를 여기에 추가
+  };
   return (
     <main className={Style.episodeSetup}>
-      <ButtonEpisodeInfo chapterName='Chapter.1' episodeName='Ep.1 FirstDay' onDrawerOpen={onDrawerOpen} />
-
-      {/* 이미지 영역 */}
+      <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} chapterName={chapterName ?? ''} episodeName={episodeName ?? ''} />
       <Box className={Style.imageArea}>
-        <EpisodeImageUpload />
+        <EpisodeImageUpload
+          onClickEasyCreate={openImageSetup}
+          onClickAdvanceCreate={openAdvanceImageSetup}
+          uploadImageState={isUploadImageDialogOpen}
+          onClickUploadImage={openUploadImageDialog}
+          onCloseUploadImage={closeUploadImageDialog}
+        />
       </Box>
-
-      {/* SetupButton 4개 */}
       <Box className={Style.setupButtons}>
-        <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={() => { }} />
-        <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openModal} /> {/* openModal 호출 */}
-        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={() => { }} />
-        <ButtonSetupDrawer icon={<ImageIcon />} label="AI Model Setup" onClick={() => { }} />
+        <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
+        <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
+        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />{' '}
+        {/*TODO : Move This into Trigger Setup */}
+        <ButtonSetupDrawer icon={<ImageIcon />} label="AI Model Setup" onClick={openLLMSetup} />
+        {/*TODO : Move This to ContentBottom - LLM Setup*/}
       </Box>
-
       {/* EpisodeTrigger 모달 */}
-      <EpisodeTrigger open={modalOpen} closeModal={closeModal} /> {/* 모달 상태 전달 */}
+      <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} /> {/* 모달 상태 전달 */}
+      <EpisodeConversationTemplate open={isConversationModalOpen} closeModal={closeConversationModal} />{' '}
+      {/* 모달 상태 전달 */}
+      {/* Episode Description 모달 */}
+      {isEpisodeModalOpen && (
+        <EpisodeDescription
+          dataDefault={{
+            userId: updateUserDetail?.characterID,
+            characterName: updateUserDetail?.char_name,
+            characterDescription: updateUserDetail?.char_persona,
+            worldScenario: updateUserDetail?.world_scenario,
+            introduction: updateUserDetail?.first_mes,
+            secret: updateUserDetail?.secrets,
+            //thumbnail: updateUserDetail?.thumbnail
+          }}
+          isModify={true}
+          open={isEpisodeModalOpen}
+          onClose={closeEpisodeModal}
+          onSubmit={handleSubmitPopup}
+        />
+      )}
+      {/*이미지 생성 모달*/}
+      {isImageSetupModalOpen && <EpisodeImageSetup open={isImageSetupModalOpen} onClose={closeImageSetup} />}
+      {/* {isAdvanceImageSetupModalOpen && <EpisodeAdvanceImageSetup open ={isAdvanceImageSetupModalOpen} onClose={closeAdvanceImageSetup} />} */}
+      {/* EpisodeLLMSetup 모달 */}
+      <EpisodeLLMSetup open={isLLMSetupOpen} onClose={closeLLMSetup} />
     </main>
   );
 };

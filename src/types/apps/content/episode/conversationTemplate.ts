@@ -1,5 +1,4 @@
-export interface conversationTemplate
-{
-    question : string;
-    answer : string;
+export interface Conversation {
+  question: string;
+  answer: string;
 }

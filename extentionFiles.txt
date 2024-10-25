@@ -1,0 +1,3 @@
+확장 플러긴 파일 설치 목록입니다.
+
+Prettier - Code formatter

@@ -9,12 +9,10 @@ import EighteenUpRatingIcon from '@mui/icons-material/EighteenUpRating';
 
 import TagData from 'data/search-board-tags.json';
 
-import Style from './SearchBoardHeader.module.css'
+import Style from './SearchBoardHeader.module.css';
 
 import SearchField from 'components/layout/shared/SearchComponent';
-import { Switch } from '@mui/material';
-
-
+import {Switch} from '@mui/material';
 
 // 아이콘 문자열을 JSX.Element로 변환하는 함수
 const getIconComponent = (iconName: string) => {
@@ -34,12 +32,7 @@ const SearchBoardHeader: React.FC = () => {
       <Box className={Style.tags}>
         {TagData.map((tag, index) => {
           const tmpIcon = getIconComponent(tag.icon);
-          return (<Chip className={Style.chip}
-            key={index}
-            icon={tmpIcon ? tmpIcon : undefined}
-            label={tag.label}
-          />
-          );
+          return <Chip className={Style.chip} key={index} icon={tmpIcon ? tmpIcon : undefined} label={tag.label} />;
         })}
       </Box>
       <div className={Style.search}>

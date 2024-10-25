@@ -1,0 +1,52 @@
+{
+  "styleOptions": [
+    { "label": "Realistic", "image": "/real.png", "prompt": "Realistic", "negativePrompt": ""},
+    { "label": "Anime", "image": "/anime.png", "prompt": "Anime", "negativePrompt": "" }
+  ],
+  "raceOptions": [
+    { "label": "Caucasian", "image": "/race_caucasian.png", "prompt": "caucasian", "negativePrompt": "" },
+    { "label": "Latina", "image": "/race_latina.png", "prompt": "Latina", "negativePrompt": "" },
+    { "label": "Asian", "image": "/race_asian.png", "prompt": "asian", "negativePrompt": "" },
+    { "label": "Arab", "image": "/race_arab.png", "prompt": "Arabic", "negativePrompt": "" },
+    { "label": "Black/Afro", "image": "/race_black.png", "prompt": "black_man", "negativePrompt": "" }
+  ],
+  "ageOptions": [
+    { "label": "Teen(18+)", "image": "/age_teen.png", "prompt": "teen", "negativePrompt": "" },
+    { "label": "20s", "image": "/age_20s.png", "prompt": "25 years old", "negativePrompt": "" },
+    { "label": "30s", "image": "/age_30s.png", "prompt": "30 years old", "negativePrompt": "" },
+    { "label": "40-55", "image": "/age_40-55.png", "prompt": "50 years old", "negativePrompt": "" }
+  ],
+  "eyeColorOptions": [
+    { "label": "Brown", "image": "/eye_brown.png", "prompt": "brown_eyes", "negativePrompt": "" },
+    { "label": "Blue", "image": "/eye_blue.png", "prompt": "blue_eyes", "negativePrompt": "" },
+    { "label": "Green", "image": "/eye_green.png", "prompt": "green_eyes", "negativePrompt": "" }
+  ],
+  "hairStyles": [
+    { "label": "Buzz cut", "image": "/hair_buzzcut.png", "prompt": "buzz cut", "negativePrompt": "" },
+    { "label": "Long", "image": "/hair_long.png", "prompt": "long_hair", "negativePrompt": "" },
+    { "label": "Slicked Back", "image": "/hair_slicked_back.png", "prompt": "hair slicked back", "negativePrompt": "" },
+    { "label": "Short", "image": "/hair_short.png", "prompt": "short_hair", "negativePrompt": "" },
+    { "label": "Bun", "image": "/hair_bun.png", "prompt": "hair_bun", "negativePrompt": "" },
+    { "label": "Dreadlocks", "image": "/hair_dreadlocks.png", "prompt": "dreadlocks", "negativePrompt": "" },
+    { "label": "Curly", "image": "/hair_curly.png", "prompt": "ponytail", "negativePrompt": "" },
+    { "label": "Bald", "image": "/hair_bald.png", "prompt": "short twintails", "negativePrompt": "" }
+  ],
+  "hairColors": [
+    { "label": "Blonde", "image": "/hair_blonde.png", "prompt": "Blonde_hair", "negativePrompt": "" },
+    { "label": "Brown", "image": "/hair_brown.png", "prompt": "brown_hair", "negativePrompt": "" },
+    { "label": "Black", "image": "/hair_black.png", "prompt": "black_hair", "negativePrompt": "" },
+    { "label": "Ginger", "image": "/hair_ginger.png", "prompt": "red_hair", "negativePrompt": "" },
+    { "label": "Gray", "image": "/hair_gray.png", "prompt": "gray_hair", "negativePrompt": "" },
+    { "label": "White", "image": "/hair_white.png", "prompt": "white_hair", "negativePrompt": "" },
+    { "label": "Pink", "image": "/hair_pink.png", "prompt": "pink_hair", "negativePrompt": "" }
+  ],
+  "bodyTypes": [
+    { "label": "Slim", "image": "/body_slim.png", "prompt": "skinny", "negativePrompt": "" },
+    { "label": "Muscular", "image": "/body_muscular.png", "prompt": "(slender), muscular", "negativePrompt": "" },
+    { "label": "Wide", "image": "/body_wide.png", "prompt": "Muscular man with broad shoulders, low body fat, defined muscles, ripped abs", "negativePrompt": "" }
+  ],
+  "topSizes": [
+  ],
+  "bottomSizes": [
+  ]
+}

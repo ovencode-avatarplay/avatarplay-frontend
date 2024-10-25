@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
-import "@/app/globals.css";
-import Main from "@/app/view/main/Main";
+import type {Metadata} from 'next';
+import '@/app/globals.css';
+import Main from '@/app/view/main/Main';
 
 export const metadata: Metadata = {
-  title: "Talkain",
-  description: "AI Chatting",
+  title: 'Talkain',
+  description: 'AI Chatting',
+  icons: '/Images/Talkain_icon_256_green.png',
 };
 
 export default function RootLayout({
@@ -12,13 +13,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body>
-        <Main>
-          {children}
-        </Main>
-      </body>
-    </html>
-  );
+  return <Main>{children}</Main>;
 }

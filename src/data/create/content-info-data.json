@@ -1,0 +1,179 @@
+{
+  "resultCode": 0,
+  "resultMessage": "",
+  "data": {
+    "contentInfo": {
+      "id": 23,
+      "userId": 1,
+      "chapterInfoList": [
+        {
+          "id": 21,
+          "name": "사이버 챕터 1",
+          "episodeInfoList": [
+            {
+              "id": 18,
+              "name": "사이버 에피소드 1-1",
+              "thumbnail": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.",
+              "episodeDescription": {
+                "characterName": "유우",
+                "characterDescription": "사교적이고 유머 감각이 있으며, 스트레스가 많은 상황에서도 긍정적인 태도를 유지한다. 요리를 통해 다른 사람들과 소통한다.",
+                "scenarioDescription": "{{char}}는 사이버펑크 도시의 해커로, {{user}}와 협력하여 기업과 정부의 비밀을 폭로한다. {{char}}는 디지털 세계에서 영웅으로 여겨지지만, 현실 세계에서는 은둔자로 산다.",
+                "introDescription": "안녕하세요, {{user}}. *{{char}} 가 당신을 향해 다가옵니다.* 디지털 세계에서 만나게 되어 기쁩니다. 여기서 어떤 정보를 찾고 있나요?",
+                "secret": "{{char}}는 유적에 숨겨진 강력한 마법의 존재를 알고 있으며, 이 마법이 {{user}}의 운명을 바꿀 수 있다."
+              },
+              "triggerInfoList": [
+                {
+                  "id": 0,
+                  "name": "가",
+                  "triggerType": 0,
+                  "triggerValueIntimacy": 1,
+                  "triggerValueChatCount": 0,
+                  "triggerValueKeyword": "",
+                  "triggerValueTimeMinute": 0,
+                  "triggerActionType": 0,
+                  "actionChangeEpisodeId": 0,
+                  "actionChangePrompt": "",
+                  "actionIntimacyPoint": 1,
+                  "maxIntimacyCount": 0,
+                  "actionConversationList": [
+                    {
+                      "id": 0,
+                      "conversationType": 0,
+                      "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                      "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                    }
+                  ]
+                },
+                {
+                  "id": 1,
+                  "name": "나",
+                  "triggerType": 0,
+                  "triggerValueIntimacy": 0,
+                  "triggerValueChatCount": 2,
+                  "triggerValueKeyword": "",
+                  "triggerValueTimeMinute": 0,
+                  "triggerActionType": 0,
+                  "actionChangeEpisodeId": 0,
+                  "actionChangePrompt": "",
+                  "actionIntimacyPoint": 10,
+                  "maxIntimacyCount": 0,
+                  "actionConversationList": [
+                    {
+                      "id": 0,
+                      "conversationType": 0,
+                      "user": " ",
+                      "character": " "
+                    }
+                  ]
+                },
+                {
+                  "id": 2,
+                  "name": "다",
+                  "triggerType": 0,
+                  "triggerValueIntimacy": 0,
+                  "triggerValueChatCount": 0,
+                  "triggerValueKeyword": "",
+                  "triggerValueTimeMinute": 5,
+                  "triggerActionType": 0,
+                  "actionChangeEpisodeId": 0,
+                  "actionChangePrompt": "",
+                  "actionIntimacyPoint": 20,
+                  "maxIntimacyCount": 0,
+                  "actionConversationList": [
+                    {
+                      "id": 0,
+                      "conversationType": 0,
+                      "user": " ",
+                      "character": " "
+                    }
+                  ]
+                },
+                {
+                  "id": 3,
+                  "name": "라",
+                  "triggerType": 0,
+                  "triggerValueIntimacy": 0,
+                  "triggerValueChatCount": 0,
+                  "triggerValueKeyword": "사랑해",
+                  "triggerValueTimeMinute": 0,
+                  "triggerActionType": 0,
+                  "actionChangeEpisodeId": 0,
+                  "actionChangePrompt": "",
+                  "actionIntimacyPoint": 0,
+                  "maxIntimacyCount": 0,
+                  "actionConversationList": [
+                    {
+                      "id": 0,
+                      "conversationType": 0,
+                      "user": " ",
+                      "character": " "
+                    }
+                  ]
+                },
+                {
+                  "id": 4,
+                  "name": "마",
+                  "triggerType": 0,
+                  "triggerValueIntimacy": 50,
+                  "triggerValueChatCount": 0,
+                  "triggerValueKeyword": "",
+                  "triggerValueTimeMinute": 0,
+                  "triggerActionType": 0,
+                  "actionChangeEpisodeId": 0,
+                  "actionChangePrompt": "",
+                  "actionIntimacyPoint": 0,
+                  "maxIntimacyCount": 0,
+                  "actionConversationList": [
+                    {
+                      "id": 0,
+                      "conversationType": 0,
+                      "user": "",
+                      "character": ""
+                    }
+                  ]
+                }
+              ],
+              "conversationTemplateList": [
+                {
+                  "id": 0,
+                  "conversationType": 0,
+                  "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
+                  "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
+                }
+              ],
+              "llmSetupInfo": {
+                "llmModel": 0,
+                "customApi": "CustomApi"
+              }
+            }
+          ]
+        }
+      ],
+      "publishInfo": {
+        "languageType": 0,
+        "contentName": "사이버 시티",
+        "thumbnail": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/1234a12f-628b-4031-8f76-1c3dac2751fb.",
+        "contentDescription": "사이버 시티 내용",
+        "authorName": "bm",
+        "authorComment": "사이버 시티 작가 코멘트",
+        "tagList":  [
+          "string",
+          "tag1",
+          "tag2",
+          "tag3",
+          "tag4",
+          "tag5",
+          "tag6",
+          "tag7",
+          "tag8"
+        ],
+        "selectTagList":  [
+          "string"
+        ],
+        "visibilityType": 0,
+        "monetization": true,
+        "nsfw": 0
+      }
+    }
+  }
+}

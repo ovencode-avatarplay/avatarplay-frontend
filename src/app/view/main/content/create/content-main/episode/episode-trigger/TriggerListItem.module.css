@@ -16,8 +16,8 @@
     background-color: #f5f5f5; /* 선택된 상태일 때의 배경색 */
   }
   
-  .iconButton {
-    margin-left: auto; /* 아이콘 버튼을 오른쪽 끝으로 정렬 */
+  .iconButton {    
+    color: black;
   }
   
   .listItemText {

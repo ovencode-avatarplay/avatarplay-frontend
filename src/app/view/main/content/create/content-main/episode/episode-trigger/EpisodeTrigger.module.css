@@ -7,13 +7,16 @@
     display: flex;
     align-items: center; /* 세로 정렬 */
     justify-content: flex-start; /* 왼쪽 정렬 */
-    padding-left: 0%;
-    padding-right: 0%;
+    padding-left: 24px;
+    padding-top: 11.5px;
+    padding-bottom: 11.5px;
 }
 
 .modal-title {    
-    font-size: 1.em; /* 제목 크기 조정 */    
+    font-size: 20px; /* 제목 크기 조정 */    
+    font-weight: bold;
 }
+
 
 .close-button {
     background: none;
@@ -23,9 +26,17 @@
 }
 .card-box
 {
-    padding: 5%;
+    padding: 0px 28px;
     height: 100%;
 }
+
+.listText
+{
+    padding-left: 10px;
+    font-size: medium;
+    font-weight: bold;
+}
+
 .card-body
 {   
     height: 100%;

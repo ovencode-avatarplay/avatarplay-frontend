@@ -1,0 +1,102 @@
+/* DrawerContentDesc.module.css */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+  }
+  
+  
+  .content {
+    height: 100%; 
+    overflow-y: auto;
+    margin-bottom: 25px;
+  }
+
+  
+  .imageThumbnail  {
+    width: '100%';
+    height: 'auto';
+    object-Fit: 'cover';
+    position: relative;
+ }
+
+
+  .descriptionBox {
+    height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  
+  .tagContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 0;
+  }
+  
+  .tagChip {
+    background-color: #e0e0e0;
+    color: #424242;
+    font-weight: bold;
+    pointer-events: none;
+  }
+  
+  .paginationContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  
+  .hiddenTabs {
+    display: none;
+  }
+
+  
+  
+  .chatingControlPanel {
+    height: calc(100vh); 
+    overflow-y: hidden;
+    margin-bottom: 25px;
+  }
+  
+
+  .chapterBox
+  {
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .chapterSelect {
+        width: 50%;
+    
+  }
+  
+  .episodeList {
+    height: 200px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .episodeListContainer {
+    width: 100%;
+    position: relative;
+    padding: 16px;
+  }
+
+  .startNewChatButton
+  {
+    height: 40px;
+    width: 80px;
+  }

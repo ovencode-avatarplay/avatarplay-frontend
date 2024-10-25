@@ -1,5 +1,4 @@
-export interface llmSetupInfo
-{
-    llmModel : number;
-    customApi : string;
+export interface LLMSetupInfo {
+  llmModel: number;
+  customApi: string;
 }

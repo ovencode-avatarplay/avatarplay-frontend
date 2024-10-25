@@ -1,0 +1,40 @@
+.drawerContainer {
+    padding: 20px;
+}
+
+.settingBox {
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: #f9f9f9;
+}
+
+.label {
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+
+.tagContainer {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.chip {
+    margin: 2px;
+}
+
+.tagSelect {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.moreTags {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}

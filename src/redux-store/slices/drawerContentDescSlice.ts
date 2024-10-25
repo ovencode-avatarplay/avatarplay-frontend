@@ -1,30 +1,37 @@
 // drawerContentDescSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 interface DrawerContentDescState {
   open: boolean;
-  id: string | null;
+  contentId: number;
+  episodeId: number;
 }
 
 const initialState: DrawerContentDescState = {
   open: false,
-  id: null,
+  contentId: 0,
+  episodeId: 0,
 };
 
 const drawerContentDescSlice = createSlice({
   name: 'drawerContentDesc',
   initialState,
   reducers: {
-    openDrawerContentDesc(state, action: PayloadAction<string>) {
+    openDrawerContentId(state, action: PayloadAction<number>) {
       state.open = true;
-      state.id = action.payload;
+      state.contentId = action.payload;
+    },
+
+    setDrawerEpisodeId(state, action: PayloadAction<number>) {
+      state.episodeId = action.payload;
     },
     closeDrawerContentDesc(state) {
       state.open = false;
-      state.id = null;
+      state.contentId = 0;
+      state.episodeId = 0;
     },
   },
 });
 
-export const { openDrawerContentDesc, closeDrawerContentDesc } = drawerContentDescSlice.actions;
+export const {openDrawerContentId, setDrawerEpisodeId, closeDrawerContentDesc} = drawerContentDescSlice.actions;
 export default drawerContentDescSlice.reducer;
