@@ -70,7 +70,7 @@ const UserDropdown = () => {
             access_type: 'offline',
             prompt: 'consent',
           },
-          redirectTo: 'http://localhost:3000',
+          redirectTo: `${process.env.NEXT_PUBLIC_FRONT_URL}`,
         },
       });
 
