@@ -3,7 +3,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {sendGetExplore} from '@/app/NetWork/ExploreNetwork';
-import {addNewCharacter, clearChatList} from '@/redux-store/slices/chat';
 import Header from './searchboard-header/SearchBoardHeader';
 import Style from './SearchBoard.module.css';
 import SearchBoardHorizonScroll from './SearchBoardHorizonScroll';

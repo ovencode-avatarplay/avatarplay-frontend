@@ -21,7 +21,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
   const dispatch = useDispatch();
 
   const handleOpenDrawer = () => {
-    dispatch(setDrawerEpisodeId(String(item.link)));
+    // dispatch(setDrawerEpisodeId(String(item.link)));
   };
 
   const toggleTextExpansion = () => {

@@ -4,7 +4,6 @@ import storage from 'redux-persist/lib/storage'; // localStorage를 사용
 
 // Slice Imports
 import sampleReducer from '@/redux-store/slices/ReduxSample';
-import chatReducer from '@/redux-store/slices/chat';
 import chattingReducer from '@/redux-store/slices/chatting';
 import drawerContentDescReducer from '@/redux-store/slices/drawerContentDescSlice';
 import ContentInfoSlice from './slices/ContentInfo';
@@ -25,7 +24,6 @@ const persistConfig = {
 
 const reducers = combineReducers({
   sample: sampleReducer,
-  // chat: chatReducer,
   user: userInfo,
 
   chatting: chattingReducer, // 서버데이터 Chatting/
