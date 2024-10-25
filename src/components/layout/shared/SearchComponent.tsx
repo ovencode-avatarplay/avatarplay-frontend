@@ -8,7 +8,7 @@ const SearchInput: React.FC = () => {
     <TextField
       placeholder="Search..."
       variant="outlined"
-      inputProps={{ 'aria-label': 'search' }}
+      inputProps={{'aria-label': 'search'}}
       className="search-input"
       InputProps={{
         startAdornment: (

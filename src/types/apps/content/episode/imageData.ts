@@ -1,8 +1,7 @@
-import { stableDiffusionData } from "./stableDiffusionData";
+import {stableDiffusionData} from './stableDiffusionData';
 
-export interface ImageData
-{
-    imageType : number;
-    imageUrl : string;
-    stableDiffusionData : stableDiffusionData;
+export interface ImageData {
+  imageType: number;
+  imageUrl: string;
+  stableDiffusionData: stableDiffusionData;
 }

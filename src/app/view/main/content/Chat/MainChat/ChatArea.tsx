@@ -3,8 +3,7 @@ import {Box} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 
 interface ChatAreaProps {
-  messages: {text: string; sender: 'user' | 'partner' | 'narration'}[]; // Message 타입으로 수정
-  isParsing: boolean; // isParsing은 유지, 하지만 사용하지는 않음
+  messages: {text: string; sender: 'user' | 'partner' | 'narration' | 'system'}[]; // 'system' 추가
   bgUrl: string;
 }
 
@@ -50,17 +49,19 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl}) => {
                   ? 'rgba(80, 80, 80, 0.8)' // 사용자 메시지: 회색(80% 불투명도)
                   : msg.sender === 'partner'
                   ? 'rgba(0, 0, 0, 0.8)' // 파트너 메시지: 검은색(80% 불투명도)
-                  : 'rgba(255, 255, 255, 0.5)', // 나레이션: 반투명 백색(50% 불투명도)
-              backdropFilter: msg.sender === 'narration' ? 'blur(20px)' : 'none', // 나레이션에만 블러 효과 추가
+                  : msg.sender === 'narration'
+                  ? 'rgba(100, 100, 100, 0.8)' // 나레이션: 회색(80% 불투명도)
+                  : 'rgba(255, 255, 255, 0.2)', // 시스템: 하얀색(80% 불투명도)
+              backdropFilter: msg.sender === 'system' ? 'blur(20px)' : 'none', // 시스템에 블러 효과 추가
               textAlign: msg.sender === 'narration' ? 'center' : 'inherit',
               color:
-                msg.sender === 'narration'
-                  ? '#FFFFFF' // 나레이션: 흰색
-                  : msg.sender === 'partner'
-                  ? '#FFFFFF' // 파트너: 흰색
-                  : '#FFFFFF', // 사용자: 검정색
-              fontSize: msg.sender === 'narration' ? '0.8em' : '0.9em', // 나레이션 메시지 크기 조정
-              fontWeight: 'bold', // 모든 메시지 볼드체
+                msg.sender === 'system'
+                  ? '#FFFFFF' // 시스템: 검은색
+                  : msg.sender === 'narration'
+                  ? '#E0E0E0' // 나레이션: 하얀색에 가까운 회색
+                  : '#FFFFFF', // 파트너와 사용자: 흰색
+              fontSize: msg.sender === 'narration' || msg.sender === 'system' ? '0.7em' : '0.8em', // 나레이션 메시지 크기 조정
+              fontWeight: msg.sender === 'narration' ? 'normal' : 'bold', // 나레이션 메시지의 볼드체 제거
               wordWrap: 'break-word',
               whiteSpace: 'pre-wrap',
             }}

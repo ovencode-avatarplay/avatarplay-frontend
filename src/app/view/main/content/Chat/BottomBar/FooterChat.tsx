@@ -9,7 +9,7 @@ import styles from '@chats/BottomBar/FooterChat.module.css';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {SendChatMessageReq, sendMessageStream} from '@/app/NetWork/ChatNetwork';
-import Stiker from './Stiker';
+import Sticker from './Sticker';
 
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
@@ -58,9 +58,20 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey}) 
     );
 
     eventSource.onmessage = event => {
-      const newMessage = JSON.parse(event.data);
-      const parseMessage = false;
-      onSend(newMessage, false, parseMessage);
+      try {
+        // event.data가 null 또는 빈 문자열인지 확인
+        if (!event.data) {
+          throw new Error('Received null or empty data');
+        }
+
+        const newMessage = JSON.parse(event.data);
+        const parseMessage = false;
+        onSend(newMessage, false, parseMessage);
+      } catch (error) {
+        console.error('Error processing message:', error);
+        console.error('Received data:', event.data);
+        // 추가적인 오류 처리 로직 (필요한 경우)
+      }
     };
 
     eventSource.onerror = () => {
@@ -172,7 +183,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey}) 
           </Button>
         </Box>
       )}
-      {isExpanded && isStickerOpen && <Stiker onSelectEmoji={handleSelectEmoji} />}
+      {isExpanded && isStickerOpen && <Sticker onSelectEmoji={handleSelectEmoji} />}
     </Box>
   );
 };

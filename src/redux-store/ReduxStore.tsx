@@ -4,14 +4,12 @@ import storage from 'redux-persist/lib/storage'; // localStorage를 사용
 
 // Slice Imports
 import sampleReducer from '@/redux-store/slices/ReduxSample';
-import chatReducer from '@/redux-store/slices/chat';
 import chattingReducer from '@/redux-store/slices/chatting';
 import drawerContentDescReducer from '@/redux-store/slices/drawerContentDescSlice';
 import ContentInfoSlice from './slices/ContentInfo';
 import userInfo from './slices/userInfo';
 import ContentSelection from './slices/ContentSelection';
 import publishInfoSlice from './slices/PublishInfo';
-import chapterBoardSlice from './slices/ChapterBoard';
 import episodeInfoSlice from './slices/EpisodeInfo';
 import myContentDashboardSlice from './slices/myContentDashboard';
 
@@ -26,7 +24,6 @@ const persistConfig = {
 
 const reducers = combineReducers({
   sample: sampleReducer,
-  // chat: chatReducer,
   user: userInfo,
 
   chatting: chattingReducer, // 서버데이터 Chatting/
@@ -40,7 +37,6 @@ const reducers = combineReducers({
 
   content: ContentInfoSlice, // 현재 편집중인 컨텐츠 (서버와 데이터 교환 용)
   contentselection: ContentSelection, // 현재 선택된 컨텐츠,챕터,에피소드 정보 (ChapterBoard 선택용)
-  chapterBoard: chapterBoardSlice, // 현재 편집중인 컨텐츠의 ChapterBoard 정부 (Chapter, Episode 수정용)
   publish: publishInfoSlice, // 현재 편집중인 컨텐츠의 publish 정보 (Content 수정용)
   episode: episodeInfoSlice, // 현재 편집중인 에피소드 정보 (Content 수정용)
   //#endregion

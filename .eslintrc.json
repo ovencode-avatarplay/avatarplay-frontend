@@ -8,9 +8,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended"
   ],
-  "plugins": [
-    "react-hooks"
-  ],
+  "plugins": ["react-hooks"],
   "rules": {
     // 모든 ESLint 규칙을 비활성화
     "no-unused-vars": "off", // 사용하지 않는 변수

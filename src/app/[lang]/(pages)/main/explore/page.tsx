@@ -1,9 +1,7 @@
-"use client"
+'use client';
 
-import Explore from "@/app/view/main/content/searchboard/SearchBoard";
+import Explore from '@/app/view/main/content/searchboard/SearchBoard';
 
 export default function ExplorePage() {
-    return (
-        <Explore />
-    );
+  return <Explore />;
 }

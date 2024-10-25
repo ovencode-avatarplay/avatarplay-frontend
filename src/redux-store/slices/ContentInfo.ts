@@ -30,9 +30,14 @@ export const curEditngContentInfoSlice = createSlice({
         state.curEditingContentInfo = {...state.curEditingContentInfo, ...action.payload};
       }
     },
+
+    setContentInfoToEmpty: state => {
+      state.curEditingContentInfo = emptyContent.data.contentInfo;
+    },
   },
 });
 
 // 액션과 리듀서 export
-export const {setEditingContentInfo, updateEditingContentInfo} = curEditngContentInfoSlice.actions;
+export const {setEditingContentInfo, updateEditingContentInfo, setContentInfoToEmpty} =
+  curEditngContentInfoSlice.actions;
 export default curEditngContentInfoSlice.reducer;

@@ -3,14 +3,21 @@ import {Box, Button, Stepper, Step, StepLabel, Typography, LinearProgress, TextF
 import styles from './CharacterCreate.module.css';
 import GirlIcon from '@mui/icons-material/Female';
 import BoyIcon from '@mui/icons-material/Male';
+import TransgenderIcon from '@mui/icons-material/Transgender';
 
-import characterOptionsMaleReal from '@/data/create/create-character-male-anime.json';
-import characterOptionsFeMaleReal from '@/data/create/create-character-female-anime.json';
+import characterOptionsMaleReal from '@/data/create/create-character-male-real.json';
+import characterOptionsFeMaleReal from '@/data/create/create-character-female-real.json';
+import characterOptionsNonBinaryReal from '@/data/create/create-character-non-binary-real.json';
 import characterOptionsMaleAnime from '@/data/create/create-character-male-anime.json';
 import characterOptionsFeMaleAnime from '@/data/create/create-character-female-anime.json';
+import characterOptionsNonBinaryAnime from '@/data/create/create-character-non-binary-anime.json';
 import CharacterCreateImageButton from './CharacterCreateImageButton';
 // Import Swiper React components
 import {Swiper, SwiperSlide} from 'swiper/react';
+
+import txt2ImgJson from '@/data/stable-diffusion/txt2imgData.json';
+import img2ImgJson from '@/data/stable-diffusion/img2imgData.json';
+import defaultPromptJson from '@/data/stable-diffusion/defaultPrompt.json';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -33,6 +40,7 @@ const CharacterCreate: React.FC<Props> = () => {
   const genderOptions = [
     {label: 'Girls', icon: <GirlIcon />},
     {label: 'Guys', icon: <BoyIcon />},
+    {label: 'Non-binary', icon: <TransgenderIcon />},
   ];
 
   const isStepFailed = (step: number) => {
@@ -62,9 +70,13 @@ const CharacterCreate: React.FC<Props> = () => {
         ? selectedOptions.style === 0
           ? characterOptionsFeMaleReal
           : characterOptionsFeMaleAnime
+        : selectedOptions.gender === 1
+        ? selectedOptions.style === 0
+          ? characterOptionsMaleReal
+          : characterOptionsMaleAnime
         : selectedOptions.style === 0
-        ? characterOptionsMaleReal
-        : characterOptionsMaleAnime;
+        ? characterOptionsNonBinaryReal
+        : characterOptionsNonBinaryAnime;
 
     // Update character options
     setCharacterOptions(newCharacterOptions);
@@ -99,7 +111,8 @@ const CharacterCreate: React.FC<Props> = () => {
   };
 
   const handleGenerate = () => {
-    const genderPrompt = selectedOptions.gender === 0 ? 'Female' : 'Male';
+    const genderPrompt = selectedOptions.gender === 0 ? 'Female' : selectedOptions.gender === 1 ? 'Male' : 'Non-binary';
+    const negativeGenderPrompt = selectedOptions.gender === 0 ? 'Male' : selectedOptions.gender === 1 ? 'Female' : '';
     const prompts = [
       genderPrompt,
       ...summaryOptions.map(option => {
@@ -113,7 +126,17 @@ const CharacterCreate: React.FC<Props> = () => {
 
     console.log('Generated Prompt:', prompts);
 
-    GetImageGenerateImage(prompts);
+    const negativePrompts = [
+      negativeGenderPrompt,
+      ...summaryOptions.map(option => {
+        const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
+        const selectedOption = option.options[selectedIndex];
+
+        return selectedOption?.negativePrompt || 'N/A';
+      }),
+    ].join(', ');
+
+    GetImageGenerateImage(txt2ImgGenerateJsonParser(prompts, negativePrompts));
   };
 
   const GetImageGenerateImage = async (prompt: string) => {
@@ -162,6 +185,15 @@ const CharacterCreate: React.FC<Props> = () => {
       }
     }
   }, [activeStep]);
+
+  function txt2ImgGenerateJsonParser(prompt: string, negativePrompt: string) {
+    const combinedPrompt = `${defaultPromptJson.Positive} ${prompt}`;
+    const combinedNegativePrompt = `${defaultPromptJson.Negative} ${negativePrompt}`;
+
+    const updatedTxt2Img = {...txt2ImgJson[0], prompt: combinedPrompt, negative_prompt: combinedNegativePrompt};
+
+    return JSON.stringify({txt2Img: updatedTxt2Img});
+  }
 
   const getStepContent = (step: number) => {
     switch (step) {
@@ -318,34 +350,38 @@ const CharacterCreate: React.FC<Props> = () => {
                   />
                 ))}
               </Box>
-              <Typography variant="h6">Top Size</Typography>
-              <Box className={styles.scrollableContainer}>
-                {characterOptions.topSizes.map((style, index) => (
-                  <CharacterCreateImageButton
-                    key={style.label}
-                    width={'20vw'}
-                    height={'20vw'}
-                    label={style.label}
-                    image={'/Images/001.png'}
-                    selected={selectedOptions.topSize === index}
-                    onClick={() => handleOptionSelect('topSize', index)}
-                  />
-                ))}
-              </Box>
-              <Typography variant="h6">Bottom Size</Typography>
-              <Box className={styles.scrollableContainer}>
-                {characterOptions.bottomSizes.map((style, index) => (
-                  <CharacterCreateImageButton
-                    key={style.label}
-                    width={'20vw'}
-                    height={'20vw'}
-                    label={style.label}
-                    image={'/Images/001.png'}
-                    selected={selectedOptions.bottomSize === index}
-                    onClick={() => handleOptionSelect('bottomSize', index)}
-                  />
-                ))}
-              </Box>
+              {selectedOptions.gender === 0 && (
+                <>
+                  <Typography variant="h6">Top Size</Typography>
+                  <Box className={styles.scrollableContainer}>
+                    {characterOptions.topSizes.map((style, index) => (
+                      <CharacterCreateImageButton
+                        key={style.label}
+                        width={'20vw'}
+                        height={'20vw'}
+                        label={style.label}
+                        image={'/Images/001.png'}
+                        selected={selectedOptions.topSize === index}
+                        onClick={() => handleOptionSelect('topSize', index)}
+                      />
+                    ))}
+                  </Box>
+                  <Typography variant="h6">Bottom Size</Typography>
+                  <Box className={styles.scrollableContainer}>
+                    {characterOptions.bottomSizes.map((style, index) => (
+                      <CharacterCreateImageButton
+                        key={style.label}
+                        width={'20vw'}
+                        height={'20vw'}
+                        label={style.label}
+                        image={'/Images/001.png'}
+                        selected={selectedOptions.bottomSize === index}
+                        onClick={() => handleOptionSelect('bottomSize', index)}
+                      />
+                    ))}
+                  </Box>
+                </>
+              )}
             </Box>
           </div>
         );

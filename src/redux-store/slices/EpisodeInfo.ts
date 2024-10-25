@@ -35,6 +35,10 @@ const episodeInfoSlice = createSlice({
       }
     },
 
+    setEpisodeInfoEmpty(state) {
+      state.currentEpisodeInfo = emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0];
+    },
+
     setCurrentEpisodeThumbnail(state, action: PayloadAction<string>) {
       state.currentEpisodeInfo.thumbnail = action.payload;
     },
@@ -388,6 +392,7 @@ const episodeInfoSlice = createSlice({
 export const {
   setCurrentEpisodeInfo,
   setCurrentEpisodeThumbnail,
+  setEpisodeInfoEmpty,
   updateEpisodeDescription,
   addTriggerInfo,
   updateTriggerInfo,

@@ -28,8 +28,7 @@
       "@configs/*": ["./configs/*"],
       "@views/*": ["./views/*"],
       "@chats/*": ["./app/view/main/content/Chat/*"],
-      "@content/*": ["./types/apps/content/*"],
-      "@shared/*": ["./components/layout/shared/*"]
+      "@content/*": ["./types/apps/content/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

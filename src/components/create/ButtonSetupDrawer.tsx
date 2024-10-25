@@ -1,6 +1,6 @@
 import React from 'react';
-import Style from './ButtonSetupDrawer.module.css'
-import { Button, Typography } from '@mui/material';
+import Style from './ButtonSetupDrawer.module.css';
+import {Button, Typography} from '@mui/material';
 
 interface Props {
   icon: React.ReactNode;
@@ -8,7 +8,7 @@ interface Props {
   onClick: () => void;
 }
 
-const ButtonSetupDrawer: React.FC<Props> = ({ icon, label, onClick }) => {
+const ButtonSetupDrawer: React.FC<Props> = ({icon, label, onClick}) => {
   return (
     <Button className={Style.setupButton} onClick={onClick}>
       {icon}

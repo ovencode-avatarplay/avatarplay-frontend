@@ -29,7 +29,7 @@ interface Props {
 const ChapterBoardOnTrigger: React.FC<Props> = ({open, onClose, initialChapters, onAddChapter, onSelectEpisode}) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
 
-  const selectedChapter = useSelector((state: RootState) => state.contentselection.selectedChapterId);
+  const selectedChapter = useSelector((state: RootState) => state.contentselection.selectedChapterIdx);
 
   // ChapterInfo 배열을 컴포넌트 상태로 변환
   useEffect(() => {
@@ -74,7 +74,7 @@ const ChapterBoardOnTrigger: React.FC<Props> = ({open, onClose, initialChapters,
 
         {/* Chapter 및 Episode 트리 구조 */}
         <Box className={Style.contentBox}>
-          {chapters.map(chapter => (
+          {chapters.map((chapter, index) => (
             <ChapterItemOnTrigger
               key={chapter.id}
               chapter={chapter}
@@ -82,7 +82,7 @@ const ChapterBoardOnTrigger: React.FC<Props> = ({open, onClose, initialChapters,
               onSelect={() => {}}
               onSelectEpisode={onSelectEpisode} // 전달된 함수 사용
               onCloseChapterBoard={onClose}
-              isSelected={selectedChapter === chapter.id}
+              isSelected={selectedChapter === index}
               disableDelete={chapters.length <= 1}
             />
           ))}

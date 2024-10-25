@@ -31,28 +31,40 @@ const EpisodeItem: React.FC<EpisodeItemProps> = ({
 }) => {
   return (
     <Box className={Style.episodeBox}>
-      <Box className={Style.episodeHeader} onClick={() => onSelect(chapterIdx, episodeIdx)}>
+      <Box
+        className={Style.episodeHeader}
+        sx={{
+          backgroundColor: isSelected ? 'rgba(255, 0, 0, 0.1)' : 'inherit',
+          border: isSelected ? '2px solid red' : '1px solid rgba(0, 0, 0, 0.12)',
+          transition: 'background-color 0.3s ease, border 0.3s ease',
+          padding: '8px',
+          marginBottom: '8px',
+        }}
+        onClick={() => onSelect(chapterIdx, episodeIdx)}
+      >
         <Button className={Style.episodeButton} onClick={() => onClose()}>
           <Typography>{episode.title}</Typography>
         </Button>
 
-        {/* Edit 버튼 */}
-        <IconButton onClick={() => onEditEpisode(episodeIdx, 'episode')}>
-          <EditIcon />
-        </IconButton>
-
-        {/* Episode 삭제 버튼 */}
-        {!disableDelete && (
-          <IconButton
-            className={Style.deleteButton}
-            onClick={() => {
-              onSelect(chapterIdx, episodeIdx);
-              onDeleteEpisode(chapterIdx, episodeIdx);
-            }}
-          >
-            <DeleteIcon />
+        <Box>
+          {/* Edit 버튼 */}
+          <IconButton onClick={() => onEditEpisode(episodeIdx, 'episode')}>
+            <EditIcon />
           </IconButton>
-        )}
+
+          {/* Episode 삭제 버튼 */}
+          {!disableDelete && (
+            <IconButton
+              className={Style.deleteButton}
+              onClick={() => {
+                onSelect(chapterIdx, episodeIdx);
+                onDeleteEpisode(chapterIdx, episodeIdx);
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          )}
+        </Box>
       </Box>
     </Box>
   );

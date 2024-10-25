@@ -91,7 +91,7 @@ const EpisodeImageUpload: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    setImagePreview(editedEpisodeInfo.currentEpisodeInfo.thumbnail);
+    setImagePreview(editedEpisodeInfo?.currentEpisodeInfo?.thumbnail);
   }, [editedEpisodeInfo]);
 
   return (
