@@ -19,7 +19,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/dataTypes'; // 타입들 임포트
 import {addTriggerInfo} from '@/redux-store/slices/EpisodeInfo';
 import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
-import select from '@/@core/theme/overrides/select';
+//import select from '@/@core/theme/overrides/select';
 
 interface SelectTriggerTypeProps {
   open: boolean;
