@@ -9,7 +9,7 @@ import styles from '@chats/BottomBar/FooterChat.module.css';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {SendChatMessageReq, sendMessageStream} from '@/app/NetWork/ChatNetwork';
-import Stiker from './Stiker';
+import Sticker from './Sticker';
 
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
@@ -183,7 +183,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey}) 
           </Button>
         </Box>
       )}
-      {isExpanded && isStickerOpen && <Stiker onSelectEmoji={handleSelectEmoji} />}
+      {isExpanded && isStickerOpen && <Sticker onSelectEmoji={handleSelectEmoji} />}
     </Box>
   );
 };

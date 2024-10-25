@@ -1,6 +1,6 @@
 // src/app/Network/ApiInstance.tsx
 
-import axios, { AxiosInstance } from 'axios';
+import axios, {AxiosInstance} from 'axios';
 
 // Axios 인스턴스 생성
 const api: AxiosInstance = axios.create({
@@ -15,8 +15,8 @@ const api: AxiosInstance = axios.create({
 
 // 공통 응답 인터페이스
 export interface ResponseAPI<T> {
-  resultCode: number;        // 응답 코드
-  resultMessage: string;     // 응답 메시지
+  resultCode: number; // 응답 코드
+  resultMessage: string; // 응답 메시지
   data: T;
 }
 

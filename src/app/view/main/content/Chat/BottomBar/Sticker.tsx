@@ -1,11 +1,11 @@
 import React from 'react';
 import EmojiPicker from './EmojiPicker';
 
-interface StikerProps {
+interface StickerProps {
   onSelectEmoji: (emoji: string) => void;
 }
 
-const Stiker: React.FC<StikerProps> = ({onSelectEmoji}) => {
+const Sticker: React.FC<StickerProps> = ({onSelectEmoji}) => {
   return (
     <div>
       <EmojiPicker onEmojiClick={onSelectEmoji} />
@@ -13,4 +13,4 @@ const Stiker: React.FC<StikerProps> = ({onSelectEmoji}) => {
   );
 };
 
-export default Stiker;
+export default Sticker;

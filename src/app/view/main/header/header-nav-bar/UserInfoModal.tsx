@@ -1,21 +1,21 @@
-import React, { useEffect, useRef } from 'react'; 
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Avatar, TextField } from '@mui/material';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/redux-store/ReduxStore'; 
-import { setUserId } from '@/redux-store/slices/userInfo'; 
+import React, {useEffect, useRef} from 'react';
+import {Dialog, DialogActions, DialogContent, DialogTitle, Button, Avatar, TextField} from '@mui/material';
+import {useSelector, useDispatch} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {setUserId} from '@/redux-store/slices/userInfo';
 
 interface UserInfoModalProps {
-  open: boolean; 
-  onClose: () => void; 
+  open: boolean;
+  onClose: () => void;
 }
 
-const UserInfoModal: React.FC<UserInfoModalProps> = ({ open, onClose }) => {
+const UserInfoModal: React.FC<UserInfoModalProps> = ({open, onClose}) => {
   const dispatch = useDispatch();
-  const { userId, profileName, profileDescription } = useSelector((state: RootState) => state.user);
+  const {userId, profileName, profileDescription} = useSelector((state: RootState) => state.user);
 
   const handleUserIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newUserId = event.target.value;
-    console.log( 'newUserId', newUserId)
+    console.log('newUserId', newUserId);
     dispatch(setUserId(newUserId));
     // 로컬 스토리지에 사용자 ID 저장
     localStorage.setItem('userId', newUserId);
@@ -31,7 +31,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({ open, onClose }) => {
         userIdInputRef.current?.focus();
       }, 0);
     }
-  }, [open]); 
+  }, [open]);
 
   // 페이지가 로드될 때 로컬 스토리지에서 사용자 ID 가져오기
   useEffect(() => {
@@ -45,11 +45,11 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({ open, onClose }) => {
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>유저 정보</DialogTitle>
       <DialogContent>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-          <Avatar alt="User Profile" src={"임시이미지파일"} style={{ marginRight: '16px' }} />
+        <div style={{display: 'flex', alignItems: 'center', marginBottom: '16px'}}>
+          <Avatar alt="User Profile" src={'임시이미지파일'} style={{marginRight: '16px'}} />
           <div>
             <h3>{profileName}</h3>
-            <p style={{ whiteSpace: 'pre-line' }}>나에대한 짧막 설명</p>
+            <p style={{whiteSpace: 'pre-line'}}>나에대한 짧막 설명</p>
           </div>
         </div>
         <TextField
@@ -68,7 +68,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({ open, onClose }) => {
           variant="outlined"
           fullWidth
           margin="normal"
-          inputProps={{ maxLength: 200 }}
+          inputProps={{maxLength: 200}}
         />
       </DialogContent>
       <DialogActions>

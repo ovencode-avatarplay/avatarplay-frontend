@@ -1,4 +1,3 @@
-export interface gimmickInfo
-{
-    gimmickData1 : string;
+export interface gimmickInfo {
+  gimmickData1: string;
 }
