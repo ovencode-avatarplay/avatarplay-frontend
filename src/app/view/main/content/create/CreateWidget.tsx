@@ -13,6 +13,18 @@ interface Props {
 }
 
 const CreateWidget: React.FC<Props> = ({open, onClose}) => {
+  const handleClickCharacter = () => {
+    onClose;
+  };
+
+  const handleClickStory = () => {
+    onClose;
+  };
+
+  const handleClickPost = () => {
+    onClose;
+  };
+
   return (
     <Drawer
       anchor="bottom"
@@ -33,8 +45,8 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
     >
       <Box className={Style.drawerBox}>
         {/* Character Navigation */}
-        <Link href="/:lang/create" passHref>
-          <Box className={Style.drawerItem} onClick={onClose}>
+        <Link href="/:lang/character" passHref>
+          <Box className={Style.drawerItem} onClick={handleClickCharacter}>
             <PersonIcon fontSize="large" />
             <Typography>Character</Typography>
           </Box>
@@ -42,15 +54,15 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
 
         {/* Story Navigation */}
         <Link href="/:lang/create" passHref>
-          <Box className={Style.drawerItem} onClick={onClose}>
+          <Box className={Style.drawerItem} onClick={handleClickStory}>
             <BookIcon fontSize="large" />
             <Typography>Story</Typography>
           </Box>
         </Link>
 
         {/* Post Navigation */}
-        <Link href="/:lang/create" passHref>
-          <Box className={Style.drawerItem} onClick={onClose}>
+        <Link href="/:lang/post" passHref>
+          <Box className={Style.drawerItem} onClick={handleClickPost}>
             <PostAddIcon fontSize="large" />
             <Typography>Post</Typography>
           </Box>

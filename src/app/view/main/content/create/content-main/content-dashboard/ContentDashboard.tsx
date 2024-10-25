@@ -5,6 +5,13 @@ import ContentItem from './ContentItem';
 import Style from './ContentDashboard.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
+import {setContentInfoToEmpty} from '@/redux-store/slices/ContentInfo';
+import {setCurrentEpisodeInfo, setEpisodeInfoEmpty} from '@/redux-store/slices/EpisodeInfo';
+import {
+  setSelectedChapterIdx,
+  setSelectedContentId,
+  setSelectedEpisodeIdx,
+} from '@/redux-store/slices/ContentSelection';
 
 interface Props {
   open: boolean;
@@ -53,6 +60,16 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
     }
   };
 
+  const handleCreateClick = () => {
+    dispatch(setContentInfoToEmpty());
+    dispatch(setEpisodeInfoEmpty());
+    dispatch(setSelectedContentId(0));
+    dispatch(setSelectedChapterIdx(0));
+    dispatch(setSelectedEpisodeIdx(0));
+
+    onClose();
+  };
+
   return (
     <Drawer
       anchor="right"
@@ -72,7 +89,7 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
             <MenuItem value="filter2">Filter 2</MenuItem>
             <MenuItem value="filter3">Filter 3</MenuItem>
           </Select>
-          <Button variant="contained" className={Style.createButton}>
+          <Button variant="contained" className={Style.createButton} onClick={handleCreateClick}>
             Create
           </Button>
         </Box>
