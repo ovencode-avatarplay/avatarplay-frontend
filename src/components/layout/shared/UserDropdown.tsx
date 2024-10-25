@@ -23,11 +23,15 @@ import Button from '@mui/material/Button';
 import type {Locale} from '@configs/i18n';
 import {createClient, Session} from '@supabase/supabase-js';
 
-// Create a single supabase client for interacting with your database
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
-// Hook Imports
-import {useSettings} from '@core/hooks/useSettings';
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  throw new Error('Supabase 환경 변수가 설정되지 않았습니다.');
+}
+
+// Create a single supabase client for interacting with your database
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Util Imports
 import {getLocalizedUrl} from '@/utils/i18n';
@@ -45,7 +49,7 @@ const BadgeContentSpan = styled('span')({
 const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false);
-  const [auth, setAuth] = useState();
+  const [auth, setAuth] = useState<Session | null>(null);
 
   // Refs
   const anchorRef = useRef<HTMLDivElement>(null);
@@ -77,7 +81,7 @@ const UserDropdown = () => {
   };
 
   useEffect(() => {
-    const handleAuthStateChange = async (event, session) => {
+    const handleAuthStateChange = async (event: any, session: Session | null) => {
       if (event === 'SIGNED_IN') {
         setAuth(session);
         try {
@@ -176,10 +180,10 @@ const UserDropdown = () => {
               <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
                 <MenuList>
                   <div className="flex items-center plb-2 pli-6 gap-2" tabIndex={-1}>
-                    <Avatar alt={auth?.user?.name || ''} src={auth?.user?.image || ''} />
+                    <Avatar alt={auth?.user?.email || ''} src={auth?.user?.user_metadata?.picture || ''} />
                     <div className="flex items-start flex-col">
                       <Typography className="font-medium" color="text.primary">
-                        {auth?.user?.name || ''}
+                        {auth?.user?.email || ''}
                       </Typography>
                       <Typography variant="caption">{auth?.user?.email || ''}</Typography>
                     </div>
