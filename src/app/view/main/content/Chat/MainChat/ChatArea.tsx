@@ -4,7 +4,6 @@ import styles from '@chats/Styles/StyleChat.module.css';
 
 interface ChatAreaProps {
   messages: {text: string; sender: 'user' | 'partner' | 'narration' | 'system'}[]; // 'system' 추가
-  isParsing: boolean; // isParsing은 유지, 하지만 사용하지는 않음
   bgUrl: string;
 }
 

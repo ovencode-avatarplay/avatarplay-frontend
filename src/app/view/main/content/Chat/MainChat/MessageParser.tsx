@@ -14,43 +14,57 @@ const parseAnswer = (answer: string): Message[] => {
   // 먼저 나레이션 패턴 처리
   while ((match = narrationPattern.exec(answer)) !== null) {
     if (match.index > lastIndex) {
-      result.push({
-        text: answer.slice(lastIndex, match.index).trim(),
-        sender: 'partner',
-      });
+      const partnerText = answer.slice(lastIndex, match.index).trim();
+      // partnerText가 비어있지 않을 경우에만 추가
+      if (partnerText) {
+        result.push({
+          text: partnerText,
+          sender: 'partner',
+        });
+      }
     }
 
     result.push({
-      text: match[1],
-      sender: 'narration',
+      text: match[1], // 매칭된 나레이션 내용
+      sender: 'narration', // 메시지 발신자
     });
 
     lastIndex = narrationPattern.lastIndex;
   }
 
-  // 나레이션 패턴 이후 남은 텍스트가 있으면 시스템 패턴 처리
+  // 나레이션 패턴 이후 남아있는 텍스트가 있는 경우 시스템 패턴 처리
   while ((match = systemPattern.exec(answer)) !== null) {
     if (match.index > lastIndex) {
-      result.push({
-        text: answer.slice(lastIndex, match.index).trim(),
-        sender: 'partner',
-      });
+      const partnerText = answer.slice(lastIndex, match.index).trim();
+      // partnerText가 비어있지 않을 경우에만 추가
+      console.log('answeransweranswer', partnerText);
+      if (partnerText) {
+        console.log('answeransweranswer2', partnerText);
+        result.push({
+          text: partnerText,
+          sender: 'partner',
+        });
+      }
     }
 
     result.push({
-      text: match[1],
-      sender: 'system',
+      text: match[1], // 매칭된 시스템 메시지 내용
+      sender: 'system', // 메시지 발신자
     });
 
     lastIndex = systemPattern.lastIndex;
   }
 
-  // 마지막으로 남은 텍스트를 partner 메시지로 처리
+  // 마지막으로 남아있는 텍스트를 partner 메시지로 처리
   if (lastIndex < answer.length) {
-    result.push({
-      text: answer.slice(lastIndex).trim(),
-      sender: 'partner',
-    });
+    const remainingText = answer.slice(lastIndex).trim();
+    // 남아있는 텍스트가 비어있지 않을 경우에만 추가
+    if (remainingText) {
+      result.push({
+        text: remainingText, // 남아있는 텍스트
+        sender: 'partner', // 메시지 발신자
+      });
+    }
   }
 
   return result;

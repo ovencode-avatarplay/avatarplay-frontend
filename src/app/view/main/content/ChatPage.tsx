@@ -19,7 +19,6 @@ interface Message {
 
 const ChatPage: React.FC = () => {
   const [parsedMessages, setParsedMessages] = useState<Message[]>([]);
-  const [isParsing, setParsingState] = useState<boolean>(true);
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [popupTitle, setPopupTitle] = useState<string>('');
@@ -44,7 +43,7 @@ const ChatPage: React.FC = () => {
     return cleaned;
   };
 
-  const handleSendMessage = async (message: string, isMyMessage: boolean, isParsing: boolean) => {
+  const handleSendMessage = async (message: string, isMyMessage: boolean) => {
     console.log('new:', message);
 
     if (!message || typeof message !== 'string') return;
@@ -80,7 +79,7 @@ const ChatPage: React.FC = () => {
 
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
-      text: isParsing ? `파싱된 메시지: ${message}` : message,
+      text: message,
       sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
     };
 
@@ -97,23 +96,12 @@ const ChatPage: React.FC = () => {
       const splitMessageLeft = splitMessage.beforeAsterisk;
       const splitMessageRight = splitMessage.afterAsterisk;
 
-      console.log('전체====' + newMessage.text + '====' + '나레이션 상태: ' + isNarrationActive.active);
-      console.log('좌====' + splitMessageLeft + '====');
-      console.log('우====' + splitMessageRight + '====');
-
       // 시스템 메시지
       const systemMessageSignCount = (newMessage.text.match(/%/g) || []).length;
-      console.log(
-        '========================시스템 메시지인가> ===================',
-        newMessage.text,
-        '   ',
-        systemMessageSignCount,
-      );
       if (systemMessageSignCount && systemMessageSignCount >= 2) {
-        console.log('========================시스템 메시지 ===================');
         // 시스템 메시지로 출력해주고 빠져나가자.
         const newMessageSystem: Message = {
-          text: isParsing ? `파싱된 메시지: ${newMessage.text}` : newMessage.text,
+          text: newMessage.text,
           sender: 'system',
         };
         newMessages.push(newMessageSystem);
@@ -121,7 +109,6 @@ const ChatPage: React.FC = () => {
       }
       // 내 메시지
       if (isMyMessage === true) {
-        console.log('========================새 말풍선1 ===================');
         newMessages.push(newMessage);
       }
       // 상대 메시지
@@ -136,20 +123,16 @@ const ChatPage: React.FC = () => {
           if (splitMessageRight.includes('*')) isNarrationActive.active = !isNarrationActive.active;
 
           const newMessage2: Message = {
-            text: isParsing ? `파싱된 메시지: ${splitMessageRight}` : splitMessageRight,
+            text: splitMessageRight,
             sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
           };
 
-          console.log('========================새 말풍선2 ===================');
           newMessages.push(newMessage2);
         }
       }
 
       return newMessages; // 업데이트된 메시지 배열 반환
     });
-
-    // 파싱 상태 설정
-    setParsingState(isParsing);
   };
 
   const splitByAsterisk = (splitMessage: string) => {
@@ -237,9 +220,11 @@ const ChatPage: React.FC = () => {
       enterData.prevMessageInfoList.length > 0
     ) {
       const parsedPrevMessages = enterData.prevMessageInfoList.flatMap(msg => parseMessage(msg.message) || []);
+      console.log('usePrevChatting 참조건', parsedPrevMessages);
       setParsedMessages(parsedPrevMessages);
       setHasFetchedPrevMessages(true);
     }
+    console.log('usePrevChatting 리턴해준다.');
   }, [error, enterData, hasFetchedPrevMessages]);
 
   return (
@@ -250,7 +235,7 @@ const ChatPage: React.FC = () => {
         onToggleBackground={handleToggleBackground}
         iconUrl={enterData?.iconImageUrl ?? ''}
       />
-      <ChatArea messages={parsedMessages} isParsing={isParsing} bgUrl={enterData?.episodeBgImageUrl ?? ''} />
+      <ChatArea messages={parsedMessages} bgUrl={enterData?.episodeBgImageUrl ?? ''} />
       <BottomBar onSend={handleSendMessage} streamKey={streamKey} setStreamKey={setStreamKey} />
 
       {showPopup && (
