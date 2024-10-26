@@ -87,7 +87,7 @@ const UserDropdown = () => {
         try {
           const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
 
-          const response = await fetch('http://localhost:5002/api/v1/auth/sign-in', {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/auth/sign-in`, {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${jwtToken}`, // JWT를 Authorization 헤더에 포함
