@@ -105,13 +105,16 @@ const UserDropdown = () => {
         } catch (error) {
           console.error('Error occurred during authentication:', error);
         }
+      } else if(event === 'INITIAL_SESSION')
+      {
+        setAuth(session);
       }
     };
 
     const {data: authListener} = supabase.auth.onAuthStateChange((event, session) => {
       handleAuthStateChange(event, session);
     });
-
+    
     return () => {
       console.log(authListener);
     };
