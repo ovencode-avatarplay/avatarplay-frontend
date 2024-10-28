@@ -113,21 +113,28 @@ const ChatPage: React.FC = () => {
       }
       // 상대 메시지
       else {
-        // 기존 말풍선에 추가
-        newMessages[newMessages.length - 1].text += `${splitMessageLeft}`;
-
         if (isIncludeAsterisk === true) {
           isNarrationActive.active = !isNarrationActive.active;
 
           // 근데 *표가 또 있다면 나레이션 상태를 한번 더 바꾼다.
           if (splitMessageRight.includes('*')) isNarrationActive.active = !isNarrationActive.active;
 
-          const newMessage2: Message = {
-            text: splitMessageRight,
-            sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
-          };
+          if (splitMessageRight?.length > 0) {
+            const newMessage2: Message = {
+              text: splitMessageRight,
+              sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
+            };
 
-          newMessages.push(newMessage2);
+            newMessages.push(newMessage2);
+          }
+        } else {
+          // 기존 sender와 다르면 새 말풍선으루~
+          if (newMessages[newMessages.length - 1].sender !== newMessage.sender) {
+            if (newMessage.text !== ' ') {
+              newMessages.push(newMessage);
+            }
+          } // 기존 말풍선에 추가
+          else newMessages[newMessages.length - 1].text += `${splitMessageLeft}`;
         }
       }
 
