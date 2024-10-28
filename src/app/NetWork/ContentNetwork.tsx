@@ -122,3 +122,29 @@ export const sendContentByUserIdGet = async (
     throw new Error('Failed to send get content data. Please try again.');
   }
 };
+
+// Delete Content
+export interface DeleteContentReq {
+  contentId: number;
+}
+
+export interface DeleteContentRes {
+  contentId: number;
+}
+
+export const sendContentDelete = async (payload: DeleteContentReq): Promise<ResponseAPI<DeleteContentRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<DeleteContentRes>>('Content/delete', payload);
+
+    if (response.data.resultCode === 0) {
+      console.log('삭제 결과 성공');
+
+      return response.data;
+    } else {
+      throw new Error('DeleteContentRes' + response.data.resultCode); // 실패 메시지 처리
+    }
+  } catch (error: any) {
+    console.error('Error sending delete content data:', error);
+    throw new Error('Failed to send delete content data. Please try again.'); // 에러 처리
+  }
+};
