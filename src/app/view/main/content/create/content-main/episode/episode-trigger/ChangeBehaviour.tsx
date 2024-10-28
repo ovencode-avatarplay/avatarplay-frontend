@@ -31,6 +31,7 @@ interface ChangeBehaviourProps {
 
 const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index}) => {
   const item = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList[index]);
+  const content = useSelector((state: RootState) => state.content.curEditingContentInfo);
   const dispatch = useDispatch();
   const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>({
     ...item,
@@ -79,21 +80,41 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   const handleCloseChapterBoard = () => {
     setIsChapterBoardOpen(false);
   };
-
   const handleSelectEpisode = (chapterId: number, episodeId: number) => {
-    const selectedChapter = contentInfo;
-    const selectedChapterInfo = selectedChapter?.chapterInfoList.find(chapter => chapter.id === chapterId);
-    const selectedEpisode = selectedChapterInfo?.episodeInfoList.find(episode => episode.id === episodeId);
+    const selectedChapterInfo = content.chapterInfoList.find(chapter => chapter.id === chapterId);
 
-    if (selectedEpisode) {
-      setSelectedChapter(selectedChapterInfo?.name || 'Chapter.1');
-      setSelectedEpisode(selectedEpisode.name || 'Ep.2 Wanna go out?');
+    if (!selectedChapterInfo) {
+      console.error('Selected chapter not found');
+      return; // selectedChapterInfo가 없으면 함수를 종료
     }
 
-    setTriggerInfo(prev => ({
-      ...prev,
-      actionChangeEpisodeId: episodeId,
-    }));
+    // 선택한 에피소드의 인덱스를 찾음
+    const selectedEpisodeIndex = selectedChapterInfo.episodeInfoList.findIndex(episode => episode.id === episodeId);
+
+    if (selectedEpisodeIndex !== -1) {
+      const selectedEpisode = selectedChapterInfo.episodeInfoList[selectedEpisodeIndex];
+      setSelectedChapter(selectedChapterInfo.name || 'None');
+      setSelectedEpisode(selectedEpisode.name || 'None select Episode');
+
+      // 전체 에피소드 인덱스를 계산
+      const totalEpisodeIndex =
+        content.chapterInfoList
+          .slice(
+            0,
+            content.chapterInfoList.findIndex(chapter => chapter.id === chapterId),
+          )
+          .reduce((acc, chapter) => {
+            return acc + chapter.episodeInfoList.length; // 이전 장의 모든 에피소드 수
+          }, 0) + selectedEpisodeIndex; // 현재 장에서 선택된 에피소드의 인덱스 추가
+
+      // Update triggerInfo with the total index instead of episodeId
+      setTriggerInfo(prev => ({
+        ...prev,
+        actionChangeEpisodeId: totalEpisodeIndex, // Here we use the total index
+      }));
+    } else {
+      console.error('Selected episode not found');
+    }
 
     setIsChapterBoardOpen(false);
   };
