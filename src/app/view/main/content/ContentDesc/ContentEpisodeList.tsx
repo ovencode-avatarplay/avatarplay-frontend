@@ -2,6 +2,7 @@ import React from 'react';
 import {Box, Typography} from '@mui/material';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {Pagination} from 'swiper/modules';
+import Style from './DrawerContentDesc.module.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
@@ -15,7 +16,7 @@ interface DrawerContentEpisodeItemListProps {
 
 const DrawerContentEpisodeItemList: React.FC<DrawerContentEpisodeItemListProps> = ({episodes, onEpisodeSelect}) => {
   return (
-    <Box className="episode-list">
+    <Box className={Style.episodeInfoList}>
       <Typography>에피소드 리스트 (가로 스크롤)</Typography>
       <Swiper modules={[Pagination]} pagination={{clickable: true}} spaceBetween={16} slidesPerView={1}>
         {episodes.map((episode, index) => (

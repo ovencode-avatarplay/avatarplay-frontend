@@ -33,11 +33,46 @@ api.interceptors.request.use(
   },
 );
 
+api.interceptors.response.use(
+  response => {
+    // 정상 응답인 경우 그대로 반환
+    return response;
+  },
+  error => {
+    // 401 에러가 발생했을 때 처리
+    if (error.response && error.response.status === 401) {
+      // 여기서 auth 페이지로 리다이렉트
+      window.location.href = '/auth';
+    }
+    return Promise.reject(error);
+  },
+);
+
 // 공통 응답 인터페이스
 export interface ResponseAPI<T> {
   resultCode: number; // 응답 코드
-  resultMessage: string; // 응답 메시지
-  data: T;
+  resultMessage?: string; // 응답 메시지
+  data?: T;
+}
+
+export const STATUS_CODE = {
+  UNAUTHORIZED: 401,
+  SUCCESS: 200,
+  // 필요에 따라 다른 상태 코드를 추가
+};
+
+export const RESULT_CODE = {
+  OK: 0,
+  UNAUTHORIZED: 1,
+};
+
+export class ResponseError {
+  ResponseError(code: number) {
+    this.resultCode = code;
+  }
+
+  resultCode: number = 0; // 응답 코드
+  resultMessage?: string; // 응답 메시지
 }
 
 export default api;

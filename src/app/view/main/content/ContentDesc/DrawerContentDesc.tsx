@@ -244,13 +244,14 @@ const DrawerContentDesc = () => {
       </main>
       <main className={Style.chatingControlPanel}>
         <Box className={Style.chapterBox}>
-          <Typography variant="h6">Chapter</Typography>
+          <Typography className={Style.chapterName} variant="h6">
+            Chapter
+          </Typography>
           <Select
             className={Style.chapterSelect}
             value={selectedChapterIdx}
             onChange={e => setSelectedChapterIdx(parseInt(e.target.value as string))}
             displayEmpty
-            fullWidth
           >
             {chapters.map((chapter, index) => (
               <MenuItem key={chapter.id} value={index}>

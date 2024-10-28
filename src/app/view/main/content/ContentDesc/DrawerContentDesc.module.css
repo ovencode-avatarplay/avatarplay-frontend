@@ -11,7 +11,6 @@
   .content {
     height: 100%; 
     overflow-y: auto;
-    margin-bottom: 25px;
   }
 
   
@@ -61,25 +60,38 @@
   
   
   .chatingControlPanel {
+    border-color: black;
+    border: 2px;
+    border-style: solid;
+    border-radius: 12px;
     height: calc(100vh); 
     overflow-y: hidden;
-    margin-bottom: 25px;
   }
   
 
   .chapterBox
   {
-    height: 40px;
+    height: 60px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
   }
+
+  .chapterName
+  {
+    align-self: center;
+    padding-left: 30px;
+
+  }
   .chapterSelect {
+    align-self: center;
+    margin-top: 5px;
         width: 50%;
-    
+    margin-right: 15px;
   }
   
   .episodeList {
+    padding-top: 20px;
     height: 200px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -93,10 +105,12 @@
     width: 100%;
     position: relative;
     padding: 16px;
+    margin-bottom: 20px;
   }
 
   .startNewChatButton
   {
-    height: 40px;
+    margin-top: 10px;
+    height:40px;
     width: 80px;
   }

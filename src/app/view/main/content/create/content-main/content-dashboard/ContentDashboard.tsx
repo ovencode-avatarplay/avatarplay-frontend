@@ -6,12 +6,14 @@ import Style from './ContentDashboard.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setContentInfoToEmpty} from '@/redux-store/slices/ContentInfo';
-import {setCurrentEpisodeInfo, setEpisodeInfoEmpty} from '@/redux-store/slices/EpisodeInfo';
+import {setEpisodeInfoEmpty} from '@/redux-store/slices/EpisodeInfo';
 import {
   setSelectedChapterIdx,
   setSelectedContentId,
   setSelectedEpisodeIdx,
 } from '@/redux-store/slices/ContentSelection';
+import {sendContentDelete, sendContentByUserIdGet, GetContentsByUserIdReq} from '@/app/NetWork/ContentNetwork';
+import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/myContentDashboard';
 
 interface Props {
   open: boolean;
@@ -23,12 +25,27 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const contentInfo = useSelector((state: RootState) => state.myContents.contentDashBoardList ?? []);
-
-  const handleItemClick = (index: number) => {
-    setSelectedIndex(index);
-  };
-
+  const userId = useSelector((state: RootState) => state.user.userId);
   const dispatch = useDispatch();
+
+  // 현재 유저가 가진 컨텐츠를 모두 가져옴 (DashBoard 에서 사용하기 위함)
+  const getContentsByUserId = async () => {
+    try {
+      const req: GetContentsByUserIdReq = {userId};
+      const response = await sendContentByUserIdGet(req);
+
+      if (response?.data) {
+        const contentData: ContentDashboardItem[] = response.data.contentDashBoardList;
+        dispatch(setContentDashboardList(contentData));
+      } else {
+        throw new Error(`No contentInfo in response for ID: ${userId}`);
+      }
+    } catch (error) {
+      console.error('Error fetching content by user ID:', error);
+    } finally {
+      console.log('SuccessRefresh');
+    }
+  };
 
   useEffect(() => {
     if (selectedIndex !== null && open && listRef.current) {
@@ -38,6 +55,11 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
       }
     }
   }, [selectedIndex, open]);
+
+  //#region Handle
+  const handleItemClick = (index: number) => {
+    setSelectedIndex(index);
+  };
 
   const handleEditClick = async () => {
     if (selectedIndex !== null) {
@@ -60,6 +82,33 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
     }
   };
 
+  const handleDeleteClick = async () => {
+    if (selectedIndex !== null) {
+      const selectedItemId = contentInfo[selectedIndex]?.id;
+      if (selectedItemId) {
+        try {
+          // 콘텐츠 삭제 API 호출
+          const response = await sendContentDelete({contentId: selectedItemId});
+          console.log('삭제된 콘텐츠 ID:', response.data.contentId);
+
+          // 삭제 후 콘텐츠 목록 새로고침
+          await getContentsByUserId();
+
+          // 선택된 인덱스 초기화
+          setSelectedIndex(null);
+          dispatch(setContentInfoToEmpty());
+          dispatch(setEpisodeInfoEmpty());
+          dispatch(setSelectedContentId(0));
+          dispatch(setSelectedChapterIdx(0));
+          dispatch(setSelectedEpisodeIdx(0));
+        } catch (error) {
+          console.error('콘텐츠 삭제 실패:', error);
+          // 에러 처리 로직 (예: 사용자에게 알림 표시)
+        }
+      }
+    }
+  };
+
   const handleCreateClick = () => {
     dispatch(setContentInfoToEmpty());
     dispatch(setEpisodeInfoEmpty());
@@ -69,6 +118,7 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
 
     onClose();
   };
+  //#endregion
 
   return (
     <Drawer
@@ -109,7 +159,9 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
             Edit
           </Button>
           <Button variant="outlined">Preview</Button>
-          <Button variant="outlined">Delete</Button>
+          <Button variant="outlined" onClick={handleDeleteClick} disabled={selectedIndex === null}>
+            Delete
+          </Button>
         </Box>
       </Box>
     </Drawer>

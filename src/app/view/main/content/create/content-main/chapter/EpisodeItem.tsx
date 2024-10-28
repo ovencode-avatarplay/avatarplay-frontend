@@ -42,7 +42,11 @@ const EpisodeItem: React.FC<EpisodeItemProps> = ({
         }}
         onClick={() => onSelect(chapterIdx, episodeIdx)}
       >
-        <Button className={Style.episodeButton} onClick={() => onClose()}>
+        <Button
+          className={Style.episodeButton}
+          style={{textTransform: 'none', justifyContent: 'flex-start', textAlign: 'left'}}
+          onClick={() => onClose()}
+        >
           <Typography>{episode.title}</Typography>
         </Button>
 
@@ -56,8 +60,8 @@ const EpisodeItem: React.FC<EpisodeItemProps> = ({
           {!disableDelete && (
             <IconButton
               className={Style.deleteButton}
-              onClick={() => {
-                onSelect(chapterIdx, episodeIdx);
+              onClick={e => {
+                e.stopPropagation(); // 이벤트 버블링 중단. 자식이벤트를 처리하고 난 후 부모 이벤트를 처리하는 상황 막기
                 onDeleteEpisode(chapterIdx, episodeIdx);
               }}
             >

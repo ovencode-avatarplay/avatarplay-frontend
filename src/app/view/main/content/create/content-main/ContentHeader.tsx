@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Box, TextField, IconButton} from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import EditIcon from '@mui/icons-material/Edit';
-import StudioIcon from '@mui/icons-material/VideoLibrary'; // 'Studio' 버튼에 사용할 아이콘
+import StudioIcon from '@mui/icons-material/VideoLibrary';
 import Style from './ContentHeader.module.css';
 import Link from 'next/link';
 
@@ -31,7 +31,7 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, con
     <Box className={Style.contentHeader}>
       <Link href={lastUrl ? lastUrl : defaultUrl} passHref>
         <IconButton>
-          <ArrowBackIcon />
+          <ChevronLeftIcon fontSize="large" />
         </IconButton>
       </Link>
       <Box className={Style.titleContainer}>
