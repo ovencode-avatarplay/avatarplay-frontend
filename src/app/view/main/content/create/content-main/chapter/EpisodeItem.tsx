@@ -42,7 +42,11 @@ const EpisodeItem: React.FC<EpisodeItemProps> = ({
         }}
         onClick={() => onSelect(chapterIdx, episodeIdx)}
       >
-        <Button className={Style.episodeButton} onClick={() => onClose()}>
+        <Button
+          className={Style.episodeButton}
+          style={{textTransform: 'none', justifyContent: 'flex-start', textAlign: 'left'}}
+          onClick={() => onClose()}
+        >
           <Typography>{episode.title}</Typography>
         </Button>
 

@@ -7,23 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
 
-import {
-  sendCharacterData,
-  updateCharacterData,
-  deleteCharacterData,
-  UpdateCharacterReq,
-  fetchCharacterInfo,
-  DeleteCharacterReq,
-} from '@/app/NetWork/CharacterNetwork'; // 서버와의 통신을 위한 API 함수
 import styles from './EpisodeDescription.module.css'; // CSS 모듈 import
-import {
-  setUserName,
-  setUserDescription,
-  setUserScenarioDescription,
-  setUserIntroDescription,
-  setUserSecret,
-} from '@/redux-store/slices/userInfo';
-import episodeDesc from '@content/episode/episodeDescription';
 
 export interface CharacterDataType {
   userId: number;
@@ -52,14 +36,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
 }) => {
   const dispatch = useDispatch();
 
-  //const chatStore = useSelector((state: RootState) => state.chat);
   const userId = useSelector((state: RootState) => state.user.userId);
-
-  const characterNameStore = useSelector((state: RootState) => state.user.episodeInfo.characterName);
-  const characterDescriptionStore = useSelector((state: RootState) => state.user.episodeInfo.characterDescription);
-  const worldScenarioStore = useSelector((state: RootState) => state.user.episodeInfo.scenarioDescription);
-  const introductionStore = useSelector((state: RootState) => state.user.episodeInfo.introDescription);
-  const secretStore = useSelector((state: RootState) => state.user.episodeInfo.secret);
 
   // 현재 에피소드 정보 가져오기
   const currentEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
@@ -95,31 +72,22 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
     onClose(); // 다이얼로그 닫기
   };
 
-  // const onChangeName = () => {
-  //     dispatch( setUserName())
-  // }
-
   const onChangeName = (name: string) => {
     setCharacterName(name);
-    // dispatch(setUserName(name));
   };
   const onChangeCharacterDescription = (description: string) => {
     setCharacterDescription(description);
-    // dispatch(setUserDescription(description));
   };
   const onChangesetWorldScenario = (worldScenario: string) => {
     setWorldScenario(worldScenario);
-    // dispatch(setUserScenarioDescription(worldScenario));
   };
 
   const onChangesetIntroduction = (worldScenario: string) => {
     setIntroduction(worldScenario);
-    // dispatch(setUserIntroDescription(worldScenario));
   };
 
   const onChangesetSecret = (worldScenario: string) => {
     setSecret(worldScenario);
-    // dispatch(setUserSecret(worldScenario));
   };
 
   return (

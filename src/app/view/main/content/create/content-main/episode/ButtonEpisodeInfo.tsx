@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Box, IconButton, Typography} from '@mui/material';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import PersonIcon from '@mui/icons-material/Person';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import Style from './ButtonEpisodeInfo.module.css';
-import {useSelector} from 'react-redux';
-import {RootState} from '@/redux-store/ReduxStore';
 
 interface Props {
   onDrawerOpen: () => void;
@@ -15,7 +13,7 @@ interface Props {
 const ButtonEpisodeInfo: React.FC<Props> = ({onDrawerOpen, chapterName, episodeName}) => {
   return (
     <Box className={Style.chapterInfo}>
-      <PersonIcon fontSize="large" />
+      <FormatListBulletedIcon fontSize="large" />
 
       <Box display="flex" flexDirection="column" className={Style.chapterDetails}>
         <Typography variant="subtitle1">{chapterName}</Typography>
@@ -23,7 +21,7 @@ const ButtonEpisodeInfo: React.FC<Props> = ({onDrawerOpen, chapterName, episodeN
       </Box>
 
       <IconButton onClick={onDrawerOpen} className={Style.arrowButton}>
-        <ArrowForwardIcon />
+        <ChevronRightIcon fontSize="large" />
       </IconButton>
     </Box>
   );

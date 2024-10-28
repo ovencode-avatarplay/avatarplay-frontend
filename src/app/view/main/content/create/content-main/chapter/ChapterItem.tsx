@@ -76,9 +76,9 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
             onToggle(chapterIdx);
           }}
         >
-          <Box className={Style.chapterHeader}>
+          <Box className={Style.chapterHeader} sx={{justifyContent: 'space-between', textAlign: 'left'}}>
             <HomeIcon />
-            <Typography>{chapter.title}</Typography>
+            <Typography sx={{width: '60%'}}>{chapter.title}</Typography>
 
             <Box>
               <IconButton onClick={() => onEdit(chapterIdx, 'chapter')}>
