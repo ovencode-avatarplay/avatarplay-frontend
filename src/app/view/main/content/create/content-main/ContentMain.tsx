@@ -13,7 +13,6 @@ import EpisodeSetup from './episode/EpisodeSetup';
 import ContentBottom from './ContentBottom';
 
 // 상황에 따라 나타나는 컴포넌트
-import ContentGimmick from './content-gimmick/ContentGimmick';
 import ContentPreviewChat from './content-preview-chat/ContentPreviewChat';
 import ContentPublishing from './content-publishing/ContentPublishing';
 import ContentDashboard from './content-dashboard/ContentDashboard';
@@ -29,7 +28,7 @@ import {
   sendContentByUserIdGet,
 } from '@/app/NetWork/ContentNetwork';
 
-// Redux
+// Redux Import
 import {
   setSelectedContentId,
   setSelectedChapterIdx,
@@ -58,12 +57,13 @@ const ContentMain: React.FC = () => {
   const [isLLMOpen, setIsLLMOpen] = useState(false);
   const [isPublishingOpen, setIsPublishingOpen] = useState(false);
 
-  // Redux
+  // Redux Selector
   // 자주 렌더링 되거나 독립적이지 않을 때 버그가 발생하면 개별선언
   const editingContentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // 현재 수정중인 컨텐츠 정보
   const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId); // ChapterBoard에서 선택된 ContentId
   const selectedChapterIdx = useSelector((state: RootState) => state.contentselection.selectedChapterIdx); // ChapterBoard에서 선택된 ChapterId
   const selectedEpisodeIdx = useSelector((state: RootState) => state.contentselection.selectedEpisodeIdx); // ChapterBoard에서 선택된 EpisodeId
+  const contentName = useSelector((state: RootState) => state.publish.contentName);
 
   // 자주 렌더링 되지 않는 경우는 묶어서
   const {
@@ -80,9 +80,29 @@ const ContentMain: React.FC = () => {
 
   const defaultContentInfo: ContentInfo = DefaultContentInfo.data.contentInfo as ContentInfo;
   const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
+  const defaultSaveContentReq = (): SaveContentReq => ({
+    contentInfo: editingContentInfo ?? emptyContentInfo,
+  });
 
   const [loading, setLoading] = useState(false);
 
+  function Init() {
+    dispatch(setSelectedContentId(emptyContentInfo.id));
+    dispatch(setSelectedChapterIdx(0));
+    dispatch(setSelectedEpisodeIdx(0));
+    dispatch(setEditingContentInfo(emptyContentInfo));
+    dispatch(setPublishInfo(emptyContentInfo.publishInfo));
+    dispatch(setCurrentEpisodeInfo(emptyContentInfo.chapterInfoList[0].episodeInfoList[0]));
+
+    getContentsByUserId();
+  }
+
+  // 렌더링 전에 Init 실행
+  useLayoutEffect(() => {
+    Init();
+  }, []);
+
+  //#region  서버에서 컨텐츠 가져오기
   // 현재 유저가 가진 컨텐츠를 불러오기 위함.
   const userId = useSelector((state: RootState) => state.user.userId);
 
@@ -137,31 +157,7 @@ const ContentMain: React.FC = () => {
     }
   };
 
-  function Init() {
-    dispatch(setSelectedContentId(emptyContentInfo.id));
-    dispatch(setSelectedChapterIdx(0));
-    dispatch(setSelectedEpisodeIdx(0));
-    dispatch(setEditingContentInfo(emptyContentInfo));
-    dispatch(setPublishInfo(emptyContentInfo.publishInfo));
-
-    getContentsByUserId();
-  }
-
-  const defaultSaveContentReq = (): SaveContentReq => ({
-    contentInfo: editingContentInfo ?? emptyContentInfo,
-  });
-
-  // 렌더링 전에 Init 실행
-  useLayoutEffect(() => {
-    Init();
-  }, []);
-
-  // ChapterBoard를 열면 Episode 수정을 완료했다고 판단해서 현재까지 수정한 정보를 저장함
-  useEffect(() => {
-    if (isChapterboardOpen) {
-      saveEpisodeData();
-    }
-  }, [isChapterboardOpen]);
+  //#endregion
 
   //#region ChapterBoard에서 정보 수정
   function setCurEpisodeInfo() {
@@ -365,7 +361,14 @@ const ContentMain: React.FC = () => {
 
   const [saveData, setSaveData] = useState<SaveContentReq>(defaultSaveContentReq);
 
-  const handlePublish = () => {
+  // ChapterBoard를 열면 Episode 수정을 완료했다고 판단해서 현재까지 수정한 정보를 저장함
+  useEffect(() => {
+    if (isChapterboardOpen) {
+      saveEpisodeData();
+    }
+  }, [isChapterboardOpen]);
+
+  const handlePublish = async () => {
     if (!editingContentInfo) {
       console.error('No content selected.');
       return;
@@ -389,41 +392,22 @@ const ContentMain: React.FC = () => {
     };
 
     setSaveData(tmp);
-    sendContentSave(tmp);
+
+    try {
+      const result = await sendContentSave(tmp);
+      console.log('Content saved successfully!');
+      handleClosePublishing();
+      Init();
+    } catch (error) {
+      console.error('Error sending save content data:', error);
+
+      // 실패 메시지
+      console.log('Failed to save content. Please try again.');
+    }
   };
   //#endregion
 
-  // 에피소드 로드
-  const loadEpisodeData = () => {
-    if (selectedChapterIdx !== -1) {
-      const chapter = editingContentInfo.chapterInfoList[selectedChapterIdx];
-
-      const episode = chapter.episodeInfoList[selectedEpisodeIdx];
-      if (episode) {
-        dispatch(setCurrentEpisodeInfo(episode));
-      } else {
-        console.error('Episode not found with idx:', selectedEpisodeIdx);
-      }
-    } else {
-      console.error('Chapter not found with idx:', selectedChapterIdx);
-    }
-  };
-
-  useEffect(() => {
-    const isChapterIdxValid = selectedChapterIdx !== null && selectedChapterIdx >= 0;
-    const isEpisodeIdxValid = selectedEpisodeIdx !== null && selectedEpisodeIdx >= 0;
-
-    if (
-      (selectedChapterIdx !== prevChapterRef.current || selectedEpisodeIdx !== prevEpisodeRef.current) &&
-      isChapterIdxValid &&
-      isEpisodeIdxValid
-    ) {
-      loadEpisodeData(); // 에피소드 데이터를 불러옴
-      prevChapterRef.current = selectedChapterIdx;
-      prevEpisodeRef.current = selectedEpisodeIdx;
-    }
-  }, [selectedChapterIdx, selectedEpisodeIdx]);
-
+  //#region 에피소드 세이브 로드
   function saveEpisodeData() {
     // selectedChapter와 일치하는 챕터를 찾기
     if (selectedChapterIdx !== -1) {
@@ -463,15 +447,50 @@ const ContentMain: React.FC = () => {
     }
   }
 
+  const loadEpisodeData = () => {
+    if (selectedChapterIdx !== -1) {
+      const chapter = editingContentInfo.chapterInfoList[selectedChapterIdx];
+
+      const episode = chapter.episodeInfoList[selectedEpisodeIdx];
+      if (episode) {
+        dispatch(setCurrentEpisodeInfo(episode));
+      } else {
+        console.error('Episode not found with idx:', selectedEpisodeIdx);
+      }
+    } else {
+      console.error('Chapter not found with idx:', selectedChapterIdx);
+    }
+  };
+  //#endregion
+
+  // 컨텐츠 타이틀
+  const handleTitleChange = (newTitle: string) => {
+    dispatch(setContentName(newTitle));
+  };
+
+  // 챕터, 에피소드 선택에 따라 수정할 에피소드 변경
+  useEffect(() => {
+    const isChapterIdxValid = selectedChapterIdx !== null && selectedChapterIdx >= 0;
+    const isEpisodeIdxValid = selectedEpisodeIdx !== null && selectedEpisodeIdx >= 0;
+
+    if (
+      (selectedChapterIdx !== prevChapterRef.current || selectedEpisodeIdx !== prevEpisodeRef.current) &&
+      isChapterIdxValid &&
+      isEpisodeIdxValid
+    ) {
+      loadEpisodeData(); // 에피소드 데이터를 불러옴
+      prevChapterRef.current = selectedChapterIdx;
+      prevEpisodeRef.current = selectedEpisodeIdx;
+    }
+  }, [selectedChapterIdx, selectedEpisodeIdx]);
+
   return (
     <>
       <main className={Style.contentMain}>
         <ContentHeader
-          contentTitle={editingContentInfo?.publishInfo?.contentName ?? ''}
+          contentTitle={contentName}
           onOpenDrawer={handleOpenDashboard}
-          onTitleChange={newTitle => {
-            dispatch(setContentName(newTitle)); // Redux 상태 업데이트
-          }}
+          onTitleChange={handleTitleChange} // Redux 상태 업데이트
         />
         <div className={Style.content}>
           <ContentDashboard
