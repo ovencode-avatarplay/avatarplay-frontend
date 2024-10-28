@@ -263,7 +263,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
             type="number"
             value={triggerInfo.triggerValueChatCount || 0}
             onChange={e => {
-              alert('g');
               setTriggerInfo(prev => ({
                 ...prev,
                 triggerValueChatCount: Number(e.target.value),
