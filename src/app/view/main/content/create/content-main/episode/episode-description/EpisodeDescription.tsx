@@ -5,7 +5,7 @@ import React, {useState} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography} from '@mui/material';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {setCurrentEpisodeInfo, updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
+import {updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
 
 import {
   sendCharacterData,
@@ -101,25 +101,25 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
 
   const onChangeName = (name: string) => {
     setCharacterName(name);
-    dispatch(setUserName(name));
+    // dispatch(setUserName(name));
   };
   const onChangeCharacterDescription = (description: string) => {
     setCharacterDescription(description);
-    dispatch(setUserDescription(description));
+    // dispatch(setUserDescription(description));
   };
   const onChangesetWorldScenario = (worldScenario: string) => {
     setWorldScenario(worldScenario);
-    dispatch(setUserScenarioDescription(worldScenario));
+    // dispatch(setUserScenarioDescription(worldScenario));
   };
 
   const onChangesetIntroduction = (worldScenario: string) => {
     setIntroduction(worldScenario);
-    dispatch(setUserIntroDescription(worldScenario));
+    // dispatch(setUserIntroDescription(worldScenario));
   };
 
   const onChangesetSecret = (worldScenario: string) => {
     setSecret(worldScenario);
-    dispatch(setUserSecret(worldScenario));
+    // dispatch(setUserSecret(worldScenario));
   };
 
   return (
