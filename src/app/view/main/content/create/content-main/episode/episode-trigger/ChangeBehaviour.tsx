@@ -233,13 +233,24 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
             variant="outlined"
             label="Target Value (Intimacy)"
             type="number"
-            value={triggerInfo.triggerValueIntimacy || 0}
-            onChange={e =>
+            value={triggerInfo.triggerValueIntimacy || ''}
+            onChange={e => {
+              let value = e.target.value;
+
+              // 빈 값이 아니라면 숫자로 변환하여 100 초과 여부를 확인
+              if (value && Number(value) > 100) {
+                value = '100'; // 100을 초과할 경우 강제로 '100'으로 설정
+              }
+
               setTriggerInfo(prev => ({
                 ...prev,
-                triggerValueIntimacy: Number(e.target.value),
-              }))
-            }
+                triggerValueIntimacy: value ? Number(value) : 0,
+              }));
+            }}
+            inputProps={{
+              min: 0,
+              max: 100,
+            }}
           />
         );
 
@@ -251,12 +262,13 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
             label="Target Value (Chat Count)"
             type="number"
             value={triggerInfo.triggerValueChatCount || 0}
-            onChange={e =>
+            onChange={e => {
+              alert('g');
               setTriggerInfo(prev => ({
                 ...prev,
                 triggerValueChatCount: Number(e.target.value),
-              }))
-            }
+              }));
+            }}
           />
         );
 
@@ -324,27 +336,39 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
               className={styles.input}
               variant="outlined"
               value={triggerInfo.actionIntimacyPoint}
-              onChange={e =>
+              onChange={e => {
+                const value = Math.min(Number(e.target.value), 100); // 최대값 100 설정
                 setTriggerInfo(prev => ({
                   ...prev,
-                  actionIntimacyPoint: Number(e.target.value),
-                }))
-              }
+                  actionIntimacyPoint: value,
+                }));
+              }}
+              inputProps={{
+                min: 0,
+                max: 100,
+              }}
             />
+
             <Typography className={styles.label}>Max Repetition Count</Typography>
             <TextField
               className={styles.input}
               variant="outlined"
               value={triggerInfo.maxIntimacyCount}
-              onChange={e =>
+              onChange={e => {
+                const value = Math.min(Number(e.target.value), 100); // 최대값 10 설정
                 setTriggerInfo(prev => ({
                   ...prev,
-                  maxIntimacyCount: Number(e.target.value),
-                }))
-              }
+                  maxIntimacyCount: value,
+                }));
+              }}
+              inputProps={{
+                min: 0,
+                max: 10,
+              }}
             />
           </Box>
         );
+
       case TriggerSubDataType.ChangePrompt:
         return (
           <Box className={styles.promptContainer}>
