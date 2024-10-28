@@ -23,6 +23,9 @@ import Button from '@mui/material/Button';
 import type {Locale} from '@configs/i18n';
 import {createClient, Session} from '@supabase/supabase-js';
 
+import {getLocalizedUrl} from '@/utils/i18n';
+import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
+
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
@@ -34,7 +37,6 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Util Imports
-import {getLocalizedUrl} from '@/utils/i18n';
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -50,6 +52,9 @@ const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<Session | null>(null);
+
+  // 임시 - UserInfo Modal
+  const [userInfoOpen, setUserInfoOpen] = useState<boolean>(false);
 
   // Refs
   const anchorRef = useRef<HTMLDivElement>(null);
@@ -105,8 +110,7 @@ const UserDropdown = () => {
         } catch (error) {
           console.error('Error occurred during authentication:', error);
         }
-      } else if(event === 'INITIAL_SESSION')
-      {
+      } else if (event === 'INITIAL_SESSION') {
         setAuth(session);
       }
     };
@@ -114,7 +118,7 @@ const UserDropdown = () => {
     const {data: authListener} = supabase.auth.onAuthStateChange((event, session) => {
       handleAuthStateChange(event, session);
     });
-    
+
     return () => {
       console.log(authListener);
     };
@@ -192,10 +196,12 @@ const UserDropdown = () => {
                     </div>
                   </div>
                   <Divider className="mlb-1" />
-                  <MenuItem className="mli-2 gap-3" onClick={e => handleDropdownClose(e, '/pages/user-profile')}>
+                  <MenuItem className="mli-2 gap-3" onClick={() => setUserInfoOpen(true)}>
+                    {/* e => handleDropdownClose(e, '/pages/user-profile') */}
                     <i className="tabler-user" />
                     <Typography color="text.primary">My Profile</Typography>
                   </MenuItem>
+
                   <MenuItem className="mli-2 gap-3" onClick={e => handleDropdownClose(e, '/pages/account-settings')}>
                     <i className="tabler-settings" />
                     <Typography color="text.primary">Settings</Typography>
@@ -227,6 +233,7 @@ const UserDropdown = () => {
           </Fade>
         )}
       </Popper>
+      <UserInfoModal open={userInfoOpen} onClose={() => setUserInfoOpen(false)} />
     </>
   );
 };
