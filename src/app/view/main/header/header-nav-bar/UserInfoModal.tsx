@@ -3,6 +3,7 @@ import {Dialog, DialogActions, DialogContent, DialogTitle, Button, Avatar, TextF
 import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setUserId} from '@/redux-store/slices/userInfo';
+import {Session} from '@supabase/supabase-js';
 
 interface UserInfoModalProps {
   open: boolean;

@@ -3,20 +3,9 @@
 import {PublishInfo} from '@/types/apps/content/chapter/publishInfo';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {number} from 'valibot';
+import emptyContent from '@/data/create/empty-content-info-data.json';
 
-const initialState: PublishInfo = {
-  languageType: 0,
-  contentName: 'string',
-  thumbnail: 'string',
-  contentDescription: 'string',
-  authorName: 'string',
-  authorComment: 'string',
-  tagList: ['string'],
-  selectTagList: ['string'],
-  visibilityType: 0,
-  monetization: true,
-  nsfw: 0,
-};
+const initialState: PublishInfo = emptyContent.data.contentInfo.publishInfo;
 
 export const PublishInfoSlice = createSlice({
   name: 'PublishInfo',

@@ -56,11 +56,6 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
 
   const handleDeleteChapter = (chapterIdx: number, chapterLength: number) => {
     onDelete(chapterIdx);
-
-    if (chapterIdx >= chapterLength - 1) {
-      dispatch(setSelectedChapterIdx(0));
-      dispatch(setSelectedEpisodeIdx(0));
-    }
   };
 
   return (
@@ -94,7 +89,10 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
               {!disableDelete && (
                 <IconButton
                   className={Style.deleteButton}
-                  onClick={() => handleDeleteChapter(chapterIdx, chapterLength)}
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleDeleteChapter(chapterIdx, chapterLength);
+                  }}
                 >
                   <DeleteIcon />
                 </IconButton>

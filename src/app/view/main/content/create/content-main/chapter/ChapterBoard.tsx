@@ -61,6 +61,7 @@ const ChapterBoard: React.FC<Props> = ({
 
   const selectedChapterIdx = useSelector((state: RootState) => state.contentselection.selectedChapterIdx);
   const selectedEpisodeIdx = useSelector((state: RootState) => state.contentselection.selectedEpisodeIdx);
+  const editingContentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo);
   const [editItem, setEditItem] = useState<{idx: number | null; type: 'chapter' | 'episode' | null}>({
     idx: null,
     type: null,
@@ -91,6 +92,21 @@ const ChapterBoard: React.FC<Props> = ({
     setChapters(transformChapterInfoToChapter(initialChapters));
   }, [initialChapters]);
 
+  useEffect(() => {
+    if (
+      editingContentInfo.chapterInfoList[selectedChapterIdx] &&
+      editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]
+    ) {
+      dispatch(
+        setCurrentEpisodeInfo(
+          editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
+        ),
+      );
+    } else {
+      dispatch(setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[0].episodeInfoList[0]));
+    }
+  }, [selectedChapterIdx, selectedEpisodeIdx]);
+
   const getMaxId = (items: {id: number}[]) => items.reduce((maxId, item) => Math.max(maxId, item.id), 0);
 
   //#region Chapter
@@ -111,10 +127,15 @@ const ChapterBoard: React.FC<Props> = ({
   const handleCreateChapter = () => {
     const newChapterId = getMaxId(chapters) + 1;
 
+    const newEpisode: EpisodeInfo = {
+      ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
+      name: `New Episode 1`,
+    };
+
     const newChapter: ChapterInfo = {
       id: newChapterId,
-      name: 'New Chapter',
-      episodeInfoList: [],
+      name: `New Chapter ${chapters.length + 1}`,
+      episodeInfoList: [newEpisode], // 기본 에피소드 추가
     };
 
     onAddChapter(newChapter);
@@ -127,11 +148,6 @@ const ChapterBoard: React.FC<Props> = ({
       onDeleteChapter(chapterIdx);
 
       setChapters(prevChapters => prevChapters.filter((_, index) => index !== validChapterIdx));
-
-      if (validChapterIdx >= chapters.length - 1) {
-        dispatch(setSelectedEpisodeIdx(0));
-        dispatch(setSelectedChapterIdx(0));
-      }
     }
   };
   //#endregion
@@ -192,6 +208,7 @@ const ChapterBoard: React.FC<Props> = ({
       const newEpisodeInfo: EpisodeInfo = {
         ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
         id: newEpisodeId,
+        name: `New Episode ${chapters[selectedChapterIdx].episodes.length + 1}`,
       };
 
       const newEpisode = {
