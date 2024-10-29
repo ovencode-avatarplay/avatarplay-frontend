@@ -316,9 +316,14 @@ const ContentMain: React.FC = () => {
     }
   };
 
-  const handleNameChange = useCallback(() => {
-    setCurEpisodeInfo();
-  }, [selectedChapterIdx, selectedEpisodeIdx, editingContentInfo]);
+  const handleNameChange = useCallback(
+    (contentInfo: ContentInfo) => {
+      dispatch(
+        setCurrentEpisodeInfo(contentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]),
+      );
+    },
+    [editingContentInfo, selectedChapterIdx, selectedEpisodeIdx],
+  );
 
   //#endregion
 

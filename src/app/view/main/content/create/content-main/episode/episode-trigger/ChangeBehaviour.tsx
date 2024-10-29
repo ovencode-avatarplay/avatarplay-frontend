@@ -52,7 +52,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
         actionConversationList: item.actionConversationList || [],
       });
     }
-  }, [item]); // item이 변경될 때마다 실행
+  }, []); // item이 변경될 때마다 실행
 
   const [selectedChapter, setSelectedChapter] = useState<string>('Chapter.1');
   const [selectedEpisode, setSelectedEpisode] = useState<string>('Ep.2 Wanna go out?');
@@ -155,13 +155,11 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
         ];
       case TriggerMainDataType.triggerValueChatCount:
         return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
           {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
           {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
         ];
       case TriggerMainDataType.triggerValueKeyword:
         return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
           {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
           {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
         ];

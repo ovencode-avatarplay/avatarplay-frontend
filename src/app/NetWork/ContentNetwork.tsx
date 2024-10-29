@@ -3,7 +3,7 @@
 import {PublishInfo} from '@/types/apps/content/chapter/publishInfo';
 import api, {ResponseAPI} from './ApiInstance';
 import {ContentInfo} from '@/types/apps/content/contentInfo';
-import {ChapterInfo} from '@/types/apps/content/chapter/chapterInfo';
+import {ChapterInfo, ChapterInfoForContentGet} from '@/types/apps/content/chapter/chapterInfo';
 import {ContentDashboardItem} from '@/redux-store/slices/myContentDashboard';
 
 // Save Content
@@ -44,7 +44,7 @@ export interface GetContentByIdRes {
   chatCount: number;
   chatUserCount: number;
   publishInfo: PublishInfo;
-  chapterInfoList: ChapterInfo[];
+  chapterInfoList: ChapterInfoForContentGet[];
   recommandContentInfoList: recommendContentInfo[];
 }
 

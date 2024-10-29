@@ -41,30 +41,30 @@ const userSlice = createSlice({
       if (action.payload.length > 0) state.userId = parseInt(action.payload, 10);
       else state.userId = 0;
     },
-    setUserName: (state, action: PayloadAction<string>) => {
-      state.episodeInfo.characterName = action.payload;
-    },
-    setUserDescription: (state, action: PayloadAction<string>) => {
-      state.episodeInfo.characterDescription = action.payload;
-    },
-    setUserScenarioDescription: (state, action: PayloadAction<string>) => {
-      state.episodeInfo.scenarioDescription = action.payload;
-    },
-    setUserIntroDescription: (state, action: PayloadAction<string>) => {
-      state.episodeInfo.introDescription = action.payload;
-    },
-    setUserSecret: (state, action: PayloadAction<string>) => {
-      state.episodeInfo.secret = action.payload;
-    },
+    // setUserName: (state, action: PayloadAction<string>) => {
+    //   state.episodeInfo.characterName = action.payload;
+    // },
+    // setUserDescription: (state, action: PayloadAction<string>) => {
+    //   state.episodeInfo.characterDescription = action.payload;
+    // },
+    // setUserScenarioDescription: (state, action: PayloadAction<string>) => {
+    //   state.episodeInfo.scenarioDescription = action.payload;
+    // },
+    // setUserIntroDescription: (state, action: PayloadAction<string>) => {
+    //   state.episodeInfo.introDescription = action.payload;
+    // },
+    // setUserSecret: (state, action: PayloadAction<string>) => {
+    //   state.episodeInfo.secret = action.payload;
+    // },
   },
 });
 
 export const {
   setUserId,
-  setUserName,
-  setUserDescription,
-  setUserScenarioDescription,
-  setUserIntroDescription,
-  setUserSecret,
+  // setUserName,
+  // setUserDescription,
+  // setUserScenarioDescription,
+  // setUserIntroDescription,
+  // setUserSecret,
 } = userSlice.actions;
 export default userSlice.reducer;

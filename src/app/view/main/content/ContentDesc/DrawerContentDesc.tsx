@@ -1,8 +1,17 @@
 'use client';
 
+// 리액트
 import React, {useEffect, useState} from 'react';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useDispatch, useSelector} from 'react-redux';
+import {
+  closeDrawerContentDesc,
+  openDrawerContentId,
+  setDrawerEpisodeId,
+} from '@/redux-store/slices/drawerContentDescSlice';
+import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
+
+// MUI
 import {
   Drawer,
   Button,
@@ -17,26 +26,31 @@ import {
   Avatar,
   Divider,
   CardMedia,
+  IconButton,
 } from '@mui/material';
-import {
-  closeDrawerContentDesc,
-  openDrawerContentId,
-  setDrawerEpisodeId,
-} from '@/redux-store/slices/drawerContentDescSlice';
-import Style from './DrawerContentDesc.module.css';
-import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
-import Link from 'next/link';
+
+import UploadIcon from '@mui/icons-material/Upload';
+import CloseIcon from '@mui/icons-material/Close';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import PeopleIcon from '@mui/icons-material/People';
+
+// Network
 import {
   GetContentByIdReq,
   GetContentByIdRes,
   sendContentByIdGet,
   recommendContentInfo,
 } from '@/app/NetWork/ContentNetwork';
+
+// Css
+import Style from './DrawerContentDesc.module.css';
+
+// Items
 import DrawerContentEpisodeItemList from './ContentEpisodeList';
 import {EpisodeCardProps} from '@/types/apps/episode-card-type';
 import ContentRecommendList from './ContentRecommendList';
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import PeopleIcon from '@mui/icons-material/People';
+import Link from 'next/link';
+import {Padding} from '@mui/icons-material';
 
 const DrawerContentDesc = () => {
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
@@ -47,11 +61,12 @@ const DrawerContentDesc = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  const [contentDesc, setContentDesc] = useState<GetContentByIdRes>();
+  const [contentWholeDesc, setContentWholeDesc] = useState<GetContentByIdRes>(); // 컨텐츠 설명 전체
 
   // Content, Chapter, Episode 혼동 때문에 Name, Thumbnail은 접두사
   const [contentName, setContentName] = useState('contentName');
   const [contentThumbnail, setContentThumbnail] = useState('/Images/001.png');
+  const [contentDescription, setContentDescription] = useState('contentDescription');
   const [authorName, setAuthorName] = useState('authorName');
   const [chatCount, setChatCount] = useState(0);
   const [chatUserCount, setChatUserCount] = useState(0);
@@ -74,28 +89,29 @@ const DrawerContentDesc = () => {
   }, [episodeId]);
 
   useEffect(() => {
-    if (contentDesc) {
-      setContentName(contentDesc.publishInfo.contentName);
-      setContentThumbnail(contentDesc.publishInfo.thumbnail);
-      setAuthorName(contentDesc.publishInfo.authorName);
-      setAuthorComment(contentDesc.publishInfo.authorComment);
-      setChatCount(contentDesc.chatCount);
-      setChatUserCount(contentDesc.chatUserCount);
-      setTaglist(contentDesc.publishInfo.tagList); // SelectTag가 맞음
-      if (contentDesc.chapterInfoList) {
-        const chaptersData = contentDesc.chapterInfoList?.map(chapter => ({
+    if (contentWholeDesc) {
+      setContentName(contentWholeDesc.publishInfo.contentName);
+      setContentThumbnail(contentWholeDesc.chapterInfoList[0].episodeInfoList[0].thumbnailList[0]); //.publishInfo.thumbnail
+      setContentDescription(contentWholeDesc.publishInfo.contentDescription);
+      setAuthorName(contentWholeDesc.publishInfo.authorName);
+      setAuthorComment(contentWholeDesc.publishInfo.authorComment);
+      setChatCount(contentWholeDesc.chatCount);
+      setChatUserCount(contentWholeDesc.chatUserCount);
+      setTaglist(contentWholeDesc.publishInfo.tagList); // SelectTag가 맞음
+      if (contentWholeDesc.chapterInfoList) {
+        const chaptersData = contentWholeDesc.chapterInfoList?.map(chapter => ({
           id: chapter.id,
           name: chapter.name,
         }));
         setChapters(chaptersData);
       }
       setSelectedChapterIdx(0);
-      setRecommendContentList(contentDesc.recommandContentInfoList);
+      setRecommendContentList(contentWholeDesc.recommandContentInfoList);
       setSelectedEpisodeIdx(0);
-      setEpisodes(contentDesc.chapterInfoList[0].episodeInfoList);
-      dispatch(setDrawerEpisodeId(contentDesc.chapterInfoList[0].episodeInfoList[0].id));
+      setEpisodes(contentWholeDesc.chapterInfoList[0].episodeInfoList);
+      dispatch(setDrawerEpisodeId(contentWholeDesc.chapterInfoList[0].episodeInfoList[0].id));
     }
-  }, [contentDesc]);
+  }, [contentWholeDesc]);
 
   const handleEpisodeSelect = (episodeIndex: number) => {
     setSelectedEpisodeIdx(episodeIndex);
@@ -115,14 +131,16 @@ const DrawerContentDesc = () => {
   useEffect(() => {
     setSelectedEpisodeIdx(0);
 
-    if (contentDesc) {
-      const selectedChapter = contentDesc.chapterInfoList[selectedChapterIdx];
+    if (contentWholeDesc) {
+      const selectedChapter = contentWholeDesc.chapterInfoList[selectedChapterIdx];
       const updatedEpisodeItems = selectedChapter?.episodeInfoList?.map(episode => ({
         episodeId: episode.id,
-        intimacy: 111,
-        imageCount: 222,
-        thumbnail: episode.thumbnail,
         name: episode.name,
+        desc: episode.description,
+        thumbnail: episode.thumbnailList[0],
+        isLock: episode.isLock,
+        intimacy: episode.intimacyProgress,
+        imageCount: episode.thumbnailList.length,
       }));
       setEpisodeItems(updatedEpisodeItems); // 에피소드 리스트 업데이트
     }
@@ -137,7 +155,7 @@ const DrawerContentDesc = () => {
       const response = await sendContentByIdGet(req);
 
       if (response?.data) {
-        setContentDesc(response.data);
+        setContentWholeDesc(response.data);
       } else {
         throw new Error(`No contentInfo in response for ID: ${contentId}`);
       }
@@ -162,28 +180,29 @@ const DrawerContentDesc = () => {
       onClose={() => handleCloseDrawer()}
       PaperProps={{
         sx: {
-          height: '90vh',
-          borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
+          height: '85vh',
+          borderTopLeftRadius: '24px',
+          borderTopRightRadius: '24px',
           overflow: 'hidden',
+          bottom: '5vh',
         },
       }}
     >
       <div className={Style.header}>
         <Typography>{contentName}</Typography>
-        <div>
-          <Button
-            variant="outlined"
+        <Box>
+          <IconButton
+            className={Style.headerButton}
             onClick={() => {
               /* Add upload functionality */
             }}
           >
-            Upload
-          </Button>
-          <Button variant="outlined" onClick={() => dispatch(closeDrawerContentDesc())}>
-            Close
-          </Button>
-        </div>
+            <UploadIcon />
+          </IconButton>
+          <IconButton className={Style.headerButton} onClick={handleCloseDrawer}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
       </div>
       <main className={Style.content}>
         <CardMedia
@@ -192,10 +211,11 @@ const DrawerContentDesc = () => {
           image={contentThumbnail}
           alt={contentName}
           className={Style.imageThumbnail}
+          onError={() => setContentThumbnail('/Images/001.png')}
         />
-        <Card elevation={3} sx={{borderRadius: 2, padding: 2}}>
-          <CardContent>
-            <Stack direction="row" alignItems="center" spacing={5}>
+        <Card>
+          <CardContent sx={{padding: 1}}>
+            <div className={Style.cardProducerArea}>
               <Avatar sx={{bgcolor: 'primary.main', width: 48, height: 48}}>
                 {authorName.charAt(0).toUpperCase()}
               </Avatar>
@@ -214,13 +234,10 @@ const DrawerContentDesc = () => {
                   <Typography variant="h6">{chatUserCount}</Typography>
                 </Stack>
               </Box>
-            </Stack>
+            </div>
           </CardContent>
-        </Card>
-
-        <Card className={Style.tagCard}>
-          <CardContent>
-            <Typography variant="h6">Publishing Tags</Typography>
+          <Divider className={Style.divider} />
+          <CardContent sx={{paddingTop: 1, paddingLeft: 3, paddingRight: 3}}>
             <Box className={Style.tagContainer}>
               {tagList.map((tag, index) => (
                 <Chip key={index} label={tag} className={Style.tagChip} />
@@ -231,14 +248,16 @@ const DrawerContentDesc = () => {
             <Typography variant="h6">Author Comment</Typography>
             <Box className={Style.descriptionBox}>{authorComment}</Box>
 
+            <Typography variant="h6">ContentDescription</Typography>
+            <Box className={Style.descriptionBox}>{contentDescription}</Box>
+
             <Divider className={Style.divider} />
             <Typography variant="h6">Content Recommend</Typography>
-            <Box className={Style.descriptionBox}>
-              <ContentRecommendList
-                recommendContents={recommendContentList}
-                onSelectContent={handleRecommendContentSelect}
-              />
-            </Box>
+
+            <ContentRecommendList
+              recommendContents={recommendContentList}
+              onSelectContent={handleRecommendContentSelect}
+            />
           </CardContent>
         </Card>
       </main>
@@ -260,9 +279,11 @@ const DrawerContentDesc = () => {
             ))}
           </Select>
         </Box>
-        <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
-        <Link href={`/:lang/chat`}>
-          <Button className={Style.startNewChatButton} variant="contained" fullWidth>
+        <div className={Style.episodeListContainer}>
+          <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
+        </div>
+        <Link href={`/:lang/chat`} className={Style.startNewChatButton}>
+          <Button variant="contained" fullWidth>
             Start new chat - episode : {episodeId}
           </Button>
         </Link>

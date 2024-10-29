@@ -89,18 +89,21 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
         try {
           // 콘텐츠 삭제 API 호출
           const response = await sendContentDelete({contentId: selectedItemId});
-          console.log('삭제된 콘텐츠 ID:', response.data.contentId);
 
-          // 삭제 후 콘텐츠 목록 새로고침
-          await getContentsByUserId();
+          if (response.data) {
+            console.log('삭제된 콘텐츠 ID:', response.data.contentId);
 
-          // 선택된 인덱스 초기화
-          setSelectedIndex(null);
-          dispatch(setContentInfoToEmpty());
-          dispatch(setEpisodeInfoEmpty());
-          dispatch(setSelectedContentId(0));
-          dispatch(setSelectedChapterIdx(0));
-          dispatch(setSelectedEpisodeIdx(0));
+            // 삭제 후 콘텐츠 목록 새로고침
+            await getContentsByUserId();
+
+            // 선택된 인덱스 초기화
+            setSelectedIndex(null);
+            dispatch(setContentInfoToEmpty());
+            dispatch(setEpisodeInfoEmpty());
+            dispatch(setSelectedContentId(0));
+            dispatch(setSelectedChapterIdx(0));
+            dispatch(setSelectedEpisodeIdx(0));
+          }
         } catch (error) {
           console.error('콘텐츠 삭제 실패:', error);
           // 에러 처리 로직 (예: 사용자에게 알림 표시)

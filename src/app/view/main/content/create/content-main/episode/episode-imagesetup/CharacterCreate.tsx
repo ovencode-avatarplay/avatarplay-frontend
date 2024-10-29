@@ -143,7 +143,7 @@ const CharacterCreate: React.FC<Props> = () => {
     setLoading(true);
 
     try {
-      const req: GenerateImageReq = {userId: userId, imagePrompt: prompt};
+      const req: GenerateImageReq = {/*userId: userId,*/ imagePrompt: prompt};
       const response = await sendGenerateImageReq(req);
 
       if (response?.data) {
