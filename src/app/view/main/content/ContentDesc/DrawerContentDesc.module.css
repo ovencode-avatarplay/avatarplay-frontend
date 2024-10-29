@@ -1,21 +1,39 @@
 /* DrawerContentDesc.module.css */
 
+
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
+    padding: 12px 24px 6px 24px;
+
+    background-color: red;  /*구분용 색*/
+  }
+
+  .header .headerbutton {
+    margin-left: 10px;
   }
   
   
   .content {
-    height: 100%; 
+    height: 100vh; 
     overflow-y: auto;
+  }
+  
+  .cardContent {
+    padding: 1px;
+  }
+  
+  .cardProducerArea {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
   }
 
   
   .imageThumbnail  {
-    width: '100%';
+    width: 100vh;
     height: 'auto';
     object-Fit: 'cover';
     position: relative;
@@ -27,8 +45,8 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: first baseline;
+    align-items: first baseline;
     margin-bottom: 16px;
   }
 
@@ -60,12 +78,13 @@
   
   
   .chatingControlPanel {
-    border-color: black;
+    /* background-color: green; */
     border: 2px;
     border-style: solid;
     border-radius: 12px;
-    height: calc(100vh); 
+    height: 130vh; 
     overflow-y: hidden;
+    align-items: center;
   }
   
 
@@ -86,31 +105,23 @@
   .chapterSelect {
     align-self: center;
     margin-top: 5px;
-        width: 50%;
+        width: 50vw;
     margin-right: 15px;
   }
   
-  .episodeList {
-    padding-top: 20px;
-    height: 200px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-  
   .episodeListContainer {
-    width: 100%;
-    position: relative;
-    padding: 16px;
-    margin-bottom: 20px;
+    padding-top: 16px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
   }
 
   .startNewChatButton
   {
-    margin-top: 10px;
-    height:40px;
-    width: 80px;
+    display: flex;
+    justify-self: center;
+    align-self: center;
+    margin-bottom: 100px;
+    height: auto;
+    width: 80vw;
   }

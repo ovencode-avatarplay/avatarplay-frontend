@@ -17,16 +17,17 @@ interface DrawerContentEpisodeItemListProps {
 const DrawerContentEpisodeItemList: React.FC<DrawerContentEpisodeItemListProps> = ({episodes, onEpisodeSelect}) => {
   return (
     <Box className={Style.episodeInfoList}>
-      <Typography>에피소드 리스트 (가로 스크롤)</Typography>
-      <Swiper modules={[Pagination]} pagination={{clickable: true}} spaceBetween={16} slidesPerView={1}>
+      <Swiper modules={[Pagination]} pagination={{clickable: true}} spaceBetween={1} slidesPerView={1}>
         {episodes.map((episode, index) => (
           <SwiperSlide key={episode.episodeId} onClick={() => onEpisodeSelect(index)}>
             <ContentEpisodeItem
               episodeId={episode.episodeId}
-              name={episodes[0].name}
-              intimacy={11}
-              imageCount={22}
+              name={episode.name}
+              desc={episode.desc}
               thumbnail={episode.thumbnail}
+              intimacy={episode.intimacy}
+              isLock={episode.isLock}
+              imageCount={episode.imageCount}
             />
           </SwiperSlide>
         ))}

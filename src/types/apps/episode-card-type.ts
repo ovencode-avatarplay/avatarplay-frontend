@@ -4,4 +4,6 @@ export interface EpisodeCardProps {
   imageCount: number;
   thumbnail: string;
   name: string;
+  desc: string;
+  isLock: boolean;
 }
