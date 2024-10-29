@@ -28,7 +28,7 @@ export const sendUploadImage = async (payload: UploadImageReq): Promise<Response
 };
 
 export interface GenerateImageReq {
-  userId: number;
+  // userId: number;
   imagePrompt: string;
 }
 

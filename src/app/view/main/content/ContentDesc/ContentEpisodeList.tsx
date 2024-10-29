@@ -17,7 +17,7 @@ interface DrawerContentEpisodeItemListProps {
 const DrawerContentEpisodeItemList: React.FC<DrawerContentEpisodeItemListProps> = ({episodes, onEpisodeSelect}) => {
   return (
     <Box className={Style.episodeInfoList}>
-      <Swiper modules={[Pagination]} pagination={{clickable: true}} spaceBetween={1} slidesPerView={1}>
+      <Swiper modules={[Pagination]} pagination={{clickable: true}} spaceBetween={'20px'} slidesPerView={1}>
         {episodes.map((episode, index) => (
           <SwiperSlide key={episode.episodeId} onClick={() => onEpisodeSelect(index)}>
             <ContentEpisodeItem

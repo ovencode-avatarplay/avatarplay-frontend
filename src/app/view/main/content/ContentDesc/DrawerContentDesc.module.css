@@ -7,7 +7,6 @@
     align-items: center;
     padding: 12px 24px 6px 24px;
 
-    background-color: red;  /*구분용 색*/
   }
 
   .header .headerbutton {
@@ -114,6 +113,11 @@
     padding-left: 4px;
     padding-right: 4px;
     padding-bottom: 4px;
+  }
+
+  .episodeInfoList
+  {
+    
   }
 
   .startNewChatButton
