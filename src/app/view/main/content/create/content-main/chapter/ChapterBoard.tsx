@@ -2,15 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-  DroppableProvided,
-  DraggableProvided,
-} from 'react-beautiful-dnd';
-
 // Css, MUI
 import {
   Drawer,
@@ -271,48 +262,6 @@ const ChapterBoard: React.FC<Props> = ({
     setNewName(currentName);
   };
 
-  const handleChapterDragEnd = (result: DropResult) => {
-    const {source, destination} = result;
-
-    // 드래그가 유효한 대상에 떨어지지 않은 경우 처리하지 않음
-    if (!destination) return;
-
-    if (source.droppableId === destination.droppableId) {
-      // 같은 리스트 내에서 순서 변경
-      const updatedChapters = reorderList([...chapters], source.index, destination.index);
-      setChapters(updatedChapters);
-
-      // 갱신된 콘텐츠 정보 생성
-      const updatedChapterInfoList: ChapterInfo[] = updatedChapters.map(chapter => {
-        const originalChapter = selectedContent.chapterInfoList.find(c => c.id === chapter.id);
-        return {
-          id: chapter.id,
-          name: chapter.title, // title을 name으로 매핑
-          episodeInfoList: originalChapter ? originalChapter.episodeInfoList : [], // 원본 에피소드 정보 유지
-        };
-      });
-
-      // 갱신된 콘텐츠 정보 생성
-      const updatedContent = {
-        ...selectedContent,
-        chapterInfoList: updatedChapterInfoList,
-      };
-
-      // Redux에 업데이트된 정보 반영
-      dispatch(updateEditingContentInfo(updatedContent));
-
-      // 새로운 선택된 인덱스 설정 (드롭 위치 인덱스 사용)
-      dispatch(setSelectedChapterIdx(destination.index));
-    }
-  };
-
-  const reorderList = (list: any[], startIndex: number, endIndex: number) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-    return result;
-  };
-
   return (
     <Drawer
       anchor="right"
@@ -335,40 +284,27 @@ const ChapterBoard: React.FC<Props> = ({
         </Box>
 
         {/* Chapter 및 Episode 트리 구조 */}
-        <DragDropContext onDragEnd={handleChapterDragEnd}>
-          <Droppable droppableId="chapter-list">
-            {(provided: DroppableProvided) => (
-              <Box {...provided.droppableProps} ref={provided.innerRef} className={Style.contentBox}>
-                {chapters.map((chapter, index) => (
-                  <Draggable key={chapter.id} draggableId={String(chapter.id)} index={index}>
-                    {(provided: DraggableProvided) => (
-                      <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                        <ChapterItem
-                          key={index}
-                          chapter={chapter}
-                          chapterIdx={index}
-                          chapterLength={chapters.length}
-                          episodeLength={chapters[index].episodes.length}
-                          onDelete={handleDeleteChapter}
-                          onToggle={handleChapterToggle}
-                          onDeleteEpisode={handleDeleteEpisode}
-                          onSelect={handleChapterSelect}
-                          onSelectEpisode={handleEpisodeSelect}
-                          onEdit={handleEditClick}
-                          onCloseChapterBoard={onClose}
-                          isSelected={selectedChapterIdx === index}
-                          selectedEpisodeIdx={selectedEpisodeIdx}
-                          disableDelete={chapters.length <= 1}
-                        />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </Box>
-            )}
-          </Droppable>
-        </DragDropContext>
+        <Box className={Style.contentBox}>
+          {chapters.map((chapter, index) => (
+            <ChapterItem
+              key={index}
+              chapter={chapter}
+              chapterIdx={index}
+              chapterLength={chapters.length}
+              episodeLength={chapters[index].episodes.length}
+              onDelete={handleDeleteChapter}
+              onToggle={handleChapterToggle}
+              onDeleteEpisode={handleDeleteEpisode}
+              onSelect={handleChapterSelect}
+              onSelectEpisode={handleEpisodeSelect}
+              onEdit={handleEditClick}
+              onCloseChapterBoard={onClose}
+              isSelected={selectedChapterIdx === index}
+              selectedEpisodeIdx={selectedEpisodeIdx}
+              disableDelete={chapters.length <= 1}
+            />
+          ))}
+        </Box>
 
         {/* Create Episode 버튼 */}
         <Box className={Style.imageButtonContainer}>
