@@ -35,7 +35,9 @@ export interface GenerateImageReq {
 export const sendGenerateImageReq = async (payload: GenerateImageReq): Promise<ResponseAPI<string>> => {
   try {
     const response = await api.post<ResponseAPI<string>>('Resource/generateImage', payload, {
-      headers: {'Content-type': 'text/plain'},
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
     if (response.data.resultCode === 0) {
