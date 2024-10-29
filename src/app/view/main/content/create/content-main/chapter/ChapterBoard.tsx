@@ -34,6 +34,7 @@ import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
 import defaultData from '@/data/create/content-info-data.json';
 import emptyData from '@/data/create/empty-content-info-data.json';
 import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {ContentInfo} from '@/types/apps/content/contentInfo';
 
 interface Props {
   open: boolean;
@@ -43,7 +44,7 @@ interface Props {
   onDeleteChapter: (chapterId: number) => void;
   onAddEpisode: (newEpisode: EpisodeInfo) => void;
   onDeleteEpisode: (chapterId: number, episodeId: number) => void;
-  onNameChange: () => void;
+  onNameChange: (contentInfo: ContentInfo) => void;
 }
 
 const ChapterBoard: React.FC<Props> = ({
@@ -170,7 +171,7 @@ const ChapterBoard: React.FC<Props> = ({
             ),
           };
           dispatch(updateEditingContentInfo(updatedContent));
-          onNameChange();
+          onNameChange(updatedContent);
           return {...chapter, title: newName};
         } else if (type === 'episode' && chapterIdx === selectedChapterIdx) {
           const updatedEpisodes = chapter.episodes.map((episode, episodeIdx) =>
@@ -192,7 +193,7 @@ const ChapterBoard: React.FC<Props> = ({
           };
 
           dispatch(updateEditingContentInfo(updatedContent));
-          onNameChange();
+          onNameChange(updatedContent);
           return {...chapter, episodes: updatedEpisodes};
         }
         return chapter;
@@ -251,8 +252,14 @@ const ChapterBoard: React.FC<Props> = ({
     if (type === 'episode') {
       dispatch(setSelectedEpisodeIdx(idx));
     }
+    // 선택된 항목의 기존 이름 설정
+    const currentName =
+      type === 'chapter'
+        ? chapters[idx].title // 챕터의 이름
+        : chapters[selectedChapterIdx]?.episodes[idx]?.title || '';
+
     setEditItem({idx, type});
-    setNewName('');
+    setNewName(currentName);
   };
 
   return (
