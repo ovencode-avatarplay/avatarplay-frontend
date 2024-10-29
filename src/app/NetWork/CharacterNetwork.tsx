@@ -145,14 +145,14 @@ export const fetchCharacterInfo = async (): Promise<{
 
     const {resultCode, resultMessage, data} = response.data;
 
-    if (resultCode === 0) {
+    if (resultCode === 0 && resultMessage && data) {
       //console.log('성공적으로 데이터 가져옴:', data.characterInfoList);
 
       return {resultCode, resultMessage, data};
     } else {
       console.error(`Error: ${resultMessage}`);
 
-      return {resultCode, resultMessage, data: null};
+      return {resultCode, resultMessage: 'resultmessage err', data: null};
     }
   } catch (error: any) {
     console.error('Failed to fetch character info:', error);

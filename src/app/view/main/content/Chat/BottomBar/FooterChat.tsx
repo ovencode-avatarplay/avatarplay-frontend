@@ -43,7 +43,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey}) 
         };
 
         const response = await sendMessageStream(reqSendChatMessage);
-        if (response.resultCode === 0) {
+        if (response.resultCode === 0 && response.data) {
           setStreamKey(response.data.streamKey); // 부모 컴포넌트의 streamKey 상태 업데이트
         }
       }
