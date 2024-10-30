@@ -49,7 +49,7 @@ const ChatPage: React.FC = () => {
     if (!message || typeof message !== 'string') return;
 
     // 메시지가 '$'을 포함할 경우 팝업 표시
-    if (message.includes('$')) {
+    if (isMyMessage === false && message.includes('$')) {
       const requestData = {
         streamKey: streamKey, // streamKey 상태에서 가져오기
       };
@@ -103,7 +103,7 @@ const ChatPage: React.FC = () => {
       // 시스템 메시지
       const systemMessageSignCount = (newMessage.text.match(/%/g) || []).length;
 
-      if (systemMessageSignCount && systemMessageSignCount >= 2) {
+      if (isMyMessage === false && systemMessageSignCount && systemMessageSignCount >= 2) {
         // 시스템 메시지로 출력해주고 빠져나가자.
         const newMessageSystem: Message = {
           text: newMessage.text,
