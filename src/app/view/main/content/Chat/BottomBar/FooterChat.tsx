@@ -8,16 +8,17 @@ import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import styles from '@chats/BottomBar/FooterChat.module.css';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {SendChatMessageReq, sendMessageStream} from '@/app/NetWork/ChatNetwork';
+import {SendChatMessageReq, sendMessageStream, EmoticonGroup} from '@/app/NetWork/ChatNetwork';
 import Sticker from './Sticker';
 
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
   streamKey: string; // streamKey를 props로 전달
   setStreamKey: (key: string) => void; // 부모에서 streamKey 설정하는 함수
+  EmoticonData?: EmoticonGroup[]; // null 및 undefined를 허용
 }
 
-const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey}) => {
+const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, EmoticonData}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isStickerOpen, setIsStickerOpen] = useState(false);
   const inputRef = useRef<HTMLDivElement | null>(null);
@@ -184,7 +185,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey}) 
           </Button>
         </Box>
       )}
-      {isExpanded && isStickerOpen && <Sticker onSelectEmoji={handleSelectEmoji} />}
+      {isExpanded && isStickerOpen && <Sticker onSelectEmoji={handleSelectEmoji} EmoticonData={EmoticonData} />}
     </Box>
   );
 };

@@ -320,7 +320,12 @@ const ChatPage: React.FC = () => {
         bgUrl={enterData?.episodeBgImageUrl ?? ''}
         iconUrl={enterData?.iconImageUrl ?? ''}
       />
-      <BottomBar onSend={handleSendMessage} streamKey={streamKey} setStreamKey={setStreamKey} />
+      <BottomBar
+        onSend={handleSendMessage}
+        streamKey={streamKey}
+        setStreamKey={setStreamKey}
+        EmoticonData={enterData?.emoticonGroupInfoList || []}
+      />
 
       {showPopup && (
         <PopUpYesOrNo

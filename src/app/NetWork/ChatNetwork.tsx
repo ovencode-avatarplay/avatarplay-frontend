@@ -1,7 +1,7 @@
 // src/app/Network/ChatNetwork.tsx
 
 import api, {ResponseAPI} from './ApiInstance';
-
+import chatEmojiTempData from '@/data/temp/chat-emoji-temp-data.json';
 // 채팅 Send ##########################################
 // Chat Data Interfaces
 export interface SendChatMessageReq {
@@ -119,16 +119,48 @@ export interface EnterEpisodeChattingReq {
 export interface EnterEpisodeChattingRes {
   iconImageUrl: string;
   episodeBgImageUrl: string;
-  prevMessageInfoList: MessageInfo[];
+  prevMessageInfoList: {
+    id: number;
+    userName: string;
+    characterName: string;
+    message: string;
+    createAt: string;
+  }[];
+  emoticonGroupInfoList: EmoticonGroup[] | null;
 }
-
+export interface EmoticonGroup {
+  id: number;
+  type: number;
+  name: string;
+  iconUrl: string;
+  emoticonList: {id: number; text: string; iconUrl: string}[];
+}
 export const sendChattingEnter = async (
   req: EnterEpisodeChattingReq,
 ): Promise<ResponseAPI<EnterEpisodeChattingRes>> => {
   try {
     const response = await api.post<ResponseAPI<EnterEpisodeChattingRes>>('/Chatting/enter', req);
     console.log('chatenter', req, response);
+
     if (response.data.resultCode === 0) {
+      const responseData = response.data.data as EnterEpisodeChattingRes;
+
+      // emoticonGroupInfoList가 null일 경우 임시 데이터를 사용
+      if (!responseData.emoticonGroupInfoList) {
+        responseData.emoticonGroupInfoList = chatEmojiTempData.emoticonGroupInfoList;
+      }
+
+      // 이미지 URL 캐싱: 서비스 워커가 이를 캐시하도록 요청
+      responseData.emoticonGroupInfoList?.forEach(group => {
+        group.emoticonList.forEach(async emoji => {
+          if ('serviceWorker' in navigator) {
+            const response = await fetch(emoji.iconUrl, {cache: 'reload'});
+            // 다운로드 후 캐싱이 이루어짐
+            await caches.open('image-cache').then(cache => cache.put(emoji.iconUrl, response));
+          }
+        });
+      });
+
       return response.data;
     } else {
       throw new Error(response.data.resultMessage); // Error handling

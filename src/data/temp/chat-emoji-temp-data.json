@@ -1,0 +1,134 @@
+{
+    "emoticonGroupInfoList": [
+      {
+        "id": 0,
+        "type": 0,
+        "name": "string",
+        "iconUrl": "/Images/emoji3.webp",
+        "emoticonList": [
+          {
+            "id": 0,
+            "text": "string",
+            "iconUrl": "/Images/emoji1.webp"
+          },
+          {
+            "id": 1,
+            "text": "string",
+            "iconUrl": "/Images/emoji2.webp"
+          },
+          {
+            "id": 2,
+            "text": "string",
+            "iconUrl": "/Images/emoji3.webp"
+          },
+          {
+            "id": 3,
+            "text": "string",
+            "iconUrl": "/Images/emoji4.webp"
+          },
+          {
+            "id": 4,
+            "text": "string",
+            "iconUrl": "/Images/emoji5.webp"
+          },
+          {
+            "id": 5,
+            "text": "string",
+            "iconUrl": "/Images/emoji6.webp"
+          },
+          {
+            "id": 6,
+            "text": "string",
+            "iconUrl": "/Images/emoji7.webp"
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "type": 1,
+        "name": "string",
+        "iconUrl": "/Images/emoji3.webp",
+        "emoticonList": [
+          {
+            "id": 0,
+            "text": "string",
+            "iconUrl": "/Images/emoji1.webp"
+          },
+          {
+            "id": 1,
+            "text": "string",
+            "iconUrl": "/Images/emoji2.webp"
+          },
+          {
+            "id": 2,
+            "text": "string",
+            "iconUrl": "/Images/emoji3.webp"
+          },
+          {
+            "id": 3,
+            "text": "string",
+            "iconUrl": "/Images/emoji4.webp"
+          },
+          {
+            "id": 4,
+            "text": "string",
+            "iconUrl": "/Images/emoji5.webp"
+          },
+          {
+            "id": 5,
+            "text": "string",
+            "iconUrl": "/Images/emoji6.webp"
+          },
+          {
+            "id": 6,
+            "text": "string",
+            "iconUrl": "/Images/emoji7.webp"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": 2,
+        "name": "string",
+        "iconUrl": "/Images/emoji3.webp",
+        "emoticonList": [
+          {
+            "id": 0,
+            "text": "string",
+            "iconUrl": "/Images/emoji1.webp"
+          },
+          {
+            "id": 1,
+            "text": "string",
+            "iconUrl": "/Images/emoji2.webp"
+          },
+          {
+            "id": 2,
+            "text": "string",
+            "iconUrl": "/Images/emoji3.webp"
+          },
+          {
+            "id": 3,
+            "text": "string",
+            "iconUrl": "/Images/emoji4.webp"
+          },
+          {
+            "id": 4,
+            "text": "string",
+            "iconUrl": "/Images/emoji5.webp"
+          },
+          {
+            "id": 5,
+            "text": "string",
+            "iconUrl": "/Images/emoji6.webp"
+          },
+          {
+            "id": 6,
+            "text": "string",
+            "iconUrl": "/Images/emoji7.webp"
+          }
+        ]
+      }
+    ]
+  }
+  
