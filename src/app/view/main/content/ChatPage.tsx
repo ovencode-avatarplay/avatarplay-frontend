@@ -11,6 +11,7 @@ import PopUpYesOrNo from '@/components/popup/PopUpYesOrNo';
 import {sendChattingResult, sendChattingEnter, EnterEpisodeChattingReq} from '@/app/NetWork/ChatNetwork';
 import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
 import {useDispatch, useSelector} from 'react-redux';
+import {useEmojiCache} from './Chat/BottomBar/EmojiCacheContext';
 
 interface Message {
   text: string;
@@ -104,11 +105,12 @@ const ChatPage: React.FC = () => {
       const systemMessageSignCount = (newMessage.text.match(/%/g) || []).length;
 
       if (isMyMessage === false && systemMessageSignCount && systemMessageSignCount >= 2) {
-        // 시스템 메시지로 출력해주고 빠져나가자.
+        // % 문자는 제거하고 시스템 메시지로 출력해주고 빠져나가자.
         const newMessageSystem: Message = {
           text: newMessage.text,
           sender: 'system',
         };
+        newMessageSystem.text = newMessageSystem.text.replace(/%/g, '');
         newMessages.push(newMessageSystem);
         return newMessages; // 업데이트된 메시지 배열 반환
       }
@@ -225,6 +227,7 @@ const ChatPage: React.FC = () => {
       afterAsterisk: parts.slice(1).join('*'), // '*' 뒤의 문자열 (여러 개의 '*'이 있을 수 있음)
     };
   };
+  const {resetCache} = useEmojiCache();
   const navigateToNextEpisode = async (episodeId: number) => {
     console.log(`Navigating to episode ID: ${episodeId}`);
 
@@ -234,6 +237,7 @@ const ChatPage: React.FC = () => {
     };
 
     try {
+      resetCache(); // 캐시 초기화
       const response = await sendChattingEnter(requestData);
 
       if (response.resultCode === 0 && response.data) {

@@ -4,42 +4,42 @@
         "id": 0,
         "type": 0,
         "name": "string",
-        "iconUrl": "/Images/emoji3.webp",
+        "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png",
         "emoticonList": [
           {
             "id": 0,
             "text": "string",
-            "iconUrl": "/Images/emoji1.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 1,
             "text": "string",
-            "iconUrl": "/Images/emoji2.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 2,
             "text": "string",
-            "iconUrl": "/Images/emoji3.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 3,
             "text": "string",
-            "iconUrl": "/Images/emoji4.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 4,
             "text": "string",
-            "iconUrl": "/Images/emoji5.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 5,
             "text": "string",
-            "iconUrl": "/Images/emoji6.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 6,
             "text": "string",
-            "iconUrl": "/Images/emoji7.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           }
         ]
       },
@@ -47,42 +47,42 @@
         "id": 1,
         "type": 1,
         "name": "string",
-        "iconUrl": "/Images/emoji3.webp",
+        "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png",
         "emoticonList": [
           {
             "id": 0,
             "text": "string",
-            "iconUrl": "/Images/emoji1.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 1,
             "text": "string",
-            "iconUrl": "/Images/emoji2.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 2,
             "text": "string",
-            "iconUrl": "/Images/emoji3.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 3,
             "text": "string",
-            "iconUrl": "/Images/emoji4.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 4,
             "text": "string",
-            "iconUrl": "/Images/emoji5.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 5,
             "text": "string",
-            "iconUrl": "/Images/emoji6.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 6,
             "text": "string",
-            "iconUrl": "/Images/emoji7.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           }
         ]
       },
@@ -90,42 +90,42 @@
         "id": 2,
         "type": 2,
         "name": "string",
-        "iconUrl": "/Images/emoji3.webp",
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png",
         "emoticonList": [
           {
             "id": 0,
             "text": "string",
-            "iconUrl": "/Images/emoji1.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 1,
             "text": "string",
-            "iconUrl": "/Images/emoji2.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 2,
             "text": "string",
-            "iconUrl": "/Images/emoji3.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 3,
             "text": "string",
-            "iconUrl": "/Images/emoji4.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 4,
             "text": "string",
-            "iconUrl": "/Images/emoji5.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 5,
             "text": "string",
-            "iconUrl": "/Images/emoji6.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           },
           {
             "id": 6,
             "text": "string",
-            "iconUrl": "/Images/emoji7.webp"
+            "iconUrl": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.png"
           }
         ]
       }
