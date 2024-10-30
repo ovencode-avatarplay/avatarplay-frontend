@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
 import styles from './EmojiPicker.module.css';
-import EmojiItem from './EmojiItem';
 
 // 이미지 파일 경로를 /Images로 설정
 const emojiCategories: Record<string, string[]> = {
@@ -10,6 +11,16 @@ const emojiCategories: Record<string, string[]> = {
     '/Images/emoji2.webp',
     '/Images/emoji3.webp',
     '/Images/emoji4.webp',
+    '/Images/emoji5.webp',
+    '/Images/emoji5.webp',
+    '/Images/emoji5.webp',
+    '/Images/emoji5.webp',
+    '/Images/emoji5.webp',
+    '/Images/emoji5.webp',
+    '/Images/emoji5.webp',
+    '/Images/emoji5.webp',
+    '/Images/emoji5.webp',
+    '/Images/emoji5.webp',
     '/Images/emoji5.webp',
   ],
   purchased: ['/Images/emoji6.webp', '/Images/emoji7.webp', '/Images/emoji8.webp'],
@@ -41,11 +52,13 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick}) => {
           </button>
         ))}
       </div>
-      <div className={styles.emojiGrid}>
+      <ImageList sx={{width: '100%', height: 270, overflowY: 'auto'}} cols={4} rowHeight={100}>
         {emojiCategories[activeTab]?.map((emoji, index) => (
-          <EmojiItem key={index} emoji={emoji} onEmojiClick={onEmojiClick} />
+          <ImageListItem key={index} onClick={() => onEmojiClick(emoji)}>
+            <img src={emoji} alt={`emoji-${index}`} loading="lazy" />
+          </ImageListItem>
         ))}
-      </div>
+      </ImageList>
     </div>
   );
 };

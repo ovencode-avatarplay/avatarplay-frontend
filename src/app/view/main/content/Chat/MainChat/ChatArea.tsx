@@ -1,14 +1,15 @@
 import React, {useEffect, useRef} from 'react';
-import {Box} from '@mui/material';
+import {Box, Avatar} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 
 interface ChatAreaProps {
   messages: {text: string; sender: 'user' | 'partner' | 'narration' | 'system'}[]; // 'system' 추가
   bgUrl: string;
+  iconUrl: string; // iconUrl 추가
 }
 
 // ChatArea 컴포넌트
-const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl}) => {
+const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null); // 스크롤 참조용 ref
 
   useEffect(() => {
@@ -38,6 +39,20 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl}) => {
             marginBottom: 1,
           }}
         >
+          {/* 파트너 메시지일 경우 아바타 표시 */}
+          {msg.sender === 'partner' && (
+            <Avatar
+              alt="Partner Avatar"
+              src={iconUrl} // iconUrl을 사용하여 아바타 이미지 설정
+              sx={{
+                width: 32,
+                height: 32,
+                marginRight: 1,
+                border: '1px solid', // 테두리 두께와 스타일 지정
+                borderColor: 'black', // 테두리 색상 지정
+              }}
+            />
+          )}
           <Box
             sx={{
               display: 'inline-block',

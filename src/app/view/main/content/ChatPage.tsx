@@ -315,7 +315,11 @@ const ChatPage: React.FC = () => {
         onToggleBackground={handleToggleBackground}
         iconUrl={enterData?.iconImageUrl ?? ''}
       />
-      <ChatArea messages={parsedMessages} bgUrl={enterData?.episodeBgImageUrl ?? ''} />
+      <ChatArea
+        messages={parsedMessages}
+        bgUrl={enterData?.episodeBgImageUrl ?? ''}
+        iconUrl={enterData?.iconImageUrl ?? ''}
+      />
       <BottomBar onSend={handleSendMessage} streamKey={streamKey} setStreamKey={setStreamKey} />
 
       {showPopup && (

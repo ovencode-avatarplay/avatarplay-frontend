@@ -26,6 +26,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey}) 
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
+    setIsStickerOpen(false); // 창이 닫힐 때 스티커 창도 닫음
   };
 
   const handleSend = async () => {
