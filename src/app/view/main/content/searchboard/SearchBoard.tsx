@@ -24,7 +24,7 @@ const SearchBoard: React.FC = () => {
       try {
         const response = await sendGetExplore(search, onlyAdults);
 
-        console.log(response);
+        // console.log(response);
         if (response.resultCode === 0) {
           if (response.searchOptionList) {
             setSearchOptionList(response.searchOptionList);

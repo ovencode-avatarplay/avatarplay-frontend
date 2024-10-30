@@ -162,7 +162,7 @@ const ContentMain: React.FC = () => {
   //#region ChapterBoard에서 정보 수정
   function setCurEpisodeInfo() {
     try {
-      console.log(`chap ${selectedChapterIdx}, epi ${selectedEpisodeIdx}`);
+      // console.log(`chap ${selectedChapterIdx}, epi ${selectedEpisodeIdx}`);
 
       const chapter = editingContentInfo.chapterInfoList?.[selectedChapterIdx];
       const episode = chapter?.episodeInfoList?.[selectedEpisodeIdx];
@@ -400,7 +400,7 @@ const ContentMain: React.FC = () => {
 
     try {
       const result = await sendContentSave(tmp);
-      console.log('Content saved successfully!');
+      // console.log('Content saved successfully!');
       handleClosePublishing();
       Init();
     } catch (error) {

@@ -116,7 +116,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
         setChapterName(chapter.name);
         const episode = chapter.episodeInfoList[episodeIdx];
         if (episode) {
-          console.log('Success!');
+          // console.log('Success!');
           setEpisodeName(episode.name);
         } else {
           console.log(`Episode at idx ${episodeIdx} not found in Content ${contentId}`);

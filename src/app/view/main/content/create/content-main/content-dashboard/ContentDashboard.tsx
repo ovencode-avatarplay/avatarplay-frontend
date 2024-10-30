@@ -43,7 +43,7 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
     } catch (error) {
       console.error('Error fetching content by user ID:', error);
     } finally {
-      console.log('SuccessRefresh');
+      // console.log('SuccessRefresh');
     }
   };
 
@@ -91,7 +91,7 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
           const response = await sendContentDelete({contentId: selectedItemId});
 
           if (response.data) {
-            console.log('삭제된 콘텐츠 ID:', response.data.contentId);
+            // console.log('삭제된 콘텐츠 ID:', response.data.contentId);
 
             // 삭제 후 콘텐츠 목록 새로고침
             await getContentsByUserId();

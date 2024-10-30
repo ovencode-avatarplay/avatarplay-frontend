@@ -16,7 +16,7 @@ export const sendUploadImage = async (payload: UploadImageReq): Promise<Response
     });
 
     if (response.data.resultCode === 0) {
-      console.log('이미지 업로드 성공');
+      // console.log('이미지 업로드 성공');
       return response.data;
     } else {
       throw new Error(`UploadImage Error: ${response.data.resultCode}`);
@@ -28,26 +28,27 @@ export const sendUploadImage = async (payload: UploadImageReq): Promise<Response
 };
 
 export interface GenerateImageReq {
-  // userId: number;
   imagePrompt: string;
 }
 
-export const sendGenerateImageReq = async (payload: GenerateImageReq): Promise<ResponseAPI<string>> => {
+export interface GenerateImageRes {
+  imageUrl: string;
+}
+export const sendGenerateImageReq = async (payload: GenerateImageReq): Promise<ResponseAPI<GenerateImageRes>> => {
   try {
-    const response = await api.post<ResponseAPI<string>>('Resource/generateImage', payload, {
+    const response = await api.post<ResponseAPI<GenerateImageRes>>('Resource/generateImage', payload, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
     if (response.data.resultCode === 0) {
-      console.log('이미지 생성 성공');
       return response.data;
     } else {
       throw new Error(`Generate Image Error: ${response.data.resultCode}`);
     }
   } catch (error: any) {
-    console.error('Error generate image');
-    throw new Error('Fail to generate image. Please try again');
+    console.error('Error generating image:', error);
+    throw new Error('Failed to generate image. Please try again.');
   }
 };

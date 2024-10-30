@@ -20,7 +20,7 @@ export const sendContentSave = async (payload: SaveContentReq): Promise<Response
     const response = await api.post<ResponseAPI<SaveContentRes>>('Content/save', payload);
 
     if (response.data.resultCode === 0) {
-      console.log('제출 결과 성공');
+      // console.log('제출 결과 성공');
 
       return response.data;
     } else {
@@ -58,7 +58,7 @@ export const sendContentByIdGet = async (payload: GetContentByIdReq): Promise<Re
     const response = await api.post<ResponseAPI<GetContentByIdRes>>('Content/get', payload);
 
     if (response.data.resultCode === 0) {
-      console.log('제출 결과 성공');
+      // console.log('제출 결과 성공');
       return response.data;
     } else {
       throw new Error(`GetContentByIdRes Error: ${response.data.resultCode}`);
@@ -85,7 +85,7 @@ export const sendContentByIdGetTotal = async (
     const response = await api.post<ResponseAPI<GetTotalContentByIdRes>>('Content/getTotal', payload);
 
     if (response.data.resultCode === 0) {
-      console.log('제출 결과 성공');
+      // console.log('제출 결과 성공');
       return response.data;
     } else {
       throw new Error(`GetTotalContentByIdRes Error: ${response.data.resultCode}`);
@@ -112,7 +112,7 @@ export const sendContentByUserIdGet = async (
     const response = await api.post<ResponseAPI<GetContentsByUserIdRes>>('Content/dashboard', payload);
 
     if (response.data.resultCode === 0) {
-      console.log('제출 결과 성공');
+      // console.log('제출 결과 성공');
       return response.data;
     } else {
       throw new Error(`GetContentByUserIdRes Error: ${response.data.resultCode}`);
@@ -137,7 +137,7 @@ export const sendContentDelete = async (payload: DeleteContentReq): Promise<Resp
     const response = await api.post<ResponseAPI<DeleteContentRes>>('Content/delete', payload);
 
     if (response.data.resultCode === 0) {
-      console.log('삭제 결과 성공');
+      // console.log('삭제 결과 성공');
 
       return response.data;
     } else {
