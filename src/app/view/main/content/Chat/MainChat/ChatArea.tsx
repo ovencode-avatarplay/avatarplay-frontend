@@ -41,9 +41,9 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl}) => {
           <Box
             sx={{
               display: 'inline-block',
-              padding: '8px',
+              padding: msg.sender === 'system' ? '8px 55px' : '8px', // 시스템 메시지에 대해 좌우 패딩을 16px로 설정
               borderRadius: '8px',
-              maxWidth: '70%',
+              maxWidth: msg.sender === 'system' ? '90%' : '70%',
               backgroundColor:
                 msg.sender === 'user'
                   ? 'rgba(80, 80, 80, 0.8)' // 사용자 메시지: 회색(80% 불투명도)
@@ -51,12 +51,12 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl}) => {
                   ? 'rgba(0, 0, 0, 0.8)' // 파트너 메시지: 검은색(80% 불투명도)
                   : msg.sender === 'narration'
                   ? 'rgba(100, 100, 100, 0.8)' // 나레이션: 회색(80% 불투명도)
-                  : 'rgba(255, 255, 255, 0.2)', // 시스템: 하얀색(80% 불투명도)
+                  : 'rgba(214, 214, 214, 0.2)', // 시스템: 하얀색(80% 불투명도)
               backdropFilter: msg.sender === 'system' ? 'blur(20px)' : 'none', // 시스템에 블러 효과 추가
               textAlign: msg.sender === 'narration' ? 'center' : 'inherit',
               color:
                 msg.sender === 'system'
-                  ? '#FFFFFF' // 시스템: 검은색
+                  ? '#FFFFFF' // 시스템: 흰색
                   : msg.sender === 'narration'
                   ? '#E0E0E0' // 나레이션: 하얀색에 가까운 회색
                   : '#FFFFFF', // 파트너와 사용자: 흰색
@@ -64,6 +64,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl}) => {
               fontWeight: msg.sender === 'narration' ? 'normal' : 'bold', // 나레이션 메시지의 볼드체 제거
               wordWrap: 'break-word',
               whiteSpace: 'pre-wrap',
+              textShadow:
+                msg.sender === 'system'
+                  ? '1px 1px 0 rgba(116, 116, 116, 1.0), -1px -1px 0 rgba(116, 116, 116, 1.0), 1px -1px 0 rgba(116, 116, 116, 1.0), -1px 1px 0 rgba(116, 116, 116, 1.0)'
+                  : 'none', // 시스템 메시지 아웃라인
             }}
           >
             {/* 텍스트와 이미지를 포함한 메시지 렌더링 */}
