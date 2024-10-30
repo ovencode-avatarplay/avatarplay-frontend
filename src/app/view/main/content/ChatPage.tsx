@@ -11,6 +11,7 @@ import PopUpYesOrNo from '@/components/popup/PopUpYesOrNo';
 import {sendChattingResult, sendChattingEnter, EnterEpisodeChattingReq} from '@/app/NetWork/ChatNetwork';
 import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
 import {useDispatch, useSelector} from 'react-redux';
+import {useEmojiCache} from './Chat/BottomBar/EmojiCacheContext';
 
 interface Message {
   text: string;
@@ -225,6 +226,7 @@ const ChatPage: React.FC = () => {
       afterAsterisk: parts.slice(1).join('*'), // '*' 뒤의 문자열 (여러 개의 '*'이 있을 수 있음)
     };
   };
+  const {resetCache} = useEmojiCache();
   const navigateToNextEpisode = async (episodeId: number) => {
     console.log(`Navigating to episode ID: ${episodeId}`);
 
@@ -234,6 +236,7 @@ const ChatPage: React.FC = () => {
     };
 
     try {
+      resetCache(); // 캐시 초기화
       const response = await sendChattingEnter(requestData);
 
       if (response.resultCode === 0 && response.data) {

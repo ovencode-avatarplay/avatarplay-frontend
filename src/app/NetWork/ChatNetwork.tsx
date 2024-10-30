@@ -150,17 +150,7 @@ export const sendChattingEnter = async (
         responseData.emoticonGroupInfoList = chatEmojiTempData.emoticonGroupInfoList;
       }
 
-      // 이미지 URL 캐싱: 서비스 워커가 이를 캐시하도록 요청
-      responseData.emoticonGroupInfoList?.forEach(group => {
-        group.emoticonList.forEach(async emoji => {
-          if ('serviceWorker' in navigator) {
-            const response = await fetch(emoji.iconUrl, {cache: 'reload'});
-            // 다운로드 후 캐싱이 이루어짐
-            await caches.open('image-cache').then(cache => cache.put(emoji.iconUrl, response));
-          }
-        });
-      });
-
+      // 여기서 이미지 캐싱 로직 제거, URL만 반환
       return response.data;
     } else {
       throw new Error(response.data.resultMessage); // Error handling
