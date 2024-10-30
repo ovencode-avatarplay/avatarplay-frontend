@@ -13,14 +13,15 @@ import Sticker from './Sticker';
 
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
-  streamKey: string; // streamKey를 props로 전달
-  setStreamKey: (key: string) => void; // 부모에서 streamKey 설정하는 함수
-  EmoticonData?: EmoticonGroup[]; // null 및 undefined를 허용
+  streamKey: string;
+  setStreamKey: (key: string) => void;
+  EmoticonData?: EmoticonGroup[];
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, EmoticonData}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isStickerOpen, setIsStickerOpen] = useState(false);
+  const [selectedEmoticonId, setSelectedEmoticonId] = useState<number | null>(null); // 이모티콘 ID 상태 추가
   const inputRef = useRef<HTMLDivElement | null>(null);
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
@@ -33,7 +34,8 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   const handleSend = async () => {
     if (inputRef.current) {
       const combinedMessage = inputRef.current.innerHTML;
-      if (combinedMessage.trim()) {
+      if (combinedMessage.trim() || selectedEmoticonId !== null) {
+        // 메시지나 이모티콘이 선택된 경우에만 전송
         const parseMessage = false;
         onSend(combinedMessage, true, parseMessage);
         inputRef.current.innerHTML = ''; // 메시지 전송 후 입력란 초기화
@@ -41,13 +43,16 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
         const reqSendChatMessage: SendChatMessageReq = {
           userId: UserId,
           episodeId: currentEpisodeId,
+          emoticonId: selectedEmoticonId || undefined, // 이모티콘 ID가 있는 경우 추가
           text: combinedMessage,
         };
 
         const response = await sendMessageStream(reqSendChatMessage);
         if (response.resultCode === 0 && response.data) {
-          setStreamKey(response.data.streamKey); // 부모 컴포넌트의 streamKey 상태 업데이트
+          setStreamKey(response.data.streamKey);
         }
+
+        setSelectedEmoticonId(null); // 전송 후 선택된 이모티콘 ID 초기화
       }
     }
   };
@@ -61,7 +66,6 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
 
     eventSource.onmessage = event => {
       try {
-        // event.data가 null 또는 빈 문자열인지 확인
         if (!event.data) {
           throw new Error('Received null or empty data');
         }
@@ -72,7 +76,6 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
       } catch (error) {
         console.error('Error processing message:', error);
         console.error('Received data:', event.data);
-        // 추가적인 오류 처리 로직 (필요한 경우)
       }
     };
 
@@ -88,7 +91,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter') {
       if (!event.shiftKey) {
-        event.preventDefault(); // 기본 Enter 키 동작 방지
+        event.preventDefault();
         handleSend();
       }
     }
@@ -98,16 +101,18 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
     setIsStickerOpen(!isStickerOpen);
   };
 
-  const handleSelectEmoji = (emoji: string) => {
+  const handleSelectEmoji = (emojiUrl: string, emojiId: number) => {
+    // emojiId 추가
     if (inputRef.current) {
       const imgElement = document.createElement('img');
-      imgElement.src = emoji;
+      imgElement.src = emojiUrl;
       imgElement.alt = 'emoji';
       imgElement.style.width = '24px';
       imgElement.style.height = '24px';
       inputRef.current.appendChild(imgElement);
       inputRef.current.focus();
     }
+    setSelectedEmoticonId(emojiId); // 선택한 이모티콘 ID 저장
     setIsStickerOpen(false);
   };
 

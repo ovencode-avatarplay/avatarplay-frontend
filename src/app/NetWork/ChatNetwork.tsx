@@ -8,6 +8,7 @@ export interface SendChatMessageReq {
   userId: number;
   episodeId: number;
   text: string;
+  emoticonId?: number; // optional로 설정하여 undefined 허용
 }
 
 export interface SendChatMessageRes {
@@ -132,8 +133,9 @@ export interface EmoticonGroup {
   id: number;
   type: number;
   name: string;
-  iconUrl: string;
-  emoticonList: {id: number; text: string; iconUrl: string}[];
+  iconOffUrl: 'string';
+  iconOnUrl: 'string';
+  emoticonList: {id: number; text: string; emoticonUrl: string}[];
 }
 export const sendChattingEnter = async (
   req: EnterEpisodeChattingReq,
@@ -146,9 +148,9 @@ export const sendChattingEnter = async (
       const responseData = response.data.data as EnterEpisodeChattingRes;
 
       // emoticonGroupInfoList가 null일 경우 임시 데이터를 사용
-      if (!responseData.emoticonGroupInfoList) {
-        responseData.emoticonGroupInfoList = chatEmojiTempData.emoticonGroupInfoList;
-      }
+      // if (!responseData.emoticonGroupInfoList) {
+      //   responseData.emoticonGroupInfoList = chatEmojiTempData.emoticonGroupInfoList;
+      // }
 
       // 여기서 이미지 캐싱 로직 제거, URL만 반환
       return response.data;

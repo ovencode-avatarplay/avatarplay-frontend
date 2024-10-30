@@ -3,8 +3,8 @@ import EmojiPicker from './EmojiPicker';
 import {EmoticonGroup} from '@/app/NetWork/ChatNetwork';
 
 interface StickerProps {
-  onSelectEmoji: (emoji: string) => void;
-  EmoticonData?: EmoticonGroup[]; // null 및 undefined를 허용
+  onSelectEmoji: (emojiUrl: string, emojiId: number) => void; // 두 개의 인수를 받도록 수정
+  EmoticonData?: EmoticonGroup[];
 }
 
 const Sticker: React.FC<StickerProps> = ({onSelectEmoji, EmoticonData}) => {
