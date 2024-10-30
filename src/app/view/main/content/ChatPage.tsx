@@ -105,11 +105,12 @@ const ChatPage: React.FC = () => {
       const systemMessageSignCount = (newMessage.text.match(/%/g) || []).length;
 
       if (isMyMessage === false && systemMessageSignCount && systemMessageSignCount >= 2) {
-        // 시스템 메시지로 출력해주고 빠져나가자.
+        // % 문자는 제거하고 시스템 메시지로 출력해주고 빠져나가자.
         const newMessageSystem: Message = {
           text: newMessage.text,
           sender: 'system',
         };
+        newMessageSystem.text = newMessageSystem.text.replace(/%/g, '');
         newMessages.push(newMessageSystem);
         return newMessages; // 업데이트된 메시지 배열 반환
       }
