@@ -7,8 +7,13 @@ interface Message {
   sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt';
 }
 
+interface MessageGroup {
+  Messages: Message[];
+  emoticonUrl: string[]; // 이모티콘 URL 배열
+}
+
 interface ChatAreaProps {
-  messages: Message[];
+  messages: MessageGroup;
   bgUrl: string;
   iconUrl: string;
 }
@@ -19,6 +24,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl}) => {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({behavior: 'smooth'});
   }, [messages]);
+
+  console.log(messages);
 
   return (
     <Box
@@ -31,10 +38,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl}) => {
         height: '100%',
         width: '100%',
         position: 'relative',
-        fontFamily: 'Noto Sans KR, sans-serif', // 폰트 전체 적용
+        fontFamily: 'Noto Sans KR, sans-serif',
       }}
     >
-      {messages.map((msg, index) => (
+      {messages.Messages.map((msg, index) => (
         <Box
           key={index}
           sx={{
@@ -71,29 +78,39 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl}) => {
                   ? 'rgba(0, 0, 0, 0.8)'
                   : msg.sender === 'narration'
                   ? 'rgba(100, 100, 100, 0.8)'
-                  : 'rgba(214, 214, 214, 0.2)', // system
-              border: msg.sender === 'introPrompt' || msg.sender === 'system' ? '1px solid #C0C0C0' : 'none', // system 및 episodeInfo에 회색 테두리
-              backdropFilter: msg.sender === 'system' ? 'blur(20px)' : 'none', // 시스템에만 블러 효과
+                  : 'rgba(214, 214, 214, 0.2)',
+              border: msg.sender === 'introPrompt' || msg.sender === 'system' ? '1px solid #C0C0C0' : 'none',
+              backdropFilter: msg.sender === 'system' ? 'blur(20px)' : 'none',
               textAlign: msg.sender === 'narration' ? 'center' : 'inherit',
               color:
                 msg.sender === 'introPrompt'
-                  ? '#000000' // episodeInfo: 검은색 폰트
+                  ? '#000000'
                   : msg.sender === 'system'
-                  ? '#FFFFFF' // system: 흰색 폰트 유지
+                  ? '#FFFFFF'
                   : msg.sender === 'narration'
                   ? '#E0E0E0'
                   : '#FFFFFF',
               fontSize: msg.sender === 'narration' || msg.sender === 'system' ? '0.7em' : '0.8em',
               fontWeight: msg.sender === 'system' ? 'bold' : 'normal',
               wordWrap: 'break-word',
-              whiteSpace: 'pre-wrap', // 행 넘김 설정
+              whiteSpace: 'pre-wrap',
               textShadow:
                 msg.sender === 'system'
                   ? '1px 1px 0 rgba(116, 116, 116, 1.0), -1px -1px 0 rgba(116, 116, 116, 1.0), 1px -1px 0 rgba(116, 116, 116, 1.0), -1px 1px 0 rgba(116, 116, 116, 1.0)'
                   : 'none',
             }}
           >
-            <div dangerouslySetInnerHTML={{__html: msg.text}} />
+            {msg.sender === 'user' && messages.emoticonUrl[index] ? (
+              <>
+                <img
+                  src={messages.emoticonUrl[index]}
+                  alt="Emoticon"
+                  style={{width: '24px', height: '24px', marginTop: '4px'}}
+                />
+              </>
+            ) : (
+              <div dangerouslySetInnerHTML={{__html: msg.text}} />
+            )}
           </Box>
         </Box>
       ))}

@@ -101,6 +101,7 @@ export interface MessageInfo {
   userName: string;
   characterName: string;
   message: string;
+  emoticonUrl: string;
   createAt: Date;
 }
 
@@ -126,6 +127,7 @@ export interface EnterEpisodeChattingRes {
     userName: string;
     characterName: string;
     message: string;
+    emoticonUrl: string;
     createAt: string;
   }[];
   emoticonGroupInfoList: EmoticonGroup[] | null;
