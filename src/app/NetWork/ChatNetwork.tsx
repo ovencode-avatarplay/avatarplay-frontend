@@ -136,7 +136,7 @@ export interface EmoticonGroup {
   name: string;
   iconOffUrl: 'string';
   iconOnUrl: 'string';
-  emoticonList: {id: number; text: string; emoticonUrl: string}[];
+  emoticonList: {id: number; text: string; emoticonUrl: string; isFavorite: boolean}[];
 }
 export const sendChattingEnter = async (
   req: EnterEpisodeChattingReq,
@@ -196,5 +196,38 @@ export const sendChattingResult = async (req: ChattingResultReq): Promise<Chatti
   } catch (error) {
     console.error('Error sending Chatting Result:', error);
     throw new Error('Failed to send Chatting Result. Please try again.'); // 에러 핸들링
+  }
+};
+// 즐겨찾기 이모티콘 요청 및 응답 인터페이스 정의 ##########################################
+
+export interface FavoriteEmoticonReq {
+  isRegist: boolean;
+  emoticonId: number;
+}
+
+export interface FavoriteEmoticonData {
+  emoticonId: number;
+}
+
+export interface FavoriteEmoticonRes {
+  resultCode: number;
+  resultMessage: string;
+  data: FavoriteEmoticonData;
+}
+// FavoriteEmoticon API 호출 함수 ##########################################
+
+export const sendFavoriteEmoticon = async (req: FavoriteEmoticonReq): Promise<FavoriteEmoticonRes> => {
+  try {
+    const response = await api.post<FavoriteEmoticonRes>('/Chatting/favoriteEmoticon', req);
+    console.log('Favorite Emoticon request:', req, response);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(response.data.resultMessage); // 에러 핸들링
+    }
+  } catch (error) {
+    console.error('Error sending Favorite Emoticon:', error);
+    throw new Error('Failed to send Favorite Emoticon. Please try again.'); // 에러 핸들링
   }
 };

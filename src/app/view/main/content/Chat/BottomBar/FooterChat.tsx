@@ -25,6 +25,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   const [showEmojiPopup, setShowEmojiPopup] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [selectedEmoticonId, setSelectedEmoticonId] = useState<number | null>(null);
+  const [selectedEmoticonIsFavorite, setselectedEmoticonIsFavorite] = useState(false);
   const inputRef = useRef<HTMLDivElement | null>(null);
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
@@ -109,7 +110,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
     setIsStickerOpen(!isStickerOpen);
   };
 
-  const handleSelectEmoji = (emojiUrl: string, emojiId: number) => {
+  const handleSelectEmoji = (emojiUrl: string, emojiId: number, isFavorite: boolean) => {
     setSelectedEmoji(emojiUrl); // 선택된 이모티콘 URL 저장
     setSelectedEmoticonId(emojiId); // 선택된 이모티콘 ID 저장
     setShowEmojiPopup(true); // 팝업 열기
@@ -196,8 +197,13 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
         <EmojiOverlayPopup
           isOpen={showEmojiPopup}
           emojiUrl={selectedEmoji}
-          onClose={() => setShowEmojiPopup(false)}
+          emoticonId={selectedEmoticonId}
+          onClose={() => {
+            setselectedEmoticonIsFavorite(false);
+            setShowEmojiPopup(false);
+          }}
           onSend={handleSend} // 팝업에서 이모티콘 클릭 시 전송
+          isFavorite={selectedEmoticonIsFavorite}
         />
       )}
     </Box>

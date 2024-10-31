@@ -4,6 +4,7 @@ import React, {createContext, useContext, useState} from 'react';
 interface CachedImage {
   id: number;
   url: string;
+  isfavorite: boolean;
 }
 
 interface EmojiCacheContextType {

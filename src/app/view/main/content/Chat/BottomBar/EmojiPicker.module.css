@@ -31,8 +31,7 @@
   grid-template-columns: repeat(5, 1fr);
   gap: 8px;
 }
-
-.imageRect
-{
-  
+.toggleButton {
+  color: #007bff;
+  margin-right: 8px;
 }
