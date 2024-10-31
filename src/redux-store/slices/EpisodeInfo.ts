@@ -23,7 +23,7 @@ const initialState: EpisodeInfoState = {
 };
 
 const episodeInfoSlice = createSlice({
-  name: 'episodeInfo',
+  name: 'introPrompt',
   initialState,
   reducers: {
     setCurrentEpisodeInfo(state, action: PayloadAction<EpisodeInfo>) {

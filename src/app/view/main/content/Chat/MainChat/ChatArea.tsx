@@ -4,7 +4,7 @@ import styles from '@chats/Styles/StyleChat.module.css';
 
 interface Message {
   text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system' | 'episodeInfo';
+  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt';
 }
 
 interface ChatAreaProps {
@@ -16,11 +16,6 @@ interface ChatAreaProps {
 const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  if (messages.length > 0) {
-    messages[0].sender = 'episodeInfo';
-    messages[0].text =
-      'bottomRef.current?.scrollIntoView({behavior: })bottomRef.current?.scrollIntoView({behavior: })bottomRef.current?.scrollIntoView({behavior: })bottomRef.current?.scrollIntoView({behavior: })';
-  }
   useEffect(() => {
     bottomRef.current?.scrollIntoView({behavior: 'smooth'});
   }, [messages]);
@@ -66,9 +61,9 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl}) => {
               display: 'inline-block',
               padding: msg.sender === 'system' ? '8px 55px' : '8px',
               borderRadius: '8px',
-              maxWidth: msg.sender === 'episodeInfo' ? '100%' : msg.sender === 'system' ? '100%' : '70%',
+              maxWidth: msg.sender === 'introPrompt' ? '100%' : msg.sender === 'system' ? '100%' : '70%',
               backgroundColor:
-                msg.sender === 'episodeInfo'
+                msg.sender === 'introPrompt'
                   ? '#FFFFFF'
                   : msg.sender === 'user'
                   ? 'rgba(80, 80, 80, 0.8)'
@@ -77,11 +72,11 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl}) => {
                   : msg.sender === 'narration'
                   ? 'rgba(100, 100, 100, 0.8)'
                   : 'rgba(214, 214, 214, 0.2)', // system
-              border: msg.sender === 'episodeInfo' || msg.sender === 'system' ? '1px solid #C0C0C0' : 'none', // system 및 episodeInfo에 회색 테두리
+              border: msg.sender === 'introPrompt' || msg.sender === 'system' ? '1px solid #C0C0C0' : 'none', // system 및 episodeInfo에 회색 테두리
               backdropFilter: msg.sender === 'system' ? 'blur(20px)' : 'none', // 시스템에만 블러 효과
               textAlign: msg.sender === 'narration' ? 'center' : 'inherit',
               color:
-                msg.sender === 'episodeInfo'
+                msg.sender === 'introPrompt'
                   ? '#000000' // episodeInfo: 검은색 폰트
                   : msg.sender === 'system'
                   ? '#FFFFFF' // system: 흰색 폰트 유지
