@@ -15,7 +15,7 @@ import {useEmojiCache} from './Chat/BottomBar/EmojiCacheContext';
 
 interface Message {
   text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system';
+  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt';
 }
 
 const ChatPage: React.FC = () => {
@@ -46,8 +46,6 @@ const ChatPage: React.FC = () => {
   };
 
   const handleSendMessage = async (message: string, isMyMessage: boolean) => {
-    //console.log('new:', message);
-
     if (!message || typeof message !== 'string') return;
 
     // 메시지가 '$'을 포함할 경우 팝업 표시
@@ -302,15 +300,21 @@ const ChatPage: React.FC = () => {
     if (
       !hasFetchedPrevMessages &&
       !error &&
-      enterData?.prevMessageInfoList &&
-      enterData.prevMessageInfoList.length > 0
+      enterData?.prevMessageInfoList //&&
+      //enterData.prevMessageInfoList.length > 0
     ) {
       const parsedPrevMessages = enterData.prevMessageInfoList.flatMap(msg => parseMessage(msg.message) || []);
-      console.log('usePrevChatting 참조건', parsedPrevMessages);
+
+      const introPrompt2: Message = {
+        text: enterData?.introPrompt || '애피소드 도입부가 설정되지 않았습니다',
+        sender: 'introPrompt',
+      };
+
+      parsedPrevMessages.unshift(introPrompt2);
+
       setParsedMessages(parsedPrevMessages);
       setHasFetchedPrevMessages(true);
     }
-    console.log('usePrevChatting 리턴해준다.');
   }, [error, enterData, hasFetchedPrevMessages]);
 
   return (

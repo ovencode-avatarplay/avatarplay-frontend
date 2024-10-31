@@ -13,6 +13,7 @@
             {
               "id": 18,
               "name": "사이버 에피소드 1-1",
+              "shortId":"",
               "thumbnail": "https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/home/0168a12f-123b-4031-0f76-1c3dac1234fb.",
               "episodeDescription": {
                 "characterName": "유우",

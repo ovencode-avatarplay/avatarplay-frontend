@@ -120,6 +120,7 @@ export interface EnterEpisodeChattingReq {
 export interface EnterEpisodeChattingRes {
   iconImageUrl: string;
   episodeBgImageUrl: string;
+  introPrompt: string;
   prevMessageInfoList: {
     id: number;
     userName: string;
