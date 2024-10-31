@@ -13,6 +13,7 @@
               {
                 "id": 0,
                 "name": "",
+                "shortId":"",
                 "thumbnail": "",
                 "episodeDescription": {
                   "characterName": "",
