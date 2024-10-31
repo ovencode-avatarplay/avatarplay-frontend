@@ -94,8 +94,6 @@ const ChatPage: React.FC = () => {
       // 문자열을 split 해서 따로 처리해야 하는지 확인
       newMessage.text = cleanString(newMessage.text); // 없앨 부분 없애줌
 
-      console.log('=========================================================================');
-      console.log('stream message ==' + newMessage.text + '==' + newMessage.sender);
       const splitMessage = splitByAsterisk(newMessage.text);
       const splitMessageLeft = splitMessage.beforeAsterisk;
       const splitMessageRight = splitMessage.afterAsterisk;
@@ -121,7 +119,6 @@ const ChatPage: React.FC = () => {
       else {
         if (isIncludeAsterisk === true) {
           // 먼저 왼쪽을 기존 말풍선에 출력시킨다
-          console.log('splitMessageLeft ==' + splitMessageLeft + '==');
           if (splitMessageLeft.length > 0) newMessages[newMessages.length - 1].text += `${splitMessageLeft}`;
 
           // 오른쪽에서 또 *가 포함되어 있는지 검사한다.
@@ -132,7 +129,6 @@ const ChatPage: React.FC = () => {
 
             // 나레이션 상태를 바꿔준다
             isNarrationActive.active = !isNarrationActive.active;
-            console.log('나레이션상태 변경1', isNarrationActive.active);
             const newMessage2: Message = {
               text: splitMessageLeft2,
               sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
@@ -147,7 +143,6 @@ const ChatPage: React.FC = () => {
 
             // 나레이션 상태를 바꿔준다
             isNarrationActive.active = !isNarrationActive.active;
-            console.log('나레이션상태 변경2', isNarrationActive.active);
 
             // 오른쪽을 출력한다.
             if (splitMessageRight2.length > 0) {
@@ -160,7 +155,6 @@ const ChatPage: React.FC = () => {
           } else {
             // 나레이션 상태를 바꿔준다
             isNarrationActive.active = !isNarrationActive.active;
-            console.log('나레이션상태 변경3', isNarrationActive.active, splitMessageRight);
 
             const newMessage4: Message = {
               text: splitMessageRight,
@@ -177,36 +171,16 @@ const ChatPage: React.FC = () => {
             text: newMessage.text,
             sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
           };
-          console.log(
-            'newMessage5.text',
-            newMessage5.text,
-            newMessage5.sender,
-            newMessages[newMessages.length - 1].sender,
-            newMessage5.text !== ' ',
-            newMessage5.text.length,
-          );
           if (newMessage5.text !== ' ') {
             // 기존 sender와 다르면 새 말풍선으로..
             if (newMessages[newMessages.length - 1].sender !== newMessage5.sender) {
               if (newMessage5.text.length > 0) {
                 newMessages.push(newMessage5);
-                console.log(
-                  '기존 sender와 다른 새 말풍선으로..',
-                  newMessages[newMessages.length - 1].sender,
-                  newMessage5.sender,
-                  newMessage5.text,
-                );
               }
             }
             // 같은 sender면 같은 말풍선에 출력
             else if (newMessage5.text.length > 0) {
               newMessages[newMessages.length - 1].text += `${newMessage5.text}`;
-              console.log(
-                '기존 sender와 같은 말풍선으로..2',
-                newMessages[newMessages.length - 1].sender,
-                newMessage5.sender,
-                newMessage.text,
-              );
             }
           }
         }

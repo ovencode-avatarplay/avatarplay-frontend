@@ -81,8 +81,6 @@ export const parseMessage = (message: string | null): Message[] | null => {
       result.push(...parseAnswer(parsedMessage.episodeInfo));
     }
 
-    console.log('resultresultresultresult', message);
-
     if (parsedMessage.Question) {
       result.push({
         text: parsedMessage.Question,
