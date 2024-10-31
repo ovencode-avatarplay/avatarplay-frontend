@@ -32,6 +32,10 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
+    setSelectedEmoji(null);
+    setSelectedEmoticonId(null);
+    setselectedEmoticonIsFavorite(false);
+    setShowEmojiPopup(false);
     setIsStickerOpen(false); // 창이 닫힐 때 스티커 창도 닫음
   };
 
@@ -200,6 +204,8 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
           emojiUrl={selectedEmoji}
           emoticonId={selectedEmoticonId}
           onClose={() => {
+            setSelectedEmoji(null);
+            setSelectedEmoticonId(null);
             setselectedEmoticonIsFavorite(false);
             setShowEmojiPopup(false);
             console.log(selectedEmoticonIsFavorite);
