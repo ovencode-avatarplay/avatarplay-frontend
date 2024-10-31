@@ -4,11 +4,10 @@ import ImageListItem from '@mui/material/ImageListItem';
 import Avatar from '@mui/material/Avatar';
 import styles from './EmojiPicker.module.css';
 import {EmoticonGroup} from '@/app/NetWork/ChatNetwork';
-import {EmoticonType} from '@/types/apps/dataTypes';
 import {useEmojiCache} from './EmojiCacheContext';
 
 interface EmojiPickerProps {
-  onEmojiClick: (emojiUrl: string, emojiId: number) => void; // 두 개의 인수를 받도록 수정
+  onEmojiClick: (emojiUrl: string, emojiId: number) => void;
   EmoticonData?: EmoticonGroup[];
 }
 
@@ -17,9 +16,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick, EmoticonData}) =
   const [activeTab, setActiveTab] = useState(0);
 
   const downloadImagesForTab = async (tabIndex: number) => {
-    if (cachedImages[tabIndex] || !EmoticonData) {
-      return; // 캐시에 이미지가 이미 있는 경우 다운로드 생략
-    }
+    if (cachedImages[tabIndex] || !EmoticonData) return;
 
     const selectedGroup = EmoticonData[tabIndex];
     const downloadedImages = await Promise.all(
@@ -59,13 +56,21 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick, EmoticonData}) =
               src={activeTab === index ? group.iconOnUrl : group.iconOffUrl}
               sx={{width: 24, height: 24, marginRight: 1}}
             />
-            {EmoticonType[group.type] || 'Unknown'}
           </button>
         ))}
       </div>
 
       {cachedImages[activeTab] ? (
-        <ImageList sx={{width: '100%', height: 270, overflowY: 'auto'}} cols={4} rowHeight={100}>
+        <ImageList
+          sx={{
+            width: '100%',
+            height: 270,
+            overflowY: 'auto',
+          }}
+          cols={4}
+          rowHeight={80}
+          gap={10}
+        >
           {cachedImages[activeTab].map(emoji => (
             <ImageListItem key={emoji.id} onClick={() => onEmojiClick(emoji.url, emoji.id)}>
               <img src={emoji.url} alt={`emoji-${emoji.id}`} loading="lazy" />

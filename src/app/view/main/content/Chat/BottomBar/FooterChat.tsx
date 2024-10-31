@@ -10,6 +10,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {SendChatMessageReq, sendMessageStream, EmoticonGroup} from '@/app/NetWork/ChatNetwork';
 import Sticker from './Sticker';
+import EmojiOverlayPopup from './EmojiOverlayPopup';
 
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
@@ -21,7 +22,9 @@ interface BottomBarProps {
 const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, EmoticonData}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isStickerOpen, setIsStickerOpen] = useState(false);
-  const [selectedEmoticonId, setSelectedEmoticonId] = useState<number | null>(null); // 이모티콘 ID 상태 추가
+  const [showEmojiPopup, setShowEmojiPopup] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
+  const [selectedEmoticonId, setSelectedEmoticonId] = useState<number | null>(null);
   const inputRef = useRef<HTMLDivElement | null>(null);
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
@@ -32,27 +35,32 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   };
 
   const handleSend = async () => {
-    if (inputRef.current) {
-      const combinedMessage = inputRef.current.innerHTML;
-      if (combinedMessage.trim() || selectedEmoticonId !== null) {
-        // 메시지나 이모티콘이 선택된 경우에만 전송
-        const parseMessage = false;
-        onSend(combinedMessage, true, parseMessage);
-        inputRef.current.innerHTML = ''; // 메시지 전송 후 입력란 초기화
+    const messageText = inputRef.current ? inputRef.current.innerHTML : '';
 
-        const reqSendChatMessage: SendChatMessageReq = {
-          userId: UserId,
-          episodeId: currentEpisodeId,
-          emoticonId: selectedEmoticonId || undefined, // 이모티콘 ID가 있는 경우 추가
-          text: combinedMessage,
-        };
+    // 선택된 이모티콘이 있으면 이미지 요소로 생성
+    const message = selectedEmoji
+      ? `<img src="${selectedEmoji}" alt="emoji" style="width:24px;height:24px;"/>`
+      : messageText;
 
-        const response = await sendMessageStream(reqSendChatMessage);
-        if (response.resultCode === 0 && response.data) {
-          setStreamKey(response.data.streamKey);
-        }
+    if (message.trim()) {
+      const parseMessage = false;
+      onSend(message, true, parseMessage);
 
-        setSelectedEmoticonId(null); // 전송 후 선택된 이모티콘 ID 초기화
+      if (inputRef.current) inputRef.current.innerHTML = ''; // 입력란 초기화
+      setSelectedEmoticonId(null); // 선택된 이모티콘 ID 초기화
+      setSelectedEmoji(null); // 선택된 이모티콘 초기화
+      setShowEmojiPopup(false); // 팝업 닫기
+
+      const reqSendChatMessage: SendChatMessageReq = {
+        userId: UserId,
+        episodeId: currentEpisodeId,
+        emoticonId: selectedEmoticonId || undefined,
+        text: message, // 이미지 요소가 포함된 message
+      };
+
+      const response = await sendMessageStream(reqSendChatMessage);
+      if (response.resultCode === 0 && response.data) {
+        setStreamKey(response.data.streamKey);
       }
     }
   };
@@ -102,18 +110,9 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   };
 
   const handleSelectEmoji = (emojiUrl: string, emojiId: number) => {
-    // emojiId 추가
-    if (inputRef.current) {
-      const imgElement = document.createElement('img');
-      imgElement.src = emojiUrl;
-      imgElement.alt = 'emoji';
-      imgElement.style.width = '24px';
-      imgElement.style.height = '24px';
-      inputRef.current.appendChild(imgElement);
-      inputRef.current.focus();
-    }
-    setSelectedEmoticonId(emojiId); // 선택한 이모티콘 ID 저장
-    setIsStickerOpen(false);
+    setSelectedEmoji(emojiUrl); // 선택된 이모티콘 URL 저장
+    setSelectedEmoticonId(emojiId); // 선택된 이모티콘 ID 저장
+    setShowEmojiPopup(true); // 팝업 열기
   };
 
   return (
@@ -125,7 +124,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
         width: '100%',
         backgroundColor: 'white',
         transition: 'height 0.3s',
-        height: isStickerOpen ? '400px' : 'auto',
+        height: isStickerOpen ? '350px' : 'auto', //박스 크기 조절 부분
         boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)',
       }}
     >
@@ -191,6 +190,16 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
         </Box>
       )}
       {isExpanded && isStickerOpen && <Sticker onSelectEmoji={handleSelectEmoji} EmoticonData={EmoticonData} />}
+
+      {/* EmojiOverlayPopup - 선택된 이모티콘을 팝업에 표시 */}
+      {showEmojiPopup && selectedEmoji && (
+        <EmojiOverlayPopup
+          isOpen={showEmojiPopup}
+          emojiUrl={selectedEmoji}
+          onClose={() => setShowEmojiPopup(false)}
+          onSend={handleSend} // 팝업에서 이모티콘 클릭 시 전송
+        />
+      )}
     </Box>
   );
 };
