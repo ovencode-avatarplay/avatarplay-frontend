@@ -17,6 +17,7 @@ export interface EpisodeInfo {
 export interface EpisodeInfoForContentGet {
   id: number;
   name: string;
+  shortId: string;
   description: string;
   thumbnailList: string[];
   isLock: boolean;

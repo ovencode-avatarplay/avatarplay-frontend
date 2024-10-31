@@ -30,6 +30,7 @@ const ChatPage: React.FC = () => {
 
   const userId = useSelector((state: RootState) => state.user.userId);
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
+  const shortsId = useSelector((state: RootState) => state.chatting.shortsId);
   const handleBackClick = useBackHandler();
   const dispatch = useDispatch();
   const cleanString = (input: string): string => {
@@ -251,6 +252,7 @@ const ChatPage: React.FC = () => {
           contentName: `content episode${episodeId}`,
           episodeName: `episode${episodeId}`,
           episodeId: Number(episodeId),
+          shortsId: shortsId,
         };
         dispatch(setStateChatting(chattingState));
       } else {

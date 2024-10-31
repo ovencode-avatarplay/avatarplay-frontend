@@ -5,6 +5,7 @@ export type ChattingState = {
   contentName: string;
   episodeName: string;
   episodeId: number;
+  shortsId: string;
 };
 
 // 초기 상태
@@ -12,6 +13,7 @@ export const initialStateChatting: ChattingState = {
   contentName: '컨텐츠네임',
   episodeName: '에피소드네임',
   episodeId: 18,
+  shortsId: 'ulKWT854VAx',
 };
 
 export const chattingSlice = createSlice({

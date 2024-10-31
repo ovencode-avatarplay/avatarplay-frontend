@@ -51,9 +51,13 @@ import {EpisodeCardProps} from '@/types/apps/episode-card-type';
 import ContentRecommendList from './ContentRecommendList';
 import Link from 'next/link';
 import {Padding} from '@mui/icons-material';
+import {string} from 'valibot';
 
 const DrawerContentDesc = () => {
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
+
+  const [shortsUrl, setShortsUrl] = useState('?v=vAPWL926G7M');
+
   const [selectedChapterIdx, setSelectedChapterIdx] = useState<number>(-1);
   const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number>(-1);
   const userId = useSelector((state: RootState) => state.user.userId);
@@ -84,8 +88,14 @@ const DrawerContentDesc = () => {
       contentName: `content episode${episodeId}`,
       episodeName: `episode${episodeId}`,
       episodeId: Number(episodeId),
+      shortsId: shortsUrl,
     };
     dispatch(setStateChatting(chattingState));
+
+    setShortsUrl(
+      `?v=${contentWholeDesc?.chapterInfoList[selectedChapterIdx]?.episodeInfoList[selectedEpisodeIdx]?.shortId}` ||
+        `?v=Err`,
+    );
   }, [episodeId]);
 
   useEffect(() => {
@@ -110,6 +120,11 @@ const DrawerContentDesc = () => {
       setSelectedEpisodeIdx(0);
       setEpisodes(contentWholeDesc.chapterInfoList[0].episodeInfoList);
       dispatch(setDrawerEpisodeId(contentWholeDesc.chapterInfoList[0].episodeInfoList[0].id));
+
+      setShortsUrl(
+        `?v=${contentWholeDesc?.chapterInfoList[selectedChapterIdx]?.episodeInfoList[selectedEpisodeIdx]?.shortId}` ||
+          `?v=Err`,
+      );
     }
   }, [contentWholeDesc]);
 
@@ -282,7 +297,7 @@ const DrawerContentDesc = () => {
         <div className={Style.episodeListContainer}>
           <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
         </div>
-        <Link href={`/:lang/chat`} className={Style.startNewChatButton}>
+        <Link href={`/:lang/chat${shortsUrl}`} className={Style.startNewChatButton}>
           <Button variant="contained" fullWidth>
             Start new chat - episode : {episodeId}
           </Button>
