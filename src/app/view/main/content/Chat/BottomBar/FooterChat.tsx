@@ -114,6 +114,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
     setSelectedEmoji(emojiUrl); // 선택된 이모티콘 URL 저장
     setSelectedEmoticonId(emojiId); // 선택된 이모티콘 ID 저장
     setShowEmojiPopup(true); // 팝업 열기
+    setselectedEmoticonIsFavorite(isFavorite);
   };
 
   return (
@@ -201,6 +202,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
           onClose={() => {
             setselectedEmoticonIsFavorite(false);
             setShowEmojiPopup(false);
+            console.log(selectedEmoticonIsFavorite);
           }}
           onSend={handleSend} // 팝업에서 이모티콘 클릭 시 전송
           isFavorite={selectedEmoticonIsFavorite}

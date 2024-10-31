@@ -4,13 +4,14 @@ import React, {createContext, useContext, useState} from 'react';
 interface CachedImage {
   id: number;
   url: string;
-  isfavorite: boolean;
+  isFavorite: boolean;
 }
 
 interface EmojiCacheContextType {
   cachedImages: Record<number, CachedImage[]>;
   setCachedImages: React.Dispatch<React.SetStateAction<Record<number, CachedImage[]>>>;
-  resetCache: () => void; // 캐시 초기화 함수
+  resetCache: () => void;
+  updateFavoriteStatus: (emoticonId: number, isFavorite: boolean) => void;
 }
 
 const EmojiCacheContext = createContext<EmojiCacheContextType | undefined>(undefined);
@@ -18,11 +19,26 @@ const EmojiCacheContext = createContext<EmojiCacheContextType | undefined>(undef
 export const EmojiCacheProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const [cachedImages, setCachedImages] = useState<Record<number, CachedImage[]>>({});
 
-  // 캐시 초기화 함수
   const resetCache = () => setCachedImages({});
+  // src/context/EmojiCacheContext.tsx
+
+  const updateFavoriteStatus = (emoticonId: number, isFavorite: boolean) => {
+    setCachedImages(prev => {
+      const updatedImages = {...prev};
+
+      // cachedImages의 모든 키를 순회하며 해당 이모티콘의 isFavorite 상태 업데이트
+      Object.keys(updatedImages).forEach(key => {
+        updatedImages[Number(key)] = updatedImages[Number(key)].map(image =>
+          image.id === emoticonId ? {...image, isFavorite} : image,
+        );
+      });
+
+      return updatedImages;
+    });
+  };
 
   return (
-    <EmojiCacheContext.Provider value={{cachedImages, setCachedImages, resetCache}}>
+    <EmojiCacheContext.Provider value={{cachedImages, setCachedImages, resetCache, updateFavoriteStatus}}>
       {children}
     </EmojiCacheContext.Provider>
   );

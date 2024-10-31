@@ -16,8 +16,9 @@ interface EmojiPickerProps {
 
 const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick, EmoticonData}) => {
   const {cachedImages, setCachedImages} = useEmojiCache();
-  const [activeTab, setActiveTab] = useState<number | null>(0); // 탭을 선택할 때 토글 비활성화
-  const [isToggleFavorite, setIsToggleFavorite] = useState(false); // 토글 상태 관리
+  const [activeTab, setActiveTab] = useState<number | null>(0);
+  const [isToggleFavorite, setIsToggleFavorite] = useState(false);
+  const [favoriteEmojis, setFavoriteEmojis] = useState<{id: number; url: string; favorite: boolean}[]>([]);
 
   const downloadImagesForTab = async (tabIndex: number) => {
     if (cachedImages[tabIndex] || !EmoticonData) return;
@@ -28,7 +29,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick, EmoticonData}) =
         const response = await fetch(emoji.emoticonUrl);
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
-        return {id: emoji.id, url, isfavorite: emoji.isFavorite};
+        return {id: emoji.id, url, isFavorite: emoji.isFavorite};
       }),
     );
 
@@ -39,23 +40,28 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick, EmoticonData}) =
   };
 
   useEffect(() => {
-    downloadImagesForTab(0); // 초기 Basic 탭 이미지 다운로드
+    downloadImagesForTab(0);
   }, [EmoticonData]);
+
+  // cachedImages가 변경될 때마다 favoriteEmojis 최신화
+  useEffect(() => {
+    const favorites = Object.values(cachedImages)
+      .flat()
+      .filter(emoji => emoji.isFavorite)
+      .map(emoji => ({id: emoji.id, url: emoji.url, favorite: emoji.isFavorite}));
+    setFavoriteEmojis(favorites);
+  }, [cachedImages]);
 
   const handleTabChange = (index: number) => {
     setActiveTab(index);
-    setIsToggleFavorite(false); // 탭을 선택하면 토글을 해제
+    setIsToggleFavorite(false);
     downloadImagesForTab(index);
   };
 
   const toggleFavoriteView = () => {
-    setIsToggleFavorite(prev => !prev); // 즐겨찾기 보기 상태 토글
-    setActiveTab(null); // 토글 버튼을 누르면 탭 선택 해제
+    setIsToggleFavorite(prev => !prev);
+    setActiveTab(null);
   };
-
-  const favoriteEmojis = EmoticonData?.flatMap(group => group.emoticonList.filter(emoji => emoji.isFavorite)).map(
-    emoji => ({id: emoji.id, url: emoji.emoticonUrl, favorite: emoji.isFavorite}),
-  );
 
   return (
     <div className={styles.emojiPicker}>
@@ -99,7 +105,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick, EmoticonData}) =
         cachedImages[activeTab] && cachedImages[activeTab].length > 0 ? (
           <ImageList sx={{width: '100%', height: 270, overflowY: 'auto'}} cols={4} rowHeight={80} gap={10}>
             {cachedImages[activeTab].map(emoji => (
-              <ImageListItem key={emoji.id} onClick={() => onEmojiClick(emoji.url, emoji.id, emoji.isfavorite)}>
+              <ImageListItem key={emoji.id} onClick={() => onEmojiClick(emoji.url, emoji.id, emoji.isFavorite)}>
                 <img src={emoji.url} alt={`emoji-${emoji.id}`} loading="lazy" />
               </ImageListItem>
             ))}

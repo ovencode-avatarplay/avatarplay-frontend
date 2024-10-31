@@ -5,13 +5,14 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import {sendFavoriteEmoticon} from '@/app/NetWork/ChatNetwork';
+import {useEmojiCache} from './EmojiCacheContext';
 
 interface EmojiOverlayPopupProps {
   isOpen: boolean;
   emojiUrl: string;
   onClose: () => void;
   isFavorite: boolean;
-  emoticonId: string | null;
+  emoticonId: number | null;
   onSend: () => void;
 }
 
@@ -24,26 +25,32 @@ const EmojiOverlayPopup: React.FC<EmojiOverlayPopupProps> = ({
   onSend,
 }) => {
   const [isStarred, setIsStarred] = useState(isFavorite);
+  const {updateFavoriteStatus} = useEmojiCache();
 
-  // 별 상태 초기화 (isFavorite 값에 따라)
+  // 이모티콘 ID나 즐겨찾기 상태가 바뀔 때마다 isStarred를 초기화
   useEffect(() => {
+    console.log(isFavorite);
     setIsStarred(isFavorite);
-  }, [isFavorite]);
-  const parsedEmoticonId = parseInt(emoticonId ?? '0', 10);
+  }, [isFavorite, emoticonId]);
+
   const handleStarClick = async () => {
     try {
-      const updatedIsFavorite = !isStarred; // 현재 상태 반대로 설정
+      const updatedIsFavorite = !isStarred;
       setIsStarred(updatedIsFavorite);
 
-      // API 호출하여 즐겨찾기 상태 업데이트
-      await sendFavoriteEmoticon({
-        isRegist: updatedIsFavorite, // 별을 켜면 true, 끄면 false
-        emoticonId: parsedEmoticonId,
+      // 서버에 요청
+      const response = await sendFavoriteEmoticon({
+        isRegist: updatedIsFavorite,
+        emoticonId: emoticonId ?? 0,
       });
-      console.log(`Emoticon ID ${emoticonId} favorite status updated successfully.`);
+
+      // 서버 응답으로 상태 업데이트
+      if (response && response.data.emoticonId === emoticonId) {
+        updateFavoriteStatus(emoticonId, updatedIsFavorite);
+      }
     } catch (error) {
       console.error('Failed to update favorite status:', error);
-      setIsStarred(!isStarred); // 오류 발생 시 상태 원상복구
+      setIsStarred(isFavorite); // 실패 시 초기값으로 복구
     }
   };
 
