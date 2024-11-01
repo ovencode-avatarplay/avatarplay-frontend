@@ -8,7 +8,13 @@ import usePrevChatting from '@chats/MainChat/PrevChatting';
 import {RootState} from '@/redux-store/ReduxStore';
 import {parseMessage} from '@chats/MainChat/MessageParser';
 import PopUpYesOrNo from '@/components/popup/PopUpYesOrNo';
-import {sendChattingResult, sendChattingEnter, EnterEpisodeChattingReq} from '@/app/NetWork/ChatNetwork';
+import {
+  sendChattingResult,
+  sendChattingEnter,
+  EnterEpisodeChattingReq,
+  fetchEmoticonGroups,
+  EmoticonGroupInfo,
+} from '@/app/NetWork/ChatNetwork';
 import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEmojiCache} from './Chat/BottomBar/EmojiCacheContext';
@@ -202,7 +208,6 @@ const ChatPage: React.FC = () => {
       afterAsterisk: parts.slice(1).join('*'), // '*' 뒤의 문자열 (여러 개의 '*'이 있을 수 있음)
     };
   };
-  const {resetCache} = useEmojiCache();
   const navigateToNextEpisode = async (episodeId: number) => {
     console.log(`Navigating to episode ID: ${episodeId}`);
 
@@ -212,7 +217,6 @@ const ChatPage: React.FC = () => {
     };
 
     try {
-      resetCache(); // 캐시 초기화
       const response = await sendChattingEnter(requestData);
 
       if (response.resultCode === 0 && response.data) {
@@ -335,9 +339,19 @@ const ChatPage: React.FC = () => {
       };
       setParsedMessages(messageInfo);
       setHasFetchedPrevMessages(true);
+
+      const loadEmoticons = async () => {
+        try {
+          const response = await fetchEmoticonGroups();
+          setEmoticonGroupInfoList(response.data.emoticonGroupInfoList);
+        } catch (error) {
+          console.error('Error fetching emoticon groups:', error);
+        }
+      };
+      loadEmoticons();
     }
   }, [error, enterData, hasFetchedPrevMessages]);
-
+  const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
   return (
     <main className={styles.chatmodal}>
       <TopBar
@@ -355,7 +369,7 @@ const ChatPage: React.FC = () => {
         onSend={handleSendMessage}
         streamKey={streamKey}
         setStreamKey={setStreamKey}
-        EmoticonData={enterData?.emoticonGroupInfoList || []}
+        EmoticonData={emoticonGroupInfoList || []} // EmoticonData에 emoticonGroupInfoList 전달
       />
 
       {showPopup && (

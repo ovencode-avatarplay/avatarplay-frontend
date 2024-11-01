@@ -5,7 +5,6 @@ import {
   MessageInfo,
   sendChattingEnter,
 } from '@/app/NetWork/ChatNetwork';
-import {useEmojiCache} from '../BottomBar/EmojiCacheContext';
 const usePrevChatting = (userId: number, episodeId: number) => {
   // 이전 메시지 및 에러 상태값 정의
   const [prevMessages, setPrevMessages] = useState<EnterEpisodeChattingRes>();
@@ -17,13 +16,10 @@ const usePrevChatting = (userId: number, episodeId: number) => {
     userId: userId,
     episodeId: episodeId,
   };
-  const {resetCache} = useEmojiCache();
 
   // 데이터를 가져오는 비동기 함수
   const fetchChattingData = async () => {
     try {
-      resetCache(); // 캐시 초기화
-
       // 서버로부터 이전 채팅 데이터를 가져옴
       const response = await sendChattingEnter(ReqData);
       if (response.resultCode === 0 && response.data) {

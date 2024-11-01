@@ -6,11 +6,5 @@ import {store} from '@/redux-store/ReduxStore';
 import {EmojiCacheProvider} from '@/app/view/main/content/Chat/BottomBar/EmojiCacheContext';
 
 export default function ChatPage() {
-  return (
-    <Provider store={store}>
-      <EmojiCacheProvider>
-        <Chat />
-      </EmojiCacheProvider>
-    </Provider>
-  );
+  return <Chat />;
 }

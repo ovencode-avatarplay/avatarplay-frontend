@@ -130,16 +130,8 @@ export interface EnterEpisodeChattingRes {
     emoticonUrl: string;
     createAt: string;
   }[];
-  emoticonGroupInfoList: EmoticonGroup[] | null;
 }
-export interface EmoticonGroup {
-  id: number;
-  type: number;
-  name: string;
-  iconOffUrl: 'string';
-  iconOnUrl: 'string';
-  emoticonList: {id: number; text: string; emoticonUrl: string; isFavorite: boolean}[];
-}
+
 export const sendChattingEnter = async (
   req: EnterEpisodeChattingReq,
 ): Promise<ResponseAPI<EnterEpisodeChattingRes>> => {
@@ -231,5 +223,47 @@ export const sendFavoriteEmoticon = async (req: FavoriteEmoticonReq): Promise<Fa
   } catch (error) {
     console.error('Error sending Favorite Emoticon:', error);
     throw new Error('Failed to send Favorite Emoticon. Please try again.'); // 에러 핸들링
+  }
+};
+
+// 이모티콘 그룹 요청 및 응답 인터페이스 정의 ##########################################
+
+export interface EmoticonGroupInfo {
+  id: number;
+  type: number;
+  name: string;
+  iconOffUrl: string;
+  iconOnUrl: string;
+  emoticonList: {
+    id: number;
+    text: string;
+    emoticonUrl: string;
+    isFavorite: boolean;
+  }[];
+}
+
+export interface EmoticonGroupRes {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    emoticonGroupInfoList: EmoticonGroupInfo[];
+  };
+}
+
+// 이모티콘 그룹 API 호출 함수 ##########################################
+
+export const fetchEmoticonGroups = async (): Promise<EmoticonGroupRes> => {
+  try {
+    const response = await api.post<EmoticonGroupRes>('/Resource/subMenu', {});
+    console.log('Emoticon Group request:', response);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(response.data.resultMessage); // 에러 메시지 처리
+    }
+  } catch (error) {
+    console.error('Error fetching Emoticon Group:', error);
+    throw new Error('Failed to fetch Emoticon Groups. Please try again.'); // 에러 메시지 처리
   }
 };

@@ -5,7 +5,9 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import {sendFavoriteEmoticon} from '@/app/NetWork/ChatNetwork';
-import {useEmojiCache} from './EmojiCacheContext';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {updateFavorite} from '@/redux-store/slices/EmoticonSlice';
 
 interface EmojiOverlayPopupProps {
   isOpen: boolean;
@@ -25,11 +27,10 @@ const EmojiOverlayPopup: React.FC<EmojiOverlayPopupProps> = ({
   onSend,
 }) => {
   const [isStarred, setIsStarred] = useState(isFavorite);
-  const {updateFavoriteStatus} = useEmojiCache();
+  const dispatch = useDispatch();
 
   // 이모티콘 ID나 즐겨찾기 상태가 바뀔 때마다 isStarred를 초기화
   useEffect(() => {
-    console.log(isFavorite);
     setIsStarred(isFavorite);
   }, [isFavorite, emoticonId]);
 
@@ -37,7 +38,7 @@ const EmojiOverlayPopup: React.FC<EmojiOverlayPopupProps> = ({
     try {
       const updatedIsFavorite = !isStarred;
       setIsStarred(updatedIsFavorite);
-
+      console.log(updatedIsFavorite);
       // 서버에 요청
       const response = await sendFavoriteEmoticon({
         isRegist: updatedIsFavorite,
@@ -46,7 +47,7 @@ const EmojiOverlayPopup: React.FC<EmojiOverlayPopupProps> = ({
 
       // 서버 응답으로 상태 업데이트
       if (response && response.data.emoticonId === emoticonId) {
-        updateFavoriteStatus(emoticonId, updatedIsFavorite);
+        dispatch(updateFavorite({emoticonId: emoticonId, isFavorite: !isStarred}));
       }
     } catch (error) {
       console.error('Failed to update favorite status:', error);
