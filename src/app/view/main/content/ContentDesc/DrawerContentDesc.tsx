@@ -84,10 +84,12 @@ const DrawerContentDesc = () => {
 
   const [episodeItems, setEpisodeItems] = useState<EpisodeCardProps[]>([]);
 
+  const currentChattingState = useSelector((state: RootState) => state.chatting);
+
   useEffect(() => {
     const chattingState: ChattingState = {
-      contentName: `content episode${episodeId}`,
-      episodeName: `episode${episodeId}`,
+      contentName: currentChattingState.contentName || '',
+      episodeName: currentChattingState.episodeName || '',
       episodeId: Number(episodeId),
       contentUrl: contentUrl,
     };
