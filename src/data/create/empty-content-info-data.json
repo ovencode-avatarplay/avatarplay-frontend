@@ -5,6 +5,7 @@
       "contentInfo": {
         "id": 0,
         "userId": 0,
+        "urlLinkKey" : "",
         "chapterInfoList": [
           {
             "id": 0,
@@ -13,7 +14,6 @@
               {
                 "id": 0,
                 "name": "",
-                "shortId":"",
                 "thumbnail": "",
                 "episodeDescription": {
                   "characterName": "",

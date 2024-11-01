@@ -43,6 +43,7 @@ export interface GetContentByIdReq {
 export interface GetContentByIdRes {
   chatCount: number;
   chatUserCount: number;
+  urlLinkKey: string;
   publishInfo: PublishInfo;
   chapterInfoList: ChapterInfoForContentGet[];
   recommandContentInfoList: recommendContentInfo[];

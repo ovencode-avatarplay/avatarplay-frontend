@@ -56,7 +56,7 @@ import {string} from 'valibot';
 const DrawerContentDesc = () => {
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
 
-  const [shortsUrl, setShortsUrl] = useState('?v=vAPWL926G7M');
+  const [contentUrl, setContentUrl] = useState('?v=vAPWL926G7M');
 
   const [selectedChapterIdx, setSelectedChapterIdx] = useState<number>(-1);
   const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number>(-1);
@@ -88,14 +88,11 @@ const DrawerContentDesc = () => {
       contentName: `content episode${episodeId}`,
       episodeName: `episode${episodeId}`,
       episodeId: Number(episodeId),
-      shortsId: shortsUrl,
+      contentUrl: contentUrl,
     };
     dispatch(setStateChatting(chattingState));
 
-    setShortsUrl(
-      `?v=${contentWholeDesc?.chapterInfoList[selectedChapterIdx]?.episodeInfoList[selectedEpisodeIdx]?.shortId}` ||
-        `?v=Err`,
-    );
+    setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
   }, [episodeId]);
 
   useEffect(() => {
@@ -121,10 +118,7 @@ const DrawerContentDesc = () => {
       setEpisodes(contentWholeDesc.chapterInfoList[0].episodeInfoList);
       dispatch(setDrawerEpisodeId(contentWholeDesc.chapterInfoList[0].episodeInfoList[0].id));
 
-      setShortsUrl(
-        `?v=${contentWholeDesc?.chapterInfoList[selectedChapterIdx]?.episodeInfoList[selectedEpisodeIdx]?.shortId}` ||
-          `?v=Err`,
-      );
+      setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
     }
   }, [contentWholeDesc]);
 
@@ -297,7 +291,7 @@ const DrawerContentDesc = () => {
         <div className={Style.episodeListContainer}>
           <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
         </div>
-        <Link href={`/:lang/chat${shortsUrl}`} className={Style.startNewChatButton}>
+        <Link href={`/:lang/chat${contentUrl}`} className={Style.startNewChatButton}>
           <Button variant="contained" fullWidth>
             Start new chat - episode : {episodeId}
           </Button>

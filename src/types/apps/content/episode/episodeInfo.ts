@@ -7,7 +7,6 @@ import {Conversation} from './conversation';
 export interface EpisodeInfo {
   id: number;
   name: string;
-  shortId: string;
   thumbnail: string;
   episodeDescription: EpisodeDescription;
   triggerInfoList: TriggerInfo[];
@@ -18,7 +17,6 @@ export interface EpisodeInfo {
 export interface EpisodeInfoForContentGet {
   id: number;
   name: string;
-  shortId: string;
   description: string;
   thumbnailList: string[];
   isLock: boolean;
