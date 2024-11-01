@@ -21,6 +21,7 @@ import {
 import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
 import {useDispatch, useSelector} from 'react-redux';
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
+import BottomNavData from 'data/navigation/bottom-nav.json';
 
 interface Message {
   text: string;

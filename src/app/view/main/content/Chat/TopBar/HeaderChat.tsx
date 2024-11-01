@@ -8,6 +8,8 @@ import styles from '@chats/Styles/StyleChat.module.css';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {ChattingState} from '@/redux-store/slices/chatting';
+import BottomNavData from 'data/navigation/bottom-nav.json';
+import Link from 'next/link';
 
 interface ChatTopBarProps {
   onBackClick: () => void;
@@ -22,9 +24,11 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, onToggleBa
   return (
     <div className={styles.topBar}>
       <div className={styles.left}>
-        <IconButton className={styles.backButton} onClick={onBackClick}>
-          <ArrowBackIcon />
-        </IconButton>
+        <Link href={BottomNavData.find(item => item.label === 'Explore')?.link || '/default-path'}>
+          <IconButton className={styles.backButton} onClick={() => {}}>
+            <ArrowBackIcon />
+          </IconButton>
+        </Link>
 
         <Avatar src={iconUrl || '/default-avatar.png'} alt={chattingState1.contentName} className={styles.avatar} />
 
