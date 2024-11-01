@@ -25,8 +25,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl}) => {
     bottomRef.current?.scrollIntoView({behavior: 'smooth'});
   }, [messages]);
 
-  console.log(messages);
-
   return (
     <Box
       className={styles.chatArea}

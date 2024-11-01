@@ -6,11 +6,12 @@ import CameraIcon from '@mui/icons-material/Camera';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import styles from '@chats/BottomBar/FooterChat.module.css';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {SendChatMessageReq, sendMessageStream, EmoticonGroupInfo} from '@/app/NetWork/ChatNetwork';
 import Sticker from './Sticker';
 import EmojiOverlayPopup from './EmojiOverlayPopup';
+import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
 
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
@@ -29,6 +30,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   const inputRef = useRef<HTMLDivElement | null>(null);
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
+  const dispatch = useDispatch();
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -52,9 +54,6 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
       onSend(message, true, parseMessage);
 
       if (inputRef.current) inputRef.current.innerHTML = ''; // 입력란 초기화
-      setSelectedEmoticonId(null); // 선택된 이모티콘 ID 초기화
-      setSelectedEmoji(null); // 선택된 이모티콘 초기화
-      setShowEmojiPopup(false); // 팝업 닫기
 
       const reqSendChatMessage: SendChatMessageReq = {
         userId: UserId,
@@ -62,6 +61,12 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
         emoticonId: selectedEmoticonId || undefined,
         text: message, // 이미지 요소가 포함된 message
       };
+
+      dispatch(updateRecent({emoticonId: selectedEmoticonId == undefined ? 0 : selectedEmoticonId}));
+
+      setSelectedEmoticonId(null); // 선택된 이모티콘 ID 초기화
+      setSelectedEmoji(null); // 선택된 이모티콘 초기화
+      setShowEmojiPopup(false); // 팝업 닫기
 
       const response = await sendMessageStream(reqSendChatMessage);
       if (response.resultCode === 0 && response.data) {

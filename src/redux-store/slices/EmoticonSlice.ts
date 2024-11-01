@@ -29,7 +29,7 @@ export const fetchAndUpdateEmoticonGroups = createAsyncThunk(
   async (emoticonGroups: EmoticonGroup[], {dispatch, getState}) => {
     const state = getState() as {emoticon: EmoticonState};
     const cachedGroups = state.emoticon.emoticonGroups;
-
+    console.log('1111');
     const updatedGroups = await Promise.all(
       emoticonGroups.map(async (group, index) => {
         const cachedGroup = cachedGroups[index];
@@ -107,8 +107,34 @@ const emoticonSlice = createSlice({
         ),
       }));
     },
+    updateRecent(state, action: PayloadAction<{emoticonId: number}>) {
+      const {emoticonId} = action.payload;
+      if (emoticonId == 0) return;
+      let recentGroup = state.emoticonGroups[1];
+      const newRecent = state.emoticonGroups.flatMap(group => group.emoticonList).find(e => e.id === emoticonId);
+
+      if (newRecent) {
+        // favoriteGroup.emoticonList가 비어있거나 null인 경우 새 이모티콘을 추가
+        if (!recentGroup.emoticonList || recentGroup.emoticonList.length === 0) {
+          recentGroup.emoticonList = [newRecent];
+        } else {
+          // 이미 동일한 id가 있는 경우
+          const existingIndex = recentGroup.emoticonList.findIndex(e => e.id === emoticonId);
+          if (existingIndex !== -1) {
+            // 기존 이모티콘을 리스트에서 제거하고 맨 앞에 추가
+            const existingItem = recentGroup.emoticonList[existingIndex];
+            recentGroup.emoticonList.splice(existingIndex, 1); // 해당 아이템 제거
+            recentGroup.emoticonList.unshift(existingItem); // 맨 앞에 추가
+          } else {
+            // 기존 아이템이 없다면 새로운 아이템 추가
+            recentGroup.emoticonList = [newRecent, ...recentGroup.emoticonList.filter(e => e.id !== emoticonId)];
+          }
+        }
+        console.log(recentGroup.emoticonList);
+      }
+    },
   },
 });
 
-export const {updateEmoticonGroups, updateFavorite} = emoticonSlice.actions;
+export const {updateEmoticonGroups, updateRecent, updateFavorite} = emoticonSlice.actions;
 export default emoticonSlice.reducer;

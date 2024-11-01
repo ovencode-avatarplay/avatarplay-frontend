@@ -38,8 +38,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick, EmoticonData}) =
     setIsToggleFavorite(prev => !prev);
     setActiveTab(null); // 탭 상태 초기화
   };
-  console.log('group', emoticonGroups);
-  console.log('Data', EmoticonData);
+
   return (
     <div className={styles.emojiPicker}>
       {/* 토글 버튼 */}
@@ -67,7 +66,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick, EmoticonData}) =
 
       {/* 즐겨찾기 이모티콘 표시 */}
       {activeTab === null && isToggleFavorite && (
-        <ImageList sx={{width: '100%', height: 'auto', overflowY: 'auto'}} cols={4} rowHeight={80} gap={10}>
+        <ImageList sx={{width: '100%', height: 270, overflowY: 'auto'}} cols={4} rowHeight={80} gap={10}>
           {emoticonGroups[0]?.emoticonList.length > 0 ? (
             emoticonGroups[0].emoticonList.map(emoji => (
               <ImageListItem key={emoji.id} onClick={() => onEmojiClick(emoji.emoticonUrl, emoji.id, emoji.isFavorite)}>
@@ -82,7 +81,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick, EmoticonData}) =
 
       {/* 최근 사용 이모티콘 표시 */}
       {activeTab === null && !isToggleFavorite && (
-        <ImageList sx={{width: '100%', height: 'auto', overflowY: 'auto'}} cols={4} rowHeight={80} gap={10}>
+        <ImageList sx={{width: '100%', height: 270, overflowY: 'auto'}} cols={4} rowHeight={80} gap={10}>
           {emoticonGroups[1]?.emoticonList.length > 0 ? (
             emoticonGroups[1].emoticonList.map(emoji => (
               <ImageListItem key={emoji.id} onClick={() => onEmojiClick(emoji.emoticonUrl, emoji.id, emoji.isFavorite)}>
@@ -97,7 +96,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({onEmojiClick, EmoticonData}) =
 
       {/* 특정 탭의 이모티콘 그룹 표시 */}
       {activeTab !== null && emoticonGroups[activeTab + 1]?.emoticonList && (
-        <ImageList sx={{width: '100%', height: 'auto', overflowY: 'auto'}} cols={4} rowHeight={80} gap={10}>
+        <ImageList sx={{width: '100%', height: 270, overflowY: 'auto'}} cols={4} rowHeight={80} gap={10}>
           {emoticonGroups[activeTab + 1].emoticonList.map(emoji => (
             <ImageListItem key={emoji.id} onClick={() => onEmojiClick(emoji.emoticonUrl, emoji.id, emoji.isFavorite)}>
               <img src={emoji.emoticonUrl} alt={`emoji-${emoji.id}`} loading="lazy" />
