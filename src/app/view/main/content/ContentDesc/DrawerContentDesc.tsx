@@ -52,6 +52,7 @@ import ContentRecommendList from './ContentRecommendList';
 import Link from 'next/link';
 import {Padding} from '@mui/icons-material';
 import {string} from 'valibot';
+import {setUrlLinkUse} from '@/redux-store/slices/chattingEnter';
 
 const DrawerContentDesc = () => {
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
@@ -292,7 +293,14 @@ const DrawerContentDesc = () => {
           <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
         </div>
         <Link href={`/:lang/chat${contentUrl}`} className={Style.startNewChatButton}>
-          <Button variant="contained" fullWidth>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => {
+              // 필요한 dispatch 작업 수행
+              dispatch(setUrlLinkUse(false)); // 채팅이 url 링크를 통해 여는 것이 아니라는 것을 명시해준다.
+            }}
+          >
             Start new chat - episode : {episodeId}
           </Button>
         </Link>

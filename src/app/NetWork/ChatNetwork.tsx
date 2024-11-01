@@ -106,8 +106,11 @@ export interface MessageInfo {
 }
 
 export interface EnterEpisodeChattingReq {
-  userId: number;
   episodeId: number;
+}
+
+export interface UrlEnterEpisodeChattingReq {
+  urlLinkKey: string;
 }
 
 // export interface MessageInfo {
@@ -119,6 +122,9 @@ export interface EnterEpisodeChattingReq {
 // }
 
 export interface EnterEpisodeChattingRes {
+  episodeId: number;
+  contentName: string;
+  episodeName: string;
   iconImageUrl: string;
   episodeBgImageUrl: string;
   introPrompt: string;
@@ -137,6 +143,32 @@ export const sendChattingEnter = async (
 ): Promise<ResponseAPI<EnterEpisodeChattingRes>> => {
   try {
     const response = await api.post<ResponseAPI<EnterEpisodeChattingRes>>('/Chatting/enter', req);
+    console.log('chatenter', req, response);
+
+    if (response.data.resultCode === 0) {
+      const responseData = response.data.data as EnterEpisodeChattingRes;
+
+      // emoticonGroupInfoList가 null일 경우 임시 데이터를 사용
+      // if (!responseData.emoticonGroupInfoList) {
+      //   responseData.emoticonGroupInfoList = chatEmojiTempData.emoticonGroupInfoList;
+      // }
+
+      // 여기서 이미지 캐싱 로직 제거, URL만 반환
+      return response.data;
+    } else {
+      throw new Error(response.data.resultMessage); // Error handling
+    }
+  } catch (error) {
+    console.error('Error sending Enter:', error);
+    throw new Error('Failed to send message. Please try again.'); // Error handling
+  }
+};
+
+export const sendChattingEnterUrl = async (
+  req: UrlEnterEpisodeChattingReq,
+): Promise<ResponseAPI<EnterEpisodeChattingRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<EnterEpisodeChattingRes>>('/Chatting/urlEnter', req);
     console.log('chatenter', req, response);
 
     if (response.data.resultCode === 0) {

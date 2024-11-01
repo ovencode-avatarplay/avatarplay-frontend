@@ -14,7 +14,10 @@ import {
   EnterEpisodeChattingReq,
   fetchEmoticonGroups,
   EmoticonGroupInfo,
+  UrlEnterEpisodeChattingReq,
+  sendChattingEnterUrl,
 } from '@/app/NetWork/ChatNetwork';
+
 import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEmojiCache} from './Chat/BottomBar/EmojiCacheContext';
@@ -44,7 +47,7 @@ const ChatPage: React.FC = () => {
   const key = getWebBrowserUrl(QueryKey) || null;
   console.log('getWebBrowserUrl', key);
 
-  const userId = useSelector((state: RootState) => state.user.userId);
+  //const userId = useSelector((state: RootState) => state.user.userId);
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
   const handleBackClick = useBackHandler();
@@ -212,7 +215,6 @@ const ChatPage: React.FC = () => {
     console.log(`Navigating to episode ID: ${episodeId}`);
 
     const requestData: EnterEpisodeChattingReq = {
-      userId: userId,
       episodeId: episodeId,
     };
 
@@ -295,7 +297,7 @@ const ChatPage: React.FC = () => {
     console.log('배경 보기/숨기기 버튼 클릭');
   };
 
-  const {prevMessages: enterData, error} = usePrevChatting(userId, episodeId);
+  const {prevMessages: enterData, error} = usePrevChatting(episodeId);
   //console.log('usePrevChatting ', {enterData, error});
   //console.log('curEpId ', {episodeId});
   episodeId;
