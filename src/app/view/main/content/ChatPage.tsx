@@ -12,6 +12,7 @@ import {sendChattingResult, sendChattingEnter, EnterEpisodeChattingReq} from '@/
 import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEmojiCache} from './Chat/BottomBar/EmojiCacheContext';
+import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 
 interface Message {
   text: string;
@@ -32,6 +33,10 @@ const ChatPage: React.FC = () => {
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
+
+  const QueryKey = QueryParams.ChattingInfo;
+  const key = getWebBrowserUrl(QueryKey) || null;
+  console.log('getWebBrowserUrl', key);
 
   const userId = useSelector((state: RootState) => state.user.userId);
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
