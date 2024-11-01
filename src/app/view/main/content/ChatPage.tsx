@@ -20,7 +20,6 @@ import {
 
 import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
 import {useDispatch, useSelector} from 'react-redux';
-import {useEmojiCache} from './Chat/BottomBar/EmojiCacheContext';
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 
 interface Message {

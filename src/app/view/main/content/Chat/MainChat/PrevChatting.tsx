@@ -6,7 +6,6 @@ import {
   sendChattingEnter,
   sendChattingEnterUrl,
 } from '@/app/NetWork/ChatNetwork';
-import {useEmojiCache} from '../BottomBar/EmojiCacheContext';
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
