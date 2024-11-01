@@ -5,6 +5,7 @@
     "contentInfo": {
       "id": 23,
       "userId": 1,
+      "urlLinkKey" : "string",
       "chapterInfoList": [
         {
           "id": 21,

@@ -12,14 +12,15 @@ import ContentSelection from './slices/ContentSelection';
 import publishInfoSlice from './slices/PublishInfo';
 import episodeInfoSlice from './slices/EpisodeInfo';
 import myContentDashboardSlice from './slices/myContentDashboard';
-
+import emoticonSlice from './slices/EmoticonSlice';
 // redux-persist
 import {persistStore, persistReducer} from 'redux-persist';
+import chattingEnterSlice from './slices/chattingEnter';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['sample', 'chat', 'chatting', 'content', 'user', 'contentselection'],
+  whitelist: ['sample', 'chat', 'chatting', 'chattingEnter', 'content', 'user', 'contentselection'],
 };
 
 const reducers = combineReducers({
@@ -39,6 +40,8 @@ const reducers = combineReducers({
   contentselection: ContentSelection, // 현재 선택된 컨텐츠,챕터,에피소드 정보 (ChapterBoard 선택용)
   publish: publishInfoSlice, // 현재 편집중인 컨텐츠의 publish 정보 (Content 수정용)
   episode: episodeInfoSlice, // 현재 편집중인 에피소드 정보 (Content 수정용)
+  chattingEnter: chattingEnterSlice,
+  emoticon: emoticonSlice,
   //#endregion
 });
 

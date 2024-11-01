@@ -51,9 +51,14 @@ import {EpisodeCardProps} from '@/types/apps/episode-card-type';
 import ContentRecommendList from './ContentRecommendList';
 import Link from 'next/link';
 import {Padding} from '@mui/icons-material';
+import {string} from 'valibot';
+import {setUrlLinkUse} from '@/redux-store/slices/chattingEnter';
 
 const DrawerContentDesc = () => {
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
+
+  const [contentUrl, setContentUrl] = useState('?v=vAPWL926G7M');
+
   const [selectedChapterIdx, setSelectedChapterIdx] = useState<number>(-1);
   const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number>(-1);
   const userId = useSelector((state: RootState) => state.user.userId);
@@ -79,13 +84,18 @@ const DrawerContentDesc = () => {
 
   const [episodeItems, setEpisodeItems] = useState<EpisodeCardProps[]>([]);
 
+  const currentChattingState = useSelector((state: RootState) => state.chatting);
+
   useEffect(() => {
     const chattingState: ChattingState = {
-      contentName: `content episode${episodeId}`,
-      episodeName: `episode${episodeId}`,
+      contentName: currentChattingState.contentName || '',
+      episodeName: currentChattingState.episodeName || '',
       episodeId: Number(episodeId),
+      contentUrl: contentUrl,
     };
     dispatch(setStateChatting(chattingState));
+
+    setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
   }, [episodeId]);
 
   useEffect(() => {
@@ -110,6 +120,8 @@ const DrawerContentDesc = () => {
       setSelectedEpisodeIdx(0);
       setEpisodes(contentWholeDesc.chapterInfoList[0].episodeInfoList);
       dispatch(setDrawerEpisodeId(contentWholeDesc.chapterInfoList[0].episodeInfoList[0].id));
+
+      setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
     }
   }, [contentWholeDesc]);
 
@@ -282,8 +294,15 @@ const DrawerContentDesc = () => {
         <div className={Style.episodeListContainer}>
           <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
         </div>
-        <Link href={`/:lang/chat`} className={Style.startNewChatButton}>
-          <Button variant="contained" fullWidth>
+        <Link href={`/:lang/chat${contentUrl}`} className={Style.startNewChatButton}>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => {
+              // 필요한 dispatch 작업 수행
+              dispatch(setUrlLinkUse(false)); // 채팅이 url 링크를 통해 여는 것이 아니라는 것을 명시해준다.
+            }}
+          >
             Start new chat - episode : {episodeId}
           </Button>
         </Link>

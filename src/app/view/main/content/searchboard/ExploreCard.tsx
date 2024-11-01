@@ -7,7 +7,7 @@ import {useDispatch} from 'react-redux';
 import {openDrawerContentId, setDrawerEpisodeId} from '@/redux-store/slices/drawerContentDescSlice';
 import {string} from 'valibot';
 
-const ExploreCard: React.FC<ExploreCardProps> = ({contentId, episodeId, shortsId, thumbnail}) => {
+const ExploreCard: React.FC<ExploreCardProps> = ({contentId, episodeId, thumbnail}) => {
   const dispatch = useDispatch();
   const [exploreDesc, setExploreDesc] = useState('DESC');
 
@@ -25,11 +25,11 @@ const ExploreCard: React.FC<ExploreCardProps> = ({contentId, episodeId, shortsId
               <h3>{contentId}</h3>
               <div className={Style.iconInfo}>
                 <MovieIcon />
-                <span>{shortsId}</span>
+                <span>{/* TODO*/}</span>
               </div>
               <div className={Style.iconInfo}>
                 <ImageIcon />
-                <span>{shortsId}</span>
+                <span>{/* TODO*/}</span>
               </div>
             </div>
           </div>

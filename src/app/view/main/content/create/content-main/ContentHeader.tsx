@@ -15,7 +15,7 @@ interface ContentHeaderProps {
 
 const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, contentTitle, onTitleChange}) => {
   const [title, setTitle] = useState(contentTitle);
-  const defaultUrl = './main/homefeed';
+  const defaultUrl = '../main/homefeed';
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;

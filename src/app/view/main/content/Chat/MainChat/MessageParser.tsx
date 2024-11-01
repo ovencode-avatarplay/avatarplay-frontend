@@ -1,7 +1,7 @@
 // messageParser.tsx
 export interface Message {
   text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system';
+  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt';
 }
 
 const parseAnswer = (answer: string): Message[] => {
@@ -37,9 +37,9 @@ const parseAnswer = (answer: string): Message[] => {
     if (match.index > lastIndex) {
       const partnerText = answer.slice(lastIndex, match.index).trim();
       // partnerText가 비어있지 않을 경우에만 추가
-      console.log('answeransweranswer', partnerText);
+      //console.log('answeransweranswer', partnerText);
       if (partnerText) {
-        console.log('answeransweranswer2', partnerText);
+        //console.log('answeransweranswer2', partnerText);
         result.push({
           text: partnerText,
           sender: 'partner',
@@ -76,6 +76,10 @@ export const parseMessage = (message: string | null): Message[] | null => {
   try {
     const parsedMessage = JSON.parse(message);
     const result: Message[] = [];
+
+    if (parsedMessage.episodeInfo) {
+      result.push(...parseAnswer(parsedMessage.episodeInfo));
+    }
 
     if (parsedMessage.Question) {
       result.push({

@@ -5,6 +5,7 @@ import {PublishInfo} from './chapter/publishInfo';
 export interface ContentInfo {
   id: number;
   userId: number;
+  urlLinkKey: string;
   chapterInfoList: ChapterInfo[];
   publishInfo: PublishInfo;
 }

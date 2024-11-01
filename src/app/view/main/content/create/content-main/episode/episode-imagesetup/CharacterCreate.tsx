@@ -1,5 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Box, Button, Stepper, Step, StepLabel, Typography, LinearProgress, TextField} from '@mui/material';
+import {
+  Box,
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  Typography,
+  LinearProgress,
+  CircularProgress,
+  TextField,
+} from '@mui/material';
 import styles from './CharacterCreate.module.css';
 import GirlIcon from '@mui/icons-material/Female';
 import BoyIcon from '@mui/icons-material/Male';
@@ -26,15 +36,22 @@ import {Pagination} from 'swiper/modules';
 import {GenerateImageReq, sendGenerateImageReq} from '@/app/NetWork/ImageNetwork';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
+import {setCurrentEpisodeThumbnail} from '@/redux-store/slices/EpisodeInfo';
+import {useDispatch} from 'react-redux';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
-interface Props {}
+interface Props {
+  closeAction: () => void;
+}
 
-const CharacterCreate: React.FC<Props> = () => {
+const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   const [activeStep, setActiveStep] = useState(0);
   const stepperRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
   const userId = useSelector((state: RootState) => state.user.userId);
   const [characterOptions, setCharacterOptions] = useState(characterOptionsFeMaleReal);
+
+  const dispatch = useDispatch();
 
   const steps = ['Gender', 'Style', 'Ethnicity', 'HairStyle', 'BodyShape', 'OutfitClothes', 'Summary'];
   const genderOptions = [
@@ -98,6 +115,10 @@ const CharacterCreate: React.FC<Props> = () => {
   ];
 
   // Handler
+  const handleClose = () => {
+    closeAction();
+  };
+
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
       setActiveStep(prev => prev + 1);
@@ -119,12 +140,12 @@ const CharacterCreate: React.FC<Props> = () => {
         const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
         const selectedOption = option.options[selectedIndex];
 
-        return selectedOption?.prompt || 'N/A';
+        return selectedOption?.prompt || '';
       }),
       clothesInputValue || 'No clothes description provided',
     ].join(', ');
 
-    console.log('Generated Prompt:', prompts);
+    // console.log('Generated Prompt:', prompts);
 
     const negativePrompts = [
       negativeGenderPrompt,
@@ -132,9 +153,11 @@ const CharacterCreate: React.FC<Props> = () => {
         const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
         const selectedOption = option.options[selectedIndex];
 
-        return selectedOption?.negativePrompt || 'N/A';
+        return selectedOption?.negativePrompt || '';
       }),
-    ].join(', ');
+    ]
+      .filter(prompt => prompt.trim() !== '')
+      .join(', ');
 
     GetImageGenerateImage(txt2ImgGenerateJsonParser(prompts, negativePrompts));
   };
@@ -143,11 +166,14 @@ const CharacterCreate: React.FC<Props> = () => {
     setLoading(true);
 
     try {
-      const req: GenerateImageReq = {/*userId: userId,*/ imagePrompt: prompt};
+      const req: GenerateImageReq = {imagePrompt: prompt};
       const response = await sendGenerateImageReq(req);
 
       if (response?.data) {
-        const imgUrl: string = response.data;
+        const imgUrl: string = response.data.imageUrl;
+
+        dispatch(setCurrentEpisodeThumbnail(imgUrl));
+        handleClose();
       } else {
         throw new Error(`No response for file`);
       }
@@ -158,7 +184,6 @@ const CharacterCreate: React.FC<Props> = () => {
       setLoading(false);
     }
   };
-
   const handleOptionSelect = (key: keyof typeof selectedOptions, index: number) => {
     setSelectedOptions(prev => ({
       ...prev,
@@ -192,7 +217,9 @@ const CharacterCreate: React.FC<Props> = () => {
 
     const updatedTxt2Img = {...txt2ImgJson[0], prompt: combinedPrompt, negative_prompt: combinedNegativePrompt};
 
-    return JSON.stringify({txt2Img: updatedTxt2Img});
+    const jsonString = JSON.stringify(updatedTxt2Img);
+
+    return jsonString;
   }
 
   const getStepContent = (step: number) => {
@@ -444,6 +471,7 @@ const CharacterCreate: React.FC<Props> = () => {
 
   return (
     <Box className={styles.container}>
+      <LoadingOverlay loading={loading} />
       <Typography variant="h5" className={styles.title}>
         Create My Character
       </Typography>

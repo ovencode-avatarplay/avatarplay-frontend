@@ -6,7 +6,7 @@ export const useBackHandler = () => {
 
   const handleBackClick = () => {
     // Perform any condition checks here
-    console.log('뒤로 가기 버튼 클릭');
+    // console.log('뒤로 가기 버튼 클릭');
     router.back();
   };
 

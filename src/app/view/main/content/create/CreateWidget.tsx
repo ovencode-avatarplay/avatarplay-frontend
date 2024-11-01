@@ -45,7 +45,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
     >
       <Box className={Style.drawerBox}>
         {/* Character Navigation */}
-        <Link href="/:lang/character" passHref>
+        <Link href="/:lang/create/artist" passHref>
           <Box className={Style.drawerItem} onClick={handleClickCharacter}>
             <PersonIcon fontSize="large" />
             <Typography>Character</Typography>
@@ -53,7 +53,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         </Link>
 
         {/* Story Navigation */}
-        <Link href="/:lang/create" passHref>
+        <Link href="/:lang/create/story" passHref>
           <Box className={Style.drawerItem} onClick={handleClickStory}>
             <BookIcon fontSize="large" />
             <Typography>Story</Typography>
@@ -61,7 +61,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         </Link>
 
         {/* Post Navigation */}
-        <Link href="/:lang/post" passHref>
+        <Link href="/:lang/create/post" passHref>
           <Box className={Style.drawerItem} onClick={handleClickPost}>
             <PostAddIcon fontSize="large" />
             <Typography>Post</Typography>

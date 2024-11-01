@@ -60,3 +60,8 @@ export enum AiModelType {
   claude3sonnet,
   customApi,
 }
+export enum EmoticonType {
+  Basic = 0,
+  Recent = 1,
+  Purchased = 2,
+}

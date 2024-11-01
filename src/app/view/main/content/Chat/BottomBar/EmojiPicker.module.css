@@ -4,7 +4,7 @@
   border: 1px solid #cccccc;
   border-radius: 8px;
   padding: 10px;
-  width: 300px;
+  width: 100%;
 }
 
 .tabs {
@@ -30,4 +30,8 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 8px;
+}
+.toggleButton {
+  color: #007bff;
+  margin-right: 8px;
 }
