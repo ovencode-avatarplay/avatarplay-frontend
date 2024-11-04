@@ -16,7 +16,7 @@ import GameIcon from '@mui/icons-material/SportsEsports';
 import BottomNavData from 'data/navigation/bottom-nav.json';
 import DrawerCreate from '../content/create/CreateWidget';
 
-import Style from './BottomNav.module.css';
+import Style from './BottomNav.css';
 import Link from 'next/link';
 
 export default function BottomNav() {
