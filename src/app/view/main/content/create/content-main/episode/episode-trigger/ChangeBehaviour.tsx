@@ -261,7 +261,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
             variant="outlined"
             label="Target Value (Chat Count)"
             type="number"
-            value={triggerInfo.triggerValueChatCount || 0}
+            value={triggerInfo.triggerValueChatCount || ''}
             onChange={e => {
               setTriggerInfo(prev => ({
                 ...prev,
