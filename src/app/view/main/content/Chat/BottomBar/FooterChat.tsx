@@ -27,6 +27,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [selectedEmoticonId, setSelectedEmoticonId] = useState<number | null>(null);
   const [selectedEmoticonIsFavorite, setselectedEmoticonIsFavorite] = useState(false);
+  const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
   const inputRef = useRef<HTMLDivElement | null>(null);
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
@@ -42,6 +43,10 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   };
 
   const handleSend = async () => {
+    // 새 채팅을 보낼 수 없는 상태
+    if (isSendingMessage.state === true) return;
+    else isSendingMessage.state = true;
+
     const messageText = inputRef.current ? inputRef.current.innerHTML : '';
 
     // 선택된 이모티콘이 있으면 이미지 요소로 생성
@@ -54,6 +59,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
       onSend(message, true, parseMessage);
 
       if (inputRef.current) inputRef.current.innerHTML = ''; // 입력란 초기화
+      inputRef.current?.focus(); // 포커스 다시 설정
 
       const reqSendChatMessage: SendChatMessageReq = {
         userId: UserId,
@@ -77,6 +83,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
 
   useEffect(() => {
     if (streamKey === '') return;
+    console.log('stream key : ', streamKey);
 
     const eventSource = new EventSource(
       `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
@@ -91,6 +98,9 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
         const newMessage = JSON.parse(event.data);
         const parseMessage = false;
         onSend(newMessage, false, parseMessage);
+        if (newMessage.includes('$') === true) {
+          isSendingMessage.state = false;
+        }
       } catch (error) {
         console.error('Error processing message:', error);
         console.error('Received data:', event.data);
@@ -99,6 +109,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
 
     eventSource.onerror = () => {
       eventSource.close();
+      isSendingMessage.state = false;
     };
 
     return () => {
