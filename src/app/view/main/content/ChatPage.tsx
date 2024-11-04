@@ -196,6 +196,7 @@ const ChatPage: React.FC = () => {
           }
           // 빈문자가 왔을때 기존 sender가 user였으면 무시하자 ( 자꾸 빈말풍선 찍히는 원인 )
           else if (newMessages[newMessages.length - 1].sender === 'user') {
+            return prev;
           }
         }
       }
