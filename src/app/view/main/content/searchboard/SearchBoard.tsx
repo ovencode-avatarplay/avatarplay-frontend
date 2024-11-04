@@ -52,6 +52,10 @@ const SearchBoard: React.FC = () => {
         <main className={Style.container}>
           {playingList && <SearchBoardHorizonScroll title="playingList" data={playingList} />}
           {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
+          {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
+          {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
+          {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
+          {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
         </main>
       </div>
     </>
