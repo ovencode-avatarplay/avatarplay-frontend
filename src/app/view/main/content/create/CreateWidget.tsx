@@ -40,6 +40,8 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
           position: 'absolute',
           bottom: 56,
           zIndex: 50,
+          maxWidth: '500px',
+          margin: '0 auto',
         },
       }}
     >

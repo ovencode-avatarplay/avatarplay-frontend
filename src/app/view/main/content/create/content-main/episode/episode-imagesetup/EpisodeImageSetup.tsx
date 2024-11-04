@@ -13,25 +13,27 @@ interface EpisodeImageSetupProps {
 
 const EpisodeImageSetup: React.FC<EpisodeImageSetupProps> = ({open, onClose}) => {
   return (
-    <>
-      <Dialog
-        closeAfterTransition={false}
-        open={open}
-        onClose={onClose}
-        fullScreen
-        classes={{paper: styles['modal-body']}}
-        disableAutoFocus={true}
-        disableEnforceFocus={true} // disableEnforceFocus 속성 사용
-      >
-        <DialogTitle className={styles['modal-header']}>
-          <Button onClick={onClose} className={styles['close-button']}>
-            <ArrowBackIosIcon />
-          </Button>
-          <span className={styles['modal-title']}>EpisodeImageSetup</span>
-        </DialogTitle>
-        <CharacterCreate closeAction={onClose} />
-      </Dialog>
-    </>
+    <Dialog
+      closeAfterTransition={false}
+      open={open}
+      onClose={onClose}
+      // fullScreen
+      classes={{paper: styles['modal-body']}}
+      disableAutoFocus={true}
+      disableEnforceFocus={true} // disableEnforceFocus 속성 사용
+      sx={{
+        maxWidth: '500px',
+        margin: '0 auto',
+      }}
+    >
+      <DialogTitle className={styles['modal-header']}>
+        <Button onClick={onClose} className={styles['close-button']}>
+          <ArrowBackIosIcon />
+        </Button>
+        <span className={styles['modal-title']}>EpisodeImageSetup</span>
+      </DialogTitle>
+      <CharacterCreate closeAction={onClose} />
+    </Dialog>
   );
 };
 

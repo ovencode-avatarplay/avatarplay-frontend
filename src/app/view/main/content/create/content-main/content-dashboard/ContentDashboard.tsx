@@ -129,7 +129,7 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
       open={open}
       onClose={onClose}
       PaperProps={{
-        sx: {width: '100vw', height: '100vh'},
+        sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
       }}
     >
       <Box className={Style.drawerContainer}>

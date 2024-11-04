@@ -1,7 +1,8 @@
 /* 전체 */
 .container {
     position: relative;
-    width: 100vw;
+    max-width: '500px';
+    margin: 0 'auto';
     height: 100vh;
     max-width: 100vw;
     max-height: 100vh;
