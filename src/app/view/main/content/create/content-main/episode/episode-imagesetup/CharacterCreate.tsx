@@ -251,8 +251,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
               {characterOptions.styleOptions.map((option, index) => (
                 <CharacterCreateImageButton
                   key={option.label}
-                  width={'40vw'}
-                  height={'40vw'}
+                  width={'20vw'}
+                  height={'20vw'}
                   label={option.label}
                   image={'/Images/001.png'}
                   selected={selectedOptions.style === index}
@@ -282,7 +282,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     <CharacterCreateImageButton
                       key={race.label}
                       width={'100%'}
-                      height={'40vw'}
+                      height={'20vh'}
                       label={race.label}
                       image={'/Images/001.png'}
                       selected={selectedOptions.race === index}
@@ -331,8 +331,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                 {characterOptions.hairStyles.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
-                    width={'20vw'}
-                    height={'20vw'}
+                    width={'15vw'}
+                    height={'15vh'}
                     label={style.label}
                     image={'/Images/001.png'}
                     selected={selectedOptions.hairStyle === index}
@@ -368,8 +368,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                 {characterOptions.bodyTypes.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
-                    width={'20vw'}
-                    height={'20vw'}
+                    width={'15vw'}
+                    height={'15vh'}
                     label={style.label}
                     image={'/Images/001.png'}
                     selected={selectedOptions.bodyType === index}
@@ -384,8 +384,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     {characterOptions.topSizes.map((style, index) => (
                       <CharacterCreateImageButton
                         key={style.label}
-                        width={'20vw'}
-                        height={'20vw'}
+                        width={'15vw'}
+                        height={'15vh'}
                         label={style.label}
                         image={'/Images/001.png'}
                         selected={selectedOptions.topSize === index}
@@ -398,8 +398,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     {characterOptions.bottomSizes.map((style, index) => (
                       <CharacterCreateImageButton
                         key={style.label}
-                        width={'20vw'}
-                        height={'20vw'}
+                        width={'15vw'}
+                        height={'15vh'}
                         label={style.label}
                         image={'/Images/001.png'}
                         selected={selectedOptions.bottomSize === index}
@@ -419,7 +419,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             <Box>
               <Typography variant="h6">Clothes</Typography>
               <TextField
-                fullWidth
+                sx={{width: '80%'}}
                 multiline
                 rows={4}
                 value={clothesInputValue}
