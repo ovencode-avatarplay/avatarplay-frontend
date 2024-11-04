@@ -4,6 +4,8 @@
     flex-direction: column;
     background-color: white;
     padding: 20px;
+    max-width: 500px;
+  margin: 0 auto; /* 수평 중앙 정렬 */
 }
 
 .modal-header {
