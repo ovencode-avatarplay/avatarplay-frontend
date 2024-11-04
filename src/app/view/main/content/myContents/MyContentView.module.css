@@ -1,0 +1,30 @@
+.container {
+    width: 100%;
+  }
+  
+  .tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  
+  .dropdownContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  
+  .dropdown {
+    min-width: 150px;
+  }
+  
+  .contentList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 70vh; /* Set a max height for the scroll area */
+    overflow-y: auto;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  

@@ -143,12 +143,13 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
       sx={{
         position: 'fixed',
         bottom: 0,
-        width: '500px',
+        maxWidth: '500px',
         margin: '0 auto',
         backgroundColor: 'white',
         transition: 'height 0.3s',
         height: isStickerOpen ? '350px' : 'auto', //박스 크기 조절 부분
         boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)',
+        width: window.innerWidth,
       }}
     >
       <Box display="flex" alignItems="center" padding={1}>
