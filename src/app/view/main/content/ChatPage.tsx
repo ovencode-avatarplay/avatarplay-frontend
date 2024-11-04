@@ -67,6 +67,7 @@ const ChatPage: React.FC = () => {
   const handleSendMessage = async (message: string, isMyMessage: boolean) => {
     if (!message || typeof message !== 'string') return;
 
+    console.log('message===' + message + '===');
     // 메시지가 '$'을 포함할 경우 팝업 표시
     if (isMyMessage === false && message.includes('$')) {
       const requestData = {
@@ -192,6 +193,9 @@ const ChatPage: React.FC = () => {
             else if (newMessage5.text.length > 0) {
               newMessages[newMessages.length - 1].text += `${newMessage5.text}`;
             }
+          }
+          // 빈문자가 왔을때 기존 sender가 user였으면 무시하자 ( 자꾸 빈말풍선 찍히는 원인 )
+          else if (newMessages[newMessages.length - 1].sender === 'user') {
           }
         }
       }
