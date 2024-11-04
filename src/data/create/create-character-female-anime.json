@@ -4,11 +4,11 @@
     { "label": "Anime", "image": "/anime.png", "prompt": "Anime", "negativePrompt": "" }
   ],
   "raceOptions": [
-    { "label": "White", "image": "/race_caucasian.png", "prompt": "white_skin", "negativePrompt": "" },
-    { "label": "Yellow", "image": "/race_latina.png", "prompt": "yellow skin", "negativePrompt": "" },
-    { "label": "Blue", "image": "/race_asian.png", "prompt": "blue skin", "negativePrompt": "" },
-    { "label": "Green", "image": "/race_arab.png", "prompt": "green skin", "negativePrompt": "" },
-    { "label": "Black", "image": "/race_black.png", "prompt": "black_skin", "negativePrompt": "" }
+    { "label": "Caucasian", "image": "/race_caucasian.png", "prompt": "caucasian", "negativePrompt": "" },
+    { "label": "Latina", "image": "/race_latina.png", "prompt": "latina", "negativePrompt": "" },
+    { "label": "Asian", "image": "/race_asian.png", "prompt": "asian", "negativePrompt": "" },
+    { "label": "Arab", "image": "/race_arab.png", "prompt": "arab", "negativePrompt": "" },
+    { "label": "Black/Afro", "image": "/race_black.png", "prompt": "black", "negativePrompt": "" }
   ],
   "ageOptions": [
     { "label": "Teen(18+)", "image": "/age_teen.png", "prompt": "teen", "negativePrompt": "" },

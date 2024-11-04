@@ -196,7 +196,9 @@ const DrawerContentDesc = () => {
           borderTopLeftRadius: '24px',
           borderTopRightRadius: '24px',
           overflow: 'hidden',
-          bottom: '5vh',
+          bottom: '0px',
+          maxWidth: '500px',
+          margin: '0 auto',
         },
       }}
     >

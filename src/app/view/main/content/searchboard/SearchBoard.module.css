@@ -1,6 +1,10 @@
 .content {
     flex: 1;
     overflow-y: auto;
+    
+    max-width: 500px;
+    margin: 0 auto; /* 수평 중앙 정렬 */
+    overflow: hidden;
 }
 
 .searchBoard

@@ -1,0 +1,72 @@
+.listItem {
+    display: flex;
+    width: 100%;
+    height: 20vh;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+  }
+  
+  .thumbnail {
+    width: 30%;
+    background-color: #ccc;
+  }
+  
+  .description {
+    width: 70%;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .topRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .contentName {
+    font-weight: bold;
+  }
+  
+  .infoButton {
+    padding: 4px;
+  }
+  
+  .middleRow {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+  
+  .namesColumn {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .progressColumn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .bottomRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+  
+  .chatIcon {
+    margin-right: 4px;
+  }
+  
+  .lastUsed {
+    font-size: 0.875rem;
+    color: gray;
+  }
+  
+  .deleteButton {
+    padding: 4px;
+  }
+  

@@ -3,9 +3,9 @@
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 120000;
+    z-index: 1500;
   }
  
   .bottomNavBox {
-    width: 100%;
+    
   }
