@@ -26,7 +26,6 @@ interface ChangeBehaviourProps {
   open: boolean;
   onClose: () => void;
   index: number;
-  triggerName: string;
 }
 
 const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index}) => {
@@ -35,12 +34,15 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   const dispatch = useDispatch();
   const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>({
     ...item,
-    name: item.name || '', // name 필드를 추가하여 초기화
-    triggerType: item.triggerType || TriggerMainDataType.triggerValueIntimacy,
-    actionChangeEpisodeId: item.actionChangeEpisodeId || 0,
-    actionChangePrompt: item.actionChangePrompt || '',
-    actionConversationList: item.actionConversationList || [],
+    name: item?.name || '', // name 필드를 추가하여 초기화
+    triggerType: item?.triggerType || TriggerMainDataType.triggerValueIntimacy,
+    actionChangeEpisodeId: item?.actionChangeEpisodeId || 0,
+    actionChangePrompt: item?.actionChangePrompt || '',
+    actionConversationList: item?.actionConversationList || [],
   });
+
+  useEffect(() => {}, []);
+
   useEffect(() => {
     if (item) {
       setTriggerInfo({
@@ -51,16 +53,16 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
         actionChangePrompt: item.actionChangePrompt || '',
         actionConversationList: item.actionConversationList || [],
       });
+      setNewTriggerName(item?.name);
     }
-  }, []); // item이 변경될 때마다 실행
+  }, [item]); // item이 변경될 때마다 실행
 
   const [selectedChapter, setSelectedChapter] = useState<string>('Chapter.1');
   const [selectedEpisode, setSelectedEpisode] = useState<string>('Ep.2 Wanna go out?');
   const [isEpisodeConversationTemplateOpen, setEpisodeConversationTemplateOpen] = useState(false);
   const [isChapterBoardOpen, setIsChapterBoardOpen] = useState(false);
   const [isEditNameModalOpen, setIsEditNameModalOpen] = useState(false);
-  const [newTriggerName, setNewTriggerName] = useState(item.name);
-
+  const [newTriggerName, setNewTriggerName] = useState(item?.name);
   const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo);
   const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId);
   const triggerInfoList = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList || []);
@@ -489,7 +491,10 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
             <TextField
               label="New Trigger Name"
               value={newTriggerName}
-              onChange={e => setNewTriggerName(e.target.value)}
+              onChange={e => {
+                console.log('onChange : ', e.target.value);
+                setNewTriggerName(e.target.value);
+              }}
               fullWidth
             />
             <Button onClick={handleSaveNewName} variant="contained" color="primary">

@@ -1,6 +1,4 @@
-// 파일 경로: components/SelectTriggerType.tsx
-
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {
@@ -19,7 +17,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/dataTypes'; // 타입들 임포트
 import {addTriggerInfo} from '@/redux-store/slices/EpisodeInfo';
 import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
-//import select from '@/@core/theme/overrides/select';
+import ChangeBehaviour from './ChangeBehaviour';
 
 interface SelectTriggerTypeProps {
   open: boolean;
@@ -36,6 +34,9 @@ const triggerTypes = [
 
 const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, triggerName}) => {
   const [selectedTrigger, setSelectedTrigger] = useState<TriggerMainDataType>(TriggerMainDataType.triggerValueIntimacy); // 초기 선택값
+  const [openChangeBehaviour, setOpenChangeBehaviour] = useState(false); // ChangeBehaviour 모달 상태
+  const [onAddTrigger, setOnAddTrigger] = useState(false); // ChangeBehaviour 모달 상태
+  console.log('네임', triggerName);
   const dispatch = useDispatch(); // Redux dispatch 사용
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +44,6 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
     setSelectedTrigger(value); // 선택된 트리거 유형 업데이트
   };
 
-  // 선택된 trigger에 따라 MainData를 생성하는 함수
   const createMainData = (): Partial<TriggerInfo> => {
     switch (selectedTrigger) {
       case TriggerMainDataType.triggerValueIntimacy:
@@ -59,7 +59,6 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
     }
   };
 
-  // SubDataB 기본값 생성 시 Conversation 타입에 맞춰서 수정
   const createDefaultSubData = (): Partial<TriggerInfo> => {
     const defaultConversationData = [
       {
@@ -79,29 +78,30 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
     return {
       triggerActionType: TriggerSubDataType.ChangePrompt,
       actionChangePrompt: 'Default Prompt',
-      actionConversationList: defaultConversationData, // Conversation 타입에 맞게 수정
+      actionConversationList: defaultConversationData,
     };
   };
 
   const triggerInfoList = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList || []);
-  // Save 버튼 클릭 시 처리 로직
+  useEffect(() => {
+    if (onAddTrigger) {
+      setOpenChangeBehaviour(true); // ChangeBehaviour 모달 열기
+      setOnAddTrigger(false);
+    }
+  }, [triggerInfoList]);
+
   const handleSave = () => {
     const mainData = createMainData();
     const subData = createDefaultSubData();
     const isKeywordTypeExists = triggerInfoList.some(info => Number(info.triggerType) === 1);
 
-    console.log('isKeywordTypeExists:', isKeywordTypeExists);
-
-    console.log('isKeywordTypeExists:', isKeywordTypeExists);
-    console.log('selectedTrigger:', selectedTrigger);
-    console.log('Expected Trigger Value:', TriggerMainDataType.triggerValueKeyword);
-
     if (isKeywordTypeExists && Number(selectedTrigger) === 1) {
-      alert('Keyword타입은 1개를 넘을 수 없습니다.');
+      alert('Keyword 타입은 1개를 넘을 수 없습니다.');
       return; // handleClose를 취소함
     }
+    console.log('전', triggerInfoList.length);
     // Redux에 데이터 저장
-    dispatch(
+    const action = dispatch(
       addTriggerInfo({
         triggerType: Number(selectedTrigger), // 트리거 유형
         name: triggerName, // 트리거 이름
@@ -117,35 +117,44 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
         actionConversationList: [], // 기본 대화 리스트
       }),
     );
-
+    setOnAddTrigger(true);
     onClose(); // 모달 닫기
   };
 
   return (
-    <Dialog closeAfterTransition={false} open={open} onClose={onClose} disableAutoFocus disableEnforceFocus>
-      <DialogTitle>Select Trigger Type</DialogTitle>
-      <DialogContent>
-        <Box sx={{mb: 2}}>
-          <p>Trigger Name: {triggerName}</p>
-        </Box>
-        <RadioGroup value={selectedTrigger} onChange={handleChange}>
-          {triggerTypes.map(trigger => (
-            <Box key={trigger.value} display="flex" alignItems="center" justifyContent="space-between" sx={{mb: 2}}>
-              <FormControlLabel value={trigger.value} control={<Radio />} label={trigger.label} />
-              <IconButton edge="end" aria-label="info">
-                <InfoIcon />
-              </IconButton>
-            </Box>
-          ))}
-        </RadioGroup>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Close</Button>
-        <Button onClick={handleSave} variant="contained" color="primary">
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <>
+      <Dialog closeAfterTransition={false} open={open} onClose={onClose} disableAutoFocus disableEnforceFocus>
+        <DialogTitle>Select Trigger Type</DialogTitle>
+        <DialogContent>
+          <Box sx={{mb: 2}}>
+            <p>Trigger Name: {triggerName}</p>
+          </Box>
+          <RadioGroup value={selectedTrigger} onChange={handleChange}>
+            {triggerTypes.map(trigger => (
+              <Box key={trigger.value} display="flex" alignItems="center" justifyContent="space-between" sx={{mb: 2}}>
+                <FormControlLabel value={trigger.value} control={<Radio />} label={trigger.label} />
+                <IconButton edge="end" aria-label="info">
+                  <InfoIcon />
+                </IconButton>
+              </Box>
+            ))}
+          </RadioGroup>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Close</Button>
+          <Button onClick={handleSave} variant="contained" color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* ChangeBehaviour 모달 추가 */}
+      <ChangeBehaviour
+        open={openChangeBehaviour}
+        onClose={() => setOpenChangeBehaviour(false)}
+        index={triggerInfoList.length - 1} // 필요한 index 값 전달
+      />
+    </>
   );
 };
 

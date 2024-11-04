@@ -58,7 +58,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
       </ListItem>
 
       {/* ChangeBehaviour 모달에 index 데이터 전달 */}
-      <ChangeBehaviour open={isModalOpen} onClose={handleModalClose} index={index} triggerName={item.name} />
+      <ChangeBehaviour open={isModalOpen} onClose={handleModalClose} index={index} />
     </>
   );
 };
