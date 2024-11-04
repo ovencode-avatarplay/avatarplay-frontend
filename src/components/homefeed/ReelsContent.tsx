@@ -5,6 +5,14 @@ import MoreVert from '@mui/icons-material/MoreVert';
 import {useDispatch} from 'react-redux';
 import {setDrawerEpisodeId} from '@/redux-store/slices/drawerContentDescSlice';
 import styles from './ReelsContent.module.css';
+import {Swiper, SwiperSlide} from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+
+// import required modules
+import {Pagination} from 'swiper/modules';
 
 interface ReelData {
   images: string[];
@@ -65,11 +73,13 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
         )}
 
         {item.images.length > 0 && (
-          <Box className={styles.image_scroll_container}>
+          <Swiper pagination={true} modules={[Pagination]} className={styles.mySwiper}>
             {item.images.map((image, index) => (
-              <Box key={index} component="img" src={image} alt={`Reel ${index}`} className={styles.post_image} />
+              <SwiperSlide>
+                <Box key={index} component="img" src={image} alt={`Reel ${index}`} className={styles.post_image} />
+              </SwiperSlide>
             ))}
-          </Box>
+          </Swiper>
         )}
 
         <Box className={styles.post_icons}>
