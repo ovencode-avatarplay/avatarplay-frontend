@@ -29,9 +29,27 @@ const MyContentTabView = () => {
       </Box>
 
       <Box className={Style.contentList}>
-        {[...Array(10)].map((_, index) => (
-          <MyContentListItem key={index} />
-        ))}
+        {' '}
+        {/* TODO API 생기면 내 컨텐츠 불러오기 */}
+        {tabValue === 0 ? (
+          <>
+            {[...Array(10)].map((_, index) => (
+              <MyContentListItem
+                key={index}
+                thumbnail="./Images/001.png"
+                contentName="ContentName"
+                chapterName="ChapterName"
+                episodeName="EpisodeName"
+                intimacy={10}
+                chatCount={10}
+                lastPlayedDate="2024-11-04 16:00 pm"
+                contentInfo="ContentInfo"
+              />
+            ))}
+          </>
+        ) : (
+          <></>
+        )}
       </Box>
     </Box>
   );

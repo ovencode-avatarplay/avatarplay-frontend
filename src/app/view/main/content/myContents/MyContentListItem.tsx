@@ -6,17 +6,38 @@ import ChatIcon from '@mui/icons-material/Chat';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Style from './MyContentListItem.module.css';
 
-const MyContentListItem = () => {
+interface Props {
+  thumbnail: string;
+  contentName: string;
+  chapterName: string;
+  episodeName: string;
+  intimacy: number;
+  chatCount: number;
+  lastPlayedDate: string;
+
+  contentInfo: string;
+}
+
+const MyContentListItem: React.FC<Props> = ({
+  thumbnail,
+  contentName,
+  chapterName,
+  episodeName,
+  intimacy,
+  chatCount,
+  lastPlayedDate,
+  contentInfo,
+}) => {
   return (
     <Box className={Style.listItem}>
       <Box className={Style.thumbnail}>
-        <img src="./Images/001.png" />
+        <img src={thumbnail} />
       </Box>
 
       <Box className={Style.description}>
         <Box className={Style.topRow}>
           <Typography variant="h6" className={Style.contentName}>
-            Content Name
+            {contentName}
           </Typography>
           <IconButton className={Style.infoButton}>
             <InfoIcon />
@@ -25,20 +46,20 @@ const MyContentListItem = () => {
 
         <Box className={Style.middleRow}>
           <Box className={Style.namesColumn}>
-            <Typography variant="body2">Chapter Name</Typography>
-            <Typography variant="body2">Episode Name</Typography>
+            <Typography variant="body2">{chapterName}</Typography>
+            <Typography variant="body2">{episodeName}</Typography>
           </Box>
           <Box className={Style.progressColumn}>
             <FavoriteIcon />
-            <Typography variant="body2">80%</Typography>
+            <Typography variant="body2">{intimacy}</Typography>
           </Box>
         </Box>
 
         <Box className={Style.bottomRow}>
           <ChatIcon className={Style.chatIcon} />
-          <Typography variant="body2">123</Typography>
+          <Typography variant="body2">{chatCount}</Typography>
           <Typography variant="body2" className={Style.lastUsed}>
-            2024-11-04 16:00 PM
+            {lastPlayedDate}
           </Typography>
           <IconButton className={Style.deleteButton}>
             <DeleteIcon />
