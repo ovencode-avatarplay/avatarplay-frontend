@@ -5,7 +5,8 @@ import MyContentTabView from './MyContentView';
 const MyContents: React.FC = () => {
   return (
     <main className={Style.myContents}>
-      <MyContentTabView />
+      MY CONTENTS
+      {/* <MyContentTabView /> */}
     </main>
   );
 };
