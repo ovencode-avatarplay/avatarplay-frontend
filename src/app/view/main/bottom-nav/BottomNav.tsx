@@ -16,7 +16,7 @@ import GameIcon from '@mui/icons-material/SportsEsports';
 import BottomNavData from 'data/navigation/bottom-nav.json';
 import DrawerCreate from '../content/create/CreateWidget';
 
-import Style from './BottomNav.css';
+import './BottomNav.css';
 import Link from 'next/link';
 
 export default function BottomNav() {
@@ -71,8 +71,8 @@ export default function BottomNav() {
 
   return (
     <footer>
-      <Paper className={Style.bottomNav} elevation={3}>
-        <Box className={Style.bottomNavBox}>
+      <Paper className="bottomNav" elevation={3} sx={{maxWidth: '500px', margin: '0 auto'}}>
+        <Box className="bottomNavBox">
           <BottomNavigation showLabels value={selectedIndex} onChange={handleNavigationChange}>
             {BottomNavData.map((button, index) =>
               index !== 2 ? (

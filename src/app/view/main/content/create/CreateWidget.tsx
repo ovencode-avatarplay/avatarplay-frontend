@@ -39,7 +39,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         sx: {
           position: 'absolute',
           bottom: 56,
-          zIndex: 50,
+          zIndex: 10,
           maxWidth: '500px',
           margin: '0 auto',
         },
