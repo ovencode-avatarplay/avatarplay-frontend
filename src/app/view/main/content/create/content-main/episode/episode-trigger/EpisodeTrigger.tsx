@@ -52,7 +52,7 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal}) => {
       open={open}
       onClose={closeModal}
       fullScreen
-      classes={{paper: styles['modal-body']}}
+      className={styles['modal-body']}
       disableAutoFocus={true}
       disableEnforceFocus={true} // disableEnforceFocus 속성 사용
     >

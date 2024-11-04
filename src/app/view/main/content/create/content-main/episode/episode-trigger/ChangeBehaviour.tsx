@@ -397,14 +397,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
 
   return (
     <>
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={onClose}
-        classes={{paper: styles.modal}}
-        disableAutoFocus
-        disableEnforceFocus
-      >
+      <Dialog fullScreen open={open} onClose={onClose} className={styles.modal} disableAutoFocus disableEnforceFocus>
         <DialogTitle className={styles['modal-header']}>
           <Button onClick={handleClose} className={styles['close-button']}>
             <ArrowBackIos />
