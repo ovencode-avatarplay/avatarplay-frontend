@@ -45,7 +45,7 @@ const EpisodeImageUpload: React.FC<Props> = ({
   };
 
   const handleEasyCreateClick = () => {
-    onClickEasyCreate();
+    // onClickEasyCreate(); // 24/11/05 임시 블락
     handleClose();
   };
 
