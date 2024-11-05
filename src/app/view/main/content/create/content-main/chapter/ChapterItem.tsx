@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Button,
-  Collapse,
-  IconButton,
-  Typography,
-} from '@mui/material';
+import {Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Typography} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HomeIcon from '@mui/icons-material/Home';
@@ -16,7 +7,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import EpisodeItem from './EpisodeItem';
 import Style from './ChapterBoard.module.css';
 import {Chapter} from '@/types/apps/chapterCardType';
-import {setSelectedChapterIdx, setSelectedEpisodeIdx} from '@/redux-store/slices/ContentSelection';
 import {useDispatch} from 'react-redux';
 
 interface ChapterItemProps {
@@ -52,8 +42,6 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   selectedEpisodeIdx,
   disableDelete,
 }) => {
-  const dispatch = useDispatch();
-
   const handleDeleteChapter = (chapterIdx: number, chapterLength: number) => {
     onDelete(chapterIdx);
   };

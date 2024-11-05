@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import Style from './ContentEpisodeItem.module.css';
-import {Box, Typography, IconButton} from '@mui/material';
+import {Box, Typography} from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ImageIcon from '@mui/icons-material/Image';
 import LockIcon from '@mui/icons-material/Lock';

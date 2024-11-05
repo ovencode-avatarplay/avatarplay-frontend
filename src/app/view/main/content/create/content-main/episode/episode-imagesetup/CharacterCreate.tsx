@@ -1,15 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  Box,
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-  Typography,
-  LinearProgress,
-  CircularProgress,
-  TextField,
-} from '@mui/material';
+import {Box, Button, Stepper, Step, StepLabel, Typography, TextField} from '@mui/material';
 import styles from './CharacterCreate.module.css';
 import GirlIcon from '@mui/icons-material/Female';
 import BoyIcon from '@mui/icons-material/Male';
@@ -251,8 +241,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
               {characterOptions.styleOptions.map((option, index) => (
                 <CharacterCreateImageButton
                   key={option.label}
-                  width={'20vw'}
-                  height={'20vw'}
+                  width={'10vw'}
+                  height={'20vh'}
                   label={option.label}
                   image={'/Images/001.png'}
                   selected={selectedOptions.style === index}
@@ -281,7 +271,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                   <SwiperSlide>
                     <CharacterCreateImageButton
                       key={race.label}
-                      width={'100%'}
+                      width={'5vw'}
                       height={'20vh'}
                       label={race.label}
                       image={'/Images/001.png'}
@@ -331,8 +321,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                 {characterOptions.hairStyles.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
-                    width={'15vw'}
-                    height={'15vh'}
+                    width={'5vw'}
+                    height={'10vh'}
                     label={style.label}
                     image={'/Images/001.png'}
                     selected={selectedOptions.hairStyle === index}
@@ -368,8 +358,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                 {characterOptions.bodyTypes.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
-                    width={'15vw'}
-                    height={'15vh'}
+                    width={'5vw'}
+                    height={'10vh'}
                     label={style.label}
                     image={'/Images/001.png'}
                     selected={selectedOptions.bodyType === index}
@@ -384,8 +374,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     {characterOptions.topSizes.map((style, index) => (
                       <CharacterCreateImageButton
                         key={style.label}
-                        width={'15vw'}
-                        height={'15vh'}
+                        width={'5vw'}
+                        height={'10vh'}
                         label={style.label}
                         image={'/Images/001.png'}
                         selected={selectedOptions.topSize === index}
@@ -398,8 +388,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     {characterOptions.bottomSizes.map((style, index) => (
                       <CharacterCreateImageButton
                         key={style.label}
-                        width={'15vw'}
-                        height={'15vh'}
+                        width={'5vw'}
+                        height={'10vh'}
                         label={style.label}
                         image={'/Images/001.png'}
                         selected={selectedOptions.bottomSize === index}
@@ -500,10 +490,6 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
           })}
         </Stepper>
       </Box>
-
-      {/* <Box className={styles.progressBarContainer}>
-        <LinearProgress variant="determinate" value={(activeStep / (steps.length - 1)) * 100} />
-      </Box> */}
 
       <Box className={styles.stepContent}>{getStepContent(activeStep)}</Box>
 
