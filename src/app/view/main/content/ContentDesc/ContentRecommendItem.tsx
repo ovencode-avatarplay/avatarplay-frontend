@@ -1,10 +1,10 @@
 import React from 'react';
-import Style from './ContentRecommendItem.module.css'; // 스타일 파일 임포트
+import Style from './ContentRecommendItem.module.css';
 
 interface ContentRecommendItemProps {
   contentId: number;
   imageUrl: string;
-  onSelect: (contentId: number) => void; // 부모 컴포넌트에 contentId 전달하는 핸들러
+  onSelect: (contentId: number) => void;
 }
 
 const ContentRecommendItem: React.FC<ContentRecommendItemProps> = ({contentId, imageUrl, onSelect}) => {

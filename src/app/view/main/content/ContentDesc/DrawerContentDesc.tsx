@@ -50,8 +50,6 @@ import DrawerContentEpisodeItemList from './ContentEpisodeList';
 import {EpisodeCardProps} from '@/types/apps/episode-card-type';
 import ContentRecommendList from './ContentRecommendList';
 import Link from 'next/link';
-import {Padding} from '@mui/icons-material';
-import {string} from 'valibot';
 import {setUrlLinkUse} from '@/redux-store/slices/chattingEnter';
 
 const DrawerContentDesc = () => {
@@ -301,7 +299,6 @@ const DrawerContentDesc = () => {
             variant="contained"
             fullWidth
             onClick={() => {
-              // 필요한 dispatch 작업 수행
               dispatch(setUrlLinkUse(false)); // 채팅이 url 링크를 통해 여는 것이 아니라는 것을 명시해준다.
             }}
           >

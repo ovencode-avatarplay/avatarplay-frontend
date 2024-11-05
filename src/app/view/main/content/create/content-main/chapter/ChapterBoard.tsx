@@ -31,7 +31,6 @@ import {ChapterInfo} from '@/types/apps/content/chapter/chapterInfo';
 import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
 
 // Data
-import defaultData from '@/data/create/content-info-data.json';
 import emptyData from '@/data/create/empty-content-info-data.json';
 import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {ContentInfo} from '@/types/apps/content/contentInfo';

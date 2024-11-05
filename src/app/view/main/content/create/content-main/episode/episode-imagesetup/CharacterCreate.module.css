@@ -138,13 +138,13 @@
 
 
 .genderButton {
-  width: 40vw;
-  height: 100px;
+  width: 10vw;
+  height: 10vh;
 }
 
 .styleButton {
-  width: 40vw;
-  height: 200px;
+  width: 10vw;
+  height: 10vh;
 }
 
 .ethnicityContent .bodyContent {
@@ -155,13 +155,13 @@
 
 
 .ethnicityButton, .bodyButton, .sizeButton{
-  min-width: 120px;
-  height: 30px;
+  min-width: 10vw;
+  height: 10vh;
 }
 
 .hairButton {
-  width: 80px;
-  height: 80px;
+  width: 10vw;
+  height: 10vh;
 }
 
 .hairLabel {
