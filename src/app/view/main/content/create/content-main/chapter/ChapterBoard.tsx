@@ -27,13 +27,12 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 // Types
 import {Chapter} from '@/types/apps/chapterCardType';
-import {ChapterInfo} from '@/types/apps/content/chapter/chapterInfo';
-import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
+import {ContentInfo, ChapterInfo} from '@/redux-store/slices/ContentInfo';
+import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 
 // Data
 import emptyData from '@/data/create/empty-content-info-data.json';
-import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
-import {ContentInfo} from '@/types/apps/content/contentInfo';
 
 interface Props {
   open: boolean;

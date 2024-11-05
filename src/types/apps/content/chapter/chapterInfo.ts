@@ -1,10 +1,4 @@
-import {EpisodeInfo, EpisodeInfoForContentGet} from '../episode/episodeInfo';
-
-export interface ChapterInfo {
-  id: number;
-  name: string;
-  episodeInfoList: EpisodeInfo[];
-}
+import {EpisodeInfoForContentGet} from '../episode/episodeInfo';
 
 export interface ChapterInfoForContentGet {
   id: number;

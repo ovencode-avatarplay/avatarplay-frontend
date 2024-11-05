@@ -1,10 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
-import {EpisodeDescription} from '@/types/apps/content/episode/episodeDescription';
 import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
 import {Conversation} from '@/types/apps/content/episode/conversation';
-import {LLMSetupInfo} from '@/types/apps/content/episode/llmSetupInfo';
-import defaultContent from '@/data/create/content-info-data.json';
+
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
 import {
@@ -13,6 +10,29 @@ import {
   ConversationPriortyType,
   ConversationTalkType,
 } from '@/types/apps/dataTypes';
+
+export interface EpisodeInfo {
+  id: number;
+  name: string;
+  thumbnail: string;
+  episodeDescription: EpisodeDescription;
+  triggerInfoList: TriggerInfo[];
+  conversationTemplateList: Conversation[];
+  llmSetupInfo: LLMSetupInfo;
+}
+
+export interface EpisodeDescription {
+  characterName: string;
+  characterDescription: string;
+  scenarioDescription: string;
+  introDescription: string;
+  secret: string;
+}
+
+export interface LLMSetupInfo {
+  llmModel: number;
+  customApi: string;
+}
 
 interface EpisodeInfoState {
   currentEpisodeInfo: EpisodeInfo; // 현재 선택된 EpisodeInfo

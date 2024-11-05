@@ -1,9 +1,9 @@
 // src/app/Network/ContentNetwork.tsx
 
-import {PublishInfo} from '@/types/apps/content/chapter/publishInfo';
+import {PublishInfo} from '@/redux-store/slices/ContentInfo';
 import api, {ResponseAPI} from './ApiInstance';
-import {ContentInfo} from '@/types/apps/content/contentInfo';
-import {ChapterInfo, ChapterInfoForContentGet} from '@/types/apps/content/chapter/chapterInfo';
+import {ContentInfo} from '@/redux-store/slices/ContentInfo';
+import {ChapterInfoForContentGet} from '@/types/apps/content/chapter/chapterInfo';
 import {ContentDashboardItem} from '@/redux-store/slices/myContentDashboard';
 
 // Save Content

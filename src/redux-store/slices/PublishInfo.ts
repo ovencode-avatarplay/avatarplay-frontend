@@ -1,6 +1,6 @@
 // publishInfo.ts
 
-import {PublishInfo} from '@/types/apps/content/chapter/publishInfo';
+import {PublishInfo} from './ContentInfo';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {number} from 'valibot';
 import emptyContent from '@/data/create/empty-content-info-data.json';
