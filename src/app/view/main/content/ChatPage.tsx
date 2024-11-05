@@ -42,6 +42,7 @@ const ChatPage: React.FC = () => {
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
+  const [isBackground, SetIsBackground] = useState<boolean>(false);
 
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
@@ -300,6 +301,7 @@ const ChatPage: React.FC = () => {
 
   const handleToggleBackground = () => {
     console.log('배경 보기/숨기기 버튼 클릭');
+    SetIsBackground(!isBackground);
   };
 
   const {prevMessages: enterData, error} = usePrevChatting(episodeId);
@@ -371,6 +373,7 @@ const ChatPage: React.FC = () => {
         messages={parsedMessages!}
         bgUrl={enterData?.episodeBgImageUrl ?? ''}
         iconUrl={enterData?.iconImageUrl ?? ''}
+        isBackground={isBackground}
       />
       <BottomBar
         onSend={handleSendMessage}
