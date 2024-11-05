@@ -15,7 +15,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import {useDispatch} from 'react-redux'; // Redux 액션을 디스패치하기 위한 훅
 import {setLlmSetupInfo} from '@/redux-store/slices/EpisodeInfo'; // 액션 임포트
-import {LLMSetupInfo} from '@/types/apps/content/episode/llmSetupInfo';
+import {LLMSetupInfo} from '@/redux-store/slices/EpisodeInfo';
 import styles from './EpisodeLLMSetup.module.css'; // 스타일 파일
 
 interface EpisodeLLMSetupProps {

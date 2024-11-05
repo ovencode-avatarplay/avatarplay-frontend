@@ -1,10 +1,31 @@
 // Imports
-import {ContentInfo} from '@/types/apps/content/contentInfo';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {EpisodeInfo} from './EpisodeInfo';
 
 // JSON 파일
-import defaultContent from '@/data/create/content-info-data.json';
 import emptyContent from '@/data/create/empty-content-info-data.json';
+
+export interface ContentInfo {
+  id: number;
+  userId: number;
+  urlLinkKey: string;
+  chapterInfoList: ChapterInfo[];
+  publishInfo: PublishInfo;
+}
+
+export interface PublishInfo {
+  languageType: number;
+  contentName: string;
+  thumbnail: string;
+  contentDescription: string;
+  authorName: string;
+  authorComment: string;
+  tagList: string[];
+  selectTagList: string[];
+  visibilityType: number;
+  monetization: boolean;
+  nsfw: number;
+}
 
 // 현재 수정 중인 Content 정보
 interface ContentInfoState {
@@ -15,6 +36,12 @@ interface ContentInfoState {
 const initialState: ContentInfoState = {
   curEditingContentInfo: emptyContent.data.contentInfo,
 };
+
+export interface ChapterInfo {
+  id: number;
+  name: string;
+  episodeInfoList: EpisodeInfo[];
+}
 
 // Slice 생성
 export const curEditngContentInfoSlice = createSlice({

@@ -39,14 +39,12 @@ import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {setPublishInfo, setContentName} from '@/redux-store/slices/PublishInfo';
 
 // Interface
-import {ContentInfo} from '@/types/apps/content/contentInfo';
-import {ChapterInfo} from '@/types/apps/content/chapter/chapterInfo';
+import {ContentInfo, ChapterInfo} from '@/redux-store/slices/ContentInfo';
+import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/myContentDashboard';
 
 // Json
-import DefaultContentInfo from '@/data/create/content-info-data.json';
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
-import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
-import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/myContentDashboard';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
@@ -78,7 +76,6 @@ const ContentMain: React.FC = () => {
   const prevChapterRef = useRef<number | null>(null);
   const prevEpisodeRef = useRef<number | null>(null);
 
-  const defaultContentInfo: ContentInfo = DefaultContentInfo.data.contentInfo as ContentInfo;
   const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
   const defaultSaveContentReq = (): SaveContentReq => ({
     contentInfo: editingContentInfo ?? emptyContentInfo,

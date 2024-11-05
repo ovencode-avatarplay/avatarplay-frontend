@@ -12,8 +12,8 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 // Types
 import {Chapter} from '@/types/apps/chapterCardType';
-import {ChapterInfo} from '@/types/apps/content/chapter/chapterInfo';
-import {EpisodeInfo} from '@/types/apps/content/episode/episodeInfo';
+import {ChapterInfo} from '@/redux-store/slices/ContentInfo';
+import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 
 interface Props {
   open: boolean;
