@@ -60,6 +60,9 @@ const usePrevChatting = (episodeId: number) => {
         if (response.resultCode === 0 && response.data) {
           // 가져온 데이터를 상태에 저장
           setPrevMessages(response.data);
+
+          dispatch(setContentName(response.data.contentName));
+          dispatch(setEpisodeName(response.data.episodeName));
         } else {
           setError('Failed to fetch previous messages.');
         }
