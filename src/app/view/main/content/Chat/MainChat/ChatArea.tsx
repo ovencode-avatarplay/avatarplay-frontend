@@ -16,20 +16,20 @@ interface ChatAreaProps {
   messages: MessageGroup;
   bgUrl: string;
   iconUrl: string;
-  isBackground: boolean;
+  isHideChat: boolean;
 }
 
-const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isBackground}) => {
+const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isHideChat: isHideChat}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  const [isBackgroundOn, SetIsBackground] = useState<boolean>(false);
+  // const [isHideChat, SetIsHideChatOn] = useState<boolean>(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({behavior: 'smooth'});
   }, [messages]);
 
-  useEffect(() => {
-    SetIsBackground(isBackground);
-  }, [isBackground]);
+  // useEffect(() => {
+  //   // SetIsHideChatOn(isHideChat);
+  // }, [isHideChat]);
 
   return (
     <Box
@@ -45,7 +45,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isBackgrou
         fontFamily: 'Noto Sans KR, sans-serif',
       }}
     >
-      {isBackgroundOn === true &&
+      {isHideChat === false &&
         messages.Messages.map((msg, index) => (
           <Box
             key={index}
