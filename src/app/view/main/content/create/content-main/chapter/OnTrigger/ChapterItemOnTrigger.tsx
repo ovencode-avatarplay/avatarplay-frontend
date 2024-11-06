@@ -3,6 +3,7 @@ import {Box, Button, Collapse, Typography} from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import styles from './ChapterBoardOnTrigger.module.css';
 import EpisodeItemOnTrigger from './EpisodeItemOnTrigger';
+import {Chapter} from '../ChapterTypes';
 
 interface ChapterItemOnTriggerProps {
   chapter: Chapter;
@@ -12,18 +13,6 @@ interface ChapterItemOnTriggerProps {
   onCloseChapterBoard: () => void;
   isSelected: boolean; // 선택 여부
   disableDelete: boolean;
-}
-
-interface Chapter {
-  id: number;
-  title: string;
-  episodes: Episode[];
-  expanded: boolean; // 접기/펼치기 상태
-}
-
-interface Episode {
-  id: number;
-  title: string;
 }
 
 const ChapterItemOnTrigger: React.FC<ChapterItemOnTriggerProps> = ({

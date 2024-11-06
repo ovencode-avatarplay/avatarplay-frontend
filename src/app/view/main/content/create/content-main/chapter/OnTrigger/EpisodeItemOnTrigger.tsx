@@ -1,6 +1,7 @@
 import React from 'react';
 import {Box, Button, Typography} from '@mui/material';
 import styles from './ChapterBoardOnTrigger.module.css';
+import {Episode} from '../ChapterTypes';
 
 interface EpisodeItemOnTriggerProps {
   episode: Episode;
@@ -9,11 +10,6 @@ interface EpisodeItemOnTriggerProps {
   onClose: () => void;
   disableDelete: boolean;
   isSelected: boolean; // 선택 여부
-}
-
-interface Episode {
-  id: number;
-  title: string;
 }
 
 const EpisodeItemOnTrigger: React.FC<EpisodeItemOnTriggerProps> = ({

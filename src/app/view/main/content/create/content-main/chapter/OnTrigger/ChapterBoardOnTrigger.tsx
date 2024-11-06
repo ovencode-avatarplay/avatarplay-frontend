@@ -13,6 +13,7 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 // Types
 import {ChapterInfo} from '@/redux-store/slices/ContentInfo';
 import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {Chapter} from '../ChapterTypes';
 
 interface Props {
   open: boolean;
@@ -23,18 +24,6 @@ interface Props {
   onAddEpisode: (newEpisode: EpisodeInfo) => void;
   onDeleteEpisode: (chapterId: number, episodeId: number) => void;
   onSelectEpisode: (chapterId: number, episodeId: number) => void; // 추가된 함수
-}
-
-interface Chapter {
-  id: number;
-  title: string;
-  episodes: Episode[];
-  expanded: boolean; // 접기/펼치기 상태
-}
-
-interface Episode {
-  id: number;
-  title: string;
 }
 
 const ChapterBoardOnTrigger: React.FC<Props> = ({open, onClose, initialChapters, onAddChapter, onSelectEpisode}) => {
