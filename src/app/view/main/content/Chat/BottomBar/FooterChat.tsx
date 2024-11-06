@@ -14,6 +14,8 @@ import EmojiOverlayPopup from './EmojiOverlayPopup';
 import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
 import MapsUgcIcon from '@mui/icons-material/MapsUgc';
 import ExtendedInputField from './ExtendedInputField';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import ChatBar from './ChatBar';
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
   streamKey: string;
@@ -22,6 +24,7 @@ interface BottomBarProps {
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, EmoticonData}) => {
+  const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isStickerOpen, setIsStickerOpen] = useState(false);
   const [showEmojiPopup, setShowEmojiPopup] = useState(false);
@@ -32,8 +35,6 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   const inputRef = useRef<HTMLInputElement | null>(null); // inputRef 타입 변경
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
-
-  const dispatch = useDispatch();
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -155,47 +156,14 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
         width: window.innerWidth,
       }}
     >
-      <Box display="flex" alignItems="center" padding={1}>
-        <TextField
-          variant="outlined"
-          placeholder="Type your message..."
+      <Box>
+        <ChatBar
+          onSend={handleSend}
+          toggleExpand={toggleExpand}
+          isExpanded={false}
+          handleKeyDown={handleKeyDown}
           inputRef={inputRef}
-          onKeyDown={handleKeyDown}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <IconButton onClick={handleSend}>
-                  <MapsUgcIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            flex: 1,
-            marginRight: 1,
-            overflow: 'auto',
-            borderRadius: '4px',
-            minHeight: '40px',
-          }}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            marginRight: 1,
-            marginBottom: 1,
-            width: '40px',
-            height: '40px',
-            minWidth: '50px',
-            whiteSpace: 'nowrap',
-          }}
-          onClick={handleSend}
-        >
-          보내기
-        </Button>
-        <IconButton onClick={toggleExpand} sx={{marginLeft: 1, marginBottom: 1}}>
-          {isExpanded ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
-        </IconButton>
       </Box>
       {isExpanded && !isStickerOpen && (
         <Box display="flex" marginTop={1} gap={1}>
