@@ -32,10 +32,9 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   const [selectedEmoticonId, setSelectedEmoticonId] = useState<number | null>(null);
   const [selectedEmoticonIsFavorite, setselectedEmoticonIsFavorite] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
-  const inputRef = useRef<HTMLInputElement | null>(null); // inputRef 타입 변경
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
-
+  const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
     setSelectedEmoji(null);
@@ -50,7 +49,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
     if (isSendingMessage.state === true) return;
     else isSendingMessage.state = true;
 
-    const messageText = inputRef.current ? inputRef.current.value : '';
+    const messageText = messages ? messages : '';
 
     // 선택된 이모티콘이 있으면 이미지 요소로 생성
     const message = selectedEmoji
@@ -58,13 +57,9 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
       : messageText;
 
     if (message.trim()) {
-      const parseMessage = false;
-      onSend(message, true, parseMessage);
-
       // 입력란 초기화
-      if (inputRef.current) {
-        inputRef.current.value = ''; // 입력 값을 빈 문자열로 설정하여 초기화
-        inputRef.current.focus(); // 포커스 다시 설정
+      if (messages) {
+        setMessage('');
       }
       const reqSendChatMessage: SendChatMessageReq = {
         userId: UserId,
@@ -78,6 +73,21 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
       setSelectedEmoticonId(null); // 선택된 이모티콘 ID 초기화
       setSelectedEmoji(null); // 선택된 이모티콘 초기화
       setShowEmojiPopup(false); // 팝업 닫기
+
+      const parseMessage = false;
+
+      if (message.includes('(,)')) {
+        const messageParts = message.split('(,)');
+        messageParts.forEach(part => {
+          const trimmedPart = part.trim(); // 필요시 양쪽 공백 제거
+          if (trimmedPart.length > 0) {
+            // 빈 문자열이 아닌 경우에만 onSend 호출
+            onSend(trimmedPart, true, parseMessage);
+          }
+        });
+      } else {
+        onSend(message, true, parseMessage);
+      }
 
       const response = await sendMessageStream(reqSendChatMessage);
       if (response.resultCode === 0 && response.data) {
@@ -122,7 +132,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
     };
   }, [streamKey]);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<Element>) => {
     if (event.key === 'Enter') {
       if (!event.shiftKey) {
         event.preventDefault();
@@ -158,11 +168,12 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
     >
       <Box>
         <ChatBar
+          message={messages} // 상태를 전달하여 최신 메시지를 관리
+          setMessage={setMessage} // 메시지를 업데이트할 함수 전달
           onSend={handleSend}
           toggleExpand={toggleExpand}
           isExpanded={false}
           handleKeyDown={handleKeyDown}
-          inputRef={inputRef}
         />
       </Box>
       {isExpanded && !isStickerOpen && (
