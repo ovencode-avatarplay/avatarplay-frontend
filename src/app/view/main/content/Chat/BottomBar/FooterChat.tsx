@@ -89,7 +89,11 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
         onSend(message, true, parseMessage);
       }
 
+      // 이미 선언된 reqSendChatMessage의 text 필드를 (,)가 제거된 메시지로 업데이트
+      reqSendChatMessage.text = message.replace(/\(,\)/g, ''); // (,)를 제거한 메시지
+
       const response = await sendMessageStream(reqSendChatMessage);
+
       if (response.resultCode === 0 && response.data) {
         setStreamKey(response.data.streamKey);
       }
