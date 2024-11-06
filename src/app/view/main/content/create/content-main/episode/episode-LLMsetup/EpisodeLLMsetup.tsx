@@ -81,7 +81,22 @@ const EpisodeLLMSetup: React.FC<EpisodeLLMSetupProps> = ({open, onClose}) => {
             <FormControlLabel value="3" control={<Radio />} label="Claude 2 - 공부와 토론에 특화된 모델" />
             <FormControlLabel value="4" control={<Radio />} label="Claude 3 Opus - 시리즈 중 가장 높은 지능" />
             <FormControlLabel value="5" control={<Radio />} label="Claude 3 Sonnet - 2배 빠른 속도" />
-            <FormControlLabel value="6" control={<Radio />} label="Custom API" />
+            <FormControlLabel
+              value="6"
+              control={<Radio />}
+              label="Claude 3.5 Sonnet - 3보다 높은 지능과 2배 빠른 속도"
+            />
+            <FormControlLabel
+              value="7"
+              control={<Radio />}
+              label="Claude 3.5 Sonnet V2 - 다 방면에서 3.5보다 향상된 모델"
+            />
+            <FormControlLabel
+              value="8"
+              control={<Radio />}
+              label="Claude 3 Haiku - 강력한 스토리 표현력을 갖춘 가볍고 빠른 모델"
+            />
+            <FormControlLabel value="9" control={<Radio />} label="Custom API" />
           </RadioGroup>
 
           {/* Custom API 입력 필드 - 'CustomAPI'가 선택되었을 때만 활성화 */}
