@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import {ArrowForwardIos} from '@mui/icons-material';
 import {useSelector} from 'react-redux'; // Redux에서 상태를 가져오기 위해 추가
 import {RootState} from '@/redux-store/ReduxStore'; // RootState 타입 가져오기
-import {TriggerTypeNames} from '@/types/apps/dataTypes'; // TriggerInfo 타입 가져오기
+import {TriggerTypeNames} from '@/types/apps/DataTypes'; // TriggerInfo 타입 가져오기
 import ChangeBehaviour from './ChangeBehaviour'; // ChangeBehaviour 모달 임포트
 import styles from './TriggerListItem.module.css'; // CSS 모듈 임포트
 

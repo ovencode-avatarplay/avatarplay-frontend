@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Typography} from '@mui/material';
-import Style from './SearchBoardHorizonScroll.module.css'; // 스타일 파일 임포트
+import styles from './SearchBoardHorizonScroll.module.css'; // 스타일 파일 임포트
 import ExploreCard from './ExploreCard';
-import {ExploreCardProps} from '@/types/apps/explore-card-type';
 
 // Import Swiper React components
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -14,6 +13,7 @@ import 'swiper/css/pagination';
 
 // Import required modules
 import {FreeMode, Pagination} from 'swiper/modules';
+import {ExploreCardProps} from './SearchBoardTypes';
 
 interface Props {
   title: string;
@@ -27,7 +27,9 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({title, data}) => {
     if (data) {
       const mappedData: ExploreCardProps[] = data.map(explore => ({
         contentId: explore.contentId,
-        episodeId: explore.episodeId,
+        contentName: explore.contentName,
+        chatCount: explore.chatCount,
+        episodeCount: explore.episodeCount,
         thumbnail: explore.thumbnail,
       }));
       setContent(mappedData);
@@ -35,7 +37,7 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({title, data}) => {
   }, [data]);
 
   return (
-    <Box className={Style.containerBox}>
+    <Box className={styles.containerBox}>
       <Typography variant="h5" sx={{fontWeight: 'bold', marginBottom: '8px'}}>
         {title}
       </Typography>
@@ -48,12 +50,18 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({title, data}) => {
         //   clickable: true,
         // }}
         modules={[FreeMode, Pagination]}
-        className={Style.mySwiper}
+        className={styles.mySwiper}
       >
         {content.map((explore, index) => (
           <SwiperSlide key={index} style={{width: 'auto'}}>
             {/* 각 슬라이드의 너비를 자동으로 설정 */}
-            <ExploreCard contentId={explore.contentId} episodeId={explore.episodeId} thumbnail={explore.thumbnail} />
+            <ExploreCard
+              contentId={explore.contentId}
+              contentName={explore.contentName}
+              chatCount={explore.chatCount}
+              episodeCount={explore.episodeCount}
+              thumbnail={explore.thumbnail}
+            />
           </SwiperSlide>
         ))}
       </Swiper>

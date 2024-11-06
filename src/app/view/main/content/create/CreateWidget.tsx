@@ -1,11 +1,13 @@
 import React from 'react';
+
 import {Drawer, Box, Typography} from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
 import PostAddIcon from '@mui/icons-material/PostAdd';
+
 import Link from 'next/link';
 
-import Style from './CreateWidget.module.css';
+import styles from './CreateWidget.module.css';
 
 interface Props {
   open: boolean;
@@ -45,10 +47,10 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         },
       }}
     >
-      <Box className={Style.drawerBox}>
+      <Box className={styles.drawerBox}>
         {/* Character Navigation */}
         <Link href="/:lang/create/artist" passHref>
-          <Box className={Style.drawerItem} onClick={handleClickCharacter}>
+          <Box className={styles.drawerItem} onClick={handleClickCharacter}>
             <PersonIcon fontSize="large" />
             <Typography>Character</Typography>
           </Box>
@@ -56,7 +58,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
 
         {/* Story Navigation */}
         <Link href="/:lang/create/story" passHref>
-          <Box className={Style.drawerItem} onClick={handleClickStory}>
+          <Box className={styles.drawerItem} onClick={handleClickStory}>
             <BookIcon fontSize="large" />
             <Typography>Story</Typography>
           </Box>
@@ -64,7 +66,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
 
         {/* Post Navigation */}
         <Link href="/:lang/create/post" passHref>
-          <Box className={Style.drawerItem} onClick={handleClickPost}>
+          <Box className={styles.drawerItem} onClick={handleClickPost}>
             <PostAddIcon fontSize="large" />
             <Typography>Post</Typography>
           </Box>

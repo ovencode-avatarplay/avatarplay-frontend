@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {Dialog, DialogActions, DialogContent, DialogTitle, Button, Avatar, TextField} from '@mui/material';
 import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {setUserId} from '@/redux-store/slices/userInfo';
+import {setUserId} from '@/redux-store/slices/UserInfo';
 import {Session} from '@supabase/supabase-js';
 
 interface UserInfoModalProps {

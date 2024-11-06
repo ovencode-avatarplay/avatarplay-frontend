@@ -1,5 +1,7 @@
 export interface ExploreCardProps {
   contentId: number;
-  episodeId: number;
+  contentName: string;
+  chatCount: number;
+  episodeCount: number;
   thumbnail: string;
 }

@@ -2,10 +2,7 @@ import React, {useRef, useEffect, useState, useCallback, useLayoutEffect} from '
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 
-import Style from './ContentMain.module.css';
-
-// 디버그용 컴포넌트
-import ContentInfoManager from './ContentInfoManager';
+import styles from './ContentMain.module.css';
 
 // 항상 보여지는 컴포넌트
 import ContentHeader from './ContentHeader';
@@ -41,7 +38,7 @@ import {setPublishInfo, setContentName} from '@/redux-store/slices/PublishInfo';
 // Interface
 import {ContentInfo, ChapterInfo} from '@/redux-store/slices/ContentInfo';
 import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
-import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/myContentDashboard';
+import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/MyContentDashboard';
 
 // Json
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
@@ -488,13 +485,13 @@ const ContentMain: React.FC = () => {
 
   return (
     <>
-      <main className={Style.contentMain}>
+      <main className={styles.contentMain}>
         <ContentHeader
           contentTitle={contentName}
           onOpenDrawer={handleOpenDashboard}
           onTitleChange={handleTitleChange} // Redux 상태 업데이트
         />
-        <div className={Style.content}>
+        <div className={styles.content}>
           <ContentDashboard
             open={isDashboardOpen}
             onClose={handleCloseDashboard}

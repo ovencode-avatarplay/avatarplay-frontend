@@ -3,7 +3,7 @@
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import {Box, Drawer} from '@mui/material';
 import React from 'react';
-import Style from './ContentGimmick.module.css';
+import styles from './ContentGimmick.module.css';
 
 interface Props {
   open: boolean;
@@ -20,7 +20,7 @@ const ContentGimmick: React.FC<Props> = ({open, onClose}) => {
         sx: {width: '100vw', height: '100vh'},
       }}
     >
-      <Box className={Style.drawerContainer}>
+      <Box className={styles.drawerContainer}>
         <CreateDrawerHeader title="Gimmick" onClose={onClose} />
       </Box>
       <div>ContentGimmick</div>

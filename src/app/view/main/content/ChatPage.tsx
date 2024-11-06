@@ -6,7 +6,14 @@ import styles from '@chats/Styles/StyleChat.module.css';
 import {useBackHandler} from 'utils/util-1';
 import usePrevChatting from '@chats/MainChat/PrevChatting';
 import {RootState} from '@/redux-store/ReduxStore';
-import {parseMessage} from '@chats/MainChat/MessageParser';
+import {
+  cleanString,
+  isFinishMessage,
+  isNarrationMessage,
+  isSystemMessage,
+  parseMessage,
+  splitByAsterisk,
+} from '@chats/MainChat/MessageParser';
 import PopUpYesOrNo from '@/components/popup/PopUpYesOrNo';
 import {
   sendChattingResult,
@@ -18,14 +25,14 @@ import {
   sendChattingEnterUrl,
 } from '@/app/NetWork/ChatNetwork';
 
-import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
+import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
 import {useDispatch, useSelector} from 'react-redux';
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import BottomNavData from 'data/navigation/bottom-nav.json';
 
 interface Message {
   text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt';
+  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
 }
 
 interface MessageGroup {
@@ -42,7 +49,7 @@ const ChatPage: React.FC = () => {
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
-  const [isBackground, SetIsBackground] = useState<boolean>(false);
+  const [isHideChat, SetHideChat] = useState<boolean>(false);
 
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
@@ -53,24 +60,13 @@ const ChatPage: React.FC = () => {
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
   const handleBackClick = useBackHandler();
   const dispatch = useDispatch();
-  const cleanString = (input: string): string => {
-    // 1. 개행 문자 제거
-    let cleaned = input.replace(/\n/g, '');
 
-    // 2. 마지막 글자가 '#'이면 제거
-    // if (cleaned.endsWith('#')) {
-    //   cleaned = cleaned.slice(0, -1);
-    // }
-
-    return cleaned;
-  };
-
+  //#region Message send handler
   const handleSendMessage = async (message: string, isMyMessage: boolean) => {
     if (!message || typeof message !== 'string') return;
 
-    console.log('message===' + message + '===');
     // 메시지가 '$'을 포함할 경우 팝업 표시
-    if (isMyMessage === false && message.includes('$')) {
+    if (isFinishMessage(isMyMessage, message) === true) {
       const requestData = {
         streamKey: streamKey, // streamKey 상태에서 가져오기
       };
@@ -94,7 +90,7 @@ const ChatPage: React.FC = () => {
 
     // *가 포함되어 있으면 적절한 위치에서 isNarrationActive.active 상태를 갱신해줘야 한다.
     // sender가 바뀌었어도 isNarrationActive.active 상태를 갱신해줘야 한다.
-    const isIncludeAsterisk: boolean = message.includes('*');
+    const isIncludeAsterisk: boolean = isNarrationMessage(message);
 
     //if (isNewWordBallon) isNarrationActive.active = !isNarrationActive.active;
 
@@ -109,44 +105,51 @@ const ChatPage: React.FC = () => {
       if (isMyMessage) isNarrationActive.active = false;
 
       // 이전 메시지 정보를 복사하고 메시지만 가져와 배열 업데이트 준비
-      const newMessages = [...(prev?.Messages || [])];
+      const allMessages = [...(prev?.Messages || [])];
 
       // 메시지가 비어있으면 반환
-      if (newMessage.text.length === 0) return {Messages: newMessages, emoticonUrl: prev?.emoticonUrl || []};
+      if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
 
       // 메시지 정리
       newMessage.text = cleanString(newMessage.text);
 
       const splitMessage = splitByAsterisk(newMessage.text);
-      const splitMessageLeft = splitMessage.beforeAsterisk;
-      const splitMessageRight = splitMessage.afterAsterisk;
+      const splitMessageLeft = splitMessage.leftAsterisk;
+      const splitMessageRight = splitMessage.rightAsterisk;
 
       // 시스템 메시지 처리
-      const systemMessageSignCount = (newMessage.text.match(/%/g) || []).length;
-
-      if (isMyMessage === false && systemMessageSignCount >= 2) {
+      if (isMyMessage === false && isSystemMessage(newMessage.text)) {
         const newMessageSystem: Message = {
           text: newMessage.text.replace(/%/g, ''),
           sender: 'system',
         };
-        newMessages.push(newMessageSystem);
-        return {Messages: newMessages, emoticonUrl: prev?.emoticonUrl || []};
+        allMessages.push(newMessageSystem);
+        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
       }
 
       // 내 메시지
       if (isMyMessage === true) {
-        newMessages.push(newMessage);
+        // newMessage.text가 *로 시작하고 끝나는 경우
+        if (newMessage.text.startsWith('*') && newMessage.text.endsWith('*')) {
+          newMessage.sender = 'userNarration';
+          newMessage.text = newMessage.text.slice(1, -1); // 양 옆의 *를 제거
+        } else {
+          newMessage.sender = 'user'; // 일반 유저 메시지
+        }
+
+        allMessages.push(newMessage); // 메시지를 배열에 추가
       }
+
       // 상대 메시지 처리
       else {
         if (isIncludeAsterisk === true) {
           // 먼저 왼쪽을 기존 말풍선에 출력시킨다
-          if (splitMessageLeft.length > 0) newMessages[newMessages.length - 1].text += `${splitMessageLeft}`;
+          if (splitMessageLeft.length > 0) allMessages[allMessages.length - 1].text += `${splitMessageLeft}`;
 
           if (splitMessageRight.includes('*')) {
             const splitMessage2 = splitByAsterisk(splitMessageRight);
-            const splitMessageLeft2 = splitMessage2.beforeAsterisk;
-            const splitMessageRight2 = splitMessage2.afterAsterisk;
+            const splitMessageLeft2 = splitMessage2.leftAsterisk;
+            const splitMessageRight2 = splitMessage2.rightAsterisk;
 
             isNarrationActive.active = !isNarrationActive.active;
             const newMessage2: Message = {
@@ -155,8 +158,8 @@ const ChatPage: React.FC = () => {
             };
 
             if (splitMessageLeft2.length > 0) {
-              if (newMessages[newMessages.length - 1].sender !== newMessage2.sender) {
-                newMessages.push(newMessage);
+              if (allMessages[allMessages.length - 1].sender !== newMessage2.sender) {
+                allMessages.push(newMessage);
               }
             }
 
@@ -167,7 +170,7 @@ const ChatPage: React.FC = () => {
                 text: splitMessageLeft2,
                 sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
               };
-              newMessages.push(newMessage3);
+              allMessages.push(newMessage3);
             }
           } else {
             isNarrationActive.active = !isNarrationActive.active;
@@ -177,7 +180,7 @@ const ChatPage: React.FC = () => {
               sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
             };
 
-            if (newMessage4.text.length > 0) newMessages.push(newMessage4);
+            if (newMessage4.text.length > 0) allMessages.push(newMessage4);
           }
         } else {
           const newMessage5: Message = {
@@ -185,38 +188,30 @@ const ChatPage: React.FC = () => {
             sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
           };
           if (newMessage5.text !== ' ') {
-            if (newMessages[newMessages.length - 1].sender !== newMessage5.sender) {
+            if (allMessages[allMessages.length - 1].sender !== newMessage5.sender) {
               if (newMessage5.text.length > 0) {
-                newMessages.push(newMessage5);
+                allMessages.push(newMessage5);
               }
             }
             // 같은 sender면 같은 말풍선에 출력
             else if (newMessage5.text.length > 0) {
-              newMessages[newMessages.length - 1].text += `${newMessage5.text}`;
+              allMessages[allMessages.length - 1].text += `${newMessage5.text}`;
             }
           }
           // 빈문자가 왔을때 기존 sender가 user였으면 무시하자 ( 자꾸 빈말풍선 찍히는 원인 )
-          else if (newMessages[newMessages.length - 1].sender === 'user') {
+          else if (allMessages[allMessages.length - 1].sender === 'user') {
             return prev;
           }
         }
       }
 
       // 업데이트된 Messages 배열을 MessageInfo 객체로 반환
-      return {Messages: newMessages, emoticonUrl: prev?.emoticonUrl || []};
+      return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
     });
   };
+  //#endregion
 
-  const splitByAsterisk = (splitMessage: string) => {
-    // '*'을 기준으로 문자열을 나누기
-    const parts = splitMessage.split('*');
-
-    // 나눈 부분에서 앞과 뒤의 문자열을 반환
-    return {
-      beforeAsterisk: parts[0], // '*' 앞의 문자열
-      afterAsterisk: parts.slice(1).join('*'), // '*' 뒤의 문자열 (여러 개의 '*'이 있을 수 있음)
-    };
-  };
+  //#region  다음 에피소드 넘어가기
   const navigateToNextEpisode = async (episodeId: number) => {
     console.log(`Navigating to episode ID: ${episodeId}`);
 
@@ -294,29 +289,28 @@ const ChatPage: React.FC = () => {
     console.log('No 클릭');
     setShowPopup(false);
   };
+  //#endregion
 
+  //#region HeaderChat handler
   const handleMoreClick = () => {
     console.log('더보기 버튼 클릭');
   };
 
   const handleToggleBackground = () => {
     console.log('배경 보기/숨기기 버튼 클릭');
-    SetIsBackground(!isBackground);
+    SetHideChat(!isHideChat);
   };
+  //#endregion
 
-  const {prevMessages: enterData, error} = usePrevChatting(episodeId);
-  //console.log('usePrevChatting ', {enterData, error});
-  //console.log('curEpId ', {episodeId});
-  episodeId;
+  const {prevMessages: enterData} = usePrevChatting(episodeId);
+
   useEffect(() => {
     if (
       !hasFetchedPrevMessages &&
-      !error &&
       enterData?.prevMessageInfoList //&&
       //enterData.prevMessageInfoList.length > 0
     ) {
       // flatMap을 통해 parsedPrevMessages를 생성
-      // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
       // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
       const {parsedPrevMessages, emoticonUrl} = enterData?.prevMessageInfoList.reduce<{
         parsedPrevMessages: Message[];
@@ -359,22 +353,24 @@ const ChatPage: React.FC = () => {
       };
       loadEmoticons();
     }
-  }, [error, enterData, hasFetchedPrevMessages]);
+  }, [enterData, hasFetchedPrevMessages]);
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
   return (
     <main className={styles.chatmodal}>
-      <TopBar
-        onBackClick={handleBackClick}
-        onMoreClick={handleMoreClick}
-        onToggleBackground={handleToggleBackground}
-        iconUrl={enterData?.iconImageUrl ?? ''}
-      />
-      <ChatArea
-        messages={parsedMessages!}
-        bgUrl={enterData?.episodeBgImageUrl ?? ''}
-        iconUrl={enterData?.iconImageUrl ?? ''}
-        isBackground={isBackground}
-      />
+      <div className={styles.overlayContainer}>
+        <TopBar
+          onBackClick={handleBackClick}
+          onMoreClick={handleMoreClick}
+          onToggleBackground={handleToggleBackground}
+          iconUrl={enterData?.iconImageUrl ?? ''}
+        />
+        <ChatArea
+          messages={parsedMessages!}
+          bgUrl={enterData?.episodeBgImageUrl ?? ''}
+          iconUrl={enterData?.iconImageUrl ?? ''}
+          isHideChat={isHideChat}
+        />
+      </div>
       <BottomBar
         onSend={handleSendMessage}
         streamKey={streamKey}

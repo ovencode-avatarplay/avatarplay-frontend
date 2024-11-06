@@ -17,8 +17,8 @@ import styles from './ChangeBehaviour.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {removeTriggerInfo, updateTriggerInfo, updateTriggerInfoName} from '@/redux-store/slices/EpisodeInfo';
-import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/dataTypes';
-import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
+import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/DataTypes';
+import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 import EpisodeConversationTemplate from '../episode-conversationtemplate/EpisodeConversationTemplate';
 import ChapterBoardOnTrigger from '@/app/view/main/content/create/content-main/chapter/OnTrigger/ChapterBoardOnTrigger';
 

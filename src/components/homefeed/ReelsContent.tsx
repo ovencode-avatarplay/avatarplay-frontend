@@ -3,7 +3,7 @@ import {Box, Typography, IconButton, Container, Avatar, Card} from '@mui/materia
 import {FavoriteBorder, ChatBubbleOutline, ArrowForwardIos} from '@mui/icons-material';
 import MoreVert from '@mui/icons-material/MoreVert';
 import {useDispatch} from 'react-redux';
-import {setDrawerEpisodeId} from '@/redux-store/slices/drawerContentDescSlice';
+import {setDrawerEpisodeId} from '@/redux-store/slices/DrawerContentDescSlice';
 import styles from './ReelsContent.module.css';
 import {Swiper, SwiperSlide} from 'swiper/react';
 

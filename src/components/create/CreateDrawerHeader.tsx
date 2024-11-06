@@ -1,7 +1,7 @@
 import React from 'react';
 import {Box, IconButton, Typography} from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Style from './CreateDrawerHeader.module.css'; // 스타일을 위한 CSS 파일
+import styles from './CreateDrawerHeader.module.css';
 
 interface Props {
   title: string;
@@ -10,7 +10,7 @@ interface Props {
 
 const CreateDrawerHeader: React.FC<Props> = ({title, onClose}) => {
   return (
-    <Box className={Style.header}>
+    <Box className={styles.header}>
       <IconButton onClick={onClose}>
         <ArrowBackIcon />
       </IconButton>

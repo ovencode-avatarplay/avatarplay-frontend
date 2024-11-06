@@ -9,8 +9,8 @@ import {
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {setUrlLinkUse} from '@/redux-store/slices/chattingEnter';
-import {setContentName, setEpisodeName} from '@/redux-store/slices/chatting';
+import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
+import {setContentName, setEpisodeName} from '@/redux-store/slices/Chatting';
 
 const usePrevChatting = (episodeId: number) => {
   // 이전 메시지 및 에러 상태값 정의
@@ -79,7 +79,7 @@ const usePrevChatting = (episodeId: number) => {
   }, [episodeId]);
 
   // 이전 메시지와 에러를 반환
-  return {prevMessages, error};
+  return {prevMessages};
 };
 
 export default usePrevChatting;

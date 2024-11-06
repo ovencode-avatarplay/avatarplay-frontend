@@ -109,3 +109,46 @@ export const convertStringMessagesToMessages = (messages: string[]): Message[] =
     sender: 'partner',
   }));
 };
+
+export const cleanString = (input: string): string => {
+  // 1. 개행 문자 제거
+  let cleaned = input.replace(/\n/g, '');
+
+  // 2. 마지막 글자가 '#'이면 제거
+  // if (cleaned.endsWith('#')) {
+  //   cleaned = cleaned.slice(0, -1);
+  // }
+
+  return cleaned;
+};
+
+export const splitByAsterisk = (splitMessage: string) => {
+  // '*'을 기준으로 문자열을 나누기
+  const parts = splitMessage.split('*');
+
+  // 나눈 부분에서 앞과 뒤의 문자열을 반환
+  return {
+    leftAsterisk: parts[0], // '*' 앞의 문자열
+    rightAsterisk: parts.slice(1).join('*'), // '*' 뒤의 문자열 (여러 개의 '*'이 있을 수 있음)
+  };
+};
+
+// 메시지가 '$'이면 메시지의 끝이라는 의미
+export const isFinishMessage = (isMyMessage: boolean, message: string): boolean => {
+  if (isMyMessage === false && message.includes('$')) {
+    return true;
+  } else return false;
+};
+
+export const isNarrationMessage = (message: string): boolean => {
+  if (message.includes('*')) {
+    return true;
+  } else return false;
+};
+
+export const isSystemMessage = (message: string): boolean => {
+  const count = (message.match(/%/g) || []).length;
+  if (count >= 2) {
+    return true;
+  } else return false;
+};

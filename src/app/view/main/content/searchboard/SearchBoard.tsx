@@ -1,12 +1,15 @@
 'use client';
 
 import React, {useEffect, useState} from 'react';
+
 import {useDispatch} from 'react-redux';
 import {sendGetExplore} from '@/app/NetWork/ExploreNetwork';
+
+import styles from './SearchBoard.module.css';
+
 import Header from './searchboard-header/SearchBoardHeader';
-import Style from './SearchBoard.module.css';
 import SearchBoardHorizonScroll from './SearchBoardHorizonScroll';
-import {ExploreCardProps} from '@/types/apps/explore-card-type';
+import {ExploreCardProps} from './SearchBoardTypes';
 
 const SearchBoard: React.FC = () => {
   const [searchOptionList, setSearchOptionList] = useState<string[] | null>(null);
@@ -47,9 +50,9 @@ const SearchBoard: React.FC = () => {
 
   return (
     <>
-      <div className={Style.content}>
+      <div className={styles.content}>
         <Header></Header>
-        <main className={Style.container}>
+        <main className={styles.container}>
           {playingList && <SearchBoardHorizonScroll title="playingList" data={playingList} />}
           {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
           {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}

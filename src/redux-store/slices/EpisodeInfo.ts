@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
-import {Conversation} from '@/types/apps/content/episode/conversation';
+import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
+import {Conversation} from '@/types/apps/content/episode/Conversation';
 
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
@@ -9,7 +9,7 @@ import {
   ConversationTalkInfo,
   ConversationPriortyType,
   ConversationTalkType,
-} from '@/types/apps/dataTypes';
+} from '@/types/apps/DataTypes';
 
 export interface EpisodeInfo {
   id: number;
