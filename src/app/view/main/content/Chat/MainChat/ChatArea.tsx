@@ -4,7 +4,7 @@ import styles from '@chats/Styles/StyleChat.module.css';
 
 interface Message {
   text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt';
+  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
 }
 
 interface MessageGroup {
@@ -21,7 +21,6 @@ interface ChatAreaProps {
 
 const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isBackground}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
-
   const [isBackgroundOn, SetIsBackground] = useState<boolean>(false);
 
   useEffect(() => {
@@ -52,7 +51,12 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isBackgrou
             key={index}
             sx={{
               display: 'flex',
-              justifyContent: msg.sender === 'user' ? 'flex-end' : msg.sender === 'partner' ? 'flex-start' : 'center',
+              justifyContent:
+                msg.sender === 'user' || msg.sender === 'userNarration'
+                  ? 'flex-end'
+                  : msg.sender === 'partner' || msg.sender === 'narration'
+                  ? 'flex-start'
+                  : 'center',
               marginBottom: 2,
             }}
           >
@@ -78,12 +82,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isBackgrou
                 backgroundColor:
                   msg.sender === 'introPrompt'
                     ? '#FFFFFF'
-                    : msg.sender === 'user'
+                    : msg.sender === 'user' || msg.sender === 'userNarration'
                     ? 'rgba(80, 80, 80, 0.8)'
-                    : msg.sender === 'partner'
+                    : msg.sender === 'partner' || msg.sender === 'narration'
                     ? 'rgba(0, 0, 0, 0.8)'
-                    : msg.sender === 'narration'
-                    ? 'rgba(100, 100, 100, 0.8)'
                     : 'rgba(214, 214, 214, 0.2)',
                 border: msg.sender === 'introPrompt' || msg.sender === 'system' ? '1px solid #C0C0C0' : 'none',
                 backdropFilter: msg.sender === 'system' ? 'blur(20px)' : 'none',
@@ -93,8 +95,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isBackgrou
                     ? '#000000'
                     : msg.sender === 'system'
                     ? '#FFFFFF'
-                    : msg.sender === 'narration'
-                    ? '#E0E0E0'
+                    : msg.sender === 'narration' || msg.sender === 'userNarration'
+                    ? '#B0B0B0' // 회색 텍스트 색상
                     : '#FFFFFF',
                 fontSize: msg.sender === 'narration' || msg.sender === 'system' ? '0.7em' : '0.8em',
                 fontWeight: msg.sender === 'system' ? 'bold' : 'normal',
@@ -104,6 +106,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isBackgrou
                   msg.sender === 'system'
                     ? '1px 1px 0 rgba(116, 116, 116, 1.0), -1px -1px 0 rgba(116, 116, 116, 1.0), 1px -1px 0 rgba(116, 116, 116, 1.0), -1px 1px 0 rgba(116, 116, 116, 1.0)'
                     : 'none',
+                // `narration` 박스에 `partner` 아바타 크기(32px) + 간격(1) 적용
+                marginLeft: msg.sender === 'narration' ? '40px' : '0px',
               }}
             >
               {msg.sender === 'user' && messages.emoticonUrl[index] ? (
