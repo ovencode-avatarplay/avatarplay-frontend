@@ -25,7 +25,7 @@ import BottomNavData from 'data/navigation/bottom-nav.json';
 
 interface Message {
   text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt';
+  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
 }
 
 interface MessageGroup {
@@ -135,8 +135,17 @@ const ChatPage: React.FC = () => {
 
       // 내 메시지
       if (isMyMessage === true) {
-        newMessages.push(newMessage);
+        // newMessage.text가 *로 시작하고 끝나는 경우
+        if (newMessage.text.startsWith('*') && newMessage.text.endsWith('*')) {
+          newMessage.sender = 'userNarration';
+          newMessage.text = newMessage.text.slice(1, -1); // 양 옆의 *를 제거
+        } else {
+          newMessage.sender = 'user'; // 일반 유저 메시지
+        }
+
+        newMessages.push(newMessage); // 메시지를 배열에 추가
       }
+
       // 상대 메시지 처리
       else {
         if (isIncludeAsterisk === true) {
