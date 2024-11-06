@@ -1,5 +1,5 @@
 import React, {useRef, useEffect, useState} from 'react';
-import {Box, Button, IconButton} from '@mui/material';
+import {Box, Button, IconButton, TextField, InputAdornment} from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import CameraIcon from '@mui/icons-material/Camera';
@@ -12,7 +12,8 @@ import {SendChatMessageReq, sendMessageStream, EmoticonGroupInfo} from '@/app/Ne
 import Sticker from './Sticker';
 import EmojiOverlayPopup from './EmojiOverlayPopup';
 import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
-
+import MapsUgcIcon from '@mui/icons-material/MapsUgc';
+import ExtendedInputField from './ExtendedInputField';
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
   streamKey: string;
@@ -28,9 +29,10 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   const [selectedEmoticonId, setSelectedEmoticonId] = useState<number | null>(null);
   const [selectedEmoticonIsFavorite, setselectedEmoticonIsFavorite] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
-  const inputRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null); // inputRef 타입 변경
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
+
   const dispatch = useDispatch();
 
   const toggleExpand = () => {
@@ -47,7 +49,7 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
     if (isSendingMessage.state === true) return;
     else isSendingMessage.state = true;
 
-    const messageText = inputRef.current ? inputRef.current.innerHTML : '';
+    const messageText = inputRef.current ? inputRef.current.value : '';
 
     // 선택된 이모티콘이 있으면 이미지 요소로 생성
     const message = selectedEmoji
@@ -58,9 +60,11 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
       const parseMessage = false;
       onSend(message, true, parseMessage);
 
-      if (inputRef.current) inputRef.current.innerHTML = ''; // 입력란 초기화
-      inputRef.current?.focus(); // 포커스 다시 설정
-
+      // 입력란 초기화
+      if (inputRef.current) {
+        inputRef.current.value = ''; // 입력 값을 빈 문자열로 설정하여 초기화
+        inputRef.current.focus(); // 포커스 다시 설정
+      }
       const reqSendChatMessage: SendChatMessageReq = {
         userId: UserId,
         episodeId: currentEpisodeId,
@@ -136,7 +140,6 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
     setShowEmojiPopup(true); // 팝업 열기
     setselectedEmoticonIsFavorite(isFavorite);
   };
-
   return (
     <Box
       className={`${styles.bottomBar} ${isExpanded ? styles.expanded : styles.collapsed}`}
@@ -153,33 +156,27 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
       }}
     >
       <Box display="flex" alignItems="center" padding={1}>
-        <Button
+        <TextField
           variant="outlined"
-          sx={{
-            marginRight: 1,
-            marginBottom: 1,
-            width: '40px',
-            height: '40px',
-            minWidth: '40px',
-            whiteSpace: 'nowrap',
+          placeholder="Type your message..."
+          inputRef={inputRef}
+          onKeyDown={handleKeyDown}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton onClick={handleSend}>
+                  <MapsUgcIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
           }}
-        >
-          +
-        </Button>
-        <Box
-          contentEditable
-          ref={inputRef}
-          className={styles.messageInput}
           sx={{
             flex: 1,
             marginRight: 1,
             overflow: 'auto',
-            border: '1px solid #ccc',
-            padding: '8px',
             borderRadius: '4px',
             minHeight: '40px',
           }}
-          onKeyDown={handleKeyDown}
         />
         <Button
           variant="contained"

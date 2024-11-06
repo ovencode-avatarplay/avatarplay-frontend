@@ -4,27 +4,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HomeIcon from '@mui/icons-material/Home';
 import EditIcon from '@mui/icons-material/Edit';
-import EpisodeItem from './EpisodeItem';
-import Style from './ChapterBoard.module.css';
-import {Chapter} from '@/types/apps/chapterCardType';
-import {useDispatch} from 'react-redux';
 
-interface ChapterItemProps {
-  chapter: Chapter;
-  chapterIdx: number; // 인덱스 추가
-  chapterLength: number;
-  episodeLength: number;
-  onDelete: (chapterIdx: number) => void;
-  onToggle: (chapterIdx: number) => void;
-  onDeleteEpisode: (chapterIdx: number, episodeIdx: number) => void;
-  onSelect: (chapterIdx: number) => void;
-  onSelectEpisode: (chapterIdx: number, episodeIdx: number) => void;
-  onCloseChapterBoard: () => void;
-  onEdit: (idx: number, type: 'chapter' | 'episode') => void;
-  isSelected: boolean; // 선택 여부
-  selectedEpisodeIdx: number;
-  disableDelete: boolean;
-}
+import EpisodeItem from './EpisodeItem';
+import {ChapterItemProps} from './ChapterTypes';
+
+import styles from './ChapterBoard.module.css';
 
 const ChapterItem: React.FC<ChapterItemProps> = ({
   chapter,
@@ -64,7 +48,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
             onToggle(chapterIdx);
           }}
         >
-          <Box className={Style.chapterHeader} sx={{justifyContent: 'space-between', textAlign: 'left'}}>
+          <Box className={styles.chapterHeader} sx={{justifyContent: 'space-between', textAlign: 'left'}}>
             <HomeIcon />
             <Typography sx={{width: '60%'}}>{chapter.title}</Typography>
 
@@ -76,7 +60,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
               {/* Chapter 삭제 버튼 */}
               {!disableDelete && (
                 <IconButton
-                  className={Style.deleteButton}
+                  className={styles.deleteButton}
                   onClick={e => {
                     e.stopPropagation();
                     handleDeleteChapter(chapterIdx, chapterLength);

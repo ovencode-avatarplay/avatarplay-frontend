@@ -7,11 +7,11 @@ import BottomNav from '@/app/view/main/bottom-nav/BottomNav';
 import DrawerContentDesc from '@/app/view/main/content/ContentDesc/DrawerContentDesc';
 import {Provider} from 'react-redux';
 import {store} from '@/redux-store/ReduxStore';
-import Style from './Main.module.css';
+import styles from './Main.module.css';
 
 const Main = ({children}: {children: ReactNode}) => {
   return (
-    <div className={Style.body}>
+    <div className={styles.body}>
       <HeaderNavBar />
       {children}
       <BottomNav />

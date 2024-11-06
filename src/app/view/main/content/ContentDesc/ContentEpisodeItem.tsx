@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import Style from './ContentEpisodeItem.module.css';
+import styles from './ContentEpisodeItem.module.css';
 import {Box, Typography} from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ImageIcon from '@mui/icons-material/Image';
 import LockIcon from '@mui/icons-material/Lock';
-import {EpisodeCardProps} from '@/types/apps/episode-card-type';
 import {useDispatch} from 'react-redux';
-import {setDrawerEpisodeId} from '@/redux-store/slices/drawerContentDescSlice';
+import {setDrawerEpisodeId} from '@/redux-store/slices/DrawerContentDescSlice';
+import {EpisodeCardProps} from './ContentDescType';
 
 const ContentEpisodeItem: React.FC<EpisodeCardProps> = ({
   episodeId,
@@ -26,20 +26,20 @@ const ContentEpisodeItem: React.FC<EpisodeCardProps> = ({
   };
 
   return (
-    <Box className={`${Style.episodeCard} ${isLock ? Style.dimmed : ''}`} onClick={handleOpenEpisodeDrawer}>
+    <Box className={`${styles.episodeCard} ${isLock ? styles.dimmed : ''}`} onClick={handleOpenEpisodeDrawer}>
       {/* 이미지 박스 */}
-      <Box className={Style.imageBox}>
-        <img src={thumbnail} alt={`Episode ${episodeId}`} className={Style.episodeImage} />
-        <Box className={Style.imageOverlay}>
-          <Box className={Style.iconInfo}>
+      <Box className={styles.imageBox}>
+        <img src={thumbnail} alt={`Episode ${episodeId}`} className={styles.episodeImage} />
+        <Box className={styles.imageOverlay}>
+          <Box className={styles.iconInfo}>
             <FavoriteIcon color="error" />
-            <Typography variant="body2" className={Style.iconText}>
+            <Typography variant="body2" className={styles.iconText}>
               {intimacy}%
             </Typography>
           </Box>
-          <Box className={Style.iconInfo}>
+          <Box className={styles.iconInfo}>
             <ImageIcon color="action" />
-            <Typography variant="body2" className={Style.iconText}>
+            <Typography variant="body2" className={styles.iconText}>
               {imageCount}
             </Typography>
           </Box>
@@ -47,19 +47,19 @@ const ContentEpisodeItem: React.FC<EpisodeCardProps> = ({
       </Box>
 
       {/* 텍스트 박스 */}
-      <Box className={Style.textBox}>
-        <Typography variant="h6" className={Style.title}>
+      <Box className={styles.textBox}>
+        <Typography variant="h6" className={styles.title}>
           {name}
         </Typography>
-        <Typography variant="body2" className={Style.description}>
+        <Typography variant="body2" className={styles.description}>
           {desc}
         </Typography>
       </Box>
 
       {/* 잠김 아이콘 */}
       {isLock && (
-        <Box className={Style.lockIconWrapper}>
-          <LockIcon className={Style.lockIcon} />
+        <Box className={styles.lockIconWrapper}>
+          <LockIcon className={styles.lockIcon} />
         </Box>
       )}
     </Box>

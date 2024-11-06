@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './ContentItem.module.css';
-import {ContentDashboardItem} from '@/redux-store/slices/myContentDashboard';
+import {ContentDashboardItem} from '@/redux-store/slices/MyContentDashboard';
 
 interface ContentItemProps {
   dashboardItem: ContentDashboardItem;

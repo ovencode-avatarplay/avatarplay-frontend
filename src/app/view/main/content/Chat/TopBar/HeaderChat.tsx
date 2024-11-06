@@ -7,7 +7,7 @@ import {Avatar, IconButton} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {ChattingState} from '@/redux-store/slices/chatting';
+import {ChattingState} from '@/redux-store/slices/Chatting';
 import BottomNavData from 'data/navigation/bottom-nav.json';
 import Link from 'next/link';
 

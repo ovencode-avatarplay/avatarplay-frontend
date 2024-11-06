@@ -3,16 +3,16 @@ import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 
 // Icons
+import {Switch} from '@mui/material';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import TagIcon from '@mui/icons-material/Tag';
 import EighteenUpRatingIcon from '@mui/icons-material/EighteenUpRating';
 
-import TagData from 'data/search-board-tags.json';
-
-import Style from './SearchBoardHeader.module.css';
+import styles from './SearchBoardHeader.module.css';
 
 import SearchField from 'components/layout/shared/SearchComponent';
-import {Switch} from '@mui/material';
+
+import TagData from 'data/search-board-tags.json';
 
 // 아이콘 문자열을 JSX.Element로 변환하는 함수
 const getIconComponent = (iconName: string) => {
@@ -28,16 +28,16 @@ const getIconComponent = (iconName: string) => {
 
 const SearchBoardHeader: React.FC = () => {
   return (
-    <div className={Style.searchBoard}>
-      <Box className={Style.tags}>
+    <div className={styles.searchBoard}>
+      <Box className={styles.tags}>
         {TagData.map((tag, index) => {
           const tmpIcon = getIconComponent(tag.icon);
-          return <Chip className={Style.chip} key={index} icon={tmpIcon ? tmpIcon : undefined} label={tag.label} />;
+          return <Chip className={styles.chip} key={index} icon={tmpIcon ? tmpIcon : undefined} label={tag.label} />;
         })}
       </Box>
-      <div className={Style.search}>
+      <div className={styles.search}>
         <SearchField />
-        <span className={Style.nsfwToggle}>
+        <span className={styles.nsfwToggle}>
           <EighteenUpRatingIcon />
           <Switch />
         </span>
