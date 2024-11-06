@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
+import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 import {Conversation} from '@/types/apps/content/episode/Conversation';
 
 import emptyContent from '@/data/create/empty-content-info-data.json';
