@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Drawer, Box, Button, Select, MenuItem} from '@mui/material';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import ContentItem from './ContentItem';
-import Style from './ContentDashboard.module.css';
+import styles from './ContentDashboard.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setContentInfoToEmpty} from '@/redux-store/slices/ContentInfo';
@@ -13,7 +13,7 @@ import {
   setSelectedEpisodeIdx,
 } from '@/redux-store/slices/ContentSelection';
 import {sendContentDelete, sendContentByUserIdGet, GetContentsByUserIdReq} from '@/app/NetWork/ContentNetwork';
-import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/myContentDashboard';
+import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/MyContentDashboard';
 
 interface Props {
   open: boolean;
@@ -132,23 +132,23 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
         sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
       }}
     >
-      <Box className={Style.drawerContainer}>
+      <Box className={styles.drawerContainer}>
         <CreateDrawerHeader title="Content Dashboard" onClose={onClose} />
 
         {/* Filter section */}
-        <Box className={Style.filterContainer}>
-          <Select className={Style.filterSelect}>
+        <Box className={styles.filterContainer}>
+          <Select className={styles.filterSelect}>
             <MenuItem value="filter1">Filter 1</MenuItem>
             <MenuItem value="filter2">Filter 2</MenuItem>
             <MenuItem value="filter3">Filter 3</MenuItem>
           </Select>
-          <Button variant="contained" className={Style.createButton} onClick={handleCreateClick}>
+          <Button variant="contained" className={styles.createButton} onClick={handleCreateClick}>
             Create
           </Button>
         </Box>
 
         {/* Content list */}
-        <Box className={Style.list} ref={listRef}>
+        <Box className={styles.list} ref={listRef}>
           {contentInfo.map((item, index) => (
             <div key={index} onClick={() => handleItemClick(index)}>
               <ContentItem dashboardItem={item} isSelected={selectedIndex === index} />
@@ -157,7 +157,7 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
         </Box>
 
         {/* Action buttons */}
-        <Box className={Style.buttonContainer}>
+        <Box className={styles.buttonContainer}>
           <Button variant="outlined" onClick={handleEditClick} disabled={selectedIndex === null}>
             Edit
           </Button>

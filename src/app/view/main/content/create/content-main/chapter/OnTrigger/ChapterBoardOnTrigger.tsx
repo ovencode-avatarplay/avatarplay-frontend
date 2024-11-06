@@ -4,14 +4,13 @@ import {RootState} from '@/redux-store/ReduxStore';
 
 // Css, MUI
 import {Drawer, Box} from '@mui/material';
-import Style from './ChapterBoardOnTrigger.module.css';
+import styles from './ChapterBoardOnTrigger.module.css';
 
 // Components
 import ChapterItemOnTrigger from './ChapterItemOnTrigger';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 // Types
-import {Chapter} from '@/types/apps/chapterCardType';
 import {ChapterInfo} from '@/redux-store/slices/ContentInfo';
 import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 
@@ -24,6 +23,18 @@ interface Props {
   onAddEpisode: (newEpisode: EpisodeInfo) => void;
   onDeleteEpisode: (chapterId: number, episodeId: number) => void;
   onSelectEpisode: (chapterId: number, episodeId: number) => void; // 추가된 함수
+}
+
+interface Chapter {
+  id: number;
+  title: string;
+  episodes: Episode[];
+  expanded: boolean; // 접기/펼치기 상태
+}
+
+interface Episode {
+  id: number;
+  title: string;
 }
 
 const ChapterBoardOnTrigger: React.FC<Props> = ({open, onClose, initialChapters, onAddChapter, onSelectEpisode}) => {
@@ -68,12 +79,12 @@ const ChapterBoardOnTrigger: React.FC<Props> = ({open, onClose, initialChapters,
         sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
       }}
     >
-      <Box className={Style.drawerContainer}>
+      <Box className={styles.drawerContainer}>
         {/* Drawer Header */}
         <CreateDrawerHeader title="ChapterBoard" onClose={onClose} />
 
         {/* Chapter 및 Episode 트리 구조 */}
-        <Box className={Style.contentBox}>
+        <Box className={styles.contentBox}>
           {chapters.map((chapter, index) => (
             <ChapterItemOnTrigger
               key={chapter.id}

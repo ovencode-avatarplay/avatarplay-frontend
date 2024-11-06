@@ -1,15 +1,17 @@
 import React, {useState} from 'react';
-import Style from './ExploreCard.module.css'; // CSS 파일 임포트
+
 import MovieIcon from '@mui/icons-material/Movie';
 import ImageIcon from '@mui/icons-material/Image';
-import {ExploreCardProps} from '@/types/apps/explore-card-type';
-import {useDispatch} from 'react-redux';
-import {openDrawerContentId, setDrawerEpisodeId} from '@/redux-store/slices/drawerContentDescSlice';
-import {string} from 'valibot';
 
-const ExploreCard: React.FC<ExploreCardProps> = ({contentId, episodeId, thumbnail}) => {
+import styles from './ExploreCard.module.css'; // CSS 파일 임포트
+
+import {useDispatch} from 'react-redux';
+import {openDrawerContentId, setDrawerEpisodeId} from '@/redux-store/slices/DrawerContentDescSlice';
+
+import {ExploreCardProps} from './SearchBoardTypes';
+
+const ExploreCard: React.FC<ExploreCardProps> = ({contentId, contentName, chatCount, episodeCount, thumbnail}) => {
   const dispatch = useDispatch();
-  const [exploreDesc, setExploreDesc] = useState('DESC');
 
   const handleOpenDrawer = () => {
     dispatch(openDrawerContentId(contentId));
@@ -17,24 +19,24 @@ const ExploreCard: React.FC<ExploreCardProps> = ({contentId, episodeId, thumbnai
 
   return (
     <>
-      <div className={Style.exploreCard}>
-        <img src={thumbnail} alt={thumbnail} className={Style.exploreImage} onClick={handleOpenDrawer} />
-        <div className={Style.exploreOverlay}>
-          <div className={Style.exploreInfo}>
-            <div className={Style.exploreIcons}>
-              <h3>{contentId}</h3>
-              <div className={Style.iconInfo}>
+      <div className={styles.exploreCard}>
+        <img src={thumbnail} alt={thumbnail} className={styles.exploreImage} onClick={handleOpenDrawer} />
+        <div className={styles.exploreOverlay}>
+          <div className={styles.exploreInfo}>
+            <div className={styles.exploreIcons}>
+              <h3>ID:{contentId}</h3>
+              <div className={styles.iconInfo}>
                 <MovieIcon />
-                <span>{/* TODO*/}</span>
+                <span>{chatCount}</span>
               </div>
-              <div className={Style.iconInfo}>
+              <div className={styles.iconInfo}>
                 <ImageIcon />
-                <span>{/* TODO*/}</span>
+                <span>{episodeCount}</span>
               </div>
             </div>
           </div>
         </div>
-        <div>{exploreDesc}</div>
+        <div>{contentName} </div>
       </div>
     </>
   );

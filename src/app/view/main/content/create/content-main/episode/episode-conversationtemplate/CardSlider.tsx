@@ -18,7 +18,7 @@ import {
   removeActionConversationTalk,
 } from '@/redux-store/slices/EpisodeInfo';
 import {SelectChangeEvent} from '@mui/material';
-import {ConversationPriortyType, ConversationTalkType} from '@/types/apps/dataTypes';
+import {ConversationPriortyType, ConversationTalkType} from '@/types/apps/DataTypes';
 
 interface CardSliderProps {
   Index: number; // 트리거 ID가 전달되며, -1이면 일반 conversationTemplateList를 사용

@@ -1,15 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Button, Dialog, DialogContent, MenuItem, Typography} from '@mui/material';
 import {styled} from '@mui/system';
-import Style from './EpisodeImageUpload.module.css';
 import SpeedDial from '@mui/material/SpeedDial';
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
-import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
-import ImageUploadDialog from './episode-imagesetup/EpisodeImageUpload';
+
+import styles from './EpisodeImageUpload.module.css';
+
 import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentEpisodeThumbnail} from '@/redux-store/slices/EpisodeInfo';
 import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
+
+import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
+import ImageUploadDialog from './episode-imagesetup/EpisodeImageUpload';
 
 const Input = styled('input')({
   display: 'none',
@@ -95,14 +98,14 @@ const EpisodeImageUpload: React.FC<Props> = ({
   }, [editedEpisodeInfo]);
 
   return (
-    <Box className={Style.imageArea}>
-      <Box className={Style.imageIcon} display="flex" alignItems="center">
+    <Box className={styles.imageArea}>
+      <Box className={styles.imageIcon} display="flex" alignItems="center">
         <ImageIcon fontSize="large" />
         <Typography variant="h6" marginLeft={1}>
           Image
         </Typography>
-        <Dialog open={dialogOpen} onClose={handleClose} className={Style.dialogContent}>
-          <DialogContent dividers className={Style.dialogContent}>
+        <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
+          <DialogContent dividers className={styles.dialogContent}>
             <MenuItem onClick={handleEasyCreateClick}>Character Create</MenuItem>
             <MenuItem onClick={handleAdvancedAIClick}>Advanced AI Image</MenuItem>
             <MenuItem onClick={handleUploadImageClick}>Upload Image</MenuItem>
@@ -111,7 +114,7 @@ const EpisodeImageUpload: React.FC<Props> = ({
       </Box>
 
       {imagePreview ? (
-        <img src={imagePreview} alt="Episode Setup" className={Style.setupImage} />
+        <img src={imagePreview} alt="Episode Setup" className={styles.setupImage} />
       ) : (
         <Typography variant="body1" color="textSecondary">
           No image selected. Please upload an image.
@@ -119,7 +122,7 @@ const EpisodeImageUpload: React.FC<Props> = ({
       )}
 
       <SpeedDial
-        className={Style.uploadButton}
+        className={styles.uploadButton}
         ariaLabel="SpeedDial openIcon"
         icon={<CreateIcon />}
         onClick={handleSpeedDialClick}

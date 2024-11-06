@@ -4,7 +4,8 @@ import InfoIcon from '@mui/icons-material/Info';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ChatIcon from '@mui/icons-material/Chat';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Style from './MyContentListItem.module.css';
+
+import styles from './MyContentListItem.module.css';
 
 interface Props {
   thumbnail: string;
@@ -29,39 +30,39 @@ const MyContentListItem: React.FC<Props> = ({
   contentInfo,
 }) => {
   return (
-    <Box className={Style.listItem}>
-      <Box className={Style.thumbnail}>
+    <Box className={styles.listItem}>
+      <Box className={styles.thumbnail}>
         <img src={thumbnail} />
       </Box>
 
-      <Box className={Style.description}>
-        <Box className={Style.topRow}>
-          <Typography variant="h6" className={Style.contentName}>
+      <Box className={styles.description}>
+        <Box className={styles.topRow}>
+          <Typography variant="h6" className={styles.contentName}>
             {contentName}
           </Typography>
-          <IconButton className={Style.infoButton}>
+          <IconButton className={styles.infoButton}>
             <InfoIcon />
           </IconButton>
         </Box>
 
-        <Box className={Style.middleRow}>
-          <Box className={Style.namesColumn}>
+        <Box className={styles.middleRow}>
+          <Box className={styles.namesColumn}>
             <Typography variant="body2">{chapterName}</Typography>
             <Typography variant="body2">{episodeName}</Typography>
           </Box>
-          <Box className={Style.progressColumn}>
+          <Box className={styles.progressColumn}>
             <FavoriteIcon />
             <Typography variant="body2">{intimacy}</Typography>
           </Box>
         </Box>
 
-        <Box className={Style.bottomRow}>
-          <ChatIcon className={Style.chatIcon} />
+        <Box className={styles.bottomRow}>
+          <ChatIcon className={styles.chatIcon} />
           <Typography variant="body2">{chatCount}</Typography>
-          <Typography variant="body2" className={Style.lastUsed}>
+          <Typography variant="body2" className={styles.lastUsed}>
             {lastPlayedDate}
           </Typography>
-          <IconButton className={Style.deleteButton}>
+          <IconButton className={styles.deleteButton}>
             <DeleteIcon />
           </IconButton>
         </Box>

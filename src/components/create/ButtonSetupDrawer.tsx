@@ -1,5 +1,5 @@
 import React from 'react';
-import Style from './ButtonSetupDrawer.module.css';
+import styles from './ButtonSetupDrawer.module.css';
 import {Button, Typography} from '@mui/material';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 
 const ButtonSetupDrawer: React.FC<Props> = ({icon, label, onClick}) => {
   return (
-    <Button className={Style.setupButton} onClick={onClick}>
+    <Button className={styles.setupButton} onClick={onClick}>
       {icon}
       <Typography>{label}</Typography>
     </Button>

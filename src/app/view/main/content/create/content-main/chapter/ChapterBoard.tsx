@@ -15,7 +15,8 @@ import {
   DialogActions,
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-import Style from './ChapterBoard.module.css';
+
+import styles from './ChapterBoard.module.css';
 
 // Slice
 import {setSelectedChapterIdx, setSelectedEpisodeIdx} from '@/redux-store/slices/ContentSelection';
@@ -26,13 +27,13 @@ import ChapterItem from './ChapterItem';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 // Types
-import {Chapter} from '@/types/apps/chapterCardType';
 import {ContentInfo, ChapterInfo} from '@/redux-store/slices/ContentInfo';
 import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 
 // Data
 import emptyData from '@/data/create/empty-content-info-data.json';
+import {Chapter} from './ChapterTypes';
 
 interface Props {
   open: boolean;
@@ -269,20 +270,20 @@ const ChapterBoard: React.FC<Props> = ({
         sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
       }}
     >
-      <Box className={Style.drawerContainer}>
+      <Box className={styles.drawerContainer}>
         {/* Drawer Header */}
         <CreateDrawerHeader title="ChapterBoard" onClose={onClose} />
 
         {/* Create Chapter 버튼 */}
-        <Box className={Style.imageButtonContainer}>
-          <Button className={Style.imageButton} onClick={handleCreateChapter}>
+        <Box className={styles.imageButtonContainer}>
+          <Button className={styles.imageButton} onClick={handleCreateChapter}>
             <HomeIcon />
             <Typography>Create Chapter</Typography>
           </Button>
         </Box>
 
         {/* Chapter 및 Episode 트리 구조 */}
-        <Box className={Style.contentBox}>
+        <Box className={styles.contentBox}>
           {chapters.map((chapter, index) => (
             <ChapterItem
               key={index}
@@ -305,8 +306,8 @@ const ChapterBoard: React.FC<Props> = ({
         </Box>
 
         {/* Create Episode 버튼 */}
-        <Box className={Style.imageButtonContainer}>
-          <Button className={Style.imageButton} onClick={handleCreateEpisode}>
+        <Box className={styles.imageButtonContainer}>
+          <Button className={styles.imageButton} onClick={handleCreateEpisode}>
             <HomeIcon />
             <Typography>Create Episode</Typography>
           </Button>

@@ -8,8 +8,9 @@ import {
   closeDrawerContentDesc,
   openDrawerContentId,
   setDrawerEpisodeId,
-} from '@/redux-store/slices/drawerContentDescSlice';
-import {setStateChatting, ChattingState} from '@/redux-store/slices/chatting';
+} from '@/redux-store/slices/DrawerContentDescSlice';
+import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
+import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
 
 // MUI
 import {
@@ -43,14 +44,14 @@ import {
 } from '@/app/NetWork/ContentNetwork';
 
 // Css
-import Style from './DrawerContentDesc.module.css';
+import styles from './DrawerContentDesc.module.css';
 
 // Items
 import DrawerContentEpisodeItemList from './ContentEpisodeList';
-import {EpisodeCardProps} from '@/types/apps/episode-card-type';
 import ContentRecommendList from './ContentRecommendList';
+import {EpisodeCardProps} from './ContentDescType';
+
 import Link from 'next/link';
-import {setUrlLinkUse} from '@/redux-store/slices/chattingEnter';
 
 const DrawerContentDesc = () => {
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
@@ -200,34 +201,34 @@ const DrawerContentDesc = () => {
         },
       }}
     >
-      <div className={Style.header}>
+      <div className={styles.header}>
         <Typography>{contentName}</Typography>
         <Box>
           <IconButton
-            className={Style.headerButton}
+            className={styles.headerButton}
             onClick={() => {
               /* Add upload functionality */
             }}
           >
             <UploadIcon />
           </IconButton>
-          <IconButton className={Style.headerButton} onClick={handleCloseDrawer}>
+          <IconButton className={styles.headerButton} onClick={handleCloseDrawer}>
             <CloseIcon />
           </IconButton>
         </Box>
       </div>
-      <main className={Style.content}>
+      <main className={styles.content}>
         <CardMedia
           component="img"
           height="200"
           image={contentThumbnail}
           alt={contentName}
-          className={Style.imageThumbnail}
+          className={styles.imageThumbnail}
           onError={() => setContentThumbnail('/Images/001.png')}
         />
         <Card>
           <CardContent sx={{padding: 1}}>
-            <div className={Style.cardProducerArea}>
+            <div className={styles.cardProducerArea}>
               <Avatar sx={{bgcolor: 'primary.main', width: 48, height: 48}}>
                 {authorName.charAt(0).toUpperCase()}
               </Avatar>
@@ -248,22 +249,22 @@ const DrawerContentDesc = () => {
               </Box>
             </div>
           </CardContent>
-          <Divider className={Style.divider} />
+          <Divider className={styles.divider} />
           <CardContent sx={{paddingTop: 1, paddingLeft: 3, paddingRight: 3}}>
-            <Box className={Style.tagContainer}>
+            <Box className={styles.tagContainer}>
               {tagList.map((tag, index) => (
-                <Chip key={index} label={tag} className={Style.tagChip} />
+                <Chip key={index} label={tag} className={styles.tagChip} />
               ))}
             </Box>
 
-            <Divider className={Style.divider} />
+            <Divider className={styles.divider} />
             <Typography variant="h6">Author Comment</Typography>
-            <Box className={Style.descriptionBox}>{authorComment}</Box>
+            <Box className={styles.descriptionBox}>{authorComment}</Box>
 
             <Typography variant="h6">ContentDescription</Typography>
-            <Box className={Style.descriptionBox}>{contentDescription}</Box>
+            <Box className={styles.descriptionBox}>{contentDescription}</Box>
 
-            <Divider className={Style.divider} />
+            <Divider className={styles.divider} />
             <Typography variant="h6">Content Recommend</Typography>
 
             <ContentRecommendList
@@ -273,13 +274,13 @@ const DrawerContentDesc = () => {
           </CardContent>
         </Card>
       </main>
-      <main className={Style.chatingControlPanel}>
-        <Box className={Style.chapterBox}>
-          <Typography className={Style.chapterName} variant="h6">
+      <main className={styles.chatingControlPanel}>
+        <Box className={styles.chapterBox}>
+          <Typography className={styles.chapterName} variant="h6">
             Chapter
           </Typography>
           <Select
-            className={Style.chapterSelect}
+            className={styles.chapterSelect}
             value={selectedChapterIdx}
             onChange={e => setSelectedChapterIdx(parseInt(e.target.value as string))}
             displayEmpty
@@ -291,10 +292,10 @@ const DrawerContentDesc = () => {
             ))}
           </Select>
         </Box>
-        <div className={Style.episodeListContainer}>
+        <div className={styles.episodeListContainer}>
           <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
         </div>
-        <Link href={`/:lang/chat${contentUrl}`} className={Style.startNewChatButton}>
+        <Link href={`/:lang/chat${contentUrl}`} className={styles.startNewChatButton}>
           <Button
             variant="contained"
             fullWidth

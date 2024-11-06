@@ -1,7 +1,6 @@
 import React from 'react';
 import {Box, Button, Typography} from '@mui/material';
-import Style from './ChapterBoardOnTrigger.module.css';
-import {Episode} from '@/types/apps/episodeCardType';
+import styles from './ChapterBoardOnTrigger.module.css';
 
 interface EpisodeItemOnTriggerProps {
   episode: Episode;
@@ -10,6 +9,11 @@ interface EpisodeItemOnTriggerProps {
   onClose: () => void;
   disableDelete: boolean;
   isSelected: boolean; // 선택 여부
+}
+
+interface Episode {
+  id: number;
+  title: string;
 }
 
 const EpisodeItemOnTrigger: React.FC<EpisodeItemOnTriggerProps> = ({
@@ -21,9 +25,9 @@ const EpisodeItemOnTrigger: React.FC<EpisodeItemOnTriggerProps> = ({
   isSelected,
 }) => {
   return (
-    <Box className={Style.episodeBox}>
-      <Box className={Style.episodeHeader} onClick={() => onSelect(chapterId, episode.id)}>
-        <Button className={Style.episodeButton} onClick={onClose}>
+    <Box className={styles.episodeBox}>
+      <Box className={styles.episodeHeader} onClick={() => onSelect(chapterId, episode.id)}>
+        <Button className={styles.episodeButton} onClick={onClose}>
           <Typography>{episode.title}</Typography>
         </Button>
       </Box>

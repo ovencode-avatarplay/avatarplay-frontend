@@ -1,5 +1,5 @@
 import React from 'react';
-import Style from './ContentRecommendItem.module.css';
+import styles from './ContentRecommendItem.module.css';
 
 interface ContentRecommendItemProps {
   contentId: number;
@@ -9,8 +9,8 @@ interface ContentRecommendItemProps {
 
 const ContentRecommendItem: React.FC<ContentRecommendItemProps> = ({contentId, imageUrl, onSelect}) => {
   return (
-    <div className={Style.recommendItem} onClick={() => onSelect(contentId)}>
-      <img src={imageUrl} alt={`Content ${contentId}`} className={Style.recommendImage} />
+    <div className={styles.recommendItem} onClick={() => onSelect(contentId)}>
+      <img src={imageUrl} alt={`Content ${contentId}`} className={styles.recommendImage} />
     </div>
   );
 };

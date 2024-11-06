@@ -14,10 +14,12 @@ import {
   setAuthorName,
 } from '@/redux-store/slices/PublishInfo';
 
-import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import {Box, Drawer, Typography, TextField, Button, Select, MenuItem, Chip, Snackbar, Alert} from '@mui/material';
-import Style from './ContentPublishing.module.css';
 import RadioButtonGroup from '@/components/create/RadioButtonGroup';
+
+import styles from './ContentPublishing.module.css';
+
+import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 interface Props {
   open: boolean;
@@ -91,11 +93,11 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
         sx: {width: '100vw', height: '100vh'},
       }}
     >
-      <Box className={Style.drawerContainer}>
+      <Box className={styles.drawerContainer}>
         <CreateDrawerHeader title="Publishing Setup" onClose={onClose} />
 
         {/* 첫 번째 설정 박스 */}
-        <Box className={Style.settingBox}>
+        <Box className={styles.settingBox}>
           <Typography variant="h6">Language Select</Typography>
 
           <Select
@@ -110,7 +112,7 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
             {/* TODO 언어 테이블 리스트 / enum 등 받아와서 설정*/}
           </Select>
 
-          <Typography variant="subtitle1" className={Style.label}>
+          <Typography variant="subtitle1" className={styles.label}>
             Content Introduction
           </Typography>
           <TextField
@@ -122,7 +124,7 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
             onChange={handleContentDescriptionChange}
           />
 
-          <Typography variant="subtitle1" className={Style.label}>
+          <Typography variant="subtitle1" className={styles.label}>
             Creator's Comment
           </Typography>
           <TextField
@@ -137,10 +139,10 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
 
         {/* 두 번째 설정 박스 */}
         {tagList != null && (
-          <Box className={Style.settingBox}>
+          <Box className={styles.settingBox}>
             <Typography variant="h6">Content Tag</Typography>
 
-            <Box display="flex" alignItems="center" justifyContent="right" className={Style.tagContainer}>
+            <Box display="flex" alignItems="center" justifyContent="right" className={styles.tagContainer}>
               {selectTagList.length > 0 ? null : (
                 <Typography variant="body2" color="textSecondary" sx={{padding: '8px'}}>
                   Please Select 1~7 Tags
@@ -152,11 +154,11 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
             </Box>
             <Box display="flex" flexWrap="wrap" sx={{flexGrow: 1}}>
               {selectTagList.map(tag => (
-                <Chip key={tag} label={tag} onDelete={() => handleTagRemove(tag)} className={Style.chip} />
+                <Chip key={tag} label={tag} onDelete={() => handleTagRemove(tag)} className={styles.chip} />
               ))}
             </Box>
             {/* 태그 선택 부분 */}
-            <Box className={Style.tagSelect}>
+            <Box className={styles.tagSelect}>
               {tagList?.slice(0, showTagCount).map(
                 (
                   tag, // 첫 6개 태그만 표시
@@ -175,7 +177,7 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
 
             {/* 추가적인 태그 내용 */}
             {showMoreTags && (
-              <Box className={Style.moreTags}>
+              <Box className={styles.moreTags}>
                 {tagList?.slice(showTagCount).map(
                   (
                     tag, // 6개 이후의 태그 표시

@@ -14,7 +14,7 @@ import {
   updateActionConversationTalk,
   removeActionConversationItem,
 } from '@/redux-store/slices/EpisodeInfo';
-import {ConversationTalkInfo} from '@/types/apps/dataTypes';
+import {ConversationTalkInfo} from '@/types/apps/DataTypes';
 
 interface TalkCardProps {
   card: {

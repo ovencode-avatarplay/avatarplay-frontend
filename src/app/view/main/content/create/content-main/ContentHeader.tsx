@@ -3,8 +3,10 @@ import {Box, TextField, IconButton} from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import EditIcon from '@mui/icons-material/Edit';
 import StudioIcon from '@mui/icons-material/VideoLibrary';
-import Style from './ContentHeader.module.css';
+
 import Link from 'next/link';
+
+import styles from './ContentHeader.module.css';
 
 interface ContentHeaderProps {
   lastUrl?: string;
@@ -28,13 +30,13 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, con
   }, [contentTitle]);
 
   return (
-    <Box className={Style.contentHeader}>
+    <Box className={styles.contentHeader}>
       <Link href={lastUrl ? lastUrl : defaultUrl} passHref>
         <IconButton>
           <ChevronLeftIcon fontSize="large" />
         </IconButton>
       </Link>
-      <Box className={Style.titleContainer}>
+      <Box className={styles.titleContainer}>
         <TextField
           variant="standard"
           value={title}
@@ -51,7 +53,7 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, con
           fullWidth
         />
       </Box>
-      <div className={Style.studioButton}>
+      <div className={styles.studioButton}>
         <IconButton onClick={onOpenDrawer}>
           <StudioIcon />
         </IconButton>
