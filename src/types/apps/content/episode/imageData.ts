@@ -1,4 +1,4 @@
-import {stableDiffusionData} from './stableDiffusionData';
+import {stableDiffusionData} from './StableDiffusionData';
 
 export interface ImageData {
   imageType: number;

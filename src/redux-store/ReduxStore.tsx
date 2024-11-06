@@ -4,18 +4,18 @@ import storage from 'redux-persist/lib/storage'; // localStorage를 사용
 
 // Slice Imports
 import sampleReducer from '@/redux-store/slices/ReduxSample';
-import chattingReducer from '@/redux-store/slices/chatting';
-import drawerContentDescReducer from '@/redux-store/slices/drawerContentDescSlice';
+import chattingReducer from '@/redux-store/slices/Chatting';
+import drawerContentDescReducer from '@/redux-store/slices/DrawerContentDescSlice';
 import ContentInfoSlice from './slices/ContentInfo';
-import userInfo from './slices/userInfo';
+import userInfo from './slices/UserInfo';
 import ContentSelection from './slices/ContentSelection';
 import publishInfoSlice from './slices/PublishInfo';
 import episodeInfoSlice from './slices/EpisodeInfo';
-import myContentDashboardSlice from './slices/myContentDashboard';
+import myContentDashboardSlice from './slices/MyContentDashboard';
 import emoticonSlice from './slices/EmoticonSlice';
 // redux-persist
 import {persistStore, persistReducer} from 'redux-persist';
-import chattingEnterSlice from './slices/chattingEnter';
+import chattingEnterSlice from './slices/ChattingEnter';
 
 const persistConfig = {
   key: 'root',

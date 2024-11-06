@@ -2,12 +2,15 @@ import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore'; // Redux Store의 RootState 가져오기
 import {Box} from '@mui/material';
-import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import ImageIcon from '@mui/icons-material/Image';
-import Style from './EpisodeSetup.module.css';
+
+import styles from './EpisodeSetup.module.css';
+
+import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
+
 import EpisodeTrigger from './episode-trigger/EpisodeTrigger';
 import ButtonEpisodeInfo from './ButtonEpisodeInfo';
 import EpisodeImageUpload from './EpisodeImageUpload';
@@ -134,9 +137,9 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
     // 필요한 처리를 여기에 추가
   };
   return (
-    <main className={Style.episodeSetup}>
+    <main className={styles.episodeSetup}>
       <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} chapterName={chapterName ?? ''} episodeName={episodeName ?? ''} />
-      <Box className={Style.imageArea}>
+      <Box className={styles.imageArea}>
         <EpisodeImageUpload
           onClickEasyCreate={openImageSetup}
           onClickAdvanceCreate={openAdvanceImageSetup}
@@ -145,7 +148,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
           onCloseUploadImage={closeUploadImageDialog}
         />
       </Box>
-      <Box className={Style.setupButtons}>
+      <Box className={styles.setupButtons}>
         <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
         <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
         <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />{' '}

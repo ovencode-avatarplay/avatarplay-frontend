@@ -3,8 +3,21 @@
 import {PublishInfo} from '@/redux-store/slices/ContentInfo';
 import api, {ResponseAPI} from './ApiInstance';
 import {ContentInfo} from '@/redux-store/slices/ContentInfo';
-import {ChapterInfoForContentGet} from '@/types/apps/content/chapter/chapterInfo';
-import {ContentDashboardItem} from '@/redux-store/slices/myContentDashboard';
+import {ContentDashboardItem} from '@/redux-store/slices/MyContentDashboard';
+
+export interface ChapterInfoForContentGet {
+  id: number;
+  name: string;
+  episodeInfoList: EpisodeInfoForContentGet[];
+}
+export interface EpisodeInfoForContentGet {
+  id: number;
+  name: string;
+  description: string;
+  thumbnailList: string[];
+  isLock: boolean;
+  intimacyProgress: number;
+}
 
 // Save Content
 export interface SaveContentReq {

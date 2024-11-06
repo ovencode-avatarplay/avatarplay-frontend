@@ -14,9 +14,9 @@ import {
   Button,
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/dataTypes'; // 타입들 임포트
+import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/DataTypes'; // 타입들 임포트
 import {addTriggerInfo} from '@/redux-store/slices/EpisodeInfo';
-import {TriggerInfo} from '@/types/apps/content/episode/triggerInfo';
+import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 import ChangeBehaviour from './ChangeBehaviour';
 
 interface SelectTriggerTypeProps {

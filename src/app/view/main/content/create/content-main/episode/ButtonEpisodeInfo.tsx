@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Box, IconButton, Typography} from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import Style from './ButtonEpisodeInfo.module.css';
+import styles from './ButtonEpisodeInfo.module.css';
 
 interface Props {
   onDrawerOpen: () => void;
@@ -12,15 +12,15 @@ interface Props {
 
 const ButtonEpisodeInfo: React.FC<Props> = ({onDrawerOpen, chapterName, episodeName}) => {
   return (
-    <Box className={Style.chapterInfo}>
+    <Box className={styles.chapterInfo}>
       <FormatListBulletedIcon fontSize="large" />
 
-      <Box display="flex" flexDirection="column" className={Style.chapterDetails}>
+      <Box display="flex" flexDirection="column" className={styles.chapterDetails}>
         <Typography variant="subtitle1">{chapterName}</Typography>
         <Typography variant="h6">{episodeName}</Typography>
       </Box>
 
-      <IconButton onClick={onDrawerOpen} className={Style.arrowButton}>
+      <IconButton onClick={onDrawerOpen} className={styles.arrowButton}>
         <ChevronRightIcon fontSize="large" />
       </IconButton>
     </Box>

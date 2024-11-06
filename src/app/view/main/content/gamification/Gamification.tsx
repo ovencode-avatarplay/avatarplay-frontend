@@ -1,8 +1,8 @@
 import React from 'react';
-import Style from './Gamification.module.css';
+import styles from './Gamification.module.css';
 
 const Gamification: React.FC = () => {
-  return <main className={Style.gamification}>GAMIFICATION</main>;
+  return <main className={styles.gamification}>GAMIFICATION</main>;
 };
 
 export default Gamification;

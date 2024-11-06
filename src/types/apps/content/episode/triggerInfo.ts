@@ -1,4 +1,4 @@
-import {Conversation} from './conversation';
+import {Conversation} from './Conversation';
 
 export interface TriggerInfo {
   id: number;

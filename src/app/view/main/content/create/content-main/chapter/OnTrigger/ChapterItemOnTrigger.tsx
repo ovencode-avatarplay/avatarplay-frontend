@@ -1,8 +1,7 @@
 import React from 'react';
 import {Box, Button, Collapse, Typography} from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-import Style from './ChapterBoardOnTrigger.module.css';
-import {Chapter} from '@/types/apps/chapterCardType';
+import styles from './ChapterBoardOnTrigger.module.css';
 import EpisodeItemOnTrigger from './EpisodeItemOnTrigger';
 
 interface ChapterItemOnTriggerProps {
@@ -15,6 +14,18 @@ interface ChapterItemOnTriggerProps {
   disableDelete: boolean;
 }
 
+interface Chapter {
+  id: number;
+  title: string;
+  episodes: Episode[];
+  expanded: boolean; // 접기/펼치기 상태
+}
+
+interface Episode {
+  id: number;
+  title: string;
+}
+
 const ChapterItemOnTrigger: React.FC<ChapterItemOnTriggerProps> = ({
   chapter,
   onToggle,
@@ -25,11 +36,11 @@ const ChapterItemOnTrigger: React.FC<ChapterItemOnTriggerProps> = ({
   disableDelete,
 }) => {
   return (
-    <Box className={Style.chapterBox}>
+    <Box className={styles.chapterBox}>
       {/* Chapter Header */}
-      <Box className={Style.chapterHeader}>
+      <Box className={styles.chapterHeader}>
         <Button
-          className={Style.chapterButton}
+          className={styles.chapterButton}
           onClick={() => {
             onSelect(chapter.id);
             onToggle(chapter.id);
@@ -42,7 +53,7 @@ const ChapterItemOnTrigger: React.FC<ChapterItemOnTriggerProps> = ({
 
       {/* Chapter에 속한 Episode */}
       <Collapse in={chapter.expanded}>
-        <Box className={Style.episodeContainer}>
+        <Box className={styles.episodeContainer}>
           {chapter.episodes.map(episode => (
             <EpisodeItemOnTrigger
               key={episode.id}
