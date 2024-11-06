@@ -1,0 +1,38 @@
+/* ChatMessageMenu.module.css */
+.topMenuContainer {
+    position: relative;
+    display: flex;
+    gap: 8px;
+    
+    justify-self: center;
+    width: 40vw;
+    
+    background-color: white;
+  }
+  
+  .bottomMenuContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    justify-self: center;
+    align-items: center;
+    gap: 8px;
+    width: 40vw;
+
+    background-color: red;
+  }
+  
+  .iconButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  
+  .actionButton {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
