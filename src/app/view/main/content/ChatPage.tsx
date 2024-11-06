@@ -357,18 +357,20 @@ const ChatPage: React.FC = () => {
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
   return (
     <main className={styles.chatmodal}>
-      <TopBar
-        onBackClick={handleBackClick}
-        onMoreClick={handleMoreClick}
-        onToggleBackground={handleToggleBackground}
-        iconUrl={enterData?.iconImageUrl ?? ''}
-      />
-      <ChatArea
-        messages={parsedMessages!}
-        bgUrl={enterData?.episodeBgImageUrl ?? ''}
-        iconUrl={enterData?.iconImageUrl ?? ''}
-        isHideChat={isHideChat}
-      />
+      <div className={styles.overlayContainer}>
+        <TopBar
+          onBackClick={handleBackClick}
+          onMoreClick={handleMoreClick}
+          onToggleBackground={handleToggleBackground}
+          iconUrl={enterData?.iconImageUrl ?? ''}
+        />
+        <ChatArea
+          messages={parsedMessages!}
+          bgUrl={enterData?.episodeBgImageUrl ?? ''}
+          iconUrl={enterData?.iconImageUrl ?? ''}
+          isHideChat={isHideChat}
+        />
+      </div>
       <BottomBar
         onSend={handleSendMessage}
         streamKey={streamKey}

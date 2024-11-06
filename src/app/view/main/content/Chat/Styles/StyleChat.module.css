@@ -7,25 +7,40 @@
   margin: 0 auto;
   /*overflow: hidden; /* 자식 요소가 벗어나는 것 방지 */
 }
-
+.overlayContainer {
+  position: relative;
+  height: 100%;
+}
 .topBar {
   display: flex;
   align-items: center;
   justify-content: space-between; /* 양쪽 끝에 배치 */
   padding: 15px;
-  background-color: #ffffff; /* 진한 보라색으로 변경 */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
   color: white; /* 글자 색상 흰색 */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
 }
+
+
+
+
 
 .chatArea {
   flex: 1; /* 남은 공간을 차지하도록 설정 */
   padding: 16px; /* 채팅 영역 패딩 */
-  max-height: calc(100vh - 120px); /* 하단바와 상단바를 제외한 최대 높이 */
+  max-height: calc(100vh - 65px); /* 하단바와 상단바를 제외한 최대 높이 */
   overflow-y: auto; /* 수직 스크롤 가능 */
   border: 1px solid #ccc; /* 선택 사항: 테두리 추가 */
   border-radius: 8px; /* 선택 사항: 모서리 둥글게 */
-  background-color: #ffffff; /* 배경색 설정 */
+  background-color: #ffffff; /* 배경색 설정 */  
 }
 
 /* 하단바 설정 */
@@ -105,7 +120,7 @@
 /* 설명 텍스트 스타일 */
 .description {
   font-size: 12px;
-  color: gray; /* 설명 색상 */
+  color: rgb(255, 255, 255); /* 설명 색상 */
 }
 
 /* 확장 버튼 설정 */
