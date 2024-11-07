@@ -12,9 +12,20 @@ interface ChatBarProps {
   toggleExpand: () => void;
   isExpanded: boolean;
   handleKeyDown: (event: React.KeyboardEvent) => void;
+  isHideChat: boolean;
+  onToggleBackground: () => void;
 }
 
-const ChatBar: React.FC<ChatBarProps> = ({message, setMessage, onSend, toggleExpand, isExpanded, handleKeyDown}) => {
+const ChatBar: React.FC<ChatBarProps> = ({
+  message,
+  setMessage,
+  onSend,
+  toggleExpand,
+  isExpanded,
+  handleKeyDown,
+  isHideChat,
+  onToggleBackground,
+}) => {
   const [chatBars, setChatBars] = useState<string[]>(['main']);
   const [inputValues, setInputValues] = useState<{[key: string]: string}>({main: ''});
   const [toggledIcons, setToggledIcons] = useState<{[key: string]: boolean}>({main: false});
@@ -84,7 +95,12 @@ const ChatBar: React.FC<ChatBarProps> = ({message, setMessage, onSend, toggleExp
     }
     handleKeyDown(event);
   };
-
+  const handleFocus = () => {
+    // 포커스가 올라올 때 isHideChat이 false이면 onToggleBackground 호출
+    if (isHideChat) {
+      onToggleBackground();
+    }
+  };
   return (
     <Box>
       {chatBars.map((id, index) => (
@@ -97,6 +113,7 @@ const ChatBar: React.FC<ChatBarProps> = ({message, setMessage, onSend, toggleExp
           <TextField
             variant="outlined"
             placeholder="Type your message..."
+            onFocus={handleFocus} // 포커스 이벤트 핸들러 추가
             value={inputValues[id]}
             onChange={e => handleInputChange(id, e.target.value)}
             onKeyDown={handleKeyDownInternal}

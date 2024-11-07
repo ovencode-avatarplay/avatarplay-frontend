@@ -361,14 +361,15 @@ const ChatPage: React.FC = () => {
         <TopBar
           onBackClick={handleBackClick}
           onMoreClick={handleMoreClick}
-          onToggleBackground={handleToggleBackground}
           iconUrl={enterData?.iconImageUrl ?? ''}
+          isHideChat={isHideChat}
         />
         <ChatArea
           messages={parsedMessages!}
           bgUrl={enterData?.episodeBgImageUrl ?? ''}
           iconUrl={enterData?.iconImageUrl ?? ''}
           isHideChat={isHideChat}
+          onToggleBackground={handleToggleBackground}
         />
       </div>
       <BottomBar
@@ -376,6 +377,8 @@ const ChatPage: React.FC = () => {
         streamKey={streamKey}
         setStreamKey={setStreamKey}
         EmoticonData={emoticonGroupInfoList || []} // EmoticonData에 emoticonGroupInfoList 전달
+        isHideChat={isHideChat}
+        onToggleBackground={handleToggleBackground}
       />
 
       {showPopup && (

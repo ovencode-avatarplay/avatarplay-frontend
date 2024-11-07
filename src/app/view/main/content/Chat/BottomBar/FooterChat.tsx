@@ -21,9 +21,18 @@ interface BottomBarProps {
   streamKey: string;
   setStreamKey: (key: string) => void;
   EmoticonData?: EmoticonGroupInfo[];
+  isHideChat: boolean;
+  onToggleBackground: () => void;
 }
 
-const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, EmoticonData}) => {
+const BottomBar: React.FC<BottomBarProps> = ({
+  onSend,
+  streamKey,
+  setStreamKey,
+  EmoticonData,
+  onToggleBackground,
+  isHideChat,
+}) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isStickerOpen, setIsStickerOpen] = useState(false);
@@ -178,6 +187,8 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
           toggleExpand={toggleExpand}
           isExpanded={false}
           handleKeyDown={handleKeyDown}
+          isHideChat={isHideChat}
+          onToggleBackground={onToggleBackground}
         />
       </Box>
       {isExpanded && !isStickerOpen && (
