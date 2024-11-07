@@ -24,6 +24,7 @@ interface BottomBarProps {
   isHideChat: boolean;
   onToggleBackground: () => void;
   onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
+  onUpdateChatBarCount: (count: number) => void; // 추가된 prop
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({
@@ -34,6 +35,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
   onToggleBackground,
   isHideChat,
   onLoading,
+  onUpdateChatBarCount,
 }) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -195,6 +197,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
           isHideChat={isHideChat}
           onToggleBackground={onToggleBackground}
           onLoading={onLoading}
+          onUpdateChatBarCount={onUpdateChatBarCount}
         />
       </Box>
       {isExpanded && !isStickerOpen && (

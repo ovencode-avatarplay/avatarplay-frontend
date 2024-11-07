@@ -2,7 +2,6 @@ import React, {useEffect, useRef} from 'react';
 import {Box, Avatar} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
-import {ContactPhoneSharp} from '@mui/icons-material';
 import {MessageGroup} from './ChatTypes';
 
 interface ChatAreaProps {
@@ -10,21 +9,50 @@ interface ChatAreaProps {
   bgUrl: string;
   iconUrl: string;
   isHideChat: boolean;
-
   onToggleBackground: () => void;
   isLoading: boolean; // 로딩 상태 추가
+  chatBarCount: number;
 }
 
-const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isHideChat, onToggleBackground, isLoading}) => {
+const ChatArea: React.FC<ChatAreaProps> = ({
+  messages,
+  bgUrl,
+  iconUrl,
+  isHideChat,
+  onToggleBackground,
+  isLoading,
+  chatBarCount,
+}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({behavior: 'smooth'});
-  }, [messages]);
+    if (scrollRef.current) {
+      const {scrollTop, clientHeight, scrollHeight} = scrollRef.current;
+      const isAtBottom = scrollHeight - scrollTop === clientHeight;
+
+      // 스크롤 위치를 유지하기 위해 이전 스크롤 높이 계산
+      const previousScrollHeight = scrollHeight;
+
+      // 새 메시지가 추가된 후 스크롤을 업데이트
+      if (messages.Messages.length > 0) {
+        // 메시지가 추가된 후 스크롤 위치 복원
+        if (isAtBottom) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight; // 맨 아래로 이동
+        } else {
+          // 현재 스크롤 위치에서 얼마나 위로 올라갔는지 계산
+          const newScrollHeight = previousScrollHeight + scrollRef.current.scrollHeight;
+          scrollRef.current.scrollTop = newScrollHeight - previousScrollHeight + scrollTop;
+        }
+      }
+    }
+  }, [messages, chatBarCount]); // messages와 chatBarCount가 변경될 때마다 실행
 
   useEffect(() => {
     console.log(isLoading);
-  }, [isLoading]);
+  }, [isLoading, chatBarCount]);
+
+  console.log('챗바카운트', chatBarCount);
 
   return (
     <>
@@ -32,7 +60,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isHideChat
         <Box
           className={styles.chatArea}
           onDoubleClick={() => {
-            // isHideChat이 false일 때만 onToggleBackground 호출
             if (isHideChat === false) {
               onToggleBackground();
             }
@@ -54,19 +81,21 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isHideChat
 
           {/* Scrollable content */}
           <Box
+            ref={scrollRef}
             sx={{
-              height: 'calc(100% - 72px)',
+              height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 72 : 0}px)`,
               overflowY: 'auto',
               position: 'absolute',
               top: '72px',
               left: 0,
               right: 0,
-              paddingLeft: '16px', // 좌측 간격 추가
-              paddingRight: '16px', // 우측 간격 추가
+              paddingLeft: '16px',
+              paddingRight: '16px',
             }}
           >
             {messages.Messages.map((msg, index) => (
               <ChatMessageBubble
+                key={index}
                 text={msg.text}
                 sender={msg.sender}
                 index={index}
@@ -75,7 +104,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isHideChat
               />
             ))}
 
-            {isLoading === true && (
+            {isLoading && (
               <Box
                 sx={{
                   display: 'flex',

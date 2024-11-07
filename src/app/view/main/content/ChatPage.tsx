@@ -36,6 +36,7 @@ import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import BottomNavData from 'data/navigation/bottom-nav.json';
 import {tree} from 'next/dist/build/templates/app-page';
 import {COMMAND_SYSTEM, Message, MessageGroup} from './Chat/MainChat/ChatTypes';
+import {number} from 'valibot';
 
 const ChatPage: React.FC = () => {
   const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
@@ -47,6 +48,8 @@ const ChatPage: React.FC = () => {
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
   const [isHideChat, SetHideChat] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
+  const [ChatBarCount, setChatBarCount] = useState<number>(1); // 로딩 상태 추가
 
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
@@ -56,11 +59,15 @@ const ChatPage: React.FC = () => {
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
   const handleBackClick = useBackHandler();
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
   // useEffect(() => {}, [isLoading]);
   const SetChatLoading = (bool: boolean) => {
     setIsLoading(bool);
   };
+
+  const SetChatBarCount = (num: number) => {
+    setChatBarCount(num);
+  };
+
   //#region Message send handler
   const handleSendMessage = async (message: string, isMyMessage: boolean) => {
     if (!message || typeof message !== 'string') return;
@@ -367,6 +374,7 @@ const ChatPage: React.FC = () => {
           isHideChat={isHideChat}
           onToggleBackground={handleToggleBackground}
           isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
+          chatBarCount={ChatBarCount}
         />
       </div>
       <BottomBar
@@ -377,6 +385,7 @@ const ChatPage: React.FC = () => {
         isHideChat={isHideChat}
         onToggleBackground={handleToggleBackground}
         onLoading={SetChatLoading}
+        onUpdateChatBarCount={SetChatBarCount}
       />
 
       {showPopup && (

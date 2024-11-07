@@ -7,14 +7,15 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 interface ChatBarProps {
   message: string;
-  setMessage: React.Dispatch<React.SetStateAction<string>>; // 메시지를 업데이트할 콜백 함수
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
   onSend: () => void;
   toggleExpand: () => void;
   isExpanded: boolean;
   handleKeyDown: (event: React.KeyboardEvent) => void;
   isHideChat: boolean;
   onToggleBackground: () => void;
-  onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
+  onLoading: (isLoading: boolean) => void;
+  onUpdateChatBarCount: (count: number) => void;
 }
 
 const ChatBar: React.FC<ChatBarProps> = ({
@@ -27,21 +28,33 @@ const ChatBar: React.FC<ChatBarProps> = ({
   isHideChat,
   onToggleBackground,
   onLoading,
+  onUpdateChatBarCount,
 }) => {
   const [chatBars, setChatBars] = useState<string[]>(['main']);
   const [inputValues, setInputValues] = useState<{[key: string]: string}>({main: ''});
   const [toggledIcons, setToggledIcons] = useState<{[key: string]: boolean}>({main: false});
 
-  // toggledIcons 또는 inputValues가 변경될 때마다 메시지 업데이트
+  useEffect(() => {
+    onUpdateChatBarCount(chatBars.length);
+  }, [chatBars]);
+
   useEffect(() => {
     updateMessageText();
   }, [toggledIcons, inputValues]);
 
   const addChatBar = () => {
+    if (chatBars.length >= 5) return; // 최대 채팅 바 개수 제한
     const newId = `chatBar-${Date.now()}`;
-    setChatBars([newId, ...chatBars]);
-    setInputValues(prevValues => ({...prevValues, [newId]: ''}));
-    setToggledIcons(prevIcons => ({...prevIcons, [newId]: false}));
+    const newContent = inputValues.main; // main의 내용을 새 채팅바에 할당
+
+    // 새로운 채팅바를 main 바로 앞에 추가
+    setChatBars(prevBars => {
+      const mainIndex = prevBars.length - 1; // main의 인덱스
+      return [...prevBars.slice(0, mainIndex), newId, ...prevBars.slice(mainIndex)];
+    });
+
+    setInputValues(prevValues => ({...prevValues, [newId]: newContent, main: ''})); // 새 채팅바의 내용을 설정하고 main을 초기화
+    setToggledIcons(prevIcons => ({...prevIcons, [newId]: false})); // 새 채팅바의 토글 상태 초기화
   };
 
   const removeChatBar = (id: string) => {
@@ -59,10 +72,10 @@ const ChatBar: React.FC<ChatBarProps> = ({
   };
 
   const handleInputChange = (id: string, value: string) => {
-    setInputValues(prevValues => {
-      const updatedValues = {...prevValues, [id]: value};
-      return updatedValues;
-    });
+    setInputValues(prevValues => ({
+      ...prevValues,
+      [id]: value,
+    }));
   };
 
   const updateMessageText = () => {
@@ -73,7 +86,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
       })
       .join('⦿SYSTEM_CHAT⦿');
 
-    setMessage(orderedValues); // `BottomBar`의 `message` 상태를 업데이트
+    setMessage(orderedValues);
   };
 
   const toggleIcon = (id: string) => {
@@ -98,12 +111,13 @@ const ChatBar: React.FC<ChatBarProps> = ({
     }
     handleKeyDown(event);
   };
+
   const handleFocus = () => {
-    // 포커스가 올라올 때 isHideChat이 false이면 onToggleBackground 호출
     if (isHideChat) {
       onToggleBackground();
     }
   };
+
   return (
     <Box>
       {chatBars.map((id, index) => (
@@ -116,7 +130,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
           <TextField
             variant="outlined"
             placeholder="Type your message..."
-            onFocus={handleFocus} // 포커스 이벤트 핸들러 추가
+            onFocus={handleFocus}
             value={inputValues[id]}
             onChange={e => handleInputChange(id, e.target.value)}
             onKeyDown={handleKeyDownInternal}
@@ -135,7 +149,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
                       <CloseIcon />
                     </IconButton>
                   ) : (
-                    <IconButton onClick={() => addChatBar()}>
+                    <IconButton onClick={addChatBar}>
                       <DirectionsRunIcon />
                     </IconButton>
                   )}
