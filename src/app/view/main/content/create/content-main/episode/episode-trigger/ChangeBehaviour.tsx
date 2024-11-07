@@ -404,7 +404,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
           <Button onClick={handleClose} className={styles['close-button']}>
             <ArrowBackIos />
           </Button>
-          <span className={styles['modal-title']}>Change Behaviour</span>
+          <span className={styles['modal-title']}>{item ? item.name : '기본 이름 또는 로딩 중...'}</span>
 
           <IconButton onClick={handleOpenEditNameModal}>
             <DriveFileRenameOutline />
