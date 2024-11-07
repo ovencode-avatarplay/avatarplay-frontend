@@ -137,14 +137,20 @@ export const splitByAsterisk = (splitMessage: string) => {
 
 // 메시지가 '$'이면 메시지의 끝이라는 의미
 export const isFinishMessage = (isMyMessage: boolean, message: string): boolean => {
-  return isMyMessage === false && message.includes('$');
+  if (isMyMessage === false && message.includes('$')) {
+    return true;
+  } else return false;
 };
 
 export const isNarrationMessage = (message: string): boolean => {
-  return message.includes('*');
+  if (message.includes('*')) {
+    return true;
+  } else return false;
 };
 
 export const isSystemMessage = (message: string): boolean => {
   const count = (message.match(/%/g) || []).length;
-  return count >= 2;
+  if (count >= 2) {
+    return true;
+  } else return false;
 };
