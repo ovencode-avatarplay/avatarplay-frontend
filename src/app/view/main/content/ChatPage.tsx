@@ -20,7 +20,7 @@ import {
   isUserNarration,
   parsedUserNarration,
   parseMessage,
-  splitByAsterisk,
+  splitByNarration,
 } from '@chats/MainChat/MessageParser';
 
 import PopUpYesOrNo from '@/components/popup/PopUpYesOrNo';
@@ -30,14 +30,10 @@ import {
   EnterEpisodeChattingReq,
   fetchEmoticonGroups,
   EmoticonGroupInfo,
-  UrlEnterEpisodeChattingReq,
-  sendChattingEnterUrl,
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {COMMAND_SYSTEM, Message, MessageGroup} from './Chat/MainChat/ChatTypes';
-
-import BottomNavData from 'data/navigation/bottom-nav.json';
 
 const ChatPage: React.FC = () => {
   const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
@@ -54,7 +50,6 @@ const ChatPage: React.FC = () => {
   const key = getWebBrowserUrl(QueryKey) || null;
   console.log('getWebBrowserUrl', key);
 
-  //const userId = useSelector((state: RootState) => state.user.userId);
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
   const handleBackClick = useBackHandler();
@@ -91,8 +86,6 @@ const ChatPage: React.FC = () => {
     // sender가 바뀌었어도 isNarrationActive.active 상태를 갱신해줘야 한다.
     const isIncludeAsterisk: boolean = isNarrationMessage(message);
 
-    //if (isNewWordBallon) isNarrationActive.active = !isNarrationActive.active;
-
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
       text: message,
@@ -112,9 +105,9 @@ const ChatPage: React.FC = () => {
       // 메시지 정리
       newMessage.text = cleanString(newMessage.text);
 
-      const splitMessage = splitByAsterisk(newMessage.text);
-      const splitMessageLeft = splitMessage.leftAsterisk;
-      const splitMessageRight = splitMessage.rightAsterisk;
+      const splitMessageStep1 = splitByNarration(newMessage.text);
+      const splitMessageStep1Left = splitMessageStep1.leftAsterisk;
+      const splitMessageStep1Right = splitMessageStep1.rightAsterisk;
 
       // 시스템 메시지 처리
       if (isMyMessage === false && isSystemMessage(newMessage.text)) {
@@ -143,48 +136,60 @@ const ChatPage: React.FC = () => {
       else {
         if (isIncludeAsterisk === true) {
           // 먼저 왼쪽을 기존 말풍선에 출력시킨다
-          if (splitMessageLeft.length > 0) allMessages[allMessages.length - 1].text += `${splitMessageLeft}`;
+          if (splitMessageStep1Left.length > 0) allMessages[allMessages.length - 1].text += `${splitMessageStep1Left}`;
 
-          if (isNarrationMessage(splitMessageRight)) {
-            const splitMessage2 = splitByAsterisk(splitMessageRight);
-            const splitMessageLeft2 = splitMessage2.leftAsterisk;
-            const splitMessageRight2 = splitMessage2.rightAsterisk;
+          if (isNarrationMessage(splitMessageStep1Right)) {
+            const splitMessageStep2 = splitByNarration(splitMessageStep1Right);
+            const splitMessageStep2Left = splitMessageStep2.leftAsterisk;
+            const splitMessageStep2Right = splitMessageStep2.rightAsterisk;
 
             isNarrationActive.active = !isNarrationActive.active;
 
-            const newMessage2: Message = setSenderType(splitMessageLeft2, isMyMessage, isNarrationActive.active);
+            const newMessageStep2: Message = setSenderType(
+              splitMessageStep2Left,
+              isMyMessage,
+              isNarrationActive.active,
+            );
 
-            if (splitMessageLeft2.length > 0) {
-              if (allMessages[allMessages.length - 1].sender !== newMessage2.sender) {
+            if (splitMessageStep2Left.length > 0) {
+              if (allMessages[allMessages.length - 1].sender !== newMessageStep2.sender) {
                 allMessages.push(newMessage);
               }
             }
 
             isNarrationActive.active = !isNarrationActive.active;
 
-            if (splitMessageRight2.length > 0) {
-              const newMessage3: Message = setSenderType(splitMessageLeft2, isMyMessage, isNarrationActive.active);
+            if (splitMessageStep2Right.length > 0) {
+              const newMessageStep3: Message = setSenderType(
+                splitMessageStep2Left,
+                isMyMessage,
+                isNarrationActive.active,
+              );
 
-              allMessages.push(newMessage3);
+              allMessages.push(newMessageStep3);
             }
           } else {
             isNarrationActive.active = !isNarrationActive.active;
 
-            const newMessage4: Message = setSenderType(splitMessageRight, isMyMessage, isNarrationActive.active);
-            if (newMessage4.text.length > 0) allMessages.push(newMessage4);
+            const splitMessageStep4: Message = setSenderType(
+              splitMessageStep1Right,
+              isMyMessage,
+              isNarrationActive.active,
+            );
+            if (splitMessageStep4.text.length > 0) allMessages.push(splitMessageStep4);
           }
         } else {
-          const newMessage5: Message = setSenderType(newMessage.text, isMyMessage, isNarrationActive.active);
+          const splitMessageStep5: Message = setSenderType(newMessage.text, isMyMessage, isNarrationActive.active);
 
-          if (newMessage5.text !== ' ') {
-            if (allMessages[allMessages.length - 1].sender !== newMessage5.sender) {
-              if (newMessage5.text.length > 0) {
-                allMessages.push(newMessage5);
+          if (splitMessageStep5.text !== ' ') {
+            if (allMessages[allMessages.length - 1].sender !== splitMessageStep5.sender) {
+              if (splitMessageStep5.text.length > 0) {
+                allMessages.push(splitMessageStep5);
               }
             }
             // 같은 sender면 같은 말풍선에 출력
-            else if (newMessage5.text.length > 0) {
-              allMessages[allMessages.length - 1].text += `${newMessage5.text}`;
+            else if (splitMessageStep5.text.length > 0) {
+              allMessages[allMessages.length - 1].text += `${splitMessageStep5.text}`;
             }
           }
           // 빈문자가 왔을때 기존 sender가 user였으면 무시하자 ( 자꾸 빈말풍선 찍히는 원인 )
@@ -294,11 +299,7 @@ const ChatPage: React.FC = () => {
   const {prevMessages: enterData} = usePrevChatting(episodeId);
 
   useEffect(() => {
-    if (
-      !hasFetchedPrevMessages &&
-      enterData?.prevMessageInfoList //&&
-      //enterData.prevMessageInfoList.length > 0
-    ) {
+    if (!hasFetchedPrevMessages && enterData?.prevMessageInfoList) {
       // flatMap을 통해 parsedPrevMessages를 생성
       // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
       const {parsedPrevMessages, emoticonUrl} = enterData?.prevMessageInfoList.reduce<{
@@ -344,6 +345,7 @@ const ChatPage: React.FC = () => {
     }
   }, [enterData, hasFetchedPrevMessages]);
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
+
   return (
     <main className={styles.chatmodal}>
       <div className={styles.overlayContainer}>

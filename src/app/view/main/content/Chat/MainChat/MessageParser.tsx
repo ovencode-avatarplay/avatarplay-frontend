@@ -121,7 +121,7 @@ export const cleanString = (input: string): string => {
   return cleaned;
 };
 
-export const splitByAsterisk = (splitMessage: string) => {
+export const splitByNarration = (splitMessage: string) => {
   // '*'을 기준으로 문자열을 나누기
   const parts = splitMessage.split(COMMAND_NARRATION);
 
