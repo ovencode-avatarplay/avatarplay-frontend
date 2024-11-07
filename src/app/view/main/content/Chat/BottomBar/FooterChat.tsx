@@ -76,8 +76,8 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
 
       const parseMessage = false;
 
-      if (message.includes('(,)')) {
-        const messageParts = message.split('(,)');
+      if (message.includes('⦿SYSTEM_CHAT⦿')) {
+        const messageParts = message.split('⦿SYSTEM_CHAT⦿');
         messageParts.forEach(part => {
           const trimmedPart = part.trim(); // 필요시 양쪽 공백 제거
           if (trimmedPart.length > 0) {

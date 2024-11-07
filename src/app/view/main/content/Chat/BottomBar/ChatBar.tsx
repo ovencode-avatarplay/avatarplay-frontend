@@ -58,7 +58,7 @@ const ChatBar: React.FC<ChatBarProps> = ({message, setMessage, onSend, toggleExp
         const value = inputValues[id] || '';
         return toggledIcons[id] ? `*${value}*` : `${value}`;
       })
-      .join('(,)');
+      .join('⦿SYSTEM_CHAT⦿');
 
     setMessage(orderedValues); // `BottomBar`의 `message` 상태를 업데이트
   };

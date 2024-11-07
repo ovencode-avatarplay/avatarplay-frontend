@@ -1,7 +1,7 @@
 // messageParser.tsx
 export interface Message {
   text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt';
+  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
 }
 
 const parseAnswer = (answer: string): Message[] => {
@@ -37,9 +37,7 @@ const parseAnswer = (answer: string): Message[] => {
     if (match.index > lastIndex) {
       const partnerText = answer.slice(lastIndex, match.index).trim();
       // partnerText가 비어있지 않을 경우에만 추가
-      //console.log('answeransweranswer', partnerText);
       if (partnerText) {
-        //console.log('answeransweranswer2', partnerText);
         result.push({
           text: partnerText,
           sender: 'partner',
@@ -82,9 +80,18 @@ export const parseMessage = (message: string | null): Message[] | null => {
     }
 
     if (parsedMessage.Question) {
-      result.push({
-        text: parsedMessage.Question,
-        sender: 'user',
+      const parts: string[] = parsedMessage.Question.split('⦿SYSTEM_CHAT⦿');
+
+      parts.forEach((part: string) => {
+        if (part.trim()) {
+          const sender = part.startsWith('*') && part.endsWith('*') ? 'userNarration' : 'user';
+          const newMessage: Message = {
+            // newMessage를 여기서 정의
+            text: part.replace(/^\*|\*$/g, ''), // 양쪽의 '*'를 제거
+            sender: sender,
+          };
+          result.push(newMessage); // 새로 정의된 메시지를 결과에 추가
+        }
       });
     }
 
@@ -114,11 +121,6 @@ export const cleanString = (input: string): string => {
   // 1. 개행 문자 제거
   let cleaned = input.replace(/\n/g, '');
 
-  // 2. 마지막 글자가 '#'이면 제거
-  // if (cleaned.endsWith('#')) {
-  //   cleaned = cleaned.slice(0, -1);
-  // }
-
   return cleaned;
 };
 
@@ -135,20 +137,14 @@ export const splitByAsterisk = (splitMessage: string) => {
 
 // 메시지가 '$'이면 메시지의 끝이라는 의미
 export const isFinishMessage = (isMyMessage: boolean, message: string): boolean => {
-  if (isMyMessage === false && message.includes('$')) {
-    return true;
-  } else return false;
+  return isMyMessage === false && message.includes('$');
 };
 
 export const isNarrationMessage = (message: string): boolean => {
-  if (message.includes('*')) {
-    return true;
-  } else return false;
+  return message.includes('*');
 };
 
 export const isSystemMessage = (message: string): boolean => {
   const count = (message.match(/%/g) || []).length;
-  if (count >= 2) {
-    return true;
-  } else return false;
+  return count >= 2;
 };
