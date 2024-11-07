@@ -33,6 +33,8 @@ import {
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
+import BottomNavData from 'data/navigation/bottom-nav.json';
+import {tree} from 'next/dist/build/templates/app-page';
 import {COMMAND_SYSTEM, Message, MessageGroup} from './Chat/MainChat/ChatTypes';
 
 const ChatPage: React.FC = () => {
@@ -54,7 +56,11 @@ const ChatPage: React.FC = () => {
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
   const handleBackClick = useBackHandler();
   const dispatch = useDispatch();
-
+  const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
+  // useEffect(() => {}, [isLoading]);
+  const SetChatLoading = (bool: boolean) => {
+    setIsLoading(bool);
+  };
   //#region Message send handler
   const handleSendMessage = async (message: string, isMyMessage: boolean) => {
     if (!message || typeof message !== 'string') return;
@@ -78,7 +84,6 @@ const ChatPage: React.FC = () => {
         console.error('Error calling Result API:', error);
         alert('API 호출 중 오류가 발생했습니다. 다시 시도해 주세요.');
       }
-
       return;
     }
 
@@ -361,6 +366,7 @@ const ChatPage: React.FC = () => {
           iconUrl={enterData?.iconImageUrl ?? ''}
           isHideChat={isHideChat}
           onToggleBackground={handleToggleBackground}
+          isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
         />
       </div>
       <BottomBar
@@ -370,6 +376,7 @@ const ChatPage: React.FC = () => {
         EmoticonData={emoticonGroupInfoList || []} // EmoticonData에 emoticonGroupInfoList 전달
         isHideChat={isHideChat}
         onToggleBackground={handleToggleBackground}
+        onLoading={SetChatLoading}
       />
 
       {showPopup && (

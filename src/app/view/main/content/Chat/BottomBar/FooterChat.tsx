@@ -23,6 +23,7 @@ interface BottomBarProps {
   EmoticonData?: EmoticonGroupInfo[];
   isHideChat: boolean;
   onToggleBackground: () => void;
+  onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({
@@ -32,6 +33,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
   EmoticonData,
   onToggleBackground,
   isHideChat,
+  onLoading,
 }) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -121,7 +123,10 @@ const BottomBar: React.FC<BottomBarProps> = ({
       try {
         if (!event.data) {
           throw new Error('Received null or empty data');
+          onLoading(false);
         }
+
+        onLoading(false);
 
         const newMessage = JSON.parse(event.data);
         const parseMessage = false;
@@ -189,6 +194,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
           handleKeyDown={handleKeyDown}
           isHideChat={isHideChat}
           onToggleBackground={onToggleBackground}
+          onLoading={onLoading}
         />
       </Box>
       {isExpanded && !isStickerOpen && (

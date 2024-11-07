@@ -2,6 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {Box, Avatar} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
+import {ContactPhoneSharp} from '@mui/icons-material';
 import {MessageGroup} from './ChatTypes';
 
 interface ChatAreaProps {
@@ -11,14 +12,19 @@ interface ChatAreaProps {
   isHideChat: boolean;
 
   onToggleBackground: () => void;
+  isLoading: boolean; // 로딩 상태 추가
 }
 
-const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isHideChat, onToggleBackground}) => {
+const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isHideChat, onToggleBackground, isLoading}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({behavior: 'smooth'});
   }, [messages]);
+
+  useEffect(() => {
+    console.log(isLoading);
+  }, [isLoading]);
 
   return (
     <>
@@ -68,6 +74,45 @@ const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isHideChat
                 emoticonUrl={messages.emoticonUrl[index]}
               />
             ))}
+
+            {isLoading === true && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  marginBottom: 2,
+                }}
+              >
+                <Avatar
+                  alt="Partner Avatar"
+                  src={iconUrl}
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    marginRight: 1,
+                    border: '1px solid',
+                    borderColor: 'black',
+                  }}
+                />
+                <Box
+                  sx={{
+                    display: 'inline-block',
+                    padding: '8px',
+                    borderRadius: '8px',
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)', // partner의 말풍선 배경색
+                    color: '#FFFFFF',
+                    fontSize: '0.8em',
+                  }}
+                >
+                  <span className={styles.loadingDots}>
+                    <span>●</span>
+                    <span>●</span>
+                    <span>●</span>
+                  </span>
+                </Box>
+              </Box>
+            )}
+
             <div ref={bottomRef} />
           </Box>
         </Box>

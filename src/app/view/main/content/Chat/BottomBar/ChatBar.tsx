@@ -14,6 +14,7 @@ interface ChatBarProps {
   handleKeyDown: (event: React.KeyboardEvent) => void;
   isHideChat: boolean;
   onToggleBackground: () => void;
+  onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
 }
 
 const ChatBar: React.FC<ChatBarProps> = ({
@@ -25,6 +26,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   handleKeyDown,
   isHideChat,
   onToggleBackground,
+  onLoading,
 }) => {
   const [chatBars, setChatBars] = useState<string[]>(['main']);
   const [inputValues, setInputValues] = useState<{[key: string]: string}>({main: ''});
@@ -79,6 +81,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   };
 
   const handleSend = () => {
+    onLoading(true);
     onSend(); // 메시지 전송
 
     // 컴포넌트를 초기 상태로 되돌림
