@@ -1,8 +1,6 @@
 // messageParser.tsx
-export interface Message {
-  text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
-}
+
+import {COMMAND_END, COMMAND_NARRATION, COMMAND_SYSTEM, Message} from './ChatTypes';
 
 const parseAnswer = (answer: string): Message[] => {
   const result: Message[] = [];
@@ -23,7 +21,6 @@ const parseAnswer = (answer: string): Message[] => {
         });
       }
     }
-
     result.push({
       text: match[1], // 매칭된 나레이션 내용
       sender: 'narration', // 메시지 발신자
@@ -126,31 +123,53 @@ export const cleanString = (input: string): string => {
 
 export const splitByAsterisk = (splitMessage: string) => {
   // '*'을 기준으로 문자열을 나누기
-  const parts = splitMessage.split('*');
+  const parts = splitMessage.split(COMMAND_NARRATION);
 
   // 나눈 부분에서 앞과 뒤의 문자열을 반환
   return {
     leftAsterisk: parts[0], // '*' 앞의 문자열
-    rightAsterisk: parts.slice(1).join('*'), // '*' 뒤의 문자열 (여러 개의 '*'이 있을 수 있음)
+    rightAsterisk: parts.slice(1).join(COMMAND_NARRATION), // '*' 뒤의 문자열 (여러 개의 '*'이 있을 수 있음)
   };
 };
 
 // 메시지가 '$'이면 메시지의 끝이라는 의미
 export const isFinishMessage = (isMyMessage: boolean, message: string): boolean => {
-  if (isMyMessage === false && message.includes('$')) {
+  if (isMyMessage === false && message.includes(COMMAND_END)) {
     return true;
   } else return false;
 };
 
 export const isNarrationMessage = (message: string): boolean => {
-  if (message.includes('*')) {
+  if (message.includes(COMMAND_NARRATION)) {
     return true;
   } else return false;
 };
 
 export const isSystemMessage = (message: string): boolean => {
-  const count = (message.match(/%/g) || []).length;
+  const count = (message.match(new RegExp(`\\${COMMAND_SYSTEM}`, 'g')) || []).length;
   if (count >= 2) {
     return true;
   } else return false;
+};
+
+export const isUserNarration = (message: string): boolean => {
+  if (message.startsWith(COMMAND_NARRATION) && message.endsWith(COMMAND_NARRATION)) {
+    return true;
+  } else return false;
+};
+
+export const parsedUserNarration = (messageData: Message): Message => {
+  const parsedMessage: Message = {
+    sender: 'userNarration',
+    text: messageData.text.slice(1, -1), // 양 옆의 *를 제거
+  };
+  return parsedMessage;
+};
+
+export const setSenderType = (message: string, isMyMessage: boolean, isNarrationActive: boolean): Message => {
+  const resultMessage: Message = {
+    sender: isMyMessage ? 'user' : isNarrationActive ? 'narration' : 'partner',
+    text: message,
+  };
+  return resultMessage;
 };

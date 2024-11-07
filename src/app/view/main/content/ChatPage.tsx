@@ -1,19 +1,28 @@
 import React, {useEffect, useState} from 'react';
+import {RootState} from '@/redux-store/ReduxStore';
+import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
+import {useDispatch, useSelector} from 'react-redux';
+
 import TopBar from '@chats/TopBar/HeaderChat';
 import BottomBar from '@chats/BottomBar/FooterChat';
 import ChatArea from '@chats/MainChat/ChatArea';
 import styles from '@chats/Styles/StyleChat.module.css';
-import {useBackHandler} from 'utils/util-1';
 import usePrevChatting from '@chats/MainChat/PrevChatting';
-import {RootState} from '@/redux-store/ReduxStore';
+
+import {useBackHandler} from 'utils/util-1';
+
 import {
+  setSenderType,
   cleanString,
   isFinishMessage,
   isNarrationMessage,
   isSystemMessage,
+  isUserNarration,
+  parsedUserNarration,
   parseMessage,
   splitByAsterisk,
 } from '@chats/MainChat/MessageParser';
+
 import PopUpYesOrNo from '@/components/popup/PopUpYesOrNo';
 import {
   sendChattingResult,
@@ -25,20 +34,10 @@ import {
   sendChattingEnterUrl,
 } from '@/app/NetWork/ChatNetwork';
 
-import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
-import {useDispatch, useSelector} from 'react-redux';
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
+import {COMMAND_SYSTEM, Message, MessageGroup} from './Chat/MainChat/ChatTypes';
+
 import BottomNavData from 'data/navigation/bottom-nav.json';
-
-interface Message {
-  text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
-}
-
-interface MessageGroup {
-  Messages: Message[];
-  emoticonUrl: string[];
-}
 
 const ChatPage: React.FC = () => {
   const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
@@ -120,7 +119,7 @@ const ChatPage: React.FC = () => {
       // 시스템 메시지 처리
       if (isMyMessage === false && isSystemMessage(newMessage.text)) {
         const newMessageSystem: Message = {
-          text: newMessage.text.replace(/%/g, ''),
+          text: newMessage.text.replace(new RegExp(`\\${COMMAND_SYSTEM}`, 'g'), ''),
           sender: 'system',
         };
         allMessages.push(newMessageSystem);
@@ -130,13 +129,13 @@ const ChatPage: React.FC = () => {
       // 내 메시지
       if (isMyMessage === true) {
         // newMessage.text가 *로 시작하고 끝나는 경우
-        if (newMessage.text.startsWith('*') && newMessage.text.endsWith('*')) {
-          newMessage.sender = 'userNarration';
-          newMessage.text = newMessage.text.slice(1, -1); // 양 옆의 *를 제거
+        if (isUserNarration(newMessage.text)) {
+          const parsedMessage: Message = parsedUserNarration(newMessage);
+          newMessage.sender = parsedMessage.sender;
+          newMessage.text = parsedMessage.text;
         } else {
           newMessage.sender = 'user'; // 일반 유저 메시지
         }
-
         allMessages.push(newMessage); // 메시지를 배열에 추가
       }
 
@@ -146,16 +145,14 @@ const ChatPage: React.FC = () => {
           // 먼저 왼쪽을 기존 말풍선에 출력시킨다
           if (splitMessageLeft.length > 0) allMessages[allMessages.length - 1].text += `${splitMessageLeft}`;
 
-          if (splitMessageRight.includes('*')) {
+          if (isNarrationMessage(splitMessageRight)) {
             const splitMessage2 = splitByAsterisk(splitMessageRight);
             const splitMessageLeft2 = splitMessage2.leftAsterisk;
             const splitMessageRight2 = splitMessage2.rightAsterisk;
 
             isNarrationActive.active = !isNarrationActive.active;
-            const newMessage2: Message = {
-              text: splitMessageLeft2,
-              sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
-            };
+
+            const newMessage2: Message = setSenderType(splitMessageLeft2, isMyMessage, isNarrationActive.active);
 
             if (splitMessageLeft2.length > 0) {
               if (allMessages[allMessages.length - 1].sender !== newMessage2.sender) {
@@ -166,27 +163,19 @@ const ChatPage: React.FC = () => {
             isNarrationActive.active = !isNarrationActive.active;
 
             if (splitMessageRight2.length > 0) {
-              const newMessage3: Message = {
-                text: splitMessageLeft2,
-                sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
-              };
+              const newMessage3: Message = setSenderType(splitMessageLeft2, isMyMessage, isNarrationActive.active);
+
               allMessages.push(newMessage3);
             }
           } else {
             isNarrationActive.active = !isNarrationActive.active;
 
-            const newMessage4: Message = {
-              text: splitMessageRight,
-              sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
-            };
-
+            const newMessage4: Message = setSenderType(splitMessageRight, isMyMessage, isNarrationActive.active);
             if (newMessage4.text.length > 0) allMessages.push(newMessage4);
           }
         } else {
-          const newMessage5: Message = {
-            text: newMessage.text,
-            sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
-          };
+          const newMessage5: Message = setSenderType(newMessage.text, isMyMessage, isNarrationActive.active);
+
           if (newMessage5.text !== ' ') {
             if (allMessages[allMessages.length - 1].sender !== newMessage5.sender) {
               if (newMessage5.text.length > 0) {

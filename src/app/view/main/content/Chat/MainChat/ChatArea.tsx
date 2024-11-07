@@ -2,16 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {Box, Avatar} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
-
-interface Message {
-  text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
-}
-
-interface MessageGroup {
-  Messages: Message[];
-  emoticonUrl: string[];
-}
+import {MessageGroup} from './ChatTypes';
 
 interface ChatAreaProps {
   messages: MessageGroup;
