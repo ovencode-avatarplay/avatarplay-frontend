@@ -157,16 +157,19 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
         ];
       case TriggerMainDataType.triggerValueChatCount:
         return [
+          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
           {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
           {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
         ];
       case TriggerMainDataType.triggerValueKeyword:
         return [
+          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
           {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
           {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
         ];
       case TriggerMainDataType.triggerValueTimeMinute:
         return [
+          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
           {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
           {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
         ];

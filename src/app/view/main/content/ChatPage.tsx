@@ -30,6 +30,7 @@ import {
   EnterEpisodeChattingReq,
   fetchEmoticonGroups,
   EmoticonGroupInfo,
+  ChattingResultData,
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
@@ -37,13 +38,13 @@ import BottomNavData from 'data/navigation/bottom-nav.json';
 import {tree} from 'next/dist/build/templates/app-page';
 import {COMMAND_SYSTEM, Message, MessageGroup} from './Chat/MainChat/ChatTypes';
 import {number} from 'valibot';
+import NextEpisodePopup from './Chat/MainChat/NextEpisodePopup';
 
 const ChatPage: React.FC = () => {
   const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [popupTitle, setPopupTitle] = useState<string>('');
-  const [popupQuestion, setPopupQuestion] = useState<string>('');
+  const [nextPopupData, setNextPopupData] = useState<ChattingResultData>();
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
@@ -83,8 +84,7 @@ const ChatPage: React.FC = () => {
         console.log('Result API Response:', response);
         if (response.data.nextEpisodeId !== 0) {
           setNextEpisodeId(response.data.nextEpisodeId); // 다음 에피소드 ID 저장
-          setPopupTitle('알림');
-          setPopupQuestion('이 작업을 수행하시겠습니까?');
+          setNextPopupData(response.data);
           setShowPopup(true);
         }
       } catch (error) {
@@ -389,13 +389,7 @@ const ChatPage: React.FC = () => {
       />
 
       {showPopup && (
-        <PopUpYesOrNo
-          title={popupTitle}
-          question={popupQuestion}
-          onYes={handlePopupYes}
-          onNo={handlePopupNo}
-          open={showPopup}
-        />
+        <NextEpisodePopup onYes={handlePopupYes} onNo={handlePopupNo} open={showPopup} data={nextPopupData} />
       )}
     </main>
   );

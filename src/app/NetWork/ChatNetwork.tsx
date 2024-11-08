@@ -201,6 +201,9 @@ export interface ChattingResultData {
   nextChapterId: number;
   nextEpisodeId: number;
   nextEpisodeName: string;
+  nextEpisodeThumbnail: string;
+  nextEpisodeDescription: string;
+  changeBackgroundThumbnail: string;
 }
 
 export interface ChattingResultRes {

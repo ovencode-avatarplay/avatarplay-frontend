@@ -20,7 +20,7 @@ interface ChatTopBarProps {
 
 const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, isHideChat}) => {
   const chattingState1: ChattingState = useSelector((state: RootState) => state.chatting);
-  //console.log('chattingState ', chattingState1);
+  console.log('chattingState ', chattingState1);
   return (
     <>
       {isHideChat === false && (
