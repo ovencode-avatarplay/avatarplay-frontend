@@ -29,7 +29,7 @@ const NotEnoughRubyPopup: React.FC<NotEnoughRubyPopupProps> = ({open, onClose, r
             variant="contained"
             color="primary"
             onClick={() => {
-              /* 루비 충전 로직 */
+              onClose;
             }}
           >
             Yes
