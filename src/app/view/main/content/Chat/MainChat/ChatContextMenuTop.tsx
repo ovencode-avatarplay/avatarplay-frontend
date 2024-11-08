@@ -5,11 +5,13 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import styles from '../Styles/ChatMessageMenu.module.css';
 
+interface ChatContextTopProps {}
+
 // 핸들러 함수 선언
 const handleLike = () => {};
 const handleDislike = () => {};
 
-const ChatMessageMenuTop: React.FC = () => {
+const ChatMessageMenuTop: React.FC<ChatContextTopProps> = ({}) => {
   return (
     <Box>
       {/* 상단의 가로 메뉴 - Like와 Dislike 버튼 */}

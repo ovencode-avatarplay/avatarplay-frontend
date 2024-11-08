@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Box, Avatar} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
@@ -25,6 +25,16 @@ const ChatArea: React.FC<ChatAreaProps> = ({
 }) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [selectedBubbleIndex, setSelectedBubbleIndex] = useState<number | null>(null);
+
+  const handleBubbleClick = (index: number) => {
+    if (selectedBubbleIndex === null) {
+      setSelectedBubbleIndex(index);
+    } else {
+      setSelectedBubbleIndex(null);
+    }
+    console.log(index);
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -93,16 +103,23 @@ const ChatArea: React.FC<ChatAreaProps> = ({
               paddingRight: '16px',
             }}
           >
-            {messages.Messages.map((msg, index) => (
-              <ChatMessageBubble
-                key={index}
-                text={msg.text}
-                sender={msg.sender}
-                index={index}
-                iconUrl={iconUrl}
-                emoticonUrl={messages.emoticonUrl[index]}
-              />
-            ))}
+            <Box onClick={() => setSelectedBubbleIndex(null)}>
+              {messages.Messages.map((msg, index) => (
+                <ChatMessageBubble
+                  key={index}
+                  text={msg.text}
+                  sender={msg.sender}
+                  index={index}
+                  iconUrl={iconUrl}
+                  emoticonUrl={messages.emoticonUrl[index]}
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleBubbleClick(index);
+                  }}
+                  selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
+                />
+              ))}
+            </Box>
 
             {isLoading && (
               <Box
