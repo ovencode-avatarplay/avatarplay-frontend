@@ -16,6 +16,7 @@ import MapsUgcIcon from '@mui/icons-material/MapsUgc';
 import ExtendedInputField from './ExtendedInputField';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import ChatBar from './ChatBar';
+import NotEnoughRubyPopup from '../MainChat/NotEnoughRubyPopup';
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
   streamKey: string;
@@ -48,6 +49,8 @@ const BottomBar: React.FC<BottomBarProps> = ({
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
+  const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
+
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
     setSelectedEmoji(null);
@@ -103,12 +106,19 @@ const BottomBar: React.FC<BottomBarProps> = ({
       }
 
       // 이미 선언된 reqSendChatMessage의 text 필드를 (,)가 제거된 메시지로 업데이트
-      reqSendChatMessage.text = message.replace(/\(,\)/g, ''); // (,)를 제거한 메시지
-
       const response = await sendMessageStream(reqSendChatMessage);
 
-      if (response.resultCode === 0 && response.data) {
-        setStreamKey(response.data.streamKey);
+      // 성공적인 응답 처리
+      if ('streamKey' in response) {
+        // SendChatMessageResSuccess 타입인 경우
+        setStreamKey(response.streamKey);
+      } else {
+        // SendChatMessageResError 타입인 경우
+        if (response.resultCode === 13) {
+          setIsSendingMessage({state: false});
+          onLoading(false);
+          setNotEnoughRubyPopupOpen(true); // NotEnoughRubyPopup 팝업 열기
+        }
       }
     }
   };
@@ -230,6 +240,13 @@ const BottomBar: React.FC<BottomBarProps> = ({
           }}
           onSend={handleSend} // 팝업에서 이모티콘 클릭 시 전송
           isFavorite={selectedEmoticonIsFavorite}
+        />
+      )}
+      {isNotEnoughRubyPopupOpen && (
+        <NotEnoughRubyPopup
+          open={isNotEnoughRubyPopupOpen}
+          onClose={() => setNotEnoughRubyPopupOpen(false)} // 팝업 닫기
+          rubyAmount={5}
         />
       )}
     </Box>
