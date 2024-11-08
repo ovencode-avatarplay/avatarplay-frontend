@@ -52,7 +52,6 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
                   </Box>
                 </Box>
               </Box>
-
               <Box className={styles.textBox}>
                 <Typography className={styles.nameText}>{data.nextEpisodeName}</Typography>
                 <Typography className={styles.descText}>{data.nextEpisodeDescription}</Typography>
@@ -63,7 +62,7 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
             </Typography>
             <Box className={styles.buttonContainer}>
               <Button variant="outlined" onClick={onNo}>
-                No (Continue chatting)
+                No
               </Button>
               <Button variant="contained" color="primary" className={styles.yesButton} onClick={onYes}>
                 Yes
