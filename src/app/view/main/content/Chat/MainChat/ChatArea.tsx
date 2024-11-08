@@ -3,6 +3,8 @@ import {Box, Avatar} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
 import {MessageGroup} from './ChatTypes';
+import ChatTtsPlayer from './ChatTtsPlayer';
+import {GenerateTtsUrl} from './GenerateTtsUrl';
 
 interface ChatAreaProps {
   messages: MessageGroup;
@@ -27,6 +29,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [selectedBubbleIndex, setSelectedBubbleIndex] = useState<number | null>(null);
 
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+
   const handleBubbleClick = (index: number) => {
     if (selectedBubbleIndex === null) {
       setSelectedBubbleIndex(index);
@@ -34,6 +38,11 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       setSelectedBubbleIndex(null);
     }
     console.log(index);
+  };
+
+  const handlePlayAudio = async (text: string) => {
+    const url = await GenerateTtsUrl(text, 'defaultVoice');
+    setAudioUrl(url); // ChatTtsPlayer로 전달할 audioUrl 상태 업데이트
   };
 
   useEffect(() => {
@@ -62,8 +71,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     console.log(isLoading);
   }, [isLoading, chatBarCount]);
 
-  console.log('챗바카운트', chatBarCount);
-
   return (
     <>
       {isHideChat === false && (
@@ -89,6 +96,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           {/* Fixed space at the top */}
           <Box sx={{height: '72px', width: '100%'}} />
 
+          <ChatTtsPlayer audioUrl={audioUrl} />
           {/* Scrollable content */}
           <Box
             ref={scrollRef}
@@ -115,6 +123,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                   onClick={e => {
                     e.stopPropagation();
                     handleBubbleClick(index);
+                  }}
+                  onTtsClick={e => {
+                    e.stopPropagation();
+                    handlePlayAudio(msg.text);
                   }}
                   selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
                 />

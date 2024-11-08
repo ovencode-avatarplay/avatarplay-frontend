@@ -9,13 +9,13 @@ import styles from '../Styles/ChatMessageMenu.module.css';
 
 interface ChatContextTopProps {
   text: string;
+  onTtsClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({text}) => {
+const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({text, onTtsClick}) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const handlePlayVoice = () => {};
   const handleCopy = (text: string, event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     navigator.clipboard
@@ -35,10 +35,14 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({text}) => {
     setSnackbarOpen(false); // Snackbar 닫기
   };
 
+  const handleTtsClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    onTtsClick(e);
+  };
+
   return (
     <Box className={styles.bottomMenuContainer}>
       {/* 하단의 세로 메뉴 - 보이스 재생, 복사, 삭제, 재생성 버튼 */}
-      <Button onClick={handlePlayVoice} className={styles.actionButton} startIcon={<PlayArrowIcon />}>
+      <Button onClick={handleTtsClick} className={styles.actionButton} startIcon={<PlayArrowIcon />}>
         Play Voice
       </Button>
       <Button onClick={e => handleCopy(text, e)} className={styles.actionButton} startIcon={<ContentCopyIcon />}>
@@ -56,7 +60,7 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({text}) => {
         autoHideDuration={2000} // 2초 후 자동 닫힘
         onClose={handleSnackbarClose}
         message={snackbarMessage}
-        anchorOrigin={{vertical: 'bottom', horizontal: 'left'}} // 왼쪽 하단에 표시
+        anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
         sx={{width: '20vw'}}
       />
     </Box>

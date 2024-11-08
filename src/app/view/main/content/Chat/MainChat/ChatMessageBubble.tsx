@@ -11,6 +11,7 @@ interface ChatMessageBubbleProps {
   index: number;
   emoticonUrl: string;
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onTtsClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   selectedIndex: number | null;
 }
 
@@ -21,12 +22,16 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   index,
   emoticonUrl,
   onClick,
+  onTtsClick,
   selectedIndex,
 }) => {
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
     if (sender !== 'user') {
       onClick(e);
     }
+  };
+  const handleTtsClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    onTtsClick(e);
   };
 
   return (
@@ -109,7 +114,14 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
               <div dangerouslySetInnerHTML={{__html: text}} />
             )}
           </Box>
-          {selectedIndex === index && <ChatMessageMenuBottom text={text} />}
+          {selectedIndex === index && (
+            <ChatMessageMenuBottom
+              text={text}
+              onTtsClick={e => {
+                handleTtsClick(e);
+              }}
+            />
+          )}
         </Box>
       </div>
     </Box>
