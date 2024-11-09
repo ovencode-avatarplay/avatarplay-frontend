@@ -66,6 +66,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
     bodyType: 0,
     topSize: 0,
     bottomSize: 0,
+    clothing: 0
   });
 
   // gender 0 Male / 1 Female, style 0 Real / 1 Anime
@@ -94,6 +95,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
 
   const summaryOptions = [
     {key: 'style', label: 'Style', options: characterOptions.styleOptions},
+    {key: 'gender', label: 'Gender', options: characterOptions.genderOptions},
     {key: 'race', label: 'Race', options: characterOptions.raceOptions},
     {key: 'age', label: 'Age', options: characterOptions.ageOptions},
     {key: 'eyeColor', label: 'Eye Color', options: characterOptions.eyeColorOptions},
@@ -102,6 +104,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
     {key: 'bodyType', label: 'Body Type', options: characterOptions.bodyTypes},
     {key: 'topSize', label: 'Top Size', options: characterOptions.topSizes},
     {key: 'bottomSize', label: 'Bottom Size', options: characterOptions.bottomSizes},
+    {key: 'clothing', label: 'Clothing', options: characterOptions.clothing}
   ];
 
   // Handler
@@ -122,41 +125,28 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   };
 
   const handleGenerate = () => {
-    const genderPrompt = selectedOptions.gender === 0 ? 'Female' : selectedOptions.gender === 1 ? 'Male' : 'Non-binary';
-    const negativeGenderPrompt = selectedOptions.gender === 0 ? 'Male' : selectedOptions.gender === 1 ? 'Female' : '';
     const prompts = [
-      genderPrompt,
+      selectedOptions.gender,
       ...summaryOptions.map(option => {
         const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
         const selectedOption = option.options[selectedIndex];
 
-        return selectedOption?.prompt || '';
-      }),
-      clothesInputValue || 'No clothes description provided',
-    ].join(', ');
-
-    // console.log('Generated Prompt:', prompts);
-
-    const negativePrompts = [
-      negativeGenderPrompt,
-      ...summaryOptions.map(option => {
-        const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
-        const selectedOption = option.options[selectedIndex];
-
-        return selectedOption?.negativePrompt || '';
+        return selectedOption?.value;
       }),
     ]
-      .filter(prompt => prompt.trim() !== '')
-      .join(', ');
 
-    GetImageGenerateImage(txt2ImgGenerateJsonParser(prompts, negativePrompts));
+    const req: GenerateImageReq = {
+      values: prompts,
+    };
+
+    GetImageGenerateImage(req);
   };
 
-  const GetImageGenerateImage = async (prompt: string) => {
+  const GetImageGenerateImage = async (req : GenerateImageReq) => {
     setLoading(true);
 
     try {
-      const req: GenerateImageReq = {imagePrompt: prompt};
+      
       const response = await sendGenerateImageReq(req);
 
       if (response?.data) {
