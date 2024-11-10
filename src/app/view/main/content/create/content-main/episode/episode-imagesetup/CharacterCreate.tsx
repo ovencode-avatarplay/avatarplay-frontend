@@ -29,6 +29,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {setCurrentEpisodeThumbnail} from '@/redux-store/slices/EpisodeInfo';
 import {useDispatch} from 'react-redux';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import Image from 'next/image';
 
 interface Props {
   closeAction: () => void;
@@ -40,10 +41,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   const [loading, setLoading] = useState(false);
   const userId = useSelector((state: RootState) => state.user.userId);
   const [characterOptions, setCharacterOptions] = useState(characterOptionsFeMaleReal);
+  const [generatedOptions, setGeneratedOptions] = useState([]);
 
   const dispatch = useDispatch();
 
-  const steps = ['Gender', 'Style', 'Ethnicity', 'HairStyle', 'BodyShape', 'OutfitClothes', 'Summary'];
+  const steps = ['Gender', 'Style', 'Ethnicity', 'HairStyle', 'BodyShape', 'OutfitClothes', 'Summary', 'Result'];
   const genderOptions = [
     {label: 'Girls', icon: <GirlIcon />},
     {label: 'Guys', icon: <BoyIcon />},
@@ -66,7 +68,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
     bodyType: 0,
     topSize: 0,
     bottomSize: 0,
-    clothing: 0
+    clothing: 0,
+    result: 0,
   });
 
   // gender 0 Male / 1 Female, style 0 Real / 1 Anime
@@ -124,9 +127,14 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
     }
   };
 
+  const handleSelect = () => {
+    let url = generatedOptions[selectedOptions.result];
+    dispatch(setCurrentEpisodeThumbnail(url.label));
+    handleClose();
+  }
+
   const handleGenerate = () => {
     const prompts = [
-      selectedOptions.gender,
       ...summaryOptions.map(option => {
         const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
         const selectedOption = option.options[selectedIndex];
@@ -144,16 +152,20 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
 
   const GetImageGenerateImage = async (req : GenerateImageReq) => {
     setLoading(true);
-
     try {
       
       const response = await sendGenerateImageReq(req);
 
+      console.log(response);
       if (response?.data) {
-        const imgUrl: string = response.data.imageUrl;
+        const imageUrls: string[] = response.data.imageUrl;
 
-        dispatch(setCurrentEpisodeThumbnail(imgUrl));
-        handleClose();
+        console.log(imageUrls);
+      setGeneratedOptions(
+        imageUrls.map((url) => ({ label: url }))
+      );
+
+        /*handleClose();*/
       } else {
         throw new Error(`No response for file`);
       }
@@ -190,17 +202,6 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
       }
     }
   }, [activeStep]);
-
-  function txt2ImgGenerateJsonParser(prompt: string, negativePrompt: string) {
-    const combinedPrompt = `${defaultPromptJson.Positive} ${prompt}`;
-    const combinedNegativePrompt = `${defaultPromptJson.Negative} ${negativePrompt}`;
-
-    const updatedTxt2Img = {...txt2ImgJson[0], prompt: combinedPrompt, negative_prompt: combinedNegativePrompt};
-
-    const jsonString = JSON.stringify(updatedTxt2Img);
-
-    return jsonString;
-  }
 
   const getStepContent = (step: number) => {
     switch (step) {
@@ -311,10 +312,10 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                 {characterOptions.hairStyles.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
-                    width={'5vw'}
-                    height={'10vh'}
+                    width={'10vw'}
+                    height={'15vh'}
                     label={style.label}
-                    image={'/Images/001.png'}
+                    image={style.image}
                     selected={selectedOptions.hairStyle === index}
                     onClick={() => handleOptionSelect('hairStyle', index)}
                   />
@@ -344,14 +345,14 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             <div className={styles.createTitle}>Step 5: Select Body Shape</div>
             <Box className={styles.bodyContent}>
               <Typography variant="h6">Body Type</Typography>
-              <Box className={styles.scrollableContainer}>
+              <Box className={styles.gridContainer}>
                 {characterOptions.bodyTypes.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
                     width={'5vw'}
-                    height={'10vh'}
+                    height={'12vh'}
                     label={style.label}
-                    image={'/Images/001.png'}
+                    image={style.image}
                     selected={selectedOptions.bodyType === index}
                     onClick={() => handleOptionSelect('bodyType', index)}
                   />
@@ -360,28 +361,28 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
               {selectedOptions.gender === 0 && (
                 <>
                   <Typography variant="h6">Top Size</Typography>
-                  <Box className={styles.scrollableContainer}>
+                  <Box className={styles.gridContainer}>
                     {characterOptions.topSizes.map((style, index) => (
                       <CharacterCreateImageButton
                         key={style.label}
                         width={'5vw'}
-                        height={'10vh'}
+                        height={'15vh'}
                         label={style.label}
-                        image={'/Images/001.png'}
+                        image={style.image}
                         selected={selectedOptions.topSize === index}
                         onClick={() => handleOptionSelect('topSize', index)}
                       />
                     ))}
                   </Box>
                   <Typography variant="h6">Bottom Size</Typography>
-                  <Box className={styles.scrollableContainer}>
+                  <Box className={styles.gridContainer}>
                     {characterOptions.bottomSizes.map((style, index) => (
                       <CharacterCreateImageButton
                         key={style.label}
                         width={'5vw'}
-                        height={'10vh'}
+                        height={'15vh'}
                         label={style.label}
-                        image={'/Images/001.png'}
+                        image={style.image}
                         selected={selectedOptions.bottomSize === index}
                         onClick={() => handleOptionSelect('bottomSize', index)}
                       />
@@ -396,20 +397,20 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
         return (
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 6: Select Outfit Clothes</div>
-            <Box>
-              <Typography variant="h6">Clothes</Typography>
-              <TextField
-                sx={{width: '80%'}}
-                multiline
-                rows={4}
-                value={clothesInputValue}
-                onChange={handleClothesInputChange}
-                placeholder="Enter up to 200 characters"
-                inputProps={{maxLength}}
-              />
-              <Typography className={styles.characterCount}>
-                {clothesInputValue.length}/{maxLength} characters
-              </Typography>
+            <Box className={styles.bodyContent}>
+              <Typography variant="h6">Clothing</Typography>
+              <Box className={styles.gridContainer}>
+                {characterOptions.clothing.map((style, index) => (
+                  <CharacterCreateImageButton
+                    key={style.label}
+                    width={'5vw'}
+                    height={'7vh'}
+                    label={style.label}
+                    selected={selectedOptions.clothing === index}
+                    onClick={() => handleOptionSelect('clothing', index)}
+                  />
+                ))}
+              </Box>
             </Box>
           </div>
         );
@@ -444,10 +445,56 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Typography>
           </div>
         );
+      case 7:
+        return (
+          <div className={styles.createBox}>
+            <Box>
+              <Box className={styles.gridContainer2}>
+                {generatedOptions.map((option, index) => (
+                  <CharacterCreateImageButton
+                  key={index}
+                  width={'17vh'}
+                  height={'25vh'}
+                  image={option.label}
+                  selected={selectedOptions.result === index}
+                  onClick={() => handleOptionSelect('result', index)}
+                />
+                ))}
+              </Box>
+
+              <Button
+                    onClick={() => handleGenerate()}
+                    className={styles.colorButton}
+                  >
+                    Generate
+                  </Button>
+            </Box>
+         
+          </div>
+        );
       default:
         return 'Unknown step';
     }
   };
+
+  const renderBottom = () => {
+    return (
+      <>
+        <Button className={styles.stepButton} variant="outlined" onClick={handlePrev} disabled={activeStep === 0}>
+          Prev
+        </Button>
+        {activeStep ===  7 ? (
+          <Button className={styles.stepButton} variant="contained" color="primary" onClick={handleSelect}>
+            Select
+          </Button>
+        ) : (
+          <Button className={styles.stepButton} variant="contained" onClick={handleNext}>
+             {activeStep === 6 ? "Next (Generate)" : "Next"}
+          </Button>
+        )}
+        </>
+      )
+  }
 
   return (
     <Box className={styles.container}>
@@ -484,18 +531,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
       <Box className={styles.stepContent}>{getStepContent(activeStep)}</Box>
 
       <Box className={styles.buttonContainer}>
-        <Button className={styles.stepButton} variant="outlined" onClick={handlePrev} disabled={activeStep === 0}>
-          Prev
-        </Button>
-        {activeStep === steps.length - 1 ? (
-          <Button className={styles.stepButton} variant="contained" color="primary" onClick={handleGenerate}>
-            Generate
-          </Button>
-        ) : (
-          <Button className={styles.stepButton} variant="contained" onClick={handleNext}>
-            Next
-          </Button>
-        )}
+        {renderBottom()}
       </Box>
     </Box>
   );

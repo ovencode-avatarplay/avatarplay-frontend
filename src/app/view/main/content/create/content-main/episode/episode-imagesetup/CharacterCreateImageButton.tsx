@@ -21,7 +21,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({width, height, 
         width: width,
         height: height,
         padding: 0,
-        border: `4px solid ${selected ? 'blue' : 'red'}`,
+        border: `2px solid ${selected ? 'blue' : 'red'}`,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end',
@@ -37,7 +37,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({width, height, 
         sx={{
           flexGrow: 1,
           backgroundImage: `url(${image})`,
-          backgroundSize: 'cover',
+          backgroundSize: 'contain',
           backgroundPosition: 'center',
           width: '100%',
         }}
@@ -58,10 +58,10 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({width, height, 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          border: `4px solid ${selected ? 'blue' : 'red'}`,
+          border: `2px solid ${selected ? 'blue' : 'red'}`,
         }}
       >
-        <Typography variant="subtitle1" sx={{fontWeight: 'bold', color: 'black'}}>
+        <Typography variant="subtitle3" sx={{fontWeight: 'bold', color: 'black'}}>
           {label}
         </Typography>
       </Box>

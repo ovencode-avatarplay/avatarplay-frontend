@@ -10,77 +10,75 @@
     { "label": "All", "image": "/anime.png", "value": 2 }
   ],
   "raceOptions": [
-    { "label": "Caucasian", "image": "/race_caucasian.png", "value": 0},
-    { "label": "Latina", "image": "/race_latina.png", "value": 1},
-    { "label": "Asian", "image": "/race_asian.png", "value": 2},
-    { "label": "Arab", "image": "/race_arab.png", "value": 3}
-  ],
-  "ageOptions": [
-    { "label": "Teen(18+)", "image": "/age_teen.png", "value": 0},
-    { "label": "20s", "image": "/age_20s.png", "value": 1},
-    { "label": "30s", "image": "/age_30s.png", "value": 2},
-    { "label": "40-55", "image": "/age_40-55.png", "value": 3 }
-  ],
-  "eyeColorOptions": [
-    { "label": "Brown", "image": "/eye_brown.png", "value": 0},
-    { "label": "Blue", "image": "/eye_blue.png", "value": 1},
-    { "label": "Green", "image": "/eye_green.png", "value": 2},
-    { "label": "Yellow", "image": "/eye_green.png", "value": 3},
-    { "label": "Red", "image": "/eye_green.png", "value": 4}
-  ],
-  "hairStyles": [
-    { "label": "Straight", "image": "/hair_straight.png", "value": 0},
-    { "label": "Braids", "image": "/hair_braids.png", "value": 1},
-    { "label": "Bangs", "image": "/hair_bangs.png", "value": 2},
-    { "label": "Curly", "image": "/hair_curly.png", "value": 3},
-    { "label": "Bun", "image": "/hair_bun.png", "value": 4},
-    { "label": "Short", "image": "/hair_short.png", "value": 5},
-    { "label": "Long", "image": "/hair_long.png", "value": 6},
-    { "label": "Ponytail", "image": "/hair_ponytail.png", "value": 7 },
-    { "label": "Pigtails", "image": "/hair_pigtail.png", "value": 8 },
-    { "label": "BuzzCut", "image": "/hair_buzzcut.png", "value": 9 },
-    { "label": "Long", "image": "/hair_long.png", "value": 10 },
-    { "label": "SlickedBack", "image": "/hair_long.png", "value": 11 },
-    { "label": "Dreadlocks", "image": "/hair_long.png", "value": 12 },
-    { "label": "Bald", "image": "/hair_long.png", "value": 13 }
-  ],
-  "hairColors": [
-    { "label": "Blonde", "image": "/hair_blonde.png", "value": 0},
-    { "label": "Brunette", "image": "/hair_brunette.png", "value": 1},
-    { "label": "Black", "image": "/hair_black.png", "value": 2},
-    { "label": "Redhead", "image": "/hair_redhead.png", "value": 3},
-    { "label": "Pink", "image": "/hair_pink.png", "value": 4 },
-    { "label": "White", "image": "/hair_pink.png", "value": 5 },
-    { "label": "Blue", "image": "/hair_pink.png", "value": 6 },
-    { "label": "Green", "image": "/hair_pink.png", "value": 7 },
-    { "label": "Purple", "image": "/hair_pink.png", "value": 8 }
-  ],
-  "bodyTypes": [
-    { "label": "Petite", "image": "/body_petite.png", "value": 0},
-    { "label": "Slim", "image": "/body_slim.png", "value": 1},
-    { "label": "Athletic", "image": "/body_athletic.png", "value": 2},
-    { "label": "Voluptuous", "image": "/body_voluptuous.png", "value": 3},
-    { "label": "Curvy", "image": "/body_curvy.png", "value": 4},
-    { "label": "Slim", "image": "/body_curvy.png", "value": 5},
-    { "label": "Muscular", "image": "/body_curvy.png", "value": 6},
-    { "label": "Wide", "image": "/body_curvy.png", "value": 7 }
-  ],
-  "topSizes": [
-    { "label": "Flat", "image": "/top_flat.png", "value": 0},
-    { "label": "Small", "image": "/top_small.png", "value": 1},
-    { "label": "Medium", "image": "/top_medium.png", "value": 2},
-    { "label": "Large", "image": "/top_large.png", "value": 3},
-    { "label": "Huge", "image": "/top_huge.png", "value": 4}
-  ],
-  "bottomSizes": [
-    { "label": "Small", "image": "/bottom_small.png", "value": 0},
-    { "label": "Medium", "image": "/bottom_medium.png", "value": 1},
-    { "label": "Large", "image": "/bottom_large.png", "value": 2},
-    { "label": "Skinny", "image": "/bottom_skinny.png", "value": 3},
-    { "label": "Athletic", "image": "/bottom_athletic.png", "value": 4 }
-  ],
+        {"label": "Unspecified", "image": "", "value": 0},
+        {"label": "Caucasian", "image": "/race_caucasian.png", "value": 1},
+        {"label": "Latina", "image": "/race_latina.png", "value": 2},
+        {"label": "Asian", "image": "/race_asian.png", "value": 3},
+        {"label": "Arab", "image": "/race_arab.png", "value": 4},
+        {"label": "Korean", "image": "/race_korean.png", "value": 5},
+        {"label": "Japaness", "image": "/race_japaness.png", "value": 6}
+    ],
+    "ageOptions": [
+        {"label": "Unspecified", "image": "", "value": 0},
+        {"label": "Teen(18+)", "image": "/age_teen.png", "value": 1},
+        {"label": "20s", "image": "/age_20s.png", "value": 2},
+        {"label": "30s", "image": "/age_30s.png", "value": 3},
+        {"label": "40-55", "image": "/age_40-55.png", "value": 4}
+    ],
+    "eyeColorOptions": [
+        {"label": "Unspecified", "image": "", "value": 0},
+        {"label": "Brown", "image": "/eye_brown.png", "value": 1},
+        {"label": "Blue", "image": "/eye_blue.png", "value": 2},
+        {"label": "Green", "image": "/eye_green.png", "value": 3},
+        {"label": "Yellow", "image": "/eye_green.png", "value": 4},
+        {"label": "Red", "image": "/eye_green.png", "value": 5}
+    ],
+    "hairStyles": [
+        {"label": "Unspecified", "image": "", "value": 0},
+        {"label": "Straight", "image": "/character/hair_straight.png", "value": 1},
+        {"label": "Braids", "image": "/character/hair_braids.png", "value": 2},
+        {"label": "Bangs", "image": "/character/hair_bangs.png", "value": 3},
+        {"label": "Curly", "image": "/character/hair_curly.png", "value": 4},
+        {"label": "Bun", "image": "/character/hair_bun.png", "value": 5},
+        {"label": "Short", "image": "/character/hair_short.png", "value": 6},
+        {"label": "Long", "image": "/character/hair_long.png", "value": 7},
+        {"label": "Ponytail", "image": "/character/hair_ponytail.png", "value": 8},
+        {"label": "Twintails", "image": "/character/hair_twintails.png", "value": 9}
+    ],
+    "hairColors": [
+        {"label": "Unspecified", "image": "", "value": 0},
+        {"label": "Blonde", "image": "/character/haircolor_blonde.png", "value": 1},
+        {"label": "Black", "image": "/character/haircolor_black.png", "value": 2},
+        {"label": "Red", "image": "/character/haircolor_red.png", "value": 3},
+        {"label": "Pink", "image": "/character/haircolor_pink.png", "value": 4},
+        {"label": "White", "image": "/character/haircolor_pink.png", "value": 5}
+    ],
+    "bodyTypes": [
+        {"label": "Unspecified", "image": "", "value": 0},
+        {"label": "Petite", "image": "/character/body_petite.png", "value": 1},
+        {"label": "Slim", "image": "/character/body_slim.png", "value": 2},
+        {"label": "Athletic", "image": "/character/body_athletic.png", "value": 3},
+        {"label": "Voluptuous", "image": "/character/body_voluptuous.png", "value": 4},
+        {"label": "Curvy", "image": "/character/body_curvy.png", "value": 5}
+    ],
+    "topSizes": [
+        {"label": "Unspecified", "image": "", "value": 0},
+        {"label": "Flat", "image": "/character/top_flat.png", "value": 1},
+        {"label": "Small", "image": "/character/top_small.png", "value": 2},
+        {"label": "Medium", "image": "/character/top_medium.png", "value": 3},
+        {"label": "Large", "image": "/character/top_large.png", "value": 4},
+        {"label": "Huge", "image": "/character/top_huge.png", "value": 5}
+    ],
+    "bottomSizes": [
+        {"label": "Unspecified", "image": "", "value": 0},
+        {"label": "Small", "image": "/character/bottom_small.png", "value": 1},
+        {"label": "Medium", "image": "/character/bottom_medium.png", "value": 2},
+        {"label": "Large", "image": "/character/bottom_large.png", "value": 3},
+        {"label": "Skinny", "image": "/character/bottom_skinny.png", "value": 4},
+        {"label": "Athletic", "image": "/character/bottom_athletic.png", "value": 5}
+    ],
   "clothing": [
-    { "label": "Bikini", "image": "/bottom_small.png", "value": 0},
+    { "label": "Unspecified", "image": "", "value": 0},
     { "label": "Skirt", "image": "/bottom_medium.png", "value": 1},
     { "label": "Cheerleader", "image": "/bottom_large.png", "value": 2},
     { "label": "BodyHuggingDress", "image": "/bottom_skinny.png", "value": 3},
@@ -164,6 +162,7 @@
     { "label": "CorduroyPants", "image": "/bottom_athletic.png", "value": 81 },
     { "label": "HenleyShort", "image": "/bottom_athletic.png", "value": 82 },
     { "label": "PrincessDress", "image": "/bottom_athletic.png", "value": 83 },
-    { "label": "JoogersPants", "image": "/bottom_athletic.png", "value": 84 }
+    { "label": "JoogersPants", "image": "/bottom_athletic.png", "value": 84 },
+    { "label": "Bikini", "image": "/bottom_small.png", "value": 85}
   ]
 }
