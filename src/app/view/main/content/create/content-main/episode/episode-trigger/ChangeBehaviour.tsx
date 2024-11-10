@@ -157,16 +157,19 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
         ];
       case TriggerMainDataType.triggerValueChatCount:
         return [
+          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
           {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
           {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
         ];
       case TriggerMainDataType.triggerValueKeyword:
         return [
+          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
           {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
           {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
         ];
       case TriggerMainDataType.triggerValueTimeMinute:
         return [
+          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
           {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
           {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
         ];
@@ -404,7 +407,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
           <Button onClick={handleClose} className={styles['close-button']}>
             <ArrowBackIos />
           </Button>
-          <span className={styles['modal-title']}>Change Behaviour</span>
+          <span className={styles['modal-title']}>{item ? item.name : '기본 이름 또는 로딩 중...'}</span>
 
           <IconButton onClick={handleOpenEditNameModal}>
             <DriveFileRenameOutline />

@@ -181,6 +181,14 @@
   width: 100%;
 }
 
+.gridContainer2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px;
+  justify-items: center;
+  width: 100%;
+}
+
 .characterCount {
   text-align: right;
   margin-top: 8px;

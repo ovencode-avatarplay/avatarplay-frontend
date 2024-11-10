@@ -16,14 +16,28 @@ import MapsUgcIcon from '@mui/icons-material/MapsUgc';
 import ExtendedInputField from './ExtendedInputField';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import ChatBar from './ChatBar';
+import NotEnoughRubyPopup from '../MainChat/NotEnoughRubyPopup';
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
   streamKey: string;
   setStreamKey: (key: string) => void;
   EmoticonData?: EmoticonGroupInfo[];
+  isHideChat: boolean;
+  onToggleBackground: () => void;
+  onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
+  onUpdateChatBarCount: (count: number) => void; // 추가된 prop
 }
 
-const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, EmoticonData}) => {
+const BottomBar: React.FC<BottomBarProps> = ({
+  onSend,
+  streamKey,
+  setStreamKey,
+  EmoticonData,
+  onToggleBackground,
+  isHideChat,
+  onLoading,
+  onUpdateChatBarCount,
+}) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isStickerOpen, setIsStickerOpen] = useState(false);
@@ -35,6 +49,8 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
+  const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
+
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
     setSelectedEmoji(null);
@@ -76,8 +92,8 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
 
       const parseMessage = false;
 
-      if (message.includes('(,)')) {
-        const messageParts = message.split('(,)');
+      if (message.includes('⦿SYSTEM_CHAT⦿')) {
+        const messageParts = message.split('⦿SYSTEM_CHAT⦿');
         messageParts.forEach(part => {
           const trimmedPart = part.trim(); // 필요시 양쪽 공백 제거
           if (trimmedPart.length > 0) {
@@ -90,12 +106,19 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
       }
 
       // 이미 선언된 reqSendChatMessage의 text 필드를 (,)가 제거된 메시지로 업데이트
-      reqSendChatMessage.text = message.replace(/\(,\)/g, ''); // (,)를 제거한 메시지
-
       const response = await sendMessageStream(reqSendChatMessage);
 
-      if (response.resultCode === 0 && response.data) {
-        setStreamKey(response.data.streamKey);
+      // 성공적인 응답 처리
+      if ('streamKey' in response) {
+        // SendChatMessageResSuccess 타입인 경우
+        setStreamKey(response.streamKey);
+      } else {
+        // SendChatMessageResError 타입인 경우
+        if (response.resultCode === 13) {
+          setIsSendingMessage({state: false});
+          onLoading(false);
+          setNotEnoughRubyPopupOpen(true); // NotEnoughRubyPopup 팝업 열기
+        }
       }
     }
   };
@@ -112,7 +135,10 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
       try {
         if (!event.data) {
           throw new Error('Received null or empty data');
+          onLoading(false);
         }
+
+        onLoading(false);
 
         const newMessage = JSON.parse(event.data);
         const parseMessage = false;
@@ -178,6 +204,10 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
           toggleExpand={toggleExpand}
           isExpanded={false}
           handleKeyDown={handleKeyDown}
+          isHideChat={isHideChat}
+          onToggleBackground={onToggleBackground}
+          onLoading={onLoading}
+          onUpdateChatBarCount={onUpdateChatBarCount}
         />
       </Box>
       {isExpanded && !isStickerOpen && (
@@ -210,6 +240,13 @@ const BottomBar: React.FC<BottomBarProps> = ({onSend, streamKey, setStreamKey, E
           }}
           onSend={handleSend} // 팝업에서 이모티콘 클릭 시 전송
           isFavorite={selectedEmoticonIsFavorite}
+        />
+      )}
+      {isNotEnoughRubyPopupOpen && (
+        <NotEnoughRubyPopup
+          open={isNotEnoughRubyPopupOpen}
+          onClose={() => setNotEnoughRubyPopupOpen(false)} // 팝업 닫기
+          rubyAmount={5}
         />
       )}
     </Box>

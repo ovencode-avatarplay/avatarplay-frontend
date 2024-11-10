@@ -66,6 +66,11 @@ const Login = () => {
           providers={['google', 'kakao']} // 구글, 카카오 등 추가하고 싶은 OAuth 제공자
           appearance={{theme: ThemeSupa}} // Supabase 기본 테마 사용
           onlyThirdPartyProviders
+          redirectTo={`http://www.naver.com`}
+          queryParams={{
+            access_type: 'offline',
+            prompt: 'consent',
+          }}
         />
       </div>
     </>

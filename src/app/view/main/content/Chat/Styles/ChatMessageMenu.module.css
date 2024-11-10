@@ -1,0 +1,57 @@
+/* ChatMessageMenu.module.css */
+.chatBubble
+{
+  position: relative;
+}
+
+.topMenuContainer {
+    position: absolute;
+    display: flex;
+    gap: 8px;
+
+    z-index: 15;
+    margin-left: 10%;
+    
+    bottom: 100%;    
+    margin-left: 10%;
+    width: 40%;
+
+    justify-items: center;
+    justify-self: center;
+    align-items: center;
+    
+    background-color: blue;
+  }
+  
+  .bottomMenuContainer {
+    position: absolute;
+    display: flex;
+    gap: 8px;
+
+    z-index: 15;
+
+    top: 100%;
+    margin-left: 10%;
+    width: 40%;
+    
+    flex-direction: column;
+    justify-items: center;
+    justify-self: center;
+    align-items: center;
+
+    background-color: red;
+  }
+  
+  .iconButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  
+  .actionButton {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  

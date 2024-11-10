@@ -1,0 +1,38 @@
+.popupContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px; /* 팝업 너비 */
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  text-align: center; /* 내용 중앙 정렬 */
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 16px; /* 제목과 내용 간격 */
+}
+
+.rubyContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px; /* 루비 아이콘과 수량 간격 */
+}
+
+.rubyAmount {
+  margin-left: 8px; /* 아이콘과 수량 간격 */
+  font-size: 24px; /* 루비 수량 크기 조정 */
+}
+
+.prompt {
+  margin-bottom: 16px; /* 문구와 버튼 간격 */
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between; /* 버튼 간격 조정 */
+}

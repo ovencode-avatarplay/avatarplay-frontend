@@ -79,7 +79,7 @@ const EpisodeLLMSetup: React.FC<EpisodeLLMSetupProps> = ({open, onClose}) => {
             <FormControlLabel value="1" control={<Radio />} label="GPT-4 - OpenAI의 높은 성능의 초거대 언어모델" />
             <FormControlLabel value="2" control={<Radio />} label="GPT-3.5 - 합리적 가성비와 다양한 활용 가능" />
             <FormControlLabel value="3" control={<Radio />} label="Claude 2 - 공부와 토론에 특화된 모델" />
-            <FormControlLabel value="4" control={<Radio />} label="Claude 3 Opus - 시리즈 중 가장 높은 지능" />
+            <FormControlLabel value="4" control={<Radio />} label="Claude 3 Opus - 시리즈 중 가장 높은 지능" disabled />
             <FormControlLabel value="5" control={<Radio />} label="Claude 3 Sonnet - 2배 빠른 속도" />
             <FormControlLabel
               value="6"
@@ -90,6 +90,7 @@ const EpisodeLLMSetup: React.FC<EpisodeLLMSetupProps> = ({open, onClose}) => {
               value="7"
               control={<Radio />}
               label="Claude 3.5 Sonnet V2 - 다 방면에서 3.5보다 향상된 모델"
+              disabled
             />
             <FormControlLabel
               value="8"

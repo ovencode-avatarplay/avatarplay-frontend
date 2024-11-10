@@ -1,131 +1,202 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Box, Avatar} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
-
-interface Message {
-  text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
-}
-
-interface MessageGroup {
-  Messages: Message[];
-  emoticonUrl: string[]; // 이모티콘 URL 배열
-}
+import ChatMessageBubble from './ChatMessageBubble';
+import {MessageGroup} from './ChatTypes';
+import ChatTtsPlayer from './ChatTtsPlayer';
+import {GenerateTtsUrl} from './GenerateTtsUrl';
 
 interface ChatAreaProps {
   messages: MessageGroup;
   bgUrl: string;
   iconUrl: string;
   isHideChat: boolean;
+  onToggleBackground: () => void;
+  isLoading: boolean; // 로딩 상태 추가
+  chatBarCount: number;
 }
 
-const ChatArea: React.FC<ChatAreaProps> = ({messages, bgUrl, iconUrl, isHideChat: isHideChat}) => {
+const ChatArea: React.FC<ChatAreaProps> = ({
+  messages,
+  bgUrl,
+  iconUrl,
+  isHideChat,
+  onToggleBackground,
+  isLoading,
+  chatBarCount,
+}) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  // const [isHideChat, SetIsHideChatOn] = useState<boolean>(false);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [selectedBubbleIndex, setSelectedBubbleIndex] = useState<number | null>(null);
+
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+
+  const handleBubbleClick = (index: number) => {
+    if (selectedBubbleIndex === null) {
+      setSelectedBubbleIndex(index);
+    } else {
+      setSelectedBubbleIndex(null);
+    }
+    console.log(index);
+  };
+
+  const handlePlayAudio = async (text: string) => {
+    const url = await GenerateTtsUrl(text, 'defaultVoice');
+    setAudioUrl(url); // ChatTtsPlayer로 전달할 audioUrl 상태 업데이트
+  };
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({behavior: 'smooth'});
-  }, [messages]);
+    if (scrollRef.current) {
+      const {scrollTop, clientHeight, scrollHeight} = scrollRef.current;
+      const isAtBottom = scrollHeight - scrollTop === clientHeight;
 
-  // useEffect(() => {
-  //   // SetIsHideChatOn(isHideChat);
-  // }, [isHideChat]);
+      // 스크롤 위치를 유지하기 위해 이전 스크롤 높이 계산
+      const previousScrollHeight = scrollHeight;
+
+      // 새 메시지가 추가된 후 스크롤을 업데이트
+      if (messages.Messages.length > 0) {
+        // 메시지가 추가된 후 스크롤 위치 복원
+        if (isAtBottom) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight; // 맨 아래로 이동
+        } else {
+          // 현재 스크롤 위치에서 얼마나 위로 올라갔는지 계산
+          const newScrollHeight = previousScrollHeight + scrollRef.current.scrollHeight;
+          scrollRef.current.scrollTop = newScrollHeight - previousScrollHeight + scrollTop;
+        }
+      }
+    }
+  }, [messages, chatBarCount]); // messages와 chatBarCount가 변경될 때마다 실행
+
+  useEffect(() => {
+    console.log(isLoading);
+  }, [isLoading, chatBarCount]);
 
   return (
-    <Box
-      className={styles.chatArea}
-      sx={{
-        backgroundImage: `url(${bgUrl})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        height: '100%',
-        width: '100%',
-        position: 'relative',
-        fontFamily: 'Noto Sans KR, sans-serif',
-      }}
-    >
-      {isHideChat === false &&
-        messages.Messages.map((msg, index) => (
+    <>
+      {isHideChat === false && (
+        <Box
+          className={styles.chatArea}
+          onDoubleClick={() => {
+            if (isHideChat === false) {
+              onToggleBackground();
+            }
+          }}
+          sx={{
+            backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            height: '100%',
+            width: '100%',
+            position: 'relative',
+            fontFamily: 'Noto Sans KR, sans-serif',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Fixed space at the top */}
+          <Box sx={{height: '72px', width: '100%'}} />
+
+          <ChatTtsPlayer audioUrl={audioUrl} />
+          {/* Scrollable content */}
           <Box
-            key={index}
+            ref={scrollRef}
             sx={{
-              display: 'flex',
-              justifyContent:
-                msg.sender === 'user' || msg.sender === 'userNarration'
-                  ? 'flex-end'
-                  : msg.sender === 'partner' || msg.sender === 'narration'
-                  ? 'flex-start'
-                  : 'center',
-              marginBottom: 2,
+              height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 72 : 0}px)`,
+              overflowY: 'auto',
+              position: 'absolute',
+              top: '72px',
+              left: 0,
+              right: 0,
+              paddingLeft: '16px',
+              paddingRight: '16px',
             }}
           >
-            {msg.sender === 'partner' && (
-              <Avatar
-                alt="Partner Avatar"
-                src={iconUrl}
-                sx={{
-                  width: 32,
-                  height: 32,
-                  marginRight: 1,
-                  border: '1px solid',
-                  borderColor: 'black',
-                }}
-              />
-            )}
-            <Box
-              sx={{
-                display: 'inline-block',
-                padding: msg.sender === 'system' ? '8px 55px' : '8px',
-                borderRadius: '8px',
-                maxWidth: msg.sender === 'introPrompt' ? '100%' : msg.sender === 'system' ? '100%' : '70%',
-                backgroundColor:
-                  msg.sender === 'introPrompt'
-                    ? '#FFFFFF'
-                    : msg.sender === 'user' || msg.sender === 'userNarration'
-                    ? 'rgba(80, 80, 80, 0.8)'
-                    : msg.sender === 'partner' || msg.sender === 'narration'
-                    ? 'rgba(0, 0, 0, 0.8)'
-                    : 'rgba(214, 214, 214, 0.2)',
-                border: msg.sender === 'introPrompt' || msg.sender === 'system' ? '1px solid #C0C0C0' : 'none',
-                backdropFilter: msg.sender === 'system' ? 'blur(20px)' : 'none',
-                textAlign: msg.sender === 'narration' ? 'center' : 'inherit',
-                color:
-                  msg.sender === 'introPrompt'
-                    ? '#000000'
-                    : msg.sender === 'system'
-                    ? '#FFFFFF'
-                    : msg.sender === 'narration' || msg.sender === 'userNarration'
-                    ? '#B0B0B0' // 회색 텍스트 색상
-                    : '#FFFFFF',
-                fontSize: msg.sender === 'narration' || msg.sender === 'system' ? '0.7em' : '0.8em',
-                fontWeight: msg.sender === 'system' ? 'bold' : 'normal',
-                wordWrap: 'break-word',
-                whiteSpace: 'pre-wrap',
-                textShadow:
-                  msg.sender === 'system'
-                    ? '1px 1px 0 rgba(116, 116, 116, 1.0), -1px -1px 0 rgba(116, 116, 116, 1.0), 1px -1px 0 rgba(116, 116, 116, 1.0), -1px 1px 0 rgba(116, 116, 116, 1.0)'
-                    : 'none',
-                // `narration` 박스에 `partner` 아바타 크기(32px) + 간격(1) 적용
-                marginLeft: msg.sender === 'narration' ? '40px' : '0px',
-              }}
-            >
-              {msg.sender === 'user' && messages.emoticonUrl[index] ? (
-                <>
-                  <img
-                    src={messages.emoticonUrl[index]}
-                    alt="Emoticon"
-                    style={{width: '24px', height: '24px', marginTop: '4px'}}
-                  />
-                </>
-              ) : (
-                <div dangerouslySetInnerHTML={{__html: msg.text}} />
-              )}
+            <Box onClick={() => setSelectedBubbleIndex(null)}>
+              {messages.Messages.map((msg, index) => (
+                <ChatMessageBubble
+                  key={index}
+                  text={msg.text}
+                  sender={msg.sender}
+                  index={index}
+                  iconUrl={iconUrl}
+                  emoticonUrl={messages.emoticonUrl[index]}
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleBubbleClick(index);
+                  }}
+                  onTtsClick={e => {
+                    e.stopPropagation();
+                    handlePlayAudio(msg.text);
+                  }}
+                  selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
+                />
+              ))}
             </Box>
+
+            {isLoading && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  marginBottom: 2,
+                }}
+              >
+                <Avatar
+                  alt="Partner Avatar"
+                  src={iconUrl}
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    marginRight: 1,
+                    border: '1px solid',
+                    borderColor: 'black',
+                  }}
+                />
+                <Box
+                  sx={{
+                    display: 'inline-block',
+                    padding: '8px',
+                    borderRadius: '8px',
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)', // partner의 말풍선 배경색
+                    color: '#FFFFFF',
+                    fontSize: '0.8em',
+                  }}
+                >
+                  <span className={styles.loadingDots}>
+                    <span>●</span>
+                    <span>●</span>
+                    <span>●</span>
+                  </span>
+                </Box>
+              </Box>
+            )}
+
+            <div ref={bottomRef} />
           </Box>
-        ))}
-      <div ref={bottomRef} />
-    </Box>
+        </Box>
+      )}
+      {isHideChat === true && (
+        <Box
+          className={styles.chatArea}
+          onDoubleClick={() => {
+            if (isHideChat === true) {
+              onToggleBackground();
+            }
+          }}
+          sx={{
+            backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            height: '100%',
+            width: '100%',
+            position: 'relative',
+            fontFamily: 'Noto Sans KR, sans-serif',
+            overflow: 'hidden',
+          }}
+        ></Box>
+      )}
+    </>
   );
 };
 

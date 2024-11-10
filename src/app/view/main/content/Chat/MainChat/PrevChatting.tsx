@@ -79,7 +79,7 @@ const usePrevChatting = (episodeId: number) => {
   }, [episodeId]);
 
   // 이전 메시지와 에러를 반환
-  return {prevMessages, error};
+  return {prevMessages};
 };
 
 export default usePrevChatting;

@@ -1,12 +1,28 @@
 import React, {useEffect, useState} from 'react';
+import {RootState} from '@/redux-store/ReduxStore';
+import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
+import {useDispatch, useSelector} from 'react-redux';
+
 import TopBar from '@chats/TopBar/HeaderChat';
 import BottomBar from '@chats/BottomBar/FooterChat';
 import ChatArea from '@chats/MainChat/ChatArea';
 import styles from '@chats/Styles/StyleChat.module.css';
-import {useBackHandler} from 'utils/util-1';
 import usePrevChatting from '@chats/MainChat/PrevChatting';
-import {RootState} from '@/redux-store/ReduxStore';
-import {parseMessage} from '@chats/MainChat/MessageParser';
+
+import {useBackHandler} from 'utils/util-1';
+
+import {
+  setSenderType,
+  cleanString,
+  isFinishMessage,
+  isNarrationMessage,
+  isSystemMessage,
+  isUserNarration,
+  parsedUserNarration,
+  parseMessage,
+  splitByNarration,
+} from '@chats/MainChat/MessageParser';
+
 import PopUpYesOrNo from '@/components/popup/PopUpYesOrNo';
 import {
   sendChattingResult,
@@ -14,63 +30,51 @@ import {
   EnterEpisodeChattingReq,
   fetchEmoticonGroups,
   EmoticonGroupInfo,
-  UrlEnterEpisodeChattingReq,
-  sendChattingEnterUrl,
+  ChattingResultData,
 } from '@/app/NetWork/ChatNetwork';
 
-import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
-import {useDispatch, useSelector} from 'react-redux';
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import BottomNavData from 'data/navigation/bottom-nav.json';
-
-interface Message {
-  text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
-}
-
-interface MessageGroup {
-  Messages: Message[];
-  emoticonUrl: string[];
-}
+import {tree} from 'next/dist/build/templates/app-page';
+import {COMMAND_SYSTEM, Message, MessageGroup} from './Chat/MainChat/ChatTypes';
+import {number} from 'valibot';
+import NextEpisodePopup from './Chat/MainChat/NextEpisodePopup';
 
 const ChatPage: React.FC = () => {
   const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [popupTitle, setPopupTitle] = useState<string>('');
-  const [popupQuestion, setPopupQuestion] = useState<string>('');
+  const [nextPopupData, setNextPopupData] = useState<ChattingResultData>();
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
   const [isHideChat, SetHideChat] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
+  const [ChatBarCount, setChatBarCount] = useState<number>(1); // 로딩 상태 추가
 
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
   console.log('getWebBrowserUrl', key);
 
-  //const userId = useSelector((state: RootState) => state.user.userId);
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
   const handleBackClick = useBackHandler();
   const dispatch = useDispatch();
-  const cleanString = (input: string): string => {
-    // 1. 개행 문자 제거
-    let cleaned = input.replace(/\n/g, '');
-
-    // 2. 마지막 글자가 '#'이면 제거
-    // if (cleaned.endsWith('#')) {
-    //   cleaned = cleaned.slice(0, -1);
-    // }
-
-    return cleaned;
+  // useEffect(() => {}, [isLoading]);
+  const SetChatLoading = (bool: boolean) => {
+    setIsLoading(bool);
   };
 
+  const SetChatBarCount = (num: number) => {
+    setChatBarCount(num);
+  };
+
+  //#region Message send handler
   const handleSendMessage = async (message: string, isMyMessage: boolean) => {
     if (!message || typeof message !== 'string') return;
 
-    console.log('message===' + message + '===');
     // 메시지가 '$'을 포함할 경우 팝업 표시
-    if (isMyMessage === false && message.includes('$')) {
+    if (isFinishMessage(isMyMessage, message) === true) {
       const requestData = {
         streamKey: streamKey, // streamKey 상태에서 가져오기
       };
@@ -80,23 +84,19 @@ const ChatPage: React.FC = () => {
         console.log('Result API Response:', response);
         if (response.data.nextEpisodeId !== 0) {
           setNextEpisodeId(response.data.nextEpisodeId); // 다음 에피소드 ID 저장
-          setPopupTitle('알림');
-          setPopupQuestion('이 작업을 수행하시겠습니까?');
+          setNextPopupData(response.data);
           setShowPopup(true);
         }
       } catch (error) {
         console.error('Error calling Result API:', error);
         alert('API 호출 중 오류가 발생했습니다. 다시 시도해 주세요.');
       }
-
       return;
     }
 
     // *가 포함되어 있으면 적절한 위치에서 isNarrationActive.active 상태를 갱신해줘야 한다.
     // sender가 바뀌었어도 isNarrationActive.active 상태를 갱신해줘야 한다.
-    const isIncludeAsterisk: boolean = message.includes('*');
-
-    //if (isNewWordBallon) isNarrationActive.active = !isNarrationActive.active;
+    const isIncludeAsterisk: boolean = isNarrationMessage(message);
 
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
@@ -109,123 +109,115 @@ const ChatPage: React.FC = () => {
       if (isMyMessage) isNarrationActive.active = false;
 
       // 이전 메시지 정보를 복사하고 메시지만 가져와 배열 업데이트 준비
-      const newMessages = [...(prev?.Messages || [])];
+      const allMessages = [...(prev?.Messages || [])];
 
       // 메시지가 비어있으면 반환
-      if (newMessage.text.length === 0) return {Messages: newMessages, emoticonUrl: prev?.emoticonUrl || []};
+      if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
 
       // 메시지 정리
       newMessage.text = cleanString(newMessage.text);
 
-      const splitMessage = splitByAsterisk(newMessage.text);
-      const splitMessageLeft = splitMessage.beforeAsterisk;
-      const splitMessageRight = splitMessage.afterAsterisk;
+      const splitMessageStep1 = splitByNarration(newMessage.text);
+      const splitMessageStep1Left = splitMessageStep1.leftAsterisk;
+      const splitMessageStep1Right = splitMessageStep1.rightAsterisk;
 
       // 시스템 메시지 처리
-      const systemMessageSignCount = (newMessage.text.match(/%/g) || []).length;
-
-      if (isMyMessage === false && systemMessageSignCount >= 2) {
+      if (isMyMessage === false && isSystemMessage(newMessage.text)) {
         const newMessageSystem: Message = {
-          text: newMessage.text.replace(/%/g, ''),
+          text: newMessage.text.replace(new RegExp(`\\${COMMAND_SYSTEM}`, 'g'), ''),
           sender: 'system',
         };
-        newMessages.push(newMessageSystem);
-        return {Messages: newMessages, emoticonUrl: prev?.emoticonUrl || []};
+        allMessages.push(newMessageSystem);
+        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
       }
 
       // 내 메시지
       if (isMyMessage === true) {
         // newMessage.text가 *로 시작하고 끝나는 경우
-        if (newMessage.text.startsWith('*') && newMessage.text.endsWith('*')) {
-          newMessage.sender = 'userNarration';
-          newMessage.text = newMessage.text.slice(1, -1); // 양 옆의 *를 제거
+        if (isUserNarration(newMessage.text)) {
+          const parsedMessage: Message = parsedUserNarration(newMessage);
+          newMessage.sender = parsedMessage.sender;
+          newMessage.text = parsedMessage.text;
         } else {
           newMessage.sender = 'user'; // 일반 유저 메시지
         }
-
-        newMessages.push(newMessage); // 메시지를 배열에 추가
+        allMessages.push(newMessage); // 메시지를 배열에 추가
       }
 
       // 상대 메시지 처리
       else {
         if (isIncludeAsterisk === true) {
           // 먼저 왼쪽을 기존 말풍선에 출력시킨다
-          if (splitMessageLeft.length > 0) newMessages[newMessages.length - 1].text += `${splitMessageLeft}`;
+          if (splitMessageStep1Left.length > 0) allMessages[allMessages.length - 1].text += `${splitMessageStep1Left}`;
 
-          if (splitMessageRight.includes('*')) {
-            const splitMessage2 = splitByAsterisk(splitMessageRight);
-            const splitMessageLeft2 = splitMessage2.beforeAsterisk;
-            const splitMessageRight2 = splitMessage2.afterAsterisk;
+          if (isNarrationMessage(splitMessageStep1Right)) {
+            const splitMessageStep2 = splitByNarration(splitMessageStep1Right);
+            const splitMessageStep2Left = splitMessageStep2.leftAsterisk;
+            const splitMessageStep2Right = splitMessageStep2.rightAsterisk;
 
             isNarrationActive.active = !isNarrationActive.active;
-            const newMessage2: Message = {
-              text: splitMessageLeft2,
-              sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
-            };
 
-            if (splitMessageLeft2.length > 0) {
-              if (newMessages[newMessages.length - 1].sender !== newMessage2.sender) {
-                newMessages.push(newMessage);
+            const newMessageStep2: Message = setSenderType(
+              splitMessageStep2Left,
+              isMyMessage,
+              isNarrationActive.active,
+            );
+
+            if (splitMessageStep2Left.length > 0) {
+              if (allMessages[allMessages.length - 1].sender !== newMessageStep2.sender) {
+                allMessages.push(newMessage);
               }
             }
 
             isNarrationActive.active = !isNarrationActive.active;
 
-            if (splitMessageRight2.length > 0) {
-              const newMessage3: Message = {
-                text: splitMessageLeft2,
-                sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
-              };
-              newMessages.push(newMessage3);
+            if (splitMessageStep2Right.length > 0) {
+              const newMessageStep3: Message = setSenderType(
+                splitMessageStep2Left,
+                isMyMessage,
+                isNarrationActive.active,
+              );
+
+              allMessages.push(newMessageStep3);
             }
           } else {
             isNarrationActive.active = !isNarrationActive.active;
 
-            const newMessage4: Message = {
-              text: splitMessageRight,
-              sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
-            };
-
-            if (newMessage4.text.length > 0) newMessages.push(newMessage4);
+            const splitMessageStep4: Message = setSenderType(
+              splitMessageStep1Right,
+              isMyMessage,
+              isNarrationActive.active,
+            );
+            if (splitMessageStep4.text.length > 0) allMessages.push(splitMessageStep4);
           }
         } else {
-          const newMessage5: Message = {
-            text: newMessage.text,
-            sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
-          };
-          if (newMessage5.text !== ' ') {
-            if (newMessages[newMessages.length - 1].sender !== newMessage5.sender) {
-              if (newMessage5.text.length > 0) {
-                newMessages.push(newMessage5);
+          const splitMessageStep5: Message = setSenderType(newMessage.text, isMyMessage, isNarrationActive.active);
+
+          if (splitMessageStep5.text !== ' ') {
+            if (allMessages[allMessages.length - 1].sender !== splitMessageStep5.sender) {
+              if (splitMessageStep5.text.length > 0) {
+                allMessages.push(splitMessageStep5);
               }
             }
             // 같은 sender면 같은 말풍선에 출력
-            else if (newMessage5.text.length > 0) {
-              newMessages[newMessages.length - 1].text += `${newMessage5.text}`;
+            else if (splitMessageStep5.text.length > 0) {
+              allMessages[allMessages.length - 1].text += `${splitMessageStep5.text}`;
             }
           }
           // 빈문자가 왔을때 기존 sender가 user였으면 무시하자 ( 자꾸 빈말풍선 찍히는 원인 )
-          else if (newMessages[newMessages.length - 1].sender === 'user') {
+          else if (allMessages[allMessages.length - 1].sender === 'user') {
             return prev;
           }
         }
       }
 
       // 업데이트된 Messages 배열을 MessageInfo 객체로 반환
-      return {Messages: newMessages, emoticonUrl: prev?.emoticonUrl || []};
+      return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
     });
   };
+  //#endregion
 
-  const splitByAsterisk = (splitMessage: string) => {
-    // '*'을 기준으로 문자열을 나누기
-    const parts = splitMessage.split('*');
-
-    // 나눈 부분에서 앞과 뒤의 문자열을 반환
-    return {
-      beforeAsterisk: parts[0], // '*' 앞의 문자열
-      afterAsterisk: parts.slice(1).join('*'), // '*' 뒤의 문자열 (여러 개의 '*'이 있을 수 있음)
-    };
-  };
+  //#region  다음 에피소드 넘어가기
   const navigateToNextEpisode = async (episodeId: number) => {
     console.log(`Navigating to episode ID: ${episodeId}`);
 
@@ -303,7 +295,9 @@ const ChatPage: React.FC = () => {
     console.log('No 클릭');
     setShowPopup(false);
   };
+  //#endregion
 
+  //#region HeaderChat handler
   const handleMoreClick = () => {
     console.log('더보기 버튼 클릭');
   };
@@ -312,20 +306,13 @@ const ChatPage: React.FC = () => {
     console.log('배경 보기/숨기기 버튼 클릭');
     SetHideChat(!isHideChat);
   };
+  //#endregion
 
-  const {prevMessages: enterData, error} = usePrevChatting(episodeId);
-  //console.log('usePrevChatting ', {enterData, error});
-  //console.log('curEpId ', {episodeId});
-  episodeId;
+  const {prevMessages: enterData} = usePrevChatting(episodeId);
+
   useEffect(() => {
-    if (
-      !hasFetchedPrevMessages &&
-      !error &&
-      enterData?.prevMessageInfoList //&&
-      //enterData.prevMessageInfoList.length > 0
-    ) {
+    if (!hasFetchedPrevMessages && enterData?.prevMessageInfoList) {
       // flatMap을 통해 parsedPrevMessages를 생성
-      // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
       // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
       const {parsedPrevMessages, emoticonUrl} = enterData?.prevMessageInfoList.reduce<{
         parsedPrevMessages: Message[];
@@ -368,37 +355,41 @@ const ChatPage: React.FC = () => {
       };
       loadEmoticons();
     }
-  }, [error, enterData, hasFetchedPrevMessages]);
+  }, [enterData, hasFetchedPrevMessages]);
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
+
   return (
     <main className={styles.chatmodal}>
-      <TopBar
-        onBackClick={handleBackClick}
-        onMoreClick={handleMoreClick}
-        onToggleBackground={handleToggleBackground}
-        iconUrl={enterData?.iconImageUrl ?? ''}
-      />
-      <ChatArea
-        messages={parsedMessages!}
-        bgUrl={enterData?.episodeBgImageUrl ?? ''}
-        iconUrl={enterData?.iconImageUrl ?? ''}
-        isHideChat={isHideChat}
-      />
+      <div className={styles.overlayContainer}>
+        <TopBar
+          onBackClick={handleBackClick}
+          onMoreClick={handleMoreClick}
+          iconUrl={enterData?.iconImageUrl ?? ''}
+          isHideChat={isHideChat}
+        />
+        <ChatArea
+          messages={parsedMessages!}
+          bgUrl={enterData?.episodeBgImageUrl ?? ''}
+          iconUrl={enterData?.iconImageUrl ?? ''}
+          isHideChat={isHideChat}
+          onToggleBackground={handleToggleBackground}
+          isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
+          chatBarCount={ChatBarCount}
+        />
+      </div>
       <BottomBar
         onSend={handleSendMessage}
         streamKey={streamKey}
         setStreamKey={setStreamKey}
         EmoticonData={emoticonGroupInfoList || []} // EmoticonData에 emoticonGroupInfoList 전달
+        isHideChat={isHideChat}
+        onToggleBackground={handleToggleBackground}
+        onLoading={SetChatLoading}
+        onUpdateChatBarCount={SetChatBarCount}
       />
 
       {showPopup && (
-        <PopUpYesOrNo
-          title={popupTitle}
-          question={popupQuestion}
-          onYes={handlePopupYes}
-          onNo={handlePopupNo}
-          open={showPopup}
-        />
+        <NextEpisodePopup onYes={handlePopupYes} onNo={handlePopupNo} open={showPopup} data={nextPopupData} />
       )}
     </main>
   );

@@ -12,25 +12,53 @@ export interface SendChatMessageReq {
   emoticonId?: number; // optional로 설정하여 undefined 허용
 }
 
-export interface SendChatMessageRes {
+// 성공적인 응답 타입
+export interface SendChatMessageResSuccess {
   streamKey: string;
   chatId: number;
 }
 
-// Sending Chat Message
+// 오류 응답 타입
+export interface SendChatMessageResError {
+  resultCode: number;
+  resultMessage: string;
+  data: SendChatMessageData; // 이 데이터 구조는 필요에 따라 정의
+}
+
+export interface SendChatMessageData {
+  point: number;
+}
+const handleSuccessResponse = (response: any): SendChatMessageResSuccess => {
+  return {
+    streamKey: response.data.streamKey,
+    chatId: response.data.chatId,
+  };
+};
+const handleErrorResponse = (response: any): SendChatMessageResError => {
+  return {
+    resultCode: response.data.resultCode,
+    resultMessage: response.data.resultMessage,
+    data: {
+      point: response.data.data?.point || 0, // 기본값 설정
+    },
+  };
+};
+
 export const sendMessageStream = async (
   sendChatMessageReq: SendChatMessageReq,
-): Promise<ResponseAPI<SendChatMessageRes>> => {
+): Promise<SendChatMessageResSuccess | SendChatMessageResError> => {
   try {
-    const response = await api.post<ResponseAPI<SendChatMessageRes>>('Chatting/send', sendChatMessageReq);
+    const response = await api.post('Chatting/send', sendChatMessageReq);
 
     if (response.data.resultCode === 0) {
-      return response.data; // Return on success
+      // 성공 응답 처리
+      return handleSuccessResponse(response);
     } else {
-      throw new Error(response.data.resultMessage); // Error handling
+      // 오류 응답 처리
+      return handleErrorResponse(response);
     }
   } catch (error: any) {
-    console.error('Error sendMessageStream :', error);
+    console.error('Error sendMessageStream:', error);
     throw new Error('Failed to send message. Please try again.'); // Error handling
   }
 };
@@ -201,6 +229,9 @@ export interface ChattingResultData {
   nextChapterId: number;
   nextEpisodeId: number;
   nextEpisodeName: string;
+  nextEpisodeThumbnail: string;
+  nextEpisodeDescription: string;
+  changeBackgroundThumbnail: string;
 }
 
 export interface ChattingResultRes {
