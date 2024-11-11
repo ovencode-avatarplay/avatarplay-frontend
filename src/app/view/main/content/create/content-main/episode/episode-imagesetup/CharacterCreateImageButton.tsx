@@ -9,9 +9,10 @@ interface ImageButtonProps {
   image: string;
   selected: boolean;
   onClick: () => void;
+  onDoubleClick : () => void;
 }
 
-const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({width, height, label, image, selected, onClick}) => {
+const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({width, height, label, image, selected, onClick }) => {
   return (
     <Button
       onClick={onClick}

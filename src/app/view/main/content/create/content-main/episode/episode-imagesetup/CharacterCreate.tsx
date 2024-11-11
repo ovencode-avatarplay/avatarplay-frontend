@@ -79,6 +79,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   });
 
   // gender 0 Male / 1 Female, style 0 Real / 1 Anime
+  useEffect(() => {
+    if (activeStep === 7 && generatedOptions.length === 0) {
+      handleGenerate();
+    }
+  }, [activeStep]);
 
   useEffect(() => {
     // Define character options based on gender and style selection
@@ -134,6 +139,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   };
 
   const handleSelect = () => {
+    alert(selectedOptions.result)
     let url = generatedOptions[selectedOptions.result];
     dispatch(setCurrentEpisodeThumbnail(url.label));
     handleClose();
@@ -186,8 +192,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
     }));
   };
 
-  const handleImageToggle = (image: string, index: number) => {
-    handleOptionSelect('style', index);
+  const handleImageToggle = (image: string) => {
     setFullscreenImage(fullscreenImage === image ? null : image); // Toggle full-screen image
   };
 
@@ -462,18 +467,18 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                 {generatedOptions.map((option, index) => (
                   <CharacterCreateImageButton
                     key={index}
-                    width={'17vh'}
-                    height={'25vh'}
+                    width={'95%'}
+                    height={'23vh'}
                     label={''}
                     image={option.label}
                     selected={selectedOptions.result === index}
-                    onClick={() => handleImageToggle(option.label, index)}
+                    onClick={() => selectedOptions.result === index ?  handleImageToggle(option.label): handleOptionSelect('result', index)}
                   />
                 ))}
               </Box>
 
               <Button onClick={() => handleGenerate()} className={styles.colorButton}>
-                Generate
+                Regenerate
               </Button>
             </Box>
           </div>
@@ -544,11 +549,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
           onClick={() => setFullscreenImage(null)} // Close full-screen on overlay click
           sx={{
             flexGrow: 1,
-          backgroundRepeat: 'no-repeat',
-          backgroundImage: `url(${fullscreenImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          width: '100%',
+            backgroundRepeat: 'no-repeat',
+            backgroundImage: `url(${fullscreenImage})`,
+            backgroundSize: 'contain',
+            backgroundPosition: 'center',
+            width: '100%',
           }}
         >
         </Box>
