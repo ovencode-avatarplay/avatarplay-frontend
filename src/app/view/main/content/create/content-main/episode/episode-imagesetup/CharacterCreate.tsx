@@ -234,7 +234,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
               {characterOptions.styleOptions.map((option, index) => (
                 <CharacterCreateImageButton
                   key={option.label}
-                  width={'30vw'}
+                  width={'40%'}
                   height={'30vh'}
                   label={option.label}
                   image={option.image}
@@ -400,13 +400,14 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 6: Select Outfit Clothes</div>
             <Box className={styles.bodyContent}>
-              <Typography variant="h6">Clothing</Typography>
               <Box className={styles.horizontalButtonGroup}>
                 {characterOptions.clothing.map((style, index) => (
                   <Button
                     key={index}
                     variant={selectedOptions.clothing === index ? 'contained' : 'outlined'}
                     className={styles.colorButton}
+                    onClick={() => handleOptionSelect('clothing', index)}
+                    style={{fontSize:10}}
                   >
                     {style.label}
                   </Button>
