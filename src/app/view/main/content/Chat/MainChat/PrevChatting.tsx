@@ -19,10 +19,10 @@ import {
   setStateChatting,
 } from '@/redux-store/slices/Chatting';
 
-const usePrevChatting = (episodeId: number) => {
-  // 이전 메시지 및 에러 상태값 정의
+const usePrevChatting = (episodeId: number, isIdEnter: boolean = false) => {
+  // 이전 메시지 및 에러 상태값 정의s
   const [prevMessages, setPrevMessages] = useState<EnterEpisodeChattingRes>();
-
+  console.log('isIdEnter', isIdEnter);
   const [error, setError] = useState<string | null>(null);
 
   // API 요청 데이터 정의
@@ -38,7 +38,7 @@ const usePrevChatting = (episodeId: number) => {
     try {
       console.log('isUsedUrlLink', isUsedUrlLink);
 
-      if (isUsedUrlLink) {
+      if (isUsedUrlLink && !isIdEnter) {
         const QueryKey = QueryParams.ChattingInfo;
         const key = getWebBrowserUrl(QueryKey) || null;
 

@@ -234,6 +234,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
         height: isStickerOpen ? '350px' : 'auto', //박스 크기 조절 부분
         boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)',
         width: window.innerWidth,
+        zIndex: 4,
       }}
     >
       <Box>

@@ -72,14 +72,44 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   useEffect(() => {
     console.log(isLoading);
   }, [isLoading, chatBarCount]);
-
-  const [prevBgUrl, setPrevBgUrl] = useState<string | null>(null);
-
   useEffect(() => {
-    if (bgUrl !== prevBgUrl) {
-      setPrevBgUrl(bgUrl); // 새 배경 이미지가 바뀌었을 때 이전 URL을 기록
+    console.log('Initial bgUrl:', bgUrl);
+    console.log('Initial prevBgUrl:', prevBgUrl);
+    console.log('Initial transitionEnabled:', transitionEnabled);
+  }, []);
+  const [prevBgUrl, setPrevBgUrl] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false); // 페이드 아웃 상태 추가
+  useEffect(() => {
+    console.log('Transition enabled?', transitionEnabled);
+    console.log('Current bgUrl:', bgUrl, 'Current prevBgUrl:', prevBgUrl);
+
+    // prevBgUrl이 null이면 초기 상태로서 bgUrl을 그대로 설정
+    if (!prevBgUrl) {
+      setPrevBgUrl(bgUrl);
+      console.log('Initial prevBgUrl set:', bgUrl);
+      return;
     }
-  }, [bgUrl, prevBgUrl]);
+
+    // bgUrl이 변경되고 transitionEnabled가 true일 때만 전환을 수행
+    if (bgUrl !== prevBgUrl && transitionEnabled) {
+      setIsFadingOut(true);
+      console.log('Start fading out previous background');
+
+      setTimeout(() => {
+        setPrevBgUrl(bgUrl); // bgUrl로 prevBgUrl 업데이트
+        setIsFadingOut(false);
+        setIsTransitioning(true);
+        console.log('Updated prevBgUrl to new bgUrl:', bgUrl);
+        console.log('Start transitioning to new background');
+
+        setTimeout(() => {
+          setIsTransitioning(false);
+          console.log('Transition completed');
+        }, 1500); // 트랜지션 지속 시간과 일치
+      }, 500); // 페이드 아웃 시간
+    }
+  }, [bgUrl, prevBgUrl, transitionEnabled]);
 
   return (
     <>
@@ -107,13 +137,15 @@ const ChatArea: React.FC<ChatAreaProps> = ({
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
+              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${
+                prevBgUrl || bgUrl
+              })`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              opacity: prevBgUrl ? 1 : 0, // 이전 배경 이미지 보이게
-              transition: transitionEnabled ? 'opacity 1.5s ease' : 'none', // transitionEnabled가 true일 때만 전환 효과 적용
-              zIndex: 1, // 이전 배경 이미지
+              opacity: isFadingOut ? 0 : 1,
+              transition: 'opacity 0.5s ease',
+              zIndex: 1,
             }}
           />
 
@@ -129,9 +161,9 @@ const ChatArea: React.FC<ChatAreaProps> = ({
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              opacity: prevBgUrl ? 0 : 1, // 새 배경 이미지 처음에 보이지 않도록 설정
-              transition: transitionEnabled ? 'opacity 1.5s ease' : 'none', // transitionEnabled가 true일 때만 전환 효과 적용
-              zIndex: 2, // 새 배경 이미지
+              opacity: isTransitioning ? 1 : 0,
+              transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
+              zIndex: 2,
             }}
           />
           {/* Fixed space at the top */}
