@@ -36,8 +36,9 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({width, height, 
       <Box
         sx={{
           flexGrow: 1,
+          backgroundRepeat: 'no-repeat',
           backgroundImage: `url(${image})`,
-          backgroundSize: 'contain',
+          backgroundSize: 'cover',
           backgroundPosition: 'center',
           width: '100%',
         }}
