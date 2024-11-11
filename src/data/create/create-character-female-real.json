@@ -10,12 +10,12 @@
   ],
   "raceOptions": [
       {"label": "Unspecified", "image": "", "value": 0},
-      {"label": "Caucasian", "image": "/race_caucasian.png", "value": 1},
-      {"label": "Latina", "image": "/race_latina.png", "value": 2},
-      {"label": "Asian", "image": "/race_asian.png", "value": 3},
-      {"label": "Arab", "image": "/race_arab.png", "value": 4},
-      {"label": "Korean", "image": "/race_korean.png", "value": 5},
-      {"label": "Japaness", "image": "/race_japaness.png", "value": 6}
+      {"label": "Caucasian", "image": "/character/race_caucasian.png", "value": 1},
+      {"label": "Latina", "image": "/character/race_latina.png", "value": 2},
+      {"label": "Asian", "image": "/character/race_asian.png", "value": 3},
+      {"label": "Arab", "image": "/character/race_arab.png", "value": 4},
+      {"label": "Korean", "image": "/character/race_korean.png", "value": 5},
+      {"label": "Japaness", "image": "/character/race_japaness.png", "value": 6}
   ],
   "ageOptions": [
       {"label": "Unspecified", "image": "", "value": 0},

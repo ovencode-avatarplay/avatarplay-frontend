@@ -32,7 +32,7 @@ export interface GenerateImageReq {
 }
 
 export interface GenerateImageRes {
-  imageUrl: string;
+  imageUrl: string[];
 }
 export const sendGenerateImageReq = async (payload: GenerateImageReq): Promise<ResponseAPI<GenerateImageRes>> => {
   try {
