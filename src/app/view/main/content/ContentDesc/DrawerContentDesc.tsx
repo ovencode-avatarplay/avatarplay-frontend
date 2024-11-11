@@ -89,6 +89,7 @@ const DrawerContentDesc = () => {
     const chattingState: ChattingState = {
       contentName: currentChattingState.contentName || '',
       episodeName: currentChattingState.episodeName || '',
+      contentId: Number(contentId),
       episodeId: Number(episodeId),
       contentUrl: contentUrl,
     };

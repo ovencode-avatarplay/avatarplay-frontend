@@ -4,6 +4,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 export type ChattingState = {
   contentName: string;
   episodeName: string;
+  contentId: number;
   episodeId: number;
   contentUrl: string;
 };
@@ -12,6 +13,7 @@ export type ChattingState = {
 export const initialStateChatting: ChattingState = {
   contentName: '컨텐츠네임',
   episodeName: '에피소드네임',
+  contentId: 1818,
   episodeId: 18,
   contentUrl: 'ulKWT854VAx',
 };
@@ -27,18 +29,22 @@ export const chattingSlice = createSlice({
       state.episodeName = action.payload; // episodeName을 업데이트하는 reducer
     },
     setEpisodeId: (state, action: PayloadAction<number>) => {
-      state.episodeId = action.payload; // episodeName을 업데이트하는 reducer
+      state.episodeId = action.payload; // episodeId 업데이트하는 reducer
+    },
+    setContentId: (state, action: PayloadAction<number>) => {
+      state.contentId = action.payload; // contentId 업데이트하는 reducer
     },
     setStateChatting: (state, action: PayloadAction<ChattingState>) => {
       // 전체 상태를 새롭게 업데이트
       state.contentName = action.payload.contentName;
       state.episodeName = action.payload.episodeName;
       state.episodeId = action.payload.episodeId;
+      state.contentId = action.payload.contentId;
       console.log('state ', state);
     },
   },
 });
 
 // 액션과 리듀서 내보내기
-export const {setContentName, setEpisodeName, setEpisodeId, setStateChatting} = chattingSlice.actions;
+export const {setContentName, setEpisodeName, setEpisodeId, setContentId, setStateChatting} = chattingSlice.actions;
 export default chattingSlice.reducer;
