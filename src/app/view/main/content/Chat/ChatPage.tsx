@@ -23,21 +23,15 @@ import {
   splitByNarration,
 } from '@chats/MainChat/MessageParser';
 
-import PopUpYesOrNo from '@/components/popup/PopUpYesOrNo';
 import {
   sendChattingResult,
-  sendChattingEnter,
-  EnterEpisodeChattingReq,
   fetchEmoticonGroups,
   EmoticonGroupInfo,
   ChattingResultData,
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
-import BottomNavData from 'data/navigation/bottom-nav.json';
-import {tree} from 'next/dist/build/templates/app-page';
 import {COMMAND_SYSTEM, Message, MessageGroup} from './MainChat/ChatTypes';
-import {number} from 'valibot';
 import NextEpisodePopup from './MainChat/NextEpisodePopup';
 
 const ChatPage: React.FC = () => {
@@ -51,9 +45,9 @@ const ChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
   const [isIdEnter, setIsIdEnter] = useState<boolean>(false); // 로딩 상태 추가
   const [chatBarCount, setChatBarCount] = useState<number>(1); // 로딩 상태 추가
-  const [isBackgroundTranstransition, SetIsBackgroundTranstransition] = useState<boolean>(false);
   const [nextPopupData, setNextPopupData] = useState<ChattingResultData>();
 
+  const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false); // 로딩 상태 추가
   const [ChattingState, setChatInfo] = useState<ChattingState>();
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
@@ -232,11 +226,10 @@ const ChatPage: React.FC = () => {
       contentUrl: shortsId,
     };
     dispatch(setStateChatting(chattingState));
-    SetIsBackgroundTranstransition(true);
+    setIsTransitionEnable(true);
     setIsIdEnter(true);
   };
 
-  console.log('isBackgroundTranstransition', isBackgroundTranstransition);
   const handlePopupYes = () => {
     console.log('Yes 클릭');
     // 특정 행동 수행
@@ -306,6 +299,7 @@ const ChatPage: React.FC = () => {
       };
       setParsedMessages(messageInfo);
       setHasFetchedPrevMessages(true);
+      //에피소드 변경 상황
       if (nextEpisodeId != null && enterData?.episodeId === nextEpisodeId) {
         setNextEpisodeId(null);
         setIsIdEnter(false);
@@ -340,7 +334,7 @@ const ChatPage: React.FC = () => {
           onToggleBackground={handleToggleBackground}
           isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
           chatBarCount={chatBarCount}
-          transitionEnabled={isBackgroundTranstransition}
+          transitionEnabled={isTransitionEnable}
         />
       </div>
       <BottomBar

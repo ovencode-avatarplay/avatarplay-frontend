@@ -15,7 +15,7 @@ interface PopupProps {
 
 const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
   return (
-    <Modal open={open} onClose={onNo}>
+    <Modal open={open} onClose={() => {}}>
       <Box className={styles.popupContainer}>
         {data ? ( // data가 존재할 때만 내용을 렌더링
           <>
