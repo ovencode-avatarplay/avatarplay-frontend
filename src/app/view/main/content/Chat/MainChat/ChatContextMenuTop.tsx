@@ -11,7 +11,7 @@ interface ChatContextTopProps {}
 const handleLike = () => {};
 const handleDislike = () => {};
 
-const ChatMessageMenuTop: React.FC<ChatContextTopProps> = ({}) => {
+const ChatMessageMenuTop: React.FC<ChatContextTopProps> = () => {
   return (
     <Box>
       {/* 상단의 가로 메뉴 - Like와 Dislike 버튼 */}

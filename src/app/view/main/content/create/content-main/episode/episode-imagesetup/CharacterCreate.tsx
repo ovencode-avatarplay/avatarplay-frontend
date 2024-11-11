@@ -6,10 +6,10 @@ import BoyIcon from '@mui/icons-material/Male';
 import TransgenderIcon from '@mui/icons-material/Transgender';
 
 import characterOptionsMaleReal from '@/data/create/create-character-male-real.json';
-import characterOptionsFeMaleReal from '@/data/create/create-character-female-real.json';
+import characterOptionsFemaleReal from '@/data/create/create-character-female-real.json';
 import characterOptionsNonBinaryReal from '@/data/create/create-character-non-binary-real.json';
 import characterOptionsMaleAnime from '@/data/create/create-character-male-anime.json';
-import characterOptionsFeMaleAnime from '@/data/create/create-character-female-anime.json';
+import characterOptionsFemaleAnime from '@/data/create/create-character-female-anime.json';
 import characterOptionsNonBinaryAnime from '@/data/create/create-character-non-binary-anime.json';
 import CharacterCreateImageButton from './CharacterCreateImageButton';
 // Import Swiper React components
@@ -35,17 +35,22 @@ interface Props {
   closeAction: () => void;
 }
 
+interface GeneratedOptionsState {
+  label: string;
+}
+
 const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   const [activeStep, setActiveStep] = useState(0);
   const stepperRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
   const userId = useSelector((state: RootState) => state.user.userId);
-  const [characterOptions, setCharacterOptions] = useState(characterOptionsFeMaleReal);
-  const [generatedOptions, setGeneratedOptions] = useState([]);
+  const [characterOptions, setCharacterOptions] = useState(characterOptionsFemaleReal);
+  const [generatedOptions, setGeneratedOptions] = useState<GeneratedOptionsState[]>([]);
 
   const dispatch = useDispatch();
 
   const steps = ['Gender', 'Style', 'Ethnicity', 'HairStyle', 'BodyShape', 'OutfitClothes', 'Summary', 'Result'];
+
   const genderOptions = [
     {label: 'Girls', icon: <GirlIcon />},
     {label: 'Guys', icon: <BoyIcon />},
@@ -79,8 +84,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
     const newCharacterOptions =
       selectedOptions.gender === 0
         ? selectedOptions.style === 0
-          ? characterOptionsFeMaleReal
-          : characterOptionsFeMaleAnime
+          ? characterOptionsFemaleReal
+          : characterOptionsFemaleAnime
         : selectedOptions.gender === 1
         ? selectedOptions.style === 0
           ? characterOptionsMaleReal
@@ -229,10 +234,10 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
               {characterOptions.styleOptions.map((option, index) => (
                 <CharacterCreateImageButton
                   key={option.label}
-                  width={'10vw'}
-                  height={'20vh'}
+                  width={'30vw'}
+                  height={'30vh'}
                   label={option.label}
-                  image={'/Images/001.png'}
+                  image={option.image}
                   selected={selectedOptions.style === index}
                   onClick={() => handleOptionSelect('style', index)}
                 />
@@ -244,12 +249,12 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
         return (
           <div className={styles.createBox}>
             <Box className={styles.ethnicityContent}>
-              <div className={styles.createTitle}>Step 3: Select Ethnicity</div>
+              <div className={styles.createTitle}>Step 3: Select Race</div>
               <Typography variant="h6">Race</Typography>
               <Swiper
                 slidesPerView={4}
-                spaceBetween={30}
-                centeredSlides={true}
+                spaceBetween={5}
+                centeredSlides={false}
                 pagination={{
                   clickable: true,
                 }}
@@ -259,10 +264,10 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                   <SwiperSlide>
                     <CharacterCreateImageButton
                       key={race.label}
-                      width={'5vw'}
+                      width={'100%'}
                       height={'20vh'}
                       label={race.label}
-                      image={'/Images/001.png'}
+                      image={race.image}
                       selected={selectedOptions.race === index}
                       onClick={() => handleOptionSelect('race', index)}
                     />
@@ -309,7 +314,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                 {characterOptions.hairStyles.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
-                    width={'10vw'}
+                    width={'100%'}
                     height={'15vh'}
                     label={style.label}
                     image={style.image}
@@ -346,7 +351,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                 {characterOptions.bodyTypes.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
-                    width={'5vw'}
+                    width={'100%'}
                     height={'12vh'}
                     label={style.label}
                     image={style.image}
@@ -362,7 +367,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     {characterOptions.topSizes.map((style, index) => (
                       <CharacterCreateImageButton
                         key={style.label}
-                        width={'5vw'}
+                        width={'100%'}
                         height={'15vh'}
                         label={style.label}
                         image={style.image}
@@ -376,7 +381,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     {characterOptions.bottomSizes.map((style, index) => (
                       <CharacterCreateImageButton
                         key={style.label}
-                        width={'5vw'}
+                        width={'100%'}
                         height={'15vh'}
                         label={style.label}
                         image={style.image}
@@ -396,16 +401,15 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             <div className={styles.createTitle}>Step 6: Select Outfit Clothes</div>
             <Box className={styles.bodyContent}>
               <Typography variant="h6">Clothing</Typography>
-              <Box className={styles.gridContainer}>
+              <Box className={styles.horizontalButtonGroup}>
                 {characterOptions.clothing.map((style, index) => (
-                  <CharacterCreateImageButton
-                    key={style.label}
-                    width={'5vw'}
-                    height={'7vh'}
-                    label={style.label}
-                    selected={selectedOptions.clothing === index}
-                    onClick={() => handleOptionSelect('clothing', index)}
-                  />
+                  <Button
+                    key={index}
+                    variant={selectedOptions.clothing === index ? 'contained' : 'outlined'}
+                    className={styles.colorButton}
+                  >
+                    {style.label}
+                  </Button>
                 ))}
               </Box>
             </Box>
@@ -452,6 +456,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     key={index}
                     width={'17vh'}
                     height={'25vh'}
+                    label={''}
                     image={option.label}
                     selected={selectedOptions.result === index}
                     onClick={() => handleOptionSelect('result', index)}

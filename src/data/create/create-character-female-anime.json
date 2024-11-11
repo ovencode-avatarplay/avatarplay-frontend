@@ -1,7 +1,12 @@
 {
   "styleOptions": [
-    { "label": "Realistic", "image": "/real.png", "prompt": "Realistic", "negativePrompt": ""},
-    { "label": "Anime", "image": "/anime.png", "prompt": "Anime", "negativePrompt": "" }
+    { "label": "Realistic", "image": "/real.png", "value":0},
+    { "label": "Anime", "image": "/anime.png", "value":0 }
+  ],
+  "genderOptions": [
+    { "label": "Girl", "image": "/real.png", "value": 0},
+    { "label": "Guy", "image": "/anime.png", "value": 1 },
+    { "label": "All", "image": "/anime.png", "value": 2 }
   ],
   "raceOptions": [
     { "label": "Caucasian", "image": "/race_caucasian.png", "prompt": "caucasian", "negativePrompt": "" },
