@@ -50,7 +50,8 @@ const ChatPage: React.FC = () => {
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
-  const [ChatBarCount, setChatBarCount] = useState<number>(1); // 로딩 상태 추가
+  const [chatBarCount, setChatBarCount] = useState<number>(1); // 로딩 상태 추가
+  const [isBackgroundTranstransition, SetIsBackgroundTranstransition] = useState<boolean>(false);
 
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
@@ -231,6 +232,7 @@ const ChatPage: React.FC = () => {
       if (response.resultCode === 0 && response.data) {
         console.log('Successfully entered episode:', response.data);
 
+        SetIsBackgroundTranstransition(true);
         // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
         // parsedPrevMessages와 emoticonUrl을 함께 생성, emoticonUrl이 없는 경우 ""로 채움
         const {parsedPrevMessages, emoticonUrl} = response.data.prevMessageInfoList.reduce<{
@@ -271,7 +273,7 @@ const ChatPage: React.FC = () => {
       }
     } catch (error) {
       console.error('Error entering episode:', error);
-
+      SetIsBackgroundTranstransition(false);
       // error 타입 확인
       if (error instanceof Error) {
         alert('에피소드 진입 중 오류가 발생했습니다: ' + error.message);
@@ -280,7 +282,7 @@ const ChatPage: React.FC = () => {
       }
     }
   };
-
+  console.log('isBackgroundTranstransition', isBackgroundTranstransition);
   const handlePopupYes = () => {
     console.log('Yes 클릭');
     // 특정 행동 수행
@@ -374,7 +376,8 @@ const ChatPage: React.FC = () => {
           isHideChat={isHideChat}
           onToggleBackground={handleToggleBackground}
           isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
-          chatBarCount={ChatBarCount}
+          chatBarCount={chatBarCount}
+          transitionEnabled={isBackgroundTranstransition}
         />
       </div>
       <BottomBar

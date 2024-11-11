@@ -113,6 +113,7 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
         actionChangeEpisodeId: 0, // 기본값 설정
         actionChangePrompt: 'Default Prompt', // 기본 프롬프트
         actionIntimacyPoint: 0, // 기본값 설정
+        actionChangeBackground: '',
         maxIntimacyCount: 0, // 기본값 설정
         actionConversationList: [], // 기본 대화 리스트
       }),

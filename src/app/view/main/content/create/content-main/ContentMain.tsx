@@ -366,6 +366,37 @@ const ContentMain: React.FC = () => {
       saveEpisodeData();
     }
   }, [isChapterboardOpen]);
+  // null인 string 값을 빈 문자열로 처리하는 함수
+  const sanitizeStringFields = (obj: any, seen: Set<any> = new Set()): any => {
+    // 객체가 null 또는 undefined인 경우, 빈 문자열 반환
+    if (obj === null || obj === undefined) {
+      return '';
+    }
+
+    // 순환 참조를 방지하기 위해 이미 처리한 객체를 확인
+    if (seen.has(obj)) {
+      return obj; // 순환 참조가 발생하면, 원래 객체 그대로 반환
+    }
+
+    // 배열인 경우, 배열 내부의 요소들을 재귀적으로 처리
+    if (Array.isArray(obj)) {
+      seen.add(obj); // 배열을 순회하기 전에 추가하여 순환 참조를 방지
+      return obj.map(item => sanitizeStringFields(item, seen));
+    }
+
+    // 객체인 경우, 객체의 모든 key를 순회하며 재귀적으로 처리
+    if (typeof obj === 'object') {
+      seen.add(obj); // 객체를 순회하기 전에 추가하여 순환 참조를 방지
+      const sanitizedObj: any = {};
+      Object.keys(obj).forEach(key => {
+        sanitizedObj[key] = sanitizeStringFields(obj[key], seen);
+      });
+      return sanitizedObj;
+    }
+
+    // 그 외의 타입은 그대로 반환
+    return obj;
+  };
 
   const handlePublish = async () => {
     if (!editingContentInfo) {
@@ -381,9 +412,9 @@ const ContentMain: React.FC = () => {
     saveEpisodeData();
 
     const updatedContent = {
-      ...editingContentInfo,
+      ...sanitizeStringFields(editingContentInfo),
       userId: userId,
-      publishInfo: {...editedPublishInfo},
+      publishInfo: sanitizeStringFields(editedPublishInfo), // editedPublishInfo의 null 값 처리
     };
 
     const tmp: SaveContentReq = {
