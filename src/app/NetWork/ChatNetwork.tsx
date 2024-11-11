@@ -30,8 +30,8 @@ export interface SendChatMessageData {
 }
 const handleSuccessResponse = (response: any): SendChatMessageResSuccess => {
   return {
-    streamKey: response.data.streamKey,
-    chatId: response.data.chatId,
+    streamKey: response.data.data.streamKey,
+    chatId: response.data.data.chatId,
   };
 };
 const handleErrorResponse = (response: any): SendChatMessageResError => {
