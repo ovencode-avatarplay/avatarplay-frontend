@@ -38,7 +38,7 @@ const MyContentTabView = () => {
             {[...Array(10)].map((_, index) => (
               <MyContentListItem
                 key={index}
-                thumbnail="./Images/001.png"
+                thumbnail="./images/001.png"
                 contentName="ContentName"
                 chapterName="ChapterName"
                 episodeName="EpisodeName"

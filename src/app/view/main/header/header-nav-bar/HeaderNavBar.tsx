@@ -6,10 +6,10 @@ import {Button} from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import styles from './HeaderNavBar.module.css';
 
-import Logo256White from '/public/Images/Talkain_logo_256_white.png';
-import Logo256Black from '/public/Images/Talkain_logo_256_black.png';
-import Logo512White from '/public/Images/Talkain_logo_512_white.png';
-import Logo512Black from '/public/Images/Talkain_logo_512_black.png';
+import Logo256White from '/public/images/Talkain_logo_256_white.png';
+import Logo256Black from '/public/images/Talkain_logo_256_black.png';
+import Logo512White from '/public/images/Talkain_logo_512_white.png';
+import Logo512Black from '/public/images/Talkain_logo_512_black.png';
 
 import UserDropdown from '@shared/UserDropdown';
 

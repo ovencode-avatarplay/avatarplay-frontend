@@ -5,7 +5,7 @@ import Main from '@/app/view/main/Main';
 export const metadata: Metadata = {
   title: 'Talkain',
   description: 'AI Chatting',
-  icons: '/Images/Talkain_icon_256_green.png',
+  icons: '/images/Talkain_icon_256_green.png',
 };
 
 export default function RootLayout({
