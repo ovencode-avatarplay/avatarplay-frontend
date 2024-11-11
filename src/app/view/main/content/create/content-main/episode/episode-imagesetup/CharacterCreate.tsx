@@ -46,6 +46,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   const userId = useSelector((state: RootState) => state.user.userId);
   const [characterOptions, setCharacterOptions] = useState(characterOptionsFemaleReal);
   const [generatedOptions, setGeneratedOptions] = useState<GeneratedOptionsState[]>([]);
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null); // Add fullscreen image state
 
   const dispatch = useDispatch();
 
@@ -185,6 +186,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
     }));
   };
 
+  const handleImageToggle = (image: string, index: number) => {
+    handleOptionSelect('style', index);
+    setFullscreenImage(fullscreenImage === image ? null : image); // Toggle full-screen image
+  };
+
   const handleClothesInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length <= maxLength) {
       setClothesInputValue(e.target.value);
@@ -239,7 +245,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                   label={option.label}
                   image={option.image}
                   selected={selectedOptions.style === index}
-                  onClick={() => handleOptionSelect('style', index)}
+                  
+                  onClick={() => handleImageToggle(option.label, index)} // Use handleImageToggle for full-screen toggle
                 />
               ))}
             </Box>
@@ -460,7 +467,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     label={''}
                     image={option.label}
                     selected={selectedOptions.result === index}
-                    onClick={() => handleOptionSelect('result', index)}
+                    onClick={() => handleImageToggle(option.label, index)}
                   />
                 ))}
               </Box>
@@ -530,6 +537,22 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
       <Box className={styles.stepContent}>{getStepContent(activeStep)}</Box>
 
       <Box className={styles.buttonContainer}>{renderBottom()}</Box>
+
+      {fullscreenImage && (
+        <Box
+          className={styles.fullscreenOverlay}
+          onClick={() => setFullscreenImage(null)} // Close full-screen on overlay click
+          sx={{
+            flexGrow: 1,
+          backgroundRepeat: 'no-repeat',
+          backgroundImage: `url(${fullscreenImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          width: '100%',
+          }}
+        >
+        </Box>
+      )}
     </Box>
   );
 };
