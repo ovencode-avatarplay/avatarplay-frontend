@@ -139,7 +139,6 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   };
 
   const handleSelect = () => {
-    alert(selectedOptions.result)
     let url = generatedOptions[selectedOptions.result];
     dispatch(setCurrentEpisodeThumbnail(url.label));
     handleClose();
