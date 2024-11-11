@@ -17,8 +17,10 @@ import ExtendedInputField from './ExtendedInputField';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import ChatBar from './ChatBar';
 import NotEnoughRubyPopup from '../MainChat/NotEnoughRubyPopup';
+import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
+import {ChattingCheatRes} from '@/app/NetWork/CheatNetwork';
 interface BottomBarProps {
-  onSend: (message: string, isMyMessage: boolean, parseMessage: boolean) => void;
+  onSend: (message: string, isMyMessage: boolean, isClearString: boolean) => void;
   streamKey: string;
   setStreamKey: (key: string) => void;
   EmoticonData?: EmoticonGroupInfo[];
@@ -47,6 +49,8 @@ const BottomBar: React.FC<BottomBarProps> = ({
   const [selectedEmoticonIsFavorite, setselectedEmoticonIsFavorite] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
+  const currnetContentId: number = useSelector((state: RootState) => state.chatting.contentId);
+  const currnetEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
   const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
@@ -60,10 +64,43 @@ const BottomBar: React.FC<BottomBarProps> = ({
     setIsStickerOpen(false); // 창이 닫힐 때 스티커 창도 닫음
   };
 
+  const cheatMessageProcess = async (messages: string): Promise<boolean> => {
+    // 치트 메시지인가?
+    if (isAnyCheatMessageType(messages || '')) {
+      try {
+        const chattingCheatRes = await cheatMessage(currnetContentId, currnetEpisodeId, messages);
+
+        if (chattingCheatRes) {
+          const cheatResult = cheatManager(chattingCheatRes, currnetEpisodeId);
+          if (cheatResult.length > 0) {
+            onSend(cheatResult, true, false);
+            onLoading(false);
+            return true;
+          } else return false;
+        } else {
+          console.warn('ChattingCheatRes is undefined');
+          return false;
+        }
+      } catch (error) {
+        console.error('Error fetching cheat message:', error);
+        return false;
+      }
+      return false;
+    }
+    return false;
+  };
+
   const handleSend = async () => {
     // 새 채팅을 보낼 수 없는 상태
     if (isSendingMessage.state === true) return;
     else isSendingMessage.state = true;
+
+    // 치트 메시지면 치트키 처리하고 빠져나온다.
+    if ((await cheatMessageProcess(messages || '')) === true) {
+      console.log('SendCheatMessage 처리됨');
+      isSendingMessage.state = false;
+      return;
+    }
 
     const messageText = messages ? messages : '';
 
@@ -90,7 +127,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
       setSelectedEmoji(null); // 선택된 이모티콘 초기화
       setShowEmojiPopup(false); // 팝업 닫기
 
-      const parseMessage = false;
+      const parseMessage = true;
 
       if (message.includes('⦿SYSTEM_CHAT⦿')) {
         const messageParts = message.split('⦿SYSTEM_CHAT⦿');
@@ -106,6 +143,9 @@ const BottomBar: React.FC<BottomBarProps> = ({
       }
 
       // 이미 선언된 reqSendChatMessage의 text 필드를 (,)가 제거된 메시지로 업데이트
+      reqSendChatMessage.text = message.replace(/\(,\)/g, ''); // (,)를 제거한 메시지
+
+      console.log('reqSendChatMessage', reqSendChatMessage);
       const response = await sendMessageStream(reqSendChatMessage);
 
       // 성공적인 응답 처리
@@ -141,7 +181,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
         onLoading(false);
 
         const newMessage = JSON.parse(event.data);
-        const parseMessage = false;
+        const parseMessage = true;
         onSend(newMessage, false, parseMessage);
         if (newMessage.includes('$') === true) {
           isSendingMessage.state = false;

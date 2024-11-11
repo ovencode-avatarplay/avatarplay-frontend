@@ -30,33 +30,35 @@ import {
   EnterEpisodeChattingReq,
   fetchEmoticonGroups,
   EmoticonGroupInfo,
-  ChattingResultData,
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import BottomNavData from 'data/navigation/bottom-nav.json';
 import {tree} from 'next/dist/build/templates/app-page';
-import {COMMAND_SYSTEM, Message, MessageGroup} from './Chat/MainChat/ChatTypes';
+import {COMMAND_SYSTEM, Message, MessageGroup} from './MainChat/ChatTypes';
 import {number} from 'valibot';
-import NextEpisodePopup from './Chat/MainChat/NextEpisodePopup';
 
 const ChatPage: React.FC = () => {
   const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [nextPopupData, setNextPopupData] = useState<ChattingResultData>();
+  const [popupTitle, setPopupTitle] = useState<string>('');
+  const [popupQuestion, setPopupQuestion] = useState<string>('');
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
-  const [ChatBarCount, setChatBarCount] = useState<number>(1); // 로딩 상태 추가
+  const [chatBarCount, setChatBarCount] = useState<number>(1); // 로딩 상태 추가
+  const [isBackgroundTranstransition, SetIsBackgroundTranstransition] = useState<boolean>(false);
 
+  const [ChattingState, setChatInfo] = useState<ChattingState>();
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
   console.log('getWebBrowserUrl', key);
 
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
+  const contentId = useSelector((state: RootState) => state.chatting.contentId);
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
   const handleBackClick = useBackHandler();
   const dispatch = useDispatch();
@@ -70,7 +72,7 @@ const ChatPage: React.FC = () => {
   };
 
   //#region Message send handler
-  const handleSendMessage = async (message: string, isMyMessage: boolean) => {
+  const handleSendMessage = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
     if (!message || typeof message !== 'string') return;
 
     // 메시지가 '$'을 포함할 경우 팝업 표시
@@ -84,7 +86,8 @@ const ChatPage: React.FC = () => {
         console.log('Result API Response:', response);
         if (response.data.nextEpisodeId !== 0) {
           setNextEpisodeId(response.data.nextEpisodeId); // 다음 에피소드 ID 저장
-          setNextPopupData(response.data);
+          setPopupTitle('알림');
+          setPopupQuestion('이 작업을 수행하시겠습니까?');
           setShowPopup(true);
         }
       } catch (error) {
@@ -115,7 +118,7 @@ const ChatPage: React.FC = () => {
       if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
 
       // 메시지 정리
-      newMessage.text = cleanString(newMessage.text);
+      if (isClearString) newMessage.text = cleanString(newMessage.text);
 
       const splitMessageStep1 = splitByNarration(newMessage.text);
       const splitMessageStep1Left = splitMessageStep1.leftAsterisk;
@@ -218,7 +221,7 @@ const ChatPage: React.FC = () => {
   //#endregion
 
   //#region  다음 에피소드 넘어가기
-  const navigateToNextEpisode = async (episodeId: number) => {
+  const navigateToNextEpisode = async (contentId: number, episodeId: number) => {
     console.log(`Navigating to episode ID: ${episodeId}`);
 
     const requestData: EnterEpisodeChattingReq = {
@@ -231,6 +234,7 @@ const ChatPage: React.FC = () => {
       if (response.resultCode === 0 && response.data) {
         console.log('Successfully entered episode:', response.data);
 
+        SetIsBackgroundTranstransition(true);
         // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
         // parsedPrevMessages와 emoticonUrl을 함께 생성, emoticonUrl이 없는 경우 ""로 채움
         const {parsedPrevMessages, emoticonUrl} = response.data.prevMessageInfoList.reduce<{
@@ -261,6 +265,7 @@ const ChatPage: React.FC = () => {
         const chattingState: ChattingState = {
           contentName: `content episode${episodeId}`,
           episodeName: `episode${episodeId}`,
+          contentId: Number(contentId),
           episodeId: Number(episodeId),
           contentUrl: shortsId,
         };
@@ -271,7 +276,7 @@ const ChatPage: React.FC = () => {
       }
     } catch (error) {
       console.error('Error entering episode:', error);
-
+      SetIsBackgroundTranstransition(false);
       // error 타입 확인
       if (error instanceof Error) {
         alert('에피소드 진입 중 오류가 발생했습니다: ' + error.message);
@@ -280,13 +285,13 @@ const ChatPage: React.FC = () => {
       }
     }
   };
-
+  console.log('isBackgroundTranstransition', isBackgroundTranstransition);
   const handlePopupYes = () => {
     console.log('Yes 클릭');
     // 특정 행동 수행
     if (nextEpisodeId !== null) {
       console.log(`에피소드 ID에 대한 행동 수행: ${nextEpisodeId}`);
-      navigateToNextEpisode(nextEpisodeId); // 다음 에피소드로 이동하는 함수 호출
+      navigateToNextEpisode(contentId, nextEpisodeId); // 다음 에피소드로 이동하는 함수 호출
     }
     setShowPopup(false);
   };
@@ -311,7 +316,7 @@ const ChatPage: React.FC = () => {
   const {prevMessages: enterData} = usePrevChatting(episodeId);
 
   useEffect(() => {
-    if (!hasFetchedPrevMessages && enterData?.prevMessageInfoList) {
+    if (!hasFetchedPrevMessages && enterData && (enterData?.prevMessageInfoList || enterData?.introPrompt.length > 0)) {
       // flatMap을 통해 parsedPrevMessages를 생성
       // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
       const {parsedPrevMessages, emoticonUrl} = enterData?.prevMessageInfoList.reduce<{
@@ -374,7 +379,8 @@ const ChatPage: React.FC = () => {
           isHideChat={isHideChat}
           onToggleBackground={handleToggleBackground}
           isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
-          chatBarCount={ChatBarCount}
+          chatBarCount={chatBarCount}
+          transitionEnabled={isBackgroundTranstransition}
         />
       </div>
       <BottomBar
@@ -389,7 +395,13 @@ const ChatPage: React.FC = () => {
       />
 
       {showPopup && (
-        <NextEpisodePopup onYes={handlePopupYes} onNo={handlePopupNo} open={showPopup} data={nextPopupData} />
+        <PopUpYesOrNo
+          title={popupTitle}
+          question={popupQuestion}
+          onYes={handlePopupYes}
+          onNo={handlePopupNo}
+          open={showPopup}
+        />
       )}
     </main>
   );

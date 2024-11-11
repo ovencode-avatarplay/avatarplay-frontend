@@ -14,6 +14,7 @@ interface ChatAreaProps {
   onToggleBackground: () => void;
   isLoading: boolean; // 로딩 상태 추가
   chatBarCount: number;
+  transitionEnabled: boolean; // 배경 이미지 전환 여부를 제어하는 프롭
 }
 
 const ChatArea: React.FC<ChatAreaProps> = ({
@@ -24,6 +25,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   onToggleBackground,
   isLoading,
   chatBarCount,
+  transitionEnabled, // transitionEnabled 프롭을 추가
 }) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -71,6 +73,14 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     console.log(isLoading);
   }, [isLoading, chatBarCount]);
 
+  const [prevBgUrl, setPrevBgUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (bgUrl !== prevBgUrl) {
+      setPrevBgUrl(bgUrl); // 새 배경 이미지가 바뀌었을 때 이전 URL을 기록
+    }
+  }, [bgUrl, prevBgUrl]);
+
   return (
     <>
       {isHideChat === false && (
@@ -82,17 +92,48 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             }
           }}
           sx={{
-            backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            height: '100%',
-            width: '100%',
             position: 'relative',
+            width: '100%',
+            height: '100%',
             fontFamily: 'Noto Sans KR, sans-serif',
             overflow: 'hidden',
           }}
         >
+          {/* 기존 배경 */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              opacity: prevBgUrl ? 1 : 0, // 이전 배경 이미지 보이게
+              transition: transitionEnabled ? 'opacity 1.5s ease' : 'none', // transitionEnabled가 true일 때만 전환 효과 적용
+              zIndex: 1, // 이전 배경 이미지
+            }}
+          />
+
+          {/* 새 배경 */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              opacity: prevBgUrl ? 0 : 1, // 새 배경 이미지 처음에 보이지 않도록 설정
+              transition: transitionEnabled ? 'opacity 1.5s ease' : 'none', // transitionEnabled가 true일 때만 전환 효과 적용
+              zIndex: 2, // 새 배경 이미지
+            }}
+          />
           {/* Fixed space at the top */}
           <Box sx={{height: '72px', width: '100%'}} />
 
@@ -109,6 +150,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
               right: 0,
               paddingLeft: '16px',
               paddingRight: '16px',
+              zIndex: 3, // 채팅 메시지가 보이도록 z-index를 더 높게 설정
             }}
           >
             <Box onClick={() => setSelectedBubbleIndex(null)}>

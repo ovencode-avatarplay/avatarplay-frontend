@@ -30,8 +30,8 @@ export interface SendChatMessageData {
 }
 const handleSuccessResponse = (response: any): SendChatMessageResSuccess => {
   return {
-    streamKey: response.data.streamKey,
-    chatId: response.data.chatId,
+    streamKey: response.data.data.streamKey,
+    chatId: response.data.data.chatId,
   };
 };
 const handleErrorResponse = (response: any): SendChatMessageResError => {
@@ -150,7 +150,10 @@ export interface UrlEnterEpisodeChattingReq {
 //   createAt: string;
 // }
 
+// URL 방식이든 아니는 Enter Respons 받는 형식은 같은걸 사용한다.
+// 만약 달라지면 따로 분리해서 만들어주자.
 export interface EnterEpisodeChattingRes {
+  contentId: number;
   episodeId: number;
   contentName: string;
   episodeName: string;

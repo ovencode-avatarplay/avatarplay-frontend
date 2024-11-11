@@ -10,7 +10,14 @@ import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
-import {setContentName, setEpisodeName} from '@/redux-store/slices/Chatting';
+import {
+  ChattingState,
+  setContentId,
+  setContentName,
+  setEpisodeId,
+  setEpisodeName,
+  setStateChatting,
+} from '@/redux-store/slices/Chatting';
 
 const usePrevChatting = (episodeId: number) => {
   // 이전 메시지 및 에러 상태값 정의
@@ -46,7 +53,10 @@ const usePrevChatting = (episodeId: number) => {
           setPrevMessages(response.data);
           dispatch(setContentName(response.data.contentName));
           dispatch(setEpisodeName(response.data.episodeName));
-          console.log('setContentName', response.data.contentName, response.data.episodeName);
+          dispatch(setContentId(response.data.contentId));
+          dispatch(setEpisodeId(response.data.episodeId));
+
+          console.log('response.data.contentId1', response.data.contentId);
         } else {
           setError('Failed to fetch previous messages.');
         }
@@ -63,6 +73,10 @@ const usePrevChatting = (episodeId: number) => {
 
           dispatch(setContentName(response.data.contentName));
           dispatch(setEpisodeName(response.data.episodeName));
+          dispatch(setContentId(response.data.contentId));
+          //dispatch(setEpisodeId(response.data.episodeId));
+
+          console.log('response.data.contentId2', response.data.contentId);
         } else {
           setError('Failed to fetch previous messages.');
         }
