@@ -22,7 +22,7 @@ const ExploreCard: React.FC<ExploreCardProps> = ({contentId, contentName, chatCo
       <div className={styles.exploreCard}>
         <div
           className={styles.exploreImage}
-          style={{backgroundImage: `url(${thumbnail || '/Images/001.png'})`, backgroundSize: 'cover'}}
+          style={{backgroundImage: `url(${thumbnail || '/images/001.png'})`, backgroundSize: 'cover'}}
           onClick={handleOpenDrawer}
         />
         <div className={styles.exploreOverlay}>

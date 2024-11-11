@@ -229,10 +229,10 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
               {characterOptions.styleOptions.map((option, index) => (
                 <CharacterCreateImageButton
                   key={option.label}
-                  width={'40%'}
-                  height={'30vh'}
+                  width={'10vw'}
+                  height={'20vh'}
                   label={option.label}
-                  image={option.image}
+                  image={'/Images/001.png'}
                   selected={selectedOptions.style === index}
                   onClick={() => handleOptionSelect('style', index)}
                 />
@@ -259,7 +259,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                   <SwiperSlide>
                     <CharacterCreateImageButton
                       key={race.label}
-                      width={'12vh'}
+                      width={'5vw'}
                       height={'20vh'}
                       label={race.label}
                       image={'/Images/001.png'}
@@ -309,7 +309,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                 {characterOptions.hairStyles.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
-                    width={'100%'}
+                    width={'10vw'}
                     height={'15vh'}
                     label={style.label}
                     image={style.image}
@@ -346,8 +346,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                 {characterOptions.bodyTypes.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
-                    width={'100%'}
-                    height={'15vh'}
+                    width={'5vw'}
+                    height={'12vh'}
                     label={style.label}
                     image={style.image}
                     selected={selectedOptions.bodyType === index}
@@ -362,7 +362,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     {characterOptions.topSizes.map((style, index) => (
                       <CharacterCreateImageButton
                         key={style.label}
-                        width={'100%'}
+                        width={'5vw'}
                         height={'15vh'}
                         label={style.label}
                         image={style.image}
@@ -376,7 +376,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     {characterOptions.bottomSizes.map((style, index) => (
                       <CharacterCreateImageButton
                         key={style.label}
-                        width={'100%'}
+                        width={'5vw'}
                         height={'15vh'}
                         label={style.label}
                         image={style.image}
@@ -396,16 +396,16 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             <div className={styles.createTitle}>Step 6: Select Outfit Clothes</div>
             <Box className={styles.bodyContent}>
               <Typography variant="h6">Clothing</Typography>
-              <Box className={styles.horizontalButtonGroup}>
+              <Box className={styles.gridContainer}>
                 {characterOptions.clothing.map((style, index) => (
-                  <Button
-                    key={index}
-                    variant={selectedOptions.clothing === index ? 'contained' : 'outlined'}
+                  <CharacterCreateImageButton
+                    key={style.label}
+                    width={'5vw'}
+                    height={'7vh'}
+                    label={style.label}
+                    selected={selectedOptions.clothing === index}
                     onClick={() => handleOptionSelect('clothing', index)}
-                    className={styles.colorButton}
-                  >
-                    {style.label}
-                  </Button>
+                  />
                 ))}
               </Box>
             </Box>
