@@ -249,8 +249,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                   label={option.label}
                   image={option.image}
                   selected={selectedOptions.style === index}
-                  
-                  onClick={() => handleImageToggle(option.label, index)} // Use handleImageToggle for full-screen toggle
+                  onClick={() => handleImageToggle(option.label)} // Use handleImageToggle for full-screen toggle
                 />
               ))}
             </Box>
@@ -418,7 +417,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     variant={selectedOptions.clothing === index ? 'contained' : 'outlined'}
                     className={styles.colorButton}
                     onClick={() => handleOptionSelect('clothing', index)}
-                    style={{fontSize:10}}
+                    style={{fontSize: 10}}
                   >
                     {style.label}
                   </Button>
@@ -471,7 +470,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     label={''}
                     image={option.label}
                     selected={selectedOptions.result === index}
-                    onClick={() => selectedOptions.result === index ?  handleImageToggle(option.label): handleOptionSelect('result', index)}
+                    onClick={() =>
+                      selectedOptions.result === index
+                        ? handleImageToggle(option.label)
+                        : handleOptionSelect('result', index)
+                    }
                   />
                 ))}
               </Box>
@@ -554,8 +557,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             backgroundPosition: 'center',
             width: '100%',
           }}
-        >
-        </Box>
+        ></Box>
       )}
     </Box>
   );

@@ -2,7 +2,7 @@
 
 import {COMMAND_END, COMMAND_NARRATION, COMMAND_SYSTEM, Message} from './ChatTypes';
 
-const parseAnswer = (answer: string): Message[] => {
+const parseAnswer = (answer: string, id: number): Message[] => {
   const result: Message[] = [];
   const narrationPattern = /\*(.*?)\*/g;
   const systemPattern = /%(.*?)%/g; // 시스템 패턴 추가
@@ -16,12 +16,14 @@ const parseAnswer = (answer: string): Message[] => {
       // partnerText가 비어있지 않을 경우에만 추가
       if (partnerText) {
         result.push({
+          chatId: id,
           text: partnerText,
           sender: 'partner',
         });
       }
     }
     result.push({
+      chatId: id,
       text: match[1], // 매칭된 나레이션 내용
       sender: 'narration', // 메시지 발신자
     });
@@ -36,6 +38,7 @@ const parseAnswer = (answer: string): Message[] => {
       // partnerText가 비어있지 않을 경우에만 추가
       if (partnerText) {
         result.push({
+          chatId: id,
           text: partnerText,
           sender: 'partner',
         });
@@ -43,6 +46,7 @@ const parseAnswer = (answer: string): Message[] => {
     }
 
     result.push({
+      chatId: id,
       text: match[1], // 매칭된 시스템 메시지 내용
       sender: 'system', // 메시지 발신자
     });
@@ -56,6 +60,7 @@ const parseAnswer = (answer: string): Message[] => {
     // 남아있는 텍스트가 비어있지 않을 경우에만 추가
     if (remainingText) {
       result.push({
+        chatId: id,
         text: remainingText, // 남아있는 텍스트
         sender: 'partner', // 메시지 발신자
       });
@@ -65,7 +70,7 @@ const parseAnswer = (answer: string): Message[] => {
   return result;
 };
 
-export const parseMessage = (message: string | null): Message[] | null => {
+export const parseMessage = (message: string | null, id: number): Message[] | null => {
   if (!message) return null;
 
   try {
@@ -73,7 +78,7 @@ export const parseMessage = (message: string | null): Message[] | null => {
     const result: Message[] = [];
 
     if (parsedMessage.episodeInfo) {
-      result.push(...parseAnswer(parsedMessage.episodeInfo));
+      result.push(...parseAnswer(parsedMessage.episodeInfo, id));
     }
 
     if (parsedMessage.Question) {
@@ -84,6 +89,7 @@ export const parseMessage = (message: string | null): Message[] | null => {
           const sender = part.startsWith('*') && part.endsWith('*') ? 'userNarration' : 'user';
           const newMessage: Message = {
             // newMessage를 여기서 정의
+            chatId: id,
             text: part.replace(/^\*|\*$/g, ''), // 양쪽의 '*'를 제거
             sender: sender,
           };
@@ -93,7 +99,7 @@ export const parseMessage = (message: string | null): Message[] | null => {
     }
 
     if (parsedMessage.Answer) {
-      result.push(...parseAnswer(parsedMessage.Answer));
+      result.push(...parseAnswer(parsedMessage.Answer, id));
     }
 
     return result;
@@ -103,12 +109,13 @@ export const parseMessage = (message: string | null): Message[] | null => {
   }
 };
 
-export const convertPrevMessages = (prevMessages: (string | null)[]): Message[] => {
-  return prevMessages.filter(msg => msg !== null && msg !== '').flatMap(msg => parseMessage(msg) || []);
+export const convertPrevMessages = (prevMessages: (string | null)[], id: number): Message[] => {
+  return prevMessages.filter(msg => msg !== null && msg !== '').flatMap(msg => parseMessage(msg, id) || []);
 };
 
-export const convertStringMessagesToMessages = (messages: string[]): Message[] => {
+export const convertStringMessagesToMessages = (messages: string[], id: number): Message[] => {
   return messages.map(msg => ({
+    chatId: id,
     text: msg,
     sender: 'partner',
   }));
@@ -160,14 +167,21 @@ export const isUserNarration = (message: string): boolean => {
 
 export const parsedUserNarration = (messageData: Message): Message => {
   const parsedMessage: Message = {
+    chatId: messageData.chatId,
     sender: 'userNarration',
     text: messageData.text.slice(1, -1), // 양 옆의 *를 제거
   };
   return parsedMessage;
 };
 
-export const setSenderType = (message: string, isMyMessage: boolean, isNarrationActive: boolean): Message => {
+export const setSenderType = (
+  message: string,
+  isMyMessage: boolean,
+  isNarrationActive: boolean,
+  id: number,
+): Message => {
   const resultMessage: Message = {
+    chatId: id,
     sender: isMyMessage ? 'user' : isNarrationActive ? 'narration' : 'partner',
     text: message,
   };

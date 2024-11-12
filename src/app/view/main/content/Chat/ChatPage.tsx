@@ -28,14 +28,19 @@ import {
   fetchEmoticonGroups,
   EmoticonGroupInfo,
   ChattingResultData,
+  SendChatMessageReq,
+  sendMessageStream,
+  SendChatMessageResSuccess,
+  SendChatMessageResError,
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {COMMAND_SYSTEM, Message, MessageGroup} from './MainChat/ChatTypes';
 import NextEpisodePopup from './MainChat/NextEpisodePopup';
+import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
 
 const ChatPage: React.FC = () => {
-  const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
+  const [parsedMessages, setParsedMessages] = useState<MessageGroup>({chatId: -1, Messages: [], emoticonUrl: []});
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
@@ -49,7 +54,7 @@ const ChatPage: React.FC = () => {
 
   const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false); // 로딩 상태 추가
   const [ChattingState, setChatInfo] = useState<ChattingState>();
-  const [isReqPrevCheat, setReqPrevCheat] = useState<Boolean>(false); // 치트키로 애피소드 초기화.
+  const [isReqPrevCheat, setReqPrevCheat] = useState<boolean>(false); // 치트키로 애피소드 초기화.
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
   console.log('getWebBrowserUrl', key);
@@ -57,6 +62,11 @@ const ChatPage: React.FC = () => {
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
   const contentId = useSelector((state: RootState) => state.chatting.contentId);
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
+  const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
+  const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
+  const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
+
+  const chatInfo = useSelector((state: RootState) => state);
   const handleBackClick = useBackHandler();
   const dispatch = useDispatch();
   // useEffect(() => {}, [isLoading]);
@@ -72,6 +82,7 @@ const ChatPage: React.FC = () => {
   const handleSendMessage = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
     if (!message || typeof message !== 'string') return;
 
+    let id = -1;
     // 메시지가 '$'을 포함할 경우 팝업 표시
     if (isFinishMessage(isMyMessage, message) === true) {
       const requestData = {
@@ -99,6 +110,7 @@ const ChatPage: React.FC = () => {
 
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
+      chatId: id,
       text: message,
       sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
     };
@@ -111,7 +123,8 @@ const ChatPage: React.FC = () => {
       const allMessages = [...(prev?.Messages || [])];
 
       // 메시지가 비어있으면 반환
-      if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
+      if (newMessage.text.length === 0)
+        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || [], chatId: -1};
 
       // 메시지 정리
       if (isClearString) newMessage.text = cleanString(newMessage.text);
@@ -120,14 +133,17 @@ const ChatPage: React.FC = () => {
       const splitMessageStep1Left = splitMessageStep1.leftAsterisk;
       const splitMessageStep1Right = splitMessageStep1.rightAsterisk;
 
+      const id = newMessage.chatId;
+
       // 시스템 메시지 처리
       if (isMyMessage === false && isSystemMessage(newMessage.text)) {
         const newMessageSystem: Message = {
+          chatId: id,
           text: newMessage.text.replace(new RegExp(`\\${COMMAND_SYSTEM}`, 'g'), ''),
           sender: 'system',
         };
         allMessages.push(newMessageSystem);
-        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
+        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || [], chatId: id};
       }
 
       // 내 메시지
@@ -160,6 +176,7 @@ const ChatPage: React.FC = () => {
               splitMessageStep2Left,
               isMyMessage,
               isNarrationActive.active,
+              id,
             );
 
             if (splitMessageStep2Left.length > 0) {
@@ -175,6 +192,7 @@ const ChatPage: React.FC = () => {
                 splitMessageStep2Left,
                 isMyMessage,
                 isNarrationActive.active,
+                id,
               );
 
               allMessages.push(newMessageStep3);
@@ -186,11 +204,12 @@ const ChatPage: React.FC = () => {
               splitMessageStep1Right,
               isMyMessage,
               isNarrationActive.active,
+              id,
             );
             if (splitMessageStep4.text.length > 0) allMessages.push(splitMessageStep4);
           }
         } else {
-          const splitMessageStep5: Message = setSenderType(newMessage.text, isMyMessage, isNarrationActive.active);
+          const splitMessageStep5: Message = setSenderType(newMessage.text, isMyMessage, isNarrationActive.active, id);
 
           if (splitMessageStep5.text !== ' ') {
             if (allMessages[allMessages.length - 1].sender !== splitMessageStep5.sender) {
@@ -211,7 +230,7 @@ const ChatPage: React.FC = () => {
       }
 
       // 업데이트된 Messages 배열을 MessageInfo 객체로 반환
-      return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
+      return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || [], chatId: id};
     });
   };
   //#endregion
@@ -277,7 +296,7 @@ const ChatPage: React.FC = () => {
         emoticonUrl: string[];
       }>(
         (acc, msg) => {
-          const parsedMessages = parseMessage(msg.message) || [];
+          const parsedMessages = parseMessage(msg.message, msg.id) || [];
           acc.parsedPrevMessages.push(...parsedMessages);
 
           // parseMessage 결과 수에 맞춰 emoticonUrl 배열에 값을 추가
@@ -290,6 +309,7 @@ const ChatPage: React.FC = () => {
       ) || {parsedPrevMessages: [], emoticonUrl: []}; // 기본값 설정
 
       const introPrompt2: Message = {
+        chatId: -1,
         text: enterData?.introPrompt || '애피소드 도입부가 설정되지 않았습니다',
         sender: 'introPrompt',
       };
@@ -297,6 +317,7 @@ const ChatPage: React.FC = () => {
       parsedPrevMessages.unshift(introPrompt2);
       emoticonUrl.unshift('');
       const messageInfo: MessageGroup = {
+        chatId: parsedPrevMessages[0].chatId,
         Messages: parsedPrevMessages, // Message 배열
         emoticonUrl: emoticonUrl, // 이모티콘 URL
       };
@@ -319,8 +340,33 @@ const ChatPage: React.FC = () => {
       loadEmoticons();
     }
   }, [enterData, hasFetchedPrevMessages, isReqPrevCheat]);
-  const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
+  const Send = async (reqSendChatMessage: SendChatMessageReq) => {
+    try {
+      const response = (await Promise.race([
+        sendMessageStream(reqSendChatMessage),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 5000)),
+      ])) as SendChatMessageResSuccess | SendChatMessageResError;
 
+      if ('streamKey' in response) {
+        // 성공적인 응답 처리
+        setStreamKey(response.streamKey);
+      } else if ('resultCode' in response) {
+        // 오류 응답 처리
+        if (response.resultCode === 13) {
+          setIsSendingMessage({state: false});
+          SetChatLoading(false);
+          setNotEnoughRubyPopupOpen(true);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      handleSendMessage('%Failed to send message. Please try again.%', false, false);
+
+      SetChatLoading(false);
+    } finally {
+      isSendingMessage.state = false;
+    }
+  };
   return (
     <main className={styles.chatmodal}>
       <div className={styles.overlayContainer}>
@@ -339,6 +385,7 @@ const ChatPage: React.FC = () => {
           isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
           chatBarCount={chatBarCount}
           transitionEnabled={isTransitionEnable}
+          send={Send}
         />
       </div>
       <BottomBar
@@ -351,10 +398,19 @@ const ChatPage: React.FC = () => {
         onLoading={SetChatLoading}
         onUpdateChatBarCount={SetChatBarCount}
         onReqPrevChatting={setReqPrevCheat}
+        isSendingMessage={isSendingMessage}
+        send={Send}
       />
 
       {showPopup && (
         <NextEpisodePopup onYes={handlePopupYes} onNo={handlePopupNo} open={showPopup} data={nextPopupData} />
+      )}
+      {isNotEnoughRubyPopupOpen && (
+        <NotEnoughRubyPopup
+          open={isNotEnoughRubyPopupOpen}
+          onClose={() => setNotEnoughRubyPopupOpen(false)} // 팝업 닫기
+          rubyAmount={5} //필요 루비 임시
+        />
       )}
     </main>
   );
