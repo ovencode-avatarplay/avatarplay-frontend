@@ -3,6 +3,7 @@
 import {boolean} from 'valibot';
 import api, {ResponseAPI} from './ApiInstance';
 import chatEmojiTempData from '@/data/temp/chat-emoji-temp-data.json';
+import getLocalizedText from '@/utils/getLocalizedText';
 // 채팅 Send ##########################################
 // Chat Data Interfaces
 export interface SendChatMessageReq {
@@ -339,5 +340,56 @@ export const fetchEmoticonGroups = async (): Promise<EmoticonGroupRes> => {
 
     console.error('Error fetching Emoticon Group:', error);
     throw new Error('Failed to fetch Emoticon Groups. Please try again.'); // 에러 메시지 처리
+  }
+};
+
+// Chatting 수정 ##########################################
+
+export interface ModifyChatReq {
+  chatId: number;
+  originText: string;
+  modifyText: string;
+}
+
+export interface ModifyChatRes {
+  chatId: number;
+  originText: string;
+  modifyText: string;
+}
+
+export const modifyChatting = async (req: ModifyChatReq): Promise<ResponseAPI<ModifyChatRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<ModifyChatRes>>('/Chatting/modify', req);
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(response.data.resultMessage); // Error handling
+    }
+  } catch (error) {
+    throw new Error('Failed to modify chatting. Please try again.'); // Error handling
+  }
+};
+
+// Chatting 삭제 ##########################################
+
+export interface DeleteChatReq {
+  chatId: number;
+  deleteText: string;
+}
+
+export interface DeleteChatRes {
+  chatId: number;
+}
+
+export const deleteChatting = async (req: DeleteChatReq): Promise<ResponseAPI<DeleteChatRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<DeleteChatRes>>('/Chatting/delete', req);
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(response.data.resultMessage); // Error handling
+    }
+  } catch (error) {
+    throw new Error('Failed to delete chatting. Please try again.'); // Error handling
   }
 };

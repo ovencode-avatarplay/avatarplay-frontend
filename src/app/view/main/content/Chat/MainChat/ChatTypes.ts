@@ -1,9 +1,11 @@
 export interface Message {
+  chatId: number;
   text: string;
   sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
 }
 
 export interface MessageGroup {
+  chatId: number;
   Messages: Message[];
   emoticonUrl: string[];
 }

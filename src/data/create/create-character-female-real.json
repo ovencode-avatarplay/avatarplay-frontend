@@ -1,6 +1,6 @@
 {
   "styleOptions": [
-    { "label": "Realistic", "image": "/images/real.png", "value": 0},
+    { "label": "Realistic", "image": "/images/real.png", "value": 0 },
     { "label": "Anime", "image": "/images/anime.png", "value": 1 }
   ],
   "genderOptions": [

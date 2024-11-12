@@ -191,6 +191,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                   key={index}
                   text={msg.text}
                   sender={msg.sender}
+                  id={msg.chatId}
                   index={index}
                   iconUrl={iconUrl}
                   emoticonUrl={messages.emoticonUrl[index]}
