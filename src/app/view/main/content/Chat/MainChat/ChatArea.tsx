@@ -192,24 +192,58 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           >
             <Box onClick={() => setSelectedBubbleIndex(null)}>
               {messages.Messages.map((msg, index) => (
-                <ChatMessageBubble
-                  key={index}
-                  text={msg.text}
-                  sender={msg.sender}
-                  id={msg.chatId}
-                  index={index}
-                  iconUrl={iconUrl}
-                  emoticonUrl={messages.emoticonUrl[index]}
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleBubbleClick(index);
-                  }}
-                  onTtsClick={e => {
-                    e.stopPropagation();
-                    handlePlayAudio(msg.text);
-                  }}
-                  selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
-                />
+                <React.Fragment key={index}>
+                  <ChatMessageBubble
+                    key={index}
+                    text={msg.text}
+                    sender={msg.sender}
+                    id={msg.chatId}
+                    index={index}
+                    iconUrl={iconUrl}
+                    emoticonUrl={messages.emoticonUrl[index]}
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleBubbleClick(index);
+                    }}
+                    onTtsClick={e => {
+                      e.stopPropagation();
+                      handlePlayAudio(msg.text);
+                    }}
+                    selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
+                  />
+                  {/* Retry 버튼 조건부 렌더링 */}
+                  {msg.sender === 'system' && msg.text.includes('Failed to send message. Please try again.') && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: '8px',
+                        padding: '4px 8px',
+                        backgroundColor: 'white',
+                        borderRadius: '12px',
+                        border: '1px solid black',
+                        color: 'black',
+                        cursor: 'pointer',
+                        position: 'relative',
+                        width: '100px',
+                        top: '-10px',
+                        margin: '0 auto', // 수평 중앙 정렬
+                      }}
+                      onClick={() => {}}
+                    >
+                      <ReplayIcon
+                        sx={{
+                          color: 'black',
+                          marginRight: '4px',
+                          fontSize: '1.2em',
+                          borderRadius: '50%',
+                        }}
+                      />
+                      <span>Retry</span>
+                    </Box>
+                  )}
+                </React.Fragment>
               ))}
             </Box>
 
