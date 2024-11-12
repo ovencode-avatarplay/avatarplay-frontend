@@ -62,6 +62,11 @@ const ChatPage: React.FC = () => {
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
   const contentId = useSelector((state: RootState) => state.chatting.contentId);
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
+  const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
+  const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
+  const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
+
+  const chatInfo = useSelector((state: RootState) => state);
   const handleBackClick = useBackHandler();
   const dispatch = useDispatch();
   // useEffect(() => {}, [isLoading]);
@@ -335,7 +340,6 @@ const ChatPage: React.FC = () => {
       loadEmoticons();
     }
   }, [enterData, hasFetchedPrevMessages, isReqPrevCheat]);
-  const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
   const Send = async (reqSendChatMessage: SendChatMessageReq) => {
     try {
       const response = (await Promise.race([
@@ -363,8 +367,6 @@ const ChatPage: React.FC = () => {
       isSendingMessage.state = false;
     }
   };
-  const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
-  const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
   return (
     <main className={styles.chatmodal}>
       <div className={styles.overlayContainer}>
@@ -383,6 +385,7 @@ const ChatPage: React.FC = () => {
           isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
           chatBarCount={chatBarCount}
           transitionEnabled={isTransitionEnable}
+          send={Send}
         />
       </div>
       <BottomBar
