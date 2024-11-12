@@ -49,8 +49,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
   const [selectedEmoticonIsFavorite, setselectedEmoticonIsFavorite] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
-  const currnetContentId: number = useSelector((state: RootState) => state.chatting.contentId);
-  const currnetEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
+  const currentContentId: number = useSelector((state: RootState) => state.chatting.contentId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
   const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
@@ -68,10 +67,10 @@ const BottomBar: React.FC<BottomBarProps> = ({
     // 치트 메시지인가?
     if (isAnyCheatMessageType(messages || '')) {
       try {
-        const chattingCheatRes = await cheatMessage(currnetContentId, currnetEpisodeId, messages);
+        const chattingCheatRes = await cheatMessage(currentContentId, currentEpisodeId, messages);
 
         if (chattingCheatRes) {
-          const cheatResult = cheatManager(chattingCheatRes, currnetEpisodeId);
+          const cheatResult = cheatManager(chattingCheatRes);
           if (cheatResult.length > 0) {
             onSend(cheatResult, true, false);
             onLoading(false);

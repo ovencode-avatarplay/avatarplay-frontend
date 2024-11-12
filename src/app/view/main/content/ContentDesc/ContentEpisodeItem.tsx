@@ -34,7 +34,7 @@ const ContentEpisodeItem: React.FC<EpisodeCardProps> = ({
           <Box className={styles.iconInfo}>
             <FavoriteIcon color="error" />
             <Typography variant="body2" className={styles.iconText}>
-              {intimacy}%
+              {Math.floor(intimacy)}%
             </Typography>
           </Box>
           <Box className={styles.iconInfo}>
