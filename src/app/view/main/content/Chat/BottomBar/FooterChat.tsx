@@ -28,6 +28,7 @@ import {ChattingCheatRes} from '@/app/NetWork/CheatNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, isClearString: boolean) => void;
+  send: (reqSendChatMessage: SendChatMessageReq) => void;
   streamKey: string;
   setStreamKey: (key: string) => void;
   EmoticonData?: EmoticonGroupInfo[];
@@ -36,6 +37,9 @@ interface BottomBarProps {
   onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
   onUpdateChatBarCount: (count: number) => void; // 추가된 prop
   onReqPrevChatting: (isEnter: boolean) => void;
+  isSendingMessage: {
+    state: boolean;
+  };
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({
@@ -48,6 +52,8 @@ const BottomBar: React.FC<BottomBarProps> = ({
   onLoading,
   onUpdateChatBarCount,
   onReqPrevChatting,
+  isSendingMessage,
+  send,
 }) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -56,12 +62,11 @@ const BottomBar: React.FC<BottomBarProps> = ({
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [selectedEmoticonId, setSelectedEmoticonId] = useState<number | null>(null);
   const [selectedEmoticonIsFavorite, setselectedEmoticonIsFavorite] = useState(false);
-  const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
+
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const currentContentId: number = useSelector((state: RootState) => state.chatting.contentId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
-  const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
   const [failMessage, setfailMessage] = useState<string | null>(null);
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -157,36 +162,10 @@ const BottomBar: React.FC<BottomBarProps> = ({
       }
 
       reqSendChatMessage.text = message.replace(/\(,\)/g, '');
-      Send(reqSendChatMessage);
+      send(reqSendChatMessage);
     }
   };
-  const Send = async (reqSendChatMessage: SendChatMessageReq) => {
-    try {
-      const response = (await Promise.race([
-        sendMessageStream(reqSendChatMessage),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 5000)),
-      ])) as SendChatMessageResSuccess | SendChatMessageResError;
 
-      if ('streamKey' in response) {
-        // 성공적인 응답 처리
-        setStreamKey(response.streamKey);
-      } else if ('resultCode' in response) {
-        // 오류 응답 처리
-        if (response.resultCode === 13) {
-          setIsSendingMessage({state: false});
-          onLoading(false);
-          setNotEnoughRubyPopupOpen(true);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      onSend('%Failed to send message. Please try again.%', false, false);
-
-      onLoading(false);
-    } finally {
-      isSendingMessage.state = false;
-    }
-  };
   useEffect(() => {
     if (streamKey === '') return;
     console.log('stream key : ', streamKey);
@@ -305,13 +284,6 @@ const BottomBar: React.FC<BottomBarProps> = ({
           }}
           onSend={handleSend} // 팝업에서 이모티콘 클릭 시 전송
           isFavorite={selectedEmoticonIsFavorite}
-        />
-      )}
-      {isNotEnoughRubyPopupOpen && (
-        <NotEnoughRubyPopup
-          open={isNotEnoughRubyPopupOpen}
-          onClose={() => setNotEnoughRubyPopupOpen(false)} // 팝업 닫기
-          rubyAmount={5} //필요 루비 임시
         />
       )}
     </Box>

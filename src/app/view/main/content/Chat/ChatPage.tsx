@@ -29,11 +29,15 @@ import {
   EmoticonGroupInfo,
   ChattingResultData,
   SendChatMessageReq,
+  sendMessageStream,
+  SendChatMessageResSuccess,
+  SendChatMessageResError,
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {COMMAND_SYSTEM, Message, MessageGroup} from './MainChat/ChatTypes';
 import NextEpisodePopup from './MainChat/NextEpisodePopup';
+import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
 
 const ChatPage: React.FC = () => {
   const [parsedMessages, setParsedMessages] = useState<MessageGroup>({chatId: -1, Messages: [], emoticonUrl: []});
@@ -50,7 +54,7 @@ const ChatPage: React.FC = () => {
 
   const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false); // 로딩 상태 추가
   const [ChattingState, setChatInfo] = useState<ChattingState>();
-  const [isReqPrevCheat, setReqPrevCheat] = useState<Boolean>(false); // 치트키로 애피소드 초기화.
+  const [isReqPrevCheat, setReqPrevCheat] = useState<boolean>(false); // 치트키로 애피소드 초기화.
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
   console.log('getWebBrowserUrl', key);
@@ -332,7 +336,35 @@ const ChatPage: React.FC = () => {
     }
   }, [enterData, hasFetchedPrevMessages, isReqPrevCheat]);
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
+  const Send = async (reqSendChatMessage: SendChatMessageReq) => {
+    try {
+      const response = (await Promise.race([
+        sendMessageStream(reqSendChatMessage),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 5000)),
+      ])) as SendChatMessageResSuccess | SendChatMessageResError;
 
+      if ('streamKey' in response) {
+        // 성공적인 응답 처리
+        setStreamKey(response.streamKey);
+      } else if ('resultCode' in response) {
+        // 오류 응답 처리
+        if (response.resultCode === 13) {
+          setIsSendingMessage({state: false});
+          SetChatLoading(false);
+          setNotEnoughRubyPopupOpen(true);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      handleSendMessage('%Failed to send message. Please try again.%', false, false);
+
+      SetChatLoading(false);
+    } finally {
+      isSendingMessage.state = false;
+    }
+  };
+  const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
+  const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
   return (
     <main className={styles.chatmodal}>
       <div className={styles.overlayContainer}>
@@ -363,10 +395,19 @@ const ChatPage: React.FC = () => {
         onLoading={SetChatLoading}
         onUpdateChatBarCount={SetChatBarCount}
         onReqPrevChatting={setReqPrevCheat}
+        isSendingMessage={isSendingMessage}
+        send={Send}
       />
 
       {showPopup && (
         <NextEpisodePopup onYes={handlePopupYes} onNo={handlePopupNo} open={showPopup} data={nextPopupData} />
+      )}
+      {isNotEnoughRubyPopupOpen && (
+        <NotEnoughRubyPopup
+          open={isNotEnoughRubyPopupOpen}
+          onClose={() => setNotEnoughRubyPopupOpen(false)} // 팝업 닫기
+          rubyAmount={5} //필요 루비 임시
+        />
       )}
     </main>
   );
