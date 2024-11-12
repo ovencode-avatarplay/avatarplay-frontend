@@ -8,7 +8,13 @@ import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import styles from '@chats/BottomBar/FooterChat.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {SendChatMessageReq, sendMessageStream, EmoticonGroupInfo} from '@/app/NetWork/ChatNetwork';
+import {
+  SendChatMessageReq,
+  sendMessageStream,
+  EmoticonGroupInfo,
+  SendChatMessageResSuccess,
+  SendChatMessageResError,
+} from '@/app/NetWork/ChatNetwork';
 import Sticker from './Sticker';
 import EmojiOverlayPopup from './EmojiOverlayPopup';
 import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
@@ -19,8 +25,10 @@ import ChatBar from './ChatBar';
 import NotEnoughRubyPopup from '../MainChat/NotEnoughRubyPopup';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
 import {ChattingCheatRes} from '@/app/NetWork/CheatNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, isClearString: boolean) => void;
+  send: (reqSendChatMessage: SendChatMessageReq) => void;
   streamKey: string;
   setStreamKey: (key: string) => void;
   EmoticonData?: EmoticonGroupInfo[];
@@ -28,6 +36,10 @@ interface BottomBarProps {
   onToggleBackground: () => void;
   onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
   onUpdateChatBarCount: (count: number) => void; // 추가된 prop
+  onReqPrevChatting: (isEnter: boolean) => void;
+  isSendingMessage: {
+    state: boolean;
+  };
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({
@@ -39,6 +51,9 @@ const BottomBar: React.FC<BottomBarProps> = ({
   isHideChat,
   onLoading,
   onUpdateChatBarCount,
+  onReqPrevChatting,
+  isSendingMessage,
+  send,
 }) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -47,14 +62,12 @@ const BottomBar: React.FC<BottomBarProps> = ({
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [selectedEmoticonId, setSelectedEmoticonId] = useState<number | null>(null);
   const [selectedEmoticonIsFavorite, setselectedEmoticonIsFavorite] = useState(false);
-  const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
+
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
-  const currnetContentId: number = useSelector((state: RootState) => state.chatting.contentId);
-  const currnetEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
+  const currentContentId: number = useSelector((state: RootState) => state.chatting.contentId);
   const UserId: number = useSelector((state: RootState) => state.user.userId);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
-  const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
-
+  const [failMessage, setfailMessage] = useState<string | null>(null);
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
     setSelectedEmoji(null);
@@ -66,28 +79,35 @@ const BottomBar: React.FC<BottomBarProps> = ({
 
   const cheatMessageProcess = async (messages: string): Promise<boolean> => {
     // 치트 메시지인가?
-    if (isAnyCheatMessageType(messages || '')) {
+    const cheat = messages ? messages : '';
+    let result: boolean = false;
+
+    if (isAnyCheatMessageType(cheat)) {
       try {
-        const chattingCheatRes = await cheatMessage(currnetContentId, currnetEpisodeId, messages);
+        const chattingCheatRes = await cheatMessage(currentContentId, currentEpisodeId, messages);
 
         if (chattingCheatRes) {
-          const cheatResult = cheatManager(chattingCheatRes, currnetEpisodeId);
-          if (cheatResult.length > 0) {
-            onSend(cheatResult, true, false);
-            onLoading(false);
-            return true;
-          } else return false;
+          const cheatResult = cheatManager(chattingCheatRes);
+          if (cheatResult.text.length > 0) {
+            onSend(cheatResult.text, true, false);
+            result = true;
+          } else if (cheatResult.reqEnter === true) {
+            onReqPrevChatting(true);
+            result = true;
+          }
+          result = true;
         } else {
           console.warn('ChattingCheatRes is undefined');
-          return false;
+          result = true;
         }
       } catch (error) {
         console.error('Error fetching cheat message:', error);
-        return false;
+        result = true;
       }
-      return false;
+      result = true;
+      onLoading(false);
     }
-    return false;
+    return result;
   };
 
   const handleSend = async () => {
@@ -97,7 +117,6 @@ const BottomBar: React.FC<BottomBarProps> = ({
 
     // 치트 메시지면 치트키 처리하고 빠져나온다.
     if ((await cheatMessageProcess(messages || '')) === true) {
-      console.log('SendCheatMessage 처리됨');
       isSendingMessage.state = false;
       return;
     }
@@ -142,24 +161,8 @@ const BottomBar: React.FC<BottomBarProps> = ({
         onSend(message, true, parseMessage);
       }
 
-      // 이미 선언된 reqSendChatMessage의 text 필드를 (,)가 제거된 메시지로 업데이트
-      reqSendChatMessage.text = message.replace(/\(,\)/g, ''); // (,)를 제거한 메시지
-
-      console.log('reqSendChatMessage', reqSendChatMessage);
-      const response = await sendMessageStream(reqSendChatMessage);
-
-      // 성공적인 응답 처리
-      if ('streamKey' in response) {
-        // SendChatMessageResSuccess 타입인 경우
-        setStreamKey(response.streamKey);
-      } else {
-        // SendChatMessageResError 타입인 경우
-        if (response.resultCode === 13) {
-          setIsSendingMessage({state: false});
-          onLoading(false);
-          setNotEnoughRubyPopupOpen(true); // NotEnoughRubyPopup 팝업 열기
-        }
-      }
+      reqSendChatMessage.text = message.replace(/\(,\)/g, '');
+      send(reqSendChatMessage);
     }
   };
 
@@ -281,13 +284,6 @@ const BottomBar: React.FC<BottomBarProps> = ({
           }}
           onSend={handleSend} // 팝업에서 이모티콘 클릭 시 전송
           isFavorite={selectedEmoticonIsFavorite}
-        />
-      )}
-      {isNotEnoughRubyPopupOpen && (
-        <NotEnoughRubyPopup
-          open={isNotEnoughRubyPopupOpen}
-          onClose={() => setNotEnoughRubyPopupOpen(false)} // 팝업 닫기
-          rubyAmount={5}
         />
       )}
     </Box>

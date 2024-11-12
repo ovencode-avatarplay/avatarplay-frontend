@@ -6,6 +6,10 @@ import {MessageGroup} from './ChatTypes';
 import ChatTtsPlayer from './ChatTtsPlayer';
 import {GenerateTtsUrl} from './GenerateTtsUrl';
 
+import ReplayIcon from '@mui/icons-material/Replay';
+import {SendChatMessageReq} from '@/app/NetWork/ChatNetwork';
+import {RootState} from '@/redux-store/ReduxStore';
+import {useSelector} from 'react-redux';
 interface ChatAreaProps {
   messages: MessageGroup;
   bgUrl: string;
@@ -15,6 +19,7 @@ interface ChatAreaProps {
   isLoading: boolean; // 로딩 상태 추가
   chatBarCount: number;
   transitionEnabled: boolean; // 배경 이미지 전환 여부를 제어하는 프롭
+  send: (reqSendChatMessage: SendChatMessageReq) => void;
 }
 
 const ChatArea: React.FC<ChatAreaProps> = ({
@@ -26,12 +31,15 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   isLoading,
   chatBarCount,
   transitionEnabled, // transitionEnabled 프롭을 추가
+  send,
 }) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [selectedBubbleIndex, setSelectedBubbleIndex] = useState<number | null>(null);
 
+  const chatInfo = useSelector((state: RootState) => state);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [retryingMessages, setRetryingMessages] = useState<number[]>([]);
 
   const handleBubbleClick = (index: number) => {
     if (selectedBubbleIndex === null) {
@@ -110,7 +118,19 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       }, 500); // 페이드 아웃 시간
     }
   }, [bgUrl, prevBgUrl, transitionEnabled]);
+  const handleRetry = (msgText: string, chatId: number) => {
+    // 재전송을 시도한 메시지의 chatId를 상태에 추가하여 버튼 숨기기
+    setRetryingMessages(prev => [...prev, chatId]);
 
+    // 실패한 메시지를 재전송하기 위한 요청 데이터 생성
+    const retryMessage: SendChatMessageReq = {
+      userId: chatInfo.user.userId,
+      episodeId: chatInfo.chatting.episodeId,
+      text: msgText,
+    };
+
+    send(retryMessage); // Send 함수를 호출하여 메시지를 재전송
+  };
   return (
     <>
       {isHideChat === false && (
@@ -187,23 +207,60 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           >
             <Box onClick={() => setSelectedBubbleIndex(null)}>
               {messages.Messages.map((msg, index) => (
-                <ChatMessageBubble
-                  key={index}
-                  text={msg.text}
-                  sender={msg.sender}
-                  index={index}
-                  iconUrl={iconUrl}
-                  emoticonUrl={messages.emoticonUrl[index]}
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleBubbleClick(index);
-                  }}
-                  onTtsClick={e => {
-                    e.stopPropagation();
-                    handlePlayAudio(msg.text);
-                  }}
-                  selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
-                />
+                <React.Fragment key={index}>
+                  <ChatMessageBubble
+                    key={index}
+                    text={msg.text}
+                    sender={msg.sender}
+                    id={msg.chatId}
+                    index={index}
+                    iconUrl={iconUrl}
+                    emoticonUrl={messages.emoticonUrl[index]}
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleBubbleClick(index);
+                    }}
+                    onTtsClick={e => {
+                      e.stopPropagation();
+                      handlePlayAudio(msg.text);
+                    }}
+                    selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
+                  />
+                  {/* Retry 버튼 조건부 렌더링 */}
+                  {msg.sender === 'system' &&
+                    msg.text.includes('Failed to send message. Please try again.') &&
+                    !retryingMessages.includes(msg.chatId) && ( // 재전송된 메시지 제외
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginTop: '8px',
+                          padding: '4px 8px',
+                          backgroundColor: 'white',
+                          borderRadius: '12px',
+                          border: '1px solid black',
+                          color: 'black',
+                          cursor: 'pointer',
+                          position: 'relative',
+                          width: '100px',
+                          top: '-10px',
+                          margin: '0 auto', // 수평 중앙 정렬
+                        }}
+                        onClick={() => handleRetry(msg.text, msg.chatId)} // 재전송을 위해 handleRetry 호출
+                      >
+                        <ReplayIcon
+                          sx={{
+                            color: 'black',
+                            marginRight: '4px',
+                            fontSize: '1.2em',
+                            borderRadius: '50%',
+                          }}
+                        />
+                        <span>Retry</span>
+                      </Box>
+                    )}
+                </React.Fragment>
               ))}
             </Box>
 
@@ -244,7 +301,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                 </Box>
               </Box>
             )}
-
             <div ref={bottomRef} />
           </Box>
         </Box>

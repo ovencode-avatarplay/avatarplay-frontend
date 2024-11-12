@@ -8,6 +8,7 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import Link from 'next/link';
 
 import styles from './CreateWidget.module.css';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface Props {
   open: boolean;
@@ -52,7 +53,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         <Link href="/:lang/create/artist" passHref>
           <Box className={styles.drawerItem} onClick={handleClickCharacter}>
             <PersonIcon fontSize="large" />
-            <Typography>Character</Typography>
+            <Typography>{getLocalizedText('widget_character')}</Typography>
           </Box>
         </Link>
 
@@ -60,7 +61,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         <Link href="/:lang/create/story" passHref>
           <Box className={styles.drawerItem} onClick={handleClickStory}>
             <BookIcon fontSize="large" />
-            <Typography>Story</Typography>
+            <Typography>{getLocalizedText('widget_story')}</Typography>
           </Box>
         </Link>
 
@@ -68,7 +69,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         <Link href="/:lang/create/post" passHref>
           <Box className={styles.drawerItem} onClick={handleClickPost}>
             <PostAddIcon fontSize="large" />
-            <Typography>Post</Typography>
+            <Typography>{getLocalizedText('widget_post')}</Typography>
           </Box>
         </Link>
       </Box>

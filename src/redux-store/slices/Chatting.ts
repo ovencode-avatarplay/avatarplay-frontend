@@ -4,7 +4,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 export type ChattingState = {
   contentName: string;
   episodeName: string;
-  contentId: number;
+  contentId: number; // url enter방식일때 필수. 그 외에는 아무값이나 넣어도 됨 ( 24년-11-11 )
   episodeId: number;
   contentUrl: string;
 };

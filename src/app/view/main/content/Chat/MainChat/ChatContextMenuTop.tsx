@@ -5,17 +5,20 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import styles from '../Styles/ChatMessageMenu.module.css';
 
-interface ChatContextTopProps {}
+interface ChatContextTopProps {
+  id: number;
+}
 
 // 핸들러 함수 선언
 const handleLike = () => {};
 const handleDislike = () => {};
 
-const ChatMessageMenuTop: React.FC<ChatContextTopProps> = () => {
+const ChatMessageMenuTop: React.FC<ChatContextTopProps> = ({id}) => {
   return (
     <Box>
       {/* 상단의 가로 메뉴 - Like와 Dislike 버튼 */}
       <Box className={styles.topMenuContainer}>
+        {id}
         <IconButton onClick={handleLike} className={styles.iconButton}>
           <ThumbUpIcon />
           <Typography variant="body2">Like</Typography>

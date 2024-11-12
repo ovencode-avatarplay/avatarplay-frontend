@@ -274,8 +274,6 @@ const DrawerContentDesc = () => {
             />
           </CardContent>
         </Card>
-      </main>
-      <main className={styles.chatingControlPanel}>
         <Box className={styles.chapterBox}>
           <Typography className={styles.chapterName} variant="h6">
             Chapter
