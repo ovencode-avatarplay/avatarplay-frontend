@@ -1,13 +1,13 @@
 import {Avatar, Box} from '@mui/material';
 import ChatMessageMenuTop from './ChatContextMenuTop';
 import ChatMessageMenuBottom from './ChatContextMenuBottom';
-import ReplayIcon from '@mui/icons-material/Replay';
-import {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from '../Styles/ChatMessageMenu.module.css';
 
 interface ChatMessageBubbleProps {
   text: string;
   sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
+  id: number;
   iconUrl: string;
   index: number;
   emoticonUrl: string;
@@ -19,6 +19,7 @@ interface ChatMessageBubbleProps {
 const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   text,
   sender,
+  id,
   iconUrl,
   index,
   emoticonUrl,
@@ -26,6 +27,8 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   onTtsClick,
   selectedIndex,
 }) => {
+  const [textMessage, setTextMessage] = useState(text);
+
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
     if (sender !== 'user') {
       onClick(e);
@@ -33,6 +36,14 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   };
   const handleTtsClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     onTtsClick(e);
+  };
+
+  const handleDelete = () => {
+    setTextMessage('');
+  };
+
+  const handleModified = (newText: string) => {
+    setTextMessage(newText);
   };
 
   return (
@@ -43,8 +54,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
       }}
     >
       <div className={styles.chatBubble}>
-        {selectedIndex === index && <ChatMessageMenuTop />}
-
+        {selectedIndex === index && <ChatMessageMenuTop id={id} />}
         <Box
           key={index}
           sx={{
@@ -111,15 +121,18 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
             {sender === 'user' && emoticonUrl !== '' && emoticonUrl !== undefined ? (
               <img src={emoticonUrl} alt="Emoticon" style={{width: '24px', height: '24px', marginTop: '4px'}} />
             ) : (
-              <div dangerouslySetInnerHTML={{__html: text}} />
+              <div dangerouslySetInnerHTML={{__html: textMessage}} />
             )}
           </Box>
           {selectedIndex === index && (
             <ChatMessageMenuBottom
               text={text}
+              id={id}
               onTtsClick={e => {
                 handleTtsClick(e);
               }}
+              onDelete={handleDelete}
+              onModified={handleModified}
             />
           )}
         </Box>

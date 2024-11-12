@@ -9,10 +9,9 @@ interface ImageButtonProps {
   image: string;
   selected: boolean;
   onClick: () => void;
-  onDoubleClick : () => void;
 }
 
-const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({width, height, label, image, selected, onClick }) => {
+const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({width, height, label, image, selected, onClick}) => {
   return (
     <Button
       onClick={onClick}
@@ -63,7 +62,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({width, height, 
           border: `2px solid ${selected ? 'blue' : 'red'}`,
         }}
       >
-        <Typography variant="subtitle3" sx={{fontWeight: 'bold', color: 'black'}}>
+        <Typography variant="subtitle2" sx={{fontWeight: 'bold', color: 'black'}}>
           {label}
         </Typography>
       </Box>
