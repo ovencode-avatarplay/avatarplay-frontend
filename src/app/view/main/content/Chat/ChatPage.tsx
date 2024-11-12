@@ -28,6 +28,7 @@ import {
   fetchEmoticonGroups,
   EmoticonGroupInfo,
   ChattingResultData,
+  SendChatMessageReq,
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';

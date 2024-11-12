@@ -1,6 +1,7 @@
 import {Avatar, Box} from '@mui/material';
 import ChatMessageMenuTop from './ChatContextMenuTop';
 import ChatMessageMenuBottom from './ChatContextMenuBottom';
+import ReplayIcon from '@mui/icons-material/Replay';
 import {useState} from 'react';
 import styles from '../Styles/ChatMessageMenu.module.css';
 
@@ -38,8 +39,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
     <Box
       sx={{
         zIndex: selectedIndex === null ? 'auto' : index === selectedIndex ? 10 : 'auto',
-        filter: selectedIndex === null ? 'none' : index === selectedIndex ? 'none' : 'blur(2px)', // 선택된 버블은 blur가 없음
-        // pointerEvents: isSelected ? 'auto' : 'none', // 선택된 버블만 클릭 가능
+        filter: selectedIndex === null ? 'none' : index === selectedIndex ? 'none' : 'blur(2px)',
       }}
     >
       <div className={styles.chatBubble}>

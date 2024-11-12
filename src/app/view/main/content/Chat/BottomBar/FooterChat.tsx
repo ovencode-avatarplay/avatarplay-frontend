@@ -8,7 +8,13 @@ import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import styles from '@chats/BottomBar/FooterChat.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {SendChatMessageReq, sendMessageStream, EmoticonGroupInfo} from '@/app/NetWork/ChatNetwork';
+import {
+  SendChatMessageReq,
+  sendMessageStream,
+  EmoticonGroupInfo,
+  SendChatMessageResSuccess,
+  SendChatMessageResError,
+} from '@/app/NetWork/ChatNetwork';
 import Sticker from './Sticker';
 import EmojiOverlayPopup from './EmojiOverlayPopup';
 import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
@@ -19,6 +25,7 @@ import ChatBar from './ChatBar';
 import NotEnoughRubyPopup from '../MainChat/NotEnoughRubyPopup';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
 import {ChattingCheatRes} from '@/app/NetWork/CheatNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
 interface BottomBarProps {
   onSend: (message: string, isMyMessage: boolean, isClearString: boolean) => void;
   streamKey: string;
@@ -55,7 +62,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
   const UserId: number = useSelector((state: RootState) => state.user.userId);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
   const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
-
+  const [failMessage, setfailMessage] = useState<string | null>(null);
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
     setSelectedEmoji(null);
@@ -93,8 +100,8 @@ const BottomBar: React.FC<BottomBarProps> = ({
         result = true;
       }
       result = true;
+      onLoading(false);
     }
-    onLoading(false);
     return result;
   };
 
@@ -149,27 +156,37 @@ const BottomBar: React.FC<BottomBarProps> = ({
         onSend(message, true, parseMessage);
       }
 
-      // 이미 선언된 reqSendChatMessage의 text 필드를 (,)가 제거된 메시지로 업데이트
-      reqSendChatMessage.text = message.replace(/\(,\)/g, ''); // (,)를 제거한 메시지
+      reqSendChatMessage.text = message.replace(/\(,\)/g, '');
+      Send(reqSendChatMessage);
+    }
+  };
+  const Send = async (reqSendChatMessage: SendChatMessageReq) => {
+    try {
+      const response = (await Promise.race([
+        sendMessageStream(reqSendChatMessage),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 5000)),
+      ])) as SendChatMessageResSuccess | SendChatMessageResError;
 
-      console.log('reqSendChatMessage', reqSendChatMessage);
-      const response = await sendMessageStream(reqSendChatMessage);
-
-      // 성공적인 응답 처리
       if ('streamKey' in response) {
-        // SendChatMessageResSuccess 타입인 경우
+        // 성공적인 응답 처리
         setStreamKey(response.streamKey);
-      } else {
-        // SendChatMessageResError 타입인 경우
+      } else if ('resultCode' in response) {
+        // 오류 응답 처리
         if (response.resultCode === 13) {
           setIsSendingMessage({state: false});
           onLoading(false);
-          setNotEnoughRubyPopupOpen(true); // NotEnoughRubyPopup 팝업 열기
+          setNotEnoughRubyPopupOpen(true);
         }
       }
+    } catch (error) {
+      console.error(error);
+      onSend('%Failed to send message. Please try again.%', false, false);
+
+      onLoading(false);
+    } finally {
+      isSendingMessage.state = false;
     }
   };
-
   useEffect(() => {
     if (streamKey === '') return;
     console.log('stream key : ', streamKey);
@@ -294,7 +311,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
         <NotEnoughRubyPopup
           open={isNotEnoughRubyPopupOpen}
           onClose={() => setNotEnoughRubyPopupOpen(false)} // 팝업 닫기
-          rubyAmount={5}
+          rubyAmount={5} //필요 루비 임시
         />
       )}
     </Box>
