@@ -1,0 +1,26 @@
+{
+    "sample_text": {
+        "ko": "샘플",
+        "en": "Sample",
+        "jp": "Sample Jp",
+        "ar": "Sample Ar"
+    },
+    "widget_character" : {
+        "ko" : "캐릭터",
+        "en" : "Character",
+        "jp" : "Character Jp",
+        "ar" : "Character Ar"
+    },
+    "widget_story" : {
+        "ko" : "스토리",
+        "en" : "Story",
+        "jp" : "Story Jp",
+        "ar" : "Story Ar"
+    },
+    "widget_post" : {
+        "ko" : "포스트",
+        "en" : "Post",
+        "jp" : "Post Jp",
+        "ar" : "Post Ar"
+    }
+}
