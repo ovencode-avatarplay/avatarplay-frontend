@@ -28,6 +28,7 @@ interface BottomBarProps {
   onToggleBackground: () => void;
   onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
   onUpdateChatBarCount: (count: number) => void; // 추가된 prop
+  onReqPrevChatting: (isEnter: boolean) => void;
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({
@@ -39,6 +40,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
   isHideChat,
   onLoading,
   onUpdateChatBarCount,
+  onReqPrevChatting,
 }) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -65,28 +67,35 @@ const BottomBar: React.FC<BottomBarProps> = ({
 
   const cheatMessageProcess = async (messages: string): Promise<boolean> => {
     // 치트 메시지인가?
-    if (isAnyCheatMessageType(messages || '')) {
+    const cheat = messages ? messages : '';
+    let result: boolean = false;
+
+    if (isAnyCheatMessageType(cheat)) {
       try {
         const chattingCheatRes = await cheatMessage(currentContentId, currentEpisodeId, messages);
 
         if (chattingCheatRes) {
           const cheatResult = cheatManager(chattingCheatRes);
-          if (cheatResult.length > 0) {
-            onSend(cheatResult, true, false);
-            onLoading(false);
-            return true;
-          } else return false;
+          if (cheatResult.text.length > 0) {
+            onSend(cheatResult.text, true, false);
+            result = true;
+          } else if (cheatResult.reqEnter === true) {
+            onReqPrevChatting(true);
+            result = true;
+          }
+          result = true;
         } else {
           console.warn('ChattingCheatRes is undefined');
-          return false;
+          result = true;
         }
       } catch (error) {
         console.error('Error fetching cheat message:', error);
-        return false;
+        result = true;
       }
-      return false;
+      result = true;
     }
-    return false;
+    onLoading(false);
+    return result;
   };
 
   const handleSend = async () => {
@@ -96,7 +105,6 @@ const BottomBar: React.FC<BottomBarProps> = ({
 
     // 치트 메시지면 치트키 처리하고 빠져나온다.
     if ((await cheatMessageProcess(messages || '')) === true) {
-      console.log('SendCheatMessage 처리됨');
       isSendingMessage.state = false;
       return;
     }

@@ -49,6 +49,7 @@ const ChatPage: React.FC = () => {
 
   const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false); // 로딩 상태 추가
   const [ChattingState, setChatInfo] = useState<ChattingState>();
+  const [isReqPrevCheat, setReqPrevCheat] = useState<Boolean>(false); // 치트키로 애피소드 초기화.
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
   console.log('getWebBrowserUrl', key);
@@ -222,6 +223,7 @@ const ChatPage: React.FC = () => {
     const chattingState: ChattingState = {
       contentName: `content episode${episodeId}`,
       episodeName: `episode${episodeId}`,
+      contentId: Number(contentId),
       episodeId: Number(episodeId),
       contentUrl: shortsId,
     };
@@ -262,7 +264,8 @@ const ChatPage: React.FC = () => {
   useEffect(() => {
     if (
       (!hasFetchedPrevMessages && enterData && (enterData?.prevMessageInfoList || enterData?.introPrompt.length > 0)) ||
-      (nextEpisodeId != null && enterData?.episodeId === nextEpisodeId)
+      (nextEpisodeId != null && enterData?.episodeId === nextEpisodeId) ||
+      isReqPrevCheat === true
     ) {
       // flatMap을 통해 parsedPrevMessages를 생성
       // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
@@ -304,6 +307,7 @@ const ChatPage: React.FC = () => {
         setNextEpisodeId(null);
         setIsIdEnter(false);
       }
+      if (isReqPrevCheat === true) setReqPrevCheat(false);
       const loadEmoticons = async () => {
         try {
           const response = await fetchEmoticonGroups();
@@ -314,7 +318,7 @@ const ChatPage: React.FC = () => {
       };
       loadEmoticons();
     }
-  }, [enterData, hasFetchedPrevMessages]);
+  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat]);
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
 
   return (
@@ -346,6 +350,7 @@ const ChatPage: React.FC = () => {
         onToggleBackground={handleToggleBackground}
         onLoading={SetChatLoading}
         onUpdateChatBarCount={SetChatBarCount}
+        onReqPrevChatting={setReqPrevCheat}
       />
 
       {showPopup && (

@@ -17,8 +17,9 @@ export const sendMessageCheat = async (
   sendCheatMessageReq: ChattingCheatReq,
 ): Promise<ResponseAPI<ChattingCheatRes>> => {
   try {
+    console.log('치트키 보냄 : ', sendCheatMessageReq.text);
     const response = await api.post<ResponseAPI<ChattingCheatRes>>('Test/cheat', sendCheatMessageReq);
-
+    console.log('치트키 결과 : ', response.data.resultCode);
     if (response.data.resultCode === 0) {
       return response.data; // Return on success
     } else {

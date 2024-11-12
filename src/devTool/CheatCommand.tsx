@@ -1,6 +1,7 @@
 'use client';
 import {ChattingCheatReq, ChattingCheatRes, sendMessageCheat} from '@/app/NetWork/CheatNetwork';
-import CheatMessageType from './cheat_type';
+import CheatMessageType, {CheatResult} from './cheat_type';
+import usePrevChatting from '@/app/view/main/content/Chat/MainChat/PrevChatting';
 
 const cheatMessage = async (contentId: number, episodeId: number, cheatText: string) => {
   const requestData: ChattingCheatReq = {
@@ -18,22 +19,31 @@ const cheatMessage = async (contentId: number, episodeId: number, cheatText: str
   }
 };
 
-// 문자열에 enum 값이 포함되어 있는지 확인하는 함수
 const isAnyCheatMessageType = (message: string): boolean => {
-  return Object.values(CheatMessageType).some(type => message.includes(type));
+  // 배열에 대해 'some'을 사용하여 각 문자열이 'message'에 포함되는지 확인
+  return CheatMessageType.some((type: string) => message.includes(type));
 };
 
-const cheatManager = (response: ChattingCheatRes): string => {
-  // 채팅창 초기화 ( 현재 애피소드에서 Enter를 재요청한다.)
-  if (response.isEpisodeInit === true) {
-    // 기존 채팅창 닫고 Enter를 다시 시도한다.
+// 테스트 예시
+console.log(isAnyCheatMessageType('⦿EPISODE_INIT⦿')); // true를 예상
 
-    return '';
+const cheatManager = (response: ChattingCheatRes): CheatResult => {
+  // 기본 result 객체 설정
+  const result: CheatResult = {
+    text: '',
+    reqEnter: false,
+  };
+
+  // 채팅창 초기화 (현재 애피소드에서 Enter를 재요청한다.)
+  if (response.isEpisodeInit === true) {
+    result.reqEnter = true;
   }
   // 말풍선에 치트키에 대한 응답정보를 출력해준다.
   else if (response.resultText.length > 0) {
-    return response.resultText;
+    result.text = response.resultText;
   }
-  return '';
+
+  return result;
 };
+
 export {cheatMessage, isAnyCheatMessageType, cheatManager};

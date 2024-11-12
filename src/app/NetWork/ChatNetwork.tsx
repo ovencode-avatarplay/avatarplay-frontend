@@ -327,9 +327,16 @@ export const fetchEmoticonGroups = async (): Promise<EmoticonGroupRes> => {
     if (response.data.resultCode === 0) {
       return response.data;
     } else {
+      // 서버에서 애러코드에 해당하는 문자열을 시스템메시지에 출력해줘야 한다.
       throw new Error(response.data.resultMessage); // 에러 메시지 처리
     }
   } catch (error) {
+    // 여기가 네트워크 오류에 해당하는 부분
+    // 서버와 연결이 되지 않을때 시스템 메시지 처리--
+    // 하지만 어떤 APi를 사용했을때였는지 까지도 시스템 메시지에 추가해주자.
+    // ex) 서버와의 연결에 실패했습니다. 잠시 후 다시 이용해 주세요
+    //     error.status 값
+
     console.error('Error fetching Emoticon Group:', error);
     throw new Error('Failed to fetch Emoticon Groups. Please try again.'); // 에러 메시지 처리
   }
