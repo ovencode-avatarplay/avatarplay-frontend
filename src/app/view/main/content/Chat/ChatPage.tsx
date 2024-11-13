@@ -198,8 +198,7 @@ const ChatPage: React.FC = () => {
       const allMessages = [...(prev?.Messages || [])];
 
       // 메시지가 비어있으면 반환
-      if (newMessage.text.length === 0)
-        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || [], chatId: -1};
+      if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
 
       // 메시지 정리
       if (isClearString) newMessage.text = cleanString(newMessage.text);
@@ -218,7 +217,7 @@ const ChatPage: React.FC = () => {
           sender: 'system',
         };
         allMessages.push(newMessageSystem);
-        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || [], chatId: id};
+        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
       }
 
       // 내 메시지
@@ -305,7 +304,7 @@ const ChatPage: React.FC = () => {
       }
 
       // 업데이트된 Messages 배열을 MessageInfo 객체로 반환
-      return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || [], chatId: id};
+      return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
     });
   };
 
