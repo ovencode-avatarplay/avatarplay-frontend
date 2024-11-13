@@ -134,6 +134,8 @@ const ChatPage: React.FC = () => {
         handleSendMessage(newMessage, false, false);
         if (newMessage.includes('$') === true) {
           isSendingMessage.state = false;
+          eventSource.close();
+          console.log('Stream ended normally');
         }
       } catch (error) {
         console.error('Error processing message:', error);
@@ -142,9 +144,10 @@ const ChatPage: React.FC = () => {
     };
 
     eventSource.onerror = error => {
-      console.log(error);
-      eventSource.close();
+      console.error('Stream encountered an error or connection was lost');
+      handleSendMessage('%Stream encountered an error or connection was lost. Please try again.%', false, false);
       isSendingMessage.state = false;
+      eventSource.close();
     };
 
     return () => {

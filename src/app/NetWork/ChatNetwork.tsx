@@ -393,3 +393,31 @@ export const deleteChatting = async (req: DeleteChatReq): Promise<ResponseAPI<De
     throw new Error('Failed to delete chatting. Please try again.'); // Error handling
   }
 };
+
+// Chatting 조회 ##########################################
+
+export interface GetChatReq {
+  chatCotnteId: number; // 요청 파라미터에 맞춘 필드명
+  episodeId: number;
+}
+
+export interface GetChatRes {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    messageInfo: MessageInfo; //다른데 같은거 쓰고 있음
+  };
+}
+
+export const getChatting = async (req: GetChatReq): Promise<ResponseAPI<GetChatRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetChatRes>>('/api/v1/Chatting/get', req);
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(response.data.resultMessage); // Error handling
+    }
+  } catch (error) {
+    throw new Error('Failed to fetch chatting details. Please try again.'); // Error handling
+  }
+};
