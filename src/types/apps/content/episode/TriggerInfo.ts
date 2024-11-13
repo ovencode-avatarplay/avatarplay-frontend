@@ -10,9 +10,17 @@ export interface TriggerInfo {
   triggerValueTimeMinute: number;
   triggerActionType: number;
   actionChangeEpisodeId: number;
-  actionChangePrompt: string;
+  actionChangePrompt: ActionChangePrompt;
   actionIntimacyPoint: number;
   actionChangeBackground: string;
   maxIntimacyCount: number;
   actionConversationList: Conversation[];
+}
+
+export interface ActionChangePrompt {
+  characterName: string;
+  characterDescription: string;
+  scenarioDescription: string;
+  introDescription: string;
+  secret: string;
 }
