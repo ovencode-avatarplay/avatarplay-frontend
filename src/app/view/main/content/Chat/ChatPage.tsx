@@ -79,7 +79,76 @@ const ChatPage: React.FC = () => {
     setChatBarCount(num);
   };
 
-  //#region Message send handler
+  //#region 메세지 전송 로직
+
+  const Send = async (reqSendChatMessage: SendChatMessageReq) => {
+    try {
+      const response = (await Promise.race([
+        sendMessageStream(reqSendChatMessage),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 5000)),
+      ])) as SendChatMessageResSuccess | SendChatMessageResError;
+
+      if ('streamKey' in response) {
+        // 성공적인 응답 처리
+        setStreamKey(response.streamKey);
+      } else if ('resultCode' in response) {
+        // 오류 응답 처리
+        if (response.resultCode === 13) {
+          setIsSendingMessage({state: false});
+          SetChatLoading(false);
+          setNotEnoughRubyPopupOpen(true);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      handleSendMessage('%Failed to send message. Please try again.%', false, false);
+
+      SetChatLoading(false);
+    } finally {
+      isSendingMessage.state = false;
+    }
+  };
+
+  useEffect(() => {
+    if (streamKey === '') return;
+    console.log('stream key : ', streamKey);
+
+    const eventSource = new EventSource(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
+    );
+
+    eventSource.onmessage = event => {
+      try {
+        if (!event.data) {
+          throw new Error('Received null or empty data');
+          setIsLoading(false);
+        }
+
+        setIsLoading(false);
+
+        const newMessage = JSON.parse(event.data);
+        const parseMessage = true;
+        handleSendMessage(newMessage, false, parseMessage);
+        if (newMessage.includes('$') === true) {
+          isSendingMessage.state = false;
+        }
+      } catch (error) {
+        console.error('Error processing message:', error);
+        console.error('Received data:', event.data);
+      }
+    };
+
+    eventSource.onerror = error => {
+      console.log(error);
+      eventSource.close();
+      isSendingMessage.state = false;
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [streamKey]);
+
   const handleSendMessage = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
     if (!message || typeof message !== 'string') return;
 
@@ -234,6 +303,7 @@ const ChatPage: React.FC = () => {
       return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || [], chatId: id};
     });
   };
+
   //#endregion
 
   //#region  다음 에피소드 넘어가기
@@ -346,33 +416,7 @@ const ChatPage: React.FC = () => {
       loadEmoticons();
     }
   }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isReqPrevCheatComplete]);
-  const Send = async (reqSendChatMessage: SendChatMessageReq) => {
-    try {
-      const response = (await Promise.race([
-        sendMessageStream(reqSendChatMessage),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 5000)),
-      ])) as SendChatMessageResSuccess | SendChatMessageResError;
 
-      if ('streamKey' in response) {
-        // 성공적인 응답 처리
-        setStreamKey(response.streamKey);
-      } else if ('resultCode' in response) {
-        // 오류 응답 처리
-        if (response.resultCode === 13) {
-          setIsSendingMessage({state: false});
-          SetChatLoading(false);
-          setNotEnoughRubyPopupOpen(true);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      handleSendMessage('%Failed to send message. Please try again.%', false, false);
-
-      SetChatLoading(false);
-    } finally {
-      isSendingMessage.state = false;
-    }
-  };
   return (
     <main className={styles.chatmodal}>
       <div className={styles.overlayContainer}>

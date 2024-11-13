@@ -44,8 +44,6 @@ interface BottomBarProps {
 
 const BottomBar: React.FC<BottomBarProps> = ({
   onSend,
-  streamKey,
-  setStreamKey,
   EmoticonData,
   onToggleBackground,
   isHideChat,
@@ -165,45 +163,6 @@ const BottomBar: React.FC<BottomBarProps> = ({
       send(reqSendChatMessage);
     }
   };
-
-  useEffect(() => {
-    if (streamKey === '') return;
-    console.log('stream key : ', streamKey);
-
-    const eventSource = new EventSource(
-      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
-    );
-
-    eventSource.onmessage = event => {
-      try {
-        if (!event.data) {
-          throw new Error('Received null or empty data');
-          onLoading(false);
-        }
-
-        onLoading(false);
-
-        const newMessage = JSON.parse(event.data);
-        const parseMessage = true;
-        onSend(newMessage, false, parseMessage);
-        if (newMessage.includes('$') === true) {
-          isSendingMessage.state = false;
-        }
-      } catch (error) {
-        console.error('Error processing message:', error);
-        console.error('Received data:', event.data);
-      }
-    };
-
-    eventSource.onerror = () => {
-      eventSource.close();
-      isSendingMessage.state = false;
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [streamKey]);
 
   const handleKeyDown = (event: React.KeyboardEvent<Element>) => {
     if (event.key === 'Enter') {
