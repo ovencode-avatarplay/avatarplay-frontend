@@ -19,22 +19,19 @@ import {
   setStateChatting,
 } from '@/redux-store/slices/Chatting';
 
-const usePrevChatting = (episodeId: number, isCheat: boolean, isIdEnter: boolean = false) => {
+const usePrevChatting = (
+  episodeId: number,
+  isCheat: boolean,
+  setCheatCompleat: (data: boolean) => void,
+  isIdEnter: boolean = false,
+) => {
   // 이전 메시지 및 에러 상태값 정의s
   const [prevMessages, setPrevMessages] = useState<EnterEpisodeChattingRes>();
-  const [isCheatEnter, setCheatEnter] = useState<boolean>(false); // 이 값이 바뀌면 무조건 채팅방 Enter 처리
   console.log('isIdEnter', isIdEnter);
   const [error, setError] = useState<string | null>(null);
 
-  // API 요청 데이터 정의
-  const ReqData: EnterEpisodeChattingReq = {
-    episodeId: episodeId,
-  };
-
   const isUsedUrlLink = useSelector((state: RootState) => state.chattingEnter.isUsedUrlLink);
   const dispatch = useDispatch();
-
-  if (isCheat === true) setCheatEnter(!isCheatEnter); // useEffect에서 Enter를 요청하도록 해준다.
 
   // 데이터를 가져오는 비동기 함수
   const fetchChattingData = async () => {
@@ -51,6 +48,7 @@ const usePrevChatting = (episodeId: number, isCheat: boolean, isIdEnter: boolean
         // 서버로부터 이전 채팅 데이터를 가져옴
         //const response = await sendChattingEnter(ReqData);
         const response = await sendChattingEnterUrl(ReqDataUrl);
+        setCheatCompleat(true);
         if (response.resultCode === 0 && response.data) {
           // 가져온 데이터를 상태에 저장
           setPrevMessages(response.data);
@@ -90,13 +88,14 @@ const usePrevChatting = (episodeId: number, isCheat: boolean, isIdEnter: boolean
     }
   };
 
+  if (isCheat === true) fetchChattingData(); //setCheatEnter(!isCheatEnter); // useEffect에서 Enter를 요청하도록 해준다.
+
   // 컴포넌트가 마운트될 때와 userId 또는 episodeId가 변경될 때마다 API 호출
   useEffect(() => {
     fetchChattingData();
-  }, [episodeId, isCheatEnter]);
+  }, [episodeId]);
 
   // 이전 메시지와 에러를 반환
   return {prevMessages};
 };
-
 export default usePrevChatting;

@@ -55,6 +55,7 @@ const ChatPage: React.FC = () => {
   const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false); // 로딩 상태 추가
   const [ChattingState, setChatInfo] = useState<ChattingState>();
   const [isReqPrevCheat, setReqPrevCheat] = useState<boolean>(false); // 치트키로 애피소드 초기화.
+  const [isReqPrevCheatComplete, setReqPrevCheatComplete] = useState<boolean>(false); // 치트키로 애피소드 초기화.
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
   console.log('getWebBrowserUrl', key);
@@ -276,15 +277,20 @@ const ChatPage: React.FC = () => {
     console.log('배경 보기/숨기기 버튼 클릭');
     SetHideChat(!isHideChat);
   };
+
+  const handleReqPrevChatComplete = (isCompleate: boolean) => {
+    setReqPrevCheatComplete(isCompleate);
+  };
   //#endregion
 
-  const {prevMessages: enterData} = usePrevChatting(episodeId, isIdEnter);
+  const {prevMessages: enterData} = usePrevChatting(episodeId, isReqPrevCheat, handleReqPrevChatComplete, isIdEnter);
 
   useEffect(() => {
     if (
       (!hasFetchedPrevMessages && enterData && (enterData?.prevMessageInfoList || enterData?.introPrompt.length > 0)) ||
       (nextEpisodeId != null && enterData?.episodeId === nextEpisodeId) ||
-      isReqPrevCheat === true
+      isReqPrevCheat === true ||
+      isReqPrevCheatComplete === true
     ) {
       // flatMap을 통해 parsedPrevMessages를 생성
       // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
@@ -339,7 +345,7 @@ const ChatPage: React.FC = () => {
       };
       loadEmoticons();
     }
-  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat]);
+  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isReqPrevCheatComplete]);
   const Send = async (reqSendChatMessage: SendChatMessageReq) => {
     try {
       const response = (await Promise.race([
