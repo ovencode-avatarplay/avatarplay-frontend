@@ -29,9 +29,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   const [textMessage, setTextMessage] = useState(text);
 
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (sender !== 'user') {
-      onClick(e);
-    }
+    onClick(e);
   };
   const handleTtsClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     onTtsClick(e);
@@ -43,6 +41,11 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
 
   const handleModified = (newText: string) => {
     setTextMessage(newText);
+  };
+
+  const checkCanOpenContextTop = (): boolean => {
+    if (sender !== 'user' && sender !== 'system' && sender !== 'introPrompt') return false;
+    return true;
   };
 
   useEffect(() => {
@@ -60,7 +63,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
           }}
         >
           <div className={styles.chatBubble}>
-            {selectedIndex === index && <ChatMessageMenuTop id={id} />}
+            {selectedIndex === index && checkCanOpenContextTop() && <ChatMessageMenuTop id={id} />}
             <Box
               key={index}
               sx={{

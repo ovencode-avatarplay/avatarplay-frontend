@@ -22,7 +22,7 @@ import {
 const usePrevChatting = (
   episodeId: number,
   isCheat: boolean,
-  setCheatCompleat: (data: boolean) => void,
+  setReRender: (data: boolean) => void,
   isIdEnter: boolean = false,
 ) => {
   // 이전 메시지 및 에러 상태값 정의s
@@ -48,7 +48,7 @@ const usePrevChatting = (
         // 서버로부터 이전 채팅 데이터를 가져옴
         //const response = await sendChattingEnter(ReqData);
         const response = await sendChattingEnterUrl(ReqDataUrl);
-        setCheatCompleat(true);
+        setReRender(true);
         if (response.resultCode === 0 && response.data) {
           // 가져온 데이터를 상태에 저장
           setPrevMessages(response.data);
@@ -68,6 +68,7 @@ const usePrevChatting = (
         // 서버로부터 이전 채팅 데이터를 가져옴
         dispatch(setUrlLinkUse(true)); // 상태 초기화
         const response = await sendChattingEnter(ReqData);
+        setReRender(true);
         if (response.resultCode === 0 && response.data) {
           // 가져온 데이터를 상태에 저장
           setPrevMessages(response.data);

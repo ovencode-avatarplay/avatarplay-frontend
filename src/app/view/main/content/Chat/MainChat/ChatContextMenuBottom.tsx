@@ -23,6 +23,8 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({text, id, onTtsCl
   const [modifyTextOpen, setModifyTextOpen] = useState(false);
   const [modifiedText, setModifiedText] = useState(text);
 
+  const deleteSuffix = '\n\n';
+
   const handleCopy = (text: string, event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     navigator.clipboard
@@ -38,7 +40,7 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({text, id, onTtsCl
   const handleDelete = async () => {
     const ReqData: DeleteChatReq = {
       chatId: id,
-      deleteText: text,
+      deleteText: text + deleteSuffix,
     };
     const response = await deleteChatting(ReqData);
     if (response.resultCode === 0 && response.data) {
@@ -49,6 +51,7 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({text, id, onTtsCl
     }
   };
 
+  //#region 기획상 사용 안하게 바뀜
   const handleOpenModifyText = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     setModifyTextOpen(!modifyTextOpen);
@@ -78,6 +81,11 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({text, id, onTtsCl
       console.log(getLocalizedText('SampleText', 'systemMessage'));
     }
   };
+  //#endregion
+
+  const handleRegenerateAnswer = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+  };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false); // Snackbar 닫기
@@ -99,11 +107,15 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({text, id, onTtsCl
           <Button onClick={e => handleCopy(text, e)} className={styles.actionButton} startIcon={<ContentCopyIcon />}>
             Copy
           </Button>
-          <Button onClick={handleDelete} className={styles.actionButton} startIcon={<DeleteIcon />}>
+          {/*<Button onClick={handleDelete} className={styles.actionButton} startIcon={<DeleteIcon />}>
             Delete
           </Button>
           <Button onClick={handleOpenModifyText} className={styles.actionButton} startIcon={<ReplayIcon />}>
             Modify
+          </Button>*/}
+
+          <Button onClick={handleRegenerateAnswer} className={styles.actionButton} startIcon={<ReplayIcon />}>
+            Regenerate
           </Button>
 
           <Snackbar

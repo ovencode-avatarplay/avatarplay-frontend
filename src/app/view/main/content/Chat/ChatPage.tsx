@@ -44,6 +44,7 @@ const ChatPage: React.FC = () => {
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
+  const [chatId, setChatId] = useState<number>(-1);
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
   const [isHideChat, SetHideChat] = useState<boolean>(false);
@@ -55,7 +56,7 @@ const ChatPage: React.FC = () => {
   const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false); // 로딩 상태 추가
   const [ChattingState, setChatInfo] = useState<ChattingState>();
   const [isReqPrevCheat, setReqPrevCheat] = useState<boolean>(false); // 치트키로 애피소드 초기화.
-  const [isReqPrevCheatComplete, setReqPrevCheatComplete] = useState<boolean>(false); // 치트키로 애피소드 초기화.
+  const [isRenderComplete, setRenderComplete] = useState<boolean>(false);
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
   console.log('getWebBrowserUrl', key);
@@ -91,6 +92,7 @@ const ChatPage: React.FC = () => {
       if ('streamKey' in response) {
         // 성공적인 응답 처리
         setStreamKey(response.streamKey);
+        setChatId(response.chatId);
       } else if ('resultCode' in response) {
         // 오류 응답 처리
         if (response.resultCode === 13) {
@@ -152,7 +154,7 @@ const ChatPage: React.FC = () => {
   const handleSendMessage = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
     if (!message || typeof message !== 'string') return;
 
-    let id = -1;
+    let id = chatId;
     // 메시지가 '$'을 포함할 경우 팝업 표시
     if (isFinishMessage(isMyMessage, message) === true) {
       const requestData = {
@@ -348,19 +350,19 @@ const ChatPage: React.FC = () => {
     SetHideChat(!isHideChat);
   };
 
-  const handleReqPrevChatComplete = (isCompleate: boolean) => {
-    setReqPrevCheatComplete(isCompleate);
+  const handleRerender = (isComplete: boolean) => {
+    setRenderComplete(isComplete);
   };
   //#endregion
 
-  const {prevMessages: enterData} = usePrevChatting(episodeId, isReqPrevCheat, handleReqPrevChatComplete, isIdEnter);
+  const {prevMessages: enterData} = usePrevChatting(episodeId, isReqPrevCheat, handleRerender, isIdEnter);
 
   useEffect(() => {
     if (
       (!hasFetchedPrevMessages && enterData && (enterData?.prevMessageInfoList || enterData?.introPrompt.length > 0)) ||
       (nextEpisodeId != null && enterData?.episodeId === nextEpisodeId) ||
       isReqPrevCheat === true ||
-      isReqPrevCheatComplete === true
+      isRenderComplete === true
     ) {
       // flatMap을 통해 parsedPrevMessages를 생성
       // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
@@ -415,7 +417,7 @@ const ChatPage: React.FC = () => {
       };
       loadEmoticons();
     }
-  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isReqPrevCheatComplete]);
+  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
 
   return (
     <main className={styles.chatmodal}>
