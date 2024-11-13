@@ -33,7 +33,13 @@
                   "triggerValueTimeMinute": 0,
                   "triggerActionType": 0,
                   "actionChangeEpisodeId": 0,
-                  "actionChangePrompt": "",
+                  "actionChangePrompt": {
+                    "characterName": "", 
+                    "characterDescription": "", 
+                    "scenarioDescription": "",
+                    "introDescription": "",
+                    "secret": ""
+                  },
                   "actionIntimacyPoint": 1,
                   "maxIntimacyCount": 0,
                   "actionConversationList": [
@@ -55,7 +61,13 @@
                   "triggerValueTimeMinute": 0,
                   "triggerActionType": 0,
                   "actionChangeEpisodeId": 0,
-                  "actionChangePrompt": "",
+                  "actionChangePrompt": {
+                    "characterName": "", 
+                    "characterDescription": "", 
+                    "scenarioDescription": "",
+                    "introDescription": "",
+                    "secret": ""
+                  },
                   "actionIntimacyPoint": 10,
                   "maxIntimacyCount": 0,
                   "actionConversationList": [
@@ -77,7 +89,13 @@
                   "triggerValueTimeMinute": 5,
                   "triggerActionType": 0,
                   "actionChangeEpisodeId": 0,
-                  "actionChangePrompt": "",
+                  "actionChangePrompt": {
+                    "characterName": "", 
+                    "characterDescription": "", 
+                    "scenarioDescription": "",
+                    "introDescription": "",
+                    "secret": ""
+                  },
                   "actionIntimacyPoint": 20,
                   "maxIntimacyCount": 0,
                   "actionConversationList": [
@@ -99,7 +117,13 @@
                   "triggerValueTimeMinute": 0,
                   "triggerActionType": 0,
                   "actionChangeEpisodeId": 0,
-                  "actionChangePrompt": "",
+                  "actionChangePrompt": {
+                    "characterName": "", 
+                    "characterDescription": "", 
+                    "scenarioDescription": "",
+                    "introDescription": "",
+                    "secret": ""
+                  },
                   "actionIntimacyPoint": 0,
                   "maxIntimacyCount": 0,
                   "actionConversationList": [
@@ -121,7 +145,13 @@
                   "triggerValueTimeMinute": 0,
                   "triggerActionType": 0,
                   "actionChangeEpisodeId": 0,
-                  "actionChangePrompt": "",
+                  "actionChangePrompt": {
+                    "characterName": "", 
+                    "characterDescription": "", 
+                    "scenarioDescription": "",
+                    "introDescription": "",
+                    "secret": ""
+                  },
                   "actionIntimacyPoint": 0,
                   "maxIntimacyCount": 0,
                   "actionConversationList": [

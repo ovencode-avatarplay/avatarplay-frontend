@@ -133,7 +133,13 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
       setTriggerInfo(prev => ({
         ...prev,
         triggerActionType: subDataOptions[0].key,
-        actionChangePrompt: '',
+        actionChangePrompt: {
+          characterName: '', // 기본 캐릭터 이름
+          characterDescription: '', // 기본 캐릭터 설명
+          scenarioDescription: '', // 기본 시나리오 설명
+          introDescription: '', // 기본 소개 설명
+          secret: '', // 기본 비밀 정보
+        },
         actionIntimacyPoint: 0,
         actionConversationList: [],
       }));
@@ -374,18 +380,92 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
       case TriggerSubDataType.ChangePrompt:
         return (
           <Box className={styles.promptContainer}>
-            <Typography className={styles.label}>Prompt Description</Typography>
-            <TextField
-              className={styles.input}
-              variant="outlined"
-              value={triggerInfo.actionChangePrompt}
-              onChange={e =>
-                setTriggerInfo(prev => ({
-                  ...prev,
-                  actionChangePrompt: e.target.value,
-                }))
-              }
-            />
+            <DialogContent className={styles.dialogContent}>
+              <TextField
+                label="Character Name"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={triggerInfo.actionChangePrompt.characterName}
+                onChange={e =>
+                  setTriggerInfo(prev => ({
+                    ...prev,
+                    actionChangePrompt: {
+                      ...prev.actionChangePrompt,
+                      characterName: e.target.value,
+                    },
+                  }))
+                }
+              />
+              <TextField
+                label="Character Description"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                multiline
+                value={triggerInfo.actionChangePrompt.characterDescription}
+                onChange={e =>
+                  setTriggerInfo(prev => ({
+                    ...prev,
+                    actionChangePrompt: {
+                      ...prev.actionChangePrompt,
+                      characterDescription: e.target.value,
+                    },
+                  }))
+                }
+              />
+              <TextField
+                label="World Scenario"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                multiline
+                value={triggerInfo.actionChangePrompt.scenarioDescription}
+                onChange={e =>
+                  setTriggerInfo(prev => ({
+                    ...prev,
+                    actionChangePrompt: {
+                      ...prev.actionChangePrompt,
+                      scenarioDescription: e.target.value,
+                    },
+                  }))
+                }
+              />
+              <TextField
+                label="Introduction"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                multiline
+                value={triggerInfo.actionChangePrompt.introDescription}
+                onChange={e =>
+                  setTriggerInfo(prev => ({
+                    ...prev,
+                    actionChangePrompt: {
+                      ...prev.actionChangePrompt,
+                      introDescription: e.target.value,
+                    },
+                  }))
+                }
+              />
+              <TextField
+                label="Secret"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                multiline
+                value={triggerInfo.actionChangePrompt.secret}
+                onChange={e =>
+                  setTriggerInfo(prev => ({
+                    ...prev,
+                    actionChangePrompt: {
+                      ...prev.actionChangePrompt,
+                      secret: e.target.value,
+                    },
+                  }))
+                }
+              />
+            </DialogContent>
             <Typography className={styles.label}>Guide Preset (Optional)</Typography>
             <Box className={styles.conversationTemplate}>
               <IconButton className={styles.rightButton} onClick={handleOpenEpisodeConversationTemplate}>
@@ -395,6 +475,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
             </Box>
           </Box>
         );
+
       default:
         return null;
     }
