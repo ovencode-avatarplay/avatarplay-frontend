@@ -4,7 +4,7 @@ import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
 import {useDispatch, useSelector} from 'react-redux';
 
 import TopBar from '@chats/TopBar/HeaderChat';
-import BottomBar from '@chats/BottomBar/FooterChat';
+import FooterChat from '@chats/BottomBar/FooterChat';
 import ChatArea from '@chats/MainChat/ChatArea';
 import styles from '@chats/Styles/StyleChat.module.css';
 import usePrevChatting from '@chats/MainChat/PrevChatting';
@@ -40,7 +40,7 @@ import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
 
 const ChatPage: React.FC = () => {
-  const [parsedMessages, setParsedMessages] = useState<MessageGroup>({chatId: -1, Messages: [], emoticonUrl: []});
+  const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
@@ -67,6 +67,8 @@ const ChatPage: React.FC = () => {
   const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
   const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
+
+  const [lastChatId, setLastChatId] = useState(-1);
 
   const chatInfo = useSelector((state: RootState) => state);
   const handleBackClick = useBackHandler();
@@ -129,8 +131,7 @@ const ChatPage: React.FC = () => {
         setIsLoading(false);
 
         const newMessage = JSON.parse(event.data);
-        const parseMessage = true;
-        handleSendMessage(newMessage, false, parseMessage);
+        handleSendMessage(newMessage, false, false);
         if (newMessage.includes('$') === true) {
           isSendingMessage.state = false;
         }
@@ -150,6 +151,8 @@ const ChatPage: React.FC = () => {
       eventSource.close();
     };
   }, [streamKey]);
+
+  useEffect(() => {}, [parsedMessages]);
 
   const handleSendMessage = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
     if (!message || typeof message !== 'string') return;
@@ -394,8 +397,8 @@ const ChatPage: React.FC = () => {
 
       parsedPrevMessages.unshift(introPrompt2);
       emoticonUrl.unshift('');
+
       const messageInfo: MessageGroup = {
-        chatId: parsedPrevMessages[0].chatId,
         Messages: parsedPrevMessages, // Message 배열
         emoticonUrl: emoticonUrl, // 이모티콘 URL
       };
@@ -440,7 +443,7 @@ const ChatPage: React.FC = () => {
           send={Send}
         />
       </div>
-      <BottomBar
+      <FooterChat
         onSend={handleSendMessage}
         streamKey={streamKey}
         setStreamKey={setStreamKey}

@@ -26,7 +26,7 @@ import NotEnoughRubyPopup from '../MainChat/NotEnoughRubyPopup';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
 import {ChattingCheatRes} from '@/app/NetWork/CheatNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
-interface BottomBarProps {
+interface FooterChatProps {
   onSend: (message: string, isMyMessage: boolean, isClearString: boolean) => void;
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   streamKey: string;
@@ -42,7 +42,7 @@ interface BottomBarProps {
   };
 }
 
-const BottomBar: React.FC<BottomBarProps> = ({
+const FooterChat: React.FC<FooterChatProps> = ({
   onSend,
   EmoticonData,
   onToggleBackground,
@@ -249,4 +249,4 @@ const BottomBar: React.FC<BottomBarProps> = ({
   );
 };
 
-export default BottomBar;
+export default FooterChat;
