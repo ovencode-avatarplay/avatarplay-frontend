@@ -200,8 +200,9 @@ const ChatPage: React.FC = () => {
       text: message,
       sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
     };
+    console.log('setParsedMessages');
 
-    setParsedMessages(prev => {
+    const func = (prev: any) => {
       // 유저의 메시지면 나레이션모드를 초기화
       if (isMyMessage) isNarrationActive.active = false;
 
@@ -310,13 +311,20 @@ const ChatPage: React.FC = () => {
           // 빈문자가 왔을때 기존 sender가 user였으면 무시하자 ( 자꾸 빈말풍선 찍히는 원인 )
           else if (allMessages[allMessages.length - 1].sender === 'user') {
             return prev;
+          } else {
+            // 그외의 ' ' 띄어쓰기면 그냥 기존 말풍선에 넣어준다.
+            allMessages[allMessages.length - 1].text += `${splitMessageStep5.text}`;
           }
         }
       }
 
       // 업데이트된 Messages 배열을 MessageInfo 객체로 반환
       return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
-    });
+    };
+    const _parsedMessages = func(parsedMessages);
+    parsedMessages.Messages = _parsedMessages.Messages;
+    parsedMessages.emoticonUrl = _parsedMessages.emoticonUrl;
+    setParsedMessages({..._parsedMessages});
   };
 
   //#endregion
