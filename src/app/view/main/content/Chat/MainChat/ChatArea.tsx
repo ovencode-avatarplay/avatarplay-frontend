@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Box, Avatar} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
-import {MessageGroup} from './ChatTypes';
+import {Message, MessageGroup} from './ChatTypes';
 import ChatTtsPlayer from './ChatTtsPlayer';
 import {GenerateTtsUrl} from './GenerateTtsUrl';
 
@@ -20,6 +20,7 @@ interface ChatAreaProps {
   chatBarCount: number;
   transitionEnabled: boolean; // 배경 이미지 전환 여부를 제어하는 프롭
   send: (reqSendChatMessage: SendChatMessageReq) => void;
+  lastMessage: Message;
 }
 
 const ChatArea: React.FC<ChatAreaProps> = ({
@@ -32,6 +33,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   chatBarCount,
   transitionEnabled, // transitionEnabled 프롭을 추가
   send,
+  lastMessage,
 }) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -47,7 +49,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     } else {
       setSelectedBubbleIndex(null);
     }
-    console.log(index);
   };
 
   const handlePlayAudio = async (text: string) => {
@@ -225,6 +226,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                       handlePlayAudio(msg.text);
                     }}
                     selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
+                    lastMessageId={lastMessage.chatId}
                   />
                   {/* Retry 버튼 조건부 렌더링 */}
                   {msg.sender === 'system' &&

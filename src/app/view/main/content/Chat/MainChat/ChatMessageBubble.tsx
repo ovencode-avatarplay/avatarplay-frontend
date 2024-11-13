@@ -13,6 +13,7 @@ interface ChatMessageBubbleProps {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onTtsClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   selectedIndex: number | null;
+  lastMessageId: number;
 }
 
 const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
@@ -25,31 +26,49 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   onClick,
   onTtsClick,
   selectedIndex,
+  lastMessageId,
 }) => {
-  const [textMessage, setTextMessage] = useState(text);
+  const [answerTextMessage, setAnswerTextMessage] = useState(text);
+  const [questionTextMessage, setQuestionTextMessage] = useState(text);
 
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
-    onClick(e);
+    if (sender === 'system' || sender === 'introPrompt') {
+      // System, IntroPrompt는 클릭되지 않게
+    } else {
+      onClick(e);
+    }
   };
   const handleTtsClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     onTtsClick(e);
   };
 
-  const handleDelete = () => {
-    setTextMessage('');
+  //#region  사용 안하기로 기획 변경
+  // const handleDeleteAnswer = () => {
+  //   setAnswerTextMessage('');
+  // };
+  // const handleAnswerModify = (newText: string) => {
+  //   setAnswerTextMessage(newText);
+  // };
+  //#endregion
+
+  const handleQuestionModify = (newText: string) => {
+    setQuestionTextMessage(newText);
   };
 
-  const handleModified = (newText: string) => {
-    setTextMessage(newText);
-  };
+  const handleRegenerateAnswer = () => {};
 
   const checkCanOpenContextTop = (): boolean => {
-    if (sender !== 'user' && sender !== 'system' && sender !== 'introPrompt') return false;
+    if (sender === 'user' || sender === 'userNarration' || sender === 'introPrompt' || sender === 'system')
+      return false;
+    return true;
+  };
+  const checkCanOpenContextBottom = (): boolean => {
+    if (sender === 'system' || sender === 'introPrompt') return false;
     return true;
   };
 
   useEffect(() => {
-    setTextMessage(text);
+    setAnswerTextMessage(text);
   }, [text]);
 
   return (
@@ -130,18 +149,22 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                 {sender === 'user' && emoticonUrl !== '' && emoticonUrl !== undefined ? (
                   <img src={emoticonUrl} alt="Emoticon" style={{width: '24px', height: '24px', marginTop: '4px'}} />
                 ) : (
-                  <div dangerouslySetInnerHTML={{__html: textMessage}} />
+                  <div dangerouslySetInnerHTML={{__html: answerTextMessage}} />
                 )}
               </Box>
-              {selectedIndex === index && (
+              {selectedIndex === index && checkCanOpenContextBottom() && (
                 <ChatMessageMenuBottom
                   text={text}
                   id={id}
                   onTtsClick={e => {
                     handleTtsClick(e);
                   }}
-                  onDelete={handleDelete}
-                  onModified={handleModified}
+                  // onDelete={handleDeleteAnswer}
+                  // onModified={handleAnswerModify}
+                  isUserChat={sender === 'user' || sender === 'userNarration'}
+                  lastMessageId={lastMessageId}
+                  onModifyQuestion={handleQuestionModify}
+                  onRegenerateAnswer={handleRegenerateAnswer}
                 />
               )}
             </Box>

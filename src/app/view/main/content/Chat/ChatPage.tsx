@@ -68,7 +68,11 @@ const ChatPage: React.FC = () => {
   const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
 
-  const [lastChatId, setLastChatId] = useState(-1);
+  const [lastMessage, setLastMessage] = useState<Message>({
+    chatId: -1,
+    text: '',
+    sender: 'system',
+  });
 
   const chatInfo = useSelector((state: RootState) => state);
   const handleBackClick = useBackHandler();
@@ -155,12 +159,16 @@ const ChatPage: React.FC = () => {
     };
   }, [streamKey]);
 
-  useEffect(() => {}, [parsedMessages]);
+  useEffect(() => {
+    if (parsedMessages.Messages.length > 0) {
+      const lastMsg = parsedMessages.Messages[parsedMessages.Messages.length - 1];
+      setLastMessage(lastMsg);
+    }
+  }, [parsedMessages]);
 
   const handleSendMessage = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
     if (!message || typeof message !== 'string') return;
 
-    let id = chatId;
     // 메시지가 '$'을 포함할 경우 팝업 표시
     if (isFinishMessage(isMyMessage, message) === true) {
       const requestData = {
@@ -188,7 +196,7 @@ const ChatPage: React.FC = () => {
 
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
-      chatId: id,
+      chatId: chatId,
       text: message,
       sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
     };
@@ -443,6 +451,7 @@ const ChatPage: React.FC = () => {
           chatBarCount={chatBarCount}
           transitionEnabled={isTransitionEnable}
           send={Send}
+          lastMessage={lastMessage}
         />
       </div>
       <FooterChat
