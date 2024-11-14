@@ -120,7 +120,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                       : 'rgba(214, 214, 214, 0.2)',
                   border: sender === 'introPrompt' || sender === 'system' ? '1px solid #C0C0C0' : 'none',
                   backdropFilter: sender === 'system' ? 'blur(20px)' : 'none',
-                  textAlign: sender === 'narration' ? 'center' : 'inherit',
+                  textAlign: sender === 'narration' || sender === 'userNarration' ? 'left' : 'inherit',
                   color:
                     sender === 'introPrompt'
                       ? '#000000'

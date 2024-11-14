@@ -49,11 +49,13 @@ const ChatBar: React.FC<ChatBarProps> = ({
   useEffect(() => {
     updateMessageText();
   }, [toggledIcons, inputValues]);
-
   const addChatBar = () => {
     if (chatBars.length >= 5) return; // 최대 채팅 바 개수 제한
     const newId = `chatBar-${Date.now()}`;
     const newContent = inputValues.main; // main의 내용을 새 채팅바에 할당
+
+    // 기존 main의 아이콘 상태를 반대로 설정
+    const newMainIconState = !toggledIcons.main; // main의 아이콘 상태 반전
 
     // 새로운 채팅바를 main 바로 앞에 추가
     setChatBars(prevBars => {
@@ -62,7 +64,11 @@ const ChatBar: React.FC<ChatBarProps> = ({
     });
 
     setInputValues(prevValues => ({...prevValues, [newId]: newContent, main: ''})); // 새 채팅바의 내용을 설정하고 main을 초기화
-    setToggledIcons(prevIcons => ({...prevIcons, [newId]: false})); // 새 채팅바의 토글 상태 초기화
+    setToggledIcons(prevIcons => ({
+      ...prevIcons,
+      main: newMainIconState, // main 아이콘 상태를 반전시킨 상태로 업데이트
+      [newId]: toggledIcons.main, // 새 채팅바의 아이콘 상태는 기존 main 상태 그대로 유지
+    }));
   };
 
   const removeChatBar = (id: string) => {
