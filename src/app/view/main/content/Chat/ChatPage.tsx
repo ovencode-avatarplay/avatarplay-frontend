@@ -135,7 +135,7 @@ const ChatPage: React.FC = () => {
         setIsLoading(false);
 
         const newMessage = JSON.parse(event.data);
-        handleSendMessage(newMessage, false, false);
+        handleSendMessage(newMessage, false, true);
         if (newMessage.includes('$') === true) {
           isSendingMessage.state = false;
           eventSource.close();
@@ -200,7 +200,7 @@ const ChatPage: React.FC = () => {
       text: message,
       sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
     };
-    console.log('setParsedMessages');
+    //console.log('setParsedMessages ==========' + newMessage.text + '=========', 'isClearString : ', isClearString);
 
     const func = (prev: any) => {
       // 유저의 메시지면 나레이션모드를 초기화
