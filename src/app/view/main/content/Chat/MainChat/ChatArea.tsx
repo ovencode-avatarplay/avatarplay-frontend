@@ -45,7 +45,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [retryingMessages, setRetryingMessages] = useState<number[]>([]);
 
-  const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isModifying);
+  const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isModifyingQuestion);
 
   const handleBubbleClick = (index: number) => {
     if (selectedBubbleIndex === null) {

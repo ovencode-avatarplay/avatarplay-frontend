@@ -11,7 +11,12 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import styles from '../Styles/ChatMessageMenu.module.css';
 import {DeleteChatReq, deleteChatting, ModifyChatReq, modifyChatting} from '@/app/NetWork/ChatNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
-import {setIsModifying, setModifyingText} from '@/redux-store/slices/ModifyQuestion';
+import {
+  setIsModifyingQuestion,
+  setIsRegenerateAnswer,
+  setModifyingQuestion,
+  setLastMessageQuestion,
+} from '@/redux-store/slices/ModifyQuestion';
 
 interface ChatContextTopProps {
   text: string;
@@ -38,8 +43,7 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
 
   //#region 기획상 사용 안함
   const [modifyTextOpen, setModifyTextOpen] = useState(false);
-  const [modifiedText, setModifiedText] = useState(text);
-  const deleteSuffix = '\n\n';
+  // const [modifiedText, setModifiedText] = useState(text);
   //#endregion
 
   const [modifyQuestionOpen, setModifyQuestionOpen] = useState(false);
@@ -106,14 +110,14 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
   const handleStartModifyQuestion = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     setModifyQuestionOpen(!modifyQuestionOpen);
-    dispatch(setIsModifying(true));
-    dispatch(setModifyingText(text));
+    dispatch(setIsModifyingQuestion(true));
+    dispatch(setModifyingQuestion(text));
   };
 
   const handleRegenerateAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
-    // dispatch
+    dispatch(setIsRegenerateAnswer(true));
   };
 
   const handleSnackbarClose = () => {
@@ -126,43 +130,39 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
 
   return (
     <Box className={styles.bottomMenuContainer}>
-      {!modifyTextOpen && (
-        <>
-          {id}
-          {/* 하단의 세로 메뉴 - 보이스 재생, 복사, 삭제, 재생성 버튼 */}
-          <Button onClick={handleTtsClick} className={styles.actionButton} startIcon={<PlayArrowIcon />}>
-            Play Voice
-          </Button>
-          <Button onClick={e => handleCopy(text, e)} className={styles.actionButton} startIcon={<ContentCopyIcon />}>
-            Copy
-          </Button>
-          {/*<Button onClick={handleDelete} className={styles.actionButton} startIcon={<DeleteIcon />}>
+      {id}
+      {/* 하단의 세로 메뉴 - 보이스 재생, 복사, 삭제, 재생성 버튼 */}
+      <Button onClick={handleTtsClick} className={styles.actionButton} startIcon={<PlayArrowIcon />}>
+        Play Voice
+      </Button>
+      <Button onClick={e => handleCopy(text, e)} className={styles.actionButton} startIcon={<ContentCopyIcon />}>
+        Copy
+      </Button>
+      {/*<Button onClick={handleDelete} className={styles.actionButton} startIcon={<DeleteIcon />}>
             Delete
           </Button>
           <Button onClick={handleOpenModifyText} className={styles.actionButton} startIcon={<ReplayIcon />}>
             Modify
           </Button>*/}
-          {lastMessageId === id &&
-            (isUserChat ? (
-              <Button onClick={handleStartModifyQuestion} className={styles.actionButton} startIcon={<ReplayIcon />}>
-                Modify Question
-              </Button>
-            ) : (
-              <Button onClick={handleRegenerateAnswer} className={styles.actionButton} startIcon={<ReplayIcon />}>
-                Regenerate Answer
-              </Button>
-            ))}
+      {lastMessageId === id &&
+        (isUserChat ? (
+          <Button onClick={handleStartModifyQuestion} className={styles.actionButton} startIcon={<ReplayIcon />}>
+            Modify Question
+          </Button>
+        ) : (
+          <Button onClick={handleRegenerateAnswer} className={styles.actionButton} startIcon={<ReplayIcon />}>
+            Regenerate Answer
+          </Button>
+        ))}
 
-          <Snackbar
-            open={snackbarOpen}
-            autoHideDuration={2000} // 2초 후 자동 닫힘
-            onClose={handleSnackbarClose}
-            message={snackbarMessage}
-            anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
-            sx={{width: '20vw'}}
-          />
-        </>
-      )}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000} // 2초 후 자동 닫힘
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
+        sx={{width: '20vw'}}
+      />
     </Box>
   );
 };

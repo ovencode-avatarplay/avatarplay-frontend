@@ -146,9 +146,6 @@ const FooterChat: React.FC<FooterChatProps> = ({
 
       const parseMessage = true;
 
-      reqSendChatMessage.text = message.replace(/\(,\)/g, '');
-      send(reqSendChatMessage);
-
       if (message.includes('⦿SYSTEM_CHAT⦿')) {
         const messageParts = message.split('⦿SYSTEM_CHAT⦿');
         messageParts.forEach(part => {
@@ -161,6 +158,9 @@ const FooterChat: React.FC<FooterChatProps> = ({
       } else {
         onSend(message, true, parseMessage);
       }
+
+      reqSendChatMessage.text = message.replace(/\(,\)/g, '');
+      send(reqSendChatMessage);
     }
   };
 

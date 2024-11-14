@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector, useDispatch} from 'react-redux';
-import {setIsModifying} from '@/redux-store/slices/ModifyQuestion';
+import {setIsModifyingQuestion, setIsRegenerateAnswer} from '@/redux-store/slices/ModifyQuestion';
 import AIRecommendImg from '@ui/chatting/btn_ai_recommend.png';
 import AI_Recommend from './AI_Recommend';
 
@@ -41,8 +41,8 @@ const ChatBar: React.FC<ChatBarProps> = ({
   const [isAIRecommendOpen, setAIRecommendOpen] = useState(false);
 
   const dispatch = useDispatch();
-  const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isModifying);
-  const modifyingText = useSelector((state: RootState) => state.modifyQuestion.modifyingText);
+  const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isModifyingQuestion);
+  const modifyingText = useSelector((state: RootState) => state.modifyQuestion.modifyingQuestion);
 
   useEffect(() => {
     onUpdateChatBarCount(chatBars.length);
@@ -113,17 +113,18 @@ const ChatBar: React.FC<ChatBarProps> = ({
   };
 
   const handleSend = () => {
-    onLoading(true);
-    onSend();
+    if (!isModifyingQuestion) {
+      onLoading(true);
+      onSend();
 
-    // 컴포넌트를 초기 상태로 되돌림
-    setChatBars(['main']); // main 이외의 모든 채팅바 제거
-    setInputValues({main: ''}); // 모든 입력값을 빈 문자열로 초기화
-    setToggledIcons({main: false}); // 모든 토글 상태를 기본값으로 초기화
-    setMessage(''); // message 상태 초기화
-
-    if (isModifyingQuestion) {
-      dispatch(setIsModifying(false));
+      // 컴포넌트를 초기 상태로 되돌림
+      setChatBars(['main']); // main 이외의 모든 채팅바 제거
+      setInputValues({main: ''}); // 모든 입력값을 빈 문자열로 초기화
+      setToggledIcons({main: false}); // 모든 토글 상태를 기본값으로 초기화
+      setMessage(''); // message 상태 초기화
+    } else {
+      console.log('Modify Requested', inputValues);
+      dispatch(setIsModifyingQuestion(false));
     }
   };
 
@@ -135,6 +136,24 @@ const ChatBar: React.FC<ChatBarProps> = ({
     handleKeyDown(event);
   };
 
+  //#region 재전송
+
+  const regenerateAnswerCalled = useSelector((state: RootState) => state.modifyQuestion.isRegenerateAnswer);
+  const regenerateQuestion = useSelector((state: RootState) => state.modifyQuestion.lastMessageQuestion);
+  const regenerateId = useSelector((state: RootState) => state.modifyQuestion.lastMessageId);
+  useEffect(() => {
+    if (regenerateAnswerCalled === true) {
+      setMessage(regenerateQuestion);
+
+      console.log('재생성 요청' + regenerateId + '/' + regenerateQuestion);
+
+      // TODO : 적절한 API 호출 또는 기존 루트 진입
+      dispatch(setIsRegenerateAnswer(false));
+    }
+  }, [regenerateAnswerCalled]);
+
+  //#endregion
+
   const handleFocus = () => {
     if (isHideChat) {
       onToggleBackground();
@@ -142,7 +161,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   };
 
   const handleCancelModifyText = () => {
-    dispatch(setIsModifying(false));
+    dispatch(setIsModifyingQuestion(false));
   };
 
   const handleAIRecommend = () => {

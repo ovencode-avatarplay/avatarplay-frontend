@@ -39,14 +39,16 @@ import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {COMMAND_SYSTEM, Message, MessageGroup} from './MainChat/ChatTypes';
 import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
+import {setLastMessageId, setLastMessageQuestion} from '@/redux-store/slices/ModifyQuestion';
 
 const ChatPage: React.FC = () => {
+  const TempIdforSendQuestion: number = -222;
   const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [retryStreamKey, setRetryStreamKey] = useState<string>(''); // streamKey 상태 추가
-  const [chatId, setChatId] = useState<number>(-1);
+  const [chatId, setChatId] = useState<number>(TempIdforSendQuestion);
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
   const [isHideChat, SetHideChat] = useState<boolean>(false);
@@ -71,7 +73,7 @@ const ChatPage: React.FC = () => {
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
 
   const [lastMessage, setLastMessage] = useState<Message>({
-    chatId: -1,
+    chatId: TempIdforSendQuestion,
     text: '',
     sender: 'system',
   });
@@ -87,8 +89,6 @@ const ChatPage: React.FC = () => {
   const SetChatBarCount = (num: number) => {
     setChatBarCount(num);
   };
-
-  const TempIdforSendQuestion: number = -222;
 
   //#region 메세지 전송 로직
 
@@ -111,6 +111,7 @@ const ChatPage: React.FC = () => {
             message.chatId === TempIdforSendQuestion ? {...message, chatId: response.chatContentId} : message,
           ),
         }));
+        dispatch(setLastMessageId(response.chatContentId));
       } else if ('resultCode' in response) {
         // 오류 응답 처리
         if (response.resultCode === 13) {
@@ -254,6 +255,7 @@ const ChatPage: React.FC = () => {
         } else {
           newMessage.sender = 'user'; // 일반 유저 메시지
         }
+        dispatch(setLastMessageQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
         allMessages.push(newMessage); // 메시지를 배열에 추가
       }
 
@@ -349,7 +351,7 @@ const ChatPage: React.FC = () => {
   //#region 메세지 재전송 로직
   const handleRetryStream = () => {
     // retryStream 함수 호출 시 필요한 파라미터
-    if (streamKey && chatId !== -1) {
+    if (streamKey && chatId !== TempIdforSendQuestion) {
       const retryRequestData = {
         chatContentId: chatId, // 또는 필요에 따라 다른 ID 사용
         episodeId: episodeId, // 에피소드 ID

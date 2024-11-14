@@ -18,6 +18,7 @@ import {
   setEpisodeName,
   setStateChatting,
 } from '@/redux-store/slices/Chatting';
+import {setLastMessageQuestion} from '@/redux-store/slices/ModifyQuestion';
 
 const usePrevChatting = (
   episodeId: number,
@@ -61,6 +62,20 @@ const usePrevChatting = (
         } else {
           setError('Failed to fetch previous messages.');
         }
+        const tmp = response.data?.prevMessageInfoList[response.data?.prevMessageInfoList.length - 1];
+
+        if (tmp !== undefined && tmp.message) {
+          // JSON 문자열을 객체로 파싱
+          const parsedMessage = JSON.parse(tmp.message);
+
+          // Question 필드를 추출하여 디스패치
+          dispatch(
+            setLastMessageQuestion({
+              lastMessageId: tmp.id ?? -3,
+              lastMessageQuestion: parsedMessage.Question ?? '',
+            }),
+          );
+        }
       } else {
         const ReqData: EnterEpisodeChattingReq = {
           episodeId: episodeId,
@@ -81,6 +96,11 @@ const usePrevChatting = (
           console.log('response.data.contentId2', response.data.contentId);
         } else {
           setError('Failed to fetch previous messages.');
+        }
+        const tmp = response.data?.prevMessageInfoList[response.data?.prevMessageInfoList.length - 1];
+
+        if (tmp !== null) {
+          dispatch(setLastMessageQuestion({lastMessageId: tmp?.id ?? -3, lastMessageQuestion: tmp?.message ?? ''}));
         }
       }
     } catch (err) {
