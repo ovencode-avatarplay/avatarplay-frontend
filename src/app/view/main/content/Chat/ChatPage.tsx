@@ -408,7 +408,7 @@ const ChatPage: React.FC = () => {
       ) || {parsedPrevMessages: [], emoticonUrl: []}; // 기본값 설정
 
       const introPrompt2: Message = {
-        chatId: -1,
+        chatId: chatId,
         text: enterData?.introPrompt || '애피소드 도입부가 설정되지 않았습니다',
         sender: 'introPrompt',
       };

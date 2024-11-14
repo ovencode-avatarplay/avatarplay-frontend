@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
 import {Box, Button, Snackbar, TextField} from '@mui/material';
 
+import {RootState} from '@/redux-store/ReduxStore';
+import {useDispatch} from 'react-redux';
+
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,6 +11,7 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import styles from '../Styles/ChatMessageMenu.module.css';
 import {DeleteChatReq, deleteChatting, ModifyChatReq, modifyChatting} from '@/app/NetWork/ChatNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {setIsModifying, setModifyingText} from '@/redux-store/slices/ModifyQuestion';
 
 interface ChatContextTopProps {
   text: string;
@@ -17,8 +21,6 @@ interface ChatContextTopProps {
   // onModified: (newText: string) => void;
   isUserChat: boolean;
   lastMessageId: number;
-  onModifyQuestion: (newText: string) => void;
-  onRegenerateAnswer: (newText: string) => void;
 }
 
 const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
@@ -29,9 +31,8 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
   // onModified,
   isUserChat,
   lastMessageId,
-  onModifyQuestion,
-  onRegenerateAnswer,
 }) => {
+  const dispatch = useDispatch();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
@@ -42,7 +43,6 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
   //#endregion
 
   const [modifyQuestionOpen, setModifyQuestionOpen] = useState(false);
-  const [modifiedQuestionText, setModifiedQuestionText] = useState(text);
 
   const handleCopy = (text: string, event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -103,25 +103,17 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
   // };
   //#endregion
 
-  const handleOpenModifyQuestion = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleStartModifyQuestion = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     setModifyQuestionOpen(!modifyQuestionOpen);
-  };
-
-  const handleCancelModifyQuestion = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    setModifiedQuestionText(text);
-    setModifyQuestionOpen(false);
-  };
-
-  const handleModifyQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    onModifyQuestion;
+    dispatch(setIsModifying(true));
+    dispatch(setModifyingText(text));
   };
 
   const handleRegenerateAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    onRegenerateAnswer;
+
+    // dispatch
   };
 
   const handleSnackbarClose = () => {
@@ -152,7 +144,7 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
           </Button>*/}
           {lastMessageId === id &&
             (isUserChat ? (
-              <Button onClick={handleOpenModifyQuestion} className={styles.actionButton} startIcon={<ReplayIcon />}>
+              <Button onClick={handleStartModifyQuestion} className={styles.actionButton} startIcon={<ReplayIcon />}>
                 Modify Question
               </Button>
             ) : (
@@ -170,26 +162,6 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
             sx={{width: '20vw'}}
           />
         </>
-      )}
-      {modifyQuestionOpen && (
-        <Box sx={{display: 'flex', width: '50vw', alignItems: 'center', alignSelf: 'end', gap: 1, mt: 1}}>
-          <TextField
-            variant="outlined"
-            size="medium"
-            placeholder="Enter new text"
-            value={modifiedQuestionText}
-            onChange={e => setModifiedQuestionText(e.target.value)}
-            onClick={e => e.stopPropagation()} // TextField 클릭 시 이벤트 버블링 방지
-            onFocus={e => e.stopPropagation()} // TextField 포커스 시 이벤트 버블링 방지
-            sx={{flexGrow: 1, backgroundColor: 'white'}}
-          />
-          <Button onClick={e => handleModifyQuestion(e)} variant="contained" color="primary">
-            Confirm
-          </Button>
-          <Button onClick={e => handleCancelModifyQuestion(e)} variant="contained" color="primary">
-            Cancel
-          </Button>
-        </Box>
       )}
     </Box>
   );

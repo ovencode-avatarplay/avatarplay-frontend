@@ -3,6 +3,7 @@ import ChatMessageMenuTop from './ChatContextMenuTop';
 import ChatMessageMenuBottom from './ChatContextMenuBottom';
 import React, {useEffect, useState} from 'react';
 import styles from '../Styles/ChatMessageMenu.module.css';
+
 interface ChatMessageBubbleProps {
   text: string;
   sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
@@ -50,12 +51,6 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   //   setAnswerTextMessage(newText);
   // };
   //#endregion
-
-  const handleQuestionModify = (newText: string) => {
-    setQuestionTextMessage(newText);
-  };
-
-  const handleRegenerateAnswer = () => {};
 
   const checkCanOpenContextTop = (): boolean => {
     if (sender === 'user' || sender === 'userNarration' || sender === 'introPrompt' || sender === 'system')
@@ -163,8 +158,6 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                   // onModified={handleAnswerModify}
                   isUserChat={sender === 'user' || sender === 'userNarration'}
                   lastMessageId={lastMessageId}
-                  onModifyQuestion={handleQuestionModify}
-                  onRegenerateAnswer={handleRegenerateAnswer}
                 />
               )}
             </Box>

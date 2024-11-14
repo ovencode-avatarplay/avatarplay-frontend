@@ -13,6 +13,7 @@ import publishInfoSlice from './slices/PublishInfo';
 import episodeInfoSlice from './slices/EpisodeInfo';
 import myContentDashboardSlice from './slices/MyContentDashboard';
 import emoticonSlice from './slices/EmoticonSlice';
+import modifyQuestionSlice from './slices/ModifyQuestion';
 // redux-persist
 import {persistStore, persistReducer} from 'redux-persist';
 import chattingEnterSlice from './slices/ChattingEnter';
@@ -42,6 +43,7 @@ const reducers = combineReducers({
   episode: episodeInfoSlice, // 현재 편집중인 에피소드 정보 (Content 수정용)
   chattingEnter: chattingEnterSlice,
   emoticon: emoticonSlice,
+  modifyQuestion: modifyQuestionSlice,
   //#endregion
 });
 
