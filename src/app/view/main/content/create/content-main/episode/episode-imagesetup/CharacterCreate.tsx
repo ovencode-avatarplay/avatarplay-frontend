@@ -249,7 +249,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                   label={option.label}
                   image={option.image}
                   selected={selectedOptions.style === index}
-                  onClick={() => handleImageToggle(option.label)} // Use handleImageToggle for full-screen toggle
+                  onClick={() => handleOptionSelect('style', index)} // Use handleImageToggle for full-screen toggle
                 />
               ))}
             </Box>

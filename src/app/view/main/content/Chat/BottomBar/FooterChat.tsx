@@ -26,7 +26,7 @@ import NotEnoughRubyPopup from '../MainChat/NotEnoughRubyPopup';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
 import {ChattingCheatRes} from '@/app/NetWork/CheatNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
-interface BottomBarProps {
+interface FooterChatProps {
   onSend: (message: string, isMyMessage: boolean, isClearString: boolean) => void;
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   streamKey: string;
@@ -42,10 +42,8 @@ interface BottomBarProps {
   };
 }
 
-const BottomBar: React.FC<BottomBarProps> = ({
+const FooterChat: React.FC<FooterChatProps> = ({
   onSend,
-  streamKey,
-  setStreamKey,
   EmoticonData,
   onToggleBackground,
   isHideChat,
@@ -148,6 +146,9 @@ const BottomBar: React.FC<BottomBarProps> = ({
 
       const parseMessage = true;
 
+      reqSendChatMessage.text = message.replace(/\(,\)/g, '');
+      send(reqSendChatMessage);
+
       if (message.includes('⦿SYSTEM_CHAT⦿')) {
         const messageParts = message.split('⦿SYSTEM_CHAT⦿');
         messageParts.forEach(part => {
@@ -160,50 +161,8 @@ const BottomBar: React.FC<BottomBarProps> = ({
       } else {
         onSend(message, true, parseMessage);
       }
-
-      reqSendChatMessage.text = message.replace(/\(,\)/g, '');
-      send(reqSendChatMessage);
     }
   };
-
-  useEffect(() => {
-    if (streamKey === '') return;
-    console.log('stream key : ', streamKey);
-
-    const eventSource = new EventSource(
-      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
-    );
-
-    eventSource.onmessage = event => {
-      try {
-        if (!event.data) {
-          throw new Error('Received null or empty data');
-          onLoading(false);
-        }
-
-        onLoading(false);
-
-        const newMessage = JSON.parse(event.data);
-        const parseMessage = true;
-        onSend(newMessage, false, parseMessage);
-        if (newMessage.includes('$') === true) {
-          isSendingMessage.state = false;
-        }
-      } catch (error) {
-        console.error('Error processing message:', error);
-        console.error('Received data:', event.data);
-      }
-    };
-
-    eventSource.onerror = () => {
-      eventSource.close();
-      isSendingMessage.state = false;
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [streamKey]);
 
   const handleKeyDown = (event: React.KeyboardEvent<Element>) => {
     if (event.key === 'Enter') {
@@ -290,4 +249,4 @@ const BottomBar: React.FC<BottomBarProps> = ({
   );
 };
 
-export default BottomBar;
+export default FooterChat;

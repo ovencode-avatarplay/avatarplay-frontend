@@ -16,7 +16,7 @@ export interface SendChatMessageReq {
 // 성공적인 응답 타입
 export interface SendChatMessageResSuccess {
   streamKey: string;
-  chatId: number;
+  chatContentId: number;
 }
 
 // 오류 응답 타입
@@ -32,7 +32,7 @@ export interface SendChatMessageData {
 const handleSuccessResponse = (response: any): SendChatMessageResSuccess => {
   return {
     streamKey: response.data.data.streamKey,
-    chatId: response.data.data.chatId,
+    chatContentId: response.data.data.chatContentId,
   };
 };
 const handleErrorResponse = (response: any): SendChatMessageResError => {
@@ -61,6 +61,56 @@ export const sendMessageStream = async (
   } catch (error: any) {
     console.error('Error sendMessageStream:', error);
     throw new Error('Failed to send message. Please try again.'); // Error handling
+  }
+};
+// 요청 데이터 타입
+interface RetryStreamRequest {
+  chatContentId: number;
+  episodeId: number;
+  text: string;
+}
+
+// 성공적인 응답 타입
+export interface RetryStreamResSuccess {
+  streamKey: string; // StreamKey가 응답으로 포함됩니다.
+}
+
+// 오류 응답 타입
+export interface RetryStreamResError {
+  resultCode: number;
+  resultMessage: string;
+}
+
+const handleRetrySuccessResponse = (response: any): RetryStreamResSuccess => {
+  return {
+    streamKey: response.data.data.streamKey, // 응답에서 streamKey를 추출
+  };
+};
+
+const handleRetryErrorResponse = (response: any): RetryStreamResError => {
+  return {
+    resultCode: response.data.resultCode,
+    resultMessage: response.data.resultMessage,
+  };
+};
+
+export const retryStream = async (
+  retryStreamRequest: RetryStreamRequest,
+): Promise<RetryStreamResSuccess | RetryStreamResError> => {
+  try {
+    // retryStream API 호출 (POST 메서드로 변경하고, 요청 본문(body)에 데이터 전송)
+    const response = await api.post('Chatting/retry', retryStreamRequest); // body로 데이터 전달
+
+    if (response.data.resultCode === 0) {
+      // 성공 응답 처리
+      return handleRetrySuccessResponse(response);
+    } else {
+      // 오류 응답 처리
+      return handleRetryErrorResponse(response);
+    }
+  } catch (error: any) {
+    console.error('Error retrying stream:', error);
+    throw new Error('Failed to retry stream. Please try again.');
   }
 };
 
@@ -391,5 +441,33 @@ export const deleteChatting = async (req: DeleteChatReq): Promise<ResponseAPI<De
     }
   } catch (error) {
     throw new Error('Failed to delete chatting. Please try again.'); // Error handling
+  }
+};
+
+// Chatting 조회 ##########################################
+
+export interface GetChatReq {
+  chatCotnteId: number; // 요청 파라미터에 맞춘 필드명
+  episodeId: number;
+}
+
+export interface GetChatRes {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    messageInfo: MessageInfo; //다른데 같은거 쓰고 있음
+  };
+}
+
+export const getChatting = async (req: GetChatReq): Promise<ResponseAPI<GetChatRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetChatRes>>('/api/v1/Chatting/get', req);
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(response.data.resultMessage); // Error handling
+    }
+  } catch (error) {
+    throw new Error('Failed to fetch chatting details. Please try again.'); // Error handling
   }
 };
