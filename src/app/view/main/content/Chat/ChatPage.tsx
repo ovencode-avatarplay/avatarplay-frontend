@@ -32,6 +32,7 @@ import {
   sendMessageStream,
   SendChatMessageResSuccess,
   SendChatMessageResError,
+  retryStream,
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
@@ -44,6 +45,7 @@ const ChatPage: React.FC = () => {
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
+  const [retryStreamKey, setRetryStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [chatId, setChatId] = useState<number>(-1);
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
@@ -343,6 +345,80 @@ const ChatPage: React.FC = () => {
 
   //#endregion
 
+  //#region 메세지 재전송 로직
+  const handleRetryStream = () => {
+    // retryStream 함수 호출 시 필요한 파라미터
+    if (streamKey && chatId !== -1) {
+      const retryRequestData = {
+        chatContentId: chatId, // 또는 필요에 따라 다른 ID 사용
+        episodeId: episodeId, // 에피소드 ID
+        text: parsedMessages.Messages[parsedMessages.Messages.length - 2].text, // 재전송할 메시지
+      };
+
+      retryStream(retryRequestData)
+        .then(response => {
+          if ('streamKey' in response) {
+            console.log('Retry successful, StreamKey:', response.streamKey);
+            // 재전송 성공 시 처리 로직
+            setIsLoading(true);
+            setRetryStreamKey(response.streamKey);
+          } else {
+            console.log('Retry failed:', response.resultMessage);
+            // 재전송 실패 시 처리 로직
+          }
+        })
+        .catch(error => {
+          console.error('Error retrying stream:', error);
+        });
+    } else {
+      console.error('StreamKey or ChatId is not available');
+    }
+  };
+
+  useEffect(() => {
+    if (retryStreamKey === '') return;
+    console.log('stream key : ', retryStreamKey);
+
+    const eventSource = new EventSource(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/retryStream?streamKey=${retryStreamKey}`, // 쿼리 파라미터 제대로 추가
+    );
+
+    eventSource.onmessage = event => {
+      try {
+        if (!event.data) {
+          throw new Error('Received null or empty data');
+          setIsLoading(false);
+        }
+
+        setIsLoading(false);
+
+        const newMessage = JSON.parse(event.data);
+        handleSendMessage(newMessage, false, true);
+        if (newMessage.includes('$') === true) {
+          isSendingMessage.state = false;
+          eventSource.close();
+          console.log('Stream ended normally');
+        }
+      } catch (error) {
+        console.error('Error processing message:', error);
+        console.error('Received data:', event.data);
+      }
+    };
+
+    eventSource.onerror = error => {
+      console.error('Stream encountered an error or connection was lost');
+      handleSendMessage('%Stream encountered an error or connection was lost. Please try again.%', false, false);
+      isSendingMessage.state = false;
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [retryStreamKey]);
+
+  //#endregion
+
   //#region  다음 에피소드 넘어가기
   const navigateToNextEpisode = async (episodeId: number) => {
     console.log(`Navigating to episode ID: ${episodeId}`);
@@ -474,6 +550,7 @@ const ChatPage: React.FC = () => {
           transitionEnabled={isTransitionEnable}
           send={Send}
           lastMessage={lastMessage}
+          retrySend={handleRetryStream}
         />
       </div>
       <FooterChat

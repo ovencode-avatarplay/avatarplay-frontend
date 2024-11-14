@@ -63,6 +63,56 @@ export const sendMessageStream = async (
     throw new Error('Failed to send message. Please try again.'); // Error handling
   }
 };
+// 요청 데이터 타입
+interface RetryStreamRequest {
+  chatContentId: number;
+  episodeId: number;
+  text: string;
+}
+
+// 성공적인 응답 타입
+export interface RetryStreamResSuccess {
+  streamKey: string; // StreamKey가 응답으로 포함됩니다.
+}
+
+// 오류 응답 타입
+export interface RetryStreamResError {
+  resultCode: number;
+  resultMessage: string;
+}
+
+const handleRetrySuccessResponse = (response: any): RetryStreamResSuccess => {
+  return {
+    streamKey: response.data.data.streamKey, // 응답에서 streamKey를 추출
+  };
+};
+
+const handleRetryErrorResponse = (response: any): RetryStreamResError => {
+  return {
+    resultCode: response.data.resultCode,
+    resultMessage: response.data.resultMessage,
+  };
+};
+
+export const retryStream = async (
+  retryStreamRequest: RetryStreamRequest,
+): Promise<RetryStreamResSuccess | RetryStreamResError> => {
+  try {
+    // retryStream API 호출 (POST 메서드로 변경하고, 요청 본문(body)에 데이터 전송)
+    const response = await api.post('Chatting/retry', retryStreamRequest); // body로 데이터 전달
+
+    if (response.data.resultCode === 0) {
+      // 성공 응답 처리
+      return handleRetrySuccessResponse(response);
+    } else {
+      // 오류 응답 처리
+      return handleRetryErrorResponse(response);
+    }
+  } catch (error: any) {
+    console.error('Error retrying stream:', error);
+    throw new Error('Failed to retry stream. Please try again.');
+  }
+};
 
 // Previous Chat Message Interfaces
 // export interface MessageInfo {
