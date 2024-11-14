@@ -86,6 +86,8 @@ const ChatPage: React.FC = () => {
     setChatBarCount(num);
   };
 
+  const TempIdforSendQuestion: number = -222;
+
   //#region 메세지 전송 로직
 
   const Send = async (reqSendChatMessage: SendChatMessageReq) => {
@@ -98,7 +100,14 @@ const ChatPage: React.FC = () => {
       if ('streamKey' in response) {
         // 성공적인 응답 처리
         setStreamKey(response.streamKey);
-        setChatId(response.chatId);
+        setChatId(response.chatContentId);
+
+        setParsedMessages(prev => ({
+          ...prev,
+          Messages: prev.Messages.map(message =>
+            message.chatId === TempIdforSendQuestion ? {...message, chatId: response.chatContentId} : message,
+          ),
+        }));
       } else if ('resultCode' in response) {
         // 오류 응답 처리
         if (response.resultCode === 13) {
@@ -169,6 +178,7 @@ const ChatPage: React.FC = () => {
   const handleSendMessage = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
     if (!message || typeof message !== 'string') return;
 
+    console.log('SetChatID checkResult');
     // 메시지가 '$'을 포함할 경우 팝업 표시
     if (isFinishMessage(isMyMessage, message) === true) {
       const requestData = {
@@ -196,10 +206,11 @@ const ChatPage: React.FC = () => {
 
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
-      chatId: chatId,
+      chatId: TempIdforSendQuestion, // 임시 ID 지급
       text: message,
       sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
     };
+
     //console.log('setParsedMessages ==========' + newMessage.text + '=========', 'isClearString : ', isClearString);
 
     const func = (prev: any) => {
@@ -219,12 +230,10 @@ const ChatPage: React.FC = () => {
       const splitMessageStep1Left = splitMessageStep1.leftAsterisk;
       const splitMessageStep1Right = splitMessageStep1.rightAsterisk;
 
-      const id = newMessage.chatId;
-
       // 시스템 메시지 처리
       if (isMyMessage === false && isSystemMessage(newMessage.text)) {
         const newMessageSystem: Message = {
-          chatId: id,
+          chatId: chatId,
           text: newMessage.text.replace(new RegExp(`\\${COMMAND_SYSTEM}`, 'g'), ''),
           sender: 'system',
         };
@@ -262,7 +271,7 @@ const ChatPage: React.FC = () => {
               splitMessageStep2Left,
               isMyMessage,
               isNarrationActive.active,
-              id,
+              chatId,
             );
 
             if (splitMessageStep2Left.length > 0) {
@@ -278,7 +287,7 @@ const ChatPage: React.FC = () => {
                 splitMessageStep2Left,
                 isMyMessage,
                 isNarrationActive.active,
-                id,
+                chatId,
               );
 
               allMessages.push(newMessageStep3);
@@ -290,12 +299,17 @@ const ChatPage: React.FC = () => {
               splitMessageStep1Right,
               isMyMessage,
               isNarrationActive.active,
-              id,
+              chatId,
             );
             if (splitMessageStep4.text.length > 0) allMessages.push(splitMessageStep4);
           }
         } else {
-          const splitMessageStep5: Message = setSenderType(newMessage.text, isMyMessage, isNarrationActive.active, id);
+          const splitMessageStep5: Message = setSenderType(
+            newMessage.text,
+            isMyMessage,
+            isNarrationActive.active,
+            chatId,
+          );
 
           if (splitMessageStep5.text !== ' ') {
             if (allMessages[allMessages.length - 1].sender !== splitMessageStep5.sender) {

@@ -16,7 +16,7 @@ export interface SendChatMessageReq {
 // 성공적인 응답 타입
 export interface SendChatMessageResSuccess {
   streamKey: string;
-  chatId: number;
+  chatContentId: number;
 }
 
 // 오류 응답 타입
@@ -32,7 +32,7 @@ export interface SendChatMessageData {
 const handleSuccessResponse = (response: any): SendChatMessageResSuccess => {
   return {
     streamKey: response.data.data.streamKey,
-    chatId: response.data.data.chatId,
+    chatContentId: response.data.data.chatContentId,
   };
 };
 const handleErrorResponse = (response: any): SendChatMessageResError => {

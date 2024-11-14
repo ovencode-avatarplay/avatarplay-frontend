@@ -43,6 +43,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [retryingMessages, setRetryingMessages] = useState<number[]>([]);
 
+  const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isModifying);
+
   const handleBubbleClick = (index: number) => {
     if (selectedBubbleIndex === null) {
       setSelectedBubbleIndex(index);
@@ -119,6 +121,13 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       }, 500); // 페이드 아웃 시간
     }
   }, [bgUrl, prevBgUrl, transitionEnabled]);
+
+  useEffect(() => {
+    if (isModifyingQuestion === false) {
+      setSelectedBubbleIndex(null);
+    }
+  }, [isModifyingQuestion]);
+
   const handleRetry = (msgText: string, chatId: number) => {
     // 재전송을 시도한 메시지의 chatId를 상태에 추가하여 버튼 숨기기
     setRetryingMessages(prev => [...prev, chatId]);

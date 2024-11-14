@@ -39,7 +39,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   const [toggledIcons, setToggledIcons] = useState<{[key: string]: boolean}>({main: false});
 
   const dispatch = useDispatch();
-  const isModifyQuestionOpen = useSelector((state: RootState) => state.modifyQuestion.isModifying);
+  const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isModifying);
   const modifyingText = useSelector((state: RootState) => state.modifyQuestion.modifyingText);
 
   useEffect(() => {
@@ -49,6 +49,15 @@ const ChatBar: React.FC<ChatBarProps> = ({
   useEffect(() => {
     updateMessageText();
   }, [toggledIcons, inputValues]);
+
+  useEffect(() => {
+    if (isModifyingQuestion) {
+      setInputValues({main: modifyingText});
+    } else {
+      setInputValues({main: ''});
+    }
+  }, [isModifyingQuestion]);
+
   const addChatBar = () => {
     if (chatBars.length >= 5) return; // 최대 채팅 바 개수 제한
     const newId = `chatBar-${Date.now()}`;
@@ -116,6 +125,10 @@ const ChatBar: React.FC<ChatBarProps> = ({
     setInputValues({main: ''}); // 모든 입력값을 빈 문자열로 초기화
     setToggledIcons({main: false}); // 모든 토글 상태를 기본값으로 초기화
     setMessage(''); // message 상태 초기화
+
+    if (isModifyingQuestion) {
+      dispatch(setIsModifying(false));
+    }
   };
 
   const handleKeyDownInternal = (event: React.KeyboardEvent) => {
@@ -146,7 +159,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
         )}
         <TextField
           variant="outlined"
-          placeholder={isModifyQuestionOpen ? modifyingText : 'Type your message...'}
+          placeholder={isModifyingQuestion ? modifyingText : 'Type your message...'}
           onFocus={handleFocus}
           value={inputValues[id]}
           onChange={e => handleInputChange(id, e.target.value)}
@@ -203,8 +216,9 @@ const ChatBar: React.FC<ChatBarProps> = ({
 
   return (
     <Box>
-      {isModifyQuestionOpen ? (
+      {isModifyingQuestion ? (
         <Box>
+          <Typography>Modify Question</Typography>
           <Box display="flex" alignItems="center">
             <Typography
               variant="body1"
