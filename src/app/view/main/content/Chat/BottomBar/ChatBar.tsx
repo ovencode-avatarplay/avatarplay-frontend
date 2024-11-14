@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Box, TextField, IconButton, InputAdornment, Button, Typography} from '@mui/material';
+import {Box, TextField, IconButton, InputAdornment, Button, Typography, Modal} from '@mui/material';
 import MapsUgcIcon from '@mui/icons-material/MapsUgc';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {RootState} from '@/redux-store/ReduxStore';
-import {useSelector} from 'react-redux';
-import {useDispatch} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {setIsModifying} from '@/redux-store/slices/ModifyQuestion';
+import AIRecommendImg from '@ui/chatting/btn_ai_recommend.png';
+import AI_Recommend from './AI_Recommend';
 
 interface ChatBarProps {
   message: string;
@@ -37,6 +38,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   const [chatBars, setChatBars] = useState<string[]>(['main']);
   const [inputValues, setInputValues] = useState<{[key: string]: string}>({main: ''});
   const [toggledIcons, setToggledIcons] = useState<{[key: string]: boolean}>({main: false});
+  const [isAIRecommendOpen, setAIRecommendOpen] = useState(false);
 
   const dispatch = useDispatch();
   const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isModifying);
@@ -59,24 +61,21 @@ const ChatBar: React.FC<ChatBarProps> = ({
   }, [isModifyingQuestion]);
 
   const addChatBar = () => {
-    if (chatBars.length >= 5) return; // 최대 채팅 바 개수 제한
+    if (chatBars.length >= 5) return;
     const newId = `chatBar-${Date.now()}`;
-    const newContent = inputValues.main; // main의 내용을 새 채팅바에 할당
+    const newContent = inputValues.main;
 
-    // 기존 main의 아이콘 상태를 반대로 설정
-    const newMainIconState = !toggledIcons.main; // main의 아이콘 상태 반전
-
-    // 새로운 채팅바를 main 바로 앞에 추가
+    const newMainIconState = !toggledIcons.main;
     setChatBars(prevBars => {
-      const mainIndex = prevBars.length - 1; // main의 인덱스
+      const mainIndex = prevBars.length - 1;
       return [...prevBars.slice(0, mainIndex), newId, ...prevBars.slice(mainIndex)];
     });
 
-    setInputValues(prevValues => ({...prevValues, [newId]: newContent, main: ''})); // 새 채팅바의 내용을 설정하고 main을 초기화
+    setInputValues(prevValues => ({...prevValues, [newId]: newContent, main: ''}));
     setToggledIcons(prevIcons => ({
       ...prevIcons,
-      main: newMainIconState, // main 아이콘 상태를 반전시킨 상태로 업데이트
-      [newId]: toggledIcons.main, // 새 채팅바의 아이콘 상태는 기존 main 상태 그대로 유지
+      main: newMainIconState,
+      [newId]: toggledIcons.main,
     }));
   };
 
@@ -95,10 +94,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   };
 
   const handleInputChange = (id: string, value: string) => {
-    setInputValues(prevValues => ({
-      ...prevValues,
-      [id]: value,
-    }));
+    setInputValues(prevValues => ({...prevValues, [id]: value}));
   };
 
   const updateMessageText = () => {
@@ -118,7 +114,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
 
   const handleSend = () => {
     onLoading(true);
-    onSend(); // 메시지 전송
+    onSend();
 
     // 컴포넌트를 초기 상태로 되돌림
     setChatBars(['main']); // main 이외의 모든 채팅바 제거
@@ -147,6 +143,14 @@ const ChatBar: React.FC<ChatBarProps> = ({
 
   const handleCancelModifyText = () => {
     dispatch(setIsModifying(false));
+  };
+
+  const handleAIRecommend = () => {
+    setAIRecommendOpen(true);
+  };
+
+  const closeAIRecommend = () => {
+    setAIRecommendOpen(false);
   };
 
   const renderChatBars = () =>
@@ -195,21 +199,40 @@ const ChatBar: React.FC<ChatBarProps> = ({
           }}
         />
         {id === 'main' && (
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              marginRight: 1,
-              marginBottom: 1,
-              width: '40px',
-              height: '40px',
-              minWidth: '50px',
-              whiteSpace: 'nowrap',
-            }}
-            onClick={handleSend}
-          >
-            보내기
-          </Button>
+          <Box display="flex" gap={1}>
+            {inputValues.main.trim() === '' ? (
+              <Button
+                onClick={handleAIRecommend}
+                sx={{
+                  marginRight: 1,
+                  marginBottom: 1,
+                  width: '40px',
+                  height: '40px',
+                  minWidth: '50px',
+                  padding: 0,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <img src={AIRecommendImg.src} alt="AI Recommend" style={{width: '100%', height: '100%'}} />
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  marginRight: 1,
+                  marginBottom: 1,
+                  width: '40px',
+                  height: '40px',
+                  minWidth: '50px',
+                  whiteSpace: 'nowrap',
+                }}
+                onClick={handleSend}
+              >
+                보내기
+              </Button>
+            )}
+          </Box>
         )}
       </Box>
     ));
@@ -230,7 +253,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
                 padding: '8px',
                 border: '1px solid #ccc',
                 borderRadius: '4px',
-                backgroundColor: '#f5f5f5', // 배경색 설정 (옵션)
+                backgroundColor: '#f5f5f5',
               }}
             >
               {modifyingText}
@@ -242,6 +265,8 @@ const ChatBar: React.FC<ChatBarProps> = ({
       ) : (
         <Box>{renderChatBars()}</Box>
       )}
+      {/* AI 추천 모달 */}
+      <AI_Recommend open={isAIRecommendOpen} onClose={closeAIRecommend} />
     </Box>
   );
 };

@@ -96,6 +96,7 @@ const ChatPage: React.FC = () => {
     try {
       const response = (await Promise.race([
         sendMessageStream(reqSendChatMessage),
+
         new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 5000)),
       ])) as SendChatMessageResSuccess | SendChatMessageResError;
 

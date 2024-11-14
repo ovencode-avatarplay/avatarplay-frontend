@@ -1,0 +1,49 @@
+.modalContainer {
+    position: fixed; /* Fixed positioning for bottom placement */
+    bottom: 0; /* Attach it to the bottom of the screen */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Shift it back by 50% of its own width to truly center */
+    background-color: white; /* Modal background color */
+    border-top: 1px solid #ccc; /* Border at the top of the modal */
+    padding: 3px; /* Padding inside modal */
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1); /* Slight shadow for separation */
+    width: 70%; /* Modal width */
+    max-width: 500px; /* Max width for the modal */
+    height: 35vh; /* Set height to 30% of the viewport height */
+    overflow-y: auto; /* Add scroll if content exceeds the height */
+}
+
+.modalTitle {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.messageBoxContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 1px;
+}
+
+.messageBox {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+  width: 100%;  /* Ensure it takes full width of its container */
+  padding: 1px;
+}
+
+.messageText {
+  width: 85%; /* Adjust width of the TextField */
+  height: 30px;  /* Adjust height of the TextField */
+  padding: 1px;  /* Padding inside TextField */
+  font-size: 14px;  /* Font size of the text */
+  resize: none;  /* Disable resizing */
+}
+
+.editButton {
+  flex-shrink: 0;  /* Prevent shrinking of the button */
+  height: 36px;  /* Set a fixed height for the button */
+  margin-left: 10px;  /* Add some space between the TextField and button */
+}
