@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Box, TextField, IconButton, InputAdornment, Button, Typography, Modal} from '@mui/material';
+import React, {useEffect, useState, useRef} from 'react';
+import {Box, TextField, IconButton, InputAdornment, Button, Typography} from '@mui/material';
 import MapsUgcIcon from '@mui/icons-material/MapsUgc';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,7 +13,7 @@ import AI_Recommend from './AI_Recommend';
 interface ChatBarProps {
   message: string;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
-  onSend: () => void;
+  onSend: (messages: string) => void;
   toggleExpand: () => void;
   isExpanded: boolean;
   handleKeyDown: (event: React.KeyboardEvent) => void;
@@ -112,10 +112,14 @@ const ChatBar: React.FC<ChatBarProps> = ({
     setToggledIcons(prevIcons => ({...prevIcons, [id]: !prevIcons[id]}));
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
+    handleSendMessage(message);
+  };
+
+  const handleSendMessage = (messages: string) => {
     if (!isModifyingQuestion) {
       onLoading(true);
-      onSend();
+      onSend(messages);
 
       // 컴포넌트를 초기 상태로 되돌림
       setChatBars(['main']); // main 이외의 모든 채팅바 제거
@@ -123,7 +127,6 @@ const ChatBar: React.FC<ChatBarProps> = ({
       setToggledIcons({main: false}); // 모든 토글 상태를 기본값으로 초기화
       setMessage(''); // message 상태 초기화
     } else {
-      console.log('Modify Requested', inputValues);
       dispatch(setIsModifyingQuestion(false));
     }
   };
@@ -131,13 +134,12 @@ const ChatBar: React.FC<ChatBarProps> = ({
   const handleKeyDownInternal = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
-      handleSend();
+      handleSendMessage(message);
     }
     handleKeyDown(event);
   };
 
   //#region 재전송
-
   const regenerateAnswerCalled = useSelector((state: RootState) => state.modifyQuestion.isRegenerateAnswer);
   const regenerateQuestion = useSelector((state: RootState) => state.modifyQuestion.lastMessageQuestion);
   const regenerateId = useSelector((state: RootState) => state.modifyQuestion.lastMessageId);
@@ -170,6 +172,16 @@ const ChatBar: React.FC<ChatBarProps> = ({
 
   const closeAIRecommend = () => {
     setAIRecommendOpen(false);
+  };
+
+  const selectMessageFromAIRecommend = (_message: string, isSend: boolean) => {
+    setInputValues(prevValues => ({...prevValues, main: _message}));
+    //handleSend(); // Automatically send the selected AI message
+    //console.log('_message', _message);
+    setAIRecommendOpen(false); // Close the AI recommendation modal
+    if (isSend === true) {
+      handleSendMessage(_message);
+    }
   };
 
   const renderChatBars = () =>
@@ -285,7 +297,11 @@ const ChatBar: React.FC<ChatBarProps> = ({
         <Box>{renderChatBars()}</Box>
       )}
       {/* AI 추천 모달 */}
-      <AI_Recommend open={isAIRecommendOpen} onClose={closeAIRecommend} />
+      <AI_Recommend
+        open={isAIRecommendOpen}
+        onClose={closeAIRecommend}
+        onSelectMessage={selectMessageFromAIRecommend}
+      />
     </Box>
   );
 };

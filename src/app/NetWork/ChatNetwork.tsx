@@ -471,3 +471,26 @@ export const getChatting = async (req: GetChatReq): Promise<ResponseAPI<GetChatR
     throw new Error('Failed to fetch chatting details. Please try again.'); // Error handling
   }
 };
+
+// Chatting 추천 보내기 ##########################################
+
+export interface RequestAiQuestionReq {
+  episodeId: number;
+}
+
+export interface RequestAiQuestionRes {
+  questionList: string[];
+}
+
+export const recommendQuestion = async (req: RequestAiQuestionReq): Promise<ResponseAPI<RequestAiQuestionRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<RequestAiQuestionRes>>('Chatting/aiQuestion', req);
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(response.data.resultMessage); // Error handling
+    }
+  } catch (error) {
+    throw new Error('Failed to recommendQuestion. Please try again.'); // Error handling
+  }
+};

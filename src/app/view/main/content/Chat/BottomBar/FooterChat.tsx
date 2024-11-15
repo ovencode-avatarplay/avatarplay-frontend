@@ -109,6 +109,9 @@ const FooterChat: React.FC<FooterChatProps> = ({
   };
 
   const handleSend = async () => {
+    handleSendMessage(messages);
+  };
+  const handleSendMessage = async (messages: string) => {
     // 새 채팅을 보낼 수 없는 상태
     if (isSendingMessage.state === true) return;
     else isSendingMessage.state = true;
@@ -203,7 +206,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
         <ChatBar
           message={messages} // 상태를 전달하여 최신 메시지를 관리
           setMessage={setMessage} // 메시지를 업데이트할 함수 전달
-          onSend={handleSend}
+          onSend={handleSendMessage}
           toggleExpand={toggleExpand}
           isExpanded={false}
           handleKeyDown={handleKeyDown}
