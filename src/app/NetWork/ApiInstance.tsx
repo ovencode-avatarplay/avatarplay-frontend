@@ -8,6 +8,7 @@ const api: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json', // JSON 데이터 전송을 명시
   },
+  withCredentials: true, // 쿠키 자동 관리 활성화
   httpsAgent: new (require('https').Agent)({
     rejectUnauthorized: false,
   }),

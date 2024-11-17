@@ -529,7 +529,7 @@ const ChatPage: React.FC = () => {
           console.error('Error fetching emoticon groups:', error);
         }
       };
-      loadEmoticons();
+      //loadEmoticons();
     }
   }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
 
