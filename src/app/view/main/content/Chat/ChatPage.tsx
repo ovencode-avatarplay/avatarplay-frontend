@@ -40,6 +40,7 @@ import {COMMAND_SYSTEM, Message, MessageGroup} from './MainChat/ChatTypes';
 import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
 import {setLastMessageId, setLastMessageQuestion} from '@/redux-store/slices/ModifyQuestion';
+import {error} from 'console';
 
 const ChatPage: React.FC = () => {
   const TempIdforSendQuestion: number = -222;
@@ -94,6 +95,17 @@ const ChatPage: React.FC = () => {
 
   const Send = async (reqSendChatMessage: SendChatMessageReq) => {
     try {
+      setParsedMessages(prev => ({
+        ...prev,
+        Messages: prev.Messages.filter(
+          msg =>
+            !(
+              msg.text.includes('Failed to send message. Please try again.') ||
+              msg.text.includes('Stream encountered an error or connection was lost. Please try again.')
+            ),
+        ),
+      }));
+      SetChatLoading(true);
       const response = (await Promise.race([
         sendMessageStream(reqSendChatMessage),
 
@@ -133,7 +145,7 @@ const ChatPage: React.FC = () => {
   useEffect(() => {
     if (streamKey === '') return;
     console.log('stream key : ', streamKey);
-
+    let messageCount = 0; // 메시지 수신 횟수 추적
     const eventSource = new EventSource(
       `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
     );
@@ -149,6 +161,21 @@ const ChatPage: React.FC = () => {
 
         const newMessage = JSON.parse(event.data);
         handleSendMessage(newMessage, false, true);
+
+        messageCount++; // 메시지 수신 횟수 증가
+
+        // 메시지가 3번 수신되면 강제로 에러 발생
+        if (messageCount === 50) {
+          console.log('Forcing an error after 3 messages');
+          if (eventSource.onerror) {
+            const simulatedErrorEvent = new Event('error');
+            eventSource.onerror(simulatedErrorEvent);
+          } else {
+            console.warn('No error handler defined for EventSource');
+          }
+          return;
+        }
+
         if (newMessage.includes('$') === true) {
           isSendingMessage.state = false;
           eventSource.close();
@@ -199,7 +226,8 @@ const ChatPage: React.FC = () => {
         }
       } catch (error) {
         console.error('Error calling Result API:', error);
-        alert('API 호출 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        handleSendMessage('%Stream encountered an error or connection was lost. Please try again.%', false, false);
+        alert('2');
       }
       return;
     }
@@ -350,7 +378,6 @@ const ChatPage: React.FC = () => {
 
   //#region 메세지 재전송 로직
   const handleRetryStream = () => {
-    // retryStream 함수 호출 시 필요한 파라미터
     if (streamKey && chatId !== TempIdforSendQuestion) {
       const retryRequestData = {
         chatContentId: chatId, // 또는 필요에 따라 다른 ID 사용
@@ -358,6 +385,16 @@ const ChatPage: React.FC = () => {
         text: parsedMessages.Messages[parsedMessages.Messages.length - 2].text, // 재전송할 메시지
       };
 
+      // const filteredMessages = parsedMessages.Messages.filter(message => message.chatId === chatId);
+
+      // // 필터링된 메시지의 text를 합치기
+      // const combinedText = filteredMessages.map(message => message.text).join(' ');
+
+      // const retryRequestData = {
+      //   chatContentId: chatId, // 메시지의 고유 ID
+      //   episodeId: episodeId, // 에피소드의 고유 ID
+      //   text: combinedText, // chatId가 같은 모든 메시지의 텍스트를 합친 결과
+      // };
       retryStream(retryRequestData)
         .then(response => {
           if ('streamKey' in response) {
@@ -365,7 +402,21 @@ const ChatPage: React.FC = () => {
             // 재전송 성공 시 처리 로직
             setIsLoading(true);
             setRetryStreamKey(response.streamKey);
+
+            setParsedMessages(prev => ({
+              ...prev,
+              Messages: prev.Messages.filter(
+                msg =>
+                  !(
+                    msg.text.includes('Failed to send message. Please try again.') ||
+                    msg.text.includes('Stream encountered an error or connection was lost. Please try again.')
+                  ),
+              ),
+            }));
           } else {
+            if (response.resultCode == 1) {
+              alert('잠시 후 시도해주세요');
+            }
             console.log('Retry failed:', response.resultMessage);
             // 재전송 실패 시 처리 로직
           }
@@ -409,8 +460,6 @@ const ChatPage: React.FC = () => {
     };
 
     eventSource.onerror = error => {
-      console.error('Stream encountered an error or connection was lost');
-      handleSendMessage('%Stream encountered an error or connection was lost. Please try again.%', false, false);
       isSendingMessage.state = false;
       eventSource.close();
     };
@@ -528,7 +577,7 @@ const ChatPage: React.FC = () => {
           console.error('Error fetching emoticon groups:', error);
         }
       };
-      //loadEmoticons();
+      // loadEmoticons();
     }
   }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
 
