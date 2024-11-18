@@ -506,7 +506,6 @@ const ChatPage: React.FC = () => {
         sender: 'introPrompt',
       };
 
-      parsedPrevMessages.unshift(introPrompt2);
       emoticonUrl.unshift('');
 
       const messageInfo: MessageGroup = {

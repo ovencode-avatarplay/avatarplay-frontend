@@ -95,7 +95,11 @@ const DrawerContentDesc = () => {
     };
     dispatch(setStateChatting(chattingState));
 
-    setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
+    if (episodeId > 0) {
+      setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}&episodeId=${episodeId}` || `?v=`);
+    } else {
+      setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
+    }
   }, [episodeId]);
 
   useEffect(() => {
@@ -294,17 +298,19 @@ const DrawerContentDesc = () => {
         <div className={styles.episodeListContainer}>
           <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
         </div>
-        <Link href={`/:lang/chat${contentUrl}`} className={styles.startNewChatButton}>
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={() => {
-              dispatch(setUrlLinkUse(false)); // 채팅이 url 링크를 통해 여는 것이 아니라는 것을 명시해준다.
-            }}
-          >
-            Start new chat - episode : {episodeId}
-          </Button>
-        </Link>
+        <div style={{marginBottom: '5vh'}}>
+          <Link href={`/:lang/chat${contentUrl}`} className={styles.startNewChatButton}>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                dispatch(setUrlLinkUse(false)); // 채팅이 url 링크를 통해 여는 것이 아니라는 것을 명시해준다.
+              }}
+            >
+              Start new chat - episode : {episodeId}
+            </Button>
+          </Link>
+        </div>
       </main>
     </Drawer>
   );

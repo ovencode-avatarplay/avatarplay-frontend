@@ -39,69 +39,42 @@ const usePrevChatting = (
     try {
       console.log('isUsedUrlLink', isUsedUrlLink);
 
-      if (isUsedUrlLink && !isIdEnter) {
-        const QueryKey = QueryParams.ChattingInfo;
-        const key = getWebBrowserUrl(QueryKey) || null;
+      const key = getWebBrowserUrl(QueryParams.ChattingInfo) || null;
+      const episodeKey = Number(getWebBrowserUrl(QueryParams.Episode)) || 0;
 
-        const ReqDataUrl: UrlEnterEpisodeChattingReq = {
-          urlLinkKey: key !== null ? key : '',
-        };
-        // 서버로부터 이전 채팅 데이터를 가져옴
-        //const response = await sendChattingEnter(ReqData);
-        const response = await sendChattingEnterUrl(ReqDataUrl);
-        setReRender(true);
-        if (response.resultCode === 0 && response.data) {
-          // 가져온 데이터를 상태에 저장
-          setPrevMessages(response.data);
-          dispatch(setContentName(response.data.contentName));
-          dispatch(setEpisodeName(response.data.episodeName));
-          dispatch(setContentId(response.data.contentId));
-          dispatch(setEpisodeId(response.data.episodeId));
+      const ReqDataUrl: UrlEnterEpisodeChattingReq = {
+        urlLinkKey: key !== null ? key : '',
+        episodeId: episodeKey,
+      };
+      // 서버로부터 이전 채팅 데이터를 가져옴
+      //const response = await sendChattingEnter(ReqData);
+      const response = await sendChattingEnterUrl(ReqDataUrl);
+      setReRender(true);
+      if (response.resultCode === 0 && response.data) {
+        // 가져온 데이터를 상태에 저장
+        setPrevMessages(response.data);
+        dispatch(setContentName(response.data.contentName));
+        dispatch(setEpisodeName(response.data.episodeName));
+        dispatch(setContentId(response.data.contentId));
+        dispatch(setEpisodeId(response.data.episodeId));
 
-          console.log('response.data.contentId1', response.data.contentId);
-        } else {
-          setError('Failed to fetch previous messages.');
-        }
-        const tmp = response.data?.prevMessageInfoList[response.data?.prevMessageInfoList.length - 1];
-
-        if (tmp !== undefined && tmp.message) {
-          // JSON 문자열을 객체로 파싱
-          const parsedMessage = JSON.parse(tmp.message);
-
-          // Question 필드를 추출하여 디스패치
-          dispatch(
-            setLastMessageQuestion({
-              lastMessageId: tmp.id ?? -3,
-              lastMessageQuestion: parsedMessage.Question ?? '',
-            }),
-          );
-        }
+        console.log('response.data.contentId1', response.data.contentId);
       } else {
-        const ReqData: EnterEpisodeChattingReq = {
-          episodeId: episodeId,
-        };
-        // 서버로부터 이전 채팅 데이터를 가져옴
-        dispatch(setUrlLinkUse(true)); // 상태 초기화
-        const response = await sendChattingEnter(ReqData);
-        setReRender(true);
-        if (response.resultCode === 0 && response.data) {
-          // 가져온 데이터를 상태에 저장
-          setPrevMessages(response.data);
+        setError('Failed to fetch previous messages.');
+      }
+      const tmp = response.data?.prevMessageInfoList[response.data?.prevMessageInfoList.length - 1];
 
-          dispatch(setContentName(response.data.contentName));
-          dispatch(setEpisodeName(response.data.episodeName));
-          dispatch(setContentId(response.data.contentId));
-          //dispatch(setEpisodeId(response.data.episodeId));
+      if (tmp !== undefined && tmp.message) {
+        // JSON 문자열을 객체로 파싱
+        const parsedMessage = JSON.parse(tmp.message);
 
-          console.log('response.data.contentId2', response.data.contentId);
-        } else {
-          setError('Failed to fetch previous messages.');
-        }
-        const tmp = response.data?.prevMessageInfoList[response.data?.prevMessageInfoList.length - 1];
-
-        if (tmp !== null) {
-          dispatch(setLastMessageQuestion({lastMessageId: tmp?.id ?? -3, lastMessageQuestion: tmp?.message ?? ''}));
-        }
+        // Question 필드를 추출하여 디스패치
+        dispatch(
+          setLastMessageQuestion({
+            lastMessageId: tmp.id ?? -3,
+            lastMessageQuestion: parsedMessage.Question ?? '',
+          }),
+        );
       }
     } catch (err) {
       console.error('Error fetching Chatting Enter:', err);

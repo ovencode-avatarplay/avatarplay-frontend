@@ -125,7 +125,7 @@
     display: flex;
     justify-self: center;
     align-self: center;
-    margin-bottom: 100px;
+    margin-bottom:1vh;
     height: auto;
     width: 80vw;
   }

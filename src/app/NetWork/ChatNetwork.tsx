@@ -191,6 +191,7 @@ export interface EnterEpisodeChattingReq {
 
 export interface UrlEnterEpisodeChattingReq {
   urlLinkKey: string;
+  episodeId: number;
 }
 
 // export interface MessageInfo {
