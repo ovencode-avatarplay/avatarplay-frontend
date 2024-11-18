@@ -145,7 +145,7 @@ const ChatPage: React.FC = () => {
   useEffect(() => {
     if (streamKey === '') return;
     console.log('stream key : ', streamKey);
-    let messageCount = 0; // 메시지 수신 횟수 추적
+    //let messageCount = 0; // 메시지 수신 횟수 추적
     const eventSource = new EventSource(
       `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
     );
@@ -162,19 +162,19 @@ const ChatPage: React.FC = () => {
         const newMessage = JSON.parse(event.data);
         handleSendMessage(newMessage, false, true);
 
-        messageCount++; // 메시지 수신 횟수 증가
+        //messageCount++; // 메시지 수신 횟수 증가
 
         // 메시지가 3번 수신되면 강제로 에러 발생
-        if (messageCount === 50) {
-          console.log('Forcing an error after 3 messages');
-          if (eventSource.onerror) {
-            const simulatedErrorEvent = new Event('error');
-            eventSource.onerror(simulatedErrorEvent);
-          } else {
-            console.warn('No error handler defined for EventSource');
-          }
-          return;
-        }
+        // if (messageCount === 50) {
+        //   console.log('Forcing an error after 3 messages');
+        //   if (eventSource.onerror) {
+        //     const simulatedErrorEvent = new Event('error');
+        //     eventSource.onerror(simulatedErrorEvent);
+        //   } else {
+        //     console.warn('No error handler defined for EventSource');
+        //   }
+        //   return;
+        // }
 
         if (newMessage.includes('$') === true) {
           isSendingMessage.state = false;
@@ -227,7 +227,6 @@ const ChatPage: React.FC = () => {
       } catch (error) {
         console.error('Error calling Result API:', error);
         handleSendMessage('%Stream encountered an error or connection was lost. Please try again.%', false, false);
-        alert('2');
       }
       return;
     }
