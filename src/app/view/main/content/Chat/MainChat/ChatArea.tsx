@@ -133,7 +133,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   const handleRetry = (msgText: string, chatId: number) => {
     // 재전송을 시도한 메시지의 chatId를 상태에 추가하여 버튼 숨기기
     setRetryingMessages(prev => [...prev, chatId]);
-
     // 실패한 메시지를 재전송하기 위한 요청 데이터 생성
     const retryMessage: SendChatMessageReq = {
       userId: chatInfo.user.userId,
@@ -221,25 +220,27 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             <Box onClick={() => setSelectedBubbleIndex(null)}>
               {messages.Messages.map((msg, index) => (
                 <React.Fragment key={index}>
-                  <ChatMessageBubble
-                    key={index}
-                    text={msg.text}
-                    sender={msg.sender}
-                    id={msg.chatId}
-                    index={index}
-                    iconUrl={iconUrl}
-                    emoticonUrl={messages.emoticonUrl[index]}
-                    onClick={e => {
-                      e.stopPropagation();
-                      handleBubbleClick(index);
-                    }}
-                    onTtsClick={e => {
-                      e.stopPropagation();
-                      handlePlayAudio(msg.text);
-                    }}
-                    selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
-                    lastMessageId={lastMessage.chatId}
-                  />
+                  {!(retryingMessages.includes(msg.chatId) && msg.sender === 'system') && (
+                    <ChatMessageBubble
+                      key={index}
+                      text={msg.text}
+                      sender={msg.sender}
+                      id={msg.chatId}
+                      index={index}
+                      iconUrl={iconUrl}
+                      emoticonUrl={messages.emoticonUrl[index]}
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleBubbleClick(index);
+                      }}
+                      onTtsClick={e => {
+                        e.stopPropagation();
+                        handlePlayAudio(msg.text);
+                      }}
+                      selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
+                      lastMessageId={lastMessage.chatId}
+                    />
+                  )}
                   {/* Retry 버튼 조건부 렌더링 */}
                   {msg.sender === 'system' &&
                     (msg.text.includes('Failed to send message. Please try again.') ||
@@ -266,7 +267,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                           if (msg.text.includes('Failed to send message. Please try again.')) {
                             // 첫 번째 문구에 해당하는 동작
                             console.log('Failed to send message. Retry logic');
-                            handleRetry(msg.text, msg.chatId);
+                            handleRetry(
+                              messages.Messages[messages.Messages.length - 2].text,
+                              messages.Messages[messages.Messages.length - 2].chatId,
+                            );
                           } else if (
                             msg.text.includes('Stream encountered an error or connection was lost. Please try again.')
                           ) {
