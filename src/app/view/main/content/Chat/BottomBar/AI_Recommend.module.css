@@ -1,0 +1,56 @@
+.modalContainer {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+    width: 70%;
+    max-width: 500px;
+    height: 25vh;
+    overflow-y: auto;
+}
+
+.modalTitle {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.messageBoxContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 1px;
+}
+
+.messageBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 8px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s ease;
+}
+
+.messageBox:hover {
+    background-color: #e9e9e9;
+}
+
+.messageText {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+    margin-right: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

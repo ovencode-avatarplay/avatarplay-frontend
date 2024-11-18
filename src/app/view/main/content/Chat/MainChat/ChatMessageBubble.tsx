@@ -3,6 +3,7 @@ import ChatMessageMenuTop from './ChatContextMenuTop';
 import ChatMessageMenuBottom from './ChatContextMenuBottom';
 import React, {useEffect, useState} from 'react';
 import styles from '../Styles/ChatMessageMenu.module.css';
+
 interface ChatMessageBubbleProps {
   text: string;
   sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
@@ -13,6 +14,7 @@ interface ChatMessageBubbleProps {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onTtsClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   selectedIndex: number | null;
+  lastMessageId: number;
 }
 
 const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
@@ -25,11 +27,15 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   onClick,
   onTtsClick,
   selectedIndex,
+  lastMessageId,
 }) => {
-  const [textMessage, setTextMessage] = useState(text);
+  const [answerTextMessage, setAnswerTextMessage] = useState(text);
+  const [questionTextMessage, setQuestionTextMessage] = useState(text);
 
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (sender !== 'user') {
+    if (sender === 'system' || sender === 'introPrompt') {
+      // System, IntroPrompt는 클릭되지 않게
+    } else {
       onClick(e);
     }
   };
@@ -37,16 +43,27 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
     onTtsClick(e);
   };
 
-  const handleDelete = () => {
-    setTextMessage('');
-  };
+  //#region  사용 안하기로 기획 변경
+  // const handleDeleteAnswer = () => {
+  //   setAnswerTextMessage('');
+  // };
+  // const handleAnswerModify = (newText: string) => {
+  //   setAnswerTextMessage(newText);
+  // };
+  //#endregion
 
-  const handleModified = (newText: string) => {
-    setTextMessage(newText);
+  const checkCanOpenContextTop = (): boolean => {
+    if (sender === 'user' || sender === 'userNarration' || sender === 'introPrompt' || sender === 'system')
+      return false;
+    return true;
+  };
+  const checkCanOpenContextBottom = (): boolean => {
+    if (sender === 'system' || sender === 'introPrompt') return false;
+    return true;
   };
 
   useEffect(() => {
-    setTextMessage(text);
+    setAnswerTextMessage(text);
   }, [text]);
 
   return (
@@ -60,7 +77,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
           }}
         >
           <div className={styles.chatBubble}>
-            {selectedIndex === index && <ChatMessageMenuTop id={id} />}
+            {selectedIndex === index && checkCanOpenContextTop() && <ChatMessageMenuTop id={id} />}
             <Box
               key={index}
               sx={{
@@ -103,7 +120,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                       : 'rgba(214, 214, 214, 0.2)',
                   border: sender === 'introPrompt' || sender === 'system' ? '1px solid #C0C0C0' : 'none',
                   backdropFilter: sender === 'system' ? 'blur(20px)' : 'none',
-                  textAlign: sender === 'narration' ? 'center' : 'inherit',
+                  textAlign: sender === 'narration' || sender === 'userNarration' ? 'left' : 'inherit',
                   color:
                     sender === 'introPrompt'
                       ? '#000000'
@@ -127,18 +144,20 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                 {sender === 'user' && emoticonUrl !== '' && emoticonUrl !== undefined ? (
                   <img src={emoticonUrl} alt="Emoticon" style={{width: '24px', height: '24px', marginTop: '4px'}} />
                 ) : (
-                  <div dangerouslySetInnerHTML={{__html: textMessage}} />
+                  <div dangerouslySetInnerHTML={{__html: answerTextMessage}} />
                 )}
               </Box>
-              {selectedIndex === index && (
+              {selectedIndex === index && checkCanOpenContextBottom() && (
                 <ChatMessageMenuBottom
                   text={text}
                   id={id}
                   onTtsClick={e => {
                     handleTtsClick(e);
                   }}
-                  onDelete={handleDelete}
-                  onModified={handleModified}
+                  // onDelete={handleDeleteAnswer}
+                  // onModified={handleAnswerModify}
+                  isUserChat={sender === 'user' || sender === 'userNarration'}
+                  lastMessageId={lastMessageId}
                 />
               )}
             </Box>

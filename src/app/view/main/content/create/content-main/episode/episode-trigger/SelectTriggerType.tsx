@@ -77,7 +77,13 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
 
     return {
       triggerActionType: TriggerSubDataType.ChangePrompt,
-      actionChangePrompt: 'Default Prompt',
+      actionChangePrompt: {
+        characterName: '', // 기본 캐릭터 이름
+        characterDescription: '', // 기본 캐릭터 설명
+        scenarioDescription: '', // 기본 시나리오 설명
+        introDescription: '', // 기본 소개 설명
+        secret: '', // 기본 비밀 정보
+      },
       actionConversationList: defaultConversationData,
     };
   };
@@ -111,7 +117,13 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
         triggerValueTimeMinute: 0, // 기본값 설정
         triggerActionType: TriggerSubDataType.ChangePrompt, // 기본 액션 타입
         actionChangeEpisodeId: 0, // 기본값 설정
-        actionChangePrompt: 'Default Prompt', // 기본 프롬프트
+        actionChangePrompt: {
+          characterName: '', // 기본 캐릭터 이름
+          characterDescription: '', // 기본 캐릭터 설명
+          scenarioDescription: '', // 기본 시나리오 설명
+          introDescription: '', // 기본 소개 설명
+          secret: '', // 기본 비밀 정보
+        },
         actionIntimacyPoint: 0, // 기본값 설정
         actionChangeBackground: '',
         maxIntimacyCount: 0, // 기본값 설정

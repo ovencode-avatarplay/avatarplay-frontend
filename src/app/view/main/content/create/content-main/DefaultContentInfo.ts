@@ -53,7 +53,13 @@ export const defaultTriggerInfo = {
   triggerValueTimeMinute: 0,
   triggerActionType: 0,
   actionChangeEpisodeId: 0,
-  actionChangePrompt: '',
+  actionChangePrompt: {
+    characterName: '', // 기본 캐릭터 이름
+    characterDescription: '', // 기본 캐릭터 설명
+    scenarioDescription: '', // 기본 시나리오 설명
+    introDescription: '', // 기본 소개 설명
+    secret: '', // 기본 비밀 정보
+  },
   actionIntimacyPoint: 0,
   actionChangeBackground: '',
   maxIntimacyCount: 0,

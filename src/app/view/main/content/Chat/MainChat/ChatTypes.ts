@@ -5,7 +5,6 @@ export interface Message {
 }
 
 export interface MessageGroup {
-  chatId: number;
   Messages: Message[];
   emoticonUrl: string[];
 }

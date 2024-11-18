@@ -26,7 +26,7 @@ import NotEnoughRubyPopup from '../MainChat/NotEnoughRubyPopup';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
 import {ChattingCheatRes} from '@/app/NetWork/CheatNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
-interface BottomBarProps {
+interface FooterChatProps {
   onSend: (message: string, isMyMessage: boolean, isClearString: boolean) => void;
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   streamKey: string;
@@ -42,10 +42,8 @@ interface BottomBarProps {
   };
 }
 
-const BottomBar: React.FC<BottomBarProps> = ({
+const FooterChat: React.FC<FooterChatProps> = ({
   onSend,
-  streamKey,
-  setStreamKey,
   EmoticonData,
   onToggleBackground,
   isHideChat,
@@ -111,6 +109,9 @@ const BottomBar: React.FC<BottomBarProps> = ({
   };
 
   const handleSend = async () => {
+    handleSendMessage(messages);
+  };
+  const handleSendMessage = async (messages: string) => {
     // 새 채팅을 보낼 수 없는 상태
     if (isSendingMessage.state === true) return;
     else isSendingMessage.state = true;
@@ -166,45 +167,6 @@ const BottomBar: React.FC<BottomBarProps> = ({
     }
   };
 
-  useEffect(() => {
-    if (streamKey === '') return;
-    console.log('stream key : ', streamKey);
-
-    const eventSource = new EventSource(
-      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
-    );
-
-    eventSource.onmessage = event => {
-      try {
-        if (!event.data) {
-          throw new Error('Received null or empty data');
-          onLoading(false);
-        }
-
-        onLoading(false);
-
-        const newMessage = JSON.parse(event.data);
-        const parseMessage = true;
-        onSend(newMessage, false, parseMessage);
-        if (newMessage.includes('$') === true) {
-          isSendingMessage.state = false;
-        }
-      } catch (error) {
-        console.error('Error processing message:', error);
-        console.error('Received data:', event.data);
-      }
-    };
-
-    eventSource.onerror = () => {
-      eventSource.close();
-      isSendingMessage.state = false;
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [streamKey]);
-
   const handleKeyDown = (event: React.KeyboardEvent<Element>) => {
     if (event.key === 'Enter') {
       if (!event.shiftKey) {
@@ -244,7 +206,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
         <ChatBar
           message={messages} // 상태를 전달하여 최신 메시지를 관리
           setMessage={setMessage} // 메시지를 업데이트할 함수 전달
-          onSend={handleSend}
+          onSend={handleSendMessage}
           toggleExpand={toggleExpand}
           isExpanded={false}
           handleKeyDown={handleKeyDown}
@@ -290,4 +252,4 @@ const BottomBar: React.FC<BottomBarProps> = ({
   );
 };
 
-export default BottomBar;
+export default FooterChat;

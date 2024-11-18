@@ -4,7 +4,7 @@ import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
 import {useDispatch, useSelector} from 'react-redux';
 
 import TopBar from '@chats/TopBar/HeaderChat';
-import BottomBar from '@chats/BottomBar/FooterChat';
+import FooterChat from '@chats/BottomBar/FooterChat';
 import ChatArea from '@chats/MainChat/ChatArea';
 import styles from '@chats/Styles/StyleChat.module.css';
 import usePrevChatting from '@chats/MainChat/PrevChatting';
@@ -32,18 +32,24 @@ import {
   sendMessageStream,
   SendChatMessageResSuccess,
   SendChatMessageResError,
+  retryStream,
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {COMMAND_SYSTEM, Message, MessageGroup} from './MainChat/ChatTypes';
 import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
+import {setLastMessageId, setLastMessageQuestion} from '@/redux-store/slices/ModifyQuestion';
+import {error} from 'console';
 
 const ChatPage: React.FC = () => {
-  const [parsedMessages, setParsedMessages] = useState<MessageGroup>({chatId: -1, Messages: [], emoticonUrl: []});
+  const TempIdforSendQuestion: number = -222;
+  const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
+  const [retryStreamKey, setRetryStreamKey] = useState<string>(''); // streamKey 상태 추가
+  const [chatId, setChatId] = useState<number>(TempIdforSendQuestion);
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
   const [isHideChat, SetHideChat] = useState<boolean>(false);
@@ -55,6 +61,7 @@ const ChatPage: React.FC = () => {
   const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false); // 로딩 상태 추가
   const [ChattingState, setChatInfo] = useState<ChattingState>();
   const [isReqPrevCheat, setReqPrevCheat] = useState<boolean>(false); // 치트키로 애피소드 초기화.
+  const [isRenderComplete, setRenderComplete] = useState<boolean>(false);
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
   console.log('getWebBrowserUrl', key);
@@ -65,6 +72,12 @@ const ChatPage: React.FC = () => {
   const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
   const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
+
+  const [lastMessage, setLastMessage] = useState<Message>({
+    chatId: TempIdforSendQuestion,
+    text: '',
+    sender: 'system',
+  });
 
   const chatInfo = useSelector((state: RootState) => state);
   const handleBackClick = useBackHandler();
@@ -78,11 +91,125 @@ const ChatPage: React.FC = () => {
     setChatBarCount(num);
   };
 
-  //#region Message send handler
+  //#region 메세지 전송 로직
+
+  const Send = async (reqSendChatMessage: SendChatMessageReq) => {
+    try {
+      setParsedMessages(prev => ({
+        ...prev,
+        Messages: prev.Messages.filter(
+          msg =>
+            !(
+              msg.text.includes('Failed to send message. Please try again.') ||
+              msg.text.includes('Stream encountered an error or connection was lost. Please try again.')
+            ),
+        ),
+      }));
+      SetChatLoading(true);
+      const response = (await Promise.race([
+        sendMessageStream(reqSendChatMessage),
+
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 5000)),
+      ])) as SendChatMessageResSuccess | SendChatMessageResError;
+
+      if ('streamKey' in response) {
+        // 성공적인 응답 처리
+        setStreamKey(response.streamKey);
+        setChatId(response.chatContentId);
+
+        setParsedMessages(prev => ({
+          ...prev,
+          Messages: prev.Messages.map(message =>
+            message.chatId === TempIdforSendQuestion ? {...message, chatId: response.chatContentId} : message,
+          ),
+        }));
+        dispatch(setLastMessageId(response.chatContentId));
+      } else if ('resultCode' in response) {
+        // 오류 응답 처리
+        if (response.resultCode === 13) {
+          setIsSendingMessage({state: false});
+          SetChatLoading(false);
+          setNotEnoughRubyPopupOpen(true);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      handleSendMessage('%Failed to send message. Please try again.%', false, false);
+
+      SetChatLoading(false);
+    } finally {
+      isSendingMessage.state = false;
+    }
+  };
+
+  useEffect(() => {
+    if (streamKey === '') return;
+    console.log('stream key : ', streamKey);
+    //let messageCount = 0; // 메시지 수신 횟수 추적
+    const eventSource = new EventSource(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
+    );
+
+    eventSource.onmessage = event => {
+      try {
+        if (!event.data) {
+          throw new Error('Received null or empty data');
+          setIsLoading(false);
+        }
+
+        setIsLoading(false);
+
+        const newMessage = JSON.parse(event.data);
+        handleSendMessage(newMessage, false, true);
+
+        //messageCount++; // 메시지 수신 횟수 증가
+
+        // 메시지가 3번 수신되면 강제로 에러 발생
+        // if (messageCount === 50) {
+        //   console.log('Forcing an error after 3 messages');
+        //   if (eventSource.onerror) {
+        //     const simulatedErrorEvent = new Event('error');
+        //     eventSource.onerror(simulatedErrorEvent);
+        //   } else {
+        //     console.warn('No error handler defined for EventSource');
+        //   }
+        //   return;
+        // }
+
+        if (newMessage.includes('$') === true) {
+          isSendingMessage.state = false;
+          eventSource.close();
+          console.log('Stream ended normally');
+        }
+      } catch (error) {
+        console.error('Error processing message:', error);
+        console.error('Received data:', event.data);
+      }
+    };
+
+    eventSource.onerror = error => {
+      console.error('Stream encountered an error or connection was lost');
+      handleSendMessage('%Stream encountered an error or connection was lost. Please try again.%', false, false);
+      isSendingMessage.state = false;
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [streamKey]);
+
+  useEffect(() => {
+    if (parsedMessages.Messages.length > 0) {
+      const lastMsg = parsedMessages.Messages[parsedMessages.Messages.length - 1];
+      setLastMessage(lastMsg);
+    }
+  }, [parsedMessages]);
+
   const handleSendMessage = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
     if (!message || typeof message !== 'string') return;
 
-    let id = -1;
+    console.log('SetChatID checkResult');
     // 메시지가 '$'을 포함할 경우 팝업 표시
     if (isFinishMessage(isMyMessage, message) === true) {
       const requestData = {
@@ -99,7 +226,7 @@ const ChatPage: React.FC = () => {
         }
       } catch (error) {
         console.error('Error calling Result API:', error);
-        alert('API 호출 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        handleSendMessage('%Stream encountered an error or connection was lost. Please try again.%', false, false);
       }
       return;
     }
@@ -110,12 +237,14 @@ const ChatPage: React.FC = () => {
 
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
-      chatId: id,
+      chatId: TempIdforSendQuestion, // 임시 ID 지급
       text: message,
       sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
     };
 
-    setParsedMessages(prev => {
+    //console.log('setParsedMessages ==========' + newMessage.text + '=========', 'isClearString : ', isClearString);
+
+    const func = (prev: any) => {
       // 유저의 메시지면 나레이션모드를 초기화
       if (isMyMessage) isNarrationActive.active = false;
 
@@ -123,8 +252,7 @@ const ChatPage: React.FC = () => {
       const allMessages = [...(prev?.Messages || [])];
 
       // 메시지가 비어있으면 반환
-      if (newMessage.text.length === 0)
-        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || [], chatId: -1};
+      if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
 
       // 메시지 정리
       if (isClearString) newMessage.text = cleanString(newMessage.text);
@@ -133,17 +261,15 @@ const ChatPage: React.FC = () => {
       const splitMessageStep1Left = splitMessageStep1.leftAsterisk;
       const splitMessageStep1Right = splitMessageStep1.rightAsterisk;
 
-      const id = newMessage.chatId;
-
       // 시스템 메시지 처리
       if (isMyMessage === false && isSystemMessage(newMessage.text)) {
         const newMessageSystem: Message = {
-          chatId: id,
+          chatId: chatId,
           text: newMessage.text.replace(new RegExp(`\\${COMMAND_SYSTEM}`, 'g'), ''),
           sender: 'system',
         };
         allMessages.push(newMessageSystem);
-        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || [], chatId: id};
+        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
       }
 
       // 내 메시지
@@ -156,6 +282,7 @@ const ChatPage: React.FC = () => {
         } else {
           newMessage.sender = 'user'; // 일반 유저 메시지
         }
+        dispatch(setLastMessageQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
         allMessages.push(newMessage); // 메시지를 배열에 추가
       }
 
@@ -176,7 +303,7 @@ const ChatPage: React.FC = () => {
               splitMessageStep2Left,
               isMyMessage,
               isNarrationActive.active,
-              id,
+              chatId,
             );
 
             if (splitMessageStep2Left.length > 0) {
@@ -192,7 +319,7 @@ const ChatPage: React.FC = () => {
                 splitMessageStep2Left,
                 isMyMessage,
                 isNarrationActive.active,
-                id,
+                chatId,
               );
 
               allMessages.push(newMessageStep3);
@@ -204,12 +331,17 @@ const ChatPage: React.FC = () => {
               splitMessageStep1Right,
               isMyMessage,
               isNarrationActive.active,
-              id,
+              chatId,
             );
             if (splitMessageStep4.text.length > 0) allMessages.push(splitMessageStep4);
           }
         } else {
-          const splitMessageStep5: Message = setSenderType(newMessage.text, isMyMessage, isNarrationActive.active, id);
+          const splitMessageStep5: Message = setSenderType(
+            newMessage.text,
+            isMyMessage,
+            isNarrationActive.active,
+            chatId,
+          );
 
           if (splitMessageStep5.text !== ' ') {
             if (allMessages[allMessages.length - 1].sender !== splitMessageStep5.sender) {
@@ -225,14 +357,117 @@ const ChatPage: React.FC = () => {
           // 빈문자가 왔을때 기존 sender가 user였으면 무시하자 ( 자꾸 빈말풍선 찍히는 원인 )
           else if (allMessages[allMessages.length - 1].sender === 'user') {
             return prev;
+          } else {
+            // 그외의 ' ' 띄어쓰기면 그냥 기존 말풍선에 넣어준다.
+            allMessages[allMessages.length - 1].text += `${splitMessageStep5.text}`;
           }
         }
       }
 
       // 업데이트된 Messages 배열을 MessageInfo 객체로 반환
-      return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || [], chatId: id};
-    });
+      return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
+    };
+    const _parsedMessages = func(parsedMessages);
+    parsedMessages.Messages = _parsedMessages.Messages;
+    parsedMessages.emoticonUrl = _parsedMessages.emoticonUrl;
+    setParsedMessages({..._parsedMessages});
   };
+
+  //#endregion
+
+  //#region 메세지 재전송 로직
+  const handleRetryStream = () => {
+    if (streamKey && chatId !== TempIdforSendQuestion) {
+      const retryRequestData = {
+        chatContentId: chatId, // 또는 필요에 따라 다른 ID 사용
+        episodeId: episodeId, // 에피소드 ID
+        text: parsedMessages.Messages[parsedMessages.Messages.length - 2].text, // 재전송할 메시지
+      };
+
+      // const filteredMessages = parsedMessages.Messages.filter(message => message.chatId === chatId);
+
+      // // 필터링된 메시지의 text를 합치기
+      // const combinedText = filteredMessages.map(message => message.text).join(' ');
+
+      // const retryRequestData = {
+      //   chatContentId: chatId, // 메시지의 고유 ID
+      //   episodeId: episodeId, // 에피소드의 고유 ID
+      //   text: combinedText, // chatId가 같은 모든 메시지의 텍스트를 합친 결과
+      // };
+      retryStream(retryRequestData)
+        .then(response => {
+          if ('streamKey' in response) {
+            console.log('Retry successful, StreamKey:', response.streamKey);
+            // 재전송 성공 시 처리 로직
+            setIsLoading(true);
+            setRetryStreamKey(response.streamKey);
+
+            setParsedMessages(prev => ({
+              ...prev,
+              Messages: prev.Messages.filter(
+                msg =>
+                  !(
+                    msg.text.includes('Failed to send message. Please try again.') ||
+                    msg.text.includes('Stream encountered an error or connection was lost. Please try again.')
+                  ),
+              ),
+            }));
+          } else {
+            if (response.resultCode == 1) {
+              alert('잠시 후 시도해주세요');
+            }
+            console.log('Retry failed:', response.resultMessage);
+            // 재전송 실패 시 처리 로직
+          }
+        })
+        .catch(error => {
+          console.error('Error retrying stream:', error);
+        });
+    } else {
+      console.error('StreamKey or ChatId is not available');
+    }
+  };
+
+  useEffect(() => {
+    if (retryStreamKey === '') return;
+    console.log('stream key : ', retryStreamKey);
+
+    const eventSource = new EventSource(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/retryStream?streamKey=${retryStreamKey}`, // 쿼리 파라미터 제대로 추가
+    );
+
+    eventSource.onmessage = event => {
+      try {
+        if (!event.data) {
+          throw new Error('Received null or empty data');
+          setIsLoading(false);
+        }
+
+        setIsLoading(false);
+
+        const newMessage = JSON.parse(event.data);
+        handleSendMessage(newMessage, false, true);
+        if (newMessage.includes('$') === true) {
+          isSendingMessage.state = false;
+          eventSource.close();
+          console.log('Stream ended normally');
+        }
+      } catch (error) {
+        console.error('Error processing message:', error);
+        console.error('Received data:', event.data);
+      }
+    };
+
+    eventSource.onerror = error => {
+      isSendingMessage.state = false;
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [retryStreamKey]);
+
   //#endregion
 
   //#region  다음 에피소드 넘어가기
@@ -276,15 +511,20 @@ const ChatPage: React.FC = () => {
     console.log('배경 보기/숨기기 버튼 클릭');
     SetHideChat(!isHideChat);
   };
+
+  const handleRerender = (isComplete: boolean) => {
+    setRenderComplete(isComplete);
+  };
   //#endregion
 
-  const {prevMessages: enterData} = usePrevChatting(episodeId, isIdEnter);
+  const {prevMessages: enterData} = usePrevChatting(episodeId, isReqPrevCheat, handleRerender, isIdEnter);
 
   useEffect(() => {
     if (
       (!hasFetchedPrevMessages && enterData && (enterData?.prevMessageInfoList || enterData?.introPrompt.length > 0)) ||
       (nextEpisodeId != null && enterData?.episodeId === nextEpisodeId) ||
-      isReqPrevCheat === true
+      isReqPrevCheat === true ||
+      isRenderComplete === true
     ) {
       // flatMap을 통해 parsedPrevMessages를 생성
       // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
@@ -309,15 +549,14 @@ const ChatPage: React.FC = () => {
       ) || {parsedPrevMessages: [], emoticonUrl: []}; // 기본값 설정
 
       const introPrompt2: Message = {
-        chatId: -1,
+        chatId: chatId,
         text: enterData?.introPrompt || '애피소드 도입부가 설정되지 않았습니다',
         sender: 'introPrompt',
       };
 
-      parsedPrevMessages.unshift(introPrompt2);
       emoticonUrl.unshift('');
+
       const messageInfo: MessageGroup = {
-        chatId: parsedPrevMessages[0].chatId,
         Messages: parsedPrevMessages, // Message 배열
         emoticonUrl: emoticonUrl, // 이모티콘 URL
       };
@@ -337,36 +576,10 @@ const ChatPage: React.FC = () => {
           console.error('Error fetching emoticon groups:', error);
         }
       };
-      loadEmoticons();
+      // loadEmoticons();
     }
-  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat]);
-  const Send = async (reqSendChatMessage: SendChatMessageReq) => {
-    try {
-      const response = (await Promise.race([
-        sendMessageStream(reqSendChatMessage),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 5000)),
-      ])) as SendChatMessageResSuccess | SendChatMessageResError;
+  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
 
-      if ('streamKey' in response) {
-        // 성공적인 응답 처리
-        setStreamKey(response.streamKey);
-      } else if ('resultCode' in response) {
-        // 오류 응답 처리
-        if (response.resultCode === 13) {
-          setIsSendingMessage({state: false});
-          SetChatLoading(false);
-          setNotEnoughRubyPopupOpen(true);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      handleSendMessage('%Failed to send message. Please try again.%', false, false);
-
-      SetChatLoading(false);
-    } finally {
-      isSendingMessage.state = false;
-    }
-  };
   return (
     <main className={styles.chatmodal}>
       <div className={styles.overlayContainer}>
@@ -386,9 +599,11 @@ const ChatPage: React.FC = () => {
           chatBarCount={chatBarCount}
           transitionEnabled={isTransitionEnable}
           send={Send}
+          lastMessage={lastMessage}
+          retrySend={handleRetryStream}
         />
       </div>
-      <BottomBar
+      <FooterChat
         onSend={handleSendMessage}
         streamKey={streamKey}
         setStreamKey={setStreamKey}

@@ -18,71 +18,62 @@ import {
   setEpisodeName,
   setStateChatting,
 } from '@/redux-store/slices/Chatting';
+import {setLastMessageQuestion} from '@/redux-store/slices/ModifyQuestion';
 
-const usePrevChatting = (episodeId: number, isCheat: boolean, isIdEnter: boolean = false) => {
+const usePrevChatting = (
+  episodeId: number,
+  isCheat: boolean,
+  setReRender: (data: boolean) => void,
+  isIdEnter: boolean = false,
+) => {
   // 이전 메시지 및 에러 상태값 정의s
   const [prevMessages, setPrevMessages] = useState<EnterEpisodeChattingRes>();
-  const [isCheatEnter, setCheatEnter] = useState<boolean>(false); // 이 값이 바뀌면 무조건 채팅방 Enter 처리
   console.log('isIdEnter', isIdEnter);
   const [error, setError] = useState<string | null>(null);
 
-  // API 요청 데이터 정의
-  const ReqData: EnterEpisodeChattingReq = {
-    episodeId: episodeId,
-  };
-
   const isUsedUrlLink = useSelector((state: RootState) => state.chattingEnter.isUsedUrlLink);
   const dispatch = useDispatch();
-
-  if (isCheat === true) setCheatEnter(!isCheatEnter); // useEffect에서 Enter를 요청하도록 해준다.
 
   // 데이터를 가져오는 비동기 함수
   const fetchChattingData = async () => {
     try {
       console.log('isUsedUrlLink', isUsedUrlLink);
 
-      if (isUsedUrlLink && !isIdEnter) {
-        const QueryKey = QueryParams.ChattingInfo;
-        const key = getWebBrowserUrl(QueryKey) || null;
+      const key = getWebBrowserUrl(QueryParams.ChattingInfo) || null;
 
-        const ReqDataUrl: UrlEnterEpisodeChattingReq = {
-          urlLinkKey: key !== null ? key : '',
-        };
-        // 서버로부터 이전 채팅 데이터를 가져옴
-        //const response = await sendChattingEnter(ReqData);
-        const response = await sendChattingEnterUrl(ReqDataUrl);
-        if (response.resultCode === 0 && response.data) {
-          // 가져온 데이터를 상태에 저장
-          setPrevMessages(response.data);
-          dispatch(setContentName(response.data.contentName));
-          dispatch(setEpisodeName(response.data.episodeName));
-          dispatch(setContentId(response.data.contentId));
-          dispatch(setEpisodeId(response.data.episodeId));
+      const ReqDataUrl: UrlEnterEpisodeChattingReq = {
+        urlLinkKey: key !== null ? key : '',
+        episodeId: episodeId,
+      };
+      // 서버로부터 이전 채팅 데이터를 가져옴
+      //const response = await sendChattingEnter(ReqData);
+      const response = await sendChattingEnterUrl(ReqDataUrl);
+      setReRender(true);
+      if (response.resultCode === 0 && response.data) {
+        // 가져온 데이터를 상태에 저장
+        setPrevMessages(response.data);
+        dispatch(setContentName(response.data.contentName));
+        dispatch(setEpisodeName(response.data.episodeName));
+        dispatch(setContentId(response.data.contentId));
+        dispatch(setEpisodeId(response.data.episodeId));
 
-          console.log('response.data.contentId1', response.data.contentId);
-        } else {
-          setError('Failed to fetch previous messages.');
-        }
+        console.log('response.data.contentId1', response.data.contentId);
       } else {
-        const ReqData: EnterEpisodeChattingReq = {
-          episodeId: episodeId,
-        };
-        // 서버로부터 이전 채팅 데이터를 가져옴
-        dispatch(setUrlLinkUse(true)); // 상태 초기화
-        const response = await sendChattingEnter(ReqData);
-        if (response.resultCode === 0 && response.data) {
-          // 가져온 데이터를 상태에 저장
-          setPrevMessages(response.data);
+        setError('Failed to fetch previous messages.');
+      }
+      const tmp = response.data?.prevMessageInfoList[response.data?.prevMessageInfoList.length - 1];
 
-          dispatch(setContentName(response.data.contentName));
-          dispatch(setEpisodeName(response.data.episodeName));
-          dispatch(setContentId(response.data.contentId));
-          //dispatch(setEpisodeId(response.data.episodeId));
+      if (tmp !== undefined && tmp.message) {
+        // JSON 문자열을 객체로 파싱
+        const parsedMessage = JSON.parse(tmp.message);
 
-          console.log('response.data.contentId2', response.data.contentId);
-        } else {
-          setError('Failed to fetch previous messages.');
-        }
+        // Question 필드를 추출하여 디스패치
+        dispatch(
+          setLastMessageQuestion({
+            lastMessageId: tmp.id ?? -3,
+            lastMessageQuestion: parsedMessage.Question ?? '',
+          }),
+        );
       }
     } catch (err) {
       console.error('Error fetching Chatting Enter:', err);
@@ -90,13 +81,14 @@ const usePrevChatting = (episodeId: number, isCheat: boolean, isIdEnter: boolean
     }
   };
 
+  if (isCheat === true) fetchChattingData(); //setCheatEnter(!isCheatEnter); // useEffect에서 Enter를 요청하도록 해준다.
+
   // 컴포넌트가 마운트될 때와 userId 또는 episodeId가 변경될 때마다 API 호출
   useEffect(() => {
     fetchChattingData();
-  }, [episodeId, isCheatEnter]);
+  }, [episodeId]);
 
   // 이전 메시지와 에러를 반환
   return {prevMessages};
 };
-
 export default usePrevChatting;

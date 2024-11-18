@@ -69,7 +69,7 @@ const DrawerContentDesc = () => {
 
   // Content, Chapter, Episode 혼동 때문에 Name, Thumbnail은 접두사
   const [contentName, setContentName] = useState('contentName');
-  const [contentThumbnail, setContentThumbnail] = useState('/images/001.png');
+  const [contentThumbnail, setContentThumbnail] = useState('');
   const [contentDescription, setContentDescription] = useState('contentDescription');
   const [authorName, setAuthorName] = useState('authorName');
   const [chatCount, setChatCount] = useState(0);
@@ -225,7 +225,7 @@ const DrawerContentDesc = () => {
           image={contentThumbnail}
           alt={contentName}
           className={styles.imageThumbnail}
-          onError={() => setContentThumbnail('/images/001.png')}
+          onError={() => setContentThumbnail('')}
         />
         <Card>
           <CardContent sx={{padding: 1}}>
@@ -294,17 +294,19 @@ const DrawerContentDesc = () => {
         <div className={styles.episodeListContainer}>
           <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
         </div>
-        <Link href={`/:lang/chat${contentUrl}`} className={styles.startNewChatButton}>
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={() => {
-              dispatch(setUrlLinkUse(false)); // 채팅이 url 링크를 통해 여는 것이 아니라는 것을 명시해준다.
-            }}
-          >
-            Start new chat - episode : {episodeId}
-          </Button>
-        </Link>
+        <div style={{marginBottom: '5vh'}}>
+          <Link href={`/:lang/chat${contentUrl}`} className={styles.startNewChatButton}>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                dispatch(setUrlLinkUse(false)); // 채팅이 url 링크를 통해 여는 것이 아니라는 것을 명시해준다.
+              }}
+            >
+              Start new chat - episode : {episodeId}
+            </Button>
+          </Link>
+        </div>
       </main>
     </Drawer>
   );
