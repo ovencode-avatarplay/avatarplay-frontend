@@ -95,11 +95,7 @@ const DrawerContentDesc = () => {
     };
     dispatch(setStateChatting(chattingState));
 
-    if (episodeId > 0) {
-      setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}&episodeId=${episodeId}` || `?v=`);
-    } else {
-      setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
-    }
+    setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
   }, [episodeId]);
 
   useEffect(() => {

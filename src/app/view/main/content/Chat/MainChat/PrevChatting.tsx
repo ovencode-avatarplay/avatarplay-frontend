@@ -40,11 +40,10 @@ const usePrevChatting = (
       console.log('isUsedUrlLink', isUsedUrlLink);
 
       const key = getWebBrowserUrl(QueryParams.ChattingInfo) || null;
-      const episodeKey = Number(getWebBrowserUrl(QueryParams.Episode)) || 0;
 
       const ReqDataUrl: UrlEnterEpisodeChattingReq = {
         urlLinkKey: key !== null ? key : '',
-        episodeId: episodeKey,
+        episodeId: episodeId,
       };
       // 서버로부터 이전 채팅 데이터를 가져옴
       //const response = await sendChattingEnter(ReqData);
