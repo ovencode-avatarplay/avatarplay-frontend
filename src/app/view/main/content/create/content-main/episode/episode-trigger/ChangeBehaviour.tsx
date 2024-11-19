@@ -82,40 +82,17 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
         maxIntimacyCount: item.maxIntimacyCount || 0,
         actionConversationList: item.actionConversationList || [],
       });
+      const matchingChapter = content.chapterInfoList.find(chapter =>
+        chapter.episodeInfoList.some(episode => episode.id === item.actionChangeEpisodeId),
+      );
 
-      const triggerId = triggerInfo.id; // 현재 triggerId를 가져옴
+      const matchingEpisode = content.chapterInfoList
+        .flatMap(chapter => chapter.episodeInfoList)
+        .find((episode, episodeIndex) => episode.id === item.actionChangeEpisodeId);
 
-      if (triggerId) {
-        // triggerId를 기준으로 matchingChapter 찾기
-        const matchingChapter = content.chapterInfoList.find(chapter =>
-          chapter.episodeInfoList.some(
-            episode => episode.triggerInfoList.some(trigger => trigger.id === triggerId), // triggerId와 일치하는 트리거 찾기
-          ),
-        );
-
-        // triggerId를 기준으로 matchingEpisode 찾기
-        const matchingEpisode = content.chapterInfoList
-          .flatMap(chapter => chapter.episodeInfoList)
-          .find(
-            episode => episode.id === triggerInfo.actionChangeEpisodeId, // 에피소드 ID와 actionChangeEpisodeId 비교
-          );
-
-        // selectedChapter 및 selectedEpisode 업데이트
-        if (matchingChapter) {
-          setSelectedChapter(matchingChapter.name || 'None');
-        } else {
-          setSelectedChapter('None');
-        }
-
-        if (matchingEpisode) {
-          setSelectedEpisode(matchingEpisode.name || 'None');
-        } else {
-          setSelectedEpisode('None');
-        }
-      } else {
-        setSelectedChapter('None');
-        setSelectedEpisode('None');
-      }
+      // selectedChapter 및 selectedEpisode 업데이트
+      setSelectedChapter(matchingChapter?.name || 'None');
+      setSelectedEpisode(matchingEpisode?.name || 'None');
     }
   }, [item, content.chapterInfoList]);
 
