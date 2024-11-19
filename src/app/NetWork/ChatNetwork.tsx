@@ -194,14 +194,6 @@ export interface UrlEnterEpisodeChattingReq {
   episodeId: number;
 }
 
-// export interface MessageInfo {
-//   id: number;
-//   userName: string;
-//   characterName: string;
-//   message: string;
-//   createAt: string;
-// }
-
 // URL 방식이든 아니는 Enter Respons 받는 형식은 같은걸 사용한다.
 // 만약 달라지면 따로 분리해서 만들어주자.
 export interface EnterEpisodeChattingRes {
@@ -212,14 +204,7 @@ export interface EnterEpisodeChattingRes {
   iconImageUrl: string;
   episodeBgImageUrl: string;
   introPrompt: string;
-  prevMessageInfoList: {
-    id: number;
-    userName: string;
-    characterName: string;
-    message: string;
-    emoticonUrl: string;
-    createAt: string;
-  }[];
+  prevMessageInfoList: MessageInfo[];
 }
 
 export const sendChattingEnter = async (
@@ -238,6 +223,7 @@ export const sendChattingEnter = async (
       // }
 
       // 여기서 이미지 캐싱 로직 제거, URL만 반환
+
       return response.data;
     } else {
       throw new Error(response.data.resultMessage); // Error handling

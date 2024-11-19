@@ -40,10 +40,12 @@ interface FooterChatProps {
   isSendingMessage: {
     state: boolean;
   };
+  onRemoveChat: (id: number) => void;
 }
 
 const FooterChat: React.FC<FooterChatProps> = ({
   onSend,
+  send,
   EmoticonData,
   onToggleBackground,
   isHideChat,
@@ -51,7 +53,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
   onUpdateChatBarCount,
   onReqPrevChatting,
   isSendingMessage,
-  send,
+  onRemoveChat,
 }) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -214,6 +216,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
           onToggleBackground={onToggleBackground}
           onLoading={onLoading}
           onUpdateChatBarCount={onUpdateChatBarCount}
+          onRemoveChat={onRemoveChat}
         />
       </Box>
       {isExpanded && !isStickerOpen && (

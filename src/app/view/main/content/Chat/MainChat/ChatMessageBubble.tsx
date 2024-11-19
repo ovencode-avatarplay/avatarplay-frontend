@@ -3,6 +3,8 @@ import ChatMessageMenuTop from './ChatContextMenuTop';
 import ChatMessageMenuBottom from './ChatContextMenuBottom';
 import React, {useEffect, useState} from 'react';
 import styles from '../Styles/ChatMessageMenu.module.css';
+// import ChatRegenerateGroupNav from './ChatRegenerateGroupNav';
+import {Message, MessageGroup} from './ChatTypes';
 
 interface ChatMessageBubbleProps {
   text: string;
@@ -14,7 +16,7 @@ interface ChatMessageBubbleProps {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onTtsClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   selectedIndex: number | null;
-  lastMessageId: number;
+  lastMessage: Message;
 }
 
 const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
@@ -27,7 +29,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   onClick,
   onTtsClick,
   selectedIndex,
-  lastMessageId,
+  lastMessage,
 }) => {
   const [answerTextMessage, setAnswerTextMessage] = useState(text);
   const [questionTextMessage, setQuestionTextMessage] = useState(text);
@@ -157,13 +159,14 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                   // onDelete={handleDeleteAnswer}
                   // onModified={handleAnswerModify}
                   isUserChat={sender === 'user' || sender === 'userNarration'}
-                  lastMessageId={lastMessageId}
+                  lastMessageId={lastMessage.chatId}
                 />
               )}
             </Box>
           </div>
         </Box>
       )}
+      {/* {id === lastMessage.chatId && (sender === 'user' || sender === 'userNarration') && <ChatRegenerateGroupNav />} */}
     </>
   );
 };

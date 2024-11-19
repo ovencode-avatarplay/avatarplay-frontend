@@ -45,7 +45,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [retryingMessages, setRetryingMessages] = useState<number[]>([]);
 
-  const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isModifyingQuestion);
+  const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isRegeneratingQuestion);
 
   const handleBubbleClick = (index: number) => {
     if (selectedBubbleIndex === null) {
@@ -238,7 +238,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                         handlePlayAudio(msg.text);
                       }}
                       selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
-                      lastMessageId={lastMessage.chatId}
+                      lastMessage={lastMessage}
                     />
                   )}
                   {/* Retry 버튼 조건부 렌더링 */}

@@ -39,7 +39,7 @@ import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {COMMAND_SYSTEM, Message, MessageGroup} from './MainChat/ChatTypes';
 import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
-import {setLastMessageId, setLastMessageQuestion} from '@/redux-store/slices/ModifyQuestion';
+import {modifyQuestionSlice, setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import {error} from 'console';
 
 const ChatPage: React.FC = () => {
@@ -123,7 +123,12 @@ const ChatPage: React.FC = () => {
             message.chatId === TempIdforSendQuestion ? {...message, chatId: response.chatContentId} : message,
           ),
         }));
-        dispatch(setLastMessageId(response.chatContentId));
+        dispatch(
+          setRegeneratingQuestion({
+            lastMessageId: response.chatContentId,
+            lastMessageQuestion: reqSendChatMessage.text,
+          }),
+        );
       } else if ('resultCode' in response) {
         // 오류 응답 처리
         if (response.resultCode === 13) {
@@ -282,7 +287,7 @@ const ChatPage: React.FC = () => {
         } else {
           newMessage.sender = 'user'; // 일반 유저 메시지
         }
-        dispatch(setLastMessageQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
+        dispatch(setRegeneratingQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
         allMessages.push(newMessage); // 메시지를 배열에 추가
       }
 
@@ -371,6 +376,23 @@ const ChatPage: React.FC = () => {
     parsedMessages.Messages = _parsedMessages.Messages;
     parsedMessages.emoticonUrl = _parsedMessages.emoticonUrl;
     setParsedMessages({..._parsedMessages});
+  };
+
+  //#endregion
+
+  //#region 프론트에서 메시지 삭제 로직
+
+  const removeParsedMessage = (removeId: number) => {
+    setParsedMessages(prev => {
+      const filteredMessages = prev.Messages.filter(
+        message => message.chatId !== removeId, // 해당 id만 삭제
+      );
+
+      return {
+        ...prev,
+        Messages: filteredMessages,
+      };
+    });
   };
 
   //#endregion
@@ -615,6 +637,7 @@ const ChatPage: React.FC = () => {
         onReqPrevChatting={setReqPrevCheat}
         isSendingMessage={isSendingMessage}
         send={Send}
+        onRemoveChat={removeParsedMessage}
       />
 
       {showPopup && (
