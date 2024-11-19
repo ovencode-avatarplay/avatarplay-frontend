@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, {useEffect} from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import WallpaperIcon from '@mui/icons-material/Wallpaper';
@@ -20,7 +20,9 @@ interface ChatTopBarProps {
 
 const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, isHideChat}) => {
   const chattingState1: ChattingState = useSelector((state: RootState) => state.chatting);
-  console.log('chattingState ', chattingState1);
+  useEffect(() => {
+    console.log('chattingState ', chattingState1);
+  }, [chattingState1]);
   return (
     <>
       {isHideChat === false && (

@@ -7,10 +7,11 @@ import getLocalizedText from '@/utils/getLocalizedText';
 // 채팅 Send ##########################################
 // Chat Data Interfaces
 export interface SendChatMessageReq {
-  userId: number;
   episodeId: number;
-  text: string;
   emoticonId?: number; // optional로 설정하여 undefined 허용
+  text: string;
+  isRegenerate?: boolean;
+  regenerateChatId?: number;
 }
 
 // 성공적인 응답 타입

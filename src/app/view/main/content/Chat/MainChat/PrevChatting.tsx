@@ -28,7 +28,10 @@ const usePrevChatting = (
 ) => {
   // 이전 메시지 및 에러 상태값 정의s
   const [prevMessages, setPrevMessages] = useState<EnterEpisodeChattingRes>();
-  console.log('isIdEnter', isIdEnter);
+  useEffect(() => {
+    console.log('isIdEnter', isIdEnter);
+  }, [prevMessages]);
+
   const [error, setError] = useState<string | null>(null);
 
   const isUsedUrlLink = useSelector((state: RootState) => state.chattingEnter.isUsedUrlLink);

@@ -68,6 +68,9 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       // 스크롤 위치를 유지하기 위해 이전 스크롤 높이 계산
       const previousScrollHeight = scrollHeight;
 
+      // console.log('chatarea', JSON.stringify(messages, null, 2)); // JSON 문자열로 변환하여 보기 좋게 출력
+      // console.log('Raw object:', messages);
+
       // 새 메시지가 추가된 후 스크롤을 업데이트
       if (messages.Messages.length > 0) {
         // 메시지가 추가된 후 스크롤 위치 복원
@@ -83,7 +86,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   }, [messages, chatBarCount]); // messages와 chatBarCount가 변경될 때마다 실행
 
   useEffect(() => {
-    console.log(isLoading);
+    console.log('Loding' + isLoading);
   }, [isLoading, chatBarCount]);
   useEffect(() => {
     console.log('Initial bgUrl:', bgUrl);
@@ -135,7 +138,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     setRetryingMessages(prev => [...prev, chatId]);
     // 실패한 메시지를 재전송하기 위한 요청 데이터 생성
     const retryMessage: SendChatMessageReq = {
-      userId: chatInfo.user.userId,
       episodeId: chatInfo.chatting.episodeId,
       text: msgText,
     };

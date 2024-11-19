@@ -64,7 +64,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
 
       setChatBars([...additionalParts.map((_, index) => `chatBar-${Date.now() + index}`), 'main']);
 
-      const newInputValues: {[key: string]: string} = {main: mainPart};
+      const newInputValues: {[key: string]: string} = {main: mainPart.replace(/\*/g, '')};
       additionalParts.forEach((part, index) => {
         newInputValues[`chatBar-${Date.now() + index}`] = part.replace(/\*/g, ''); // Remove asterisks
       });
@@ -144,16 +144,17 @@ const ChatBar: React.FC<ChatBarProps> = ({
   const handleSendMessage = (messages: string) => {
     onLoading(true);
     if (!isRegeneratingQuestion) {
+      onSend(messages);
     } else {
       console.log('질문 편집 요청' + regenerateQuestion.id + ' : ' + regenerateQuestion.text + '  to => ' + message);
 
       // ChatArea에 올라와있는 ChatBubble에서 id로 찾아서 지우기.
       onRemoveChat(regenerateQuestion.id);
 
+      onSend(messages);
+
       dispatch(setIsRegeneratingQuestion(false));
     }
-    onSend(messages);
-
     // 컴포넌트를 초기 상태로 되돌림
     setChatBars(['main']); // main 이외의 모든 채팅바 제거
     setInputValues({main: ''}); // 모든 입력값을 빈 문자열로 초기화

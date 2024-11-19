@@ -11,6 +11,6 @@ export const getWebBrowserUrl = (param: QueryParams): string | null => {
   const url = window.location.href;
   const urlObj = new URL(url);
   const paramValue = urlObj.searchParams.get(param); // enum에서 지정한 키 값 가져오기
-  console.log(`getWebBrowserUrl (${param}) :`, paramValue);
+
   return paramValue; // 해당하는 쿼리 파라미터 값 반환, 없으면 null 반환
 };

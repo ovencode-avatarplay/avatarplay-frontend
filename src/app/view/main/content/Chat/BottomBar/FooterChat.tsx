@@ -1,7 +1,5 @@
-import React, {useRef, useEffect, useState} from 'react';
-import {Box, Button, IconButton, TextField, InputAdornment} from '@mui/material';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import React, {useState} from 'react';
+import {Box, Button} from '@mui/material';
 import CameraIcon from '@mui/icons-material/Camera';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
@@ -18,9 +16,6 @@ import {
 import Sticker from './Sticker';
 import EmojiOverlayPopup from './EmojiOverlayPopup';
 import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
-import MapsUgcIcon from '@mui/icons-material/MapsUgc';
-import ExtendedInputField from './ExtendedInputField';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import ChatBar from './ChatBar';
 import NotEnoughRubyPopup from '../MainChat/NotEnoughRubyPopup';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
@@ -65,7 +60,6 @@ const FooterChat: React.FC<FooterChatProps> = ({
 
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const currentContentId: number = useSelector((state: RootState) => state.chatting.contentId);
-  const UserId: number = useSelector((state: RootState) => state.user.userId);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
   const [failMessage, setfailMessage] = useState<string | null>(null);
   const toggleExpand = () => {
@@ -137,7 +131,6 @@ const FooterChat: React.FC<FooterChatProps> = ({
         setMessage('');
       }
       const reqSendChatMessage: SendChatMessageReq = {
-        userId: UserId,
         episodeId: currentEpisodeId,
         emoticonId: selectedEmoticonId || undefined,
         text: message, // 이미지 요소가 포함된 message
