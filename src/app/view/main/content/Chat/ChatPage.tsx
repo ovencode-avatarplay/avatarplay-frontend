@@ -98,8 +98,7 @@ const ChatPage: React.FC = () => {
 
   const Send = async (reqSendChatMessage: SendChatMessageReq) => {
     try {
-      console.log('sendParsedMessageStart:', parsedMessages);
-      console.log('sendParsedMessageStartRef:', parsedMessagesRef);
+      // console.log('sendParsedMessageStartRef:', parsedMessagesRef);
 
       const currentMessages = parsedMessagesRef.current.Messages;
       const filteredMessages = currentMessages.filter(
@@ -393,13 +392,10 @@ const ChatPage: React.FC = () => {
       // 업데이트된 Messages 배열을 MessageInfo 객체로 반환
       return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
     };
-    console.log('sendParsedMessage0:', parsedMessages);
-    const _parsedMessages = func(parsedMessages);
-    parsedMessages.Messages = _parsedMessages.Messages;
-    parsedMessages.emoticonUrl = _parsedMessages.emoticonUrl;
-    setParsedMessages({..._parsedMessages});
 
-    console.log('sendParsedMessage1:', _parsedMessages);
+    const updatedMessages = func(parsedMessagesRef.current);
+    setParsedMessages(updatedMessages);
+    parsedMessagesRef.current = updatedMessages;
   };
 
   //#endregion
@@ -407,19 +403,17 @@ const ChatPage: React.FC = () => {
   //#region 프론트에서 메시지 삭제 로직
 
   const removeParsedMessage = (removeId: number) => {
-    const filteredMessages = parsedMessages.Messages.filter(
+    const filteredMessages = parsedMessagesRef.current.Messages.filter(
       message => message.chatId !== removeId, // 해당 id만 삭제
     );
 
     const updatedParsedMessages = {
-      ...parsedMessages,
+      ...parsedMessagesRef.current,
       Messages: filteredMessages,
     };
 
     setParsedMessages(updatedParsedMessages);
-
-    console.log('removeParsedMessage:', updatedParsedMessages);
-    console.log('removeParsedMessage:', parsedMessages);
+    parsedMessagesRef.current = updatedParsedMessages;
   };
 
   //#endregion
