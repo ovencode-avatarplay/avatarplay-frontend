@@ -45,6 +45,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   const dispatch = useDispatch();
   const isRegeneratingQuestion = useSelector((state: RootState) => state.modifyQuestion.isRegeneratingQuestion);
   const regenerateQuestion = useSelector((state: RootState) => state.modifyQuestion.regeneratingQuestion);
+  const [parsedModifyText, setParsedModifyText] = useState<string>('');
 
   useEffect(() => {
     onUpdateChatBarCount(chatBars.length);
@@ -57,16 +58,16 @@ const ChatBar: React.FC<ChatBarProps> = ({
   useEffect(() => {
     if (isRegeneratingQuestion) {
       const parts = regenerateQuestion.text.split('⦿SYSTEM_CHAT⦿');
-      const mainPart = parts[0];
-      const additionalParts = parts.slice(1);
+      const mainPart = parts[parts.length - 1];
+      const partsExcludingMain = parts.slice(0, parts.length - 1);
+      const additionalParts = partsExcludingMain.slice(0);
 
-      setChatBars(['main', ...additionalParts.map((_, index) => `chatBar-${Date.now() + index}`)]);
+      setChatBars([...additionalParts.map((_, index) => `chatBar-${Date.now() + index}`), 'main']);
 
       const newInputValues: {[key: string]: string} = {main: mainPart};
       additionalParts.forEach((part, index) => {
         newInputValues[`chatBar-${Date.now() + index}`] = part.replace(/\*/g, ''); // Remove asterisks
       });
-
       setInputValues(newInputValues);
       setToggledIcons({
         main: mainPart.includes('*'),
@@ -75,6 +76,10 @@ const ChatBar: React.FC<ChatBarProps> = ({
           return acc;
         }, {} as {[key: string]: boolean}),
       });
+
+      // 최종 텍스트
+      const parsedText = parts.map(part => part.replace(/\*/g, '')).join(' ');
+      setParsedModifyText(parsedText);
     } else {
       setInputValues({main: ''});
     }
@@ -172,6 +177,10 @@ const ChatBar: React.FC<ChatBarProps> = ({
 
   const handleCancelModifyText = () => {
     dispatch(setIsRegeneratingQuestion(false));
+
+    setChatBars(['main']);
+    setInputValues({main: ''});
+    setToggledIcons({main: false});
   };
 
   const handleAIRecommend = () => {
@@ -202,7 +211,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
         )}
         <TextField
           variant="outlined"
-          placeholder={isRegeneratingQuestion ? regenerateQuestion.text : 'Type your message...'}
+          placeholder={'Type your message...'}
           onFocus={handleFocus}
           value={inputValues[id]}
           onChange={e => handleInputChange(id, e.target.value)}
@@ -295,7 +304,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
                 backgroundColor: '#f5f5f5',
               }}
             >
-              {regenerateQuestion.text}
+              {parsedModifyText}
             </Typography>
             <Button onClick={handleCancelModifyText}>Cancel</Button>
           </Box>
