@@ -97,7 +97,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
         const matchingEpisode = content.chapterInfoList
           .flatMap(chapter => chapter.episodeInfoList)
           .find(
-            episode => episode.triggerInfoList.some(trigger => trigger.id === triggerInfo.actionChangeEpisodeId), // triggerId와 일치하는 트리거 찾기
+            episode => episode.id === triggerInfo.actionChangeEpisodeId, // 에피소드 ID와 actionChangeEpisodeId 비교
           );
 
         // selectedChapter 및 selectedEpisode 업데이트
