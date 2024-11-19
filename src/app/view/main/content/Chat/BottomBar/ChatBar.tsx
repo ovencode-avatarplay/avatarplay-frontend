@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector, useDispatch} from 'react-redux';
-import {setIsModifyingQuestion, setIsRegenerateAnswer} from '@/redux-store/slices/ModifyQuestion';
+import {setIsRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import AIRecommendImg from '@ui/chatting/btn_ai_recommend.png';
 import AI_Recommend from './AI_Recommend';
 
@@ -21,6 +21,7 @@ interface ChatBarProps {
   onToggleBackground: () => void;
   onLoading: (isLoading: boolean) => void;
   onUpdateChatBarCount: (count: number) => void;
+  onRemoveChat: (removeId: number) => void;
 }
 
 const ChatBar: React.FC<ChatBarProps> = ({
@@ -34,6 +35,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   onToggleBackground,
   onLoading,
   onUpdateChatBarCount,
+  onRemoveChat,
 }) => {
   const [chatBars, setChatBars] = useState<string[]>(['main']);
   const [inputValues, setInputValues] = useState<{[key: string]: string}>({main: ''});
@@ -41,8 +43,9 @@ const ChatBar: React.FC<ChatBarProps> = ({
   const [isAIRecommendOpen, setAIRecommendOpen] = useState(false);
 
   const dispatch = useDispatch();
-  const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isModifyingQuestion);
-  const modifyingText = useSelector((state: RootState) => state.modifyQuestion.modifyingQuestion);
+  const isRegeneratingQuestion = useSelector((state: RootState) => state.modifyQuestion.isRegeneratingQuestion);
+  const regenerateQuestion = useSelector((state: RootState) => state.modifyQuestion.regeneratingQuestion);
+  const [parsedModifyText, setParsedModifyText] = useState<string>('');
 
   useEffect(() => {
     onUpdateChatBarCount(chatBars.length);
@@ -53,12 +56,34 @@ const ChatBar: React.FC<ChatBarProps> = ({
   }, [toggledIcons, inputValues]);
 
   useEffect(() => {
-    if (isModifyingQuestion) {
-      setInputValues({main: modifyingText});
+    if (isRegeneratingQuestion) {
+      const parts = regenerateQuestion.text.split('⦿SYSTEM_CHAT⦿');
+      const mainPart = parts[parts.length - 1];
+      const partsExcludingMain = parts.slice(0, parts.length - 1);
+      const additionalParts = partsExcludingMain.slice(0);
+
+      setChatBars([...additionalParts.map((_, index) => `chatBar-${Date.now() + index}`), 'main']);
+
+      const newInputValues: {[key: string]: string} = {main: mainPart.replace(/\*/g, '')};
+      additionalParts.forEach((part, index) => {
+        newInputValues[`chatBar-${Date.now() + index}`] = part.replace(/\*/g, ''); // Remove asterisks
+      });
+      setInputValues(newInputValues);
+      setToggledIcons({
+        main: mainPart.includes('*'),
+        ...additionalParts.reduce((acc, part, index) => {
+          acc[`chatBar-${Date.now() + index}`] = part.includes('*');
+          return acc;
+        }, {} as {[key: string]: boolean}),
+      });
+
+      // 최종 텍스트
+      const parsedText = parts.map(part => part.replace(/\*/g, '')).join(' ');
+      setParsedModifyText(parsedText);
     } else {
       setInputValues({main: ''});
     }
-  }, [isModifyingQuestion]);
+  }, [isRegeneratingQuestion]);
 
   const addChatBar = () => {
     if (chatBars.length >= 5) return;
@@ -117,18 +142,24 @@ const ChatBar: React.FC<ChatBarProps> = ({
   };
 
   const handleSendMessage = (messages: string) => {
-    if (!isModifyingQuestion) {
-      onLoading(true);
+    onLoading(true);
+    if (!isRegeneratingQuestion) {
+      onSend(messages);
+    } else {
+      console.log('질문 편집 요청' + regenerateQuestion.id + ' : ' + regenerateQuestion.text + '  to => ' + message);
+
+      // ChatArea에 올라와있는 ChatBubble에서 id로 찾아서 지우기.
+      onRemoveChat(regenerateQuestion.id);
+
       onSend(messages);
 
-      // 컴포넌트를 초기 상태로 되돌림
-      setChatBars(['main']); // main 이외의 모든 채팅바 제거
-      setInputValues({main: ''}); // 모든 입력값을 빈 문자열로 초기화
-      setToggledIcons({main: false}); // 모든 토글 상태를 기본값으로 초기화
-      setMessage(''); // message 상태 초기화
-    } else {
-      dispatch(setIsModifyingQuestion(false));
+      dispatch(setIsRegeneratingQuestion(false));
     }
+    // 컴포넌트를 초기 상태로 되돌림
+    setChatBars(['main']); // main 이외의 모든 채팅바 제거
+    setInputValues({main: ''}); // 모든 입력값을 빈 문자열로 초기화
+    setToggledIcons({main: false}); // 모든 토글 상태를 기본값으로 초기화
+    setMessage(''); // message 상태 초기화
   };
 
   const handleKeyDownInternal = (event: React.KeyboardEvent) => {
@@ -139,23 +170,6 @@ const ChatBar: React.FC<ChatBarProps> = ({
     handleKeyDown(event);
   };
 
-  //#region 재전송
-  const regenerateAnswerCalled = useSelector((state: RootState) => state.modifyQuestion.isRegenerateAnswer);
-  const regenerateQuestion = useSelector((state: RootState) => state.modifyQuestion.lastMessageQuestion);
-  const regenerateId = useSelector((state: RootState) => state.modifyQuestion.lastMessageId);
-  useEffect(() => {
-    if (regenerateAnswerCalled === true) {
-      setMessage(regenerateQuestion);
-
-      console.log('재생성 요청' + regenerateId + '/' + regenerateQuestion);
-
-      // TODO : 적절한 API 호출 또는 기존 루트 진입
-      dispatch(setIsRegenerateAnswer(false));
-    }
-  }, [regenerateAnswerCalled]);
-
-  //#endregion
-
   const handleFocus = () => {
     if (isHideChat) {
       onToggleBackground();
@@ -163,7 +177,11 @@ const ChatBar: React.FC<ChatBarProps> = ({
   };
 
   const handleCancelModifyText = () => {
-    dispatch(setIsModifyingQuestion(false));
+    dispatch(setIsRegeneratingQuestion(false));
+
+    setChatBars(['main']);
+    setInputValues({main: ''});
+    setToggledIcons({main: false});
   };
 
   const handleAIRecommend = () => {
@@ -194,7 +212,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
         )}
         <TextField
           variant="outlined"
-          placeholder={isModifyingQuestion ? modifyingText : 'Type your message...'}
+          placeholder={'Type your message...'}
           onFocus={handleFocus}
           value={inputValues[id]}
           onChange={e => handleInputChange(id, e.target.value)}
@@ -270,7 +288,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
 
   return (
     <Box>
-      {isModifyingQuestion ? (
+      {isRegeneratingQuestion ? (
         <Box>
           <Typography>Modify Question</Typography>
           <Box display="flex" alignItems="center">
@@ -287,7 +305,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
                 backgroundColor: '#f5f5f5',
               }}
             >
-              {modifyingText}
+              {parsedModifyText}
             </Typography>
             <Button onClick={handleCancelModifyText}>Cancel</Button>
           </Box>

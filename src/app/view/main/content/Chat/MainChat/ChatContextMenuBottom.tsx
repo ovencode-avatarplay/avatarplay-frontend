@@ -11,12 +11,7 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import styles from '../Styles/ChatMessageMenu.module.css';
 import {DeleteChatReq, deleteChatting, ModifyChatReq, modifyChatting} from '@/app/NetWork/ChatNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
-import {
-  setIsModifyingQuestion,
-  setIsRegenerateAnswer,
-  setModifyingQuestion,
-  setLastMessageQuestion,
-} from '@/redux-store/slices/ModifyQuestion';
+import {setIsRegeneratingQuestion, setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 
 interface ChatContextTopProps {
   text: string;
@@ -110,14 +105,13 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
   const handleStartModifyQuestion = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     setModifyQuestionOpen(!modifyQuestionOpen);
-    dispatch(setIsModifyingQuestion(true));
-    dispatch(setModifyingQuestion(text));
+    dispatch(setIsRegeneratingQuestion(true));
   };
 
   const handleRegenerateAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
-    dispatch(setIsRegenerateAnswer(true));
+    // dispatch(setIsRegeneratingQuestion(true));
   };
 
   const handleSnackbarClose = () => {
@@ -144,16 +138,16 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
           <Button onClick={handleOpenModifyText} className={styles.actionButton} startIcon={<ReplayIcon />}>
             Modify
           </Button>*/}
-      {lastMessageId === id &&
-        (isUserChat ? (
-          <Button onClick={handleStartModifyQuestion} className={styles.actionButton} startIcon={<ReplayIcon />}>
-            Modify Question
-          </Button>
-        ) : (
-          <Button onClick={handleRegenerateAnswer} className={styles.actionButton} startIcon={<ReplayIcon />}>
-            Regenerate Answer
-          </Button>
-        ))}
+      {lastMessageId === id && isUserChat && (
+        <Button onClick={handleStartModifyQuestion} className={styles.actionButton} startIcon={<ReplayIcon />}>
+          Modify Question
+        </Button>
+        // :        (
+        //   <Button onClick={handleRegenerateAnswer} className={styles.actionButton} startIcon={<ReplayIcon />}>
+        //     Regenerate Answer
+        //   </Button>
+        // )
+      )}
 
       <Snackbar
         open={snackbarOpen}

@@ -93,7 +93,9 @@ export const parseMessage = (message: string | null, id: number): Message[] | nu
             text: part.replace(/^\*|\*$/g, ''), // 양쪽의 '*'를 제거
             sender: sender,
           };
-          result.push(newMessage); // 새로 정의된 메시지를 결과에 추가
+
+          if(newMessage.text !== '...')
+            result.push(newMessage); // 새로 정의된 메시지를 결과에 추가
         }
       });
     }

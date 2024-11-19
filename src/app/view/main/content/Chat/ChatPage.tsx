@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
 import {useDispatch, useSelector} from 'react-redux';
@@ -39,12 +39,13 @@ import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {COMMAND_SYSTEM, Message, MessageGroup} from './MainChat/ChatTypes';
 import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
-import {setLastMessageId, setLastMessageQuestion} from '@/redux-store/slices/ModifyQuestion';
+import {modifyQuestionSlice, setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import {error} from 'console';
 
 const ChatPage: React.FC = () => {
   const TempIdforSendQuestion: number = -222;
   const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
+  const parsedMessagesRef = useRef(parsedMessages);
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
@@ -64,7 +65,7 @@ const ChatPage: React.FC = () => {
   const [isRenderComplete, setRenderComplete] = useState<boolean>(false);
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
-  console.log('getWebBrowserUrl', key);
+  // console.log('getWebBrowserUrl', key);
 
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
   const contentId = useSelector((state: RootState) => state.chatting.contentId);
@@ -92,20 +93,33 @@ const ChatPage: React.FC = () => {
   };
 
   //#region 메세지 전송 로직
+  const isRegeneratingQuestion = useSelector((state: RootState) => state.modifyQuestion.isRegeneratingQuestion);
+  const regenerateQuestion = useSelector((state: RootState) => state.modifyQuestion.regeneratingQuestion);
 
   const Send = async (reqSendChatMessage: SendChatMessageReq) => {
     try {
-      setParsedMessages(prev => ({
-        ...prev,
-        Messages: prev.Messages.filter(
-          msg =>
-            !(
-              msg.text.includes('Failed to send message. Please try again.') ||
-              msg.text.includes('Stream encountered an error or connection was lost. Please try again.')
-            ),
-        ),
-      }));
-      SetChatLoading(true);
+      // console.log('sendParsedMessageStartRef:', parsedMessagesRef);
+
+      const currentMessages = parsedMessagesRef.current.Messages;
+      const filteredMessages = currentMessages.filter(
+        msg =>
+          !(
+            msg.text.includes('Failed to send message. Please try again.') ||
+            msg.text.includes('Stream encountered an error or connection was lost. Please try again.')
+          ),
+      );
+
+      // 상태를 업데이트
+      setParsedMessages({
+        ...parsedMessagesRef.current, // 최신 상태 유지
+        Messages: filteredMessages,
+      });
+
+      if (isRegeneratingQuestion) {
+        reqSendChatMessage.isRegenerate = isRegeneratingQuestion;
+        reqSendChatMessage.regenerateChatId = regenerateQuestion.id;
+      }
+
       const response = (await Promise.race([
         sendMessageStream(reqSendChatMessage),
 
@@ -117,13 +131,23 @@ const ChatPage: React.FC = () => {
         setStreamKey(response.streamKey);
         setChatId(response.chatContentId);
 
-        setParsedMessages(prev => ({
-          ...prev,
-          Messages: prev.Messages.map(message =>
-            message.chatId === TempIdforSendQuestion ? {...message, chatId: response.chatContentId} : message,
-          ),
-        }));
-        dispatch(setLastMessageId(response.chatContentId));
+        const currentMessages = parsedMessagesRef.current.Messages;
+
+        const updatedMessages = currentMessages.map(message =>
+          message.chatId === TempIdforSendQuestion ? {...message, chatId: response.chatContentId} : message,
+        );
+
+        // 상태 업데이트
+        setParsedMessages({
+          ...parsedMessagesRef.current,
+          Messages: updatedMessages,
+        });
+        dispatch(
+          setRegeneratingQuestion({
+            lastMessageId: response.chatContentId,
+            lastMessageQuestion: reqSendChatMessage.text,
+          }),
+        );
       } else if ('resultCode' in response) {
         // 오류 응답 처리
         if (response.resultCode === 13) {
@@ -204,12 +228,13 @@ const ChatPage: React.FC = () => {
       const lastMsg = parsedMessages.Messages[parsedMessages.Messages.length - 1];
       setLastMessage(lastMsg);
     }
+    parsedMessagesRef.current = parsedMessages;
   }, [parsedMessages]);
 
   const handleSendMessage = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
     if (!message || typeof message !== 'string') return;
 
-    console.log('SetChatID checkResult');
+    // console.log('SetChatID checkResult');
     // 메시지가 '$'을 포함할 경우 팝업 표시
     if (isFinishMessage(isMyMessage, message) === true) {
       const requestData = {
@@ -282,7 +307,7 @@ const ChatPage: React.FC = () => {
         } else {
           newMessage.sender = 'user'; // 일반 유저 메시지
         }
-        dispatch(setLastMessageQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
+        dispatch(setRegeneratingQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
         allMessages.push(newMessage); // 메시지를 배열에 추가
       }
 
@@ -367,10 +392,28 @@ const ChatPage: React.FC = () => {
       // 업데이트된 Messages 배열을 MessageInfo 객체로 반환
       return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
     };
-    const _parsedMessages = func(parsedMessages);
-    parsedMessages.Messages = _parsedMessages.Messages;
-    parsedMessages.emoticonUrl = _parsedMessages.emoticonUrl;
-    setParsedMessages({..._parsedMessages});
+
+    const updatedMessages = func(parsedMessagesRef.current);
+    setParsedMessages(updatedMessages);
+    parsedMessagesRef.current = updatedMessages;
+  };
+
+  //#endregion
+
+  //#region 프론트에서 메시지 삭제 로직
+
+  const removeParsedMessage = (removeId: number) => {
+    const filteredMessages = parsedMessagesRef.current.Messages.filter(
+      message => message.chatId !== removeId, // 해당 id만 삭제
+    );
+
+    const updatedParsedMessages = {
+      ...parsedMessagesRef.current,
+      Messages: filteredMessages,
+    };
+
+    setParsedMessages(updatedParsedMessages);
+    parsedMessagesRef.current = updatedParsedMessages;
   };
 
   //#endregion
@@ -615,6 +658,7 @@ const ChatPage: React.FC = () => {
         onReqPrevChatting={setReqPrevCheat}
         isSendingMessage={isSendingMessage}
         send={Send}
+        onRemoveChat={removeParsedMessage}
       />
 
       {showPopup && (

@@ -18,7 +18,7 @@ import {
   setEpisodeName,
   setStateChatting,
 } from '@/redux-store/slices/Chatting';
-import {setLastMessageQuestion} from '@/redux-store/slices/ModifyQuestion';
+import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 
 const usePrevChatting = (
   episodeId: number,
@@ -28,7 +28,10 @@ const usePrevChatting = (
 ) => {
   // 이전 메시지 및 에러 상태값 정의s
   const [prevMessages, setPrevMessages] = useState<EnterEpisodeChattingRes>();
-  console.log('isIdEnter', isIdEnter);
+  useEffect(() => {
+    console.log('isIdEnter', isIdEnter);
+  }, [prevMessages]);
+
   const [error, setError] = useState<string | null>(null);
 
   const isUsedUrlLink = useSelector((state: RootState) => state.chattingEnter.isUsedUrlLink);
@@ -65,13 +68,13 @@ const usePrevChatting = (
 
       if (tmp !== undefined && tmp.message) {
         // JSON 문자열을 객체로 파싱
-        const parsedMessage = JSON.parse(tmp.message);
+        const jsonMessage = JSON.parse(tmp.message);
 
         // Question 필드를 추출하여 디스패치
         dispatch(
-          setLastMessageQuestion({
-            lastMessageId: tmp.id ?? -3,
-            lastMessageQuestion: parsedMessage.Question ?? '',
+          setRegeneratingQuestion({
+            lastMessageId: tmp.id ?? -333,
+            lastMessageQuestion: jsonMessage.Question ?? '',
           }),
         );
       }
