@@ -25,7 +25,7 @@ interface EpisodeLLMSetupProps {
 
 const EpisodeLLMSetup: React.FC<EpisodeLLMSetupProps> = ({open, onClose}) => {
   const dispatch = useDispatch(); // Redux 액션 디스패치 훅
-  const [selectedModel, setSelectedModel] = useState<number>(0); // 기본값을 0으로 설정 (GPT-4o)
+  const [selectedModel, setSelectedModel] = useState<number>(6); // 기본값을 0으로 설정 (GPT-4o)
   const [customApiKey, setCustomApiKey] = useState<string>(''); // Custom API 입력 상태 관리
 
   // 라디오 버튼 값 변경 핸들러
