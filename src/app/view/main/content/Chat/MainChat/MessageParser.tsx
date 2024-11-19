@@ -1,6 +1,16 @@
 // messageParser.tsx
 
-import {COMMAND_END, COMMAND_NARRATION, COMMAND_SYSTEM, Message} from './ChatTypes';
+import {
+  COMMAND_END,
+  COMMAND_NARRATION,
+  COMMAND_SYSTEM,
+  COMMAND_ANSWER,
+  Message,
+  SenderType,
+  COMMAND_USER,
+} from './ChatTypes';
+
+// ㅋㅋㅋㅋㅋㅋㅋㅋ
 
 const parseAnswer = (answer: string, id: number): Message[] => {
   const result: Message[] = [];
@@ -18,14 +28,14 @@ const parseAnswer = (answer: string, id: number): Message[] => {
         result.push({
           chatId: id,
           text: partnerText,
-          sender: 'partner',
+          sender: SenderType.Partner,
         });
       }
     }
     result.push({
       chatId: id,
       text: match[1], // 매칭된 나레이션 내용
-      sender: 'narration', // 메시지 발신자
+      sender: SenderType.PartnerNarration, // 메시지 발신자
     });
 
     lastIndex = narrationPattern.lastIndex;
@@ -40,7 +50,7 @@ const parseAnswer = (answer: string, id: number): Message[] => {
         result.push({
           chatId: id,
           text: partnerText,
-          sender: 'partner',
+          sender: SenderType.Partner,
         });
       }
     }
@@ -48,7 +58,7 @@ const parseAnswer = (answer: string, id: number): Message[] => {
     result.push({
       chatId: id,
       text: match[1], // 매칭된 시스템 메시지 내용
-      sender: 'system', // 메시지 발신자
+      sender: SenderType.System, // 메시지 발신자
     });
 
     lastIndex = systemPattern.lastIndex;
@@ -62,7 +72,7 @@ const parseAnswer = (answer: string, id: number): Message[] => {
       result.push({
         chatId: id,
         text: remainingText, // 남아있는 텍스트
-        sender: 'partner', // 메시지 발신자
+        sender: SenderType.Partner, // 메시지 발신자
       });
     }
   }
@@ -86,7 +96,7 @@ export const parseMessage = (message: string | null, id: number): Message[] | nu
 
       parts.forEach((part: string) => {
         if (part.trim()) {
-          const sender = part.startsWith('*') && part.endsWith('*') ? 'userNarration' : 'user';
+          const sender = part.startsWith('*') && part.endsWith('*') ? SenderType.UserNarration : SenderType.User;
           const newMessage: Message = {
             // newMessage를 여기서 정의
             chatId: id,
@@ -94,8 +104,7 @@ export const parseMessage = (message: string | null, id: number): Message[] | nu
             sender: sender,
           };
 
-          if(newMessage.text !== '...')
-            result.push(newMessage); // 새로 정의된 메시지를 결과에 추가
+          if (newMessage.text !== '...') result.push(newMessage); // 새로 정의된 메시지를 결과에 추가
         }
       });
     }
@@ -119,13 +128,22 @@ export const convertStringMessagesToMessages = (messages: string[], id: number):
   return messages.map(msg => ({
     chatId: id,
     text: msg,
-    sender: 'partner',
+    sender: SenderType.Partner,
   }));
 };
 
 export const cleanString = (input: string): string => {
   // 1. 개행 문자 제거
-  let cleaned = input.replace(/\n/g, '');
+  //let cleaned = input.replace(/\n/g, '');
+  let cleaned = input.replace(/[\n*]/g, '');
+
+  return cleaned;
+};
+
+export const cleanStringFinal = (input: string): string => {
+  // 1. 개행 문자 제거
+  //let cleaned = input.replace(/\n/g, '');
+  let cleaned = input.replace(/[\n*"%]/g, '');
 
   return cleaned;
 };
@@ -148,15 +166,18 @@ export const isFinishMessage = (isMyMessage: boolean, message: string): boolean 
   } else return false;
 };
 
-export const isNarrationMessage = (message: string): boolean => {
+export const isPartnerNarration = (message: string): boolean => {
   if (message.includes(COMMAND_NARRATION)) {
     return true;
   } else return false;
 };
 
 export const isSystemMessage = (message: string): boolean => {
-  const count = (message.match(new RegExp(`\\${COMMAND_SYSTEM}`, 'g')) || []).length;
+  /*const count = (message.match(new RegExp(`\\${COMMAND_SYSTEM}`, 'g')) || []).length;
   if (count >= 2) {
+    return true;
+  } else return false;*/
+  if (message.includes(COMMAND_SYSTEM)) {
     return true;
   } else return false;
 };
@@ -170,11 +191,127 @@ export const isUserNarration = (message: string): boolean => {
 export const parsedUserNarration = (messageData: Message): Message => {
   const parsedMessage: Message = {
     chatId: messageData.chatId,
-    sender: 'userNarration',
+    sender: SenderType.UserNarration,
     text: messageData.text.slice(1, -1), // 양 옆의 *를 제거
   };
   return parsedMessage;
 };
+
+export const isUser = (message: string): boolean => {
+  if (message.includes(COMMAND_USER)) {
+    return true;
+  } else return false;
+};
+
+export const isPartner = (message: string): boolean => {
+  if (message.includes(COMMAND_ANSWER)) {
+    return true;
+  } else return false;
+};
+
+// newMessage 가 어떤 타입과 관련된 문자열이 포함되어 있는지 리턴해주는 함수
+const checkNewSender = (isUserMessage: boolean, newMessage: string, currentSender: SenderType): SenderType => {
+  var newSender: SenderType = currentSender;
+
+  if (isUserMessage) {
+    if (isUser(newMessage)) newSender = SenderType.User;
+    else if (isUserNarration(newMessage)) newSender = SenderType.UserNarration;
+  } else {
+    if (isPartner(newMessage)) newSender = SenderType.Partner;
+    else if (isPartnerNarration(newMessage)) newSender = SenderType.PartnerNarration;
+    else if (isSystemMessage(newMessage)) newSender = SenderType.System;
+  }
+
+  return newSender;
+};
+
+// newMessage 가 어떤 타입과 관련된 문자열이 포함되어 있는지 리턴해주는 함수
+const checkSameSenderCommand = (isUserMessage: boolean, newMessage: string, currentSender: SenderType): boolean => {
+  let isNewSenderCommand: boolean = false;
+
+  // if (isUserMessage) {
+  //   if (isUser(newMessage) || isUserNarration(newMessage)) isNewSenderCommand = true;
+  // } else {
+  //   if (isPartner(newMessage) || isPartnerNarration(newMessage) || isSystemMessage(newMessage))
+  //     isNewSenderCommand = true;
+  // }
+
+  switch (currentSender) {
+    case SenderType.User:
+      {
+        if (isUser(newMessage) === true) isNewSenderCommand = true;
+      }
+      break;
+    case SenderType.UserNarration:
+      {
+        if (isUserNarration(newMessage) === true) isNewSenderCommand = true;
+      }
+      break;
+    case SenderType.Partner:
+      {
+        if (isPartner(newMessage) === true) isNewSenderCommand = true;
+      }
+      break;
+    case SenderType.PartnerNarration:
+      {
+        if (isPartnerNarration(newMessage) === true) isNewSenderCommand = true;
+      }
+      break;
+    case SenderType.System:
+      {
+        if (isSystemMessage(newMessage) === true) isNewSenderCommand = true;
+      }
+      break;
+  }
+
+  return isNewSenderCommand;
+};
+
+// 다른 senderType이 들어왔는지 검사
+export const isAnotherSenderType = (
+  isUserMessage: boolean,
+  newMessage: string,
+  currentSender: SenderType,
+): {isAnotherSender: boolean; newSender: SenderType} => {
+  var isAnotherSender = false;
+  var newSender: SenderType = currentSender;
+
+  newSender = checkNewSender(isUserMessage, newMessage, currentSender);
+
+  if (newSender !== currentSender) isAnotherSender = true;
+
+  // 서버에서 보내줄때 * 가 없이 오는 시작되는 나레이션일때가 있어서 예외처리 해준다.
+  if (currentSender === SenderType.User && isUserMessage === false) {
+    isAnotherSender = true;
+    newSender = SenderType.PartnerNarration;
+  }
+
+  return {isAnotherSender, newSender};
+};
+
+// 같은 senderType이 들어왔는지 검사( 해당 말풍선 타입을 종료하기 위해 사용하는 함수)
+export const isSameSenderType = (
+  isUserMessage: boolean,
+  newMessage: string,
+  currentSender: SenderType,
+): {isSameSenderCommand: boolean} => {
+  var isSameSenderCommand: boolean = false;
+
+  isSameSenderCommand = checkSameSenderCommand(isUserMessage, newMessage, currentSender);
+
+  return {isSameSenderCommand};
+};
+
+// export const isInitNarraition = (
+//   isUserMessage: boolean,
+//   newMessage: string,
+//   currentSender: SenderType,
+// ): {isInit: boolean} => {
+
+//   const isInit = false;
+//   if( isUserMessage === false && currentSender !== SenderType.PartnerNarration &&
+//   return {isInit};
+// }
 
 export const setSenderType = (
   message: string,
@@ -184,7 +321,7 @@ export const setSenderType = (
 ): Message => {
   const resultMessage: Message = {
     chatId: id,
-    sender: isMyMessage ? 'user' : isNarrationActive ? 'narration' : 'partner',
+    sender: isMyMessage ? SenderType.User : isNarrationActive ? SenderType.PartnerNarration : SenderType.Partner,
     text: message,
   };
   return resultMessage;

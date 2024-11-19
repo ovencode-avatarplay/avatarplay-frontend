@@ -48,9 +48,15 @@
     font-size: 14px;
     color: #333;
     margin-right: 10px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* Limit to 2 lines */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: -webkit-box; /* WebKit 기반 브라우저용 */
+    -webkit-line-clamp: 2; /* 줄 수 제한 */
+    -webkit-box-orient: vertical; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: normal; /* 다른 브라우저용 줄바꿈 */
+    max-height: calc(1.2em * 2); /* 비-WebKit 브라우저용 두 줄 높이 */
+    line-height: 1.2em; /* 줄 간격 설정 */
 }
+
+
+

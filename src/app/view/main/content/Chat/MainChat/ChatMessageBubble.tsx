@@ -8,7 +8,7 @@ import {Message, MessageGroup} from './ChatTypes';
 
 interface ChatMessageBubbleProps {
   text: string;
-  sender: 'user' | 'partner' | 'narration' | 'system' | 'introPrompt' | 'userNarration';
+  sender: 'user' | 'partner' | 'partnerNarration' | 'system' | 'introPrompt' | 'userNarration';
   id: number;
   iconUrl: string;
   index: number;
@@ -87,7 +87,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                 justifyContent:
                   sender === 'user' || sender === 'userNarration'
                     ? 'flex-end'
-                    : sender === 'partner' || sender === 'narration'
+                    : sender === 'partner' || sender === 'partnerNarration'
                     ? 'flex-start'
                     : 'center',
                 marginBottom: 2,
@@ -117,21 +117,21 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                       ? '#FFFFFF'
                       : sender === 'user' || sender === 'userNarration'
                       ? 'rgba(80, 80, 80, 0.8)'
-                      : sender === 'partner' || sender === 'narration'
+                      : sender === 'partner' || sender === 'partnerNarration'
                       ? 'rgba(0, 0, 0, 0.8)'
                       : 'rgba(214, 214, 214, 0.2)',
                   border: sender === 'introPrompt' || sender === 'system' ? '1px solid #C0C0C0' : 'none',
                   backdropFilter: sender === 'system' ? 'blur(20px)' : 'none',
-                  textAlign: sender === 'narration' || sender === 'userNarration' ? 'left' : 'inherit',
+                  textAlign: sender === 'partnerNarration' || sender === 'userNarration' ? 'left' : 'inherit',
                   color:
                     sender === 'introPrompt'
                       ? '#000000'
                       : sender === 'system'
                       ? '#FFFFFF'
-                      : sender === 'narration' || sender === 'userNarration'
+                      : sender === 'partnerNarration' || sender === 'userNarration'
                       ? '#B0B0B0'
                       : '#FFFFFF',
-                  fontSize: sender === 'narration' || sender === 'system' ? '0.7em' : '0.8em',
+                  fontSize: sender === 'partnerNarration' || sender === 'system' ? '0.7em' : '0.8em',
                   fontWeight: sender === 'system' ? 'bold' : 'normal',
                   wordWrap: 'break-word',
                   whiteSpace: 'pre-wrap',
@@ -139,7 +139,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                     sender === 'system'
                       ? '1px 1px 0 rgba(116, 116, 116, 1.0), -1px -1px 0 rgba(116, 116, 116, 1.0), 1px -1px 0 rgba(116, 116, 116, 1.0), -1px 1px 0 rgba(116, 116, 116, 1.0)'
                       : 'none',
-                  marginLeft: sender === 'narration' ? '40px' : '0px',
+                  marginLeft: sender === 'partnerNarration' ? '40px' : '0px',
                 }}
                 onClick={handleMenuOpen}
               >
