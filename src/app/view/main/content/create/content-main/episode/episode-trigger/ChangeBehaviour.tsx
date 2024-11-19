@@ -43,7 +43,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     triggerValueKeyword: item?.triggerValueKeyword || '',
     triggerValueTimeMinute: item?.triggerValueTimeMinute || 0,
     triggerActionType: item?.triggerActionType || 0,
-    actionChangeEpisodeId: item?.actionChangeEpisodeId || 0,
+    actionChangeEpisodeId: item?.actionChangeEpisodeId ?? -1,
     actionChangePrompt: {
       characterName: item?.actionChangePrompt?.characterName || '',
       characterDescription: item?.actionChangePrompt?.characterDescription || '',
@@ -69,7 +69,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
         triggerValueKeyword: item.triggerValueKeyword || '',
         triggerValueTimeMinute: item.triggerValueTimeMinute || 0,
         triggerActionType: item.triggerActionType || 0,
-        actionChangeEpisodeId: item.actionChangeEpisodeId || 0,
+        actionChangeEpisodeId: item.actionChangeEpisodeId ?? -1,
         actionChangePrompt: {
           characterName: item.actionChangePrompt?.characterName || '',
           characterDescription: item.actionChangePrompt?.characterDescription || '',
@@ -82,19 +82,54 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
         maxIntimacyCount: item.maxIntimacyCount || 0,
         actionConversationList: item.actionConversationList || [],
       });
+      if (triggerInfo.actionChangeEpisodeId === -1) {
+        setSelectedChapter('None');
+        setSelectedEpisode('None');
+        return;
+      }
       const matchingChapter = content.chapterInfoList.find(chapter =>
-        chapter.episodeInfoList.some(episode => episode.id === item.actionChangeEpisodeId),
+        chapter.episodeInfoList.some(episode => episode.id === triggerInfo.actionChangeEpisodeId),
       );
 
-      const matchingEpisode = content.chapterInfoList
+      let matchingEpisode = content.chapterInfoList
         .flatMap(chapter => chapter.episodeInfoList)
-        .find((episode, episodeIndex) => episode.id === item.actionChangeEpisodeId);
+        .find(episode => episode.id === triggerInfo.actionChangeEpisodeId);
 
-      // selectedChapter 및 selectedEpisode 업데이트
-      setSelectedChapter(matchingChapter?.name || 'None');
-      setSelectedEpisode(matchingEpisode?.name || 'None');
+      // matchingChapter와 matchingEpisode가 undefined인 경우 인덱스를 기반으로 검사
+      if (!matchingChapter || !matchingEpisode) {
+        const fallbackChapter = content.chapterInfoList.find(
+          chapter => chapter.episodeInfoList[triggerInfo.actionChangeEpisodeId] !== undefined,
+        );
+
+        const fallbackEpisode = fallbackChapter?.episodeInfoList[triggerInfo.actionChangeEpisodeId];
+
+        if (fallbackChapter) {
+          setSelectedChapter(fallbackChapter.name || 'None');
+        } else {
+          setSelectedChapter('None');
+        }
+
+        if (fallbackEpisode) {
+          matchingEpisode = fallbackEpisode;
+          setSelectedEpisode(fallbackEpisode.name || 'None');
+        } else {
+          setSelectedEpisode('None');
+        }
+      } else {
+        if (matchingChapter) {
+          setSelectedChapter(matchingChapter.name || 'None');
+        } else {
+          setSelectedChapter('None');
+        }
+
+        if (matchingEpisode) {
+          setSelectedEpisode(matchingEpisode.name || 'None');
+        } else {
+          setSelectedEpisode('None');
+        }
+      }
     }
-  }, [item, content.chapterInfoList]);
+  }, [item, content.chapterInfoList, open]);
 
   const [selectedChapter, setSelectedChapter] = useState<string>('None');
   const [selectedEpisode, setSelectedEpisode] = useState<string>('None');
@@ -102,6 +137,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   const [isChapterBoardOpen, setIsChapterBoardOpen] = useState(false);
   const [isEditNameModalOpen, setIsEditNameModalOpen] = useState(false);
   const [newTriggerName, setNewTriggerName] = useState(item?.name);
+
   const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo);
   const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId);
   const triggerInfoList = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList || []);
