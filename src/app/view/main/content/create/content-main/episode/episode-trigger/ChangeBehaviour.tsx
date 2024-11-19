@@ -31,34 +31,96 @@ interface ChangeBehaviourProps {
 const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index}) => {
   const item = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList[index]);
   const content = useSelector((state: RootState) => state.content.curEditingContentInfo);
+
   const dispatch = useDispatch();
+
   const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>({
-    ...item,
-    name: item?.name || '', // name 필드를 추가하여 초기화
-    triggerType: item?.triggerType || TriggerMainDataType.triggerValueIntimacy,
+    id: item?.id || 0,
+    name: item?.name || '',
+    triggerType: item?.triggerType || 0,
+    triggerValueIntimacy: item?.triggerValueIntimacy || 0,
+    triggerValueChatCount: item?.triggerValueChatCount || 0,
+    triggerValueKeyword: item?.triggerValueKeyword || '',
+    triggerValueTimeMinute: item?.triggerValueTimeMinute || 0,
+    triggerActionType: item?.triggerActionType || 0,
     actionChangeEpisodeId: item?.actionChangeEpisodeId || 0,
-    actionChangePrompt: item?.actionChangePrompt || '',
+    actionChangePrompt: {
+      characterName: item?.actionChangePrompt?.characterName || '',
+      characterDescription: item?.actionChangePrompt?.characterDescription || '',
+      scenarioDescription: item?.actionChangePrompt?.scenarioDescription || '',
+      introDescription: item?.actionChangePrompt?.introDescription || '',
+      secret: item?.actionChangePrompt?.secret || '',
+    },
+    actionIntimacyPoint: item?.actionIntimacyPoint || 0,
+    actionChangeBackground: item?.actionChangeBackground || '',
+    maxIntimacyCount: item?.maxIntimacyCount || 0,
     actionConversationList: item?.actionConversationList || [],
   });
 
-  useEffect(() => {}, []);
-
   useEffect(() => {
     if (item) {
+      // triggerInfo 초기화
       setTriggerInfo({
-        ...item,
+        id: item.id || 0,
         name: item.name || '',
-        triggerType: item.triggerType || TriggerMainDataType.triggerValueIntimacy,
+        triggerType: item.triggerType || 0,
+        triggerValueIntimacy: item.triggerValueIntimacy || 0,
+        triggerValueChatCount: item.triggerValueChatCount || 0,
+        triggerValueKeyword: item.triggerValueKeyword || '',
+        triggerValueTimeMinute: item.triggerValueTimeMinute || 0,
+        triggerActionType: item.triggerActionType || 0,
         actionChangeEpisodeId: item.actionChangeEpisodeId || 0,
-        actionChangePrompt: item.actionChangePrompt || '',
+        actionChangePrompt: {
+          characterName: item.actionChangePrompt?.characterName || '',
+          characterDescription: item.actionChangePrompt?.characterDescription || '',
+          scenarioDescription: item.actionChangePrompt?.scenarioDescription || '',
+          introDescription: item.actionChangePrompt?.introDescription || '',
+          secret: item.actionChangePrompt?.secret || '',
+        },
+        actionIntimacyPoint: item.actionIntimacyPoint || 0,
+        actionChangeBackground: item.actionChangeBackground || '',
+        maxIntimacyCount: item.maxIntimacyCount || 0,
         actionConversationList: item.actionConversationList || [],
       });
-      setNewTriggerName(item?.name);
-    }
-  }, [item]); // item이 변경될 때마다 실행
 
-  const [selectedChapter, setSelectedChapter] = useState<string>('Chapter.1');
-  const [selectedEpisode, setSelectedEpisode] = useState<string>('Ep.2 Wanna go out?');
+      const triggerId = triggerInfo.id; // 현재 triggerId를 가져옴
+
+      if (triggerId) {
+        // triggerId를 기준으로 matchingChapter 찾기
+        const matchingChapter = content.chapterInfoList.find(chapter =>
+          chapter.episodeInfoList.some(
+            episode => episode.triggerInfoList.some(trigger => trigger.id === triggerId), // triggerId와 일치하는 트리거 찾기
+          ),
+        );
+
+        // triggerId를 기준으로 matchingEpisode 찾기
+        const matchingEpisode = content.chapterInfoList
+          .flatMap(chapter => chapter.episodeInfoList)
+          .find(
+            episode => episode.triggerInfoList.some(trigger => trigger.id === triggerInfo.actionChangeEpisodeId), // triggerId와 일치하는 트리거 찾기
+          );
+
+        // selectedChapter 및 selectedEpisode 업데이트
+        if (matchingChapter) {
+          setSelectedChapter(matchingChapter.name || 'None');
+        } else {
+          setSelectedChapter('None');
+        }
+
+        if (matchingEpisode) {
+          setSelectedEpisode(matchingEpisode.name || 'None');
+        } else {
+          setSelectedEpisode('None');
+        }
+      } else {
+        setSelectedChapter('None');
+        setSelectedEpisode('None');
+      }
+    }
+  }, [item, content.chapterInfoList]);
+
+  const [selectedChapter, setSelectedChapter] = useState<string>('None');
+  const [selectedEpisode, setSelectedEpisode] = useState<string>('None');
   const [isEpisodeConversationTemplateOpen, setEpisodeConversationTemplateOpen] = useState(false);
   const [isChapterBoardOpen, setIsChapterBoardOpen] = useState(false);
   const [isEditNameModalOpen, setIsEditNameModalOpen] = useState(false);
