@@ -20,7 +20,7 @@ import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeC
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 
 import EpisodeLLMSetup from './episode-LLMsetup/EpisodeLLMsetup';
-import EpisodeUploadArtist from './episode-ImageCharacter/EpisodeUploadArtist';
+import EpisodeUploadCharacter from './episode-ImageCharacter/EpisodeUploadCharacter';
 import EpisodeImageUpload from './episode-ImageCharacter/EpisodeImageUpload';
 
 interface Props {
@@ -142,7 +142,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
     <main className={styles.episodeSetup}>
       <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} chapterName={chapterName ?? ''} episodeName={episodeName ?? ''} />
       <div className={styles.imageBox}>
-        <EpisodeUploadArtist uploadImageState={isUploadImageDialogOpen} />
+        <EpisodeUploadCharacter uploadImageState={isUploadImageDialogOpen} />
         <EpisodeImageUpload
           onClickEasyCreate={openImageSetup}
           onClickAdvanceCreate={openAdvanceImageSetup}

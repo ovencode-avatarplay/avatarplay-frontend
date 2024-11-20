@@ -13,8 +13,8 @@ import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
 import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import ImageUploadDialog from '../episode-imagesetup/EpisodeImageUpload';
-import EpisodeStarringArtist from './EpisodeStarringArtist';
-import EpisodeTempArtist from './EpisodeTempArtist';
+import EpisodeStarringArtist from './EpisodeStarringCharacter';
+import EpisodeTempArtist from './EpisodeTempCharacter';
 
 const Input = styled('input')({
   display: 'none',
@@ -24,7 +24,7 @@ interface Props {
   uploadImageState: boolean;
 }
 
-const EpisodeArtist: React.FC<Props> = ({uploadImageState: uploadImageOpen}) => {
+const EpisodeCharacter: React.FC<Props> = ({uploadImageState: uploadImageOpen}) => {
   const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -126,4 +126,4 @@ const EpisodeArtist: React.FC<Props> = ({uploadImageState: uploadImageOpen}) => 
   );
 };
 
-export default EpisodeArtist;
+export default EpisodeCharacter;

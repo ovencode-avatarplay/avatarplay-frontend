@@ -5,7 +5,7 @@ import SpeedDial from '@mui/material/SpeedDial';
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
 
-import styles from './EpisodeTempArtist.module.css';
+import styles from './EpisodeTempCharacter.module.css';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentEpisodeThumbnail} from '@/redux-store/slices/EpisodeInfo';
@@ -13,6 +13,7 @@ import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
 import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import EpisodeAiImageGeneration from './EpisodeAiImageGeneration';
 
 const Input = styled('input')({
   display: 'none',
@@ -23,7 +24,7 @@ interface Props {
   closeModal: () => void; // 모달 닫기 함수
 }
 
-const EpisodeTempArtist: React.FC<Props> = ({open, closeModal}) => {
+const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
   const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -31,6 +32,15 @@ const EpisodeTempArtist: React.FC<Props> = ({open, closeModal}) => {
   const [secondDialogOpen, setSecondDialogOpen] = useState(false); // 두 번째 다이얼로그 상태
   const dispatch = useDispatch();
   const [isMobile, setIsMobile] = useState(false); // 모바일 여부 확인
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false); // AI 모달 상태 추가
+
+  const handleOpenAiModal = () => {
+    setIsAiModalOpen(true); // AI 모달 열기
+  };
+
+  const handleCloseAiModal = () => {
+    setIsAiModalOpen(false); // AI 모달 닫기
+  };
 
   useEffect(() => {
     // 모바일 디바이스 감지
@@ -175,7 +185,7 @@ const EpisodeTempArtist: React.FC<Props> = ({open, closeModal}) => {
             <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
               <DialogContent dividers className={styles.dialogContent}>
                 <MenuItem onClick={handleUploadImageClick}>Upload Image</MenuItem>
-                <MenuItem onClick={handleClose}>AI Image Generation</MenuItem>
+                <MenuItem onClick={handleOpenAiModal}>AI Image Generation</MenuItem>
               </DialogContent>
             </Dialog>
 
@@ -259,8 +269,11 @@ const EpisodeTempArtist: React.FC<Props> = ({open, closeModal}) => {
           Confirm
         </Button>
       </Box>
+
+      {/* EpisodeAiImageGeneration 모달 */}
+      <EpisodeAiImageGeneration open={isAiModalOpen} onClose={handleCloseAiModal} />
     </Dialog>
   );
 };
 
-export default EpisodeTempArtist;
+export default EpisodeTempCharacter;
