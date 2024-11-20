@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore'; // Redux Store의 RootState 가져오기
-import {Box} from '@mui/material';
+import {Box, Typography} from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
 import PostAddIcon from '@mui/icons-material/PostAdd';
@@ -13,13 +13,15 @@ import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
 
 import EpisodeTrigger from './episode-trigger/EpisodeTrigger';
 import ButtonEpisodeInfo from './ButtonEpisodeInfo';
-import EpisodeImageUpload from './EpisodeImageUpload';
+
 import EpisodeDescription from './episode-description/EpisodeDescription';
 
 import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 
 import EpisodeLLMSetup from './episode-LLMsetup/EpisodeLLMsetup';
+import EpisodeUploadArtist from './episode-ImageCharacter/EpisodeUploadArtist';
+import EpisodeImageUpload from './episode-ImageCharacter/EpisodeImageUpload';
 
 interface Props {
   onDrawerOpen: () => void;
@@ -139,7 +141,8 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
   return (
     <main className={styles.episodeSetup}>
       <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} chapterName={chapterName ?? ''} episodeName={episodeName ?? ''} />
-      <Box className={styles.imageArea}>
+      <div className={styles.imageBox}>
+        <EpisodeUploadArtist uploadImageState={isUploadImageDialogOpen} />
         <EpisodeImageUpload
           onClickEasyCreate={openImageSetup}
           onClickAdvanceCreate={openAdvanceImageSetup}
@@ -147,7 +150,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
           onClickUploadImage={openUploadImageDialog}
           onCloseUploadImage={closeUploadImageDialog}
         />
-      </Box>
+      </div>
       <Box className={styles.setupButtons}>
         <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
         <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />

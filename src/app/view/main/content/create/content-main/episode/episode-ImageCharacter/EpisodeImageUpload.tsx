@@ -12,7 +12,7 @@ import {setCurrentEpisodeThumbnail} from '@/redux-store/slices/EpisodeInfo';
 import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
 import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
-import ImageUploadDialog from './episode-imagesetup/EpisodeImageUpload';
+import ImageUploadDialog from '../episode-imagesetup/EpisodeImageUpload';
 
 const Input = styled('input')({
   display: 'none',
@@ -98,39 +98,42 @@ const EpisodeImageUpload: React.FC<Props> = ({
   }, [editedEpisodeInfo]);
 
   return (
-    <Box className={styles.imageArea}>
-      <Box className={styles.imageIcon} display="flex" alignItems="center">
-        <ImageIcon fontSize="large" />
-        <Typography variant="h6" marginLeft={1}>
-          Image
-        </Typography>
-        <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
-          <DialogContent dividers className={styles.dialogContent}>
-            <MenuItem onClick={handleEasyCreateClick}>Character Create</MenuItem>
-            <MenuItem onClick={handleAdvancedAIClick}>Advanced AI Image</MenuItem>
-            <MenuItem onClick={handleUploadImageClick}>Upload Image</MenuItem>
-          </DialogContent>
-        </Dialog>
+    <div className={styles.imageBox}>
+      <Typography>Episode Background</Typography>
+      <Box className={styles.imageArea}>
+        <Box className={styles.imageIcon} display="flex" alignItems="center">
+          <ImageIcon fontSize="large" />
+          <Typography variant="h6" marginLeft={1}>
+            Image
+          </Typography>
+          <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
+            <DialogContent dividers className={styles.dialogContent}>
+              <MenuItem onClick={handleEasyCreateClick}>Character Create</MenuItem>
+              <MenuItem onClick={handleAdvancedAIClick}>Advanced AI Image</MenuItem>
+              <MenuItem onClick={handleUploadImageClick}>Upload Image</MenuItem>
+            </DialogContent>
+          </Dialog>
+        </Box>
+
+        {imagePreview ? (
+          <img src={imagePreview} alt="Episode Setup" className={styles.setupImage} />
+        ) : (
+          <Typography variant="body1" color="textSecondary">
+            No image selected. Please upload an image.
+          </Typography>
+        )}
+
+        <SpeedDial
+          className={styles.uploadButton}
+          ariaLabel="SpeedDial openIcon"
+          icon={<CreateIcon />}
+          onClick={handleSpeedDialClick}
+        />
+        {uploadImageOpen && (
+          <ImageUploadDialog isOpen={uploadImageOpen} onClose={onCloseUploadImage} onUpload={handleImageUpload} />
+        )}
       </Box>
-
-      {imagePreview ? (
-        <img src={imagePreview} alt="Episode Setup" className={styles.setupImage} />
-      ) : (
-        <Typography variant="body1" color="textSecondary">
-          No image selected. Please upload an image.
-        </Typography>
-      )}
-
-      <SpeedDial
-        className={styles.uploadButton}
-        ariaLabel="SpeedDial openIcon"
-        icon={<CreateIcon />}
-        onClick={handleSpeedDialClick}
-      />
-      {uploadImageOpen && (
-        <ImageUploadDialog isOpen={uploadImageOpen} onClose={onCloseUploadImage} onUpload={handleImageUpload} />
-      )}
-    </Box>
+    </div>
   );
 };
 
