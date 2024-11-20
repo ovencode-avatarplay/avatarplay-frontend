@@ -14,6 +14,7 @@ import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import ImageUploadDialog from '../episode-imagesetup/EpisodeImageUpload';
 import EpisodeStarringArtist from './EpisodeStarringArtist';
+import EpisodeTempArtist from './EpisodeTempArtist';
 
 const Input = styled('input')({
   display: 'none',
@@ -116,7 +117,7 @@ const EpisodeArtist: React.FC<Props> = ({uploadImageState: uploadImageOpen}) => 
           icon={<CreateIcon />}
           onClick={handleSpeedDialClick}
         />
-        {openTempArtist && <EpisodeStarringArtist open={openTempArtist} closeModal={() => onClickTempArtist(false)} />}
+        {openTempArtist && <EpisodeTempArtist open={openTempArtist} closeModal={() => onClickTempArtist(false)} />}
         {openSelectArtist && (
           <EpisodeStarringArtist open={openSelectArtist} closeModal={() => onClickSelectArtist(false)} />
         )}

@@ -38,7 +38,7 @@ const EpisodeStarringArtist: React.FC<EpisodeStarringArtistProps> = ({open, clos
         }}
         variant="outlined"
       >
-        Next →
+        Confirm
       </Button>
       {/* <Box className={styles.artistInfo}>
         <FormatListBulletedIcon fontSize="large" />
