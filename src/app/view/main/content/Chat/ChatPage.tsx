@@ -15,12 +15,15 @@ import {
   setSenderType,
   cleanString,
   isFinishMessage,
-  isNarrationMessage,
+  isPartnerNarration,
   isSystemMessage,
   isUserNarration,
   parsedUserNarration,
   parseMessage,
   splitByNarration,
+  isAnotherSenderType,
+  isSameSenderType,
+  cleanStringFinal,
 } from '@chats/MainChat/MessageParser';
 
 import {
@@ -36,7 +39,7 @@ import {
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
-import {COMMAND_SYSTEM, Message, MessageGroup} from './MainChat/ChatTypes';
+import {COMMAND_SYSTEM, Message, MessageGroup, SenderType} from './MainChat/ChatTypes';
 import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
 import {modifyQuestionSlice, setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
@@ -52,6 +55,7 @@ const ChatPage: React.FC = () => {
   const [retryStreamKey, setRetryStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [chatId, setChatId] = useState<number>(TempIdforSendQuestion);
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
+  const [currentParsingSender, setCurrentParsingSender] = useState<{current: SenderType}>({current: SenderType.User}); // 현재 파싱중인 sender 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
@@ -77,7 +81,7 @@ const ChatPage: React.FC = () => {
   const [lastMessage, setLastMessage] = useState<Message>({
     chatId: TempIdforSendQuestion,
     text: '',
-    sender: 'system',
+    sender: SenderType.System,
   });
 
   const chatInfo = useSelector((state: RootState) => state);
@@ -258,23 +262,22 @@ const ChatPage: React.FC = () => {
 
     // *가 포함되어 있으면 적절한 위치에서 isNarrationActive.active 상태를 갱신해줘야 한다.
     // sender가 바뀌었어도 isNarrationActive.active 상태를 갱신해줘야 한다.
-    const isIncludeAsterisk: boolean = isNarrationMessage(message);
+    const currentSender = currentParsingSender.current;
 
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
       chatId: TempIdforSendQuestion, // 임시 ID 지급
       text: message,
-      sender: isMyMessage ? 'user' : isNarrationActive.active ? 'narration' : 'partner',
+      sender: isMyMessage ? SenderType.User : currentSender,
     };
 
     //console.log('setParsedMessages ==========' + newMessage.text + '=========', 'isClearString : ', isClearString);
 
     const func = (prev: any) => {
-      // 유저의 메시지면 나레이션모드를 초기화
-      if (isMyMessage) isNarrationActive.active = false;
-
       // 이전 메시지 정보를 복사하고 메시지만 가져와 배열 업데이트 준비
       const allMessages = [...(prev?.Messages || [])];
+
+      //return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
 
       // 메시지가 비어있으면 반환
       if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
@@ -282,110 +285,59 @@ const ChatPage: React.FC = () => {
       // 메시지 정리
       if (isClearString) newMessage.text = cleanString(newMessage.text);
 
-      const splitMessageStep1 = splitByNarration(newMessage.text);
-      const splitMessageStep1Left = splitMessageStep1.leftAsterisk;
-      const splitMessageStep1Right = splitMessageStep1.rightAsterisk;
-
-      // 시스템 메시지 처리
-      if (isMyMessage === false && isSystemMessage(newMessage.text)) {
-        const newMessageSystem: Message = {
-          chatId: chatId,
-          text: newMessage.text.replace(new RegExp(`\\${COMMAND_SYSTEM}`, 'g'), ''),
-          sender: 'system',
-        };
-        allMessages.push(newMessageSystem);
-        return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
-      }
-
-      // 내 메시지
+      // 일단 내 메시지  처리
       if (isMyMessage === true) {
-        // newMessage.text가 *로 시작하고 끝나는 경우
         if (isUserNarration(newMessage.text)) {
           const parsedMessage: Message = parsedUserNarration(newMessage);
           newMessage.sender = parsedMessage.sender;
           newMessage.text = parsedMessage.text;
         } else {
-          newMessage.sender = 'user'; // 일반 유저 메시지
+          newMessage.sender = SenderType.User;
         }
         dispatch(setRegeneratingQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
-        allMessages.push(newMessage); // 메시지를 배열에 추가
-      }
+        allMessages.push(newMessage);
+      } else {
+        //
+        // 1. current sender를 가져온다
+        let currentSender: SenderType = allMessages[allMessages.length - 1].sender;
+        const tempChatId: number = chatId;
+        // 2. 메시지를 한 바이트씩 조사해서 새로운 Sender로 만들지 말지 처리한다.
+        console.log('new text====' + newMessage.text + '====');
+        for (let i = 0; i < newMessage.text.length; i++) {
+          let {isAnotherSender, newSender} = isAnotherSenderType(isMyMessage, newMessage.text[i], currentSender);
 
-      // 상대 메시지 처리
-      else {
-        if (isIncludeAsterisk === true) {
-          // 먼저 왼쪽을 기존 말풍선에 출력시킨다
-          if (splitMessageStep1Left.length > 0) allMessages[allMessages.length - 1].text += `${splitMessageStep1Left}`;
+          //console.log('isAnotherSenderType', isAnotherSender, '   ', newSender);
 
-          if (isNarrationMessage(splitMessageStep1Right)) {
-            const splitMessageStep2 = splitByNarration(splitMessageStep1Right);
-            const splitMessageStep2Left = splitMessageStep2.leftAsterisk;
-            const splitMessageStep2Right = splitMessageStep2.rightAsterisk;
+          let newSenderResult = newSender;
 
-            isNarrationActive.active = !isNarrationActive.active;
+          if (isAnotherSender) isNarrationActive.active = false;
+          // 나레이션모드이면  그냥 나레이션으로 출력해줘야 한다.
+          if (isNarrationActive.active === true) {
+            newSenderResult = SenderType.PartnerNarration;
+            isAnotherSender = true;
+            isNarrationActive.active = false;
+          }
 
-            const newMessageStep2: Message = setSenderType(
-              splitMessageStep2Left,
-              isMyMessage,
-              isNarrationActive.active,
-              chatId,
-            );
-
-            if (splitMessageStep2Left.length > 0) {
-              if (allMessages[allMessages.length - 1].sender !== newMessageStep2.sender) {
-                allMessages.push(newMessage);
-              }
-            }
-
-            isNarrationActive.active = !isNarrationActive.active;
-
-            if (splitMessageStep2Right.length > 0) {
-              const newMessageStep3: Message = setSenderType(
-                splitMessageStep2Left,
-                isMyMessage,
-                isNarrationActive.active,
-                chatId,
-              );
-
-              allMessages.push(newMessageStep3);
-            }
+          const beforeSender = currentSender;
+          if (isAnotherSender) {
+            // sender Type이 달라졌으니 새로운 말풍선으로 넣어준다.
+            const _newMessage: Message = {
+              chatId: tempChatId,
+              text: newMessage.text[i],
+              sender: (newMessage.sender = newSenderResult),
+            };
+            currentSender = _newMessage.sender;
+            allMessages.push(_newMessage);
           } else {
-            isNarrationActive.active = !isNarrationActive.active;
+            // sender Type이 같으니 기존 말풍선에 계속 넣어준다.
+            allMessages[allMessages.length - 1].text += `${newMessage.text[i]}`;
+            // 마지막으로 문자열들에 필요없는 문자열을 제거한다.
+            allMessages[allMessages.length - 1].text = cleanStringFinal(allMessages[allMessages.length - 1].text);
+          }
 
-            const splitMessageStep4: Message = setSenderType(
-              splitMessageStep1Right,
-              isMyMessage,
-              isNarrationActive.active,
-              chatId,
-            );
-            if (splitMessageStep4.text.length > 0) allMessages.push(splitMessageStep4);
-          }
-        } else {
-          const splitMessageStep5: Message = setSenderType(
-            newMessage.text,
-            isMyMessage,
-            isNarrationActive.active,
-            chatId,
-          );
-
-          if (splitMessageStep5.text !== ' ') {
-            if (allMessages[allMessages.length - 1].sender !== splitMessageStep5.sender) {
-              if (splitMessageStep5.text.length > 0) {
-                allMessages.push(splitMessageStep5);
-              }
-            }
-            // 같은 sender면 같은 말풍선에 출력
-            else if (splitMessageStep5.text.length > 0) {
-              allMessages[allMessages.length - 1].text += `${splitMessageStep5.text}`;
-            }
-          }
-          // 빈문자가 왔을때 기존 sender가 user였으면 무시하자 ( 자꾸 빈말풍선 찍히는 원인 )
-          else if (allMessages[allMessages.length - 1].sender === 'user') {
-            return prev;
-          } else {
-            // 그외의 ' ' 띄어쓰기면 그냥 기존 말풍선에 넣어준다.
-            allMessages[allMessages.length - 1].text += `${splitMessageStep5.text}`;
-          }
+          // 마지막으로 아무 commend가 없으면 나레이션 모드로 하도록 하자.( 서버에서 **로 묶어주지 않을때가 있음 )
+          const {isSameSenderCommand: isSame} = isSameSenderType(isMyMessage, newMessage.text[i], beforeSender);
+          if (isSame === true) isNarrationActive.active = true;
         }
       }
 
@@ -396,6 +348,12 @@ const ChatPage: React.FC = () => {
     const updatedMessages = func(parsedMessagesRef.current);
     setParsedMessages(updatedMessages);
     parsedMessagesRef.current = updatedMessages;
+  };
+
+  // 파싱 테스트를 위한 함수임..
+  const test = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
+    message = '%테스트%  가나다라 "안녕하세요" 라고 말했다 %호감도 상승% *귀신 시나락 * 까먹는 소리"ㅋㅋㅋㅋㅋㅋ"';
+    handleSendMessage(message, false, true);
   };
 
   //#endregion
@@ -594,7 +552,7 @@ const ChatPage: React.FC = () => {
       const introPrompt2: Message = {
         chatId: chatId,
         text: enterData?.introPrompt || '애피소드 도입부가 설정되지 않았습니다',
-        sender: 'introPrompt',
+        sender: SenderType.IntroPrompt,
       };
 
       emoticonUrl.unshift('');
