@@ -184,15 +184,18 @@ const TalkCard: React.FC<TalkCardProps> = ({
       }
     }
   };
+  useEffect(() => {
+    if (isRefresh) {
+      setUserInputCards(initialUserInputCards);
+      setCharacterInputCards(initialCharacterInputCards);
+      SetIsRefresh(false);
+    }
+  }, [initialUserInputCards, initialCharacterInputCards]);
 
+  const [isRefresh, SetIsRefresh] = useState<boolean>(false);
   const handleDeleteInputCard = (type: 'user' | 'character', index: number) => {
     if (type === 'user') {
-      setUserInputCards(prev => {
-        const updated = [...prev];
-        updated.splice(index, 1);
-        return updated;
-      });
-
+      // Redux 상태 업데이트
       if (isFromChangeBehaviour) {
         dispatch(
           removeActionConversationItem({
@@ -212,12 +215,6 @@ const TalkCard: React.FC<TalkCardProps> = ({
         );
       }
     } else {
-      setCharacterInputCards(prev => {
-        const updated = [...prev];
-        updated.splice(index, 1);
-        return updated;
-      });
-
       if (isFromChangeBehaviour) {
         dispatch(
           removeActionConversationItem({
@@ -237,6 +234,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
         );
       }
     }
+    SetIsRefresh(true);
   };
 
   return (
@@ -283,7 +281,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
               <div>
                 {userInputCards.map((inputCard, index) => (
-                  <div key={index} style={{paddingBottom: '10px'}}>
+                  <div key={`${inputCard.talk}-${index}`} style={{paddingBottom: '10px'}}>
                     <InputCard
                       defaultValue={inputCard.talk}
                       onChange={value => handleUpdateInputCard('user', index, value)}
@@ -318,7 +316,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
               <div>
                 {characterInputCards.map((inputCard, index) => (
-                  <div key={index} style={{paddingBottom: '10px'}}>
+                  <div key={`${inputCard.talk}-${index}`} style={{paddingBottom: '10px'}}>
                     <InputCard
                       defaultValue={inputCard.talk}
                       onChange={value => handleUpdateInputCard('character', index, value)}
