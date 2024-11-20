@@ -4,7 +4,7 @@ import {Button, Dialog, DialogTitle} from '@mui/material';
 import styles from './EpisodeImageSetup.module.css';
 import React from 'react';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import CharacterCreate from './CharacterCreate';
+import CharacterCreate from '../../../character/CreateCharacterSequence';
 
 interface EpisodeImageSetupProps {
   open: boolean;

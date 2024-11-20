@@ -3,7 +3,7 @@ import '@/app/globals.css';
 
 export const metadata: Metadata = {
   title: 'Talkain',
-  description: 'Create Artist',
+  description: 'Create Character',
   icons: '/images/Talkain_icon_256_green.png',
 };
 

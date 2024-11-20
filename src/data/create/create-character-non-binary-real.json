@@ -163,5 +163,48 @@
     { "label": "PrincessDress", "image": "/bottom_athletic.png", "value": 83 },
     { "label": "JoogersPants", "image": "/bottom_athletic.png", "value": 84 },
     { "label": "Bikini", "image": "/bottom_small.png", "value": 85}
+  ],
+  "clothingColor" : [
+    {"label" : "Unspecified", "image" : "", "value" : 0},
+    {"label" : "Beige", "image" : "clothingcolor_beige", "value" : 1},
+    {"label" : "Brown", "image" : "clothingcolor_brown", "value" : 2},
+    {"label" : "Black", "image" : "clothingcolor_black", "value" : 3},
+    {"label" : "Pastel Scarlet", "image" : "clothingcolor_scarlet", "value" : 4},
+    {"label" : "Pink", "image" : "clothingcolor_pink", "value" : 5},
+    {"label" : "Silver", "image" : "clothingcolor_silver", "value" : 6}
+  ],
+  "background": [
+    { "label": "Sakura Blossom", "image": "/background_sakura_blossom.png", "value": 0 },
+    { "label": "Garden", "image": "/background_garden.png", "value": 1 },
+    { "label": "Flower Field", "image": "/background_flower_field.png", "value": 2 },
+    { "label": "Beach", "image": "/background_beach.png", "value": 3 },
+    { "label": "Farm", "image": "/background_farm.png", "value": 4 },
+    { "label": "Hot Spring", "image": "/background_hot_spring.png", "value": 5 },
+    { "label": "Classroom", "image": "/background_classroom.png", "value": 6 },
+    { "label": "Library", "image": "/background_library.png", "value": 7 },
+    { "label": "Artist Studio", "image": "/background_artist_studio.png", "value": 8 },
+    { "label": "Supermarket", "image": "/background_supermarket.png", "value": 9 },
+    { "label": "Clothing Store", "image": "/background_clothing_store.png", "value": 10 },
+    { "label": "Office", "image": "/background_office.png", "value": 11 },
+    { "label": "Cocktail Bar", "image": "/background_cocktail_bar.png", "value": 12 },
+    { "label": "Church", "image": "/background_church.png", "value": 13 },
+    { "label": "Coffee Shop", "image": "/background_coffee_shop.png", "value": 14 },
+    { "label": "Gym", "image": "/background_gym.png", "value": 15 },
+    { "label": "Vending Machine", "image": "/background_vending_machine.png", "value": 16 },
+    { "label": "Inside Car", "image": "/background_inside_car.png", "value": 17 }
+  ],
+  "personality": [
+    { "label": "Caregiver\nProtective,Comfortive", "image": "/personality_caregiver.png", "value": 0 },
+    { "label": "Sage\nReflective,Wise", "image": "/personality_sage.png", "value": 1 },
+    { "label": "Innocent\nOptimistic,Naive", "image": "/personality_innocent.png", "value": 2 },
+    { "label": "Jester\nPlayful,Humorous", "image": "/personality_jester.png", "value": 3 },
+    { "label": "Temptress\nFirtatious,Playful", "image": "/personality_temptress.png", "value": 4 },
+    { "label": "Dominant\nAssertive,Controlling", "image": "/personality_dominant.png", "value": 5 },
+    { "label": "Submissive\nObedient,Passive", "image": "/personality_submissive.png", "value": 6 },
+    { "label": "Lover\nRomantic,Emotional", "image": "/personality_lover.png", "value": 7 },
+    { "label": "Nympho\nInsatiable,Passionate", "image": "/personality_nympho.png", "value": 8 },
+    { "label": "Mean\nCold,Dismissive,Sarcastic", "image": "/personality_mean.png", "value": 9 },
+    { "label": "Confidant\nTrustworth,Listener", "image": "/personality_confidant.png", "value": 10 },
+    { "label": "Experimenter\nCurious,Willing", "image": "/personality_experimenter.png", "value": 11 }
   ]
 }

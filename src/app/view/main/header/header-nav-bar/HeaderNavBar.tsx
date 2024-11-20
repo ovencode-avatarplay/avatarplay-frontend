@@ -12,6 +12,7 @@ import Logo512White from '/public/images/Talkain_logo_512_white.png';
 import Logo512Black from '/public/images/Talkain_logo_512_black.png';
 
 import UserDropdown from '@shared/UserDropdown';
+import Link from 'next/link';
 
 const HeaderNavBar = () => {
   const [logo, setLogo] = useState(Logo256Black);
@@ -19,9 +20,11 @@ const HeaderNavBar = () => {
   return (
     <>
       <header className={styles.navbar}>
-        <div className={styles.logo}>
-          <Image src={logo} alt="Logo" width={128} height={128} priority />
-        </div>
+        <Link href={'/:lang/main/homefeed'}>
+          <div className={styles.logo}>
+            <Image src={logo} alt="Logo" width={128} height={128} priority />
+          </div>
+        </Link>
         <div className={styles.right}>
           <Button>
             <NotificationsIcon />

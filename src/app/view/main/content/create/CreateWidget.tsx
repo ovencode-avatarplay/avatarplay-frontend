@@ -50,7 +50,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
     >
       <Box className={styles.drawerBox}>
         {/* Character Navigation */}
-        <Link href="/:lang/create/artist" passHref>
+        <Link href="/:lang/create/character" passHref>
           <Box className={styles.drawerItem} onClick={handleClickCharacter}>
             <PersonIcon fontSize="large" />
             <Typography>{getLocalizedText('widget_character')}</Typography>

@@ -1,53 +1,57 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Box, Button, Stepper, Step, StepLabel, Typography, TextField} from '@mui/material';
-import styles from './CharacterCreate.module.css';
+import {
+  Box,
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  Typography,
+  TextField,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from '@mui/material';
+import styles from './CreateCharacterSequence.module.css';
 import GirlIcon from '@mui/icons-material/Female';
 import BoyIcon from '@mui/icons-material/Male';
 import TransgenderIcon from '@mui/icons-material/Transgender';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
+// Json Data
 import characterOptionsMaleReal from '@/data/create/create-character-male-real.json';
 import characterOptionsFemaleReal from '@/data/create/create-character-female-real.json';
 import characterOptionsNonBinaryReal from '@/data/create/create-character-non-binary-real.json';
 import characterOptionsMaleAnime from '@/data/create/create-character-male-anime.json';
 import characterOptionsFemaleAnime from '@/data/create/create-character-female-anime.json';
 import characterOptionsNonBinaryAnime from '@/data/create/create-character-non-binary-anime.json';
-import CharacterCreateImageButton from './CharacterCreateImageButton';
+
+// Network
+import {GenerateImageReq, sendGenerateImageReq} from '@/app/NetWork/ImageNetwork';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
+
+// Components
+import CharacterCreateImageButton from './CreateCharacterImageButton';
+
 // Import Swiper React components
 import {Swiper, SwiperSlide} from 'swiper/react';
-
-import txt2ImgJson from '@/data/stable-diffusion/txt2imgData.json';
-import img2ImgJson from '@/data/stable-diffusion/img2imgData.json';
-import defaultPromptJson from '@/data/stable-diffusion/defaultPrompt.json';
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
-import {GenerateImageReq, sendGenerateImageReq} from '@/app/NetWork/ImageNetwork';
-import {useSelector} from 'react-redux';
-import {RootState} from '@/redux-store/ReduxStore';
-import {setCurrentEpisodeThumbnail} from '@/redux-store/slices/EpisodeInfo';
-import {useDispatch} from 'react-redux';
-import LoadingOverlay from '@/components/create/LoadingOverlay';
-import Image from 'next/image';
+import PublishCharacter from './PublishCharacter';
+import {CreateCharacterOption, GeneratedOptionsState} from './CreateCharacterType';
 
 interface Props {
   closeAction: () => void;
-}
-
-interface GeneratedOptionsState {
-  label: string;
 }
 
 const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   const [activeStep, setActiveStep] = useState(0);
   const stepperRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
-  const userId = useSelector((state: RootState) => state.user.userId);
 
-  type Option = {label: string; image: string; value: number};
-
-  const defaultOptions: Record<string, Option[]> = {
+  const defaultOptions: Record<string, CreateCharacterOption[]> = {
     styleOptions: [],
     genderOptions: [],
     raceOptions: [],
@@ -57,20 +61,27 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
     hairColors: [],
     bodyTypes: [],
     clothing: [],
+    clothingColor: [],
+    background: [],
+    personality: [],
   };
 
   const [characterOptions, setCharacterOptions] = useState(defaultOptions);
   const [generatedOptions, setGeneratedOptions] = useState<GeneratedOptionsState[]>([]);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null); // Add fullscreen image state
 
-  const dispatch = useDispatch();
-
-  const steps = ['Gender', 'Style', 'Ethnicity', 'HairStyle', 'BodyShape', 'OutfitClothes', 'Summary', 'Result'];
-
-  const genderOptions = [
-    {label: 'Girls', icon: <GirlIcon />},
-    {label: 'Guys', icon: <BoyIcon />},
-    {label: 'Non-binary', icon: <TransgenderIcon />},
+  const steps = [
+    'Gender',
+    'Style',
+    'Ethnicity',
+    'HairStyle',
+    'BodyShape',
+    'OutfitClothes',
+    'ThumbnailBackground',
+    'Personality',
+    'Summary',
+    'Result',
+    'Publish',
   ];
 
   const isStepFailed = (step: number) => {
@@ -90,12 +101,15 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
     topSize: 0,
     bottomSize: 0,
     clothing: 0,
+    clothingColor: 0,
+    background: 0,
+    personality: 0,
     result: 0,
   });
 
   // gender 0 Male / 1 Female, style 0 Real / 1 Anime
   useEffect(() => {
-    if (activeStep === 7 && generatedOptions.length === 0) {
+    if (steps[activeStep] === 'Result' && generatedOptions.length === 0) {
       handleGenerate();
     }
   }, [activeStep]);
@@ -124,7 +138,6 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
 
   const summaryOptions = [
     {key: 'style', label: 'Style', options: characterOptions.styleOptions},
-    {key: 'gender', label: 'Gender', options: characterOptions.genderOptions},
     {key: 'race', label: 'Race', options: characterOptions.raceOptions},
     {key: 'age', label: 'Age', options: characterOptions.ageOptions},
     {key: 'eyeColor', label: 'Eye Color', options: characterOptions.eyeColorOptions},
@@ -134,7 +147,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
     {key: 'topSize', label: 'Top Size', options: characterOptions.topSizes},
     {key: 'bottomSize', label: 'Bottom Size', options: characterOptions.bottomSizes},
     {key: 'clothing', label: 'Clothing', options: characterOptions.clothing},
+    {key: 'background', label: 'Background', options: characterOptions.background},
+    {key: 'personality', label: 'Personality', options: characterOptions.personality},
   ];
+
+  const [customClothesActive, setCustomClothesActive] = useState(false);
 
   // Handler
   const handleClose = () => {
@@ -155,8 +172,12 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
 
   const handleSelect = () => {
     let url = generatedOptions[selectedOptions.result];
-    dispatch(setCurrentEpisodeThumbnail(url.label));
+
     handleClose();
+  };
+
+  const handleCustomToggle = () => {
+    setCustomClothesActive(!customClothesActive);
   };
 
   const handleGenerate = () => {
@@ -186,7 +207,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
         const imageUrls: string[] = response.data.imageUrl;
 
         console.log(imageUrls);
-        setGeneratedOptions(imageUrls.map(url => ({label: url})));
+        setGeneratedOptions(imageUrls.map(url => ({url: url})));
 
         /*handleClose();*/
       } else {
@@ -237,11 +258,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 1: Select Gender</div>
             <Box className={styles.verticalButtonGroup}>
-              {genderOptions.map((option, index) => (
+              {characterOptions.genderOptions.map((option, index) => (
                 <Button
                   key={option.label}
                   variant={selectedOptions.gender === index ? 'contained' : 'outlined'}
-                  startIcon={option.icon}
+                  startIcon={index === 0 ? <GirlIcon /> : index === 1 ? <BoyIcon /> : <TransgenderIcon />}
                   className={styles.genderButton}
                   onClick={() => handleOptionSelect('gender', index)}
                 >
@@ -425,13 +446,77 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 6: Select Outfit Clothes</div>
             <Box className={styles.bodyContent}>
-              <Box className={styles.horizontalButtonGroup}>
+              <Swiper
+                slidesPerView={4} // 한 번에 표시되는 슬라이드 개수
+                spaceBetween={5} // 슬라이드 간격
+                centeredSlides={false} // 슬라이드 중앙 정렬 여부
+                style={{pointerEvents: customClothesActive ? 'none' : 'auto', opacity: customClothesActive ? 0.5 : 1}}
+              >
                 {characterOptions.clothing.map((style, index) => (
+                  <SwiperSlide key={index}>
+                    <CharacterCreateImageButton
+                      key={style.label}
+                      width={'100%'}
+                      height={'20vh'}
+                      label={style.label}
+                      image={style.image}
+                      selected={selectedOptions.clothing === index}
+                      onClick={() => handleOptionSelect('clothing', index)}
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              <br />
+              <Box
+                className={styles.horizontalButtonGroup}
+                style={{pointerEvents: customClothesActive ? 'none' : 'auto', opacity: customClothesActive ? 0.5 : 1}}
+              >
+                {characterOptions.clothingColor.map((style, index) => (
                   <Button
                     key={index}
-                    variant={selectedOptions.clothing === index ? 'contained' : 'outlined'}
+                    variant={selectedOptions.clothingColor === index ? 'contained' : 'outlined'}
                     className={styles.colorButton}
-                    onClick={() => handleOptionSelect('clothing', index)}
+                    onClick={() => handleOptionSelect('clothingColor', index)}
+                    style={{fontSize: 10}}
+                  >
+                    {style.label}
+                  </Button>
+                ))}
+              </Box>
+              {/* Custom Setup Accordion */}
+              <Accordion expanded={customClothesActive} onChange={handleCustomToggle}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="custom-setup-content"
+                  id="custom-setup-header"
+                >
+                  <Typography>Custom Setup</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <TextField
+                    label="Custom Outfit"
+                    variant="outlined"
+                    fullWidth
+                    value={clothesInputValue}
+                    onChange={handleClothesInputChange}
+                  />
+                </AccordionDetails>
+              </Accordion>
+            </Box>
+          </div>
+        );
+      case 6:
+        return (
+          <div className={styles.createBox}>
+            <div className={styles.createTitle}>Step 7: Thumbnail Background</div>
+            <Box className={styles.bodyContent}>
+              <Box className={styles.horizontalButtonGroup}>
+                {characterOptions.background.map((style, index) => (
+                  <Button
+                    key={index}
+                    variant={selectedOptions.background === index ? 'contained' : 'outlined'}
+                    className={styles.colorButton}
+                    onClick={() => handleOptionSelect('background', index)}
                     style={{fontSize: 10}}
                   >
                     {style.label}
@@ -441,10 +526,31 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Box>
           </div>
         );
-      case 6:
+      case 7:
         return (
           <div className={styles.createBox}>
-            <div className={styles.createTitle}>Step 7: Summary</div>
+            <div className={styles.createTitle}>Step 8: Choose Personality</div>
+            <Box className={styles.bodyContent}>
+              <Box className={styles.horizontalButtonGroup}>
+                {characterOptions.personality.map((style, index) => (
+                  <Button
+                    key={index}
+                    variant={selectedOptions.personality === index ? 'contained' : 'outlined'}
+                    className={styles.colorButton}
+                    onClick={() => handleOptionSelect('personality', index)}
+                    style={{fontSize: 10}}
+                  >
+                    {style.label}
+                  </Button>
+                ))}
+              </Box>
+            </Box>
+          </div>
+        );
+      case 8:
+        return (
+          <div className={styles.createBox}>
+            <div className={styles.createTitle}>Step 9: Summary</div>
             <Box>
               <Typography variant="h6">Summary</Typography>
               <Box className={styles.gridContainer}>
@@ -460,21 +566,27 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                       }}
                     />
                     <Typography variant="subtitle1" className={styles.summaryLabel}>
-                      {option.label}:{' '}
-                      {option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label || 'N/A'}
+                      {option.key === 'clothing' && customClothesActive
+                        ? 'Custom'
+                        : `${option.label}: ${
+                            option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label || 'N/A'
+                          }`}
                     </Typography>
                   </Box>
                 ))}
               </Box>
             </Box>
-            <Typography variant="subtitle1" className={styles.summaryClothes}>
-              Clothes: {clothesInputValue}
-            </Typography>
+            {customClothesActive && (
+              <Typography variant="subtitle1" className={styles.summaryClothes}>
+                Clothes: {clothesInputValue}
+              </Typography>
+            )}
           </div>
         );
-      case 7:
+      case 9:
         return (
           <div className={styles.createBox}>
+            <div className={styles.createTitle}>Step 10: Choose Generated Image</div>
             <Box>
               <Box className={styles.gridContainer2}>
                 {generatedOptions.map((option, index) => (
@@ -483,11 +595,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
                     width={'95%'}
                     height={'23vh'}
                     label={''}
-                    image={option.label}
+                    image={option.url}
                     selected={selectedOptions.result === index}
                     onClick={() =>
                       selectedOptions.result === index
-                        ? handleImageToggle(option.label)
+                        ? handleImageToggle(option.url)
                         : handleOptionSelect('result', index)
                     }
                   />
@@ -500,6 +612,12 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Box>
           </div>
         );
+      case 10:
+        return (
+          <div className={styles.createBox}>
+            <PublishCharacter url={generatedOptions[selectedOptions.result].url} />
+          </div>
+        );
       default:
         return 'Unknown step';
     }
@@ -508,17 +626,20 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   const renderBottom = () => {
     return (
       <>
-        <Button className={styles.stepButton} variant="outlined" onClick={handlePrev} disabled={activeStep === 0}>
-          Prev
-        </Button>
-        {activeStep === 7 ? (
-          <Button className={styles.stepButton} variant="contained" color="primary" onClick={handleSelect}>
-            Select
-          </Button>
-        ) : (
-          <Button className={styles.stepButton} variant="contained" onClick={handleNext}>
-            {activeStep === 6 ? 'Next (Generate)' : 'Next'}
-          </Button>
+        {activeStep < steps.length - 1 && (
+          <>
+            <Button className={styles.stepButton} variant="outlined" onClick={handlePrev} disabled={activeStep === 0}>
+              Prev
+            </Button>
+
+            <Button className={styles.stepButton} variant="contained" onClick={handleNext}>
+              {steps[activeStep] === 'Summary'
+                ? generatedOptions.length === 0 /* 이미 생성된 후에는 Regenerate 버튼으로 수정 가능 */
+                  ? 'Next (Generate)'
+                  : 'Next (isGenerated)'
+                : 'Next'}
+            </Button>
+          </>
         )}
       </>
     );

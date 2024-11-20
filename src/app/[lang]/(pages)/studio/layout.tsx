@@ -1,5 +1,6 @@
 import type {Metadata} from 'next';
 import '@/app/globals.css';
+import Studio from '@/app/view/studio/Studio';
 
 export const metadata: Metadata = {
   title: 'Talkain',
@@ -8,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
-  return <>{children}</>;
+  return <Studio>{children}</Studio>;
 }

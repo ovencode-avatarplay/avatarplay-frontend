@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Typography, Box} from '@mui/material';
-import styles from './CharacterCreateImageButton.module.css';
+import styles from './CreateCharacterImageButton.module.css';
 
 interface ImageButtonProps {
   width: string;
