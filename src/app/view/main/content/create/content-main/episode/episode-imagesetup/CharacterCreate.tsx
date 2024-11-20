@@ -44,7 +44,22 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   const stepperRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
   const userId = useSelector((state: RootState) => state.user.userId);
-  const [characterOptions, setCharacterOptions] = useState(characterOptionsFemaleReal);
+
+  type Option = {label: string; image: string; value: number};
+
+  const defaultOptions: Record<string, Option[]> = {
+    styleOptions: [],
+    genderOptions: [],
+    raceOptions: [],
+    ageOptions: [],
+    eyeColorOptions: [],
+    hairStyles: [],
+    hairColors: [],
+    bodyTypes: [],
+    clothing: [],
+  };
+
+  const [characterOptions, setCharacterOptions] = useState(defaultOptions);
   const [generatedOptions, setGeneratedOptions] = useState<GeneratedOptionsState[]>([]);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null); // Add fullscreen image state
 
