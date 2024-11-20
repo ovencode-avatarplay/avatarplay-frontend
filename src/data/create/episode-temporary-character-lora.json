@@ -1,14 +1,13 @@
 { 
   "hairStyles": [
-      {"label": "Unspecified", "image": "", "value": 0},
-      {"label": "Straight", "image": "/character/hair_straight.png", "value": 1},
-      {"label": "Braids", "image": "/character/hair_braids.png", "value": 2},
-      {"label": "Bangs", "image": "/character/hair_bangs.png", "value": 3},
-      {"label": "Curly", "image": "/character/hair_curly.png", "value": 4},
-      {"label": "Bun", "image": "/character/hair_bun.png", "value": 5},
-      {"label": "Short", "image": "/character/hair_short.png", "value": 6},
-      {"label": "Long", "image": "/character/hair_long.png", "value": 7},
-      {"label": "Ponytail", "image": "/character/hair_ponytail.png", "value": 8},
-      {"label": "Twintails", "image": "/character/hair_twintails.png", "value": 9}
+      {"label": "Straight", "image": "/character/hair_straight.png", "value": 0},
+      {"label": "Braids", "image": "/character/hair_braids.png", "value": 1},
+      {"label": "Bangs", "image": "/character/hair_bangs.png", "value": 2},
+      {"label": "Curly", "image": "/character/hair_curly.png", "value": 3},
+      {"label": "Bun", "image": "/character/hair_bun.png", "value": 4},
+      {"label": "Short", "image": "/character/hair_short.png", "value": 5},
+      {"label": "Long", "image": "/character/hair_long.png", "value": 6},
+      {"label": "Ponytail", "image": "/character/hair_ponytail.png", "value": 7},
+      {"label": "Twintails", "image": "/character/hair_twintails.png", "value": 8}
   ]
 }

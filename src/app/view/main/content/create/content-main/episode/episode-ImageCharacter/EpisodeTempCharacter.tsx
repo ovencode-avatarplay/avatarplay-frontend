@@ -36,6 +36,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
 
   const handleOpenAiModal = () => {
     setIsAiModalOpen(true); // AI 모달 열기
+    setDialogOpen(false);
   };
 
   const handleCloseAiModal = () => {
@@ -271,7 +272,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
       </Box>
 
       {/* EpisodeAiImageGeneration 모달 */}
-      <EpisodeAiImageGeneration open={isAiModalOpen} onClose={handleCloseAiModal} />
+      <EpisodeAiImageGeneration open={isAiModalOpen} closeModal={handleCloseAiModal} />
     </Dialog>
   );
 };
