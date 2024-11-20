@@ -211,7 +211,7 @@ export const isPartner = (message: string): boolean => {
 
 // newMessage 가 어떤 타입과 관련된 문자열이 포함되어 있는지 리턴해주는 함수
 const checkNewSender = (isUserMessage: boolean, newMessage: string, currentSender: SenderType): SenderType => {
-  var newSender: SenderType = currentSender;
+  let newSender: SenderType = currentSender;
 
   if (isUserMessage) {
     if (isUser(newMessage)) newSender = SenderType.User;
@@ -273,8 +273,8 @@ export const isAnotherSenderType = (
   newMessage: string,
   currentSender: SenderType,
 ): {isAnotherSender: boolean; newSender: SenderType} => {
-  var isAnotherSender = false;
-  var newSender: SenderType = currentSender;
+  let isAnotherSender = false;
+  let newSender: SenderType = currentSender;
 
   newSender = checkNewSender(isUserMessage, newMessage, currentSender);
 
@@ -295,7 +295,7 @@ export const isSameSenderType = (
   newMessage: string,
   currentSender: SenderType,
 ): {isSameSenderCommand: boolean} => {
-  var isSameSenderCommand: boolean = false;
+  let isSameSenderCommand: boolean = false;
 
   isSameSenderCommand = checkSameSenderCommand(isUserMessage, newMessage, currentSender);
 
