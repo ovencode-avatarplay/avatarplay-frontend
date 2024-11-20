@@ -27,7 +27,7 @@
                 "conversationTemplateList": [
                 ],
                 "llmSetupInfo": {
-                  "llmModel": 0,
+                  "llmModel": 6,
                   "customApi": ""
                 }
               }
