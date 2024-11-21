@@ -21,15 +21,6 @@
 .createButton {
     flex-shrink: 0;
 }
-
-.list {
-    height: 70%; 
-    background-color: black;
-    border: 1px solid #ccc; 
-    margin-bottom: 16px;
-    overflow-y: auto; 
-}
-
 .buttonContainer {
     display: flex;
     justify-content: space-between;

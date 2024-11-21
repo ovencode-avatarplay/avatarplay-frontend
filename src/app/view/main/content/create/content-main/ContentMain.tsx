@@ -12,7 +12,7 @@ import ContentBottom from './ContentBottom';
 // 상황에 따라 나타나는 컴포넌트
 import ContentPreviewChat from './content-preview-chat/ContentPreviewChat';
 import ContentPublishing from './content-publishing/ContentPublishing';
-import ContentDashboard from './content-dashboard/ContentDashboard';
+import ContentDashboardDrawer from './content-dashboard/ContentDashboardDrawer';
 import ChapterBoard from './chapter/ChapterBoard';
 
 // 네트워크
@@ -523,7 +523,7 @@ const ContentMain: React.FC = () => {
           onTitleChange={handleTitleChange} // Redux 상태 업데이트
         />
         <div className={styles.content}>
-          <ContentDashboard
+          <ContentDashboardDrawer
             open={isDashboardOpen}
             onClose={handleCloseDashboard}
             onSelectItem={GetContentByContentId}

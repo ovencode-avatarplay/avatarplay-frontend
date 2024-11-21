@@ -1,0 +1,51 @@
+.gridItem {
+    position: relative;
+    border-radius: 6px;
+    border: 4px solid;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border 0.3s ease-in-out;
+  }
+  
+  .selected {
+    border-color: blue;
+  }
+  
+  .unselected {
+    border-color: black;
+  }
+  
+  .statusOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 4px;
+    z-index: 1;
+    text-align: center;
+  }
+  
+  .characterImage {
+    height: 50vh;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .characterInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+  }
+  
+  .genderIcon {
+    font-size: 20px;
+  }
+  
+  .characterName {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  

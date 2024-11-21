@@ -1,0 +1,7 @@
+.list {
+    height: 70%; 
+    background-color: black;
+    border: 1px solid #ccc; 
+    margin-bottom: 16px;
+    overflow-y: auto; 
+}

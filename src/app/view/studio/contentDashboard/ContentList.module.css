@@ -1,0 +1,26 @@
+.drawerContainer {
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    padding: 16px;
+    overflow: hidden;
+}
+
+.filterContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.filterSelect {
+    margin-right: 8px;
+    flex-grow: 1;
+}
+
+.createButton {
+    flex-shrink: 0;
+}
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+}

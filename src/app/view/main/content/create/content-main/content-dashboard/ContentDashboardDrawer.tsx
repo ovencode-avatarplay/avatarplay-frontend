@@ -1,8 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Drawer, Box, Button, Select, MenuItem} from '@mui/material';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-import ContentItem from './ContentItem';
-import styles from './ContentDashboard.module.css';
+import styles from './ContentDashboardDrawer.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setContentInfoToEmpty} from '@/redux-store/slices/ContentInfo';
@@ -12,8 +11,8 @@ import {
   setSelectedContentId,
   setSelectedEpisodeIdx,
 } from '@/redux-store/slices/ContentSelection';
-import {sendContentDelete, sendContentByUserIdGet, GetContentsByUserIdReq} from '@/app/NetWork/ContentNetwork';
-import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/MyContentDashboard';
+import {sendContentDelete} from '@/app/NetWork/ContentNetwork';
+import ContentDashboardList from './ContentDashboardList';
 
 interface Props {
   open: boolean;
@@ -21,31 +20,12 @@ interface Props {
   onSelectItem: (id: number) => void;
 }
 
-const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
+const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem}) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const contentInfo = useSelector((state: RootState) => state.myContents.contentDashBoardList ?? []);
   const userId = useSelector((state: RootState) => state.user.userId);
   const dispatch = useDispatch();
-
-  // 현재 유저가 가진 컨텐츠를 모두 가져옴 (DashBoard 에서 사용하기 위함)
-  const getContentsByUserId = async () => {
-    try {
-      const req: GetContentsByUserIdReq = {userId};
-      const response = await sendContentByUserIdGet(req);
-
-      if (response?.data) {
-        const contentData: ContentDashboardItem[] = response.data.contentDashBoardList;
-        dispatch(setContentDashboardList(contentData));
-      } else {
-        throw new Error(`No contentInfo in response for ID: ${userId}`);
-      }
-    } catch (error) {
-      console.error('Error fetching content by user ID:', error);
-    } finally {
-      // console.log('SuccessRefresh');
-    }
-  };
 
   useEffect(() => {
     if (selectedIndex !== null && open && listRef.current) {
@@ -60,7 +40,6 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
   const handleItemClick = (index: number) => {
     setSelectedIndex(index);
   };
-
   const handleEditClick = async () => {
     if (selectedIndex !== null) {
       const selectedItemId = contentInfo[selectedIndex]?.id;
@@ -94,7 +73,7 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
             // console.log('삭제된 콘텐츠 ID:', response.data.contentId);
 
             // 삭제 후 콘텐츠 목록 새로고침
-            await getContentsByUserId();
+            await onSelectItem;
 
             // 선택된 인덱스 초기화
             setSelectedIndex(null);
@@ -148,13 +127,7 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
         </Box>
 
         {/* Content list */}
-        <Box className={styles.list} ref={listRef}>
-          {contentInfo.map((item, index) => (
-            <div key={index} onClick={() => handleItemClick(index)}>
-              <ContentItem dashboardItem={item} isSelected={selectedIndex === index} />
-            </div>
-          ))}
-        </Box>
+        <ContentDashboardList contentInfo={contentInfo} selectedIndex={selectedIndex} onItemSelect={handleItemClick} />
 
         {/* Action buttons */}
         <Box className={styles.buttonContainer}>
@@ -171,4 +144,4 @@ const ContentDashboard: React.FC<Props> = ({open, onClose, onSelectItem}) => {
   );
 };
 
-export default ContentDashboard;
+export default ContentDashboardDrawer;

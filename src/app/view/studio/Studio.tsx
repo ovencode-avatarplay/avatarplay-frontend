@@ -12,7 +12,6 @@ const Studio = ({children}: {children: ReactNode}) => {
   return (
     <div className={styles.body}>
       <HeaderNavBar />
-      <StudioTopMenu />
       {children}
     </div>
   );
