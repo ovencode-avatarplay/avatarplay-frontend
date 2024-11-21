@@ -47,7 +47,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
   const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // contentInfo 가져오기
 
   const [isTriggerModalOpen, setTriggerModalOpen] = useState(false); // Trigger 모달 열림 상태
-  const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
+
   const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false);
   const [isImageSetupModalOpen, setImageSetupModalOpen] = useState(false);
   const [isAdvanceImageSetupModalOpen, setAdvanceImageSetupModalOpen] = useState(false);
@@ -63,14 +63,6 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
 
   const closeTriggerModal = () => {
     setTriggerModalOpen(false); // Trigger 모달 닫기
-  };
-
-  const openConversationModal = () => {
-    setConversationModalOpen(true); // Conversation 모달 열기
-  };
-
-  const closeConversationModal = () => {
-    setConversationModalOpen(false); // Conversation 모달 닫기
   };
 
   const openEpisodeModal = () => {
@@ -154,14 +146,12 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
       <Box className={styles.setupButtons}>
         <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
         <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
-        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />{' '}
         {/*TODO : Move This into Trigger Setup */}
         <ButtonSetupDrawer icon={<ImageIcon />} label="AI Model Setup" onClick={openLLMSetup} />
         {/*TODO : Move This to ContentBottom - LLM Setup*/}
       </Box>
       {/* EpisodeTrigger 모달 */}
       <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} /> {/* 모달 상태 전달 */}
-      <EpisodeConversationTemplate open={isConversationModalOpen} closeModal={closeConversationModal} />{' '}
       {/* 모달 상태 전달 */}
       {/* Episode Description 모달 */}
       {isEpisodeModalOpen && (

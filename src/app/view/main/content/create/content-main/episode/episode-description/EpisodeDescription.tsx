@@ -8,7 +8,10 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
 
 import styles from './EpisodeDescription.module.css'; // CSS 모듈 import
+import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
 
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import EpisodeConversationTemplate from '../episode-conversationtemplate/EpisodeConversationTemplate';
 export interface CharacterDataType {
   userId: number;
   characterName: string;
@@ -53,7 +56,13 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
 
   //const [thumbnail, setThumbnail] = useState<string>(dataDefault?.thumbnail || "");
   const [error, setError] = useState<string | null>(null);
-
+  const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
+  const openConversationModal = () => {
+    setConversationModalOpen(true); // Conversation 모달 열기
+  };
+  const closeConversationModal = () => {
+    setConversationModalOpen(false); // Conversation 모달 닫기
+  };
   // 정보 제출 처리
   const handleSubmit = () => {
     const updatedEpisodeDescription = {
@@ -118,6 +127,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
           value={secret}
           onChange={e => onChangesetSecret(e.target.value)}
         />
+        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />{' '}
         {/* <TextField
                     label="Thumbnail"
                     variant="outlined"
@@ -138,6 +148,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
           확인
         </Button>
       </DialogActions>
+      <EpisodeConversationTemplate open={isConversationModalOpen} closeModal={closeConversationModal} />{' '}
     </Dialog>
   );
 };
