@@ -45,6 +45,13 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
     setIsAiModalOpen(false); // AI 모달 닫기
   };
 
+  const handleSpeedDialClick = () => {
+    setDialogOpen(true);
+  };
+
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
   useEffect(() => {
     // 모바일 디바이스 감지
     const checkMobileDevice = () => {
@@ -65,14 +72,6 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
     }
   };
 
-  const handleSpeedDialClick = () => {
-    setDialogOpen(true);
-  };
-
-  const handleClose = () => {
-    setDialogOpen(false);
-  };
-
   const handleUploadImageClick = () => {
     if (isMobile) {
       // 모바일인 경우 다이얼로그 열기
@@ -87,24 +86,6 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
   const handleSecondDialogClose = () => {
     setSecondDialogOpen(false); // 새 다이얼로그 닫기
   };
-
-  const [characterDescription, setCharacterDescription] = useState<string>(
-    editedEpisodeInfo.currentEpisodeInfo.characterInfo.introduction || '',
-  );
-  const onChangeCharacterDescription = (description: string) => {
-    setCharacterDescription(description);
-
-    dispatch(setCharacterInfo({introduction: description}));
-  };
-
-  const [characterName, setCharacterName] = useState<string>(
-    editedEpisodeInfo.currentEpisodeInfo.characterInfo.name || '',
-  );
-  const onChangeCharacterName = (name: string) => {
-    setCharacterName(name);
-    dispatch(setCharacterInfo({name: name}));
-  };
-
   const handleFileSelection = async (file: File) => {
     setLoading(true);
     console.log('s');
@@ -176,6 +157,23 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
     };
     input.click();
     setSecondDialogOpen(false); // 다이얼로그 닫기
+  };
+
+  const [characterDescription, setCharacterDescription] = useState<string>(
+    editedEpisodeInfo.currentEpisodeInfo.characterInfo.introduction || '',
+  );
+  const onChangeCharacterDescription = (description: string) => {
+    setCharacterDescription(description);
+
+    dispatch(setCharacterInfo({introduction: description}));
+  };
+
+  const [characterName, setCharacterName] = useState<string>(
+    editedEpisodeInfo.currentEpisodeInfo.characterInfo.name || '',
+  );
+  const onChangeCharacterName = (name: string) => {
+    setCharacterName(name);
+    dispatch(setCharacterInfo({name: name}));
   };
 
   useEffect(() => {

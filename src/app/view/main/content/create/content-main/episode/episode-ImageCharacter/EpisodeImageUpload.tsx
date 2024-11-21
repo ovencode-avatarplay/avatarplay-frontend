@@ -13,6 +13,7 @@ import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
 import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import ImageUploadDialog from '../episode-imagesetup/EpisodeImageUpload';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const Input = styled('input')({
   display: 'none',
@@ -34,11 +35,21 @@ const EpisodeImageUpload: React.FC<Props> = ({
   onCloseUploadImage,
 }) => {
   const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
-
+  const [isMobile, setIsMobile] = useState(false); // 모바일 여부 확인
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const dispatch = useDispatch();
+  const [secondDialogOpen, setSecondDialogOpen] = useState(false); // 두 번째 다이얼로그 상태
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    // 모바일 디바이스 감지
+    const checkMobileDevice = () => {
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(isMobileDevice);
+    };
+
+    checkMobileDevice();
+  }, []);
   const handleSpeedDialClick = () => {
     setDialogOpen(true);
   };
@@ -56,17 +67,76 @@ const EpisodeImageUpload: React.FC<Props> = ({
     onClickAdvanceCreate();
     handleClose();
   };
+  const openPhotoDialog = () => {
+    if (isMobile) {
+      // 모바일인 경우 다이얼로그 열기
+      setSecondDialogOpen(true);
+    } else {
+      // 모바일이 아닌 경우 Take Photo 실행
+      handleTakePhoto();
+    }
+  };
 
   const handleUploadImageClick = () => {
-    onClickUploadImage();
-    handleClose();
+    if (isMobile) {
+      // 모바일인 경우 다이얼로그 열기
+      setSecondDialogOpen(true);
+    } else {
+      // 모바일이 아닌 경우 Take Photo 실행
+      handleTakePhoto();
+    }
+    setDialogOpen(false); // 기존 다이얼로그 닫기
+  };
+
+  const handleSecondDialogClose = () => {
+    setSecondDialogOpen(false); // 새 다이얼로그 닫기
+  };
+
+  const handlePhotoLibrary = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = event => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        GetImageUrlByFile(file); // 파일 선택 후 이미지 URL 생성 및 업데이트
+      }
+    };
+    input.click();
+    setSecondDialogOpen(false); // 다이얼로그 닫기
+  };
+
+  const handleTakePhoto = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment'; // 후면 카메라
+    input.onchange = event => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        GetImageUrlByFile(file); // 파일 선택 후 이미지 URL 생성 및 업데이트
+      }
+    };
+    input.click();
+    setSecondDialogOpen(false); // 다이얼로그 닫기
+  };
+
+  const handleChooseFile = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = event => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        GetImageUrlByFile(file); // 파일 선택 후 이미지 URL 생성 및 업데이트
+      }
+    };
+    input.click();
+    setSecondDialogOpen(false); // 다이얼로그 닫기
   };
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [uploadImageList, setUploadImageList] = useState<File[]>([]);
 
   const handleImageUpload = (images: File[]) => {
-    setUploadImageList(images);
     const uploadImg: File = images[0];
     GetImageUrlByFile(uploadImg);
   };
@@ -108,11 +178,20 @@ const EpisodeImageUpload: React.FC<Props> = ({
           </Typography>
           <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
             <DialogContent dividers className={styles.dialogContent}>
-              <MenuItem onClick={handleEasyCreateClick}>Character Create</MenuItem>
-              <MenuItem onClick={handleAdvancedAIClick}>Advanced AI Image</MenuItem>
-              <MenuItem onClick={handleUploadImageClick}>Upload Image</MenuItem>
+              <MenuItem onClick={handleUploadImageClick}>Upload Background Image</MenuItem>
             </DialogContent>
           </Dialog>
+
+          {/* 모바일 환경에서만 표시되는 두 번째 다이얼로그 */}
+          {isMobile && (
+            <Dialog open={secondDialogOpen} onClose={() => setSecondDialogOpen(false)}>
+              <DialogContent dividers>
+                <MenuItem onClick={handlePhotoLibrary}>Photo Library</MenuItem>
+                <MenuItem onClick={handleTakePhoto}>Take Photo</MenuItem>
+                <MenuItem onClick={handleChooseFile}>Choose File</MenuItem>
+              </DialogContent>
+            </Dialog>
+          )}
         </Box>
 
         {imagePreview ? (
@@ -133,6 +212,8 @@ const EpisodeImageUpload: React.FC<Props> = ({
           <ImageUploadDialog isOpen={uploadImageOpen} onClose={onCloseUploadImage} onUpload={handleImageUpload} />
         )}
       </Box>
+
+      <LoadingOverlay loading={loading} />
     </div>
   );
 };
