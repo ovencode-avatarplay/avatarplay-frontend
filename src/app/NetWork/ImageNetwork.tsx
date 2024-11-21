@@ -27,8 +27,12 @@ export const sendUploadImage = async (payload: UploadImageReq): Promise<Response
   }
 };
 
+export interface GenerateParameter {
+  name: string;
+  value: number;
+}
 export interface GenerateImageReq {
-  values: number[];
+  values: GenerateParameter[];
 }
 
 export interface GenerateImageRes {

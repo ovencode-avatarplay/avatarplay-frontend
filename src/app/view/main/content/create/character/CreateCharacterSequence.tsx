@@ -200,7 +200,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
         const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
         const selectedOption = option.options[selectedIndex];
 
-        return selectedOption?.value;
+        return {name: option.key, value: selectedOption?.value};
       }),
     ];
 
