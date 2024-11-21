@@ -1,0 +1,9 @@
+{ 
+  "hairStyles": [
+      {"label": "absoluteReality", "image": "/lora/absoluteReality.png", "value": 0},
+      {"label": "majicmix", "image": "/lora/majicmix.jpeg", "value": 1},
+      {"label": "anylora", "image": "/lora/anylora.png", "value": 2},
+      {"label": "meina_hentai", "image": "/lora/meina_hentai.png", "value": 3},
+      {"label": "testxl", "image": "/lora/testxl.png", "value": 4}
+  ]
+}

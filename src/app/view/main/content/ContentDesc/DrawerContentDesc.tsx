@@ -75,6 +75,7 @@ const DrawerContentDesc = () => {
   const [chatCount, setChatCount] = useState(0);
   const [chatUserCount, setChatUserCount] = useState(0);
   const [tagList, setTaglist] = useState<string[]>(['tag1', 'tag2']);
+  const [selectTagList, setSelectTaglist] = useState<string[]>(['tag1', 'tag2']);
   const [authorComment, setAuthorComment] = useState('authorComment');
   const [recommendContentList, setRecommendContentList] = useState<recommendContentInfo[]>([]);
 
@@ -107,7 +108,8 @@ const DrawerContentDesc = () => {
       setAuthorComment(contentWholeDesc.publishInfo.authorComment);
       setChatCount(contentWholeDesc.chatCount);
       setChatUserCount(contentWholeDesc.chatUserCount);
-      setTaglist(contentWholeDesc.publishInfo.tagList); // SelectTag가 맞음
+      setTaglist(contentWholeDesc.publishInfo.tagList); // SelectTag가 맞음 //아님 전체 Tag가 맞고 SelectTag는 따로 있음
+      setSelectTaglist(contentWholeDesc.publishInfo.selectTagList); // SelectTag가 맞음 //아님 전체 Tag가 맞고 SelectTag는 따로 있음
       if (contentWholeDesc.chapterInfoList) {
         const chaptersData = contentWholeDesc.chapterInfoList?.map(chapter => ({
           id: chapter.id,
@@ -253,7 +255,7 @@ const DrawerContentDesc = () => {
           <Divider className={styles.divider} />
           <CardContent sx={{paddingTop: 1, paddingLeft: 3, paddingRight: 3}}>
             <Box className={styles.tagContainer}>
-              {tagList.map((tag, index) => (
+              {selectTagList.map((tag, index) => (
                 <Chip key={index} label={tag} className={styles.tagChip} />
               ))}
             </Box>

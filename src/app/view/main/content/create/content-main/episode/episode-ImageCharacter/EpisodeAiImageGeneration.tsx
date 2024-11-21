@@ -5,9 +5,11 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import {Swiper, SwiperSlide} from 'swiper/react'; // Swiper components import
 import 'swiper/css'; // 기본 Swiper 스타일 가져오기
 import 'swiper/css/pagination';
-import loRaStyles from '@/data/create/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
+import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
 import DiamondIcon from '@mui/icons-material/Diamond';
 import CollectionsIcon from '@mui/icons-material/Collections';
+
+import Slider from '@mui/material/Slider';
 interface EpisodeAiImageGenerationProps {
   open: boolean; // 모달 열림 상태
   closeModal: () => void; // 모달 닫기 함수
@@ -41,11 +43,20 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
     console.log(text);
     setSeedText(text);
   };
-  const [selectedToggle, setSelectedToggle] = useState<number>(1); // 선택된 토글 숫자 저장
-  const handleToggleSelect = (value: number) => {
-    setSelectedToggle(value); // 선택된 숫자를 저장
-    console.log('Selected Toggle:', value); // 콘솔에 선택된 숫자 출력
+  const [selectedValue, setSelectedValue] = useState<number>(1); // 선택된 값 저장
+
+  const handleSliderChange = (event: Event, newValue: number | number[]) => {
+    if (typeof newValue === 'number') {
+      setSelectedValue(newValue); // 선택된 값을 저장
+      console.log('Selected Value:', newValue); // 콘솔 출력
+    }
   };
+  const marks = [
+    {value: 1, label: '1'},
+    {value: 2, label: '2'},
+    {value: 3, label: '3'},
+    {value: 4, label: '4'},
+  ];
 
   return (
     <Dialog
@@ -145,7 +156,7 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
             fullWidth
             margin="normal"
             multiline
-            rows={3}
+            rows={1}
             value={seedText}
             onChange={e => {
               const value = e.target.value;
@@ -183,23 +194,24 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
         <div className={styles.itemBox}>
           <Typography>Number Of Images</Typography>
           <div className={styles.itemitemBox}>
-            {[1, 2, 3, 4].map(num => (
-              <Button
-                key={num}
-                variant={selectedToggle === num ? 'contained' : 'outlined'} // 선택된 버튼 스타일 변경
+            <Box sx={{width: 300}}>
+              <Slider
+                value={selectedValue}
+                step={1} // 한 번에 이동하는 값
+                marks={marks}
+                min={1}
+                max={4}
+                valueLabelDisplay="auto"
+                onChange={handleSliderChange} // 값 변경 핸들러
                 sx={{
-                  margin: '5px',
-                  minWidth: '40px',
-                  minHeight: '40px',
-                  borderColor: selectedToggle === num ? 'blue' : 'gray',
-                  color: selectedToggle === num ? 'white' : 'black',
-                  backgroundColor: selectedToggle === num ? 'blue' : 'transparent',
+                  marginTop: 2,
+                  '& .MuiSlider-markLabel': {
+                    // 마크 라벨 스타일링
+                    fontSize: '14px',
+                  },
                 }}
-                onClick={() => handleToggleSelect(num)}
-              >
-                {num}
-              </Button>
-            ))}
+              />
+            </Box>
           </div>
         </div>
 

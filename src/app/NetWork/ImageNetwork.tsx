@@ -52,3 +52,34 @@ export const sendGenerateImageReq = async (payload: GenerateImageReq): Promise<R
     throw new Error('Failed to generate image. Please try again.');
   }
 };
+
+//프롬프트로 이미지 만들게
+export interface GenerateImageReq2 {
+  modelId: string;
+  prompt: string;
+  negativePrompt: string;
+  batchSize: number;
+  seed: number;
+}
+
+export interface GenerateImageRes2 {
+  imageUrl: string[];
+}
+export const sendGenerateImageReq2 = async (payload: GenerateImageReq2): Promise<ResponseAPI<GenerateImageRes2>> => {
+  try {
+    const response = await api.post<ResponseAPI<GenerateImageRes2>>('Resource/generateImage2', payload, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`Generate Image Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error generating image:', error);
+    throw new Error('Failed to generate image. Please try again.');
+  }
+};
