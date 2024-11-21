@@ -283,13 +283,13 @@ const ChatPage: React.FC = () => {
       if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
 
       // 메시지 정리
-      if (isClearString) newMessage.text = cleanString(newMessage.text);
+      //if (isClearString) newMessage.text = cleanString(newMessage.text);
 
       // 일단 내 메시지  처리
       if (isMyMessage === true) {
         if (isUserNarration(newMessage.text)) {
           const parsedMessage: Message = parsedUserNarration(newMessage);
-          newMessage.sender = parsedMessage.sender;
+          newMessage.sender = SenderType.UserNarration;
           newMessage.text = parsedMessage.text;
         } else {
           newMessage.sender = SenderType.User;
@@ -305,8 +305,6 @@ const ChatPage: React.FC = () => {
         console.log('new text====' + newMessage.text + '====');
         for (let i = 0; i < newMessage.text.length; i++) {
           let {isAnotherSender, newSender} = isAnotherSenderType(isMyMessage, newMessage.text[i], currentSender);
-
-          //console.log('isAnotherSenderType', isAnotherSender, '   ', newSender);
 
           let newSenderResult = newSender;
 
