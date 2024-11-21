@@ -18,6 +18,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import styles from './PublishCharacter.module.css';
 
 import {useState} from 'react';
+import {CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
 
 interface PublishCharacterProps {
   url: string;
@@ -28,12 +29,48 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url}) => {
   const [drawerMonetizationOpen, setDrawerMonetizationOpen] = useState(false);
   const [visibility, setVisibility] = useState('Private');
   const [monetization, setMonetization] = useState('Off');
+  const [loading, setLoading] = useState(false);
+  const [characterName, setCharacterName] = useState<string>('');
+  const [characterIntroduction, setCharacterIntroduction] = useState<string>('');
 
   const handleDrawerVisibilityToggle = () => {
     setDrawerVisibilityOpen(!drawerVisibilityOpen);
   };
   const handleDrawerMonetizationToggle = () => {
     setDrawerMonetizationOpen(!drawerMonetizationOpen);
+  };
+
+  const handleCreateCharacter = async () => {
+    setLoading(true);
+
+    try {
+      // 사용자의 입력 데이터를 수집하여 CreateCharacterReq로 구성
+      const req: CreateCharacterReq = {
+        characterInfo: {
+          id: 0,
+          name: characterName,
+          introduction: characterIntroduction,
+          mainImageUrl: url,
+          galleryImageUrl: [url, url],
+          visibilityType: visibility === 'Public' ? 2 : visibility === 'Unlisted' ? 1 : 0, // Visibility를 숫자로 변환
+          isMonetization: monetization === 'On',
+          state: 1,
+        },
+      };
+
+      // API 호출
+      const response = await sendCreateCharacter(req);
+
+      if (response.data) {
+        console.log('Character created successfully:', response.data);
+      } else {
+        throw new Error('Character creation failed.');
+      }
+    } catch (error) {
+      console.error('Error creating character:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,7 +91,13 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url}) => {
         </Box>
         <Box className={styles.nameArea}>
           <Typography className={styles.label}>Character Name</Typography>
-          <TextField variant="outlined" fullWidth placeholder="Enter Character Name" />
+          <TextField
+            variant="outlined"
+            fullWidth
+            placeholder="Enter Character Name"
+            value={characterName}
+            onChange={e => setCharacterName(e.target.value)} // 이름 상태 업데이트
+          />
           <Button variant="outlined" className={styles.regenerateButton}>
             Regenerate
           </Button>
@@ -69,6 +112,8 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url}) => {
         multiline
         rows={4}
         placeholder="Write a brief introduction about the character..."
+        value={characterIntroduction}
+        onChange={e => setCharacterIntroduction(e.target.value)}
       />
 
       {/* Setting Button Area */}
@@ -88,7 +133,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url}) => {
       </Box>
 
       {/* Publish Button */}
-      <Button variant="contained" color="primary" className={styles.publishButton}>
+      <Button variant="contained" color="primary" className={styles.publishButton} onClick={handleCreateCharacter}>
         Publish Character
       </Button>
 

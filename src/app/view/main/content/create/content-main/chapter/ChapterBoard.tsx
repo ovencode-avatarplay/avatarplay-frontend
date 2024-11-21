@@ -77,7 +77,7 @@ const ChapterBoard: React.FC<Props> = ({
       episodes: chapterInfo.episodeInfoList.map(episodeInfo => ({
         id: episodeInfo.id,
         title: episodeInfo.name,
-        thumbnail: episodeInfo.thumbnail,
+        thumbnail: episodeInfo.backgroundImageUrl,
         description: episodeInfo.episodeDescription,
         triggerInfoList: episodeInfo.triggerInfoList,
         conversationTemplateList: episodeInfo.conversationTemplateList,
@@ -214,7 +214,7 @@ const ChapterBoard: React.FC<Props> = ({
       const newEpisode = {
         id: newEpisodeInfo.id,
         title: newEpisodeInfo.name,
-        thumbnail: newEpisodeInfo.thumbnail,
+        thumbnail: newEpisodeInfo.backgroundImageUrl,
         description: newEpisodeInfo.episodeDescription,
         triggerInfoList: newEpisodeInfo.triggerInfoList,
         conversationTemplateList: newEpisodeInfo.conversationTemplateList,

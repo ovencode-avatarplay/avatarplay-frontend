@@ -9,9 +9,9 @@ export interface GetCharacterListRes {
   characterInfoList: CharacterInfo[];
 }
 
-export const sendGetCharacterList = async (): Promise<ResponseAPI<GetCharacterListRes>> => {
+export const sendGetCharacterList = async (payload: {}): Promise<ResponseAPI<GetCharacterListRes>> => {
   try {
-    const response = await api.post<ResponseAPI<GetCharacterListRes>>('Character/getCharacterList');
+    const response = await api.post<ResponseAPI<GetCharacterListRes>>('Character/getCharacterList', payload);
 
     if (response.data.resultCode === 0) {
       return response.data;
@@ -36,7 +36,7 @@ export interface CreateCharacterRes {
 
 export const sendCreateCharacter = async (payload: CreateCharacterReq): Promise<ResponseAPI<CreateCharacterRes>> => {
   try {
-    const response = await api.post<ResponseAPI<CreateCharacterRes>>('Character/create');
+    const response = await api.post<ResponseAPI<CreateCharacterRes>>('Character/create', payload);
 
     if (response.data.resultCode === 0) {
       return response.data;
@@ -59,7 +59,7 @@ export interface DeleteCharacterRes {}
 
 export const sendDeleteCharacter = async (payload: DeleteCharacterReq): Promise<ResponseAPI<DeleteCharacterRes>> => {
   try {
-    const response = await api.post<ResponseAPI<DeleteCharacterRes>>('Character/delete');
+    const response = await api.post<ResponseAPI<DeleteCharacterRes>>('Character/delete', payload);
 
     if (response.data.resultCode === 0) {
       return response.data;

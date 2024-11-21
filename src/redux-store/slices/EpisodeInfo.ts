@@ -34,6 +34,12 @@ export interface CharacterInfo {
   state: number;
 }
 
+export enum CharacterState {
+  None = 0,
+  Create = 1,
+  Delete = 2,
+}
+
 export interface EpisodeDescription {
   scenarioDescription: string;
   introDescription: string;

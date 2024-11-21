@@ -17,7 +17,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import DeleteIcon from '@mui/icons-material/Delete';
 import StudioFilter from '../StudioFilter';
-import {GetCharacterListRes, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
+import {
+  DeleteCharacterReq,
+  GetCharacterListRes,
+  sendDeleteCharacter,
+  sendGetCharacterList,
+} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import {useDispatch} from 'react-redux';
 
@@ -36,93 +41,36 @@ const CharacterDashboard: React.FC = () => {
     {value: 'filter3', label: 'Filter 3'},
   ];
 
-  const characters = [
-    {
-      id: 1,
-      status: 'Publish',
-      image: '/Images/001.png',
-      name: 'Character 1',
-      gender: 'Male',
-    },
-    {
-      id: 2,
-      status: 'Draft',
-      image: '/Images/001.png',
-      name: 'Character 2',
-      gender: 'Female',
-    },
-    {
-      id: 3,
-      status: 'Draft',
-      image: '/Images/001.png',
-      name: 'Character 3',
-      gender: 'Female',
-    },
-    {
-      id: 4,
-      status: 'Draft',
-      image: '/Images/001.png',
-      name: 'Character 4',
-      gender: 'Female',
-    },
-    {
-      id: 5,
-      status: 'Draft',
-      image: '/Images/001.png',
-      name: 'Character 5',
-      gender: 'Female',
-    },
-    {
-      id: 6,
-      status: 'Draft',
-      image: '/Images/001.png',
-      name: 'Character 6',
-      gender: 'Female',
-    },
-    {
-      id: 7,
-      status: 'Draft',
-      image: '/Images/001.png',
-      name: 'Character 7',
-      gender: 'Female',
-    },
-    {
-      id: 8,
-      status: 'Draft',
-      image: '/Images/001.png',
-      name: 'Character 8',
-      gender: 'Female',
-    },
-  ];
+  const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
 
   // 렌더링 전에 Init 실행
-  // useLayoutEffect(() => {
-  //   Init();
-  // }, []);
+  useLayoutEffect(() => {
+    Init();
+  }, []);
 
-  // function Init() {
-  //   getCharacterList();
-  // }
+  function Init() {
+    getCharacterList();
+  }
 
-  // 현재 유저가 가진 컨텐츠를 모두 가져옴 (DashBoard 에서 사용하기 위함)
-  // const getCharacterList = async () => {
-  //   setLoading(true);
+  // 현재 유저가 가진 캐릭터를 모두 가져옴
+  const getCharacterList = async () => {
+    setLoading(true);
 
-  //   try {
-  //     const response = await sendGetCharacterList();
+    try {
+      const response = await sendGetCharacterList({});
 
-  //     if (response.data.data) {
-  //       const characterList: CharacterInfo[] = response.data.contentDashBoardList;
-
-  //     } else {
-  //       throw new Error(`No contentInfo in response for ID: `);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching content by user ID:', error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      if (response.data) {
+        const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
+        setCharacters(characterInfoList);
+      } else {
+        throw new Error(`No contentInfo in response for ID: `);
+      }
+    } catch (error) {
+      console.error('Error fetching content by user ID:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleCharacterSelect = (id: number) => {
     console.log('Selected Character ID:', id);
     setSelectedCharacterId(id);
@@ -146,13 +94,41 @@ const CharacterDashboard: React.FC = () => {
     console.log(`Opening gallery for character ID: ${selectedCharacterId}`);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (selectedCharacterId === -1) {
       alert('Please select a character to delete.');
       return;
     }
-    const characterName = characters.find(char => char.id === selectedCharacterId)?.name || 'Unknown';
-    console.log(`Deleting character: ${characterName} (ID: ${selectedCharacterId})`);
+
+    const characterName = characters?.find(char => char.id === selectedCharacterId)?.name || 'Unknown';
+
+    const payload: DeleteCharacterReq = {
+      characterId: selectedCharacterId,
+    };
+
+    try {
+      // 네트워크 요청 전 사용자 확인
+      const confirmDelete = window.confirm(
+        `Are you sure you want to delete the character: ${characterName} (ID: ${selectedCharacterId})?`,
+      );
+
+      if (!confirmDelete) return;
+
+      // API 호출
+      const response = await sendDeleteCharacter(payload);
+
+      if (response) {
+        console.log(`Character deleted successfully: ${characterName} (ID: ${selectedCharacterId})`);
+
+        // UI에서 삭제된 캐릭터 제거
+        setCharacters(prev => prev?.filter(char => char.id !== selectedCharacterId));
+        setSelectedCharacterId(-1);
+        alert(`Character "${characterName}" deleted successfully.`);
+      }
+    } catch (error) {
+      console.error('Error deleting character:', error);
+      alert(`Failed to delete character "${characterName}". Please try again.`);
+    }
   };
 
   const handleCloseModify = () => {
@@ -185,7 +161,7 @@ const CharacterDashboard: React.FC = () => {
         onFilterChange={handleFilterChange}
         onCreateClick={handleCreateClick}
       />
-      <CharacterGrid characters={characters} onCharacterSelect={handleCharacterSelect} />
+      <CharacterGrid characters={characters ? characters : undefined} onCharacterSelect={handleCharacterSelect} />
       <CharacterDashboardFooter buttons={buttons} />
 
       {/* ModifyCharacter Drawer */}

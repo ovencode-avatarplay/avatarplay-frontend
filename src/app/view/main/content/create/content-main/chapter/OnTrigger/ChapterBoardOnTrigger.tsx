@@ -40,7 +40,7 @@ const ChapterBoardOnTrigger: React.FC<Props> = ({open, onClose, initialChapters,
         episodes: chapterInfo.episodeInfoList.map(episodeInfo => ({
           id: episodeInfo.id,
           title: episodeInfo.name,
-          thumbnail: episodeInfo.thumbnail,
+          thumbnail: episodeInfo.backgroundImageUrl,
           description: episodeInfo.episodeDescription,
           triggerInfoList: episodeInfo.triggerInfoList,
           conversationTemplateList: episodeInfo.conversationTemplateList,
