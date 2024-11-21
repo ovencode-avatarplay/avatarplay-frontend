@@ -42,10 +42,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   const currentEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
 
   // 상태 초기화
-  const [characterName, setCharacterName] = useState<string>(currentEpisodeInfo.episodeDescription.characterName || '');
-  const [characterDescription, setCharacterDescription] = useState<string>(
-    currentEpisodeInfo.episodeDescription.characterDescription || '',
-  );
+
   const [worldScenario, setWorldScenario] = useState<string>(
     currentEpisodeInfo.episodeDescription.scenarioDescription || '',
   );
@@ -60,8 +57,6 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   // 정보 제출 처리
   const handleSubmit = () => {
     const updatedEpisodeDescription = {
-      characterName,
-      characterDescription,
       scenarioDescription: worldScenario,
       introDescription: introduction,
       secret,
@@ -72,12 +67,6 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
     onClose(); // 다이얼로그 닫기
   };
 
-  const onChangeName = (name: string) => {
-    setCharacterName(name);
-  };
-  const onChangeCharacterDescription = (description: string) => {
-    setCharacterDescription(description);
-  };
   const onChangesetWorldScenario = (worldScenario: string) => {
     setWorldScenario(worldScenario);
   };
@@ -99,25 +88,6 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
         <Typography variant="subtitle1" gutterBottom>
           Please enter the character details below:
         </Typography>
-        <TextField label="User ID" variant="outlined" fullWidth margin="normal" type="number" value={userId} disabled />
-        <TextField
-          label="Character Name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={characterName}
-          onChange={e => onChangeName(e.target.value)}
-        />
-        <TextField
-          label="Character Description"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          multiline
-          rows={4}
-          value={characterDescription}
-          onChange={e => onChangeCharacterDescription(e.target.value)}
-        />
         <TextField
           label="World Scenario"
           variant="outlined"
