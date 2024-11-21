@@ -180,16 +180,14 @@ const ChatPage: React.FC = () => {
 
     eventSource.onmessage = event => {
       try {
+        setIsLoading(false);
         if (!event.data) {
           throw new Error('Received null or empty data');
-          setIsLoading(false);
         }
-
-        setIsLoading(false);
 
         const newMessage = JSON.parse(event.data);
         handleSendMessage(newMessage, false, true);
-        console.log('stream new text====' + newMessage + '====');
+        //console.log('stream new text====' + newMessage + '====');
         //messageCount++; // 메시지 수신 횟수 증가
 
         // 메시지가 3번 수신되면 강제로 에러 발생

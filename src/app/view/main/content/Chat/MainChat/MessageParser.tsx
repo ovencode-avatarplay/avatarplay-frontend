@@ -25,9 +25,14 @@ const parseAnswer = (answer: string, id: number): Message[] => {
       const partnerText = answer.slice(lastIndex, match.index).trim();
       // partnerText가 비어있지 않을 경우에만 추가
       if (partnerText) {
+        let cleanedText = partnerText;
+        if (partnerText.startsWith('"') && partnerText.endsWith('"')) {
+          cleanedText = partnerText.slice(1, -1); // 첫 번째와 마지막 문자를 제거
+        }
+
         result.push({
           chatId: id,
-          text: partnerText,
+          text: cleanedText,
           sender: SenderType.Partner,
         });
       }
@@ -64,7 +69,7 @@ const parseAnswer = (answer: string, id: number): Message[] => {
     lastIndex = systemPattern.lastIndex;
   }
 
-  // 마지막으로 남아있는 텍스트를 partner 메시지로 처리
+  // 마지막으로 남아있는 텍스트를 PartnerNarration 메시지로 처리
   if (lastIndex < answer.length) {
     const remainingText = answer.slice(lastIndex).trim();
     // 남아있는 텍스트가 비어있지 않을 경우에만 추가
@@ -72,7 +77,7 @@ const parseAnswer = (answer: string, id: number): Message[] => {
       result.push({
         chatId: id,
         text: remainingText, // 남아있는 텍스트
-        sender: SenderType.Partner, // 메시지 발신자
+        sender: SenderType.PartnerNarration, // 메시지 발신자
       });
     }
   }
