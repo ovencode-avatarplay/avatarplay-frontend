@@ -6,7 +6,8 @@ import {Swiper, SwiperSlide} from 'swiper/react'; // Swiper components import
 import 'swiper/css'; // 기본 Swiper 스타일 가져오기
 import 'swiper/css/pagination';
 import loRaStyles from '@/data/create/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
-
+import DiamondIcon from '@mui/icons-material/Diamond';
+import CollectionsIcon from '@mui/icons-material/Collections';
 interface EpisodeAiImageGenerationProps {
   open: boolean; // 모달 열림 상태
   closeModal: () => void; // 모달 닫기 함수
@@ -37,6 +38,7 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
     /* currentEpisodeInfo.episodeDescription.characterDescription || '',*/ '',
   );
   const onChangSeeedText = (text: string) => {
+    console.log(text);
     setSeedText(text);
   };
   const [selectedToggle, setSelectedToggle] = useState<number>(1); // 선택된 토글 숫자 저장
@@ -60,7 +62,7 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
         },
       }}
     >
-      <DialogTitle className={styles['modal-header']}>
+      <DialogTitle className={styles.modalHeader}>
         <Button onClick={closeModal} className={styles['close-button']}>
           <ArrowBackIosIcon />
         </Button>
@@ -138,7 +140,6 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
 
         <div className={styles.itemBox}>
           <Typography>Seed</Typography>
-
           <TextField
             variant="outlined"
             fullWidth
@@ -146,7 +147,36 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
             multiline
             rows={3}
             value={seedText}
-            onChange={e => onChangSeeedText(e.target.value)}
+            onChange={e => {
+              const value = e.target.value;
+
+              // 입력값이 비어있다면 상태를 빈 문자열로 업데이트
+              if (value === '') {
+                onChangSeeedText(value);
+                return;
+              }
+
+              // 1. `-` 기호만 입력된 경우 상태 업데이트
+              if (value === '-') {
+                onChangSeeedText(value);
+                return;
+              }
+
+              // 2. 정규식으로 숫자와 음수만 허용
+              if (/^-?\d*$/.test(value)) {
+                // 3. 값이 32비트 정수 범위를 넘지 않도록 제한
+                const parsedValue = parseInt(value, 10);
+
+                if (
+                  !isNaN(parsedValue) && // 숫자인지 확인
+                  parsedValue >= -2147483648 && // 최소값
+                  parsedValue <= 2147483647 // 최대값
+                ) {
+                  onChangSeeedText(value); // 유효한 값만 상태 업데이트
+                }
+              }
+            }}
+            helperText="Enter a number between -2,147,483,648 and 2,147,483,647 (or leave it empty)"
           />
         </div>
 
@@ -172,16 +202,60 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
             ))}
           </div>
         </div>
-      </Box>
 
-      <Box
-        sx={{
-          display: 'flex', // Flexbox 활성화
-          justifyContent: 'center', // 가로 중앙 정렬
-          alignItems: 'center', // 세로 중앙 정렬
-        }}
-        className={styles.buttonBox}
-      >
+        <div className={styles.itemBox}>
+          <div
+            className={styles.itemSideGapBox}
+            style={{
+              gap: '50px', // 아이템 간격
+            }}
+          >
+            <Typography>My Ruby</Typography>
+            <div
+              style={{
+                display: 'flex',
+              }}
+            >
+              <DiamondIcon className={styles.generateIcon} /> {/* 아이콘 스타일 적용 */}
+              <Typography>99.999</Typography>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.itemBox}>
+          <div className={styles.itemitemBox}>
+            <Button
+              className={styles.generateButton}
+              variant="outlined"
+              onClick={() => console.log('Final selected index:', selectedIndex)} // Confirm 시 선택된 index 출력
+            >
+              <span className={styles.generateText}>Generate</span> {/* 텍스트 스타일 적용 */}
+              <DiamondIcon className={styles.generateIcon} /> {/* 아이콘 스타일 적용 */}
+              <span className={styles.generateCount}>99</span> {/* 숫자 스타일 적용 */}
+            </Button>
+          </div>
+        </div>
+
+        <div className={styles.itemBox}>
+          <div
+            className={styles.itemSideGapBox}
+            style={{
+              gap: '70px', // 아이템 간격
+              borderBottom: '1px solid #ccc', // 밑줄 추가
+              paddingBottom: '8px', // 밑줄과 콘텐츠 사이 간격
+            }}
+          >
+            <Typography>Image Output</Typography>
+            <div
+              style={{
+                display: 'flex',
+              }}
+            >
+              <CollectionsIcon></CollectionsIcon>
+              <Typography>Gallery</Typography>
+            </div>
+          </div>
+        </div>
         <Button
           sx={{
             m: 1,

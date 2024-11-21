@@ -8,7 +8,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import styles from './EpisodeImageUpload.module.css';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {setCurrentEpisodeThumbnail} from '@/redux-store/slices/EpisodeInfo';
+import {setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo';
 import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
 import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
@@ -81,7 +81,7 @@ const EpisodeImageUpload: React.FC<Props> = ({
       if (response?.data) {
         const imgUrl: string = response.data;
         setImagePreview(imgUrl);
-        dispatch(setCurrentEpisodeThumbnail(imgUrl));
+        dispatch(setCurrentEpisodeBackgroundImage(imgUrl));
       } else {
         throw new Error(`No response for file`);
       }
@@ -94,7 +94,7 @@ const EpisodeImageUpload: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    setImagePreview(editedEpisodeInfo?.currentEpisodeInfo?.thumbnail);
+    setImagePreview(editedEpisodeInfo?.currentEpisodeInfo?.backgroundImageUrl);
   }, [editedEpisodeInfo]);
 
   return (

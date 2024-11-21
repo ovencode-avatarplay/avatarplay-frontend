@@ -8,12 +8,13 @@ import ImageIcon from '@mui/icons-material/Image';
 import styles from './EpisodeTempCharacter.module.css';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {setCurrentEpisodeThumbnail} from '@/redux-store/slices/EpisodeInfo';
+import {setCharacterInfo, setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo';
 import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
 import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EpisodeAiImageGeneration from './EpisodeAiImageGeneration';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const Input = styled('input')({
   display: 'none',
@@ -29,6 +30,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [secondDialogOpen, setSecondDialogOpen] = useState(false); // 두 번째 다이얼로그 상태
   const dispatch = useDispatch();
   const [isMobile, setIsMobile] = useState(false); // 모바일 여부 확인
@@ -87,26 +89,51 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
   };
 
   const [characterDescription, setCharacterDescription] = useState<string>(
-    /* currentEpisodeInfo.episodeDescription.characterDescription || '',*/ '',
+    editedEpisodeInfo.currentEpisodeInfo.characterInfo.introduction || '',
   );
   const onChangeCharacterDescription = (description: string) => {
     setCharacterDescription(description);
+
+    dispatch(setCharacterInfo({introduction: description}));
   };
 
   const [characterName, setCharacterName] = useState<string>(
-    /* currentEpisodeInfo.episodeDescription.characterDescription || '',*/ '',
+    editedEpisodeInfo.currentEpisodeInfo.characterInfo.name || '',
   );
   const onChangeCharacterName = (name: string) => {
     setCharacterName(name);
+    dispatch(setCharacterInfo({name: name}));
   };
-  const handleFileSelection = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = event => {
-      if (event.target && typeof event.target.result === 'string') {
-        setImagePreview(event.target.result); // Base64 URL로 변환된 이미지 저장
+
+  const handleFileSelection = async (file: File) => {
+    setLoading(true);
+    console.log('s');
+    try {
+      const req: UploadImageReq = {file: file};
+      const response = await sendUploadImage(req);
+
+      if (response?.data) {
+        const imgUrl: string = response.data;
+
+        const reader = new FileReader();
+        reader.onload = event => {
+          if (event.target && typeof event.target.result === 'string') {
+            setImagePreview(event.target.result); // Base64 URL로 변환된 이미지 저장
+          }
+        };
+        reader.readAsDataURL(file); // 파일을 Base64로 변환
+
+        //사용법: dispatch(setCharacterInfo({ name: "New Name", state: 1 }));
+        dispatch(setCharacterInfo({mainImageUrl: imgUrl}));
+      } else {
+        throw new Error(`No response for file`);
       }
-    };
-    reader.readAsDataURL(file); // 파일을 Base64로 변환
+    } catch (error) {
+      console.error('Error fetching content info:', error);
+      throw error; // 에러를 상위로 전달
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePhotoLibrary = () => {
@@ -152,7 +179,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
   };
 
   useEffect(() => {
-    setImagePreview(editedEpisodeInfo?.currentEpisodeInfo?.thumbnail);
+    setImagePreview(editedEpisodeInfo?.currentEpisodeInfo?.characterInfo.mainImageUrl);
   }, [editedEpisodeInfo]);
 
   return (
@@ -250,29 +277,11 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
           onChange={e => onChangeCharacterDescription(e.target.value)}
         />
       </Box>
-      <Box
-        sx={{
-          display: 'flex', // Flexbox 활성화
-          justifyContent: 'center', // 가로 중앙 정렬
-          alignItems: 'center', // 세로 중앙 정렬
-        }}
-        className={styles.buttonBox}
-      >
-        <Button
-          sx={{
-            m: 1,
-            color: 'black',
-            borderColor: 'gray',
-            width: '100px',
-          }}
-          variant="outlined"
-        >
-          Confirm
-        </Button>
-      </Box>
 
       {/* EpisodeAiImageGeneration 모달 */}
       <EpisodeAiImageGeneration open={isAiModalOpen} closeModal={handleCloseAiModal} />
+
+      <LoadingOverlay loading={isLoading} />
     </Dialog>
   );
 };

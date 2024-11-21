@@ -14,6 +14,7 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({loading}) => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
+          zIndex: '1000',
         }}
       >
         <CircularProgress />

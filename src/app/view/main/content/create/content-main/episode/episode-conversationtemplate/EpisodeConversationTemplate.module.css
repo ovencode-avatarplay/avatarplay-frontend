@@ -15,13 +15,13 @@
 }
 
 .modal-title {    
-    font-size: 1.em; /* 제목 크기 조정 */    
+    font-size: 1.0 em; /* 제목 크기 조정 */    
 }
 
 .close-button {
     background: none;
     border: none;
-    font-size: 1.5em;
+    font-size: 1.5 em;
     cursor: pointer;
 }
 .card-box

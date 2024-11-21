@@ -10,20 +10,31 @@ import {
   ConversationPriortyType,
   ConversationTalkType,
 } from '@/types/apps/DataTypes';
+import {boolean} from 'valibot';
 
 export interface EpisodeInfo {
   id: number;
   name: string;
-  thumbnail: string;
+  backgroundImageUrl: string;
+  characterInfo: CharacterInfo;
   episodeDescription: EpisodeDescription;
   triggerInfoList: TriggerInfo[];
   conversationTemplateList: Conversation[];
   llmSetupInfo: LLMSetupInfo;
 }
 
+export interface CharacterInfo {
+  id: number;
+  name: string;
+  introduction: string;
+  mainImageUrl: string;
+  galleryImageUrl: string[];
+  visibilityType: number;
+  isMonetization: boolean;
+  state: number;
+}
+
 export interface EpisodeDescription {
-  characterName: string;
-  characterDescription: string;
   scenarioDescription: string;
   introDescription: string;
   secret: string;
@@ -59,10 +70,22 @@ const episodeInfoSlice = createSlice({
       state.currentEpisodeInfo = emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0];
     },
 
-    setCurrentEpisodeThumbnail(state, action: PayloadAction<string>) {
-      state.currentEpisodeInfo.thumbnail = action.payload;
+    setCurrentEpisodeBackgroundImage(state, action: PayloadAction<string>) {
+      state.currentEpisodeInfo.backgroundImageUrl = action.payload;
     },
 
+    //#region Character
+
+    //사용법: dispatch(setCharacterInfo({ name: "New Name", state: 1 }));
+    setCharacterInfo: (state, action: PayloadAction<Partial<CharacterInfo>>) => {
+      state.currentEpisodeInfo.characterInfo = {
+        ...state.currentEpisodeInfo.characterInfo,
+        ...action.payload, // 전달된 속성만 덮어쓰기
+      };
+    },
+    //#endregion
+
+    //#region Trigger
     // 새로운 TriggerInfo를 추가
     addTriggerInfo: (state, action: PayloadAction<Omit<TriggerInfo, 'id'>>) => {
       const newDataPair: TriggerInfo = {
@@ -101,7 +124,9 @@ const episodeInfoSlice = createSlice({
         state.currentEpisodeInfo.triggerInfoList.splice(index, 1);
       }
     },
+    //#endregion
 
+    //#region conversation
     // 기존 기능 - conversationTemplateList 관련 액션들
     addConversationTalk: (
       state,
@@ -406,12 +431,13 @@ const episodeInfoSlice = createSlice({
         state.currentEpisodeInfo.llmSetupInfo = action.payload; // LLM 설정 정보 업데이트
       }
     },
+    //#endregion
   },
 });
 
 export const {
   setCurrentEpisodeInfo,
-  setCurrentEpisodeThumbnail,
+  setCurrentEpisodeBackgroundImage,
   setEpisodeInfoEmpty,
   updateEpisodeDescription,
   addTriggerInfo,
@@ -431,6 +457,7 @@ export const {
   removeActionConversationTalk,
   removeAllConversationTalk,
   removeAllActionConversationTalk,
+  setCharacterInfo,
 } = episodeInfoSlice.actions;
 
 export default episodeInfoSlice.reducer;

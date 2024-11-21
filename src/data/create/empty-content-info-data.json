@@ -14,10 +14,20 @@
               {
                 "id": 0,
                 "name": "",
-                "thumbnail": "",
+                "backgroundImageUrl": "",
+                "characterInfo": {
+                  "id": 0,
+                  "name": "",
+                  "introduction": "",
+                  "mainImageUrl": "",
+                  "galleryImageUrl": [
+                    ""
+                  ],
+                  "visibilityType": 0,
+                  "isMonetization": true,
+                  "state": 1
+                },
                 "episodeDescription": {
-                  "characterName": "",
-                  "characterDescription": "",
                   "scenarioDescription": "",
                   "introDescription": "",
                   "secret": ""
