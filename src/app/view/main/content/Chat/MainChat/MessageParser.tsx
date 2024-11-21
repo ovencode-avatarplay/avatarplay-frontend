@@ -225,41 +225,33 @@ const checkNewSender = (isUserMessage: boolean, newMessage: string, currentSende
   return newSender;
 };
 
-// newMessage 가 어떤 타입과 관련된 문자열이 포함되어 있는지 리턴해주는 함수
+// newMessage 가 어떤 기존 Sender타입과 같은 문자열이 포함되어 있는지 리턴해주는 함수
 const checkSameSenderCommand = (isUserMessage: boolean, newMessage: string, currentSender: SenderType): boolean => {
   let isNewSenderCommand: boolean = false;
-
-  // if (isUserMessage) {
-  //   if (isUser(newMessage) || isUserNarration(newMessage)) isNewSenderCommand = true;
-  // } else {
-  //   if (isPartner(newMessage) || isPartnerNarration(newMessage) || isSystemMessage(newMessage))
-  //     isNewSenderCommand = true;
-  // }
-
   switch (currentSender) {
     case SenderType.User:
       {
-        if (isUser(newMessage) === true) isNewSenderCommand = true;
+        if (isUserMessage === true && isUser(newMessage) === true) isNewSenderCommand = true;
       }
       break;
     case SenderType.UserNarration:
       {
-        if (isUserNarration(newMessage) === true) isNewSenderCommand = true;
+        if (isUserMessage === true && isUserNarration(newMessage) === true) isNewSenderCommand = true;
       }
       break;
     case SenderType.Partner:
       {
-        if (isPartner(newMessage) === true) isNewSenderCommand = true;
+        if (isUserMessage === false && isPartner(newMessage) === true) isNewSenderCommand = true;
       }
       break;
     case SenderType.PartnerNarration:
       {
-        if (isPartnerNarration(newMessage) === true) isNewSenderCommand = true;
+        if (isUserMessage === false && isPartnerNarration(newMessage) === true) isNewSenderCommand = true;
       }
       break;
     case SenderType.System:
       {
-        if (isSystemMessage(newMessage) === true) isNewSenderCommand = true;
+        if (isUserMessage === false && isSystemMessage(newMessage) === true) isNewSenderCommand = true;
       }
       break;
   }
@@ -281,9 +273,10 @@ export const isAnotherSenderType = (
   if (newSender !== currentSender) isAnotherSender = true;
 
   // 서버에서 보내줄때 * 가 없이 오는 시작되는 나레이션일때가 있어서 예외처리 해준다.
-  if (currentSender === SenderType.User && isUserMessage === false) {
+  if ((currentSender === SenderType.User || currentSender == SenderType.UserNarration) && isUserMessage === false) {
     isAnotherSender = true;
-    newSender = SenderType.PartnerNarration;
+    // 같다라는건 새로운 Sender Command가 없었다는 이야기다.
+    if (newSender === currentSender) newSender = SenderType.PartnerNarration;
   }
 
   return {isAnotherSender, newSender};

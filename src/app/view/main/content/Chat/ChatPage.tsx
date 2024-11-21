@@ -189,7 +189,7 @@ const ChatPage: React.FC = () => {
 
         const newMessage = JSON.parse(event.data);
         handleSendMessage(newMessage, false, true);
-
+        console.log('stream new text====' + newMessage + '====');
         //messageCount++; // 메시지 수신 횟수 증가
 
         // 메시지가 3번 수신되면 강제로 에러 발생
@@ -283,7 +283,7 @@ const ChatPage: React.FC = () => {
       if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
 
       // 메시지 정리
-      //if (isClearString) newMessage.text = cleanString(newMessage.text);
+      if (isMyMessage === false && isClearString === true) newMessage.text = cleanString(newMessage.text);
 
       // 일단 내 메시지  처리
       if (isMyMessage === true) {
@@ -302,7 +302,7 @@ const ChatPage: React.FC = () => {
         let currentSender: SenderType = allMessages[allMessages.length - 1].sender;
         const tempChatId: number = chatId;
         // 2. 메시지를 한 바이트씩 조사해서 새로운 Sender로 만들지 말지 처리한다.
-        console.log('new text====' + newMessage.text + '====');
+        //console.log('new text====' + newMessage.text + '====');
         for (let i = 0; i < newMessage.text.length; i++) {
           let {isAnotherSender, newSender} = isAnotherSenderType(isMyMessage, newMessage.text[i], currentSender);
 
@@ -325,6 +325,13 @@ const ChatPage: React.FC = () => {
               sender: (newMessage.sender = newSenderResult),
             };
             currentSender = _newMessage.sender;
+
+            // 새 말풍선을 추가하라고 했는데 그냥 빈칸만 있는경우는 무시한다.
+            if (_newMessage.text === ' ' || newMessage.text === '\n') {
+              isNarrationActive.active = false;
+              continue;
+            }
+
             allMessages.push(_newMessage);
           } else {
             // sender Type이 같으니 기존 말풍선에 계속 넣어준다.
@@ -445,6 +452,7 @@ const ChatPage: React.FC = () => {
         setIsLoading(false);
 
         const newMessage = JSON.parse(event.data);
+        console.log('stream new text====' + newMessage + '====');
         handleSendMessage(newMessage, false, true);
         if (newMessage.includes('$') === true) {
           isSendingMessage.state = false;
