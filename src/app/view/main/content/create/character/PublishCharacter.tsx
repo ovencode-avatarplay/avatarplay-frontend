@@ -20,6 +20,9 @@ import styles from './PublishCharacter.module.css';
 import {useState} from 'react';
 import {CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
 
+// publish가 끝나고 다른곳으로 이동하기
+import {useRouter, useSearchParams} from 'next/navigation';
+
 interface PublishCharacterProps {
   url: string;
 }
@@ -30,6 +33,8 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url}) => {
   const [visibility, setVisibility] = useState('Private');
   const [monetization, setMonetization] = useState('Off');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const searchParam = useSearchParams();
   const [characterName, setCharacterName] = useState<string>('');
   const [characterIntroduction, setCharacterIntroduction] = useState<string>('');
 
@@ -63,6 +68,10 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url}) => {
 
       if (response.data) {
         console.log('Character created successfully:', response.data);
+
+        // 작업 성공 후 리디렉션
+        const currentLang = searchParam.get(':lang') || 'en';
+        router.push(`/${currentLang}/studio/character`);
       } else {
         throw new Error('Character creation failed.');
       }
