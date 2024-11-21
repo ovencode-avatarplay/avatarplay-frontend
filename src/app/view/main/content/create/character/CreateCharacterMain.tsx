@@ -10,7 +10,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({}) => {
     <>
       <main className={styles.characterMain}>
         <CreateCharacterTopMenu contentTitle="Artist Creation" />
-        <CharacterCreate closeAction={() => {}} />
+        <CharacterCreate closeAction={() => {}} isModify={false} />
       </main>
     </>
   );

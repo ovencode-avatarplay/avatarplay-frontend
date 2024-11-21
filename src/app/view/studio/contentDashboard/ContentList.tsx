@@ -1,18 +1,53 @@
 import {useSelector} from 'react-redux';
 import ContentDashboardList from '../../main/content/create/content-main/content-dashboard/ContentDashboardList';
 import {RootState} from '@/redux-store/ReduxStore';
-import {useState} from 'react';
-import {GetTotalContentByIdReq, sendContentByIdGetTotal} from '@/app/NetWork/ContentNetwork';
-import {ContentInfo, setEditingContentInfo} from '@/redux-store/slices/ContentInfo';
+import {useLayoutEffect, useState} from 'react';
+import {
+  GetContentsByUserIdReq,
+  GetTotalContentByIdReq,
+  sendContentByIdGetTotal,
+  sendContentByUserIdGet,
+} from '@/app/NetWork/ContentNetwork';
+import {ContentInfo} from '@/redux-store/slices/ContentInfo';
 import {useDispatch} from 'react-redux';
-import {Box, Button, MenuItem, Select} from '@mui/material';
+import {Box} from '@mui/material';
 import styles from './ContentList.module.css';
+import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/MyContentDashboard';
 
 const ContentList: React.FC = () => {
   const contentInfo = useSelector((state: RootState) => state.myContents.contentDashBoardList ?? []);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+
+  // 렌더링 전에 Init 실행
+  useLayoutEffect(() => {
+    Init();
+  }, []);
+
+  function Init() {
+    getContentsByUserId();
+  }
+  // 현재 유저가 가진 컨텐츠를 모두 가져옴 (DashBoard 에서 사용하기 위함)
+  const getContentsByUserId = async () => {
+    setLoading(true);
+
+    try {
+      const req: GetContentsByUserIdReq = {};
+      const response = await sendContentByUserIdGet(req);
+
+      if (response?.data) {
+        const contentData: ContentDashboardItem[] = response.data.contentDashBoardList;
+        dispatch(setContentDashboardList(contentData));
+      } else {
+        throw new Error(`No contentInfo in response for ID: `);
+      }
+    } catch (error) {
+      console.error('Error fetching content by user ID:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // DashBoard 에서 선택한 컨텐츠를 Id로 가져옴 (CreateContent사이클 (Chapter, Episode 편집) 에서 사용하기 위함)
   const GetContentByContentId = async (contentId: number) => {
@@ -36,25 +71,15 @@ const ContentList: React.FC = () => {
   };
 
   return (
-    <Box className={styles.drawerContainer}>
-      {/* Filter section */}
-      <Box className={styles.filterContainer}>
-        <Select className={styles.filterSelect}>
-          <MenuItem value="filter1">Filter 1</MenuItem>
-          <MenuItem value="filter2">Filter 2</MenuItem>
-          <MenuItem value="filter3">Filter 3</MenuItem>
-        </Select>
-        <Button variant="contained" className={styles.createButton} onClick={() => {}}>
-          Create
-        </Button>
+    <>
+      <Box className={styles.drawerContainer}>
+        <ContentDashboardList
+          contentInfo={contentInfo}
+          selectedIndex={selectedIndex}
+          onItemSelect={GetContentByContentId}
+        />
       </Box>
-
-      <ContentDashboardList
-        contentInfo={contentInfo}
-        selectedIndex={selectedIndex}
-        onItemSelect={GetContentByContentId}
-      />
-    </Box>
+    </>
   );
 };
 export default ContentList;

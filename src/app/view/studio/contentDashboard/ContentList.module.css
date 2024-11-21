@@ -1,7 +1,7 @@
 .drawerContainer {
     display: flex;
     flex-direction: column;
-    height: 80vh;
+    height: 70vh;
     padding: 16px;
     overflow: hidden;
 }

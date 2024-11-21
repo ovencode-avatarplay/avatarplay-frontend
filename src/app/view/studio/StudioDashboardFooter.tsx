@@ -1,21 +1,22 @@
 import React from 'react';
 import {Button, Typography} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import DeleteIcon from '@mui/icons-material/Delete';
 import styles from './StudioDashboardFooter.module.css';
 
-const StudioDashboardFooter: React.FC = () => {
-  const buttons = [
-    {icon: <EditIcon />, text: 'Edit'},
-    {icon: <PhotoLibraryIcon />, text: 'Gallery'},
-    {icon: <DeleteIcon />, text: 'Delete'},
-  ];
+interface FooterButton {
+  icon: React.ReactNode; // MUI 아이콘
+  text: string; // 버튼 텍스트
+  onClick: () => void; // 실행할 함수
+}
 
+interface StudioDashboardFooterProps {
+  buttons: FooterButton[]; // 버튼 배열
+}
+
+const StudioDashboardFooter: React.FC<StudioDashboardFooterProps> = ({buttons}) => {
   return (
     <div className={styles.footer}>
       {buttons.map((button, index) => (
-        <Button key={index} className={styles.button} startIcon={button.icon}>
+        <Button key={index} className={styles.button} startIcon={button.icon} onClick={button.onClick}>
           <Typography>{button.text}</Typography>
         </Button>
       ))}

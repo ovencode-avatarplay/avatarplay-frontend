@@ -111,9 +111,7 @@ export const sendContentByIdGetTotal = async (
 };
 
 // Get Contents By UserId
-export interface GetContentsByUserIdReq {
-  userId: number;
-}
+export interface GetContentsByUserIdReq {}
 
 export interface GetContentsByUserIdRes<> {
   contentDashBoardList: ContentDashboardItem[];

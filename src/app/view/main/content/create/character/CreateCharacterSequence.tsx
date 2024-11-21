@@ -44,9 +44,10 @@ import {CreateCharacterOption, GeneratedOptionsState} from './CreateCharacterTyp
 
 interface Props {
   closeAction: () => void;
+  isModify: boolean;
 }
 
-const CharacterCreate: React.FC<Props> = ({closeAction}) => {
+const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
   const [activeStep, setActiveStep] = useState(0);
   const stepperRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
@@ -70,19 +71,32 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
   const [generatedOptions, setGeneratedOptions] = useState<GeneratedOptionsState[]>([]);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null); // Add fullscreen image state
 
-  const steps = [
-    'Gender',
-    'Style',
-    'Ethnicity',
-    'HairStyle',
-    'BodyShape',
-    'OutfitClothes',
-    'ThumbnailBackground',
-    'Personality',
-    'Summary',
-    'Result',
-    'Publish',
+  enum CreateCharacterStep {
+    Gender = 'Gender',
+    Style = 'Style',
+    Ethnicity = 'Ethnicity',
+    HairStyle = 'HairStyle',
+    BodyShape = 'BodyShape',
+    OutfitClothes = 'OutfitClothes',
+    ThumbnailBackground = 'ThumbnailBackground',
+    Personality = 'Personality',
+    Summary = 'Summary',
+    Result = 'Result',
+    Publish = 'Publish',
+  }
+
+  const CreateSteps: CreateCharacterStep[] = Object.values(CreateCharacterStep);
+
+  const ModifySteps: CreateCharacterStep[] = [
+    CreateCharacterStep.HairStyle,
+    CreateCharacterStep.OutfitClothes,
+    CreateCharacterStep.ThumbnailBackground,
+    CreateCharacterStep.Summary,
+    CreateCharacterStep.Result,
+    CreateCharacterStep.Publish,
   ];
+
+  const steps = isModify ? ModifySteps : CreateSteps;
 
   const isStepFailed = (step: number) => {
     return step === 1;
@@ -251,12 +265,12 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
     }
   }, [activeStep]);
 
-  const getStepContent = (step: number) => {
+  const getStepContent = (step: CreateCharacterStep) => {
     switch (step) {
-      case 0:
+      case CreateCharacterStep.Gender:
         return (
           <div className={styles.createBox}>
-            <div className={styles.createTitle}>Step 1: Select Gender</div>
+            <div className={styles.createTitle}>Step : Select Gender</div>
             <Box className={styles.verticalButtonGroup}>
               {characterOptions.genderOptions.map((option, index) => (
                 <Button
@@ -272,7 +286,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Box>
           </div>
         );
-      case 1:
+      case CreateCharacterStep.Style:
         return (
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 2: Select Style</div>
@@ -291,7 +305,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Box>
           </div>
         );
-      case 2:
+      case CreateCharacterStep.Ethnicity:
         return (
           <div className={styles.createBox}>
             <Box className={styles.ethnicityContent}>
@@ -350,7 +364,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Box>
           </div>
         );
-      case 3:
+      case CreateCharacterStep.HairStyle:
         return (
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 4: Select Hair Style</div>
@@ -387,7 +401,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Box>
           </div>
         );
-      case 4:
+      case CreateCharacterStep.BodyShape:
         return (
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 5: Select Body Shape</div>
@@ -441,7 +455,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Box>
           </div>
         );
-      case 5:
+      case CreateCharacterStep.OutfitClothes:
         return (
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 6: Select Outfit Clothes</div>
@@ -505,7 +519,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Box>
           </div>
         );
-      case 6:
+      case CreateCharacterStep.ThumbnailBackground:
         return (
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 7: Thumbnail Background</div>
@@ -526,7 +540,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Box>
           </div>
         );
-      case 7:
+      case CreateCharacterStep.Personality:
         return (
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 8: Choose Personality</div>
@@ -547,7 +561,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Box>
           </div>
         );
-      case 8:
+      case CreateCharacterStep.Summary:
         return (
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 9: Summary</div>
@@ -583,7 +597,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             )}
           </div>
         );
-      case 9:
+      case CreateCharacterStep.Result:
         return (
           <div className={styles.createBox}>
             <div className={styles.createTitle}>Step 10: Choose Generated Image</div>
@@ -612,7 +626,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
             </Box>
           </div>
         );
-      case 10:
+      case CreateCharacterStep.Publish:
         return (
           <div className={styles.createBox}>
             <PublishCharacter url={generatedOptions[selectedOptions.result].url} />
@@ -677,7 +691,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction}) => {
         </Stepper>
       </Box>
 
-      <Box className={styles.stepContent}>{getStepContent(activeStep)}</Box>
+      <Box className={styles.stepContent}>{getStepContent(steps[activeStep])}</Box>
 
       <Box className={styles.buttonContainer}>{renderBottom()}</Box>
 

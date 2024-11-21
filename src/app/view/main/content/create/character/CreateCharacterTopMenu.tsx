@@ -9,11 +9,12 @@ import Link from 'next/link';
 import styles from './CreateCharacterTopMenu.module.css';
 
 interface CreateCharacterTopMenuProps {
+  backButtonAction?: () => void;
   lastUrl?: string;
   contentTitle: string;
 }
 
-const CreateCharacterTopMenu: React.FC<CreateCharacterTopMenuProps> = ({lastUrl, contentTitle}) => {
+const CreateCharacterTopMenu: React.FC<CreateCharacterTopMenuProps> = ({backButtonAction, lastUrl, contentTitle}) => {
   const [title, setTitle] = useState(contentTitle);
   const defaultUrl = '../main/homefeed';
   const studioUrl = '../studio';
@@ -24,11 +25,17 @@ const CreateCharacterTopMenu: React.FC<CreateCharacterTopMenuProps> = ({lastUrl,
 
   return (
     <Box className={styles.contentHeader}>
-      <Link href={lastUrl ? lastUrl : defaultUrl} passHref>
-        <IconButton>
+      {backButtonAction ? (
+        <IconButton onClick={backButtonAction}>
           <ChevronLeftIcon fontSize="large" />
         </IconButton>
-      </Link>
+      ) : (
+        <Link href={lastUrl ? lastUrl : defaultUrl} passHref>
+          <IconButton>
+            <ChevronLeftIcon fontSize="large" />
+          </IconButton>
+        </Link>
+      )}
       <Box className={styles.titleContainer}>{title}</Box>
       <Link href={studioUrl} passHref>
         <div className={styles.studioButton}>
