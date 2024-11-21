@@ -34,7 +34,7 @@ const EpisodeLLMSetup: React.FC<EpisodeLLMSetupProps> = ({open, onClose}) => {
     setSelectedModel(selectedValue);
 
     // Custom API가 선택되지 않으면 API 키 초기화
-    if (selectedValue !== 6) {
+    if (selectedValue !== 9) {
       setCustomApiKey(''); // Custom API가 아닌 경우 API 키 초기화
     }
   };
@@ -48,7 +48,7 @@ const EpisodeLLMSetup: React.FC<EpisodeLLMSetupProps> = ({open, onClose}) => {
   const handleSaveAndClose = () => {
     const llmSetupInfo: LLMSetupInfo = {
       llmModel: selectedModel,
-      customApi: selectedModel === 6 ? customApiKey : '', // CustomAPI 선택 시 API 키 저장
+      customApi: selectedModel === 9 ? customApiKey : '', // CustomAPI 선택 시 API 키 저장
     };
 
     // Redux 스토어에 LLM 설정 정보 저장
@@ -107,7 +107,7 @@ const EpisodeLLMSetup: React.FC<EpisodeLLMSetupProps> = ({open, onClose}) => {
             fullWidth
             value={customApiKey}
             onChange={handleApiKeyChange}
-            disabled={selectedModel !== 6}
+            disabled={selectedModel !== 9}
           />
           <Typography variant="body2">You can validate your API Key on OpenAI API</Typography>
 

@@ -1,3 +1,10 @@
+.imageBox {
+    width: 100%; 
+    height: 100%;
+    align-items: center;    
+    display: flex; 
+    flex-direction: column; 
+}
 .imageArea {
     width: 100%; 
     height: 100%; 
@@ -6,6 +13,8 @@
     justify-content: center;
     position: relative;
     overflow: hidden; 
+    border: 3px dotted black; 
+    border-radius: 3px;
 }
 
 .setupImage {
