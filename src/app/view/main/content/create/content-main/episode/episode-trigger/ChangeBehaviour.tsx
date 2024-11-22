@@ -22,6 +22,9 @@ import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 import EpisodeConversationTemplate from '../episode-conversationtemplate/EpisodeConversationTemplate';
 import ChapterBoardOnTrigger from '@/app/view/main/content/create/content-main/chapter/OnTrigger/ChapterBoardOnTrigger';
 import {RenderTargetValueField, RenderSubDataFields} from './RenderFields';
+import {handleMainDataChange, handleSubDataChange, ensureValidSubData} from './triggerHandlers';
+import {getSubDataOptionsForMainData} from './triggerDataUtils';
+
 interface ChangeBehaviourProps {
   open: boolean;
   onClose: () => void;
@@ -188,49 +191,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     setIsChapterBoardOpen(false);
   };
 
-  const handleMainDataChange = (event: SelectChangeEvent<number>) => {
-    const selectedTriggerType = event.target.value as TriggerMainDataType;
-    setTriggerInfo(prev => ({
-      ...prev,
-      triggerType: selectedTriggerType,
-    }));
-
-    const subDataOptions = getSubDataOptionsForMainData(selectedTriggerType);
-    if (!subDataOptions.some(option => option.key === triggerInfo.triggerActionType)) {
-      setTriggerInfo(prev => ({
-        ...prev,
-        triggerActionType: subDataOptions[0].key,
-        actionChangePrompt: {
-          characterName: '', // 기본 캐릭터 이름
-          characterDescription: '', // 기본 캐릭터 설명
-          scenarioDescription: '', // 기본 시나리오 설명
-          introDescription: '', // 기본 소개 설명
-          secret: '', // 기본 비밀 정보
-        },
-        actionIntimacyPoint: 0,
-        actionConversationList: [],
-      }));
-    }
-  };
-
-  const handleSubDataChange = (event: SelectChangeEvent<number>) => {
-    const selectedSubType = event.target.value as TriggerSubDataType;
-    setTriggerInfo(prev => ({
-      ...prev,
-      triggerActionType: selectedSubType,
-    }));
-  };
-
-  useEffect(() => {
-    const subDataOptions = getSubDataOptionsForMainData(triggerInfo.triggerType);
-    if (subDataOptions.length > 0 && !subDataOptions.some(option => option.key === triggerInfo.triggerActionType)) {
-      setTriggerInfo(prev => ({
-        ...prev,
-        triggerActionType: subDataOptions[0].key,
-      }));
-    }
-  }, [triggerInfo.triggerType]);
-
   const handleClose = () => {
     // Keyword 타입이 이미 존재하는지 확인 (TriggerMainDataType.triggerValueKeyword = 1 이라고 가정)
     const isKeywordTypeExists = triggerInfoList.some(
@@ -268,35 +228,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     }
   };
 
-  const getSubDataOptionsForMainData = (mainDataKey: TriggerMainDataType) => {
-    switch (mainDataKey) {
-      case TriggerMainDataType.triggerValueIntimacy:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-        ];
-      case TriggerMainDataType.triggerValueChatCount:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
-        ];
-      case TriggerMainDataType.triggerValueKeyword:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
-        ];
-      case TriggerMainDataType.triggerValueTimeMinute:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
-        ];
-      default:
-        return [{key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'}];
-    }
-  };
   const handleOpenEpisodeConversationTemplate = () => {
     setEpisodeConversationTemplateOpen(true);
   };
@@ -304,6 +235,10 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   const handleCloseEpisodeConversationTemplate = () => {
     setEpisodeConversationTemplateOpen(false);
   };
+
+  useEffect(() => {
+    ensureValidSubData(triggerInfo, setTriggerInfo);
+  }, [triggerInfo.triggerType]);
 
   return (
     <>
@@ -331,7 +266,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
                 <Select
                   className={styles.selectBox}
                   value={triggerInfo.triggerType}
-                  onChange={handleMainDataChange}
+                  onChange={(event, child) => handleMainDataChange(event, child, triggerInfo, setTriggerInfo)}
                   variant="outlined"
                 >
                   <MenuItem value={TriggerMainDataType.triggerValueIntimacy}>Intimacy</MenuItem>
@@ -355,7 +290,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
                 <Select
                   className={styles.selectBox}
                   value={triggerInfo.triggerActionType}
-                  onChange={handleSubDataChange}
+                  onChange={event => handleSubDataChange({target: {value: Number(event.target.value)}}, setTriggerInfo)}
                   variant="outlined"
                 >
                   {getSubDataOptionsForMainData(triggerInfo.triggerType).map(option => (
@@ -376,7 +311,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
                 handleOpenChapterBoard={handleOpenChapterBoard}
                 handleOpenEpisodeConversationTemplate={handleOpenEpisodeConversationTemplate}
               />
-              ;
             </Box>
           </Box>
         </DialogContent>

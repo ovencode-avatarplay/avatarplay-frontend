@@ -10,6 +10,7 @@ interface RenderTargetValueFieldProps {
 }
 
 export const RenderTargetValueField: React.FC<RenderTargetValueFieldProps> = ({triggerInfo, setTriggerInfo}) => {
+  console.log('asd');
   switch (triggerInfo.triggerType) {
     case TriggerMainDataType.triggerValueIntimacy:
       return (
