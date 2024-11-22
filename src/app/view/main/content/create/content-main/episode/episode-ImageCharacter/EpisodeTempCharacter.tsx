@@ -193,7 +193,8 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
   };
 
   useEffect(() => {
-    setImagePreview(editedEpisodeInfo?.currentEpisodeInfo?.characterInfo.mainImageUrl);
+    if (editedEpisodeInfo?.currentEpisodeInfo?.characterInfo)
+      setImagePreview(editedEpisodeInfo?.currentEpisodeInfo?.characterInfo?.mainImageUrl);
   }, [editedEpisodeInfo]);
 
   return (

@@ -83,7 +83,8 @@ const EpisodeCharacter: React.FC<Props> = ({uploadImageState: uploadImageOpen}) 
   };
 
   useEffect(() => {
-    setImagePreview(editedEpisodeInfo?.currentEpisodeInfo?.characterInfo.mainImageUrl);
+    if (editedEpisodeInfo?.currentEpisodeInfo?.characterInfo)
+      setImagePreview(editedEpisodeInfo?.currentEpisodeInfo?.characterInfo?.mainImageUrl);
   }, [editedEpisodeInfo]);
 
   return (
