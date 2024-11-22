@@ -88,7 +88,6 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
   };
   const handleFileSelection = async (file: File) => {
     setLoading(true);
-    console.log('s');
     try {
       const req: UploadImageReq = {file: file};
       const response = await sendUploadImage(req);
@@ -106,6 +105,23 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
 
         //사용법: dispatch(setCharacterInfo({ name: "New Name", state: 1 }));
         dispatch(setCharacterInfo({mainImageUrl: imgUrl}));
+      } else {
+        throw new Error(`No response for file`);
+      }
+    } catch (error) {
+      console.error('Error fetching content info:', error);
+      throw error; // 에러를 상위로 전달
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSelectUrl = async (url: string) => {
+    setLoading(true);
+    try {
+      if (url) {
+        //사용법: dispatch(setCharacterInfo({ name: "New Name", state: 1 }));
+        dispatch(setCharacterInfo({mainImageUrl: url}));
       } else {
         throw new Error(`No response for file`);
       }
@@ -277,7 +293,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
       </Box>
 
       {/* EpisodeAiImageGeneration 모달 */}
-      <EpisodeAiImageGeneration open={isAiModalOpen} closeModal={handleCloseAiModal} />
+      <EpisodeAiImageGeneration open={isAiModalOpen} closeModal={handleCloseAiModal} uploadImage={handleSelectUrl} />
 
       <LoadingOverlay loading={isLoading} />
     </Dialog>

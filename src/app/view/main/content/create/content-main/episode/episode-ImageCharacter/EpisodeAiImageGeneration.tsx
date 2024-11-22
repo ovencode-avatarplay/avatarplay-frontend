@@ -10,16 +10,36 @@ import DiamondIcon from '@mui/icons-material/Diamond';
 import CollectionsIcon from '@mui/icons-material/Collections';
 
 import Slider from '@mui/material/Slider';
+import {GenerateImageReq2, sendGenerateImageReq2} from '@/app/NetWork/ImageNetwork';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
+// Import Swiper React components
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/grid';
+import 'swiper/css/pagination';
+
+import {Grid, Pagination} from 'swiper/modules';
 interface EpisodeAiImageGenerationProps {
   open: boolean; // 모달 열림 상태
   closeModal: () => void; // 모달 닫기 함수
+  uploadImage: (url: string) => void;
 }
 
-const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open, closeModal}) => {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // 선택된 index 저장
+const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open, closeModal, uploadImage}) => {
+  const [selectedIndex, setSelectedIndex] = useState<number>(0); // 선택된 index 저장
+  const [selectedMainIndex, setSelectedMainIndex] = useState<number>(0); // 선택된 index 저장
+  const [selectedValue, setSelectedValue] = useState<number>(1); // Number of images 선택 값
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]); // 생성된 이미지 URL 저장
+  const [isLoading, setLoading] = useState(false);
 
   const handleSelectItem = (index: number) => {
     setSelectedIndex(index); // 선택된 index 저장
+    console.log('Selected index:', index); // 콘솔에 선택된 index 출력
+  };
+
+  const handleSelectMainItem = (index: number) => {
+    setSelectedMainIndex(index); // 선택된 index 저장
     console.log('Selected index:', index); // 콘솔에 선택된 index 출력
   };
   const [promptText, setPromptText] = useState<string>(
@@ -43,20 +63,40 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
     console.log(text);
     setSeedText(text);
   };
-  const [selectedValue, setSelectedValue] = useState<number>(1); // 선택된 값 저장
 
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
-    if (typeof newValue === 'number') {
-      setSelectedValue(newValue); // 선택된 값을 저장
-      console.log('Selected Value:', newValue); // 콘솔 출력
-    }
+    if (typeof newValue === 'number') setSelectedValue(newValue); // 슬라이더 값 저장
   };
+
   const marks = [
     {value: 1, label: '1'},
     {value: 2, label: '2'},
     {value: 3, label: '3'},
     {value: 4, label: '4'},
   ];
+
+  const handleImageGeneration = async () => {
+    setLoading(true);
+    try {
+      const selectedModel = loRaStyles.hairStyles.find(style => style.value === selectedIndex);
+      const modelId = selectedModel ? selectedModel.label : 'MeinaHentai'; // 선택된 모델 ID 설정
+
+      const payload: GenerateImageReq2 = {
+        modelId: modelId, // 필요한 모델 ID를 지정
+        prompt: promptText,
+        negativePrompt,
+        batchSize: selectedValue, // 슬라이더 값 사용
+        seed: seedText === '' ? 0 : parseInt(seedText, 10), // Seed 처리
+      };
+
+      const response = await sendGenerateImageReq2(payload); // API 요청
+      setGeneratedImages(response.data?.imageUrl || []);
+    } catch (error) {
+      alert('Failed to generate images. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Dialog
@@ -239,7 +279,7 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
             <Button
               className={styles.generateButton}
               variant="outlined"
-              onClick={() => console.log('Final selected index:', selectedIndex)} // Confirm 시 선택된 index 출력
+              onClick={handleImageGeneration} // Confirm 시 선택된 index 출력
             >
               <span className={styles.generateText}>Generate</span> {/* 텍스트 스타일 적용 */}
               <DiamondIcon className={styles.generateIcon} /> {/* 아이콘 스타일 적용 */}
@@ -268,19 +308,65 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
             </div>
           </div>
         </div>
-        <Button
-          sx={{
-            m: 1,
-            color: 'black',
-            borderColor: 'gray',
-            width: '100px',
+
+        <div className={styles.itemBox}>
+          <Swiper
+            spaceBetween={10}
+            slidesPerView={3}
+            pagination={{clickable: true}}
+            style={{width: '100%'}} // 화살표 제거
+          >
+            {generatedImages.map((image, index) => (
+              <SwiperSlide key={index} onClick={() => handleSelectMainItem(index)}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    cursor: 'pointer', // 선택 가능한 느낌을 주기 위한 커서 스타일
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      borderRadius: '10px',
+                      marginBottom: '8px',
+                      backgroundImage: `url(${image})`, // backgroundImage로 설정
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      border: selectedMainIndex === index ? '2px solid blue' : 'none', // 선택된 경우 강조
+                    }}
+                  />
+                </Box>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <div
+          className={styles.itemBox}
+          style={{
+            alignItems: 'center',
           }}
-          variant="outlined"
-          onClick={() => console.log('Final selected index:', selectedIndex)} // Confirm 시 선택된 index 출력
         >
-          Confirm
-        </Button>
+          <Button
+            onClick={() => uploadImage(generatedImages[selectedMainIndex])} // Confirm 시 선택된 index 출력
+            sx={{
+              m: 1,
+              color: 'black',
+              borderColor: 'gray',
+              width: '100px',
+            }}
+            variant="outlined"
+          >
+            Confirm
+          </Button>
+        </div>
       </Box>
+
+      <LoadingOverlay loading={isLoading} />
     </Dialog>
   );
 };
