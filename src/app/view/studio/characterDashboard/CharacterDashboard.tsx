@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 
@@ -8,10 +8,10 @@ import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import StudioTopMenu from '../StudioDashboardMenu';
 import CharacterGrid from './CharacterGrid';
 import CharacterDashboardFooter from '.././StudioDashboardFooter';
-import ModifyCharacterDrawer from './ModifyCharacterDrawer';
 import StudioFilter from '../StudioFilter';
 
 // MUI, Styles
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import styles from './CharacterDashboard.module.css';
 import StarIcon from '@mui/icons-material/Star';
 
@@ -24,13 +24,18 @@ import {DeleteCharacterReq, sendDeleteCharacter, sendGetCharacterList} from '@/a
 
 // Link
 import {useRouter, useSearchParams} from 'next/navigation';
+import ModifyCharacterModal from './ModifyCharacterModal';
+import CharacterGalleryModal from './CharacterGalleryModal';
 
 const CharacterDashboard: React.FC = () => {
-  const [selectedCharacterId, setSelectedCharacterId] = useState(-1);
+  const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
+  const [selectedCharacter, setSelecteedCharacter] = useState<CharacterInfo>();
   const [modifyOpen, setModifyOpen] = useState(false);
   const [isModifyMode, setIsModifyMode] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('filter1');
   const [loading, setLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -87,34 +92,34 @@ const CharacterDashboard: React.FC = () => {
     setModifyOpen(true);
   };
 
-  const handleGallery = () => {
+  const handleGalleryClick = () => {
     if (selectedCharacterId === -1) {
       alert('Please select a character to view the gallery.');
       return;
     }
     console.log(`Opening gallery for character ID: ${selectedCharacterId}`);
+    setGalleryOpen(true);
   };
 
-  const handleDelete = async () => {
-    if (selectedCharacterId === -1) {
-      alert('Please select a character to delete.');
-      return;
-    }
+  const handleDeleteClick = () => {
+    setIsDialogOpen(true); // 팝업 열기
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false); // 팝업 닫기
+    setSelectedCharacterId(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (selectedCharacterId === null) return;
 
     const characterName = characters?.find(char => char.id === selectedCharacterId)?.name || 'Unknown';
 
     const payload: DeleteCharacterReq = {
-      characterId: selectedCharacterId,
+      characterId: selectedCharacterId ? selectedCharacterId : 0,
     };
 
     try {
-      // 네트워크 요청 전 사용자 확인
-      const confirmDelete = window.confirm(
-        `Are you sure you want to delete the character: ${characterName} (ID: ${selectedCharacterId})?`,
-      );
-
-      if (!confirmDelete) return;
-
       // API 호출
       const response = await sendDeleteCharacter(payload);
 
@@ -123,8 +128,10 @@ const CharacterDashboard: React.FC = () => {
 
         // UI에서 삭제된 캐릭터 제거
         setCharacters(prev => prev?.filter(char => char.id !== selectedCharacterId));
-        setSelectedCharacterId(-1);
+        setSelectedCharacterId(null);
         alert(`Character "${characterName}" deleted successfully.`);
+
+        handleDialogClose();
       }
     } catch (error) {
       console.error('Error deleting character:', error);
@@ -134,6 +141,10 @@ const CharacterDashboard: React.FC = () => {
 
   const handleCloseModify = () => {
     setModifyOpen(false);
+  };
+
+  const handleCloseGallery = () => {
+    setGalleryOpen(false);
   };
 
   const handleCreateClick = () => {
@@ -148,9 +159,13 @@ const CharacterDashboard: React.FC = () => {
 
   const buttons = [
     {icon: <EditIcon />, text: 'Edit', onClick: handleModifyClick},
-    {icon: <PhotoLibraryIcon />, text: 'Gallery', onClick: handleGallery},
-    {icon: <DeleteIcon />, text: 'Delete', onClick: handleDelete},
+    {icon: <PhotoLibraryIcon />, text: 'Gallery', onClick: handleGalleryClick},
+    {icon: <DeleteIcon />, text: 'Delete', onClick: handleDeleteClick},
   ];
+
+  useEffect(() => {
+    setSelecteedCharacter(characters?.find(char => char.id === selectedCharacterId));
+  }, [selectedCharacterId]);
 
   return (
     <div className={styles.dashboard}>
@@ -165,8 +180,29 @@ const CharacterDashboard: React.FC = () => {
       <CharacterGrid characters={characters ? characters : undefined} onCharacterSelect={handleCharacterSelect} />
       <CharacterDashboardFooter buttons={buttons} />
 
+      {/* CharacterGallery */}
+      {selectedCharacter && (
+        <CharacterGalleryModal open={galleryOpen} onClose={handleCloseGallery} characterData={selectedCharacter} />
+      )}
+
       {/* ModifyCharacter Drawer */}
-      <ModifyCharacterDrawer open={modifyOpen} onClose={handleCloseModify} isModify={isModifyMode} />
+      <ModifyCharacterModal open={modifyOpen} onClose={handleCloseModify} isModify={isModifyMode} />
+
+      {/* Dialog */}
+      <Dialog open={isDialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure you want to delete this character?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

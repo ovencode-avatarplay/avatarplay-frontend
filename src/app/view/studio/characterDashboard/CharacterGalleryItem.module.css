@@ -1,0 +1,14 @@
+.galleryItem {
+  height: 100px;
+  width: 100px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border 0.3s;
+}
+
+.galleryItem.selected {
+  border: 8px solid blue;
+}

@@ -12,9 +12,15 @@ interface CreateCharacterTopMenuProps {
   backButtonAction?: () => void;
   lastUrl?: string;
   contentTitle: string;
+  blockStudioButton?: boolean;
 }
 
-const CreateCharacterTopMenu: React.FC<CreateCharacterTopMenuProps> = ({backButtonAction, lastUrl, contentTitle}) => {
+const CreateCharacterTopMenu: React.FC<CreateCharacterTopMenuProps> = ({
+  backButtonAction,
+  lastUrl,
+  contentTitle,
+  blockStudioButton = false,
+}) => {
   const [title, setTitle] = useState(contentTitle);
   const defaultUrl = '../main/homefeed';
   const studioUrl = '../studio';
@@ -37,13 +43,15 @@ const CreateCharacterTopMenu: React.FC<CreateCharacterTopMenuProps> = ({backButt
         </Link>
       )}
       <Box className={styles.titleContainer}>{title}</Box>
-      <Link href={studioUrl} passHref>
-        <div className={styles.studioButton}>
-          <IconButton>
-            <StudioIcon />
-          </IconButton>
-        </div>
-      </Link>
+      {!blockStudioButton && (
+        <Link href={studioUrl} passHref>
+          <div className={styles.studioButton}>
+            <IconButton>
+              <StudioIcon />
+            </IconButton>
+          </div>
+        </Link>
+      )}
     </Box>
   );
 };

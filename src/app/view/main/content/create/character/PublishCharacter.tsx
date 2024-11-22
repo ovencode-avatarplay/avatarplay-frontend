@@ -56,9 +56,12 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender}) => {
           id: 0,
           name: characterName,
           introduction: characterIntroduction,
-          GenderType: gender,
+          genderType: gender,
           mainImageUrl: url,
-          galleryImageUrl: [url, url],
+
+          portraitGalleryImageUrl: [],
+          poseGalleryImageUrl: [],
+          expressionGalleryImageUrl: [],
           visibilityType: visibility === 'Public' ? 2 : visibility === 'Unlisted' ? 1 : 0, // Visibility를 숫자로 변환
           isMonetization: monetization === 'On',
           state: 1,

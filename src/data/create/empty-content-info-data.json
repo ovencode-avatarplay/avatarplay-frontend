@@ -22,8 +22,11 @@
                   "introduction": "",
                   "genderType" : 0,
                   "mainImageUrl": "",
-                  "galleryImageUrl": [
-                    ""
+                  "portraitGalleryImageUrl": [
+                  ],
+                  "poseGalleryImageUrl": [
+                  ],
+                  "expressionGalleryImageUrl": [
                   ],
                   "visibilityType": 0,
                   "isMonetization": true,

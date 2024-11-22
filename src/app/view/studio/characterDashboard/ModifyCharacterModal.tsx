@@ -1,6 +1,6 @@
 import React from 'react';
-import {Drawer, Box} from '@mui/material';
-import styles from './ModifyCharacterDrawer.module.css';
+import {Modal, Box, Backdrop} from '@mui/material';
+import styles from './ModifyCharacterModal.module.css';
 import CreateCharacterTopMenu from '../../main/content/create/character/CreateCharacterTopMenu';
 import CharacterCreate from '../../main/content/create/character/CreateCharacterSequence';
 
@@ -10,25 +10,20 @@ interface ModifyCharacterProps {
   isModify: boolean;
 }
 
-const ModifyCharacterDrawer: React.FC<ModifyCharacterProps> = ({open, onClose, isModify}) => {
+const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({open, onClose, isModify}) => {
   return (
-    <Drawer
-      anchor="right"
-      open={open}
-      onClose={onClose}
-      PaperProps={{
-        sx: {width: '100vw', maxWidth: '500px', height: '100vh'},
-      }}
-    >
-      <Box className={styles.characterMain}>
+    <Modal open={open} onClose={onClose}>
+      <Box className={styles.modalContent}>
         <CreateCharacterTopMenu
           backButtonAction={onClose}
+          lastUrl=":/lang/studio/Character"
           contentTitle={isModify ? 'Modify Character' : 'Create Character'}
+          blockStudioButton={true}
         />
         <CharacterCreate closeAction={onClose} isModify={isModify} />
       </Box>
-    </Drawer>
+    </Modal>
   );
 };
 
-export default ModifyCharacterDrawer;
+export default ModifyCharacterModal;

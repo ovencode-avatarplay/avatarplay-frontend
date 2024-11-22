@@ -28,7 +28,9 @@ export interface CharacterInfo {
   introduction: string;
   genderType: number;
   mainImageUrl: string;
-  galleryImageUrl: string[];
+  portraitGalleryImageUrl: string[];
+  poseGalleryImageUrl: string[];
+  expressionGalleryImageUrl: string[];
   visibilityType: number;
   isMonetization: boolean;
   state: number;

@@ -1,0 +1,18 @@
+.modalContent {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    max-width: 500px;
+    height: 100vh;
+    background-color: var(--mui-palette-background-paper); /* MUI Theme Variable */
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  
