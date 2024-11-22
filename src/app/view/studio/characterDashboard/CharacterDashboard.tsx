@@ -1,13 +1,15 @@
 'use client';
 
 import React, {useLayoutEffect, useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 
 // Components
 import StudioTopMenu from '../StudioDashboardMenu';
 import CharacterGrid from './CharacterGrid';
 import CharacterDashboardFooter from '.././StudioDashboardFooter';
-import CharacterItemData from './CharacterGrid';
 import ModifyCharacterDrawer from './ModifyCharacterDrawer';
+import StudioFilter from '../StudioFilter';
 
 // MUI, Styles
 import styles from './CharacterDashboard.module.css';
@@ -16,15 +18,12 @@ import StarIcon from '@mui/icons-material/Star';
 import EditIcon from '@mui/icons-material/Edit';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import DeleteIcon from '@mui/icons-material/Delete';
-import StudioFilter from '../StudioFilter';
-import {
-  DeleteCharacterReq,
-  GetCharacterListRes,
-  sendDeleteCharacter,
-  sendGetCharacterList,
-} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
-import {useDispatch} from 'react-redux';
+
+// Network
+import {DeleteCharacterReq, sendDeleteCharacter, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
+
+// Link
+import {useRouter, useSearchParams} from 'next/navigation';
 
 const CharacterDashboard: React.FC = () => {
   const [selectedCharacterId, setSelectedCharacterId] = useState(-1);
@@ -34,6 +33,8 @@ const CharacterDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
+  const router = useRouter();
+  const searchParam = useSearchParams();
 
   const filters = [
     {value: 'filter1', label: 'Filter 1'},
@@ -136,8 +137,8 @@ const CharacterDashboard: React.FC = () => {
   };
 
   const handleCreateClick = () => {
-    setIsModifyMode(false);
-    setModifyOpen(true);
+    const currentLang = searchParam.get(':lang') || 'en';
+    router.push(`/${currentLang}/create/character`);
   };
 
   const handleFilterChange = (value: string) => {

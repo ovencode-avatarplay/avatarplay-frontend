@@ -26,7 +26,7 @@ import characterOptionsFemaleAnime from '@/data/create/create-character-female-a
 import characterOptionsNonBinaryAnime from '@/data/create/create-character-non-binary-anime.json';
 
 // Network
-import {GenerateImageReq, sendGenerateImageReq} from '@/app/NetWork/ImageNetwork';
+import {GenerateImageReq, GenerateParameter, sendGenerateImageReq} from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 // Components
@@ -74,7 +74,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
   enum CreateCharacterStep {
     Gender = 'Gender',
     Style = 'Style',
-    Ethnicity = 'Ethnicity',
+    Race = 'Race',
     HairStyle = 'HairStyle',
     BodyShape = 'BodyShape',
     OutfitClothes = 'OutfitClothes',
@@ -195,7 +195,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
   };
 
   const handleGenerate = () => {
-    const prompts = [
+    const prompts: GenerateParameter[] = [
       ...summaryOptions.map(option => {
         const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
         const selectedOption = option.options[selectedIndex];
@@ -305,10 +305,10 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
             </Box>
           </div>
         );
-      case CreateCharacterStep.Ethnicity:
+      case CreateCharacterStep.Race:
         return (
           <div className={styles.createBox}>
-            <Box className={styles.ethnicityContent}>
+            <Box className={styles.raceContent}>
               <div className={styles.createTitle}>Step 3: Select Race</div>
               <Typography variant="h6">Race</Typography>
               <Swiper
@@ -341,7 +341,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
                   <Button
                     key={age.label}
                     variant={selectedOptions.age === index ? 'contained' : 'outlined'}
-                    className={styles.ethnicityButton}
+                    className={styles.raceButton}
                     onClick={() => handleOptionSelect('age', index)}
                   >
                     {age.label}
@@ -354,7 +354,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
                   <Button
                     key={color.label}
                     variant={selectedOptions.eyeColor === index ? 'contained' : 'outlined'}
-                    className={styles.ethnicityButton}
+                    className={styles.raceButton}
                     onClick={() => handleOptionSelect('eyeColor', index)}
                   >
                     {color.label}

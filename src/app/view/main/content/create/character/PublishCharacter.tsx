@@ -69,9 +69,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url}) => {
       if (response.data) {
         console.log('Character created successfully:', response.data);
 
-        // 작업 성공 후 리디렉션
-        const currentLang = searchParam.get(':lang') || 'en';
-        router.push(`/${currentLang}/studio/character`);
+        router.push(`/:lang/studio/character`);
       } else {
         throw new Error('Character creation failed.');
       }

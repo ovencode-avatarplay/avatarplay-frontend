@@ -24,7 +24,6 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem}) 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const contentInfo = useSelector((state: RootState) => state.myContents.contentDashBoardList ?? []);
-  const userId = useSelector((state: RootState) => state.user.userId);
   const dispatch = useDispatch();
 
   useEffect(() => {

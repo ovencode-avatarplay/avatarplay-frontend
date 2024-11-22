@@ -1,10 +1,11 @@
 import React, {useRef, useEffect} from 'react';
-import {Box, Button, MenuItem, Select} from '@mui/material';
+import {Box} from '@mui/material';
 import ContentItem from './ContentItem';
 import styles from './ContentDashboardList.module.css';
+import {ContentDashboardItem} from '@/redux-store/slices/MyContentDashboard';
 
 interface Props {
-  contentInfo: any[]; // Replace with your actual type
+  contentInfo: ContentDashboardItem[];
   selectedIndex: number | null;
   onItemSelect: (index: number) => void;
 }

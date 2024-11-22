@@ -3,22 +3,27 @@ import {Box, Typography} from '@mui/material';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import styles from './CharacterGridItem.module.css';
-import {CharacterInfo, CharacterState} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 
 interface CharacterGridItemProps {
   character: CharacterInfo;
   isSelected: boolean;
   onSelect: () => void;
 }
+export enum CharacterVisibility {
+  Private = 0,
+  Unlisted = 1,
+  Publish = 2,
+}
 
-export const CharacterStateDescriptions: Record<CharacterState, string> = {
-  [CharacterState.None]: '에피소드 임시 생성',
-  [CharacterState.Create]: '캐릭터 생성',
-  [CharacterState.Delete]: '삭제',
+export const CharacterStateDescriptions: Record<CharacterVisibility, string> = {
+  [CharacterVisibility.Private]: 'Private',
+  [CharacterVisibility.Unlisted]: 'Unlisted',
+  [CharacterVisibility.Publish]: 'Publish',
 };
 export const getCharacterStateText = (state: number): string => {
   if (state in CharacterStateDescriptions) {
-    return CharacterStateDescriptions[state as CharacterState];
+    return CharacterStateDescriptions[state as CharacterVisibility];
   }
   return 'Unknown State';
 };
@@ -29,7 +34,7 @@ const CharacterGridItem: React.FC<CharacterGridItemProps> = ({character, isSelec
       {/* Status Overlay */}
       <Box className={styles.statusOverlay}>
         <Typography variant="body2" className={styles.statusText}>
-          {getCharacterStateText(character.state)}
+          {getCharacterStateText(character.visibilityType)}
         </Typography>
       </Box>
 

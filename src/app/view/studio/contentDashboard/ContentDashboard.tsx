@@ -1,30 +1,169 @@
 'use client';
 
-import React, {useState} from 'react';
-import StudioTopMenu from '../StudioDashboardMenu'; // 상단 메뉴 컴포넌트
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {ContentInfo, setContentInfoToEmpty, setEditingContentInfo} from '@/redux-store/slices/ContentInfo';
+import {setCurrentEpisodeInfo, setEpisodeInfoEmpty} from '@/redux-store/slices/EpisodeInfo';
+import {
+  setSelectedChapterIdx,
+  setSelectedContentId,
+  setSelectedEpisodeIdx,
+} from '@/redux-store/slices/ContentSelection';
+
+// Component
+import StudioTopMenu from '../StudioDashboardMenu';
 import ContentList from './ContentList';
-import ContentDashboardFooter from '.././StudioDashboardFooter'; // 하단 버튼 컴포넌트
+import ContentDashboardFooter from '.././StudioDashboardFooter';
+import StudioFilter from '../StudioFilter';
+
+// Styles
 import styles from './ContentDashboard.module.css';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
-
 import EditIcon from '@mui/icons-material/Edit';
 import PreviewIcon from '@mui/icons-material/Preview';
 import DeleteIcon from '@mui/icons-material/Delete';
-import StudioFilter from '../StudioFilter';
+import {
+  GetContentsByUserIdReq,
+  GetTotalContentByIdReq,
+  sendContentByIdGetTotal,
+  sendContentByUserIdGet,
+  sendContentDelete,
+} from '@/app/NetWork/ContentNetwork';
+import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/MyContentDashboard';
+import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
 
 const ContentDashboard: React.FC = () => {
+  const router = useRouter();
+  const searchParam = useSearchParams();
+  const dispatch = useDispatch();
+
   const [selectedFilter, setSelectedFilter] = useState('filter1');
 
-  const handleEdit = () => {
-    console.log('Edit button clicked');
+  const [loading, setLoading] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+
+  // 렌더링 전에 Init 실행
+  useLayoutEffect(() => {
+    Init();
+  }, []);
+
+  function Init() {
+    getContentsByUserId();
+    setSelectedItemId(null);
+  }
+  // 현재 유저가 가진 컨텐츠를 모두 가져옴 (DashBoard 에서 사용하기 위함)
+  const getContentsByUserId = async () => {
+    setLoading(true);
+
+    try {
+      const req: GetContentsByUserIdReq = {};
+      const response = await sendContentByUserIdGet(req);
+
+      if (response?.data) {
+        const contentData: ContentDashboardItem[] = response.data.contentDashBoardList;
+        dispatch(setContentDashboardList(contentData));
+      } else {
+        throw new Error(`No contentInfo in response for ID: `);
+      }
+    } catch (error) {
+      console.error('Error fetching content by user ID:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //handle
+  const handleSelectItem = (selectedItemId: number) => {
+    console.log('Selected Item ID:', selectedItemId);
+    setSelectedItemId(selectedItemId);
+  };
+
+  const handleEdit = async () => {
+    if (selectedItemId !== null) {
+      if (selectedItemId) {
+        try {
+          const timeout = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Loading took too long!')), 5000),
+          );
+
+          await Promise.race([GetContentByContentId(selectedItemId), timeout]);
+
+          dispatch(setSelectedContentId(selectedItemId));
+
+          dispatch(setSelectedChapterIdx(0));
+          dispatch(setSelectedEpisodeIdx(0));
+          const currentLang = searchParam.get(':lang') || 'en';
+          router.push(`/${currentLang}/create/story`);
+        } catch (error) {
+          console.log('error');
+        }
+      }
+    } else {
+      const currentLang = searchParam.get(':lang') || 'en';
+      router.push(`/${currentLang}/create/story`);
+    }
+  };
+
+  // DashBoard 에서 선택한 컨텐츠를 Id로 가져옴 (CreateContent사이클 (Chapter, Episode 편집) 에서 사용하기 위함)
+  const GetContentByContentId = async (contentId: number) => {
+    setLoading(true);
+
+    try {
+      const req: GetTotalContentByIdReq = {contentId: contentId};
+      const response = await sendContentByIdGetTotal(req);
+
+      if (response?.data) {
+        const contentData: ContentInfo = response.data.contentInfo;
+
+        // Redux 상태 업데이트
+        dispatch(setEditingContentInfo(contentData));
+
+        dispatch(setCurrentEpisodeInfo(contentData.chapterInfoList[0].episodeInfoList[0]));
+        dispatch(setPublishInfo(contentData.publishInfo));
+      } else {
+        throw new Error(`No contentInfo in response for ID: ${contentId}`);
+      }
+    } catch (error) {
+      console.error('Error fetching content info:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePreview = () => {
     console.log('Gallery button clicked');
   };
 
-  const handleDelete = () => {
-    console.log('Delete button clicked');
+  const handleDelete = async () => {
+    if (selectedItemId !== null) {
+      if (selectedItemId) {
+        try {
+          // 콘텐츠 삭제 API 호출
+          const response = await sendContentDelete({contentId: selectedItemId});
+
+          if (response.data) {
+            // console.log('삭제된 콘텐츠 ID:', response.data.contentId);
+
+            // 삭제 후 콘텐츠 목록 새로고침
+            await getContentsByUserId;
+
+            // 선택된 인덱스 초기화
+            setSelectedItemId(null);
+            dispatch(setContentInfoToEmpty());
+            dispatch(setEpisodeInfoEmpty());
+            dispatch(setSelectedContentId(0));
+            dispatch(setSelectedChapterIdx(0));
+            dispatch(setSelectedEpisodeIdx(0));
+          }
+        } catch (error) {
+          console.error('콘텐츠 삭제 실패:', error);
+        }
+      }
+    }
   };
 
   const handleFilterChange = (value: string) => {
@@ -33,9 +172,17 @@ const ContentDashboard: React.FC = () => {
   };
 
   const handleCreateClick = () => {
-    console.log('Create button clicked');
+    dispatch(setContentInfoToEmpty());
+    dispatch(setEpisodeInfoEmpty());
+    dispatch(setSelectedContentId(0));
+    dispatch(setSelectedChapterIdx(0));
+    dispatch(setSelectedEpisodeIdx(0));
+
+    const currentLang = searchParam.get(':lang') || 'en';
+    router.push(`/${currentLang}/create/story`);
   };
 
+  // Data
   const filters = [
     {value: 'filter1', label: 'Filter 1'},
     {value: 'filter2', label: 'Filter 2'},
@@ -56,7 +203,7 @@ const ContentDashboard: React.FC = () => {
         onFilterChange={handleFilterChange}
         onCreateClick={handleCreateClick}
       />
-      <ContentList />
+      <ContentList onSelect={handleSelectItem} />
       <ContentDashboardFooter buttons={buttons} />
     </div>
   );
