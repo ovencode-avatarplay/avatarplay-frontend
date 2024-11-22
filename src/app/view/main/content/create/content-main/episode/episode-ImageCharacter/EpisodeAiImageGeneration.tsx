@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './EpisodeAiImageGeneration.module.css'; // CSS Module import
 import {Dialog, DialogTitle, Button, Box, Typography, TextField} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -32,7 +32,12 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
   const [selectedValue, setSelectedValue] = useState<number>(1); // Number of images 선택 값
   const [generatedImages, setGeneratedImages] = useState<string[]>([]); // 생성된 이미지 URL 저장
   const [isLoading, setLoading] = useState(false);
-
+  useEffect(() => {
+    const savedImages = localStorage.getItem('generatedImages');
+    if (savedImages) {
+      setGeneratedImages(JSON.parse(savedImages));
+    }
+  }, []);
   const handleSelectItem = (index: number) => {
     setSelectedIndex(index); // 선택된 index 저장
     console.log('Selected index:', index); // 콘솔에 선택된 index 출력
@@ -74,7 +79,6 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
     {value: 3, label: '3'},
     {value: 4, label: '4'},
   ];
-
   const handleImageGeneration = async () => {
     setLoading(true);
     try {
@@ -90,12 +94,29 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
       };
 
       const response = await sendGenerateImageReq2(payload); // API 요청
-      setGeneratedImages(response.data?.imageUrl || []);
+      const newImages = response.data?.imageUrl || [];
+
+      // 기존 로컬스토리지 값 가져오기
+      addToLocalStorage(newImages);
+
+      // 상태도 업데이트
+      setGeneratedImages(prev => [...prev, ...newImages]);
     } catch (error) {
       alert('Failed to generate images. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const addToLocalStorage = (newImages: string[]) => {
+    // 기존 로컬 스토리지 데이터 가져오기
+    const savedImages = JSON.parse(localStorage.getItem('generatedImages') || '[]');
+
+    // 기존 데이터와 새 데이터를 병합
+    const updatedImages = [...savedImages, ...newImages];
+
+    // 병합된 데이터를 로컬 스토리지에 저장
+    localStorage.setItem('generatedImages', JSON.stringify(updatedImages));
   };
 
   return (
@@ -127,7 +148,7 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
 
           {/* Swiper 추가 */}
           <Swiper
-            spaceBetween={10}
+            spaceBetween={20}
             slidesPerView={3}
             pagination={{clickable: true}}
             style={{width: '100%', marginTop: '20px'}} // 화살표 제거
@@ -352,7 +373,10 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
           }}
         >
           <Button
-            onClick={() => uploadImage(generatedImages[selectedMainIndex])} // Confirm 시 선택된 index 출력
+            onClick={() => {
+              uploadImage(generatedImages[selectedMainIndex]);
+              closeModal();
+            }} // Confirm 시 선택된 index 출력
             sx={{
               m: 1,
               color: 'black',
