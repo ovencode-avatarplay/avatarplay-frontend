@@ -300,11 +300,17 @@ const ChatPage: React.FC = () => {
         let currentSender: SenderType = allMessages[allMessages.length - 1].sender;
         const tempChatId: number = chatId;
         // 2. 메시지를 한 바이트씩 조사해서 새로운 Sender로 만들지 말지 처리한다.
-        //console.log('new text====' + newMessage.text + '====');
+        console.log('new text====' + newMessage.text + '====');
         for (let i = 0; i < newMessage.text.length; i++) {
           let {isAnotherSender, newSender} = isAnotherSenderType(isMyMessage, newMessage.text[i], currentSender);
 
           let newSenderResult = newSender;
+
+          // 새 말풍선을 추가하라고 했는데 그냥 빈칸만 있는경우는 무시한다.
+          if (isAnotherSender === true && (newMessage.text[i] === ' ' || newMessage.text === '\n')) {
+            //isNarrationActive.active = false;
+            continue;
+          }
 
           if (isAnotherSender) isNarrationActive.active = false;
           // 나레이션모드이면  그냥 나레이션으로 출력해줘야 한다.
@@ -323,12 +329,6 @@ const ChatPage: React.FC = () => {
               sender: (newMessage.sender = newSenderResult),
             };
             currentSender = _newMessage.sender;
-
-            // 새 말풍선을 추가하라고 했는데 그냥 빈칸만 있는경우는 무시한다.
-            if (_newMessage.text === ' ' || newMessage.text === '\n') {
-              isNarrationActive.active = false;
-              continue;
-            }
 
             allMessages.push(_newMessage);
           } else {
@@ -355,7 +355,8 @@ const ChatPage: React.FC = () => {
 
   // 파싱 테스트를 위한 함수임..
   const test = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
-    message = '%테스트%  가나다라 "안녕하세요" 라고 말했다 %호감도 상승% *귀신 시나락 * 까먹는 소리"ㅋㅋㅋㅋㅋㅋ"';
+    message =
+      '레인은 당신의 짧은 대답에 미묘하게 눈썹을 치켜올립니다. 그의 입가에 희미한 비웃음이 스칩니다. 그의 눈빛은 여전히 날카롭고 탐색적입니다."그렇군요. 말씀이 없으시네요." 그가 천천히 당신 주위를 한바퀴 돌며 말을 이어갑니다';
     handleSendMessage(message, false, true);
   };
 
