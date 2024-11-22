@@ -12,72 +12,75 @@ import {
 
 // ㅋㅋㅋㅋㅋㅋㅋㅋ
 
+//const patternParsing( pattern : RegExp, )
+
 const parseAnswer = (answer: string, id: number): Message[] => {
   const result: Message[] = [];
-  const narrationPattern = /\*(.*?)\*/g;
-  const systemPattern = /%(.*?)%/g; // 시스템 패턴 추가
+
+  // 패턴과 해당 발신자 타입을 객체 배열로 정의
+  const patterns: {type: SenderType; regex: RegExp; clean: (text: string) => string}[] = [
+    {
+      type: SenderType.Partner,
+      regex: /"(.*?)"/g,
+      clean: text => text, // "" 제거
+    },
+    {
+      type: SenderType.System,
+      regex: /%(.*?)%/g,
+      clean: text => text, // %% 제거
+    },
+    {
+      type: SenderType.PartnerNarration,
+      regex: /\*\*(.*?)\*\*/g,
+      clean: text => text, // ** 제거
+    },
+  ];
+
+  // 모든 패턴을 하나의 정규식으로 통합
+  const combinedPattern = new RegExp(patterns.map(p => p.regex.source).join('|'), 'g');
+
   let lastIndex = 0;
-  let match;
+  let match: RegExpExecArray | null;
 
-  // 먼저 나레이션 패턴 처리
-  while ((match = narrationPattern.exec(answer)) !== null) {
+  while ((match = combinedPattern.exec(answer)) !== null) {
+    // 매칭된 텍스트 이전의 일반 텍스트 처리
     if (match.index > lastIndex) {
-      const partnerText = answer.slice(lastIndex, match.index).trim();
-      // partnerText가 비어있지 않을 경우에만 추가
-      if (partnerText) {
-        let cleanedText = partnerText;
-        if (partnerText.startsWith('"') && partnerText.endsWith('"')) {
-          cleanedText = partnerText.slice(1, -1); // 첫 번째와 마지막 문자를 제거
-        }
+      const plainText = answer.slice(lastIndex, match.index).trim();
+      if (plainText) {
+        result.push({
+          chatId: id,
+          text: plainText.replace(/[%"*]/g, ''), // 특수 문자 제거
+          sender: SenderType.PartnerNarration,
+        });
+      }
+    }
 
+    // 매칭된 패턴 처리
+    for (let i = 1; i < match.length; i++) {
+      if (match[i] !== undefined) {
+        const pattern = patterns[i - 1];
+        const cleanedText = pattern.clean(match[i]).replace(/[%"*]/g, ''); // 특수 문자 제거
         result.push({
           chatId: id,
           text: cleanedText,
-          sender: SenderType.Partner,
+          sender: pattern.type,
         });
-      }
-    }
-    result.push({
-      chatId: id,
-      text: match[1], // 매칭된 나레이션 내용
-      sender: SenderType.PartnerNarration, // 메시지 발신자
-    });
-
-    lastIndex = narrationPattern.lastIndex;
-  }
-
-  // 나레이션 패턴 이후 남아있는 텍스트가 있는 경우 시스템 패턴 처리
-  while ((match = systemPattern.exec(answer)) !== null) {
-    if (match.index > lastIndex) {
-      const partnerText = answer.slice(lastIndex, match.index).trim();
-      // partnerText가 비어있지 않을 경우에만 추가
-      if (partnerText) {
-        result.push({
-          chatId: id,
-          text: partnerText,
-          sender: SenderType.Partner,
-        });
+        break; // 첫 번째 매칭된 그룹만 처리
       }
     }
 
-    result.push({
-      chatId: id,
-      text: match[1], // 매칭된 시스템 메시지 내용
-      sender: SenderType.System, // 메시지 발신자
-    });
-
-    lastIndex = systemPattern.lastIndex;
+    // 마지막 매칭 위치 업데이트
+    lastIndex = combinedPattern.lastIndex;
   }
 
-  // 마지막으로 남아있는 텍스트를 PartnerNarration 메시지로 처리
+  // 남아있는 일반 텍스트 처리 (패턴이 없는 경우도 포함)
   if (lastIndex < answer.length) {
     const remainingText = answer.slice(lastIndex).trim();
-    // 남아있는 텍스트가 비어있지 않을 경우에만 추가
     if (remainingText) {
       result.push({
         chatId: id,
-        text: remainingText, // 남아있는 텍스트
-        sender: SenderType.PartnerNarration, // 메시지 발신자
+        text: remainingText.replace(/[%"*]/g, ''), // 특수 문자 제거
+        sender: SenderType.PartnerNarration,
       });
     }
   }
