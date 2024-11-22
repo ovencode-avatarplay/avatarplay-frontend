@@ -629,7 +629,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
       case CreateCharacterStep.Publish:
         return (
           <div className={styles.createBox}>
-            <PublishCharacter url={generatedOptions[selectedOptions.result].url} />
+            <PublishCharacter url={generatedOptions[selectedOptions.result].url} gender={selectedOptions.gender} />
           </div>
         );
       default:

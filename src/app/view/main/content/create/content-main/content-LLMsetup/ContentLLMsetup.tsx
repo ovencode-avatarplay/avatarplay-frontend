@@ -14,16 +14,17 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import {useDispatch} from 'react-redux'; // Redux 액션을 디스패치하기 위한 훅
-import {setLlmSetupInfo} from '@/redux-store/slices/EpisodeInfo'; // 액션 임포트
-import {LLMSetupInfo} from '@/redux-store/slices/EpisodeInfo';
-import styles from './EpisodeLLMSetup.module.css'; // 스타일 파일
 
-interface EpisodeLLMSetupProps {
+import {LLMSetupInfo} from '@/redux-store/slices/ContentInfo';
+import styles from './ContentLLMSetup.module.css'; // 스타일 파일
+import {setLlmSetupInfo} from '@/redux-store/slices/PublishInfo';
+
+interface ContentLLMSetupProps {
   open: boolean;
   onClose: () => void; // 부모 컴포넌트로 모달 닫기 요청
 }
 
-const EpisodeLLMSetup: React.FC<EpisodeLLMSetupProps> = ({open, onClose}) => {
+const ContentLLMSetup: React.FC<ContentLLMSetupProps> = ({open, onClose}) => {
   const dispatch = useDispatch(); // Redux 액션 디스패치 훅
   const [selectedModel, setSelectedModel] = useState<number>(6); // 기본값을 0으로 설정 (GPT-4o)
   const [customApiKey, setCustomApiKey] = useState<string>(''); // Custom API 입력 상태 관리
@@ -121,4 +122,4 @@ const EpisodeLLMSetup: React.FC<EpisodeLLMSetupProps> = ({open, onClose}) => {
   );
 };
 
-export default EpisodeLLMSetup;
+export default ContentLLMSetup;

@@ -42,6 +42,7 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 
 // Json
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
+import ContentLLMSetup from './content-LLMsetup/ContentLLMsetup';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
@@ -51,6 +52,7 @@ const ContentMain: React.FC = () => {
   const [isChapterboardOpen, setIsChapterboardOpen] = useState(false);
   const [isLLMOpen, setIsLLMOpen] = useState(false);
   const [isPublishingOpen, setIsPublishingOpen] = useState(false);
+  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
 
   // Redux Selector
   // 자주 렌더링 되거나 독립적이지 않을 때 버그가 발생하면 개별선언
@@ -339,11 +341,12 @@ const ContentMain: React.FC = () => {
     setIsChapterboardOpen(false);
   };
 
-  const handleOpenLLM = () => {
-    setIsLLMOpen(true);
+  const handleOpenLLMSetup = () => {
+    setLLMSetupOpen(true); // 모달 열기
   };
-  const handleCloseLLM = () => {
-    setIsLLMOpen(false);
+
+  const handleCloseLLMSetup = () => {
+    setLLMSetupOpen(false); // 모달 닫기
   };
 
   const handleOpenPublishing = () => {
@@ -551,7 +554,9 @@ const ContentMain: React.FC = () => {
             episodeIdx={selectedEpisodeIdx}
           />
         </div>
-        <ContentBottom onLLMOpen={handleOpenLLM} onPublishingOpen={handleOpenPublishing} />
+        <ContentBottom onLLMOpen={handleOpenLLMSetup} onPublishingOpen={handleOpenPublishing} />
+        {/* EpisodeLLMSetup 모달 */}
+        <ContentLLMSetup open={isLLMSetupOpen} onClose={handleCloseLLMSetup} />
       </main>
     </>
   );

@@ -25,9 +25,10 @@ import {useRouter, useSearchParams} from 'next/navigation';
 
 interface PublishCharacterProps {
   url: string;
+  gender: number;
 }
 
-const PublishCharacter: React.FC<PublishCharacterProps> = ({url}) => {
+const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender}) => {
   const [drawerVisibilityOpen, setDrawerVisibilityOpen] = useState(false);
   const [drawerMonetizationOpen, setDrawerMonetizationOpen] = useState(false);
   const [visibility, setVisibility] = useState('Private');
@@ -55,6 +56,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url}) => {
           id: 0,
           name: characterName,
           introduction: characterIntroduction,
+          GenderType: gender,
           mainImageUrl: url,
           galleryImageUrl: [url, url],
           visibilityType: visibility === 'Public' ? 2 : visibility === 'Unlisted' ? 1 : 0, // Visibility를 숫자로 변환

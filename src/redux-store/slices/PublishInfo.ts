@@ -1,6 +1,6 @@
 // publishInfo.ts
 
-import {PublishInfo} from './ContentInfo';
+import {LLMSetupInfo, PublishInfo} from './ContentInfo';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {number} from 'valibot';
 import emptyContent from '@/data/create/empty-content-info-data.json';
@@ -49,6 +49,9 @@ export const PublishInfoSlice = createSlice({
     setNSFW: (state, action: PayloadAction<number>) => {
       state.nsfw = action.payload;
     },
+    setLlmSetupInfo(state, action: PayloadAction<LLMSetupInfo>) {
+      state.llmSetupInfo = action.payload; // LLM 설정 정보 업데이트
+    },
   },
 });
 
@@ -63,6 +66,7 @@ export const {
   setVisibility,
   setMonetization,
   setNSFW,
+  setLlmSetupInfo,
 } = PublishInfoSlice.actions;
 export const PublishInfoSliceReducer = PublishInfoSlice.reducer;
 export default PublishInfoSlice.reducer;

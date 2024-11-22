@@ -171,11 +171,7 @@
                   "user": "[{\"Type\":0,\"Talk\":\"유저 행동1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"},{\"Type\":1,\"Talk\":\"유저 대사1\"}]",
                   "character": "[{\"Type\":0,\"Talk\":\"캐릭터 행동1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"},{\"Type\":1,\"Talk\":\"캐릭터 대사1\"}]"
                 }
-              ],
-              "llmSetupInfo": {
-                "llmModel": 0,
-                "customApi": "CustomApi"
-              }
+              ]
             }
           ]
         }
@@ -203,7 +199,11 @@
         ],
         "visibilityType": 0,
         "monetization": true,
-        "nsfw": 0
+        "nsfw": 0,
+        "llmSetupInfo": {
+          "llmModel": 0,
+          "customApi": "CustomApi"
+        }
       }
     }
   }

@@ -20,13 +20,13 @@ export interface EpisodeInfo {
   episodeDescription: EpisodeDescription;
   triggerInfoList: TriggerInfo[];
   conversationTemplateList: Conversation[];
-  llmSetupInfo: LLMSetupInfo;
 }
 
 export interface CharacterInfo {
   id: number;
   name: string;
   introduction: string;
+  GenderType: number;
   mainImageUrl: string;
   galleryImageUrl: string[];
   visibilityType: number;
@@ -38,11 +38,6 @@ export interface EpisodeDescription {
   scenarioDescription: string;
   introDescription: string;
   secret: string;
-}
-
-export interface LLMSetupInfo {
-  llmModel: number;
-  customApi: string;
 }
 
 interface EpisodeInfoState {
@@ -426,11 +421,6 @@ const episodeInfoSlice = createSlice({
       }
     },
 
-    setLlmSetupInfo(state, action: PayloadAction<LLMSetupInfo>) {
-      if (state.currentEpisodeInfo) {
-        state.currentEpisodeInfo.llmSetupInfo = action.payload; // LLM 설정 정보 업데이트
-      }
-    },
     //#endregion
   },
 });
@@ -444,7 +434,6 @@ export const {
   updateTriggerInfo,
   updateTriggerInfoName,
   removeTriggerInfo,
-  setLlmSetupInfo,
   addConversationTalk,
   addConversationTalkItem,
   updateConversationTalk,

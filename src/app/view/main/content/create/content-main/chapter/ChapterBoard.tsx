@@ -81,7 +81,6 @@ const ChapterBoard: React.FC<Props> = ({
         description: episodeInfo.episodeDescription,
         triggerInfoList: episodeInfo.triggerInfoList,
         conversationTemplateList: episodeInfo.conversationTemplateList,
-        llmSetupInfo: episodeInfo.llmSetupInfo,
       })),
       expanded: false,
     }));
@@ -218,7 +217,6 @@ const ChapterBoard: React.FC<Props> = ({
         description: newEpisodeInfo.episodeDescription,
         triggerInfoList: newEpisodeInfo.triggerInfoList,
         conversationTemplateList: newEpisodeInfo.conversationTemplateList,
-        llmSetupInfo: newEpisodeInfo.llmSetupInfo,
       };
 
       onAddEpisode(newEpisodeInfo);

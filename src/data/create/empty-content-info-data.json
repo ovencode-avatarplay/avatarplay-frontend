@@ -20,6 +20,7 @@
                   "id": 0,
                   "name": "",
                   "introduction": "",
+                  "GenderType" : 0,
                   "mainImageUrl": "",
                   "galleryImageUrl": [
                     ""
@@ -36,11 +37,7 @@
                 "triggerInfoList": [
                 ],
                 "conversationTemplateList": [
-                ],
-                "llmSetupInfo": {
-                  "llmModel": 6,
-                  "customApi": ""
-                }
+                ]
               }
             ]
           }
@@ -56,7 +53,11 @@
           "selectTagList": [],
           "visibilityType": 0,
           "monetization": false,
-          "nsfw": 0
+          "nsfw": 0,
+          "llmSetupInfo": {
+            "llmModel": 6,
+            "customApi": ""
+          }
         }
       }
     }
