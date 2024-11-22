@@ -26,7 +26,7 @@ import characterOptionsFemaleAnime from '@/data/create/create-character-female-a
 import characterOptionsNonBinaryAnime from '@/data/create/create-character-non-binary-anime.json';
 
 // Network
-import {GenerateImageReq, GenerateParameter, sendGenerateImageReq} from '@/app/NetWork/ImageNetwork';
+import {GenerateImageReq, GenerateImageRes, GenerateParameter, sendGenerateImageReq} from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 // Components
@@ -45,6 +45,11 @@ import {CreateCharacterOption, GeneratedOptionsState} from './CreateCharacterTyp
 interface Props {
   closeAction: () => void;
   isModify: boolean;
+}
+
+interface ResultProps {
+  url: string;
+  parameter: string;
 }
 
 const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
@@ -68,8 +73,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
   };
 
   const [characterOptions, setCharacterOptions] = useState(defaultOptions);
-  const [generatedOptions, setGeneratedOptions] = useState<GeneratedOptionsState[]>([]);
-  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null); // Add fullscreen image state
+  const [generatedOptions, setGeneratedOptions] = useState<GenerateImageRes | null>(null);
+  const [fullscreenImage, setFullscreenImage] = useState<ResultProps | null>(null); // Add fullscreen image state
 
   enum CreateCharacterStep {
     Gender = 'Gender',
@@ -123,7 +128,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
 
   // gender 0 Male / 1 Female, style 0 Real / 1 Anime
   useEffect(() => {
-    if (steps[activeStep] === 'Result' && generatedOptions.length === 0) {
+    if (steps[activeStep] === 'Result' && generatedOptions === null) {
       handleGenerate();
     }
   }, [activeStep]);
@@ -185,7 +190,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
   };
 
   const handleSelect = () => {
-    let url = generatedOptions[selectedOptions.result];
+    let url = generatedOptions?.imageUrl[selectedOptions.result];
 
     handleClose();
   };
@@ -218,10 +223,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
 
       console.log(response);
       if (response?.data) {
-        const imageUrls: string[] = response.data.imageUrl;
-
-        console.log(imageUrls);
-        setGeneratedOptions(imageUrls.map(url => ({url: url})));
+        setGeneratedOptions(response.data);
 
         /*handleClose();*/
       } else {
@@ -241,8 +243,10 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
     }));
   };
 
-  const handleImageToggle = (image: string) => {
-    setFullscreenImage(fullscreenImage === image ? null : image); // Toggle full-screen image
+  const handleImageToggle = (image: string, parameter: string) => {
+    if (image === null) return;
+
+    setFullscreenImage({url: image, parameter: parameter});
   };
 
   const handleClothesInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -603,17 +607,17 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
             <div className={styles.createTitle}>Step 10: Choose Generated Image</div>
             <Box>
               <Box className={styles.gridContainer2}>
-                {generatedOptions.map((option, index) => (
+                {generatedOptions?.imageUrl.map((option, index) => (
                   <CharacterCreateImageButton
                     key={index}
                     width={'95%'}
                     height={'23vh'}
                     label={''}
-                    image={option.url}
+                    image={option}
                     selected={selectedOptions.result === index}
                     onClick={() =>
                       selectedOptions.result === index
-                        ? handleImageToggle(option.url)
+                        ? handleImageToggle(option, generatedOptions?.debugParameter)
                         : handleOptionSelect('result', index)
                     }
                   />
@@ -629,7 +633,10 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
       case CreateCharacterStep.Publish:
         return (
           <div className={styles.createBox}>
-            <PublishCharacter url={generatedOptions[selectedOptions.result].url} gender={selectedOptions.gender} />
+            <PublishCharacter
+              url={generatedOptions?.imageUrl[selectedOptions.result] ?? ''}
+              gender={selectedOptions.gender}
+            />
           </div>
         );
       default:
@@ -648,7 +655,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
 
             <Button className={styles.stepButton} variant="contained" onClick={handleNext}>
               {steps[activeStep] === 'Summary'
-                ? generatedOptions.length === 0 /* 이미 생성된 후에는 Regenerate 버튼으로 수정 가능 */
+                ? generatedOptions === null /* 이미 생성된 후에는 Regenerate 버튼으로 수정 가능 */
                   ? 'Next (Generate)'
                   : 'Next (isGenerated)'
                 : 'Next'}
@@ -698,16 +705,53 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
       {fullscreenImage && (
         <Box
           className={styles.fullscreenOverlay}
-          onClick={() => setFullscreenImage(null)} // Close full-screen on overlay click
+          onClick={e => {
+            setFullscreenImage(null);
+          }} // Close full-screen on overlay click
           sx={{
-            flexGrow: 1,
-            backgroundRepeat: 'no-repeat',
-            backgroundImage: `url(${fullscreenImage})`,
-            backgroundSize: 'contain',
-            backgroundPosition: 'center',
+            position: 'fixed',
+            top: 0,
+            left: 0,
             width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end', // Align content to the bottom
+            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark background for overlay
+            zIndex: 9999, // Ensure it's on top
           }}
-        ></Box>
+        >
+          {/* Fullscreen image */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              backgroundRepeat: 'no-repeat',
+              backgroundImage: `url(${fullscreenImage.url})`,
+              backgroundSize: 'contain',
+              backgroundPosition: 'center',
+              width: '100%',
+            }}
+          />
+          <Box
+            sx={{
+              width: '100%',
+              justifyContent: 'flex-end',
+              backgroundColor: 'white', // White background
+              padding: '10px 20px',
+              textAlign: 'center',
+              cursor: 'pointer', // Indicates it's clickable
+            }}
+            onClick={e => {
+              setFullscreenImage(null);
+              e.stopPropagation(); // Prevent closing the fullscreen when clicking on text
+              navigator.clipboard.writeText(fullscreenImage.parameter); // Copy to clipboard
+              alert('Copied to clipboard!'); // Optional feedback
+            }} // Close full-screen on overlay click
+          >
+            {fullscreenImage.parameter}
+          </Box>
+        </Box>
       )}
     </Box>
   );
