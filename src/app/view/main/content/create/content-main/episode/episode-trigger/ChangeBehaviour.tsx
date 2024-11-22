@@ -21,7 +21,7 @@ import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/DataTypes';
 import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 import EpisodeConversationTemplate from '../episode-conversationtemplate/EpisodeConversationTemplate';
 import ChapterBoardOnTrigger from '@/app/view/main/content/create/content-main/chapter/OnTrigger/ChapterBoardOnTrigger';
-
+import {RenderTargetValueField, RenderSubDataFields} from './RenderFields';
 interface ChangeBehaviourProps {
   open: boolean;
   onClose: () => void;
@@ -142,14 +142,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId);
   const triggerInfoList = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList || []);
 
-  const handleOpenEpisodeConversationTemplate = () => {
-    setEpisodeConversationTemplateOpen(true);
-  };
-
-  const handleCloseEpisodeConversationTemplate = () => {
-    setEpisodeConversationTemplateOpen(false);
-  };
-
   const handleOpenChapterBoard = () => {
     setIsChapterBoardOpen(true);
   };
@@ -229,36 +221,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     }));
   };
 
-  const getSubDataOptionsForMainData = (mainDataKey: TriggerMainDataType) => {
-    switch (mainDataKey) {
-      case TriggerMainDataType.triggerValueIntimacy:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-        ];
-      case TriggerMainDataType.triggerValueChatCount:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
-        ];
-      case TriggerMainDataType.triggerValueKeyword:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
-        ];
-      case TriggerMainDataType.triggerValueTimeMinute:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
-        ];
-      default:
-        return [{key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'}];
-    }
-  };
-
   useEffect(() => {
     const subDataOptions = getSubDataOptionsForMainData(triggerInfo.triggerType);
     if (subDataOptions.length > 0 && !subDataOptions.some(option => option.key === triggerInfo.triggerActionType)) {
@@ -290,7 +252,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     onClose();
   };
 
-  // 이름 변경 처리 함수
   const handleOpenEditNameModal = () => {
     setIsEditNameModalOpen(true);
   };
@@ -307,253 +268,41 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     }
   };
 
-  const renderTargetValueField = (triggerType: TriggerMainDataType) => {
-    console.log('Current triggerType:', triggerInfo.triggerType);
-    switch (triggerType) {
+  const getSubDataOptionsForMainData = (mainDataKey: TriggerMainDataType) => {
+    switch (mainDataKey) {
       case TriggerMainDataType.triggerValueIntimacy:
-        return (
-          <TextField
-            className={styles.input}
-            variant="outlined"
-            label="Target Value (Intimacy)"
-            type="number"
-            value={triggerInfo.triggerValueIntimacy || ''}
-            onChange={e => {
-              let value = e.target.value;
-
-              // 빈 값이 아니라면 숫자로 변환하여 100 초과 여부를 확인
-              if (value && Number(value) > 100) {
-                value = '100'; // 100을 초과할 경우 강제로 '100'으로 설정
-              }
-
-              setTriggerInfo(prev => ({
-                ...prev,
-                triggerValueIntimacy: value ? Number(value) : 0,
-              }));
-            }}
-            inputProps={{
-              min: 0,
-              max: 100,
-            }}
-          />
-        );
-
+        return [
+          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
+          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
+        ];
       case TriggerMainDataType.triggerValueChatCount:
-        return (
-          <TextField
-            className={styles.input}
-            variant="outlined"
-            label="Target Value (Chat Count)"
-            type="number"
-            value={triggerInfo.triggerValueChatCount || ''}
-            onChange={e => {
-              setTriggerInfo(prev => ({
-                ...prev,
-                triggerValueChatCount: Number(e.target.value),
-              }));
-            }}
-          />
-        );
-
-      case TriggerMainDataType.triggerValueTimeMinute:
-        return (
-          <TextField
-            className={styles.input}
-            variant="outlined"
-            label="Target Value (Time Minute)"
-            type="number"
-            value={triggerInfo.triggerValueTimeMinute || 0}
-            onChange={e =>
-              setTriggerInfo(prev => ({
-                ...prev,
-                triggerValueTimeMinute: Number(e.target.value),
-              }))
-            }
-          />
-        );
-
+        return [
+          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
+          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
+          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
+        ];
       case TriggerMainDataType.triggerValueKeyword:
-        return (
-          <TextField
-            className={styles.input}
-            variant="outlined"
-            label="Target Keywords"
-            value={triggerInfo.triggerValueKeyword || ''}
-            onChange={e => {
-              setTriggerInfo(prev => ({
-                ...prev,
-                triggerValueKeyword: e.target.value,
-              }));
-            }}
-          />
-        );
-
+        return [
+          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
+          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
+          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
+        ];
+      case TriggerMainDataType.triggerValueTimeMinute:
+        return [
+          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
+          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
+          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
+        ];
       default:
-        return null;
+        return [{key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'}];
     }
   };
+  const handleOpenEpisodeConversationTemplate = () => {
+    setEpisodeConversationTemplateOpen(true);
+  };
 
-  const renderSubDataFields = (triggerActionType: TriggerSubDataType) => {
-    switch (triggerActionType) {
-      case TriggerSubDataType.actionEpisodeChangeId:
-        return (
-          <Box className={styles.destinationContainer}>
-            <Typography className={styles.destinationLabel}>Destination Episode</Typography>
-            <Box className={styles.destinationDetails}>
-              <Box className={styles.destinationIcon} />
-              <Box>
-                <Typography className={styles.chapter}>{selectedChapter}</Typography>
-                <Typography className={styles.episode}>{selectedEpisode}</Typography>
-              </Box>
-              <IconButton className={styles.rightButton} onClick={handleOpenChapterBoard}>
-                <ArrowBackIos />
-              </IconButton>
-            </Box>
-          </Box>
-        );
-      case TriggerSubDataType.actionIntimacyPoint:
-        return (
-          <Box className={styles.intimacyContainer}>
-            <Typography className={styles.label}>Get Point</Typography>
-            <TextField
-              className={styles.input}
-              variant="outlined"
-              value={triggerInfo.actionIntimacyPoint}
-              onChange={e => {
-                const value = Math.min(Number(e.target.value), 100); // 최대값 100 설정
-                setTriggerInfo(prev => ({
-                  ...prev,
-                  actionIntimacyPoint: value,
-                }));
-              }}
-              inputProps={{
-                min: 0,
-                max: 100,
-              }}
-            />
-
-            <Typography className={styles.label}>Max Repetition Count</Typography>
-            <TextField
-              className={styles.input}
-              variant="outlined"
-              value={triggerInfo.maxIntimacyCount}
-              onChange={e => {
-                const value = Math.min(Number(e.target.value), 100); // 최대값 10 설정
-                setTriggerInfo(prev => ({
-                  ...prev,
-                  maxIntimacyCount: value,
-                }));
-              }}
-              inputProps={{
-                min: 0,
-                max: 10,
-              }}
-            />
-          </Box>
-        );
-
-      case TriggerSubDataType.ChangePrompt:
-        return (
-          <Box className={styles.promptContainer}>
-            <DialogContent className={styles.dialogContent}>
-              <TextField
-                label="Character Name"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={triggerInfo.actionChangePrompt.characterName}
-                onChange={e =>
-                  setTriggerInfo(prev => ({
-                    ...prev,
-                    actionChangePrompt: {
-                      ...prev.actionChangePrompt,
-                      characterName: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                label="Character Description"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                multiline
-                value={triggerInfo.actionChangePrompt.characterDescription}
-                onChange={e =>
-                  setTriggerInfo(prev => ({
-                    ...prev,
-                    actionChangePrompt: {
-                      ...prev.actionChangePrompt,
-                      characterDescription: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                label="World Scenario"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                multiline
-                value={triggerInfo.actionChangePrompt.scenarioDescription}
-                onChange={e =>
-                  setTriggerInfo(prev => ({
-                    ...prev,
-                    actionChangePrompt: {
-                      ...prev.actionChangePrompt,
-                      scenarioDescription: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                label="Introduction"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                multiline
-                value={triggerInfo.actionChangePrompt.introDescription}
-                onChange={e =>
-                  setTriggerInfo(prev => ({
-                    ...prev,
-                    actionChangePrompt: {
-                      ...prev.actionChangePrompt,
-                      introDescription: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                label="Secret"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                multiline
-                value={triggerInfo.actionChangePrompt.secret}
-                onChange={e =>
-                  setTriggerInfo(prev => ({
-                    ...prev,
-                    actionChangePrompt: {
-                      ...prev.actionChangePrompt,
-                      secret: e.target.value,
-                    },
-                  }))
-                }
-              />
-            </DialogContent>
-            <Typography className={styles.label}>Guide Preset (Optional)</Typography>
-            <Box className={styles.conversationTemplate}>
-              <IconButton className={styles.rightButton} onClick={handleOpenEpisodeConversationTemplate}>
-                <ArrowBackIos />
-              </IconButton>
-              <Typography className={styles.conversationLabel}>Conversation Template</Typography>
-            </Box>
-          </Box>
-        );
-
-      default:
-        return null;
-    }
+  const handleCloseEpisodeConversationTemplate = () => {
+    setEpisodeConversationTemplateOpen(false);
   };
 
   return (
@@ -593,7 +342,9 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
               </div>
             </Box>
 
-            <Box className={styles.targetValueSection}>{renderTargetValueField(triggerInfo.triggerType)}</Box>
+            <Box className={styles.targetValueSection}>
+              <RenderTargetValueField triggerInfo={triggerInfo} setTriggerInfo={setTriggerInfo} />
+            </Box>
           </Box>
 
           <Box className={styles.subValueContainer}>
@@ -617,7 +368,15 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
                   <ArrowBackIos />
                 </IconButton>
               </Box>
-              {renderSubDataFields(triggerInfo.triggerActionType)}
+              <RenderSubDataFields
+                triggerInfo={triggerInfo}
+                setTriggerInfo={setTriggerInfo}
+                selectedChapter={selectedChapter}
+                selectedEpisode={selectedEpisode}
+                handleOpenChapterBoard={handleOpenChapterBoard}
+                handleOpenEpisodeConversationTemplate={handleOpenEpisodeConversationTemplate}
+              />
+              ;
             </Box>
           </Box>
         </DialogContent>
