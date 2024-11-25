@@ -10,7 +10,6 @@ import {
   Select,
   MenuItem,
   TextField,
-  SelectChangeEvent,
 } from '@mui/material';
 import {ArrowBackIos, DeleteForever, DriveFileRenameOutline} from '@mui/icons-material';
 import styles from './ChangeBehaviour.module.css';

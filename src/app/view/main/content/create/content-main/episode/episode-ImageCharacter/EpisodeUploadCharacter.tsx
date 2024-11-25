@@ -11,7 +11,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo';
 import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
-import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
+import {MediaState, Upload, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import ImageUploadDialog from '../episode-imagesetup/EpisodeImageUpload';
 import EpisodeStarringArtist from './EpisodeStarringCharacter';
 import EpisodeTempArtist from './EpisodeTempCharacter';
@@ -61,24 +61,31 @@ const EpisodeCharacter: React.FC<Props> = ({uploadImageState: uploadImageOpen}) 
   };
 
   const GetImageUrlByFile = async (image: File) => {
-    setLoading(true);
+    setLoading(true); // 로딩 상태 활성화
 
     try {
-      const req: UploadImageReq = {file: image};
+      // Upload 객체 생성
+      const req: Upload = {
+        mediaState: MediaState.BackgroundImage, // 적절한 MediaState 설정
+        file: image,
+      };
+
+      // 파일 업로드 API 호출
       const response = await sendUploadImage(req);
 
       if (response?.data) {
-        const imgUrl: string = response.data;
-        setImagePreview(imgUrl);
-        dispatch(setCurrentEpisodeBackgroundImage(imgUrl));
+        const imgUrl: string = response.data.url; // 업로드된 메인 이미지 URL
+        setImagePreview(imgUrl); // 미리보기 업데이트
+        dispatch(setCurrentEpisodeBackgroundImage(imgUrl)); // Redux 상태 업데이트
+
+        console.log('Additional image URLs:', response.data.imageUrlList); // 추가 이미지 URL 출력
       } else {
-        throw new Error(`No response for file`);
+        throw new Error('Unexpected API response: No data');
       }
     } catch (error) {
-      console.error('Error fetching content info:', error);
-      throw error; // 에러를 상위로 전달
+      console.error('Error uploading image:', error);
     } finally {
-      setLoading(false);
+      setLoading(false); // 로딩 상태 비활성화
     }
   };
 

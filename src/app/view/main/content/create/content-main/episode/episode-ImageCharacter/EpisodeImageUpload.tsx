@@ -9,15 +9,11 @@ import styles from './EpisodeImageUpload.module.css';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo';
-import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
+import {RootState} from '@/redux-store/ReduxStore';
 
-import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
-import ImageUploadDialog from '../episode-imagesetup/EpisodeImageUpload';
+import {MediaState, Upload, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-
-const Input = styled('input')({
-  display: 'none',
-});
+import ImageUploadDialog from './ImageUploadDialog';
 
 interface Props {
   onClickEasyCreate: () => void;
@@ -35,14 +31,14 @@ const EpisodeImageUpload: React.FC<Props> = ({
   onCloseUploadImage,
 }) => {
   const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
-  const [isMobile, setIsMobile] = useState(false); // 모바일 여부 확인
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [secondDialogOpen, setSecondDialogOpen] = useState(false); // 두 번째 다이얼로그 상태
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const dispatch = useDispatch();
+
   useEffect(() => {
-    // 모바일 디바이스 감지
     const checkMobileDevice = () => {
       const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       setIsMobile(isMobileDevice);
@@ -50,6 +46,7 @@ const EpisodeImageUpload: React.FC<Props> = ({
 
     checkMobileDevice();
   }, []);
+
   const handleSpeedDialClick = () => {
     setDialogOpen(true);
   };
@@ -57,109 +54,31 @@ const EpisodeImageUpload: React.FC<Props> = ({
   const handleClose = () => {
     setDialogOpen(false);
   };
-
-  const handleEasyCreateClick = () => {
-    onClickEasyCreate(); // 24/11/05 임시 블락
-    handleClose();
-  };
-
-  const handleAdvancedAIClick = () => {
-    onClickAdvanceCreate();
-    handleClose();
-  };
-  const openPhotoDialog = () => {
-    if (isMobile) {
-      // 모바일인 경우 다이얼로그 열기
-      setSecondDialogOpen(true);
-    } else {
-      // 모바일이 아닌 경우 Take Photo 실행
-      handleTakePhoto();
-    }
-  };
-
-  const handleUploadImageClick = () => {
-    if (isMobile) {
-      // 모바일인 경우 다이얼로그 열기
-      setSecondDialogOpen(true);
-    } else {
-      // 모바일이 아닌 경우 Take Photo 실행
-      handleTakePhoto();
-    }
-    setDialogOpen(false); // 기존 다이얼로그 닫기
-  };
-
-  const handleSecondDialogClose = () => {
-    setSecondDialogOpen(false); // 새 다이얼로그 닫기
-  };
-
-  const handlePhotoLibrary = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = event => {
-      const file = (event.target as HTMLInputElement).files?.[0];
-      if (file) {
-        GetImageUrlByFile(file); // 파일 선택 후 이미지 URL 생성 및 업데이트
-      }
-    };
-    input.click();
-    setSecondDialogOpen(false); // 다이얼로그 닫기
-  };
-
-  const handleTakePhoto = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.capture = 'environment'; // 후면 카메라
-    input.onchange = event => {
-      const file = (event.target as HTMLInputElement).files?.[0];
-      if (file) {
-        GetImageUrlByFile(file); // 파일 선택 후 이미지 URL 생성 및 업데이트
-      }
-    };
-    input.click();
-    setSecondDialogOpen(false); // 다이얼로그 닫기
-  };
-
-  const handleChooseFile = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.onchange = event => {
-      const file = (event.target as HTMLInputElement).files?.[0];
-      if (file) {
-        GetImageUrlByFile(file); // 파일 선택 후 이미지 URL 생성 및 업데이트
-      }
-    };
-    input.click();
-    setSecondDialogOpen(false); // 다이얼로그 닫기
-  };
-
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const handleImageUpload = (images: File[]) => {
-    const uploadImg: File = images[0];
-    GetImageUrlByFile(uploadImg);
-  };
-
-  const GetImageUrlByFile = async (image: File) => {
-    setLoading(true);
-
+  const handleImageUpload = async (file: File) => {
+    setLoading(true); // 로딩 상태 활성화
     try {
-      const req: UploadImageReq = {file: image};
+      // Upload 객체 생성
+      const req: Upload = {
+        mediaState: MediaState.BackgroundImage, // 적절한 MediaState 설정
+        file,
+      };
+
+      // 파일 업로드 API 호출
       const response = await sendUploadImage(req);
 
       if (response?.data) {
-        const imgUrl: string = response.data;
-        setImagePreview(imgUrl);
-        dispatch(setCurrentEpisodeBackgroundImage(imgUrl));
+        const imgUrl: string = response.data.url; // 메인 이미지 URL
+        setImagePreview(imgUrl); // 미리보기 업데이트
+        dispatch(setCurrentEpisodeBackgroundImage(imgUrl)); // Redux 상태 업데이트
+
+        console.log('Image URLs:', response.data.imageUrlList); // 추가 이미지 URL 로그 출력
       } else {
-        throw new Error(`No response for file`);
+        throw new Error('Unexpected API response: No data');
       }
     } catch (error) {
-      console.error('Error fetching content info:', error);
-      throw error; // 에러를 상위로 전달
+      console.error('Error uploading image:', error);
     } finally {
-      setLoading(false);
+      setLoading(false); // 로딩 상태 비활성화
     }
   };
 
@@ -176,22 +95,6 @@ const EpisodeImageUpload: React.FC<Props> = ({
           <Typography variant="h6" marginLeft={1}>
             Image
           </Typography>
-          <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
-            <DialogContent dividers className={styles.dialogContent}>
-              <MenuItem onClick={handleUploadImageClick}>Upload Background Image</MenuItem>
-            </DialogContent>
-          </Dialog>
-
-          {/* 모바일 환경에서만 표시되는 두 번째 다이얼로그 */}
-          {isMobile && (
-            <Dialog open={secondDialogOpen} onClose={() => setSecondDialogOpen(false)}>
-              <DialogContent dividers>
-                <MenuItem onClick={handlePhotoLibrary}>Photo Library</MenuItem>
-                <MenuItem onClick={handleTakePhoto}>Take Photo</MenuItem>
-                <MenuItem onClick={handleChooseFile}>Choose File</MenuItem>
-              </DialogContent>
-            </Dialog>
-          )}
         </Box>
 
         {imagePreview ? (
@@ -208,9 +111,14 @@ const EpisodeImageUpload: React.FC<Props> = ({
           icon={<CreateIcon />}
           onClick={handleSpeedDialClick}
         />
-        {uploadImageOpen && (
-          <ImageUploadDialog isOpen={uploadImageOpen} onClose={onCloseUploadImage} onUpload={handleImageUpload} />
-        )}
+
+        <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
+          <DialogContent dividers className={styles.dialogContent}>
+            <MenuItem onClick={onClickUploadImage}>Upload Background Image</MenuItem>
+          </DialogContent>
+        </Dialog>
+
+        <ImageUploadDialog isOpen={uploadImageOpen} onClose={onCloseUploadImage} onFileSelect={handleImageUpload} />
       </Box>
 
       <LoadingOverlay loading={loading} />

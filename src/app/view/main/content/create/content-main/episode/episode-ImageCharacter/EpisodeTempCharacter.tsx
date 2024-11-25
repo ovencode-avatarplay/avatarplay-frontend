@@ -11,10 +11,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setCharacterInfo, setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo';
 import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
-import {UploadImageReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
+import {MediaState, Upload, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EpisodeAiImageGeneration from './EpisodeAiImageGeneration';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import ImageUploadDialog from './ImageUploadDialog';
 
 const Input = styled('input')({
   display: 'none',
@@ -87,14 +88,21 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
     setSecondDialogOpen(false); // 새 다이얼로그 닫기
   };
   const handleFileSelection = async (file: File) => {
-    setLoading(true);
+    setLoading(true); // 로딩 상태 활성화
     try {
-      const req: UploadImageReq = {file: file};
+      // Upload 객체 생성
+      const req: Upload = {
+        mediaState: MediaState.CharacterImage, // 적절한 MediaState 설정
+        file: file,
+      };
+
+      // 파일 업로드 API 호출
       const response = await sendUploadImage(req);
 
       if (response?.data) {
-        const imgUrl: string = response.data;
+        const imgUrl: string = response.data.url; // 메인 이미지 URL
 
+        // Base64로 변환하여 미리보기 업데이트
         const reader = new FileReader();
         reader.onload = event => {
           if (event.target && typeof event.target.result === 'string') {
@@ -103,16 +111,18 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
         };
         reader.readAsDataURL(file); // 파일을 Base64로 변환
 
-        //사용법: dispatch(setCharacterInfo({ name: "New Name", state: 1 }));
+        // Redux 상태 업데이트
         dispatch(setCharacterInfo({mainImageUrl: imgUrl}));
+
+        // 추가 이미지 리스트 로그 출력
+        console.log('Additional image URLs:', response.data.imageUrlList);
       } else {
-        throw new Error(`No response for file`);
+        throw new Error('Unexpected API response: No data');
       }
     } catch (error) {
-      console.error('Error fetching content info:', error);
-      throw error; // 에러를 상위로 전달
+      console.error('Error uploading image:', error);
     } finally {
-      setLoading(false);
+      setLoading(false); // 로딩 상태 비활성화
     }
   };
 
@@ -231,17 +241,11 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
                 <MenuItem onClick={handleOpenAiModal}>AI Image Generation</MenuItem>
               </DialogContent>
             </Dialog>
-
-            {/* 모바일 환경에서만 표시되는 두 번째 다이얼로그 */}
-            {isMobile && (
-              <Dialog open={secondDialogOpen} onClose={() => setSecondDialogOpen(false)}>
-                <DialogContent dividers>
-                  <MenuItem onClick={handlePhotoLibrary}>Photo Library</MenuItem>
-                  <MenuItem onClick={handleTakePhoto}>Take Photo</MenuItem>
-                  <MenuItem onClick={handleChooseFile}>Choose File</MenuItem>
-                </DialogContent>
-              </Dialog>
-            )}
+            <ImageUploadDialog
+              isOpen={secondDialogOpen}
+              onClose={() => setSecondDialogOpen(false)}
+              onFileSelect={handleFileSelection}
+            />
           </Box>
 
           {imagePreview ? (
