@@ -41,15 +41,11 @@ import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
 import PublishCharacter from './PublishCharacter';
 import {CreateCharacterOption, GeneratedOptionsState} from './CreateCharacterType';
+import FullScreenImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
 
 interface Props {
   closeAction: () => void;
   isModify: boolean;
-}
-
-interface ResultProps {
-  url: string;
-  parameter: string;
 }
 
 const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
@@ -74,7 +70,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
 
   const [characterOptions, setCharacterOptions] = useState(defaultOptions);
   const [generatedOptions, setGeneratedOptions] = useState<GenerateImageRes | null>(null);
-  const [fullscreenImage, setFullscreenImage] = useState<ResultProps | null>(null); // Add fullscreen image state
+  const [fullscreenImage, setFullscreenImage] = useState<FullViewImageData | null>(null); // Add fullscreen image state
 
   enum CreateCharacterStep {
     Gender = 'Gender',
@@ -708,57 +704,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
 
       <Box className={styles.buttonContainer}>{renderBottom()}</Box>
 
-      {fullscreenImage && (
-        <Box
-          className={styles.fullscreenOverlay}
-          onClick={e => {
-            setFullscreenImage(null);
-          }} // Close full-screen on overlay click
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end', // Align content to the bottom
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark background for overlay
-            zIndex: 9999, // Ensure it's on top
-          }}
-        >
-          {/* Fullscreen image */}
-          <Box
-            sx={{
-              flexGrow: 1,
-              backgroundRepeat: 'no-repeat',
-              backgroundImage: `url(${fullscreenImage.url})`,
-              backgroundSize: 'contain',
-              backgroundPosition: 'center',
-              width: '100%',
-            }}
-          />
-          <Box
-            sx={{
-              width: '100%',
-              justifyContent: 'flex-end',
-              backgroundColor: 'white', // White background
-              padding: '10px 20px',
-              textAlign: 'center',
-              cursor: 'pointer', // Indicates it's clickable
-            }}
-            onClick={e => {
-              setFullscreenImage(null);
-              e.stopPropagation(); // Prevent closing the fullscreen when clicking on text
-              navigator.clipboard.writeText(fullscreenImage.parameter); // Copy to clipboard
-              alert('Copied to clipboard!'); // Optional feedback
-            }} // Close full-screen on overlay click
-          >
-            {fullscreenImage.parameter}
-          </Box>
-        </Box>
-      )}
+      {fullscreenImage && <FullScreenImage imageData={fullscreenImage} onClick={() => setFullscreenImage(null)} />}
     </Box>
   );
 };

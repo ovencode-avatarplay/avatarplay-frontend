@@ -1,17 +1,16 @@
 // src/app/Network/ImageNetwork.ts
 
-import {string} from 'valibot';
-import axios from 'axios';
 import api, {ResponseAPI} from './ApiInstance';
 export enum MediaState {
   None = 0,
   CharacterImage = 1,
-  BackgroundImage = 2,
-  ContentImage = 3,
-  TtsVoice = 4,
-  TriggerImage = 5,
-  TriggerVideo = 6,
-  TriggerAudio = 7,
+  GalleryImage = 2,
+  BackgroundImage = 3,
+  ContentImage = 4,
+  TtsVoice = 5,
+  TriggerImage = 6,
+  TriggerVideo = 7,
+  TriggerAudio = 8,
 }
 export interface MediaUploadReq {
   mediaState: number; // Enum 타입

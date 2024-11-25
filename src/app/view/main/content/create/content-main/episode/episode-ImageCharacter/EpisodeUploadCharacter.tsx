@@ -12,7 +12,6 @@ import {setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo
 import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
 import {MediaState, MediaUploadReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
-import ImageUploadDialog from '../episode-imagesetup/EpisodeImageUpload';
 import EpisodeStarringArtist from './EpisodeStarringCharacter';
 import EpisodeTempArtist from './EpisodeTempCharacter';
 

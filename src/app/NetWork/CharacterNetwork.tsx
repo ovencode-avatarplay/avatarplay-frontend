@@ -74,4 +74,29 @@ export const sendDeleteCharacter = async (payload: DeleteCharacterReq): Promise<
   }
 };
 
+// Get CharacterData by Id
+
+export interface GetCharacterInfoReq {
+  characterId: number;
+}
+
+export interface GetCharacterInfoRes {
+  characterInfo: CharacterInfo;
+}
+
+export const sendGetCharacterInfo = async (payload: GetCharacterInfoReq): Promise<ResponseAPI<GetCharacterInfoRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetCharacterInfoRes>>('Character/get', payload);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`GetChracterRes Error : ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error sending get character : ', error);
+    throw new Error('Failed to send get character. Please try again');
+  }
+};
+
 // Select Image
