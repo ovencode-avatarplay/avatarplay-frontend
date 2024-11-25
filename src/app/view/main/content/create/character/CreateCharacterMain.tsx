@@ -5,7 +5,7 @@ import CreateCharacterTopMenu from './CreateCharacterTopMenu';
 
 interface CreateCharacterProps {}
 
-const CreateCharacterMain: React.FC<CreateCharacterProps> = ({}) => {
+const CreateCharacterMain: React.FC<CreateCharacterProps> = () => {
   return (
     <>
       <main className={styles.characterMain}>

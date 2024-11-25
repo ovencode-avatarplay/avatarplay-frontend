@@ -60,6 +60,7 @@ export interface GenerateImageReq {
 }
 
 export interface GenerateImageRes {
+  debugParameter: string;
   imageUrl: string[];
 }
 export const sendGenerateImageReq = async (payload: GenerateImageReq): Promise<ResponseAPI<GenerateImageRes>> => {
