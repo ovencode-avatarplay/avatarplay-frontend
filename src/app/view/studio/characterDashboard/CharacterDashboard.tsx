@@ -20,8 +20,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 // Network
 import {
+  CreateCharacterReq,
   DeleteCharacterReq,
   GetCharacterInfoReq,
+  sendCreateCharacter,
   sendDeleteCharacter,
   sendGetCharacterInfo,
   sendGetCharacterList,
@@ -106,7 +108,27 @@ const CharacterDashboard: React.FC = () => {
     }
   };
 
-  // 현재 선택된 캐릭터 정보를 수정함
+  // 현재 선택된 캐릭터의 정보를 수정함 (재생성, 그림 추가 등)
+  const updateCharacterInfo = async (newinfo: CharacterInfo) => {
+    setLoading(true);
+    try {
+      if (currentSelectedCharacter) {
+        const req: CreateCharacterReq = {characterInfo: newinfo, createOption: []};
+        const response = await sendCreateCharacter(req);
+
+        if (response.data) {
+          const characterInfo: CharacterInfo = response.data?.characterInfo;
+          setCurrentSelectedCharacter(characterInfo);
+        } else {
+          throw new Error(`No characterInfo in response `);
+        }
+      }
+    } catch (error) {
+      console.error('Error modify Character Info', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   //#endregion
 
@@ -232,6 +254,7 @@ const CharacterDashboard: React.FC = () => {
           open={galleryOpen}
           onClose={handleCloseGallery}
           characterData={currentSelectedCharacter}
+          updateCharacter={updateCharacterInfo}
         />
       )}
 

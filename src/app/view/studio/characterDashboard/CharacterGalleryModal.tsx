@@ -15,9 +15,15 @@ interface CharacterGalleryModalProps {
   open: boolean;
   onClose: () => void;
   characterData: CharacterInfo;
+  updateCharacter: (newinfo: CharacterInfo) => void;
 }
 
-const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({open, onClose, characterData}) => {
+const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
+  open,
+  onClose,
+  characterData,
+  updateCharacter,
+}) => {
   const buttons = [
     {
       icon: <StarIcon />,
@@ -28,33 +34,14 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({open, onCl
     {icon: <DeleteIcon />, text: 'Delete', onClick: () => handleDeleteItem()},
   ];
 
-  // const tmpPortraitUrl = [
-  //   'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/cb8ddc8c-fa68-4f49-a366-7f8c6ad49122.jpg',
-  //   'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/952d5dc6-7e03-4f41-bce2-b9e75f998e90.jpeg',
-  //   'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/9375e557-2c4d-47c8-b148-b6686848e54f.jfif',
-  //   'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/cb8ddc8c-fa68-4f49-a366-7f8c6ad49122.jpg',
-  //   'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/cb8ddc8c-fa68-4f49-a366-7f8c6ad49122.jpg',
-  //   'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/cb8ddc8c-fa68-4f49-a366-7f8c6ad49122.jpg',
-  //   'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/cb8ddc8c-fa68-4f49-a366-7f8c6ad49122.jpg',
-  // ];
-
-  // const tmpPoseUrl = [
-  //   'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/840fbf94-d337-4e82-9a19-31f19ad41022.png',
-  //   'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/edf6157d-ac7e-4360-8691-f28dfd75c0c0.png',
-  // ];
-
-  // const tmpExpressionUrl: string[] = [];
-
   useEffect(() => {
     setCharacterInfo(characterData);
-    // characterData.portraitGalleryImageUrl = tmpPortraitUrl;
-    // characterData.poseGalleryImageUrl = tmpPoseUrl;
-    // characterData.expressionGalleryImageUrl = tmpExpressionUrl;
   }, [characterData]);
 
   const [isRegenerateOpen, setIsRegenerateOpen] = useState(false);
   const [isModifyOpen, setIsModifyOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<[string, number | null]>(['Portrait', null]);
+  const [selectedItem, setSelectedItem] = useState<[string, number | null]>(['Portrait', null]); //카테고리가 섞여 있을 가능성도 있다고 했기 때문에 번거롭지만 pair data로
+  const [selectedCategory, setSelectedCategory] = useState<string>('Portrait');
 
   const [characterInfo, setCharacterInfo] = useState<CharacterInfo>(characterData);
 
@@ -77,13 +64,12 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({open, onCl
   };
 
   const handleRegenerateItem = () => {
-    if (
-      (!selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) &&
-      selectedItem[0] === 'Portrait'
-    ) {
-      setIsModifyOpen(true);
+    if (!selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
+      if (selectedCategory === 'Portrait') setIsModifyOpen(true);
+      else {
+        setIsRegenerateOpen(true);
+      }
     } else {
-      setIsRegenerateOpen(true);
     }
   };
 
@@ -178,7 +164,13 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({open, onCl
                 contentTitle={`${characterInfo.name}'s Gallery`}
                 blockStudioButton={true}
               />
-              <CharacterGallery characterInfo={characterInfo} onCurrentSelected={handleSelectItem} />
+              <CharacterGallery
+                characterInfo={characterInfo}
+                onCategorySelected={setSelectedCategory}
+                onCurrentSelected={handleSelectItem}
+                onGenerateSelected={handleRegenerateItem}
+                updateCharacter={updateCharacter}
+              />
               <div className={styles.footer}>
                 {buttons.map((button, index) => (
                   <Button key={index} className={styles.button} startIcon={button.icon} onClick={button.onClick}>

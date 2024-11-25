@@ -176,7 +176,7 @@ const UserDropdown = () => {
           </MenuItem>
           <Divider className={styles.menuDivider} />
           {/* <Link href={getLocalizedUrl(`/studio`, locale as Locale)} passHref> */}
-          <Link href={`/studio`} passHref>
+          {/* <Link href={`/studio`} passHref>
             <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, 'studio')}>
               <i className={styles.tabler} />
               <Typography color="text.primary">Studio</Typography>
@@ -197,7 +197,19 @@ const UserDropdown = () => {
           <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/supports')}>
             <i className={styles.tabler} />
             <Typography color="text.primary">Supports</Typography>
-          </MenuItem>
+          </MenuItem> */}
+          <Link href={`/:lang/studio/character`} passHref>
+            <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/:lang/studio/character')}>
+              <i className={styles.tabler} />
+              <Typography color="text.primary">Character</Typography>
+            </MenuItem>
+          </Link>
+          <Link href={`/:lang/studio/story`} passHref>
+            <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/:lang/studio/story')}>
+              <i className={styles.tabler} />
+              <Typography color="text.primary">Story</Typography>
+            </MenuItem>
+          </Link>
         </MenuList>
         <Popper
           open={open}

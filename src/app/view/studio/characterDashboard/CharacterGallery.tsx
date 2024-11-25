@@ -10,10 +10,19 @@ import {MediaState, sendUploadImage, MediaUploadReq} from '@/app/NetWork/ImageNe
 
 interface CharacterGalleryProps {
   characterInfo: CharacterInfo;
+  onCategorySelected: (category: string) => void;
   onCurrentSelected: (category: string, index: number | null) => void;
+  onGenerateSelected: () => void;
+  updateCharacter: (newinfo: CharacterInfo) => void;
 }
 
-const CharacterGallery: React.FC<CharacterGalleryProps> = ({characterInfo, onCurrentSelected}) => {
+const CharacterGallery: React.FC<CharacterGalleryProps> = ({
+  characterInfo,
+  onCategorySelected,
+  onCurrentSelected,
+  onGenerateSelected,
+  updateCharacter,
+}) => {
   // 카테고리
   const [category, setCategory] = useState('Portrait');
   const [categoryIndexes, setCategoryIndexes] = useState({
@@ -30,6 +39,8 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({characterInfo, onCur
 
   // 현재 선택된 아이템
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
+
+  const [currentCharacterInfo, setCurrentCharacterInfo] = useState<CharacterInfo>(characterInfo);
 
   // upload
   const [uploadModeDialogOpen, setUploadModeDialogOpen] = useState(false);
@@ -66,11 +77,13 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({characterInfo, onCur
     setImageUploadDialogOpen(false);
   };
 
+  // 이미지 하나를 업로드 함
   const handleUploadImage = async (file: File) => {
     try {
       const req: MediaUploadReq = {
         mediaState: MediaState.GalleryImage,
         file: file,
+        imageList: [],
       };
 
       // 파일 업로드 API 호출
@@ -79,7 +92,48 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({characterInfo, onCur
       if (response?.data) {
         const imgUrl: string = response.data.url;
 
-        console.log('Additional image URLs:', response.data.imageUrlList); // 추가 이미지 URL 출력
+        switch (category) {
+          case 'Portrait':
+            setCurrentCharacterInfo(prevState => ({
+              ...prevState,
+              portraitGalleryImageUrl: [...prevState.portraitGalleryImageUrl, imgUrl],
+            }));
+
+            updateCharacter({
+              ...currentCharacterInfo,
+              portraitGalleryImageUrl: [...currentCharacterInfo.portraitGalleryImageUrl, imgUrl],
+            });
+            break;
+
+          case 'Poses':
+            setCurrentCharacterInfo(prevState => ({
+              ...prevState,
+              poseGalleryImageUrl: [...prevState.poseGalleryImageUrl, imgUrl],
+            }));
+
+            updateCharacter({
+              ...currentCharacterInfo,
+              poseGalleryImageUrl: [...currentCharacterInfo.poseGalleryImageUrl, imgUrl],
+            });
+            break;
+
+          case 'Expression':
+            setCurrentCharacterInfo(prevState => ({
+              ...prevState,
+              expressionGalleryImageUrl: [...prevState.expressionGalleryImageUrl, imgUrl],
+            }));
+
+            updateCharacter({
+              ...currentCharacterInfo,
+              expressionGalleryImageUrl: [...currentCharacterInfo.expressionGalleryImageUrl, imgUrl],
+            });
+            break;
+
+          default:
+            console.error('Unknown category:', category);
+            break;
+        }
+        console.log('Additional image URLs:', response.data.url); // 추가 이미지 URL 출력
       } else {
         throw new Error('Unexpected API response: No data');
       }
@@ -95,6 +149,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({characterInfo, onCur
     setPortraitUrl(characterInfo.portraitGalleryImageUrl);
     setPoseUrl(characterInfo.poseGalleryImageUrl);
     setExpressionUrl(characterInfo.expressionGalleryImageUrl);
+    setCurrentCharacterInfo(characterInfo);
   }, [characterInfo]);
 
   useEffect(() => {
@@ -109,6 +164,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({characterInfo, onCur
       setItemUrl(expressionUrl);
       setSelectedItemIndex(categoryIndexes.Expression);
     }
+    onCategorySelected(category);
   }, [category, categoryIndexes, portraitUrl, poseUrl, expressionUrl]);
   //#endregion
 
@@ -146,7 +202,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({characterInfo, onCur
             <Button variant="outlined" onClick={handleImageUploadClick}>
               Upload Image
             </Button>
-            <Button variant="outlined">{`${category} Create`}</Button>
+            <Button variant="outlined" onClick={onGenerateSelected}>{`${category} Create`}</Button>
           </Box>
         </DialogContent>
       </Dialog>
