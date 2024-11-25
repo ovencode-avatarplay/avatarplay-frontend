@@ -11,7 +11,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo';
 import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
-import {MediaState, Upload, sendUploadImage} from '@/app/NetWork/ImageNetwork';
+import {MediaState, MediaUploadReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import ImageUploadDialog from '../episode-imagesetup/EpisodeImageUpload';
 import EpisodeStarringArtist from './EpisodeStarringCharacter';
 import EpisodeTempArtist from './EpisodeTempCharacter';
@@ -65,7 +65,7 @@ const EpisodeCharacter: React.FC<Props> = ({uploadImageState: uploadImageOpen}) 
 
     try {
       // Upload 객체 생성
-      const req: Upload = {
+      const req: MediaUploadReq = {
         mediaState: MediaState.BackgroundImage, // 적절한 MediaState 설정
         file: image,
       };

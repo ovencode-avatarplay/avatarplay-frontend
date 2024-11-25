@@ -11,7 +11,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setCharacterInfo, setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo';
 import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
-import {MediaState, Upload, sendUploadImage} from '@/app/NetWork/ImageNetwork';
+import {MediaState, MediaUploadReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EpisodeAiImageGeneration from './EpisodeAiImageGeneration';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
@@ -91,7 +91,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
     setLoading(true); // 로딩 상태 활성화
     try {
       // Upload 객체 생성
-      const req: Upload = {
+      const req: MediaUploadReq = {
         mediaState: MediaState.CharacterImage, // 적절한 MediaState 설정
         file: file,
       };
