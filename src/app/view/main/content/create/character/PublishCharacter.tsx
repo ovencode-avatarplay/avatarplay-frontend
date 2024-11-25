@@ -22,13 +22,15 @@ import {CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNe
 
 // publish가 끝나고 다른곳으로 이동하기
 import {useRouter, useSearchParams} from 'next/navigation';
+import {GenerateParameter} from '@/app/NetWork/ImageNetwork';
 
 interface PublishCharacterProps {
   url: string;
   gender: number;
+  createOption: GenerateParameter[];
 }
 
-const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender}) => {
+const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender, createOption}) => {
   const [drawerVisibilityOpen, setDrawerVisibilityOpen] = useState(false);
   const [drawerMonetizationOpen, setDrawerMonetizationOpen] = useState(false);
   const [visibility, setVisibility] = useState('Private');
@@ -66,6 +68,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender}) => {
           isMonetization: monetization === 'On',
           state: 1,
         },
+        createOption: createOption,
       };
 
       // API 호출

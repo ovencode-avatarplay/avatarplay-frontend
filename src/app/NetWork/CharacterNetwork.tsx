@@ -2,6 +2,7 @@
 
 import api, {ResponseAPI} from './ApiInstance';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {GenerateParameter} from './ImageNetwork';
 
 // GetCharacterList
 
@@ -28,6 +29,7 @@ export const sendGetCharacterList = async (payload: {}): Promise<ResponseAPI<Get
 
 export interface CreateCharacterReq {
   characterInfo: CharacterInfo;
+  createOption: GenerateParameter[];
 }
 
 export interface CreateCharacterRes {

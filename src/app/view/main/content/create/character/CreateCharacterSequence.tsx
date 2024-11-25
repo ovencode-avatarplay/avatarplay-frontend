@@ -200,20 +200,25 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
   };
 
   const handleGenerate = () => {
-    const prompts: GenerateParameter[] = [
-      ...summaryOptions.map(option => {
-        const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
-        const selectedOption = option.options[selectedIndex];
-
-        return {name: option.key, value: selectedOption?.value};
-      }),
-    ];
+    const prompts: GenerateParameter[] = generatePrompts(summaryOptions, selectedOptions);
 
     const req: GenerateImageReq = {
       values: prompts,
     };
 
     GetImageGenerateImage(req);
+  };
+
+  const generatePrompts = (
+    summaryOptions: {key: string; options: {value: number}[]}[],
+    selectedOptions: Record<string, number>,
+  ): GenerateParameter[] => {
+    return summaryOptions.map(option => {
+      const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
+      const selectedOption = option.options[selectedIndex];
+
+      return {name: option.key, value: selectedOption?.value ?? 0};
+    });
   };
 
   const GetImageGenerateImage = async (req: GenerateImageReq) => {
@@ -607,7 +612,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
             <div className={styles.createTitle}>Step 10: Choose Generated Image</div>
             <Box>
               <Box className={styles.gridContainer2}>
-                {generatedOptions?.imageUrl.map((option, index) => (
+                {(generatedOptions?.imageUrl ?? []).map((option, index) => (
                   <CharacterCreateImageButton
                     key={index}
                     width={'95%'}
@@ -617,7 +622,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
                     selected={selectedOptions.result === index}
                     onClick={() =>
                       selectedOptions.result === index
-                        ? handleImageToggle(option, generatedOptions?.debugParameter)
+                        ? handleImageToggle(option, generatedOptions?.debugParameter ?? '')
                         : handleOptionSelect('result', index)
                     }
                   />
@@ -636,6 +641,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
             <PublishCharacter
               url={generatedOptions?.imageUrl[selectedOptions.result] ?? ''}
               gender={selectedOptions.gender}
+              createOption={generatePrompts(summaryOptions, selectedOptions)}
             />
           </div>
         );
