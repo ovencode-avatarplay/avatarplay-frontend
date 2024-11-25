@@ -12,9 +12,10 @@ export enum MediaState {
   TriggerVideo = 7,
   TriggerAudio = 8,
 }
+
 export interface MediaUploadReq {
   mediaState: number; // Enum 타입
-  file: File; // 업로드할 파일
+  file?: File; // 업로드할 파일
   imageList?: File[]; // 추가 이미지 파일 리스트 (선택적)
 }
 
@@ -28,8 +29,13 @@ export const sendUploadImage = async (payload: MediaUploadReq): Promise<Response
 
     formData.append('MediaState', payload.mediaState.toString()); // Enum 값 추가
 
+    if (payload.file) {
+      formData.append('File', payload.file);
+    } else {
+      // ImageList가 비어있을 때 빈 필드라도 전송
+      formData.append('File', new Blob()); // 빈 Blob을 추가
+    }
     // 메인 파일 추가
-    formData.append('File', payload.file);
 
     // 추가 이미지 리스트 처리s
     if (Array.isArray(payload.imageList) && payload.imageList.length > 0) {

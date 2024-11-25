@@ -37,7 +37,8 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   const dispatch = useDispatch();
 
   const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>({
-    id: item?.id || 0,
+    id: item?.id || 0, // 기본값 설정
+    episodeId: item?.episodeId || 0, // episodeId 기본값 추가
     name: item?.name || '',
     triggerType: item?.triggerType || 0,
     triggerValueIntimacy: item?.triggerValueIntimacy || 0,
@@ -45,17 +46,26 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     triggerValueKeyword: item?.triggerValueKeyword || '',
     triggerValueTimeMinute: item?.triggerValueTimeMinute || 0,
     triggerActionType: item?.triggerActionType || 0,
-    actionChangeEpisodeId: item?.actionChangeEpisodeId ?? -1,
-    actionChangePrompt: {
-      characterName: item?.actionChangePrompt?.characterName || '',
-      characterDescription: item?.actionChangePrompt?.characterDescription || '',
-      scenarioDescription: item?.actionChangePrompt?.scenarioDescription || '',
-      introDescription: item?.actionChangePrompt?.introDescription || '',
-      secret: item?.actionChangePrompt?.secret || '',
-    },
+    actionChangeEpisodeId: item?.actionChangeEpisodeId ?? -1, // ?? 사용하여 null 또는 undefined 체크
+    actionPromptScenarioDescription: item?.actionPromptScenarioDescription || '', // 추가된 속성
     actionIntimacyPoint: item?.actionIntimacyPoint || 0,
-    actionChangeBackground: item?.actionChangeBackground || '',
     maxIntimacyCount: item?.maxIntimacyCount || 0,
+    actionCharacterInfo: item?.actionCharacterInfo || {
+      // actionCharacterInfo에 기본값 설정
+      id: 0,
+      name: '',
+      introduction: '',
+      genderType: 0,
+      mainImageUrl: '',
+      portraitGalleryImageUrl: [],
+      poseGalleryImageUrl: [],
+      expressionGalleryImageUrl: [],
+      visibilityType: 0,
+      isMonetization: false,
+      state: 0,
+    },
+    actionMediaState: item?.actionMediaState || 0, // 기본값 수정
+    actionMediaUrl: item?.actionMediaUrl || '',
     actionConversationList: item?.actionConversationList || [],
   });
 
@@ -63,26 +73,36 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     if (item) {
       // triggerInfo 초기화
       setTriggerInfo({
-        id: item.id || 0,
-        name: item.name || '',
-        triggerType: item.triggerType || 0,
-        triggerValueIntimacy: item.triggerValueIntimacy || 0,
-        triggerValueChatCount: item.triggerValueChatCount || 0,
-        triggerValueKeyword: item.triggerValueKeyword || '',
-        triggerValueTimeMinute: item.triggerValueTimeMinute || 0,
-        triggerActionType: item.triggerActionType || 0,
-        actionChangeEpisodeId: item.actionChangeEpisodeId ?? -1,
-        actionChangePrompt: {
-          characterName: item.actionChangePrompt?.characterName || '',
-          characterDescription: item.actionChangePrompt?.characterDescription || '',
-          scenarioDescription: item.actionChangePrompt?.scenarioDescription || '',
-          introDescription: item.actionChangePrompt?.introDescription || '',
-          secret: item.actionChangePrompt?.secret || '',
+        id: item?.id || 0, // 기본값 설정
+        episodeId: item?.episodeId || 0, // episodeId 기본값 추가
+        name: item?.name || '',
+        triggerType: item?.triggerType || 0,
+        triggerValueIntimacy: item?.triggerValueIntimacy || 0,
+        triggerValueChatCount: item?.triggerValueChatCount || 0,
+        triggerValueKeyword: item?.triggerValueKeyword || '',
+        triggerValueTimeMinute: item?.triggerValueTimeMinute || 0,
+        triggerActionType: item?.triggerActionType || 0,
+        actionChangeEpisodeId: item?.actionChangeEpisodeId ?? -1, // ?? 사용하여 null 또는 undefined 체크
+        actionPromptScenarioDescription: item?.actionPromptScenarioDescription || '', // 추가된 속성
+        actionIntimacyPoint: item?.actionIntimacyPoint || 0,
+        maxIntimacyCount: item?.maxIntimacyCount || 0,
+        actionCharacterInfo: item?.actionCharacterInfo || {
+          // actionCharacterInfo에 기본값 설정
+          id: 0,
+          name: '',
+          introduction: '',
+          genderType: 0,
+          mainImageUrl: '',
+          portraitGalleryImageUrl: [],
+          poseGalleryImageUrl: [],
+          expressionGalleryImageUrl: [],
+          visibilityType: 0,
+          isMonetization: false,
+          state: 0,
         },
-        actionIntimacyPoint: item.actionIntimacyPoint || 0,
-        actionChangeBackground: item.actionChangeBackground || '',
-        maxIntimacyCount: item.maxIntimacyCount || 0,
-        actionConversationList: item.actionConversationList || [],
+        actionMediaState: item?.actionMediaState || 0, // 기본값 수정
+        actionMediaUrl: item?.actionMediaUrl || '',
+        actionConversationList: item?.actionConversationList || [],
       });
       if (triggerInfo.actionChangeEpisodeId === -1) {
         setSelectedChapter('None');

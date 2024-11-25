@@ -4,6 +4,7 @@ import {ArrowBackIos} from '@mui/icons-material';
 import styles from './ChangeBehaviour.module.css';
 import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/DataTypes';
 import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
+import PlayMediaComponent from './PlayMediaComponent';
 interface RenderTargetValueFieldProps {
   triggerInfo: TriggerInfo; // TriggerInfo 타입 지정
   setTriggerInfo: React.Dispatch<React.SetStateAction<TriggerInfo>>;
@@ -112,7 +113,7 @@ export const RenderSubDataFields: React.FC<RenderSubDataFieldsProps> = ({
   handleOpenEpisodeConversationTemplate,
 }) => {
   switch (triggerInfo.triggerActionType) {
-    case TriggerSubDataType.actionEpisodeChangeId:
+    case TriggerSubDataType.EpisodeChange:
       return (
         <Box className={styles.destinationContainer}>
           <Typography className={styles.destinationLabel}>Destination Episode</Typography>
@@ -129,7 +130,7 @@ export const RenderSubDataFields: React.FC<RenderSubDataFieldsProps> = ({
         </Box>
       );
 
-    case TriggerSubDataType.actionIntimacyPoint:
+    case TriggerSubDataType.GetIntimacyPoint:
       return (
         <Box className={styles.intimacyContainer}>
           <Typography className={styles.label}>Get Point</Typography>
@@ -175,86 +176,15 @@ export const RenderSubDataFields: React.FC<RenderSubDataFieldsProps> = ({
         <Box className={styles.promptContainer}>
           <DialogContent className={styles.dialogContent}>
             <TextField
-              label="Character Name"
+              label="ScenarioDescription"
               variant="outlined"
               fullWidth
               margin="normal"
-              value={triggerInfo.actionChangePrompt.characterName}
+              value={triggerInfo.actionPromptScenarioDescription}
               onChange={e =>
                 setTriggerInfo(prev => ({
                   ...prev,
-                  actionChangePrompt: {
-                    ...prev.actionChangePrompt,
-                    characterName: e.target.value,
-                  },
-                }))
-              }
-            />
-            <TextField
-              label="Character Description"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              multiline
-              value={triggerInfo.actionChangePrompt.characterDescription}
-              onChange={e =>
-                setTriggerInfo(prev => ({
-                  ...prev,
-                  actionChangePrompt: {
-                    ...prev.actionChangePrompt,
-                    characterDescription: e.target.value,
-                  },
-                }))
-              }
-            />
-            <TextField
-              label="World Scenario"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              multiline
-              value={triggerInfo.actionChangePrompt.scenarioDescription}
-              onChange={e =>
-                setTriggerInfo(prev => ({
-                  ...prev,
-                  actionChangePrompt: {
-                    ...prev.actionChangePrompt,
-                    scenarioDescription: e.target.value,
-                  },
-                }))
-              }
-            />
-            <TextField
-              label="Introduction"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              multiline
-              value={triggerInfo.actionChangePrompt.introDescription}
-              onChange={e =>
-                setTriggerInfo(prev => ({
-                  ...prev,
-                  actionChangePrompt: {
-                    ...prev.actionChangePrompt,
-                    introDescription: e.target.value,
-                  },
-                }))
-              }
-            />
-            <TextField
-              label="Secret"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              multiline
-              value={triggerInfo.actionChangePrompt.secret}
-              onChange={e =>
-                setTriggerInfo(prev => ({
-                  ...prev,
-                  actionChangePrompt: {
-                    ...prev.actionChangePrompt,
-                    secret: e.target.value,
-                  },
+                  actionPromptScenarioDescription: e.target.value, // 문자열로 바로 업데이트
                 }))
               }
             />
@@ -267,6 +197,17 @@ export const RenderSubDataFields: React.FC<RenderSubDataFieldsProps> = ({
             <Typography className={styles.conversationLabel}>Conversation Template</Typography>
           </Box>
         </Box>
+      );
+    case TriggerSubDataType.playMedia:
+      return (
+        <PlayMediaComponent
+          onMediaSelect={file => {
+            setTriggerInfo(prev => ({
+              ...prev,
+              actionMediaUrl: URL.createObjectURL(file), // 선택된 파일 URL 저장
+            }));
+          }}
+        />
       );
 
     default:
