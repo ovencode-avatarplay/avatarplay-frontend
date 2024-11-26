@@ -129,7 +129,7 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
           state: 0, // 기본값 설정
         }, // CharacterInfo의 기본값 설정
         actionMediaState: TriggerMediaState.None, // 기본값 설정 (TriggerMediaState의 기본값)
-        actionMediaUrl: '', // 기본값 설정
+        actionMediaUrlList: [], // 기본값 설정
         actionConversationList: [], // 기본값 설정 (빈 대화 리스트)
         maxIntimacyCount: 0, // 기본값 설정
       }),

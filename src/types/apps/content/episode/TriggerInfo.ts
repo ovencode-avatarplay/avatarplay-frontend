@@ -17,7 +17,7 @@ export interface TriggerInfo {
   maxIntimacyCount: number;
   actionCharacterInfo: CharacterInfo;
   actionMediaState: TriggerMediaState;
-  actionMediaUrl: string;
+  actionMediaUrlList: string[];
   actionConversationList: Conversation[];
 }
 export interface ActionChangePrompt {

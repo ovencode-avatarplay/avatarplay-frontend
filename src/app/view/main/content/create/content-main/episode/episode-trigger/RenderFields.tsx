@@ -201,12 +201,20 @@ export const RenderSubDataFields: React.FC<RenderSubDataFieldsProps> = ({
     case TriggerSubDataType.playMedia:
       return (
         <PlayMediaComponent
-          onMediaSelect={file => {
+          onMediaSelect={urlList => {
             setTriggerInfo(prev => ({
               ...prev,
-              actionMediaUrl: URL.createObjectURL(file), // 선택된 파일 URL 저장
+              actionMediaUrlList: urlList, // 선택된 파일 URL 저장
             }));
           }}
+          onTypeSelect={num => {
+            setTriggerInfo(prev => ({
+              ...prev,
+              actionMediaState: num, // 선택된 파일 URL 저장
+            }));
+          }}
+          type={triggerInfo.actionMediaState}
+          initUrls={triggerInfo.actionMediaUrlList}
         />
       );
 

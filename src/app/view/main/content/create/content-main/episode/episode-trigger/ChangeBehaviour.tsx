@@ -65,7 +65,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
       state: 0,
     },
     actionMediaState: item?.actionMediaState || 0, // 기본값 수정
-    actionMediaUrl: item?.actionMediaUrl || '',
+    actionMediaUrlList: item?.actionMediaUrlList || '',
     actionConversationList: item?.actionConversationList || [],
   });
 
@@ -101,7 +101,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
           state: 0,
         },
         actionMediaState: item?.actionMediaState || 0, // 기본값 수정
-        actionMediaUrl: item?.actionMediaUrl || '',
+        actionMediaUrlList: item?.actionMediaUrlList || '',
         actionConversationList: item?.actionConversationList || [],
       });
       if (triggerInfo.actionChangeEpisodeId === -1) {
