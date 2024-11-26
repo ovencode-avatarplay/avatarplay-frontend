@@ -108,7 +108,7 @@ const CharacterDashboard: React.FC = () => {
     }
   };
 
-  // 현재 선택된 캐릭터의 정보를 수정함 (재생성, 그림 추가 등)
+  // 현재 선택된 캐릭터의 정보를 수정함 (재생성 등)
   const updateCharacterInfo = async (newinfo: CharacterInfo) => {
     setLoading(true);
     try {
@@ -252,7 +252,6 @@ const CharacterDashboard: React.FC = () => {
           open={galleryOpen}
           onClose={handleCloseGallery}
           characterData={currentSelectedCharacter}
-          updateCharacter={updateCharacterInfo}
           refreshCharacter={getCharacterInfo}
         />
       )}

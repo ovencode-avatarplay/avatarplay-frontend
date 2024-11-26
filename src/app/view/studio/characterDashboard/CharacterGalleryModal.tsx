@@ -7,17 +7,16 @@ import styles from './CharacterGalleryModal.module.css';
 import CreateCharacterTopMenu from '../../main/content/create/character/CreateCharacterTopMenu';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import CharacterGallery from './CharacterGallery';
-import CharacterGalleryCreateSlide from './CharacterGalleryCreateSlide';
+import CharacterGalleryCreate from './CharacterGalleryCreate';
 import FullViewImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
 import CharacterCreate from '../../main/content/create/character/CreateCharacterSequence';
-import {GalleryCategory} from './CharacterGalleryData';
+import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import {DeleteGalleryReq, sendDeleteGallery} from '@/app/NetWork/CharacterNetwork';
 
 interface CharacterGalleryModalProps {
   open: boolean;
   onClose: () => void;
   characterData: CharacterInfo;
-  updateCharacter: (newinfo: CharacterInfo) => void;
   refreshCharacter: (id: number) => void;
 }
 
@@ -25,7 +24,6 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   open,
   onClose,
   characterData,
-  updateCharacter,
   refreshCharacter,
 }) => {
   const buttons = [
@@ -192,13 +190,14 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
               <CreateCharacterTopMenu
                 backButtonAction={handleRegenerateClose}
                 lastUrl=":/lang/studio/Character"
-                contentTitle={`${characterInfo.name}'s generate`}
+                contentTitle={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]} Creation`}
                 blockStudioButton={true}
               />
-              <CharacterGalleryCreateSlide
+              <CharacterGalleryCreate
                 open={isRegenerateOpen}
                 onClose={handleRegenerateClose}
-                category={characterInfo.name}
+                category={selectedCategory}
+                characterInfo={characterInfo}
               />
             </>
           ) : isModifyOpen ? (
@@ -206,7 +205,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
               <CreateCharacterTopMenu
                 backButtonAction={handleModifyClose}
                 lastUrl=":/lang/studio/Character"
-                contentTitle={'Modify Character'}
+                contentTitle={`Modify ${characterInfo.name}`}
                 blockStudioButton={true}
               />
               <CharacterCreate closeAction={handleModifyClose} isModify={true} />
