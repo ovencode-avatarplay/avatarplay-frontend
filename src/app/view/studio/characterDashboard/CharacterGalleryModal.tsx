@@ -172,9 +172,42 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
       const response = await sendDeleteGallery(req);
 
-      if (response) {
-        console.log('deleted');
+      if (response.data) {
+        console.log('Image deleted successfully:', galleryImageId);
+
+        // 삭제 후 데이터 갱신
+        switch (selectedItem[0]) {
+          case GalleryCategory.Portrait:
+            characterInfo.portraitGalleryImageUrl = characterInfo.portraitGalleryImageUrl.filter(
+              item => item.galleryImageId !== galleryImageId,
+            );
+            break;
+
+          case GalleryCategory.Pose:
+            characterInfo.poseGalleryImageUrl = characterInfo.poseGalleryImageUrl.filter(
+              item => item.galleryImageId !== galleryImageId,
+            );
+            break;
+
+          case GalleryCategory.Expression:
+            characterInfo.expressionGalleryImageUrl = characterInfo.expressionGalleryImageUrl.filter(
+              item => item.galleryImageId !== galleryImageId,
+            );
+            break;
+
+          default:
+            console.error('Unknown category:', selectedItem[0]);
+            break;
+        }
+
+        // 상태 업데이트
+        setCharacterInfo({...characterInfo});
+        setSelectedItem([selectedItem[0], null]);
+      } else {
+        console.error('Failed to delete image with ID:', galleryImageId);
       }
+    } else {
+      console.error('Selected item is invalid:', selectedItem);
     }
   };
 
