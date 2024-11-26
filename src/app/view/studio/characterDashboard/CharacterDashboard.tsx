@@ -130,12 +130,14 @@ const CharacterDashboard: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    setCurrentSelectedCharacter(currentSelectedCharacter);
+  }, [currentSelectedCharacter]);
   //#endregion
 
   //#region  handler
 
   const handleCharacterSelect = (id: number) => {
-    console.log('Selected Character ID:', id);
     setSelectedCharacterId(id);
   };
 
@@ -166,7 +168,6 @@ const CharacterDashboard: React.FC = () => {
 
     await getCharacterInfo(selectedCharacterId);
 
-    console.log(`Opening gallery for character ID: ${selectedCharacterId}`);
     setGalleryOpen(true);
   };
 
@@ -199,8 +200,6 @@ const CharacterDashboard: React.FC = () => {
       const response = await sendDeleteCharacter(payload);
 
       if (response) {
-        console.log(`Character deleted successfully: ${characterName} (ID: ${selectedCharacterId})`);
-
         // UI에서 삭제된 캐릭터 제거
         setCharacters(prev => prev?.filter(char => char.id !== selectedCharacterId));
         setSelectedCharacterId(null);
@@ -222,7 +221,6 @@ const CharacterDashboard: React.FC = () => {
   };
 
   const handleFilterChange = (value: string) => {
-    console.log('Selected filter:', value);
     setSelectedFilter(value);
   };
   //#endregion
@@ -255,6 +253,7 @@ const CharacterDashboard: React.FC = () => {
           onClose={handleCloseGallery}
           characterData={currentSelectedCharacter}
           updateCharacter={updateCharacterInfo}
+          refreshCharacter={getCharacterInfo}
         />
       )}
 

@@ -15,6 +15,7 @@ interface CharacterGalleryProps {
   onCategorySelected: (category: GalleryCategory) => void;
   onCurrentSelected: (category: GalleryCategory, index: number | null) => void;
   onGenerateSelected: () => void;
+  refreshCharacter: (id: number) => void;
 }
 
 const CharacterGallery: React.FC<CharacterGalleryProps> = ({
@@ -22,21 +23,17 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   onCategorySelected,
   onCurrentSelected,
   onGenerateSelected,
+  refreshCharacter,
 }) => {
   // 카테고리
   const [category, setCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
-  const [categoryIndexes, setCategoryIndexes] = useState({
-    All: null as number | null,
-    Portrait: null as number | null,
-    Poses: null as number | null,
-    Expression: null as number | null,
-  });
 
   // list에 올릴 이미지 url
   const [portraitUrl, setPortraitUrl] = useState<GalleryImageInfo[] | null>(null);
   const [poseUrl, setPoseUrl] = useState<GalleryImageInfo[] | null>(null);
   const [expressionUrl, setExpressionUrl] = useState<GalleryImageInfo[] | null>(null);
-  const [itemUrl, setItemUrl] = useState<GalleryImageInfo[] | null>(portraitUrl);
+
+  const [itemUrl, setItemUrl] = useState<GalleryImageInfo[] | null>(null);
 
   // 현재 선택된 아이템
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
@@ -54,10 +51,6 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
 
   const handleSelectItem = (index: number | null) => {
     setSelectedItemIndex(index);
-    setCategoryIndexes(prev => ({
-      ...prev,
-      [category]: index,
-    }));
 
     onCurrentSelected(category, index);
   };
@@ -110,57 +103,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
         const responseGallery = await sendSaveGallery(saveReq);
 
         console.log('save gallery success' + responseGallery.resultCode);
-
-        switch (category) {
-          case GalleryCategory.Portrait:
-            setCurrentCharacterInfo(prevState => ({
-              ...prevState,
-              portraitGalleryImageUrl: [
-                ...prevState.poseGalleryImageUrl,
-                {
-                  galleryImageId: 0,
-                  isGenerate: false,
-                  promptParameter: uploadedImage,
-                  imageUrl: imgUrl,
-                },
-              ],
-            }));
-            break;
-
-          case GalleryCategory.Pose:
-            setCurrentCharacterInfo(prevState => ({
-              ...prevState,
-              poseGalleryImageUrl: [
-                ...prevState.poseGalleryImageUrl,
-                {
-                  galleryImageId: 0,
-                  isGenerate: false,
-                  promptParameter: uploadedImage,
-                  imageUrl: imgUrl,
-                },
-              ],
-            }));
-            break;
-
-          case GalleryCategory.Expression:
-            setCurrentCharacterInfo(prevState => ({
-              ...prevState,
-              expressionGalleryImageUrl: [
-                ...prevState.expressionGalleryImageUrl,
-                {
-                  galleryImageId: 0,
-                  isGenerate: false,
-                  promptParameter: uploadedImage,
-                  imageUrl: imgUrl,
-                },
-              ],
-            }));
-            break;
-
-          default:
-            console.error('Unknown category:', category);
-            break;
-        }
+        refreshCharacter(characterInfo.id);
       } else {
         throw new Error('Unexpected API response: No data');
       }
@@ -172,6 +115,13 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   //#endregion
 
   //#region  hook
+
+  useEffect(() => {
+    setPortraitUrl(currentCharacterInfo.portraitGalleryImageUrl);
+    setPoseUrl(currentCharacterInfo.poseGalleryImageUrl);
+    setExpressionUrl(currentCharacterInfo.expressionGalleryImageUrl);
+  }, []);
+
   useEffect(() => {
     setCurrentCharacterInfo(characterInfo);
   }, [characterInfo]);
@@ -185,30 +135,17 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   useEffect(() => {
     // 카테고리 전환 시 아이템, 인덱스 갱신
     if (category === GalleryCategory.Portrait) {
-      // mainImageUrl을 첫 번째로 추가하고, 그 뒤에 portraitUrl을 연결
-      const updatedPortraitUrl = characterInfo.mainImageUrl
-        ? [
-            {
-              galleryImageId: 0,
-              isGenerate: false,
-              promptParameter: '',
-              imageUrl: characterInfo.mainImageUrl,
-            },
-            ...(portraitUrl || []),
-          ]
-        : [...(portraitUrl || [])];
-      setItemUrl(updatedPortraitUrl);
-      console.log(updatedPortraitUrl);
-      setSelectedItemIndex(categoryIndexes.Portrait);
+      setItemUrl(portraitUrl);
+      setSelectedItemIndex(0);
     } else if (category === GalleryCategory.Pose) {
       setItemUrl(poseUrl);
-      setSelectedItemIndex(categoryIndexes.Poses);
+      setSelectedItemIndex(0);
     } else if (category === GalleryCategory.Expression) {
       setItemUrl(expressionUrl);
-      setSelectedItemIndex(categoryIndexes.Expression);
+      setSelectedItemIndex(0);
     }
     onCategorySelected(category);
-  }, [category, categoryIndexes, portraitUrl, poseUrl, expressionUrl]);
+  }, [category, portraitUrl, poseUrl, expressionUrl]);
   //#endregion
 
   return (
