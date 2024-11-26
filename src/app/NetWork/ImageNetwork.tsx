@@ -23,7 +23,7 @@ export interface MediaUploadRes {
   url: string; // 메인 URL
   imageUrlList: string[]; // 추가 이미지 URL 리스트
 }
-export const sendUploadImage = async (payload: MediaUploadReq): Promise<ResponseAPI<MediaUploadRes>> => {
+export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<MediaUploadRes>> => {
   try {
     const formData = new FormData();
 

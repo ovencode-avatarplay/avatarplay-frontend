@@ -14,10 +14,10 @@ const StudioDashboardMenu: React.FC<StudioDashboardMenuProps> = ({icon, text}) =
     <div className={styles.container}>
       {/* Studio Label with ChevronLeft Icon */}
       <div className={styles.studioLink}>
-        <Link href={`/studio`} passHref>
+        <Link href={`/:lang/main/homefeed`} passHref>
           <Typography className={styles.label} component="a">
             <ChevronLeftIcon className={styles.chevronIcon} />
-            Studio
+            Home
           </Typography>
         </Link>
       </div>

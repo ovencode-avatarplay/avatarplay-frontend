@@ -11,7 +11,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setCharacterInfo, setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo';
 import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
-import {MediaState, MediaUploadReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
+import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EpisodeAiImageGeneration from './EpisodeAiImageGeneration';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
@@ -97,7 +97,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
       };
 
       // 파일 업로드 API 호출
-      const response = await sendUploadImage(req);
+      const response = await sendUpload(req);
 
       if (response?.data) {
         const imgUrl: string = response.data.url; // 메인 이미지 URL

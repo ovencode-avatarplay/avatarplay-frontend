@@ -3,7 +3,7 @@ import {Box, Typography, IconButton} from '@mui/material';
 import {ArrowBackIos} from '@mui/icons-material';
 import styles from './PlayMediaComponent.module.css';
 import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
-import {MediaState, MediaUploadReq, sendUploadImage} from '@/app/NetWork/ImageNetwork';
+import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 interface PlayMediaComponentProps {
@@ -23,11 +23,11 @@ const PlayMediaComponent: React.FC<PlayMediaComponentProps> = ({onMediaSelect}) 
       // Upload 객체 생성
       const req: MediaUploadReq = {
         mediaState: MediaState.TriggerImage, // 적절한 MediaState 설정
-        imageList: [file],
+        triggerImageList: [file],
       };
 
       // 파일 업로드 API 호출
-      const response = await sendUploadImage(req);
+      const response = await sendUpload(req);
 
       if (response?.data) {
         const imgUrls: string[] = response.data.imageUrlList; // 메인 이미지 URL

@@ -99,4 +99,53 @@ export const sendGetCharacterInfo = async (payload: GetCharacterInfoReq): Promis
   }
 };
 
+// UpdateGallery
+
+export interface SaveGalleryReq {
+  characterId: number;
+  galleryType: number;
+  galleryImageUrls: string[];
+  debugParameter: string;
+}
+
+export interface SaveGalleryRes {}
+
+export const sendSaveGallery = async (payload: SaveGalleryReq): Promise<ResponseAPI<SaveGalleryRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<SaveGalleryRes>>('Character/saveGallery', payload);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`SaveGallery Error : ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error save gallery :', error);
+    throw new Error('Failed to send save gallery. Please try again');
+  }
+};
+
+// DeleteGallery
+
+export interface DeleteGalleryReq {
+  galleryImageId: number;
+}
+
+export interface DeleteGalleryRes {}
+
+export const sendDeleteGallery = async (payload: DeleteGalleryReq): Promise<ResponseAPI<DeleteGalleryRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<DeleteGalleryRes>>('Character/deleteGallery', payload);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`DeleteGallery Error : ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error delete gallery :', error);
+    throw new Error('Failed to send delete gallery. Please try again');
+  }
+};
+
 // Select Image

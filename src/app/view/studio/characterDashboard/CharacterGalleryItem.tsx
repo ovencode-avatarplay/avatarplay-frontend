@@ -1,9 +1,10 @@
 import React from 'react';
 import {Box} from '@mui/material';
 import styles from './CharacterGalleryItem.module.css';
+import {GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 
 interface CharacterGalleryItemProps {
-  url: string;
+  url: GalleryImageInfo;
   isSelected: boolean;
   onSelect: () => void;
 }
@@ -14,7 +15,7 @@ const CharacterGalleryItem: React.FC<CharacterGalleryItemProps> = ({url, isSelec
       onClick={onSelect}
       className={`${styles.galleryItem} ${isSelected ? styles.selected : ''}`}
       sx={{
-        backgroundImage: `url(${url})`,
+        backgroundImage: `url(${url.imageUrl})`,
       }}
     />
   );

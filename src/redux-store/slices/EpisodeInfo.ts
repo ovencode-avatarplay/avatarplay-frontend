@@ -28,12 +28,19 @@ export interface CharacterInfo {
   introduction: string;
   genderType: number;
   mainImageUrl: string;
-  portraitGalleryImageUrl: string[];
-  poseGalleryImageUrl: string[];
-  expressionGalleryImageUrl: string[];
+  portraitGalleryImageUrl: GalleryImageInfo[];
+  poseGalleryImageUrl: GalleryImageInfo[];
+  expressionGalleryImageUrl: GalleryImageInfo[];
   visibilityType: number;
   isMonetization: boolean;
   state: number;
+}
+
+export interface GalleryImageInfo {
+  galleryImageId: number;
+  isGenerate: boolean;
+  promptParameter: string;
+  imageUrl: string;
 }
 
 export interface EpisodeDescription {

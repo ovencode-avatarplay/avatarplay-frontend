@@ -2,18 +2,19 @@ import React, {useEffect, useState} from 'react';
 import {Box, ToggleButton, ToggleButtonGroup, Dialog, DialogContent, Button} from '@mui/material';
 import styles from './CharacterGallery.module.css';
 
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 import CharacterGalleryItem from './CharacterGalleryItem';
 
 import ImageUploadDialog from '../../main/content/create/content-main/episode/episode-ImageCharacter/ImageUploadDialog';
-import {MediaState, sendUploadImage, MediaUploadReq} from '@/app/NetWork/ImageNetwork';
+import {MediaState, sendUpload, MediaUploadReq} from '@/app/NetWork/ImageNetwork';
+import {GalleryCategory} from './CharacterGalleryData';
+import {SaveGalleryReq, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
 
 interface CharacterGalleryProps {
   characterInfo: CharacterInfo;
-  onCategorySelected: (category: string) => void;
-  onCurrentSelected: (category: string, index: number | null) => void;
+  onCategorySelected: (category: GalleryCategory) => void;
+  onCurrentSelected: (category: GalleryCategory, index: number | null) => void;
   onGenerateSelected: () => void;
-  updateCharacter: (newinfo: CharacterInfo) => void;
 }
 
 const CharacterGallery: React.FC<CharacterGalleryProps> = ({
@@ -21,21 +22,21 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   onCategorySelected,
   onCurrentSelected,
   onGenerateSelected,
-  updateCharacter,
 }) => {
   // 카테고리
-  const [category, setCategory] = useState('Portrait');
+  const [category, setCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
   const [categoryIndexes, setCategoryIndexes] = useState({
+    All: null as number | null,
     Portrait: null as number | null,
     Poses: null as number | null,
     Expression: null as number | null,
   });
 
   // list에 올릴 이미지 url
-  const [portraitUrl, setPortraitUrl] = useState<string[] | null>(null);
-  const [poseUrl, setPoseUrl] = useState<string[] | null>(null);
-  const [expressionUrl, setExpressionUrl] = useState<string[] | null>(null);
-  const [itemUrl, setItemUrl] = useState<string[] | null>(portraitUrl);
+  const [portraitUrl, setPortraitUrl] = useState<GalleryImageInfo[] | null>(null);
+  const [poseUrl, setPoseUrl] = useState<GalleryImageInfo[] | null>(null);
+  const [expressionUrl, setExpressionUrl] = useState<GalleryImageInfo[] | null>(null);
+  const [itemUrl, setItemUrl] = useState<GalleryImageInfo[] | null>(portraitUrl);
 
   // 현재 선택된 아이템
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
@@ -47,7 +48,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   const [imageUploadDialogOpen, setImageUploadDialogOpen] = useState(false);
 
   //#region handler
-  const handleCategoryChange = (_: any, newCategory: string) => {
+  const handleCategoryChange = (_: any, newCategory: GalleryCategory) => {
     if (newCategory !== null) setCategory(newCategory);
   };
 
@@ -83,57 +84,83 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
       const req: MediaUploadReq = {
         mediaState: MediaState.GalleryImage,
         file: file,
-        imageList: [],
+        triggerImageList: [],
       };
 
       // 파일 업로드 API 호출
-      const response = await sendUploadImage(req);
+      const response = await sendUpload(req);
+
+      const uploadedImage = 'local uploaded image';
 
       if (response?.data) {
         const imgUrl: string = response.data.url;
 
+        console.log('Additional image URLs:', response.data.url); // 추가할 이미지 URL
+
+        let updatedGalleryUrls: string[] = [];
+        updatedGalleryUrls = [imgUrl];
+
+        const saveReq: SaveGalleryReq = {
+          characterId: characterInfo.id,
+          galleryType: category,
+          galleryImageUrls: updatedGalleryUrls,
+          debugParameter: uploadedImage,
+        };
+
+        const responseGallery = await sendSaveGallery(saveReq);
+
+        console.log('save gallery success' + responseGallery.resultCode);
+
         switch (category) {
-          case 'Portrait':
+          case GalleryCategory.Portrait:
             setCurrentCharacterInfo(prevState => ({
               ...prevState,
-              portraitGalleryImageUrl: [...prevState.portraitGalleryImageUrl, imgUrl],
+              portraitGalleryImageUrl: [
+                ...prevState.poseGalleryImageUrl,
+                {
+                  galleryImageId: 0,
+                  isGenerate: false,
+                  promptParameter: uploadedImage,
+                  imageUrl: imgUrl,
+                },
+              ],
             }));
-
-            updateCharacter({
-              ...currentCharacterInfo,
-              portraitGalleryImageUrl: [...currentCharacterInfo.portraitGalleryImageUrl, imgUrl],
-            });
             break;
 
-          case 'Poses':
+          case GalleryCategory.Pose:
             setCurrentCharacterInfo(prevState => ({
               ...prevState,
-              poseGalleryImageUrl: [...prevState.poseGalleryImageUrl, imgUrl],
+              poseGalleryImageUrl: [
+                ...prevState.poseGalleryImageUrl,
+                {
+                  galleryImageId: 0,
+                  isGenerate: false,
+                  promptParameter: uploadedImage,
+                  imageUrl: imgUrl,
+                },
+              ],
             }));
-
-            updateCharacter({
-              ...currentCharacterInfo,
-              poseGalleryImageUrl: [...currentCharacterInfo.poseGalleryImageUrl, imgUrl],
-            });
             break;
 
-          case 'Expression':
+          case GalleryCategory.Expression:
             setCurrentCharacterInfo(prevState => ({
               ...prevState,
-              expressionGalleryImageUrl: [...prevState.expressionGalleryImageUrl, imgUrl],
+              expressionGalleryImageUrl: [
+                ...prevState.expressionGalleryImageUrl,
+                {
+                  galleryImageId: 0,
+                  isGenerate: false,
+                  promptParameter: uploadedImage,
+                  imageUrl: imgUrl,
+                },
+              ],
             }));
-
-            updateCharacter({
-              ...currentCharacterInfo,
-              expressionGalleryImageUrl: [...currentCharacterInfo.expressionGalleryImageUrl, imgUrl],
-            });
             break;
 
           default:
             console.error('Unknown category:', category);
             break;
         }
-        console.log('Additional image URLs:', response.data.url); // 추가 이미지 URL 출력
       } else {
         throw new Error('Unexpected API response: No data');
       }
@@ -146,21 +173,37 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
 
   //#region  hook
   useEffect(() => {
-    setPortraitUrl(characterInfo.portraitGalleryImageUrl);
-    setPoseUrl(characterInfo.poseGalleryImageUrl);
-    setExpressionUrl(characterInfo.expressionGalleryImageUrl);
     setCurrentCharacterInfo(characterInfo);
   }, [characterInfo]);
 
   useEffect(() => {
+    setPortraitUrl(currentCharacterInfo.portraitGalleryImageUrl);
+    setPoseUrl(currentCharacterInfo.poseGalleryImageUrl);
+    setExpressionUrl(currentCharacterInfo.expressionGalleryImageUrl);
+  }, [currentCharacterInfo]);
+
+  useEffect(() => {
     // 카테고리 전환 시 아이템, 인덱스 갱신
-    if (category === 'Portrait') {
-      setItemUrl(portraitUrl);
+    if (category === GalleryCategory.Portrait) {
+      // mainImageUrl을 첫 번째로 추가하고, 그 뒤에 portraitUrl을 연결
+      const updatedPortraitUrl = characterInfo.mainImageUrl
+        ? [
+            {
+              galleryImageId: 0,
+              isGenerate: false,
+              promptParameter: '',
+              imageUrl: characterInfo.mainImageUrl,
+            },
+            ...(portraitUrl || []),
+          ]
+        : [...(portraitUrl || [])];
+      setItemUrl(updatedPortraitUrl);
+      console.log(updatedPortraitUrl);
       setSelectedItemIndex(categoryIndexes.Portrait);
-    } else if (category === 'Poses') {
+    } else if (category === GalleryCategory.Pose) {
       setItemUrl(poseUrl);
       setSelectedItemIndex(categoryIndexes.Poses);
-    } else if (category === 'Expression') {
+    } else if (category === GalleryCategory.Expression) {
       setItemUrl(expressionUrl);
       setSelectedItemIndex(categoryIndexes.Expression);
     }
@@ -171,13 +214,13 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   return (
     <Box className={styles.container}>
       <ToggleButtonGroup value={category} exclusive onChange={handleCategoryChange} className={styles.toggleButtons}>
-        <ToggleButton value="Portrait" className={styles.toggleButton}>
+        <ToggleButton value={GalleryCategory.Portrait} className={styles.toggleButton}>
           Portrait
         </ToggleButton>
-        <ToggleButton value="Poses" className={styles.toggleButton}>
+        <ToggleButton value={GalleryCategory.Pose} className={styles.toggleButton}>
           Poses
         </ToggleButton>
-        <ToggleButton value="Expression" className={styles.toggleButton}>
+        <ToggleButton value={GalleryCategory.Expression} className={styles.toggleButton}>
           Expression
         </ToggleButton>
       </ToggleButtonGroup>

@@ -10,6 +10,8 @@ import CharacterGallery from './CharacterGallery';
 import CharacterGalleryCreateSlide from './CharacterGalleryCreateSlide';
 import FullViewImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
 import CharacterCreate from '../../main/content/create/character/CreateCharacterSequence';
+import {GalleryCategory} from './CharacterGalleryData';
+import {DeleteGalleryReq, sendDeleteGallery} from '@/app/NetWork/CharacterNetwork';
 
 interface CharacterGalleryModalProps {
   open: boolean;
@@ -34,16 +36,14 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     {icon: <DeleteIcon />, text: 'Delete', onClick: () => handleDeleteItem()},
   ];
 
-  useEffect(() => {
-    setCharacterInfo(characterData);
-  }, [characterData]);
-
+  const [selectedCategory, setSelectedCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
   const [isRegenerateOpen, setIsRegenerateOpen] = useState(false);
   const [isModifyOpen, setIsModifyOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<[string, number | null]>(['Portrait', null]); //카테고리가 섞여 있을 가능성도 있다고 했기 때문에 번거롭지만 pair data로
-  const [selectedCategory, setSelectedCategory] = useState<string>('Portrait');
+  const [selectedItem, setSelectedItem] = useState<[GalleryCategory, number | null]>([GalleryCategory.Portrait, null]); //카테고리가 섞여 있을 가능성도 있다고 했기 때문에 번거롭지만 pair data로
 
   const [characterInfo, setCharacterInfo] = useState<CharacterInfo>(characterData);
+  const [fullscreenImage, setFullscreenImage] = useState<FullViewImageData | null>(null); // Add fullscreen image state
+  let imageData: FullViewImageData = {url: '', parameter: ''};
 
   const handleOnClose = () => {
     onClose();
@@ -59,19 +59,23 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     setIsModifyOpen(false);
   };
 
-  const handleSelectItem = (category: string, index: number | null) => {
+  const handleSelectItem = (category: GalleryCategory, index: number | null) => {
     setSelectedItem([category, index]);
   };
 
   const handleRegenerateItem = () => {
     if (!selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
-      if (selectedCategory === 'Portrait') setIsModifyOpen(true);
+    } else {
+      if (selectedCategory === GalleryCategory.Portrait) setIsModifyOpen(true);
       else {
         setIsRegenerateOpen(true);
       }
-    } else {
     }
   };
+
+  useEffect(() => {
+    setCharacterInfo(characterData);
+  }, [characterData]);
 
   const handleViewItem = () => {
     if (!selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
@@ -79,31 +83,49 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
       return;
     }
 
-    let imageData: FullViewImageData = {url: '', parameter: ''};
-
-    switch (selectedItem[0]) {
-      case 'Portrait':
-        if (characterInfo.portraitGalleryImageUrl && characterInfo.portraitGalleryImageUrl[selectedItem[1]]) {
-          imageData.url = characterInfo.portraitGalleryImageUrl[selectedItem[1]];
-          imageData.parameter = `${selectedItem[1]}`;
+    switch (selectedItem[0] as GalleryCategory) {
+      case GalleryCategory.All:
+        const allUrls = [
+          ...(characterInfo.portraitGalleryImageUrl || []),
+          ...(characterInfo.poseGalleryImageUrl || []),
+          ...(characterInfo.expressionGalleryImageUrl || []),
+        ];
+        if (allUrls[selectedItem[1]]) {
+          imageData.url = allUrls[selectedItem[1]].imageUrl;
+          imageData.parameter = `${allUrls[selectedItem[1]].promptParameter}`;
         } else {
-          console.error('Portrait URL not found for index:', selectedItem[1]);
+          console.error('URL not found for index in All category:', selectedItem[1]);
         }
         break;
 
-      case 'Poses':
-        if (characterInfo.poseGalleryImageUrl && characterInfo.poseGalleryImageUrl[selectedItem[1]]) {
-          imageData.url = characterInfo.poseGalleryImageUrl[selectedItem[1]];
+      case GalleryCategory.Portrait:
+        if (selectedItem[1] === 0) {
+          imageData.url = characterInfo.mainImageUrl;
           imageData.parameter = `${selectedItem[1]}`;
+        } else if (
+          characterInfo.portraitGalleryImageUrl &&
+          characterInfo.portraitGalleryImageUrl[selectedItem[1] - 1]
+        ) {
+          imageData.url = characterInfo.portraitGalleryImageUrl[selectedItem[1] - 1].imageUrl;
+          imageData.parameter = `${characterInfo.portraitGalleryImageUrl[selectedItem[1] - 1].promptParameter}`;
+        } else {
+          console.error('Portrait URL not found for index:', selectedItem[1] - 1);
+        }
+        break;
+
+      case GalleryCategory.Pose:
+        if (characterInfo.poseGalleryImageUrl && characterInfo.poseGalleryImageUrl[selectedItem[1]]) {
+          imageData.url = characterInfo.poseGalleryImageUrl[selectedItem[1]].imageUrl;
+          imageData.parameter = `${characterInfo.poseGalleryImageUrl[selectedItem[1]].promptParameter}`;
         } else {
           console.error('Pose URL not found for index:', selectedItem[1]);
         }
         break;
 
-      case 'Expression':
+      case GalleryCategory.Expression:
         if (characterInfo.expressionGalleryImageUrl && characterInfo.expressionGalleryImageUrl[selectedItem[1]]) {
-          imageData.url = characterInfo.expressionGalleryImageUrl[selectedItem[1]];
-          imageData.parameter = `${selectedItem[1]}`;
+          imageData.url = characterInfo.expressionGalleryImageUrl[selectedItem[1]].imageUrl;
+          imageData.parameter = `${characterInfo.expressionGalleryImageUrl[selectedItem[1]].promptParameter}`;
         } else {
           console.error('Expression URL not found for index:', selectedItem[1]);
         }
@@ -122,11 +144,39 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     }
   };
 
-  const handleDeleteItem = () => {
+  const handleDeleteItem = async () => {
     console.log('Delete Clicked' + selectedItem[0] + '/' + selectedItem[1]);
-  };
 
-  const [fullscreenImage, setFullscreenImage] = useState<FullViewImageData | null>(null); // Add fullscreen image state
+    if (selectedItem[0] === GalleryCategory.Portrait && selectedItem[1] === 0) {
+      console.log('Portrait index 0 can not delete');
+    }
+    if (selectedItem[1]) {
+      let galleryImageId = 0;
+      switch (selectedItem[0]) {
+        case GalleryCategory.All:
+          break;
+        case GalleryCategory.Portrait:
+          galleryImageId = characterInfo.portraitGalleryImageUrl[selectedItem[1] - 1].galleryImageId;
+          break;
+        case GalleryCategory.Pose:
+          galleryImageId = characterInfo.poseGalleryImageUrl[selectedItem[1]].galleryImageId;
+          break;
+        case GalleryCategory.Expression:
+          galleryImageId = characterInfo.expressionGalleryImageUrl[selectedItem[1]].galleryImageId;
+          break;
+      }
+
+      const req: DeleteGalleryReq = {
+        galleryImageId: galleryImageId,
+      };
+
+      const response = await sendDeleteGallery(req);
+
+      if (response) {
+        console.log('deleted');
+      }
+    }
+  };
 
   return (
     <Modal open={open} onClose={handleOnClose}>
@@ -169,7 +219,6 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
                 onCategorySelected={setSelectedCategory}
                 onCurrentSelected={handleSelectItem}
                 onGenerateSelected={handleRegenerateItem}
-                updateCharacter={updateCharacter}
               />
               <div className={styles.footer}>
                 {buttons.map((button, index) => (
