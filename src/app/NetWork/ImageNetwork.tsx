@@ -16,7 +16,7 @@ export enum MediaState {
 export interface MediaUploadReq {
   mediaState: number; // Enum 타입
   file?: File; // 업로드할 파일
-  imageList?: File[]; // 추가 이미지 파일 리스트 (선택적)
+  triggerImageList?: File[]; // 추가 이미지 파일 리스트 (선택적)
 }
 
 export interface MediaUploadRes {
@@ -38,13 +38,13 @@ export const sendUploadImage = async (payload: MediaUploadReq): Promise<Response
     // 메인 파일 추가
 
     // 추가 이미지 리스트 처리s
-    if (Array.isArray(payload.imageList) && payload.imageList.length > 0) {
-      payload.imageList.forEach(file => {
-        formData.append('ImageList', file); // 서버가 List<IFormFile>로 수신
+    if (Array.isArray(payload.triggerImageList) && payload.triggerImageList.length > 0) {
+      payload.triggerImageList.forEach(file => {
+        formData.append('TriggerImageList', file); // 서버가 List<IFormFile>로 수신
       });
     } else {
       // ImageList가 비어있을 때 빈 필드라도 전송
-      formData.append('ImageList', new Blob([])); // 빈 Blob을 추가
+      formData.append('TriggerImageList', new Blob([])); // 빈 Blob을 추가
     }
 
     // Axios 요청
