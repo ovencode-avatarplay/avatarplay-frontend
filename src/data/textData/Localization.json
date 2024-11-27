@@ -1,150 +1,164 @@
 {
-    "EpisodeDescription": {
-      "sampleText_label_001": {
-        "ko": "샘플",
-        "en": "Sample",
-        "ja": "Sample Ja",
-        "fr": "Sample fr",
-        "es": "Sample es",
-        "zh-CN": "Sample zh-CN",
-        "zh-TW": "Sample zh-TW",
-        "pt-PT": "Sample pt-PT",
-        "de": "Sample de"
-      },
-      "episodeDescription_label_001": {
-        "ko": "노력하지 않고 인기를 얻고 싶어",
-        "en": "",
-        "ja": "",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      },
-      "episodeDescription_label_002": {
-        "ko": "그게 바로 사랑의 시작이잖아",
-        "en": "",
-        "ja": "",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      },
-      "episodeDescription_label_003": {
-        "ko": "나에 대한 이상한 소문",
-        "en": "",
-        "ja": "",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      },
-      "episodeDescription_label_004": {
-        "ko": "친구의 부탁",
-        "en": "",
-        "ja": "",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      },
-      "scenarioIntroduction_desc_001": {
-        "ko": "살아온 나이 = 솔로인 기간인 {{user}}. 언제쯤 연인이 생길까. 낙심하던 중 가판대에 파는 사랑의 부적을 얼떨결에 사버린 {{user}}. 이게 정말 효과가 있을까?",
-        "en": "",
-        "ja": "",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      },
-      "scenarioGuide_desc_001": {
-        "ko": "{{char}}은 {{user}} 당신이 사랑의 부적을 사는 모습을 지켜본다. 그 모습을 보며 그에게 흥미를 느끼기 시작한다. 사랑의 부적을 믿는 {{user}} 당신을 한심하게 생각한다.",
-        "en": "",
-        "ja": "",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      },
-      "scenarioGuide_desc_002": {
-        "ko": "{{user}} 당신은 죽은 {{char}}의 전 애인의 얼굴과 똑같이 생겼다. {{user}}에게 관심 있는 이유는 그의 얼굴 뿐이다.",
-        "en": "",
-        "ja": "",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      },
-      "scenarioGuide_desc_003": {
-        "ko": "{{char}}은 {{user}}의 곤란한 모습을 보려고 일부러 나쁜 소문을 퍼트렸다. {{char}}은 {{user}}의 우는 모습, 침울해하는 모습을 보길 기대하고 있다.",
-        "en": "",
-        "ja": "",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      },
-      "scenarioGuide_desc_004": {
-        "ko": "예전 {{char}}은 {{user}}에게 괴롭힘 당했다. {{user}} 본인은 해당 일을 기억하지 못한다. {{char}}은 이 점을 이용해 {{user}}에게 복수하려고 한다.",
-        "en": "",
-        "ja": "",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      }
+  "SampleText": {
+    "sampleText_label_001": {
+      "type": "",
+      "ko": "샘플",
+      "en-US": "Sample",
+      "ja": "Sample Ja",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    }
+  },
+  "EpisodeDescription": {
+    "episodeDescription_label_001": {
+      "type": "",
+      "ko": "노력하지 않고 인기를 얻고 싶어",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
     },
-    "CreateWidget": {
-      "widgetCharacter_label_001": {
-        "ko": "캐릭터",
-        "en": "Character",
-        "ja": "Character Ja",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      },
-      "widgetStory_label_001": {
-        "ko": "스토리",
-        "en": "Story",
-        "ja": "Story Ja",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      },
-      "widgetPost_label_001": {
-        "ko": "포스트",
-        "en": "Post",
-        "ja": "Post Ja",
-        "fr": "",
-        "es": "",
-        "zh-CN": "",
-        "zh-TW": "",
-        "pt-PT": "",
-        "de": ""
-      }
+    "episodeDescription_label_002": {
+      "type": "",
+      "ko": "그게 바로 사랑의 시작이잖아",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "episodeDescription_label_003": {
+      "type": "",
+      "ko": "나에 대한 이상한 소문",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "episodeDescription_label_004": {
+      "type": "",
+      "ko": "친구의 부탁",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "scenarioIntroduction_desc_001": {
+      "type": "",
+      "ko": "{{char}}의 부탁을 들어주려다 난처한 상황에 빠져버렸다. {{char}}는 그 모습을 보며 즐거워한다.",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "scenarioGuide_desc_001": {
+      "type": "",
+      "ko": "{{char}}은 {{user}} 당신이 사랑의 부적을 사는 모습을 지켜본다. 그 모습을 보며 그에게 흥미를 느끼기 시작한다. 사랑의 부적을 믿는 {{user}} 당신을 한심하게 생각한다.",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "scenarioGuide_desc_002": {
+      "type": "",
+      "ko": "{{user}} 당신은 죽은 {{char}}의 전 애인의 얼굴과 똑같이 생겼다. {{user}}에게 관심 있는 이유는 그의 얼굴 뿐이다.",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "scenarioGuide_desc_003": {
+      "type": "",
+      "ko": "{{char}}은 {{user}}의 곤란한 모습을 보려고 일부러 나쁜 소문을 퍼트렸다. {{char}}은 {{user}}의 우는 모습, 침울해하는 모습을 보길 기대하고 있다.",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "scenarioGuide_desc_004": {
+      "type": "",
+      "ko": "예전 {{char}}은 {{user}}에게 괴롭힘 당했다. {{user}} 본인은 해당 일을 기억하지 못한다. {{char}}은 이 점을 이용해 {{user}}에게 복수하려고 한다.",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    }
+  },
+  "CreateWidget": {
+    "widgetCharacter_label_001": {
+      "type": "",
+      "ko": "캐릭터",
+      "en-US": "Character",
+      "ja": "Character Ja",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "widgetStory_label_001": {
+      "type": "",
+      "ko": "스토리",
+      "en-US": "Story",
+      "ja": "Story Ja",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "widgetPost_label_001": {
+      "type": "",
+      "ko": "포스트",
+      "en-US": "Post",
+      "ja": "Post Ja",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
     }
   }
-  
+}
