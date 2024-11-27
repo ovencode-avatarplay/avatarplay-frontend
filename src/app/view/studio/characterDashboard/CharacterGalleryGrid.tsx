@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, Button, Typography} from '@mui/material';
 import styles from './CharacterGallery.module.css';
 import CharacterGalleryItem from './CharacterGalleryItem';

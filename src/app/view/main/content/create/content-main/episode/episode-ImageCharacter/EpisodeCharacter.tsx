@@ -86,6 +86,8 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({currentStep, onClose
   const handleFinish = async () => {
     if (!currentSelectedCharacter || selectedGalleryIndex === null) {
       console.error('Character or selected gallery index is not set');
+      console.error('currentSelectedCharacter', currentSelectedCharacter);
+      console.error('selectedGalleryIndex', selectedGalleryIndex);
       return;
     }
 
@@ -118,7 +120,7 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({currentStep, onClose
         {currentStep === 2 && (
           <CharacterGalleryGrid
             itemUrl={galleryAllUrl}
-            selectedItemIndex={0}
+            selectedItemIndex={selectedGalleryIndex}
             onSelectItem={i => {
               setSelectedGalleryIndex(i);
             }}
@@ -140,7 +142,7 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({currentStep, onClose
           className={styles.confirmButton}
           variant="outlined"
           onClick={currentStep === 3 ? handleFinish : handleConfirm} // Step 3에서 Finish 버튼 클릭 시 모달 닫기
-          disabled={currentStep === 1 && !selectedCharacterId} // Step 1에서 캐릭터 선택이 없으면 비활성화
+          disabled={(currentStep === 1 && !selectedCharacterId) || (currentStep === 2 && selectedGalleryIndex == null)} // Step 1에서 캐릭터 선택이 없으면 비활성화
         >
           {currentStep === 3 ? 'Finish' : 'Confirm'}
         </Button>
