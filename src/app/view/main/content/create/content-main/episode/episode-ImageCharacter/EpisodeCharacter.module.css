@@ -44,3 +44,12 @@
     align-items: center; 
     bottom: 30%;
 }
+
+  
+.confirmButton {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  

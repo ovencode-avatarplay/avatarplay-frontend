@@ -45,7 +45,7 @@ const EpisodeStarringCharacter: React.FC<EpisodeStarringCharacterProps> = ({open
         <span className={styles['modal-title']}>Episode Conversation Template</span>
       </DialogTitle>
       <div style={{height: '90%'}}>
-        <EpisodeCharacter currentStep={currentStep} setCurrentStep={setCurrentStep} />
+        <EpisodeCharacter currentStep={currentStep} setCurrentStep={setCurrentStep} onClose={closeModal} />
       </div>
 
       {/* <Box className={styles.artistInfo}>

@@ -2,21 +2,27 @@ import React, {useState, useEffect} from 'react';
 import {Button, Box} from '@mui/material';
 import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
 import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo, setCharacterInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CharacterGrid from '@/app/view/studio/characterDashboard/CharacterGrid';
+import EpisodeCharacterView from './EpisodeCharacterView'; // Step 3에 사용할 컴포넌트
+
+import styles from './EpisodeCharacter.module.css';
+import {useDispatch} from 'react-redux';
 
 interface EpisodeCharacterProps {
   currentStep: number;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  onClose: () => void;
 }
 
-const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({currentStep, setCurrentStep}) => {
+const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({currentStep, onClose, setCurrentStep}) => {
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
   const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
+  const [selectedGalleryIndex, setSelectedGalleryIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
+  const dispatch = useDispatch();
   // Step 1: 캐릭터 리스트 가져오기
   const getCharacterList = async () => {
     setLoading(true);
@@ -73,8 +79,23 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({currentStep, setCurr
       await getCharacterInfo(selectedCharacterId);
       setCurrentStep(2);
     } else if (currentStep === 2) {
-      console.log('Proceed to next step'); // Step 3 로직 추가
+      setCurrentStep(3); // Step 3으로 이동
     }
+  };
+
+  const handleFinish = async () => {
+    if (!currentSelectedCharacter || selectedGalleryIndex === null) {
+      console.error('Character or selected gallery index is not set');
+      return;
+    }
+
+    const updatedCharacterInfo = {
+      ...currentSelectedCharacter,
+      mainImageUrl: galleryAllUrl[selectedGalleryIndex].imageUrl, // 선택된 이미지 URL 추가
+    };
+
+    dispatch(setCharacterInfo(updatedCharacterInfo)); // Redux 상태 업데이트
+    onClose(); // 모달 닫기
   };
 
   // Step 1 초기화: 컴포넌트 마운트 시 캐릭터 리스트 가져오기
@@ -88,7 +109,7 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({currentStep, setCurr
     <>
       <Box
         sx={{
-          height: '85vh', // 화면의 80% 높이
+          height: '85vh', // 화면의 85% 높이
           overflowY: 'auto', // 세로 스크롤 허용
           padding: 2, // 패딩 추가
         }}
@@ -98,24 +119,32 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({currentStep, setCurr
           <CharacterGalleryGrid
             itemUrl={galleryAllUrl}
             selectedItemIndex={0}
-            onSelectItem={() => {}}
+            onSelectItem={i => {
+              setSelectedGalleryIndex(i);
+            }}
             isTrigger={true}
+          />
+        )}
+        {currentStep === 3 && currentSelectedCharacter && (
+          <EpisodeCharacterView
+            imageUrl={currentSelectedCharacter.portraitGalleryImageUrl?.[0].imageUrl || ''}
+            characterInfo={currentSelectedCharacter}
+            open={true}
+            onClose={() => setCurrentStep(2)} // 닫으면 Step 2로 돌아가기
+            onChange={() => setCurrentStep(2)} // Change 버튼 클릭 시 Step 2로 돌아가기
           />
         )}
       </Box>
       <Box>
         <Button
-          sx={{
-            m: 1,
-            color: 'black',
-            borderColor: 'gray',
-          }}
+          className={styles.confirmButton}
           variant="outlined"
-          onClick={handleConfirm}
+          onClick={currentStep === 3 ? handleFinish : handleConfirm} // Step 3에서 Finish 버튼 클릭 시 모달 닫기
           disabled={currentStep === 1 && !selectedCharacterId} // Step 1에서 캐릭터 선택이 없으면 비활성화
         >
-          Confirm
+          {currentStep === 3 ? 'Finish' : 'Confirm'}
         </Button>
+
         <LoadingOverlay loading={loading} />
       </Box>
     </>
