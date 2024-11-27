@@ -156,10 +156,42 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     if (selectedItem[1] !== null && selectedItem[1] !== undefined) {
       let galleryImageId = 0;
 
-      const tmpData = getSelectedImageData();
+      let targetCategory: GalleryCategory | null = null;
+      let adjustedIndex = selectedItem[1];
 
-      if (tmpData) {
-        galleryImageId = tmpData.galleryImageId;
+      // All 일때 해당하는 삭제 요청 받은 아이템 찾기
+      if (selectedItem[0] === GalleryCategory.All) {
+        const portraitLength = characterInfo.portraitGalleryImageUrl?.length || 0;
+        const poseLength = characterInfo.poseGalleryImageUrl?.length || 0;
+
+        if (adjustedIndex < portraitLength) {
+          targetCategory = GalleryCategory.Portrait;
+        } else if (adjustedIndex < portraitLength + poseLength) {
+          targetCategory = GalleryCategory.Pose;
+          adjustedIndex -= portraitLength;
+        } else {
+          targetCategory = GalleryCategory.Expression;
+          adjustedIndex -= portraitLength + poseLength;
+        }
+      } else {
+        targetCategory = selectedItem[0];
+      }
+
+      const selectedData = (() => {
+        switch (targetCategory) {
+          case GalleryCategory.Portrait:
+            return characterInfo.portraitGalleryImageUrl[adjustedIndex];
+          case GalleryCategory.Pose:
+            return characterInfo.poseGalleryImageUrl[adjustedIndex];
+          case GalleryCategory.Expression:
+            return characterInfo.expressionGalleryImageUrl[adjustedIndex];
+          default:
+            return null;
+        }
+      })();
+
+      if (selectedData) {
+        galleryImageId = selectedData.galleryImageId;
 
         const req: DeleteGalleryReq = {
           galleryImageId: galleryImageId,
@@ -175,7 +207,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
           // 삭제 후 selectedItem 업데이트
           const currentCategoryUrls = (() => {
-            switch (selectedItem[0]) {
+            switch (targetCategory) {
               case GalleryCategory.Portrait:
                 return characterInfo.portraitGalleryImageUrl;
               case GalleryCategory.Pose:
