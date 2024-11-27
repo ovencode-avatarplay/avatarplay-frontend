@@ -17,7 +17,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 import styles from './PublishCharacter.module.css';
 
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
 
 // publish가 끝나고 다른곳으로 이동하기
@@ -28,9 +28,17 @@ interface PublishCharacterProps {
   url: string;
   gender: number;
   createOption: GenerateParameter[];
+  publishRequested: boolean;
+  publishRequestedAction: () => void;
 }
 
-const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender, createOption}) => {
+const PublishCharacter: React.FC<PublishCharacterProps> = ({
+  url,
+  gender,
+  createOption,
+  publishRequested,
+  publishRequestedAction,
+}) => {
   const [drawerVisibilityOpen, setDrawerVisibilityOpen] = useState(false);
   const [drawerMonetizationOpen, setDrawerMonetizationOpen] = useState(false);
   const [visibility, setVisibility] = useState('Private');
@@ -41,7 +49,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender, createO
   const [characterName, setCharacterName] = useState<string>('');
   const [characterIntroduction, setCharacterIntroduction] = useState<string>('');
   const [characterDescription, setCharacterDescription] = useState<string>('');
-
+  const [isPublishRequested, setIsPublishRequested] = useState<Boolean>(false);
   const handleDrawerVisibilityToggle = () => {
     setDrawerVisibilityOpen(!drawerVisibilityOpen);
   };
@@ -96,6 +104,18 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender, createO
       return 'Fan';
     }
   }
+
+  useEffect(() => {
+    if (publishRequested) setIsPublishRequested(true);
+  }, [publishRequested]);
+
+  useEffect(() => {
+    if (isPublishRequested) {
+      handleCreateCharacter();
+      publishRequestedAction();
+      setIsPublishRequested(false);
+    }
+  }, [isPublishRequested]);
 
   return (
     <>

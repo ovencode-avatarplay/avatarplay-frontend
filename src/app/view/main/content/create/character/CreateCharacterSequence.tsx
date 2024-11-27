@@ -53,6 +53,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
   const [activeStep, setActiveStep] = useState(0);
   const stepperRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
+  const [publishClick, setPublishClick] = useState(Boolean);
+  const [publishReqested, setPublishReqested] = useState(Boolean);
 
   const defaultOptions: Record<string, CreateCharacterOption[]> = {
     styleOptions: [],
@@ -122,6 +124,13 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
     personality: 0,
     result: 0,
   });
+
+  useEffect(() => {
+    if (publishClick) {
+      setPublishReqested(true);
+      setPublishClick(false);
+    }
+  }, [publishClick]);
 
   // gender 0 Male / 1 Female, style 0 Real / 1 Anime
   useEffect(() => {
@@ -677,6 +686,10 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
               url={generatedOptions?.imageUrl[selectedOptions.result] ?? ''}
               gender={selectedOptions.gender}
               createOption={generatePrompts(summaryOptions, selectedOptions)}
+              publishRequested={publishReqested}
+              publishRequestedAction={() => {
+                setPublishReqested(false);
+              }}
             />
           </div>
         );
@@ -704,7 +717,12 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
           </>
         ) : (
           <>
-            <PublishCharacterBottom onPrevClick={handlePrev} onPublishClick={() => {}} />
+            <PublishCharacterBottom
+              onPrevClick={handlePrev}
+              onPublishClick={() => {
+                setPublishClick(true);
+              }}
+            />
           </>
         )}
       </>
