@@ -1,10 +1,17 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from './EpisodeStarringCharacter.module.css'; // CSS Module import
 import {Dialog, DialogTitle, Button, IconButton, Box, Typography} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import {useDispatch} from 'react-redux'; // Redux useDispatch import
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
+import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
+import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {Height} from '@mui/icons-material';
+import EpisodeUploadCharacter from './EpisodeUploadCharacter';
+import EpisodeCharacter from './EpisodeCharacter';
 
 interface EpisodeStarringCharacterProps {
   open: boolean; // 모달 열림 상태
@@ -13,7 +20,14 @@ interface EpisodeStarringCharacterProps {
 
 const EpisodeStarringCharacter: React.FC<EpisodeStarringCharacterProps> = ({open, closeModal}) => {
   const dispatch = useDispatch(); // Redux dispatch hook 사용
-
+  const [currentStep, setCurrentStep] = useState<number>(1); // 현재 스텝 관리
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(prevStep => prevStep - 1);
+    } else {
+      closeModal(); // 첫 번째 스텝에서는 모달을 닫음
+    }
+  };
   return (
     <Dialog
       closeAfterTransition={false}
@@ -25,21 +39,15 @@ const EpisodeStarringCharacter: React.FC<EpisodeStarringCharacterProps> = ({open
       disableEnforceFocus={true} // disableEnforceFocus 속성 사용
     >
       <DialogTitle className={styles['modal-header']}>
-        <Button onClick={closeModal} className={styles['close-button']}>
+        <Button onClick={handleBack} className={styles['close-button']}>
           <ArrowBackIosIcon />
         </Button>
         <span className={styles['modal-title']}>Episode Conversation Template</span>
       </DialogTitle>
-      <Button
-        sx={{
-          m: 1,
-          color: 'black',
-          borderColor: 'gray',
-        }}
-        variant="outlined"
-      >
-        Confirm
-      </Button>
+      <div style={{height: '90%'}}>
+        <EpisodeCharacter currentStep={currentStep} setCurrentStep={setCurrentStep} />
+      </div>
+
       {/* <Box className={styles.artistInfo}>
         <FormatListBulletedIcon fontSize="large" />
 
