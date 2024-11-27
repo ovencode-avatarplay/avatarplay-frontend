@@ -5,6 +5,8 @@ import styles from './ChangeBehaviour.module.css';
 import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/DataTypes';
 import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 import PlayMediaComponent from './PlayMediaComponent';
+import EpisodeStarringCharacter from '../episode-ImageCharacter/EpisodeStarringCharacter';
+import TriggerChangeCharacter from './TriggerChangeCharacter';
 interface RenderTargetValueFieldProps {
   triggerInfo: TriggerInfo; // TriggerInfo 타입 지정
   setTriggerInfo: React.Dispatch<React.SetStateAction<TriggerInfo>>;
@@ -217,7 +219,8 @@ export const RenderSubDataFields: React.FC<RenderSubDataFieldsProps> = ({
           initUrls={triggerInfo.actionMediaUrlList}
         />
       );
-
+    case TriggerSubDataType.ChangeCharacter:
+      return <TriggerChangeCharacter triggerInfo={triggerInfo} setTriggerInfo={setTriggerInfo} />;
     default:
       return null;
   }

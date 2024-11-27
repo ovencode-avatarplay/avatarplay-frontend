@@ -12,13 +12,21 @@ import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import {Height} from '@mui/icons-material';
 import EpisodeUploadCharacter from './EpisodeUploadCharacter';
 import EpisodeCharacter from './EpisodeCharacter';
+import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 
 interface EpisodeStarringCharacterProps {
   open: boolean; // 모달 열림 상태
   closeModal: () => void; // 모달 닫기 함수
+  isTrigger?: boolean;
+  setTriggerInfo?: React.Dispatch<React.SetStateAction<TriggerInfo>>;
 }
 
-const EpisodeStarringCharacter: React.FC<EpisodeStarringCharacterProps> = ({open, closeModal}) => {
+const EpisodeStarringCharacter: React.FC<EpisodeStarringCharacterProps> = ({
+  open,
+  closeModal,
+  isTrigger,
+  setTriggerInfo,
+}) => {
   const dispatch = useDispatch(); // Redux dispatch hook 사용
   const [currentStep, setCurrentStep] = useState<number>(1); // 현재 스텝 관리
   const handleBack = () => {
@@ -45,7 +53,13 @@ const EpisodeStarringCharacter: React.FC<EpisodeStarringCharacterProps> = ({open
         <span className={styles['modal-title']}>Episode Conversation Template</span>
       </DialogTitle>
       <div style={{height: '90%'}}>
-        <EpisodeCharacter currentStep={currentStep} setCurrentStep={setCurrentStep} onClose={closeModal} />
+        <EpisodeCharacter
+          currentStep={currentStep}
+          setCurrentStep={setCurrentStep}
+          onClose={closeModal}
+          isTrigger={isTrigger}
+          setTriggerInfo={setTriggerInfo}
+        />
       </div>
 
       {/* <Box className={styles.artistInfo}>
