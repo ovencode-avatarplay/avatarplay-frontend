@@ -9,6 +9,7 @@ import ImageUploadDialog from '../../main/content/create/content-main/episode/ep
 import {MediaState, sendUpload, MediaUploadReq} from '@/app/NetWork/ImageNetwork';
 import {GalleryCategory} from './CharacterGalleryData';
 import {SaveGalleryReq, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
+import GalleryItemList from './CharacterGalleryGrid';
 
 interface CharacterGalleryProps {
   characterInfo: CharacterInfo;
@@ -110,6 +111,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
     } catch (error) {
       console.error('Error uploading image:', error);
     } finally {
+      console.log('final');
     }
   };
   //#endregion
@@ -162,19 +164,12 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
         </ToggleButton>
       </ToggleButtonGroup>
 
-      <Box className={styles.galleryContainer}>
-        {itemUrl?.map((item, index) => (
-          <CharacterGalleryItem
-            key={index}
-            url={item}
-            isSelected={selectedItemIndex === index}
-            onSelect={() => handleSelectItem(index)}
-          />
-        ))}
-        <Button variant="contained" color="primary" onClick={handleAddImageClick} className={styles.addImageButton}>
-          + Add Image
-        </Button>
-      </Box>
+      <GalleryItemList
+        itemUrl={itemUrl}
+        selectedItemIndex={selectedItemIndex}
+        onSelectItem={handleSelectItem}
+        onAddImageClick={handleAddImageClick}
+      />
 
       <Dialog open={uploadModeDialogOpen} onClose={handleUploadModeDialogClose}>
         <DialogContent>
