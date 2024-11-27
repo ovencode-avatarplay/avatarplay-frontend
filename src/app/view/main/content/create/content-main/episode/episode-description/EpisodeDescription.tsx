@@ -1,50 +1,15 @@
-'use client';
-// Modal or Drawer
-
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography} from '@mui/material';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
 
-import styles from './EpisodeDescription.module.css'; // CSS 모듈 import
-import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
+import styles from './EpisodeDescription.module.css';
 
-import PostAddIcon from '@mui/icons-material/PostAdd';
-import EpisodeConversationTemplate from '../episode-conversationtemplate/EpisodeConversationTemplate';
-export interface CharacterDataType {
-  userId: number;
-  characterName: string;
-  characterDescription: string;
-  worldScenario: string;
-  introduction: string;
-  secret: string;
-  //thumbnail: string;
-}
-
-interface CharacterPopupProps {
-  dataDefault?: CharacterDataType;
-  isModify: boolean;
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (data: CharacterDataType) => void;
-}
-
-export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
-  dataDefault,
-  isModify = false,
-  open,
-  onClose,
-  onSubmit,
-}) => {
+export const EpisodeDescription: React.FC = () => {
   const dispatch = useDispatch();
 
-  const userId = useSelector((state: RootState) => state.user.userId);
-
-  // 현재 에피소드 정보 가져오기
   const currentEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
-
-  // 상태 초기화
 
   const [worldScenario, setWorldScenario] = useState<string>(
     currentEpisodeInfo.episodeDescription.scenarioDescription || '',
@@ -53,50 +18,44 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
     currentEpisodeInfo.episodeDescription.introDescription || '',
   );
   const [secret, setSecret] = useState<string>(currentEpisodeInfo.episodeDescription.secret || '');
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  //const [thumbnail, setThumbnail] = useState<string>(dataDefault?.thumbnail || "");
-  const [error, setError] = useState<string | null>(null);
-  const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
-  const openConversationModal = () => {
-    setConversationModalOpen(true); // Conversation 모달 열기
-  };
-  const closeConversationModal = () => {
-    setConversationModalOpen(false); // Conversation 모달 닫기
-  };
-  // 정보 제출 처리
-  const handleSubmit = () => {
-    const updatedEpisodeDescription = {
-      scenarioDescription: worldScenario,
-      introDescription: introduction,
-      secret,
-    };
+  const worldScenarioRef = useRef<HTMLInputElement | null>(null);
+  const introductionRef = useRef<HTMLInputElement | null>(null);
+  const secretRef = useRef<HTMLInputElement | null>(null);
 
-    dispatch(updateEpisodeDescription(updatedEpisodeDescription)); // Redux에 정보 업데이트
-
-    onClose(); // 다이얼로그 닫기
+  const handleFocus = (field: string) => {
+    setFocusedField(field);
   };
 
-  const onChangesetWorldScenario = (worldScenario: string) => {
-    setWorldScenario(worldScenario);
+  const handleBlur = (event: React.FocusEvent) => {
+    // 버튼 클릭으로 인한 blur는 무시
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    if (relatedTarget && relatedTarget.dataset && relatedTarget.dataset.virtualButton) {
+      return;
+    }
+    setFocusedField(null);
   };
 
-  const onChangesetIntroduction = (worldScenario: string) => {
-    setIntroduction(worldScenario);
-  };
-
-  const onChangesetSecret = (worldScenario: string) => {
-    setSecret(worldScenario);
+  const handleVirtualButtonClick = (buttonText: string) => {
+    if (focusedField === 'worldScenario' && worldScenarioRef.current) {
+      worldScenarioRef.current.focus();
+      setWorldScenario(worldScenario + buttonText);
+    } else if (focusedField === 'introduction' && introductionRef.current) {
+      introductionRef.current.focus();
+      setIntroduction(introduction + buttonText);
+    } else if (focusedField === 'secret' && secretRef.current) {
+      secretRef.current.focus();
+      setSecret(secret + buttonText);
+    }
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open={true} fullWidth maxWidth="sm">
       <DialogTitle>
         <Typography className={styles.dialogTitle}>Character Information</Typography>
       </DialogTitle>
       <DialogContent className={styles.dialogContent}>
-        <Typography variant="subtitle1" gutterBottom>
-          Please enter the character details below:
-        </Typography>
         <TextField
           label="World Scenario"
           variant="outlined"
@@ -105,7 +64,10 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
           multiline
           rows={4}
           value={worldScenario}
-          onChange={e => onChangesetWorldScenario(e.target.value)}
+          onChange={e => setWorldScenario(e.target.value)}
+          onFocus={() => handleFocus('worldScenario')}
+          onBlur={handleBlur}
+          inputRef={worldScenarioRef}
         />
         <TextField
           label="Introduction"
@@ -115,7 +77,10 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
           multiline
           rows={4}
           value={introduction}
-          onChange={e => onChangesetIntroduction(e.target.value)}
+          onChange={e => setIntroduction(e.target.value)}
+          onFocus={() => handleFocus('introduction')}
+          onBlur={handleBlur}
+          inputRef={introductionRef}
         />
         <TextField
           label="Secret"
@@ -125,30 +90,45 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
           multiline
           rows={4}
           value={secret}
-          onChange={e => onChangesetSecret(e.target.value)}
+          onChange={e => setSecret(e.target.value)}
+          onFocus={() => handleFocus('secret')}
+          onBlur={handleBlur}
+          inputRef={secretRef}
         />
-        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />{' '}
-        {/* <TextField
-                    label="Thumbnail"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={thumbnail}
-                    onChange={(e) => setThumbnail(e.target.value)}
-                /> */}
-        {error && <Typography className={styles.errorMessage}>{error}</Typography>}
       </DialogContent>
       <DialogActions className={styles.dialogActions}>
-        {/* <div>
-                <Button onClick={handleSubmit} color="primary">
-                        {isModify ? "Modify" : "Create"}
-                    </Button>
-                </div> */}
-        <Button onClick={handleSubmit} color="primary" className={styles.confirmButton}>
+        <Button color="primary" className={styles.confirmButton}>
           확인
         </Button>
       </DialogActions>
-      <EpisodeConversationTemplate open={isConversationModalOpen} closeModal={closeConversationModal} />{' '}
+      {focusedField && (
+        <div className={styles.keyboardButtons}>
+          <Button
+            variant="contained"
+            color="primary"
+            data-virtual-button
+            onClick={() => handleVirtualButtonClick('자동입력')}
+          >
+            자동입력
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            data-virtual-button
+            onClick={() => handleVirtualButtonClick('캐릭터')}
+          >
+            캐릭터
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            data-virtual-button
+            onClick={() => handleVirtualButtonClick('유저')}
+          >
+            유저
+          </Button>
+        </div>
+      )}
     </Dialog>
   );
 };
