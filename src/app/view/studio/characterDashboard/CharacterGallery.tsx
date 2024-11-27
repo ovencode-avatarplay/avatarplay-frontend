@@ -17,6 +17,7 @@ interface CharacterGalleryProps {
   onCurrentSelected: (category: GalleryCategory, index: number | null) => void;
   onGenerateSelected: () => void;
   refreshCharacter: (id: number) => void;
+  initialSelectedItem?: [GalleryCategory, number | null];
 }
 
 const CharacterGallery: React.FC<CharacterGalleryProps> = ({
@@ -25,6 +26,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   onCurrentSelected,
   onGenerateSelected,
   refreshCharacter,
+  initialSelectedItem,
 }) => {
   // 카테고리
   const [category, setCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
@@ -117,6 +119,13 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   //#endregion
 
   //#region  hook
+  useEffect(() => {
+    if (initialSelectedItem) {
+      const [initialCategory, initialIndex] = initialSelectedItem;
+      setCategory(initialCategory);
+      setSelectedItemIndex(initialIndex);
+    }
+  }, [initialSelectedItem]);
 
   useEffect(() => {
     setPortraitUrl(currentCharacterInfo.portraitGalleryImageUrl);

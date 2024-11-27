@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import styles from './CharacterGalleryModal.module.css';
 
 // redux
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 
 // Network
 import {DeleteGalleryReq, sendDeleteGallery} from '@/app/NetWork/CharacterNetwork';
@@ -51,7 +51,6 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
   const [characterInfo, setCharacterInfo] = useState<CharacterInfo>(characterData);
   const [viewerOpen, setViewerOpen] = useState(false);
-  const [viewerImages, setViewerImages] = useState<string[]>([]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -59,6 +58,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     onClose();
     setIsRegenerateOpen(false);
     setIsModifyOpen(false);
+    setViewerOpen(false);
   };
 
   const handleRegenerateClose = () => {
@@ -139,7 +139,6 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     }
 
     if (imageUrls.length > 0) {
-      setViewerImages(imageUrls);
       setViewerOpen(true);
     } else {
       console.error('No valid URLs found for the selected category');
@@ -151,111 +150,157 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
     if (selectedItem[0] === GalleryCategory.Portrait && selectedItem[1] === 0) {
       setErrorMessage('The main portrait (index 0) cannot be deleted.');
+      return;
     }
-    if (selectedItem[1]) {
+
+    if (selectedItem[1] !== null && selectedItem[1] !== undefined) {
       let galleryImageId = 0;
-      switch (selectedItem[0]) {
-        case GalleryCategory.All:
-          break;
-        case GalleryCategory.Portrait:
-          galleryImageId = characterInfo.portraitGalleryImageUrl[selectedItem[1]].galleryImageId;
-          break;
-        case GalleryCategory.Pose:
-          galleryImageId = characterInfo.poseGalleryImageUrl[selectedItem[1]].galleryImageId;
-          break;
-        case GalleryCategory.Expression:
-          galleryImageId = characterInfo.expressionGalleryImageUrl[selectedItem[1]].galleryImageId;
-          break;
-      }
 
-      const req: DeleteGalleryReq = {
-        galleryImageId: galleryImageId,
-      };
+      const tmpData = getSelectedImageData();
 
-      const response = await sendDeleteGallery(req);
+      if (tmpData) {
+        galleryImageId = tmpData.galleryImageId;
 
-      if (response.data) {
-        console.log('Image deleted successfully:', galleryImageId);
+        const req: DeleteGalleryReq = {
+          galleryImageId: galleryImageId,
+        };
 
-        // 삭제 후 데이터 갱신
-        refreshCharacter(characterInfo.id);
+        const response = await sendDeleteGallery(req);
+
+        if (response.data) {
+          console.log('Image deleted successfully:', galleryImageId);
+
+          // 삭제 후 데이터 갱신
+          refreshCharacter(characterInfo.id);
+
+          // 삭제 후 selectedItem 업데이트
+          const currentCategoryUrls = (() => {
+            switch (selectedItem[0]) {
+              case GalleryCategory.Portrait:
+                return characterInfo.portraitGalleryImageUrl;
+              case GalleryCategory.Pose:
+                return characterInfo.poseGalleryImageUrl;
+              case GalleryCategory.Expression:
+                return characterInfo.expressionGalleryImageUrl;
+              default:
+                return [];
+            }
+          })();
+
+          const newLength = currentCategoryUrls.length - 1; // 삭제된 후 길이
+          if (newLength === 0) {
+            // 해당 카테고리가 비어있으면 viewer를 close
+            setViewerOpen(false);
+          } else {
+            // 마지막 항목이면 selectedItem을 이전 인덱스로 설정
+            setSelectedItem([selectedItem[0], Math.min(selectedItem[1], newLength - 1)]);
+          }
+        } else {
+          console.error('Failed to delete image with ID:', galleryImageId);
+        }
       } else {
-        console.error('Failed to delete image with ID:', galleryImageId);
+        console.error('Failed to delete image: Selected data is invalid');
       }
     } else {
       console.error('Selected item is invalid:', selectedItem);
     }
   };
 
+  const handleImageSelect = (category: GalleryCategory, index: number) => {
+    setSelectedItem([category, index]);
+  };
+
+  function getSelectedImageData(): GalleryImageInfo | undefined {
+    if (selectedItem[1] === null || selectedItem[1] === undefined) {
+      return undefined; // 선택되지 않은 경우 처리
+    }
+
+    switch (selectedItem[0]) {
+      case GalleryCategory.All:
+        return characterInfo.portraitGalleryImageUrl[selectedItem[1]];
+
+      case GalleryCategory.Portrait:
+        return characterInfo.portraitGalleryImageUrl[selectedItem[1]];
+
+      case GalleryCategory.Pose:
+        return characterInfo.poseGalleryImageUrl[selectedItem[1]];
+
+      case GalleryCategory.Expression:
+        return characterInfo.expressionGalleryImageUrl[selectedItem[1]];
+
+      default:
+        console.error(`Unknown category: ${selectedItem[0]}`);
+        return undefined;
+    }
+  }
+
   return (
     <Modal open={open} onClose={handleOnClose}>
       <Box className={styles.modalContent}>
-        {!viewerOpen && (
-          <Box className={styles.container}>
-            {isRegenerateOpen ? (
-              <>
-                <CreateCharacterTopMenu
-                  backButtonAction={handleRegenerateClose}
-                  lastUrl=":/lang/studio/Character"
-                  contentTitle={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]} Creation`}
-                  blockStudioButton={true}
-                />
-                <CharacterGalleryCreate
-                  open={isRegenerateOpen}
-                  onClose={handleRegenerateClose}
-                  category={selectedCategory}
-                  characterInfo={characterInfo}
-                />
-              </>
-            ) : isModifyOpen ? (
-              <>
-                <CreateCharacterTopMenu
-                  backButtonAction={handleModifyClose}
-                  lastUrl=":/lang/studio/Character"
-                  contentTitle={`Modify ${characterInfo.name}`}
-                  blockStudioButton={true}
-                />
-                <CharacterCreate closeAction={handleModifyClose} isModify={true} />
-              </>
-            ) : (
-              <>
-                <CreateCharacterTopMenu
-                  backButtonAction={onClose}
-                  lastUrl=":/lang/studio/Character"
-                  contentTitle={`${characterInfo.name}'s Gallery`}
-                  blockStudioButton={true}
-                />
-                <CharacterGallery
-                  characterInfo={characterInfo}
-                  onCategorySelected={setSelectedCategory}
-                  onCurrentSelected={handleSelectItem}
-                  onGenerateSelected={handleRegenerateItem}
-                  refreshCharacter={refreshCharacter}
-                />
-                <div className={styles.footer}>
-                  {buttons.map((button, index) => (
-                    <Button key={index} className={styles.button} startIcon={button.icon} onClick={button.onClick}>
-                      <Typography>{button.text}</Typography>
-                    </Button>
-                  ))}
-                </div>
-              </>
-            )}
-          </Box>
-        )}
-
-        {/* Viewer */}
-        {viewerOpen && (
-          <CharacterGalleryViewer
-            imageUrls={viewerImages}
-            categoryType={galleryCategoryText[selectedCategory]}
-            onBack={() => setViewerOpen(false)}
-            onShare={() => console.log('Share clicked')}
-            onThumbnail={() => console.log('Thumbnail clicked')}
-            onInfo={() => console.log('Info clicked')}
-            onDelete={() => console.log('Delete clicked')}
-          />
-        )}
+        <Box className={styles.container}>
+          {isRegenerateOpen ? (
+            <>
+              <CreateCharacterTopMenu
+                backButtonAction={handleRegenerateClose}
+                lastUrl=":/lang/studio/Character"
+                contentTitle={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]} Creation`}
+                blockStudioButton={true}
+              />
+              <CharacterGalleryCreate
+                open={isRegenerateOpen}
+                onClose={handleRegenerateClose}
+                category={selectedCategory}
+                characterInfo={characterInfo}
+              />
+            </>
+          ) : isModifyOpen ? (
+            <>
+              <CreateCharacterTopMenu
+                backButtonAction={handleModifyClose}
+                lastUrl=":/lang/studio/Character"
+                contentTitle={`Modify ${characterInfo.name}`}
+                blockStudioButton={true}
+              />
+              Sorry Modify is not working now
+              {/* <CharacterCreate closeAction={handleModifyClose} isModify={true} /> */}
+            </>
+          ) : viewerOpen ? (
+            <CharacterGalleryViewer
+              characterInfo={characterInfo}
+              selectedIndex={selectedItem[1]}
+              categoryType={selectedCategory}
+              onBack={() => setViewerOpen(false)}
+              onThumbnail={() => console.log('Thumbnail clicked')}
+              onInfo={() => console.log('Info clicked')}
+              onDelete={handleDeleteItem}
+              onSelectImage={handleImageSelect}
+            />
+          ) : (
+            <>
+              <CreateCharacterTopMenu
+                backButtonAction={onClose}
+                lastUrl=":/lang/studio/Character"
+                contentTitle={`${characterInfo.name}'s Gallery`}
+                blockStudioButton={true}
+              />
+              <CharacterGallery
+                characterInfo={characterInfo}
+                onCategorySelected={setSelectedCategory}
+                onCurrentSelected={handleSelectItem}
+                onGenerateSelected={handleRegenerateItem}
+                refreshCharacter={refreshCharacter}
+                initialSelectedItem={selectedItem}
+              />
+              <div className={styles.footer}>
+                {buttons.map((button, index) => (
+                  <Button key={index} className={styles.button} startIcon={button.icon} onClick={button.onClick}>
+                    <Typography>{button.text}</Typography>
+                  </Button>
+                ))}
+              </div>
+            </>
+          )}
+        </Box>
 
         <Snackbar
           open={!!errorMessage}

@@ -7,18 +7,28 @@
     background-position: center;
   }
   
-  .thumbnailButton {
+  .thumbnailButtonArea {
     position: absolute;
     top: 16px;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
+    
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
   }
   
+
+
   .backButton {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    position: relative;
     left: 16px;
   }
   
   .menuButton {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    position: relative;
     right: 16px;
   }
   
@@ -46,11 +56,12 @@
   }
   
   .thumbnailSwiper {
+    width: 100%;
     flex-grow: 1;
   }
   
   .thumbnailSlide {
-    width: 100%;
+    width: 100px;
     height: 80px;
     background-size: cover;
     background-position: center;
