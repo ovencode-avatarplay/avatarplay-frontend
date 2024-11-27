@@ -180,16 +180,14 @@ const ChatPage: React.FC = () => {
 
     eventSource.onmessage = event => {
       try {
+        setIsLoading(false);
         if (!event.data) {
           throw new Error('Received null or empty data');
-          setIsLoading(false);
         }
-
-        setIsLoading(false);
 
         const newMessage = JSON.parse(event.data);
         handleSendMessage(newMessage, false, true);
-
+        //console.log('stream new text====' + newMessage + '====');
         //messageCount++; // 메시지 수신 횟수 증가
 
         // 메시지가 3번 수신되면 강제로 에러 발생
@@ -283,7 +281,7 @@ const ChatPage: React.FC = () => {
       if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
 
       // 메시지 정리
-      //if (isClearString) newMessage.text = cleanString(newMessage.text);
+      if (isMyMessage === false && isClearString === true) newMessage.text = cleanString(newMessage.text);
 
       // 일단 내 메시지  처리
       if (isMyMessage === true) {
@@ -308,6 +306,12 @@ const ChatPage: React.FC = () => {
 
           let newSenderResult = newSender;
 
+          // 새 말풍선을 추가하라고 했는데 그냥 빈칸만 있는경우는 무시한다.
+          if (isAnotherSender === true && (newMessage.text[i] === ' ' || newMessage.text === '\n')) {
+            //isNarrationActive.active = false;
+            continue;
+          }
+
           if (isAnotherSender) isNarrationActive.active = false;
           // 나레이션모드이면  그냥 나레이션으로 출력해줘야 한다.
           if (isNarrationActive.active === true) {
@@ -325,6 +329,7 @@ const ChatPage: React.FC = () => {
               sender: (newMessage.sender = newSenderResult),
             };
             currentSender = _newMessage.sender;
+
             allMessages.push(_newMessage);
           } else {
             // sender Type이 같으니 기존 말풍선에 계속 넣어준다.
@@ -350,7 +355,8 @@ const ChatPage: React.FC = () => {
 
   // 파싱 테스트를 위한 함수임..
   const test = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
-    message = '%테스트%  가나다라 "안녕하세요" 라고 말했다 %호감도 상승% *귀신 시나락 * 까먹는 소리"ㅋㅋㅋㅋㅋㅋ"';
+    message =
+      '레인은 당신의 짧은 대답에 미묘하게 눈썹을 치켜올립니다. 그의 입가에 희미한 비웃음이 스칩니다. 그의 눈빛은 여전히 날카롭고 탐색적입니다."그렇군요. 말씀이 없으시네요." 그가 천천히 당신 주위를 한바퀴 돌며 말을 이어갑니다';
     handleSendMessage(message, false, true);
   };
 
@@ -445,6 +451,7 @@ const ChatPage: React.FC = () => {
         setIsLoading(false);
 
         const newMessage = JSON.parse(event.data);
+        console.log('stream new text====' + newMessage + '====');
         handleSendMessage(newMessage, false, true);
         if (newMessage.includes('$') === true) {
           isSendingMessage.state = false;

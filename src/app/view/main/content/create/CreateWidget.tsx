@@ -50,10 +50,10 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
     >
       <Box className={styles.drawerBox}>
         {/* Character Navigation */}
-        <Link href="/:lang/create/artist" passHref>
+        <Link href="/:lang/create/character" passHref>
           <Box className={styles.drawerItem} onClick={handleClickCharacter}>
             <PersonIcon fontSize="large" />
-            <Typography>{getLocalizedText('widget_character')}</Typography>
+            <Typography>{getLocalizedText('CreateWidget', 'widgetCharacter_label_001')}</Typography>
           </Box>
         </Link>
 
@@ -61,7 +61,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         <Link href="/:lang/create/story" passHref>
           <Box className={styles.drawerItem} onClick={handleClickStory}>
             <BookIcon fontSize="large" />
-            <Typography>{getLocalizedText('widget_story')}</Typography>
+            <Typography>{getLocalizedText('CreateWidget', 'widgetStory_label_001')}</Typography>
           </Box>
         </Link>
 
@@ -69,7 +69,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         <Link href="/:lang/create/post" passHref>
           <Box className={styles.drawerItem} onClick={handleClickPost}>
             <PostAddIcon fontSize="large" />
-            <Typography>{getLocalizedText('widget_post')}</Typography>
+            <Typography>{getLocalizedText('CreateWidget', 'widgetPost_label_001')}</Typography>
           </Box>
         </Link>
       </Box>

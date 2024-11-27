@@ -18,6 +18,7 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import styles from './UserDropdown.module.css';
 
 // Type Imports
 import type {Locale} from '@configs/i18n';
@@ -25,21 +26,14 @@ import {createClient, Session} from '@supabase/supabase-js';
 import {supabase} from 'utils/supabaseClient';
 import {getLocalizedUrl} from '@/utils/i18n';
 import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
-
-// Styled component for badge content
-const BadgeContentSpan = styled('span')({
-  width: 8,
-  height: 8,
-  borderRadius: '50%',
-  cursor: 'pointer',
-  backgroundColor: 'var(--mui-palette-success-main)',
-  boxShadow: '0 0 0 2px var(--mui-palette-background-paper)',
-});
+import {Drawer} from '@mui/material';
+import Link from 'next/link';
 
 const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<Session | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // 임시 - UserInfo Modal
   const [userInfoOpen, setUserInfoOpen] = useState<boolean>(false);
@@ -61,6 +55,20 @@ const UserDropdown = () => {
     }
 
     !open ? setOpen(true) : setOpen(false);
+  };
+
+  const handleDrawerOpen = async () => {
+    setDrawerOpen(true);
+  };
+
+  const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return;
+    }
+    setDrawerOpen(open);
   };
 
   useEffect(() => {
@@ -103,15 +111,21 @@ const UserDropdown = () => {
   }, []);
 
   const handleDropdownClose = (event?: MouseEvent<HTMLLIElement> | (MouseEvent | TouchEvent), url?: string) => {
-    if (url) {
-      router.push(getLocalizedUrl(url, locale as Locale));
-    }
-
     if (anchorRef.current && anchorRef.current.contains(event?.target as HTMLElement)) {
       return;
     }
 
     setOpen(false);
+
+    // if (url) {
+    //   router.push(getLocalizedUrl(url, locale as Locale));
+    // }
+
+    // if (anchorRef.current && anchorRef.current.contains(event?.target as HTMLElement)) {
+    //   return;
+    // }
+
+    // setOpen(false);
   };
 
   const handleUserLogout = async () => {
@@ -133,85 +147,141 @@ const UserDropdown = () => {
   return (
     <>
       <Badge
-        ref={anchorRef}
         overlap="circular"
-        badgeContent={<BadgeContentSpan onClick={handleDropdownOpen} />}
+        badgeContent={<span className={styles.avatarBadge} onClick={handleDrawerOpen} />}
         anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-        className="mis-2"
       >
         <Avatar
-          ref={anchorRef}
           alt={auth?.user?.email || ''}
           src={auth?.user?.user_metadata?.picture || ''}
-          onClick={handleDropdownOpen}
-          className="cursor-pointer bs-[38px] is-[38px]"
+          onClick={handleDrawerOpen}
+          className={styles.avatar}
         />
       </Badge>
-      <Popper
-        open={open}
-        transition
-        disablePortal
-        placement="bottom-end"
-        anchorEl={anchorRef.current}
-        className="min-is-[240px] !mbs-3 z-[1]"
-      >
-        {({TransitionProps, placement}) => (
-          <Fade
-            {...TransitionProps}
-            style={{
-              transformOrigin: placement === 'bottom-end' ? 'right top' : 'left top',
-            }}
-          >
-            <Paper className={settings.skin === 'bordered' ? 'border shadow-none' : 'shadow-lg'}>
-              <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
-                <MenuList>
-                  <div className="flex items-center plb-2 pli-6 gap-2" tabIndex={-1}>
-                    <Avatar alt={auth?.user?.email || ''} src={auth?.user?.user_metadata?.picture || ''} />
-                    <div className="flex items-start flex-col">
-                      <Typography className="font-medium" color="text.primary">
-                        {auth?.user?.email || ''}
-                      </Typography>
-                      <Typography variant="caption">{auth?.user?.email || ''}</Typography>
-                    </div>
-                  </div>
-                  <Divider className="mlb-1" />
-                  <MenuItem className="mli-2 gap-3" onClick={() => setUserInfoOpen(true)}>
-                    {/* e => handleDropdownClose(e, '/pages/user-profile') */}
-                    <i className="tabler-user" />
-                    <Typography color="text.primary">My Profile</Typography>
-                  </MenuItem>
-
-                  <MenuItem className="mli-2 gap-3" onClick={e => handleDropdownClose(e, '/pages/account-settings')}>
-                    <i className="tabler-settings" />
-                    <Typography color="text.primary">Settings</Typography>
-                  </MenuItem>
-                  <MenuItem className="mli-2 gap-3" onClick={e => handleDropdownClose(e, '/pages/pricing')}>
-                    <i className="tabler-currency-dollar" />
-                    <Typography color="text.primary">Pricing</Typography>
-                  </MenuItem>
-                  <MenuItem className="mli-2 gap-3" onClick={e => handleDropdownClose(e, '/pages/faq')}>
-                    <i className="tabler-help-circle" />
-                    <Typography color="text.primary">FAQ</Typography>
-                  </MenuItem>
-                  <div className="flex items-center plb-2 pli-3">
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      color="error"
-                      size="small"
-                      endIcon={<i className="tabler-logout" />}
-                      onClick={handleUserLogout}
-                      sx={{'& .MuiButton-endIcon': {marginInlineStart: 1.5}}}
+      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <MenuList className={styles.menuList}>
+          <MenuItem className={styles.menuItem}>
+            <Avatar
+              alt={auth?.user?.email || ''}
+              src={auth?.user?.user_metadata?.picture || ''}
+              onClick={handleDropdownOpen}
+              className={styles.avatar}
+            />
+            <div className={styles.userInfo}>
+              <Typography className={styles.userInfoText}>{auth?.user?.email || ''}</Typography>
+              <Typography variant="caption" className={styles.userInfoCaption}>
+                {auth?.user?.email || ''}
+              </Typography>
+            </div>
+          </MenuItem>
+          <Divider className={styles.menuDivider} />
+          {/* <Link href={getLocalizedUrl(`/studio`, locale as Locale)} passHref> */}
+          {/* <Link href={`/studio`} passHref>
+            <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, 'studio')}>
+              <i className={styles.tabler} />
+              <Typography color="text.primary">Studio</Typography>
+            </MenuItem>
+          </Link>
+          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/activity')}>
+            <i className={styles.tabler} />
+            <Typography color="text.primary">Activity</Typography>
+          </MenuItem>
+          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/notice')}>
+            <i className={styles.tabler} />
+            <Typography color="text.primary">Notice</Typography>
+          </MenuItem>
+          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/setting')}>
+            <i className={styles.tabler} />
+            <Typography color="text.primary">Setting</Typography>
+          </MenuItem>
+          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/supports')}>
+            <i className={styles.tabler} />
+            <Typography color="text.primary">Supports</Typography>
+          </MenuItem> */}
+          <Link href={`/:lang/studio/character`} passHref>
+            <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/:lang/studio/character')}>
+              <i className={styles.tabler} />
+              <Typography color="text.primary">Character</Typography>
+            </MenuItem>
+          </Link>
+          <Link href={`/:lang/studio/story`} passHref>
+            <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/:lang/studio/story')}>
+              <i className={styles.tabler} />
+              <Typography color="text.primary">Story</Typography>
+            </MenuItem>
+          </Link>
+        </MenuList>
+        <Popper
+          open={open}
+          transition
+          disablePortal
+          placement="bottom-end"
+          anchorEl={anchorRef.current}
+          className="min-is-[240px] !mbs-3 z-[1]"
+        >
+          {({TransitionProps, placement}) => (
+            <Fade
+              {...TransitionProps}
+              style={{
+                transformOrigin: placement === 'bottom-end' ? 'right top' : 'left top',
+              }}
+            >
+              <Paper className={settings.skin === 'bordered' ? 'border shadow-none' : 'shadow-lg'}>
+                <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
+                  <MenuList className={styles.menuList}>
+                    <MenuItem className={styles.menuItem} onClick={handleDropdownOpen}>
+                      <Avatar
+                        alt={auth?.user?.email || ''}
+                        src={auth?.user?.user_metadata?.picture || ''}
+                        onClick={handleDropdownOpen}
+                      />
+                      <div className={styles.userInfo}>
+                        <Typography className={styles.userInfoText}>{auth?.user?.email || ''}</Typography>
+                        <Typography variant="caption" className={styles.userInfoCaption}>
+                          {auth?.user?.email || ''}
+                        </Typography>
+                      </div>
+                    </MenuItem>
+                    <Divider className={styles.menuDivider} />
+                    <MenuItem className={styles.menuItem} onClick={() => setUserInfoOpen(true)}>
+                      <i className={styles.tabler} />
+                      <Typography color="text.primary">My Profile</Typography>
+                    </MenuItem>
+                    <MenuItem
+                      className={styles.menuItem}
+                      onClick={e => handleDropdownClose(e, '/pages/account-settings')}
                     >
-                      Logout
-                    </Button>
-                  </div>
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Fade>
-        )}
-      </Popper>
+                      <i className={styles.tabler} />
+                      <Typography color="text.primary">Settings</Typography>
+                    </MenuItem>
+                    <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/pricing')}>
+                      <i className={styles.tabler} />
+                      <Typography color="text.primary">Pricing</Typography>
+                    </MenuItem>
+                    <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/faq')}>
+                      <i className={styles.tabler} />
+                      <Typography color="text.primary">FAQ</Typography>
+                    </MenuItem>
+                    <div>
+                      <Button
+                        className={styles.logoutButton}
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        endIcon={<i className={styles.tabler} />}
+                        onClick={handleUserLogout}
+                        sx={{'& .MuiButton-endIcon': {marginInlineStart: 1.5}}}
+                      >
+                        Logout
+                      </Button>
+                    </div>
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Fade>
+          )}
+        </Popper>
+      </Drawer>
       <UserInfoModal open={userInfoOpen} onClose={() => setUserInfoOpen(false)} />
     </>
   );

@@ -1,6 +1,8 @@
+import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import {Conversation} from './Conversation';
 
 export interface TriggerInfo {
+  episodeId: number;
   id: number;
   name: string;
   triggerType: number;
@@ -10,17 +12,25 @@ export interface TriggerInfo {
   triggerValueTimeMinute: number;
   triggerActionType: number;
   actionChangeEpisodeId: number;
-  actionChangePrompt: ActionChangePrompt;
+  actionPromptScenarioDescription: string;
   actionIntimacyPoint: number;
-  actionChangeBackground: string;
   maxIntimacyCount: number;
+  actionCharacterInfo: CharacterInfo;
+  actionMediaState: TriggerMediaState;
+  actionMediaUrlList: string[];
   actionConversationList: Conversation[];
 }
-
 export interface ActionChangePrompt {
   characterName: string;
   characterDescription: string;
   scenarioDescription: string;
   introDescription: string;
   secret: string;
+}
+
+export enum TriggerMediaState {
+  None = 0,
+  TriggerImage = 1,
+  TriggerVideo = 2,
+  TriggerAudio = 3,
 }

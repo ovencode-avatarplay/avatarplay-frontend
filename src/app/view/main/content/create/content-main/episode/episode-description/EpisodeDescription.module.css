@@ -1,25 +1,68 @@
 /* EpisodeDescription.module.css */
 .dialogTitle {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .dialogContent {
-    padding: 16px;
-  }
-  
-  .errorMessage {
-    color: red;
-  }
+  font-size: 1.5rem;
+  font-weight: bold;
+}
 
-  .dialogActions {
-    display: flex;
-    justify-content: center; /* 버튼을 가운데 정렬 */
-    padding: 16px; /* 기본 여백 */
-  }
-  
-  .confirmButton {
-    font-size: 18px; /* 버튼 텍스트 크기 */
-    font-weight: bold;
-    padding: 12px 24px; /* 버튼 패딩을 조정하여 크기 조절 */
-  }
+.dialogContent {
+  padding: 16px;
+}
+
+.errorMessage {
+  color: red;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: center; /* 버튼을 가운데 정렬 */
+  padding: 16px; /* 기본 여백 */
+}
+
+.confirmButton {
+  font-size: 18px; /* 버튼 텍스트 크기 */
+  font-weight: bold;
+  padding: 12px 24px; /* 버튼 패딩을 조정하여 크기 조절 */
+}
+
+/* Virtual keyboard buttons, placed above the Confirm button */
+.keyboardButtons {
+  position: fixed;
+  bottom: 120px; /* Ensure it's above the confirm button */
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  z-index: 999; /* Make sure it's above other content */
+  background-color: white; /* Optional: Background color */
+  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1); /* Optional: Add shadow */
+}
+
+.keyboardButtons button {
+  font-size: 14px; /* Adjust font size */
+  padding: 8px 16px; /* Button padding */
+}
+
+.hidden {
+  display: none;
+}
+
+.conversationButtonWrapper {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.conversationButton {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 12px 24px;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+

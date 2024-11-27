@@ -10,14 +10,29 @@
           {
             "id": 0,
             "name": "",
+            "thumbnail": "",
             "episodeInfoList": [
               {
                 "id": 0,
                 "name": "",
-                "thumbnail": "",
+                "backgroundImageUrl": "",
+                "characterInfo": {
+                  "id": 0,
+                  "name": "",
+                  "introduction": "",
+                  "genderType" : 0,
+                  "mainImageUrl": "",
+                  "portraitGalleryImageUrl": [
+                  ],
+                  "poseGalleryImageUrl": [
+                  ],
+                  "expressionGalleryImageUrl": [
+                  ],
+                  "visibilityType": 0,
+                  "isMonetization": true,
+                  "state": 1
+                },
                 "episodeDescription": {
-                  "characterName": "",
-                  "characterDescription": "",
                   "scenarioDescription": "",
                   "introDescription": "",
                   "secret": ""
@@ -25,11 +40,7 @@
                 "triggerInfoList": [
                 ],
                 "conversationTemplateList": [
-                ],
-                "llmSetupInfo": {
-                  "llmModel": 6,
-                  "customApi": ""
-                }
+                ]
               }
             ]
           }
@@ -45,7 +56,11 @@
           "selectTagList": [],
           "visibilityType": 0,
           "monetization": false,
-          "nsfw": 0
+          "nsfw": 0,
+          "llmSetupInfo": {
+            "llmModel": 6,
+            "customApi": ""
+          }
         }
       }
     }

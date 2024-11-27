@@ -4,7 +4,7 @@ import {Button, Dialog, DialogTitle} from '@mui/material';
 import styles from './EpisodeImageSetup.module.css';
 import React from 'react';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import CharacterCreate from './CharacterCreate';
+import CharacterCreate from '../../../character/CreateCharacterSequence';
 
 interface EpisodeImageSetupProps {
   open: boolean;
@@ -32,7 +32,7 @@ const EpisodeImageSetup: React.FC<EpisodeImageSetupProps> = ({open, onClose}) =>
         </Button>
         <span className={styles['modal-title']}>EpisodeImageSetup</span>
       </DialogTitle>
-      <CharacterCreate closeAction={onClose} />
+      <CharacterCreate closeAction={onClose} isModify={false} />
     </Dialog>
   );
 };

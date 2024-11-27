@@ -1,0 +1,31 @@
+.fullscreenOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+  }
+  
+  .fullscreenImage {
+    flex-grow: 1;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    width: 100%;
+  }
+  
+  .textBox {
+    width: 100%;
+    justify-content: flex-end;
+    background-color: white;
+    padding: 10px 20px;
+    text-align: center;
+    cursor: pointer;
+  }
+  

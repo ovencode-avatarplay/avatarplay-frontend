@@ -13,9 +13,11 @@ export enum TriggerTypeNames {
 }
 
 export enum TriggerSubDataType {
-  actionEpisodeChangeId,
+  EpisodeChange,
   ChangePrompt,
-  actionIntimacyPoint,
+  GetIntimacyPoint,
+  ChangeCharacter,
+  playMedia,
 }
 
 export interface CoversationData {

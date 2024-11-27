@@ -1,225 +1,151 @@
 // src/app/Network/CharacterNetwork.tsx
 
 import api, {ResponseAPI} from './ApiInstance';
+import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {GenerateParameter} from './ImageNetwork';
 
-// Type Definitions
-interface CharacterInfo {
-  id: number;
-  name: string;
+// GetCharacterList
+
+export interface GetCharacterListRes {
+  characterInfoList: CharacterInfo[];
 }
 
-//==== Set 캐릭터 정보 =======================================================================================================
-
-// 캐릭터 설정 - Req
-export interface PayloadCharacterData {
-  userId: number;
-  characterName: string;
-  characterDescription: string;
-  worldScenario: string;
-  introduction: string;
-  secret: string;
-  thumbnail: string;
-}
-
-// 캐릭터 설정 - Rec
-export interface SetCharacterRes {
-  characterID: number;
-}
-// 캐릭터 데이터를 전송하는 새로운 POST 요청 함수 정의
-export const sendCharacterData = async (payload: PayloadCharacterData): Promise<ResponseAPI<SetCharacterRes>> => {
+export const sendGetCharacterList = async (payload: {}): Promise<ResponseAPI<GetCharacterListRes>> => {
   try {
-    const response = await api.post<ResponseAPI<SetCharacterRes>>('DemoChat/setCharacter', payload); // '/character' 엔드포인트로 POST 요청 전송
+    const response = await api.post<ResponseAPI<GetCharacterListRes>>('Character/getCharacterList', payload);
 
     if (response.data.resultCode === 0) {
-      //console.log('제출 결과 성공');
-
-      return response.data; // 성공적으로 응답을 받은 경우
+      return response.data;
     } else {
-      throw new Error('CharacterDataResponse' + response.data.resultCode); // 실패 메시지 처리
+      throw new Error(`GetCharacterListRes Error : ${response.data.resultCode}`);
     }
   } catch (error: any) {
-    console.error('Error sending character data:', error);
-    throw new Error('Failed to send character data. Please try again.'); // 에러 처리
+    console.error('Error sending get character list :', error);
+    throw new Error('Failed to send get character list data. Please try again.');
   }
 };
 
-//==== Modify 캐릭터 정보 =======================================================================================================
+// Create Character
 
-export interface UpdateCharacterReq {
-  userID: number;
-  characterID: number;
-  characterName: string;
-  characterDescription: string;
-  worldScenario: string;
-  introduction: string;
-  secret: string;
-  thumbnail: string;
+export interface CreateCharacterReq {
+  characterInfo: CharacterInfo;
+  createOption: GenerateParameter[];
 }
 
-// 캐릭터 설정 - Req
-export interface UpdateCharacterRes {
-  characterID: number;
-  characterName: string;
-  characterDescription: string;
-  worldScenario: string;
-  introduction: string;
-  secret: string;
-  thumbnail: string;
+export interface CreateCharacterRes {
+  characterInfo: CharacterInfo;
 }
 
-// 캐릭터 데이터를 전송하는 새로운 POST 요청 함수 정의
-export const updateCharacterData = async (payload: UpdateCharacterReq): Promise<ResponseAPI<UpdateCharacterRes>> => {
+export const sendCreateCharacter = async (payload: CreateCharacterReq): Promise<ResponseAPI<CreateCharacterRes>> => {
   try {
-    console.error('update sending character data:', payload);
-    const response = await api.post<ResponseAPI<UpdateCharacterRes>>('DemoChat/updateCharacter', payload); // '/character' 엔드포인트로 POST 요청 전송
+    const response = await api.post<ResponseAPI<CreateCharacterRes>>('Character/create', payload);
 
     if (response.data.resultCode === 0) {
-      //console.log('제출 결과 성공');
-
-      return response.data; // 성공적으로 응답을 받은 경우
+      return response.data;
     } else {
-      throw new Error('UpdateCharacterRes' + response.data.resultCode); // 실패 메시지 처리
+      throw new Error(`CreateCharacterRes Error : ${response.data.resultCode}`);
     }
   } catch (error: any) {
-    console.error('Error sending character data:', error);
-    throw new Error('Failed to send character data. Please try again.'); // 에러 처리
+    console.error('Error sending create character :', error);
+    throw new Error('Failed to send create character. Please try again.');
   }
 };
 
-//==== Delete 캐릭터 정보 =======================================================================================================
+// Delete Character
 
 export interface DeleteCharacterReq {
-  characterID: number;
+  characterId: number;
 }
 
-export interface DeleteCharacterRes {
-  characterInfoList: CharacterInfo[];
-}
+export interface DeleteCharacterRes {}
 
-// 캐릭터 데이터를 전송하는 새로운 POST 요청 함수 정의
-export const deleteCharacterData = async (payload: DeleteCharacterReq): Promise<ResponseAPI<UpdateCharacterRes>> => {
+export const sendDeleteCharacter = async (payload: DeleteCharacterReq): Promise<ResponseAPI<DeleteCharacterRes>> => {
   try {
-    //console.log('캐릭터 삭제 요청2');
-    const response = await api.post<ResponseAPI<UpdateCharacterRes>>('DemoChat/deleteCharacter', payload); // '/character' 엔드포인트로 POST 요청 전송
+    const response = await api.post<ResponseAPI<DeleteCharacterRes>>('Character/delete', payload);
 
     if (response.data.resultCode === 0) {
-      //console.log('제출 결과 성공');
-
-      return response.data; // 성공적으로 응답을 받은 경우
+      return response.data;
     } else {
-      throw new Error('deleteCharacterRes' + response.data.resultCode); // 실패 메시지 처리
+      throw new Error(`DeleteCharacterRes Error : ${response.data.resultCode}`);
     }
   } catch (error: any) {
-    console.error('Error sending character data:', error);
-    throw new Error('Failed to send character data. Please try again.'); // 에러 처리
+    console.error('Error sending delete character :', error);
+    throw new Error('Failed to send delete character. Please try again.');
   }
 };
 
-//==== Get 캐릭터 리스트 정보 =======================================================================================================
+// Get CharacterData by Id
 
-// Type Definitions
-interface CharacterInfo {
-  id: number;
-  name: string;
+export interface GetCharacterInfoReq {
+  characterId: number;
 }
 
-interface ResponseCharactersInfo {
-  characterInfoList: CharacterInfo[];
+export interface GetCharacterInfoRes {
+  characterInfo: CharacterInfo;
 }
 
-// Fetch Character Info Function
-export const fetchCharacterInfo = async (): Promise<{
-  resultCode: number;
-  resultMessage: string;
-  data: {
-    characterInfoList: CharacterInfo[];
-  } | null;
-}> => {
+export const sendGetCharacterInfo = async (payload: GetCharacterInfoReq): Promise<ResponseAPI<GetCharacterInfoRes>> => {
   try {
-    //console.log('요청합니다 시작');
+    const response = await api.post<ResponseAPI<GetCharacterInfoRes>>('Character/get', payload);
 
-    // POST 요청을 보내기 위한 기본적인 payload 정의
-    const payload = {}; // 필요한 경우 이곳에 payload를 정의
-
-    const response = await api.post<ResponseAPI<ResponseCharactersInfo>>('DemoChat/getCharacters', payload); // POST 요청
-
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0 && resultMessage && data) {
-      //console.log('성공적으로 데이터 가져옴:', data.characterInfoList);
-
-      return {resultCode, resultMessage, data};
+    if (response.data.resultCode === 0) {
+      return response.data;
     } else {
-      console.error(`Error: ${resultMessage}`);
-
-      return {resultCode, resultMessage: 'resultmessage err', data: null};
+      throw new Error(`GetChracterRes Error : ${response.data.resultCode}`);
     }
   } catch (error: any) {
-    console.error('Failed to fetch character info:', error);
-
-    return {resultCode: -1, resultMessage: 'Failed to fetch character info', data: null};
+    console.error('Error sending get character : ', error);
+    throw new Error('Failed to send get character. Please try again');
   }
 };
 
-//==== Get 캐릭터 상세 정보 =======================================================================================================
+// UpdateGallery
 
-interface ReqCharacterInfoDetail {
-  characterID: number;
+export interface SaveGalleryReq {
+  characterId: number;
+  galleryType: number;
+  galleryImageUrls: string[];
+  debugParameter: string;
 }
 
-interface CharacterDataDetail {
-  secrets: string;
-  char_name: string;
-  first_mes: string;
-  char_persona: string;
-  world_scenario: string;
-}
+export interface SaveGalleryRes {}
 
-interface ResponseCharacterInfoDetail {
-  resultCode: number;
-  resultMessage: string;
-  data: {
-    characterID: number;
-    characterData: CharacterDataDetail;
-  };
-  thumbnail: string;
-}
-
-export const sendCharacterInfoDetail = async (
-  charaterID: number,
-): Promise<{
-  resultCode: number;
-  resultMessage: string;
-  data: {
-    characterID: number;
-    characterData: CharacterDataDetail;
-  } | null;
-  thumbnail: string;
-}> => {
+export const sendSaveGallery = async (payload: SaveGalleryReq): Promise<ResponseAPI<SaveGalleryRes>> => {
   try {
-    //console.log('요청합니다 시작');
-    const ReqData: ReqCharacterInfoDetail = {characterID: charaterID};
+    const response = await api.post<ResponseAPI<SaveGalleryRes>>('Character/saveGallery', payload);
 
-    // POST 요청을 보내기 위한 기본적인 payload 정의
-    //const payload = {}; // 필요한 경우 이곳에 payload를 정의
-
-    //console.log('reqdata ',ReqData)
-    const response = await api.post<ResponseCharacterInfoDetail>('DemoChat/getCharacter', ReqData); // POST 요청
-
-    const {resultCode, resultMessage, data, thumbnail} = response.data;
-
-    if (resultCode === 0) {
-      //console.log('성공적으로 캐릭터 상세 데이터 가져옴:', data );
-
-      return {resultCode, resultMessage, data, thumbnail};
+    if (response.data.resultCode === 0) {
+      return response.data;
     } else {
-      console.error(`Error: ${resultMessage}`);
-
-      return {resultCode, resultMessage, data: null, thumbnail};
+      throw new Error(`SaveGallery Error : ${response.data.resultCode}`);
     }
   } catch (error: any) {
-    console.error('Failed to fetch character info:', error);
-
-    return {resultCode: -1, resultMessage: 'Failed to fetch character info', data: null, thumbnail: ''};
+    console.error('Error save gallery :', error);
+    throw new Error('Failed to send save gallery. Please try again');
   }
 };
+
+// DeleteGallery
+
+export interface DeleteGalleryReq {
+  galleryImageId: number;
+}
+
+export interface DeleteGalleryRes {}
+
+export const sendDeleteGallery = async (payload: DeleteGalleryReq): Promise<ResponseAPI<DeleteGalleryRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<DeleteGalleryRes>>('Character/deleteGallery', payload);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`DeleteGallery Error : ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error delete gallery :', error);
+    throw new Error('Failed to send delete gallery. Please try again');
+  }
+};
+
+// Select Image

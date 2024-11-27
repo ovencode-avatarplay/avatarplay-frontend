@@ -1,0 +1,9 @@
+.gridContainer {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    
+    padding: 16px;
+    overflow-y: auto;
+  }
+  

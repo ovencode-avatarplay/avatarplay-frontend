@@ -1,0 +1,41 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+    z-index: 5;
+  }
+  
+  .label {
+    color: var(--mui-palette-primary-main);
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .centerItems {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin: auto; /* 가로 중앙 배치 */
+    justify-content: center; /* 내부 아이템 중앙 정렬 */
+  }
+  
+  
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .icon {
+    font-size: 20px;
+    color: var(--mui-palette-text-secondary);
+  }
+  
+  .text {
+    font-size: 14px;
+    color: var(--mui-palette-text-secondary);
+  }
+  

@@ -16,11 +16,9 @@ import ButtonEpisodeInfo from './ButtonEpisodeInfo';
 
 import EpisodeDescription from './episode-description/EpisodeDescription';
 
-import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 
-import EpisodeLLMSetup from './episode-LLMsetup/EpisodeLLMsetup';
-import EpisodeUploadArtist from './episode-ImageCharacter/EpisodeUploadArtist';
+import EpisodeUploadCharacter from './episode-ImageCharacter/EpisodeUploadCharacter';
 import EpisodeImageUpload from './episode-ImageCharacter/EpisodeImageUpload';
 
 interface Props {
@@ -47,12 +45,11 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
   const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // contentInfo 가져오기
 
   const [isTriggerModalOpen, setTriggerModalOpen] = useState(false); // Trigger 모달 열림 상태
-  const [isConversationModalOpen, setConversationModalOpen] = useState(false); // Conversation 모달 열림 상태
+
   const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false);
   const [isImageSetupModalOpen, setImageSetupModalOpen] = useState(false);
   const [isAdvanceImageSetupModalOpen, setAdvanceImageSetupModalOpen] = useState(false);
   const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
-  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
 
   const [chapterName, setChapterName] = useState('chapterName');
   const [episodeName, setEpisodeName] = useState('episodeName');
@@ -63,14 +60,6 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
 
   const closeTriggerModal = () => {
     setTriggerModalOpen(false); // Trigger 모달 닫기
-  };
-
-  const openConversationModal = () => {
-    setConversationModalOpen(true); // Conversation 모달 열기
-  };
-
-  const closeConversationModal = () => {
-    setConversationModalOpen(false); // Conversation 모달 닫기
   };
 
   const openEpisodeModal = () => {
@@ -105,14 +94,6 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
     setUploadImageDialogOpen(false);
   };
 
-  const openLLMSetup = () => {
-    setLLMSetupOpen(true); // 모달 열기
-  };
-
-  const closeLLMSetup = () => {
-    setLLMSetupOpen(false); // 모달 닫기
-  };
-
   useEffect(() => {
     if (contentInfo) {
       const chapter = contentInfo.chapterInfoList[chapterIdx];
@@ -142,7 +123,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
     <main className={styles.episodeSetup}>
       <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} chapterName={chapterName ?? ''} episodeName={episodeName ?? ''} />
       <div className={styles.imageBox}>
-        <EpisodeUploadArtist uploadImageState={isUploadImageDialogOpen} />
+        <EpisodeUploadCharacter />
         <EpisodeImageUpload
           onClickEasyCreate={openImageSetup}
           onClickAdvanceCreate={openAdvanceImageSetup}
@@ -154,14 +135,10 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
       <Box className={styles.setupButtons}>
         <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
         <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
-        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />{' '}
         {/*TODO : Move This into Trigger Setup */}
-        <ButtonSetupDrawer icon={<ImageIcon />} label="AI Model Setup" onClick={openLLMSetup} />
-        {/*TODO : Move This to ContentBottom - LLM Setup*/}
       </Box>
       {/* EpisodeTrigger 모달 */}
       <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} /> {/* 모달 상태 전달 */}
-      <EpisodeConversationTemplate open={isConversationModalOpen} closeModal={closeConversationModal} />{' '}
       {/* 모달 상태 전달 */}
       {/* Episode Description 모달 */}
       {isEpisodeModalOpen && (
@@ -184,8 +161,6 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
       {/*이미지 생성 모달*/}
       {isImageSetupModalOpen && <EpisodeImageSetup open={isImageSetupModalOpen} onClose={closeImageSetup} />}
       {/* {isAdvanceImageSetupModalOpen && <EpisodeAdvanceImageSetup open ={isAdvanceImageSetupModalOpen} onClose={closeAdvanceImageSetup} />} */}
-      {/* EpisodeLLMSetup 모달 */}
-      <EpisodeLLMSetup open={isLLMSetupOpen} onClose={closeLLMSetup} />
     </main>
   );
 };

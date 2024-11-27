@@ -1,0 +1,96 @@
+.container {
+  position: relative;
+  max-width: 500px;
+  height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+
+  padding-left: 36px;
+  padding-right: 36px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  overflow: hidden;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .title {
+    font-weight: bold;
+  }
+  
+  .currency {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .basePortrait {
+    text-align: center;
+    margin-bottom: 16px;
+
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .portraitImage {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 8px;
+  }
+  
+  .changeButton {
+    margin-top: 8px;
+  }
+  
+  .prompt {
+    margin-bottom: 16px;
+  }
+  
+  .sliderbox {
+    margin-bottom: 16px;
+    margin-left: 24px;
+    margin-right: 24px;
+    gap: 36px;
+    display: flex;
+  }
+
+  
+  .generateSection {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+.swiperSection {
+  margin-bottom: 24px;
+  justify-items: center;
+}
+
+.swiper {
+  padding: 10px 0;
+}
+
+.swiperImage {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: transform 0.2s;
+}
+
+.swiperImage:hover {
+  transform: scale(1.1);
+}

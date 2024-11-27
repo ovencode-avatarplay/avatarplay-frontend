@@ -1,0 +1,9 @@
+.characterMain {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; 
+    overflow: hidden;
+    max-width: 500px;
+      margin: 0 auto
+  }
+  

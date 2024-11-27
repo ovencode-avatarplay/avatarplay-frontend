@@ -25,6 +25,12 @@ export interface PublishInfo {
   visibilityType: number;
   monetization: boolean;
   nsfw: number;
+  llmSetupInfo: LLMSetupInfo;
+}
+
+export interface LLMSetupInfo {
+  llmModel: number;
+  customApi: string;
 }
 
 // 현재 수정 중인 Content 정보

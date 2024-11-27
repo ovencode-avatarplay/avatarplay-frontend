@@ -12,67 +12,75 @@ import {
 
 // ㅋㅋㅋㅋㅋㅋㅋㅋ
 
+//const patternParsing( pattern : RegExp, )
+
 const parseAnswer = (answer: string, id: number): Message[] => {
   const result: Message[] = [];
-  const narrationPattern = /\*(.*?)\*/g;
-  const systemPattern = /%(.*?)%/g; // 시스템 패턴 추가
+
+  // 패턴과 해당 발신자 타입을 객체 배열로 정의
+  const patterns: {type: SenderType; regex: RegExp; clean: (text: string) => string}[] = [
+    {
+      type: SenderType.Partner,
+      regex: /"(.*?)"/g,
+      clean: text => text, // "" 제거
+    },
+    {
+      type: SenderType.System,
+      regex: /%(.*?)%/g,
+      clean: text => text, // %% 제거
+    },
+    {
+      type: SenderType.PartnerNarration,
+      regex: /\*\*(.*?)\*\*/g,
+      clean: text => text, // ** 제거
+    },
+  ];
+
+  // 모든 패턴을 하나의 정규식으로 통합
+  const combinedPattern = new RegExp(patterns.map(p => p.regex.source).join('|'), 'g');
+
   let lastIndex = 0;
-  let match;
+  let match: RegExpExecArray | null;
 
-  // 먼저 나레이션 패턴 처리
-  while ((match = narrationPattern.exec(answer)) !== null) {
+  while ((match = combinedPattern.exec(answer)) !== null) {
+    // 매칭된 텍스트 이전의 일반 텍스트 처리
     if (match.index > lastIndex) {
-      const partnerText = answer.slice(lastIndex, match.index).trim();
-      // partnerText가 비어있지 않을 경우에만 추가
-      if (partnerText) {
+      const plainText = answer.slice(lastIndex, match.index).trim();
+      if (plainText) {
         result.push({
           chatId: id,
-          text: partnerText,
-          sender: SenderType.Partner,
-        });
-      }
-    }
-    result.push({
-      chatId: id,
-      text: match[1], // 매칭된 나레이션 내용
-      sender: SenderType.PartnerNarration, // 메시지 발신자
-    });
-
-    lastIndex = narrationPattern.lastIndex;
-  }
-
-  // 나레이션 패턴 이후 남아있는 텍스트가 있는 경우 시스템 패턴 처리
-  while ((match = systemPattern.exec(answer)) !== null) {
-    if (match.index > lastIndex) {
-      const partnerText = answer.slice(lastIndex, match.index).trim();
-      // partnerText가 비어있지 않을 경우에만 추가
-      if (partnerText) {
-        result.push({
-          chatId: id,
-          text: partnerText,
-          sender: SenderType.Partner,
+          text: plainText.replace(/[%"*]/g, ''), // 특수 문자 제거
+          sender: SenderType.PartnerNarration,
         });
       }
     }
 
-    result.push({
-      chatId: id,
-      text: match[1], // 매칭된 시스템 메시지 내용
-      sender: SenderType.System, // 메시지 발신자
-    });
+    // 매칭된 패턴 처리
+    for (let i = 1; i < match.length; i++) {
+      if (match[i] !== undefined) {
+        const pattern = patterns[i - 1];
+        const cleanedText = pattern.clean(match[i]).replace(/[%"*]/g, ''); // 특수 문자 제거
+        result.push({
+          chatId: id,
+          text: cleanedText,
+          sender: pattern.type,
+        });
+        break; // 첫 번째 매칭된 그룹만 처리
+      }
+    }
 
-    lastIndex = systemPattern.lastIndex;
+    // 마지막 매칭 위치 업데이트
+    lastIndex = combinedPattern.lastIndex;
   }
 
-  // 마지막으로 남아있는 텍스트를 partner 메시지로 처리
+  // 남아있는 일반 텍스트 처리 (패턴이 없는 경우도 포함)
   if (lastIndex < answer.length) {
     const remainingText = answer.slice(lastIndex).trim();
-    // 남아있는 텍스트가 비어있지 않을 경우에만 추가
     if (remainingText) {
       result.push({
         chatId: id,
-        text: remainingText, // 남아있는 텍스트
-        sender: SenderType.Partner, // 메시지 발신자
+        text: remainingText.replace(/[%"*]/g, ''), // 특수 문자 제거
+        sender: SenderType.PartnerNarration,
       });
     }
   }
@@ -225,41 +233,33 @@ const checkNewSender = (isUserMessage: boolean, newMessage: string, currentSende
   return newSender;
 };
 
-// newMessage 가 어떤 타입과 관련된 문자열이 포함되어 있는지 리턴해주는 함수
+// newMessage 가 어떤 기존 Sender타입과 같은 문자열이 포함되어 있는지 리턴해주는 함수
 const checkSameSenderCommand = (isUserMessage: boolean, newMessage: string, currentSender: SenderType): boolean => {
   let isNewSenderCommand: boolean = false;
-
-  // if (isUserMessage) {
-  //   if (isUser(newMessage) || isUserNarration(newMessage)) isNewSenderCommand = true;
-  // } else {
-  //   if (isPartner(newMessage) || isPartnerNarration(newMessage) || isSystemMessage(newMessage))
-  //     isNewSenderCommand = true;
-  // }
-
   switch (currentSender) {
     case SenderType.User:
       {
-        if (isUser(newMessage) === true) isNewSenderCommand = true;
+        if (isUserMessage === true && isUser(newMessage) === true) isNewSenderCommand = true;
       }
       break;
     case SenderType.UserNarration:
       {
-        if (isUserNarration(newMessage) === true) isNewSenderCommand = true;
+        if (isUserMessage === true && isUserNarration(newMessage) === true) isNewSenderCommand = true;
       }
       break;
     case SenderType.Partner:
       {
-        if (isPartner(newMessage) === true) isNewSenderCommand = true;
+        if (isUserMessage === false && isPartner(newMessage) === true) isNewSenderCommand = true;
       }
       break;
     case SenderType.PartnerNarration:
       {
-        if (isPartnerNarration(newMessage) === true) isNewSenderCommand = true;
+        if (isUserMessage === false && isPartnerNarration(newMessage) === true) isNewSenderCommand = true;
       }
       break;
     case SenderType.System:
       {
-        if (isSystemMessage(newMessage) === true) isNewSenderCommand = true;
+        if (isUserMessage === false && isSystemMessage(newMessage) === true) isNewSenderCommand = true;
       }
       break;
   }
@@ -281,9 +281,10 @@ export const isAnotherSenderType = (
   if (newSender !== currentSender) isAnotherSender = true;
 
   // 서버에서 보내줄때 * 가 없이 오는 시작되는 나레이션일때가 있어서 예외처리 해준다.
-  if (currentSender === SenderType.User && isUserMessage === false) {
+  if ((currentSender === SenderType.User || currentSender == SenderType.UserNarration) && isUserMessage === false) {
     isAnotherSender = true;
-    newSender = SenderType.PartnerNarration;
+    // 같다라는건 새로운 Sender Command가 없었다는 이야기다.
+    if (newSender === currentSender) newSender = SenderType.PartnerNarration;
   }
 
   return {isAnotherSender, newSender};

@@ -10,7 +10,6 @@ import {
   Select,
   MenuItem,
   TextField,
-  SelectChangeEvent,
 } from '@mui/material';
 import {ArrowBackIos, DeleteForever, DriveFileRenameOutline} from '@mui/icons-material';
 import styles from './ChangeBehaviour.module.css';
@@ -21,6 +20,9 @@ import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/DataTypes';
 import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 import EpisodeConversationTemplate from '../episode-conversationtemplate/EpisodeConversationTemplate';
 import ChapterBoardOnTrigger from '@/app/view/main/content/create/content-main/chapter/OnTrigger/ChapterBoardOnTrigger';
+import {RenderTargetValueField, RenderSubDataFields} from './RenderFields';
+import {handleMainDataChange, handleSubDataChange, ensureValidSubData} from './triggerHandlers';
+import {getSubDataOptionsForMainData} from './triggerDataUtils';
 
 interface ChangeBehaviourProps {
   open: boolean;
@@ -35,7 +37,8 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   const dispatch = useDispatch();
 
   const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>({
-    id: item?.id || 0,
+    id: item?.id || 0, // 기본값 설정
+    episodeId: item?.episodeId || 0, // episodeId 기본값 추가
     name: item?.name || '',
     triggerType: item?.triggerType || 0,
     triggerValueIntimacy: item?.triggerValueIntimacy || 0,
@@ -43,17 +46,26 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     triggerValueKeyword: item?.triggerValueKeyword || '',
     triggerValueTimeMinute: item?.triggerValueTimeMinute || 0,
     triggerActionType: item?.triggerActionType || 0,
-    actionChangeEpisodeId: item?.actionChangeEpisodeId ?? -1,
-    actionChangePrompt: {
-      characterName: item?.actionChangePrompt?.characterName || '',
-      characterDescription: item?.actionChangePrompt?.characterDescription || '',
-      scenarioDescription: item?.actionChangePrompt?.scenarioDescription || '',
-      introDescription: item?.actionChangePrompt?.introDescription || '',
-      secret: item?.actionChangePrompt?.secret || '',
-    },
+    actionChangeEpisodeId: item?.actionChangeEpisodeId ?? -1, // ?? 사용하여 null 또는 undefined 체크
+    actionPromptScenarioDescription: item?.actionPromptScenarioDescription || '', // 추가된 속성
     actionIntimacyPoint: item?.actionIntimacyPoint || 0,
-    actionChangeBackground: item?.actionChangeBackground || '',
     maxIntimacyCount: item?.maxIntimacyCount || 0,
+    actionCharacterInfo: item?.actionCharacterInfo || {
+      // actionCharacterInfo에 기본값 설정
+      id: 0,
+      name: '',
+      introduction: '',
+      genderType: 0,
+      mainImageUrl: '',
+      portraitGalleryImageUrl: [],
+      poseGalleryImageUrl: [],
+      expressionGalleryImageUrl: [],
+      visibilityType: 0,
+      isMonetization: false,
+      state: 0,
+    },
+    actionMediaState: item?.actionMediaState || 0, // 기본값 수정
+    actionMediaUrlList: item?.actionMediaUrlList || '',
     actionConversationList: item?.actionConversationList || [],
   });
 
@@ -61,26 +73,36 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     if (item) {
       // triggerInfo 초기화
       setTriggerInfo({
-        id: item.id || 0,
-        name: item.name || '',
-        triggerType: item.triggerType || 0,
-        triggerValueIntimacy: item.triggerValueIntimacy || 0,
-        triggerValueChatCount: item.triggerValueChatCount || 0,
-        triggerValueKeyword: item.triggerValueKeyword || '',
-        triggerValueTimeMinute: item.triggerValueTimeMinute || 0,
-        triggerActionType: item.triggerActionType || 0,
-        actionChangeEpisodeId: item.actionChangeEpisodeId ?? -1,
-        actionChangePrompt: {
-          characterName: item.actionChangePrompt?.characterName || '',
-          characterDescription: item.actionChangePrompt?.characterDescription || '',
-          scenarioDescription: item.actionChangePrompt?.scenarioDescription || '',
-          introDescription: item.actionChangePrompt?.introDescription || '',
-          secret: item.actionChangePrompt?.secret || '',
+        id: item?.id || 0, // 기본값 설정
+        episodeId: item?.episodeId || 0, // episodeId 기본값 추가
+        name: item?.name || '',
+        triggerType: item?.triggerType || 0,
+        triggerValueIntimacy: item?.triggerValueIntimacy || 0,
+        triggerValueChatCount: item?.triggerValueChatCount || 0,
+        triggerValueKeyword: item?.triggerValueKeyword || '',
+        triggerValueTimeMinute: item?.triggerValueTimeMinute || 0,
+        triggerActionType: item?.triggerActionType || 0,
+        actionChangeEpisodeId: item?.actionChangeEpisodeId ?? -1, // ?? 사용하여 null 또는 undefined 체크
+        actionPromptScenarioDescription: item?.actionPromptScenarioDescription || '', // 추가된 속성
+        actionIntimacyPoint: item?.actionIntimacyPoint || 0,
+        maxIntimacyCount: item?.maxIntimacyCount || 0,
+        actionCharacterInfo: item?.actionCharacterInfo || {
+          // actionCharacterInfo에 기본값 설정
+          id: 0,
+          name: '',
+          introduction: '',
+          genderType: 0,
+          mainImageUrl: '',
+          portraitGalleryImageUrl: [],
+          poseGalleryImageUrl: [],
+          expressionGalleryImageUrl: [],
+          visibilityType: 0,
+          isMonetization: false,
+          state: 0,
         },
-        actionIntimacyPoint: item.actionIntimacyPoint || 0,
-        actionChangeBackground: item.actionChangeBackground || '',
-        maxIntimacyCount: item.maxIntimacyCount || 0,
-        actionConversationList: item.actionConversationList || [],
+        actionMediaState: item?.actionMediaState || 0, // 기본값 수정
+        actionMediaUrlList: item?.actionMediaUrlList || '',
+        actionConversationList: item?.actionConversationList || [],
       });
       if (triggerInfo.actionChangeEpisodeId === -1) {
         setSelectedChapter('None');
@@ -142,14 +164,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId);
   const triggerInfoList = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList || []);
 
-  const handleOpenEpisodeConversationTemplate = () => {
-    setEpisodeConversationTemplateOpen(true);
-  };
-
-  const handleCloseEpisodeConversationTemplate = () => {
-    setEpisodeConversationTemplateOpen(false);
-  };
-
   const handleOpenChapterBoard = () => {
     setIsChapterBoardOpen(true);
   };
@@ -196,79 +210,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     setIsChapterBoardOpen(false);
   };
 
-  const handleMainDataChange = (event: SelectChangeEvent<number>) => {
-    const selectedTriggerType = event.target.value as TriggerMainDataType;
-    setTriggerInfo(prev => ({
-      ...prev,
-      triggerType: selectedTriggerType,
-    }));
-
-    const subDataOptions = getSubDataOptionsForMainData(selectedTriggerType);
-    if (!subDataOptions.some(option => option.key === triggerInfo.triggerActionType)) {
-      setTriggerInfo(prev => ({
-        ...prev,
-        triggerActionType: subDataOptions[0].key,
-        actionChangePrompt: {
-          characterName: '', // 기본 캐릭터 이름
-          characterDescription: '', // 기본 캐릭터 설명
-          scenarioDescription: '', // 기본 시나리오 설명
-          introDescription: '', // 기본 소개 설명
-          secret: '', // 기본 비밀 정보
-        },
-        actionIntimacyPoint: 0,
-        actionConversationList: [],
-      }));
-    }
-  };
-
-  const handleSubDataChange = (event: SelectChangeEvent<number>) => {
-    const selectedSubType = event.target.value as TriggerSubDataType;
-    setTriggerInfo(prev => ({
-      ...prev,
-      triggerActionType: selectedSubType,
-    }));
-  };
-
-  const getSubDataOptionsForMainData = (mainDataKey: TriggerMainDataType) => {
-    switch (mainDataKey) {
-      case TriggerMainDataType.triggerValueIntimacy:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-        ];
-      case TriggerMainDataType.triggerValueChatCount:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
-        ];
-      case TriggerMainDataType.triggerValueKeyword:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
-        ];
-      case TriggerMainDataType.triggerValueTimeMinute:
-        return [
-          {key: TriggerSubDataType.actionEpisodeChangeId, label: 'Episode Change'},
-          {key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'},
-          {key: TriggerSubDataType.actionIntimacyPoint, label: 'Get Intimacy Point'},
-        ];
-      default:
-        return [{key: TriggerSubDataType.ChangePrompt, label: 'Change Prompt'}];
-    }
-  };
-
-  useEffect(() => {
-    const subDataOptions = getSubDataOptionsForMainData(triggerInfo.triggerType);
-    if (subDataOptions.length > 0 && !subDataOptions.some(option => option.key === triggerInfo.triggerActionType)) {
-      setTriggerInfo(prev => ({
-        ...prev,
-        triggerActionType: subDataOptions[0].key,
-      }));
-    }
-  }, [triggerInfo.triggerType]);
-
   const handleClose = () => {
     // Keyword 타입이 이미 존재하는지 확인 (TriggerMainDataType.triggerValueKeyword = 1 이라고 가정)
     const isKeywordTypeExists = triggerInfoList.some(
@@ -290,7 +231,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     onClose();
   };
 
-  // 이름 변경 처리 함수
   const handleOpenEditNameModal = () => {
     setIsEditNameModalOpen(true);
   };
@@ -307,254 +247,17 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     }
   };
 
-  const renderTargetValueField = (triggerType: TriggerMainDataType) => {
-    console.log('Current triggerType:', triggerInfo.triggerType);
-    switch (triggerType) {
-      case TriggerMainDataType.triggerValueIntimacy:
-        return (
-          <TextField
-            className={styles.input}
-            variant="outlined"
-            label="Target Value (Intimacy)"
-            type="number"
-            value={triggerInfo.triggerValueIntimacy || ''}
-            onChange={e => {
-              let value = e.target.value;
-
-              // 빈 값이 아니라면 숫자로 변환하여 100 초과 여부를 확인
-              if (value && Number(value) > 100) {
-                value = '100'; // 100을 초과할 경우 강제로 '100'으로 설정
-              }
-
-              setTriggerInfo(prev => ({
-                ...prev,
-                triggerValueIntimacy: value ? Number(value) : 0,
-              }));
-            }}
-            inputProps={{
-              min: 0,
-              max: 100,
-            }}
-          />
-        );
-
-      case TriggerMainDataType.triggerValueChatCount:
-        return (
-          <TextField
-            className={styles.input}
-            variant="outlined"
-            label="Target Value (Chat Count)"
-            type="number"
-            value={triggerInfo.triggerValueChatCount || ''}
-            onChange={e => {
-              setTriggerInfo(prev => ({
-                ...prev,
-                triggerValueChatCount: Number(e.target.value),
-              }));
-            }}
-          />
-        );
-
-      case TriggerMainDataType.triggerValueTimeMinute:
-        return (
-          <TextField
-            className={styles.input}
-            variant="outlined"
-            label="Target Value (Time Minute)"
-            type="number"
-            value={triggerInfo.triggerValueTimeMinute || 0}
-            onChange={e =>
-              setTriggerInfo(prev => ({
-                ...prev,
-                triggerValueTimeMinute: Number(e.target.value),
-              }))
-            }
-          />
-        );
-
-      case TriggerMainDataType.triggerValueKeyword:
-        return (
-          <TextField
-            className={styles.input}
-            variant="outlined"
-            label="Target Keywords"
-            value={triggerInfo.triggerValueKeyword || ''}
-            onChange={e => {
-              setTriggerInfo(prev => ({
-                ...prev,
-                triggerValueKeyword: e.target.value,
-              }));
-            }}
-          />
-        );
-
-      default:
-        return null;
-    }
+  const handleOpenEpisodeConversationTemplate = () => {
+    setEpisodeConversationTemplateOpen(true);
   };
 
-  const renderSubDataFields = (triggerActionType: TriggerSubDataType) => {
-    switch (triggerActionType) {
-      case TriggerSubDataType.actionEpisodeChangeId:
-        return (
-          <Box className={styles.destinationContainer}>
-            <Typography className={styles.destinationLabel}>Destination Episode</Typography>
-            <Box className={styles.destinationDetails}>
-              <Box className={styles.destinationIcon} />
-              <Box>
-                <Typography className={styles.chapter}>{selectedChapter}</Typography>
-                <Typography className={styles.episode}>{selectedEpisode}</Typography>
-              </Box>
-              <IconButton className={styles.rightButton} onClick={handleOpenChapterBoard}>
-                <ArrowBackIos />
-              </IconButton>
-            </Box>
-          </Box>
-        );
-      case TriggerSubDataType.actionIntimacyPoint:
-        return (
-          <Box className={styles.intimacyContainer}>
-            <Typography className={styles.label}>Get Point</Typography>
-            <TextField
-              className={styles.input}
-              variant="outlined"
-              value={triggerInfo.actionIntimacyPoint}
-              onChange={e => {
-                const value = Math.min(Number(e.target.value), 100); // 최대값 100 설정
-                setTriggerInfo(prev => ({
-                  ...prev,
-                  actionIntimacyPoint: value,
-                }));
-              }}
-              inputProps={{
-                min: 0,
-                max: 100,
-              }}
-            />
-
-            <Typography className={styles.label}>Max Repetition Count</Typography>
-            <TextField
-              className={styles.input}
-              variant="outlined"
-              value={triggerInfo.maxIntimacyCount}
-              onChange={e => {
-                const value = Math.min(Number(e.target.value), 100); // 최대값 10 설정
-                setTriggerInfo(prev => ({
-                  ...prev,
-                  maxIntimacyCount: value,
-                }));
-              }}
-              inputProps={{
-                min: 0,
-                max: 10,
-              }}
-            />
-          </Box>
-        );
-
-      case TriggerSubDataType.ChangePrompt:
-        return (
-          <Box className={styles.promptContainer}>
-            <DialogContent className={styles.dialogContent}>
-              <TextField
-                label="Character Name"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={triggerInfo.actionChangePrompt.characterName}
-                onChange={e =>
-                  setTriggerInfo(prev => ({
-                    ...prev,
-                    actionChangePrompt: {
-                      ...prev.actionChangePrompt,
-                      characterName: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                label="Character Description"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                multiline
-                value={triggerInfo.actionChangePrompt.characterDescription}
-                onChange={e =>
-                  setTriggerInfo(prev => ({
-                    ...prev,
-                    actionChangePrompt: {
-                      ...prev.actionChangePrompt,
-                      characterDescription: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                label="World Scenario"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                multiline
-                value={triggerInfo.actionChangePrompt.scenarioDescription}
-                onChange={e =>
-                  setTriggerInfo(prev => ({
-                    ...prev,
-                    actionChangePrompt: {
-                      ...prev.actionChangePrompt,
-                      scenarioDescription: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                label="Introduction"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                multiline
-                value={triggerInfo.actionChangePrompt.introDescription}
-                onChange={e =>
-                  setTriggerInfo(prev => ({
-                    ...prev,
-                    actionChangePrompt: {
-                      ...prev.actionChangePrompt,
-                      introDescription: e.target.value,
-                    },
-                  }))
-                }
-              />
-              <TextField
-                label="Secret"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                multiline
-                value={triggerInfo.actionChangePrompt.secret}
-                onChange={e =>
-                  setTriggerInfo(prev => ({
-                    ...prev,
-                    actionChangePrompt: {
-                      ...prev.actionChangePrompt,
-                      secret: e.target.value,
-                    },
-                  }))
-                }
-              />
-            </DialogContent>
-            <Typography className={styles.label}>Guide Preset (Optional)</Typography>
-            <Box className={styles.conversationTemplate}>
-              <IconButton className={styles.rightButton} onClick={handleOpenEpisodeConversationTemplate}>
-                <ArrowBackIos />
-              </IconButton>
-              <Typography className={styles.conversationLabel}>Conversation Template</Typography>
-            </Box>
-          </Box>
-        );
-
-      default:
-        return null;
-    }
+  const handleCloseEpisodeConversationTemplate = () => {
+    setEpisodeConversationTemplateOpen(false);
   };
+
+  useEffect(() => {
+    ensureValidSubData(triggerInfo, setTriggerInfo);
+  }, [triggerInfo.triggerType]);
 
   return (
     <>
@@ -582,7 +285,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
                 <Select
                   className={styles.selectBox}
                   value={triggerInfo.triggerType}
-                  onChange={handleMainDataChange}
+                  onChange={(event, child) => handleMainDataChange(event, child, triggerInfo, setTriggerInfo)}
                   variant="outlined"
                 >
                   <MenuItem value={TriggerMainDataType.triggerValueIntimacy}>Intimacy</MenuItem>
@@ -593,7 +296,9 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
               </div>
             </Box>
 
-            <Box className={styles.targetValueSection}>{renderTargetValueField(triggerInfo.triggerType)}</Box>
+            <Box className={styles.targetValueSection}>
+              <RenderTargetValueField triggerInfo={triggerInfo} setTriggerInfo={setTriggerInfo} />
+            </Box>
           </Box>
 
           <Box className={styles.subValueContainer}>
@@ -604,7 +309,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
                 <Select
                   className={styles.selectBox}
                   value={triggerInfo.triggerActionType}
-                  onChange={handleSubDataChange}
+                  onChange={event => handleSubDataChange({target: {value: Number(event.target.value)}}, setTriggerInfo)}
                   variant="outlined"
                 >
                   {getSubDataOptionsForMainData(triggerInfo.triggerType).map(option => (
@@ -617,7 +322,14 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
                   <ArrowBackIos />
                 </IconButton>
               </Box>
-              {renderSubDataFields(triggerInfo.triggerActionType)}
+              <RenderSubDataFields
+                triggerInfo={triggerInfo}
+                setTriggerInfo={setTriggerInfo}
+                selectedChapter={selectedChapter}
+                selectedEpisode={selectedEpisode}
+                handleOpenChapterBoard={handleOpenChapterBoard}
+                handleOpenEpisodeConversationTemplate={handleOpenEpisodeConversationTemplate}
+              />
             </Box>
           </Box>
         </DialogContent>
