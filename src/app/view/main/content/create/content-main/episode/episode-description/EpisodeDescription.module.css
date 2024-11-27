@@ -42,3 +42,27 @@
   font-size: 14px; /* Adjust font size */
   padding: 8px 16px; /* Button padding */
 }
+
+.hidden {
+  display: none;
+}
+
+.conversationButtonWrapper {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.conversationButton {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 12px 24px;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
