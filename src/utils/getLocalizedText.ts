@@ -69,7 +69,7 @@ const getLocalizedText = (head: keyof LocalizationStrings, key: string, language
   const localizedItem = group[key];
 
   // 언어별 데이터가 없으면 영어 기본값 반환
-  return localizedItem[effectiveLanguage] || localizedItem['en'] || '';
+  return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
 };
 
 export default getLocalizedText;

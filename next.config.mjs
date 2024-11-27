@@ -6,19 +6,19 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/en/main/homefeed',
+        destination: '/en-US/main/homefeed',
         permanent: true,
         locale: false,
       },
       {
-        source: '/:lang(en|ko|ar)',
+        source: '/:lang(en-US|ko|ja|fr|es|zh-CN|zh-TW|pt-PT|de)',
         destination: '/:lang/main/homefeed',
         permanent: true,
         locale: false,
       },
       {
-        source: '/((?!(?:en|ko|ar|front-pages|favicon.ico)\\b)):path',
-        destination: '/en/:path',
+        source: '/((?!(?:en-US|ko|ja|fr|es|zh-CN|zh-TW|pt-PT|de|front-pages|favicon.ico)\\b)):path',
+        destination: '/en-US/:path',
         permanent: true,
         locale: false,
       },
