@@ -16,6 +16,7 @@ const CharacterGalleryItem: React.FC<CharacterGalleryItemProps> = ({url, isSelec
       className={`${styles.galleryItem} ${isSelected ? styles.selected : ''}`}
       sx={{
         backgroundImage: `url(${url.imageUrl})`,
+        borderRadius: '8px',
       }}
     />
   );

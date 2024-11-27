@@ -42,6 +42,7 @@ import {Pagination} from 'swiper/modules';
 import PublishCharacter from './PublishCharacter';
 import {CreateCharacterOption, GeneratedOptionsState} from './CreateCharacterType';
 import FullScreenImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
+import PublishCharacterBottom from './PublishCharacterBottom';
 
 interface Props {
   closeAction: () => void;
@@ -317,9 +318,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
               <div className={styles.createTitle}>Step 3: Select Race</div>
               <Typography variant="h6">Race</Typography>
               <Swiper
+                initialSlide={selectedOptions.race}
                 slidesPerView={4}
                 spaceBetween={5}
-                centeredSlides={false}
+                centeredSlides={true}
+                onSlideChange={swiper => handleOptionSelect('race', swiper.activeIndex)}
                 pagination={{
                   clickable: true,
                 }}
@@ -334,7 +337,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
                       label={race.label}
                       image={race.image}
                       selected={selectedOptions.race === index}
-                      onClick={() => handleOptionSelect('race', index)}
+                      onClick={() => {} /*handleOptionSelect('race', index)*/}
                     />
                   </SwiperSlide>
                 ))}
@@ -412,49 +415,83 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
             <div className={styles.createTitle}>Step 5: Select Body Shape</div>
             <Box className={styles.bodyContent}>
               <Typography variant="h6">Body Type</Typography>
-              <Box className={styles.gridContainer}>
+              <Swiper
+                initialSlide={selectedOptions.bodyType}
+                slidesPerView={4}
+                spaceBetween={5}
+                centeredSlides={true}
+                onSlideChange={swiper => handleOptionSelect('bodyType', swiper.activeIndex)}
+                pagination={{
+                  clickable: true,
+                }}
+                modules={[Pagination]}
+              >
                 {characterOptions.bodyTypes.map((style, index) => (
-                  <CharacterCreateImageButton
-                    key={style.label}
-                    width={'100%'}
-                    height={'12vh'}
-                    label={style.label}
-                    image={style.image}
-                    selected={selectedOptions.bodyType === index}
-                    onClick={() => handleOptionSelect('bodyType', index)}
-                  />
+                  <SwiperSlide key={style.label}>
+                    <CharacterCreateImageButton
+                      width={'100%'}
+                      height={'12vh'}
+                      label={style.label}
+                      image={style.image}
+                      selected={selectedOptions.bodyType === index}
+                      onClick={() => {}}
+                    />
+                  </SwiperSlide>
                 ))}
-              </Box>
+              </Swiper>
               {selectedOptions.gender === 0 && (
                 <>
                   <Typography variant="h6">Top Size</Typography>
-                  <Box className={styles.gridContainer}>
+                  <Swiper
+                    initialSlide={selectedOptions.topSize}
+                    slidesPerView={4}
+                    spaceBetween={5}
+                    centeredSlides={true}
+                    onSlideChange={swiper => handleOptionSelect('topSize', swiper.activeIndex)}
+                    pagination={{
+                      clickable: true,
+                    }}
+                    modules={[Pagination]}
+                  >
                     {characterOptions.topSizes.map((style, index) => (
-                      <CharacterCreateImageButton
-                        key={style.label}
-                        width={'100%'}
-                        height={'15vh'}
-                        label={style.label}
-                        image={style.image}
-                        selected={selectedOptions.topSize === index}
-                        onClick={() => handleOptionSelect('topSize', index)}
-                      />
+                      <SwiperSlide key={style.label}>
+                        <CharacterCreateImageButton
+                          width={'100%'}
+                          height={'15vh'}
+                          label={style.label}
+                          image={style.image}
+                          selected={selectedOptions.topSize === index}
+                          onClick={() => {}}
+                        />
+                      </SwiperSlide>
                     ))}
-                  </Box>
+                  </Swiper>
+
                   <Typography variant="h6">Bottom Size</Typography>
-                  <Box className={styles.gridContainer}>
+                  <Swiper
+                    initialSlide={selectedOptions.bottomSize}
+                    slidesPerView={4}
+                    spaceBetween={5}
+                    centeredSlides={true}
+                    onSlideChange={swiper => handleOptionSelect('bottomSize', swiper.activeIndex)}
+                    pagination={{
+                      clickable: true,
+                    }}
+                    modules={[Pagination]}
+                  >
                     {characterOptions.bottomSizes.map((style, index) => (
-                      <CharacterCreateImageButton
-                        key={style.label}
-                        width={'100%'}
-                        height={'15vh'}
-                        label={style.label}
-                        image={style.image}
-                        selected={selectedOptions.bottomSize === index}
-                        onClick={() => handleOptionSelect('bottomSize', index)}
-                      />
+                      <SwiperSlide key={style.label}>
+                        <CharacterCreateImageButton
+                          width={'100%'}
+                          height={'15vh'}
+                          label={style.label}
+                          image={style.image}
+                          selected={selectedOptions.bottomSize === index}
+                          onClick={() => {}}
+                        />
+                      </SwiperSlide>
                     ))}
-                  </Box>
+                  </Swiper>
                 </>
               )}
             </Box>
@@ -466,9 +503,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
             <div className={styles.createTitle}>Step 6: Select Outfit Clothes</div>
             <Box className={styles.bodyContent}>
               <Swiper
+                initialSlide={selectedOptions.clothing}
                 slidesPerView={4} // 한 번에 표시되는 슬라이드 개수
                 spaceBetween={5} // 슬라이드 간격
-                centeredSlides={false} // 슬라이드 중앙 정렬 여부
+                centeredSlides={true}
+                onSlideChange={swiper => handleOptionSelect('clothing', swiper.activeIndex)}
                 style={{pointerEvents: customClothesActive ? 'none' : 'auto', opacity: customClothesActive ? 0.5 : 1}}
               >
                 {characterOptions.clothing.map((style, index) => (
@@ -480,7 +519,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
                       label={style.label}
                       image={style.image}
                       selected={selectedOptions.clothing === index}
-                      onClick={() => handleOptionSelect('clothing', index)}
+                      onClick={() => {} /*handleOptionSelect('clothing', index)*/}
                     />
                   </SwiperSlide>
                 ))}
@@ -649,10 +688,10 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
   const renderBottom = () => {
     return (
       <>
-        {activeStep < steps.length - 1 && (
+        {activeStep < steps.length - 1 ? (
           <>
             <Button className={styles.stepButton} variant="outlined" onClick={handlePrev} disabled={activeStep === 0}>
-              Prev
+              {steps[activeStep] === 'Result' ? 'Regenerate' : 'Prev'}
             </Button>
 
             <Button className={styles.stepButton} variant="contained" onClick={handleNext}>
@@ -662,6 +701,10 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
                   : 'Next (isGenerated)'
                 : 'Next'}
             </Button>
+          </>
+        ) : (
+          <>
+            <PublishCharacterBottom onPrevClick={handlePrev} onPublishClick={() => {}} />
           </>
         )}
       </>

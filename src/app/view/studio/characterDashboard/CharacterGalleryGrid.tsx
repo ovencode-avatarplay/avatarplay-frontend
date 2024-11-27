@@ -23,6 +23,11 @@ const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
 
   return (
     <Box className={styles.galleryContainer}>
+      {!isTrigger && (
+        <Button variant="contained" color="primary" onClick={onAddImageClick} className={styles.addImageButton}>
+          + Add Image
+        </Button>
+      )}
       {!isEmptyGallery &&
         itemUrl?.map((item, index) => (
           <CharacterGalleryItem
@@ -36,11 +41,6 @@ const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
         <Typography variant="body1" className={styles.emptyMessage}>
           The gallery is empty.
         </Typography>
-      )}
-      {!isTrigger && (
-        <Button variant="contained" color="primary" onClick={onAddImageClick} className={styles.addImageButton}>
-          + Add Image
-        </Button>
       )}
     </Box>
   );

@@ -1,17 +1,25 @@
 import React, {useEffect, useState} from 'react';
+
+// mui, css
 import {Modal, Box, Button, Typography, Snackbar, Alert} from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import PreviewIcon from '@mui/icons-material/Preview';
 import DeleteIcon from '@mui/icons-material/Delete';
 import styles from './CharacterGalleryModal.module.css';
-import CreateCharacterTopMenu from '../../main/content/create/character/CreateCharacterTopMenu';
+
+// redux
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+
+// Network
+import {DeleteGalleryReq, sendDeleteGallery} from '@/app/NetWork/CharacterNetwork';
+
+// Components
+import CreateCharacterTopMenu from '../../main/content/create/character/CreateCharacterTopMenu';
 import CharacterGallery from './CharacterGallery';
 import CharacterGalleryCreate from './CharacterGalleryCreate';
-import FullViewImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
 import CharacterCreate from '../../main/content/create/character/CreateCharacterSequence';
+import CharacterGalleryViewer from './CharacterGalleryViewer';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
-import {DeleteGalleryReq, sendDeleteGallery} from '@/app/NetWork/CharacterNetwork';
 
 interface CharacterGalleryModalProps {
   open: boolean;
@@ -42,8 +50,8 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   const [selectedItem, setSelectedItem] = useState<[GalleryCategory, number | null]>([GalleryCategory.Portrait, null]); //카테고리가 섞여 있을 가능성도 있다고 했기 때문에 번거롭지만 pair data로
 
   const [characterInfo, setCharacterInfo] = useState<CharacterInfo>(characterData);
-  const [fullscreenImage, setFullscreenImage] = useState<FullViewImageData | null>(null); // Add fullscreen image state
-  let imageData: FullViewImageData = {url: '', parameter: ''};
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerImages, setViewerImages] = useState<string[]>([]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -85,6 +93,8 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
       return;
     }
 
+    let imageUrls: string[] = [];
+
     switch (selectedItem[0] as GalleryCategory) {
       case GalleryCategory.All:
         const allUrls = [
@@ -93,8 +103,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
           ...(characterInfo.expressionGalleryImageUrl || []),
         ];
         if (allUrls[selectedItem[1]]) {
-          imageData.url = allUrls[selectedItem[1]].imageUrl;
-          imageData.parameter = `${allUrls[selectedItem[1]].promptParameter}`;
+          imageUrls = allUrls.map(img => img.imageUrl) || [];
         } else {
           console.error('URL not found for index in All category:', selectedItem[1]);
         }
@@ -102,8 +111,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
       case GalleryCategory.Portrait:
         if (characterInfo.portraitGalleryImageUrl && characterInfo.portraitGalleryImageUrl[selectedItem[1]]) {
-          imageData.url = characterInfo.portraitGalleryImageUrl[selectedItem[1]].imageUrl;
-          imageData.parameter = `${characterInfo.portraitGalleryImageUrl[selectedItem[1]].promptParameter}`;
+          imageUrls = characterInfo.portraitGalleryImageUrl.map(img => img.imageUrl) || [];
         } else {
           console.error('Portrait URL not found for index:', selectedItem[1]);
         }
@@ -111,8 +119,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
       case GalleryCategory.Pose:
         if (characterInfo.poseGalleryImageUrl && characterInfo.poseGalleryImageUrl[selectedItem[1]]) {
-          imageData.url = characterInfo.poseGalleryImageUrl[selectedItem[1]].imageUrl;
-          imageData.parameter = `${characterInfo.poseGalleryImageUrl[selectedItem[1]].promptParameter}`;
+          imageUrls = characterInfo.poseGalleryImageUrl.map(img => img.imageUrl) || [];
         } else {
           console.error('Pose URL not found for index:', selectedItem[1]);
         }
@@ -120,8 +127,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
       case GalleryCategory.Expression:
         if (characterInfo.expressionGalleryImageUrl && characterInfo.expressionGalleryImageUrl[selectedItem[1]]) {
-          imageData.url = characterInfo.expressionGalleryImageUrl[selectedItem[1]].imageUrl;
-          imageData.parameter = `${characterInfo.expressionGalleryImageUrl[selectedItem[1]].promptParameter}`;
+          imageUrls = characterInfo.expressionGalleryImageUrl.map(img => img.imageUrl) || [];
         } else {
           console.error('Expression URL not found for index:', selectedItem[1]);
         }
@@ -132,11 +138,11 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
         break;
     }
 
-    if (imageData.url) {
-      setFullscreenImage(imageData);
-      console.log(`View Clicked: ${selectedItem[0]} / ${selectedItem[1]}`);
+    if (imageUrls.length > 0) {
+      setViewerImages(imageUrls);
+      setViewerOpen(true);
     } else {
-      console.error('Failed to set fullscreen image: No valid URL.');
+      console.error('No valid URLs found for the selected category');
     }
   };
 
@@ -184,65 +190,73 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   return (
     <Modal open={open} onClose={handleOnClose}>
       <Box className={styles.modalContent}>
-        <Box className={styles.container}>
-          {isRegenerateOpen ? (
-            <>
-              <CreateCharacterTopMenu
-                backButtonAction={handleRegenerateClose}
-                lastUrl=":/lang/studio/Character"
-                contentTitle={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]} Creation`}
-                blockStudioButton={true}
-              />
-              <CharacterGalleryCreate
-                open={isRegenerateOpen}
-                onClose={handleRegenerateClose}
-                category={selectedCategory}
-                characterInfo={characterInfo}
-              />
-            </>
-          ) : isModifyOpen ? (
-            <>
-              <CreateCharacterTopMenu
-                backButtonAction={handleModifyClose}
-                lastUrl=":/lang/studio/Character"
-                contentTitle={`Modify ${characterInfo.name}`}
-                blockStudioButton={true}
-              />
-              <CharacterCreate closeAction={handleModifyClose} isModify={true} />
-            </>
-          ) : (
-            <>
-              <CreateCharacterTopMenu
-                backButtonAction={onClose}
-                lastUrl=":/lang/studio/Character"
-                contentTitle={`${characterInfo.name}'s Gallery`}
-                blockStudioButton={true}
-              />
-              <CharacterGallery
-                characterInfo={characterInfo}
-                onCategorySelected={setSelectedCategory}
-                onCurrentSelected={handleSelectItem}
-                onGenerateSelected={handleRegenerateItem}
-                refreshCharacter={refreshCharacter}
-              />
-              <div className={styles.footer}>
-                {buttons.map((button, index) => (
-                  <Button key={index} className={styles.button} startIcon={button.icon} onClick={button.onClick}>
-                    <Typography>{button.text}</Typography>
-                  </Button>
-                ))}
-              </div>
-            </>
-          )}
-        </Box>
-        {fullscreenImage && (
-          <FullViewImage
-            imageData={fullscreenImage}
-            onClick={() => {
-              setFullscreenImage(null);
-            }}
+        {!viewerOpen && (
+          <Box className={styles.container}>
+            {isRegenerateOpen ? (
+              <>
+                <CreateCharacterTopMenu
+                  backButtonAction={handleRegenerateClose}
+                  lastUrl=":/lang/studio/Character"
+                  contentTitle={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]} Creation`}
+                  blockStudioButton={true}
+                />
+                <CharacterGalleryCreate
+                  open={isRegenerateOpen}
+                  onClose={handleRegenerateClose}
+                  category={selectedCategory}
+                  characterInfo={characterInfo}
+                />
+              </>
+            ) : isModifyOpen ? (
+              <>
+                <CreateCharacterTopMenu
+                  backButtonAction={handleModifyClose}
+                  lastUrl=":/lang/studio/Character"
+                  contentTitle={`Modify ${characterInfo.name}`}
+                  blockStudioButton={true}
+                />
+                <CharacterCreate closeAction={handleModifyClose} isModify={true} />
+              </>
+            ) : (
+              <>
+                <CreateCharacterTopMenu
+                  backButtonAction={onClose}
+                  lastUrl=":/lang/studio/Character"
+                  contentTitle={`${characterInfo.name}'s Gallery`}
+                  blockStudioButton={true}
+                />
+                <CharacterGallery
+                  characterInfo={characterInfo}
+                  onCategorySelected={setSelectedCategory}
+                  onCurrentSelected={handleSelectItem}
+                  onGenerateSelected={handleRegenerateItem}
+                  refreshCharacter={refreshCharacter}
+                />
+                <div className={styles.footer}>
+                  {buttons.map((button, index) => (
+                    <Button key={index} className={styles.button} startIcon={button.icon} onClick={button.onClick}>
+                      <Typography>{button.text}</Typography>
+                    </Button>
+                  ))}
+                </div>
+              </>
+            )}
+          </Box>
+        )}
+
+        {/* Viewer */}
+        {viewerOpen && (
+          <CharacterGalleryViewer
+            imageUrls={viewerImages}
+            categoryType={galleryCategoryText[selectedCategory]}
+            onBack={() => setViewerOpen(false)}
+            onShare={() => console.log('Share clicked')}
+            onThumbnail={() => console.log('Thumbnail clicked')}
+            onInfo={() => console.log('Info clicked')}
+            onDelete={() => console.log('Delete clicked')}
           />
         )}
+
         <Snackbar
           open={!!errorMessage}
           autoHideDuration={6000}

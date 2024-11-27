@@ -148,10 +148,12 @@ const CharacterDashboard: React.FC = () => {
       return;
     }
 
-    await getCharacterInfo(selectedCharacterId);
+    alert('Modify is not working now');
+    // Modify 용도의 api 생성 전까지 막아둠
+    // await getCharacterInfo(selectedCharacterId);
 
-    setIsModifyMode(true);
-    setModifyOpen(true);
+    // setIsModifyMode(true);
+    // setModifyOpen(true);
   };
 
   const handleCloseModify = () => {
@@ -261,16 +263,20 @@ const CharacterDashboard: React.FC = () => {
 
       {/* Dialog */}
       <Dialog open={isDialogOpen} onClose={handleDeleteDialogClose}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Are you sure you want to delete this character?</DialogContentText>
+        <DialogTitle>Discard Character '{currentSelectedCharacter?.name}'?</DialogTitle>
+        <DialogContent sx={{justifyContent: 'center'}}>
+          <DialogContentText>
+            All Data of this character will be deleted.
+            <br />
+            Are you sure?
+          </DialogContentText>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{justifyContent: 'center'}}>
           <Button onClick={handleDeleteDialogClose} color="primary">
             Cancel
           </Button>
           <Button onClick={handleConfirmDelete} color="error">
-            Delete
+            Okay
           </Button>
         </DialogActions>
       </Dialog>

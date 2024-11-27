@@ -40,6 +40,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender, createO
   const searchParam = useSearchParams();
   const [characterName, setCharacterName] = useState<string>('');
   const [characterIntroduction, setCharacterIntroduction] = useState<string>('');
+  const [characterDescription, setCharacterDescription] = useState<string>('');
 
   const handleDrawerVisibilityToggle = () => {
     setDrawerVisibilityOpen(!drawerVisibilityOpen);
@@ -88,6 +89,14 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender, createO
     }
   };
 
+  function getMonetizationText() {
+    if (monetization === 'On') {
+      return 'Original';
+    } else if (monetization === 'Off') {
+      return 'Fan';
+    }
+  }
+
   return (
     <>
       {/* Thumbnail Area */}
@@ -113,22 +122,29 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender, createO
             value={characterName}
             onChange={e => setCharacterName(e.target.value)} // 이름 상태 업데이트
           />
-          <Button variant="outlined" className={styles.regenerateButton}>
-            Regenerate
-          </Button>
+          <Typography className={styles.label}>Character Introduction</Typography>
+          <TextField
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={4}
+            placeholder="Write a brief introduction about the character..."
+            value={characterIntroduction}
+            onChange={e => setCharacterIntroduction(e.target.value)}
+          />
         </Box>
       </Box>
 
-      {/* Character Introduction */}
-      <Typography className={styles.label}>Character Introduction</Typography>
+      {/* Character Description */}
+      <Typography className={styles.label}>Character Description</Typography>
       <TextField
         variant="outlined"
         fullWidth
         multiline
         rows={4}
-        placeholder="Write a brief introduction about the character..."
-        value={characterIntroduction}
-        onChange={e => setCharacterIntroduction(e.target.value)}
+        placeholder="Write a brief description about the character..."
+        value={characterDescription}
+        onChange={e => setCharacterDescription(e.target.value)}
       />
 
       {/* Setting Button Area */}
@@ -142,15 +158,15 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender, createO
         <Box className={styles.settingButton} onClick={handleDrawerMonetizationToggle}>
           <MonetizationOnIcon />
           <Typography className={styles.label}>Monetization</Typography>
-          <Typography className={styles.toggleState}>{monetization}</Typography>
+          <Typography className={styles.toggleState}>{getMonetizationText()}</Typography>
           <ChevronRightIcon />
         </Box>
       </Box>
 
       {/* Publish Button */}
-      <Button variant="contained" color="primary" className={styles.publishButton} onClick={handleCreateCharacter}>
+      {/* <Button variant="contained" color="primary" className={styles.publishButton} onClick={handleCreateCharacter}>
         Publish Character
-      </Button>
+      </Button> */}
 
       {/* Drawer */}
       <Drawer anchor="right" open={drawerVisibilityOpen} onClose={handleDrawerVisibilityToggle}>
@@ -194,8 +210,8 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({url, gender, createO
             onChange={e => setMonetization(e.target.value)}
             className={styles.toggleGroup}
           >
-            <FormControlLabel value="Off" control={<Radio />} label="Off" />
-            <FormControlLabel value="On" control={<Radio />} label="On" />
+            <FormControlLabel value="On" control={<Radio />} label="Original" />
+            <FormControlLabel value="Off" control={<Radio />} label="Fan" />
           </RadioGroup>
         </Box>
       </Drawer>
