@@ -23,6 +23,7 @@ import {CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNe
 // publish가 끝나고 다른곳으로 이동하기
 import {useRouter, useSearchParams} from 'next/navigation';
 import {GenerateParameter} from '@/app/NetWork/ImageNetwork';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 interface PublishCharacterProps {
   url: string;
@@ -119,6 +120,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
 
   return (
     <>
+      <LoadingOverlay loading={loading} />
       {/* Thumbnail Area */}
       <Box className={styles.thumbnailArea}>
         <Box className={styles.portraitArea}>
