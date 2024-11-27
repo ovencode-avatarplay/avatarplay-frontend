@@ -1,0 +1,72 @@
+/* Thumbnail Area */
+.thumbnailArea {
+    height: 70%;
+    width: 100%;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .thumbnailButton {
+    position: absolute;
+    top: 16px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+  }
+  
+  .backButton {
+    left: 16px;
+  }
+  
+  .menuButton {
+    right: 16px;
+  }
+  
+  .label {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  
+  /* Control Area */
+  .controlArea {
+    height: 30%;
+    width: 100%;
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+  }
+  
+  .thumbnailSwiper {
+    flex-grow: 1;
+  }
+  
+  .thumbnailSlide {
+    width: 100%;
+    height: 80px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+  }
+  
+  .controlButtonArea {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 8px;
+  }
+  
+  .controlButton {
+    color: white;
+    text-transform: none;
+    flex-direction: column;
+  }
+  

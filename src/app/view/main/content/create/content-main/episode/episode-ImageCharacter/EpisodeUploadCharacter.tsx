@@ -15,15 +15,7 @@ import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork
 import EpisodeStarringArtist from './EpisodeStarringCharacter';
 import EpisodeTempArtist from './EpisodeTempCharacter';
 
-const Input = styled('input')({
-  display: 'none',
-});
-
-interface Props {
-  uploadImageState: boolean;
-}
-
-const EpisodeCharacter: React.FC<Props> = ({uploadImageState: uploadImageOpen}) => {
+const EpisodeUploadCharacter: React.FC = () => {
   const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -133,4 +125,4 @@ const EpisodeCharacter: React.FC<Props> = ({uploadImageState: uploadImageOpen}) 
   );
 };
 
-export default EpisodeCharacter;
+export default EpisodeUploadCharacter;

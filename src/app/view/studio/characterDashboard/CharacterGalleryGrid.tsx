@@ -1,18 +1,18 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, Button, Typography} from '@mui/material';
 import styles from './CharacterGallery.module.css';
 import CharacterGalleryItem from './CharacterGalleryItem';
 import {GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 
-interface GalleryItemListProps {
+interface CharacterGalleryGridProps {
   itemUrl: GalleryImageInfo[] | null;
   selectedItemIndex: number | null;
   onSelectItem: (index: number | null) => void;
-  onAddImageClick: () => void;
+  onAddImageClick?: () => void;
   isTrigger?: boolean;
 }
 
-const GalleryItemList: React.FC<GalleryItemListProps> = ({
+const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
   itemUrl,
   selectedItemIndex,
   onSelectItem,
@@ -23,6 +23,11 @@ const GalleryItemList: React.FC<GalleryItemListProps> = ({
 
   return (
     <Box className={styles.galleryContainer}>
+      {!isTrigger && (
+        <Button variant="contained" color="primary" onClick={onAddImageClick} className={styles.addImageButton}>
+          + Add Image
+        </Button>
+      )}
       {!isEmptyGallery &&
         itemUrl?.map((item, index) => (
           <CharacterGalleryItem
@@ -37,13 +42,8 @@ const GalleryItemList: React.FC<GalleryItemListProps> = ({
           The gallery is empty.
         </Typography>
       )}
-      {!isTrigger && (
-        <Button variant="contained" color="primary" onClick={onAddImageClick} className={styles.addImageButton}>
-          + Add Image
-        </Button>
-      )}
     </Box>
   );
 };
 
-export default GalleryItemList;
+export default CharacterGalleryGrid;

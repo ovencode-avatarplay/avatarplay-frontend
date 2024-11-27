@@ -9,7 +9,7 @@ import ImageUploadDialog from '../../main/content/create/content-main/episode/ep
 import {MediaState, sendUpload, MediaUploadReq} from '@/app/NetWork/ImageNetwork';
 import {GalleryCategory} from './CharacterGalleryData';
 import {SaveGalleryReq, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
-import GalleryItemList from './CharacterGalleryGrid';
+import CharacterGalleryGrid from './CharacterGalleryGrid';
 
 interface CharacterGalleryProps {
   characterInfo: CharacterInfo;
@@ -164,7 +164,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
         </ToggleButton>
       </ToggleButtonGroup>
 
-      <GalleryItemList
+      <CharacterGalleryGrid
         itemUrl={itemUrl}
         selectedItemIndex={selectedItemIndex}
         onSelectItem={handleSelectItem}

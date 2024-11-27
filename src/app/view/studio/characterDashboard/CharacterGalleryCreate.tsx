@@ -84,6 +84,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({open, onClose, c
     <Box className={styles.container}>
       {/* Base Portrait */}
       <Box className={styles.basePortrait}>
+        <Typography variant="subtitle1">Base Portrait</Typography>
         <Box
           sx={{
             width: '180px',
@@ -92,9 +93,9 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({open, onClose, c
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             borderRadius: '8px',
+            marginBottom: '8px',
           }}
         />
-        <Typography variant="subtitle1">Base Portrait</Typography>
         <Button variant="outlined" className={styles.changeButton}>
           Change
         </Button>
@@ -116,7 +117,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({open, onClose, c
               <Box
                 sx={{
                   width: '100%',
-                  height: '100px',
+                  height: '240px',
                   backgroundImage: `url(${url})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
@@ -132,14 +133,14 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({open, onClose, c
 
       {/* Creation Amount Slider */}
 
-      <Typography variant="subtitle1">Creation Amount</Typography>
+      {/* <Typography variant="subtitle1">Creation Amount</Typography>
       <Box className={styles.sliderbox}>
         <Slider value={creationAmount} onChange={handleAmountChange} sx={{width: '70%'}} min={1} max={4} step={1} />
         <Typography align="right">{creationAmount}</Typography>
-      </Box>
+      </Box> */}
 
       {/* Image Quality Slider */}
-      <Typography variant="subtitle1">Image Quality</Typography>
+      {/* <Typography variant="subtitle1">Image Quality</Typography>
       <Box className={styles.sliderbox}>
         <Slider
           className={styles.slider}
@@ -151,7 +152,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({open, onClose, c
           step={1}
         />
         <Typography align="right">{imageQuality === 1 ? 'Low' : imageQuality === 2 ? 'Medium' : 'High'}</Typography>
-      </Box>
+      </Box> */}
 
       {/* Generate Button */}
       <Box className={styles.generateSection}>

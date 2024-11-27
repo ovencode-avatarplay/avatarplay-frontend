@@ -123,7 +123,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
     <main className={styles.episodeSetup}>
       <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} chapterName={chapterName ?? ''} episodeName={episodeName ?? ''} />
       <div className={styles.imageBox}>
-        <EpisodeUploadCharacter uploadImageState={isUploadImageDialogOpen} />
+        <EpisodeUploadCharacter />
         <EpisodeImageUpload
           onClickEasyCreate={openImageSetup}
           onClickAdvanceCreate={openAdvanceImageSetup}
