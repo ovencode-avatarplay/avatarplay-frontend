@@ -592,13 +592,13 @@ const ChatPage: React.FC = () => {
         <TopBar
           onBackClick={handleBackClick}
           onMoreClick={handleMoreClick}
-          iconUrl={enterData?.iconImageUrl ?? ''}
+          iconUrl={enterData?.CharacterImageUrl ?? ''}
           isHideChat={isHideChat}
         />
         <ChatArea
           messages={parsedMessages!}
           bgUrl={enterData?.episodeBgImageUrl ?? ''}
-          iconUrl={enterData?.iconImageUrl ?? ''}
+          iconUrl={enterData?.CharacterImageUrl ?? ''}
           isHideChat={isHideChat}
           onToggleBackground={handleToggleBackground}
           isLoading={isLoading} // 로딩 상태를 ChatArea에 전달

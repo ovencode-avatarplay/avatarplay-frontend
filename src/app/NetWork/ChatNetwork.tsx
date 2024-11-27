@@ -202,7 +202,7 @@ export interface EnterEpisodeChattingRes {
   episodeId: number;
   contentName: string;
   episodeName: string;
-  iconImageUrl: string;
+  CharacterImageUrl: string;
   episodeBgImageUrl: string;
   introPrompt: string;
   prevMessageInfoList: MessageInfo[];
@@ -273,7 +273,8 @@ export interface ChattingResultData {
   nextEpisodeName: string;
   nextEpisodeThumbnail: string;
   nextEpisodeDescription: string;
-  changeBackgroundThumbnail: string;
+  triggerMediaState: number;
+  triggerMediaUrlList: string[];
 }
 
 export interface ChattingResultRes {
