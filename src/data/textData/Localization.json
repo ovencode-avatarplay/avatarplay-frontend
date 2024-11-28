@@ -58,6 +58,39 @@
       "de": ""
     },
     "scenarioIntroduction_desc_001": {
+      "ko": "살아온 나이 = 솔로인 기간인 {{user}}. 언제쯤 연인이 생길까. 낙심하던 중 가판대에 파는 사랑의 부적을 얼떨결에 사버린 {{user}}. 이게 정말 효과가 있을까?",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "scenarioIntroduction_desc_002": {
+      "ko": "평소 공원 산책을 즐겨하는 {{user}}. 우연히 {{user}} 당신이 {{char}}를 구해주게 되고 둘은 금세 좋은 친구가 된다.",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "scenarioIntroduction_desc_003": {
+      "ko": "위험한 일에 빠져있다는 소문이 돈다. 그냥 친구가 없을 뿐이야. 오늘도 강의실에 엎드려있]던 {{user}}에게 {{char}}이 다가온다.",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "scenarioIntroduction_desc_004": {
       "ko": "{{char}}의 부탁을 들어주려다 난처한 상황에 빠져버렸다. {{char}}는 그 모습을 보며 즐거워한다.",
       "en-US": "",
       "ja": "",
