@@ -685,7 +685,8 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
             <PublishCharacter
               url={generatedOptions?.imageUrl[selectedOptions.result] ?? ''}
               gender={selectedOptions.gender}
-              createOption={generatePrompts(summaryOptions, selectedOptions)}
+              // createOption={generatePrompts(summaryOptions, selectedOptions)}
+              debugparam={generatedOptions?.debugParameter ?? 'not generated image'}
               publishRequested={publishReqested}
               publishRequestedAction={() => {
                 setPublishReqested(false);

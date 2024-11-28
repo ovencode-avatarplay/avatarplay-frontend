@@ -28,7 +28,8 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 interface PublishCharacterProps {
   url: string;
   gender: number;
-  createOption: GenerateParameter[];
+  // createOption: GenerateParameter[];
+  debugparam: string;
   publishRequested: boolean;
   publishRequestedAction: () => void;
 }
@@ -36,7 +37,8 @@ interface PublishCharacterProps {
 const PublishCharacter: React.FC<PublishCharacterProps> = ({
   url,
   gender,
-  createOption,
+  // createOption,
+  debugparam,
   publishRequested,
   publishRequestedAction,
 }) => {
@@ -68,6 +70,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
           id: 0,
           name: characterName,
           introduction: characterIntroduction,
+          description: characterDescription,
           genderType: gender,
           mainImageUrl: url,
 
@@ -78,7 +81,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
           isMonetization: monetization === 'On',
           state: 1,
         },
-        createOption: createOption,
+        debugParameter: debugparam,
       };
 
       // API 호출

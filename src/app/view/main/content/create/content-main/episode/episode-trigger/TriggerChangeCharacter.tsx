@@ -145,7 +145,7 @@ const TriggerChangeCharacter: React.FC<TriggerChangeCharacterProps> = ({triggerI
         Personality
       </Typography>
       <Typography variant="body2" color="textSecondary">
-        {characterInfo?.introduction}
+        {characterInfo?.description}
       </Typography>
     </div>
   );

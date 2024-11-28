@@ -109,11 +109,11 @@ const CharacterDashboard: React.FC = () => {
   };
 
   // 현재 선택된 캐릭터의 정보를 수정함 (재생성 등)
-  const updateCharacterInfo = async (newinfo: CharacterInfo) => {
+  const updateCharacterInfo = async (newinfo: CharacterInfo, debugparam: string) => {
     setLoading(true);
     try {
       if (currentSelectedCharacter) {
-        const req: CreateCharacterReq = {characterInfo: newinfo, createOption: []};
+        const req: CreateCharacterReq = {characterInfo: newinfo, debugParameter: debugparam /*, createOption: []*/};
         const response = await sendCreateCharacter(req);
 
         if (response.data) {

@@ -26,6 +26,7 @@ export interface CharacterInfo {
   id: number;
   name: string;
   introduction: string;
+  description: string;
   genderType: number;
   mainImageUrl: string;
   portraitGalleryImageUrl: GalleryImageInfo[];

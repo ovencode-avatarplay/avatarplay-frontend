@@ -119,6 +119,7 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
           id: 0, // 기본값 설정
           name: '', // 기본값 설정
           introduction: '', // 기본값 설정
+          description: '',
           genderType: 0, // 기본값 설정 (숫자형 타입, 예: 0 - 남성, 1 - 여성)
           mainImageUrl: '', // 기본값 설정
           portraitGalleryImageUrl: [], // 기본값 설정 (빈 배열)

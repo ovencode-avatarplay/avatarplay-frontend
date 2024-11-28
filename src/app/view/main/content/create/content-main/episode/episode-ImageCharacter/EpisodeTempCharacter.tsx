@@ -208,7 +208,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
   };
 
   const [characterDescription, setCharacterDescription] = useState<string>(
-    editedEpisodeInfo.currentEpisodeInfo.characterInfo.introduction || '',
+    editedEpisodeInfo.currentEpisodeInfo.characterInfo.description || '',
   );
   const onChangeCharacterDescription = (description: string) => {
     setCharacterDescription(description);
@@ -217,11 +217,11 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
         ...prev, // 기존 상태 복사
         actionCharacterInfo: {
           ...prev.actionCharacterInfo, // 기존 `actionCharacterInfo` 복사
-          introduction: description, // `mainImageUrl` 업데이트
+          description: description, // `mainImageUrl` 업데이트
         },
       }));
     } else {
-      dispatch(setCharacterInfo({introduction: description}));
+      dispatch(setCharacterInfo({description: description}));
     }
   };
 
