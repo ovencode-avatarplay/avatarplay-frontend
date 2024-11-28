@@ -1,10 +1,19 @@
 import React, {useEffect, useState} from 'react';
+
 import {Select, MenuItem, FormControl, InputLabel, SelectChangeEvent, Box} from '@mui/material';
-import {changeLanguage, LanguageType, sendGetLanguage} from '@/app/NetWork/AuthNetwork';
 import styles from './LanguageSelectDropBox.module.css';
 
+import {changeLanguage, LanguageType, sendGetLanguage} from '@/app/NetWork/AuthNetwork';
+
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {setLanguage} from '@/redux-store/slices/UserInfo';
+import Cookies from 'js-cookie';
+
 const LanguageSelectDropBox: React.FC = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState<LanguageType>(LanguageType.Korean);
+  const dispatch = useDispatch();
+  const selectedLanguage = useSelector((state: RootState) => state.user.language);
+
   const LanguageDisplay = [
     {value: LanguageType.Korean, label: 'Korean'},
     {value: LanguageType.English, label: 'English'},
@@ -21,7 +30,9 @@ const LanguageSelectDropBox: React.FC = () => {
     try {
       const response = await sendGetLanguage({});
       const language = response.data?.languageType;
-      setSelectedLanguage(language !== undefined ? language : LanguageType.Korean); // 기본값 설정
+      if (language !== undefined) {
+        dispatch(setLanguage(language));
+      }
     } catch (error) {
       console.error('Failed to fetch language:', error);
     }
@@ -41,7 +52,8 @@ const LanguageSelectDropBox: React.FC = () => {
       const language = response.data?.languageType;
 
       if (language !== undefined) {
-        setSelectedLanguage(language);
+        dispatch(setLanguage(language));
+        Cookies.set('language', String(language), {expires: 365});
       } else {
         throw new Error('Failed to retrieve updated language from server');
       }
