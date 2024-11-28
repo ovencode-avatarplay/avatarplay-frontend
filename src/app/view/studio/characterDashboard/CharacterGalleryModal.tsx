@@ -88,22 +88,32 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   }, [characterData]);
 
   const handleViewItem = () => {
-    if (!selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
+    if (selectedItem[1] === null || selectedItem[1] === undefined) {
       console.error('Invalid selection: ', selectedItem);
       return;
     }
 
-    let imageUrls: string[] = [];
+    let imageUrls: {url: string; category: GalleryCategory}[] = []; // URL과 카테고리 정보를 함께 저장
 
     switch (selectedItem[0] as GalleryCategory) {
       case GalleryCategory.All:
         const allUrls = [
-          ...(characterInfo.portraitGalleryImageUrl || []),
-          ...(characterInfo.poseGalleryImageUrl || []),
-          ...(characterInfo.expressionGalleryImageUrl || []),
+          ...(characterInfo.portraitGalleryImageUrl || []).map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Portrait,
+          })),
+          ...(characterInfo.poseGalleryImageUrl || []).map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Pose,
+          })),
+          ...(characterInfo.expressionGalleryImageUrl || []).map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Expression,
+          })),
         ];
+
         if (allUrls[selectedItem[1]]) {
-          imageUrls = allUrls.map(img => img.imageUrl) || [];
+          imageUrls = allUrls;
         } else {
           console.error('URL not found for index in All category:', selectedItem[1]);
         }
@@ -111,7 +121,10 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
       case GalleryCategory.Portrait:
         if (characterInfo.portraitGalleryImageUrl && characterInfo.portraitGalleryImageUrl[selectedItem[1]]) {
-          imageUrls = characterInfo.portraitGalleryImageUrl.map(img => img.imageUrl) || [];
+          imageUrls = characterInfo.portraitGalleryImageUrl.map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Portrait,
+          }));
         } else {
           console.error('Portrait URL not found for index:', selectedItem[1]);
         }
@@ -119,7 +132,10 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
       case GalleryCategory.Pose:
         if (characterInfo.poseGalleryImageUrl && characterInfo.poseGalleryImageUrl[selectedItem[1]]) {
-          imageUrls = characterInfo.poseGalleryImageUrl.map(img => img.imageUrl) || [];
+          imageUrls = characterInfo.poseGalleryImageUrl.map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Pose,
+          }));
         } else {
           console.error('Pose URL not found for index:', selectedItem[1]);
         }
@@ -127,7 +143,10 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
       case GalleryCategory.Expression:
         if (characterInfo.expressionGalleryImageUrl && characterInfo.expressionGalleryImageUrl[selectedItem[1]]) {
-          imageUrls = characterInfo.expressionGalleryImageUrl.map(img => img.imageUrl) || [];
+          imageUrls = characterInfo.expressionGalleryImageUrl.map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Expression,
+          }));
         } else {
           console.error('Expression URL not found for index:', selectedItem[1]);
         }
@@ -137,7 +156,6 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
         console.error('Unknown category: ', selectedItem[0]);
         break;
     }
-
     if (imageUrls.length > 0) {
       setViewerOpen(true);
     } else {
