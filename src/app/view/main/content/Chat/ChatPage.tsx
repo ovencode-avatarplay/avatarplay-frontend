@@ -39,7 +39,7 @@ import {
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
-import {COMMAND_SYSTEM, Message, MessageGroup, SenderType} from './MainChat/ChatTypes';
+import {COMMAND_SYSTEM, MediaData, Message, MessageGroup, SenderType, TriggerMediaState} from './MainChat/ChatTypes';
 import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
 import {modifyQuestionSlice, setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
@@ -47,7 +47,7 @@ import {error} from 'console';
 
 const ChatPage: React.FC = () => {
   const TempIdforSendQuestion: number = -222;
-  const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: []});
+  const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: [], mediaData: []});
   const parsedMessagesRef = useRef(parsedMessages);
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
@@ -235,16 +235,67 @@ const ChatPage: React.FC = () => {
 
   const handleSendMessage = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
     if (!message || typeof message !== 'string') return;
-
+    let isResult = false;
+    const currentSender = currentParsingSender.current;
+    const mediaMessages: Message = {
+      chatId: -1,
+      text: '.',
+      sender: SenderType.media,
+    };
+    // 나레이션 활성화 상태에 따라 sender 설정
+    const newMessage: Message = {
+      chatId: TempIdforSendQuestion, // 임시 ID 지급
+      text: message,
+      sender: isMyMessage ? SenderType.User : currentSender,
+    };
+    const mediaDataValue: MediaData = {
+      mediaType: TriggerMediaState.None,
+      mediaUrlList: [],
+    };
     // console.log('SetChatID checkResult');
     // 메시지가 '$'을 포함할 경우 팝업 표시
     if (isFinishMessage(isMyMessage, message) === true) {
       const requestData = {
         streamKey: streamKey, // streamKey 상태에서 가져오기
       };
-
+      isResult = true;
       try {
         const response = await sendChattingResult(requestData);
+
+        if (response.data.triggerMediaState != 0) {
+          const allMedia = [...(parsedMessagesRef.current?.mediaData || [])];
+          const allMessage = [...(parsedMessagesRef.current?.Messages || [])];
+          const allEmoticon = [...(parsedMessagesRef.current?.emoticonUrl || [])];
+          const newMedia: MediaData = {
+            mediaType: allMedia[allMedia.length - 1].mediaType,
+            mediaUrlList: allMedia[allMedia.length - 1].mediaUrlList,
+          };
+          newMedia.mediaUrlList = response.data.triggerMediaUrlList;
+          switch (response.data.triggerMediaState) {
+            case 1: //이미지
+              newMedia.mediaType = TriggerMediaState.TriggerImage;
+              break;
+            case 2: //영상
+              newMedia.mediaType = TriggerMediaState.TriggerVideo;
+              break;
+            case 3: //음성
+              newMedia.mediaType = TriggerMediaState.TriggerAudio;
+              break;
+          }
+          allMessage.push(mediaMessages);
+          allEmoticon.push('');
+          allMedia.push(newMedia);
+          const updateMessage = {
+            Messages: allMessage,
+            emoticonUrl: allEmoticon,
+            mediaData: allMedia,
+          };
+
+          setParsedMessages(updateMessage);
+          parsedMessagesRef.current = updateMessage;
+          console.log('parsedMessagesRef.current ', parsedMessagesRef.current);
+        }
+
         console.log('Result API Response:', response);
         if (response.data.nextEpisodeId !== 0) {
           setNextEpisodeId(response.data.nextEpisodeId); // 다음 에피소드 ID 저장
@@ -260,25 +311,19 @@ const ChatPage: React.FC = () => {
 
     // *가 포함되어 있으면 적절한 위치에서 isNarrationActive.active 상태를 갱신해줘야 한다.
     // sender가 바뀌었어도 isNarrationActive.active 상태를 갱신해줘야 한다.
-    const currentSender = currentParsingSender.current;
-
-    // 나레이션 활성화 상태에 따라 sender 설정
-    const newMessage: Message = {
-      chatId: TempIdforSendQuestion, // 임시 ID 지급
-      text: message,
-      sender: isMyMessage ? SenderType.User : currentSender,
-    };
 
     //console.log('setParsedMessages ==========' + newMessage.text + '=========', 'isClearString : ', isClearString);
 
     const func = (prev: any) => {
       // 이전 메시지 정보를 복사하고 메시지만 가져와 배열 업데이트 준비
       const allMessages = [...(prev?.Messages || [])];
+      const allEmoticon = [...(prev?.emoticonUrl || [])];
+      const allMedia = [...(prev?.mediaData || [])];
 
       //return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
 
       // 메시지가 비어있으면 반환
-      if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
+      if (newMessage.text.length === 0) return {Messages: allMessages, emoticonUrl: allEmoticon, mediaData: allMedia};
 
       // 메시지 정리
       if (isMyMessage === false && isClearString === true) newMessage.text = cleanString(newMessage.text);
@@ -293,14 +338,23 @@ const ChatPage: React.FC = () => {
           newMessage.sender = SenderType.User;
         }
         dispatch(setRegeneratingQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
-        allMessages.push(newMessage);
+        if (!isResult) {
+          allMessages.push(newMessage);
+          allEmoticon.push('');
+          allMedia.push(mediaDataValue);
+          console.log('A');
+        } else {
+          allMessages.push(mediaMessages);
+          allEmoticon.push('');
+          allMedia.push(mediaDataValue);
+          console.log('B');
+        }
       } else {
         //
         // 1. current sender를 가져온다
         let currentSender: SenderType = allMessages[allMessages.length - 1].sender;
         const tempChatId: number = chatId;
         // 2. 메시지를 한 바이트씩 조사해서 새로운 Sender로 만들지 말지 처리한다.
-        console.log('new text====' + newMessage.text + '====');
         for (let i = 0; i < newMessage.text.length; i++) {
           let {isAnotherSender, newSender} = isAnotherSenderType(isMyMessage, newMessage.text[i], currentSender);
 
@@ -330,7 +384,17 @@ const ChatPage: React.FC = () => {
             };
             currentSender = _newMessage.sender;
 
-            allMessages.push(_newMessage);
+            if (!isResult) {
+              allMessages.push(_newMessage);
+              allEmoticon.push('');
+              allMedia.push(mediaDataValue);
+              console.log('C');
+            } else {
+              allMessages.push(mediaMessages);
+              allEmoticon.push('');
+              allMedia.push(mediaDataValue);
+              console.log('D');
+            }
           } else {
             // sender Type이 같으니 기존 말풍선에 계속 넣어준다.
             allMessages[allMessages.length - 1].text += `${newMessage.text[i]}`;
@@ -345,7 +409,11 @@ const ChatPage: React.FC = () => {
       }
 
       // 업데이트된 Messages 배열을 MessageInfo 객체로 반환
-      return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
+      return {
+        Messages: allMessages,
+        emoticonUrl: allEmoticon,
+        mediaData: allMedia, // 빈 배열로 기본값 설정
+      };
     };
 
     const updatedMessages = func(parsedMessagesRef.current);
@@ -534,25 +602,60 @@ const ChatPage: React.FC = () => {
     ) {
       // flatMap을 통해 parsedPrevMessages를 생성
       // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
-      console.log('nepid', nextEpisodeId);
-      console.log('episodeId', episodeId);
-
-      const {parsedPrevMessages, emoticonUrl} = enterData?.prevMessageInfoList.reduce<{
+      const {parsedPrevMessages, emoticonUrl, mediaData} = enterData?.prevMessageInfoList.reduce<{
         parsedPrevMessages: Message[];
         emoticonUrl: string[];
+        mediaData: MediaData[];
       }>(
         (acc, msg) => {
+          // 메시지 파싱
           const parsedMessages = parseMessage(msg.message, msg.id) || [];
+
           acc.parsedPrevMessages.push(...parsedMessages);
 
-          // parseMessage 결과 수에 맞춰 emoticonUrl 배열에 값을 추가
+          // 이모티콘 URL 추가
           const emoticonValue = msg.emoticonUrl || '';
           acc.emoticonUrl.push(...Array(parsedMessages.length).fill(emoticonValue));
 
+          // MediaData 구성
+          let mediaType = TriggerMediaState.None;
+          switch (msg.triggerMediaState) {
+            case 1:
+              mediaType = TriggerMediaState.TriggerImage;
+              break;
+            case 2:
+              mediaType = TriggerMediaState.TriggerVideo;
+              break;
+            case 3:
+              mediaType = TriggerMediaState.TriggerAudio;
+              break;
+            default:
+              mediaType = TriggerMediaState.None;
+          }
+
+          const mediaDataValue = {
+            mediaType: mediaType,
+            mediaUrlList: msg.mediaUrlList || [],
+          };
+
+          if (parsedMessages.length > 0) {
+            acc.mediaData.push(...Array(parsedMessages.length));
+            acc.mediaData[acc.mediaData.length - 1] = mediaDataValue;
+          } else {
+            const defaultMessages: Message = {
+              chatId: -1,
+              text: '.',
+              sender: SenderType.media,
+            };
+            acc.parsedPrevMessages.push(defaultMessages);
+            acc.emoticonUrl.push(emoticonValue);
+            acc.mediaData.push(mediaDataValue); // 기본값 추가
+          }
+
           return acc;
         },
-        {parsedPrevMessages: [], emoticonUrl: []},
-      ) || {parsedPrevMessages: [], emoticonUrl: []}; // 기본값 설정
+        {parsedPrevMessages: [], emoticonUrl: [], mediaData: []},
+      ) || {parsedPrevMessages: [], emoticonUrl: [], mediaData: []};
 
       const introPrompt2: Message = {
         chatId: chatId,
@@ -560,11 +663,16 @@ const ChatPage: React.FC = () => {
         sender: SenderType.IntroPrompt,
       };
 
-      emoticonUrl.unshift('');
-
+      // emoticonUrl.unshift('');
+      // const defaultMediaData: MediaData = {
+      //   mediaType: TriggerMediaState.None, // 미디어 타입이 없는 상태를 나타냄
+      //   mediaUrlList: [], // 빈 배열로 초기화
+      // };
+      // mediaData.unshift(defaultMediaData);
       const messageInfo: MessageGroup = {
         Messages: parsedPrevMessages, // Message 배열
         emoticonUrl: emoticonUrl, // 이모티콘 URL
+        mediaData: mediaData,
       };
       setParsedMessages(messageInfo);
       setHasFetchedPrevMessages(true);
@@ -592,13 +700,14 @@ const ChatPage: React.FC = () => {
         <TopBar
           onBackClick={handleBackClick}
           onMoreClick={handleMoreClick}
-          iconUrl={enterData?.CharacterImageUrl ?? ''}
+          iconUrl={enterData?.characterImageUrl ?? ''}
           isHideChat={isHideChat}
         />
         <ChatArea
           messages={parsedMessages!}
           bgUrl={enterData?.episodeBgImageUrl ?? ''}
-          iconUrl={enterData?.CharacterImageUrl ?? ''}
+          characterUrl={enterData?.characterImageUrl ?? ''}
+          iconUrl={enterData?.characterImageUrl ?? ''}
           isHideChat={isHideChat}
           onToggleBackground={handleToggleBackground}
           isLoading={isLoading} // 로딩 상태를 ChatArea에 전달

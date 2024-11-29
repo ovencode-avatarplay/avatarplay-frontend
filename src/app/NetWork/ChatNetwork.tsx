@@ -183,6 +183,8 @@ export interface MessageInfo {
   characterName: string;
   message: string;
   emoticonUrl: string;
+  triggerMediaState: number;
+  mediaUrlList: string[];
   createAt: Date;
 }
 
@@ -202,7 +204,7 @@ export interface EnterEpisodeChattingRes {
   episodeId: number;
   contentName: string;
   episodeName: string;
-  CharacterImageUrl: string;
+  characterImageUrl: string;
   episodeBgImageUrl: string;
   introPrompt: string;
   prevMessageInfoList: MessageInfo[];
@@ -217,7 +219,7 @@ export const sendChattingEnter = async (
 
     if (response.data.resultCode === 0) {
       const responseData = response.data.data as EnterEpisodeChattingRes;
-
+      console.log('enterData', response.data.data);
       // emoticonGroupInfoList가 null일 경우 임시 데이터를 사용
       // if (!responseData.emoticonGroupInfoList) {
       //   responseData.emoticonGroupInfoList = chatEmojiTempData.emoticonGroupInfoList;
