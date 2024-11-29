@@ -9,6 +9,7 @@ import {
   setMonetization,
   setNSFW,
   setLanguageType,
+  setThumbnail,
   setContentDescription,
   setAuthorComment,
   setAuthorName,
@@ -20,6 +21,8 @@ import RadioButtonGroup from '@/components/create/RadioButtonGroup';
 import styles from './ContentPublishing.module.css';
 
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import EpisodeUploadCharacter from '../episode/episode-ImageCharacter/EpisodeUploadCharacter';
+import ContentImageUpload from './ContentImageUploader';
 
 interface Props {
   open: boolean;
@@ -44,6 +47,7 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
   const [showMoreTags, setShowMoreTags] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [showTagCount, setShowTagCount] = useState(6);
+  const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
 
   useEffect(() => {
     // contentTag의 길이에 따라 showTagCount 설정
@@ -84,6 +88,14 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
     setOpenSnackbar(false);
   };
 
+  const openUploadImageDialog = () => {
+    setUploadImageDialogOpen(true);
+  };
+
+  const closeUploadImageDialog = () => {
+    setUploadImageDialogOpen(false);
+  };
+
   return (
     <Drawer
       anchor="right"
@@ -98,8 +110,8 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
 
         {/* 첫 번째 설정 박스 */}
         <Box className={styles.settingBox}>
-          <Typography variant="h6">Language Select</Typography>
-
+          {/* TODO 언어 테이블 리스트 / enum 등 받아와서 설정*/}
+          {/* <Typography variant="h6">Language Select</Typography>
           <Select
             fullWidth
             variant="outlined"
@@ -109,8 +121,12 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
             <MenuItem value={0}>English</MenuItem>
             <MenuItem value={1}>Korean</MenuItem>
             <MenuItem value={2}>Arab</MenuItem>
-            {/* TODO 언어 테이블 리스트 / enum 등 받아와서 설정*/}
-          </Select>
+          </Select> */}
+          <ContentImageUpload
+            uploadImageState={isUploadImageDialogOpen}
+            onClickUploadImage={openUploadImageDialog}
+            onCloseUploadImage={closeUploadImageDialog}
+          />
 
           <Typography variant="subtitle1" className={styles.label}>
             Content Introduction

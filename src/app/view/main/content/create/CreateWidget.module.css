@@ -1,7 +1,7 @@
 .drawerCreate {
     position: absolute;
     bottom: 72px; /* BottomNavigation의 높이만큼 여백 */
-    z-index: 50; /* BottomNavigation보다 낮은 zIndex */
+    z-index: 30; /* BottomNavigation보다 낮은 zIndex */
   }
   
   .drawerBackdrop {

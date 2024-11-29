@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, TextField, IconButton, InputAdornment, Button, Typography} from '@mui/material';
 import MapsUgcIcon from '@mui/icons-material/MapsUgc';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';

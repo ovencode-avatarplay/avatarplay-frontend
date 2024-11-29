@@ -1,9 +1,6 @@
 // src/app/Network/ChatNetwork.tsx
 
-import {boolean} from 'valibot';
 import api, {ResponseAPI} from './ApiInstance';
-import chatEmojiTempData from '@/data/temp/chat-emoji-temp-data.json';
-import getLocalizedText from '@/utils/getLocalizedText';
 // 채팅 Send ##########################################
 // Chat Data Interfaces
 export interface SendChatMessageReq {

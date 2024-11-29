@@ -1,8 +1,5 @@
 import type {Metadata, Viewport} from 'next';
 import '@/app/globals.css';
-import Main from '@/app/view/main/Main';
-import {Provider} from 'react-redux';
-import {store} from '@/redux-store/ReduxStore';
 import Root from './Root';
 export const metadata: Metadata = {
   title: 'Talkain',

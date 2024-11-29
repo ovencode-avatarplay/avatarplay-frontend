@@ -1,6 +1,6 @@
 // src/app/Network/ShortsNetwork.ts
 
-import api, {ResponseAPI} from './ApiInstance';
+import api from './ApiInstance';
 
 // 쇼츠 정보 타입
 export interface ShortsInfo {

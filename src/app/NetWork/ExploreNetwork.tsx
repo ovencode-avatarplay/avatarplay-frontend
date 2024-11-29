@@ -1,6 +1,6 @@
 // src/app/Network/ExploreNetwork.tsx
 
-import api, {ResponseAPI} from './ApiInstance';
+import api from './ApiInstance';
 import {ExploreCardProps} from '../view/main/content/searchboard/SearchBoardTypes';
 
 interface ReqExploreSearch {
