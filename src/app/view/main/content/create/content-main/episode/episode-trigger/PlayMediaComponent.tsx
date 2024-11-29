@@ -37,6 +37,7 @@ const PlayMediaComponent: React.FC<PlayMediaComponentProps> = ({onMediaSelect, t
   const [video, setVideo] = useState<string | undefined>(); // 이미지 URL 배열 상태
   const [audio, setAudio] = useState<string | undefined>(); // 오디오 URL 상태
   const [isInit, setIsInit] = useState<boolean>(false); // 오디오 URL 상태
+  const [updatedUrls, setUpdatedUrls] = useState<string[]>(initUrls); // 오디오 URL 상태
   React.useEffect(() => {
     console.log('type:', type);
     console.log('initUrls:', initUrls);
@@ -148,9 +149,11 @@ const PlayMediaComponent: React.FC<PlayMediaComponentProps> = ({onMediaSelect, t
       if (response?.data) {
         const imgUrls: string[] = response.data.imageUrlList; // 메인 이미지 URL
         setImages(prevImages => [...prevImages, ...imgUrls]); // 여러 이미지 URL을 기존 이미지 배열에 추가
-
-        const urlList: string[] = imgUrls;
-        onMediaSelect(urlList); // 상위 컴포넌트로 파일 전달
+        //initUrls 여기의 뒷부분에 imgUrls를 추가하고 싶어
+        // 기존 updatedUrls에 imgUrls를 추가하여 새로운 상태로 설정
+        const newUrls = [...updatedUrls, ...imgUrls];
+        setUpdatedUrls(newUrls); // 상태 업데이트
+        onMediaSelect(newUrls); // 상위 컴포넌트로 파일 전달
         console.log('Image URLs:', response.data.imageUrlList); // 추가 이미지 URL 로그 출력
       } else {
         throw new Error('Unexpected API response: No data');
