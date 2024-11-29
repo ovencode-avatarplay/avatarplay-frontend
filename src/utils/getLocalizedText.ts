@@ -29,7 +29,7 @@ const getLanguageFromURL = (): string => {
   const pathSegments = window.location.pathname.split('/');
   const lang = pathSegments[1] as string;
   const supportedLocales = ['ko', 'en-US', 'ja', 'fr', 'es', 'zh-CN', 'zh-TW', 'pt-PT', 'de'];
-  return supportedLocales.includes(lang) ? lang : 'en'; // 기본 언어는 영어
+  return supportedLocales.includes(lang) ? lang : 'ko'; // 기본 언어는 영어
 };
 
 /**

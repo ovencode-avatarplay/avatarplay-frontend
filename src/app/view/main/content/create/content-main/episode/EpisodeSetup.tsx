@@ -63,6 +63,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
   };
 
   const openEpisodeModal = () => {
+    (document.activeElement as HTMLElement).blur(); // 하위 컴포넌트에 브레이크포인트가 걸렸을때 aria-hidden 애러가 발생해서 넣음
     setEpisodeModalOpen(true); // Episode 모달 열기
   };
 
@@ -118,6 +119,8 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
   const handleSubmitPopup = (data: any) => {
     console.log('Submitted data:', data);
     // 필요한 처리를 여기에 추가
+
+    setEpisodeModalOpen(false); // Episode 모달 닫기
   };
   return (
     <main className={styles.episodeSetup}>
