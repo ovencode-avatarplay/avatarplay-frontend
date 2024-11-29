@@ -91,7 +91,7 @@ const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
     }
   };
 
-  const handlerOnShare = () => {
+  const handleOnShare = () => {
     if (imageUrls && selectedIndex !== null && imageUrls[selectedIndex]) {
       const imageUrl = imageUrls[selectedIndex].imageUrl;
 
@@ -111,9 +111,9 @@ const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
     }
   };
 
-  const handlerOnThumbnail = () => {};
+  const handleOnThumbnail = () => {};
 
-  const handlerOnInfo = () => {
+  const handleOnInfo = () => {
     setInfoOpen(true);
   };
 
@@ -176,13 +176,13 @@ const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
 
         {/* Control Button Area */}
         <Box className={styles.controlButtonArea}>
-          <Button onClick={handlerOnShare} className={styles.controlButton} startIcon={<ShareIcon />}>
+          <Button onClick={handleOnShare} className={styles.controlButton} startIcon={<ShareIcon />}>
             Share
           </Button>
-          <Button onClick={handlerOnThumbnail} className={styles.controlButton} startIcon={<PhotoLibraryIcon />}>
+          <Button onClick={handleOnThumbnail} className={styles.controlButton} startIcon={<PhotoLibraryIcon />}>
             Thumbnail
           </Button>
-          <Button onClick={handlerOnInfo} className={styles.controlButton} startIcon={<InfoIcon />}>
+          <Button onClick={handleOnInfo} className={styles.controlButton} startIcon={<InfoIcon />}>
             Info
           </Button>
           <Button onClick={onDelete} className={styles.controlButton} startIcon={<DeleteIcon />}>

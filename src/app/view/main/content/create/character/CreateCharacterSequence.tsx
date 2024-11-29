@@ -31,6 +31,10 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 // Components
 import CharacterCreateImageButton from './CreateCharacterImageButton';
+import PublishCharacter from './PublishCharacter';
+import {CreateCharacterOption} from './CreateCharacterType';
+import FullScreenImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
+import PublishCharacterBottom from './PublishCharacterBottom';
 
 // Import Swiper React components
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -39,23 +43,19 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
-import PublishCharacter from './PublishCharacter';
-import {CreateCharacterOption, GeneratedOptionsState} from './CreateCharacterType';
-import FullScreenImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
-import PublishCharacterBottom from './PublishCharacterBottom';
+
+// redux
+import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 
 interface Props {
   closeAction: () => void;
   isModify: boolean;
+  characterInfo?: CharacterInfo;
+  publishFinishAction?: () => void;
 }
 
-const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
-  const [activeStep, setActiveStep] = useState(0);
-  const stepperRef = useRef<HTMLDivElement | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [publishClick, setPublishClick] = useState(Boolean);
-  const [publishReqested, setPublishReqested] = useState(Boolean);
-
+const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo, publishFinishAction}) => {
+  //#region Pre Define
   const defaultOptions: Record<string, CreateCharacterOption[]> = {
     styleOptions: [],
     genderOptions: [],
@@ -71,10 +71,6 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
     personality: [],
   };
 
-  const [characterOptions, setCharacterOptions] = useState(defaultOptions);
-  const [generatedOptions, setGeneratedOptions] = useState<GenerateImageRes | null>(null);
-  const [fullscreenImage, setFullscreenImage] = useState<FullViewImageData | null>(null); // Add fullscreen image state
-
   enum CreateCharacterStep {
     Gender = 'Gender',
     Style = 'Style',
@@ -88,9 +84,6 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
     Result = 'Result',
     Publish = 'Publish',
   }
-
-  const CreateSteps: CreateCharacterStep[] = Object.values(CreateCharacterStep);
-
   const ModifySteps: CreateCharacterStep[] = [
     CreateCharacterStep.HairStyle,
     CreateCharacterStep.OutfitClothes,
@@ -100,13 +93,27 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
     CreateCharacterStep.Publish,
   ];
 
-  const steps = isModify ? ModifySteps : CreateSteps;
+  const maxLength = 200;
+  //#endregion
 
+  //#region State
+  const [loading, setLoading] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const stepperRef = useRef<HTMLDivElement | null>(null);
+  const [publishClick, setPublishClick] = useState(Boolean);
+  const [publishReqested, setPublishReqested] = useState(Boolean);
+
+  const [characterOptions, setCharacterOptions] = useState(defaultOptions);
+  const [generatedOptions, setGeneratedOptions] = useState<GenerateImageRes | null>(null);
+  const [fullscreenImage, setFullscreenImage] = useState<FullViewImageData | null>(null); // Add fullscreen image state
+
+  const CreateSteps: CreateCharacterStep[] = Object.values(CreateCharacterStep);
+
+  const steps = isModify ? ModifySteps : CreateSteps;
   const isStepFailed = (step: number) => {
     return step === 1;
   };
 
-  // States
   const [selectedOptions, setSelectedOptions] = useState({
     gender: 0,
     style: 0,
@@ -125,42 +132,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
     result: 0,
   });
 
-  useEffect(() => {
-    if (publishClick) {
-      setPublishReqested(true);
-      setPublishClick(false);
-    }
-  }, [publishClick]);
-
-  // gender 0 Male / 1 Female, style 0 Real / 1 Anime
-  useEffect(() => {
-    if (steps[activeStep] === 'Result' && generatedOptions === null) {
-      handleGenerate();
-    }
-  }, [activeStep]);
-
-  useEffect(() => {
-    // Define character options based on gender and style selection
-    const newCharacterOptions =
-      selectedOptions.gender === 0
-        ? selectedOptions.style === 0
-          ? characterOptionsFemaleReal
-          : characterOptionsFemaleAnime
-        : selectedOptions.gender === 1
-        ? selectedOptions.style === 0
-          ? characterOptionsMaleReal
-          : characterOptionsMaleAnime
-        : selectedOptions.style === 0
-        ? characterOptionsNonBinaryReal
-        : characterOptionsNonBinaryAnime;
-
-    // Update character options
-    setCharacterOptions(newCharacterOptions);
-  }, [selectedOptions.gender, selectedOptions.style]);
-
   const [clothesInputValue, setClothesInputValue] = useState('');
-  const maxLength = 200;
+  const [customClothesActive, setCustomClothesActive] = useState(false);
+  //#endregion
 
+  //#region Post Define
   const summaryOptions = [
     {key: 'style', label: 'Style', options: characterOptions.styleOptions},
     {key: 'race', label: 'Race', options: characterOptions.raceOptions},
@@ -176,9 +152,9 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
     {key: 'personality', label: 'Personality', options: characterOptions.personality},
   ];
 
-  const [customClothesActive, setCustomClothesActive] = useState(false);
+  //#endregion
 
-  // Handler
+  //#region  Handler
   const handleClose = () => {
     closeAction();
   };
@@ -215,6 +191,82 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
     GetImageGenerateImage(req);
   };
 
+  const handleOptionSelect = (key: keyof typeof selectedOptions, index: number) => {
+    setSelectedOptions(prev => ({
+      ...prev,
+      [key]: index,
+    }));
+  };
+
+  const handleImageToggle = (image: string, parameter: string) => {
+    if (image === null) return;
+
+    setFullscreenImage({url: image, parameter: parameter});
+  };
+
+  const handleClothesInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length <= maxLength) {
+      setClothesInputValue(e.target.value);
+    }
+  };
+
+  const handlePublishFinishAction = () => {
+    if (publishFinishAction) {
+      publishFinishAction();
+    }
+  };
+  //#endregion
+
+  //#region Hook
+  useEffect(() => {
+    if (publishClick) {
+      setPublishReqested(true);
+      setPublishClick(false);
+    }
+  }, [publishClick]);
+
+  // gender 0 Male / 1 Female, style 0 Real / 1 Anime
+  useEffect(() => {
+    if (steps[activeStep] === 'Result' && generatedOptions === null) {
+      handleGenerate();
+    }
+  }, [activeStep]);
+
+  useEffect(() => {
+    // Define character options based on gender and style selection
+    const newCharacterOptions =
+      selectedOptions.gender === 0
+        ? selectedOptions.style === 0
+          ? characterOptionsFemaleReal
+          : characterOptionsFemaleAnime
+        : selectedOptions.gender === 1
+        ? selectedOptions.style === 0
+          ? characterOptionsMaleReal
+          : characterOptionsMaleAnime
+        : selectedOptions.style === 0
+        ? characterOptionsNonBinaryReal
+        : characterOptionsNonBinaryAnime;
+
+    // Update character options
+    setCharacterOptions(newCharacterOptions);
+  }, [selectedOptions.gender, selectedOptions.style]);
+
+  useEffect(() => {
+    if (stepperRef.current) {
+      const currentStepElement = stepperRef.current.querySelector(`.MuiStep-horizontal:nth-child(${activeStep + 1})`);
+      if (currentStepElement) {
+        currentStepElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }
+    }
+  }, [activeStep]);
+  //#endregion
+
+  //#region Function
+
   const generatePrompts = (
     summaryOptions: {key: string; options: {value: number}[]}[],
     selectedOptions: Record<string, number>,
@@ -242,43 +294,11 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
       }
     } catch (error) {
       console.error('Error fetching content info:', error);
-      throw error; // 에러를 상위로 전달
+      throw error;
     } finally {
       setLoading(false);
     }
   };
-  const handleOptionSelect = (key: keyof typeof selectedOptions, index: number) => {
-    setSelectedOptions(prev => ({
-      ...prev,
-      [key]: index,
-    }));
-  };
-
-  const handleImageToggle = (image: string, parameter: string) => {
-    if (image === null) return;
-
-    setFullscreenImage({url: image, parameter: parameter});
-  };
-
-  const handleClothesInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length <= maxLength) {
-      setClothesInputValue(e.target.value);
-    }
-  };
-
-  // Effects
-  useEffect(() => {
-    if (stepperRef.current) {
-      const currentStepElement = stepperRef.current.querySelector(`.MuiStep-horizontal:nth-child(${activeStep + 1})`);
-      if (currentStepElement) {
-        currentStepElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest', // 요소가 중앙에 오도록 스크롤
-          inline: 'center',
-        });
-      }
-    }
-  }, [activeStep]);
 
   const getStepContent = (step: CreateCharacterStep) => {
     switch (step) {
@@ -314,7 +334,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
                   label={option.label}
                   image={option.image}
                   selected={selectedOptions.style === index}
-                  onClick={() => handleOptionSelect('style', index)} // Use handleImageToggle for full-screen toggle
+                  onClick={() => handleOptionSelect('style', index)}
                 />
               ))}
             </Box>
@@ -683,14 +703,31 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
         return (
           <div className={styles.createBox}>
             <PublishCharacter
-              url={generatedOptions?.imageUrl[selectedOptions.result] ?? ''}
-              gender={selectedOptions.gender}
+              characterInfo={{
+                ...(characterInfo ?? {
+                  id: 0,
+                  name: '',
+                  introduction: '',
+                  description: '',
+                  genderType: selectedOptions.gender,
+                  mainImageUrl: generatedOptions?.imageUrl[selectedOptions.result] ?? '',
+                  portraitGalleryImageUrl: [],
+                  poseGalleryImageUrl: [],
+                  expressionGalleryImageUrl: [],
+                  visibilityType: 0,
+                  isMonetization: false,
+                  state: 0,
+                }),
+                mainImageUrl: generatedOptions?.imageUrl[selectedOptions.result] ?? '',
+                genderType: selectedOptions.gender,
+              }}
               // createOption={generatePrompts(summaryOptions, selectedOptions)}
               debugparam={generatedOptions?.debugParameter ?? 'not generated image'}
               publishRequested={publishReqested}
               publishRequestedAction={() => {
                 setPublishReqested(false);
               }}
+              publishFinishAction={handlePublishFinishAction}
             />
           </div>
         );
@@ -729,6 +766,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify}) => {
       </>
     );
   };
+  //#endregion
 
   return (
     <Box className={styles.container}>

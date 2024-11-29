@@ -17,15 +17,16 @@ import {DeleteGalleryReq, sendDeleteGallery} from '@/app/NetWork/CharacterNetwor
 import CreateCharacterTopMenu from '../../main/content/create/character/CreateCharacterTopMenu';
 import CharacterGallery from './CharacterGallery';
 import CharacterGalleryCreate from './CharacterGalleryCreate';
-import CharacterCreate from '../../main/content/create/character/CreateCharacterSequence';
 import CharacterGalleryViewer from './CharacterGalleryViewer';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
+import ModifyCharacterModal from './ModifyCharacterModal';
 
 interface CharacterGalleryModalProps {
   open: boolean;
   onClose: () => void;
   characterData: CharacterInfo;
   refreshCharacter: (id: number) => void;
+  refreshCharacterList: () => void;
 }
 
 const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
@@ -33,6 +34,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   onClose,
   characterData,
   refreshCharacter,
+  refreshCharacterList,
 }) => {
   const buttons = [
     {
@@ -311,8 +313,15 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
                 contentTitle={`Modify ${characterInfo.name}`}
                 blockStudioButton={true}
               />
-              Sorry Modify is not working now
-              {/* <CharacterCreate closeAction={handleModifyClose} isModify={true} /> */}
+              {/* Sorry Modify is not working now */}
+
+              <ModifyCharacterModal
+                open={isModifyOpen}
+                onClose={handleModifyClose}
+                isModify={isModifyOpen}
+                characterInfo={characterInfo}
+                refreshCharacterList={refreshCharacterList}
+              />
             </>
           ) : viewerOpen ? (
             <CharacterGalleryViewer

@@ -20,38 +20,56 @@ import styles from './PublishCharacter.module.css';
 import {useEffect, useState} from 'react';
 import {CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
 
-// publish가 끝나고 다른곳으로 이동하기
-import {useRouter, useSearchParams} from 'next/navigation';
-import {GenerateParameter} from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 
 interface PublishCharacterProps {
-  url: string;
-  gender: number;
-  // createOption: GenerateParameter[];
+  characterInfo: Partial<CharacterInfo>;
   debugparam: string;
   publishRequested: boolean;
   publishRequestedAction: () => void;
+  publishFinishAction: () => void;
 }
 
 const PublishCharacter: React.FC<PublishCharacterProps> = ({
-  url,
-  gender,
-  // createOption,
+  characterInfo,
   debugparam,
   publishRequested,
   publishRequestedAction,
+  publishFinishAction,
 }) => {
   const [drawerVisibilityOpen, setDrawerVisibilityOpen] = useState(false);
   const [drawerMonetizationOpen, setDrawerMonetizationOpen] = useState(false);
   const [visibility, setVisibility] = useState('Private');
   const [monetization, setMonetization] = useState('Off');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const searchParam = useSearchParams();
-  const [characterName, setCharacterName] = useState<string>('');
-  const [characterIntroduction, setCharacterIntroduction] = useState<string>('');
-  const [characterDescription, setCharacterDescription] = useState<string>('');
+
+  const defaultCharacterInfo: CharacterInfo = {
+    id: 0,
+    name: '',
+    introduction: '',
+    description: '',
+    genderType: 0,
+    mainImageUrl: '',
+    portraitGalleryImageUrl: [],
+    poseGalleryImageUrl: [],
+    expressionGalleryImageUrl: [],
+    visibilityType: 0,
+    isMonetization: false,
+    state: 0,
+  };
+
+  const mergedCharacterInfo: CharacterInfo = {
+    ...defaultCharacterInfo,
+    ...characterInfo,
+  };
+
+  const [currentCharacter, setCurrentCharacter] = useState<CharacterInfo>(mergedCharacterInfo);
+
+  const [characterName, setCharacterName] = useState<string>(currentCharacter.name || '');
+  const [characterIntroduction, setCharacterIntroduction] = useState<string>(currentCharacter.introduction || '');
+  const [characterDescription, setCharacterDescription] = useState<string>(currentCharacter.description || '');
+
   const [isPublishRequested, setIsPublishRequested] = useState<Boolean>(false);
   const handleDrawerVisibilityToggle = () => {
     setDrawerVisibilityOpen(!drawerVisibilityOpen);
@@ -67,12 +85,12 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
       // 사용자의 입력 데이터를 수집하여 CreateCharacterReq로 구성
       const req: CreateCharacterReq = {
         characterInfo: {
-          id: 0,
+          id: characterInfo.id ?? 0,
           name: characterName,
           introduction: characterIntroduction,
           description: characterDescription,
-          genderType: gender,
-          mainImageUrl: url,
+          genderType: currentCharacter.genderType,
+          mainImageUrl: currentCharacter.mainImageUrl,
 
           portraitGalleryImageUrl: [],
           poseGalleryImageUrl: [],
@@ -90,7 +108,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
       if (response.data) {
         console.log('Character created successfully:', response.data);
 
-        router.push(`/:lang/studio/character`);
+        publishFinishAction();
       } else {
         throw new Error('Character creation failed.');
       }
@@ -108,6 +126,10 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
       return 'Fan';
     }
   }
+
+  useEffect(() => {
+    if (characterInfo) setCurrentCharacter(mergedCharacterInfo);
+  }, []);
 
   useEffect(() => {
     if (publishRequested) setIsPublishRequested(true);
@@ -130,7 +152,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
           <Typography className={styles.label}>Base Portrait</Typography>
           <Box
             style={{
-              backgroundImage: `url(${url || ''})`,
+              backgroundImage: `url(${currentCharacter.mainImageUrl || ''})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               height: '100%',
@@ -194,7 +216,13 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
       </Button> */}
 
       {/* Drawer */}
-      <Drawer anchor="right" open={drawerVisibilityOpen} onClose={handleDrawerVisibilityToggle}>
+      <Drawer
+        className={styles.drawerindex}
+        anchor="right"
+        open={drawerVisibilityOpen}
+        onClose={handleDrawerVisibilityToggle}
+        sx={{zIndex: 1500}}
+      >
         <Box className={styles.drawer}>
           {/* Drawer Header */}
           <Box className={styles.drawerHeader}>
@@ -208,7 +236,12 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
           </Box>
 
           {/* Visibility Toggle */}
-          <RadioGroup value={visibility} onChange={e => setVisibility(e.target.value)} className={styles.toggleGroup}>
+          <RadioGroup
+            value={visibility}
+            onChange={e => setVisibility(e.target.value)}
+            className={styles.toggleGroup}
+            sx={{zIndex: 1500}}
+          >
             <FormControlLabel value="Private" control={<Radio />} label="Private" />
             <FormControlLabel value="Unlisted" control={<Radio />} label="Unlisted" />
             <FormControlLabel value="Public" control={<Radio />} label="Public" />
@@ -216,7 +249,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
         </Box>
       </Drawer>
       {/* Drawer */}
-      <Drawer anchor="right" open={drawerMonetizationOpen} onClose={handleDrawerMonetizationToggle}>
+      <Drawer anchor="right" open={drawerMonetizationOpen} onClose={handleDrawerMonetizationToggle} sx={{zIndex: 1500}}>
         <Box className={styles.drawer}>
           {/* Drawer Header */}
           <Box className={styles.drawerHeader}>

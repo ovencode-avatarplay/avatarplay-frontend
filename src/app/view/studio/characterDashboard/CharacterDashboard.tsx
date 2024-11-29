@@ -148,12 +148,12 @@ const CharacterDashboard: React.FC = () => {
       return;
     }
 
-    alert('Modify is not working now');
+    // alert('Modify is not working now');
     // Modify 용도의 api 생성 전까지 막아둠
-    // await getCharacterInfo(selectedCharacterId);
+    await getCharacterInfo(selectedCharacterId);
 
-    // setIsModifyMode(true);
-    // setModifyOpen(true);
+    setIsModifyMode(true);
+    setModifyOpen(true);
   };
 
   const handleCloseModify = () => {
@@ -255,11 +255,18 @@ const CharacterDashboard: React.FC = () => {
           onClose={handleCloseGallery}
           characterData={currentSelectedCharacter}
           refreshCharacter={getCharacterInfo}
+          refreshCharacterList={getCharacterList}
         />
       )}
 
       {/* ModifyCharacter Drawer */}
-      <ModifyCharacterModal open={modifyOpen} onClose={handleCloseModify} isModify={isModifyMode} />
+      <ModifyCharacterModal
+        open={modifyOpen}
+        onClose={handleCloseModify}
+        isModify={isModifyMode}
+        characterInfo={currentSelectedCharacter}
+        refreshCharacterList={getCharacterList}
+      />
 
       {/* Dialog */}
       <Dialog open={isDialogOpen} onClose={handleDeleteDialogClose}>
