@@ -3,7 +3,6 @@ import {Box, ToggleButton, ToggleButtonGroup, Dialog, DialogContent, Button, Typ
 import styles from './CharacterGallery.module.css';
 
 import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
-import CharacterGalleryItem from './CharacterGalleryItem';
 
 import ImageUploadDialog from '../../main/content/create/content-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaState, sendUpload, MediaUploadReq} from '@/app/NetWork/ImageNetwork';
