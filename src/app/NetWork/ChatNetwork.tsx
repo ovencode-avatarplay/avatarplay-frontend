@@ -1,6 +1,9 @@
 // src/app/Network/ChatNetwork.tsx
 
 import api, {ResponseAPI} from './ApiInstance';
+import chatEmojiTempData from '@/data/temp/chat-emoji-temp-data.json';
+import getLocalizedText from '@/utils/getLocalizedText';
+import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 // 채팅 Send ##########################################
 // Chat Data Interfaces
 export interface SendChatMessageReq {
@@ -266,6 +269,13 @@ export interface ChattingResultReq {
   streamKey: string;
 }
 
+export interface ChattingCharacterData {
+  name: string;
+  introduction: string;
+  description: string;
+  imageUrl: string;
+}
+
 export interface ChattingResultData {
   nextChapterId: number;
   nextEpisodeId: number;
@@ -274,6 +284,7 @@ export interface ChattingResultData {
   nextEpisodeDescription: string;
   triggerMediaState: number;
   triggerMediaUrlList: string[];
+  changeCharacterInfo: ChattingCharacterData;
 }
 
 export interface ChattingResultRes {

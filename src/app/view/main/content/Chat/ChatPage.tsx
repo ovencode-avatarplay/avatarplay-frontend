@@ -67,6 +67,7 @@ const ChatPage: React.FC = () => {
   const [ChattingState, setChatInfo] = useState<ChattingState>();
   const [isReqPrevCheat, setReqPrevCheat] = useState<boolean>(false); // 치트키로 애피소드 초기화.
   const [isRenderComplete, setRenderComplete] = useState<boolean>(false);
+  const [characterImageUrl, setCharacterImageUrl] = useState<string | undefined>('');
   const QueryKey = QueryParams.ChattingInfo;
   const key = getWebBrowserUrl(QueryKey) || null;
   // console.log('getWebBrowserUrl', key);
@@ -261,7 +262,8 @@ const ChatPage: React.FC = () => {
       isResult = true;
       try {
         const response = await sendChattingResult(requestData);
-
+        if (response.data.changeCharacterInfo && characterImageUrl != response.data.changeCharacterInfo.imageUrl)
+          setCharacterImageUrl(response.data.changeCharacterInfo.imageUrl);
         if (response.data.triggerMediaState != 0) {
           const allMedia = [...(parsedMessagesRef.current?.mediaData || [])];
           const allMessage = [...(parsedMessagesRef.current?.Messages || [])];
@@ -682,6 +684,8 @@ const ChatPage: React.FC = () => {
         setIsIdEnter(false);
       }
       if (isReqPrevCheat === true) setReqPrevCheat(false);
+
+      setCharacterImageUrl(enterData?.characterImageUrl);
       const loadEmoticons = async () => {
         try {
           const response = await fetchEmoticonGroups();
@@ -700,14 +704,14 @@ const ChatPage: React.FC = () => {
         <TopBar
           onBackClick={handleBackClick}
           onMoreClick={handleMoreClick}
-          iconUrl={enterData?.characterImageUrl ?? ''}
+          iconUrl={characterImageUrl ?? ''}
           isHideChat={isHideChat}
         />
         <ChatArea
           messages={parsedMessages!}
           bgUrl={enterData?.episodeBgImageUrl ?? ''}
-          characterUrl={enterData?.characterImageUrl ?? ''}
-          iconUrl={enterData?.characterImageUrl ?? ''}
+          characterUrl={characterImageUrl ?? ''}
+          iconUrl={characterImageUrl ?? ''}
           isHideChat={isHideChat}
           onToggleBackground={handleToggleBackground}
           isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
