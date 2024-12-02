@@ -208,7 +208,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
   };
 
   const [characterDescription, setCharacterDescription] = useState<string>(
-    editedEpisodeInfo.currentEpisodeInfo.characterInfo.description || '',
+    editedEpisodeInfo.currentEpisodeInfo.characterInfo?.description || '',
   );
   const onChangeCharacterDescription = (description: string) => {
     setCharacterDescription(description);
