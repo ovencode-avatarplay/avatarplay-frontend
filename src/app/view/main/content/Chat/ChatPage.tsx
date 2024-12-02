@@ -643,7 +643,7 @@ const ChatPage: React.FC = () => {
           if (parsedMessages.length > 0) {
             acc.mediaData.push(...Array(parsedMessages.length));
             acc.mediaData[acc.mediaData.length - 1] = mediaDataValue;
-          } else {
+          } else if (mediaType != TriggerMediaState.None) {
             const defaultMessages: Message = {
               chatId: -1,
               text: '.',
