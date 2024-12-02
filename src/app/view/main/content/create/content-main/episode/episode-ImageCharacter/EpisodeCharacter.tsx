@@ -146,7 +146,7 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({
         )}
         {currentStep === 3 && currentSelectedCharacter && (
           <EpisodeCharacterView
-            imageUrl={currentSelectedCharacter.portraitGalleryImageUrl?.[selectedGalleryIndex || 0].imageUrl || ''}
+            imageUrl={galleryAllUrl?.[selectedGalleryIndex || 0].imageUrl || ''}
             characterInfo={currentSelectedCharacter}
             open={true}
             onClose={() => setCurrentStep(2)} // 닫으면 Step 2로 돌아가기
