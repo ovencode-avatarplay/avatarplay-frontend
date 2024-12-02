@@ -149,7 +149,6 @@ const PlayMediaComponent: React.FC<PlayMediaComponentProps> = ({onMediaSelect, t
       if (response?.data) {
         const imgUrls: string[] = response.data.imageUrlList; // 메인 이미지 URL
         setImages(prevImages => [...prevImages, ...imgUrls]); // 여러 이미지 URL을 기존 이미지 배열에 추가
-        //initUrls 여기의 뒷부분에 imgUrls를 추가하고 싶어
         // 기존 updatedUrls에 imgUrls를 추가하여 새로운 상태로 설정
         const newUrls = [...updatedUrls, ...imgUrls];
         setUpdatedUrls(newUrls); // 상태 업데이트
@@ -168,6 +167,7 @@ const PlayMediaComponent: React.FC<PlayMediaComponentProps> = ({onMediaSelect, t
   // 이미지 삭제 핸들러
   const handleImageDelete = (index: number) => {
     setImages(prevImages => prevImages.filter((_, i) => i !== index)); // 해당 인덱스의 이미지 제거
+    onMediaSelect(images); // 상위 컴포넌트로 파일 전달
   };
   // 미디어 타입 변경 핸들러
   const handleMediaTypeChange = (event: SelectChangeEvent<number>) => {
