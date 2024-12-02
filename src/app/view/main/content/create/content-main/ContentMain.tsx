@@ -30,6 +30,7 @@ import {
   setSelectedContentId,
   setSelectedChapterIdx,
   setSelectedEpisodeIdx,
+  setSkipContentInit,
 } from '@/redux-store/slices/ContentSelection';
 import {setContentInfoToEmpty, setEditingContentInfo, updateEditingContentInfo} from '@/redux-store/slices/ContentInfo';
 import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
@@ -61,7 +62,7 @@ const ContentMain: React.FC = () => {
   const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId); // ChapterBoard에서 선택된 ContentId
   const selectedChapterIdx = useSelector((state: RootState) => state.contentselection.selectedChapterIdx); // ChapterBoard에서 선택된 ChapterId
   const selectedEpisodeIdx = useSelector((state: RootState) => state.contentselection.selectedEpisodeIdx); // ChapterBoard에서 선택된 EpisodeId
-
+  const skipContentInit = useSelector((state: RootState) => state.contentselection.skipContentInit); // Init Skip (다른 페이지에서 편집을 들어올 때 사용)
   // 자주 렌더링 되지 않는 경우는 묶어서
   const {
     editedPublishInfo, // 저장하기 전에 수정사항을 올려놓는 PublishInfo 정보
@@ -97,7 +98,10 @@ const ContentMain: React.FC = () => {
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
-    Init();
+    if (!skipContentInit) {
+      Init();
+    }
+    dispatch(setSkipContentInit(false));
   }, []);
 
   //#region  서버에서 컨텐츠 가져오기
@@ -537,6 +541,7 @@ const ContentMain: React.FC = () => {
             open={isDashboardOpen}
             onClose={handleCloseDashboard}
             onSelectItem={GetContentByContentId}
+            onRefreshItem={getContentsByUserId}
           />
           <ChapterBoard
             open={isChapterboardOpen}

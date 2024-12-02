@@ -25,6 +25,10 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   isSelected,
   selectedEpisodeIdx,
   disableDelete,
+  onDeleteChapterOpen,
+  onDeleteChapterClose,
+  onDeleteEpisodeOpen,
+  onDeleteEpisodeClose,
 }) => {
   const handleDeleteChapter = (chapterIdx: number, chapterLength: number) => {
     onDelete(chapterIdx);

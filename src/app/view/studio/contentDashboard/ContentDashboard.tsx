@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useDispatch} from 'react-redux';
 import {ContentInfo, setContentInfoToEmpty, setEditingContentInfo} from '@/redux-store/slices/ContentInfo';
@@ -9,6 +9,7 @@ import {
   setSelectedChapterIdx,
   setSelectedContentId,
   setSelectedEpisodeIdx,
+  setSkipContentInit,
 } from '@/redux-store/slices/ContentSelection';
 import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
 
@@ -34,6 +35,7 @@ import {
 import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/MyContentDashboard';
 
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
+import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 
 const ContentDashboard: React.FC = () => {
   const router = useRouter();
@@ -46,6 +48,9 @@ const ContentDashboard: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
@@ -93,6 +98,7 @@ const ContentDashboard: React.FC = () => {
 
           await Promise.race([GetContentByContentId(selectedItemId), timeout]);
 
+          dispatch(setSkipContentInit(true));
           dispatch(setSelectedContentId(selectedItemId));
 
           dispatch(setSelectedChapterIdx(0));
@@ -108,6 +114,26 @@ const ContentDashboard: React.FC = () => {
       router.push(`/${currentLang}/create/story`);
     }
   };
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    setConfirmed(true);
+  };
+
+  useEffect(() => {
+    if (confirmed) {
+      handleDeleteClick();
+      setDialogOpen(false);
+      setConfirmed(false);
+    }
+  }, [confirmed]);
 
   // DashBoard 에서 선택한 컨텐츠를 Id로 가져옴 (CreateContent사이클 (Chapter, Episode 편집) 에서 사용하기 위함)
   const GetContentByContentId = async (contentId: number) => {
@@ -140,7 +166,7 @@ const ContentDashboard: React.FC = () => {
     console.log('Gallery button clicked');
   };
 
-  const handleDelete = async () => {
+  const handleDeleteClick = async () => {
     if (selectedItemId !== null) {
       if (selectedItemId) {
         try {
@@ -151,7 +177,7 @@ const ContentDashboard: React.FC = () => {
             // console.log('삭제된 콘텐츠 ID:', response.data.contentId);
 
             // 삭제 후 콘텐츠 목록 새로고침
-            await getContentsByUserId;
+            await getContentsByUserId();
 
             // 선택된 인덱스 초기화
             setSelectedItemId(null);
@@ -193,21 +219,32 @@ const ContentDashboard: React.FC = () => {
   const buttons = [
     {icon: <EditIcon />, text: 'Edit', onClick: handleEdit},
     {icon: <PreviewIcon />, text: 'Preview', onClick: handlePreview},
-    {icon: <DeleteIcon />, text: 'Delete', onClick: handleDelete},
+    {icon: <DeleteIcon />, text: 'Delete', onClick: handleOpenDialog},
   ];
 
   return (
-    <div className={styles.dashboard}>
-      <StudioTopMenu icon={<AutoStoriesIcon />} text="Story" />
-      <StudioFilter
-        filters={filters}
-        selectedFilter={selectedFilter}
-        onFilterChange={handleFilterChange}
-        onCreateClick={handleCreateClick}
+    <>
+      <div className={styles.dashboard}>
+        <StudioTopMenu icon={<AutoStoriesIcon />} text="Story" />
+        <StudioFilter
+          filters={filters}
+          selectedFilter={selectedFilter}
+          onFilterChange={handleFilterChange}
+          onCreateClick={handleCreateClick}
+        />
+        <ContentList onSelect={handleSelectItem} />
+        <ContentDashboardFooter buttons={buttons} />
+      </div>
+      <ConfirmationDialog
+        title="Discard Content?"
+        content="Data will be disappeared. Are you sure?"
+        cancelText="Cancel"
+        confirmText="Okay"
+        open={dialogOpen}
+        onConfirm={handleConfirm}
+        onClose={handleCloseDialog}
       />
-      <ContentList onSelect={handleSelectItem} />
-      <ContentDashboardFooter buttons={buttons} />
-    </div>
+    </>
   );
 };
 

@@ -5,12 +5,16 @@ interface ReduxState {
   selectedContentId: number;
   selectedChapterIdx: number;
   selectedEpisodeIdx: number;
+
+  skipContentInit: boolean;
 }
 
 const initialState: ReduxState = {
   selectedContentId: 0,
   selectedChapterIdx: 0,
   selectedEpisodeIdx: 0,
+
+  skipContentInit: false,
 };
 
 export const ContentSelectionSlice = createSlice({
@@ -29,9 +33,13 @@ export const ContentSelectionSlice = createSlice({
       // console.log(action.payload);
       state.selectedEpisodeIdx = action.payload;
     },
+    setSkipContentInit: (state, action: PayloadAction<boolean>) => {
+      state.skipContentInit = action.payload;
+    },
   },
 });
 
-export const {setSelectedContentId, setSelectedChapterIdx, setSelectedEpisodeIdx} = ContentSelectionSlice.actions;
+export const {setSelectedContentId, setSelectedChapterIdx, setSelectedEpisodeIdx, setSkipContentInit} =
+  ContentSelectionSlice.actions;
 export const ContentSelectionReducer = ContentSelectionSlice.reducer;
 export default ContentSelectionSlice.reducer;

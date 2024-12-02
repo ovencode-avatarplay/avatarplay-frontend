@@ -20,19 +20,24 @@ import ContentDashboardList from './ContentDashboardList';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
+import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 
 interface Props {
   open: boolean;
   onClose: () => void;
   onSelectItem: (id: number) => void;
+  onRefreshItem: () => void;
 }
 
-const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem}) => {
+const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, onRefreshItem}) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const contentInfo = useSelector((state: RootState) => state.myContents.contentDashBoardList ?? []);
   const dispatch = useDispatch();
   const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
 
   useEffect(() => {
     if (selectedIndex !== null && open && listRef.current) {
@@ -68,6 +73,26 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem}) 
     }
   };
 
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    setConfirmed(true);
+  };
+
+  useEffect(() => {
+    if (confirmed) {
+      handleDeleteClick();
+      setDialogOpen(false);
+      setConfirmed(false);
+    }
+  }, [confirmed]);
+
   const handleDeleteClick = async () => {
     if (selectedIndex !== null) {
       const selectedItemId = contentInfo[selectedIndex]?.id;
@@ -80,7 +105,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem}) 
             // console.log('삭제된 콘텐츠 ID:', response.data.contentId);
 
             // 삭제 후 콘텐츠 목록 새로고침
-            await onSelectItem;
+            await onRefreshItem();
 
             // 선택된 인덱스 초기화
             setSelectedIndex(null);
@@ -100,55 +125,71 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem}) 
 
   const handleCreateClick = () => {
     dispatch(setContentInfoToEmpty());
+    dispatch(setPublishInfo(emptyContentInfo.publishInfo));
     dispatch(setEpisodeInfoEmpty());
     dispatch(setSelectedContentId(0));
     dispatch(setSelectedChapterIdx(0));
     dispatch(setSelectedEpisodeIdx(0));
-    dispatch(setPublishInfo(emptyContentInfo.publishInfo));
 
     onClose();
   };
   //#endregion
 
   return (
-    <Drawer
-      anchor="right"
-      open={open}
-      onClose={onClose}
-      PaperProps={{
-        sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
-      }}
-    >
-      <Box className={styles.drawerContainer}>
-        <CreateDrawerHeader title="Content Dashboard" onClose={onClose} />
+    <>
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={onClose}
+        PaperProps={{
+          sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
+        }}
+      >
+        <Box className={styles.drawerContainer}>
+          <CreateDrawerHeader title="Content Dashboard" onClose={onClose} />
 
-        {/* Filter section */}
-        <Box className={styles.filterContainer}>
-          <Select className={styles.filterSelect}>
-            <MenuItem value="filter1">Filter 1</MenuItem>
-            <MenuItem value="filter2">Filter 2</MenuItem>
-            <MenuItem value="filter3">Filter 3</MenuItem>
-          </Select>
-          <Button variant="contained" className={styles.createButton} onClick={handleCreateClick}>
-            Create
-          </Button>
+          {/* Filter section */}
+          <Box className={styles.filterContainer}>
+            <Select className={styles.filterSelect}>
+              <MenuItem value="filter1">Filter 1</MenuItem>
+              <MenuItem value="filter2">Filter 2</MenuItem>
+              <MenuItem value="filter3">Filter 3</MenuItem>
+            </Select>
+            <Button variant="contained" className={styles.createButton} onClick={handleCreateClick}>
+              Create
+            </Button>
+          </Box>
+
+          {/* Content list */}
+          <ContentDashboardList
+            contentInfo={contentInfo}
+            selectedIndex={selectedIndex}
+            onItemSelect={handleItemClick}
+          />
+
+          {/* Action buttons */}
+          <Box className={styles.buttonContainer}>
+            <Button variant="outlined" onClick={handleEditClick} disabled={selectedIndex === null}>
+              Edit
+            </Button>
+            <Button variant="outlined">Preview</Button>
+            <Button variant="outlined" onClick={handleOpenDialog} disabled={selectedIndex === null}>
+              Delete
+            </Button>
+          </Box>
         </Box>
+      </Drawer>
 
-        {/* Content list */}
-        <ContentDashboardList contentInfo={contentInfo} selectedIndex={selectedIndex} onItemSelect={handleItemClick} />
-
-        {/* Action buttons */}
-        <Box className={styles.buttonContainer}>
-          <Button variant="outlined" onClick={handleEditClick} disabled={selectedIndex === null}>
-            Edit
-          </Button>
-          <Button variant="outlined">Preview</Button>
-          <Button variant="outlined" onClick={handleDeleteClick} disabled={selectedIndex === null}>
-            Delete
-          </Button>
-        </Box>
-      </Box>
-    </Drawer>
+      <ConfirmationDialog
+        title="Discard Content?"
+        content="Data will be disappeared. Are you sure?"
+        cancelText="Cancel"
+        confirmText="Okay"
+        open={dialogOpen}
+        onConfirm={handleConfirm}
+        onClose={handleCloseDialog}
+      />
+    </>
   );
 };
 
