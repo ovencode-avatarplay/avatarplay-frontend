@@ -92,17 +92,19 @@ const ChapterBoard: React.FC<Props> = ({
   }, [initialChapters]);
 
   useEffect(() => {
-    if (
-      editingContentInfo.chapterInfoList[selectedChapterIdx] &&
-      editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]
-    ) {
-      dispatch(
-        setCurrentEpisodeInfo(
-          editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
-        ),
-      );
-    } else {
-      dispatch(setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[0].episodeInfoList[0]));
+    if (open) {
+      if (
+        editingContentInfo.chapterInfoList[selectedChapterIdx] &&
+        editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]
+      ) {
+        dispatch(
+          setCurrentEpisodeInfo(
+            editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
+          ),
+        );
+      } else {
+        dispatch(setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[0].episodeInfoList[0]));
+      }
     }
   }, [selectedChapterIdx, selectedEpisodeIdx]);
 

@@ -7,27 +7,26 @@ import StudioIcon from '@mui/icons-material/VideoLibrary';
 import Link from 'next/link';
 
 import styles from './ContentHeader.module.css';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {setContentName} from '@/redux-store/slices/PublishInfo';
 
 interface ContentHeaderProps {
   lastUrl?: string;
   onOpenDrawer: () => void; // 스튜디오 버튼 클릭 시 호출될 함수
-  contentTitle: string;
   onTitleChange: (newTitle: string) => void;
 }
 
-const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, contentTitle, onTitleChange}) => {
-  const [title, setTitle] = useState(contentTitle);
+const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, onTitleChange}) => {
+  const contentName = useSelector((state: RootState) => state.publish.contentName);
   const defaultUrl = '../main/homefeed';
+  const dispatch = useDispatch();
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
-    setTitle(newTitle);
+    dispatch(setContentName(newTitle));
     onTitleChange(newTitle);
   };
-
-  useEffect(() => {
-    setTitle(contentTitle);
-  }, [contentTitle]);
 
   return (
     <Box className={styles.contentHeader}>
@@ -39,7 +38,7 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, con
       <Box className={styles.titleContainer}>
         <TextField
           variant="standard"
-          value={title}
+          value={contentName}
           aria-placeholder="Content Title Text"
           onChange={handleTitleChange}
           InputProps={{

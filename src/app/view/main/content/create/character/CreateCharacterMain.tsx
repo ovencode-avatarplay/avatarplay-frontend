@@ -1,4 +1,3 @@
-import ContentHeader from '../content-main/ContentHeader';
 import CharacterCreate from './CreateCharacterSequence';
 import styles from './CreateCharacterMain.module.css';
 import CreateCharacterTopMenu from './CreateCharacterTopMenu';

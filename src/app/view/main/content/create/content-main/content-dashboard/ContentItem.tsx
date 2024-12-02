@@ -14,6 +14,10 @@ interface ContentItemProps {
 }
 
 const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected}) => {
+  const handleShareContent = () => {
+    // TODO : 주소 받아와서 클립보드에  붙여넣기
+  };
+
   return (
     <div className={styles.container} style={{backgroundColor: isSelected ? 'red' : 'blue'}}>
       <div className={styles.thumbnailArea}>
@@ -43,7 +47,7 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected}) =>
       <div className={styles.description}>
         <div className={styles.topRow}>
           <span className={styles.createdDate}>{dashboardItem.createAt}</span>
-          <button className={styles.buttonShare}>
+          <button className={styles.buttonShare} onClick={handleShareContent}>
             <ShareIcon />
             Share
           </button>

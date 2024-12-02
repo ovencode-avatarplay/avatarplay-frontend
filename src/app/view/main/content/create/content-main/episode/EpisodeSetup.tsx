@@ -19,7 +19,7 @@ import EpisodeDescription from './episode-description/EpisodeDescription';
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 
 import EpisodeUploadCharacter from './episode-ImageCharacter/EpisodeUploadCharacter';
-import EpisodeImageUpload from './episode-ImageCharacter/EpisodeImageUpload';
+import EpisodeBackgroundUpload from './episode-ImageCharacter/EpisodeImageUpload';
 
 interface Props {
   onDrawerOpen: () => void;
@@ -127,7 +127,7 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
       <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} chapterName={chapterName ?? ''} episodeName={episodeName ?? ''} />
       <div className={styles.imageBox}>
         <EpisodeUploadCharacter />
-        <EpisodeImageUpload
+        <EpisodeBackgroundUpload
           onClickEasyCreate={openImageSetup}
           onClickAdvanceCreate={openAdvanceImageSetup}
           uploadImageState={isUploadImageDialogOpen}

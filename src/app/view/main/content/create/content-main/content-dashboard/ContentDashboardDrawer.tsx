@@ -1,18 +1,25 @@
 import React, {useEffect, useRef, useState} from 'react';
+
 import {Drawer, Box, Button, Select, MenuItem} from '@mui/material';
-import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import styles from './ContentDashboardDrawer.module.css';
+
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {setContentInfoToEmpty} from '@/redux-store/slices/ContentInfo';
+import {ContentInfo, setContentInfoToEmpty} from '@/redux-store/slices/ContentInfo';
 import {setEpisodeInfoEmpty} from '@/redux-store/slices/EpisodeInfo';
 import {
   setSelectedChapterIdx,
   setSelectedContentId,
   setSelectedEpisodeIdx,
 } from '@/redux-store/slices/ContentSelection';
+import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
+
 import {sendContentDelete} from '@/app/NetWork/ContentNetwork';
+
 import ContentDashboardList from './ContentDashboardList';
+import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+
+import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 
 interface Props {
   open: boolean;
@@ -25,6 +32,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem}) 
   const listRef = useRef<HTMLDivElement | null>(null);
   const contentInfo = useSelector((state: RootState) => state.myContents.contentDashBoardList ?? []);
   const dispatch = useDispatch();
+  const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
 
   useEffect(() => {
     if (selectedIndex !== null && open && listRef.current) {
@@ -96,6 +104,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem}) 
     dispatch(setSelectedContentId(0));
     dispatch(setSelectedChapterIdx(0));
     dispatch(setSelectedEpisodeIdx(0));
+    dispatch(setPublishInfo(emptyContentInfo.publishInfo));
 
     onClose();
   };

@@ -23,7 +23,7 @@ interface Props {
   onCloseUploadImage: () => void;
 }
 
-const EpisodeImageUpload: React.FC<Props> = ({
+const EpisodeBackgroundUpload: React.FC<Props> = ({
   onClickEasyCreate,
   onClickAdvanceCreate,
   uploadImageState: uploadImageOpen,
@@ -126,4 +126,4 @@ const EpisodeImageUpload: React.FC<Props> = ({
   );
 };
 
-export default EpisodeImageUpload;
+export default EpisodeBackgroundUpload;
