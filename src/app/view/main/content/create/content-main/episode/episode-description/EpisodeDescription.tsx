@@ -13,6 +13,8 @@ import EpisodeConversationTemplate from '../episode-conversationtemplate/Episode
 
 import getLocalizedText from '@/utils/getLocalizedText';
 
+import MessageBox from '@/components/messageBox/messageBox';
+
 interface CharacterDataType {
   userId: number;
   characterName: string;
@@ -65,6 +67,11 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   const [isFirstClickWorldScenario, setIsFirstClickWorldScenario] = useState<boolean>(true);
   const [isFirstClickIntroduction, setIsFirstClickIntroduction] = useState<boolean>(true);
   const [isFirstClickSecret, setIsFirstClickSecret] = useState<boolean>(true);
+
+  // messageBox 사용
+  const [isMessageBoxOpen, setMessageBoxOpen] = useState(false);
+  const handleOpenMessageBox = () => setMessageBoxOpen(true);
+  const handleCloseMessageBox = () => setMessageBoxOpen(false);
 
   const worldScenarioRef = useRef<HTMLInputElement | null>(null);
   const introductionRef = useRef<HTMLInputElement | null>(null);
@@ -181,9 +188,34 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
     }
   };
 
+  const handleClickAutoWrite = () => {
+    if (focusedField === 'worldScenario') {
+      if (worldScenario.length > 0) {
+        setMessageBoxOpen(true);
+      } else handleAutoWriteClick();
+    } else if (focusedField === 'introduction') {
+      if (introduction.length > 0) {
+        setMessageBoxOpen(true);
+      } else handleAutoWriteClick();
+    } else if (focusedField === 'secret') {
+      if (secret.length > 0) {
+        setMessageBoxOpen(true);
+      } else handleAutoWriteClick();
+    } // 입력창이 비어있다면 그냥 자동 텍스트를 출력해준다.
+  };
+
   // 랜덤 텍스트 입력 함수 (첫 클릭 시 랜덤, 이후 순차적)
   const handleAutoWriteClick = () => {
+    const showMessageBoxIfNotEmpty = (value: string) => {
+      if (value.length > 0) {
+        return true; // 실행 중단 신호
+      }
+      return false; // 실행 계속 신호
+    };
+
     if (focusedField === 'worldScenario') {
+      //if (showMessageBoxIfNotEmpty(worldScenario)) return; // 값이 존재하면 실행 중단
+
       if (isFirstClickWorldScenario) {
         const randomIndex = Math.floor(Math.random() * autoWriteWorldScenario.length);
         setWorldScenario(autoWriteWorldScenario[randomIndex]);
@@ -194,6 +226,8 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
         setWorldScenario(autoWriteWorldScenario[nextIndex]);
       }
     } else if (focusedField === 'introduction') {
+      //if (showMessageBoxIfNotEmpty(introduction)) return;
+
       if (isFirstClickIntroduction) {
         const randomIndex = Math.floor(Math.random() * autoWriteIntroduction.length);
         setIntroduction(autoWriteIntroduction[randomIndex]);
@@ -204,6 +238,8 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
         setIntroduction(autoWriteIntroduction[nextIndex]);
       }
     } else if (focusedField === 'secret') {
+      //if (showMessageBoxIfNotEmpty(secret)) return;
+
       if (isFirstClickSecret) {
         const randomIndex = Math.floor(Math.random() * autoWriteSecret.length);
         setSecret(autoWriteSecret[randomIndex]);
@@ -269,7 +305,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
       {/* 버튼들이 focusField에 따라 보이거나 숨겨짐 */}
       {focusedField && (
         <div className={styles.keyboardButtons}>
-          <Button variant="contained" color="primary" data-virtual-button onClick={handleAutoWriteClick}>
+          <Button variant="contained" color="primary" data-virtual-button onClick={handleClickAutoWrite}>
             Auto Write
           </Button>
           <Button
@@ -292,6 +328,25 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
       )}
 
       <EpisodeConversationTemplate open={isConversationModalOpen} closeModal={closeConversationModal} />
+      {isMessageBoxOpen && (
+        <MessageBox
+          message="필드에 이미 텍스트가 존재합니다. 내용을 덮어쓰시겠습니까?"
+          onClose={handleCloseMessageBox}
+          buttons={[
+            {
+              label: '확인',
+              onClick: () => {
+                setMessageBoxOpen(false);
+                handleAutoWriteClick();
+              },
+            },
+            {
+              label: '취소',
+              onClick: handleCloseMessageBox,
+            },
+          ]}
+        />
+      )}
     </Dialog>
   );
 };
