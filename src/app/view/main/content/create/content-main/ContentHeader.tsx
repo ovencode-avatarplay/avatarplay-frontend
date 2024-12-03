@@ -28,9 +28,16 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, onT
     onTitleChange(newTitle);
   };
 
+  const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const confirmation = window.confirm('You have unsaved changes. Are you sure you want to leave?');
+    if (!confirmation) {
+      event.preventDefault(); // 링크 이동 중단
+    }
+  };
+
   return (
     <Box className={styles.contentHeader}>
-      <Link href={lastUrl ? lastUrl : defaultUrl} passHref>
+      <Link href={lastUrl ? lastUrl : defaultUrl} passHref onClick={handleLinkClick}>
         <IconButton>
           <ChevronLeftIcon fontSize="large" />
         </IconButton>
