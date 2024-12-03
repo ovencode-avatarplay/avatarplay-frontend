@@ -4,18 +4,30 @@ import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import HeadsetIcon from '@mui/icons-material/Headset';
 import styles from './InputCard.module.css';
+import {ConversationTalkType} from '@/types/apps/DataTypes';
 
 interface InputCardProps {
   defaultValue: string;
+  defalutType: ConversationTalkType;
   onDelete: () => void;
-  onChange: (value: string) => void; // 추가
+  onChange: (value: string, type: ConversationTalkType) => void; // 추가
 }
 
-const InputCard: React.FC<InputCardProps> = ({defaultValue, onDelete, onChange}) => {
-  const [isHeadset, setIsHeadset] = useState(false);
+const InputCard: React.FC<InputCardProps> = ({defaultValue, defalutType, onDelete, onChange}) => {
+  const [isHeadset, setIsHeadset] = useState(defalutType === ConversationTalkType.Action);
 
   const toggleIcon = () => {
-    setIsHeadset(prev => !prev);
+    setIsHeadset(prev => {
+      const newIsHeadset = !prev;
+      // 상태가 변경될 때 onChange도 호출
+      onChange(defaultValue, newIsHeadset ? ConversationTalkType.Action : ConversationTalkType.Speech);
+      return newIsHeadset;
+    });
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const talkType = isHeadset ? ConversationTalkType.Action : ConversationTalkType.Speech;
+    onChange(e.target.value, talkType);
   };
 
   return (
@@ -27,7 +39,7 @@ const InputCard: React.FC<InputCardProps> = ({defaultValue, onDelete, onChange})
         defaultValue={defaultValue}
         variant="filled"
         size="small"
-        onChange={e => onChange(e.target.value)} // 텍스트 변경 시 부모로 값 전달
+        onChange={handleChange} // 수정된 handleChange 함수 사용
       />
       <IconButton onClick={onDelete}>
         <DeleteForeverIcon />

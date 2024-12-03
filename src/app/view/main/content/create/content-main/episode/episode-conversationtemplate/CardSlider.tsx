@@ -76,7 +76,7 @@ const CardSlider: React.FC<CardSliderProps> = ({Index: triggerIndex}) => {
     setCurrentIndex(prevIndex => Math.max(0, Math.min(prevIndex, conversationList.length - 2)));
   };
 
-  const updateUserTalk = (conversationIndex: number, itemIndex: number, value: string) => {
+  const updateUserTalk = (conversationIndex: number, itemIndex: number, type: ConversationTalkType, value: string) => {
     if (isFromChangeBehaviour) {
       dispatch(
         updateActionConversationTalk({
@@ -84,6 +84,7 @@ const CardSlider: React.FC<CardSliderProps> = ({Index: triggerIndex}) => {
           conversationIndex,
           itemIndex,
           type: 'user',
+          newType: type,
           newTalk: value,
         }),
       );
@@ -93,13 +94,19 @@ const CardSlider: React.FC<CardSliderProps> = ({Index: triggerIndex}) => {
           conversationIndex,
           itemIndex,
           type: 'user',
+          newType: type,
           newTalk: value,
         }),
       );
     }
   };
 
-  const updateCharacterTalk = (conversationIndex: number, itemIndex: number, value: string) => {
+  const updateCharacterTalk = (
+    conversationIndex: number,
+    itemIndex: number,
+    type: ConversationTalkType,
+    value: string,
+  ) => {
     if (isFromChangeBehaviour) {
       dispatch(
         updateActionConversationTalk({
@@ -107,6 +114,7 @@ const CardSlider: React.FC<CardSliderProps> = ({Index: triggerIndex}) => {
           conversationIndex,
           itemIndex,
           type: 'character',
+          newType: type,
           newTalk: value,
         }),
       );
@@ -116,6 +124,7 @@ const CardSlider: React.FC<CardSliderProps> = ({Index: triggerIndex}) => {
           conversationIndex,
           itemIndex,
           type: 'character',
+          newType: type,
           newTalk: value,
         }),
       );
@@ -138,8 +147,12 @@ const CardSlider: React.FC<CardSliderProps> = ({Index: triggerIndex}) => {
                 priorities={priorities}
                 onChange={handleChange}
                 onDelete={() => deleteTalkCard(index)}
-                updateUserTalk={(itemIndex: number, value: string) => updateUserTalk(index, itemIndex, value)}
-                updateCharacterTalk={(itemIndex: number, value: string) => updateCharacterTalk(index, itemIndex, value)}
+                updateUserTalk={(itemIndex: number, type: ConversationTalkType, value: string) =>
+                  updateUserTalk(index, itemIndex, type, value)
+                }
+                updateCharacterTalk={(itemIndex: number, type: ConversationTalkType, value: string) =>
+                  updateCharacterTalk(index, itemIndex, type, value)
+                }
                 triggerIndex={triggerIndex}
               />
             ))}
