@@ -10,24 +10,26 @@ interface InputCardProps {
   defaultValue: string;
   defalutType: ConversationTalkType;
   onDelete: () => void;
-  onChange: (value: string, type: ConversationTalkType) => void; // 추가
+  onChange: (value: string, type: ConversationTalkType) => void;
 }
 
 const InputCard: React.FC<InputCardProps> = ({defaultValue, defalutType, onDelete, onChange}) => {
   const [isHeadset, setIsHeadset] = useState(defalutType === ConversationTalkType.Action);
+  const [value, setValue] = useState(defaultValue);
 
   const toggleIcon = () => {
     setIsHeadset(prev => {
       const newIsHeadset = !prev;
-      // 상태가 변경될 때 onChange도 호출
-      onChange(defaultValue, newIsHeadset ? ConversationTalkType.Action : ConversationTalkType.Speech);
+      onChange(value, newIsHeadset ? ConversationTalkType.Action : ConversationTalkType.Speech);
       return newIsHeadset;
     });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setValue(newValue);
     const talkType = isHeadset ? ConversationTalkType.Action : ConversationTalkType.Speech;
-    onChange(e.target.value, talkType);
+    onChange(newValue, talkType);
   };
 
   return (
@@ -36,10 +38,11 @@ const InputCard: React.FC<InputCardProps> = ({defaultValue, defalutType, onDelet
       <TextField
         hiddenLabel
         id="filled-hidden-label-small"
-        defaultValue={defaultValue}
+        value={value}
         variant="filled"
         size="small"
-        onChange={handleChange} // 수정된 handleChange 함수 사용
+        onChange={handleChange}
+        autoFocus // 포커스를 유지하려면 autoFocus 속성을 추가
       />
       <IconButton onClick={onDelete}>
         <DeleteForeverIcon />
