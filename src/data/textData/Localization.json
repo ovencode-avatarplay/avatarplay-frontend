@@ -180,5 +180,53 @@
       "pt-PT": "",
       "de": ""
     }
+  },
+  "SystemMessage": {
+    "overwriteAlert_label_001": {
+      "ko": "경고",
+      "en-US": "Alert",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "overwriteAlert_desc_001": {
+      "ko": "필드에 이미 텍스트가 존재합니다. 내용을 덮어쓰시겠습니까?",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    }
+  },
+  "UI": {
+    "accept_btn_001": {
+      "ko": "확인",
+      "en-US": "Accept",
+      "ja": "Accept Ja",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "cancel_btn_001": {
+      "ko": "취소",
+      "en-US": "Cancel",
+      "ja": "Cancel Ja",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    }
   }
 }
