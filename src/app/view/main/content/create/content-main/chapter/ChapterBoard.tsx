@@ -70,8 +70,13 @@ const ChapterBoard: React.FC<Props> = ({
   const [newName, setNewName] = useState<string>('');
   const dispatch = useDispatch();
 
-  const [deleteChapterDialogOpen, setDeleteChapterDialogOpen] = useState(false);
-  const [deleteEpisodeDialogOpen, setDeleteEpisodeDialogOpen] = useState(false);
+  // 삭제 Dialog
+  const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    title: '',
+    content: '',
+    onConfirm: () => {},
+  });
 
   // ChapterInfo를 Chapter로 변환하는 함수
   const transformChapterInfoToChapter = (chapterInfoList: ChapterInfo[]): Chapter[] => {
@@ -147,13 +152,15 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleDeleteChapter = (chapterIdx: number) => {
-    if (chapters.length > 1) {
-      const validChapterIdx = chapterIdx >= chapters.length ? 0 : chapterIdx;
-
-      onDeleteChapter(chapterIdx);
-
-      setChapters(prevChapters => prevChapters.filter((_, index) => index !== validChapterIdx));
-    }
+    setConfirmDialog({
+      open: true,
+      title: 'Discard Chapter',
+      content: `"${chapters[chapterIdx].title}" Data will be disappeared. Are you sure?`,
+      onConfirm: () => {
+        onDeleteChapter(chapterIdx);
+        setChapters(prev => prev.filter((_, idx) => idx !== chapterIdx));
+      },
+    });
   };
   //#endregion
 
@@ -236,18 +243,21 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleDeleteEpisode = (chapterIdx: number, episodeIdx: number) => {
-    onDeleteEpisode(chapterIdx, episodeIdx);
-    setChapters(prevChapters =>
-      prevChapters.map((chapter, index) => {
-        if (index === chapterIdx && chapter.episodes.length > 1) {
-          return {
-            ...chapter,
-            episodes: chapter.episodes.filter((_, epIdx) => epIdx !== episodeIdx),
-          };
-        }
-        return chapter;
-      }),
-    );
+    setConfirmDialog({
+      open: true,
+      title: 'Discard Episode',
+      content: `"${chapters[chapterIdx].episodes[episodeIdx].title}" Data will be disappeared. Are you sure?`,
+      onConfirm: () => {
+        onDeleteEpisode(chapterIdx, episodeIdx);
+        setChapters(prev =>
+          prev.map((chapter, idx) =>
+            idx === chapterIdx
+              ? {...chapter, episodes: chapter.episodes.filter((_, epIdx) => epIdx !== episodeIdx)}
+              : chapter,
+          ),
+        );
+      },
+    });
   };
 
   // Edit 팝업 열기
@@ -357,7 +367,17 @@ const ChapterBoard: React.FC<Props> = ({
           </DialogActions>
         </Dialog>
       </Drawer>
-      {/* <ConfirmationDialog title='' content='' confirmText='' cancelText='' open={deleteChapterDialogOpen} onClose={handleDeleteChapterClose} onConfirm={() => handleDeleteChapter()}/> */}
+
+      <ConfirmationDialog
+        open={confirmDialog.open}
+        title={confirmDialog.title}
+        content={confirmDialog.content}
+        onClose={() => setConfirmDialog({...confirmDialog, open: false})}
+        onConfirm={() => {
+          confirmDialog.onConfirm();
+          setConfirmDialog({...confirmDialog, open: false});
+        }}
+      />
     </>
   );
 };
