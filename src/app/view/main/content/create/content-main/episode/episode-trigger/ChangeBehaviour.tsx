@@ -246,6 +246,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   };
 
   const handleSaveNewName = () => {
+    dispatch(updateTriggerInfo({index: index, info: {...triggerInfo}}));
     if (newTriggerName.trim()) {
       dispatch(updateTriggerInfoName({index: index, name: newTriggerName}));
       triggerInfo.name = newTriggerName;
