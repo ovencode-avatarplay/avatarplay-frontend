@@ -23,6 +23,7 @@ import ChapterBoardOnTrigger from '@/app/view/main/content/create/content-main/c
 import {RenderTargetValueField, RenderSubDataFields} from './RenderFields';
 import {handleMainDataChange, handleSubDataChange, ensureValidSubData} from './triggerHandlers';
 import {getSubDataOptionsForMainData} from './triggerDataUtils';
+import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 
 interface ChangeBehaviourProps {
   open: boolean;
@@ -33,8 +34,11 @@ interface ChangeBehaviourProps {
 const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index}) => {
   const item = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList[index]);
   const content = useSelector((state: RootState) => state.content.curEditingContentInfo);
-
   const dispatch = useDispatch();
+
+  // Delete
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
 
   const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>({
     id: item?.id || 0, // 기본값 설정
@@ -257,6 +261,26 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
     setEpisodeConversationTemplateOpen(false);
   };
 
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    setConfirmed(true);
+  };
+
+  useEffect(() => {
+    if (confirmed) {
+      handleRemove();
+      setDialogOpen(false);
+      setConfirmed(false);
+    }
+  }, [confirmed]);
+
   useEffect(() => {
     ensureValidSubData(triggerInfo, setTriggerInfo);
   }, [triggerInfo.triggerType]);
@@ -274,7 +298,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
             <DriveFileRenameOutline />
           </IconButton>
 
-          <IconButton onClick={handleRemove}>
+          <IconButton onClick={handleOpenDialog}>
             <DeleteForever />
           </IconButton>
         </DialogTitle>
@@ -379,6 +403,17 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
           </Box>
         </DialogContent>
       </Dialog>
+
+      {/* 삭제 Dialog */}
+      <ConfirmationDialog
+        title="Discard Trigger?"
+        content="Data will be disappeared. Are you sure?"
+        cancelText="Cancel"
+        confirmText="Okay"
+        open={dialogOpen}
+        onConfirm={handleConfirm}
+        onClose={handleCloseDialog}
+      />
     </>
   );
 };

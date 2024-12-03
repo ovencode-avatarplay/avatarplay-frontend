@@ -15,6 +15,7 @@ import {
   removeActionConversationItem,
 } from '@/redux-store/slices/EpisodeInfo';
 import {ConversationTalkInfo, ConversationTalkType} from '@/types/apps/DataTypes';
+import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 
 interface TalkCardProps {
   card: {
@@ -44,6 +45,9 @@ const TalkCard: React.FC<TalkCardProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   const isFromChangeBehaviour = triggerIndex !== -1; // triggerId가 -1이 아니면 ChangeBehaviour에서 호출됨
   const [isExpanded, setIsExpanded] = useState(true);
+  const [talkCardDialogOpen, setTalkCardDialogOpen] = useState(false);
+  const [inputCardDialogOpen, setInputCardDialogOpen] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
 
   // Redux에서 초기 값을 가져오기
   const initialUserInputCards = useSelector((state: RootState) => {
@@ -207,6 +211,10 @@ const TalkCard: React.FC<TalkCardProps> = ({
   }, [initialUserInputCards, initialCharacterInputCards]);
 
   const [isRefresh, SetIsRefresh] = useState<boolean>(false);
+
+  const [deleteInputType, setDeleteInputType] = useState<'user' | 'character'>('user');
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+
   const handleDeleteInputCard = (type: 'user' | 'character', index: number) => {
     if (type === 'user') {
       // Redux 상태 업데이트
@@ -249,6 +257,8 @@ const TalkCard: React.FC<TalkCardProps> = ({
       }
     }
     SetIsRefresh(true);
+    setDeleteInputType('user');
+    setDeleteIndex(null);
   };
 
   return (
@@ -269,7 +279,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
             ))}
           </Select>
         </FormControl>
-        <Button className={styles.button1} onClick={() => onDelete(card.id)}>
+        <Button className={styles.button1} onClick={() => setTalkCardDialogOpen(true)}>
           delete
         </Button>
       </div>
@@ -300,7 +310,11 @@ const TalkCard: React.FC<TalkCardProps> = ({
                       defaultValue={inputCard.talk}
                       defalutType={inputCard.type}
                       onChange={(value, type) => handleUpdateInputCard('user', index, type, value)}
-                      onDelete={() => handleDeleteInputCard('user', index)}
+                      onDelete={() => {
+                        setDeleteInputType('user');
+                        setDeleteIndex(index); // 삭제할 인덱스 설정
+                        setInputCardDialogOpen(true);
+                      }}
                     />
                   </div>
                 ))}
@@ -336,7 +350,11 @@ const TalkCard: React.FC<TalkCardProps> = ({
                       defaultValue={inputCard.talk}
                       defalutType={inputCard.type}
                       onChange={(value, type) => handleUpdateInputCard('character', index, type, value)}
-                      onDelete={() => handleDeleteInputCard('character', index)}
+                      onDelete={() => {
+                        setDeleteInputType('character');
+                        setDeleteIndex(index); // 삭제할 인덱스 설정
+                        setInputCardDialogOpen(true);
+                      }}
                     />
                   </div>
                 ))}
@@ -345,6 +363,33 @@ const TalkCard: React.FC<TalkCardProps> = ({
           </Card>
         </div>
       </div>
+      {/* 삭제 Dialog */}
+      <ConfirmationDialog
+        title="Discard TalkCard?"
+        content="Data will be disappeared. Are you sure?"
+        cancelText="Cancel"
+        confirmText="Okay"
+        open={talkCardDialogOpen}
+        onConfirm={() => {
+          onDelete(card.id); // 카드 삭제 핸들러
+          setTalkCardDialogOpen(false);
+        }}
+        onClose={() => setTalkCardDialogOpen(false)}
+      />
+
+      {/* 삭제 Dialog */}
+      <ConfirmationDialog
+        title="Discard InputCard?"
+        content="Data will be disappeared. Are you sure?"
+        cancelText="Cancel"
+        confirmText="Okay"
+        open={inputCardDialogOpen}
+        onConfirm={() => {
+          handleDeleteInputCard(deleteInputType, deleteIndex ?? 0);
+          setInputCardDialogOpen(false);
+        }}
+        onClose={() => setInputCardDialogOpen(false)}
+      />
     </Card>
   );
 };

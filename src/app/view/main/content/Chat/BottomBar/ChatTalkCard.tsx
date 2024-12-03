@@ -14,6 +14,7 @@ import {
 import styles from './ChatTalkCard.module.css';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InputCard from '../../create/content-main/episode/episode-conversationtemplate/InputCard';
+import {ConversationTalkType} from '@/types/apps/DataTypes';
 
 interface ChatTalkCardProps {}
 
@@ -31,6 +32,7 @@ const ChatTalkCard: React.FC<ChatTalkCardProps> = () => {
       {userInputCards.map((inputCard, index) => (
         <InputCard
           defaultValue={inputCard.talk}
+          defalutType={ConversationTalkType.Speech}
           onChange={() => {}}
           onDelete={() => handleDeleteInputCard('user', index)}
         />
