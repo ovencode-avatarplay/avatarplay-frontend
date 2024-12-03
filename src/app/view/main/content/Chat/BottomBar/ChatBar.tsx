@@ -173,7 +173,6 @@ const ChatBar: React.FC<ChatBarProps> = ({
         .trim();
       if (cleanedMessages == '' || cleanedMessages == null) return;
 
-      alert('sadadas');
       event.preventDefault();
       handleSendMessage(message);
     }
