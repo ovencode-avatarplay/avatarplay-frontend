@@ -13,7 +13,7 @@ import EpisodeConversationTemplate from '../episode-conversationtemplate/Episode
 
 import getLocalizedText from '@/utils/getLocalizedText';
 
-import MessageBox from '@/components/messageBox/MessageBox';
+import MessageBox from '@/components/MessageBox/MessageBox';
 import {string} from 'valibot';
 
 interface CharacterDataType {
