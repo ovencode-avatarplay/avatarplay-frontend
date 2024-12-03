@@ -1,0 +1,40 @@
+.ChatFloatingArea {
+    position: absolute;
+    width: 90%;
+    height: 80px;
+    background-color: greenyellow;
+    z-index: 30;
+    top: 100px;
+    left: 5%; /* 부모 요소 기준 가로 가운데 정렬 */
+    transform: translate(10vh); /* 가로 -50%로 이동하여 가운데 정렬, 세로 초기 위치 */
+   
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    border-radius: 4px;
+    transform: translateY(10vh); /* 초기 위치 (아래로 10vh 이동) */
+    opacity: 0; /* 초기 투명도 */
+    transition: transform 1s ease, opacity 1s ease; /* 애니메이션 효과 */
+  }
+  
+  .ChatFloatingArea.visible {
+    transform: translateY(0); /* 최종 위치 */
+    opacity: 1; /* 최종 투명도 */
+  }
+  
+  .episodeName {
+    color: black;
+    font-size: 1.25rem; /* h6 크기 */
+  }
+  
+  .moveButton {
+    background-color: blue;
+    color: white;
+    text-transform: none;  
+  }
+  
+  .moveButton:hover {
+    background-color: darkblue;
+  }
+  

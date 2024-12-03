@@ -44,6 +44,7 @@ import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
 import {modifyQuestionSlice, setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import {error} from 'console';
+import ChatFloatingArea from './MainChat/ChatFloatingArea';
 
 const ChatPage: React.FC = () => {
   const TempIdforSendQuestion: number = -222;
@@ -96,6 +97,9 @@ const ChatPage: React.FC = () => {
   const SetChatBarCount = (num: number) => {
     setChatBarCount(num);
   };
+
+  // floatingArea
+  const [floatingNextEpisode, setFloatingNextEpisode] = useState<boolean>(false);
 
   //#region 메세지 전송 로직
   const isRegeneratingQuestion = useSelector((state: RootState) => state.modifyQuestion.isRegeneratingQuestion);
@@ -560,6 +564,7 @@ const ChatPage: React.FC = () => {
     dispatch(setStateChatting(chattingState));
     setIsTransitionEnable(true);
     setIsIdEnter(true);
+    setFloatingNextEpisode(false);
   };
 
   const handlePopupYes = () => {
@@ -575,6 +580,7 @@ const ChatPage: React.FC = () => {
   const handlePopupNo = () => {
     console.log('No 클릭');
     setShowPopup(false);
+    setFloatingNextEpisode(true);
   };
   //#endregion
 
@@ -695,6 +701,12 @@ const ChatPage: React.FC = () => {
         }
       };
       // loadEmoticons();
+
+      // enter 했을 때 에피소드 이동 트리거 발동기록 확인
+      if (enterData?.nextEpisodeId && enterData.nextEpisodeId > 0) {
+        setNextEpisodeId(enterData.nextEpisodeId);
+        setFloatingNextEpisode(true);
+      }
     }
   }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
 
@@ -707,6 +719,9 @@ const ChatPage: React.FC = () => {
           iconUrl={characterImageUrl ?? ''}
           isHideChat={isHideChat}
         />
+        {floatingNextEpisode && (
+          <ChatFloatingArea episodeName={`${nextEpisodeId} 이동 버튼`} onNavigate={handlePopupYes} /> // TODO nextEpisodeId 대신 에피소드 이름으로 변경 (서버 작업 후)
+        )}
         <ChatArea
           messages={parsedMessages!}
           bgUrl={enterData?.episodeBgImageUrl ?? ''}
