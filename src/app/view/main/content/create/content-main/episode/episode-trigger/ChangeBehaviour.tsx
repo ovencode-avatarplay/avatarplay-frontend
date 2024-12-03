@@ -218,10 +218,10 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
       (info, idx) => info.triggerType === TriggerMainDataType.triggerValueKeyword && idx !== index, // idx를 사용하여 현재 인덱스와 비교
     );
 
-    if (isKeywordTypeExists && triggerInfo.triggerType === TriggerMainDataType.triggerValueKeyword) {
-      alert('Keyword타입은 1개를 넘을 수 없습니다.');
-      return; // handleClose를 취소함
-    }
+    // if (isKeywordTypeExists && triggerInfo.triggerType === TriggerMainDataType.triggerValueKeyword) {
+    //   alert('Keyword타입은 1개를 넘을 수 없습니다.');
+    //   return; // handleClose를 취소함
+    // }
 
     // 조건을 만족하지 않으면 트리거 정보 업데이트
     dispatch(updateTriggerInfo({index: index, info: {...triggerInfo}}));

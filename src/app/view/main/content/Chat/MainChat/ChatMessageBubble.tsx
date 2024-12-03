@@ -1,4 +1,4 @@
-import {Avatar, Box} from '@mui/material';
+import {Avatar, Box, IconButton, Modal} from '@mui/material';
 import ChatMessageMenuTop from './ChatContextMenuTop';
 import ChatMessageMenuBottom from './ChatContextMenuBottom';
 import React, {useEffect, useState} from 'react';
@@ -8,10 +8,13 @@ import {MediaData, Message, MessageGroup, TriggerMediaState} from './ChatTypes';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-cards';
+import 'swiper/css/navigation';
 import {EffectCards} from 'swiper/modules';
 import ReactPlayer from 'react-player';
 import ReactAudioPlayer from 'react-audio-player';
-
+import {FreeMode, Navigation, Pagination} from 'swiper/modules';
+import ChatMediaDialog from './ChatMediaDialog';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 interface ChatMessageBubbleProps {
   text: string;
   sender: 'user' | 'partner' | 'partnerNarration' | 'system' | 'introPrompt' | 'userNarration' | 'media';
@@ -51,6 +54,21 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   const handleTtsClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     onTtsClick(e);
   };
+
+  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleMediaClick = () => {
+    if (
+      mediaData &&
+      (mediaData.mediaType === TriggerMediaState.TriggerVideo || mediaData.mediaType === TriggerMediaState.TriggerImage)
+    ) {
+      setModalOpen(true);
+    }
+  };
+
+  const closeModal = () => setModalOpen(false);
+
   //#region  사용 안하기로 기획 변경
   // const handleDeleteAnswer = () => {
   //   setAnswerTextMessage('');
@@ -174,14 +192,19 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
               {sender === 'media' && mediaData && mediaData.mediaType === TriggerMediaState.TriggerImage && (
                 <Swiper
                   effect={'cards'}
-                  grabCursor={true}
+                  grabCursor={false}
                   modules={[EffectCards]}
                   className={styles.mySwiper}
                   style={{
-                    width: '200px', // 원하는 가로 크기
+                    width: '100px', // 원하는 가로 크기
                     height: 'auto', // 원하는 세로 크기
                     marginLeft: '10%',
                   }}
+                  loop={false} // 루프 비활성화 (슬라이드가 끝나면 멈춤)
+                  freeMode={false} // 자유 모드 비활성화
+                  allowSlideNext={false} // 슬라이드 이동 방지
+                  allowSlidePrev={false} // 슬라이드 이동 방지
+                  onClick={handleMediaClick}
                 >
                   {mediaData.mediaUrlList.map((url, idx) => (
                     <SwiperSlide key={idx}>
@@ -198,21 +221,40 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
               {/* 비디오 출력 */}
               {sender === 'media' && mediaData && mediaData.mediaType === TriggerMediaState.TriggerVideo && (
                 <Box
-                  style={{
+                  sx={{
+                    position: 'relative',
                     width: '100%',
+                    height: 'auto', // 원하는 높이로 설정
                   }}
                 >
-                  <ReactPlayer
-                    muted={true}
-                    url={mediaData.mediaUrlList[0]} // 첫 번째 URL 사용
-                    playing={true}
-                    controls={true}
-                    width="70%" // 비율 유지하며 높이 자동 조정
-                    height="auto" // 비율 유지하며 높이 자동 조정
-                    style={{
-                      borderRadius: '8px',
+                  {/* ReactPlayer */}
+                  {mediaData && mediaData.mediaType === TriggerMediaState.TriggerVideo && (
+                    <ReactPlayer
+                      muted={true}
+                      url={mediaData.mediaUrlList[0]} // 첫 번째 URL 사용
+                      width="70%" // 비율 유지하며 너비 자동 조정
+                      height="auto" // 비율 유지하며 높이 자동 조정
+                      style={{
+                        borderRadius: '8px',
+                      }}
+                    />
+                  )}
+
+                  {/* Play 버튼 */}
+                  <IconButton
+                    onClick={handleMediaClick}
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '35%', // ReactPlayer width 70%를 고려하여 중앙에 배치
+                      transform: 'translate(-50%, -50%)', // 중앙 정렬
+                      color: 'white', // 아이콘 색상
+                      fontSize: 48, // 아이콘 크기
+                      zIndex: 10, // 다른 요소 위에 표시
                     }}
-                  />
+                  >
+                    <PlayCircleIcon fontSize="inherit" />
+                  </IconButton>
                 </Box>
               )}
               {/* 오디오 출력 */}
@@ -236,6 +278,18 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
         </Box>
       )}
       {/* {id === lastMessage.chatId && (sender === 'user' || sender === 'userNarration') && <ChatRegenerateGroupNav />} */}
+
+      {sender === 'media' &&
+        mediaData &&
+        (mediaData.mediaType === TriggerMediaState.TriggerVideo ||
+          mediaData.mediaType === TriggerMediaState.TriggerImage) && (
+          <ChatMediaDialog
+            mediaData={mediaData}
+            isModalOpen={isModalOpen}
+            closeModal={closeModal}
+            type={mediaData?.mediaType}
+          />
+        )}
     </>
   );
 };
