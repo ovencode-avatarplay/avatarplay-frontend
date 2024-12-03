@@ -79,6 +79,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
 
       // 최종 텍스트
       const parsedText = parts.map(part => part.replace(/\*/g, '')).join(' ');
+
       setParsedModifyText(parsedText);
     } else {
       setInputValues({main: ''});
@@ -142,6 +143,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   };
 
   const handleSendMessage = (messages: string) => {
+    if (message == '' || message == null) return;
     onLoading(true);
     if (!isRegeneratingQuestion) {
       onSend(messages);
@@ -164,6 +166,14 @@ const ChatBar: React.FC<ChatBarProps> = ({
 
   const handleKeyDownInternal = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && !event.shiftKey) {
+      if (message == '' || message == null) return;
+      const cleanedMessages = message
+        .replace(/⦿SYSTEM_CHAT⦿/g, '')
+        .replace(/\*/g, '')
+        .trim();
+      if (cleanedMessages == '' || cleanedMessages == null) return;
+
+      alert('sadadas');
       event.preventDefault();
       handleSendMessage(message);
     }

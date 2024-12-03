@@ -109,6 +109,13 @@ const FooterChat: React.FC<FooterChatProps> = ({
   };
   const handleSendMessage = async (messages: string) => {
     // 새 채팅을 보낼 수 없는 상태
+    if (messages == '' || messages == null) return;
+    const cleanedMessages = messages
+      .replace(/⦿SYSTEM_CHAT⦿/g, '')
+      .replace(/\*/g, '')
+      .trim();
+
+    if (cleanedMessages == '' || cleanedMessages == null) return;
     if (isSendingMessage.state === true) return;
     else isSendingMessage.state = true;
 
@@ -163,6 +170,12 @@ const FooterChat: React.FC<FooterChatProps> = ({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<Element>) => {
+    if (messages == '' || messages == null) return;
+    const cleanedMessages = messages
+      .replace(/⦿SYSTEM_CHAT⦿/g, '')
+      .replace(/\*/g, '')
+      .trim();
+    if (cleanedMessages == '' || cleanedMessages == null) return;
     if (event.key === 'Enter') {
       if (!event.shiftKey) {
         event.preventDefault();
