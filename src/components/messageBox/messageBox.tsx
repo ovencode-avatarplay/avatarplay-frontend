@@ -9,13 +9,14 @@ interface Button {
 }
 
 interface MessageBoxProps {
+  title: string;
   message: string;
   buttons?: Button[];
   onClose: () => void;
   buttonAlign?: 'flex-start' | 'center' | 'flex-end';
 }
 
-const MessageBox: React.FC<MessageBoxProps> = ({message, buttons = [], onClose, buttonAlign = 'center'}) => {
+const MessageBox: React.FC<MessageBoxProps> = ({title, message, buttons = [], onClose, buttonAlign = 'center'}) => {
   return (
     <div className={styles.overlay}>
       <div
@@ -24,6 +25,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({message, buttons = [], onClose, 
           width: message.length > 50 ? '400px' : '300px',
         }}
       >
+        <h2 className={styles.title}>{title}</h2>
         <p className={styles.message}>{message}</p>
         <div className={styles.buttons} style={{justifyContent: buttonAlign}}>
           {buttons.map((btn, index) => (

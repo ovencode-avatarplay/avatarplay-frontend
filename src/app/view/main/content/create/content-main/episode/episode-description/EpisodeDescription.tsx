@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography} from '@mui/material';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
@@ -13,7 +13,8 @@ import EpisodeConversationTemplate from '../episode-conversationtemplate/Episode
 
 import getLocalizedText from '@/utils/getLocalizedText';
 
-import MessageBox from '@/components/messageBox/messageBox';
+import MessageBox from '@/components/messageBox/MessageBox';
+import {string} from 'valibot';
 
 interface CharacterDataType {
   userId: number;
@@ -30,6 +31,11 @@ interface CharacterPopupProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: CharacterDataType) => void;
+}
+
+interface MessageBoxText {
+  title: string;
+  text: string;
 }
 
 export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
@@ -76,6 +82,13 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   const worldScenarioRef = useRef<HTMLInputElement | null>(null);
   const introductionRef = useRef<HTMLInputElement | null>(null);
   const secretRef = useRef<HTMLInputElement | null>(null);
+
+  const messageBoxText = useMemo(() => {
+    return {
+      title: getLocalizedText('SystemMessage', 'overwriteAlert_label_001'),
+      text: getLocalizedText('SystemMessage', 'overwriteAlert_desc_001'),
+    };
+  }, []);
 
   const openConversationModal = () => {
     setConversationModalOpen(true);
@@ -330,7 +343,8 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
       <EpisodeConversationTemplate open={isConversationModalOpen} closeModal={closeConversationModal} />
       {isMessageBoxOpen && (
         <MessageBox
-          message="필드에 이미 텍스트가 존재합니다. 내용을 덮어쓰시겠습니까?"
+          title={messageBoxText.title}
+          message={messageBoxText.text}
           onClose={handleCloseMessageBox}
           buttons={[
             {

@@ -66,7 +66,7 @@ const LanguageSelectDropBox: React.FC = () => {
   }, []);
 
   return (
-    <Box className={styles.languageSelectorContainer}>
+    <Box className={styles.languageSelectorContainer} sx={{marginRight: '30px', paddingLeft: '50px'}}>
       <InputLabel id="language-selector-label" className={styles.languageLabel}>
         Language
       </InputLabel>
