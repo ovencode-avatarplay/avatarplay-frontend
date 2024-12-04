@@ -13,6 +13,7 @@ import EpisodeConversationTemplate from '../episode-conversationtemplate/Episode
 
 import getLocalizedText from '@/utils/getLocalizedText';
 
+import MessageBox from '@/components/messageBox/MessageBox';
 import {string} from 'valibot';
 import MessageBox from '@/components/messageBox/MessageBox'; // 메시지박스
 
