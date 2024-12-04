@@ -70,7 +70,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
   const [characterIntroduction, setCharacterIntroduction] = useState<string>(currentCharacter.introduction || '');
   const [characterDescription, setCharacterDescription] = useState<string>(currentCharacter.description || '');
 
-  const [isPublishRequested, setIsPublishRequested] = useState<Boolean>(false);
+  const [isPublishRequested, setIsPublishRequested] = useState<boolean>(false);
   const handleDrawerVisibilityToggle = () => {
     setDrawerVisibilityOpen(!drawerVisibilityOpen);
   };

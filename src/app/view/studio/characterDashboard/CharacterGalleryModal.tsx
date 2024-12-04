@@ -76,8 +76,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   };
 
   const handleRegenerateItem = () => {
-    if (!selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
-    } else {
+    if (selectedItem[0] !== null && selectedItem[1] !== null && selectedItem[1] !== undefined) {
       if (selectedCategory === GalleryCategory.Portrait) setIsModifyOpen(true);
       else {
         setIsRegenerateOpen(true);
