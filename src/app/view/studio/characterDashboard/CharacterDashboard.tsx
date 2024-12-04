@@ -34,6 +34,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import CharacterGalleryModal from './CharacterGalleryModal';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const CharacterDashboard: React.FC = () => {
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
@@ -287,6 +288,8 @@ const CharacterDashboard: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <LoadingOverlay loading={loading} />
     </div>
   );
 };

@@ -44,6 +44,7 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 // Json
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import ContentLLMSetup from './content-LLMsetup/ContentLLMsetup';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
@@ -437,15 +438,18 @@ const ContentMain: React.FC = () => {
     setSaveData(tmp);
 
     try {
+      setLoading(true);
       const result = await sendContentSave(tmp);
       // console.log('Content saved successfully!');
       handleClosePublishing();
       Init();
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error('Error sending save content data:', error);
 
       // 실패 메시지
-      console.log('Failed to save content. Please try again.');
+      alert('Failed to save content.');
     }
   };
   //#endregion
@@ -570,6 +574,7 @@ const ContentMain: React.FC = () => {
         {/* EpisodeLLMSetup 모달 */}
         <ContentLLMSetup open={isLLMSetupOpen} onClose={handleCloseLLMSetup} />
       </main>
+      <LoadingOverlay loading={loading} />
     </>
   );
 };

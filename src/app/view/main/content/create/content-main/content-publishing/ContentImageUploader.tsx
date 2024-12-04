@@ -67,6 +67,8 @@ const ContentImageUpload: React.FC<Props> = ({
         dispatch(setThumbnail(imgUrl)); // Redux 상태 업데이트
 
         console.log('Image URLs:', response.data.imageUrlList); // 추가 이미지 URL 로그 출력
+
+        setDialogOpen(false);
       } else {
         throw new Error('Unexpected API response: No data');
       }

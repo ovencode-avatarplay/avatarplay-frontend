@@ -36,6 +36,7 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const ContentDashboard: React.FC = () => {
   const router = useRouter();
@@ -244,6 +245,7 @@ const ContentDashboard: React.FC = () => {
         onConfirm={handleConfirm}
         onClose={handleCloseDialog}
       />
+      <LoadingOverlay loading={loading} />
     </>
   );
 };

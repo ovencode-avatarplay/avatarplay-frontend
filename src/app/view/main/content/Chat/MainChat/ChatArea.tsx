@@ -10,6 +10,7 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import {retryStream, SendChatMessageReq} from '@/app/NetWork/ChatNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 interface ChatAreaProps {
   messages: MessageGroup;
   bgUrl: string;
@@ -49,6 +50,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({
 
   const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isRegeneratingQuestion);
 
+  const [loading, setloading] = useState(false);
+
   const handleBubbleClick = (index: number) => {
     if (selectedBubbleIndex === null) {
       setSelectedBubbleIndex(index);
@@ -58,7 +61,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   };
 
   const handlePlayAudio = async (text: string) => {
+    setloading(true);
     const url = await GenerateTtsUrl(text, 'defaultVoice');
+
+    setloading(false);
     setAudioUrl(url); // ChatTtsPlayer로 전달할 audioUrl 상태 업데이트
   };
 
@@ -136,6 +142,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
 
   return (
     <>
+      <LoadingOverlay loading={loading} />
       {isHideChat === false && (
         <Box
           className={styles.chatArea}

@@ -20,6 +20,7 @@ import CharacterGalleryCreate from './CharacterGalleryCreate';
 import CharacterGalleryViewer from './CharacterGalleryViewer';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import ModifyCharacterModal from './ModifyCharacterModal';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 interface CharacterGalleryModalProps {
   open: boolean;
@@ -55,6 +56,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   const [viewerOpen, setViewerOpen] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setloading] = useState(false);
 
   const handleOnClose = () => {
     onClose();
@@ -217,7 +219,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
         };
 
         const response = await sendDeleteGallery(req);
-
+        setloading(true);
         if (response.data) {
           console.log('Image deleted successfully:', galleryImageId);
 
@@ -255,6 +257,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     } else {
       console.error('Selected item is invalid:', selectedItem);
     }
+    setloading(false);
   };
 
   const handleImageSelect = (category: GalleryCategory, index: number) => {
@@ -370,6 +373,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
             {errorMessage}
           </Alert>
         </Snackbar>
+        <LoadingOverlay loading={loading} />
       </Box>
     </Modal>
   );

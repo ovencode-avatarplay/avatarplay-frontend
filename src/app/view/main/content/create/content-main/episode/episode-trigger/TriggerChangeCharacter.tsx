@@ -15,6 +15,7 @@ import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork
 import EpisodeTempCharacter from '../episode-ImageCharacter/EpisodeTempCharacter';
 import EpisodeStarringCharacter from '../episode-ImageCharacter/EpisodeStarringCharacter';
 import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 interface TriggerChangeCharacterProps {
   triggerInfo: TriggerInfo;
@@ -147,6 +148,8 @@ const TriggerChangeCharacter: React.FC<TriggerChangeCharacterProps> = ({triggerI
       <Typography variant="body2" color="textSecondary">
         {characterInfo?.description}
       </Typography>
+
+      <LoadingOverlay loading={loading} />
     </div>
   );
 };
