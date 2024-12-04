@@ -1,6 +1,6 @@
 'use client';
 
-import React, {ReactNode} from 'react';
+import React from 'react';
 
 import StudioTopMenu from './StudioTopMenu';
 import {Box} from '@mui/material';

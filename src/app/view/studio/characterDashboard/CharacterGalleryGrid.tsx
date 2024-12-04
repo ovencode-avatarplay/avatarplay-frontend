@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Box, Button, Typography} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import styles from './CharacterGalleryGrid.module.css';

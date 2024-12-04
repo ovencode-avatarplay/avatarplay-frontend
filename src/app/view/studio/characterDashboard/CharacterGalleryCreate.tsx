@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Typography, Slider, Button} from '@mui/material';
+import {Box, Typography, Button} from '@mui/material';
 import CurrencyIcon from '@mui/icons-material/AttachMoney';
 import styles from './CharacterGalleryCreate.module.css';
 import {Swiper, SwiperSlide} from 'swiper/react';

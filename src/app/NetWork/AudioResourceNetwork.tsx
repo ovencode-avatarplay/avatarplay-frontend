@@ -28,7 +28,7 @@ export const sendGenerateAudio = async (payload: GenerateAudioReq): Promise<Gene
     } else {
       throw new Error(`GenerateTts Error: ${response.status}`);
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error GenerateTts:', error);
     throw new Error('Audio generation failed');
   }

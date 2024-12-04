@@ -29,7 +29,7 @@ const DrawerContentEpisodeItemList: React.FC<DrawerContentEpisodeItemListProps> 
         slidesPerView={1}
         onSlideChange={handleSlideChange} // 슬라이드 변경 시 handleSlideChange를 호출합니다.
       >
-        {episodes.map((episode, index) => (
+        {episodes.map(episode => (
           <SwiperSlide key={episode.episodeId}>
             <ContentEpisodeItem
               episodeId={episode.episodeId}

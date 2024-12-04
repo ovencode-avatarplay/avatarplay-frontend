@@ -171,12 +171,6 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
     }
   };
 
-  const handleSelect = () => {
-    let url = generatedOptions?.imageUrl[selectedOptions.result];
-
-    handleClose();
-  };
-
   const handleCustomToggle = () => {
     setCustomClothesActive(!customClothesActive);
   };
@@ -641,7 +635,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
             <Box>
               <Typography variant="h6">Summary</Typography>
               <Box className={styles.gridContainer}>
-                {summaryOptions.map((option, index) => (
+                {summaryOptions.map(option => (
                   <Box key={option.key} className={styles.summaryItem}>
                     <Box
                       className={styles.summaryImage}

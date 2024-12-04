@@ -2,7 +2,6 @@
 
 import {LLMSetupInfo, PublishInfo} from './ContentInfo';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {number} from 'valibot';
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
 const initialState: PublishInfo = emptyContent.data.contentInfo.publishInfo;

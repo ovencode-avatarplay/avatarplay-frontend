@@ -31,7 +31,7 @@ export const sendGetPromptTemplate = async () => {
   try {
     const response = await api.post(`/DemoChat/getPromptTemplate`);
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error('Failed to fetch prompt template');
   }
 };
@@ -56,7 +56,7 @@ export const sendChatPromptTemplateData = async (
     } else {
       throw new Error('SetChatPromptTemplateRes' + response.data.resultCode); // 실패 메시지 처리
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error sending character data:', error);
     throw new Error('Failed to send character data. Please try again.'); // 에러 처리
   }

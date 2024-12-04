@@ -17,7 +17,7 @@ export const sendGetCharacterList = async (payload: {}): Promise<ResponseAPI<Get
     } else {
       throw new Error(`GetCharacterListRes Error : ${response.data.resultCode}`);
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error sending get character list :', error);
     throw new Error('Failed to send get character list data. Please try again.');
   }
@@ -43,7 +43,7 @@ export const sendCreateCharacter = async (payload: CreateCharacterReq): Promise<
     } else {
       throw new Error(`CreateCharacterRes Error : ${response.data.resultCode}`);
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error sending create character :', error);
     throw new Error('Failed to send create character. Please try again.');
   }
@@ -66,7 +66,7 @@ export const sendDeleteCharacter = async (payload: DeleteCharacterReq): Promise<
     } else {
       throw new Error(`DeleteCharacterRes Error : ${response.data.resultCode}`);
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error sending delete character :', error);
     throw new Error('Failed to send delete character. Please try again.');
   }
@@ -91,7 +91,7 @@ export const sendGetCharacterInfo = async (payload: GetCharacterInfoReq): Promis
     } else {
       throw new Error(`GetChracterRes Error : ${response.data.resultCode}`);
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error sending get character : ', error);
     throw new Error('Failed to send get character. Please try again');
   }
@@ -117,7 +117,7 @@ export const sendSaveGallery = async (payload: SaveGalleryReq): Promise<Response
     } else {
       throw new Error(`SaveGallery Error : ${response.data.resultCode}`);
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error save gallery :', error);
     throw new Error('Failed to send save gallery. Please try again');
   }
@@ -140,7 +140,7 @@ export const sendDeleteGallery = async (payload: DeleteGalleryReq): Promise<Resp
     } else {
       throw new Error(`DeleteGallery Error : ${response.data.resultCode}`);
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error delete gallery :', error);
     throw new Error('Failed to send delete gallery. Please try again');
   }
