@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Box, IconButton, Typography} from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';

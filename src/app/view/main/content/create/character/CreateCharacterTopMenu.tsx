@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 
-import {Box, TextField, IconButton} from '@mui/material';
+import {Box, IconButton} from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import StudioIcon from '@mui/icons-material/VideoLibrary';
 import styles from './CreateCharacterTopMenu.module.css';

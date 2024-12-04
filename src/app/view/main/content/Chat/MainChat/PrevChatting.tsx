@@ -1,23 +1,9 @@
 import {useState, useEffect} from 'react';
-import {
-  EnterEpisodeChattingReq,
-  UrlEnterEpisodeChattingReq,
-  EnterEpisodeChattingRes,
-  sendChattingEnter,
-  sendChattingEnterUrl,
-} from '@/app/NetWork/ChatNetwork';
+import {UrlEnterEpisodeChattingReq, EnterEpisodeChattingRes, sendChattingEnterUrl} from '@/app/NetWork/ChatNetwork';
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
-import {
-  ChattingState,
-  setContentId,
-  setContentName,
-  setEpisodeId,
-  setEpisodeName,
-  setStateChatting,
-} from '@/redux-store/slices/Chatting';
+import {setContentId, setContentName, setEpisodeId, setEpisodeName} from '@/redux-store/slices/Chatting';
 import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 
 const usePrevChatting = (

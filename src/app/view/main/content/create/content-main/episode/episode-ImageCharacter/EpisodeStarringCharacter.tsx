@@ -1,16 +1,8 @@
 import React, {useState} from 'react';
 import styles from './EpisodeStarringCharacter.module.css'; // CSS Module import
-import {Dialog, DialogTitle, Button, IconButton, Box, Typography} from '@mui/material';
+import {Dialog, DialogTitle, Button} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import {useDispatch} from 'react-redux'; // Redux useDispatch import
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
-import LoadingOverlay from '@/components/create/LoadingOverlay';
-import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
-import {Height} from '@mui/icons-material';
-import EpisodeUploadCharacter from './EpisodeUploadCharacter';
+
 import EpisodeCharacter from './EpisodeCharacter';
 import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 
@@ -27,7 +19,6 @@ const EpisodeStarringCharacter: React.FC<EpisodeStarringCharacterProps> = ({
   isTrigger,
   setTriggerInfo,
 }) => {
-  const dispatch = useDispatch(); // Redux dispatch hook 사용
   const [currentStep, setCurrentStep] = useState<number>(1); // 현재 스텝 관리
   const handleBack = () => {
     if (currentStep > 1) {

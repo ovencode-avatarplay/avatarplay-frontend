@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useState, useEffect, useRef, useMemo} from 'react';
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography} from '@mui/material';
+import {Button, Dialog, DialogContent, DialogTitle, TextField, Typography} from '@mui/material';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
@@ -31,11 +31,6 @@ interface CharacterPopupProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: CharacterDataType) => void;
-}
-
-interface MessageBoxText {
-  title: string;
-  text: string;
 }
 
 export const EpisodeDescription: React.FC<CharacterPopupProps> = ({

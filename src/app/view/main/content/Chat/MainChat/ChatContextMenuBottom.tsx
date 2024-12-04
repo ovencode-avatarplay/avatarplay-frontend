@@ -1,17 +1,13 @@
 import React, {useState} from 'react';
-import {Box, Button, Snackbar, TextField} from '@mui/material';
+import {Box, Button, Snackbar} from '@mui/material';
 
-import {RootState} from '@/redux-store/ReduxStore';
 import {useDispatch} from 'react-redux';
 
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import DeleteIcon from '@mui/icons-material/Delete';
 import ReplayIcon from '@mui/icons-material/Replay';
 import styles from '../Styles/ChatMessageMenu.module.css';
-import {DeleteChatReq, deleteChatting, ModifyChatReq, modifyChatting} from '@/app/NetWork/ChatNetwork';
-import getLocalizedText from '@/utils/getLocalizedText';
-import {setIsRegeneratingQuestion, setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
+import {setIsRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 
 interface ChatContextTopProps {
   text: string;
@@ -35,11 +31,6 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
   const dispatch = useDispatch();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-
-  //#region 기획상 사용 안함
-  const [modifyTextOpen, setModifyTextOpen] = useState(false);
-  // const [modifiedText, setModifiedText] = useState(text);
-  //#endregion
 
   const [modifyQuestionOpen, setModifyQuestionOpen] = useState(false);
 
@@ -106,12 +97,6 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
     event.stopPropagation();
     setModifyQuestionOpen(!modifyQuestionOpen);
     dispatch(setIsRegeneratingQuestion(true));
-  };
-
-  const handleRegenerateAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-
-    // dispatch(setIsRegeneratingQuestion(true));
   };
 
   const handleSnackbarClose = () => {

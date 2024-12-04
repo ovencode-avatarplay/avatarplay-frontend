@@ -2,8 +2,6 @@ import React, {useState} from 'react';
 import {Box, Typography, IconButton, Container, Avatar, Card} from '@mui/material';
 import {FavoriteBorder, ChatBubbleOutline, ArrowForwardIos} from '@mui/icons-material';
 import MoreVert from '@mui/icons-material/MoreVert';
-import {useDispatch} from 'react-redux';
-import {setDrawerEpisodeId} from '@/redux-store/slices/DrawerContentDescSlice';
 import styles from './ReelsContent.module.css';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
@@ -26,7 +24,6 @@ interface ReelsContentProps {
 
 const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
   const [isTextExpanded, setIsTextExpanded] = useState(false);
-  const dispatch = useDispatch();
 
   const handleOpenDrawer = () => {
     // dispatch(setDrawerEpisodeId(String(item.link)));

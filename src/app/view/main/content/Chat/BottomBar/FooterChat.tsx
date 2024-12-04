@@ -6,27 +6,17 @@ import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import styles from '@chats/BottomBar/FooterChat.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {
-  SendChatMessageReq,
-  sendMessageStream,
-  EmoticonGroupInfo,
-  SendChatMessageResSuccess,
-  SendChatMessageResError,
-} from '@/app/NetWork/ChatNetwork';
+import {SendChatMessageReq} from '@/app/NetWork/ChatNetwork';
 import Sticker from './Sticker';
 import EmojiOverlayPopup from './EmojiOverlayPopup';
 import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
 import ChatBar from './ChatBar';
-import NotEnoughRubyPopup from '../MainChat/NotEnoughRubyPopup';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
-import {ChattingCheatRes} from '@/app/NetWork/CheatNetwork';
-import getLocalizedText from '@/utils/getLocalizedText';
 interface FooterChatProps {
   onSend: (message: string, isMyMessage: boolean, isClearString: boolean) => void;
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   streamKey: string;
   setStreamKey: (key: string) => void;
-  EmoticonData?: EmoticonGroupInfo[];
   isHideChat: boolean;
   onToggleBackground: () => void;
   onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
@@ -41,7 +31,6 @@ interface FooterChatProps {
 const FooterChat: React.FC<FooterChatProps> = ({
   onSend,
   send,
-  EmoticonData,
   onToggleBackground,
   isHideChat,
   onLoading,
@@ -124,7 +113,6 @@ const FooterChat: React.FC<FooterChatProps> = ({
       isSendingMessage.state = false;
       return;
     }
-
     const messageText = messages ? messages : '';
 
     // 선택된 이모티콘이 있으면 이미지 요소로 생성

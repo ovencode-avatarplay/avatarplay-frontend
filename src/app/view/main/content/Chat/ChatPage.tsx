@@ -12,15 +12,11 @@ import usePrevChatting from '@chats/MainChat/PrevChatting';
 import {useBackHandler} from 'utils/util-1';
 
 import {
-  setSenderType,
   cleanString,
   isFinishMessage,
-  isPartnerNarration,
-  isSystemMessage,
   isUserNarration,
   parsedUserNarration,
   parseMessage,
-  splitByNarration,
   isAnotherSenderType,
   isSameSenderType,
   cleanStringFinal,
@@ -39,11 +35,10 @@ import {
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
-import {COMMAND_SYSTEM, MediaData, Message, MessageGroup, SenderType, TriggerMediaState} from './MainChat/ChatTypes';
+import {MediaData, Message, MessageGroup, SenderType, TriggerMediaState} from './MainChat/ChatTypes';
 import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
-import {modifyQuestionSlice, setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
-import {error} from 'console';
+import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import ChatFloatingArea from './MainChat/ChatFloatingArea';
 
 const ChatPage: React.FC = () => {
@@ -65,7 +60,6 @@ const ChatPage: React.FC = () => {
   const [nextPopupData, setNextPopupData] = useState<ChattingResultData>();
 
   const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false); // 로딩 상태 추가
-  const [ChattingState, setChatInfo] = useState<ChattingState>();
   const [isReqPrevCheat, setReqPrevCheat] = useState<boolean>(false); // 치트키로 애피소드 초기화.
   const [isRenderComplete, setRenderComplete] = useState<boolean>(false);
   const [characterImageUrl, setCharacterImageUrl] = useState<string | undefined>('');
@@ -86,7 +80,6 @@ const ChatPage: React.FC = () => {
     sender: SenderType.System,
   });
 
-  const chatInfo = useSelector((state: RootState) => state);
   const handleBackClick = useBackHandler();
   const dispatch = useDispatch();
   // useEffect(() => {}, [isLoading]);
@@ -421,13 +414,6 @@ const ChatPage: React.FC = () => {
     const updatedMessages = func(parsedMessagesRef.current);
     setParsedMessages(updatedMessages);
     parsedMessagesRef.current = updatedMessages;
-  };
-
-  // 파싱 테스트를 위한 함수임..
-  const test = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
-    message =
-      '레인은 당신의 짧은 대답에 미묘하게 눈썹을 치켜올립니다. 그의 입가에 희미한 비웃음이 스칩니다. 그의 눈빛은 여전히 날카롭고 탐색적입니다."그렇군요. 말씀이 없으시네요." 그가 천천히 당신 주위를 한바퀴 돌며 말을 이어갑니다';
-    handleSendMessage(message, false, true);
   };
 
   //#endregion

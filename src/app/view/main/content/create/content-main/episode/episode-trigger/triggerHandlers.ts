@@ -1,6 +1,6 @@
 import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 import {getSubDataOptionsForMainData} from './triggerDataUtils';
-import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/DataTypes';
+import {TriggerSubDataType} from '@/types/apps/DataTypes';
 import {SelectChangeEvent} from '@mui/material';
 
 export const handleMainDataChange = (

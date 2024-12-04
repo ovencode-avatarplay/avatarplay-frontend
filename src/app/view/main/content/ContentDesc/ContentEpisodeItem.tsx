@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styles from './ContentEpisodeItem.module.css';
 import {Box, Typography} from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';

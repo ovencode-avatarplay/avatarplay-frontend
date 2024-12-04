@@ -35,7 +35,7 @@ export const sendGetHomeFeedShorts = async (): Promise<{
       console.error(`Error: ${resultMessage}`);
       return {resultCode, resultMessage, data: null};
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Failed to fetch shorts info:', error);
     return {resultCode: -1, resultMessage: 'Failed to fetch shorts info', data: null};
   }

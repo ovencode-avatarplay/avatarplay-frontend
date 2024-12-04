@@ -1,14 +1,11 @@
 import React, {useState} from 'react';
 import {Box, Typography, IconButton, MenuItem, Select, FormControl, InputLabel, SelectChangeEvent} from '@mui/material';
-import {ArrowBackIos} from '@mui/icons-material';
 import styles from './PlayMediaComponent.module.css';
-import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CloseIcon from '@mui/icons-material/Close';
 import ImagesUploadDialog from '@/components/layout/shared/ImagesUploadDialog';
 import VideoUploadDialog from '@/components/layout/shared/VideoUploadDialog';
-import {constrainedMemory} from 'process';
 import ReactPlayer from 'react-player';
 import ReactAudioPlayer from 'react-audio-player';
 import AudioUploadDialog from '@/components/layout/shared/AudioUploadDialog';

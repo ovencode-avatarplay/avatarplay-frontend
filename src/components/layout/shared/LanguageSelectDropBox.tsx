@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 
 import {Select, MenuItem, FormControl, InputLabel, SelectChangeEvent, Box} from '@mui/material';
 import styles from './LanguageSelectDropBox.module.css';

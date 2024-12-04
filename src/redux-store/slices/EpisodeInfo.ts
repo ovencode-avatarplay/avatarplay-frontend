@@ -4,13 +4,7 @@ import {Conversation} from '@/types/apps/content/episode/Conversation';
 
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
-import {
-  ConversationTalkInfoList,
-  ConversationTalkInfo,
-  ConversationPriortyType,
-  ConversationTalkType,
-} from '@/types/apps/DataTypes';
-import {boolean} from 'valibot';
+import {ConversationTalkInfo, ConversationPriortyType, ConversationTalkType} from '@/types/apps/DataTypes';
 
 export interface EpisodeInfo {
   id: number;

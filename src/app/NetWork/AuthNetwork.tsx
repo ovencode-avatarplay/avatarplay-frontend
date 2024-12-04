@@ -27,7 +27,7 @@ export const sendGetLanguage = async (payload: GetLanguageReq): Promise<Response
     } else {
       throw new Error(`GetLanguage Error : ${response.data.resultCode}`);
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error get language :', error);
     throw new Error('Failed to send get language. Please try again');
   }
@@ -50,7 +50,7 @@ export const changeLanguage = async (payload: ChangeLanguageReq): Promise<Respon
     } else {
       throw new Error(`ChangeLanguage Error : ${response.data.resultCode}`);
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error change language : ', error);
     throw new Error('Failed to send change language. Please try again');
   }

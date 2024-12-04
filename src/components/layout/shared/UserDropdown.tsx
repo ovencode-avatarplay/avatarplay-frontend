@@ -6,7 +6,6 @@ import type {MouseEvent} from 'react';
 import {useParams, useRouter} from 'next/navigation';
 
 // MUI Imports
-import {styled} from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import Popper from '@mui/material/Popper';
@@ -21,12 +20,10 @@ import Button from '@mui/material/Button';
 import styles from './UserDropdown.module.css';
 
 // Type Imports
-import type {Locale} from '@configs/i18n';
 import {createClient, Session} from '@supabase/supabase-js';
 import {supabase} from 'utils/supabaseClient';
-import {getLocalizedUrl} from '@/utils/i18n';
 import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
-import {Drawer, FormControl, InputLabel, Select, SelectChangeEvent} from '@mui/material';
+import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
 import LanguageSelectDropBox from './LanguageSelectDropBox';
 
@@ -46,7 +43,6 @@ const UserDropdown = () => {
   // Hooks
   const router = useRouter();
   const {settings} = {settings: {skin: null}};
-  const {lang: locale} = useParams();
 
   const handleDropdownOpen = async () => {
     const session = await supabase.auth.getSession();

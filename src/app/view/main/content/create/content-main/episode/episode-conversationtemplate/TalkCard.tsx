@@ -38,8 +38,6 @@ const TalkCard: React.FC<TalkCardProps> = ({
   priorities,
   onChange,
   onDelete,
-  updateUserTalk,
-  updateCharacterTalk,
   triggerIndex: triggerIndex = -1, // 기본값은 -1
 }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -47,8 +45,6 @@ const TalkCard: React.FC<TalkCardProps> = ({
   const [isExpanded, setIsExpanded] = useState(true);
   const [talkCardDialogOpen, setTalkCardDialogOpen] = useState(false);
   const [inputCardDialogOpen, setInputCardDialogOpen] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
-
   // Redux에서 초기 값을 가져오기
   const initialUserInputCards = useSelector((state: RootState) => {
     const userString = isFromChangeBehaviour
