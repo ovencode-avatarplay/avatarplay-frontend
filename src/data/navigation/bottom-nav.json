@@ -1,7 +1,7 @@
 [
     { "label": "Home", "icon": "<HomeIcon />" , "link" : "/:lang/main/homefeed"},
     { "label": "Explore", "icon": "<ExploreIcon />" , "link" : "/:lang/main/explore"},
-    { "label": "Create", "icon": "<CreateIcon />" , "link" : "/:lang/create/story"},
+    { "label": "Reward", "icon": "<RewardIcon />" , "link" : "/:lang/main/game"},
     { "label": "Content", "icon": "<ContentIcon />" , "link" : "/:lang/main/mycontent"},
-    { "label": "Game", "icon": "<GameIcon />" , "link" : "/:lang/main/game"}
+    { "label": "My", "icon": "<MyProfileIcon />" , "link" : "/:lang/profile"}
 ]
