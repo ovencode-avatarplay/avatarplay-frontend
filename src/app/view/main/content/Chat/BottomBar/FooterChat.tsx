@@ -6,7 +6,7 @@ import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import styles from '@chats/BottomBar/FooterChat.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {SendChatMessageReq} from '@/app/NetWork/ChatNetwork';
+import {SendChatMessageReq, EmoticonGroupInfo} from '@/app/NetWork/ChatNetwork';
 import Sticker from './Sticker';
 import EmojiOverlayPopup from './EmojiOverlayPopup';
 import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
@@ -22,6 +22,8 @@ interface FooterChatProps {
   onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
   onUpdateChatBarCount: (count: number) => void; // 추가된 prop
   onReqPrevChatting: (isEnter: boolean) => void;
+  EmoticonData?: EmoticonGroupInfo[];
+
   isSendingMessage: {
     state: boolean;
   };
@@ -33,6 +35,8 @@ const FooterChat: React.FC<FooterChatProps> = ({
   send,
   onToggleBackground,
   isHideChat,
+  EmoticonData,
+
   onLoading,
   onUpdateChatBarCount,
   onReqPrevChatting,
