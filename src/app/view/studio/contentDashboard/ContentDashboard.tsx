@@ -1,17 +1,17 @@
 'use client';
 
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useDispatch} from 'react-redux';
-import {useSelector} from 'react-redux';
-import {RootState} from '@/redux-store/ReduxStore';
 import {ContentInfo, setContentInfoToEmpty, setEditingContentInfo} from '@/redux-store/slices/ContentInfo';
 import {setCurrentEpisodeInfo, setEpisodeInfoEmpty} from '@/redux-store/slices/EpisodeInfo';
 import {
   setSelectedChapterIdx,
   setSelectedContentId,
   setSelectedEpisodeIdx,
+  setSkipContentInit,
 } from '@/redux-store/slices/ContentSelection';
+import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
 
 // Component
 import StudioTopMenu from '../StudioDashboardMenu';
@@ -33,7 +33,10 @@ import {
   sendContentDelete,
 } from '@/app/NetWork/ContentNetwork';
 import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/MyContentDashboard';
-import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
+
+import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
+import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const ContentDashboard: React.FC = () => {
   const router = useRouter();
@@ -42,8 +45,13 @@ const ContentDashboard: React.FC = () => {
 
   const [selectedFilter, setSelectedFilter] = useState('filter1');
 
+  const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
+
   const [loading, setLoading] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
@@ -91,6 +99,7 @@ const ContentDashboard: React.FC = () => {
 
           await Promise.race([GetContentByContentId(selectedItemId), timeout]);
 
+          dispatch(setSkipContentInit(true));
           dispatch(setSelectedContentId(selectedItemId));
 
           dispatch(setSelectedChapterIdx(0));
@@ -106,6 +115,26 @@ const ContentDashboard: React.FC = () => {
       router.push(`/${currentLang}/create/story`);
     }
   };
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    setConfirmed(true);
+  };
+
+  useEffect(() => {
+    if (confirmed) {
+      handleDeleteClick();
+      setDialogOpen(false);
+      setConfirmed(false);
+    }
+  }, [confirmed]);
 
   // DashBoard 에서 선택한 컨텐츠를 Id로 가져옴 (CreateContent사이클 (Chapter, Episode 편집) 에서 사용하기 위함)
   const GetContentByContentId = async (contentId: number) => {
@@ -138,7 +167,7 @@ const ContentDashboard: React.FC = () => {
     console.log('Gallery button clicked');
   };
 
-  const handleDelete = async () => {
+  const handleDeleteClick = async () => {
     if (selectedItemId !== null) {
       if (selectedItemId) {
         try {
@@ -149,7 +178,7 @@ const ContentDashboard: React.FC = () => {
             // console.log('삭제된 콘텐츠 ID:', response.data.contentId);
 
             // 삭제 후 콘텐츠 목록 새로고침
-            await getContentsByUserId;
+            await getContentsByUserId();
 
             // 선택된 인덱스 초기화
             setSelectedItemId(null);
@@ -173,11 +202,11 @@ const ContentDashboard: React.FC = () => {
 
   const handleCreateClick = () => {
     dispatch(setContentInfoToEmpty());
+    dispatch(setPublishInfo(emptyContentInfo.publishInfo));
     dispatch(setEpisodeInfoEmpty());
     dispatch(setSelectedContentId(0));
     dispatch(setSelectedChapterIdx(0));
     dispatch(setSelectedEpisodeIdx(0));
-
     const currentLang = searchParam.get(':lang') || 'en';
     router.push(`/${currentLang}/create/story`);
   };
@@ -191,21 +220,33 @@ const ContentDashboard: React.FC = () => {
   const buttons = [
     {icon: <EditIcon />, text: 'Edit', onClick: handleEdit},
     {icon: <PreviewIcon />, text: 'Preview', onClick: handlePreview},
-    {icon: <DeleteIcon />, text: 'Delete', onClick: handleDelete},
+    {icon: <DeleteIcon />, text: 'Delete', onClick: handleOpenDialog},
   ];
 
   return (
-    <div className={styles.dashboard}>
-      <StudioTopMenu icon={<AutoStoriesIcon />} text="Story" />
-      <StudioFilter
-        filters={filters}
-        selectedFilter={selectedFilter}
-        onFilterChange={handleFilterChange}
-        onCreateClick={handleCreateClick}
+    <>
+      <div className={styles.dashboard}>
+        <StudioTopMenu icon={<AutoStoriesIcon />} text="Story" />
+        <StudioFilter
+          filters={filters}
+          selectedFilter={selectedFilter}
+          onFilterChange={handleFilterChange}
+          onCreateClick={handleCreateClick}
+        />
+        <ContentList onSelect={handleSelectItem} />
+        <ContentDashboardFooter buttons={buttons} />
+      </div>
+      <ConfirmationDialog
+        title="Discard Content?"
+        content="Data will be disappeared. Are you sure?"
+        cancelText="Cancel"
+        confirmText="Okay"
+        open={dialogOpen}
+        onConfirm={handleConfirm}
+        onClose={handleCloseDialog}
       />
-      <ContentList onSelect={handleSelectItem} />
-      <ContentDashboardFooter buttons={buttons} />
-    </div>
+      <LoadingOverlay loading={loading} />
+    </>
   );
 };
 

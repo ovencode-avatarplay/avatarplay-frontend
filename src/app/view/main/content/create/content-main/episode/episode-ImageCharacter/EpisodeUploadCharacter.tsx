@@ -4,7 +4,6 @@ import {styled} from '@mui/system';
 import SpeedDial from '@mui/material/SpeedDial';
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
-
 import styles from './EpisodeImageUpload.module.css';
 
 import {useDispatch, useSelector} from 'react-redux';
@@ -14,6 +13,8 @@ import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import EpisodeStarringArtist from './EpisodeStarringCharacter';
 import EpisodeTempArtist from './EpisodeTempCharacter';
+import EpisodeStarringCharacter from './EpisodeStarringCharacter';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const EpisodeUploadCharacter: React.FC = () => {
   const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
@@ -118,9 +119,11 @@ const EpisodeUploadCharacter: React.FC = () => {
         />
         {openTempArtist && <EpisodeTempArtist open={openTempArtist} closeModal={() => onClickTempArtist(false)} />}
         {openSelectArtist && (
-          <EpisodeStarringArtist open={openSelectArtist} closeModal={() => onClickSelectArtist(false)} />
+          <EpisodeStarringCharacter open={openSelectArtist} closeModal={() => onClickSelectArtist(false)} />
         )}
       </Box>
+
+      <LoadingOverlay loading={loading} />
     </div>
   );
 };

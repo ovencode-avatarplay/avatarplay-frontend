@@ -26,6 +26,7 @@ export interface CharacterInfo {
   id: number;
   name: string;
   introduction: string;
+  description: string;
   genderType: number;
   mainImageUrl: string;
   portraitGalleryImageUrl: GalleryImageInfo[];
@@ -191,6 +192,7 @@ const episodeInfoSlice = createSlice({
         conversationIndex: number;
         itemIndex: number;
         type: 'user' | 'character';
+        newType: ConversationTalkType;
         newTalk: string;
       }>,
     ) => {
@@ -213,11 +215,13 @@ const episodeInfoSlice = createSlice({
 
         if (action.payload.type === 'user') {
           if (userArray[action.payload.itemIndex]) {
+            userArray[action.payload.itemIndex].type = action.payload.newType;
             userArray[action.payload.itemIndex].talk = action.payload.newTalk;
             conversation.user = JSON.stringify(userArray);
           }
         } else if (action.payload.type === 'character') {
           if (characterArray[action.payload.itemIndex]) {
+            characterArray[action.payload.itemIndex].type = action.payload.newType;
             characterArray[action.payload.itemIndex].talk = action.payload.newTalk;
             conversation.character = JSON.stringify(characterArray);
           }
@@ -340,6 +344,7 @@ const episodeInfoSlice = createSlice({
         conversationIndex: number;
         itemIndex: number;
         type: 'user' | 'character';
+        newType: ConversationTalkType;
         newTalk: string;
       }>,
     ) => {
@@ -364,11 +369,13 @@ const episodeInfoSlice = createSlice({
 
           if (action.payload.type === 'user') {
             if (userArray[action.payload.itemIndex]) {
+              userArray[action.payload.itemIndex].type = action.payload.newType;
               userArray[action.payload.itemIndex].talk = action.payload.newTalk;
               conversation.user = JSON.stringify(userArray);
             }
           } else if (action.payload.type === 'character') {
             if (characterArray[action.payload.itemIndex]) {
+              characterArray[action.payload.itemIndex].type = action.payload.newType;
               characterArray[action.payload.itemIndex].talk = action.payload.newTalk;
               conversation.character = JSON.stringify(characterArray);
             }

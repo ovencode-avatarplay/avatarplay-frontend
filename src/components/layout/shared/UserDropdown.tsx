@@ -26,14 +26,16 @@ import {createClient, Session} from '@supabase/supabase-js';
 import {supabase} from 'utils/supabaseClient';
 import {getLocalizedUrl} from '@/utils/i18n';
 import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
-import {Drawer} from '@mui/material';
+import {Drawer, FormControl, InputLabel, Select, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
+import LanguageSelectDropBox from './LanguageSelectDropBox';
 
 const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<Session | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(0);
 
   // 임시 - UserInfo Modal
   const [userInfoOpen, setUserInfoOpen] = useState<boolean>(false);
@@ -69,6 +71,10 @@ const UserDropdown = () => {
       return;
     }
     setDrawerOpen(open);
+  };
+
+  const handleLanguageChange = (event: SelectChangeEvent<number>) => {
+    setSelectedLanguage(Number(event.target.value));
   };
 
   useEffect(() => {
@@ -210,6 +216,7 @@ const UserDropdown = () => {
               <Typography color="text.primary">Story</Typography>
             </MenuItem>
           </Link>
+          <LanguageSelectDropBox />
         </MenuList>
         <Popper
           open={open}

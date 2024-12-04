@@ -1,9 +1,9 @@
 // src/app/Network/ChatNetwork.tsx
 
-import {boolean} from 'valibot';
 import api, {ResponseAPI} from './ApiInstance';
 import chatEmojiTempData from '@/data/temp/chat-emoji-temp-data.json';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 // 채팅 Send ##########################################
 // Chat Data Interfaces
 export interface SendChatMessageReq {
@@ -183,6 +183,8 @@ export interface MessageInfo {
   characterName: string;
   message: string;
   emoticonUrl: string;
+  triggerMediaState: number;
+  mediaUrlList: string[];
   createAt: Date;
 }
 
@@ -200,9 +202,10 @@ export interface UrlEnterEpisodeChattingReq {
 export interface EnterEpisodeChattingRes {
   contentId: number;
   episodeId: number;
+  nextEpisodeId: number;
   contentName: string;
   episodeName: string;
-  iconImageUrl: string;
+  characterImageUrl: string;
   episodeBgImageUrl: string;
   introPrompt: string;
   prevMessageInfoList: MessageInfo[];
@@ -217,7 +220,7 @@ export const sendChattingEnter = async (
 
     if (response.data.resultCode === 0) {
       const responseData = response.data.data as EnterEpisodeChattingRes;
-
+      console.log('enterData', response.data.data);
       // emoticonGroupInfoList가 null일 경우 임시 데이터를 사용
       // if (!responseData.emoticonGroupInfoList) {
       //   responseData.emoticonGroupInfoList = chatEmojiTempData.emoticonGroupInfoList;
@@ -267,13 +270,22 @@ export interface ChattingResultReq {
   streamKey: string;
 }
 
+export interface ChattingCharacterData {
+  name: string;
+  introduction: string;
+  description: string;
+  imageUrl: string;
+}
+
 export interface ChattingResultData {
   nextChapterId: number;
   nextEpisodeId: number;
   nextEpisodeName: string;
   nextEpisodeThumbnail: string;
   nextEpisodeDescription: string;
-  changeBackgroundThumbnail: string;
+  triggerMediaState: number;
+  triggerMediaUrlList: string[];
+  changeCharacterInfo: ChattingCharacterData;
 }
 
 export interface ChattingResultRes {

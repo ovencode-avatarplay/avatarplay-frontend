@@ -30,8 +30,9 @@ import {
   setSelectedContentId,
   setSelectedChapterIdx,
   setSelectedEpisodeIdx,
+  setSkipContentInit,
 } from '@/redux-store/slices/ContentSelection';
-import {setEditingContentInfo, updateEditingContentInfo} from '@/redux-store/slices/ContentInfo';
+import {setContentInfoToEmpty, setEditingContentInfo, updateEditingContentInfo} from '@/redux-store/slices/ContentInfo';
 import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {setPublishInfo, setContentName} from '@/redux-store/slices/PublishInfo';
 
@@ -43,6 +44,7 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 // Json
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import ContentLLMSetup from './content-LLMsetup/ContentLLMsetup';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
@@ -53,6 +55,7 @@ const ContentMain: React.FC = () => {
   const [isLLMOpen, setIsLLMOpen] = useState(false);
   const [isPublishingOpen, setIsPublishingOpen] = useState(false);
   const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
+  const [isInitFinished, setIsInitFinished] = useState(false);
 
   // Redux Selector
   // 자주 렌더링 되거나 독립적이지 않을 때 버그가 발생하면 개별선언
@@ -60,8 +63,7 @@ const ContentMain: React.FC = () => {
   const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId); // ChapterBoard에서 선택된 ContentId
   const selectedChapterIdx = useSelector((state: RootState) => state.contentselection.selectedChapterIdx); // ChapterBoard에서 선택된 ChapterId
   const selectedEpisodeIdx = useSelector((state: RootState) => state.contentselection.selectedEpisodeIdx); // ChapterBoard에서 선택된 EpisodeId
-  const contentName = useSelector((state: RootState) => state.publish.contentName);
-
+  const skipContentInit = useSelector((state: RootState) => state.contentselection.skipContentInit); // Init Skip (다른 페이지에서 편집을 들어올 때 사용)
   // 자주 렌더링 되지 않는 경우는 묶어서
   const {
     editedPublishInfo, // 저장하기 전에 수정사항을 올려놓는 PublishInfo 정보
@@ -83,7 +85,8 @@ const ContentMain: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   function Init() {
-    dispatch(setSelectedContentId(emptyContentInfo.id));
+    setIsInitFinished(false);
+    dispatch(setContentInfoToEmpty());
     dispatch(setSelectedChapterIdx(0));
     dispatch(setSelectedEpisodeIdx(0));
     dispatch(setEditingContentInfo(emptyContentInfo));
@@ -91,11 +94,15 @@ const ContentMain: React.FC = () => {
     dispatch(setCurrentEpisodeInfo(emptyContentInfo.chapterInfoList[0].episodeInfoList[0]));
 
     getContentsByUserId();
+    setIsInitFinished(true);
   }
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
-    Init();
+    if (!skipContentInit) {
+      Init();
+    }
+    dispatch(setSkipContentInit(false));
   }, []);
 
   //#region  서버에서 컨텐츠 가져오기
@@ -125,31 +132,33 @@ const ContentMain: React.FC = () => {
 
   // DashBoard 에서 선택한 컨텐츠를 Id로 가져옴 (CreateContent사이클 (Chapter, Episode 편집) 에서 사용하기 위함)
   const GetContentByContentId = async (contentId: number) => {
-    setLoading(true);
+    if (isInitFinished) {
+      setLoading(true);
 
-    try {
-      const req: GetTotalContentByIdReq = {contentId: contentId};
-      const response = await sendContentByIdGetTotal(req);
+      try {
+        const req: GetTotalContentByIdReq = {contentId: contentId};
+        const response = await sendContentByIdGetTotal(req);
 
-      if (response?.data) {
-        const contentData: ContentInfo = response.data.contentInfo;
+        if (response?.data) {
+          const contentData: ContentInfo = response.data.contentInfo;
 
-        // Redux 상태 업데이트
-        dispatch(setEditingContentInfo(contentData));
+          // Redux 상태 업데이트
+          dispatch(setEditingContentInfo(contentData));
 
-        // 아이템 선택 처리
-        handleItemSelect(contentId);
+          // 아이템 선택 처리
+          handleItemSelect(contentId);
 
-        dispatch(setCurrentEpisodeInfo(contentData.chapterInfoList[0].episodeInfoList[0]));
-        dispatch(setPublishInfo(contentData.publishInfo));
-      } else {
-        throw new Error(`No contentInfo in response for ID: ${contentId}`);
+          dispatch(setCurrentEpisodeInfo(contentData.chapterInfoList[0].episodeInfoList[0]));
+          dispatch(setPublishInfo(contentData.publishInfo));
+        } else {
+          throw new Error(`No contentInfo in response for ID: ${contentId}`);
+        }
+      } catch (error) {
+        console.error('Error fetching content info:', error);
+        throw error; // 에러를 상위로 전달
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching content info:', error);
-      throw error; // 에러를 상위로 전달
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -201,21 +210,23 @@ const ContentMain: React.FC = () => {
 
   // chapterBoard가 변경될 때 episodeInfoList를 반영
   useEffect(() => {
-    if (editingContentInfo.chapterInfoList.length > 0) {
-      const updatedChapterList = editingContentInfo.chapterInfoList.map(chapter => ({
-        ...chapter,
-        episodeInfoList: chapter.episodeInfoList,
-      }));
+    if (isInitFinished) {
+      if (editingContentInfo.chapterInfoList.length > 0) {
+        const updatedChapterList = editingContentInfo.chapterInfoList.map(chapter => ({
+          ...chapter,
+          episodeInfoList: chapter.episodeInfoList,
+        }));
 
-      // contentInfo 상태 업데이트
-      dispatch(
-        updateEditingContentInfo({
-          id: selectedContentId,
-          chapterInfoList: updatedChapterList,
-        }),
-      );
+        // contentInfo 상태 업데이트
+        dispatch(
+          updateEditingContentInfo({
+            id: selectedContentId,
+            chapterInfoList: updatedChapterList,
+          }),
+        );
+      }
     }
-  }, [selectedContentId, dispatch]);
+  }, [selectedContentId]);
 
   const handleAddChapter = (newChapter: ChapterInfo) => {
     const updatedChapterList = [
@@ -427,15 +438,18 @@ const ContentMain: React.FC = () => {
     setSaveData(tmp);
 
     try {
+      setLoading(true);
       const result = await sendContentSave(tmp);
       // console.log('Content saved successfully!');
       handleClosePublishing();
       Init();
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error('Error sending save content data:', error);
 
       // 실패 메시지
-      console.log('Failed to save content. Please try again.');
+      alert('Failed to save content.');
     }
   };
   //#endregion
@@ -481,17 +495,19 @@ const ContentMain: React.FC = () => {
   }
 
   const loadEpisodeData = () => {
-    if (selectedChapterIdx !== -1) {
-      const chapter = editingContentInfo.chapterInfoList[selectedChapterIdx];
+    if (isInitFinished) {
+      if (selectedChapterIdx !== -1) {
+        const chapter = editingContentInfo.chapterInfoList[selectedChapterIdx];
 
-      const episode = chapter.episodeInfoList[selectedEpisodeIdx];
-      if (episode) {
-        dispatch(setCurrentEpisodeInfo(episode));
+        const episode = chapter.episodeInfoList[selectedEpisodeIdx];
+        if (episode) {
+          dispatch(setCurrentEpisodeInfo(episode));
+        } else {
+          console.error('Episode not found with idx:', selectedEpisodeIdx);
+        }
       } else {
-        console.error('Episode not found with idx:', selectedEpisodeIdx);
+        console.error('Chapter not found with idx:', selectedChapterIdx);
       }
-    } else {
-      console.error('Chapter not found with idx:', selectedChapterIdx);
     }
   };
   //#endregion
@@ -521,7 +537,6 @@ const ContentMain: React.FC = () => {
     <>
       <main className={styles.contentMain}>
         <ContentHeader
-          contentTitle={contentName}
           onOpenDrawer={handleOpenDashboard}
           onTitleChange={handleTitleChange} // Redux 상태 업데이트
         />
@@ -530,6 +545,7 @@ const ContentMain: React.FC = () => {
             open={isDashboardOpen}
             onClose={handleCloseDashboard}
             onSelectItem={GetContentByContentId}
+            onRefreshItem={getContentsByUserId}
           />
           <ChapterBoard
             open={isChapterboardOpen}
@@ -558,6 +574,7 @@ const ContentMain: React.FC = () => {
         {/* EpisodeLLMSetup 모달 */}
         <ContentLLMSetup open={isLLMSetupOpen} onClose={handleCloseLLMSetup} />
       </main>
+      <LoadingOverlay loading={loading} />
     </>
   );
 };

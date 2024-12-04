@@ -7,6 +7,14 @@ export enum SenderType {
   PartnerNarration = 'partnerNarration',
   System = 'system',
   IntroPrompt = 'introPrompt',
+  media = 'media',
+}
+
+export enum TriggerMediaState {
+  None = 'none',
+  TriggerImage = 'triggerImage',
+  TriggerVideo = 'triggerVideo',
+  TriggerAudio = 'triggerAudio',
 }
 
 export interface Message {
@@ -15,9 +23,15 @@ export interface Message {
   sender: SenderType;
 }
 
+export interface MediaData {
+  mediaType: TriggerMediaState;
+  mediaUrlList: string[];
+}
+
 export interface MessageGroup {
   Messages: Message[];
   emoticonUrl: string[];
+  mediaData?: MediaData[];
 }
 
 export const COMMAND_NARRATION = '*';

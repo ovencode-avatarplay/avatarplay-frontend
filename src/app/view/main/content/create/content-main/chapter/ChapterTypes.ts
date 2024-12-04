@@ -13,6 +13,10 @@ export interface ChapterItemProps {
   isSelected: boolean; // 선택 여부
   selectedEpisodeIdx: number;
   disableDelete: boolean;
+  onDeleteChapterOpen: () => void;
+  onDeleteChapterClose: () => void;
+  onDeleteEpisodeOpen: () => void;
+  onDeleteEpisodeClose: () => void;
 }
 
 export interface Chapter {

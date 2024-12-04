@@ -34,6 +34,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import CharacterGalleryModal from './CharacterGalleryModal';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const CharacterDashboard: React.FC = () => {
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
@@ -109,11 +110,11 @@ const CharacterDashboard: React.FC = () => {
   };
 
   // 현재 선택된 캐릭터의 정보를 수정함 (재생성 등)
-  const updateCharacterInfo = async (newinfo: CharacterInfo) => {
+  const updateCharacterInfo = async (newinfo: CharacterInfo, debugparam: string) => {
     setLoading(true);
     try {
       if (currentSelectedCharacter) {
-        const req: CreateCharacterReq = {characterInfo: newinfo, createOption: []};
+        const req: CreateCharacterReq = {characterInfo: newinfo, debugParameter: debugparam /*, createOption: []*/};
         const response = await sendCreateCharacter(req);
 
         if (response.data) {
@@ -148,12 +149,12 @@ const CharacterDashboard: React.FC = () => {
       return;
     }
 
-    alert('Modify is not working now');
+    // alert('Modify is not working now');
     // Modify 용도의 api 생성 전까지 막아둠
-    // await getCharacterInfo(selectedCharacterId);
+    await getCharacterInfo(selectedCharacterId);
 
-    // setIsModifyMode(true);
-    // setModifyOpen(true);
+    setIsModifyMode(true);
+    setModifyOpen(true);
   };
 
   const handleCloseModify = () => {
@@ -255,11 +256,18 @@ const CharacterDashboard: React.FC = () => {
           onClose={handleCloseGallery}
           characterData={currentSelectedCharacter}
           refreshCharacter={getCharacterInfo}
+          refreshCharacterList={getCharacterList}
         />
       )}
 
       {/* ModifyCharacter Drawer */}
-      <ModifyCharacterModal open={modifyOpen} onClose={handleCloseModify} isModify={isModifyMode} />
+      <ModifyCharacterModal
+        open={modifyOpen}
+        onClose={handleCloseModify}
+        isModify={isModifyMode}
+        characterInfo={currentSelectedCharacter}
+        refreshCharacterList={getCharacterList}
+      />
 
       {/* Dialog */}
       <Dialog open={isDialogOpen} onClose={handleDeleteDialogClose}>
@@ -280,6 +288,8 @@ const CharacterDashboard: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <LoadingOverlay loading={loading} />
     </div>
   );
 };

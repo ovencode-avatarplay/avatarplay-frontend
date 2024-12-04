@@ -16,6 +16,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EpisodeAiImageGeneration from './EpisodeAiImageGeneration';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ImageUploadDialog from './ImageUploadDialog';
+import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 
 const Input = styled('input')({
   display: 'none',
@@ -24,9 +25,11 @@ const Input = styled('input')({
 interface Props {
   open: boolean; // 모달 열림 상태
   closeModal: () => void; // 모달 닫기 함수
+  isTrigger?: boolean;
+  setTriggerInfo?: React.Dispatch<React.SetStateAction<TriggerInfo>>;
 }
 
-const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
+const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, setTriggerInfo}) => {
   const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -112,7 +115,17 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
         reader.readAsDataURL(file); // 파일을 Base64로 변환
 
         // Redux 상태 업데이트
-        dispatch(setCharacterInfo({mainImageUrl: imgUrl}));
+        if (isTrigger && setTriggerInfo) {
+          setTriggerInfo(prev => ({
+            ...prev, // 기존 상태 복사
+            actionCharacterInfo: {
+              ...prev.actionCharacterInfo, // 기존 `actionCharacterInfo` 복사
+              mainImageUrl: imgUrl, // `mainImageUrl` 업데이트
+            },
+          }));
+        } else {
+          dispatch(setCharacterInfo({mainImageUrl: imgUrl}));
+        }
 
         // 추가 이미지 리스트 로그 출력
         console.log('Additional image URLs:', response.data.imageUrlList);
@@ -130,8 +143,17 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
     setLoading(true);
     try {
       if (url) {
-        //사용법: dispatch(setCharacterInfo({ name: "New Name", state: 1 }));
-        dispatch(setCharacterInfo({mainImageUrl: url}));
+        if (isTrigger && setTriggerInfo) {
+          setTriggerInfo(prev => ({
+            ...prev, // 기존 상태 복사
+            actionCharacterInfo: {
+              ...prev.actionCharacterInfo, // 기존 `actionCharacterInfo` 복사
+              mainImageUrl: url, // `mainImageUrl` 업데이트
+            },
+          }));
+        } else {
+          dispatch(setCharacterInfo({mainImageUrl: url}));
+        }
       } else {
         throw new Error(`No response for file`);
       }
@@ -186,12 +208,21 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
   };
 
   const [characterDescription, setCharacterDescription] = useState<string>(
-    editedEpisodeInfo.currentEpisodeInfo.characterInfo.introduction || '',
+    editedEpisodeInfo.currentEpisodeInfo.characterInfo?.description || '',
   );
   const onChangeCharacterDescription = (description: string) => {
     setCharacterDescription(description);
-
-    dispatch(setCharacterInfo({introduction: description}));
+    if (isTrigger && setTriggerInfo) {
+      setTriggerInfo(prev => ({
+        ...prev, // 기존 상태 복사
+        actionCharacterInfo: {
+          ...prev.actionCharacterInfo, // 기존 `actionCharacterInfo` 복사
+          description: description, // `mainImageUrl` 업데이트
+        },
+      }));
+    } else {
+      dispatch(setCharacterInfo({description: description}));
+    }
   };
 
   const [characterName, setCharacterName] = useState<string>(
@@ -199,7 +230,17 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal}) => {
   );
   const onChangeCharacterName = (name: string) => {
     setCharacterName(name);
-    dispatch(setCharacterInfo({name: name}));
+    if (isTrigger && setTriggerInfo) {
+      setTriggerInfo(prev => ({
+        ...prev, // 기존 상태 복사
+        actionCharacterInfo: {
+          ...prev.actionCharacterInfo, // 기존 `actionCharacterInfo` 복사
+          name: name, // `mainImageUrl` 업데이트
+        },
+      }));
+    } else {
+      dispatch(setCharacterInfo({name: name}));
+    }
   };
 
   useEffect(() => {

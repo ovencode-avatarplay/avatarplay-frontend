@@ -9,14 +9,24 @@ import EpisodeCharacterView from './EpisodeCharacterView'; // Step 3에 사용�
 
 import styles from './EpisodeCharacter.module.css';
 import {useDispatch} from 'react-redux';
+import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 
 interface EpisodeCharacterProps {
   currentStep: number;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   onClose: () => void;
+
+  isTrigger?: boolean;
+  setTriggerInfo?: React.Dispatch<React.SetStateAction<TriggerInfo>>;
 }
 
-const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({currentStep, onClose, setCurrentStep}) => {
+const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({
+  currentStep,
+  onClose,
+  setCurrentStep,
+  isTrigger,
+  setTriggerInfo,
+}) => {
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
   const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
@@ -96,7 +106,14 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({currentStep, onClose
       mainImageUrl: galleryAllUrl[selectedGalleryIndex].imageUrl, // 선택된 이미지 URL 추가
     };
 
-    dispatch(setCharacterInfo(updatedCharacterInfo)); // Redux 상태 업데이트
+    if (isTrigger && setTriggerInfo) {
+      setTriggerInfo(prev => ({
+        ...prev, // 기존 상태 복사
+        actionCharacterInfo: updatedCharacterInfo,
+      }));
+    } else {
+      dispatch(setCharacterInfo(updatedCharacterInfo)); // Redux 상태 업데이트
+    }
     onClose(); // 모달 닫기
   };
 
@@ -129,7 +146,7 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({currentStep, onClose
         )}
         {currentStep === 3 && currentSelectedCharacter && (
           <EpisodeCharacterView
-            imageUrl={currentSelectedCharacter.portraitGalleryImageUrl?.[0].imageUrl || ''}
+            imageUrl={galleryAllUrl?.[selectedGalleryIndex || 0].imageUrl || ''}
             characterInfo={currentSelectedCharacter}
             open={true}
             onClose={() => setCurrentStep(2)} // 닫으면 Step 2로 돌아가기

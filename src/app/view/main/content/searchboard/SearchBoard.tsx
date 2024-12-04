@@ -10,6 +10,7 @@ import styles from './SearchBoard.module.css';
 import Header from './searchboard-header/SearchBoardHeader';
 import SearchBoardHorizonScroll from './SearchBoardHorizonScroll';
 import {ExploreCardProps} from './SearchBoardTypes';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const SearchBoard: React.FC = () => {
   const [searchOptionList, setSearchOptionList] = useState<string[] | null>(null);
@@ -19,11 +20,14 @@ const SearchBoard: React.FC = () => {
   const [search, setSearch] = useState('all');
   const [onlyAdults, setOnlyAdults] = useState(false);
 
+  const [loading, setloading] = useState(false);
+
   // Hooks
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
+      setloading(true);
       try {
         const response = await sendGetExplore(search, onlyAdults);
 
@@ -38,10 +42,13 @@ const SearchBoard: React.FC = () => {
           if (response.recommendationListData) {
             setRecommendationList(response.recommendationListData);
           }
+          setloading(false);
         } else {
+          setloading(false);
           console.error(`Error: ${response.resultMessage}`);
         }
       } catch (error) {
+        setloading(false);
         console.error('Error fetching shorts data:', error);
       }
     };
@@ -61,6 +68,7 @@ const SearchBoard: React.FC = () => {
           {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
         </main>
       </div>
+      <LoadingOverlay loading={loading} />
     </>
   );
 };

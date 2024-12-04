@@ -1,4 +1,4 @@
-import api, {ResponseAPI} from './ApiInstance';
+import api from './ApiInstance';
 
 export interface GenerateAudioReq {
   text: string;

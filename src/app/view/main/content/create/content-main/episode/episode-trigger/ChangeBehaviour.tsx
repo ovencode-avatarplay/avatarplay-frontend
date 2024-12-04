@@ -23,6 +23,7 @@ import ChapterBoardOnTrigger from '@/app/view/main/content/create/content-main/c
 import {RenderTargetValueField, RenderSubDataFields} from './RenderFields';
 import {handleMainDataChange, handleSubDataChange, ensureValidSubData} from './triggerHandlers';
 import {getSubDataOptionsForMainData} from './triggerDataUtils';
+import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 
 interface ChangeBehaviourProps {
   open: boolean;
@@ -33,8 +34,11 @@ interface ChangeBehaviourProps {
 const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index}) => {
   const item = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList[index]);
   const content = useSelector((state: RootState) => state.content.curEditingContentInfo);
-
   const dispatch = useDispatch();
+
+  // Delete
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
 
   const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>({
     id: item?.id || 0, // 기본값 설정
@@ -55,6 +59,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
       id: 0,
       name: '',
       introduction: '',
+      description: '',
       genderType: 0,
       mainImageUrl: '',
       portraitGalleryImageUrl: [],
@@ -91,6 +96,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
           id: 0,
           name: '',
           introduction: '',
+          description: '',
           genderType: 0,
           mainImageUrl: '',
           portraitGalleryImageUrl: [],
@@ -216,10 +222,10 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
       (info, idx) => info.triggerType === TriggerMainDataType.triggerValueKeyword && idx !== index, // idx를 사용하여 현재 인덱스와 비교
     );
 
-    if (isKeywordTypeExists && triggerInfo.triggerType === TriggerMainDataType.triggerValueKeyword) {
-      alert('Keyword타입은 1개를 넘을 수 없습니다.');
-      return; // handleClose를 취소함
-    }
+    // if (isKeywordTypeExists && triggerInfo.triggerType === TriggerMainDataType.triggerValueKeyword) {
+    //   alert('Keyword타입은 1개를 넘을 수 없습니다.');
+    //   return; // handleClose를 취소함
+    // }
 
     // 조건을 만족하지 않으면 트리거 정보 업데이트
     dispatch(updateTriggerInfo({index: index, info: {...triggerInfo}}));
@@ -240,6 +246,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   };
 
   const handleSaveNewName = () => {
+    dispatch(updateTriggerInfo({index: index, info: {...triggerInfo}}));
     if (newTriggerName.trim()) {
       dispatch(updateTriggerInfoName({index: index, name: newTriggerName}));
       triggerInfo.name = newTriggerName;
@@ -254,6 +261,26 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   const handleCloseEpisodeConversationTemplate = () => {
     setEpisodeConversationTemplateOpen(false);
   };
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    setConfirmed(true);
+  };
+
+  useEffect(() => {
+    if (confirmed) {
+      handleRemove();
+      setDialogOpen(false);
+      setConfirmed(false);
+    }
+  }, [confirmed]);
 
   useEffect(() => {
     ensureValidSubData(triggerInfo, setTriggerInfo);
@@ -272,7 +299,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
             <DriveFileRenameOutline />
           </IconButton>
 
-          <IconButton onClick={handleRemove}>
+          <IconButton onClick={handleOpenDialog}>
             <DeleteForever />
           </IconButton>
         </DialogTitle>
@@ -377,6 +404,17 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
           </Box>
         </DialogContent>
       </Dialog>
+
+      {/* 삭제 Dialog */}
+      <ConfirmationDialog
+        title="Discard Trigger?"
+        content="Data will be disappeared. Are you sure?"
+        cancelText="Cancel"
+        confirmText="Okay"
+        open={dialogOpen}
+        onConfirm={handleConfirm}
+        onClose={handleCloseDialog}
+      />
     </>
   );
 };

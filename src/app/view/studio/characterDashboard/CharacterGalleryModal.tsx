@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import styles from './CharacterGalleryModal.module.css';
 
 // redux
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 
 // Network
 import {DeleteGalleryReq, sendDeleteGallery} from '@/app/NetWork/CharacterNetwork';
@@ -17,15 +17,17 @@ import {DeleteGalleryReq, sendDeleteGallery} from '@/app/NetWork/CharacterNetwor
 import CreateCharacterTopMenu from '../../main/content/create/character/CreateCharacterTopMenu';
 import CharacterGallery from './CharacterGallery';
 import CharacterGalleryCreate from './CharacterGalleryCreate';
-import CharacterCreate from '../../main/content/create/character/CreateCharacterSequence';
 import CharacterGalleryViewer from './CharacterGalleryViewer';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
+import ModifyCharacterModal from './ModifyCharacterModal';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 interface CharacterGalleryModalProps {
   open: boolean;
   onClose: () => void;
   characterData: CharacterInfo;
   refreshCharacter: (id: number) => void;
+  refreshCharacterList: () => void;
 }
 
 const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
@@ -33,6 +35,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   onClose,
   characterData,
   refreshCharacter,
+  refreshCharacterList,
 }) => {
   const buttons = [
     {
@@ -51,14 +54,15 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
   const [characterInfo, setCharacterInfo] = useState<CharacterInfo>(characterData);
   const [viewerOpen, setViewerOpen] = useState(false);
-  const [viewerImages, setViewerImages] = useState<string[]>([]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setloading] = useState(false);
 
   const handleOnClose = () => {
     onClose();
     setIsRegenerateOpen(false);
     setIsModifyOpen(false);
+    setViewerOpen(false);
   };
 
   const handleRegenerateClose = () => {
@@ -74,8 +78,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   };
 
   const handleRegenerateItem = () => {
-    if (!selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
-    } else {
+    if (selectedItem[0] !== null && selectedItem[1] !== null && selectedItem[1] !== undefined) {
       if (selectedCategory === GalleryCategory.Portrait) setIsModifyOpen(true);
       else {
         setIsRegenerateOpen(true);
@@ -88,22 +91,32 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   }, [characterData]);
 
   const handleViewItem = () => {
-    if (!selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
+    if (selectedItem[1] === null || selectedItem[1] === undefined) {
       console.error('Invalid selection: ', selectedItem);
       return;
     }
 
-    let imageUrls: string[] = [];
+    let imageUrls: {url: string; category: GalleryCategory}[] = []; // URL과 카테고리 정보를 함께 저장
 
     switch (selectedItem[0] as GalleryCategory) {
       case GalleryCategory.All:
         const allUrls = [
-          ...(characterInfo.portraitGalleryImageUrl || []),
-          ...(characterInfo.poseGalleryImageUrl || []),
-          ...(characterInfo.expressionGalleryImageUrl || []),
+          ...(characterInfo.portraitGalleryImageUrl || []).map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Portrait,
+          })),
+          ...(characterInfo.poseGalleryImageUrl || []).map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Pose,
+          })),
+          ...(characterInfo.expressionGalleryImageUrl || []).map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Expression,
+          })),
         ];
+
         if (allUrls[selectedItem[1]]) {
-          imageUrls = allUrls.map(img => img.imageUrl) || [];
+          imageUrls = allUrls;
         } else {
           console.error('URL not found for index in All category:', selectedItem[1]);
         }
@@ -111,7 +124,10 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
       case GalleryCategory.Portrait:
         if (characterInfo.portraitGalleryImageUrl && characterInfo.portraitGalleryImageUrl[selectedItem[1]]) {
-          imageUrls = characterInfo.portraitGalleryImageUrl.map(img => img.imageUrl) || [];
+          imageUrls = characterInfo.portraitGalleryImageUrl.map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Portrait,
+          }));
         } else {
           console.error('Portrait URL not found for index:', selectedItem[1]);
         }
@@ -119,7 +135,10 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
       case GalleryCategory.Pose:
         if (characterInfo.poseGalleryImageUrl && characterInfo.poseGalleryImageUrl[selectedItem[1]]) {
-          imageUrls = characterInfo.poseGalleryImageUrl.map(img => img.imageUrl) || [];
+          imageUrls = characterInfo.poseGalleryImageUrl.map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Pose,
+          }));
         } else {
           console.error('Pose URL not found for index:', selectedItem[1]);
         }
@@ -127,7 +146,10 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
       case GalleryCategory.Expression:
         if (characterInfo.expressionGalleryImageUrl && characterInfo.expressionGalleryImageUrl[selectedItem[1]]) {
-          imageUrls = characterInfo.expressionGalleryImageUrl.map(img => img.imageUrl) || [];
+          imageUrls = characterInfo.expressionGalleryImageUrl.map(img => ({
+            url: img.imageUrl,
+            category: GalleryCategory.Expression,
+          }));
         } else {
           console.error('Expression URL not found for index:', selectedItem[1]);
         }
@@ -137,9 +159,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
         console.error('Unknown category: ', selectedItem[0]);
         break;
     }
-
     if (imageUrls.length > 0) {
-      setViewerImages(imageUrls);
       setViewerOpen(true);
     } else {
       console.error('No valid URLs found for the selected category');
@@ -151,111 +171,197 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
     if (selectedItem[0] === GalleryCategory.Portrait && selectedItem[1] === 0) {
       setErrorMessage('The main portrait (index 0) cannot be deleted.');
+      return;
     }
-    if (selectedItem[1]) {
+
+    if (selectedItem[1] !== null && selectedItem[1] !== undefined) {
       let galleryImageId = 0;
-      switch (selectedItem[0]) {
-        case GalleryCategory.All:
-          break;
-        case GalleryCategory.Portrait:
-          galleryImageId = characterInfo.portraitGalleryImageUrl[selectedItem[1]].galleryImageId;
-          break;
-        case GalleryCategory.Pose:
-          galleryImageId = characterInfo.poseGalleryImageUrl[selectedItem[1]].galleryImageId;
-          break;
-        case GalleryCategory.Expression:
-          galleryImageId = characterInfo.expressionGalleryImageUrl[selectedItem[1]].galleryImageId;
-          break;
+
+      let targetCategory: GalleryCategory | null = null;
+      let adjustedIndex = selectedItem[1];
+
+      // All 일때 해당하는 삭제 요청 받은 아이템 찾기
+      if (selectedItem[0] === GalleryCategory.All) {
+        const portraitLength = characterInfo.portraitGalleryImageUrl?.length || 0;
+        const poseLength = characterInfo.poseGalleryImageUrl?.length || 0;
+
+        if (adjustedIndex < portraitLength) {
+          targetCategory = GalleryCategory.Portrait;
+        } else if (adjustedIndex < portraitLength + poseLength) {
+          targetCategory = GalleryCategory.Pose;
+          adjustedIndex -= portraitLength;
+        } else {
+          targetCategory = GalleryCategory.Expression;
+          adjustedIndex -= portraitLength + poseLength;
+        }
+      } else {
+        targetCategory = selectedItem[0];
       }
 
-      const req: DeleteGalleryReq = {
-        galleryImageId: galleryImageId,
-      };
+      const selectedData = (() => {
+        switch (targetCategory) {
+          case GalleryCategory.Portrait:
+            return characterInfo.portraitGalleryImageUrl[adjustedIndex];
+          case GalleryCategory.Pose:
+            return characterInfo.poseGalleryImageUrl[adjustedIndex];
+          case GalleryCategory.Expression:
+            return characterInfo.expressionGalleryImageUrl[adjustedIndex];
+          default:
+            return null;
+        }
+      })();
 
-      const response = await sendDeleteGallery(req);
+      if (selectedData) {
+        galleryImageId = selectedData.galleryImageId;
 
-      if (response.data) {
-        console.log('Image deleted successfully:', galleryImageId);
+        const req: DeleteGalleryReq = {
+          galleryImageId: galleryImageId,
+        };
 
-        // 삭제 후 데이터 갱신
-        refreshCharacter(characterInfo.id);
+        const response = await sendDeleteGallery(req);
+        setloading(true);
+        if (response.data) {
+          console.log('Image deleted successfully:', galleryImageId);
+
+          // 삭제 후 데이터 갱신
+          refreshCharacter(characterInfo.id);
+
+          // 삭제 후 selectedItem 업데이트
+          const currentCategoryUrls = (() => {
+            switch (targetCategory) {
+              case GalleryCategory.Portrait:
+                return characterInfo.portraitGalleryImageUrl;
+              case GalleryCategory.Pose:
+                return characterInfo.poseGalleryImageUrl;
+              case GalleryCategory.Expression:
+                return characterInfo.expressionGalleryImageUrl;
+              default:
+                return [];
+            }
+          })();
+
+          const newLength = currentCategoryUrls.length - 1; // 삭제된 후 길이
+          if (newLength === 0) {
+            // 해당 카테고리가 비어있으면 viewer를 close
+            setViewerOpen(false);
+          } else {
+            // 마지막 항목이면 selectedItem을 이전 인덱스로 설정
+            setSelectedItem([selectedItem[0], Math.min(selectedItem[1], newLength - 1)]);
+          }
+        } else {
+          console.error('Failed to delete image with ID:', galleryImageId);
+        }
       } else {
-        console.error('Failed to delete image with ID:', galleryImageId);
+        console.error('Failed to delete image: Selected data is invalid');
       }
     } else {
       console.error('Selected item is invalid:', selectedItem);
     }
+    setloading(false);
   };
+
+  const handleImageSelect = (category: GalleryCategory, index: number) => {
+    setSelectedItem([category, index]);
+  };
+
+  function getSelectedImageData(): GalleryImageInfo | undefined {
+    if (selectedItem[1] === null || selectedItem[1] === undefined) {
+      return undefined; // 선택되지 않은 경우 처리
+    }
+
+    switch (selectedItem[0]) {
+      case GalleryCategory.All:
+        return characterInfo.portraitGalleryImageUrl[selectedItem[1]];
+
+      case GalleryCategory.Portrait:
+        return characterInfo.portraitGalleryImageUrl[selectedItem[1]];
+
+      case GalleryCategory.Pose:
+        return characterInfo.poseGalleryImageUrl[selectedItem[1]];
+
+      case GalleryCategory.Expression:
+        return characterInfo.expressionGalleryImageUrl[selectedItem[1]];
+
+      default:
+        console.error(`Unknown category: ${selectedItem[0]}`);
+        return undefined;
+    }
+  }
 
   return (
     <Modal open={open} onClose={handleOnClose}>
       <Box className={styles.modalContent}>
-        {!viewerOpen && (
-          <Box className={styles.container}>
-            {isRegenerateOpen ? (
-              <>
-                <CreateCharacterTopMenu
-                  backButtonAction={handleRegenerateClose}
-                  lastUrl=":/lang/studio/Character"
-                  contentTitle={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]} Creation`}
-                  blockStudioButton={true}
-                />
-                <CharacterGalleryCreate
-                  open={isRegenerateOpen}
-                  onClose={handleRegenerateClose}
-                  category={selectedCategory}
-                  characterInfo={characterInfo}
-                />
-              </>
-            ) : isModifyOpen ? (
-              <>
-                <CreateCharacterTopMenu
-                  backButtonAction={handleModifyClose}
-                  lastUrl=":/lang/studio/Character"
-                  contentTitle={`Modify ${characterInfo.name}`}
-                  blockStudioButton={true}
-                />
-                <CharacterCreate closeAction={handleModifyClose} isModify={true} />
-              </>
-            ) : (
-              <>
-                <CreateCharacterTopMenu
-                  backButtonAction={onClose}
-                  lastUrl=":/lang/studio/Character"
-                  contentTitle={`${characterInfo.name}'s Gallery`}
-                  blockStudioButton={true}
-                />
-                <CharacterGallery
-                  characterInfo={characterInfo}
-                  onCategorySelected={setSelectedCategory}
-                  onCurrentSelected={handleSelectItem}
-                  onGenerateSelected={handleRegenerateItem}
-                  refreshCharacter={refreshCharacter}
-                />
-                <div className={styles.footer}>
-                  {buttons.map((button, index) => (
-                    <Button key={index} className={styles.button} startIcon={button.icon} onClick={button.onClick}>
-                      <Typography>{button.text}</Typography>
-                    </Button>
-                  ))}
-                </div>
-              </>
-            )}
-          </Box>
-        )}
+        <Box className={styles.container}>
+          {isRegenerateOpen ? (
+            <>
+              <CreateCharacterTopMenu
+                backButtonAction={handleRegenerateClose}
+                lastUrl=":/lang/studio/Character"
+                contentTitle={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]} Creation`}
+                blockStudioButton={true}
+              />
+              <CharacterGalleryCreate
+                open={isRegenerateOpen}
+                onClose={handleRegenerateClose}
+                category={selectedCategory}
+                characterInfo={characterInfo}
+              />
+            </>
+          ) : isModifyOpen ? (
+            <>
+              <CreateCharacterTopMenu
+                backButtonAction={handleModifyClose}
+                lastUrl=":/lang/studio/Character"
+                contentTitle={`Modify ${characterInfo.name}`}
+                blockStudioButton={true}
+              />
+              {/* Sorry Modify is not working now */}
 
-        {/* Viewer */}
-        {viewerOpen && (
-          <CharacterGalleryViewer
-            imageUrls={viewerImages}
-            categoryType={galleryCategoryText[selectedCategory]}
-            onBack={() => setViewerOpen(false)}
-            onShare={() => console.log('Share clicked')}
-            onThumbnail={() => console.log('Thumbnail clicked')}
-            onInfo={() => console.log('Info clicked')}
-            onDelete={() => console.log('Delete clicked')}
-          />
-        )}
+              <ModifyCharacterModal
+                open={isModifyOpen}
+                onClose={handleModifyClose}
+                isModify={isModifyOpen}
+                characterInfo={characterInfo}
+                refreshCharacterList={refreshCharacterList}
+              />
+            </>
+          ) : viewerOpen ? (
+            <CharacterGalleryViewer
+              characterInfo={characterInfo}
+              selectedIndex={selectedItem[1]}
+              categoryType={selectedCategory}
+              onBack={() => setViewerOpen(false)}
+              onThumbnail={() => console.log('Thumbnail clicked')}
+              onInfo={() => console.log('Info clicked')}
+              onDelete={handleDeleteItem}
+              onSelectImage={handleImageSelect}
+            />
+          ) : (
+            <>
+              <CreateCharacterTopMenu
+                backButtonAction={onClose}
+                lastUrl=":/lang/studio/Character"
+                contentTitle={`${characterInfo.name}'s Gallery`}
+                blockStudioButton={true}
+              />
+              <CharacterGallery
+                characterInfo={characterInfo}
+                onCategorySelected={setSelectedCategory}
+                onCurrentSelected={handleSelectItem}
+                onGenerateSelected={handleRegenerateItem}
+                refreshCharacter={refreshCharacter}
+                initialSelectedItem={selectedItem}
+              />
+              <div className={styles.footer}>
+                {buttons.map((button, index) => (
+                  <Button key={index} className={styles.button} startIcon={button.icon} onClick={button.onClick}>
+                    <Typography>{button.text}</Typography>
+                  </Button>
+                ))}
+              </div>
+            </>
+          )}
+        </Box>
 
         <Snackbar
           open={!!errorMessage}
@@ -267,6 +373,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
             {errorMessage}
           </Alert>
         </Snackbar>
+        <LoadingOverlay loading={loading} />
       </Box>
     </Modal>
   );

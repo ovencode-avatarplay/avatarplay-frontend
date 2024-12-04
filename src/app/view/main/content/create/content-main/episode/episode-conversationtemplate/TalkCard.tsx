@@ -14,7 +14,8 @@ import {
   updateActionConversationTalk,
   removeActionConversationItem,
 } from '@/redux-store/slices/EpisodeInfo';
-import {ConversationTalkInfo} from '@/types/apps/DataTypes';
+import {ConversationTalkInfo, ConversationTalkType} from '@/types/apps/DataTypes';
+import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 
 interface TalkCardProps {
   card: {
@@ -26,8 +27,8 @@ interface TalkCardProps {
   priorities: string[];
   onChange: (event: SelectChangeEvent<string>) => void;
   onDelete: (id: number) => void;
-  updateUserTalk: (itemIndex: number, value: string) => void;
-  updateCharacterTalk: (itemIndex: number, value: string) => void;
+  updateUserTalk: (itemIndex: number, type: ConversationTalkType, value: string) => void;
+  updateCharacterTalk: (itemIndex: number, type: ConversationTalkType, value: string) => void;
   triggerIndex?: number; // triggerId를 받아서 처리 (optional)
 }
 
@@ -44,6 +45,9 @@ const TalkCard: React.FC<TalkCardProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   const isFromChangeBehaviour = triggerIndex !== -1; // triggerId가 -1이 아니면 ChangeBehaviour에서 호출됨
   const [isExpanded, setIsExpanded] = useState(true);
+  const [talkCardDialogOpen, setTalkCardDialogOpen] = useState(false);
+  const [inputCardDialogOpen, setInputCardDialogOpen] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
 
   // Redux에서 초기 값을 가져오기
   const initialUserInputCards = useSelector((state: RootState) => {
@@ -127,14 +131,21 @@ const TalkCard: React.FC<TalkCardProps> = ({
     }
   };
 
-  const handleUpdateInputCard = (type: 'user' | 'character', index: number, value: string) => {
+  const handleUpdateInputCard = (
+    type: 'user' | 'character',
+    index: number,
+    talkType: ConversationTalkType,
+    value: string,
+  ) => {
     if (type === 'user') {
       setUserInputCards(prev => {
         const updated = [...prev];
-        updated[index].talk = value;
+        updated[index].talk = value; // 유저의 토크를 업데이트
+        updated[index].type = talkType;
         return updated;
       });
 
+      // Redux 상태 업데이트
       if (isFromChangeBehaviour) {
         dispatch(
           updateActionConversationTalk({
@@ -142,6 +153,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
             conversationIndex: card.id,
             itemIndex: index,
             type: 'user',
+            newType: talkType,
             newTalk: value,
           }),
         );
@@ -150,18 +162,21 @@ const TalkCard: React.FC<TalkCardProps> = ({
           updateConversationTalk({
             conversationIndex: card.id,
             itemIndex: index,
+            newType: talkType,
             type: 'user',
             newTalk: value,
           }),
         );
       }
-    } else {
+    } else if (type === 'character') {
       setCharacterInputCards(prev => {
         const updated = [...prev];
-        updated[index].talk = value;
+        updated[index].talk = value; // 캐릭터의 토크를 업데이트
+        updated[index].type = talkType;
         return updated;
       });
 
+      // Redux 상태 업데이트
       if (isFromChangeBehaviour) {
         dispatch(
           updateActionConversationTalk({
@@ -169,6 +184,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
             conversationIndex: card.id,
             itemIndex: index,
             type: 'character',
+            newType: talkType,
             newTalk: value,
           }),
         );
@@ -177,6 +193,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
           updateConversationTalk({
             conversationIndex: card.id,
             itemIndex: index,
+            newType: talkType,
             type: 'character',
             newTalk: value,
           }),
@@ -184,6 +201,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
       }
     }
   };
+
   useEffect(() => {
     if (isRefresh) {
       setUserInputCards(initialUserInputCards);
@@ -193,6 +211,10 @@ const TalkCard: React.FC<TalkCardProps> = ({
   }, [initialUserInputCards, initialCharacterInputCards]);
 
   const [isRefresh, SetIsRefresh] = useState<boolean>(false);
+
+  const [deleteInputType, setDeleteInputType] = useState<'user' | 'character'>('user');
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+
   const handleDeleteInputCard = (type: 'user' | 'character', index: number) => {
     if (type === 'user') {
       // Redux 상태 업데이트
@@ -235,6 +257,8 @@ const TalkCard: React.FC<TalkCardProps> = ({
       }
     }
     SetIsRefresh(true);
+    setDeleteInputType('user');
+    setDeleteIndex(null);
   };
 
   return (
@@ -255,7 +279,7 @@ const TalkCard: React.FC<TalkCardProps> = ({
             ))}
           </Select>
         </FormControl>
-        <Button className={styles.button1} onClick={() => onDelete(card.id)}>
+        <Button className={styles.button1} onClick={() => setTalkCardDialogOpen(true)}>
           delete
         </Button>
       </div>
@@ -284,8 +308,13 @@ const TalkCard: React.FC<TalkCardProps> = ({
                   <div key={`${inputCard.talk}-${index}`} style={{paddingBottom: '10px'}}>
                     <InputCard
                       defaultValue={inputCard.talk}
-                      onChange={value => handleUpdateInputCard('user', index, value)}
-                      onDelete={() => handleDeleteInputCard('user', index)}
+                      defalutType={inputCard.type}
+                      onChange={(value, type) => handleUpdateInputCard('user', index, type, value)}
+                      onDelete={() => {
+                        setDeleteInputType('user');
+                        setDeleteIndex(index); // 삭제할 인덱스 설정
+                        setInputCardDialogOpen(true);
+                      }}
                     />
                   </div>
                 ))}
@@ -319,8 +348,13 @@ const TalkCard: React.FC<TalkCardProps> = ({
                   <div key={`${inputCard.talk}-${index}`} style={{paddingBottom: '10px'}}>
                     <InputCard
                       defaultValue={inputCard.talk}
-                      onChange={value => handleUpdateInputCard('character', index, value)}
-                      onDelete={() => handleDeleteInputCard('character', index)}
+                      defalutType={inputCard.type}
+                      onChange={(value, type) => handleUpdateInputCard('character', index, type, value)}
+                      onDelete={() => {
+                        setDeleteInputType('character');
+                        setDeleteIndex(index); // 삭제할 인덱스 설정
+                        setInputCardDialogOpen(true);
+                      }}
                     />
                   </div>
                 ))}
@@ -329,6 +363,33 @@ const TalkCard: React.FC<TalkCardProps> = ({
           </Card>
         </div>
       </div>
+      {/* 삭제 Dialog */}
+      <ConfirmationDialog
+        title="Discard TalkCard?"
+        content="Data will be disappeared. Are you sure?"
+        cancelText="Cancel"
+        confirmText="Okay"
+        open={talkCardDialogOpen}
+        onConfirm={() => {
+          onDelete(card.id); // 카드 삭제 핸들러
+          setTalkCardDialogOpen(false);
+        }}
+        onClose={() => setTalkCardDialogOpen(false)}
+      />
+
+      {/* 삭제 Dialog */}
+      <ConfirmationDialog
+        title="Discard InputCard?"
+        content="Data will be disappeared. Are you sure?"
+        cancelText="Cancel"
+        confirmText="Okay"
+        open={inputCardDialogOpen}
+        onConfirm={() => {
+          handleDeleteInputCard(deleteInputType, deleteIndex ?? 0);
+          setInputCardDialogOpen(false);
+        }}
+        onClose={() => setInputCardDialogOpen(false)}
+      />
     </Card>
   );
 };

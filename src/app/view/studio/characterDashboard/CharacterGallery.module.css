@@ -43,17 +43,3 @@
   height: 8px;
   background-color: blue;
 }
-
-.galleryContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  width: 100%;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-.addImageButton {
-  height: 100px;
-  width: 100px;
-}

@@ -1,3 +1,4 @@
+import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 // UserState 인터페이스에 유저 이미지와 설명 추가
@@ -6,6 +7,7 @@ export interface UserState {
   profileName: string;
   // userImage: string; // 유저 이미지 (URL 또는 경로)
   profileDescription: string; // 유저 설명
+  language: LanguageType;
 }
 
 // 초기 상태 설정
@@ -21,6 +23,7 @@ const initialState: UserState = {
   // 사용자 ID 6 : 지현
   // 사용자 ID 7 : 범쑤
   // ---- 추가 아이디는 범수님께 문의 ----`, // 기본 유저 설명
+  language: LanguageType.Korean,
 };
 
 // Redux slice 생성
@@ -32,8 +35,11 @@ const userSlice = createSlice({
       if (action.payload.length > 0) state.userId = parseInt(action.payload, 10);
       else state.userId = 0;
     },
+    setLanguage: (state, action: PayloadAction<LanguageType>) => {
+      state.language = action.payload; // 언어 설정
+    },
   },
 });
 
-export const {setUserId} = userSlice.actions;
+export const {setUserId, setLanguage} = userSlice.actions;
 export default userSlice.reducer;

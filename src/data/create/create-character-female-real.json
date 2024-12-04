@@ -47,10 +47,11 @@
   "hairColors": [
       {"label": "Unspecified", "image": "", "value": 0},
       {"label": "Blonde", "image": "/character/haircolor_blonde.png", "value": 1},
-      {"label": "Black", "image": "/character/haircolor_black.png", "value": 2},
-      {"label": "Red", "image": "/character/haircolor_red.png", "value": 3},
-      {"label": "Pink", "image": "/character/haircolor_pink.png", "value": 4},
-      {"label": "White", "image": "/character/haircolor_pink.png", "value": 5}
+      {"label": "Brown", "image": "/character/haircolor_brown.png", "value": 2},
+      {"label": "Black", "image": "/character/haircolor_black.png", "value": 3},
+      {"label": "Red", "image": "/character/haircolor_red.png", "value": 4},
+      {"label": "Pink", "image": "/character/haircolor_pink.png", "value": 5},
+      {"label": "White", "image": "/character/haircolor_white.png", "value": 6}
   ],
   "bodyTypes": [
       {"label": "Unspecified", "image": "", "value": 0},

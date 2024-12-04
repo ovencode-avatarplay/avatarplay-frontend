@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {Box, Button, Typography} from '@mui/material';
-import styles from './CharacterGallery.module.css';
+import AddIcon from '@mui/icons-material/Add';
+import styles from './CharacterGalleryGrid.module.css';
 import CharacterGalleryItem from './CharacterGalleryItem';
 import {GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 
@@ -25,7 +26,8 @@ const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
     <Box className={styles.galleryContainer}>
       {!isTrigger && (
         <Button variant="contained" color="primary" onClick={onAddImageClick} className={styles.addImageButton}>
-          + Add Image
+          <AddIcon />
+          Add Image
         </Button>
       )}
       {!isEmptyGallery &&

@@ -13,6 +13,7 @@ export const PublishInfoSlice = createSlice({
   reducers: {
     setPublishInfo: (state, action: PayloadAction<PublishInfo>) => {
       state.languageType = action.payload.languageType;
+      state.thumbnail = action.payload.thumbnail;
       state.contentName = action.payload.contentName;
       state.contentDescription = action.payload.contentDescription;
       state.authorComment = action.payload.authorComment;
@@ -24,6 +25,9 @@ export const PublishInfoSlice = createSlice({
 
     setLanguageType: (state, action: PayloadAction<number>) => {
       state.languageType = action.payload;
+    },
+    setThumbnail: (state, action: PayloadAction<string>) => {
+      state.thumbnail = action.payload;
     },
     setContentName: (state, action: PayloadAction<string>) => {
       state.contentName = action.payload;
@@ -58,6 +62,7 @@ export const PublishInfoSlice = createSlice({
 export const {
   setPublishInfo,
   setLanguageType,
+  setThumbnail,
   setContentName,
   setContentDescription,
   setAuthorName,

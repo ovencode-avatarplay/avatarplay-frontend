@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Box, Typography, IconButton, Button} from '@mui/material';
+import React, {useEffect, useState} from 'react';
+import {Box, Typography, IconButton, Button, Paper} from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ShareIcon from '@mui/icons-material/Share';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
@@ -8,54 +8,136 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import styles from './CharacterGalleryViewer.module.css';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
+import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 
 interface CharacterGalleryViewerProps {
-  imageUrls: string[];
-  categoryType: string;
+  characterInfo: CharacterInfo;
+  selectedIndex: number | null;
+  categoryType: GalleryCategory;
   onBack: () => void;
-  onShare: () => void;
   onThumbnail: () => void;
   onInfo: () => void;
   onDelete: () => void;
+  onSelectImage: (category: GalleryCategory, index: number) => void;
 }
 
 const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
-  imageUrls,
+  characterInfo,
+  selectedIndex,
   categoryType,
   onBack,
-  onShare,
-  onThumbnail,
-  onInfo,
   onDelete,
+  onSelectImage,
 }) => {
-  const [currentBackground, setCurrentBackground] = useState(imageUrls[0]);
+  const [currentBackground, setCurrentBackground] = useState<string>('');
+  const [imageUrls, setImageUrls] = useState<GalleryImageInfo[]>([]);
+  const [currentInfo, setCurrentInfo] = useState<string>('');
+  const [infoOpen, setInfoOpen] = useState<boolean>(false);
 
+  // Function
+  function getImageUrls(info: CharacterInfo, type: GalleryCategory) {
+    let tmp: GalleryImageInfo[] = [];
+    switch (type) {
+      case GalleryCategory.All:
+        tmp = [
+          ...(info.portraitGalleryImageUrl || []),
+          ...(info.poseGalleryImageUrl || []),
+          ...(info.expressionGalleryImageUrl || []),
+        ];
+        break;
+
+      case GalleryCategory.Portrait:
+        tmp = info.portraitGalleryImageUrl || [];
+        break;
+
+      case GalleryCategory.Pose:
+        tmp = info.poseGalleryImageUrl || [];
+        break;
+
+      case GalleryCategory.Expression:
+        tmp = info.expressionGalleryImageUrl || [];
+        break;
+
+      default:
+        console.error(`Unknown category type: ${type}`);
+    }
+    return tmp;
+  }
+
+  const closeInfo = () => {
+    setInfoOpen(false);
+  };
+
+  // Hooks
+  useEffect(() => {
+    setImageUrls(getImageUrls(characterInfo, categoryType));
+  }, [characterInfo, categoryType]);
+
+  useEffect(() => {
+    if (imageUrls != null && imageUrls.length > 0 && selectedIndex !== null) {
+      setCurrentBackground(imageUrls[selectedIndex].imageUrl);
+      setCurrentInfo(imageUrls[selectedIndex].promptParameter);
+      onSelectImage(categoryType, selectedIndex);
+    }
+  }, [imageUrls, selectedIndex]);
+
+  // Handler
   const handleSwipeChange = (swiper: any) => {
-    setCurrentBackground(imageUrls[swiper.activeIndex]);
+    if (imageUrls.length > 0) {
+      const newIndex = swiper.activeIndex;
+      setCurrentBackground(imageUrls[newIndex].imageUrl);
+      onSelectImage(categoryType, newIndex);
+    }
+  };
+
+  const handleOnShare = () => {
+    if (imageUrls && selectedIndex !== null && imageUrls[selectedIndex]) {
+      const imageUrl = imageUrls[selectedIndex].imageUrl;
+
+      navigator.clipboard
+        .writeText(imageUrl)
+        .then(() => {
+          console.log('Image URL copied to clipboard:', imageUrl);
+          alert('Image URL copied to clipboard!');
+        })
+        .catch(err => {
+          console.error('Failed to copy URL to clipboard:', err);
+          alert('Failed to copy URL. Please try again.');
+        });
+    } else {
+      console.error('No valid image URL found for the current selection.');
+      alert('No image URL available to copy.');
+    }
+  };
+
+  const handleOnThumbnail = () => {};
+
+  const handleOnInfo = () => {
+    setInfoOpen(true);
   };
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
-      {/* Thumbnail Area */}
+    <Box sx={{display: 'flex', flexDirection: 'column', height: '100vh'}} onClick={() => infoOpen && closeInfo()}>
       <Box
         className={styles.thumbnailArea}
         style={{
           backgroundImage: `url(${currentBackground})`,
         }}
       >
-        {/* Back Button */}
-        <IconButton onClick={onBack} className={`${styles.thumbnailButton} ${styles.backButton}`}>
-          <ArrowBackIcon />
-        </IconButton>
+        <Box className={styles.thumbnailButtonArea}>
+          <IconButton onClick={onBack} className={styles.backButton}>
+            <ArrowBackIcon />
+          </IconButton>
 
-        {/* Menu Button */}
-        <IconButton className={`${styles.thumbnailButton} ${styles.menuButton}`}>
-          <Typography variant="caption">•••</Typography>
-        </IconButton>
+          <IconButton className={styles.menuButton}>
+            <Typography variant="caption">•••</Typography>
+          </IconButton>
+        </Box>
 
         {/* Label */}
         <Typography variant="h6" className={styles.label}>
-          {categoryType}
+          {galleryCategoryText[categoryType]}
         </Typography>
       </Box>
 
@@ -63,28 +145,44 @@ const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
       <Box className={styles.controlArea}>
         {/* Thumbnail Navigation */}
         <Swiper
+          initialSlide={selectedIndex ?? 0}
           slidesPerView={4}
-          spaceBetween={10}
+          spaceBetween={1}
           centeredSlides={true}
           onSlideChange={handleSwipeChange}
           className={styles.thumbnailSwiper}
         >
           {imageUrls.map((url, index) => (
             <SwiperSlide key={index}>
-              <Box className={styles.thumbnailSlide} style={{backgroundImage: `url(${url})`}} />
+              <Box
+                className={styles.thumbnailSlide}
+                style={{
+                  backgroundImage: `url(${url.imageUrl})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
 
+        {/* Info Popup */}
+        {infoOpen && selectedIndex !== null && (
+          <Paper className={styles.infoPopup}>
+            <Typography variant="subtitle1">Info</Typography>
+            <Typography variant="body2">{currentInfo || 'No promptParameter available'}</Typography>
+          </Paper>
+        )}
+
         {/* Control Button Area */}
         <Box className={styles.controlButtonArea}>
-          <Button onClick={onShare} className={styles.controlButton} startIcon={<ShareIcon />}>
+          <Button onClick={handleOnShare} className={styles.controlButton} startIcon={<ShareIcon />}>
             Share
           </Button>
-          <Button onClick={onThumbnail} className={styles.controlButton} startIcon={<PhotoLibraryIcon />}>
+          <Button onClick={handleOnThumbnail} className={styles.controlButton} startIcon={<PhotoLibraryIcon />}>
             Thumbnail
           </Button>
-          <Button onClick={onInfo} className={styles.controlButton} startIcon={<InfoIcon />}>
+          <Button onClick={handleOnInfo} className={styles.controlButton} startIcon={<InfoIcon />}>
             Info
           </Button>
           <Button onClick={onDelete} className={styles.controlButton} startIcon={<DeleteIcon />}>

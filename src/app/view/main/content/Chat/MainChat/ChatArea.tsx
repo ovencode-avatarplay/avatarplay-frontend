@@ -10,9 +10,11 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import {retryStream, SendChatMessageReq} from '@/app/NetWork/ChatNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 interface ChatAreaProps {
   messages: MessageGroup;
   bgUrl: string;
+  characterUrl: string;
   iconUrl: string;
   isHideChat: boolean;
   onToggleBackground: () => void;
@@ -36,6 +38,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   send,
   lastMessage,
   retrySend,
+  characterUrl,
 }) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -47,6 +50,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({
 
   const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isRegeneratingQuestion);
 
+  const [loading, setloading] = useState(false);
+
   const handleBubbleClick = (index: number) => {
     if (selectedBubbleIndex === null) {
       setSelectedBubbleIndex(index);
@@ -56,7 +61,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   };
 
   const handlePlayAudio = async (text: string) => {
+    setloading(true);
     const url = await GenerateTtsUrl(text, 'defaultVoice');
+
+    setloading(false);
     setAudioUrl(url); // ChatTtsPlayer로 전달할 audioUrl 상태 업데이트
   };
 
@@ -85,25 +93,15 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     }
   }, [messages, chatBarCount]); // messages와 chatBarCount가 변경될 때마다 실행
 
-  useEffect(() => {
-    console.log('Loding' + isLoading);
-  }, [isLoading, chatBarCount]);
-  useEffect(() => {
-    console.log('Initial bgUrl:', bgUrl);
-    console.log('Initial prevBgUrl:', prevBgUrl);
-    console.log('Initial transitionEnabled:', transitionEnabled);
-  }, []);
   const [prevBgUrl, setPrevBgUrl] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false); // 페이드 아웃 상태 추가
-  useEffect(() => {
-    console.log('Transition enabled?', transitionEnabled);
-    console.log('Current bgUrl:', bgUrl, 'Current prevBgUrl:', prevBgUrl);
+  useEffect(() => {}, [characterUrl]);
 
+  useEffect(() => {
     // prevBgUrl이 null이면 초기 상태로서 bgUrl을 그대로 설정
     if (!prevBgUrl) {
       setPrevBgUrl(bgUrl);
-      console.log('Initial prevBgUrl set:', bgUrl);
       return;
     }
 
@@ -116,12 +114,9 @@ const ChatArea: React.FC<ChatAreaProps> = ({
         setPrevBgUrl(bgUrl); // bgUrl로 prevBgUrl 업데이트
         setIsFadingOut(false);
         setIsTransitioning(true);
-        console.log('Updated prevBgUrl to new bgUrl:', bgUrl);
-        console.log('Start transitioning to new background');
 
         setTimeout(() => {
           setIsTransitioning(false);
-          console.log('Transition completed');
         }, 1500); // 트랜지션 지속 시간과 일치
       }, 500); // 페이드 아웃 시간
     }
@@ -147,6 +142,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
 
   return (
     <>
+      <LoadingOverlay loading={loading} />
       {isHideChat === false && (
         <Box
           className={styles.chatArea}
@@ -200,6 +196,23 @@ const ChatArea: React.FC<ChatAreaProps> = ({
               zIndex: 2,
             }}
           />
+
+          {/* 캐릭터 이미지 */}
+          <Box
+            sx={{
+              position: 'absolute',
+
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `url(${characterUrl})`,
+              backgroundSize: 'contain',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              zIndex: 2, // 배경 위에 렌더링
+            }}
+          />
           {/* Fixed space at the top */}
           <Box sx={{height: '72px', width: '100%'}} />
 
@@ -232,6 +245,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                       index={index}
                       iconUrl={iconUrl}
                       emoticonUrl={messages.emoticonUrl[index]}
+                      mediaData={messages.mediaData?.[index] || null}
                       onClick={e => {
                         e.stopPropagation();
                         handleBubbleClick(index);
@@ -348,20 +362,71 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             }
           }}
           sx={{
-            backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            height: '100%',
-            width: '100%',
             position: 'relative',
+            width: '100%',
+            height: '100%',
             fontFamily: 'Noto Sans KR, sans-serif',
             overflow: 'hidden',
           }}
-        ></Box>
+        >
+          {/* 기존 배경 */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${
+                prevBgUrl || bgUrl
+              })`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              opacity: isFadingOut ? 0 : 1,
+              transition: 'opacity 0.5s ease',
+              zIndex: 1,
+            }}
+          />
+
+          {/* 새 배경 */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              opacity: isTransitioning ? 1 : 0,
+              transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
+              zIndex: 2,
+            }}
+          />
+
+          {/* 캐릭터 이미지 */}
+          <Box
+            sx={{
+              position: 'absolute',
+
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `url(${characterUrl})`,
+              backgroundSize: 'contain',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              zIndex: 2, // 배경 위에 렌더링
+            }}
+          />
+        </Box>
       )}
     </>
   );
 };
-
+console.log('bgUrl');
 export default ChatArea;

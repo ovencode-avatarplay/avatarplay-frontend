@@ -19,8 +19,9 @@
                 "characterInfo": {
                   "id": 0,
                   "name": "",
-                  "introduction": "",
                   "genderType" : 0,
+                  "introduction": "",
+                  "description" : "",
                   "mainImageUrl": "",
                   "portraitGalleryImageUrl": [
                   ],

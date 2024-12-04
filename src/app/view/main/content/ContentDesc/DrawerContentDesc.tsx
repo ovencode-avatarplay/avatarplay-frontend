@@ -52,6 +52,7 @@ import ContentRecommendList from './ContentRecommendList';
 import {EpisodeCardProps} from './ContentDescType';
 
 import Link from 'next/link';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const DrawerContentDesc = () => {
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
@@ -102,7 +103,7 @@ const DrawerContentDesc = () => {
   useEffect(() => {
     if (contentWholeDesc) {
       setContentName(contentWholeDesc.publishInfo.contentName);
-      setContentThumbnail(contentWholeDesc.chapterInfoList[0].episodeInfoList[0].thumbnailList[0]); //.publishInfo.thumbnail
+      setContentThumbnail(contentWholeDesc.publishInfo.thumbnail);
       setContentDescription(contentWholeDesc.publishInfo.contentDescription);
       setAuthorName(contentWholeDesc.publishInfo.authorName);
       setAuthorComment(contentWholeDesc.publishInfo.authorComment);
@@ -310,6 +311,7 @@ const DrawerContentDesc = () => {
           </Link>
         </div>
       </main>
+      <LoadingOverlay loading={loading} />
     </Drawer>
   );
 };

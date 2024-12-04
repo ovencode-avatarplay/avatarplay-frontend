@@ -3,6 +3,29 @@
 {
   position: relative;
 }
+.mySwiper {
+  width: 300px; /* 카드 크기 */
+  height: 400px;
+}
+
+.mySwiper2 {
+  height: 80%;
+  width: 100%;
+}
+
+.mySwiper3 {
+  height: 20%;
+  box-sizing: border-box;
+  padding: 10px 0;
+}
+
+.mySwiper .swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background: #fff;
+}
 
 .topMenuContainer {
     position: absolute;

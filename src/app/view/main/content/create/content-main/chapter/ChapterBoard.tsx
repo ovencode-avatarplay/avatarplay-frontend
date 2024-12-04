@@ -34,6 +34,7 @@ import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 // Data
 import emptyData from '@/data/create/empty-content-info-data.json';
 import {Chapter} from './ChapterTypes';
+import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 
 interface Props {
   open: boolean;
@@ -69,6 +70,14 @@ const ChapterBoard: React.FC<Props> = ({
   const [newName, setNewName] = useState<string>('');
   const dispatch = useDispatch();
 
+  // 삭제 Dialog
+  const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    title: '',
+    content: '',
+    onConfirm: () => {},
+  });
+
   // ChapterInfo를 Chapter로 변환하는 함수
   const transformChapterInfoToChapter = (chapterInfoList: ChapterInfo[]): Chapter[] => {
     return chapterInfoList.map(chapterInfo => ({
@@ -92,17 +101,19 @@ const ChapterBoard: React.FC<Props> = ({
   }, [initialChapters]);
 
   useEffect(() => {
-    if (
-      editingContentInfo.chapterInfoList[selectedChapterIdx] &&
-      editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]
-    ) {
-      dispatch(
-        setCurrentEpisodeInfo(
-          editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
-        ),
-      );
-    } else {
-      dispatch(setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[0].episodeInfoList[0]));
+    if (open) {
+      if (
+        editingContentInfo.chapterInfoList[selectedChapterIdx] &&
+        editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]
+      ) {
+        dispatch(
+          setCurrentEpisodeInfo(
+            editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
+          ),
+        );
+      } else {
+        dispatch(setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[0].episodeInfoList[0]));
+      }
     }
   }, [selectedChapterIdx, selectedEpisodeIdx]);
 
@@ -141,13 +152,15 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleDeleteChapter = (chapterIdx: number) => {
-    if (chapters.length > 1) {
-      const validChapterIdx = chapterIdx >= chapters.length ? 0 : chapterIdx;
-
-      onDeleteChapter(chapterIdx);
-
-      setChapters(prevChapters => prevChapters.filter((_, index) => index !== validChapterIdx));
-    }
+    setConfirmDialog({
+      open: true,
+      title: 'Discard Chapter',
+      content: `"${chapters[chapterIdx].title}" Data will be disappeared. Are you sure?`,
+      onConfirm: () => {
+        onDeleteChapter(chapterIdx);
+        setChapters(prev => prev.filter((_, idx) => idx !== chapterIdx));
+      },
+    });
   };
   //#endregion
 
@@ -230,18 +243,21 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleDeleteEpisode = (chapterIdx: number, episodeIdx: number) => {
-    onDeleteEpisode(chapterIdx, episodeIdx);
-    setChapters(prevChapters =>
-      prevChapters.map((chapter, index) => {
-        if (index === chapterIdx && chapter.episodes.length > 1) {
-          return {
-            ...chapter,
-            episodes: chapter.episodes.filter((_, epIdx) => epIdx !== episodeIdx),
-          };
-        }
-        return chapter;
-      }),
-    );
+    setConfirmDialog({
+      open: true,
+      title: 'Discard Episode',
+      content: `"${chapters[chapterIdx].episodes[episodeIdx].title}" Data will be disappeared. Are you sure?`,
+      onConfirm: () => {
+        onDeleteEpisode(chapterIdx, episodeIdx);
+        setChapters(prev =>
+          prev.map((chapter, idx) =>
+            idx === chapterIdx
+              ? {...chapter, episodes: chapter.episodes.filter((_, epIdx) => epIdx !== episodeIdx)}
+              : chapter,
+          ),
+        );
+      },
+    });
   };
 
   // Edit 팝업 열기
@@ -259,87 +275,110 @@ const ChapterBoard: React.FC<Props> = ({
     setNewName(currentName);
   };
 
+  const handleDeleteChapterOpen = () => {};
+  const handleDeleteChapterClose = () => {};
+
+  const handleDeleteEpisodeOpen = () => {};
+  const handleDeleteEpisodeClose = () => {};
+
   return (
-    <Drawer
-      anchor="right"
-      open={open}
-      onClose={onClose}
-      PaperProps={{
-        sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
-      }}
-    >
-      <Box className={styles.drawerContainer}>
-        {/* Drawer Header */}
-        <CreateDrawerHeader title="ChapterBoard" onClose={onClose} />
+    <>
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={onClose}
+        PaperProps={{
+          sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
+        }}
+      >
+        <Box className={styles.drawerContainer}>
+          {/* Drawer Header */}
+          <CreateDrawerHeader title="ChapterBoard" onClose={onClose} />
 
-        {/* Create Chapter 버튼 */}
-        <Box className={styles.imageButtonContainer}>
-          <Button className={styles.imageButton} onClick={handleCreateChapter}>
-            <HomeIcon />
-            <Typography>Create Chapter</Typography>
-          </Button>
+          {/* Create Chapter 버튼 */}
+          <Box className={styles.imageButtonContainer}>
+            <Button className={styles.imageButton} onClick={handleCreateChapter}>
+              <HomeIcon />
+              <Typography>Create Chapter</Typography>
+            </Button>
+          </Box>
+
+          {/* Chapter 및 Episode 트리 구조 */}
+          <Box className={styles.contentBox}>
+            {chapters.map((chapter, index) => (
+              <ChapterItem
+                key={index}
+                chapter={chapter}
+                chapterIdx={index}
+                chapterLength={chapters.length}
+                episodeLength={chapters[index].episodes.length}
+                onDelete={handleDeleteChapter}
+                onToggle={handleChapterToggle}
+                onDeleteEpisode={handleDeleteEpisode}
+                onSelect={handleChapterSelect}
+                onSelectEpisode={handleEpisodeSelect}
+                onEdit={handleEditClick}
+                onCloseChapterBoard={onClose}
+                isSelected={selectedChapterIdx === index}
+                selectedEpisodeIdx={selectedEpisodeIdx}
+                disableDelete={chapters.length <= 1}
+                onDeleteChapterOpen={handleDeleteChapterOpen}
+                onDeleteChapterClose={handleDeleteChapterClose}
+                onDeleteEpisodeOpen={handleDeleteEpisodeOpen}
+                onDeleteEpisodeClose={handleDeleteEpisodeClose}
+              />
+            ))}
+          </Box>
+
+          {/* Create Episode 버튼 */}
+          <Box className={styles.imageButtonContainer}>
+            <Button className={styles.imageButton} onClick={handleCreateEpisode}>
+              <HomeIcon />
+              <Typography>Create Episode</Typography>
+            </Button>
+          </Box>
         </Box>
 
-        {/* Chapter 및 Episode 트리 구조 */}
-        <Box className={styles.contentBox}>
-          {chapters.map((chapter, index) => (
-            <ChapterItem
-              key={index}
-              chapter={chapter}
-              chapterIdx={index}
-              chapterLength={chapters.length}
-              episodeLength={chapters[index].episodes.length}
-              onDelete={handleDeleteChapter}
-              onToggle={handleChapterToggle}
-              onDeleteEpisode={handleDeleteEpisode}
-              onSelect={handleChapterSelect}
-              onSelectEpisode={handleEpisodeSelect}
-              onEdit={handleEditClick}
-              onCloseChapterBoard={onClose}
-              isSelected={selectedChapterIdx === index}
-              selectedEpisodeIdx={selectedEpisodeIdx}
-              disableDelete={chapters.length <= 1}
+        {/* 이름 변경을 위한 Dialog */}
+        <Dialog open={editItem.idx !== null} onClose={() => setEditItem({idx: null, type: null})}>
+          <DialogTitle>Edit {editItem.type === 'chapter' ? 'Chapter' : 'Episode'} Name</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="New Name"
+              fullWidth
+              value={newName}
+              onChange={e => setNewName(e.target.value)}
             />
-          ))}
-        </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setEditItem({idx: null, type: null})}>Cancel</Button>
+            <Button
+              onClick={() => {
+                if (editItem.idx !== null && editItem.type) {
+                  handleChangeName(editItem.idx, editItem.type, newName);
+                  setEditItem({idx: null, type: null});
+                }
+              }}
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Drawer>
 
-        {/* Create Episode 버튼 */}
-        <Box className={styles.imageButtonContainer}>
-          <Button className={styles.imageButton} onClick={handleCreateEpisode}>
-            <HomeIcon />
-            <Typography>Create Episode</Typography>
-          </Button>
-        </Box>
-      </Box>
-
-      {/* 이름 변경을 위한 Dialog */}
-      <Dialog open={editItem.idx !== null} onClose={() => setEditItem({idx: null, type: null})}>
-        <DialogTitle>Edit {editItem.type === 'chapter' ? 'Chapter' : 'Episode'} Name</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="New Name"
-            fullWidth
-            value={newName}
-            onChange={e => setNewName(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditItem({idx: null, type: null})}>Cancel</Button>
-          <Button
-            onClick={() => {
-              if (editItem.idx !== null && editItem.type) {
-                handleChangeName(editItem.idx, editItem.type, newName);
-                setEditItem({idx: null, type: null});
-              }
-            }}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Drawer>
+      <ConfirmationDialog
+        open={confirmDialog.open}
+        title={confirmDialog.title}
+        content={confirmDialog.content}
+        onClose={() => setConfirmDialog({...confirmDialog, open: false})}
+        onConfirm={() => {
+          confirmDialog.onConfirm();
+          setConfirmDialog({...confirmDialog, open: false});
+        }}
+      />
+    </>
   );
 };
 
