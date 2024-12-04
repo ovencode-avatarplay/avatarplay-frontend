@@ -14,6 +14,7 @@ import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork
 import EpisodeStarringArtist from './EpisodeStarringCharacter';
 import EpisodeTempArtist from './EpisodeTempCharacter';
 import EpisodeStarringCharacter from './EpisodeStarringCharacter';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const EpisodeUploadCharacter: React.FC = () => {
   const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
@@ -121,6 +122,8 @@ const EpisodeUploadCharacter: React.FC = () => {
           <EpisodeStarringCharacter open={openSelectArtist} closeModal={() => onClickSelectArtist(false)} />
         )}
       </Box>
+
+      <LoadingOverlay loading={loading} />
     </div>
   );
 };

@@ -52,6 +52,7 @@ import ContentRecommendList from './ContentRecommendList';
 import {EpisodeCardProps} from './ContentDescType';
 
 import Link from 'next/link';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const DrawerContentDesc = () => {
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
@@ -310,6 +311,7 @@ const DrawerContentDesc = () => {
           </Link>
         </div>
       </main>
+      <LoadingOverlay loading={loading} />
     </Drawer>
   );
 };

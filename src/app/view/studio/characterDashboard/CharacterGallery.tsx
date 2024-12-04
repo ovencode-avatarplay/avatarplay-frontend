@@ -9,6 +9,7 @@ import {MediaState, sendUpload, MediaUploadReq} from '@/app/NetWork/ImageNetwork
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import {SaveGalleryReq, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
 import CharacterGalleryGrid from './CharacterGalleryGrid';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 interface CharacterGalleryProps {
   characterInfo: CharacterInfo;
@@ -48,6 +49,8 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   // All 일때 upload
   const [selectedGalleryType, setSelectedGalleryType] = useState<GalleryCategory>(GalleryCategory.All);
   const [galleryTypeDialogOpen, setGalleryTypeDialogOpen] = useState(false);
+
+  const [loading, setloading] = useState(false);
 
   //#region handler
   const handleCategoryChange = (_: any, newCategory: GalleryCategory) => {
@@ -96,6 +99,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
       };
 
       // 파일 업로드 API 호출
+      setloading(true);
       const response = await sendUpload(req);
 
       const uploadedImage = 'local uploaded image';
@@ -125,7 +129,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
     } catch (error) {
       console.error('Error uploading image:', error);
     } finally {
-      console.log('final');
+      setloading(false);
     }
   };
 
@@ -239,6 +243,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
         onClose={handleImageUploadDialogClose}
         onFileSelect={handleUploadImage}
       />
+      <LoadingOverlay loading={loading} />
     </Box>
   );
 };
