@@ -8,20 +8,16 @@ import {
   setVisibility,
   setMonetization,
   setNSFW,
-  setLanguageType,
-  setThumbnail,
   setContentDescription,
   setAuthorComment,
-  setAuthorName,
 } from '@/redux-store/slices/PublishInfo';
 
-import {Box, Drawer, Typography, TextField, Button, Select, MenuItem, Chip, Snackbar, Alert} from '@mui/material';
+import {Box, Drawer, Typography, TextField, Button, Chip, Snackbar, Alert} from '@mui/material';
 import RadioButtonGroup from '@/components/create/RadioButtonGroup';
 
 import styles from './ContentPublishing.module.css';
 
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-import EpisodeUploadCharacter from '../episode/episode-ImageCharacter/EpisodeUploadCharacter';
 import ContentImageUpload from './ContentImageUploader';
 
 interface Props {
@@ -33,16 +29,9 @@ interface Props {
 
 const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList}) => {
   const dispatch = useDispatch();
-  const {
-    languageType,
-    contentDescription,
-    authorName,
-    authorComment,
-    visibilityType,
-    monetization,
-    nsfw,
-    selectTagList,
-  } = useSelector((state: RootState) => state.publish);
+  const {contentDescription, authorComment, visibilityType, monetization, nsfw, selectTagList} = useSelector(
+    (state: RootState) => state.publish,
+  );
 
   const [showMoreTags, setShowMoreTags] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);

@@ -29,7 +29,6 @@ const ChatBar: React.FC<ChatBarProps> = ({
   setMessage,
   onSend,
   toggleExpand,
-  isExpanded,
   handleKeyDown,
   isHideChat,
   onToggleBackground,

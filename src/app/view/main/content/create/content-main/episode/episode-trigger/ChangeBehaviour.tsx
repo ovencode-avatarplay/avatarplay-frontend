@@ -16,7 +16,7 @@ import styles from './ChangeBehaviour.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {removeTriggerInfo, updateTriggerInfo, updateTriggerInfoName} from '@/redux-store/slices/EpisodeInfo';
-import {TriggerMainDataType, TriggerSubDataType} from '@/types/apps/DataTypes';
+import {TriggerMainDataType} from '@/types/apps/DataTypes';
 import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 import EpisodeConversationTemplate from '../episode-conversationtemplate/EpisodeConversationTemplate';
 import ChapterBoardOnTrigger from '@/app/view/main/content/create/content-main/chapter/OnTrigger/ChapterBoardOnTrigger';
@@ -167,7 +167,6 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
   const [newTriggerName, setNewTriggerName] = useState(item?.name);
 
   const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo);
-  const selectedContentId = useSelector((state: RootState) => state.contentselection.selectedContentId);
   const triggerInfoList = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList || []);
 
   const handleOpenChapterBoard = () => {

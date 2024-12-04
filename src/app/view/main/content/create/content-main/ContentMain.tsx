@@ -10,7 +10,6 @@ import EpisodeSetup from './episode/EpisodeSetup';
 import ContentBottom from './ContentBottom';
 
 // 상황에 따라 나타나는 컴포넌트
-import ContentPreviewChat from './content-preview-chat/ContentPreviewChat';
 import ContentPublishing from './content-publishing/ContentPublishing';
 import ContentDashboardDrawer from './content-dashboard/ContentDashboardDrawer';
 import ChapterBoard from './chapter/ChapterBoard';
@@ -52,7 +51,6 @@ const ContentMain: React.FC = () => {
   // 컴포넌트 오픈 상태
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isChapterboardOpen, setIsChapterboardOpen] = useState(false);
-  const [isLLMOpen, setIsLLMOpen] = useState(false);
   const [isPublishingOpen, setIsPublishingOpen] = useState(false);
   const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
   const [isInitFinished, setIsInitFinished] = useState(false);

@@ -2,7 +2,6 @@ import React from 'react';
 import {Box, Button, Typography, Modal} from '@mui/material';
 import DiamondIcon from '@mui/icons-material/Diamond'; // 다이아몬드 아이콘 임포트
 import styles from './NotEnoughRubyPopup.module.css'; // CSS 모듈 경로
-import Image from 'next/image'; // 아이콘에 사용할 이미지
 
 interface NotEnoughRubyPopupProps {
   open: boolean;

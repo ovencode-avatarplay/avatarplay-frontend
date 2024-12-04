@@ -1,15 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Button, Dialog, DialogContent, MenuItem, Typography} from '@mui/material';
-import {styled} from '@mui/system';
+import {Box, Dialog, DialogContent, MenuItem, Typography} from '@mui/material';
 import SpeedDial from '@mui/material/SpeedDial';
 import CreateIcon from '@mui/icons-material/Create';
-import ImageIcon from '@mui/icons-material/Image';
 
 import styles from './TriggerChangeCharacter.module.css';
 
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {CharacterInfo, setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo';
-import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
 
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import EpisodeTempCharacter from '../episode-ImageCharacter/EpisodeTempCharacter';

@@ -1,10 +1,10 @@
-import {Avatar, Box, IconButton, Modal} from '@mui/material';
+import {Avatar, Box, IconButton} from '@mui/material';
 import ChatMessageMenuTop from './ChatContextMenuTop';
 import ChatMessageMenuBottom from './ChatContextMenuBottom';
 import React, {useEffect, useState} from 'react';
 import styles from '../Styles/ChatMessageMenu.module.css';
 // import ChatRegenerateGroupNav from './ChatRegenerateGroupNav';
-import {MediaData, Message, MessageGroup, TriggerMediaState} from './ChatTypes';
+import {MediaData, Message, TriggerMediaState} from './ChatTypes';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-cards';
@@ -12,7 +12,6 @@ import 'swiper/css/navigation';
 import {EffectCards} from 'swiper/modules';
 import ReactPlayer from 'react-player';
 import ReactAudioPlayer from 'react-audio-player';
-import {FreeMode, Navigation, Pagination} from 'swiper/modules';
 import ChatMediaDialog from './ChatMediaDialog';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 interface ChatMessageBubbleProps {
@@ -43,7 +42,6 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   mediaData,
 }) => {
   const [answerTextMessage, setAnswerTextMessage] = useState(text);
-  const [questionTextMessage, setQuestionTextMessage] = useState(text);
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
     if (sender === 'system' || sender === 'introPrompt') {
       // System, IntroPrompt는 클릭되지 않게
@@ -55,7 +53,6 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
     onTtsClick(e);
   };
 
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
   const [isModalOpen, setModalOpen] = useState(false);
 
   const handleMediaClick = () => {

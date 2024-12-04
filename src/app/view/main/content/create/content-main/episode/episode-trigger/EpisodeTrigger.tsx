@@ -2,8 +2,7 @@
 
 import React, {useState} from 'react';
 import styles from './EpisodeTrigger.module.css'; // CSS Module import
-import {Dialog, DialogTitle, Button, Box, Card, CardContent, IconButton} from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import {Dialog, Button, Box, IconButton} from '@mui/material';
 import CheckboxList from './TriggerList'; // CheckboxList 컴포넌트 임포트
 import WriteTriggerName from './WriteTriggerName'; // WriteTriggerName 모달 컴포넌트
 import SelectTriggerType from './SelectTriggerType';
