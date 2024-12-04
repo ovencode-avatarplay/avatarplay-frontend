@@ -103,7 +103,7 @@ const DrawerContentDesc = () => {
   useEffect(() => {
     if (contentWholeDesc) {
       setContentName(contentWholeDesc.publishInfo.contentName);
-      setContentThumbnail(contentWholeDesc.chapterInfoList[0].episodeInfoList[0].thumbnailList[0]); //.publishInfo.thumbnail
+      setContentThumbnail(contentWholeDesc.publishInfo.thumbnail);
       setContentDescription(contentWholeDesc.publishInfo.contentDescription);
       setAuthorName(contentWholeDesc.publishInfo.authorName);
       setAuthorComment(contentWholeDesc.publishInfo.authorComment);
