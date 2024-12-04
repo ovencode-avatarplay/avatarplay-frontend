@@ -170,8 +170,6 @@ const ChatPage: React.FC = () => {
       handleSendMessage('%Failed to send message. Please try again.%', false, false);
 
       SetChatLoading(false);
-    } finally {
-      isSendingMessage.state = false;
     }
   };
 
@@ -209,6 +207,7 @@ const ChatPage: React.FC = () => {
 
         if (newMessage.includes('$') === true) {
           isSendingMessage.state = false;
+
           eventSource.close();
           console.log('Stream ended normally');
         }
@@ -222,6 +221,7 @@ const ChatPage: React.FC = () => {
       console.error('Stream encountered an error or connection was lost');
       handleSendMessage('%Stream encountered an error or connection was lost. Please try again.%', false, false);
       isSendingMessage.state = false;
+
       eventSource.close();
     };
 
@@ -348,12 +348,10 @@ const ChatPage: React.FC = () => {
           allMessages.push(newMessage);
           allEmoticon.push('');
           allMedia.push(mediaDataValue);
-          console.log('A');
         } else {
           allMessages.push(mediaMessages);
           allEmoticon.push('');
           allMedia.push(mediaDataValue);
-          console.log('B');
         }
       } else {
         //
@@ -394,12 +392,10 @@ const ChatPage: React.FC = () => {
               allMessages.push(_newMessage);
               allEmoticon.push('');
               allMedia.push(mediaDataValue);
-              console.log('C');
             } else {
               allMessages.push(mediaMessages);
               allEmoticon.push('');
               allMedia.push(mediaDataValue);
-              console.log('D');
             }
           } else {
             // sender Type이 같으니 기존 말풍선에 계속 넣어준다.
@@ -529,6 +525,7 @@ const ChatPage: React.FC = () => {
         handleSendMessage(newMessage, false, true);
         if (newMessage.includes('$') === true) {
           isSendingMessage.state = false;
+
           eventSource.close();
           console.log('Stream ended normally');
         }

@@ -362,20 +362,71 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             }
           }}
           sx={{
-            backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            height: '100%',
-            width: '100%',
             position: 'relative',
+            width: '100%',
+            height: '100%',
             fontFamily: 'Noto Sans KR, sans-serif',
             overflow: 'hidden',
           }}
-        ></Box>
+        >
+          {/* 기존 배경 */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${
+                prevBgUrl || bgUrl
+              })`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              opacity: isFadingOut ? 0 : 1,
+              transition: 'opacity 0.5s ease',
+              zIndex: 1,
+            }}
+          />
+
+          {/* 새 배경 */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              opacity: isTransitioning ? 1 : 0,
+              transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
+              zIndex: 2,
+            }}
+          />
+
+          {/* 캐릭터 이미지 */}
+          <Box
+            sx={{
+              position: 'absolute',
+
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `url(${characterUrl})`,
+              backgroundSize: 'contain',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              zIndex: 2, // 배경 위에 렌더링
+            }}
+          />
+        </Box>
       )}
     </>
   );
 };
-
+console.log('bgUrl');
 export default ChatArea;
