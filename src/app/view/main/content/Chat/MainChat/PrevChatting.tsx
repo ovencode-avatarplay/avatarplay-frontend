@@ -33,6 +33,7 @@ const usePrevChatting = (
       const ReqDataUrl: UrlEnterEpisodeChattingReq = {
         urlLinkKey: key !== null ? key : '',
         episodeId: episodeId,
+        language: navigator.language,
       };
       // 서버로부터 이전 채팅 데이터를 가져옴
       //const response = await sendChattingEnter(ReqData);
