@@ -22,27 +22,27 @@ const DrawerContentEpisodeItemList: React.FC<DrawerContentEpisodeItemListProps> 
 
   return (
     <Box className={styles.episodeInfoList}>
-      <Swiper
+      {/* <Swiper
         modules={[Pagination]}
         pagination={{clickable: true}}
         spaceBetween={'20px'}
         slidesPerView={1}
         onSlideChange={handleSlideChange} // 슬라이드 변경 시 handleSlideChange를 호출합니다.
-      >
-        {episodes.map(episode => (
-          <SwiperSlide key={episode.episodeId}>
-            <ContentEpisodeItem
-              episodeId={episode.episodeId}
-              name={episode.name}
-              desc={episode.desc}
-              thumbnail={episode.thumbnail}
-              intimacy={episode.intimacy}
-              isLock={episode.isLock}
-              imageCount={episode.imageCount}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      > */}
+      {episodes.map(episode => (
+        // <SwiperSlide key={episode.episodeId}>
+        <ContentEpisodeItem
+          episodeId={episode.episodeId}
+          name={episode.name}
+          desc={episode.desc}
+          thumbnail={episode.thumbnail}
+          intimacy={episode.intimacy}
+          isLock={episode.isLock}
+          imageCount={episode.imageCount}
+        />
+        // </SwiperSlide>
+      ))}
+      {/* </Swiper> */}
     </Box>
   );
 };

@@ -12,17 +12,13 @@ interface ContentRecommendListProps {
 
 const ContentRecommendList: React.FC<ContentRecommendListProps> = ({recommendContents, onSelectContent}) => {
   return (
-    <Swiper
-      spaceBetween={16}
-      slidesPerView={2.5} // 한 번에 2.5개의 아이템 표시
-      style={{width: '100%', height: 'auto'}}
-    >
+    <>
       {recommendContents.map(content => (
-        <SwiperSlide key={content.contentId}>
-          <ContentRecommendItem contentId={content.contentId} imageUrl={content.imageUrl} onSelect={onSelectContent} />
-        </SwiperSlide>
+        // <SwiperSlide key={content.contentId}>
+        <ContentRecommendItem contentId={content.contentId} imageUrl={content.imageUrl} onSelect={onSelectContent} />
+        // </SwiperSlide>
       ))}
-    </Swiper>
+    </>
   );
 };
 

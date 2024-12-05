@@ -24,16 +24,20 @@ import {
   Card,
   CardContent,
   Stack,
-  Avatar,
   Divider,
-  CardMedia,
   IconButton,
+  Tabs,
+  Tab,
 } from '@mui/material';
 
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import PeopleIcon from '@mui/icons-material/People';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import AddIcon from '@mui/icons-material/Add';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ShareIcon from '@mui/icons-material/Share';
 
 // Network
 import {
@@ -55,16 +59,17 @@ import Link from 'next/link';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const DrawerContentDesc = () => {
+  const dispatch = useDispatch();
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
+
+  const [loading, setLoading] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<'Episode' | 'Reccomend'>('Episode');
 
   const [contentUrl, setContentUrl] = useState('?v=vAPWL926G7M');
 
   const [selectedChapterIdx, setSelectedChapterIdx] = useState<number>(-1);
   const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number>(-1);
   const userId = useSelector((state: RootState) => state.user.userId);
-
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
 
   const [contentWholeDesc, setContentWholeDesc] = useState<GetContentByIdRes>(); // 컨텐츠 설명 전체
 
@@ -142,6 +147,10 @@ const DrawerContentDesc = () => {
     dispatch(closeDrawerContentDesc());
   };
 
+  const handleTabChange = (event: React.SyntheticEvent, value: any) => {
+    setSelectedTab(value);
+  };
+
   // chapter가 변경될 때 에피소드 리스트 업데이트
   useEffect(() => {
     setSelectedEpisodeIdx(0);
@@ -205,40 +214,26 @@ const DrawerContentDesc = () => {
         },
       }}
     >
-      <div className={styles.header}>
-        <Typography>{contentName}</Typography>
-        <Box>
-          <IconButton
-            className={styles.headerButton}
-            onClick={() => {
-              /* Add upload functionality */
-            }}
-          >
-            <UploadIcon />
-          </IconButton>
-          <IconButton className={styles.headerButton} onClick={handleCloseDrawer}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-      </div>
-      <main className={styles.content}>
-        <CardMedia
-          component="img"
-          height="200"
-          image={contentThumbnail}
-          alt={contentName}
+      <Box className={styles.thumbnailArea}>
+        <Box
           className={styles.imageThumbnail}
-          onError={() => setContentThumbnail('')}
-        />
+          sx={{
+            backgroundImage: `url(${contentThumbnail})`,
+          }}
+        ></Box>
+        <IconButton className={styles.thumbnailButton} onClick={handleCloseDrawer} sx={{position: 'absolute'}}>
+          <CloseIcon />
+        </IconButton>
+        <Typography className={styles.thumbnailTitle}>{contentName}</Typography>
+      </Box>
+      <main className={styles.content}>
         <Card>
           <CardContent sx={{padding: 1}}>
+            <Box className={styles.descriptionBox}>{contentDescription}</Box>
+          </CardContent>
+          <Divider className={styles.divider} />
+          <CardContent sx={{padding: 1}}>
             <div className={styles.cardProducerArea}>
-              <Avatar sx={{bgcolor: 'primary.main', width: 48, height: 48}}>
-                {authorName.charAt(0).toUpperCase()}
-              </Avatar>
-              <Box>
-                <Typography variant="h6">{authorName}</Typography>
-              </Box>
               <Box textAlign="center">
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <ChatBubbleIcon color="action" />
@@ -251,65 +246,92 @@ const DrawerContentDesc = () => {
                   <Typography variant="h6">{chatUserCount}</Typography>
                 </Stack>
               </Box>
+              <Box textAlign="center">
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <QuestionAnswerIcon color="action" />
+                  <Typography variant="h6">Story</Typography>
+                </Stack>
+              </Box>
             </div>
-          </CardContent>
-          <Divider className={styles.divider} />
-          <CardContent sx={{paddingTop: 1, paddingLeft: 3, paddingRight: 3}}>
             <Box className={styles.tagContainer}>
               {selectTagList.map((tag, index) => (
                 <Chip key={index} label={tag} className={styles.tagChip} />
               ))}
             </Box>
-
             <Divider className={styles.divider} />
-            <Typography variant="h6">Author Comment</Typography>
-            <Box className={styles.descriptionBox}>{authorComment}</Box>
+          </CardContent>
+          <Divider className={styles.divider} />
+          <CardContent sx={{paddingTop: 1, paddingLeft: 3, paddingRight: 3}}>
+            <div>
+              <Link href={`/:lang/chat${contentUrl}`} className={styles.startNewChatButton}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={() => {
+                    dispatch(setUrlLinkUse(false)); // 채팅이 url 링크를 통해 여는 것이 아니라는 것을 명시해준다.
+                  }}
+                >
+                  Continue
+                </Button>
+              </Link>
+            </div>
+            <div className={styles.contentButtonArea}>
+              <Button sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <AddIcon />
+                Add to My List
+              </Button>
+              <Button sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <ThumbUpIcon />
+                Rate
+              </Button>
+              <Button sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <ShareIcon />
+                Share
+              </Button>
+            </div>
 
-            <Typography variant="h6">ContentDescription</Typography>
-            <Box className={styles.descriptionBox}>{contentDescription}</Box>
+            {/* ContentDataTab */}
+            <div className={styles.contentDataTab}>
+              <Tabs value={selectedTab} onChange={handleTabChange} centered>
+                <Tab label="Episodes" value="Episode" />
+                <Tab label="Recommend" value="Reccomend" />
+              </Tabs>
+            </div>
 
-            <Divider className={styles.divider} />
-            <Typography variant="h6">Content Recommend</Typography>
-
-            <ContentRecommendList
-              recommendContents={recommendContentList}
-              onSelectContent={handleRecommendContentSelect}
-            />
+            {selectedTab === 'Episode' ? (
+              <>
+                <Box className={styles.chapterBox}>
+                  <Typography className={styles.chapterName} variant="h6">
+                    Chapter
+                  </Typography>
+                  <Select
+                    className={styles.chapterSelect}
+                    value={selectedChapterIdx}
+                    onChange={e => setSelectedChapterIdx(parseInt(e.target.value as string))}
+                    displayEmpty
+                  >
+                    {chapters.map((chapter, index) => (
+                      <MenuItem key={chapter.id} value={index}>
+                        {chapter.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Box>
+                <div className={styles.episodeListContainer}>
+                  <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
+                </div>
+              </>
+            ) : (
+              <>
+                <Typography variant="h6">Content Recommend</Typography>
+                <ContentRecommendList
+                  recommendContents={recommendContentList}
+                  onSelectContent={handleRecommendContentSelect}
+                />
+              </>
+            )}
           </CardContent>
         </Card>
-        <Box className={styles.chapterBox}>
-          <Typography className={styles.chapterName} variant="h6">
-            Chapter
-          </Typography>
-          <Select
-            className={styles.chapterSelect}
-            value={selectedChapterIdx}
-            onChange={e => setSelectedChapterIdx(parseInt(e.target.value as string))}
-            displayEmpty
-          >
-            {chapters.map((chapter, index) => (
-              <MenuItem key={chapter.id} value={index}>
-                {chapter.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
-        <div className={styles.episodeListContainer}>
-          <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
-        </div>
-        <div style={{marginBottom: '5vh'}}>
-          <Link href={`/:lang/chat${contentUrl}`} className={styles.startNewChatButton}>
-            <Button
-              variant="contained"
-              fullWidth
-              onClick={() => {
-                dispatch(setUrlLinkUse(false)); // 채팅이 url 링크를 통해 여는 것이 아니라는 것을 명시해준다.
-              }}
-            >
-              Start new chat - episode : {episodeId}
-            </Button>
-          </Link>
-        </div>
       </main>
       <LoadingOverlay loading={loading} />
     </Drawer>
