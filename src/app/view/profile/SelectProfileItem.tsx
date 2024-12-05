@@ -1,7 +1,12 @@
 import React from 'react';
-import {Avatar, Box, Typography, Radio, Checkbox} from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
+// styles, mui
 import styles from './SelectProfileItem.module.css';
+import {Avatar, Box, Typography} from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
+// types
 import {Profile} from './ProfileType';
 
 interface Props {
@@ -18,7 +23,7 @@ const SelectProfileItem: React.FC<Props> = ({profile, isEditing, onSelect}) => {
           <AddCircleOutlineIcon fontSize="large" />
         </Box>
       ) : (
-        <Avatar src={profile.avatar} alt={profile.userName} className={styles.avatar} />
+        <Avatar src={profile.avatar} alt={profile.name} className={styles.avatar} />
       )}
       <Box className={styles.userNameArea}>
         <Box className={styles.userNameArea}>
@@ -26,16 +31,11 @@ const SelectProfileItem: React.FC<Props> = ({profile, isEditing, onSelect}) => {
             {isEditing ? '' : profile.status}
           </Typography>
           <Typography variant="h6" className={styles.userName}>
-            {isEditing ? 'Add New Profile' : profile.userName}
+            {isEditing ? 'Add New Profile' : profile.name}
           </Typography>
         </Box>
       </Box>
-      <Checkbox
-        className={styles.checkbox}
-        checked={profile.isSelected}
-        inputProps={{'aria-label': profile.userName}}
-        disabled={isEditing} // isEditing 상태에서는 체크박스 비활성화
-      />
+      {profile.isSelected && <CheckCircleIcon className={styles.selectedIcon} fontSize="large" color="primary" />}
     </Box>
   );
 };

@@ -1,7 +1,12 @@
 export interface Profile {
   id: number;
+  type: string;
   avatar: string;
-  userName: string;
-  status: 'Original' | 'Fan' | '';
+  name: string;
+  status: string;
   isSelected: boolean;
+
+  posts: number;
+  followers: number;
+  following: number;
 }
