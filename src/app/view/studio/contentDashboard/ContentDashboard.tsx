@@ -97,6 +97,7 @@ const ContentDashboard: React.FC = () => {
             setTimeout(() => reject(new Error('Loading took too long!')), 5000),
           );
 
+          setLoading(true);
           await Promise.race([GetContentByContentId(selectedItemId), timeout]);
 
           dispatch(setSkipContentInit(true));
@@ -104,13 +105,16 @@ const ContentDashboard: React.FC = () => {
 
           dispatch(setSelectedChapterIdx(0));
           dispatch(setSelectedEpisodeIdx(0));
+          setLoading(false);
           const currentLang = searchParam.get(':lang') || 'en';
           router.push(`/${currentLang}/create/story`);
         } catch (error) {
+          setLoading(false);
           console.log('error');
         }
       }
     } else {
+      setLoading(false);
       const currentLang = searchParam.get(':lang') || 'en';
       router.push(`/${currentLang}/create/story`);
     }

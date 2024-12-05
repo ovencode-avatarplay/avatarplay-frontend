@@ -1,9 +1,10 @@
 import React from 'react';
 
-import {Drawer, Box, Typography} from '@mui/material';
+import {Drawer, Box, Typography, Button} from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
 import PostAddIcon from '@mui/icons-material/PostAdd';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 
 import Link from 'next/link';
 
@@ -33,45 +34,78 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
       anchor="bottom"
       open={open}
       onClose={onClose}
-      ModalProps={{
-        BackdropProps: {
-          style: {backgroundColor: 'transparent'},
-        },
-      }}
       PaperProps={{
-        sx: {
-          position: 'absolute',
-          bottom: 56,
-          zIndex: 10,
-          maxWidth: '500px',
-          margin: '0 auto',
-        },
+        className: styles.drawerContainer, // 클래스 이름으로 스타일 적용
       }}
     >
-      <Box className={styles.drawerBox}>
-        {/* Character Navigation */}
-        <Link href="/:lang/create/character" passHref>
-          <Box className={styles.drawerItem} onClick={handleClickCharacter}>
-            <PersonIcon fontSize="large" />
-            <Typography>{getLocalizedText('CreateWidget', 'widgetCharacter_label_001')}</Typography>
-          </Box>
-        </Link>
+      <Box>
+        {/* Drawer 타이틀 */}
+        <Typography variant="h5" className={styles.drawerTitle}>
+          Create
+        </Typography>
 
-        {/* Story Navigation */}
-        <Link href="/:lang/create/story" passHref>
-          <Box className={styles.drawerItem} onClick={handleClickStory}>
-            <BookIcon fontSize="large" />
-            <Typography>{getLocalizedText('CreateWidget', 'widgetStory_label_001')}</Typography>
-          </Box>
-        </Link>
+        {/* 항목 리스트 */}
+        <Box>
+          {/* Post */}
+          <Link href="/:lang/create/post" passHref>
+            <Button
+              variant="outlined"
+              onClick={onClose}
+              className={styles.drawerButton}
+              sx={{
+                justifyContent: 'flex-start',
+              }}
+            >
+              <PostAddIcon fontSize="large" className={styles.drawerButtonIcon} />
+              <Typography variant="h6">Post</Typography>
+            </Button>
+          </Link>
 
-        {/* Post Navigation */}
-        <Link href="/:lang/create/post" passHref>
-          <Box className={styles.drawerItem} onClick={handleClickPost}>
-            <PostAddIcon fontSize="large" />
-            <Typography>{getLocalizedText('CreateWidget', 'widgetPost_label_001')}</Typography>
-          </Box>
-        </Link>
+          {/* Contents */}
+          <Link href="/:lang/create/contents" passHref>
+            <Button
+              variant="outlined"
+              onClick={onClose}
+              className={styles.drawerButton}
+              sx={{
+                justifyContent: 'flex-start',
+              }}
+            >
+              <ContentPasteIcon fontSize="large" className={styles.drawerButtonIcon} />
+              <Typography variant="h6">Contents</Typography>
+            </Button>
+          </Link>
+
+          {/* Character */}
+          <Link href="/:lang/create/character" passHref>
+            <Button
+              variant="outlined"
+              onClick={onClose}
+              className={styles.drawerButton}
+              sx={{
+                justifyContent: 'flex-start',
+              }}
+            >
+              <PersonIcon fontSize="large" className={styles.drawerButtonIcon} />
+              <Typography variant="h6">Character</Typography>
+            </Button>
+          </Link>
+
+          {/* Story */}
+          <Link href="/:lang/create/story" passHref>
+            <Button
+              variant="outlined"
+              onClick={onClose}
+              className={styles.drawerButton}
+              sx={{
+                justifyContent: 'flex-start',
+              }}
+            >
+              <BookIcon fontSize="large" className={styles.drawerButtonIcon} />
+              <Typography variant="h6">Story</Typography>
+            </Button>
+          </Link>
+        </Box>
       </Box>
     </Drawer>
   );
