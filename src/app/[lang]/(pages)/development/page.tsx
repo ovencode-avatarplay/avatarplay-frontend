@@ -80,10 +80,11 @@ export default function ApiTestTool() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
     if (e.target.files) {
       setFormData(prev => ({
         ...prev,
-        templateFile: e.target.files[0],
+        templateFile: file,
       }));
     }
   };
