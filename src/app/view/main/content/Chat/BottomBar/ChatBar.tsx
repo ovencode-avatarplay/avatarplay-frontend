@@ -311,6 +311,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
                 border: '1px solid #ccc',
                 borderRadius: '4px',
                 backgroundColor: '#f5f5f5',
+                width: '100%',
               }}
             >
               {parsedModifyText}
