@@ -221,13 +221,13 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           <Box
             ref={scrollRef}
             sx={{
-              //height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 72 : 0}px)`,
+              height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 72 : 0}px)`,
               overflowY: 'auto',
               position: 'absolute',
-              top: '400px',
+              top: '72px',
               left: 0,
               right: 0,
-              height: `calc(100% - 400px)`, // 400px 이후의 높이를 지정
+              //height: `calc(100% - 400px)`, // 400px 이후의 높이를 지정
               paddingLeft: '16px',
               paddingRight: '16px',
               zIndex: 3, // 채팅 메시지가 보이도록 z-index를 더 높게 설정
