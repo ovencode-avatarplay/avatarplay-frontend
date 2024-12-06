@@ -53,10 +53,14 @@ const SelectProfileWidget: React.FC<Props> = ({open, onClose, profiles, isEditin
               key={-1}
               profile={{
                 id: -1,
+                type: 'Character',
                 avatar: '',
-                userName: 'Add New Profile',
+                name: 'Add New Profile',
                 status: '',
                 isSelected: false,
+                posts: 0,
+                followers: 0,
+                following: 0,
               }}
               isEditing={true}
               onSelect={() => handleProfileSelect(-1)}

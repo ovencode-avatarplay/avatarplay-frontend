@@ -95,10 +95,10 @@ const SelectTriggerType: React.FC<SelectTriggerTypeProps> = ({open, onClose, tri
     const subData = createDefaultSubData();
     const isKeywordTypeExists = triggerInfoList.some(info => Number(info.triggerType) === 1);
 
-    if (isKeywordTypeExists && Number(selectedTrigger) === 1) {
-      alert('Keyword 타입은 1개를 넘을 수 없습니다.');
-      return; // handleClose를 취소함
-    }
+    // if (isKeywordTypeExists && Number(selectedTrigger) === 1) {
+    //   alert('Keyword 타입은 1개를 넘을 수 없습니다.');
+    //   return; // handleClose를 취소함
+    // }
     console.log('전', triggerInfoList.length);
     // Redux에 데이터 저장
     const action = dispatch(

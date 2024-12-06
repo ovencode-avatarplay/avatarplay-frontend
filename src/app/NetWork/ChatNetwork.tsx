@@ -195,6 +195,7 @@ export interface EnterEpisodeChattingReq {
 export interface UrlEnterEpisodeChattingReq {
   urlLinkKey: string;
   episodeId: number;
+  language: string;
 }
 
 // URL 방식이든 아니는 Enter Respons 받는 형식은 같은걸 사용한다.
@@ -203,6 +204,7 @@ export interface EnterEpisodeChattingRes {
   contentId: number;
   episodeId: number;
   nextEpisodeId: number;
+  nextEpisodeName: string;
   contentName: string;
   episodeName: string;
   characterImageUrl: string;

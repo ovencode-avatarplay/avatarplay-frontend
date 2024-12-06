@@ -53,6 +53,7 @@ const ChatPage: React.FC = () => {
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [currentParsingSender, setCurrentParsingSender] = useState<{current: SenderType}>({current: SenderType.User}); // 현재 파싱중인 sender 상태
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
+  const [nextEpisodeName, setNextEpisodeName] = useState<string | null>(null); // 다음 에피소드 이름
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
   const [isIdEnter, setIsIdEnter] = useState<boolean>(false); // 로딩 상태 추가
@@ -298,6 +299,7 @@ const ChatPage: React.FC = () => {
         console.log('Result API Response:', response);
         if (response.data.nextEpisodeId !== 0) {
           setNextEpisodeId(response.data.nextEpisodeId); // 다음 에피소드 ID 저장
+          setNextEpisodeName(response.data.nextEpisodeName);
           setNextPopupData(response.data);
           setShowPopup(true);
         }
@@ -350,7 +352,10 @@ const ChatPage: React.FC = () => {
         //
         // 1. current sender를 가져온다
         let currentSender: SenderType = allMessages[allMessages.length - 1].sender;
+        // 같은타입의 말풍선이 새로 만들어져야 하는 경우가 있어서 아래 조건 추가함.
+        if (isNarrationActive.active === true) currentSender = SenderType.PartnerNarration;
         const tempChatId: number = chatId;
+        console.log('newMessage.text :' + newMessage.text);
         // 2. 메시지를 한 바이트씩 조사해서 새로운 Sender로 만들지 말지 처리한다.
         for (let i = 0; i < newMessage.text.length; i++) {
           let {isAnotherSender, newSender} = isAnotherSenderType(isMyMessage, newMessage.text[i], currentSender);
@@ -688,6 +693,7 @@ const ChatPage: React.FC = () => {
       // enter 했을 때 에피소드 이동 트리거 발동기록 확인
       if (enterData?.nextEpisodeId && enterData.nextEpisodeId > 0) {
         setNextEpisodeId(enterData.nextEpisodeId);
+        setNextEpisodeName(enterData.nextEpisodeName);
         setFloatingNextEpisode(true);
       }
     }
@@ -703,7 +709,7 @@ const ChatPage: React.FC = () => {
           isHideChat={isHideChat}
         />
         {floatingNextEpisode && (
-          <ChatFloatingArea episodeName={`${nextEpisodeId} 이동 버튼`} onNavigate={handlePopupYes} /> // TODO nextEpisodeId 대신 에피소드 이름으로 변경 (서버 작업 후)
+          <ChatFloatingArea episodeName={`${nextEpisodeName} 이동 버튼`} onNavigate={handlePopupYes} /> // TODO nextEpisodeId 대신 에피소드 이름으로 변경 (서버 작업 후)
         )}
         <ChatArea
           messages={parsedMessages!}

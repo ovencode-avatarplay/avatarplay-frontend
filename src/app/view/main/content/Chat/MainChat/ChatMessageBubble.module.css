@@ -1,0 +1,128 @@
+.chatBubble
+{
+  position: relative;
+}
+
+/*Blur*/
+
+.blurNone {
+    z-index: auto;
+    filter: none;
+}
+
+.blurSelected {
+    z-index: 10;
+    filter: none;
+}
+
+.blurBox {
+z-index: auto;
+filter: blur(2px);
+}
+
+.chatBubbleJustifyUser {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.chatBubbleJustifyPartner {
+    display: flex;
+    justify-content: flex-start; 
+    margin-bottom: 16px;
+}
+
+.chatBubbleJustifySystem {
+    display: flex;
+    justify-content: center; 
+    margin-bottom: 16px;
+}
+
+.AvatarIcon {
+    width: 32;
+    height: 32;
+    margin-right: 1;
+    border: 1px solid;
+border-color: black;
+}
+
+.chatBackSystem {
+    display:inline-block;
+    padding: 8px 55px;
+    border-radius: 8px;
+    max-width: 100%;
+    background-color: rgba(214, 214, 214, 0.8);    
+    border: 1px solid #c0c0c0;
+    color: #ffffff;
+    backdrop-filter: blur(20px);
+    text-shadow: 1px 1px 0 rgba(116, 116, 116, 1.0), -1px -1px 0 rgba(116, 116, 116, 1.0), 
+      1px -1px 0 rgba(116, 116, 116, 1.0), -1px 1px 0 rgba(116, 116, 116, 1.0);
+    font-size: 0.7em;
+    font-weight: bold;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  .chatBackIntro {
+    display:inline-block;
+    padding: 8px ;
+    border-radius: 8px;
+    max-width: 70%;
+    background-color: #ffffff;
+    color: #000000;
+    text-align: inherit;
+    border: 1px solid #c0c0c0;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  .chatBackUser {
+    display:inline-block;
+    padding: 8px ;
+    border-radius: 8px;
+    max-width: 70%;
+    background-color: rgba(80, 80, 80, 0.8);
+    color: #ffffff;
+    text-align: inherit;
+    font-size: 0.8em;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  .chatBackPartner {
+    display:inline-block;
+    padding: 8px ;
+    border-radius: 8px;
+    max-width: 70%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+    text-align: left;
+    font-size: 0.8em;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  .chatBackPartnerNarration {
+    display:inline-block;
+    padding: 8px ;
+    border-radius: 8px;
+    max-width: 70%;
+    background-color: rgba(0, 0, 0, 0.8);
+    margin-left: 40px;
+    color: #b0b0b0;
+    text-align: left;
+    font-size: 0.7em;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  .chatBackDefault {
+    display:inline-block;
+    padding: 8px ;
+    border-radius: 8px;
+    max-width: 70%;
+    background-color: rgba(214, 214, 214, 0.2);
+    color: #ffffff;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }

@@ -257,7 +257,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
         />
         {id === 'main' && (
           <Box display="flex" gap={1}>
-            {inputValues.main.trim() === '' ? (
+            {Object.values(inputValues).every(value => value.trim() === '') ? (
               <Button
                 onClick={handleAIRecommend}
                 sx={{
@@ -311,6 +311,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
                 border: '1px solid #ccc',
                 borderRadius: '4px',
                 backgroundColor: '#f5f5f5',
+                width: '100%',
               }}
             >
               {parsedModifyText}

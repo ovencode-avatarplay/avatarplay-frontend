@@ -1,6 +1,9 @@
 'use client';
 
 import * as React from 'react';
+
+// style, mui
+import './BottomNav.css';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -14,8 +17,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import CreateIcon from '@mui/icons-material/AddCircleOutline';
 
 import BottomNavData from 'data/navigation/bottom-nav.json';
+import profileData from 'data/profile/profile-data.json';
 
-import './BottomNav.css';
+// components
 import Link from 'next/link';
 import CreateWidget from '../content/create/CreateWidget';
 import SelectProfileWidget from '../../profile/SelectProfileWidget';
@@ -112,10 +116,7 @@ export default function BottomNav() {
         <SelectProfileWidget
           open={profileDrawerOpen}
           onClose={() => toggleProfileDrawer(false)}
-          profiles={[
-            {id: 1, avatar: '/path/avatar1.png', userName: 'Alice', status: '', isSelected: true},
-            {id: 2, avatar: '/path/avatar2.png', userName: 'Bob', status: 'Fan', isSelected: false},
-          ]}
+          profiles={profileData}
           isEditing={true}
         />
       </Paper>
