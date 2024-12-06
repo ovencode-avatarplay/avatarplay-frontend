@@ -1,0 +1,39 @@
+.chatBubble
+{
+  position: relative;
+}
+
+/*Blur*/
+
+.blurNone {
+    z-index: auto;
+    filter: none;
+}
+
+.blurSelected {
+    z-index: 10;
+    filter: none;
+}
+
+.blurBox {
+z-index: auto;
+filter: blur(2px);
+}
+
+.chatBubbleJustifyUser {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.chatBubbleJustifyPartner {
+    display: flex;
+    justify-content: flex-start; 
+    margin-bottom: 16px;
+}
+
+.chatBubbleJustifySystem {
+    display: flex;
+    justify-content: center; 
+    margin-bottom: 16px;
+}

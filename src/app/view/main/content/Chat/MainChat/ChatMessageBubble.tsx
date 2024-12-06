@@ -2,7 +2,7 @@ import {Avatar, Box, IconButton} from '@mui/material';
 import ChatMessageMenuTop from './ChatContextMenuTop';
 import ChatMessageMenuBottom from './ChatContextMenuBottom';
 import React, {useEffect, useState} from 'react';
-import styles from '../Styles/ChatMessageMenu.module.css';
+import styles from './ChatMessageBubble.module.css';
 // import ChatRegenerateGroupNav from './ChatRegenerateGroupNav';
 import {MediaData, Message, TriggerMediaState} from './ChatTypes';
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -93,26 +93,21 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
     <>
       {text !== '' && (
         <Box
-          sx={{
-            zIndex: selectedIndex === null ? 'auto' : index === selectedIndex ? 10 : 'auto',
-            filter: selectedIndex === null ? 'none' : index === selectedIndex ? 'none' : 'blur(2px)', // 선택된 버블은 blur가 없음
-            // pointerEvents: isSelected ? 'auto' : 'none', // 선택된 버블만 클릭 가능
-          }}
+          className={
+            selectedIndex === null ? styles.blurNone : index === selectedIndex ? styles.blurSelected : styles.blurBox
+          }
         >
           <div className={styles.chatBubble}>
             {selectedIndex === index && checkCanOpenContextTop() && <ChatMessageMenuTop id={id} />}
             <Box
               key={index}
-              sx={{
-                display: 'flex',
-                justifyContent:
-                  sender === 'user' || sender === 'userNarration'
-                    ? 'flex-end'
-                    : sender === 'partner' || sender === 'partnerNarration'
-                    ? 'flex-start'
-                    : 'center',
-                marginBottom: 2,
-              }}
+              className={
+                sender === 'user' || sender === 'userNarration'
+                  ? styles.chatBubbleJustifyUser
+                  : sender === 'partner' || sender === 'partnerNarration'
+                  ? styles.chatBubbleJustifyPartner
+                  : styles.chatBubbleJustifySystem
+              }
             >
               {(sender === 'partner' || sender === 'media') && (
                 <Avatar
