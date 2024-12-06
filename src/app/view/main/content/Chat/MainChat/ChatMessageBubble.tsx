@@ -110,55 +110,24 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
               }
             >
               {(sender === 'partner' || sender === 'media') && (
-                <Avatar
-                  alt="Partner Avatar"
-                  src={iconUrl}
-                  sx={{
-                    width: 32,
-                    height: 32,
-                    marginRight: 1,
-                    border: '1px solid',
-                    borderColor: 'black',
-                  }}
-                />
+                <Avatar alt="Partner Avatar" src={iconUrl} className={styles.AvatarIcon} />
               )}
 
               {sender !== 'media' && (
-                <Box
-                  sx={{
-                    display: 'inline-block',
-                    padding: sender === 'system' ? '8px 55px' : '8px',
-                    borderRadius: '8px',
-                    maxWidth: sender === 'introPrompt' ? '100%' : sender === 'system' ? '100%' : '70%',
-                    backgroundColor:
-                      sender === 'introPrompt'
-                        ? '#FFFFFF'
-                        : sender === 'user' || sender === 'userNarration'
-                        ? 'rgba(80, 80, 80, 0.8)'
-                        : sender === 'partner' || sender === 'partnerNarration'
-                        ? 'rgba(0, 0, 0, 0.8)'
-                        : 'rgba(214, 214, 214, 0.2)',
-                    border: sender === 'introPrompt' || sender === 'system' ? '1px solid #C0C0C0' : 'none',
-                    backdropFilter: sender === 'system' ? 'blur(20px)' : 'none',
-                    textAlign: sender === 'partnerNarration' || sender === 'userNarration' ? 'left' : 'inherit',
-                    color:
-                      sender === 'introPrompt'
-                        ? '#000000'
-                        : sender === 'system'
-                        ? '#FFFFFF'
-                        : sender === 'partnerNarration' || sender === 'userNarration'
-                        ? '#B0B0B0'
-                        : '#FFFFFF',
-                    fontSize: sender === 'partnerNarration' || sender === 'system' ? '0.7em' : '0.8em',
-                    fontWeight: sender === 'system' ? 'bold' : 'normal',
-                    wordWrap: 'break-word',
-                    whiteSpace: 'pre-wrap',
-                    textShadow:
-                      sender === 'system'
-                        ? '1px 1px 0 rgba(116, 116, 116, 1.0), -1px -1px 0 rgba(116, 116, 116, 1.0), 1px -1px 0 rgba(116, 116, 116, 1.0), -1px 1px 0 rgba(116, 116, 116, 1.0)'
-                        : 'none',
-                    marginLeft: sender === 'partnerNarration' ? '40px' : '0px',
-                  }}
+                <div
+                  className={
+                    sender === 'system'
+                      ? styles.chatBackSystem
+                      : sender === 'introPrompt'
+                      ? styles.chatBackIntro
+                      : sender === 'user' || sender === 'userNarration'
+                      ? styles.chatBackUser
+                      : sender === 'partner'
+                      ? styles.chatBackPartner
+                      : sender === 'partnerNarration'
+                      ? styles.chatBackPartnerNarration
+                      : styles.chatBackDefault
+                  }
                   onClick={handleMenuOpen}
                 >
                   {sender === 'user' && emoticonUrl !== '' && emoticonUrl !== undefined ? (
@@ -166,7 +135,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                   ) : (
                     <div dangerouslySetInnerHTML={{__html: answerTextMessage}} />
                   )}
-                </Box>
+                </div>
               )}
               {selectedIndex === index && checkCanOpenContextBottom() && (
                 <ChatMessageMenuBottom

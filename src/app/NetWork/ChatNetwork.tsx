@@ -204,6 +204,7 @@ export interface EnterEpisodeChattingRes {
   contentId: number;
   episodeId: number;
   nextEpisodeId: number;
+  nextEpisodeName: string;
   contentName: string;
   episodeName: string;
   characterImageUrl: string;
