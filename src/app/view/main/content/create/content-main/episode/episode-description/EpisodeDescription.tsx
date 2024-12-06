@@ -78,9 +78,9 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   const introductionRef = useRef<HTMLInputElement | null>(null);
   const secretRef = useRef<HTMLInputElement | null>(null);
 
-  const LIMIT_WORLD_SCENARIO = 10; // 월드 시나리오 필드 입력가능 최대값
-  const LIMIT_INTRODUCTION = 10; // 인트로 필드 입력가능 최대값
-  const LIMIT_SECRET = 10; // 비밀 필드 입력가능 최대값
+  const LIMIT_WORLD_SCENARIO = 1000; // 월드 시나리오 필드 입력가능 최대값
+  const LIMIT_INTRODUCTION = 3000; // 인트로 필드 입력가능 최대값
+  const LIMIT_SECRET = 3000; // 비밀 필드 입력가능 최대값
 
   const messageBoxText = useMemo(() => {
     return {
