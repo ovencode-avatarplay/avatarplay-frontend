@@ -120,8 +120,10 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                       ? styles.chatBackSystem
                       : sender === 'introPrompt'
                       ? styles.chatBackIntro
-                      : sender === 'user' || sender === 'userNarration'
+                      : sender === 'user'
                       ? styles.chatBackUser
+                      : sender === 'userNarration'
+                      ? styles.chatBackUserNarration
                       : sender === 'partner'
                       ? styles.chatBackPartner
                       : sender === 'partnerNarration'
