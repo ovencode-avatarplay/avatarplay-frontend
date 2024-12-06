@@ -1,0 +1,73 @@
+.chatBubble {
+    display: flex;
+    flex-direction: column;
+    margin: 8px;
+  }
+  
+  .partnerAvatar {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    border: 1px solid black;
+  }
+  
+  .chatBox {
+    display: inline-block;
+    padding: 8px;
+    border-radius: 8px;
+    max-width: 70%;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  .userChat {
+    background-color: rgba(80, 80, 80, 0.8);
+    color: #ffffff;
+  }
+  
+  .partnerChat {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+  }
+  
+  .systemChat {
+    background-color: rgba(214, 214, 214, 0.2);
+    color: #ffffff;
+    text-shadow: 1px 1px 0 rgba(116, 116, 116, 1.0);
+    backdrop-filter: blur(20px);
+    border: 1px solid #c0c0c0;
+  }
+  
+  .introPromptChat {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #c0c0c0;
+  }
+  
+  .mediaSwiper {
+    width: 100px;
+    height: auto;
+    margin-left: 10%;
+  }
+  
+  .reactPlayerContainer {
+    position: relative;
+    width: 70%;
+    height: auto;
+  }
+  
+  .playButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 48px;
+    z-index: 10;
+  }
+  
+  .audioPlayer {
+    width: 100%;
+    border-radius: 8px;
+  }
+  
