@@ -257,7 +257,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
         />
         {id === 'main' && (
           <Box display="flex" gap={1}>
-            {inputValues.main.trim() === '' ? (
+            {Object.values(inputValues).every(value => value.trim() === '') ? (
               <Button
                 onClick={handleAIRecommend}
                 sx={{
