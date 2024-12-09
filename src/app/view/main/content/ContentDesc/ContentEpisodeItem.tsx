@@ -59,7 +59,7 @@ const ContentEpisodeItem: React.FC<EpisodeCardProps> = ({
       {/* 잠김 아이콘 */}
       {isLock && (
         <Box className={styles.lockIconWrapper}>
-          <LockIcon className={styles.lockIcon} />
+          <img src="/ui/Icons/Audio/Pause.svg" alt="Pause Icon" />
         </Box>
       )}
     </Box>

@@ -1,0 +1,49 @@
+import AiText from './bottombar/AiText.svg';
+import Description from './bottombar/Description.svg';
+import message from './bottombar/Message.svg';
+import Plus from './bottombar/Plus.svg';
+import Recording1 from './bottombar/Recording.svg';
+import send from './bottombar/send.svg';
+
+import Left from './Icons/Arrow/Left.svg';
+import Right from './Icons/Arrow/Right.svg';
+
+import Pause from './Icons/Audio/Pause.svg';
+import Play from './Icons/Audio/Play.svg';
+
+import Ruby from './Icons/Gem/Ruby.svg';
+import Star from './Icons/Gem/Star.svg';
+
+import AI from './Icons/Messages, Conversation/AI.svg';
+import ChatRoundDots from './Icons/Messages, Conversation/Chat Round Dots.svg';
+import Description2 from './Icons/Messages, Conversation/Description.svg';
+import Edit from './Icons/Messages, Conversation/Edit.svg';
+import Image from './Icons/Messages, Conversation/Image.svg';
+import Lock from './Icons/Messages, Conversation/Lock.svg';
+import MenuDots from './Icons/Messages, Conversation/Menu Dots.svg';
+import Recording2 from './Icons/Messages, Conversation/Recording.svg';
+import Send from './Icons/Messages, Conversation/Send.svg';
+
+export {
+  AiText,
+  Description,
+  message,
+  Plus,
+  Recording1,
+  send,
+  Left,
+  Right,
+  Pause,
+  Play,
+  Ruby,
+  Star,
+  AI,
+  ChatRoundDots,
+  Description2,
+  Edit,
+  Image,
+  Lock,
+  MenuDots,
+  Recording2,
+  Send,
+};

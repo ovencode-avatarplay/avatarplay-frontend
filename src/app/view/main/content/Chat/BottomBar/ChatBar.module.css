@@ -1,0 +1,37 @@
+.expandButton {
+    margin-left: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .textField {
+    flex: 1;
+    margin-right: 8px;
+    overflow: auto;
+    border-radius: 4px;
+    min-height: 40px;
+  }
+  
+  .aiRecommendButton {
+    margin-right: 8px;
+    margin-bottom: 8px;
+    width: 40px;
+    height: 40px;
+    min-width: 50px;
+    padding: 0;
+    white-space: nowrap;
+  }
+  
+  .aiRecommendImage {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .sendButton {
+    margin-right: 8px;
+    margin-bottom: 8px;
+    width: 40px;
+    height: 40px;
+    min-width: 50px;
+    white-space: nowrap;
+  }
+  

@@ -9,6 +9,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import {setIsRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import AIRecommendImg from '@ui/chatting/btn_ai_recommend.png';
 import AI_Recommend from './AI_Recommend';
+import styles from './ChatBar.module.css';
+import {AI, AiText} from '@ui/chatting';
 
 interface ChatBarProps {
   message: string;
@@ -240,9 +242,40 @@ const ChatBar: React.FC<ChatBarProps> = ({
                     <CloseIcon />
                   </IconButton>
                 ) : (
-                  <IconButton onClick={addChatBar}>
-                    <DirectionsRunIcon />
-                  </IconButton>
+                  <Box display="flex" gap={1}>
+                    {Object.values(inputValues).every(value => value.trim() === '') ? (
+                      <Button
+                        onClick={handleAIRecommend}
+                        sx={{
+                          marginRight: 1,
+                          marginBottom: 1,
+                          width: '40px',
+                          height: '40px',
+                          minWidth: '50px',
+                          padding: 0,
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        <img src={AiText.src} alt="AI Recommend" style={{width: '100%', height: '100%'}} />
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                          marginRight: 1,
+                          marginBottom: 1,
+                          width: '40px',
+                          height: '40px',
+                          minWidth: '50px',
+                          whiteSpace: 'nowrap',
+                        }}
+                        onClick={handleSend}
+                      >
+                        보내기
+                      </Button>
+                    )}
+                  </Box>
                 )}
               </InputAdornment>
             ),
@@ -256,40 +289,9 @@ const ChatBar: React.FC<ChatBarProps> = ({
           }}
         />
         {id === 'main' && (
-          <Box display="flex" gap={1}>
-            {Object.values(inputValues).every(value => value.trim() === '') ? (
-              <Button
-                onClick={handleAIRecommend}
-                sx={{
-                  marginRight: 1,
-                  marginBottom: 1,
-                  width: '40px',
-                  height: '40px',
-                  minWidth: '50px',
-                  padding: 0,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <img src={AIRecommendImg.src} alt="AI Recommend" style={{width: '100%', height: '100%'}} />
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  marginRight: 1,
-                  marginBottom: 1,
-                  width: '40px',
-                  height: '40px',
-                  minWidth: '50px',
-                  whiteSpace: 'nowrap',
-                }}
-                onClick={handleSend}
-              >
-                보내기
-              </Button>
-            )}
-          </Box>
+          <IconButton onClick={addChatBar}>
+            <DirectionsRunIcon />
+          </IconButton>
         )}
       </Box>
     ));
