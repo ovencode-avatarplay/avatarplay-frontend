@@ -1,11 +1,9 @@
 import React, {useState} from 'react';
-import {Box, Button, Snackbar} from '@mui/material';
+import {Snackbar} from '@mui/material';
 
 import {useDispatch} from 'react-redux';
 
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import ReplayIcon from '@mui/icons-material/Replay';
+import {PlayTts, Copy, Delete, Regenerate} from '@ui/chatting';
 import styles from '../Styles/ChatMessageMenu.module.css';
 import {setIsRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 
@@ -33,6 +31,8 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const [modifyQuestionOpen, setModifyQuestionOpen] = useState(false);
+
+  const MinByte = 30;
 
   const handleCopy = (text: string, event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -107,31 +107,54 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
     onTtsClick(e);
   };
 
+  // Byte 길이를 계산하는 함수
+  const getTextByteLength = (text: string): number => {
+    // TextEncoder를 사용해 byte 길이 계산
+    const encoder = new TextEncoder();
+    return encoder.encode(text).length;
+  };
+
   return (
-    <Box className={styles.bottomMenuContainer}>
-      {id}
-      {/* 하단의 세로 메뉴 - 보이스 재생, 복사, 삭제, 재생성 버튼 */}
-      <Button onClick={handleTtsClick} className={styles.actionButton} startIcon={<PlayArrowIcon />}>
+    <div
+      className={
+        isUserChat
+          ? getTextByteLength(text) > MinByte
+            ? styles.bottomMenuContainerUser
+            : styles.bottomMenuContainerUserShort
+          : styles.bottomMenuContainerAI
+      }
+    >
+      {/* {id} */}
+      <button onClick={handleTtsClick} className={styles.actionButton}>
         Play Voice
-      </Button>
-      <Button onClick={e => handleCopy(text, e)} className={styles.actionButton} startIcon={<ContentCopyIcon />}>
-        Copy
-      </Button>
+        <img className={styles.icon} src={PlayTts.src} />
+      </button>
       {/*<Button onClick={handleDelete} className={styles.actionButton} startIcon={<DeleteIcon />}>
             Delete
           </Button>
           <Button onClick={handleOpenModifyText} className={styles.actionButton} startIcon={<ReplayIcon />}>
             Modify
           </Button>*/}
-      {lastMessageId === id && isUserChat && (
-        <Button onClick={handleStartModifyQuestion} className={styles.actionButton} startIcon={<ReplayIcon />}>
-          Modify Question
-        </Button>
-        // :        (
-        //   <Button onClick={handleRegenerateAnswer} className={styles.actionButton} startIcon={<ReplayIcon />}>
-        //     Regenerate Answer
-        //   </Button>
-        // )
+      {/* <button onClick={handleOpenModifyText } className={styles.actionButtonDelete}>
+        Delete
+        <img className={styles.icon} src={Delete.src} />
+      </button> */}
+      {lastMessageId === id && isUserChat ? (
+        <>
+          <button onClick={e => handleCopy(text, e)} className={styles.actionButton}>
+            Copy
+            <img className={styles.icon} src={Copy.src} />
+          </button>
+          <button onClick={handleStartModifyQuestion} className={styles.actionButtonLast}>
+            Regenerate
+            <img className={styles.icon} src={Regenerate.src} />
+          </button>
+        </>
+      ) : (
+        <button onClick={e => handleCopy(text, e)} className={styles.actionButtonLast}>
+          Copy
+          <img className={styles.icon} src={Copy.src} />
+        </button>
       )}
 
       <Snackbar
@@ -142,7 +165,7 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
         anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
         sx={{width: '20vw'}}
       />
-    </Box>
+    </div>
   );
 };
 
