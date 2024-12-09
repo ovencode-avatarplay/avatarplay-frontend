@@ -1,9 +1,10 @@
-import AiText from "./bottombar/AiText.svg";
-import Description from "./bottombar/Description.svg";
-import message from "./bottombar/Message.svg";
-import Plus from "./bottombar/Plus.svg";
-import Recording1 from "./bottombar/Recording.svg";
-import send from "./bottombar/send.svg";
+import AiText from './bottombar/AiText.svg';
+import Description from './bottombar/Description.svg';
+import BotMessage from './bottombar/Message.svg';
+import Plus from './bottombar/Plus.svg';
+import Recording1 from './bottombar/Recording.svg';
+import BotSend from './bottombar/send.svg';
+import Chat from './bottombar/Chat.svg';
 
 import Left from "./Icons/Arrow/Left.svg";
 import Right from "./Icons/Arrow/Right.svg";
@@ -32,12 +33,13 @@ import LikeOn from "./Icons/MessageMenu/LikeOn.svg";
 import LikeOff from "./Icons/MessageMenu/LikeOff.svg";
 
 export {
+  Chat,
   AiText,
   Description,
-  message,
+  BotMessage,
   Plus,
   Recording1,
-  send,
+  BotSend,
   Left,
   Right,
   Pause,

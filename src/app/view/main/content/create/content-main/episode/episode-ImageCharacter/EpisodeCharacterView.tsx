@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {Box, Typography, Slider, Button} from '@mui/material';
-import CurrencyIcon from '@mui/icons-material/AttachMoney';
+import React from 'react';
+import {Box, Typography, Button} from '@mui/material';
 import styles from './EpisodeCharacterView.module.css';
-import {Swiper, SwiperSlide} from 'swiper/react';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 interface EpisodeCharacterViewProps {
   open: boolean;

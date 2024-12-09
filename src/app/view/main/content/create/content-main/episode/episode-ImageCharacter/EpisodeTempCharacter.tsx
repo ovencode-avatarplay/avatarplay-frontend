@@ -8,8 +8,8 @@ import ImageIcon from '@mui/icons-material/Image';
 import styles from './EpisodeTempCharacter.module.css';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {setCharacterInfo, setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo';
-import {RootState, AppDispatch} from '@/redux-store/ReduxStore';
+import {setCharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {RootState} from '@/redux-store/ReduxStore';
 
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
