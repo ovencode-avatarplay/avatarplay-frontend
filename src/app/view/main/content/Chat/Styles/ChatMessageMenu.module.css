@@ -28,41 +28,75 @@
 }
 
 .topMenuContainer {
-    position: absolute;
-    display: flex;
-    gap: 8px;
+    position: absolute; 
 
-    z-index: 15;
-    margin-left: 10%;
-    
-    bottom: 100%;    
-    margin-left: 10%;
-    width: 40%;
-
-    justify-items: center;
-    justify-self: center;
-    align-items: center;
-    
-    background-color: blue;
+    z-index: 15;  
+    justify-self: flex-end;
+    align-items: center; 
+    bottom: 100%;
+    padding: 0px; 
   }
   
-  .bottomMenuContainer {
+  .bottomMenuContainerUser {
     position: absolute;
     display: flex;
-    gap: 8px;
 
     z-index: 15;
 
+    width: 160px;
     top: 100%;
-    margin-left: 10%;
-    width: 40%;
+
+    margin-top: 12px;
+    margin-right: 12px;
     
     flex-direction: column;
     justify-items: center;
-    justify-self: center;
+    justify-self: flex-start;
     align-items: center;
+    padding: 0px;
+    background: #FFFFFF;
+    border-radius: 10px;
+  }
+  
+  .bottomMenuContainerUserShort {
+    position: absolute;
+    display: flex;
 
-    background-color: red;
+    z-index: 15;
+
+    width: 160px;
+    top: 100%;
+    right: 0%;
+
+    margin-top: 12px; 
+    
+    flex-direction: column;
+    justify-items: center;
+    justify-self: flex-start;
+    align-items: center;
+    padding: 0px;
+    background: #FFFFFF;
+    border-radius: 10px;
+  }
+  
+  .bottomMenuContainerAI {
+    position: absolute;
+    display: flex;
+
+    z-index: 15;
+
+    width: 160px;
+    top: 100%;
+
+    margin-top: 12px;
+    
+    flex-direction: column;
+    justify-items: center;
+    justify-self: flex-end;
+    align-items: center; 
+    padding: 0px;
+    background: #FFFFFF;
+    border-radius: 10px;
   }
   
   .iconButton {
@@ -73,8 +107,80 @@
   }
   
   .actionButton {
+    box-sizing: border-box;
+
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    justify-content: flex-start;
+    padding: 10px 14px;
+    gap: 8px;
+
+    border-bottom: 1px solid #EAECF0;
+
+    flex: none;
+    order: 1;
+    align-self: stretch;
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 160%; 
+    letter-spacing: 0.2px;
+
+    color: #000000;
   }
   
+  .actionButtonDelete {
+    box-sizing: border-box;
+    
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 8px;
+    
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 160%; 
+    letter-spacing: 0.2px; 
+    color: #F75555;
+  }
+      
+
+  .actionButtonLast {
+    box-sizing: border-box;
+    
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+     
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+    
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 160%;
+    letter-spacing: 0.2px;
+    
+    color: #000000;
+  }
+      
