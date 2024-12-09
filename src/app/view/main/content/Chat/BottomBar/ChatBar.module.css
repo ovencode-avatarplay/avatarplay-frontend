@@ -8,11 +8,8 @@
     overflow-y: hidden; /* 초기에는 스크롤 숨김 */
     font-size: 14px;
     width: 100%;
-    min-height: 38px; /* 기본 높이 */
-    max-height: 100px; /* 최대 높이 */
     background: #e8eaed;
-    border: none;
-    outline: none;
+
     
   }
   

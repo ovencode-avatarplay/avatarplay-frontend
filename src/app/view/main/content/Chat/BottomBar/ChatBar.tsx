@@ -226,14 +226,32 @@ const ChatBar: React.FC<ChatBarProps> = ({
           ) : (
             <img src={Description.src} onClick={() => toggleIcon(id)} />
           )}
-          <input
-            placeholder={'Type your message...'}
+          <TextField
+            placeholder="Type your message..."
             onFocus={handleFocus}
             value={inputValues[id]}
             onChange={e => handleInputChange(id, e.target.value)}
             onKeyDown={handleKeyDownInternal}
+            multiline
+            maxRows={5}
             className={styles.textField}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  border: 'none', // 아웃라인 제거
+                },
+                fontSize: '14px', // 폰트 크기 설정
+                paddingTop: '5px',
+                paddingBottom: '5px',
+              },
+              '& .MuiInputBase-input': {
+                fontSize: '14px', // 내부 입력 텍스트의 폰트 크기 설정
+                paddingTop: '5px',
+                paddingBottom: '5px',
+              },
+            }}
           />
+
           {id !== 'main' ? (
             <IconButton onClick={() => removeChatBar(id)}>
               <CloseIcon />
