@@ -10,7 +10,7 @@ import {setIsRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import AIRecommendImg from '@ui/chatting/btn_ai_recommend.png';
 import AI_Recommend from './AI_Recommend';
 import styles from './ChatBar.module.css';
-import {AI, AiText, BotSend, Chat, Recording1, Send} from '@ui/chatting';
+import {AI, AiText, BotMessage, BotSend, Chat, Description, Plus, Recording1, Send} from '@ui/chatting';
 
 interface ChatBarProps {
   message: string;
@@ -216,15 +216,17 @@ const ChatBar: React.FC<ChatBarProps> = ({
     chatBars.map((id, index) => (
       <div className={styles.chatBox} key={id}>
         {index === chatBars.length - 1 && (
-          <IconButton onClick={toggleExpand} sx={{marginLeft: 1, marginBottom: 1}}>
-            <ArrowUpwardIcon />
-          </IconButton>
+          <button className={styles.commonButton} onClick={toggleExpand}>
+            <img src={Plus.src} />
+          </button>
         )}
         <div className={styles.inputBox}>
-          <IconButton onClick={() => toggleIcon(id)}>
-            {toggledIcons[id] ? <DirectionsRunIcon /> : <MapsUgcIcon />}
-          </IconButton>
-          <textarea
+          {toggledIcons[id] ? (
+            <img src={BotMessage.src} onClick={() => toggleIcon(id)} />
+          ) : (
+            <img src={Description.src} onClick={() => toggleIcon(id)} />
+          )}
+          <input
             placeholder={'Type your message...'}
             onFocus={handleFocus}
             value={inputValues[id]}
@@ -239,11 +241,11 @@ const ChatBar: React.FC<ChatBarProps> = ({
           ) : (
             <Box display="flex">
               {Object.values(inputValues).every(value => value.trim() === '') ? (
-                <button className={styles.textFieldButton} onClick={handleAIRecommend}>
+                <button className={styles.commonButton} onClick={handleAIRecommend}>
                   <img src={AiText.src} alt="AI Recommend" />
                 </button>
               ) : (
-                <button className={styles.textFieldButton} onClick={handleSend}>
+                <button className={styles.commonButton} onClick={handleSend}>
                   <img src={BotSend.src} alt="AI Recommend" />
                 </button>
               )}
@@ -254,7 +256,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
           <Box display="flex">
             {Object.values(inputValues).every(value => value.trim() === '') ? (
               <button
-                className={styles.textFieldButton}
+                className={styles.commonButton}
                 onClick={() => {
                   /*아직 미구현*/
                 }}
@@ -262,7 +264,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
                 <img src={Recording1.src} alt="AI Recommend" />
               </button>
             ) : (
-              <button className={styles.textFieldButton} onClick={addChatBar}>
+              <button className={styles.commonButton} onClick={addChatBar}>
                 <img src={Chat.src} alt="AI Recommend" />
               </button>
             )}
