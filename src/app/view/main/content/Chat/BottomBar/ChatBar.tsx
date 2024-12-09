@@ -88,7 +88,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   }, [isRegeneratingQuestion]);
 
   const addChatBar = () => {
-    if (chatBars.length >= 5) return;
+    if (chatBars.length >= 6) return;
     const newId = `chatBar-${Date.now()}`;
     const newContent = inputValues.main;
 
@@ -215,16 +215,16 @@ const ChatBar: React.FC<ChatBarProps> = ({
   const renderChatBars = () =>
     chatBars.map((id, index) => (
       <div className={styles.chatBox} key={id}>
-        {index === chatBars.length - 1 && (
-          <button className={styles.commonButton} onClick={toggleExpand}>
-            <img src={Plus.src} />
-          </button>
-        )}
+        <>
+          {Object.values(inputValues).every(value => value.trim() === '') && index === chatBars.length - 1 && (
+            <img src={Plus.src} className={styles.plusButton} onClick={toggleExpand} />
+          )}
+        </>
         <div className={styles.inputBox}>
           {toggledIcons[id] ? (
-            <img src={BotMessage.src} onClick={() => toggleIcon(id)} />
+            <img src={BotMessage.src} onClick={() => toggleIcon(id)} className={styles.inputButton} />
           ) : (
-            <img src={Description.src} onClick={() => toggleIcon(id)} />
+            <img src={Description.src} onClick={() => toggleIcon(id)} className={styles.inputButton} />
           )}
           <TextField
             placeholder="Type your message..."
@@ -257,20 +257,16 @@ const ChatBar: React.FC<ChatBarProps> = ({
               <CloseIcon />
             </IconButton>
           ) : (
-            <Box display="flex">
+            <>
               {Object.values(inputValues).every(value => value.trim() === '') ? (
-                <button className={styles.commonButton} onClick={handleAIRecommend}>
-                  <img src={AiText.src} alt="AI Recommend" />
-                </button>
+                <img src={AiText.src} alt="AI Recommend" onClick={handleAIRecommend} className={styles.inputButton} />
               ) : (
-                <button className={styles.commonButton} onClick={handleSend}>
-                  <img src={BotSend.src} alt="AI Recommend" />
-                </button>
+                <img src={BotSend.src} alt="AI Recommend" onClick={handleAIRecommend} className={styles.inputButton} />
               )}
-            </Box>
+            </>
           )}
         </div>
-        {id === 'main' && (
+        {id === 'main' && chatBars.length < 6 && (
           <Box display="flex">
             {Object.values(inputValues).every(value => value.trim() === '') ? (
               <button
