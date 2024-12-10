@@ -160,3 +160,24 @@ export const sendContentDelete = async (payload: DeleteContentReq): Promise<Resp
     throw new Error('Failed to send delete content data. Please try again.'); // 에러 처리
   }
 };
+
+// getTagList
+export interface GetTagListReq {}
+
+export interface GetTagListRes {
+  tagList: string[];
+}
+
+export const sendGetTagList = async (payload: GetTagListReq): Promise<ResponseAPI<GetTagListRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetTagListRes>>('Content/getTagList', payload);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`GetTagList Fail ${response.data.resultMessage}`);
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to send getTagList.`);
+  }
+};

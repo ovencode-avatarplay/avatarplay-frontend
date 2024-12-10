@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './ChatRetryButton.module.css';
-import Retry from '@ui/chatting/Icons/MessageMenu/Regenerate.svg';
+import {Regenerate} from '@ui/chatting';
 
 interface ChatRetryButtonProps {
   retrySend: () => void;
@@ -14,7 +14,7 @@ const ChatRetryButton: React.FC<ChatRetryButtonProps> = ({retrySend}) => {
   return (
     <div className={styles.chatRetryButton} onClick={handleClick}>
       <div className={styles.retryIcon}>
-        <img src={Retry.src} />
+        <img src={Regenerate.src} />
       </div>
 
       <span>Retry</span>

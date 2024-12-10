@@ -40,8 +40,6 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
 }) => {
   const [drawerVisibilityOpen, setDrawerVisibilityOpen] = useState(false);
   const [drawerMonetizationOpen, setDrawerMonetizationOpen] = useState(false);
-  const [visibility, setVisibility] = useState('Private');
-  const [monetization, setMonetization] = useState('Off');
   const [loading, setLoading] = useState(false);
 
   const defaultCharacterInfo: CharacterInfo = {
@@ -69,6 +67,8 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
   const [characterName, setCharacterName] = useState<string>(currentCharacter.name || '');
   const [characterIntroduction, setCharacterIntroduction] = useState<string>(currentCharacter.introduction || '');
   const [characterDescription, setCharacterDescription] = useState<string>(currentCharacter.description || '');
+  const [visibility, setVisibility] = useState(currentCharacter.visibilityType);
+  const [monetization, setMonetization] = useState(currentCharacter.isMonetization);
 
   const [isPublishRequested, setIsPublishRequested] = useState<boolean>(false);
   const handleDrawerVisibilityToggle = () => {
@@ -85,7 +85,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
       // 사용자의 입력 데이터를 수집하여 CreateCharacterReq로 구성
       const req: CreateCharacterReq = {
         characterInfo: {
-          id: characterInfo.id ?? 0,
+          id: currentCharacter.id ?? 0,
           name: characterName,
           introduction: characterIntroduction,
           description: characterDescription,
@@ -95,8 +95,8 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
           portraitGalleryImageUrl: [],
           poseGalleryImageUrl: [],
           expressionGalleryImageUrl: [],
-          visibilityType: visibility === 'Public' ? 2 : visibility === 'Unlisted' ? 1 : 0, // Visibility를 숫자로 변환
-          isMonetization: monetization === 'On',
+          visibilityType: visibility, // Visibility를 숫자로 변환
+          isMonetization: monetization,
           state: 1,
         },
         debugParameter: debugparam,
@@ -119,10 +119,22 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
     }
   };
 
+  function GetVisibilityText() {
+    if (visibility === 0) {
+      return 'Private';
+    } else if (visibility === 1) {
+      return 'Unlisted';
+    } else if (visibility === 2) {
+      return 'Public';
+    } else {
+      return 'Err';
+    }
+  }
+
   function getMonetizationText() {
-    if (monetization === 'On') {
+    if (monetization === true) {
       return 'Original';
-    } else if (monetization === 'Off') {
+    } else if (monetization === false) {
       return 'Fan';
     }
   }
@@ -199,7 +211,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
         <Box className={styles.settingButton} onClick={handleDrawerVisibilityToggle}>
           <PublicIcon />
           <Typography className={styles.label}>Visibility</Typography>
-          <Typography className={styles.toggleState}>{visibility}</Typography>
+          <Typography className={styles.toggleState}>{GetVisibilityText()}</Typography>
           <ChevronRightIcon />
         </Box>
         <Box className={styles.settingButton} onClick={handleDrawerMonetizationToggle}>
@@ -238,13 +250,13 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
           {/* Visibility Toggle */}
           <RadioGroup
             value={visibility}
-            onChange={e => setVisibility(e.target.value)}
+            onChange={e => setVisibility(parseInt(e.target.value, 10))}
             className={styles.toggleGroup}
             sx={{zIndex: 1500}}
           >
-            <FormControlLabel value="Private" control={<Radio />} label="Private" />
-            <FormControlLabel value="Unlisted" control={<Radio />} label="Unlisted" />
-            <FormControlLabel value="Public" control={<Radio />} label="Public" />
+            <FormControlLabel value={0} control={<Radio />} label="Private" />
+            <FormControlLabel value={1} control={<Radio />} label="Unlisted" />
+            <FormControlLabel value={2} control={<Radio />} label="Public" />
           </RadioGroup>
         </Box>
       </Drawer>
@@ -265,11 +277,11 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
           {/* Monetization Toggle */}
           <RadioGroup
             value={monetization}
-            onChange={e => setMonetization(e.target.value)}
+            onChange={e => setMonetization(e.target.value === 'true')}
             className={styles.toggleGroup}
           >
-            <FormControlLabel value="On" control={<Radio />} label="Original" />
-            <FormControlLabel value="Off" control={<Radio />} label="Fan" />
+            <FormControlLabel value={true} control={<Radio />} label="Original" />
+            <FormControlLabel value={false} control={<Radio />} label="Fan" />
           </RadioGroup>
         </Box>
       </Drawer>

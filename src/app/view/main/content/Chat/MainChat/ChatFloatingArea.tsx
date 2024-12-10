@@ -1,8 +1,8 @@
 import {Box, Button, Typography} from '@mui/material';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import {useEffect, useState} from 'react';
 
 import styles from './ChatFloatingArea.module.css';
+import {Play2} from '@ui/chatting';
 
 interface ChatFloatingAreaProps {
   episodeName: string;
@@ -18,12 +18,11 @@ const ChatFloatingArea: React.FC<ChatFloatingAreaProps> = ({episodeName, onNavig
   }, []);
 
   return (
-    <Box className={`${styles.ChatFloatingArea} ${isVisible ? styles.visible : ''}`}>
+    <Box className={`${styles.ChatFloatingArea}  ${isVisible ? styles.visible : ''}`}>
       <Typography className={styles.episodeName}>{episodeName}</Typography>
-      <Button variant="contained" className={styles.moveButton} onClick={onNavigate}>
-        {' '}
-        <ArrowForwardIosIcon />
-      </Button>
+      <button className={styles.moveButton} onClick={onNavigate}>
+        <img src={Play2.src} />
+      </button>
     </Box>
   );
 };

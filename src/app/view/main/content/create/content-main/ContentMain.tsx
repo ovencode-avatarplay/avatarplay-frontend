@@ -555,12 +555,7 @@ const ContentMain: React.FC = () => {
             onDeleteEpisode={handleDeleteEpisode}
             onNameChange={handleNameChange}
           />
-          <ContentPublishing
-            open={isPublishingOpen}
-            onClose={handleClosePublishing}
-            onPublish={handlePublish}
-            tagList={editingContentInfo?.publishInfo?.tagList}
-          />
+          <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
           <EpisodeSetup
             onDrawerOpen={handleOpenChapterboard}
             contentId={editingContentInfo?.id ?? 0}

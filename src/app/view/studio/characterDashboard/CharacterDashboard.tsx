@@ -45,7 +45,6 @@ const CharacterDashboard: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
 
-  const dispatch = useDispatch();
   const router = useRouter();
   const searchParam = useSearchParams();
 
@@ -203,16 +202,19 @@ const CharacterDashboard: React.FC = () => {
       const response = await sendDeleteCharacter(payload);
 
       if (response) {
-        // UI에서 삭제된 캐릭터 제거
-        setCharacters(prev => prev?.filter(char => char.id !== selectedCharacterId));
-        setSelectedCharacterId(null);
-        alert(`Character "${characterName}" deleted successfully.`);
-
+        if (response.resultCode === 1) {
+          alert(`캐릭터 "${characterName}"가 에피소드에서 사용되고 있습니다. 에피소드를 먼저 지우세요`);
+        } else {
+          // UI에서 삭제된 캐릭터 제거
+          setCharacters(prev => prev?.filter(char => char.id !== selectedCharacterId));
+          setSelectedCharacterId(null);
+          alert(`캐릭터 "${characterName}"가 성공적으로 지워졌습니다.`);
+        }
         handleDeleteDialogClose();
       }
     } catch (error) {
       console.error('Error deleting character:', error);
-      alert(`Failed to delete character "${characterName}". Please try again.`);
+      alert(`캐릭터 "${characterName}" 삭제를 실패했습니다. 다시 해보고 리포트 해주세요`);
     }
   };
   //#endregion
