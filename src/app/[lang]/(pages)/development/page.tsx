@@ -21,12 +21,17 @@ import {
   CardContent,
   TextareaAutosize,
   CircularProgress,
+  SelectChangeEvent,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 type ChatMessageContent = {
   question: string;
   answer: string;
+};
+
+type Trigger = {
+  condition: string;
 };
 
 type FormDataType = {
@@ -42,6 +47,8 @@ type FormDataType = {
   question: string;
   jailBreak: boolean;
   contents: ChatMessageContent[];
+  triggerKeyword: string;
+  triggers: Trigger[];
 };
 
 type UsageDetails = {
@@ -64,18 +71,29 @@ export default function ApiTestTool() {
     question: '안녕?',
     jailBreak: true,
     contents: [],
+    triggers: [{condition: '기분 좋을때'}, {condition: '우울 할 때'}],
   });
 
   const [logs, setLogs] = useState<string[]>([]);
   const [usageDetails, setUsageDetails] = useState<UsageDetails | null>(null);
   const [answer, setAnswer] = useState<string>();
+  const [triggerAnswer, setTriggerAnswer] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value, type, checked} = e.target;
+
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const handleSelect = (e: SelectChangeEvent<string>) => {
+    const {name, value} = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
     }));
   };
 
@@ -113,11 +131,39 @@ export default function ApiTestTool() {
     }));
   };
 
+  const handleAddTrigger = () => {
+    setFormData(prev => ({
+      ...prev,
+      triggers: [...prev.triggers, {condition: ''}],
+    }));
+  };
+
+  const handleDeleteTrigger = (index: number) => {
+    const updatedContents = formData.triggers.filter((_, i) => i !== index);
+    setFormData(prev => ({
+      ...prev,
+      triggers: updatedContents,
+    }));
+  };
+
+  const handleTriggerChange = (index: number, field: string, value: string) => {
+    const updatedContents = [...formData.triggers];
+    updatedContents[index][field as keyof Trigger] = value;
+    setFormData(prev => ({
+      ...prev,
+      triggers: updatedContents,
+    }));
+  };
+
+  const handleClear = async () => {
+    setLogs([]);
+  };
+
   const handleSubmit = async () => {
     setIsLoading(true);
     const data = new FormData();
     Object.keys(formData).forEach(key => {
-      if (key === 'contents') {
+      if (key === 'contents' || key === 'triggers') {
         data.append(key, JSON.stringify(formData[key as keyof FormDataType]));
       } else if (key === 'templateFile' && formData.templateFile) {
         data.append(key, formData.templateFile);
@@ -138,12 +184,13 @@ export default function ApiTestTool() {
         ...prev,
         contents: [
           ...prev.contents,
-          {question: prev.question, answer: response.data.choices[0].message.content || 'No answer provided'},
+          {question: prev.question, answer: response.data.data.content || 'No answer provided'},
         ],
       }));
       // Set usage details
-      setUsageDetails(response.data.usage);
-      setAnswer(response.data.choices[0].message.content);
+      setUsageDetails(response.data.data.usage);
+      setAnswer(response.data.data.content);
+      setTriggerAnswer(response.data.data.trigger.summary);
     } catch (error: any) {
       setLogs(prevLogs => [...prevLogs, error.message]);
     } finally {
@@ -157,9 +204,25 @@ export default function ApiTestTool() {
         <Typography variant="h4" component="h1" gutterBottom>
           API 테스트 도구
         </Typography>
+
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label="Model ID" name="modelId" value={formData.modelId} onChange={handleChange} />
+            <FormControl fullWidth>
+              <InputLabel id="model-id-label">Model ID</InputLabel>
+              <Select
+                labelId="model-id-label"
+                id="model-id-select"
+                value={formData.modelId}
+                name="modelId"
+                onChange={handleSelect}
+              >
+                <MenuItem value="gpt-4">GPT-4</MenuItem>
+                <MenuItem value="gpt-4o">GPT-4o</MenuItem>
+                <MenuItem value="anthropic.claude-3-haiku-20240307-v1:0">Claude3 Haiku</MenuItem>
+                <MenuItem value="anthropic.claude-3-sonnet">Claude3 Sonnet</MenuItem>
+                <MenuItem value="anthropic.claude-3-5-sonnet-20241022-v2:0">Claude3.5 Sonnet</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Button variant="contained" component="label" fullWidth>
@@ -261,6 +324,26 @@ export default function ApiTestTool() {
               Add Content
             </Button>
           </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">Trigger:</Typography>
+            {formData.triggers.map((trigger, index) => (
+              <Box key={index} display="flex" gap={2} my={1} alignItems="center">
+                <TextField
+                  fullWidth
+                  label="Condition"
+                  value={trigger.condition}
+                  onChange={e => handleTriggerChange(index, 'condition', e.target.value)}
+                />
+
+                <IconButton onClick={() => handleDeleteTrigger(index)}>
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            ))}
+            <Button variant="outlined" onClick={handleAddTrigger} sx={{mt: 2}}>
+              Add Trigger
+            </Button>
+          </Grid>
         </Grid>
         <Grid item xs={12} sm={6} my={2}>
           <Box display="flex" gap={2} alignItems="center">
@@ -296,13 +379,18 @@ export default function ApiTestTool() {
             <CircularProgress />
           </Box>
         ) : (
-          <Grid item xs={12} sm={6} my={2}>
-            <TextField multiline rows={8} fullWidth label="Answer" name="answer" value={answer} />
-          </Grid>
+          <>
+            <Grid item xs={12} sm={6} my={2}>
+              <TextField multiline rows={8} fullWidth label="Answer" name="answer" value={answer} />
+            </Grid>
+            <TextField multiline rows={4} fullWidth label="Trigger Answer" name="answer" value={triggerAnswer} />
+          </>
         )}
 
         <Box mt={4}>
-          <Typography variant="h6">로그</Typography>
+          <Typography variant="h6">
+            로그 <Button onClick={handleClear}>Clear</Button>
+          </Typography>
           <pre>{JSON.stringify(logs, null, 2)}</pre>
         </Box>
         {usageDetails && (
