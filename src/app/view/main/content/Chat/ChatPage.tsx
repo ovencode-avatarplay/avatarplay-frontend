@@ -291,7 +291,7 @@ const ChatPage: React.FC = () => {
             createDate: new Date(0),
           };
 
-          resultSystemMessages.text = triggerInfo.systemText;
+          resultSystemMessages.text = triggerInfo.systemText.replace(/^%|%$/g, '');
           allMessage.push(resultSystemMessages); // Media 관련 메시지 추가
           allEmoticon.push(''); // 빈 이모티콘 추가
           allMedia.push(noneMedia); // 새 미디어 추가

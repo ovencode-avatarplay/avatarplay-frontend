@@ -230,9 +230,9 @@ const ChatBar: React.FC<ChatBarProps> = ({
         </>
         <div className={styles.inputBox}>
           {toggledIcons[id] ? (
-            <img src={BotMessage.src} onClick={() => toggleIcon(id)} className={styles.inputButton} />
-          ) : (
             <img src={Description.src} onClick={() => toggleIcon(id)} className={styles.inputButton} />
+          ) : (
+            <img src={BotMessage.src} onClick={() => toggleIcon(id)} className={styles.inputButton} />
           )}
           <TextField
             placeholder="Type your message..."

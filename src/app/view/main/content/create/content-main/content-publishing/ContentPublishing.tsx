@@ -29,7 +29,7 @@ interface Props {
 
 const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList}) => {
   const dispatch = useDispatch();
-  const {contentDescription, authorComment, visibilityType, monetization, nsfw, selectTagList} = useSelector(
+  const {thumbnail, contentDescription, authorComment, visibilityType, monetization, nsfw, selectTagList} = useSelector(
     (state: RootState) => state.publish,
   );
 
@@ -84,7 +84,6 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
   const closeUploadImageDialog = () => {
     setUploadImageDialogOpen(false);
   };
-
   return (
     <Drawer
       anchor="right"
@@ -113,6 +112,7 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
           </Select> */}
           <ContentImageUpload
             uploadImageState={isUploadImageDialogOpen}
+            initImage={thumbnail}
             onClickUploadImage={openUploadImageDialog}
             onCloseUploadImage={closeUploadImageDialog}
           />
