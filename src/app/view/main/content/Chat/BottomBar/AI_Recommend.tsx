@@ -54,31 +54,29 @@ const AI_Recommend: React.FC<AIRecommendProps> = ({open, onClose, onSelectMessag
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Box className={styles.modalContainer}>
-        <Typography className={styles.modalTitle} variant="h5">
-          추천 채팅
-        </Typography>
+    <Box className={styles.modalContainer}>
+      <Typography className={styles.modalTitle} variant="h5">
+        추천 채팅
+      </Typography>
 
-        <Box className={styles.messageBoxContainer}>
-          {messages.map((message, index) => (
-            <Box key={index} className={styles.messageBox}>
-              <Typography className={styles.messageText} onClick={() => handleClickMessage(message)}>
-                {message}
-              </Typography>
-              <Button
-                variant="outlined"
-                startIcon={<EditIcon />}
-                className={styles.editButton}
-                onClick={() => handleEditButtonClick(message)} // 편집하기 버튼 클릭 시 기존 동작 유지
-              >
-                편집하기
-              </Button>
-            </Box>
-          ))}
-        </Box>
+      <Box className={styles.messageBoxContainer}>
+        {messages.map((message, index) => (
+          <Box key={index} className={styles.messageBox}>
+            <Typography className={styles.messageText} onClick={() => handleClickMessage(message)}>
+              {message}
+            </Typography>
+            <Button
+              variant="outlined"
+              startIcon={<EditIcon />}
+              className={styles.editButton}
+              onClick={() => handleEditButtonClick(message)} // 편집하기 버튼 클릭 시 기존 동작 유지
+            >
+              편집하기
+            </Button>
+          </Box>
+        ))}
       </Box>
-    </Modal>
+    </Box>
   );
 };
 

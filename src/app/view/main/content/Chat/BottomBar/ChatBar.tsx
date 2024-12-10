@@ -312,16 +312,31 @@ const ChatBar: React.FC<ChatBarProps> = ({
             <Button onClick={handleCancelModifyText}>Cancel</Button>
           </Box>
           {renderChatBars()}
+          {isAIRecommendOpen ? (
+            <Box>
+              <AI_Recommend
+                open={isAIRecommendOpen}
+                onClose={closeAIRecommend}
+                onSelectMessage={selectMessageFromAIRecommend}
+              />
+            </Box>
+          ) : null}
         </Box>
       ) : (
-        <Box>{renderChatBars()}</Box>
+        <Box>
+          {renderChatBars()}
+          {isAIRecommendOpen ? (
+            <Box>
+              <AI_Recommend
+                open={isAIRecommendOpen}
+                onClose={closeAIRecommend}
+                onSelectMessage={selectMessageFromAIRecommend}
+              />
+            </Box>
+          ) : null}
+        </Box>
       )}
       {/* AI 추천 모달 */}
-      <AI_Recommend
-        open={isAIRecommendOpen}
-        onClose={closeAIRecommend}
-        onSelectMessage={selectMessageFromAIRecommend}
-      />
     </Box>
   );
 };
