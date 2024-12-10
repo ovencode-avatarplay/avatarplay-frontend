@@ -135,20 +135,23 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleCreateChapter = () => {
-    const newChapterId = getMaxId(chapters) + 1;
+    const newChapterId = getMinChapterId(chapters);
+    const newEpisodeId = getMinEpisodeId(chapters);
+    if (newChapterId != null && newEpisodeId != null) {
+      const newEpisode: EpisodeInfo = {
+        ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
+        id: newEpisodeId - 1,
+        name: `New Episode ${newEpisodeId - 1}`,
+      };
 
-    const newEpisode: EpisodeInfo = {
-      ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
-      name: `New Episode 1`,
-    };
+      const newChapter: ChapterInfo = {
+        id: newChapterId - 1,
+        name: `New Chapter ${newChapterId - 1}`,
+        episodeInfoList: [newEpisode], // 기본 에피소드 추가
+      };
 
-    const newChapter: ChapterInfo = {
-      id: newChapterId,
-      name: `New Chapter ${chapters.length + 1}`,
-      episodeInfoList: [newEpisode], // 기본 에피소드 추가
-    };
-
-    onAddChapter(newChapter);
+      onAddChapter(newChapter);
+    }
   };
 
   const handleDeleteChapter = (chapterIdx: number) => {
@@ -214,31 +217,32 @@ const ChapterBoard: React.FC<Props> = ({
 
   const handleCreateEpisode = () => {
     if (selectedChapterIdx !== null) {
-      const selectedChapterData = chapters[selectedChapterIdx];
-      const newEpisodeId = getMaxId(selectedChapterData?.episodes || []) + 1;
+      const newEpisodeId = getMinEpisodeId(chapters);
 
-      const newEpisodeInfo: EpisodeInfo = {
-        ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
-        id: newEpisodeId,
-        name: `New Episode ${chapters[selectedChapterIdx].episodes.length + 1}`,
-      };
+      if (newEpisodeId != null) {
+        const newEpisodeInfo: EpisodeInfo = {
+          ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
+          id: newEpisodeId - 1,
+          name: `New Episode ${newEpisodeId - 1}`,
+        };
 
-      const newEpisode = {
-        id: newEpisodeInfo.id,
-        title: newEpisodeInfo.name,
-        thumbnail: newEpisodeInfo.backgroundImageUrl,
-        description: newEpisodeInfo.episodeDescription,
-        triggerInfoList: newEpisodeInfo.triggerInfoList,
-        conversationTemplateList: newEpisodeInfo.conversationTemplateList,
-      };
+        const newEpisode = {
+          id: newEpisodeInfo.id,
+          title: newEpisodeInfo.name,
+          thumbnail: newEpisodeInfo.backgroundImageUrl,
+          description: newEpisodeInfo.episodeDescription,
+          triggerInfoList: newEpisodeInfo.triggerInfoList,
+          conversationTemplateList: newEpisodeInfo.conversationTemplateList,
+        };
 
-      onAddEpisode(newEpisodeInfo);
+        onAddEpisode(newEpisodeInfo);
 
-      setChapters(prevChapters =>
-        prevChapters.map((chapter, index) =>
-          index === selectedChapterIdx ? {...chapter, episodes: [...chapter.episodes, newEpisode]} : chapter,
-        ),
-      );
+        setChapters(prevChapters =>
+          prevChapters.map((chapter, index) =>
+            index === selectedChapterIdx ? {...chapter, episodes: [...chapter.episodes, newEpisode]} : chapter,
+          ),
+        );
+      }
     }
   };
 
@@ -280,6 +284,27 @@ const ChapterBoard: React.FC<Props> = ({
 
   const handleDeleteEpisodeOpen = () => {};
   const handleDeleteEpisodeClose = () => {};
+
+  const getMinEpisodeId = (chapters: Chapter[]): number | null => {
+    const episodeIds = chapters.flatMap(chapter => chapter.episodes.map(episode => episode.id));
+
+    if (episodeIds.length === 0) {
+      return null; // 에피소드가 없는 경우 null 반환 (버그)
+    }
+
+    const minId = Math.min(...episodeIds);
+    return minId > 0 ? 0 : minId;
+  };
+
+  const getMinChapterId = (chapters: Chapter[]): number | null => {
+    if (chapters.length === 0) {
+      return null; // Chapter가 없을 경우 null 반환 (버그)
+    }
+
+    const minChapterId = chapters.reduce((minId, chapter) => Math.min(minId, chapter.id), Infinity);
+
+    return minChapterId > 0 ? 0 : minChapterId;
+  };
 
   return (
     <>

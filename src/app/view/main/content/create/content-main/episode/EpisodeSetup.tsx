@@ -1,11 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore'; // Redux Store의 RootState 가져오기
-import {Box, Typography} from '@mui/material';
+import {Box} from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
-import PostAddIcon from '@mui/icons-material/PostAdd';
-import ImageIcon from '@mui/icons-material/Image';
 
 import styles from './EpisodeSetup.module.css';
 

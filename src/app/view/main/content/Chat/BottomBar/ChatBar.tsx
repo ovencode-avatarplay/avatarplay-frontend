@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, TextField, IconButton, InputAdornment, Button, Typography} from '@mui/material';
+import {Box, TextField, IconButton, InputAdornment, Button, Typography, Grow} from '@mui/material';
 import MapsUgcIcon from '@mui/icons-material/MapsUgc';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import CloseIcon from '@mui/icons-material/Close';
@@ -9,6 +9,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import {setIsRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import AIRecommendImg from '@ui/chatting/btn_ai_recommend.png';
 import AI_Recommend from './AI_Recommend';
+import styles from './ChatBar.module.css';
+import {AI, AiText, BotMessage, BotSend, Chat, Description, Plus, Recording1, Send} from '@ui/chatting';
 
 interface ChatBarProps {
   message: string;
@@ -86,7 +88,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   }, [isRegeneratingQuestion]);
 
   const addChatBar = () => {
-    if (chatBars.length >= 5) return;
+    if (chatBars.length >= 6) return;
     const newId = `chatBar-${Date.now()}`;
     const newContent = inputValues.main;
 
@@ -212,86 +214,77 @@ const ChatBar: React.FC<ChatBarProps> = ({
 
   const renderChatBars = () =>
     chatBars.map((id, index) => (
-      <Box display="flex" alignItems="center" padding={1} key={id}>
-        {index === chatBars.length - 1 && (
-          <IconButton onClick={toggleExpand} sx={{marginLeft: 1, marginBottom: 1}}>
-            <ArrowUpwardIcon />
-          </IconButton>
-        )}
-        <TextField
-          variant="outlined"
-          placeholder={'Type your message...'}
-          onFocus={handleFocus}
-          value={inputValues[id]}
-          onChange={e => handleInputChange(id, e.target.value)}
-          onKeyDown={handleKeyDownInternal}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <IconButton onClick={() => toggleIcon(id)}>
-                  {toggledIcons[id] ? <DirectionsRunIcon /> : <MapsUgcIcon />}
-                </IconButton>
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment position="end">
-                {id !== 'main' ? (
-                  <IconButton onClick={() => removeChatBar(id)}>
-                    <CloseIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton onClick={addChatBar}>
-                    <DirectionsRunIcon />
-                  </IconButton>
-                )}
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            flex: 1,
-            marginRight: 1,
-            overflow: 'auto',
-            borderRadius: '4px',
-            minHeight: '40px',
-          }}
-        />
-        {id === 'main' && (
-          <Box display="flex" gap={1}>
-            {inputValues.main.trim() === '' ? (
-              <Button
-                onClick={handleAIRecommend}
-                sx={{
-                  marginRight: 1,
-                  marginBottom: 1,
-                  width: '40px',
-                  height: '40px',
-                  minWidth: '50px',
-                  padding: 0,
-                  whiteSpace: 'nowrap',
+      <div className={styles.chatBox} key={id}>
+        <>
+          {Object.values(inputValues).every(value => value.trim() === '') && index === chatBars.length - 1 && (
+            <img src={Plus.src} className={styles.plusButton} onClick={toggleExpand} />
+          )}
+        </>
+        <div className={styles.inputBox}>
+          {toggledIcons[id] ? (
+            <img src={BotMessage.src} onClick={() => toggleIcon(id)} className={styles.inputButton} />
+          ) : (
+            <img src={Description.src} onClick={() => toggleIcon(id)} className={styles.inputButton} />
+          )}
+          <TextField
+            placeholder="Type your message..."
+            onFocus={handleFocus}
+            value={inputValues[id]}
+            onChange={e => handleInputChange(id, e.target.value)}
+            onKeyDown={handleKeyDownInternal}
+            multiline
+            maxRows={5}
+            className={styles.textField}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  border: 'none', // 아웃라인 제거
+                },
+                fontSize: '14px', // 폰트 크기 설정
+                paddingTop: '5px',
+                paddingBottom: '5px',
+              },
+              '& .MuiInputBase-input': {
+                fontSize: '14px', // 내부 입력 텍스트의 폰트 크기 설정
+                paddingTop: '5px',
+                paddingBottom: '5px',
+              },
+            }}
+          />
+
+          {id !== 'main' ? (
+            <IconButton onClick={() => removeChatBar(id)}>
+              <CloseIcon />
+            </IconButton>
+          ) : (
+            <>
+              {Object.values(inputValues).every(value => value.trim() === '') ? (
+                <img src={AiText.src} alt="AI Recommend" onClick={handleAIRecommend} className={styles.inputButton} />
+              ) : (
+                <img src={BotSend.src} alt="AI Recommend" onClick={handleAIRecommend} className={styles.inputButton} />
+              )}
+            </>
+          )}
+        </div>
+        {id === 'main' && chatBars.length < 6 && (
+          <Box display="flex">
+            {Object.values(inputValues).every(value => value.trim() === '') ? (
+              <button
+                className={styles.commonButton}
+                onClick={() => {
+                  /*아직 미구현*/
                 }}
               >
-                <img src={AIRecommendImg.src} alt="AI Recommend" style={{width: '100%', height: '100%'}} />
-              </Button>
+                <img src={Recording1.src} alt="AI Recommend" />
+              </button>
             ) : (
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  marginRight: 1,
-                  marginBottom: 1,
-                  width: '40px',
-                  height: '40px',
-                  minWidth: '50px',
-                  whiteSpace: 'nowrap',
-                }}
-                onClick={handleSend}
-              >
-                보내기
-              </Button>
+              <button className={styles.commonButton} onClick={addChatBar}>
+                <img src={Chat.src} alt="AI Recommend" />
+              </button>
             )}
           </Box>
         )}
-      </Box>
+      </div>
     ));
 
   return (
@@ -311,6 +304,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
                 border: '1px solid #ccc',
                 borderRadius: '4px',
                 backgroundColor: '#f5f5f5',
+                width: '100%',
               }}
             >
               {parsedModifyText}

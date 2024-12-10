@@ -110,40 +110,18 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
         actionMediaUrlList: item?.actionMediaUrlList || '',
         actionConversationList: item?.actionConversationList || [],
       });
-      if (triggerInfo.actionChangeEpisodeId === -1) {
-        setSelectedChapter('None');
-        setSelectedEpisode('None');
-        return;
-      }
+
       const matchingChapter = content.chapterInfoList.find(chapter =>
         chapter.episodeInfoList.some(episode => episode.id === triggerInfo.actionChangeEpisodeId),
       );
-
+      console.log('triggerInfo.actionChangeEpisodeId', triggerInfo.actionChangeEpisodeId);
       let matchingEpisode = content.chapterInfoList
         .flatMap(chapter => chapter.episodeInfoList)
         .find(episode => episode.id === triggerInfo.actionChangeEpisodeId);
 
       // matchingChapter와 matchingEpisode가 undefined인 경우 인덱스를 기반으로 검사
-      if (!matchingChapter || !matchingEpisode) {
-        const fallbackChapter = content.chapterInfoList.find(
-          chapter => chapter.episodeInfoList[triggerInfo.actionChangeEpisodeId] !== undefined,
-        );
-
-        const fallbackEpisode = fallbackChapter?.episodeInfoList[triggerInfo.actionChangeEpisodeId];
-
-        if (fallbackChapter) {
-          setSelectedChapter(fallbackChapter.name || 'None');
-        } else {
-          setSelectedChapter('None');
-        }
-
-        if (fallbackEpisode) {
-          matchingEpisode = fallbackEpisode;
-          setSelectedEpisode(fallbackEpisode.name || 'None');
-        } else {
-          setSelectedEpisode('None');
-        }
-      } else {
+      // matchingChapter와 matchingEpisode가 undefined인 경우 인덱스를 기반으로 검사
+      {
         if (matchingChapter) {
           setSelectedChapter(matchingChapter.name || 'None');
         } else {
@@ -192,21 +170,10 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
       setSelectedChapter(selectedChapterInfo.name || 'None');
       setSelectedEpisode(selectedEpisode.name || 'None select Episode');
 
-      // 전체 에피소드 인덱스를 계산
-      const totalEpisodeIndex =
-        content.chapterInfoList
-          .slice(
-            0,
-            content.chapterInfoList.findIndex(chapter => chapter.id === chapterId),
-          )
-          .reduce((acc, chapter) => {
-            return acc + chapter.episodeInfoList.length; // 이전 장의 모든 에피소드 수
-          }, 0) + selectedEpisodeIndex; // 현재 장에서 선택된 에피소드의 인덱스 추가
-
       // Update triggerInfo with the total index instead of episodeId
       setTriggerInfo(prev => ({
         ...prev,
-        actionChangeEpisodeId: totalEpisodeIndex, // Here we use the total index
+        actionChangeEpisodeId: selectedEpisode.id, // Here we use the total index
       }));
     } else {
       console.error('Selected episode not found');

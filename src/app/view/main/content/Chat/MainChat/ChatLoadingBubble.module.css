@@ -1,0 +1,65 @@
+.chatLoadingContainer {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 16px; 
+  }
+  
+  .avatar {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px; /* marginRight: 1 equivalent */
+    border: 1px solid black;
+    border-radius: 50%; /* To make the avatar circular */
+  }
+  
+  .bubble {
+    display: inline-block;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.8); 
+    font-size: 0.8em;
+
+    
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 16px;
+    flex-direction: column;
+    align-items: center;
+    padding: 18px 12px; 
+    max-width: 260px;
+
+    background: #FFFFFF;
+    backdrop-filter: blur(7.5px);
+    border-radius: 0px 12px 12px 12px;
+  }
+  
+  .loadingDots span {
+    animation: blink 1.5s infinite;
+    animation-fill-mode: both;
+    display: inline-block;
+    margin-right: 4px;
+    
+  }
+  
+  .loadingDots span:nth-child(1) {
+    animation-delay: 0s;
+  }
+  .loadingDots span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .loadingDots span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes blink {
+    0% {
+      opacity: 0.2;
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.2;
+    }
+  }
+  

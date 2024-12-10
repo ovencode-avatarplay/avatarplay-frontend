@@ -8,8 +8,8 @@ import BottomNav from '../main/bottom-nav/BottomNav';
 const Profile = ({children}: {children: ReactNode}) => {
   return (
     <div className={styles.body}>
-      <BottomNav />
       {children}
+      <BottomNav />
     </div>
   );
 };

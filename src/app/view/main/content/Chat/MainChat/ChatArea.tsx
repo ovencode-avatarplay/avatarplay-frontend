@@ -11,6 +11,8 @@ import {SendChatMessageReq} from '@/app/NetWork/ChatNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import ChatRetryButton from './ChatRetryButton';
+import ChatLoadingBubble from './ChatLoadingBubble';
 interface ChatAreaProps {
   messages: MessageGroup;
   bgUrl: string;
@@ -44,7 +46,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [selectedBubbleIndex, setSelectedBubbleIndex] = useState<number | null>(null);
 
-  const chatInfo = useSelector((state: RootState) => state);
+  const chatInfo = useSelector((state: RootState) => state.chatting);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [retryingMessages, setRetryingMessages] = useState<number[]>([]);
 
@@ -133,11 +135,26 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     setRetryingMessages(prev => [...prev, chatId]);
     // 실패한 메시지를 재전송하기 위한 요청 데이터 생성
     const retryMessage: SendChatMessageReq = {
-      episodeId: chatInfo.chatting.episodeId,
+      episodeId: chatInfo.episodeId,
       text: msgText,
     };
 
     send(retryMessage); // Send 함수를 호출하여 메시지를 재전송
+  };
+
+  const retryAction = (msg: Message) => {
+    if (msg.text.includes('Failed to send message. Please try again.')) {
+      // 첫 번째 문구에 해당하는 동작
+      console.log('Failed to send message. Retry logic');
+      handleRetry(
+        messages.Messages[messages.Messages.length - 2].text,
+        messages.Messages[messages.Messages.length - 2].chatId,
+      );
+    } else if (msg.text.includes('Stream encountered an error or connection was lost. Please try again.')) {
+      // 두 번째 문구에 해당하는 동작
+      console.log('Stream error. Attempting to reconnect');
+      retrySend();
+    }
   };
 
   return (
@@ -221,13 +238,13 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           <Box
             ref={scrollRef}
             sx={{
-              //height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 72 : 0}px)`,
+              height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 72 : 0}px)`,
               overflowY: 'auto',
               position: 'absolute',
-              top: '400px',
+              top: '72px',
               left: 0,
               right: 0,
-              height: `calc(100% - 400px)`, // 400px 이후의 높이를 지정
+              //height: `calc(100% - 400px)`, // 400px 이후의 높이를 지정
               paddingLeft: '16px',
               paddingRight: '16px',
               zIndex: 3, // 채팅 메시지가 보이도록 z-index를 더 높게 설정
@@ -256,6 +273,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                       }}
                       selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
                       lastMessage={lastMessage}
+                      createDate={new Date(0)}
                     />
                   )}
                   {/* Retry 버튼 조건부 렌더링 */}
@@ -263,92 +281,14 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                     (msg.text.includes('Failed to send message. Please try again.') ||
                       msg.text.includes('Stream encountered an error or connection was lost. Please try again.')) &&
                     !retryingMessages.includes(msg.chatId) && ( // 재전송된 메시지 제외
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginTop: '8px',
-                          padding: '4px 8px',
-                          backgroundColor: 'white',
-                          borderRadius: '12px',
-                          border: '1px solid black',
-                          color: 'black',
-                          cursor: 'pointer',
-                          position: 'relative',
-                          width: '100px',
-                          top: '-10px',
-                          margin: '0 auto', // 수평 중앙 정렬
-                        }}
-                        onClick={() => {
-                          if (msg.text.includes('Failed to send message. Please try again.')) {
-                            // 첫 번째 문구에 해당하는 동작
-                            console.log('Failed to send message. Retry logic');
-                            handleRetry(
-                              messages.Messages[messages.Messages.length - 2].text,
-                              messages.Messages[messages.Messages.length - 2].chatId,
-                            );
-                          } else if (
-                            msg.text.includes('Stream encountered an error or connection was lost. Please try again.')
-                          ) {
-                            // 두 번째 문구에 해당하는 동작
-                            console.log('Stream error. Attempting to reconnect');
-                            retrySend();
-                          }
-                        }}
-                      >
-                        <ReplayIcon
-                          sx={{
-                            color: 'black',
-                            marginRight: '4px',
-                            fontSize: '1.2em',
-                            borderRadius: '50%',
-                          }}
-                        />
-                        <span>Retry</span>
-                      </Box>
+                      <>
+                        <ChatRetryButton retrySend={() => retryAction(msg)} />
+                      </>
                     )}
                 </React.Fragment>
               ))}
             </Box>
-
-            {isLoading && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  marginBottom: 2,
-                }}
-              >
-                <Avatar
-                  alt="Partner Avatar"
-                  src={iconUrl}
-                  sx={{
-                    width: 32,
-                    height: 32,
-                    marginRight: 1,
-                    border: '1px solid',
-                    borderColor: 'black',
-                  }}
-                />
-                <Box
-                  sx={{
-                    display: 'inline-block',
-                    padding: '8px',
-                    borderRadius: '8px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)', // partner의 말풍선 배경색
-                    color: '#FFFFFF',
-                    fontSize: '0.8em',
-                  }}
-                >
-                  <span className={styles.loadingDots}>
-                    <span>●</span>
-                    <span>●</span>
-                    <span>●</span>
-                  </span>
-                </Box>
-              </Box>
-            )}
+            {isLoading && <ChatLoadingBubble iconUrl={iconUrl} />}
             <div ref={bottomRef} />
           </Box>
         </Box>
@@ -428,5 +368,4 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     </>
   );
 };
-console.log('bgUrl');
 export default ChatArea;

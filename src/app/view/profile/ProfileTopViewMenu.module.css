@@ -1,0 +1,35 @@
+.profileTopViewMenu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background-color: white;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .backButton {
+    margin-right: 16px;
+  }
+  
+  .nameArea {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .name {
+    font-weight: bold;
+  }
+  
+  .chip {
+    font-size: 0.75rem;
+  }
+  
+  .buttonArea {
+    display: flex;
+    gap: 8px;
+  }
+  

@@ -195,6 +195,7 @@ export interface EnterEpisodeChattingReq {
 export interface UrlEnterEpisodeChattingReq {
   urlLinkKey: string;
   episodeId: number;
+  language: string;
 }
 
 // URL 방식이든 아니는 Enter Respons 받는 형식은 같은걸 사용한다.
@@ -203,6 +204,7 @@ export interface EnterEpisodeChattingRes {
   contentId: number;
   episodeId: number;
   nextEpisodeId: number;
+  nextEpisodeName: string;
   contentName: string;
   episodeName: string;
   characterImageUrl: string;
@@ -276,22 +278,47 @@ export interface ChattingCharacterData {
   description: string;
   imageUrl: string;
 }
-
-export interface ChattingResultData {
-  nextChapterId: number;
-  nextEpisodeId: number;
-  nextEpisodeName: string;
-  nextEpisodeThumbnail: string;
-  nextEpisodeDescription: string;
-  triggerMediaState: number;
-  triggerMediaUrlList: string[];
-  changeCharacterInfo: ChattingCharacterData;
-}
-
+// API Response Types
 export interface ChattingResultRes {
   resultCode: number;
   resultMessage: string;
-  data: ChattingResultData;
+  data: ChatData;
+}
+
+export interface ChatData {
+  chatResultInfoList: ChatResultInfo[];
+}
+
+export interface ChatResultInfo {
+  type: number;
+  systemText: string;
+  triggerActionInfo: TriggerActionInfo;
+}
+
+export interface TriggerActionInfo {
+  triggerNextEpisodeInfo: TriggerNextEpisodeInfo;
+  changeCharacterInfo: ChangeCharacterInfo;
+  triggerMediaInfoList: TriggerMediaInfo[];
+}
+
+export interface TriggerNextEpisodeInfo {
+  nextChapterId: number;
+  nextEpisodeId: number;
+  nextEpisodeName: string;
+  nextEpisodeBackgroundImageUrl: string;
+  nextEpisodeDescription: string;
+}
+
+export interface ChangeCharacterInfo {
+  name: string;
+  introduction: string;
+  description: string;
+  imageUrl: string;
+}
+
+export interface TriggerMediaInfo {
+  triggerMediaState: number;
+  triggerMediaUrlList: string[];
 }
 
 // ChattingResult API 호출 함수 ##########################################

@@ -1,14 +1,14 @@
 import React from 'react';
 import {Box, Button, Typography, Modal} from '@mui/material';
 import styles from './NextEpisodePopup.module.css'; // CSS 모듈 경로
-import {ChattingResultData} from '@/app/NetWork/ChatNetwork';
 import {Padding} from '@mui/icons-material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ImageIcon from '@mui/icons-material/Image';
+import {TriggerNextEpisodeInfo} from '@/app/NetWork/ChatNetwork';
 
 interface PopupProps {
   open: boolean;
-  data?: ChattingResultData;
+  data?: TriggerNextEpisodeInfo;
   onYes: () => void;
   onNo: () => void;
 }
@@ -26,7 +26,7 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
               <Box
                 className={styles.content}
                 style={{
-                  backgroundImage: `url(${data.nextEpisodeThumbnail})`,
+                  backgroundImage: `url(${data.nextEpisodeBackgroundImageUrl})`,
                   backgroundSize: 'contain', // 이미지 비율을 유지하면서 박스 안에 맞춤
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat', // 이미지를 반복하지 않도록 설정

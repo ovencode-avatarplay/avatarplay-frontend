@@ -9,6 +9,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {ChattingState} from '@/redux-store/slices/Chatting';
 import BottomNavData from 'data/navigation/bottom-nav.json';
+import {Left, Image, MenuDots} from '@ui/chatting';
 import Link from 'next/link';
 
 interface ChatTopBarProps {
@@ -30,24 +31,24 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, i
           <div className={styles.left}>
             <Link href={BottomNavData.find(item => item.label === 'Explore')?.link || '/default-path'}>
               <IconButton className={styles.backButton} onClick={() => {}}>
-                <ArrowBackIcon />
+                <img src={Left.src} />
               </IconButton>
             </Link>
 
-            <Avatar src={iconUrl || '/default-avatar.png'} alt={chattingState1.contentName} className={styles.avatar} />
+            <Avatar src={iconUrl || '/images/001.png'} alt={chattingState1.contentName} className={styles.avatar} />
 
             <div className={styles.userInfo}>
               <span className={styles.username}>{chattingState1.contentName}</span>
               <span className={styles.description}>{chattingState1.episodeName}</span>
             </div>
           </div>
-          <div className={styles.right}>
+          <div className={styles.topButtonBox}>
             <IconButton className={styles.BackgroundButton}>
-              <WallpaperIcon />
+              <img src={Image.src} />
             </IconButton>
 
             <IconButton className={styles.moreButton} onClick={onMoreClick}>
-              <MoreVertIcon />
+              <img src={MenuDots.src} />
             </IconButton>
           </div>
         </div>

@@ -1,0 +1,47 @@
+[
+    {
+      "id": 1,
+      "type" : "User",
+      "avatar": "/path/avatar1.png",
+      "name": "Alice",
+      "status": "",
+      "isSelected": true,
+  "posts": 11,
+  "followers": 111,
+  "following": 1111
+    },
+    {
+      "id": 2,
+      "type" : "Character",
+      "avatar": "/path/avatar2.png",
+      "name": "Bob",
+      "status": "Fan",
+      "isSelected": false,
+  "posts": 22,
+  "followers": 222,
+  "following": 2222
+    },
+    {
+      "id": 3,
+      "type" : "Character",
+      "avatar": "/path/avatar3.png",
+      "name": "Cho",
+      "status": "Fan",
+      "isSelected": false,
+  "posts": 33,
+  "followers": 333,
+  "following": 3333
+    },
+    {
+      "id": 4,
+      "type" : "Character",
+      "avatar": "/path/avatar4.png",
+      "name": "Daniel",
+      "status": "Original",
+      "isSelected": false,
+  "posts": 44,
+  "followers": 444,
+  "following": 4444
+    }
+]
+  

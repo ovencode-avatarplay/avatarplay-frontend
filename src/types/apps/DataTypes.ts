@@ -17,7 +17,7 @@ export enum TriggerSubDataType {
   ChangePrompt,
   GetIntimacyPoint,
   ChangeCharacter,
-  playMedia,
+  PlayMedia,
 }
 
 export interface CoversationData {

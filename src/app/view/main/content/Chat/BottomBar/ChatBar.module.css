@@ -1,0 +1,86 @@
+.expandButton {
+    margin-left: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .textField {
+    resize: none;
+    overflow-y: hidden; /* 초기에는 스크롤 숨김 */
+    font-size: 14px;
+    width: 100%;
+    background: #e8eaed;
+
+    
+  }
+  
+  
+  .aiRecommendButton {
+    margin-right: 8px;
+    margin-bottom: 8px; 
+    width: 40px;
+    height: 40px;
+    min-width: 50px;
+    padding: 0;
+    white-space: nowrap;
+  }
+
+  .chatBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 6px;    
+  }
+
+  .inputBox {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    width: 100%;
+    gap: 6px;
+    background: #e8eaed;
+    padding: 0 6px; /* 양측 여백 추가 */
+    
+    border-radius: 20px;
+  }
+  
+  .inputButton {
+    margin-bottom: 5px;
+    height: 30px;
+    width: 30px;
+  }
+  
+  
+/* 공통 버튼 스타일 */
+.commonButton {
+  width: 30px;
+  height: 30px;
+}
+
+.commonButton img {
+  width: 100%; /* 부모 요소와 동일한 너비 */
+  height: 100%; /* 부모 요소와 동일한 높이 */
+}
+
+/* 개별 크기 조정이 필요한 버튼 */
+.commonButton.plusButton {
+  width: 26px;
+  height: 26px;  
+}
+
+  .aiRecommendImage {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .sendButton {
+    margin-right: 8px;
+    margin-bottom: 8px;
+    width: 40px;
+    height: 40px;
+    min-width: 50px;
+    white-space: nowrap;
+  }
+  

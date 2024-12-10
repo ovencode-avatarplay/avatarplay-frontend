@@ -1,0 +1,284 @@
+.chatBubble
+{
+  position: relative;
+}
+
+/*Blur*/
+
+.blurNone {
+    z-index: auto;
+    filter: none;
+}
+
+.blurSelected {
+    z-index: 10;
+    filter: none;
+}
+
+.blurBox {
+z-index: auto;
+filter: blur(2px);
+}
+
+.chatBubbleJustifyUser { 
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.chatBubbleProfilePartner
+{
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 4px;
+}
+
+.chatBubbleJustifyPartner {
+    display: grid;
+    justify-content: flex-start; 
+    margin-left: 8px;
+}
+
+.chatBubbleJustifySystem {
+    display: flex;
+    justify-content: center; 
+    margin-bottom: 4px;
+}
+
+.AvatarIcon {
+    width: 32;
+    height: 32;
+    margin-right: 1;
+    border: 1px solid;
+    border-color: black;
+}
+
+.chatBackSystem {
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+
+    margin: 30px auto;
+
+    padding: 7px 20px;
+    gap: 10px;
+  
+    background: rgba(255, 255, 255, 0.5);
+    border: 0.5px solid rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(2.5px);
+    border-radius: 12px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 19;
+    flex-grow: 0;
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 140%;
+    text-align: center;
+
+    color: #000000;
+
+  }
+  
+.chatBackSystemError {
+  /* Auto layout */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 7px 20px;
+  gap: 10px;
+
+  border: 0.5px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 50, 53, 0.4);
+  backdrop-filter: blur(2.5px); 
+  border-radius: 12px;
+  
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 140%;
+  text-align: center;
+
+  color: #000000; 
+}
+  
+  .chatBackIntro {
+    display:inline-block;
+    padding: 8px ;
+    border-radius: 8px;
+    max-width: 260px;
+    background-color: #ffffff;
+    color: #000000;
+    text-align: inherit;
+    border: 1px solid #c0c0c0;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  .chatBackUser {
+    display:inline-block; 
+    max-width: 260px;
+    background-color: rgba(80, 80, 80, 0.8); 
+  
+    /* Chat */
+    align-items: flex-start;
+    padding: 8px 12px;
+    gap: 10px; 
+    background: rgba(242, 130, 214, 0.6);
+    backdrop-filter: blur(7.5px); 
+    border-radius: 12px 0px 12px 12px; 
+
+    flex: none;
+    order: 1;
+
+    /*Text*/    
+    text-align: inherit; 
+    word-wrap: break-word;
+    white-space: pre-wrap;
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 140%;
+    color: #FFFFFF;
+
+    align-self: stretch;
+    flex-grow: 0;
+  }
+
+  .chatBackUserNarration {
+    display:inline-block; 
+    max-width: 260px;
+
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 8px 12px;
+    gap: 10px;
+
+    background: rgba(242, 130, 214, 0.6);
+    backdrop-filter: blur(7.5px); 
+    border-radius: 12px 0px 12px 12px;
+  
+    text-align: inherit;
+    font-size: 0.8em;
+    word-wrap: break-word;
+    white-space: pre-wrap; 
+
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 140%;
+
+    color: #D6BBCF;
+ 
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+
+  }
+  
+  
+  .chatBackPartner {
+
+    align-items: flex-end;
+    padding: 8px 12px;
+    gap: 10px;
+     
+    max-width: 260px; 
+    
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(7.5px); 
+    border-radius: 0px 12px 12px 12px;
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 140%; 
+
+    color: #FFFFFF;
+
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0; 
+  }
+  
+  .chatBackPartnerNarration {
+    display:inline-block; 
+    margin-left: 40px;
+    color: #b0b0b0;
+    text-align: left;
+    font-size: 0.7em;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+   
+    padding: 8px 12px;
+    gap: 10px;
+    max-width: 260px; 
+
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(7.5px); 
+    border-radius: 0px 12px 12px 12px;
+
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 140%;
+
+    color: #9AA0A6;
+
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+
+  }
+  
+  .chatBackDefault {
+    display:inline-block;
+    padding: 8px ;
+    border-radius: 8px;
+    max-width: 260px;
+    background-color: rgba(214, 214, 214, 0.2);
+    color: #ffffff;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  .dateTimeBoxBase {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: end;
+    margin-left: 4px;
+  }
+  
+  .dateTimeBoxUser {
+    order: -1;
+  }
+  
+  .dateTimeBoxHide {
+    display: none;
+  }
+
+  .dateTimeText {
+    color: var(--Neutral-200, #E8EAED);
+  font-family: Lato;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 15.4px */
+  }

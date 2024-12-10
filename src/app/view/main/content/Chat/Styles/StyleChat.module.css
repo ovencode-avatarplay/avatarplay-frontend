@@ -13,20 +13,26 @@
 }
 .topBar {
   display: flex;
+  flex-direction: row; 
   align-items: center;
   justify-content: space-between; /* 양쪽 끝에 배치 */
-  padding: 15px;
+  align-items: center;
+  position: absolute;
+  z-index: 10;  
+  padding: 0px;
+  gap: 10px;
+ 
+  width: 100%;
+  height: 6.63%; 
+
+  /*
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
   background-color: rgba(0, 0, 0, 0);
-  /* backdrop-filter: blur(10px); */
+  
   border-radius: 8px;
-  color: white; /* 글자 색상 흰색 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
+  color: white; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  */
 }
 
 
@@ -136,23 +142,44 @@
 }
 
 /* 사용자 정보 설정 */
-.userInfo {
+.userInfo { 
   display: flex;
-  flex-direction: column; /* 세로 정렬 */
-  justify-content: center; /* 중앙 정렬 */
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 4px; 
 }
 
 /* 사용자 이름 스타일 */
-.username {
-  font-weight: bold;
+.username {  
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 600;
   font-size: 16px;
-  color: rgb(255, 255, 255); /* 사용자 이름 색상 */
+  line-height: 100%;
+  /* identical to box height, or 16px */ 
+  color: #FFFFFF;
+   
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
 }
 
 /* 설명 텍스트 스타일 */
-.description {
-  font-size: 12px;
-  color: rgb(255, 255, 255); /* 설명 색상 */
+.description { 
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%; 
+  color: #BDC1C6; 
+
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+  
 }
 
 /* 확장 버튼 설정 */
@@ -190,10 +217,33 @@
   justify-content: center; /* 박스 내에서 버튼을 중앙에 배치 */
 }
 
+.topButtonBox
+{ 
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+
+width: 80px;
+height: 40px;
+ 
+flex: none;
+order: 2;
+flex-grow: 0; 
+}
+
 /* 버튼 간의 간격 추가 */
 .BackgroundButton,
-.moreButton {
-  margin-left: 10px; 
+.moreButton {  
+  width: 40px;
+  height: 40px;
+  
+  
+  /* Inside auto layout */
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  
 }
 
 /* 왼쪽, 오른쪽 정렬 설정 */
