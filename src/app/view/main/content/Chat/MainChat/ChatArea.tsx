@@ -46,7 +46,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [selectedBubbleIndex, setSelectedBubbleIndex] = useState<number | null>(null);
 
-  const chatInfo = useSelector((state: RootState) => state);
+  const chatInfo = useSelector((state: RootState) => state.chatting);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [retryingMessages, setRetryingMessages] = useState<number[]>([]);
 
@@ -135,7 +135,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     setRetryingMessages(prev => [...prev, chatId]);
     // 실패한 메시지를 재전송하기 위한 요청 데이터 생성
     const retryMessage: SendChatMessageReq = {
-      episodeId: chatInfo.chatting.episodeId,
+      episodeId: chatInfo.episodeId,
       text: msgText,
     };
 
@@ -273,6 +273,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                       }}
                       selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
                       lastMessage={lastMessage}
+                      createDate={new Date(0)}
                     />
                   )}
                   {/* Retry 버튼 조건부 렌더링 */}
@@ -367,5 +368,4 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     </>
   );
 };
-console.log('bgUrl');
 export default ChatArea;

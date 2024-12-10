@@ -59,6 +59,10 @@ filter: blur(2px);
     flex-direction: row;
     justify-content: center;
     align-items: center;
+
+
+    margin: 30px auto;
+
     padding: 7px 20px;
     gap: 10px;
   
@@ -253,4 +257,28 @@ filter: blur(2px);
     color: #ffffff;
     word-wrap: break-word;
     white-space: pre-wrap;
+  }
+  
+  .dateTimeBoxBase {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: end;
+    margin-left: 4px;
+  }
+  
+  .dateTimeBoxUser {
+    order: -1;
+  }
+  
+  .dateTimeBoxHide {
+    display: none;
+  }
+
+  .dateTimeText {
+    color: var(--Neutral-200, #E8EAED);
+  font-family: Lato;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 15.4px */
   }

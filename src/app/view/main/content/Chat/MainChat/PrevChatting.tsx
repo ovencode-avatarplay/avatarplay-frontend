@@ -78,6 +78,7 @@ const usePrevChatting = (
     fetchChattingData();
   }, [episodeId]);
 
+  console.log(prevMessages);
   // 이전 메시지와 에러를 반환
   return {prevMessages};
 };

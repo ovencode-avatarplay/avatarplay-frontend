@@ -26,6 +26,7 @@ interface ChatMessageBubbleProps {
   selectedIndex: number | null;
   lastMessage: Message;
   mediaData: MediaData | null;
+  createDate: Date;
 }
 
 const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
@@ -40,6 +41,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   selectedIndex,
   lastMessage,
   mediaData,
+  createDate,
 }) => {
   const [answerTextMessage, setAnswerTextMessage] = useState(text);
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -237,6 +239,19 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                   </Box>
                 )}
               </Box>
+              <div
+                className={`${styles.dateTimeBoxBase} ${
+                  sender === 'user' || sender === 'userNarration'
+                    ? styles.dateTimeBoxUser
+                    : sender === 'partner' || sender === 'partnerNarration'
+                    ? ''
+                    : styles.dateTimeBoxHide
+                }`}
+              >
+                <div className={styles.dateTimeText}>
+                  {createDate.toLocaleTimeString('en-US', {hour: 'numeric', minute: 'numeric', hour12: true})}
+                </div>
+              </div>
             </Box>
           </div>
         </Box>
