@@ -253,7 +253,7 @@ const ContentMain: React.FC = () => {
 
     dispatch(
       updateEditingContentInfo({
-        id: selectedContentId,
+        id: editingContentInfo.id,
         chapterInfoList: updatedChapterList,
       }),
     );
@@ -280,7 +280,7 @@ const ContentMain: React.FC = () => {
 
       dispatch(
         updateEditingContentInfo({
-          id: selectedContentId,
+          id: editingContentInfo.id,
           chapterInfoList: updatedChapterList,
         }),
       );
@@ -314,7 +314,7 @@ const ContentMain: React.FC = () => {
 
       dispatch(
         updateEditingContentInfo({
-          id: selectedContentId,
+          id: editingContentInfo.id,
           chapterInfoList: updatedChapterList,
         }),
       );
@@ -480,7 +480,7 @@ const ContentMain: React.FC = () => {
 
         dispatch(
           updateEditingContentInfo({
-            id: selectedContentId,
+            id: editingContentInfo.id,
             chapterInfoList: updatedChapterList,
           }),
         );
