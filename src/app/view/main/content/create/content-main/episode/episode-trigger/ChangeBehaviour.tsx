@@ -110,11 +110,7 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
         actionMediaUrlList: item?.actionMediaUrlList || '',
         actionConversationList: item?.actionConversationList || [],
       });
-      if (triggerInfo.actionChangeEpisodeId === -1) {
-        setSelectedChapter('None');
-        setSelectedEpisode('None');
-        return;
-      }
+
       const matchingChapter = content.chapterInfoList.find(chapter =>
         chapter.episodeInfoList.some(episode => episode.id === triggerInfo.actionChangeEpisodeId),
       );

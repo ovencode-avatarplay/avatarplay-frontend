@@ -278,22 +278,47 @@ export interface ChattingCharacterData {
   description: string;
   imageUrl: string;
 }
-
-export interface ChattingResultData {
-  nextChapterId: number;
-  nextEpisodeId: number;
-  nextEpisodeName: string;
-  nextEpisodeThumbnail: string;
-  nextEpisodeDescription: string;
-  triggerMediaState: number;
-  triggerMediaUrlList: string[];
-  changeCharacterInfo: ChattingCharacterData;
-}
-
+// API Response Types
 export interface ChattingResultRes {
   resultCode: number;
   resultMessage: string;
-  data: ChattingResultData;
+  data: ChatData;
+}
+
+export interface ChatData {
+  chatResultInfoList: ChatResultInfo[];
+}
+
+export interface ChatResultInfo {
+  type: number;
+  systemText: string;
+  triggerActionInfo: TriggerActionInfo;
+}
+
+export interface TriggerActionInfo {
+  triggerNextEpisodeInfo: TriggerNextEpisodeInfo;
+  changeCharacterInfo: ChangeCharacterInfo;
+  triggerMediaInfoList: TriggerMediaInfo[];
+}
+
+export interface TriggerNextEpisodeInfo {
+  nextChapterId: number;
+  nextEpisodeId: number;
+  nextEpisodeName: string;
+  nextEpisodeBackgroundImageUrl: string;
+  nextEpisodeDescription: string;
+}
+
+export interface ChangeCharacterInfo {
+  name: string;
+  introduction: string;
+  description: string;
+  imageUrl: string;
+}
+
+export interface TriggerMediaInfo {
+  triggerMediaState: number;
+  triggerMediaUrlList: string[];
 }
 
 // ChattingResult API 호출 함수 ##########################################

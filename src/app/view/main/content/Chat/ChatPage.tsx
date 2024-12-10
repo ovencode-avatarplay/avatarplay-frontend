@@ -26,12 +26,13 @@ import {
   sendChattingResult,
   fetchEmoticonGroups,
   EmoticonGroupInfo,
-  ChattingResultData,
   SendChatMessageReq,
   sendMessageStream,
   SendChatMessageResSuccess,
   SendChatMessageResError,
   retryStream,
+  ChatResultInfo,
+  TriggerNextEpisodeInfo,
 } from '@/app/NetWork/ChatNetwork';
 
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
@@ -40,6 +41,7 @@ import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
 import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import ChatFloatingArea from './MainChat/ChatFloatingArea';
+import {TriggerSubDataType} from '@/types/apps/DataTypes';
 
 const ChatPage: React.FC = () => {
   const TempIdforSendQuestion: number = -222;
@@ -58,7 +60,7 @@ const ChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
   const [isIdEnter, setIsIdEnter] = useState<boolean>(false); // 로딩 상태 추가
   const [chatBarCount, setChatBarCount] = useState<number>(1); // 로딩 상태 추가
-  const [nextPopupData, setNextPopupData] = useState<ChattingResultData>();
+  const [nextPopupData, setNextPopupData] = useState<TriggerNextEpisodeInfo>();
 
   const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false); // 로딩 상태 추가
   const [isReqPrevCheat, setReqPrevCheat] = useState<boolean>(false); // 치트키로 애피소드 초기화.
@@ -258,33 +260,86 @@ const ChatPage: React.FC = () => {
         streamKey: streamKey, // streamKey 상태에서 가져오기
       };
       isResult = true;
+
       try {
         const response = await sendChattingResult(requestData);
-        if (response.data.changeCharacterInfo && characterImageUrl != response.data.changeCharacterInfo.imageUrl)
-          setCharacterImageUrl(response.data.changeCharacterInfo.imageUrl);
-        if (response.data.triggerMediaState != 0) {
+        const chatResultInfoList: ChatResultInfo[] = response.data.chatResultInfoList;
+
+        const resultSystemMessages: Message = {
+          chatId: 0,
+          text: '.',
+          sender: SenderType.System,
+        };
+
+        const noneMedia: MediaData = {
+          mediaType: TriggerMediaState.None,
+          mediaUrlList: [],
+        };
+
+        // Trigger 데이터를 순차적으로 처리
+        chatResultInfoList.forEach(triggerInfo => {
           const allMedia = [...(parsedMessagesRef.current?.mediaData || [])];
           const allMessage = [...(parsedMessagesRef.current?.Messages || [])];
           const allEmoticon = [...(parsedMessagesRef.current?.emoticonUrl || [])];
-          const newMedia: MediaData = {
-            mediaType: allMedia[allMedia.length - 1].mediaType,
-            mediaUrlList: allMedia[allMedia.length - 1].mediaUrlList,
-          };
-          newMedia.mediaUrlList = response.data.triggerMediaUrlList;
-          switch (response.data.triggerMediaState) {
-            case 1: //이미지
-              newMedia.mediaType = TriggerMediaState.TriggerImage;
+          resultSystemMessages.text = triggerInfo.systemText;
+          allMessage.push(resultSystemMessages); // Media 관련 메시지 추가
+          allEmoticon.push(''); // 빈 이모티콘 추가
+          allMedia.push(noneMedia); // 새 미디어 추가
+
+          switch (triggerInfo.type as TriggerSubDataType) {
+            case TriggerSubDataType.EpisodeChange:
+              if (
+                triggerInfo.triggerActionInfo.triggerNextEpisodeInfo != null &&
+                triggerInfo.triggerActionInfo.triggerNextEpisodeInfo.nextEpisodeId !== 0
+              ) {
+                setNextEpisodeId(triggerInfo.triggerActionInfo.triggerNextEpisodeInfo.nextEpisodeId);
+                setNextEpisodeName(triggerInfo.triggerActionInfo.triggerNextEpisodeInfo.nextEpisodeName);
+                setNextPopupData(triggerInfo.triggerActionInfo.triggerNextEpisodeInfo);
+                setShowPopup(true);
+              }
               break;
-            case 2: //영상
-              newMedia.mediaType = TriggerMediaState.TriggerVideo;
+            case TriggerSubDataType.ChangePrompt:
               break;
-            case 3: //음성
-              newMedia.mediaType = TriggerMediaState.TriggerAudio;
+            case TriggerSubDataType.GetIntimacyPoint:
+              break;
+            case TriggerSubDataType.ChangeCharacter:
+              // 캐릭터 변경 처리
+              if (
+                triggerInfo.triggerActionInfo.changeCharacterInfo &&
+                characterImageUrl !== triggerInfo.triggerActionInfo.changeCharacterInfo.imageUrl
+              ) {
+                setCharacterImageUrl(triggerInfo.triggerActionInfo.changeCharacterInfo.imageUrl);
+              }
+              break;
+            case TriggerSubDataType.PlayMedia:
+              const mediaInfoList = triggerInfo.triggerActionInfo.triggerMediaInfoList || [];
+              mediaInfoList.forEach(mediaInfo => {
+                if (mediaInfo.triggerMediaState.toString() !== TriggerMediaState.None) {
+                  const newMedia = {
+                    mediaType: TriggerMediaState.None,
+                    mediaUrlList: [...mediaInfo.triggerMediaUrlList],
+                  };
+
+                  // Media 상태에 따라 타입 설정
+                  switch (mediaInfo.triggerMediaState) {
+                    case 1:
+                      newMedia.mediaType = TriggerMediaState.TriggerImage;
+                      break;
+                    case 2:
+                      newMedia.mediaType = TriggerMediaState.TriggerVideo;
+                      break;
+                    case 3:
+                      newMedia.mediaType = TriggerMediaState.TriggerAudio;
+                      break;
+                  }
+
+                  allMessage.push(mediaMessages); // Media 관련 메시지 추가
+                  allEmoticon.push(''); // 빈 이모티콘 추가
+                  allMedia.push(newMedia); // 새 미디어 추가
+                }
+              });
               break;
           }
-          allMessage.push(mediaMessages);
-          allEmoticon.push('');
-          allMedia.push(newMedia);
           const updateMessage = {
             Messages: allMessage,
             emoticonUrl: allEmoticon,
@@ -293,16 +348,11 @@ const ChatPage: React.FC = () => {
 
           setParsedMessages(updateMessage);
           parsedMessagesRef.current = updateMessage;
-          console.log('parsedMessagesRef.current ', parsedMessagesRef.current);
-        }
+
+          console.log('Updated parsedMessagesRef.current:', parsedMessagesRef.current);
+        });
 
         console.log('Result API Response:', response);
-        if (response.data.nextEpisodeId !== 0) {
-          setNextEpisodeId(response.data.nextEpisodeId); // 다음 에피소드 ID 저장
-          setNextEpisodeName(response.data.nextEpisodeName);
-          setNextPopupData(response.data);
-          setShowPopup(true);
-        }
       } catch (error) {
         console.error('Error calling Result API:', error);
         handleSendMessage('%Stream encountered an error or connection was lost. Please try again.%', false, false);

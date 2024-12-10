@@ -113,6 +113,8 @@ export const RenderSubDataFields: React.FC<RenderSubDataFieldsProps> = ({
   handleOpenChapterBoard,
   handleOpenEpisodeConversationTemplate,
 }) => {
+  console.log(selectedChapter);
+  console.log(selectedEpisode);
   switch (triggerInfo.triggerActionType) {
     case TriggerSubDataType.EpisodeChange:
       return (
@@ -199,7 +201,7 @@ export const RenderSubDataFields: React.FC<RenderSubDataFieldsProps> = ({
           </Box>
         </Box>
       );
-    case TriggerSubDataType.playMedia:
+    case TriggerSubDataType.PlayMedia:
       return (
         <PlayMediaComponent
           onMediaSelect={urlList => {
