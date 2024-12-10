@@ -82,6 +82,7 @@ const ChatPage: React.FC = () => {
     chatId: TempIdforSendQuestion,
     text: '',
     sender: SenderType.System,
+    createDate: new Date(0),
   });
 
   const handleBackClick = useBackHandler();
@@ -247,12 +248,14 @@ const ChatPage: React.FC = () => {
       chatId: -1,
       text: '.',
       sender: SenderType.media,
+      createDate: new Date(0),
     };
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
       chatId: TempIdforSendQuestion, // 임시 ID 지급
       text: message,
       sender: isMyMessage ? SenderType.User : currentSender,
+      createDate: new Date(0),
     };
     const mediaDataValue: MediaData = {
       mediaType: TriggerMediaState.None,
@@ -285,6 +288,7 @@ const ChatPage: React.FC = () => {
             chatId: 0,
             text: '.',
             sender: SenderType.System,
+            createDate: new Date(0),
           };
 
           resultSystemMessages.text = triggerInfo.systemText;
@@ -439,6 +443,7 @@ const ChatPage: React.FC = () => {
               chatId: tempChatId,
               text: newMessage.text[i],
               sender: (newMessage.sender = newSenderResult),
+              createDate: new Date(0),
             };
             currentSender = _newMessage.sender;
 
@@ -698,6 +703,7 @@ const ChatPage: React.FC = () => {
               chatId: -1,
               text: '.',
               sender: SenderType.media,
+              createDate: new Date(0),
             };
             acc.parsedPrevMessages.push(defaultMessages);
             acc.emoticonUrl.push(emoticonValue);
@@ -713,6 +719,7 @@ const ChatPage: React.FC = () => {
         chatId: chatId,
         text: enterData?.introPrompt || '애피소드 도입부가 설정되지 않았습니다',
         sender: SenderType.IntroPrompt,
+        createDate: new Date(0),
       };
 
       // emoticonUrl.unshift('');

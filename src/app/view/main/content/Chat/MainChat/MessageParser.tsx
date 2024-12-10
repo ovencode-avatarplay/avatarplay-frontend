@@ -51,6 +51,7 @@ const parseAnswer = (answer: string, id: number): Message[] => {
           chatId: id,
           text: plainText.replace(/[%"*]/g, ''), // 특수 문자 제거
           sender: SenderType.PartnerNarration,
+          createDate: new Date(0),
         });
       }
     }
@@ -64,6 +65,7 @@ const parseAnswer = (answer: string, id: number): Message[] => {
           chatId: id,
           text: cleanedText,
           sender: pattern.type,
+          createDate: new Date(0),
         });
         break; // 첫 번째 매칭된 그룹만 처리
       }
@@ -81,6 +83,7 @@ const parseAnswer = (answer: string, id: number): Message[] => {
         chatId: id,
         text: remainingText.replace(/[%"*]/g, ''), // 특수 문자 제거
         sender: SenderType.PartnerNarration,
+        createDate: new Date(0),
       });
     }
   }
@@ -110,6 +113,7 @@ export const parseMessage = (message: string | null, id: number): Message[] | nu
             chatId: id,
             text: part.replace(/^\*|\*$/g, ''), // 양쪽의 '*'를 제거
             sender: sender,
+            createDate: new Date(0),
           };
 
           if (newMessage.text !== '...') result.push(newMessage); // 새로 정의된 메시지를 결과에 추가
@@ -137,6 +141,7 @@ export const convertStringMessagesToMessages = (messages: string[], id: number):
     chatId: id,
     text: msg,
     sender: SenderType.Partner,
+    createDate: new Date(0),
   }));
 };
 
@@ -201,6 +206,7 @@ export const parsedUserNarration = (messageData: Message): Message => {
     chatId: messageData.chatId,
     sender: SenderType.UserNarration,
     text: messageData.text.slice(1, -1), // 양 옆의 *를 제거
+    createDate: new Date(0),
   };
   return parsedMessage;
 };
@@ -324,6 +330,7 @@ export const setSenderType = (
     chatId: id,
     sender: isMyMessage ? SenderType.User : isNarrationActive ? SenderType.PartnerNarration : SenderType.Partner,
     text: message,
+    createDate: new Date(0),
   };
   return resultMessage;
 };
