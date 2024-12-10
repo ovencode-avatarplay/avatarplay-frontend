@@ -265,12 +265,6 @@ const ChatPage: React.FC = () => {
         const response = await sendChattingResult(requestData);
         const chatResultInfoList: ChatResultInfo[] = response.data.chatResultInfoList;
 
-        const resultSystemMessages: Message = {
-          chatId: 0,
-          text: '.',
-          sender: SenderType.System,
-        };
-
         const noneMedia: MediaData = {
           mediaType: TriggerMediaState.None,
           mediaUrlList: [],
@@ -281,6 +275,13 @@ const ChatPage: React.FC = () => {
           const allMedia = [...(parsedMessagesRef.current?.mediaData || [])];
           const allMessage = [...(parsedMessagesRef.current?.Messages || [])];
           const allEmoticon = [...(parsedMessagesRef.current?.emoticonUrl || [])];
+
+          const resultSystemMessages: Message = {
+            chatId: 0,
+            text: '.',
+            sender: SenderType.System,
+          };
+
           resultSystemMessages.text = triggerInfo.systemText;
           allMessage.push(resultSystemMessages); // Media 관련 메시지 추가
           allEmoticon.push(''); // 빈 이모티콘 추가
