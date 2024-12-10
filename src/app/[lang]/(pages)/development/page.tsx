@@ -217,9 +217,10 @@ export default function ApiTestTool() {
               >
                 <MenuItem value="gpt-4">GPT-4</MenuItem>
                 <MenuItem value="gpt-4o">GPT-4o</MenuItem>
+                <MenuItem value="gpt-4o-mini-2024-07-18">GPT-4o-mini</MenuItem>
                 <MenuItem value="anthropic.claude-3-haiku-20240307-v1:0">Claude3 Haiku</MenuItem>
-                <MenuItem value="anthropic.claude-3-sonnet">Claude3 Sonnet</MenuItem>
-                <MenuItem value="anthropic.claude-3-5-sonnet-20241022-v2:0">Claude3.5 Sonnet</MenuItem>
+                <MenuItem value="anthropic.claude-3-sonnet-20240229-v1:0">Claude3 Sonnet</MenuItem>
+                <MenuItem value="anthropic.claude-3-5-sonnet-20240620-v1:0">Claude3.5 Sonnet</MenuItem>
               </Select>
             </FormControl>
           </Grid>
