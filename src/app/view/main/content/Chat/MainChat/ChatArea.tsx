@@ -186,7 +186,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${
+              backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.70) 4.69%, rgba(0, 0, 0, 0.40) 14.22%, rgba(0, 0, 0, 0.20) 100%), url(${
                 prevBgUrl || bgUrl
               })`,
               backgroundSize: 'cover',
