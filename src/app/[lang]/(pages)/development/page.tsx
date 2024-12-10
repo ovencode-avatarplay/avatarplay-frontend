@@ -47,7 +47,6 @@ type FormDataType = {
   question: string;
   jailBreak: boolean;
   contents: ChatMessageContent[];
-  triggerKeyword: string;
   triggers: Trigger[];
 };
 
