@@ -1,60 +1,94 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {TextareaAutosize} from '@mui/material';
 import styles from './AI_Recommend.module.css';
 import {recommendQuestion, RequestAiQuestionReq} from '@/app/NetWork/ChatNetwork';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
+import {Variant1, Variant2, Variant3, Variant4, Variant5, Variant6} from '@ui/chatting';
+
+const LOADING_MESSAGE = '검색중...'; // 로딩 상태를 나타내는 상수
+
+const loadingImages = [Variant1.src, Variant2.src, Variant3.src, Variant4.src, Variant5.src, Variant6.src];
 
 interface AIRecommendProps {
   open: boolean;
   onClose: () => void;
   onSelectMessage: (message: string, isSend: boolean) => void;
+  onHeightChange?: (height: number) => void; // height 변화를 감지하는 콜백
 }
 
-const AI_Recommend: React.FC<AIRecommendProps> = ({open, onClose, onSelectMessage}) => {
-  const [messages, setMessages] = useState<string[]>(['검색중...', '검색중...', '검색중...']); // 내부 상태로 관리
+const AI_Recommend: React.FC<AIRecommendProps> = ({open, onClose, onSelectMessage, onHeightChange}) => {
+  const [messages, setMessages] = useState<string[]>([LOADING_MESSAGE, LOADING_MESSAGE, LOADING_MESSAGE]);
+  const [loadingIndex, setLoadingIndex] = useState(0);
 
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
+  const containerRef = useRef<HTMLDivElement | null>(null); // 모달 컨테이너 Ref
+  useEffect(() => {
+    if (containerRef.current) {
+      const observer = new ResizeObserver(entries => {
+        for (let entry of entries) {
+          if (entry.contentRect) {
+            onHeightChange?.(entry.contentRect.height);
+          }
+        }
+      });
+
+      observer.observe(containerRef.current);
+
+      return () => observer.disconnect();
+    }
+  }, [onHeightChange]);
 
   useEffect(() => {
-    // 모달이 열릴 때만 실행되도록 설정
     if (open) {
-      handleModalOpen(); // 모달 열릴 때만 실행
+      handleModalOpen();
     }
-  }, [open]); // open 값이 변경될 때마다 실행됨
+  }, [open]);
+
+  useEffect(() => {
+    // 로딩 이미지 애니메이션
+    if (messages.includes(LOADING_MESSAGE)) {
+      const interval = setInterval(() => {
+        setLoadingIndex(prevIndex => (prevIndex + 1) % loadingImages.length);
+      }, 200); // 500ms 간격으로 이미지 변경
+      return () => clearInterval(interval); // 컴포넌트 unmount 시 정리
+    }
+  }, [messages]);
 
   const handleModalOpen = () => {
-    console.log('Modal is opened!'); // 모달 열릴 때만 실행할 작업
-    // 서버에서 추천 메시지 요청
-    setMessages(['검색중...', '검색중...', '검색중...']);
+    setMessages([LOADING_MESSAGE, LOADING_MESSAGE, LOADING_MESSAGE]);
     reqRecommendQuestion();
   };
 
   const reqRecommendQuestion = async () => {
-    // 예시로 서버에서 메시지를 요청한다고 가정
     const data: RequestAiQuestionReq = {
-      episodeId: episodeId, // store에서 가져온 값 세팅
+      episodeId: episodeId,
     };
     const receive = await recommendQuestion(data);
 
-    setMessages(receive.data?.questionList || []); // 서버에서 받은 데이터를 설정
+    setMessages(receive.data?.questionList || []); // 서버에서 받은 데이터로 업데이트
   };
 
   const handleClickMessage = (message: string) => {
-    onSelectMessage(message, true); // 편집할 메시지 선택
-    onClose(); // 모달 닫기
+    onSelectMessage(message, true);
+    onClose();
   };
-
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} ref={containerRef}>
       {messages.map((message, index) => (
-        <TextareaAutosize
-          value={message}
-          disabled
-          className={styles.messageText}
-          maxRows={3} // 최대 줄 수 제한
-          onClick={() => handleClickMessage(message)}
-        />
+        <div key={index} className={styles.messageContainer} onClick={() => handleClickMessage(message)}>
+          {message === LOADING_MESSAGE ? (
+            <div className={styles.loadingWrapper}>
+              <img
+                src={loadingImages[(loadingIndex + index * 2) % loadingImages.length]} // index * 3에서 시작
+                alt="Loading"
+                className={styles.loadingImage}
+              />
+            </div>
+          ) : (
+            <TextareaAutosize value={message} className={styles.messageText} maxRows={3} />
+          )}
+        </div>
       ))}
     </div>
   );

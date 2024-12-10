@@ -21,6 +21,7 @@ interface FooterChatProps {
   onToggleBackground: () => void;
   onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
   onUpdateChatBarCount: (count: number) => void; // 추가된 prop
+  onUpdateAiChatBarCount: (count: number) => void; // 추가된 prop
   onReqPrevChatting: (isEnter: boolean) => void;
   EmoticonData?: EmoticonGroupInfo[];
 
@@ -39,6 +40,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
 
   onLoading,
   onUpdateChatBarCount,
+  onUpdateAiChatBarCount,
   onReqPrevChatting,
   isSendingMessage,
   onRemoveChat,
@@ -214,6 +216,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
           onToggleBackground={onToggleBackground}
           onLoading={onLoading}
           onUpdateChatBarCount={onUpdateChatBarCount}
+          onUpdateAiBarCount={onUpdateAiChatBarCount}
           onRemoveChat={onRemoveChat}
         />
       </Box>

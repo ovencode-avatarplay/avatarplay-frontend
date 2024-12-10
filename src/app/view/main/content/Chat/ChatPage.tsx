@@ -60,6 +60,7 @@ const ChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
   const [isIdEnter, setIsIdEnter] = useState<boolean>(false); // 로딩 상태 추가
   const [chatBarCount, setChatBarCount] = useState<number>(1); // 로딩 상태 추가
+  const [aiChatHeight, setAiChatHeight] = useState<number>(0); // 로딩 상태 추가
   const [nextPopupData, setNextPopupData] = useState<TriggerNextEpisodeInfo>();
 
   const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false); // 로딩 상태 추가
@@ -92,6 +93,10 @@ const ChatPage: React.FC = () => {
 
   const SetChatBarCount = (num: number) => {
     setChatBarCount(num);
+  };
+
+  const SetAiChatHeight = (num: number) => {
+    setAiChatHeight(num);
   };
 
   // floatingArea
@@ -771,6 +776,7 @@ const ChatPage: React.FC = () => {
           onToggleBackground={handleToggleBackground}
           isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
           chatBarCount={chatBarCount}
+          aiChatHeight={aiChatHeight}
           transitionEnabled={isTransitionEnable}
           send={Send}
           lastMessage={lastMessage}
@@ -786,6 +792,7 @@ const ChatPage: React.FC = () => {
         onToggleBackground={handleToggleBackground}
         onLoading={SetChatLoading}
         onUpdateChatBarCount={SetChatBarCount}
+        onUpdateAiChatBarCount={SetAiChatHeight}
         onReqPrevChatting={setReqPrevCheat}
         isSendingMessage={isSendingMessage}
         send={Send}

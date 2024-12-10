@@ -22,6 +22,7 @@ interface ChatAreaProps {
   onToggleBackground: () => void;
   isLoading: boolean; // 로딩 상태 추가
   chatBarCount: number;
+  aiChatHeight: number;
   transitionEnabled: boolean; // 배경 이미지 전환 여부를 제어하는 프롭
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   lastMessage: Message;
@@ -38,6 +39,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   chatBarCount,
   transitionEnabled, // transitionEnabled 프롭을 추가
   send,
+  aiChatHeight,
   lastMessage,
   retrySend,
   characterUrl,
@@ -93,7 +95,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
         }
       }
     }
-  }, [messages, chatBarCount]); // messages와 chatBarCount가 변경될 때마다 실행
+  }, [messages, chatBarCount, aiChatHeight]); // messages와 chatBarCount가 변경될 때마다 실행
 
   const [prevBgUrl, setPrevBgUrl] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -156,7 +158,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       retrySend();
     }
   };
-
+  console.log('aiChatHeight', aiChatHeight);
   return (
     <>
       <LoadingOverlay loading={loading} />
@@ -238,7 +240,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           <Box
             ref={scrollRef}
             sx={{
-              height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 72 : 0}px)`,
+              height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 72 : 0}px - ${aiChatHeight}px)`,
               overflowY: 'auto',
               position: 'absolute',
               top: '72px',

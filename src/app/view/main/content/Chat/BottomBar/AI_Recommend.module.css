@@ -36,3 +36,47 @@
 
 
 
+  .modalContainer {
+    background-color: white;
+    border-top: 1px solid #ccc;
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    overflow-y: auto;
+  }
+  
+  .messageBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 8px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s ease;
+  }
+  
+  .messageText {
+    width: 100%;
+    box-sizing: border-box;
+    background: #ffffff;
+    padding: 8px 12px;
+    font-size: 16px;
+    line-height: 1.5;
+    resize: none; /* 사용자가 크기를 조절하지 못하도록 설정 */
+    cursor: pointer; /* 버튼처럼 커서 변경 */
+    border-top: 1px solid #e8eaed; /* 밑줄 추가 */
+  }
+  
+  /* 로딩 상태용 스타일 */
+  .loadingWrapper {
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 부모 컨테이너가 높이를 가질 경우 세로 중앙 정렬 */
+    border-top: 1px solid #e8eaed; /* 밑줄 추가 */
+  }
+  
+  .loadingImage {
+    width: 24px;
+    height: 24px;
+  }
