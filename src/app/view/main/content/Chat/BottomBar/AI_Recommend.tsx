@@ -1,6 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {Box, Typography, Button, Modal} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+import {TextareaAutosize} from '@mui/material';
 import styles from './AI_Recommend.module.css';
 import {recommendQuestion, RequestAiQuestionReq} from '@/app/NetWork/ChatNetwork';
 import {useSelector} from 'react-redux';
@@ -14,16 +13,14 @@ interface AIRecommendProps {
 
 const AI_Recommend: React.FC<AIRecommendProps> = ({open, onClose, onSelectMessage}) => {
   const [messages, setMessages] = useState<string[]>(['검색중...', '검색중...', '검색중...']); // 내부 상태로 관리
-  const prevOpen = useRef(open); // 이전 open 상태를 추적
 
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
 
   useEffect(() => {
     // 모달이 열릴 때만 실행되도록 설정
-    if (open && !prevOpen.current) {
+    if (open) {
       handleModalOpen(); // 모달 열릴 때만 실행
     }
-    prevOpen.current = open; // 이전 open 값을 업데이트
   }, [open]); // open 값이 변경될 때마다 실행됨
 
   const handleModalOpen = () => {
@@ -48,35 +45,18 @@ const AI_Recommend: React.FC<AIRecommendProps> = ({open, onClose, onSelectMessag
     onClose(); // 모달 닫기
   };
 
-  const handleEditButtonClick = (message: string) => {
-    onSelectMessage(message, false); // 편집할 메시지 선택
-    onClose(); // 모달 닫기
-  };
-
   return (
-    <Box className={styles.modalContainer}>
-      <Typography className={styles.modalTitle} variant="h5">
-        추천 채팅
-      </Typography>
-
-      <Box className={styles.messageBoxContainer}>
-        {messages.map((message, index) => (
-          <Box key={index} className={styles.messageBox}>
-            <Typography className={styles.messageText} onClick={() => handleClickMessage(message)}>
-              {message}
-            </Typography>
-            <Button
-              variant="outlined"
-              startIcon={<EditIcon />}
-              className={styles.editButton}
-              onClick={() => handleEditButtonClick(message)} // 편집하기 버튼 클릭 시 기존 동작 유지
-            >
-              편집하기
-            </Button>
-          </Box>
-        ))}
-      </Box>
-    </Box>
+    <div className={styles.modalContainer}>
+      {messages.map((message, index) => (
+        <TextareaAutosize
+          value={message}
+          disabled
+          className={styles.messageText}
+          maxRows={3} // 최대 줄 수 제한
+          onClick={() => handleClickMessage(message)}
+        />
+      ))}
+    </div>
   );
 };
 

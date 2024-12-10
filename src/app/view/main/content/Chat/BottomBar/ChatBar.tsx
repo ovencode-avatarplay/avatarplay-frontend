@@ -121,6 +121,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   };
 
   const handleInputChange = (id: string, value: string) => {
+    closeAIRecommend();
     setInputValues(prevValues => ({...prevValues, [id]: value}));
   };
 
@@ -261,7 +262,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
               {Object.values(inputValues).every(value => value.trim() === '') ? (
                 <img src={AiText.src} alt="AI Recommend" onClick={handleAIRecommend} className={styles.inputButton} />
               ) : (
-                <img src={BotSend.src} alt="AI Recommend" onClick={handleAIRecommend} className={styles.inputButton} />
+                <img src={BotSend.src} alt="AI Recommend" onClick={handleSend} className={styles.inputButton} />
               )}
             </>
           )}
@@ -311,30 +312,26 @@ const ChatBar: React.FC<ChatBarProps> = ({
             </Typography>
             <Button onClick={handleCancelModifyText}>Cancel</Button>
           </Box>
-          {renderChatBars()}
+
           {isAIRecommendOpen ? (
-            <Box>
-              <AI_Recommend
-                open={isAIRecommendOpen}
-                onClose={closeAIRecommend}
-                onSelectMessage={selectMessageFromAIRecommend}
-              />
-            </Box>
+            <AI_Recommend
+              open={isAIRecommendOpen}
+              onClose={closeAIRecommend}
+              onSelectMessage={selectMessageFromAIRecommend}
+            />
           ) : null}
         </Box>
       ) : (
-        <Box>
+        <div className={styles.test}>
           {renderChatBars()}
           {isAIRecommendOpen ? (
-            <Box>
-              <AI_Recommend
-                open={isAIRecommendOpen}
-                onClose={closeAIRecommend}
-                onSelectMessage={selectMessageFromAIRecommend}
-              />
-            </Box>
+            <AI_Recommend
+              open={isAIRecommendOpen}
+              onClose={closeAIRecommend}
+              onSelectMessage={selectMessageFromAIRecommend}
+            />
           ) : null}
-        </Box>
+        </div>
       )}
       {/* AI 추천 모달 */}
     </Box>

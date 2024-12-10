@@ -12,7 +12,11 @@
 
     
   }
-  
+  .test{
+    
+    display: flex;
+    flex-direction: column;
+  }
   
   .aiRecommendButton {
     margin-right: 8px;
