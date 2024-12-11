@@ -15,7 +15,7 @@ import {
 
 //const patternParsing( pattern : RegExp, )
 
-const parseAnswer = (answer: string, id: number, createDate: Date): Message[] => {
+const parseAnswer = (answer: string, id: number, createDate: string): Message[] => {
   const result: Message[] = [];
 
   // 패턴과 해당 발신자 타입을 객체 배열로 정의
@@ -84,7 +84,7 @@ const parseAnswer = (answer: string, id: number, createDate: Date): Message[] =>
         chatId: id,
         text: remainingText.replace(/[%"*]/g, ''), // 특수 문자 제거
         sender: SenderType.PartnerNarration,
-        createDate: new Date(0),
+        createDate: createDate,
       });
     }
   }
@@ -92,11 +92,20 @@ const parseAnswer = (answer: string, id: number, createDate: Date): Message[] =>
   return result;
 };
 
+const timeParser = (dateTimeUTC: Date): string => {
+  const dateUTC: Date = new Date(dateTimeUTC.toString() + 'Z'); // 표준시간이면 끝에 Z를 붙여줘야한다.( 서버에서 안붙여서 보내줌 )
+  const date = dateUTC.toLocaleTimeString(navigator.language, {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+  return date.toString();
+};
 //export const parseMessage = (message: string | null, id: number): Message[] | null => {
 export const parseMessage = (messageInfo: MessageInfo): Message[] | null => {
   let message: string = messageInfo.message;
   let id: number = messageInfo.id;
-  let createDate: Date = messageInfo.createAt;
+  let createDate: string = timeParser(messageInfo.createAt);
   if (!message) return null;
 
   try {
@@ -211,7 +220,7 @@ export const parsedUserNarration = (messageData: Message): Message => {
     chatId: messageData.chatId,
     sender: SenderType.UserNarration,
     text: messageData.text.slice(1, -1), // 양 옆의 *를 제거
-    createDate: new Date(0),
+    createDate: '',
   };
   return parsedMessage;
 };
@@ -335,7 +344,7 @@ export const setSenderType = (
     chatId: id,
     sender: isMyMessage ? SenderType.User : isNarrationActive ? SenderType.PartnerNarration : SenderType.Partner,
     text: message,
-    createDate: new Date(0),
+    createDate: '',
   };
   return resultMessage;
 };

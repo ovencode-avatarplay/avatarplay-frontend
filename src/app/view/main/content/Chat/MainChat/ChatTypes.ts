@@ -21,7 +21,7 @@ export interface Message {
   chatId: number;
   text: string;
   sender: SenderType;
-  createDate: Date;
+  createDate: string;
 }
 
 export interface MediaData {

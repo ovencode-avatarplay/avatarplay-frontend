@@ -275,7 +275,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                       }}
                       selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
                       lastMessage={lastMessage}
-                      createDate={new Date(msg.createDate)}
+                      createDate={msg.createDate}
                     />
                   )}
                   {/* Retry 버튼 조건부 렌더링 */}

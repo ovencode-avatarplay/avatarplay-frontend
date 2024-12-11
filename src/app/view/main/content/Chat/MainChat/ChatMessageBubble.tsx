@@ -27,7 +27,7 @@ interface ChatMessageBubbleProps {
   selectedIndex: number | null;
   lastMessage: Message;
   mediaData: MediaData | null;
-  createDate: Date;
+  createDate: string;
 }
 
 const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
@@ -243,9 +243,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                     : styles.dateTimeBoxHide
                 }`}
               >
-                <div className={styles.dateTimeText}>
-                  {createDate.toLocaleTimeString('en-US', {hour: 'numeric', minute: 'numeric', hour12: true})}
-                </div>
+                <div className={styles.dateTimeText}>{createDate}</div>
               </div>
             </Box>
           </div>
