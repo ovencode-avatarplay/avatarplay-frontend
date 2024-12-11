@@ -666,7 +666,7 @@ const ChatPage: React.FC = () => {
       }>(
         (acc, msg) => {
           // 메시지 파싱
-          const parsedMessages = parseMessage(msg.message, msg.id) || [];
+          const parsedMessages = parseMessage(msg) || [];
 
           acc.parsedPrevMessages.push(...parsedMessages);
 

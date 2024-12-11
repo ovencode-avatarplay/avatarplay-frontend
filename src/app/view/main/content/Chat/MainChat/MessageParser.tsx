@@ -1,5 +1,6 @@
 // messageParser.tsx
 
+import {MessageInfo} from '@/app/NetWork/ChatNetwork';
 import {
   COMMAND_END,
   COMMAND_NARRATION,
@@ -14,7 +15,7 @@ import {
 
 //const patternParsing( pattern : RegExp, )
 
-const parseAnswer = (answer: string, id: number): Message[] => {
+const parseAnswer = (answer: string, id: number, createDate: Date): Message[] => {
   const result: Message[] = [];
 
   // 패턴과 해당 발신자 타입을 객체 배열로 정의
@@ -51,7 +52,7 @@ const parseAnswer = (answer: string, id: number): Message[] => {
           chatId: id,
           text: plainText.replace(/[%"*]/g, ''), // 특수 문자 제거
           sender: SenderType.PartnerNarration,
-          createDate: new Date(0),
+          createDate: createDate,
         });
       }
     }
@@ -65,7 +66,7 @@ const parseAnswer = (answer: string, id: number): Message[] => {
           chatId: id,
           text: cleanedText,
           sender: pattern.type,
-          createDate: new Date(0),
+          createDate: createDate,
         });
         break; // 첫 번째 매칭된 그룹만 처리
       }
@@ -91,7 +92,11 @@ const parseAnswer = (answer: string, id: number): Message[] => {
   return result;
 };
 
-export const parseMessage = (message: string | null, id: number): Message[] | null => {
+//export const parseMessage = (message: string | null, id: number): Message[] | null => {
+export const parseMessage = (messageInfo: MessageInfo): Message[] | null => {
+  let message: string = messageInfo.message;
+  let id: number = messageInfo.id;
+  let createDate: Date = messageInfo.createAt;
   if (!message) return null;
 
   try {
@@ -99,7 +104,7 @@ export const parseMessage = (message: string | null, id: number): Message[] | nu
     const result: Message[] = [];
 
     if (parsedMessage.episodeInfo) {
-      result.push(...parseAnswer(parsedMessage.episodeInfo, id));
+      result.push(...parseAnswer(parsedMessage.episodeInfo, parsedMessage.id, createDate));
     }
 
     if (parsedMessage.Question) {
@@ -113,7 +118,7 @@ export const parseMessage = (message: string | null, id: number): Message[] | nu
             chatId: id,
             text: part.replace(/^\*|\*$/g, ''), // 양쪽의 '*'를 제거
             sender: sender,
-            createDate: new Date(0),
+            createDate: createDate,
           };
 
           if (newMessage.text !== '...') result.push(newMessage); // 새로 정의된 메시지를 결과에 추가
@@ -122,7 +127,7 @@ export const parseMessage = (message: string | null, id: number): Message[] | nu
     }
 
     if (parsedMessage.Answer) {
-      result.push(...parseAnswer(parsedMessage.Answer, id));
+      result.push(...parseAnswer(parsedMessage.Answer, parsedMessage.id, createDate));
     }
 
     return result;
@@ -132,7 +137,7 @@ export const parseMessage = (message: string | null, id: number): Message[] | nu
   }
 };
 
-export const convertPrevMessages = (prevMessages: (string | null)[], id: number): Message[] => {
+/*export const convertPrevMessages = (prevMessages: (string | null)[], id: number): Message[] => {
   return prevMessages.filter(msg => msg !== null && msg !== '').flatMap(msg => parseMessage(msg, id) || []);
 };
 
@@ -143,7 +148,7 @@ export const convertStringMessagesToMessages = (messages: string[], id: number):
     sender: SenderType.Partner,
     createDate: new Date(0),
   }));
-};
+};*/
 
 export const cleanString = (input: string): string => {
   // 1. 개행 문자 제거
