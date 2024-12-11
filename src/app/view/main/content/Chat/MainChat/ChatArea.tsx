@@ -6,7 +6,6 @@ import {Message, MessageGroup} from './ChatTypes';
 import ChatTtsPlayer from './ChatTtsPlayer';
 import {GenerateTtsUrl} from './GenerateTtsUrl';
 
-import ReplayIcon from '@mui/icons-material/Replay';
 import {SendChatMessageReq} from '@/app/NetWork/ChatNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
@@ -162,94 +161,62 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   return (
     <>
       <LoadingOverlay loading={loading} />
-      {isHideChat === false && (
+      {/* {isHideChat === false && ( */}
+      <Box
+        className={styles.chatArea}
+        onDoubleClick={event => {
+          // if (isHideChat === false) {
+          event.preventDefault();
+          onToggleBackground();
+          // }
+        }}
+      >
+        {/* 기존 배경 */}
         <Box
-          className={styles.chatArea}
-          onDoubleClick={() => {
-            if (isHideChat === false) {
-              onToggleBackground();
-            }
-          }}
+          className={`${styles.mainBackground} ${isFadingOut ? styles.fadingOut : ''}`}
           sx={{
-            position: 'relative',
-            width: '100%',
-            height: '100%',
-            fontFamily: 'Noto Sans KR, sans-serif',
-            overflow: 'hidden',
+            backgroundImage: `${
+              isHideChat
+                ? ''
+                : 'linear-gradient(180deg, rgba(0, 0, 0, 0.70) 4.69%, rgba(0, 0, 0, 0.40) 14.22%, rgba(0, 0, 0, 0.20) 100%), '
+            }url(${prevBgUrl || bgUrl})`,
+            opacity: isFadingOut ? 0 : 1,
+            transition: 'opacity 0.5s ease',
           }}
-        >
-          {/* 기존 배경 */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.70) 4.69%, rgba(0, 0, 0, 0.40) 14.22%, rgba(0, 0, 0, 0.20) 100%), url(${
-                prevBgUrl || bgUrl
-              })`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              opacity: isFadingOut ? 0 : 1,
-              transition: 'opacity 0.5s ease',
-              zIndex: 1,
-            }}
-          />
+        />
 
-          {/* 새 배경 */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              opacity: isTransitioning ? 1 : 0,
-              transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
-              zIndex: 2,
-            }}
-          />
+        {/* 새 배경 */}
+        <Box
+          className={`${styles.newBackground} ${isHideChat ? styles.fadeCover : ''} ${
+            isFadingOut ? styles.fadingOut : ''
+          }`}
+          sx={{
+            backgroundImage: `${
+              isHideChat
+                ? ''
+                : 'linear-gradient(180deg, rgba(0, 0, 0, 0.70) 4.69%, rgba(0, 0, 0, 0.40) 14.22%, rgba(0, 0, 0, 0.20) 100%), '
+            }url(${prevBgUrl || bgUrl})`,
+            opacity: isTransitioning ? 1 : 0,
+            transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
+          }}
+        />
 
-          {/* 캐릭터 이미지 */}
-          <Box
-            sx={{
-              position: 'absolute',
+        {/* 캐릭터 이미지 */}
+        <Box
+          className={styles.mainCharacter}
+          sx={{
+            backgroundImage: `url(${characterUrl})`,
+          }}
+        />
 
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `url(${characterUrl})`,
-              backgroundSize: 'contain',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-              zIndex: 2, // 배경 위에 렌더링
-            }}
-          />
-          {/* Fixed space at the top */}
-          <Box sx={{height: '72px', width: '100%'}} />
-
-          <ChatTtsPlayer audioUrl={audioUrl} />
-          {/* Scrollable content */}
+        <ChatTtsPlayer audioUrl={audioUrl} />
+        {/* Scrollable content */}
+        {isHideChat === false && (
           <Box
+            className={`${styles.messageBubbleArea}`}
             ref={scrollRef}
             sx={{
               height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 72 : 0}px - ${aiChatHeight}px)`,
-              overflowY: 'auto',
-              position: 'absolute',
-              top: '72px',
-              left: 0,
-              right: 0,
-              //height: `calc(100% - 400px)`, // 400px 이후의 높이를 지정
-              paddingLeft: '16px',
-              paddingRight: '16px',
-              zIndex: 3, // 채팅 메시지가 보이도록 z-index를 더 높게 설정
             }}
           >
             <Box onClick={() => setSelectedBubbleIndex(null)}>
@@ -293,80 +260,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             {isLoading && <ChatLoadingBubble iconUrl={iconUrl} />}
             <div ref={bottomRef} />
           </Box>
-        </Box>
-      )}
-      {isHideChat === true && (
-        <Box
-          className={styles.chatArea}
-          onDoubleClick={() => {
-            if (isHideChat === true) {
-              onToggleBackground();
-            }
-          }}
-          sx={{
-            position: 'relative',
-            width: '100%',
-            height: '100%',
-            fontFamily: 'Noto Sans KR, sans-serif',
-            overflow: 'hidden',
-          }}
-        >
-          {/* 기존 배경 */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${
-                prevBgUrl || bgUrl
-              })`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              opacity: isFadingOut ? 0 : 1,
-              transition: 'opacity 0.5s ease',
-              zIndex: 1,
-            }}
-          />
-
-          {/* 새 배경 */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              opacity: isTransitioning ? 1 : 0,
-              transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
-              zIndex: 2,
-            }}
-          />
-
-          {/* 캐릭터 이미지 */}
-          <Box
-            sx={{
-              position: 'absolute',
-
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `url(${characterUrl})`,
-              backgroundSize: 'contain',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-              zIndex: 2, // 배경 위에 렌더링
-            }}
-          />
-        </Box>
-      )}
+        )}
+      </Box>
     </>
   );
 };
