@@ -43,7 +43,8 @@ import Variant6 from "./loading/Variant=6.svg";
 import Retry from "./Icons/MessageMenu/Regenerate.svg";
 
 import NextEpisodeFloat from "./NextEpisode/NextEpisodeFloat.svg";
-import NextEpisodeWait from "./NextEpisode/NextEpisodeWait.svg";
+import NextEpisodeWait from "./NextEpisode/NextEpisodeWait.png";
+import DialogBody from "./NextEpisode/DialogBody.svg";
 
 export {
   Chat,
@@ -84,4 +85,5 @@ export {
   Retry,
   NextEpisodeFloat,
   NextEpisodeWait,
+  DialogBody,
 };

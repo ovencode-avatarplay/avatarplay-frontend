@@ -3,7 +3,7 @@ import {Box, Typography, Modal} from '@mui/material';
 import styles from './NextEpisodePopup.module.css'; // CSS 모듈 경로
 import ImageIcon from '@mui/icons-material/Image';
 import {TriggerNextEpisodeInfo} from '@/app/NetWork/ChatNetwork';
-import {NextEpisodeWait} from '@ui/chatting';
+import {DialogBody, NextEpisodeWait} from '@ui/chatting';
 
 interface PopupProps {
   open: boolean;
@@ -17,11 +17,18 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setWaitTime(prev => Math.max(prev - 1, 0));
+      setWaitTime(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          onYes();
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearInterval(interval); // 컴포넌트 언마운트 시 타이머 정리
+  }, [onYes]);
 
   return (
     <Modal open={open} onClose={() => {}}>
@@ -41,13 +48,11 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
                       backgroundSize: 'cover', // 이미지 비율을 유지하면서 박스 안에 맞춤
                       backgroundPosition: 'center',
                       backgroundRepeat: 'no-repeat', // 이미지를 반복하지 않도록 설정
-                      borderRadius: '8px',
-                      border: '2px solid black', // 검은색 테두리 추가
                       overflow: 'hidden', // 이미지를 영역을 벗어나지 않도록 설정
                     }}
                   >
                     <Box className={styles.imageCounter}>
-                      <ImageIcon className={styles.iconsViewImage} />
+                      <img src={DialogBody.src} className={styles.iconsViewImage} />
                       <Typography variant="body2" className={styles.iconViewText}>
                         {5}
                       </Typography>
@@ -84,7 +89,13 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
           </Box>
         </div>
       ) : (
-        <Typography className={styles.loadingText}>Loading...</Typography> // data가 없을 때 로딩 상태 표시
+        <>
+          <Typography className={styles.loadingText}>다음 에피소드 데이터를 불러오는데 실패했습니다.</Typography>{' '}
+          {/*data가 없을 때 로딩 상태 표시 */}
+          <button className={`${styles.buttonDefault} ${styles.buttonBgNo}`} onClick={onNo}>
+            <div className={styles.buttonTextNo}>닫기</div>
+          </button>
+        </>
       )}
     </Modal>
   );
