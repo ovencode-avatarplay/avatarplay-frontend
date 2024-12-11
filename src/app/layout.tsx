@@ -1,6 +1,7 @@
 import type {Metadata, Viewport} from 'next';
 import '@/app/globals.css';
 import Root from './Root';
+import ThemeRegistry from './themRegistry';
 export const metadata: Metadata = {
   title: 'Talkain',
   description: 'AI Chatting',
@@ -23,7 +24,9 @@ export default function Layout({
   return (
     <html lang="en">
       <body>
-        <Root>{children}</Root>
+        <ThemeRegistry>
+          <Root>{children}</Root>
+        </ThemeRegistry>
       </body>
     </html>
   );
