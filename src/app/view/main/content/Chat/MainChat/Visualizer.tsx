@@ -14,14 +14,29 @@ const Visualizer: React.FC<VisualizerProps> = ({url}) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0); // 오디오 전체 길이
   const visualizerRef = useRef<HTMLDivElement>(null); // 감싸는 div에 참조
+  const extractValidUrl = (url: string): string => {
+    const match = url.match(/https:\/\/.+/); // 'https://'로 시작하는 부분을 추출
+    return match ? match[0] : ''; // 유효한 부분이 있으면 반환, 없으면 빈 문자열 반환
+  };
 
   useEffect(() => {
     const fetchAudio = async () => {
       try {
-        const response = await fetch(url);
+        console.log('Original Audio URL:', url);
+
+        // 유효한 URL 추출
+        const validUrl = extractValidUrl(url);
+        if (!validUrl) {
+          throw new Error('Invalid URL format: Unable to extract valid URL');
+        }
+
+        console.log('Valid Audio URL:', validUrl);
+
+        const response = await fetch(validUrl);
         if (!response.ok) {
           throw new Error(`Failed to fetch audio from URL: ${response.statusText}`);
         }
+
         const audioBlob = await response.blob();
         setBlob(audioBlob);
 
@@ -30,7 +45,7 @@ const Visualizer: React.FC<VisualizerProps> = ({url}) => {
         setAudio(audioElement);
 
         audioElement.addEventListener('loadedmetadata', () => {
-          setDuration(audioElement.duration); // 전체 길이 설정
+          setDuration(audioElement.duration); // 오디오 길이 설정
         });
       } catch (error) {
         console.error('Error fetching audio:', error);

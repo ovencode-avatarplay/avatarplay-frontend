@@ -106,7 +106,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
               className={
                 sender === 'user' || sender === 'userNarration'
                   ? styles.chatBubbleJustifyUser
-                  : sender === 'partner' || sender === 'partnerNarration'
+                  : sender === 'partner' || sender === 'partnerNarration' || sender === 'media'
                   ? styles.chatBubbleProfilePartner
                   : styles.chatBubbleJustifySystem
               }
