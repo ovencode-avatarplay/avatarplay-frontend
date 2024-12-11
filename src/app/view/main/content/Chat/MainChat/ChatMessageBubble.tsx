@@ -14,6 +14,7 @@ import ReactPlayer from 'react-player';
 import ReactAudioPlayer from 'react-audio-player';
 import ChatMediaDialog from './ChatMediaDialog';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import Visualizer from './Visualizer';
 interface ChatMessageBubbleProps {
   text: string;
   sender: 'user' | 'partner' | 'partnerNarration' | 'system' | 'introPrompt' | 'userNarration' | 'media';
@@ -229,13 +230,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                       width: '100%',
                     }}
                   >
-                    <ReactAudioPlayer
-                      src={mediaData.mediaUrlList[0]}
-                      controls // 재생 컨트롤 활성화
-                      style={{
-                        borderRadius: '8px',
-                      }}
-                    />
+                    <Visualizer url={mediaData.mediaUrlList[0]}></Visualizer>
                   </Box>
                 )}
               </Box>
