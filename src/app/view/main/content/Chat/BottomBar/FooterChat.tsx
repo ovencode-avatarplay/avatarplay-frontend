@@ -13,7 +13,7 @@ import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
 import ChatBar from './ChatBar';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
 interface FooterChatProps {
-  onSend: (message: string, isMyMessage: boolean, isClearString: boolean) => void;
+  onSend: (message: string, isMyMessage: boolean, isClearString: boolean, isShowDate: boolean) => void;
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   streamKey: string;
   setStreamKey: (key: string) => void;
@@ -78,7 +78,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
         if (chattingCheatRes) {
           const cheatResult = cheatManager(chattingCheatRes);
           if (cheatResult.text.length > 0) {
-            onSend(cheatResult.text, true, false);
+            onSend(cheatResult.text, true, false, false);
             result = true;
           } else if (cheatResult.reqEnter === true) {
             onReqPrevChatting(true);
@@ -147,15 +147,19 @@ const FooterChat: React.FC<FooterChatProps> = ({
 
       if (message.includes('⦿SYSTEM_CHAT⦿')) {
         const messageParts = message.split('⦿SYSTEM_CHAT⦿');
-        messageParts.forEach(part => {
+        messageParts.forEach((part, index) => {
           const trimmedPart = part.trim(); // 필요시 양쪽 공백 제거
+          const isLast = index === messageParts.length - 1; // 마지막 요소 판별
+
           if (trimmedPart.length > 0) {
-            // 빈 문자열이 아닌 경우에만 onSend 호출
-            onSend(trimmedPart, true, parseMessage);
+            // 마지막 요소인 경우 별도 처리
+            if (isLast) {
+              onSend(trimmedPart, true, parseMessage, true);
+            } else onSend(trimmedPart, true, parseMessage, false);
           }
         });
       } else {
-        onSend(message, true, parseMessage);
+        onSend(message, true, parseMessage, true);
       }
 
       reqSendChatMessage.text = message.replace(/\(,\)/g, '');

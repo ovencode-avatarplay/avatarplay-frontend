@@ -20,6 +20,7 @@ import {
   isAnotherSenderType,
   isSameSenderType,
   cleanStringFinal,
+  timeParser,
 } from '@chats/MainChat/MessageParser';
 
 import {
@@ -108,6 +109,26 @@ const ChatPage: React.FC = () => {
   const isRegeneratingQuestion = useSelector((state: RootState) => state.modifyQuestion.isRegeneratingQuestion);
   const regenerateQuestion = useSelector((state: RootState) => state.modifyQuestion.regeneratingQuestion);
 
+  const getCurrentLocaleTime = (): string => {
+    const currentDate = new Date();
+
+    // 시간 포맷을 직접 생성
+    const hours = currentDate.getHours(); // 시
+    const minutes = currentDate.getMinutes(); // 분
+    const isPM = hours >= 12; // 오후 여부 확인
+
+    // 12시간 형식으로 변환
+    const formattedHours = hours % 12 || 12; // 0을 12로 바꿔줌
+    const formattedMinutes = minutes.toString().padStart(2, '0'); // 항상 2자리 숫자
+    const period = isPM ? 'pm' : 'am'; // AM/PM 결정
+
+    // 결과 문자열
+    const timeString = `${formattedHours}:${formattedMinutes} ${period}`;
+
+    console.log(timeString); // 예: "3:49 pm"
+
+    return timeString;
+  };
   const Send = async (reqSendChatMessage: SendChatMessageReq) => {
     try {
       // console.log('sendParsedMessageStartRef:', parsedMessagesRef);
@@ -164,7 +185,7 @@ const ChatPage: React.FC = () => {
       }
     } catch (error) {
       console.error(error);
-      handleSendMessage(`${ESystemError.syserr_chatting_send_post}`, false, false);
+      handleSendMessage(`${ESystemError.syserr_chatting_send_post}`, false, false, false);
 
       SetChatLoading(false);
     }
@@ -186,7 +207,7 @@ const ChatPage: React.FC = () => {
         }
 
         const newMessage = JSON.parse(event.data);
-        handleSendMessage(newMessage, false, true);
+        handleSendMessage(newMessage, false, true, false);
         //console.log('stream new text====' + newMessage + '====');
         //messageCount++; // 메시지 수신 횟수 증가
 
@@ -216,7 +237,7 @@ const ChatPage: React.FC = () => {
 
     eventSource.onerror = error => {
       console.error('Stream encountered an error or connection was lost');
-      handleSendMessage(`${ESystemError.syserr_chat_stream_error}`, false, false);
+      handleSendMessage(`${ESystemError.syserr_chat_stream_error}`, false, false, false);
       isSendingMessage.state = false;
 
       eventSource.close();
@@ -235,22 +256,35 @@ const ChatPage: React.FC = () => {
     parsedMessagesRef.current = parsedMessages;
   }, [parsedMessages]);
 
-  const handleSendMessage = async (message: string, isMyMessage: boolean, isClearString: boolean) => {
+  const handleSendMessage = async (
+    message: string,
+    isMyMessage: boolean,
+    isClearString: boolean,
+    isShowDate: boolean,
+  ) => {
     if (!message || typeof message !== 'string') return;
-    let isResult = false;
+    let currentTime: string = getCurrentLocaleTime();
+    if (isShowDate === false) currentTime = '';
+
+    let isFinish = false;
     const currentSender = currentParsingSender.current;
     const mediaMessages: Message = {
       chatId: -1,
       text: '.',
       sender: SenderType.media,
-      createDate: '',
+      createDate: currentTime,
     };
+
+    if (isFinishMessage(isMyMessage, message) === true) {
+      isFinish = true;
+    }
+
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {
       chatId: TempIdforSendQuestion, // 임시 ID 지급
       text: message,
       sender: isMyMessage ? SenderType.User : currentSender,
-      createDate: '',
+      createDate: currentTime,
     };
     const mediaDataValue: MediaData = {
       mediaType: TriggerMediaState.None,
@@ -258,13 +292,22 @@ const ChatPage: React.FC = () => {
     };
     // console.log('SetChatID checkResult');
     // 메시지가 '$'을 포함할 경우 팝업 표시
-    if (isFinishMessage(isMyMessage, message) === true) {
+    if (isFinish === true) {
       const requestData = {
         streamKey: streamKey, // streamKey 상태에서 가져오기
       };
-      isResult = true;
-
       try {
+        currentTime = getCurrentLocaleTime(); // 스트리밍 받는 말풍선은 무조건 위에서 지워줬기 때문에 한번 더 가져온다.
+        // 이 시점이 마지막 Partner 말풍선이 끝난 시점이라서 이 시점에서 마지막 말풍선에 날짜를 출력한다.
+        let tempAllMessage: Message[] = [...(parsedMessagesRef.current?.Messages || [])];
+        if (tempAllMessage && tempAllMessage[tempAllMessage.length - 1]) {
+          tempAllMessage[tempAllMessage.length - 1].createDate = currentTime;
+        }
+
+        const allMedia = [...(parsedMessagesRef.current?.mediaData || [])];
+        const allMessage = tempAllMessage;
+        const allEmoticon = [...(parsedMessagesRef.current?.emoticonUrl || [])];
+
         const response = await sendChattingResult(requestData);
         const chatResultInfoList: ChatResultInfo[] = response.data.chatResultInfoList;
 
@@ -273,17 +316,24 @@ const ChatPage: React.FC = () => {
           mediaUrlList: [],
         };
 
+        // 마지막 채팅메시지에 날짜를 넣어주자.
+        //allMessage[allMessage.length - 1].createDate = currentTime;
+
+        //
+        //parsedMessagesRef.current?.Messages[parsedMessagesRef.current?.Messages.length - 1].createDate = currentTime;
+
         // Trigger 데이터를 순차적으로 처리
         chatResultInfoList.forEach(triggerInfo => {
-          const allMedia = [...(parsedMessagesRef.current?.mediaData || [])];
-          const allMessage = [...(parsedMessagesRef.current?.Messages || [])];
-          const allEmoticon = [...(parsedMessagesRef.current?.emoticonUrl || [])];
+          // const allMedia = [...(parsedMessagesRef.current?.mediaData || [])];
+          // const allMessage = [...(parsedMessagesRef.current?.Messages || [])];
+          // const allEmoticon = [...(parsedMessagesRef.current?.emoticonUrl || [])];
 
+          const isPrintDate: boolean = triggerInfo.type === 1 ? false : true; // triggerInfo.type === 1 이면 시스템메시지
           const resultSystemMessages: Message = {
             chatId: 0,
             text: '.',
             sender: SenderType.System,
-            createDate: '',
+            createDate: isPrintDate ? currentTime : '', // 시스템 메시지에는 시간을 출력하지 않는다.
           };
 
           resultSystemMessages.text = triggerInfo.systemText.replace(/^%|%$/g, '');
@@ -345,22 +395,23 @@ const ChatPage: React.FC = () => {
               });
               break;
           }
-          const updateMessage = {
-            Messages: allMessage,
-            emoticonUrl: allEmoticon,
-            mediaData: allMedia,
-          };
-
-          setParsedMessages(updateMessage);
-          parsedMessagesRef.current = updateMessage;
-
-          console.log('Updated parsedMessagesRef.current:', parsedMessagesRef.current);
         });
+
+        const updateMessage = {
+          Messages: allMessage,
+          emoticonUrl: allEmoticon,
+          mediaData: allMedia,
+        };
+
+        setParsedMessages(updateMessage);
+        parsedMessagesRef.current = updateMessage;
+
+        console.log('Updated parsedMessagesRef.current:', parsedMessagesRef.current);
 
         console.log('Result API Response:', response);
       } catch (error) {
         console.error('Error calling Result API:', error);
-        handleSendMessage(`${ESystemError.syserr_chat_stream_error}`, false, false);
+        handleSendMessage(`${ESystemError.syserr_chat_stream_error}`, false, false, false);
       }
       return;
     }
@@ -394,7 +445,7 @@ const ChatPage: React.FC = () => {
           newMessage.sender = SenderType.User;
         }
         dispatch(setRegeneratingQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
-        if (!isResult) {
+        if (!isFinish) {
           allMessages.push(newMessage);
           allEmoticon.push('');
           allMedia.push(mediaDataValue);
@@ -438,11 +489,11 @@ const ChatPage: React.FC = () => {
               chatId: tempChatId,
               text: newMessage.text[i],
               sender: (newMessage.sender = newSenderResult),
-              createDate: '',
+              createDate: currentTime,
             };
             currentSender = _newMessage.sender;
 
-            if (!isResult) {
+            if (!isFinish) {
               allMessages.push(_newMessage);
               allEmoticon.push('');
               allMedia.push(mediaDataValue);
@@ -563,7 +614,7 @@ const ChatPage: React.FC = () => {
 
         const newMessage = JSON.parse(event.data);
         console.log('stream new text====' + newMessage + '====');
-        handleSendMessage(newMessage, false, true);
+        handleSendMessage(newMessage, false, true, false);
         if (newMessage.includes('$') === true) {
           isSendingMessage.state = false;
 
@@ -688,11 +739,12 @@ const ChatPage: React.FC = () => {
             acc.mediaData.push(...Array(parsedMessages.length));
             acc.mediaData[acc.mediaData.length - 1] = mediaDataValue;
           } else if (mediaType != TriggerMediaState.None) {
+            let createDate: string = timeParser(msg.createAt);
             const defaultMessages: Message = {
               chatId: -1,
               text: '.',
               sender: SenderType.media,
-              createDate: '',
+              createDate: createDate,
             };
             acc.parsedPrevMessages.push(defaultMessages);
             acc.emoticonUrl.push(emoticonValue);

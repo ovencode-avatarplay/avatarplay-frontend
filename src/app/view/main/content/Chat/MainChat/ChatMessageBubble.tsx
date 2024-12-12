@@ -244,7 +244,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                 className={`${styles.dateTimeBoxBase} ${
                   sender === 'user' || sender === 'userNarration'
                     ? styles.dateTimeBoxUser
-                    : sender === 'partner' || sender === 'partnerNarration'
+                    : sender === 'partner' || sender === 'partnerNarration' || sender === 'media'
                     ? ''
                     : styles.dateTimeBoxHide
                 }`}
