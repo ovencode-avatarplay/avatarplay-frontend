@@ -216,7 +216,7 @@ const ChatPage: React.FC = () => {
 
     eventSource.onerror = error => {
       console.error('Stream encountered an error or connection was lost');
-      handleSendMessage(`${ESystemError.syserr_chat_stream_error.toString}`, false, false);
+      handleSendMessage(`${ESystemError.syserr_chat_stream_error}`, false, false);
       isSendingMessage.state = false;
 
       eventSource.close();
@@ -360,7 +360,7 @@ const ChatPage: React.FC = () => {
         console.log('Result API Response:', response);
       } catch (error) {
         console.error('Error calling Result API:', error);
-        handleSendMessage(`${ESystemError.syserr_chat_stream_error.toString}`, false, false);
+        handleSendMessage(`${ESystemError.syserr_chat_stream_error}`, false, false);
       }
       return;
     }
