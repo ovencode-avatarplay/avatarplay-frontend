@@ -15,6 +15,7 @@
     filter: none;
 }
 
+
 .blurBox {
 z-index: auto;
 filter: blur(2px);

@@ -16,6 +16,7 @@ import ChatMediaDialog from './ChatMediaDialog';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import Visualizer from './Visualizer';
 import {checkChatSystemError} from '@/app/NetWork/ESystemError';
+import ImageGrid from './ImageGrid';
 interface ChatMessageBubbleProps {
   text: string;
   sender: 'user' | 'partner' | 'partnerNarration' | 'system' | 'introPrompt' | 'userNarration' | 'media';
@@ -159,32 +160,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                   />
                 )}
                 {sender === 'media' && mediaData && mediaData.mediaType === TriggerMediaState.TriggerImage && (
-                  <Swiper
-                    effect={'cards'}
-                    grabCursor={false}
-                    modules={[EffectCards]}
-                    className={styles.mySwiper}
-                    style={{
-                      width: '100px', // 원하는 가로 크기
-                      height: 'auto', // 원하는 세로 크기
-                      marginLeft: '10%',
-                    }}
-                    loop={false} // 루프 비활성화 (슬라이드가 끝나면 멈춤)
-                    freeMode={false} // 자유 모드 비활성화
-                    allowSlideNext={false} // 슬라이드 이동 방지
-                    allowSlidePrev={false} // 슬라이드 이동 방지
-                    onClick={handleMediaClick}
-                  >
-                    {mediaData.mediaUrlList.map((url, idx) => (
-                      <SwiperSlide key={idx}>
-                        <img
-                          src={url}
-                          alt={`Media ${idx}`}
-                          style={{width: '100%', height: 'auto', borderRadius: '8px'}}
-                        />
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
+                  <ImageGrid urls={mediaData.mediaUrlList}></ImageGrid>
                 )}
 
                 {/* 비디오 출력 */}

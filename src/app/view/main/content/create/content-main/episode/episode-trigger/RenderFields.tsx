@@ -113,8 +113,6 @@ export const RenderSubDataFields: React.FC<RenderSubDataFieldsProps> = ({
   handleOpenChapterBoard,
   handleOpenEpisodeConversationTemplate,
 }) => {
-  console.log(selectedChapter);
-  console.log(selectedEpisode);
   switch (triggerInfo.triggerActionType) {
     case TriggerSubDataType.EpisodeChange:
       return (
