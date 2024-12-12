@@ -12,6 +12,7 @@ import {useSelector} from 'react-redux';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ChatRetryButton from './ChatRetryButton';
 import ChatLoadingBubble from './ChatLoadingBubble';
+import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
 interface ChatAreaProps {
   messages: MessageGroup;
   bgUrl: string;
@@ -144,14 +145,14 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   };
 
   const retryAction = (msg: Message) => {
-    if (msg.text.includes('Failed to send message. Please try again.')) {
+    if (msg.text.includes(`${ESystemError.syserr_chatting_send_post.toString}`)) {
       // 첫 번째 문구에 해당하는 동작
       console.log('Failed to send message. Retry logic');
       handleRetry(
         messages.Messages[messages.Messages.length - 2].text,
         messages.Messages[messages.Messages.length - 2].chatId,
       );
-    } else if (msg.text.includes('Stream encountered an error or connection was lost. Please try again.')) {
+    } else if (msg.text.includes(`${ESystemError.syserr_chat_stream_error.toString}`)) {
       // 두 번째 문구에 해당하는 동작
       console.log('Stream error. Attempting to reconnect');
       retrySend();
@@ -247,8 +248,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                   )}
                   {/* Retry 버튼 조건부 렌더링 */}
                   {msg.sender === 'system' &&
-                    (msg.text.includes('Failed to send message. Please try again.') ||
-                      msg.text.includes('Stream encountered an error or connection was lost. Please try again.')) &&
+                    checkChatSystemError(msg.text) &&
                     !retryingMessages.includes(msg.chatId) && ( // 재전송된 메시지 제외
                       <>
                         <ChatRetryButton retrySend={() => retryAction(msg)} />

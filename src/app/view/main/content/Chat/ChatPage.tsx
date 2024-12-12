@@ -42,6 +42,7 @@ import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
 import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import ChatFloatingArea from './MainChat/ChatFloatingArea';
 import {TriggerSubDataType} from '@/types/apps/DataTypes';
+import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
 
 const ChatPage: React.FC = () => {
   const TempIdforSendQuestion: number = -222;
@@ -112,13 +113,7 @@ const ChatPage: React.FC = () => {
       // console.log('sendParsedMessageStartRef:', parsedMessagesRef);
 
       const currentMessages = parsedMessagesRef.current.Messages;
-      const filteredMessages = currentMessages.filter(
-        msg =>
-          !(
-            msg.text.includes('Failed to send message. Please try again.') ||
-            msg.text.includes('Stream encountered an error or connection was lost. Please try again.')
-          ),
-      );
+      const filteredMessages = currentMessages.filter(msg => !checkChatSystemError(msg.text));
 
       // 상태를 업데이트
       setParsedMessages({
@@ -169,7 +164,7 @@ const ChatPage: React.FC = () => {
       }
     } catch (error) {
       console.error(error);
-      handleSendMessage('%Failed to send message. Please try again.%', false, false);
+      handleSendMessage(`${ESystemError.syserr_chatting_send_post}`, false, false);
 
       SetChatLoading(false);
     }
@@ -221,7 +216,7 @@ const ChatPage: React.FC = () => {
 
     eventSource.onerror = error => {
       console.error('Stream encountered an error or connection was lost');
-      handleSendMessage('%Stream encountered an error or connection was lost. Please try again.%', false, false);
+      handleSendMessage(`${ESystemError.syserr_chat_stream_error.toString}`, false, false);
       isSendingMessage.state = false;
 
       eventSource.close();
@@ -365,7 +360,7 @@ const ChatPage: React.FC = () => {
         console.log('Result API Response:', response);
       } catch (error) {
         console.error('Error calling Result API:', error);
-        handleSendMessage('%Stream encountered an error or connection was lost. Please try again.%', false, false);
+        handleSendMessage(`${ESystemError.syserr_chat_stream_error.toString}`, false, false);
       }
       return;
     }
@@ -531,13 +526,7 @@ const ChatPage: React.FC = () => {
 
             setParsedMessages(prev => ({
               ...prev,
-              Messages: prev.Messages.filter(
-                msg =>
-                  !(
-                    msg.text.includes('Failed to send message. Please try again.') ||
-                    msg.text.includes('Stream encountered an error or connection was lost. Please try again.')
-                  ),
-              ),
+              Messages: prev.Messages.filter(msg => !checkChatSystemError(msg.text)),
             }));
           } else {
             if (response.resultCode == 1) {

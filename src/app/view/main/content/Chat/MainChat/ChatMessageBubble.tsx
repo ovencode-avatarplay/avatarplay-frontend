@@ -15,6 +15,7 @@ import ReactAudioPlayer from 'react-audio-player';
 import ChatMediaDialog from './ChatMediaDialog';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import Visualizer from './Visualizer';
+import {checkChatSystemError} from '@/app/NetWork/ESystemError';
 interface ChatMessageBubbleProps {
   text: string;
   sender: 'user' | 'partner' | 'partnerNarration' | 'system' | 'introPrompt' | 'userNarration' | 'media';
@@ -120,7 +121,9 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                   <div
                     className={
                       sender === 'system'
-                        ? styles.chatBackSystem
+                        ? checkChatSystemError(text)
+                          ? styles.chatBackSystemError
+                          : styles.chatBackSystem
                         : sender === 'introPrompt'
                         ? styles.chatBackIntro
                         : sender === 'user'

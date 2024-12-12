@@ -1,6 +1,8 @@
 // src/app/Network/ChatNetwork.tsx
 
 import api, {ResponseAPI} from './ApiInstance';
+import {ESystemError} from './ESystemError';
+
 import chatEmojiTempData from '@/data/temp/chat-emoji-temp-data.json';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
@@ -60,8 +62,7 @@ export const sendMessageStream = async (
       return handleErrorResponse(response);
     }
   } catch (error: any) {
-    console.error('Error sendMessageStream:', error);
-    throw new Error('Failed to send message. Please try again.'); // Error handling
+    throw new Error(`${ESystemError.syserr_chatting_send_post}`);
   }
 };
 // 요청 데이터 타입
@@ -171,7 +172,7 @@ export const retryStream = async (
 //     }
 //   } catch (error: any) {
 //     console.error('Error sending message:', error);
-//     throw new Error('Failed to send message. Please try again.'); // Error handling
+//     throw new Error(`${ESystemError.syserr_chatting_send_post}`); // Error handling
 //   }
 // };
 
@@ -236,7 +237,7 @@ export const sendChattingEnter = async (
     }
   } catch (error) {
     console.error('Error sending Enter:', error);
-    throw new Error('Failed to send message. Please try again.'); // Error handling
+    throw new Error(`${ESystemError.syserr_chatting_send_post}`); // Error handling
   }
 };
 
@@ -262,7 +263,7 @@ export const sendChattingEnterUrl = async (
     }
   } catch (error) {
     console.error('Error sending Enter:', error);
-    throw new Error('Failed to send message. Please try again.'); // Error handling
+    throw new Error(`${ESystemError.syserr_chatting_send_post}`); // Error handling
   }
 };
 
