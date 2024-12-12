@@ -1,4 +1,4 @@
-import {Avatar, Box, IconButton} from '@mui/material';
+import {Avatar, Box, IconButton, Typography} from '@mui/material';
 import ChatMessageMenuTop from './ChatContextMenuTop';
 import ChatMessageMenuBottom from './ChatContextMenuBottom';
 import React, {useEffect, useState} from 'react';
@@ -59,6 +59,14 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   };
 
   const [isModalOpen, setModalOpen] = useState(false);
+  const [videoDuration, setVideoDuration] = useState<string | null>(null);
+
+  // 초를 분:초 형식으로 변환
+  const formatDuration = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   const handleMediaClick = () => {
     if (
@@ -165,42 +173,61 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
 
                 {/* 비디오 출력 */}
                 {sender === 'media' && mediaData && mediaData.mediaType === TriggerMediaState.TriggerVideo && (
-                  <Box
-                    sx={{
-                      position: 'relative',
-                      width: '100%',
-                      height: 'auto', // 원하는 높이로 설정
-                    }}
-                  >
-                    {/* ReactPlayer */}
-                    {mediaData && mediaData.mediaType === TriggerMediaState.TriggerVideo && (
-                      <ReactPlayer
-                        muted={true}
-                        url={mediaData.mediaUrlList[0]} // 첫 번째 URL 사용
-                        width="70%" // 비율 유지하며 너비 자동 조정
-                        height="auto" // 비율 유지하며 높이 자동 조정
-                        style={{
-                          borderRadius: '8px',
-                        }}
-                      />
-                    )}
-
-                    {/* Play 버튼 */}
-                    <IconButton
-                      onClick={handleMediaClick}
+                  <div className={styles.mediaVideo}>
+                    <Box
                       sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '35%', // ReactPlayer width 70%를 고려하여 중앙에 배치
-                        transform: 'translate(-50%, -50%)', // 중앙 정렬
-                        color: 'white', // 아이콘 색상
-                        fontSize: 48, // 아이콘 크기
-                        zIndex: 10, // 다른 요소 위에 표시
+                        width: '100%',
+                        height: '100%', // 원하는 높이로 설정
                       }}
                     >
-                      <PlayCircleIcon fontSize="inherit" />
-                    </IconButton>
-                  </Box>
+                      {/* ReactPlayer */}
+                      {mediaData && mediaData.mediaType === TriggerMediaState.TriggerVideo && (
+                        <ReactPlayer
+                          muted={true}
+                          url={mediaData.mediaUrlList[0]} // 첫 번째 URL 사용
+                          width="100%" // 비율 유지하며 너비 자동 조정
+                          height="100%" // 비율 유지하며 높이 자동 조정
+                          style={{
+                            borderRadius: '8px',
+                          }}
+                          onDuration={(duration: number) => setVideoDuration(formatDuration(duration))} // 영상 길이 설정
+                        />
+                      )}
+
+                      {/* Play 버튼 */}
+
+                      <IconButton
+                        onClick={handleMediaClick}
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%', // ReactPlayer width 70%를 고려하여 중앙에 배치
+                          transform: 'translate(-50%, -50%)', // 중앙 정렬
+                          color: 'white', // 아이콘 색상
+                          fontSize: 48, // 아이콘 크기
+                          zIndex: 10, // 다른 요소 위에 표시
+                          display: 'flex',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <PlayCircleIcon fontSize="inherit" />
+                        <Typography
+                          sx={{
+                            width: '50px',
+                            height: '15px',
+                            fontStyle: 'normal',
+                            fontWeight: 400,
+                            fontSize: '11px',
+                            lineHeight: '140%',
+                            textAlign: 'center',
+                            color: '#E8EAED',
+                          }}
+                        >
+                          {videoDuration || '0:00'} {/* 영상 길이가 없으면 기본값 0:00 */}
+                        </Typography>
+                      </IconButton>
+                    </Box>
+                  </div>
                 )}
                 {/* 오디오 출력 */}
                 {sender === 'media' && mediaData && mediaData.mediaType === TriggerMediaState.TriggerAudio && (

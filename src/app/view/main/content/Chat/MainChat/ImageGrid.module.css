@@ -155,9 +155,6 @@ object-fit: contain; /* 비율 유지하며 축소 */
 
 .count7
 {
-/* Frame 71 */
-
-/* Auto layout */
 display: flex;
 flex-direction: column;
 align-items: flex-start;
