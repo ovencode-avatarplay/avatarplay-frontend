@@ -55,6 +55,12 @@
     height: 30px;
     width: 30px;
   }
+
+  .closeButton {    
+    height: 16px;
+    width: 16px;
+    margin-bottom: 12px;
+  }
   
   
 /* 공통 버튼 스타일 */

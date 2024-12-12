@@ -6,7 +6,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {setIsRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import AI_Recommend from './AI_Recommend';
 import styles from './ChatBar.module.css';
-import {AiText, BotMessage, BotSend, Chat, Description, Plus, Recording1} from '@ui/chatting';
+import {AiText, BotMessage, BotSend, Chat, Close, Description, Plus, Recording1} from '@ui/chatting';
 import {all} from 'axios';
 
 interface ChatBarProps {
@@ -261,9 +261,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
           />
 
           {id !== 'main' ? (
-            <IconButton onClick={() => removeChatBar(id)}>
-              <CloseIcon />
-            </IconButton>
+            <img src={Close.src} onClick={() => removeChatBar(id)} className={styles.closeButton} />
           ) : (
             <>
               {Object.values(inputValues).every(value => value.trim() === '') ? (

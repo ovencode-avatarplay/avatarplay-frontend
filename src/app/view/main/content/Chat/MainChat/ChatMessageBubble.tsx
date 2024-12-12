@@ -67,12 +67,13 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
-
-  const handleMediaClick = () => {
+  const [selectImage, setSelectImage] = useState<number>(0);
+  const handleMediaClick = (index: number = 0) => {
     if (
       mediaData &&
       (mediaData.mediaType === TriggerMediaState.TriggerVideo || mediaData.mediaType === TriggerMediaState.TriggerImage)
     ) {
+      setSelectImage(index);
       setModalOpen(true);
     }
   };
@@ -168,7 +169,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                   />
                 )}
                 {sender === 'media' && mediaData && mediaData.mediaType === TriggerMediaState.TriggerImage && (
-                  <ImageGrid urls={mediaData.mediaUrlList}></ImageGrid>
+                  <ImageGrid urls={mediaData.mediaUrlList} onClick={handleMediaClick}></ImageGrid>
                 )}
 
                 {/* 비디오 출력 */}
@@ -197,7 +198,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                       {/* Play 버튼 */}
 
                       <IconButton
-                        onClick={handleMediaClick}
+                        onClick={() => handleMediaClick()}
                         sx={{
                           position: 'absolute',
                           top: '50%',
@@ -266,6 +267,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
             isModalOpen={isModalOpen}
             closeModal={closeModal}
             type={mediaData?.mediaType}
+            initNum={selectImage}
           />
         )}
     </>
