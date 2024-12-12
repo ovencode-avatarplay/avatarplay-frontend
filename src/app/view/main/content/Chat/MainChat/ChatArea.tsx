@@ -204,7 +204,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
 
         {/* 캐릭터 이미지 */}
         <Box
-          className={styles.mainCharacter}
+          className={`${styles.mainCharacter} ${bgUrl === '' || bgUrl === undefined ? styles.mainCharacterNonBg : ''}`}
           sx={{
             backgroundImage: `url(${characterUrl})`,
           }}

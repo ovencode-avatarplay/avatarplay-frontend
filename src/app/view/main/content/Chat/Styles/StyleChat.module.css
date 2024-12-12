@@ -77,7 +77,7 @@
 .chatArea {
   flex: 1; /* 남은 공간을 차지하도록 설정 */
   padding: 16px; /* 채팅 영역 패딩 */
-  max-height: calc(100vh - 65px); /* 하단바와 상단바를 제외한 최대 높이 */
+  max-height: calc(100vh - 48px);  
   overflow-y: auto; /* 수직 스크롤 가능 */
   border: 1px solid #ccc; /* 선택 사항: 테두리 추가 */
   border-radius: 8px; /* 선택 사항: 모서리 둥글게 */
@@ -128,11 +128,15 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-size: contain;
+  background-size: auto;
   background-repeat: no-repeat;
   background-position: bottom;
   
   z-Index: 3,
+}
+
+.mainCharacterNonBg {
+  background-size: cover;
 }
 
 .messageBubbleArea {
