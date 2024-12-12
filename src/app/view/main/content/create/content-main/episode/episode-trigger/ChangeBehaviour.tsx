@@ -162,22 +162,15 @@ const ChangeBehaviour: React.FC<ChangeBehaviourProps> = ({open, onClose, index})
       return; // selectedChapterInfo가 없으면 함수를 종료
     }
 
-    // 선택한 에피소드의 인덱스를 찾음
-    const selectedEpisodeIndex = selectedChapterInfo.episodeInfoList.findIndex(episode => episode.id === episodeId);
+    const selectedEpisode = selectedChapterInfo.episodeInfoList.find(a => a.id == episodeId);
+    setSelectedChapter(selectedChapterInfo.name || 'None');
+    setSelectedEpisode(selectedEpisode?.name || 'None select Episode');
 
-    if (selectedEpisodeIndex !== -1) {
-      const selectedEpisode = selectedChapterInfo.episodeInfoList[selectedEpisodeIndex];
-      setSelectedChapter(selectedChapterInfo.name || 'None');
-      setSelectedEpisode(selectedEpisode.name || 'None select Episode');
-
-      // Update triggerInfo with the total index instead of episodeId
-      setTriggerInfo(prev => ({
-        ...prev,
-        actionChangeEpisodeId: selectedEpisode.id, // Here we use the total index
-      }));
-    } else {
-      console.error('Selected episode not found');
-    }
+    // Update triggerInfo with the total index instead of episodeId
+    setTriggerInfo(prev => ({
+      ...prev,
+      actionChangeEpisodeId: selectedEpisode?.id || 0, // Here we use the total index
+    }));
 
     setIsChapterBoardOpen(false);
   };
