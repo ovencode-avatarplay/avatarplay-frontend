@@ -81,7 +81,7 @@ overflow: hidden; /* 추가 */
   
   border-radius:4px 4px 4px 4px;
   
-    object-fit: contain; /* 비율 유지하며 축소 */
+    object-fit: cover; /* 비율 유지하며 축소 */
     background-color: white;
   }
 
@@ -134,7 +134,7 @@ height: 80px;
 
 border-radius: 4px;
 background-color: white;
-object-fit: contain; /* 비율 유지하며 축소 */
+object-fit: cover; /* 비율 유지하며 축소 */
 
 }
 .image5_2
@@ -146,7 +146,7 @@ height: 80px;
 
 border-radius: 4px 4px 4px 4px;
 background-color: white;
-object-fit: contain; /* 비율 유지하며 축소 */
+object-fit: cover; /* 비율 유지하며 축소 */
 }
 .count6
 {
@@ -181,6 +181,6 @@ overflow: hidden; /* 추가 */
 .image {
   width: 100%; /* 이미지 가로 크기 */
   height: 100%; /* 이미지 세로 크기 */
-  object-fit: contain; /* 비율 유지하며 축소 */
+  object-fit: cover; /* 비율 유지하며 축소 */
   background-color: white;
 }

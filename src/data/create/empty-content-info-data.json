@@ -3,17 +3,17 @@
     "resultMessage": "",
     "data": {
       "contentInfo": {
-        "id": 0,
+        "id": -1,
         "userId": 0,
         "urlLinkKey" : "",
         "chapterInfoList": [
           {
-            "id": 0,
+            "id": -1,
             "name": "",
             "thumbnail": "",
             "episodeInfoList": [
               {
-                "id": 0,
+                "id": -1,
                 "name": "",
                 "backgroundImageUrl": "",
                 "characterInfo": {
