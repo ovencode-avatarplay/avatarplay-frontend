@@ -228,5 +228,30 @@
       "pt-PT": "",
       "de": ""
     }
+  },
+  "SystemError" :
+  {
+    "syserr_chatting_send_post" : {
+      "ko": "Failed to send message. Please try again",
+      "en-US": "Failed to send message. Please try again",
+      "ja": "Failed to send message. Please try again Ja",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    } ,
+    "syserr_chat_stream_error" : {
+      "ko": "There is something wrong. Please try again. ",
+      "en-US": "There is something wrong. Please try again. ",
+      "ja": "There is something wrong. Please try again. Ja",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    } 
   }
 }

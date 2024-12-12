@@ -1,8 +1,6 @@
 'use client';
 import React, {useEffect} from 'react';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import WallpaperIcon from '@mui/icons-material/Wallpaper';
+
 import {Avatar, IconButton} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import {useSelector} from 'react-redux';

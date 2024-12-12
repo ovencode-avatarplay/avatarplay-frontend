@@ -1,0 +1,64 @@
+.box{
+
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 4px;
+gap: 8px;
+
+width: 260px;
+max-width: 260px;
+height: 40px;
+
+background: rgba(0, 0, 0, 0.6);
+border-radius: 1000px;
+flex-grow: 1;
+position: relative;
+cursor: pointer;
+justify-content: space-between;
+}
+
+.curTime{
+    /* 0:08 */
+
+width: 22px;
+height: 13px;
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 11px;
+line-height: 13px;
+/* identical to box height, or 118% */
+text-align: right;
+
+color: #777E90;
+
+}
+
+.playButton {
+    /* Button-Iconic-M */
+    box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+  
+    background: #FCFCFD;
+    border: 1px solid #F4F5F6;
+    border-radius: 16px;
+  
+    display: flex; /* 플렉스박스 활성화 */
+    justify-content: center; /* 가로 방향 중앙 정렬 */
+    align-items: center; /* 세로 방향 중앙 정렬 */
+  
+    cursor: pointer; /* 클릭 가능 상태 */
+  }
+  
+
+.icon
+{
+width: auto;
+height: auto;
+align-items: center;
+
+
+}

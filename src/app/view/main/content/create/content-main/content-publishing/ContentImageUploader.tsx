@@ -13,15 +13,18 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ImageUploadDialog from '../episode/episode-ImageCharacter/ImageUploadDialog';
+import {AltRoute} from '@mui/icons-material';
 
 interface Props {
   uploadImageState: boolean;
+  initImage: string;
   onClickUploadImage: () => void;
   onCloseUploadImage: () => void;
 }
 
 const ContentImageUpload: React.FC<Props> = ({
   uploadImageState: uploadImageOpen,
+  initImage,
   onClickUploadImage,
   onCloseUploadImage,
 }) => {
@@ -41,7 +44,12 @@ const ContentImageUpload: React.FC<Props> = ({
 
     checkMobileDevice();
   }, []);
-
+  useEffect(() => {
+    if (!imagePreview && initImage) {
+      console.log('Force setting imagePreview');
+      setImagePreview(initImage);
+    }
+  }, [initImage, imagePreview]);
   const handleSpeedDialClick = () => {
     setDialogOpen(true);
   };
@@ -82,7 +90,6 @@ const ContentImageUpload: React.FC<Props> = ({
   useEffect(() => {
     setImagePreview(editedContentInfo?.curEditingContentInfo.publishInfo.thumbnail);
   }, [editedContentInfo]);
-
   return (
     <div className={styles.imageBox}>
       <Typography>Story Thumbnail</Typography>

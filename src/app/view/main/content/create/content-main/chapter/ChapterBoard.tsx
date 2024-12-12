@@ -130,27 +130,35 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleChapterSelect = (chapterIdx: number) => {
-    dispatch(setSelectedChapterIdx(chapterIdx));
-    dispatch(setSelectedEpisodeIdx(0));
+    const confirmation = window.confirm('다른 챕터 수정으로 이동하시겠습니까?');
+
+    if (confirmation) {
+      dispatch(setSelectedChapterIdx(chapterIdx));
+      dispatch(setSelectedEpisodeIdx(0));
+    }
   };
 
   const handleCreateChapter = () => {
-    const newChapterId = getMinChapterId(chapters);
-    const newEpisodeId = getMinEpisodeId(chapters);
-    if (newChapterId != null && newEpisodeId != null) {
-      const newEpisode: EpisodeInfo = {
-        ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
-        id: newEpisodeId - 1,
-        name: `New Episode ${newEpisodeId - 1}`,
-      };
+    const confirmation = window.confirm('챕터를 추가하고 새 챕터의 에피소드 수정으로 이동하시겠습니까?');
 
-      const newChapter: ChapterInfo = {
-        id: newChapterId - 1,
-        name: `New Chapter ${newChapterId - 1}`,
-        episodeInfoList: [newEpisode], // 기본 에피소드 추가
-      };
+    if (confirmation) {
+      const newChapterId = getMinChapterId(chapters);
+      const newEpisodeId = getMinEpisodeId(chapters);
+      if (newChapterId != null && newEpisodeId != null) {
+        const newEpisode: EpisodeInfo = {
+          ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
+          id: newEpisodeId - 1,
+          name: `New Episode ${newEpisodeId - 1}`,
+        };
 
-      onAddChapter(newChapter);
+        const newChapter: ChapterInfo = {
+          id: newChapterId - 1,
+          name: `New Chapter ${newChapterId - 1}`,
+          episodeInfoList: [newEpisode], // 기본 에피소드 추가
+        };
+
+        onAddChapter(newChapter);
+      }
     }
   };
 
@@ -158,7 +166,7 @@ const ChapterBoard: React.FC<Props> = ({
     setConfirmDialog({
       open: true,
       title: 'Discard Chapter',
-      content: `"${chapters[chapterIdx].title}" Data will be disappeared. Are you sure?`,
+      content: `"${chapters[chapterIdx].title}" 챕터를 삭제하시겠습니까?`,
       onConfirm: () => {
         onDeleteChapter(chapterIdx);
         setChapters(prev => prev.filter((_, idx) => idx !== chapterIdx));
@@ -170,8 +178,12 @@ const ChapterBoard: React.FC<Props> = ({
   //#region Episode
 
   const handleEpisodeSelect = (chapterIdx: number, episodeIdx: number) => {
-    dispatch(setSelectedChapterIdx(chapterIdx));
-    dispatch(setSelectedEpisodeIdx(episodeIdx));
+    const confirmation = window.confirm('다른 에피소드 수정으로 이동하시겠습니까?');
+
+    if (confirmation) {
+      dispatch(setSelectedChapterIdx(chapterIdx));
+      dispatch(setSelectedEpisodeIdx(episodeIdx));
+    }
   };
 
   const handleChangeName = (idx: number, type: 'chapter' | 'episode', newName: string) => {
@@ -216,32 +228,36 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleCreateEpisode = () => {
-    if (selectedChapterIdx !== null) {
-      const newEpisodeId = getMinEpisodeId(chapters);
+    const confirmation = window.confirm('에피소드를 추가하고 새 에피소드 수정으로 이동하시겠습니까?');
 
-      if (newEpisodeId != null) {
-        const newEpisodeInfo: EpisodeInfo = {
-          ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
-          id: newEpisodeId - 1,
-          name: `New Episode ${newEpisodeId - 1}`,
-        };
+    if (confirmation) {
+      if (selectedChapterIdx !== null) {
+        const newEpisodeId = getMinEpisodeId(chapters);
 
-        const newEpisode = {
-          id: newEpisodeInfo.id,
-          title: newEpisodeInfo.name,
-          thumbnail: newEpisodeInfo.backgroundImageUrl,
-          description: newEpisodeInfo.episodeDescription,
-          triggerInfoList: newEpisodeInfo.triggerInfoList,
-          conversationTemplateList: newEpisodeInfo.conversationTemplateList,
-        };
+        if (newEpisodeId != null) {
+          const newEpisodeInfo: EpisodeInfo = {
+            ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
+            id: newEpisodeId - 1,
+            name: `New Episode ${newEpisodeId - 1}`,
+          };
 
-        onAddEpisode(newEpisodeInfo);
+          const newEpisode = {
+            id: newEpisodeInfo.id,
+            title: newEpisodeInfo.name,
+            thumbnail: newEpisodeInfo.backgroundImageUrl,
+            description: newEpisodeInfo.episodeDescription,
+            triggerInfoList: newEpisodeInfo.triggerInfoList,
+            conversationTemplateList: newEpisodeInfo.conversationTemplateList,
+          };
 
-        setChapters(prevChapters =>
-          prevChapters.map((chapter, index) =>
-            index === selectedChapterIdx ? {...chapter, episodes: [...chapter.episodes, newEpisode]} : chapter,
-          ),
-        );
+          onAddEpisode(newEpisodeInfo);
+
+          setChapters(prevChapters =>
+            prevChapters.map((chapter, index) =>
+              index === selectedChapterIdx ? {...chapter, episodes: [...chapter.episodes, newEpisode]} : chapter,
+            ),
+          );
+        }
       }
     }
   };
@@ -250,7 +266,7 @@ const ChapterBoard: React.FC<Props> = ({
     setConfirmDialog({
       open: true,
       title: 'Discard Episode',
-      content: `"${chapters[chapterIdx].episodes[episodeIdx].title}" Data will be disappeared. Are you sure?`,
+      content: `"${chapters[chapterIdx].episodes[episodeIdx].title}" 에피소드를 삭제하시겠습니까?`,
       onConfirm: () => {
         onDeleteEpisode(chapterIdx, episodeIdx);
         setChapters(prev =>

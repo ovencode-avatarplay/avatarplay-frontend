@@ -15,6 +15,15 @@
     filter: none;
 }
 
+.mediaVideo
+{
+width: 260px;
+height: 372px;
+border-radius: 12px;
+background-color: #000000;
+overflow: hidden; /* 추가 */
+
+}
 .blurBox {
 z-index: auto;
 filter: blur(2px);
@@ -95,8 +104,7 @@ filter: blur(2px);
   align-items: center;
   padding: 7px 20px;
   gap: 10px;
-
-  border: 0.5px solid rgba(255, 255, 255, 0.7);
+ 
   background: rgba(255, 50, 53, 0.4);
   backdrop-filter: blur(2.5px); 
   border-radius: 12px;
@@ -107,8 +115,9 @@ filter: blur(2px);
   font-size: 13px;
   line-height: 140%;
   text-align: center;
-
-  color: #000000; 
+  
+  color: #FFFFFF;
+ 
 }
   
   .chatBackIntro {

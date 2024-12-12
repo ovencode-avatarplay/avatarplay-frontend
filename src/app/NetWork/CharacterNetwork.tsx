@@ -63,6 +63,8 @@ export const sendDeleteCharacter = async (payload: DeleteCharacterReq): Promise<
 
     if (response.data.resultCode === 0) {
       return response.data;
+    } else if (response.data.resultCode === 1) {
+      return response.data;
     } else {
       throw new Error(`DeleteCharacterRes Error : ${response.data.resultCode}`);
     }
@@ -147,3 +149,24 @@ export const sendDeleteGallery = async (payload: DeleteGalleryReq): Promise<Resp
 };
 
 // Select Image
+
+export interface SelectImageReq {
+  characterImageId: number;
+}
+
+export interface SelectImageRes {}
+
+export const sendSelectImage = async (paylod: SelectImageReq): Promise<ResponseAPI<SelectImageRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<SelectImageRes>>('Character/selectImage', paylod);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`SelectImage Error : ${response.data.resultCode}`);
+    }
+  } catch (error) {
+    console.error(`Error select image : `, error);
+    throw new Error(`Failed to send select image. please try again`);
+  }
+};

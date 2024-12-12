@@ -126,7 +126,7 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
     >
       {/* {id} */}
       <button onClick={handleTtsClick} className={styles.actionButton}>
-        Play Voice
+        Voice
         <img className={styles.icon} src={PlayTts.src} />
       </button>
       {/*<Button onClick={handleDelete} className={styles.actionButton} startIcon={<DeleteIcon />}>

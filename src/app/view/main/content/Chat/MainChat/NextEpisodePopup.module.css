@@ -1,6 +1,10 @@
-.popupContainer {  
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  
-  text-align: center;    
+/* From Figma */
+
+
+/* Dialog Body */
+.dialogBody {
+  
+  user-select: none;
   
   display: flex;
   flex-direction: column;
@@ -12,239 +16,528 @@
   width: 320px;
   height: 550px;
   max-height: 716px;
-  left: calc(50% - 320px/2);
-  top: calc(50% - 550px/2);
+  left: calc(50% - 320px / 2);
+  top: calc(50% - 550px / 2);
 
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 24px;
 }
 
-.popupContent { 
-display: flex;
-flex-direction: column;
-align-items: center;
-padding: 0px;
-gap: 8px;
+/* Dialog body/Content/Action */
+.dialogContentAction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 8px;
 
-width: 256px;
-height: 372px;
- 
-flex: none;
-order: 1;
-align-self: stretch;
-flex-grow: 0;
+  width: 256px;
+  height: 372px;
 
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
 }
 
-.title {  
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 21px;
-  line-height: 120%; 
+/* NewEpisodeArea */
+.newEpisodeArea {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 12px;
 
-  text-align: justify;
-  letter-spacing: -0.02em;
-  
-  color: #000000;
-  
-  
-  /* Inside auto layout */
+  width: 256px;
+  height: 372px;
+
   flex: none;
   order: 0;
   align-self: stretch;
   flex-grow: 0;
-  
 }
 
-.contentImage { 
-display: flex;
-flex-direction: row;
-align-items: center;
-padding: 0px;
-gap: 12px;
+/* New Episode Opened! */
+.newEpisodeTitle {
+  width: 100%; 
 
-width: 256px;
-height: 156px;
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 120%; /* 25px */
+  text-align: justify;
+  letter-spacing: -0.02em;
 
-border-radius: 10px;
+  color: #000000;
+
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+/* List */
+.newEpisodeList {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+ 
+
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+/* Transaction Item */
+.transactionItemImage {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px;
+  gap: 12px;
+
+  width: 100%;
+  height: 156px;
+
+  border-radius: 10px;
+
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+/* episode cover */
+.episodeCover {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+ 
+  padding: 0px;
+  gap: 12px; 
+
+  border-radius: 10px;
+ 
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 1;  
+}
+
+/* Frame 1000002426 */
+.episodeCover > .imageCounter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px;
+  gap: 3px;
+
+  position: absolute;
+  width: auto;
+  height: 20px;
+  left: 7px;
+  top: 129.5px;
+}
+
+/* Icons / View / Image */
+.imageCounter > .iconsViewImage {
+  width: 20px;
+  height: 20px;
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+/*iconViewText*/
+.imageCounter > .iconViewText {
+
+width: auto;
+height: auto;
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 100%;
+
+color: #FFFFFF;
+
+text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
  
 flex: none;
-order: 0;
-align-self: stretch;
-flex-grow: 0; 
+order: 1;
+flex-grow: 0;
 }
 
-
-
-
-
-
-.contentText { 
+/* Transaction Item */
+.transactionItemText
+{ 
 display: flex;
 flex-direction: row;
 align-items: center;
 padding: 0px;
 gap: 12px;
 
-width: 256px;
-height: 179px;
+width: 100%;
  
 flex: none;
 order: 1;
 align-self: stretch;
 flex-grow: 0;
-
 }
 
-/* 아이콘 정보 */
-.iconInfo {
-  display: flex;
-  align-items: center;
-}
-.iconText {
-  margin-left: 4px;
-  color: white;
-  position: relative;
-}
-
-.image {
-  border-radius: 8px;
-  
-}
-.imageOverlay {
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 25%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 8px;
-  
+/* TextArea */
+.transactionItemText > .textArea
+{
   box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 16px 0px;
+gap: 12px;
+
+width: 100%;
+height: 179px;
+
+border-bottom: 1px solid #EAECF0;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 1;
 }
 
-.episodeTitle {
-  padding-top: 10px;
-  
-  font-weight: bold;
+
+/* Body */
+.textArea > .textBody
+{/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 6px;
+
+width: 100%; 
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 1;
 }
 
-.description {
-  margin-top: 4px;
-  color: gray;
+
+/* Row */
+.textBody > .episodeTitle
+{/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+padding: 0px;
+gap: 4px;
+
+width: 100%;
+ 
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+ 
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 15px;
+line-height: 140%;
+/* identical to box height, or 21px */
+
+color: #2C3131;
+
 }
 
-.prompt { 
-width: 256px;
-height: 20px;
+
+/* Description */
+
+.textBody > .episodeDesc
+{
+width: 100%;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 140%;
+/* or 20px */
+
+color: #80868B;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Description */
+ 
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 140%;
+/* identical to box height, or 20px */
+
+color: #80868B;
+
+
+/* Inside auto layout */
+flex: none;
+order: 2;
+align-self: stretch;
+flex-grow: 0;
+}
+
+
+.descArea
+{/* Description */
+
+width: 100%;
 
 font-family: 'Lato';
 font-style: normal;
 font-weight: 400;
 font-size: 14px;
-line-height: 140%; 
+line-height: 140%;
+/* identical to box height, or 20px */
 
 color: #80868B;
- 
+
+
+/* Inside auto layout */
 flex: none;
-order:  2;
-align-self: stretch;
-flex-grow: 0; 
-}
-
-.buttonContainer { 
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 0px;
-  gap: 8px;
-  
-  width: 256px;
-  height: 46px;
-   
-  flex: none;
-  order: 3;
-  align-self: stretch;
-  flex-grow: 0;  
-}
-
-.buttonNo { 
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-padding: 16px;
-gap: 3px;
-
-width: 124px;
-height: 46px;
-
-background: #F1F3F4;
-border-radius: 8px;
- 
-flex: none;
-order: 0;
-flex-grow: 1;
-
-}
-
-.buttonYes { 
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-  gap: 10px;
-  
-  width: 124px;
-  height: 46px;
-  
-  background: #2C3131;
-  border-radius: 8px; 
-
-  flex: none;
-  order: 1;
-  flex-grow: 1;
-  
-}
-
-.list { 
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-padding: 0px;
-
-width: 256px;
-height: 335px;
-
- 
-flex: none;
-order: 1;
+order: 2;
 align-self: stretch;
 flex-grow: 0;
 
 }
 
-.textBox{
+
+
+
+/* Frame 1000002418 */
+.buttonArea
+{/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+padding: 0px;
+gap: 8px;
+
+width: 256px;
+height: 46px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 3;
+align-self: stretch;
+flex-grow: 0;
+}
+
+
+
+/* Button Default */
+.buttonDefault {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding-right: 20px;
-  height: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  gap: 3px;
+
+  width: 124px;
+  height: 46px;
+
+  background: #f1f3f4;
+  border-radius: 8px;
+
+  flex: none;
+  order: 0;
+  flex-grow: 1;
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 100%;
+
+color: #80868B;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
 }
 
-.nameText{
+.buttonBgNo
+{
+  background: #F1F3F4;
+  border-radius: 8px; 
+}
+
+
+.buttonTextNo
+{   
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  /* identical to box height, or 14px */
+  
+  color: #80868B;
+  
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+}
+
+.buttonTextNoSub
+{   
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 10px;
+line-height: 100%; 
+
+color: #BDC1C6;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
 
 }
 
-.descText{
+.buttonBgYes
+{
+  background: #2C3131;
+  border-radius: 8px; 
+}
+
+.buttonTextYes
+{ 
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  /* identical to box height, or 14px */
+  
+  color: #FFFFFF;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading 4 */
+.loadingItem
+{
+  position: relative;
+
+width: 24px;
+height: 24px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 3;
+flex-grow: 0;
+}
+
+.waitTime
+{/* 4 */
+
+position: absolute; 
+width: 1rem;
+height: 11px;
+left: calc(50% - 1rem/2);
+top: calc(50% - 11px/2 - 1px);
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 11px;
+line-height: 100%;
+/* identical to box height, or 11px */
+text-align: center;
+
+color: #F5F5F5;
+
 
 }
 
+.loadingText 
+{
+  position: absolute;
+  /* 4 */
+ 
+align-self: center;
+
+left: 0%;
+right: 0%;
+top: 0%;
+bottom: 0%;
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 400;
+font-size: 11px;
+line-height: 100%;
+/* identical to box height, or 11px */
+text-align: center;
+
+color: #F5F5F5; 
+}
+
+/* Ellipse 12 */
+.rotatingImage {
+box-sizing: border-box;
+
+position: absolute;
+left: 0%;
+right: 0%;
+top: 0%;
+bottom: 0%;
+
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+
+  stroke-width: 3px;
+  stroke: rgba(255, 255, 255, 0.00);
+ 
+  animation: rotate 1s linear infinite; /* 회전 애니메이션 */
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

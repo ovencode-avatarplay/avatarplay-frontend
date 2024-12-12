@@ -1,5 +1,6 @@
 //import axios, {AxiosInstance} from 'axios';
 import api, {ResponseAPI} from './ApiInstance';
+import {ESystemError} from './ESystemError';
 
 export interface ChattingCheatReq {
   contentId: number;
@@ -27,6 +28,6 @@ export const sendMessageCheat = async (
     }
   } catch (error: any) {
     console.error('Error sendMessageCheat :', error);
-    throw new Error('Failed to send message. Please try again.'); // Error handling
+    throw new Error(`${ESystemError.syserr_chatting_send_post}`); // Error handling
   }
 };
