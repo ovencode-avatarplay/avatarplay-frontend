@@ -1,4 +1,6 @@
 .ChatFloatingArea {
+  
+  user-select: none;
 
     position: absolute;
     width: 92%;

@@ -13,6 +13,7 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ChatRetryButton from './ChatRetryButton';
 import ChatLoadingBubble from './ChatLoadingBubble';
 import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
+import {red} from '@mui/material/colors';
 interface ChatAreaProps {
   messages: MessageGroup;
   bgUrl: string;
@@ -176,11 +177,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
         <Box
           className={`${styles.mainBackground} ${isFadingOut ? styles.fadingOut : ''}`}
           sx={{
-            backgroundImage: `${
-              isHideChat
-                ? ''
-                : 'linear-gradient(180deg, rgba(0, 0, 0, 0.70) 4.69%, rgba(0, 0, 0, 0.40) 14.22%, rgba(0, 0, 0, 0.20) 100%), '
-            }url(${prevBgUrl || bgUrl})`,
+            backgroundImage: `url(${prevBgUrl || bgUrl})`,
             opacity: isFadingOut ? 0 : 1,
             transition: 'opacity 0.5s ease',
           }}
@@ -192,11 +189,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             isFadingOut ? styles.fadingOut : ''
           }`}
           sx={{
-            backgroundImage: `${
-              isHideChat
-                ? ''
-                : 'linear-gradient(180deg, rgba(0, 0, 0, 0.70) 4.69%, rgba(0, 0, 0, 0.40) 14.22%, rgba(0, 0, 0, 0.20) 100%), '
-            }url(${prevBgUrl || bgUrl})`,
+            backgroundImage: ` url(${prevBgUrl || bgUrl})`,
             opacity: isTransitioning ? 1 : 0,
             transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
           }}
@@ -207,6 +200,22 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           className={`${styles.mainCharacter} ${bgUrl === '' || bgUrl === undefined ? styles.mainCharacterNonBg : ''}`}
           sx={{
             backgroundImage: `url(${characterUrl})`,
+          }}
+        />
+
+        {/* 최상위 그라데이션 */}
+        <Box
+          className={`${styles.mainGradiationCover}`}
+          sx={{
+            width: '100%',
+            height: '100%',
+            backgroundImage: `${
+              !isHideChat
+                ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.70) 4.69%, rgba(0, 0, 0, 0.40) 14.22%, rgba(0, 0, 0, 0.02) 100%)'
+                : ''
+            }`,
+            opacity: isTransitioning ? 0 : 1,
+            transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
           }}
         />
 
