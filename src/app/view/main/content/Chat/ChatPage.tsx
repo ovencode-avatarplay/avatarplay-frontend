@@ -264,7 +264,6 @@ const ChatPage: React.FC = () => {
   ) => {
     if (!message || typeof message !== 'string') return;
     let currentTime: string = getCurrentLocaleTime();
-    if (isShowDate === false) currentTime = '';
 
     let isFinish = false;
     const currentSender = currentParsingSender.current;
@@ -278,6 +277,8 @@ const ChatPage: React.FC = () => {
     if (isFinishMessage(isMyMessage, message) === true) {
       isFinish = true;
     }
+
+    if (isShowDate === false) currentTime = '';
 
     // 나레이션 활성화 상태에 따라 sender 설정
     const newMessage: Message = {

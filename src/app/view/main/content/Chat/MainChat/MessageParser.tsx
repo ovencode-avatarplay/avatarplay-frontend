@@ -66,7 +66,7 @@ const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate:
           chatId: id,
           text: plainText.replace(/[%"*]/g, ''), // 특수 문자 제거
           sender: SenderType.PartnerNarration,
-          createDate: createDate,
+          createDate: '',
         });
       }
     }
@@ -80,7 +80,7 @@ const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate:
           chatId: id,
           text: cleanedText,
           sender: chatType === ChatType.SystemText ? SenderType.System : pattern.type,
-          createDate: createDate,
+          createDate: i === match.length ? createDate : '', // AI 채팅은 마지막 말풍선에만 시간을 출력해준다.
         });
         break; // 첫 번째 매칭된 그룹만 처리
       }
