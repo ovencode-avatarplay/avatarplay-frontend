@@ -1,6 +1,6 @@
 // messageParser.tsx
 
-import {MessageInfo} from '@/app/NetWork/ChatNetwork';
+import {ChatType, MessageInfo} from '@/app/NetWork/ChatNetwork';
 import {
   COMMAND_END,
   COMMAND_NARRATION,
@@ -15,8 +15,22 @@ import {
 
 //const patternParsing( pattern : RegExp, )
 
-const parseAnswer = (answer: string, id: number, createDate: string): Message[] => {
+const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate: string): Message[] => {
   const result: Message[] = [];
+
+  // 시스템 메시지면 바로 세팅해주고 리턴해준다.
+  if (chatType === ChatType.SystemText) {
+    if (answer && answer.length > 0) {
+      //const remainingText = answer.slice(lastIndex).trim();
+      result.push({
+        chatId: id,
+        text: answer.replace(/[%"*]/g, ''), // 특수 문자 제거
+        sender: SenderType.System,
+        createDate: '',
+      });
+      return result;
+    }
+  }
 
   // 패턴과 해당 발신자 타입을 객체 배열로 정의
   const patterns: {type: SenderType; regex: RegExp; clean: (text: string) => string}[] = [
@@ -25,11 +39,11 @@ const parseAnswer = (answer: string, id: number, createDate: string): Message[] 
       regex: /"(.*?)"/g,
       clean: text => text, // "" 제거
     },
-    {
-      type: SenderType.System,
-      regex: /%(.*?)%/g,
-      clean: text => text, // %% 제거
-    },
+    // {
+    //   type: SenderType.System,
+    //   regex: /%(.*?)%/g,
+    //   clean: text => text, // %% 제거
+    // },
     {
       type: SenderType.PartnerNarration,
       regex: /\*\*(.*?)\*\*/g,
@@ -65,7 +79,7 @@ const parseAnswer = (answer: string, id: number, createDate: string): Message[] 
         result.push({
           chatId: id,
           text: cleanedText,
-          sender: pattern.type,
+          sender: chatType === ChatType.SystemText ? SenderType.System : pattern.type,
           createDate: createDate,
         });
         break; // 첫 번째 매칭된 그룹만 처리
@@ -92,7 +106,7 @@ const parseAnswer = (answer: string, id: number, createDate: string): Message[] 
   return result;
 };
 
-const timeParser = (dateTimeUTC: Date): string => {
+/*const timeParser = (dateTimeUTC: Date): string => {
   const dateUTC: Date = new Date(dateTimeUTC.toString() + 'Z'); // 표준시간이면 끝에 Z를 붙여줘야한다.( 서버에서 안붙여서 보내줌 )
   const date = dateUTC.toLocaleTimeString(navigator.language, {
     hour: 'numeric',
@@ -100,10 +114,29 @@ const timeParser = (dateTimeUTC: Date): string => {
     hour12: true,
   });
   return date.toString();
+};*/
+
+export const timeParser = (dateTimeUTC: Date): string => {
+  // UTC 시간을 로컬 시간으로 변환
+  const localDate = new Date(dateTimeUTC.toString() + 'Z');
+
+  // 시간 데이터 가져오기
+  const hours = localDate.getHours(); // 24시간 형식 시
+  const minutes = localDate.getMinutes(); // 분
+  const isPM = hours >= 12; // 오후 여부
+
+  // 12시간 형식으로 변환
+  const formattedHours = hours % 12 || 12; // 0은 12로 변경
+  const formattedMinutes = minutes.toString().padStart(2, '0'); // 항상 2자리
+  const period = isPM ? 'pm' : 'am'; // am/ pm 결정
+
+  // 결과 문자열 생성
+  return `${formattedHours}:${formattedMinutes} ${period}`;
 };
 //export const parseMessage = (message: string | null, id: number): Message[] | null => {
 export const parseMessage = (messageInfo: MessageInfo): Message[] | null => {
   let message: string = messageInfo.message;
+  const chatType: ChatType = messageInfo.chatType;
   let id: number = messageInfo.id;
   let createDate: string = timeParser(messageInfo.createAt);
   if (!message) return null;
@@ -113,7 +146,7 @@ export const parseMessage = (messageInfo: MessageInfo): Message[] | null => {
     const result: Message[] = [];
 
     if (parsedMessage.episodeInfo) {
-      result.push(...parseAnswer(parsedMessage.episodeInfo, parsedMessage.id, createDate));
+      result.push(...parseAnswer(parsedMessage.episodeInfo, chatType, parsedMessage.id, createDate));
     }
 
     if (parsedMessage.Question) {
@@ -136,7 +169,7 @@ export const parseMessage = (messageInfo: MessageInfo): Message[] | null => {
     }
 
     if (parsedMessage.Answer) {
-      result.push(...parseAnswer(parsedMessage.Answer, parsedMessage.id, createDate));
+      result.push(...parseAnswer(parsedMessage.Answer, chatType, parsedMessage.id, createDate));
     }
 
     return result;
