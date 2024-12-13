@@ -38,6 +38,8 @@
 }
 
 body {
+  
+  user-select: none;
   color: var(--foreground);
   background: var(--background);
   font-family: 'Lato', Arial, Helvetica, sans-serif;

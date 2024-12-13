@@ -813,7 +813,7 @@ const ChatPage: React.FC = () => {
           iconUrl={characterImageUrl ?? ''}
           isHideChat={isHideChat}
         />
-        {floatingNextEpisode && (
+        {floatingNextEpisode && !isHideChat && (
           <ChatFloatingArea episodeName={`${nextEpisodeName} 이동 버튼`} onNavigate={handlePopupYes} /> // TODO nextEpisodeId 대신 에피소드 이름으로 변경 (서버 작업 후)
         )}
         <ChatArea

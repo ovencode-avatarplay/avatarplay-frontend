@@ -36,7 +36,16 @@ interface UpdateUserDetail {
   world_scenario: string;
   thumbnail: string;
 }
-let updateUserDetail: UpdateUserDetail;
+let updateUserDetail: UpdateUserDetail = {
+  characterID: 0,
+  secrets: '',
+  char_name: '',
+  first_mes: '',
+  char_persona: '',
+  world_scenario: '',
+  thumbnail: '',
+};
+
 const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0, episodeIdx = 0}) => {
   // episodeIndex 기본값 0
   // Redux에서 contentInfo 데이터 가져오기
