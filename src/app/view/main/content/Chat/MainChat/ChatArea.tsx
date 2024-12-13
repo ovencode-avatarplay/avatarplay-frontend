@@ -38,9 +38,9 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   onToggleBackground,
   isLoading,
   chatBarCount,
+  aiChatHeight,
   transitionEnabled, // transitionEnabled 프롭을 추가
   send,
-  aiChatHeight,
   lastMessage,
   retrySend,
   characterUrl,
@@ -78,6 +78,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       const {scrollTop, clientHeight, scrollHeight} = scrollRef.current;
       const isAtBottom = scrollHeight - scrollTop === clientHeight;
 
+      console.log(scrollRef.current);
       // 스크롤 위치를 유지하기 위해 이전 스크롤 높이 계산
       const previousScrollHeight = scrollHeight;
 
@@ -226,7 +227,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             className={`${styles.messageBubbleArea}`}
             ref={scrollRef}
             sx={{
-              height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 72 : 0}px - ${aiChatHeight}px)`,
+              height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 8 : 0}vh - ${aiChatHeight}px)`,
             }}
           >
             <Box onClick={() => setSelectedBubbleIndex(null)}>
