@@ -13,12 +13,11 @@
   }
   
   .bubble {
-    display: inline-block;
-    padding: 8px;
-    border-radius: 8px;
-    background-color: rgba(0, 0, 0, 0.8); 
+    display: inline-block;  
     font-size: 0.8em;
-
+  
+justify-content: center; 
+gap: 10px;
     
     display: flex;
     justify-content: flex-start;
