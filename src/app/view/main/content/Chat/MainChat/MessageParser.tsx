@@ -103,6 +103,13 @@ const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate:
     }
   }
 
+  // 마지막 메시지에 Date값 넣자
+  if (result.length > 0) {
+    const lastMessage = result[result.length - 1];
+    lastMessage.text += ' (modified)'; // 텍스트 수정
+    lastMessage.createDate = createDate; // 예: 생성 날짜를 업데이트
+  }
+
   return result;
 };
 
@@ -152,18 +159,17 @@ export const parseMessage = (messageInfo: MessageInfo): Message[] | null => {
     if (parsedMessage.Question) {
       const parts: string[] = parsedMessage.Question.split('⦿SYSTEM_CHAT⦿');
 
-      parts.forEach((part: string) => {
+      parts.forEach((part, index, array) => {
         if (part.trim()) {
           const sender = part.startsWith('*') && part.endsWith('*') ? SenderType.UserNarration : SenderType.User;
           const newMessage: Message = {
-            // newMessage를 여기서 정의
             chatId: id,
             text: part.replace(/^\*|\*$/g, ''), // 양쪽의 '*'를 제거
             sender: sender,
-            createDate: createDate,
+            createDate: index === array.length - 1 ? createDate : '', // 마지막 항목만 createDate 설정
           };
 
-          if (newMessage.text !== '...') result.push(newMessage); // 새로 정의된 메시지를 결과에 추가
+          if (newMessage.text !== '...') result.push(newMessage);
         }
       });
     }
