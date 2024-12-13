@@ -174,6 +174,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           // }
         }}
       >
+        {/* 채팅 화면에서 사용되는 이미지는 배경, 캐릭터가 서버 로직에 의해 합성이 끝난 이미지를 사용합니다. 
+        현재 임시로 Character, BackGround를 분리하고 있으나 최종적으로는 캐릭터와 배경이 합성된 이미지를 사용하며, 
+        캐릭터 표정, 포즈, 배경 변경 등에 사용되는 새 배경을 사용 하기 위해 2개까지 동시에 나와 있을 수는 있습니다. 
+        임시 작업 중 캐릭터가 배경을 덮는 현상은 무시해도 됩니다. */}
         {/* 기존 배경 */}
         <Box
           className={`${styles.mainBackground} ${isFadingOut ? styles.fadingOut : ''}`}
@@ -183,7 +187,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             transition: 'opacity 0.5s ease',
           }}
         />
-
         {/* 새 배경 */}
         <Box
           className={`${styles.newBackground} ${isHideChat ? styles.fadeCover : ''} ${
@@ -195,15 +198,17 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
           }}
         />
-
-        {/* 캐릭터 이미지 */}
-        <Box
-          className={`${styles.mainCharacter} ${bgUrl === '' || bgUrl === undefined ? styles.mainCharacterNonBg : ''}`}
-          sx={{
-            backgroundImage: `url(${characterUrl})`,
-          }}
-        />
-
+        <div className={styles.mainCharacterContainer}>
+          {/* 캐릭터 이미지 */}
+          <Box
+            className={`${styles.mainCharacter} ${
+              bgUrl === '' || bgUrl === undefined ? styles.mainCharacterNonBg : ''
+            }`}
+            sx={{
+              backgroundImage: `url(${characterUrl})`,
+            }}
+          />
+        </div>
         {/* 최상위 그라데이션 */}
         <Box
           className={`${styles.mainGradiationCover}`}

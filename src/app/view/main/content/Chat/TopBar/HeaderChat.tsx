@@ -1,7 +1,7 @@
 'use client';
 import React, {useEffect} from 'react';
 
-import {Avatar, IconButton} from '@mui/material';
+import {Avatar, Box, IconButton} from '@mui/material';
 import styles from './HeaderChat.module.css';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
@@ -25,12 +25,13 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, i
   return (
     <>
       {isHideChat === false && (
-        <div className={styles.topNavigation}>
+        <Box className={styles.topNavigation} sx={{width: window.innerWidth}}>
           <div className={styles.left}>
-            <Link href={BottomNavData.find(item => item.label === 'Explore')?.link || '/default-path'}>
-              <IconButton className={styles.backButton} onClick={() => {}}>
-                <img src={Left.src} />
-              </IconButton>
+            <Link
+              className={styles.button}
+              href={BottomNavData.find(item => item.label === 'Explore')?.link || '/default-path'}
+            >
+              <img className={styles.buttonImage} src={Left.src} />
             </Link>
           </div>
           <div className={styles.chat}>
@@ -50,7 +51,7 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, i
               <img className={styles.buttonImage} src={MenuDots.src} />
             </IconButton>
           </div>
-        </div>
+        </Box>
       )}
     </>
   );
