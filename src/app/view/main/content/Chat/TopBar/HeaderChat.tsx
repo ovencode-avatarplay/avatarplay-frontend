@@ -2,7 +2,7 @@
 import React, {useEffect} from 'react';
 
 import {Avatar, IconButton} from '@mui/material';
-import styles from '@chats/Styles/StyleChat.module.css';
+import styles from './HeaderChat.module.css';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {ChattingState} from '@/redux-store/slices/Chatting';
@@ -25,28 +25,29 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, i
   return (
     <>
       {isHideChat === false && (
-        <div className={styles.topBar}>
+        <div className={styles.topNavigation}>
           <div className={styles.left}>
             <Link href={BottomNavData.find(item => item.label === 'Explore')?.link || '/default-path'}>
               <IconButton className={styles.backButton} onClick={() => {}}>
                 <img src={Left.src} />
               </IconButton>
             </Link>
-
+          </div>
+          <div className={styles.chat}>
             <Avatar src={iconUrl || '/images/001.png'} alt={chattingState1.contentName} className={styles.avatar} />
 
-            <div className={styles.userInfo}>
-              <span className={styles.username}>{chattingState1.contentName}</span>
-              <span className={styles.description}>{chattingState1.episodeName}</span>
+            <div className={styles.textArea}>
+              <span className={styles.contentName}>{chattingState1.contentName}</span>
+              <span className={styles.episodeName}>{chattingState1.episodeName}</span>
             </div>
           </div>
           <div className={styles.topButtonBox}>
-            <IconButton className={styles.BackgroundButton}>
-              <img src={Image.src} />
+            <IconButton className={styles.button}>
+              <img className={styles.buttonImage} src={Image.src} />
             </IconButton>
 
-            <IconButton className={styles.moreButton} onClick={onMoreClick}>
-              <img src={MenuDots.src} />
+            <IconButton className={styles.button} onClick={onMoreClick}>
+              <img className={styles.buttonImage} src={MenuDots.src} />
             </IconButton>
           </div>
         </div>

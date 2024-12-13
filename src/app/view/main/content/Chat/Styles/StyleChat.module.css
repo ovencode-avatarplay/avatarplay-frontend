@@ -165,6 +165,11 @@
   display: none; /* Webkit 브라우저에서 스크롤바 숨기기 */
 }
 
+.messageBubbleArea > .endPadding
+{
+  padding-bottom: 2.3vh;
+}
+
 /* 하단바 설정 */
 .bottomBar {
   display: flex;

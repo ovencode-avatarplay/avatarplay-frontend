@@ -268,6 +268,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
               ))}
             </Box>
             {isLoading && <ChatLoadingBubble iconUrl={iconUrl} />}
+            <div className={styles.endPadding}> </div>
             <div ref={bottomRef} />
           </Box>
         )}
