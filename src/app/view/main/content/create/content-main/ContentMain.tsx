@@ -44,6 +44,7 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import ContentLLMSetup from './content-LLMsetup/ContentLLMsetup';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import EpisodeInitialize from './episode/episode-initialize/EpisodeInitialize';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
@@ -52,7 +53,9 @@ const ContentMain: React.FC = () => {
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isChapterboardOpen, setIsChapterboardOpen] = useState(false);
   const [isPublishingOpen, setIsPublishingOpen] = useState(false);
-  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
+  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false);
+  const [isEpisodeInitOpen, setIsEpisodeInitOpen] = useState(true);
+
   const [isInitFinished, setIsInitFinished] = useState(false);
 
   // Redux Selector
@@ -366,6 +369,15 @@ const ContentMain: React.FC = () => {
   const handleClosePublishing = () => {
     setIsPublishingOpen(false);
   };
+
+  const handleOpenInitialEpisode = () => {
+    setIsEpisodeInitOpen(true);
+  };
+
+  const handleCloseInitialEpisode = () => {
+    setIsEpisodeInitOpen(false);
+  };
+
   //#endregion
 
   //#region SaveContent
@@ -566,6 +578,7 @@ const ContentMain: React.FC = () => {
         <ContentBottom onLLMOpen={handleOpenLLMSetup} onPublishingOpen={handleOpenPublishing} />
         {/* EpisodeLLMSetup 모달 */}
         <ContentLLMSetup open={isLLMSetupOpen} onClose={handleCloseLLMSetup} />
+        <EpisodeInitialize open={isEpisodeInitOpen} onClose={handleCloseInitialEpisode} />
       </main>
       <LoadingOverlay loading={loading} />
     </>

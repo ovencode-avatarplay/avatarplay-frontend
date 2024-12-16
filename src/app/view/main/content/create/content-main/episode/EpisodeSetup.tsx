@@ -17,7 +17,7 @@ import EpisodeDescription from './episode-description/EpisodeDescription';
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 
 import EpisodeUploadCharacter from './episode-ImageCharacter/EpisodeUploadCharacter';
-import EpisodeBackgroundUpload from './episode-ImageCharacter/EpisodeImageUpload';
+// import EpisodeBackgroundUpload from './episode-ImageCharacter/EpisodeImageUpload';
 
 interface Props {
   onDrawerOpen: () => void;
@@ -132,24 +132,24 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
   return (
     <main className={styles.episodeSetup}>
       <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} chapterName={chapterName ?? ''} episodeName={episodeName ?? ''} />
+      {/* TODO : 이 아래의 내용 Image, SeceneDesc, EpisodeTrigger 전부 하나의 컴포넌트 EpisodeItem 으로 만들어서 EpisodeList로 감싸기.*/}
       <div className={styles.imageBox}>
         <EpisodeUploadCharacter />
-        <EpisodeBackgroundUpload
+        {/* <EpisodeBackgroundUpload
           onClickEasyCreate={openImageSetup}
           onClickAdvanceCreate={openAdvanceImageSetup}
           uploadImageState={isUploadImageDialogOpen}
           onClickUploadImage={openUploadImageDialog}
           onCloseUploadImage={closeUploadImageDialog}
-        />
+        /> */}
       </div>
       <Box className={styles.setupButtons}>
         <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
         <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
-        {/*TODO : Move This into Trigger Setup */}
       </Box>
       {/* EpisodeTrigger 모달 */}
-      <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} /> {/* 모달 상태 전달 */}
-      {/* 모달 상태 전달 */}
+      <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} />
+
       {/* Episode Description 모달 */}
       {isEpisodeModalOpen && (
         <EpisodeDescription
@@ -160,7 +160,6 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
             worldScenario: updateUserDetail?.world_scenario,
             introduction: updateUserDetail?.first_mes,
             secret: updateUserDetail?.secrets,
-            //thumbnail: updateUserDetail?.thumbnail
           }}
           isModify={true}
           open={isEpisodeModalOpen}
