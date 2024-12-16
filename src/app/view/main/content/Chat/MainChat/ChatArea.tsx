@@ -5,7 +5,7 @@ import ChatMessageBubble from './ChatMessageBubble';
 import {Message, MessageGroup} from './ChatTypes';
 import ChatTtsPlayer from './ChatTtsPlayer';
 import {GenerateTtsUrl} from './GenerateTtsUrl';
-
+import {useGesture} from '@use-gesture/react';
 import {SendChatMessageReq} from '@/app/NetWork/ChatNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
@@ -127,7 +127,12 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       }, 500); // 페이드 아웃 시간
     }
   }, [bgUrl, prevBgUrl, transitionEnabled]);
-
+  const bind = useGesture({
+    onDoubleClick: () => {
+      console.log('Double tap detected!');
+      onToggleBackground();
+    },
+  });
   useEffect(() => {
     if (isModifyingQuestion === false) {
       setSelectedBubbleIndex(null);
@@ -165,15 +170,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     <>
       <LoadingOverlay loading={loading} />
       {/* {isHideChat === false && ( */}
-      <Box
-        className={styles.chatArea}
-        onDoubleClick={event => {
-          // if (isHideChat === false) {
-          event.preventDefault();
-          onToggleBackground();
-          // }
-        }}
-      >
+      <Box className={styles.chatArea} {...bind()}>
         {/* 채팅 화면에서 사용되는 이미지는 배경, 캐릭터가 서버 로직에 의해 합성이 끝난 이미지를 사용합니다. 
         현재 임시로 Character, BackGround를 분리하고 있으나 최종적으로는 캐릭터와 배경이 합성된 이미지를 사용하며, 
         캐릭터 표정, 포즈, 배경 변경 등에 사용되는 새 배경을 사용 하기 위해 2개까지 동시에 나와 있을 수는 있습니다. 
