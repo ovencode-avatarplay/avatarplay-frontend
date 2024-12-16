@@ -5,7 +5,7 @@ import ChatMessageBubble from './ChatMessageBubble';
 import {Message, MessageGroup} from './ChatTypes';
 import ChatTtsPlayer from './ChatTtsPlayer';
 import {GenerateTtsUrl} from './GenerateTtsUrl';
-
+import {useGesture} from '@use-gesture/react';
 import {SendChatMessageReq} from '@/app/NetWork/ChatNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
@@ -127,7 +127,12 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       }, 500); // 페이드 아웃 시간
     }
   }, [bgUrl, prevBgUrl, transitionEnabled]);
-
+  const bind = useGesture({
+    onDoubleClick: () => {
+      console.log('Double tap detected!');
+      onToggleBackground();
+    },
+  });
   useEffect(() => {
     if (isModifyingQuestion === false) {
       setSelectedBubbleIndex(null);
@@ -165,15 +170,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     <>
       <LoadingOverlay loading={loading} />
       {/* {isHideChat === false && ( */}
-      <Box
-        className={styles.chatArea}
-        onDoubleClick={event => {
-          // if (isHideChat === false) {
-          event.preventDefault();
-          onToggleBackground();
-          // }
-        }}
-      >
+      <Box className={styles.chatArea} {...bind()}>
         {/* 기존 배경 */}
         <Box
           className={`${styles.mainBackground} ${isFadingOut ? styles.fadingOut : ''}`}
