@@ -45,9 +45,11 @@ import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import ContentLLMSetup from './content-LLMsetup/ContentLLMsetup';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import EpisodeInitialize from './episode/episode-initialize/EpisodeInitialize';
+import ButtonEpisodeInfo from './episode/ButtonEpisodeInfo';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   // 컴포넌트 오픈 상태
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
@@ -83,7 +85,8 @@ const ContentMain: React.FC = () => {
     contentInfo: editingContentInfo ?? emptyContentInfo,
   });
 
-  const [loading, setLoading] = useState(false);
+  // Episode 편집을 위한 요청
+  const [addEpisodeRequested, setAddEpisodeRequested] = useState<boolean>(false);
 
   function Init() {
     setIsInitFinished(false);
@@ -289,6 +292,8 @@ const ContentMain: React.FC = () => {
       );
       dispatch(setSelectedEpisodeIdx(updatedChapter.episodeInfoList.length - 1));
       setCurEpisodeInfo();
+      setAddEpisodeRequested(false);
+      setIsEpisodeInitOpen(true);
     }
   };
 
@@ -550,7 +555,7 @@ const ContentMain: React.FC = () => {
           onOpenDrawer={handleOpenDashboard}
           onTitleChange={handleTitleChange} // Redux 상태 업데이트
         />
-        <div className={styles.content}>
+        <div className={styles.chapterArea}>
           <ContentDashboardDrawer
             open={isDashboardOpen}
             onClose={handleCloseDashboard}
@@ -563,17 +568,34 @@ const ContentMain: React.FC = () => {
             initialChapters={editingContentInfo?.chapterInfoList || []}
             onAddChapter={handleAddChapter}
             onDeleteChapter={handleDeleteChapter}
+            isAddEpisodeRequested={addEpisodeRequested}
             onAddEpisode={handleAddEpisode}
             onDeleteEpisode={handleDeleteEpisode}
             onNameChange={handleNameChange}
           />
-          <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
-          <EpisodeSetup
+          <ButtonEpisodeInfo
             onDrawerOpen={handleOpenChapterboard}
-            contentId={editingContentInfo?.id ?? 0}
-            chapterIdx={selectedChapterIdx}
-            episodeIdx={selectedEpisodeIdx}
+            chapterName={editingContentInfo.chapterInfoList[selectedChapterIdx].name ?? ''}
+            episodeName={
+              editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx].name ?? ''
+            }
           />
+          <div className={styles.episodeCounter}>
+            {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.length} / 10
+          </div>
+          <button
+            className={styles.addEpisode}
+            onClick={() => {
+              setAddEpisodeRequested(true);
+            }}
+          >
+            Add Episode
+          </button>
+        </div>
+        <div className={styles.content}>
+          <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
+
+          <EpisodeSetup onOpenEpisodeInitialize={handleOpenInitialEpisode} />
         </div>
         <ContentBottom onLLMOpen={handleOpenLLMSetup} onPublishingOpen={handleOpenPublishing} />
         {/* EpisodeLLMSetup 모달 */}

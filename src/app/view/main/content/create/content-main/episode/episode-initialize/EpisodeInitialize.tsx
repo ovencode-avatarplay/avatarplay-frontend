@@ -15,6 +15,7 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose}) => {
 
   const handlerOnCompleteInit = () => {
     setIsInitFinished(true);
+    onClose();
   };
 
   const handlerOnClose = () => {

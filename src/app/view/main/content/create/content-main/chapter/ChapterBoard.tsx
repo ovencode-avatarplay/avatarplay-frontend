@@ -43,6 +43,7 @@ interface Props {
   onAddChapter: (newChapter: ChapterInfo) => void;
   onDeleteChapter: (chapterId: number) => void;
   onAddEpisode: (newEpisode: EpisodeInfo) => void;
+  isAddEpisodeRequested: boolean;
   onDeleteEpisode: (chapterId: number, episodeId: number) => void;
   onNameChange: (contentInfo: ContentInfo) => void;
 }
@@ -54,6 +55,7 @@ const ChapterBoard: React.FC<Props> = ({
   onAddChapter,
   onDeleteChapter,
   onAddEpisode,
+  isAddEpisodeRequested,
   onDeleteEpisode,
   onNameChange,
 }) => {
@@ -116,6 +118,12 @@ const ChapterBoard: React.FC<Props> = ({
       }
     }
   }, [selectedChapterIdx, selectedEpisodeIdx]);
+
+  useEffect(() => {
+    if (isAddEpisodeRequested) {
+      handleCreateEpisode();
+    }
+  }, [isAddEpisodeRequested]);
 
   const getMaxId = (items: {id: number}[]) => items.reduce((maxId, item) => Math.max(maxId, item.id), 0);
 
@@ -325,7 +333,7 @@ const ChapterBoard: React.FC<Props> = ({
   return (
     <>
       <Drawer
-        anchor="right"
+        anchor="bottom"
         open={open}
         onClose={onClose}
         PaperProps={{
@@ -372,12 +380,12 @@ const ChapterBoard: React.FC<Props> = ({
           </Box>
 
           {/* Create Episode 버튼 */}
-          <Box className={styles.imageButtonContainer}>
+          {/* <Box className={styles.imageButtonContainer}>
             <Button className={styles.imageButton} onClick={handleCreateEpisode}>
               <HomeIcon />
               <Typography>Create Episode</Typography>
             </Button>
-          </Box>
+          </Box> */}
         </Box>
 
         {/* 이름 변경을 위한 Dialog */}
