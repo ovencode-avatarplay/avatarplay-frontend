@@ -1,4 +1,3 @@
-import {Box, Button, Typography} from '@mui/material';
 import {useEffect, useState} from 'react';
 
 import styles from './ChatFloatingArea.module.css';
@@ -18,12 +17,12 @@ const ChatFloatingArea: React.FC<ChatFloatingAreaProps> = ({episodeName, onNavig
   }, []);
 
   return (
-    <Box className={`${styles.ChatFloatingArea}  ${isVisible ? styles.visible : ''}`}>
-      <Typography className={styles.episodeName}>{episodeName}</Typography>
+    <div className={`${styles.ChatFloatingArea}  ${isVisible ? styles.visible : ''}`}>
+      <div className={styles.episodeName}>{episodeName}</div>
       <button className={styles.moveButton} onClick={onNavigate}>
         <img src={Play2.src} />
       </button>
-    </Box>
+    </div>
   );
 };
 

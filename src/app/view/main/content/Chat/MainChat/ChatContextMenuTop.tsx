@@ -1,22 +1,28 @@
-// MessageMenu.tsx
-import React from 'react';
-import {Box, IconButton, Typography} from '@mui/material';
+import React, {useState} from 'react';
+import {Box, IconButton} from '@mui/material';
 import styles from '../Styles/ChatMessageMenu.module.css';
-import {LikeOn} from '@ui/chatting';
+import {LikeOn, LikeOff} from '@ui/chatting';
 
 interface ChatContextTopProps {
   id: number;
+  closeAction: () => void;
 }
 
-// 핸들러 함수 선언
-const handleLike = () => {};
-const handleDislike = () => {};
+const ChatMessageMenuTop: React.FC<ChatContextTopProps> = ({id, closeAction}) => {
+  const [isLiked, setIsLiked] = useState(false);
 
-const ChatMessageMenuTop: React.FC<ChatContextTopProps> = ({id}) => {
+  const handleLikeToggle = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    setIsLiked(prev => !prev);
+    setTimeout(() => {
+      closeAction();
+    }, 300);
+  };
+
   return (
     <Box className={styles.topMenuContainer}>
-      <IconButton onClick={handleLike} className={styles.iconButton}>
-        <img className={styles.icon} src={LikeOn.src} />
+      <IconButton onClick={handleLikeToggle} className={styles.iconButton}>
+        <img className={styles.icon} src={isLiked ? LikeOn.src : LikeOff.src} alt={isLiked ? 'Liked' : 'Not Liked'} />
       </IconButton>
     </Box>
   );

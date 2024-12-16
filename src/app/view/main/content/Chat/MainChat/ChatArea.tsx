@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Box, Avatar} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
-import {Message, MessageGroup} from './ChatTypes';
+import {Message, MessageGroup, SenderType} from './ChatTypes';
 import ChatTtsPlayer from './ChatTtsPlayer';
 import {GenerateTtsUrl} from './GenerateTtsUrl';
 import {useGesture} from '@use-gesture/react';
@@ -63,6 +63,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     } else {
       setSelectedBubbleIndex(null);
     }
+  };
+
+  const setBubbleIndexNull = () => {
+    setSelectedBubbleIndex(null);
   };
 
   const handlePlayAudio = async (text: string) => {
@@ -208,7 +212,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
         </div>
         {/* 최상위 그라데이션 */}
         <Box
-          className={`${styles.mainGradiationCover}`}
+          className={`${styles.mainGradiationCover}  ${selectedBubbleIndex !== null ? styles.blurBackground : ''}`}
           sx={{
             width: '100%',
             height: '100%',
@@ -253,9 +257,11 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                         e.stopPropagation();
                         handlePlayAudio(msg.text);
                       }}
+                      setSelectedNull={() => setBubbleIndexNull()}
                       selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
                       lastMessage={lastMessage}
                       createDate={msg.createDate}
+                      prevSenderType={index === 0 ? SenderType.IntroPrompt : messages.Messages[index - 1].sender}
                     />
                   )}
                   {/* Retry 버튼 조건부 렌더링 */}

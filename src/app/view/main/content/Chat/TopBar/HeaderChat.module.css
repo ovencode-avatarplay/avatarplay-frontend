@@ -113,6 +113,12 @@
 
 }
 
+@media (min-width: 500px) {
+    .textArea > .contentName{ 
+        max-width: 297px;
+    }
+}
+
 .textArea > .episodeName{ 
     max-width: 49vw;
 
@@ -126,6 +132,13 @@
     overflow: hidden; 
     text-overflow: ellipsis; 
     white-space: nowrap; 
+}
+
+
+@media (min-width: 500px) {
+    .textArea > .episodeName{ 
+        max-width: 297px;
+    }
 }
 
 .topButtonBox {
