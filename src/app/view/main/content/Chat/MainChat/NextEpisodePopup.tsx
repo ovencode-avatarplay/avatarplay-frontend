@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Typography, Modal} from '@mui/material';
 import styles from './NextEpisodePopup.module.css'; // CSS 모듈 경로
-import ImageIcon from '@mui/icons-material/Image';
 import {TriggerNextEpisodeInfo} from '@/app/NetWork/ChatNetwork';
 import {DialogBody, NextEpisodeWait} from '@ui/chatting';
 
@@ -16,18 +15,17 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
   const [waitTime, setWaitTime] = useState(10);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setWaitTime(prev => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          onYes();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval); // 컴포넌트 언마운트 시 타이머 정리
+    // const interval = setInterval(() => {
+    //   setWaitTime(prev => {
+    //     if (prev <= 1) {
+    //       clearInterval(interval);
+    //       onYes();
+    //       return 0;
+    //     }
+    //     return prev - 1;
+    //   });
+    // }, 1000);
+    // return () => clearInterval(interval);
   }, [onYes]);
 
   return (
