@@ -1,5 +1,4 @@
 .topNavigation{
-
     position: absolute;
 
     display: flex;
@@ -12,31 +11,66 @@
     z-index: 10;  
     padding-top: 2.2vh;
     gap: 2.48vw; 
+    
+    max-width: 500px;
 }
+
+@media (min-width: 500px) {
+    .topNavigation {         
+        padding: 0px;
+        gap: 10px; 
+    }
+}
+ 
 
 .left {
     display: flex;
     height: 100%;
     padding: 1.6vh 0px 1.6vh 3.96vw;
+    
     align-items: center; 
     align-self: center;
     justify-self: center;
 }
 
+@media (min-width: 500px) {
+    .left {
+        padding: 14px 0px 14px 16px; 
+    }
+}
+
 .left > .button
 {
     width: 10vw;
-    height: 10vw;
+    height: 10vw; 
+    
     align-self: center;
     justify-self: center;
 }
 
-
+@media (min-width: 500px) {
+    .left > .button {
+        max-width: 40px;
+        max-height: 40px;
+    }
+}
+ 
 .left > .button > .buttonImage{
     width: 10vw;
     height: 10vw;
+    
+    max-width: 40px;
+    max-height: 40px;
+
     align-self: center;
     justify-self: center;
+}
+
+@media (min-width: 500px) {
+    .left > .button > .buttonImage{    
+        max-width: 40px;
+        max-height: 40px;
+    }
 }
 
 .chat {
@@ -45,6 +79,14 @@
     gap: 1.7vw;
     flex: 1 0 0; 
 }
+
+
+@media (min-width: 500px) {
+    .chat {
+        gap: 7px;
+    }
+}
+
 
 .chat > .textArea
 {
@@ -68,6 +110,7 @@
     overflow: hidden;  
     text-overflow: ellipsis; 
     white-space: nowrap;  
+
 }
 
 .textArea > .episodeName{ 
@@ -94,13 +137,39 @@
     display: flex;
     width: 10vw;
     height: 10vw;
+    
+    max-width: 40px;
+    max-height: 40px;
+    
     padding: 2vw;
+
     justify-content: center;
     align-items: center;
+}
+
+@media (min-width: 500px) {
+    .topButtonBox > .button{
+        max-width: 40px;
+        max-height: 40px;
+        
+        padding: 8px;
+    }
 }
 
 
 .topButtonBox > .button > .buttonImage{
     width: 6vw;
     height: 6vw;
+    
+    max-width: 40px;
+    max-height: 40px;
+
+}
+
+
+@media (min-width: 500px) {
+    .topButtonBox > .button > .buttonImage{
+        width: 24px;
+        height: 24px;  
+    }
 }
