@@ -175,7 +175,7 @@ const DrawerContentDesc = () => {
     setLoading(true);
 
     try {
-      const req: GetContentByIdReq = {userId: userId, contentId: contentId};
+      const req: GetContentByIdReq = {contentId: contentId, language: navigator.language};
       const response = await sendContentByIdGet(req);
 
       if (response?.data) {

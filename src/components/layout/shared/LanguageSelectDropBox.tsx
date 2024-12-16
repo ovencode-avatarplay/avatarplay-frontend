@@ -14,6 +14,24 @@ const LanguageSelectDropBox: React.FC = () => {
   const dispatch = useDispatch();
   const selectedLanguage = useSelector((state: RootState) => state.user.language);
 
+  // 브라우저 언어 설정을 LanguageType으로 변환
+  const getBrowserLanguage = (): LanguageType => {
+    const browserLang = navigator.language;
+
+    if (browserLang.startsWith('ko')) return LanguageType.Korean;
+    if (browserLang.startsWith('en')) return LanguageType.English;
+    if (browserLang.startsWith('ja')) return LanguageType.Japanese;
+    if (browserLang.startsWith('fr')) return LanguageType.French;
+    if (browserLang.startsWith('es')) return LanguageType.Spanish;
+    if (browserLang.startsWith('zh')) {
+      return browserLang.includes('Hans') ? LanguageType.ChineseSimplified : LanguageType.ChineseTraditional;
+    }
+    if (browserLang.startsWith('pt')) return LanguageType.Portuguese;
+    if (browserLang.startsWith('de')) return LanguageType.German;
+
+    return LanguageType.English; // 기본값
+  };
+
   const LanguageDisplay = [
     {value: LanguageType.Korean, label: 'Korean'},
     {value: LanguageType.English, label: 'English'},
@@ -30,11 +48,20 @@ const LanguageSelectDropBox: React.FC = () => {
     try {
       const response = await sendGetLanguage({});
       const language = response.data?.languageType;
+
+      // 서버에서 언어를 가져오지 못한 경우 브라우저 언어 사용
       if (language !== undefined) {
         dispatch(setLanguage(language));
+      } else {
+        const browserLang = getBrowserLanguage();
+        dispatch(setLanguage(browserLang));
+        Cookies.set('language', String(browserLang), {expires: 365});
       }
     } catch (error) {
       console.error('Failed to fetch language:', error);
+      const browserLang = getBrowserLanguage();
+      dispatch(setLanguage(browserLang));
+      Cookies.set('language', String(browserLang), {expires: 365});
     }
   };
 

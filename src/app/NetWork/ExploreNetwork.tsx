@@ -6,6 +6,7 @@ import {ExploreCardProps} from '../view/main/content/searchboard/SearchBoardType
 interface ReqExploreSearch {
   search: string;
   onlyAdults: boolean;
+  language: string;
 }
 
 interface ResponseExplore {
@@ -29,7 +30,7 @@ export const sendGetExplore = async (
   recommendationListData: ExploreCardProps[] | null;
 }> => {
   try {
-    const reqData: ReqExploreSearch = {search: search, onlyAdults: onlyAdults};
+    const reqData: ReqExploreSearch = {search: search, onlyAdults: onlyAdults, language: navigator.language || 'en-US'};
 
     // GET 요청을 보내기 위한 기본적인 정의
     const response = await api.get<ResponseExplore>('/Explore', {params: reqData}); // GET 요청으로 수정

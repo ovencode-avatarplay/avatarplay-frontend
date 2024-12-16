@@ -49,8 +49,8 @@ export const sendContentSave = async (payload: SaveContentReq): Promise<Response
 
 // Get Content By ContnetId for ExploreItem
 export interface GetContentByIdReq {
-  userId: number;
   contentId: number;
+  language: string;
 }
 
 export interface GetContentByIdRes {
@@ -86,6 +86,7 @@ export const sendContentByIdGet = async (payload: GetContentByIdReq): Promise<Re
 // Get TotalContent By ContentId
 export interface GetTotalContentByIdReq {
   contentId: number;
+  language: string;
 }
 
 export interface GetTotalContentByIdRes {
