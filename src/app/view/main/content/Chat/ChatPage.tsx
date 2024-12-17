@@ -77,7 +77,7 @@ const ChatPage: React.FC = () => {
   const contentId = useSelector((state: RootState) => state.chatting.contentId);
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
   const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
-  const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태
+  const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태 (렌더링과 관계 없을때 사용가능한 useState 형태)
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
 
   const [lastMessage, setLastMessage] = useState<Message>({
@@ -666,6 +666,10 @@ const ChatPage: React.FC = () => {
   };
 
   const handlePopupYes = () => {
+    if (isSendingMessage.state) {
+      console.log('메세지 중에는 넘어가지 않습니다');
+      return;
+    }
     console.log('Yes 클릭');
     // 특정 행동 수행
     if (nextEpisodeId !== null) {
