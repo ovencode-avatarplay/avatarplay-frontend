@@ -43,9 +43,10 @@ let updateUserDetail: UpdateUserDetail = {
 
 interface Props {
   onOpenEpisodeInitialize: () => void;
+  episodeId: number;
 }
 
-const EpisodeSetup: React.FC<Props> = ({onOpenEpisodeInitialize}) => {
+const EpisodeSetup: React.FC<Props> = ({onOpenEpisodeInitialize, episodeId}) => {
   // episodeIndex 기본값 0
   // Redux에서 contentInfo 데이터 가져오기
   const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // contentInfo 가져오기
@@ -101,6 +102,7 @@ const EpisodeSetup: React.FC<Props> = ({onOpenEpisodeInitialize}) => {
         <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
         <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
       </Box>
+
       {/* EpisodeTrigger 모달 */}
       <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} />
       {/* 여기까지 묶기 */}

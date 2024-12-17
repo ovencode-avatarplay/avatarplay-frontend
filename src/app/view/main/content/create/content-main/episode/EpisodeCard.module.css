@@ -1,0 +1,235 @@
+.episodeCard {
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px 0px 20px;
+gap: 12px;
+
+position: absolute;
+width: 92vw;
+height: 263px;
+left: calc(50% - 370px/2);
+
+
+  }
+
+  @media (min-width: 500px) {
+    .episodeCard{
+        max-width: 370px;
+    }
+}
+
+  .header {
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: space-between;
+padding: 10px 12px 10px 16px;
+gap: 12px;
+
+width: 100%;
+height: 48px;
+
+background: #2C3131;
+border-radius: 12px 12px 0px 0px ;
+  }
+
+  .contentBox{
+
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px 16px;
+gap: 10px;
+
+width: 370px;
+height: 217px;
+  }
+
+  .contentTop
+  {
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+width: 338px;
+height: 128px;
+  }
+
+.contentTopBox
+{
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: flex-start;
+padding: 0px;
+gap: 3px;
+
+width: 239px;
+height: 128px;
+}
+
+.contentTopItem
+{
+    box-sizing: border-box;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+padding: 10px 5px 10px 15px;
+gap: 8px;
+
+width: 100%;
+height: 40px;
+
+background: #FFFFFF;
+border: 1px solid #EAECF0;
+border-radius: 8px;
+}
+
+  .cardBox {
+
+box-sizing: border-box;
+
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 0px;
+
+width: 107px;
+height: 100%;
+
+border: 1px solid #EAECF0;
+border-radius: 8px;
+  }
+  
+.itemBox{
+    width: 100%;
+}
+
+  .cardimageContainer {
+/* Frame 1597881978 */
+
+width: 107px;
+height: 153.01px;
+
+border-radius: 8px 8px 0px 0px;
+
+  }
+  
+  .cardmainImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .cardtopRightButton {
+/* Img */
+
+position: absolute;
+width: 24px;
+height: 24px;
+right: 250px;
+top: 60px;
+
+
+
+
+  }
+  
+  .cardfooter {
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: flex-start;
+padding: 8px 10px;
+gap: 10px;
+
+width: 107px;
+height: 29.99px;
+  }
+  
+  .carduserName {
+    /* Suyeon */
+
+width: 47px;
+height: 10px;
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 700;
+font-size: 14px;
+line-height: 140%;
+
+display: flex;
+align-items: center;
+
+color: #000000;
+
+  }
+  
+  .contentItemBox{
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: flex-start;
+padding: 0px;
+gap: 6px;
+
+width: 221px;
+height: 183px;
+    }
+
+    .contentItem
+    {
+box-sizing: border-box;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: flex-start;
+padding: 0px;
+
+width: 221px;
+height: 79px;
+
+border: 1px solid #EAECF0;
+border-radius: 8px;
+    }
+
+    .episodeScenario
+    {
+box-sizing: border-box;
+
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: flex-start;
+padding: 0px;
+
+width: 338px;
+height: 79px;
+
+border: 1px solid #EAECF0;
+border-radius: 8px;
+
+    }
+    .episodeScenarioItem
+    {
+box-sizing: border-box;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+padding: 5px 5px 5px 15px;
+gap: 61px;
+
+width: 338px;
+height: 40px;
+
+background: #FFFFFF;
+border-bottom: 1px solid #EAECF0;
+
+
+    }

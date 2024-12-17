@@ -46,6 +46,7 @@ import ContentLLMSetup from './content-LLMsetup/ContentLLMsetup';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import EpisodeInitialize from './episode/episode-initialize/EpisodeInitialize';
 import ButtonEpisodeInfo from './episode/ButtonEpisodeInfo';
+import EpisodeCard from './episode/EpisodeCard';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
@@ -595,7 +596,9 @@ const ContentMain: React.FC = () => {
         <div className={styles.content}>
           <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
 
-          <EpisodeSetup onOpenEpisodeInitialize={handleOpenInitialEpisode} />
+          {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.map((episode, index) => (
+            <EpisodeCard episodeInfo={episode} />
+          ))}
         </div>
         <ContentBottom onLLMOpen={handleOpenLLMSetup} onPublishingOpen={handleOpenPublishing} />
         {/* EpisodeLLMSetup 모달 */}
