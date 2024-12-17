@@ -607,6 +607,7 @@ const ContentMain: React.FC = () => {
           open={isEpisodeInitOpen}
           onClose={handleCloseInitialEpisode}
           addEpisodeOper={() => setAddEpisodeRequested(true)}
+          episodeName={editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx].name}
         />
       </main>
       <LoadingOverlay loading={loading} />
