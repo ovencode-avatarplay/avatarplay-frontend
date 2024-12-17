@@ -32,6 +32,17 @@ height: 48px;
 
 border-radius: 12px 12px 0px 0px ;
 background: #FFE6F8;
+
+
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 600;
+font-size: 15px;
+line-height: 155%;
+color: #000000;
+
+
   }
 
   .contentBox{
@@ -87,6 +98,41 @@ height: 40px;
 background: #FFFFFF;
 border: 1px solid #EAECF0;
 border-radius: 8px;
+
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 500;
+font-size: 13px;
+line-height: 150%;
+color: #040415;
+}
+
+.contentTopName
+{
+    box-sizing: border-box;
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 10px 5px 10px 15px;
+gap: 8px;
+
+width: 100%;
+height: 40px;
+
+background: #FFFFFF;
+border: 1px solid #EAECF0;
+border-radius: 8px;
+
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 700;
+font-size: 15px;
+line-height: 150%;
+
+color: #040415;
 }
 
   .cardBox {
@@ -228,6 +274,13 @@ height: 40px;
 
 background: #FFFFFF;
 border-bottom: 1px solid #FFF5FD;
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 500;
+font-size: 13px;
+line-height: 150%;
+color: #040415;
     }
 
     .episodeScenarioItem2

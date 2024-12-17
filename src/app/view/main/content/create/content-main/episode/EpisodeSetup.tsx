@@ -102,30 +102,6 @@ const EpisodeSetup: React.FC<Props> = ({onOpenEpisodeInitialize, episodeId}) => 
         <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
         <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
       </Box>
-
-      {/* EpisodeTrigger 모달 */}
-      <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} />
-      {/* 여기까지 묶기 */}
-
-      {/* Episode Description 모달 */}
-      {isEpisodeModalOpen && (
-        <EpisodeDescription
-          dataDefault={{
-            userId: updateUserDetail?.characterID,
-            characterName: updateUserDetail?.char_name,
-            characterDescription: updateUserDetail?.char_persona,
-            worldScenario: updateUserDetail?.world_scenario,
-            introduction: updateUserDetail?.first_mes,
-            secret: updateUserDetail?.secrets,
-          }}
-          isModify={true}
-          open={isEpisodeModalOpen}
-          onClose={closeEpisodeModal}
-          onSubmit={handleSubmitPopup}
-        />
-      )}
-      {/*이미지 생성 모달*/}
-      {isImageSetupModalOpen && <EpisodeImageSetup open={isImageSetupModalOpen} onClose={closeImageSetup} />}
     </main>
   );
 };

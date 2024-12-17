@@ -4,7 +4,7 @@ import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {Button, Dialog, DialogContent, DialogTitle, TextField, Typography} from '@mui/material';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
+import {EpisodeInfo, setCurrentEpisodeInfo, updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
 
 import styles from './EpisodeDescription.module.css'; // CSS 모듈 import
 import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
@@ -31,6 +31,7 @@ interface CharacterPopupProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: CharacterDataType) => void;
+  episodeInfo: EpisodeInfo;
 }
 
 export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
@@ -39,9 +40,16 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   open,
   onClose,
   onSubmit,
+  episodeInfo,
 }) => {
   const dispatch = useDispatch();
   const currentEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
+
+  useEffect(() => {
+    if (open) {
+      setCurrentEpisodeInfo(episodeInfo);
+    }
+  }, [episodeInfo]);
 
   // 상태 초기화
   const [worldScenario, setWorldScenario] = useState<string>(
@@ -354,7 +362,11 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
         </div>
       )}
 
-      <EpisodeConversationTemplate open={isConversationModalOpen} closeModal={closeConversationModal} />
+      <EpisodeConversationTemplate
+        open={isConversationModalOpen}
+        closeModal={closeConversationModal}
+        episodeInfo={episodeInfo}
+      />
       {isMessageBoxOpen && (
         <MessageBox
           title={messageBoxText.title}

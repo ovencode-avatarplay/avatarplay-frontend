@@ -1,24 +1,36 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styles from './EpisodeConversationTemplate.module.css'; // CSS Module import
 import {Dialog, DialogTitle, Button, IconButton} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CardSlider from './CardSlider'; // 카드 슬라이더 import
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {useDispatch} from 'react-redux'; // Redux useDispatch import
-import {removeAllConversationTalk, removeAllActionConversationTalk} from '@/redux-store/slices/EpisodeInfo';
+import {
+  removeAllConversationTalk,
+  removeAllActionConversationTalk,
+  EpisodeInfo,
+  setCurrentEpisodeInfo,
+} from '@/redux-store/slices/EpisodeInfo';
 
 interface EpisodeConversationTemplateProps {
   open: boolean; // 모달 열림 상태
   closeModal: () => void; // 모달 닫기 함수
   triggerIndex?: number; // 트리거 ID (optional)
+  episodeInfo?: EpisodeInfo;
 }
 
 const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = ({
   open,
   closeModal,
   triggerIndex: triggerIndex = -1, // 기본값은 -1
+  episodeInfo,
 }) => {
   const dispatch = useDispatch(); // Redux dispatch hook 사용
+  useEffect(() => {
+    if (open && episodeInfo) {
+      setCurrentEpisodeInfo(episodeInfo);
+    }
+  }, [episodeInfo]);
 
   const handleResetConversations = () => {
     if (triggerIndex !== -1) {

@@ -82,7 +82,14 @@ import LineStory from './Line/Story.svg';
 import LineUpload from './Line/Upload.svg';
 import LineVoicePlay from './Line/Voice_Play.svg';
 
+import edit1Pixel from './Custom/edit1Pixel.svg';
+import editPlusOpacity from './Custom/editPlusOpacity.svg';
+import plusRound from './Custom/plusRound.svg';
+
 export {
+  edit1Pixel,
+  editPlusOpacity,
+  plusRound,
   BoldAI,
   BoldAlertOn,
   BoldAlert,

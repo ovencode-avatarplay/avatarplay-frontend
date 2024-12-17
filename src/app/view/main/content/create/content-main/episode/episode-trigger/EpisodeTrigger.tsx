@@ -1,23 +1,29 @@
 // 파일 경로: components/EpisodeTrigger.tsx
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './EpisodeTrigger.module.css'; // CSS Module import
 import {Dialog, Button, Box, IconButton} from '@mui/material';
 import CheckboxList from './TriggerList'; // CheckboxList 컴포넌트 임포트
 import WriteTriggerName from './WriteTriggerName'; // WriteTriggerName 모달 컴포넌트
 import SelectTriggerType from './SelectTriggerType';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 
 interface EpisodeTriggerProps {
   open: boolean; // 모달 열림 상태
   closeModal: () => void; // closeModal prop 추가
+  episodeInfo: EpisodeInfo;
 }
 
-const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal}) => {
+const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episodeInfo}) => {
   const [isWriteTriggerNameOpen, setWriteTriggerNameOpen] = useState(false); // WriteTriggerName 모달 상태
   const [isSelectTriggerTypeOpen, setSelectTriggerTypeOpen] = useState(false); // SelectTriggerType 모달 상태
   const [triggerName, setTriggerName] = useState(''); // Trigger name 상태
-
+  useEffect(() => {
+    if (open) {
+      setCurrentEpisodeInfo(episodeInfo);
+    }
+  }, [episodeInfo]);
   // WriteTriggerName 모달 열기
   const handleOpenWriteTriggerName = () => {
     setWriteTriggerNameOpen(true);
