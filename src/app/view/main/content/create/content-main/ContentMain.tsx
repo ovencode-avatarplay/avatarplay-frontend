@@ -294,7 +294,7 @@ const ContentMain: React.FC = () => {
       dispatch(setSelectedEpisodeIdx(updatedChapter.episodeInfoList.length - 1));
       setCurEpisodeInfo();
       setAddEpisodeRequested(false);
-      setIsEpisodeInitOpen(true);
+      setIsEpisodeInitOpen(false);
     }
   };
 
@@ -587,7 +587,7 @@ const ContentMain: React.FC = () => {
           <button
             className={styles.addEpisode}
             onClick={() => {
-              setAddEpisodeRequested(true);
+              setIsEpisodeInitOpen(true);
             }}
           >
             Add Episode
@@ -597,13 +597,17 @@ const ContentMain: React.FC = () => {
           <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
 
           {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.map((episode, index) => (
-            <EpisodeCard episodeInfo={episode} />
+            <EpisodeCard episodeInfo={episode} episodeNum={index} />
           ))}
         </div>
         <ContentBottom onLLMOpen={handleOpenLLMSetup} onPublishingOpen={handleOpenPublishing} />
         {/* EpisodeLLMSetup 모달 */}
         <ContentLLMSetup open={isLLMSetupOpen} onClose={handleCloseLLMSetup} />
-        <EpisodeInitialize open={isEpisodeInitOpen} onClose={handleCloseInitialEpisode} />
+        <EpisodeInitialize
+          open={isEpisodeInitOpen}
+          onClose={handleCloseInitialEpisode}
+          addEpisodeOper={() => setAddEpisodeRequested(true)}
+        />
       </main>
       <LoadingOverlay loading={loading} />
     </>

@@ -1,0 +1,159 @@
+
+.floatButtonArea
+{
+    bottom: 45px;
+    position: absolute;
+    display: flex;
+    width: 370px;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.floatButtonArea > .floatButton
+{
+    display: flex;
+    flex-direction: row;
+    width: 120px;
+    height: 46px;
+    padding: 14px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: 'Lato';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;  
+    letter-spacing: -0.4px;
+}
+
+.floatButtonArea > .prevButton
+{    
+    border-radius: 10px;
+    border: 1px solid var(--Border-1, #EAECF0);
+    background: var(--White, #FFF);
+
+    color: var(--Black, #000);
+}
+
+.floatButtonArea > .nextButton
+{
+    border-radius: 10px;
+    background: var(--Neutral-800, #2C3131);
+
+    color: var(--White, #FFF);
+}
+
+.floatButton >.buttonIcon
+{
+    display: flex;
+    width: 12px;
+    height: 12px;
+    justify-content: center;
+    align-items: center;
+}
+
+.stepDesc {  
+
+    align-self: center;
+    justify-self: center;
+
+    margin-top: 22px;
+    
+    width: 285px;
+    height: 22px;
+    left: calc(50% - 285px/2);
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+    /* identical to box height, or 157% */
+    text-align: center;
+
+    color: #9AA0A6;
+}
+
+
+.uploadImage > .buttonArea
+{
+    display: flex;
+    width: 92vw;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 7.3vw 4vw auto 4vw;
+    gap: 5vw;
+}
+
+
+@media (min-width : 500px) {    
+.uploadImage > .buttonArea
+ {   margin: 30px 16px auto 16px;
+    gap: 20px;
+}
+}
+
+.uploadImage > .buttonArea > .uploadButton
+{
+    display: flex;
+    padding: var(--Gap-and-Padding-Positive-GapPadding-16, 16px) var(--Gap-and-Padding-Positive-GapPadding-24, 24px) var(--Gap-and-Padding-Positive-GapPadding-16, 16px) var(--Gap-and-Padding-Positive-GapPadding-20, 20px);
+    align-items: center;
+    gap: 18px;
+    align-self: stretch;
+    
+    border-radius: 12px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--Neutral-50, #F8F9FA);
+    
+    color: var(--Black, #000);
+    text-align: justify;
+    font-family: 'Lato';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 160%;     
+}
+ 
+.uploadImage > .buttonArea > .uploadButton:hover
+{
+    border-radius: 12px;
+    background: var(--Neutral-800, #2C3131);
+    
+    color: var(--White, #FFF);
+}
+
+.uploadButton > .buttonIconBack
+{
+    display: flex;
+width: 50px;
+height: 50px;
+padding: 13px;
+justify-content: center;
+align-items: center;
+
+border-radius: 100px;
+border: 1px solid var(--Neutral-200, #E8EAED);
+background: #FFF;
+}
+
+
+.uploadButton > .buttonIconBack > .buttonIcon
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+ 
+
+@media (min-width : 500px) {
+    .uploadImage > .buttonArea
+    {
+        width: 370px;
+    }
+}
