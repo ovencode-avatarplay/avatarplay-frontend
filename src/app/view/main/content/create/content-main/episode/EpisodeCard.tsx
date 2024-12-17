@@ -5,6 +5,7 @@ import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import {BoldCirclePlus} from '@ui/Icons';
 interface EpisodeCardProps {
   episodeNum: number;
   episodeInfo: EpisodeInfo;
@@ -41,15 +42,17 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeInfo}) => {
             </div>
           </div>
           <div className={styles.contentTopBox}>
-            <div className={styles.contentTopItem}>asd</div>
-            <div className={styles.contentTopItem}>asd</div>
-            <div className={styles.contentTopItem}>asd</div>
+            <div className={styles.contentTopItem}>... </div>
+            <div className={styles.contentTopItem}>
+              텍스트1 <img src={BoldCirclePlus.src} alt="AI Recommend" className={styles.inputButton} />
+            </div>
+            <div className={styles.contentTopItem}>텍스트2</div>
           </div>
         </div>
 
         <div className={styles.episodeScenario}>
-          <div className={styles.episodeScenarioItem1}>asd</div>
-          <div className={styles.episodeScenarioItem2}>asd</div>
+          <div className={styles.episodeScenarioItem1}>텍스트3</div>
+          <div className={styles.episodeScenarioItem2}>...</div>
         </div>
       </Box>
     </div>
