@@ -48,8 +48,8 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeInfo}) => {
         </div>
 
         <div className={styles.episodeScenario}>
-          <div className={styles.episodeScenarioItem}>asd</div>
-          <div className={styles.episodeScenarioItem}>asd</div>
+          <div className={styles.episodeScenarioItem1}>asd</div>
+          <div className={styles.episodeScenarioItem2}>asd</div>
         </div>
       </Box>
     </div>
