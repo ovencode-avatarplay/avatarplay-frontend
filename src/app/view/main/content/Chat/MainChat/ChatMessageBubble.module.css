@@ -45,13 +45,20 @@ filter: blur(2px);
 .chatBubbleJustifyPartner {
     display: grid;
     justify-content: flex-start; 
-    margin-left: 8px;
+    margin-left: 8px; 
 }
 
 .chatBubbleJustifySystem {
     display: flex;
     justify-content: center; 
     margin-bottom: 4px;
+
+}
+
+.chatBubbleNewDate {
+  display: flex;
+  justify-content:  center;
+  margin-bottom: 4px;
 }
 
 .AvatarIcon {
@@ -253,7 +260,27 @@ filter: blur(2px);
     flex-grow: 0;
 
   }
+
+  .chatBackNewDate {
+    display:inline-block;   
+    text-align: center;  
+     
+    max-width: 260px; 
+
+    background: rgba(0, 0, 0, 0);
+    border-radius: 0px 12px 12px 12px;
+
+    font-family: 'Lato';
+    color: var(--White, #FFF);     
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 166.667% */
+
+  }
   
+
+
   .chatBackDefault {
     display:inline-block;
     padding: 8px ;

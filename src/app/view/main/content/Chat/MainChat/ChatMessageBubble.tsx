@@ -19,7 +19,7 @@ import {checkChatSystemError} from '@/app/NetWork/ESystemError';
 import ImageGrid from './ImageGrid';
 interface ChatMessageBubbleProps {
   text: string;
-  sender: 'user' | 'partner' | 'partnerNarration' | 'system' | 'introPrompt' | 'userNarration' | 'media';
+  sender: 'user' | 'partner' | 'partnerNarration' | 'system' | 'introPrompt' | 'userNarration' | 'media' | 'newDate';
   id: number;
   iconUrl: string;
   index: number;
@@ -123,7 +123,9 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                   ? styles.chatBubbleJustifyUser
                   : sender === 'partner' || sender === 'partnerNarration' || sender === 'media'
                   ? styles.chatBubbleProfilePartner
-                  : styles.chatBubbleJustifySystem
+                  : sender === 'system' || sender === 'newDate'
+                  ? styles.chatBubbleJustifySystem
+                  : 'sender null error'
               }
             >
               {(sender === 'partner' || sender === 'media') && (
@@ -150,6 +152,8 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                         ? styles.chatBackPartner
                         : sender === 'partnerNarration'
                         ? styles.chatBackPartnerNarration
+                        : sender === 'newDate'
+                        ? styles.chatBackNewDate
                         : styles.chatBackDefault
                     }
                       ${
