@@ -18,6 +18,7 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ImageUploadDialog from './ImageUploadDialog';
 import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 
+import emptyContent from '@/data/create/empty-content-info-data.json';
 const Input = styled('input')({
   display: 'none',
 });
@@ -32,13 +33,24 @@ interface Props {
 const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, setTriggerInfo}) => {
   const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | undefined>();
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [secondDialogOpen, setSecondDialogOpen] = useState(false); // 두 번째 다이얼로그 상태
   const dispatch = useDispatch();
   const [isMobile, setIsMobile] = useState(false); // 모바일 여부 확인
   const [isAiModalOpen, setIsAiModalOpen] = useState(false); // AI 모달 상태 추가
+  const [tempCharacterInfo, setTempCharacterInfo] = useState(
+    emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo,
+  );
+
+  const handleChange = (key: keyof typeof tempCharacterInfo, value: any) => {
+    setTempCharacterInfo(prev => ({
+      ...prev,
+      [key]: value, // 특정 필드 업데이트
+    }));
+  };
 
   const handleOpenAiModal = () => {
     setIsAiModalOpen(true); // AI 모달 열기
@@ -91,51 +103,32 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
     setSecondDialogOpen(false); // 새 다이얼로그 닫기
   };
   const handleFileSelection = async (file: File) => {
-    setLoading(true); // 로딩 상태 활성화
+    setLoading(true);
     try {
-      // Upload 객체 생성
       const req: MediaUploadReq = {
-        mediaState: MediaState.CharacterImage, // 적절한 MediaState 설정
+        mediaState: MediaState.CharacterImage,
         file: file,
       };
-
-      // 파일 업로드 API 호출
       const response = await sendUpload(req);
-
       if (response?.data) {
-        const imgUrl: string = response.data.url; // 메인 이미지 URL
-
-        // Base64로 변환하여 미리보기 업데이트
+        const imgUrl: string = response.data.url;
         const reader = new FileReader();
         reader.onload = event => {
           if (event.target && typeof event.target.result === 'string') {
-            setImagePreview(event.target.result); // Base64 URL로 변환된 이미지 저장
+            setTempCharacterInfo(prev => ({
+              ...prev,
+              mainImageUrl: imgUrl, // API로 받은 URL을 업데이트
+            }));
           }
         };
-        reader.readAsDataURL(file); // 파일을 Base64로 변환
-
-        // Redux 상태 업데이트
-        if (isTrigger && setTriggerInfo) {
-          setTriggerInfo(prev => ({
-            ...prev, // 기존 상태 복사
-            actionCharacterInfo: {
-              ...prev.actionCharacterInfo, // 기존 `actionCharacterInfo` 복사
-              mainImageUrl: imgUrl, // `mainImageUrl` 업데이트
-            },
-          }));
-        } else {
-          dispatch(setCharacterInfo({mainImageUrl: imgUrl}));
-        }
-
-        // 추가 이미지 리스트 로그 출력
-        console.log('Additional image URLs:', response.data.imageUrlList);
+        reader.readAsDataURL(file);
       } else {
         throw new Error('Unexpected API response: No data');
       }
     } catch (error) {
       console.error('Error uploading image:', error);
     } finally {
-      setLoading(false); // 로딩 상태 비활성화
+      setLoading(false);
     }
   };
 
@@ -143,17 +136,10 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
     setLoading(true);
     try {
       if (url) {
-        if (isTrigger && setTriggerInfo) {
-          setTriggerInfo(prev => ({
-            ...prev, // 기존 상태 복사
-            actionCharacterInfo: {
-              ...prev.actionCharacterInfo, // 기존 `actionCharacterInfo` 복사
-              mainImageUrl: url, // `mainImageUrl` 업데이트
-            },
-          }));
-        } else {
-          dispatch(setCharacterInfo({mainImageUrl: url}));
-        }
+        setTempCharacterInfo(prev => ({
+          ...prev,
+          mainImageUrl: url, // API로 받은 URL을 업데이트
+        }));
       } else {
         throw new Error(`No response for file`);
       }
@@ -206,47 +192,21 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
     input.click();
     setSecondDialogOpen(false); // 다이얼로그 닫기
   };
-
-  const [characterDescription, setCharacterDescription] = useState<string>(
-    editedEpisodeInfo.currentEpisodeInfo.characterInfo?.description || '',
-  );
-  const onChangeCharacterDescription = (description: string) => {
-    setCharacterDescription(description);
+  const handleConfirm = () => {
     if (isTrigger && setTriggerInfo) {
       setTriggerInfo(prev => ({
-        ...prev, // 기존 상태 복사
-        actionCharacterInfo: {
-          ...prev.actionCharacterInfo, // 기존 `actionCharacterInfo` 복사
-          description: description, // `mainImageUrl` 업데이트
-        },
+        ...prev,
+        actionCharacterInfo: tempCharacterInfo,
       }));
     } else {
-      dispatch(setCharacterInfo({description: description}));
+      dispatch(setCharacterInfo(tempCharacterInfo));
     }
-  };
-
-  const [characterName, setCharacterName] = useState<string>(
-    editedEpisodeInfo.currentEpisodeInfo.characterInfo.name || '',
-  );
-  const onChangeCharacterName = (name: string) => {
-    setCharacterName(name);
-    if (isTrigger && setTriggerInfo) {
-      setTriggerInfo(prev => ({
-        ...prev, // 기존 상태 복사
-        actionCharacterInfo: {
-          ...prev.actionCharacterInfo, // 기존 `actionCharacterInfo` 복사
-          name: name, // `mainImageUrl` 업데이트
-        },
-      }));
-    } else {
-      dispatch(setCharacterInfo({name: name}));
-    }
+    closeModal(); // 모달 닫기
   };
 
   useEffect(() => {
-    if (editedEpisodeInfo?.currentEpisodeInfo?.characterInfo)
-      setImagePreview(editedEpisodeInfo?.currentEpisodeInfo?.characterInfo?.mainImageUrl);
-  }, [editedEpisodeInfo]);
+    if (tempCharacterInfo.mainImageUrl) setImagePreview(tempCharacterInfo.mainImageUrl);
+  }, [tempCharacterInfo.mainImageUrl]);
 
   return (
     <Dialog
@@ -323,8 +283,13 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
           margin="normal"
           multiline
           rows={1}
-          value={characterName}
-          onChange={e => onChangeCharacterName(e.target.value)}
+          value={tempCharacterInfo.name}
+          onChange={e =>
+            setTempCharacterInfo(prev => ({
+              ...prev,
+              name: e.target.value, // 입력 필드의 값을 name에 업데이트
+            }))
+          }
         />
         <TextField
           label="Personality"
@@ -333,11 +298,27 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
           margin="normal"
           multiline
           rows={4}
-          value={characterDescription}
-          onChange={e => onChangeCharacterDescription(e.target.value)}
+          value={tempCharacterInfo.description}
+          onChange={e =>
+            setTempCharacterInfo(prev => ({
+              ...prev,
+              description: e.target.value, // 입력 필드의 값을 name에 업데이트
+            }))
+          }
         />
       </Box>
 
+      <Box>
+        <Button
+          className={styles.confirmButton}
+          variant="outlined"
+          onClick={() => {
+            handleConfirm();
+          }}
+        >
+          Confirm
+        </Button>
+      </Box>
       {/* EpisodeAiImageGeneration 모달 */}
       <EpisodeAiImageGeneration open={isAiModalOpen} closeModal={handleCloseAiModal} uploadImage={handleSelectUrl} />
 

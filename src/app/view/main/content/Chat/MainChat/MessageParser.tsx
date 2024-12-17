@@ -106,7 +106,7 @@ const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate:
   // 마지막 메시지에 Date값 넣자
   if (result.length > 0) {
     const lastMessage = result[result.length - 1];
-    lastMessage.text += ' (modified)'; // 텍스트 수정
+    //lastMessage.text += ' (modified)'; // 텍스트 수정
     lastMessage.createDate = createDate; // 예: 생성 날짜를 업데이트
   }
 
@@ -125,7 +125,10 @@ const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate:
 
 export const timeParser = (dateTimeUTC: Date): string => {
   // UTC 시간을 로컬 시간으로 변환
-  const localDate = new Date(dateTimeUTC.toString() + 'Z');
+  // 만약 문자열 안에 Z가 포함되어있지 않으면 Z를 명시해준다
+  let stringDate = dateTimeUTC.toString();
+  let localDate = new Date(dateTimeUTC.toString());
+  if (stringDate.includes('Z') === false) localDate = new Date(dateTimeUTC.toString() + 'Z');
 
   // 시간 데이터 가져오기
   const hours = localDate.getHours(); // 24시간 형식 시
@@ -387,3 +390,37 @@ export const setSenderType = (
   };
   return resultMessage;
 };
+
+const checkNewDate = (prevDate: string, newDate: string): string => {
+  // 날짜 객체 생성
+  const prev = new Date(prevDate);
+  const current = new Date(newDate);
+
+  // 로컬 날짜 비교용
+  const prevYear = prev.getFullYear();
+  const prevMonth = prev.getMonth();
+  const prevDay = prev.getDate();
+
+  const currentYear = current.getFullYear();
+  const currentMonth = current.getMonth();
+  const currentDay = current.getDate();
+
+  // 같은 날인 경우 빈 문자열 반환
+  if (prevYear === currentYear && prevMonth === currentMonth && prevDay === currentDay) {
+    return '';
+  }
+
+  // 날짜 포맷 설정
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const formattedDate = `${months[currentMonth]} ${currentDay}`;
+
+  // 같은 해라면 월 일만 반환
+  if (prevYear === currentYear) {
+    return formattedDate;
+  }
+
+  // 해가 다르면 월 일, 연도 반환
+  return `${formattedDate}, ${currentYear}`;
+};
+
+export default checkNewDate;

@@ -45,18 +45,25 @@ filter: blur(2px);
 .chatBubbleJustifyPartner {
     display: grid;
     justify-content: flex-start; 
-    margin-left: 8px;
+    margin-left: 8px; 
 }
 
 .chatBubbleJustifySystem {
     display: flex;
     justify-content: center; 
     margin-bottom: 4px;
+
+}
+
+.chatBubbleNewDate {
+  display: flex;
+  justify-content:  center;
+  margin-bottom: 4px;
 }
 
 .AvatarIcon {
-    width: 32;
-    height: 32;
+    width: 32px;
+    height: 32px;
     margin-right: 1;
     border: 1px solid;
     border-color: black;
@@ -68,10 +75,7 @@ filter: blur(2px);
     flex-direction: row;
     justify-content: center;
     align-items: center;
-
-
-    margin: 30px auto;
-
+ 
     padding: 7px 20px;
     gap: 10px;
   
@@ -227,7 +231,7 @@ filter: blur(2px);
   
   .chatBackPartnerNarration {
     display:inline-block; 
-    margin-left: 40px;
+    margin-left: 32px;
     color: #b0b0b0;
     text-align: left;
     font-size: 0.7em;
@@ -256,7 +260,27 @@ filter: blur(2px);
     flex-grow: 0;
 
   }
+
+  .chatBackNewDate {
+    display:inline-block;   
+    text-align: center;  
+     
+    max-width: 260px; 
+
+    background: rgba(0, 0, 0, 0);
+    border-radius: 0px 12px 12px 12px;
+
+    font-family: 'Lato';
+    color: var(--White, #FFF);     
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 166.667% */
+
+  }
   
+
+
   .chatBackDefault {
     display:inline-block;
     padding: 8px ;
@@ -290,4 +314,14 @@ filter: blur(2px);
   font-style: normal;
   font-weight: 400;
   line-height: 140%; /* 15.4px */
+  }
+
+
+  .systemGap1 {
+    margin-top: -20px;
+    margin-bottom: 30px;
+  }
+
+  .systemGap2 {
+    margin: 30px auto;
   }

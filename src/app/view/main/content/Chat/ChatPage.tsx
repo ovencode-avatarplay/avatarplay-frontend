@@ -438,6 +438,14 @@ const ChatPage: React.FC = () => {
 
       // 일단 내 메시지  처리
       if (isMyMessage === true) {
+        // 임시로 newDate 넣자
+        const newDateMessage: Message = parsedUserNarration(newMessage);
+        newDateMessage.sender = SenderType.NewDate;
+        newDateMessage.text = 'july 23';
+        allMessages.push(newDateMessage);
+        allEmoticon.push('');
+        allMedia.push(mediaDataValue);
+
         if (isUserNarration(newMessage.text)) {
           const parsedMessage: Message = parsedUserNarration(newMessage);
           newMessage.sender = SenderType.UserNarration;

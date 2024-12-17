@@ -2,10 +2,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Box, Avatar} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
-import {Message, MessageGroup} from './ChatTypes';
+import {Message, MessageGroup, SenderType} from './ChatTypes';
 import ChatTtsPlayer from './ChatTtsPlayer';
 import {GenerateTtsUrl} from './GenerateTtsUrl';
-
+import {useGesture} from '@use-gesture/react';
 import {SendChatMessageReq} from '@/app/NetWork/ChatNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
@@ -63,6 +63,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     } else {
       setSelectedBubbleIndex(null);
     }
+  };
+
+  const setBubbleIndexNull = () => {
+    setSelectedBubbleIndex(null);
   };
 
   const handlePlayAudio = async (text: string) => {
@@ -127,7 +131,12 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       }, 500); // 페이드 아웃 시간
     }
   }, [bgUrl, prevBgUrl, transitionEnabled]);
-
+  const bind = useGesture({
+    onDoubleClick: () => {
+      console.log('Double tap detected!');
+      onToggleBackground();
+    },
+  });
   useEffect(() => {
     if (isModifyingQuestion === false) {
       setSelectedBubbleIndex(null);
@@ -165,15 +174,11 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     <>
       <LoadingOverlay loading={loading} />
       {/* {isHideChat === false && ( */}
-      <Box
-        className={styles.chatArea}
-        onDoubleClick={event => {
-          // if (isHideChat === false) {
-          event.preventDefault();
-          onToggleBackground();
-          // }
-        }}
-      >
+      <Box className={styles.chatArea} {...bind()}>
+        {/* 채팅 화면에서 사용되는 이미지는 배경, 캐릭터가 서버 로직에 의해 합성이 끝난 이미지를 사용합니다. 
+        현재 임시로 Character, BackGround를 분리하고 있으나 최종적으로는 캐릭터와 배경이 합성된 이미지를 사용하며, 
+        캐릭터 표정, 포즈, 배경 변경 등에 사용되는 새 배경을 사용 하기 위해 2개까지 동시에 나와 있을 수는 있습니다. 
+        임시 작업 중 캐릭터가 배경을 덮는 현상은 무시해도 됩니다. */}
         {/* 기존 배경 */}
         <Box
           className={`${styles.mainBackground} ${isFadingOut ? styles.fadingOut : ''}`}
@@ -183,7 +188,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             transition: 'opacity 0.5s ease',
           }}
         />
-
         {/* 새 배경 */}
         <Box
           className={`${styles.newBackground} ${isHideChat ? styles.fadeCover : ''} ${
@@ -195,18 +199,20 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
           }}
         />
-
-        {/* 캐릭터 이미지 */}
-        <Box
-          className={`${styles.mainCharacter} ${bgUrl === '' || bgUrl === undefined ? styles.mainCharacterNonBg : ''}`}
-          sx={{
-            backgroundImage: `url(${characterUrl})`,
-          }}
-        />
-
+        <div className={styles.mainCharacterContainer}>
+          {/* 캐릭터 이미지 */}
+          <Box
+            className={`${styles.mainCharacter} ${
+              bgUrl === '' || bgUrl === undefined ? styles.mainCharacterNonBg : ''
+            }`}
+            sx={{
+              backgroundImage: `url(${characterUrl})`,
+            }}
+          />
+        </div>
         {/* 최상위 그라데이션 */}
         <Box
-          className={`${styles.mainGradiationCover}`}
+          className={`${styles.mainGradiationCover}  ${selectedBubbleIndex !== null ? styles.blurBackground : ''}`}
           sx={{
             width: '100%',
             height: '100%',
@@ -251,9 +257,11 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                         e.stopPropagation();
                         handlePlayAudio(msg.text);
                       }}
+                      setSelectedNull={() => setBubbleIndexNull()}
                       selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
                       lastMessage={lastMessage}
                       createDate={msg.createDate}
+                      prevSenderType={index === 0 ? SenderType.IntroPrompt : messages.Messages[index - 1].sender}
                     />
                   )}
                   {/* Retry 버튼 조건부 렌더링 */}
@@ -268,6 +276,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
               ))}
             </Box>
             {isLoading && <ChatLoadingBubble iconUrl={iconUrl} />}
+            <div className={styles.endPadding}> </div>
             <div ref={bottomRef} />
           </Box>
         )}

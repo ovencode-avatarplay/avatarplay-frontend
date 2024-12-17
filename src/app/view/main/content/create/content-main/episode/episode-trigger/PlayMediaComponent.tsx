@@ -139,7 +139,10 @@ const PlayMediaComponent: React.FC<PlayMediaComponentProps> = ({onMediaSelect, t
         mediaState: mediaType === MediaType.IMAGE ? MediaState.TriggerImage : MediaState.TriggerVideo, // 미디어 타입에 따라 다르게 설정
         triggerImageList: mediaType === MediaType.IMAGE ? files : [], // 이미지일 때만 파일 배열을 넣음
       };
-
+      if (images.length + files.length > 9) {
+        alert('이미지는 최대 9장까지 업로드 가능합니다.');
+        return;
+      }
       // 파일 업로드 API 호출
       const response = await sendUpload(req);
 
@@ -148,6 +151,7 @@ const PlayMediaComponent: React.FC<PlayMediaComponentProps> = ({onMediaSelect, t
         setImages(prevImages => [...prevImages, ...imgUrls]); // 여러 이미지 URL을 기존 이미지 배열에 추가
         // 기존 updatedUrls에 imgUrls를 추가하여 새로운 상태로 설정
         const newUrls = [...updatedUrls, ...imgUrls];
+
         setUpdatedUrls(newUrls); // 상태 업데이트
         onMediaSelect(newUrls); // 상위 컴포넌트로 파일 전달
         console.log('Image URLs:', response.data.imageUrlList); // 추가 이미지 URL 로그 출력

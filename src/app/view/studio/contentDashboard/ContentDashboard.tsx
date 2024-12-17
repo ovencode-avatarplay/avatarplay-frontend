@@ -145,7 +145,7 @@ const ContentDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetTotalContentByIdReq = {contentId: contentId};
+      const req: GetTotalContentByIdReq = {contentId: contentId, language: navigator.language};
       const response = await sendContentByIdGetTotal(req);
 
       if (response?.data) {

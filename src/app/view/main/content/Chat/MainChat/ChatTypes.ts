@@ -8,6 +8,7 @@ export enum SenderType {
   System = 'system',
   IntroPrompt = 'introPrompt',
   media = 'media',
+  NewDate = 'newDate',
 }
 
 export enum TriggerMediaState {

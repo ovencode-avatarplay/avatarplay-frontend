@@ -4,7 +4,7 @@ import ChatMessageMenuBottom from './ChatContextMenuBottom';
 import React, {useEffect, useState} from 'react';
 import styles from './ChatMessageBubble.module.css';
 // import ChatRegenerateGroupNav from './ChatRegenerateGroupNav';
-import {MediaData, Message, TriggerMediaState} from './ChatTypes';
+import {MediaData, Message, SenderType, TriggerMediaState} from './ChatTypes';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-cards';
@@ -19,17 +19,19 @@ import {checkChatSystemError} from '@/app/NetWork/ESystemError';
 import ImageGrid from './ImageGrid';
 interface ChatMessageBubbleProps {
   text: string;
-  sender: 'user' | 'partner' | 'partnerNarration' | 'system' | 'introPrompt' | 'userNarration' | 'media';
+  sender: 'user' | 'partner' | 'partnerNarration' | 'system' | 'introPrompt' | 'userNarration' | 'media' | 'newDate';
   id: number;
   iconUrl: string;
   index: number;
   emoticonUrl: string;
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onTtsClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  setSelectedNull: () => void;
   selectedIndex: number | null;
   lastMessage: Message;
   mediaData: MediaData | null;
   createDate: string;
+  prevSenderType: SenderType;
 }
 
 const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
@@ -41,10 +43,12 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   emoticonUrl,
   onClick,
   onTtsClick,
+  setSelectedNull,
   selectedIndex,
   lastMessage,
   mediaData,
   createDate,
+  prevSenderType,
 }) => {
   const [answerTextMessage, setAnswerTextMessage] = useState(text);
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -119,17 +123,21 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                   ? styles.chatBubbleJustifyUser
                   : sender === 'partner' || sender === 'partnerNarration' || sender === 'media'
                   ? styles.chatBubbleProfilePartner
-                  : styles.chatBubbleJustifySystem
+                  : sender === 'system' || sender === 'newDate'
+                  ? styles.chatBubbleJustifySystem
+                  : 'sender null error'
               }
             >
               {(sender === 'partner' || sender === 'media') && (
                 <Avatar alt="Partner Avatar" src={iconUrl} className={styles.AvatarIcon} />
               )}
               <Box className={styles.chatBubbleJustifyPartner}>
-                {selectedIndex === index && checkCanOpenContextTop() && <ChatMessageMenuTop id={id} />}
+                {selectedIndex === index && checkCanOpenContextTop() && (
+                  <ChatMessageMenuTop id={id} closeAction={() => setSelectedNull()} />
+                )}
                 {sender !== 'media' && (
                   <div
-                    className={
+                    className={`${
                       sender === 'system'
                         ? checkChatSystemError(text)
                           ? styles.chatBackSystemError
@@ -144,8 +152,13 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                         ? styles.chatBackPartner
                         : sender === 'partnerNarration'
                         ? styles.chatBackPartnerNarration
+                        : sender === 'newDate'
+                        ? styles.chatBackNewDate
                         : styles.chatBackDefault
                     }
+                      ${
+                        sender === 'system' ? (prevSenderType === 'system' ? styles.systemGap1 : styles.systemGap2) : ''
+                      }`}
                     onClick={handleMenuOpen}
                   >
                     {sender === 'user' && emoticonUrl !== '' && emoticonUrl !== undefined ? (

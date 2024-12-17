@@ -137,6 +137,10 @@
   background-size: cover;
 }
 
+.blurBackground {
+   backdrop-filter: blur(7.5px);
+}
+
 .mainGradiationCover {
   position: absolute;
   top: 0;
@@ -163,6 +167,11 @@
 
 .messageBubbleArea::-webkit-scrollbar {
   display: none; /* Webkit 브라우저에서 스크롤바 숨기기 */
+}
+
+.messageBubbleArea > .endPadding
+{
+  padding-bottom: 2.3vh;
 }
 
 /* 하단바 설정 */

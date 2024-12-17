@@ -1,22 +1,26 @@
 .ChatFloatingArea {
   
+  
+
   user-select: none;
 
     position: absolute;
     width: 92%;
-    height: 56px;
+    height: 44px;
+ 
     z-index: 30;
-    top: 48px;
+    top: 7.2vh;
     left: 5%; /* 부모 요소 기준 가로 가운데 정렬 */
     transform: translate(10vh); /* 가로 -50%로 이동하여 가운데 정렬, 세로 초기 위치 */
    
-    background: linear-gradient(156.37deg, #FD55D3 15.22%, #FDAFA3 150.69%);
+    background: linear-gradient(180deg, #FD55D3 15.22%, #FDAFA3 150.69%);
     border-radius: 8px;
 
     display: flex;
     justify-content: space-between; 
     padding: 12px 16px;
     align-items: center;
+    justify-items: center;
     gap: 20px;
     flex: 1 0 0; 
     transform: translateY(10vh); /* 초기 위치 (아래로 10vh 이동) */
@@ -34,13 +38,16 @@
   .episodeName {/* Ep.2 Meet Arlen, the Storyweaver */
 
     width: 74%;
-    height: 74%;
+    height: 20px;
+ 
+    justify-self: center;
+    justify-content: center;
     
     font-family: 'Lato';
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
-    line-height: 100%;
+    line-height: 20px;
     /* identical to box height, or 14px */
     
     color: #F5F5F5; 
