@@ -157,7 +157,7 @@ border-radius: 8px;
 
   .cardimageContainer {
 /* Frame 1597881978 */
-
+position: relative;
 width: 107px;
 height: 153.01px;
 
@@ -172,17 +172,15 @@ border-radius: 8px 8px 0px 0px;
   }
   
   .cardtopRightButton {
-/* Img */
-
-position: absolute;
-width: 24px;
-height: 24px;
-right: 250px;
-top: 60px;
-
-
-
-
+    position: absolute;
+    top: 0; /* 부모 컨테이너의 상단 */
+    right: 0; /* 부모 컨테이너의 우측 상단 */
+    transform: translate(-10%, 10%); /* 정확한 위치 조정 */
+    width: 24px; /* 버튼 크기 */
+    height: 24px;
+    z-index: 10; /* 이미지 위에 표시 */
+    cursor: pointer;
+    pointer-events: auto; /* 클릭 이벤트 활성화 */
   }
   
   .cardfooter {

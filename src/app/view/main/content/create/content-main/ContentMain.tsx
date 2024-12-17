@@ -597,7 +597,7 @@ const ContentMain: React.FC = () => {
           <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
 
           {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.map((episode, index) => (
-            <EpisodeCard episodeId={episode.id} episodeNum={index} />
+            <EpisodeCard episodeId={episode.id} episodeNum={index} onInit={() => handleOpenInitialEpisode()} />
           ))}
         </div>
         <ContentBottom onLLMOpen={handleOpenLLMSetup} onPublishingOpen={handleOpenPublishing} />

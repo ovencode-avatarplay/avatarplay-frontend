@@ -5,7 +5,7 @@ import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import {BoldCirclePlus, edit1Pixel, plusRound} from '@ui/Icons';
+import {BoldCirclePlus, edit1Pixel, editPlusOpacity, plusRound} from '@ui/Icons';
 import {CircleRounded} from '@mui/icons-material';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
@@ -16,6 +16,7 @@ import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeC
 interface EpisodeCardProps {
   episodeNum: number;
   episodeId: number;
+  onInit: () => void;
 }
 // 캐릭터 팝업창 열때 해당 내용을 채워서 열기 위한
 interface UpdateUserDetail {
@@ -36,7 +37,7 @@ let updateUserDetail: UpdateUserDetail = {
   world_scenario: '',
   thumbnail: '',
 };
-const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId}) => {
+const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}) => {
   const episodeInfo = useSelector((state: RootState) => {
     const flatEpisodes = state.content.curEditingContentInfo.chapterInfoList.flatMap(
       chapter => chapter.episodeInfoList,
@@ -107,15 +108,8 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId}) => {
           <div className={styles.cardBox}>
             {/* Image Section */}
             <div className={styles.cardimageContainer}>
-              <div className={styles.cardtopRightButton}>
-                <EditIcon />
-              </div>
               <img src={episodeInfo?.characterInfo.mainImageUrl} alt="Main" className={styles.cardmainImage} />
-            </div>
-
-            {/* Footer */}
-            <div className={styles.cardfooter}>
-              <Typography className={styles.carduserName}>Suyeon</Typography>
+              <img src={editPlusOpacity.src} className={styles.cardtopRightButton} onClick={() => onInit()} />
             </div>
           </div>
           <div className={styles.contentTopBox}>
@@ -138,7 +132,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId}) => {
             Episode Scenario
             <img src={edit1Pixel.src} className={styles.circlePlusIcon} onClick={() => openEpisodeModal()} />
           </div>
-          <div className={styles.episodeScenarioItem2}>...</div>
+          <div className={styles.episodeScenarioItem2}>{episodeInfo.episodeDescription.scenarioDescription}</div>
         </div>
       </Box>
 
