@@ -1,17 +1,11 @@
-.topNavigation{
+.topNavigation {
     position: absolute;
-
     display: flex;
     flex-direction: row; 
     align-items: center;
     justify-content: space-between;
- 
-    height: 6.63vh;    
-    
+    height:58px;    
     z-index: 10;  
-    padding-top: 2.2vh;
-    gap: 2.48vw; 
-    
     width: 100vh;
 }
 

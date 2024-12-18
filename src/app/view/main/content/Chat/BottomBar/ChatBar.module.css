@@ -13,11 +13,9 @@
     
   }
   .test{
-    
     display: flex;
     flex-direction: column;
-    margin-top: 3px;
-    margin-bottom: 3px;
+    margin: 6px 10px;
   }
   
   .aiRecommendButton {
@@ -39,7 +37,6 @@
     gap: 10px;
     background: #ffffff;
     border-radius: 8px;
-    padding: 3px;    
   }
 
   .inputBox {

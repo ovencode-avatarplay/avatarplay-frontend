@@ -705,6 +705,15 @@ const ChatPage: React.FC = () => {
   const {prevMessages: enterData} = usePrevChatting(episodeId, isReqPrevCheat, handleRerender, isIdEnter);
 
   useEffect(() => {
+    function setFullHeight() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    window.addEventListener('resize', setFullHeight);
+    window.addEventListener('orientationchange', setFullHeight);
+    setFullHeight();
+
     if (
       (!hasFetchedPrevMessages && enterData && (enterData?.prevMessageInfoList || enterData?.introPrompt.length > 0)) ||
       (nextEpisodeId != null && enterData?.episodeId === nextEpisodeId) ||
