@@ -13,7 +13,7 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ChatRetryButton from './ChatRetryButton';
 import ChatLoadingBubble from './ChatLoadingBubble';
 import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
-import {red} from '@mui/material/colors';
+
 interface ChatAreaProps {
   messages: MessageGroup;
   bgUrl: string;
@@ -22,6 +22,7 @@ interface ChatAreaProps {
   isHideChat: boolean;
   onToggleBackground: () => void;
   isLoading: boolean; // 로딩 상태 추가
+  setBlurOn: React.Dispatch<React.SetStateAction<boolean>>;
   chatBarCount: number;
   aiChatHeight: number;
   transitionEnabled: boolean; // 배경 이미지 전환 여부를 제어하는 프롭
@@ -37,6 +38,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   isHideChat,
   onToggleBackground,
   isLoading,
+  setBlurOn,
   chatBarCount,
   aiChatHeight,
   transitionEnabled, // transitionEnabled 프롭을 추가
@@ -142,6 +144,11 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       setSelectedBubbleIndex(null);
     }
   }, [isModifyingQuestion]);
+
+  useEffect(() => {
+    if (selectedBubbleIndex !== null) setBlurOn(true);
+    else setBlurOn(false);
+  }, [selectedBubbleIndex]);
 
   const handleRetry = (msgText: string, chatId: number) => {
     // 재전송을 시도한 메시지의 chatId를 상태에 추가하여 버튼 숨기기

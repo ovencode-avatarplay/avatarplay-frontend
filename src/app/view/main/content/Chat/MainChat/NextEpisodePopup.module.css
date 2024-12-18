@@ -309,6 +309,9 @@ line-height: 140%;
 
 color: #80868B;
 
+/* 스크롤 설정 */
+max-height: calc(100% - 21px - 6px); /*  title(21px) + gap(6px) */
+overflow-y: auto;
 
 /* Inside auto layout */
 flex: none;
@@ -379,7 +382,7 @@ flex-grow: 0;
   height: 46px;
 
   background: #f1f3f4;
-  border-radius: 8px;
+  border-radius: 10px;
 
   flex: none;
   order: 0;

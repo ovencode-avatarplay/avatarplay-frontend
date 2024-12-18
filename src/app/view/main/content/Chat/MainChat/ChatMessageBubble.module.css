@@ -26,7 +26,7 @@ overflow: hidden; /* 추가 */
 }
 .blurBox {
 z-index: auto;
-filter: blur(2px);
+filter: blur(10px);
 }
 
 .chatBubbleJustifyUser { 

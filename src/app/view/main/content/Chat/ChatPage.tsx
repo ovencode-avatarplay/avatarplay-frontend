@@ -59,6 +59,7 @@ const ChatPage: React.FC = () => {
   const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
   const [nextEpisodeName, setNextEpisodeName] = useState<string | null>(null); // 다음 에피소드 이름
   const [isHideChat, SetHideChat] = useState<boolean>(false);
+  const [isBlurOn, SetIsBlurOn] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
   const [isIdEnter, setIsIdEnter] = useState<boolean>(false); // 로딩 상태 추가
   const [chatBarCount, setChatBarCount] = useState<number>(1); // 로딩 상태 추가
@@ -824,9 +825,14 @@ const ChatPage: React.FC = () => {
           onMoreClick={handleMoreClick}
           iconUrl={characterImageUrl ?? ''}
           isHideChat={isHideChat}
+          isBlurOn={isBlurOn}
         />
         {floatingNextEpisode && !isHideChat && (
-          <ChatFloatingArea episodeName={`${nextEpisodeName} 이동 버튼`} onNavigate={handlePopupYes} /> // TODO nextEpisodeId 대신 에피소드 이름으로 변경 (서버 작업 후)
+          <ChatFloatingArea
+            episodeName={`${nextEpisodeName} 이동 버튼`}
+            onNavigate={handlePopupYes}
+            isBlurOn={isBlurOn}
+          /> // TODO nextEpisodeId 대신 에피소드 이름으로 변경 (서버 작업 후)
         )}
         <ChatArea
           messages={parsedMessages!}
@@ -836,6 +842,7 @@ const ChatPage: React.FC = () => {
           isHideChat={isHideChat}
           onToggleBackground={handleToggleBackground}
           isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
+          setBlurOn={SetIsBlurOn}
           chatBarCount={chatBarCount}
           aiChatHeight={aiChatHeight}
           transitionEnabled={isTransitionEnable}
@@ -850,6 +857,7 @@ const ChatPage: React.FC = () => {
         setStreamKey={setStreamKey}
         EmoticonData={emoticonGroupInfoList || []} // EmoticonData에 emoticonGroupInfoList 전달
         isHideChat={isHideChat}
+        isBlurOn={isBlurOn}
         onToggleBackground={handleToggleBackground}
         onLoading={SetChatLoading}
         onUpdateChatBarCount={SetChatBarCount}

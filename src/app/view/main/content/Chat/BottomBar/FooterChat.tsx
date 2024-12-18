@@ -18,6 +18,7 @@ interface FooterChatProps {
   streamKey: string;
   setStreamKey: (key: string) => void;
   isHideChat: boolean;
+  isBlurOn: boolean;
   onToggleBackground: () => void;
   onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
   onUpdateChatBarCount: (count: number) => void; // 추가된 prop
@@ -36,6 +37,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
   send,
   onToggleBackground,
   isHideChat,
+  isBlurOn,
   EmoticonData,
 
   onLoading,
@@ -194,11 +196,13 @@ const FooterChat: React.FC<FooterChatProps> = ({
   };
   return (
     <Box
-      className={`${styles.bottomBar} ${isExpanded ? styles.expanded : styles.collapsed}`}
+      className={`${styles.bottomBar} ${isExpanded ? styles.expanded : styles.collapsed} ${
+        isBlurOn ? styles.blurOn : ''
+      }`}
       sx={{
         position: 'fixed',
         bottom: 0,
-        maxWidth: '500px',
+        maxWidth: '402px',
         margin: '0 auto',
         backgroundColor: 'white',
         transition: 'height 0.3s',

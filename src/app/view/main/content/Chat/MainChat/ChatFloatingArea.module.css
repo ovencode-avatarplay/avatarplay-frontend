@@ -73,3 +73,7 @@
   .moveButton:hover { 
   }
   
+
+  .blurOn {
+    filter: blur(10px);
+  }
