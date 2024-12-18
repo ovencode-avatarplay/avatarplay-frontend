@@ -227,31 +227,63 @@
       "zh-TW": "",
       "pt-PT": "",
       "de": ""
+    },
+    "yes_btn_001": {
+      "ko": "예",
+      "en-US": "YES",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "no_btn_001": {
+      "ko": "아니오",
+      "en-US": "NO",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "close_btn_001": {
+      "ko": "닫기",
+      "en-US": "Close",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
     }
   },
-  "SystemError" :
-  {
-    "syserr_chatting_send_post" : {
-      "ko": "Failed to send message. Please try again",
-      "en-US": "Failed to send message. Please try again",
-      "ja": "Failed to send message. Please try again Ja",
+  "EpisodePopup": {
+    "openEpisode_desc_001": {
+      "ko": "새로운 에피소드 오픈!",
+      "en-US": "New Episode opened!",
+      "ja": "New Episode opened! Ja",
       "fr": "",
       "es": "",
       "zh-CN": "",
       "zh-TW": "",
       "pt-PT": "",
       "de": ""
-    } ,
-    "syserr_chat_stream_error" : {
-      "ko": "There is something wrong. Please try again. ",
-      "en-US": "There is something wrong. Please try again. ",
-      "ja": "There is something wrong. Please try again. Ja",
+    },
+    "jumpEpisode_desc_001": {
+      "ko": "다음 에피소드로 넘어갈까요?",
+      "en-US": "Ready to jump into the next episode?",
+      "ja": "Ready to jump into the next episode? Ja",
       "fr": "",
       "es": "",
       "zh-CN": "",
       "zh-TW": "",
       "pt-PT": "",
       "de": ""
-    } 
+    }
   }
 }

@@ -6,9 +6,10 @@ import {Play2} from '@ui/chatting';
 interface ChatFloatingAreaProps {
   episodeName: string;
   onNavigate: () => void;
+  isBlurOn: boolean;
 }
 
-const ChatFloatingArea: React.FC<ChatFloatingAreaProps> = ({episodeName, onNavigate}) => {
+const ChatFloatingArea: React.FC<ChatFloatingAreaProps> = ({episodeName, onNavigate, isBlurOn}) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ const ChatFloatingArea: React.FC<ChatFloatingAreaProps> = ({episodeName, onNavig
   }, []);
 
   return (
-    <div className={`${styles.ChatFloatingArea}  ${isVisible ? styles.visible : ''}`}>
+    <div className={`${styles.ChatFloatingArea}  ${isVisible ? styles.visible : ''} ${isBlurOn ? styles.blurOn : ''}`}>
       <div className={styles.episodeName}>{episodeName}</div>
       <button className={styles.moveButton} onClick={onNavigate}>
         <img src={Play2.src} />

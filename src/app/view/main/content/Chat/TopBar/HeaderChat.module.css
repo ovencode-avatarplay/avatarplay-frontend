@@ -12,16 +12,23 @@
     padding-top: 2.2vh;
     gap: 2.48vw; 
     
-    max-width: 500px;
+    width: 100vh;
 }
 
 @media (min-width: 500px) {
-    .topNavigation {         
+    .topNavigation {    
+        max-width: 500px;     
         padding: 0px;
         gap: 10px; 
     }
 }
  
+.blurOn
+{ 
+    z-index: 20;
+    filter: blur(10px); 
+}
+
 
 .left {
     display: flex;
