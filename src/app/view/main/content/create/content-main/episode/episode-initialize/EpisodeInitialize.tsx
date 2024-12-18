@@ -1,13 +1,19 @@
-import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-import {Drawer} from '@mui/material';
 import React, {useEffect, useState} from 'react';
+
+import {Drawer} from '@mui/material';
 import {useRouter} from 'next/navigation';
+
 import styles from './EpisodeInitialize.module.css';
+
+import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
+import {CharacterInfo, EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+
+import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import EpisodeInitializeStep from './EpisodeInitializeStep';
 import CharacterGrid from '@/app/view/studio/characterDashboard/CharacterGrid';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
-import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
 import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
+import EpisodeSetNamePopup from './EpisodeSetNamePopup';
+import EpisodeUploadImage from './EpisodeUploadImage';
 
 interface Props {
   open: boolean;
@@ -23,6 +29,7 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
   const [loading, setLoading] = useState<boolean>(true);
 
   const [isInitFinished, setIsInitFinished] = useState<boolean>(false);
+  const [isEpisodeNameOn, setIsEpisodeNameOn] = useState<boolean>(false);
   // 스텝
   const [maxStep, setMaxStep] = useState<number>(4);
   const [curStep, setCurStep] = useState<number>(0); // 0일때는 max 수치가 변동이 있을 수 있기때문에 step이 가려집니다.
@@ -50,6 +57,10 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
   // 이미지 업로드
 
   // 이미지 생성
+
+  // 저장될 데이터
+  const [curEpisodeName, setCurEpisodeName] = useState<string>('');
+  const [curEpisodeCharacterImage, setCurEpisodeCharacterImage] = useState<string>('');
 
   //#endregion
 
@@ -123,7 +134,54 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
 
   //#region handler
   // 공통
+
+  const handleOnSetEpisodeName = () => {
+    setIsEpisodeNameOn(true);
+  };
+
+  const handleSetEpisodeNameComplete = (name: string) => {
+    console.log('Episode name set to:', name);
+    setCurEpisodeName(name);
+    setIsEpisodeNameOn(false);
+
+    handlerOnCompleteInit();
+  };
+
   const handlerOnCompleteInit = () => {
+    if (!currentSelectedCharacter) {
+      console.error("No character selected. Can't complete initialization.");
+      return;
+    }
+
+    const episodeInfo: EpisodeInfo = {
+      id: 0,
+      name: curEpisodeName,
+      characterInfo: {
+        id: currentSelectedCharacter.id,
+        name: currentSelectedCharacter.name,
+        introduction: currentSelectedCharacter.introduction,
+        description: currentSelectedCharacter.description,
+        genderType: 0,
+        mainImageUrl: currentSelectedCharacter.mainImageUrl,
+        portraitGalleryImageUrl: [],
+        poseGalleryImageUrl: [],
+        expressionGalleryImageUrl: [],
+        visibilityType: 0,
+        isMonetization: false,
+        state: 0,
+      },
+      backgroundImageUrl: '',
+      conversationTemplateList: [],
+      episodeDescription: {
+        scenarioDescription: 'string',
+        introDescription: 'string',
+        secret: 'string',
+      },
+      triggerInfoList: [],
+    };
+
+    console.log('Final Episode Info:', episodeInfo);
+
     setIsInitFinished(true);
     addEpisodeOper();
     onClose();
@@ -139,19 +197,19 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
 
   // 업로드 타입 선택
   const handleOnSelectCharacter = () => {
-    setMaxStep(4);
+    setMaxStep(3);
     setUploadType('SelectCharacter');
     addStep();
   };
 
   const handleOnUploadImage = () => {
-    setMaxStep(3);
+    setMaxStep(2);
     setUploadType('UploadImage');
     addStep();
   };
 
   const handleOnGenerateImage = () => {
-    setMaxStep(4);
+    setMaxStep(3);
     setUploadType('GenerateImage');
     addStep();
   };
@@ -203,7 +261,7 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
     switch (step) {
       case 0:
         return (
-          <div className={styles.uploadImage}>
+          <div className={styles.uploadType}>
             <div className={styles.buttonArea}>
               <button className={styles.uploadButton} onClick={handleOnSelectCharacter}>
                 <div className={styles.buttonIconBack}>
@@ -234,7 +292,9 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
             {uploadType === 'SelectCharacter' ? (
               <CharacterGrid characters={characters || []} onCharacterSelect={handleCharacterSelect} />
             ) : uploadType === 'UploadImage' ? (
-              <>UploadImage1</>
+              <>
+                <EpisodeUploadImage imgUrl={curEpisodeCharacterImage} setImgUrl={setCurEpisodeCharacterImage} />
+              </>
             ) : (
               <>GenerateImage1</>
             )}
@@ -260,37 +320,8 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
           </>
         );
       case 3:
-        return (
-          <>
-            {uploadType === 'SelectCharacter' ? (
-              <>SelectCharacter3</>
-            ) : uploadType === 'UploadImage' ? (
-              <div> {getInputTitle()}</div>
-            ) : (
-              <div>{getInputCharacterDesc()}</div>
-            )}
-          </>
-        );
-      case 4:
-        return (
-          <>
-            {uploadType === 'SelectCharacter' || uploadType === 'GenerateImage' ? (
-              <div> {getInputTitle()}</div>
-            ) : (
-              <>Err</>
-            )}
-          </>
-        );
+        return <>{uploadType === 'SelectCharacter' ? <>SelectCharacter3</> : <div>{getInputCharacterDesc()}</div>}</>;
     }
-  };
-
-  const getInputTitle = () => {
-    return (
-      <div className={styles.inputTitle}>
-        <div className={styles.title}>Title</div>
-        <input className={styles.inputBox} placeholder="Text Placeholder" value={episodeName} />
-      </div>
-    );
   };
 
   const getInputCharacterDesc = () => {
@@ -328,48 +359,58 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
   //#endregion
 
   return (
-    <Drawer
-      anchor="bottom"
-      open={open}
-      onClose={onClose}
-      PaperProps={{
-        sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
-      }}
-    >
-      <CreateDrawerHeader title="EpisodeCreate" onClose={handlerOnClose} />
-      {curStep > 0 && (
-        <>
-          <EpisodeInitializeStep maxStep={maxStep} curStep={curStep} />
-          <div className={styles.stepDesc}>
-            Step {curStep}. {getStepText()}
-          </div>
-        </>
-      )}
-      {getStepContent(curStep)}
-      {/* Float Button */}
-      <div className={styles.floatButtonArea}>
-        <button
-          className={`${styles.floatButton} ${styles.prevButton}`}
-          onClick={() => {
-            subStep();
+    <>
+      <Drawer
+        anchor="bottom"
+        open={open}
+        onClose={onClose}
+        PaperProps={{
+          sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
+        }}
+      >
+        <CreateDrawerHeader title="EpisodeCreate" onClose={handlerOnClose} />
+        {curStep > 0 && (
+          <>
+            <EpisodeInitializeStep maxStep={maxStep} curStep={curStep} />
+            <div className={styles.stepDesc}>
+              Step {curStep}. {getStepText()}
+            </div>
+          </>
+        )}
+        {getStepContent(curStep)}
+        {/* Float Button */}
+        <div className={styles.floatButtonArea}>
+          <button
+            className={`${styles.floatButton} ${styles.prevButton}`}
+            onClick={() => {
+              subStep();
+            }}
+          >
+            <img className={styles.buttonIcon} />
+            <div>Previous</div>
+          </button>
+          <button
+            className={`${styles.floatButton} ${styles.nextButton}`}
+            onClick={() => {
+              {
+                checkFinalStep() === true ? handleOnSetEpisodeName() : addStep();
+              }
+            }}
+          >
+            <div>{checkFinalStep() === true ? 'Set Episode Name' : 'Next'}</div>
+            <img className={styles.buttonIcon} />
+          </button>
+        </div>
+
+        <EpisodeSetNamePopup
+          open={isEpisodeNameOn}
+          onClickCancel={() => {
+            setIsEpisodeNameOn(false);
           }}
-        >
-          <img className={styles.buttonIcon} />
-          <div>Previous</div>
-        </button>
-        <button
-          className={`${styles.floatButton} ${styles.nextButton}`}
-          onClick={() => {
-            {
-              checkFinalStep() === true ? handlerOnCompleteInit() : addStep();
-            }
-          }}
-        >
-          <div>{checkFinalStep() === true ? 'Complete' : 'Next'}</div>
-          <img className={styles.buttonIcon} />
-        </button>
-      </div>
-    </Drawer>
+          onClickComplete={handleSetEpisodeNameComplete}
+        />
+      </Drawer>
+    </>
   );
 };
 
