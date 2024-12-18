@@ -1,15 +1,31 @@
 .contentHeader {
-    height: 15vh; 
+    height: 58px; 
     display: flex;
     align-items: center;
     justify-content: space-between; 
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #e0e0e0; 
+    background-color: #ffffff;
+    
+    padding-left: 16px;
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 600;
+font-size: 20px;
+line-height: 20px;
+/* or 100% */
+display: flex;
+align-items: center;
+letter-spacing: -0.02em;
+
+color: #000000;
+
+
+
 }
 
 .titleContainer {
-    flex-grow: 1;
-    margin: 0 16px; 
+    display: flex;
+    flex-direction: row;
 }
 
 .studioButton {
@@ -23,4 +39,26 @@
 /* 호버 시 배경색 변경 */
 .studioButton:hover {
     background-color: #f0f0f0;
+}
+
+.blackIcon{
+    filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
+}
+
+.arrowIcon
+{
+
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 14px 0px 14px 16px;
+gap: 8px;
+
+position: absolute;
+width: 36px;
+height: 40px;
+left: 0.36px;
+top: calc(50% - 40px/2);
+
+
 }

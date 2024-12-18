@@ -77,8 +77,7 @@
   padding: 16px; /* 채팅 영역 패딩 */
   max-height: calc(100vh - 48px);  
   overflow-y: auto; /* 수직 스크롤 가능 */
-  border: 1px solid #ccc; /* 선택 사항: 테두리 추가 */
-  border-radius: 8px; /* 선택 사항: 모서리 둥글게 */
+  
   background-color: #ffffff; /* 배경색 설정 */  
   
   position: sticky;

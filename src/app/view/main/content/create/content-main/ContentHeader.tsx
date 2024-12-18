@@ -10,6 +10,8 @@ import styles from './ContentHeader.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setContentName} from '@/redux-store/slices/PublishInfo';
+import {LeftArrow, LineDashboard, LineEdit} from '@ui/Icons';
+import EpisodeTitlePopup from './episode/EpisodeTitlePopup';
 
 interface ContentHeaderProps {
   lastUrl?: string;
@@ -37,31 +39,20 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, onT
 
   return (
     <Box className={styles.contentHeader}>
-      <Link href={lastUrl ? lastUrl : defaultUrl} passHref onClick={handleLinkClick}>
+      <div className={styles.titleContainer}>
+        <Link href={lastUrl ? lastUrl : defaultUrl} passHref onClick={handleLinkClick}>
+          <img src={LeftArrow.src} />
+        </Link>
+        {contentName && contentName.trim() ? contentName : 'Story Name'}
+      </div>
+
+      <div>
         <IconButton>
-          <ChevronLeftIcon fontSize="large" />
+          <img src={LineEdit.src} className={styles.blackIcon} />
         </IconButton>
-      </Link>
-      <Box className={styles.titleContainer}>
-        <TextField
-          variant="standard"
-          value={contentName}
-          aria-placeholder="Content Title Text"
-          onChange={handleTitleChange}
-          InputProps={{
-            endAdornment: (
-              <IconButton>
-                <EditIcon />
-              </IconButton>
-            ),
-          }}
-          placeholder="Content Title Text"
-          fullWidth
-        />
-      </Box>
-      <div className={styles.studioButton}>
+
         <IconButton onClick={onOpenDrawer}>
-          <StudioIcon />
+          <img src={LineDashboard.src} className={styles.blackIcon} />
         </IconButton>
       </div>
     </Box>

@@ -85,8 +85,10 @@ import LineVoicePlay from './Line/Voice_Play.svg';
 import edit1Pixel from './Custom/edit1Pixel.svg';
 import editPlusOpacity from './Custom/editPlusOpacity.svg';
 import plusRound from './Custom/plusRound.svg';
+import LeftArrow from './Custom/LeftArrow.svg';
 
 export {
+  LeftArrow,
   edit1Pixel,
   editPlusOpacity,
   plusRound,

@@ -7,7 +7,6 @@ import styles from './ContentMain.module.css';
 // 항상 보여지는 컴포넌트
 import ContentHeader from './ContentHeader';
 import EpisodeSetup from './episode/EpisodeSetup';
-import ContentBottom from './ContentBottom';
 
 // 상황에 따라 나타나는 컴포넌트
 import ContentPublishing from './content-publishing/ContentPublishing';
@@ -581,18 +580,22 @@ const ContentMain: React.FC = () => {
               editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx].name ?? ''
             }
           />
-          <div className={styles.episodeCounter}>
-            {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.length} / 10
+          {/* EpisodeCounter */}
+          <div>
+            <div className={styles.episodeCounter}>
+              {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.length} / 10
+            </div>
+            <button
+              className={styles.addEpisode}
+              onClick={() => {
+                setIsEpisodeInitOpen(true);
+              }}
+            >
+              Add Episode
+            </button>
           </div>
-          <button
-            className={styles.addEpisode}
-            onClick={() => {
-              setIsEpisodeInitOpen(true);
-            }}
-          >
-            Add Episode
-          </button>
         </div>
+
         <div className={styles.content}>
           <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
 
@@ -600,9 +603,11 @@ const ContentMain: React.FC = () => {
             <EpisodeCard episodeId={episode.id} episodeNum={index} onInit={() => handleOpenInitialEpisode()} />
           ))}
         </div>
-        <ContentBottom onLLMOpen={handleOpenLLMSetup} onPublishingOpen={handleOpenPublishing} />
+        <div className={styles.contentBottom}>
+          <div className={styles.setupButtons}>Publish</div>
+        </div>
         {/* EpisodeLLMSetup 모달 */}
-        <ContentLLMSetup open={isLLMSetupOpen} onClose={handleCloseLLMSetup} />
+        {/* <ContentLLMSetup open={isLLMSetupOpen} onClose={handleCloseLLMSetup} /> llm publish로 이관 */}
         <EpisodeInitialize
           open={isEpisodeInitOpen}
           onClose={handleCloseInitialEpisode}
