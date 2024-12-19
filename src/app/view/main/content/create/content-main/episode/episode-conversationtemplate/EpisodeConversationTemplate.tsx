@@ -28,7 +28,7 @@ const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = 
   const dispatch = useDispatch(); // Redux dispatch hook 사용
   useEffect(() => {
     if (open && episodeInfo) {
-      setCurrentEpisodeInfo(episodeInfo);
+      dispatch(setCurrentEpisodeInfo(episodeInfo));
     }
   }, [episodeInfo]);
 

@@ -1,18 +1,20 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './EpisodeCard.module.css';
-import {Avatar, Box, Typography, IconButton, Badge, Card} from '@mui/material';
+import {Avatar, Box, Typography, IconButton, Badge, Card, Modal} from '@mui/material';
 import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import {BoldCirclePlus, edit1Pixel, editPlusOpacity, plusRound} from '@ui/Icons';
 import {CircleRounded} from '@mui/icons-material';
-import {RootState} from '@/redux-store/ReduxStore';
-import {useSelector} from 'react-redux';
+import {RootState, store} from '@/redux-store/ReduxStore';
+import {useDispatch, useSelector} from 'react-redux';
 import EpisodeTrigger from './episode-trigger/EpisodeTrigger';
 import EpisodeDescription from './episode-description/EpisodeDescription';
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
+import EpisodeCardDropDown from './EpisodeCardDropDown';
+import {updateEpisodeInfoInContent} from '@/redux-store/slices/ContentInfo';
 interface EpisodeCardProps {
   episodeNum: number;
   episodeId: number;
@@ -45,8 +47,10 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
 
     return flatEpisodes.find(episode => episode.id === episodeId) || flatEpisodes[0]; // 기본값 처리
   });
-  const [isTriggerModalOpen, setTriggerModalOpen] = useState(false); // Trigger 모달 열림 상태
 
+  const currentEpisode = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
+  const [isTriggerModalOpen, setTriggerModalOpen] = useState(false); // Trigger 모달 열림 상태
+  const dispatch = useDispatch();
   const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false);
   const [isImageSetupModalOpen, setImageSetupModalOpen] = useState(false);
   const [isConversationModalOpen, setConversationModalOpen] = useState(false);
@@ -90,16 +94,30 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
     setEpisodeModalOpen(false); // Episode 모달 닫기
   };
 
+  const [isDropDownOpen, setDropDownOpen] = useState(false);
+  useEffect(() => {
+    console.log('Updated episodeInfo:', episodeInfo);
+  }, [episodeInfo]);
+
+  useEffect(() => {
+    console.log('currentEpisode updated:', currentEpisode.name);
+    dispatch(updateEpisodeInfoInContent(currentEpisode)); // 상태 업데이트
+  }, [currentEpisode.name]);
+
   return (
     <div className={styles.episodeCard}>
       {/* 상단 제목 영역 */}
       <Box className={styles.header}>
         <div style={{display: 'flex'}}>
-          <Typography style={{marginRight: '4px'}}>{`Ep.${episodeNum || '?'}`}</Typography>
+          <Typography style={{marginRight: '4px'}}>{`Ep.${episodeNum + 1}`}</Typography>
 
           <Typography>{`${episodeInfo?.name || 'None'}`}</Typography>
         </div>
-        <IconButton>
+        <IconButton
+          onClick={() => {
+            setDropDownOpen(true);
+          }}
+        >
           <MoreVertIcon />
         </IconButton>
       </Box>
@@ -108,8 +126,12 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
           <div className={styles.cardBox}>
             {/* Image Section */}
             <div className={styles.cardimageContainer}>
-              <img src={episodeInfo?.characterInfo.mainImageUrl} alt="Main" className={styles.cardmainImage} />
-              <img src={editPlusOpacity.src} className={styles.cardtopRightButton} onClick={() => onInit()} />
+              <div className={styles.cardmainImage}>
+                <img src={episodeInfo?.characterInfo.mainImageUrl} alt="Main" />
+              </div>
+              <div className={styles.cardtopRightButton} onClick={() => onInit()}>
+                <img src={editPlusOpacity.src} />
+              </div>
             </div>
           </div>
           <div className={styles.contentTopBox}>
@@ -118,11 +140,15 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
             </div>
             <div className={styles.contentTopItem}>
               Conversation Template
-              <img src={plusRound.src} className={styles.circlePlusIcon} onClick={() => openConversationModal()} />
+              <div className={styles.circlePlusIcon} onClick={() => openConversationModal()}>
+                <img src={plusRound.src} />
+              </div>
             </div>
             <div className={styles.contentTopItem}>
               Trigger Event
-              <img src={plusRound.src} className={styles.circlePlusIcon} onClick={() => openTriggerModal()} />
+              <div className={styles.circlePlusIcon} onClick={() => openTriggerModal()}>
+                <img src={plusRound.src} />
+              </div>
             </div>
           </div>
         </div>
@@ -130,12 +156,13 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
         <div className={styles.episodeScenario}>
           <div className={styles.episodeScenarioItem1}>
             Episode Scenario
-            <img src={edit1Pixel.src} className={styles.circlePlusIcon} onClick={() => openEpisodeModal()} />
+            <div className={styles.circlePlusIcon} onClick={() => openEpisodeModal()}>
+              <img src={edit1Pixel.src} />
+            </div>
           </div>
           <div className={styles.episodeScenarioItem2}>{episodeInfo.episodeDescription.scenarioDescription}</div>
         </div>
       </Box>
-
       {/* EpisodeTrigger 모달 */}
       <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} episodeInfo={episodeInfo} />
       {/* 여기까지 묶기 */}
@@ -165,6 +192,19 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
       {/*이미지 생성 모달*/}
       {isImageSetupModalOpen && (
         <EpisodeImageSetup open={isImageSetupModalOpen} onClose={closeImageSetup} episodeInfo={episodeInfo} />
+      )}
+      {isDropDownOpen && (
+        <>
+          <div className={styles.editDropdDownBack} onClick={() => setDropDownOpen(false)}></div>
+          <div className={styles.editDropdDown}>
+            <EpisodeCardDropDown
+              save={() => {}}
+              close={() => setDropDownOpen(false)}
+              open={isDropDownOpen}
+              episodeInfo={episodeInfo}
+            />
+          </div>
+        </>
       )}
     </div>
   );

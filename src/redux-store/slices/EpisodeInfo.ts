@@ -59,6 +59,15 @@ const episodeInfoSlice = createSlice({
     setCurrentEpisodeInfo(state, action: PayloadAction<EpisodeInfo>) {
       state.currentEpisodeInfo = action.payload; // 현재 에피소드 정보 설정
     },
+    updateEpisodeInfo: (state, action: PayloadAction<Partial<EpisodeInfo>>) => {
+      const updatedInfo = action.payload;
+      const targetEpisode = state.currentEpisodeInfo;
+      console.log('asdsadasdas');
+      {
+        state.currentEpisodeInfo = {...targetEpisode, ...updatedInfo};
+      }
+    },
+
     updateEpisodeDescription(state, action: PayloadAction<EpisodeDescription>) {
       if (state.currentEpisodeInfo) {
         state.currentEpisodeInfo.episodeDescription = action.payload; // 에피소드 설명 업데이트
@@ -437,6 +446,7 @@ const episodeInfoSlice = createSlice({
 
 export const {
   setCurrentEpisodeInfo,
+  updateEpisodeInfo,
   setCurrentEpisodeBackgroundImage,
   setEpisodeInfoEmpty,
   updateEpisodeDescription,

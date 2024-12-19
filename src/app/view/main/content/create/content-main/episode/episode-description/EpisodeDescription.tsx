@@ -42,12 +42,12 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   onSubmit,
   episodeInfo,
 }) => {
-  const dispatch = useDispatch();
   const currentEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
 
+  const dispatch = useDispatch();
   useEffect(() => {
     if (open) {
-      setCurrentEpisodeInfo(episodeInfo);
+      dispatch(setCurrentEpisodeInfo(episodeInfo));
     }
   }, [episodeInfo]);
 

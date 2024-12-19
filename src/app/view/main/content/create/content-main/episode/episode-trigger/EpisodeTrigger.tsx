@@ -8,6 +8,7 @@ import WriteTriggerName from './WriteTriggerName'; // WriteTriggerName 모달 �
 import SelectTriggerType from './SelectTriggerType';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {useDispatch} from 'react-redux';
 
 interface EpisodeTriggerProps {
   open: boolean; // 모달 열림 상태
@@ -19,9 +20,11 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
   const [isWriteTriggerNameOpen, setWriteTriggerNameOpen] = useState(false); // WriteTriggerName 모달 상태
   const [isSelectTriggerTypeOpen, setSelectTriggerTypeOpen] = useState(false); // SelectTriggerType 모달 상태
   const [triggerName, setTriggerName] = useState(''); // Trigger name 상태
+
+  const dispatch = useDispatch();
   useEffect(() => {
     if (open) {
-      setCurrentEpisodeInfo(episodeInfo);
+      dispatch(setCurrentEpisodeInfo(episodeInfo));
     }
   }, [episodeInfo]);
   // WriteTriggerName 모달 열기

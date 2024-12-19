@@ -11,8 +11,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setContentName} from '@/redux-store/slices/PublishInfo';
 import {LeftArrow, LineDashboard, LineEdit} from '@ui/Icons';
-import EpisodeTitlePopup from './episode/EpisodeTitlePopup';
-
 interface ContentHeaderProps {
   lastUrl?: string;
   onOpenDrawer: () => void; // 스튜디오 버튼 클릭 시 호출될 함수
