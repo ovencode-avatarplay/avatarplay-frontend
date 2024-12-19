@@ -1,16 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Box, TextField, IconButton, InputAdornment, Button, Typography, Grow} from '@mui/material';
-import MapsUgcIcon from '@mui/icons-material/MapsUgc';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import {Box, TextField, IconButton, Button, Typography, Grow} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector, useDispatch} from 'react-redux';
 import {setIsRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
-import AIRecommendImg from '@ui/chatting/btn_ai_recommend.png';
 import AI_Recommend from './AI_Recommend';
 import styles from './ChatBar.module.css';
-import {AI, AiText, BotMessage, BotSend, Chat, Description, Plus, Recording1, Send} from '@ui/chatting';
+import {AiText, BotMessage, BotSend, Chat, Close, Description, Plus, Recording1} from '@ui/chatting';
+import {all} from 'axios';
 
 interface ChatBarProps {
   message: string;
@@ -23,6 +20,7 @@ interface ChatBarProps {
   onToggleBackground: () => void;
   onLoading: (isLoading: boolean) => void;
   onUpdateChatBarCount: (count: number) => void;
+  onUpdateAiBarCount: (count: number) => void;
   onRemoveChat: (removeId: number) => void;
 }
 
@@ -36,6 +34,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   onToggleBackground,
   onLoading,
   onUpdateChatBarCount,
+  onUpdateAiBarCount,
   onRemoveChat,
 }) => {
   const [chatBars, setChatBars] = useState<string[]>(['main']);
@@ -48,9 +47,19 @@ const ChatBar: React.FC<ChatBarProps> = ({
   const regenerateQuestion = useSelector((state: RootState) => state.modifyQuestion.regeneratingQuestion);
   const [parsedModifyText, setParsedModifyText] = useState<string>('');
 
+  const [aiHeight, setAiHeight] = useState<number>(0);
+
+  const handleHeightChange = (newHeight: number) => {
+    setAiHeight(newHeight);
+  };
+
   useEffect(() => {
     onUpdateChatBarCount(chatBars.length);
   }, [chatBars]);
+
+  useEffect(() => {
+    onUpdateAiBarCount(aiHeight);
+  }, [aiHeight]);
 
   useEffect(() => {
     updateMessageText();
@@ -121,6 +130,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   };
 
   const handleInputChange = (id: string, value: string) => {
+    closeAIRecommend();
     setInputValues(prevValues => ({...prevValues, [id]: value}));
   };
 
@@ -200,16 +210,14 @@ const ChatBar: React.FC<ChatBarProps> = ({
 
   const closeAIRecommend = () => {
     setAIRecommendOpen(false);
+    setAiHeight(0);
   };
 
   const selectMessageFromAIRecommend = (_message: string, isSend: boolean) => {
     setInputValues(prevValues => ({...prevValues, main: _message}));
-    //handleSend(); // Automatically send the selected AI message
-    //console.log('_message', _message);
+    updateMessageText();
+
     setAIRecommendOpen(false); // Close the AI recommendation modal
-    if (isSend === true) {
-      handleSendMessage(_message);
-    }
   };
 
   const renderChatBars = () =>
@@ -222,9 +230,9 @@ const ChatBar: React.FC<ChatBarProps> = ({
         </>
         <div className={styles.inputBox}>
           {toggledIcons[id] ? (
-            <img src={BotMessage.src} onClick={() => toggleIcon(id)} className={styles.inputButton} />
-          ) : (
             <img src={Description.src} onClick={() => toggleIcon(id)} className={styles.inputButton} />
+          ) : (
+            <img src={BotMessage.src} onClick={() => toggleIcon(id)} className={styles.inputButton} />
           )}
           <TextField
             placeholder="Type your message..."
@@ -253,15 +261,13 @@ const ChatBar: React.FC<ChatBarProps> = ({
           />
 
           {id !== 'main' ? (
-            <IconButton onClick={() => removeChatBar(id)}>
-              <CloseIcon />
-            </IconButton>
+            <img src={Close.src} onClick={() => removeChatBar(id)} className={styles.closeButton} />
           ) : (
             <>
               {Object.values(inputValues).every(value => value.trim() === '') ? (
                 <img src={AiText.src} alt="AI Recommend" onClick={handleAIRecommend} className={styles.inputButton} />
               ) : (
-                <img src={BotSend.src} alt="AI Recommend" onClick={handleAIRecommend} className={styles.inputButton} />
+                <img src={BotSend.src} alt="AI Recommend" onClick={handleSend} className={styles.inputButton} />
               )}
             </>
           )}
@@ -288,41 +294,17 @@ const ChatBar: React.FC<ChatBarProps> = ({
     ));
 
   return (
-    <Box>
-      {isRegeneratingQuestion ? (
-        <Box>
-          <Typography>Modify Question</Typography>
-          <Box display="flex" alignItems="center">
-            <Typography
-              variant="body1"
-              sx={{
-                flex: 1,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                padding: '8px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                backgroundColor: '#f5f5f5',
-                width: '100%',
-              }}
-            >
-              {parsedModifyText}
-            </Typography>
-            <Button onClick={handleCancelModifyText}>Cancel</Button>
-          </Box>
-          {renderChatBars()}
-        </Box>
-      ) : (
-        <Box>{renderChatBars()}</Box>
-      )}
-      {/* AI 추천 모달 */}
-      <AI_Recommend
-        open={isAIRecommendOpen}
-        onClose={closeAIRecommend}
-        onSelectMessage={selectMessageFromAIRecommend}
-      />
-    </Box>
+    <div className={styles.test}>
+      {renderChatBars()}
+      {isAIRecommendOpen ? (
+        <AI_Recommend
+          open={isAIRecommendOpen}
+          onClose={closeAIRecommend}
+          onSelectMessage={selectMessageFromAIRecommend}
+          onHeightChange={handleHeightChange}
+        />
+      ) : null}
+    </div>
   );
 };
 

@@ -91,7 +91,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   }, [characterData]);
 
   const handleViewItem = () => {
-    if (selectedItem[1] === null || selectedItem[1] === undefined) {
+    if (selectedCategory !== selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
       console.error('Invalid selection: ', selectedItem);
       return;
     }
@@ -335,6 +335,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
               onInfo={() => console.log('Info clicked')}
               onDelete={handleDeleteItem}
               onSelectImage={handleImageSelect}
+              onRefresh={refreshCharacterList}
             />
           ) : (
             <>

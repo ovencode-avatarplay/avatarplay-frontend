@@ -134,7 +134,7 @@ const ContentMain: React.FC = () => {
       setLoading(true);
 
       try {
-        const req: GetTotalContentByIdReq = {contentId: contentId};
+        const req: GetTotalContentByIdReq = {contentId: contentId, language: navigator.language};
         const response = await sendContentByIdGetTotal(req);
 
         if (response?.data) {
@@ -253,7 +253,7 @@ const ContentMain: React.FC = () => {
 
     dispatch(
       updateEditingContentInfo({
-        id: selectedContentId,
+        id: editingContentInfo.id,
         chapterInfoList: updatedChapterList,
       }),
     );
@@ -280,7 +280,7 @@ const ContentMain: React.FC = () => {
 
       dispatch(
         updateEditingContentInfo({
-          id: selectedContentId,
+          id: editingContentInfo.id,
           chapterInfoList: updatedChapterList,
         }),
       );
@@ -314,7 +314,7 @@ const ContentMain: React.FC = () => {
 
       dispatch(
         updateEditingContentInfo({
-          id: selectedContentId,
+          id: editingContentInfo.id,
           chapterInfoList: updatedChapterList,
         }),
       );
@@ -480,7 +480,7 @@ const ContentMain: React.FC = () => {
 
         dispatch(
           updateEditingContentInfo({
-            id: selectedContentId,
+            id: editingContentInfo.id,
             chapterInfoList: updatedChapterList,
           }),
         );
@@ -555,12 +555,7 @@ const ContentMain: React.FC = () => {
             onDeleteEpisode={handleDeleteEpisode}
             onNameChange={handleNameChange}
           />
-          <ContentPublishing
-            open={isPublishingOpen}
-            onClose={handleClosePublishing}
-            onPublish={handlePublish}
-            tagList={editingContentInfo?.publishInfo?.tagList}
-          />
+          <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
           <EpisodeSetup
             onDrawerOpen={handleOpenChapterboard}
             contentId={editingContentInfo?.id ?? 0}

@@ -29,10 +29,20 @@
   }
 }
 
+@font-face {
+  font-family: 'Lato';
+  src: 
+  url('/fonts/Lato-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
+  
+  user-select: none;
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Lato', Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {

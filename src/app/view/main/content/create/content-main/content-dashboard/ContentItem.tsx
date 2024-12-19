@@ -35,11 +35,11 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected}) =>
           <Box className={styles.imageOverlay}>
             <Box className={styles.iconInfo}>
               <MovieIcon />
-              {dashboardItem.videoCount}
+              {dashboardItem.episodeCount}
             </Box>
             <Box className={styles.iconInfo}>
               <PhotoIcon />
-              {dashboardItem.thumbnailCount}
+              {dashboardItem.mediaCount}
             </Box>
           </Box>
         </Box>

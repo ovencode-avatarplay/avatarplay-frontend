@@ -1,0 +1,186 @@
+.container {
+
+}
+.count1 {
+  width: 260px;
+  max-width: 260px;
+  height: 372px;
+  border-radius: 12px;
+  overflow: hidden; /* 추가 */
+}
+
+.count2
+{
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 120px;
+max-height: 120px;
+border-radius: 12px;
+overflow: hidden; /* 추가 */
+}
+
+.count3
+{
+/* Frame 70 */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 80px;
+max-height: 80px;
+border-radius: 12px;
+overflow: hidden; /* 추가 */
+
+}
+
+.count4
+{
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 4px;
+
+width: 260px;
+height: 244px;
+border-radius: 12px;
+overflow: hidden; /* 추가 */
+
+}
+
+.row4
+{
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 120px;
+max-height: 120px;
+overflow: hidden; /* 추가 */
+}
+
+
+.image4 {
+  /* IMG_4315 2 */
+  
+  width: 128.5px;
+  height: 120px;
+  
+  border-radius:4px 4px 4px 4px;
+  
+    object-fit: cover; /* 비율 유지하며 축소 */
+    background-color: white;
+  }
+
+.count5
+{
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 163px;
+border-radius: 12px;
+overflow: hidden; /* 추가 */
+
+}
+.row5_1
+{
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 80px;
+max-height: 80px;
+
+}
+.row5_2
+{
+  /* Frame 71 */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 80px;
+max-height: 120px;
+}
+.image5_1
+{
+width: 84.67px;
+height: 80px;
+
+border-radius: 4px;
+background-color: white;
+object-fit: cover; /* 비율 유지하며 축소 */
+
+}
+.image5_2
+{
+  /* IMG_4315 2 */
+
+width: 128.5px;
+height: 80px;
+
+border-radius: 4px 4px 4px 4px;
+background-color: white;
+object-fit: cover; /* 비율 유지하며 축소 */
+}
+.count6
+{
+
+}
+
+.count7
+{
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 246px;
+border-radius: 12px;
+overflow: hidden; /* 추가 */
+
+}
+
+.count8
+{
+
+}
+
+.count9
+{
+
+}
+
+.image {
+  width: 100%; /* 이미지 가로 크기 */
+  height: 100%; /* 이미지 세로 크기 */
+  object-fit: cover; /* 비율 유지하며 축소 */
+  background-color: white;
+}

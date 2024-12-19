@@ -10,6 +10,7 @@ import 'swiper/css';
 import styles from './CharacterGalleryViewer.module.css';
 import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
+import {SelectImageReq, sendSelectImage} from '@/app/NetWork/CharacterNetwork';
 
 interface CharacterGalleryViewerProps {
   characterInfo: CharacterInfo;
@@ -20,6 +21,7 @@ interface CharacterGalleryViewerProps {
   onInfo: () => void;
   onDelete: () => void;
   onSelectImage: (category: GalleryCategory, index: number) => void;
+  onRefresh: () => void;
 }
 
 const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
@@ -29,6 +31,7 @@ const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
   onBack,
   onDelete,
   onSelectImage,
+  onRefresh,
 }) => {
   const [currentBackground, setCurrentBackground] = useState<string>('');
   const [imageUrls, setImageUrls] = useState<GalleryImageInfo[]>([]);
@@ -111,7 +114,25 @@ const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
     }
   };
 
-  const handleOnThumbnail = () => {};
+  const handleOnThumbnail = async () => {
+    if (selectedIndex !== null) {
+      const payload: SelectImageReq = {
+        characterImageId: imageUrls[selectedIndex].galleryImageId,
+      };
+
+      try {
+        // API 호출
+        const response = await sendSelectImage(payload);
+
+        if (response) {
+          alert(`캐릭터 썸네일이 변경되었습니다.`);
+          onRefresh();
+        }
+      } catch (error) {
+        console.error('Error select Image:', error);
+      }
+    }
+  };
 
   const handleOnInfo = () => {
     setInfoOpen(true);

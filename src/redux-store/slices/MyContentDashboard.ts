@@ -6,10 +6,10 @@ export interface ContentDashboardItem {
   id: number;
   name: string;
   thumbnail: string;
+  episodeCount: number;
+  mediaCount: number;
   messageCount: number;
   followCount: number;
-  thumbnailCount: number;
-  videoCount: number;
   createAt: string;
 }
 

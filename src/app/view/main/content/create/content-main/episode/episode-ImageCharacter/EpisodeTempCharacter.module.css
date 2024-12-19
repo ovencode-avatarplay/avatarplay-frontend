@@ -27,7 +27,15 @@
     border: 3px dotted black; 
     border-radius: 3px;
 }
+.confirmButton {
+    margin-top: auto;
+    display: flex;
+    position: absolute;
+    top: 220px; 
+    left: 16px; 
 
+  }
+  
 .modalTitle
 {    
     display: flex; 

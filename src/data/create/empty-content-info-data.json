@@ -8,12 +8,12 @@
         "urlLinkKey" : "",
         "chapterInfoList": [
           {
-            "id": 0,
+            "id": -1,
             "name": "",
             "thumbnail": "",
             "episodeInfoList": [
               {
-                "id": 0,
+                "id": -1,
                 "name": "",
                 "backgroundImageUrl": "",
                 "characterInfo": {
@@ -30,7 +30,7 @@
                   "expressionGalleryImageUrl": [
                   ],
                   "visibilityType": 0,
-                  "isMonetization": true,
+                  "isMonetization": false,
                   "state": 1
                 },
                 "episodeDescription": {

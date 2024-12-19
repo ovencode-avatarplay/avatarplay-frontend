@@ -8,6 +8,7 @@ export enum SenderType {
   System = 'system',
   IntroPrompt = 'introPrompt',
   media = 'media',
+  NewDate = 'newDate',
 }
 
 export enum TriggerMediaState {
@@ -21,6 +22,7 @@ export interface Message {
   chatId: number;
   text: string;
   sender: SenderType;
+  createDate: string;
 }
 
 export interface MediaData {

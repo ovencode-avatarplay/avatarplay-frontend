@@ -130,11 +130,18 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleChapterSelect = (chapterIdx: number) => {
+    // const confirmation = window.confirm('다른 챕터 수정으로 이동하시겠습니까?');
+
+    // if (confirmation) {
     dispatch(setSelectedChapterIdx(chapterIdx));
     dispatch(setSelectedEpisodeIdx(0));
+    // }
   };
 
   const handleCreateChapter = () => {
+    // const confirmation = window.confirm('챕터를 추가하고 새 챕터의 에피소드 수정으로 이동하시겠습니까?');
+
+    // if (confirmation) {
     const newChapterId = getMinChapterId(chapters);
     const newEpisodeId = getMinEpisodeId(chapters);
     if (newChapterId != null && newEpisodeId != null) {
@@ -152,13 +159,14 @@ const ChapterBoard: React.FC<Props> = ({
 
       onAddChapter(newChapter);
     }
+    // }
   };
 
   const handleDeleteChapter = (chapterIdx: number) => {
     setConfirmDialog({
       open: true,
       title: 'Discard Chapter',
-      content: `"${chapters[chapterIdx].title}" Data will be disappeared. Are you sure?`,
+      content: `"${chapters[chapterIdx].title}" 챕터를 삭제하시겠습니까?`,
       onConfirm: () => {
         onDeleteChapter(chapterIdx);
         setChapters(prev => prev.filter((_, idx) => idx !== chapterIdx));
@@ -170,8 +178,12 @@ const ChapterBoard: React.FC<Props> = ({
   //#region Episode
 
   const handleEpisodeSelect = (chapterIdx: number, episodeIdx: number) => {
+    // const confirmation = window.confirm('다른 에피소드 수정으로 이동하시겠습니까?');
+
+    // if (confirmation) {
     dispatch(setSelectedChapterIdx(chapterIdx));
     dispatch(setSelectedEpisodeIdx(episodeIdx));
+    // }
   };
 
   const handleChangeName = (idx: number, type: 'chapter' | 'episode', newName: string) => {
@@ -216,6 +228,9 @@ const ChapterBoard: React.FC<Props> = ({
   };
 
   const handleCreateEpisode = () => {
+    // const confirmation = window.confirm('에피소드를 추가하고 새 에피소드 수정으로 이동하시겠습니까?');
+
+    // if (confirmation) {
     if (selectedChapterIdx !== null) {
       const newEpisodeId = getMinEpisodeId(chapters);
 
@@ -244,13 +259,14 @@ const ChapterBoard: React.FC<Props> = ({
         );
       }
     }
+    // }
   };
 
   const handleDeleteEpisode = (chapterIdx: number, episodeIdx: number) => {
     setConfirmDialog({
       open: true,
       title: 'Discard Episode',
-      content: `"${chapters[chapterIdx].episodes[episodeIdx].title}" Data will be disappeared. Are you sure?`,
+      content: `"${chapters[chapterIdx].episodes[episodeIdx].title}" 에피소드를 삭제하시겠습니까?`,
       onConfirm: () => {
         onDeleteEpisode(chapterIdx, episodeIdx);
         setChapters(prev =>

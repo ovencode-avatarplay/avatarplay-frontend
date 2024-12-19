@@ -1,6 +1,6 @@
 //Drawer
 // ContentPublishing.tsx
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {
@@ -19,35 +19,30 @@ import styles from './ContentPublishing.module.css';
 
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import ContentImageUpload from './ContentImageUploader';
+import {sendGetTagList} from '@/app/NetWork/ContentNetwork';
+import {string} from 'valibot';
 
 interface Props {
   open: boolean;
   onClose: () => void;
   onPublish: () => void;
-  tagList: string[];
 }
 
-const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList}) => {
+const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish}) => {
   const dispatch = useDispatch();
-  const {contentDescription, authorComment, visibilityType, monetization, nsfw, selectTagList} = useSelector(
+  const {thumbnail, contentDescription, authorComment, visibilityType, monetization, nsfw, selectTagList} = useSelector(
     (state: RootState) => state.publish,
   );
 
+  const [tagList, setTagList] = useState<string[]>([]);
   const [showMoreTags, setShowMoreTags] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [showTagCount, setShowTagCount] = useState(6);
   const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
 
-  useEffect(() => {
-    // contentTag의 길이에 따라 showTagCount 설정
-    if (tagList?.length >= 6) {
-      setShowTagCount(6);
-    } else if (tagList?.length > 1) {
-      setShowTagCount(Math.floor(tagList.length / 2));
-    } else {
-      setShowTagCount(1);
-    }
-  }, [tagList]);
+  useLayoutEffect(() => {
+    handleGetTagList();
+  }, []);
 
   const handleContentDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setContentDescription(e.target.value));
@@ -55,6 +50,22 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
 
   const handleAuthorCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setAuthorComment(e.target.value));
+  };
+
+  const handleGetTagList = async () => {
+    try {
+      const response = await sendGetTagList({}); // 수정된 반환 타입 반영
+
+      if (response.data) {
+        const tagData: string[] = response.data?.tagList;
+        setTagList(tagData);
+      } else {
+        console.warn('No tags found in the response.');
+        setTagList([]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch tags:', error);
+    }
   };
 
   const handleTagSelect = (tag: string) => {
@@ -85,6 +96,17 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
     setUploadImageDialogOpen(false);
   };
 
+  useEffect(() => {
+    // contentTag의 길이에 따라 showTagCount 설정
+    if (tagList?.length >= 6) {
+      setShowTagCount(6);
+    } else if (tagList?.length > 1) {
+      setShowTagCount(Math.floor(tagList.length / 2));
+    } else {
+      setShowTagCount(1);
+    }
+  }, [tagList]);
+
   return (
     <Drawer
       anchor="right"
@@ -113,6 +135,7 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, tagList})
           </Select> */}
           <ContentImageUpload
             uploadImageState={isUploadImageDialogOpen}
+            initImage={thumbnail}
             onClickUploadImage={openUploadImageDialog}
             onCloseUploadImage={closeUploadImageDialog}
           />

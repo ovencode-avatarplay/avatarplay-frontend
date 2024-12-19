@@ -15,9 +15,10 @@ interface ChatMediaDialogProps {
   isModalOpen: boolean;
   closeModal: () => void;
   type: TriggerMediaState;
+  initNum?: number | null;
 }
 
-const ChatMediaDialog: React.FC<ChatMediaDialogProps> = ({mediaData, isModalOpen, closeModal, type}) => {
+const ChatMediaDialog: React.FC<ChatMediaDialogProps> = ({mediaData, isModalOpen, closeModal, type, initNum}) => {
   console.log('type', type);
   return (
     <Modal open={isModalOpen} onClose={closeModal}>
@@ -51,6 +52,7 @@ const ChatMediaDialog: React.FC<ChatMediaDialogProps> = ({mediaData, isModalOpen
             navigation={true}
             modules={[Pagination, Navigation]}
             className={styles.mySwiper}
+            initialSlide={initNum || 0}
           >
             {mediaData?.mediaUrlList.map((url, idx) => (
               <SwiperSlide key={idx}>

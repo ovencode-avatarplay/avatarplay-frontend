@@ -1,6 +1,8 @@
 // src/app/Network/ChatNetwork.tsx
 
 import api, {ResponseAPI} from './ApiInstance';
+import {ESystemError} from './ESystemError';
+
 import chatEmojiTempData from '@/data/temp/chat-emoji-temp-data.json';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
@@ -60,8 +62,7 @@ export const sendMessageStream = async (
       return handleErrorResponse(response);
     }
   } catch (error: any) {
-    console.error('Error sendMessageStream:', error);
-    throw new Error('Failed to send message. Please try again.'); // Error handling
+    throw new Error(`${ESystemError.syserr_chatting_send_post}`);
   }
 };
 // 요청 데이터 타입
@@ -171,16 +172,25 @@ export const retryStream = async (
 //     }
 //   } catch (error: any) {
 //     console.error('Error sending message:', error);
-//     throw new Error('Failed to send message. Please try again.'); // Error handling
+//     throw new Error(`${ESystemError.syserr_chatting_send_post}`); // Error handling
 //   }
 // };
 
 // 채팅 Enter ##########################################
 
+// 서버에서 사용하는 enum
+export enum ChatType {
+  Answer = 0,
+  SystemText = 1,
+  TriggerInfo = 2,
+  Intro = 3,
+}
+
 export interface MessageInfo {
   id: number;
   userName: string;
   characterName: string;
+  chatType: ChatType;
   message: string;
   emoticonUrl: string;
   triggerMediaState: number;
@@ -236,7 +246,7 @@ export const sendChattingEnter = async (
     }
   } catch (error) {
     console.error('Error sending Enter:', error);
-    throw new Error('Failed to send message. Please try again.'); // Error handling
+    throw new Error(`${ESystemError.syserr_chatting_send_post}`); // Error handling
   }
 };
 
@@ -262,7 +272,7 @@ export const sendChattingEnterUrl = async (
     }
   } catch (error) {
     console.error('Error sending Enter:', error);
-    throw new Error('Failed to send message. Please try again.'); // Error handling
+    throw new Error(`${ESystemError.syserr_chatting_send_post}`); // Error handling
   }
 };
 
@@ -290,7 +300,7 @@ export interface ChatData {
 }
 
 export interface ChatResultInfo {
-  type: number;
+  type: number; //enum ChatType  <-- 검색해서 참고..   서버에서 주고있음
   systemText: string;
   triggerActionInfo: TriggerActionInfo;
 }
@@ -322,7 +332,6 @@ export interface TriggerMediaInfo {
 }
 
 // ChattingResult API 호출 함수 ##########################################
-
 export const sendChattingResult = async (req: ChattingResultReq): Promise<ChattingResultRes> => {
   try {
     const response = await api.post<ChattingResultRes>('/Chatting/result', req);

@@ -7,7 +7,13 @@ interface LoadingOverlayProps {
 
 const LoadingOverlay: React.FC<LoadingOverlayProps> = ({loading}) => {
   return (
-    <Backdrop open={loading} sx={{zIndex: theme => theme.zIndex.modal + 1}}>
+    <Backdrop
+      open={loading}
+      sx={{
+        zIndex: theme => theme.zIndex.modal + 1,
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+      }}
+    >
       <Box
         sx={{
           position: 'absolute',

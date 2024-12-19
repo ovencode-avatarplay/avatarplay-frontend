@@ -49,8 +49,8 @@ export const sendContentSave = async (payload: SaveContentReq): Promise<Response
 
 // Get Content By ContnetId for ExploreItem
 export interface GetContentByIdReq {
-  userId: number;
   contentId: number;
+  language: string;
 }
 
 export interface GetContentByIdRes {
@@ -86,6 +86,7 @@ export const sendContentByIdGet = async (payload: GetContentByIdReq): Promise<Re
 // Get TotalContent By ContentId
 export interface GetTotalContentByIdReq {
   contentId: number;
+  language: string;
 }
 
 export interface GetTotalContentByIdRes {
@@ -158,5 +159,26 @@ export const sendContentDelete = async (payload: DeleteContentReq): Promise<Resp
   } catch (error: any) {
     console.error('Error sending delete content data:', error);
     throw new Error('Failed to send delete content data. Please try again.'); // 에러 처리
+  }
+};
+
+// getTagList
+export interface GetTagListReq {}
+
+export interface GetTagListRes {
+  tagList: string[];
+}
+
+export const sendGetTagList = async (payload: GetTagListReq): Promise<ResponseAPI<GetTagListRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetTagListRes>>('Content/getTagList', payload);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`GetTagList Fail ${response.data.resultMessage}`);
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to send getTagList.`);
   }
 };

@@ -12,7 +12,11 @@
 
     
   }
-  
+  .test{
+    display: flex;
+    flex-direction: column;
+    margin: 6px 10px;
+  }
   
   .aiRecommendButton {
     margin-right: 8px;
@@ -25,13 +29,14 @@
   }
 
   .chatBox {
+    user-select: none;
+    
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 10px;
     background: #ffffff;
     border-radius: 8px;
-    padding: 6px;    
   }
 
   .inputBox {
@@ -50,6 +55,12 @@
     margin-bottom: 5px;
     height: 30px;
     width: 30px;
+  }
+
+  .closeButton {    
+    height: 16px;
+    width: 16px;
+    margin-bottom: 12px;
   }
   
   

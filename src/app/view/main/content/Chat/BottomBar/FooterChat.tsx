@@ -13,14 +13,16 @@ import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
 import ChatBar from './ChatBar';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
 interface FooterChatProps {
-  onSend: (message: string, isMyMessage: boolean, isClearString: boolean) => void;
+  onSend: (message: string, isMyMessage: boolean, isClearString: boolean, isShowDate: boolean) => void;
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   streamKey: string;
   setStreamKey: (key: string) => void;
   isHideChat: boolean;
+  isBlurOn: boolean;
   onToggleBackground: () => void;
   onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
   onUpdateChatBarCount: (count: number) => void; // 추가된 prop
+  onUpdateAiChatBarCount: (count: number) => void; // 추가된 prop
   onReqPrevChatting: (isEnter: boolean) => void;
   EmoticonData?: EmoticonGroupInfo[];
 
@@ -35,10 +37,12 @@ const FooterChat: React.FC<FooterChatProps> = ({
   send,
   onToggleBackground,
   isHideChat,
+  isBlurOn,
   EmoticonData,
 
   onLoading,
   onUpdateChatBarCount,
+  onUpdateAiChatBarCount,
   onReqPrevChatting,
   isSendingMessage,
   onRemoveChat,
@@ -76,7 +80,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
         if (chattingCheatRes) {
           const cheatResult = cheatManager(chattingCheatRes);
           if (cheatResult.text.length > 0) {
-            onSend(cheatResult.text, true, false);
+            onSend(cheatResult.text, true, false, false);
             result = true;
           } else if (cheatResult.reqEnter === true) {
             onReqPrevChatting(true);
@@ -145,15 +149,19 @@ const FooterChat: React.FC<FooterChatProps> = ({
 
       if (message.includes('⦿SYSTEM_CHAT⦿')) {
         const messageParts = message.split('⦿SYSTEM_CHAT⦿');
-        messageParts.forEach(part => {
+        messageParts.forEach((part, index) => {
           const trimmedPart = part.trim(); // 필요시 양쪽 공백 제거
+          const isLast = index === messageParts.length - 1; // 마지막 요소 판별
+
           if (trimmedPart.length > 0) {
-            // 빈 문자열이 아닌 경우에만 onSend 호출
-            onSend(trimmedPart, true, parseMessage);
+            // 마지막 요소인 경우 별도 처리
+            if (isLast) {
+              onSend(trimmedPart, true, parseMessage, true);
+            } else onSend(trimmedPart, true, parseMessage, false);
           }
         });
       } else {
-        onSend(message, true, parseMessage);
+        onSend(message, true, parseMessage, true);
       }
 
       reqSendChatMessage.text = message.replace(/\(,\)/g, '');
@@ -188,11 +196,13 @@ const FooterChat: React.FC<FooterChatProps> = ({
   };
   return (
     <Box
-      className={`${styles.bottomBar} ${isExpanded ? styles.expanded : styles.collapsed}`}
+      className={`${styles.bottomBar} ${isExpanded ? styles.expanded : styles.collapsed} ${
+        isBlurOn ? styles.blurOn : ''
+      }`}
       sx={{
         position: 'fixed',
         bottom: 0,
-        maxWidth: '500px',
+        maxWidth: '402px',
         margin: '0 auto',
         backgroundColor: 'white',
         transition: 'height 0.3s',
@@ -214,6 +224,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
           onToggleBackground={onToggleBackground}
           onLoading={onLoading}
           onUpdateChatBarCount={onUpdateChatBarCount}
+          onUpdateAiBarCount={onUpdateAiChatBarCount}
           onRemoveChat={onRemoveChat}
         />
       </Box>
