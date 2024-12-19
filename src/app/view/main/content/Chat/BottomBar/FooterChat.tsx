@@ -202,7 +202,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
       sx={{
         position: 'fixed',
         bottom: 0,
-        maxWidth: '402px',
+        maxWidth: '500px',
         margin: '0 auto',
         backgroundColor: 'white',
         transition: 'height 0.3s',
