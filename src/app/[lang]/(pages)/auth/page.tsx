@@ -7,6 +7,7 @@ import {Auth} from '@supabase/auth-ui-react';
 import {ThemeSupa} from '@supabase/auth-ui-shared';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {Session} from '@supabase/supabase-js';
+import {env} from 'process';
 
 const Login = () => {
   const router = useRouter();
@@ -63,7 +64,7 @@ const Login = () => {
           providers={['google', 'kakao']} // 구글, 카카오 등 추가하고 싶은 OAuth 제공자
           appearance={{theme: ThemeSupa}} // Supabase 기본 테마 사용
           onlyThirdPartyProviders
-          redirectTo={`http://192.168.0.35:3000`}
+          redirectTo={process.env.NEXT_PUBLIC_FRONT_URL}
           queryParams={{
             access_type: 'offline',
             prompt: 'consent',
