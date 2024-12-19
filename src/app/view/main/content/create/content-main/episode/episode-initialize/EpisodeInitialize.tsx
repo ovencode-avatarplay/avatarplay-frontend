@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useSelector} from 'react-redux';
 
 import {Drawer} from '@mui/material';
 import {useRouter} from 'next/navigation';
@@ -8,21 +9,25 @@ import styles from './EpisodeInitialize.module.css';
 import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo, EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 
+import emptyContent from '@/data/create/empty-content-info-data.json';
+
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import EpisodeInitializeStep from './EpisodeInitializeStep';
 import CharacterGrid from '@/app/view/studio/characterDashboard/CharacterGrid';
 import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
 import EpisodeSetNamePopup from './EpisodeSetNamePopup';
 import EpisodeUploadImage from './EpisodeUploadImage';
+import {RootState} from '@/redux-store/ReduxStore';
 
 interface Props {
   open: boolean;
+  isEditing: boolean;
   onClose: () => void;
-  addEpisodeOper: () => void;
+  addEpisodeOper: (episodeInfo: EpisodeInfo) => void;
   episodeName: string;
 }
 
-const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, episodeName}) => {
+const EpisodeInitialize: React.FC<Props> = ({open, isEditing, onClose, addEpisodeOper, episodeName}) => {
   //#region 선언
   // 공통
   const router = useRouter();
@@ -30,6 +35,12 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
 
   const [isInitFinished, setIsInitFinished] = useState<boolean>(false);
   const [isEpisodeNameOn, setIsEpisodeNameOn] = useState<boolean>(false);
+
+  // 에피소드 생성시 가져올 빈 데이터
+  let emptyEpisodeInfo = emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0];
+  // 편집시 가져올데이터
+  const editingEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
+
   // 스텝
   const [maxStep, setMaxStep] = useState<number>(4);
   const [curStep, setCurStep] = useState<number>(0); // 0일때는 max 수치가 변동이 있을 수 있기때문에 step이 가려집니다.
@@ -42,7 +53,6 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
   };
   const finalStepText = 'Write the title of the episode';
 
-  // 캐릭터 설명
   const maxNameLength: number = 50;
   const maxPromptLength: number = 500;
   const [nameValue, setNameValue] = useState<string>('');
@@ -65,6 +75,20 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
   //#endregion
 
   //#region  함수
+  // 데이터 초기화
+  const initData = () => {
+    setIsEpisodeNameOn(false);
+    setCurStep(0);
+    setUploadType('SelectCharacter');
+    setNameValue('');
+    setPromptValue('');
+    setCurrentSelectedCharacter(undefined);
+    setSelectedCharacterId(null);
+    setSelectedGalleryIndex(null);
+    setCurEpisodeName('');
+    setCurEpisodeCharacterImage('');
+  };
+
   // 공통
   const getStepText = () => {
     if (curStep >= maxStep) {
@@ -80,8 +104,53 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
     return false;
   }
   function addStep() {
+    if (!checkEssential()) {
+      alert('필수 선택 항목이 선택되지 않았습니다.');
+      return;
+    }
+
     setCurStep(prev => Math.min(prev + 1, maxStep));
     handleConfirm();
+  }
+
+  function checkEssential() {
+    if (curStep > 0) {
+      switch (uploadType) {
+        case 'SelectCharacter':
+          {
+            if (curStep === 1 && selectedCharacterId === null) {
+              return false;
+            }
+            if (
+              curStep === 2 &&
+              (selectedGalleryIndex === null ||
+                currentSelectedCharacter === null ||
+                currentSelectedCharacter === undefined)
+            ) {
+              return false;
+            }
+          }
+          break;
+        case 'UploadImage':
+          {
+            if (curStep === 1 && curEpisodeCharacterImage === '') {
+              return false;
+            }
+            if (curStep === 2 && (nameValue === '' || promptValue === '')) {
+              return false;
+            }
+          }
+          break;
+        case 'GenerateImage':
+          {
+            if (curStep === 3 && (nameValue === '' || promptValue === '')) {
+              return false;
+            }
+          }
+          break;
+      }
+    }
+    return true;
   }
 
   function subStep() {
@@ -90,6 +159,10 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
 
   // 캐릭터 선택
   const getCharacterList = async () => {
+    if (characters) {
+      // 이미 데이터를 불러온 후
+      return;
+    }
     setLoading(true);
     try {
       const response = await sendGetCharacterList({});
@@ -136,11 +209,19 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
   // 공통
 
   const handleOnSetEpisodeName = () => {
+    if (!checkEssential()) {
+      alert('필수 선택 항목이 선택되지 않았습니다.');
+      return;
+    }
     setIsEpisodeNameOn(true);
   };
 
   const handleSetEpisodeNameComplete = (name: string) => {
-    console.log('Episode name set to:', name);
+    if (!checkEssential()) {
+      alert('필수 선택 항목이 선택되지 않았습니다.');
+      return;
+    }
+
     setCurEpisodeName(name);
     setIsEpisodeNameOn(false);
 
@@ -148,48 +229,62 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
   };
 
   const handlerOnCompleteInit = () => {
-    if (!currentSelectedCharacter) {
-      console.error("No character selected. Can't complete initialization.");
+    let episodeInfo: EpisodeInfo;
+
+    const baseEpisodeInfo = isEditing ? editingEpisodeInfo : emptyEpisodeInfo;
+
+    if (uploadType === 'SelectCharacter') {
+      if (!currentSelectedCharacter) {
+        console.error("No character selected. Can't complete initialization.");
+        return;
+      }
+
+      episodeInfo = {
+        ...baseEpisodeInfo,
+        name: curEpisodeName,
+        characterInfo: {
+          id: currentSelectedCharacter.id,
+          name: currentSelectedCharacter.name,
+          introduction: currentSelectedCharacter.introduction,
+          description: currentSelectedCharacter.description,
+          genderType: currentSelectedCharacter.genderType,
+          mainImageUrl: currentSelectedCharacter.mainImageUrl,
+          portraitGalleryImageUrl: currentSelectedCharacter.portraitGalleryImageUrl,
+          poseGalleryImageUrl: currentSelectedCharacter.poseGalleryImageUrl,
+          expressionGalleryImageUrl: currentSelectedCharacter.expressionGalleryImageUrl,
+          visibilityType: currentSelectedCharacter.visibilityType,
+          isMonetization: currentSelectedCharacter.isMonetization,
+          state: currentSelectedCharacter.state,
+        },
+      };
+    } else if (uploadType === 'UploadImage' || uploadType === 'GenerateImage') {
+      episodeInfo = {
+        ...baseEpisodeInfo,
+        name: curEpisodeName,
+        characterInfo: {
+          ...emptyEpisodeInfo.characterInfo,
+          name: nameValue,
+          description: promptValue,
+          mainImageUrl: curEpisodeCharacterImage,
+        },
+      };
+    } else {
+      console.error('Invalid uploadType. Unable to generate episodeInfo.');
       return;
     }
-
-    const episodeInfo: EpisodeInfo = {
-      id: 0,
-      name: curEpisodeName,
-      characterInfo: {
-        id: currentSelectedCharacter.id,
-        name: currentSelectedCharacter.name,
-        introduction: currentSelectedCharacter.introduction,
-        description: currentSelectedCharacter.description,
-        genderType: 0,
-        mainImageUrl: currentSelectedCharacter.mainImageUrl,
-        portraitGalleryImageUrl: [],
-        poseGalleryImageUrl: [],
-        expressionGalleryImageUrl: [],
-        visibilityType: 0,
-        isMonetization: false,
-        state: 0,
-      },
-      backgroundImageUrl: '',
-      conversationTemplateList: [],
-      episodeDescription: {
-        scenarioDescription: 'string',
-        introDescription: 'string',
-        secret: 'string',
-      },
-      triggerInfoList: [],
-    };
 
     console.log('Final Episode Info:', episodeInfo);
 
     setIsInitFinished(true);
-    addEpisodeOper();
+    addEpisodeOper(episodeInfo);
     onClose();
+    initData();
   };
 
   const handlerOnClose = () => {
     if (isInitFinished) {
       onClose();
+      initData();
     } else {
       router.back();
     }
@@ -247,7 +342,16 @@ const EpisodeInitialize: React.FC<Props> = ({open, onClose, addEpisodeOper, epis
 
   //#region Hook
 
-  //캐릭터 선택
+  // 편집으로 들어왔을때 값 세팅
+  useEffect(() => {
+    if (isEditing) {
+      setCurEpisodeCharacterImage(editingEpisodeInfo.characterInfo.mainImageUrl);
+      setNameValue(editingEpisodeInfo.characterInfo.name);
+      setPromptValue(editingEpisodeInfo.characterInfo.description);
+    }
+  }, [isEditing]);
+
+  // 캐릭터 선택
   useEffect(() => {
     if (uploadType === 'SelectCharacter' && curStep === 1) {
       getCharacterList();

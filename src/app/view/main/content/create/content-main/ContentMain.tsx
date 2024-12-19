@@ -57,6 +57,7 @@ const ContentMain: React.FC = () => {
   const [isPublishingOpen, setIsPublishingOpen] = useState(false);
   const [isLLMSetupOpen, setLLMSetupOpen] = useState(false);
   const [isEpisodeInitOpen, setIsEpisodeInitOpen] = useState(true);
+  const [isEpisodeEditing, setIsEpisodeEditing] = useState(false);
 
   const [isInitFinished, setIsInitFinished] = useState(false);
 
@@ -375,12 +376,18 @@ const ContentMain: React.FC = () => {
     setIsPublishingOpen(false);
   };
 
-  const handleOpenInitialEpisode = () => {
+  const handleOpenInitialEpisode = (isEditing: boolean = false) => {
+    setIsEpisodeEditing(isEditing);
     setIsEpisodeInitOpen(true);
   };
 
   const handleCloseInitialEpisode = () => {
+    setIsEpisodeEditing(false);
     setIsEpisodeInitOpen(false);
+  };
+
+  const handleInitialEpisodeFinish = (episodeInfo: EpisodeInfo) => {
+    handleAddEpisode(episodeInfo);
   };
 
   //#endregion
@@ -600,7 +607,7 @@ const ContentMain: React.FC = () => {
           <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
 
           {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.map((episode, index) => (
-            <EpisodeCard episodeId={episode.id} episodeNum={index} onInit={() => handleOpenInitialEpisode()} />
+            <EpisodeCard episodeId={episode.id} episodeNum={index} onInit={() => handleOpenInitialEpisode(true)} />
           ))}
         </div>
         <div className={styles.contentBottom}>
@@ -610,8 +617,9 @@ const ContentMain: React.FC = () => {
         {/* <ContentLLMSetup open={isLLMSetupOpen} onClose={handleCloseLLMSetup} /> llm publish로 이관 */}
         <EpisodeInitialize
           open={isEpisodeInitOpen}
+          isEditing={isEpisodeEditing}
           onClose={handleCloseInitialEpisode}
-          addEpisodeOper={() => setAddEpisodeRequested(true)}
+          addEpisodeOper={handleInitialEpisodeFinish}
           episodeName={editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx].name}
         />
       </main>
