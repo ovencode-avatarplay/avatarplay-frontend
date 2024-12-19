@@ -9,6 +9,7 @@ interface CharacterGridItemProps {
   character: CharacterInfo;
   isSelected: boolean;
   onSelect: () => void;
+  hideOverlay?: boolean;
 }
 export enum CharacterVisibility {
   Private = 0,
@@ -28,25 +29,31 @@ export const getCharacterStateText = (state: number): string => {
   return 'Unknown State';
 };
 
-const CharacterGridItem: React.FC<CharacterGridItemProps> = ({character, isSelected, onSelect}) => {
+const CharacterGridItem: React.FC<CharacterGridItemProps> = ({
+  character,
+  isSelected,
+  onSelect,
+  hideOverlay = false,
+}) => {
   return (
-    <Box onClick={onSelect} className={`${styles.gridItem} ${isSelected ? styles.selected : styles.unselected}`}>
+    <div onClick={onSelect} className={`${styles.gridItem} ${isSelected ? styles.selected : styles.unselected}`}>
       {/* Status Overlay */}
-      <Box className={styles.statusOverlay}>
-        <Typography variant="body2" className={styles.statusText}>
-          {getCharacterStateText(character.visibilityType)}
-        </Typography>
-      </Box>
+      <div className={`${styles.statusOverlay} ${styles.hide}`}>
+        <div className={styles.statusText}>{getCharacterStateText(character.visibilityType)}</div>
+      </div>
 
       {/* Character Image */}
-      <Box className={styles.characterImage} style={{backgroundImage: `url(${character.mainImageUrl})`}} />
+      <div className={styles.characterImage} style={{backgroundImage: `url(${character.mainImageUrl})`}} />
 
       {/* Character Info */}
-      <Box className={styles.characterInfo}>
-        <Box className={styles.genderIcon}>{character.name === 'Male' ? <MaleIcon /> : <FemaleIcon />}</Box>
-        <Typography className={styles.characterName}>{character.name}</Typography>
-      </Box>
-    </Box>
+      <div className={styles.characterInfo}>
+        {/* <div className={styles.genderIcon}>{character.name === 'Male' ? <MaleIcon /> : <FemaleIcon />}</div> */}
+        <div className={styles.characterName}>{character.name}</div>
+        <div className={`${styles.monetizationLabel} ${character.isMonetization ? styles.original : styles.fan}`}>
+          {character.isMonetization ? 'Original' : 'Fan'}
+        </div>
+      </div>
+    </div>
   );
 };
 

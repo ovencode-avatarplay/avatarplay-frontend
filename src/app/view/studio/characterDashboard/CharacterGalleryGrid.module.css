@@ -1,16 +1,26 @@
 .galleryContainer {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 16px;
-  width: 100%;
-  height: auto;
-  padding: 16px;
+  display: flex;
+  width: 370px;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 12px;
+
+  margin-top: 15px;
+margin-left: 16px;
+margin-right: 16px;
+
+  flex-wrap: wrap;
 }
 
 .addImageButton {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-transform: none;
+  
+  cursor: pointer;
+  
+  width: 179px;
+  height: 259.172px;
+  flex-shrink: 0;
+
+  border-radius: 12px;
+  background:  lightgray 50% / cover no-repeat;
+
 }

@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 
-import {Drawer} from '@mui/material';
+import {Drawer, ToggleButton, ToggleButtonGroup} from '@mui/material';
 import {useRouter} from 'next/navigation';
 
 import styles from './EpisodeInitialize.module.css';
 
 import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo, EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo, EpisodeInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
@@ -20,6 +20,7 @@ import EpisodeUploadImage from './EpisodeUploadImage';
 import {RootState} from '@/redux-store/ReduxStore';
 import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 
 interface Props {
   open: boolean;
@@ -73,6 +74,8 @@ const EpisodeInitialize: React.FC<Props> = ({
   const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
   const [selectedGalleryIndex, setSelectedGalleryIndex] = useState<number | null>(null);
+  const [category, setCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
+  const [itemUrl, setItemUrl] = useState<GalleryImageInfo[] | null>(null);
 
   // 이미지 업로드
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -236,10 +239,10 @@ const EpisodeInitialize: React.FC<Props> = ({
     setCurEpisodeName(name);
     setIsEpisodeNameOn(false);
 
-    handlerOnCompleteInit();
+    handlerOnCompleteInit(name);
   };
 
-  const handlerOnCompleteInit = () => {
+  const handlerOnCompleteInit = (name: string) => {
     let episodeInfo: EpisodeInfo;
 
     const baseEpisodeInfo = isEditing ? editingEpisodeInfo : emptyEpisodeInfo;
@@ -252,7 +255,7 @@ const EpisodeInitialize: React.FC<Props> = ({
 
       episodeInfo = {
         ...baseEpisodeInfo,
-        name: curEpisodeName,
+        name: name,
         characterInfo: {
           id: currentSelectedCharacter.id,
           name: currentSelectedCharacter.name,
@@ -271,7 +274,7 @@ const EpisodeInitialize: React.FC<Props> = ({
     } else if (uploadType === 'UploadImage' || uploadType === 'GenerateImage') {
       episodeInfo = {
         ...baseEpisodeInfo,
-        name: curEpisodeName,
+        name: name,
         characterInfo: {
           ...emptyEpisodeInfo.characterInfo,
           name: nameValue,
@@ -357,6 +360,10 @@ const EpisodeInitialize: React.FC<Props> = ({
     }
   };
 
+  const handleCategoryChange = (newCategory: GalleryCategory) => {
+    setCategory(newCategory);
+  };
+
   // 이미지 업로드
 
   const handleFileSelection = async (file: File) => {
@@ -405,6 +412,23 @@ const EpisodeInitialize: React.FC<Props> = ({
     }
   }, [curStep]);
 
+  useEffect(() => {
+    // 카테고리 전환 시 아이템과 인덱스를 갱신
+    switch (category) {
+      case GalleryCategory.Portrait:
+        setItemUrl(currentSelectedCharacter?.portraitGalleryImageUrl || null);
+        break;
+      case GalleryCategory.Pose:
+        setItemUrl(currentSelectedCharacter?.poseGalleryImageUrl || null);
+        break;
+      case GalleryCategory.Expression:
+        setItemUrl(currentSelectedCharacter?.expressionGalleryImageUrl || null);
+        break;
+      default:
+        setItemUrl(galleryAllUrl);
+    }
+    setSelectedGalleryIndex(0);
+  }, [category, currentSelectedCharacter, galleryAllUrl]);
   //#endregion
 
   //#region 렌더링을 위한 함수
@@ -460,14 +484,42 @@ const EpisodeInitialize: React.FC<Props> = ({
         return (
           <>
             {uploadType === 'SelectCharacter' ? (
-              <CharacterGalleryGrid
-                itemUrl={galleryAllUrl}
-                selectedItemIndex={selectedGalleryIndex}
-                onSelectItem={i => {
-                  setSelectedGalleryIndex(i);
-                }}
-                isTrigger={true}
-              />
+              <>
+                <div className={styles.toggleButtons}>
+                  <button
+                    className={`${styles.toggleButton} ${category === GalleryCategory.All ? styles.active : ''}`}
+                    onClick={() => handleCategoryChange(GalleryCategory.All)}
+                  >
+                    All
+                  </button>
+                  <button
+                    className={`${styles.toggleButton} ${category === GalleryCategory.Portrait ? styles.active : ''}`}
+                    onClick={() => handleCategoryChange(GalleryCategory.Portrait)}
+                  >
+                    Portrait
+                  </button>
+                  <button
+                    className={`${styles.toggleButton} ${category === GalleryCategory.Pose ? styles.active : ''}`}
+                    onClick={() => handleCategoryChange(GalleryCategory.Pose)}
+                  >
+                    Poses
+                  </button>
+                  <button
+                    className={`${styles.toggleButton} ${category === GalleryCategory.Expression ? styles.active : ''}`}
+                    onClick={() => handleCategoryChange(GalleryCategory.Expression)}
+                  >
+                    Expression
+                  </button>
+                </div>
+                <CharacterGalleryGrid
+                  itemUrl={itemUrl}
+                  selectedItemIndex={selectedGalleryIndex}
+                  onSelectItem={i => {
+                    setSelectedGalleryIndex(i);
+                  }}
+                  isTrigger={true}
+                />
+              </>
             ) : uploadType === 'UploadImage' ? (
               <div>{getInputCharacterDesc()}</div>
             ) : (
