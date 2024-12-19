@@ -248,10 +248,10 @@ const ChatBar: React.FC<ChatBarProps> = ({
                   border: 'none', // 아웃라인 제거
                 },
                 fontSize: '14px', // 폰트 크기 설정
-                paddingTop: '5px',
-                paddingBottom: '5px',
                 paddingLeft: '0px',
                 paddingRight: '0px',
+                paddingTop: '5px',
+                paddingBottom: '5px',
               },
               '& .MuiInputBase-input': {
                 fontSize: '14px', // 내부 입력 텍스트의 폰트 크기 설정
@@ -261,7 +261,9 @@ const ChatBar: React.FC<ChatBarProps> = ({
           />
 
           {id !== 'main' ? (
-            <img src={Close.src} onClick={() => removeChatBar(id)} className={styles.closeButton} />
+            <div onClick={() => removeChatBar(id)} className={styles.closeButton}>
+              <img src={Close.src} />
+            </div>
           ) : (
             <>
               {Object.values(inputValues).every(value => value.trim() === '') ? (

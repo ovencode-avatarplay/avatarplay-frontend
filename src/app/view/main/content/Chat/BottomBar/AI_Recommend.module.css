@@ -29,7 +29,6 @@
     box-sizing: border-box;
    
     background: #ffffff;
-    padding: 8px 12px;
   
     font-size: 16px;
     line-height: 1.5;
@@ -60,7 +59,8 @@
     width: 100%;
     box-sizing: border-box;
     background: #ffffff;
-    padding: 8px 12px;
+    padding: 10px 0px;
+    margin-right: 50px;
     font-size: 16px;
     line-height: 1.5;
     resize: none; /* 사용자가 크기를 조절하지 못하도록 설정 */
