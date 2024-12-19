@@ -108,9 +108,10 @@ const ContentMain: React.FC = () => {
   useLayoutEffect(() => {
     if (!skipContentInit) {
       Init();
-    } else {
-      setIsEpisodeEditing(true);
     }
+    // else {
+    //   setIsEpisodeEditing(true);
+    // }
     dispatch(setSkipContentInit(false));
   }, []);
 
