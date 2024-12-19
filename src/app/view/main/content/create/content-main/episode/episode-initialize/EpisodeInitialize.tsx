@@ -18,16 +18,26 @@ import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/Character
 import EpisodeSetNamePopup from './EpisodeSetNamePopup';
 import EpisodeUploadImage from './EpisodeUploadImage';
 import {RootState} from '@/redux-store/ReduxStore';
+import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
+import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 
 interface Props {
   open: boolean;
   isEditing: boolean;
   onClose: () => void;
+  modifyEpisodeOper: (episodeInfo: EpisodeInfo) => void;
   addEpisodeOper: (episodeInfo: EpisodeInfo) => void;
   episodeName: string;
 }
 
-const EpisodeInitialize: React.FC<Props> = ({open, isEditing, onClose, addEpisodeOper, episodeName}) => {
+const EpisodeInitialize: React.FC<Props> = ({
+  open,
+  isEditing,
+  onClose,
+  modifyEpisodeOper,
+  addEpisodeOper,
+  episodeName,
+}) => {
   //#region 선언
   // 공통
   const router = useRouter();
@@ -65,11 +75,12 @@ const EpisodeInitialize: React.FC<Props> = ({open, isEditing, onClose, addEpisod
   const [selectedGalleryIndex, setSelectedGalleryIndex] = useState<number | null>(null);
 
   // 이미지 업로드
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   // 이미지 생성
 
   // 저장될 데이터
-  const [curEpisodeName, setCurEpisodeName] = useState<string>('');
+  const [curEpisodeName, setCurEpisodeName] = useState<string>(episodeName);
   const [curEpisodeCharacterImage, setCurEpisodeCharacterImage] = useState<string>('');
 
   //#endregion
@@ -276,7 +287,11 @@ const EpisodeInitialize: React.FC<Props> = ({open, isEditing, onClose, addEpisod
     console.log('Final Episode Info:', episodeInfo);
 
     setIsInitFinished(true);
-    addEpisodeOper(episodeInfo);
+    if (isEditing) {
+      modifyEpisodeOper(episodeInfo);
+    } else {
+      addEpisodeOper(episodeInfo);
+    }
     onClose();
     initData();
   };
@@ -295,6 +310,14 @@ const EpisodeInitialize: React.FC<Props> = ({open, isEditing, onClose, addEpisod
     setMaxStep(3);
     setUploadType('SelectCharacter');
     addStep();
+  };
+
+  const handleOnUploadImageClick = () => {
+    if (curEpisodeCharacterImage !== '') {
+      handleOnUploadImage();
+    } else {
+      setUploadDialogOpen(true);
+    }
   };
 
   const handleOnUploadImage = () => {
@@ -336,14 +359,38 @@ const EpisodeInitialize: React.FC<Props> = ({open, isEditing, onClose, addEpisod
 
   // 이미지 업로드
 
+  const handleFileSelection = async (file: File) => {
+    setLoading(true);
+    try {
+      const req: MediaUploadReq = {
+        mediaState: MediaState.CharacterImage,
+        file: file,
+      };
+      const response = await sendUpload(req);
+      if (response?.data) {
+        const imgUrl: string = response.data.url;
+
+        setCurEpisodeCharacterImage(imgUrl);
+
+        handleOnUploadImage();
+      } else {
+        throw new Error('Unexpected API response: No data');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // 이미지 생성
 
   //#endregion
 
   //#region Hook
 
-  // 편집으로 들어왔을때 값 세팅
   useEffect(() => {
+    // 에피소드카드 이미지의 버튼으로 편집 들어왔을때 값 세팅
     if (isEditing) {
       setCurEpisodeCharacterImage(editingEpisodeInfo.characterInfo.mainImageUrl);
       setNameValue(editingEpisodeInfo.characterInfo.name);
@@ -374,7 +421,7 @@ const EpisodeInitialize: React.FC<Props> = ({open, isEditing, onClose, addEpisod
                 <div className={styles.buttonText}>Select Character</div>
               </button>
 
-              <button className={styles.uploadButton} onClick={handleOnUploadImage}>
+              <button className={styles.uploadButton} onClick={handleOnUploadImageClick}>
                 <div className={styles.buttonIconBack}>
                   <img className={styles.buttonIcon} />
                 </div>
@@ -388,6 +435,11 @@ const EpisodeInitialize: React.FC<Props> = ({open, isEditing, onClose, addEpisod
                 <div className={styles.buttonText}>Generate Image</div>
               </button>
             </div>
+            <ImageUploadDialog
+              isOpen={uploadDialogOpen}
+              onClose={() => setUploadDialogOpen(false)}
+              onFileSelect={handleFileSelection}
+            />
           </div>
         );
       case 1:

@@ -51,16 +51,6 @@ const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  // 컴포넌트 오픈 상태
-  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
-  const [isChapterboardOpen, setIsChapterboardOpen] = useState(false);
-  const [isPublishingOpen, setIsPublishingOpen] = useState(false);
-  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false);
-  const [isEpisodeInitOpen, setIsEpisodeInitOpen] = useState(true);
-  const [isEpisodeEditing, setIsEpisodeEditing] = useState(false);
-
-  const [isInitFinished, setIsInitFinished] = useState(false);
-
   // Redux Selector
   // 자주 렌더링 되거나 독립적이지 않을 때 버그가 발생하면 개별선언
   const editingContentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // 현재 수정중인 컨텐츠 정보
@@ -68,6 +58,18 @@ const ContentMain: React.FC = () => {
   const selectedChapterIdx = useSelector((state: RootState) => state.contentselection.selectedChapterIdx); // ChapterBoard에서 선택된 ChapterId
   const selectedEpisodeIdx = useSelector((state: RootState) => state.contentselection.selectedEpisodeIdx); // ChapterBoard에서 선택된 EpisodeId
   const skipContentInit = useSelector((state: RootState) => state.contentselection.skipContentInit); // Init Skip (다른 페이지에서 편집을 들어올 때 사용)
+
+  // 컴포넌트 오픈 상태
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+  const [isChapterboardOpen, setIsChapterboardOpen] = useState(false);
+  const [isPublishingOpen, setIsPublishingOpen] = useState(false);
+  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false);
+
+  const [isEpisodeEditing, setIsEpisodeEditing] = useState(false);
+  const [isEpisodeInitOpen, setIsEpisodeInitOpen] = useState(!skipContentInit);
+
+  const [isInitFinished, setIsInitFinished] = useState(false);
+
   // 자주 렌더링 되지 않는 경우는 묶어서
   const {
     editedPublishInfo, // 저장하기 전에 수정사항을 올려놓는 PublishInfo 정보
@@ -106,6 +108,8 @@ const ContentMain: React.FC = () => {
   useLayoutEffect(() => {
     if (!skipContentInit) {
       Init();
+    } else {
+      setIsEpisodeEditing(true);
     }
     dispatch(setSkipContentInit(false));
   }, []);
@@ -298,6 +302,30 @@ const ContentMain: React.FC = () => {
     }
   };
 
+  const handleModifyEpisode = (updatedEpisode: EpisodeInfo) => {
+    if (selectedChapterIdx !== -1 && selectedEpisodeIdx !== -1) {
+      const updatedChapter = {
+        ...editingContentInfo.chapterInfoList[selectedChapterIdx],
+        episodeInfoList: editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.map((episode, idx) =>
+          idx === selectedEpisodeIdx ? updatedEpisode : episode,
+        ),
+      };
+
+      const updatedChapterList = [
+        ...editingContentInfo.chapterInfoList.slice(0, selectedChapterIdx),
+        updatedChapter,
+        ...editingContentInfo.chapterInfoList.slice(selectedChapterIdx + 1),
+      ];
+
+      dispatch(
+        updateEditingContentInfo({
+          id: editingContentInfo.id,
+          chapterInfoList: updatedChapterList,
+        }),
+      );
+    }
+  };
+
   const handleDeleteEpisode = (chapterIdx: number, episodeIdx: number) => {
     if (chapterIdx !== -1) {
       const updatedEpisodeList = editingContentInfo.chapterInfoList[chapterIdx].episodeInfoList.filter(
@@ -378,7 +406,7 @@ const ContentMain: React.FC = () => {
 
   const handleOpenInitialEpisode = (isEditing: boolean = false) => {
     setIsEpisodeEditing(isEditing);
-    setIsEpisodeInitOpen(true);
+    setIsEpisodeInitOpen(isEditing);
   };
 
   const handleCloseInitialEpisode = () => {
@@ -388,6 +416,10 @@ const ContentMain: React.FC = () => {
 
   const handleInitialEpisodeFinish = (episodeInfo: EpisodeInfo) => {
     handleAddEpisode(episodeInfo);
+  };
+
+  const handleModifyEpisodeFinish = (episodeInfo: EpisodeInfo) => {
+    handleModifyEpisode(episodeInfo);
   };
 
   //#endregion
@@ -619,6 +651,7 @@ const ContentMain: React.FC = () => {
           open={isEpisodeInitOpen}
           isEditing={isEpisodeEditing}
           onClose={handleCloseInitialEpisode}
+          modifyEpisodeOper={handleModifyEpisodeFinish}
           addEpisodeOper={handleInitialEpisodeFinish}
           episodeName={editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx].name}
         />
