@@ -16,9 +16,6 @@ const Login = () => {
   useEffect(() => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
       if (event === 'SIGNED_IN') {
-        // 로그인 성공 시 리다이렉트
-        alert(session?.access_token);
-
         try {
           const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
 
@@ -66,7 +63,7 @@ const Login = () => {
           providers={['google', 'kakao']} // 구글, 카카오 등 추가하고 싶은 OAuth 제공자
           appearance={{theme: ThemeSupa}} // Supabase 기본 테마 사용
           onlyThirdPartyProviders
-          redirectTo={`http://www.naver.com`}
+          redirectTo={`http://192.168.0.35:3000`}
           queryParams={{
             access_type: 'offline',
             prompt: 'consent',

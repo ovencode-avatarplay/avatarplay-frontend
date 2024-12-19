@@ -76,6 +76,7 @@ const UserDropdown = () => {
   useEffect(() => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
       if (event === 'SIGNED_IN') {
+        if (auth?.access_token == session?.access_token) return;
         setAuth(session);
         try {
           const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
@@ -108,7 +109,7 @@ const UserDropdown = () => {
     });
 
     return () => {
-      console.log(authListener);
+      authListener?.subscription.unsubscribe();
     };
   }, []);
 
