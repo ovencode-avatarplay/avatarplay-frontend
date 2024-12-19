@@ -37,7 +37,12 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, i
               </Link>
             </div>
             <div className={styles.chat}>
-              <Avatar src={iconUrl || '/images/001.png'} alt={chattingState1.contentName} className={styles.avatar} />
+              <Avatar
+                src={iconUrl || '/images/001.png'}
+                alt={chattingState1.contentName}
+                className={styles.avatar}
+                style={{width: '40px', height: '40px'}}
+              />
 
               <div className={`${styles.textArea}  ${isBlurOn ? styles.blurOn : ''}`}>
                 <span className={`${styles.contentName} ${isBlurOn ? styles.blurOn : ''}`}>
