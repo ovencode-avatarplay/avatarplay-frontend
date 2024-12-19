@@ -11,13 +11,10 @@ interface CharacterGalleryItemProps {
 
 const CharacterGalleryItem: React.FC<CharacterGalleryItemProps> = ({url, isSelected, onSelect}) => {
   return (
-    <Box
+    <div
       onClick={onSelect}
       className={`${styles.galleryItem} ${isSelected ? styles.selected : ''}`}
-      sx={{
-        backgroundImage: `url(${url.imageUrl})`,
-        borderRadius: '8px',
-      }}
+      style={{backgroundImage: `url(${url.imageUrl}`}}
     />
   );
 };

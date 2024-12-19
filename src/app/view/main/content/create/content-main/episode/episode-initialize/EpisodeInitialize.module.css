@@ -332,3 +332,44 @@ background: #FFF;
         width: 370px;
     }
 }
+
+
+.toggleButtons {
+    display: inline-flex;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 26px;
+    gap: 37px;
+    flex-shrink: 0;
+}
+
+.toggleButtons button
+{
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    align-self: stretch;
+
+    font-family: Lato;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 16px; /* 100% */
+    letter-spacing: -0.32px;
+    
+    color: var(--Neutral-500, #9AA0A6);
+}
+
+.toggleButtons button.active
+{
+    border-bottom: 2px solid var(--Black, #000);
+    
+    color: var(--Black, #000);
+}
+
+.toggleButtons button:hover {
+  color: var(--Neutral-700, #555);
+}
