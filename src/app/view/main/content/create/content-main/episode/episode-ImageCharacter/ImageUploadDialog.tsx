@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
-import {Dialog, DialogContent, MenuItem} from '@mui/material';
+import {Drawer} from '@mui/material';
+import styles from './ImageUploadDrawer.module.css';
 
 interface Props {
   isOpen: boolean; // 다이얼로그 오픈 여부
@@ -60,17 +61,36 @@ const ImageUploadDialog: React.FC<Props> = ({isOpen, onClose, onFileSelect}) => 
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose}>
-      <DialogContent dividers>
-        {isMobile ? (
-          <>
-            <MenuItem onClick={handlePhotoLibrary}>Photo Library</MenuItem>
-            <MenuItem onClick={handleTakePhoto}>Take Photo</MenuItem>
-            <MenuItem onClick={handleChooseFile}>Choose File</MenuItem>
-          </>
-        ) : null}
-      </DialogContent>
-    </Dialog>
+    <Drawer
+      anchor="bottom"
+      open={isOpen}
+      onClose={onClose}
+      PaperProps={{
+        className: styles.drawer,
+      }}
+      BackdropProps={{
+        sx: {
+          background: 'rgba(0, 0, 0, 0.70)',
+        },
+      }}
+    >
+      {isMobile ? (
+        <div className={styles.drawerContainer}>
+          <div className={styles.handleArea}>
+            <div className={styles.handle} />
+          </div>
+          <button className={styles.drawerItem} onClick={handlePhotoLibrary}>
+            Photo Library
+          </button>
+          <button className={styles.drawerItem} onClick={handleTakePhoto}>
+            Take Photo
+          </button>
+          <button className={styles.drawerItem} onClick={handleChooseFile}>
+            Choose File
+          </button>
+        </div>
+      ) : null}
+    </Drawer>
   );
 };
 

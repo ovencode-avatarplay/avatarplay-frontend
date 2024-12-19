@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 
-import {Drawer, ToggleButton, ToggleButtonGroup} from '@mui/material';
+import {Drawer} from '@mui/material';
 import {useRouter} from 'next/navigation';
 
 import styles from './EpisodeInitialize.module.css';
@@ -21,6 +21,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
+import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
 
 interface Props {
   open: boolean;
@@ -81,6 +82,8 @@ const EpisodeInitialize: React.FC<Props> = ({
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   // 이미지 생성
+  const [generatePromptValue, setGeneratePromptValue] = useState<string>('');
+  const maxGeneratePromptLength: number = 500;
 
   // 저장될 데이터
   const [curEpisodeName, setCurEpisodeName] = useState<string>(episodeName);
@@ -392,6 +395,11 @@ const EpisodeInitialize: React.FC<Props> = ({
 
   // 이미지 생성
 
+  const handleGeneratePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.value.length <= maxPromptLength) {
+      setGeneratePromptValue(e.target.value);
+    }
+  };
   //#endregion
 
   //#region Hook
@@ -476,7 +484,7 @@ const EpisodeInitialize: React.FC<Props> = ({
                 <EpisodeUploadImage imgUrl={curEpisodeCharacterImage} setImgUrl={setCurEpisodeCharacterImage} />
               </>
             ) : (
-              <>GenerateImage1</>
+              <div>{getGenerateInputPrompt()}</div>
             )}
           </>
         );
@@ -485,32 +493,8 @@ const EpisodeInitialize: React.FC<Props> = ({
           <>
             {uploadType === 'SelectCharacter' ? (
               <>
-                <div className={styles.toggleButtons}>
-                  <button
-                    className={`${styles.toggleButton} ${category === GalleryCategory.All ? styles.active : ''}`}
-                    onClick={() => handleCategoryChange(GalleryCategory.All)}
-                  >
-                    All
-                  </button>
-                  <button
-                    className={`${styles.toggleButton} ${category === GalleryCategory.Portrait ? styles.active : ''}`}
-                    onClick={() => handleCategoryChange(GalleryCategory.Portrait)}
-                  >
-                    Portrait
-                  </button>
-                  <button
-                    className={`${styles.toggleButton} ${category === GalleryCategory.Pose ? styles.active : ''}`}
-                    onClick={() => handleCategoryChange(GalleryCategory.Pose)}
-                  >
-                    Poses
-                  </button>
-                  <button
-                    className={`${styles.toggleButton} ${category === GalleryCategory.Expression ? styles.active : ''}`}
-                    onClick={() => handleCategoryChange(GalleryCategory.Expression)}
-                  >
-                    Expression
-                  </button>
-                </div>
+                <CharacterGalleryToggle category={category} onCategoryChange={handleCategoryChange} />
+
                 <CharacterGalleryGrid
                   itemUrl={itemUrl}
                   selectedItemIndex={selectedGalleryIndex}
@@ -562,6 +546,42 @@ const EpisodeInitialize: React.FC<Props> = ({
           </div>
         </div>
       </div>
+    );
+  };
+
+  const getGenerateInputPrompt = () => {
+    return (
+      <>
+        <div className={styles.promptArea}>
+          <div className={styles.characterDesc}>
+            <div className={styles.title}>CharacterPrompt</div>
+            <div className={styles.inputArea}>
+              <textarea
+                className={styles.inputPrompt}
+                placeholder="Text Placeholder"
+                value={generatePromptValue}
+                onChange={handleGeneratePromptChange}
+                maxLength={maxGeneratePromptLength}
+              />
+
+              <div className={styles.inputHint}>
+                {generatePromptValue.length} / {maxGeneratePromptLength}
+              </div>
+            </div>
+          </div>
+          <button className={styles.generateButton} onClick={() => {}}>
+            <div className={styles.buttonText}>Generate</div>
+            <div className={styles.costArea}>
+              <img className={styles.costIcon} />
+              <div className={styles.costText}>50</div>
+            </div>
+          </button>
+        </div>
+        <div className={styles.styleArea}>
+          <div className={styles.title}>Styles</div>
+        </div>
+        {/* TODO : Style 선택용 Swiper */}
+      </>
     );
   };
   //#endregion

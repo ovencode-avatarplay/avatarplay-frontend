@@ -162,7 +162,7 @@
     }
 }
 
-.inputCharacterDesc .characterDesc
+ .characterDesc
 {
     display: flex;
     flex-direction: column;
@@ -334,42 +334,100 @@ background: #FFF;
 }
 
 
-.toggleButtons {
-    display: inline-flex;
-    height: 40px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 26px;
-    gap: 37px;
-    flex-shrink: 0;
-}
+/* Generate */
 
-.toggleButtons button
+.promptArea 
+{
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 38px;
+} 
+
+
+.generateButton 
 {
     display: flex;
-    padding: 10px;
-    flex-direction: column;
+    width: 370px;
+    height: 46px;
+    padding: 14px 20px;
+    justify-content: center;
     align-items: center;
-    gap: 12px;
-    align-self: stretch;
-
-    font-family: Lato;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 16px; /* 100% */
-    letter-spacing: -0.32px;
+    gap: 4px;
     
-    color: var(--Neutral-500, #9AA0A6);
+    border-radius: 8px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
 }
 
-.toggleButtons button.active
+.generateButton > .buttonText
 {
-    border-bottom: 2px solid var(--Black, #000);
-    
     color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: 'Lato';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px; /* 142.857% */
+    letter-spacing: -0.4px;
 }
 
-.toggleButtons button:hover {
-  color: var(--Neutral-700, #555);
+.generateButton > .costArea
+{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.costArea > .costIcon
+{
+    width: 14px;
+    height: 14px;
+}
+
+.costArea > .costText
+{
+    color: var(--Black, #000);
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px; /* 128.571% */
+}
+
+
+.styleArea 
+{
+    display: flex;
+    width: 386px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 20px;
+}
+
+.styleArea > .title{
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    color: var(--Black, #000);
+    
+    font-family: 'Lato';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 155%; /* 21.7px */
+}
+
+.styleArea > .styleSwiper
+{
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    align-self: stretch;
 }
