@@ -30,6 +30,7 @@ interface FooterChatProps {
     state: boolean;
   };
   onRemoveChat: (id: number) => void;
+  onCheatChangeDate: (cheat: string) => void;
 }
 
 const FooterChat: React.FC<FooterChatProps> = ({
@@ -46,6 +47,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
   onReqPrevChatting,
   isSendingMessage,
   onRemoveChat,
+  onCheatChangeDate,
 }) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -75,6 +77,25 @@ const FooterChat: React.FC<FooterChatProps> = ({
 
     if (isAnyCheatMessageType(cheat)) {
       try {
+        switch (cheat) {
+          case '⦿YEAR⦿':
+            onCheatChangeDate('⦿YEAR⦿');
+            onLoading(false);
+            return true;
+          case '⦿MONTH⦿':
+            onCheatChangeDate('⦿MONTH⦿');
+            onLoading(false);
+            return true;
+          case '⦿DAY⦿':
+            onCheatChangeDate('⦿DAY⦿');
+            onLoading(false);
+            return true;
+          case '⦿REFRESH_NEW_DAY⦿':
+            onCheatChangeDate('⦿REFRESH_NEW_DAY⦿');
+            onLoading(false);
+            return true;
+        }
+
         const chattingCheatRes = await cheatMessage(currentContentId, currentEpisodeId, messages);
 
         if (chattingCheatRes) {
