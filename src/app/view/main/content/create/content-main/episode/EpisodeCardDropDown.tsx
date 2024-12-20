@@ -9,7 +9,12 @@ import {EpisodeInfo, setCurrentEpisodeInfo, updateEpisodeInfo} from '@/redux-sto
 import {useDispatch, useSelector} from 'react-redux';
 import {LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePreview} from '@ui/Icons';
 import EpisodeSetNamePopup from './episode-initialize/EpisodeSetNamePopup';
-import {ChapterInfo, removeEpisode, updateEpisodeInfoInContent} from '@/redux-store/slices/ContentInfo';
+import {
+  ChapterInfo,
+  duplicateEpisode,
+  removeEpisode,
+  updateEpisodeInfoInContent,
+} from '@/redux-store/slices/ContentInfo';
 import {RootState, store} from '@/redux-store/ReduxStore';
 import BottomRenameDrawer from './BottomRenameDrawer';
 
@@ -35,6 +40,7 @@ const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeI
   });
 
   const [isEpisodeNameOn, setIsEpisodeNameOn] = useState<boolean>(false);
+  const [isDeleteOn, setIsDeleteOn] = useState<boolean>(false);
 
   const handleSetEpisodeNameComplete = (name: string): boolean => {
     try {
@@ -83,10 +89,13 @@ const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeI
       alert('해당 에피소드는 삭제할 수 없습니다');
       return;
     }
-
-    dispatch(setCurrentEpisodeInfo(episodeInfo));
     dispatch(removeEpisode(id));
 
+    close();
+  };
+
+  const HandleDuplicateEpisode = (id: number) => {
+    dispatch(duplicateEpisode(id));
     close();
   };
 
@@ -109,17 +118,26 @@ const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeI
         <span className={styles.label}>Preview this Episode</span>
         <img src={LinePreview.src} className={styles.icon} />
       </div>
-      <div className={styles.dropdownItem}>
+      <div className={styles.dropdownItem} onClick={() => HandleDuplicateEpisode(episodeInfo.id)}>
         <span className={styles.label}>Duplicate</span>
         <img src={LineCopy.src} className={styles.icon} />
       </div>
-      <div
-        className={`${styles.dropdownItem} ${styles.deleteItemLabel}`}
-        onClick={() => HandleRemoveEpisode(episodeInfo.id)}
-      >
+      <div className={`${styles.dropdownItem} ${styles.deleteItemLabel}`} onClick={() => setIsDeleteOn(true)}>
         <span className={styles.deleteItemLabel}>Delete</span>
         <img src={LineDelete.src} className={styles.deleteItemIcon} />
       </div>
+      <EpisodeSetNamePopup
+        open={isDeleteOn}
+        onClickCancel={() => setIsDeleteOn(false)}
+        cancelText="Cancel"
+        confirmText="Delete"
+        title="Are you sure?"
+        desc="Deleting your trigger is irreversible"
+        onClickCompleteAlert={() => {
+          HandleRemoveEpisode(episodeInfo.id);
+        }}
+        isAlert={true}
+      ></EpisodeSetNamePopup>
       <BottomRenameDrawer
         open={isEpisodeNameOn}
         onClose={() => setIsEpisodeNameOn(false)}

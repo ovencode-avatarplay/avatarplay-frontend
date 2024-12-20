@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import styles from './EpisodeCard.module.css';
 import {Avatar, Box, Typography, IconButton, Badge, Card, Modal} from '@mui/material';
-import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import {BoldCirclePlus, edit1Pixel, editPlusOpacity, plusRound} from '@ui/Icons';
+import {BoldArrowDown, BoldCirclePlus, BoldMenuDots, edit1Pixel, editPlusOpacity, LineMenu, plusRound} from '@ui/Icons';
 import {CircleRounded} from '@mui/icons-material';
 import {RootState, store} from '@/redux-store/ReduxStore';
 import {useDispatch, useSelector} from 'react-redux';
@@ -14,7 +14,7 @@ import EpisodeDescription from './episode-description/EpisodeDescription';
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
 import EpisodeCardDropDown from './EpisodeCardDropDown';
-import {updateEpisodeInfoInContent} from '@/redux-store/slices/ContentInfo';
+import {adjustEpisodeIndex, updateEpisodeInfoInContent} from '@/redux-store/slices/ContentInfo';
 interface EpisodeCardProps {
   episodeNum: number;
   episodeId: number;
@@ -94,6 +94,13 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
     setEpisodeModalOpen(false); // Episode 모달 닫기
   };
 
+  const handleChangeOrderEpisodeIndex = (targetId: number, direction: 'up' | 'down') => {
+    // 순서 변경
+    dispatch(adjustEpisodeIndex({targetId, direction}));
+
+    //순서 변경 시 현재 에피소드 바꾸는 작업 필요
+  };
+
   const [isDropDownOpen, setDropDownOpen] = useState(false);
   useEffect(() => {
     console.log('Updated episodeInfo:', episodeInfo);
@@ -113,13 +120,32 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
 
           <Typography>{`${episodeInfo?.name || 'None'}`}</Typography>
         </div>
-        <IconButton
-          onClick={() => {
-            setDropDownOpen(true);
-          }}
-        >
-          <MoreVertIcon />
-        </IconButton>
+        <div style={{display: 'flex'}}>
+          <div
+            className={styles.arrowIcon}
+            onClick={() => {
+              handleChangeOrderEpisodeIndex(currentEpisode.id, 'up');
+            }}
+          >
+            <img src={BoldArrowDown.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
+          </div>
+          <div
+            className={styles.arrowIcon}
+            onClick={() => {
+              handleChangeOrderEpisodeIndex(currentEpisode.id, 'down');
+            }}
+          >
+            <img src={BoldArrowDown.src} alt="Main" />
+          </div>
+          <div
+            className={styles.arrowIcon}
+            onClick={() => {
+              setDropDownOpen(true);
+            }}
+          >
+            <img src={BoldMenuDots.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
+          </div>
+        </div>
       </Box>
       <Box className={styles.contentBox}>
         <div className={styles.contentTop}>
