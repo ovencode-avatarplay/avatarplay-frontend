@@ -6,10 +6,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {EpisodeInfo, setCurrentEpisodeInfo, updateEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePreview} from '@ui/Icons';
 import EpisodeSetNamePopup from './episode-initialize/EpisodeSetNamePopup';
 import {removeEpisode, updateEpisodeInfoInContent} from '@/redux-store/slices/ContentInfo';
+import {RootState} from '@/redux-store/ReduxStore';
 
 interface EpisodeCardDropDownProps {
   episodeInfo: EpisodeInfo;
@@ -25,6 +26,13 @@ const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeI
       dispatch(setCurrentEpisodeInfo(episodeInfo));
     }
   }, [episodeInfo]);
+
+  const chapterInfo = useSelector((state: RootState) => {
+    return state.content.curEditingContentInfo.chapterInfoList.find(chapter =>
+      chapter.episodeInfoList.some(episode => episode.id === episodeInfo?.id),
+    );
+  });
+
   const [isEpisodeNameOn, setIsEpisodeNameOn] = useState<boolean>(false);
 
   const handleSetEpisodeNameComplete = (name: string) => {
@@ -38,7 +46,20 @@ const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeI
   };
 
   const HandleRemoveEpisode = (id: number) => {
+    const episodeIndex = chapterInfo?.episodeInfoList.findIndex(episode => episode.id === episodeInfo?.id);
+
+    if (episodeIndex !== 0 && chapterInfo?.episodeInfoList[0]) {
+      dispatch(setCurrentEpisodeInfo(chapterInfo.episodeInfoList[0]));
+    } else if (episodeIndex == 0 && chapterInfo && chapterInfo?.episodeInfoList.length > 1) {
+      dispatch(setCurrentEpisodeInfo(chapterInfo.episodeInfoList[1]));
+    } else if (episodeIndex == 0 && chapterInfo && chapterInfo?.episodeInfoList.length == 1) {
+      alert('해당 에피소드는 삭제할 수 없습니다');
+      return;
+    }
+
+    dispatch(setCurrentEpisodeInfo(episodeInfo));
     dispatch(removeEpisode(id));
+
     close();
   };
 

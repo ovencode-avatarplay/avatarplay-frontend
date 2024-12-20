@@ -617,7 +617,7 @@ const ContentMain: React.FC = () => {
             onDrawerOpen={handleOpenChapterboard}
             chapterName={editingContentInfo.chapterInfoList[selectedChapterIdx].name ?? ''}
             episodeName={
-              editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx].name ?? ''
+              editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]?.name ?? ''
             }
           />
           {/* EpisodeCounter */}
@@ -654,7 +654,9 @@ const ContentMain: React.FC = () => {
           onClose={handleCloseInitialEpisode}
           modifyEpisodeOper={handleModifyEpisodeFinish}
           addEpisodeOper={handleInitialEpisodeFinish}
-          episodeName={editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx].name}
+          episodeName={
+            editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]?.name ?? ''
+          }
         />
       </main>
       <LoadingOverlay loading={loading} />
