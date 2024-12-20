@@ -22,7 +22,8 @@ export interface Message {
   chatId: number;
   text: string;
   sender: SenderType;
-  createDate: string;
+  createDateString: string;
+  createDateLocale: Date | null; // 서버는 UTC로 주지만 프론트에서는 로컬타임으로 변환해서 쓴다.
 }
 
 export interface MediaData {

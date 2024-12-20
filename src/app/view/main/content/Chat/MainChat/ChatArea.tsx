@@ -267,7 +267,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                       setSelectedNull={() => setBubbleIndexNull()}
                       selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
                       lastMessage={lastMessage}
-                      createDate={msg.createDate}
+                      createDate={msg.createDateString}
                       prevSenderType={index === 0 ? SenderType.IntroPrompt : messages.Messages[index - 1].sender}
                     />
                   )}

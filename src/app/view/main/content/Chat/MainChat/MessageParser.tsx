@@ -10,12 +10,19 @@ import {
   SenderType,
   COMMAND_USER,
 } from './ChatTypes';
+import {compareDates} from './NewDate';
 
 // ㅋㅋㅋㅋㅋㅋㅋㅋ
 
 //const patternParsing( pattern : RegExp, )
 
-const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate: string): Message[] => {
+const parseAnswer = (
+  answer: string,
+  chatType: ChatType,
+  id: number,
+  createDateString: string,
+  createDate: Date,
+): Message[] => {
   const result: Message[] = [];
 
   // 시스템 메시지면 바로 세팅해주고 리턴해준다.
@@ -26,7 +33,8 @@ const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate:
         chatId: id,
         text: answer.replace(/[%"*]/g, ''), // 특수 문자 제거
         sender: SenderType.System,
-        createDate: '',
+        createDateString: '',
+        createDateLocale: new Date(),
       });
       return result;
     }
@@ -66,7 +74,8 @@ const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate:
           chatId: id,
           text: plainText.replace(/[%"*]/g, ''), // 특수 문자 제거
           sender: SenderType.PartnerNarration,
-          createDate: '',
+          createDateString: '',
+          createDateLocale: createDate,
         });
       }
     }
@@ -80,7 +89,8 @@ const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate:
           chatId: id,
           text: cleanedText,
           sender: chatType === ChatType.SystemText ? SenderType.System : pattern.type,
-          createDate: i === match.length ? createDate : '', // AI 채팅은 마지막 말풍선에만 시간을 출력해준다.
+          createDateString: i === match.length ? createDateString : '', // AI 채팅은 마지막 말풍선에만 시간을 출력해준다.
+          createDateLocale: createDate,
         });
         break; // 첫 번째 매칭된 그룹만 처리
       }
@@ -98,7 +108,8 @@ const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate:
         chatId: id,
         text: remainingText.replace(/[%"*]/g, ''), // 특수 문자 제거
         sender: SenderType.PartnerNarration,
-        createDate: createDate,
+        createDateString: createDateString,
+        createDateLocale: createDate,
       });
     }
   }
@@ -107,7 +118,7 @@ const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate:
   if (result.length > 0) {
     const lastMessage = result[result.length - 1];
     //lastMessage.text += ' (modified)'; // 텍스트 수정
-    lastMessage.createDate = createDate; // 예: 생성 날짜를 업데이트
+    lastMessage.createDateString = createDateString; // 예: 생성 날짜를 업데이트
   }
 
   return result;
@@ -125,7 +136,7 @@ const parseAnswer = (answer: string, chatType: ChatType, id: number, createDate:
 
 export const timeParser = (dateTimeUTC: Date): string => {
   // UTC 시간을 로컬 시간으로 변환
-  // 만약 문자열 안에 Z가 포함되어있지 않으면 Z를 명시해준다
+  // 만약 문자열 안에 Z가 포함되어있지 않으면 Z를 명시해준다( 서버에서 줄때가 있고 안줄때가 있다 )
   let stringDate = dateTimeUTC.toString();
   let localDate = new Date(dateTimeUTC.toString());
   if (stringDate.includes('Z') === false) localDate = new Date(dateTimeUTC.toString() + 'Z');
@@ -144,11 +155,12 @@ export const timeParser = (dateTimeUTC: Date): string => {
   return `${formattedHours}:${formattedMinutes} ${period}`;
 };
 //export const parseMessage = (message: string | null, id: number): Message[] | null => {
-export const parseMessage = (messageInfo: MessageInfo): Message[] | null => {
+export const parseMessage = (messageInfo: MessageInfo, prevMessageDate: Date | null): Message[] | null => {
   let message: string = messageInfo.message;
   const chatType: ChatType = messageInfo.chatType;
   let id: number = messageInfo.id;
-  let createDate: string = timeParser(messageInfo.createAt);
+  let createDateString: string = timeParser(messageInfo.createAt);
+  const createDate: Date = messageInfo.createAt;
   if (!message) return null;
 
   try {
@@ -156,7 +168,9 @@ export const parseMessage = (messageInfo: MessageInfo): Message[] | null => {
     const result: Message[] = [];
 
     if (parsedMessage.episodeInfo) {
-      result.push(...parseAnswer(parsedMessage.episodeInfo, chatType, parsedMessage.id, createDate));
+      result.push(
+        ...parseAnswer(parsedMessage.episodeInfo, chatType, parsedMessage.id, createDateString, messageInfo.createAt),
+      );
     }
 
     if (parsedMessage.Question) {
@@ -164,12 +178,30 @@ export const parseMessage = (messageInfo: MessageInfo): Message[] | null => {
 
       parts.forEach((part, index, array) => {
         if (part.trim()) {
+          // 첫번째 메시지에는 날짜 말풍선을 넣을지 체크해서 처리
+          if (index === 0) {
+            const strNewDate = compareDates(prevMessageDate, messageInfo.createAt);
+
+            if (strNewDate.length > 1) {
+              // newDate 말풍선을 추가해준다.
+              const newDateMessage: Message = {
+                chatId: 0,
+                text: strNewDate,
+                sender: SenderType.NewDate,
+                createDateString: '',
+                createDateLocale: new Date(messageInfo.createAt),
+              };
+              result.push(newDateMessage);
+            }
+          }
+
           const sender = part.startsWith('*') && part.endsWith('*') ? SenderType.UserNarration : SenderType.User;
           const newMessage: Message = {
             chatId: id,
             text: part.replace(/^\*|\*$/g, ''), // 양쪽의 '*'를 제거
             sender: sender,
-            createDate: index === array.length - 1 ? createDate : '', // 마지막 항목만 createDate 설정
+            createDateString: index === array.length - 1 ? createDateString : '', // 마지막 항목만 createDate 설정
+            createDateLocale: createDate,
           };
 
           if (newMessage.text !== '...') result.push(newMessage);
@@ -178,7 +210,9 @@ export const parseMessage = (messageInfo: MessageInfo): Message[] | null => {
     }
 
     if (parsedMessage.Answer) {
-      result.push(...parseAnswer(parsedMessage.Answer, chatType, parsedMessage.id, createDate));
+      result.push(
+        ...parseAnswer(parsedMessage.Answer, chatType, parsedMessage.id, createDateString, parsedMessage.createAt),
+      );
     }
 
     return result;
@@ -262,7 +296,8 @@ export const parsedUserNarration = (messageData: Message): Message => {
     chatId: messageData.chatId,
     sender: SenderType.UserNarration,
     text: messageData.text.slice(1, -1), // 양 옆의 *를 제거
-    createDate: '',
+    createDateString: '',
+    createDateLocale: new Date(),
   };
   return parsedMessage;
 };
@@ -386,12 +421,34 @@ export const setSenderType = (
     chatId: id,
     sender: isMyMessage ? SenderType.User : isNarrationActive ? SenderType.PartnerNarration : SenderType.Partner,
     text: message,
-    createDate: '',
+    createDateString: '',
+    createDateLocale: new Date(),
   };
   return resultMessage;
 };
 
-const checkNewDate = (prevDate: string, newDate: string): string => {
+export const getCurrentLocaleTime = (): string => {
+  const currentDate = new Date();
+
+  // 시간 포맷을 직접 생성
+  const hours = currentDate.getHours(); // 시
+  const minutes = currentDate.getMinutes(); // 분
+  const isPM = hours >= 12; // 오후 여부 확인
+
+  // 12시간 형식으로 변환
+  const formattedHours = hours % 12 || 12; // 0을 12로 바꿔줌
+  const formattedMinutes = minutes.toString().padStart(2, '0'); // 항상 2자리 숫자
+  const period = isPM ? 'pm' : 'am'; // AM/PM 결정
+
+  // 결과 문자열
+  const timeString = `${formattedHours}:${formattedMinutes} ${period}`;
+
+  console.log(timeString); // 예: "3:49 pm"
+
+  return timeString;
+};
+
+export const checkNewDate = (prevDate: string, newDate: string): string => {
   // 날짜 객체 생성
   const prev = new Date(prevDate);
   const current = new Date(newDate);
