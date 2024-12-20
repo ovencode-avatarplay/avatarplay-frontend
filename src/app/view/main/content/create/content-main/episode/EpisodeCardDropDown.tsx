@@ -9,8 +9,9 @@ import {EpisodeInfo, setCurrentEpisodeInfo, updateEpisodeInfo} from '@/redux-sto
 import {useDispatch, useSelector} from 'react-redux';
 import {LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePreview} from '@ui/Icons';
 import EpisodeSetNamePopup from './episode-initialize/EpisodeSetNamePopup';
-import {removeEpisode, updateEpisodeInfoInContent} from '@/redux-store/slices/ContentInfo';
-import {RootState} from '@/redux-store/ReduxStore';
+import {ChapterInfo, removeEpisode, updateEpisodeInfoInContent} from '@/redux-store/slices/ContentInfo';
+import {RootState, store} from '@/redux-store/ReduxStore';
+import BottomRenameDrawer from './BottomRenameDrawer';
 
 interface EpisodeCardDropDownProps {
   episodeInfo: EpisodeInfo;
@@ -35,14 +36,40 @@ const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeI
 
   const [isEpisodeNameOn, setIsEpisodeNameOn] = useState<boolean>(false);
 
-  const handleSetEpisodeNameComplete = (name: string) => {
-    // Redux 상태 업데이트
-    dispatch(updateEpisodeInfo({name: name}));
-    setTimeout(() => {
-      save();
-      setIsEpisodeNameOn(false);
-      close();
-    }, 0); // 상태 반영 이후 실행
+  const handleSetEpisodeNameComplete = (name: string): boolean => {
+    try {
+      // Redux 상태 가져오기
+      const state = store.getState(); // Redux store의 상태 가져오기
+      const allEpisodes = state.content.curEditingContentInfo.chapterInfoList.flatMap(
+        (chapter: ChapterInfo) => chapter.episodeInfoList,
+      );
+
+      // 중복 이름 확인
+      const isDuplicateName = allEpisodes.some((episode: EpisodeInfo) => episode.name === name);
+
+      if (isDuplicateName) {
+        console.warn('Duplicate episode name found:', name);
+        return false; // 중복된 이름이 있으면 false 반환
+      }
+
+      // Redux 상태 업데이트
+      dispatch(updateEpisodeInfo({name}));
+
+      // 상태 반영 이후 실행
+      setTimeout(() => {
+        save();
+        setIsEpisodeNameOn(false);
+        close();
+      }, 0);
+
+      // 성공적으로 완료되었음을 반환
+      return true;
+    } catch (error) {
+      console.error('Error updating episode name:', error);
+
+      // 오류가 발생했음을 반환
+      return false;
+    }
   };
 
   const HandleRemoveEpisode = (id: number) => {
@@ -93,12 +120,10 @@ const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeI
         <span className={styles.deleteItemLabel}>Delete</span>
         <img src={LineDelete.src} className={styles.deleteItemIcon} />
       </div>
-      <EpisodeSetNamePopup
+      <BottomRenameDrawer
         open={isEpisodeNameOn}
-        onClickCancel={() => {
-          setIsEpisodeNameOn(false);
-        }}
-        onClickComplete={handleSetEpisodeNameComplete}
+        onClose={() => setIsEpisodeNameOn(false)}
+        onComplete={handleSetEpisodeNameComplete}
       />
     </div>
   );

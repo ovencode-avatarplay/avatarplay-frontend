@@ -1,0 +1,108 @@
+.handleBar {
+  width: 39px;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 50px;
+  margin: 8px auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.container {
+width: 100vw;
+max-width: 500px;
+margin: 0  auto;
+border-radius: 24px 24px 0 0;
+box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+padding: 20px;
+overflow: hidden;
+background-color: white;
+  
+}
+
+.cancelButton,
+.doneButton {
+  font-family: "Lato", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fd55d3;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.title {
+  font-family: "Lato", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e1e1e;
+  text-align: center;
+}
+
+.inputContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 12px;
+  background: #ffffff;
+  border: 1px solid #e8eaed;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.input {
+  width: 100%;
+  font-family: "Lato", sans-serif;
+  font-size: 15px;
+  color: #1e1e1e;
+  background: none;
+  outline: none;
+  border: none;
+}
+
+.inputError {
+  background: #fff5fd;
+  border: 1px solid #febbea;
+}
+.errorContainer {  
+  
+max-width: 500px;
+margin: 0  auto;
+  left: 50%; /* 화면 중앙 정렬 */
+  
+  width: 370px; /* 에러 메시지 너비 */
+  z-index: 5000; /* Drawer 위에 표시되도록 높은 z-index 설정 */
+}
+
+.errorMessage {
+  background: #f75555;
+  border-radius: 12px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.errorIcon {
+  width: 24px;
+  height: 24px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorText {
+  font-family: "Lato", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 20px;
+}

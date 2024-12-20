@@ -6,9 +6,29 @@ interface Props {
   open: boolean;
   onClickCancel: () => void;
   onClickComplete: (nameResult: string) => void;
+  title?: string;
+  desc?: string;
+  cancelText?: string;
+  confirmText?: string;
+  isAlert?: boolean;
 }
 
-const EpisodeSetNamePopup: React.FC<Props> = ({open, onClickCancel, onClickComplete}) => {
+const EpisodeSetNamePopup: React.FC<Props> = ({
+  open,
+  onClickCancel,
+  onClickComplete,
+  title = 'Alert',
+  desc = (
+    <>
+      Are you sure you want to cancel?
+      <br />
+      Your changes will be lost
+    </>
+  ),
+  cancelText = 'No',
+  confirmText = 'Yes',
+  isAlert,
+}) => {
   const [inputValue, setInputValue] = useState<string>('');
   const [isAlertOn, setIsAlertOn] = useState<boolean>(false);
 
@@ -42,18 +62,14 @@ const EpisodeSetNamePopup: React.FC<Props> = ({open, onClickCancel, onClickCompl
       <div className={styles.setNamePopup}>
         {isAlertOn === true ? (
           <>
-            <div className={styles.title}>Alert</div>
-            <div className={styles.alertMessage}>
-              Are you sure you want to cancel?
-              <br />
-              Your changes will be lost
-            </div>
+            <div className={styles.title}>{title}</div>
+            <div className={styles.alertMessage}>{desc}</div>
             <div className={styles.buttonArea}>
               <button className={`${styles.button} ${styles.cancelButton}`} onClick={handleClickAlertNo}>
-                No
+                {cancelText}
               </button>
               <button className={`${styles.button} ${styles.completeButton}`} onClick={handleClickAlertYes}>
-                Yes
+                {confirmText}
               </button>
             </div>
           </>
