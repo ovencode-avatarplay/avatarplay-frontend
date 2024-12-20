@@ -5,7 +5,8 @@ import {Modal} from '@mui/material';
 interface Props {
   open: boolean;
   onClickCancel: () => void;
-  onClickComplete: (nameResult: string) => void;
+  onClickComplete?: (nameResult: string) => void;
+  onClickCompleteAlert?: () => void;
   title?: string;
   desc?: string;
   cancelText?: string;
@@ -17,6 +18,7 @@ const EpisodeSetNamePopup: React.FC<Props> = ({
   open,
   onClickCancel,
   onClickComplete,
+  onClickCompleteAlert,
   title = 'Alert',
   desc = (
     <>
@@ -27,17 +29,17 @@ const EpisodeSetNamePopup: React.FC<Props> = ({
   ),
   cancelText = 'No',
   confirmText = 'Yes',
-  isAlert,
+  isAlert = false,
 }) => {
   const [inputValue, setInputValue] = useState<string>('');
-  const [isAlertOn, setIsAlertOn] = useState<boolean>(false);
+  const [isAlertOn, setIsAlertOn] = useState<boolean>(isAlert);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
   const handleCompleteClick = () => {
-    onClickComplete(inputValue);
+    if (onClickComplete) onClickComplete(inputValue);
   };
 
   const handleClickCancel = () => {
@@ -60,37 +62,55 @@ const EpisodeSetNamePopup: React.FC<Props> = ({
   return (
     <Modal open={open} onClose={() => {}}>
       <div className={styles.setNamePopup}>
-        {isAlertOn === true ? (
+        {isAlert ? (
           <>
             <div className={styles.title}>{title}</div>
             <div className={styles.alertMessage}>{desc}</div>
             <div className={styles.buttonArea}>
-              <button className={`${styles.button} ${styles.cancelButton}`} onClick={handleClickAlertNo}>
+              <button className={`${styles.button} ${styles.cancelButton}`} onClick={onClickCancel}>
                 {cancelText}
               </button>
-              <button className={`${styles.button} ${styles.completeButton}`} onClick={handleClickAlertYes}>
+              <button className={`${styles.button} ${styles.completeButton}`} onClick={onClickCompleteAlert}>
                 {confirmText}
               </button>
             </div>
           </>
         ) : (
+          // isAlertOn 상태에서 렌더링될 내용
           <>
-            <div className={styles.title}>Episode Title</div>
-            <input
-              className={styles.input}
-              type="text"
-              placeholder="Place Holder"
-              value={inputValue}
-              onChange={handleInputChange}
-            />
-            <div className={styles.buttonArea}>
-              <button className={`${styles.button} ${styles.cancelButton}`} onClick={handleClickCancel}>
-                Cancel
-              </button>
-              <button className={`${styles.button} ${styles.completeButton}`} onClick={handleCompleteClick}>
-                Complete
-              </button>
-            </div>
+            {isAlertOn ? (
+              <>
+                <div className={styles.title}>{title}</div>
+                <div className={styles.alertMessage}>{desc}</div>
+                <div className={styles.buttonArea}>
+                  <button className={`${styles.button} ${styles.cancelButton}`} onClick={handleClickAlertNo}>
+                    {cancelText}
+                  </button>
+                  <button className={`${styles.button} ${styles.completeButton}`} onClick={handleClickAlertYes}>
+                    {confirmText}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={styles.title}>Episode Title</div>
+                <input
+                  className={styles.input}
+                  type="text"
+                  placeholder="Place Holder"
+                  value={inputValue}
+                  onChange={handleInputChange}
+                />
+                <div className={styles.buttonArea}>
+                  <button className={`${styles.button} ${styles.cancelButton}`} onClick={handleClickCancel}>
+                    Cancel
+                  </button>
+                  <button className={`${styles.button} ${styles.completeButton}`} onClick={handleCompleteClick}>
+                    Complete
+                  </button>
+                </div>
+              </>
+            )}
           </>
         )}
       </div>

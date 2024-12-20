@@ -66,6 +66,64 @@ export const curEditngContentInfoSlice = createSlice({
         );
       });
     },
+    duplicateEpisode: (state, action: PayloadAction<number>) => {
+      const targetId = action.payload; // 복제할 에피소드 ID
+
+      // 모든 에피소드의 ID를 수집하여 가장 낮은 ID를 계산
+      let minId = Infinity;
+      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
+        chapter.episodeInfoList.forEach(episode => {
+          if (episode.id < minId) {
+            minId = episode.id;
+          }
+        });
+      });
+
+      // 새로운 ID는 가장 낮은 ID에서 -1을 뺌
+      const newId = minId - 1;
+
+      // 각 챕터를 순회하며 타겟 에피소드를 찾음
+      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
+        const targetIndex = chapter.episodeInfoList.findIndex(episode => episode.id === targetId);
+
+        // 타겟 에피소드가 존재하면 복제
+        if (targetIndex !== -1) {
+          const targetEpisode = chapter.episodeInfoList[targetIndex];
+
+          // 복제된 에피소드 생성
+          const duplicatedEpisode = {
+            ...targetEpisode,
+            id: newId, // 새로운 고유 ID
+            name: `${targetEpisode.name} copy`, // 이름에 ' copy' 추가
+          };
+
+          // 타겟 에피소드 다음 인덱스에 삽입
+          chapter.episodeInfoList.splice(targetIndex + 1, 0, duplicatedEpisode);
+        }
+      });
+    },
+    adjustEpisodeIndex: (state, action: PayloadAction<{targetId: number; direction: 'up' | 'down'}>) => {
+      const {targetId, direction} = action.payload;
+
+      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
+        const targetIndex = chapter.episodeInfoList.findIndex(episode => episode.id === targetId);
+
+        // 타겟 에피소드가 존재하고 방향에 따른 이동 가능 여부 확인
+        if (targetIndex !== -1) {
+          if (direction === 'up' && targetIndex > 0) {
+            // 위로 이동: 현재 인덱스와 이전 인덱스의 위치를 교체
+            const temp = chapter.episodeInfoList[targetIndex - 1];
+            chapter.episodeInfoList[targetIndex - 1] = chapter.episodeInfoList[targetIndex];
+            chapter.episodeInfoList[targetIndex] = temp;
+          } else if (direction === 'down' && targetIndex < chapter.episodeInfoList.length - 1) {
+            // 아래로 이동: 현재 인덱스와 다음 인덱스의 위치를 교체
+            const temp = chapter.episodeInfoList[targetIndex + 1];
+            chapter.episodeInfoList[targetIndex + 1] = chapter.episodeInfoList[targetIndex];
+            chapter.episodeInfoList[targetIndex] = temp;
+          }
+        }
+      });
+    },
 
     updateEditingContentInfo: (state, action: PayloadAction<Partial<ContentInfo>>) => {
       if (state.curEditingContentInfo) {
@@ -93,8 +151,10 @@ export const curEditngContentInfoSlice = createSlice({
 export const {
   setEditingContentInfo,
   updateEditingContentInfo,
+  duplicateEpisode,
   setContentInfoToEmpty,
   removeEpisode,
   updateEpisodeInfoInContent,
+  adjustEpisodeIndex,
 } = curEditngContentInfoSlice.actions;
 export default curEditngContentInfoSlice.reducer;

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import styles from './EpisodeCard.module.css';
 import {Avatar, Box, Typography, IconButton, Badge, Card, Modal} from '@mui/material';
-import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import {BoldCirclePlus, edit1Pixel, editPlusOpacity, plusRound} from '@ui/Icons';
+import {BoldArrowDown, BoldCirclePlus, BoldMenuDots, edit1Pixel, editPlusOpacity, LineMenu, plusRound} from '@ui/Icons';
 import {CircleRounded} from '@mui/icons-material';
 import {RootState, store} from '@/redux-store/ReduxStore';
 import {useDispatch, useSelector} from 'react-redux';
@@ -14,7 +14,7 @@ import EpisodeDescription from './episode-description/EpisodeDescription';
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
 import EpisodeCardDropDown from './EpisodeCardDropDown';
-import {updateEpisodeInfoInContent} from '@/redux-store/slices/ContentInfo';
+import {adjustEpisodeIndex, updateEpisodeInfoInContent} from '@/redux-store/slices/ContentInfo';
 interface EpisodeCardProps {
   episodeNum: number;
   episodeId: number;
@@ -93,14 +93,39 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
 
     setEpisodeModalOpen(false); // Episode 모달 닫기
   };
+  const chapters = useSelector((state: RootState) => state.content.curEditingContentInfo.chapterInfoList);
+  const handleChangeOrderEpisodeIndex = (targetId: number, direction: 'up' | 'down') => {
+    const currentChapter = chapters.find(chapter => chapter.episodeInfoList.some(episode => episode.id === targetId));
+
+    if (!currentChapter) {
+      console.warn('해당 에피소드를 포함하는 챕터를 찾을 수 없습니다.');
+      return;
+    }
+
+    const episodeIndex = currentChapter.episodeInfoList.findIndex(episode => episode.id === targetId);
+
+    if (episodeIndex === -1) {
+      console.warn('에피소드 인덱스를 찾을 수 없습니다.');
+      return;
+    }
+
+    // 방향에 따른 인덱스 계산
+    const swapIndex = direction === 'up' ? episodeIndex - 1 : episodeIndex + 1;
+    const currentIndex = direction === 'up' ? episodeIndex + 1 : episodeIndex - 1;
+    // 인덱스 범위 검사
+    if (swapIndex < 0 || swapIndex >= currentChapter.episodeInfoList.length) {
+      console.warn('더 이상 이동할 수 없습니다.');
+      return;
+    }
+    console.log({episodeIndex}, currentChapter.episodeInfoList[episodeIndex]);
+    dispatch(setCurrentEpisodeInfo(currentChapter.episodeInfoList[swapIndex]));
+    // 인덱스를 기반으로 순서 변경 작업 디스패치
+    dispatch(adjustEpisodeIndex({targetId, direction}));
+  };
 
   const [isDropDownOpen, setDropDownOpen] = useState(false);
-  useEffect(() => {
-    console.log('Updated episodeInfo:', episodeInfo);
-  }, [episodeInfo]);
 
   useEffect(() => {
-    console.log('currentEpisode updated:', currentEpisode.name);
     dispatch(updateEpisodeInfoInContent(currentEpisode)); // 상태 업데이트
   }, [currentEpisode.name]);
 
@@ -113,13 +138,32 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
 
           <Typography>{`${episodeInfo?.name || 'None'}`}</Typography>
         </div>
-        <IconButton
-          onClick={() => {
-            setDropDownOpen(true);
-          }}
-        >
-          <MoreVertIcon />
-        </IconButton>
+        <div style={{display: 'flex'}}>
+          <div
+            className={styles.arrowIcon}
+            onClick={() => {
+              handleChangeOrderEpisodeIndex(currentEpisode.id, 'up');
+            }}
+          >
+            <img src={BoldArrowDown.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
+          </div>
+          <div
+            className={styles.arrowIcon}
+            onClick={() => {
+              handleChangeOrderEpisodeIndex(currentEpisode.id, 'down');
+            }}
+          >
+            <img src={BoldArrowDown.src} alt="Main" />
+          </div>
+          <div
+            className={styles.arrowIcon}
+            onClick={() => {
+              setDropDownOpen(true);
+            }}
+          >
+            <img src={BoldMenuDots.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
+          </div>
+        </div>
       </Box>
       <Box className={styles.contentBox}>
         <div className={styles.contentTop}>
