@@ -3,6 +3,7 @@ import {Box, Typography, Modal} from '@mui/material';
 import styles from './NextEpisodePopup.module.css'; // CSS 모듈 경로
 import {TriggerNextEpisodeInfo} from '@/app/NetWork/ChatNetwork';
 import {DialogBody, NextEpisodeWait} from '@ui/chatting';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface PopupProps {
   open: boolean;
@@ -35,7 +36,7 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
           <div className={styles.dialogContentAction}>
             <div className={styles.newEpisodeArea}>
               <Typography variant="h6" component="h2" className={styles.newEpisodeTitle}>
-                New Episode opened!
+                {getLocalizedText('EpisodePopup', 'openEpisode_desc_001')}
               </Typography>
               <Box className={styles.newEpisodeList}>
                 <div className={styles.transactionItemImage}>
@@ -70,15 +71,17 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
           </div>
 
           <Typography variant="body2" className={styles.descArea}>
-            Ready to jump into the next episode?
+            {getLocalizedText('EpisodePopup', 'jumpEpisode_desc_001')}
           </Typography>
           <Box className={styles.buttonArea}>
             <button className={`${styles.buttonDefault} ${styles.buttonBgNo}`} onClick={onNo}>
-              <div className={styles.buttonTextNo}>No</div>
-              <div className={styles.buttonTextNoSub}>(Continue Chatting)</div>
+              <div className={styles.buttonTextNo}>{getLocalizedText('UI', 'yes_btn_002') /*NO*/}</div>
+              <div className={styles.buttonTextNoSub}>
+                {getLocalizedText('EpisodePopup', 'continueEpisode_desc_001') /*(Continue Chatting)*/}
+              </div>
             </button>
             <button className={`${styles.buttonDefault} ${styles.buttonBgYes}`} onClick={onYes}>
-              <div className={styles.buttonTextYes}>Yes</div>
+              <div className={styles.buttonTextYes}>{getLocalizedText('UI', 'yes_btn_001') /*YES*/}</div>
               <div className={styles.loadingItem}>
                 <img src={NextEpisodeWait.src} className={styles.rotatingImage} alt="Loading" />
                 <div className={styles.waitTime}>{waitTime}</div>
@@ -88,10 +91,17 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
         </div>
       ) : (
         <>
-          <Typography className={styles.loadingText}>다음 에피소드 데이터를 불러오는데 실패했습니다.</Typography>{' '}
+          <Typography className={styles.loadingText}>
+            {
+              getLocalizedText(
+                'SystemMessage',
+                'failEpisode_desc_001',
+              ) /*다음 에피소드 데이터를 불러오는데 실패했습니다.*/
+            }
+          </Typography>{' '}
           {/*data가 없을 때 로딩 상태 표시 */}
           <button className={`${styles.buttonDefault} ${styles.buttonBgNo}`} onClick={onNo}>
-            <div className={styles.buttonTextNo}>닫기</div>
+            <div className={styles.buttonTextNo}>{getLocalizedText('UI', 'close_btn_001') /*닫기*/}</div>
           </button>
         </>
       )}

@@ -210,9 +210,7 @@ export const parseMessage = (messageInfo: MessageInfo, prevMessageDate: Date | n
     }
 
     if (parsedMessage.Answer) {
-      result.push(
-        ...parseAnswer(parsedMessage.Answer, chatType, parsedMessage.id, createDateString, parsedMessage.createAt),
-      );
+      result.push(...parseAnswer(parsedMessage.Answer, chatType, parsedMessage.id, createDateString, createDate));
     }
 
     return result;
