@@ -21,6 +21,7 @@ import {
   isSameSenderType,
   cleanStringFinal,
   timeParser,
+  getCurrentLocaleTime,
 } from '@chats/MainChat/MessageParser';
 
 import {
@@ -44,6 +45,7 @@ import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import ChatFloatingArea from './MainChat/ChatFloatingArea';
 import {TriggerSubDataType} from '@/types/apps/DataTypes';
 import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
+import {addNewDateMessage, compareDates, NewDateType, refreshNewDateAll, shiftDates} from './MainChat/NewDate';
 
 const ChatPage: React.FC = () => {
   const TempIdforSendQuestion: number = -222;
@@ -85,7 +87,8 @@ const ChatPage: React.FC = () => {
     chatId: TempIdforSendQuestion,
     text: '',
     sender: SenderType.System,
-    createDate: '',
+    createDateString: '',
+    createDateLocale: new Date('2024-12-17T10:30:00Z'),
   });
 
   const handleBackClick = useBackHandler();
@@ -110,26 +113,6 @@ const ChatPage: React.FC = () => {
   const isRegeneratingQuestion = useSelector((state: RootState) => state.modifyQuestion.isRegeneratingQuestion);
   const regenerateQuestion = useSelector((state: RootState) => state.modifyQuestion.regeneratingQuestion);
 
-  const getCurrentLocaleTime = (): string => {
-    const currentDate = new Date();
-
-    // 시간 포맷을 직접 생성
-    const hours = currentDate.getHours(); // 시
-    const minutes = currentDate.getMinutes(); // 분
-    const isPM = hours >= 12; // 오후 여부 확인
-
-    // 12시간 형식으로 변환
-    const formattedHours = hours % 12 || 12; // 0을 12로 바꿔줌
-    const formattedMinutes = minutes.toString().padStart(2, '0'); // 항상 2자리 숫자
-    const period = isPM ? 'pm' : 'am'; // AM/PM 결정
-
-    // 결과 문자열
-    const timeString = `${formattedHours}:${formattedMinutes} ${period}`;
-
-    console.log(timeString); // 예: "3:49 pm"
-
-    return timeString;
-  };
   const Send = async (reqSendChatMessage: SendChatMessageReq) => {
     try {
       // console.log('sendParsedMessageStartRef:', parsedMessagesRef);
@@ -272,7 +255,8 @@ const ChatPage: React.FC = () => {
       chatId: -1,
       text: '.',
       sender: SenderType.media,
-      createDate: currentTime,
+      createDateString: currentTime,
+      createDateLocale: new Date(),
     };
 
     if (isFinishMessage(isMyMessage, message) === true) {
@@ -286,7 +270,8 @@ const ChatPage: React.FC = () => {
       chatId: TempIdforSendQuestion, // 임시 ID 지급
       text: message,
       sender: isMyMessage ? SenderType.User : currentSender,
-      createDate: currentTime,
+      createDateString: currentTime,
+      createDateLocale: new Date(),
     };
     const mediaDataValue: MediaData = {
       mediaType: TriggerMediaState.None,
@@ -303,7 +288,7 @@ const ChatPage: React.FC = () => {
         // 이 시점이 마지막 Partner 말풍선이 끝난 시점이라서 이 시점에서 마지막 말풍선에 날짜를 출력한다.
         let tempAllMessage: Message[] = [...(parsedMessagesRef.current?.Messages || [])];
         if (tempAllMessage && tempAllMessage[tempAllMessage.length - 1]) {
-          tempAllMessage[tempAllMessage.length - 1].createDate = currentTime;
+          tempAllMessage[tempAllMessage.length - 1].createDateString = currentTime;
         }
 
         const allMedia = [...(parsedMessagesRef.current?.mediaData || [])];
@@ -335,7 +320,8 @@ const ChatPage: React.FC = () => {
             chatId: 0,
             text: '.',
             sender: SenderType.System,
-            createDate: isPrintDate ? currentTime : '', // 시스템 메시지에는 시간을 출력하지 않는다.
+            createDateString: isPrintDate ? currentTime : '', // 시스템 메시지에는 시간을 출력하지 않는다.
+            createDateLocale: new Date(),
           };
 
           resultSystemMessages.text = triggerInfo.systemText.replace(/^%|%$/g, '');
@@ -423,7 +409,7 @@ const ChatPage: React.FC = () => {
 
     //console.log('setParsedMessages ==========' + newMessage.text + '=========', 'isClearString : ', isClearString);
 
-    const func = (prev: any) => {
+    const funcSendMessage = (prev: any) => {
       // 이전 메시지 정보를 복사하고 메시지만 가져와 배열 업데이트 준비
       const allMessages = [...(prev?.Messages || [])];
       const allEmoticon = [...(prev?.emoticonUrl || [])];
@@ -440,12 +426,18 @@ const ChatPage: React.FC = () => {
       // 일단 내 메시지  처리
       if (isMyMessage === true) {
         // 임시로 newDate 넣자
-        const newDateMessage: Message = parsedUserNarration(newMessage);
-        newDateMessage.sender = SenderType.NewDate;
-        newDateMessage.text = 'july 23';
-        allMessages.push(newDateMessage);
-        allEmoticon.push('');
-        allMedia.push(mediaDataValue);
+        // const newDateMessage: Message = parsedUserNarration(newMessage);
+        // newDateMessage.sender = SenderType.NewDate;
+        // newDateMessage.text = newDateMessage.createDateString;
+        // allMessages.push(newDateMessage);
+        // allEmoticon.push('');
+        // allMedia.push(mediaDataValue);
+
+        // 가장최근 메시지의 표준시간을 가져온다
+        const dateBefore = allMessages[allMessages.length - 1].createDateLocale;
+        const dateCurrent = new Date();
+        const strNewDate = compareDates(dateBefore, dateCurrent);
+        addNewDateMessage(allMessages, allEmoticon, allMedia, strNewDate, dateCurrent, mediaDataValue);
 
         if (isUserNarration(newMessage.text)) {
           const parsedMessage: Message = parsedUserNarration(newMessage);
@@ -499,7 +491,8 @@ const ChatPage: React.FC = () => {
               chatId: tempChatId,
               text: newMessage.text[i],
               sender: (newMessage.sender = newSenderResult),
-              createDate: currentTime,
+              createDateString: currentTime,
+              createDateLocale: new Date(),
             };
             currentSender = _newMessage.sender;
 
@@ -533,7 +526,7 @@ const ChatPage: React.FC = () => {
       };
     };
 
-    const updatedMessages = func(parsedMessagesRef.current);
+    const updatedMessages = funcSendMessage(parsedMessagesRef.current);
     setParsedMessages(updatedMessages);
     parsedMessagesRef.current = updatedMessages;
   };
@@ -557,6 +550,27 @@ const ChatPage: React.FC = () => {
   };
 
   //#endregion
+
+  const handleChangeNewDate = (cheat: string) => {
+    switch (cheat) {
+      case '⦿YEAR⦿':
+        const messageGroupYear = shiftDates(NewDateType.YEAR, parsedMessages);
+        setParsedMessages(messageGroupYear);
+        break;
+      case '⦿MONTH⦿':
+        const messageGroupMonth = shiftDates(NewDateType.MONTH, parsedMessages);
+        setParsedMessages(messageGroupMonth);
+        break;
+      case '⦿DAY⦿':
+        const messageGroupDay = shiftDates(NewDateType.DAY, parsedMessages);
+        setParsedMessages(messageGroupDay);
+        break;
+      case '⦿REFRESH_NEW_DAY⦿': // 현재상태에서 모든 시간 말풍선을 갱신한다.
+        const messageGroupRefresh = refreshNewDateAll(parsedMessages);
+        setParsedMessages(messageGroupRefresh);
+        break;
+    }
+  };
 
   //#region 메세지 재전송 로직
   const handleRetryStream = () => {
@@ -705,6 +719,15 @@ const ChatPage: React.FC = () => {
   const {prevMessages: enterData} = usePrevChatting(episodeId, isReqPrevCheat, handleRerender, isIdEnter);
 
   useEffect(() => {
+    function setFullHeight() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    window.addEventListener('resize', setFullHeight);
+    window.addEventListener('orientationchange', setFullHeight);
+    setFullHeight();
+
     if (
       (!hasFetchedPrevMessages && enterData && (enterData?.prevMessageInfoList || enterData?.introPrompt.length > 0)) ||
       (nextEpisodeId != null && enterData?.episodeId === nextEpisodeId) ||
@@ -718,9 +741,12 @@ const ChatPage: React.FC = () => {
         emoticonUrl: string[];
         mediaData: MediaData[];
       }>(
-        (acc, msg) => {
+        (acc, msg, indexCurrent, array) => {
+          let prevDate: Date | null = null;
+          if (indexCurrent > 0) prevDate = array[indexCurrent - 1].createAt;
+
           // 메시지 파싱
-          const parsedMessages = parseMessage(msg) || [];
+          const parsedMessages = parseMessage(msg, prevDate) || [];
 
           acc.parsedPrevMessages.push(...parsedMessages);
 
@@ -758,7 +784,8 @@ const ChatPage: React.FC = () => {
               chatId: -1,
               text: '.',
               sender: SenderType.media,
-              createDate: createDate,
+              createDateString: createDate,
+              createDateLocale: new Date(),
             };
             acc.parsedPrevMessages.push(defaultMessages);
             acc.emoticonUrl.push(emoticonValue);
@@ -774,7 +801,8 @@ const ChatPage: React.FC = () => {
         chatId: chatId,
         text: enterData?.introPrompt || '애피소드 도입부가 설정되지 않았습니다',
         sender: SenderType.IntroPrompt,
-        createDate: '',
+        createDateString: '',
+        createDateLocale: new Date(),
       };
 
       // emoticonUrl.unshift('');
@@ -866,6 +894,7 @@ const ChatPage: React.FC = () => {
         isSendingMessage={isSendingMessage}
         send={Send}
         onRemoveChat={removeParsedMessage}
+        onCheatChangeDate={handleChangeNewDate}
       />
 
       {showPopup && (

@@ -1,7 +1,4 @@
 .ChatFloatingArea {
-  
-  
-
   user-select: none;
 
     position: absolute;
@@ -9,7 +6,7 @@
     height: 44px;
  
     z-index: 30;
-    top: 7.2vh;
+    top: 58px;
     left: 5%; /* 부모 요소 기준 가로 가운데 정렬 */
     transform: translate(10vh); /* 가로 -50%로 이동하여 가운데 정렬, 세로 초기 위치 */
    

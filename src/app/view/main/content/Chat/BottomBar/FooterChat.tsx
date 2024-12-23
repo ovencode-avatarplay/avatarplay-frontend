@@ -30,6 +30,7 @@ interface FooterChatProps {
     state: boolean;
   };
   onRemoveChat: (id: number) => void;
+  onCheatChangeDate: (cheat: string) => void;
 }
 
 const FooterChat: React.FC<FooterChatProps> = ({
@@ -46,6 +47,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
   onReqPrevChatting,
   isSendingMessage,
   onRemoveChat,
+  onCheatChangeDate,
 }) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -75,6 +77,25 @@ const FooterChat: React.FC<FooterChatProps> = ({
 
     if (isAnyCheatMessageType(cheat)) {
       try {
+        switch (cheat) {
+          case '⦿YEAR⦿':
+            onCheatChangeDate('⦿YEAR⦿');
+            onLoading(false);
+            return true;
+          case '⦿MONTH⦿':
+            onCheatChangeDate('⦿MONTH⦿');
+            onLoading(false);
+            return true;
+          case '⦿DAY⦿':
+            onCheatChangeDate('⦿DAY⦿');
+            onLoading(false);
+            return true;
+          case '⦿REFRESH_NEW_DAY⦿':
+            onCheatChangeDate('⦿REFRESH_NEW_DAY⦿');
+            onLoading(false);
+            return true;
+        }
+
         const chattingCheatRes = await cheatMessage(currentContentId, currentEpisodeId, messages);
 
         if (chattingCheatRes) {
@@ -199,35 +220,21 @@ const FooterChat: React.FC<FooterChatProps> = ({
       className={`${styles.bottomBar} ${isExpanded ? styles.expanded : styles.collapsed} ${
         isBlurOn ? styles.blurOn : ''
       }`}
-      sx={{
-        position: 'fixed',
-        bottom: 0,
-        maxWidth: '402px',
-        margin: '0 auto',
-        backgroundColor: 'white',
-        transition: 'height 0.3s',
-        height: isStickerOpen ? '350px' : 'auto', //박스 크기 조절 부분
-        boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)',
-        width: window.innerWidth,
-        zIndex: 4,
-      }}
     >
-      <Box>
-        <ChatBar
-          message={messages} // 상태를 전달하여 최신 메시지를 관리
-          setMessage={setMessage} // 메시지를 업데이트할 함수 전달
-          onSend={handleSendMessage}
-          toggleExpand={toggleExpand}
-          isExpanded={false}
-          handleKeyDown={handleKeyDown}
-          isHideChat={isHideChat}
-          onToggleBackground={onToggleBackground}
-          onLoading={onLoading}
-          onUpdateChatBarCount={onUpdateChatBarCount}
-          onUpdateAiBarCount={onUpdateAiChatBarCount}
-          onRemoveChat={onRemoveChat}
-        />
-      </Box>
+      <ChatBar
+        message={messages} // 상태를 전달하여 최신 메시지를 관리
+        setMessage={setMessage} // 메시지를 업데이트할 함수 전달
+        onSend={handleSendMessage}
+        toggleExpand={toggleExpand}
+        isExpanded={false}
+        handleKeyDown={handleKeyDown}
+        isHideChat={isHideChat}
+        onToggleBackground={onToggleBackground}
+        onLoading={onLoading}
+        onUpdateChatBarCount={onUpdateChatBarCount}
+        onUpdateAiBarCount={onUpdateAiChatBarCount}
+        onRemoveChat={onRemoveChat}
+      />
       {isExpanded && !isStickerOpen && (
         <Box display="flex" marginTop={1} gap={1}>
           <Button variant="outlined" startIcon={<CameraIcon />}>
