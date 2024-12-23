@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Box, TextField, IconButton, Button, Typography, Grow} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import {Box, TextField} from '@mui/material';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector, useDispatch} from 'react-redux';
 import {setIsRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import AI_Recommend from './AI_Recommend';
 import styles from './ChatBar.module.css';
 import {AiText, BotMessage, BotSend, Chat, Close, Description, Plus, Recording1} from '@ui/chatting';
-import {all} from 'axios';
+import {Padding} from '@mui/icons-material';
 
 interface ChatBarProps {
   message: string;
@@ -249,19 +248,22 @@ const ChatBar: React.FC<ChatBarProps> = ({
                   border: 'none', // 아웃라인 제거
                 },
                 fontSize: '14px', // 폰트 크기 설정
+                paddingLeft: '0px',
+                paddingRight: '0px',
                 paddingTop: '5px',
                 paddingBottom: '5px',
               },
               '& .MuiInputBase-input': {
                 fontSize: '14px', // 내부 입력 텍스트의 폰트 크기 설정
-                paddingTop: '5px',
-                paddingBottom: '5px',
               },
             }}
+            style={{padding: '0px'}}
           />
 
           {id !== 'main' ? (
-            <img src={Close.src} onClick={() => removeChatBar(id)} className={styles.closeButton} />
+            <div onClick={() => removeChatBar(id)} className={styles.closeButton}>
+              <img src={Close.src} />
+            </div>
           ) : (
             <>
               {Object.values(inputValues).every(value => value.trim() === '') ? (
@@ -276,7 +278,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
           <Box display="flex">
             {Object.values(inputValues).every(value => value.trim() === '') ? (
               <button
-                className={styles.commonButton}
+                className={styles.recordingButton}
                 onClick={() => {
                   /*아직 미구현*/
                 }}
@@ -294,7 +296,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
     ));
 
   return (
-    <div className={styles.test}>
+    <div className={styles.container}>
       {renderChatBars()}
       {isAIRecommendOpen ? (
         <AI_Recommend

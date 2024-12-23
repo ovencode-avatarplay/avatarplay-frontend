@@ -123,6 +123,13 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
     dispatch(adjustEpisodeIndex({targetId, direction}));
   };
 
+  const handleChangeOrderEpisodeIndex = (targetId: number, direction: 'up' | 'down') => {
+    // 순서 변경
+    dispatch(adjustEpisodeIndex({targetId, direction}));
+
+    //순서 변경 시 현재 에피소드 바꾸는 작업 필요
+  };
+
   const [isDropDownOpen, setDropDownOpen] = useState(false);
 
   useEffect(() => {

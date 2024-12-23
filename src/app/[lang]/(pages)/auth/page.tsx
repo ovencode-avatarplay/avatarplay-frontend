@@ -7,6 +7,7 @@ import {Auth} from '@supabase/auth-ui-react';
 import {ThemeSupa} from '@supabase/auth-ui-shared';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {Session} from '@supabase/supabase-js';
+import {env} from 'process';
 
 const Login = () => {
   const router = useRouter();
@@ -16,9 +17,6 @@ const Login = () => {
   useEffect(() => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
       if (event === 'SIGNED_IN') {
-        // 로그인 성공 시 리다이렉트
-        alert(session?.access_token);
-
         try {
           const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
 
@@ -66,7 +64,7 @@ const Login = () => {
           providers={['google', 'kakao']} // 구글, 카카오 등 추가하고 싶은 OAuth 제공자
           appearance={{theme: ThemeSupa}} // Supabase 기본 테마 사용
           onlyThirdPartyProviders
-          redirectTo={`http://www.naver.com`}
+          redirectTo={process.env.NEXT_PUBLIC_FRONT_URL}
           queryParams={{
             access_type: 'offline',
             prompt: 'consent',
