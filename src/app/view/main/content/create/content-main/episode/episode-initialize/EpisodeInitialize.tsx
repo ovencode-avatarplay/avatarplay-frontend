@@ -23,6 +23,20 @@ import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
 
+import styleData from './EpisodeGenerateInputStyles.json';
+import CreateTempCharacterImage from '../../../character/CreateTempCharacterImage';
+import CreateTempCharacterSelect from '../../../character/CreateTempCharacterSelect';
+import {
+  BoldArrowLeft,
+  BoldRuby,
+  LineAIImage,
+  LineArrowLeft,
+  LineArrowRight,
+  LineCharacter,
+  LineCheck,
+  LineUpload,
+} from '@ui/Icons';
+
 interface Props {
   open: boolean;
   isEditing: boolean;
@@ -84,10 +98,46 @@ const EpisodeInitialize: React.FC<Props> = ({
   // 이미지 생성
   const [generatePromptValue, setGeneratePromptValue] = useState<string>('');
   const maxGeneratePromptLength: number = 500;
+  const [selectedStyle, setSelectedStyle] = useState<number>(0);
+  const [selectedGeneratedImage, setSelectedGeneratedImage] = useState<number>(0);
+  const [generatedImage, setGeneratedImage] = useState<string[]>([
+    'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/3badeb75-c620-4086-b283-743064d62f67.jpg',
+    'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/3badeb75-c620-4086-b283-743064d62f67.jpg',
+    'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/3badeb75-c620-4086-b283-743064d62f67.jpg',
+    'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/3badeb75-c620-4086-b283-743064d62f67.jpg',
+  ]);
+  const generateCost = 30;
 
   // 저장될 데이터
   const [curEpisodeName, setCurEpisodeName] = useState<string>(episodeName);
   const [curEpisodeCharacterImage, setCurEpisodeCharacterImage] = useState<string>('');
+
+  // SVG
+  const getAIImage = (color: string) => {
+    return (
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={`${styles.buttonIcon}`}
+      >
+        <path
+          d="M12 3H9.4C7.15979 3 6.03969 3 5.18404 3.43597C4.43139 3.81947 3.81947 4.43139 3.43597 5.18404C3 6.03969 3 7.15979 3 9.4V14.6C3 16.8402 3 17.9603 3.43597 18.816C3.81947 19.5686 4.43139 20.1805 5.18404 20.564C6.03969 21 7.15979 21 9.4 21H15.3337C16.8847 21 17.6602 21 18.2855 20.7878C19.4633 20.3881 20.3881 19.4633 20.7878 18.2855C21 17.6602 21 16.8847 21 15.3337C21 14.3567 21 13.8682 20.8549 13.5627C20.5794 12.9828 19.9655 12.6426 19.3278 12.7163C18.9918 12.7551 18.5775 13.014 17.749 13.5319L14.8889 15.3194C13.7591 16.0256 12.3053 15.9355 11.2712 15.0954C9.99433 14.0579 8.13101 14.1914 7.01509 15.4003L6 16.5"
+          style={{stroke: color}}
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+        <path
+          d="M18.9706 1.64505C18.9772 1.61278 19.0233 1.61278 19.0299 1.64505C19.3722 3.31953 20.6808 4.62812 22.3552 4.97038C22.3875 4.97697 22.3875 5.02307 22.3552 5.02966C20.6808 5.37191 19.3722 6.68051 19.0299 8.35499C19.0233 8.38725 18.9772 8.38725 18.9706 8.35499C18.6284 6.68051 17.3198 5.37191 15.6453 5.02966C15.613 5.02307 15.613 4.97697 15.6453 4.97038C17.3198 4.62812 18.6284 3.31953 18.9706 1.64505Z"
+          stroke="#FD55D3"
+          stroke-width="1.5"
+        />
+        <path d="M9 9V9.1" style={{stroke: color}} stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+    );
+  };
 
   //#endregion
 
@@ -128,6 +178,12 @@ const EpisodeInitialize: React.FC<Props> = ({
 
     setCurStep(prev => Math.min(prev + 1, maxStep));
     handleConfirm();
+  }
+
+  function checkCenterButtonStep() {
+    if (uploadType === 'GenerateImage' && curStep === 2) return true;
+
+    return false;
   }
 
   function checkEssential() {
@@ -448,22 +504,20 @@ const EpisodeInitialize: React.FC<Props> = ({
             <div className={styles.buttonArea}>
               <button className={styles.uploadButton} onClick={handleOnSelectCharacter}>
                 <div className={styles.buttonIconBack}>
-                  <img className={styles.buttonIcon} />
+                  <img src={LineCharacter.src} className={`${styles.buttonIcon} ${styles.blackIcon}`} />
                 </div>
                 <div className={styles.buttonText}>Select Character</div>
               </button>
 
               <button className={styles.uploadButton} onClick={handleOnUploadImageClick}>
                 <div className={styles.buttonIconBack}>
-                  <img className={styles.buttonIcon} />
+                  <img src={LineUpload.src} className={`${styles.buttonIcon} ${styles.blackIcon}`} />
                 </div>
                 <div className={styles.buttonText}>Upload Image</div>
               </button>
 
               <button className={styles.uploadButton} onClick={handleOnGenerateImage}>
-                <div className={styles.buttonIconBack}>
-                  <img className={styles.buttonIcon} />
-                </div>
+                <div className={styles.buttonIconBack}>{getAIImage('black')}</div>
                 <div className={styles.buttonText}>Generate Image</div>
               </button>
             </div>
@@ -484,7 +538,14 @@ const EpisodeInitialize: React.FC<Props> = ({
                 <EpisodeUploadImage imgUrl={curEpisodeCharacterImage} setImgUrl={setCurEpisodeCharacterImage} />
               </>
             ) : (
-              <div>{getGenerateInputPrompt()}</div>
+              <CreateTempCharacterImage
+                styleData={styleData}
+                generatePromptValue={generatePromptValue}
+                maxGeneratePromptLength={maxGeneratePromptLength}
+                handleGeneratePromptChange={handleGeneratePromptChange}
+                selectedIdx={selectedStyle}
+                onSelect={setSelectedStyle}
+              />
             )}
           </>
         );
@@ -507,7 +568,11 @@ const EpisodeInitialize: React.FC<Props> = ({
             ) : uploadType === 'UploadImage' ? (
               <div>{getInputCharacterDesc()}</div>
             ) : (
-              <>GenerateImage2</>
+              <CreateTempCharacterSelect
+                urls={generatedImage}
+                selectedIdx={selectedGeneratedImage}
+                onSelect={setSelectedGeneratedImage}
+              />
             )}
           </>
         );
@@ -549,41 +614,6 @@ const EpisodeInitialize: React.FC<Props> = ({
     );
   };
 
-  const getGenerateInputPrompt = () => {
-    return (
-      <>
-        <div className={styles.promptArea}>
-          <div className={styles.characterDesc}>
-            <div className={styles.title}>CharacterPrompt</div>
-            <div className={styles.inputArea}>
-              <textarea
-                className={styles.inputPrompt}
-                placeholder="Text Placeholder"
-                value={generatePromptValue}
-                onChange={handleGeneratePromptChange}
-                maxLength={maxGeneratePromptLength}
-              />
-
-              <div className={styles.inputHint}>
-                {generatePromptValue.length} / {maxGeneratePromptLength}
-              </div>
-            </div>
-          </div>
-          <button className={styles.generateButton} onClick={() => {}}>
-            <div className={styles.buttonText}>Generate</div>
-            <div className={styles.costArea}>
-              <img className={styles.costIcon} />
-              <div className={styles.costText}>50</div>
-            </div>
-          </button>
-        </div>
-        <div className={styles.styleArea}>
-          <div className={styles.title}>Styles</div>
-        </div>
-        {/* TODO : Style 선택용 Swiper */}
-      </>
-    );
-  };
   //#endregion
 
   return (
@@ -593,7 +623,7 @@ const EpisodeInitialize: React.FC<Props> = ({
         open={open}
         onClose={onClose}
         PaperProps={{
-          sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
+          sx: {width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto', overflowX: 'hidden'},
         }}
       >
         <CreateDrawerHeader title="EpisodeCreate" onClose={handlerOnClose} />
@@ -609,24 +639,38 @@ const EpisodeInitialize: React.FC<Props> = ({
         {/* Float Button */}
         <div className={styles.floatButtonArea}>
           <button
-            className={`${styles.floatButton} ${styles.prevButton}`}
+            className={`${styles.floatButton} ${styles.prevButton} ${
+              checkCenterButtonStep() && styles.centerSideButton
+            }`}
             onClick={() => {
               subStep();
             }}
           >
-            <img className={styles.buttonIcon} />
+            <img src={LineArrowLeft.src} className={`${styles.buttonIcon} ${styles.blackIcon} `} />
             <div>Previous</div>
           </button>
+          {checkCenterButtonStep() && (
+            <button className={`${styles.floatButton} ${styles.centerButton}`}>
+              <div>Generate</div>
+              <img src={BoldRuby.src} className={`${styles.buttonIcon} ${styles.blackIcon}`} />
+              <div>{generateCost}</div>
+            </button>
+          )}
           <button
-            className={`${styles.floatButton} ${styles.nextButton}`}
+            className={`${styles.floatButton} ${styles.nextButton} ${
+              checkCenterButtonStep() && styles.centerSideButton
+            }`}
             onClick={() => {
               {
                 checkFinalStep() === true ? handleOnSetEpisodeName() : addStep();
               }
             }}
           >
-            <div>{checkFinalStep() === true ? 'Set Episode Name' : 'Next'}</div>
-            <img className={styles.buttonIcon} />
+            <div>{checkFinalStep() === true ? 'Complete' : checkCenterButtonStep() ? 'Confirm' : 'Next'}</div>
+            <img
+              src={checkCenterButtonStep() ? LineCheck.src : LineArrowRight.src}
+              className={checkCenterButtonStep() ? styles.buttonCheckIcon : styles.buttonIcon}
+            />
           </button>
         </div>
 

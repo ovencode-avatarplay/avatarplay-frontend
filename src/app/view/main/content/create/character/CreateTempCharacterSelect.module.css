@@ -1,0 +1,40 @@
+.imageList {
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 38px;
+    display: flex;
+    width: 370px;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .imageItem {
+    position: relative;
+    
+    width: 179px;
+    height: 259.172px;
+    flex-shrink: 0;
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat; 
+    
+    border-radius: 12px;
+    background: lightgray 50% / cover no-repeat;
+    cursor: pointer;     
+  }
+    
+  .imageItem > .selectedIcon {
+    position: absolute;
+
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  

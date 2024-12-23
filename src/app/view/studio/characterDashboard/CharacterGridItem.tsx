@@ -4,6 +4,7 @@ import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import styles from './CharacterGridItem.module.css';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {LineCheck} from '@ui/Icons';
 
 interface CharacterGridItemProps {
   character: CharacterInfo;
@@ -36,14 +37,23 @@ const CharacterGridItem: React.FC<CharacterGridItemProps> = ({
   hideOverlay = false,
 }) => {
   return (
-    <div onClick={onSelect} className={`${styles.gridItem} ${isSelected ? styles.selected : styles.unselected}`}>
+    <div onClick={onSelect} className={`${styles.gridItem}`}>
       {/* Status Overlay */}
       <div className={`${styles.statusOverlay} ${styles.hide}`}>
         <div className={styles.statusText}>{getCharacterStateText(character.visibilityType)}</div>
       </div>
 
       {/* Character Image */}
-      <div className={styles.characterImage} style={{backgroundImage: `url(${character.mainImageUrl})`}} />
+      <div
+        className={`${styles.characterImage} `}
+        style={{
+          background: isSelected
+            ? `linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), url(${character.mainImageUrl}) lightgray 50% / cover no-repeat`
+            : `url(${character.mainImageUrl}) lightgray 50% / cover no-repeat`,
+        }}
+      >
+        {isSelected && <img src={LineCheck.src} className={styles.selectedIcon} />}
+      </div>
 
       {/* Character Info */}
       <div className={styles.characterInfo}>

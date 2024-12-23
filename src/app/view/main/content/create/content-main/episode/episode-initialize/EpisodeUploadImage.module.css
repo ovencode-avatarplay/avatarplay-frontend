@@ -95,3 +95,8 @@
     height: 21.333px;
     flex-shrink: 0;
 }
+
+
+.blackIcon{
+    filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
+}

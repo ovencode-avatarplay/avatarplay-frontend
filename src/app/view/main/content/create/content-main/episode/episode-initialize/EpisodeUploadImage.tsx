@@ -5,6 +5,7 @@ import styles from './EpisodeUploadImage.module.css';
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import {BoldCircleX, LineUpload} from '@ui/Icons';
 
 interface Props {
   imgUrl: string;
@@ -51,13 +52,23 @@ const EpisodeUploadImage: React.FC<Props> = ({imgUrl, setImgUrl}) => {
       <LoadingOverlay loading={isLoading} />
       <div className={styles.uploadImageArea}>
         <button className={styles.uploadButton} onClick={handleOnClickUploadButton}>
-          <img className={styles.buttonIcon} alt="Upload Icon" />
+          <img src={LineUpload.src} className={`${styles.buttonIcon} ${styles.blackIcon}`} alt="Upload Icon" />
           <div className={styles.buttonText}>Upload</div>
         </button>
         <div className={styles.uploadedImageArea}>
-          <img className={styles.uploadedImage} src={imgUrl} alt="Uploaded" />
+          {/* <img className={styles.uploadedImage} src={imgUrl} alt="Uploaded" /> */}
+          <div
+            className={styles.uploadedImage}
+            style={{
+              backgroundImage: `url(${imgUrl})`,
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'contain',
+            }}
+            role="img"
+            aria-label="Uploaded"
+          />
           <button className={styles.deleteButton} onClick={handleDeleteImage}>
-            <img className={styles.buttonIcon} alt="Delete Icon" />{' '}
+            <img src={BoldCircleX.src} className={styles.buttonIcon} alt="Delete Icon" />{' '}
           </button>
         </div>
       </div>

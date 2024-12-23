@@ -17,15 +17,7 @@
     border: 1px solid var(--Neutral-200, #E8EAED);
     overflow :hidden;
   }
-  
-  .selected {
-    border-color: blue;
-  }
-  
-  .unselected {
-    border-color: black;
-  }
-  
+    
   .statusOverlay {
     position: absolute;
     top: 0;
@@ -44,9 +36,23 @@
   }
   
   .characterImage {
+    position: relative;
     height: 257.143px;
     align-self: stretch;
     background: lightgray 50% / cover no-repeat;
+  } 
+
+  .selectedIcon 
+  {
+    position: absolute;
+
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
   
   .characterInfo {
