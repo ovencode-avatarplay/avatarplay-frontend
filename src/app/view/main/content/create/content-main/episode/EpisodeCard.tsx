@@ -94,47 +94,18 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
     setEpisodeModalOpen(false); // Episode 모달 닫기
   };
   const chapters = useSelector((state: RootState) => state.content.curEditingContentInfo.chapterInfoList);
-  const handleChangeOrderEpisodeIndex = (targetId: number, direction: 'up' | 'down') => {
-    const currentChapter = chapters.find(chapter => chapter.episodeInfoList.some(episode => episode.id === targetId));
-
-    if (!currentChapter) {
-      console.warn('해당 에피소드를 포함하는 챕터를 찾을 수 없습니다.');
-      return;
-    }
-
-    const episodeIndex = currentChapter.episodeInfoList.findIndex(episode => episode.id === targetId);
-
-    if (episodeIndex === -1) {
-      console.warn('에피소드 인덱스를 찾을 수 없습니다.');
-      return;
-    }
-
-    // 방향에 따른 인덱스 계산
-    const swapIndex = direction === 'up' ? episodeIndex - 1 : episodeIndex + 1;
-    const currentIndex = direction === 'up' ? episodeIndex + 1 : episodeIndex - 1;
-    // 인덱스 범위 검사
-    if (swapIndex < 0 || swapIndex >= currentChapter.episodeInfoList.length) {
-      console.warn('더 이상 이동할 수 없습니다.');
-      return;
-    }
-    console.log({episodeIndex}, currentChapter.episodeInfoList[episodeIndex]);
-    dispatch(setCurrentEpisodeInfo(currentChapter.episodeInfoList[swapIndex]));
-    // 인덱스를 기반으로 순서 변경 작업 디스패치
+  const handleChangeOrderEpisodeIndex = (direction: 'up' | 'down') => {
+    dispatch(setCurrentEpisodeInfo(episodeInfo));
+    const targetId = episodeInfo.id;
     dispatch(adjustEpisodeIndex({targetId, direction}));
-  };
-
-  const handleChangeOrderEpisodeIndex = (targetId: number, direction: 'up' | 'down') => {
-    // 순서 변경
-    dispatch(adjustEpisodeIndex({targetId, direction}));
-
-    //순서 변경 시 현재 에피소드 바꾸는 작업 필요
   };
 
   const [isDropDownOpen, setDropDownOpen] = useState(false);
-
   useEffect(() => {
     dispatch(updateEpisodeInfoInContent(currentEpisode)); // 상태 업데이트
-  }, [currentEpisode.name]);
+
+    console.log('바뀐에피소드', currentEpisode);
+  }, [currentEpisode]);
 
   return (
     <div className={styles.episodeCard}>
@@ -149,7 +120,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
           <div
             className={styles.arrowIcon}
             onClick={() => {
-              handleChangeOrderEpisodeIndex(currentEpisode.id, 'up');
+              handleChangeOrderEpisodeIndex('up');
             }}
           >
             <img src={BoldArrowDown.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
@@ -157,7 +128,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
           <div
             className={styles.arrowIcon}
             onClick={() => {
-              handleChangeOrderEpisodeIndex(currentEpisode.id, 'down');
+              handleChangeOrderEpisodeIndex('down');
             }}
           >
             <img src={BoldArrowDown.src} alt="Main" />

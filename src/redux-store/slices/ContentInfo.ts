@@ -105,6 +105,7 @@ export const curEditngContentInfoSlice = createSlice({
     adjustEpisodeIndex: (state, action: PayloadAction<{targetId: number; direction: 'up' | 'down'}>) => {
       const {targetId, direction} = action.payload;
 
+      console.log('dada');
       state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
         const targetIndex = chapter.episodeInfoList.findIndex(episode => episode.id === targetId);
 
