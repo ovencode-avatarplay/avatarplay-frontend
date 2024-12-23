@@ -22,20 +22,14 @@ import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
+import EpisodeInitializeBackground from './EpisodeInitializeBackground';
 
 import styleData from './EpisodeGenerateInputStyles.json';
+import bgData from './EpisodeBackground.json';
+
 import CreateTempCharacterImage from '../../../character/CreateTempCharacterImage';
 import CreateTempCharacterSelect from '../../../character/CreateTempCharacterSelect';
-import {
-  BoldArrowLeft,
-  BoldRuby,
-  LineAIImage,
-  LineArrowLeft,
-  LineArrowRight,
-  LineCharacter,
-  LineCheck,
-  LineUpload,
-} from '@ui/Icons';
+import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineCheck, LineUpload} from '@ui/Icons';
 
 interface Props {
   open: boolean;
@@ -90,7 +84,10 @@ const EpisodeInitialize: React.FC<Props> = ({
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
   const [selectedGalleryIndex, setSelectedGalleryIndex] = useState<number | null>(null);
   const [category, setCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
+  const [lastCategory, setLastCategory] = useState<GalleryCategory>(GalleryCategory.All);
   const [itemUrl, setItemUrl] = useState<GalleryImageInfo[] | null>(null);
+  const [selectedBackground, setSelectedBackground] = useState<number>(0);
+  const [backgrounds, setBackgrounds] = useState(bgData);
 
   // 이미지 업로드
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -420,7 +417,9 @@ const EpisodeInitialize: React.FC<Props> = ({
   };
 
   const handleCategoryChange = (newCategory: GalleryCategory) => {
-    setCategory(newCategory);
+    if (newCategory !== category) {
+      setCategory(newCategory);
+    }
   };
 
   // 이미지 업로드
@@ -478,21 +477,25 @@ const EpisodeInitialize: React.FC<Props> = ({
 
   useEffect(() => {
     // 카테고리 전환 시 아이템과 인덱스를 갱신
-    switch (category) {
-      case GalleryCategory.Portrait:
-        setItemUrl(currentSelectedCharacter?.portraitGalleryImageUrl || null);
-        break;
-      case GalleryCategory.Pose:
-        setItemUrl(currentSelectedCharacter?.poseGalleryImageUrl || null);
-        break;
-      case GalleryCategory.Expression:
-        setItemUrl(currentSelectedCharacter?.expressionGalleryImageUrl || null);
-        break;
-      default:
-        setItemUrl(galleryAllUrl);
+
+    if (currentSelectedCharacter && uploadType === 'SelectCharacter' && curStep === 2 && category !== lastCategory) {
+      switch (category) {
+        case GalleryCategory.Portrait:
+          setItemUrl(currentSelectedCharacter?.portraitGalleryImageUrl || null);
+          break;
+        case GalleryCategory.Pose:
+          setItemUrl(currentSelectedCharacter?.poseGalleryImageUrl || null);
+          break;
+        case GalleryCategory.Expression:
+          setItemUrl(currentSelectedCharacter?.expressionGalleryImageUrl || null);
+          break;
+        default:
+          setItemUrl(galleryAllUrl);
+      }
+      setSelectedGalleryIndex(0);
+      setLastCategory(category);
     }
-    setSelectedGalleryIndex(0);
-  }, [category, currentSelectedCharacter, galleryAllUrl]);
+  }, [category, currentSelectedCharacter, galleryAllUrl, curStep]);
   //#endregion
 
   //#region 렌더링을 위한 함수
@@ -560,6 +563,7 @@ const EpisodeInitialize: React.FC<Props> = ({
                   itemUrl={itemUrl}
                   selectedItemIndex={selectedGalleryIndex}
                   onSelectItem={i => {
+                    console.log('set' + i);
                     setSelectedGalleryIndex(i);
                   }}
                   isTrigger={true}
@@ -577,7 +581,19 @@ const EpisodeInitialize: React.FC<Props> = ({
           </>
         );
       case 3:
-        return <>{uploadType === 'SelectCharacter' ? <>SelectCharacter3</> : <div>{getInputCharacterDesc()}</div>}</>;
+        return (
+          <>
+            {uploadType === 'SelectCharacter' ? (
+              <EpisodeInitializeBackground
+                data={bgData}
+                selectedIdx={selectedBackground}
+                onSelect={setSelectedBackground}
+              />
+            ) : (
+              <div>{getInputCharacterDesc()}</div>
+            )}
+          </>
+        );
     }
   };
 

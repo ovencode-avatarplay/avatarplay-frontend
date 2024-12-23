@@ -46,6 +46,7 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import EpisodeInitialize from './episode/episode-initialize/EpisodeInitialize';
 import ButtonEpisodeInfo from './episode/ButtonEpisodeInfo';
 import EpisodeCard from './episode/EpisodeCard';
+import {LinePlus, LineStack} from '@ui/Icons';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
@@ -595,24 +596,24 @@ const ContentMain: React.FC = () => {
           onOpenDrawer={handleOpenDashboard}
           onTitleChange={handleTitleChange} // Redux 상태 업데이트
         />
-        <div className={styles.chapterArea}>
-          <ContentDashboardDrawer
-            open={isDashboardOpen}
-            onClose={handleCloseDashboard}
-            onSelectItem={GetContentByContentId}
-            onRefreshItem={getContentsByUserId}
-          />
-          <ChapterBoard
-            open={isChapterboardOpen}
-            onClose={handleCloseChapterboard}
-            initialChapters={editingContentInfo?.chapterInfoList || []}
-            onAddChapter={handleAddChapter}
-            onDeleteChapter={handleDeleteChapter}
-            isAddEpisodeRequested={addEpisodeRequested}
-            onAddEpisode={handleAddEpisode}
-            onDeleteEpisode={handleDeleteEpisode}
-            onNameChange={handleNameChange}
-          />
+        <ContentDashboardDrawer
+          open={isDashboardOpen}
+          onClose={handleCloseDashboard}
+          onSelectItem={GetContentByContentId}
+          onRefreshItem={getContentsByUserId}
+        />
+        <ChapterBoard
+          open={isChapterboardOpen}
+          onClose={handleCloseChapterboard}
+          initialChapters={editingContentInfo?.chapterInfoList || []}
+          onAddChapter={handleAddChapter}
+          onDeleteChapter={handleDeleteChapter}
+          isAddEpisodeRequested={addEpisodeRequested}
+          onAddEpisode={handleAddEpisode}
+          onDeleteEpisode={handleDeleteEpisode}
+          onNameChange={handleNameChange}
+        />
+        <div className={styles.seasonArea}>
           <ButtonEpisodeInfo
             onDrawerOpen={handleOpenChapterboard}
             chapterName={editingContentInfo.chapterInfoList[selectedChapterIdx].name ?? ''}
@@ -621,9 +622,12 @@ const ContentMain: React.FC = () => {
             }
           />
           {/* EpisodeCounter */}
-          <div>
-            <div className={styles.episodeCounter}>
-              {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.length} / 10
+          <div className={styles.episodeInfo}>
+            <div className={styles.episodeCountArea}>
+              <img src={LineStack.src} className={styles.episodeIcon} />
+              <div className={styles.episodeCounter}>
+                {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.length} / 10
+              </div>
             </div>
             <button
               className={styles.addEpisode}
@@ -631,21 +635,24 @@ const ContentMain: React.FC = () => {
                 setIsEpisodeInitOpen(true);
               }}
             >
-              Add Episode
+              <img src={LinePlus.src} className={styles.iconPlus} />
+              Create
             </button>
+          </div>
+
+          <div className={styles.episodeCardList}>
+            {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.map((episode, index) => (
+              <EpisodeCard episodeId={episode.id} episodeNum={index} onInit={() => handleOpenInitialEpisode(true)} />
+            ))}
+          </div>
+          <div className={styles.content}>
+            <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
+          </div>
+          <div className={styles.contentBottom}>
+            <div className={styles.setupButtons}>Publish</div>
           </div>
         </div>
 
-        <div className={styles.content}>
-          <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
-
-          {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.map((episode, index) => (
-            <EpisodeCard episodeId={episode.id} episodeNum={index} onInit={() => handleOpenInitialEpisode(true)} />
-          ))}
-        </div>
-        <div className={styles.contentBottom}>
-          <div className={styles.setupButtons}>Publish</div>
-        </div>
         {/* EpisodeLLMSetup 모달 */}
         {/* <ContentLLMSetup open={isLLMSetupOpen} onClose={handleCloseLLMSetup} /> llm publish로 이관 */}
         <EpisodeInitialize

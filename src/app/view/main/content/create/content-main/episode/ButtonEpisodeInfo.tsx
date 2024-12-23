@@ -3,6 +3,7 @@ import {Box, IconButton, Typography} from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import styles from './ButtonEpisodeInfo.module.css';
+import {LineEdit} from '@ui/Icons';
 
 interface Props {
   onDrawerOpen: () => void;
@@ -12,18 +13,12 @@ interface Props {
 
 const ButtonEpisodeInfo: React.FC<Props> = ({onDrawerOpen, chapterName, episodeName}) => {
   return (
-    <Box className={styles.chapterInfo}>
-      <FormatListBulletedIcon fontSize="large" />
-
-      <Box display="flex" flexDirection="column" className={styles.chapterDetails}>
-        <Typography variant="subtitle1">{chapterName}</Typography>
-        <Typography variant="h6">{episodeName}</Typography>
-      </Box>
-
-      <IconButton onClick={onDrawerOpen} className={styles.arrowButton}>
-        <ChevronRightIcon fontSize="large" />
-      </IconButton>
-    </Box>
+    <div className={styles.chapterInfo}>
+      <div className={styles.chapterName}>{chapterName}</div>
+      <div className={styles.editButton} onClick={onDrawerOpen}>
+        <img src={LineEdit.src} className={styles.editIcon} />
+      </div>
+    </div>
   );
 };
 
