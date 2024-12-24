@@ -89,7 +89,9 @@ import plusRound from './Custom/plusRound.svg';
 import LeftArrow from './Custom/LeftArrow.svg';
 import ProfileChar from './Custom/ProfileChar.svg';
 import ProfileUser from './Custom/ProfileUser.svg';
+import PlusBubble from './Custom/PlusBubble.svg';
 export {
+  PlusBubble,
   ProfileChar,
   ProfileUser,
   LeftArrow,

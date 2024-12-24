@@ -66,3 +66,42 @@ border-radius: 12px;
 
 }
 
+.contentBottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    gap: 10px;
+
+    position: fixed; /* position을 fixed로 변경 */
+    width: 100vw;
+    height: 70px;
+    left: 0px;
+    bottom: 0px;
+}
+
+.setupButtons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 20px;
+    gap: 4px;
+
+    width: 92.5vw;
+    height: 50px;
+
+    background: #2C3131;
+    border-radius: 10px;
+
+    max-width: 400px;
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: -0.4px;
+
+    color: #FFFFFF;
+}

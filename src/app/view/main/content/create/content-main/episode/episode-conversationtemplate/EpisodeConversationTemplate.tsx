@@ -55,7 +55,7 @@ const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = 
         <Button onClick={closeModal} className={styles['close-button']}>
           <ArrowBackIosIcon />
         </Button>
-        <span className={styles['modal-title']}>Episode Conversation Template</span>
+        <span className={styles['modal-title']}>Conversation Template</span>
 
         {/* 리셋 버튼 클릭 시 전체 대화 제거 및 트리거별 대화 제거 */}
         <IconButton onClick={handleResetConversations}>
@@ -71,6 +71,9 @@ const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = 
         <div className={styles.cardBox}>
           <ConversationCard></ConversationCard>
         </div>
+      </div>
+      <div className={styles.contentBottom}>
+        <div className={styles.setupButtons}>Confirm</div>
       </div>
     </Dialog>
   );
