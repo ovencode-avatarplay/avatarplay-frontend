@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './ContentItem.module.css';
-import ShareIcon from '@mui/icons-material/Share';
 import {ContentDashboardItem} from '@/redux-store/slices/MyContentDashboard';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
@@ -8,6 +7,7 @@ import PhotoIcon from '@mui/icons-material/Photo';
 import MovieIcon from '@mui/icons-material/Movie';
 import {Box} from '@mui/material';
 import {MenuDots} from '@ui/chatting';
+import {BoldChatRoundDots, BoldFollowers, BoldImage, BoldVideo} from '@ui/Icons';
 
 interface ContentItemProps {
   dashboardItem: ContentDashboardItem;
@@ -49,25 +49,34 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected}) =>
         <div className={styles.descriptionArea}>
           <div className={styles.contentInfo}>
             <div className={styles.infoArea}>
-              <div className={styles.createData}>{dashboardItem.createAt}</div>
+              <div className={styles.dateText}>{dashboardItem.createAt}</div>
               <button className={styles.menuButton} onClick={() => {}}>
                 <img className={styles.buttonIcon} src={MenuDots.src} />
               </button>
             </div>
             <div className={styles.titleArea}>
+              <div className={`${styles.publishLabel} ${styles.saved}`}> Saved</div>
               <div className={styles.title}>{dashboardItem.name}</div>
             </div>
           </div>
 
-          <div className={styles.bottomRow}>
-            <span className={styles.talkCount}>
-              <ChatBubbleOutlineIcon className={styles.icon} />
-              {`Talk Count: ${dashboardItem.messageCount}`}
-            </span>
-            <span className={styles.people}>
-              <PeopleOutlineIcon className={styles.icon} />
-              {`People: ${dashboardItem.followCount}`}
-            </span>
+          <div className={styles.statisticsArea}>
+            <div className={styles.statisticsItem}>
+              <img className={styles.statisticsIcon} src={BoldVideo.src} />
+              <div className={styles.statisticsText}> {dashboardItem.episodeCount}</div>
+            </div>
+            <div className={styles.statisticsItem}>
+              <img className={styles.statisticsIcon} src={BoldImage.src} />
+              <div className={styles.statisticsText}> {dashboardItem.mediaCount}</div>
+            </div>
+            <div className={styles.statisticsItem}>
+              <img className={styles.statisticsIcon} src={BoldChatRoundDots.src} />
+              <div className={styles.statisticsText}> {dashboardItem.messageCount}</div>
+            </div>
+            <div className={styles.statisticsItem}>
+              <img className={styles.statisticsIcon} src={BoldFollowers.src} />
+              <div className={styles.statisticsText}> {dashboardItem.followCount}</div>
+            </div>
           </div>
         </div>
       </div>
