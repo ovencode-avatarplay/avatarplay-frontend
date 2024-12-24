@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import styles from './ConversationCard.module.css';
-import {BoldMenuDots, PlusBubble, ProfileChar, ProfileUser} from '@ui/Icons';
-import {ChatRoundDots, Close, Description, Description2} from '@ui/chatting';
+import {BoldArrowDown, BoldMenuDots, PlusBubble, ProfileChar, ProfileUser} from '@ui/Icons';
+import {ChatRoundDots, Close, Description2} from '@ui/chatting';
 import TextField from '@mui/material/TextField';
+import ConversationCardDropDown from './ConversationCardDropDown';
 
 interface Bar {
   id: string;
@@ -10,57 +11,44 @@ interface Bar {
   type: 'dots' | 'description';
 }
 
-const ConversationCard: React.FC = () => {
-  const [userBars, setUserBars] = useState<Bar[]>([{id: Date.now().toString(), inputValue: '', type: 'dots'}]);
+interface CardData {
+  id: string; // 고유 ID
+  userBars: Bar[]; // User 데이터
+  charBars: Bar[]; // Char 데이터
+}
 
-  const UserHandleAddBar = () => {
-    setUserBars(prevBars => [{id: Date.now().toString(), inputValue: '', type: 'dots'}, ...prevBars]);
-  };
+interface ConversationCardProps {
+  card: CardData;
+  onUpdate: (updatedCard: Partial<CardData>) => void;
+  remove: () => void;
+  moveUp: () => void;
+  moveDown: () => void;
+  duplicate: () => void;
+}
 
-  const UserHandleInputChange = (id: string, value: string) => {
-    setUserBars(prevBars => prevBars.map(bar => (bar.id === id ? {...bar, inputValue: value} : bar)));
-  };
-
-  const UserHandleKeyDown = (id: string, event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      // 기본 Enter 동작을 막음
-      event.preventDefault();
-    }
-  };
-  const UserHandleTypeToggle = (id: string) => {
-    setUserBars(prevBars =>
-      prevBars.map(bar => (bar.id === id ? {...bar, type: bar.type === 'dots' ? 'description' : 'dots'} : bar)),
+const ConversationCard: React.FC<ConversationCardProps> = ({card, moveUp, moveDown, duplicate, onUpdate, remove}) => {
+  const [isDropDown, setIsDropDown] = useState<boolean>(false);
+  const handleInputChange = (type: 'userBars' | 'charBars', barId: string, value: string) => {
+    const updatedBars = card[type].map(
+      bar => (bar.id === barId ? {...bar, inputValue: value} : bar), // 해당 bar만 업데이트
     );
+    onUpdate({[type]: updatedBars});
+  };
+  const handleAddBar = (type: 'userBars' | 'charBars') => {
+    const newBar = {id: Date.now().toString(), inputValue: '', type: 'dots'};
+    onUpdate({[type]: [...card[type], newBar]}); // 배열에 새 bar 추가
   };
 
-  const UserHandleRemoveBar = (id: string) => {
-    setUserBars(prevBars => prevBars.filter(bar => bar.id !== id));
+  const handleRemoveBar = (type: 'userBars' | 'charBars', barId: string) => {
+    const updatedBars = card[type].filter(bar => bar.id !== barId); // 해당 bar만 제거
+    onUpdate({[type]: updatedBars});
   };
 
-  const [charBars, setCharBars] = useState<Bar[]>([{id: Date.now().toString(), inputValue: '', type: 'dots'}]);
-
-  const CharHandleAddBar = () => {
-    setCharBars(prevBars => [{id: Date.now().toString(), inputValue: '', type: 'dots'}, ...prevBars]);
-  };
-
-  const CharHandleInputChange = (id: string, value: string) => {
-    setCharBars(prevBars => prevBars.map(bar => (bar.id === id ? {...bar, inputValue: value} : bar)));
-  };
-
-  const CharHandleKeyDown = (id: string, event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      // 기본 Enter 동작을 막음
-      event.preventDefault();
-    }
-  };
-  const CharHandleTypeToggle = (id: string) => {
-    setCharBars(prevBars =>
-      prevBars.map(bar => (bar.id === id ? {...bar, type: bar.type === 'dots' ? 'description' : 'dots'} : bar)),
+  const handleTypeToggle = (type: 'userBars' | 'charBars', barId: string) => {
+    const updatedBars = card[type].map(bar =>
+      bar.id === barId ? {...bar, type: bar.type === 'dots' ? 'description' : 'dots'} : bar,
     );
-  };
-
-  const CharHandleRemoveBar = (id: string) => {
-    setCharBars(prevBars => prevBars.filter(bar => bar.id !== id));
+    onUpdate({[type]: updatedBars});
   };
 
   return (
@@ -68,8 +56,31 @@ const ConversationCard: React.FC = () => {
       {/* 헤더 영역 */}
       <div className={styles.header}>
         Mandatory
-        <div className={styles.blackIcon} onClick={() => {}}>
-          <img src={BoldMenuDots.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
+        <div style={{display: 'flex'}}>
+          <div
+            className={styles.arrowIcon}
+            onClick={() => {
+              moveUp();
+            }}
+          >
+            <img src={BoldArrowDown.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
+          </div>
+          <div
+            className={styles.arrowIcon}
+            onClick={() => {
+              moveDown();
+            }}
+          >
+            <img src={BoldArrowDown.src} alt="Main" />
+          </div>
+          <div
+            className={styles.blackIcon}
+            onClick={() => {
+              setIsDropDown(true);
+            }}
+          >
+            <img src={BoldMenuDots.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
+          </div>
         </div>
       </div>
 
@@ -80,11 +91,11 @@ const ConversationCard: React.FC = () => {
           User
         </div>
         <div className={styles.barGroup}>
-          {userBars.map((bar, index) => (
+          {card.userBars.map((bar, index) => (
             <div key={bar.id} className={styles.inputBar}>
               <div className={styles.body}>
                 <div className={styles.inputGroup}>
-                  <div className={styles.icon} onClick={() => UserHandleTypeToggle(bar.id)}>
+                  <div className={styles.icon} onClick={() => handleTypeToggle('userBars', bar.id)}>
                     <img
                       src={bar.type === 'dots' ? ChatRoundDots.src : Description2.src}
                       style={{
@@ -98,9 +109,8 @@ const ConversationCard: React.FC = () => {
                     <TextField
                       multiline
                       maxRows={4}
-                      value={bar.inputValue}
-                      onChange={e => UserHandleInputChange(bar.id, e.target.value)}
-                      onKeyDown={e => UserHandleKeyDown(bar.id, e)}
+                      value={bar.inputValue} // Redux 데이터를 바인딩
+                      onChange={e => handleInputChange('userBars', bar.id, e.target.value)}
                       placeholder="Write a message"
                       fullWidth
                       variant="outlined"
@@ -123,16 +133,15 @@ const ConversationCard: React.FC = () => {
                       }}
                     />
                   </div>
-
                   {index > 0 && (
-                    <div onClick={() => UserHandleRemoveBar(bar.id)} className={styles.closeButton}>
+                    <div onClick={() => handleRemoveBar('userBars', bar.id)} className={styles.closeButton}>
                       <img src={Close.src} alt="Close Button" />
                     </div>
                   )}
                 </div>
               </div>
               {index === 0 && (
-                <div className={styles.plusButton} onClick={UserHandleAddBar}>
+                <div className={styles.plusButton} onClick={() => handleAddBar('userBars')}>
                   <img src={PlusBubble.src} alt="Add Button" />
                 </div>
               )}
@@ -144,15 +153,15 @@ const ConversationCard: React.FC = () => {
       {/* 캐릭터 영역 */}
       <div className={styles.chatGroup}>
         <div className={styles.userAvatar}>
-          <img src={ProfileChar.src} style={{width: '30px', height: '48px'}} alt="User Avatar" />
+          <img src={ProfileChar.src} style={{width: '30px', height: '48px'}} alt="Char Avatar" />
           Char
         </div>
         <div className={styles.barGroup}>
-          {charBars.map((bar, index) => (
+          {card.charBars.map((bar, index) => (
             <div key={bar.id} className={styles.inputBar}>
               <div className={styles.body}>
                 <div className={styles.inputGroup}>
-                  <div className={styles.icon} onClick={() => CharHandleTypeToggle(bar.id)}>
+                  <div className={styles.icon} onClick={() => handleTypeToggle('charBars', bar.id)}>
                     <img
                       src={bar.type === 'dots' ? ChatRoundDots.src : Description2.src}
                       style={{
@@ -166,9 +175,8 @@ const ConversationCard: React.FC = () => {
                     <TextField
                       multiline
                       maxRows={4}
-                      value={bar.inputValue}
-                      onChange={e => CharHandleInputChange(bar.id, e.target.value)}
-                      onKeyDown={e => CharHandleKeyDown(bar.id, e)}
+                      value={bar.inputValue} // Redux 데이터를 바인딩
+                      onChange={e => handleInputChange('charBars', bar.id, e.target.value)}
                       placeholder="Write a message"
                       fullWidth
                       variant="outlined"
@@ -191,16 +199,15 @@ const ConversationCard: React.FC = () => {
                       }}
                     />
                   </div>
-
                   {index > 0 && (
-                    <div onClick={() => CharHandleRemoveBar(bar.id)} className={styles.closeButton}>
+                    <div onClick={() => handleRemoveBar('charBars', bar.id)} className={styles.closeButton}>
                       <img src={Close.src} alt="Close Button" />
                     </div>
                   )}
                 </div>
               </div>
               {index === 0 && (
-                <div className={styles.plusButton} onClick={CharHandleAddBar}>
+                <div className={styles.plusButton} onClick={() => handleAddBar('charBars')}>
                   <img src={PlusBubble.src} alt="Add Button" />
                 </div>
               )}
@@ -208,6 +215,19 @@ const ConversationCard: React.FC = () => {
           ))}
         </div>
       </div>
+      {isDropDown && (
+        <>
+          <div className={styles.editDropdDownBack} onClick={() => setIsDropDown(false)}></div>
+          <div className={styles.editDropdDown}>
+            <ConversationCardDropDown
+              close={() => setIsDropDown(false)}
+              remove={() => remove()}
+              duplicate={() => duplicate()}
+              open={isDropDown}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

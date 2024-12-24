@@ -136,6 +136,9 @@ const episodeInfoSlice = createSlice({
 
     //#region conversation
     // 기존 기능 - conversationTemplateList 관련 액션들
+    saveConversationTemplateList: (state, action: PayloadAction<Conversation[]>) => {
+      state.currentEpisodeInfo.conversationTemplateList = action.payload;
+    },
     addConversationTalk: (
       state,
       action: PayloadAction<{
@@ -467,6 +470,7 @@ export const {
   removeAllConversationTalk,
   removeAllActionConversationTalk,
   setCharacterInfo,
+  saveConversationTemplateList,
 } = episodeInfoSlice.actions;
 
 export default episodeInfoSlice.reducer;

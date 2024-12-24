@@ -6,6 +6,7 @@
     border: 1px solid #eaecf0;
     border-radius: 12px;
     padding: 0;
+    position: relative;
   }
   
   .header {
@@ -14,6 +15,7 @@
     align-items: center;
     padding: 10px 16px;
     background: #f1f3f4;
+    border-radius: 12px 12px 0 0 ;
   }
   
   .header span {
@@ -67,6 +69,7 @@ overflow-y: auto;
 
 background: #FFFFFF;
 border-bottom: 1px solid #EAECF0;
+border-radius: 12px;
   }
   
   .inputGroup {
@@ -168,4 +171,34 @@ width: 100%;
     cursor: not-allowed;
     opacity: 0.5;
   }
+  .editDropdDown {
+    position: absolute;
+    right: 200px;
+    top: 50px;
+    z-index: 1000; /* 드롭다운이 배경 위로 올라오도록 설정 */
+  }
+  
+  .editDropdDownBack {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    z-index: 999; /* 드롭다운보다 낮게 설정 */
+  }
+  .arrowIcon
+  {
+    width: 17px;
+    height: 17px;
+    margin: 5.5px;
+    filter: brightness(0) saturate(100%) invert(0%) sepia(92%) saturate(7479%) hue-rotate(92deg) brightness(106%) contrast(100%);
+  }
+
+  .arrowIcon img
+  {
+    width: 100%;
+    height: 100%;
+  }
+
   

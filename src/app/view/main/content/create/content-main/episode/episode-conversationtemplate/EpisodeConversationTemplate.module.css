@@ -13,7 +13,7 @@
     align-items: center;
     width: 100%;
     height: 100%;
-    gap: 16px
+    gap: 16px;
 }
 
 .addNew{
@@ -43,8 +43,9 @@ border-radius: 10px;
     flex-direction: column;    
     align-items: center;
     width: 100%;
-    height: 100%;
-    gap: 16px
+    height: 80vh;
+    gap: 16px;   
+    overflow-y: auto;
 }
 
 
@@ -63,6 +64,7 @@ height: 244px;
 background: #FFFFFF;
 border: 1px solid #EAECF0;
 border-radius: 12px;
+
 
 }
 
@@ -105,3 +107,20 @@ border-radius: 12px;
 
     color: #FFFFFF;
 }
+
+.editDropdDown {
+    position: absolute;
+    right: 200px;
+    top: 50px;
+    z-index: 1000; /* 드롭다운이 배경 위로 올라오도록 설정 */
+  }
+  
+  .editDropdDownBack {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    z-index: 999; /* 드롭다운보다 낮게 설정 */
+  }
