@@ -103,9 +103,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
   const [isDropDownOpen, setDropDownOpen] = useState(false);
   useEffect(() => {
     dispatch(updateEpisodeInfoInContent(currentEpisode)); // 상태 업데이트
-
-    console.log('바뀐에피소드', currentEpisode);
-  }, [currentEpisode]);
+  }, [currentEpisode.name]);
 
   return (
     <div className={styles.episodeCard}>
