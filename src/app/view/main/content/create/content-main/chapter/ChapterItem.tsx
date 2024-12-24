@@ -1,21 +1,17 @@
-import React from 'react';
-import {Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Typography} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import DeleteIcon from '@mui/icons-material/Delete';
-import HomeIcon from '@mui/icons-material/Home';
-import EditIcon from '@mui/icons-material/Edit';
+import React, {useState} from 'react';
 
 import EpisodeItem from './EpisodeItem';
 import {ChapterItemProps} from './ChapterTypes';
 
-import styles from './ChapterBoard.module.css';
+import styles from './ChapterItem.module.css';
+import {BoldMenuDots, BoldRadioButton, BoldRadioButtonSelected, LineCopy, LineDelete, LineEdit} from '@ui/Icons';
 
 const ChapterItem: React.FC<ChapterItemProps> = ({
   chapter,
   chapterIdx,
   chapterLength,
-  onDelete,
   onToggle,
+  onDelete,
   onDeleteEpisode,
   onSelect,
   onSelectEpisode,
@@ -25,6 +21,8 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   selectedEpisodeIdx,
   disableDelete,
 }) => {
+  const [dropBoxOpen, setDropBoxOpen] = useState<boolean>(false);
+
   const handleDeleteChapter = (chapterIdx: number, chapterLength: number) => {
     onDelete(chapterIdx);
 
@@ -33,47 +31,33 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
 
   return (
     <>
-      <Accordion
-        expanded={isSelected}
-        onChange={() => onToggle(chapterIdx)}
-        sx={{
-          backgroundColor: isSelected ? 'rgba(0, 123, 255, 0.1)' : 'inherit',
-          border: isSelected ? '2px solid #007bff' : '1px solid rgba(0, 0, 0, 0.12)',
-          transition: 'background-color 0.3s ease, border 0.3s ease',
+      <div
+        className={styles.chapterItem}
+        onClick={() => {
+          onSelect(chapterIdx);
+          onToggle(chapterIdx);
         }}
       >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          onClick={() => {
-            onSelect(chapterIdx); // 인덱스를 사용
-            onToggle(chapterIdx);
-          }}
-        >
-          <Box className={styles.chapterHeader} sx={{justifyContent: 'space-between', textAlign: 'left'}}>
-            <HomeIcon />
-            <Typography sx={{width: '60%'}}>{chapter.title}</Typography>
-
-            <Box>
-              <IconButton onClick={() => onEdit(chapterIdx, 'chapter')}>
-                <EditIcon />
-              </IconButton>
-
-              {/* Chapter 삭제 버튼 */}
-              {!disableDelete && (
-                <IconButton
-                  className={styles.deleteButton}
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleDeleteChapter(chapterIdx, chapterLength);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              )}
-            </Box>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails>
+        <div className={styles.chapterInfoArea}>
+          <button className={styles.chapterInfoLeft}>
+            <div className={styles.radioButton}>
+              <img
+                className={styles.radioButtonIcon}
+                src={isSelected ? BoldRadioButtonSelected.src : BoldRadioButton.src}
+              />
+            </div>
+            <div className={styles.chapterName}>ChapterName</div>
+          </button>
+          <button
+            className={styles.chapterDropDownButton}
+            onClick={() => {
+              setDropBoxOpen(!dropBoxOpen);
+            }}
+          >
+            <img className={styles.chapterDropDownIcon} src={BoldMenuDots.src} />
+          </button>
+        </div>
+        <div className={styles.episodeContainer}>
           {chapter.episodes.map((episode, episodeIdx) => (
             <EpisodeItem
               key={episodeIdx}
@@ -88,8 +72,40 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
               isSelected={selectedEpisodeIdx === episodeIdx}
             />
           ))}
-        </AccordionDetails>
-      </Accordion>
+        </div>
+        {dropBoxOpen && (
+          <div className={styles.chapterDropDown}>
+            <button className={styles.dropDownItem}>
+              <div className={styles.dropDownName}>Rename</div>
+              <div className={styles.dropDownIconBox}>
+                <img className={`${styles.dropDownIcon} ${styles.blackIcon}`} src={LineEdit.src} />
+              </div>
+            </button>
+
+            <button className={styles.dropDownItem}>
+              <div className={styles.dropDownName}>Duplicate</div>
+              <div className={styles.dropDownIconBox}>
+                <img className={`${styles.dropDownIcon} ${styles.blackIcon}`} src={LineCopy.src} />
+              </div>
+            </button>
+
+            {!disableDelete && (
+              <button
+                className={styles.dropDownItem}
+                onClick={e => {
+                  e.stopPropagation();
+                  handleDeleteChapter(chapterIdx, chapterLength);
+                }}
+              >
+                <div className={`${styles.dropDownName} ${styles.redText}`}>Delete</div>
+                <div className={styles.dropDownIconBox}>
+                  <img className={`${styles.dropDownIcon} ${styles.redIcon}`} src={LineDelete.src} />
+                </div>
+              </button>
+            )}
+          </div>
+        )}
+      </div>
     </>
   );
 };

@@ -96,7 +96,7 @@
   gap: 16px;
 }
 
-@media (min-width:500px)
+@media (min-width:402px)
 {
   .seasonArea {
     width: 370px;

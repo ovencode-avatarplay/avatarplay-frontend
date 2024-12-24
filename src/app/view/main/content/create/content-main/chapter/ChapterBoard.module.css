@@ -1,41 +1,117 @@
 .drawerContainer {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    padding: 16px;
+    height: 82vh ;
+    padding: 16px ;
 }
 
-.imageButtonContainer {
+.addButton{
+    margin-top: 12px;
+    margin-left: 16px;
+    margin-right: 16px;
     display: flex;
+    height: 46px;
+    padding: 10px 12px;
     justify-content: center;
-    margin-bottom: 16px;
-}
-
-.imageButton {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    text-align: center;
+    gap: 6px;
+    align-self: stretch;
+    
+    border-radius: 10px;
+    border: 1px dashed var(--Neutral-400, #BDC1C6);
+    background: var(--White, #FFF);
 }
 
-.buttonImage {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
+.addButton > .buttonIconBox
+{
+    display: flex;
+    width: 12px;
+    height: 12px;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttonIconBox > .buttonIcon
+{
+    display: flex;
+    width: 12px;
+    height: 12px;
+    padding: 1.757px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    color: #2C3131;
+    filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
+}
+
+.addButton >.buttonText 
+{
+    color: var(--Neutral-800, #2C3131);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: 'Lato';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 21px; /* 150% */
+    letter-spacing: -0.4px;
+}
+
+
+.confirmButtonBox
+{
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    width: 370px;
+    align-items: flex-start;
+    margin-left: 16px;
+    margin-right: 16px;
     margin-bottom: 8px;
+}
+
+
+.confirmButtonBox > .confirmButton
+{
+    display: flex;
+    height: 50px;
+    padding: 14px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex: 1 0 0;
+    
+    border-radius: 12px;
+    background: var(--Neutral-800, #2C3131);
+    
+    color: var(--White, #FFF); 
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: 'Lato';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 21px; /* 150% */
+    letter-spacing: -0.4px;
+    
 }
 
 .contentBox {
     flex-grow: 1;
     height: 70vh; /* 70% 차지 */
-    background-color: #f5f5f5;
+    
     display: flex table-column;
     justify-content: center;
     align-items: center;
     overflow-y: auto;
+    
+}
+
+.contentBox::-webkit-scrollbar {
+    display: none;  
+  }
+  
+.contentBox {
+   scrollbar-width: none;  
+   -ms-overflow-style: none;  
 }
 
 .chapterBox {

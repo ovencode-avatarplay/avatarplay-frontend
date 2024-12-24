@@ -82,6 +82,7 @@ import LineStack from "./Line/Stack.svg";
 import LineStory from "./Line/Story.svg";
 import LineUpload from "./Line/Upload.svg";
 import LineVoicePlay from "./Line/Voice_Play.svg";
+import LineCorner from "./Line/Arrow_Corner.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -176,4 +177,5 @@ export {
   LineStory,
   LineUpload,
   LineVoicePlay,
+  LineCorner,
 };

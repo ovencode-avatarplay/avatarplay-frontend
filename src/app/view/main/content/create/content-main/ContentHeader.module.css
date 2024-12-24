@@ -5,57 +5,86 @@
     justify-content: space-between; 
     background-color: #ffffff;
     
-    padding-left: 16px;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 20px;
+    /* or 100% */
+    display: flex;
+    justify-items: center;
+    letter-spacing: -0.02em;
 
-font-family: 'Lato';
-font-style: normal;
-font-weight: 600;
-font-size: 20px;
-line-height: 20px;
-/* or 100% */
-display: flex;
-align-items: center;
-letter-spacing: -0.02em;
-
-color: #000000;
-
-
-
+    color: #000000;
 }
 
 .titleContainer {
-    display: flex;
+     display: flex;
     flex-direction: row;
-}
-
-.studioButton {
-    margin-left: auto; 
-    border: 3px solid #000; 
-    border-radius: 8px 0 0 8px; 
-    padding: 8px; 
-    transition: background-color 0.3s; 
-}
-
-/* 호버 시 배경색 변경 */
-.studioButton:hover {
-    background-color: #f0f0f0;
+    align-items: center;
+    justify-items: center;
+    gap: 6.6px;
 }
 
 
-.arrowIcon
+.goBackButton
 {
+    display: inline-flex;
+    height: 40px;
+    padding: 14px 0px 14px 16px;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
 
-display: flex;
-flex-direction: row;
-align-items: center;
-padding: 14px 0px 14px 16px;
-gap: 8px;
+.goBackIcon
+{
+    width: 20px;
+    height: 20px;
+}
 
-position: absolute;
-width: 36px;
-height: 40px;
-left: 0.36px;
-top: calc(50% - 40px/2);
+.contentName
+{
+    color: var(--Black, #000);
+    font-family: Lato;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px; /* 100% */
+    letter-spacing: -0.4px;
+} 
 
+.headerButtonArea{
+    display: inline-flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 11px;
+    margin-bottom: 7px;
+    margin-right: 6px;
+}
 
+.headerButton{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.iconBox{
+    display: flex;
+    width: 24px;
+    height: 24px;
+    padding: 3.366px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+
+}
+.headerIcon { 
+    width: 17.269px;
+    height: 17.269px;
+    flex-shrink: 0;
+    filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
 }
