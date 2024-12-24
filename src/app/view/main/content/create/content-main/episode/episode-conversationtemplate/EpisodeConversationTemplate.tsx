@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import styles from './EpisodeConversationTemplate.module.css'; // CSS Module import
 import {Dialog, DialogTitle, Button, IconButton} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import CardSlider from './CardSlider'; // 카드 슬라이더 import
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {useDispatch} from 'react-redux'; // Redux useDispatch import
 import {
@@ -11,6 +10,9 @@ import {
   EpisodeInfo,
   setCurrentEpisodeInfo,
 } from '@/redux-store/slices/EpisodeInfo';
+import {plusRound} from '@ui/Icons';
+import {Plus} from '@ui/chatting';
+import ConversationCard from './ConversationCard';
 
 interface EpisodeConversationTemplateProps {
   open: boolean; // 모달 열림 상태
@@ -31,7 +33,6 @@ const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = 
       dispatch(setCurrentEpisodeInfo(episodeInfo));
     }
   }, [episodeInfo]);
-
   const handleResetConversations = () => {
     if (triggerIndex !== -1) {
       dispatch(removeAllActionConversationTalk({triggerIndex}));
@@ -62,8 +63,15 @@ const EpisodeConversationTemplate: React.FC<EpisodeConversationTemplateProps> = 
         </IconButton>
       </DialogTitle>
 
-      {/* CardSlider에 triggerId 전달 */}
-      <CardSlider Index={triggerIndex} />
+      <div className={styles.container}>
+        <div className={styles.addNew}>
+          <img src={Plus.src} />
+          Add New
+        </div>
+        <div className={styles.cardBox}>
+          <ConversationCard></ConversationCard>
+        </div>
+      </div>
     </Dialog>
   );
 };

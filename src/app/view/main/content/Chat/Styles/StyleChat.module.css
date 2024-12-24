@@ -67,7 +67,6 @@
   flex: 1; /* 남은 공간을 차지하도록 설정 */
   padding: 16px; /* 채팅 영역 패딩 */
   overflow-y: auto; /* 수직 스크롤 가능 */
-
   background-color: #ffffff; /* 배경색 설정 */  
   height: calc(100%);
   position: sticky;
@@ -114,7 +113,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-size: cover;
+  background-size: auto;
   background-repeat: no-repeat;
   background-position: bottom;
   z-Index: 3,
@@ -155,10 +154,17 @@
 .messageBubbleArea::-webkit-scrollbar {
   display: none; /* Webkit 브라우저에서 스크롤바 숨기기 */
 }
-  
+
+.messageBubbleArea > .endPadding
+{
+  padding-bottom: 2.3vh;
+}
+
 /* 하단바 설정 */
 .bottomBar {
+  
 }
+
 
 .collapsed {
   max-height: 70px; /* 접혔을 때 높이 */
