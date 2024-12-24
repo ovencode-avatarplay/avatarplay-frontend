@@ -10,6 +10,7 @@ import ConversationCard from './ConversationCard';
 import {RootState} from '@/redux-store/ReduxStore';
 import ConversationCardDropDown from './ConversationCardDropDown';
 import {duplicateEpisode} from '@/redux-store/slices/ContentInfo';
+import {BoldArrowLeft} from '@ui/Icons';
 
 interface Bar {
   id: string;
@@ -202,15 +203,17 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
       disableAutoFocus={true}
       disableEnforceFocus={true}
     >
-      <DialogTitle className={styles['modal-header']}>
-        <Button onClick={closeModal} className={styles['close-button']}>
-          <ArrowBackIosIcon />
-        </Button>
-        <span className={styles['modal-title']}>Conversation Template</span>
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
+          <button className={styles.backButton} onClick={closeModal}>
+            <img src={BoldArrowLeft.src} className={styles.backIcon} />
+          </button>
+          <div className={styles.navTitle}>Conversation Template</div>
+        </div>
         <IconButton onClick={() => setCards([])}>
           <RestartAltIcon />
         </IconButton>
-      </DialogTitle>
+      </div>
 
       <div className={styles.container}>
         <div className={styles.addNew} onClick={handleAddCard}>
