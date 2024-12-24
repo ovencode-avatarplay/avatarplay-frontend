@@ -4,7 +4,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100vw;
-    max-width: 500px;
+    max-width: 402px;
     height: 100vh;
     background-color: var(--mui-palette-background-paper); /* MUI Theme Variable */
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
@@ -19,7 +19,7 @@
   
 .container {
     position: relative;
-    max-width: '500px';
+    max-width: '402px';
     margin: 0 'auto';
     height: 100vh;
     max-width: 100vw;
@@ -35,7 +35,7 @@
     align-items: center;
     width: 100%;
     overflow: hidden;       
-    max-width: 500px;
+    max-width: 402px;
   margin: 0 auto; /* 수평 중앙 정렬 */
     background-color: #f9f9f9;
     padding: 10px 0;

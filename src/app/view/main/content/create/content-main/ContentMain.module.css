@@ -3,7 +3,7 @@
     flex-direction: column;
     height: 100vh; 
     overflow: hidden;
-    max-width: 500px;
+    max-width: 402px;
       margin: 0 auto;
       position: relative;
       
@@ -20,7 +20,7 @@
     padding: 0px;
     gap: 6px;
   
-    max-width: 500px;
+    max-width: 402px;
     height: 100vh; /* 고정 높이 */
     
     overflow-y: auto; /* 세로 스크롤 활성화 */
@@ -47,7 +47,7 @@
     bottom: 0px;
     
     background: #FFFFFF;
-    max-width: 500px;
+    max-width: 402px;
     margin: 0 auto; /* 수평 중앙 정렬 */
     
       }

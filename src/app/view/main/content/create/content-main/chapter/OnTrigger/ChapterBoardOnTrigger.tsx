@@ -64,7 +64,7 @@ const ChapterBoardOnTrigger: React.FC<Props> = ({open, onClose, initialChapters,
       open={open}
       onClose={onClose}
       PaperProps={{
-        sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
+        sx: {width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto'},
       }}
     >
       <Box className={styles.drawerContainer}>

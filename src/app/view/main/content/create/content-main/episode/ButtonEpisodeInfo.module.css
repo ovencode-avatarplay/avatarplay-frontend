@@ -44,6 +44,6 @@
     align-items: center;
     flex-shrink: 0;
     
-    filter: invert(98%) sepia(39%) saturate(3734%) hue-rotate(281deg) brightness(107%) contrast(108%);
-
+    color: #FEBBEA;
+    filter: sepia(97%) saturate(4411%) hue-rotate(281deg) brightness(110%) contrast(101%);
 }

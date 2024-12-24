@@ -31,7 +31,7 @@ const EpisodeImageSetup: React.FC<EpisodeImageSetupProps> = ({open, onClose, epi
       disableAutoFocus={true}
       disableEnforceFocus={true} // disableEnforceFocus 속성 사용
       sx={{
-        maxWidth: '500px',
+        maxWidth: '402px',
         margin: '0 auto',
       }}
     >

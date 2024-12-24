@@ -7,7 +7,7 @@
   gap: 15px;
 
   justify-self: center;
-  max-width: 500px;
+  max-width: 402px;
   max-height: 35vh;
 
   border-radius: 24px 24px 0px 0px;
@@ -78,7 +78,7 @@ gap: 10px;
 background: var(--Neutral-50, #F8F9FA);
 }
 
-@media (min-width: 500px) {
+@media (min-width: 402px) {
 .drawerButton
 {
   width: 370px;
@@ -115,7 +115,7 @@ flex-shrink: 0;
 align-self: stretch;
 }
 
-@media (min-width: 500px) {
+@media (min-width: 402px) {
   
 .drawerButton > .buttonItem
 {
