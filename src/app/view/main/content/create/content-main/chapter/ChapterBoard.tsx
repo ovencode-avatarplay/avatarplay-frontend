@@ -35,6 +35,7 @@ import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import emptyData from '@/data/create/empty-content-info-data.json';
 import {Chapter} from './ChapterTypes';
 import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
+import {LinePlus} from '@ui/Icons';
 
 interface Props {
   open: boolean;
@@ -337,21 +338,19 @@ const ChapterBoard: React.FC<Props> = ({
         open={open}
         onClose={onClose}
         PaperProps={{
-          sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
+          sx: {width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto'},
         }}
       >
+        {/* Drawer Header */}
+        <CreateDrawerHeader title="Season" onClose={onClose} />
+        {/* Create Chapter 버튼 */}
+        <button className={styles.addButton} onClick={handleCreateChapter}>
+          <div className={styles.buttonIconBox}>
+            <img className={styles.buttonIcon} src={LinePlus.src} />
+          </div>
+          <div className={styles.buttonText}>Add new</div>
+        </button>
         <Box className={styles.drawerContainer}>
-          {/* Drawer Header */}
-          <CreateDrawerHeader title="ChapterBoard" onClose={onClose} />
-
-          {/* Create Chapter 버튼 */}
-          <Box className={styles.imageButtonContainer}>
-            <Button className={styles.imageButton} onClick={handleCreateChapter}>
-              <HomeIcon />
-              <Typography>Create Chapter</Typography>
-            </Button>
-          </Box>
-
           {/* Chapter 및 Episode 트리 구조 */}
           <Box className={styles.contentBox}>
             {chapters.map((chapter, index) => (
@@ -378,15 +377,10 @@ const ChapterBoard: React.FC<Props> = ({
               />
             ))}
           </Box>
-
-          {/* Create Episode 버튼 */}
-          {/* <Box className={styles.imageButtonContainer}>
-            <Button className={styles.imageButton} onClick={handleCreateEpisode}>
-              <HomeIcon />
-              <Typography>Create Episode</Typography>
-            </Button>
-          </Box> */}
         </Box>
+        <div className={styles.confirmButtonBox}>
+          <button className={styles.confirmButton}>Confirm</button>
+        </div>
 
         {/* 이름 변경을 위한 Dialog */}
         <Dialog open={editItem.idx !== null} onClose={() => setEditItem({idx: null, type: null})}>

@@ -79,7 +79,7 @@ export default function BottomNav() {
 
   return (
     <footer>
-      <Paper className="bottomNav" elevation={3} sx={{maxWidth: '500px', margin: '0 auto'}}>
+      <Paper className="bottomNav" elevation={3} sx={{maxWidth: '402px', margin: '0 auto'}}>
         <Box className="bottomNavBox">
           <BottomNavigation showLabels value={selectedIndex} onChange={handleNavigationChange}>
             {BottomNavData.map((button, index) => (

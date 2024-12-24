@@ -15,7 +15,7 @@ border-radius: 12px;
 
   }
 
-  @media (min-width: 500px) {
+  @media (min-width: 402px) {
     .episodeCard{
         max-width: 370px;
     }

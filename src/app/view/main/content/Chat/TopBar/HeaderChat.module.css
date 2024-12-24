@@ -10,9 +10,9 @@
     gap :10px;
 }
 
-@media (min-width: 500px) {
+@media (min-width: 402px) {
     .topNavigation {    
-        max-width: 500px;     
+        max-width: 402px;     
         gap: 10px; 
     }
 }
@@ -34,7 +34,7 @@
     justify-self: center;
 }
 
-@media (min-width: 500px) {
+@media (min-width: 402px) {
     .left {
         padding: 14px 0px 14px 16px; 
     }
@@ -49,7 +49,7 @@
     justify-self: center;
 }
 
-@media (min-width: 500px) {
+@media (min-width: 402px) {
     .left > .button {
         max-width: 20px;
         max-height: 20px;
@@ -63,7 +63,7 @@
     justify-self: center;
 }
 
-@media (min-width: 500px) {
+@media (min-width: 402px) {
     .left > .button > .buttonImage{    
         max-width: 20px;
         max-height: 20px;
@@ -83,7 +83,7 @@
 }
 
 
-@media (min-width: 500px) {
+@media (min-width: 402px) {
     .chat {
         gap: 7px;
     }
@@ -115,7 +115,7 @@
 
 }
 
-@media (min-width: 500px) {
+@media (min-width: 402px) {
     .textArea > .contentName{ 
         max-width: 297px;
     }
@@ -137,7 +137,7 @@
 }
 
 
-@media (min-width: 500px) {
+@media (min-width: 402px) {
     .textArea > .episodeName{ 
         max-width: 297px;
     }
@@ -159,7 +159,7 @@
     align-items: center;
 }
 
-@media (min-width: 500px) {
+@media (min-width: 402px) {
     .topButtonBox > .button{
         width: 40px;
         height: 40px;
@@ -176,7 +176,7 @@
 }
 
 
-@media (min-width: 500px) {
+@media (min-width: 402px) {
     .topButtonBox > .button > .buttonImage{
         width: 40px;
         height: 40px;

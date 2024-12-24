@@ -21,6 +21,8 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
+import ContentDashboardHeader from './ContentDashboardHeader';
+import {BoldArrowDown} from '@ui/Icons';
 
 interface Props {
   open: boolean;
@@ -142,23 +144,25 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
         open={open}
         onClose={onClose}
         PaperProps={{
-          sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
+          sx: {width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto'},
         }}
       >
-        <Box className={styles.drawerContainer}>
-          <CreateDrawerHeader title="Content Dashboard" onClose={onClose} />
-
-          {/* Filter section */}
-          <Box className={styles.filterContainer}>
-            <Select className={styles.filterSelect}>
-              <MenuItem value="filter1">Filter 1</MenuItem>
-              <MenuItem value="filter2">Filter 2</MenuItem>
-              <MenuItem value="filter3">Filter 3</MenuItem>
-            </Select>
-            <Button variant="contained" className={styles.createButton} onClick={handleCreateClick}>
-              Create
-            </Button>
-          </Box>
+        <ContentDashboardHeader title="Story" onClose={onClose} onCreate={handleCreateClick} />
+        <div className={styles.drawerContainer}>
+          <div className={styles.filterContainer}>
+            <div className={`${styles.filterBase} ${styles.filterPublish}`}>
+              <div className={styles.filterData}>
+                <div className={styles.filterName}>All</div>
+                <img className={styles.filterIcon} src={BoldArrowDown.src} />
+              </div>
+            </div>
+            <div className={`${styles.filterBase} ${styles.filterOption}`}>
+              <div className={styles.filterData}>
+                <div className={styles.filterName}>Alphabetically</div>
+                <img className={styles.filterIcon} src={BoldArrowDown.src} />
+              </div>
+            </div>
+          </div>
 
           {/* Content list */}
           <ContentDashboardList
@@ -177,7 +181,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
               Delete
             </Button>
           </Box>
-        </Box>
+        </div>
       </Drawer>
 
       <ConfirmationDialog

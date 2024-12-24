@@ -1,24 +1,31 @@
 import React from 'react';
-import {Box, IconButton, Typography} from '@mui/material';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import styles from './ButtonEpisodeInfo.module.css';
 import {LineEdit} from '@ui/Icons';
 
 interface Props {
   onDrawerOpen: () => void;
+  onEditChapterName: () => void;
   chapterName: string;
-  episodeName: string;
 }
 
-const ButtonEpisodeInfo: React.FC<Props> = ({onDrawerOpen, chapterName, episodeName}) => {
+const ButtonEpisodeInfo: React.FC<Props> = ({onDrawerOpen, chapterName, onEditChapterName}) => {
+  const handlerOnDrawerOpen = () => {
+    onDrawerOpen();
+  };
+
   return (
-    <div className={styles.chapterInfo}>
+    <button className={styles.chapterInfo} onClick={handlerOnDrawerOpen}>
       <div className={styles.chapterName}>{chapterName}</div>
-      <div className={styles.editButton} onClick={onDrawerOpen}>
+      <button
+        className={styles.editButton}
+        onClick={event => {
+          event.stopPropagation();
+          onEditChapterName();
+        }}
+      >
         <img src={LineEdit.src} className={styles.editIcon} />
-      </div>
-    </div>
+      </button>
+    </button>
   );
 };
 

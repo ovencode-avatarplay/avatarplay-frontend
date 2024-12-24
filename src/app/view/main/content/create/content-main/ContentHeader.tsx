@@ -1,9 +1,5 @@
 import React from 'react';
-import {Box, TextField, IconButton} from '@mui/material';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import EditIcon from '@mui/icons-material/Edit';
-import StudioIcon from '@mui/icons-material/VideoLibrary';
-
+import {Box, IconButton} from '@mui/material';
 import Link from 'next/link';
 
 import styles from './ContentHeader.module.css';
@@ -29,6 +25,8 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, onT
   };
 
   const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    // TODO : 현재 편집중인 값이 emptydata와 동일한지 체크해서 경고 메시지 스킵
+
     const confirmation = window.confirm('You have unsaved changes. Are you sure you want to leave?');
     if (!confirmation) {
       event.preventDefault(); // 링크 이동 중단
@@ -38,20 +36,24 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, onT
   return (
     <Box className={styles.contentHeader}>
       <div className={styles.titleContainer}>
-        <Link href={lastUrl ? lastUrl : defaultUrl} passHref onClick={handleLinkClick}>
-          <img src={LeftArrow.src} />
+        <Link className={styles.goBackButton} href={lastUrl ? lastUrl : defaultUrl} passHref onClick={handleLinkClick}>
+          <img src={LeftArrow.src} className={styles.goBackIcon} />
         </Link>
-        {contentName && contentName.trim() ? contentName : 'Story Name'}
+        <div className={styles.contentName}>{contentName && contentName.trim() ? contentName : 'Story Name'}</div>
       </div>
 
-      <div>
-        <IconButton>
-          <img src={LineEdit.src} className={styles.blackIcon} />
-        </IconButton>
+      <div className={styles.headerButtonArea}>
+        <button className={styles.headerButton}>
+          <div className={styles.iconBox}>
+            <img src={LineEdit.src} className={styles.headerIcon} />
+          </div>
+        </button>
 
-        <IconButton onClick={onOpenDrawer}>
-          <img src={LineDashboard.src} className={styles.blackIcon} />
-        </IconButton>
+        <button className={styles.headerButton} onClick={onOpenDrawer}>
+          <div className={styles.iconBox}>
+            <img src={LineDashboard.src} className={styles.headerIcon} />
+          </div>
+        </button>
       </div>
     </Box>
   );

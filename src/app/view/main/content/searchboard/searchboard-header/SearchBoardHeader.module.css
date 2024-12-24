@@ -7,7 +7,7 @@
   -ms-overflow-style: none;
   /* Internet Explorer 10+ */
 
-  max-width: 500px;
+  max-width: 402px;
   margin: 0 auto; /* 수평 중앙 정렬 */
   overflow-x: auto;
   white-space: nowrap;

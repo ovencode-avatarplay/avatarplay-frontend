@@ -5,13 +5,63 @@
     height: 100vh;
     padding: 16px;
     overflow: hidden;
+
 }
 
 .filterContainer {
     display: flex;
+    width: 370px;
+    justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
+
+.filterBase {
+    display: flex;
+    width: 96px;
+    padding: 10px 13px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    flex-shrink: 0;
+    
+    border-radius: 30px;
+    border: 1px solid var(--Border-1, #EAECF0);    
+}
+
+.filterData
+{
+    width: 100%;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center; 
+    gap : auto;
+}
+
+.filterPublish { 
+    width: 96px;
+}
+
+.filterOption{
+    width: 140px; 
+}
+
+.filterName {
+    color: var(--Neutral-800, #2C3131);
+    text-align: center; 
+    font-family: 'Lato';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.28px;
+}
+
+.filterIcon {
+    color : #bdc1c6;
+    filter: invert(85%) sepia(1%) saturate(1472%) hue-rotate(125deg) brightness(97%) contrast(82%);
+}
+
 
 .filterSelect {
     margin-right: 8px;
