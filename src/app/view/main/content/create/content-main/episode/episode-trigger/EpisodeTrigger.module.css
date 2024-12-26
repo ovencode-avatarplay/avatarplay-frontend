@@ -61,3 +61,140 @@
     width: 120px;
     
 }
+
+
+.header {
+    display: flex;
+    width: 100%;
+    height: 58px;
+    padding-top: 9px;
+    padding-right: 16px;
+    padding-bottom : 9px ;
+    padding-left:  0.362px;
+    align-items: center;
+    gap: 6.6px;
+    flex-shrink: 0;
+
+    background: var(--White, #FFF);
+}
+
+@media (min-width:402px)
+{.header {
+    width: 402px;
+    height: 58px;
+    gap: 6.6px;
+    display: flex;
+    justify-content: space-between;
+}
+}
+
+.headerLeft
+{ 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6.6px;
+}
+
+.headerLeft > .backButton{
+    display: flex;
+height: 40px;
+padding: 14px 0px 14px 16px;
+align-items: center;
+gap: 8px;
+}
+
+.backButton > .backIcon {
+    display: flex;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+}
+
+.headerLeft > .navTitle{
+    display: flex; 
+    justify-content: center;
+
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 600;
+font-size: 20px;
+line-height: 150%;
+/* identical to box height, or 30px */
+display: flex;
+align-items: center;
+
+/* Eerie black */
+color: #1E1E1E;
+
+
+}
+
+.counterAndCraete{
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+padding: 0px;
+gap: 198px;
+
+width: 370px;
+height: 30px;
+left: 15.58px;
+top: 192px;
+
+
+}
+
+
+.counterButton
+{
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 8px 12px;
+gap: 8px;
+
+width: 82px;
+height: 30px;
+
+background: #F8F9FA;
+border-radius: 8px;
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 600;
+font-size: 13px;
+line-height: 20px;
+letter-spacing: -0.4px;
+
+color: #5F6368;
+}
+
+.createButton
+{
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 8px 20px;
+gap: 8px;
+
+width: 90px;
+height: 30px;
+
+background: #2C3131;
+border-radius: 8px;
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 20px;
+letter-spacing: -0.4px;
+
+color: #FFFFFF;
+
+}

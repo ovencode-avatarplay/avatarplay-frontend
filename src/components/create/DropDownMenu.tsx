@@ -12,36 +12,38 @@ export interface DropDownMenuItem {
 interface DropDownMenuProps {
   items: DropDownMenuItem[];
   className?: string; //  추가적으로 세팅될 클래스네임
+  onClose: () => void;
 }
 
-const DropDownMenu: React.FC<DropDownMenuProps> = ({items, className}) => {
+const DropDownMenu: React.FC<DropDownMenuProps> = ({items, className, onClose}) => {
   return (
-    <div className={`${styles.dropDownMenu} ${className || ''}`}>
-      {items.map((item, idx) => (
-        <button
-          key={idx}
-          className={`${styles.dropDownItem} ${item.isRed ? styles.redText : ''} ${
-            idx === items.length - 1 ? styles.lastItem : ''
-          }`}
-          onClick={e => {
-            e.stopPropagation();
-            if (!item.disabled) {
-              item.onClick(e);
-            }
-          }}
-          disabled={item.disabled}
-        >
-          <div className={styles.dropDownName}>{item.name}</div>
-          <div className={styles.dropDownIconBox}>
-            <img
-              className={`${styles.dropDownIcon} ${item.isRed ? styles.redIcon : styles.blackIcon}`}
-              src={item.icon}
-              alt={`${item.name} icon`}
-            />
-          </div>
-        </button>
-      ))}
-    </div>
+    <>
+      <div className={styles.editDropdDownBack} onClick={() => onClose()}></div>
+      <div className={`${styles.dropDownMenu} ${className || ''}`}>
+        {items.map((item, idx) => (
+          <button
+            key={idx}
+            className={`${styles.dropDownItem}  ${idx === items.length - 1 ? styles.lastItem : ''}`}
+            onClick={e => {
+              e.stopPropagation();
+              if (!item.disabled) {
+                item.onClick(e);
+              }
+            }}
+            disabled={item.disabled}
+          >
+            <div className={`${styles.dropDownName} ${item.isRed ? styles.redText : ''}`}>{item.name}</div>
+            <div className={styles.dropDownIconBox}>
+              <img
+                className={`${styles.dropDownIcon} ${item.isRed ? styles.redIcon : styles.blackIcon}`}
+                src={item.icon}
+                alt={`${item.name} icon`}
+              />
+            </div>
+          </button>
+        ))}
+      </div>
+    </>
   );
 };
 

@@ -93,7 +93,13 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
             />
           ))}
         </div>
-        {dropBoxOpen && <DropDownMenu items={dropDownMenuItems} className={styles.chapterDropDown} />}
+        {dropBoxOpen && (
+          <DropDownMenu
+            items={dropDownMenuItems}
+            onClose={() => setDropBoxOpen(false)}
+            className={styles.chapterDropDown}
+          />
+        )}
       </div>
     </>
   );

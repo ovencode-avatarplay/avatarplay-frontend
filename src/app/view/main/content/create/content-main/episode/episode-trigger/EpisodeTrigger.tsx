@@ -9,6 +9,7 @@ import SelectTriggerType from './SelectTriggerType';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {useDispatch} from 'react-redux';
+import {BoldArrowLeft} from '@ui/Icons';
 
 interface EpisodeTriggerProps {
   open: boolean; // 모달 열림 상태
@@ -64,12 +65,18 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
       disableAutoFocus={true}
       disableEnforceFocus={true} // disableEnforceFocus 속성 사용
     >
-      <Box className={styles['modal-header']}>
-        <IconButton onClick={closeModal} className={styles['close-button']}>
-          <ArrowBackIcon style={{fontSize: 32, color: 'black'}} />{' '}
-        </IconButton>
-        <span className={styles['modal-title']}>Trigger</span>
-      </Box>
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
+          <button className={styles.backButton} onClick={closeModal}>
+            <img src={BoldArrowLeft.src} className={styles.backIcon} />
+          </button>
+          <div className={styles.navTitle}>Trigger Event</div>
+        </div>
+      </div>
+      <div className={styles.counterAndCraete}>
+        <div className={styles.counterButton}>1/2</div>
+        <div className={styles.createButton}>Create</div>
+      </div>
       <Box className={styles['card-box']}>
         <div className={styles['listText']}>Trigger list</div>
         <CheckboxList /> {/* CheckboxList 컴포넌트 추가 */}

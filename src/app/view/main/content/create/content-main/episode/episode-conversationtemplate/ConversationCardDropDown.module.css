@@ -29,6 +29,8 @@
 
 .icon {
   width: 22px;
+
+  
   height: 22px;
   color: #000000;
   filter: brightness(0) saturate(100%)

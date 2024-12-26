@@ -122,7 +122,13 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected}) =>
             </div>
           </div>
         </div>
-        {dropBoxOpen && <DropDownMenu items={dropDownMenuItems} className={styles.contentItemDropDown} />}
+        {dropBoxOpen && (
+          <DropDownMenu
+            items={dropDownMenuItems}
+            onClose={() => setDropBoxOpen(false)}
+            className={styles.contentItemDropDown}
+          />
+        )}
       </div>
     </div>
   );

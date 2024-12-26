@@ -27,7 +27,9 @@
     border-bottom: 1px solid var(--Border-1, #EAECF0);
     gap: 6px;
 }
-
+.dropDownItem:hover {
+    background-color: #f8f8f8;
+  }
 .lastItem{
     border-bottom: none;
 }
@@ -73,3 +75,13 @@
     color: #F75555;
     filter: invert(45%) sepia(15%) saturate(2269%) hue-rotate(314deg) brightness(105%) contrast(100%);
 }
+.editDropdDownBack {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    z-index: 9; /* 드롭다운보다 낮게 설정 */
+  }
+  

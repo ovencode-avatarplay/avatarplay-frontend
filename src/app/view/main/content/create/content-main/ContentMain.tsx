@@ -616,6 +616,7 @@ const ContentMain: React.FC = () => {
         <div className={styles.seasonArea}>
           <ButtonEpisodeInfo
             onDrawerOpen={handleOpenChapterboard}
+            onEditChapterName={() => {}}
             chapterName={editingContentInfo.chapterInfoList[selectedChapterIdx].name ?? ''}
           />
           {/* EpisodeCounter */}
