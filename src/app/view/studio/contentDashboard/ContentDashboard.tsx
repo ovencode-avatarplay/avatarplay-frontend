@@ -16,15 +16,11 @@ import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
 // Component
 import StudioTopMenu from '../StudioDashboardMenu';
 import ContentList from './ContentList';
-import ContentDashboardFooter from '.././StudioDashboardFooter';
 import StudioFilter from '../StudioFilter';
 
 // Styles
 import styles from './ContentDashboard.module.css';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
-import EditIcon from '@mui/icons-material/Edit';
-import PreviewIcon from '@mui/icons-material/Preview';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
   GetContentsByUserIdReq,
   GetTotalContentByIdReq,
@@ -115,6 +111,7 @@ const ContentDashboard: React.FC = () => {
       }
     } else {
       setLoading(false);
+      dispatch(setSkipContentInit(false));
       const currentLang = searchParam.get(':lang') || 'en';
       router.push(`/${currentLang}/create/story`);
     }
@@ -221,12 +218,6 @@ const ContentDashboard: React.FC = () => {
     {value: 'filter2', label: 'Filter 2'},
     {value: 'filter3', label: 'Filter 3'},
   ];
-  const buttons = [
-    {icon: <EditIcon />, text: 'Edit', onClick: handleEdit},
-    {icon: <PreviewIcon />, text: 'Preview', onClick: handlePreview},
-    {icon: <DeleteIcon />, text: 'Delete', onClick: handleOpenDeleteDialog},
-  ];
-
   return (
     <>
       <div className={styles.dashboard}>
@@ -238,7 +229,6 @@ const ContentDashboard: React.FC = () => {
           onCreateClick={handleCreateClick}
         />
         <ContentList onSelect={handleSelectItem} onItemEdit={handleEdit} onItemDelete={handleOpenDeleteDialog} />
-        <ContentDashboardFooter buttons={buttons} />
       </div>
       <ConfirmationDialog
         title="Discard Content?"

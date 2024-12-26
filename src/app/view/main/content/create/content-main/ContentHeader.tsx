@@ -1,5 +1,4 @@
 import React from 'react';
-import {Box, IconButton} from '@mui/material';
 import Link from 'next/link';
 
 import styles from './ContentHeader.module.css';
@@ -9,11 +8,12 @@ import {setContentName} from '@/redux-store/slices/PublishInfo';
 import {LeftArrow, LineDashboard, LineEdit} from '@ui/Icons';
 interface ContentHeaderProps {
   lastUrl?: string;
+  onOpenContentName: () => void;
   onOpenDrawer: () => void; // 스튜디오 버튼 클릭 시 호출될 함수
   onTitleChange: (newTitle: string) => void;
 }
 
-const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, onTitleChange}) => {
+const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenContentName, onOpenDrawer, onTitleChange}) => {
   const contentName = useSelector((state: RootState) => state.publish.contentName);
   const defaultUrl = '../main/homefeed';
   const dispatch = useDispatch();
@@ -34,7 +34,7 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, onT
   };
 
   return (
-    <Box className={styles.contentHeader}>
+    <div className={styles.contentHeader}>
       <div className={styles.titleContainer}>
         <Link className={styles.goBackButton} href={lastUrl ? lastUrl : defaultUrl} passHref onClick={handleLinkClick}>
           <img src={LeftArrow.src} className={styles.goBackIcon} />
@@ -43,7 +43,7 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, onT
       </div>
 
       <div className={styles.headerButtonArea}>
-        <button className={styles.headerButton}>
+        <button className={styles.headerButton} onClick={onOpenContentName}>
           <div className={styles.iconBox}>
             <img src={LineEdit.src} className={styles.headerIcon} />
           </div>
@@ -55,7 +55,7 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenDrawer, onT
           </div>
         </button>
       </div>
-    </Box>
+    </div>
   );
 };
 

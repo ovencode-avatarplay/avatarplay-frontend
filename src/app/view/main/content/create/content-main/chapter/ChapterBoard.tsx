@@ -3,21 +3,20 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 
 // Css, MUI
-import {Drawer, Box, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions} from '@mui/material';
+import {Drawer} from '@mui/material';
 
 import styles from './ChapterBoard.module.css';
 import {LinePlus} from '@ui/Icons';
 
 // Slice
 import {setSelectedChapterIdx, setSelectedEpisodeIdx} from '@/redux-store/slices/ContentSelection';
-import {updateEditingContentInfo} from '@/redux-store/slices/ContentInfo';
 
 // Components
 import ChapterItem from './ChapterItem';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 // Types
-import {ContentInfo, ChapterInfo} from '@/redux-store/slices/ContentInfo';
+import {ChapterInfo} from '@/redux-store/slices/ContentInfo';
 import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 
@@ -29,40 +28,38 @@ import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 interface Props {
   open: boolean;
   onClose: () => void;
-  initialChapters: ChapterInfo[];
+  contentChapters: ChapterInfo[];
   onAddChapter: (newChapter: ChapterInfo) => void;
   onDeleteChapter: (chapterId: number) => void;
   onRenameClick: () => void;
+  openInitEpisode: () => void;
+  chapterFirstEpisode: EpisodeInfo;
 }
 
 const ChapterBoard: React.FC<Props> = ({
   open,
   onClose,
-  initialChapters,
+  contentChapters,
   onAddChapter,
   onDeleteChapter,
   onRenameClick,
+  openInitEpisode,
+  chapterFirstEpisode,
 }) => {
   const dispatch = useDispatch();
 
   const [chapters, setChapters] = useState<Chapter[]>([]);
-  const selectedContent = useSelector((state: RootState) => state.content.curEditingContentInfo);
 
   const selectedChapterIdx = useSelector((state: RootState) => state.contentselection.selectedChapterIdx);
   const selectedEpisodeIdx = useSelector((state: RootState) => state.contentselection.selectedEpisodeIdx);
   const editingContentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo);
-  const [editItem, setEditItem] = useState<{idx: number | null; type: 'chapter' | 'episode' | null}>({
-    idx: null,
-    type: null,
-  });
-  const [newName, setNewName] = useState<string>('');
 
   // 삭제 Dialog
   const [confirmDialog, setConfirmDialog] = useState({
     open: false,
     title: '',
     content: '',
-    onConfirm: () => {},
+    onConfirm: onClose,
   });
 
   //#region 함수
@@ -109,8 +106,8 @@ const ChapterBoard: React.FC<Props> = ({
   //#region Hooks
   // ChapterInfo 배열을 컴포넌트 상태로 변환
   useEffect(() => {
-    setChapters(transformChapterInfoToChapter(initialChapters));
-  }, [initialChapters]);
+    setChapters(transformChapterInfoToChapter(contentChapters));
+  }, [contentChapters]);
 
   useEffect(() => {
     if (open) {
@@ -129,6 +126,16 @@ const ChapterBoard: React.FC<Props> = ({
     }
   }, [selectedChapterIdx, selectedEpisodeIdx]);
 
+  useEffect(() => {
+    if (
+      chapterFirstEpisode !== null &&
+      chapterFirstEpisode !== emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0]
+    ) {
+      const tmp: EpisodeInfo = chapterFirstEpisode;
+      handleCreateChapter(tmp);
+    }
+  }, [chapterFirstEpisode]);
+
   //#endregion
 
   //#region Handler
@@ -139,16 +146,10 @@ const ChapterBoard: React.FC<Props> = ({
     dispatch(setSelectedEpisodeIdx(0));
   };
 
-  const handleCreateChapter = () => {
+  const handleCreateChapter = (newEpisode: EpisodeInfo) => {
     const newChapterId = getMinChapterId(chapters);
     const newEpisodeId = getMinEpisodeId(chapters);
     if (newChapterId != null && newEpisodeId != null) {
-      const newEpisode: EpisodeInfo = {
-        ...emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
-        id: newEpisodeId - 1,
-        name: `New Episode ${newEpisodeId - 1}`,
-      };
-
       const newChapter: ChapterInfo = {
         id: newChapterId - 1,
         name: `New Chapter ${newChapterId - 1}`,
@@ -202,15 +203,15 @@ const ChapterBoard: React.FC<Props> = ({
         {/* Drawer Header */}
         <CreateDrawerHeader title="Season" onClose={onClose} />
         {/* Create Chapter 버튼 */}
-        <button className={styles.addButton} onClick={handleCreateChapter}>
+        <button className={styles.addButton} onClick={openInitEpisode}>
           <div className={styles.buttonIconBox}>
             <img className={styles.buttonIcon} src={LinePlus.src} />
           </div>
           <div className={styles.buttonText}>Add new</div>
         </button>
-        <Box className={styles.drawerContainer}>
+        <div className={styles.drawerContainer}>
           {/* Chapter 및 Episode 트리 구조 */}
-          <Box className={styles.contentBox}>
+          <div className={styles.contentBox}>
             {chapters.map((chapter, index) => (
               <ChapterItem
                 key={index}
@@ -227,10 +228,12 @@ const ChapterBoard: React.FC<Props> = ({
                 disableDelete={chapters.length <= 1}
               />
             ))}
-          </Box>
-        </Box>
+          </div>
+        </div>
         <div className={styles.confirmButtonBox}>
-          <button className={styles.confirmButton}>Confirm</button>
+          <button className={styles.confirmButton} onClick={onClose}>
+            Confirm
+          </button>
         </div>
       </Drawer>
 

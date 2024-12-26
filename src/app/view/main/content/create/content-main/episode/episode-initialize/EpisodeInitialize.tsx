@@ -34,26 +34,33 @@ import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineCheck, LineU
 interface Props {
   open: boolean;
   isEditing: boolean;
+  isFromChapterFirstEpisode: boolean;
   onClose: () => void;
   modifyEpisodeOper: (episodeInfo: EpisodeInfo) => void;
   addEpisodeOper: (episodeInfo: EpisodeInfo) => void;
+  addChapterOper: (episodeInfo: EpisodeInfo) => void;
   episodeName: string;
+  isInitFinished: boolean;
+  setIsInitFinished: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EpisodeInitialize: React.FC<Props> = ({
   open,
   isEditing,
+  isFromChapterFirstEpisode,
   onClose,
   modifyEpisodeOper,
   addEpisodeOper,
+  addChapterOper,
   episodeName,
+  isInitFinished,
+  setIsInitFinished,
 }) => {
   //#region 선언
   // 공통
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [isInitFinished, setIsInitFinished] = useState<boolean>(false);
   const [isEpisodeNameOn, setIsEpisodeNameOn] = useState<boolean>(false);
 
   // 에피소드 생성시 가져올 빈 데이터
@@ -348,6 +355,8 @@ const EpisodeInitialize: React.FC<Props> = ({
     setIsInitFinished(true);
     if (isEditing) {
       modifyEpisodeOper(episodeInfo);
+    } else if (isFromChapterFirstEpisode) {
+      addChapterOper(episodeInfo);
     } else {
       addEpisodeOper(episodeInfo);
     }

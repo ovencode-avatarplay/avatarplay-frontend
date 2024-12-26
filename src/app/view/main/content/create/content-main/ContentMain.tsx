@@ -3,15 +3,21 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState, store} from '@/redux-store/ReduxStore';
 
 import styles from './ContentMain.module.css';
+import {LinePlus, LineStack} from '@ui/Icons';
 
 // 항상 보여지는 컴포넌트
 import ContentHeader from './ContentHeader';
-import EpisodeSetup from './episode/EpisodeSetup';
+import ButtonEpisodeInfo from './episode/ButtonEpisodeInfo';
 
 // 상황에 따라 나타나는 컴포넌트
 import ContentPublishing from './content-publishing/ContentPublishing';
 import ContentDashboardDrawer from './content-dashboard/ContentDashboardDrawer';
 import ChapterBoard from './chapter/ChapterBoard';
+import ContentLLMSetup from './content-LLMsetup/ContentLLMsetup';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
+import EpisodeInitialize from './episode/episode-initialize/EpisodeInitialize';
+import BottomRenameDrawer from './episode/BottomRenameDrawer';
+import EpisodeCard from './episode/EpisodeCard';
 
 // 네트워크
 import {
@@ -32,7 +38,7 @@ import {
 } from '@/redux-store/slices/ContentSelection';
 import {setContentInfoToEmpty, setEditingContentInfo, updateEditingContentInfo} from '@/redux-store/slices/ContentInfo';
 import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
-import {setPublishInfo, setContentName} from '@/redux-store/slices/PublishInfo';
+import {setPublishInfo, setContentName, PublishInfoSlice} from '@/redux-store/slices/PublishInfo';
 
 // Interface
 import {ContentInfo, ChapterInfo} from '@/redux-store/slices/ContentInfo';
@@ -41,17 +47,12 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 
 // Json
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
-import ContentLLMSetup from './content-LLMsetup/ContentLLMsetup';
-import LoadingOverlay from '@/components/create/LoadingOverlay';
-import EpisodeInitialize from './episode/episode-initialize/EpisodeInitialize';
-import ButtonEpisodeInfo from './episode/ButtonEpisodeInfo';
-import EpisodeCard from './episode/EpisodeCard';
-import {LinePlus, LineStack} from '@ui/Icons';
-import BottomRenameDrawer from './episode/BottomRenameDrawer';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+
+  const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
 
   // Redux Selector
   // 자주 렌더링 되거나 독립적이지 않을 때 버그가 발생하면 개별선언
@@ -62,13 +63,18 @@ const ContentMain: React.FC = () => {
   const skipContentInit = useSelector((state: RootState) => state.contentselection.skipContentInit); // Init Skip (다른 페이지에서 편집을 들어올 때 사용)
 
   // 컴포넌트 오픈 상태
+  const [isContentNameOpen, setIsContentNameOpen] = useState<boolean>(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isChapterboardOpen, setIsChapterboardOpen] = useState(false);
   const [isPublishingOpen, setIsPublishingOpen] = useState(false);
   const [isLLMSetupOpen, setLLMSetupOpen] = useState(false);
 
   const [isEpisodeEditing, setIsEpisodeEditing] = useState(false);
+  const [isFromChapterFirstEpisode, setIsFromChapterFirstEpisode] = useState(false);
   const [isEpisodeInitOpen, setIsEpisodeInitOpen] = useState(!skipContentInit);
+  const [chapterFirstEpisode, setChapterFirstEpisode] = useState<EpisodeInfo>(
+    emptyContentInfo.chapterInfoList[0].episodeInfoList[0],
+  );
 
   const [isChapterNameOpen, setIsChapterNameOpen] = useState<boolean>(false);
 
@@ -87,7 +93,6 @@ const ContentMain: React.FC = () => {
   const prevChapterRef = useRef<number | null>(null);
   const prevEpisodeRef = useRef<number | null>(null);
 
-  const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
   const defaultSaveContentReq = (): SaveContentReq => ({
     contentInfo: editingContentInfo ?? emptyContentInfo,
   });
@@ -116,6 +121,7 @@ const ContentMain: React.FC = () => {
     // else {
     //   setIsEpisodeEditing(true);
     // }
+    setIsInitFinished(true);
     dispatch(setSkipContentInit(false));
   }, []);
 
@@ -363,19 +369,6 @@ const ContentMain: React.FC = () => {
     }
   };
 
-  const handleNameChange = useCallback(
-    (contentInfo: ContentInfo) => {
-      dispatch(
-        setCurrentEpisodeInfo(contentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]),
-      );
-    },
-    [editingContentInfo, selectedChapterIdx, selectedEpisodeIdx],
-  );
-
-  const handleChapterNameOpen = () => {
-    setIsChapterNameOpen(true);
-  };
-
   const handleSetChapterNameComplete = (inputValue: string): boolean => {
     try {
       // Redux 상태 가져오기
@@ -419,9 +412,47 @@ const ContentMain: React.FC = () => {
     }
   };
 
+  const handleSetContentNameComplete = (inputValue: string): boolean => {
+    try {
+      // Redux 상태 가져오기
+      const state = store.getState(); // Redux store의 상태 가져오기
+
+      // Redux 상태 가져오기
+      const editingContentInfo = state.content.curEditingContentInfo;
+
+      if (!editingContentInfo) {
+        console.error('Editing content info not found');
+        return false;
+      }
+
+      const updatedContent = {
+        ...editingContentInfo,
+        publishInfo: {
+          ...editingContentInfo.publishInfo,
+          contentName: inputValue,
+        },
+      };
+
+      // Redux 상태 업데이트
+      dispatch(updateEditingContentInfo(updatedContent));
+      dispatch(setContentName(inputValue));
+      return true;
+    } catch (error) {
+      console.error('Error updating chapter name:', error);
+
+      // 오류가 발생했음을 반환
+      return false;
+    }
+  };
+
   //#endregion
 
   //#region Drawer, Modal Open / Close
+  const handleContentNameOpen = () => {
+    console.log('asdfa');
+    setIsContentNameOpen(true);
+  };
+
   const handleOpenDashboard = useCallback(() => {
     getContentsByUserId();
 
@@ -437,6 +468,10 @@ const ContentMain: React.FC = () => {
   };
   const handleCloseChapterboard = () => {
     setIsChapterboardOpen(false);
+  };
+
+  const handleChapterNameOpen = () => {
+    setIsChapterNameOpen(true);
   };
 
   const handleOpenLLMSetup = () => {
@@ -460,10 +495,17 @@ const ContentMain: React.FC = () => {
     setIsEpisodeEditing(isEditing);
     setIsEpisodeInitOpen(isEditing);
   };
+  const handleOpenInitialEpisodeFromChapter = () => {
+    setIsEpisodeInitOpen(true);
+    setIsFromChapterFirstEpisode(true);
+  };
 
   const handleCloseInitialEpisode = () => {
     setIsEpisodeEditing(false);
     setIsEpisodeInitOpen(false);
+  };
+  const handleInitialChapterFirstEpisodeFinish = (episodeInfo: EpisodeInfo) => {
+    setChapterFirstEpisode(episodeInfo);
   };
 
   const handleInitialEpisodeFinish = (episodeInfo: EpisodeInfo) => {
@@ -472,6 +514,15 @@ const ContentMain: React.FC = () => {
 
   const handleModifyEpisodeFinish = (episodeInfo: EpisodeInfo) => {
     handleModifyEpisode(episodeInfo);
+  };
+
+  //#endregion
+
+  //#region ContentDashboard 안에서 Create를 들어올 경우
+
+  const handleCreateContentFromDashBoard = () => {
+    setIsInitFinished(false);
+    setIsEpisodeInitOpen(true);
   };
 
   //#endregion
@@ -643,6 +694,7 @@ const ContentMain: React.FC = () => {
     <>
       <main className={styles.contentMain}>
         <ContentHeader
+          onOpenContentName={handleContentNameOpen}
           onOpenDrawer={handleOpenDashboard}
           onTitleChange={handleTitleChange} // Redux 상태 업데이트
         />
@@ -651,14 +703,17 @@ const ContentMain: React.FC = () => {
           onClose={handleCloseDashboard}
           onSelectItem={GetContentByContentId}
           onRefreshItem={getContentsByUserId}
+          onClickCreate={handleCreateContentFromDashBoard}
         />
         <ChapterBoard
           open={isChapterboardOpen}
           onClose={handleCloseChapterboard}
-          initialChapters={editingContentInfo?.chapterInfoList || []}
+          contentChapters={editingContentInfo?.chapterInfoList || []}
           onAddChapter={handleAddChapter}
           onDeleteChapter={handleDeleteChapter}
           onRenameClick={handleChapterNameOpen}
+          openInitEpisode={handleOpenInitialEpisodeFromChapter}
+          chapterFirstEpisode={chapterFirstEpisode}
         />
         <div className={styles.seasonArea}>
           <ButtonEpisodeInfo
@@ -705,12 +760,24 @@ const ContentMain: React.FC = () => {
         <EpisodeInitialize
           open={isEpisodeInitOpen}
           isEditing={isEpisodeEditing}
+          isFromChapterFirstEpisode={isFromChapterFirstEpisode}
           onClose={handleCloseInitialEpisode}
           modifyEpisodeOper={handleModifyEpisodeFinish}
           addEpisodeOper={handleInitialEpisodeFinish}
+          addChapterOper={handleInitialChapterFirstEpisodeFinish}
           episodeName={
             editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]?.name ?? ''
           }
+          isInitFinished={isInitFinished}
+          setIsInitFinished={setIsInitFinished}
+        />
+
+        {/* ContentName 변경 Drawer */}
+        <BottomRenameDrawer
+          open={isContentNameOpen}
+          onClose={() => setIsContentNameOpen(false)}
+          onComplete={handleSetContentNameComplete}
+          lastValue={editingContentInfo.publishInfo.contentName}
         />
 
         {/* ChapterName 변경 Drawer */}

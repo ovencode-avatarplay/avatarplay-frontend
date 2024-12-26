@@ -1,7 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 
-import {Drawer, Box, Button, Select, MenuItem} from '@mui/material';
+import {Drawer} from '@mui/material';
 import styles from './ContentDashboardDrawer.module.css';
+import {BoldArrowDown} from '@ui/Icons';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
@@ -11,28 +12,28 @@ import {
   setSelectedChapterIdx,
   setSelectedContentId,
   setSelectedEpisodeIdx,
+  setSkipContentInit,
 } from '@/redux-store/slices/ContentSelection';
 import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
 
 import {sendContentDelete} from '@/app/NetWork/ContentNetwork';
 
 import ContentDashboardList from './ContentDashboardList';
-import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-
-import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 import ContentDashboardHeader from './ContentDashboardHeader';
-import {BoldArrowDown} from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
+
+import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 
 interface Props {
   open: boolean;
   onClose: () => void;
   onSelectItem: (id: number) => void;
   onRefreshItem: () => void;
+  onClickCreate: () => void;
 }
 
-const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, onRefreshItem}) => {
+const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, onRefreshItem, onClickCreate}) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const contentInfo = useSelector((state: RootState) => state.myContents.contentDashBoardList ?? []);
@@ -179,6 +180,8 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
   };
 
   const handleCreateClick = () => {
+    dispatch(setSkipContentInit(false));
+    onClickCreate();
     dispatch(setContentInfoToEmpty());
     dispatch(setPublishInfo(emptyContentInfo.publishInfo));
     dispatch(setEpisodeInfoEmpty());
@@ -233,17 +236,6 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
             onItemEdit={handleEditClick}
             onItemDelete={handleOpenDialog}
           />
-
-          {/* Action buttons */}
-          <Box className={styles.buttonContainer}>
-            <Button variant="outlined" onClick={handleEditClick} disabled={selectedIndex === null}>
-              Edit
-            </Button>
-            <Button variant="outlined">Preview</Button>
-            <Button variant="outlined" onClick={handleOpenDialog} disabled={selectedIndex === null}>
-              Delete
-            </Button>
-          </Box>
         </div>
         <SelectDrawer
           items={publishItems}
