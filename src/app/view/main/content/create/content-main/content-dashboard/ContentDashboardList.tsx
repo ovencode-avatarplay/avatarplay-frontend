@@ -8,9 +8,17 @@ interface Props {
   contentInfo: ContentDashboardItem[];
   selectedIndex: number | null;
   onItemSelect: (index: number) => void;
+  onItemEdit: () => void;
+  onItemDelete: () => void;
 }
 
-const ContentDashboardList: React.FC<Props> = ({contentInfo, selectedIndex, onItemSelect}) => {
+const ContentDashboardList: React.FC<Props> = ({
+  contentInfo,
+  selectedIndex,
+  onItemSelect,
+  onItemEdit,
+  onItemDelete,
+}) => {
   const listRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -26,7 +34,12 @@ const ContentDashboardList: React.FC<Props> = ({contentInfo, selectedIndex, onIt
     <Box className={styles.list} ref={listRef}>
       {contentInfo.map((item, index) => (
         <div key={index} onClick={() => onItemSelect(index)}>
-          <ContentItem dashboardItem={item} isSelected={selectedIndex === index} />
+          <ContentItem
+            dashboardItem={item}
+            isSelected={selectedIndex === index}
+            onEditClicked={onItemEdit}
+            onDeleteClicked={onItemDelete}
+          />
         </div>
       ))}
     </Box>

@@ -20,9 +20,11 @@ import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 interface ContentItemProps {
   dashboardItem: ContentDashboardItem;
   isSelected: boolean;
+  onEditClicked: () => void;
+  onDeleteClicked: () => void;
 }
 
-const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected}) => {
+const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected, onEditClicked, onDeleteClicked}) => {
   const handleShareContent = () => {
     // TODO : 주소 받아와서 클립보드에  붙여넣기
   };
@@ -37,7 +39,7 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected}) =>
     {
       name: 'Edit',
       icon: LineEdit.src,
-      onClick: () => console.log('Edit clicked'),
+      onClick: onEditClicked,
     },
     {
       name: 'Preview',
@@ -52,7 +54,7 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected}) =>
     {
       name: 'Delete',
       icon: LineDelete.src,
-      onClick: () => console.log('Delete clicked'),
+      onClick: onDeleteClicked,
       isRed: true, // Delete는 위험 동작으로 표시
     },
   ];

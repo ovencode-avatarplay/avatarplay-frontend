@@ -9,13 +9,6 @@ import styles from './EpisodeSetup.module.css';
 
 import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
 
-import EpisodeTrigger from './episode-trigger/EpisodeTrigger';
-import ButtonEpisodeInfo from './ButtonEpisodeInfo';
-
-import EpisodeDescription from './episode-description/EpisodeDescription';
-
-import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
-
 import EpisodeUploadCharacter from './episode-ImageCharacter/EpisodeUploadCharacter';
 // import EpisodeBackgroundUpload from './episode-ImageCharacter/EpisodeImageUpload';
 

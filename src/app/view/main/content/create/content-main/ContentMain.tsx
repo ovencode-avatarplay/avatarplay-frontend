@@ -1,6 +1,6 @@
 import React, {useRef, useEffect, useState, useCallback, useLayoutEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '@/redux-store/ReduxStore';
+import {RootState, store} from '@/redux-store/ReduxStore';
 
 import styles from './ContentMain.module.css';
 
@@ -47,6 +47,7 @@ import EpisodeInitialize from './episode/episode-initialize/EpisodeInitialize';
 import ButtonEpisodeInfo from './episode/ButtonEpisodeInfo';
 import EpisodeCard from './episode/EpisodeCard';
 import {LinePlus, LineStack} from '@ui/Icons';
+import BottomRenameDrawer from './episode/BottomRenameDrawer';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
@@ -68,6 +69,8 @@ const ContentMain: React.FC = () => {
 
   const [isEpisodeEditing, setIsEpisodeEditing] = useState(false);
   const [isEpisodeInitOpen, setIsEpisodeInitOpen] = useState(!skipContentInit);
+
+  const [isChapterNameOpen, setIsChapterNameOpen] = useState<boolean>(false);
 
   const [isInitFinished, setIsInitFinished] = useState(false);
 
@@ -369,6 +372,53 @@ const ContentMain: React.FC = () => {
     [editingContentInfo, selectedChapterIdx, selectedEpisodeIdx],
   );
 
+  const handleChapterNameOpen = () => {
+    setIsChapterNameOpen(true);
+  };
+
+  const handleSetChapterNameComplete = (inputValue: string): boolean => {
+    try {
+      // Redux 상태 가져오기
+      const state = store.getState(); // Redux store의 상태 가져오기
+      const allChapters = state.content.curEditingContentInfo.chapterInfoList;
+
+      // 중복 이름 확인
+      const isDuplicateName = allChapters.some((chapter: ChapterInfo) => chapter.name === inputValue);
+
+      if (isDuplicateName) {
+        console.warn('Duplicate chapter name found:', inputValue);
+        return false; // 중복된 이름이 있으면 false 반환
+      }
+      // Redux 상태 가져오기
+      const editingContentInfo = state.content.curEditingContentInfo;
+
+      if (!editingContentInfo) {
+        console.error('Editing content info not found');
+        return false;
+      }
+
+      // Chapter 이름 업데이트
+      const updatedChapters = editingContentInfo.chapterInfoList.map((chapterInfo, index) =>
+        index === selectedChapterIdx ? {...chapterInfo, name: inputValue} : chapterInfo,
+      );
+
+      // 업데이트된 Content 객체 생성
+      const updatedContent = {
+        ...editingContentInfo,
+        chapterInfoList: updatedChapters,
+      };
+
+      // Redux 상태 업데이트
+      dispatch(updateEditingContentInfo(updatedContent));
+      return true;
+    } catch (error) {
+      console.error('Error updating chapter name:', error);
+
+      // 오류가 발생했음을 반환
+      return false;
+    }
+  };
+
   //#endregion
 
   //#region Drawer, Modal Open / Close
@@ -608,15 +658,12 @@ const ContentMain: React.FC = () => {
           initialChapters={editingContentInfo?.chapterInfoList || []}
           onAddChapter={handleAddChapter}
           onDeleteChapter={handleDeleteChapter}
-          isAddEpisodeRequested={addEpisodeRequested}
-          onAddEpisode={handleAddEpisode}
-          onDeleteEpisode={handleDeleteEpisode}
-          onNameChange={handleNameChange}
+          onRenameClick={handleChapterNameOpen}
         />
         <div className={styles.seasonArea}>
           <ButtonEpisodeInfo
             onDrawerOpen={handleOpenChapterboard}
-            onEditChapterName={() => {}}
+            onEditChapterNameOpen={handleChapterNameOpen}
             chapterName={editingContentInfo.chapterInfoList[selectedChapterIdx].name ?? ''}
           />
           {/* EpisodeCounter */}
@@ -647,7 +694,9 @@ const ContentMain: React.FC = () => {
             <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
           </div>
           <div className={styles.contentBottom}>
-            <div className={styles.setupButtons}>Publish</div>
+            <div className={styles.setupButtons} onClick={handleOpenPublishing}>
+              Publish
+            </div>
           </div>
         </div>
 
@@ -662,6 +711,14 @@ const ContentMain: React.FC = () => {
           episodeName={
             editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]?.name ?? ''
           }
+        />
+
+        {/* ChapterName 변경 Drawer */}
+        <BottomRenameDrawer
+          open={isChapterNameOpen}
+          onClose={() => setIsChapterNameOpen(false)}
+          onComplete={handleSetChapterNameComplete}
+          lastValue={editingContentInfo.chapterInfoList[selectedChapterIdx].name}
         />
       </main>
       <LoadingOverlay loading={loading} />

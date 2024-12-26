@@ -12,6 +12,16 @@
     
 }
 
+.chapterInfo :focus
+{
+    outline: none;  
+}
+
+.chapterInfo :focus-visible
+{
+    outline: none;  
+}
+
 .chapterName {
     color: var(--White, #FFF);    
     font-feature-settings: 'liga' off, 'clig' off;

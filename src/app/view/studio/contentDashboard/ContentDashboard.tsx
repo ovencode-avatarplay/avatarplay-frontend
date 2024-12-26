@@ -50,8 +50,8 @@ const ContentDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteConfirmed, setDeleteConfirmed] = useState(false);
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
@@ -120,25 +120,25 @@ const ContentDashboard: React.FC = () => {
     }
   };
 
-  const handleOpenDialog = () => {
-    setDialogOpen(true);
+  const handleOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true);
   };
 
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
   };
 
   const handleConfirm = () => {
-    setConfirmed(true);
+    setDeleteConfirmed(true);
   };
 
   useEffect(() => {
-    if (confirmed) {
+    if (deleteConfirmed) {
       handleDeleteClick();
-      setDialogOpen(false);
-      setConfirmed(false);
+      setDeleteDialogOpen(false);
+      setDeleteConfirmed(false);
     }
-  }, [confirmed]);
+  }, [deleteConfirmed]);
 
   // DashBoard 에서 선택한 컨텐츠를 Id로 가져옴 (CreateContent사이클 (Chapter, Episode 편집) 에서 사용하기 위함)
   const GetContentByContentId = async (contentId: number) => {
@@ -224,7 +224,7 @@ const ContentDashboard: React.FC = () => {
   const buttons = [
     {icon: <EditIcon />, text: 'Edit', onClick: handleEdit},
     {icon: <PreviewIcon />, text: 'Preview', onClick: handlePreview},
-    {icon: <DeleteIcon />, text: 'Delete', onClick: handleOpenDialog},
+    {icon: <DeleteIcon />, text: 'Delete', onClick: handleOpenDeleteDialog},
   ];
 
   return (
@@ -237,7 +237,7 @@ const ContentDashboard: React.FC = () => {
           onFilterChange={handleFilterChange}
           onCreateClick={handleCreateClick}
         />
-        <ContentList onSelect={handleSelectItem} />
+        <ContentList onSelect={handleSelectItem} onItemEdit={handleEdit} onItemDelete={handleOpenDeleteDialog} />
         <ContentDashboardFooter buttons={buttons} />
       </div>
       <ConfirmationDialog
@@ -245,9 +245,9 @@ const ContentDashboard: React.FC = () => {
         content="Data will be disappeared. Are you sure?"
         cancelText="Cancel"
         confirmText="Okay"
-        open={dialogOpen}
+        open={deleteDialogOpen}
         onConfirm={handleConfirm}
-        onClose={handleCloseDialog}
+        onClose={handleCloseDeleteDialog}
       />
       <LoadingOverlay loading={loading} />
     </>

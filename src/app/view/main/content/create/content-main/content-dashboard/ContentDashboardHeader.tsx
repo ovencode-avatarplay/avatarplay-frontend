@@ -17,7 +17,7 @@ const ContentDashboardHeader: React.FC<Props> = ({title, onClose, onCreate}) => 
         </button>
         <div className={styles.navTitle}>{title}</div>
       </div>
-      <button className={styles.createButton}>
+      <button className={styles.createButton} onClick={onCreate}>
         <div className={styles.buttonBox}>
           <img className={styles.buttonIcon} src={LinePlus.src}></img>
           Create

@@ -6,10 +6,11 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onComplete: (inputValue: string) => boolean; // boolean 반환
+  lastValue?: string;
 }
 
-const BottomRenameDrawer: React.FC<Props> = ({open, onClose, onComplete}) => {
-  const [inputValue, setInputValue] = useState('');
+const BottomRenameDrawer: React.FC<Props> = ({open, onClose, onComplete, lastValue = ''}) => {
+  const [inputValue, setInputValue] = useState(lastValue);
   const [hasError, setHasError] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

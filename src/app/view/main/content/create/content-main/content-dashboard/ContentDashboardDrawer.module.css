@@ -39,7 +39,7 @@
 }
 
 .filterPublish { 
-    width: 96px;
+    width: 100px;
 }
 
 .filterOption{
@@ -58,8 +58,12 @@
 }
 
 .filterIcon {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    
     color : #bdc1c6;
-    filter: invert(85%) sepia(1%) saturate(1472%) hue-rotate(125deg) brightness(97%) contrast(82%);
+    filter: invert(25%) sepia(1%) saturate(1472%) hue-rotate(125deg) brightness(97%) contrast(82%);
 }
 
 

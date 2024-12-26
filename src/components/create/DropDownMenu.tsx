@@ -18,29 +18,38 @@ interface DropDownMenuProps {
 const DropDownMenu: React.FC<DropDownMenuProps> = ({items, className, onClose}) => {
   return (
     <>
-      <div className={styles.editDropdDownBack} onClick={() => onClose()}></div>
+      <div
+        className={styles.editDropdDownBack}
+        onClick={e => {
+          e.stopPropagation();
+          onClose();
+        }}
+      ></div>
       <div className={`${styles.dropDownMenu} ${className || ''}`}>
         {items.map((item, idx) => (
-          <button
-            key={idx}
-            className={`${styles.dropDownItem}  ${idx === items.length - 1 ? styles.lastItem : ''}`}
-            onClick={e => {
-              e.stopPropagation();
-              if (!item.disabled) {
-                item.onClick(e);
-              }
-            }}
-            disabled={item.disabled}
-          >
-            <div className={`${styles.dropDownName} ${item.isRed ? styles.redText : ''}`}>{item.name}</div>
-            <div className={styles.dropDownIconBox}>
-              <img
-                className={`${styles.dropDownIcon} ${item.isRed ? styles.redIcon : styles.blackIcon}`}
-                src={item.icon}
-                alt={`${item.name} icon`}
-              />
-            </div>
-          </button>
+          <>
+            {!item.disabled && (
+              <button
+                key={idx}
+                className={`${styles.dropDownItem} ${idx === items.length - 1 ? styles.lastItem : ''}`}
+                onClick={e => {
+                  e.stopPropagation();
+                  if (!item.disabled) {
+                    item.onClick(e);
+                  }
+                }}
+              >
+                <div className={`${styles.dropDownName} ${item.isRed ? styles.redText : ''}`}>{item.name}</div>
+                <div className={styles.dropDownIconBox}>
+                  <img
+                    className={`${styles.dropDownIcon} ${item.isRed ? styles.redIcon : styles.blackIcon}`}
+                    src={item.icon}
+                    alt={`${item.name} icon`}
+                  />
+                </div>
+              </button>
+            )}
+          </>
         ))}
       </div>
     </>

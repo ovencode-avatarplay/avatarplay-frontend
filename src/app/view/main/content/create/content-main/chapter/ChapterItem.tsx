@@ -11,13 +11,10 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   chapter,
   chapterIdx,
   chapterLength,
-  onToggle,
   onDelete,
-  onDeleteEpisode,
   onSelect,
   onSelectEpisode,
-  onCloseChapterBoard,
-  onEdit,
+  onRename,
   isSelected,
   selectedEpisodeIdx,
   disableDelete,
@@ -27,7 +24,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
     {
       name: 'Rename',
       icon: LineEdit.src,
-      onClick: () => console.log('Rename clicked'),
+      onClick: () => onRename(),
     },
     {
       name: 'Duplicate',
@@ -55,7 +52,6 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
         className={styles.chapterItem}
         onClick={() => {
           onSelect(chapterIdx);
-          onToggle(chapterIdx);
         }}
       >
         <div className={styles.chapterInfoArea}>
@@ -66,7 +62,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
                 src={isSelected ? BoldRadioButtonSelected.src : BoldRadioButton.src}
               />
             </div>
-            <div className={styles.chapterName}>ChapterName</div>
+            <div className={styles.chapterName}>{chapter.title}</div>
           </button>
           <button
             className={styles.chapterDropDownButton}
@@ -82,14 +78,8 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
             <EpisodeItem
               key={episodeIdx}
               episode={episode}
-              chapterIdx={chapterIdx}
-              episodeIdx={episodeIdx} // 인덱스를 전달
-              onEditEpisode={onEdit}
-              onDeleteEpisode={onDeleteEpisode}
-              disableDelete={chapter.episodes.length <= 1}
-              onSelect={onSelectEpisode}
-              onClose={onCloseChapterBoard}
-              isSelected={selectedEpisodeIdx === episodeIdx}
+              onSelectEpisode={onSelectEpisode}
+              isSelected={episodeIdx === selectedEpisodeIdx ? true : false}
             />
           ))}
         </div>

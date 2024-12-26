@@ -23,6 +23,7 @@ import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 import ContentDashboardHeader from './ContentDashboardHeader';
 import {BoldArrowDown} from '@ui/Icons';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 interface Props {
   open: boolean;
@@ -40,6 +41,58 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+
+  const [filterPublishOpen, setFilterPublishOpen] = useState<boolean>(false);
+  const [selectedPublish, setSelectedPublish] = useState<number>(0);
+
+  /* TODO : 필터링 */
+  const publishItems: SelectDrawerItem[] = [
+    {
+      name: 'All',
+      onClick: () => {
+        setSelectedPublish(0);
+      },
+    },
+    {
+      name: 'Saved',
+      onClick: () => {
+        setSelectedPublish(1);
+      },
+    },
+    {
+      name: 'Published',
+      onClick: () => {
+        setSelectedPublish(2);
+      },
+    },
+  ];
+  const [filterOptionOpen, setFilterOptionOpen] = useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = useState<number>(0);
+
+  /* TODO : 필터링 */
+  const optionItems: SelectDrawerItem[] = [
+    {
+      name: 'Alphabetically',
+      onClick: () => {
+        console.log('Alphabetically Selected');
+        setSelectedOption(0);
+      },
+    },
+    {
+      name: 'Last Modified',
+      onClick: () => {
+        console.log('Last Modified Selected');
+        setSelectedOption(1);
+      },
+    },
+    {
+      name: 'Created On',
+      onClick: () => {
+        console.log('Created On Selected');
+        setSelectedOption(2);
+      },
+    },
+  ];
 
   useEffect(() => {
     if (selectedIndex !== null && open && listRef.current) {
@@ -140,28 +193,36 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
   return (
     <>
       <Drawer
-        anchor="right"
+        anchor="bottom"
         open={open}
         onClose={onClose}
         PaperProps={{
           sx: {width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto'},
         }}
+        BackdropProps={{
+          sx: {
+            background: 'rgba(0, 0, 0, 0.70)',
+          },
+        }}
       >
         <ContentDashboardHeader title="Story" onClose={onClose} onCreate={handleCreateClick} />
         <div className={styles.drawerContainer}>
           <div className={styles.filterContainer}>
-            <div className={`${styles.filterBase} ${styles.filterPublish}`}>
+            <button
+              className={`${styles.filterBase} ${styles.filterPublish}`}
+              onClick={() => setFilterPublishOpen(true)}
+            >
               <div className={styles.filterData}>
-                <div className={styles.filterName}>All</div>
+                <div className={styles.filterName}>{publishItems[selectedPublish].name}</div>
                 <img className={styles.filterIcon} src={BoldArrowDown.src} />
               </div>
-            </div>
-            <div className={`${styles.filterBase} ${styles.filterOption}`}>
+            </button>
+            <button className={`${styles.filterBase} ${styles.filterOption}`} onClick={() => setFilterOptionOpen(true)}>
               <div className={styles.filterData}>
-                <div className={styles.filterName}>Alphabetically</div>
+                <div className={styles.filterName}>{optionItems[selectedOption].name}</div>
                 <img className={styles.filterIcon} src={BoldArrowDown.src} />
               </div>
-            </div>
+            </button>
           </div>
 
           {/* Content list */}
@@ -169,6 +230,8 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
             contentInfo={contentInfo}
             selectedIndex={selectedIndex}
             onItemSelect={handleItemClick}
+            onItemEdit={handleEditClick}
+            onItemDelete={handleOpenDialog}
           />
 
           {/* Action buttons */}
@@ -182,6 +245,23 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
             </Button>
           </Box>
         </div>
+        <SelectDrawer
+          items={publishItems}
+          isOpen={filterPublishOpen}
+          onClose={() => {
+            setFilterPublishOpen(false);
+          }}
+          selectedIndex={selectedPublish}
+        />
+
+        <SelectDrawer
+          items={optionItems}
+          isOpen={filterOptionOpen}
+          onClose={() => {
+            setFilterOptionOpen(false);
+          }}
+          selectedIndex={selectedOption}
+        />
       </Drawer>
 
       <ConfirmationDialog

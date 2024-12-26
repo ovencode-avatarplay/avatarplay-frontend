@@ -4,11 +4,11 @@ import {LineEdit} from '@ui/Icons';
 
 interface Props {
   onDrawerOpen: () => void;
-  onEditChapterName: () => void;
+  onEditChapterNameOpen: () => void;
   chapterName: string;
 }
 
-const ButtonEpisodeInfo: React.FC<Props> = ({onDrawerOpen, chapterName, onEditChapterName}) => {
+const ButtonEpisodeInfo: React.FC<Props> = ({onDrawerOpen, chapterName, onEditChapterNameOpen}) => {
   const handlerOnDrawerOpen = () => {
     onDrawerOpen();
   };
@@ -20,7 +20,7 @@ const ButtonEpisodeInfo: React.FC<Props> = ({onDrawerOpen, chapterName, onEditCh
         className={styles.editButton}
         onClick={event => {
           event.stopPropagation();
-          onEditChapterName();
+          onEditChapterNameOpen();
         }}
       >
         <img src={LineEdit.src} className={styles.editIcon} />

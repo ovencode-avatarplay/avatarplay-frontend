@@ -5,20 +5,14 @@ import {EpisodeItemProps} from './ChapterTypes';
 import styles from './EpisodeItem.module.css';
 import {BoldArrowDown, LineCorner} from '@ui/Icons';
 
-const EpisodeItem: React.FC<EpisodeItemProps> = ({
-  episode,
-  chapterIdx,
-  episodeIdx,
-  onEditEpisode,
-  onDeleteEpisode,
-  disableDelete,
-  onSelect,
-  onClose,
-  isSelected,
-}) => {
+const EpisodeItem: React.FC<EpisodeItemProps> = ({episode, onSelectEpisode, isSelected}) => {
+  const handleOnSelectEpisode = () => {
+    onSelectEpisode;
+  };
+
   return (
     <>
-      <div className={styles.episodeItem}>
+      <button className={`${styles.episodeItem} ${isSelected && styles.selectedItem}`} onClick={handleOnSelectEpisode}>
         <div className={styles.episodeInfo}>
           <div className={styles.iconBox}>
             <img className={styles.cornerIcon} src={LineCorner.src} />
@@ -33,7 +27,7 @@ const EpisodeItem: React.FC<EpisodeItemProps> = ({
             <img className={styles.moveIcon} src={BoldArrowDown.src} />
           </button>
         </div>
-      </div>
+      </button>
     </>
   );
 };
