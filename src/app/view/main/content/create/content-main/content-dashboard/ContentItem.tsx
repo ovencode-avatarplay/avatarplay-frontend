@@ -1,13 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from './ContentItem.module.css';
 import {ContentDashboardItem} from '@/redux-store/slices/MyContentDashboard';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import PhotoIcon from '@mui/icons-material/Photo';
 import MovieIcon from '@mui/icons-material/Movie';
 import {Box} from '@mui/material';
 import {MenuDots} from '@ui/chatting';
-import {BoldChatRoundDots, BoldFollowers, BoldImage, BoldVideo} from '@ui/Icons';
+import {
+  BoldChatRoundDots,
+  BoldFollowers,
+  BoldImage,
+  BoldVideo,
+  LineDelete,
+  LineEdit,
+  LinePreview,
+  LineShare,
+} from '@ui/Icons';
+import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 
 interface ContentItemProps {
   dashboardItem: ContentDashboardItem;
@@ -18,6 +26,36 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected}) =>
   const handleShareContent = () => {
     // TODO : 주소 받아와서 클립보드에  붙여넣기
   };
+
+  const formattedDate = (time: string) => {
+    // time은 2024-07-02T12:26:07 형식으로 들어옴
+    return time.split('T')[0]; // 2024-07-02 형식으로 변경
+  };
+
+  const [dropBoxOpen, setDropBoxOpen] = useState<boolean>(false);
+  const dropDownMenuItems: DropDownMenuItem[] = [
+    {
+      name: 'Edit',
+      icon: LineEdit.src,
+      onClick: () => console.log('Edit clicked'),
+    },
+    {
+      name: 'Preview',
+      icon: LinePreview.src,
+      onClick: () => console.log('Preview clicked'),
+    },
+    {
+      name: 'Share',
+      icon: LineShare.src,
+      onClick: () => console.log('Share clicked'),
+    },
+    {
+      name: 'Delete',
+      icon: LineDelete.src,
+      onClick: () => console.log('Delete clicked'),
+      isRed: true, // Delete는 위험 동작으로 표시
+    },
+  ];
 
   return (
     <div className={styles.contentItem}>
@@ -49,8 +87,13 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected}) =>
         <div className={styles.descriptionArea}>
           <div className={styles.contentInfo}>
             <div className={styles.infoArea}>
-              <div className={styles.dateText}>{dashboardItem.createAt}</div>
-              <button className={styles.menuButton} onClick={() => {}}>
+              <div className={styles.dateText}>{formattedDate(dashboardItem.createAt)}</div>
+              <button
+                className={styles.menuButton}
+                onClick={() => {
+                  setDropBoxOpen(!dropBoxOpen);
+                }}
+              >
                 <img className={styles.buttonIcon} src={MenuDots.src} />
               </button>
             </div>
@@ -79,6 +122,7 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected}) =>
             </div>
           </div>
         </div>
+        {dropBoxOpen && <DropDownMenu items={dropDownMenuItems} className={styles.contentItemDropDown} />}
       </div>
     </div>
   );

@@ -13,6 +13,7 @@
 }
 
 .container {
+    position: relative;
     display: flex;
     padding: 10px;
     align-items: center;
@@ -248,4 +249,11 @@
 .people {
     font-size: 14px;
     color: #666;
+}
+
+
+.contentItemDropDown
+{
+    top: 37.84px;
+    right: 0;
 }

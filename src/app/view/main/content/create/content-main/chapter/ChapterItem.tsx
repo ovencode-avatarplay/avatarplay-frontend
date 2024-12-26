@@ -5,6 +5,7 @@ import {ChapterItemProps} from './ChapterTypes';
 
 import styles from './ChapterItem.module.css';
 import {BoldMenuDots, BoldRadioButton, BoldRadioButtonSelected, LineCopy, LineDelete, LineEdit} from '@ui/Icons';
+import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 
 const ChapterItem: React.FC<ChapterItemProps> = ({
   chapter,
@@ -22,6 +23,25 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   disableDelete,
 }) => {
   const [dropBoxOpen, setDropBoxOpen] = useState<boolean>(false);
+  const dropDownMenuItems: DropDownMenuItem[] = [
+    {
+      name: 'Rename',
+      icon: LineEdit.src,
+      onClick: () => console.log('Rename clicked'),
+    },
+    {
+      name: 'Duplicate',
+      icon: LineCopy.src,
+      onClick: () => console.log('Duplicate clicked'),
+    },
+    {
+      name: 'Delete',
+      icon: LineDelete.src,
+      onClick: () => handleDeleteChapter(chapterIdx, chapterLength),
+      disabled: disableDelete,
+      isRed: true, // Delete는 위험 동작으로 표시
+    },
+  ];
 
   const handleDeleteChapter = (chapterIdx: number, chapterLength: number) => {
     onDelete(chapterIdx);
@@ -73,38 +93,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
             />
           ))}
         </div>
-        {dropBoxOpen && (
-          <div className={styles.chapterDropDown}>
-            <button className={styles.dropDownItem}>
-              <div className={styles.dropDownName}>Rename</div>
-              <div className={styles.dropDownIconBox}>
-                <img className={`${styles.dropDownIcon} ${styles.blackIcon}`} src={LineEdit.src} />
-              </div>
-            </button>
-
-            <button className={styles.dropDownItem}>
-              <div className={styles.dropDownName}>Duplicate</div>
-              <div className={styles.dropDownIconBox}>
-                <img className={`${styles.dropDownIcon} ${styles.blackIcon}`} src={LineCopy.src} />
-              </div>
-            </button>
-
-            {!disableDelete && (
-              <button
-                className={styles.dropDownItem}
-                onClick={e => {
-                  e.stopPropagation();
-                  handleDeleteChapter(chapterIdx, chapterLength);
-                }}
-              >
-                <div className={`${styles.dropDownName} ${styles.redText}`}>Delete</div>
-                <div className={styles.dropDownIconBox}>
-                  <img className={`${styles.dropDownIcon} ${styles.redIcon}`} src={LineDelete.src} />
-                </div>
-              </button>
-            )}
-          </div>
-        )}
+        {dropBoxOpen && <DropDownMenu items={dropDownMenuItems} className={styles.chapterDropDown} />}
       </div>
     </>
   );
