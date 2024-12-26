@@ -506,6 +506,7 @@ const ContentMain: React.FC = () => {
   };
   const handleInitialChapterFirstEpisodeFinish = (episodeInfo: EpisodeInfo) => {
     setChapterFirstEpisode(episodeInfo);
+    setIsFromChapterFirstEpisode(false);
   };
 
   const handleInitialEpisodeFinish = (episodeInfo: EpisodeInfo) => {
