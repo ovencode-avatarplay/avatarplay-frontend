@@ -9,7 +9,8 @@ import SelectTriggerType from './SelectTriggerType';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {useDispatch} from 'react-redux';
-import {BoldArrowLeft} from '@ui/Icons';
+import {BoldArrowLeft, LineTrigger} from '@ui/Icons';
+import TriggerList from './TriggerList';
 
 interface EpisodeTriggerProps {
   open: boolean; // 모달 열림 상태
@@ -73,19 +74,25 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
           <div className={styles.navTitle}>Trigger Event</div>
         </div>
       </div>
-      <div className={styles.counterAndCraete}>
-        <div className={styles.counterButton}>1/2</div>
-        <div className={styles.createButton}>Create</div>
+
+      <div className={styles.topGroup}>
+        <div className={styles.episodeBar}>
+          {episodeInfo.name ? episodeInfo.name : 'None'} <img src={LineTrigger.src} />
+        </div>
+        <div className={styles.counterAndCraete}>
+          <div className={styles.counterButton}> {episodeInfo.triggerInfoList.length} / 10 </div>
+          <div className={styles.createButton}>Create</div>
+        </div>
+        <div className={styles.triggerBox}>
+          <TriggerList /> {/* CheckboxList 컴포넌트 추가 */}
+          <div style={{height: '50px'}}></div>
+        </div>
       </div>
-      <Box className={styles['card-box']}>
-        <div className={styles['listText']}>Trigger list</div>
-        <CheckboxList /> {/* CheckboxList 컴포넌트 추가 */}
-      </Box>
-      <Box className={styles['box-button']}>
-        <Button className={styles['button-add']} variant="outlined" onClick={handleOpenWriteTriggerName}>
-          Primary
-        </Button>
-      </Box>
+      <div className={styles.contentBottom}>
+        <div className={styles.setupButtons} onClick={() => {}}>
+          Confirm
+        </div>
+      </div>
       {/* WriteTriggerName 모달 */}
       <WriteTriggerName
         open={isWriteTriggerNameOpen}

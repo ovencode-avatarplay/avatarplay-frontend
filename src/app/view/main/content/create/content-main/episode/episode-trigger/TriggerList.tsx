@@ -27,7 +27,16 @@ const TriggerList: React.FC = () => {
   }, [dataPairs, selectedIndex, dispatch]);
 
   return (
-    <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px',
+        width: '100%',
+        maxWidth: '402px',
+        alignItems: 'center',
+      }}
+    >
       {dataPairs.map((pair, index) => (
         <TriggerListItem
           key={index}
@@ -36,7 +45,7 @@ const TriggerList: React.FC = () => {
           index={index}
         />
       ))}
-    </List>
+    </div>
   );
 };
 
