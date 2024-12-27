@@ -1,11 +1,19 @@
 .emptyStateContainer
 {
     display: flex;
-    width: 370px;
+    width: calc(100vw - 32px);
     padding: 0px var(--Spacing-5xl, 40px);
     flex-direction: column;
     align-items: center;
     gap: var(--Spacing-spacing-xs, 6px);
+}
+
+@media (min-width:402px)
+{
+  .emptyStateContainer  {
+    width: 370px;
+
+  }
 }
 
 .emptyStateBox

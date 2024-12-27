@@ -6,6 +6,7 @@ import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork
 import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import {BoldCircleX, LineUpload} from '@ui/Icons';
+import UploadedImageArea from './UploadedImageArea';
 
 interface Props {
   imgUrl: string;
@@ -55,22 +56,8 @@ const EpisodeUploadImage: React.FC<Props> = ({imgUrl, setImgUrl}) => {
           <img src={LineUpload.src} className={`${styles.buttonIcon} ${styles.blackIcon}`} alt="Upload Icon" />
           <div className={styles.buttonText}>Upload</div>
         </button>
-        <div className={styles.uploadedImageArea}>
-          {/* <img className={styles.uploadedImage} src={imgUrl} alt="Uploaded" /> */}
-          <div
-            className={styles.uploadedImage}
-            style={{
-              backgroundImage: `url(${imgUrl})`,
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: 'contain',
-            }}
-            role="img"
-            aria-label="Uploaded"
-          />
-          <button className={styles.deleteButton} onClick={handleDeleteImage}>
-            <img src={BoldCircleX.src} className={styles.buttonIcon} alt="Delete Icon" />{' '}
-          </button>
-        </div>
+
+        <UploadedImageArea imgUrl={imgUrl} onDelete={handleDeleteImage} />
       </div>
 
       <ImageUploadDialog isOpen={dialogOpen} onClose={() => setDialogOpen(false)} onFileSelect={handleFileSelection} />

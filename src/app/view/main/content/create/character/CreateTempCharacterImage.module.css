@@ -46,7 +46,7 @@ flex-direction: column;
 align-items: flex-start;
 padding: 10px 12px;
 
-width: 370px;
+width: calc(100vw - 32px);
 height: 190px;
 
 background: #FFFFFF;
@@ -59,6 +59,13 @@ order: 1;
 align-self: stretch;
 flex-grow: 1;
 
+}
+
+@media (min-width:402px)
+{
+  .characterDesc > .inputArea  {
+    width: 370px;
+  }
 }
 
 .characterDesc > .inputArea >.inputPrompt
@@ -119,7 +126,7 @@ flex-grow: 1;
 .generateButton 
 {
     display: flex;
-    width: 370px;
+    width: calc(100vw - 32px);
     height: 46px;
     padding: 14px 20px;
     justify-content: center;
@@ -128,6 +135,13 @@ flex-grow: 1;
     
     border-radius: 8px;
     border: 1px solid var(--Neutral-200, #E8EAED);
+}
+
+@media (min-width:402px)
+{
+  .generateButton  {
+    width: 370px;
+  }
 }
 
 .generateButton > .buttonText
@@ -169,7 +183,7 @@ flex-grow: 1;
 .styleArea 
 {
     display: flex;
-    width: 386px;
+    width: calc(100vw - 32px);
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
@@ -177,6 +191,13 @@ flex-grow: 1;
     margin-left: 16px;
     margin-right: 16px;
     margin-top: 20px;
+}
+
+@media (min-width:402px)
+{
+  .styleArea  {
+    width: 370px;
+  }
 }
 
 .styleArea > .title{
@@ -220,7 +241,7 @@ flex-grow: 1;
   
 .swiperSlide > .slideBackground {
     position: relative;
-    width: 88px;
+    width: calc((100vw - 32px) * 0.23);
     height: 88px;
     flex-shrink: 0;
 

@@ -4,12 +4,20 @@
     bottom: 45px;
     position: absolute;
     display: flex;
-    width: 370px;
+    width: calc(100vw - 32px);
     justify-content: space-between;
     align-items: center;
     margin-left: 16px;
     margin-right: 16px;
     gap: 12px;
+}
+
+@media (min-width:402px)
+{
+  .floatButtonArea {
+    width: 370px;
+
+  }
 }
 
 .floatButtonArea > .floatButton
@@ -241,7 +249,7 @@ flex-direction: column;
 align-items: flex-start;
 padding: 10px 12px;
 
-width: 370px;
+width: calc(100vw - 32px);
 height: 190px;
 
 background: #FFFFFF;
@@ -254,6 +262,14 @@ order: 1;
 align-self: stretch;
 flex-grow: 1;
 
+}
+
+@media (min-width:402px)
+{
+  .characterDesc > .inputArea  {
+    width: 370px;
+
+  }
 }
 
 .characterDesc > .inputArea >.inputPrompt

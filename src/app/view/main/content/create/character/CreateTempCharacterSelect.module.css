@@ -3,17 +3,25 @@
     margin-right: 16px;
     margin-top: 38px;
     display: flex;
-    width: 370px;
+    width: calc(100vw - 32px);
     align-items: flex-start;
     align-content: flex-start;
     gap: 12px;
     flex-wrap: wrap;
   }
+ 
+@media (min-width:402px)
+{
+  .imageList  {
+    width: 370px;
+
+  }
+}
   
   .imageItem {
     position: relative;
     
-    width: 179px;
+    width: calc((100vw - 32px - 12px) * 0.5);
     height: 259.172px;
     flex-shrink: 0;
     
@@ -25,6 +33,13 @@
     background: lightgray 50% / cover no-repeat;
     cursor: pointer;     
   }
+  @media (min-width:402px)
+{
+  .imageItem  {
+    width: 179px;
+
+  }
+}
     
   .imageItem > .selectedIcon {
     position: absolute;

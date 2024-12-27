@@ -9,17 +9,14 @@
     align-items: center;
     gap: 6.6px;
     flex-shrink: 0;
+    justify-content: space-between;
 
     background: var(--White, #FFF);
 }
 
 @media (min-width:402px)
 {.header {
-    width: 402px;
-    height: 58px;
-    gap: 6.6px;
-    display: flex;
-    justify-content: space-between;
+    width: 402px; 
 }
 }
 

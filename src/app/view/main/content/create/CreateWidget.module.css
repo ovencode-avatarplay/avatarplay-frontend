@@ -79,10 +79,10 @@ background: var(--Neutral-50, #F8F9FA);
 }
 
 @media (min-width: 402px) {
-.drawerButton
-{
-  width: 370px;
-}
+  .drawerButton
+  {
+    width: 370px;
+  }
 }
 
 .drawerButtonTop

@@ -10,11 +10,19 @@
 
 .filterContainer {
     display: flex;
-    width: 370px;
+    width: calc(100vw - 32px);
     justify-content: space-between;
     align-items: center;
     margin-bottom: 14px;
 }
+
+@media (min-width:402px)
+{
+  .filterContainer  {
+    width: 370px;
+  }
+}
+
 
 .filterBase {
     display: flex;

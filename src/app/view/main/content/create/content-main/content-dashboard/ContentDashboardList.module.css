@@ -1,10 +1,18 @@
 .list {
     height: 100%; 
     display: flex;
-    width: 370px;
+    width: calc(100vw - 32px);
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
     margin-bottom: 16px;
     overflow-y: auto; 
+}
+
+@media (min-width:402px)
+{
+  .list  {
+    width: 370px;
+
+  }
 }

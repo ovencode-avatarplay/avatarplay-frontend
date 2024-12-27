@@ -62,13 +62,20 @@
     position: absolute;
     bottom: 0;
     display: flex;
-    width: 370px;
+    width: calc(100vw - 32px);
     align-items: flex-start;
     margin-left: 16px;
     margin-right: 16px;
     margin-bottom: 8px;
 }
 
+@media (min-width:402px)
+{
+  .confirmButtonBox {
+    width: 370px;
+
+  }
+}
 
 .confirmButtonBox > .confirmButton
 {

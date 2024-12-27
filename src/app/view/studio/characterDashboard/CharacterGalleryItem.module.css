@@ -2,7 +2,7 @@
   position: relative;
   cursor: pointer;
   
-  width: 179px;
+  width: calc((100vw - 32px - 12px) * 0.5);
   height: 259.172px;
   flex-shrink: 0;
 
@@ -10,6 +10,14 @@
   background:  lightgray 50% / cover no-repeat;
   border-radius: 12px;
   border: 1px solid var(--Neutral-200, #E8EAED);
+}
+
+@media (min-width:402px)
+{
+  .galleryItem  {
+    width: 179px;
+
+  }
 }
  
 .selectedIcon 

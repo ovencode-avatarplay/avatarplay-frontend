@@ -4,7 +4,7 @@
   margin-top: 28px;
   margin-left: 16px;
   margin-right: 16px;
-  width: 370px;
+  width: calc(100vw - 32px);
   align-items: flex-start;
   align-content: flex-start;
   gap: 12px;
@@ -16,3 +16,11 @@
   overflow-y: auto;
 }
   
+
+@media (min-width:402px)
+{
+  .gridContainer {
+    width: 370px;
+
+  }
+}

@@ -2,7 +2,7 @@
     position: relative; 
     cursor: pointer; 
  
-    width: 179px;
+    width: calc((100vw - 32px - 12px) * 0.5); /* 12px : gap */
     height: 303px;
 
     padding-bottom: 10px;
@@ -17,6 +17,14 @@
     border: 1px solid var(--Neutral-200, #E8EAED);
     overflow :hidden;
   }
+  
+@media (min-width:402px)
+{
+  .gridItem {
+    width: 179px;
+
+  }
+}
     
   .statusOverlay {
     position: absolute;
