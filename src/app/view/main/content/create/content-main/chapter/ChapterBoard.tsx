@@ -149,7 +149,9 @@ const ChapterBoard: React.FC<Props> = ({
   const handleCreateChapter = (newEpisode: EpisodeInfo) => {
     const newChapterId = getMinChapterId(chapters);
     const newEpisodeId = getMinEpisodeId(chapters);
+
     if (newChapterId != null && newEpisodeId != null) {
+      newEpisode.id = newEpisodeId - 1;
       const newChapter: ChapterInfo = {
         id: newChapterId - 1,
         name: `New Chapter ${newChapterId - 1}`,
