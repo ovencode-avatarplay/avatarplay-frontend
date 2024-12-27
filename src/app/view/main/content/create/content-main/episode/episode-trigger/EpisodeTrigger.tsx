@@ -3,10 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import styles from './EpisodeTrigger.module.css'; // CSS Module import
 import {Dialog, Button, Box, IconButton} from '@mui/material';
-import CheckboxList from './TriggerList'; // CheckboxList 컴포넌트 임포트
 import WriteTriggerName from './WriteTriggerName'; // WriteTriggerName 모달 컴포넌트
-import SelectTriggerType from './SelectTriggerType';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {useDispatch} from 'react-redux';
 import {BoldArrowLeft, LineTrigger} from '@ui/Icons';
@@ -98,12 +95,6 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
         open={isWriteTriggerNameOpen}
         onClose={handleCloseWriteTriggerName}
         onSave={handleSaveTriggerName} // Save 시 name 저장 및 다음 모달 열기
-      />
-      {/* SelectTriggerType 모달 */}
-      <SelectTriggerType
-        open={isSelectTriggerTypeOpen}
-        onClose={handleCloseSelectTriggerType}
-        triggerName={triggerName} // 전달된 name을 SelectTriggerType으로 전달
       />
     </Dialog>
   );
