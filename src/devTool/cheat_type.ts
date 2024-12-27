@@ -6,6 +6,7 @@ const CheatMessageType: string[] = [
   '⦿MONTH⦿',
   '⦿DAY⦿',
   '⦿REFRESH_NEW_DAY⦿',
+  '⦿CONTENT_INIT⦿',
 ];
 
 export interface CheatResult {
