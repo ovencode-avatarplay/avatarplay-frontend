@@ -71,7 +71,7 @@ const ContentMain: React.FC = () => {
 
   const [isEpisodeEditing, setIsEpisodeEditing] = useState(false);
   const [isFromChapterFirstEpisode, setIsFromChapterFirstEpisode] = useState(false);
-  const [isEpisodeInitOpen, setIsEpisodeInitOpen] = useState(!skipContentInit);
+  const [isEpisodeInitOpen, setIsEpisodeInitOpen] = useState(false);
   const [chapterFirstEpisode, setChapterFirstEpisode] = useState<EpisodeInfo>(
     emptyContentInfo.chapterInfoList[0].episodeInfoList[0],
   );
@@ -97,11 +97,7 @@ const ContentMain: React.FC = () => {
     contentInfo: editingContentInfo ?? emptyContentInfo,
   });
 
-  // Episode 편집을 위한 요청
-  const [addEpisodeRequested, setAddEpisodeRequested] = useState<boolean>(false);
-
   function Init() {
-    setIsInitFinished(false);
     dispatch(setContentInfoToEmpty());
     dispatch(setSelectedChapterIdx(0));
     dispatch(setSelectedEpisodeIdx(0));
@@ -110,18 +106,20 @@ const ContentMain: React.FC = () => {
     dispatch(setCurrentEpisodeInfo(emptyContentInfo.chapterInfoList[0].episodeInfoList[0]));
 
     getContentsByUserId();
-    setIsInitFinished(true);
   }
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
-    if (!skipContentInit) {
+    setIsEpisodeEditing(true); // Edit으로 들어오던, create로 들어오던 처음은 Edit상태임
+
+    setIsInitFinished(false);
+    if (skipContentInit) {
+      setIsEpisodeInitOpen(false);
+      setIsInitFinished(true);
+    } else {
       Init();
+      setIsEpisodeInitOpen(true);
     }
-    // else {
-    //   setIsEpisodeEditing(true);
-    // }
-    setIsInitFinished(true);
     dispatch(setSkipContentInit(false));
   }, []);
 
@@ -187,8 +185,6 @@ const ContentMain: React.FC = () => {
   //#region ChapterBoard에서 정보 수정
   function setCurEpisodeInfo() {
     try {
-      // console.log(`chap ${selectedChapterIdx}, epi ${selectedEpisodeIdx}`);
-
       const chapter = editingContentInfo.chapterInfoList?.[selectedChapterIdx];
       const episode = chapter?.episodeInfoList?.[selectedEpisodeIdx];
 
@@ -308,7 +304,7 @@ const ContentMain: React.FC = () => {
       );
       dispatch(setSelectedEpisodeIdx(updatedChapter.episodeInfoList.length - 1));
       setCurEpisodeInfo();
-      setAddEpisodeRequested(false);
+
       setIsEpisodeInitOpen(false);
     }
   };
@@ -449,7 +445,6 @@ const ContentMain: React.FC = () => {
 
   //#region Drawer, Modal Open / Close
   const handleContentNameOpen = () => {
-    console.log('asdfa');
     setIsContentNameOpen(true);
   };
 
@@ -523,6 +518,7 @@ const ContentMain: React.FC = () => {
 
   const handleCreateContentFromDashBoard = () => {
     setIsInitFinished(false);
+    setIsEpisodeEditing(true);
     setIsEpisodeInitOpen(true);
   };
 
@@ -598,7 +594,6 @@ const ContentMain: React.FC = () => {
     try {
       setLoading(true);
       const result = await sendContentSave(tmp);
-      // console.log('Content saved successfully!');
       handleClosePublishing();
       Init();
       setLoading(false);

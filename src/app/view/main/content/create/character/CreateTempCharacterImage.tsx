@@ -16,6 +16,7 @@ interface CreateTempCharacterImageProps {
   generatePromptValue: string;
   maxGeneratePromptLength: number;
   handleGeneratePromptChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onClickGenerate: () => void;
   selectedIdx: number;
   onSelect: (idx: number) => void;
 }
@@ -25,6 +26,7 @@ const CreateTempCharacterImage: React.FC<CreateTempCharacterImageProps> = ({
   generatePromptValue,
   maxGeneratePromptLength,
   handleGeneratePromptChange,
+  onClickGenerate,
   selectedIdx,
   onSelect,
 }) => {
@@ -47,7 +49,7 @@ const CreateTempCharacterImage: React.FC<CreateTempCharacterImageProps> = ({
             </div>
           </div>
         </div>
-        <button className={styles.generateButton} onClick={() => {}}>
+        <button className={styles.generateButton} onClick={onClickGenerate}>
           <div className={styles.buttonText}>Generate</div>
           <div className={styles.costArea}>
             <img src={BoldRuby.src} className={`${styles.costIcon} ${styles.blackIcon}`} alt="cost-icon" />

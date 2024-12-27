@@ -82,6 +82,16 @@ flex-grow: 1;
     vertical-align: top;
 }
 
+
+.characterDesc > .inputArea >.inputPrompt:focus {
+    outline: none; 
+  }
+  
+.characterDesc > .inputArea >.inputPrompt:focus-visible {
+    outline: none;  
+  }
+   
+
 .characterDesc > .inputArea > .inputHint
 {
     display: flex;

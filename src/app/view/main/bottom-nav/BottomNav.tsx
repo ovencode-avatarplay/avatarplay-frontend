@@ -23,8 +23,11 @@ import profileData from 'data/profile/profile-data.json';
 import Link from 'next/link';
 import CreateWidget from '../content/create/CreateWidget';
 import SelectProfileWidget from '../../profile/SelectProfileWidget';
+import {setSkipContentInit} from '@/redux-store/slices/ContentSelection';
+import {useDispatch} from 'react-redux';
 
 export default function BottomNav() {
+  const dispatch = useDispatch();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
@@ -110,7 +113,10 @@ export default function BottomNav() {
             right: 16,
           }}
           icon={<CreateIcon />}
-          onClick={() => toggleDrawer(!drawerOpen)}
+          onClick={() => {
+            dispatch(setSkipContentInit(false));
+            toggleDrawer(!drawerOpen);
+          }}
         />
         <CreateWidget open={drawerOpen} onClose={() => toggleDrawer(false)} />
         <SelectProfileWidget

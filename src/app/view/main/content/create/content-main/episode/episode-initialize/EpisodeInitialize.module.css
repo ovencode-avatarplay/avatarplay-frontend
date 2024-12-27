@@ -162,6 +162,16 @@
     background: var(--White, #FFF);
 }
 
+.inputBox:focus
+{
+    outline: none;
+}
+
+.inputBox:focus-visible
+{
+    outline: none;
+}
+
 /* 중복영역 CharacterDesc*/
 
 .inputCharacterDesc
@@ -176,6 +186,7 @@
     align-items: flex-start;
     gap: 28px;
 }
+
 
 @media (min-width : 402px) {    
     .inputCharacterDesc{
@@ -265,6 +276,17 @@ flex-grow: 1;
     text-align: left;
     vertical-align: top;
 }
+
+.inputPrompt:focus
+{
+    outline: none;
+}
+
+.inputPrompt:focus-visible
+{
+    outline: none;
+}
+
 
 .characterDesc > .inputArea > .inputHint
 {

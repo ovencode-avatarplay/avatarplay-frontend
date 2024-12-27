@@ -19,13 +19,20 @@ import EpisodeSetNamePopup from './EpisodeSetNamePopup';
 import EpisodeUploadImage from './EpisodeUploadImage';
 import {RootState} from '@/redux-store/ReduxStore';
 import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
-import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {
+  GenerateImageReq2,
+  MediaState,
+  MediaUploadReq,
+  sendGenerateImageReq2,
+  sendUpload,
+} from '@/app/NetWork/ImageNetwork';
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
 import EpisodeInitializeBackground from './EpisodeInitializeBackground';
 
 import styleData from './EpisodeGenerateInputStyles.json';
 import bgData from './EpisodeBackground.json';
+import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json';
 
 import CreateTempCharacterImage from '../../../character/CreateTempCharacterImage';
 import CreateTempCharacterSelect from '../../../character/CreateTempCharacterSelect';
@@ -174,6 +181,7 @@ const EpisodeInitialize: React.FC<Props> = ({
     if (curStep === maxStep) return true;
     return false;
   }
+
   function addStep() {
     if (!checkEssential()) {
       alert('필수 선택 항목이 선택되지 않았습니다.');
@@ -220,6 +228,9 @@ const EpisodeInitialize: React.FC<Props> = ({
           break;
         case 'GenerateImage':
           {
+            if (curStep === 1 && generatedImage.length < 1) {
+              return false;
+            }
             if (curStep === 3 && (nameValue === '' || promptValue === '')) {
               return false;
             }
@@ -280,6 +291,48 @@ const EpisodeInitialize: React.FC<Props> = ({
     ...(currentSelectedCharacter?.poseGalleryImageUrl || []),
     ...(currentSelectedCharacter?.expressionGalleryImageUrl || []),
   ];
+
+  // 이미지 생성
+  const handleImageGeneration = async () => {
+    setLoading(true);
+    try {
+      const selectedModel = loRaStyles.hairStyles.find(style => style.value === selectedStyle);
+      const modelId = selectedModel ? selectedModel.label : 'MeinaHentai'; // 선택된 모델 ID 설정
+
+      const payload: GenerateImageReq2 = {
+        modelId: modelId, // 필요한 모델 ID를 지정
+        prompt: generatePromptValue,
+        negativePrompt: '',
+        batchSize: 4, // 슬라이더 값 사용
+        seed: -1, // Seed 처리
+      };
+
+      const response = await sendGenerateImageReq2(payload); // API 요청
+      const newImages = response.data?.imageUrl || [];
+
+      // 기존 로컬스토리지 값 가져오기
+      addToLocalStorage(newImages);
+
+      // 상태도 업데이트
+      setGeneratedImage(prev => [...prev, ...newImages]);
+    } catch (error) {
+      alert('Failed to generate images. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addToLocalStorage = (newImages: string[]) => {
+    // 기존 로컬 스토리지 데이터 가져오기
+    const savedImages = JSON.parse(localStorage.getItem('generatedImages') || '[]');
+
+    // 기존 데이터와 새 데이터를 병합
+    const updatedImages = [...savedImages, ...newImages];
+
+    // 병합된 데이터를 로컬 스토리지에 저장
+    localStorage.setItem('generatedImages', JSON.stringify(updatedImages));
+  };
+
   //#endregion
 
   //#region handler
@@ -349,9 +402,6 @@ const EpisodeInitialize: React.FC<Props> = ({
       console.error('Invalid uploadType. Unable to generate episodeInfo.');
       return;
     }
-
-    console.log('Final Episode Info:', episodeInfo);
-
     setIsInitFinished(true);
     if (isEditing) {
       modifyEpisodeOper(episodeInfo);
@@ -555,6 +605,7 @@ const EpisodeInitialize: React.FC<Props> = ({
                 generatePromptValue={generatePromptValue}
                 maxGeneratePromptLength={maxGeneratePromptLength}
                 handleGeneratePromptChange={handleGeneratePromptChange}
+                onClickGenerate={handleImageGeneration}
                 selectedIdx={selectedStyle}
                 onSelect={setSelectedStyle}
               />
@@ -572,9 +623,9 @@ const EpisodeInitialize: React.FC<Props> = ({
                   itemUrl={itemUrl}
                   selectedItemIndex={selectedGalleryIndex}
                   onSelectItem={i => {
-                    console.log('set' + i);
                     setSelectedGalleryIndex(i);
                   }}
+                  category={category}
                   isTrigger={true}
                 />
               </>
