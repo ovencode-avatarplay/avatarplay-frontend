@@ -5,6 +5,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import styles from './CreateTempCharacterImage.module.css';
 import {BoldRuby, LineCheck} from '@ui/Icons';
+import MaxTextInput from '@/components/create/MaxTextInput';
 
 interface StyleData {
   name: string;
@@ -35,19 +36,11 @@ const CreateTempCharacterImage: React.FC<CreateTempCharacterImageProps> = ({
       <div className={styles.promptArea}>
         <div className={styles.characterDesc}>
           <div className={styles.title}>CharacterPrompt</div>
-          <div className={styles.inputArea}>
-            <textarea
-              className={styles.inputPrompt}
-              placeholder="Text Placeholder"
-              value={generatePromptValue}
-              onChange={handleGeneratePromptChange}
-              maxLength={maxGeneratePromptLength}
-            />
-
-            <div className={styles.inputHint}>
-              {generatePromptValue.length} / {maxGeneratePromptLength}
-            </div>
-          </div>
+          <MaxTextInput
+            promptValue={generatePromptValue}
+            handlePromptChange={handleGeneratePromptChange}
+            maxPromptLength={maxGeneratePromptLength}
+          />
         </div>
         <button className={styles.generateButton} onClick={onClickGenerate}>
           <div className={styles.buttonText}>Generate</div>

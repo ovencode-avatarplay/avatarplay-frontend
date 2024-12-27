@@ -37,6 +37,7 @@ import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora
 import CreateTempCharacterImage from '../../../character/CreateTempCharacterImage';
 import CreateTempCharacterSelect from '../../../character/CreateTempCharacterSelect';
 import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineCheck, LineUpload} from '@ui/Icons';
+import MaxTextInput from '@/components/create/MaxTextInput';
 
 interface Props {
   open: boolean;
@@ -672,19 +673,11 @@ const EpisodeInitialize: React.FC<Props> = ({
         </div>
         <div className={styles.characterDesc}>
           <div className={styles.title}>CharacterPrompt</div>
-          <div className={styles.inputArea}>
-            <textarea
-              className={styles.inputPrompt}
-              placeholder="Text Placeholder"
-              value={promptValue}
-              onChange={handleCharacterDescPromptChange}
-              maxLength={maxPromptLength}
-            />
-
-            <div className={styles.inputHint}>
-              {promptValue.length} / {maxPromptLength}
-            </div>
-          </div>
+          <MaxTextInput
+            promptValue={promptValue}
+            handlePromptChange={handleCharacterDescPromptChange}
+            maxPromptLength={maxPromptLength}
+          />
         </div>
       </div>
     );

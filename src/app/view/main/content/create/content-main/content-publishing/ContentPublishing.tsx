@@ -21,6 +21,8 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import ContentImageUpload from './ContentImageUploader';
 import {sendGetTagList} from '@/app/NetWork/ContentNetwork';
 import {string} from 'valibot';
+import {LineUpload} from '@ui/Icons';
+import MaxTextInput from '@/components/create/MaxTextInput';
 
 interface Props {
   open: boolean;
@@ -116,23 +118,31 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish}) => {
         sx: {width: '100vw', height: '100vh'},
       }}
     >
-      <Box className={styles.drawerContainer}>
-        <CreateDrawerHeader title="Publishing Setup" onClose={onClose} />
+      <CreateDrawerHeader title="Publish" onClose={onClose} />
+      <div className={styles.drawerContainer}>
+        <div className={styles.bigTitle}>Default Information</div>
+        <div className={styles.informationArea}>
+          <div className={styles.imageArea}>
+            <div className={styles.smallTitle}>Cover Image</div>
+            <div className={styles.imageInputBox}>
+              <img className={styles.uploadIcon} src={LineUpload.src} />
+              <div className={styles.uploadText}>Upload</div>
+            </div>
+          </div>
+          <div className={styles.inputBox}>
+            <div className={styles.smallTitle}>Introduction</div>
+            <MaxTextInput promptValue="" handlePromptChange={() => {}} maxPromptLength={400} />
+          </div>
+        </div>
+        <div className={styles.settingList}>
+          <div className={styles.settingItem}></div>
+          <div className={styles.settingItem}></div>
+          <div className={styles.settingItem}></div>
+          <div className={styles.settingItem}></div>
+        </div>
 
         {/* 첫 번째 설정 박스 */}
-        <Box className={styles.settingBox}>
-          {/* TODO 언어 테이블 리스트 / enum 등 받아와서 설정*/}
-          {/* <Typography variant="h6">Language Select</Typography>
-          <Select
-            fullWidth
-            variant="outlined"
-            value={languageType}
-            onChange={e => dispatch(setLanguageType(e.target.value as number))}
-          >
-            <MenuItem value={0}>English</MenuItem>
-            <MenuItem value={1}>Korean</MenuItem>
-            <MenuItem value={2}>Arab</MenuItem>
-          </Select> */}
+        <div className={styles.settingBox}>
           <ContentImageUpload
             uploadImageState={isUploadImageDialogOpen}
             initImage={thumbnail}
@@ -163,7 +173,7 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish}) => {
             value={authorComment}
             onChange={handleAuthorCommentChange}
           />
-        </Box>
+        </div>
 
         {/* 두 번째 설정 박스 */}
         {tagList != null && (
@@ -271,7 +281,7 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish}) => {
             You can only select up to 7 tags!
           </Alert>
         </Snackbar>
-      </Box>
+      </div>
     </Drawer>
   );
 };
