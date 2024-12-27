@@ -6,6 +6,7 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import WallpaperIcon from '@mui/icons-material/Wallpaper';
 import styles from './StudioTopMenu.module.css';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface MenuItem {
   icon: React.ReactNode;
@@ -13,7 +14,8 @@ interface MenuItem {
   url: string;
 }
 
-const prefixUrl = '/:lang/studio';
+//const prefixUrl = '/:lang/studio';
+const prefixUrl = '/studio';
 
 const items: MenuItem[] = [
   {icon: <StarIcon />, text: 'Character', url: '/character'},
@@ -26,7 +28,7 @@ const StudioTopMenu: React.FC = () => {
   return (
     <div className={styles.menuContainer}>
       {items.map((item, index) => (
-        <Link key={index} href={prefixUrl + item.url} passHref>
+        <Link key={index} href={getLocalizedLink(prefixUrl + item.url)} passHref>
           <div className={styles.menuItem}>
             <div className={styles.icon}>{item.icon}</div>
             <Typography className={styles.text}>{item.text}</Typography>

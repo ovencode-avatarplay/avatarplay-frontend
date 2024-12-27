@@ -37,6 +37,7 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
 
 const ContentDashboard: React.FC = () => {
   const router = useRouter();
@@ -107,7 +108,8 @@ const ContentDashboard: React.FC = () => {
           dispatch(setSelectedEpisodeIdx(0));
           setLoading(false);
           const currentLang = searchParam.get(':lang') || 'en';
-          router.push(`/${currentLang}/create/story`);
+          //router.push(`/${currentLang}/create/story`);
+          pushLocalizedRoute('/create/story', router);
         } catch (error) {
           setLoading(false);
           console.log('error');
@@ -116,7 +118,8 @@ const ContentDashboard: React.FC = () => {
     } else {
       setLoading(false);
       const currentLang = searchParam.get(':lang') || 'en';
-      router.push(`/${currentLang}/create/story`);
+      //router.push(`/${currentLang}/create/story`);
+      pushLocalizedRoute('/create/story', router);
     }
   };
 
@@ -212,7 +215,8 @@ const ContentDashboard: React.FC = () => {
     dispatch(setSelectedChapterIdx(0));
     dispatch(setSelectedEpisodeIdx(0));
     const currentLang = searchParam.get(':lang') || 'en';
-    router.push(`/${currentLang}/create/story`);
+    //router.push(`/${currentLang}/create/story`);
+    pushLocalizedRoute('/create/story', router);
   };
 
   // Data

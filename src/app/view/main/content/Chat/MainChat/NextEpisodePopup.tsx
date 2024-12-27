@@ -75,7 +75,7 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
           </Typography>
           <Box className={styles.buttonArea}>
             <button className={`${styles.buttonDefault} ${styles.buttonBgNo}`} onClick={onNo}>
-              <div className={styles.buttonTextNo}>{getLocalizedText('UI', 'yes_btn_002') /*NO*/}</div>
+              <div className={styles.buttonTextNo}>{getLocalizedText('UI', 'no_btn_001') /*NO*/}</div>
               <div className={styles.buttonTextNoSub}>
                 {getLocalizedText('EpisodePopup', 'continueEpisode_desc_001') /*(Continue Chatting)*/}
               </div>
@@ -101,7 +101,7 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
           </Typography>{' '}
           {/*data가 없을 때 로딩 상태 표시 */}
           <button className={`${styles.buttonDefault} ${styles.buttonBgNo}`} onClick={onNo}>
-            <div className={styles.buttonTextNo}>{getLocalizedText('UI', 'close_btn_001') /*닫기*/}</div>
+            <div className={styles.buttonTextNo}>{getLocalizedText('UI', 'no_btn_001') /*닫기*/}</div>
           </button>
         </>
       )}

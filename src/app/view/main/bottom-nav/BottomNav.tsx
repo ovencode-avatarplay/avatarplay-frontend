@@ -23,6 +23,7 @@ import profileData from 'data/profile/profile-data.json';
 import Link from 'next/link';
 import CreateWidget from '../content/create/CreateWidget';
 import SelectProfileWidget from '../../profile/SelectProfileWidget';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 export default function BottomNav() {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -88,7 +89,7 @@ export default function BottomNav() {
                 label={button.label}
                 icon={getIconComponent(button.icon)}
                 component={Link}
-                href={button.link}
+                href={getLocalizedLink(button.link)}
                 onClick={index !== BottomNavData.length - 1 ? () => handleClick(index) : undefined}
                 onMouseDown={index === BottomNavData.length - 1 ? handleLongPressStart : undefined}
                 onMouseUp={index === BottomNavData.length - 1 ? handleLongPressEnd : undefined}

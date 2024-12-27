@@ -35,6 +35,7 @@ import ModifyCharacterModal from './ModifyCharacterModal';
 import CharacterGalleryModal from './CharacterGalleryModal';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
 
 const CharacterDashboard: React.FC = () => {
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
@@ -222,7 +223,8 @@ const CharacterDashboard: React.FC = () => {
   //#region  TopMenu
   const handleCreateClick = () => {
     const currentLang = searchParam.get(':lang') || 'en';
-    router.push(`/${currentLang}/create/character`);
+    //router.push(`/${currentLang}/create/character`);
+    pushLocalizedRoute('/studio/character', router);
   };
 
   const handleFilterChange = (value: string) => {

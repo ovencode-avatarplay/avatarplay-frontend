@@ -206,6 +206,7 @@ export interface UrlEnterEpisodeChattingReq {
   urlLinkKey: string;
   episodeId: number;
   language: string;
+  isUrlEnter: boolean;
 }
 
 // URL 방식이든 아니는 Enter Respons 받는 형식은 같은걸 사용한다.

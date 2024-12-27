@@ -3,6 +3,7 @@ import Link from 'next/link';
 import {Typography} from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import styles from './StudioDashboardMenu.module.css';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface StudioDashboardMenuProps {
   icon: React.ReactNode; // MUI 아이콘을 받을 수 있도록
@@ -14,7 +15,7 @@ const StudioDashboardMenu: React.FC<StudioDashboardMenuProps> = ({icon, text}) =
     <div className={styles.container}>
       {/* Studio Label with ChevronLeft Icon */}
       <div className={styles.studioLink}>
-        <Link href={`/:lang/main/homefeed`} passHref>
+        <Link href={getLocalizedLink('/main/homefeed')} passHref>
           <Typography className={styles.label} component="a">
             <ChevronLeftIcon className={styles.chevronIcon} />
             Home

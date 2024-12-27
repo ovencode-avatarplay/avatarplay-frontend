@@ -9,6 +9,7 @@ import {ChattingState} from '@/redux-store/slices/Chatting';
 import BottomNavData from 'data/navigation/bottom-nav.json';
 import {Left, Image, MenuDots} from '@ui/chatting';
 import Link from 'next/link';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface ChatTopBarProps {
   onBackClick: () => void;
@@ -31,7 +32,7 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, i
             <div className={styles.left}>
               <Link
                 className={styles.button}
-                href={BottomNavData.find(item => item.label === 'Explore')?.link || '/default-path'}
+                href={getLocalizedLink(BottomNavData.find(item => item.label === 'Explore')?.link || '/default-path')}
               >
                 <img className={styles.buttonImage} src={Left.src} />
               </Link>

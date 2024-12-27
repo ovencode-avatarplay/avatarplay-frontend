@@ -9,6 +9,7 @@ export interface ChattingCheatReq {
 }
 
 export interface ChattingCheatRes {
+  isContentInit: boolean;
   isEpisodeInit: boolean;
   resultText: string;
 }

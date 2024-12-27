@@ -26,6 +26,7 @@ import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
 import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
 import LanguageSelectDropBox from './LanguageSelectDropBox';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 const UserDropdown = () => {
   // States
@@ -201,14 +202,20 @@ const UserDropdown = () => {
             <i className={styles.tabler} />
             <Typography color="text.primary">Supports</Typography>
           </MenuItem> */}
-          <Link href={`/:lang/studio/character`} passHref>
-            <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/:lang/studio/character')}>
+          <Link href={getLocalizedLink('/studio/character')} passHref>
+            <MenuItem
+              className={styles.menuItem}
+              onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/character'))}
+            >
               <i className={styles.tabler} />
               <Typography color="text.primary">Character</Typography>
             </MenuItem>
           </Link>
-          <Link href={`/:lang/studio/story`} passHref>
-            <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/:lang/studio/story')}>
+          <Link href={getLocalizedLink(`/studio/story`)} passHref>
+            <MenuItem
+              className={styles.menuItem}
+              onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/story'))}
+            >
               <i className={styles.tabler} />
               <Typography color="text.primary">Story</Typography>
             </MenuItem>

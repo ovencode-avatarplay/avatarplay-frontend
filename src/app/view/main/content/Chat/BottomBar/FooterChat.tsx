@@ -12,6 +12,7 @@ import EmojiOverlayPopup from './EmojiOverlayPopup';
 import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
 import ChatBar from './ChatBar';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
+import {useRouter} from 'next/navigation';
 interface FooterChatProps {
   onSend: (message: string, isMyMessage: boolean, isClearString: boolean, isShowDate: boolean) => void;
   send: (reqSendChatMessage: SendChatMessageReq) => void;
@@ -61,6 +62,9 @@ const FooterChat: React.FC<FooterChatProps> = ({
   const currentContentId: number = useSelector((state: RootState) => state.chatting.contentId);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
   const [failMessage, setfailMessage] = useState<string | null>(null);
+
+  const router = useRouter();
+
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
     setSelectedEmoji(null);
@@ -99,7 +103,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
         const chattingCheatRes = await cheatMessage(currentContentId, currentEpisodeId, messages);
 
         if (chattingCheatRes) {
-          const cheatResult = cheatManager(chattingCheatRes);
+          const cheatResult = cheatManager(chattingCheatRes, router);
           if (cheatResult.text.length > 0) {
             onSend(cheatResult.text, true, false, false);
             result = true;

@@ -57,6 +57,7 @@ import {EpisodeCardProps} from './ContentDescType';
 
 import Link from 'next/link';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 const DrawerContentDesc = () => {
   const dispatch = useDispatch();
@@ -263,7 +264,7 @@ const DrawerContentDesc = () => {
           <Divider className={styles.divider} />
           <CardContent sx={{paddingTop: 1, paddingLeft: 3, paddingRight: 3}}>
             <div>
-              <Link href={`/:lang/chat${contentUrl}`} className={styles.startNewChatButton}>
+              <Link href={getLocalizedLink(`/chat${contentUrl}`)} className={styles.startNewChatButton}>
                 <Button
                   variant="contained"
                   fullWidth

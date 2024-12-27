@@ -5,20 +5,21 @@ const nextConfig = {
   redirects: async () => {
     return [
       {
-        source: '/',
-        destination: '/en-US/main/homefeed',
+        source: "/",
+        destination: "/en-US/main/homefeed", // 기본 언어로 리다이렉트
         permanent: true,
         locale: false,
       },
       {
-        source: '/:lang(en-US|ko|ja|fr|es|zh-CN|zh-TW|pt-PT|de)',
-        destination: '/:lang/main/homefeed',
+        source: "/:lang(ko|en-US|ja|fr|es|zh-CN|zh-TW|pt-PT|de)", // 다른 언어들이 있을 경우 해당 언어로 리다이렉트
+        destination: "/:lang/main/homefeed", // 각 언어에 맞는 페이지로 리디렉트
         permanent: true,
         locale: false,
       },
       {
-        source: '/((?!(?:en-US|ko|ja|fr|es|zh-CN|zh-TW|pt-PT|de|front-pages|favicon.ico)\\b)):path',
-        destination: '/en-US/:path',
+        source:
+          "/((?!(?:ko|en-US|ja|fr|es|zh-CN|zh-TW|pt-PT|de|front-pages|favicon.ico)\\b)):path",
+        destination: "/en-US/:path",
         permanent: true,
         locale: false,
       },
