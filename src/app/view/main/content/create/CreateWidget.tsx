@@ -10,6 +10,7 @@ import Link from 'next/link';
 
 import styles from './CreateWidget.module.css';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface Props {
   open: boolean;
@@ -47,7 +48,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         {/* 항목 리스트 */}
         <Box>
           {/* Post */}
-          <Link href="/:lang/create/post" passHref>
+          <Link href={getLocalizedLink('/create/post')} passHref>
             <Button
               variant="outlined"
               onClick={onClose}
@@ -62,7 +63,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
           </Link>
 
           {/* Contents */}
-          <Link href="/:lang/create/contents" passHref>
+          <Link href={getLocalizedLink('/create/contents')} passHref>
             <Button
               variant="outlined"
               onClick={onClose}
@@ -77,7 +78,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
           </Link>
 
           {/* Character */}
-          <Link href="/:lang/create/character" passHref>
+          <Link href={getLocalizedLink('/create/character')} passHref>
             <Button
               variant="outlined"
               onClick={onClose}
@@ -92,7 +93,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
           </Link>
 
           {/* Story */}
-          <Link href="/:lang/create/story" passHref>
+          <Link href={getLocalizedLink('/create/story')} passHref>
             <Button
               variant="outlined"
               onClick={onClose}

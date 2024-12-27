@@ -6,6 +6,8 @@ import CharacterCreate from '../../main/content/create/character/CreateCharacter
 import PublishCharacter from '../../main/content/create/character/PublishCharacter';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import PublishCharacterBottom from '../../main/content/create/character/PublishCharacterBottom';
+import {getLocaleUrl} from '@/configs/i18n';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface ModifyCharacterProps {
   open: boolean;
@@ -56,7 +58,7 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
       <Box className={styles.modalContent}>
         <CreateCharacterTopMenu
           backButtonAction={handleCloseClick}
-          lastUrl=":/lang/studio/Character"
+          lastUrl={getLocalizedLink('/lang/studio/Character')}
           contentTitle={isModify ? 'Modify Character' : 'Create Character'}
           blockStudioButton={true}
         />

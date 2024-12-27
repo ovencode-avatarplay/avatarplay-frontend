@@ -9,10 +9,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setLanguage} from '@/redux-store/slices/UserInfo';
 import Cookies from 'js-cookie';
+import {useRouter} from 'next/navigation';
+import {changeLanguageAndRoute} from '@/utils/UrlMove';
+import {i18n} from 'next-i18next';
 
 const LanguageSelectDropBox: React.FC = () => {
   const dispatch = useDispatch();
   const selectedLanguage = useSelector((state: RootState) => state.user.language);
+  const router = useRouter();
 
   // 브라우저 언어 설정을 LanguageType으로 변환
   const getBrowserLanguage = (): LanguageType => {
@@ -81,6 +85,8 @@ const LanguageSelectDropBox: React.FC = () => {
       if (language !== undefined) {
         dispatch(setLanguage(language));
         Cookies.set('language', String(language), {expires: 365});
+
+        changeLanguageAndRoute(language, router, i18n);
       } else {
         throw new Error('Failed to retrieve updated language from server');
       }

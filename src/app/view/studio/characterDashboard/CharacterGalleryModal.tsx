@@ -21,6 +21,7 @@ import CharacterGalleryViewer from './CharacterGalleryViewer';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface CharacterGalleryModalProps {
   open: boolean;
@@ -296,7 +297,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
             <>
               <CreateCharacterTopMenu
                 backButtonAction={handleRegenerateClose}
-                lastUrl=":/lang/studio/Character"
+                lastUrl={getLocalizedLink('/studio/Character')}
                 contentTitle={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]} Creation`}
                 blockStudioButton={true}
               />
@@ -311,7 +312,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
             <>
               <CreateCharacterTopMenu
                 backButtonAction={handleModifyClose}
-                lastUrl=":/lang/studio/Character"
+                lastUrl={getLocalizedLink('/studio/Character')}
                 contentTitle={`Modify ${characterInfo.name}`}
                 blockStudioButton={true}
               />
@@ -341,7 +342,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
             <>
               <CreateCharacterTopMenu
                 backButtonAction={onClose}
-                lastUrl=":/lang/studio/Character"
+                lastUrl={getLocalizedLink('/studio/Character')}
                 contentTitle={`${characterInfo.name}'s Gallery`}
                 blockStudioButton={true}
               />
