@@ -1,4 +1,4 @@
-import {i18n} from 'next-i18next'; // i18n 객체를 가져오기 위한 임포트
+import {i18n} from 'next-i18next'; // i18n 객체 가져오기
 import {useRouter} from 'next/navigation';
 import Cookies from 'js-cookie';
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
@@ -6,49 +6,60 @@ import {getLangUrlCode} from '@/configs/i18n';
 
 // 현재 언어 가져오기 (쿠키에서)
 export const getCurrentLanguage = (): string => {
-  const lang = Cookies.get('language');
-  return lang || '';
+  return Cookies.get('language') || 'en-US';
 };
 
-// 언어에 맞는 URL을 반환하는 함수
+// 언어에 맞는 URL 생성 함수
 export const getLocalizedLink = (path: string): string => {
-  //const currentLanguage = i18nInstance?.language || 'en-US'; // i18n 인스턴스를 사용하여 언어 가져오기, 기본값 'en-US'
-  const currentLanguage = getCurrentLanguage() || 'en-US'; // i18n 인스턴스를 사용하여 언어 가져오기, 기본값 'en-US'
-
-  // 언어 기반 URL 생성
+  const currentLanguage = getCurrentLanguage();
   return `/${currentLanguage}${path}`;
 };
 
-// 현재 언어에 맞는 URL로 라우팅하는 함수
+// 현재 언어에 맞는 URL로 라우팅 함수
 export const pushLocalizedRoute = (path: string, router: ReturnType<typeof useRouter>) => {
-  // 현재 언어에 맞는 URL을 생성
   const localizedUrl = getLocalizedLink(path);
 
-  // 새로운 URL로 라우팅
-  router.push(localizedUrl);
+  // 브라우저에서 현재 URL 확인
+  const currentUrl = window.location.href;
+  const newUrl = new URL(localizedUrl, window.location.origin);
+
+  if (currentUrl !== newUrl.href) {
+    router.push(localizedUrl);
+  }
 };
 
 // 언어 변경 및 라우팅 처리 함수
 export const changeLanguageAndRoute = (
   newLanguage: LanguageType,
   router: ReturnType<typeof useRouter>,
-  i18nInstance: typeof i18n,
+  i18nInstance?: typeof i18n,
 ) => {
-  // 언어 변경 및 상태 업데이트
-  Cookies.set('language', String(getLangUrlCode(newLanguage) || 'lang'), {expires: 365});
+  const newLocale = getLangUrlCode(newLanguage) || 'en-US';
+  Cookies.set('language', newLocale, {expires: 365});
 
-  // 언어 코드 가져오기
-  const newLocale = getLangUrlCode(newLanguage); // 해당 언어에 맞는 URL 코드 생성
+  const currentUrl = new URL(window.location.href); // 현재 URL 가져오기
+  const pathSegments = currentUrl.pathname.split('/');
 
-  // 현재 페이지에서 언어만 변경하여 다시 라우팅
-  const currentUrl = window.location.href; // 현재 URL
+  // 기존 경로에서 첫 번째 세그먼트가 언어 코드인 경우 교체
+  if (/^[a-z]{2}(-[A-Z]{2})?$/.test(pathSegments[1])) {
+    pathSegments[1] = newLocale;
+  } else {
+    // 언어 코드가 없으면 추가
+    pathSegments.splice(1, 0, newLocale);
+  }
 
-  // URL에서 언어를 제외하고 새로운 언어로 변경된 URL 생성
-  const newUrl = currentUrl.replace(/\/(:lang|ko|en-US|ja|fr|es|zh-CN|zh-TW|pt-PT|de)/, `/${newLocale}`);
+  // 새로운 URL 생성
+  const newPath = pathSegments.join('/');
+  const newUrl = `${currentUrl.origin}${newPath}${currentUrl.search}${currentUrl.hash}`;
 
-  // i18n 인스턴스의 언어를 업데이트 (선택적으로 적용)
-  i18nInstance?.changeLanguage(newLocale);
+  if (i18nInstance) {
+    i18nInstance.changeLanguage(newLocale).catch(err => console.error('Failed to change language:', err));
+  } else {
+    console.warn('i18nInstance is not initialized.');
+  }
 
-  // 새 URL로 라우팅
-  router.push(newUrl); // 새 URL로 이동
+  // 같은 URL을 또 push하지 말자.
+  if (currentUrl.href !== newUrl) {
+    router.push(newUrl);
+  }
 };
