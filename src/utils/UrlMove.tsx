@@ -41,7 +41,7 @@ export const changeLanguageAndRoute = (
   const pathSegments = currentUrl.pathname.split('/');
 
   // 기존 경로에서 첫 번째 세그먼트가 언어 코드인 경우 교체
-  if (/^[a-z]{2}(-[A-Z]{2})?$/.test(pathSegments[1])) {
+  if (/^[a-z]{2}(-[A-Za-z]{2,3})?$/.test(pathSegments[1])) {
     pathSegments[1] = newLocale;
   } else {
     // 언어 코드가 없으면 추가
