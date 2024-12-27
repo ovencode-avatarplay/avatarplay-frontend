@@ -96,16 +96,62 @@ const episodeInfoSlice = createSlice({
     //#region Trigger
     // 새로운 TriggerInfo를 추가
     addTriggerInfo: (state, action: PayloadAction<Omit<TriggerInfo, 'id'>>) => {
+      // 트리거 리스트의 현재 id 중 최소값을 구함
+      const triggerList = state.currentEpisodeInfo.triggerInfoList;
+      const minId = triggerList.length > 0 ? Math.min(...triggerList.map(trigger => trigger.id)) : 0;
+
+      const newId = minId > 0 ? -1 : minId - 1; // 음수 id 생성
+
       const newDataPair: TriggerInfo = {
         ...action.payload,
-        id: 0, // id를 설정하지 않음
+        id: newId, // 자동 생성된 id
       };
-      state.currentEpisodeInfo.triggerInfoList.push(newDataPair);
+
+      triggerList.push(newDataPair);
     },
 
     // TriggerInfo 업데이트
-    updateTriggerInfo: (state, action: PayloadAction<{index: number; info: Omit<TriggerInfo, 'id'>}>) => {
+    updateTriggerInfo: (state, action: PayloadAction<{id: number; info: Omit<TriggerInfo, 'id'>}>) => {
+      const {id, info} = action.payload;
+      const triggerIndex = state.currentEpisodeInfo.triggerInfoList.findIndex(trigger => trigger.id === id);
+
+      if (triggerIndex !== -1) {
+        // id에 해당하는 항목이 존재하는 경우
+        state.currentEpisodeInfo.triggerInfoList[triggerIndex] = {
+          ...info,
+          id: state.currentEpisodeInfo.triggerInfoList[triggerIndex].id, // 기존 id 유지
+        };
+      }
+    },
+
+    // Trigger 이름 업데이트
+    updateTriggerInfoName: (state, action: PayloadAction<{id: number; name: string}>) => {
+      const {id, name} = action.payload;
+      const triggerIndex = state.currentEpisodeInfo.triggerInfoList.findIndex(trigger => trigger.id === id);
+
+      if (triggerIndex !== -1) {
+        // id에 해당하는 항목이 존재하는 경우
+        state.currentEpisodeInfo.triggerInfoList[triggerIndex] = {
+          ...state.currentEpisodeInfo.triggerInfoList[triggerIndex],
+          name,
+        };
+      }
+    },
+
+    removeTriggerInfo: (state, action: PayloadAction<number>) => {
+      const id = action.payload;
+      const triggerIndex = state.currentEpisodeInfo.triggerInfoList.findIndex(trigger => trigger.id === id);
+
+      if (triggerIndex !== -1) {
+        // id에 해당하는 항목이 존재하는 경우
+        state.currentEpisodeInfo.triggerInfoList.splice(triggerIndex, 1);
+      }
+    },
+
+    // TriggerInfo 업데이트 (index 기반)
+    updateTriggerInfoByIndex: (state, action: PayloadAction<{index: number; info: Omit<TriggerInfo, 'id'>}>) => {
       const {index, info} = action.payload;
+
       if (index >= 0 && index < state.currentEpisodeInfo.triggerInfoList.length) {
         state.currentEpisodeInfo.triggerInfoList[index] = {
           ...info,
@@ -114,9 +160,10 @@ const episodeInfoSlice = createSlice({
       }
     },
 
-    // Trigger 이름 업데이트
-    updateTriggerInfoName: (state, action: PayloadAction<{index: number; name: string}>) => {
+    // Trigger 이름 업데이트 (index 기반)
+    updateTriggerInfoNameByIndex: (state, action: PayloadAction<{index: number; name: string}>) => {
       const {index, name} = action.payload;
+
       if (index >= 0 && index < state.currentEpisodeInfo.triggerInfoList.length) {
         state.currentEpisodeInfo.triggerInfoList[index] = {
           ...state.currentEpisodeInfo.triggerInfoList[index],
@@ -125,13 +172,15 @@ const episodeInfoSlice = createSlice({
       }
     },
 
-    // Trigger 삭제
-    removeTriggerInfo: (state, action: PayloadAction<number>) => {
+    // Trigger 삭제 (index 기반)
+    removeTriggerInfoByIndex: (state, action: PayloadAction<number>) => {
       const index = action.payload;
+
       if (index >= 0 && index < state.currentEpisodeInfo.triggerInfoList.length) {
         state.currentEpisodeInfo.triggerInfoList.splice(index, 1);
       }
     },
+
     //#endregion
 
     //#region conversation
@@ -276,173 +325,6 @@ const episodeInfoSlice = createSlice({
     removeAllConversationTalk: state => {
       state.currentEpisodeInfo.conversationTemplateList = [];
     },
-
-    // 새로운 기능 - actionConversationList 관련 액션들 추가
-    addActionConversationTalk: (
-      state,
-      action: PayloadAction<{
-        triggerIndex: number;
-        user: ConversationTalkInfo[];
-        character: ConversationTalkInfo[];
-        conversationType: ConversationPriortyType;
-      }>,
-    ) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
-      if (trigger) {
-        const newConversation: Conversation = {
-          id: 0,
-          conversationType: action.payload.conversationType,
-          user: JSON.stringify(action.payload.user),
-          character: JSON.stringify(action.payload.character),
-        };
-        trigger.actionConversationList.push(newConversation);
-      }
-    },
-
-    addActionConversationTalkItem: (
-      state,
-      action: PayloadAction<{
-        triggerIndex: number;
-        conversationIndex: number;
-        type: 'user' | 'character';
-        newTalk: string;
-      }>,
-    ) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
-      if (trigger) {
-        const conversation = trigger.actionConversationList[action.payload.conversationIndex];
-        if (conversation) {
-          const newTalkItem: ConversationTalkInfo = {
-            type: action.payload.type === 'user' ? ConversationTalkType.Speech : ConversationTalkType.Action,
-            talk: action.payload.newTalk,
-          };
-
-          let userArray: ConversationTalkInfo[] = [];
-          let characterArray: ConversationTalkInfo[] = [];
-
-          try {
-            userArray = conversation.user ? JSON.parse(conversation.user) : [];
-          } catch (error) {
-            console.error('Failed to parse user conversation:', error);
-          }
-
-          try {
-            characterArray = conversation.character ? JSON.parse(conversation.character) : [];
-          } catch (error) {
-            console.error('Failed to parse character conversation:', error);
-          }
-
-          if (action.payload.type === 'user') {
-            userArray.push(newTalkItem);
-            conversation.user = JSON.stringify(userArray);
-          } else if (action.payload.type === 'character') {
-            characterArray.push(newTalkItem);
-            conversation.character = JSON.stringify(characterArray);
-          }
-        }
-      }
-    },
-
-    updateActionConversationTalk: (
-      state,
-      action: PayloadAction<{
-        triggerIndex: number;
-        conversationIndex: number;
-        itemIndex: number;
-        type: 'user' | 'character';
-        newType: ConversationTalkType;
-        newTalk: string;
-      }>,
-    ) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
-      if (trigger) {
-        const conversation = trigger.actionConversationList[action.payload.conversationIndex];
-        if (conversation) {
-          let userArray: ConversationTalkInfo[] = [];
-          let characterArray: ConversationTalkInfo[] = [];
-
-          try {
-            userArray = conversation.user ? JSON.parse(conversation.user) : [];
-          } catch (error) {
-            console.error('Failed to parse user conversation:', error);
-          }
-
-          try {
-            characterArray = conversation.character ? JSON.parse(conversation.character) : [];
-          } catch (error) {
-            console.error('Failed to parse character conversation:', error);
-          }
-
-          if (action.payload.type === 'user') {
-            if (userArray[action.payload.itemIndex]) {
-              userArray[action.payload.itemIndex].type = action.payload.newType;
-              userArray[action.payload.itemIndex].talk = action.payload.newTalk;
-              conversation.user = JSON.stringify(userArray);
-            }
-          } else if (action.payload.type === 'character') {
-            if (characterArray[action.payload.itemIndex]) {
-              characterArray[action.payload.itemIndex].type = action.payload.newType;
-              characterArray[action.payload.itemIndex].talk = action.payload.newTalk;
-              conversation.character = JSON.stringify(characterArray);
-            }
-          }
-        }
-      }
-    },
-
-    removeActionConversationItem: (
-      state,
-      action: PayloadAction<{
-        triggerIndex: number;
-        conversationIndex: number;
-        itemIndex: number;
-        type: 'user' | 'character';
-      }>,
-    ) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
-      if (trigger) {
-        const conversation = trigger.actionConversationList[action.payload.conversationIndex];
-        if (conversation) {
-          let userArray: ConversationTalkInfo[] = [];
-          let characterArray: ConversationTalkInfo[] = [];
-
-          try {
-            userArray = conversation.user ? JSON.parse(conversation.user) : [];
-          } catch (error) {
-            console.error('Failed to parse user conversation:', error);
-          }
-
-          try {
-            characterArray = conversation.character ? JSON.parse(conversation.character) : [];
-          } catch (error) {
-            console.error('Failed to parse character conversation:', error);
-          }
-
-          if (action.payload.type === 'user') {
-            userArray.splice(action.payload.itemIndex, 1);
-            conversation.user = JSON.stringify(userArray);
-          } else if (action.payload.type === 'character') {
-            characterArray.splice(action.payload.itemIndex, 1);
-            conversation.character = JSON.stringify(characterArray);
-          }
-        }
-      }
-    },
-
-    removeActionConversationTalk: (state, action: PayloadAction<{triggerIndex: number; conversationIndex: number}>) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
-      if (trigger) {
-        trigger.actionConversationList.splice(action.payload.conversationIndex, 1);
-      }
-    },
-
-    removeAllActionConversationTalk: (state, action: PayloadAction<{triggerIndex: number}>) => {
-      const trigger = state.currentEpisodeInfo.triggerInfoList[action.payload.triggerIndex];
-      if (trigger) {
-        trigger.actionConversationList = [];
-      }
-    },
-
     //#endregion
   },
 });
@@ -457,18 +339,15 @@ export const {
   updateTriggerInfo,
   updateTriggerInfoName,
   removeTriggerInfo,
+  updateTriggerInfoByIndex,
+  updateTriggerInfoNameByIndex,
+  removeTriggerInfoByIndex,
   addConversationTalk,
   addConversationTalkItem,
   updateConversationTalk,
   removeConversationItem,
   removeConversationTalk,
-  addActionConversationTalk,
-  addActionConversationTalkItem,
-  updateActionConversationTalk,
-  removeActionConversationItem,
-  removeActionConversationTalk,
   removeAllConversationTalk,
-  removeAllActionConversationTalk,
   setCharacterInfo,
   saveConversationTemplateList,
 } = episodeInfoSlice.actions;

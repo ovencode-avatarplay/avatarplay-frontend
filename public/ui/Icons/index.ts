@@ -93,8 +93,10 @@ import ProfileChar from './Custom/ProfileChar.svg';
 import ProfileUser from './Custom/ProfileUser.svg';
 import PlusBubble from './Custom/PlusBubble.svg';
 import Arrow_Trigger from './Custom/Arrow_Trigger.svg';
+import AudioFile from './Custom/AudioFile.svg';
 
 export {
+  AudioFile,
   Arrow_Trigger,
   LineTrigger,
   PlusBubble,

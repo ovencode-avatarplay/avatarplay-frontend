@@ -182,7 +182,7 @@ border-radius: 8px 8px 8px 8px;
     height: 24px;
     z-index: 10; /* 이미지 위에 표시 */
     cursor: pointer;
-    pointer-events: auto; /* 클릭 이벤트 활성화 */
+    pointer-events: auto; /* 클릭 이벤트 활성화 */cursor: pointer
   }
   
   .cardfooter {
@@ -302,7 +302,7 @@ background: #FFFFFF;
     {
       width: 18px;
       height: 18px;
-      margin: 6px;
+      margin: 6px;cursor: pointer
     }
   
     .circlePlusIcon img
@@ -315,7 +315,7 @@ background: #FFFFFF;
       position: absolute;
       right: 200px;
       top: 50px;
-      z-index: 1000; /* 드롭다운이 배경 위로 올라오도록 설정 */
+      z-index: 1000; /* 드롭다운이 배경 위로 올라오도록 설정 */cursor: pointer
     }
     
     .editDropdDownBack {
@@ -334,6 +334,7 @@ background: #FFFFFF;
       height: 17px;
       margin: 5.5px;
       filter: brightness(0) saturate(100%) invert(0%) sepia(92%) saturate(7479%) hue-rotate(92deg) brightness(106%) contrast(100%);
+      cursor: pointer
     }
 
     .arrowIcon img
