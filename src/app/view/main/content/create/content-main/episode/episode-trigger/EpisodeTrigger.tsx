@@ -8,6 +8,7 @@ import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeIn
 import {useDispatch} from 'react-redux';
 import {BoldArrowLeft, LineTrigger} from '@ui/Icons';
 import TriggerList from './TriggerList';
+import TriggerCreate from './TriggerCreate';
 
 interface EpisodeTriggerProps {
   open: boolean; // 모달 열림 상태
@@ -19,6 +20,7 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
   const [isWriteTriggerNameOpen, setWriteTriggerNameOpen] = useState(false); // WriteTriggerName 모달 상태
   const [isSelectTriggerTypeOpen, setSelectTriggerTypeOpen] = useState(false); // SelectTriggerType 모달 상태
   const [triggerName, setTriggerName] = useState(''); // Trigger name 상태
+  const [openTriggerCreate, SetOpenTriggerCreate] = useState(false); // Trigger name 상태
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -78,7 +80,14 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
         </div>
         <div className={styles.counterAndCraete}>
           <div className={styles.counterButton}> {episodeInfo.triggerInfoList.length} / 10 </div>
-          <div className={styles.createButton}>Create</div>
+          <div
+            className={styles.createButton}
+            onClick={() => {
+              SetOpenTriggerCreate(true);
+            }}
+          >
+            Create
+          </div>
         </div>
         <div className={styles.triggerBox}>
           <TriggerList /> {/* CheckboxList 컴포넌트 추가 */}
@@ -86,7 +95,12 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
         </div>
       </div>
       <div className={styles.contentBottom}>
-        <div className={styles.setupButtons} onClick={() => {}}>
+        <div
+          className={styles.setupButtons}
+          onClick={() => {
+            SetOpenTriggerCreate(true);
+          }}
+        >
           Confirm
         </div>
       </div>
@@ -96,6 +110,13 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
         onClose={handleCloseWriteTriggerName}
         onSave={handleSaveTriggerName} // Save 시 name 저장 및 다음 모달 열기
       />
+      <TriggerCreate
+        open={openTriggerCreate}
+        onClose={() => {
+          SetOpenTriggerCreate(false);
+        }}
+        isEditing={false}
+      ></TriggerCreate>
     </Dialog>
   );
 };

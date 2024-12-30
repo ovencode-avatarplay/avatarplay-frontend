@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useSelector} from 'react-redux'; // Redux에서 상태를 가져오기 위해 추가
 import {RootState} from '@/redux-store/ReduxStore'; // RootState 타입 가져오기
-import {TriggerSubDataType, TriggerTypeNames} from '@/types/apps/DataTypes'; // TriggerInfo 타입 가져오기
+import {TriggerActionType, TriggerTypeNames} from '@/types/apps/DataTypes'; // TriggerInfo 타입 가져오기
 import styles from './TriggerListItem.module.css'; // CSS 모듈 임포트
 import {
   Arrow_Trigger,
@@ -40,16 +40,16 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
   if (!item) {
     return null; // item이 없으면 렌더링하지 않음
   }
-  const getDynamicStyle = (triggerActionType: TriggerSubDataType): React.CSSProperties => {
+  const getDynamicStyle = (triggerActionType: TriggerActionType): React.CSSProperties => {
     switch (triggerActionType) {
-      case TriggerSubDataType.EpisodeChange:
+      case TriggerActionType.EpisodeChange:
         return {width: '100%'}; // 예: EpisodeChange일 경우
-      case TriggerSubDataType.ChangePrompt:
+      case TriggerActionType.ChangePrompt:
         return {width: '100%'}; // 예: ChangePrompt일 경우
-      case TriggerSubDataType.GetIntimacyPoint:
+      case TriggerActionType.GetIntimacyPoint:
         return {width: '100%'}; // 예: GetIntimacyPoint일 경우
-      case TriggerSubDataType.ChangeCharacter:
-      case TriggerSubDataType.PlayMedia:
+      case TriggerActionType.ChangeCharacter:
+      case TriggerActionType.PlayMedia:
       default:
         return {width: '275px'}; // 기본값
     }
@@ -105,15 +105,15 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
   };
 
   // TriggerSubDataType에 따라 이미지와 아이콘 내용 동적으로 변경
-  const renderTriggerImage = (triggerActionType: TriggerSubDataType) => {
+  const renderTriggerImage = (triggerActionType: TriggerActionType) => {
     switch (triggerActionType) {
-      case TriggerSubDataType.EpisodeChange:
+      case TriggerActionType.EpisodeChange:
         return null;
-      case TriggerSubDataType.ChangePrompt:
+      case TriggerActionType.ChangePrompt:
         return null;
-      case TriggerSubDataType.GetIntimacyPoint:
+      case TriggerActionType.GetIntimacyPoint:
         return null;
-      case TriggerSubDataType.ChangeCharacter:
+      case TriggerActionType.ChangeCharacter:
         return (
           <div className={styles.triggerImage}>
             <img src={item.actionCharacterInfo.mainImageUrl} alt="Character" className={styles.thumbnail} />
@@ -122,7 +122,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
             </div>
           </div>
         );
-      case TriggerSubDataType.PlayMedia:
+      case TriggerActionType.PlayMedia:
         return renderTriggerMedia(item.actionMediaState);
       default:
         return (
@@ -147,7 +147,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
               <span className={styles.arrowIcon}>
                 <img src={Arrow_Trigger.src}></img>
               </span>
-              <span className={styles.changeCharacter}>{TriggerSubDataType[item.triggerActionType]}</span>
+              <span className={styles.changeCharacter}>{TriggerActionType[item.triggerActionType]}</span>
             </div>
             <div className={styles.triggerCondition}>Trigger Condition</div>
             <div className={styles.input}>
