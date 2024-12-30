@@ -6,27 +6,34 @@
     padding-right: auto;
     padding-bottom : 9px ;
     padding-left:  0.362px;
-    align-items: center;
-    gap: 6.6px;
+    align-items: center; 
     flex-shrink: 0;
+    justify-content: space-between;
 
     background: var(--White, #FFF);
 }
 
 @media (min-width:402px)
-{.header {
+{
+    .header {
     width: 402px;
     height: 58px;
-    gap: 6.6px;
 }
 }
 
-.header > .backButton{
+.baseArea {
     display: flex;
-height: 40px;
-padding: 14px 0px 14px 16px;
-align-items: center;
-gap: 8px;
+    flex-direction: row;
+    align-items: center; 
+    gap: 6.6px;
+}
+
+.baseArea > .backButton{
+    display: flex;
+    height: 40px;
+    padding: 14px 0px 14px 16px;
+    align-items: center;
+    gap: 8px;
 }
 
 .backButton > .backIcon {
@@ -36,7 +43,7 @@ gap: 8px;
     align-items: center;
 }
 
-.header > .navTitle{
+.baseArea > .navTitle{
     display: flex; 
     justify-content: center;
     flex-shrink: 0;
@@ -47,4 +54,9 @@ gap: 8px;
     font-weight: 600;
     line-height: 20px;
     letter-spacing: -0.4px;
+}
+
+
+.childrenArea {
+    
 }

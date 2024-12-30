@@ -1,0 +1,162 @@
+.llmDrawer
+{
+    height: 100%;
+    overflow :hidden;
+
+}
+
+.costArea {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 16px;
+}
+
+.costButton
+{
+    display: flex;
+    padding: 5px 8px 6px 8px;
+    align-items: center;
+    gap: 4px;  
+    
+    border-radius: 30px;
+    background: var(--Neutral-800, #2C3131);  
+}
+
+.costButton > .costIcon
+{
+    width: 12px;
+    height: 12px;
+}
+
+.costButton > .costText
+{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+
+    overflow: hidden;
+    color: var(--White, #FFF);
+    text-align: center;
+    text-overflow: ellipsis;
+    font-family: Lato;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 100%; /* 11px */
+}
+
+.costArea > .costDesc
+{
+    color: var(--Neutral-600, #80868B);
+    font-family: Lato;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 155%; /* 18.6px */
+}
+
+.categoryArea
+{
+    overflow-y: auto;
+}
+
+.categoryList
+{
+    display: flex;
+    width: calc(100% - 32px);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 12px;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+@media (min-width:402px)
+{
+    .categoryList
+    {
+        max-width: 370px;
+    }
+}
+
+.llmCategory
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.llmCategory.disabled
+{
+
+}
+
+.radioButton
+{
+    display: flex;
+    width: 24px;
+    height: 24px;
+    padding: 2px;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttonIcon
+{
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.textArea
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    flex: 1 0 0;
+}
+
+.llmName
+{
+    align-self: stretch;
+    color: #000;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Lato;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px; /* 133.333% */
+}
+
+.llmDesc
+{
+    color: var(--Neutral-500, #9AA0A6);
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 155%; /* 21.7px */
+
+} 
+
+.confirmButton
+{
+    display: flex;
+    height: 50px;
+    padding: 14px 20px;
+
+    margin: 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    
+    border-radius: 12px;
+    background: var(--Neutral-800, #2C3131);
+
+    color: white;
+}

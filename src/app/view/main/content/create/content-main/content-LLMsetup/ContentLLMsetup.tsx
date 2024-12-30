@@ -1,31 +1,34 @@
 import React, {useState} from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-  Typography,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Box,
-  TextField,
-  Button,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import {Drawer} from '@mui/material';
 import {useDispatch} from 'react-redux'; // Redux 액션을 디스패치하기 위한 훅
 
+import styles from './ContentLLMsetup.module.css'; // 스타일 파일
+import {BoldRadioButton, BoldRadioButtonSelected, BoldRuby} from '@ui/Icons';
+
+import llmModelData from './ContentLLMsetup.json';
+
 import {LLMSetupInfo} from '@/redux-store/slices/ContentInfo';
-import styles from './ContentLLMSetup.module.css'; // 스타일 파일
 import {setLlmSetupInfo} from '@/redux-store/slices/PublishInfo';
+import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import MaxTextInput from '@/components/create/MaxTextInput';
+
+interface ModelOption {
+  value: number;
+  label: string;
+  description: string;
+  disabled: boolean;
+}
 
 interface ContentLLMSetupProps {
   open: boolean;
-  onClose: () => void; // 부모 컴포넌트로 모달 닫기 요청
+  onClose: () => void;
 }
 
 const ContentLLMSetup: React.FC<ContentLLMSetupProps> = ({open, onClose}) => {
   const dispatch = useDispatch(); // Redux 액션 디스패치 훅
+
+  const [modelOptions] = useState<ModelOption[]>(llmModelData);
+
   const [selectedModel, setSelectedModel] = useState<number>(6); // 기본값을 0으로 설정 (GPT-4o)
   const [customApiKey, setCustomApiKey] = useState<string>(''); // Custom API 입력 상태 관리
 
@@ -41,7 +44,7 @@ const ContentLLMSetup: React.FC<ContentLLMSetupProps> = ({open, onClose}) => {
   };
 
   // Custom API 입력 핸들러
-  const handleApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleApiKeyChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCustomApiKey(event.target.value);
   };
 
@@ -58,67 +61,65 @@ const ContentLLMSetup: React.FC<ContentLLMSetupProps> = ({open, onClose}) => {
     onClose(); // 모달 닫기
   };
 
+  const handleSelection = (value: number) => {
+    setSelectedModel(value);
+    if (selectedModel !== 9) {
+      setCustomApiKey(''); // Custom API가 아닌 경우 API 키 초기화
+    }
+  };
+
   return (
-    <Dialog open={open} onClose={handleSaveAndClose} fullWidth maxWidth="sm">
-      <DialogTitle>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">AI Model Setup</Typography>
-          <IconButton onClick={handleSaveAndClose}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-      </DialogTitle>
-      <DialogContent>
-        <Box display="flex" flexDirection="column" gap={2}>
-          <Box display="flex" justifyContent="flex-end">
-            <Typography>150 tokens per chat</Typography> {/* 상단 토큰 수 */}
-          </Box>
-
-          {/* 모델 선택 라디오 버튼 */}
-          <RadioGroup value={selectedModel.toString()} onChange={handleModelChange}>
-            <FormControlLabel value="0" control={<Radio />} label="GPT-4o - GPT-4보다 2배 빠른 속도" />
-            <FormControlLabel value="1" control={<Radio />} label="GPT-4 - OpenAI의 높은 성능의 초거대 언어모델" />
-            <FormControlLabel value="2" control={<Radio />} label="GPT-3.5 - 합리적 가성비와 다양한 활용 가능" />
-            <FormControlLabel value="3" control={<Radio />} label="Claude 2 - 공부와 토론에 특화된 모델" />
-            <FormControlLabel value="4" control={<Radio />} label="Claude 3 Opus - 시리즈 중 가장 높은 지능" disabled />
-            <FormControlLabel value="5" control={<Radio />} label="Claude 3 Sonnet - 2배 빠른 속도" />
-            <FormControlLabel
-              value="6"
-              control={<Radio />}
-              label="Claude 3.5 Sonnet - 3보다 높은 지능과 2배 빠른 속도"
-            />
-            <FormControlLabel
-              value="7"
-              control={<Radio />}
-              label="Claude 3.5 Sonnet V2 - 다 방면에서 3.5보다 향상된 모델"
-              disabled
-            />
-            <FormControlLabel
-              value="8"
-              control={<Radio />}
-              label="Claude 3 Haiku - 강력한 스토리 표현력을 갖춘 가볍고 빠른 모델"
-            />
-            <FormControlLabel value="9" control={<Radio />} label="Custom API" />
-          </RadioGroup>
-
-          {/* Custom API 입력 필드 - 'CustomAPI'가 선택되었을 때만 활성화 */}
-          <TextField
-            label="Custom API Key"
-            variant="outlined"
-            fullWidth
-            value={customApiKey}
-            onChange={handleApiKeyChange}
+    <Drawer
+      anchor="right"
+      open={open}
+      onClose={handleSaveAndClose}
+      className={styles.llmDrawer}
+      PaperProps={{
+        sx: {width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto', overflow: 'hidden'},
+      }}
+    >
+      <CreateDrawerHeader title="LLM" onClose={onClose}>
+        <div className={styles.costArea}>
+          <div className={styles.costButton}>
+            <img className={styles.costIcon} src={BoldRuby.src} />
+            <div className={styles.costText}>150</div>
+          </div>
+          <div className={styles.costDesc}>per chat</div>
+        </div>
+      </CreateDrawerHeader>
+      <div className={styles.categoryArea}>
+        <div className={styles.categoryList}>
+          {modelOptions.map(option => (
+            <div
+              key={option.value}
+              className={`${styles.llmCategory} ${option.disabled ? styles.disabled : ''}`}
+              onClick={() => !option.disabled && handleSelection(option.value)}
+            >
+              <img
+                className={styles.radioButton}
+                src={selectedModel === option.value ? BoldRadioButtonSelected.src : BoldRadioButton.src}
+                alt="Radio Button"
+              />
+              <div className={styles.textArea}>
+                <div className={styles.llmName}>{option.label}</div>
+                <div className={styles.llmDesc}>{option.description}</div>
+              </div>
+            </div>
+          ))}
+          <MaxTextInput
+            promptValue={customApiKey}
             disabled={selectedModel !== 9}
+            handlePromptChange={handleApiKeyChange}
+            hint="You can validate your API Key on OpenAI API"
           />
-          <Typography variant="body2">You can validate your API Key on OpenAI API</Typography>
+        </div>
+      </div>
 
-          {/* 저장 버튼 */}
-          <Button variant="contained" color="primary" onClick={handleSaveAndClose}>
-            Save
-          </Button>
-        </Box>
-      </DialogContent>
-    </Dialog>
+      {/* 저장 버튼 */}
+      <button className={styles.confirmButton} onClick={handleSaveAndClose}>
+        Confirm
+      </button>
+    </Drawer>
   );
 };
 

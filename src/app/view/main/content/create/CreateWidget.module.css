@@ -70,7 +70,7 @@
 .drawerButton
 {
   display: flex;
-width: 92vw;
+  width: calc(100vw - 32px);
 height: 66px;
 padding: 13px 20px;
 align-items: center;

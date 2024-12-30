@@ -742,7 +742,14 @@ const ContentMain: React.FC = () => {
             ))}
           </div>
           <div className={styles.content}>
-            <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
+            <ContentPublishing
+              open={isPublishingOpen}
+              onClose={handleClosePublishing}
+              onPublish={handlePublish}
+              LLMOpen={isLLMSetupOpen}
+              setLLMOpen={() => setLLMSetupOpen(true)}
+              onLLMClose={handleCloseLLMSetup}
+            />
           </div>
           <div className={styles.contentBottom}>
             <div className={styles.setupButtons} onClick={handleOpenPublishing}>
@@ -751,8 +758,6 @@ const ContentMain: React.FC = () => {
           </div>
         </div>
 
-        {/* EpisodeLLMSetup 모달 */}
-        {/* <ContentLLMSetup open={isLLMSetupOpen} onClose={handleCloseLLMSetup} /> llm publish로 이관 */}
         <EpisodeInitialize
           open={isEpisodeInitOpen}
           isEditing={isEpisodeEditing}

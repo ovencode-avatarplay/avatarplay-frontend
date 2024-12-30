@@ -4,9 +4,11 @@ import styles from './MaxTextInput.module.css';
 interface Props {
   promptValue: string;
   handlePromptChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  maxPromptLength: number;
   type?: inputType;
   allowSpecialCharacters?: boolean; // 특수문자 허용 여부
+  disabled?: boolean;
+  maxPromptLength?: number;
+  hint?: string;
 }
 
 export enum inputType {
@@ -18,11 +20,12 @@ export enum inputType {
 const MaxTextInput: React.FC<Props> = ({
   promptValue,
   handlePromptChange,
-  maxPromptLength,
   type = inputType.None,
   allowSpecialCharacters = true,
+  disabled,
+  maxPromptLength,
+  hint,
 }) => {
-  console.log('asdsadad', type);
   // 입력 제한 함수
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     let value = event.target.value;
@@ -45,7 +48,6 @@ const MaxTextInput: React.FC<Props> = ({
     event.target.value = value;
     handlePromptChange(event);
   };
-
   return (
     <div className={styles.inputArea}>
       <textarea
@@ -54,10 +56,14 @@ const MaxTextInput: React.FC<Props> = ({
         value={promptValue}
         onChange={handleInput}
         maxLength={maxPromptLength}
+        disabled={disabled}
       />
-      <div className={styles.inputHint}>
-        {promptValue.length} / {maxPromptLength}
-      </div>
+      {maxPromptLength && (
+        <div className={styles.inputHint}>
+          {promptValue.length} / {maxPromptLength}
+        </div>
+      )}
+      {hint && <div className={styles.inputHint}>{hint}</div>}
     </div>
   );
 };
