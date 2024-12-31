@@ -5,7 +5,13 @@ import {useRouter} from 'next/navigation';
 import styles from './TriggerCreate.module.css';
 
 import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo, EpisodeInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
+import {
+  addTriggerInfo,
+  CharacterInfo,
+  duplicateTriggerInfo,
+  EpisodeInfo,
+  GalleryImageInfo,
+} from '@/redux-store/slices/EpisodeInfo';
 
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
@@ -31,12 +37,13 @@ import {
   LineUpload,
 } from '@ui/Icons';
 import {TriggerActionType, TriggerTypeNames} from '@/types/apps/DataTypes';
-import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
+import {TriggerInfo, TriggerMediaState} from '@/types/apps/content/episode/TriggerInfo';
 import EpisodeInitializeStep from '../episode-initialize/EpisodeInitializeStep';
 import Modal from '@mui/material/Modal/Modal';
 import MaxTextInput, {inputType as inputType} from '@/components/create/MaxTextInput';
 import TriggerCreateMedia from './TriggerCreateMedia';
-
+import Popup from '@/components/popup/Popup';
+import {useDispatch} from 'react-redux';
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -46,7 +53,7 @@ interface Props {
 const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   //#region 선언
   // 공통
-
+  const dispatch = useDispatch();
   const tempTriggerInfo: TriggerInfo = {
     episodeId: 0, // 기본 에피소드 ID
     id: 0, // 임시 값, addTriggerInfo에서 자동 생성됨
@@ -84,7 +91,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>(tempTriggerInfo);
 
   const [loading, setLoading] = useState<boolean>(true);
-
+  const [isCompletePopupOpen, setIsCompletePopupOpen] = useState<boolean>(false);
   //   // 에피소드 생성시 가져올 빈 데이터
   //   let emptyEpisodeInfo = emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0];
   // 편집시 가져올데이터
@@ -94,7 +101,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   const [maxStep, setMaxStep] = useState<number>(7);
   const [curStep, setCurStep] = useState<number>(0); // 0일때는 max 수치가 변동이 있을 수 있기때문에 step이 가려집니다.
 
-  const [actionStepType, setActionType] = useState<TriggerActionType>();
+  const [actionStepType, setActionType] = useState<TriggerActionType>(0);
   // 캐릭터 선택
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
   const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
@@ -113,7 +120,9 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   // 데이터 초기화
   const initData = () => {
     setCurStep(0);
-    setActionType(TriggerActionType.ChangeCharacter);
+    setTriggerInfo(tempTriggerInfo);
+    setActionType(0);
+    resetAllStates();
     setCurrentSelectedCharacter(undefined);
     setSelectedCharacterId(null);
     setSelectedGalleryIndex(null);
@@ -215,44 +224,24 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   //#region handler
   // 공통
 
-  const handleOnSetEpisodeName = () => {
+  const handleOnComplete = () => {
     if (!checkEssential()) {
       alert('필수 선택 항목이 선택되지 않았습니다.');
       return;
     }
+    dispatch(addTriggerInfo(triggerInfo));
+    setIsCompletePopupOpen(true);
   };
 
-  const handleSetEpisodeNameComplete = (name: string) => {
-    if (!checkEssential()) {
-      alert('필수 선택 항목이 선택되지 않았습니다.');
-      return;
-    }
-
-    handlerOnCompleteInit(name);
-  };
-
-  const handlerOnCompleteInit = (name: string) => {
-    let episodeInfo: EpisodeInfo;
-
+  const handlerOnCompleteInit = () => {
+    setIsCompletePopupOpen(false);
     onClose();
     initData();
   };
 
   const handlerOnClose = () => {
+    setIsCompletePopupOpen(false);
     onClose();
-  };
-
-  // 업로드 타입 선택
-  const handleOnSelectCharacter = () => {
-    setMaxStep(3);
-    setActionType(TriggerActionType.ChangeCharacter);
-    addStep();
-  };
-
-  const handleOnUploadImageClick = () => {
-    if (curEpisodeCharacterImage !== '') {
-      handleOnUploadImage();
-    }
   };
 
   const handleOnUploadImage = () => {
@@ -275,32 +264,6 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   const handleCategoryChange = (newCategory: GalleryCategory) => {
     if (newCategory !== category) {
       setCategory(newCategory);
-    }
-  };
-
-  // 파일 업로드
-
-  const handleFileSelection = async (file: File) => {
-    setLoading(true);
-    try {
-      const req: MediaUploadReq = {
-        mediaState: MediaState.CharacterImage,
-        file: file,
-      };
-      const response = await sendUpload(req);
-      if (response?.data) {
-        const imgUrl: string = response.data.url;
-
-        setCurEpisodeCharacterImage(imgUrl);
-
-        handleOnUploadImage();
-      } else {
-        throw new Error('Unexpected API response: No data');
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -346,6 +309,12 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   }, [category, currentSelectedCharacter, galleryAllUrl, curStep]);
   //#endregion
 
+  const resetAllStates = () => {
+    setTypes(prevTypes => prevTypes.map(type => ({...type, isActive: false})));
+    setActions(prevActions => prevActions.map(action => ({...action, isActive: false})));
+    setEmotions(prevEmotions => prevEmotions.map(emotion => ({...emotion, isActive: false})));
+  };
+
   //#region 렌더링을 위한 함수
   const [types, setTypes] = useState([
     {text: 'Check\nProgress Point', isActive: false},
@@ -356,7 +325,6 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
     {text: 'When\nEpisode starts at first', isActive: false},
   ]);
 
-  //#region 렌더링을 위한 함수
   const [actions, setActions] = useState([
     {text: 'Change\nEpisode', isActive: false},
     {text: 'Change\nEpisode Guide', isActive: false},
@@ -690,11 +658,44 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
       case 3:
         return <></>;
       case 4:
-        return <TriggerCreateMedia mediaType="image"></TriggerCreateMedia>;
+        return (
+          <TriggerCreateMedia
+            onMediaUrlsChange={s => {
+              setTriggerInfo(prevTriggerInfo => ({
+                ...prevTriggerInfo,
+                actionMediaState: TriggerMediaState.TriggerImage,
+                actionMediaUrlList: s,
+              }));
+            }}
+            mediaType="image"
+          ></TriggerCreateMedia>
+        );
       case 5:
-        return <TriggerCreateMedia mediaType="video"></TriggerCreateMedia>;
+        return (
+          <TriggerCreateMedia
+            onMediaUrlsChange={s => {
+              setTriggerInfo(prevTriggerInfo => ({
+                ...prevTriggerInfo,
+                actionMediaState: TriggerMediaState.TriggerVideo,
+                actionMediaUrlList: s,
+              }));
+            }}
+            mediaType="video"
+          ></TriggerCreateMedia>
+        );
       case 6:
-        return <TriggerCreateMedia mediaType="audio"></TriggerCreateMedia>;
+        return (
+          <TriggerCreateMedia
+            onMediaUrlsChange={s => {
+              setTriggerInfo(prevTriggerInfo => ({
+                ...prevTriggerInfo,
+                actionMediaState: TriggerMediaState.TriggerAudio,
+                actionMediaUrlList: s,
+              }));
+            }}
+            mediaType="audio"
+          ></TriggerCreateMedia>
+        );
       default:
         return <div>Unknown step</div>;
     }
@@ -777,7 +778,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
             }`}
             onClick={() => {
               {
-                checkFinalStep() === true ? handleOnSetEpisodeName() : addStep();
+                checkFinalStep() === true ? handleOnComplete() : addStep();
               }
             }}
           >
@@ -788,6 +789,33 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
             />
           </button>
         </div>
+        {isCompletePopupOpen && (
+          <Popup
+            type="alert"
+            title="Completed"
+            description="The trigger has been successfully created"
+            buttons={[
+              {
+                label: 'Duplicate',
+                onClick: () => {
+                  dispatch(addTriggerInfo(triggerInfo));
+                  handlerOnCompleteInit();
+                },
+
+                isPrimary: false,
+              },
+              {
+                label: 'Add New',
+                onClick: initData,
+                isPrimary: true,
+              },
+            ]}
+            textButton={{
+              label: 'Move to the list',
+              onClick: handlerOnCompleteInit,
+            }}
+          />
+        )}
       </>
     </Modal>
   );

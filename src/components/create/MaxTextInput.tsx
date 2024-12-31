@@ -28,10 +28,16 @@ const MaxTextInput: React.FC<Props> = ({
   hint,
 }) => {
   const [hasError, setHasError] = useState(false);
-  console.log('adasd', type);
-  // 입력 제한 함수
+  const [isComposing, setIsComposing] = useState(false); // 한글 입력 상태
+
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     let value = event.target.value;
+
+    // 조합 중에는 입력을 허용
+    if (isComposing) {
+      handlePromptChange(event);
+      return;
+    }
 
     // OnlyNum 및 OnlyNumMax100에 대한 처리
     if (type === inputType.OnlyNum || type === inputType.OnlyNumMax100) {
@@ -44,18 +50,30 @@ const MaxTextInput: React.FC<Props> = ({
     }
 
     // 특수문자 허용 여부 처리
-    // if (!allowSpecialCharacters) {
-    //   value = value.replace(/[^가-힣a-zA-Z0-9\s]/g, ''); // 한글, 알파벳, 숫자, 공백만 허용
-    // }
+    if (!allowSpecialCharacters) {
+      value = value.replace(/[^가-힣a-zA-Z0-9\s]/g, ''); // 한글, 알파벳, 숫자, 공백만 허용
+    }
 
+    // 값 업데이트
     event.target.value = value;
     handlePromptChange(event);
+  };
+
+  // 조합 상태 시작
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+
+  // 조합 상태 종료
+  const handleCompositionEnd = (event: React.CompositionEvent<HTMLTextAreaElement>) => {
+    setIsComposing(false);
+    handleInput(event as unknown as React.ChangeEvent<HTMLTextAreaElement>);
   };
 
   // promptValue와 maxPromptLength를 기반으로 hasError 상태 업데이트
   useEffect(() => {
     if (maxPromptLength !== undefined) {
-      setHasError(promptValue.length === maxPromptLength);
+      setHasError(promptValue.length > maxPromptLength);
     }
   }, [promptValue, maxPromptLength]);
 
@@ -67,6 +85,8 @@ const MaxTextInput: React.FC<Props> = ({
           placeholder="Text Placeholder"
           value={promptValue}
           onChange={handleInput}
+          onCompositionStart={handleCompositionStart} // 조합 시작
+          onCompositionEnd={handleCompositionEnd} // 조합 종료
           maxLength={maxPromptLength}
           disabled={disabled}
         />

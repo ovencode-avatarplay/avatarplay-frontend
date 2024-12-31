@@ -123,6 +123,30 @@ const episodeInfoSlice = createSlice({
         };
       }
     },
+    duplicateTriggerInfo: (state, action: PayloadAction<number>) => {
+      const triggerList = state.currentEpisodeInfo.triggerInfoList;
+      const sourceIndex = action.payload; // 복사할 TriggerInfo의 인덱스
+
+      if (sourceIndex < 0 || sourceIndex >= triggerList.length) {
+        // 유효하지 않은 인덱스 처리
+        console.error('Invalid source index for copying TriggerInfo');
+        return;
+      }
+
+      // 원본 TriggerInfo 복사
+      const sourceTriggerInfo = triggerList[sourceIndex];
+      const minId = triggerList.length > 0 ? Math.min(...triggerList.map(trigger => trigger.id)) : 0;
+
+      const newId = minId > 0 ? -1 : minId - 1; // 새로운 음수 id 생성
+
+      const newTriggerInfo: TriggerInfo = {
+        ...sourceTriggerInfo,
+        id: newId, // 새로운 id 할당
+      };
+
+      // 다음 인덱스에 삽입
+      triggerList.splice(sourceIndex + 1, 0, newTriggerInfo);
+    },
 
     // Trigger 이름 업데이트
     updateTriggerInfoName: (state, action: PayloadAction<{id: number; name: string}>) => {
@@ -342,6 +366,7 @@ export const {
   updateTriggerInfoByIndex,
   updateTriggerInfoNameByIndex,
   removeTriggerInfoByIndex,
+  duplicateTriggerInfo,
   addConversationTalk,
   addConversationTalkItem,
   updateConversationTalk,

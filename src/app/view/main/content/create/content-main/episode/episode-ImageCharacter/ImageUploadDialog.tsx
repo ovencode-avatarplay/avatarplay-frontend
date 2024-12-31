@@ -6,7 +6,6 @@ interface Props {
   isOpen: boolean; // 다이얼로그 오픈 여부
   onClose: () => void; // 다이얼로그 닫기 콜백
   onFileSelect: (file: File) => void; // 선택된 파일을 부모로 전달
-  type: number;
 }
 
 const ImageUploadDialog: React.FC<Props> = ({isOpen, onClose, onFileSelect}) => {

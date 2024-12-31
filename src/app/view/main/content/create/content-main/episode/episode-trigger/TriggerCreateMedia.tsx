@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './TriggerCreateMedia.module.css';
 import {AudioFile, BoldPlay, CircleClose, LineUpload, LineVoicePlay} from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -9,6 +9,7 @@ import ReactPlayer from 'react-player';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 interface TriggerCreateMediaProps {
   mediaType: 'image' | 'video' | 'audio'; // 미디어 타입
+  onMediaUrlsChange: (urls: string[]) => void; // mediaUrls 전달 콜백
 }
 
 const mediaTypeConfig = {
@@ -29,7 +30,7 @@ const mediaTypeConfig = {
   },
 };
 
-const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType}) => {
+const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType, onMediaUrlsChange}) => {
   const {label, hint, accept} = mediaTypeConfig[mediaType];
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const [mediaUrls, setImageUrls] = useState<string[]>([]);
@@ -55,6 +56,9 @@ const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType}) => {
   const handleMediaRemove = (indexToRemove: number) => {
     setImageUrls(prevUrls => prevUrls.filter((_, index) => index !== indexToRemove));
   };
+  useEffect(() => {
+    onMediaUrlsChange(mediaUrls);
+  }, [mediaUrls, onMediaUrlsChange]);
 
   const visibilityItems: SelectDrawerItem[] = [
     {
