@@ -310,7 +310,7 @@ line-height: 140%;
 color: #80868B;
 
 /* 스크롤 설정 */
-max-height: calc(100% - 21px - 6px); /*  title(21px) + gap(6px) */
+max-height: calc(100vh - 21px - 6px); /*  title(21px) + gap(6px) */
 overflow-y: auto;
 
 /* Inside auto layout */

@@ -91,7 +91,7 @@
 .categoryList
 {
     display: flex;
-    width: calc(100% - 32px);
+    width: calc(100vh - 32px);
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
