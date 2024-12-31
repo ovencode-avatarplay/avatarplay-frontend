@@ -390,7 +390,7 @@ background: #FFF;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     width: 370px;
     margin: 0 auto;

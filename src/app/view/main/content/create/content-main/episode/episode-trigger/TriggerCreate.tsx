@@ -16,7 +16,20 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
-import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineCheck, LineUpload} from '@ui/Icons';
+import {
+  BoldRuby,
+  EmotionAngry,
+  EmotionBored,
+  EmotionExcited,
+  EmotionHappy,
+  EmotionSad,
+  EmotionScared,
+  LineArrowLeft,
+  LineArrowRight,
+  LineCharacter,
+  LineCheck,
+  LineUpload,
+} from '@ui/Icons';
 import {TriggerActionType, TriggerTypeNames} from '@/types/apps/DataTypes';
 import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 import EpisodeInitializeStep from '../episode-initialize/EpisodeInitializeStep';
@@ -43,6 +56,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
     triggerValueKeyword: '', // 기본 키워드
     triggerValueTimeMinute: 0, // 기본 시간 값
     triggerActionType: 0, // 기본 액션 유형
+    emotionState: 0,
     actionChangeEpisodeId: 0, // 기본 에피소드 변경 ID
     actionPromptScenarioDescription: '', // 기본 설명
     actionIntimacyPoint: 0, // 기본 친밀도 포인트
@@ -229,25 +243,6 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   const handlerOnCompleteInit = (name: string) => {
     let episodeInfo: EpisodeInfo;
 
-    // episodeInfo = {
-    //   ...baseEpisodeInfo,
-    //   name: name,
-    //   characterInfo: {
-    //     id: currentSelectedCharacter.id,
-    //     name: currentSelectedCharacter.name,
-    //     introduction: currentSelectedCharacter.introduction,
-    //     description: currentSelectedCharacter.description,
-    //     genderType: currentSelectedCharacter.genderType,
-    //     mainImageUrl: currentSelectedCharacter.mainImageUrl,
-    //     portraitGalleryImageUrl: currentSelectedCharacter.portraitGalleryImageUrl,
-    //     poseGalleryImageUrl: currentSelectedCharacter.poseGalleryImageUrl,
-    //     expressionGalleryImageUrl: currentSelectedCharacter.expressionGalleryImageUrl,
-    //     visibilityType: currentSelectedCharacter.visibilityType,
-    //     isMonetization: currentSelectedCharacter.isMonetization,
-    //     state: currentSelectedCharacter.state,
-    //   },
-    // };
-
     onClose();
     initData();
   };
@@ -381,6 +376,24 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
     {text: 'Play\nAudio', isActive: false},
   ]);
 
+  const [emotions, setEmotions] = useState([
+    {text: 'Happy', isActive: false, src: EmotionHappy},
+    {text: 'Angry', isActive: false, src: EmotionAngry},
+    {text: 'Sad', isActive: false, src: EmotionSad},
+    {text: 'Excited', isActive: false, src: EmotionExcited},
+    {text: 'Scared', isActive: false, src: EmotionScared},
+    {text: 'Bored', isActive: false, src: EmotionBored},
+  ]);
+  const setEmotionsActive = (index: number) => {
+    // 상태를 업데이트하며 선택된 step만 활성화
+    setEmotions(prevSteps =>
+      prevSteps.map((step, i) => ({
+        ...step,
+        isActive: i === index, // 선택된 index만 활성화
+      })),
+    );
+  };
+
   const setTypesActive = (index: number) => {
     // 상태를 업데이트하며 선택된 step만 활성화
     setTypes(prevSteps =>
@@ -399,9 +412,34 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
         isActive: i === index, // 선택된 index만 활성화
       })),
     );
+
+    switch (index) {
+      case TriggerActionType.EpisodeChange:
+        setMaxStep(3);
+        break;
+      case TriggerActionType.ChangePrompt:
+        setMaxStep(3);
+        break;
+      case TriggerActionType.GetIntimacyPoint:
+        setMaxStep(3);
+        break;
+      case TriggerActionType.ChangeCharacter:
+        setMaxStep(4);
+        break;
+      case 4:
+      case 5:
+      case 6:
+        setMaxStep(3);
+    }
   };
+
+  const getActionsActive = () => {
+    // isActive가 true인 action의 index를 반환
+    return actions.findIndex(action => action.isActive);
+  };
+
   const [textValue, setPromptValue] = useState<string>('');
-  const maxPromptLength: number = 500;
+  const maxPromptLength: number = 10;
   const handleCharacterDescPromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= maxPromptLength) {
       setPromptValue(e.target.value);
@@ -463,6 +501,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   React.useEffect(() => {
     console.log('Updated triggerType:', triggerInfo.triggerType);
   }, [triggerInfo.triggerType]);
+
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
@@ -490,10 +529,39 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
         );
       case 1:
         if (triggerInfo.triggerType == TriggerTypeNames.EmotionStatus) {
-          return <div style={{backgroundColor: 'white', width: '100%', height: '100%', overflowY: 'hidden'}}></div>;
-        } else {
           return (
             <div style={{backgroundColor: 'white', width: '100%', height: '100%', overflowY: 'hidden'}}>
+              <div className={styles.step_grid}>
+                {emotions.map((stepData, index) => (
+                  <div
+                    key={index}
+                    className={`${styles.step_button} ${stepData.isActive ? styles.active : ''}`} // active 클래스가 CSS 모듈 내에서 정의된 경우
+                    style={{whiteSpace: 'pre-wrap'}} // 줄바꿈 처리
+                    onClick={() => {
+                      setTriggerInfo(prevTriggerInfo => ({
+                        ...prevTriggerInfo,
+                        emotionState: index,
+                      }));
+                      setEmotionsActive(index);
+                    }}
+                  >
+                    <img src={stepData.src.src}></img> {stepData.text}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        } else {
+          return (
+            <div
+              style={{
+                backgroundColor: 'white',
+                width: '100%',
+                height: '100%',
+                overflowY: 'hidden',
+                justifyItems: 'center',
+              }}
+            >
               <MaxTextInput
                 handlePromptChange={handlePromptChange}
                 maxPromptLength={maxPromptLength}
@@ -514,10 +582,17 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
                   className={`${styles.step_button} ${stepData.isActive ? styles.active : ''}`} // active 클래스가 CSS 모듈 내에서 정의된 경우
                   style={{whiteSpace: 'pre-wrap'}} // 줄바꿈 처리
                   onClick={() => {
-                    setTriggerInfo(prevTriggerInfo => ({
-                      ...prevTriggerInfo,
-                      triggerType: index,
-                    }));
+                    if (index >= TriggerActionType.PlayMedia) {
+                      setTriggerInfo(prevTriggerInfo => ({
+                        ...prevTriggerInfo,
+                        triggerActionType: TriggerActionType.PlayMedia,
+                      }));
+                    } else {
+                      setTriggerInfo(prevTriggerInfo => ({
+                        ...prevTriggerInfo,
+                        triggerActionType: index,
+                      }));
+                    }
                     setActionsActive(index);
                   }}
                 >
@@ -529,11 +604,17 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
         );
       case 3:
         return (
-          <>
-            {actionStepType === TriggerActionType.ChangeCharacter && (
-              <CharacterGrid characters={characters || []} onCharacterSelect={handleCharacterSelect} />
-            )}
-          </>
+          <div
+            style={{
+              backgroundColor: 'white',
+              width: '100%',
+              height: '100%',
+              overflowY: 'hidden',
+              justifyItems: 'center',
+            }}
+          >
+            {getActionContent(getActionsActive())}
+          </div>
         );
       case 4:
         return (
@@ -557,7 +638,31 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
         return <div>Unknown step</div>;
     }
   };
-
+  const getActionContent = (actionType: number) => {
+    switch (actionType) {
+      case 0:
+        return <></>;
+      case 1: {
+        return (
+          <MaxTextInput
+            handlePromptChange={handlePromptChange}
+            maxPromptLength={maxPromptLength}
+            promptValue={getTriggerValue()}
+            type={getInputType()}
+            allowSpecialCharacters={false}
+          />
+        );
+      }
+      case 2:
+        return <></>;
+      case 3:
+        return <></>;
+      case 4:
+        return <></>;
+      default:
+        return <div>Unknown step</div>;
+    }
+  };
   //#endregion
   const getStepTitleText = (step: number): string => {
     switch (step) {
@@ -567,6 +672,31 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
         if (triggerInfo.triggerType === TriggerTypeNames.EmotionStatus) {
           return "Check Character's Emotion";
         } else return 'Title';
+      case 2:
+        return 'Select an action type';
+      case 3:
+        switch (getActionsActive()) {
+          case TriggerActionType.EpisodeChange:
+            return 'Change Episode';
+          case TriggerActionType.ChangePrompt:
+            return 'Change Episode Guide';
+
+          case TriggerActionType.GetIntimacyPoint:
+            return 'Get Progress Point';
+
+          case TriggerActionType.ChangeCharacter:
+            return 'Select a character';
+
+          case 4:
+            return 'Show Image';
+
+          case 5:
+            return 'Play Video';
+          case 6:
+            return 'Play Audio';
+          default:
+            return 'None';
+        }
       default:
         return '';
     }
@@ -580,7 +710,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
     >
       <>
         <CreateDrawerHeader title={getStepTitleText(curStep)} onClose={handlerOnClose} />
-        {curStep >= 3 && actionStepType == TriggerActionType.ChangeCharacter && (
+        {curStep >= 3 && getActionsActive() == TriggerActionType.ChangeCharacter && (
           <>
             <EpisodeInitializeStep maxStep={maxStep} curStep={curStep} />
           </>

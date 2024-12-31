@@ -7,6 +7,9 @@ box-sizing: border-box;
 display: flex;
 flex-direction: column;
 align-items: flex-start;
+
+justify-items: center;
+
 padding: 10px 12px;
 
 width: calc(100vw - 32px);
@@ -16,11 +19,29 @@ background: #FFFFFF;
 border: 1px solid #E8EAED;
 border-radius: 10px;
 
-/* Inside auto layout */
-flex: none;
-order: 1;
-align-self: stretch;
-flex-grow: 1;
+}
+
+
+.inputErrorArea
+{ 
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+
+justify-items: center;
+
+padding: 10px 12px;
+
+width: calc(100vw - 32px);
+height: 190px;
+
+background: #FFF5FD;
+border: 1px solid #FEBBEA;
+border-radius: 10px;
+
 
 }
 
@@ -61,7 +82,36 @@ flex-grow: 1;
     outline: none;  
   }
    
+.inputArea >.inputError
+{
+  flex: 1 0 0;
+  align-self: stretch;
 
+  color: var(--Black, #000);
+  font-family: 'Lato';
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%;  
+
+  resize: none; 
+  height: 150px; 
+  overflow-y: auto; 
+  box-sizing: border-box;
+
+  text-align: left;
+  vertical-align: top;
+
+background: #FFF5FD;
+}
+
+  .inputArea >.inputError:focus {
+    outline: none; 
+  }
+  
+   .inputArea >.inputError:focus-visible {
+    outline: none;  
+  }
   .inputArea > .inputHint
 {
     display: flex;
@@ -74,3 +124,5 @@ flex-grow: 1;
     font-weight: 400;
     line-height: 155%; /* 18.6px */
 }
+
+

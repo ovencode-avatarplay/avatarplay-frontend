@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import styles from './MaxTextInput.module.css';
+import ErrorMessage from './ErrorMessage';
 
 interface Props {
   promptValue: string;
@@ -26,6 +27,8 @@ const MaxTextInput: React.FC<Props> = ({
   maxPromptLength,
   hint,
 }) => {
+  const [hasError, setHasError] = useState(false);
+  console.log('adasd', type);
   // 입력 제한 함수
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     let value = event.target.value;
@@ -41,30 +44,43 @@ const MaxTextInput: React.FC<Props> = ({
     }
 
     // 특수문자 허용 여부 처리
-    if (!allowSpecialCharacters) {
-      value = value.replace(/[^a-zA-Z0-9\s]/g, ''); // 알파벳, 숫자, 공백만 허용
-    }
+    // if (!allowSpecialCharacters) {
+    //   value = value.replace(/[^가-힣a-zA-Z0-9\s]/g, ''); // 한글, 알파벳, 숫자, 공백만 허용
+    // }
 
     event.target.value = value;
     handlePromptChange(event);
   };
+
+  // promptValue와 maxPromptLength를 기반으로 hasError 상태 업데이트
+  useEffect(() => {
+    if (maxPromptLength !== undefined) {
+      setHasError(promptValue.length === maxPromptLength);
+    }
+  }, [promptValue, maxPromptLength]);
+
   return (
-    <div className={styles.inputArea}>
-      <textarea
-        className={styles.inputPrompt}
-        placeholder="Text Placeholder"
-        value={promptValue}
-        onChange={handleInput}
-        maxLength={maxPromptLength}
-        disabled={disabled}
-      />
-      {maxPromptLength && (
-        <div className={styles.inputHint}>
-          {promptValue.length} / {maxPromptLength}
-        </div>
-      )}
+    <>
+      <div className={`${styles.inputArea} ${hasError ? styles.inputErrorArea : ''}`}>
+        <textarea
+          className={`${styles.inputPrompt} ${hasError ? styles.inputError : ''}`}
+          placeholder="Text Placeholder"
+          value={promptValue}
+          onChange={handleInput}
+          maxLength={maxPromptLength}
+          disabled={disabled}
+        />
+        {maxPromptLength && (
+          <div className={styles.inputHint}>
+            {promptValue.length} / {maxPromptLength}
+          </div>
+        )}
+      </div>
+      <div style={{height: '10px'}}></div>
       {hint && <div className={styles.inputHint}>{hint}</div>}
-    </div>
+      {/* 경고 메시지 */}
+      {hasError && <ErrorMessage message="Character limit exceeded. Please shorten your input"></ErrorMessage>}
+    </>
   );
 };
 

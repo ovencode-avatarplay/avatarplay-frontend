@@ -86,17 +86,29 @@ import LineCorner from "./Line/Arrow_Corner.svg";
 import LineTrigger from "./Line/Trigger.svg";
 import LineRefresh from "./Line/refresh.svg";
 
-import edit1Pixel from "./Custom/edit1Pixel.svg";
-import editPlusOpacity from "./Custom/editPlusOpacity.svg";
-import plusRound from "./Custom/plusRound.svg";
-import LeftArrow from "./Custom/LeftArrow.svg";
-import ProfileChar from "./Custom/ProfileChar.svg";
-import ProfileUser from "./Custom/ProfileUser.svg";
-import PlusBubble from "./Custom/PlusBubble.svg";
-import Arrow_Trigger from "./Custom/Arrow_Trigger.svg";
-import AudioFile from "./Custom/AudioFile.svg";
+import edit1Pixel from './Custom/edit1Pixel.svg';
+import editPlusOpacity from './Custom/editPlusOpacity.svg';
+import plusRound from './Custom/plusRound.svg';
+import LeftArrow from './Custom/LeftArrow.svg';
+import ProfileChar from './Custom/ProfileChar.svg';
+import ProfileUser from './Custom/ProfileUser.svg';
+import PlusBubble from './Custom/PlusBubble.svg';
+import Arrow_Trigger from './Custom/Arrow_Trigger.svg';
+import AudioFile from './Custom/AudioFile.svg';
+import EmotionBored from './Custom/Bored.svg';
+import EmotionHappy from './Custom/Happy.svg';
+import EmotionSad from './Custom/Sad.svg';
+import EmotionExcited from './Custom/Excited.svg';
+import EmotionScared from './Custom/Scared.svg';
+import EmotionAngry from './Custom/Angry.svg';
 
 export {
+  EmotionBored,
+  EmotionHappy,
+  EmotionSad,
+  EmotionExcited,
+  EmotionScared,
+  EmotionAngry,
   AudioFile,
   Arrow_Trigger,
   LineTrigger,
