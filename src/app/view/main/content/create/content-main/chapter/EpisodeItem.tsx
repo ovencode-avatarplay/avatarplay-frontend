@@ -35,7 +35,7 @@ const EpisodeItem: React.FC<EpisodeItemProps> = ({episode, onSelectEpisode, isSe
         <div className={styles.episodeInfo}>
           <div className={styles.iconBox}>
             <img className={styles.cornerIcon} src={LineCorner.src} />
-            <div className={styles.episodeName}>{episode.title}</div>
+            <div className={styles.episodeName}>{episode.name}</div>
           </div>
         </div>
         <div className={styles.episodeMove}>

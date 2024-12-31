@@ -8,6 +8,7 @@ import {BoldMenuDots, BoldRadioButton, BoldRadioButtonSelected, LineCopy, LineDe
 import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 
 const ChapterItem: React.FC<ChapterItemProps> = ({
+  canEdit,
   chapter,
   chapterIdx,
   chapterLength,
@@ -62,19 +63,23 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
                 src={isSelected ? BoldRadioButtonSelected.src : BoldRadioButton.src}
               />
             </div>
-            <div className={styles.chapterName}>{chapter.title}</div>
+            <div className={styles.chapterName}>{chapter.name}</div>
           </button>
-          <button
-            className={styles.chapterDropDownButton}
-            onClick={() => {
-              setDropBoxOpen(!dropBoxOpen);
-            }}
-          >
-            <img className={styles.chapterDropDownIcon} src={BoldMenuDots.src} />
-          </button>
+          {canEdit && (
+            <button
+              className={styles.chapterDropDownButton}
+              onClick={() => {
+                if (canEdit) {
+                  setDropBoxOpen(!dropBoxOpen);
+                }
+              }}
+            >
+              <img className={styles.chapterDropDownIcon} src={BoldMenuDots.src} />
+            </button>
+          )}
         </div>
         <div className={styles.episodeContainer}>
-          {chapter.episodes.map((episode, episodeIdx) => (
+          {chapter.episodeInfoList.map((episode, episodeIdx) => (
             <EpisodeItem
               key={episodeIdx}
               episode={episode}

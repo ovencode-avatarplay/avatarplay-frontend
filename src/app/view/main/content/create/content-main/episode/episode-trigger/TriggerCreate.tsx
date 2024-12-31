@@ -44,6 +44,7 @@ import MaxTextInput, {inputType as inputType} from '@/components/create/MaxTextI
 import TriggerCreateMedia from './TriggerCreateMedia';
 import Popup from '@/components/popup/Popup';
 import {useDispatch} from 'react-redux';
+import ChapterItemList from '../../chapter/ChapterItemList';
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -113,6 +114,11 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
 
   // 저장될 데이터
   const [curEpisodeCharacterImage, setCurEpisodeCharacterImage] = useState<string>('');
+
+  // 에피소드 선택
+  const editingContentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // 현재 수정중인 컨텐츠 정보
+  const [targetChapterIdx, setTargetChapterIdx] = useState(0);
+  const [targetEpisodeIdx, setTargetEpisodeIdx] = useState(0);
 
   //#endregion
 
@@ -266,6 +272,15 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
     if (newCategory !== category) {
       setCategory(newCategory);
     }
+  };
+
+  // 에피소드 선택
+  const handleChapterSelect = (chapterIdx: number) => {
+    setTargetChapterIdx(chapterIdx);
+  };
+
+  const handleEpisodeSelect = (episodeIdx: number) => {
+    setTargetEpisodeIdx(episodeIdx);
   };
 
   useEffect(() => {
@@ -626,7 +641,21 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   const getActionContent = (actionType: number) => {
     switch (actionType) {
       case 0:
-        return <></>;
+        return (
+          <>
+            <ChapterItemList
+              canEdit={false}
+              chapters={editingContentInfo.chapterInfoList}
+              selectedChapterIdx={targetChapterIdx}
+              selectedEpisodeIdx={targetEpisodeIdx}
+              onClose={onClose}
+              onSelect={handleChapterSelect}
+              onSelectEpisode={handleEpisodeSelect}
+              onDelete={() => {}}
+              onRename={() => {}}
+            />
+          </>
+        );
       case 1: {
         return (
           <MaxTextInput

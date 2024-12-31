@@ -1,6 +1,10 @@
+import {ChapterInfo} from '@/redux-store/slices/ContentInfo';
+import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+
 export interface ChapterItemProps {
+  canEdit: boolean;
   onCloseChapterBoard: () => void;
-  chapter: Chapter;
+  chapter: ChapterInfo;
   chapterIdx: number; // 인덱스 추가
   chapterLength: number;
   onSelect: (chapterIdx: number) => void;
@@ -12,14 +16,8 @@ export interface ChapterItemProps {
   disableDelete: boolean;
 }
 
-export interface Chapter {
-  id: number;
-  title: string;
-  episodes: Episode[];
-}
-
 export interface EpisodeItemProps {
-  episode: Episode;
+  episode: EpisodeInfo;
   onSelectEpisode: (chapterIdx: number, episodeIdx: number) => void;
   isSelected: boolean;
 }

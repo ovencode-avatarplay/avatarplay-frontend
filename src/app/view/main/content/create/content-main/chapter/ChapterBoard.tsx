@@ -22,8 +22,8 @@ import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 
 // Data
 import emptyData from '@/data/create/empty-content-info-data.json';
-import {Chapter} from './ChapterTypes';
 import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
+import ChapterList from './ChapterItemList';
 
 interface Props {
   open: boolean;
@@ -48,7 +48,7 @@ const ChapterBoard: React.FC<Props> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [chapters, setChapters] = useState<ChapterInfo[]>([]);
 
   const selectedChapterIdx = useSelector((state: RootState) => state.contentselection.selectedChapterIdx);
   const selectedEpisodeIdx = useSelector((state: RootState) => state.contentselection.selectedEpisodeIdx);
@@ -64,25 +64,8 @@ const ChapterBoard: React.FC<Props> = ({
 
   //#region 함수
 
-  // ChapterInfo를 Chapter로 변환하는 함수
-  const transformChapterInfoToChapter = (chapterInfoList: ChapterInfo[]): Chapter[] => {
-    return chapterInfoList.map(chapterInfo => ({
-      id: chapterInfo.id,
-      title: chapterInfo.name,
-      episodes: chapterInfo.episodeInfoList.map(episodeInfo => ({
-        id: episodeInfo.id,
-        title: episodeInfo.name,
-        thumbnail: episodeInfo.backgroundImageUrl,
-        description: episodeInfo.episodeDescription,
-        triggerInfoList: episodeInfo.triggerInfoList,
-        conversationTemplateList: episodeInfo.conversationTemplateList,
-      })),
-      expanded: false,
-    }));
-  };
-
-  const getMinEpisodeId = (chapters: Chapter[]): number | null => {
-    const episodeIds = chapters.flatMap(chapter => chapter.episodes.map(episode => episode.id));
+  const getMinEpisodeId = (chapters: ChapterInfo[]): number | null => {
+    const episodeIds = chapters.flatMap(chapter => chapter.episodeInfoList.map(episode => episode.id));
 
     if (episodeIds.length === 0) {
       return null; // 에피소드가 없는 경우 null 반환 (버그)
@@ -92,7 +75,7 @@ const ChapterBoard: React.FC<Props> = ({
     return minId > 0 ? 0 : minId;
   };
 
-  const getMinChapterId = (chapters: Chapter[]): number | null => {
+  const getMinChapterId = (chapters: ChapterInfo[]): number | null => {
     if (chapters.length === 0) {
       return null; // Chapter가 없을 경우 null 반환 (버그)
     }
@@ -106,7 +89,7 @@ const ChapterBoard: React.FC<Props> = ({
   //#region Hooks
   // ChapterInfo 배열을 컴포넌트 상태로 변환
   useEffect(() => {
-    setChapters(transformChapterInfoToChapter(contentChapters));
+    setChapters(contentChapters);
   }, [contentChapters]);
 
   useEffect(() => {
@@ -166,7 +149,7 @@ const ChapterBoard: React.FC<Props> = ({
     setConfirmDialog({
       open: true,
       title: 'Discard Chapter',
-      content: `"${chapters[chapterIdx].title}" 챕터를 삭제하시겠습니까?`,
+      content: `"${chapters[chapterIdx].name}" 챕터를 삭제하시겠습니까?`,
       onConfirm: () => {
         onDeleteChapter(chapterIdx);
         setChapters(prev => prev.filter((_, idx) => idx !== chapterIdx));
@@ -211,27 +194,17 @@ const ChapterBoard: React.FC<Props> = ({
           </div>
           <div className={styles.buttonText}>Add new</div>
         </button>
-        <div className={styles.drawerContainer}>
-          {/* Chapter 및 Episode 트리 구조 */}
-          <div className={styles.contentBox}>
-            {chapters.map((chapter, index) => (
-              <ChapterItem
-                key={index}
-                onCloseChapterBoard={onClose}
-                chapter={chapter}
-                chapterIdx={index}
-                chapterLength={chapters.length}
-                onDelete={handleDeleteChapter}
-                onSelect={handleChapterSelect}
-                onSelectEpisode={handleEpisodeSelect}
-                onRename={handleRenameClick}
-                isSelected={selectedChapterIdx === index}
-                selectedEpisodeIdx={selectedEpisodeIdx}
-                disableDelete={chapters.length <= 1}
-              />
-            ))}
-          </div>
-        </div>
+        <ChapterList
+          canEdit={true}
+          chapters={chapters}
+          selectedChapterIdx={selectedChapterIdx}
+          selectedEpisodeIdx={selectedEpisodeIdx}
+          onClose={onClose}
+          onDelete={handleDeleteChapter}
+          onSelect={handleChapterSelect}
+          onSelectEpisode={handleEpisodeSelect}
+          onRename={handleRenameClick}
+        />
         <div className={styles.confirmButtonBox}>
           <button className={styles.confirmButton} onClick={onClose}>
             Confirm
