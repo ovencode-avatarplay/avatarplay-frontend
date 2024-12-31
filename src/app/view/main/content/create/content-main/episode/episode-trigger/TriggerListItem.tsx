@@ -14,7 +14,7 @@ import {
   LineCopy,
   LineDelete,
 } from '@ui/Icons';
-import {TriggerMediaState} from '@/types/apps/content/episode/TriggerInfo';
+import {EmotionState, TriggerMediaState} from '@/types/apps/content/episode/TriggerInfo';
 
 interface TriggerListItemProps {
   handleToggle: () => void; // 함수 형식을 () => void로 수정
@@ -135,6 +135,22 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
         );
     }
   };
+  function getCharacterDescriptionById(type: TriggerTypeNames): string {
+    switch (type) {
+      case TriggerTypeNames.Intimacy:
+        return item.triggerValueIntimacy.toString();
+      case TriggerTypeNames.ChatCount:
+        return item.triggerValueChatCount.toString();
+      case TriggerTypeNames.EmotionStatus:
+        return EmotionState[item.emotionState].toString();
+      case TriggerTypeNames.EpisodeStart:
+        return '-';
+      case TriggerTypeNames.Keyword:
+        return item.triggerValueKeyword;
+      case TriggerTypeNames.TimeMinute:
+        return item.triggerValueTimeMinute.toString();
+    }
+  }
 
   return (
     <>
@@ -150,11 +166,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
               <span className={styles.changeCharacter}>{TriggerActionType[item.triggerActionType]}</span>
             </div>
             <div className={styles.triggerCondition}>Trigger Condition</div>
-            <div className={styles.input}>
-              {' '}
-              Trigger ConditionTrigger ConditionTrigger ConditionTrigger ConditionTrigger ConditionTrigger
-              ConditionTrigger ConditionTrigger ConditionTrigger ConditionTrigger Condition
-            </div>
+            <div className={styles.input}>{getCharacterDescriptionById(item.triggerType)}</div>
           </div>
         </div>
         <div className={styles.triggerActions}>

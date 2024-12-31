@@ -36,8 +36,8 @@ import {
   LineCheck,
   LineUpload,
 } from '@ui/Icons';
-import {TriggerActionType, TriggerTypeNames} from '@/types/apps/DataTypes';
-import {TriggerInfo, TriggerMediaState} from '@/types/apps/content/episode/TriggerInfo';
+import {TriggerActionType, TriggerMainDataType, TriggerTypeNames} from '@/types/apps/DataTypes';
+import {EmotionState, TriggerInfo, TriggerMediaState} from '@/types/apps/content/episode/TriggerInfo';
 import EpisodeInitializeStep from '../episode-initialize/EpisodeInitializeStep';
 import Modal from '@mui/material/Modal/Modal';
 import MaxTextInput, {inputType as inputType} from '@/components/create/MaxTextInput';
@@ -93,6 +93,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [isCompletePopupOpen, setIsCompletePopupOpen] = useState<boolean>(false);
+  const [onBackButton, setOnBackButton] = useState<boolean>(false);
   //   // 에피소드 생성시 가져올 빈 데이터
   //   let emptyEpisodeInfo = emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0];
   // 편집시 가져올데이터
@@ -120,6 +121,24 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   const [targetChapterIdx, setTargetChapterIdx] = useState(0);
   const [targetEpisodeIdx, setTargetEpisodeIdx] = useState(0);
 
+  useEffect(() => {
+    if (selectedCharacterId !== null && selectedGalleryIndex !== null && characters) {
+      // characters 배열에서 id가 selectedCharacterId와 같은 CharacterInfo를 찾음
+      const character = characters.find(char => char.id === selectedCharacterId);
+
+      if (character) {
+        if (itemUrl && itemUrl[selectedGalleryIndex].imageUrl != null)
+          character.mainImageUrl = itemUrl[selectedGalleryIndex].imageUrl;
+        // actionCharacterInfo 값 설정
+        setTriggerInfo(prevTriggerInfo => ({
+          ...prevTriggerInfo,
+          actionCharacterInfo: character, // 찾은 character 객체를 설정
+        }));
+      } else {
+        console.warn('Character not found for the given selectedCharacterId');
+      }
+    }
+  }, [selectedCharacterId, selectedGalleryIndex, characters]);
   //#endregion
 
   //#region  함수
@@ -172,8 +191,42 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
     if (curStep == 0) {
       if (triggerInfo.triggerType == -1) return false;
     }
+    if (curStep == 1 && triggerInfo.triggerType == TriggerTypeNames.Intimacy) {
+      if (triggerInfo.triggerValueIntimacy == 0) return false;
+    }
+    if (curStep == 1 && triggerInfo.triggerType == TriggerTypeNames.Keyword) {
+      if (triggerInfo.triggerValueKeyword == '') return false;
+    }
+    if (curStep == 1 && triggerInfo.triggerType == TriggerTypeNames.ChatCount) {
+      if (triggerInfo.triggerValueChatCount == 0) return false;
+    }
+    if (curStep == 1 && triggerInfo.triggerType == TriggerTypeNames.TimeMinute) {
+      if (triggerInfo.triggerValueTimeMinute == 0) return false;
+    }
+    // if (curStep == 1 && triggerInfo.triggerType == TriggerTypeNames.EmotionStatus) {
+    //   if (triggerInfo.emotionState == EmotionState.) return false;
+    // }
+
     if (curStep == 2) {
       if (triggerInfo.triggerActionType == -1) return false;
+    }
+    if (curStep == 3 && triggerInfo.triggerActionType == TriggerActionType.PlayMedia) {
+      if (triggerInfo.actionMediaUrlList.length == 0) return false;
+    }
+    if (curStep == 3 && triggerInfo.triggerActionType == TriggerActionType.ChangeCharacter) {
+      if (selectedCharacterId == null) return false;
+    }
+    if (curStep == 3 && triggerInfo.triggerActionType == TriggerActionType.EpisodeChange) {
+      // if (targetEpisodeIdx == null || targetEpisodeIdx == 0) return false;
+    }
+    if (curStep == 3 && triggerInfo.triggerActionType == TriggerActionType.ChangePrompt) {
+      if (triggerInfo.actionPromptScenarioDescription == '') return false;
+    }
+    if (curStep == 3 && triggerInfo.triggerActionType == TriggerActionType.GetIntimacyPoint) {
+      if (triggerInfo.actionIntimacyPoint == 0) return false;
+    }
+    if (curStep == 4 && triggerInfo.triggerActionType == TriggerActionType.ChangeCharacter) {
+      if (selectedGalleryIndex == null) return false;
     }
     return true;
   }
@@ -248,6 +301,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   const handlerOnClose = () => {
     setIsCompletePopupOpen(false);
     onClose();
+    initData();
   };
 
   const handleOnUploadImage = () => {
@@ -348,7 +402,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   ]);
 
   const [emotions, setEmotions] = useState([
-    {text: 'Happy', isActive: false, src: EmotionHappy},
+    {text: 'Happy', isActive: true, src: EmotionHappy},
     {text: 'Angry', isActive: false, src: EmotionAngry},
     {text: 'Sad', isActive: false, src: EmotionSad},
     {text: 'Excited', isActive: false, src: EmotionExcited},
@@ -410,7 +464,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   };
 
   const [textValue, setPromptValue] = useState<string>('');
-  const maxPromptLength: number = 10;
+  const maxPromptLength: number = 500;
   const handleCharacterDescPromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= maxPromptLength) {
       setPromptValue(e.target.value);
@@ -772,8 +826,21 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
       onClose={onClose}
       sx={{width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto', overflow: 'hidden'}}
     >
-      <>
-        <CreateDrawerHeader title={getStepTitleText(curStep)} onClose={handlerOnClose} />
+      <div
+        style={{
+          backgroundColor: 'white',
+          width: '100%',
+          height: '100%',
+          overflowY: 'hidden',
+          justifyItems: 'center',
+        }}
+      >
+        <CreateDrawerHeader
+          title={getStepTitleText(curStep)}
+          onClose={() => {
+            setOnBackButton(true);
+          }}
+        />
         {curStep >= 3 && getActionsActive() == TriggerActionType.ChangeCharacter && (
           <>
             <EpisodeInitializeStep maxStep={maxStep} curStep={curStep} />
@@ -833,7 +900,10 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
               },
               {
                 label: 'Add New',
-                onClick: initData,
+                onClick: () => {
+                  initData();
+                  setIsCompletePopupOpen(false);
+                },
                 isPrimary: true,
               },
             ]}
@@ -843,7 +913,32 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
             }}
           />
         )}
-      </>
+        {onBackButton && (
+          <Popup
+            type="alert"
+            title="Alert"
+            description="Are you sure you want to exit?\nYour Change will be lost"
+            buttons={[
+              {
+                label: 'No',
+                onClick: () => {
+                  setOnBackButton(false);
+                },
+
+                isPrimary: false,
+              },
+              {
+                label: 'Yes',
+                onClick: () => {
+                  handlerOnClose();
+                  setOnBackButton(false);
+                },
+                isPrimary: true,
+              },
+            ]}
+          />
+        )}
+      </div>
     </Modal>
   );
 };

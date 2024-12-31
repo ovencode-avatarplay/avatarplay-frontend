@@ -34,7 +34,11 @@ const Popup: React.FC<PopupProps> = ({type, title, description, buttons, textBut
           {/* Title */}
           <div className={styles.popupTitle}>{title}</div>
           {/* Description */}
-          {description && <div className={styles.popupDescription}>{description}</div>}
+          {description && (
+            <div className={styles.popupDescription} style={{whiteSpace: 'pre-wrap'}}>
+              {description}
+            </div>
+          )}
         </div>
 
         {/* Input Field */}
