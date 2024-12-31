@@ -41,6 +41,7 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, sele
             background: 'rgba(0, 0, 0, 0.70)',
           },
         }}
+        style={{zIndex: '1399'}}
       >
         <div className={styles.handleArea}>
           <div className={styles.handleBar}></div>

@@ -35,6 +35,7 @@ import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 import EpisodeInitializeStep from '../episode-initialize/EpisodeInitializeStep';
 import Modal from '@mui/material/Modal/Modal';
 import MaxTextInput, {inputType as inputType} from '@/components/create/MaxTextInput';
+import TriggerCreateMedia from './TriggerCreateMedia';
 
 interface Props {
   open: boolean;
@@ -50,12 +51,12 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
     episodeId: 0, // 기본 에피소드 ID
     id: 0, // 임시 값, addTriggerInfo에서 자동 생성됨
     name: '새 트리거', // 기본 이름
-    triggerType: 0, // 기본 트리거 유형
+    triggerType: -1, // 기본 트리거 유형
     triggerValueIntimacy: 0, // 기본 친밀도 값
     triggerValueChatCount: 0, // 기본 채팅 횟수
     triggerValueKeyword: '', // 기본 키워드
     triggerValueTimeMinute: 0, // 기본 시간 값
-    triggerActionType: 0, // 기본 액션 유형
+    triggerActionType: -1, // 기본 액션 유형
     emotionState: 0,
     actionChangeEpisodeId: 0, // 기본 에피소드 변경 ID
     actionPromptScenarioDescription: '', // 기본 설명
@@ -93,9 +94,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   const [maxStep, setMaxStep] = useState<number>(7);
   const [curStep, setCurStep] = useState<number>(0); // 0일때는 max 수치가 변동이 있을 수 있기때문에 step이 가려집니다.
 
-  const [actionStepType, setActionType] = useState<TriggerActionType>(TriggerActionType.ChangeCharacter);
-  const [triggerType, setTriggerType] = useState<TriggerTypeNames>(TriggerTypeNames.Intimacy);
-
+  const [actionStepType, setActionType] = useState<TriggerActionType>();
   // 캐릭터 선택
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
   const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
@@ -155,19 +154,11 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
 
   //스탭에 따른 빠꾸 케이스
   function checkEssential() {
-    if (curStep > 0) {
-      switch (actionStepType) {
-        case TriggerActionType.ChangeCharacter:
-          break;
-        case TriggerActionType.ChangePrompt:
-          break;
-        case TriggerActionType.EpisodeChange:
-          break;
-        case TriggerActionType.GetIntimacyPoint:
-          break;
-        case TriggerActionType.PlayMedia:
-          break;
-      }
+    if (curStep == 0) {
+      if (triggerInfo.triggerType == -1) return false;
+    }
+    if (curStep == 2) {
+      if (triggerInfo.triggerActionType == -1) return false;
     }
     return true;
   }
@@ -447,7 +438,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   };
 
   // 동적으로 MaxTextInput props 설정
-  const getInputType = (): inputType => {
+  const getTriggerValueInputType = (): inputType => {
     switch (triggerInfo.triggerType) {
       case TriggerTypeNames.Intimacy:
         return inputType.OnlyNumMax100; // 100까지만 입력 가능
@@ -461,7 +452,16 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
         return inputType.None; // 제한 없음
     }
   };
-
+  const getActionValueInputType = (): inputType => {
+    switch (triggerInfo.triggerActionType) {
+      case TriggerActionType.ChangePrompt:
+        return inputType.None; // 100까지만 입력 가능
+      case TriggerActionType.GetIntimacyPoint:
+        return inputType.OnlyNumMax100; // 숫자만 입력 가능
+      default:
+        return inputType.None; // 제한 없음
+    }
+  };
   const handlePromptChange = (s: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (triggerInfo.triggerType === TriggerTypeNames.ChatCount) {
       setTriggerInfo(prevTriggerInfo => ({
@@ -486,6 +486,20 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
     }
   };
 
+  const handleActionTextValueChange = (s: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (triggerInfo.triggerActionType === TriggerActionType.ChangePrompt) {
+      setTriggerInfo(prevTriggerInfo => ({
+        ...prevTriggerInfo,
+        actionPromptScenarioDescription: s.target.value,
+      }));
+    } else if (triggerInfo.triggerActionType === TriggerActionType.GetIntimacyPoint) {
+      setTriggerInfo(prevTriggerInfo => ({
+        ...prevTriggerInfo,
+        actionIntimacyPoint: s.target.value ? Number(s.target.value) : 0,
+      }));
+    }
+  };
+
   const getTriggerValue = (): string => {
     if (triggerInfo.triggerType === TriggerTypeNames.ChatCount) {
       return triggerInfo.triggerValueChatCount.toString();
@@ -498,6 +512,16 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
     }
     return ''; // 기본 반환 값
   };
+
+  const getActionValue = (): string => {
+    if (triggerInfo.triggerActionType === TriggerActionType.ChangePrompt) {
+      return triggerInfo.actionPromptScenarioDescription.toString();
+    } else if (triggerInfo.triggerActionType === TriggerActionType.GetIntimacyPoint) {
+      return triggerInfo.actionIntimacyPoint.toString();
+    }
+    return ''; // 기본 반환 값
+  };
+
   React.useEffect(() => {
     console.log('Updated triggerType:', triggerInfo.triggerType);
   }, [triggerInfo.triggerType]);
@@ -566,7 +590,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
                 handlePromptChange={handlePromptChange}
                 maxPromptLength={maxPromptLength}
                 promptValue={getTriggerValue()}
-                type={getInputType()}
+                type={getTriggerValueInputType()}
                 allowSpecialCharacters={false}
               />
             </div>
@@ -645,20 +669,32 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
       case 1: {
         return (
           <MaxTextInput
-            handlePromptChange={handlePromptChange}
+            handlePromptChange={handleActionTextValueChange}
             maxPromptLength={maxPromptLength}
-            promptValue={getTriggerValue()}
-            type={getInputType()}
+            promptValue={getActionValue()}
+            type={getActionValueInputType()}
             allowSpecialCharacters={false}
           />
         );
       }
       case 2:
-        return <></>;
+        return (
+          <MaxTextInput
+            handlePromptChange={handleActionTextValueChange}
+            maxPromptLength={maxPromptLength}
+            promptValue={getActionValue()}
+            type={getActionValueInputType()}
+            allowSpecialCharacters={false}
+          />
+        );
       case 3:
         return <></>;
       case 4:
-        return <></>;
+        return <TriggerCreateMedia mediaType="image"></TriggerCreateMedia>;
+      case 5:
+        return <TriggerCreateMedia mediaType="video"></TriggerCreateMedia>;
+      case 6:
+        return <TriggerCreateMedia mediaType="audio"></TriggerCreateMedia>;
       default:
         return <div>Unknown step</div>;
     }
