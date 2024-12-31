@@ -11,6 +11,7 @@ interface ChapterListProps {
   onClose: () => void;
   onDelete: (chapterIdx: number) => void;
   onSelect: (chapterIdx: number) => void;
+  hideSelectedEpisode: boolean;
   onSelectEpisode: (chapterIdx: number, episodeIdx: number) => void;
   onRename: () => void;
 }
@@ -24,6 +25,7 @@ const ChapterItemList: React.FC<ChapterListProps> = ({
   onDelete,
   onSelect,
   onSelectEpisode,
+  hideSelectedEpisode,
   onRename,
 }) => {
   return (
@@ -44,6 +46,7 @@ const ChapterItemList: React.FC<ChapterListProps> = ({
             onRename={onRename}
             isSelected={selectedChapterIdx === index}
             selectedEpisodeIdx={selectedEpisodeIdx}
+            hideSelectedEpisode={hideSelectedEpisode}
             disableDelete={chapters.length <= 1}
           />
         ))}

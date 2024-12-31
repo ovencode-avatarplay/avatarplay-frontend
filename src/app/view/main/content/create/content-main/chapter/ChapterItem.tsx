@@ -18,6 +18,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   onRename,
   isSelected,
   selectedEpisodeIdx,
+  hideSelectedEpisode,
   disableDelete,
 }) => {
   const [dropBoxOpen, setDropBoxOpen] = useState<boolean>(false);
@@ -84,6 +85,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
               key={episodeIdx}
               episode={episode}
               onSelectEpisode={onSelectEpisode}
+              hideSelected={hideSelectedEpisode}
               isSelected={episodeIdx === selectedEpisodeIdx ? true : false}
             />
           ))}

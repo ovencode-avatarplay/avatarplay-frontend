@@ -79,3 +79,21 @@
     filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
 }
  
+.radioButton
+{
+    display: flex;
+    width: 24px;
+    height: 24px;
+    padding: 2px;
+    justify-content: center;
+    align-items: center;
+
+    margin-right: 8px;
+}
+
+.radioButtonIcon
+{
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}

@@ -203,6 +203,7 @@ const ChapterBoard: React.FC<Props> = ({
           onDelete={handleDeleteChapter}
           onSelect={handleChapterSelect}
           onSelectEpisode={handleEpisodeSelect}
+          hideSelectedEpisode={true}
           onRename={handleRenameClick}
         />
         <div className={styles.confirmButtonBox}>

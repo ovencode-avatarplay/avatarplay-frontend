@@ -13,12 +13,14 @@ export interface ChapterItemProps {
   onRename: () => void;
   isSelected: boolean; // 선택 여부
   selectedEpisodeIdx: number;
+  hideSelectedEpisode: boolean;
   disableDelete: boolean;
 }
 
 export interface EpisodeItemProps {
   episode: EpisodeInfo;
   onSelectEpisode: (chapterIdx: number, episodeIdx: number) => void;
+  hideSelected: boolean;
   isSelected: boolean;
 }
 

@@ -3,13 +3,13 @@ import React from 'react';
 import {EpisodeItemProps} from './ChapterTypes';
 
 import styles from './EpisodeItem.module.css';
-import {BoldArrowDown, LineCorner} from '@ui/Icons';
+import {BoldArrowDown, BoldRadioButton, BoldRadioButtonSelected, LineCorner} from '@ui/Icons';
 import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {adjustEpisodeIndex} from '@/redux-store/slices/ContentInfo';
 import {RootState} from '@/redux-store/ReduxStore';
 
-const EpisodeItem: React.FC<EpisodeItemProps> = ({episode, onSelectEpisode, isSelected}) => {
+const EpisodeItem: React.FC<EpisodeItemProps> = ({episode, onSelectEpisode, hideSelected, isSelected}) => {
   const dispatch = useDispatch();
   const episodeInfo = useSelector((state: RootState) => {
     const flatEpisodes = state.content.curEditingContentInfo.chapterInfoList.flatMap(
@@ -35,6 +35,14 @@ const EpisodeItem: React.FC<EpisodeItemProps> = ({episode, onSelectEpisode, isSe
         <div className={styles.episodeInfo}>
           <div className={styles.iconBox}>
             <img className={styles.cornerIcon} src={LineCorner.src} />
+            {!hideSelected && (
+              <div className={styles.radioButton}>
+                <img
+                  className={styles.radioButtonIcon}
+                  src={isSelected ? BoldRadioButtonSelected.src : BoldRadioButton.src}
+                />
+              </div>
+            )}
             <div className={styles.episodeName}>{episode.name}</div>
           </div>
         </div>

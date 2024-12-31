@@ -651,6 +651,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
               onClose={onClose}
               onSelect={handleChapterSelect}
               onSelectEpisode={handleEpisodeSelect}
+              hideSelectedEpisode={false}
               onDelete={() => {}}
               onRename={() => {}}
             />
