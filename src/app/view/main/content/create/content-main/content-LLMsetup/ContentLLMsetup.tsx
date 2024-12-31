@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Drawer} from '@mui/material';
+import {Drawer, Modal} from '@mui/material';
 import {useDispatch} from 'react-redux'; // Redux 액션을 디스패치하기 위한 훅
 
 import styles from './ContentLLMsetup.module.css'; // 스타일 파일
@@ -69,57 +69,57 @@ const ContentLLMSetup: React.FC<ContentLLMSetupProps> = ({open, onClose}) => {
   };
 
   return (
-    <Drawer
-      anchor="right"
+    <Modal
       open={open}
-      onClose={handleSaveAndClose}
-      className={styles.llmDrawer}
-      PaperProps={{
-        sx: {width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto', overflow: 'hidden'},
+      onClose={onClose}
+      BackdropProps={{
+        sx: {background: 'rgba(0, 0, 0, 0.7)'},
       }}
     >
-      <CreateDrawerHeader title="LLM" onClose={onClose}>
-        <div className={styles.costArea}>
-          <div className={styles.costButton}>
-            <img className={styles.costIcon} src={BoldRuby.src} />
-            <div className={styles.costText}>150</div>
-          </div>
-          <div className={styles.costDesc}>per chat</div>
-        </div>
-      </CreateDrawerHeader>
-      <div className={styles.categoryArea}>
-        <div className={styles.categoryList}>
-          {modelOptions.map(option => (
-            <div
-              key={option.value}
-              className={`${styles.llmCategory} ${option.disabled ? styles.disabled : ''}`}
-              onClick={() => !option.disabled && handleSelection(option.value)}
-            >
-              <img
-                className={styles.radioButton}
-                src={selectedModel === option.value ? BoldRadioButtonSelected.src : BoldRadioButton.src}
-                alt="Radio Button"
-              />
-              <div className={styles.textArea}>
-                <div className={styles.llmName}>{option.label}</div>
-                <div className={styles.llmDesc}>{option.description}</div>
-              </div>
+      <div className={styles.modalContainer}>
+        <CreateDrawerHeader title="LLM" onClose={onClose}>
+          <div className={styles.costArea}>
+            <div className={styles.costButton}>
+              <img className={styles.costIcon} src={BoldRuby.src} />
+              <div className={styles.costText}>150</div>
             </div>
-          ))}
-          <MaxTextInput
-            promptValue={customApiKey}
-            disabled={selectedModel !== 9}
-            handlePromptChange={handleApiKeyChange}
-            hint="You can validate your API Key on OpenAI API"
-          />
+            <div className={styles.costDesc}>per chat</div>
+          </div>
+        </CreateDrawerHeader>
+        <div className={styles.categoryArea}>
+          <div className={styles.categoryList}>
+            {modelOptions.map(option => (
+              <div
+                key={option.value}
+                className={`${styles.llmCategory} ${option.disabled ? styles.disabled : ''}`}
+                onClick={() => !option.disabled && handleSelection(option.value)}
+              >
+                <img
+                  className={styles.radioButton}
+                  src={selectedModel === option.value ? BoldRadioButtonSelected.src : BoldRadioButton.src}
+                  alt="Radio Button"
+                />
+                <div className={styles.textArea}>
+                  <div className={styles.llmName}>{option.label}</div>
+                  <div className={styles.llmDesc}>{option.description}</div>
+                </div>
+              </div>
+            ))}
+            <MaxTextInput
+              promptValue={customApiKey}
+              disabled={selectedModel !== 9}
+              handlePromptChange={handleApiKeyChange}
+              hint="You can validate your API Key on OpenAI API"
+            />
+          </div>
         </div>
-      </div>
 
-      {/* 저장 버튼 */}
-      <button className={styles.confirmButton} onClick={handleSaveAndClose}>
-        Confirm
-      </button>
-    </Drawer>
+        {/* 저장 버튼 */}
+        <button className={styles.confirmButton} onClick={handleSaveAndClose}>
+          Confirm
+        </button>
+      </div>
+    </Modal>
   );
 };
 

@@ -1,3 +1,20 @@
+.modalContainer
+{
+    width: 100vw;
+    height: 100vh;
+    max-width: 402px;
+    margin: 0 auto;
+    overflow: hidden; 
+    background: #fff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
 .drawerContainer {
     margin: 6px 16px 0px 16px;
 
@@ -89,7 +106,7 @@
     background: var(--White, #FFF);
 }
 
-.llmSettingContainer
+.settingButtonContainer
 {
     display: flex;
     justify-content: space-between;
@@ -97,7 +114,7 @@
     flex: 1 0 0;
 }
 
-.llmButtonArea
+.settingButtonArea
 {
     display: flex;
     height: 40px;
@@ -107,7 +124,7 @@
     align-items: center;
 }
 
-.llmButtonIcon
+.settingButtonIcon
 {
     width: 16px;
     height: 16px;
@@ -136,6 +153,21 @@
     font-style: normal;
     font-weight: 500;
     line-height: 150%; /* 21px */
+}
+
+.settingSelected
+{
+    color: var(--Black, #000);
+    text-align: right;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Lato;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 150%; /* 22.5px */
+
 }
 
 .settingState
