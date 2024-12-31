@@ -256,7 +256,8 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   };
 
   const handleConfirm = async () => {
-    if (curStep === 1 && selectedCharacterId) {
+    console.log(getActionsActive());
+    if (curStep === 3 && selectedCharacterId) {
       await getCharacterInfo(selectedCharacterId);
     }
   };
@@ -276,7 +277,8 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
 
   // 캐릭터 선택
   useEffect(() => {
-    if (actionStepType === TriggerActionType.ChangeCharacter && curStep === 1) {
+    console.log(getActionsActive());
+    if (getActionsActive() === TriggerActionType.ChangeCharacter && curStep === 3) {
       getCharacterList();
     }
   }, [curStep]);
@@ -284,12 +286,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   useEffect(() => {
     // 카테고리 전환 시 아이템과 인덱스를 갱신
 
-    if (
-      currentSelectedCharacter &&
-      actionStepType === TriggerActionType.ChangeCharacter &&
-      curStep === 2 &&
-      category !== lastCategory
-    ) {
+    if (currentSelectedCharacter && getActionsActive() === TriggerActionType.ChangeCharacter && curStep === 4) {
       switch (category) {
         case GalleryCategory.Portrait:
           setItemUrl(currentSelectedCharacter?.portraitGalleryImageUrl || null);
@@ -611,19 +608,15 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
       case 4:
         return (
           <>
-            {actionStepType === TriggerActionType.ChangeCharacter && (
-              <>
-                <CharacterGalleryToggle category={category} onCategoryChange={handleCategoryChange} />
+            <CharacterGalleryToggle category={category} onCategoryChange={handleCategoryChange} />
 
-                <CharacterGalleryGrid
-                  itemUrl={itemUrl}
-                  selectedItemIndex={selectedGalleryIndex}
-                  onSelectItem={i => setSelectedGalleryIndex(i)}
-                  category={category}
-                  isTrigger={true}
-                />
-              </>
-            )}
+            <CharacterGalleryGrid
+              itemUrl={itemUrl}
+              selectedItemIndex={selectedGalleryIndex}
+              onSelectItem={i => setSelectedGalleryIndex(i)}
+              category={category}
+              isTrigger={true}
+            />
           </>
         );
       default:
@@ -656,7 +649,11 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
           />
         );
       case 3:
-        return <></>;
+        return (
+          <>
+            <CharacterGrid characters={characters || []} onCharacterSelect={handleCharacterSelect} />
+          </>
+        );
       case 4:
         return (
           <TriggerCreateMedia

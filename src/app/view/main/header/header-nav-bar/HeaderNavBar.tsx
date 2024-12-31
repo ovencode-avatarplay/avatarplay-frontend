@@ -37,7 +37,7 @@ const HeaderNavBar = () => {
         <button className={styles.notification} onClick={() => {}}>
           <img className={styles.notificationIcon} src={BoldAlert.src} />
         </button>
-        {/* <UserDropdown /> */}
+        <UserDropdown />
       </div>
     </header>
   );
