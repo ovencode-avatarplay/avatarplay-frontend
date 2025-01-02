@@ -110,8 +110,6 @@ const ContentMain: React.FC = () => {
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
-    setIsEpisodeEditing(true); // Edit으로 들어오던, create로 들어오던 처음은 Edit상태임
-
     setIsInitFinished(false);
     if (skipContentInit) {
       setIsEpisodeInitOpen(false);
