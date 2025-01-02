@@ -1,18 +1,20 @@
+.featuredContainer
+{
+    margin-top: 12px;
+    gap: 15px;
+}
+
 .content {
-    flex: 1;
-    overflow-y: auto;
-    width: 100%;
+    flex: 1; 
     
-    margin: 0 ; 
-    overflow: hidden;
+    margin-left: 16px;  
+    overflow-y: hidden;
 }
 
 @media (min-width : 402px)
 {
     .content
     {
-        width: 402px;
-
     }
 }
 
@@ -31,6 +33,16 @@
     scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */
 }
 
+.listContainer::-webkit-scrollbar {
+    display: none;  
+  }
+  
+.listContainer {
+   scrollbar-width: none;  
+   -ms-overflow-style: none;  
+}
+
+
 @media (min-width : 402px)
 {
     .listContainer
@@ -38,10 +50,4 @@
 
         width: 386px;
     }
-}
-
-.featuredContainer
-{
-    margin-top: 12px;
-    gap: 15px;
 }

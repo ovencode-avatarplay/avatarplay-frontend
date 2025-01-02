@@ -29,12 +29,6 @@ const getIconComponent = (iconName: string) => {
 const SearchBoardHeader: React.FC = () => {
   return (
     <div className={styles.searchBoard}>
-      <Box className={styles.tags}>
-        {TagData.map((tag, index) => {
-          const tmpIcon = getIconComponent(tag.icon);
-          return <Chip className={styles.chip} key={index} icon={tmpIcon ? tmpIcon : undefined} label={tag.label} />;
-        })}
-      </Box>
       <div className={styles.search}>
         <SearchField />
         <span className={styles.nsfwToggle}>
@@ -42,6 +36,13 @@ const SearchBoardHeader: React.FC = () => {
           <Switch />
         </span>
       </div>
+
+      <Box className={styles.tags}>
+        {TagData.map((tag, index) => {
+          const tmpIcon = getIconComponent(tag.icon);
+          return <Chip className={styles.chip} key={index} icon={tmpIcon ? tmpIcon : undefined} label={tag.label} />;
+        })}
+      </Box>
     </div>
   );
 };

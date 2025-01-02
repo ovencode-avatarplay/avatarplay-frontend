@@ -17,6 +17,11 @@ import ExploreFeaturedHeader from './searchboard-header/ExploreFeaturedHeader';
 const SearchBoard: React.FC = () => {
   const [bannerList, setBannerList] = useState<string[] | null>(null);
   const [searchOptionList, setSearchOptionList] = useState<string[] | null>(null);
+  const [talkainOperatorList, setTalkainOperatorList] = useState<ExploreCardProps[] | null>(null);
+  const [popularList, setPopularList] = useState<ExploreCardProps[] | null>(null);
+  const [malePopularList, setMalePopularList] = useState<ExploreCardProps[] | null>(null);
+  const [femalePopularList, setFemalePopularList] = useState<ExploreCardProps[] | null>(null);
+  const [newContentList, setNewContentList] = useState<ExploreCardProps[] | null>(null);
   const [playingList, setPlayingList] = useState<ExploreCardProps[] | null>(null);
   const [recommendationList, setRecommendationList] = useState<ExploreCardProps[] | null>(null);
 
@@ -42,6 +47,27 @@ const SearchBoard: React.FC = () => {
           if (response.searchOptionList) {
             setSearchOptionList(response.searchOptionList);
           }
+
+          if (response.talkainOperatorList) {
+            setTalkainOperatorList(response.talkainOperatorList);
+          }
+
+          if (response.popularList) {
+            setPopularList(response.popularList);
+          }
+
+          if (response.malePopularList) {
+            setMalePopularList(response.malePopularList);
+          }
+
+          if (response.femalePopularList) {
+            setFemalePopularList(response.femalePopularList);
+          }
+
+          if (response.newContentList) {
+            setNewContentList(response.newContentList);
+          }
+
           if (response.playingList) {
             setPlayingList(response.playingList);
           }
@@ -69,8 +95,27 @@ const SearchBoard: React.FC = () => {
         <div className={styles.featuredContainer}>
           <div className={styles.content}>
             <main className={styles.listContainer}>
-              {playingList && <SearchBoardHorizonScroll title="playingList" data={playingList} />}
-              {recommendationList && <SearchBoardHorizonScroll title="recommendList" data={recommendationList} />}
+              {talkainOperatorList && talkainOperatorList.length > 0 && (
+                <SearchBoardHorizonScroll title="talkainOperatorList" data={talkainOperatorList} />
+              )}
+              {popularList && popularList.length > 0 && (
+                <SearchBoardHorizonScroll title="popularList" data={popularList} />
+              )}
+              {malePopularList && malePopularList.length > 0 && (
+                <SearchBoardHorizonScroll title="malePopularList" data={malePopularList} />
+              )}
+              {femalePopularList && femalePopularList.length > 0 && (
+                <SearchBoardHorizonScroll title="femalePopularList" data={femalePopularList} />
+              )}
+              {newContentList && newContentList.length > 0 && (
+                <SearchBoardHorizonScroll title="newContentList" data={newContentList} />
+              )}
+              {playingList && playingList.length > 0 && (
+                <SearchBoardHorizonScroll title="playingList" data={playingList} />
+              )}
+              {recommendationList && recommendationList.length > 0 && (
+                <SearchBoardHorizonScroll title="recommendList" data={recommendationList} />
+              )}
             </main>
           </div>
         </div>

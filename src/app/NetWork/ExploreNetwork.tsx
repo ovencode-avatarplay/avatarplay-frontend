@@ -19,6 +19,7 @@ interface ResponseExplore {
     popularList: ExploreCardProps[];
     malePopularList: ExploreCardProps[];
     femalePopularList: ExploreCardProps[];
+    newContentList: ExploreCardProps[];
     recommendationList: ExploreCardProps[];
     playingList: ExploreCardProps[];
   };
@@ -36,6 +37,7 @@ export const sendGetExplore = async (
   popularList: ExploreCardProps[] | null;
   malePopularList: ExploreCardProps[] | null;
   femalePopularList: ExploreCardProps[] | null;
+  newContentList: ExploreCardProps[] | null;
   recommendationList: ExploreCardProps[] | null;
   playingList: ExploreCardProps[] | null;
 }> => {
@@ -62,6 +64,7 @@ export const sendGetExplore = async (
         popularList: data.popularList || [],
         malePopularList: data.malePopularList || [],
         femalePopularList: data.femalePopularList || [],
+        newContentList: data.newContentList || [],
         recommendationList: data.recommendationList || [],
         playingList: data.playingList || [],
       };
@@ -76,6 +79,7 @@ export const sendGetExplore = async (
         popularList: null,
         malePopularList: null,
         femalePopularList: null,
+        newContentList: null,
         recommendationList: null,
         playingList: null,
       };
@@ -91,6 +95,7 @@ export const sendGetExplore = async (
       popularList: null,
       malePopularList: null,
       femalePopularList: null,
+      newContentList: null,
       recommendationList: null,
       playingList: null,
     };

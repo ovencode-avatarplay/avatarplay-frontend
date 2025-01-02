@@ -1,20 +1,62 @@
 import React, {useState} from 'react';
 
-import MovieIcon from '@mui/icons-material/Movie';
-import ImageIcon from '@mui/icons-material/Image';
-
 import styles from './ExploreCard.module.css'; // CSS 파일 임포트
 
 import {useDispatch} from 'react-redux';
-import {openDrawerContentId, setDrawerEpisodeId} from '@/redux-store/slices/DrawerContentDescSlice';
+import {openDrawerContentId} from '@/redux-store/slices/DrawerContentDescSlice';
 
 import {ExploreCardProps} from './SearchBoardTypes';
+import {BoldChatRoundDots, BoldEpisodes, BoldFollowers} from '@ui/Icons';
 
-const ExploreCard: React.FC<ExploreCardProps> = ({contentId, contentName, chatCount, episodeCount, thumbnail}) => {
+const ExploreCard: React.FC<ExploreCardProps> = ({
+  exploreItemType,
+  updateExplorState,
+  contentId,
+  contentRank,
+  contentName,
+  chatCount,
+  episodeCount,
+  followerCount,
+  thumbnail,
+}) => {
   const dispatch = useDispatch();
+
+  const RankCount = 3 + 1;
 
   const handleOpenDrawer = () => {
     dispatch(openDrawerContentId(contentId));
+  };
+
+  const getDataItem = (icon: number, text: string) => {
+    return (
+      <div className={styles.dataItem}>
+        <img
+          className={styles.dataIcon}
+          src={icon === 0 ? BoldChatRoundDots.src : icon === 1 ? BoldEpisodes.src : BoldFollowers.src}
+        />
+        <div className={styles.dataText}>{text}</div>
+      </div>
+    );
+  };
+
+  const getUpdateState = (state: number) => {
+    let result = '';
+    switch (state) {
+      case 1:
+        result = 'New Season';
+        break;
+      case 2:
+        result = 'New Episode';
+        break;
+      case 3:
+        result = 'Recently Add';
+        break;
+      case 4:
+        result = 'Top10';
+        break;
+    }
+
+    return result;
   };
 
   return (
@@ -22,25 +64,33 @@ const ExploreCard: React.FC<ExploreCardProps> = ({contentId, contentName, chatCo
       <div className={styles.exploreCard}>
         <div
           className={styles.exploreImage}
-          style={{backgroundImage: `url(${thumbnail || '/images/001.png'})`, backgroundSize: 'cover'}}
+          style={{
+            backgroundImage: `url(${thumbnail || '/images/001.png'})`,
+            backgroundSize: 'cover',
+          }}
           onClick={handleOpenDrawer}
         />
+
+        {contentRank < RankCount && (
+          <div className={styles.rankArea}>
+            <div className={styles.rankText}>{contentRank}</div>
+          </div>
+        )}
+
         <div className={styles.exploreOverlay}>
-          <div className={styles.exploreInfo}>
-            <div className={styles.exploreIcons}>
-              <h3>ID:{contentId}</h3>
-              <div className={styles.iconInfo}>
-                <MovieIcon />
-                <span>{chatCount}</span>
-              </div>
-              <div className={styles.iconInfo}>
-                <ImageIcon />
-                <span>{episodeCount}</span>
-              </div>
-            </div>
+          <div className={styles.contentName}>{contentName}</div>
+          {updateExplorState !== 0 && <div className={styles.isNewLabel}>{getUpdateState(updateExplorState)}</div>}
+          <div className={styles.dataArea}>
+            {exploreItemType === 0 ? (
+              <>
+                {getDataItem(0, chatCount.toString())}
+                {getDataItem(1, episodeCount.toString())}
+              </>
+            ) : (
+              <>{getDataItem(2, followerCount.toString())}</>
+            )}
           </div>
         </div>
-        <div>{contentName} </div>
       </div>
     </>
   );
