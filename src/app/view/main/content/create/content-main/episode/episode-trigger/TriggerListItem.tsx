@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useSelector} from 'react-redux'; // Redux에서 상태를 가져오기 위해 추가
+import {useDispatch, useSelector} from 'react-redux'; // Redux에서 상태를 가져오기 위해 추가
 import {RootState} from '@/redux-store/ReduxStore'; // RootState 타입 가져오기
 import {TriggerActionType, TriggerTypeNames} from '@/types/apps/DataTypes'; // TriggerInfo 타입 가져오기
 import styles from './TriggerListItem.module.css'; // CSS 모듈 임포트
@@ -15,6 +15,8 @@ import {
   LineDelete,
 } from '@ui/Icons';
 import {EmotionState, TriggerMediaState} from '@/types/apps/content/episode/TriggerInfo';
+import TriggerCreate from './TriggerCreate';
+import {duplicateTriggerInfo, removeTriggerInfo} from '@/redux-store/slices/EpisodeInfo';
 
 interface TriggerListItemProps {
   handleToggle: () => void; // 함수 형식을 () => void로 수정
@@ -25,9 +27,11 @@ interface TriggerListItemProps {
 const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelected, index}) => {
   const [isModalOpen, setModalOpen] = useState(false); // 모달 열림 상태 관리
 
+  const dispatch = useDispatch();
   // Redux 상태에서 triggerInfoList 배열을 가져오고, 전달받은 index를 통해 해당 item을 탐색
   const item = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList[index]);
 
+  const [openTriggerCreate, SetOpenTriggerCreate] = useState(false); // Trigger name 상태
   const handleModalOpen = () => {
     setModalOpen(true); // 모달 열기
   };
@@ -170,7 +174,12 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
           </div>
         </div>
         <div className={styles.triggerActions}>
-          <div className={styles.actionButton} onClick={() => {}}>
+          <div
+            className={styles.actionButton}
+            onClick={() => {
+              SetOpenTriggerCreate(true);
+            }}
+          >
             <span className={styles.editButton}>
               <img src={edit1Pixel.src}></img>
             </span>
@@ -182,19 +191,37 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
             </span>
             <span>Move to</span>
           </div>
-          <div className={styles.actionButton} onClick={() => {}}>
+          <div
+            className={styles.actionButton}
+            onClick={() => {
+              dispatch(duplicateTriggerInfo(item.id));
+            }}
+          >
             <span className={styles.normalButton}>
               <img src={LineCopy.src}></img>
             </span>
             Duplicate
           </div>
-          <div className={`${styles.actionButton} ${styles.delete}`} onClick={() => {}}>
+          <div
+            className={`${styles.actionButton} ${styles.delete}`}
+            onClick={() => {
+              dispatch(removeTriggerInfo(item.id));
+            }}
+          >
             <span className={styles.normalButtonRed}>
               <img src={LineDelete.src}></img>
             </span>
             Delete
           </div>
         </div>
+        <TriggerCreate
+          open={openTriggerCreate}
+          onClose={() => {
+            SetOpenTriggerCreate(false);
+          }}
+          isEditing={true}
+          updateInfo={item}
+        ></TriggerCreate>
       </div>
     </>
   );

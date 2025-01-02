@@ -27,8 +27,10 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
     if (open) {
       dispatch(setCurrentEpisodeInfo(episodeInfo));
     }
-  }, [episodeInfo]);
+  }, [open, episodeInfo, dispatch]);
+
   // WriteTriggerName 모달 열기
+
   const handleOpenWriteTriggerName = () => {
     setWriteTriggerNameOpen(true);
   };
@@ -83,6 +85,10 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
           <div
             className={styles.createButton}
             onClick={() => {
+              if (episodeInfo.triggerInfoList.length == 10) {
+                alert('10개 이상 만들 수 없습니다.');
+                return;
+              }
               SetOpenTriggerCreate(true);
             }}
           >

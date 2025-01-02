@@ -125,18 +125,14 @@ const episodeInfoSlice = createSlice({
     },
     duplicateTriggerInfo: (state, action: PayloadAction<number>) => {
       const triggerList = state.currentEpisodeInfo.triggerInfoList;
-      const sourceIndex = action.payload; // 복사할 TriggerInfo의 인덱스
+      const sourceTriggerInfo = triggerList.find(trigger => trigger.id === action.payload);
 
-      if (sourceIndex < 0 || sourceIndex >= triggerList.length) {
-        // 유효하지 않은 인덱스 처리
-        console.error('Invalid source index for copying TriggerInfo');
+      if (!sourceTriggerInfo) {
+        console.error('Invalid source id for copying TriggerInfo');
         return;
       }
 
-      // 원본 TriggerInfo 복사
-      const sourceTriggerInfo = triggerList[sourceIndex];
       const minId = triggerList.length > 0 ? Math.min(...triggerList.map(trigger => trigger.id)) : 0;
-
       const newId = minId > 0 ? -1 : minId - 1; // 새로운 음수 id 생성
 
       const newTriggerInfo: TriggerInfo = {
@@ -144,7 +140,8 @@ const episodeInfoSlice = createSlice({
         id: newId, // 새로운 id 할당
       };
 
-      // 다음 인덱스에 삽입
+      // 원본 항목 바로 다음에 삽입
+      const sourceIndex = triggerList.findIndex(trigger => trigger.id === action.payload);
       triggerList.splice(sourceIndex + 1, 0, newTriggerInfo);
     },
 

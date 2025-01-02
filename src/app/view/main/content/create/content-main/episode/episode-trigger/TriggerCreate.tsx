@@ -11,6 +11,7 @@ import {
   duplicateTriggerInfo,
   EpisodeInfo,
   GalleryImageInfo,
+  updateTriggerInfo,
 } from '@/redux-store/slices/EpisodeInfo';
 
 import emptyContent from '@/data/create/empty-content-info-data.json';
@@ -49,17 +50,18 @@ interface Props {
   open: boolean;
   onClose: () => void;
   isEditing: boolean;
+  updateInfo?: TriggerInfo;
 }
 
-const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
+const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) => {
   //#region 선언
   // 공통
   const dispatch = useDispatch();
   const tempTriggerInfo: TriggerInfo = {
     episodeId: 0, // 기본 에피소드 ID
-    id: 0, // 임시 값, addTriggerInfo에서 자동 생성됨
+    id: -1, // 임시 값, addTriggerInfo에서 자동 생성됨
     name: '새 트리거', // 기본 이름
-    triggerType: -1, // 기본 트리거 유형
+    triggerType: 0, // 기본 트리거 유형
     triggerValueIntimacy: 0, // 기본 친밀도 값
     triggerValueChatCount: 0, // 기본 채팅 횟수
     triggerValueKeyword: '', // 기본 키워드
@@ -89,7 +91,20 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
     actionConversationList: [], // 기본 대화 리스트
   };
 
-  const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>(tempTriggerInfo);
+  const [triggerInfo, setTriggerInfo] = useState<TriggerInfo>(() => {
+    return updateInfo && isEditing == true ? updateInfo : tempTriggerInfo;
+  });
+
+  // open 상태가 변경될 때마다 triggerInfo를 업데이트
+  useEffect(() => {
+    if (open) {
+      console.log('updateInfo:', updateInfo);
+      console.log('isEditing:', isEditing);
+      console.log('Condition result:', updateInfo && isEditing === true ? 'updateInfo' : 'tempTriggerInfo');
+
+      setTriggerInfo(updateInfo && isEditing ? updateInfo : tempTriggerInfo);
+    }
+  }, [open, updateInfo, isEditing]); // 의존성 배열에 open, updateInfo, isEditing 추가
 
   const [loading, setLoading] = useState<boolean>(true);
   const [isCompletePopupOpen, setIsCompletePopupOpen] = useState<boolean>(false);
@@ -286,6 +301,11 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose}) => {
   const handleOnComplete = () => {
     if (!checkEssential()) {
       alert('필수 선택 항목이 선택되지 않았습니다.');
+      return;
+    }
+    if (triggerInfo.id != 0) {
+      dispatch(updateTriggerInfo({id: triggerInfo.id, info: triggerInfo}));
+      setIsCompletePopupOpen(true);
       return;
     }
     dispatch(addTriggerInfo(triggerInfo));
