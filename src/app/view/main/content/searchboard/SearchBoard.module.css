@@ -1,10 +1,19 @@
 .content {
     flex: 1;
     overflow-y: auto;
+    width: 100%;
     
-    max-width: 402px;
-    margin: 0 auto; /* 수평 중앙 정렬 */
+    margin: 0 ; 
     overflow: hidden;
+}
+
+@media (min-width : 402px)
+{
+    .content
+    {
+        width: 402px;
+
+    }
 }
 
 .searchBoard
@@ -13,14 +22,22 @@
     height: 120px;
 } 
  
-.container
-{
-    margin-top: 5px;
+.listContainer
+{ 
     height: calc(100vh - 56px - 60px);
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
     scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */
+}
+
+@media (min-width : 402px)
+{
+    .listContainer
+    {
+
+        width: 386px;
+    }
 }
 
 .featuredContainer

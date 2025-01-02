@@ -19,6 +19,8 @@ export interface ChapterItemProps {
 
 export interface EpisodeItemProps {
   episode: EpisodeInfo;
+  chapterIdx: number;
+  episodeIdx: number;
   onSelectEpisode: (chapterIdx: number, episodeIdx: number) => void;
   hideSelected: boolean;
   isSelected: boolean;

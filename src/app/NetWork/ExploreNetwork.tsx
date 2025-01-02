@@ -13,9 +13,14 @@ interface ResponseExplore {
   resultCode: number;
   resultMessage: string;
   data: {
-    playingList: ExploreCardProps[];
-    recommendationList: ExploreCardProps[];
+    bannerUrlList: string[];
     searchOptionList: string[];
+    talkainOperatorList: ExploreCardProps[];
+    popularList: ExploreCardProps[];
+    malePopularList: ExploreCardProps[];
+    femalePopularList: ExploreCardProps[];
+    recommendationList: ExploreCardProps[];
+    playingList: ExploreCardProps[];
   };
 }
 
@@ -25,12 +30,21 @@ export const sendGetExplore = async (
 ): Promise<{
   resultCode: number;
   resultMessage: string;
+  bannerUrlList: string[] | null;
   searchOptionList: string[] | null;
-  playingListData: ExploreCardProps[] | null;
-  recommendationListData: ExploreCardProps[] | null;
+  talkainOperatorList: ExploreCardProps[] | null;
+  popularList: ExploreCardProps[] | null;
+  malePopularList: ExploreCardProps[] | null;
+  femalePopularList: ExploreCardProps[] | null;
+  recommendationList: ExploreCardProps[] | null;
+  playingList: ExploreCardProps[] | null;
 }> => {
   try {
-    const reqData: ReqExploreSearch = {search: search, onlyAdults: onlyAdults, language: navigator.language || 'en-US'};
+    const reqData: ReqExploreSearch = {
+      search: search,
+      onlyAdults: onlyAdults,
+      language: navigator.language || 'en-US',
+    };
 
     // GET 요청을 보내기 위한 기본적인 정의
     const response = await api.get<ResponseExplore>('/Explore', {params: reqData}); // GET 요청으로 수정
@@ -42,22 +56,43 @@ export const sendGetExplore = async (
         // 결과를 반환
         resultCode,
         resultMessage,
+        bannerUrlList: data.bannerUrlList || [],
         searchOptionList: data.searchOptionList || [],
-        playingListData: data.playingList || [],
-        recommendationListData: data.recommendationList || [],
+        talkainOperatorList: data.talkainOperatorList || [],
+        popularList: data.popularList || [],
+        malePopularList: data.malePopularList || [],
+        femalePopularList: data.femalePopularList || [],
+        recommendationList: data.recommendationList || [],
+        playingList: data.playingList || [],
       };
     } else {
       console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage, searchOptionList: null, playingListData: null, recommendationListData: null};
+      return {
+        resultCode,
+        resultMessage,
+        bannerUrlList: null,
+        searchOptionList: null,
+        talkainOperatorList: null,
+        popularList: null,
+        malePopularList: null,
+        femalePopularList: null,
+        recommendationList: null,
+        playingList: null,
+      };
     }
   } catch (error: unknown) {
-    console.error('Failed to fetch shorts info:', error);
+    console.error('Failed to fetch explore info:', error);
     return {
       resultCode: -1,
-      resultMessage: 'Failed to fetch shorts info',
+      resultMessage: 'Failed to fetch explore info',
+      bannerUrlList: null,
       searchOptionList: null,
-      playingListData: null,
-      recommendationListData: null,
+      talkainOperatorList: null,
+      popularList: null,
+      malePopularList: null,
+      femalePopularList: null,
+      recommendationList: null,
+      playingList: null,
     };
   }
 };

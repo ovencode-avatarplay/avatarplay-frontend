@@ -15,6 +15,7 @@ import Tabs from '@/components/layout/shared/Tabs';
 import ExploreFeaturedHeader from './searchboard-header/ExploreFeaturedHeader';
 
 const SearchBoard: React.FC = () => {
+  const [bannerList, setBannerList] = useState<string[] | null>(null);
   const [searchOptionList, setSearchOptionList] = useState<string[] | null>(null);
   const [playingList, setPlayingList] = useState<ExploreCardProps[] | null>(null);
   const [recommendationList, setRecommendationList] = useState<ExploreCardProps[] | null>(null);
@@ -35,14 +36,17 @@ const SearchBoard: React.FC = () => {
 
         // console.log(response);
         if (response.resultCode === 0) {
+          if (response.bannerUrlList) {
+            setBannerList(response.bannerUrlList);
+          }
           if (response.searchOptionList) {
             setSearchOptionList(response.searchOptionList);
           }
-          if (response.playingListData) {
-            setPlayingList(response.playingListData);
+          if (response.playingList) {
+            setPlayingList(response.playingList);
           }
-          if (response.recommendationListData) {
-            setRecommendationList(response.recommendationListData);
+          if (response.recommendationList) {
+            setRecommendationList(response.recommendationList);
           }
           setloading(false);
         } else {
@@ -57,32 +61,20 @@ const SearchBoard: React.FC = () => {
     fetchData();
   }, []);
 
-  const featureBannerData = [
-    {
-      id: 1,
-      backgroundImage: '/images/001.png',
-      title: 'Title 1',
-      description: 'Description for item 1',
-    },
-    {
-      id: 2,
-      backgroundImage: '/images/001.png',
-      title: 'Title 2',
-      description: 'Description for item 2',
-    },
-    {
-      id: 3,
-      backgroundImage: '/images/001.png',
-      title: 'Title 3',
-      description: 'Description for item 3',
-    },
-  ];
-
   const tabData = [
     {
       label: 'Featured',
-      preContent: <ExploreFeaturedHeader items={featureBannerData} />,
-      content: <div className={styles.featuredContainer}></div>,
+      preContent: bannerList && <ExploreFeaturedHeader items={bannerList} />,
+      content: (
+        <div className={styles.featuredContainer}>
+          <div className={styles.content}>
+            <main className={styles.listContainer}>
+              {playingList && <SearchBoardHorizonScroll title="playingList" data={playingList} />}
+              {recommendationList && <SearchBoardHorizonScroll title="recommendList" data={recommendationList} />}
+            </main>
+          </div>
+        </div>
+      ),
     },
     {
       label: 'Search',
@@ -96,17 +88,8 @@ const SearchBoard: React.FC = () => {
 
   return (
     <>
-      <Tabs tabs={tabData} />
-      <div className={styles.content}>
-        <main className={styles.container}>
-          {playingList && <SearchBoardHorizonScroll title="playingList" data={playingList} />}
-          {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
-          {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
-          {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
-          {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
-          {recommendationList && <SearchBoardHorizonScroll title="recomendationList" data={recommendationList} />}
-        </main>
-      </div>
+      <Tabs tabs={tabData} contentStyle={{padding: '0'}} />
+      <div className={styles.content}></div>
       <LoadingOverlay loading={loading} />
     </>
   );

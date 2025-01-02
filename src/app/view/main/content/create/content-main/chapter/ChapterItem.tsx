@@ -48,6 +48,10 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
     console.log(chapterIdx + '/' + chapterLength);
   };
 
+  const handleOnSelectEpisode = (chapterIdx: number, episodeIdx: number) => {
+    onSelectEpisode(chapterIdx, episodeIdx);
+  };
+
   return (
     <>
       <div
@@ -84,9 +88,11 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
             <EpisodeItem
               key={episodeIdx}
               episode={episode}
-              onSelectEpisode={onSelectEpisode}
+              chapterIdx={chapterIdx}
+              episodeIdx={episodeIdx}
+              onSelectEpisode={handleOnSelectEpisode}
               hideSelected={hideSelectedEpisode}
-              isSelected={episodeIdx === selectedEpisodeIdx ? true : false}
+              isSelected={isSelected && episodeIdx === selectedEpisodeIdx ? true : false}
             />
           ))}
         </div>

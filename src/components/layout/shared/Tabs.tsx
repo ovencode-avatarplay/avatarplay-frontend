@@ -10,9 +10,10 @@ interface Tab {
 interface TabsProps {
   tabs: Tab[];
   initialActiveTab?: number;
+  contentStyle?: React.CSSProperties;
 }
 
-const Tabs: React.FC<TabsProps> = ({tabs, initialActiveTab = 0}) => {
+const Tabs: React.FC<TabsProps> = ({tabs, initialActiveTab = 0, contentStyle}) => {
   const [activeTab, setActiveTab] = useState(initialActiveTab);
 
   return (
@@ -35,7 +36,9 @@ const Tabs: React.FC<TabsProps> = ({tabs, initialActiveTab = 0}) => {
         {tabs[activeTab] && tabs[activeTab].preContent}
 
         {/* Tabs Content */}
-        <div className={styles.tabContent}>{tabs[activeTab] && tabs[activeTab].content}</div>
+        <div className={styles.tabContent} style={contentStyle}>
+          {tabs[activeTab] && tabs[activeTab].content}
+        </div>
       </div>
     </>
   );

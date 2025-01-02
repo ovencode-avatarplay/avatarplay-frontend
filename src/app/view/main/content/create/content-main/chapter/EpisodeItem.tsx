@@ -9,7 +9,14 @@ import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {adjustEpisodeIndex} from '@/redux-store/slices/ContentInfo';
 import {RootState} from '@/redux-store/ReduxStore';
 
-const EpisodeItem: React.FC<EpisodeItemProps> = ({episode, onSelectEpisode, hideSelected, isSelected}) => {
+const EpisodeItem: React.FC<EpisodeItemProps> = ({
+  episode,
+  chapterIdx,
+  episodeIdx,
+  onSelectEpisode,
+  hideSelected,
+  isSelected,
+}) => {
   const dispatch = useDispatch();
   const episodeInfo = useSelector((state: RootState) => {
     const flatEpisodes = state.content.curEditingContentInfo.chapterInfoList.flatMap(
@@ -20,7 +27,7 @@ const EpisodeItem: React.FC<EpisodeItemProps> = ({episode, onSelectEpisode, hide
   });
 
   const handleOnSelectEpisode = () => {
-    onSelectEpisode;
+    onSelectEpisode(chapterIdx, episodeIdx);
   };
 
   const handleChangeOrderEpisodeIndex = (direction: 'up' | 'down') => {

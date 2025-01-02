@@ -283,11 +283,29 @@ const ContentMain: React.FC = () => {
     }
   };
 
+  const getMinEpisodeId = (chapters: ChapterInfo[]): number => {
+    const episodeIds = chapters.flatMap(chapter => chapter.episodeInfoList.map(episode => episode.id));
+
+    if (episodeIds.length === 0) {
+      return 0; // 에피소드가 없는 경우 null 반환 (버그)
+    }
+
+    const minId = Math.min(...episodeIds);
+    return minId > 0 ? 0 : minId;
+  };
+
   const handleAddEpisode = (newEpisode: EpisodeInfo) => {
+    const newEpisodeId = getMinEpisodeId(editingContentInfo.chapterInfoList);
+
     if (selectedChapterIdx !== -1) {
+      const updatedEpisode: EpisodeInfo = {
+        ...newEpisode,
+        id: newEpisodeId - 1 || -1,
+      };
+
       const updatedChapter = {
         ...editingContentInfo.chapterInfoList[selectedChapterIdx],
-        episodeInfoList: [...editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList, newEpisode],
+        episodeInfoList: [...editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList, updatedEpisode],
       };
 
       const updatedChapterList = [
