@@ -4,12 +4,20 @@
     bottom: 45px;
     position: absolute;
     display: flex;
-    width: 370px;
+    width: calc(100vw - 32px);
     justify-content: space-between;
     align-items: center;
     margin-left: 16px;
     margin-right: 16px;
     gap: 12px;
+}
+
+@media (min-width : 402px)
+{
+    .floatButtonArea
+    {
+        width: 370px;
+    }
 }
 
 .floatButtonArea > .floatButton
@@ -109,7 +117,7 @@
 {
     display: flex;
 
-    width: 92vw;
+    width: calc(100vw - 32px);
     margin-top: 5vh;
     margin-left: 4vw;
     margin-right: 4vw;
@@ -177,7 +185,7 @@
 .inputCharacterDesc
 {
     display: flex;
-    width: 92vw;
+    width: calc(100vw - 32px);
     margin-top: 5vh;
     margin-left: 4vw;
     margin-right: 4vw;
@@ -233,28 +241,36 @@ background: var(--White, #FFF);
 
 .characterDesc > .inputArea
 { 
-box-sizing: border-box;
+    box-sizing: border-box;
 
-/* Auto layout */
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-padding: 10px 12px;
+    /* Auto layout */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 12px;
 
-width: 370px;
-height: 190px;
+    width: calc(100vw - 32px);
+    height: 190px;
 
-background: #FFFFFF;
-border: 1px solid #E8EAED;
-border-radius: 10px;
+    background: #FFFFFF;
+    border: 1px solid #E8EAED;
+    border-radius: 10px;
 
-/* Inside auto layout */
-flex: none;
-order: 1;
-align-self: stretch;
-flex-grow: 1;
-
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 1;
 }
+
+@media (min-width : 402px)
+{
+    .inputArea
+    {
+        width: 370px;
+    }
+}
+
 
 .characterDesc > .inputArea >.inputPrompt
 {
@@ -305,7 +321,7 @@ flex-grow: 1;
 .uploadType > .buttonArea
 {
     display: flex;
-    width: 92vw;
+    width: calc(100vw - 32px);
     flex-direction: column;
     align-items: flex-start;
     margin: 7.3vw 4vw auto 4vw;
@@ -392,16 +408,24 @@ background: #FFF;
     gap: 10px;
     justify-content: start;
     align-items: center;
-    width: 370px;
+    width: calc(100vw - 32px);
     margin: 0 auto;
   }
+
+@media (min-width : 402px)
+{
+    .step_grid
+    {
+        width: 370px;
+    }
+}
   
   /* 버튼 기본 스타일 */
   .step_button {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 180px;
+    width: calc(50vw - 16px - 5px);
     height: 68px;
     padding: 20px 15px;
     gap: 8px;
@@ -417,6 +441,14 @@ background: #FFF;
     text-align: center;
     cursor: pointer;
     transition: background 0.3s, border 0.3s, color 0.3s;
+  }
+
+  @media (min-width : 402px)
+  {
+    .step_button
+    {
+        width: 180px;
+    }
   }
   
   /* 활성화된 버튼 스타일 */

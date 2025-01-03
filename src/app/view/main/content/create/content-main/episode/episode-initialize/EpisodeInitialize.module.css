@@ -16,7 +16,6 @@
 {
   .floatButtonArea {
     width: 370px;
-
   }
 }
 
@@ -52,15 +51,34 @@
 
 .floatButtonArea > .floatButton.centerSideButton
 {
+    width: calc(25vw + 3px);
+}
+
+
+@media (min-width:402px)
+{
+    .floatButtonArea > .floatButton.centerSideButton {
     width: 106px;
+
+  }
 }
 
 
 .floatButtonArea > .centerButton
 {    
-    width: 134px;
+    background: var(--White, #FFF);
+    
+    width: calc(25vw + 32px);
     border-radius: 8px;
     border: 1px solid var(--Neutral-200, #E8EAED);
+}
+
+@media (min-width:402px)
+{
+    .floatButtonArea > .centerButton
+    {
+        width: 134px;
+  }
 }
 
 .floatButtonArea > .nextButton
@@ -268,7 +286,6 @@ flex-grow: 1;
 {
   .characterDesc > .inputArea  {
     width: 370px;
-
   }
 }
 

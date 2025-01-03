@@ -1,13 +1,21 @@
 .card {
     display: flex;
     flex-direction: column;
-    width: 370px;
+    width: calc(100vw - 32px);
     background: #ffffff;
     border: 1px solid #eaecf0;
     border-radius: 12px;
     padding: 0;
     position: relative;
   }
+
+@media (min-width : 402px)
+{
+  .card
+  {
+    width: 370px;
+  }
+}
   
   .header {
     display: flex;

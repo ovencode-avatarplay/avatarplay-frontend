@@ -5,7 +5,16 @@ import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeIn
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import {BoldArrowDown, BoldCirclePlus, BoldMenuDots, edit1Pixel, editPlusOpacity, LineMenu, plusRound} from '@ui/Icons';
+import {
+  BoldArrowDown,
+  BoldCirclePlus,
+  BoldMenuDots,
+  edit1Pixel,
+  editPlusOpacity,
+  LineEdit,
+  LineMenu,
+  plusRound,
+} from '@ui/Icons';
 import {CircleRounded} from '@mui/icons-material';
 import {RootState, store} from '@/redux-store/ReduxStore';
 import {useDispatch, useSelector} from 'react-redux';
@@ -158,14 +167,28 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
             </div>
             <div className={styles.contentTopItem}>
               Conversation Template
-              <div className={styles.circlePlusIcon} onClick={() => openConversationModal()}>
-                <img src={plusRound.src} />
+              <div className={styles.buttonArea}>
+                {episodeInfo.conversationTemplateList.length > 0 && (
+                  <div className={styles.itemCounter}>
+                    <div className={styles.itemCounterText}>{episodeInfo.conversationTemplateList.length}</div>
+                  </div>
+                )}
+                <div className={styles.circlePlusIcon} onClick={() => openConversationModal()}>
+                  <img src={episodeInfo.conversationTemplateList.length < 10 ? plusRound.src : edit1Pixel.src} />
+                </div>
               </div>
             </div>
             <div className={styles.contentTopItem}>
               Trigger Event
-              <div className={styles.circlePlusIcon} onClick={() => openTriggerModal()}>
-                <img src={plusRound.src} />
+              <div className={styles.buttonArea}>
+                {episodeInfo.triggerInfoList.length > 0 && (
+                  <div className={styles.itemCounter}>
+                    <div className={styles.itemCounterText}>{episodeInfo.triggerInfoList.length}</div>
+                  </div>
+                )}
+                <div className={styles.circlePlusIcon} onClick={() => openTriggerModal()}>
+                  <img src={episodeInfo.triggerInfoList.length < 10 ? plusRound.src : edit1Pixel.src} />
+                </div>
               </div>
             </div>
           </div>

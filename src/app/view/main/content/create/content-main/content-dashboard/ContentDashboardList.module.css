@@ -13,6 +13,14 @@
 {
   .list  {
     width: 370px;
-
   }
+}
+
+.list::-webkit-scrollbar {
+  display: none;  
+}
+
+.list {
+ scrollbar-width: none;  
+ -ms-overflow-style: none;  
 }

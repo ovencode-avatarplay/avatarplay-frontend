@@ -15,12 +15,18 @@
     align-items: flex-start;
     padding: 0px;
     gap: 8px;
-  
-    ;
-    width: 370px;
+
+    width: calc(100vw - 32px);
     height: 103px;
-    
   }
+
+@media (min-width : 402px)
+{
+  .container
+  {
+    width: 370px;
+  }
+}
   
   .label {
     display: flex;
@@ -29,7 +35,7 @@
     padding: 0px;
     gap: 5px;
   
-    width: 370px;
+    width: calc(100vw - 32px);
     height: 22px;
   
     flex: none;
@@ -37,6 +43,14 @@
     align-self: stretch;
     flex-grow: 0;
   }
+
+@media (min-width : 402px)
+{
+  .label
+  {
+    width: 370px;
+  }
+}
   
   .labelText {
     width: 136px;
@@ -63,7 +77,7 @@
     padding: 0px;
     gap: 83px;
   
-    width: 370px;
+    width: calc(100vw - 32px);
     height: 46px;
   
     flex: none;
@@ -71,6 +85,14 @@
     align-self: stretch;
     flex-grow: 0;
   }
+  
+@media (min-width : 402px)
+{
+  .inputFrame
+  {
+    width: 370px;
+  }
+}
   
   .inputBox {
     box-sizing: border-box;
@@ -81,7 +103,7 @@
     padding: 13px 0px;
     gap: 8px;
   
-    width: 370px;
+    width: calc(100vw - 32px);
     height: 46px;
   
     background: #ffffff;
@@ -92,6 +114,14 @@
     order: 0;
     flex-grow: 1;
   }
+  
+@media (min-width : 402px)
+{
+  .inputBox
+  {
+    width: 370px;
+  }
+}
   
   .uploadIcon {
     width: 20px;
@@ -136,10 +166,18 @@
   .mediaVideo
   {
     position: relative;
-    width: 370px;
+    width: calc(100vw - 32px);
     height: 316px;
     background-color: #000000;
   }
+  
+@media (min-width : 402px)
+{
+  .mediaVideo
+  {
+    width: 370px;
+  }
+}
 
   .deleteButton {
     position: absolute;
@@ -179,7 +217,7 @@
   }
   .audioContainer {
     position: relative;
-    width: 370px;
+    width: calc(100vw - 32px);
     height: 146px;
     border: 1px solid #eaecf0;
     border-radius: 8px;
@@ -190,6 +228,14 @@
     align-items: center;
     margin-top: 16px; /* 상단 간격 */
   }
+  
+@media (min-width : 402px)
+{
+  .audioContainer
+  {
+    width: 370px;
+  }
+}
   
   .audioContent {
     display: flex;

@@ -354,6 +354,8 @@ const ContentMain: React.FC = () => {
           chapterInfoList: updatedChapterList,
         }),
       );
+
+      setSaveDraftRequested(true);
     }
   };
 

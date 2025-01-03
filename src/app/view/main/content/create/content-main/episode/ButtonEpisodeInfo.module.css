@@ -12,12 +12,12 @@
     
 }
 
-.chapterInfo :focus
+.chapterInfo:focus
 {
     outline: none;  
 }
 
-.chapterInfo :focus-visible
+.chapterInfo:focus-visible
 {
     outline: none;  
 }

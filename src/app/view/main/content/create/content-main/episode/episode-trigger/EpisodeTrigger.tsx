@@ -92,7 +92,7 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
         <div className={styles.episodeBar} onClick={() => setModalOpen(true)}>
           {episodeInfo.name ? episodeInfo.name : 'None'} <img src={LineTrigger.src} />
         </div>
-        <div className={styles.counterAndCraete}>
+        <div className={styles.counterAndCreate}>
           <div className={styles.counterButton}> {episodeInfo.triggerInfoList.length} / 10 </div>
           <div
             className={styles.createButton}

@@ -131,7 +131,7 @@ color: #1E1E1E;
 
 }
 
-.counterAndCraete{
+.counterAndCreate{
 display: flex;
 flex-direction: row;
 justify-content: space-between;
@@ -139,12 +139,18 @@ align-items: center;
 padding: 0px;
 gap: 198px;
 
-width: 370px;
+width: calc(100vw - 32px);
 height: 30px;
 left: 15.58px;
 top: 192px;
+}
 
-
+@media (min-width : 402px)
+{
+    .counterAndCreate
+    {
+        width: 370px;
+    }
 }
 
 
@@ -208,7 +214,7 @@ align-items: center;
 padding: 8px 12px;
 gap: 4px;
 
-width: 370px;
+width: calc(100vw - 32px);
 height: 46px;
 left: 15.58px;
 top: 132px;
@@ -222,8 +228,16 @@ font-weight: 700;
 font-size: 16px;
 line-height: 20px;
 color: #FFFFFF;
-
 }
+
+@media (min-width : 402px)
+{
+    .episodeBar
+    {
+        width: 370px;
+    }
+}
+
 .topGroup
 {
     display: flex;
@@ -235,11 +249,28 @@ color: #FFFFFF;
 }
 .triggerBox
 {
-    overflow-y: auto;
-    width: 100%;
+    overflow-y: auto; 
+    width: calc(100vw - 32px);
     height: 80vh;    
 }
 
+@media (min-width : 402px)
+{
+    .triggerBox
+    {
+        width: 370px;
+    }
+}
+
+.triggerBox::-webkit-scrollbar {
+    display: none;  
+}
+  
+.triggerBox {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+}
+  
 
 
 .contentBottom {

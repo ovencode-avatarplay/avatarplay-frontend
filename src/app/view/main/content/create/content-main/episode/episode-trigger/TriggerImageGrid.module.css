@@ -2,11 +2,19 @@
 
 }
 .count1 {
-  width: 370px;
+  width: calc(100vw - 32px);
   max-width: 370px;
   height: 538px;
   border-radius: 12px;
   overflow: hidden; /* 추가 */
+}
+
+@media (min-width : 402px)
+{
+  .count1
+  {
+    width: 370px;
+  }
 }
 
 .count2
