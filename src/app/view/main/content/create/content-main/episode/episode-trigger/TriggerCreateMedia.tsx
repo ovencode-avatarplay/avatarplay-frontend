@@ -45,50 +45,55 @@ const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType, onMed
   };
   // 파일 선택 시 처리
   const handleOnFileSelect = async (files: File[]) => {
-    const newImageUrls = await Promise.all(
-      files.map(async file => {
-        // 파일 업로드 요청 생성
+    try {
+      // MediaState 설정
+      let state = MediaState.None;
+      if (mediaType === 'audio') {
+        state = MediaState.TriggerAudio;
+      } else if (mediaType === 'image') {
+        state = MediaState.TriggerImage;
+      } else if (mediaType === 'video') {
+        state = MediaState.TriggerVideo;
+      }
 
-        let state = MediaState.None;
-        if (mediaType == 'audio') {
-          state = MediaState.TriggerAudio;
-        } else if (mediaType == 'image') {
-          state = MediaState.TriggerImage;
-        } else if (mediaType == 'video') {
-          state = MediaState.TriggerVideo;
-        }
+      // 업로드 요청 객체 생성
+      const req: MediaUploadReq = {
+        mediaState: state, // 적절한 MediaState 설정
+      };
 
-        const req: MediaUploadReq = {
-          mediaState: state, // 적절한 MediaState 설정
-          file,
-        };
+      // 이미지일 경우 다중 파일 처리, 그 외 단일 파일 처리
+      if (state === MediaState.TriggerImage) {
+        req.triggerImageList = files;
+      } else {
+        req.file = files[0];
+      }
 
-        // 파일 업로드 API 호출
-        const response = await sendUpload(req);
+      // 파일 업로드 API 호출
+      const response = await sendUpload(req);
 
-        if (response?.data) {
-          const imgUrl: string = response.data.url; // 업로드된 이미지 URL
-          console.log('Uploaded Image URL:', imgUrl); // 업로드 결과 로그 출력
-          // 추가 이미지 URL 로그 출력
-          console.log('Additional Image URLs:', response.data.imageUrlList);
+      if (response?.data) {
+        const imgUrl: string = response.data.url; // 업로드된 메인 이미지 URL
+        const additionalUrls: string[] = response.data.imageUrlList || []; // 추가 이미지 URL 리스트
 
-          // 업로드된 이미지 URL 반환
-          return imgUrl;
-        } else {
-          console.error('Failed to upload file:', file.name);
-          return null;
-        }
-      }),
-    );
+        console.log('Uploaded Image URL:', imgUrl); // 업로드 결과 로그 출력
+        console.log('Additional Image URLs:', additionalUrls); // 추가 이미지 결과 로그 출력
 
-    // 업로드에 성공한 이미지 URL만 필터링
-    const validImageUrls = newImageUrls.filter(url => url !== null) as string[];
+        // Redux 상태 업데이트를 위한 URL 리스트 생성
+        const validImageUrls = [imgUrl, ...additionalUrls].filter(url => url !== null);
 
-    // 상태 업데이트: 새로운 이미지 추가 및 최대 9장 제한
-    setImageUrls(prevUrls => {
-      const combinedUrls = [...prevUrls, ...validImageUrls];
-      return combinedUrls.slice(0, 9); // 최대 9장 제한
-    });
+        // 상태 업데이트: 새로운 이미지 추가
+        setImageUrls(prevUrls => {
+          const combinedUrls = [...prevUrls, ...validImageUrls];
+          return combinedUrls.slice(0, 9); // 최대 9장 제한
+        });
+
+        console.log('Updated Trigger Info with Media URLs:', validImageUrls);
+      } else {
+        console.error('Failed to upload files:', files.map(file => file.name).join(', '));
+      }
+    } catch (error) {
+      console.error('Error during file upload:', error);
+    }
   };
 
   // 이미지 삭제
