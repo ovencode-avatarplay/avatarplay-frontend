@@ -81,6 +81,9 @@ const ContentMain: React.FC = () => {
 
   const [isInitFinished, setIsInitFinished] = useState(false);
 
+  // Save Draft
+  const [saveDraftRequested, setSaveDraftRequested] = useState(false);
+
   // 자주 렌더링 되지 않는 경우는 묶어서
   const {
     editedPublishInfo, // 저장하기 전에 수정사항을 올려놓는 PublishInfo 정보
@@ -325,6 +328,8 @@ const ContentMain: React.FC = () => {
       setCurEpisodeInfo();
 
       setIsEpisodeInitOpen(false);
+
+      setSaveDraftRequested(true);
     }
   };
 
@@ -625,6 +630,61 @@ const ContentMain: React.FC = () => {
       alert('Failed to save content.');
     }
   };
+
+  useEffect(() => {
+    if (saveDraftRequested === true) {
+      handleSaveDraft();
+      setSaveDraftRequested(false);
+    }
+  }, [saveDraftRequested]);
+
+  const handleSaveDraft = async () => {
+    if (!editingContentInfo) {
+      console.error('No content selected.');
+      return;
+    }
+    console.log(editingContentInfo);
+
+    if (!editedPublishInfo) {
+      console.error('No editedPublishInfo available.');
+      return;
+    }
+
+    const updatedContent = {
+      ...sanitizeStringFields(editingContentInfo),
+      userId: userId,
+      publishInfo: {
+        ...sanitizeStringFields(editedPublishInfo),
+        visibilityType: 3, // visible 값을 임시 저장으로 설정
+      },
+    };
+
+    const tmp: SaveContentReq = {
+      contentInfo: updatedContent,
+    };
+
+    setSaveData(tmp);
+
+    try {
+      setLoading(true);
+      const result = await sendContentSave(tmp);
+
+      if (result.data) {
+        GetContentByContentId(result.data?.contentId);
+      }
+
+      handleClosePublishing();
+      // Init();
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error sending save content data:', error);
+
+      // 실패 메시지
+      alert('Failed to save content.');
+    }
+  };
+
   //#endregion
 
   //#region 에피소드 세이브 로드
