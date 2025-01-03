@@ -69,6 +69,7 @@ const ContentMain: React.FC = () => {
   const [isPublishingOpen, setIsPublishingOpen] = useState(false);
   const [isLLMSetupOpen, setLLMSetupOpen] = useState(false);
 
+  const [isFromInitFirstEpisode, setIsFromInitFirstEpisode] = useState(false);
   const [isEpisodeEditing, setIsEpisodeEditing] = useState(false);
   const [isFromChapterFirstEpisode, setIsFromChapterFirstEpisode] = useState(false);
   const [isEpisodeInitOpen, setIsEpisodeInitOpen] = useState(false);
@@ -112,10 +113,12 @@ const ContentMain: React.FC = () => {
   useLayoutEffect(() => {
     setIsInitFinished(false);
     if (skipContentInit) {
+      setIsFromInitFirstEpisode(false);
       setIsEpisodeInitOpen(false);
       setIsInitFinished(true);
     } else {
       Init();
+      setIsFromInitFirstEpisode(true);
       setIsEpisodeInitOpen(true);
     }
     dispatch(setSkipContentInit(false));
@@ -533,6 +536,7 @@ const ContentMain: React.FC = () => {
   //#region ContentDashboard 안에서 Create를 들어올 경우
 
   const handleCreateContentFromDashBoard = () => {
+    setIsFromInitFirstEpisode(false);
     setIsInitFinished(false);
     setIsEpisodeEditing(true);
     setIsEpisodeInitOpen(true);
@@ -776,6 +780,8 @@ const ContentMain: React.FC = () => {
 
         <EpisodeInitialize
           open={isEpisodeInitOpen}
+          isFromInitFirstEpisode={isFromInitFirstEpisode}
+          setIsFromInitFirstEpisode={setIsFromInitFirstEpisode}
           isEditing={isEpisodeEditing}
           isFromChapterFirstEpisode={isFromChapterFirstEpisode}
           onClose={handleCloseInitialEpisode}

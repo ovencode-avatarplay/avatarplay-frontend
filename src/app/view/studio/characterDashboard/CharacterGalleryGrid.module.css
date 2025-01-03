@@ -22,6 +22,15 @@ margin-right: 16px;
   }
 }
 
+.galleryContainer::-webkit-scrollbar {
+  display: none;  
+}
+
+.galleryContainer {
+  scrollbar-width: none;  
+  -ms-overflow-style: none;  
+}
+
 .addImageButton {
   
   cursor: pointer;

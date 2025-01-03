@@ -188,6 +188,7 @@ border-radius: 8px 8px 8px 8px;
     height: 100%;
     object-fit: cover;
     border-radius: 8px 8px 8px 8px;
+    overflow: hidden;
   }
   
   .cardtopRightButton {
@@ -299,6 +300,9 @@ width: 100%;
 height: 40px;
 
 background: #FFFFFF;
+border-bottom: 1px solid var(--Primary-4, #FFF5FD);
+background: #FFF;
+
 
 font-family: 'Lato';
 font-style: normal;

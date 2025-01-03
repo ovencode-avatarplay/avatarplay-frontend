@@ -146,9 +146,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
           <div className={styles.cardBox}>
             {/* Image Section */}
             <div className={styles.cardimageContainer}>
-              <div className={styles.cardmainImage}>
-                <img src={episodeInfo?.characterInfo.mainImageUrl} alt="Main" />
-              </div>
+              <img className={styles.cardmainImage} src={episodeInfo?.characterInfo.mainImageUrl} alt="Main" />
               <div className={styles.cardtopRightButton} onClick={() => onInit()}>
                 <img src={editPlusOpacity.src} />
               </div>

@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 import styles from './CreateWidget.module.css';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {LineCharacter, LineEdit, LineStory} from '@ui/Icons';
 
 interface Props {
   open: boolean;
@@ -44,7 +45,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
             <Link href="/:lang/create/post" passHref>
               <button className={`${styles.drawerButton} ${styles.drawerButtonTop}`} onClick={onClose}>
                 <div className={styles.buttonItem}>
-                  <div className={styles.buttonIcon} />
+                  <img className={styles.buttonIcon} src={LineEdit.src} />
                   <div className={styles.buttonText}>Post</div>
                 </div>
               </button>
@@ -62,7 +63,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
             <Link href="/:lang/create/character" passHref>
               <button className={`${styles.drawerButton} ${styles.drawerButtonMid}`} onClick={onClose}>
                 <div className={styles.buttonItem}>
-                  <div className={styles.buttonIcon} />
+                  <img className={styles.buttonIcon} src={LineCharacter.src} />
                   <div className={styles.buttonText}>Character</div>
                 </div>
               </button>
@@ -70,7 +71,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
             <Link href="/:lang/create/story" passHref>
               <button className={`${styles.drawerButton} ${styles.drawerButtonBot}`} onClick={onClose}>
                 <div className={styles.buttonItem}>
-                  <div className={styles.buttonIcon} />
+                  <img className={styles.buttonIcon} src={LineStory.src} />
                   <div className={styles.buttonText}>Story</div>
                 </div>
               </button>

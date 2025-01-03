@@ -189,7 +189,8 @@
 .episodeCardList
 {
   display: flex;
-  max-height: 800px;
+  
+  max-height: calc(100vh - 56px - 60px - 140px);
   flex-direction: column;
   overflow-y: auto; 
   overflow-x: hidden;

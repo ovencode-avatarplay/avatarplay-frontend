@@ -132,6 +132,7 @@ padding: 2.53px 2.499px 2.53px 2px;
 justify-content: center;
 align-items: center;
 flex-shrink: 0;
+filter: brightness(0) saturate(100%) invert(0%) sepia(92%) saturate(7479%) hue-rotate(92deg) brightness(106%) contrast(100%);
 }
 
 .buttonItem > .buttonText

@@ -42,6 +42,8 @@ import Popup from '@/components/popup/Popup';
 
 interface Props {
   open: boolean;
+  isFromInitFirstEpisode: boolean;
+  setIsFromInitFirstEpisode: React.Dispatch<React.SetStateAction<boolean>>;
   isEditing: boolean;
   isFromChapterFirstEpisode: boolean;
   onClose: () => void;
@@ -55,6 +57,8 @@ interface Props {
 
 const EpisodeInitialize: React.FC<Props> = ({
   open,
+  isFromInitFirstEpisode,
+  setIsFromInitFirstEpisode,
   isEditing,
   isFromChapterFirstEpisode,
   onClose,
@@ -68,7 +72,7 @@ const EpisodeInitialize: React.FC<Props> = ({
   //#region 선언
   // 공통
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [isEpisodeNameOn, setIsEpisodeNameOn] = useState<boolean>(false);
 
@@ -405,8 +409,9 @@ const EpisodeInitialize: React.FC<Props> = ({
       return;
     }
     setIsInitFinished(true);
-    if (isEditing) {
+    if (isFromInitFirstEpisode || isEditing) {
       modifyEpisodeOper(episodeInfo);
+      setIsFromInitFirstEpisode(false);
     } else if (isFromChapterFirstEpisode) {
       addChapterOper(episodeInfo);
     } else {
