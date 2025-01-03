@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, RefObject} from 'react';
 import styles from './MaxTextInput.module.css';
 import ErrorMessage from './ErrorMessage';
 
@@ -10,6 +10,9 @@ interface Props {
   disabled?: boolean;
   maxPromptLength?: number;
   hint?: string;
+  onFocus?: () => void;
+  onBlur?: (event: React.FocusEvent) => void;
+  inputRef?: RefObject<HTMLTextAreaElement>;
 }
 
 export enum inputType {
@@ -26,6 +29,9 @@ const MaxTextInput: React.FC<Props> = ({
   disabled,
   maxPromptLength,
   hint,
+  onFocus,
+  onBlur,
+  inputRef,
 }) => {
   const [hasError, setHasError] = useState(false);
   const [isComposing, setIsComposing] = useState(false); // 한글 입력 상태
@@ -89,6 +95,9 @@ const MaxTextInput: React.FC<Props> = ({
           onCompositionEnd={handleCompositionEnd} // 조합 종료
           maxLength={maxPromptLength}
           disabled={disabled}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          ref={inputRef}
         />
         {maxPromptLength && (
           <div className={styles.inputHint}>

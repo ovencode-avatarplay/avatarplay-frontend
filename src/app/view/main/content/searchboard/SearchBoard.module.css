@@ -6,6 +6,8 @@
 
 .content {
     flex: 1; 
+
+    height: calc(100vh - 56px - 60px);
     
     margin-left: 16px;  
     overflow-y: hidden;
@@ -26,7 +28,7 @@
  
 .listContainer
 { 
-    height: calc(100vh - 56px - 60px);
+    height: calc(100vh - 56px - 60px - 170px);
     display: flex;
     flex-direction: column;
     overflow-y: scroll;

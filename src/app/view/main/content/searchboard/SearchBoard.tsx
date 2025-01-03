@@ -7,7 +7,7 @@ import {sendGetExplore} from '@/app/NetWork/ExploreNetwork';
 
 import styles from './SearchBoard.module.css';
 
-import Header from './searchboard-header/SearchBoardHeader';
+import SearchBoardHeader from './searchboard-header/SearchBoardHeader';
 import SearchBoardHorizonScroll from './SearchBoardHorizonScroll';
 import {ExploreCardProps} from './SearchBoardTypes';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
@@ -125,7 +125,7 @@ const SearchBoard: React.FC = () => {
       label: 'Search',
       content: (
         <div>
-          <Header />
+          <SearchBoardHeader />
         </div>
       ),
     },
@@ -134,7 +134,6 @@ const SearchBoard: React.FC = () => {
   return (
     <>
       <Tabs tabs={tabData} contentStyle={{padding: '0'}} />
-      <div className={styles.content}></div>
       <LoadingOverlay loading={loading} />
     </>
   );

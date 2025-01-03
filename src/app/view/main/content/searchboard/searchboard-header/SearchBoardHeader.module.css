@@ -1,3 +1,49 @@
+.searchHeader
+{
+  display: flex;
+  width: calc(100vw - 32px);
+  align-items: center;
+  gap: 8px;
+}
+
+@media (min-width : 402px)
+{
+  .searchHeader
+  {
+    width: 370px;
+  }
+}
+
+.ageRateArea
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.rateText
+{
+  color: var(--Neutral-400, #BDC1C6);
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Lato;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 11px; /* 100% */
+
+}
+
+.rateText.toggleOn
+{
+  color: var(--Primary-1, #FD55D3);
+}
+
+
+
+
+
 .searchBoard> .tags
 {
   display: flex;

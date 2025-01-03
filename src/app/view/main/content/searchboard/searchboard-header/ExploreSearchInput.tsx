@@ -1,24 +1,22 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchComponent: React.FC = () => {
+import styles from './ExploreSearchInput.module.css';
+import {LineSearch} from '@ui/Icons';
+
+const ExploreSearchInput: React.FC = () => {
   return (
     <TextField
       placeholder="Search..."
       variant="outlined"
       inputProps={{'aria-label': 'search'}}
-      className="search-input"
+      className={styles.searchInput}
       InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
-        ),
+        startAdornment: <img className={styles.searchIcon} src={LineSearch.src} />,
       }}
     />
   );
 };
 
-export default SearchComponent;
+export default ExploreSearchInput;

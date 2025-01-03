@@ -43,10 +43,9 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({title, data}) => {
     <div className={styles.containerBox}>
       <div className={styles.title}>{title}</div>
 
-      <Swiper slidesPerView={2.5} className={styles.exploreSwiper}>
+      <Swiper slidesPerView={2.5} spaceBetween={'5px'} className={styles.exploreSwiper} grabCursor={true}>
         {content.map((explore, index) => (
           <SwiperSlide key={index}>
-            {/* 각 슬라이드의 너비를 자동으로 설정 */}
             <ExploreCard
               exploreItemType={explore.exploreItemType}
               updateExplorState={explore.updateExplorState}
