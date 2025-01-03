@@ -89,7 +89,7 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
       </div>
 
       <div className={styles.topGroup}>
-        <div className={styles.episodeBar}>
+        <div className={styles.episodeBar} onClick={() => setModalOpen(true)}>
           {episodeInfo.name ? episodeInfo.name : 'None'} <img src={LineTrigger.src} />
         </div>
         <div className={styles.counterAndCraete}>
