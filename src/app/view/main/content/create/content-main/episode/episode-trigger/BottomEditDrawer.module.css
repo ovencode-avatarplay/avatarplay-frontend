@@ -46,7 +46,6 @@ background-color: white;
 .inputContainer {
   width: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 14px 12px;
@@ -106,30 +105,4 @@ margin: 0  auto;
   font-weight: 600;
   color: #ffffff;
   line-height: 20px;
-}
-.inputContainer > .inputHint
-{
-    display: flex;
-    align-items: flex-end;
-    align-self: stretch;
-    color: var(--Neutral-500, #9AA0A6);
-    font-family: 'Lato';
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 155%; /* 18.6px */
-}
-
-
-.textarea {
-  width: 100%;
-  font-family: "Lato", sans-serif;
-  font-size: 15px;
-  color: #1e1e1e;
-  background: none;
-  outline: none;
-  border: none;
-  resize: none; /* 사용자가 크기 조정 불가 */
-  overflow-y: auto; /* 세로 스크롤 활성화 */
-  box-sizing: border-box;
 }

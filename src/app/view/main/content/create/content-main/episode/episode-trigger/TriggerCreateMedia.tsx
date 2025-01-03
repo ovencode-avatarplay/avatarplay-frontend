@@ -7,6 +7,7 @@ import {Box, IconButton, Typography} from '@mui/material';
 import ReactPlayer from 'react-player';
 
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 interface TriggerCreateMediaProps {
   mediaType: 'image' | 'video' | 'audio'; // 미디어 타입
   onMediaUrlsChange: (urls: string[]) => void; // mediaUrls 전달 콜백
@@ -43,12 +44,50 @@ const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType, onMed
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
   // 파일 선택 시 처리
-  const handleOnFileSelect = (files: File[]) => {
-    const newImageUrls = files.map(file => URL.createObjectURL(file));
+  const handleOnFileSelect = async (files: File[]) => {
+    const newImageUrls = await Promise.all(
+      files.map(async file => {
+        // 파일 업로드 요청 생성
+
+        let state = MediaState.None;
+        if (mediaType == 'audio') {
+          state = MediaState.TriggerAudio;
+        } else if (mediaType == 'image') {
+          state = MediaState.TriggerImage;
+        } else if (mediaType == 'video') {
+          state = MediaState.TriggerVideo;
+        }
+
+        const req: MediaUploadReq = {
+          mediaState: state, // 적절한 MediaState 설정
+          file,
+        };
+
+        // 파일 업로드 API 호출
+        const response = await sendUpload(req);
+
+        if (response?.data) {
+          const imgUrl: string = response.data.url; // 업로드된 이미지 URL
+          console.log('Uploaded Image URL:', imgUrl); // 업로드 결과 로그 출력
+          // 추가 이미지 URL 로그 출력
+          console.log('Additional Image URLs:', response.data.imageUrlList);
+
+          // 업로드된 이미지 URL 반환
+          return imgUrl;
+        } else {
+          console.error('Failed to upload file:', file.name);
+          return null;
+        }
+      }),
+    );
+
+    // 업로드에 성공한 이미지 URL만 필터링
+    const validImageUrls = newImageUrls.filter(url => url !== null) as string[];
+
+    // 상태 업데이트: 새로운 이미지 추가 및 최대 9장 제한
     setImageUrls(prevUrls => {
-      // 새로운 이미지 추가 및 최대 9장 제한
-      const combinedUrls = [...prevUrls, ...newImageUrls];
-      return combinedUrls.slice(0, 9); // 최대 9장까지 제한
+      const combinedUrls = [...prevUrls, ...validImageUrls];
+      return combinedUrls.slice(0, 9); // 최대 9장 제한
     });
   };
 

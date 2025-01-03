@@ -9,6 +9,12 @@ import {
   BoldPlay,
   edit1Pixel,
   editPlusOpacity,
+  EmotionBored,
+  EmotionHappy,
+  EmotionSad,
+  EmotionExcited,
+  EmotionScared,
+  EmotionAngry,
   LineArrowRight,
   LineArrowSwap,
   LineCopy,
@@ -16,7 +22,12 @@ import {
 } from '@ui/Icons';
 import {EmotionState, TriggerMediaState} from '@/types/apps/content/episode/TriggerInfo';
 import TriggerCreate from './TriggerCreate';
-import {duplicateTriggerInfo, removeTriggerInfo} from '@/redux-store/slices/EpisodeInfo';
+import {duplicateTriggerInfo, removeTriggerInfo, updateTriggerInfo} from '@/redux-store/slices/EpisodeInfo';
+import TriggerChapterList from './TriggerChapterList';
+import {moveTriggerToEpisode} from '@/redux-store/slices/ContentInfo';
+import BottomRenameDrawer from '../BottomRenameDrawer';
+import {inputType} from '@/components/create/MaxTextInput';
+import {number} from 'valibot';
 
 interface TriggerListItemProps {
   handleToggle: () => void; // 함수 형식을 () => void로 수정
@@ -25,19 +36,93 @@ interface TriggerListItemProps {
 }
 
 const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelected, index}) => {
-  const [isModalOpen, setModalOpen] = useState(false); // 모달 열림 상태 관리
-
   const dispatch = useDispatch();
   // Redux 상태에서 triggerInfoList 배열을 가져오고, 전달받은 index를 통해 해당 item을 탐색
   const item = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList[index]);
+  const ep = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
 
   const [openTriggerCreate, SetOpenTriggerCreate] = useState(false); // Trigger name 상태
-  const handleModalOpen = () => {
-    setModalOpen(true); // 모달 열기
-  };
 
-  const handleModalClose = () => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedChapterIdx, setSelectedChapterIdx] = useState<number | null>(null);
+  const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number | null>(null);
+
+  const editingContentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // 현재 수정중인 컨텐츠 정보
+  const handleConfirm = (chapterIdx: number, episodeIdx: number) => {
+    setSelectedChapterIdx(chapterIdx);
+    setSelectedEpisodeIdx(episodeIdx);
     setModalOpen(false); // 모달 닫기
+    dispatch(
+      moveTriggerToEpisode({
+        sourceEpisodeId: ep.id, // 소스 에피소드 ID
+        triggerId: item.id, // 이동할 트리거 ID
+        targetEpisodeId: editingContentInfo.chapterInfoList[chapterIdx].episodeInfoList[episodeIdx].id, // 대상 에피소드 ID
+      }),
+    );
+  };
+  const getTriggerValueInputType = (): inputType => {
+    switch (item.triggerType) {
+      case TriggerTypeNames.Intimacy:
+        return inputType.OnlyNumMax100; // 100까지만 입력 가능
+      case TriggerTypeNames.ChatCount:
+        return inputType.OnlyNum; // 숫자만 입력 가능
+      case TriggerTypeNames.TimeMinute:
+        return inputType.OnlyNum; // 숫자만 입력 가능
+      case TriggerTypeNames.Keyword:
+        return inputType.None; // 제한 없음
+      default:
+        return inputType.None; // 제한 없음
+    }
+  };
+  const [isEditValue, setIsEditValue] = useState<boolean>(false);
+  const handleSetEpisodeNameComplete = (name: string): boolean => {
+    if (name != null && name != '') {
+      if (item.triggerType === TriggerTypeNames.ChatCount) {
+        dispatch(
+          updateTriggerInfo({
+            id: item.id, // 업데이트할 트리거의 ID
+            info: {
+              triggerValueChatCount: name ? Number(name) : 0,
+            }, // 업데이트할 정보
+          }),
+        );
+      } else if (item.triggerType === TriggerTypeNames.Intimacy) {
+        dispatch(
+          updateTriggerInfo({
+            id: item.id, // 업데이트할 트리거의 ID
+            info: {
+              triggerValueIntimacy: name ? Number(name) : 0,
+            }, // 업데이트할 정보
+          }),
+        );
+      } else if (item.triggerType === TriggerTypeNames.TimeMinute) {
+        dispatch(
+          updateTriggerInfo({
+            id: item.id, // 업데이트할 트리거의 ID
+            info: {
+              triggerValueTimeMinute: name ? Number(name) : 0,
+            }, // 업데이트할 정보
+          }),
+        );
+      } else if (item.triggerType === TriggerTypeNames.Keyword) {
+        dispatch(
+          updateTriggerInfo({
+            id: item.id, // 업데이트할 트리거의 ID
+            info: {
+              triggerValueKeyword: name ? name : '',
+            }, // 업데이트할 정보
+          }),
+        );
+      }
+      dispatch(
+        updateTriggerInfo({
+          id: item.id, // 업데이트할 트리거의 ID
+          info: {}, // 업데이트할 정보
+        }),
+      );
+      return true;
+    }
+    return false;
   };
 
   // item이 존재하는지 확인하여 렌더링
@@ -107,6 +192,14 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
         );
     }
   };
+  const emotionImages: {[key in EmotionState]: {src: string; alt: string}} = {
+    [EmotionState.Happy]: {src: EmotionHappy.src, alt: 'Happy'},
+    [EmotionState.Angry]: {src: EmotionAngry.src, alt: 'Angry'},
+    [EmotionState.Sad]: {src: EmotionSad.src, alt: 'Sad'},
+    [EmotionState.Excited]: {src: EmotionExcited.src, alt: 'Excited'},
+    [EmotionState.Scared]: {src: EmotionScared.src, alt: 'Scared'},
+    [EmotionState.Bored]: {src: EmotionBored.src, alt: 'Bored'},
+  };
 
   // TriggerSubDataType에 따라 이미지와 아이콘 내용 동적으로 변경
   const renderTriggerImage = (triggerActionType: TriggerActionType) => {
@@ -139,20 +232,28 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
         );
     }
   };
-  function getCharacterDescriptionById(type: TriggerTypeNames): string {
+  function getCharacterDescriptionById(type: TriggerTypeNames): JSX.Element | string {
     switch (type) {
       case TriggerTypeNames.Intimacy:
         return item.triggerValueIntimacy.toString();
       case TriggerTypeNames.ChatCount:
         return item.triggerValueChatCount.toString();
       case TriggerTypeNames.EmotionStatus:
-        return EmotionState[item.emotionState].toString();
+        const {src, alt} = emotionImages[item.emotionState];
+        return (
+          <div style={{display: 'flex', alignItems: 'center'}}>
+            <img src={src} alt={alt} style={{width: '20px', height: '20px', marginRight: '8px'}} />
+            {EmotionState[item.emotionState]}
+          </div>
+        );
       case TriggerTypeNames.EpisodeStart:
         return '-';
       case TriggerTypeNames.Keyword:
         return item.triggerValueKeyword;
       case TriggerTypeNames.TimeMinute:
         return item.triggerValueTimeMinute.toString();
+      default:
+        return '';
     }
   }
 
@@ -170,7 +271,14 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
               <span className={styles.changeCharacter}>{TriggerActionType[item.triggerActionType]}</span>
             </div>
             <div className={styles.triggerCondition}>Trigger Condition</div>
-            <div className={styles.input}>{getCharacterDescriptionById(item.triggerType)}</div>
+            <div
+              className={styles.input}
+              onClick={() => {
+                setIsEditValue(true);
+              }}
+            >
+              {getCharacterDescriptionById(item.triggerType)}
+            </div>
           </div>
         </div>
         <div className={styles.triggerActions}>
@@ -185,7 +293,12 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
             </span>
             <span>Edit</span>
           </div>
-          <div className={styles.actionButton} onClick={() => {}}>
+          <div
+            className={styles.actionButton}
+            onClick={() => {
+              setModalOpen(true);
+            }}
+          >
             <span className={styles.normalButton}>
               <img src={LineArrowSwap.src}></img>
             </span>
@@ -222,6 +335,23 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
           isEditing={true}
           updateInfo={item}
         ></TriggerCreate>
+        <TriggerChapterList
+          open={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          onConfirm={handleConfirm} // 콜백 전달
+        />
+        <BottomRenameDrawer
+          open={isEditValue}
+          onClose={() => {
+            setIsEditValue(false);
+          }}
+          onComplete={s => handleSetEpisodeNameComplete(s)}
+          errorMessage="Character Limit exceeded. Please shorten your input"
+          maxTextLength={500}
+          lineCount={5}
+          name="Trigger Condition"
+          inputType={getTriggerValueInputType()}
+        ></BottomRenameDrawer>
       </div>
     </>
   );

@@ -4,6 +4,7 @@ import {EpisodeInfo} from './EpisodeInfo';
 
 // JSON 파일
 import emptyContent from '@/data/create/empty-content-info-data.json';
+import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 
 export interface ContentInfo {
   id: number;
@@ -145,11 +146,61 @@ export const curEditngContentInfoSlice = createSlice({
         );
       });
     },
+
+    moveTriggerToEpisode: (
+      state,
+      action: PayloadAction<{sourceEpisodeId: number; triggerId: number; targetEpisodeId: number}>,
+    ) => {
+      const {sourceEpisodeId, triggerId, targetEpisodeId} = action.payload;
+
+      let triggerToMove: TriggerInfo | null = null;
+
+      // 1. 소스 에피소드에서 트리거 제거
+      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
+        const sourceEpisode = chapter.episodeInfoList.find(episode => episode.id === sourceEpisodeId);
+
+        if (sourceEpisode) {
+          const triggerIndex = sourceEpisode.triggerInfoList.findIndex(trigger => trigger.id === triggerId);
+
+          if (triggerIndex !== -1) {
+            triggerToMove = sourceEpisode.triggerInfoList[triggerIndex];
+            sourceEpisode.triggerInfoList.splice(triggerIndex, 1); // 트리거 제거
+          }
+        }
+      });
+
+      if (!triggerToMove) {
+        console.error('Trigger not found in the source episode.');
+        return;
+      }
+
+      // 2. 타겟 에피소드에 트리거 추가
+      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
+        const targetEpisode = chapter.episodeInfoList.find(episode => episode.id === targetEpisodeId);
+
+        if (targetEpisode) {
+          const minId =
+            targetEpisode.triggerInfoList.length > 0
+              ? Math.min(...targetEpisode.triggerInfoList.map(trigger => trigger.id))
+              : 0;
+
+          const newId = minId > 0 ? -1 : minId - 1; // 새로운 음수 ID 생성
+
+          const newTrigger = {
+            ...triggerToMove,
+            id: newId, // 새로운 ID 할당
+          };
+
+          targetEpisode.triggerInfoList.push(newTrigger as TriggerInfo);
+        }
+      });
+    },
   },
 });
 
 // 액션과 리듀서 export
 export const {
+  moveTriggerToEpisode,
   setEditingContentInfo,
   updateEditingContentInfo,
   duplicateEpisode,

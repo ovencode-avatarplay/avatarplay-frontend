@@ -5,10 +5,12 @@ import styles from './EpisodeTrigger.module.css'; // CSS Module import
 import {Dialog, Button, Box, IconButton} from '@mui/material';
 import WriteTriggerName from './WriteTriggerName'; // WriteTriggerName 모달 컴포넌트
 import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {BoldArrowLeft, LineTrigger} from '@ui/Icons';
 import TriggerList from './TriggerList';
 import TriggerCreate from './TriggerCreate';
+import {RootState} from '@/redux-store/ReduxStore';
+import TriggerChapterList from './TriggerChapterList';
 
 interface EpisodeTriggerProps {
   open: boolean; // 모달 열림 상태
@@ -21,7 +23,17 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
   const [isSelectTriggerTypeOpen, setSelectTriggerTypeOpen] = useState(false); // SelectTriggerType 모달 상태
   const [triggerName, setTriggerName] = useState(''); // Trigger name 상태
   const [openTriggerCreate, SetOpenTriggerCreate] = useState(false); // Trigger name 상태
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedChapterIdx, setSelectedChapterIdx] = useState<number | null>(null);
+  const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number | null>(null);
 
+  const editingContentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // 현재 수정중인 컨텐츠 정보
+  const handleConfirm = (chapterIdx: number, episodeIdx: number) => {
+    setSelectedChapterIdx(chapterIdx);
+    setSelectedEpisodeIdx(episodeIdx);
+    setModalOpen(false); // 모달 닫기
+    dispatch(setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[chapterIdx].episodeInfoList[episodeIdx]));
+  };
   const dispatch = useDispatch();
   useEffect(() => {
     if (open) {
@@ -123,6 +135,11 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
         }}
         isEditing={false}
       ></TriggerCreate>
+      <TriggerChapterList
+        open={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={handleConfirm} // 콜백 전달
+      />
     </Dialog>
   );
 };

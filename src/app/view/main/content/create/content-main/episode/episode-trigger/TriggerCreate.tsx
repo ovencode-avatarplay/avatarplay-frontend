@@ -303,7 +303,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
       alert('필수 선택 항목이 선택되지 않았습니다.');
       return;
     }
-    if (triggerInfo.id != 0) {
+    if (isEditing == true) {
       dispatch(updateTriggerInfo({id: triggerInfo.id, info: triggerInfo}));
       setIsCompletePopupOpen(true);
       return;
@@ -353,8 +353,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     setTargetChapterIdx(chapterIdx);
   };
 
-  const handleEpisodeSelect = (chapterIdx: number, episodeIdx: number) => {
-    setTargetChapterIdx(chapterIdx);
+  const handleEpisodeSelect = (episodeIdx: number) => {
     setTargetEpisodeIdx(episodeIdx);
   };
 
@@ -531,7 +530,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     } else if (triggerInfo.triggerType === TriggerTypeNames.TimeMinute) {
       setTriggerInfo(prevTriggerInfo => ({
         ...prevTriggerInfo,
-        triggerValueIntimacy: s.target.value ? Number(s.target.value) : 0,
+        triggerValueTimeMinute: s.target.value ? Number(s.target.value) : 0,
       }));
     } else if (triggerInfo.triggerType === TriggerTypeNames.Keyword) {
       setTriggerInfo(prevTriggerInfo => ({

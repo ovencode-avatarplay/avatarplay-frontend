@@ -111,18 +111,18 @@ const episodeInfoSlice = createSlice({
     },
 
     // TriggerInfo 업데이트
-    updateTriggerInfo: (state, action: PayloadAction<{id: number; info: Omit<TriggerInfo, 'id'>}>) => {
+    updateTriggerInfo: (state, action: PayloadAction<{id: number; info: Partial<Omit<TriggerInfo, 'id'>>}>) => {
       const {id, info} = action.payload;
       const triggerIndex = state.currentEpisodeInfo.triggerInfoList.findIndex(trigger => trigger.id === id);
 
       if (triggerIndex !== -1) {
-        // id에 해당하는 항목이 존재하는 경우
         state.currentEpisodeInfo.triggerInfoList[triggerIndex] = {
-          ...info,
-          id: state.currentEpisodeInfo.triggerInfoList[triggerIndex].id, // 기존 id 유지
+          ...state.currentEpisodeInfo.triggerInfoList[triggerIndex],
+          ...info, // Partial로 인해 누락된 필드는 기존 값 유지
         };
       }
     },
+
     duplicateTriggerInfo: (state, action: PayloadAction<number>) => {
       const triggerList = state.currentEpisodeInfo.triggerInfoList;
       const sourceTriggerInfo = triggerList.find(trigger => trigger.id === action.payload);
