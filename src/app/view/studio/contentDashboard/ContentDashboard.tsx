@@ -107,7 +107,7 @@ const ContentDashboard: React.FC = () => {
           dispatch(setSelectedChapterIdx(0));
           dispatch(setSelectedEpisodeIdx(0));
           setLoading(false);
-          const currentLang = searchParam.get(':lang') || 'en';
+          const currentLang = searchParam?.get(':lang') || 'en';
           //router.push(`/${currentLang}/create/story`);
           pushLocalizedRoute('/create/story', router);
         } catch (error) {
@@ -117,7 +117,7 @@ const ContentDashboard: React.FC = () => {
       }
     } else {
       setLoading(false);
-      const currentLang = searchParam.get(':lang') || 'en';
+      const currentLang = searchParam?.get(':lang') || 'en';
       //router.push(`/${currentLang}/create/story`);
       pushLocalizedRoute('/create/story', router);
     }
@@ -214,7 +214,7 @@ const ContentDashboard: React.FC = () => {
     dispatch(setSelectedContentId(0));
     dispatch(setSelectedChapterIdx(0));
     dispatch(setSelectedEpisodeIdx(0));
-    const currentLang = searchParam.get(':lang') || 'en';
+    const currentLang = searchParam?.get(':lang') || 'en';
     //router.push(`/${currentLang}/create/story`);
     pushLocalizedRoute('/create/story', router);
   };
