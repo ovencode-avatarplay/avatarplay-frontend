@@ -652,6 +652,10 @@ const ContentMain: React.FC = () => {
       return;
     }
 
+    //(트리거, 대화 템플릿, 에피소드 시나리오) 수정 및 추가 완료 시
+    //currentEpisode를 editingContent에 넣은 후 SaveDraft를 실행할 필요가 있음
+    saveEpisodeData();
+
     const updatedContent = {
       ...sanitizeStringFields(editingContentInfo),
       userId: userId,
@@ -820,7 +824,12 @@ const ContentMain: React.FC = () => {
 
           <div className={styles.episodeCardList}>
             {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.map((episode, index) => (
-              <EpisodeCard episodeId={episode.id} episodeNum={index} onInit={() => handleOpenInitialEpisode(true)} />
+              <EpisodeCard
+                episodeId={episode.id}
+                episodeNum={index}
+                onInit={() => handleOpenInitialEpisode(true)}
+                saveDraft={() => setSaveDraftRequested(true)}
+              />
             ))}
           </div>
           <div className={styles.content}>

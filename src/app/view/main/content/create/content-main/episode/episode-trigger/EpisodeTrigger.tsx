@@ -16,9 +16,10 @@ interface EpisodeTriggerProps {
   open: boolean; // 모달 열림 상태
   closeModal: () => void; // closeModal prop 추가
   episodeInfo: EpisodeInfo;
+  saveDraft: () => void;
 }
 
-const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episodeInfo}) => {
+const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episodeInfo, saveDraft}) => {
   const [isWriteTriggerNameOpen, setWriteTriggerNameOpen] = useState(false); // WriteTriggerName 모달 상태
   const [isSelectTriggerTypeOpen, setSelectTriggerTypeOpen] = useState(false); // SelectTriggerType 모달 상태
   const [triggerName, setTriggerName] = useState(''); // Trigger name 상태
@@ -75,71 +76,72 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
       open={open}
       onClose={closeModal}
       fullScreen
-      className={styles['modal-body']}
       disableAutoFocus={true}
       disableEnforceFocus={true} // disableEnforceFocus 속성 사용
     >
-      <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <button className={styles.backButton} onClick={closeModal}>
-            <img src={BoldArrowLeft.src} className={styles.backIcon} />
-          </button>
-          <div className={styles.navTitle}>Trigger Event</div>
-        </div>
-      </div>
-
-      <div className={styles.topGroup}>
-        <div className={styles.episodeBar} onClick={() => setModalOpen(true)}>
-          {episodeInfo.name ? episodeInfo.name : 'None'} <img src={LineTrigger.src} />
-        </div>
-        <div className={styles.counterAndCreate}>
-          <div className={styles.counterButton}> {episodeInfo.triggerInfoList.length} / 10 </div>
-          <div
-            className={styles.createButton}
-            onClick={() => {
-              if (episodeInfo.triggerInfoList.length == 10) {
-                alert('10개 이상 만들 수 없습니다.');
-                return;
-              }
-              SetOpenTriggerCreate(true);
-            }}
-          >
-            Create
+      <div className={styles.modal_body}>
+        <div className={styles.header}>
+          <div className={styles.headerLeft}>
+            <button className={styles.backButton} onClick={closeModal}>
+              <img src={BoldArrowLeft.src} className={styles.backIcon} />
+            </button>
+            <div className={styles.navTitle}>Trigger Event</div>
           </div>
         </div>
-        <div className={styles.triggerBox}>
-          <TriggerList /> {/* CheckboxList 컴포넌트 추가 */}
-          <div style={{height: '50px'}}></div>
+
+        <div className={styles.topGroup}>
+          <div className={styles.episodeBar} onClick={() => setModalOpen(true)}>
+            {episodeInfo.name ? episodeInfo.name : 'None'} <img src={LineTrigger.src} />
+          </div>
+          <div className={styles.counterAndCreate}>
+            <div className={styles.counterButton}> {episodeInfo.triggerInfoList.length} / 10 </div>
+            <div
+              className={styles.createButton}
+              onClick={() => {
+                if (episodeInfo.triggerInfoList.length == 10) {
+                  alert('10개 이상 만들 수 없습니다.');
+                  return;
+                }
+                SetOpenTriggerCreate(true);
+              }}
+            >
+              Create
+            </div>
+          </div>
+          <div className={styles.triggerBox}>
+            <TriggerList /> {/* CheckboxList 컴포넌트 추가 */}
+            <div style={{height: '50px'}}></div>
+          </div>
         </div>
-      </div>
-      <div className={styles.contentBottom}>
-        <div
-          className={styles.setupButtons}
-          onClick={() => {
-            SetOpenTriggerCreate(true);
+        <div className={styles.contentBottom}>
+          <div
+            className={styles.setupButtons}
+            onClick={() => {
+              saveDraft();
+            }}
+          >
+            Apply
+          </div>
+        </div>
+        {/* WriteTriggerName 모달 */}
+        <WriteTriggerName
+          open={isWriteTriggerNameOpen}
+          onClose={handleCloseWriteTriggerName}
+          onSave={handleSaveTriggerName} // Save 시 name 저장 및 다음 모달 열기
+        />
+        <TriggerCreate
+          open={openTriggerCreate}
+          onClose={() => {
+            SetOpenTriggerCreate(false);
           }}
-        >
-          Confirm
-        </div>
+          isEditing={false}
+        ></TriggerCreate>
+        <TriggerChapterList
+          open={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          onConfirm={handleConfirm} // 콜백 전달
+        />
       </div>
-      {/* WriteTriggerName 모달 */}
-      <WriteTriggerName
-        open={isWriteTriggerNameOpen}
-        onClose={handleCloseWriteTriggerName}
-        onSave={handleSaveTriggerName} // Save 시 name 저장 및 다음 모달 열기
-      />
-      <TriggerCreate
-        open={openTriggerCreate}
-        onClose={() => {
-          SetOpenTriggerCreate(false);
-        }}
-        isEditing={false}
-      ></TriggerCreate>
-      <TriggerChapterList
-        open={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        onConfirm={handleConfirm} // 콜백 전달
-      />
     </Dialog>
   );
 };

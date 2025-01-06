@@ -1,8 +1,15 @@
-.modal-body {
+.modal_body {
     display: flex;
-    flex-direction: column; /* 세로 정렬 */    
-    max-width: 402px;
+    flex-direction: column; /* 세로 정렬 */ 
   margin: 0 auto; /* 수평 중앙 정렬 */
+  height: 100vh;
+}
+@media (min-width : 402px)
+{
+    .modal-body
+    {
+        width: 370px;
+    }
 }
 
 .modal-header {
@@ -251,7 +258,7 @@ color: #FFFFFF;
 {
     overflow-y: auto; 
     width: calc(100vw - 32px);
-    height: 80vh;    
+    height: 74vh;    
 }
 
 @media (min-width : 402px)

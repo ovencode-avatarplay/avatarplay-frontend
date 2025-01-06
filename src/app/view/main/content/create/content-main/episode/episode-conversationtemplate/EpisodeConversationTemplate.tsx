@@ -86,25 +86,6 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
       console.log('Initialized Cards:', initialCards);
     } else {
       // 기본값 생성
-      setCards([
-        {
-          id: Date.now().toString(),
-          userBars: [
-            {
-              id: (currentBarId--).toString(),
-              inputValue: '',
-              type: 'dots',
-            },
-          ],
-          charBars: [
-            {
-              id: (currentBarId--).toString(),
-              inputValue: '',
-              type: 'dots',
-            },
-          ],
-        },
-      ]);
     }
   }, [conversationTemplateList]);
   const handleDuplicateCard = (index: number) => {

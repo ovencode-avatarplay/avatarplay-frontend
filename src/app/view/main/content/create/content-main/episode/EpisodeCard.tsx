@@ -28,6 +28,7 @@ interface EpisodeCardProps {
   episodeNum: number;
   episodeId: number;
   onInit: () => void;
+  saveDraft: () => void;
 }
 // 캐릭터 팝업창 열때 해당 내용을 채워서 열기 위한
 interface UpdateUserDetail {
@@ -48,7 +49,7 @@ let updateUserDetail: UpdateUserDetail = {
   world_scenario: '',
   thumbnail: '',
 };
-const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}) => {
+const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit, saveDraft}) => {
   const episodeInfo = useSelector((state: RootState) => {
     const flatEpisodes = state.content.curEditingContentInfo.chapterInfoList.flatMap(
       chapter => chapter.episodeInfoList,
@@ -102,6 +103,14 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
 
     setEpisodeModalOpen(false); // Episode 모달 닫기
   };
+
+  const calcScenarioLine = (value: string): number => {
+    return value.length >= 20 ? 2 : 1;
+  };
+
+  const lineCount = calcScenarioLine(episodeInfo.episodeDescription.scenarioDescription);
+  const height = lineCount === 2 ? 59 : 49;
+  console.log(height);
   const chapters = useSelector((state: RootState) => state.content.curEditingContentInfo.chapterInfoList);
   const handleChangeOrderEpisodeIndex = (direction: 'up' | 'down') => {
     dispatch(setCurrentEpisodeInfo(episodeInfo));
@@ -112,7 +121,12 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
   const [isDropDownOpen, setDropDownOpen] = useState(false);
   useEffect(() => {
     dispatch(updateEpisodeInfoInContent(currentEpisode)); // 상태 업데이트
-  }, [currentEpisode.name]);
+  }, [
+    currentEpisode.name,
+    currentEpisode.conversationTemplateList.length,
+    currentEpisode.triggerInfoList.length,
+    currentEpisode.episodeDescription,
+  ]);
 
   return (
     <div className={styles.episodeCard}>
@@ -201,11 +215,23 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit}
               <img src={edit1Pixel.src} />
             </div>
           </div>
-          <div className={styles.episodeScenarioItem2}>{episodeInfo.episodeDescription.scenarioDescription}</div>
+          <div
+            className={styles.episodeScenarioItem2}
+            style={{
+              height: `${height}px`,
+            }}
+          >
+            {episodeInfo.episodeDescription.scenarioDescription}
+          </div>
         </div>
       </Box>
       {/* EpisodeTrigger 모달 */}
-      <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} episodeInfo={episodeInfo} />
+      <EpisodeTrigger
+        open={isTriggerModalOpen}
+        closeModal={closeTriggerModal}
+        episodeInfo={episodeInfo}
+        saveDraft={saveDraft}
+      />
       {/* 여기까지 묶기 */}
       <EpisodeConversationTemplate
         open={isConversationModalOpen}

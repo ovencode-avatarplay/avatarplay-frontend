@@ -1,6 +1,7 @@
 .episodeCard {
   display: flex;
   flex-direction: column;
+
   align-items: flex-start;
   padding: 0px 0px 20px;
   gap: 12px;
@@ -48,7 +49,7 @@
   padding: 0px 16px;
   gap: 10px;
   width: calc(100vw - 32px);
-  height: 217px;
+  
 }
 
 @media (min-width: 402px) {
@@ -234,7 +235,6 @@
   padding: 0px;
   gap: 6px;
   width: 221px;
-  height: 183px;
 }
 
 .contentItem {
@@ -245,7 +245,6 @@
   align-items: flex-start;
   padding: 0px;
   width: 221px;
-  height: 79px;
   border-radius: 8px;
 }
 
@@ -255,15 +254,14 @@
   justify-content: center;
   align-items: flex-start;
   padding: 0px;
-  width: calc(100vw - 32px - 32px);
-  height: 99px;
+  width: calc(100% - 64px); /* 32px의 좌우 여백 */
   border-radius: 8px;
   overflow: hidden;
 }
 
 @media (min-width: 402px) {
   .episodeScenario {
-      width: 338px;
+      width: 338px; /* 고정 너비 */
   }
 }
 
@@ -287,17 +285,30 @@
   color: #040415;
 }
 
-.episodeScenarioItem2 {
-  display: flex;
-  flex-direction: row;
+.episodeScenarioItem2 {  
+  display: -webkit-box; /* 텍스트 클램프를 위한 필수 속성 */
+  -webkit-line-clamp: 2; /* 최대 2줄 */
+  -webkit-box-orient: vertical;
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* ... 표시 */
+  
   align-items: flex-start;
-  padding: 15px 10px 15px 15px;
-  gap: 61px;
-  width: 100%;
-  height: auto;
-  min-height: 39px;
+  padding: 10px 10px 15px 15px; /* 패딩 유지 */
+  box-sizing: border-box; /* 패딩을 박스 크기에 포함 */
+
+  width: 100%; /* 부모 요소가 고정된 너비를 가지고 있어야 함 */
   background: #FFFFFF;
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.7; /* 줄 간격 조절 */
+
+  color: #80868B;
+  outline: none; /* 포커스 시 아웃라인 제거 */
+  border: none;
 }
+
 
 .circlePlusIcon {
   width: 18px;
