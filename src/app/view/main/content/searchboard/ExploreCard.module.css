@@ -2,7 +2,7 @@
 .exploreCard
 {
   position: relative;
-  width: 147.467px;
+  width: 36.68vw;
   height: 210px;
   flex-shrink: 0; 
   color: #fff;
@@ -18,7 +18,7 @@
   overflow: hidden;  
 }
 
-@media (max-width: 402px) {
+@media (min-width: 402px) {
   .exploreCard {
     width: 147.467px;
   }

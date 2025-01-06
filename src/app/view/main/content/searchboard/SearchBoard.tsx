@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 
 import {useDispatch} from 'react-redux';
-import {sendGetExplore} from '@/app/NetWork/ExploreNetwork';
+import {ExploreItem, sendGetExplore} from '@/app/NetWork/ExploreNetwork';
 
 import styles from './SearchBoard.module.css';
 
@@ -15,6 +15,10 @@ import Tabs from '@/components/layout/shared/Tabs';
 import ExploreFeaturedHeader from './searchboard-header/ExploreFeaturedHeader';
 
 const SearchBoard: React.FC = () => {
+  const [loading, setloading] = useState(false);
+  const dispatch = useDispatch();
+
+  // Featured
   const [bannerList, setBannerList] = useState<string[] | null>(null);
   const [searchOptionList, setSearchOptionList] = useState<string[] | null>(null);
   const [talkainOperatorList, setTalkainOperatorList] = useState<ExploreCardProps[] | null>(null);
@@ -25,14 +29,13 @@ const SearchBoard: React.FC = () => {
   const [playingList, setPlayingList] = useState<ExploreCardProps[] | null>(null);
   const [recommendationList, setRecommendationList] = useState<ExploreCardProps[] | null>(null);
 
+  // Search
   const [search, setSearch] = useState('all');
   const [onlyAdults, setOnlyAdults] = useState(false);
 
-  const [loading, setloading] = useState(false);
+  const [searchResultList, setSearchResultList] = useState<ExploreItem[] | null>(null);
 
   // Hooks
-  const dispatch = useDispatch();
-
   useEffect(() => {
     const fetchData = async () => {
       setloading(true);
@@ -90,33 +93,36 @@ const SearchBoard: React.FC = () => {
   const tabData = [
     {
       label: 'Featured',
-      preContent: bannerList && <ExploreFeaturedHeader items={bannerList} />,
+      preContent: '',
       content: (
         <div className={styles.featuredContainer}>
-          <div className={styles.content}>
-            <main className={styles.listContainer}>
-              {talkainOperatorList && talkainOperatorList.length > 0 && (
-                <SearchBoardHorizonScroll title="talkainOperatorList" data={talkainOperatorList} />
-              )}
-              {popularList && popularList.length > 0 && (
-                <SearchBoardHorizonScroll title="popularList" data={popularList} />
-              )}
-              {malePopularList && malePopularList.length > 0 && (
-                <SearchBoardHorizonScroll title="malePopularList" data={malePopularList} />
-              )}
-              {femalePopularList && femalePopularList.length > 0 && (
-                <SearchBoardHorizonScroll title="femalePopularList" data={femalePopularList} />
-              )}
-              {newContentList && newContentList.length > 0 && (
-                <SearchBoardHorizonScroll title="newContentList" data={newContentList} />
-              )}
-              {playingList && playingList.length > 0 && (
-                <SearchBoardHorizonScroll title="playingList" data={playingList} />
-              )}
-              {recommendationList && recommendationList.length > 0 && (
-                <SearchBoardHorizonScroll title="recommendList" data={recommendationList} />
-              )}
-            </main>
+          <div className={styles.scrollArea}>
+            {bannerList && <ExploreFeaturedHeader items={bannerList} />}
+            <div className={styles.content}>
+              <main className={styles.listContainer}>
+                {talkainOperatorList && talkainOperatorList.length > 0 && (
+                  <SearchBoardHorizonScroll title="talkainOperatorList" data={talkainOperatorList} />
+                )}
+                {popularList && popularList.length > 0 && (
+                  <SearchBoardHorizonScroll title="popularList" data={popularList} />
+                )}
+                {malePopularList && malePopularList.length > 0 && (
+                  <SearchBoardHorizonScroll title="malePopularList" data={malePopularList} />
+                )}
+                {femalePopularList && femalePopularList.length > 0 && (
+                  <SearchBoardHorizonScroll title="femalePopularList" data={femalePopularList} />
+                )}
+                {newContentList && newContentList.length > 0 && (
+                  <SearchBoardHorizonScroll title="newContentList" data={newContentList} />
+                )}
+                {playingList && playingList.length > 0 && (
+                  <SearchBoardHorizonScroll title="playingList" data={playingList} />
+                )}
+                {recommendationList && recommendationList.length > 0 && (
+                  <SearchBoardHorizonScroll title="recommendList" data={recommendationList} />
+                )}
+              </main>
+            </div>
           </div>
         </div>
       ),
@@ -125,7 +131,8 @@ const SearchBoard: React.FC = () => {
       label: 'Search',
       content: (
         <div>
-          <SearchBoardHeader />
+          <SearchBoardHeader setSearchResultList={setSearchResultList} />
+          {/* {searchResultList === null} */}
         </div>
       ),
     },

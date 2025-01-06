@@ -9,13 +9,15 @@ import {BoldFilter, BoldFilterOn} from '@ui/Icons';
 import ExploreSearchInput from './ExploreSearchInput';
 import {ExploreItem, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
 
-const SearchBoardHeader: React.FC = () => {
+interface Props {
+  setSearchResultList: React.Dispatch<React.SetStateAction<ExploreItem[] | null>>;
+}
+
+const SearchBoardHeader: React.FC<Props> = ({setSearchResultList}) => {
   const [adultToggleOn, setAdultToggleOn] = useState(false);
   const [filterDialogOn, setFilterDialogOn] = useState(false);
   const [filterOn, setFilterOn] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-
-  const [searchResultList, setSearchResultList] = useState<ExploreItem[] | null>(null);
 
   const handleAdultToggleClicked = () => {
     setAdultToggleOn(!adultToggleOn);

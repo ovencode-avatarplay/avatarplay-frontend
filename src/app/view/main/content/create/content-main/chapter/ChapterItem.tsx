@@ -16,6 +16,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   onSelect,
   onSelectEpisode,
   onRename,
+  onDuplicate,
   isSelected,
   selectedEpisodeIdx,
   hideSelectedEpisode,
@@ -26,12 +27,18 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
     {
       name: 'Rename',
       icon: LineEdit.src,
-      onClick: () => onRename(),
+      onClick: () => {
+        onRename();
+        setDropBoxOpen(false);
+      },
     },
     {
       name: 'Duplicate',
       icon: LineCopy.src,
-      onClick: () => console.log('Duplicate clicked'),
+      onClick: () => {
+        onDuplicate();
+        setDropBoxOpen(false);
+      },
     },
     {
       name: 'Delete',
@@ -44,12 +51,18 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
 
   const handleDeleteChapter = (chapterIdx: number, chapterLength: number) => {
     onDelete(chapterIdx);
+    setDropBoxOpen(false);
 
     console.log(chapterIdx + '/' + chapterLength);
   };
 
   const handleOnSelectEpisode = (chapterIdx: number, episodeIdx: number) => {
     onSelectEpisode(chapterIdx, episodeIdx);
+  };
+
+  const handleDuplicateChapter = () => {
+    onDuplicate();
+    setDropBoxOpen(false);
   };
 
   return (

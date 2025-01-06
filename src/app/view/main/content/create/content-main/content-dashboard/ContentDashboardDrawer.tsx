@@ -19,11 +19,11 @@ import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
 import {sendContentDelete} from '@/app/NetWork/ContentNetwork';
 
 import ContentDashboardList from './ContentDashboardList';
-import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 import ContentDashboardHeader from './ContentDashboardHeader';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
+import Popup from '@/components/popup/Popup';
 
 interface Props {
   open: boolean;
@@ -46,7 +46,6 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
   const [filterPublishOpen, setFilterPublishOpen] = useState<boolean>(false);
   const [selectedPublish, setSelectedPublish] = useState<number>(0);
 
-  /* TODO : 필터링 */
   const publishItems: SelectDrawerItem[] = [
     {
       name: 'All',
@@ -70,7 +69,6 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
   const [filterOptionOpen, setFilterOptionOpen] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<number>(0);
 
-  /* TODO : 필터링 */
   const optionItems: SelectDrawerItem[] = [
     {
       name: 'Alphabetically',
@@ -95,6 +93,28 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
     },
   ];
 
+  const getFilteredAndSortedContent = () => {
+    let filtered = [...contentInfo];
+
+    // 필터 적용
+    // if (selectedPublish === 1) {
+    //   filtered = filtered.filter(item => item.status === 'saved');
+    // } else if (selectedPublish === 2) {
+    //   filtered = filtered.filter(item => item.status === 'published');
+    // }
+
+    // 정렬 적용
+    if (selectedOption === 0) {
+      filtered.sort((a, b) => a.name.localeCompare(b.name)); // 알파벳 순서
+    } else if (selectedOption === 1) {
+      filtered.sort((a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()); // 수정일 역순
+    } else if (selectedOption === 2) {
+      filtered.sort((a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()); // 생성일 역순
+    }
+
+    return filtered;
+  };
+
   useEffect(() => {
     if (selectedIndex !== null && open && listRef.current) {
       const selectedItem = listRef.current.children[selectedIndex];
@@ -110,7 +130,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
   };
   const handleEditClick = async () => {
     if (selectedIndex !== null) {
-      const selectedItemId = contentInfo[selectedIndex]?.id;
+      const selectedItemId = getFilteredAndSortedContent()[selectedIndex]?.id;
       if (selectedItemId) {
         try {
           // 비동기 호출이 5초 이상 걸리면 에러를 던지기 위한 타이머 설정
@@ -230,7 +250,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
 
           {/* Content list */}
           <ContentDashboardList
-            contentInfo={contentInfo}
+            contentInfo={getFilteredAndSortedContent()}
             selectedIndex={selectedIndex}
             onItemSelect={handleItemClick}
             onItemEdit={handleEditClick}
@@ -256,15 +276,25 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
         />
       </Drawer>
 
-      <ConfirmationDialog
-        title="Discard Content?"
-        content="Data will be disappeared. Are you sure?"
-        cancelText="Cancel"
-        confirmText="Okay"
-        open={dialogOpen}
-        onConfirm={handleConfirm}
-        onClose={handleCloseDialog}
-      />
+      {dialogOpen && (
+        <Popup
+          type="alert"
+          title="Discard Content?"
+          description="Data will be disappeared. Are you sure?"
+          buttons={[
+            {
+              label: 'Cancel',
+              onClick: handleCloseDialog,
+              isPrimary: false,
+            },
+            {
+              label: 'Okay',
+              onClick: handleConfirm,
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
     </>
   );
 };

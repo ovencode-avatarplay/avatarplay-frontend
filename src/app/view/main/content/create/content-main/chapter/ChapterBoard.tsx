@@ -12,7 +12,6 @@ import {LinePlus} from '@ui/Icons';
 import {setSelectedChapterIdx, setSelectedEpisodeIdx} from '@/redux-store/slices/ContentSelection';
 
 // Components
-import ChapterItem from './ChapterItem';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 // Types
@@ -22,8 +21,8 @@ import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 
 // Data
 import emptyData from '@/data/create/empty-content-info-data.json';
-import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 import ChapterList from './ChapterItemList';
+import Popup from '@/components/popup/Popup';
 
 interface Props {
   open: boolean;
@@ -55,12 +54,7 @@ const ChapterBoard: React.FC<Props> = ({
   const editingContentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo);
 
   // 삭제 Dialog
-  const [confirmDialog, setConfirmDialog] = useState({
-    open: false,
-    title: '',
-    content: '',
-    onConfirm: onClose,
-  });
+  const [confirmDialog, setConfirmDialog] = useState(false);
 
   //#region 함수
 
@@ -145,16 +139,38 @@ const ChapterBoard: React.FC<Props> = ({
     }
   };
 
+  const handleDuplicateChapter = () => {
+    if (selectedChapterIdx < 0 || selectedChapterIdx >= editingContentInfo.chapterInfoList.length) {
+      console.error('Invalid chapter index.');
+      return;
+    }
+
+    const selectedChapter = editingContentInfo.chapterInfoList[selectedChapterIdx];
+    const newChapterId = getMinChapterId(editingContentInfo.chapterInfoList);
+    const newEpisodeId = getMinEpisodeId(editingContentInfo.chapterInfoList);
+
+    if (newChapterId != null && newEpisodeId != null) {
+      const duplicatedEpisodes = selectedChapter.episodeInfoList.map((episode, index) => ({
+        ...episode,
+        id: newEpisodeId - index - 1, // 새로운 에피소드 ID 부여
+      }));
+
+      // 새로운 챕터 생성
+      const newChapter: ChapterInfo = {
+        ...selectedChapter,
+        id: newChapterId - 1, // 새로운 챕터 ID 부여
+        name: `${selectedChapter.name} (Copy)`, // 복사본임을 알리는 이름
+        episodeInfoList: duplicatedEpisodes,
+      };
+
+      // 추가 로직 실행
+      onAddChapter(newChapter);
+    }
+  };
+
   const handleDeleteChapter = (chapterIdx: number) => {
-    setConfirmDialog({
-      open: true,
-      title: 'Discard Chapter',
-      content: `"${chapters[chapterIdx].name}" 챕터를 삭제하시겠습니까?`,
-      onConfirm: () => {
-        onDeleteChapter(chapterIdx);
-        setChapters(prev => prev.filter((_, idx) => idx !== chapterIdx));
-      },
-    });
+    onDeleteChapter(chapterIdx);
+    setChapters(prev => prev.filter((_, idx) => idx !== chapterIdx));
   };
   //#endregion
 
@@ -172,7 +188,6 @@ const ChapterBoard: React.FC<Props> = ({
     onRenameClick();
   };
 
-  const handleDeleteChapterOpen = () => {};
   //#endregion
 
   return (
@@ -200,11 +215,12 @@ const ChapterBoard: React.FC<Props> = ({
           selectedChapterIdx={selectedChapterIdx}
           selectedEpisodeIdx={selectedEpisodeIdx}
           onClose={onClose}
-          onDelete={handleDeleteChapter}
+          onDelete={() => setConfirmDialog(true)}
           onSelect={handleChapterSelect}
           onSelectEpisode={handleEpisodeSelect}
           hideSelectedEpisode={true}
           onRename={handleRenameClick}
+          onDuplicate={handleDuplicateChapter}
         />
         <div className={styles.confirmButtonBox}>
           <button className={styles.confirmButton} onClick={onClose}>
@@ -212,17 +228,28 @@ const ChapterBoard: React.FC<Props> = ({
           </button>
         </div>
       </Drawer>
-
-      <ConfirmationDialog
-        open={confirmDialog.open}
-        title={confirmDialog.title}
-        content={confirmDialog.content}
-        onClose={() => setConfirmDialog({...confirmDialog, open: false})}
-        onConfirm={() => {
-          confirmDialog.onConfirm();
-          setConfirmDialog({...confirmDialog, open: false});
-        }}
-      />
+      {confirmDialog && (
+        <Popup
+          type="alert"
+          title="Discard Content?"
+          description="Data will be disappeared. Are you sure?"
+          buttons={[
+            {
+              label: 'Cancel',
+              onClick: () => setConfirmDialog(false),
+              isPrimary: false,
+            },
+            {
+              label: 'Okay',
+              onClick: () => {
+                handleDeleteChapter(selectedChapterIdx);
+                setConfirmDialog(false);
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
     </>
   );
 };

@@ -28,7 +28,7 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, sele
         PaperProps={{
           sx: {
             // transform: 'translate(50%, 0)',
-            width: 'calc(100vw - 32px)',
+            width: 'calc(100vw)',
             maxWidth: '402px',
             margin: '0 auto',
             padding: '8px 20px',

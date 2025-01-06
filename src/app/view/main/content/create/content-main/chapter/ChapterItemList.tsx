@@ -14,6 +14,7 @@ interface ChapterListProps {
   hideSelectedEpisode: boolean;
   onSelectEpisode: (chapterIdx: number, episodeIdx: number) => void;
   onRename: () => void;
+  onDuplicate: () => void;
 }
 
 const ChapterItemList: React.FC<ChapterListProps> = ({
@@ -27,6 +28,7 @@ const ChapterItemList: React.FC<ChapterListProps> = ({
   onSelectEpisode,
   hideSelectedEpisode,
   onRename,
+  onDuplicate,
 }) => {
   return (
     <div className={styles.drawerContainer}>
@@ -44,6 +46,7 @@ const ChapterItemList: React.FC<ChapterListProps> = ({
             onSelect={onSelect}
             onSelectEpisode={onSelectEpisode}
             onRename={onRename}
+            onDuplicate={onDuplicate}
             isSelected={selectedChapterIdx === index}
             selectedEpisodeIdx={selectedEpisodeIdx}
             hideSelectedEpisode={hideSelectedEpisode}

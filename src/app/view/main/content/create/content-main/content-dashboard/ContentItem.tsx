@@ -49,12 +49,15 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected, onE
     {
       name: 'Share',
       icon: LineShare.src,
-      onClick: () => console.log('Share clicked'),
+      onClick: handleShareContent,
     },
     {
       name: 'Delete',
       icon: LineDelete.src,
-      onClick: onDeleteClicked,
+      onClick: () => {
+        onDeleteClicked();
+        setDropBoxOpen(false);
+      },
       isRed: true, // Delete는 위험 동작으로 표시
     },
   ];
@@ -72,19 +75,7 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected, onE
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
-          >
-            {/* Overlay for Image */}
-            <Box className={styles.imageOverlay}>
-              <Box className={styles.iconInfo}>
-                <MovieIcon />
-                {dashboardItem.episodeCount}
-              </Box>
-              <Box className={styles.iconInfo}>
-                <PhotoIcon />
-                {dashboardItem.mediaCount}
-              </Box>
-            </Box>
-          </Box>
+          ></Box>
         </div>
         <div className={styles.descriptionArea}>
           <div className={styles.contentInfo}>

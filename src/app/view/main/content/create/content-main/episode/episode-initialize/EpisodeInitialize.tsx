@@ -38,7 +38,6 @@ import CreateTempCharacterImage from '../../../character/CreateTempCharacterImag
 import CreateTempCharacterSelect from '../../../character/CreateTempCharacterSelect';
 import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineCheck, LineUpload} from '@ui/Icons';
 import MaxTextInput from '@/components/create/MaxTextInput';
-import Popup from '@/components/popup/Popup';
 
 interface Props {
   open: boolean;

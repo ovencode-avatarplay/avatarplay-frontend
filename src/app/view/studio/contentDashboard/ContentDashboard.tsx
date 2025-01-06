@@ -31,8 +31,8 @@ import {
 import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/MyContentDashboard';
 
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
-import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import Popup from '@/components/popup/Popup';
 
 const ContentDashboard: React.FC = () => {
   const router = useRouter();
@@ -230,15 +230,18 @@ const ContentDashboard: React.FC = () => {
         />
         <ContentList onSelect={handleSelectItem} onItemEdit={handleEdit} onItemDelete={handleOpenDeleteDialog} />
       </div>
-      <ConfirmationDialog
-        title="Discard Content?"
-        content="Data will be disappeared. Are you sure?"
-        cancelText="Cancel"
-        confirmText="Okay"
-        open={deleteDialogOpen}
-        onConfirm={handleConfirm}
-        onClose={handleCloseDeleteDialog}
-      />
+      {deleteDialogOpen && (
+        <Popup
+          type="alert"
+          title="Discard Content?"
+          description="Data will be disappeared. Are you sure?"
+          buttons={[
+            {label: 'Cancel', onClick: handleConfirm, isPrimary: false},
+            {label: 'Okay', onClick: handleCloseDeleteDialog, isPrimary: true},
+          ]}
+        />
+      )}
+
       <LoadingOverlay loading={loading} />
     </>
   );

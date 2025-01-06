@@ -15,6 +15,7 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ImageUploadDialog from '../episode/episode-ImageCharacter/ImageUploadDialog';
 import {AltRoute} from '@mui/icons-material';
 import {BoldCircleX, LineUpload} from '@ui/Icons';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 interface Props {
   uploadImageState: boolean;
@@ -124,16 +125,15 @@ const ContentImageUpload: React.FC<Props> = ({
       </div>
 
       <div className={styles.imageBox}>
-        <Box className={styles.imageArea}>
+        {/* <Box className={styles.imageArea}>
           <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
             <DialogContent dividers className={styles.dialogContent}>
               <MenuItem onClick={onClickUploadImage}>Upload Thumbnail Image</MenuItem>
             </DialogContent>
           </Dialog>
 
-          <ImageUploadDialog isOpen={uploadImageOpen} onClose={onCloseUploadImage} onFileSelect={handleImageUpload} />
-        </Box>
-
+        </Box> */}
+        <ImageUploadDialog isOpen={dialogOpen} onClose={handleClose} onFileSelect={handleImageUpload} />
         <LoadingOverlay loading={loading} />
       </div>
     </>

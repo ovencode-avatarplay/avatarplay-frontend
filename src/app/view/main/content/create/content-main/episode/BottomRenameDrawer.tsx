@@ -67,6 +67,7 @@ const BottomRenameDrawer: React.FC<Props> = ({
       return;
     }
     onClose();
+    setInputValue('');
   };
 
   return (

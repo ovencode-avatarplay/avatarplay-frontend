@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
-import {Drawer} from '@mui/material';
-import styles from './ImageUploadDrawer.module.css';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 interface Props {
   isOpen: boolean; // 다이얼로그 오픈 여부
@@ -60,37 +59,31 @@ const ImageUploadDialog: React.FC<Props> = ({isOpen, onClose, onFileSelect}) => 
     onClose();
   };
 
+  const uploadImageItems: SelectDrawerItem[] = [
+    {
+      name: 'Take a photo or video',
+      onClick: () => {
+        handleTakePhoto();
+      },
+    },
+    {
+      name: 'Media library',
+      onClick: () => {
+        handlePhotoLibrary();
+      },
+    },
+    {
+      name: 'File folder',
+      onClick: () => {
+        handleChooseFile();
+      },
+    },
+  ];
+
   return (
-    <Drawer
-      anchor="bottom"
-      open={isOpen}
-      onClose={onClose}
-      PaperProps={{
-        className: styles.drawer,
-      }}
-      BackdropProps={{
-        sx: {
-          background: 'rgba(0, 0, 0, 0.70)',
-        },
-      }}
-    >
-      {isMobile ? (
-        <div className={styles.drawerContainer}>
-          <div className={styles.handleArea}>
-            <div className={styles.handle} />
-          </div>
-          <button className={styles.drawerItem} onClick={handlePhotoLibrary}>
-            Photo Library
-          </button>
-          <button className={styles.drawerItem} onClick={handleTakePhoto}>
-            Take Photo
-          </button>
-          <button className={styles.drawerItem} onClick={handleChooseFile}>
-            Choose File
-          </button>
-        </div>
-      ) : null}
-    </Drawer>
+    <>
+      {isMobile ? <SelectDrawer isOpen={isOpen} onClose={onClose} items={uploadImageItems} selectedIndex={0} /> : null}
+    </>
   );
 };
 
