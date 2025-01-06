@@ -36,12 +36,6 @@
     {
     }
 }
-
-.searchBoard
-{
-    margin-top: 0;
-    height: 120px;
-} 
  
 .listContainer
 { 
@@ -57,4 +51,121 @@
 
         width: 386px;
     }
+}
+
+.searchContainer
+{
+    margin: 0 16px; 
+}
+
+.filterArea
+{
+    margin-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+}
+
+.tagArea
+{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tag
+{
+    display: flex;
+    min-width: 40px;
+    height: 30px;
+    padding: 2.5px 7.356px 3.5px 8.356px;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 50px;
+    border: 1px solid var(--Border-1, #EAECF0);
+    
+    color: var(--Black, #000);
+    text-align: center;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px; /* 171.429% */
+    letter-spacing: -0.3px;
+}
+
+.tag.selected
+{
+    border-radius: 30px;
+    background: var(--Primary-1, #FD55D3);
+    
+    color: var(--White, #FFF);
+}
+
+.sortButton
+{
+    position: relative;
+    display: flex;
+    height: 12px;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 7px;
+    
+    color: var(--Neutral-600, #80868B);
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 12px; /* 85.714% */
+    letter-spacing: -0.14px;
+}
+
+.buttonIcon
+{
+    width: 12px;
+    height: 12px;
+    filter: invert(73%) sepia(2%) saturate(1287%) hue-rotate(169deg) brightness(88%) contrast(86%);
+}
+
+
+.sortDropDown
+{
+    position: absolute;
+    top:  20px;
+
+}
+
+.resultList
+{
+    margin-top: 14px;
+    
+    display: flex;
+    align-items: center;
+    align-content: center;
+    gap: 5px;
+    align-self: stretch;
+    flex-wrap: wrap;
+}
+
+
+
+
+.emptyResult 
+{
+    margin-top: 19.5px;
+
+    color: var(--Neutral-400, #BDC1C6);
+    font-family: Lato;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 12px; /* 100% */
+    letter-spacing: -0.12px;
+}
+
+.emptyContainer
+{
+    margin-top: 95.5px;
 }

@@ -13,6 +13,10 @@ import {ExploreCardProps} from './SearchBoardTypes';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import Tabs from '@/components/layout/shared/Tabs';
 import ExploreFeaturedHeader from './searchboard-header/ExploreFeaturedHeader';
+import EmptyState from '@/components/create/EmptyState';
+import {BoldArrowDown, LineCheck} from '@ui/Icons';
+import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
+import ExploreCard from './ExploreCard';
 
 const SearchBoard: React.FC = () => {
   const [loading, setloading] = useState(false);
@@ -20,7 +24,6 @@ const SearchBoard: React.FC = () => {
 
   // Featured
   const [bannerList, setBannerList] = useState<string[] | null>(null);
-  const [searchOptionList, setSearchOptionList] = useState<string[] | null>(null);
   const [talkainOperatorList, setTalkainOperatorList] = useState<ExploreCardProps[] | null>(null);
   const [popularList, setPopularList] = useState<ExploreCardProps[] | null>(null);
   const [malePopularList, setMalePopularList] = useState<ExploreCardProps[] | null>(null);
@@ -30,17 +33,64 @@ const SearchBoard: React.FC = () => {
   const [recommendationList, setRecommendationList] = useState<ExploreCardProps[] | null>(null);
 
   // Search
-  const [search, setSearch] = useState('all');
-  const [onlyAdults, setOnlyAdults] = useState(false);
-
+  const [searchOptionList, setSearchOptionList] = useState<string[] | null>(null);
   const [searchResultList, setSearchResultList] = useState<ExploreItem[] | null>(null);
+
+  const [search, setSearch] = useState<'All' | 'Story' | 'Character'>('All');
+  const [adultToggleOn, setAdultToggleOn] = useState(false);
+
+  const [searchSort, setSearchSort] = useState<'Newest' | 'Most Popular' | 'Weekly Popular' | 'Monthly Popular'>(
+    'Newest',
+  );
+  const [selectedSort, setSelectedSort] = useState<number>(0);
+  const [sortDropDownOpen, setSortDropDownOpen] = useState<boolean>(false);
+  const dropDownMenuItems: DropDownMenuItem[] = [
+    {
+      name: 'Newest',
+      onClick: () => {
+        setSearchSort('Newest');
+        setSortDropDownOpen(false);
+        setSelectedSort(0);
+      },
+    },
+    {
+      name: 'Most Popular',
+      onClick: () => {
+        setSearchSort('Most Popular');
+        setSortDropDownOpen(false);
+        setSelectedSort(1);
+      },
+    },
+    {
+      name: 'Weekly Popular',
+      onClick: () => {
+        setSearchSort('Weekly Popular');
+        setSortDropDownOpen(false);
+        setSelectedSort(2);
+      },
+    },
+    {
+      name: 'Monthly Popular',
+      onClick: () => {
+        setSearchSort('Monthly Popular');
+        setSortDropDownOpen(false);
+        setSelectedSort(3);
+      },
+    },
+  ];
+
+  // Handle
+
+  const handleSearchChange = (value: 'All' | 'Story' | 'Character') => {
+    setSearch(value);
+  };
 
   // Hooks
   useEffect(() => {
     const fetchData = async () => {
       setloading(true);
       try {
-        const response = await sendGetExplore(search, onlyAdults);
+        const response = await sendGetExplore(search, adultToggleOn);
 
         // console.log(response);
         if (response.resultCode === 0) {
@@ -130,9 +180,79 @@ const SearchBoard: React.FC = () => {
     {
       label: 'Search',
       content: (
-        <div>
-          <SearchBoardHeader setSearchResultList={setSearchResultList} />
-          {/* {searchResultList === null} */}
+        <div className={styles.searchContainer}>
+          <div className={styles.scrollArea}>
+            <SearchBoardHeader
+              setSearchResultList={setSearchResultList}
+              adultToggleOn={adultToggleOn}
+              setAdultToggleOn={setAdultToggleOn}
+              filterData={searchOptionList}
+            />
+            <div className={styles.filterArea}>
+              <div className={styles.tagArea}>
+                <button
+                  className={`${styles.tag} ${search === 'All' ? styles.selected : ''}`}
+                  onClick={() => handleSearchChange('All')}
+                >
+                  All
+                </button>
+                <button
+                  className={`${styles.tag} ${search === 'Story' ? styles.selected : ''}`}
+                  onClick={() => handleSearchChange('Story')}
+                >
+                  Story
+                </button>
+                <button
+                  className={`${styles.tag} ${search === 'Character' ? styles.selected : ''}`}
+                  onClick={() => handleSearchChange('Character')}
+                >
+                  Character
+                </button>
+              </div>
+              <button className={styles.sortButton} onClick={() => setSortDropDownOpen(true)}>
+                <div>{searchSort}</div>
+                <img className={styles.buttonIcon} src={BoldArrowDown.src} />
+                {sortDropDownOpen && (
+                  <DropDownMenu
+                    items={dropDownMenuItems}
+                    onClose={() => setSortDropDownOpen(false)}
+                    className={styles.sortDropDown}
+                    useSelected={true}
+                    selectedIndex={selectedSort}
+                  />
+                )}
+              </button>
+            </div>
+            {searchResultList === null ? (
+              <>
+                <div className={styles.emptyResult}> Result : 0</div>
+                <div className={styles.emptyContainer}>
+                  <EmptyState stateText={'No search data'} />
+                </div>
+              </>
+            ) : (
+              <>
+                <ul className={styles.resultList}>
+                  {searchResultList.map(item => (
+                    <li key={item.contentId} className={styles.resultItem}>
+                      <ExploreCard
+                        exploreItemType={item.exploreItemType}
+                        updateExplorState={item.updateExplorState}
+                        contentId={item.contentId}
+                        contentRank={item.sortCount} // 정렬 순서 사용
+                        contentName={item.contentName}
+                        chatCount={item.chatCount}
+                        episodeCount={item.episodeCount}
+                        followerCount={item.followerCount}
+                        thumbnail={item.thumbnail}
+                        classType="search"
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
         </div>
       ),
     },

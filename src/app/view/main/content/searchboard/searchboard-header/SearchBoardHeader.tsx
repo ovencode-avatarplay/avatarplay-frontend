@@ -1,43 +1,53 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 // Icons
 import styles from './SearchBoardHeader.module.css';
 
-import TagData from 'data/search-board-tags.json';
 import ToggleButton from '@/components/layout/shared/ToggleButton';
 import {BoldFilter, BoldFilterOn} from '@ui/Icons';
 import ExploreSearchInput from './ExploreSearchInput';
 import {ExploreItem, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
+import FilterSelector, {FilterDataItem} from '@/components/create/FilterSelector';
 
 interface Props {
   setSearchResultList: React.Dispatch<React.SetStateAction<ExploreItem[] | null>>;
+  adultToggleOn: boolean;
+  setAdultToggleOn: React.Dispatch<React.SetStateAction<boolean>>;
+  filterData: string[] | null;
 }
 
-const SearchBoardHeader: React.FC<Props> = ({setSearchResultList}) => {
-  const [adultToggleOn, setAdultToggleOn] = useState(false);
+const SearchBoardHeader: React.FC<Props> = ({setSearchResultList, adultToggleOn, setAdultToggleOn, filterData}) => {
   const [filterDialogOn, setFilterDialogOn] = useState(false);
   const [filterOn, setFilterOn] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [filterItem, setFilterItem] = useState<FilterDataItem[]>([]);
+  const [positiveFilters, setPositiveFilters] = useState<FilterDataItem[]>([]);
 
   const handleAdultToggleClicked = () => {
     setAdultToggleOn(!adultToggleOn);
   };
 
   const handleFilterButtonClicked = () => {
-    setFilterDialogOn(true);
+    setFilterDialogOn(!filterDialogOn);
   };
 
   const handleSearch = () => {
     fetchExploreData();
   };
 
+  const handleSave = (selectedFilters: FilterDataItem[]) => {
+    setPositiveFilters(selectedFilters);
+  };
+
+  const filterString = positiveFilters.map(filter => filter.name).join(',');
+
   const fetchExploreData = async () => {
     const result = await sendSearchExplore(
       searchValue,
       1, // category
       0, // sort
-      '', // filter
-      adultToggleOn, // isOnlyAdults
+      filterString, // filter
+      adultToggleOn,
       0, // offset
       20, // limit
     );
@@ -50,8 +60,16 @@ const SearchBoardHeader: React.FC<Props> = ({setSearchResultList}) => {
     }
   };
 
+  useEffect(() => {
+    if (filterData) {
+      // filterData(string[])를 FilterDataItem[]로 변환
+      const items = filterData.map(name => ({name}));
+      setFilterItem(items);
+    }
+  }, [filterData]);
+
   return (
-    <div>
+    <div className={styles.searchHeaderContainer}>
       <div className={styles.searchHeader}>
         <div className={styles.ageRateArea}>
           <ToggleButton
@@ -72,25 +90,14 @@ const SearchBoardHeader: React.FC<Props> = ({setSearchResultList}) => {
           <img className={styles.filterIcon} src={filterOn ? BoldFilterOn.src : BoldFilter.src} />
         </button>
       </div>
-      {filterDialogOn && <div className={styles.filterDialog}></div>}
+
+      <FilterSelector
+        filterData={filterItem}
+        onSave={handleSave}
+        open={filterDialogOn}
+        onClose={() => setFilterDialogOn(false)}
+      />
     </div>
-
-    // <div className={styles.searchBoard}>
-    //   <div className={styles.search}>
-    //     <SearchField />
-    //     <span className={styles.nsfwToggle}>
-    //       <EighteenUpRatingIcon />
-    //       <Switch />
-    //     </span>
-    //   </div>
-
-    //   <Box className={styles.tags}>
-    //     {TagData.map((tag, index) => {
-    //       const tmpIcon = getIconComponent(tag.icon);
-    //       return <Chip className={styles.chip} key={index} icon={tmpIcon ? tmpIcon : undefined} label={tag.label} />;
-    //     })}
-    //   </Box>
-    // </div>
   );
 };
 

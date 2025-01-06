@@ -1,11 +1,14 @@
+.searchHeaderContainer
+{
+  margin-top: 12px;
+}
+
 .searchHeader
 {
   display: flex;
   width: calc(100vw - 32px);
   align-items: center;
-  gap: 8px;
-  margin: 0 16px ;
-  margin-top: 12px;
+  gap: 8px; 
 }
 
 @media (min-width : 402px)
@@ -40,70 +43,4 @@
 .rateText.toggleOn
 {
   color: var(--Primary-1, #FD55D3);
-}
-
-
-
-
-
-.searchBoard> .tags
-{
-  display: flex;
-  align-items: center;
-  scrollbar-width: none;
-  /* Firefox */
-  -ms-overflow-style: none;
-  /* Internet Explorer 10+ */
-
-  max-width: 402px;
-  margin: 0 auto; /* 수평 중앙 정렬 */
-  overflow-x: auto;
-  white-space: nowrap;
-  padding: 10px;
-  top: 0;
-
-  background-color: white;
-
-  z-index: 2;
-}
-
-.searchBoard> .tags::-webkit-scrollbar
-{
-  display: none;
-  /* Webkit 브라우저 (Chrome, Safari) */
-}
-
-.chip
-{
-  margin-right: 10px;
-  min-width: 100px;
-  text-transform: none;
-  white-space: nowrap;
-  font-variant: "outlined";
-  color: "primary";
-  margin: '0 4px';
-}
-
-
-.searchBoard> .search
-{
-  justify-content: space-between;
-  display: flex;
-  padding: 10px;
-  width: 100%;
-  height: inherit;
-}
-
-.searchBoard> .search >.input
-{
-  width: 60%;
-  font-size: 18px;
-}
-
-.searchBoard> .search >.nsfwToggle
-{
-  display: flex;
-  align-items: center;
-  width: 30%;
-  height: 70px;
 }

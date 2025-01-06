@@ -1,0 +1,124 @@
+.modalBox
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    width: 350px;
+    height: 590px;
+    padding: 26px 24px 30px 24px;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    flex-shrink: 0;
+    
+    border-radius: 24px;
+    background: #FFF;
+}
+
+.filterSelectorContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    flex: 1 0 0;
+    align-self: stretch;
+}
+
+.filterTitle {
+    align-self: stretch;
+
+    color: var(--Neutral-900, #040415);
+    text-align: center;
+    font-family: Lato;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px; /* 133.333% */    
+}
+
+.filterList {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1 0 0;
+    align-self: stretch;
+    
+    border-radius: 8px;
+    background: var(--Neutral-50, #F8F9FA);
+}
+
+.filterItem {
+    display: flex;
+    padding: 12px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    align-self: stretch;
+    border-bottom: 1px solid var(--Neutral-100, #F1F3F4);
+}
+
+.filterContent {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    align-self: stretch;
+    justify-content: space-between;    
+}
+
+.textArea
+{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.filterText {
+    /* flex: 1 0 0; */
+    
+    color: #000;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
+}
+
+.filterIcon {}
+
+.filterButton {
+    display: flex;
+    width: 24px;
+    height: 24px;
+    padding: 2px;
+    justify-content: center;
+    align-items: center;
+}
+
+.saveButton {
+    display: flex;
+    height: 46px;
+    padding: 14px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    align-self: stretch;
+    
+    border-radius: 10px;
+    background: var(--Primary-1, #FD55D3);
+    
+    /* Inner Button */
+    box-shadow: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset, 0px -4px 4px 0px rgba(255, 255, 255, 0.20) inset;
+    
+    color: var(--Grays-White, #FFF);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px; /* 142.857% */
+    letter-spacing: -0.4px;
+}

@@ -18,6 +18,7 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
   episodeCount,
   followerCount,
   thumbnail,
+  classType,
 }) => {
   const dispatch = useDispatch();
 
@@ -59,9 +60,13 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
     return result;
   };
 
+  const getClassType = (classType: string) => {
+    return styles[classType] || ''; // classType이 유효하지 않으면 빈 문자열 반환
+  };
+
   return (
     <>
-      <div className={styles.exploreCard}>
+      <div className={`${styles.exploreCard} ${classType && getClassType(classType)}`}>
         <div
           className={styles.exploreImage}
           style={{

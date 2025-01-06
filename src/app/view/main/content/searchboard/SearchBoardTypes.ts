@@ -8,4 +8,5 @@ export interface ExploreCardProps {
   episodeCount: number;
   followerCount: number;
   thumbnail: string;
+  classType?: string;
 }

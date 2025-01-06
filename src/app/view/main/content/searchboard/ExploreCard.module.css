@@ -13,9 +13,17 @@
   
   /* 각 카드의 시작 부분이 스냅 기준 */
   border-radius: 10px;
-  /* background: #FFF; */
-  background: red;
+  background: #FFF;
+  /* background: red; */
   overflow: hidden;  
+}
+
+.exploreCard.search
+{
+  width: calc((100vw - 32px) / 3 - 4px);
+  height: 171.429px;
+
+
 }
 
 @media (min-width: 402px) {
