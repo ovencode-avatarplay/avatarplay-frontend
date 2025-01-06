@@ -11,35 +11,17 @@ import Logo512Black from '/public/images/Talkain_logo_512_black.png';
 
 import UserDropdown from '@shared/UserDropdown';
 import Link from 'next/link';
-<<<<<<< HEAD
 import {getLocalizedLink} from '@/utils/UrlMove';
-=======
 import {BoldAlert, BoldRuby, BoldStar} from '@ui/Icons';
->>>>>>> CreateStoryRemake
 
 const HeaderNavBar = () => {
   const [logo, setLogo] = useState(Logo256Black);
 
   return (
-<<<<<<< HEAD
-    <>
-      <header className={styles.navbar}>
-        <Link href={getLocalizedLink('/main/homefeed')}>
-          <div className={styles.logo}>
-            <Image src={logo} alt="Logo" width={128} height={128} priority />
-          </div>
-        </Link>
-        <div className={styles.right}>
-          <Button>
-            <NotificationsIcon />
-          </Button>
-          <UserDropdown />
-=======
     <header className={styles.navbar}>
-      <Link href={'/:lang/main/homefeed'}>
+      <Link href={getLocalizedLink('/main/homefeed')}>
         <div className={styles.logoArea}>
           <Image src={logo} alt="Logo" width={128} height={128} priority />
->>>>>>> CreateStoryRemake
         </div>
       </Link>
       <div className={styles.rightArea}>

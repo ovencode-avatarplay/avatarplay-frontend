@@ -12,9 +12,6 @@ import Cookies from 'js-cookie';
 import {useRouter} from 'next/navigation';
 import {changeLanguageAndRoute, refreshLanaguage} from '@/utils/UrlMove';
 import {i18n} from 'next-i18next';
-import {unknown} from 'valibot';
-import {getLangUrlCode} from '@/configs/i18n';
-import {getBrowserLanguage} from '@/utils/getLocalizedText';
 import {fetchLanguage} from './LanguageSetting';
 
 const LanguageSelectDropBox: React.FC = () => {

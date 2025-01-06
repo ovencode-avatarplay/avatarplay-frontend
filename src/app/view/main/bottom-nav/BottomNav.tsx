@@ -23,12 +23,9 @@ import profileData from 'data/profile/profile-data.json';
 import Link from 'next/link';
 import CreateWidget from '../content/create/CreateWidget';
 import SelectProfileWidget from '../../profile/SelectProfileWidget';
-<<<<<<< HEAD
 import {getLocalizedLink} from '@/utils/UrlMove';
-=======
 import {setSkipContentInit} from '@/redux-store/slices/ContentSelection';
 import {useDispatch} from 'react-redux';
->>>>>>> CreateStoryRemake
 
 export default function BottomNav() {
   const dispatch = useDispatch();
