@@ -11,7 +11,7 @@ export interface ChapterItemProps {
   onDelete: (chapterIdx: number) => void;
   onSelectEpisode: (chapterIdx: number, episodeIdx: number) => void;
   onRename: () => void;
-  onDuplicate: () => void;
+  onDuplicate?: () => void;
   isSelected: boolean; // 선택 여부
   selectedEpisodeIdx: number;
   hideSelectedEpisode: boolean;

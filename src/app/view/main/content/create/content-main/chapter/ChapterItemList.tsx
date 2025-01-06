@@ -14,7 +14,7 @@ interface ChapterListProps {
   hideSelectedEpisode: boolean;
   onSelectEpisode: (chapterIdx: number, episodeIdx: number) => void;
   onRename: () => void;
-  onDuplicate: () => void;
+  onDuplicate?: () => void;
 }
 
 const ChapterItemList: React.FC<ChapterListProps> = ({

@@ -36,8 +36,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
       name: 'Duplicate',
       icon: LineCopy.src,
       onClick: () => {
-        onDuplicate();
-        setDropBoxOpen(false);
+        handleDuplicateChapter();
       },
     },
     {
@@ -61,7 +60,7 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
   };
 
   const handleDuplicateChapter = () => {
-    onDuplicate();
+    if (onDuplicate) onDuplicate();
     setDropBoxOpen(false);
   };
 
