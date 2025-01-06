@@ -3,8 +3,10 @@
     flex-direction: column;
     height: 100vh; 
     overflow: hidden;
-    max-width: 500px;
-      margin: 0 auto
+    max-width: 402px;
+      margin: 0 auto;
+      position: relative;
+      
   }
   
   .contentHeader {
@@ -12,11 +14,194 @@
   }
   
   .content {
-    height: 60vh; 
-    overflow-y: auto; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 6px;
+  
+    max-width: 402px;
+    height: 100vh; /* 고정 높이 */
+    
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    scrollbar-width: thin; /* (옵션) 스크롤바 얇게 */
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent; /* (옵션) 스크롤바 색상 */
+    margin-bottom: 70px;
   }
   
   .contentBottom {
-    height: 25vh; 
+    
   }
+  .contentBottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    gap: 10px;
+    
+    position: absolute;
+    width: 100%;
+    height: 70px;
+    left: 0px;
+    bottom: 0px;
+    
+    background: #FFFFFF;
+    max-width: 402px;
+    margin: 0 auto; /* 수평 중앙 정렬 */
+    
+      }
+      
+    
+      .setupButtons {
+      
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 20px;
+    gap: 4px;
+    
+    width: 92.5vw;
+    height: 50px;
+    
+    background: #2C3131;
+    border-radius: 10px;
+    
+    max-width: 400px;
+    
+    
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: -0.4px;
+    
+    color: #FFFFFF;
+    cursor: pointer;
+      }
+
+.seasonArea
+{
+  margin: 12px 16px;
   
+  display: flex;
+  width: calc(100vw - 32px);
+  height: auto;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-shrink: 0;
+
+  gap: 16px;
+}
+
+@media (min-width:402px)
+{
+  .seasonArea {
+    width: 370px;
+  }
+}
+
+
+.episodeInfo
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+}
+
+.episodeCountArea 
+{
+  display: flex;
+  height: 30px;
+  padding: 8px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  
+  border-radius: 8px;
+  background: var(--Neutral-50, #F8F9FA);
+}
+
+.episodeIcon
+{
+  width: 16px;
+  height: 16px;
+  filter: invert(38%) sepia(7%) saturate(384%) hue-rotate(173deg) brightness(95%) contrast(87%);
+}
+
+.episodeCounter
+{
+  display: flex;
+  height: 30px;
+  padding: 8px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--Neutral-700, #5F6368);
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Lato;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px; /* 153.846% */
+  letter-spacing: -0.4px;
+}
+
+.addEpisode
+{
+  display: flex;
+  width: 90px;
+  height: 30px;
+  padding: 8px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  
+  border-radius: 8px;
+  background: var(--Neutral-800, #2C3131);
+  
+  color: var(--White, #FFF);
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: 'Lato';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: -0.4px;
+}
+
+.iconPlus
+{
+  display: flex;
+  width: 12px;
+  height: 12px;
+  padding: 1.757px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.episodeCardList
+{
+  display: flex;
+  
+  max-height: calc(100vh - 56px - 60px - 140px);
+  flex-direction: column;
+  overflow-y: auto; 
+  overflow-x: hidden;
+  gap: 6px;
+
+}
+
+.episodeCardList::-webkit-scrollbar {
+  display: none;  
+}
+
+.episodeCardList {
+  scrollbar-width: none;  
+  -ms-overflow-style: none;  
+}

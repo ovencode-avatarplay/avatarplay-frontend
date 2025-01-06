@@ -222,7 +222,7 @@ const CharacterDashboard: React.FC = () => {
 
   //#region  TopMenu
   const handleCreateClick = () => {
-    const currentLang = searchParam.get(':lang') || 'en';
+    const currentLang = searchParam?.get(':lang') || 'en';
     //router.push(`/${currentLang}/create/character`);
     pushLocalizedRoute('/studio/character', router);
   };

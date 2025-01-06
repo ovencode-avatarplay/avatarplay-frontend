@@ -1,0 +1,65 @@
+.dropdown {
+  position: absolute;
+  width: 200px;
+  background: #ffffff;
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.dropdownItem {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  gap: 8px;
+  width: 100%;
+  height: 42px;
+  border-bottom: 1px solid #eaecf0;
+  cursor: pointer;
+}
+
+.dropdownItem:hover {
+  background-color: #f8f8f8;
+}
+
+.icon {
+  width: 22px;
+
+  
+  height: 22px;
+  color: #000000;
+  filter: brightness(0) saturate(100%)
+}
+
+.label {
+  font-family: "Lato", sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.2px;
+  color: #000000;
+}
+
+.deleteItemIcon {
+  filter: brightness(0) saturate(100%) invert(57%) sepia(37%) saturate(7486%) hue-rotate(331deg) brightness(101%) contrast(85%);
+}
+
+.deleteItemLabel {
+  font-family: "Lato", sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.2px;        
+  color: #f75555;
+}

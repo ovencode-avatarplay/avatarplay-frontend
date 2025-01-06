@@ -14,6 +14,8 @@ import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ImageUploadDialog from '../episode/episode-ImageCharacter/ImageUploadDialog';
 import {AltRoute} from '@mui/icons-material';
+import {BoldCircleX, LineUpload} from '@ui/Icons';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 interface Props {
   uploadImageState: boolean;
@@ -29,6 +31,7 @@ const ContentImageUpload: React.FC<Props> = ({
   onCloseUploadImage,
 }) => {
   const editedContentInfo = useSelector((state: RootState) => state.content);
+  const thumbnail = useSelector((state: RootState) => state.content.curEditingContentInfo.publishInfo.thumbnail);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -89,44 +92,51 @@ const ContentImageUpload: React.FC<Props> = ({
 
   useEffect(() => {
     setImagePreview(editedContentInfo?.curEditingContentInfo.publishInfo.thumbnail);
-  }, [editedContentInfo]);
+  }, [editedContentInfo, thumbnail]);
   return (
-    <div className={styles.imageBox}>
-      <Typography>Story Thumbnail</Typography>
-      <Box className={styles.imageArea}>
-        <Box className={styles.imageIcon} display="flex" alignItems="center">
-          <ImageIcon fontSize="large" />
-          <Typography variant="h6" marginLeft={1}>
-            Image
-          </Typography>
-        </Box>
-
-        {imagePreview ? (
-          <img src={imagePreview} alt="Publish Setup" className={styles.setupImage} />
-        ) : (
-          <Typography variant="body1" color="textSecondary">
-            No image selected. Please upload an image.
-          </Typography>
-        )}
-
-        <SpeedDial
-          className={styles.uploadButton}
-          ariaLabel="SpeedDial openIcon"
-          icon={<CreateIcon />}
+    <>
+      <div className={styles.imageArea}>
+        <div className={styles.smallTitle}>Cover Image</div>
+        <button
+          className={`${styles.imageInputBox} ${imagePreview ? styles.thumbnailExist : ''}`}
           onClick={handleSpeedDialClick}
-        />
+        >
+          {imagePreview ? (
+            <>
+              <img className={styles.uploadedImage} src={imagePreview} />
+              <button
+                className={styles.buttonRemoveThumbnail}
+                onClick={event => {
+                  event.stopPropagation();
+                  dispatch(setThumbnail(''));
+                  setImagePreview(null);
+                }}
+              >
+                <img className={styles.buttonRemoveIcon} src={BoldCircleX.src} />
+              </button>
+            </>
+          ) : (
+            <>
+              <img className={styles.uploadIcon} src={LineUpload.src} />
+              <div className={styles.uploadText}>Upload</div>
+            </>
+          )}
+        </button>
+      </div>
 
-        <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
-          <DialogContent dividers className={styles.dialogContent}>
-            <MenuItem onClick={onClickUploadImage}>Upload Thumbnail Image</MenuItem>
-          </DialogContent>
-        </Dialog>
+      <div className={styles.imageBox}>
+        {/* <Box className={styles.imageArea}>
+          <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
+            <DialogContent dividers className={styles.dialogContent}>
+              <MenuItem onClick={onClickUploadImage}>Upload Thumbnail Image</MenuItem>
+            </DialogContent>
+          </Dialog>
 
-        <ImageUploadDialog isOpen={uploadImageOpen} onClose={onCloseUploadImage} onFileSelect={handleImageUpload} />
-      </Box>
-
-      <LoadingOverlay loading={loading} />
-    </div>
+        </Box> */}
+        <ImageUploadDialog isOpen={dialogOpen} onClose={handleClose} onFileSelect={handleImageUpload} />
+        <LoadingOverlay loading={loading} />
+      </div>
+    </>
   );
 };
 

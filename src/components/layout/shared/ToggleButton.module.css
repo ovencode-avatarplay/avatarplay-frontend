@@ -1,0 +1,147 @@
+/* Base styles for ToggleButton */
+.toggleBackground {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    position: relative;
+  }
+  
+  /* Button */
+  .toggleButton {
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    position: absolute;
+  }
+  
+  /* Size Variants */
+  .toggleBackground.sm {
+    width: 32px;
+    height: 16px;
+  }
+  
+  .toggleButton.sm {
+    width: 12.8px;
+    height: 12.8px;
+  }
+  
+  .toggleBackground.md {
+    width: 36px;
+    height: 20px;
+  }
+  
+  .toggleButton.md {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .toggleBackground.lg {
+    width: 44px;
+    height: 24px;
+  }
+  
+  .toggleButton.lg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Theme Variants */
+  .toggleBackground.default {
+    background: #f1f3f4;
+  }
+  
+  .toggleBackground.hover {
+    background: #f1f3f4;
+  }
+  
+  .toggleBackground.focus {
+    background: #f1f3f4;
+    box-shadow: 0px 0px 0px 4px #e7ffe9;
+  }
+  
+  .toggleBackground.disabled {
+    background: #f1f3f4;
+  }
+  
+  .toggleBackground.toggled {
+    background: #fd55d3;
+  }
+  
+  .toggleButton.toggled {
+    background: #fd55d3;
+  }
+
+  /*dark*/
+
+  .toggleBackground.dark.default {
+    background: #f1f3f4;
+  }
+  
+  .toggleBackground.dark.hover {
+    background: #f1f3f4;
+  }
+  
+  .toggleBackground.dark.focus {
+    background: #f1f3f4;
+    box-shadow: 0px 0px 0px 4px #e7ffe9;
+  }
+  
+  .toggleBackground.dark.disabled {
+    background: #f1f3f4;
+  }
+  
+  .toggleBackground.dark.toggled {
+    background: #fd55d3;
+  }
+  
+  .toggleButton.dark.toggled {
+    background: #fd55d3;
+  }
+  
+  /* Button alignment for toggled state */
+  .toggleBackground .toggleButton.toggled {
+    background: #ffffff;
+    transform: translateX(100%); 
+  }
+  
+  .toggleBackground .toggleButton:not(.toggled) {
+    background: #ffffff;
+    transform: translateX(0%); 
+  }
+  
+  .toggleBackground .toggleButton.toggled {
+    background: #ffffff;
+    transform: translateX(100%); 
+  }
+  
+  .toggleBackground .toggleButton:not(.toggled) {
+    background: #ffffff;
+    transform: translateX(0%); 
+  }
+  
+  /*dark*/  
+  .toggleBackground.dark .toggleButton.toggled {
+    background: #f1f3f4;
+    transform: translateX(100%); 
+  }
+  
+  .toggleBackground.dark .toggleButton:not(.toggled) {
+    background: #f1f3f4;
+    transform: translateX(0%); 
+  }
+  
+  /* Focus outline */
+  .toggleBackground.focus {
+    box-shadow: 0px 0px 0px 4px #e7ffe9;
+  }
+  
+  /* Disabled state */
+  .toggleBackground.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  

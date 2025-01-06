@@ -1,0 +1,103 @@
+.imageList {
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 38px;
+    display: flex;
+    width: calc(100vw - 32px);
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    overflow-y: auto;
+  }
+
+  @media (min-width:402px)
+{
+  .imageList  {
+    width: 370px;
+  }
+}
+  
+  .imageItem {
+    position: relative;
+    
+    width: calc((100vw - 32px - 12px) * 0.5);
+    height: 259.172px;
+    flex-shrink: 0;
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat; 
+    
+    border-radius: 12px;
+    background: lightgray 50% / cover no-repeat;
+    cursor: pointer;     
+  }
+  
+  @media (min-width:402px)
+{
+  .imageItem  {
+    width: 179px;
+
+  }
+}
+
+  .imageList::-webkit-scrollbar {
+    display: none; 
+}
+
+    .imageList {
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+    
+  .imageItem > .selectedIcon {
+    position: absolute;
+
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+
+  .name {
+    position: absolute;
+
+    left: 50%;
+    transform: translate(-50%);
+    bottom: 0;
+    margin-bottom: 15px;
+
+    display: inline-flex;
+    height: 26px;
+    padding: 3px 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    border-radius: 24px;
+
+    border: 1px solid var(--White, #FFF);
+    background: rgba(245, 245, 245, 0.20);
+    backdrop-filter: blur(10px);
+
+    color: var(--White, #FFF);
+    text-align: center;
+    font-family: 'Lato';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 166.667% */
+  }
+
+  .selectedName 
+  {
+    background: #FFF;
+    
+    color: var(--Black, #000);
+  }

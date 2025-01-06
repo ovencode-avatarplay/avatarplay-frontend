@@ -1,36 +1,330 @@
-/* 파일 경로: styles/TriggerListItem.module.css */
+.triggerCard {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: calc(100vw - 32px);
+  height: auto;
+  background: #ffffff;
+  border: 1px solid #e8eaed;
+  border-radius: 10px;
+}
 
-/* ListItem에 밑줄을 추가 */
-.listItem {
-    border-bottom: 1px solid #e0e0e0; /* 밑줄 */
-    padding: 10px 16px; /* 기본 패딩 */
+@media (min-width : 402px)
+{
+  .triggerCard
+  {
+    width: 370px;
   }
+}
+
+.triggerHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  gap: 12px;
+  width: 100%;
+  height: 110px;
+}
+
+.triggerImage {
+  position: relative;
+  width: 63px;
+  height: 90px;
+  border-radius: 6px;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.editIcon {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ellipse {
+  width: 20px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+}
+
+.editVector {
+  width: 12px;
+  height: 12px;
+  border: 1px solid #ffffff;
+}
+
+.triggerContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 90px;
+  overflow: hidden;
+}
+
+.triggerTitle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.progressPoint {
+  font-family: "Lato", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #000000;
+}
+
+.arrowIcon {
+  font-weight: bold;
+  color: #fd55d3;
+  filter: brightness(0) saturate(100%) invert(54%) sepia(38%) saturate(4035%) hue-rotate(286deg) brightness(100%) contrast(100%);
+}
+
+.changeCharacter {
+  font-family: "Lato", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #fd55d3;
+}
+
+.triggerCondition {
+  font-family: "Lato", sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  color: #9aa0a6;
+}
+
+.triggerValue {
+  font-family: "Lato", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #040415;
+}
+
+.triggerActions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
   
-  /* 마지막 아이템에는 밑줄 제거 */
-  .listItem:last-child {
-    border-bottom: none; /* 마지막 아이템의 밑줄 제거 */
-  }
+  border-top: 1px solid #eaecf0;
+  background: #ffffff;
+  border-radius: 0 0 10px 10px;
+}
+
+.actionButton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;  
+  gap: 4px;
+  padding: 10px 14px;
+  font-family: Lato;
+font-size: 13px;
+font-style: normal;
+font-weight: 600;
+  cursor: pointer;
+  line-height: 0px;
+}
+
+.actionButton span {
+  font-family: "Lato", sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: #000000;
+}
+
+.delete {
+  color: #f75555;
+}
+
+.input {
+  padding: 10px;
+  gap: 10px;
+
+  width: 100%;
+  height: 42px;
+
+  background: #f1f3f4;
+  border-radius: 6px;
+
+  /* 포커스 시 아웃라인 제거 */
+  outline: none;
+  border: none;
+
+  /* 텍스트가 넘칠 경우 ... 처리 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+}
+
+.editButton
+{
+  display: flex;
+width: 18px;
+height: 18px;
+justify-content: center;
+align-items: center;
+flex-shrink: 0;
+}
+
+.normalButton
+{
+  width: 18px;
+height: 18px;
+flex-shrink: 0;
+filter: brightness(0) saturate(100%);
+
+}
+
+.normalButtonRed
+{
+  width: 18px;
+height: 18px;
+flex-shrink: 0;
+filter: brightness(0) saturate(100%) invert(57%) sepia(76%) saturate(3496%) hue-rotate(327deg) brightness(100%) contrast(94%);
+}
+
+.redFont
+{
+  color:#F75555 ;
+}
+
+/* 공통 스타일 */
+.audioContainer, .videoContainer, .imageContainer {
+  width: 63px;
+  height: 90px;
+  border-radius: 6px;
+  position: relative;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+/* Audio 스타일 */
+.audioBackground {
+  background: #040415;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+}
+
+.audioEditIcon {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 0;
+  right: 0;
+}
+
+.audioFileIcon {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  left: calc(50% - 20px);
+  top: calc(50% - 20px);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.audioLabel {
+  position: absolute;
+  width: 24px;
+  text-align: center;
+  top: calc(50% + 20px);
+  left: calc(50% - 12px);
+  font-family: 'Lato', sans-serif;
+  font-size: 12px;
+  color: #fff;
+}
+
+/* Video 스타일 */
+.videoContainer {
+  background-size: cover;
+  background-position: center;
+}
+
+.videoEditIcon {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 0;
+  right: 0;
+}
+
+.videoPlayIcon {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: calc(50% - 9px);
+  top: calc(50% - 9px);
+  background: #fff;
   
-  /* 선택된 아이템 스타일 */
-  .selected {
-    background-color: #f5f5f5; /* 선택된 상태일 때의 배경색 */
-  }
-  
-  .iconButton {    
-    color: black;
-  }
-  
-  .listItemText {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .primaryText {
-    font-weight: bold; /* Main key 텍스트 굵게 */
-  }
-  
-  .secondaryText {
-    font-size: 0.875rem; /* Sub key 텍스트 크기 조정 */
-    color: #757575; /* Sub key 텍스트 색상 */
-  }
-  
+}
+
+/* Image 기본 스타일 */
+.imageContainer .thumbnail {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.editIcon {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 0;
+  right: 0;
+}
+
+
+.videoContainer {
+  width: 63px;
+  height: 90px;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.videoThumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 비디오를 컨테이너에 맞게 크기 조정 */
+  border-radius: 6px;
+  pointer-events: none; /* 재생 방지 */
+}
+
+.videoEditIcon {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 0;
+  right: 0;
+}
+
+.videoPlayIcon {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: calc(50% - 9px);
+  top: calc(50% - 9px);
+  background: #fff;
+  clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+}

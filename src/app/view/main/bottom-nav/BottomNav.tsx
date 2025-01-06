@@ -24,8 +24,11 @@ import Link from 'next/link';
 import CreateWidget from '../content/create/CreateWidget';
 import SelectProfileWidget from '../../profile/SelectProfileWidget';
 import {getLocalizedLink} from '@/utils/UrlMove';
+import {setSkipContentInit} from '@/redux-store/slices/ContentSelection';
+import {useDispatch} from 'react-redux';
 
 export default function BottomNav() {
+  const dispatch = useDispatch();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
@@ -80,7 +83,7 @@ export default function BottomNav() {
 
   return (
     <footer>
-      <Paper className="bottomNav" elevation={3} sx={{maxWidth: '500px', margin: '0 auto'}}>
+      <Paper className="bottomNav" elevation={3} sx={{maxWidth: '402px', margin: '0 auto'}}>
         <Box className="bottomNavBox">
           <BottomNavigation showLabels value={selectedIndex} onChange={handleNavigationChange}>
             {BottomNavData.map((button, index) => (
@@ -111,7 +114,10 @@ export default function BottomNav() {
             right: 16,
           }}
           icon={<CreateIcon />}
-          onClick={() => toggleDrawer(!drawerOpen)}
+          onClick={() => {
+            dispatch(setSkipContentInit(false));
+            toggleDrawer(!drawerOpen);
+          }}
         />
         <CreateWidget open={drawerOpen} onClose={() => toggleDrawer(false)} />
         <SelectProfileWidget

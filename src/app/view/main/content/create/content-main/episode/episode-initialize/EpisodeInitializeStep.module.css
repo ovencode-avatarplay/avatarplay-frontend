@@ -1,0 +1,48 @@
+
+.stepContainer
+{
+    display: flex;
+    width: 92vw;
+    align-items: flex-start;
+    gap: 8px;
+
+    margin: 8px 16px 0px 16px;
+    
+}
+
+@media (min-width: 402px) {
+    .stepContainer
+    {
+        width: 370px
+    }
+}
+
+.stepItem
+{
+    height: 4px;
+    flex: 1 0 0;
+    border-radius: 4px;
+    background: var(--Neutral-100, #F1F3F4);
+    position: relative;
+    overflow: hidden; 
+}
+
+.stepOn
+{
+    background: var(--Neutral-900, #040415);
+    animation: fillAnimation 1s forwards;
+}
+
+.stepOff
+{
+    background: var(--Neutral-100, #F1F3F4);
+}
+
+@keyframes fillAnimation {
+    from {
+      background: linear-gradient(to right, #040415 0%, transparent 100%);
+    }
+    to {
+      background: var(--Neutral-900, #040415);
+    }
+  }

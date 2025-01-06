@@ -210,7 +210,7 @@ const DrawerContentDesc = () => {
           borderTopRightRadius: '24px',
           overflow: 'hidden',
           bottom: '0px',
-          maxWidth: '500px',
+          maxWidth: '402px',
           margin: '0 auto',
         },
       }}

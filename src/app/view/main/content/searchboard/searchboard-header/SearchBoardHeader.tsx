@@ -1,48 +1,96 @@
-import React from 'react';
-import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
+import React, {useState} from 'react';
 
 // Icons
-import {Switch} from '@mui/material';
-import WhatshotIcon from '@mui/icons-material/Whatshot';
-import TagIcon from '@mui/icons-material/Tag';
-import EighteenUpRatingIcon from '@mui/icons-material/EighteenUpRating';
-
 import styles from './SearchBoardHeader.module.css';
 
-import SearchField from 'components/layout/shared/SearchComponent';
-
 import TagData from 'data/search-board-tags.json';
+import ToggleButton from '@/components/layout/shared/ToggleButton';
+import {BoldFilter, BoldFilterOn} from '@ui/Icons';
+import ExploreSearchInput from './ExploreSearchInput';
+import {ExploreItem, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
 
-// 아이콘 문자열을 JSX.Element로 변환하는 함수
-const getIconComponent = (iconName: string) => {
-  switch (iconName) {
-    case 'WhatshotIcon':
-      return <WhatshotIcon />;
-    case 'TagIcon':
-      return <TagIcon />;
-    default:
-      return <WhatshotIcon />; // 정의되지 않은 아이콘은 null로 반환
-  }
-};
+interface Props {
+  setSearchResultList: React.Dispatch<React.SetStateAction<ExploreItem[] | null>>;
+}
 
-const SearchBoardHeader: React.FC = () => {
+const SearchBoardHeader: React.FC<Props> = ({setSearchResultList}) => {
+  const [adultToggleOn, setAdultToggleOn] = useState(false);
+  const [filterDialogOn, setFilterDialogOn] = useState(false);
+  const [filterOn, setFilterOn] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+
+  const handleAdultToggleClicked = () => {
+    setAdultToggleOn(!adultToggleOn);
+  };
+
+  const handleFilterButtonClicked = () => {
+    setFilterDialogOn(true);
+  };
+
+  const handleSearch = () => {
+    fetchExploreData();
+  };
+
+  const fetchExploreData = async () => {
+    const result = await sendSearchExplore(
+      searchValue,
+      1, // category
+      0, // sort
+      '', // filter
+      adultToggleOn, // isOnlyAdults
+      0, // offset
+      20, // limit
+    );
+
+    if (result.resultCode === 0) {
+      console.log('Explore data fetched:', result.searchExploreList);
+      setSearchResultList(result.searchExploreList);
+    } else {
+      console.error('Failed to fetch explore data:', result.resultMessage);
+    }
+  };
+
   return (
-    <div className={styles.searchBoard}>
-      <Box className={styles.tags}>
-        {TagData.map((tag, index) => {
-          const tmpIcon = getIconComponent(tag.icon);
-          return <Chip className={styles.chip} key={index} icon={tmpIcon ? tmpIcon : undefined} label={tag.label} />;
-        })}
-      </Box>
-      <div className={styles.search}>
-        <SearchField />
-        <span className={styles.nsfwToggle}>
-          <EighteenUpRatingIcon />
-          <Switch />
-        </span>
+    <div>
+      <div className={styles.searchHeader}>
+        <div className={styles.ageRateArea}>
+          <ToggleButton
+            isToggled={adultToggleOn}
+            onToggle={handleAdultToggleClicked}
+            size="sm"
+            state="default"
+            theme="dark"
+          />
+          <div className={`${styles.rateText} ${adultToggleOn ? styles.toggleOn : ''}`}>Adult</div>
+        </div>
+        <ExploreSearchInput
+          value={searchValue}
+          onChange={e => setSearchValue(e.target.value)}
+          onSearch={handleSearch}
+        />
+        <button className={styles.filterButton} onClick={handleFilterButtonClicked}>
+          <img className={styles.filterIcon} src={filterOn ? BoldFilterOn.src : BoldFilter.src} />
+        </button>
       </div>
+      {filterDialogOn && <div className={styles.filterDialog}></div>}
     </div>
+
+    // <div className={styles.searchBoard}>
+    //   <div className={styles.search}>
+    //     <SearchField />
+    //     <span className={styles.nsfwToggle}>
+    //       <EighteenUpRatingIcon />
+    //       <Switch />
+    //     </span>
+    //   </div>
+
+    //   <Box className={styles.tags}>
+    //     {TagData.map((tag, index) => {
+    //       const tmpIcon = getIconComponent(tag.icon);
+    //       return <Chip className={styles.chip} key={index} icon={tmpIcon ? tmpIcon : undefined} label={tag.label} />;
+    //     })}
+    //   </Box>
+    // </div>
   );
 };
 

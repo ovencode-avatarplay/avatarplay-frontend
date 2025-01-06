@@ -1,0 +1,223 @@
+.container {
+
+}
+.count1 {
+  width: calc(100vw - 32px);
+  max-width: 370px;
+  height: 538px;
+  border-radius: 12px;
+  overflow: hidden; /* 추가 */
+}
+
+@media (min-width : 402px)
+{
+  .count1
+  {
+    width: 370px;
+  }
+}
+
+.count2
+{
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 120px;
+max-height: 120px;
+border-radius: 12px;
+overflow: hidden; /* 추가 */
+}
+
+.count3
+{
+/* Frame 70 */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 80px;
+max-height: 80px;
+border-radius: 12px;
+overflow: hidden; /* 추가 */
+
+}
+
+.count4
+{
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 4px;
+
+width: 260px;
+height: 244px;
+border-radius: 12px;
+overflow: hidden; /* 추가 */
+
+}
+
+.row4
+{
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 120px;
+max-height: 120px;
+overflow: hidden; /* 추가 */
+}
+
+
+.image4 {
+  /* IMG_4315 2 */
+  
+  width: 128.5px;
+  height: 120px;
+  
+  border-radius:4px 4px 4px 4px;
+  
+    object-fit: cover; /* 비율 유지하며 축소 */
+    background-color: white;
+  }
+
+.count5
+{
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 163px;
+border-radius: 12px;
+overflow: hidden; /* 추가 */
+
+}
+.row5_1
+{
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 80px;
+max-height: 80px;
+
+}
+.row5_2
+{
+  /* Frame 71 */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 80px;
+max-height: 120px;
+}
+.image5_1
+{
+width: 84.67px;
+height: 80px;
+
+border-radius: 4px;
+background-color: white;
+object-fit: cover; /* 비율 유지하며 축소 */
+
+}
+.image5_2
+{
+  /* IMG_4315 2 */
+
+width: 128.5px;
+height: 80px;
+
+border-radius: 4px 4px 4px 4px;
+background-color: white;
+object-fit: cover; /* 비율 유지하며 축소 */
+}
+.count6
+{
+
+}
+
+.count7
+{
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 3px;
+
+width: 260px;
+height: 246px;
+border-radius: 12px;
+overflow: hidden; /* 추가 */
+
+}
+
+.count8
+{
+
+}
+
+.count9
+{
+
+}
+
+.image {
+  width: 100%; /* 이미지 가로 크기 */
+  height: 100%; /* 이미지 세로 크기 */
+  object-fit: cover; /* 비율 유지하며 축소 */
+  background-color: white;
+}
+.imageContainer {
+  position: relative; /* 삭제 버튼 위치를 조정하기 위해 필요 */
+  width: 100%; /* 이미지 가로 크기 */
+  height: 100%; /* 이미지 세로 크기 */
+}
+
+.deleteButton {
+  position: absolute;
+  top: 0px;
+  right:0px;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  padding: 5.33px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deleteButton img {
+  width: 100%; /* 이미지 가로 크기 */
+  height: 100%; /* 이미지 세로 크기 */
+}
+
+.deleteButton:hover {
+}

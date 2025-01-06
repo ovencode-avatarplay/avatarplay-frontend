@@ -27,6 +27,7 @@ import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
 import LanguageSelectDropBox from './LanguageSelectDropBox';
 import {getLocalizedLink} from '@/utils/UrlMove';
+import {fetchLanguage} from './LanguageSetting';
 
 const UserDropdown = () => {
   // States
@@ -78,6 +79,8 @@ const UserDropdown = () => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
       if (event === 'SIGNED_IN') {
         if (auth?.access_token == session?.access_token) return;
+        //alert('여기아');
+
         setAuth(session);
         try {
           const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
@@ -97,6 +100,7 @@ const UserDropdown = () => {
 
           const data = await response.json();
           localStorage.setItem('jwt', data.accessToken);
+          fetchLanguage(router);
         } catch (error) {
           console.error('Error occurred during authentication:', error);
         }

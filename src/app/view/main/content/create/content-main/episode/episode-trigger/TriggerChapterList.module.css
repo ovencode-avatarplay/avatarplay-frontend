@@ -1,0 +1,335 @@
+.modal-body {
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */    
+  max-width: 402px;
+margin: 0 auto; /* 수평 중앙 정렬 */
+}
+
+.modal-header {
+  display: flex;
+  align-items: center; /* 세로 정렬 */
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  padding-left: 24px;
+  padding-top: 11.5px;
+  padding-bottom: 11.5px;
+}
+
+.modal-title {    
+  font-size: 20px; /* 제목 크기 조정 */    
+  font-weight: bold;
+}
+
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+.card-box
+{
+  padding: 0px 28px;
+  height: 100%;
+}
+
+.listText
+{
+  padding-left: 10px;
+  font-size: medium;
+  font-weight: bold;
+}
+
+.card-body
+{   
+  height: 100%;
+}
+
+.box-button
+{
+  display: flex;
+  align-items: center; /* 세로 정렬 */
+  justify-content: center; /* 가로 정렬 */    
+  height: 10%;
+  padding-bottom: 5%;
+
+}
+
+.button-add
+{
+  border-radius: 10px;
+  height: 50px;
+  width: 120px;
+  
+}
+
+
+.header {
+  display: flex;
+  width: 100%;
+  height: 58px;
+  padding-top: 9px;
+  padding-right: 16px;
+  padding-bottom : 9px ;
+  padding-left:  0.362px;
+  align-items: center;
+  gap: 6.6px;
+  flex-shrink: 0;
+
+  background: var(--White, #FFF);
+}
+
+@media (min-width:402px)
+{.header {
+  width: 402px;
+  height: 58px;
+  gap: 6.6px;
+  display: flex;
+  justify-content: space-between;
+}
+}
+
+.headerLeft
+{ 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6.6px;
+}
+
+.headerLeft > .backButton{
+  display: flex;
+height: 40px;
+padding: 14px 0px 14px 16px;
+align-items: center;
+gap: 8px;
+}
+
+.backButton > .backIcon {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+}
+
+.headerLeft > .navTitle{
+  display: flex; 
+  justify-content: center;
+
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 600;
+font-size: 20px;
+line-height: 150%;
+/* identical to box height, or 30px */
+display: flex;
+align-items: center;
+
+/* Eerie black */
+color: #1E1E1E;
+
+
+}
+
+.counterAndCraete{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px;
+  gap: 198px;
+
+  width: calc(100vw - 32px);
+  height: 30px;
+  left: 15.58px;
+  top: 192px;
+}
+
+@media (min-width:402px)
+{
+  .counterAndCraete
+  {
+    width: 370px;
+  }
+}
+
+.counterButton
+{
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 8px 12px;
+gap: 8px;
+
+width: 82px;
+height: 30px;
+
+background: #F8F9FA;
+border-radius: 8px;
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 600;
+font-size: 13px;
+line-height: 20px;
+letter-spacing: -0.4px;
+
+color: #5F6368;
+}
+
+.createButton
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 20px;
+  gap: 8px;
+
+  width: 90px;
+  height: 30px;
+
+  background: #2C3131;
+  border-radius: 8px;
+
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.4px;
+
+  color: #FFFFFF;
+
+}
+
+.episodeBar
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 4px;
+
+  width: calc(100vw - 32px);
+  height: 46px;
+  left: 15.58px;
+  top: 132px;
+
+  background: #FD55D3;
+  border-radius: 10px;
+
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  color: #FFFFFF;
+}
+
+@media (min-width : 402px)
+{
+  .episodeBar
+  {
+    width: 370px;
+  }
+}
+
+.topGroup
+{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  
+  align-items: center;
+  gap: 14px;
+}
+.triggerBox
+{
+  overflow-y: auto;
+  width: 100%;
+  height: 80vh;    
+}
+
+
+
+.contentBottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  gap: 10px;
+
+  position: fixed; /* position을 fixed로 변경 */
+  width: 100vw;
+  height: 70px;
+  left: 0px;
+  bottom: 0px;
+}
+
+.setupButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 20px;
+  gap: 4px;
+
+  width: 92.5vw;
+  height: 50px;
+
+  background: #2C3131;
+  border-radius: 10px;
+
+  max-width: 370px;
+
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: -0.4px;
+
+  color: #FFFFFF;
+}
+.contentBottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  gap: 10px;
+
+  position: fixed; /* position을 fixed로 변경 */
+  width: 100vw;
+  height: 70px;
+  left: 0px;
+  bottom: 0px;
+}
+
+.setupButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 20px;
+  gap: 4px;
+
+  width: 92.5vw;
+  height: 50px;
+
+  background: #2C3131;
+  border-radius: 10px;
+
+  max-width: 370px;
+
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: -0.4px;
+
+  color: #FFFFFF;
+}

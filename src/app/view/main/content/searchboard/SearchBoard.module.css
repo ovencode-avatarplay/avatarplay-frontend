@@ -1,25 +1,60 @@
+.featuredContainer
+{
+    top: 12px;
+    gap: 15px;
+    overflow-y: hidden;
+}
+
+.scrollArea
+{ 
+    height: calc((var(--vh, 1vh) * 100) - 160px);
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */
+}
+
+.scrollArea::-webkit-scrollbar {
+    display: none;  
+  }
+  
+.scrollArea {
+   scrollbar-width: none;  
+   -ms-overflow-style: none;  
+}
+
+
 .content {
-    flex: 1;
-    overflow-y: auto;
+    flex: 1; 
+
+    height: calc(100vh - 56px - 60px);
     
-    max-width: 500px;
-    margin: 0 auto; /* 수평 중앙 정렬 */
-    overflow: hidden;
+    margin-left: 16px;  
+}
+
+@media (min-width : 402px)
+{
+    .content
+    {
+    }
 }
 
 .searchBoard
 {
     margin-top: 0;
     height: 120px;
-}
-
+} 
  
-.container
-{
-    margin-top: 5px;
-    height: calc(100vh - 56px - 60px);
+.listContainer
+{ 
+    height: calc(100vh - 56px - 60px - 320px);
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
-    scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */
+}
+
+@media (min-width : 402px)
+{
+    .listContainer
+    {
+
+        width: 386px;
+    }
 }

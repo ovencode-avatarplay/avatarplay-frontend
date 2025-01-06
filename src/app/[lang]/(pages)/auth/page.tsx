@@ -8,11 +8,12 @@ import {ThemeSupa} from '@supabase/auth-ui-shared';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {Session} from '@supabase/supabase-js';
 import {env} from 'process';
+import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';
 
 const Login = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect'); // 쿼리 파라미터에서 redirect 값을 가져옴
+  const redirect = searchParams?.get('redirect'); // 쿼리 파라미터에서 redirect 값을 가져옴
 
   useEffect(() => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
@@ -35,6 +36,8 @@ const Login = () => {
 
           const data = await response.json();
           localStorage.setItem('jwt', data.accessToken);
+          fetchLanguage(router);
+          // 서버에 저장한 언어코드로 language 변경
         } catch (error) {
           console.error('Error occurred during authentication:', error);
         }

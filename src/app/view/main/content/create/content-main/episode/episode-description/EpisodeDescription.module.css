@@ -1,4 +1,112 @@
 /* EpisodeDescription.module.css */
+
+.modalContainer
+{
+    width: 100vw;
+    height: 100vh;
+    max-width: 402px;
+    margin: 0 auto;
+    overflow: hidden; 
+    background: #fff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width : 402px)
+{
+  .modalContainer
+  {
+    width: 402px;
+  }
+}
+
+
+.descItem
+{
+  display: flex;
+  width: calc(100vw - 32px);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 16px;
+}
+
+@media (min-width : 402px) {
+  .descItem
+  {
+    width : 370px;
+  }
+  
+}
+
+.descContainer
+{
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.descTitle
+{
+  align-self: stretch;
+  
+  color: var(--Black, #000);
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 155%; /* 21.7px */
+}
+
+.supportButtonArea
+{
+  position: fixed;
+  bottom: 5%;
+  margin-left: 16px;
+  
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+
+}
+
+.supportButton
+{
+  display: flex;
+  padding: 7px 15px 7px 10px;
+  align-items: center;
+  gap: 5px;
+  
+  border-radius: 100px;
+  background: var(--Neutral-800, #2C3131);
+}
+
+.supportButton > .buttonIcon
+{
+  width: 15px;
+  height: 15px;
+
+}
+
+.supportButton > .buttonText
+{
+  color: var(--White, #FFF);
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Lato;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 123.077% */
+  letter-spacing: -0.4px;
+}
+
+
 .dialogTitle {
   font-size: 1.5rem;
   font-weight: bold;
