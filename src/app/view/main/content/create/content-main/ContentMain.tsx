@@ -1,18 +1,23 @@
 import React, {useRef, useEffect, useState, useCallback, useLayoutEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '@/redux-store/ReduxStore';
+import {RootState, store} from '@/redux-store/ReduxStore';
 
 import styles from './ContentMain.module.css';
+import {LinePlus, LineStack} from '@ui/Icons';
 
 // 항상 보여지는 컴포넌트
 import ContentHeader from './ContentHeader';
-import EpisodeSetup from './episode/EpisodeSetup';
-import ContentBottom from './ContentBottom';
+import ButtonEpisodeInfo from './episode/ButtonEpisodeInfo';
 
 // 상황에 따라 나타나는 컴포넌트
 import ContentPublishing from './content-publishing/ContentPublishing';
 import ContentDashboardDrawer from './content-dashboard/ContentDashboardDrawer';
 import ChapterBoard from './chapter/ChapterBoard';
+import ContentLLMSetup from './content-LLMsetup/ContentLLMsetup';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
+import EpisodeInitialize from './episode/episode-initialize/EpisodeInitialize';
+import BottomRenameDrawer from './episode/BottomRenameDrawer';
+import EpisodeCard from './episode/EpisodeCard';
 
 // 네트워크
 import {
@@ -33,7 +38,7 @@ import {
 } from '@/redux-store/slices/ContentSelection';
 import {setContentInfoToEmpty, setEditingContentInfo, updateEditingContentInfo} from '@/redux-store/slices/ContentInfo';
 import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
-import {setPublishInfo, setContentName} from '@/redux-store/slices/PublishInfo';
+import {setPublishInfo, setContentName, PublishInfoSlice} from '@/redux-store/slices/PublishInfo';
 
 // Interface
 import {ContentInfo, ChapterInfo} from '@/redux-store/slices/ContentInfo';
@@ -42,18 +47,12 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 
 // Json
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
-import ContentLLMSetup from './content-LLMsetup/ContentLLMsetup';
-import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
-  // 컴포넌트 오픈 상태
-  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
-  const [isChapterboardOpen, setIsChapterboardOpen] = useState(false);
-  const [isPublishingOpen, setIsPublishingOpen] = useState(false);
-  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false); // 모달 상태 관리
-  const [isInitFinished, setIsInitFinished] = useState(false);
+  const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
 
   // Redux Selector
   // 자주 렌더링 되거나 독립적이지 않을 때 버그가 발생하면 개별선언
@@ -62,6 +61,29 @@ const ContentMain: React.FC = () => {
   const selectedChapterIdx = useSelector((state: RootState) => state.contentselection.selectedChapterIdx); // ChapterBoard에서 선택된 ChapterId
   const selectedEpisodeIdx = useSelector((state: RootState) => state.contentselection.selectedEpisodeIdx); // ChapterBoard에서 선택된 EpisodeId
   const skipContentInit = useSelector((state: RootState) => state.contentselection.skipContentInit); // Init Skip (다른 페이지에서 편집을 들어올 때 사용)
+
+  // 컴포넌트 오픈 상태
+  const [isContentNameOpen, setIsContentNameOpen] = useState<boolean>(false);
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+  const [isChapterboardOpen, setIsChapterboardOpen] = useState(false);
+  const [isPublishingOpen, setIsPublishingOpen] = useState(false);
+  const [isLLMSetupOpen, setLLMSetupOpen] = useState(false);
+
+  const [isFromInitFirstEpisode, setIsFromInitFirstEpisode] = useState(false);
+  const [isEpisodeEditing, setIsEpisodeEditing] = useState(false);
+  const [isFromChapterFirstEpisode, setIsFromChapterFirstEpisode] = useState(false);
+  const [isEpisodeInitOpen, setIsEpisodeInitOpen] = useState(false);
+  const [chapterFirstEpisode, setChapterFirstEpisode] = useState<EpisodeInfo>(
+    emptyContentInfo.chapterInfoList[0].episodeInfoList[0],
+  );
+
+  const [isChapterNameOpen, setIsChapterNameOpen] = useState<boolean>(false);
+
+  const [isInitFinished, setIsInitFinished] = useState(false);
+
+  // Save Draft
+  const [saveDraftRequested, setSaveDraftRequested] = useState(false);
+
   // 자주 렌더링 되지 않는 경우는 묶어서
   const {
     editedPublishInfo, // 저장하기 전에 수정사항을 올려놓는 PublishInfo 정보
@@ -75,15 +97,11 @@ const ContentMain: React.FC = () => {
   const prevChapterRef = useRef<number | null>(null);
   const prevEpisodeRef = useRef<number | null>(null);
 
-  const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
   const defaultSaveContentReq = (): SaveContentReq => ({
     contentInfo: editingContentInfo ?? emptyContentInfo,
   });
 
-  const [loading, setLoading] = useState(false);
-
   function Init() {
-    setIsInitFinished(false);
     dispatch(setContentInfoToEmpty());
     dispatch(setSelectedChapterIdx(0));
     dispatch(setSelectedEpisodeIdx(0));
@@ -92,13 +110,19 @@ const ContentMain: React.FC = () => {
     dispatch(setCurrentEpisodeInfo(emptyContentInfo.chapterInfoList[0].episodeInfoList[0]));
 
     getContentsByUserId();
-    setIsInitFinished(true);
   }
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
-    if (!skipContentInit) {
+    setIsInitFinished(false);
+    if (skipContentInit) {
+      setIsFromInitFirstEpisode(false);
+      setIsEpisodeInitOpen(false);
+      setIsInitFinished(true);
+    } else {
       Init();
+      setIsFromInitFirstEpisode(true);
+      setIsEpisodeInitOpen(true);
     }
     dispatch(setSkipContentInit(false));
   }, []);
@@ -165,8 +189,6 @@ const ContentMain: React.FC = () => {
   //#region ChapterBoard에서 정보 수정
   function setCurEpisodeInfo() {
     try {
-      // console.log(`chap ${selectedChapterIdx}, epi ${selectedEpisodeIdx}`);
-
       const chapter = editingContentInfo.chapterInfoList?.[selectedChapterIdx];
       const episode = chapter?.episodeInfoList?.[selectedEpisodeIdx];
 
@@ -265,11 +287,29 @@ const ContentMain: React.FC = () => {
     }
   };
 
+  const getMinEpisodeId = (chapters: ChapterInfo[]): number => {
+    const episodeIds = chapters.flatMap(chapter => chapter.episodeInfoList.map(episode => episode.id));
+
+    if (episodeIds.length === 0) {
+      return 0; // 에피소드가 없는 경우 null 반환 (버그)
+    }
+
+    const minId = Math.min(...episodeIds);
+    return minId > 0 ? 0 : minId;
+  };
+
   const handleAddEpisode = (newEpisode: EpisodeInfo) => {
+    const newEpisodeId = getMinEpisodeId(editingContentInfo.chapterInfoList);
+
     if (selectedChapterIdx !== -1) {
+      const updatedEpisode: EpisodeInfo = {
+        ...newEpisode,
+        id: newEpisodeId - 1 || -1,
+      };
+
       const updatedChapter = {
         ...editingContentInfo.chapterInfoList[selectedChapterIdx],
-        episodeInfoList: [...editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList, newEpisode],
+        episodeInfoList: [...editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList, updatedEpisode],
       };
 
       const updatedChapterList = [
@@ -286,6 +326,36 @@ const ContentMain: React.FC = () => {
       );
       dispatch(setSelectedEpisodeIdx(updatedChapter.episodeInfoList.length - 1));
       setCurEpisodeInfo();
+
+      setIsEpisodeInitOpen(false);
+
+      setSaveDraftRequested(true);
+    }
+  };
+
+  const handleModifyEpisode = (updatedEpisode: EpisodeInfo) => {
+    if (selectedChapterIdx !== -1 && selectedEpisodeIdx !== -1) {
+      const updatedChapter = {
+        ...editingContentInfo.chapterInfoList[selectedChapterIdx],
+        episodeInfoList: editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.map((episode, idx) =>
+          idx === selectedEpisodeIdx ? updatedEpisode : episode,
+        ),
+      };
+
+      const updatedChapterList = [
+        ...editingContentInfo.chapterInfoList.slice(0, selectedChapterIdx),
+        updatedChapter,
+        ...editingContentInfo.chapterInfoList.slice(selectedChapterIdx + 1),
+      ];
+
+      dispatch(
+        updateEditingContentInfo({
+          id: editingContentInfo.id,
+          chapterInfoList: updatedChapterList,
+        }),
+      );
+
+      setSaveDraftRequested(true);
     }
   };
 
@@ -321,18 +391,89 @@ const ContentMain: React.FC = () => {
     }
   };
 
-  const handleNameChange = useCallback(
-    (contentInfo: ContentInfo) => {
-      dispatch(
-        setCurrentEpisodeInfo(contentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]),
+  const handleSetChapterNameComplete = (inputValue: string): boolean => {
+    try {
+      // Redux 상태 가져오기
+      const state = store.getState(); // Redux store의 상태 가져오기
+      const allChapters = state.content.curEditingContentInfo.chapterInfoList;
+
+      // 중복 이름 확인
+      const isDuplicateName = allChapters.some((chapter: ChapterInfo) => chapter.name === inputValue);
+
+      if (isDuplicateName) {
+        console.warn('Duplicate chapter name found:', inputValue);
+        return false; // 중복된 이름이 있으면 false 반환
+      }
+      // Redux 상태 가져오기
+      const editingContentInfo = state.content.curEditingContentInfo;
+
+      if (!editingContentInfo) {
+        console.error('Editing content info not found');
+        return false;
+      }
+
+      // Chapter 이름 업데이트
+      const updatedChapters = editingContentInfo.chapterInfoList.map((chapterInfo, index) =>
+        index === selectedChapterIdx ? {...chapterInfo, name: inputValue} : chapterInfo,
       );
-    },
-    [editingContentInfo, selectedChapterIdx, selectedEpisodeIdx],
-  );
+
+      // 업데이트된 Content 객체 생성
+      const updatedContent = {
+        ...editingContentInfo,
+        chapterInfoList: updatedChapters,
+      };
+
+      // Redux 상태 업데이트
+      dispatch(updateEditingContentInfo(updatedContent));
+      return true;
+    } catch (error) {
+      console.error('Error updating chapter name:', error);
+
+      // 오류가 발생했음을 반환
+      return false;
+    }
+  };
+
+  const handleSetContentNameComplete = (inputValue: string): boolean => {
+    try {
+      // Redux 상태 가져오기
+      const state = store.getState(); // Redux store의 상태 가져오기
+
+      // Redux 상태 가져오기
+      const editingContentInfo = state.content.curEditingContentInfo;
+
+      if (!editingContentInfo) {
+        console.error('Editing content info not found');
+        return false;
+      }
+
+      const updatedContent = {
+        ...editingContentInfo,
+        publishInfo: {
+          ...editingContentInfo.publishInfo,
+          contentName: inputValue,
+        },
+      };
+
+      // Redux 상태 업데이트
+      dispatch(updateEditingContentInfo(updatedContent));
+      dispatch(setContentName(inputValue));
+      return true;
+    } catch (error) {
+      console.error('Error updating chapter name:', error);
+
+      // 오류가 발생했음을 반환
+      return false;
+    }
+  };
 
   //#endregion
 
   //#region Drawer, Modal Open / Close
+  const handleContentNameOpen = () => {
+    setIsContentNameOpen(true);
+  };
+
   const handleOpenDashboard = useCallback(() => {
     getContentsByUserId();
 
@@ -348,6 +489,10 @@ const ContentMain: React.FC = () => {
   };
   const handleCloseChapterboard = () => {
     setIsChapterboardOpen(false);
+  };
+
+  const handleChapterNameOpen = () => {
+    setIsChapterNameOpen(true);
   };
 
   const handleOpenLLMSetup = () => {
@@ -366,6 +511,44 @@ const ContentMain: React.FC = () => {
   const handleClosePublishing = () => {
     setIsPublishingOpen(false);
   };
+
+  const handleOpenInitialEpisode = (isEditing: boolean = false) => {
+    setIsEpisodeEditing(isEditing);
+    setIsEpisodeInitOpen(isEditing);
+  };
+  const handleOpenInitialEpisodeFromChapter = () => {
+    setIsEpisodeInitOpen(true);
+    setIsFromChapterFirstEpisode(true);
+  };
+
+  const handleCloseInitialEpisode = () => {
+    setIsEpisodeEditing(false);
+    setIsEpisodeInitOpen(false);
+  };
+  const handleInitialChapterFirstEpisodeFinish = (episodeInfo: EpisodeInfo) => {
+    setChapterFirstEpisode(episodeInfo);
+    setIsFromChapterFirstEpisode(false);
+  };
+
+  const handleInitialEpisodeFinish = (episodeInfo: EpisodeInfo) => {
+    handleAddEpisode(episodeInfo);
+  };
+
+  const handleModifyEpisodeFinish = (episodeInfo: EpisodeInfo) => {
+    handleModifyEpisode(episodeInfo);
+  };
+
+  //#endregion
+
+  //#region ContentDashboard 안에서 Create를 들어올 경우
+
+  const handleCreateContentFromDashBoard = () => {
+    setIsFromInitFirstEpisode(false);
+    setIsInitFinished(false);
+    setIsEpisodeEditing(true);
+    setIsEpisodeInitOpen(true);
+  };
+
   //#endregion
 
   //#region SaveContent
@@ -438,7 +621,6 @@ const ContentMain: React.FC = () => {
     try {
       setLoading(true);
       const result = await sendContentSave(tmp);
-      // console.log('Content saved successfully!');
       handleClosePublishing();
       Init();
       setLoading(false);
@@ -450,6 +632,65 @@ const ContentMain: React.FC = () => {
       alert('Failed to save content.');
     }
   };
+
+  useEffect(() => {
+    if (saveDraftRequested === true) {
+      handleSaveDraft();
+      setSaveDraftRequested(false);
+    }
+  }, [saveDraftRequested]);
+
+  const handleSaveDraft = async () => {
+    if (!editingContentInfo) {
+      console.error('No content selected.');
+      return;
+    }
+    console.log(editingContentInfo);
+
+    if (!editedPublishInfo) {
+      console.error('No editedPublishInfo available.');
+      return;
+    }
+
+    //(트리거, 대화 템플릿, 에피소드 시나리오) 수정 및 추가 완료 시
+    //currentEpisode를 editingContent에 넣은 후 SaveDraft를 실행할 필요가 있음
+    saveEpisodeData();
+
+    const updatedContent = {
+      ...sanitizeStringFields(editingContentInfo),
+      userId: userId,
+      publishInfo: {
+        ...sanitizeStringFields(editedPublishInfo),
+        visibilityType: 3, // visible 값을 임시 저장으로 설정
+      },
+    };
+
+    const tmp: SaveContentReq = {
+      contentInfo: updatedContent,
+    };
+
+    setSaveData(tmp);
+
+    try {
+      setLoading(true);
+      const result = await sendContentSave(tmp);
+
+      if (result.data) {
+        GetContentByContentId(result.data?.contentId);
+      }
+
+      handleClosePublishing();
+      // Init();
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error sending save content data:', error);
+
+      // 실패 메시지
+      alert('Failed to save content.');
+    }
+  };
+
   //#endregion
 
   //#region 에피소드 세이브 로드
@@ -535,37 +776,111 @@ const ContentMain: React.FC = () => {
     <>
       <main className={styles.contentMain}>
         <ContentHeader
+          onOpenContentName={handleContentNameOpen}
           onOpenDrawer={handleOpenDashboard}
           onTitleChange={handleTitleChange} // Redux 상태 업데이트
         />
-        <div className={styles.content}>
-          <ContentDashboardDrawer
-            open={isDashboardOpen}
-            onClose={handleCloseDashboard}
-            onSelectItem={GetContentByContentId}
-            onRefreshItem={getContentsByUserId}
-          />
-          <ChapterBoard
-            open={isChapterboardOpen}
-            onClose={handleCloseChapterboard}
-            initialChapters={editingContentInfo?.chapterInfoList || []}
-            onAddChapter={handleAddChapter}
-            onDeleteChapter={handleDeleteChapter}
-            onAddEpisode={handleAddEpisode}
-            onDeleteEpisode={handleDeleteEpisode}
-            onNameChange={handleNameChange}
-          />
-          <ContentPublishing open={isPublishingOpen} onClose={handleClosePublishing} onPublish={handlePublish} />
-          <EpisodeSetup
+        <ContentDashboardDrawer
+          open={isDashboardOpen}
+          onClose={handleCloseDashboard}
+          onSelectItem={GetContentByContentId}
+          onRefreshItem={getContentsByUserId}
+          onClickCreate={handleCreateContentFromDashBoard}
+        />
+        <ChapterBoard
+          open={isChapterboardOpen}
+          onClose={handleCloseChapterboard}
+          contentChapters={editingContentInfo?.chapterInfoList || []}
+          onAddChapter={handleAddChapter}
+          onDeleteChapter={handleDeleteChapter}
+          onRenameClick={handleChapterNameOpen}
+          openInitEpisode={handleOpenInitialEpisodeFromChapter}
+          chapterFirstEpisode={chapterFirstEpisode}
+        />
+        <div className={styles.seasonArea}>
+          <ButtonEpisodeInfo
             onDrawerOpen={handleOpenChapterboard}
-            contentId={editingContentInfo?.id ?? 0}
-            chapterIdx={selectedChapterIdx}
-            episodeIdx={selectedEpisodeIdx}
+            onEditChapterNameOpen={handleChapterNameOpen}
+            chapterName={editingContentInfo.chapterInfoList[selectedChapterIdx].name ?? ''}
           />
+          {/* EpisodeCounter */}
+          <div className={styles.episodeInfo}>
+            <div className={styles.episodeCountArea}>
+              <img src={LineStack.src} className={styles.episodeIcon} />
+              <div className={styles.episodeCounter}>
+                {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.length} / 10
+              </div>
+            </div>
+            <button
+              className={styles.addEpisode}
+              onClick={() => {
+                setIsEpisodeInitOpen(true);
+              }}
+            >
+              <img src={LinePlus.src} className={styles.iconPlus} />
+              Create
+            </button>
+          </div>
+
+          <div className={styles.episodeCardList}>
+            {editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList.map((episode, index) => (
+              <EpisodeCard
+                episodeId={episode.id}
+                episodeNum={index}
+                onInit={() => handleOpenInitialEpisode(true)}
+                saveDraft={() => setSaveDraftRequested(true)}
+              />
+            ))}
+          </div>
+          <div className={styles.content}>
+            <ContentPublishing
+              open={isPublishingOpen}
+              onClose={handleClosePublishing}
+              onPublish={handlePublish}
+              LLMOpen={isLLMSetupOpen}
+              setLLMOpen={() => setLLMSetupOpen(true)}
+              onLLMClose={handleCloseLLMSetup}
+            />
+          </div>
+          <div className={styles.contentBottom}>
+            <div className={styles.setupButtons} onClick={handleOpenPublishing}>
+              Publish
+            </div>
+          </div>
         </div>
-        <ContentBottom onLLMOpen={handleOpenLLMSetup} onPublishingOpen={handleOpenPublishing} />
-        {/* EpisodeLLMSetup 모달 */}
-        <ContentLLMSetup open={isLLMSetupOpen} onClose={handleCloseLLMSetup} />
+
+        <EpisodeInitialize
+          open={isEpisodeInitOpen}
+          isFromInitFirstEpisode={isFromInitFirstEpisode}
+          setIsFromInitFirstEpisode={setIsFromInitFirstEpisode}
+          isEditing={isEpisodeEditing}
+          isFromChapterFirstEpisode={isFromChapterFirstEpisode}
+          onClose={handleCloseInitialEpisode}
+          modifyEpisodeOper={handleModifyEpisodeFinish}
+          addEpisodeOper={handleInitialEpisodeFinish}
+          addChapterOper={handleInitialChapterFirstEpisodeFinish}
+          episodeName={
+            editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]?.name ?? ''
+          }
+          isInitFinished={isInitFinished}
+          setIsInitFinished={setIsInitFinished}
+        />
+
+        {/* ContentName 변경 Drawer */}
+        <BottomRenameDrawer
+          open={isContentNameOpen}
+          onClose={() => setIsContentNameOpen(false)}
+          onComplete={handleSetContentNameComplete}
+          lastValue={editingContentInfo.publishInfo.contentName}
+        />
+
+        {/* ChapterName 변경 Drawer */}
+        <BottomRenameDrawer
+          open={isChapterNameOpen}
+          onClose={() => setIsChapterNameOpen(false)}
+          onComplete={handleSetChapterNameComplete}
+          lastValue={editingContentInfo.chapterInfoList[selectedChapterIdx].name}
+        />
       </main>
       <LoadingOverlay loading={loading} />
     </>

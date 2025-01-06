@@ -16,7 +16,6 @@ const TriggerList: React.FC = () => {
     // 인덱스를 받아 선택 상태를 설정
     setSelectedIndex(index === selectedIndex ? null : index);
   };
-
   // 트리거 리스트가 변경될 때 선택된 항목이 삭제되었는지 확인하고, 삭제된 경우 Redux에 삭제 요청
   useEffect(() => {
     if (selectedIndex !== null && (selectedIndex < 0 || selectedIndex >= dataPairs.length)) {
@@ -27,7 +26,16 @@ const TriggerList: React.FC = () => {
   }, [dataPairs, selectedIndex, dispatch]);
 
   return (
-    <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px',
+        width: '100%',
+        maxWidth: '402px',
+        alignItems: 'center',
+      }}
+    >
       {dataPairs.map((pair, index) => (
         <TriggerListItem
           key={index}
@@ -36,7 +44,7 @@ const TriggerList: React.FC = () => {
           index={index}
         />
       ))}
-    </List>
+    </div>
   );
 };
 

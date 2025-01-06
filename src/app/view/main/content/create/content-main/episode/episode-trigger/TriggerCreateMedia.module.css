@@ -1,0 +1,283 @@
+.box
+{
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    overflow-y: hidden;
+    justify-items: center;
+    padding: 16px 16px 12px 12px;
+    position: relative;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 8px;
+
+    width: calc(100vw - 32px);
+    height: 103px;
+  }
+
+@media (min-width : 402px)
+{
+  .container
+  {
+    width: 370px;
+  }
+}
+  
+  .label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 5px;
+  
+    width: calc(100vw - 32px);
+    height: 22px;
+  
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+
+@media (min-width : 402px)
+{
+  .label
+  {
+    width: 370px;
+  }
+}
+  
+  .labelText {
+    width: 136px;
+    height: 22px;
+  
+    font-family: "Lato", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 155%;
+  
+    color: #000000;
+  
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+  
+  .inputFrame {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px;
+    gap: 83px;
+  
+    width: calc(100vw - 32px);
+    height: 46px;
+  
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+  
+@media (min-width : 402px)
+{
+  .inputFrame
+  {
+    width: 370px;
+  }
+}
+  
+  .inputBox {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 13px 0px;
+    gap: 8px;
+  
+    width: calc(100vw - 32px);
+    height: 46px;
+  
+    background: #ffffff;
+    border: 1px dashed #bdc1c6;
+    border-radius: 10px;
+  
+    flex: none;
+    order: 0;
+    flex-grow: 1;
+  }
+  
+@media (min-width : 402px)
+{
+  .inputBox
+  {
+    width: 370px;
+  }
+}
+  
+  .uploadIcon {
+    width: 20px;
+    height: 20px;
+  
+    filter: brightness(0) saturate(100%)
+  }
+  
+  .uploadText {
+    width: 41px;
+    height: 20px;
+  
+    font-family: "Lato", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 155%;
+    text-align: center;
+  
+    color: #000000;
+  
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+  
+  .hint {
+    width: 346px;
+    height: 19px;
+  
+    font-family: "Lato", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 155%;
+    color: #9aa0a6;
+  
+    flex: none;
+    order: 2;
+    flex-grow: 0;
+  }
+  .mediaVideo
+  {
+    position: relative;
+    width: calc(100vw - 32px);
+    height: 316px;
+    background-color: #000000;
+  }
+  
+@media (min-width : 402px)
+{
+  .mediaVideo
+  {
+    width: 370px;
+  }
+}
+
+  .deleteButton {
+    position: absolute;
+    top: 0px;
+    right:0px;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    padding: 5.33px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  
+.deleteButton img {
+    width: 100%; /* 이미지 가로 크기 */
+    height: 100%; /* 이미지 세로 크기 */
+  }
+  .playButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  
+  .playButton img {
+    width: 40px;
+    height: 40px;
+  }
+  .audioContainer {
+    position: relative;
+    width: calc(100vw - 32px);
+    height: 146px;
+    border: 1px solid #eaecf0;
+    border-radius: 8px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 16px; /* 상단 간격 */
+  }
+  
+@media (min-width : 402px)
+{
+  .audioContainer
+  {
+    width: 370px;
+  }
+}
+  
+  .audioContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .iconWrapper {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: brightness(0) saturate(100%)
+  }
+  
+  .fileIcon {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    background: #000000;
+    border-radius: 2px;
+  }
+  
+  .musicNote {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #000000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .audioFileName {
+    font-family: 'Lato', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 19px;
+    color: #000000;
+    text-align: center;
+  }
+  

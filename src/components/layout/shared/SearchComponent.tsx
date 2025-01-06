@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchInput: React.FC = () => {
+const SearchComponent: React.FC = () => {
   return (
     <TextField
       placeholder="Search..."
@@ -21,4 +21,4 @@ const SearchInput: React.FC = () => {
   );
 };
 
-export default SearchInput;
+export default SearchComponent;

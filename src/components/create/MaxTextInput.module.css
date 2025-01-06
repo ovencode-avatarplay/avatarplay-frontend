@@ -1,0 +1,128 @@
+
+.inputArea
+{ 
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+
+justify-items: center;
+
+padding: 10px 12px;
+
+width: calc(100vw - 32px);
+height: 190px;
+
+background: #FFFFFF;
+border: 1px solid #E8EAED;
+border-radius: 10px;
+
+}
+
+
+.inputErrorArea
+{ 
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+
+justify-items: center;
+
+padding: 10px 12px;
+
+width: calc(100vw - 32px);
+height: 190px;
+
+background: #FFF5FD;
+border: 1px solid #FEBBEA;
+border-radius: 10px;
+
+
+}
+
+@media (min-width:402px)
+{
+    .inputArea  {
+    width: 370px;
+  }
+}
+
+.inputArea >.inputPrompt
+{
+    flex: 1 0 0;
+    align-self: stretch;
+
+    color: var(--Black, #000);
+    font-family: 'Lato';
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%;  
+
+    resize: none; 
+    height: 150px; 
+    overflow-y: auto; 
+    box-sizing: border-box;
+
+    text-align: left;
+    vertical-align: top;
+}
+
+
+.inputArea >.inputPrompt:focus {
+    outline: none; 
+  }
+  
+   .inputArea >.inputPrompt:focus-visible {
+    outline: none;  
+  }
+   
+.inputArea >.inputError
+{
+  flex: 1 0 0;
+  align-self: stretch;
+
+  color: var(--Black, #000);
+  font-family: 'Lato';
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%;  
+
+  resize: none; 
+  height: 150px; 
+  overflow-y: auto; 
+  box-sizing: border-box;
+
+  text-align: left;
+  vertical-align: top;
+
+background: #FFF5FD;
+}
+
+  .inputArea >.inputError:focus {
+    outline: none; 
+  }
+  
+   .inputArea >.inputError:focus-visible {
+    outline: none;  
+  }
+  .inputArea > .inputHint
+{
+    display: flex;
+    align-items: flex-end;
+    align-self: stretch;
+    color: var(--Neutral-500, #9AA0A6);
+    font-family: 'Lato';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 155%; /* 18.6px */
+}
+
+

@@ -1,95 +1,122 @@
-import React from 'react';
-import {Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Typography} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import DeleteIcon from '@mui/icons-material/Delete';
-import HomeIcon from '@mui/icons-material/Home';
-import EditIcon from '@mui/icons-material/Edit';
+import React, {useState} from 'react';
 
 import EpisodeItem from './EpisodeItem';
 import {ChapterItemProps} from './ChapterTypes';
 
-import styles from './ChapterBoard.module.css';
+import styles from './ChapterItem.module.css';
+import {BoldMenuDots, BoldRadioButton, BoldRadioButtonSelected, LineCopy, LineDelete, LineEdit} from '@ui/Icons';
+import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 
 const ChapterItem: React.FC<ChapterItemProps> = ({
+  canEdit,
   chapter,
   chapterIdx,
   chapterLength,
   onDelete,
-  onToggle,
-  onDeleteEpisode,
   onSelect,
   onSelectEpisode,
-  onCloseChapterBoard,
-  onEdit,
+  onRename,
+  onDuplicate,
   isSelected,
   selectedEpisodeIdx,
+  hideSelectedEpisode,
   disableDelete,
 }) => {
+  const [dropBoxOpen, setDropBoxOpen] = useState<boolean>(false);
+  const dropDownMenuItems: DropDownMenuItem[] = [
+    {
+      name: 'Rename',
+      icon: LineEdit.src,
+      onClick: () => {
+        onRename();
+        setDropBoxOpen(false);
+      },
+    },
+    {
+      name: 'Duplicate',
+      icon: LineCopy.src,
+      onClick: () => {
+        onDuplicate();
+        setDropBoxOpen(false);
+      },
+    },
+    {
+      name: 'Delete',
+      icon: LineDelete.src,
+      onClick: () => handleDeleteChapter(chapterIdx, chapterLength),
+      disabled: disableDelete,
+      isRed: true, // Delete는 위험 동작으로 표시
+    },
+  ];
+
   const handleDeleteChapter = (chapterIdx: number, chapterLength: number) => {
     onDelete(chapterIdx);
+    setDropBoxOpen(false);
 
     console.log(chapterIdx + '/' + chapterLength);
   };
 
+  const handleOnSelectEpisode = (chapterIdx: number, episodeIdx: number) => {
+    onSelectEpisode(chapterIdx, episodeIdx);
+  };
+
+  const handleDuplicateChapter = () => {
+    onDuplicate();
+    setDropBoxOpen(false);
+  };
+
   return (
     <>
-      <Accordion
-        expanded={isSelected}
-        onChange={() => onToggle(chapterIdx)}
-        sx={{
-          backgroundColor: isSelected ? 'rgba(0, 123, 255, 0.1)' : 'inherit',
-          border: isSelected ? '2px solid #007bff' : '1px solid rgba(0, 0, 0, 0.12)',
-          transition: 'background-color 0.3s ease, border 0.3s ease',
+      <div
+        className={styles.chapterItem}
+        onClick={() => {
+          onSelect(chapterIdx);
         }}
       >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          onClick={() => {
-            onSelect(chapterIdx); // 인덱스를 사용
-            onToggle(chapterIdx);
-          }}
-        >
-          <Box className={styles.chapterHeader} sx={{justifyContent: 'space-between', textAlign: 'left'}}>
-            <HomeIcon />
-            <Typography sx={{width: '60%'}}>{chapter.title}</Typography>
-
-            <Box>
-              <IconButton onClick={() => onEdit(chapterIdx, 'chapter')}>
-                <EditIcon />
-              </IconButton>
-
-              {/* Chapter 삭제 버튼 */}
-              {!disableDelete && (
-                <IconButton
-                  className={styles.deleteButton}
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleDeleteChapter(chapterIdx, chapterLength);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              )}
-            </Box>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails>
-          {chapter.episodes.map((episode, episodeIdx) => (
+        <div className={styles.chapterInfoArea}>
+          <button className={styles.chapterInfoLeft}>
+            <div className={styles.radioButton}>
+              <img
+                className={styles.radioButtonIcon}
+                src={isSelected ? BoldRadioButtonSelected.src : BoldRadioButton.src}
+              />
+            </div>
+            <div className={styles.chapterName}>{chapter.name}</div>
+          </button>
+          {canEdit && (
+            <button
+              className={styles.chapterDropDownButton}
+              onClick={() => {
+                if (canEdit) {
+                  setDropBoxOpen(!dropBoxOpen);
+                }
+              }}
+            >
+              <img className={styles.chapterDropDownIcon} src={BoldMenuDots.src} />
+            </button>
+          )}
+        </div>
+        <div className={styles.episodeContainer}>
+          {chapter.episodeInfoList.map((episode, episodeIdx) => (
             <EpisodeItem
               key={episodeIdx}
               episode={episode}
               chapterIdx={chapterIdx}
-              episodeIdx={episodeIdx} // 인덱스를 전달
-              onEditEpisode={onEdit}
-              onDeleteEpisode={onDeleteEpisode}
-              disableDelete={chapter.episodes.length <= 1}
-              onSelect={onSelectEpisode}
-              onClose={onCloseChapterBoard}
-              isSelected={selectedEpisodeIdx === episodeIdx}
+              episodeIdx={episodeIdx}
+              onSelectEpisode={handleOnSelectEpisode}
+              hideSelected={hideSelectedEpisode}
+              isSelected={isSelected && episodeIdx === selectedEpisodeIdx ? true : false}
             />
           ))}
-        </AccordionDetails>
-      </Accordion>
+        </div>
+        {dropBoxOpen && (
+          <DropDownMenu
+            items={dropDownMenuItems}
+            onClose={() => setDropBoxOpen(false)}
+            className={styles.chapterDropDown}
+          />
+        )}
+      </div>
     </>
   );
 };

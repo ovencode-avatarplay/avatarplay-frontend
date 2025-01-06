@@ -43,7 +43,7 @@ import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
 import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import ChatFloatingArea from './MainChat/ChatFloatingArea';
-import {TriggerSubDataType} from '@/types/apps/DataTypes';
+import {TriggerActionType} from '@/types/apps/DataTypes';
 import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
 import {addNewDateMessage, compareDates, NewDateType, refreshNewDateAll, shiftDates} from './MainChat/NewDate';
 
@@ -329,8 +329,8 @@ const ChatPage: React.FC = () => {
           allEmoticon.push(''); // 빈 이모티콘 추가
           allMedia.push(noneMedia); // 새 미디어 추가
 
-          switch (triggerInfo.type as TriggerSubDataType) {
-            case TriggerSubDataType.EpisodeChange:
+          switch (triggerInfo.type as TriggerActionType) {
+            case TriggerActionType.EpisodeChange:
               if (
                 triggerInfo.triggerActionInfo.triggerNextEpisodeInfo != null &&
                 triggerInfo.triggerActionInfo.triggerNextEpisodeInfo.nextEpisodeId !== 0
@@ -341,11 +341,11 @@ const ChatPage: React.FC = () => {
                 setShowPopup(true);
               }
               break;
-            case TriggerSubDataType.ChangePrompt:
+            case TriggerActionType.ChangePrompt:
               break;
-            case TriggerSubDataType.GetIntimacyPoint:
+            case TriggerActionType.GetIntimacyPoint:
               break;
-            case TriggerSubDataType.ChangeCharacter:
+            case TriggerActionType.ChangeCharacter:
               // 캐릭터 변경 처리
               if (
                 triggerInfo.triggerActionInfo.changeCharacterInfo &&
@@ -354,7 +354,7 @@ const ChatPage: React.FC = () => {
                 setCharacterImageUrl(triggerInfo.triggerActionInfo.changeCharacterInfo.imageUrl);
               }
               break;
-            case TriggerSubDataType.PlayMedia:
+            case TriggerActionType.PlayMedia:
               const mediaInfoList = triggerInfo.triggerActionInfo.triggerMediaInfoList || [];
               mediaInfoList.forEach(mediaInfo => {
                 if (mediaInfo.triggerMediaState.toString() !== TriggerMediaState.None) {

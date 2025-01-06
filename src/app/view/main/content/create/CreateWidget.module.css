@@ -1,20 +1,158 @@
 .drawerContainer {
+  display: flex;
+  width: 100%;
+  padding: 8px 16px 45px 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+
   justify-self: center;
-  max-width: 500px;
-  max-height: 80vh;
-  padding: 16px;
-  background-color: #f9f9f9;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
+  max-width: 402px;
+  max-height: 35vh;
+
+  border-radius: 24px 24px 0px 0px;
+  background: var(--White, #FFF);
 }
 
-.drawerTitle {
+.widgetBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+}
+
+.widgetBox > .handleArea {
+  display: flex;
+  padding: 8px 0px 22px 0px;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+}
+
+.handleArea > .handle {
+  width: 39px;
+  height: 4px;
+
+  border-radius: 50px;
+  background: #E0E0E0;
+}
+
+.drawerArea
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  align-self: stretch;
+}
+
+.drawerTitle
+{
+  color: var(--Neutral-100, #101010);
+  font-family: Lato;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+
+}
+
+.buttonArea
+{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  border-radius: 12px;
+  border: 1px solid var(--Border-1, #EAECF0);
+}
+.drawerButton
+{
+  display: flex;
+  width: calc(100vw - 32px);
+height: 66px;
+padding: 13px 20px;
+align-items: center;
+gap: 10px;
+background: var(--Neutral-50, #F8F9FA);
+}
+
+@media (min-width: 402px) {
+  .drawerButton
+  {
+    width: 370px;
+  }
+}
+
+.drawerButtonTop
+{
+  
+  border-top-left-radius : 12px ;
+  border-top-right-radius : 12px ;
+  border: 1px solid var(--Border-1, #EAECF0);
+}
+
+.drawerButtonMid
+{
+  border-bottom: 1px solid var(--Border-1, #EAECF0);
+}
+
+.drawerButtonBot
+{
+  border-bottom-left-radius : 12px ;
+  border-bottom-right-radius : 12px ;
+
+}
+
+.drawerButton > .buttonItem
+{
+  display: flex;
+width: 5.55vw;
+align-items: center;
+gap: 10px;
+flex-shrink: 0;
+align-self: stretch;
+}
+
+@media (min-width: 402px) {
+  
+.drawerButton > .buttonItem
+{
+  width: 223.5px;
+}
+}
+
+.buttonItem > .buttonIcon
+{
+  display: flex;
+width: 24px;
+height: 24px;
+padding: 2.53px 2.499px 2.53px 2px;
+justify-content: center;
+align-items: center;
+flex-shrink: 0;
+filter: brightness(0) saturate(100%) invert(0%) sepia(92%) saturate(7479%) hue-rotate(92deg) brightness(106%) contrast(100%);
+}
+
+.buttonItem > .buttonText
+{
+  color: var(--Black, #000);
+font-family: Lato;
+font-size: 15px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+letter-spacing: -0.3px;
+}
+
+/* .drawerTitle {
   text-align: center;
   margin-bottom: 16px;
   font-weight: bold;
-}
+} */
 
-.drawerButton {
+/* .drawerButton {
   display: flex;
   align-items: flex-start;
   width: 100%;
@@ -25,4 +163,4 @@
 
 .drawerButtonIcon {
   margin-right: 12px;
-}
+} */

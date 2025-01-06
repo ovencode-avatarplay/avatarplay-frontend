@@ -10,6 +10,8 @@ import EpisodeCharacterView from './EpisodeCharacterView'; // Step 3에 사용�
 import styles from './EpisodeCharacter.module.css';
 import {useDispatch} from 'react-redux';
 import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
+import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
+import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
 
 interface EpisodeCharacterProps {
   currentStep: number;
@@ -31,6 +33,7 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({
   const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
   const [selectedGalleryIndex, setSelectedGalleryIndex] = useState<number | null>(null);
+  const [category, setCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
   const [loading, setLoading] = useState<boolean>(true);
   const dispatch = useDispatch();
   // Step 1: 캐릭터 리스트 가져오기
@@ -81,6 +84,12 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({
   // 캐릭터 선택 핸들러
   const handleCharacterSelect = (id: number) => {
     setSelectedCharacterId(id);
+  };
+
+  const handleCategoryChange = (newCategory: GalleryCategory) => {
+    if (newCategory !== category) {
+      setCategory(newCategory);
+    }
   };
 
   // Step 진행 핸들러
@@ -135,14 +144,19 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({
       >
         {currentStep === 1 && <CharacterGrid characters={characters || []} onCharacterSelect={handleCharacterSelect} />}
         {currentStep === 2 && (
-          <CharacterGalleryGrid
-            itemUrl={galleryAllUrl}
-            selectedItemIndex={selectedGalleryIndex}
-            onSelectItem={i => {
-              setSelectedGalleryIndex(i);
-            }}
-            isTrigger={true}
-          />
+          <>
+            <CharacterGalleryToggle category={category} onCategoryChange={handleCategoryChange} />
+
+            <CharacterGalleryGrid
+              itemUrl={galleryAllUrl}
+              selectedItemIndex={selectedGalleryIndex}
+              onSelectItem={i => {
+                setSelectedGalleryIndex(i);
+              }}
+              category={category}
+              isTrigger={true}
+            />
+          </>
         )}
         {currentStep === 3 && currentSelectedCharacter && (
           <EpisodeCharacterView
