@@ -20,7 +20,6 @@ interface Props {
     searchValue: string,
     adultToggleOn: boolean,
     filterString: string,
-    searchOffset: number,
     contentPage: PaginationRequest,
     characterPage: PaginationRequest,
   ) => void;
@@ -53,7 +52,7 @@ const SearchBoardHeader: React.FC<Props> = ({
   const handleSearch = () => {
     const filterString = positiveFilters.map(filter => filter.name).join(',');
     setSearchOffset(0);
-    fetchExploreData(searchValue, adultToggleOn, filterString, 0, {offset: 0, limit: 20}, {offset: 0, limit: 20});
+    fetchExploreData(searchValue, adultToggleOn, filterString, {offset: 0, limit: 20}, {offset: 0, limit: 20});
   };
 
   const handleSave = (selectedFilters: FilterDataItem[]) => {

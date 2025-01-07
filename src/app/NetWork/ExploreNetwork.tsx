@@ -1,6 +1,6 @@
 // src/app/Network/ExploreNetwork.tsx
 
-import api from './ApiInstance';
+import api, {ResponseAPI} from './ApiInstance';
 import {ExploreCardProps} from '../view/main/content/searchboard/SearchBoardTypes';
 
 interface ReqExploreSearch {
@@ -132,65 +132,28 @@ export interface ExploreItem {
 }
 
 interface ResSearchExplore {
-  resultCode: number;
-  resultMessage: string;
-  data: {
-    searchExploreList: ExploreItem[];
-    contentPage: PaginationRequest;
-    characterPage: PaginationRequest;
-  };
+  searchExploreList: ExploreItem[];
+  contentPage: PaginationRequest;
+  characterPage: PaginationRequest;
 }
 
-export const sendSearchExplore = async (
-  search: string,
-  category: number,
-  sort: number,
-  filter: string,
-  isOnlyAdults: boolean,
-  contentPage: PaginationRequest,
-  characterPage: PaginationRequest,
-): Promise<{
-  resultCode: number;
-  resultMessage: string;
-  searchExploreList: ExploreItem[] | null;
-}> => {
+export const sendSearchExplore = async (payload: ReqSearchExplore): Promise<ResponseAPI<ResSearchExplore>> => {
   try {
-    const reqData: ReqSearchExplore = {
-      language: navigator.language || 'en-US',
-      search,
-      category,
-      sort,
-      filter,
-      isOnlyAdults,
-      contentPage,
-      characterPage,
-    };
-
     // POST 요청을 통해 Explore/search API 호출
-    const response = await api.post<ResSearchExplore>('/Explore/search', reqData);
+    const response = await api.post<ResponseAPI<ResSearchExplore>>('/Explore/search', payload);
 
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0) {
-      return {
-        resultCode,
-        resultMessage,
-        searchExploreList: data.searchExploreList || [],
-      };
-    } else {
-      console.error(`Error: ${resultMessage}`);
-      return {
-        resultCode,
-        resultMessage,
-        searchExploreList: null,
-      };
-    }
-  } catch (error: unknown) {
+    return response.data;
+  } catch (error) {
     console.error('Failed to fetch explore search info:', error);
+
     return {
       resultCode: -1,
       resultMessage: 'Failed to fetch explore search info',
-      searchExploreList: null,
+      data: {
+        searchExploreList: [],
+        contentPage: {offset: 0, limit: 0},
+        characterPage: {offset: 0, limit: 0},
+      },
     };
   }
 };

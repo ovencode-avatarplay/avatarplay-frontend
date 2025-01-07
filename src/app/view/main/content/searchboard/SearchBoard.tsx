@@ -103,7 +103,7 @@ const SearchBoard: React.FC = () => {
     if (isScrollingDown && target.scrollTop + target.clientHeight >= target.scrollHeight - THRESHOLD && !loading) {
       setSearchOffset(prevSearchOffset => {
         const newSearchOffset = prevSearchOffset + 1;
-        fetchExploreData(searchValue, adultToggleOn, '', newSearchOffset, contentPage, characterPage);
+        fetchExploreData(searchValue, adultToggleOn, '', contentPage, characterPage);
         return newSearchOffset;
       });
     }
@@ -113,27 +113,29 @@ const SearchBoard: React.FC = () => {
     searchValue: string,
     adultToggleOn: boolean,
     filterString: string,
-    searchOffset: number,
     contentPage: PaginationRequest,
     characterPage: PaginationRequest,
   ) => {
     setLoading(true);
     try {
-      const result = await sendSearchExplore(
-        searchValue,
-        search === 'All' ? 0 : search === 'Story' ? 1 : 2,
-        selectedSort,
-        filterString,
-        adultToggleOn,
+      const result = await sendSearchExplore({
+        language: navigator.language || 'en-US',
+        search: searchValue,
+        category: search === 'All' ? 0 : search === 'Story' ? 1 : 2,
+        sort: selectedSort,
+        filter: filterString,
+        isOnlyAdults: adultToggleOn,
         contentPage,
         characterPage,
-      );
+      });
 
-      if (result.resultCode === 0) {
+      if (result.data !== undefined && result.resultCode === 0) {
         setSearchResultList(prevList => {
-          const newList = result.searchExploreList || [];
-          return searchOffset > 0 && prevList ? [...prevList, ...newList] : newList;
+          const newList = result.data?.searchExploreList || [];
+          return contentPage.offset > 0 && prevList ? [...prevList, ...newList] : newList;
         });
+        setContentPage(result.data.contentPage);
+        setCharacterPage(result.data.characterPage);
       } else {
         console.error('Failed to fetch explore data:', result.resultMessage);
       }
