@@ -20,16 +20,21 @@
 
 .exploreCard.search
 {
-  width: calc((100vw - 32px) / 3 - 4px);
-  height: 171.429px;
-
-
+  width: calc((100vw - 32px) / 3 - 3.5px);
+  height: 171.429px; 
 }
 
 @media (min-width: 402px) {
   .exploreCard {
     width: 147.467px;
   }
+  
+  .exploreCard.search
+  {
+    width: 120px;
+    height: 171.429px; 
+  }
+
 }
 
 .exploreImage

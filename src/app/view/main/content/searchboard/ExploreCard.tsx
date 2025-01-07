@@ -76,7 +76,7 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
           onClick={handleOpenDrawer}
         />
 
-        {contentRank < RankCount && (
+        {contentRank && contentRank < RankCount && (
           <div className={styles.rankArea}>
             <div className={styles.rankText}>{contentRank}</div>
           </div>

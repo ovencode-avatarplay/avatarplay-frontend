@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 
 import {useDispatch} from 'react-redux';
-import {ExploreItem, sendGetExplore} from '@/app/NetWork/ExploreNetwork';
+import {ExploreItem, sendGetExplore, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
 
 import styles from './SearchBoard.module.css';
 
@@ -19,7 +19,7 @@ import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import ExploreCard from './ExploreCard';
 
 const SearchBoard: React.FC = () => {
-  const [loading, setloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   // Featured
@@ -38,10 +38,15 @@ const SearchBoard: React.FC = () => {
 
   const [search, setSearch] = useState<'All' | 'Story' | 'Character'>('All');
   const [adultToggleOn, setAdultToggleOn] = useState(false);
-
+  const [searchValue, setSearchValue] = useState<string>('');
   const [searchSort, setSearchSort] = useState<'Newest' | 'Most Popular' | 'Weekly Popular' | 'Monthly Popular'>(
     'Newest',
   );
+  // Search Scroll
+  const [searchOffset, setSearchOffset] = useState(0);
+  const searchLimit = 20;
+  const [previousScrollTop, setPreviousScrollTop] = useState(0);
+
   const [selectedSort, setSelectedSort] = useState<number>(0);
   const [sortDropDownOpen, setSortDropDownOpen] = useState<boolean>(false);
   const dropDownMenuItems: DropDownMenuItem[] = [
@@ -85,10 +90,60 @@ const SearchBoard: React.FC = () => {
     setSearch(value);
   };
 
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    const THRESHOLD = 200; // 데이터 불러오기 전에 남겨둘 여유 공간 (픽셀 단위)
+    const isScrollingDown = target.scrollTop > previousScrollTop;
+
+    setPreviousScrollTop(target.scrollTop);
+
+    // 스크롤 끝에 도달하기 직전인지 확인
+    if (isScrollingDown && target.scrollTop + target.clientHeight >= target.scrollHeight - THRESHOLD && !loading) {
+      setSearchOffset(prevSearchOffset => {
+        const newSearchOffset = prevSearchOffset + 1;
+        fetchExploreData(searchValue, adultToggleOn, '', newSearchOffset);
+        return newSearchOffset;
+      });
+    }
+  };
+
+  const fetchExploreData = async (
+    searchValue: string,
+    adultToggleOn: boolean,
+    filterString: string,
+    searchOffset: number,
+  ) => {
+    setLoading(true);
+    try {
+      const result = await sendSearchExplore(
+        searchValue,
+        search === 'All' ? 0 : search === 'Story' ? 1 : 2,
+        selectedSort,
+        filterString,
+        adultToggleOn,
+        searchOffset,
+        searchLimit,
+      );
+
+      if (result.resultCode === 0) {
+        setSearchResultList(prevList => {
+          const newList = result.searchExploreList || [];
+          return searchOffset > 0 && prevList ? [...prevList, ...newList] : newList;
+        });
+      } else {
+        console.error('Failed to fetch explore data:', result.resultMessage);
+      }
+    } catch (error) {
+      console.error('Error fetching explore data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Hooks
   useEffect(() => {
     const fetchData = async () => {
-      setloading(true);
+      setLoading(true);
       try {
         const response = await sendGetExplore(search, adultToggleOn);
 
@@ -97,9 +152,9 @@ const SearchBoard: React.FC = () => {
           if (response.bannerUrlList) {
             setBannerList(response.bannerUrlList);
           }
-          if (response.searchOptionList) {
-            setSearchOptionList(response.searchOptionList);
-          }
+          // if (response.searchOptionList) {
+          //   setSearchOptionList(response.searchOptionList);
+          // }
 
           if (response.talkainOperatorList) {
             setTalkainOperatorList(response.talkainOperatorList);
@@ -127,18 +182,20 @@ const SearchBoard: React.FC = () => {
           if (response.recommendationList) {
             setRecommendationList(response.recommendationList);
           }
-          setloading(false);
+          setLoading(false);
         } else {
-          setloading(false);
+          setLoading(false);
           console.error(`Error: ${response.resultMessage}`);
         }
       } catch (error) {
-        setloading(false);
+        setLoading(false);
         console.error('Error fetching shorts data:', error);
       }
     };
     fetchData();
   }, []);
+
+  useEffect(() => {}, [searchResultList]);
 
   const tabData = [
     {
@@ -181,12 +238,16 @@ const SearchBoard: React.FC = () => {
       label: 'Search',
       content: (
         <div className={styles.searchContainer}>
-          <div className={styles.scrollArea}>
+          <div className={styles.scrollArea} onScroll={handleScroll}>
             <SearchBoardHeader
               setSearchResultList={setSearchResultList}
               adultToggleOn={adultToggleOn}
               setAdultToggleOn={setAdultToggleOn}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
               filterData={searchOptionList}
+              fetchExploreData={fetchExploreData}
+              setSearchOffset={setSearchOffset}
             />
             <div className={styles.filterArea}>
               <div className={styles.tagArea}>
@@ -223,7 +284,7 @@ const SearchBoard: React.FC = () => {
                 )}
               </button>
             </div>
-            {searchResultList === null ? (
+            {searchResultList === null || searchResultList.length < 1 ? (
               <>
                 <div className={styles.emptyResult}> Result : 0</div>
                 <div className={styles.emptyContainer}>
@@ -233,22 +294,31 @@ const SearchBoard: React.FC = () => {
             ) : (
               <>
                 <ul className={styles.resultList}>
-                  {searchResultList.map(item => (
-                    <li key={item.contentId} className={styles.resultItem}>
-                      <ExploreCard
-                        exploreItemType={item.exploreItemType}
-                        updateExplorState={item.updateExplorState}
-                        contentId={item.contentId}
-                        contentRank={item.sortCount} // 정렬 순서 사용
-                        contentName={item.contentName}
-                        chatCount={item.chatCount}
-                        episodeCount={item.episodeCount}
-                        followerCount={item.followerCount}
-                        thumbnail={item.thumbnail}
-                        classType="search"
-                      />
-                    </li>
-                  ))}
+                  {searchResultList
+                    .filter(item => {
+                      if (search === 'Story') {
+                        return item.exploreItemType === 0;
+                      }
+                      if (search === 'Character') {
+                        return item.exploreItemType === 1;
+                      }
+                      return true;
+                    })
+                    .map(item => (
+                      <li key={item.contentId} className={styles.resultItem}>
+                        <ExploreCard
+                          exploreItemType={item.exploreItemType}
+                          updateExplorState={item.updateExplorState}
+                          contentId={item.contentId}
+                          contentName={item.contentName}
+                          chatCount={item.chatCount}
+                          episodeCount={item.episodeCount}
+                          followerCount={item.followerCount}
+                          thumbnail={item.thumbnail}
+                          classType="search"
+                        />
+                      </li>
+                    ))}
                 </ul>
               </>
             )}

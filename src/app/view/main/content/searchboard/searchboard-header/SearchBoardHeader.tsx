@@ -13,13 +13,25 @@ interface Props {
   setSearchResultList: React.Dispatch<React.SetStateAction<ExploreItem[] | null>>;
   adultToggleOn: boolean;
   setAdultToggleOn: React.Dispatch<React.SetStateAction<boolean>>;
+  searchValue: string;
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   filterData: string[] | null;
+  fetchExploreData: (searchValue: string, adultToggleOn: boolean, filterString: string, searchOffset: number) => void;
+  setSearchOffset: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const SearchBoardHeader: React.FC<Props> = ({setSearchResultList, adultToggleOn, setAdultToggleOn, filterData}) => {
+const SearchBoardHeader: React.FC<Props> = ({
+  setSearchResultList,
+  adultToggleOn,
+  setAdultToggleOn,
+  searchValue,
+  setSearchValue,
+  filterData,
+  fetchExploreData,
+  setSearchOffset,
+}) => {
   const [filterDialogOn, setFilterDialogOn] = useState(false);
   const [filterOn, setFilterOn] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
   const [filterItem, setFilterItem] = useState<FilterDataItem[]>([]);
   const [positiveFilters, setPositiveFilters] = useState<FilterDataItem[]>([]);
 
@@ -32,32 +44,13 @@ const SearchBoardHeader: React.FC<Props> = ({setSearchResultList, adultToggleOn,
   };
 
   const handleSearch = () => {
-    fetchExploreData();
+    const filterString = positiveFilters.map(filter => filter.name).join(',');
+    setSearchOffset(0);
+    fetchExploreData(searchValue, adultToggleOn, filterString, 0);
   };
 
   const handleSave = (selectedFilters: FilterDataItem[]) => {
     setPositiveFilters(selectedFilters);
-  };
-
-  const filterString = positiveFilters.map(filter => filter.name).join(',');
-
-  const fetchExploreData = async () => {
-    const result = await sendSearchExplore(
-      searchValue,
-      1, // category
-      0, // sort
-      filterString, // filter
-      adultToggleOn,
-      0, // offset
-      20, // limit
-    );
-
-    if (result.resultCode === 0) {
-      console.log('Explore data fetched:', result.searchExploreList);
-      setSearchResultList(result.searchExploreList);
-    } else {
-      console.error('Failed to fetch explore data:', result.resultMessage);
-    }
   };
 
   useEffect(() => {
