@@ -224,7 +224,7 @@ const CharacterDashboard: React.FC = () => {
   const handleCreateClick = () => {
     const currentLang = searchParam?.get(':lang') || 'en';
     //router.push(`/${currentLang}/create/character`);
-    pushLocalizedRoute('/studio/character', router);
+    pushLocalizedRoute('/create/character', router);
   };
 
   const handleFilterChange = (value: string) => {

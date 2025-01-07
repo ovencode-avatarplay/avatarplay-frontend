@@ -3,11 +3,8 @@
 import * as React from 'react';
 
 // style, mui
-import './BottomNav.css';
-import Box from '@mui/material/Box';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import {Paper, SpeedDial} from '@mui/material';
+import styles from './BottomNav.module.css';
+import {SpeedDial} from '@mui/material';
 
 import HomeIcon from '@mui/icons-material/Home';
 import ExploreIcon from '@mui/icons-material/Explore';
@@ -16,7 +13,6 @@ import ContentIcon from '@mui/icons-material/DynamicFeed';
 import PersonIcon from '@mui/icons-material/Person';
 import CreateIcon from '@mui/icons-material/AddCircleOutline';
 
-import BottomNavData from 'data/navigation/bottom-nav.json';
 import profileData from 'data/profile/profile-data.json';
 
 // components
@@ -26,6 +22,7 @@ import SelectProfileWidget from '../../profile/SelectProfileWidget';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {setSkipContentInit} from '@/redux-store/slices/ContentSelection';
 import {useDispatch} from 'react-redux';
+import {BoldContents, BoldExplore, BoldHome} from '@ui/Icons';
 
 export default function BottomNav() {
   const dispatch = useDispatch();
@@ -63,28 +60,26 @@ export default function BottomNav() {
     setTimer(null);
   };
 
-  // 아이콘 문자열을 JSX.Element로 변환하는 함수
-  const getIconComponent = (iconName: string) => {
-    switch (iconName) {
-      case '<HomeIcon />':
-        return <HomeIcon />;
-      case '<ExploreIcon />':
-        return <ExploreIcon />;
-      case '<RedeemIcon />':
-        return <RewardIcon />;
-      case '<ContentIcon />':
-        return <ContentIcon />;
-      case '<PersonIcon />':
-        return <PersonIcon />;
-      default:
-        return <PersonIcon />;
-    }
-  };
+  const buttonData = [
+    {label: 'Home', icon: BoldHome.src, link: '/main/homefeed'},
+    {label: 'Explore', icon: BoldExplore.src, link: '/main/explore'},
+    {label: 'Reward', icon: '<RewardIcon />', link: '/main/game'},
+    {label: 'Content', icon: BoldContents.src, link: '/main/mycontent'},
+    {label: 'My', icon: '<MyProfileIcon />', link: '/profile'},
+  ];
 
   return (
     <footer>
-      <Paper className="bottomNav" elevation={3} sx={{maxWidth: '402px', margin: '0 auto'}}>
-        <Box className="bottomNavBox">
+      <div className={styles.bottomNav}>
+        <div className={styles.bottomNavBox}>
+          {buttonData.map((button, index) => (
+            <Link href={getLocalizedLink(button.link)}>
+              <button className={styles.navButton}>
+                <img className={styles.buttonIcon} src={BoldHome.src} />
+              </button>
+            </Link>
+          ))}
+          {/* 
           <BottomNavigation showLabels value={selectedIndex} onChange={handleNavigationChange}>
             {BottomNavData.map((button, index) => (
               <BottomNavigationAction
@@ -104,8 +99,8 @@ export default function BottomNav() {
                 showLabel
               />
             ))}
-          </BottomNavigation>
-        </Box>
+          </BottomNavigation> */}
+        </div>
         <SpeedDial
           ariaLabel="Create SpeedDial"
           sx={{
@@ -126,7 +121,52 @@ export default function BottomNav() {
           profiles={profileData}
           isEditing={true}
         />
-      </Paper>
+      </div>
+
+      {/* <div className={styles.bottomNav}>
+        <div className={styles.bottomNavBox}>
+          <BottomNavigation showLabels value={selectedIndex} onChange={handleNavigationChange}>
+            {BottomNavData.map((button, index) => (
+              <BottomNavigationAction
+                key={index}
+                label={button.label}
+                icon={getIconComponent(button.icon)}
+                component={Link}
+                href={getLocalizedLink(button.link)}
+                onClick={index !== BottomNavData.length - 1 ? () => handleClick(index) : undefined}
+                onMouseDown={index === BottomNavData.length - 1 ? handleLongPressStart : undefined}
+                onMouseUp={index === BottomNavData.length - 1 ? handleLongPressEnd : undefined}
+                onMouseLeave={index === BottomNavData.length - 1 ? handleLongPressEnd : undefined}
+                // 모바일 대응
+                onTouchStart={index === BottomNavData.length - 1 ? handleLongPressStart : undefined}
+                onTouchEnd={index === BottomNavData.length - 1 ? handleLongPressEnd : undefined}
+                onTouchCancel={index === BottomNavData.length - 1 ? handleLongPressEnd : undefined}
+                showLabel
+              />
+            ))}
+          </BottomNavigation>
+        </div>
+        <SpeedDial
+          ariaLabel="Create SpeedDial"
+          sx={{
+            position: 'fixed',
+            bottom: 80,
+            right: 16,
+          }}
+          icon={<CreateIcon />}
+          onClick={() => {
+            dispatch(setSkipContentInit(false));
+            toggleDrawer(!drawerOpen);
+          }}
+        />
+        <CreateWidget open={drawerOpen} onClose={() => toggleDrawer(false)} />
+        <SelectProfileWidget
+          open={profileDrawerOpen}
+          onClose={() => toggleProfileDrawer(false)}
+          profiles={profileData}
+          isEditing={true}
+        />
+      </div> */}
     </footer>
   );
 }

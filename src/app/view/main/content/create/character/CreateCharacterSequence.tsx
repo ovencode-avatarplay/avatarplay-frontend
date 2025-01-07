@@ -670,6 +670,19 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
             <div className={styles.createTitle}>Step 10: Choose Generated Image</div>
             <Box>
               <Box className={styles.gridContainer2}>
+                {generatedOptions === null ||
+                  (generatedOptions.imageUrl.length < 1 && (
+                    <CharacterCreateImageButton
+                      width={'95%'}
+                      height={'23vh'}
+                      label={''}
+                      image={
+                        'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/dea8a131-ffd5-4a60-b570-8e7e1ffde877.jpg'
+                      }
+                      selected={true}
+                      onClick={() => handleOptionSelect('result', 0)}
+                    />
+                  ))}
                 {(generatedOptions?.imageUrl ?? []).map((option, index) => (
                   <CharacterCreateImageButton
                     key={index}

@@ -42,13 +42,24 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
     flex: 1 0 0;
     align-self: stretch;
     
     border-radius: 8px;
     background: var(--Neutral-50, #F8F9FA);
+
+    overflow-y: scroll;
 }
+
+.filterList::-webkit-scrollbar {
+    display: none; 
+}
+
+.filterList {
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+
 
 .filterItem {
     display: flex;

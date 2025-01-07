@@ -102,7 +102,7 @@ export const sendGetExplore = async (
   }
 };
 
-interface PageInfo {
+export interface PaginationRequest {
   offset: number;
   limit: number;
 }
@@ -114,7 +114,8 @@ interface ReqSearchExplore {
   sort: number;
   filter: string;
   isOnlyAdults: boolean;
-  page: PageInfo;
+  contentPage: PaginationRequest;
+  characterPage: PaginationRequest;
 }
 
 export interface ExploreItem {
@@ -135,6 +136,8 @@ interface ResSearchExplore {
   resultMessage: string;
   data: {
     searchExploreList: ExploreItem[];
+    contentPage: PaginationRequest;
+    characterPage: PaginationRequest;
   };
 }
 
@@ -144,8 +147,8 @@ export const sendSearchExplore = async (
   sort: number,
   filter: string,
   isOnlyAdults: boolean,
-  offset: number,
-  limit: number,
+  contentPage: PaginationRequest,
+  characterPage: PaginationRequest,
 ): Promise<{
   resultCode: number;
   resultMessage: string;
@@ -159,10 +162,8 @@ export const sendSearchExplore = async (
       sort,
       filter,
       isOnlyAdults,
-      page: {
-        offset,
-        limit,
-      },
+      contentPage,
+      characterPage,
     };
 
     // POST 요청을 통해 Explore/search API 호출

@@ -6,7 +6,7 @@ import styles from './SearchBoardHeader.module.css';
 import ToggleButton from '@/components/layout/shared/ToggleButton';
 import {BoldFilter, BoldFilterOn} from '@ui/Icons';
 import ExploreSearchInput from './ExploreSearchInput';
-import {ExploreItem, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
+import {ExploreItem, PaginationRequest, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
 import FilterSelector, {FilterDataItem} from '@/components/create/FilterSelector';
 
 interface Props {
@@ -16,7 +16,14 @@ interface Props {
   searchValue: string;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   filterData: string[] | null;
-  fetchExploreData: (searchValue: string, adultToggleOn: boolean, filterString: string, searchOffset: number) => void;
+  fetchExploreData: (
+    searchValue: string,
+    adultToggleOn: boolean,
+    filterString: string,
+    searchOffset: number,
+    contentPage: PaginationRequest,
+    characterPage: PaginationRequest,
+  ) => void;
   setSearchOffset: React.Dispatch<React.SetStateAction<number>>;
 }
 
@@ -46,7 +53,7 @@ const SearchBoardHeader: React.FC<Props> = ({
   const handleSearch = () => {
     const filterString = positiveFilters.map(filter => filter.name).join(',');
     setSearchOffset(0);
-    fetchExploreData(searchValue, adultToggleOn, filterString, 0);
+    fetchExploreData(searchValue, adultToggleOn, filterString, 0, {offset: 0, limit: 20}, {offset: 0, limit: 20});
   };
 
   const handleSave = (selectedFilters: FilterDataItem[]) => {
@@ -80,7 +87,7 @@ const SearchBoardHeader: React.FC<Props> = ({
           onSearch={handleSearch}
         />
         <button className={styles.filterButton} onClick={handleFilterButtonClicked}>
-          <img className={styles.filterIcon} src={filterOn ? BoldFilterOn.src : BoldFilter.src} />
+          <img className={styles.filterIcon} src={positiveFilters.length > 0 ? BoldFilterOn.src : BoldFilter.src} />
         </button>
       </div>
 

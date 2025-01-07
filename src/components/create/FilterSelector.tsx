@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Modal, Box} from '@mui/material';
 import styles from './FilterSelector.module.css';
 import {BoldRadioButton, BoldRadioButtonSelected, BoldRadioButtonSubtract} from '@ui/Icons';
@@ -16,12 +16,15 @@ interface FilterSelectorProps {
 }
 
 const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open, onClose}) => {
-  const [selectedFilters, setSelectedFilters] = useState<{[key: string]: 'empty' | 'selected' | 'remove'}>(
-    filterData.reduce((acc, item) => {
+  const [selectedFilters, setSelectedFilters] = useState<{[key: string]: 'empty' | 'selected' | 'remove'}>({});
+
+  useEffect(() => {
+    const initialFilters = filterData.reduce((acc, item) => {
       acc[item.name] = 'empty';
       return acc;
-    }, {} as {[key: string]: 'empty' | 'selected' | 'remove'}),
-  );
+    }, {} as {[key: string]: 'empty' | 'selected' | 'remove'});
+    setSelectedFilters(initialFilters);
+  }, [filterData]);
 
   const handleToggleFilter = (name: string) => {
     setSelectedFilters(prevState => {

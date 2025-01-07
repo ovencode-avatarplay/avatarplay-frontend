@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 
 import {useDispatch} from 'react-redux';
-import {ExploreItem, sendGetExplore, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
+import {ExploreItem, PaginationRequest, sendGetExplore, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
 
 import styles from './SearchBoard.module.css';
 
@@ -33,7 +33,7 @@ const SearchBoard: React.FC = () => {
   const [recommendationList, setRecommendationList] = useState<ExploreCardProps[] | null>(null);
 
   // Search
-  const [searchOptionList, setSearchOptionList] = useState<string[] | null>(null);
+  const searchOptionList = ['Female', 'Male', 'BL', 'GL', 'LGBT+', 'Romance', 'Villain', 'Gaming', 'Adventure'];
   const [searchResultList, setSearchResultList] = useState<ExploreItem[] | null>(null);
 
   const [search, setSearch] = useState<'All' | 'Story' | 'Character'>('All');
@@ -43,8 +43,10 @@ const SearchBoard: React.FC = () => {
     'Newest',
   );
   // Search Scroll
-  const [searchOffset, setSearchOffset] = useState(0);
   const searchLimit = 20;
+  const [searchOffset, setSearchOffset] = useState<number>(0);
+  const [contentPage, setContentPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
+  const [characterPage, setCharacterPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
   const [previousScrollTop, setPreviousScrollTop] = useState(0);
 
   const [selectedSort, setSelectedSort] = useState<number>(0);
@@ -101,7 +103,7 @@ const SearchBoard: React.FC = () => {
     if (isScrollingDown && target.scrollTop + target.clientHeight >= target.scrollHeight - THRESHOLD && !loading) {
       setSearchOffset(prevSearchOffset => {
         const newSearchOffset = prevSearchOffset + 1;
-        fetchExploreData(searchValue, adultToggleOn, '', newSearchOffset);
+        fetchExploreData(searchValue, adultToggleOn, '', newSearchOffset, contentPage, characterPage);
         return newSearchOffset;
       });
     }
@@ -112,6 +114,8 @@ const SearchBoard: React.FC = () => {
     adultToggleOn: boolean,
     filterString: string,
     searchOffset: number,
+    contentPage: PaginationRequest,
+    characterPage: PaginationRequest,
   ) => {
     setLoading(true);
     try {
@@ -121,8 +125,8 @@ const SearchBoard: React.FC = () => {
         selectedSort,
         filterString,
         adultToggleOn,
-        searchOffset,
-        searchLimit,
+        contentPage,
+        characterPage,
       );
 
       if (result.resultCode === 0) {
