@@ -3,7 +3,6 @@ import {Box, Typography, IconButton, Container, Avatar, Card} from '@mui/materia
 import {FavoriteBorder, ChatBubbleOutline, ArrowForwardIos} from '@mui/icons-material';
 import MoreVert from '@mui/icons-material/MoreVert';
 import styles from './ReelsContent.module.css';
-import {Swiper, SwiperSlide} from 'swiper/react';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -16,96 +15,52 @@ interface ReelData {
   images: string[];
   text: string;
   link: string;
+  item: ReelData;
 }
 
 interface ReelsContentProps {
   item: ReelData;
 }
 
-const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
-  const [isTextExpanded, setIsTextExpanded] = useState(false);
-
-  const handleOpenDrawer = () => {
-    // dispatch(setDrawerEpisodeId(String(item.link)));
-  };
-
-  const toggleTextExpansion = () => {
-    setIsTextExpanded(prevState => !prevState);
-  };
-
+const ReelsContent: React.FC = () => {
   return (
-    <Box className={styles.reel}>
-      <Container className={styles.box_group}>
-        <Box className={styles.top_box}>
-          <Avatar />
-          <Box className={styles.info_box}>
-            <div className={styles.typo_type1}>0.01% Alpha Male Simulator</div>
-            <div className={styles.typo_type2}>5 Days ago</div>
-          </Box>
-          <IconButton>
-            <MoreVert sx={{fontSize: 35}} />
-          </IconButton>
-        </Box>
+    <div className={styles.reelsContainer}>
+      {/* Main Content */}
+      <div className={styles.mainContent}>
+        {/* Background Image with Dim */}
+        <div className={styles.Image}>
+          <img src="/ui/유나.png" alt="유나 이미지" className={styles.Image} />
+        </div>
+        <div className={styles.dim}></div>
 
-        <Typography
-          className={`${styles.post_text} ${isTextExpanded ? styles.expanded : ''}`}
-          color="black"
-          fontSize={14}
-          variant="body1"
-        >
-          {item.text}
-        </Typography>
+        {/* Pause Button */}
+        <div className={styles.pauseButton}></div>
 
-        {item.text.length > 100 && (
-          <Typography
-            fontSize={14}
-            component="span"
-            variant="body1"
-            color="primary"
-            onClick={toggleTextExpansion}
-            style={{cursor: 'pointer'}}
-          >
-            {isTextExpanded ? 'Read less' : 'Read more'}
-          </Typography>
-        )}
+        {/* User Info */}
+        <div className={styles.userInfo}>
+          <div className={styles.profilePicture}></div>
+          <div className={styles.profileDetails}>
+            <span className={styles.username}>your-name</span>
+            <span className={styles.sponsored}>Sponsored</span>
+          </div>
+          <button className={styles.followButton}>Follow</button>
+        </div>
 
-        {item.images.length > 0 && (
-          <Swiper pagination={true} modules={[Pagination]} className={styles.mySwiper}>
-            {item.images.map((image, index) => (
-              <SwiperSlide>
-                <Box key={index} component="img" src={image} alt={`Reel ${index}`} className={styles.post_image} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        )}
+        {/* Description */}
+        <div className={styles.description}>Lorem ipsum dolor sit amet, consectetur...</div>
 
-        <Box className={styles.post_icons}>
-          <IconButton>
-            <FavoriteBorder />
-            <div className={styles.typo_type3}>100k</div>
-          </IconButton>
-          <IconButton>
-            <ChatBubbleOutline />
-            <div className={styles.typo_type3}>100k</div>
-          </IconButton>
-        </Box>
-        <Card
-          variant="outlined"
-          sx={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            padding: 2,
-            justifyContent: 'space-between',
-          }}
-          onClick={handleOpenDrawer}
-        >
-          <Avatar sx={{width: 30, height: 30, borderRadius: '10px'}} />
-          <span style={{flexGrow: 1, textAlign: 'center'}}>Go swimming with her</span>
-          <ArrowForwardIos />
-        </Card>
-      </Container>
-    </Box>
+        {/* Video Info */}
+        <div className={styles.videoInfo}>Video · 2:30/15:25</div>
+
+        {/* CTA Buttons */}
+        <div className={styles.ctaButtons}>
+          <div className={styles.likeButton}></div>
+          <div className={styles.dislikeButton}></div>
+          <div className={styles.commentButton}></div>
+          <div className={styles.shareButton}></div>
+        </div>
+      </div>
+    </div>
   );
 };
 

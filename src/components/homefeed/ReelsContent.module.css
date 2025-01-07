@@ -1,120 +1,180 @@
-.reel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;  
-  justify-content: center;
-  max-width: 402px;
-  margin: 0 auto; /* 수평 중앙 정렬 */
+.reelsContainer {
+  position: relative;
+  width: 402px;
+  height: 874px;
+  background: #000000;
 }
 
-.box_group {
+.statusBar {
+  position: absolute;
   width: 100%;
-  background-color: rgb(255, 255, 255);
-}
-
-.image_scroll_container {
+  height: 62px;
+  background: #000000;
   display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  gap: 10px;
-  scroll-behavior: smooth; /* 부드러운 스크롤 */
-  overscroll-behavior: auto;
-}
-
-
-.post_image {
-  width: 100%;  
-  object-fit: cover;
-  scroll-snap-align: center;
-}
-
-.image_index {
-  display: flex;
-  justify-content: center;
-  gap: 5px; /* 원 사이 간격 */
-  font-size: 24px; /* 원 크기 */
-  color: white;
-}
-
-.dot {
-  font-size: 18px;  /* 점들의 크기 */
-  padding: 0 0px;  /* 점들 사이의 간격을 padding으로 조절 */
-  color: black;
-  transition: color 0.3s ease;
-}
-
-.dot.active {
-  color: rgb(0, 0, 0); /* 활성화된 점의 색상 */
-}
-
-.post_icons {
-  display: flex;
-  justify-content: flex-start;
-}
-
-.post_details {
-  margin-top: 10px; /* 이미지 아래에 여백 추가 */
-  padding: 10px 20px;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 10px;
-}
-
-.post_text {
-  display: -webkit-box;
-  -webkit-line-clamp: 3; /* 기본적으로 3줄까지만 보이도록 설정 */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.post_text.expanded {
-  -webkit-line-clamp: unset; /* expanded 상태일 때 제한 해제 */
-}
-
-.post_link a {
-  color: #0095f6;
-  text-decoration: none;
-}
-
-.post_link a:hover {
-  text-decoration: underline;
-}
-
-.top_box
-{
-  padding-top: 15px;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start; 
   justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
 }
 
-.info_box
-{
+.time {
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #FFFFFF;
+}
+
+.statusIcons {
+  display: flex;
+  gap: 10px;
+}
+
+.cellular,
+.wifi,
+.battery {
+  width: 20px;
+  height: 12px;
+  background: #FFFFFF;
+}
+
+.topNavigation {
+  position: absolute;
+  width: 100%;
+  height: 58px;
+  top: 62px;
+  background: #000000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.logo {
+  font-family: 'Gilmer', sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  color: #FFFFFF;
+}
+
+.topStats {
+  display: flex;
+  gap: 10px;
+}
+
+.ruby,
+.star {
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  color: #FFFFFF;
+}
+
+.mainContent {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 56px - 58px);
+}
+
+.Image {
+  width: 100%;
+  height: 100%;   
+  object-fit: contain;
+  
+}
+
+.dim {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0.3) 90%);
+}
+
+.pauseButton {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.userInfo {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  bottom: 80px;
+  left: 16px;
+  gap: 10px;
+}
+
+.profilePicture {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #FFFFFF;
+}
+
+.profileDetails {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; 
-  padding-left: 15px;
 }
 
-.typo_type1
-{
-  font-size: 17px;
-  font-weight: bold; 
-  color: black;
+.username {
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #FFFFFF;
 }
 
-.typo_type2
-{
+.sponsored {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
   font-size: 12px;
-  color: gray;
+  color: #FFFFFF;
 }
 
-.typo_type3
-{
-  font-size: 15px;
-  color: gray;
+.followButton {
+  padding: 4px 8px;
+  background: #000000;
+  border-radius: 8px;
+  color: #FFFFFF;
 }
-.customIcon1 {
-  font-size: 40px;
+
+.description {
+  position: absolute;
+  bottom: 60px;
+  left: 16px;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  color: #FFFFFF;
+}
+
+.videoInfo {
+  position: absolute;
+  bottom: 40px;
+  left: 16px;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  color: #FFFFFF;
+}
+
+.ctaButtons {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  bottom: 120px;
+  right: 16px;
+}
+
+.navigationTab {
+  position: absolute;
+  width: 100%;
+  height: 78px;
+  bottom: 0;
+  background: #040415;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }

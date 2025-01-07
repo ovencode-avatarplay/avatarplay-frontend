@@ -5,10 +5,11 @@ import {BoldArrowLeft, LinePlus} from '@ui/Icons';
 interface Props {
   title: string;
   onClose: () => void;
-  onCreate: () => void;
+  isCreate?: boolean;
+  onCreate?: () => void;
 }
 
-const ContentDashboardHeader: React.FC<Props> = ({title, onClose, onCreate}) => {
+const ContentDashboardHeader: React.FC<Props> = ({title, onClose, onCreate, isCreate}) => {
   return (
     <div className={styles.header}>
       <div className={styles.headerLeft}>
@@ -17,12 +18,14 @@ const ContentDashboardHeader: React.FC<Props> = ({title, onClose, onCreate}) => 
         </button>
         <div className={styles.navTitle}>{title}</div>
       </div>
-      <button className={styles.createButton} onClick={onCreate}>
-        <div className={styles.buttonBox}>
-          <img className={styles.buttonIcon} src={LinePlus.src}></img>
-          Create
-        </div>
-      </button>
+      {isCreate && (
+        <button className={styles.createButton} onClick={onCreate}>
+          <div className={styles.buttonBox}>
+            <img className={styles.buttonIcon} src={LinePlus.src} alt="Create Icon" />
+            Create
+          </div>
+        </button>
+      )}
     </div>
   );
 };

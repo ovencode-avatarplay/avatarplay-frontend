@@ -39,13 +39,13 @@ const ReelsLayout = () => {
 
     fetchData();
   }, []);
-
+  console.log(content);
   return (
     <Box className={styles.reels_container}>
       {' '}
       {/* 수정된 부분 */}
       {content.map((item, index) => (
-        <ReelsContent key={index} item={item} />
+        <ReelsContent key={index} />
       ))}
     </Box>
   );
