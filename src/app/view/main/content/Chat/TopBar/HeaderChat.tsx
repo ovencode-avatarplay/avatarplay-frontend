@@ -6,7 +6,6 @@ import styles from './HeaderChat.module.css';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {ChattingState} from '@/redux-store/slices/Chatting';
-import BottomNavData from 'data/navigation/bottom-nav.json';
 import {Left, Image, MenuDots} from '@ui/chatting';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
@@ -30,10 +29,7 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, i
         <>
           <Box className={`${styles.topNavigation} ${isBlurOn ? styles.blurOn : ''}`} sx={{width: window.innerWidth}}>
             <div className={styles.left}>
-              <Link
-                className={styles.button}
-                href={getLocalizedLink(BottomNavData.find(item => item.label === 'Explore')?.link || '/default-path')}
-              >
+              <Link className={styles.button} href={getLocalizedLink(`/main/explore`) || '/default-path'}>
                 <img className={styles.buttonImage} src={Left.src} />
               </Link>
             </div>
