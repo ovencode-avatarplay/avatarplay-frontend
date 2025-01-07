@@ -116,7 +116,11 @@ const SearchBoard: React.FC = () => {
     contentPage: PaginationRequest,
     characterPage: PaginationRequest,
   ) => {
+    if (loading) return;
+
     setLoading(true);
+
+    const minimumLoadingTime = new Promise<void>(resolve => setTimeout(resolve, 1000));
     try {
       const result = await sendSearchExplore({
         language: navigator.language || 'en-US',
@@ -142,6 +146,7 @@ const SearchBoard: React.FC = () => {
     } catch (error) {
       console.error('Error fetching explore data:', error);
     } finally {
+      await minimumLoadingTime;
       setLoading(false);
     }
   };
@@ -153,55 +158,43 @@ const SearchBoard: React.FC = () => {
       try {
         const response = await sendGetExplore(search, adultToggleOn);
 
-        // console.log(response);
         if (response.resultCode === 0) {
           if (response.bannerUrlList) {
             setBannerList(response.bannerUrlList);
           }
-          // if (response.searchOptionList) {
-          //   setSearchOptionList(response.searchOptionList);
-          // }
-
           if (response.talkainOperatorList) {
             setTalkainOperatorList(response.talkainOperatorList);
           }
-
           if (response.popularList) {
             setPopularList(response.popularList);
           }
-
           if (response.malePopularList) {
             setMalePopularList(response.malePopularList);
           }
-
           if (response.femalePopularList) {
             setFemalePopularList(response.femalePopularList);
           }
-
           if (response.newContentList) {
             setNewContentList(response.newContentList);
           }
-
           if (response.playingList) {
             setPlayingList(response.playingList);
           }
           if (response.recommendationList) {
             setRecommendationList(response.recommendationList);
           }
-          setLoading(false);
         } else {
-          setLoading(false);
           console.error(`Error: ${response.resultMessage}`);
         }
       } catch (error) {
-        setLoading(false);
         console.error('Error fetching shorts data:', error);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchData();
   }, []);
-
-  useEffect(() => {}, [searchResultList]);
 
   useEffect(() => {
     fetchExploreData(searchValue, adultToggleOn, '', {offset: 0, limit: searchLimit}, {offset: 0, limit: searchLimit});
