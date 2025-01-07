@@ -6,11 +6,6 @@ import * as React from 'react';
 import styles from './BottomNav.module.css';
 import {SpeedDial} from '@mui/material';
 
-import HomeIcon from '@mui/icons-material/Home';
-import ExploreIcon from '@mui/icons-material/Explore';
-import RewardIcon from '@mui/icons-material/Redeem';
-import ContentIcon from '@mui/icons-material/DynamicFeed';
-import PersonIcon from '@mui/icons-material/Person';
 import CreateIcon from '@mui/icons-material/AddCircleOutline';
 
 import profileData from 'data/profile/profile-data.json';
@@ -22,7 +17,7 @@ import SelectProfileWidget from '../../profile/SelectProfileWidget';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {setSkipContentInit} from '@/redux-store/slices/ContentSelection';
 import {useDispatch} from 'react-redux';
-import {BoldContents, BoldExplore, BoldHome} from '@ui/Icons';
+import {BoldContents, BoldExplore, BoldHome, BoldProfile, BoldReward} from '@ui/Icons';
 
 export default function BottomNav() {
   const dispatch = useDispatch();
@@ -63,9 +58,9 @@ export default function BottomNav() {
   const buttonData = [
     {label: 'Home', icon: BoldHome.src, link: '/main/homefeed'},
     {label: 'Explore', icon: BoldExplore.src, link: '/main/explore'},
-    {label: 'Reward', icon: '<RewardIcon />', link: '/main/game'},
+    {label: 'Reward', icon: BoldReward.src, link: '/main/game'},
     {label: 'Content', icon: BoldContents.src, link: '/main/mycontent'},
-    {label: 'My', icon: '<MyProfileIcon />', link: '/profile'},
+    {label: 'My', icon: BoldProfile.src, link: '/profile'},
   ];
 
   return (
@@ -74,8 +69,11 @@ export default function BottomNav() {
         <div className={styles.bottomNavBox}>
           {buttonData.map((button, index) => (
             <Link href={getLocalizedLink(button.link)}>
-              <button className={styles.navButton}>
-                <img className={styles.buttonIcon} src={BoldHome.src} />
+              <button
+                className={styles.navButton}
+                onClick={index !== buttonData.length - 1 ? () => handleClick(index) : undefined}
+              >
+                <img className={styles.buttonIcon} src={button.icon} />
               </button>
             </Link>
           ))}

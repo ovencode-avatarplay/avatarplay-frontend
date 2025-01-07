@@ -132,7 +132,7 @@ const SearchBoard: React.FC = () => {
       if (result.data !== undefined && result.resultCode === 0) {
         setSearchResultList(prevList => {
           const newList = result.data?.searchExploreList || [];
-          return contentPage.offset > 0 && prevList ? [...prevList, ...newList] : newList;
+          return (contentPage.offset > 0 || characterPage.offset > 0) && prevList ? [...prevList, ...newList] : newList;
         });
         setContentPage(result.data.contentPage);
         setCharacterPage(result.data.characterPage);
@@ -203,6 +203,10 @@ const SearchBoard: React.FC = () => {
 
   useEffect(() => {}, [searchResultList]);
 
+  useEffect(() => {
+    fetchExploreData(searchValue, adultToggleOn, '', {offset: 0, limit: searchLimit}, {offset: 0, limit: searchLimit});
+  }, [search]);
+
   const tabData = [
     {
       label: 'Featured',
@@ -259,19 +263,25 @@ const SearchBoard: React.FC = () => {
               <div className={styles.tagArea}>
                 <button
                   className={`${styles.tag} ${search === 'All' ? styles.selected : ''}`}
-                  onClick={() => handleSearchChange('All')}
+                  onClick={() => {
+                    handleSearchChange('All');
+                  }}
                 >
                   All
                 </button>
                 <button
                   className={`${styles.tag} ${search === 'Story' ? styles.selected : ''}`}
-                  onClick={() => handleSearchChange('Story')}
+                  onClick={() => {
+                    handleSearchChange('Story');
+                  }}
                 >
                   Story
                 </button>
                 <button
                   className={`${styles.tag} ${search === 'Character' ? styles.selected : ''}`}
-                  onClick={() => handleSearchChange('Character')}
+                  onClick={() => {
+                    handleSearchChange('Character');
+                  }}
                 >
                   Character
                 </button>
