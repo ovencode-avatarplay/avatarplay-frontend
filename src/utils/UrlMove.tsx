@@ -10,7 +10,7 @@ import {store} from '@/redux-store/ReduxStore';
 
 // 로그인상태인가
 export const isLogined = (): boolean => {
-  return Cookies.get('jwt') ? true : false;
+  return localStorage.getItem('jwt') ? true : false;
 };
 
 // 현지 언어로 변경

@@ -5,6 +5,7 @@ import {useRouter} from 'next/navigation'; // 클라이언트 사이드에서만
 import Root from './Root';
 import '@/app/globals.css';
 import {getCurrentLanguage, initLocalLanguage, isLogined, refreshLanaguage} from '@/utils/UrlMove';
+import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';
 
 export const viewport = {
   width: 'device-width',
@@ -26,7 +27,8 @@ export default function Layout({children}: {children: React.ReactNode}) {
       if (isLogined() === false) {
         refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
       } else {
-        refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
+        //refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
+        fetchLanguage(router);
       }
 
       setHasRun(true); // 상태를 업데이트하여 이후에는 실행되지 않도록 함
