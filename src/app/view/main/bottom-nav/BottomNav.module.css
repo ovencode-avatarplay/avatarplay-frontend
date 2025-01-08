@@ -65,7 +65,39 @@
   filter: sepia(3%) saturate(5269%) hue-rotate(147deg) brightness(79%) contrast(92%);
 }
 
-.buttonIcon.selected
+.navButton.selected > .buttonIcon
 {
   filter: invert(0%) sepia(3%) saturate(3306%) hue-rotate(146deg) brightness(98%) contrast(101%);
 }
+
+.createSpeedDial
+{
+  display: flex;
+  width: 52px;
+  height: 52px;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm, 6px);
+  flex-shrink: 0;
+
+  position: fixed; 
+  bottom: 96px;
+  right: 9px;
+
+  flex-shrink: 0;border-radius: 50px;
+  background: var(--White, #FFF);
+  box-shadow: 0px 0px 24px 0px rgba(4, 4, 21, 0.20);
+}
+
+.speedDialIcon
+{
+  display: flex;
+  width: 28px;
+  height: 28px;
+  padding: 4.1px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+
+  filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
+} 
