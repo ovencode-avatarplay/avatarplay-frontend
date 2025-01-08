@@ -51,10 +51,19 @@
 {
   display: flex;
   padding: 12px 25.4px 12px 26.2px;
+  width: 19vw;
   justify-content: center;
   align-items: center;
   flex: 1 0 0;
   align-self: stretch;
+}
+
+@media (min-width : 402px)
+{
+  .navButton
+  {
+    width: 76.58px;
+  }
 }
 
 .buttonIcon
