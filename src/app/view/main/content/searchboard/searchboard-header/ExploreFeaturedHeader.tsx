@@ -22,8 +22,8 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
         }}
         modules={[Pagination]}
       >
-        {items.map(item => (
-          <SwiperSlide className={styles.swiperItem}>
+        {items.map((item, index) => (
+          <SwiperSlide className={styles.swiperItem} key={index}>
             <div className={styles.backImage} style={{backgroundImage: `url(${item})`}}>
               <div className={styles.textArea}>
                 <div className={`${styles.text} ${styles.type1}`}>title</div>
