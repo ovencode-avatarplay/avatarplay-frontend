@@ -14,6 +14,7 @@ import episodeInfoSlice from './slices/EpisodeInfo';
 import myContentDashboardSlice from './slices/MyContentDashboard';
 import emoticonSlice from './slices/EmoticonSlice';
 import modifyQuestionSlice from './slices/ModifyQuestion';
+import mainControl from './slices/MainControl';
 // redux-persist
 import {persistStore, persistReducer} from 'redux-persist';
 import chattingEnterSlice from './slices/ChattingEnter';
@@ -27,6 +28,10 @@ const persistConfig = {
 const reducers = combineReducers({
   sample: sampleReducer,
   user: userInfo,
+
+  //#region Main
+  mainControl: mainControl,
+  //#endregion
 
   chatting: chattingReducer, // 서버데이터 Chatting/
 

@@ -26,7 +26,7 @@ import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
 import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
 import LanguageSelectDropBox from './LanguageSelectDropBox';
-import {getLocalizedLink} from '@/utils/UrlMove';
+import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {fetchLanguage} from './LanguageSetting';
 
 const UserDropdown = () => {
@@ -124,6 +124,8 @@ const UserDropdown = () => {
     }
 
     setOpen(false);
+
+    if (url && router) pushLocalizedRoute(url, router);
 
     // if (url) {
     //   router.push(getLocalizedUrl(url, locale as Locale));
@@ -269,7 +271,7 @@ const UserDropdown = () => {
                       <i className={styles.tabler} />
                       <Typography color="text.primary">Settings</Typography>
                     </MenuItem>
-                    <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/pricing')}>
+                    <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/service')}>
                       <i className={styles.tabler} />
                       <Typography color="text.primary">Pricing</Typography>
                     </MenuItem>
