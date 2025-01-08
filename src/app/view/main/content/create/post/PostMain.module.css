@@ -115,7 +115,7 @@ line-height: 155%; /* 18.6px */
   bottom: 0px;
 }
 
-.setupButtons {
+.setupButtons { 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -136,4 +136,29 @@ line-height: 155%; /* 18.6px */
   letter-spacing: -0.4px;
 
   color: #FFFFFF;
+}
+
+.deleteButton {
+  position: absolute;
+  top: 0px;
+  right:0px;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  padding: 5.33px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mediaVideo
+{
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #000000;
 }

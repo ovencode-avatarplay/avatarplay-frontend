@@ -40,3 +40,56 @@ export const sendGetHomeFeedShorts = async (): Promise<{
     return {resultCode: -1, resultMessage: 'Failed to fetch shorts info', data: null};
   }
 };
+
+export interface FeedInfo {
+  id: number;
+  mediaState: number;
+  mediaUrlList: string[];
+  description: string;
+  hashTag: string;
+  likeCount: number;
+  disLikeCount: number;
+  playTime: string;
+}
+
+interface RequestCreateFeed {
+  feedInfo: FeedInfo;
+}
+
+interface ResponseCreateFeed {
+  resultCode: number;
+  resultMessage: string;
+  data: any; // API 응답 데이터 구조에 따라 수정 가능
+}
+
+/**
+ * Feed 생성 API 호출 함수
+ * @param feedInfo - 생성할 Feed 정보
+ * @returns API 응답 결과
+ */
+export const sendCreateFeed = async (
+  feedInfo: FeedInfo,
+): Promise<{resultCode: number; resultMessage: string; data: any | null}> => {
+  try {
+    // POST 요청 전송
+    const response = await api.post<ResponseCreateFeed>('/Feed/create', {
+      feedInfo,
+    });
+
+    const {resultCode, resultMessage, data} = response.data;
+
+    if (resultCode === 0) {
+      return {resultCode, resultMessage, data};
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {resultCode, resultMessage, data: null};
+    }
+  } catch (error) {
+    console.error('Failed to create feed:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to create feed',
+      data: null,
+    };
+  }
+};

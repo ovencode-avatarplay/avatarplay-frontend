@@ -386,7 +386,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
 
       // 이미지일 경우 다중 파일 처리, 그 외 단일 파일 처리
       if (state === MediaState.TriggerImage) {
-        req.triggerImageList = files;
+        req.imageList = files;
       } else {
         req.file = files[0];
       }
