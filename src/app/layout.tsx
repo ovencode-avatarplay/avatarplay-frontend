@@ -7,15 +7,6 @@ import '@/app/globals.css';
 import {getCurrentLanguage, initLocalLanguage, isLogined, refreshLanaguage} from '@/utils/UrlMove';
 import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';
 
-export const viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  minimumScale: 1,
-  userScalable: false,
-  interactiveWidget: 'resizes-content',
-};
-
 export default function Layout({children}: {children: React.ReactNode}) {
   const [hasRun, setHasRun] = useState(false); // 상태를 관리하여 최초 실행 여부 판단
   const router = useRouter(); // useRouter는 클라이언트에서만 사용
