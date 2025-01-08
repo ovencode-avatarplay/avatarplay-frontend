@@ -14,13 +14,13 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import Tabs from '@/components/layout/shared/Tabs';
 import ExploreFeaturedHeader from './searchboard-header/ExploreFeaturedHeader';
 import EmptyState from '@/components/create/EmptyState';
-import {BoldArrowDown, LineCheck} from '@ui/Icons';
+import {BoldArrowDown} from '@ui/Icons';
 import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import ExploreCard from './ExploreCard';
+import {FilterDataItem} from '@/components/create/FilterSelector';
 
 const SearchBoard: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
 
   // Featured
   const [bannerList, setBannerList] = useState<string[] | null>(null);
@@ -42,6 +42,11 @@ const SearchBoard: React.FC = () => {
   const [searchSort, setSearchSort] = useState<'Newest' | 'Most Popular' | 'Weekly Popular' | 'Monthly Popular'>(
     'Newest',
   );
+
+  // Filter State
+  const [positiveFilters, setPositiveFilters] = useState<FilterDataItem[]>([]);
+  const [negativeFilters, setNegativeFilters] = useState<FilterDataItem[]>([]);
+
   // Search Scroll
   const searchLimit = 20;
   const [searchOffset, setSearchOffset] = useState<number>(0);
@@ -103,16 +108,34 @@ const SearchBoard: React.FC = () => {
     if (isScrollingDown && target.scrollTop + target.clientHeight >= target.scrollHeight - THRESHOLD && !loading) {
       setSearchOffset(prevSearchOffset => {
         const newSearchOffset = prevSearchOffset + 1;
-        fetchExploreData(searchValue, adultToggleOn, '', contentPage, characterPage);
+        fetchExploreData(searchValue, adultToggleOn, contentPage, characterPage);
         return newSearchOffset;
       });
     }
   };
 
+  // Func
+  const generateFilterList = (): {searchFilterType: number; searchFilterState: number}[] => {
+    const positiveFilterList = positiveFilters
+      .map(filter => ({
+        searchFilterType: searchOptionList.indexOf(filter.name),
+        searchFilterState: 0, // Positive
+      }))
+      .filter(item => item.searchFilterType !== -1);
+
+    const negativeFilterList = negativeFilters
+      .map(filter => ({
+        searchFilterType: searchOptionList.indexOf(filter.name),
+        searchFilterState: 1, // Negative
+      }))
+      .filter(item => item.searchFilterType !== -1);
+
+    return [...positiveFilterList, ...negativeFilterList];
+  };
+
   const fetchExploreData = async (
     searchValue: string,
     adultToggleOn: boolean,
-    filterString: string,
     contentPage: PaginationRequest,
     characterPage: PaginationRequest,
   ) => {
@@ -120,14 +143,14 @@ const SearchBoard: React.FC = () => {
 
     setLoading(true);
 
-    const minimumLoadingTime = new Promise<void>(resolve => setTimeout(resolve, 1000));
+    const minLoadingTime = new Promise<void>(resolve => setTimeout(resolve, 1000));
     try {
       const result = await sendSearchExplore({
         language: navigator.language || 'en-US',
         search: searchValue,
         category: search === 'All' ? 0 : search === 'Story' ? 1 : 2,
         sort: selectedSort,
-        filter: filterString,
+        filterList: generateFilterList(),
         isOnlyAdults: adultToggleOn,
         contentPage,
         characterPage,
@@ -146,7 +169,7 @@ const SearchBoard: React.FC = () => {
     } catch (error) {
       console.error('Error fetching explore data:', error);
     } finally {
-      await minimumLoadingTime;
+      await minLoadingTime;
       setLoading(false);
     }
   };
@@ -197,7 +220,7 @@ const SearchBoard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchExploreData(searchValue, adultToggleOn, '', {offset: 0, limit: searchLimit}, {offset: 0, limit: searchLimit});
+    fetchExploreData(searchValue, adultToggleOn, {offset: 0, limit: searchLimit}, {offset: 0, limit: searchLimit});
   }, [search]);
 
   const tabData = [
@@ -249,6 +272,10 @@ const SearchBoard: React.FC = () => {
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               filterData={searchOptionList}
+              positiveFilter={positiveFilters}
+              setPositiveFilter={setPositiveFilters}
+              negativeFilter={negativeFilters}
+              setNegativeFilter={setNegativeFilters}
               fetchExploreData={fetchExploreData}
               setSearchOffset={setSearchOffset}
             />

@@ -16,10 +16,13 @@ interface Props {
   searchValue: string;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   filterData: string[] | null;
+  positiveFilter: FilterDataItem[];
+  setPositiveFilter: React.Dispatch<React.SetStateAction<FilterDataItem[]>>;
+  negativeFilter: FilterDataItem[];
+  setNegativeFilter: React.Dispatch<React.SetStateAction<FilterDataItem[]>>;
   fetchExploreData: (
     searchValue: string,
     adultToggleOn: boolean,
-    filterString: string,
     contentPage: PaginationRequest,
     characterPage: PaginationRequest,
   ) => void;
@@ -33,13 +36,15 @@ const SearchBoardHeader: React.FC<Props> = ({
   searchValue,
   setSearchValue,
   filterData,
+  positiveFilter,
+  setPositiveFilter,
+  negativeFilter,
+  setNegativeFilter,
   fetchExploreData,
   setSearchOffset,
 }) => {
   const [filterDialogOn, setFilterDialogOn] = useState(false);
-  const [filterOn, setFilterOn] = useState(false);
   const [filterItem, setFilterItem] = useState<FilterDataItem[]>([]);
-  const [positiveFilters, setPositiveFilters] = useState<FilterDataItem[]>([]);
 
   const handleAdultToggleClicked = () => {
     setAdultToggleOn(!adultToggleOn);
@@ -50,19 +55,33 @@ const SearchBoardHeader: React.FC<Props> = ({
   };
 
   const handleSearch = () => {
-    const filterString = positiveFilters.map(filter => filter.name).join(',');
     setSearchOffset(0);
-    fetchExploreData(searchValue, adultToggleOn, filterString, {offset: 0, limit: 20}, {offset: 0, limit: 20});
+    fetchExploreData(searchValue, adultToggleOn, {offset: 0, limit: 20}, {offset: 0, limit: 20});
   };
 
-  const handleSave = (selectedFilters: FilterDataItem[]) => {
-    setPositiveFilters(selectedFilters);
+  const handleSave = (filters: {positive: FilterDataItem[]; negative: FilterDataItem[]}) => {
+    setPositiveFilter(filters.positive);
+    setNegativeFilter(filters.negative);
+
+    setFilterItem(prevFilterItem =>
+      prevFilterItem.map(item => {
+        if (filters.positive.some(filter => filter.name === item.name)) {
+          return {...item, state: 'selected'};
+        }
+        if (filters.negative.some(filter => filter.name === item.name)) {
+          return {...item, state: 'remove'};
+        }
+        return {...item, state: 'empty'};
+      }),
+    );
   };
 
   useEffect(() => {
     if (filterData) {
-      // filterData(string[])를 FilterDataItem[]로 변환
-      const items = filterData.map(name => ({name}));
+      const items = filterData.map(name => ({
+        name,
+        state: 'empty', // 초기 상태 설정
+      }));
       setFilterItem(items);
     }
   }, [filterData]);
@@ -86,7 +105,10 @@ const SearchBoardHeader: React.FC<Props> = ({
           onSearch={handleSearch}
         />
         <button className={styles.filterButton} onClick={handleFilterButtonClicked}>
-          <img className={styles.filterIcon} src={positiveFilters.length > 0 ? BoldFilterOn.src : BoldFilter.src} />
+          <img
+            className={styles.filterIcon}
+            src={positiveFilter.length > 0 || negativeFilter.length > 0 ? BoldFilterOn.src : BoldFilter.src}
+          />
         </button>
       </div>
 

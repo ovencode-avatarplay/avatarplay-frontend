@@ -107,12 +107,17 @@ export interface PaginationRequest {
   limit: number;
 }
 
+interface filterList {
+  searchFilterType: number;
+  searchFilterState: number; // 0 : Positive,  1 : Negative
+}
+
 interface ReqSearchExplore {
   language: string;
   search: string;
   category: number;
   sort: number;
-  filter: string;
+  filterList: filterList[];
   isOnlyAdults: boolean;
   contentPage: PaginationRequest;
   characterPage: PaginationRequest;

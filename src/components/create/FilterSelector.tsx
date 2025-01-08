@@ -6,11 +6,12 @@ import {BoldRadioButton, BoldRadioButtonSelected, BoldRadioButtonSubtract} from 
 export interface FilterDataItem {
   name: string;
   icon?: string;
+  state?: string;
 }
 
 interface FilterSelectorProps {
   filterData: FilterDataItem[];
-  onSave: (selectedFilters: FilterDataItem[]) => void;
+  onSave: (selectedFilters: {positive: FilterDataItem[]; negative: FilterDataItem[]}) => void;
   open: boolean;
   onClose: () => void;
 }
@@ -18,13 +19,13 @@ interface FilterSelectorProps {
 const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open, onClose}) => {
   const [selectedFilters, setSelectedFilters] = useState<{[key: string]: 'empty' | 'selected' | 'remove'}>({});
 
-  useEffect(() => {
-    const initialFilters = filterData.reduce((acc, item) => {
-      acc[item.name] = 'empty';
-      return acc;
-    }, {} as {[key: string]: 'empty' | 'selected' | 'remove'});
-    setSelectedFilters(initialFilters);
-  }, [filterData]);
+  // useEffect(() => {
+  //   const initialFilters = filterData.reduce((acc, item) => {
+  //     acc[item.name] = 'empty';
+  //     return acc;
+  //   }, {} as {[key: string]: 'empty' | 'selected' | 'remove'});
+  //   setSelectedFilters(initialFilters);
+  // }, [filterData]);
 
   const handleToggleFilter = (name: string) => {
     setSelectedFilters(prevState => {
@@ -35,8 +36,9 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
   };
 
   const handleSave = () => {
-    const selectedItems = filterData.filter(item => selectedFilters[item.name] === 'selected');
-    onSave(selectedItems);
+    const positive = filterData.filter(item => selectedFilters[item.name] === 'selected');
+    const negative = filterData.filter(item => selectedFilters[item.name] === 'remove');
+    onSave({positive, negative});
     onClose();
   };
 
