@@ -7,9 +7,9 @@
 
 .scrollArea
 { 
-    height: calc((var(--vh, 1vh) * 100) - 160px);
+    height: calc((var(--vh, 1vh) * 100) - 58px - 39px - 78px);
     overflow-y: scroll;
-    scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */
+    scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */ 
 }
 
 .scrollArea::-webkit-scrollbar {
@@ -42,6 +42,7 @@
     height: calc(100vh - 56px - 60px - 320px);
     display: flex;
     flex-direction: column;
+    gap : 16px;
 }
 
 @media (min-width : 402px)

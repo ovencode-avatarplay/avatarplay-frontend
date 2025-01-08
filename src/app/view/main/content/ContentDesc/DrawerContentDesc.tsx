@@ -1,9 +1,12 @@
 'use client';
 
 // 리액트
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useDispatch, useSelector} from 'react-redux';
+import Link from 'next/link';
+
+// Redux
 import {
   closeDrawerContentDesc,
   openDrawerContentId,
@@ -11,33 +14,6 @@ import {
 } from '@/redux-store/slices/DrawerContentDescSlice';
 import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
 import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
-
-// MUI
-import {
-  Drawer,
-  Button,
-  Box,
-  Typography,
-  Select,
-  MenuItem,
-  Chip,
-  Card,
-  CardContent,
-  Stack,
-  Divider,
-  IconButton,
-  Tabs,
-  Tab,
-} from '@mui/material';
-
-import UploadIcon from '@mui/icons-material/Upload';
-import CloseIcon from '@mui/icons-material/Close';
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import PeopleIcon from '@mui/icons-material/People';
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import AddIcon from '@mui/icons-material/Add';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ShareIcon from '@mui/icons-material/Share';
 
 // Network
 import {
@@ -49,22 +25,23 @@ import {
 
 // Css
 import styles from './DrawerContentDesc.module.css';
+import {BoldChatRoundDots, BoldFolderPlus, BoldFollowers, BoldLike, BoldPlay, BoldShare} from '@ui/Icons';
+// MUI
+import {Drawer, Select, MenuItem} from '@mui/material';
 
-// Items
+// Components
+import {getLocalizedLink} from '@/utils/UrlMove';
 import DrawerContentEpisodeItemList from './ContentEpisodeList';
 import ContentRecommendList from './ContentRecommendList';
 import {EpisodeCardProps} from './ContentDescType';
-
-import Link from 'next/link';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import {getLocalizedLink} from '@/utils/UrlMove';
+import Tabs from '@/components/layout/shared/Tabs';
 
 const DrawerContentDesc = () => {
   const dispatch = useDispatch();
   const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
 
   const [loading, setLoading] = useState(false);
-  const [selectedTab, setSelectedTab] = useState<'Episode' | 'Reccomend'>('Episode');
 
   const [contentUrl, setContentUrl] = useState('?v=vAPWL926G7M');
 
@@ -78,6 +55,11 @@ const DrawerContentDesc = () => {
   const [contentName, setContentName] = useState('contentName');
   const [contentThumbnail, setContentThumbnail] = useState('');
   const [contentDescription, setContentDescription] = useState('contentDescription');
+
+  const [contentDescExpanded, setContentDescExpanded] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const [authorName, setAuthorName] = useState('authorName');
   const [chatCount, setChatCount] = useState(0);
   const [chatUserCount, setChatUserCount] = useState(0);
@@ -148,8 +130,8 @@ const DrawerContentDesc = () => {
     dispatch(closeDrawerContentDesc());
   };
 
-  const handleTabChange = (event: React.SyntheticEvent, value: any) => {
-    setSelectedTab(value);
+  const handleToggleExpand = () => {
+    setContentDescExpanded(!contentDescExpanded);
   };
 
   // chapter가 변경될 때 에피소드 리스트 업데이트
@@ -198,6 +180,63 @@ const DrawerContentDesc = () => {
     }
   }, [open, contentId]);
 
+  useEffect(() => {
+    if (contentRef.current) {
+      const lineHeight = parseInt(getComputedStyle(contentRef.current).lineHeight || '0', 10);
+      const maxHeight = lineHeight * 3; // 3줄 높이 계산
+      const actualHeight = contentRef.current.scrollHeight;
+      setIsOverflowing(actualHeight > maxHeight); // 실제 높이가 3줄을 초과하면 true
+    }
+  }, [contentDescription]);
+
+  const tabData = [
+    {
+      label: 'Episodes',
+      preContent: '',
+      content: (
+        <>
+          <div className={styles.chapterBox}>
+            <div className={styles.chapterName}>Chapter</div>
+            <Select
+              className={styles.chapterSelect}
+              value={selectedChapterIdx}
+              onChange={e => setSelectedChapterIdx(parseInt(e.target.value as string))}
+              displayEmpty
+            >
+              {chapters.map((chapter, index) => (
+                <MenuItem key={chapter.id} value={index}>
+                  {chapter.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
+          <div className={styles.episodeListContainer}>
+            <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
+          </div>
+        </>
+      ),
+    },
+    {
+      label: 'More Like This',
+      preContent: '',
+      content: (
+        <>
+          <div>Content Recommend</div>
+          <ContentRecommendList
+            recommendContents={recommendContentList}
+            onSelectContent={handleRecommendContentSelect}
+          />
+        </>
+      ),
+    },
+    {
+      label: '',
+      preContent: '',
+      content: <></>,
+      isPlaceholder: true,
+    },
+  ];
+
   return (
     <Drawer
       anchor="bottom"
@@ -205,9 +244,10 @@ const DrawerContentDesc = () => {
       onClose={() => handleCloseDrawer()}
       PaperProps={{
         sx: {
-          height: '85vh',
+          height: 'calc((var(--vh, 1vh) * 100) - 111px)',
           borderTopLeftRadius: '24px',
           borderTopRightRadius: '24px',
+          background: 'var(--White, #FFF)',
           overflow: 'hidden',
           bottom: '0px',
           maxWidth: '402px',
@@ -215,126 +255,97 @@ const DrawerContentDesc = () => {
         },
       }}
     >
-      <Box className={styles.thumbnailArea}>
-        <Box
-          className={styles.imageThumbnail}
-          sx={{
-            backgroundImage: `url(${contentThumbnail})`,
-          }}
-        ></Box>
-        <IconButton className={styles.thumbnailButton} onClick={handleCloseDrawer} sx={{position: 'absolute'}}>
-          <CloseIcon />
-        </IconButton>
-        <Typography className={styles.thumbnailTitle}>{contentName}</Typography>
-      </Box>
-      <main className={styles.content}>
-        <Card>
-          <CardContent sx={{padding: 1}}>
-            <Box className={styles.descriptionBox}>{contentDescription}</Box>
-          </CardContent>
-          <Divider className={styles.divider} />
-          <CardContent sx={{padding: 1}}>
-            <div className={styles.cardProducerArea}>
-              <Box textAlign="center">
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <ChatBubbleIcon color="action" />
-                  <Typography variant="h6">{chatCount}</Typography>
-                </Stack>
-              </Box>
-              <Box textAlign="center">
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <PeopleIcon color="action" />
-                  <Typography variant="h6">{chatUserCount}</Typography>
-                </Stack>
-              </Box>
-              <Box textAlign="center">
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <QuestionAnswerIcon color="action" />
-                  <Typography variant="h6">Story</Typography>
-                </Stack>
-              </Box>
+      <div className={styles.handleArea}>
+        <div className={styles.handleBar}></div>
+      </div>
+      <div className={styles.drawerContainer}>
+        <div className={styles.topArea}>
+          <div className={styles.thumbnailArea}>
+            <div className={styles.thumbnailContainer}>
+              <img className={styles.thumbnailImage} src={contentThumbnail} />
             </div>
-            <Box className={styles.tagContainer}>
+          </div>
+          <div className={styles.descriptionArea}>
+            <div className={styles.contentName}>{contentName}</div>
+            <div className={styles.tagArea}>
               {selectTagList.map((tag, index) => (
-                <Chip key={index} label={tag} className={styles.tagChip} />
+                <div key={index} className={styles.tagChip}>
+                  {tag}
+                </div>
               ))}
-            </Box>
-            <Divider className={styles.divider} />
-          </CardContent>
-          <Divider className={styles.divider} />
-          <CardContent sx={{paddingTop: 1, paddingLeft: 3, paddingRight: 3}}>
-            <div>
-              <Link href={getLocalizedLink(`/chat${contentUrl}`)} className={styles.startNewChatButton}>
-                <Button
-                  variant="contained"
-                  fullWidth
+            </div>
+            <div
+              ref={contentRef}
+              className={contentDescExpanded ? styles.fullContentDesc : styles.contentDesc}
+              title={!contentDescExpanded && isOverflowing ? contentDescription : ''}
+            >
+              {contentDescription}
+            </div>
+            {isOverflowing && !contentDescExpanded && (
+              <div className={styles.readMore} onClick={handleToggleExpand}>
+                Read More
+              </div>
+            )}
+            {contentDescExpanded && (
+              <div className={styles.readMore} onClick={handleToggleExpand}>
+                Show Less
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.botArea}>
+          <div className={styles.buttonArea}>
+            <div className={styles.countArea}>
+              <div className={styles.countItem}>
+                <img className={styles.countIcon} src={BoldChatRoundDots.src} />
+                <div className={styles.countText}>{chatCount}</div>
+              </div>
+              <div className={styles.countItem}>
+                <img className={styles.countIcon} src={BoldFollowers.src} />
+                <div className={styles.countText}>{chatUserCount}</div>
+              </div>
+            </div>
+            <div className={styles.contentButtonArea}>
+              <button className={styles.contentButton}>
+                <div className={styles.contentButtonItem}>
+                  <img className={styles.buttonIcon} src={BoldFolderPlus.src} />
+                  My List
+                </div>
+              </button>
+              <div className={styles.contentDivider} />
+              <button className={styles.contentButton}>
+                <div className={styles.contentButtonItem}>
+                  <img className={styles.buttonIcon} src={BoldLike.src} />
+                  Rate
+                </div>
+              </button>
+              <div className={styles.contentDivider} />
+              <button className={styles.contentButton}>
+                <div className={styles.contentButtonItem}>
+                  <img className={styles.buttonIcon} src={BoldShare.src} />
+                  Share
+                </div>
+              </button>
+            </div>
+            <div className={styles.playButton}>
+              <Link href={getLocalizedLink(`/chat${contentUrl}`)}>
+                <button
+                  className={styles.playButtonItem}
                   onClick={() => {
                     dispatch(setUrlLinkUse(false)); // 채팅이 url 링크를 통해 여는 것이 아니라는 것을 명시해준다.
                   }}
                 >
+                  <img className={styles.playIcon} src={BoldPlay.src} />
                   Continue
-                </Button>
+                </button>
               </Link>
             </div>
-            <div className={styles.contentButtonArea}>
-              <Button sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <AddIcon />
-                Add to My List
-              </Button>
-              <Button sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <ThumbUpIcon />
-                Rate
-              </Button>
-              <Button sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <ShareIcon />
-                Share
-              </Button>
-            </div>
-
-            {/* ContentDataTab */}
-            <div className={styles.contentDataTab}>
-              <Tabs value={selectedTab} onChange={handleTabChange} centered>
-                <Tab label="Episodes" value="Episode" />
-                <Tab label="Recommend" value="Reccomend" />
-              </Tabs>
-            </div>
-
-            {selectedTab === 'Episode' ? (
-              <>
-                <Box className={styles.chapterBox}>
-                  <Typography className={styles.chapterName} variant="h6">
-                    Chapter
-                  </Typography>
-                  <Select
-                    className={styles.chapterSelect}
-                    value={selectedChapterIdx}
-                    onChange={e => setSelectedChapterIdx(parseInt(e.target.value as string))}
-                    displayEmpty
-                  >
-                    {chapters.map((chapter, index) => (
-                      <MenuItem key={chapter.id} value={index}>
-                        {chapter.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Box>
-                <div className={styles.episodeListContainer}>
-                  <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
-                </div>
-              </>
-            ) : (
-              <>
-                <Typography variant="h6">Content Recommend</Typography>
-                <ContentRecommendList
-                  recommendContents={recommendContentList}
-                  onSelectContent={handleRecommendContentSelect}
-                />
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </main>
-      <LoadingOverlay loading={loading} />
+          </div>
+          <Tabs tabs={tabData} placeholderWidth="40vw" />
+        </div>
+        <LoadingOverlay loading={loading} />
+      </div>
     </Drawer>
   );
 };

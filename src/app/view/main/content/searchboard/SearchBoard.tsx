@@ -254,6 +254,7 @@ const SearchBoard: React.FC = () => {
                 {recommendationList && recommendationList.length > 0 && (
                   <SearchBoardHorizonScroll title="recommendList" data={recommendationList} />
                 )}
+                <br />
               </main>
             </div>
           </div>
@@ -366,7 +367,7 @@ const SearchBoard: React.FC = () => {
 
   return (
     <>
-      <Tabs tabs={tabData} contentStyle={{padding: '0'}} />
+      <Tabs tabs={tabData} contentStyle={{padding: '0'}} isDark={true} />
       <LoadingOverlay loading={loading} />
     </>
   );
