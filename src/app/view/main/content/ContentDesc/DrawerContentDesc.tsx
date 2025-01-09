@@ -25,7 +25,15 @@ import {
 
 // Css
 import styles from './DrawerContentDesc.module.css';
-import {BoldChatRoundDots, BoldFolderPlus, BoldFollowers, BoldLike, BoldPlay, BoldShare} from '@ui/Icons';
+import {
+  BoldArrowDown,
+  BoldChatRoundDots,
+  BoldFolderPlus,
+  BoldFollowers,
+  BoldLike,
+  BoldPlay,
+  BoldShare,
+} from '@ui/Icons';
 // MUI
 import {Drawer, Select, MenuItem} from '@mui/material';
 
@@ -36,6 +44,7 @@ import ContentRecommendList from './ContentRecommendList';
 import {EpisodeCardProps} from './ContentDescType';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import Tabs from '@/components/layout/shared/Tabs';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 const DrawerContentDesc = () => {
   const dispatch = useDispatch();
@@ -70,10 +79,30 @@ const DrawerContentDesc = () => {
 
   const [chapters, setChapters] = useState<{id: number; name: string}[]>([]);
   const [episodes, setEpisodes] = useState<{id: number; name: string}[]>([]);
+  const [chapterSelectDrawerOpen, setChapterSelectDrawerOpen] = useState(false);
+  const [drawerItems, setDrawerItems] = useState<SelectDrawerItem[]>([]);
 
   const [episodeItems, setEpisodeItems] = useState<EpisodeCardProps[]>([]);
 
   const currentChattingState = useSelector((state: RootState) => state.chatting);
+
+  const handleEpisodeSelect = (episodeIndex: number) => {
+    setSelectedEpisodeIdx(episodeIndex);
+    const selectedEpisode = episodeItems[episodeIndex];
+    dispatch(setDrawerEpisodeId(selectedEpisode.episodeId)); // Redux에 선택된 에피소드 ID 설정
+  };
+
+  const handleRecommendContentSelect = (contentId: number) => {
+    dispatch(openDrawerContentId(contentId));
+  };
+
+  const handleCloseDrawer = () => {
+    dispatch(closeDrawerContentDesc());
+  };
+
+  const handleToggleExpand = () => {
+    setContentDescExpanded(!contentDescExpanded);
+  };
 
   useEffect(() => {
     const chattingState: ChattingState = {
@@ -116,23 +145,13 @@ const DrawerContentDesc = () => {
     }
   }, [contentWholeDesc]);
 
-  const handleEpisodeSelect = (episodeIndex: number) => {
-    setSelectedEpisodeIdx(episodeIndex);
-    const selectedEpisode = episodeItems[episodeIndex];
-    dispatch(setDrawerEpisodeId(selectedEpisode.episodeId)); // Redux에 선택된 에피소드 ID 설정
-  };
-
-  const handleRecommendContentSelect = (contentId: number) => {
-    dispatch(openDrawerContentId(contentId));
-  };
-
-  const handleCloseDrawer = () => {
-    dispatch(closeDrawerContentDesc());
-  };
-
-  const handleToggleExpand = () => {
-    setContentDescExpanded(!contentDescExpanded);
-  };
+  useEffect(() => {
+    const newItems = chapters.map((chapter, index) => ({
+      name: chapter.name,
+      onClick: () => setSelectedChapterIdx(index), // 챕터 선택
+    }));
+    setDrawerItems(newItems);
+  }, [chapters]);
 
   // chapter가 변경될 때 에피소드 리스트 업데이트
   useEffect(() => {
@@ -152,6 +171,21 @@ const DrawerContentDesc = () => {
       setEpisodeItems(updatedEpisodeItems); // 에피소드 리스트 업데이트
     }
   }, [chapters, selectedChapterIdx]);
+
+  useEffect(() => {
+    if (open) {
+      GetContentByContentId(contentId); // Drawer가 열릴 때 호출
+    }
+  }, [open, contentId]);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      const lineHeight = parseInt(getComputedStyle(contentRef.current).lineHeight || '0', 10);
+      const maxHeight = lineHeight * 3; // 3줄 높이 계산
+      const actualHeight = contentRef.current.scrollHeight;
+      setIsOverflowing(actualHeight > maxHeight); // 실제 높이가 3줄을 초과하면 true
+    }
+  }, [contentDescription]);
 
   // Explore 에서 선택한 컨텐츠를 Id로 가져옴 (Play사이클 채팅 진입에서 사용하기 위함)
   const GetContentByContentId = async (contentId: number) => {
@@ -174,43 +208,29 @@ const DrawerContentDesc = () => {
     }
   };
 
-  useEffect(() => {
-    if (open) {
-      GetContentByContentId(contentId); // Drawer가 열릴 때 호출
-    }
-  }, [open, contentId]);
-
-  useEffect(() => {
-    if (contentRef.current) {
-      const lineHeight = parseInt(getComputedStyle(contentRef.current).lineHeight || '0', 10);
-      const maxHeight = lineHeight * 3; // 3줄 높이 계산
-      const actualHeight = contentRef.current.scrollHeight;
-      setIsOverflowing(actualHeight > maxHeight); // 실제 높이가 3줄을 초과하면 true
-    }
-  }, [contentDescription]);
-
   const tabData = [
     {
       label: 'Episodes',
       preContent: '',
       content: (
         <>
-          <div className={styles.chapterBox}>
-            <div className={styles.chapterName}>Chapter</div>
-            <Select
-              className={styles.chapterSelect}
-              value={selectedChapterIdx}
-              onChange={e => setSelectedChapterIdx(parseInt(e.target.value as string))}
-              displayEmpty
-            >
-              {chapters.map((chapter, index) => (
-                <MenuItem key={chapter.id} value={index}>
-                  {chapter.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
-          <div className={styles.episodeListContainer}>
+          <div className={styles.chapterArea}>
+            <div className={styles.chapterSelectBox}>
+              <div className={styles.chapterTitle}>Selected Season</div>
+              {chapters && chapters[selectedChapterIdx] && (
+                <button className={styles.chapterSelectArea} onClick={() => setChapterSelectDrawerOpen(true)}>
+                  <div className={styles.chapterSelected}>{chapters[selectedChapterIdx].name}</div>
+                  <img className={styles.dropDownIcon} src={BoldArrowDown.src} />
+                </button>
+              )}
+
+              <SelectDrawer
+                isOpen={chapterSelectDrawerOpen}
+                onClose={() => setChapterSelectDrawerOpen(false)}
+                items={drawerItems}
+                selectedIndex={selectedChapterIdx}
+              />
+            </div>
             <DrawerContentEpisodeItemList episodes={episodeItems} onEpisodeSelect={handleEpisodeSelect} />
           </div>
         </>
@@ -342,7 +362,7 @@ const DrawerContentDesc = () => {
               </Link>
             </div>
           </div>
-          <Tabs tabs={tabData} placeholderWidth="40vw" />
+          <Tabs tabs={tabData} placeholderWidth="40vw" headerStyle={{padding: '0'}} contentStyle={{padding: '0'}} />
         </div>
         <LoadingOverlay loading={loading} />
       </div>

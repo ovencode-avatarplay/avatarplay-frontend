@@ -11,6 +11,7 @@ interface Tab {
 interface TabsProps {
   tabs: Tab[];
   initialActiveTab?: number;
+  headerStyle?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
   isDark?: boolean;
   placeholderWidth?: string; // 더미 탭의 width
@@ -19,19 +20,31 @@ interface TabsProps {
 const Tabs: React.FC<TabsProps> = ({
   tabs,
   initialActiveTab = 0,
+  headerStyle,
   contentStyle,
   isDark = false,
   placeholderWidth = '50vw', // 기본값: 50vw
 }) => {
   const [activeTab, setActiveTab] = useState(initialActiveTab);
 
+  const calculateMaxWidth = () => {
+    if (placeholderWidth.endsWith('vw')) {
+      const vwValue = parseFloat(placeholderWidth.replace('vw', ''));
+      return `${(402 * (vwValue / 100)).toFixed(2)}px`;
+    }
+    return placeholderWidth; // 만약 vw가 아니면 그대로 반환
+  };
   return (
     <div className={`${styles.tabsContainer} ${isDark ? styles.darkMode : ''}`}>
       {/* Tabs Header */}
-      <div className={`${styles.tabsHeader} ${isDark ? styles.darkHeader : ''}`}>
+      <div className={`${styles.tabsHeader} ${isDark ? styles.darkHeader : ''}`} style={headerStyle}>
         {tabs.map((tab, index) =>
           tab.isPlaceholder ? (
-            <div key={index} className={styles.placeholderTab} style={{width: placeholderWidth}}></div>
+            <div
+              key={index}
+              className={styles.placeholderTab}
+              style={{width: placeholderWidth, maxWidth: calculateMaxWidth()}}
+            ></div>
           ) : (
             <div
               key={index}

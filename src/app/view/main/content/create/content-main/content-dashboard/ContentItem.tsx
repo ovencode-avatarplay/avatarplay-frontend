@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
 import styles from './ContentItem.module.css';
 import {ContentDashboardItem} from '@/redux-store/slices/MyContentDashboard';
-import PhotoIcon from '@mui/icons-material/Photo';
-import MovieIcon from '@mui/icons-material/Movie';
 import {Box} from '@mui/material';
 import {MenuDots} from '@ui/chatting';
 import {
