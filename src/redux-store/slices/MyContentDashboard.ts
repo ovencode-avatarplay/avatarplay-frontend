@@ -10,7 +10,10 @@ export interface ContentDashboardItem {
   mediaCount: number;
   messageCount: number;
   followCount: number;
+  urlLinkKey: string;
+  visibilityType: number;
   createAt: string;
+  updateAt: string;
 }
 
 interface MyContentDashboardState {
