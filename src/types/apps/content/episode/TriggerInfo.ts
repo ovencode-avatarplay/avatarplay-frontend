@@ -10,6 +10,7 @@ export interface TriggerInfo {
   triggerValueChatCount: number;
   triggerValueKeyword: string;
   triggerValueTimeMinute: number;
+  emotionState: EmotionState;
   triggerActionType: number;
   actionChangeEpisodeId: number;
   actionPromptScenarioDescription: string;
@@ -33,4 +34,13 @@ export enum TriggerMediaState {
   TriggerImage = 1,
   TriggerVideo = 2,
   TriggerAudio = 3,
+}
+
+export enum EmotionState {
+  Happy = 0,
+  Angry = 1,
+  Sad = 2,
+  Excited = 3,
+  Scared = 4,
+  Bored = 5,
 }

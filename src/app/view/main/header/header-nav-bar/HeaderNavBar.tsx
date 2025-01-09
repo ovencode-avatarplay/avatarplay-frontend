@@ -2,8 +2,6 @@ import React, {useState} from 'react';
 
 import Image from 'next/image';
 
-import {Button} from '@mui/material';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import styles from './HeaderNavBar.module.css';
 
 import Logo256White from '/public/images/Talkain_logo_256_white.png';
@@ -13,26 +11,36 @@ import Logo512Black from '/public/images/Talkain_logo_512_black.png';
 
 import UserDropdown from '@shared/UserDropdown';
 import Link from 'next/link';
+import {getLocalizedLink} from '@/utils/UrlMove';
+import {BoldAlert, BoldRuby, BoldStar} from '@ui/Icons';
 
 const HeaderNavBar = () => {
   const [logo, setLogo] = useState(Logo256Black);
 
   return (
-    <>
-      <header className={styles.navbar}>
-        <Link href={'/:lang/main/homefeed'}>
-          <div className={styles.logo}>
-            <Image src={logo} alt="Logo" width={128} height={128} priority />
-          </div>
-        </Link>
-        <div className={styles.right}>
-          <Button>
-            <NotificationsIcon />
-          </Button>
-          <UserDropdown />
+    <header className={styles.navbar}>
+      <Link href={getLocalizedLink('/main/homefeed')}>
+        <div className={styles.logoArea}>
+          <Image src={logo} alt="Logo" width={128} height={128} priority />
         </div>
-      </header>
-    </>
+      </Link>
+      <div className={styles.rightArea}>
+        <div className={styles.currencyArea}>
+          <div className={styles.currencyItem}>
+            <img className={styles.currencyIcon} src={BoldRuby.src} />
+            <div className={styles.currencyText}>CurRuby</div>
+          </div>
+          <div className={styles.currencyItem}>
+            <img className={styles.currencyIcon} src={BoldStar.src} />
+            <div className={styles.currencyText}>CurStar</div>
+          </div>
+        </div>
+        <button className={styles.notification} onClick={() => {}}>
+          <img className={styles.notificationIcon} src={BoldAlert.src} />
+        </button>
+        <UserDropdown />
+      </div>
+    </header>
   );
 };
 

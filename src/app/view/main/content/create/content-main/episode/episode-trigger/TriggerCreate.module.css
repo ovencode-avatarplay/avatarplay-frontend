@@ -1,0 +1,460 @@
+/* 공통 영역*/
+.floatButtonArea
+{
+    bottom: 45px;
+    position: absolute;
+    display: flex;
+    width: calc(100vw - 32px);
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 16px;
+    margin-right: 16px;
+    gap: 12px;
+}
+
+@media (min-width : 402px)
+{
+    .floatButtonArea
+    {
+        width: 370px;
+    }
+}
+
+.floatButtonArea > .floatButton
+{
+    display: flex;
+    flex-direction: row;
+    width: 120px;
+    height: 46px;
+    padding: 14px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: 'Lato';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;  
+    letter-spacing: -0.4px;
+}
+
+.floatButtonArea > .prevButton
+{    
+    border-radius: 10px;
+    border: 1px solid var(--Border-1, #EAECF0);
+    background: var(--White, #FFF);
+
+    color: var(--Black, #000);
+}
+
+.floatButtonArea > .floatButton.centerSideButton
+{
+    width: 106px;
+}
+
+
+.floatButtonArea > .centerButton
+{    
+    width: 134px;
+    border-radius: 8px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+}
+
+.floatButtonArea > .nextButton
+{
+    border-radius: 10px;
+    background: var(--Neutral-800, #2C3131);
+
+    color: var(--White, #FFF);
+}
+
+.floatButton >.buttonIcon
+{
+    display: flex;
+    width: 12px;
+    height: 12px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.floatButton >.buttonCheckIcon
+{
+    display: flex;
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+}
+
+.stepDesc {  
+
+    align-self: center;
+    justify-self: center;
+
+    margin-top: 22px;
+
+    width: 285px;
+    height: 22px;
+    left: calc(50% - 285px/2);
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+    /* identical to box height, or 157% */
+    text-align: center;
+
+    color: #9AA0A6;
+}
+
+/* 중복 영역 InputTitle */
+.inputTitle
+{
+    display: flex;
+
+    width: calc(100vw - 32px);
+    margin-top: 5vh;
+    margin-left: 4vw;
+    margin-right: 4vw;
+    
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+@media (min-width : 402px) {    
+    .inputTitle{
+        width: 370px;
+        margin-top: 43.35px;
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+}
+
+
+.inputTitle > .title
+{
+    display: flex;
+    height: 22px;
+    flex-direction: column;
+    justify-content: center;
+    align-self: stretch;
+
+    color: var(--Neutral-900, #040415);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: 'Lato';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px; /* 114.286% */
+    letter-spacing: -0.4px;
+}
+
+.inputTitle > .inputBox
+{
+    display: flex;
+    height: 47px;
+    padding: 14px 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    align-self: stretch;
+    border-radius: 10px;
+    
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--White, #FFF);
+}
+
+.inputBox:focus
+{
+    outline: none;
+}
+
+.inputBox:focus-visible
+{
+    outline: none;
+}
+
+/* 중복영역 CharacterDesc*/
+
+.inputCharacterDesc
+{
+    display: flex;
+    width: calc(100vw - 32px);
+    margin-top: 5vh;
+    margin-left: 4vw;
+    margin-right: 4vw;
+
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+}
+
+
+@media (min-width : 402px) {    
+    .inputCharacterDesc{
+        width: 370px;
+        margin-top: 43.35px;
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+}
+
+ .characterDesc
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+}
+
+.characterDesc > .title
+{
+    flex: 1 0 0;
+    color: var(--Black, #000);
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 155%; /* 21.7px */
+
+}
+
+.characterDesc > .inputBox
+{
+    display: flex;
+padding: 18px 12px;
+flex-direction: column;
+align-items: flex-start;
+gap: 8px;
+align-self: stretch;
+border-radius: 10px;
+border: 1px solid var(--Neutral-200, #E8EAED);
+background: var(--White, #FFF);
+}
+
+.characterDesc > .inputArea
+{ 
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 12px;
+
+    width: calc(100vw - 32px);
+    height: 190px;
+
+    background: #FFFFFF;
+    border: 1px solid #E8EAED;
+    border-radius: 10px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 1;
+}
+
+@media (min-width : 402px)
+{
+    .inputArea
+    {
+        width: 370px;
+    }
+}
+
+
+.characterDesc > .inputArea >.inputPrompt
+{
+    flex: 1 0 0;
+    align-self: stretch;
+
+    color: var(--Black, #000);
+    font-family: 'Lato';
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%;  
+
+    resize: none; 
+    height: 150px; 
+    overflow-y: auto; 
+    box-sizing: border-box;
+
+    text-align: left;
+    vertical-align: top;
+}
+
+.inputPrompt:focus
+{
+    outline: none;
+}
+
+.inputPrompt:focus-visible
+{
+    outline: none;
+}
+
+
+.characterDesc > .inputArea > .inputHint
+{
+    display: flex;
+    align-items: flex-end;
+    align-self: stretch;
+    color: var(--Neutral-500, #9AA0A6);
+    font-family: 'Lato';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 155%; /* 18.6px */
+}
+
+/* uploadType */
+.uploadType > .buttonArea
+{
+    display: flex;
+    width: calc(100vw - 32px);
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 7.3vw 4vw auto 4vw;
+    gap: 5vw;
+}
+
+
+@media (min-width : 402px) {    
+.uploadType > .buttonArea
+ {   margin: 30px 16px auto 16px;
+    gap: 20px;
+}
+}
+
+.uploadType > .buttonArea > .uploadButton
+{
+    display: flex;
+    padding: var(--Gap-and-Padding-Positive-GapPadding-16, 16px) var(--Gap-and-Padding-Positive-GapPadding-24, 24px) var(--Gap-and-Padding-Positive-GapPadding-16, 16px) var(--Gap-and-Padding-Positive-GapPadding-20, 20px);
+    align-items: center;
+    gap: 18px;
+    align-self: stretch;
+    
+    border-radius: 12px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--Neutral-50, #F8F9FA);
+    
+    color: var(--Black, #000);
+    text-align: justify;
+    font-family: 'Lato';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 160%;     
+}
+ 
+.uploadType > .buttonArea > .uploadButton:hover
+{
+    border-radius: 12px;
+    background: var(--Neutral-800, #2C3131);
+    
+    color: var(--White, #FFF);
+}
+
+.uploadButton > .buttonIconBack
+{
+    display: flex;
+width: 50px;
+height: 50px;
+padding: 13px;
+justify-content: center;
+align-items: center;
+
+border-radius: 100px;
+border: 1px solid var(--Neutral-200, #E8EAED);
+background: #FFF;
+}
+
+
+.uploadButton > .buttonIconBack > .buttonIcon
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+ 
+
+@media (min-width : 402px) {
+    .uploadType > .buttonArea
+    {
+        width: 370px;
+    }
+}
+
+
+
+.blackIcon{
+    filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
+}
+
+/* 전체 그리드 스타일 */
+.step_grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: start;
+    align-items: center;
+    width: calc(100vw - 32px);
+    margin: 0 auto;
+  }
+
+@media (min-width : 402px)
+{
+    .step_grid
+    {
+        width: 370px;
+    }
+}
+  
+  /* 버튼 기본 스타일 */
+  .step_button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc(50vw - 16px - 5px);
+    height: 68px;
+    padding: 20px 15px;
+    gap: 8px;
+    background: #f8f9fa;
+    border: 1px solid #eaecf0;
+    border-radius: 10px;
+    color: #2c3131;
+    font-family: 'Lato', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 130%;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.3s, border 0.3s, color 0.3s;
+  }
+
+  @media (min-width : 402px)
+  {
+    .step_button
+    {
+        width: 180px;
+    }
+  }
+  
+  /* 활성화된 버튼 스타일 */
+  .step_button.active {
+    background: #fd55d3;
+    border: 1px solid #ffe6f8;
+    color: #ffffff;
+  }
+  

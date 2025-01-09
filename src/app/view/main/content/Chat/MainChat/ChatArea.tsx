@@ -2,15 +2,18 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Box, Avatar} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
-import {Message, MessageGroup} from './ChatTypes';
+import {Message, MessageGroup, SenderType} from './ChatTypes';
 import ChatTtsPlayer from './ChatTtsPlayer';
 import {GenerateTtsUrl} from './GenerateTtsUrl';
-
-import ReplayIcon from '@mui/icons-material/Replay';
+import {useGesture} from '@use-gesture/react';
 import {SendChatMessageReq} from '@/app/NetWork/ChatNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import ChatRetryButton from './ChatRetryButton';
+import ChatLoadingBubble from './ChatLoadingBubble';
+import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
+
 interface ChatAreaProps {
   messages: MessageGroup;
   bgUrl: string;
@@ -19,7 +22,9 @@ interface ChatAreaProps {
   isHideChat: boolean;
   onToggleBackground: () => void;
   isLoading: boolean; // 로딩 상태 추가
+  setBlurOn: React.Dispatch<React.SetStateAction<boolean>>;
   chatBarCount: number;
+  aiChatHeight: number;
   transitionEnabled: boolean; // 배경 이미지 전환 여부를 제어하는 프롭
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   lastMessage: Message;
@@ -33,7 +38,9 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   isHideChat,
   onToggleBackground,
   isLoading,
+  setBlurOn,
   chatBarCount,
+  aiChatHeight,
   transitionEnabled, // transitionEnabled 프롭을 추가
   send,
   lastMessage,
@@ -44,7 +51,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [selectedBubbleIndex, setSelectedBubbleIndex] = useState<number | null>(null);
 
-  const chatInfo = useSelector((state: RootState) => state);
+  const chatInfo = useSelector((state: RootState) => state.chatting);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [retryingMessages, setRetryingMessages] = useState<number[]>([]);
 
@@ -60,6 +67,10 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     }
   };
 
+  const setBubbleIndexNull = () => {
+    setSelectedBubbleIndex(null);
+  };
+
   const handlePlayAudio = async (text: string) => {
     setloading(true);
     const url = await GenerateTtsUrl(text, 'defaultVoice');
@@ -73,6 +84,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       const {scrollTop, clientHeight, scrollHeight} = scrollRef.current;
       const isAtBottom = scrollHeight - scrollTop === clientHeight;
 
+      console.log(scrollRef.current);
       // 스크롤 위치를 유지하기 위해 이전 스크롤 높이 계산
       const previousScrollHeight = scrollHeight;
 
@@ -91,7 +103,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
         }
       }
     }
-  }, [messages, chatBarCount]); // messages와 chatBarCount가 변경될 때마다 실행
+  }, [messages, chatBarCount, aiChatHeight]); // messages와 chatBarCount가 변경될 때마다 실행
 
   const [prevBgUrl, setPrevBgUrl] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -121,116 +133,114 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       }, 500); // 페이드 아웃 시간
     }
   }, [bgUrl, prevBgUrl, transitionEnabled]);
-
+  const bind = useGesture({
+    onDoubleClick: () => {
+      console.log('Double tap detected!');
+      onToggleBackground();
+    },
+  });
   useEffect(() => {
     if (isModifyingQuestion === false) {
       setSelectedBubbleIndex(null);
     }
   }, [isModifyingQuestion]);
 
+  useEffect(() => {
+    if (selectedBubbleIndex !== null) setBlurOn(true);
+    else setBlurOn(false);
+  }, [selectedBubbleIndex]);
+
   const handleRetry = (msgText: string, chatId: number) => {
     // 재전송을 시도한 메시지의 chatId를 상태에 추가하여 버튼 숨기기
     setRetryingMessages(prev => [...prev, chatId]);
     // 실패한 메시지를 재전송하기 위한 요청 데이터 생성
     const retryMessage: SendChatMessageReq = {
-      episodeId: chatInfo.chatting.episodeId,
+      episodeId: chatInfo.episodeId,
       text: msgText,
     };
 
     send(retryMessage); // Send 함수를 호출하여 메시지를 재전송
   };
 
+  const retryAction = (msg: Message) => {
+    if (msg.text.includes(`${ESystemError.syserr_chatting_send_post}`)) {
+      // 첫 번째 문구에 해당하는 동작
+      console.log('Failed to send message. Retry logic');
+      handleRetry(
+        messages.Messages[messages.Messages.length - 2].text,
+        messages.Messages[messages.Messages.length - 2].chatId,
+      );
+    } else if (msg.text.includes(`${ESystemError.syserr_chat_stream_error}`)) {
+      // 두 번째 문구에 해당하는 동작
+      console.log('Stream error. Attempting to reconnect');
+      retrySend();
+    }
+  };
+  console.log('aiChatHeight', aiChatHeight);
   return (
     <>
       <LoadingOverlay loading={loading} />
-      {isHideChat === false && (
+      {/* {isHideChat === false && ( */}
+      <Box className={styles.chatArea} {...bind()}>
+        {/* 채팅 화면에서 사용되는 이미지는 배경, 캐릭터가 서버 로직에 의해 합성이 끝난 이미지를 사용합니다. 
+        현재 임시로 Character, BackGround를 분리하고 있으나 최종적으로는 캐릭터와 배경이 합성된 이미지를 사용하며, 
+        캐릭터 표정, 포즈, 배경 변경 등에 사용되는 새 배경을 사용 하기 위해 2개까지 동시에 나와 있을 수는 있습니다. 
+        임시 작업 중 캐릭터가 배경을 덮는 현상은 무시해도 됩니다. */}
+        {/* 기존 배경 */}
         <Box
-          className={styles.chatArea}
-          onDoubleClick={() => {
-            if (isHideChat === false) {
-              onToggleBackground();
-            }
-          }}
+          className={`${styles.mainBackground} ${isFadingOut ? styles.fadingOut : ''}`}
           sx={{
-            position: 'relative',
-            width: '100%',
-            height: '100%',
-            fontFamily: 'Noto Sans KR, sans-serif',
-            overflow: 'hidden',
+            backgroundImage: `url(${prevBgUrl || bgUrl})`,
+            opacity: isFadingOut ? 0 : 1,
+            transition: 'opacity 0.5s ease',
           }}
-        >
-          {/* 기존 배경 */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${
-                prevBgUrl || bgUrl
-              })`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              opacity: isFadingOut ? 0 : 1,
-              transition: 'opacity 0.5s ease',
-              zIndex: 1,
-            }}
-          />
-
-          {/* 새 배경 */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              opacity: isTransitioning ? 1 : 0,
-              transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
-              zIndex: 2,
-            }}
-          />
-
+        />
+        {/* 새 배경 */}
+        <Box
+          className={`${styles.newBackground} ${isHideChat ? styles.fadeCover : ''} ${
+            isFadingOut ? styles.fadingOut : ''
+          }`}
+          sx={{
+            backgroundImage: ` url(${prevBgUrl || bgUrl})`,
+            opacity: isTransitioning ? 1 : 0,
+            transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
+          }}
+        />
+        <div className={styles.mainCharacterContainer}>
           {/* 캐릭터 이미지 */}
           <Box
+            className={`${styles.mainCharacter} ${
+              bgUrl === '' || bgUrl === undefined ? styles.mainCharacterNonBg : ''
+            }`}
             sx={{
-              position: 'absolute',
-
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
               backgroundImage: `url(${characterUrl})`,
-              backgroundSize: 'contain',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-              zIndex: 2, // 배경 위에 렌더링
             }}
           />
-          {/* Fixed space at the top */}
-          <Box sx={{height: '72px', width: '100%'}} />
+        </div>
+        {/* 최상위 그라데이션 */}
+        <Box
+          className={`${styles.mainGradiationCover}  ${selectedBubbleIndex !== null ? styles.blurBackground : ''}`}
+          sx={{
+            width: '100%',
+            height: '100%',
+            backgroundImage: `${
+              !isHideChat
+                ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.70) 4.69%, rgba(0, 0, 0, 0.40) 14.22%, rgba(0, 0, 0, 0.02) 100%)'
+                : ''
+            }`,
+            opacity: isTransitioning ? 0 : 1,
+            transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
+          }}
+        />
 
-          <ChatTtsPlayer audioUrl={audioUrl} />
-          {/* Scrollable content */}
+        <ChatTtsPlayer audioUrl={audioUrl} />
+        {/* Scrollable content */}
+        {isHideChat === false && (
           <Box
+            className={`${styles.messageBubbleArea}`}
             ref={scrollRef}
             sx={{
-              //height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 72 : 0}px)`,
-              overflowY: 'auto',
-              position: 'absolute',
-              top: '400px',
-              left: 0,
-              right: 0,
-              height: `calc(100% - 400px)`, // 400px 이후의 높이를 지정
-              paddingLeft: '16px',
-              paddingRight: '16px',
-              zIndex: 3, // 채팅 메시지가 보이도록 z-index를 더 높게 설정
+              height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 8 : 0}vh - ${aiChatHeight}px)`,
             }}
           >
             <Box onClick={() => setSelectedBubbleIndex(null)}>
@@ -254,179 +264,31 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                         e.stopPropagation();
                         handlePlayAudio(msg.text);
                       }}
+                      setSelectedNull={() => setBubbleIndexNull()}
                       selectedIndex={selectedBubbleIndex} // 현재 선택된 상태 전달
                       lastMessage={lastMessage}
+                      createDate={msg.createDateString}
+                      prevSenderType={index === 0 ? SenderType.IntroPrompt : messages.Messages[index - 1].sender}
                     />
                   )}
                   {/* Retry 버튼 조건부 렌더링 */}
                   {msg.sender === 'system' &&
-                    (msg.text.includes('Failed to send message. Please try again.') ||
-                      msg.text.includes('Stream encountered an error or connection was lost. Please try again.')) &&
+                    checkChatSystemError(msg.text) &&
                     !retryingMessages.includes(msg.chatId) && ( // 재전송된 메시지 제외
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginTop: '8px',
-                          padding: '4px 8px',
-                          backgroundColor: 'white',
-                          borderRadius: '12px',
-                          border: '1px solid black',
-                          color: 'black',
-                          cursor: 'pointer',
-                          position: 'relative',
-                          width: '100px',
-                          top: '-10px',
-                          margin: '0 auto', // 수평 중앙 정렬
-                        }}
-                        onClick={() => {
-                          if (msg.text.includes('Failed to send message. Please try again.')) {
-                            // 첫 번째 문구에 해당하는 동작
-                            console.log('Failed to send message. Retry logic');
-                            handleRetry(
-                              messages.Messages[messages.Messages.length - 2].text,
-                              messages.Messages[messages.Messages.length - 2].chatId,
-                            );
-                          } else if (
-                            msg.text.includes('Stream encountered an error or connection was lost. Please try again.')
-                          ) {
-                            // 두 번째 문구에 해당하는 동작
-                            console.log('Stream error. Attempting to reconnect');
-                            retrySend();
-                          }
-                        }}
-                      >
-                        <ReplayIcon
-                          sx={{
-                            color: 'black',
-                            marginRight: '4px',
-                            fontSize: '1.2em',
-                            borderRadius: '50%',
-                          }}
-                        />
-                        <span>Retry</span>
-                      </Box>
+                      <>
+                        <ChatRetryButton retrySend={() => retryAction(msg)} />
+                      </>
                     )}
                 </React.Fragment>
               ))}
             </Box>
-
-            {isLoading && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  marginBottom: 2,
-                }}
-              >
-                <Avatar
-                  alt="Partner Avatar"
-                  src={iconUrl}
-                  sx={{
-                    width: 32,
-                    height: 32,
-                    marginRight: 1,
-                    border: '1px solid',
-                    borderColor: 'black',
-                  }}
-                />
-                <Box
-                  sx={{
-                    display: 'inline-block',
-                    padding: '8px',
-                    borderRadius: '8px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)', // partner의 말풍선 배경색
-                    color: '#FFFFFF',
-                    fontSize: '0.8em',
-                  }}
-                >
-                  <span className={styles.loadingDots}>
-                    <span>●</span>
-                    <span>●</span>
-                    <span>●</span>
-                  </span>
-                </Box>
-              </Box>
-            )}
+            {isLoading && <ChatLoadingBubble iconUrl={iconUrl} />}
+            <div className={styles.endPadding}> </div>
             <div ref={bottomRef} />
           </Box>
-        </Box>
-      )}
-      {isHideChat === true && (
-        <Box
-          className={styles.chatArea}
-          onDoubleClick={() => {
-            if (isHideChat === true) {
-              onToggleBackground();
-            }
-          }}
-          sx={{
-            position: 'relative',
-            width: '100%',
-            height: '100%',
-            fontFamily: 'Noto Sans KR, sans-serif',
-            overflow: 'hidden',
-          }}
-        >
-          {/* 기존 배경 */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${
-                prevBgUrl || bgUrl
-              })`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              opacity: isFadingOut ? 0 : 1,
-              transition: 'opacity 0.5s ease',
-              zIndex: 1,
-            }}
-          />
-
-          {/* 새 배경 */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 80%), url(${bgUrl})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              opacity: isTransitioning ? 1 : 0,
-              transition: transitionEnabled ? 'opacity 1.5s ease' : 'none',
-              zIndex: 2,
-            }}
-          />
-
-          {/* 캐릭터 이미지 */}
-          <Box
-            sx={{
-              position: 'absolute',
-
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `url(${characterUrl})`,
-              backgroundSize: 'contain',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-              zIndex: 2, // 배경 위에 렌더링
-            }}
-          />
-        </Box>
-      )}
+        )}
+      </Box>
     </>
   );
 };
-console.log('bgUrl');
 export default ChatArea;

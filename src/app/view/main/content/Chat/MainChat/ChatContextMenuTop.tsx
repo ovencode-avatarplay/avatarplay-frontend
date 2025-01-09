@@ -1,33 +1,29 @@
-// MessageMenu.tsx
-import React from 'react';
-import {Box, IconButton, Typography} from '@mui/material';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import React, {useState} from 'react';
+import {Box, IconButton} from '@mui/material';
 import styles from '../Styles/ChatMessageMenu.module.css';
+import {LikeOn, LikeOff} from '@ui/chatting';
 
 interface ChatContextTopProps {
   id: number;
+  closeAction: () => void;
 }
 
-// 핸들러 함수 선언
-const handleLike = () => {};
-const handleDislike = () => {};
+const ChatMessageMenuTop: React.FC<ChatContextTopProps> = ({id, closeAction}) => {
+  const [isLiked, setIsLiked] = useState(false);
 
-const ChatMessageMenuTop: React.FC<ChatContextTopProps> = ({id}) => {
+  const handleLikeToggle = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    setIsLiked(prev => !prev);
+    setTimeout(() => {
+      closeAction();
+    }, 300);
+  };
+
   return (
-    <Box>
-      {/* 상단의 가로 메뉴 - Like와 Dislike 버튼 */}
-      <Box className={styles.topMenuContainer}>
-        {id}
-        <IconButton onClick={handleLike} className={styles.iconButton}>
-          <ThumbUpIcon />
-          <Typography variant="body2">Like</Typography>
-        </IconButton>
-        <IconButton onClick={handleDislike} className={styles.iconButton}>
-          <ThumbDownIcon />
-          <Typography variant="body2">Dislike</Typography>
-        </IconButton>
-      </Box>
+    <Box className={styles.topMenuContainer}>
+      <IconButton onClick={handleLikeToggle} className={styles.iconButton}>
+        <img className={styles.icon} src={isLiked ? LikeOn.src : LikeOff.src} alt={isLiked ? 'Liked' : 'Not Liked'} />
+      </IconButton>
     </Box>
   );
 };

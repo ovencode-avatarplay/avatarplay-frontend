@@ -21,6 +21,7 @@ import CharacterGalleryViewer from './CharacterGalleryViewer';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface CharacterGalleryModalProps {
   open: boolean;
@@ -91,7 +92,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   }, [characterData]);
 
   const handleViewItem = () => {
-    if (selectedItem[1] === null || selectedItem[1] === undefined) {
+    if (selectedCategory !== selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
       console.error('Invalid selection: ', selectedItem);
       return;
     }
@@ -296,7 +297,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
             <>
               <CreateCharacterTopMenu
                 backButtonAction={handleRegenerateClose}
-                lastUrl=":/lang/studio/Character"
+                lastUrl={getLocalizedLink('/studio/Character')}
                 contentTitle={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]} Creation`}
                 blockStudioButton={true}
               />
@@ -311,7 +312,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
             <>
               <CreateCharacterTopMenu
                 backButtonAction={handleModifyClose}
-                lastUrl=":/lang/studio/Character"
+                lastUrl={getLocalizedLink('/studio/Character')}
                 contentTitle={`Modify ${characterInfo.name}`}
                 blockStudioButton={true}
               />
@@ -335,12 +336,13 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
               onInfo={() => console.log('Info clicked')}
               onDelete={handleDeleteItem}
               onSelectImage={handleImageSelect}
+              onRefresh={refreshCharacterList}
             />
           ) : (
             <>
               <CreateCharacterTopMenu
                 backButtonAction={onClose}
-                lastUrl=":/lang/studio/Character"
+                lastUrl={getLocalizedLink('/studio/Character')}
                 contentTitle={`${characterInfo.name}'s Gallery`}
                 blockStudioButton={true}
               />

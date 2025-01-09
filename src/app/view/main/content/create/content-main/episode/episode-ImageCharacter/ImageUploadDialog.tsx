@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Dialog, DialogContent, MenuItem} from '@mui/material';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 interface Props {
   isOpen: boolean; // 다이얼로그 오픈 여부
@@ -59,18 +59,31 @@ const ImageUploadDialog: React.FC<Props> = ({isOpen, onClose, onFileSelect}) => 
     onClose();
   };
 
+  const uploadImageItems: SelectDrawerItem[] = [
+    {
+      name: 'Take a photo or video',
+      onClick: () => {
+        handleTakePhoto();
+      },
+    },
+    {
+      name: 'Media library',
+      onClick: () => {
+        handlePhotoLibrary();
+      },
+    },
+    {
+      name: 'File folder',
+      onClick: () => {
+        handleChooseFile();
+      },
+    },
+  ];
+
   return (
-    <Dialog open={isOpen} onClose={onClose}>
-      <DialogContent dividers>
-        {isMobile ? (
-          <>
-            <MenuItem onClick={handlePhotoLibrary}>Photo Library</MenuItem>
-            <MenuItem onClick={handleTakePhoto}>Take Photo</MenuItem>
-            <MenuItem onClick={handleChooseFile}>Choose File</MenuItem>
-          </>
-        ) : null}
-      </DialogContent>
-    </Dialog>
+    <>
+      {isMobile ? <SelectDrawer isOpen={isOpen} onClose={onClose} items={uploadImageItems} selectedIndex={0} /> : null}
+    </>
   );
 };
 

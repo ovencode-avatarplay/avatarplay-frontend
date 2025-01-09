@@ -7,18 +7,17 @@ import {Auth} from '@supabase/auth-ui-react';
 import {ThemeSupa} from '@supabase/auth-ui-shared';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {Session} from '@supabase/supabase-js';
+import {env} from 'process';
+import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';
 
 const Login = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect'); // 쿼리 파라미터에서 redirect 값을 가져옴
+  const redirect = searchParams?.get('redirect'); // 쿼리 파라미터에서 redirect 값을 가져옴
 
   useEffect(() => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
       if (event === 'SIGNED_IN') {
-        // 로그인 성공 시 리다이렉트
-        alert(session?.access_token);
-
         try {
           const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
 
@@ -37,6 +36,8 @@ const Login = () => {
 
           const data = await response.json();
           localStorage.setItem('jwt', data.accessToken);
+          fetchLanguage(router);
+          // 서버에 저장한 언어코드로 language 변경
         } catch (error) {
           console.error('Error occurred during authentication:', error);
         }
@@ -66,7 +67,7 @@ const Login = () => {
           providers={['google', 'kakao']} // 구글, 카카오 등 추가하고 싶은 OAuth 제공자
           appearance={{theme: ThemeSupa}} // Supabase 기본 테마 사용
           onlyThirdPartyProviders
-          redirectTo={`http://www.naver.com`}
+          redirectTo={process.env.NEXT_PUBLIC_FRONT_URL}
           queryParams={{
             access_type: 'offline',
             prompt: 'consent',

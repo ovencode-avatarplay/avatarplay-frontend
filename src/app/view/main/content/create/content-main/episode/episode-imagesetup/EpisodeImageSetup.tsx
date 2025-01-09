@@ -2,16 +2,25 @@
 
 import {Button, Dialog, DialogTitle} from '@mui/material';
 import styles from './EpisodeImageSetup.module.css';
-import React from 'react';
+import React, {useEffect} from 'react';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CharacterCreate from '../../../character/CreateCharacterSequence';
+import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {useDispatch} from 'react-redux';
 
 interface EpisodeImageSetupProps {
   open: boolean;
   onClose: () => void;
+  episodeInfo: EpisodeInfo;
 }
 
-const EpisodeImageSetup: React.FC<EpisodeImageSetupProps> = ({open, onClose}) => {
+const EpisodeImageSetup: React.FC<EpisodeImageSetupProps> = ({open, onClose, episodeInfo}) => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (open) {
+      dispatch(setCurrentEpisodeInfo(episodeInfo));
+    }
+  }, [episodeInfo]);
   return (
     <Dialog
       closeAfterTransition={false}
@@ -22,7 +31,7 @@ const EpisodeImageSetup: React.FC<EpisodeImageSetupProps> = ({open, onClose}) =>
       disableAutoFocus={true}
       disableEnforceFocus={true} // disableEnforceFocus 속성 사용
       sx={{
-        maxWidth: '500px',
+        maxWidth: '402px',
         margin: '0 auto',
       }}
     >

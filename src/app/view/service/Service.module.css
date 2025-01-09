@@ -1,0 +1,9 @@
+.body {
+    
+    display: flex;
+    flex-direction: column;
+    height: 100vh; 
+    overflow: hidden;       
+    max-width: 402px;
+  margin: 0 auto; /* 수평 중앙 정렬 */
+}

@@ -12,15 +12,18 @@ import EmojiOverlayPopup from './EmojiOverlayPopup';
 import {updateRecent} from '@/redux-store/slices/EmoticonSlice';
 import ChatBar from './ChatBar';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
+import {useRouter} from 'next/navigation';
 interface FooterChatProps {
-  onSend: (message: string, isMyMessage: boolean, isClearString: boolean) => void;
+  onSend: (message: string, isMyMessage: boolean, isClearString: boolean, isShowDate: boolean) => void;
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   streamKey: string;
   setStreamKey: (key: string) => void;
   isHideChat: boolean;
+  isBlurOn: boolean;
   onToggleBackground: () => void;
   onLoading: (isLoading: boolean) => void; // 로딩 상태 변경 함수 추가
   onUpdateChatBarCount: (count: number) => void; // 추가된 prop
+  onUpdateAiChatBarCount: (count: number) => void; // 추가된 prop
   onReqPrevChatting: (isEnter: boolean) => void;
   EmoticonData?: EmoticonGroupInfo[];
 
@@ -28,6 +31,7 @@ interface FooterChatProps {
     state: boolean;
   };
   onRemoveChat: (id: number) => void;
+  onCheatChangeDate: (cheat: string) => void;
 }
 
 const FooterChat: React.FC<FooterChatProps> = ({
@@ -35,13 +39,16 @@ const FooterChat: React.FC<FooterChatProps> = ({
   send,
   onToggleBackground,
   isHideChat,
+  isBlurOn,
   EmoticonData,
 
   onLoading,
   onUpdateChatBarCount,
+  onUpdateAiChatBarCount,
   onReqPrevChatting,
   isSendingMessage,
   onRemoveChat,
+  onCheatChangeDate,
 }) => {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -55,6 +62,9 @@ const FooterChat: React.FC<FooterChatProps> = ({
   const currentContentId: number = useSelector((state: RootState) => state.chatting.contentId);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
   const [failMessage, setfailMessage] = useState<string | null>(null);
+
+  const router = useRouter();
+
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
     setSelectedEmoji(null);
@@ -71,12 +81,31 @@ const FooterChat: React.FC<FooterChatProps> = ({
 
     if (isAnyCheatMessageType(cheat)) {
       try {
+        switch (cheat) {
+          case '⦿YEAR⦿':
+            onCheatChangeDate('⦿YEAR⦿');
+            onLoading(false);
+            return true;
+          case '⦿MONTH⦿':
+            onCheatChangeDate('⦿MONTH⦿');
+            onLoading(false);
+            return true;
+          case '⦿DAY⦿':
+            onCheatChangeDate('⦿DAY⦿');
+            onLoading(false);
+            return true;
+          case '⦿REFRESH_NEW_DAY⦿':
+            onCheatChangeDate('⦿REFRESH_NEW_DAY⦿');
+            onLoading(false);
+            return true;
+        }
+
         const chattingCheatRes = await cheatMessage(currentContentId, currentEpisodeId, messages);
 
         if (chattingCheatRes) {
-          const cheatResult = cheatManager(chattingCheatRes);
+          const cheatResult = cheatManager(chattingCheatRes, router);
           if (cheatResult.text.length > 0) {
-            onSend(cheatResult.text, true, false);
+            onSend(cheatResult.text, true, false, false);
             result = true;
           } else if (cheatResult.reqEnter === true) {
             onReqPrevChatting(true);
@@ -145,15 +174,19 @@ const FooterChat: React.FC<FooterChatProps> = ({
 
       if (message.includes('⦿SYSTEM_CHAT⦿')) {
         const messageParts = message.split('⦿SYSTEM_CHAT⦿');
-        messageParts.forEach(part => {
+        messageParts.forEach((part, index) => {
           const trimmedPart = part.trim(); // 필요시 양쪽 공백 제거
+          const isLast = index === messageParts.length - 1; // 마지막 요소 판별
+
           if (trimmedPart.length > 0) {
-            // 빈 문자열이 아닌 경우에만 onSend 호출
-            onSend(trimmedPart, true, parseMessage);
+            // 마지막 요소인 경우 별도 처리
+            if (isLast) {
+              onSend(trimmedPart, true, parseMessage, true);
+            } else onSend(trimmedPart, true, parseMessage, false);
           }
         });
       } else {
-        onSend(message, true, parseMessage);
+        onSend(message, true, parseMessage, true);
       }
 
       reqSendChatMessage.text = message.replace(/\(,\)/g, '');
@@ -188,35 +221,24 @@ const FooterChat: React.FC<FooterChatProps> = ({
   };
   return (
     <Box
-      className={`${styles.bottomBar} ${isExpanded ? styles.expanded : styles.collapsed}`}
-      sx={{
-        position: 'fixed',
-        bottom: 0,
-        maxWidth: '500px',
-        margin: '0 auto',
-        backgroundColor: 'white',
-        transition: 'height 0.3s',
-        height: isStickerOpen ? '350px' : 'auto', //박스 크기 조절 부분
-        boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)',
-        width: window.innerWidth,
-        zIndex: 4,
-      }}
+      className={`${styles.bottomBar} ${isExpanded ? styles.expanded : styles.collapsed} ${
+        isBlurOn ? styles.blurOn : ''
+      }`}
     >
-      <Box>
-        <ChatBar
-          message={messages} // 상태를 전달하여 최신 메시지를 관리
-          setMessage={setMessage} // 메시지를 업데이트할 함수 전달
-          onSend={handleSendMessage}
-          toggleExpand={toggleExpand}
-          isExpanded={false}
-          handleKeyDown={handleKeyDown}
-          isHideChat={isHideChat}
-          onToggleBackground={onToggleBackground}
-          onLoading={onLoading}
-          onUpdateChatBarCount={onUpdateChatBarCount}
-          onRemoveChat={onRemoveChat}
-        />
-      </Box>
+      <ChatBar
+        message={messages} // 상태를 전달하여 최신 메시지를 관리
+        setMessage={setMessage} // 메시지를 업데이트할 함수 전달
+        onSend={handleSendMessage}
+        toggleExpand={toggleExpand}
+        isExpanded={false}
+        handleKeyDown={handleKeyDown}
+        isHideChat={isHideChat}
+        onToggleBackground={onToggleBackground}
+        onLoading={onLoading}
+        onUpdateChatBarCount={onUpdateChatBarCount}
+        onUpdateAiBarCount={onUpdateAiChatBarCount}
+        onRemoveChat={onRemoveChat}
+      />
       {isExpanded && !isStickerOpen && (
         <Box display="flex" marginTop={1} gap={1}>
           <Button variant="outlined" startIcon={<CameraIcon />}>

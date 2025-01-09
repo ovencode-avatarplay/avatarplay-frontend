@@ -1,4 +1,3 @@
-import {Episode} from './../app/view/main/content/create/content-main/chapter/ChapterTypes';
 // 쿼리 파라미터 키들을 정의하는 enum 타입
 // 브라우저에서 파싱해서 추출할 key를 추가하면 됩니다
 export enum QueryParams {

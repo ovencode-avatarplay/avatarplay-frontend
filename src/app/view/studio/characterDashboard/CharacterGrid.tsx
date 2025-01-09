@@ -18,23 +18,22 @@ const CharacterGrid: React.FC<CharacterGridProps> = ({characters, onCharacterSel
   };
 
   return (
-    <Grid container spacing={2} className={styles.gridContainer}>
+    <div className={styles.gridContainer}>
       {characters && characters.length > 0 ? (
         characters.map(character => (
-          <Grid item xs={6} key={character.id}>
-            <CharacterGridItem
-              character={character}
-              isSelected={selectedId === character.id}
-              onSelect={() => handleSelect(character.id)}
-            />
-          </Grid>
+          <CharacterGridItem
+            key={character.id}
+            character={character}
+            isSelected={selectedId === character.id}
+            onSelect={() => handleSelect(character.id)}
+          />
         ))
       ) : (
         <Typography variant="body1" className={styles.noCharactersMessage}>
           No characters available.
         </Typography>
       )}
-    </Grid>
+    </div>
   );
 };
 

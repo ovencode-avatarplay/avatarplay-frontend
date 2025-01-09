@@ -1,14 +1,13 @@
 import React from 'react';
 
-import {Drawer, Box, Typography} from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
-import BookIcon from '@mui/icons-material/Book';
-import PostAddIcon from '@mui/icons-material/PostAdd';
+import {Drawer, Box, Typography, Button} from '@mui/material';
 
 import Link from 'next/link';
 
 import styles from './CreateWidget.module.css';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {getLocalizedLink} from '@/utils/UrlMove';
+import {LineCharacter, LineEdit, LineStory} from '@ui/Icons';
 
 interface Props {
   open: boolean;
@@ -33,46 +32,54 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
       anchor="bottom"
       open={open}
       onClose={onClose}
-      ModalProps={{
-        BackdropProps: {
-          style: {backgroundColor: 'transparent'},
-        },
-      }}
       PaperProps={{
-        sx: {
-          position: 'absolute',
-          bottom: 56,
-          zIndex: 10,
-          maxWidth: '500px',
-          margin: '0 auto',
-        },
+        className: styles.drawerContainer,
       }}
     >
-      <Box className={styles.drawerBox}>
-        {/* Character Navigation */}
-        <Link href="/:lang/create/character" passHref>
-          <Box className={styles.drawerItem} onClick={handleClickCharacter}>
-            <PersonIcon fontSize="large" />
-            <Typography>{getLocalizedText('CreateWidget', 'widgetCharacter_label_001')}</Typography>
-          </Box>
-        </Link>
-
-        {/* Story Navigation */}
-        <Link href="/:lang/create/story" passHref>
-          <Box className={styles.drawerItem} onClick={handleClickStory}>
-            <BookIcon fontSize="large" />
-            <Typography>{getLocalizedText('CreateWidget', 'widgetStory_label_001')}</Typography>
-          </Box>
-        </Link>
-
-        {/* Post Navigation */}
-        <Link href="/:lang/create/post" passHref>
-          <Box className={styles.drawerItem} onClick={handleClickPost}>
-            <PostAddIcon fontSize="large" />
-            <Typography>{getLocalizedText('CreateWidget', 'widgetPost_label_001')}</Typography>
-          </Box>
-        </Link>
-      </Box>
+      <div className={styles.widgetBox}>
+        <div className={styles.handleArea}>
+          <div className={styles.handle} />
+        </div>
+        <div className={styles.drawerArea}>
+          <div className={styles.drawerTitle}>Select Profile</div>
+          <div className={styles.buttonArea}>
+            <Link href={getLocalizedLink('/create/post')} passHref>
+              <button className={`${styles.drawerButton} ${styles.drawerButtonTop}`} onClick={onClose}>
+                <div className={styles.buttonItem}>
+                  <img className={styles.buttonIcon} src={LineEdit.src} />
+                  <div className={styles.buttonText}>Post</div>
+                </div>
+              </button>
+            </Link>
+            {/* <Link href={getLocalizedLink('/create/contents')} passHref>
+            <button className={`${styles.drawerButton} ${styles.drawerButtonMid}`} 
+              onClick={onClose}>
+              <div className={styles.buttonItem}>
+                <div className={styles.buttonIcon} />
+                <div className={styles.buttonText}>Contents</div>
+              </div>
+            </button>
+            </Link>
+             */}
+            <Link href={getLocalizedLink('/create/character')} passHref>
+              <button className={`${styles.drawerButton} ${styles.drawerButtonMid}`} onClick={onClose}>
+                <div className={styles.buttonItem}>
+                  <img className={styles.buttonIcon} src={LineCharacter.src} />
+                  <div className={styles.buttonText}>Character</div>
+                </div>
+              </button>
+            </Link>
+            <Link href={getLocalizedLink('/create/story')} passHref>
+              <button className={`${styles.drawerButton} ${styles.drawerButtonBot}`} onClick={onClose}>
+                <div className={styles.buttonItem}>
+                  <img className={styles.buttonIcon} src={LineStory.src} />
+                  <div className={styles.buttonText}>Story</div>
+                </div>
+              </button>
+            </Link>
+          </div>
+        </div>
+      </div>
     </Drawer>
   );
 };

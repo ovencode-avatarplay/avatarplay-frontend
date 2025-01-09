@@ -1,20 +1,19 @@
 'use client';
 
 import React, {useState, useEffect, useRef, useMemo} from 'react';
-import {Button, Dialog, DialogContent, DialogTitle, TextField, Typography} from '@mui/material';
+import {Button, DialogContent, DialogTitle, Modal, TextField, Typography} from '@mui/material';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
+import {EpisodeInfo, setCurrentEpisodeInfo, updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
 
 import styles from './EpisodeDescription.module.css'; // CSS 모듈 import
-import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
-import PostAddIcon from '@mui/icons-material/PostAdd';
-import EpisodeConversationTemplate from '../episode-conversationtemplate/EpisodeConversationTemplate';
 
 import getLocalizedText from '@/utils/getLocalizedText';
 
-import MessageBox from '@/components/messageBox/MessageBox';
-import {string} from 'valibot';
+import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import MaxTextInput from '@/components/create/MaxTextInput';
+import {BoldAI, BoldCharacter, BoldChatRoundDots} from '@ui/Icons';
+import Popup from '@/components/popup/Popup';
 
 interface CharacterDataType {
   userId: number;
@@ -31,6 +30,7 @@ interface CharacterPopupProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: CharacterDataType) => void;
+  episodeInfo: EpisodeInfo;
 }
 
 export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
@@ -39,9 +39,16 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   open,
   onClose,
   onSubmit,
+  episodeInfo,
 }) => {
-  const dispatch = useDispatch();
   const currentEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (open) {
+      dispatch(setCurrentEpisodeInfo(episodeInfo));
+    }
+  }, [episodeInfo]);
 
   // 상태 초기화
   const [worldScenario, setWorldScenario] = useState<string>(
@@ -74,9 +81,13 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   const handleOpenMessageBox = () => setMessageBoxOpen(true);
   const handleCloseMessageBox = () => setMessageBoxOpen(false);
 
-  const worldScenarioRef = useRef<HTMLInputElement | null>(null);
-  const introductionRef = useRef<HTMLInputElement | null>(null);
-  const secretRef = useRef<HTMLInputElement | null>(null);
+  const worldScenarioRef = useRef<HTMLTextAreaElement | null>(null);
+  const introductionRef = useRef<HTMLTextAreaElement | null>(null);
+  const secretRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const LIMIT_WORLD_SCENARIO = 1000; // 월드 시나리오 필드 입력가능 최대값
+  const LIMIT_INTRODUCTION = 3000; // 인트로 필드 입력가능 최대값
+  const LIMIT_SECRET = 3000; // 비밀 필드 입력가능 최대값
 
   const messageBoxText = useMemo(() => {
     return {
@@ -114,16 +125,22 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
     onSubmit(submitData);
   };
 
-  const onChangesetWorldScenario = (worldScenario: string) => {
-    setWorldScenario(worldScenario);
+  const onChangesetWorldScenario = (newText: string) => {
+    if (isInputLimit(newText, LIMIT_WORLD_SCENARIO) === false || newText.length < worldScenario.length) {
+      setWorldScenario(newText);
+    }
   };
 
-  const onChangesetIntroduction = (introduction: string) => {
-    setIntroduction(introduction);
+  const onChangesetIntroduction = (newText: string) => {
+    if (isInputLimit(newText, LIMIT_INTRODUCTION) === false || newText.length < introduction.length) {
+      setIntroduction(newText);
+    }
   };
 
-  const onChangesetSecret = (secret: string) => {
-    setSecret(secret);
+  const onChangesetSecret = (newText: string) => {
+    if (isInputLimit(newText, LIMIT_SECRET) === false || newText.length < secret.length) {
+      setSecret(newText);
+    }
   };
 
   // Auto Write 문자열을 Json Table에서 한번만 읽어옴
@@ -167,7 +184,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   const handleVirtualButtonClick = (buttonText: string) => {
     const updateField = (
       currentValue: string,
-      ref: React.RefObject<HTMLInputElement | null>,
+      ref: React.RefObject<HTMLTextAreaElement | null>,
       setValue: React.Dispatch<React.SetStateAction<string>>,
     ) => {
       if (ref.current) {
@@ -188,11 +205,13 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
     };
 
     if (focusedField === 'worldScenario') {
-      updateField(worldScenario, worldScenarioRef, setWorldScenario);
+      if (isInputLimit(worldScenario + buttonText, LIMIT_WORLD_SCENARIO) === false)
+        updateField(worldScenario, worldScenarioRef, setWorldScenario);
     } else if (focusedField === 'introduction') {
-      updateField(introduction, introductionRef, setIntroduction);
+      if (isInputLimit(introduction + buttonText, LIMIT_INTRODUCTION) === false)
+        updateField(introduction, introductionRef, setIntroduction);
     } else if (focusedField === 'secret') {
-      updateField(secret, secretRef, setSecret);
+      if (isInputLimit(secret + buttonText, LIMIT_SECRET) === false) updateField(secret, secretRef, setSecret);
     }
   };
 
@@ -234,8 +253,6 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
         setWorldScenario(autoWriteWorldScenario[nextIndex]);
       }
     } else if (focusedField === 'introduction') {
-      //if (showMessageBoxIfNotEmpty(introduction)) return;
-
       if (isFirstClickIntroduction) {
         const randomIndex = Math.floor(Math.random() * autoWriteIntroduction.length);
         setIntroduction(autoWriteIntroduction[randomIndex]);
@@ -260,11 +277,80 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
     }
   };
 
+  // 입력제한 길이를 넘겼는지 리턴
+  const isInputLimit = (text: string, countMax: number): boolean => {
+    if (text.length <= countMax) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleOnClose = () => {
+    handleSubmit();
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Episode Description</DialogTitle>
-      <DialogContent>
-        <TextField
+    <Modal
+      open={open}
+      onClose={handleOnClose}
+      BackdropProps={{
+        sx: {background: 'rgba(0, 0, 0, 0.7)'},
+      }}
+    >
+      <div className={styles.modalContainer}>
+        <CreateDrawerHeader title="Episode Scenario" onClose={handleOnClose} />
+        <div className={styles.descContainer}>
+          <div className={styles.descItem}>
+            <div className={styles.descTitle}>Description</div>
+            <MaxTextInput
+              promptValue={worldScenario}
+              handlePromptChange={e => onChangesetWorldScenario(e.target.value)}
+              maxPromptLength={500}
+              onFocus={() => handleFocus('worldScenario')}
+              onBlur={handleBlur}
+              inputRef={worldScenarioRef}
+            />
+          </div>
+
+          <div className={styles.descItem}>
+            <div className={styles.descTitle}>Scenario Introduction</div>
+            <MaxTextInput
+              promptValue={introduction}
+              handlePromptChange={e => onChangesetIntroduction(e.target.value)}
+              maxPromptLength={500}
+              onFocus={() => handleFocus('introduction')}
+              onBlur={handleBlur}
+              inputRef={introductionRef}
+            />
+          </div>
+        </div>
+        {focusedField && (
+          <div className={styles.supportButtonArea}>
+            <button className={styles.supportButton} data-virtual-button onClick={handleClickAutoWrite}>
+              <img className={styles.buttonIcon} src={BoldAI.src} />
+              <div className={styles.buttonText}>AI</div>
+            </button>
+            <button
+              className={styles.supportButton}
+              data-virtual-button
+              onClick={() => handleVirtualButtonClick('{{char}}')}
+            >
+              <img className={styles.buttonIcon} src={BoldCharacter.src} />
+              <div className={styles.buttonText}>Character</div>
+            </button>
+            <button
+              className={styles.supportButton}
+              data-virtual-button
+              onClick={() => handleVirtualButtonClick('{{user}}')}
+            >
+              <img className={styles.buttonIcon} src={BoldChatRoundDots.src} />
+              <div className={styles.buttonText}>User</div>
+            </button>
+          </div>
+        )}
+
+        {/* <TextField
           style={{marginBottom: '16px'}}
           label="World Scenario"
           variant="outlined"
@@ -302,61 +388,73 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
           onFocus={() => handleFocus('secret')}
           onBlur={handleBlur}
           inputRef={secretRef}
-        />
-        <ButtonSetupDrawer icon={<PostAddIcon />} label="Conversation Setup" onClick={openConversationModal} />
-        <Button onClick={handleSubmit} color="primary" className={styles.confirmButton}>
-          확인
-        </Button>
-        <div style={{marginBottom: '20px'}} /> {/* 여백 추가 */}
-        {error && <Typography className={styles.errorMessage}>{error}</Typography>}
-      </DialogContent>
-      {/* 버튼들이 focusField에 따라 보이거나 숨겨짐 */}
-      {focusedField && (
-        <div className={styles.keyboardButtons}>
-          <Button variant="contained" color="primary" data-virtual-button onClick={handleClickAutoWrite}>
-            Auto Write
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            data-virtual-button
-            onClick={() => handleVirtualButtonClick('{{char}}')}
-          >
-            Character
-          </Button>
-          <Button
-            variant="contained"
-            color="success"
-            data-virtual-button
-            onClick={() => handleVirtualButtonClick('{{user}}')}
-          >
-            User
-          </Button>
-        </div>
-      )}
+        /> */}
 
-      <EpisodeConversationTemplate open={isConversationModalOpen} closeModal={closeConversationModal} />
-      {isMessageBoxOpen && (
-        <MessageBox
-          title={messageBoxText.title}
-          message={messageBoxText.text}
-          onClose={handleCloseMessageBox}
-          buttons={[
-            {
-              label: '확인',
-              onClick: () => {
-                setMessageBoxOpen(false);
-                handleAutoWriteClick();
+        {/* 버튼들이 focusField에 따라 보이거나 숨겨짐 */}
+        {/* {focusedField && (
+          <div className={styles.keyboardButtons}>
+            <Button variant="contained" color="primary" data-virtual-button onClick={handleClickAutoWrite}>
+              Auto Write
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              data-virtual-button
+              onClick={() => handleVirtualButtonClick('{{char}}')}
+            >
+              Character
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              data-virtual-button
+              onClick={() => handleVirtualButtonClick('{{user}}')}
+            >
+              User
+            </Button>
+          </div>
+        )} */}
+
+        {isMessageBoxOpen && (
+          <Popup
+            type="alert"
+            title="Alert"
+            description="override value?"
+            buttons={[
+              {
+                label: 'Confirm',
+                onClick: () => {
+                  setMessageBoxOpen(false);
+                  handleAutoWriteClick();
+                },
+                isPrimary: false,
               },
-            },
-            {
-              label: '취소',
-              onClick: handleCloseMessageBox,
-            },
-          ]}
-        />
-      )}
-    </Dialog>
+              {label: 'Cancle', onClick: handleCloseMessageBox, isPrimary: true},
+            ]}
+          />
+        )}
+        {/* {isMessageBoxOpen && (
+          <MessageBox
+            title={messageBoxText.title}
+            message={messageBoxText.text}
+            onClose={handleCloseMessageBox}
+            buttons={[
+              {
+                label: '확인',
+                onClick: () => {
+                  setMessageBoxOpen(false);
+                  handleAutoWriteClick();
+                },
+              },
+              {
+                label: '취소',
+                onClick: handleCloseMessageBox,
+              },
+            ]}
+          />
+        )} */}
+      </div>
+    </Modal>
   );
 };
 

@@ -1,0 +1,29 @@
+.drawerContainer {
+    display: flex;
+    flex-direction: column;
+    height: 82vh ;
+    padding: 16px ;
+} 
+
+.contentBox {
+    flex-grow: 1;
+    height: 70vh; /* 70% 차지 */
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: top;
+    align-items: center;
+    overflow-y: auto;
+    
+    gap: 16px;
+}
+
+.contentBox::-webkit-scrollbar {
+    display: none;  
+  }
+  
+.contentBox {
+   scrollbar-width: none;  
+   -ms-overflow-style: none;  
+}
+ 

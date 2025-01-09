@@ -1,7 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 
-import {Drawer, Box, Button, Select, MenuItem} from '@mui/material';
+import {Drawer} from '@mui/material';
 import styles from './ContentDashboardDrawer.module.css';
+import {BoldArrowDown} from '@ui/Icons';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
@@ -11,25 +12,28 @@ import {
   setSelectedChapterIdx,
   setSelectedContentId,
   setSelectedEpisodeIdx,
+  setSkipContentInit,
 } from '@/redux-store/slices/ContentSelection';
 import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
 
 import {sendContentDelete} from '@/app/NetWork/ContentNetwork';
 
 import ContentDashboardList from './ContentDashboardList';
-import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import ContentDashboardHeader from './ContentDashboardHeader';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
-import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
+import Popup from '@/components/popup/Popup';
 
 interface Props {
   open: boolean;
   onClose: () => void;
   onSelectItem: (id: number) => void;
   onRefreshItem: () => void;
+  onClickCreate: () => void;
 }
 
-const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, onRefreshItem}) => {
+const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, onRefreshItem, onClickCreate}) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const contentInfo = useSelector((state: RootState) => state.myContents.contentDashBoardList ?? []);
@@ -38,6 +42,78 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+
+  const [filterPublishOpen, setFilterPublishOpen] = useState<boolean>(false);
+  const [selectedPublish, setSelectedPublish] = useState<number>(0);
+
+  const publishItems: SelectDrawerItem[] = [
+    {
+      name: 'All',
+      onClick: () => {
+        setSelectedPublish(0);
+      },
+    },
+    {
+      name: 'Saved',
+      onClick: () => {
+        setSelectedPublish(1);
+      },
+    },
+    {
+      name: 'Published',
+      onClick: () => {
+        setSelectedPublish(2);
+      },
+    },
+  ];
+  const [filterOptionOpen, setFilterOptionOpen] = useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = useState<number>(0);
+
+  const optionItems: SelectDrawerItem[] = [
+    {
+      name: 'Alphabetically',
+      onClick: () => {
+        console.log('Alphabetically Selected');
+        setSelectedOption(0);
+      },
+    },
+    {
+      name: 'Last Modified',
+      onClick: () => {
+        console.log('Last Modified Selected');
+        setSelectedOption(1);
+      },
+    },
+    {
+      name: 'Created On',
+      onClick: () => {
+        console.log('Created On Selected');
+        setSelectedOption(2);
+      },
+    },
+  ];
+
+  const getFilteredAndSortedContent = () => {
+    let filtered = [...contentInfo];
+
+    // 필터 적용
+    if (selectedPublish === 1) {
+      filtered = filtered.filter(item => item.visibilityType === 3);
+    } else if (selectedPublish === 2) {
+      filtered = filtered.filter(item => item.visibilityType !== 3);
+    }
+
+    // 정렬 적용
+    if (selectedOption === 0) {
+      filtered.sort((a, b) => a.name.localeCompare(b.name)); // 알파벳 순서
+    } else if (selectedOption === 1) {
+      filtered.sort((a, b) => new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime()); // 수정일 역순
+    } else if (selectedOption === 2) {
+      filtered.sort((a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()); // 생성일 역순
+    }
+
+    return filtered;
+  };
 
   useEffect(() => {
     if (selectedIndex !== null && open && listRef.current) {
@@ -54,7 +130,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
   };
   const handleEditClick = async () => {
     if (selectedIndex !== null) {
-      const selectedItemId = contentInfo[selectedIndex]?.id;
+      const selectedItemId = getFilteredAndSortedContent()[selectedIndex]?.id;
       if (selectedItemId) {
         try {
           // 비동기 호출이 5초 이상 걸리면 에러를 던지기 위한 타이머 설정
@@ -124,6 +200,8 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
   };
 
   const handleCreateClick = () => {
+    dispatch(setSkipContentInit(false));
+    onClickCreate();
     dispatch(setContentInfoToEmpty());
     dispatch(setPublishInfo(emptyContentInfo.publishInfo));
     dispatch(setEpisodeInfoEmpty());
@@ -138,57 +216,86 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
   return (
     <>
       <Drawer
-        anchor="right"
+        anchor="bottom"
         open={open}
         onClose={onClose}
         PaperProps={{
-          sx: {width: '100vw', height: '100vh', maxWidth: '500px', margin: '0 auto'},
+          sx: {width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto'},
+        }}
+        BackdropProps={{
+          sx: {
+            background: 'rgba(0, 0, 0, 0.70)',
+          },
         }}
       >
-        <Box className={styles.drawerContainer}>
-          <CreateDrawerHeader title="Content Dashboard" onClose={onClose} />
-
-          {/* Filter section */}
-          <Box className={styles.filterContainer}>
-            <Select className={styles.filterSelect}>
-              <MenuItem value="filter1">Filter 1</MenuItem>
-              <MenuItem value="filter2">Filter 2</MenuItem>
-              <MenuItem value="filter3">Filter 3</MenuItem>
-            </Select>
-            <Button variant="contained" className={styles.createButton} onClick={handleCreateClick}>
-              Create
-            </Button>
-          </Box>
+        <ContentDashboardHeader title="Story" onClose={onClose} onCreate={handleCreateClick} />
+        <div className={styles.drawerContainer}>
+          <div className={styles.filterContainer}>
+            <button
+              className={`${styles.filterBase} ${styles.filterPublish}`}
+              onClick={() => setFilterPublishOpen(true)}
+            >
+              <div className={styles.filterData}>
+                <div className={styles.filterName}>{publishItems[selectedPublish].name}</div>
+                <img className={styles.filterIcon} src={BoldArrowDown.src} />
+              </div>
+            </button>
+            <button className={`${styles.filterBase} ${styles.filterOption}`} onClick={() => setFilterOptionOpen(true)}>
+              <div className={styles.filterData}>
+                <div className={styles.filterName}>{optionItems[selectedOption].name}</div>
+                <img className={styles.filterIcon} src={BoldArrowDown.src} />
+              </div>
+            </button>
+          </div>
 
           {/* Content list */}
           <ContentDashboardList
-            contentInfo={contentInfo}
+            contentInfo={getFilteredAndSortedContent()}
             selectedIndex={selectedIndex}
             onItemSelect={handleItemClick}
+            onItemEdit={handleEditClick}
+            onItemDelete={handleOpenDialog}
+            dateOption={selectedOption}
           />
+        </div>
+        <SelectDrawer
+          items={publishItems}
+          isOpen={filterPublishOpen}
+          onClose={() => {
+            setFilterPublishOpen(false);
+          }}
+          selectedIndex={selectedPublish}
+        />
 
-          {/* Action buttons */}
-          <Box className={styles.buttonContainer}>
-            <Button variant="outlined" onClick={handleEditClick} disabled={selectedIndex === null}>
-              Edit
-            </Button>
-            <Button variant="outlined">Preview</Button>
-            <Button variant="outlined" onClick={handleOpenDialog} disabled={selectedIndex === null}>
-              Delete
-            </Button>
-          </Box>
-        </Box>
+        <SelectDrawer
+          items={optionItems}
+          isOpen={filterOptionOpen}
+          onClose={() => {
+            setFilterOptionOpen(false);
+          }}
+          selectedIndex={selectedOption}
+        />
       </Drawer>
 
-      <ConfirmationDialog
-        title="Discard Content?"
-        content="Data will be disappeared. Are you sure?"
-        cancelText="Cancel"
-        confirmText="Okay"
-        open={dialogOpen}
-        onConfirm={handleConfirm}
-        onClose={handleCloseDialog}
-      />
+      {dialogOpen && (
+        <Popup
+          type="alert"
+          title="Discard Content?"
+          description="Data will be disappeared. Are you sure?"
+          buttons={[
+            {
+              label: 'Cancel',
+              onClick: handleCloseDialog,
+              isPrimary: false,
+            },
+            {
+              label: 'Okay',
+              onClick: handleConfirm,
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
     </>
   );
 };

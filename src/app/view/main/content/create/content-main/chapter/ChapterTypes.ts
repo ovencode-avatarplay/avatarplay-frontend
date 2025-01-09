@@ -1,41 +1,30 @@
+import {ChapterInfo} from '@/redux-store/slices/ContentInfo';
+import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+
 export interface ChapterItemProps {
-  chapter: Chapter;
+  canEdit: boolean;
+  onCloseChapterBoard: () => void;
+  chapter: ChapterInfo;
   chapterIdx: number; // 인덱스 추가
   chapterLength: number;
-  episodeLength: number;
-  onDelete: (chapterIdx: number) => void;
-  onToggle: (chapterIdx: number) => void;
-  onDeleteEpisode: (chapterIdx: number, episodeIdx: number) => void;
   onSelect: (chapterIdx: number) => void;
+  onDelete: (chapterIdx: number) => void;
   onSelectEpisode: (chapterIdx: number, episodeIdx: number) => void;
-  onCloseChapterBoard: () => void;
-  onEdit: (idx: number, type: 'chapter' | 'episode') => void;
+  onRename: () => void;
+  onDuplicate?: () => void;
   isSelected: boolean; // 선택 여부
   selectedEpisodeIdx: number;
+  hideSelectedEpisode: boolean;
   disableDelete: boolean;
-  onDeleteChapterOpen: () => void;
-  onDeleteChapterClose: () => void;
-  onDeleteEpisodeOpen: () => void;
-  onDeleteEpisodeClose: () => void;
-}
-
-export interface Chapter {
-  id: number;
-  title: string;
-  episodes: Episode[];
-  expanded: boolean; // 접기/펼치기 상태
 }
 
 export interface EpisodeItemProps {
-  episode: Episode;
+  episode: EpisodeInfo;
   chapterIdx: number;
   episodeIdx: number;
-  onEditEpisode: (episodeIdx: number, type: 'episode') => void;
-  onDeleteEpisode: (chapterIdx: number, episodeIdx: number) => void;
-  onSelect: (chapterIdx: number, episodeIdx: number) => void; // 선택된 Episode 처리
-  onClose: () => void;
-  disableDelete: boolean;
-  isSelected: boolean; // 선택 여부
+  onSelectEpisode: (chapterIdx: number, episodeIdx: number) => void;
+  hideSelected: boolean;
+  isSelected: boolean;
 }
 
 export interface Episode {

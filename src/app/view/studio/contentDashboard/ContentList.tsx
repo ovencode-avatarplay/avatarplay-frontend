@@ -7,9 +7,11 @@ import styles from './ContentList.module.css';
 
 interface ContentListProps {
   onSelect: (selectedItemId: number) => void;
+  onItemEdit: () => void;
+  onItemDelete: () => void;
 }
 
-const ContentList: React.FC<ContentListProps> = ({onSelect}) => {
+const ContentList: React.FC<ContentListProps> = ({onSelect, onItemEdit, onItemDelete}) => {
   const contentInfo = useSelector((state: RootState) => state.myContents.contentDashBoardList);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const handleItemSelect = (index: number) => {
@@ -19,11 +21,23 @@ const ContentList: React.FC<ContentListProps> = ({onSelect}) => {
       onSelect(selectedItemId);
     }
   };
+  const handleItemEdit = () => {
+    onItemEdit();
+  };
+  const handleItemDelete = () => {
+    onItemDelete();
+  };
 
   return (
     <>
       <Box className={styles.drawerContainer}>
-        <ContentDashboardList contentInfo={contentInfo} selectedIndex={selectedIndex} onItemSelect={handleItemSelect} />
+        <ContentDashboardList
+          contentInfo={contentInfo}
+          selectedIndex={selectedIndex}
+          onItemSelect={handleItemSelect}
+          onItemEdit={handleItemEdit}
+          onItemDelete={handleItemDelete}
+        />
       </Box>
     </>
   );

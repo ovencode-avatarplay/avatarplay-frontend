@@ -10,6 +10,7 @@ import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import {SaveGalleryReq, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
 import CharacterGalleryGrid from './CharacterGalleryGrid';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import CharacterGalleryToggle from './CharacterGalleryToggle';
 
 interface CharacterGalleryProps {
   characterInfo: CharacterInfo;
@@ -53,8 +54,11 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   const [loading, setloading] = useState(false);
 
   //#region handler
-  const handleCategoryChange = (_: any, newCategory: GalleryCategory) => {
-    if (newCategory !== null) setCategory(newCategory);
+
+  const handleCategoryChange = (newCategory: GalleryCategory) => {
+    if (newCategory !== category) {
+      setCategory(newCategory);
+    }
   };
 
   const handleSelectItem = (index: number | null) => {
@@ -95,7 +99,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
       const req: MediaUploadReq = {
         mediaState: MediaState.GalleryImage,
         file: file,
-        triggerImageList: [],
+        imageList: [],
       };
 
       // 파일 업로드 API 호출
@@ -188,26 +192,14 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
 
   return (
     <Box className={styles.container}>
-      <ToggleButtonGroup value={category} exclusive onChange={handleCategoryChange} className={styles.toggleButtons}>
-        <ToggleButton value={GalleryCategory.All} className={styles.toggleButton}>
-          All
-        </ToggleButton>
-        <ToggleButton value={GalleryCategory.Portrait} className={styles.toggleButton}>
-          Portrait
-        </ToggleButton>
-        <ToggleButton value={GalleryCategory.Pose} className={styles.toggleButton}>
-          Poses
-        </ToggleButton>
-        <ToggleButton value={GalleryCategory.Expression} className={styles.toggleButton}>
-          Expression
-        </ToggleButton>
-      </ToggleButtonGroup>
+      <CharacterGalleryToggle category={category} onCategoryChange={handleCategoryChange} />
 
       <CharacterGalleryGrid
         itemUrl={itemUrl}
         selectedItemIndex={selectedItemIndex}
         onSelectItem={handleSelectItem}
         onAddImageClick={handleAddImageClick}
+        category={category}
       />
       <Dialog open={galleryTypeDialogOpen} onClose={() => setGalleryTypeDialogOpen(false)}>
         <DialogContent>

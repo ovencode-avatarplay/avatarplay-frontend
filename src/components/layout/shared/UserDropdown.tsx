@@ -26,6 +26,8 @@ import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
 import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
 import LanguageSelectDropBox from './LanguageSelectDropBox';
+import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {fetchLanguage} from './LanguageSetting';
 
 const UserDropdown = () => {
   // States
@@ -76,6 +78,9 @@ const UserDropdown = () => {
   useEffect(() => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
       if (event === 'SIGNED_IN') {
+        if (auth?.access_token == session?.access_token) return;
+        //alert('여기아');
+
         setAuth(session);
         try {
           const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
@@ -95,6 +100,7 @@ const UserDropdown = () => {
 
           const data = await response.json();
           localStorage.setItem('jwt', data.accessToken);
+          fetchLanguage(router);
         } catch (error) {
           console.error('Error occurred during authentication:', error);
         }
@@ -108,7 +114,7 @@ const UserDropdown = () => {
     });
 
     return () => {
-      console.log(authListener);
+      authListener?.subscription.unsubscribe();
     };
   }, []);
 
@@ -118,6 +124,8 @@ const UserDropdown = () => {
     }
 
     setOpen(false);
+
+    if (url && router) pushLocalizedRoute(url, router);
 
     // if (url) {
     //   router.push(getLocalizedUrl(url, locale as Locale));
@@ -200,14 +208,20 @@ const UserDropdown = () => {
             <i className={styles.tabler} />
             <Typography color="text.primary">Supports</Typography>
           </MenuItem> */}
-          <Link href={`/:lang/studio/character`} passHref>
-            <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/:lang/studio/character')}>
+          <Link href={getLocalizedLink('/studio/character')} passHref>
+            <MenuItem
+              className={styles.menuItem}
+              onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/character'))}
+            >
               <i className={styles.tabler} />
               <Typography color="text.primary">Character</Typography>
             </MenuItem>
           </Link>
-          <Link href={`/:lang/studio/story`} passHref>
-            <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/:lang/studio/story')}>
+          <Link href={getLocalizedLink(`/studio/story`)} passHref>
+            <MenuItem
+              className={styles.menuItem}
+              onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/story'))}
+            >
               <i className={styles.tabler} />
               <Typography color="text.primary">Story</Typography>
             </MenuItem>
@@ -257,7 +271,7 @@ const UserDropdown = () => {
                       <i className={styles.tabler} />
                       <Typography color="text.primary">Settings</Typography>
                     </MenuItem>
-                    <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/pricing')}>
+                    <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/service')}>
                       <i className={styles.tabler} />
                       <Typography color="text.primary">Pricing</Typography>
                     </MenuItem>

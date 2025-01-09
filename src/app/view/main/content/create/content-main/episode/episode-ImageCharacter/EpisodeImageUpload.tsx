@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Button, Dialog, DialogContent, MenuItem, Typography} from '@mui/material';
-import {styled} from '@mui/system';
+import {Box, Dialog, DialogContent, MenuItem, Typography} from '@mui/material';
 import SpeedDial from '@mui/material/SpeedDial';
 import CreateIcon from '@mui/icons-material/Create';
 import ImageIcon from '@mui/icons-material/Image';
@@ -114,7 +113,14 @@ const EpisodeBackgroundUpload: React.FC<Props> = ({
 
         <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
           <DialogContent dividers className={styles.dialogContent}>
-            <MenuItem onClick={onClickUploadImage}>Upload Background Image</MenuItem>
+            <MenuItem
+              onClick={() => {
+                onClickUploadImage();
+                handleClose();
+              }}
+            >
+              Upload Background Image
+            </MenuItem>
           </DialogContent>
         </Dialog>
 

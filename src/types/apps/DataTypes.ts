@@ -3,6 +3,8 @@ export enum TriggerMainDataType {
   triggerValueKeyword = 1,
   triggerValueChatCount = 2,
   triggerValueTimeMinute = 3,
+  triggerValueEmotionStatus = 4,
+  triggerValueEpisodeStart = 5,
 }
 
 export enum TriggerTypeNames {
@@ -10,14 +12,16 @@ export enum TriggerTypeNames {
   Keyword,
   ChatCount,
   TimeMinute,
+  EmotionStatus,
+  EpisodeStart,
 }
 
-export enum TriggerSubDataType {
+export enum TriggerActionType {
   EpisodeChange,
   ChangePrompt,
   GetIntimacyPoint,
   ChangeCharacter,
-  playMedia,
+  PlayMedia,
 }
 
 export interface CoversationData {

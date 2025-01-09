@@ -1,4 +1,13 @@
-const CheatMessageType: string[] = ['⦿USER_STAT⦿', '⦿TRIGGER_STAT⦿', '⦿EPISODE_INIT⦿'];
+const CheatMessageType: string[] = [
+  '⦿USER_STAT⦿',
+  '⦿TRIGGER_STAT⦿',
+  '⦿EPISODE_INIT⦿',
+  '⦿YEAR⦿',
+  '⦿MONTH⦿',
+  '⦿DAY⦿',
+  '⦿REFRESH_NEW_DAY⦿',
+  '⦿CONTENT_INIT⦿',
+];
 
 export interface CheatResult {
   text: string; // 메시지 내용

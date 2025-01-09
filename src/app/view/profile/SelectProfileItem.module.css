@@ -1,0 +1,38 @@
+.profileItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+  }
+  
+  .avatar {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .userNameArea {
+    display: flex;
+    flex-direction: column;
+    margin-left: 16px;
+    flex-grow: 1;
+  }
+  
+  .status {
+    font-size: 12px;
+    color: gray;
+  }
+  
+  .userName {
+    font-weight: bold;
+  }
+  
+  .radioButton {
+    color: #1976d2;
+  }
+  
+.checkbox {
+    color: #1976d2;
+    padding: 0;
+  }

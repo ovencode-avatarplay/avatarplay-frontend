@@ -1,0 +1,184 @@
+.topNavigation {
+    position: absolute;
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: space-between;
+    height:58px;    
+    z-index: 10;  
+    width: 100vh;
+    gap :10px;
+}
+
+@media (min-width: 402px) {
+    .topNavigation {    
+        max-width: 402px;     
+        gap: 10px; 
+    }
+}
+ 
+.blurOn
+{ 
+    z-index: 20;
+    filter: blur(10px); 
+}
+
+
+.left {
+    display: flex;
+    height: 100%;
+    padding: 14px 0px 14px 16px;
+    
+    align-items: center; 
+    align-self: center;
+    justify-self: center;
+}
+
+@media (min-width: 402px) {
+    .left {
+        padding: 14px 0px 14px 16px; 
+    }
+}
+
+.left > .button
+{
+    width: 20px;
+    height: 20px; 
+    
+    align-self: center;
+    justify-self: center;
+}
+
+@media (min-width: 402px) {
+    .left > .button {
+        max-width: 20px;
+        max-height: 20px;
+    }
+}
+ 
+.left > .button > .buttonImage{
+    width: 20px;
+    height: 20px;  
+    align-self: center;
+    justify-self: center;
+}
+
+@media (min-width: 402px) {
+    .left > .button > .buttonImage{    
+        max-width: 20px;
+        max-height: 20px;
+    }
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.chat {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex: 1 0 0; 
+}
+
+
+@media (min-width: 402px) {
+    .chat {
+        gap: 7px;
+    }
+}
+
+
+.chat > .textArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    flex: 1 0 0;
+}
+
+.textArea > .contentName{    
+    max-width: 49vw;
+    
+    color: var(--White, #FFF);
+    font-family: Lato;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 100%; /* 16px */
+
+    overflow: hidden;  
+    text-overflow: ellipsis; 
+    white-space: nowrap;  
+
+}
+
+@media (min-width: 402px) {
+    .textArea > .contentName{ 
+        max-width: 297px;
+    }
+}
+
+.textArea > .episodeName{ 
+    max-width: 49vw;
+
+    color: var(--Neutral-400, #BDC1C6);
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%; /* 14px */
+
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+}
+
+
+@media (min-width: 402px) {
+    .textArea > .episodeName{ 
+        max-width: 297px;
+    }
+}
+
+.topButtonBox {
+    display: flex;
+    align-items: center;
+}
+
+.topButtonBox > .button{
+    display: flex; 
+    width: 40px;
+    height: 40px;
+    
+    padding: 8px;
+
+    justify-content: center;
+    align-items: center;
+}
+
+@media (min-width: 402px) {
+    .topButtonBox > .button{
+        width: 40px;
+        height: 40px;
+        
+        padding: 8px;
+    }
+}
+
+
+.topButtonBox > .button > .buttonImage{
+    width: 40px;
+    height: 40px;
+
+}
+
+
+@media (min-width: 402px) {
+    .topButtonBox > .button > .buttonImage{
+        width: 40px;
+        height: 40px;
+    }
+}

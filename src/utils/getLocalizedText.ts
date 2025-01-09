@@ -1,3 +1,4 @@
+import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import localizationData from '../data/textData/Localization.json';
 
 /**
@@ -29,7 +30,7 @@ const getLanguageFromURL = (): string => {
   const pathSegments = window.location.pathname.split('/');
   const lang = pathSegments[1] as string;
   const supportedLocales = ['ko', 'en-US', 'ja', 'fr', 'es', 'zh-CN', 'zh-TW', 'pt-PT', 'de'];
-  return supportedLocales.includes(lang) ? lang : 'ko'; // 기본 언어는 영어
+  return supportedLocales.includes(lang) ? lang : 'ko'; // 기본 언어
 };
 
 /**
@@ -70,6 +71,24 @@ const getLocalizedText = (head: keyof LocalizationStrings, key: string, language
 
   // 언어별 데이터가 없으면 영어 기본값 반환
   return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
+};
+
+// 브라우저 언어 설정을 LanguageType으로 변환
+export const getBrowserLanguage = (): LanguageType => {
+  const browserLang = navigator.language;
+
+  if (browserLang.startsWith('ko')) return LanguageType.Korean;
+  if (browserLang.startsWith('en')) return LanguageType.English;
+  if (browserLang.startsWith('ja')) return LanguageType.Japanese;
+  if (browserLang.startsWith('fr')) return LanguageType.French;
+  if (browserLang.startsWith('es')) return LanguageType.Spanish;
+  if (browserLang.startsWith('zh')) {
+    return browserLang.includes('Hans') ? LanguageType.ChineseSimplified : LanguageType.ChineseTraditional;
+  }
+  if (browserLang.startsWith('pt')) return LanguageType.Portuguese;
+  if (browserLang.startsWith('de')) return LanguageType.German;
+
+  return LanguageType.English; // 기본값
 };
 
 export default getLocalizedText;

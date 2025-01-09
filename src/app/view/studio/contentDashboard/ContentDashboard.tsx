@@ -16,15 +16,11 @@ import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
 // Component
 import StudioTopMenu from '../StudioDashboardMenu';
 import ContentList from './ContentList';
-import ContentDashboardFooter from '.././StudioDashboardFooter';
 import StudioFilter from '../StudioFilter';
 
 // Styles
 import styles from './ContentDashboard.module.css';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
-import EditIcon from '@mui/icons-material/Edit';
-import PreviewIcon from '@mui/icons-material/Preview';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
   GetContentsByUserIdReq,
   GetTotalContentByIdReq,
@@ -35,8 +31,9 @@ import {
 import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/MyContentDashboard';
 
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
-import ConfirmationDialog from '@/components/layout/shared/ConfirmationDialog';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
+import Popup from '@/components/popup/Popup';
 
 const ContentDashboard: React.FC = () => {
   const router = useRouter();
@@ -50,8 +47,8 @@ const ContentDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteConfirmed, setDeleteConfirmed] = useState(false);
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
@@ -97,6 +94,7 @@ const ContentDashboard: React.FC = () => {
             setTimeout(() => reject(new Error('Loading took too long!')), 5000),
           );
 
+          setLoading(true);
           await Promise.race([GetContentByContentId(selectedItemId), timeout]);
 
           dispatch(setSkipContentInit(true));
@@ -104,44 +102,50 @@ const ContentDashboard: React.FC = () => {
 
           dispatch(setSelectedChapterIdx(0));
           dispatch(setSelectedEpisodeIdx(0));
-          const currentLang = searchParam.get(':lang') || 'en';
-          router.push(`/${currentLang}/create/story`);
+          setLoading(false);
+          const currentLang = searchParam?.get(':lang') || 'en';
+          //router.push(`/${currentLang}/create/story`);
+          pushLocalizedRoute('/create/story', router);
         } catch (error) {
+          setLoading(false);
           console.log('error');
         }
       }
     } else {
-      const currentLang = searchParam.get(':lang') || 'en';
-      router.push(`/${currentLang}/create/story`);
+      setLoading(false);
+      const currentLang = searchParam?.get(':lang') || 'en';
+      //router.push(`/${currentLang}/create/story`);
+      pushLocalizedRoute('/create/story', router);
+      dispatch(setSkipContentInit(false));
     }
   };
 
-  const handleOpenDialog = () => {
-    setDialogOpen(true);
+  const handleOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true);
   };
 
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
   };
 
   const handleConfirm = () => {
-    setConfirmed(true);
+    setDeleteConfirmed(true);
   };
 
   useEffect(() => {
-    if (confirmed) {
+    if (deleteConfirmed) {
       handleDeleteClick();
-      setDialogOpen(false);
-      setConfirmed(false);
+      setDeleteDialogOpen(false);
+      setDeleteConfirmed(false);
     }
-  }, [confirmed]);
+  }, [deleteConfirmed]);
 
   // DashBoard 에서 선택한 컨텐츠를 Id로 가져옴 (CreateContent사이클 (Chapter, Episode 편집) 에서 사용하기 위함)
   const GetContentByContentId = async (contentId: number) => {
     setLoading(true);
 
     try {
-      const req: GetTotalContentByIdReq = {contentId: contentId};
+      const req: GetTotalContentByIdReq = {contentId: contentId, language: navigator.language};
       const response = await sendContentByIdGetTotal(req);
 
       if (response?.data) {
@@ -207,8 +211,9 @@ const ContentDashboard: React.FC = () => {
     dispatch(setSelectedContentId(0));
     dispatch(setSelectedChapterIdx(0));
     dispatch(setSelectedEpisodeIdx(0));
-    const currentLang = searchParam.get(':lang') || 'en';
-    router.push(`/${currentLang}/create/story`);
+    const currentLang = searchParam?.get(':lang') || 'en';
+    //router.push(`/${currentLang}/create/story`);
+    pushLocalizedRoute('/create/story', router);
   };
 
   // Data
@@ -217,12 +222,6 @@ const ContentDashboard: React.FC = () => {
     {value: 'filter2', label: 'Filter 2'},
     {value: 'filter3', label: 'Filter 3'},
   ];
-  const buttons = [
-    {icon: <EditIcon />, text: 'Edit', onClick: handleEdit},
-    {icon: <PreviewIcon />, text: 'Preview', onClick: handlePreview},
-    {icon: <DeleteIcon />, text: 'Delete', onClick: handleOpenDialog},
-  ];
-
   return (
     <>
       <div className={styles.dashboard}>
@@ -233,18 +232,20 @@ const ContentDashboard: React.FC = () => {
           onFilterChange={handleFilterChange}
           onCreateClick={handleCreateClick}
         />
-        <ContentList onSelect={handleSelectItem} />
-        <ContentDashboardFooter buttons={buttons} />
+        <ContentList onSelect={handleSelectItem} onItemEdit={handleEdit} onItemDelete={handleOpenDeleteDialog} />
       </div>
-      <ConfirmationDialog
-        title="Discard Content?"
-        content="Data will be disappeared. Are you sure?"
-        cancelText="Cancel"
-        confirmText="Okay"
-        open={dialogOpen}
-        onConfirm={handleConfirm}
-        onClose={handleCloseDialog}
-      />
+      {deleteDialogOpen && (
+        <Popup
+          type="alert"
+          title="Discard Content?"
+          description="Data will be disappeared. Are you sure?"
+          buttons={[
+            {label: 'Cancel', onClick: handleCloseDeleteDialog, isPrimary: false},
+            {label: 'Okay', onClick: handleConfirm, isPrimary: true},
+          ]}
+        />
+      )}
+
       <LoadingOverlay loading={loading} />
     </>
   );

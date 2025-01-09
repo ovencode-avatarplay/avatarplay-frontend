@@ -1,0 +1,42 @@
+.chatRetryButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative; 
+    margin: 28px auto; 
+    transition: background-color 0.2s ease; 
+
+    width: 94px;
+    height: 32px;
+
+    background: #FFFFFF;
+    backdrop-filter: blur(2.5px);
+
+    border-radius: 12px;
+    
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 140%; 
+    text-align: center;
+    
+    color: #000000; 
+    
+    flex: none;  
+  }
+  
+  .chatRetryButton:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .retryIcon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+    /* background-color: black; */
+    border-radius: 50%;
+  }
+  

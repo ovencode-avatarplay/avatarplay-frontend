@@ -1,0 +1,17 @@
+.bottomBar
+{
+
+}
+
+.expanded{
+
+}
+
+.collapsed{
+    
+}
+
+.blurOn
+{  
+    filter: blur(10px); 
+}

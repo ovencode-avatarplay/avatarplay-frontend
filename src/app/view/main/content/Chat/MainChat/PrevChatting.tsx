@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setContentId, setContentName, setEpisodeId, setEpisodeName} from '@/redux-store/slices/Chatting';
 import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
+import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
 
 const usePrevChatting = (
   episodeId: number,
@@ -33,6 +34,8 @@ const usePrevChatting = (
       const ReqDataUrl: UrlEnterEpisodeChattingReq = {
         urlLinkKey: key !== null ? key : '',
         episodeId: episodeId,
+        language: navigator.language,
+        isUrlEnter: isUsedUrlLink,
       };
       // 서버로부터 이전 채팅 데이터를 가져옴
       //const response = await sendChattingEnter(ReqData);
@@ -50,6 +53,7 @@ const usePrevChatting = (
       } else {
         setError('Failed to fetch previous messages.');
       }
+      dispatch(setUrlLinkUse(true)); // 초기화가 true다!!
       const tmp = response.data?.prevMessageInfoList[response.data?.prevMessageInfoList.length - 1];
 
       if (tmp !== undefined && tmp.message) {
@@ -77,6 +81,7 @@ const usePrevChatting = (
     fetchChattingData();
   }, [episodeId]);
 
+  console.log(prevMessages);
   // 이전 메시지와 에러를 반환
   return {prevMessages};
 };

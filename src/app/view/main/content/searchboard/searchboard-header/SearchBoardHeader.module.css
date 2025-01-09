@@ -1,61 +1,46 @@
-.searchBoard> .tags
+.searchHeaderContainer
+{
+  margin-top: 12px;
+}
+
+.searchHeader
 {
   display: flex;
+  width: calc(100vw - 32px);
   align-items: center;
-  scrollbar-width: none;
-  /* Firefox */
-  -ms-overflow-style: none;
-  /* Internet Explorer 10+ */
-
-  max-width: 500px;
-  margin: 0 auto; /* 수평 중앙 정렬 */
-  overflow-x: auto;
-  white-space: nowrap;
-  padding: 10px;
-  top: 0;
-
-  background-color: white;
-
-  z-index: 2;
+  gap: 8px; 
 }
 
-.searchBoard> .tags::-webkit-scrollbar
+@media (min-width : 402px)
 {
-  display: none;
-  /* Webkit 브라우저 (Chrome, Safari) */
+  .searchHeader
+  {
+    width: 370px;
+  }
 }
 
-.chip
-{
-  margin-right: 10px;
-  min-width: 100px;
-  text-transform: none;
-  white-space: nowrap;
-  font-variant: "outlined";
-  color: "primary";
-  margin: '0 4px';
-}
-
-
-.searchBoard> .search
-{
-  justify-content: space-between;
-  display: flex;
-  padding: 10px;
-  width: 100%;
-  height: inherit;
-}
-
-.searchBoard> .search >.input
-{
-  width: 60%;
-  font-size: 18px;
-}
-
-.searchBoard> .search >.nsfwToggle
+.ageRateArea
 {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  width: 30%;
-  height: 70px;
+  gap: 4px;
+}
+
+.rateText
+{
+  color: var(--Neutral-400, #BDC1C6);
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Lato;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 11px; /* 100% */
+
+}
+
+.rateText.toggleOn
+{
+  color: var(--Primary-1, #FD55D3);
 }

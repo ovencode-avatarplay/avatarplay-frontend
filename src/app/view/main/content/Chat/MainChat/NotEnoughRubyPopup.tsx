@@ -1,6 +1,6 @@
 import React from 'react';
 import {Box, Button, Typography, Modal} from '@mui/material';
-import DiamondIcon from '@mui/icons-material/Diamond'; // 다이아몬드 아이콘 임포트
+import {Ruby} from '@ui/chatting';
 import styles from './NotEnoughRubyPopup.module.css'; // CSS 모듈 경로
 
 interface NotEnoughRubyPopupProps {
@@ -16,23 +16,24 @@ const NotEnoughRubyPopup: React.FC<NotEnoughRubyPopupProps> = ({open, onClose, r
         <Typography variant="h6" className={styles.title}>
           Not enough Ruby
         </Typography>
-        <DiamondIcon style={{fontSize: 24}} />
+        <div className={styles.rubyContainer}>
+          <img src={Ruby.src} /> {rubyAmount}
+        </div>
         <Typography variant="body2" className={styles.prompt}>
           Do you want to charge more Ruby?
         </Typography>
         <Box className={styles.buttonContainer}>
-          <Button variant="outlined" onClick={onClose}>
+          <button className={styles.button} onClick={onClose}>
             No
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
+          </button>
+          <button
+            className={styles.buttonYes}
             onClick={() => {
               onClose;
             }}
           >
             Yes
-          </Button>
+          </button>
         </Box>
       </Box>
     </Modal>

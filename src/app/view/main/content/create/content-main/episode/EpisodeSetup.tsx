@@ -1,32 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore'; // Redux Store의 RootState 가져오기
-import {Box, Typography} from '@mui/material';
+import {Box} from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import BookIcon from '@mui/icons-material/Book';
-import PostAddIcon from '@mui/icons-material/PostAdd';
-import ImageIcon from '@mui/icons-material/Image';
 
 import styles from './EpisodeSetup.module.css';
 
 import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
 
-import EpisodeTrigger from './episode-trigger/EpisodeTrigger';
-import ButtonEpisodeInfo from './ButtonEpisodeInfo';
-
-import EpisodeDescription from './episode-description/EpisodeDescription';
-
-import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
-
 import EpisodeUploadCharacter from './episode-ImageCharacter/EpisodeUploadCharacter';
-import EpisodeBackgroundUpload from './episode-ImageCharacter/EpisodeImageUpload';
+// import EpisodeBackgroundUpload from './episode-ImageCharacter/EpisodeImageUpload';
 
-interface Props {
-  onDrawerOpen: () => void;
-  contentId: number;
-  chapterIdx: number;
-  episodeIdx: number;
-}
+interface Props {}
 
 // 캐릭터 팝업창 열때 해당 내용을 채워서 열기 위한
 interface UpdateUserDetail {
@@ -38,8 +24,22 @@ interface UpdateUserDetail {
   world_scenario: string;
   thumbnail: string;
 }
-let updateUserDetail: UpdateUserDetail;
-const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0, episodeIdx = 0}) => {
+let updateUserDetail: UpdateUserDetail = {
+  characterID: 0,
+  secrets: '',
+  char_name: '',
+  first_mes: '',
+  char_persona: '',
+  world_scenario: '',
+  thumbnail: '',
+};
+
+interface Props {
+  onOpenEpisodeInitialize: () => void;
+  episodeId: number;
+}
+
+const EpisodeSetup: React.FC<Props> = ({onOpenEpisodeInitialize, episodeId}) => {
   // episodeIndex 기본값 0
   // Redux에서 contentInfo 데이터 가져오기
   const contentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // contentInfo 가져오기
@@ -48,11 +48,6 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
 
   const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false);
   const [isImageSetupModalOpen, setImageSetupModalOpen] = useState(false);
-  const [isAdvanceImageSetupModalOpen, setAdvanceImageSetupModalOpen] = useState(false);
-  const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
-
-  const [chapterName, setChapterName] = useState('chapterName');
-  const [episodeName, setEpisodeName] = useState('episodeName');
 
   const openTriggerModal = () => {
     setTriggerModalOpen(true); // Trigger 모달 열기
@@ -79,43 +74,6 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
     setImageSetupModalOpen(false); // 이미지 생성 모달 닫기
   };
 
-  const openAdvanceImageSetup = () => {
-    setAdvanceImageSetupModalOpen(true);
-  };
-
-  const closeAdvanceImageSetup = () => {
-    setAdvanceImageSetupModalOpen(false);
-  };
-
-  const openUploadImageDialog = () => {
-    setUploadImageDialogOpen(true);
-  };
-
-  const closeUploadImageDialog = () => {
-    setUploadImageDialogOpen(false);
-  };
-
-  useEffect(() => {
-    if (contentInfo) {
-      const chapter = contentInfo.chapterInfoList[chapterIdx];
-
-      if (chapter) {
-        setChapterName(chapter.name);
-        const episode = chapter.episodeInfoList[episodeIdx];
-        if (episode) {
-          // console.log('Success!');
-          setEpisodeName(episode.name);
-        } else {
-          console.log(`Episode at idx ${episodeIdx} not found in Content ${contentId}`);
-        }
-      } else {
-        console.log(`Chapter With Idx ${chapterIdx} not found in ${contentId}`);
-      }
-    } else {
-      console.log(`Content with ID ${contentId} not found`);
-    }
-  }, [contentInfo, contentId, chapterIdx, episodeIdx]);
-
   const handleSubmitPopup = (data: any) => {
     console.log('Submitted data:', data);
     // 필요한 처리를 여기에 추가
@@ -124,46 +82,19 @@ const EpisodeSetup: React.FC<Props> = ({onDrawerOpen, contentId, chapterIdx = 0,
   };
   return (
     <main className={styles.episodeSetup}>
-      <ButtonEpisodeInfo onDrawerOpen={onDrawerOpen} chapterName={chapterName ?? ''} episodeName={episodeName ?? ''} />
+      {/* TODO : 이 아래의 내용 Image, SeceneDesc, EpisodeTrigger 전부 하나의 컴포넌트 EpisodeItem 으로 만들어서 EpisodeList로 감싸기.*/}
       <div className={styles.imageBox}>
         <EpisodeUploadCharacter />
-        <EpisodeBackgroundUpload
-          onClickEasyCreate={openImageSetup}
-          onClickAdvanceCreate={openAdvanceImageSetup}
-          uploadImageState={isUploadImageDialogOpen}
-          onClickUploadImage={openUploadImageDialog}
-          onCloseUploadImage={closeUploadImageDialog}
-        />
+        <button onClick={onOpenEpisodeInitialize}>
+          {' '}
+          임시 EpisodeInitialize 열기버튼 <br />
+          이미지에 붙은 버튼에 연결하고 삭제{' '}
+        </button>
       </div>
       <Box className={styles.setupButtons}>
         <ButtonSetupDrawer icon={<PersonIcon />} label="SceneDescription" onClick={openEpisodeModal} />
         <ButtonSetupDrawer icon={<BookIcon />} label="TriggerSetup" onClick={openTriggerModal} />
-        {/*TODO : Move This into Trigger Setup */}
       </Box>
-      {/* EpisodeTrigger 모달 */}
-      <EpisodeTrigger open={isTriggerModalOpen} closeModal={closeTriggerModal} /> {/* 모달 상태 전달 */}
-      {/* 모달 상태 전달 */}
-      {/* Episode Description 모달 */}
-      {isEpisodeModalOpen && (
-        <EpisodeDescription
-          dataDefault={{
-            userId: updateUserDetail?.characterID,
-            characterName: updateUserDetail?.char_name,
-            characterDescription: updateUserDetail?.char_persona,
-            worldScenario: updateUserDetail?.world_scenario,
-            introduction: updateUserDetail?.first_mes,
-            secret: updateUserDetail?.secrets,
-            //thumbnail: updateUserDetail?.thumbnail
-          }}
-          isModify={true}
-          open={isEpisodeModalOpen}
-          onClose={closeEpisodeModal}
-          onSubmit={handleSubmitPopup}
-        />
-      )}
-      {/*이미지 생성 모달*/}
-      {isImageSetupModalOpen && <EpisodeImageSetup open={isImageSetupModalOpen} onClose={closeImageSetup} />}
-      {/* {isAdvanceImageSetupModalOpen && <EpisodeAdvanceImageSetup open ={isAdvanceImageSetupModalOpen} onClose={closeAdvanceImageSetup} />} */}
     </main>
   );
 };

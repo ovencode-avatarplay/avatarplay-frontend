@@ -2,33 +2,28 @@
 .chatmodal {
   display: flex;
   flex-direction: column; /* 세로 방향으로 요소를 배치 */
-  height: 100vh; /* 전체 화면 높이 */
-  max-width: 500px;
+  height:  calc((var(--vh, 1vh) * 100));
+  max-width: 402px;
   margin: 0 auto;
   /*overflow: hidden; /* 자식 요소가 벗어나는 것 방지 */  
 }
 .overlayContainer {
   position: relative;
-  height: 100%;
+  height: calc(100%);
 }
 .topBar {
+  user-select: none;
   display: flex;
+  flex-direction: row; 
   align-items: center;
   justify-content: space-between; /* 양쪽 끝에 배치 */
-  padding: 15px;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
-  background-color: rgba(0, 0, 0, 0);
-  /* backdrop-filter: blur(10px); */
-  border-radius: 8px;
-  color: white; /* 글자 색상 흰색 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+  align-items: center;
   position: absolute;
-  top: 0;
-  left: 0;
+  z-index: 10;  
+  padding: 0px;
+  gap: 10px; 
   width: 100%;
-  z-index: 10;
 }
-
 
 /* ChatArea.module.css 또는 별도의 CSS 파일에 추가 */
 
@@ -66,34 +61,110 @@
   animation-delay: 0.6s; /* 세 번째 점 */
 }
 
-
-
 .chatArea {
+  user-select: none; /* 텍스트 드래그 방지 */
+  -webkit-user-drag: none; 
   flex: 1; /* 남은 공간을 차지하도록 설정 */
   padding: 16px; /* 채팅 영역 패딩 */
-  max-height: calc(100vh - 65px); /* 하단바와 상단바를 제외한 최대 높이 */
   overflow-y: auto; /* 수직 스크롤 가능 */
-  border: 1px solid #ccc; /* 선택 사항: 테두리 추가 */
-  border-radius: 8px; /* 선택 사항: 모서리 둥글게 */
   background-color: #ffffff; /* 배경색 설정 */  
+  height: calc(100%);
+  position: sticky;
+  width: 100%;
+  overflow: hidden;
+}
+
+.fadingOut {
+  opacity: 0;
+}
+
+.transitioning {
+  opacity: 1;
+}
+
+.mainBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  z-Index: 1,
+}
+
+.newBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; 
+  z-Index: 2,
+}
+ 
+.mainCharacter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: auto;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  z-Index: 3,
+}
+
+.mainCharacterNonBg {
+  background-size: cover;
+}
+
+.blurBackground {
+   backdrop-filter: blur(7.5px);
+}
+
+.mainGradiationCover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: auto;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  
+  z-Index: 4,
+}
+
+.messageBubbleArea {
+  overflow-y: auto;
+  position: absolute;
+  top:58px;
+  left: 0;
+  right: 0; 
+  padding-left: 16px;
+  padding-right: 16px;
+  z-index: 5; 
+}
+
+.messageBubbleArea::-webkit-scrollbar {
+  display: none; /* Webkit 브라우저에서 스크롤바 숨기기 */
+}
+
+.messageBubbleArea > .endPadding
+{
+  padding-bottom: 2.3vh;
 }
 
 /* 하단바 설정 */
 .bottomBar {
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  border-top: 1px solid #ccc;
-  background-color: #ffffff;
-  position: fixed; /* 화면 아래에 고정 */
-  bottom: 0; /* 아래에 위치 */
-  max-width: 500px;
-  margin: 0 auto;
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  transition: max-height 0.3s ease, padding 0.3s ease; /* 애니메이션 추가 */
-  overflow: hidden; /* 내용이 넘치지 않도록 설정 */
+  
 }
+
 
 .collapsed {
   max-height: 70px; /* 접혔을 때 높이 */
@@ -136,23 +207,44 @@
 }
 
 /* 사용자 정보 설정 */
-.userInfo {
+.userInfo { 
   display: flex;
-  flex-direction: column; /* 세로 정렬 */
-  justify-content: center; /* 중앙 정렬 */
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 4px; 
 }
 
 /* 사용자 이름 스타일 */
-.username {
-  font-weight: bold;
+.username {  
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 600;
   font-size: 16px;
-  color: rgb(255, 255, 255); /* 사용자 이름 색상 */
+  line-height: 100%;
+  /* identical to box height, or 16px */ 
+  color: #FFFFFF;
+   
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
 }
 
 /* 설명 텍스트 스타일 */
-.description {
-  font-size: 12px;
-  color: rgb(255, 255, 255); /* 설명 색상 */
+.description { 
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%; 
+  color: #BDC1C6; 
+
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+  
 }
 
 /* 확장 버튼 설정 */
@@ -190,10 +282,33 @@
   justify-content: center; /* 박스 내에서 버튼을 중앙에 배치 */
 }
 
+.topButtonBox
+{ 
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+
+width: 80px;
+height: 40px;
+ 
+flex: none;
+order: 2;
+flex-grow: 0; 
+}
+
 /* 버튼 간의 간격 추가 */
 .BackgroundButton,
-.moreButton {
-  margin-left: 10px; 
+.moreButton {  
+  width: 40px;
+  height: 40px;
+  
+  
+  /* Inside auto layout */
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  
 }
 
 /* 왼쪽, 오른쪽 정렬 설정 */

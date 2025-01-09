@@ -1,21 +1,30 @@
 .ChatFloatingArea {
+  user-select: none;
+
     position: absolute;
-    width: 90%;
-    height: 80px;
-    background-color: greenyellow;
+    width: 92%;
+    height: 44px;
+ 
     z-index: 30;
-    top: 100px;
+    top: 58px;
     left: 5%; /* 부모 요소 기준 가로 가운데 정렬 */
     transform: translate(10vh); /* 가로 -50%로 이동하여 가운데 정렬, 세로 초기 위치 */
    
+    background: linear-gradient(180deg, #FD55D3 15.22%, #FDAFA3 150.69%);
+    border-radius: 8px;
+
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; 
+    padding: 12px 16px;
     align-items: center;
-    padding: 0 16px;
-    border-radius: 4px;
+    justify-items: center;
+    gap: 20px;
+    flex: 1 0 0; 
     transform: translateY(10vh); /* 초기 위치 (아래로 10vh 이동) */
     opacity: 0; /* 초기 투명도 */
-    transition: transform 1s ease, opacity 1s ease; /* 애니메이션 효과 */
+    transition: transform 1s ease, opacity 1s ease; /* 애니메이션 효과 */ 
+
+    /* Button Default */  
   }
   
   .ChatFloatingArea.visible {
@@ -23,18 +32,45 @@
     opacity: 1; /* 최종 투명도 */
   }
   
-  .episodeName {
-    color: black;
-    font-size: 1.25rem; /* h6 크기 */
+  .episodeName {/* Ep.2 Meet Arlen, the Storyweaver */
+
+    width: 74%;
+    height: 20px;
+ 
+    justify-self: center;
+    justify-content: center;
+    
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    /* identical to box height, or 14px */
+    
+    color: #F5F5F5; 
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 1; 
   }
   
-  .moveButton {
-    background-color: blue;
+  .moveButton { 
     color: white;
-    text-transform: none;  
+
+    width: 20px;
+    height: 20px;
+     
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    
   }
   
-  .moveButton:hover {
-    background-color: darkblue;
+  .moveButton:hover { 
   }
   
+
+  .blurOn {
+    filter: blur(10px);
+  }

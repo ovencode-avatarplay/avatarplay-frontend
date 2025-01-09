@@ -1,16 +1,64 @@
 .chapterInfo {
     display: flex;
+    height: 46px;
+    padding: 8px 12px;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
-    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+    align-self: stretch;
+    
+    border-radius: 10px;
+    background: var(--Primary-1, #FD55D3);
+    
 }
 
-.chapterDetails {
-    margin-left: 16px;
-    width: 70%;
+.chapterInfo:focus
+{
+    outline: none;  
 }
 
-.arrowButton {
-    margin-left: auto;
+.chapterInfo:focus-visible
+{
+    outline: none;  
+}
+
+.chapterName {
+    color: var(--White, #FFF);    
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: 'Lato';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px; /* 125% */
+    letter-spacing: -0.4px;
+    
+    max-width: calc(100% - 30px);
+
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+
+}
+
+.editButton {
+    display: flex;
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.editIcon
+{
+    display: flex;
+    width: 20px;
+    height: 20px;
+    padding: 2.805px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    
+    color: #FEBBEA;
+    filter: sepia(97%) saturate(4411%) hue-rotate(281deg) brightness(110%) contrast(101%);
 }

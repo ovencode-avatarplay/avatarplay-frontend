@@ -2,14 +2,14 @@
 .modal-body {
     display: flex;
     flex-direction: column; /* 세로 정렬 */    
-    max-width: 500px;
+    max-width: 402px;
     margin: 0 auto; /* 수평 중앙 정렬 */      
 }
 
 
 
 .modalHeader {    
-    max-width: 500px;
+    max-width: 402px;
     margin: 0 auto; /* 수평 중앙 정렬 */      
     width: 100%; /* 헤더의 너비를 화면 전체로 설정 */
     z-index: 1000; /* 다른 요소 위에 나타나도록 설정 */    

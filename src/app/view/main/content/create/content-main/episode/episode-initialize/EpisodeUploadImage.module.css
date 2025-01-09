@@ -1,0 +1,60 @@
+
+/* Upload Image */
+.uploadImageArea 
+{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 27px;
+    justify-items: center;
+    align-items: center;
+
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+@media (min-width: 402px) {
+    .uploadImageArea
+    {
+        width: 370px;
+    }
+}
+
+.uploadImageArea  > .uploadButton
+{
+    width: 100%;
+    display: flex;
+    padding: 13px 0px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex: 1 0 0;
+    
+    border-radius: 10px;
+    border: 1px dashed var(--Neutral-400, #BDC1C6);
+    background: var(--White, #FFF);
+}
+
+.uploadButton > .buttonIcon{
+    display: flex;
+    width: 20px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.uploadButton > .buttonText
+{
+    color: var(--Black, #000);
+    text-align: center;
+    font-family: Lato;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 155%; /* 20.15px */
+}
+ 
+
+.blackIcon{
+    filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
+}

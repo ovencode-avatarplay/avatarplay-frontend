@@ -9,10 +9,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setLanguage} from '@/redux-store/slices/UserInfo';
 import Cookies from 'js-cookie';
+import {useRouter} from 'next/navigation';
+import {changeLanguageAndRoute, refreshLanaguage} from '@/utils/UrlMove';
+import {i18n} from 'next-i18next';
+import {fetchLanguage} from './LanguageSetting';
 
 const LanguageSelectDropBox: React.FC = () => {
   const dispatch = useDispatch();
   const selectedLanguage = useSelector((state: RootState) => state.user.language);
+  const router = useRouter();
 
   const LanguageDisplay = [
     {value: LanguageType.Korean, label: 'Korean'},
@@ -25,18 +30,6 @@ const LanguageSelectDropBox: React.FC = () => {
     {value: LanguageType.Portuguese, label: 'Portuguese'},
     {value: LanguageType.German, label: 'German'},
   ];
-  // 언어 가져오기
-  const fetchLanguage = async () => {
-    try {
-      const response = await sendGetLanguage({});
-      const language = response.data?.languageType;
-      if (language !== undefined) {
-        dispatch(setLanguage(language));
-      }
-    } catch (error) {
-      console.error('Failed to fetch language:', error);
-    }
-  };
 
   const handleLanguageChange = async (event: SelectChangeEvent<number>) => {
     try {
@@ -53,7 +46,7 @@ const LanguageSelectDropBox: React.FC = () => {
 
       if (language !== undefined) {
         dispatch(setLanguage(language));
-        Cookies.set('language', String(language), {expires: 365});
+        changeLanguageAndRoute(language, router, i18n);
       } else {
         throw new Error('Failed to retrieve updated language from server');
       }
@@ -62,7 +55,7 @@ const LanguageSelectDropBox: React.FC = () => {
     }
   };
   useEffect(() => {
-    fetchLanguage();
+    fetchLanguage(router);
   }, []);
 
   return (

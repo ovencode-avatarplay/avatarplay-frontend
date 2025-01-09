@@ -1,0 +1,145 @@
+.setNamePopup
+{     
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+    gap: 24px;
+
+    position: absolute;
+    width: 320px;
+    height: 230px;
+    max-height: 716px;
+    left: calc(50% - 320px/2 - 0.51px);
+    top: calc(50% - 230px/2);
+
+    background: #FFFFFF;
+    border-radius: 24px;
+}
+
+.title
+{
+    width: 256px;
+    height: 25px;
+    
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 120%;
+    text-align: center;
+    letter-spacing: -0.02em;
+    
+    color: #000000;
+        
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+    
+    align-self: stretch;
+}
+
+.alertMessage
+{ 
+    width: 256px;
+    height: 40px;
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 140%;
+    /* or 20px */
+    text-align: center;
+
+    color: #80868B;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+
+}
+
+.input
+{    
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 12px;
+    gap: 6px;
+
+    width: 256px;
+    height: 47px;
+
+    background: #FFFFFF;
+    border: 1px solid #E8EAED;
+    border-radius: 10px;
+
+    flex: none;
+    order: 2;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+.buttonArea
+{    
+/* Auto layout */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 8px;
+
+    width: 256px;
+    height: 46px;
+
+
+/* Inside auto layout */
+    flex: none;
+    order: 3;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+.button
+{    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    gap: 3px;
+
+    width: 124px;
+    height: 46px;
+
+    background: #F1F3F4;
+    border-radius: 10px;
+
+/* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 1;
+}
+
+.cancelButton
+{
+    border-radius: 10px;
+    background: var(--Neutral-100, #F1F3F4); 
+    
+    color: #80868B; 
+}
+
+.completeButton
+{
+    border-radius: 10px;
+    background: var(--Neutral-800, #2C3131);
+ 
+    color: #FFFFFF; 
+}

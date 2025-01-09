@@ -2,6 +2,8 @@
 import {ChattingCheatReq, ChattingCheatRes, sendMessageCheat} from '@/app/NetWork/CheatNetwork';
 import CheatMessageType, {CheatResult} from './cheat_type';
 import usePrevChatting from '@/app/view/main/content/Chat/MainChat/PrevChatting';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
 
 const cheatMessage = async (contentId: number, episodeId: number, cheatText: string) => {
   const requestData: ChattingCheatReq = {
@@ -27,7 +29,7 @@ const isAnyCheatMessageType = (message: string): boolean => {
 // 테스트 예시
 console.log(isAnyCheatMessageType('⦿EPISODE_INIT⦿')); // true를 예상
 
-const cheatManager = (response: ChattingCheatRes): CheatResult => {
+const cheatManager = (response: ChattingCheatRes, router: ReturnType<typeof useRouter>): CheatResult => {
   // 기본 result 객체 설정
   const result: CheatResult = {
     text: '',
@@ -35,7 +37,10 @@ const cheatManager = (response: ChattingCheatRes): CheatResult => {
   };
 
   // 채팅창 초기화 (현재 애피소드에서 Enter를 재요청한다.)
-  if (response.isEpisodeInit === true) {
+  if (response.isContentInit === true) {
+    // 채팅창 좌상단 back 버튼 클릭했을때랑 동일하게 처리
+    pushLocalizedRoute('/main/explore', router);
+  } else if (response.isEpisodeInit === true) {
     result.reqEnter = true;
   }
   // 말풍선에 치트키에 대한 응답정보를 출력해준다.
