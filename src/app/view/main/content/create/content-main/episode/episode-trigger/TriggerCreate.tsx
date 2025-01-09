@@ -142,7 +142,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
       const character = characters.find(char => char.id === selectedCharacterId);
 
       if (character) {
-        if (itemUrl && itemUrl[selectedGalleryIndex].imageUrl != null)
+        if (itemUrl && itemUrl[selectedGalleryIndex] && itemUrl[selectedGalleryIndex].imageUrl != null)
           character.mainImageUrl = itemUrl[selectedGalleryIndex].imageUrl;
         // actionCharacterInfo 값 설정
         setTriggerInfo(prevTriggerInfo => ({
@@ -287,11 +287,13 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     }
   };
 
-  const galleryAllUrl = [
-    ...(currentSelectedCharacter?.portraitGalleryImageUrl || []),
-    ...(currentSelectedCharacter?.poseGalleryImageUrl || []),
-    ...(currentSelectedCharacter?.expressionGalleryImageUrl || []),
-  ];
+  const getGalleryAllUrl = (): GalleryImageInfo[] => {
+    return [
+      ...(currentSelectedCharacter?.portraitGalleryImageUrl || []),
+      ...(currentSelectedCharacter?.poseGalleryImageUrl || []),
+      ...(currentSelectedCharacter?.expressionGalleryImageUrl || []),
+    ];
+  };
 
   //#endregion
 
@@ -387,12 +389,13 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
           setItemUrl(currentSelectedCharacter?.expressionGalleryImageUrl || null);
           break;
         default:
-          setItemUrl(galleryAllUrl);
+          setItemUrl(getGalleryAllUrl() || null);
       }
       setSelectedGalleryIndex(0);
       setLastCategory(category);
     }
-  }, [category, currentSelectedCharacter, galleryAllUrl, curStep]);
+  }, [category, currentSelectedCharacter, curStep]);
+
   //#endregion
 
   const resetAllStates = () => {
@@ -702,7 +705,10 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
             <CharacterGalleryGrid
               itemUrl={itemUrl}
               selectedItemIndex={selectedGalleryIndex}
-              onSelectItem={i => setSelectedGalleryIndex(i)}
+              onSelectItem={i => {
+                console.log(i);
+                setSelectedGalleryIndex(i);
+              }}
               category={category}
               isTrigger={true}
             />

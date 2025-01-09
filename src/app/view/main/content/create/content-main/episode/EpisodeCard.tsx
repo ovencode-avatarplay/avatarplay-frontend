@@ -177,7 +177,11 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit,
           </div>
           <div className={styles.contentTopBox}>
             <div className={styles.contentTopName}>
-              <b>{episodeInfo.name == null || episodeInfo.name == '' ? 'None' : episodeInfo.name}</b>
+              <b>
+                {episodeInfo.characterInfo == null || episodeInfo.characterInfo.name == ''
+                  ? 'None'
+                  : episodeInfo.characterInfo.name}
+              </b>
             </div>
             <div className={styles.contentTopItem}>
               Conversation Template

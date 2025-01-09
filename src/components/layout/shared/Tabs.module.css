@@ -1,55 +1,78 @@
 /* Tabs Container */
 .tabsContainer {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    background: #ffffff;
-  }
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #ffffff;
+}
+
+/* Tabs Header */
+.tabsHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px;
+  border-bottom: 1px solid #eaecf0;
+}
+
+.tabsHeader.darkHeader
+{
+  background: var(--Black, #000);
+}
   
-  /* Tabs Header */
-  .tabsHeader {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 8px;
-    border-bottom: 1px solid #eaecf0;
-  }
+/* Tab Label */
+.tabLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 8px;
+  flex-grow: 1;
+  text-align: center;
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #bdc1c6;
+  cursor: pointer;
+}
+
+.tabLabel.darkTabLabel
+{
+  color: var(--Neutral-600, #80868B);
+}
   
-  /* Tab Label */
-  .tabLabel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 8px;
-    flex-grow: 1;
-    text-align: center;
-    font-family: 'Lato', sans-serif;
-    font-weight: 600;
-    font-size: 16px;
-    color: #bdc1c6;
-    cursor: pointer;
-  }
+.tabLabel:hover {
+  color: #000000;
+}
+
+.tabLabel.darkTabLabel:hover {
+  color: var(--White, #FFF);   
+}
   
-  .tabLabel:hover {
-    color: #000000;
-  }
+.tabLabel.activeTab {
+  color: #000000;
+}
+
+.tabLabel.activeTab.darkTabLabel
+{
+  color: var(--White, #FFF);  
+}
   
-  .activeTab {
-    color: #000000;
-  }
+/* Divider for Active Tab */
+.tabDivider {
+  width: 100%;
+  height: 2px;
+  background: #000000;
+  margin-top: 4px;
+}
+.tabDivider.darkDivider
+{
+  background: var(--White, #FFF);
+}
   
-  /* Divider for Active Tab */
-  .tabDivider {
-    width: 100%;
-    height: 2px;
-    background: #000000;
-    margin-top: 4px;
-  }
-  
-  /* Tab Content */
-  .tabContent {
-    padding: 16px;
-    font-family: 'Lato', sans-serif;
-    font-size: 14px;
-    color: #80868b;
-  }
+/* Tab Content */
+.tabContent {
+  padding: 16px;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  color: #80868b;
+}
   

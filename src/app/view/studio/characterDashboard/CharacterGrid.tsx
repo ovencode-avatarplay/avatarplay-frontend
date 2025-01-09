@@ -22,6 +22,7 @@ const CharacterGrid: React.FC<CharacterGridProps> = ({characters, onCharacterSel
       {characters && characters.length > 0 ? (
         characters.map(character => (
           <CharacterGridItem
+            key={character.id}
             character={character}
             isSelected={selectedId === character.id}
             onSelect={() => handleSelect(character.id)}

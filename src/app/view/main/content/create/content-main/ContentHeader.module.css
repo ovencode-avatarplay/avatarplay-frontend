@@ -1,5 +1,6 @@
 .contentHeader {
     height: 58px; 
+    max-width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between; 
@@ -23,7 +24,18 @@
     flex-direction: row;
     align-items: center;
     justify-items: center;
-    gap: 6.6px;
+    gap: 6.6px; 
+    width: 100%;  
+    box-sizing: border-box;
+    max-width: calc(100vw - 80px);
+}
+
+@media (min-width:402px)
+{
+    .titleContainer
+    {
+        max-width: calc(402px - 80px);
+    }
 }
 
 
@@ -52,7 +64,20 @@
     font-weight: 600;
     line-height: 20px; /* 100% */
     letter-spacing: -0.4px;
+    max-width: calc(100vw - 80px - 36px);
+    
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;  
 } 
+
+@media (min-width:402px)
+{
+    .contentName
+    {
+        max-width: calc(100vw - 80px - 36px);
+    }
+}
 
 .headerButtonArea{
     display: inline-flex;

@@ -19,6 +19,8 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
         grabCursor={true}
         pagination={{
           clickable: true,
+          renderBullet: (index, className) =>
+            `<span class="${className}" style="background-color: ${index > -1 ? 'white' : ''};"></span>`,
         }}
         modules={[Pagination]}
       >

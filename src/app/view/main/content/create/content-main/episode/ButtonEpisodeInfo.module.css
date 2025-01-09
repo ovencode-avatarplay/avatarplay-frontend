@@ -31,7 +31,12 @@
     font-weight: 700;
     line-height: 20px; /* 125% */
     letter-spacing: -0.4px;
+    
+    max-width: calc(100% - 30px);
 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
 
 }
 
