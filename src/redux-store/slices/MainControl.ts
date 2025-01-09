@@ -4,10 +4,12 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 interface MainControlState {
   selectedIndex: number;
+  bottomNavColor: number;
 }
 
 const initialState: MainControlState = {
   selectedIndex: 0,
+  bottomNavColor: 1,
 };
 
 const mainControlSlice = createSlice({
@@ -17,8 +19,11 @@ const mainControlSlice = createSlice({
     setSelectedIndex(state, action: PayloadAction<number>) {
       state.selectedIndex = action.payload;
     },
+    setBottomNavColor(state, action: PayloadAction<number>) {
+      state.bottomNavColor = action.payload;
+    },
   },
 });
 
-export const {setSelectedIndex} = mainControlSlice.actions;
+export const {setSelectedIndex, setBottomNavColor} = mainControlSlice.actions;
 export default mainControlSlice.reducer;

@@ -41,11 +41,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
               style={{
                 height: '100%',
               }}
-              pagination={{
-                clickable: true,
-              }}
               navigation={true}
-              modules={[Pagination]}
               className={styles.mySwiper}
               initialSlide={0}
               onSlideChange={handleSlideChange} // 슬라이드 변경 이벤트 핸들러 추가
@@ -63,7 +59,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
             </Swiper>
           )}
           {item.mediaState === 2 && (
-            <div style={{position: 'relative', width: '100%', height: '100%'}}>
+            <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
               <ReactPlayer
                 muted={true}
                 url={item.mediaUrlList[0]} // 첫 번째 URL 사용
@@ -76,8 +72,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
                 onProgress={({playedSeconds}) => handleVideoProgress(playedSeconds)} // 비디오 진행도 업데이트
                 onDuration={duration => setVideoDuration(duration)} // 비디오 총 길이 설정
               />
-              <button
-                onClick={handleClick}
+
+              <div
                 style={{
                   position: 'absolute',
                   top: '50%',
@@ -89,7 +85,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
                 <div className={`${styles.playCircleIcon} ${isClicked ? styles.fadeAndGrow : ''}`}>
                   <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
                 </div>
-              </button>
+              </div>
             </div>
           )}
         </div>

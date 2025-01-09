@@ -15,7 +15,7 @@ import {getLocalizedLink} from '@/utils/UrlMove';
 import {setSkipContentInit} from '@/redux-store/slices/ContentSelection';
 import {useDispatch, useSelector} from 'react-redux';
 import {LinePlus} from '@ui/Icons';
-import {setSelectedIndex} from '@/redux-store/slices/MainControl';
+import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
 
 export default function BottomNav() {
@@ -24,6 +24,7 @@ export default function BottomNav() {
   const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
   const [timer, setTimer] = React.useState<NodeJS.Timeout | null>(null);
   const selectedIndex = useSelector((state: RootState) => state.mainControl.selectedIndex);
+  const colorMode = useSelector((state: RootState) => state.mainControl.bottomNavColor);
 
   const toggleDrawer = (open: boolean) => {
     setDrawerOpen(open);
@@ -34,6 +35,11 @@ export default function BottomNav() {
   };
 
   const handleClick = (index: number) => {
+    if (index == 0) {
+      dispatch(setBottomNavColor(0));
+    } else {
+      dispatch(setBottomNavColor(1));
+    }
     dispatch(setSelectedIndex(index));
   };
 
@@ -147,14 +153,18 @@ export default function BottomNav() {
     }
   }, [dispatch]);
 
+  React.useEffect(() => {}, [colorMode]);
+
   return (
     <footer>
-      <div className={styles.bottomNav}>
+      <div className={`${styles.bottomNav} ${colorMode === 1 ? styles['light-mode'] : styles['dark-mode']}`}>
         <div className={styles.bottomNavBox}>
           {buttonData.map((button, index) => (
             <Link key={index} href={getLocalizedLink(button.link)}>
               <button
-                className={`${styles.navButton} ${selectedIndex === index ? styles.selected : ''}`}
+                className={`${styles.navButton} 
+                  ${selectedIndex === index ? styles.selected : ''} 
+                  ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
                 onClick={index !== buttonData.length - 1 ? () => handleClick(index) : undefined}
                 onMouseDown={index === buttonData.length - 1 ? handleLongPressStart : undefined}
                 onMouseUp={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
