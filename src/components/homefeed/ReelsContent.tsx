@@ -1,40 +1,112 @@
 import React, {useState} from 'react';
-import {Box, Typography, IconButton, Container, Avatar, Card} from '@mui/material';
-import {FavoriteBorder, ChatBubbleOutline, ArrowForwardIos} from '@mui/icons-material';
-import MoreVert from '@mui/icons-material/MoreVert';
 import styles from './ReelsContent.module.css';
-
-// Import Swiper styles
+import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
-
-// import required modules
 import {Pagination} from 'swiper/modules';
-
-interface ReelData {
-  images: string[];
-  text: string;
-  link: string;
-  item: ReelData;
-}
+import {FeedInfo} from '@/app/NetWork/ShortsNetwork';
+import ReactPlayer from 'react-player';
+import {BoldPause, BoldPlay} from '@ui/Icons';
 
 interface ReelsContentProps {
-  item: ReelData;
+  item: FeedInfo;
 }
 
-const ReelsContent: React.FC = () => {
+const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+
+  const [activeIndex, setActiveIndex] = useState(0); // 현재 슬라이드 인덱스 상태
+  const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
+  const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
+  const handleClick = () => {
+    setIsPlaying(!isPlaying);
+    setIsClicked(true);
+    setTimeout(() => setIsClicked(false), 300); // 애니메이션이 끝난 후 상태 초기화
+  };
+  const handleSlideChange = (swiper: SwiperClass) => {
+    setActiveIndex(swiper.activeIndex); // Swiper의 activeIndex로 상태 업데이트
+  };
+
+  const handleVideoProgress = (playedSeconds: number) => {
+    setVideoProgress(playedSeconds);
+  };
+
   return (
     <div className={styles.reelsContainer}>
-      {/* Main Content */}
       <div className={styles.mainContent}>
-        {/* Background Image with Dim */}
         <div className={styles.Image}>
-          <img src="/ui/유나.png" alt="유나 이미지" className={styles.Image} />
+          {item.mediaState === 1 && (
+            <Swiper
+              style={{
+                height: '100%',
+              }}
+              pagination={{
+                clickable: true,
+              }}
+              navigation={true}
+              modules={[Pagination]}
+              className={styles.mySwiper}
+              initialSlide={0}
+              onSlideChange={handleSlideChange} // 슬라이드 변경 이벤트 핸들러 추가
+            >
+              {item?.mediaUrlList.map((url, idx) => (
+                <SwiperSlide key={idx}>
+                  <img
+                    src={url}
+                    alt={`Slide ${idx}`}
+                    loading="lazy"
+                    style={{width: '100%', height: '100%', objectFit: 'contain'}}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
+          {item.mediaState === 2 && (
+            <div style={{position: 'relative', width: '100%', height: '100%'}}>
+              <ReactPlayer
+                muted={true}
+                url={item.mediaUrlList[0]} // 첫 번째 URL 사용
+                playing={isPlaying} // 재생 상태
+                width="100%"
+                height="100%"
+                style={{
+                  borderRadius: '8px',
+                }}
+                onProgress={({playedSeconds}) => handleVideoProgress(playedSeconds)} // 비디오 진행도 업데이트
+                onDuration={duration => setVideoDuration(duration)} // 비디오 총 길이 설정
+              />
+              <button
+                onClick={handleClick}
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  zIndex: 10,
+                }}
+              >
+                <div className={`${styles.playCircleIcon} ${isClicked ? styles.fadeAndGrow : ''}`}>
+                  <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
+                </div>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Progress Bar */}
+        <div className={styles.progressBar}>
+          <div
+            className={styles.progressFill}
+            style={{
+              width:
+                item.mediaState === 1
+                  ? `${((activeIndex + 1) / item.mediaUrlList.length) * 100}%` // 이미지 슬라이드 진행도
+                  : `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
+            }}
+          ></div>
         </div>
         <div className={styles.dim}></div>
-
-        {/* Pause Button */}
-        <div className={styles.pauseButton}></div>
 
         {/* User Info */}
         <div className={styles.userInfo}>

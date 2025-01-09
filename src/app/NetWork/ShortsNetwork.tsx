@@ -93,3 +93,108 @@ export const sendCreateFeed = async (
     };
   }
 };
+
+// Feed 정보 타입 정의
+export interface FeedInfo {
+  id: number;
+  mediaState: number;
+  mediaUrlList: string[];
+  description: string;
+  hashTag: string;
+  likeCount: number;
+  disLikeCount: number;
+  playTime: string;
+}
+
+// getFeedList API 응답 타입 정의
+interface ResponseGetFeedList {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    feedInfoList: FeedInfo[];
+  } | null;
+}
+
+/**
+ * Feed 리스트 가져오기
+ * @param characterProfileId - 요청에 사용될 캐릭터 프로필 ID
+ * @returns API 응답 결과
+ */
+export const sendGetFeedList = async (
+  characterProfileId: number,
+): Promise<{resultCode: number; resultMessage: string; data: FeedInfo[] | null}> => {
+  try {
+    // POST 요청 전송
+    const response = await api.post<ResponseGetFeedList>('/Feed/getFeedList', {
+      characterProfileId,
+    });
+
+    const {resultCode, resultMessage, data} = response.data;
+
+    if (resultCode === 0) {
+      return {resultCode, resultMessage, data: data?.feedInfoList || null};
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {resultCode, resultMessage, data: null};
+    }
+  } catch (error) {
+    console.error('Failed to fetch feed list:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to fetch feed list',
+      data: null,
+    };
+  }
+};
+
+// Feed 정보 타입 정의
+export interface FeedInfo {
+  id: number;
+  mediaState: number;
+  mediaUrlList: string[];
+  description: string;
+  hashTag: string;
+  likeCount: number;
+  disLikeCount: number;
+  playTime: string;
+}
+
+// 추천 피드 API 응답 타입 정의
+interface ResponseRecommendFeed {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    feedInfoList: FeedInfo[];
+  } | null;
+}
+
+/**
+ * 추천 피드 가져오기
+ * @returns API 응답 결과
+ */
+export const sendGetRecommendFeed = async (): Promise<{
+  resultCode: number;
+  resultMessage: string;
+  data: FeedInfo[] | null;
+}> => {
+  try {
+    // GET 요청 전송
+    const response = await api.get<ResponseRecommendFeed>('/Feed/recommend');
+
+    const {resultCode, resultMessage, data} = response.data;
+
+    if (resultCode === 0) {
+      return {resultCode, resultMessage, data: data?.feedInfoList || null};
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {resultCode, resultMessage, data: null};
+    }
+  } catch (error) {
+    console.error('Failed to fetch recommended feeds:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to fetch recommended feeds',
+      data: null,
+    };
+  }
+};

@@ -31,6 +31,7 @@ const PostMain: React.FC<Props> = () => {
   const router = useRouter();
   const [text, setText] = useState(''); // 입력된 텍스트 상태
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
+  const [publishPopup, setPublishPopup] = useState<boolean>(false); // 입력된 텍스트 상태
   const maxLength = 500; // 최대 문자 수
   const [isOpenSelectDrawer, setIsOpenSelectDrawer] = useState<boolean>(false);
 
@@ -59,6 +60,11 @@ const PostMain: React.FC<Props> = () => {
 
   const [loading, setLoading] = useState(false);
   const {label, hint, accept} = mediaTypeConfig[mediaType];
+
+  const handleInit = () => {
+    setMediaUrls([]);
+    setText('');
+  };
   // 파일 선택 시 처리
   const handleOnFileSelect = async (files: File[]) => {
     try {
@@ -215,6 +221,7 @@ const PostMain: React.FC<Props> = () => {
     const result = await sendCreateFeed(feedInfo);
     setLoading(false);
     if (result.resultCode === 0) {
+      setPublishPopup(true);
       console.log('Feed created successfully:', result.data);
     } else {
       console.error('Failed to create feed:', result.resultMessage);
@@ -344,6 +351,23 @@ const PostMain: React.FC<Props> = () => {
               label: 'Ok',
               onClick: () => {
                 setWarnPopup(false);
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
+      {publishPopup && (
+        <Popup
+          type="alert"
+          title="Alert"
+          description="Publish"
+          buttons={[
+            {
+              label: 'Ok',
+              onClick: () => {
+                handleInit();
+                setPublishPopup(false);
               },
               isPrimary: true,
             },
