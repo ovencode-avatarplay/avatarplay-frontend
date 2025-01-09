@@ -60,7 +60,7 @@ const ConversationCard: React.FC<ConversationCardProps> = ({card, moveUp, moveDo
     <div className={styles.card}>
       {/* 헤더 영역 */}
       <div className={styles.header}>
-        {card.priorityType === 0 ? 'Mandatory' : 'Priority'}
+        {card.priorityType === 0 ? 'Mandatory' : 'Depends on Situation'}
         <div style={{display: 'flex'}}>
           <div
             className={styles.arrowIcon}
