@@ -108,8 +108,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
         <div className={styles.userInfo}>
           <div className={styles.profilePicture}></div>
           <div className={styles.profileDetails}>
-            <span className={styles.username}>your-name</span>
-            <span className={styles.sponsored}>Sponsored</span>
+            <span className={styles.username}>your- sored</span>
           </div>
           <button className={styles.followButton}>Follow</button>
         </div>
