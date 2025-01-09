@@ -240,8 +240,8 @@ const ContentDashboard: React.FC = () => {
           title="Discard Content?"
           description="Data will be disappeared. Are you sure?"
           buttons={[
-            {label: 'Cancel', onClick: handleConfirm, isPrimary: false},
-            {label: 'Okay', onClick: handleCloseDeleteDialog, isPrimary: true},
+            {label: 'Cancel', onClick: handleCloseDeleteDialog, isPrimary: false},
+            {label: 'Okay', onClick: handleConfirm, isPrimary: true},
           ]}
         />
       )}

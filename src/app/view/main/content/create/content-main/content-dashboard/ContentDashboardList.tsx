@@ -10,7 +10,7 @@ interface Props {
   onItemSelect: (index: number) => void;
   onItemEdit: () => void;
   onItemDelete: () => void;
-  dateOption: number;
+  dateOption?: number;
 }
 
 const ContentDashboardList: React.FC<Props> = ({
@@ -19,7 +19,7 @@ const ContentDashboardList: React.FC<Props> = ({
   onItemSelect,
   onItemEdit,
   onItemDelete,
-  dateOption,
+  dateOption = 0,
 }) => {
   const listRef = useRef<HTMLDivElement | null>(null);
 
