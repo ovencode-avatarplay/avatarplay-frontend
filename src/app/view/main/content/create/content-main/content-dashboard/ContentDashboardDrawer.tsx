@@ -97,17 +97,17 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
     let filtered = [...contentInfo];
 
     // 필터 적용
-    // if (selectedPublish === 1) {
-    //   filtered = filtered.filter(item => item.status === 'saved');
-    // } else if (selectedPublish === 2) {
-    //   filtered = filtered.filter(item => item.status === 'published');
-    // }
+    if (selectedPublish === 1) {
+      filtered = filtered.filter(item => item.visibilityType === 3);
+    } else if (selectedPublish === 2) {
+      filtered = filtered.filter(item => item.visibilityType !== 3);
+    }
 
     // 정렬 적용
     if (selectedOption === 0) {
       filtered.sort((a, b) => a.name.localeCompare(b.name)); // 알파벳 순서
     } else if (selectedOption === 1) {
-      filtered.sort((a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()); // 수정일 역순
+      filtered.sort((a, b) => new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime()); // 수정일 역순
     } else if (selectedOption === 2) {
       filtered.sort((a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()); // 생성일 역순
     }
@@ -255,6 +255,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
             onItemSelect={handleItemClick}
             onItemEdit={handleEditClick}
             onItemDelete={handleOpenDialog}
+            dateOption={selectedOption}
           />
         </div>
         <SelectDrawer

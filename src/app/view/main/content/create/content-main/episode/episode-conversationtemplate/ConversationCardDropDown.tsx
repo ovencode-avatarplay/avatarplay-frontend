@@ -21,9 +21,10 @@ interface EpisodeCardDropDownProps {
   close: () => void;
   remove: () => void;
   duplicate: () => void;
+  changePriority: () => void;
 }
 
-const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({open, duplicate, remove, close}) => {
+const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({open, duplicate, remove, close, changePriority}) => {
   const dispatch = useDispatch();
 
   const HandleDuplicateEpisode = (id: number) => {
@@ -33,6 +34,16 @@ const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({open, duplicat
 
   return (
     <div className={styles.dropdown}>
+      <div
+        className={styles.dropdownItem}
+        onClick={() => {
+          changePriority();
+          close();
+        }}
+      >
+        <span className={styles.label}>Change Priority</span>
+        <img src={LineArrowSwap.src} className={styles.icon} />
+      </div>
       <div
         className={styles.dropdownItem}
         onClick={() => {
