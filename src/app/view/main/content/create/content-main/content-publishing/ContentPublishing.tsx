@@ -48,19 +48,19 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, LLMOpen, 
   const currentLLM = useSelector((state: RootState) => state.publish.llmSetupInfo);
   const visibilityItems: SelectDrawerItem[] = [
     {
-      name: 'Public',
+      name: 'Private',
       onClick: () => {
         dispatch(setVisibility(0));
       },
     },
     {
-      name: 'Only Invited People',
+      name: 'Unlisted',
       onClick: () => {
         dispatch(setVisibility(1));
       },
     },
     {
-      name: 'Private',
+      name: 'Public',
       onClick: () => {
         dispatch(setVisibility(2));
       },

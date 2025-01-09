@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
 import styles from './ContentItem.module.css';
 import {ContentDashboardItem} from '@/redux-store/slices/MyContentDashboard';
-import PhotoIcon from '@mui/icons-material/Photo';
-import MovieIcon from '@mui/icons-material/Movie';
 import {Box} from '@mui/material';
 import {MenuDots} from '@ui/chatting';
 import {
@@ -22,11 +20,33 @@ interface ContentItemProps {
   isSelected: boolean;
   onEditClicked: () => void;
   onDeleteClicked: () => void;
+  dateOption: number;
 }
 
-const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected, onEditClicked, onDeleteClicked}) => {
+const ContentItem: React.FC<ContentItemProps> = ({
+  dashboardItem,
+  isSelected,
+  onEditClicked,
+  onDeleteClicked,
+  dateOption,
+}) => {
   const handleShareContent = () => {
-    // TODO : 주소 받아와서 클립보드에  붙여넣기
+    if (dashboardItem.urlLinkKey) {
+      const fullUrl = `${window.location.origin}/chat?${dashboardItem.urlLinkKey}`;
+
+      navigator.clipboard
+        .writeText(fullUrl)
+        .then(() => {
+          alert('URL이 클립보드에 복사되었습니다.');
+        })
+        .catch(err => {
+          console.error('클립보드 복사 중 에러 발생:', err);
+          alert('클립보드에 복사할 수 없습니다.');
+        });
+    } else {
+      console.warn('URL이 유효하지 않습니다.');
+      alert('공유할 수 있는 URL이 없습니다.');
+    }
   };
 
   const formattedDate = (time: string) => {
@@ -80,7 +100,9 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected, onE
         <div className={styles.descriptionArea}>
           <div className={styles.contentInfo}>
             <div className={styles.infoArea}>
-              <div className={styles.dateText}>{formattedDate(dashboardItem.createAt)}</div>
+              <div className={styles.dateText}>
+                {dateOption === 1 ? formattedDate(dashboardItem.updateAt) : formattedDate(dashboardItem.createAt)}
+              </div>
               <button
                 className={styles.menuButton}
                 onClick={() => {
@@ -91,7 +113,21 @@ const ContentItem: React.FC<ContentItemProps> = ({dashboardItem, isSelected, onE
               </button>
             </div>
             <div className={styles.titleArea}>
-              <div className={`${styles.publishLabel} ${styles.saved}`}> Saved</div>
+              <div
+                className={`${styles.publishLabel} ${
+                  dashboardItem.visibilityType === 3 ? styles.saved : styles.published
+                }`}
+              >
+                {dashboardItem.visibilityType === 3
+                  ? 'Saved'
+                  : dashboardItem.visibilityType === 2
+                  ? 'Publsih'
+                  : dashboardItem.visibilityType === 1
+                  ? 'Unlisted'
+                  : dashboardItem.visibilityType === 0
+                  ? 'Private'
+                  : ''}
+              </div>
               <div className={styles.title}>{dashboardItem.name}</div>
             </div>
           </div>

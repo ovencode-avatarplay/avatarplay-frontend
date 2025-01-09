@@ -291,11 +291,13 @@ const EpisodeInitialize: React.FC<Props> = ({
     }
   };
 
-  const galleryAllUrl = [
-    ...(currentSelectedCharacter?.portraitGalleryImageUrl || []),
-    ...(currentSelectedCharacter?.poseGalleryImageUrl || []),
-    ...(currentSelectedCharacter?.expressionGalleryImageUrl || []),
-  ];
+  const getGalleryAllUrl = (): GalleryImageInfo[] => {
+    return [
+      ...(currentSelectedCharacter?.portraitGalleryImageUrl || []),
+      ...(currentSelectedCharacter?.poseGalleryImageUrl || []),
+      ...(currentSelectedCharacter?.expressionGalleryImageUrl || []),
+    ];
+  };
 
   // 이미지 생성
   const handleImageGeneration = async () => {
@@ -477,6 +479,7 @@ const EpisodeInitialize: React.FC<Props> = ({
 
   const handleConfirm = async () => {
     if (curStep === 1 && selectedCharacterId) {
+      setCategory(GalleryCategory.All);
       await getCharacterInfo(selectedCharacterId);
     }
   };
@@ -543,7 +546,7 @@ const EpisodeInitialize: React.FC<Props> = ({
   useEffect(() => {
     // 카테고리 전환 시 아이템과 인덱스를 갱신
 
-    if (currentSelectedCharacter && uploadType === 'SelectCharacter' && curStep === 2 && category !== lastCategory) {
+    if (currentSelectedCharacter && uploadType === 'SelectCharacter' && curStep === 2) {
       switch (category) {
         case GalleryCategory.Portrait:
           setItemUrl(currentSelectedCharacter?.portraitGalleryImageUrl || null);
@@ -555,12 +558,13 @@ const EpisodeInitialize: React.FC<Props> = ({
           setItemUrl(currentSelectedCharacter?.expressionGalleryImageUrl || null);
           break;
         default:
-          setItemUrl(galleryAllUrl);
+          setItemUrl(getGalleryAllUrl() || null);
       }
       setSelectedGalleryIndex(0);
       setLastCategory(category);
     }
-  }, [category, currentSelectedCharacter, galleryAllUrl, curStep]);
+  }, [category, currentSelectedCharacter, curStep]);
+
   //#endregion
 
   //#region 렌더링을 위한 함수

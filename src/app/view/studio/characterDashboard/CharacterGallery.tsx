@@ -99,7 +99,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
       const req: MediaUploadReq = {
         mediaState: MediaState.GalleryImage,
         file: file,
-        triggerImageList: [],
+        imageList: [],
       };
 
       // 파일 업로드 API 호출

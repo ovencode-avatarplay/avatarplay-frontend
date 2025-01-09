@@ -45,6 +45,22 @@
         width: 370px;
     }
 }
+
+.swiper-pagination {
+  bottom: 16px; /* Swiper 하단에 위치 */
+}
+
+.swiper-pagination-bullet {
+  background: #ddd;
+  opacity: 0.8;
+}
+
+.textArea
+{
+    padding-left: 17px;
+    padding-top: 21px;
+}
+
 .text
 {
     color: var(--White, #FFF);
@@ -56,20 +72,6 @@
     line-height: 28px; /* 155.556% */
     letter-spacing: -0.4px;
 }
-
-.swiper-pagination {
-  bottom: 16px; /* Swiper 하단에 위치 */
-}
-
-.swiper-pagination-bullet {
-  background: #ddd;
-  opacity: 0.8;
-}
-
-.swiper-pagination-bullet-active {
-  background: #000; /* 활성화된 페이지 색상 */
-}
-
 .text.type1
 {
     font-weight: 700;

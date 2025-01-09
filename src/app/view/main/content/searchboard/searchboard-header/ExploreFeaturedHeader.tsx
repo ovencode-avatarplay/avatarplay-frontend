@@ -19,11 +19,13 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
         grabCursor={true}
         pagination={{
           clickable: true,
+          renderBullet: (index, className) =>
+            `<span class="${className}" style="background-color: ${index > -1 ? 'white' : ''};"></span>`,
         }}
         modules={[Pagination]}
       >
-        {items.map(item => (
-          <SwiperSlide className={styles.swiperItem}>
+        {items.map((item, index) => (
+          <SwiperSlide className={styles.swiperItem} key={index}>
             <div className={styles.backImage} style={{backgroundImage: `url(${item})`}}>
               <div className={styles.textArea}>
                 <div className={`${styles.text} ${styles.type1}`}>title</div>

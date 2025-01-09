@@ -1,7 +1,0 @@
-[
-    { "label": "Home", "icon": "<HomeIcon />" , "link" : "/main/homefeed"},
-    { "label": "Explore", "icon": "<ExploreIcon />" , "link" : "/main/explore"},
-    { "label": "Reward", "icon": "<RewardIcon />" , "link" : "/main/game"},
-    { "label": "Content", "icon": "<ContentIcon />" , "link" : "/main/mycontent"},
-    { "label": "My", "icon": "<MyProfileIcon />" , "link" : "/profile"}
-]

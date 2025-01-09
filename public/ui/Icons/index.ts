@@ -46,6 +46,7 @@ import BoldVerticalGrid from "./Bold/Vertical_Grid.svg";
 import BoldVideo from "./Bold/Video.svg";
 import BoldViewGallery from "./Bold/View_Gallery.svg";
 import BoldArrowLeft from "./Bold/Arrow/Left.svg";
+import BoldReward from "./Bold/Reward.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -170,6 +171,7 @@ export {
   BoldVideo,
   BoldViewGallery,
   BoldArrowLeft,
+  BoldReward,
   LineAddButton,
   LineAIImage,
   LineArchive,

@@ -13,6 +13,7 @@ interface Bar {
 
 interface CardData {
   id: string; // 고유 ID
+  priorityType: number;
   userBars: Bar[]; // User 데이터
   charBars: Bar[]; // Char 데이터
 }
@@ -50,12 +51,16 @@ const ConversationCard: React.FC<ConversationCardProps> = ({card, moveUp, moveDo
     );
     onUpdate({[type]: updatedBars});
   };
+  const handlePriorityChange = () => {
+    const newPriorityType = card.priorityType === 0 ? 1 : 0; // 0이면 1로, 1이면 0으로
+    onUpdate({priorityType: newPriorityType});
+  };
 
   return (
     <div className={styles.card}>
       {/* 헤더 영역 */}
       <div className={styles.header}>
-        Mandatory
+        {card.priorityType === 0 ? 'Mandatory' : 'Depends on Situation'}
         <div style={{display: 'flex'}}>
           <div
             className={styles.arrowIcon}
@@ -224,6 +229,7 @@ const ConversationCard: React.FC<ConversationCardProps> = ({card, moveUp, moveDo
               remove={() => remove()}
               duplicate={() => duplicate()}
               open={isDropDown}
+              changePriority={() => handlePriorityChange()}
             />
           </div>
         </>

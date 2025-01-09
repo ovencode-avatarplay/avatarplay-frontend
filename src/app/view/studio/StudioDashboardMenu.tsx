@@ -16,10 +16,8 @@ const StudioDashboardMenu: React.FC<StudioDashboardMenuProps> = ({icon, text}) =
       {/* Studio Label with ChevronLeft Icon */}
       <div className={styles.studioLink}>
         <Link href={getLocalizedLink('/main/homefeed')} passHref>
-          <Typography className={styles.label} component="a">
-            <ChevronLeftIcon className={styles.chevronIcon} />
-            Home
-          </Typography>
+          <ChevronLeftIcon className={styles.chevronIcon} />
+          Home
         </Link>
       </div>
 

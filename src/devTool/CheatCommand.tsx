@@ -3,7 +3,6 @@ import {ChattingCheatReq, ChattingCheatRes, sendMessageCheat} from '@/app/NetWor
 import CheatMessageType, {CheatResult} from './cheat_type';
 import usePrevChatting from '@/app/view/main/content/Chat/MainChat/PrevChatting';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
-import BottomNavData from 'data/navigation/bottom-nav.json';
 import {useRouter} from 'next/navigation';
 
 const cheatMessage = async (contentId: number, episodeId: number, cheatText: string) => {
@@ -40,7 +39,7 @@ const cheatManager = (response: ChattingCheatRes, router: ReturnType<typeof useR
   // 채팅창 초기화 (현재 애피소드에서 Enter를 재요청한다.)
   if (response.isContentInit === true) {
     // 채팅창 좌상단 back 버튼 클릭했을때랑 동일하게 처리
-    pushLocalizedRoute(BottomNavData.find(item => item.label === 'Explore')?.link || '/default-path', router);
+    pushLocalizedRoute('/main/explore', router);
   } else if (response.isEpisodeInit === true) {
     result.reqEnter = true;
   }

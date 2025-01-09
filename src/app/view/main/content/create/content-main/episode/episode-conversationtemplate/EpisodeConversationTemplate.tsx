@@ -20,6 +20,7 @@ interface Bar {
 
 interface CardData {
   id: string;
+  priorityType: number;
   userBars: Bar[];
   charBars: Bar[];
 }
@@ -75,6 +76,7 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
         // CardData 생성
         const newCard: CardData = {
           id: assignedId.toString(),
+          priorityType: conversation.conversationType,
           userBars,
           charBars,
         };
@@ -140,6 +142,7 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
       ...prevCards,
       {
         id: Date.now().toString(),
+        priorityType: 0,
         userBars: [{id: Date.now().toString() + '_user', inputValue: '', type: 'dots'}],
         charBars: [{id: Date.now().toString() + '_char', inputValue: '', type: 'dots'}],
       },
@@ -154,7 +157,7 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
     // Redux 저장 형식으로 변환
     const updatedTemplateList = cards.map(card => ({
       id: 0, // 서버에서 부여받는 값
-      conversationType: 0, // 기본 타입 (필요시 수정 가능)
+      conversationType: card.priorityType, // 기본 타입 (필요시 수정 가능)
       user: JSON.stringify(
         card.userBars.map(bar => ({
           type: bar.type === 'dots' ? 0 : 1,

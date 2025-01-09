@@ -142,18 +142,24 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
       const character = characters.find(char => char.id === selectedCharacterId);
 
       if (character) {
-        if (itemUrl && itemUrl[selectedGalleryIndex].imageUrl != null)
-          character.mainImageUrl = itemUrl[selectedGalleryIndex].imageUrl;
-        // actionCharacterInfo 값 설정
-        setTriggerInfo(prevTriggerInfo => ({
-          ...prevTriggerInfo,
-          actionCharacterInfo: character, // 찾은 character 객체를 설정
-        }));
+        if (itemUrl && itemUrl[selectedGalleryIndex] && itemUrl[selectedGalleryIndex].imageUrl != null) {
+          const updatedCharacter = {
+            ...character,
+            mainImageUrl: itemUrl[selectedGalleryIndex].imageUrl,
+          };
+
+          // actionCharacterInfo 값 설정
+          setTriggerInfo(prevTriggerInfo => ({
+            ...prevTriggerInfo,
+            actionCharacterInfo: updatedCharacter, // 새로운 객체를 설정
+          }));
+        }
       } else {
         console.warn('Character not found for the given selectedCharacterId');
       }
     }
-  }, [selectedCharacterId, selectedGalleryIndex, characters]);
+  }, [selectedCharacterId, selectedGalleryIndex, characters, itemUrl]);
+
   //#endregion
 
   //#region  함수
@@ -287,11 +293,13 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     }
   };
 
-  const galleryAllUrl = [
-    ...(currentSelectedCharacter?.portraitGalleryImageUrl || []),
-    ...(currentSelectedCharacter?.poseGalleryImageUrl || []),
-    ...(currentSelectedCharacter?.expressionGalleryImageUrl || []),
-  ];
+  const getGalleryAllUrl = (): GalleryImageInfo[] => {
+    return [
+      ...(currentSelectedCharacter?.portraitGalleryImageUrl || []),
+      ...(currentSelectedCharacter?.poseGalleryImageUrl || []),
+      ...(currentSelectedCharacter?.expressionGalleryImageUrl || []),
+    ];
+  };
 
   //#endregion
 
@@ -387,12 +395,13 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
           setItemUrl(currentSelectedCharacter?.expressionGalleryImageUrl || null);
           break;
         default:
-          setItemUrl(galleryAllUrl);
+          setItemUrl(getGalleryAllUrl() || null);
       }
       setSelectedGalleryIndex(0);
       setLastCategory(category);
     }
-  }, [category, currentSelectedCharacter, galleryAllUrl, curStep]);
+  }, [category, currentSelectedCharacter, curStep]);
+
   //#endregion
 
   const resetAllStates = () => {
@@ -702,7 +711,10 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
             <CharacterGalleryGrid
               itemUrl={itemUrl}
               selectedItemIndex={selectedGalleryIndex}
-              onSelectItem={i => setSelectedGalleryIndex(i)}
+              onSelectItem={i => {
+                console.log(i);
+                setSelectedGalleryIndex(i);
+              }}
               category={category}
               isTrigger={true}
             />
