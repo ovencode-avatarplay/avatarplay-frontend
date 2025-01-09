@@ -26,8 +26,9 @@ import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
 import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
 import LanguageSelectDropBox from './LanguageSelectDropBox';
-import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {fetchLanguage} from './LanguageSetting';
+import {getLangUrlCode} from '@/configs/i18n';
 
 const UserDropdown = () => {
   // States
@@ -84,13 +85,16 @@ const UserDropdown = () => {
         setAuth(session);
         try {
           const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
-
+          const _language = getCurrentLanguage();
           const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/auth/sign-in`, {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${jwtToken}`, // JWT를 Authorization 헤더에 포함
               'Content-Type': 'application/json',
             },
+            body: JSON.stringify({
+              language: _language,
+            }),
           });
 
           if (!response.ok) {
