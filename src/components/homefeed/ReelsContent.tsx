@@ -6,7 +6,7 @@ import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
 import {FeedInfo} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
-import {BoldPause, BoldPlay} from '@ui/Icons';
+import {BoldComment, BoldDislike, BoldLike, BoldMore, BoldPause, BoldPlay, BoldShare, LineArchive} from '@ui/Icons';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -108,8 +108,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
         <div className={styles.userInfo}>
           <div className={styles.profilePicture}></div>
           <div className={styles.profileDetails}>
-            <span className={styles.username}>your-name</span>
-            <span className={styles.sponsored}>Sponsored</span>
+            <span className={styles.username}>your- sored</span>
           </div>
           <button className={styles.followButton}>Follow</button>
         </div>
@@ -122,10 +121,27 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
 
         {/* CTA Buttons */}
         <div className={styles.ctaButtons}>
-          <div className={styles.likeButton}></div>
-          <div className={styles.dislikeButton}></div>
-          <div className={styles.commentButton}></div>
-          <div className={styles.shareButton}></div>
+          <div className={styles.textButtons}>
+            <img src={BoldLike.src} className={styles.button}></img>
+            1200
+          </div>
+          <div className={styles.textButtons}>
+            <img src={BoldDislike.src} className={styles.button}></img>
+            1200
+          </div>
+          <div className={styles.textButtons}>
+            <img src={BoldComment.src} className={styles.button}></img>
+            40
+          </div>
+          <div className={styles.noneTextButton}>
+            <img src={BoldShare.src} className={styles.button}></img>
+          </div>
+          <div className={styles.noneTextButton}>
+            <img src={LineArchive.src} className={styles.button}></img>
+          </div>
+          <div className={styles.noneTextButton}>
+            <img src={BoldMore.src} className={styles.button}></img>
+          </div>
         </div>
       </div>
     </div>
