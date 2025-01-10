@@ -7,13 +7,9 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {EpisodeInfo, setCurrentEpisodeInfo, updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
 
 import styles from './EpisodeDescription.module.css'; // CSS 모듈 import
-import ButtonSetupDrawer from '@/components/create/ButtonSetupDrawer';
-import PostAddIcon from '@mui/icons-material/PostAdd';
-import EpisodeConversationTemplate from '../episode-conversationtemplate/EpisodeConversationTemplate';
 
 import getLocalizedText from '@/utils/getLocalizedText';
 
-import MessageBox from '@/components/messageBox/MessageBox';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import MaxTextInput from '@/components/create/MaxTextInput';
 import {BoldAI, BoldCharacter, BoldChatRoundDots} from '@ui/Icons';

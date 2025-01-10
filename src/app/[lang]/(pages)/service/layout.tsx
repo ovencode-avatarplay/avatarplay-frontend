@@ -1,6 +1,6 @@
 import type {Metadata} from 'next';
 import '@/app/globals.css';
-import Service from '@/app/view/service/Service';
+import ServiceMain from '@/app/view/service/Service';
 
 export const metadata: Metadata = {
   title: 'Talkain',
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
-  return <Service></Service>;
+  return <ServiceMain>{children}</ServiceMain>;
 }
