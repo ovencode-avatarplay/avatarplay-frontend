@@ -3,7 +3,7 @@
 import React, {ReactNode} from 'react';
 
 import styles from './service.module.css';
-import {Analysis} from './analysis/analysis';
+import {Analysis} from './analysis/Analysis';
 
 const Service = () => {
   return (
