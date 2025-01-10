@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './ReelsContent.module.css';
 import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
@@ -7,6 +7,7 @@ import {Pagination} from 'swiper/modules';
 import {FeedInfo} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
 import {BoldComment, BoldDislike, BoldLike, BoldMore, BoldPause, BoldPlay, BoldShare, LineArchive} from '@ui/Icons';
+import {Avatar} from '@mui/material';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -15,7 +16,13 @@ interface ReelsContentProps {
 const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
+  const [isFollow, setIsFollow] = useState(false);
 
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpanded = () => {
+    setIsExpanded(!isExpanded);
+  };
   const [activeIndex, setActiveIndex] = useState(0); // 현재 슬라이드 인덱스 상태
   const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
@@ -102,23 +109,53 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
             }}
           ></div>
         </div>
-        <div className={styles.dim}></div>
 
-        {/* User Info */}
-        <div className={styles.userInfo}>
-          <div className={styles.profilePicture}></div>
-          <div className={styles.profileDetails}>
-            <span className={styles.username}>your- sored</span>
+        <div className={styles.profileBox}>
+          <div className={styles.dim}></div>
+
+          {/* User Info */}
+          <div className={styles.userInfo}>
+            <Avatar src={item.characterProfileUrl || '/images/001.png'} style={{width: '32px', height: '32px'}} />
+
+            <div className={styles.profileDetails}>
+              <span className={styles.username}>{item.characterProfileName}</span>
+              <span className={styles.sponsored}>Sponsored</span>
+            </div>
+            <button
+              className={isFollow ? styles.followButtonOn : styles.followButtonOff}
+              onClick={() => {
+                setIsFollow(!isFollow);
+                console.log('isfollow', isFollow);
+              }}
+            >
+              Follow
+            </button>
           </div>
-          <button className={styles.followButton}>Follow</button>
+
+          <div className={styles.text_container}>
+            <div
+              className={styles.text_content}
+              style={{
+                maxHeight: isExpanded ? 'none' : '20px',
+                overflowY: isExpanded ? 'auto' : 'hidden',
+                marginBottom: isExpanded ? '20px' : '0px',
+              }}
+            >
+              {item.description}
+            </div>
+            <button
+              onClick={() => {
+                toggleExpanded();
+              }}
+              className={styles.button2}
+            >
+              {isExpanded ? '간단히' : '자세히'}
+            </button>
+          </div>
+
+          {/* Video Info */}
+          <div className={styles.videoInfo}>Video · 2:30/15:25</div>
         </div>
-
-        {/* Description */}
-        <div className={styles.description}>Lorem ipsum dolor sit amet, consectetur...</div>
-
-        {/* Video Info */}
-        <div className={styles.videoInfo}>Video · 2:30/15:25</div>
-
         {/* CTA Buttons */}
         <div className={styles.ctaButtons}>
           <div className={styles.textButtons}>
