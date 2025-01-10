@@ -1,7 +1,7 @@
 'use client';
 
-import Service from '@/app/view/service/service';
+import ServiceMain from '@/app/view/service/Service';
 
 export default function ServicePage() {
-  return <Service />;
+  return <ServiceMain children={undefined} />;
 }
