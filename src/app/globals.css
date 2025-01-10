@@ -2,13 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
+:root {  
+  /*Color 선언*/
+  --background-fill-light-theme: #ffffff; 
+  --background-fill-light-theme-primary: #ffffff;
+  --background-fill-light-theme-secondary: #f3f4fa;
+  --background-fill-light-theme-tertiary: #f8f8f9;
+
+  --background-fill-dark-theme: #000000;
+  --background-fill-dark-theme-primary: #000000;
+  --background-fill-dark-theme-secondary: #1c1c1e;
+  --background-fill-dark-theme-tertiary: #2c2c2e;
+
+  --Neutral-900 : #040415;
+  --Neutral-800 : #2c3131;
+  --Neutral-700 : #5f6368;
+  --Neutral-600 : #80868b;
+  --Neutral-500 : #9aa0a6;
+  --Neutral-400 : #bdc1c6;
+  --Neutral-300 : #dadce0;
+  --Neutral-200 : #e8eaed;
+  --Neutral-100 : #f1f3f4;
+  --Neutral-50 : #f8f9fa;
+
+  --typhography-primary : var(--Neutral-800);
+  --typhography-secondary : var(--Neutral-500);
+  --typhography-placeholder : var(--Neutral-300);
+
+  --Primary-1 : #fd55d3;
+  --Primary-2 : #febbea;
+  --Primary-3 : #ffe6f8;
+  --Primary-4 : #fff5fd;
+
+  --Secondary-Red-1 : #f75555; 
+
+
+  /* darkmode 자동 대응 되도록 설정*/
+  --background: var(--background-fill-light-theme);
+  --background-primary: var(--background-fill-light-theme-primary);
+  --background-secondary: var(--background-fill-light-theme-secondary);
+  --background-tertiary: var(--background-fill-light-theme-tertiary);
+
+
   --foreground: #171717;
   --safe-area-inset-top: env(safe-area-inset-top);
   --safe-area-inset-bottom: env(safe-area-inset-bottom);
   --safe-area-inset-left: env(safe-area-inset-left);
   --safe-area-inset-right: env(safe-area-inset-right);
+
   --bottom-nav-height : 78px;
 }
 
@@ -24,8 +65,12 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
+  :root {    
+    --background: var(--background-fill-dark-theme);
+    --background-primary: var(--background-fill-dark-theme-primary);
+    --background-secondary: var(--background-fill-dark-theme-secondary);
+    --background-tertiary: var(--background-fill-dark-theme-tertiary);
+ 
     --foreground: #ededed;
   }
 }

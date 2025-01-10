@@ -25,7 +25,11 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
   const RankCount = 3 + 1;
 
   const handleOpenDrawer = () => {
-    dispatch(openDrawerContentId(contentId));
+    if (exploreItemType === 0) {
+      dispatch(openDrawerContentId(contentId));
+    } else if (exploreItemType === 1) {
+      alert('캐릭터는 프로필로 갈 예정입니다. (프로필 작업 완료후 연결 필요)');
+    }
   };
 
   const getDataItem = (icon: number, text: string) => {
