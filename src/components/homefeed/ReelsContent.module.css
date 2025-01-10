@@ -206,16 +206,17 @@ line-height: 18px; /* 150% */
   width: 100%;
   
   display: flex;
+
+  
 }
 
 .text_content {
   font-size: 14px;
   line-height: 18px;
-  white-space: pre-wrap;
   transition: max-height 0.3s ease;
   color: #ffffff;
   z-index: 10;
-  width: 80%;
+  width: 75%;
 }
 
 .button2 {
@@ -228,8 +229,8 @@ line-height: 18px; /* 150% */
   color: #ffffff;
   border-radius: 4px;  
   z-index: 10;
-  right: 0px;
-  bottom: 30px;
+  right: 50px;
+  bottom: 55px;
 }
 
 .profileBox
@@ -242,4 +243,5 @@ line-height: 18px; /* 150% */
   bottom: 24.5px;
   left: 16px;
   gap: 10px;
+  z-index: 10;
 }

@@ -233,6 +233,30 @@ export const sendFeedLike = async (
   }
 };
 
+// Feed Like API 호출 함수
+export const sendFeedDisLike = async (
+  feedId: number,
+  isDisLike: boolean,
+): Promise<{resultCode: number; resultMessage: string}> => {
+  try {
+    const response = await api.post('/api/v1/Feed/dislike', {feedId, isDisLike});
+    const {resultCode, resultMessage} = response.data;
+
+    if (resultCode === 0) {
+      return {resultCode, resultMessage};
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {resultCode, resultMessage};
+    }
+  } catch (error) {
+    console.error('Failed to like feed:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to like feed',
+    };
+  }
+};
+
 // Feed Share API 호출 함수
 export const sendFeedShare = async (feedId: number): Promise<{resultCode: number; resultMessage: string}> => {
   try {

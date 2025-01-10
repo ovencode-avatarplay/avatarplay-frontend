@@ -112,7 +112,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
 
         <div className={styles.profileBox}>
           <div className={styles.dim}></div>
-
           {/* User Info */}
           <div className={styles.userInfo}>
             <Avatar src={item.characterProfileUrl || '/images/001.png'} style={{width: '32px', height: '32px'}} />
@@ -131,7 +130,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
               Follow
             </button>
           </div>
-
           <div className={styles.text_container}>
             <div
               className={styles.text_content}
@@ -140,22 +138,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
                 overflowY: isExpanded ? 'auto' : 'hidden',
                 marginBottom: isExpanded ? '20px' : '0px',
               }}
-            >
-              {item.description}
-            </div>
-            <button
               onClick={() => {
                 toggleExpanded();
               }}
-              className={styles.button2}
             >
-              {isExpanded ? '간단히' : '자세히'}
-            </button>
+              {item.description}
+            </div>
           </div>
-
           {/* Video Info */}
           <div className={styles.videoInfo}>Video · 2:30/15:25</div>
         </div>
+
         {/* CTA Buttons */}
         <div className={styles.ctaButtons}>
           <div className={styles.textButtons}>
