@@ -15,7 +15,7 @@
   left: calc(50% - 320px/2 - 0.66px);
   top: calc(50% - 269px/2);
 
-  background: #FFFFFF;
+  background: var(--background);
   border-radius: 24px;
 }
 

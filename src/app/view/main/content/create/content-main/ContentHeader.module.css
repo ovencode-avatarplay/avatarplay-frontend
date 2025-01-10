@@ -4,7 +4,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between; 
-    background-color: #ffffff;
+    background: var(--background);
     
     font-family: 'Lato';
     font-style: normal;

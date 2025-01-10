@@ -15,7 +15,7 @@ padding: 10px 12px;
 width: calc(100vw - 32px);
 height: 190px;
 
-background: #FFFFFF;
+background: var(--background);
 border: 1px solid #E8EAED;
 border-radius: 10px;
 

@@ -24,7 +24,7 @@
 
 .progressFill {
   height: 100%;
-  background-color: #ffffff; /* 흰색 진행도 */
+  background: var(--background); /* 흰색 진행도 */
   transition: width 0.2s ease; /* 부드러운 진행 애니메이션 */
 }
 .playCircleIcon {
@@ -100,7 +100,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #FFFFFF;
+  background: var(--background);
 }
 
 .profileDetails {

@@ -1,22 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import styles from './EpisodeCardDropDown.module.css';
-import EditIcon from '@mui/icons-material/Edit';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {EpisodeInfo, setCurrentEpisodeInfo, updateEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {useDispatch, useSelector} from 'react-redux';
 import {LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePreview} from '@ui/Icons';
-import EpisodeSetNamePopup from './episode-initialize/EpisodeSetNamePopup';
-import {
-  ChapterInfo,
-  duplicateEpisode,
-  removeEpisode,
-  updateEpisodeInfoInContent,
-} from '@/redux-store/slices/ContentInfo';
+import {ChapterInfo, duplicateEpisode, removeEpisode} from '@/redux-store/slices/ContentInfo';
 import {RootState, store} from '@/redux-store/ReduxStore';
 import BottomRenameDrawer from './BottomRenameDrawer';
+import Popup from '@/components/popup/Popup';
 
 interface EpisodeCardDropDownProps {
   episodeInfo: EpisodeInfo;
@@ -126,18 +116,29 @@ const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeI
         <span className={styles.deleteItemLabel}>Delete</span>
         <img src={LineDelete.src} className={styles.deleteItemIcon} />
       </div>
-      <EpisodeSetNamePopup
-        open={isDeleteOn}
-        onClickCancel={() => setIsDeleteOn(false)}
-        cancelText="Cancel"
-        confirmText="Delete"
-        title="Are you sure?"
-        desc="Deleting your trigger is irreversible"
-        onClickCompleteAlert={() => {
-          HandleRemoveEpisode(episodeInfo.id);
-        }}
-        isAlert={true}
-      ></EpisodeSetNamePopup>
+      {isDeleteOn && (
+        <Popup
+          type="alert"
+          title="Are you sure?"
+          description="Deleting your trigger is irreversible"
+          buttons={[
+            {
+              label: 'Cancel',
+              onClick: () => setIsDeleteOn(false),
+              isPrimary: false,
+            },
+            {
+              label: 'Delete',
+              onClick: () => {
+                HandleRemoveEpisode(episodeInfo.id);
+                setIsDeleteOn(false);
+              },
+              isPrimary: true,
+            },
+          ]}
+          onClose={() => setIsDeleteOn(false)}
+        />
+      )}
       <BottomRenameDrawer
         open={isEpisodeNameOn}
         onClose={() => setIsEpisodeNameOn(false)}

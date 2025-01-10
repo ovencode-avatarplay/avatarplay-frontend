@@ -1,6 +1,6 @@
 /* EmojiPicker.module.css */
 .emojiPicker {
-  background-color: #ffffff;
+  background: var(--background);
   border: 1px solid #cccccc;
   border-radius: 8px;
   padding: 10px;

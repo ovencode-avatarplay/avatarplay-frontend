@@ -4,7 +4,7 @@
 
 :root {  
   /*Color 선언*/
-  --background-fill-light-theme: #ffffff; 
+  --background-fill-light-theme: #ffffff;   
   --background-fill-light-theme-primary: #ffffff;
   --background-fill-light-theme-secondary: #f3f4fa;
   --background-fill-light-theme-tertiary: #f8f8f9;
@@ -36,6 +36,17 @@
 
   --Secondary-Red-1 : #f75555; 
 
+  --Border-1 : #eaecf0;
+  
+  /* text color */
+  --Grays-White : #fff;
+  --White : #fff;
+  --Black : #000;
+
+
+  /* icon color filter */
+  
+  --black-icon-filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
 
   /* darkmode 자동 대응 되도록 설정*/
   --background: var(--background-fill-light-theme);
@@ -83,8 +94,7 @@
   font-style: normal;
 }
 
-body {
-  
+body {  
   user-select: none;
   color: var(--foreground);
   background: var(--background);
@@ -99,5 +109,5 @@ body {
 
 
 .blackIcon{
-  filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
+  filter: var(--black-Icon-Filter);
 }

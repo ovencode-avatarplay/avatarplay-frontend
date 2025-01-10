@@ -23,6 +23,7 @@ import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import emptyData from '@/data/create/empty-content-info-data.json';
 import ChapterList from './ChapterItemList';
 import Popup from '@/components/popup/Popup';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 interface Props {
   open: boolean;
@@ -222,10 +223,17 @@ const ChapterBoard: React.FC<Props> = ({
           onRename={handleRenameClick}
           onDuplicate={handleDuplicateChapter}
         />
+
         <div className={styles.confirmButtonBox}>
-          <button className={styles.confirmButton} onClick={onClose}>
+          <CustomButton
+            size="Large"
+            state="Normal"
+            type="Primary"
+            customClassName={[styles.confirmButton]}
+            onClick={onClose}
+          >
             Confirm
-          </button>
+          </CustomButton>
         </div>
       </Drawer>
       {confirmDialog && (

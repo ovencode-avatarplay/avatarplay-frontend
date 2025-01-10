@@ -11,7 +11,7 @@
   
   /* Button */
   .toggleButton {
-    background: #ffffff;
+    background: var(--background);
     border-radius: 50%;
     box-shadow: 0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06);
     transition: transform 0.2s ease, background-color 0.2s ease;
@@ -104,22 +104,22 @@
   
   /* Button alignment for toggled state */
   .toggleBackground .toggleButton.toggled {
-    background: #ffffff;
+    background: var(--background);
     transform: translateX(100%); 
   }
   
   .toggleBackground .toggleButton:not(.toggled) {
-    background: #ffffff;
+    background: var(--background);
     transform: translateX(0%); 
   }
   
   .toggleBackground .toggleButton.toggled {
-    background: #ffffff;
+    background: var(--background);
     transform: translateX(100%); 
   }
   
   .toggleBackground .toggleButton:not(.toggled) {
-    background: #ffffff;
+    background: var(--background);
     transform: translateX(0%); 
   }
   
