@@ -48,7 +48,8 @@ export interface FeedInfo {
   description: string;
   hashTag: string;
   likeCount: number;
-  disLikeCount: boolean;
+  isLike: boolean;
+  isDisLike: boolean;
   playTime: string;
   characterProfileId: number;
   characterProfileName: string;
@@ -142,7 +143,7 @@ export const sendGetFeed = async (
   feedId: number,
 ): Promise<{resultCode: number; resultMessage: string; data: FeedInfo | null}> => {
   try {
-    const response = await api.post('/api/v1/Feed/get', {feedId});
+    const response = await api.post('/Feed/get', {feedId});
     const {resultCode, resultMessage, data} = response.data;
 
     if (resultCode === 0) {
@@ -166,7 +167,7 @@ export const sendGetFeedList = async (
   characterProfileId: number,
 ): Promise<{resultCode: number; resultMessage: string; data: FeedInfo[] | null}> => {
   try {
-    const response = await api.post('/api/v1/Feed/getFeedList', {characterProfileId});
+    const response = await api.post('/Feed/getFeedList', {characterProfileId});
     const {resultCode, resultMessage, data} = response.data;
 
     if (resultCode === 0) {
@@ -190,7 +191,7 @@ export const sendFeedView = async (
   feedId: number,
 ): Promise<{resultCode: number; resultMessage: string; data: FeedInfo | null}> => {
   try {
-    const response = await api.post('/api/v1/Feed/view', {feedId});
+    const response = await api.post('/Feed/view', {feedId});
     const {resultCode, resultMessage, data} = response.data;
 
     if (resultCode === 0) {
@@ -215,7 +216,7 @@ export const sendFeedLike = async (
   isLike: boolean,
 ): Promise<{resultCode: number; resultMessage: string}> => {
   try {
-    const response = await api.post('/api/v1/Feed/like', {feedId, isLike});
+    const response = await api.post('/Feed/like', {feedId, isLike});
     const {resultCode, resultMessage} = response.data;
 
     if (resultCode === 0) {
@@ -239,7 +240,7 @@ export const sendFeedDisLike = async (
   isDisLike: boolean,
 ): Promise<{resultCode: number; resultMessage: string}> => {
   try {
-    const response = await api.post('/api/v1/Feed/dislike', {feedId, isDisLike});
+    const response = await api.post('/Feed/dislike', {feedId, isDisLike});
     const {resultCode, resultMessage} = response.data;
 
     if (resultCode === 0) {
@@ -260,7 +261,7 @@ export const sendFeedDisLike = async (
 // Feed Share API 호출 함수
 export const sendFeedShare = async (feedId: number): Promise<{resultCode: number; resultMessage: string}> => {
   try {
-    const response = await api.post('/api/v1/Feed/share', {feedId});
+    const response = await api.post('/Feed/share', {feedId});
     const {resultCode, resultMessage} = response.data;
 
     if (resultCode === 0) {
