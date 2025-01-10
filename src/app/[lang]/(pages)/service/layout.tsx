@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
-  return <ServiceMain>{children}</ServiceMain>;
+  return <Service></Service>;
 }

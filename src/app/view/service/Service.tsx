@@ -2,7 +2,7 @@
 
 import React, {ReactNode} from 'react';
 
-import styles from './Service.module.css';
+import styles from './service.module.css';
 import {Analysis} from './analysis/Analysis';
 
 const ServiceMain = ({children}: {children: ReactNode}) => {
