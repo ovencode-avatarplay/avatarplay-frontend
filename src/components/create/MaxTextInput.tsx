@@ -5,14 +5,17 @@ import ErrorMessage from './ErrorMessage';
 interface Props {
   promptValue: string;
   handlePromptChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  type?: inputType;
+  inputDataType?: inputType;
+  displayDataType?: displayType;
+  stateDataType?: inputState;
   allowSpecialCharacters?: boolean; // 특수문자 허용 여부
   disabled?: boolean;
   maxPromptLength?: number;
-  hint?: string;
   onFocus?: () => void;
   onBlur?: (event: React.FocusEvent) => void;
   inputRef?: RefObject<HTMLTextAreaElement>;
+  labelText?: string;
+  hint?: string;
 }
 
 export enum inputType {
@@ -21,20 +24,39 @@ export enum inputType {
   OnlyNumMax100 = 2, // 숫자만 입력 가능 + 100까지만
 }
 
+export enum displayType {
+  Default = 'default',
+  Label = 'label',
+  Hint = 'hint',
+  LabelAndHint = 'labelAndHint',
+}
+
+export enum inputState {
+  Normal = 'normal',
+  Focused = 'focused',
+  Typing = 'typing',
+  Error = 'error',
+  Disable = 'disable',
+}
+
 const MaxTextInput: React.FC<Props> = ({
   promptValue,
   handlePromptChange,
-  type = inputType.None,
+  inputDataType = inputType.None,
+  displayDataType = displayType.Default,
+  stateDataType = inputState.Disable,
   allowSpecialCharacters = true,
-  disabled,
+  disabled = false,
   maxPromptLength,
-  hint,
   onFocus,
   onBlur,
   inputRef,
+  labelText,
+  hint,
 }) => {
   const [hasError, setHasError] = useState(false);
   const [isComposing, setIsComposing] = useState(false); // 한글 입력 상태
+  const [currentState, setCurrentState] = useState<inputState>(stateDataType);
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     let value = event.target.value;
@@ -46,11 +68,11 @@ const MaxTextInput: React.FC<Props> = ({
     }
 
     // OnlyNum 및 OnlyNumMax100에 대한 처리
-    if (type === inputType.OnlyNum || type === inputType.OnlyNumMax100) {
+    if (inputDataType === inputType.OnlyNum || inputDataType === inputType.OnlyNumMax100) {
       value = value.replace(/[^0-9]/g, ''); // 숫자만 허용
 
       // OnlyNumMax100 제한
-      if (type === inputType.OnlyNumMax100 && Number(value) > 100) {
+      if (inputDataType === inputType.OnlyNumMax100 && Number(value) > 100) {
         value = '100';
       }
     }
@@ -63,6 +85,12 @@ const MaxTextInput: React.FC<Props> = ({
     // 값 업데이트
     event.target.value = value;
     handlePromptChange(event);
+
+    if (!disabled) {
+      setCurrentState(event.target.value ? inputState.Typing : inputState.Focused);
+    } else {
+      setCurrentState(inputState.Disable);
+    }
   };
 
   // 조합 상태 시작
@@ -79,13 +107,39 @@ const MaxTextInput: React.FC<Props> = ({
   // promptValue와 maxPromptLength를 기반으로 hasError 상태 업데이트
   useEffect(() => {
     if (maxPromptLength !== undefined) {
-      setHasError(promptValue.length > maxPromptLength);
+      setHasError(promptValue.length >= maxPromptLength);
     }
   }, [promptValue, maxPromptLength]);
 
+  const handleFocus = () => {
+    if (!disabled && !hasError) {
+      setCurrentState(inputState.Focused);
+      if (onFocus) onFocus();
+    } else {
+      setCurrentState(inputState.Disable);
+    }
+  };
+
+  const handleBlur = (event: React.FocusEvent) => {
+    if (!disabled && !hasError) {
+      setCurrentState(inputState.Normal);
+      if (onBlur) onBlur(event);
+    } else {
+      setCurrentState(inputState.Disable);
+    }
+  };
+
   return (
     <>
-      <div className={`${styles.inputArea} ${hasError ? styles.inputErrorArea : ''}`}>
+      {(displayDataType === displayType.Label || displayDataType === displayType.LabelAndHint) && labelText && (
+        <div className={styles.label}>{labelText}</div>
+      )}
+      <div
+        className={`${styles.inputArea} ${hasError && styles.inputAreaError} ${
+          currentState === inputState.Focused && styles.inputAreaFocused
+        } ${currentState === inputState.Typing && styles.inputAreaTyping}
+        ${currentState === inputState.Disable && styles.inputAreaDisable}`}
+      >
         <textarea
           className={`${styles.inputPrompt} ${hasError ? styles.inputError : ''}`}
           placeholder="Text Placeholder"
@@ -95,18 +149,19 @@ const MaxTextInput: React.FC<Props> = ({
           onCompositionEnd={handleCompositionEnd} // 조합 종료
           maxLength={maxPromptLength}
           disabled={disabled}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           ref={inputRef}
         />
         {maxPromptLength && (
-          <div className={styles.inputHint}>
+          <div className={`${styles.inputHint} ${currentState === inputState.Error && styles.errorInputHint}`}>
             {promptValue.length} / {maxPromptLength}
           </div>
         )}
       </div>
-      <div style={{height: '10px'}}></div>
-      {hint && <div className={styles.inputHint}>{hint}</div>}
+      {(displayDataType === displayType.Hint || displayDataType === displayType.LabelAndHint) && hint && (
+        <div className={styles.hintText}>{hint}</div>
+      )}
       {/* 경고 메시지 */}
       {hasError && <ErrorMessage message="Character limit exceeded. Please shorten your input"></ErrorMessage>}
     </>

@@ -175,11 +175,11 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, LLMOpen, 
           />
           <div className={styles.informationArea}>
             <div className={styles.inputBox}>
-              <div className={styles.smallTitle}>Introduction</div>
               <MaxTextInput
                 promptValue={contentDescription}
                 handlePromptChange={handleIntroductionChange}
                 maxPromptLength={400}
+                labelText="Introduction"
               />
             </div>
           </div>
