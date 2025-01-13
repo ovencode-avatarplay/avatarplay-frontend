@@ -214,8 +214,12 @@ const PostMain: React.FC<Props> = () => {
       description: text,
       hashTag: '',
       likeCount: 0,
-      disLikeCount: 0,
+      isLike: false,
+      isDisLike: false,
       playTime: '', // 예시 값
+      characterProfileId: 0,
+      characterProfileName: '',
+      characterProfileUrl: '',
     };
     setLoading(true);
     const result = await sendCreateFeed(feedInfo);
