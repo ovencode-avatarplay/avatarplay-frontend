@@ -47,6 +47,7 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 
 // Json
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
@@ -843,9 +844,15 @@ const ContentMain: React.FC = () => {
             />
           </div>
           <div className={styles.contentBottom}>
-            <div className={styles.setupButtons} onClick={handleOpenPublishing}>
+            <CustomButton
+              size="Large"
+              state="Normal"
+              type="Primary"
+              customClassName={[styles.setupButtons]}
+              onClick={handleOpenPublishing}
+            >
               Publish
-            </div>
+            </CustomButton>
           </div>
         </div>
 

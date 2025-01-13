@@ -38,6 +38,8 @@ import CreateTempCharacterImage from '../../../character/CreateTempCharacterImag
 import CreateTempCharacterSelect from '../../../character/CreateTempCharacterSelect';
 import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineCheck, LineUpload} from '@ui/Icons';
 import MaxTextInput from '@/components/create/MaxTextInput';
+import CustomButton from '@/components/layout/shared/CustomButton';
+import Popup from '@/components/popup/Popup';
 
 interface Props {
   open: boolean;
@@ -96,6 +98,8 @@ const EpisodeInitialize: React.FC<Props> = ({
   const maxPromptLength: number = 500;
   const [nameValue, setNameValue] = useState<string>('');
   const [promptValue, setPromptValue] = useState<string>('');
+
+  const [episodeNameValue, setEpisodeNameValue] = useState<string>(episodeName);
 
   // 캐릭터 선택
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
@@ -164,6 +168,7 @@ const EpisodeInitialize: React.FC<Props> = ({
     setCurStep(0);
     setUploadType('SelectCharacter');
     setNameValue('');
+    setEpisodeNameValue('');
     setPromptValue('');
     setCurrentSelectedCharacter(undefined);
     setSelectedCharacterId(null);
@@ -353,16 +358,11 @@ const EpisodeInitialize: React.FC<Props> = ({
     setIsEpisodeNameOn(true);
   };
 
-  const handleSetEpisodeNameComplete = (name: string) => {
-    if (!checkEssential()) {
-      alert('필수 선택 항목이 선택되지 않았습니다.');
-      return;
-    }
-
-    setCurEpisodeName(name);
+  const handleSetEpisodeNameComplete = () => {
+    setCurEpisodeName(episodeNameValue);
     setIsEpisodeNameOn(false);
 
-    handlerOnCompleteInit(name);
+    handlerOnCompleteInit(episodeNameValue);
   };
 
   const handlerOnCompleteInit = (name: string) => {
@@ -723,48 +723,85 @@ const EpisodeInitialize: React.FC<Props> = ({
         {getStepContent(curStep)}
         {/* Float Button */}
         <div className={styles.floatButtonArea}>
-          <button
-            className={`${styles.floatButton} ${styles.prevButton} ${
-              checkCenterButtonStep() && styles.centerSideButton
-            }`}
+          <CustomButton
+            size="Medium"
+            type="Tertiary"
+            state="IconLeft"
+            icon={LineArrowLeft.src}
+            iconClass={`${styles.buttonIcon} ${styles.blackIcon}`}
+            customClassName={[
+              styles.floatButton,
+              styles.prevButton,
+              checkCenterButtonStep() ? styles.centerSideButton : '',
+            ]}
             onClick={() => {
               subStep();
             }}
           >
-            <img src={LineArrowLeft.src} className={`${styles.buttonIcon} ${styles.blackIcon} `} />
-            <div>Previous</div>
-          </button>
+            Previous
+          </CustomButton>
           {checkCenterButtonStep() && (
-            <button className={`${styles.floatButton} ${styles.centerButton}`}>
-              <div>Generate</div>
-              <img src={BoldRuby.src} className={`${styles.buttonIcon} ${styles.blackIcon}`} />
-              <div>{generateCost}</div>
-            </button>
+            <CustomButton
+              size="Medium"
+              type="Tertiary"
+              state="IconLeft"
+              icon={BoldRuby.src}
+              iconClass={`${styles.buttonIcon} ${styles.blackIcon}`}
+              customClassName={[
+                styles.floatButton,
+                styles.centerButton,
+                checkCenterButtonStep() ? styles.centerSideButton : '',
+              ]}
+            >
+              Generate
+            </CustomButton>
           )}
-          <button
-            className={`${styles.floatButton} ${styles.nextButton} ${
-              checkCenterButtonStep() && styles.centerSideButton
-            }`}
+          <CustomButton
+            size="Medium"
+            type="Primary"
+            state="IconRight"
+            icon={checkCenterButtonStep() ? LineCheck.src : LineArrowRight.src}
+            iconClass={checkCenterButtonStep() ? styles.buttonCheckIcon : styles.buttonIcon}
+            customClassName={[
+              styles.floatButton,
+              styles.nextButton,
+              checkCenterButtonStep() ? styles.centerSideButton : '',
+            ]}
             onClick={() => {
               {
                 checkFinalStep() === true ? handleOnSetEpisodeName() : addStep();
               }
             }}
           >
-            <div>{checkFinalStep() === true ? 'Complete' : checkCenterButtonStep() ? 'Confirm' : 'Next'}</div>
-            <img
-              src={checkCenterButtonStep() ? LineCheck.src : LineArrowRight.src}
-              className={checkCenterButtonStep() ? styles.buttonCheckIcon : styles.buttonIcon}
-            />
-          </button>
+            {checkFinalStep() === true ? 'Complete' : checkCenterButtonStep() ? 'Confirm' : 'Next'}
+          </CustomButton>
         </div>
-        <EpisodeSetNamePopup
-          open={isEpisodeNameOn}
-          onClickCancel={() => {
-            setIsEpisodeNameOn(false);
-          }}
-          onClickComplete={handleSetEpisodeNameComplete}
-        />
+        {isEpisodeNameOn && (
+          <Popup
+            type="input"
+            title="Episode Title"
+            inputField={{
+              value: episodeNameValue,
+              onChange: e => setEpisodeNameValue(e.target.value),
+              maxLength: 50,
+              placeholder: 'Input Episode Name',
+            }}
+            buttons={[
+              {
+                label: 'Cancel',
+                onClick: () => {
+                  setIsEpisodeNameOn(false);
+                },
+                isPrimary: false,
+              },
+              {
+                label: 'Complete',
+                onClick: handleSetEpisodeNameComplete,
+                isPrimary: true,
+              },
+            ]}
+          />
+        )}
       </Drawer>
     </>
   );

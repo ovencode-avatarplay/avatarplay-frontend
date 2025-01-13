@@ -35,7 +35,7 @@
     flex-direction: row;
     align-items: center;
     gap: 7px;
-    background: #ffffff;
+    background: var(--background);
     border-radius: 8px; 
   }
 

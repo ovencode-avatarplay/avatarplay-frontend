@@ -1,0 +1,87 @@
+/* Drawer Paper */
+.drawer {
+    background: #252525;
+    border-radius: 24px 24px 0 0;
+    height: 70%; /* Adjust height as needed */
+    overflow: hidden;
+    
+    max-width: 402px;
+    margin: 0 auto; /* 수평 중앙 정렬 */
+  }
+  
+  
+  /* Header */
+  .header {
+    position: relative;
+    width: 100%;
+    height: 62px;
+    display: flex;
+    
+    align-items: center;
+    justify-content: center;
+    background-color: #2e2e2e;
+    
+  }
+  
+  .headerGroup{
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tab {
+    position: absolute;
+    width: 42px;
+    height: 3px;
+    top: 8px;
+    background: #3f4144;
+    border-radius: 4px;
+  }
+  
+  .title {
+    font-family: "Pretendard", sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 26px;
+    text-align: center;
+    color: #ffffff;
+    display: flex;
+  }
+  
+  .closeButton {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(238deg) brightness(103%) contrast(103%);
+    width: 24px;
+    height: 24px;
+    align-content: center;
+    
+  }
+  
+  /* Input Section */
+  .inputSection {
+    width: 100%;
+    padding: 8px 14px;   
+    background-color: #2e2e2e;
+  }
+  
+  .inputWrapper {
+    display: flex;
+    align-items: center;
+    padding: 7px 17px;
+    border: 1px solid #313131;
+    border-radius: 22px;
+    background: #252525;
+  }
+  
+  .input {
+    flex: 1;
+    font-family: "Pretendard", sans-serif;
+    font-size: 14px;
+    color: #c6cdd1;
+    border: none;
+    background: none;
+    outline: none;
+  }
+  

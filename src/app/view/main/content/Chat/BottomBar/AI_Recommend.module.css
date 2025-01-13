@@ -28,7 +28,7 @@
     width: 100%;    
     box-sizing: border-box;
    
-    background: #ffffff;
+    background: var(--background);
   
     font-size: 16px;
     line-height: 1.5;
@@ -58,7 +58,7 @@
   .messageText {
     width: 100%;
     box-sizing: border-box;
-    background: #ffffff;
+    background: var(--background);
     padding: 10px 0px;
     margin-right: 50px;
     font-size: 16px;

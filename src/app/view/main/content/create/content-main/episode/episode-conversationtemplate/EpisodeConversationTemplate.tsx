@@ -11,6 +11,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import ConversationCardDropDown from './ConversationCardDropDown';
 import {duplicateEpisode} from '@/redux-store/slices/ContentInfo';
 import {BoldArrowLeft} from '@ui/Icons';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 interface Bar {
   id: string;
@@ -223,9 +224,15 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
         </div>
       </div>
       <div className={styles.contentBottom}>
-        <div className={styles.setupButtons} onClick={handleConfirm}>
+        <CustomButton
+          size="Large"
+          state="Normal"
+          type="Primary"
+          customClassName={[styles.setupButtons]}
+          onClick={handleConfirm}
+        >
           Confirm
-        </div>
+        </CustomButton>
       </div>
     </Dialog>
   );

@@ -25,6 +25,7 @@ import MaxTextInput from '@/components/create/MaxTextInput';
 import ToggleButton from '@/components/layout/shared/ToggleButton';
 import ContentLLMSetup from '../content-LLMsetup/ContentLLMsetup';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 interface Props {
   open: boolean;
@@ -306,9 +307,15 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, LLMOpen, 
             </div>
           </div>
 
-          <button className={styles.buttonComplete} onClick={onPublish}>
+          <CustomButton
+            size="Large"
+            state="Normal"
+            type="Primary"
+            customClassName={[styles.buttonComplete]}
+            onClick={onPublish}
+          >
             Complete
-          </button>
+          </CustomButton>
         </div>
         {/* EpisodeLLMSetup 모달 */}
         <ContentLLMSetup open={LLMOpen} onClose={onLLMClose} />

@@ -1,5 +1,7 @@
 import React from 'react';
 import styles from './Popup.module.css';
+import CustomButton from '../layout/shared/CustomButton';
+import CustomInput from '../layout/shared/CustomInput';
 
 type PopupType = 'alert' | 'error' | 'input';
 
@@ -44,27 +46,30 @@ const Popup: React.FC<PopupProps> = ({type, title, description, buttons, textBut
         {/* Input Field */}
         {inputField && (
           <div className={styles.popupInputField}>
-            <input
-              type="text"
-              className={styles.input}
+            <CustomInput
+              inputType="Basic"
+              textType="InputOnly"
               value={inputField.value}
-              onChange={inputField.onChange}
+              onChange={e => {
+                inputField.onChange(e);
+              }}
               placeholder={inputField.placeholder}
-              maxLength={inputField.maxLength}
-            />
+            ></CustomInput>
           </div>
         )}
 
         {/* Buttons */}
         <div className={styles.popupButtons}>
           {buttons.map((button, idx) => (
-            <button
-              key={idx}
-              className={`${styles.popupButton} ${button.isPrimary ? styles.primaryButton : styles.secondaryButton}`}
+            <CustomButton
+              size="Medium"
+              state="Normal"
+              type={button.isPrimary ? 'Primary' : 'Secondary'}
+              customClassName={[styles.popupButton]}
               onClick={button.onClick}
             >
               {button.label}
-            </button>
+            </CustomButton>
           ))}
         </div>
 

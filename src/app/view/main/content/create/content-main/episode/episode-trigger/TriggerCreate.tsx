@@ -46,6 +46,7 @@ import TriggerCreateMedia from './TriggerCreateMedia';
 import Popup from '@/components/popup/Popup';
 import {useDispatch} from 'react-redux';
 import ChapterItemList from '../../chapter/ChapterItemList';
+import CustomButton from '@/components/layout/shared/CustomButton';
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -881,17 +882,25 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
         {getStepContent(curStep)}
         {/* Float Button */}
         <div className={styles.floatButtonArea}>
-          <button
-            className={`${styles.floatButton} ${styles.prevButton} ${
+          <CustomButton
+            size="Medium"
+            type="Primary"
+            state="IconRight"
+            icon={LineArrowLeft.src}
+            iconClass={`${styles.floatButton} ${styles.prevButton} ${
               checkCenterButtonStep() && styles.centerSideButton
             }`}
+            customClassName={[
+              styles.floatButton,
+              styles.prevButton,
+              checkCenterButtonStep() ? styles.centerSideButton : '',
+            ]}
             onClick={() => {
               subStep();
             }}
           >
-            <img src={LineArrowLeft.src} className={`${styles.buttonIcon} ${styles.blackIcon} `} />
-            <div>Previous</div>
-          </button>
+            Previous
+          </CustomButton>
           {checkCenterButtonStep() && (
             <button className={`${styles.floatButton} ${styles.centerButton}`}>
               <div>Generate</div>

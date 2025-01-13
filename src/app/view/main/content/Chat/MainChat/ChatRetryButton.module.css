@@ -10,7 +10,7 @@
     width: 94px;
     height: 32px;
 
-    background: #FFFFFF;
+    background: var(--background);
     backdrop-filter: blur(2.5px);
 
     border-radius: 12px;

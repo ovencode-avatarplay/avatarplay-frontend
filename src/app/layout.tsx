@@ -6,6 +6,9 @@ import Root from './Root';
 import '@/app/globals.css';
 import {getCurrentLanguage, initLocalLanguage, isLogined, refreshLanaguage} from '@/utils/UrlMove';
 import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';
+import {sendSignIn, SignInReq} from './NetWork/AuthNetwork';
+import {getBrowserLanguage} from '@/utils/getLocalizedText';
+import {getLangUrlCode} from '@/configs/i18n';
 
 export default function Layout({children}: {children: React.ReactNode}) {
   const [hasRun, setHasRun] = useState(false); // 상태를 관리하여 최초 실행 여부 판단
@@ -18,8 +21,14 @@ export default function Layout({children}: {children: React.ReactNode}) {
       if (isLogined() === false) {
         refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
       } else {
-        //refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
-        fetchLanguage(router);
+        // 서버에 로그인 상태 갱신을 요청한다.
+        // const router = useRouter(); // useRouter는 클라이언트에서만 사용
+        // const _language: string = getLangUrlCode(getBrowserLanguage());
+        // const reqData: SignInReq = {
+        //   language: _language,
+        // };
+        // sendSignIn(reqData);
+        // refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
       }
 
       setHasRun(true); // 상태를 업데이트하여 이후에는 실행되지 않도록 함

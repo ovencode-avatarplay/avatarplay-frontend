@@ -45,6 +45,7 @@ import {EpisodeCardProps} from './ContentDescType';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import Tabs from '@/components/layout/shared/Tabs';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 const DrawerContentDesc = () => {
   const dispatch = useDispatch();
@@ -350,15 +351,19 @@ const DrawerContentDesc = () => {
             </div>
             <div className={styles.playButton}>
               <Link href={getLocalizedLink(`/chat${contentUrl}`)}>
-                <button
-                  className={styles.playButtonItem}
+                <CustomButton
+                  size="Large"
+                  state="IconLeft"
+                  type="Primary"
+                  icon={BoldPlay.src}
+                  iconClass={styles.playIcon}
+                  customClassName={[styles.playButton]}
                   onClick={() => {
                     dispatch(setUrlLinkUse(false)); // 채팅이 url 링크를 통해 여는 것이 아니라는 것을 명시해준다.
                   }}
                 >
-                  <img className={styles.playIcon} src={BoldPlay.src} />
                   Continue
-                </button>
+                </CustomButton>
               </Link>
             </div>
           </div>

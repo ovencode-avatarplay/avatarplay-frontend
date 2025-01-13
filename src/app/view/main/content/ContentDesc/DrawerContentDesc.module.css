@@ -294,18 +294,10 @@
 }
 
 .playButton
-{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+{ 
   width: calc(100vw - 32px);
-  height: 46px;
-  padding: 14px 20px;
+  height: 46px; 
   
-  border-radius: 8px;
-  background: var(--Neutral-800, #2C3131);
-  
-  color: var(--White, #FFF);
   font-feature-settings: 'liga' off, 'clig' off;
   font-family: Lato;
   font-size: 14px;

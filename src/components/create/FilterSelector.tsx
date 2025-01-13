@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Modal, Box} from '@mui/material';
 import styles from './FilterSelector.module.css';
 import {BoldRadioButton, BoldRadioButtonSelected, BoldRadioButtonSubtract} from '@ui/Icons';
+import CustomButton from '../layout/shared/CustomButton';
 
 export interface FilterDataItem {
   name: string;
@@ -18,14 +19,6 @@ interface FilterSelectorProps {
 
 const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open, onClose}) => {
   const [selectedFilters, setSelectedFilters] = useState<{[key: string]: 'empty' | 'selected' | 'remove'}>({});
-
-  // useEffect(() => {
-  //   const initialFilters = filterData.reduce((acc, item) => {
-  //     acc[item.name] = 'empty';
-  //     return acc;
-  //   }, {} as {[key: string]: 'empty' | 'selected' | 'remove'});
-  //   setSelectedFilters(initialFilters);
-  // }, [filterData]);
 
   const handleToggleFilter = (name: string) => {
     setSelectedFilters(prevState => {
@@ -71,9 +64,9 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
               </li>
             ))}
           </ul>
-          <button className={styles.saveButton} onClick={handleSave}>
+          <CustomButton size="Large" state="Normal" type="ColorPrimary" onClick={handleSave} style={{width: '100%'}}>
             Save
-          </button>
+          </CustomButton>
         </div>
       </Box>
     </Modal>
