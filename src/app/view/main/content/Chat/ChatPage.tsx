@@ -9,7 +9,7 @@ import ChatArea from '@chats/MainChat/ChatArea';
 import styles from '@chats/Styles/StyleChat.module.css';
 import usePrevChatting from '@chats/MainChat/PrevChatting';
 
-import {useBackHandler} from 'utils/util-1';
+import {preventZoom, useBackHandler} from 'utils/util-1';
 
 import {
   cleanString,
@@ -46,6 +46,7 @@ import ChatFloatingArea from './MainChat/ChatFloatingArea';
 import {TriggerActionType} from '@/types/apps/DataTypes';
 import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
 import {addNewDateMessage, compareDates, NewDateType, refreshNewDateAll, shiftDates} from './MainChat/NewDate';
+import Head from 'next/head';
 
 const ChatPage: React.FC = () => {
   const TempIdforSendQuestion: number = -222;
@@ -845,69 +846,83 @@ const ChatPage: React.FC = () => {
     }
   }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
 
+  useEffect(() => {
+    preventZoom();
+  }, []);
+
   return (
-    <main className={styles.chatmodal}>
-      <div className={styles.overlayContainer}>
-        <TopBar
-          onBackClick={handleBackClick}
-          onMoreClick={handleMoreClick}
-          iconUrl={characterImageUrl ?? ''}
+    <>
+      {/*
+        <Head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+          <meta name="description" content="채팅 페이지" />
+          <meta name="author" content="당신의 이름" />
+        </Head>
+      */}
+
+      <main className={styles.chatmodal}>
+        <div className={styles.overlayContainer}>
+          <TopBar
+            onBackClick={handleBackClick}
+            onMoreClick={handleMoreClick}
+            iconUrl={characterImageUrl ?? ''}
+            isHideChat={isHideChat}
+            isBlurOn={isBlurOn}
+          />
+          {floatingNextEpisode && !isHideChat && (
+            <ChatFloatingArea
+              episodeName={`${nextEpisodeName} 이동 버튼`}
+              onNavigate={handlePopupYes}
+              isBlurOn={isBlurOn}
+            /> // TODO nextEpisodeId 대신 에피소드 이름으로 변경 (서버 작업 후)
+          )}
+          <ChatArea
+            messages={parsedMessages!}
+            bgUrl={enterData?.episodeBgImageUrl ?? ''}
+            characterUrl={characterImageUrl ?? ''}
+            iconUrl={characterImageUrl ?? ''}
+            isHideChat={isHideChat}
+            onToggleBackground={handleToggleBackground}
+            isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
+            setBlurOn={SetIsBlurOn}
+            chatBarCount={chatBarCount}
+            aiChatHeight={aiChatHeight}
+            transitionEnabled={isTransitionEnable}
+            send={Send}
+            lastMessage={lastMessage}
+            retrySend={handleRetryStream}
+          />
+        </div>
+        <FooterChat
+          onSend={handleSendMessage}
+          streamKey={streamKey}
+          setStreamKey={setStreamKey}
+          EmoticonData={emoticonGroupInfoList || []} // EmoticonData에 emoticonGroupInfoList 전달
           isHideChat={isHideChat}
           isBlurOn={isBlurOn}
-        />
-        {floatingNextEpisode && !isHideChat && (
-          <ChatFloatingArea
-            episodeName={`${nextEpisodeName} 이동 버튼`}
-            onNavigate={handlePopupYes}
-            isBlurOn={isBlurOn}
-          /> // TODO nextEpisodeId 대신 에피소드 이름으로 변경 (서버 작업 후)
-        )}
-        <ChatArea
-          messages={parsedMessages!}
-          bgUrl={enterData?.episodeBgImageUrl ?? ''}
-          characterUrl={characterImageUrl ?? ''}
-          iconUrl={characterImageUrl ?? ''}
-          isHideChat={isHideChat}
           onToggleBackground={handleToggleBackground}
-          isLoading={isLoading} // 로딩 상태를 ChatArea에 전달
-          setBlurOn={SetIsBlurOn}
-          chatBarCount={chatBarCount}
-          aiChatHeight={aiChatHeight}
-          transitionEnabled={isTransitionEnable}
+          onLoading={SetChatLoading}
+          onUpdateChatBarCount={SetChatBarCount}
+          onUpdateAiChatBarCount={SetAiChatHeight}
+          onReqPrevChatting={setReqPrevCheat}
+          isSendingMessage={isSendingMessage}
           send={Send}
-          lastMessage={lastMessage}
-          retrySend={handleRetryStream}
+          onRemoveChat={removeParsedMessage}
+          onCheatChangeDate={handleChangeNewDate}
         />
-      </div>
-      <FooterChat
-        onSend={handleSendMessage}
-        streamKey={streamKey}
-        setStreamKey={setStreamKey}
-        EmoticonData={emoticonGroupInfoList || []} // EmoticonData에 emoticonGroupInfoList 전달
-        isHideChat={isHideChat}
-        isBlurOn={isBlurOn}
-        onToggleBackground={handleToggleBackground}
-        onLoading={SetChatLoading}
-        onUpdateChatBarCount={SetChatBarCount}
-        onUpdateAiChatBarCount={SetAiChatHeight}
-        onReqPrevChatting={setReqPrevCheat}
-        isSendingMessage={isSendingMessage}
-        send={Send}
-        onRemoveChat={removeParsedMessage}
-        onCheatChangeDate={handleChangeNewDate}
-      />
 
-      {showPopup && (
-        <NextEpisodePopup onYes={handlePopupYes} onNo={handlePopupNo} open={showPopup} data={nextPopupData} />
-      )}
-      {isNotEnoughRubyPopupOpen && (
-        <NotEnoughRubyPopup
-          open={isNotEnoughRubyPopupOpen}
-          onClose={() => setNotEnoughRubyPopupOpen(false)} // 팝업 닫기
-          rubyAmount={5} //필요 루비 임시
-        />
-      )}
-    </main>
+        {showPopup && (
+          <NextEpisodePopup onYes={handlePopupYes} onNo={handlePopupNo} open={showPopup} data={nextPopupData} />
+        )}
+        {isNotEnoughRubyPopupOpen && (
+          <NotEnoughRubyPopup
+            open={isNotEnoughRubyPopupOpen}
+            onClose={() => setNotEnoughRubyPopupOpen(false)} // 팝업 닫기
+            rubyAmount={5} //필요 루비 임시
+          />
+        )}
+      </main>
+    </>
   );
 };
 
