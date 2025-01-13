@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './ReelsCommentItem.module.css';
-import {BoldComment, BoldDislike, BoldLike} from '@ui/Icons';
+import {BoldComment, BoldDislike, BoldLike, LineComment, LineDisLike, LineFolderPlus, LineLike} from '@ui/Icons';
 
 interface ReelsCommentItemProps {
   username: string;
@@ -27,15 +27,15 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({username, time, comm
         {/* Actions */}
         <div className={styles.actions}>
           <div className={styles.actionItem}>
-            <img src={BoldLike.src}></img>
+            <img src={LineLike.src}></img>
             <div className={styles.actionText}>{likes}</div>
           </div>
           <div className={styles.actionItem}>
-            <img src={BoldDislike.src}></img>
+            <img src={LineDisLike.src}></img>
             <div className={styles.actionText}>{dislikes}</div>
           </div>
           <div className={styles.actionItem}>
-            <img src={BoldComment.src}></img>
+            <img src={LineComment.src}></img>
             <div className={styles.actionText}>{replies}</div>
           </div>
         </div>

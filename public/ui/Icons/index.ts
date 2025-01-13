@@ -87,6 +87,9 @@ import LineCorner from "./Line/Arrow_Corner.svg";
 import LineTrigger from "./Line/Trigger.svg";
 import LineRefresh from "./Line/refresh.svg";
 import LineSearch from "./Line/Search.svg";
+import LineLike from "./Line/Like.svg";
+import LineDisLike from "./Line/Dislike.svg";
+import LineComment from "./Line/Comment.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -106,6 +109,9 @@ import EmotionAngry from "./Custom/Angry.svg";
 import CircleClose from "./Custom/CircleClose.svg";
 
 export {
+  LineComment,
+  LineDisLike,
+  LineLike,
   CircleClose,
   EmotionBored,
   EmotionHappy,

@@ -277,7 +277,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
         </div>
       </div>
 
-      <ReelsComment isOpen={isCommentOpen} toggleDrawer={v => setCommentIsOpen(v)} />
+      <ReelsComment feedId={item.id} isOpen={isCommentOpen} toggleDrawer={v => setCommentIsOpen(v)} />
     </div>
   );
 };

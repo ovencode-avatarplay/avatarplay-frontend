@@ -280,14 +280,12 @@ export const sendFeedShare = async (feedId: number): Promise<{resultCode: number
   }
 };
 
-// 댓글 요청 타입 정의
-export interface AddCommentRequest {
-  feedId: number;
-  parentCommentId: number;
-  content: string;
-}
-
-export interface AddCommentResponse {
+// Comment 추가 API 호출 함수
+export const sendAddComment = async (
+  feedId: number,
+  parentCommentId: number,
+  content: string,
+): Promise<{
   resultCode: number;
   resultMessage: string;
   data: {
@@ -297,13 +295,22 @@ export interface AddCommentResponse {
     content: string;
     createAt: string;
   } | null;
-}
-
-// 댓글 추가 API 호출 함수
-export const sendAddComment = async (req: AddCommentRequest): Promise<AddCommentResponse> => {
+}> => {
   try {
-    const response = await api.post<AddCommentResponse>('/Feed/addComment', req);
-    return response.data;
+    const response = await api.post('/api/v1/Feed/addComment', {
+      feedId,
+      parentCommentId,
+      content,
+    });
+
+    const {resultCode, resultMessage, data} = response.data;
+
+    if (resultCode === 0) {
+      return {resultCode, resultMessage, data};
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {resultCode, resultMessage, data: null};
+    }
   } catch (error) {
     console.error('Failed to add comment:', error);
     return {
@@ -313,37 +320,42 @@ export const sendAddComment = async (req: AddCommentRequest): Promise<AddComment
     };
   }
 };
-export interface CommentInfo {
-  commentId: number;
-  content: string;
-  parentCommentId: number;
-  userName: string;
-  likeCount: number;
-  isLike: boolean;
-  isDisLike: boolean;
-  isModify: boolean;
-  updatedAt: string;
-}
 
-// 댓글 수정 요청 타입 정의
-export interface UpdateCommentRequest {
-  commentId: number;
-  content: string;
-}
-
-export interface UpdateCommentResponse {
+// Comment 수정 API 호출 함수
+export const sendUpdateComment = async (
+  commentId: number,
+  content: string,
+): Promise<{
   resultCode: number;
   resultMessage: string;
   data: {
-    commentInfo: CommentInfo;
+    commentInfo: {
+      commentId: number;
+      content: string;
+      parentCommentId: number;
+      userName: string;
+      likeCount: number;
+      isLike: boolean;
+      isDisLike: boolean;
+      isModify: boolean;
+      updatedAt: string;
+    };
   } | null;
-}
-
-// 댓글 수정 API 호출 함수
-export const sendUpdateComment = async (req: UpdateCommentRequest): Promise<UpdateCommentResponse> => {
+}> => {
   try {
-    const response = await api.post<UpdateCommentResponse>('/Feed/updateComment', req);
-    return response.data;
+    const response = await api.post('/api/v1/Feed/updateComment', {
+      commentId,
+      content,
+    });
+
+    const {resultCode, resultMessage, data} = response.data;
+
+    if (resultCode === 0) {
+      return {resultCode, resultMessage, data};
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {resultCode, resultMessage, data: null};
+    }
   } catch (error) {
     console.error('Failed to update comment:', error);
     return {
@@ -354,13 +366,11 @@ export const sendUpdateComment = async (req: UpdateCommentRequest): Promise<Upda
   }
 };
 
-// 댓글 좋아요 요청 타입 정의
-export interface CommentLikeRequest {
-  commentId: number;
-  isLike: boolean;
-}
-
-export interface CommentLikeResponse {
+// Comment Like API 호출 함수
+export const sendCommentLike = async (
+  commentId: number,
+  isLike: boolean,
+): Promise<{
   resultCode: number;
   resultMessage: string;
   data: {
@@ -368,13 +378,21 @@ export interface CommentLikeResponse {
     isLike: boolean;
     likeCount: number;
   } | null;
-}
-
-// 댓글 좋아요 API 호출 함수
-export const sendCommentLike = async (req: CommentLikeRequest): Promise<CommentLikeResponse> => {
+}> => {
   try {
-    const response = await api.post<CommentLikeResponse>('/Feed/commentLike', req);
-    return response.data;
+    const response = await api.post('/api/v1/Feed/commentLike', {
+      commentId,
+      isLike,
+    });
+
+    const {resultCode, resultMessage, data} = response.data;
+
+    if (resultCode === 0) {
+      return {resultCode, resultMessage, data};
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {resultCode, resultMessage, data: null};
+    }
   } catch (error) {
     console.error('Failed to like comment:', error);
     return {
@@ -385,26 +403,32 @@ export const sendCommentLike = async (req: CommentLikeRequest): Promise<CommentL
   }
 };
 
-// 댓글 싫어요 요청 타입 정의
-export interface CommentDislikeRequest {
-  commentId: number;
-  isDisLike: boolean;
-}
-
-export interface CommentDislikeResponse {
+// Comment Dislike API 호출 함수
+export const sendCommentDislike = async (
+  commentId: number,
+  isDisLike: boolean,
+): Promise<{
   resultCode: number;
   resultMessage: string;
   data: {
     commentId: number;
     isDisLike: boolean;
   } | null;
-}
-
-// 댓글 싫어요 API 호출 함수
-export const sendCommentDislike = async (req: CommentDislikeRequest): Promise<CommentDislikeResponse> => {
+}> => {
   try {
-    const response = await api.post<CommentDislikeResponse>('/Feed/commentDislike', req);
-    return response.data;
+    const response = await api.post('/api/v1/Feed/commentDislike', {
+      commentId,
+      isDisLike,
+    });
+
+    const {resultCode, resultMessage, data} = response.data;
+
+    if (resultCode === 0) {
+      return {resultCode, resultMessage, data};
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {resultCode, resultMessage, data: null};
+    }
   } catch (error) {
     console.error('Failed to dislike comment:', error);
     return {

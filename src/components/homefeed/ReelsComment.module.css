@@ -1,6 +1,6 @@
 /* Drawer Paper */
 .drawer {
-    background: #252525;
+    background:  var(--White);
     border-radius: 24px 24px 0 0;
     height: 70%; /* Adjust height as needed */
     overflow: hidden;
@@ -19,24 +19,17 @@
     
     align-items: center;
     justify-content: center;
-    background-color: #2e2e2e;
+    background-color: var(--White);
+    border-bottom: 0.5px solid var(--Neutral-100, #F1F3F4);
     
-  }
-  
-  .headerGroup{
-    width: 100%;
-    padding-left: 20px;
-    padding-right: 20px;
-    display: flex;
-    justify-content: space-between;
-  }
+  }  
 
   .tab {
     position: absolute;
     width: 42px;
     height: 3px;
     top: 8px;
-    background: #3f4144;
+    background: var(--Neutral-300);
     border-radius: 4px;
   }
   
@@ -47,41 +40,50 @@
     font-size: 17px;
     line-height: 26px;
     text-align: center;
-    color: #ffffff;
+    color: var(--Black);
     display: flex;
   }
   
-  .closeButton {
-    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(238deg) brightness(103%) contrast(103%);
-    width: 24px;
-    height: 24px;
-    align-content: center;
-    
+  .commentsSection  
+  { 
+    height: calc(70vh - 62px);
+    overflow-y: scroll;
   }
-  
   /* Input Section */
   .inputSection {
     width: 100%;
     padding: 8px 14px;   
-    background-color: #2e2e2e;
+    background-color: var(--background);
   }
   
   .inputWrapper {
     display: flex;
     align-items: center;
-    padding: 7px 17px;
-    border: 1px solid #313131;
-    border-radius: 22px;
-    background: #252525;
+    padding: 4px 4px 4px 17px;
+    border-radius: 19px;
+    background: var(--Neutral-200);
+    gap:6px;
+    width: 100%;
   }
   
   .input {
     flex: 1;
     font-family: "Pretendard", sans-serif;
-    font-size: 14px;
-    color: #c6cdd1;
+    font-size: 14px;  
     border: none;
     background: none;
     outline: none;
   }
   
+  .circleBlack
+  {
+    border-radius: 50%;
+    background-color: var(--Neutral-900);
+    width: 30px;
+    height: 30px;
+    padding: 6px;
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+  }
