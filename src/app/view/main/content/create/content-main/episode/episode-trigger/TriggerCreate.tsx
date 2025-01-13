@@ -654,7 +654,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
                 handlePromptChange={handlePromptChange}
                 maxPromptLength={maxPromptLength}
                 promptValue={getTriggerValue()}
-                type={getTriggerValueInputType()}
+                inputDataType={getTriggerValueInputType()}
                 allowSpecialCharacters={false}
               />
             </div>
@@ -750,7 +750,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
             handlePromptChange={handleActionTextValueChange}
             maxPromptLength={maxPromptLength}
             promptValue={getActionValue()}
-            type={getActionValueInputType()}
+            inputDataType={getActionValueInputType()}
             allowSpecialCharacters={false}
           />
         );
@@ -761,7 +761,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
             handlePromptChange={handleActionTextValueChange}
             maxPromptLength={maxPromptLength}
             promptValue={getActionValue()}
-            type={getActionValueInputType()}
+            inputDataType={getActionValueInputType()}
             allowSpecialCharacters={false}
           />
         );

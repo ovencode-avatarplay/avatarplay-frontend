@@ -11,7 +11,7 @@ import styles from './EpisodeDescription.module.css'; // CSS 모듈 import
 import getLocalizedText from '@/utils/getLocalizedText';
 
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-import MaxTextInput from '@/components/create/MaxTextInput';
+import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import {BoldAI, BoldCharacter, BoldChatRoundDots} from '@ui/Icons';
 import Popup from '@/components/popup/Popup';
 
@@ -302,7 +302,6 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
         <CreateDrawerHeader title="Episode Scenario" onClose={handleOnClose} />
         <div className={styles.descContainer}>
           <div className={styles.descItem}>
-            <div className={styles.descTitle}>Description</div>
             <MaxTextInput
               promptValue={worldScenario}
               handlePromptChange={e => onChangesetWorldScenario(e.target.value)}
@@ -310,11 +309,12 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
               onFocus={() => handleFocus('worldScenario')}
               onBlur={handleBlur}
               inputRef={worldScenarioRef}
+              displayDataType={displayType.Label}
+              labelText="Description"
             />
           </div>
 
           <div className={styles.descItem}>
-            <div className={styles.descTitle}>Scenario Introduction</div>
             <MaxTextInput
               promptValue={introduction}
               handlePromptChange={e => onChangesetIntroduction(e.target.value)}
@@ -322,6 +322,8 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
               onFocus={() => handleFocus('introduction')}
               onBlur={handleBlur}
               inputRef={introductionRef}
+              displayDataType={displayType.Label}
+              labelText="Scenario Introduction"
             />
           </div>
         </div>
