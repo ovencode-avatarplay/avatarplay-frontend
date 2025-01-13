@@ -2,13 +2,12 @@
 
 import React, {ReactNode} from 'react';
 
-import styles from './service.module.css';
+import styles from './Service.module.css';
 import {Analysis} from './analysis/Analysis';
 
 const ServiceMain = ({children}: {children: ReactNode}) => {
   return (
     <div className={styles.body}>
-      {children}
       <Analysis />
     </div>
   );

@@ -28,6 +28,8 @@ export const refreshLanaguage = (language: LanguageType | undefined, router: Ret
   try {
     // 서버에서 언어를 가져오지 못한 경우 브라우저 언어 사용
     if (language !== undefined) {
+      if (language === getBrowserLanguage()) return;
+
       dispatch(setLanguage(language));
 
       const newLocale = getLangUrlCode(language) || 'en-US';
