@@ -1,10 +1,11 @@
 'use client';
 
-import styles from './analysis.module.css';
+import styles from './Analysis.module.css';
 
 import * as React from 'react';
 import {BarChart} from '@mui/x-charts/BarChart';
 import {dataset, valueFormatter} from './DataSample';
+//import { BarChart } from '@mui/icons-material';
 
 const chartSettingX = {
   xAxis: [

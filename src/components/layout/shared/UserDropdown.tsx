@@ -26,9 +26,11 @@ import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
 import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
 import LanguageSelectDropBox from './LanguageSelectDropBox';
-import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
 import {fetchLanguage} from './LanguageSetting';
 import {getLangUrlCode} from '@/configs/i18n';
+import {getBrowserLanguage, getCookiesLanguageType} from '@/utils/getLocalizedText';
+import Cookies from 'js-cookie';
 
 const UserDropdown = () => {
   // States
@@ -99,17 +101,24 @@ const UserDropdown = () => {
 
           if (!response.ok) {
             console.error('Failed to authenticate:', response.statusText);
+            console.log('SIGNED_IN  리스폰스 ok 실패');
             return;
           }
 
           const data = await response.json();
           localStorage.setItem('jwt', data.accessToken);
           fetchLanguage(router);
+          //setSignIn();
+          console.log('서버에 저장된 언어로 가져오자');
         } catch (error) {
           console.error('Error occurred during authentication:', error);
         }
       } else if (event === 'INITIAL_SESSION') {
         setAuth(session);
+        const cookieLang = Cookies.get('language') || 'en-US';
+        const language = getCookiesLanguageType();
+        refreshLanaguage(language, router);
+        console.log('브라우저에 저장된 언어로 가져오자');
       }
     };
 
