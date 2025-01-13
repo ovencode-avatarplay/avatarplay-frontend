@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './Popup.module.css';
 import CustomButton from '../layout/shared/CustomButton';
+import CustomInput from '../layout/shared/CustomInput';
 
 type PopupType = 'alert' | 'error' | 'input';
 
@@ -45,16 +46,15 @@ const Popup: React.FC<PopupProps> = ({type, title, description, buttons, textBut
         {/* Input Field */}
         {inputField && (
           <div className={styles.popupInputField}>
-            <input
-              type="text"
-              className={styles.input}
+            <CustomInput
+              inputType="Basic"
+              textType="InputOnly"
               value={inputField.value}
               onChange={e => {
                 inputField.onChange(e);
               }}
               placeholder={inputField.placeholder}
-              maxLength={inputField.maxLength}
-            />
+            ></CustomInput>
           </div>
         )}
 

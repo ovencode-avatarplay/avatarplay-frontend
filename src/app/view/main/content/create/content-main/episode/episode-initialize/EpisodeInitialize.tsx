@@ -99,6 +99,8 @@ const EpisodeInitialize: React.FC<Props> = ({
   const [nameValue, setNameValue] = useState<string>('');
   const [promptValue, setPromptValue] = useState<string>('');
 
+  const [episodeNameValue, setEpisodeNameValue] = useState<string>(episodeName);
+
   // 캐릭터 선택
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
   const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
@@ -166,6 +168,7 @@ const EpisodeInitialize: React.FC<Props> = ({
     setCurStep(0);
     setUploadType('SelectCharacter');
     setNameValue('');
+    setEpisodeNameValue('');
     setPromptValue('');
     setCurrentSelectedCharacter(undefined);
     setSelectedCharacterId(null);
@@ -355,16 +358,11 @@ const EpisodeInitialize: React.FC<Props> = ({
     setIsEpisodeNameOn(true);
   };
 
-  const handleSetEpisodeNameComplete = (name: string) => {
-    if (!checkEssential()) {
-      alert('필수 선택 항목이 선택되지 않았습니다.');
-      return;
-    }
-
-    setCurEpisodeName(name);
+  const handleSetEpisodeNameComplete = () => {
+    setCurEpisodeName(episodeNameValue);
     setIsEpisodeNameOn(false);
 
-    handlerOnCompleteInit(name);
+    handlerOnCompleteInit(episodeNameValue);
   };
 
   const handlerOnCompleteInit = (name: string) => {
@@ -778,13 +776,32 @@ const EpisodeInitialize: React.FC<Props> = ({
             {checkFinalStep() === true ? 'Complete' : checkCenterButtonStep() ? 'Confirm' : 'Next'}
           </CustomButton>
         </div>
-        <EpisodeSetNamePopup
-          open={isEpisodeNameOn}
-          onClickCancel={() => {
-            setIsEpisodeNameOn(false);
-          }}
-          onClickComplete={handleSetEpisodeNameComplete}
-        />
+        {isEpisodeNameOn && (
+          <Popup
+            type="input"
+            title="Episode Title"
+            inputField={{
+              value: episodeNameValue,
+              onChange: e => setEpisodeNameValue(e.target.value),
+              maxLength: 50,
+              placeholder: 'Input Episode Name',
+            }}
+            buttons={[
+              {
+                label: 'Cancel',
+                onClick: () => {
+                  setIsEpisodeNameOn(false);
+                },
+                isPrimary: false,
+              },
+              {
+                label: 'Complete',
+                onClick: handleSetEpisodeNameComplete,
+                isPrimary: true,
+              },
+            ]}
+          />
+        )}
       </Drawer>
     </>
   );
