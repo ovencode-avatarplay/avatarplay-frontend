@@ -37,9 +37,10 @@ import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora
 import CreateTempCharacterImage from '../../../character/CreateTempCharacterImage';
 import CreateTempCharacterSelect from '../../../character/CreateTempCharacterSelect';
 import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineCheck, LineUpload} from '@ui/Icons';
-import MaxTextInput from '@/components/create/MaxTextInput';
+import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import Popup from '@/components/popup/Popup';
+import CustomInput from '@/components/layout/shared/CustomInput';
 
 interface Props {
   open: boolean;
@@ -671,21 +672,23 @@ const EpisodeInitialize: React.FC<Props> = ({
     return (
       <div className={styles.inputCharacterDesc}>
         <div className={styles.characterDesc}>
-          <div className={styles.title}>CharacterName</div>
-          <input
-            className={styles.inputBox}
-            placeholder="Text Placeholder"
+          <CustomInput
+            inputType="Basic"
+            textType="Label"
             value={nameValue}
             onChange={handleCharacterDescNameChange}
             maxLength={maxNameLength}
+            label="Character Name"
+            customClassName={[styles.inputBox]}
           />
         </div>
         <div className={styles.characterDesc}>
-          <div className={styles.title}>CharacterPrompt</div>
           <MaxTextInput
             promptValue={promptValue}
             handlePromptChange={handleCharacterDescPromptChange}
             maxPromptLength={maxPromptLength}
+            displayDataType={displayType.LabelAndHint}
+            labelText="CharacterPrompt"
           />
         </div>
       </div>

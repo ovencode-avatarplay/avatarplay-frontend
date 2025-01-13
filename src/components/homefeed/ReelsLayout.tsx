@@ -27,22 +27,20 @@ const ReelsLayout = () => {
   }, []);
 
   return (
-    <Box className={styles.reels_container}>
-      <Swiper
-        direction="vertical" // 세로 방향 설정
-        spaceBetween={0} // 슬라이드 간격
-        slidesPerView={1} // 한 번에 하나의 슬라이드 표시
-        centeredSlides={true} // 슬라이드를 중앙 정렬
-        scrollbar={{draggable: true}} // 스크롤바 활성화 (선택사항)
-        className={styles.mySwiper}
-      >
-        {info.map((item, index) => (
-          <SwiperSlide key={index} className={styles.swiperSlide}>
-            <ReelsContent item={item} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </Box>
+    <Swiper
+      direction="vertical" // 세로 방향 설정
+      spaceBetween={0} // 슬라이드 간격
+      slidesPerView={1} // 한 번에 하나의 슬라이드 표시
+      centeredSlides={true} // 슬라이드를 중앙 정렬
+      scrollbar={{draggable: true}} // 스크롤바 활성화 (선택사항)
+      className={styles.mySwiper}
+    >
+      {info.map((item, index) => (
+        <SwiperSlide key={index} className={styles.swiperSlide}>
+          <ReelsContent item={item} />
+        </SwiperSlide>
+      ))}
+    </Swiper>
   );
 };
 

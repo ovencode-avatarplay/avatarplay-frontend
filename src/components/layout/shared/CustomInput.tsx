@@ -19,6 +19,7 @@ interface CustomInputProps {
   error?: boolean;
   disabled?: boolean;
   maxLength?: number;
+  customClassName?: string[];
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -35,6 +36,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   error = false,
   disabled = false,
   maxLength,
+  customClassName = [],
 }) => {
   const [currentState, setCurrentState] = useState<State>(state);
 
@@ -64,13 +66,13 @@ const CustomInput: React.FC<CustomInputProps> = ({
   };
 
   return (
-    <div className={`${styles.inputContainer} `}>
+    <div className={`${styles.inputContainer} ${customClassName} `}>
       {(textType === 'Label' || textType === 'LabelandHint') && label && (
         <label className={styles.label}>{label}</label>
       )}
 
       <div
-        className={`${styles.textArea}  ${styles[currentState]} ${error ? styles.Error : ''} ${
+        className={`${styles.textArea} ${styles[currentState]} ${error ? styles.Error : ''} ${
           disabled ? styles.Disabled : ''
         } `}
       >
