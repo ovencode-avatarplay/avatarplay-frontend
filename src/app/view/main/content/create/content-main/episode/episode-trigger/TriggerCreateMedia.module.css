@@ -106,7 +106,7 @@
     width: calc(100vw - 32px);
     height: 46px;
   
-    background: #ffffff;
+    background: var(--background);
     border: 1px dashed #bdc1c6;
     border-radius: 10px;
   
@@ -221,7 +221,7 @@
     height: 146px;
     border: 1px solid #eaecf0;
     border-radius: 8px;
-    background: #ffffff;
+    background: var(--background);
     display: flex;
     flex-direction: column;
     justify-content: center;

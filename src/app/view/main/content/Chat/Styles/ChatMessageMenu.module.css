@@ -54,7 +54,7 @@
     justify-self: flex-start;
     align-items: center;
     padding: 0px;
-    background: #FFFFFF;
+    background: var(--background);
     border-radius: 10px;
   }
   
@@ -75,7 +75,7 @@
     justify-self: flex-start;
     align-items: center;
     padding: 0px;
-    background: #FFFFFF;
+    background: var(--background);
     border-radius: 10px;
   }
   
@@ -95,7 +95,7 @@
     justify-self: flex-end;
     align-items: center; 
     padding: 0px;
-    background: #FFFFFF;
+    background: var(--background);
     border-radius: 10px;
   }
   

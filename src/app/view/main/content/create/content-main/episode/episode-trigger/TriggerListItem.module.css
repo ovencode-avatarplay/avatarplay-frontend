@@ -5,7 +5,7 @@
   align-items: flex-start;
   width: calc(100vw - 32px);
   height: auto;
-  background: #ffffff;
+  background: var(--background);
   border: 1px solid #e8eaed;
   border-radius: 10px;
 }
@@ -124,7 +124,7 @@
   width: 100%;
   
   border-top: 1px solid #eaecf0;
-  background: #ffffff;
+  background: var(--background);
   border-radius: 0 0 10px 10px;
 }
 

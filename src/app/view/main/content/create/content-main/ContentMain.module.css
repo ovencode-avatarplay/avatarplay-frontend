@@ -46,40 +46,25 @@
     left: 0px;
     bottom: 0px;
     
-    background: #FFFFFF;
+    background: var(--background);
     max-width: 402px;
     margin: 0 auto; /* 수평 중앙 정렬 */
     
       }
       
     
-      .setupButtons {
-      
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 14px 20px;
-    gap: 4px;
-    
-    width: 92.5vw;
-    height: 50px;
-    
-    background: #2C3131;
-    border-radius: 10px;
-    
-    max-width: 400px;
-    
-    
+.setupButtons {       
+    width: calc(100vw - 32px);
+     
+    max-width: 370px;
+        
     font-family: 'Lato';
     font-style: normal;
     font-weight: 600;
     font-size: 14px;
     line-height: 21px;
     letter-spacing: -0.4px;
-    
-    color: #FFFFFF;
-    cursor: pointer;
-      }
+}
 
 .seasonArea
 {

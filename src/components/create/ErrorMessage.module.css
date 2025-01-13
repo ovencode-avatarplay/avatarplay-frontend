@@ -30,7 +30,7 @@
     .errorIcon {
       width: 24px;
       height: 24px;
-      background: #ffffff;
+      background: var(--background);
       border-radius: 50%;
       display: flex;
       align-items: center;

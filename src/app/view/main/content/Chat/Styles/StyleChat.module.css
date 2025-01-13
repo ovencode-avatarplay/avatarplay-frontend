@@ -67,7 +67,7 @@
   flex: 1; /* 남은 공간을 차지하도록 설정 */
   padding: 16px; /* 채팅 영역 패딩 */
   overflow-y: auto; /* 수직 스크롤 가능 */
-  background-color: #ffffff; /* 배경색 설정 */  
+  background: var(--background); /* 배경색 설정 */  
   height: calc(100%);
   position: sticky;
   width: 100%;

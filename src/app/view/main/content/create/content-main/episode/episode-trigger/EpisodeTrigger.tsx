@@ -11,6 +11,7 @@ import TriggerList from './TriggerList';
 import TriggerCreate from './TriggerCreate';
 import {RootState} from '@/redux-store/ReduxStore';
 import TriggerChapterList from './TriggerChapterList';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 interface EpisodeTriggerProps {
   open: boolean; // 모달 열림 상태
@@ -113,16 +114,17 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
             <div style={{height: '50px'}}></div>
           </div>
         </div>
-        <div className={styles.contentBottom}>
-          <div
-            className={styles.setupButtons}
-            onClick={() => {
-              saveDraft();
-            }}
-          >
-            Apply
-          </div>
-        </div>
+        <CustomButton
+          size="Large"
+          state="Normal"
+          type="Primary"
+          customClassName={[styles.setupButtons]}
+          onClick={() => {
+            saveDraft();
+          }}
+        >
+          Apply
+        </CustomButton>
         {/* WriteTriggerName 모달 */}
         <WriteTriggerName
           open={isWriteTriggerNameOpen}
