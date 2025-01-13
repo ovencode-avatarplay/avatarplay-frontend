@@ -47,6 +47,7 @@ export interface FeedInfo {
   mediaUrlList: string[];
   description: string;
   hashTag: string;
+  commentCount: number;
   likeCount: number;
   isLike: boolean;
   isDisLike: boolean;
@@ -275,6 +276,141 @@ export const sendFeedShare = async (feedId: number): Promise<{resultCode: number
     return {
       resultCode: -1,
       resultMessage: 'Failed to share feed',
+    };
+  }
+};
+
+// 댓글 요청 타입 정의
+export interface AddCommentRequest {
+  feedId: number;
+  parentCommentId: number;
+  content: string;
+}
+
+export interface AddCommentResponse {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    feedId: number;
+    parentCommentId: number;
+    userName: string;
+    content: string;
+    createAt: string;
+  } | null;
+}
+
+// 댓글 추가 API 호출 함수
+export const sendAddComment = async (req: AddCommentRequest): Promise<AddCommentResponse> => {
+  try {
+    const response = await api.post<AddCommentResponse>('/Feed/addComment', req);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to add comment:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to add comment',
+      data: null,
+    };
+  }
+};
+export interface CommentInfo {
+  commentId: number;
+  content: string;
+  parentCommentId: number;
+  userName: string;
+  likeCount: number;
+  isLike: boolean;
+  isDisLike: boolean;
+  isModify: boolean;
+  updatedAt: string;
+}
+
+// 댓글 수정 요청 타입 정의
+export interface UpdateCommentRequest {
+  commentId: number;
+  content: string;
+}
+
+export interface UpdateCommentResponse {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    commentInfo: CommentInfo;
+  } | null;
+}
+
+// 댓글 수정 API 호출 함수
+export const sendUpdateComment = async (req: UpdateCommentRequest): Promise<UpdateCommentResponse> => {
+  try {
+    const response = await api.post<UpdateCommentResponse>('/Feed/updateComment', req);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update comment:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to update comment',
+      data: null,
+    };
+  }
+};
+
+// 댓글 좋아요 요청 타입 정의
+export interface CommentLikeRequest {
+  commentId: number;
+  isLike: boolean;
+}
+
+export interface CommentLikeResponse {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    commentId: number;
+    isLike: boolean;
+    likeCount: number;
+  } | null;
+}
+
+// 댓글 좋아요 API 호출 함수
+export const sendCommentLike = async (req: CommentLikeRequest): Promise<CommentLikeResponse> => {
+  try {
+    const response = await api.post<CommentLikeResponse>('/Feed/commentLike', req);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to like comment:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to like comment',
+      data: null,
+    };
+  }
+};
+
+// 댓글 싫어요 요청 타입 정의
+export interface CommentDislikeRequest {
+  commentId: number;
+  isDisLike: boolean;
+}
+
+export interface CommentDislikeResponse {
+  resultCode: number;
+  resultMessage: string;
+  data: {
+    commentId: number;
+    isDisLike: boolean;
+  } | null;
+}
+
+// 댓글 싫어요 API 호출 함수
+export const sendCommentDislike = async (req: CommentDislikeRequest): Promise<CommentDislikeResponse> => {
+  try {
+    const response = await api.post<CommentDislikeResponse>('/Feed/commentDislike', req);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to dislike comment:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to dislike comment',
+      data: null,
     };
   }
 };

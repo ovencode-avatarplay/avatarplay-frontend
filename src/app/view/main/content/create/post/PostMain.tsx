@@ -214,6 +214,7 @@ const PostMain: React.FC<Props> = () => {
       description: text,
       hashTag: '',
       likeCount: 0,
+      commentCount: 0,
       isLike: false,
       isDisLike: false,
       playTime: '', // 예시 값

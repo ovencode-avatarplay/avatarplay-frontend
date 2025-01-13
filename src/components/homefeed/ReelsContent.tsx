@@ -18,6 +18,7 @@ import {
   LineArchive,
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
+import ReelsComment from './ReelsComment';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -43,6 +44,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
   const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
+
+  const [isCommentOpen, setCommentIsOpen] = useState(false);
+
   const handleClick = () => {
     setIsPlaying(!isPlaying);
     setIsClicked(true);
@@ -57,6 +61,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
   };
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
+      if (isDisLike == true) {
+        await handleDisLikeFeed(item.id, !isDisLike);
+      }
       const response = await sendFeedLike(feedId, isLike);
 
       if (response.resultCode === 0) {
@@ -71,6 +78,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
   };
   const handleDisLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
+      if (isLike == true) {
+        await handleLikeFeed(item.id, !isLike);
+      }
       const response = await sendFeedDisLike(feedId, isLike);
 
       if (response.resultCode === 0) {
@@ -251,7 +261,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
               }}
             />
           </div>
-          <div className={styles.textButtons}>
+          <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
             <img src={BoldComment.src} className={styles.button}></img>
             40
           </div>
@@ -266,6 +276,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
           </div>
         </div>
       </div>
+
+      <ReelsComment isOpen={isCommentOpen} toggleDrawer={v => setCommentIsOpen(v)} />
     </div>
   );
 };
