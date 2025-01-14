@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styles from './ReelsContent.module.css';
 import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
@@ -22,16 +22,26 @@ import ReelsComment from './ReelsComment';
 
 interface ReelsContentProps {
   item: FeedInfo;
+  isActive: boolean; // 현재 슬라이드인지 확인
 }
 
-const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
-  const [isPlaying, setIsPlaying] = useState(true);
+const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
   const [isLike, setIsLike] = useState(item.isLike);
   const [isDisLike, setIsDisLike] = useState(item.isDisLike);
   const [isExpanded, setIsExpanded] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
+  const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
+  useEffect(() => {
+    if (isActive) {
+      setIsPlaying(true); // 활성화된 경우 자동 재생
+    } else {
+      setIsPlaying(false); // 비활성화된 경우 재생 중지
+    }
+    playerRef.current?.seekTo(0); // 재생 위치를 0으로 설정
+  }, [isActive]);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -69,7 +79,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-
+        if (response.data?.likeCount) setLikeCount(response.data?.likeCount);
         setIsLike(isLike);
       } else {
         console.error(`Failed to like/unlike feed: ${response.resultMessage}`);
@@ -125,6 +135,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
           {item.mediaState === 2 && (
             <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
               <ReactPlayer
+                ref={playerRef} // ReactPlayer 참조 연결
                 muted={true}
                 url={item.mediaUrlList[0]} // 첫 번째 URL 사용
                 playing={isPlaying} // 재생 상태
@@ -243,7 +254,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
                   : 'none', // 기본 상태는 필터 없음
               }}
             />
-            {item.likeCount}
+            {likeCount}
           </div>
 
           {/* Dislike Button */}

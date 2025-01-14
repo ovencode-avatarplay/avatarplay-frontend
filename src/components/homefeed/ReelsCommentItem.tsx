@@ -5,6 +5,8 @@ import ReelsComment from './ReelsComment';
 import {CommentInfo, ReplieInfo, sendCommentLike} from '@/app/NetWork/ShortsNetwork';
 import {Menu, MenuItem} from '@mui/material';
 import ReelsCommentEdit from './ReelsCommentEdit';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
 
 export enum CommentType {
   default = 0,
@@ -29,7 +31,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
   const [likeCount, setLikeCount] = useState(comment.likeCount);
   const [isExpanded, setIsExpanded] = useState(false);
   const [formattedTime, setFormattedTime] = useState('');
-
+  const userId = useSelector((state: RootState) => state.user.userId);
   useEffect(() => {}, [comment]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -41,7 +43,6 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
   };
 
   const [isEditOpen, setIsEditOpen] = useState(false);
-
   const handleLikeComment = async (commentId: number, isLike: boolean) => {
     try {
       // if (isDisLike == true) {
@@ -59,6 +60,25 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
     } catch (error) {
       console.error('An error occurred while liking/unliking the feed:', error);
     }
+  };
+  const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
+    try {
+      const base64Payload = token.split('.')[1]; // payload 부분 추출
+      const decodedPayload = atob(base64Payload); // Base64 디코드
+      return JSON.parse(decodedPayload); // JSON 파싱하여 반환
+    } catch (error) {
+      console.error('Failed to decode JWT:', error);
+      return null;
+    }
+  };
+
+  const getEmailFromJwt = (): string | null => {
+    const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
+    if (jwt) {
+      const payload = decodeJwt(jwt); // 디코드
+      return payload?.email || null; // email 반환
+    }
+    return null; // JWT가 없을 경우 null 반환
   };
 
   const formatTimeAgo = (time: string): string => {
@@ -195,14 +215,16 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
           horizontal: 'left',
         }}
       >
-        <MenuItem
-          onClick={() => {
-            handleClose();
-            setIsEditOpen(true);
-          }}
-        >
-          Edit
-        </MenuItem>
+        {'Email' in comment && getEmailFromJwt() && getEmailFromJwt() == comment.Email && (
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              setIsEditOpen(true);
+            }}
+          >
+            Edit
+          </MenuItem>
+        )}
         <MenuItem
           onClick={() => {
             handleClose();

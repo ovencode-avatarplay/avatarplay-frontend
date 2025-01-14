@@ -180,22 +180,35 @@ export const sendFeedView = async (
 export const sendFeedLike = async (
   feedId: number,
   isLike: boolean,
-): Promise<{resultCode: number; resultMessage: string}> => {
+): Promise<{
+  resultCode: number;
+  resultMessage: string;
+  data: {feedId: number; isLike: boolean; likeCount: number} | null;
+}> => {
   try {
     const response = await api.post('/Feed/like', {feedId, isLike});
-    const {resultCode, resultMessage} = response.data;
+    const {resultCode, resultMessage, data} = response.data;
 
     if (resultCode === 0) {
-      return {resultCode, resultMessage};
+      return {
+        resultCode,
+        resultMessage,
+        data: data || null, // 데이터가 없을 경우 null 반환
+      };
     } else {
       console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage};
+      return {
+        resultCode,
+        resultMessage,
+        data: null, // 실패 시 data를 null로 반환
+      };
     }
   } catch (error) {
     console.error('Failed to like feed:', error);
     return {
       resultCode: -1,
       resultMessage: 'Failed to like feed',
+      data: null,
     };
   }
 };
@@ -247,6 +260,7 @@ export const sendFeedShare = async (feedId: number): Promise<{resultCode: number
 
 // 댓글 정보 타입 정의
 export interface CommentInfo {
+  Email: string;
   commentId: number;
   content: string;
   parentCommentId: number;
