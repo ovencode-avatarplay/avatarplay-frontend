@@ -60,7 +60,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
     }
   };
 
-  useEffect(() => {}, [parentComment]);
+  useEffect(() => {}, [parentComment, commentList]);
   useEffect(() => {
     if (isOpen) {
       getCommentList();
@@ -114,14 +114,26 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
       <div className={styles.commentsSection}>
         {/* Comments Section */}
         {!isReplies &&
-          commentList.map((comment, index) => <ReelsCommentItem key={index} feedId={feedId} comment={comment} />)}
+          commentList.map((comment, index) => (
+            <ReelsCommentItem onComplete={() => getCommentList()} key={index} feedId={feedId} comment={comment} />
+          ))}
 
         {isReplies && parentComment && (
-          <ReelsCommentItem feedId={feedId} comment={parentComment} type={CommentType.parent} />
+          <ReelsCommentItem
+            feedId={feedId}
+            comment={parentComment}
+            type={CommentType.parent}
+            onComplete={() => getCommentList()}
+          />
         )}
         {isReplies &&
           parentComment?.replies.map((comment, index) => (
-            <ReelsCommentItem feedId={feedId} comment={comment} type={CommentType.replies} />
+            <ReelsCommentItem
+              feedId={feedId}
+              comment={comment}
+              type={CommentType.replies}
+              onComplete={() => getCommentList()}
+            />
           ))}
       </div>
       {/* Input Section */}

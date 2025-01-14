@@ -265,7 +265,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
           </div>
           <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
             <img src={BoldComment.src} className={styles.button}></img>
-            40
+            {item.commentCount}
           </div>
           <div className={styles.noneTextButton}>
             <img src={BoldShare.src} className={styles.button}></img>

@@ -3,6 +3,8 @@ import styles from './ReelsCommentItem.module.css';
 import {BoldComment, BoldDislike, BoldLike, LineComment, LineDisLike, LineFolderPlus, LineLike} from '@ui/Icons';
 import ReelsComment from './ReelsComment';
 import {CommentInfo, ReplieInfo, sendCommentLike} from '@/app/NetWork/ShortsNetwork';
+import {Menu, MenuItem} from '@mui/material';
+import ReelsCommentEdit from './ReelsCommentEdit';
 
 export enum CommentType {
   default = 0,
@@ -14,13 +16,31 @@ interface ReelsCommentItemProps {
   feedId: number;
   comment: CommentInfo | ReplieInfo;
   type?: CommentType;
+  onComplete: () => void;
 }
 
-const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({feedId, comment, type = CommentType.default}) => {
+const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
+  onComplete,
+  feedId,
+  comment,
+  type = CommentType.default,
+}) => {
   const [isLike, setIsLike] = useState(comment.isLike);
   const [likeCount, setLikeCount] = useState(comment.likeCount);
   const [isExpanded, setIsExpanded] = useState(false);
   const [formattedTime, setFormattedTime] = useState('');
+
+  useEffect(() => {}, [comment]);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const handleLikeComment = async (commentId: number, isLike: boolean) => {
     try {
@@ -78,7 +98,9 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({feedId, comment, typ
         {/* User Info */}
         <div className={styles.userInfo}>
           <span className={styles.username}>{comment.userName}</span>
-          <span className={styles.time}>{formattedTime}</span>
+          <span className={styles.time}>
+            {formattedTime} {comment.isModify && <>(수정됨)</>}
+          </span>
         </div>
         {/* Comment */}
         <p
@@ -148,12 +170,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({feedId, comment, typ
       </div>
 
       {/* Menu Icon */}
-      <div
-        className={styles.menuIcon}
-        onClick={() => {
-          alert('신고 나중에 추가');
-        }}
-      >
+      <div className={styles.menuIcon} onClick={event => handleClick(event)}>
         <div className={styles.menuDots}></div>
       </div>
       <ReelsComment
@@ -163,6 +180,45 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({feedId, comment, typ
         isReplies={true}
         parentCommentId={comment.commentId}
       />
+      <Menu
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            setIsEditOpen(true);
+          }}
+        >
+          Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            alert('추후 추가');
+          }}
+        >
+          Delete
+        </MenuItem>
+      </Menu>
+      <ReelsCommentEdit
+        commentId={comment.commentId}
+        isOpen={isEditOpen}
+        prevChat={comment.content}
+        toggleDrawer={setIsEditOpen}
+        onComplete={() => onComplete()}
+      ></ReelsCommentEdit>
     </div>
   );
 };
