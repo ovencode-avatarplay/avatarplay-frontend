@@ -35,11 +35,11 @@ const CreateTempCharacterImage: React.FC<CreateTempCharacterImageProps> = ({
     <>
       <div className={styles.promptArea}>
         <div className={styles.characterDesc}>
-          <div className={styles.title}>CharacterPrompt</div>
           <MaxTextInput
             promptValue={generatePromptValue}
             handlePromptChange={handleGeneratePromptChange}
             maxPromptLength={maxGeneratePromptLength}
+            labelText="CharacterPrompt"
           />
         </div>
         <button className={styles.generateButton} onClick={onClickGenerate}>
