@@ -25,7 +25,7 @@ interface ReelsContentProps {
 }
 
 const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
   const [isLike, setIsLike] = useState(item.isLike);

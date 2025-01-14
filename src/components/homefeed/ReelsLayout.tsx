@@ -6,7 +6,7 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css'; // Swiper 기본 스타일
 import 'swiper/css/scrollbar'; // Swiper 스크롤바 스타일 (선택사항)
 import ReelsContent from './ReelsContent';
-import {FeedInfo, sendGetRecommendFeed} from '@/app/NetWork/ShortsNetwork';
+import {FeedInfo, sendFeedView, sendGetRecommendFeed} from '@/app/NetWork/ShortsNetwork';
 import styles from './ReelsLayout.module.css';
 
 const ReelsLayout = () => {
@@ -25,6 +25,29 @@ const ReelsLayout = () => {
   useEffect(() => {
     fetchRecommendFeed();
   }, []);
+  const viewFeed = async (feedId: number) => {
+    try {
+      const response = await sendFeedView(feedId);
+
+      if (response.resultCode === 0 && response.data) {
+        console.log('Feed viewed successfully:', response.data);
+      } else {
+        console.error('Failed to view feed:', response.resultMessage);
+      }
+    } catch (error) {
+      console.error('Error while viewing feed:', error);
+    }
+  };
+
+  const handleSlideChange = (swiper: any) => {
+    const currentIndex = swiper.activeIndex; // 현재 슬라이드 인덱스
+    const currentItem = info[currentIndex]; // 현재 활성화된 아이템
+    console.log('currentIndex', currentIndex);
+    console.log('currentItem', currentItem);
+    if (currentItem) {
+      viewFeed(currentItem.id);
+    }
+  };
 
   return (
     <Swiper
@@ -33,6 +56,7 @@ const ReelsLayout = () => {
       slidesPerView={1} // 한 번에 하나의 슬라이드 표시
       centeredSlides={true} // 슬라이드를 중앙 정렬
       scrollbar={{draggable: true}} // 스크롤바 활성화 (선택사항)
+      onSlideChange={handleSlideChange} // 슬라이드 변경 이벤트 핸들러
       className={styles.mySwiper}
     >
       {info.map((item, index) => (
