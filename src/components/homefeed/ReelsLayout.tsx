@@ -13,9 +13,9 @@ const ReelsLayout = () => {
   const [info, setInfo] = useState<FeedInfo[]>([]);
 
   const fetchRecommendFeed = async () => {
-    const result = await sendGetRecommendFeed();
+    const result = await sendGetRecommendFeed({language: navigator.language || 'en-US'});
     if (result.resultCode === 0 && result.data) {
-      setInfo(result.data as FeedInfo[]);
+      setInfo(result.data.feedInfoList);
       console.log('Recommended feeds fetched successfully:', result.data);
     } else {
       console.error('Failed to fetch recommended feeds:', result.resultMessage);
