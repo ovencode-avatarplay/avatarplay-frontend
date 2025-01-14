@@ -291,7 +291,20 @@ export interface CommentInfo {
   isDisLike: boolean;
   isModify: boolean;
   updatedAt: string;
-  replies: string[];
+  replies: ReplieInfo[];
+}
+
+// 대댓글 정보
+export interface ReplieInfo {
+  commentId: number;
+  content: string;
+  parentCommentId: number;
+  userName: string;
+  likeCount: number;
+  isLike: boolean;
+  isDisLike: boolean;
+  isModify: boolean;
+  updatedAt: string;
 }
 
 // 댓글 추가하기
@@ -414,6 +427,8 @@ export interface GetCommentListRes {
 export const sendGetCommentList = async (payload: GetCommentListReq): Promise<ResponseAPI<GetCommentListRes>> => {
   try {
     const response = await api.post<ResponseAPI<GetCommentListRes>>('/Feed/getCommentList', payload);
+
+    console.log('asd', response);
 
     if (response.data.resultCode === 0) {
       return response.data;
