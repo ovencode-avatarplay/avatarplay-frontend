@@ -33,7 +33,7 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
-import Popup from '@/components/popup/Popup';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 const ContentDashboard: React.FC = () => {
   const router = useRouter();
@@ -235,7 +235,7 @@ const ContentDashboard: React.FC = () => {
         <ContentList onSelect={handleSelectItem} onItemEdit={handleEdit} onItemDelete={handleOpenDeleteDialog} />
       </div>
       {deleteDialogOpen && (
-        <Popup
+        <CustomPopup
           type="alert"
           title="Discard Content?"
           description="Data will be disappeared. Are you sure?"

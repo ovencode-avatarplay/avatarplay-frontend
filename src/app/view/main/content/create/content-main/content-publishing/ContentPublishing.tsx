@@ -22,7 +22,7 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import ContentImageUpload from './ContentImageUploader';
 import {sendGetTagList} from '@/app/NetWork/ContentNetwork';
 import MaxTextInput from '@/components/create/MaxTextInput';
-import ToggleButton from '@/components/layout/shared/ToggleButton';
+import CustomToggleButton from '@/components/layout/shared/CustomToggleButton';
 import ContentLLMSetup from '../content-LLMsetup/ContentLLMsetup';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
@@ -231,7 +231,7 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, LLMOpen, 
                 <div className={styles.settingName}>NSFW</div>
                 <div className={styles.settingState}>{nsfw === 0 ? 'ON' : 'OFF'}</div>
               </div>
-              <ToggleButton
+              <CustomToggleButton
                 size="lg"
                 isToggled={nsfw === 0 ? true : false}
                 onToggle={() => {

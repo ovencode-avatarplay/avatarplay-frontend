@@ -4,7 +4,7 @@ import {Dialog, DialogTitle, Button} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 import EpisodeCharacter from './EpisodeCharacter';
-import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
+import {TriggerInfo} from '@/redux-store/slices/EpisodeInfo';
 
 interface EpisodeStarringCharacterProps {
   open: boolean; // 모달 열림 상태

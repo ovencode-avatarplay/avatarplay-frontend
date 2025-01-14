@@ -1,45 +1,6 @@
-.drawerContainer {
-  display: flex;
-  width: 100%;
-  padding: 8px 16px 45px 16px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 15px;
-
-  justify-self: center;
-  max-width: 402px;
-  max-height: 35vh;
-
-  border-radius: 24px 24px 0px 0px;
-  background: var(--White, #FFF);
-}
-
-.widgetBox {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  align-self: stretch;
-}
-
-.widgetBox > .handleArea {
-  display: flex;
-  padding: 8px 0px 22px 0px;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  align-self: stretch;
-}
-
-.handleArea > .handle {
-  width: 39px;
-  height: 4px;
-
-  border-radius: 50px;
-  background: #E0E0E0;
-}
-
 .drawerArea
 {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

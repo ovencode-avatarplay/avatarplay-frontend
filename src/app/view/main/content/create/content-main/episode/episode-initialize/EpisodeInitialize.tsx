@@ -39,7 +39,7 @@ import CreateTempCharacterSelect from '../../../character/CreateTempCharacterSel
 import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineCheck, LineUpload} from '@ui/Icons';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import Popup from '@/components/popup/Popup';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomInput from '@/components/layout/shared/CustomInput';
 
 interface Props {
@@ -780,7 +780,7 @@ const EpisodeInitialize: React.FC<Props> = ({
           </CustomButton>
         </div>
         {isEpisodeNameOn && (
-          <Popup
+          <CustomPopup
             type="input"
             title="Episode Title"
             inputField={{

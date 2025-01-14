@@ -3,11 +3,11 @@ import React, {useEffect, useState} from 'react';
 // Icons
 import styles from './SearchBoardHeader.module.css';
 
-import ToggleButton from '@/components/layout/shared/ToggleButton';
+import CustomToggleButton from '@/components/layout/shared/CustomToggleButton';
 import {BoldFilter, BoldFilterOn} from '@ui/Icons';
 import ExploreSearchInput from './ExploreSearchInput';
 import {ExploreItem, PaginationRequest, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
-import FilterSelector, {FilterDataItem} from '@/components/create/FilterSelector';
+import FilterSelector, {FilterDataItem} from '@/components/search/FilterSelector';
 
 interface Props {
   setSearchResultList: React.Dispatch<React.SetStateAction<ExploreItem[] | null>>;
@@ -90,7 +90,7 @@ const SearchBoardHeader: React.FC<Props> = ({
     <div className={styles.searchHeaderContainer}>
       <div className={styles.searchHeader}>
         <div className={styles.ageRateArea}>
-          <ToggleButton
+          <CustomToggleButton
             isToggled={adultToggleOn}
             onToggle={handleAdultToggleClicked}
             size="sm"

@@ -2,7 +2,6 @@
 
 import React, {useEffect, useState} from 'react';
 
-import {useDispatch} from 'react-redux';
 import {ExploreItem, PaginationRequest, sendGetExplore, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
 
 import styles from './SearchBoard.module.css';
@@ -11,13 +10,13 @@ import SearchBoardHeader from './searchboard-header/SearchBoardHeader';
 import SearchBoardHorizonScroll from './SearchBoardHorizonScroll';
 import {ExploreCardProps} from './SearchBoardTypes';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import Tabs from '@/components/layout/shared/Tabs';
+import Splitter from '@/components/layout/shared/CustomSplitter';
 import ExploreFeaturedHeader from './searchboard-header/ExploreFeaturedHeader';
-import EmptyState from '@/components/create/EmptyState';
+import EmptyState from '@/components/search/EmptyState';
 import {BoldArrowDown} from '@ui/Icons';
 import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import ExploreCard from './ExploreCard';
-import {FilterDataItem} from '@/components/create/FilterSelector';
+import {FilterDataItem} from '@/components/search/FilterSelector';
 
 const SearchBoard: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -223,7 +222,7 @@ const SearchBoard: React.FC = () => {
     fetchExploreData(searchValue, adultToggleOn, {offset: 0, limit: searchLimit}, {offset: 0, limit: searchLimit});
   }, [search]);
 
-  const tabData = [
+  const splitterData = [
     {
       label: 'Featured',
       preContent: '',
@@ -367,7 +366,7 @@ const SearchBoard: React.FC = () => {
 
   return (
     <>
-      <Tabs tabs={tabData} contentStyle={{padding: '0'}} isDark={true} />
+      <Splitter splitters={splitterData} contentStyle={{padding: '0'}} isDark={true} />
       <LoadingOverlay loading={loading} />
     </>
   );

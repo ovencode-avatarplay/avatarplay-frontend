@@ -1,26 +1,26 @@
-/* Tabs Container */
-.tabsContainer {
+/* Splitters Container */
+.splittersContainer {
   display: flex;
   flex-direction: column;
   width: 100%;
   background: var(--background);
 }
 
-/* Tabs Header */
-.tabsHeader {
+/* Splitters Header */
+.splittersHeader {
   display: flex;
   justify-content: space-between;
   padding: 0 8px;
   border-bottom: 1px solid #eaecf0;
 }
 
-.tabsHeader.darkHeader
+.splittersHeader.darkHeader
 {
   background: var(--Black, #000);
 }
   
-/* Tab Label */
-.tabLabel {
+/* Splitter Label */
+.splitterLabel {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,42 +34,42 @@
   cursor: pointer;
 }
 
-.tabLabel.darkTabLabel
+.splitterLabel.darkSplitterLabel
 {
   color: var(--Neutral-600, #80868B);
 }
   
-.tabLabel:hover {
+.splitterLabel:hover {
   color: #000000;
 }
 
-.tabLabel.darkTabLabel:hover {
+.splitterLabel.darkSplitterLabel:hover {
   color: var(--White, #FFF);   
 }
   
-.tabLabel.activeTab {
+.splitterLabel.activeSplitter {
   color: #000000;
 }
 
-.tabLabel.activeTab.darkTabLabel
+.splitterLabel.activeSplitter.darkSplitterLabel
 {
   color: var(--White, #FFF);  
 }
   
-/* Divider for Active Tab */
-.tabDivider {
+/* Divider for Active Splitter */
+.splitterDivider {
   width: 100%;
   height: 2px;
   background: #000000;
   margin-top: 4px;
 }
-.tabDivider.darkDivider
+.splitterDivider.darkDivider
 {
   background: var(--White, #FFF);
 }
   
-/* Tab Content */
-.tabContent {
+/* Splitter Content */
+.splitterContent {
   padding: 16px;
   font-family: 'Lato', sans-serif;
   font-size: 14px;

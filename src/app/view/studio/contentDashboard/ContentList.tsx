@@ -2,7 +2,6 @@ import {useSelector} from 'react-redux';
 import ContentDashboardList from '../../main/content/create/content-main/content-dashboard/ContentDashboardList';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useState} from 'react';
-import {Box} from '@mui/material';
 import styles from './ContentList.module.css';
 
 interface ContentListProps {
@@ -29,17 +28,15 @@ const ContentList: React.FC<ContentListProps> = ({onSelect, onItemEdit, onItemDe
   };
 
   return (
-    <>
-      <Box className={styles.drawerContainer}>
-        <ContentDashboardList
-          contentInfo={contentInfo}
-          selectedIndex={selectedIndex}
-          onItemSelect={handleItemSelect}
-          onItemEdit={handleItemEdit}
-          onItemDelete={handleItemDelete}
-        />
-      </Box>
-    </>
+    <div className={styles.drawerContainer}>
+      <ContentDashboardList
+        contentInfo={contentInfo}
+        selectedIndex={selectedIndex}
+        onItemSelect={handleItemSelect}
+        onItemEdit={handleItemEdit}
+        onItemDelete={handleItemDelete}
+      />
+    </div>
   );
 };
 export default ContentList;

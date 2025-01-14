@@ -1,10 +1,9 @@
 // Imports
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {EpisodeInfo} from './EpisodeInfo';
+import {EpisodeInfo, TriggerInfo} from './EpisodeInfo';
 
 // JSON 파일
 import emptyContent from '@/data/create/empty-content-info-data.json';
-import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 
 export interface ContentInfo {
   id: number;
