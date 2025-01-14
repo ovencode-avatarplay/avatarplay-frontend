@@ -857,7 +857,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     <Modal
       open={open}
       onClose={onClose}
-      sx={{width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto', overflow: 'hidden'}}
+      sx={{width: 'var(--full-width)', height: '100vh', margin: '0 auto', overflow: 'hidden'}}
     >
       <div
         style={{

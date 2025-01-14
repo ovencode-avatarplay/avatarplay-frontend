@@ -25,19 +25,10 @@
     align-items: center;
     justify-items: center;
     gap: 6.6px; 
-    width: 100%;  
     box-sizing: border-box;
-    max-width: calc(100vw - 80px);
+    width: calc(var(--full-width) - 80px);
+    
 }
-
-@media (min-width:402px)
-{
-    .titleContainer
-    {
-        max-width: calc(402px - 80px);
-    }
-}
-
 
 .goBackButton
 {
@@ -64,20 +55,13 @@
     font-weight: 600;
     line-height: 20px; /* 100% */
     letter-spacing: -0.4px;
-    max-width: calc(100vw - 80px - 36px);
+    width: calc(var(--second-width) - 80px);
     
     white-space: nowrap; 
     overflow: hidden; 
     text-overflow: ellipsis;  
 } 
-
-@media (min-width:402px)
-{
-    .contentName
-    {
-        max-width: calc(100vw - 80px - 36px);
-    }
-}
+ 
 
 .headerButtonArea{
     display: inline-flex;

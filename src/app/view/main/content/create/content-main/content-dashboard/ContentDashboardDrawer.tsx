@@ -220,7 +220,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
         open={open}
         onClose={onClose}
         PaperProps={{
-          sx: {width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto'},
+          sx: {width: 'var(--full-width)', height: '100vh', margin: '0 auto'},
         }}
         BackdropProps={{
           sx: {

@@ -31,20 +31,14 @@
 .drawerButton
 {
   display: flex;
-  width: calc(100vw - 32px);
-height: 66px;
-padding: 13px 20px;
-align-items: center;
-gap: 10px;
-background: var(--Neutral-50, #F8F9FA);
+  width: var(--second-width);
+  height: 66px;
+  padding: 13px 20px;
+  align-items: center;
+  gap: 10px;
+  background: var(--Neutral-50, #F8F9FA);
 }
-
-@media (min-width: 402px) {
-  .drawerButton
-  {
-    width: 370px;
-  }
-}
+ 
 
 .drawerButtonTop
 {

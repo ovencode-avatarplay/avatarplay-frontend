@@ -2,20 +2,14 @@
 .stepContainer
 {
     display: flex;
-    width: 92vw;
+    width: var(--second-width);
     align-items: flex-start;
     gap: 8px;
 
     margin: 8px 16px 0px 16px;
     
 }
-
-@media (min-width: 402px) {
-    .stepContainer
-    {
-        width: 370px
-    }
-}
+ 
 
 .stepItem
 {

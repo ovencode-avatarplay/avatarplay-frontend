@@ -2,37 +2,22 @@
 .modal-body {
     display: flex;
     flex-direction: column; /* 세로 정렬 */    
-    max-width: 100vw;
+    width: var(--full-width);
     margin: 0 auto; /* 수평 중앙 정렬 */    
 }
-
-@media (min-width:402px) {
-    .modal-body
-    {
-        width: 402px;
-    }
-}
-
+ 
 .container
 {
     display: flex;
     flex-direction: column;    
     align-items: center;
     margin: 0 16px;
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     height: 100%;
     gap: 16px;
 }
 
-
-@media (min-width : 402px)
-{
-    .container
-    {
-        width: 370px;
-    }
-}
-
+ 
 
 .addNew{
     box-sizing: border-box;
@@ -44,23 +29,14 @@
     padding: 10px 12px;
     gap: 6px;
 
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     height: 46px;
 
     background: var(--background);
     border: 1px dashed #BDC1C6;
     border-radius: 10px;
 }
-
-@media (min-width : 402px)
-{
-    .addNew
-    {
-        width: 370px;
-    }
-}
-
-
+ 
 .cardBox
 {
 
@@ -90,22 +66,14 @@
     align-items: flex-start;
     padding: 0px;
 
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     height: 244px;
 
     background: var(--background);
     border: 1px solid #EAECF0;
     border-radius: 12px;
 }
-
-@media (min-width : 402px)
-{
-    .card
-    {
-        width: 370px;
-    }    
-}
-
+ 
 .contentBottom {
     display: flex;
     flex-direction: column;
@@ -115,7 +83,7 @@
     gap: 10px;
 
     position: fixed; /* position을 fixed로 변경 */
-    width: 100vw;
+    width: var(--full-width);
     height: 70px;
     left: 0px;
     bottom: 0px;
@@ -128,7 +96,7 @@
     padding: 14px 20px;
     gap: 4px;
 
-    width: 92.5vw;
+    width: var(--second-width);
     height: 50px;
 
     background: #2C3131;
@@ -144,17 +112,9 @@
     color: #FFFFFF;
 }
 
-@media (min-width : 402px)
-{
-    .setupButtons
-    {
-        width: 370px;
-    }
-}
-
 .header {
     display: flex;
-    width: 100%;
+    width: var(--full-width);
     height: 58px;
     padding-top: 9px;
     padding-right: 16px;
@@ -163,19 +123,11 @@
     align-items: center;
     gap: 6.6px;
     flex-shrink: 0;
+    justify-content: space-between;
 
     background: var(--White, #FFF);
 }
-
-@media (min-width:402px)
-{.header {
-    width: 402px;
-    height: 58px;
-    gap: 6.6px;
-    display: flex;
-    justify-content: space-between;
-}
-}
+ 
 
 .headerLeft
 { 

@@ -3,36 +3,31 @@
     margin-right: 16px;
     margin-top: 38px;
     display: flex;
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     align-items: flex-start;
     align-content: flex-start;
     gap: 12px;
     flex-wrap: wrap;
   }
- 
-@media (min-width:402px)
-{
-  .imageList  {
-    width: 370px;
-  }
-}
   
-  .imageItem {
-    position: relative;
+  
+.imageItem {
+  position: relative;
     
-    width: calc((100vw - 32px - 12px) * 0.5);
-    height: 259.172px;
-    flex-shrink: 0;
+  width: calc((var(--second-width)  - 12px) * 0.5);
+  height: 259.172px;
+  flex-shrink: 0;
     
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat; 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; 
     
-    border-radius: 12px;
-    background: lightgray 50% / cover no-repeat;
-    cursor: pointer;     
-  }
-  @media (min-width:402px)
+  border-radius: 12px;
+  background: lightgray 50% / cover no-repeat;
+  cursor: pointer;     
+}
+
+@media (min-width:402px)
 {
   .imageItem  {
     width: 179px;

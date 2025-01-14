@@ -295,7 +295,7 @@
 
 .playButton
 { 
-  width: calc(100vw - 32px);
+  width: var(--second-width);
   height: 46px; 
   
   font-feature-settings: 'liga' off, 'clig' off;
@@ -305,14 +305,6 @@
   font-weight: 600;
   line-height: 20px; /* 142.857% */
   letter-spacing: -0.4px;
-}
-
-@media (min-width:402px)
-{
-  .playButton
-  {
-    width: 370px;
-  }
 }
 
 .playButtonItem

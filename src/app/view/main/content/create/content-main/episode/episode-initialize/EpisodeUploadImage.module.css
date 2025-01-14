@@ -9,17 +9,11 @@
     justify-items: center;
     align-items: center;
 
+    width: var(--second-width);
     margin-left: 16px;
     margin-right: 16px;
 }
-
-@media (min-width: 402px) {
-    .uploadImageArea
-    {
-        width: 370px;
-    }
-}
-
+ 
 .uploadImageArea  > .uploadButton
 {
     width: 100%;

@@ -31,8 +31,7 @@ const TriggerList: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: '15px',
-        width: '100%',
-        maxWidth: '402px',
+        width: 'var(--full-width)',
         alignItems: 'center',
       }}
     >

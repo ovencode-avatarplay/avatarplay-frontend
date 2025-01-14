@@ -4,7 +4,7 @@
   cursor: pointer;
   
   display: flex;
-  width: 370px;
+  width: var(--second-width);
   padding: 16px;
   align-items: flex-start;
   gap: 14px;

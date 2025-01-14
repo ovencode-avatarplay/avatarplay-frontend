@@ -271,7 +271,7 @@ const DrawerContentDesc = () => {
           background: 'var(--White, #FFF)',
           overflow: 'hidden',
           bottom: '0px',
-          maxWidth: '402px',
+          width: 'var(--full-width)',
           margin: '0 auto',
         },
       }}

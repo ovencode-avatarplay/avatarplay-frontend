@@ -705,9 +705,8 @@ const EpisodeInitialize: React.FC<Props> = ({
         onClose={onClose}
         PaperProps={{
           sx: {
-            width: '100vw',
+            width: 'var(--full-width)',
             height: '100vh',
-            maxWidth: '402px',
             margin: '0 auto',
             overflowX: 'hidden',
             overflowY: 'hidden',

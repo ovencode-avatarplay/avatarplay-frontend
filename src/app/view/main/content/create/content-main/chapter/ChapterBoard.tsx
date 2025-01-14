@@ -198,7 +198,7 @@ const ChapterBoard: React.FC<Props> = ({
         open={open}
         onClose={onClose}
         PaperProps={{
-          sx: {width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto'},
+          sx: {width: 'var(--full-width)', height: '100vh', margin: '0 auto'},
         }}
       >
         {/* Drawer Header */}
