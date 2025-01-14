@@ -31,6 +31,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
   const [isLike, setIsLike] = useState(item.isLike);
   const [isDisLike, setIsDisLike] = useState(item.isDisLike);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [likeCount, setLikeCount] = useState(item.likeCount);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -68,6 +69,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
+
         setIsLike(isLike);
       } else {
         console.error(`Failed to like/unlike feed: ${response.resultMessage}`);

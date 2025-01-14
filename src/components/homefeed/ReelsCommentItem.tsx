@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styles from './ReelsCommentItem.module.css';
 import {BoldComment, BoldDislike, BoldLike, LineComment, LineDisLike, LineFolderPlus, LineLike} from '@ui/Icons';
 import ReelsComment from './ReelsComment';
+import {CommentInfo, ReplieInfo, sendCommentLike} from '@/app/NetWork/ShortsNetwork';
 
 export enum CommentType {
   default = 0,
@@ -11,27 +12,35 @@ export enum CommentType {
 
 interface ReelsCommentItemProps {
   feedId: number;
-  commentId: number;
-  username: string;
-  time: string;
-  comment: string;
-  likesCount: number; // e.g., "2.3만"
-  isLike: boolean; // e.g., "2"
+  comment: CommentInfo | ReplieInfo;
   type?: CommentType;
 }
 
-const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
-  feedId,
-  commentId,
-  username,
-  time,
-  comment,
-  likesCount,
-  isLike,
-  type = CommentType.default,
-}) => {
+const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({feedId, comment, type = CommentType.default}) => {
+  const [isLike, setIsLike] = useState(comment.isLike);
+  const [likeCount, setLikeCount] = useState(comment.likeCount);
   const [isExpanded, setIsExpanded] = useState(false);
   const [formattedTime, setFormattedTime] = useState('');
+
+  const handleLikeComment = async (commentId: number, isLike: boolean) => {
+    try {
+      // if (isDisLike == true) {
+      //   await handleDisLikeFeed(item.id, !isDisLike);
+      // }
+      const response = await sendCommentLike({commentId, isLike});
+
+      if (response.resultCode === 0) {
+        console.log(`Feed ${commentId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
+        if (response.data?.likeCount) setLikeCount(response.data?.likeCount);
+        setIsLike(isLike);
+      } else {
+        console.error(`Failed to like/unlike feed: ${response.resultMessage}`);
+      }
+    } catch (error) {
+      console.error('An error occurred while liking/unliking the feed:', error);
+    }
+  };
+
   const formatTimeAgo = (time: string): string => {
     const now = new Date();
     const commentTime = new Date(time);
@@ -53,8 +62,8 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
   };
 
   useEffect(() => {
-    setFormattedTime(formatTimeAgo(time));
-  }, [time]);
+    setFormattedTime(formatTimeAgo(comment.updatedAt));
+  }, [comment.updatedAt]);
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
   return (
@@ -68,10 +77,9 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
       <div className={styles.content}>
         {/* User Info */}
         <div className={styles.userInfo}>
-          <span className={styles.username}>{username}</span>
+          <span className={styles.username}>{comment.userName}</span>
           <span className={styles.time}>{formattedTime}</span>
         </div>
-
         {/* Comment */}
         <p
           className={styles.commentText}
@@ -83,10 +91,10 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
           onClick={() => setIsExpanded(!isExpanded)}
         >
           {isExpanded ? (
-            comment
-          ) : comment.length > 100 ? (
+            comment.content
+          ) : comment.content.length > 100 ? (
             <>
-              {comment.slice(0, 92)}
+              {comment.content.slice(0, 92)}
               <span
                 style={{
                   color: '#99A3AD', // 원하는 색상 코드
@@ -97,32 +105,55 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
               </span>
             </>
           ) : (
-            comment
+            comment.content
           )}
         </p>
 
+        <span style={{height: '10px'}}></span>
         {/* Actions */}
         <div className={styles.actions}>
           <div className={styles.actionItem}>
-            <img
-              src={LineLike.src}
-              className={styles.button}
-              style={{
-                filter: isLike
-                  ? 'brightness(0) saturate(100%) invert(47%) sepia(57%) saturate(1806%) hue-rotate(287deg) brightness(102%) contrast(98%)'
-                  : 'none', // 기본 상태는 필터 없음
-              }}
-            />
-            <div className={styles.actionText}>{likesCount.toString()}</div>
+            {!isLike && (
+              <img
+                src={LineLike.src}
+                className={styles.button}
+                onClick={() => handleLikeComment(comment.commentId, !isLike)}
+              />
+            )}
+            {isLike && (
+              <img
+                src={BoldLike.src}
+                className={styles.button}
+                onClick={() => handleLikeComment(comment.commentId, !isLike)}
+              />
+            )}
+            <div className={styles.actionText}>{likeCount}</div>
           </div>
+
           <div className={styles.actionItem} onClick={() => setCommentIsOpen(true)}>
             <img src={LineComment.src}></img>
           </div>
         </div>
+        <span style={{height: '14px'}}></span>
+        {'replies' in comment && type == CommentType.default && (
+          <div
+            className={styles.commentCount}
+            onClick={() => {
+              setCommentIsOpen(true);
+            }}
+          >
+            답글 {comment.replies.length}
+          </div>
+        )}
       </div>
 
       {/* Menu Icon */}
-      <div className={styles.menuIcon}>
+      <div
+        className={styles.menuIcon}
+        onClick={() => {
+          alert('신고 나중에 추가');
+        }}
+      >
         <div className={styles.menuDots}></div>
       </div>
       <ReelsComment
@@ -130,7 +161,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
         isOpen={isCommentOpen}
         toggleDrawer={v => setCommentIsOpen(v)}
         isReplies={true}
-        parentCommentId={commentId}
+        parentCommentId={comment.commentId}
       />
     </div>
   );

@@ -114,44 +114,14 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
       <div className={styles.commentsSection}>
         {/* Comments Section */}
         {!isReplies &&
-          commentList.map((comment, index) => (
-            <ReelsCommentItem
-              key={index} // key는 React에서 필수
-              commentId={comment.commentId}
-              feedId={feedId}
-              username={comment.userName}
-              time={comment.updatedAt}
-              comment={comment.content}
-              likesCount={comment.likeCount}
-              isLike={comment.isLike}
-            />
-          ))}
+          commentList.map((comment, index) => <ReelsCommentItem key={index} feedId={feedId} comment={comment} />)}
 
         {isReplies && parentComment && (
-          <ReelsCommentItem
-            feedId={feedId}
-            commentId={parentComment.commentId}
-            username={parentComment.userName}
-            time={parentComment.updatedAt}
-            comment={parentComment.content}
-            likesCount={parentComment.likeCount}
-            isLike={parentComment.isLike}
-            type={CommentType.parent}
-          />
+          <ReelsCommentItem feedId={feedId} comment={parentComment} type={CommentType.parent} />
         )}
         {isReplies &&
           parentComment?.replies.map((comment, index) => (
-            <ReelsCommentItem
-              feedId={feedId}
-              commentId={comment.commentId}
-              key={index} // key는 React에서 필수
-              username={comment.userName}
-              time={comment.updatedAt}
-              comment={comment.content}
-              likesCount={comment.likeCount}
-              isLike={comment.isLike}
-              type={CommentType.replies}
-            />
+            <ReelsCommentItem feedId={feedId} comment={comment} type={CommentType.replies} />
           ))}
       </div>
       {/* Input Section */}
