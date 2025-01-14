@@ -260,7 +260,7 @@ export const sendFeedShare = async (feedId: number): Promise<{resultCode: number
 
 // 댓글 정보 타입 정의
 export interface CommentInfo {
-  Email: string;
+  email: string;
   commentId: number;
   content: string;
   parentCommentId: number;
