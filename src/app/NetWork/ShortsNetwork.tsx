@@ -1,6 +1,6 @@
 // src/app/Network/ShortsNetwork.ts
 
-import api from './ApiInstance';
+import api, {ResponseAPI} from './ApiInstance';
 
 // 쇼츠 정보 타입
 export interface ShortsInfo {
@@ -280,161 +280,148 @@ export const sendFeedShare = async (feedId: number): Promise<{resultCode: number
   }
 };
 
-// Comment 추가 API 호출 함수
-export const sendAddComment = async (
-  feedId: number,
-  parentCommentId: number,
-  content: string,
-): Promise<{
-  resultCode: number;
-  resultMessage: string;
-  data: {
-    feedId: number;
-    parentCommentId: number;
-    userName: string;
-    content: string;
-    createAt: string;
-  } | null;
-}> => {
+// 댓글 정보 타입 정의
+export interface CommentInfo {
+  commentId: number;
+  content: string;
+  parentCommentId: number;
+  userName: string;
+  likeCount: number;
+  isLike: boolean;
+  isDisLike: boolean;
+  isModify: boolean;
+  updatedAt: string;
+  replies: string[];
+}
+
+// 댓글 추가하기
+export interface AddCommentReq {
+  feedId: number;
+  parentCommentId: number;
+  content: string;
+}
+
+export interface AddCommentRes {
+  feedId: number;
+  parentCommentId: number;
+  userName: string;
+  content: string;
+  createAt: string;
+}
+
+export const sendAddComment = async (payload: AddCommentReq): Promise<ResponseAPI<AddCommentRes>> => {
   try {
-    const response = await api.post('/api/v1/Feed/addComment', {
-      feedId,
-      parentCommentId,
-      content,
-    });
+    const response = await api.post<ResponseAPI<AddCommentRes>>('/Feed/addComment', payload);
 
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0) {
-      return {resultCode, resultMessage, data};
+    if (response.data.resultCode === 0) {
+      return response.data;
     } else {
-      console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage, data: null};
+      throw new Error(`AddComment Error: ${response.data.resultCode}`);
     }
   } catch (error) {
-    console.error('Failed to add comment:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to add comment',
-      data: null,
-    };
+    console.error('Error adding comment:', error);
+    throw new Error('Failed to add comment. Please try again.');
   }
 };
 
-// Comment 수정 API 호출 함수
-export const sendUpdateComment = async (
-  commentId: number,
-  content: string,
-): Promise<{
-  resultCode: number;
-  resultMessage: string;
-  data: {
-    commentInfo: {
-      commentId: number;
-      content: string;
-      parentCommentId: number;
-      userName: string;
-      likeCount: number;
-      isLike: boolean;
-      isDisLike: boolean;
-      isModify: boolean;
-      updatedAt: string;
-    };
-  } | null;
-}> => {
+// 댓글 수정하기
+export interface UpdateCommentReq {
+  commentId: number;
+  content: string;
+}
+
+export interface UpdateCommentRes {
+  commentInfo: CommentInfo;
+}
+
+export const sendUpdateComment = async (payload: UpdateCommentReq): Promise<ResponseAPI<UpdateCommentRes>> => {
   try {
-    const response = await api.post('/api/v1/Feed/updateComment', {
-      commentId,
-      content,
-    });
+    const response = await api.post<ResponseAPI<UpdateCommentRes>>('/Feed/updateComment', payload);
 
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0) {
-      return {resultCode, resultMessage, data};
+    if (response.data.resultCode === 0) {
+      return response.data;
     } else {
-      console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage, data: null};
+      throw new Error(`UpdateComment Error: ${response.data.resultCode}`);
     }
   } catch (error) {
-    console.error('Failed to update comment:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to update comment',
-      data: null,
-    };
+    console.error('Error updating comment:', error);
+    throw new Error('Failed to update comment. Please try again.');
   }
 };
 
-// Comment Like API 호출 함수
-export const sendCommentLike = async (
-  commentId: number,
-  isLike: boolean,
-): Promise<{
-  resultCode: number;
-  resultMessage: string;
-  data: {
-    commentId: number;
-    isLike: boolean;
-    likeCount: number;
-  } | null;
-}> => {
+// 댓글 좋아요
+export interface CommentLikeReq {
+  commentId: number;
+  isLike: boolean;
+}
+
+export interface CommentLikeRes {
+  commentId: number;
+  isLike: boolean;
+  likeCount: number;
+}
+
+export const sendCommentLike = async (payload: CommentLikeReq): Promise<ResponseAPI<CommentLikeRes>> => {
   try {
-    const response = await api.post('/api/v1/Feed/commentLike', {
-      commentId,
-      isLike,
-    });
+    const response = await api.post<ResponseAPI<CommentLikeRes>>('/Feed/commentLike', payload);
 
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0) {
-      return {resultCode, resultMessage, data};
+    if (response.data.resultCode === 0) {
+      return response.data;
     } else {
-      console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage, data: null};
+      throw new Error(`CommentLike Error: ${response.data.resultCode}`);
     }
   } catch (error) {
-    console.error('Failed to like comment:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to like comment',
-      data: null,
-    };
+    console.error('Error liking comment:', error);
+    throw new Error('Failed to like comment. Please try again.');
   }
 };
 
-// Comment Dislike API 호출 함수
-export const sendCommentDislike = async (
-  commentId: number,
-  isDisLike: boolean,
-): Promise<{
-  resultCode: number;
-  resultMessage: string;
-  data: {
-    commentId: number;
-    isDisLike: boolean;
-  } | null;
-}> => {
+// 댓글 싫어요
+export interface CommentDislikeReq {
+  commentId: number;
+  isDisLike: boolean;
+}
+
+export interface CommentDislikeRes {
+  commentId: number;
+  isDisLike: boolean;
+}
+
+export const sendCommentDislike = async (payload: CommentDislikeReq): Promise<ResponseAPI<CommentDislikeRes>> => {
   try {
-    const response = await api.post('/api/v1/Feed/commentDislike', {
-      commentId,
-      isDisLike,
-    });
+    const response = await api.post<ResponseAPI<CommentDislikeRes>>('/Feed/commentDislike', payload);
 
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0) {
-      return {resultCode, resultMessage, data};
+    if (response.data.resultCode === 0) {
+      return response.data;
     } else {
-      console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage, data: null};
+      throw new Error(`CommentDislike Error: ${response.data.resultCode}`);
     }
   } catch (error) {
-    console.error('Failed to dislike comment:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to dislike comment',
-      data: null,
-    };
+    console.error('Error disliking comment:', error);
+    throw new Error('Failed to dislike comment. Please try again.');
+  }
+};
+
+// 댓글 리스트 가져오기
+export interface GetCommentListReq {
+  feedId: number;
+}
+
+export interface GetCommentListRes {
+  commentInfoList: CommentInfo[];
+}
+
+export const sendGetCommentList = async (payload: GetCommentListReq): Promise<ResponseAPI<GetCommentListRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetCommentListRes>>('/Feed/getCommentList', payload);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`GetCommentList Error: ${response.data.resultCode}`);
+    }
+  } catch (error) {
+    console.error('Error fetching comment list:', error);
+    throw new Error('Failed to fetch comment list. Please try again.');
   }
 };
