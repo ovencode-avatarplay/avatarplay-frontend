@@ -25,12 +25,13 @@ interface ReelsContentProps {
 }
 
 const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
   const [isLike, setIsLike] = useState(item.isLike);
   const [isDisLike, setIsDisLike] = useState(item.isDisLike);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [likeCount, setLikeCount] = useState(item.likeCount);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -61,13 +62,14 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
   };
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
-      if (isDisLike == true) {
-        await handleDisLikeFeed(item.id, !isDisLike);
-      }
+      // if (isDisLike == true) {
+      //   await handleDisLikeFeed(item.id, !isDisLike);
+      // }
       const response = await sendFeedLike(feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
+
         setIsLike(isLike);
       } else {
         console.error(`Failed to like/unlike feed: ${response.resultMessage}`);
@@ -78,9 +80,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
   };
   const handleDisLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
-      if (isLike == true) {
-        await handleLikeFeed(item.id, !isLike);
-      }
+      // if (isLike == true) {
+      //   await handleLikeFeed(item.id, !isLike);
+      // }
       const response = await sendFeedDisLike(feedId, isLike);
 
       if (response.resultCode === 0) {
@@ -263,7 +265,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item}) => {
           </div>
           <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
             <img src={BoldComment.src} className={styles.button}></img>
-            40
+            {item.commentCount}
           </div>
           <div className={styles.noneTextButton}>
             <img src={BoldShare.src} className={styles.button}></img>

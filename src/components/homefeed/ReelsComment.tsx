@@ -1,130 +1,140 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './ReelsComment.module.css';
-import ReelsCommentItem from './ReelsCommentItem';
+import ReelsCommentItem, {CommentType} from './ReelsCommentItem';
 import {BoldSend, LeftArrow} from '@ui/Icons';
 import {InputAdornment, TextField} from '@mui/material';
-import {AddCommentRequest, sendAddComment} from '@/app/NetWork/ShortsNetwork';
+import {CommentInfo, sendAddComment, sendGetCommentList} from '@/app/NetWork/ShortsNetwork';
 
 interface ReelsCommentProps {
   feedId: number;
   isOpen: boolean;
   toggleDrawer: (open: boolean) => void;
+  isReplies?: boolean;
+  parentCommentId?: number;
 }
 
-const ReelsComment: React.FC<ReelsCommentProps> = ({isOpen, toggleDrawer, feedId}) => {
+const ReelsComment: React.FC<ReelsCommentProps> = ({
+  isOpen,
+  toggleDrawer,
+  feedId,
+  parentCommentId = 0,
+  isReplies = false,
+}) => {
   const [chat, setChat] = useState<string>('');
   const handleInputChange = (value: string) => {
     setChat(value);
   };
-  const handleSendAddComment = async (feedId: number, parentCommentId: number, content: string) => {
+
+  const [parentComment, setParentComment] = useState<CommentInfo>(); // 댓글 리스트 상태
+
+  const [commentList, setCommentList] = useState<CommentInfo[]>([]); // 댓글 리스트 상태
+  // 댓글 리스트 가져오기
+  const getCommentList = async () => {
+    const payload = {
+      feedId: feedId, // 댓글을 가져올 피드 ID
+    };
+
     try {
-      // AddCommentRequest 객체 생성
-      const request: AddCommentRequest = {
-        feedId,
-        parentCommentId,
-        content,
-      };
+      const response = await sendGetCommentList(payload);
+      if (isReplies) {
+        let allComment = response.data?.commentInfoList as CommentInfo[];
 
-      // API 호출
-      const response = await sendAddComment(feedId, parentCommentId, content);
+        // `proms.commentId`와 같은 commentId를 가진 댓글 찾기
+        const targetCommentId = parentCommentId; // 주어진 `proms` 객체의 commentId
+        const matchingComment = allComment.find(comment => comment.commentId === targetCommentId);
 
-      // API 호출 결과 처리
-      if (response.resultCode === 0) {
-        console.log('Comment added successfully:', response.data);
-        setChat('');
-        // 추가 성공 시 필요한 로직 작성
+        if (matchingComment) {
+          console.log('일치하는 댓글:', matchingComment);
+          setParentComment(matchingComment);
+        } else {
+          console.log('일치하는 댓글이 없습니다.');
+        }
       } else {
-        console.error('Failed to add comment:', response.resultMessage);
-        // 실패 시 필요한 로직 작성
+        setCommentList(response.data?.commentInfoList as CommentInfo[]);
       }
     } catch (error) {
-      console.error('An error occurred while adding a comment:', error);
-      // 에러 발생 시 처리 로직 작성
+      console.error('댓글 리스트 가져오기 실패:', error);
+    }
+  };
+
+  useEffect(() => {}, [parentComment, commentList]);
+  useEffect(() => {
+    if (isOpen) {
+      getCommentList();
+    }
+  }, [isOpen]);
+  const handleSendAddComment = async (feedId: number, parentCommentId: number, content: string) => {
+    const payload = {
+      feedId: feedId, // 댓글을 추가할 피드 ID
+      parentCommentId: parentCommentId, // 대댓글의 경우 부모 댓글 ID, 아니면 0
+      content: content, // 댓글 내용
+    };
+
+    try {
+      const response = await sendAddComment(payload);
+      console.log('댓글 추가 성공:', response.data);
+      setChat('');
+      getCommentList();
+    } catch (error) {
+      console.error('댓글 추가 실패:', error);
     }
   };
   const handleKeyDownInternal = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && !event.shiftKey) {
-      handleSendAddComment(feedId, 0, chat);
+      event.preventDefault(); // 기본 동작 방지 (텍스트 줄바꿈)
+      handleSendAddComment(feedId, parentCommentId, chat);
     }
   };
   return (
     <Drawer anchor="bottom" open={isOpen} onClose={() => toggleDrawer(false)} classes={{paper: styles.drawer}}>
       {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.tab}></div>
+      {!isReplies && (
+        <div className={styles.header}>
+          <div className={styles.tab}></div>
 
-        <div className={styles.title}>댓글</div>
-      </div>
+          <div className={styles.title}>댓글</div>
+        </div>
+      )}
+      {isReplies && (
+        <div className={styles.header}>
+          <div className={styles.tab}></div>
+          <div className={styles.headerGroup}>
+            <div className={styles.closeButton}>
+              <img src={LeftArrow.src} onClick={() => toggleDrawer(false)} />
+            </div>
+            <div className={styles.title}>답글</div>
+            <span style={{width: '21px'}}></span>
+          </div>
+        </div>
+      )}
 
       <div className={styles.commentsSection}>
         {/* Comments Section */}
-        <ReelsCommentItem
-          username="pppdfk99"
-          time="지금"
-          comment="너무 재밌어요"
-          likes="2.3만"
-          dislikes="2"
-          replies="2"
-        />
-        <ReelsCommentItem
-          username="jhshdhddhd183"
-          time="3시간"
-          comment="이 커플이 진짜 제일 좋아요"
-          likes="1.2만"
-          dislikes="1"
-          replies="5"
-        />
-        <ReelsCommentItem
-          username="jhshdhddhd183"
-          time="3시간"
-          comment="이 커플이 진짜 제일 좋아요"
-          likes="1.2만"
-          dislikes="1"
-          replies="5"
-        />{' '}
-        <ReelsCommentItem
-          username="jhshdhddhd183"
-          time="3시간"
-          comment="이 커플이 진짜 제일 좋아요"
-          likes="1.2만"
-          dislikes="1"
-          replies="5"
-        />{' '}
-        <ReelsCommentItem
-          username="jhshdhddhd183"
-          time="3시간"
-          comment="이 커플이 진짜 제일 좋아요"
-          likes="1.2만"
-          dislikes="1"
-          replies="5"
-        />{' '}
-        <ReelsCommentItem
-          username="jhshdhddhd183"
-          time="3시간"
-          comment="이 커플이 진짜 제일 좋아요"
-          likes="1.2만"
-          dislikes="1"
-          replies="5"
-        />{' '}
-        <ReelsCommentItem
-          username="jhshdhddhd183"
-          time="3시간"
-          comment="이 커플이 진짜 제일 좋아요"
-          likes="1.2만"
-          dislikes="1"
-          replies="5"
-        />{' '}
-        <ReelsCommentItem
-          username="jhshdhddhd183"
-          time="3시간"
-          comment="이 커플이 진짜 제일 좋아요"
-          likes="1.2만"
-          dislikes="1"
-          replies="5"
-        />
+        {!isReplies &&
+          commentList.map((comment, index) => (
+            <ReelsCommentItem onComplete={() => getCommentList()} key={index} feedId={feedId} comment={comment} />
+          ))}
+
+        {isReplies && parentComment && (
+          <ReelsCommentItem
+            feedId={feedId}
+            comment={parentComment}
+            type={CommentType.parent}
+            onComplete={() => getCommentList()}
+          />
+        )}
+        {isReplies &&
+          parentComment?.replies.map((comment, index) => (
+            <ReelsCommentItem
+              feedId={feedId}
+              comment={comment}
+              type={CommentType.replies}
+              onComplete={() => getCommentList()}
+            />
+          ))}
       </div>
       {/* Input Section */}
       <div className={styles.inputSection}>
@@ -164,7 +174,10 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({isOpen, toggleDrawer, feedId
               endAdornment: (
                 <InputAdornment position="end">
                   {chat.length > 0 && (
-                    <div className={styles.circleBlack} onClick={() => handleSendAddComment(feedId, 0, chat)}>
+                    <div
+                      className={styles.circleBlack}
+                      onClick={() => handleSendAddComment(feedId, parentCommentId, chat)}
+                    >
                       <img src={BoldSend.src}></img>
                     </div>
                   )}

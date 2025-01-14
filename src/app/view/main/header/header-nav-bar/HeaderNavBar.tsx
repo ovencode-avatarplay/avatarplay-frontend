@@ -8,19 +8,29 @@ import Logo256White from '/public/images/Talkain_logo_256_white.png';
 import Logo256Black from '/public/images/Talkain_logo_256_black.png';
 import Logo512White from '/public/images/Talkain_logo_512_white.png';
 import Logo512Black from '/public/images/Talkain_logo_512_black.png';
+import logoTalkain from '@ui/logo_talkain.png';
 
 import UserDropdown from '@shared/UserDropdown';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {BoldAlert, BoldRuby, BoldStar} from '@ui/Icons';
+import {useDispatch} from 'react-redux';
+import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 
 const HeaderNavBar = () => {
-  const [logo, setLogo] = useState(Logo256Black);
+  const [logo, setLogo] = useState(logoTalkain);
+  const dispatch = useDispatch();
 
   return (
     <header className={styles.navbar}>
       <Link href={getLocalizedLink('/main/homefeed')}>
-        <div className={styles.logoArea}>
+        <div
+          className={styles.logoArea}
+          onClick={() => {
+            dispatch(setBottomNavColor(0));
+            dispatch(setSelectedIndex(0));
+          }}
+        >
           <Image src={logo} alt="Logo" width={128} height={128} priority />
         </div>
       </Link>

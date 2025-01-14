@@ -1,11 +1,11 @@
 /* Drawer Paper */
 .drawer {
     background:  var(--White);
-    border-radius: 24px 24px 0 0;
+    border-radius: 0px 0px 0px 0px;
     height: 70%; /* Adjust height as needed */
     overflow: hidden;
-      
-    width: var(--full-width);
+    
+    max-width: 402px;
     margin: 0 auto; /* 수평 중앙 정렬 */
   }
   
@@ -114,7 +114,6 @@
   .circleBlack
   {
     border-radius: 50%;
-    background-color: var(--Neutral-900);
     width: 30px;
     height: 30px;
     padding: 6px;
