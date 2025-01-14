@@ -8,6 +8,7 @@ import Logo256White from '/public/images/Talkain_logo_256_white.png';
 import Logo256Black from '/public/images/Talkain_logo_256_black.png';
 import Logo512White from '/public/images/Talkain_logo_512_white.png';
 import Logo512Black from '/public/images/Talkain_logo_512_black.png';
+import logoTalkain from '@ui/logo_talkain.png';
 
 import UserDropdown from '@shared/UserDropdown';
 import Link from 'next/link';
@@ -15,7 +16,7 @@ import {getLocalizedLink} from '@/utils/UrlMove';
 import {BoldAlert, BoldRuby, BoldStar} from '@ui/Icons';
 
 const HeaderNavBar = () => {
-  const [logo, setLogo] = useState(Logo256Black);
+  const [logo, setLogo] = useState(logoTalkain);
 
   return (
     <header className={styles.navbar}>
