@@ -98,68 +98,33 @@ export const sendCreateFeed = async (
     };
   }
 };
+// Recommend Feed API Types
+export interface RecommendFeedReq {
+  language: string;
+}
 
-// 추천 피드 API 응답 타입 정의
-interface ResponseRecommendFeed {
-  resultCode: number;
-  resultMessage: string;
-  data: {
-    feedInfoList: FeedInfo[];
-  } | null;
+export interface RecommendFeedRes {
+  feedInfoList: FeedInfo[];
 }
 
 /**
  * 추천 피드 가져오기
+ * @param payload 요청 본문에 포함할 데이터 (언어 정보)
  * @returns API 응답 결과
  */
-export const sendGetRecommendFeed = async (): Promise<{
-  resultCode: number;
-  resultMessage: string;
-  data: FeedInfo[] | null;
-}> => {
+export const sendGetRecommendFeed = async (payload: RecommendFeedReq): Promise<ResponseAPI<RecommendFeedRes>> => {
   try {
-    // GET 요청 전송
-    const response = await api.get<ResponseRecommendFeed>('/Feed/recommend');
+    // POST 요청으로 변경
+    const response = await api.post<ResponseAPI<RecommendFeedRes>>('/Feed/recommend', payload);
 
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0) {
-      return {resultCode, resultMessage, data: data?.feedInfoList || null};
+    if (response.data.resultCode === 0) {
+      return response.data;
     } else {
-      console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage, data: null};
+      throw new Error(`RecommendFeedRes Error: ${response.data.resultCode}`);
     }
   } catch (error) {
-    console.error('Failed to fetch recommended feeds:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to fetch recommended feeds',
-      data: null,
-    };
-  }
-};
-
-// GET Feed API 호출 함수
-export const sendGetFeed = async (
-  feedId: number,
-): Promise<{resultCode: number; resultMessage: string; data: FeedInfo | null}> => {
-  try {
-    const response = await api.post('/Feed/get', {feedId});
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0) {
-      return {resultCode, resultMessage, data: data?.feedInfo || null};
-    } else {
-      console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage, data: null};
-    }
-  } catch (error) {
-    console.error('Failed to fetch feed:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to fetch feed',
-      data: null,
-    };
+    console.error('Error fetching recommended feeds:', error);
+    throw new Error('Failed to fetch recommended feeds. Please try again.');
   }
 };
 
@@ -215,22 +180,35 @@ export const sendFeedView = async (
 export const sendFeedLike = async (
   feedId: number,
   isLike: boolean,
-): Promise<{resultCode: number; resultMessage: string}> => {
+): Promise<{
+  resultCode: number;
+  resultMessage: string;
+  data: {feedId: number; isLike: boolean; likeCount: number} | null;
+}> => {
   try {
     const response = await api.post('/Feed/like', {feedId, isLike});
-    const {resultCode, resultMessage} = response.data;
+    const {resultCode, resultMessage, data} = response.data;
 
     if (resultCode === 0) {
-      return {resultCode, resultMessage};
+      return {
+        resultCode,
+        resultMessage,
+        data: data || null, // 데이터가 없을 경우 null 반환
+      };
     } else {
       console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage};
+      return {
+        resultCode,
+        resultMessage,
+        data: null, // 실패 시 data를 null로 반환
+      };
     }
   } catch (error) {
     console.error('Failed to like feed:', error);
     return {
       resultCode: -1,
       resultMessage: 'Failed to like feed',
+      data: null,
     };
   }
 };
@@ -282,6 +260,7 @@ export const sendFeedShare = async (feedId: number): Promise<{resultCode: number
 
 // 댓글 정보 타입 정의
 export interface CommentInfo {
+  email: string;
   commentId: number;
   content: string;
   parentCommentId: number;
@@ -291,7 +270,20 @@ export interface CommentInfo {
   isDisLike: boolean;
   isModify: boolean;
   updatedAt: string;
-  replies: string[];
+  replies: ReplieInfo[];
+}
+
+// 대댓글 정보
+export interface ReplieInfo {
+  commentId: number;
+  content: string;
+  parentCommentId: number;
+  userName: string;
+  likeCount: number;
+  isLike: boolean;
+  isDisLike: boolean;
+  isModify: boolean;
+  updatedAt: string;
 }
 
 // 댓글 추가하기
@@ -414,6 +406,8 @@ export interface GetCommentListRes {
 export const sendGetCommentList = async (payload: GetCommentListReq): Promise<ResponseAPI<GetCommentListRes>> => {
   try {
     const response = await api.post<ResponseAPI<GetCommentListRes>>('/Feed/getCommentList', payload);
+
+    console.log('asd', response);
 
     if (response.data.resultCode === 0) {
       return response.data;
