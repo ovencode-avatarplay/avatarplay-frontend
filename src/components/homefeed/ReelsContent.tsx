@@ -4,7 +4,7 @@ import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
-import {FeedInfo, sendFeedDisLike, sendFeedLike} from '@/app/NetWork/ShortsNetwork';
+import {FeedInfo, sendFeedDisLike, sendFeedLike, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
 import {
   BoldComment,
@@ -19,6 +19,7 @@ import {
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
 import ReelsComment from './ReelsComment';
+import SharePopup from '../layout/shared/SharePopup';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -32,6 +33,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
   const [isLike, setIsLike] = useState(item.isLike);
   const [isDisLike, setIsDisLike] = useState(item.isDisLike);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isShare, setIsShare] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
   useEffect(() => {
@@ -103,6 +105,35 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
       }
     } catch (error) {
       console.error('An error occurred while liking/unliking the feed:', error);
+    }
+  };
+  const sendShare = async () => {
+    const response = await sendFeedShare(item.id);
+    const {resultCode, resultMessage} = response;
+
+    if (resultCode === 0) {
+      console.log('공유 성공!');
+    } else {
+      console.log(`공유 실패: ${resultMessage}`);
+    }
+  };
+  const handleShare = async () => {
+    sendShare();
+    const shareData = {
+      title: '공유하기 제목',
+      text: '이 링크를 확인해보세요!',
+      url: window.location.href, // 현재 페이지 URL
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData); // 네이티브 공유 UI 호출
+        alert('링크가 성공적으로 공유되었습니다!');
+      } catch (error) {
+        console.error('공유 실패:', error);
+      }
+    } else {
+      setIsShare(true);
     }
   };
   React.useEffect(() => {}, [item]);
@@ -278,9 +309,15 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
             <img src={BoldComment.src} className={styles.button}></img>
             {item.commentCount}
           </div>
-          <div className={styles.noneTextButton}>
+          <div
+            className={styles.noneTextButton}
+            onClick={async () => {
+              handleShare();
+            }}
+          >
             <img src={BoldShare.src} className={styles.button}></img>
           </div>
+
           <div className={styles.noneTextButton}>
             <img src={LineArchive.src} className={styles.button}></img>
           </div>
@@ -291,6 +328,13 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
       </div>
 
       <ReelsComment feedId={item.id} isOpen={isCommentOpen} toggleDrawer={v => setCommentIsOpen(v)} />
+
+      <SharePopup
+        open={isShare}
+        title={item.characterProfileName}
+        url={window.location.href}
+        onClose={() => setIsShare(false)}
+      ></SharePopup>
     </div>
   );
 };
