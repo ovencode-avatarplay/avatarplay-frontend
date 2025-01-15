@@ -20,7 +20,7 @@
 
 .exploreCard.search
 {
-  width: calc((100vw - 32px) / 3 - 3.5px);
+  width: calc((var(--second-width)) / 3 - 3.5px);
   height: 171.429px; 
 }
 

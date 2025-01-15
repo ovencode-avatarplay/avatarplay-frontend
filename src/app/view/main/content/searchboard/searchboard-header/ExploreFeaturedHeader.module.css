@@ -14,21 +14,14 @@
 {
     justify-content: center; 
     align-items: center;
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     height: 100px;    
 }
-
-@media (min-width : 402px)
-{
-    .swiperItem
-    {
-        width: 370px;
-    }
-}
+ 
 
 .backImage
 {
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     height: 100px;
     flex-shrink: 0;
     
@@ -37,14 +30,7 @@
     background: lightgray 0px -335.272px / 100% 740% no-repeat;
 }
 
-
-@media (min-width : 402px)
-{
-    .backImage
-    {
-        width: 370px;
-    }
-}
+ 
 
 .swiper-pagination {
   bottom: 16px; /* Swiper 하단에 위치 */

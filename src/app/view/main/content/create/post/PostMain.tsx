@@ -12,7 +12,7 @@ import {stat} from 'fs';
 import PostImageGrid from './PostImageGrid';
 import {FeedInfo, sendCreateFeed} from '@/app/NetWork/ShortsNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import Popup from '@/components/popup/Popup';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface Props {}
 const mediaTypeConfig = {
@@ -347,7 +347,7 @@ const PostMain: React.FC<Props> = () => {
       </div>
       <LoadingOverlay loading={loading} />
       {warnPopup && (
-        <Popup
+        <CustomPopup
           type="alert"
           title="Alert"
           description="No media added"
@@ -363,7 +363,7 @@ const PostMain: React.FC<Props> = () => {
         />
       )}
       {publishPopup && (
-        <Popup
+        <CustomPopup
           type="alert"
           title="Alert"
           description="Publish"

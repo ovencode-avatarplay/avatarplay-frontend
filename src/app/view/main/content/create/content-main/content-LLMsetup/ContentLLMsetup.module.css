@@ -1,8 +1,7 @@
 .modalContainer
 {
-    width: 100vw;
+    width: var(--full-width);
     height: 100vh;
-    max-width: 402px;
     margin: 0 auto;
     overflow: hidden; 
     background: #fff;
@@ -91,23 +90,14 @@
 .categoryList
 {
     display: flex;
-    width: calc(100vh - 32px);
+    width: var(--second-width);
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
     margin-top: 12px;
     margin-left: 16px;
     margin-right: 16px;
-}
-
-@media (min-width:402px)
-{
-    .categoryList
-    {
-        max-width: 370px;
-    }
-}
-
+} 
 .llmCategory
 {
     display: flex;

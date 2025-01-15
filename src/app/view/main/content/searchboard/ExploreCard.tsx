@@ -70,8 +70,8 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
 
   return (
     <>
-      <div className={`${styles.exploreCard} ${classType && getClassType(classType)}`}>
-        <div
+      <article className={`${styles.exploreCard} ${classType && getClassType(classType)}`}>
+        <figure
           className={styles.exploreImage}
           style={{
             backgroundImage: `url(${thumbnail || '/images/001.png'})`,
@@ -82,12 +82,12 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
 
         {contentRank && contentRank < RankCount && (
           <div className={styles.rankArea}>
-            <div className={styles.rankText}>{contentRank}</div>
+            <span className={styles.rankText}>{contentRank}</span>
           </div>
         )}
 
         <div className={styles.exploreOverlay}>
-          <div className={styles.contentName}>{contentName}</div>
+          <span className={styles.contentName}>{contentName}</span>
           {updateExplorState !== 0 && <div className={styles.isNewLabel}>{getUpdateState(updateExplorState)}</div>}
           <div className={styles.dataArea}>
             {exploreItemType === 0 ? (
@@ -100,7 +100,7 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
             )}
           </div>
         </div>
-      </div>
+      </article>
     </>
   );
 };

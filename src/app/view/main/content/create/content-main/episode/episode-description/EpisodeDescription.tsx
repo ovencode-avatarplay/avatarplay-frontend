@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useState, useEffect, useRef, useMemo} from 'react';
-import {Button, DialogContent, DialogTitle, Modal, TextField, Typography} from '@mui/material';
+import {Modal} from '@mui/material';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {EpisodeInfo, setCurrentEpisodeInfo, updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
@@ -13,7 +13,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import {BoldAI, BoldCharacter, BoldChatRoundDots} from '@ui/Icons';
-import Popup from '@/components/popup/Popup';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface CharacterDataType {
   userId: number;
@@ -418,7 +418,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
         )} */}
 
         {isMessageBoxOpen && (
-          <Popup
+          <CustomPopup
             type="alert"
             title="Alert"
             description="override value?"

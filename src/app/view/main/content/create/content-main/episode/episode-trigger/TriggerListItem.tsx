@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux'; // Redux에서 상태를 가져오기 위해 추가
 import {RootState} from '@/redux-store/ReduxStore'; // RootState 타입 가져오기
-import {TriggerActionType, TriggerTypeNames} from '@/types/apps/DataTypes'; // TriggerInfo 타입 가져오기
 import styles from './TriggerListItem.module.css'; // CSS 모듈 임포트
 import {
   Arrow_Trigger,
@@ -20,17 +19,22 @@ import {
   LineCopy,
   LineDelete,
 } from '@ui/Icons';
-import {EmotionState, TriggerMediaState} from '@/types/apps/content/episode/TriggerInfo';
 import TriggerCreate from './TriggerCreate';
-import {duplicateTriggerInfo, removeTriggerInfo, updateTriggerInfo} from '@/redux-store/slices/EpisodeInfo';
+import {
+  duplicateTriggerInfo,
+  EmotionState,
+  removeTriggerInfo,
+  TriggerActionType,
+  TriggerMediaState,
+  TriggerTypeNames,
+  updateTriggerInfo,
+} from '@/redux-store/slices/EpisodeInfo';
 import TriggerChapterList from './TriggerChapterList';
 import {moveTriggerToEpisode} from '@/redux-store/slices/ContentInfo';
 import BottomRenameDrawer from '../BottomRenameDrawer';
 import {inputType} from '@/components/create/MaxTextInput';
-import {number} from 'valibot';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
-import {Alert} from '@mui/material';
 
 const mediaTypeConfig = {
   image: {

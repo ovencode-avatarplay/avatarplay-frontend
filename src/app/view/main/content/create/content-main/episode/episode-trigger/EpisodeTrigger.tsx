@@ -77,8 +77,9 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
       open={open}
       onClose={closeModal}
       fullScreen
+      className={styles['modal-body']}
       disableAutoFocus={true}
-      disableEnforceFocus={true} // disableEnforceFocus 속성 사용
+      disableEnforceFocus={true}
     >
       <div className={styles.modal_body}>
         <div className={styles.header}>
@@ -114,17 +115,19 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
             <div style={{height: '50px'}}></div>
           </div>
         </div>
-        <CustomButton
-          size="Large"
-          state="Normal"
-          type="Primary"
-          customClassName={[styles.setupButtons]}
-          onClick={() => {
-            saveDraft();
-          }}
-        >
-          Apply
-        </CustomButton>
+        <div className={styles.buttonArea}>
+          <CustomButton
+            size="Large"
+            state="Normal"
+            type="Primary"
+            customClassName={[styles.setupButtons]}
+            onClick={() => {
+              saveDraft();
+            }}
+          >
+            Apply
+          </CustomButton>
+        </div>
         {/* WriteTriggerName 모달 */}
         <WriteTriggerName
           open={isWriteTriggerNameOpen}

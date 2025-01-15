@@ -4,11 +4,7 @@ import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation'; // 클라이언트 사이드에서만 사용
 import Root from './Root';
 import '@/app/globals.css';
-import {getCurrentLanguage, initLocalLanguage, isLogined, refreshLanaguage} from '@/utils/UrlMove';
-import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';
-import {sendSignIn, SignInReq} from './NetWork/AuthNetwork';
-import {getBrowserLanguage} from '@/utils/getLocalizedText';
-import {getLangUrlCode} from '@/configs/i18n';
+import {isLogined, refreshLanaguage} from '@/utils/UrlMove';
 
 export default function Layout({children}: {children: React.ReactNode}) {
   const [hasRun, setHasRun] = useState(false); // 상태를 관리하여 최초 실행 여부 판단

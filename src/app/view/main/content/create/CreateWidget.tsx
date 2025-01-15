@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-import {Drawer, Box, Typography, Button} from '@mui/material';
+import {Drawer} from '@mui/material';
 
 import Link from 'next/link';
 
 import styles from './CreateWidget.module.css';
-import getLocalizedText from '@/utils/getLocalizedText';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {LineCharacter, LineEdit, LineStory} from '@ui/Icons';
+import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 
 interface Props {
   open: boolean;
@@ -15,6 +15,30 @@ interface Props {
 }
 
 const CreateWidget: React.FC<Props> = ({open, onClose}) => {
+  const [startY, setStartY] = useState<number | null>(null);
+  const [translateY, setTranslateY] = useState(0);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setStartY(e.touches[0].clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (startY !== null) {
+      const currentY = e.touches[0].clientY;
+      const distance = Math.max(currentY - startY, 0);
+      setTranslateY(distance);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    const threshold = 100;
+    if (translateY > threshold) {
+      onClose();
+    } else {
+      setTranslateY(0);
+    }
+    setStartY(null);
+  };
+
   const handleClickCharacter = () => {
     onClose;
   };
@@ -28,18 +52,13 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
   };
 
   return (
-    <Drawer
-      anchor="bottom"
-      open={open}
-      onClose={onClose}
-      PaperProps={{
-        className: styles.drawerContainer,
-      }}
-    >
-      <div className={styles.widgetBox}>
-        <div className={styles.handleArea}>
-          <div className={styles.handle} />
-        </div>
+    <CustomDrawer open={open} onClose={onClose}>
+      <div
+        className={styles.widgetBox}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         <div className={styles.drawerArea}>
           <div className={styles.drawerTitle}>Select Profile</div>
           <div className={styles.buttonArea}>
@@ -51,16 +70,6 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                 </div>
               </button>
             </Link>
-            {/* <Link href={getLocalizedLink('/create/contents')} passHref>
-            <button className={`${styles.drawerButton} ${styles.drawerButtonMid}`} 
-              onClick={onClose}>
-              <div className={styles.buttonItem}>
-                <div className={styles.buttonIcon} />
-                <div className={styles.buttonText}>Contents</div>
-              </div>
-            </button>
-            </Link>
-             */}
             <Link href={getLocalizedLink('/create/character')} passHref>
               <button className={`${styles.drawerButton} ${styles.drawerButtonMid}`} onClick={onClose}>
                 <div className={styles.buttonItem}>
@@ -80,7 +89,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
           </div>
         </div>
       </div>
-    </Drawer>
+    </CustomDrawer>
   );
 };
 

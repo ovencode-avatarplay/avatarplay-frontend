@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './ToggleButton.module.css';
+import styles from './CustomToggleButton.module.css';
 
 interface ToggleButtonProps {
   isToggled: boolean;
@@ -9,7 +9,7 @@ interface ToggleButtonProps {
   onToggle: () => void;
 }
 
-const ToggleButton: React.FC<ToggleButtonProps> = ({
+const CustomToggleButton: React.FC<ToggleButtonProps> = ({
   isToggled,
   size = 'md',
   theme = 'light',
@@ -34,4 +34,4 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   );
 };
 
-export default ToggleButton;
+export default CustomToggleButton;

@@ -7,7 +7,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {setContentName} from '@/redux-store/slices/PublishInfo';
 import {LeftArrow, LineDashboard, LineEdit} from '@ui/Icons';
 import {useRouter} from 'next/navigation';
-import Popup from '@/components/popup/Popup';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 interface ContentHeaderProps {
   lastUrl?: string;
   onOpenContentName: () => void;
@@ -77,7 +77,7 @@ const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenContentName
         </button>
       </div>{' '}
       {isPopupOpen && (
-        <Popup
+        <CustomPopup
           type="alert"
           title="Alert"
           description="Are you sure you want to exit?

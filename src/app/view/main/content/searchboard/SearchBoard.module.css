@@ -29,13 +29,7 @@
     
     margin-left: 16px;  
 }
-
-@media (min-width : 402px)
-{
-    .content
-    {
-    }
-}
+ 
  
 .listContainer
 { 

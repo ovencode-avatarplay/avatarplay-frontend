@@ -52,7 +52,7 @@ background: var(--White, #FFF);
 .generateButton 
 {
     display: flex;
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     height: 46px;
     padding: 14px 20px;
     justify-content: center;
@@ -62,14 +62,7 @@ background: var(--White, #FFF);
     border-radius: 8px;
     border: 1px solid var(--Neutral-200, #E8EAED);
 }
-
-@media (min-width:402px)
-{
-  .generateButton  {
-    width: 370px;
-  }
-}
-
+ 
 .generateButton > .buttonText
 {
     color: var(--Black, #000);
@@ -109,7 +102,7 @@ background: var(--White, #FFF);
 .styleArea 
 {
     display: flex;
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
@@ -118,13 +111,7 @@ background: var(--White, #FFF);
     margin-right: 16px;
     margin-top: 20px;
 }
-
-@media (min-width:402px)
-{
-  .styleArea  {
-    width: 370px;
-  }
-}
+ 
 
 .styleArea > .title{
     display: flex;
@@ -152,7 +139,7 @@ background: var(--White, #FFF);
 
 .styleSwiper > .swiperSlide {
     display: flex;
-    width: calc((100vw - 32px) * 0.23);
+    width: calc(var(--second-width) * 0.23);
     height: 122px;
     padding-bottom: 2px;
     flex-direction: column;
@@ -174,7 +161,7 @@ background: var(--White, #FFF);
   
 .swiperSlide > .slideBackground {
     position: relative;
-    width: calc((100vw - 32px) * 0.23);
+    width: calc(var(--second-width) * 0.23);
     height: 88px;
     flex-shrink: 0;
 

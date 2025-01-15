@@ -4,21 +4,14 @@
     bottom: 45px;
     position: absolute;
     display: flex;
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     justify-content: space-between;
     align-items: center;
     margin-left: 16px;
     margin-right: 16px;
     gap: 12px;
 }
-
-@media (min-width : 402px)
-{
-    .floatButtonArea
-    {
-        width: 370px;
-    }
-}
+ 
 
 .floatButtonArea > .floatButton
 {
@@ -117,25 +110,16 @@
 {
     display: flex;
 
-    width: calc(100vw - 32px);
-    margin-top: 5vh;
-    margin-left: 4vw;
-    margin-right: 4vw;
+        width: var(--second-width);
+        margin-top: 43.35px;
+        margin-left: 16px;
+        margin-right: 16px; 
     
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
 }
-
-@media (min-width : 402px) {    
-    .inputTitle{
-        width: 370px;
-        margin-top: 43.35px;
-        margin-left: 16px;
-        margin-right: 16px;
-    }
-}
-
+ 
 
 .inputTitle > .title
 {
@@ -185,26 +169,16 @@
 .inputCharacterDesc
 {
     display: flex;
-    width: calc(100vw - 32px);
-    margin-top: 5vh;
-    margin-left: 4vw;
-    margin-right: 4vw;
-
+        width: var(--second-width);
+        margin-top: 43.35px;
+        margin-left: 16px;
+        margin-right: 16px; 
     flex-direction: column;
     align-items: flex-start;
     gap: 28px;
 }
 
-
-@media (min-width : 402px) {    
-    .inputCharacterDesc{
-        width: 370px;
-        margin-top: 43.35px;
-        margin-left: 16px;
-        margin-right: 16px;
-    }
-}
-
+ 
  .characterDesc
 {
     display: flex;
@@ -249,7 +223,7 @@ background: var(--White, #FFF);
     align-items: flex-start;
     padding: 10px 12px;
 
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     height: 190px;
 
     background: var(--background);
@@ -262,14 +236,7 @@ background: var(--White, #FFF);
     align-self: stretch;
     flex-grow: 1;
 }
-
-@media (min-width : 402px)
-{
-    .inputArea
-    {
-        width: 370px;
-    }
-}
+ 
 
 
 .characterDesc > .inputArea >.inputPrompt
@@ -321,20 +288,12 @@ background: var(--White, #FFF);
 .uploadType > .buttonArea
 {
     display: flex;
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     flex-direction: column;
     align-items: flex-start;
-    margin: 7.3vw 4vw auto 4vw;
-    gap: 5vw;
-}
-
-
-@media (min-width : 402px) {    
-.uploadType > .buttonArea
- {   margin: 30px 16px auto 16px;
-    gap: 20px;
-}
-}
+    margin: 30px 16px auto 16px;
+    gap: 20px; 
+} 
 
 .uploadType > .buttonArea > .uploadButton
 {
@@ -387,14 +346,7 @@ background: #FFF;
     flex-shrink: 0;
 }
  
-
-@media (min-width : 402px) {
-    .uploadType > .buttonArea
-    {
-        width: 370px;
-    }
-}
-
+ 
 
 
 .blackIcon{
@@ -408,17 +360,10 @@ background: #FFF;
     gap: 10px;
     justify-content: start;
     align-items: center;
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     margin: 0 auto;
   }
-
-@media (min-width : 402px)
-{
-    .step_grid
-    {
-        width: 370px;
-    }
-}
+ 
   
   /* 버튼 기본 스타일 */
   .step_button {

@@ -8,7 +8,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import styles from './EpisodeTempCharacter.module.css';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {setCharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {setCharacterInfo, TriggerInfo} from '@/redux-store/slices/EpisodeInfo';
 import {RootState} from '@/redux-store/ReduxStore';
 
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
@@ -16,7 +16,6 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EpisodeAiImageGeneration from './EpisodeAiImageGeneration';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ImageUploadDialog from './ImageUploadDialog';
-import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
 
 import emptyContent from '@/data/create/empty-content-info-data.json';
 const Input = styled('input')({

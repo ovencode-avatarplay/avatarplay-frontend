@@ -4,21 +4,13 @@
     bottom: 8px;
     position: absolute;
     display: flex;
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     justify-content: space-between;
     align-items: center;
     margin-left: 16px;
     margin-right: 16px;
     gap: 12px;
-}
-
-@media (min-width:402px)
-{
-  .floatButtonArea {
-    width: 370px;
-  }
-}
-
+} 
 .floatButtonArea > .floatButton
 {
     display: flex;
@@ -135,25 +127,15 @@
 {
     display: flex;
 
-    width: 92vw;
-    margin-top: 5vh;
-    margin-left: 4vw;
-    margin-right: 4vw;
+    width: var(--second-width);
+    margin-top: 43.35px;
+    margin-left: 16px;
+    margin-right: 16px; 
     
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-}
-
-@media (min-width : 402px) {    
-    .inputTitle{
-        width: 370px;
-        margin-top: 43.35px;
-        margin-left: 16px;
-        margin-right: 16px;
-    }
-}
-
+} 
 
 .inputTitle > .title
 {
@@ -203,26 +185,17 @@
 .inputCharacterDesc
 {
     display: flex;
-    width: 92vw;
-    margin-top: 5vh;
-    margin-left: 4vw;
-    margin-right: 4vw;
+    width: var(--second-width);
+    margin-top: 43.35px;
+    margin-left: 16px;
+    margin-right: 16px; 
 
     flex-direction: column;
     align-items: flex-start;
     gap: 28px;
 }
 
-
-@media (min-width : 402px) {    
-    .inputCharacterDesc{
-        width: 370px;
-        margin-top: 43.35px;
-        margin-left: 16px;
-        margin-right: 16px;
-    }
-}
-
+ 
  .characterDesc
 {
     display: flex;
@@ -259,7 +232,7 @@ flex-direction: column;
 align-items: flex-start;
 padding: 10px 12px;
 
-width: calc(100vw - 32px);
+width: var(--second-width);
 height: 190px;
 
 background: var(--background);
@@ -273,13 +246,7 @@ align-self: stretch;
 flex-grow: 1;
 
 }
-
-@media (min-width:402px)
-{
-  .characterDesc > .inputArea  {
-    width: 370px;
-  }
-}
+ 
 
 .characterDesc > .inputArea >.inputPrompt
 {
@@ -330,19 +297,11 @@ flex-grow: 1;
 .uploadType > .buttonArea
 {
     display: flex;
-    width: 92vw;
+    width: var(--second-width);
     flex-direction: column;
     align-items: flex-start;
-    margin: 7.3vw 4vw auto 4vw;
-    gap: 5vw;
-}
-
-
-@media (min-width : 402px) {    
-.uploadType > .buttonArea
- {   margin: 30px 16px auto 16px;
+    margin: 30px 16px auto 16px;
     gap: 20px;
-}
 }
 
 .uploadType > .buttonArea > .uploadButton
@@ -395,16 +354,7 @@ background: #FFF;
     height: 24px;
     flex-shrink: 0;
 }
- 
-
-@media (min-width : 402px) {
-    .uploadType > .buttonArea
-    {
-        width: 370px;
-    }
-}
-
-
+  
 
 .blackIcon{
     filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);

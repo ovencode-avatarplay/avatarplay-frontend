@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Box, Avatar} from '@mui/material';
+import {Box} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
 import {Message, MessageGroup, SenderType} from './ChatTypes';

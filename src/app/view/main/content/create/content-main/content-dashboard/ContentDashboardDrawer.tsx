@@ -23,7 +23,7 @@ import ContentDashboardHeader from './ContentDashboardHeader';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
-import Popup from '@/components/popup/Popup';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface Props {
   open: boolean;
@@ -220,7 +220,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
         open={open}
         onClose={onClose}
         PaperProps={{
-          sx: {width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto'},
+          sx: {width: 'var(--full-width)', height: '100vh', margin: '0 auto'},
         }}
         BackdropProps={{
           sx: {
@@ -278,7 +278,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
       </Drawer>
 
       {dialogOpen && (
-        <Popup
+        <CustomPopup
           type="alert"
           title="Discard Content?"
           description="Data will be disappeared. Are you sure?"

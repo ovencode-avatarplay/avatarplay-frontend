@@ -3,7 +3,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: var(--full-width);
   height: 100vh;
   pointer-events: none; /* 다른 요소들과의 상호작용 허용 */
   display: flex;

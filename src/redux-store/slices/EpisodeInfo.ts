@@ -1,10 +1,8 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {TriggerInfo} from '@/types/apps/content/episode/TriggerInfo';
-import {Conversation} from '@/types/apps/content/episode/Conversation';
 
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
-import {ConversationTalkInfo, ConversationPriortyType, ConversationTalkType} from '@/types/apps/DataTypes';
+//#region  Episode
 
 export interface EpisodeInfo {
   id: number;
@@ -16,6 +14,23 @@ export interface EpisodeInfo {
   conversationTemplateList: Conversation[];
 }
 
+export interface EpisodeDescription {
+  scenarioDescription: string;
+  introDescription: string;
+  secret: string;
+}
+
+interface EpisodeInfoState {
+  currentEpisodeInfo: EpisodeInfo; // 현재 선택된 EpisodeInfo
+}
+
+const initialState: EpisodeInfoState = {
+  currentEpisodeInfo: emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
+};
+
+//#endregion
+
+//#region  Character
 export interface CharacterInfo {
   id: number;
   name: string;
@@ -38,19 +53,108 @@ export interface GalleryImageInfo {
   imageUrl: string;
 }
 
-export interface EpisodeDescription {
+//#endregion
+
+//#region  Trigger
+export interface TriggerInfo {
+  episodeId: number;
+  id: number;
+  name: string;
+  triggerType: number;
+  triggerValueIntimacy: number;
+  triggerValueChatCount: number;
+  triggerValueKeyword: string;
+  triggerValueTimeMinute: number;
+  emotionState: EmotionState;
+  triggerActionType: number;
+  actionChangeEpisodeId: number;
+  actionPromptScenarioDescription: string;
+  actionIntimacyPoint: number;
+  maxIntimacyCount: number;
+  actionCharacterInfo: CharacterInfo;
+  actionMediaState: TriggerMediaState;
+  actionMediaUrlList: string[];
+  actionConversationList: Conversation[];
+}
+export interface ActionChangePrompt {
+  characterName: string;
+  characterDescription: string;
   scenarioDescription: string;
   introDescription: string;
   secret: string;
 }
 
-interface EpisodeInfoState {
-  currentEpisodeInfo: EpisodeInfo; // 현재 선택된 EpisodeInfo
+export enum TriggerMediaState {
+  None = 0,
+  TriggerImage = 1,
+  TriggerVideo = 2,
+  TriggerAudio = 3,
 }
 
-const initialState: EpisodeInfoState = {
-  currentEpisodeInfo: emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0],
-};
+export enum EmotionState {
+  Happy = 0,
+  Angry = 1,
+  Sad = 2,
+  Excited = 3,
+  Scared = 4,
+  Bored = 5,
+}
+export enum TriggerMainDataType {
+  triggerValueIntimacy = 0,
+  triggerValueKeyword = 1,
+  triggerValueChatCount = 2,
+  triggerValueTimeMinute = 3,
+  triggerValueEmotionStatus = 4,
+  triggerValueEpisodeStart = 5,
+}
+
+export enum TriggerTypeNames {
+  Intimacy,
+  Keyword,
+  ChatCount,
+  TimeMinute,
+  EmotionStatus,
+  EpisodeStart,
+}
+
+export enum TriggerActionType {
+  EpisodeChange,
+  ChangePrompt,
+  GetIntimacyPoint,
+  ChangeCharacter,
+  PlayMedia,
+}
+//#endregion
+
+//#region  Conversation
+export interface Conversation {
+  id: number;
+  conversationType: number;
+  user: string;
+  character: string;
+}
+
+export interface ConversationTalkInfo {
+  /// <summary>
+  // 행동, 말 Type
+  /// </summary>
+  type: ConversationTalkType;
+  /// <summary>
+  // 대화 행동
+  /// </summary>
+  talk: string;
+}
+
+export enum ConversationTalkType {
+  Action,
+  Speech,
+}
+
+export enum ConversationPriortyType {
+  Mandatory,
+  DependsOn,
+}
+//#endregion
 
 const episodeInfoSlice = createSlice({
   name: 'introPrompt',
