@@ -116,6 +116,7 @@ export interface RecommendFeedRes {
 export const sendGetRecommendFeed = async (payload: RecommendFeedReq): Promise<ResponseAPI<RecommendFeedRes>> => {
   try {
     // POST 요청으로 변경
+    console.log('리코맨드시작');
     const response = await api.post<ResponseAPI<RecommendFeedRes>>('/Feed/recommend', payload);
 
     if (response.data.resultCode === 0) {

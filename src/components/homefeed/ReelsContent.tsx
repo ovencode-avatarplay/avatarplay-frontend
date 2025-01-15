@@ -321,7 +321,12 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
           <div className={styles.noneTextButton}>
             <img src={LineArchive.src} className={styles.button}></img>
           </div>
-          <div className={styles.noneTextButton}>
+          <div
+            className={styles.noneTextButton}
+            onClick={() => {
+              alert('추후 신고 기능 추가');
+            }}
+          >
             <img src={BoldMore.src} className={styles.button}></img>
           </div>
         </div>
