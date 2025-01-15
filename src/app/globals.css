@@ -100,7 +100,6 @@
   margin-right: 16px;
 }
 
-
 @media (prefers-color-scheme: dark) {
   :root {    
     --background: var(--background-fill-dark-theme);
@@ -137,3 +136,10 @@ body {
 .blackIcon{
   filter: var(--black-Icon-Filter);
 }
+
+h1, h2, h3, h4, h5, h6
+{
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: 'Lato', Arial, Helvetica, sans-serif;
+}
+

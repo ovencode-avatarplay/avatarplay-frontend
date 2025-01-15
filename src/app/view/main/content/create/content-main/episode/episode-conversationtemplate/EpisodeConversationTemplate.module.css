@@ -85,7 +85,7 @@
     position: fixed; /* position을 fixed로 변경 */
     width: var(--full-width);
     height: 70px;
-    left: 0px;
+    
     bottom: 0px;
 }
 
@@ -207,3 +207,4 @@ color: #1E1E1E;
     align-items: center;
     flex-shrink: 0;
 }
+ 

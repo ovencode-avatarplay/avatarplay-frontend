@@ -227,7 +227,7 @@ const SearchBoard: React.FC = () => {
       label: 'Featured',
       preContent: '',
       content: (
-        <div className={styles.featuredContainer}>
+        <section className={styles.featuredContainer}>
           <div className={styles.scrollArea}>
             {bannerList && <ExploreFeaturedHeader items={bannerList} />}
             <div className={styles.content}>
@@ -257,13 +257,13 @@ const SearchBoard: React.FC = () => {
               </main>
             </div>
           </div>
-        </div>
+        </section>
       ),
     },
     {
       label: 'Search',
       content: (
-        <div className={styles.searchContainer}>
+        <section className={styles.searchContainer}>
           <div className={styles.scrollArea} onScroll={handleScroll}>
             <SearchBoardHeader
               setSearchResultList={setSearchResultList}
@@ -279,7 +279,7 @@ const SearchBoard: React.FC = () => {
               fetchExploreData={fetchExploreData}
               setSearchOffset={setSearchOffset}
             />
-            <div className={styles.filterArea}>
+            <header className={styles.filterArea}>
               <div className={styles.tagArea}>
                 <button
                   className={`${styles.tag} ${search === 'All' ? styles.selected : ''}`}
@@ -319,13 +319,13 @@ const SearchBoard: React.FC = () => {
                   />
                 )}
               </button>
-            </div>
+            </header>
             {searchResultList === null || searchResultList.length < 1 ? (
               <>
-                <div className={styles.emptyResult}> Result : 0</div>
-                <div className={styles.emptyContainer}>
+                <h2 className={styles.emptyResult}> Result : 0</h2>
+                <section className={styles.emptyContainer}>
                   <EmptyState stateText={'No search data'} />
-                </div>
+                </section>
               </>
             ) : (
               <>
@@ -359,7 +359,7 @@ const SearchBoard: React.FC = () => {
               </>
             )}
           </div>
-        </div>
+        </section>
       ),
     },
   ];
