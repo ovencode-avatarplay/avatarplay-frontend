@@ -8,30 +8,50 @@ import ReelsContent from './ReelsContent';
 import {FeedInfo, sendFeedView, sendGetRecommendFeed} from '@/app/NetWork/ShortsNetwork';
 import styles from './ReelsLayout.module.css';
 
-const ReelsLayout = () => {
+interface ReelsLayoutProps {
+  initialFeed?: FeedInfo; // 특정 URL 키를 통해 전달받은 초기 피드
+}
+
+const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   const [info, setInfo] = useState<FeedInfo[]>([]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 활성 슬라이드 인덱스
 
-  // 추천 피드 데이터를 가져오는 함수
   const fetchRecommendFeed = async () => {
     const result = await sendGetRecommendFeed({language: navigator.language || 'en-US'});
     if (result.resultCode === 0 && result.data) {
-      setInfo(result.data.feedInfoList);
-      console.log('Recommended feeds fetched successfully:', result.data);
-    } else {
-      console.error('Failed to fetch recommended feeds:', result.resultMessage);
+      const feeds = result.data.feedInfoList;
+      if (initialFeed) {
+        // 초기 피드를 배열의 첫 번째로 추가
+        setInfo([initialFeed, ...feeds]);
+      } else {
+        setInfo(feeds);
+      }
+      console.log(feeds);
     }
   };
+
+  useEffect(() => {
+    fetchRecommendFeed();
+  }, [initialFeed]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const currentPath = window.location.pathname; // 현재 경로
+      const basePath = '/ko/main/homefeed'; // 동적 라우팅이 없는 기본 경로
+
+      // 현재 경로가 basePath와 같다면 URL에 첫 번째 피드의 urlLinkKey 추가
+      if (currentPath === basePath && info.length > 0) {
+        const firstFeed = info[0];
+        const newUrl = `${basePath}/${firstFeed.urlLinkKey}`;
+        window.history.replaceState(null, '', newUrl); // 주소창만 변경 (새로고침 없음)
+      }
+    }
+  }, [info]);
 
   // 피드 조회 API 호출
   const viewFeed = async (feedId: number) => {
     try {
       const response = await sendFeedView(feedId);
-      if (response.resultCode === 0 && response.data) {
-        console.log('Feed viewed successfully:', response.data);
-      } else {
-        console.error('Failed to view feed:', response.resultMessage);
-      }
     } catch (error) {
       console.error('Error while viewing feed:', error);
     }
@@ -48,12 +68,12 @@ const ReelsLayout = () => {
 
     if (currentItem) {
       viewFeed(currentItem.id); // 현재 슬라이드 아이템 조회
+
+      // URL 업데이트 (주소창만 변경, 새로고침 없음)
+      const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
+      window.history.pushState(null, '', newUrl); // 새 주소로 변경
     }
   };
-
-  useEffect(() => {
-    fetchRecommendFeed();
-  }, []);
 
   return (
     <Swiper
