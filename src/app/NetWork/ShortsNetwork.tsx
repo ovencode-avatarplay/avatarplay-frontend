@@ -43,6 +43,7 @@ export const sendGetHomeFeedShorts = async (): Promise<{
 
 export interface FeedInfo {
   id: number;
+  urlLinkKey: number;
   mediaState: number;
   mediaUrlList: string[];
   description: string;
@@ -180,22 +181,35 @@ export const sendFeedView = async (
 export const sendFeedLike = async (
   feedId: number,
   isLike: boolean,
-): Promise<{resultCode: number; resultMessage: string}> => {
+): Promise<{
+  resultCode: number;
+  resultMessage: string;
+  data: {feedId: number; isLike: boolean; likeCount: number} | null;
+}> => {
   try {
     const response = await api.post('/Feed/like', {feedId, isLike});
-    const {resultCode, resultMessage} = response.data;
+    const {resultCode, resultMessage, data} = response.data;
 
     if (resultCode === 0) {
-      return {resultCode, resultMessage};
+      return {
+        resultCode,
+        resultMessage,
+        data: data || null, // 데이터가 없을 경우 null 반환
+      };
     } else {
       console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage};
+      return {
+        resultCode,
+        resultMessage,
+        data: null, // 실패 시 data를 null로 반환
+      };
     }
   } catch (error) {
     console.error('Failed to like feed:', error);
     return {
       resultCode: -1,
       resultMessage: 'Failed to like feed',
+      data: null,
     };
   }
 };
@@ -247,6 +261,7 @@ export const sendFeedShare = async (feedId: number): Promise<{resultCode: number
 
 // 댓글 정보 타입 정의
 export interface CommentInfo {
+  email: string;
   commentId: number;
   content: string;
   parentCommentId: number;
@@ -403,5 +418,47 @@ export const sendGetCommentList = async (payload: GetCommentListReq): Promise<Re
   } catch (error) {
     console.error('Error fetching comment list:', error);
     throw new Error('Failed to fetch comment list. Please try again.');
+  }
+};
+
+// Feed Get API 요청 타입
+export interface GetFeedReq {
+  urlLinkKey: string;
+  languageType: string;
+}
+// Feed Get API 응답 타입
+export interface GetFeedRes {
+  feedInfo: FeedInfo;
+}
+/**
+ * 특정 피드 가져오기
+ * @param payload 요청 본문에 포함할 데이터 (urlLinkKey, languageType)
+ * @returns API 응답 결과
+ */
+export const sendGetFeed = async (
+  payload: GetFeedReq,
+): Promise<{
+  resultCode: number;
+  resultMessage: string;
+  data: GetFeedRes | null;
+}> => {
+  try {
+    // POST 요청 실행
+    const response = await api.post('/Feed/get', payload);
+    const {resultCode, resultMessage, data} = response.data;
+
+    if (resultCode === 0) {
+      return {resultCode, resultMessage, data: data || null}; // 성공 시 데이터 반환
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {resultCode, resultMessage, data: null}; // 실패 시 데이터 null
+    }
+  } catch (error) {
+    console.error('Failed to fetch feed:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to fetch feed',
+      data: null,
+    };
   }
 };
