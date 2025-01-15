@@ -37,6 +37,12 @@ export default function Layout({children}: {children: React.ReactNode}) {
 
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&family=Noto+Sans+JP&family=Noto+Sans+SC&family=Noto+Sans+TC&display=swap"
+        />
+      </head>
       <body>
         <Root>{children}</Root> {/* 설정 정보를 Provider를 통해 자식 컴포넌트에 전달 */}
       </body>
