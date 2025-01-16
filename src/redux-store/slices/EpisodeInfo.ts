@@ -36,6 +36,11 @@ export interface CharacterInfo {
   name: string;
   introduction: string;
   description: string;
+
+  worldScenario: string
+  greeting: string,
+  secret: string,
+
   genderType: number;
   mainImageUrl: string;
   portraitGalleryImageUrl: GalleryImageInfo[];
