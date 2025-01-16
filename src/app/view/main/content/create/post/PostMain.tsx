@@ -218,6 +218,7 @@ const PostMain: React.FC<Props> = () => {
       commentCount: 0,
       isLike: false,
       isDisLike: false,
+      isBookmark: false,
       playTime: '', // 예시 값
       characterProfileId: 0,
       characterProfileName: '',

@@ -4,9 +4,10 @@ import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
-import {FeedInfo, sendFeedDisLike, sendFeedLike, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
+import {FeedInfo, sendFeedBookmark, sendFeedDisLike, sendFeedLike, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
 import {
+  BoldArchive,
   BoldComment,
   BoldDislike,
   BoldLike,
@@ -16,6 +17,7 @@ import {
   BoldShare,
   BoldVideo,
   LineArchive,
+  LineArrowLeft,
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
 import ReelsComment from './ReelsComment';
@@ -128,7 +130,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
     if (navigator.share) {
       try {
         await navigator.share(shareData); // 네이티브 공유 UI 호출
-        alert('링크가 성공적으로 공유되었습니다!');
       } catch (error) {
         console.error('공유 실패:', error);
       }
@@ -136,9 +137,34 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
       setIsShare(true);
     }
   };
+
+  const [isBookmarked, setIsBookmarked] = useState(item.isBookmark);
+  const bookmarkFeed = async () => {
+    const payload = {
+      feedId: item.id, // 북마크할 피드 ID
+      isSave: !isBookmarked, // 북마크 저장 여부 (true: 저장, false: 해제)
+    };
+
+    const response = await sendFeedBookmark(payload);
+    setIsBookmarked(!isBookmarked);
+    if (response.resultCode === 0) {
+      console.log('Bookmark operation successful:', response);
+    } else {
+      console.error('Failed to bookmark feed:', response.resultMessage);
+    }
+  };
+
   React.useEffect(() => {}, [item]);
   return (
     <div className={styles.reelsContainer}>
+      <div className={styles.followingContainer}>
+        <div className={styles.followingBox}>
+          <span className={styles.followingText}>Featured</span>
+          <div className={styles.iconArrowDown}>
+            <img src={LineArrowLeft.src} style={{transform: 'rotate(270deg)'}}></img>
+          </div>
+        </div>
+      </div>
       <div className={styles.mainContent}>
         <div className={styles.Image}>
           {item.mediaState === 1 && (
@@ -318,8 +344,14 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
             <img src={BoldShare.src} className={styles.button}></img>
           </div>
 
-          <div className={styles.noneTextButton}>
-            <img src={LineArchive.src} className={styles.button}></img>
+          <div
+            className={styles.noneTextButton}
+            onClick={() => {
+              bookmarkFeed();
+            }}
+          >
+            {isBookmarked && <img src={BoldArchive.src} className={styles.button}></img>}
+            {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
           </div>
           <div
             className={styles.noneTextButton}

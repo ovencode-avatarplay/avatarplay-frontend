@@ -115,6 +115,13 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
         backgroundColor: type == CommentType.parent ? '#f8f9fa' : '#ffffff',
       }}
     >
+      <div className={styles.followingContainer}>
+        <span className={styles.followingText}>Following</span>
+        <div className={styles.iconArrowDown}>
+          <div className={styles.vector}></div>
+        </div>
+      </div>
+
       <div className={styles.content}>
         {/* User Info */}
         <div className={styles.userInfo}>
