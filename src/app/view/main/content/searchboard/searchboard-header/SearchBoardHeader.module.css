@@ -6,19 +6,11 @@
 .searchHeader
 {
   display: flex;
-  width: calc(100vw - 32px);
+  width: var(--second-width);
   align-items: center;
   gap: 8px; 
 }
-
-@media (min-width : 402px)
-{
-  .searchHeader
-  {
-    width: 370px;
-  }
-}
-
+ 
 .ageRateArea
 {
   display: flex;

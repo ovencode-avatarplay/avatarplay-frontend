@@ -43,6 +43,7 @@ export const sendGetHomeFeedShorts = async (): Promise<{
 
 export interface FeedInfo {
   id: number;
+  urlLinkKey: number;
   mediaState: number;
   mediaUrlList: string[];
   description: string;
@@ -115,6 +116,7 @@ export interface RecommendFeedRes {
 export const sendGetRecommendFeed = async (payload: RecommendFeedReq): Promise<ResponseAPI<RecommendFeedRes>> => {
   try {
     // POST 요청으로 변경
+    console.log('리코맨드시작');
     const response = await api.post<ResponseAPI<RecommendFeedRes>>('/Feed/recommend', payload);
 
     if (response.data.resultCode === 0) {
@@ -417,5 +419,47 @@ export const sendGetCommentList = async (payload: GetCommentListReq): Promise<Re
   } catch (error) {
     console.error('Error fetching comment list:', error);
     throw new Error('Failed to fetch comment list. Please try again.');
+  }
+};
+
+// Feed Get API 요청 타입
+export interface GetFeedReq {
+  urlLinkKey: string;
+  languageType: string;
+}
+// Feed Get API 응답 타입
+export interface GetFeedRes {
+  feedInfo: FeedInfo;
+}
+/**
+ * 특정 피드 가져오기
+ * @param payload 요청 본문에 포함할 데이터 (urlLinkKey, languageType)
+ * @returns API 응답 결과
+ */
+export const sendGetFeed = async (
+  payload: GetFeedReq,
+): Promise<{
+  resultCode: number;
+  resultMessage: string;
+  data: GetFeedRes | null;
+}> => {
+  try {
+    // POST 요청 실행
+    const response = await api.post('/Feed/get', payload);
+    const {resultCode, resultMessage, data} = response.data;
+
+    if (resultCode === 0) {
+      return {resultCode, resultMessage, data: data || null}; // 성공 시 데이터 반환
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {resultCode, resultMessage, data: null}; // 실패 시 데이터 null
+    }
+  } catch (error) {
+    console.error('Failed to fetch feed:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to fetch feed',
+      data: null,
+    };
   }
 };

@@ -6,7 +6,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import {sendFavoriteEmoticon} from '@/app/NetWork/ChatNetwork';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '@/redux-store/ReduxStore';
 import {updateFavorite} from '@/redux-store/slices/EmoticonSlice';
 
 interface EmojiOverlayPopupProps {

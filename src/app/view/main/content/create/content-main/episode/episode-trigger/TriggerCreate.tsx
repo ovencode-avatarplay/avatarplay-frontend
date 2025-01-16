@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
-import {useRouter} from 'next/navigation';
 
 import styles from './TriggerCreate.module.css';
 
@@ -11,6 +10,10 @@ import {
   duplicateTriggerInfo,
   EpisodeInfo,
   GalleryImageInfo,
+  TriggerActionType,
+  TriggerInfo,
+  TriggerMediaState,
+  TriggerTypeNames,
   updateTriggerInfo,
 } from '@/redux-store/slices/EpisodeInfo';
 
@@ -20,7 +23,6 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import CharacterGrid from '@/app/view/studio/characterDashboard/CharacterGrid';
 import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
 import {RootState} from '@/redux-store/ReduxStore';
-import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
 import {
@@ -37,13 +39,11 @@ import {
   LineCheck,
   LineUpload,
 } from '@ui/Icons';
-import {TriggerActionType, TriggerMainDataType, TriggerTypeNames} from '@/types/apps/DataTypes';
-import {EmotionState, TriggerInfo, TriggerMediaState} from '@/types/apps/content/episode/TriggerInfo';
 import EpisodeInitializeStep from '../episode-initialize/EpisodeInitializeStep';
 import Modal from '@mui/material/Modal/Modal';
 import MaxTextInput, {inputType as inputType} from '@/components/create/MaxTextInput';
 import TriggerCreateMedia from './TriggerCreateMedia';
-import Popup from '@/components/popup/Popup';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {useDispatch} from 'react-redux';
 import ChapterItemList from '../../chapter/ChapterItemList';
 import CustomButton from '@/components/layout/shared/CustomButton';
@@ -857,7 +857,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     <Modal
       open={open}
       onClose={onClose}
-      sx={{width: '100vw', height: '100vh', maxWidth: '402px', margin: '0 auto', overflow: 'hidden'}}
+      sx={{width: 'var(--full-width)', height: '100vh', margin: '0 auto', overflow: 'hidden'}}
     >
       <div
         style={{
@@ -925,7 +925,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
           </button>
         </div>
         {isCompletePopupOpen && (
-          <Popup
+          <CustomPopup
             type="alert"
             title="Completed"
             description="The trigger has been successfully created"
@@ -955,7 +955,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
           />
         )}
         {onBackButton && (
-          <Popup
+          <CustomPopup
             type="alert"
             title="Alert"
             description="Are you sure you want to exit?\nYour Change will be lost"

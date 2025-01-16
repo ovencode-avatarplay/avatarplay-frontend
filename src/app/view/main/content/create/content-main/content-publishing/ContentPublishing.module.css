@@ -1,8 +1,7 @@
 .modalContainer
 {
-    width: 100vw;
-    height: 100vh;
-    max-width: 402px;
+    width: var(--full-width);
+    height: 100vh; 
     margin: 0 auto;
     overflow: hidden; 
     background: #fff;
@@ -45,20 +44,13 @@
 .informationArea
 {
     display: flex;
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
     margin-bottom: 20px;
 }
-
-@media (min-width:402px)
-{
-  .informationArea  {
-    width: 370px;
-  }
-}
-
+ 
  
 
 .smallTitle
@@ -197,7 +189,7 @@
 }
 
 .tagContainer {    
-    width: calc(100vw - 32px);
+    width: var(--second-width);
     min-height: 283px;
 
     display: flex;
@@ -205,14 +197,7 @@
     flex-wrap: wrap;
     margin-bottom: 8px;
 }
-
-@media (min-width:402px)
-{
-  .tagContainer  {
-    width: 370px;
-  }
-}
-
+ 
 .tagTitleArea
 {
     display: flex;
@@ -342,28 +327,4 @@
     filter: brightness(0) saturate(100%) invert(72%) sepia(2%) saturate(1072%) hue-rotate(170deg) brightness(88%) contrast(86%);
 }
 
-
-.buttonComplete
-{
-    display: flex;
-    width: calc(100vw - 32px);
-    
-    color: var(--White, #FFF);
-    leading-trim: both;
-    text-edge: cap;
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: Lato;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 21px; /* 150% */
-    letter-spacing: -0.4px;
-}
-
-@media (min-width:402px)
-{
-    .buttonComplete
-    {
-        width: 370px;
-    }
-}
+ 

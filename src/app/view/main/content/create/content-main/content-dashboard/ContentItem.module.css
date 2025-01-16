@@ -1,6 +1,6 @@
 .contentItem
 {
-    width: calc(100vw - 32px);
+    width: var(--second-width);
 
     display: flex;
     flex-direction: column;
@@ -10,15 +10,7 @@
     border-radius: 10px;
     border: 1px solid var(--Neutral-200, #E8EAED);
     background: var(--White, #FFF);
-}
-
-@media (min-width:402px)
-{
-  .contentItem  {
-    width: 370px;
-  }
-}
-
+} 
 .container {
     position: relative;
     display: flex;

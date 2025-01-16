@@ -40,8 +40,8 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({title, data}) => {
   }, [data]);
 
   return (
-    <div className={styles.containerBox}>
-      <div className={styles.title}>{title}</div>
+    <section className={styles.containerBox}>
+      <h2 className={styles.title}>{title}</h2>
 
       <Swiper slidesPerView={2.5} spaceBetween={'5px'} className={styles.exploreSwiper} grabCursor={true}>
         {content.map((explore, index) => (
@@ -60,7 +60,7 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({title, data}) => {
           </SwiperSlide>
         ))}
       </Swiper>
-    </div>
+    </section>
   );
 };
 

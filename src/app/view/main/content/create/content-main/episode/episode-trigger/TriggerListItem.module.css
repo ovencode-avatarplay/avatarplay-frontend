@@ -3,20 +3,13 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: calc(100vw - 32px);
+  width: var(--second-width);
   height: auto;
   background: var(--background);
   border: 1px solid #e8eaed;
   border-radius: 10px;
 }
-
-@media (min-width : 402px)
-{
-  .triggerCard
-  {
-    width: 370px;
-  }
-}
+ 
 
 .triggerHeader {
   display: flex;

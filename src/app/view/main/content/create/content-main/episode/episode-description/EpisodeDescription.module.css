@@ -2,9 +2,8 @@
 
 .modalContainer
 {
-    width: 100vw;
-    height: 100vh;
-    max-width: 402px;
+  width: var(--full-width);
+    height: 100vh; 
     margin: 0 auto;
     overflow: hidden; 
     background: #fff;
@@ -16,33 +15,16 @@
     display: flex;
     flex-direction: column;
 }
-
-@media (min-width : 402px)
-{
-  .modalContainer
-  {
-    width: 402px;
-  }
-}
-
-
+ 
 .descItem
 {
   display: flex;
-  width: calc(100vw - 32px);
+  width: var(--second-width);
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
   margin: 0 16px;
-}
-
-@media (min-width : 402px) {
-  .descItem
-  {
-    width : 370px;
-  }
-  
-}
+} 
 
 .descContainer
 {

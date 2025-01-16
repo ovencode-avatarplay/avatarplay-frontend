@@ -1,6 +1,6 @@
 .drawerContainer {
     justify-self: center;    
-    max-width: 402px;
+    width: var(--full-width);
     max-height: 80vh;
     padding: 16px;
     background-color: #f9f9f9;

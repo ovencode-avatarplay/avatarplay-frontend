@@ -56,10 +56,17 @@
 
 
   --foreground: #171717;
+
+  /* ScreenSize 관련*/
   --safe-area-inset-top: env(safe-area-inset-top);
   --safe-area-inset-bottom: env(safe-area-inset-bottom);
   --safe-area-inset-left: env(safe-area-inset-left);
   --safe-area-inset-right: env(safe-area-inset-right);
+
+
+  --full-width: clamp(0px, 100vw, 402px);
+  --second-width : clamp(0px, calc(100vw - 32px) , calc(402px - 32px));  /* 370px */
+  --third-width : clamp(0px, calc(100vw - 32px - 32px) , calc(402px - 32px - 32px));  /* 338px */
 
   --bottom-nav-height : 78px;
 }
@@ -73,6 +80,24 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.full-width-size {
+  width: var(--full-width);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.second-width-size {
+  width: var(--second-width);
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.third-width-size {
+  width: var(--third-width);
+  margin-left: 16px;
+  margin-right: 16px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -98,7 +123,7 @@ body {
   user-select: none;
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Lato', Arial, Helvetica, sans-serif;
+  font-family: 'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC', sans-serif;
 }
 
 @layer utilities {
@@ -111,3 +136,10 @@ body {
 .blackIcon{
   filter: var(--black-Icon-Filter);
 }
+
+h1, h2, h3, h4, h5, h6
+{
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: 'Lato', Arial, Helvetica, sans-serif;
+}
+

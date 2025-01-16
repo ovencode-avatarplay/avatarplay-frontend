@@ -11,20 +11,14 @@
 
   padding: 10px 12px;
 
-  width: calc(100vw - 32px);
+  width: var(--second-width);
   height: 190px;
 
   background: var(--background);
   border: 1px solid #E8EAED;
   border-radius: 10px;
 }
-
-@media (min-width:402px)
-{
-  .inputArea  {
-    width: 370px;
-  }
-}
+ 
 
 .inputAreaError
 { 
@@ -133,7 +127,7 @@
 .hintText
 {
   display: -webkit-box;
-  width: calc(100vw - 32px - 27px);
+  width: calc(var(--second-width) - 27px);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   

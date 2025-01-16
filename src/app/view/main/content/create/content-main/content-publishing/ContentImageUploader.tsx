@@ -1,9 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Button, Dialog, DialogContent, MenuItem, Typography} from '@mui/material';
-import SpeedDial from '@mui/material/SpeedDial';
-import CreateIcon from '@mui/icons-material/Create';
-import ImageIcon from '@mui/icons-material/Image';
-
 import styles from './ContentImageUpload.module.css';
 
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,9 +8,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ImageUploadDialog from '../episode/episode-ImageCharacter/ImageUploadDialog';
-import {AltRoute} from '@mui/icons-material';
 import {BoldCircleX, LineUpload} from '@ui/Icons';
-import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 interface Props {
   uploadImageState: boolean;
@@ -125,14 +118,6 @@ const ContentImageUpload: React.FC<Props> = ({
       </div>
 
       <div className={styles.imageBox}>
-        {/* <Box className={styles.imageArea}>
-          <Dialog open={dialogOpen} onClose={handleClose} className={styles.dialogContent}>
-            <DialogContent dividers className={styles.dialogContent}>
-              <MenuItem onClick={onClickUploadImage}>Upload Thumbnail Image</MenuItem>
-            </DialogContent>
-          </Dialog>
-
-        </Box> */}
         <ImageUploadDialog isOpen={dialogOpen} onClose={handleClose} onFileSelect={handleImageUpload} />
         <LoadingOverlay loading={loading} />
       </div>

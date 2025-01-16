@@ -1,7 +1,7 @@
 .drawer
 {
     display: flex;
-    width: calc(100vw);
+    width: var(--full-width);
     padding: 8px 20px;
     flex-direction: column;
     align-items: flex-start;

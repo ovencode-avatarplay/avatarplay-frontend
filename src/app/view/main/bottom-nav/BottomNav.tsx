@@ -30,10 +30,6 @@ export default function BottomNav() {
     setDrawerOpen(open);
   };
 
-  const handleNavigationChange = (event: React.SyntheticEvent, newValue: number) => {
-    dispatch(setSelectedIndex(newValue));
-  };
-
   const handleClick = (index: number) => {
     if (index == 0) {
       dispatch(setBottomNavColor(0));
@@ -157,7 +153,11 @@ export default function BottomNav() {
 
   return (
     <footer>
-      <div className={`${styles.bottomNav} ${colorMode === 1 ? styles['light-mode'] : styles['dark-mode']}`}>
+      <div
+        className={`full-width-container ${styles.bottomNav} ${
+          colorMode === 1 ? styles['light-mode'] : styles['dark-mode']
+        }`}
+      >
         <div className={styles.bottomNavBox}>
           {buttonData.map((button, index) => (
             <Link key={index} href={getLocalizedLink(button.link)}>

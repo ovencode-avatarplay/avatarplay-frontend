@@ -3,9 +3,6 @@
 import api, {ResponseAPI} from './ApiInstance';
 import {ESystemError} from './ESystemError';
 
-import chatEmojiTempData from '@/data/temp/chat-emoji-temp-data.json';
-import getLocalizedText from '@/utils/getLocalizedText';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 // 채팅 Send ##########################################
 // Chat Data Interfaces
 export interface SendChatMessageReq {
@@ -116,68 +113,6 @@ export const retryStream = async (
   }
 };
 
-// Previous Chat Message Interfaces
-// export interface MessageInfo {
-//   id: number;
-//   userName: string;
-//   characterName: string;
-//   message: string;
-//   createAt: Date;
-// }
-
-// export interface GetPrevChatMessageRes {
-//   messageInfoList: MessageInfo[];
-// }
-
-// export interface GetPrevChatMessageReq {
-//   userID: number;
-//   characterID: number;
-// }
-
-// Getting Previous Chat Messages
-// export const getPrevChat = async (data: GetPrevChatMessageReq): Promise<ResponseAPI<GetPrevChatMessageRes>> => {
-//   try {
-//     const response = await api.post<ResponseAPI<GetPrevChatMessageRes>>('Chat/getPrevChat', data);
-
-//     if (response.data.resultCode === 0) {
-//       return response.data; // Return on success
-//     } else {
-//       throw new Error(response.data.resultMessage); // Error handling
-//     }
-//   } catch (error: any) {
-//     console.error('Error fetching previous chat:', error);
-//     throw new Error('Failed to fetch previous chat. Please try again.'); // Error handling
-//   }
-// };
-
-// // Sending Elastic Message Interfaces
-// export interface ResponseChat {
-//   resultCode: number; // 응답 코드
-//   resultMessage: string; // 응답 메시지
-//   data: {
-//     text: string; // 서버에서 반환하는 데이터
-//   };
-// }
-
-// // Sending Elastic Message
-// export const sendElasticMessage = async (payload: any): Promise<ResponseChat> => {
-//   // Change 'any' to the appropriate type
-//   try {
-//     const response = await api.post<ResponseChat>('/Bedrock/sendElastic', payload);
-
-//     if (response.data.resultCode === 0) {
-//       return response.data; // Return on success
-//     } else {
-//       throw new Error(response.data.resultMessage); // Error handling
-//     }
-//   } catch (error: any) {
-//     console.error('Error sending message:', error);
-//     throw new Error(`${ESystemError.syserr_chatting_send_post}`); // Error handling
-//   }
-// };
-
-// 채팅 Enter ##########################################
-
 // 서버에서 사용하는 enum
 export enum ChatType {
   Answer = 0,
@@ -234,11 +169,6 @@ export const sendChattingEnter = async (
     if (response.data.resultCode === 0) {
       const responseData = response.data.data as EnterEpisodeChattingRes;
       console.log('enterData', response.data.data);
-      // emoticonGroupInfoList가 null일 경우 임시 데이터를 사용
-      // if (!responseData.emoticonGroupInfoList) {
-      //   responseData.emoticonGroupInfoList = chatEmojiTempData.emoticonGroupInfoList;
-      // }
-
       // 여기서 이미지 캐싱 로직 제거, URL만 반환
 
       return response.data;
@@ -260,11 +190,6 @@ export const sendChattingEnterUrl = async (
 
     if (response.data.resultCode === 0) {
       const responseData = response.data.data as EnterEpisodeChattingRes;
-
-      // emoticonGroupInfoList가 null일 경우 임시 데이터를 사용
-      // if (!responseData.emoticonGroupInfoList) {
-      //   responseData.emoticonGroupInfoList = chatEmojiTempData.emoticonGroupInfoList;
-      // }
 
       // 여기서 이미지 캐싱 로직 제거, URL만 반환
       return response.data;

@@ -1,6 +1,6 @@
 .navbar {
-  display: flex;
-  width: 100%;
+  display: flex;  
+  width: var(--full-width);
   height: 58px;
   padding: 0px 10px 0px 16px;
   justify-content: space-between;
@@ -9,13 +9,7 @@
   
   background: var(--Black, #000);
 }
-
-@media (min-width:402px) {
-  .navbar{
-    width: 402px;
-  }
-  
-}
+ 
   
 .logoArea {
   width: 85px;

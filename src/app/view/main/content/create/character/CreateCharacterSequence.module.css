@@ -1,10 +1,9 @@
 /* 전체 */
 .container {
     position: relative;
-    max-width: '402px';
+    width: var(--full-width);
     margin: 0 'auto';
     height: 100vh;
-    max-width: 100vw;
     max-height: 100vh;
     overflow-x: auto; 
     background-color: white;

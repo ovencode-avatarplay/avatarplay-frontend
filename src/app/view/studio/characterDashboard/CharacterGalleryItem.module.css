@@ -2,7 +2,7 @@
   position: relative;
   cursor: pointer;
   
-  width: calc((100vw - 32px - 12px) * 0.5);
+  width: calc((var(--second-width) - 12px) * 0.5);
   height: 259.172px;
   flex-shrink: 0;
 

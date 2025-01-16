@@ -5,7 +5,6 @@ import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import {getLangUrlCode} from '@/configs/i18n';
 import {getBrowserLanguage} from './getLocalizedText';
 import {setLanguage} from '@/redux-store/slices/UserInfo';
-import {useDispatch} from 'react-redux';
 import {store} from '@/redux-store/ReduxStore';
 
 // 로그인상태인가

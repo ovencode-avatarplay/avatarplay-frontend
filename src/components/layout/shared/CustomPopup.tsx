@@ -1,7 +1,7 @@
 import React from 'react';
-import styles from './Popup.module.css';
-import CustomButton from '../layout/shared/CustomButton';
-import CustomInput from '../layout/shared/CustomInput';
+import styles from './CustomPopup.module.css';
+import CustomButton from './CustomButton';
+import CustomInput from './CustomInput';
 
 type PopupType = 'alert' | 'error' | 'input';
 
@@ -28,7 +28,7 @@ interface PopupProps {
   onClose?: () => void;
 }
 
-const Popup: React.FC<PopupProps> = ({type, title, description, buttons, textButton, inputField, onClose}) => {
+const CustomPopup: React.FC<PopupProps> = ({type, title, description, buttons, textButton, inputField, onClose}) => {
   return (
     <div className={styles.popupOverlay} onClick={onClose}>
       <div className={styles.popupContainer} onClick={e => e.stopPropagation()}>
@@ -62,6 +62,7 @@ const Popup: React.FC<PopupProps> = ({type, title, description, buttons, textBut
         <div className={styles.popupButtons}>
           {buttons.map((button, idx) => (
             <CustomButton
+              key={idx}
               size="Medium"
               state="Normal"
               type={button.isPrimary ? 'Primary' : 'Secondary'}
@@ -84,4 +85,4 @@ const Popup: React.FC<PopupProps> = ({type, title, description, buttons, textBut
   );
 };
 
-export default Popup;
+export default CustomPopup;

@@ -4,7 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import styles from './CharacterGalleryGrid.module.css';
 import CharacterGalleryItem from './CharacterGalleryItem';
 import {GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
-import EmptyState from '@/components/create/EmptyState';
+import EmptyState from '@/components/search/EmptyState';
 import {GalleryCategory} from './CharacterGalleryData';
 
 interface CharacterGalleryGridProps {
