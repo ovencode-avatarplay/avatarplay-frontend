@@ -1,5 +1,5 @@
+import {getBrowserLanguage} from '@/utils/browserInfo';
 import api, {ResponseAPI} from './ApiInstance';
-import {getBrowserLanguage} from '@/utils/getLocalizedText';
 import {getLangUrlCode} from '@/configs/i18n';
 
 export enum LanguageType {
@@ -25,6 +25,7 @@ export interface SignInRes {
 
 export const sendSignIn = async (payload: SignInReq): Promise<boolean> => {
   try {
+    console.log('로그인 시작');
     const jwtToken = localStorage.getItem('jwt');
     const _language = getLangUrlCode(getBrowserLanguage());
     const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/auth/sign-in`, {

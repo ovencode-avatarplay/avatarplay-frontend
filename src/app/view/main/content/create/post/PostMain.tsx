@@ -209,6 +209,7 @@ const PostMain: React.FC<Props> = () => {
 
     const feedInfo: FeedInfo = {
       id: 0,
+      urlLinkKey: 0,
       mediaState: state, // 예시 값
       mediaUrlList: mediaUrls,
       description: text,

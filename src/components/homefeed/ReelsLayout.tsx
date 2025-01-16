@@ -15,6 +15,26 @@ interface ReelsLayoutProps {
 const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   const [info, setInfo] = useState<FeedInfo[]>([]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 활성 슬라이드 인덱스
+  const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
+    try {
+      const base64Payload = token.split('.')[1]; // payload 부분 추출
+      const decodedPayload = atob(base64Payload); // Base64 디코드
+      return JSON.parse(decodedPayload); // JSON 파싱하여 반환
+    } catch (error) {
+      console.error('Failed to decode JWT:', error);
+      return null;
+    }
+  };
+
+  const getEmailFromJwt = (): string | null => {
+    const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
+    if (jwt) {
+      const payload = decodeJwt(jwt); // 디코드
+      console.log('payload?.email', payload?.email);
+      return payload?.email || null; // email 반환
+    }
+    return null; // JWT가 없을 경우 null 반환
+  };
 
   const fetchRecommendFeed = async () => {
     const result = await sendGetRecommendFeed({language: navigator.language || 'en-US'});
@@ -23,16 +43,16 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
       if (initialFeed) {
         // 초기 피드를 배열의 첫 번째로 추가
         setInfo([initialFeed, ...feeds]);
+        console.log('initialFeed', initialFeed);
       } else {
         setInfo(feeds);
       }
-      console.log(feeds);
     }
   };
 
   useEffect(() => {
     fetchRecommendFeed();
-  }, [initialFeed]);
+  }, [initialFeed, getEmailFromJwt()]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -59,38 +79,52 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
 
   // 슬라이드 변경 이벤트 핸들러
   const handleSlideChange = (swiper: any) => {
-    const currentIndex = swiper.activeIndex; // 현재 슬라이드 인덱스
-    setCurrentSlideIndex(currentIndex); // 활성화된 슬라이드 인덱스 업데이트
+    const currentIndex = swiper.activeIndex;
+    setCurrentSlideIndex(currentIndex);
+    // 배열 범위 검증
+    if (currentIndex < 0 || currentIndex >= info.length) {
+      console.warn('Slide index out of bounds');
+      return;
+    }
 
-    const currentItem = info[currentIndex]; // 현재 슬라이드의 아이템
-    console.log('currentIndex', currentIndex);
-    console.log('currentItem', currentItem);
+    const currentItem = info[currentIndex];
 
-    if (currentItem) {
-      viewFeed(currentItem.id); // 현재 슬라이드 아이템 조회
+    if (currentItem && currentItem.urlLinkKey != null) {
+      viewFeed(currentItem.id);
 
-      // URL 업데이트 (주소창만 변경, 새로고침 없음)
+      // URL 업데이트
       const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
-      window.history.pushState(null, '', newUrl); // 새 주소로 변경
+      window.history.pushState(null, '', newUrl);
+    } else {
+      console.warn('Invalid urlLinkKey for current slide');
     }
   };
 
   return (
-    <Swiper
-      direction="vertical"
-      spaceBetween={0}
-      slidesPerView={1}
-      centeredSlides={true}
-      scrollbar={{draggable: true}}
-      onSlideChange={handleSlideChange}
-      className={styles.mySwiper}
-    >
-      {info.map((item, index) => (
-        <SwiperSlide key={index} className={styles.swiperSlide}>
-          <ReelsContent item={item} isActive={index === currentSlideIndex} />
-        </SwiperSlide>
-      ))}
-    </Swiper>
+    <>
+      {/* <Head>
+        <title>{initialFeed?.characterProfileName || 'Home Feed'}</title>
+        <meta name="description" content={initialFeed?.description || 'Welcome to the home feed'} />
+        <meta property="og:title" content={initialFeed?.characterProfileName || 'Home Feed'} />
+        <meta property="og:description" content={initialFeed?.description || ''} />
+        <meta property="og:image" content={initialFeed?.characterProfileUrl || '/default-image.png'} />
+      </Head> 추후 메타 처리*/}
+      <Swiper
+        direction="vertical"
+        spaceBetween={0}
+        slidesPerView={1}
+        centeredSlides={true}
+        scrollbar={{draggable: true}}
+        onSlideChange={handleSlideChange}
+        className={styles.mySwiper}
+      >
+        {info.map((item, index) => (
+          <SwiperSlide key={index} className={styles.swiperSlide}>
+            <ReelsContent item={item} isActive={index === currentSlideIndex} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </>
   );
 };
 
