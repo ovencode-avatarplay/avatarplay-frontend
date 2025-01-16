@@ -15,6 +15,26 @@ interface ReelsLayoutProps {
 const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   const [info, setInfo] = useState<FeedInfo[]>([]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 활성 슬라이드 인덱스
+  const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
+    try {
+      const base64Payload = token.split('.')[1]; // payload 부분 추출
+      const decodedPayload = atob(base64Payload); // Base64 디코드
+      return JSON.parse(decodedPayload); // JSON 파싱하여 반환
+    } catch (error) {
+      console.error('Failed to decode JWT:', error);
+      return null;
+    }
+  };
+
+  const getEmailFromJwt = (): string | null => {
+    const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
+    if (jwt) {
+      const payload = decodeJwt(jwt); // 디코드
+      console.log('payload?.email', payload?.email);
+      return payload?.email || null; // email 반환
+    }
+    return null; // JWT가 없을 경우 null 반환
+  };
 
   const fetchRecommendFeed = async () => {
     const result = await sendGetRecommendFeed({language: navigator.language || 'en-US'});
@@ -27,13 +47,12 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
       } else {
         setInfo(feeds);
       }
-      console.log(feeds);
     }
   };
 
   useEffect(() => {
     fetchRecommendFeed();
-  }, [initialFeed]);
+  }, [initialFeed, getEmailFromJwt()]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -69,8 +88,6 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
     }
 
     const currentItem = info[currentIndex];
-    console.log('currentIndex', currentIndex);
-    console.log('currentItem', currentItem);
 
     if (currentItem && currentItem.urlLinkKey != null) {
       viewFeed(currentItem.id);

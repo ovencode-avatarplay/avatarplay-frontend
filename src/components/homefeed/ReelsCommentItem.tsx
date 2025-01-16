@@ -173,9 +173,11 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
             <div className={styles.actionText}>{likeCount}</div>
           </div>
 
-          <div className={styles.actionItem} onClick={() => setCommentIsOpen(true)}>
-            <img src={LineComment.src}></img>
-          </div>
+          {type == CommentType.default && (
+            <div className={styles.actionItem} onClick={() => setCommentIsOpen(true)}>
+              <img src={LineComment.src}></img>
+            </div>
+          )}
         </div>
         <span style={{height: '14px'}}></span>
         {'replies' in comment && type == CommentType.default && (
