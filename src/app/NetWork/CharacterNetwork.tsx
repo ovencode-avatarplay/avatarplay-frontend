@@ -82,6 +82,7 @@ export interface GetCharacterInfoReq {
 
 export interface GetCharacterInfoRes {
   characterInfo: CharacterInfo;
+  urlLinkKey : string;
 }
 
 export const sendGetCharacterInfo = async (payload: GetCharacterInfoReq): Promise<ResponseAPI<GetCharacterInfoRes>> => {

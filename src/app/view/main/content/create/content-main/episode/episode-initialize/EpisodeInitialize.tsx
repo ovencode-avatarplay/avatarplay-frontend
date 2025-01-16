@@ -380,7 +380,11 @@ const EpisodeInitialize: React.FC<Props> = ({
       episodeInfo = {
         ...baseEpisodeInfo,
         name: name,
+        backgroundImageUrl: '',
         characterInfo: {
+          greeting: currentSelectedCharacter.greeting,
+          secret: currentSelectedCharacter.secret,
+          worldScenario: currentSelectedCharacter.worldScenario,
           id: currentSelectedCharacter.id,
           name: currentSelectedCharacter.name,
           introduction: currentSelectedCharacter.introduction,
@@ -404,6 +408,9 @@ const EpisodeInitialize: React.FC<Props> = ({
           name: nameValue,
           description: promptValue,
           mainImageUrl: curEpisodeCharacterImage,
+          secret: '',
+          worldScenario: '',
+          greeting:''
         },
       };
     } else {

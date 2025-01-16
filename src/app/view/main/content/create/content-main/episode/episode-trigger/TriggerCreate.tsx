@@ -76,6 +76,9 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     actionCharacterInfo: {
       id: 0,
       name: '',
+      greeting:'',
+      secret:'',
+      worldScenario:'',
       introduction: '',
       description: '',
       genderType: 0,

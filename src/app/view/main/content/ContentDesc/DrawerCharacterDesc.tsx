@@ -47,6 +47,14 @@ import Splitter from '@/components/layout/shared/CustomSplitter';
 import SelectDrawer, { SelectDrawerItem } from '@/components/create/SelectDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import { GetCharacterInfoReq, sendGetCharacterInfo } from '@/app/NetWork/CharacterNetwork';
+import { ChapterInfo } from '@/redux-store/slices/ContentInfo';
+import { CharacterInfo } from '@/redux-store/slices/EpisodeInfo';
+
+type ContentWholeDesc = {
+  // 필요한 다른 속성들이 있다면 여기서 모두 정의
+  characterInfo?: CharacterInfo;
+  urlLinkKey : string;
+};
 
 const DrawerCharacterDesc = () => {
   const dispatch = useDispatch();
@@ -60,7 +68,7 @@ const DrawerCharacterDesc = () => {
   const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number>(-1);
   const userId = useSelector((state: RootState) => state.user.userId);
 
-  const [contentWholeDesc, setContentWholeDesc] = useState(); // 컨텐츠 설명 전체
+  const [contentWholeDesc, setContentWholeDesc] = useState<ContentWholeDesc | null>(null);
 
   // Content, Chapter, Episode 혼동 때문에 Name, Thumbnail은 접두사
   const [contentName, setContentName] = useState('contentName');
@@ -144,7 +152,7 @@ const DrawerCharacterDesc = () => {
 
     //   setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
     // }
-    setContentUrl(`?v=${contentWholeDesc?.characterInfo?.urlLinkKey}` || `?v=`);
+    setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
 
   }, [contentWholeDesc]);
 
@@ -160,19 +168,6 @@ const DrawerCharacterDesc = () => {
   useEffect(() => {
     setSelectedEpisodeIdx(0);
 
-    if (contentWholeDesc) {
-      const selectedChapter = contentWholeDesc.chapterInfoList[selectedChapterIdx];
-      const updatedEpisodeItems = selectedChapter?.episodeInfoList?.map(episode => ({
-        episodeId: episode.id,
-        name: episode.name,
-        desc: episode.description,
-        thumbnail: episode.thumbnailList[0],
-        isLock: episode.isLock,
-        intimacy: episode.intimacyProgress,
-        imageCount: episode.thumbnailList.length,
-      }));
-      setEpisodeItems(updatedEpisodeItems); // 에피소드 리스트 업데이트
-    }
   }, [chapters, selectedChapterIdx]);
 
   useEffect(() => {
