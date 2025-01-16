@@ -116,8 +116,6 @@ const DrawerCharacterDesc = () => {
       contentUrl: contentUrl,
     };
     dispatch(setStateChatting(chattingState));
-
-    setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
   }, [episodeId]);
 
   useEffect(() => {
@@ -146,6 +144,8 @@ const DrawerCharacterDesc = () => {
 
     //   setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
     // }
+    setContentUrl(`?v=${contentWholeDesc?.characterInfo?.urlLinkKey}` || `?v=`);
+
   }, [contentWholeDesc]);
 
   // useEffect(() => {
