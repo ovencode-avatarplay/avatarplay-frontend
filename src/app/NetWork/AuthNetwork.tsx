@@ -1,5 +1,5 @@
+import {getBrowserLanguage} from '@/utils/browserInfo';
 import api, {ResponseAPI} from './ApiInstance';
-import {getBrowserLanguage} from '@/utils/getLocalizedText';
 import {getLangUrlCode} from '@/configs/i18n';
 
 export enum LanguageType {

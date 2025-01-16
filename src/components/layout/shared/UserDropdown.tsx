@@ -29,8 +29,8 @@ import LanguageSelectDropBox from './LanguageSelectDropBox';
 import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
 import {fetchLanguage} from './LanguageSetting';
 import {getLangUrlCode} from '@/configs/i18n';
-import {getBrowserLanguage, getCookiesLanguageType} from '@/utils/getLocalizedText';
 import Cookies from 'js-cookie';
+import {getCookiesLanguageType} from '@/utils/browserInfo';
 
 const UserDropdown = () => {
   // States
