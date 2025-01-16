@@ -19,6 +19,8 @@ interface ReelsCommentItemProps {
   comment: CommentInfo | ReplieInfo;
   type?: CommentType;
   onComplete: () => void;
+  onRepliesBack?: () => void;
+  onAddTotalCommentCount: () => void;
 }
 
 const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
@@ -26,11 +28,20 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
   feedId,
   comment,
   type = CommentType.default,
+  onRepliesBack = () => {},
+  onAddTotalCommentCount,
 }) => {
   const [isLike, setIsLike] = useState(comment.isLike);
   const [likeCount, setLikeCount] = useState(comment.likeCount);
   const [isExpanded, setIsExpanded] = useState(false);
   const [formattedTime, setFormattedTime] = useState('');
+  const [repleCount, setRepleCount] = useState(() => {
+    // 초기값 설정 시 'replies' 존재 여부 확인
+    if ('replies' in comment) {
+      return comment.replies.length;
+    }
+    return 0;
+  });
   const userId = useSelector((state: RootState) => state.user.userId);
   useEffect(() => {}, [comment]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -76,7 +87,6 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
     const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
     if (jwt) {
       const payload = decodeJwt(jwt); // 디코드
-      console.log('payload?.email', payload?.email);
       return payload?.email || null; // email 반환
     }
     return null; // JWT가 없을 경우 null 반환
@@ -101,7 +111,11 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
     const diffInYears = Math.floor(diffInMonths / 12);
     return `${diffInYears}년 전`;
   };
-
+  useEffect(() => {
+    if ('replies' in comment) {
+      setRepleCount(comment.replies.length);
+    }
+  }, [comment]);
   useEffect(() => {
     setFormattedTime(formatTimeAgo(comment.updatedAt));
   }, [comment.updatedAt]);
@@ -115,13 +129,6 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
         backgroundColor: type == CommentType.parent ? '#f8f9fa' : '#ffffff',
       }}
     >
-      <div className={styles.followingContainer}>
-        <span className={styles.followingText}>Following</span>
-        <div className={styles.iconArrowDown}>
-          <div className={styles.vector}></div>
-        </div>
-      </div>
-
       <div className={styles.content}>
         {/* User Info */}
         <div className={styles.userInfo}>
@@ -194,7 +201,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
               setCommentIsOpen(true);
             }}
           >
-            답글 {comment.replies.length}
+            답글 {repleCount}
           </div>
         )}
       </div>
@@ -209,6 +216,8 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
         toggleDrawer={v => setCommentIsOpen(v)}
         isReplies={true}
         parentCommentId={comment.commentId}
+        onRepliesBack={() => onRepliesBack()}
+        onAddTotalCommentCount={() => onAddTotalCommentCount()}
       />
       <Menu
         id="demo-positioned-menu"

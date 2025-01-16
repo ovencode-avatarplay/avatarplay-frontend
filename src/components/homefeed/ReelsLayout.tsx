@@ -30,7 +30,6 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
     const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
     if (jwt) {
       const payload = decodeJwt(jwt); // 디코드
-      console.log('payload?.email', payload?.email);
       return payload?.email || null; // email 반환
     }
     return null; // JWT가 없을 경우 null 반환

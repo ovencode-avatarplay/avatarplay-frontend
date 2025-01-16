@@ -223,6 +223,7 @@ const PostMain: React.FC<Props> = () => {
       characterProfileId: 0,
       characterProfileName: '',
       characterProfileUrl: '',
+      createAt: '',
     };
     setLoading(true);
     const result = await sendCreateFeed(feedInfo);

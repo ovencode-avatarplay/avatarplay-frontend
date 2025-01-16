@@ -59,9 +59,12 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
   const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
+  const [commentCount, setCommentCount] = useState(item.commentCount); // 비디오 총 길이
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
-
+  const handleAddCommentCount = () => {
+    setCommentCount(commentCount + 1);
+  };
   const handleClick = () => {
     setIsPlaying(!isPlaying);
     setIsClicked(true);
@@ -154,7 +157,30 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
     }
   };
 
-  React.useEffect(() => {}, [item]);
+  const formatTimeAgo = (time: string): string => {
+    const now = new Date();
+    const commentTime = new Date(time);
+    const diffInSeconds = Math.floor((now.getTime() - commentTime.getTime()) / 1000);
+
+    if (diffInSeconds < 60) return `${diffInSeconds}초 전`;
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) return `${diffInMinutes}분 전`;
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours}시간 전`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays}일 전`;
+    const diffInWeeks = Math.floor(diffInDays / 7);
+    if (diffInWeeks < 4) return `${diffInWeeks}주 전`;
+    const diffInMonths = Math.floor(diffInWeeks / 4);
+    if (diffInMonths < 12) return `${diffInMonths}달 전`;
+    const diffInYears = Math.floor(diffInMonths / 12);
+    return `${diffInYears}년 전`;
+  };
+
+  React.useEffect(() => {
+    setCommentCount(item.commentCount);
+    console.log(item.commentCount);
+  }, [item]);
   return (
     <div className={styles.reelsContainer}>
       <div className={styles.followingContainer}>
@@ -196,6 +222,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                 muted={true}
                 url={item.mediaUrlList[0]} // 첫 번째 URL 사용
                 playing={isPlaying} // 재생 상태
+                loop={true}
                 width="100%"
                 height="100%"
                 style={{
@@ -291,6 +318,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                 Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
               </div>
             )}
+            <div>{formatTimeAgo(item.createAt)}</div>
           </div>
         </div>
 
@@ -333,7 +361,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
           </div>
           <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
             <img src={BoldComment.src} className={styles.button}></img>
-            {item.commentCount}
+            {commentCount}
           </div>
           <div
             className={styles.noneTextButton}
@@ -364,7 +392,12 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
         </div>
       </div>
 
-      <ReelsComment feedId={item.id} isOpen={isCommentOpen} toggleDrawer={v => setCommentIsOpen(v)} />
+      <ReelsComment
+        feedId={item.id}
+        isOpen={isCommentOpen}
+        toggleDrawer={v => setCommentIsOpen(v)}
+        onAddTotalCommentCount={() => handleAddCommentCount()}
+      />
 
       <SharePopup
         open={isShare}

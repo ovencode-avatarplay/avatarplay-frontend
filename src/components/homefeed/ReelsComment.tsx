@@ -14,6 +14,8 @@ interface ReelsCommentProps {
   toggleDrawer: (open: boolean) => void;
   isReplies?: boolean;
   parentCommentId?: number;
+  onRepliesBack?: () => void;
+  onAddTotalCommentCount: () => void;
 }
 
 const ReelsComment: React.FC<ReelsCommentProps> = ({
@@ -22,6 +24,8 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
   feedId,
   parentCommentId = 0,
   isReplies = false,
+  onRepliesBack = () => {},
+  onAddTotalCommentCount,
 }) => {
   const [chat, setChat] = useState<string>('');
   const handleInputChange = (value: string) => {
@@ -47,13 +51,11 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
         const matchingComment = allComment.find(comment => comment.commentId === targetCommentId);
 
         if (matchingComment) {
-          console.log('일치하는 댓글:', matchingComment);
           setParentComment(matchingComment);
-        } else {
-          console.log('일치하는 댓글이 없습니다.');
         }
       } else {
         setCommentList(response.data?.commentInfoList as CommentInfo[]);
+        console.log('response.data?.commentInfoList as CommentInfo[]', response.data?.commentInfoList as CommentInfo[]);
       }
     } catch (error) {
       console.error('댓글 리스트 가져오기 실패:', error);
@@ -75,9 +77,10 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
 
     try {
       const response = await sendAddComment(payload);
-      console.log('댓글 추가 성공:', response.data);
+      onAddTotalCommentCount();
       setChat('');
       getCommentList();
+      onRepliesBack();
     } catch (error) {
       console.error('댓글 추가 실패:', error);
     }
@@ -89,7 +92,15 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
     }
   };
   return (
-    <Drawer anchor="bottom" open={isOpen} onClose={() => toggleDrawer(false)} classes={{paper: styles.drawer}}>
+    <Drawer
+      anchor="bottom"
+      open={isOpen}
+      onClose={() => {
+        toggleDrawer(false);
+        onRepliesBack();
+      }}
+      classes={{paper: styles.drawer}}
+    >
       {/* Header */}
       {!isReplies && (
         <div className={styles.header}>
@@ -115,7 +126,14 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
         {/* Comments Section */}
         {!isReplies &&
           commentList.map((comment, index) => (
-            <ReelsCommentItem onComplete={() => getCommentList()} key={index} feedId={feedId} comment={comment} />
+            <ReelsCommentItem
+              onComplete={() => getCommentList()}
+              key={index}
+              feedId={feedId}
+              comment={comment}
+              onRepliesBack={() => getCommentList()}
+              onAddTotalCommentCount={() => onAddTotalCommentCount()}
+            />
           ))}
 
         {isReplies && parentComment && (
@@ -124,6 +142,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
             comment={parentComment}
             type={CommentType.parent}
             onComplete={() => getCommentList()}
+            onAddTotalCommentCount={() => onAddTotalCommentCount()}
           />
         )}
         {isReplies &&
@@ -133,6 +152,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
               comment={comment}
               type={CommentType.replies}
               onComplete={() => getCommentList()}
+              onAddTotalCommentCount={() => onAddTotalCommentCount()}
             />
           ))}
       </div>
