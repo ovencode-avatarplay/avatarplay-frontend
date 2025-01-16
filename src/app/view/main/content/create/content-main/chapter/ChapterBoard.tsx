@@ -111,7 +111,7 @@ const ChapterBoard: React.FC<Props> = ({
     ) {
       const tmp: EpisodeInfo = chapterFirstEpisode;
       handleCreateChapter(tmp);
-    }
+    } 
   }, [chapterFirstEpisode]);
 
   //#endregion

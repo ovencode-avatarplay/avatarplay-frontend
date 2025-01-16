@@ -19,6 +19,11 @@
                 "characterInfo": {
                   "id": 0,
                   "name": "",
+                  
+                  "worldScenario":"",
+                  "greeting":"",
+                  "secret":"",
+
                   "genderType" : 0,
                   "introduction": "",
                   "description" : "",
