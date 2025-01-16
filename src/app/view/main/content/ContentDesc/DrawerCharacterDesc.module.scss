@@ -1,0 +1,385 @@
+/* DrawerContentDesc.module.css */
+
+
+.drawerContainer {
+  display: flex;
+  padding: 0px 16px 8px 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+
+  overflow-y: scroll;
+
+  height: 100%;
+}
+
+.drawerContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.drawerContainer {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.topArea {
+  height: 40%;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+
+  gap: 5px;
+}
+
+.handleArea {
+  display: flex;
+  padding: 16px 0px 22px 0px;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+}
+
+.handleBar {
+  width: 39px;
+  height: 4px;
+
+  border-radius: 50px;
+  background: #E0E0E0;
+}
+
+.thumbnailArea {
+  height: calc(100% - 57px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+
+}
+
+.thumbnailContainer {
+  display: flex;
+  height: 100%;
+  padding: var(--sds-size-space-0);
+  align-items: center;
+  gap: var(--sds-size-space-300);
+  align-self: stretch;
+
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.thumbnailImage {
+  flex: 1 0 0;
+  align-self: stretch;
+  object-fit: contain;
+  // background: lightgray 0px -88.577px / 100% 288.915% no-repeat;
+  background: white;
+}
+
+.descriptionArea {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+}
+
+.contentName {
+  color: var(#0C0C0C);
+  font-family: Lato;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.tagArea {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.tagChip {
+  display: flex;
+  padding: 6px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  border-radius: 100px;
+  border: 1px solid var(--Border-1, #EAECF0);
+  background: var(--Neutral-50, #F8F9FA);
+
+  color: var(--Neutral-800, #2C3131);
+  leading-trim: both;
+  text-edge: cap;
+  font-family: Lato;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 12px;
+  /* 100% */
+}
+
+.contentDesc {
+  align-self: stretch;
+  color: var(--Neutral-500, #9AA0A6);
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 17px;
+  /* 121.429% */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  /* 줄 수 */
+  -webkit-box-orient: vertical;
+}
+
+.fullContentDesc {
+  align-self: stretch;
+  color: var(--Neutral-500, #9AA0A6);
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 17px;
+  /* 121.429% */
+  overflow: visible;
+  display: block;
+}
+
+.contentReadMore {
+  color: var(--Black, #000);
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 17px;
+
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.thumbnailTitle {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  color: white;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 8px;
+  font-size: 1rem;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 1;
+}
+
+.botArea {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  align-self: stretch;
+  padding-bottom: 8px;
+}
+
+.buttonArea {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+}
+
+.countArea {
+  display: flex;
+  height: 38px;
+  align-items: center;
+  gap: 6px;
+  align-self: stretch;
+}
+
+.countItem {
+  display: flex;
+  width: 79px;
+  padding: 10px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  border-radius: 100px;
+  border: 1px solid var(--Border-1, #EAECF0);
+  background: var(--Neutral-50, #F8F9FA);
+}
+
+.countIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  filter: invert(14%) sepia(2%) saturate(2033%) hue-rotate(131deg) brightness(90%) contrast(84%);
+}
+
+.countText {
+  color: var(--Neutral-800, #2C3131);
+  leading-trim: both;
+  text-edge: cap;
+  font-family: Lato;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 12px;
+  /* 100% */
+}
+
+.contentButtonArea {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  align-self: stretch;
+}
+
+.contentButton {
+  display: flex;
+  padding: 10px 22px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex: 1 0 0;
+
+  border-radius: 12px;
+}
+
+.contentButtonItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  color: var(--Neutral-800, #2C3131);
+  text-align: center;
+  font-family: Lato;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+  /* 184.615% */
+}
+
+.contentButtonItem>.buttonIcon {
+  width: 28px;
+  height: 28px;
+  filter: invert(81%) sepia(12%) saturate(101%) hue-rotate(173deg) brightness(97%) contrast(84%);
+}
+
+.contentDivider {
+  width: 1px;
+  height: 25px;
+
+  background: var(--Border-1, #EAECF0);
+}
+
+.playButton {
+  width: var(--second-width);
+  height: 46px;
+
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px;
+  /* 142.857% */
+  letter-spacing: -0.4px;
+}
+
+.playButtonItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  align-self: stretch;
+}
+
+.playIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.chapterArea {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  gap: 16px;
+}
+
+.chapterSelectBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+}
+
+.chapterTitle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+
+  color: var(--Neutral-100, #101010);
+  font-family: Lato;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+  /* 150% */
+}
+
+.chapterSelectArea {
+  display: flex;
+  height: 12px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.chapterSelected {
+  color: var(--Neutral-500, #9AA0A6);
+  text-align: right;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 12px;
+  /* 85.714% */
+  letter-spacing: -0.14px;
+}
+
+.dropDownIcon {
+  width: 12px;
+  height: 12px;
+  filter: invert(70%) sepia(13%) saturate(146%) hue-rotate(169deg) brightness(87%) contrast(94%);
+}
+
+
+.chapterBox {
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+
+.episodeInfoList {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}

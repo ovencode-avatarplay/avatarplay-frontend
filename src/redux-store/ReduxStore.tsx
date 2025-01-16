@@ -1,11 +1,12 @@
 // Third-party Imports
-import {combineReducers, configureStore} from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage'; // localStorage를 사용
 
 // Slice Imports
 import sampleReducer from '@/redux-store/slices/ReduxSample';
 import chattingReducer from '@/redux-store/slices/Chatting';
 import drawerContentDescReducer from '@/redux-store/slices/DrawerContentDescSlice';
+import drawerCharacterDescReducer from '@/redux-store/slices/DrawerCharacterDescSlice';
 import ContentInfoSlice from './slices/ContentInfo';
 import userInfo from './slices/UserInfo';
 import ContentSelection from './slices/ContentSelection';
@@ -16,7 +17,7 @@ import emoticonSlice from './slices/EmoticonSlice';
 import modifyQuestionSlice from './slices/ModifyQuestion';
 import mainControl from './slices/MainControl';
 // redux-persist
-import {persistStore, persistReducer} from 'redux-persist';
+import { persistStore, persistReducer } from 'redux-persist';
 import chattingEnterSlice from './slices/ChattingEnter';
 
 const persistConfig = {
@@ -37,6 +38,7 @@ const reducers = combineReducers({
 
   //#region  Explore
   drawerContentDesc: drawerContentDescReducer, // 현재
+  drawerCharacterDesc: drawerCharacterDescReducer, // 현재
   //#endregion
 
   //#region  Create
@@ -57,7 +59,7 @@ const persistedReducer = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
   reducer: persistedReducer, // Persisted reducer 사용
-  middleware: getDefaultMiddleware => getDefaultMiddleware({serializableCheck: false}),
+  middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false }),
 });
 
 export const persistor = persistStore(store);

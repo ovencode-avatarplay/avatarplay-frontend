@@ -2,11 +2,12 @@ import React, {useState} from 'react';
 
 import styles from './ExploreCard.module.css'; // CSS 파일 임포트
 
-import {useDispatch} from 'react-redux';
-import {openDrawerContentId} from '@/redux-store/slices/DrawerContentDescSlice';
+import { useDispatch } from 'react-redux';
+import { openDrawerContentId } from '@/redux-store/slices/DrawerContentDescSlice';
+import { openDrawerCharacterId } from '@/redux-store/slices/DrawerCharacterDescSlice';
 
-import {ExploreCardProps} from './SearchBoardTypes';
-import {BoldChatRoundDots, BoldEpisodes, BoldFollowers} from '@ui/Icons';
+import { ExploreCardProps } from './SearchBoardTypes';
+import { BoldChatRoundDots, BoldEpisodes, BoldFollowers } from '@ui/Icons';
 
 const ExploreCard: React.FC<ExploreCardProps> = ({
   exploreItemType,
@@ -28,7 +29,9 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
     if (exploreItemType === 0) {
       dispatch(openDrawerContentId(contentId));
     } else if (exploreItemType === 1) {
-      alert('캐릭터는 프로필로 갈 예정입니다. (프로필 작업 완료후 연결 필요)');
+      dispatch(openDrawerCharacterId(contentId));
+
+      // alert('캐릭터는 프로필로 갈 예정입니다. (프로필 작업 완료후 연결 필요)');
     }
   };
 
