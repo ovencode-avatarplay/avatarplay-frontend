@@ -12,9 +12,8 @@
   align-items: center;
   margin-bottom: 20px;
 }
-.container {
-width: 100vw;
-max-width: 402px;
+.container {  
+  width: var(--full-width);
 margin: 0  auto;
 border-radius: 24px 24px 0 0;
 box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
@@ -70,12 +69,11 @@ background-color: white;
   border: 1px solid #febbea;
 }
 .errorContainer {  
-  
-max-width: 402px;
+   
 margin: 0  auto;
   left: 50%; /* 화면 중앙 정렬 */
   
-  width: 370px; /* 에러 메시지 너비 */
+  width: var(--second-width);
   z-index: 5000; /* Drawer 위에 표시되도록 높은 z-index 설정 */
 }
 

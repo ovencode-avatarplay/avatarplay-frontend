@@ -788,16 +788,6 @@ const ContentMain: React.FC = () => {
           onRefreshItem={getContentsByUserId}
           onClickCreate={handleCreateContentFromDashBoard}
         />
-        <ChapterBoard
-          open={isChapterboardOpen}
-          onClose={handleCloseChapterboard}
-          contentChapters={editingContentInfo?.chapterInfoList || []}
-          onAddChapter={handleAddChapter}
-          onDeleteChapter={handleDeleteChapter}
-          onRenameClick={handleChapterNameOpen}
-          openInitEpisode={handleOpenInitialEpisodeFromChapter}
-          chapterFirstEpisode={chapterFirstEpisode}
-        />
         <div className={styles.seasonArea}>
           <ButtonEpisodeInfo
             onDrawerOpen={handleOpenChapterboard}
@@ -833,16 +823,6 @@ const ContentMain: React.FC = () => {
               />
             ))}
           </div>
-          <div className={styles.content}>
-            <ContentPublishing
-              open={isPublishingOpen}
-              onClose={handleClosePublishing}
-              onPublish={handlePublish}
-              LLMOpen={isLLMSetupOpen}
-              setLLMOpen={() => setLLMSetupOpen(true)}
-              onLLMClose={handleCloseLLMSetup}
-            />
-          </div>
           <div className={styles.contentBottom}>
             <CustomButton
               size="Large"
@@ -855,7 +835,24 @@ const ContentMain: React.FC = () => {
             </CustomButton>
           </div>
         </div>
-
+        <ContentPublishing
+          open={isPublishingOpen}
+          onClose={handleClosePublishing}
+          onPublish={handlePublish}
+          LLMOpen={isLLMSetupOpen}
+          setLLMOpen={() => setLLMSetupOpen(true)}
+          onLLMClose={handleCloseLLMSetup}
+        />
+        <ChapterBoard
+          open={isChapterboardOpen}
+          onClose={handleCloseChapterboard}
+          contentChapters={editingContentInfo?.chapterInfoList || []}
+          onAddChapter={handleAddChapter}
+          onDeleteChapter={handleDeleteChapter}
+          onRenameClick={handleChapterNameOpen}
+          openInitEpisode={handleOpenInitialEpisodeFromChapter}
+          chapterFirstEpisode={chapterFirstEpisode}
+        />
         <EpisodeInitialize
           open={isEpisodeInitOpen}
           isFromInitFirstEpisode={isFromInitFirstEpisode}

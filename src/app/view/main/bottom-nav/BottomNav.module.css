@@ -3,8 +3,7 @@
   bottom: 0;
     
   display: flex;
-
-  width: 100vw;
+ 
   height: var(--bottom-nav-height);
   padding: 0px 6px 17px 6px;
   flex-direction: column;
@@ -28,15 +27,7 @@
 {
   background: var(--Neutral-900, #040415);
 }
-
-
-@media (min-width:402px)
-{
-  .bottomNav
-  {
-    width: 402px;
-  }
-}
+ 
  
 .bottomNavBox 
 {

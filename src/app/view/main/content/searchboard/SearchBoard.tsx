@@ -2,7 +2,6 @@
 
 import React, {useEffect, useState} from 'react';
 
-import {useDispatch} from 'react-redux';
 import {ExploreItem, PaginationRequest, sendGetExplore, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
 
 import styles from './SearchBoard.module.css';
@@ -11,13 +10,13 @@ import SearchBoardHeader from './searchboard-header/SearchBoardHeader';
 import SearchBoardHorizonScroll from './SearchBoardHorizonScroll';
 import {ExploreCardProps} from './SearchBoardTypes';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import Tabs from '@/components/layout/shared/Tabs';
+import Splitter from '@/components/layout/shared/CustomSplitter';
 import ExploreFeaturedHeader from './searchboard-header/ExploreFeaturedHeader';
-import EmptyState from '@/components/create/EmptyState';
+import EmptyState from '@/components/search/EmptyState';
 import {BoldArrowDown} from '@ui/Icons';
 import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import ExploreCard from './ExploreCard';
-import {FilterDataItem} from '@/components/create/FilterSelector';
+import {FilterDataItem} from '@/components/search/FilterSelector';
 
 const SearchBoard: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -223,12 +222,12 @@ const SearchBoard: React.FC = () => {
     fetchExploreData(searchValue, adultToggleOn, {offset: 0, limit: searchLimit}, {offset: 0, limit: searchLimit});
   }, [search]);
 
-  const tabData = [
+  const splitterData = [
     {
       label: 'Featured',
       preContent: '',
       content: (
-        <div className={styles.featuredContainer}>
+        <section className={styles.featuredContainer}>
           <div className={styles.scrollArea}>
             {bannerList && <ExploreFeaturedHeader items={bannerList} />}
             <div className={styles.content}>
@@ -258,13 +257,13 @@ const SearchBoard: React.FC = () => {
               </main>
             </div>
           </div>
-        </div>
+        </section>
       ),
     },
     {
       label: 'Search',
       content: (
-        <div className={styles.searchContainer}>
+        <section className={styles.searchContainer}>
           <div className={styles.scrollArea} onScroll={handleScroll}>
             <SearchBoardHeader
               setSearchResultList={setSearchResultList}
@@ -280,7 +279,7 @@ const SearchBoard: React.FC = () => {
               fetchExploreData={fetchExploreData}
               setSearchOffset={setSearchOffset}
             />
-            <div className={styles.filterArea}>
+            <header className={styles.filterArea}>
               <div className={styles.tagArea}>
                 <button
                   className={`${styles.tag} ${search === 'All' ? styles.selected : ''}`}
@@ -320,13 +319,13 @@ const SearchBoard: React.FC = () => {
                   />
                 )}
               </button>
-            </div>
+            </header>
             {searchResultList === null || searchResultList.length < 1 ? (
               <>
-                <div className={styles.emptyResult}> Result : 0</div>
-                <div className={styles.emptyContainer}>
+                <h2 className={styles.emptyResult}> Result : 0</h2>
+                <section className={styles.emptyContainer}>
                   <EmptyState stateText={'No search data'} />
-                </div>
+                </section>
               </>
             ) : (
               <>
@@ -360,14 +359,14 @@ const SearchBoard: React.FC = () => {
               </>
             )}
           </div>
-        </div>
+        </section>
       ),
     },
   ];
 
   return (
     <>
-      <Tabs tabs={tabData} contentStyle={{padding: '0'}} isDark={true} />
+      <Splitter splitters={splitterData} contentStyle={{padding: '0'}} isDark={true} />
       <LoadingOverlay loading={loading} />
     </>
   );

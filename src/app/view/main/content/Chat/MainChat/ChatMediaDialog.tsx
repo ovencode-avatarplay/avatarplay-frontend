@@ -27,7 +27,7 @@ const ChatMediaDialog: React.FC<ChatMediaDialogProps> = ({mediaData, isModalOpen
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '100vw',
+          width: 'var(--full-width)',
           height: '100vh',
           bgcolor: 'gray',
           zIndex: 1300,

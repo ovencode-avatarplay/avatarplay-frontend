@@ -4,9 +4,10 @@ import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
-import {FeedInfo, sendFeedDisLike, sendFeedLike} from '@/app/NetWork/ShortsNetwork';
+import {FeedInfo, sendFeedBookmark, sendFeedDisLike, sendFeedLike, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
 import {
+  BoldArchive,
   BoldComment,
   BoldDislike,
   BoldLike,
@@ -16,9 +17,11 @@ import {
   BoldShare,
   BoldVideo,
   LineArchive,
+  LineArrowLeft,
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
 import ReelsComment from './ReelsComment';
+import SharePopup from '../layout/shared/SharePopup';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -32,6 +35,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
   const [isLike, setIsLike] = useState(item.isLike);
   const [isDisLike, setIsDisLike] = useState(item.isDisLike);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isShare, setIsShare] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
   useEffect(() => {
@@ -55,9 +59,12 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
   const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
+  const [commentCount, setCommentCount] = useState(item.commentCount); // 비디오 총 길이
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
-
+  const handleAddCommentCount = () => {
+    setCommentCount(commentCount + 1);
+  };
   const handleClick = () => {
     setIsPlaying(!isPlaying);
     setIsClicked(true);
@@ -105,9 +112,85 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
       console.error('An error occurred while liking/unliking the feed:', error);
     }
   };
-  React.useEffect(() => {}, [item]);
+  const sendShare = async () => {
+    const response = await sendFeedShare(item.id);
+    const {resultCode, resultMessage} = response;
+
+    if (resultCode === 0) {
+      console.log('공유 성공!');
+    } else {
+      console.log(`공유 실패: ${resultMessage}`);
+    }
+  };
+  const handleShare = async () => {
+    sendShare();
+    const shareData = {
+      title: '공유하기 제목',
+      text: '이 링크를 확인해보세요!',
+      url: window.location.href, // 현재 페이지 URL
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData); // 네이티브 공유 UI 호출
+      } catch (error) {
+        console.error('공유 실패:', error);
+      }
+    } else {
+      setIsShare(true);
+    }
+  };
+
+  const [isBookmarked, setIsBookmarked] = useState(item.isBookmark);
+  const bookmarkFeed = async () => {
+    const payload = {
+      feedId: item.id, // 북마크할 피드 ID
+      isSave: !isBookmarked, // 북마크 저장 여부 (true: 저장, false: 해제)
+    };
+
+    const response = await sendFeedBookmark(payload);
+    setIsBookmarked(!isBookmarked);
+    if (response.resultCode === 0) {
+      console.log('Bookmark operation successful:', response);
+    } else {
+      console.error('Failed to bookmark feed:', response.resultMessage);
+    }
+  };
+
+  const formatTimeAgo = (time: string): string => {
+    const now = new Date();
+    const commentTime = new Date(time);
+    const diffInSeconds = Math.floor((now.getTime() - commentTime.getTime()) / 1000);
+
+    if (diffInSeconds < 60) return `${diffInSeconds}초 전`;
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) return `${diffInMinutes}분 전`;
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours}시간 전`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays}일 전`;
+    const diffInWeeks = Math.floor(diffInDays / 7);
+    if (diffInWeeks < 4) return `${diffInWeeks}주 전`;
+    const diffInMonths = Math.floor(diffInWeeks / 4);
+    if (diffInMonths < 12) return `${diffInMonths}달 전`;
+    const diffInYears = Math.floor(diffInMonths / 12);
+    return `${diffInYears}년 전`;
+  };
+
+  React.useEffect(() => {
+    setCommentCount(item.commentCount);
+    console.log(item.commentCount);
+  }, [item]);
   return (
     <div className={styles.reelsContainer}>
+      <div className={styles.followingContainer}>
+        <div className={styles.followingBox}>
+          <span className={styles.followingText}>Featured</span>
+          <div className={styles.iconArrowDown}>
+            <img src={LineArrowLeft.src} style={{transform: 'rotate(270deg)'}}></img>
+          </div>
+        </div>
+      </div>
       <div className={styles.mainContent}>
         <div className={styles.Image}>
           {item.mediaState === 1 && (
@@ -139,6 +222,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                 muted={true}
                 url={item.mediaUrlList[0]} // 첫 번째 URL 사용
                 playing={isPlaying} // 재생 상태
+                loop={true}
                 width="100%"
                 height="100%"
                 style={{
@@ -234,6 +318,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                 Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
               </div>
             )}
+            <div>{formatTimeAgo(item.createAt)}</div>
           </div>
         </div>
 
@@ -276,21 +361,50 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
           </div>
           <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
             <img src={BoldComment.src} className={styles.button}></img>
-            {item.commentCount}
+            {commentCount}
           </div>
-          <div className={styles.noneTextButton}>
+          <div
+            className={styles.noneTextButton}
+            onClick={async () => {
+              handleShare();
+            }}
+          >
             <img src={BoldShare.src} className={styles.button}></img>
           </div>
-          <div className={styles.noneTextButton}>
-            <img src={LineArchive.src} className={styles.button}></img>
+
+          <div
+            className={styles.noneTextButton}
+            onClick={() => {
+              bookmarkFeed();
+            }}
+          >
+            {isBookmarked && <img src={BoldArchive.src} className={styles.button}></img>}
+            {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
           </div>
-          <div className={styles.noneTextButton}>
+          <div
+            className={styles.noneTextButton}
+            onClick={() => {
+              alert('추후 신고 기능 추가');
+            }}
+          >
             <img src={BoldMore.src} className={styles.button}></img>
           </div>
         </div>
       </div>
 
-      <ReelsComment feedId={item.id} isOpen={isCommentOpen} toggleDrawer={v => setCommentIsOpen(v)} />
+      <ReelsComment
+        feedId={item.id}
+        isOpen={isCommentOpen}
+        toggleDrawer={v => setCommentIsOpen(v)}
+        onAddTotalCommentCount={() => handleAddCommentCount()}
+      />
+
+      <SharePopup
+        open={isShare}
+        title={item.characterProfileName}
+        url={window.location.href}
+        onClose={() => setIsShare(false)}
+      ></SharePopup>
     </div>
   );
 };

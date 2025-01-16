@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
-  max-width: 402px;
+  overflow: hidden;   
+  width: var(--full-width);
   margin: 0 auto;
   position: relative;
 }
@@ -14,7 +14,7 @@
   align-items: flex-start;
   padding: 0px;
   gap: 8px;
-  width: 370px;
+  width: var(--second-width);
   height: auto;
   padding: 12px 16px 12px 16px;
 }
@@ -109,7 +109,7 @@ line-height: 155%; /* 18.6px */
   gap: 10px;
 
   position: fixed; /* position을 fixed로 변경 */
-  width: 100vw;
+  width: var(--full-width);
   height: 70px;
   left: 0px;
   bottom: 0px;

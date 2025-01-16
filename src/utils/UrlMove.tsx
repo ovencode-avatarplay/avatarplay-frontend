@@ -3,10 +3,9 @@ import {useRouter} from 'next/navigation';
 import Cookies from 'js-cookie';
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import {getLangUrlCode} from '@/configs/i18n';
-import {getBrowserLanguage} from './getLocalizedText';
 import {setLanguage} from '@/redux-store/slices/UserInfo';
-import {useDispatch} from 'react-redux';
 import {store} from '@/redux-store/ReduxStore';
+import {getBrowserLanguage, getLanguageFromURL, getLanguageTypeFromText} from './browserInfo';
 
 // 로그인상태인가
 export const isLogined = (): boolean => {
@@ -29,6 +28,9 @@ export const refreshLanaguage = (language: LanguageType | undefined, router: Ret
     // 서버에서 언어를 가져오지 못한 경우 브라우저 언어 사용
     if (language !== undefined) {
       if (language === getBrowserLanguage()) return;
+
+      // 이미 같은 언어이면 패스
+      if (language === getLanguageTypeFromText(getLanguageFromURL())) return;
 
       dispatch(setLanguage(language));
 

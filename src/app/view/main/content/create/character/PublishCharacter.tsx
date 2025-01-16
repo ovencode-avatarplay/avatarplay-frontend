@@ -47,6 +47,11 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
     name: '',
     introduction: '',
     description: '',
+
+    worldScenario: "",
+    greeting: "",
+    secret: "",
+
     genderType: 0,
     mainImageUrl: '',
     portraitGalleryImageUrl: [],
@@ -89,6 +94,11 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
           name: characterName,
           introduction: characterIntroduction,
           description: characterDescription,
+
+          worldScenario: currentCharacter.worldScenario,
+          greeting: currentCharacter.greeting,
+          secret: currentCharacter.secret,
+
           genderType: currentCharacter.genderType,
           mainImageUrl: currentCharacter.mainImageUrl,
 
@@ -204,6 +214,49 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
         placeholder="Write a brief description about the character..."
         value={characterDescription}
         onChange={e => setCharacterDescription(e.target.value)}
+      />
+
+      {/* Character Description */}
+      <Typography className={styles.label}>World Scenario</Typography>
+      <TextField
+        variant="outlined"
+        fullWidth
+        multiline
+        rows={4}
+        placeholder="Describe the background of the character..."
+        value={currentCharacter.worldScenario}
+        onChange={e => {
+          currentCharacter.worldScenario = e.target.value
+          setCurrentCharacter({ ...currentCharacter })
+        }}
+      />
+      {/* Character Description */}
+      <Typography className={styles.label}>Greeting</Typography>
+      <TextField
+        variant="outlined"
+        fullWidth
+        multiline
+        rows={4}
+        placeholder="Describe the situation at the start of the conversation..."
+        value={currentCharacter.greeting}
+        onChange={e => {
+          currentCharacter.greeting = e.target.value
+          setCurrentCharacter({ ...currentCharacter })
+        }}
+      />
+      {/* Character Description */}
+      <Typography className={styles.label}>Secrets</Typography>
+      <TextField
+        variant="outlined"
+        fullWidth
+        multiline
+        rows={4}
+        placeholder="This information will not be exposed to the user in conversation, and will be passed to the prompt generator...."
+        value={currentCharacter.secret}
+        onChange={e => {
+          currentCharacter.secret = e.target.value
+          setCurrentCharacter({ ...currentCharacter })
+        }}
       />
 
       {/* Setting Button Area */}

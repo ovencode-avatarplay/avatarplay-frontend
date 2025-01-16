@@ -1,6 +1,5 @@
-import React, {MouseEventHandler} from 'react';
+import React from 'react';
 import styles from './ImageGrid.module.css';
-import {Box} from '@mui/material';
 
 type ImageGridProps = {
   urls: string[];
@@ -12,9 +11,9 @@ const ImageGrid: React.FC<ImageGridProps> = ({urls, onClick}) => {
     switch (urls.length) {
       case 1:
         return (
-          <Box className={styles.count1}>
+          <div className={styles.count1}>
             <img src={urls[0]} className={styles.image} onClick={() => onClick?.(0)} />
-          </Box>
+          </div>
         );
 
       case 2:

@@ -1,15 +1,13 @@
-.modal_body {
-    display: flex;
-    flex-direction: column; /* 세로 정렬 */ 
-  margin: 0 auto; /* 수평 중앙 정렬 */
-  height: 100vh;
-}
-@media (min-width : 402px)
+.dialogBody
 {
-    .modal-body
-    {
-        width: 370px;
-    }
+    background-color: transparent;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */    
+    width: var(--full-width);
+    margin: 0 auto; /* 수평 중앙 정렬 */    
 }
 
 .modal-header {
@@ -71,8 +69,8 @@
 
 
 .header {
-    display: flex;
-    width: 100%;
+    display: flex;  
+    width: var(--full-width);
     height: 58px;
     padding-top: 9px;
     padding-right: 16px;
@@ -83,17 +81,9 @@
     flex-shrink: 0;
 
     background: var(--White, #FFF);
-}
-
-@media (min-width:402px)
-{.header {
-    width: 402px;
-    height: 58px;
-    gap: 6.6px;
-    display: flex;
     justify-content: space-between;
 }
-}
+ 
 
 .headerLeft
 { 
@@ -146,20 +136,12 @@ align-items: center;
 padding: 0px;
 gap: 198px;
 
-width: calc(100vw - 32px);
+width: var(--second-width);
 height: 30px;
 left: 15.58px;
 top: 192px;
 }
-
-@media (min-width : 402px)
-{
-    .counterAndCreate
-    {
-        width: 370px;
-    }
-}
-
+ 
 
 .counterButton
 {
@@ -221,7 +203,7 @@ align-items: center;
 padding: 8px 12px;
 gap: 4px;
 
-width: calc(100vw - 32px);
+width: var(--second-width);
 height: 46px;
 left: 15.58px;
 top: 132px;
@@ -236,15 +218,7 @@ font-size: 16px;
 line-height: 20px;
 color: #FFFFFF;
 }
-
-@media (min-width : 402px)
-{
-    .episodeBar
-    {
-        width: 370px;
-    }
-}
-
+ 
 .topGroup
 {
     display: flex;
@@ -257,18 +231,10 @@ color: #FFFFFF;
 .triggerBox
 {
     overflow-y: auto; 
-    width: calc(100vw - 32px);
+    width: (var(--second-width));
     height: 74vh;    
 }
-
-@media (min-width : 402px)
-{
-    .triggerBox
-    {
-        width: 370px;
-    }
-}
-
+ 
 .triggerBox::-webkit-scrollbar {
     display: none;  
 }
@@ -289,17 +255,15 @@ color: #FFFFFF;
     gap: 10px;
 
     position: fixed; /* position을 fixed로 변경 */
-    width: 100vw;
+    width: var(--full-width);
     height: 70px;
     left: 0px;
     bottom: 0px;
 }
 
-.setupButtons {
-    width: calc(100vw - 32px);
+.setupButtons { 
     height: 50px;
-
-    max-width: 370px;
+    width: var(--second-width);
 
     font-family: 'Lato';
     font-style: normal;
@@ -309,4 +273,10 @@ color: #FFFFFF;
     letter-spacing: -0.4px;
 
     color: #FFFFFF;
+}
+
+
+.buttonArea
+{
+    justify-self: center;
 }

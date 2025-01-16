@@ -6,7 +6,6 @@ import {setIsRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import AI_Recommend from './AI_Recommend';
 import styles from './ChatBar.module.css';
 import {AiText, BotMessage, BotSend, Chat, Close, Description, Plus, Recording1} from '@ui/chatting';
-import {Padding} from '@mui/icons-material';
 
 interface ChatBarProps {
   message: string;

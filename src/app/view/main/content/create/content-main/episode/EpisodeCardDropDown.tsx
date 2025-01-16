@@ -6,7 +6,7 @@ import {LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePreview} from '@ui/Ic
 import {ChapterInfo, duplicateEpisode, removeEpisode} from '@/redux-store/slices/ContentInfo';
 import {RootState, store} from '@/redux-store/ReduxStore';
 import BottomRenameDrawer from './BottomRenameDrawer';
-import Popup from '@/components/popup/Popup';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface EpisodeCardDropDownProps {
   episodeInfo: EpisodeInfo;
@@ -117,7 +117,7 @@ const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeI
         <img src={LineDelete.src} className={styles.deleteItemIcon} />
       </div>
       {isDeleteOn && (
-        <Popup
+        <CustomPopup
           type="alert"
           title="Are you sure?"
           description="Deleting your trigger is irreversible"

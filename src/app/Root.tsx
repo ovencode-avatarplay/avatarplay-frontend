@@ -1,7 +1,7 @@
 'use client';
 
 import {store, persistor} from '@/redux-store/ReduxStore';
-import {ReactNode, useEffect} from 'react';
+import {ReactNode} from 'react';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {ThemeProvider, createTheme} from '@mui/material/styles';
@@ -11,7 +11,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 // MUI에 전역 css 적용하는 코드
 const theme = createTheme({
   typography: {
-    fontFamily: "'Lato', 'Arial', 'Helvetica', 'sans-serif'",
+    fontFamily: "'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC', sans-serif",
   },
   components: {
     MuiTextField: {
@@ -22,28 +22,28 @@ const theme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          fontFamily: "'Lato', 'Arial', 'Helvetica', 'sans-serif'",
+          fontFamily: "'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC', sans-serif",
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          fontFamily: "'Lato', 'Arial', 'Helvetica', 'sans-serif'",
+          fontFamily: "'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC', sans-serif",
         },
       },
     },
     MuiChip: {
       styleOverrides: {
         root: {
-          fontFamily: "'Lato', 'Arial', 'Helvetica', 'sans-serif'",
+          fontFamily: "'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC', sans-serif",
         },
       },
     },
     MuiTypography: {
       styleOverrides: {
         root: {
-          fontFamily: "'Lato', 'Arial', 'Helvetica', 'sans-serif'",
+          fontFamily: "'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC', sans-serif",
         },
       },
     },

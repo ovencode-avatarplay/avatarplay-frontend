@@ -28,7 +28,6 @@ const usePrevChatting = (
   const fetchChattingData = async () => {
     try {
       console.log('isUsedUrlLink', isUsedUrlLink);
-
       const key = getWebBrowserUrl(QueryParams.ChattingInfo) || null;
 
       const ReqDataUrl: UrlEnterEpisodeChattingReq = {

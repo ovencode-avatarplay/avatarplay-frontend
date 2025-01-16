@@ -1,6 +1,6 @@
 .container {
-  position: relative;
-  max-width: 402px;
+  position: relative;  
+  width: var(--full-width);
   height: 100vh;
   max-height: 100vh;
   overflow-y: auto;

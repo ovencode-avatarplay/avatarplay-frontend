@@ -29,8 +29,8 @@ import LanguageSelectDropBox from './LanguageSelectDropBox';
 import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
 import {fetchLanguage} from './LanguageSetting';
 import {getLangUrlCode} from '@/configs/i18n';
-import {getBrowserLanguage, getCookiesLanguageType} from '@/utils/getLocalizedText';
 import Cookies from 'js-cookie';
+import {getCookiesLanguageType} from '@/utils/browserInfo';
 
 const UserDropdown = () => {
   // States
@@ -86,6 +86,7 @@ const UserDropdown = () => {
 
         setAuth(session);
         try {
+          console.log('로그인 시작');
           const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
           const _language = getCurrentLanguage();
           const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/auth/sign-in`, {

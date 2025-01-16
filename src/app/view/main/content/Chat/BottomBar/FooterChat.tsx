@@ -61,7 +61,6 @@ const FooterChat: React.FC<FooterChatProps> = ({
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const currentContentId: number = useSelector((state: RootState) => state.chatting.contentId);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
-  const [failMessage, setfailMessage] = useState<string | null>(null);
 
   const router = useRouter();
 

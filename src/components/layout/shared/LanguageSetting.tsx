@@ -2,7 +2,7 @@
 
 import {sendGetLanguage, sendSignIn, SignInReq} from '@/app/NetWork/AuthNetwork';
 import {getLangUrlCode} from '@/configs/i18n';
-import {getBrowserLanguage} from '@/utils/getLocalizedText';
+
 import {refreshLanaguage} from '@/utils/UrlMove';
 import {i18n} from 'next-i18next';
 import {useRouter} from 'next/navigation';

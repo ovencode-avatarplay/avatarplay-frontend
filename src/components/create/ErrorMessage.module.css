@@ -1,21 +1,12 @@
 
 .errorContainer {  
-  
-    max-width: 402px;
     margin: 0  auto;
       
       
-    width: calc(100vw - 32px);
+    width: var(--second-width);
       z-index: 5000; /* Drawer 위에 표시되도록 높은 z-index 설정 */
   }
-
-  @media (min-width:402px)
-  {
-    .contentBox {
-      width: 370px;
-  
-    }
-  }
+ 
 
     .errorMessage {
       background: #f75555;

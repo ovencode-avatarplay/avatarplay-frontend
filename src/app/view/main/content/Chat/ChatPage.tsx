@@ -43,10 +43,9 @@ import NextEpisodePopup from './MainChat/NextEpisodePopup';
 import NotEnoughRubyPopup from './MainChat/NotEnoughRubyPopup';
 import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import ChatFloatingArea from './MainChat/ChatFloatingArea';
-import {TriggerActionType} from '@/types/apps/DataTypes';
 import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
 import {addNewDateMessage, compareDates, NewDateType, refreshNewDateAll, shiftDates} from './MainChat/NewDate';
-import Head from 'next/head';
+import {TriggerActionType} from '@/redux-store/slices/EpisodeInfo';
 
 const ChatPage: React.FC = () => {
   const TempIdforSendQuestion: number = -222;
@@ -63,13 +62,13 @@ const ChatPage: React.FC = () => {
   const [nextEpisodeName, setNextEpisodeName] = useState<string | null>(null); // 다음 에피소드 이름
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isBlurOn, SetIsBlurOn] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
-  const [isIdEnter, setIsIdEnter] = useState<boolean>(false); // 로딩 상태 추가
-  const [chatBarCount, setChatBarCount] = useState<number>(1); // 로딩 상태 추가
-  const [aiChatHeight, setAiChatHeight] = useState<number>(0); // 로딩 상태 추가
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isIdEnter, setIsIdEnter] = useState<boolean>(false);
+  const [chatBarCount, setChatBarCount] = useState<number>(1);
+  const [aiChatHeight, setAiChatHeight] = useState<number>(0);
   const [nextPopupData, setNextPopupData] = useState<TriggerNextEpisodeInfo>();
 
-  const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false); // 로딩 상태 추가
+  const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false);
   const [isReqPrevCheat, setReqPrevCheat] = useState<boolean>(false); // 치트키로 애피소드 초기화.
   const [isRenderComplete, setRenderComplete] = useState<boolean>(false);
   const [characterImageUrl, setCharacterImageUrl] = useState<string | undefined>('');
@@ -116,8 +115,6 @@ const ChatPage: React.FC = () => {
 
   const Send = async (reqSendChatMessage: SendChatMessageReq) => {
     try {
-      // console.log('sendParsedMessageStartRef:', parsedMessagesRef);
-
       const currentMessages = parsedMessagesRef.current.Messages;
       const filteredMessages = currentMessages.filter(msg => !checkChatSystemError(msg.text));
 

@@ -43,7 +43,7 @@ import DrawerContentEpisodeItemList from './ContentEpisodeList';
 import ContentRecommendList from './ContentRecommendList';
 import {EpisodeCardProps} from './ContentDescType';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import Tabs from '@/components/layout/shared/Tabs';
+import Splitter from '@/components/layout/shared/CustomSplitter';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
 
@@ -209,7 +209,7 @@ const DrawerContentDesc = () => {
     }
   };
 
-  const tabData = [
+  const splitterData = [
     {
       label: 'Episodes',
       preContent: '',
@@ -271,7 +271,7 @@ const DrawerContentDesc = () => {
           background: 'var(--White, #FFF)',
           overflow: 'hidden',
           bottom: '0px',
-          maxWidth: '402px',
+          width: 'var(--full-width)',
           margin: '0 auto',
         },
       }}
@@ -367,7 +367,12 @@ const DrawerContentDesc = () => {
               </Link>
             </div>
           </div>
-          <Tabs tabs={tabData} placeholderWidth="40vw" headerStyle={{padding: '0'}} contentStyle={{padding: '0'}} />
+          <Splitter
+            splitters={splitterData}
+            placeholderWidth="40vw"
+            headerStyle={{padding: '0'}}
+            contentStyle={{padding: '0'}}
+          />
         </div>
         <LoadingOverlay loading={loading} />
       </div>
