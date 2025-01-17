@@ -18,6 +18,7 @@ import {
   BoldVideo,
   LineArchive,
   LineArrowLeft,
+  LineFeatured,
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
 import ReelsComment from './ReelsComment';
@@ -192,6 +193,16 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
           </div>
         </div>
       </div>
+
+      <div className={styles.featuredContainer}>
+        <span className={styles.featuredText}>Featured</span>
+        <div className={styles.featuredIcon}>
+          <div className={styles.iconCircle}>
+            <img src={LineFeatured.src}></img>
+          </div>
+        </div>
+      </div>
+
       <div className={styles.mainContent}>
         <div className={styles.Image}>
           {item.mediaState === 1 && (

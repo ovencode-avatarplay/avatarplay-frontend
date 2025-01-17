@@ -38,7 +38,7 @@
   }
   
   .popupTitle {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato';
     font-size: 21px;
     font-weight: 600;
     line-height: 120%;
@@ -46,7 +46,7 @@
   }
   
   .popupDescription {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato';
     font-size: 14px;
     font-weight: 400;
     line-height: 140%;
@@ -62,7 +62,7 @@
   .popupButton {
     flex-grow: 1;
 
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato';
   }   
   .textButton {
     align-self: stretch;

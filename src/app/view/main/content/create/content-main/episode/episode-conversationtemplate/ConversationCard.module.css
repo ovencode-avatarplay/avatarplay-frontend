@@ -20,7 +20,7 @@
   }
   
   .header span {
-    font-family: "Lato", sans-serif;
+    font-family: "Lato" ;
     font-weight: 600;
     font-size: 15px;
     color: #000000;
@@ -115,7 +115,7 @@ border-radius: 12px;
     border: none;
     outline: none;
     background: transparent;
-    font-family: "Lato", sans-serif;
+    font-family: "Lato" ;
     font-size: 14px;
     color: #9aa0a6;
     resize: none; /* 사용자가 크기를 조정하지 못하게 설정 */

@@ -70,7 +70,7 @@
   padding: 10px;
   border: 1px solid #bdc1c6;
   border-radius: 10px;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato';
   font-size: 14px;
   line-height: 1.5;
   color: #000;
@@ -89,7 +89,7 @@
   position: absolute;
   bottom: 10px;
   left: 12px;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato';
   font-size: 12px;
   color: #9aa0a6;
   color: var(--Neutral-500, #9AA0A6);

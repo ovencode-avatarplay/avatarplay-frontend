@@ -21,21 +21,21 @@
     gap: 8px;
   }
   .username {
-    font-family: "Pretendard", sans-serif;
+    font-family: "Pretendard";
     font-weight: 600;
     font-size: 11px;
     color: var(--Black);
   }
   
   .time {
-    font-family: "Pretendard", sans-serif;
+    font-family: "Pretendard";
     font-weight: 400;
     font-size: 12px;
     color: #6d7681;
   }
   
   .commentText {
-    font-family: "Pretendard", sans-serif;
+    font-family: "Pretendard";
     font-weight: 400;
     font-size: 14px;
     line-height: 150%;
@@ -67,7 +67,7 @@
   }
   
   .actionText {
-    font-family: "Pretendard", sans-serif;
+    font-family: "Pretendard";
     font-weight: 400;
     font-size: 10px;
     color: #6d7681;
