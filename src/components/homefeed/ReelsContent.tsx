@@ -18,6 +18,7 @@ import {
   BoldVideo,
   LineArchive,
   LineArrowLeft,
+  LineFeatured,
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
 import ReelsComment from './ReelsComment';
@@ -60,6 +61,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
   const [commentCount, setCommentCount] = useState(item.commentCount); // 비디오 총 길이
+
+  const [curFollowFeatured, setCurFollowFeatured] = useState(false); // 비디오 총 길이
+  const [isOpenFollowFeatured, setIsOpenFollowFeatured] = useState(false); // 비디오 총 길이
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
   const handleAddCommentCount = () => {
@@ -179,18 +183,47 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
 
   React.useEffect(() => {
     setCommentCount(item.commentCount);
-    console.log(item.commentCount);
+    console.log('id', item.id);
+    console.log('count', item.commentCount);
   }, [item]);
   return (
     <div className={styles.reelsContainer}>
       <div className={styles.followingContainer}>
         <div className={styles.followingBox}>
-          <span className={styles.followingText}>Featured</span>
-          <div className={styles.iconArrowDown}>
+          <span className={styles.followingText}>
+            {curFollowFeatured && <>Featured</>}
+            {!curFollowFeatured && <>Following</>}
+          </span>
+          <div
+            className={styles.iconArrowDown}
+            onClick={() => {
+              setIsOpenFollowFeatured(!isOpenFollowFeatured);
+            }}
+          >
             <img src={LineArrowLeft.src} style={{transform: 'rotate(270deg)'}}></img>
           </div>
         </div>
       </div>
+
+      {isOpenFollowFeatured && (
+        <div
+          className={styles.featuredContainer}
+          onClick={() => {
+            setCurFollowFeatured(!curFollowFeatured);
+          }}
+        >
+          <span className={styles.featuredText}>
+            {' '}
+            {curFollowFeatured && <>Following</>}
+            {!curFollowFeatured && <>Featured</>}
+          </span>
+          <div className={styles.featuredIcon}>
+            <div className={styles.iconCircle}>
+              <img src={LineFeatured.src}></img>
+            </div>
+          </div>
+        </div>
+      )}
       <div className={styles.mainContent}>
         <div className={styles.Image}>
           {item.mediaState === 1 && (
@@ -228,6 +261,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                 style={{
                   borderRadius: '8px',
                 }}
+                progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
                 onProgress={({playedSeconds}) => {
                   handleVideoProgress(playedSeconds);
 
@@ -264,6 +298,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                 item.mediaState === 1
                   ? `${((activeIndex + 1) / item.mediaUrlList.length) * 100}%` // 이미지 슬라이드 진행도
                   : `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
+              transition: 'width 0.1s linear', // 부드러운 진행도 애니메이션
             }}
           ></div>
         </div>

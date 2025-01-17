@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Modal, Box} from '@mui/material';
 import styles from './ModifyCharacterModal.module.css';
 import CreateCharacterTopMenu from '../../main/content/create/character/CreateCharacterTopMenu';
-import CharacterCreate from '../../main/content/create/character/CreateCharacterSequence';
+import CharacterCreateSequence from '../../main/content/create/character/CreateCharacterSequence';
 import PublishCharacter from '../../main/content/create/character/PublishCharacter';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import PublishCharacterBottom from '../../main/content/create/character/PublishCharacterBottom';
@@ -63,7 +63,7 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
           blockStudioButton={true}
         />
         {isModifying ? (
-          <CharacterCreate
+          <CharacterCreateSequence
             closeAction={handleCloseClick}
             isModify={isModify}
             characterInfo={characterInfo}

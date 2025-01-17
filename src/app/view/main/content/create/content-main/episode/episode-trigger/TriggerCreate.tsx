@@ -39,7 +39,7 @@ import {
   LineCheck,
   LineUpload,
 } from '@ui/Icons';
-import EpisodeInitializeStep from '../episode-initialize/EpisodeInitializeStep';
+import CustomStepper from '@/components/layout/shared/CustomStepper';
 import Modal from '@mui/material/Modal/Modal';
 import MaxTextInput, {inputType as inputType} from '@/components/create/MaxTextInput';
 import TriggerCreateMedia from './TriggerCreateMedia';
@@ -76,9 +76,9 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     actionCharacterInfo: {
       id: 0,
       name: '',
-      greeting:'',
-      secret:'',
-      worldScenario:'',
+      greeting: '',
+      secret: '',
+      worldScenario: '',
       introduction: '',
       description: '',
       genderType: 0,
@@ -879,7 +879,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
         />
         {curStep >= 3 && getActionsActive() == TriggerActionType.ChangeCharacter && (
           <>
-            <EpisodeInitializeStep maxStep={maxStep} curStep={curStep} />
+            <CustomStepper maxStep={maxStep} curStep={curStep} />
           </>
         )}
         {getStepContent(curStep)}

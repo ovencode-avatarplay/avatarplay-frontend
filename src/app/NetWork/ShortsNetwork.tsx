@@ -275,6 +275,7 @@ export interface CommentInfo {
   isModify: boolean;
   updatedAt: string;
   replies: ReplieInfo[];
+  userImage: string;
 }
 
 // 대댓글 정보
@@ -288,6 +289,7 @@ export interface ReplieInfo {
   isDisLike: boolean;
   isModify: boolean;
   updatedAt: string;
+  userImage: string;
 }
 
 // 댓글 추가하기

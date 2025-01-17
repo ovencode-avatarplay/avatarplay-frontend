@@ -8,8 +8,7 @@
 
 .label 
 {
-    justify-content: center;
-    align-self: stretch;
+    justify-content: center; 
     
     color: var(--Neutral-900, #040415);
     font-feature-settings: 'liga' off, 'clig' off;

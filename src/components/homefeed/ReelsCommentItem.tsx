@@ -3,10 +3,11 @@ import styles from './ReelsCommentItem.module.css';
 import {BoldComment, BoldDislike, BoldLike, LineComment, LineDisLike, LineFolderPlus, LineLike} from '@ui/Icons';
 import ReelsComment from './ReelsComment';
 import {CommentInfo, ReplieInfo, sendCommentLike} from '@/app/NetWork/ShortsNetwork';
-import {Menu, MenuItem} from '@mui/material';
+import {Avatar, Menu, MenuItem} from '@mui/material';
 import ReelsCommentEdit from './ReelsCommentEdit';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
+import {ClassNames} from '@emotion/react';
 
 export enum CommentType {
   default = 0,
@@ -31,6 +32,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
   onRepliesBack = () => {},
   onAddTotalCommentCount,
 }) => {
+  console.log('comment.userImage', comment.userImage);
   const [isLike, setIsLike] = useState(comment.isLike);
   const [likeCount, setLikeCount] = useState(comment.likeCount);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -131,81 +133,84 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
     >
       <div className={styles.content}>
         {/* User Info */}
-        <div className={styles.userInfo}>
-          <span className={styles.username}>{comment.userName}</span>
-          <span className={styles.time}>
-            {formattedTime} {comment.isModify && <>(수정됨)</>}
-          </span>
-        </div>
-        {/* Comment */}
-        <p
-          className={styles.commentText}
-          style={{
-            maxHeight: isExpanded ? 'none' : '200px',
-            overflowY: isExpanded ? 'auto' : 'hidden',
-            width: '100%',
-          }}
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          {isExpanded ? (
-            comment.content
-          ) : comment.content.length > 100 ? (
-            <>
-              {comment.content.slice(0, 92)}
-              <span
-                style={{
-                  color: '#99A3AD', // 원하는 색상 코드
-                  cursor: 'pointer', // 클릭 가능한 상태로 표시
+
+        <div style={{display: 'flex'}}>
+          <Avatar src={comment.userImage} style={{width: '22px', height: '22px', marginRight: '12px'}} />
+          <div>
+            <div className={styles.userInfo}>
+              <span className={styles.username}>{comment.userName}</span>
+              <span className={styles.time}>
+                {formattedTime} {comment.isModify && <>(수정됨)</>}
+              </span>
+            </div>
+            {/* Comment */}
+            <p
+              className={styles.commentText}
+              style={{
+                maxHeight: isExpanded ? 'none' : '200px',
+                overflowY: isExpanded ? 'auto' : 'hidden',
+                width: '100%',
+              }}
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              {isExpanded ? (
+                comment.content
+              ) : comment.content.length > 100 ? (
+                <>
+                  {comment.content.slice(0, 92)}
+                  <span
+                    style={{
+                      color: '#99A3AD', // 원하는 색상 코드
+                      cursor: 'pointer', // 클릭 가능한 상태로 표시
+                    }}
+                  >
+                    ...자세히보기
+                  </span>
+                </>
+              ) : (
+                comment.content
+              )}
+            </p>
+            {/* Actions */}
+            <div className={styles.actions} style={{marginTop: '10px'}}>
+              <div className={styles.actionItem}>
+                {!isLike && (
+                  <img
+                    src={LineLike.src}
+                    className={styles.button}
+                    onClick={() => handleLikeComment(comment.commentId, !isLike)}
+                  />
+                )}
+                {isLike && (
+                  <img
+                    src={BoldLike.src}
+                    className={styles.button}
+                    onClick={() => handleLikeComment(comment.commentId, !isLike)}
+                  />
+                )}
+                <div className={styles.actionText}>{likeCount}</div>
+              </div>
+
+              {type == CommentType.default && (
+                <div className={styles.actionItem} onClick={() => setCommentIsOpen(true)}>
+                  <img src={LineComment.src}></img>
+                </div>
+              )}
+            </div>
+            {'replies' in comment && type == CommentType.default && (
+              <div
+                style={{marginTop: '14px'}}
+                className={styles.commentCount}
+                onClick={() => {
+                  setCommentIsOpen(true);
                 }}
               >
-                ...자세히보기
-              </span>
-            </>
-          ) : (
-            comment.content
-          )}
-        </p>
-
-        <span style={{height: '10px'}}></span>
-        {/* Actions */}
-        <div className={styles.actions}>
-          <div className={styles.actionItem}>
-            {!isLike && (
-              <img
-                src={LineLike.src}
-                className={styles.button}
-                onClick={() => handleLikeComment(comment.commentId, !isLike)}
-              />
+                답글 {repleCount}
+              </div>
             )}
-            {isLike && (
-              <img
-                src={BoldLike.src}
-                className={styles.button}
-                onClick={() => handleLikeComment(comment.commentId, !isLike)}
-              />
-            )}
-            <div className={styles.actionText}>{likeCount}</div>
           </div>
-
-          {type == CommentType.default && (
-            <div className={styles.actionItem} onClick={() => setCommentIsOpen(true)}>
-              <img src={LineComment.src}></img>
-            </div>
-          )}
         </div>
-        <span style={{height: '14px'}}></span>
-        {'replies' in comment && type == CommentType.default && (
-          <div
-            className={styles.commentCount}
-            onClick={() => {
-              setCommentIsOpen(true);
-            }}
-          >
-            답글 {repleCount}
-          </div>
-        )}
       </div>
-
       {/* Menu Icon */}
       <div className={styles.menuIcon} onClick={event => handleClick(event)}>
         <div className={styles.menuDots}></div>

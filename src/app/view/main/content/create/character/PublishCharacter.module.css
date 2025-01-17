@@ -1,26 +1,62 @@
+.publishContainer
+{
+  display: flex;
+  width: var(--second-width);
+  margin-left: 16px;
+  margin-right: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
 
-.thumbnailArea {
-    display: flex;
-    justify-content: space-between;
-    height: 30vh;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
+}
+
+.publishTitle
+{ 
+  height: 22px;
   
-  .portraitArea,
-  .nameArea {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+  color: var(--Black, #000);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 155%; /* 21.7px */
   
-  .portrait {
-    height: 100px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-  }
+}
+
+.thumbnailArea
+{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+}
+
+.thumbnail
+{
+  width: 180px;
+  height: 260px;
+
+  border-radius: 12px;
+  background: lightgray 50% / cover no-repeat;
+}
+
+.dataArea
+{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  align-self: stretch;
+  margin-bottom: 43px;
+}
+
+.nameInput
+{ 
+  width: 100%;
+  align-items: start;
+
+}
+    
   
   .label {
     font-size: 14px;
@@ -31,29 +67,6 @@
     align-self: flex-start;
   }
   
-  .settingButtonArea {
-    margin-top: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .settingButton {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-  }
-  
-  .toggleState {
-    margin-left: auto;
-    color: gray;
-  }
-  
-  .publishButton {
-    margin-top: 16px;
-    width: 100%;
-  }
   
   .drawer {
     width: 300px;

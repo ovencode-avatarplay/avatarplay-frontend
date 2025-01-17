@@ -4,7 +4,7 @@ import {Button, Dialog, DialogTitle} from '@mui/material';
 import styles from './EpisodeImageSetup.module.css';
 import React, {useEffect} from 'react';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import CharacterCreate from '../../../character/CreateCharacterSequence';
+import CharacterCreateSequence from '../../../character/CreateCharacterSequence';
 import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {useDispatch} from 'react-redux';
 
@@ -41,7 +41,7 @@ const EpisodeImageSetup: React.FC<EpisodeImageSetupProps> = ({open, onClose, epi
         </Button>
         <span className={styles['modal-title']}>EpisodeImageSetup</span>
       </DialogTitle>
-      <CharacterCreate closeAction={onClose} isModify={false} />
+      <CharacterCreateSequence closeAction={onClose} isModify={false} />
     </Dialog>
   );
 };

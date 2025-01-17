@@ -26,6 +26,7 @@ import CustomToggleButton from '@/components/layout/shared/CustomToggleButton';
 import ContentLLMSetup from '../content-LLMsetup/ContentLLMsetup';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import CustomSettingButton from '@/components/layout/shared/CustomSettingButton';
 
 interface Props {
   open: boolean;
@@ -183,62 +184,48 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, LLMOpen, 
               />
             </div>
           </div>
+
           {/* Setting List */}
           <div className={styles.settingList}>
-            <div className={styles.settingItem}>
-              <div className={styles.settingButtonContainer}>
-                <div className={styles.settingTextArea}>
-                  <div className={styles.settingName}>LLM</div>
-                  <div className={styles.settingSelected}>{llmModelData[currentLLM.llmModel].label}</div>
-                </div>
-                <button className={styles.settingButtonArea} onClick={setLLMOpen}>
-                  <img className={styles.settingButtonIcon} src={LineArrowRight.src} />
-                </button>
-              </div>
-            </div>
-            <div className={styles.settingItem}>
-              <div className={styles.settingTextArea}>
-                <div className={styles.settingName}>Visibility</div>
-                <div className={styles.settingSelected}>{visibilityItems[visibilityType]?.name}</div>
-              </div>
-              <button className={styles.settingButtonArea} onClick={() => setIsVisibilityOpen(true)}>
-                <img className={styles.settingButtonIcon} src={LineArrowRight.src} />
-              </button>
-              <SelectDrawer
-                items={visibilityItems}
-                isOpen={isVisibilityOpen}
-                onClose={() => setIsVisibilityOpen(false)}
-                selectedIndex={visibilityType}
-              />
-            </div>
-            <div className={styles.settingItem}>
-              <div className={styles.settingTextArea}>
-                <div className={styles.settingName}>Monetization</div>
-                <div className={styles.settingSelected}>{monetizationItems[monetization ? 1 : 0]?.name}</div>
-              </div>
-              <button className={styles.settingButtonArea} onClick={() => setIsMonetizationOpen(true)}>
-                <img className={styles.settingButtonIcon} src={LineArrowRight.src} />
-              </button>
-              <SelectDrawer
-                items={monetizationItems}
-                isOpen={isMonetizationOpen}
-                onClose={() => setIsMonetizationOpen(false)}
-                selectedIndex={monetization ? 1 : 0}
-              />
-            </div>
-            <div className={styles.settingItem}>
-              <div className={styles.settingTextArea}>
-                <div className={styles.settingName}>NSFW</div>
-                <div className={styles.settingState}>{nsfw === 0 ? 'ON' : 'OFF'}</div>
-              </div>
-              <CustomToggleButton
-                size="lg"
-                isToggled={nsfw === 0 ? true : false}
-                onToggle={() => {
-                  dispatch(setNSFW(nsfw === 0 ? 1 : 0));
-                }}
-              />
-            </div>
+            <CustomSettingButton
+              type="text"
+              name="LLM"
+              selectedValue={llmModelData[currentLLM.llmModel].label}
+              onClick={setLLMOpen}
+              isOpen={false}
+              selectedIndex={0}
+            />
+            <CustomSettingButton
+              type="select"
+              name="Visibility"
+              selectedValue={visibilityItems[visibilityType]?.name}
+              items={visibilityItems}
+              onClick={() => setIsVisibilityOpen(true)}
+              isOpen={isVisibilityOpen}
+              onClose={() => setIsVisibilityOpen(false)}
+              selectedIndex={visibilityType}
+            />
+            <CustomSettingButton
+              type="select"
+              name="Monetization"
+              selectedValue={monetizationItems[monetization ? 1 : 0]?.name}
+              items={monetizationItems}
+              onClick={() => setIsMonetizationOpen(true)}
+              isOpen={isMonetizationOpen}
+              onClose={() => setIsMonetizationOpen(false)}
+              selectedIndex={monetization ? 1 : 0}
+            />
+
+            <CustomSettingButton
+              type="toggle"
+              name="NSFW"
+              selectedValue={nsfw === 0 ? 'ON' : 'OFF'}
+              onClick={() => {}}
+              isToggled={nsfw === 0}
+              onToggle={() => {
+                dispatch(setNSFW(nsfw === 0 ? 1 : 0));
+              }}
+            />
           </div>
 
           {/* Tag Container */}

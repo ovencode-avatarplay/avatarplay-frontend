@@ -3,7 +3,7 @@ import {UrlEnterEpisodeChattingReq, EnterEpisodeChattingRes, sendChattingEnterUr
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {setContentId, setContentName, setEpisodeId, setEpisodeName} from '@/redux-store/slices/Chatting';
+import {setContentId, setContentName, setEpisodeId, setEpisodeName, setStreamKey} from '@/redux-store/slices/Chatting';
 import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
 
@@ -47,8 +47,7 @@ const usePrevChatting = (
         dispatch(setEpisodeName(response.data.episodeName));
         dispatch(setContentId(response.data.contentId));
         dispatch(setEpisodeId(response.data.episodeId));
-
-        console.log('response.data.contentId1', response.data.contentId);
+        dispatch(setStreamKey(response.data.streamKey));
       } else {
         setError('Failed to fetch previous messages.');
       }

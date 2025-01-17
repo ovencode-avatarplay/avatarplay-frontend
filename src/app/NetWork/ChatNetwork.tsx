@@ -11,6 +11,7 @@ export interface SendChatMessageReq {
   text: string;
   isRegenerate?: boolean;
   regenerateChatId?: number;
+  streamKey: string;
 }
 
 // 성공적인 응답 타입
@@ -149,6 +150,7 @@ export interface UrlEnterEpisodeChattingReq {
 export interface EnterEpisodeChattingRes {
   contentId: number;
   episodeId: number;
+  streamKey: string;
   nextEpisodeId: number;
   nextEpisodeName: string;
   contentName: string;
@@ -186,12 +188,8 @@ export const sendChattingEnterUrl = async (
 ): Promise<ResponseAPI<EnterEpisodeChattingRes>> => {
   try {
     const response = await api.post<ResponseAPI<EnterEpisodeChattingRes>>('/Chatting/urlEnter', req);
-    console.log('chatenter', req, response);
 
     if (response.data.resultCode === 0) {
-      const responseData = response.data.data as EnterEpisodeChattingRes;
-
-      // 여기서 이미지 캐싱 로직 제거, URL만 반환
       return response.data;
     } else {
       throw new Error(response.data.resultMessage); // Error handling

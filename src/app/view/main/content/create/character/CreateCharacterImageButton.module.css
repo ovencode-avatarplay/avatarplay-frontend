@@ -1,42 +1,108 @@
-/* ImageButton 기본 스타일 */
 .imageButton {
-    position: relative;
-    padding: 0;
-    border: 4px solid black;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    overflow: hidden;
-    background-color: transparent;
-    transition: border-color 0.3s;
-  }
+  position: relative; 
   
-  /* 선택된 상태에 대한 스타일 */
-  .imageButton.selected {
-    border-color: blue !important;
-  }
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.imageBackGround {
+  flex-shrink: 0;
   
-  /* 이미지 영역 */
-  .image {
-    flex-grow: 1;
-    background-size: cover;
-    background-position: center;
-    width: 90%;
-    height: 90%;
-  }
+  background-position: center;
+  background:  lightgray 50% / cover no-repeat;
+}
+
+.imageBackGround.selected
+{
+  background-color: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), 
+}
+
+.imageBackGround.large
+{
+  width: calc(var(--second-width) * 0.5 - 5.5px);
+  height: 260px;
+}
+
+.imageBackGround.middle
+{
+  width: 117px;
+  height: 117px; 
+}
+
+.imageBackGround.small
+{
+  width: 100px;
+  height: 100px;
+}
+
+.label {
+  max-width: 100%;
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
   
-  /* 라벨 컨테이너 */
-  .labelContainer {
-    width: 100%;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-top: 4px solid black;
-  }
+  display: inline-flex;
+  height: 26px;
+  padding: 3px 15px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0; 
   
-  .label {
-    font-weight: bold;
-    color: black;
-  }
+  border-radius: 24px;
+  border: 1px solid var(--White, #FFF);
+  background: rgba(245, 245, 245, 0.20);
+  backdrop-filter: blur(10px);
+}
+
+.label.selected {
+  background: #F5F5F5;
+}
+
+.label span
+{
+  white-space: nowrap;
+
+  color: var(--White, #FFF);
+  text-align: center;
+  leading-trim: both;
+  text-edge: cap;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 166.667% */
+}
+
+.label.selected span
+{
+  color: var(--Black, #000);
+}
+
+.selectedIcon
+{
+  position: absolute;
   
+  left: 50%;
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.selectedIcon.small
+{
+  top: 7px;
+  transform: translate(-50%);
+}
+
+.selectedIcon.middle
+{
+  transform: translate(-50%);
+  bottom: 50%;
+}
+
+.selectedIcon.large
+{
+  transform: translate(-50%, 50%);
+  bottom: 50%;
+}
