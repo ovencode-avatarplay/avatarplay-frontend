@@ -22,6 +22,10 @@ import {CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNe
 
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import CustomInput from '@/components/layout/shared/CustomInput';
+import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
+import {SelectDrawerItem} from '@/components/create/SelectDrawer';
+import CustomSettingButton from '@/components/layout/shared/CustomSettingButton';
 
 interface PublishCharacterProps {
   characterInfo: Partial<CharacterInfo>;
@@ -38,8 +42,8 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
   publishRequestedAction,
   publishFinishAction,
 }) => {
-  const [drawerVisibilityOpen, setDrawerVisibilityOpen] = useState(false);
-  const [drawerMonetizationOpen, setDrawerMonetizationOpen] = useState(false);
+  const [isVisibilityOpen, setIsVisibilityOpen] = useState(false);
+  const [isMonetizationOpen, setIsMonetizationOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const defaultCharacterInfo: CharacterInfo = {
@@ -48,9 +52,9 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
     introduction: '',
     description: '',
 
-    worldScenario: "",
-    greeting: "",
-    secret: "",
+    worldScenario: '',
+    greeting: '',
+    secret: '',
 
     genderType: 0,
     mainImageUrl: '',
@@ -72,16 +76,45 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
   const [characterName, setCharacterName] = useState<string>(currentCharacter.name || '');
   const [characterIntroduction, setCharacterIntroduction] = useState<string>(currentCharacter.introduction || '');
   const [characterDescription, setCharacterDescription] = useState<string>(currentCharacter.description || '');
-  const [visibility, setVisibility] = useState(currentCharacter.visibilityType);
+  const [visibilityType, setVisibilityType] = useState(currentCharacter.visibilityType);
   const [monetization, setMonetization] = useState(currentCharacter.isMonetization);
 
   const [isPublishRequested, setIsPublishRequested] = useState<boolean>(false);
-  const handleDrawerVisibilityToggle = () => {
-    setDrawerVisibilityOpen(!drawerVisibilityOpen);
-  };
-  const handleDrawerMonetizationToggle = () => {
-    setDrawerMonetizationOpen(!drawerMonetizationOpen);
-  };
+
+  const visibilityItems: SelectDrawerItem[] = [
+    {
+      name: 'Private',
+      onClick: () => {
+        setVisibilityType(0);
+      },
+    },
+    {
+      name: 'Unlisted',
+      onClick: () => {
+        setVisibilityType(1);
+      },
+    },
+    {
+      name: 'Public',
+      onClick: () => {
+        setVisibilityType(2);
+      },
+    },
+  ];
+  const monetizationItems: SelectDrawerItem[] = [
+    {
+      name: 'Fan',
+      onClick: () => {
+        setMonetization(false);
+      },
+    },
+    {
+      name: 'Original',
+      onClick: () => {
+        setMonetization(true);
+      },
+    },
+  ];
 
   const handleCreateCharacter = async () => {
     setLoading(true);
@@ -105,7 +138,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
           portraitGalleryImageUrl: [],
           poseGalleryImageUrl: [],
           expressionGalleryImageUrl: [],
-          visibilityType: visibility, // Visibility를 숫자로 변환
+          visibilityType: visibilityType, // Visibility를 숫자로 변환
           isMonetization: monetization,
           state: 1,
         },
@@ -129,26 +162,6 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
     }
   };
 
-  function GetVisibilityText() {
-    if (visibility === 0) {
-      return 'Private';
-    } else if (visibility === 1) {
-      return 'Unlisted';
-    } else if (visibility === 2) {
-      return 'Public';
-    } else {
-      return 'Err';
-    }
-  }
-
-  function getMonetizationText() {
-    if (monetization === true) {
-      return 'Original';
-    } else if (monetization === false) {
-      return 'Fan';
-    }
-  }
-
   useEffect(() => {
     if (characterInfo) setCurrentCharacter(mergedCharacterInfo);
   }, []);
@@ -168,176 +181,102 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
   return (
     <>
       <LoadingOverlay loading={loading} />
-      {/* Thumbnail Area */}
-      <Box className={styles.thumbnailArea}>
-        <Box className={styles.portraitArea}>
-          <Typography className={styles.label}>Base Portrait</Typography>
-          <Box
+      <div className={styles.publishContainer}>
+        <div className={styles.thumbnailArea}>
+          <h2 className={styles.publishTitle}>Thumbnail</h2>
+          <div
+            className={styles.thumbnail}
             style={{
               backgroundImage: `url(${currentCharacter.mainImageUrl || ''})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              height: '100%',
-              width: '100%',
             }}
-          ></Box>
-        </Box>
-        <Box className={styles.nameArea}>
-          <Typography className={styles.label}>Character Name</Typography>
-          <TextField
-            variant="outlined"
-            fullWidth
-            placeholder="Enter Character Name"
+          />
+        </div>
+        <div className={styles.dataArea}>
+          <CustomInput
+            inputType="Basic"
+            textType="Label"
+            label="Character Name"
             value={characterName}
-            onChange={e => setCharacterName(e.target.value)} // 이름 상태 업데이트
+            onChange={e => setCharacterName(e.target.value)}
+            customClassName={[styles.nameInput]}
           />
-          <Typography className={styles.label}>Character Introduction</Typography>
-          <TextField
-            variant="outlined"
-            fullWidth
-            multiline
-            rows={4}
-            placeholder="Write a brief introduction about the character..."
-            value={characterIntroduction}
-            onChange={e => setCharacterIntroduction(e.target.value)}
+          <MaxTextInput
+            displayDataType={displayType.Label}
+            labelText="Introduction"
+            promptValue={characterIntroduction || ''}
+            handlePromptChange={e => setCharacterIntroduction(e.target.value)}
+            maxPromptLength={500}
           />
-        </Box>
-      </Box>
-
-      {/* Character Description */}
-      <Typography className={styles.label}>Character Description</Typography>
-      <TextField
-        variant="outlined"
-        fullWidth
-        multiline
-        rows={4}
-        placeholder="Write a brief description about the character..."
-        value={characterDescription}
-        onChange={e => setCharacterDescription(e.target.value)}
-      />
-
-      {/* Character Description */}
-      <Typography className={styles.label}>World Scenario</Typography>
-      <TextField
-        variant="outlined"
-        fullWidth
-        multiline
-        rows={4}
-        placeholder="Describe the background of the character..."
-        value={currentCharacter.worldScenario}
-        onChange={e => {
-          currentCharacter.worldScenario = e.target.value
-          setCurrentCharacter({ ...currentCharacter })
-        }}
-      />
-      {/* Character Description */}
-      <Typography className={styles.label}>Greeting</Typography>
-      <TextField
-        variant="outlined"
-        fullWidth
-        multiline
-        rows={4}
-        placeholder="Describe the situation at the start of the conversation..."
-        value={currentCharacter.greeting}
-        onChange={e => {
-          currentCharacter.greeting = e.target.value
-          setCurrentCharacter({ ...currentCharacter })
-        }}
-      />
-      {/* Character Description */}
-      <Typography className={styles.label}>Secrets</Typography>
-      <TextField
-        variant="outlined"
-        fullWidth
-        multiline
-        rows={4}
-        placeholder="This information will not be exposed to the user in conversation, and will be passed to the prompt generator...."
-        value={currentCharacter.secret}
-        onChange={e => {
-          currentCharacter.secret = e.target.value
-          setCurrentCharacter({ ...currentCharacter })
-        }}
-      />
-
-      {/* Setting Button Area */}
-      <Box className={styles.settingButtonArea}>
-        <Box className={styles.settingButton} onClick={handleDrawerVisibilityToggle}>
-          <PublicIcon />
-          <Typography className={styles.label}>Visibility</Typography>
-          <Typography className={styles.toggleState}>{GetVisibilityText()}</Typography>
-          <ChevronRightIcon />
-        </Box>
-        <Box className={styles.settingButton} onClick={handleDrawerMonetizationToggle}>
-          <MonetizationOnIcon />
-          <Typography className={styles.label}>Monetization</Typography>
-          <Typography className={styles.toggleState}>{getMonetizationText()}</Typography>
-          <ChevronRightIcon />
-        </Box>
-      </Box>
-
-      {/* Publish Button */}
-      {/* <Button variant="contained" color="primary" className={styles.publishButton} onClick={handleCreateCharacter}>
-        Publish Character
-      </Button> */}
-
-      {/* Drawer */}
-      <Drawer
-        className={styles.drawerindex}
-        anchor="right"
-        open={drawerVisibilityOpen}
-        onClose={handleDrawerVisibilityToggle}
-        sx={{zIndex: 1500}}
-      >
-        <Box className={styles.drawer}>
-          {/* Drawer Header */}
-          <Box className={styles.drawerHeader}>
-            <Button onClick={handleDrawerVisibilityToggle}>
-              <ChevronLeftIcon />
-            </Button>
-            <Typography className={styles.drawerTitle}>Visibility</Typography>
-            <IconButton>
-              <InfoIcon />
-            </IconButton>
-          </Box>
-
-          {/* Visibility Toggle */}
-          <RadioGroup
-            value={visibility}
-            onChange={e => setVisibility(parseInt(e.target.value, 10))}
-            className={styles.toggleGroup}
-            sx={{zIndex: 1500}}
-          >
-            <FormControlLabel value={0} control={<Radio />} label="Private" />
-            <FormControlLabel value={1} control={<Radio />} label="Unlisted" />
-            <FormControlLabel value={2} control={<Radio />} label="Public" />
-          </RadioGroup>
-        </Box>
-      </Drawer>
-      {/* Drawer */}
-      <Drawer anchor="right" open={drawerMonetizationOpen} onClose={handleDrawerMonetizationToggle} sx={{zIndex: 1500}}>
-        <Box className={styles.drawer}>
-          {/* Drawer Header */}
-          <Box className={styles.drawerHeader}>
-            <Button onClick={handleDrawerMonetizationToggle}>
-              <ChevronLeftIcon />
-            </Button>
-            <Typography className={styles.drawerTitle}>Monetization</Typography>
-            <IconButton>
-              <InfoIcon />
-            </IconButton>
-          </Box>
-
-          {/* Monetization Toggle */}
-          <RadioGroup
-            value={monetization}
-            onChange={e => setMonetization(e.target.value === 'true')}
-            className={styles.toggleGroup}
-          >
-            <FormControlLabel value={true} control={<Radio />} label="Original" />
-            <FormControlLabel value={false} control={<Radio />} label="Fan" />
-          </RadioGroup>
-        </Box>
-      </Drawer>
+          <MaxTextInput
+            displayDataType={displayType.Label}
+            labelText="Description"
+            promptValue={characterDescription || ''}
+            handlePromptChange={e => setCharacterDescription(e.target.value)}
+            maxPromptLength={500}
+          />
+          <MaxTextInput
+            displayDataType={displayType.Label}
+            labelText="World Scenario"
+            promptValue={currentCharacter.worldScenario || ''}
+            placeholder={'Describe the background of the character...'}
+            handlePromptChange={e => {
+              currentCharacter.worldScenario = e.target.value;
+              setCurrentCharacter({...currentCharacter});
+            }}
+            maxPromptLength={500}
+          />
+          <MaxTextInput
+            displayDataType={displayType.Label}
+            labelText="Greeting"
+            promptValue={currentCharacter.greeting || ''}
+            placeholder={'Describe the situation at the start of the conversation...'}
+            handlePromptChange={e => {
+              currentCharacter.greeting = e.target.value;
+              setCurrentCharacter({...currentCharacter});
+            }}
+            maxPromptLength={500}
+          />
+          <MaxTextInput
+            displayDataType={displayType.Label}
+            labelText="Secrets"
+            promptValue={currentCharacter.secret || ''}
+            placeholder={
+              'This information will not be exposed to the user in conversation, and will be passed to the prompt generator....'
+            }
+            handlePromptChange={e => {
+              currentCharacter.secret = e.target.value;
+              setCurrentCharacter({...currentCharacter});
+            }}
+            maxPromptLength={500}
+          />
+          <CustomSettingButton
+            type="select"
+            name="Visibility"
+            selectedValue={visibilityItems[visibilityType].name}
+            items={visibilityItems}
+            onClick={() => {
+              setIsVisibilityOpen(true);
+              console.log(isVisibilityOpen);
+            }}
+            isOpen={isVisibilityOpen}
+            onClose={() => {
+              setIsVisibilityOpen(false);
+              console.log(isVisibilityOpen);
+            }}
+            selectedIndex={visibilityType}
+          />
+          <CustomSettingButton
+            type="select"
+            name="Monetization"
+            selectedValue={monetizationItems[monetization ? 1 : 0]?.name}
+            items={monetizationItems}
+            onClick={() => setIsMonetizationOpen(true)}
+            isOpen={isMonetizationOpen}
+            onClose={() => setIsMonetizationOpen(false)}
+            selectedIndex={monetization ? 1 : 0}
+          />
+        </div>
+      </div>
     </>
   );
 };

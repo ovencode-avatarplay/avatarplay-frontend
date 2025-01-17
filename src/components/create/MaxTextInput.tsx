@@ -4,6 +4,7 @@ import ErrorMessage from './ErrorMessage';
 
 interface Props {
   promptValue: string;
+  placeholder?: string;
   handlePromptChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   inputDataType?: inputType;
   displayDataType?: displayType;
@@ -41,6 +42,7 @@ export enum inputState {
 
 const MaxTextInput: React.FC<Props> = ({
   promptValue,
+  placeholder,
   handlePromptChange,
   inputDataType = inputType.None,
   displayDataType = displayType.Default,
@@ -142,7 +144,7 @@ const MaxTextInput: React.FC<Props> = ({
       >
         <textarea
           className={`${styles.inputPrompt} ${hasError ? styles.inputError : ''}`}
-          placeholder="Text Placeholder"
+          placeholder={placeholder ? placeholder : 'Text Placeholder'}
           value={promptValue}
           onChange={handleInput}
           onCompositionStart={handleCompositionStart} // 조합 시작

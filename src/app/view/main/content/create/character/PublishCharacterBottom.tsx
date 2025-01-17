@@ -1,6 +1,7 @@
-import {Button} from '@mui/material';
 import React from 'react';
 import styles from './CreateCharacterSequence.module.css';
+import CustomButton from '@/components/layout/shared/CustomButton';
+import {LineArrowLeft, LineArrowRight} from '@ui/Icons';
 
 interface PublishCharacterBottomProps {
   onPrevClick: () => void;
@@ -10,13 +11,28 @@ interface PublishCharacterBottomProps {
 const PublishCharacterBottom: React.FC<PublishCharacterBottomProps> = ({onPrevClick, onPublishClick}) => {
   return (
     <>
-      <Button className={styles.stepButton} variant="outlined" onClick={onPrevClick}>
-        Change Thumbnail
-      </Button>
-
-      <Button className={styles.stepButton} variant="contained" onClick={onPublishClick}>
-        Publish
-      </Button>
+      <CustomButton
+        size="Medium"
+        type="Tertiary"
+        state="IconLeft"
+        onClick={onPublishClick}
+        icon={LineArrowLeft.src}
+        iconClass="blackIcon"
+        customClassName={[styles.stepButton]}
+      >
+        {'Previous'}
+      </CustomButton>
+      <CustomButton
+        size="Medium"
+        type="Primary"
+        state="IconRight"
+        customClassName={[styles.stepButton]}
+        icon={LineArrowRight.src}
+        iconClass="blackIcon"
+        onClick={onPrevClick}
+      >
+        {'Submit'}
+      </CustomButton>
     </>
   );
 };

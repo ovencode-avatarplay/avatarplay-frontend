@@ -139,7 +139,7 @@ body {
 
 
 .blackIcon{
-  filter: var(--black-Icon-Filter);
+  filter: var(--black-icon-filter);
 }
 
 h1, h2, h3, h4, h5, h6

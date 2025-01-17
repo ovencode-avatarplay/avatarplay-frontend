@@ -1,21 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  Box,
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-  Typography,
-  TextField,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from '@mui/material';
 import styles from './CreateCharacterSequence.module.css';
-import GirlIcon from '@mui/icons-material/Female';
-import BoyIcon from '@mui/icons-material/Male';
-import TransgenderIcon from '@mui/icons-material/Transgender';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
+// redux
+import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 
 // Json Data
 import characterOptionsMaleReal from '@/data/create/create-character-male-real.json';
@@ -29,23 +16,24 @@ import characterOptionsNonBinaryAnime from '@/data/create/create-character-non-b
 import {GenerateImageReq, GenerateImageRes, GenerateParameter, sendGenerateImageReq} from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 
-// Components
-import CharacterCreateImageButton from './CreateCharacterImageButton';
-import PublishCharacter from './PublishCharacter';
-import {CreateCharacterOption} from './CreateCharacterType';
-import FullScreenImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
-import PublishCharacterBottom from './PublishCharacterBottom';
-
 // Import Swiper React components
 import {Swiper, SwiperSlide} from 'swiper/react';
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
-import {Pagination} from 'swiper/modules';
 
-// redux
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+// Components
+import CharacterCreateImageButton from './CreateCharacterImageButton';
+import PublishCharacter from './PublishCharacter';
+import {CreateCharacterOption} from './CreateCharacterType';
+import FullScreenImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
+import PublishCharacterBottom from './PublishCharacterBottom';
+import CustomStepper from '@/components/layout/shared/CustomStepper';
+import CustomButton from '@/components/layout/shared/CustomButton';
+import {BoldRuby, LineArrowLeft, LineArrowRight} from '@ui/Icons';
+import CustomHashtag from '@/components/layout/shared/CustomHashtag';
+import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 
 interface Props {
   closeAction: () => void;
@@ -54,7 +42,7 @@ interface Props {
   publishFinishAction?: () => void;
 }
 
-const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo, publishFinishAction}) => {
+const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, characterInfo, publishFinishAction}) => {
   //#region Pre Define
   const defaultOptions: Record<string, CreateCharacterOption[]> = {
     styleOptions: [],
@@ -94,11 +82,13 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
   ];
 
   const maxLength = 200;
+
+  const imageLoc = '/create_character/';
   //#endregion
 
   //#region State
   const [loading, setLoading] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
+
   const stepperRef = useRef<HTMLDivElement | null>(null);
   const [publishClick, setPublishClick] = useState(Boolean);
   const [publishReqested, setPublishReqested] = useState(Boolean);
@@ -107,12 +97,28 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
   const [generatedOptions, setGeneratedOptions] = useState<GenerateImageRes | null>(null);
   const [fullscreenImage, setFullscreenImage] = useState<FullViewImageData | null>(null); // Add fullscreen image state
 
+  // Step
+  const [maxStep, setMaxStep] = useState<number>(11);
+  const showStep = 8;
+  const [curStep, setCurStep] = useState<number>(0); // 0일때는 max 수치가 변동이 있을 수 있기때문에 step이 가려집니다.
+  const stepTexts: string[] = [
+    'Step 1. Select gender',
+    'Step 2. Select style',
+    'Step 3. Choose ethnicity',
+    'Step 4. Choose hair style',
+    'Step 5. Body shape',
+    'Step 6. Outfit of clothes',
+    'Step 7. Thumbnail background',
+    'Step 8. Choose personality',
+    '',
+    'Step 9. Choose one as a character thumbnail',
+    '',
+  ];
+  const finalStepText = 'Write the title of the episode';
+
   const CreateSteps: CreateCharacterStep[] = Object.values(CreateCharacterStep);
 
   const steps = isModify ? ModifySteps : CreateSteps;
-  const isStepFailed = (step: number) => {
-    return step === 1;
-  };
 
   const [selectedOptions, setSelectedOptions] = useState({
     gender: 0,
@@ -159,17 +165,29 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
     closeAction();
   };
 
-  const handleNext = () => {
-    if (activeStep < steps.length - 1) {
-      setActiveStep(prev => prev + 1);
+  function addStep() {
+    if (!checkEssential()) {
+      alert('필수 선택 항목이 선택되지 않았습니다.');
+      return;
     }
-  };
 
-  const handlePrev = () => {
-    if (activeStep > 0) {
-      setActiveStep(prev => prev - 1);
+    setCurStep(prev => Math.min(prev + 1, maxStep));
+    handleConfirm();
+  }
+  function subStep() {
+    setCurStep(prev => Math.max(prev - 1, 0));
+  }
+
+  function checkEssential() {
+    {
+      if (curStep > 0) {
+        return true;
+      }
     }
-  };
+    return true;
+  }
+
+  const handleConfirm = async () => {};
 
   const handleCustomToggle = () => {
     setCustomClothesActive(!customClothesActive);
@@ -185,11 +203,13 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
     GetImageGenerateImage(req);
   };
 
-  const handleOptionSelect = (key: keyof typeof selectedOptions, index: number) => {
+  const handleOptionSelect = (key: keyof typeof selectedOptions, index: number, autoNextStep?: boolean) => {
     setSelectedOptions(prev => ({
       ...prev,
       [key]: index,
     }));
+
+    if (autoNextStep) addStep();
   };
 
   const handleImageToggle = (image: string, parameter: string) => {
@@ -198,7 +218,7 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
     setFullscreenImage({url: image, parameter: parameter});
   };
 
-  const handleClothesInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleClothesInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= maxLength) {
       setClothesInputValue(e.target.value);
     }
@@ -221,10 +241,20 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
 
   // gender 0 Male / 1 Female, style 0 Real / 1 Anime
   useEffect(() => {
-    if (steps[activeStep] === 'Result' && generatedOptions === null) {
+    if (steps[curStep] === 'Result' && generatedOptions === null) {
       handleGenerate();
     }
-  }, [activeStep]);
+    if (stepperRef.current) {
+      const currentStepElement = stepperRef.current.querySelector(`.MuiStep-horizontal:nth-child(${curStep + 1})`);
+      if (currentStepElement) {
+        currentStepElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }
+    }
+  }, [curStep]);
 
   useEffect(() => {
     // Define character options based on gender and style selection
@@ -245,21 +275,37 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
     setCharacterOptions(newCharacterOptions);
   }, [selectedOptions.gender, selectedOptions.style]);
 
-  useEffect(() => {
-    if (stepperRef.current) {
-      const currentStepElement = stepperRef.current.querySelector(`.MuiStep-horizontal:nth-child(${activeStep + 1})`);
-      if (currentStepElement) {
-        currentStepElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'center',
-        });
-      }
-    }
-  }, [activeStep]);
   //#endregion
 
   //#region Function
+
+  const getImgLoc = (imgName: string) => {
+    return imageLoc + imgName;
+  };
+
+  const getStepText = () => {
+    if (curStep >= maxStep) {
+      return finalStepText;
+    }
+    const currentStep = stepTexts[curStep];
+    return currentStep || '';
+  };
+
+  const getSplitedPersonalityButton = (label: string, index: number, isSelected: boolean) => {
+    const [label1, label2] = label.split('\n');
+
+    return (
+      <button
+        key={index}
+        className={`${styles.personalityButton} ${isSelected && styles.selected}`}
+        onClick={() => handleOptionSelect('personality', index)}
+      >
+        <div className={`${styles.personalityLabel1} ${isSelected && styles.selected}`}>{label1}</div>
+
+        <div className={`${styles.personalityLabel2} ${isSelected && styles.selected}`}>{label2}</div>
+      </button>
+    );
+  };
 
   const generatePrompts = (
     summaryOptions: {key: string; options: {value: number}[]}[],
@@ -278,7 +324,6 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
     try {
       const response = await sendGenerateImageReq(req);
 
-      console.log(response);
       if (response?.data) {
         setGeneratedOptions(response.data);
 
@@ -298,164 +343,144 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
     switch (step) {
       case CreateCharacterStep.Gender:
         return (
-          <div className={styles.createBox}>
-            <div className={styles.createTitle}>Step : Select Gender</div>
-            <Box className={styles.verticalButtonGroup}>
-              {characterOptions.genderOptions.map((option, index) => (
-                <Button
-                  key={option.label}
-                  variant={selectedOptions.gender === index ? 'contained' : 'outlined'}
-                  startIcon={index === 0 ? <GirlIcon /> : index === 1 ? <BoyIcon /> : <TransgenderIcon />}
-                  className={styles.genderButton}
-                  onClick={() => handleOptionSelect('gender', index)}
-                >
-                  {option.label}
-                </Button>
-              ))}
-            </Box>
+          <div className={styles.verticalButtonGroup}>
+            {characterOptions.genderOptions.map((option, index) => (
+              <button className={styles.uploadButton} onClick={() => handleOptionSelect('gender', index, true)}>
+                <img className={styles.buttonIconBack} src={LineArrowLeft.src} />
+                <div className={styles.buttonText}>{option.label}</div>
+              </button>
+            ))}
           </div>
         );
       case CreateCharacterStep.Style:
         return (
-          <div className={styles.createBox}>
-            <div className={styles.createTitle}>Step 2: Select Style</div>
-            <Box className={styles.horizontalButtonGroup}>
+          <div className={styles.createContentBox}>
+            <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap11}`}>
               {characterOptions.styleOptions.map((option, index) => (
                 <CharacterCreateImageButton
                   key={option.label}
-                  width={'40%'}
-                  height={'30vh'}
+                  sizeType="large"
                   label={option.label}
-                  image={option.image}
+                  image={getImgLoc(option.image)}
                   selected={selectedOptions.style === index}
                   onClick={() => handleOptionSelect('style', index)}
                 />
               ))}
-            </Box>
+            </div>
           </div>
         );
       case CreateCharacterStep.Race:
         return (
-          <div className={styles.createBox}>
-            <Box className={styles.raceContent}>
-              <div className={styles.createTitle}>Step 3: Select Race</div>
-              <Typography variant="h6">Race</Typography>
+          <div className={styles.createContentBox}>
+            <article className={styles.createContentArea}>
+              <h3 className={styles.createSubTitle}>Ethnicity</h3>
               <Swiper
+                className={styles.horizonSwiper}
                 initialSlide={selectedOptions.race}
-                slidesPerView={4}
-                spaceBetween={5}
                 centeredSlides={true}
+                slidesPerView="auto"
+                spaceBetween={6}
                 onSlideChange={swiper => handleOptionSelect('race', swiper.activeIndex)}
-                pagination={{
-                  clickable: true,
-                }}
-                modules={[Pagination]}
               >
                 {characterOptions.raceOptions.map((race, index) => (
-                  <SwiperSlide>
+                  <SwiperSlide className={styles.swiperSmall} style={{width: '100px', height: '100px'}}>
                     <CharacterCreateImageButton
                       key={race.label}
-                      width={'100%'}
-                      height={'20vh'}
+                      sizeType="small"
                       label={race.label}
-                      image={race.image}
+                      image={getImgLoc(race.image)}
                       selected={selectedOptions.race === index}
                       onClick={() => {} /*handleOptionSelect('race', index)*/}
                     />
                   </SwiperSlide>
                 ))}
               </Swiper>
-
-              <Typography variant="h6">Age</Typography>
-              <Box className={styles.horizontalButtonGroup}>
+            </article>
+            <article className={styles.createContentArea}>
+              <h3 className={styles.createSubTitle}>Age</h3>
+              <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
                 {characterOptions.ageOptions.map((age, index) => (
-                  <Button
+                  <CustomHashtag
                     key={age.label}
-                    variant={selectedOptions.age === index ? 'contained' : 'outlined'}
-                    className={styles.raceButton}
-                    onClick={() => handleOptionSelect('age', index)}
-                  >
-                    {age.label}
-                  </Button>
+                    text={age.label}
+                    onClickAction={() => handleOptionSelect('age', index)}
+                    isSelected={selectedOptions.age === index}
+                  />
                 ))}
-              </Box>
-              <Typography variant="h6">Eye Color</Typography>
-              <Box className={styles.horizontalButtonGroup}>
-                {characterOptions.eyeColorOptions.map((color, index) => (
-                  <Button
-                    key={color.label}
-                    variant={selectedOptions.eyeColor === index ? 'contained' : 'outlined'}
-                    className={styles.raceButton}
+              </div>
+            </article>
+            <article className={styles.createContentArea}>
+              <h3 className={styles.createSubTitle}>Eye Color</h3>
+              <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
+                {characterOptions.eyeColorOptions.map((eyeColor, index) => (
+                  <CharacterCreateImageButton
+                    key={eyeColor.label}
+                    sizeType="small"
+                    label={eyeColor.label}
+                    image={getImgLoc(eyeColor.image)}
+                    selected={selectedOptions.eyeColor === index}
                     onClick={() => handleOptionSelect('eyeColor', index)}
-                  >
-                    {color.label}
-                  </Button>
+                  />
                 ))}
-              </Box>
-            </Box>
+              </div>
+            </article>
           </div>
         );
       case CreateCharacterStep.HairStyle:
         return (
-          <div className={styles.createBox}>
-            <div className={styles.createTitle}>Step 4: Select Hair Style</div>
-            <Box>
-              <Typography variant="h6">Hair Style</Typography>
-              <Box className={styles.gridContainer}>
+          <div className={styles.createContentBox}>
+            <article className={styles.createContentArea}>
+              <h3 className={styles.createSubTitle}>Hair Style</h3>
+              <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
                 {characterOptions.hairStyles.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
-                    width={'100%'}
-                    height={'15vh'}
+                    sizeType="middle"
                     label={style.label}
-                    image={style.image}
+                    image={getImgLoc(style.image)}
                     selected={selectedOptions.hairStyle === index}
                     onClick={() => handleOptionSelect('hairStyle', index)}
                   />
                 ))}
-              </Box>
-              <Typography variant="h6" style={{marginTop: '16px'}}>
-                Hair Color
-              </Typography>
-              <Box className={styles.horizontalButtonGroup}>
+              </div>
+              <h3 className={styles.createSubTitle}>Hair Color</h3>
+              <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
                 {characterOptions.hairColors.map((color, index) => (
-                  <Button
+                  <CustomHashtag
                     key={color.label}
-                    variant={selectedOptions.hairColor === index ? 'contained' : 'outlined'}
-                    onClick={() => handleOptionSelect('hairColor', index)}
-                    className={styles.colorButton}
-                  >
-                    {color.label}
-                  </Button>
+                    text={color.label}
+                    onClickAction={() => handleOptionSelect('hairColor', index)}
+                    isSelected={selectedOptions.hairColor === index}
+                    color={color.image}
+                  />
                 ))}
-              </Box>
-            </Box>
+              </div>
+            </article>
           </div>
         );
       case CreateCharacterStep.BodyShape:
         return (
-          <div className={styles.createBox}>
-            <div className={styles.createTitle}>Step 5: Select Body Shape</div>
-            <Box className={styles.bodyContent}>
-              <Typography variant="h6">Body Type</Typography>
+          <div className={styles.createContentBox}>
+            <article className={styles.createContentArea}>
+              <h3 className={styles.createSubTitle}>Body Type</h3>
               <Swiper
+                className={styles.horizonSwiper}
                 initialSlide={selectedOptions.bodyType}
-                slidesPerView={4}
-                spaceBetween={5}
+                slidesPerView="auto"
+                spaceBetween={6}
                 centeredSlides={true}
                 onSlideChange={swiper => handleOptionSelect('bodyType', swiper.activeIndex)}
-                pagination={{
-                  clickable: true,
-                }}
-                modules={[Pagination]}
               >
                 {characterOptions.bodyTypes.map((style, index) => (
-                  <SwiperSlide key={style.label}>
+                  <SwiperSlide
+                    className={styles.swiperSmall}
+                    style={{width: '100px', height: '100px'}}
+                    key={style.label}
+                  >
                     <CharacterCreateImageButton
-                      width={'100%'}
-                      height={'12vh'}
+                      sizeType="small"
                       label={style.label}
-                      image={style.image}
+                      image={getImgLoc(style.image)}
                       selected={selectedOptions.bodyType === index}
                       onClick={() => {}}
                     />
@@ -464,25 +489,25 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
               </Swiper>
               {selectedOptions.gender === 0 && (
                 <>
-                  <Typography variant="h6">Top Size</Typography>
+                  <h3 className={styles.createSubTitle}>Top Size</h3>
                   <Swiper
+                    className={styles.horizonSwiper}
                     initialSlide={selectedOptions.topSize}
-                    slidesPerView={4}
-                    spaceBetween={5}
+                    slidesPerView="auto"
+                    spaceBetween={6}
                     centeredSlides={true}
                     onSlideChange={swiper => handleOptionSelect('topSize', swiper.activeIndex)}
-                    pagination={{
-                      clickable: true,
-                    }}
-                    modules={[Pagination]}
                   >
                     {characterOptions.topSizes.map((style, index) => (
-                      <SwiperSlide key={style.label}>
+                      <SwiperSlide
+                        className={styles.swiperSmall}
+                        style={{width: '100px', height: '100px'}}
+                        key={style.label}
+                      >
                         <CharacterCreateImageButton
-                          width={'100%'}
-                          height={'15vh'}
+                          sizeType="small"
                           label={style.label}
-                          image={style.image}
+                          image={getImgLoc(style.image)}
                           selected={selectedOptions.topSize === index}
                           onClick={() => {}}
                         />
@@ -490,25 +515,25 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
                     ))}
                   </Swiper>
 
-                  <Typography variant="h6">Bottom Size</Typography>
+                  <h3 className={styles.createSubTitle}>Bottom Size</h3>
                   <Swiper
+                    className={styles.horizonSwiper}
                     initialSlide={selectedOptions.bottomSize}
-                    slidesPerView={4}
-                    spaceBetween={5}
+                    slidesPerView="auto"
+                    spaceBetween={6}
                     centeredSlides={true}
                     onSlideChange={swiper => handleOptionSelect('bottomSize', swiper.activeIndex)}
-                    pagination={{
-                      clickable: true,
-                    }}
-                    modules={[Pagination]}
                   >
                     {characterOptions.bottomSizes.map((style, index) => (
-                      <SwiperSlide key={style.label}>
+                      <SwiperSlide
+                        className={styles.swiperSmall}
+                        style={{width: '100px', height: '100px'}}
+                        key={style.label}
+                      >
                         <CharacterCreateImageButton
-                          width={'100%'}
-                          height={'15vh'}
+                          sizeType="small"
                           label={style.label}
-                          image={style.image}
+                          image={getImgLoc(style.image)}
                           selected={selectedOptions.bottomSize === index}
                           onClick={() => {}}
                         />
@@ -517,194 +542,165 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
                   </Swiper>
                 </>
               )}
-            </Box>
+            </article>
           </div>
         );
       case CreateCharacterStep.OutfitClothes:
         return (
-          <div className={styles.createBox}>
-            <div className={styles.createTitle}>Step 6: Select Outfit Clothes</div>
-            <Box className={styles.bodyContent}>
+          <div className={styles.createContentBox}>
+            <article className={styles.createContentArea}>
+              <h3 className={styles.createSubTitle}>Outfit Style</h3>
               <Swiper
+                className={styles.horizonSwiper}
+                slidesPerView="auto"
+                spaceBetween={6}
                 initialSlide={selectedOptions.clothing}
-                slidesPerView={4} // 한 번에 표시되는 슬라이드 개수
-                spaceBetween={5} // 슬라이드 간격
                 centeredSlides={true}
                 onSlideChange={swiper => handleOptionSelect('clothing', swiper.activeIndex)}
                 style={{pointerEvents: customClothesActive ? 'none' : 'auto', opacity: customClothesActive ? 0.5 : 1}}
               >
                 {characterOptions.clothing.map((style, index) => (
-                  <SwiperSlide key={index}>
+                  <SwiperSlide
+                    className={styles.swiperSmall}
+                    style={{width: '100px', height: '100px'}}
+                    key={style.label}
+                  >
                     <CharacterCreateImageButton
                       key={style.label}
-                      width={'100%'}
-                      height={'20vh'}
+                      sizeType="small"
                       label={style.label}
-                      image={style.image}
+                      image={getImgLoc(style.image)}
                       selected={selectedOptions.clothing === index}
-                      onClick={() => {} /*handleOptionSelect('clothing', index)*/}
+                      onClick={() => {
+                        handleOptionSelect('clothing', index);
+                      }}
                     />
                   </SwiperSlide>
                 ))}
               </Swiper>
-              <br />
-              <Box
-                className={styles.horizontalButtonGroup}
+              <h3 className={styles.createSubTitle}>Theme Color</h3>
+              <div
+                className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}
                 style={{pointerEvents: customClothesActive ? 'none' : 'auto', opacity: customClothesActive ? 0.5 : 1}}
               >
                 {characterOptions.clothingColor.map((style, index) => (
-                  <Button
-                    key={index}
-                    variant={selectedOptions.clothingColor === index ? 'contained' : 'outlined'}
-                    className={styles.colorButton}
-                    onClick={() => handleOptionSelect('clothingColor', index)}
-                    style={{fontSize: 10}}
-                  >
-                    {style.label}
-                  </Button>
-                ))}
-              </Box>
-              {/* Custom Setup Accordion */}
-              <Accordion expanded={customClothesActive} onChange={handleCustomToggle}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="custom-setup-content"
-                  id="custom-setup-header"
-                >
-                  <Typography>Custom Setup</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <TextField
-                    label="Custom Outfit"
-                    variant="outlined"
-                    fullWidth
-                    value={clothesInputValue}
-                    onChange={handleClothesInputChange}
+                  <CustomHashtag
+                    key={style.label}
+                    text={style.label}
+                    onClickAction={() => handleOptionSelect('clothingColor', index)}
+                    isSelected={selectedOptions.clothingColor === index}
+                    color={style.image}
                   />
-                </AccordionDetails>
-              </Accordion>
-            </Box>
+                ))}
+              </div>
+              <MaxTextInput
+                displayDataType={displayType.Label}
+                promptValue={clothesInputValue}
+                handlePromptChange={handleClothesInputChange}
+                maxPromptLength={500}
+                labelText="Custom Setup"
+              />
+            </article>
           </div>
         );
       case CreateCharacterStep.ThumbnailBackground:
         return (
-          <div className={styles.createBox}>
-            <div className={styles.createTitle}>Step 7: Thumbnail Background</div>
-            <Box className={styles.bodyContent}>
-              <Box className={styles.horizontalButtonGroup}>
+          <div className={styles.createContentBox}>
+            <article className={styles.createContentArea}>
+              <h3 className={styles.createSubTitle}>Background</h3>
+              <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
                 {characterOptions.background.map((style, index) => (
-                  <Button
-                    key={index}
-                    variant={selectedOptions.background === index ? 'contained' : 'outlined'}
-                    className={styles.colorButton}
-                    onClick={() => handleOptionSelect('background', index)}
-                    style={{fontSize: 10}}
-                  >
-                    {style.label}
-                  </Button>
+                  <CustomHashtag
+                    key={style.label}
+                    text={style.label}
+                    onClickAction={() => handleOptionSelect('background', index)}
+                    isSelected={selectedOptions.background === index}
+                  />
                 ))}
-              </Box>
-            </Box>
+              </div>
+            </article>
           </div>
         );
       case CreateCharacterStep.Personality:
         return (
-          <div className={styles.createBox}>
-            <div className={styles.createTitle}>Step 8: Choose Personality</div>
-            <Box className={styles.bodyContent}>
-              <Box className={styles.horizontalButtonGroup}>
-                {characterOptions.personality.map((style, index) => (
-                  <Button
-                    key={index}
-                    variant={selectedOptions.personality === index ? 'contained' : 'outlined'}
-                    className={styles.colorButton}
-                    onClick={() => handleOptionSelect('personality', index)}
-                    style={{fontSize: 10}}
-                  >
-                    {style.label}
-                  </Button>
-                ))}
-              </Box>
-            </Box>
+          <div className={styles.createContentBox}>
+            <article className={styles.createContentArea}>
+              <h3 className={styles.createSubTitle}>Personality</h3>
+              <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap10}`}>
+                {characterOptions.personality.map((style, index) =>
+                  getSplitedPersonalityButton(style.label, index, selectedOptions.personality === index),
+                )}
+              </div>
+            </article>
           </div>
         );
       case CreateCharacterStep.Summary:
         return (
-          <div className={styles.createBox}>
-            <div className={styles.createTitle}>Step 9: Summary</div>
-            <Box>
-              <Typography variant="h6">Summary</Typography>
-              <Box className={styles.gridContainer}>
-                {summaryOptions.map(option => (
-                  <Box key={option.key} className={styles.summaryItem}>
-                    <Box
-                      className={styles.summaryImage}
-                      style={{
-                        backgroundImage: `url(${
-                          option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image || ''
-                        })`,
-                        backgroundSize: 'cover',
-                      }}
-                    />
-                    <Typography variant="subtitle1" className={styles.summaryLabel}>
-                      {option.key === 'clothing' && customClothesActive
-                        ? 'Custom'
-                        : `${option.label}: ${
-                            option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label || 'N/A'
-                          }`}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-            {customClothesActive && (
-              <Typography variant="subtitle1" className={styles.summaryClothes}>
-                Clothes: {clothesInputValue}
-              </Typography>
-            )}
+          <div className={styles.createContentBox}>
+            <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
+              {summaryOptions.map((option, index) => (
+                <div className={styles.summaryItem}>
+                  <CharacterCreateImageButton
+                    key={index}
+                    label={
+                      option.key === 'personality'
+                        ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label.split(
+                            '\n',
+                          )[0]
+                        : option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label || ''
+                    }
+                    onClick={() => {}}
+                    image={
+                      option.key !== 'hairColor'
+                        ? getImgLoc(option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image)
+                        : ''
+                    }
+                    color={
+                      option.key === 'hairColor'
+                        ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image
+                        : undefined // 다른 경우에는 color를 전달하지 않음
+                    }
+                    selected={false}
+                    sizeType="middle"
+                  />
+                  <div className={styles.summaryLabel}>{option.label}</div>
+                </div>
+              ))}
+              {/* {customClothesActive && (
+                  <Typography variant="subtitle1" className={styles.summaryClothes}>
+                    Clothes: {clothesInputValue}
+                  </Typography>
+                )} */}
+            </div>
           </div>
         );
       case CreateCharacterStep.Result:
         return (
-          <div className={styles.createBox}>
-            <div className={styles.createTitle}>Step 10: Choose Generated Image</div>
-            <Box>
-              <Box className={styles.gridContainer2}>
-                {generatedOptions === null ||
-                  (generatedOptions.imageUrl.length < 1 && (
-                    <CharacterCreateImageButton
-                      width={'95%'}
-                      height={'23vh'}
-                      label={''}
-                      image={
-                        'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/dea8a131-ffd5-4a60-b570-8e7e1ffde877.jpg'
-                      }
-                      selected={true}
-                      onClick={() => handleOptionSelect('result', 0)}
-                    />
-                  ))}
-                {(generatedOptions?.imageUrl ?? []).map((option, index) => (
-                  <CharacterCreateImageButton
-                    key={index}
-                    width={'95%'}
-                    height={'23vh'}
-                    label={''}
-                    image={option}
-                    selected={selectedOptions.result === index}
-                    onClick={() =>
-                      selectedOptions.result === index
-                        ? handleImageToggle(option, generatedOptions?.debugParameter ?? '')
-                        : handleOptionSelect('result', index)
-                    }
-                  />
-                ))}
-              </Box>
-
-              <Button onClick={() => handleGenerate()} className={styles.colorButton}>
-                Regenerate
-              </Button>
-            </Box>
-          </div>
+          <article className={styles.createContentArea}>
+            {generatedOptions === null ||
+              (generatedOptions.imageUrl.length < 1 ? (
+                <>GenerateFailed</>
+              ) : (
+                <div className={styles.createContentBox}>
+                  <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap11}`}>
+                    {(generatedOptions?.imageUrl ?? []).map((option, index) => (
+                      <CharacterCreateImageButton
+                        key={index}
+                        sizeType="large"
+                        label={null}
+                        image={option}
+                        selected={selectedOptions.result === index}
+                        onClick={() =>
+                          selectedOptions.result === index
+                            ? handleImageToggle(option, generatedOptions?.debugParameter ?? '')
+                            : handleOptionSelect('result', index)
+                        }
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+          </article>
         );
       case CreateCharacterStep.Publish:
         return (
@@ -746,28 +742,59 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
   const renderBottom = () => {
     return (
       <>
-        {activeStep < steps.length - 1 ? (
+        {curStep > 0 && (
           <>
-            <Button className={styles.stepButton} variant="outlined" onClick={handlePrev} disabled={activeStep === 0}>
-              {steps[activeStep] === 'Result' ? 'Regenerate' : 'Prev'}
-            </Button>
+            {curStep < steps.length - 1 ? (
+              <>
+                <CustomButton
+                  size="Medium"
+                  type="Tertiary"
+                  state="IconLeft"
+                  onClick={subStep}
+                  isDisabled={curStep === 0}
+                  icon={LineArrowLeft.src}
+                  iconClass="blackIcon"
+                  customClassName={[styles.stepButton]}
+                >
+                  {'Previous'}
+                </CustomButton>
 
-            <Button className={styles.stepButton} variant="contained" onClick={handleNext}>
-              {steps[activeStep] === 'Summary'
-                ? generatedOptions === null /* 이미 생성된 후에는 Regenerate 버튼으로 수정 가능 */
-                  ? 'Next (Generate)'
-                  : 'Next (isGenerated)'
-                : 'Next'}
-            </Button>
-          </>
-        ) : (
-          <>
-            <PublishCharacterBottom
-              onPrevClick={handlePrev}
-              onPublishClick={() => {
-                setPublishClick(true);
-              }}
-            />
+                <CustomButton
+                  size="Medium"
+                  type="Primary"
+                  state="IconRight"
+                  onClick={addStep}
+                  icon={steps[curStep] === 'Summary' && generatedOptions === null ? '' : LineArrowRight.src}
+                  iconClass="blackIcon"
+                  customClassName={[styles.stepButton]}
+                >
+                  {steps[curStep] === 'Summary' ? (
+                    generatedOptions === null /* 이미 생성된 후에는 Regenerate 버튼으로 수정 가능 */ ? (
+                      <>
+                        Generate
+                        <img className={styles.rubyIcon} src={BoldRuby.src} />
+                        50
+                      </>
+                    ) : (
+                      'Next (isGenerated)'
+                    )
+                  ) : steps[curStep] === 'Result' ? (
+                    'Confirm'
+                  ) : (
+                    'Next'
+                  )}
+                </CustomButton>
+              </>
+            ) : (
+              <>
+                <PublishCharacterBottom
+                  onPrevClick={subStep}
+                  onPublishClick={() => {
+                    setPublishClick(true);
+                  }}
+                />
+              </>
+            )}
           </>
         )}
       </>
@@ -776,44 +803,23 @@ const CharacterCreate: React.FC<Props> = ({closeAction, isModify, characterInfo,
   //#endregion
 
   return (
-    <Box className={styles.container}>
-      <LoadingOverlay loading={loading} />
-      <Typography variant="h5" className={styles.title}>
-        Create My Character
-      </Typography>
+    <main className={styles.container}>
+      {curStep < showStep && <CustomStepper curStep={curStep + 1} maxStep={showStep} />}
 
-      <Box className={styles.stepperContainer} ref={stepperRef}>
-        <Stepper activeStep={activeStep} alternativeLabel className={styles.stepper}>
-          {steps.map((label, index) => {
-            const labelProps: {
-              optional?: React.ReactNode;
-              error?: boolean;
-            } = {};
-            if (isStepFailed(index)) {
-              labelProps.optional = (
-                <Typography variant="caption" color="error">
-                  Alert message
-                </Typography>
-              );
-              labelProps.error = true;
-            }
+      <article className={styles.stepContent}>
+        <div className={styles.createBox}>
+          <h2 className={getStepText() !== '' ? styles.createTitle : ''}>{getStepText()}</h2>
+          {getStepContent(steps[curStep])}
+        </div>
+      </article>
 
-            return (
-              <Step key={label} className={styles.stepItem}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            );
-          })}
-        </Stepper>
-      </Box>
-
-      <Box className={styles.stepContent}>{getStepContent(steps[activeStep])}</Box>
-
-      <Box className={styles.buttonContainer}>{renderBottom()}</Box>
+      <footer className={styles.buttonContainer}>{renderBottom()}</footer>
 
       {fullscreenImage && <FullScreenImage imageData={fullscreenImage} onClick={() => setFullscreenImage(null)} />}
-    </Box>
+
+      <LoadingOverlay loading={loading} />
+    </main>
   );
 };
 
-export default CharacterCreate;
+export default CharacterCreateSequence;

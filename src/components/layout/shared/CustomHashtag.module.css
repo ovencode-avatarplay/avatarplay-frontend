@@ -1,0 +1,51 @@
+.customHashtag {
+    display: inline-flex;
+    height: 36px;
+    padding: 10px 18px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+
+    cursor: pointer;
+    
+    border-radius: 100px;
+    border: 1px solid var(--Border-1, #EAECF0);
+    
+    leading-trim: both;
+    text-edge: cap;    
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 12px; /* 100% */
+  }
+  
+  .default {
+    background: var(--Neutral-50, #F8F9FA);
+    
+    color: var(--Neutral-800, #2C3131);
+  }
+  
+  .hover {
+    background: var(--Neutral-100, #F1F3F4);
+    
+    color: var(--Neutral-800, #2C3131);
+  }
+  
+  .active {
+    background: var(--Neutral-800, #2C3131);
+
+    color: var(--White, #FFF);
+  }
+  
+  .colorCircle
+  {
+    display: flex;
+    width: 28px;
+    height: 28px;
+    justify-content: center;
+    align-items: center;
+    
+    border-radius: 100px;
+    border: 1px solid var(--Border-1, #EAECF0); 
+  }

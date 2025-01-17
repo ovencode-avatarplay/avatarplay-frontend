@@ -1,12 +1,12 @@
 {
-  "styleOptions": [
-    { "label": "Realistic", "image": "/images/real.png", "value": 0 },
-    { "label": "Anime", "image": "/images/anime.png", "value": 1 }
-  ],
   "genderOptions": [
     { "label": "Girl", "image": "/real.png", "value": 0},
     { "label": "Guy", "image": "/anime.png", "value": 1 },
     { "label": "All", "image": "/anime.png", "value": 2 }
+  ],
+  "styleOptions": [
+    { "label": "Realistic", "image": "style_realistic.png", "value": 0 },
+    { "label": "Anime", "image": "style_anime.png", "value": 1 }
   ],
   "raceOptions": [
       {"label": "Unspecified", "image": "", "value": 0},
