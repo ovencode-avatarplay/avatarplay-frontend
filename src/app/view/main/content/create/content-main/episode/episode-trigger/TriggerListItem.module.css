@@ -76,7 +76,7 @@
 }
 
 .progressPoint {
-  font-family: "Lato", sans-serif;
+  font-family: "Lato" ;
   font-weight: 600;
   font-size: 14px;
   color: #000000;
@@ -89,21 +89,21 @@
 }
 
 .changeCharacter {
-  font-family: "Lato", sans-serif;
+  font-family: "Lato";
   font-weight: 600;
   font-size: 14px;
   color: #fd55d3;
 }
 
 .triggerCondition {
-  font-family: "Lato", sans-serif;
+  font-family: "Lato" ;
   font-weight: 500;
   font-size: 11px;
   color: #9aa0a6;
 }
 
 .triggerValue {
-  font-family: "Lato", sans-serif;
+  font-family: "Lato" ;
   font-weight: 500;
   font-size: 14px;
   color: #040415;
@@ -137,7 +137,7 @@ font-weight: 600;
 }
 
 .actionButton span {
-  font-family: "Lato", sans-serif;
+  font-family: "Lato";
   font-weight: 600;
   font-size: 13px;
   color: #000000;
@@ -242,7 +242,7 @@ filter: brightness(0) saturate(100%) invert(57%) sepia(76%) saturate(3496%) hue-
   text-align: center;
   top: calc(50% + 20px);
   left: calc(50% - 12px);
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato';
   font-size: 12px;
   color: #fff;
 }

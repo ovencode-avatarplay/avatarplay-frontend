@@ -42,7 +42,7 @@
     width: 136px;
     height: 22px;
   
-    font-family: "Lato", sans-serif;
+    font-family: "Lato" ;
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
@@ -106,7 +106,7 @@
     width: 41px;
     height: 20px;
   
-    font-family: "Lato", sans-serif;
+    font-family: "Lato" ;
     font-style: normal;
     font-weight: 400;
     font-size: 13px;
@@ -124,7 +124,7 @@
     width: 346px;
     height: 19px;
   
-    font-family: "Lato", sans-serif;
+    font-family: "Lato" ;
     font-style: normal;
     font-weight: 400;
     font-size: 12px;
@@ -230,7 +230,7 @@
   }
   
   .audioFileName {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato' ;
     font-style: normal;
     font-weight: 400;
     font-size: 12px;
