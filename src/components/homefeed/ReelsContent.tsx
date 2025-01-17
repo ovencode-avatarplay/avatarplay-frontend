@@ -179,7 +179,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
 
   React.useEffect(() => {
     setCommentCount(item.commentCount);
-    console.log(item.commentCount);
+    console.log('id', item.id);
+    console.log('count', item.commentCount);
   }, [item]);
   return (
     <div className={styles.reelsContainer}>
@@ -228,6 +229,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                 style={{
                   borderRadius: '8px',
                 }}
+                progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
                 onProgress={({playedSeconds}) => {
                   handleVideoProgress(playedSeconds);
 
@@ -264,6 +266,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                 item.mediaState === 1
                   ? `${((activeIndex + 1) / item.mediaUrlList.length) * 100}%` // 이미지 슬라이드 진행도
                   : `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
+              transition: 'width 0.1s linear', // 부드러운 진행도 애니메이션
             }}
           ></div>
         </div>
