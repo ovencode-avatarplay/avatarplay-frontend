@@ -19,12 +19,26 @@
   .userInfo {
     display: flex;
     gap: 8px;
+    align-content: center;
+    align-items: center;
+    
+    
   }
   .username {
+    height: 18px;
     font-family: "Pretendard";
     font-weight: 600;
     font-size: 11px;
     color: var(--Black);
+
+line-height: 150%; /* 16.5px */
+letter-spacing: -0.027px;
+display: flex;
+flex-wrap: wrap;
+align-content: center;
+    align-items: center;
+justify-content: center;
+justify-items: center;
   }
   
   .time {
