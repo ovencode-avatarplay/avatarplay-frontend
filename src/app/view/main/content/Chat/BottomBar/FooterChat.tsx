@@ -60,6 +60,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
 
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
   const currentContentId: number = useSelector((state: RootState) => state.chatting.contentId);
+  const currentStreamKey: string = useSelector((state: RootState) => state.chatting.streamKey);
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
 
   const router = useRouter();
@@ -161,6 +162,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
         episodeId: currentEpisodeId,
         emoticonId: selectedEmoticonId || undefined,
         text: message, // 이미지 요소가 포함된 message
+        streamKey: currentStreamKey
       };
 
       dispatch(updateRecent({emoticonId: selectedEmoticonId == undefined ? 0 : selectedEmoticonId}));
