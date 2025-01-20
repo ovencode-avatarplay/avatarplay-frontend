@@ -3,6 +3,14 @@
 import api, {ResponseAPI} from './ApiInstance';
 import {ExploreCardProps} from '../view/main/content/searchboard/SearchBoardTypes';
 
+export interface BannerUrlList {
+  id: number;
+  title: string;
+  content: string;
+  imageUrl: string;
+  imageLinkUrl: string;
+}
+
 interface ReqExploreSearch {
   search: string;
   onlyAdults: boolean;
@@ -13,7 +21,7 @@ interface ResponseExplore {
   resultCode: number;
   resultMessage: string;
   data: {
-    bannerUrlList: string[];
+    bannerUrlList: BannerUrlList[];
     searchOptionList: string[];
     talkainOperatorList: ExploreCardProps[];
     popularList: ExploreCardProps[];
@@ -31,7 +39,7 @@ export const sendGetExplore = async (
 ): Promise<{
   resultCode: number;
   resultMessage: string;
-  bannerUrlList: string[] | null;
+  bannerUrlList: BannerUrlList[] | null;
   searchOptionList: string[] | null;
   talkainOperatorList: ExploreCardProps[] | null;
   popularList: ExploreCardProps[] | null;

@@ -4,9 +4,12 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
 import styles from './ExploreFeaturedHeader.module.css';
+import {BannerUrlList} from '@/app/NetWork/ExploreNetwork';
+import Link from 'next/link';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface ExploreFeaturedHeaderProps {
-  items: string[];
+  items: BannerUrlList[];
 }
 
 const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) => {
@@ -26,12 +29,14 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
       >
         {items.map((item, index) => (
           <SwiperSlide className={styles.swiperItem} key={index}>
-            <div className={styles.backImage} style={{backgroundImage: `url(${item})`}}>
-              <div className={styles.textArea}>
-                <div className={`${styles.text} ${styles.type1}`}>title</div>
-                <div className={`${styles.text} ${styles.type2}`}>description</div>
+            <Link key={index} href={item.imageLinkUrl}>
+              <div className={styles.backImage} style={{backgroundImage: `url(${item.imageUrl})`}}>
+                <div className={styles.textArea}>
+                  <div className={`${styles.text} ${styles.type1}`}>{item.title}</div>
+                  <div className={`${styles.text} ${styles.type2}`}>{item.content}</div>
+                </div>
               </div>
-            </div>
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>

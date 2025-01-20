@@ -2,7 +2,13 @@
 
 import React, {useEffect, useState} from 'react';
 
-import {ExploreItem, PaginationRequest, sendGetExplore, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
+import {
+  BannerUrlList,
+  ExploreItem,
+  PaginationRequest,
+  sendGetExplore,
+  sendSearchExplore,
+} from '@/app/NetWork/ExploreNetwork';
 
 import styles from './SearchBoard.module.css';
 
@@ -22,7 +28,7 @@ const SearchBoard: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   // Featured
-  const [bannerList, setBannerList] = useState<string[] | null>(null);
+  const [bannerList, setBannerList] = useState<BannerUrlList[] | null>(null);
   const [talkainOperatorList, setTalkainOperatorList] = useState<ExploreCardProps[] | null>(null);
   const [popularList, setPopularList] = useState<ExploreCardProps[] | null>(null);
   const [malePopularList, setMalePopularList] = useState<ExploreCardProps[] | null>(null);
