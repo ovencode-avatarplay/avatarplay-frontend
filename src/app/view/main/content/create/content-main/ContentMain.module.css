@@ -1,20 +1,17 @@
 .contentMain {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; 
-    overflow: hidden;
-    width: var(--full-width);
-    margin: 0 auto;
-    position: relative;
-      
-  }
-  
-  .contentHeader {
-    height: 15vh; 
-  }
-  
-  
+  --header-height : 58px;
+  --bottom-height : 58px;
+  --body-height : calc(100% - var(--header-height) - var(--bottom-height) - 24px);
 
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: var(--full-width);
+  height: 100%;
+  margin: 0 auto;
+  position: relative;      
+}
+  
 .contentBottom {
   display: flex;
   flex-direction: column;
@@ -24,10 +21,12 @@
   gap: 10px;
 
   position: fixed; /* position을 fixed로 변경 */
-  width: var(--full-width);
+  width: var(--second-width);
   height: 70px;
-  left: 0px;
   bottom: 0px;
+
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .setupButtons { 
@@ -51,7 +50,7 @@
   
   display: flex;
   width: var(--second-width);
-  height: auto;
+  height: var(--body-height); 
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
@@ -146,7 +145,7 @@
 {
   display: flex;
   
-  max-height: calc(100vh - 56px - 60px - 140px);
+  height: 100%;
   flex-direction: column;
   overflow-y: auto; 
   overflow-x: hidden;

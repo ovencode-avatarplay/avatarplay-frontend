@@ -1,54 +1,59 @@
 {
-  "styleOptions": [
-    { "label": "Realistic", "image": "/real.png", "value": 0 },
-    { "label": "Anime", "image": "/anime.png", "value": 1 }
-  ],
   "genderOptions": [
     { "label": "Girl", "image": "/real.png", "value": 0 },
     { "label": "Guy", "image": "/anime.png", "value": 1 },
     { "label": "All", "image": "/anime.png", "value": 2 }
   ],
+  "styleOptions": [
+    { "label": "Realistic", "image": "male_style_realistic.png", "value": 0 },
+    { "label": "Anime", "image": "male_style_anime.png", "value": 1 }
+  ],
   "raceOptions": [
-    { "label": "Caucasian", "image": "/race_caucasian.png", "value": 0 },
-    { "label": "Latina", "image": "/race_latina.png", "value": 1 },
-    { "label": "Asian", "image": "/race_asian.png", "value": 2 },
-    { "label": "Arab", "image": "/race_arab.png", "value": 3 },
-    { "label": "Black/Afro", "image": "/race_black.png", "value": 4 }
+    {"label": "Unspecified", "image": "", "value": 0},
+    {"label": "Caucasian", "image": "ethnicity_1_caucasian.png", "value": 1},
+    {"label": "Asian", "image": "ethnicity_2_asian.png", "value": 2},
+    {"label": "Latina", "image": "ethnicity_3_latina.png", "value": 3},
+    {"label": "Arab", "image": "ethnicity_4_arab.png", "value": 4},
+    {"label": "black", "image": "ethnicity_5_black.png", "value": 5}
   ],
   "ageOptions": [
-    { "label": "Teen(18+)", "image": "/age_teen.png", "value": 0 },
-    { "label": "20s", "image": "/age_20s.png", "value": 1 },
-    { "label": "30s", "image": "/age_30s.png", "value": 2 },
-    { "label": "40-55", "image": "/age_40-55.png", "value": 3 }
+    {"label": "Unspecified", "image": "", "value": 0},
+    {"label": "Teen(18+)", "image": "/age_teen.png", "value": 1},
+    {"label": "20s", "image": "/age_20s.png", "value": 2},
+    {"label": "30s", "image": "/age_30s.png", "value": 3},
+    {"label": "40-55", "image": "/age_40-55.png", "value": 4}
   ],
   "eyeColorOptions": [
-    { "label": "Brown", "image": "/eye_brown.png", "value": 0 },
-    { "label": "Blue", "image": "/eye_blue.png", "value": 1 },
-    { "label": "Green", "image": "/eye_green.png", "value": 2 }
+    {"label": "Unspecified", "image": "", "value": 0},
+    {"label": "Brown", "image": "eye_1_brown.png", "value": 1},
+    {"label": "Blue", "image": "/eye_2_blue.png", "value": 2},
+    {"label": "Green", "image": "eye_3_green.png", "value": 3}
   ],
   "hairStyles": [
-    { "label": "Buzz cut", "image": "/hair_buzzcut.png", "value": 0 },
-    { "label": "Long", "image": "/hair_long.png", "value": 1 },
-    { "label": "Slicked Back", "image": "/hair_slicked_back.png", "value": 2 },
-    { "label": "Short", "image": "/hair_short.png", "value": 3 },
-    { "label": "Bun", "image": "/hair_bun.png", "value": 4 },
-    { "label": "Dreadlocks", "image": "/hair_dreadlocks.png", "value": 5 },
-    { "label": "Curly", "image": "/hair_curly.png", "value": 6 },
-    { "label": "Bald", "image": "/hair_bald.png", "value": 7 }
+    {"label": "Unspecified", "image": "", "value": 0},
+    { "label": "Buzz cut", "image": "/hair_1_buzzcut.png", "value": 1 },
+    { "label": "Long", "image": "/hair_2_long.png", "value": 2 },
+    { "label": "Slicked Back", "image": "/hair_3_slickedback.png", "value": 3 },
+    { "label": "Short", "image": "/hair_4_short.png", "value": 4 },
+    { "label": "Bun", "image": "/hair_5_bun.png", "value": 5 },
+    { "label": "Dreadlocks", "image": "/hair_6_dreadlocks.png", "value": 6 },
+    { "label": "Curly", "image": "/hair_7_curly.png", "value": 7 },
+    { "label": "Bald", "image": "/hair_8_bald.png", "value": 8 }
   ],
   "hairColors": [
-    { "label": "Blonde", "image": "/hair_blonde.png", "value": 0 },
-    { "label": "Brown", "image": "/hair_brown.png", "value": 1 },
-    { "label": "Black", "image": "/hair_black.png", "value": 2 },
-    { "label": "Ginger", "image": "/hair_ginger.png", "value": 3 },
-    { "label": "Gray", "image": "/hair_gray.png", "value": 4 },
-    { "label": "White", "image": "/hair_white.png", "value": 5 },
-    { "label": "Pink", "image": "/hair_pink.png", "value": 6 }
+    {"label": "Unspecified", "image": "", "value": 0},
+    {"label": "Blonde", "image": "linear-gradient(144deg, #CA9B11 15.81%, #FFF1C3 53.69%, #CA9B11 86.62%)", "value": 1},
+    {"label": "Brunette", "image": "#A37B5E", "value": 2},
+    {"label": "Black", "image": "#000", "value": 3},
+    {"label": "Red", "image": "#B82626", "value": 4},
+    {"label": "Pink", "image": "#FF81DF", "value": 5},
+    {"label": "Silver", "image": "linear-gradient(137deg, #B2B2B2 17.4%, #EBEBEB 50.99%, #B2B2B2 83.91%)", "value": 6}
   ],
   "bodyTypes": [
-    { "label": "Slim", "image": "/body_slim.png", "value": 0 },
-    { "label": "Muscular", "image": "/body_muscular.png", "value": 1 },
-    { "label": "Wide", "image": "/body_wide.png", "value": 2 }
+    {"label": "Unspecified", "image": "", "value": 0},
+    { "label": "Slim", "image": "/body_1_slim.png", "value": 1 },
+    { "label": "Muscular", "image": "/body_2_muscular.png", "value": 2 },
+    { "label": "Wide", "image": "/body_3_wide.png", "value": 3 }
   ],
   "topSizes": [
   ],
@@ -144,12 +149,12 @@
   ],
   "clothingColor" : [
     {"label" : "Unspecified", "image" : "", "value" : 0},
-    {"label" : "Beige", "image" : "clothingcolor_beige", "value" : 1},
-    {"label" : "Brown", "image" : "clothingcolor_brown", "value" : 2},
-    {"label" : "Black", "image" : "clothingcolor_black", "value" : 3},
-    {"label" : "Pastel Scarlet", "image" : "clothingcolor_scarlet", "value" : 4},
-    {"label" : "Pink", "image" : "clothingcolor_pink", "value" : 5},
-    {"label" : "Silver", "image" : "clothingcolor_silver", "value" : 6}
+    {"label" : "Beige", "image" : "#DECC98", "value" : 1},
+    {"label" : "Brown", "image" : "#A37B5E", "value" : 2},
+    {"label" : "Black", "image" : "#000", "value" : 3},
+    {"label" : "Red", "image" : "#B82626", "value" : 4},
+    {"label" : "Pink", "image" : "#FF81DF", "value" : 5},
+    {"label" : "Silver", "image" : "linear-gradient(137deg, #B2B2B2 17.4%, #EBEBEB 50.99%, #B2B2B2 83.91%)", "value" : 6}
   ],
   "background": [
     { "label": "Sakura Blossom", "image": "/background_sakura_blossom.png", "value": 0 },

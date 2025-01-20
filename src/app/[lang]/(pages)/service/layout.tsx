@@ -1,5 +1,4 @@
 import type {Metadata} from 'next';
-import '@/app/globals.css';
 import ServiceMain from '@/app/view/service/Service';
 
 export const metadata: Metadata = {

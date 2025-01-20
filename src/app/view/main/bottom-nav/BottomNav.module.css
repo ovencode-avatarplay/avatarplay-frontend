@@ -4,6 +4,7 @@
     
   display: flex;
  
+  width: var(--full-width);
   height: var(--bottom-nav-height);
   padding: 0px 6px 0px 6px;
   flex-direction: column;

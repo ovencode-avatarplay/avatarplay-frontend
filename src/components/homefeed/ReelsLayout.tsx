@@ -7,6 +7,8 @@ import 'swiper/css/scrollbar';
 import ReelsContent from './ReelsContent';
 import {FeedInfo, sendFeedView, sendGetRecommendFeed} from '@/app/NetWork/ShortsNetwork';
 import styles from './ReelsLayout.module.css';
+import {setBottomNavColor} from '@/redux-store/slices/MainControl';
+import {useDispatch} from 'react-redux';
 
 interface ReelsLayoutProps {
   initialFeed?: FeedInfo; // 특정 URL 키를 통해 전달받은 초기 피드
@@ -25,7 +27,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
       return null;
     }
   };
-
+  const dispatch = useDispatch();
   const getEmailFromJwt = (): string | null => {
     const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
     if (jwt) {
@@ -36,6 +38,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   };
 
   const fetchRecommendFeed = async () => {
+    dispatch(setBottomNavColor(0));
     const result = await sendGetRecommendFeed({language: navigator.language || 'en-US'});
     if (result.resultCode === 0 && result.data) {
       const feeds = result.data.feedInfoList;

@@ -3,5 +3,7 @@
   "editor.formatOnSave": true,
 
   "typescript.tsc.autoDetect": "on",
-  "typescript.tsserver.experimental.enableProjectDiagnostics": true
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" }
 }
