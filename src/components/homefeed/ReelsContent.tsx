@@ -14,6 +14,7 @@ import {
   BoldMore,
   BoldPause,
   BoldPlay,
+  BoldReward,
   BoldShare,
   BoldVideo,
   LineArchive,
@@ -359,6 +360,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
 
         {/* CTA Buttons */}
         <div className={styles.ctaButtons}>
+          <div className={styles.textButtons} onClick={() => {}}>
+            <img src={BoldReward.src} className={styles.button}></img>
+          </div>
           <div
             className={styles.textButtons}
             onClick={() => {
