@@ -262,6 +262,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                 playing={isPlaying} // 재생 상태
                 loop={true}
                 width="100%"
+                playsinline={true}
                 height="100%"
                 style={{
                   borderRadius: '8px',
