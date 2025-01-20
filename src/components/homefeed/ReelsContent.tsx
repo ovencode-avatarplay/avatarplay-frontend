@@ -18,6 +18,7 @@ import {
   BoldShare,
   BoldVideo,
   LineArchive,
+  LineArrowDown,
   LineArrowLeft,
   LineFeatured,
 } from '@ui/Icons';
@@ -201,7 +202,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
               setIsOpenFollowFeatured(!isOpenFollowFeatured);
             }}
           >
-            <img src={LineArrowLeft.src} style={{transform: 'rotate(270deg)'}}></img>
+            <img src={LineArrowDown.src}></img>
           </div>
         </div>
       </div>
@@ -315,7 +316,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
               <span className={styles.sponsored}>Sponsored</span>
             </div>
             <button
-              className={isFollow ? styles.followButtonOn : styles.followButtonOff}
+              className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
               onClick={() => {
                 setIsFollow(!isFollow);
                 console.log('isfollow', isFollow);
@@ -324,33 +325,33 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
               Follow
             </button>
           </div>
-          <div className={styles.text_container}>
-            <div
-              className={styles.text_content}
-              style={{
-                maxHeight: isExpanded ? 'none' : '20px',
-                overflowY: isExpanded ? 'auto' : 'hidden',
-                width: isExpanded ? '80%' : '100%',
-              }}
-              onClick={() => {
-                toggleExpanded();
-              }}
-            >
-              {isExpanded
-                ? item.description
-                : item.description.length > 20 // 접힌 상태에서 최대 길이 제한
-                ? `${item.description.slice(0, 17)}...` // 첫 17글자 + "..."
-                : item.description}
+          {item?.description && (
+            <div className={styles.text_container}>
+              <div
+                className={styles.text_content}
+                style={{
+                  maxHeight: isExpanded ? 'none' : '20px',
+                  overflowY: isExpanded ? 'auto' : 'hidden',
+                  width: isExpanded ? '80%' : '100%',
+                }}
+                onClick={() => {
+                  toggleExpanded();
+                }}
+              >
+                {isExpanded
+                  ? item.description
+                  : item.description.length > 20 // 접힌 상태에서 최대 길이 제한
+                  ? `${item.description.slice(0, 17)}...` // 첫 17글자 + "..."
+                  : item.description}
+              </div>
             </div>
-          </div>
+          )}
           {/* Video Info */}
           <div className={styles.videoInfo}>
             {item.mediaState == 1 && <>Image</>}
             {item.mediaState == 2 && (
               <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
-                <div style={{height: '16.67px', width: '16.67px'}}>
-                  <img src={BoldVideo.src} style={{height: '100%', width: '100%'}}></img>
-                </div>
+                <img className={styles.iconVideo} src={BoldVideo.src}></img>
                 Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
               </div>
             )}

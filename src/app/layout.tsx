@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation'; // 클라이언트 사이드에서만 사용
 import Root from './Root';
 import '@/app/globals.css';
+import '@/app/reset.css';
 import {isLogined, refreshLanaguage} from '@/utils/UrlMove';
 
 export default function Layout({children}: {children: React.ReactNode}) {

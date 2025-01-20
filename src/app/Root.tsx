@@ -1,10 +1,10 @@
 'use client';
 
-import {store, persistor} from '@/redux-store/ReduxStore';
-import {ReactNode} from 'react';
-import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/integration/react';
-import {ThemeProvider, createTheme} from '@mui/material/styles';
+import { store, persistor } from '@/redux-store/ReduxStore';
+import { ReactNode } from 'react';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -50,15 +50,15 @@ const theme = createTheme({
     MuiAvatar: {
       styleOverrides: {
         root: {
-          width: '32px',
-          height: '32px',
+          width: '24px',
+          height: '24px',
         },
       },
     },
   },
 });
 
-const Root = ({children}: {children: ReactNode}) => {
+const Root = ({ children }: { children: ReactNode }) => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
