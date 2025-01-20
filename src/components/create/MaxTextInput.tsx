@@ -17,6 +17,7 @@ interface Props {
   inputRef?: RefObject<HTMLTextAreaElement>;
   labelText?: string;
   hint?: string;
+  onErrorChange?: (hasError: boolean) => void;
 }
 
 export enum inputType {
@@ -55,6 +56,7 @@ const MaxTextInput: React.FC<Props> = ({
   inputRef,
   labelText,
   hint,
+  onErrorChange,
 }) => {
   const [hasError, setHasError] = useState(false);
   const [isComposing, setIsComposing] = useState(false); // 한글 입력 상태
@@ -112,6 +114,10 @@ const MaxTextInput: React.FC<Props> = ({
       setHasError(promptValue.length >= maxPromptLength);
     }
   }, [promptValue, maxPromptLength]);
+
+  useEffect(() => {
+    if (onErrorChange) onErrorChange(hasError);
+  }, [hasError]);
 
   const handleFocus = () => {
     if (!disabled && !hasError) {

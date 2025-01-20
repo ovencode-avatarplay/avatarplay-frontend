@@ -25,8 +25,8 @@
 
 .imageBackGround.middle
 {
-  width: 117px;
-  height: 117px; 
+  width: calc(var(--second-width) * 0.33 - 3.2px);
+  height: calc(var(--second-width) * 0.33 - 3.2px);
 }
 
 .imageBackGround.small

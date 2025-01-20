@@ -205,14 +205,14 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
             labelText="Introduction"
             promptValue={characterIntroduction || ''}
             handlePromptChange={e => setCharacterIntroduction(e.target.value)}
-            maxPromptLength={500}
+            maxPromptLength={1000}
           />
           <MaxTextInput
             displayDataType={displayType.Label}
             labelText="Description"
             promptValue={characterDescription || ''}
             handlePromptChange={e => setCharacterDescription(e.target.value)}
-            maxPromptLength={500}
+            maxPromptLength={1000}
           />
           <MaxTextInput
             displayDataType={displayType.Label}
@@ -223,7 +223,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
               currentCharacter.worldScenario = e.target.value;
               setCurrentCharacter({...currentCharacter});
             }}
-            maxPromptLength={500}
+            maxPromptLength={1000}
           />
           <MaxTextInput
             displayDataType={displayType.Label}
@@ -234,7 +234,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
               currentCharacter.greeting = e.target.value;
               setCurrentCharacter({...currentCharacter});
             }}
-            maxPromptLength={500}
+            maxPromptLength={1000}
           />
           <MaxTextInput
             displayDataType={displayType.Label}
@@ -247,7 +247,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
               currentCharacter.secret = e.target.value;
               setCurrentCharacter({...currentCharacter});
             }}
-            maxPromptLength={500}
+            maxPromptLength={1000}
           />
           <CustomSettingButton
             type="select"

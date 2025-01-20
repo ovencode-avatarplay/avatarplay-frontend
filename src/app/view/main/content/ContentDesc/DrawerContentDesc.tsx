@@ -283,6 +283,7 @@ const DrawerContentDesc = () => {
         <div className={styles.topArea}>
           <div className={styles.thumbnailArea}>
             <div className={styles.thumbnailContainer}>
+              {/* <div className={styles.thumbnailImage} style={{backgroundImage: `url(${contentThumbnail})`}} /> */}
               <img className={styles.thumbnailImage} src={contentThumbnail} />
             </div>
           </div>

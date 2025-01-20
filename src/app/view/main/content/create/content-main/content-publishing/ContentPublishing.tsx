@@ -178,7 +178,7 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, LLMOpen, 
               <MaxTextInput
                 promptValue={contentDescription}
                 handlePromptChange={handleIntroductionChange}
-                maxPromptLength={400}
+                maxPromptLength={1000}
                 displayDataType={displayType.Label}
                 labelText="Introduction"
               />

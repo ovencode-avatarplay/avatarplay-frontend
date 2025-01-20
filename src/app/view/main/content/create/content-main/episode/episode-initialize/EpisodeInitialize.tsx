@@ -75,6 +75,7 @@ const EpisodeInitialize: React.FC<Props> = ({
   // 공통
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
 
   const [isEpisodeNameOn, setIsEpisodeNameOn] = useState<boolean>(false);
 
@@ -194,6 +195,11 @@ const EpisodeInitialize: React.FC<Props> = ({
   }
 
   function addStep() {
+    if (hasError) {
+      alert('입력값에 오류가 있습니다.');
+      return;
+    }
+
     if (!checkEssential()) {
       alert('필수 선택 항목이 선택되지 않았습니다.');
       return;
@@ -352,6 +358,11 @@ const EpisodeInitialize: React.FC<Props> = ({
   // 공통
 
   const handleOnSetEpisodeName = () => {
+    if (hasError) {
+      alert('입력값에 오류가 있습니다.');
+      return;
+    }
+
     if (!checkEssential()) {
       alert('필수 선택 항목이 선택되지 않았습니다.');
       return;
@@ -702,6 +713,7 @@ const EpisodeInitialize: React.FC<Props> = ({
             maxPromptLength={maxPromptLength}
             displayDataType={displayType.LabelAndHint}
             labelText="CharacterPrompt"
+            onErrorChange={setHasError}
           />
         </div>
       </div>
