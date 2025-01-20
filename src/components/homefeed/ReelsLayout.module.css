@@ -1,7 +1,7 @@
 
 .mySwiper {
   width: 100%;
-  height: calc(100% - 19px);
+  height: calc(100%);
   margin: 0; /* 기본 마진 제거 */
   padding: 0; /* 기본 패딩 제거 */
   --swiper-navigation-size: 0px; /* 네비게이션 버튼 크기 제거 (필요 시) */
