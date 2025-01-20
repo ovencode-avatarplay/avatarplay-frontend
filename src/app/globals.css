@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
 
 
 
@@ -135,12 +135,12 @@ body {
   background: var(--background);
   font-family: 'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC' ;
 }
-
+/* 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
+} */
 
 
 .blackIcon{
@@ -150,6 +150,6 @@ body {
 h1, h2, h3, h4, h5, h6
 {
   font-feature-settings: 'liga' off, 'clig' off;
-  font-family: 'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC', sans-serif;
+  font-family: 'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC';
 }
 
