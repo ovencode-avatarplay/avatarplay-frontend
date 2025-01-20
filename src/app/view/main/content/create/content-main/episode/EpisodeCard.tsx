@@ -54,7 +54,6 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit,
     const flatEpisodes = state.content.curEditingContentInfo.chapterInfoList.flatMap(
       chapter => chapter.episodeInfoList,
     );
-
     return flatEpisodes.find(episode => episode.id === episodeId) || flatEpisodes[0]; // 기본값 처리
   });
 
@@ -65,6 +64,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit,
   const [isImageSetupModalOpen, setImageSetupModalOpen] = useState(false);
   const [isConversationModalOpen, setConversationModalOpen] = useState(false);
   const openConversationModal = () => {
+    dispatch(setCurrentEpisodeInfo(episodeInfo));
     setConversationModalOpen(true);
   };
 
@@ -73,6 +73,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit,
   };
 
   const openTriggerModal = () => {
+    dispatch(setCurrentEpisodeInfo(episodeInfo));
     setTriggerModalOpen(true); // Trigger 모달 열기
   };
 
@@ -81,6 +82,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit,
   };
 
   const openEpisodeModal = () => {
+    dispatch(setCurrentEpisodeInfo(episodeInfo));
     (document.activeElement as HTMLElement).blur(); // 하위 컴포넌트에 브레이크포인트가 걸렸을때 aria-hidden 애러가 발생해서 넣음
     setEpisodeModalOpen(true); // Episode 모달 열기
   };
