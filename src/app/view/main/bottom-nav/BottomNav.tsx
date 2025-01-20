@@ -162,11 +162,7 @@ export default function BottomNav() {
 
   return (
     <footer>
-      <div
-        className={`full-width-container ${styles.bottomNav} ${
-          colorMode === 1 ? styles['light-mode'] : styles['dark-mode']
-        }`}
-      >
+      <div className={` ${styles.bottomNav} ${colorMode === 1 ? styles['light-mode'] : styles['dark-mode']}`}>
         <div className={styles.bottomNavBox}>
           {buttonData.map((button, index) => {
             const isMy = button.label == 'My';
