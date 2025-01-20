@@ -14,7 +14,13 @@ import ChatBar from './ChatBar';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
 import {useRouter} from 'next/navigation';
 interface FooterChatProps {
-  onSend: (message: string, isMyMessage: boolean, isClearString: boolean, isShowDate: boolean) => void;
+  onSend: (
+    message: string,
+    isMyMessage: boolean,
+    isClearString: boolean,
+    isShowDate: boolean,
+    //tempIdforSendQuestion: number,
+  ) => void;
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   streamKey: string;
   setStreamKey: (key: string) => void;
@@ -32,6 +38,7 @@ interface FooterChatProps {
   };
   onRemoveChat: (id: number) => void;
   onCheatChangeDate: (cheat: string) => void;
+  //tempIdforSendQuestion: number;
 }
 
 const FooterChat: React.FC<FooterChatProps> = ({
