@@ -71,8 +71,13 @@
   --second-width : clamp(0px, calc(100vw - 32px) , calc(402px - 32px));  /* 370px */
   --third-width : clamp(0px, calc(100vw - 32px - 32px) , calc(402px - 32px - 32px));  /* 338px */
 
-  --bottom-nav-height : 78px;
+  --bottom-nav-height : 48px;
+  
+  --body-height : calc(100% - 58px - 48px);
+  
 }
+
+html, body{height: 100%;}
 
 .safe-area-container {
   padding-top: var(--safe-area-inset-top);

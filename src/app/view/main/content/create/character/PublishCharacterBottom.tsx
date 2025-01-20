@@ -15,7 +15,7 @@ const PublishCharacterBottom: React.FC<PublishCharacterBottomProps> = ({onPrevCl
         size="Medium"
         type="Tertiary"
         state="IconLeft"
-        onClick={onPublishClick}
+        onClick={onPrevClick}
         icon={LineArrowLeft.src}
         iconClass="blackIcon"
         customClassName={[styles.stepButton]}
@@ -29,7 +29,7 @@ const PublishCharacterBottom: React.FC<PublishCharacterBottomProps> = ({onPrevCl
         customClassName={[styles.stepButton]}
         icon={LineArrowRight.src}
         iconClass="blackIcon"
-        onClick={onPrevClick}
+        onClick={onPublishClick}
       >
         {'Submit'}
       </CustomButton>

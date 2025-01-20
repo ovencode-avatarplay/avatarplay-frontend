@@ -13,13 +13,15 @@ import logoTalkain from '@ui/logo_talkain.png';
 import UserDropdown from '@shared/UserDropdown';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
-import {BoldAlert, BoldRuby, BoldStar} from '@ui/Icons';
+import {BoldAlert, BoldRuby, BoldStar, LineMenu} from '@ui/Icons';
 import {useDispatch} from 'react-redux';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
+import HamburgerBar from './HamburgerBar';
 
 const HeaderNavBar = () => {
   const [logo, setLogo] = useState(logoTalkain);
   const dispatch = useDispatch();
+  const [isHamOpen, setIsHamOpen] = useState(false);
 
   return (
     <header className={styles.navbar}>
@@ -31,7 +33,8 @@ const HeaderNavBar = () => {
             dispatch(setSelectedIndex(0));
           }}
         >
-          <Image src={logo} alt="Logo" width={128} height={128} priority />
+          <Image src={LineMenu.src} alt="Logo" width={24} height={24} priority onClick={() => setIsHamOpen(true)} />
+          <Image src={logo} alt="Logo" width={85} height={17} priority />
         </div>
       </Link>
       <div className={styles.rightArea}>
@@ -50,6 +53,12 @@ const HeaderNavBar = () => {
         </button>
         <UserDropdown />
       </div>
+      <HamburgerBar
+        onClose={() => {
+          setIsHamOpen(false);
+        }}
+        open={isHamOpen}
+      ></HamburgerBar>
     </header>
   );
 };

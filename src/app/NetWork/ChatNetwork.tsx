@@ -11,7 +11,7 @@ export interface SendChatMessageReq {
   text: string;
   isRegenerate?: boolean;
   regenerateChatId?: number;
-  streamKey: string;
+  streamKey?: string;
 }
 
 // 성공적인 응답 타입

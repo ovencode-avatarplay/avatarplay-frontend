@@ -7,7 +7,7 @@ export type ChattingState = {
   contentId: number; // url enter방식일때 필수. 그 외에는 아무값이나 넣어도 됨 ( 24년-11-11 )
   episodeId: number;
   contentUrl: string;
-  streamKey: string;
+  streamKey?: string;
 };
 
 // 초기 상태
@@ -52,5 +52,6 @@ export const chattingSlice = createSlice({
 });
 
 // 액션과 리듀서 내보내기
-export const {setContentName, setEpisodeName, setEpisodeId, setContentId, setStreamKey, setStateChatting} = chattingSlice.actions;
+export const {setContentName, setEpisodeName, setEpisodeId, setContentId, setStreamKey, setStateChatting} =
+  chattingSlice.actions;
 export default chattingSlice.reducer;

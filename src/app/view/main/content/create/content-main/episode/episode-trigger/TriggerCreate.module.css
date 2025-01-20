@@ -1,7 +1,7 @@
 /* 공통 영역*/
 .floatButtonArea
 {
-    bottom: 45px;
+    bottom: 8px;
     position: absolute;
     display: flex;
     width: var(--second-width);
@@ -403,3 +403,19 @@ background: #FFF;
     color: #ffffff;
   }
   
+
+.characterScrollArea
+{
+    height: 100vh ;
+    padding-bottom: 60px;
+    overflow-y: scroll; 
+}
+
+.characterScrollArea::-webkit-scrollbar {
+  display: none;  
+}
+
+.characterScrollArea {
+  scrollbar-width: none;  
+  -ms-overflow-style: none;  
+}

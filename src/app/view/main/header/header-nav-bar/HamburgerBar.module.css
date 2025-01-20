@@ -1,0 +1,102 @@
+/* MUI Drawer 스타일 */
+.drawerPaper {
+    width: 310px;
+    background-color: #ffffff;
+    padding-top: 70px;
+    box-sizing: border-box;
+  }
+  
+  /* Drawer 내부 콘텐츠 */
+  .drawerContent {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  /* 프로필 섹션 */
+  .profileSection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+  }
+  
+  .profileImage {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 0.5px solid rgba(0, 0, 0, 0.4);
+  }
+  
+  .profileInfo {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profileName {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    color: #000;
+  }
+  
+  .profileEmail {
+    font-size: 12px;
+    margin: 0;
+    color: #000;
+  }
+  
+  /* 메뉴 리스트 */
+  .menuList {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    width: 100%;
+  }
+  
+  .menuItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .menuItem:hover {
+    background-color: #f1f3f4;
+  }
+  
+  .menuIcon {
+    font-size: 16px;
+  }
+  
+  /* 포인트 섹션 */
+  .pointsSection {
+    display: flex;
+    gap: 10px;
+    padding: 10px 20px;
+  }
+  
+  .point {
+    display: flex;
+    align-items: center;
+    padding: 5px 8px;
+    background: #2c3131;
+    border-radius: 30px;
+    color: #ffffff;
+  }
+  
+  .pointIcon {
+    font-size: 12px;
+    margin-right: 4px;
+  }
+  
+  .pointText {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  

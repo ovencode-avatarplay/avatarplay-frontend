@@ -11,6 +11,7 @@ interface Splitter {
 interface SplittersProps {
   splitters: Splitter[];
   initialActiveSplitter?: number;
+  splitterStyle?: React.CSSProperties;
   headerStyle?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
   isDark?: boolean;
@@ -20,6 +21,7 @@ interface SplittersProps {
 const Splitters: React.FC<SplittersProps> = ({
   splitters,
   initialActiveSplitter = 0,
+  splitterStyle,
   headerStyle,
   contentStyle,
   isDark = false,
@@ -35,7 +37,7 @@ const Splitters: React.FC<SplittersProps> = ({
     return placeholderWidth; // 만약 vw가 아니면 그대로 반환
   };
   return (
-    <div className={`${styles.splittersContainer} ${isDark ? styles.darkMode : ''}`}>
+    <div className={`${styles.splittersContainer} ${isDark ? styles.darkMode : ''}`} style={splitterStyle}>
       {/* Splitters Header */}
       <div className={`${styles.splittersHeader} ${isDark ? styles.darkHeader : ''}`} style={headerStyle}>
         {splitters.map((splitter, index) =>

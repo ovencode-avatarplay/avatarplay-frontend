@@ -14,6 +14,7 @@ interface CharacterGalleryGridProps {
   onAddImageClick?: () => void;
   category: GalleryCategory;
   isTrigger?: boolean;
+  style?: React.CSSProperties;
 }
 
 const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
@@ -23,6 +24,7 @@ const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
   onAddImageClick,
   category,
   isTrigger,
+  style,
 }) => {
   const isEmptyGallery = !itemUrl || itemUrl.length === 0;
 
@@ -46,7 +48,7 @@ const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
   };
 
   return (
-    <div className={styles.galleryContainer}>
+    <div className={styles.galleryContainer} style={style}>
       {!isTrigger && (
         <Button variant="contained" color="primary" onClick={onAddImageClick} className={styles.addImageButton}>
           <AddIcon />
