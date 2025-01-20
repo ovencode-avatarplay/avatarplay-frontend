@@ -19,6 +19,9 @@ import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainCont
 import HamburgerBar from './HamburgerBar';
 
 const HeaderNavBar = () => {
+  const curRuby = '10.5K';
+  const curStar = '100';
+
   const [logo, setLogo] = useState(logoTalkain);
   const dispatch = useDispatch();
   const [isHamOpen, setIsHamOpen] = useState(false);
@@ -41,17 +44,18 @@ const HeaderNavBar = () => {
         <div className={styles.currencyArea}>
           <div className={styles.currencyItem}>
             <img className={styles.currencyIcon} src={BoldRuby.src} />
-            <div className={styles.currencyText}>CurRuby</div>
+            <div className={styles.currencyText}>{curRuby}</div>
           </div>
           <div className={styles.currencyItem}>
             <img className={styles.currencyIcon} src={BoldStar.src} />
-            <div className={styles.currencyText}>CurStar</div>
+            <div className={styles.currencyText}>{curStar}</div>
           </div>
         </div>
         <button className={styles.notification} onClick={() => {}}>
           <img className={styles.notificationIcon} src={BoldAlert.src} />
+          <div className={styles.redDot}></div>
         </button>
-        <UserDropdown />
+        {/* <UserDropdown /> */}
       </div>
       <HamburgerBar
         onClose={() => {

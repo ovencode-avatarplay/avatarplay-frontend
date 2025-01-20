@@ -90,7 +90,7 @@
 .userInfo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  /* gap: 10px; */
 }
 
 .profilePicture {
@@ -101,10 +101,31 @@
 }
 
 .profileDetails {
+  margin-left:8px;
   display: flex;
   flex-direction: column;
 }
+.follow{
+  margin-left:15px;
 
+  width: 40px;
+  height: 17px;
+  padding: 4px 8px;
+  background: #000000;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  background-color: #00000000;
+  color: #FFFFFF;
+  cursor: pointer;
+  z-index: 10;
+  color: var(--White, #FFF);
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.21px;
+}
 .username {
   font-family: 'Lato';
   font-weight: 600;
@@ -120,44 +141,11 @@
 }
 
 .followButtonOff {
-  width: 40px;
-  height: 17px;
 
-  padding: 4px 8px;
-  background: #000000;
-  border-radius: 8px;
-  border: 1px solid rgb(0, 0, 0);
-  background-color: #000000;
-  color: #FFFFFF;
-  cursor: pointer;
-  z-index: 10;
-  color: var(--White, #FFF);
-font-family: Lato;
-font-size: 14px;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-letter-spacing: -0.21px;
 }
 
 .followButtonOn {
-  width: 40px;
-  height: 17px;
-  padding: 4px 8px;
-  background: #000000;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.40);
-  background-color: #00000000;
-  color: #FFFFFF;
-  cursor: pointer;
-  z-index: 10;
-  color: var(--White, #FFF);
-font-family: Lato;
-font-size: 14px;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-letter-spacing: -0.21px;
+
 }
 
 .description {
@@ -176,6 +164,10 @@ letter-spacing: -0.21px;
   font-size: 14px;
   color: #FFFFFF;
   gap: 10px;
+}
+
+.iconVideo{
+  margin-left:2px;
 }
 
 .ctaButtons {
@@ -260,11 +252,10 @@ line-height: 18px; /* 150% */
   position: absolute;
   display: flex;
   flex-direction: column;
-  align-items: flex-start
-  ;
-  bottom: 24.5px;
+  align-items: flex-start;
+  bottom: 23px;
   left: 16px;
-  gap: 10px;
+  gap: 16px;
   z-index: 10;
 }
 
@@ -273,7 +264,7 @@ line-height: 18px; /* 150% */
   width: 114px;
   height: 18px;
   left: 16px;
-  top: 13px;
+  top: 15px;
   display: flex;
   align-items: center;
   z-index: 12;
@@ -285,6 +276,7 @@ line-height: 18px; /* 150% */
   flex-direction: row;
   gap: 7px;
   
+  align-items: center;
 }
 
 .followingText {
@@ -297,11 +289,10 @@ line-height: 18px; /* 150% */
 }
 
 .iconArrowDown {
-  
-  width: 12px;
-  height: 12px;
-  left: 118px;
-  top: 137px;
+  /* width: 12px; */
+  /* height: 12px; */
+  /* left: 118px; */
+  /* top: 137px; */
 }
 
 .vector {

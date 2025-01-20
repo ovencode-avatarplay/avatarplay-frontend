@@ -53,6 +53,7 @@ import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
 import LineArchive from "./Line/Archive.svg";
 import LineArrowLeft from "./Line/Arrow_Left.svg";
+import LineArrowDown from "./Line/Arrow_Down.svg";
 import LineArrowRight from "./Line/Arrow_Right.svg";
 import LineArrowSwap from "./Line/Arrow_swap.svg";
 import LineCharacter from "./Line/Character.svg";
@@ -184,6 +185,7 @@ export {
   LineAIImage,
   LineArchive,
   LineArrowLeft,
+  LineArrowDown,
   LineArrowRight,
   LineArrowSwap,
   LineCharacter,

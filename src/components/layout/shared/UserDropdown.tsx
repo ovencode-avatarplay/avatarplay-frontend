@@ -173,6 +173,7 @@ const UserDropdown = () => {
   return (
     <>
       <Badge
+        style={{padding: '12px 25px', margin: '12px -25px'}}
         overlap="circular"
         badgeContent={<span className={styles.avatarBadge} onClick={handleDrawerOpen} />}
         anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}

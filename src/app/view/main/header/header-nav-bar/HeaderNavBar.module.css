@@ -72,8 +72,21 @@
     padding: 9px;
     justify-content: center;
     align-items: center;
-  }
 
+    position:relative;
+
+
+  }
+  .redDot{
+    position:absolute;
+    top:10px;
+    right:9px;
+
+    width:4px;
+    height:4px;
+    border-radius: 50%;
+    background:#F93052;
+  }
   .notificationIcon{
     width: 22px;
     height: 22px;
