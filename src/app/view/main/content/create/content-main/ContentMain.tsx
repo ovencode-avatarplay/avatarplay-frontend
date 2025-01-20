@@ -805,6 +805,8 @@ const ContentMain: React.FC = () => {
             <button
               className={styles.addEpisode}
               onClick={() => {
+                dispatch(setSelectedChapterIdx(selectedChapterIdx));
+                dispatch(setSelectedEpisodeIdx(editingContentInfo.chapterInfoList.length));
                 setIsEpisodeInitOpen(true);
               }}
             >
