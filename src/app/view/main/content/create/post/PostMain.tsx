@@ -210,7 +210,7 @@ const PostMain: React.FC<Props> = () => {
     const feedInfo: FeedInfo = {
       id: 0,
       urlLinkKey: '',
-      mediaState: 0, // 예시 값
+      mediaState: state, // 예시 값
       mediaUrlList: mediaUrls,
       description: text,
       hashTag: '',
