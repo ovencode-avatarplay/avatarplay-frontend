@@ -123,6 +123,7 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
             customClassName={[styles.setupButtons]}
             onClick={() => {
               saveDraft();
+              closeModal();
             }}
           >
             Apply

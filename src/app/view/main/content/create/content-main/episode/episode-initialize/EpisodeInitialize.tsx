@@ -612,7 +612,11 @@ const EpisodeInitialize: React.FC<Props> = ({
         return (
           <>
             {uploadType === 'SelectCharacter' ? (
-              <CharacterGrid characters={characters || []} onCharacterSelect={handleCharacterSelect} />
+              <CharacterGrid
+                characters={characters || []}
+                onCharacterSelect={handleCharacterSelect}
+                style={{paddingBottom: '60px'}}
+              />
             ) : uploadType === 'UploadImage' ? (
               <>
                 <EpisodeUploadImage imgUrl={curEpisodeCharacterImage} setImgUrl={setCurEpisodeCharacterImage} />
@@ -645,6 +649,7 @@ const EpisodeInitialize: React.FC<Props> = ({
                   }}
                   category={category}
                   isTrigger={true}
+                  style={{paddingBottom: '60px'}}
                 />
               </>
             ) : uploadType === 'UploadImage' ? (
@@ -666,6 +671,7 @@ const EpisodeInitialize: React.FC<Props> = ({
                 data={bgData}
                 selectedIdx={selectedBackground}
                 onSelect={setSelectedBackground}
+                style={{paddingBottom: '60px'}}
               />
             ) : (
               <div>{getInputCharacterDesc()}</div>

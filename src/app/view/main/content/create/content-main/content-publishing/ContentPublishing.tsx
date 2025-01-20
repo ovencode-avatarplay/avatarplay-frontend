@@ -21,10 +21,9 @@ import llmModelData from '../content-LLMsetup/ContentLLMsetup.json';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import ContentImageUpload from './ContentImageUploader';
 import {sendGetTagList} from '@/app/NetWork/ContentNetwork';
-import MaxTextInput from '@/components/create/MaxTextInput';
-import CustomToggleButton from '@/components/layout/shared/CustomToggleButton';
+import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import ContentLLMSetup from '../content-LLMsetup/ContentLLMsetup';
-import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
+import {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import CustomSettingButton from '@/components/layout/shared/CustomSettingButton';
 
@@ -180,6 +179,7 @@ const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, LLMOpen, 
                 promptValue={contentDescription}
                 handlePromptChange={handleIntroductionChange}
                 maxPromptLength={400}
+                displayDataType={displayType.Label}
                 labelText="Introduction"
               />
             </div>
