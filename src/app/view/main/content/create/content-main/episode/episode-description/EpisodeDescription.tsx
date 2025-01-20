@@ -94,7 +94,9 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
     const updatedEpisodeDescription = {
       scenarioDescription: worldScenario,
       introDescription: introduction,
-      secret,
+      secret: '',
+      greeting: '',
+      worldScenario: '',
     };
 
     const submitData: CharacterDataType = {
