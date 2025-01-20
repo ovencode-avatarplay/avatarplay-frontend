@@ -106,14 +106,14 @@
 }
 
 .username {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato';
   font-weight: 600;
   font-size: 14px;
   color: #FFFFFF;
 }
 
 .sponsored {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato';
   font-weight: 400;
   font-size: 12px;
   color: #FFFFFF;
@@ -163,17 +163,19 @@ letter-spacing: -0.21px;
 .description {
   bottom: 60px;
   left: 16px;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato';
   font-size: 14px;
   color: #FFFFFF;
 }
 
 .videoInfo {
+  display: flex;
   bottom: 40px;
   left: 16px;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato';
   font-size: 14px;
   color: #FFFFFF;
+  gap: 10px;
 }
 
 .ctaButtons {
@@ -181,7 +183,7 @@ letter-spacing: -0.21px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  bottom: 120px;
+  bottom: 91px;
   right: 13px;
   z-index: 12;
   
@@ -264,4 +266,105 @@ line-height: 18px; /* 150% */
   left: 16px;
   gap: 10px;
   z-index: 10;
+}
+
+.followingContainer {
+  position: absolute;
+  width: 114px;
+  height: 18px;
+  left: 16px;
+  top: 13px;
+  display: flex;
+  align-items: center;
+  z-index: 12;
+}
+
+.followingBox {
+  
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+  
+}
+
+.followingText {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 80%; /* 18px */
+  color: #FFFFFF;
+}
+
+.iconArrowDown {
+  
+  width: 12px;
+  height: 12px;
+  left: 118px;
+  top: 137px;
+}
+
+.vector {
+  position: absolute;
+  left: 17.92%;
+  right: 17.5%;
+  top: 33.85%;
+  bottom: 33.85%;
+  border: 1.5px solid #FFFFFF;
+  box-shadow: 0px 0px 30px rgba(4, 4, 21, 0.8);
+}
+
+/* Container 스타일 */
+.featuredContainer {
+  position: absolute;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  gap: 12px;
+
+  position: absolute;
+  width: 150px;
+  height: 46px;
+  left: 16px;
+  top: 48px;
+
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--Neutral-800, #2C3131);
+  border-radius: 10px;
+  z-index: 13;
+}
+
+/* 텍스트 스타일 */
+.featuredText {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 160%;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.2px;
+  color: #FFFFFF;
+
+  width: 65px;
+  height: 26px;
+}
+
+/* 아이콘 컨테이너 스타일 */
+.featuredIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+
+/* 원형 아이콘 스타일 */
+.iconCircle {
+    width: 100%;
+  height: 100%;
 }

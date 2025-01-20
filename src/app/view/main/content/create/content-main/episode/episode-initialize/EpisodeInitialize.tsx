@@ -12,7 +12,7 @@ import {CharacterInfo, EpisodeInfo, GalleryImageInfo} from '@/redux-store/slices
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-import EpisodeInitializeStep from './EpisodeInitializeStep';
+import CustomStepper from '@/components/layout/shared/CustomStepper';
 import CharacterGrid from '@/app/view/studio/characterDashboard/CharacterGrid';
 import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
 import EpisodeSetNamePopup from './EpisodeSetNamePopup';
@@ -380,7 +380,11 @@ const EpisodeInitialize: React.FC<Props> = ({
       episodeInfo = {
         ...baseEpisodeInfo,
         name: name,
+        backgroundImageUrl: '',
         characterInfo: {
+          greeting: currentSelectedCharacter.greeting,
+          secret: currentSelectedCharacter.secret,
+          worldScenario: currentSelectedCharacter.worldScenario,
           id: currentSelectedCharacter.id,
           name: currentSelectedCharacter.name,
           introduction: currentSelectedCharacter.introduction,
@@ -404,6 +408,9 @@ const EpisodeInitialize: React.FC<Props> = ({
           name: nameValue,
           description: promptValue,
           mainImageUrl: curEpisodeCharacterImage,
+          secret: '',
+          worldScenario: '',
+          greeting: '',
         },
       };
     } else {
@@ -716,7 +723,7 @@ const EpisodeInitialize: React.FC<Props> = ({
         <CreateDrawerHeader title="EpisodeCreate" onClose={handlerOnClose} />
         {curStep > 0 && (
           <>
-            <EpisodeInitializeStep maxStep={maxStep} curStep={curStep} />
+            <CustomStepper maxStep={maxStep} curStep={curStep} />
             <div className={styles.stepDesc}>
               Step {curStep}. {getStepText()}
             </div>

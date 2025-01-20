@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {  
+
+
+:root {   
   /*Color 선언*/
   --background-fill-light-theme: #ffffff;   
   --background-fill-light-theme-primary: #ffffff;
@@ -68,7 +71,7 @@
   --second-width : clamp(0px, calc(100vw - 32px) , calc(402px - 32px));  /* 370px */
   --third-width : clamp(0px, calc(100vw - 32px - 32px) , calc(402px - 32px - 32px));  /* 338px */
 
-  --bottom-nav-height : 78px;
+  --bottom-nav-height : 48px;
 }
 
 .safe-area-container {
@@ -100,6 +103,8 @@
   margin-right: 16px;
 }
 
+
+
 @media (prefers-color-scheme: dark) {
   :root {    
     --background: var(--background-fill-dark-theme);
@@ -111,19 +116,19 @@
   }
 }
 
-@font-face {
+/* @font-face {
   font-family: 'Lato';
   src: 
   url('/fonts/Lato-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-}
+} */
 
 body {  
   user-select: none;
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC', sans-serif;
+  font-family: 'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC' ;
 }
 
 @layer utilities {
@@ -134,12 +139,12 @@ body {
 
 
 .blackIcon{
-  filter: var(--black-Icon-Filter);
+  filter: var(--black-icon-filter);
 }
 
 h1, h2, h3, h4, h5, h6
 {
   font-feature-settings: 'liga' off, 'clig' off;
-  font-family: 'Lato', Arial, Helvetica, sans-serif;
+  font-family: 'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC', sans-serif;
 }
 

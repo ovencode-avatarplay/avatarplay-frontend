@@ -12,9 +12,11 @@
  
   
 .logoArea {
-  width: 85px;
-  height: 17px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer
 }
   
   .rightArea {

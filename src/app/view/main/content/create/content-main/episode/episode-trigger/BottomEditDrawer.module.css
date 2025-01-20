@@ -25,7 +25,7 @@ background-color: white;
 
 .cancelButton,
 .doneButton {
-  font-family: "Lato", sans-serif;
+  font-family: "Lato" ;
   font-size: 16px;
   font-weight: 500;
   color: #fd55d3;
@@ -35,7 +35,7 @@ background-color: white;
 }
 
 .title {
-  font-family: "Lato", sans-serif;
+  font-family: "Lato" ;
   font-size: 16px;
   font-weight: 700;
   color: #1e1e1e;
@@ -56,7 +56,7 @@ background-color: white;
 
 .input {
   width: 100%;
-  font-family: "Lato", sans-serif;
+  font-family: "Lato" ;
   font-size: 15px;
   color: #1e1e1e;
   background: none;
@@ -98,7 +98,7 @@ margin: 0  auto;
 }
 
 .errorText {
-  font-family: "Lato", sans-serif;
+  font-family: "Lato" ;
   font-size: 12px;
   font-weight: 600;
   color: #ffffff;

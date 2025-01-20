@@ -52,10 +52,12 @@ export interface FeedInfo {
   likeCount: number;
   isLike: boolean;
   isDisLike: boolean;
+  isBookmark: boolean;
   playTime: string;
   characterProfileId: number;
   characterProfileName: string;
   characterProfileUrl: string;
+  createAt: string;
 }
 
 interface RequestCreateFeed {
@@ -273,6 +275,7 @@ export interface CommentInfo {
   isModify: boolean;
   updatedAt: string;
   replies: ReplieInfo[];
+  userImage: string;
 }
 
 // 대댓글 정보
@@ -286,6 +289,7 @@ export interface ReplieInfo {
   isDisLike: boolean;
   isModify: boolean;
   updatedAt: string;
+  userImage: string;
 }
 
 // 댓글 추가하기
@@ -459,6 +463,83 @@ export const sendGetFeed = async (
     return {
       resultCode: -1,
       resultMessage: 'Failed to fetch feed',
+      data: null,
+    };
+  }
+};
+// Feed Bookmark API 요청 타입
+export interface FeedBookmarkReq {
+  feedId: number;
+  isSave: boolean;
+}
+
+// Feed Bookmark API 응답 타입
+export interface FeedBookmarkRes {
+  resultCode: number;
+  resultMessage: string;
+  data: {}; // 빈 객체
+}
+
+/**
+ * 피드 북마크 API 호출
+ * @param payload 요청 본문에 포함할 데이터 (feedId, isSave)
+ * @returns API 응답 결과
+ */
+export const sendFeedBookmark = async (payload: FeedBookmarkReq): Promise<FeedBookmarkRes> => {
+  try {
+    const response = await api.post('/Feed/bookmark', payload);
+    const {resultCode, resultMessage, data} = response.data;
+
+    return {
+      resultCode,
+      resultMessage,
+      data: data || {}, // 데이터가 없을 경우 빈 객체 반환
+    };
+  } catch (error) {
+    console.error('Failed to bookmark feed:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to bookmark feed',
+      data: {},
+    };
+  }
+};
+// Get Comment API 요청 타입
+export interface GetCommentReq {
+  commentId: number; // 가져올 댓글 ID
+}
+
+// Get Comment API 응답 타입
+export interface GetCommentRes {
+  commentInfo: CommentInfo;
+}
+
+/**
+ * 댓글 가져오기
+ * @param payload 요청 본문에 포함할 데이터 (commentId)
+ * @returns API 응답 결과
+ */
+export const sendGetComment = async (
+  payload: GetCommentReq,
+): Promise<{
+  resultCode: number;
+  resultMessage: string;
+  data: CommentInfo | null;
+}> => {
+  try {
+    const response = await api.post('/Feed/getComment', payload);
+    const {resultCode, resultMessage, data} = response.data;
+
+    return {
+      resultCode,
+      resultMessage,
+      data: data || null, // 데이터가 없으면 null 반환
+    };
+  } catch (error) {
+    console.error('Failed to fetch comment:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to fetch comment',
       data: null,
     };
   }

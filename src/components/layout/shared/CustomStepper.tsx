@@ -1,12 +1,12 @@
 import React from 'react';
-import styles from './EpisodeInitializeStep.module.css';
+import styles from './CustomStepper.module.css';
 
 interface Props {
   maxStep: number;
   curStep: number;
 }
 
-const EpisodeInitializeStep: React.FC<Props> = ({maxStep, curStep}) => {
+const CustomStepper: React.FC<Props> = ({maxStep, curStep}) => {
   return (
     <div className={styles.stepContainer}>
       {Array.from({length: maxStep}, (_, index) => (
@@ -16,4 +16,4 @@ const EpisodeInitializeStep: React.FC<Props> = ({maxStep, curStep}) => {
   );
 };
 
-export default EpisodeInitializeStep;
+export default CustomStepper;

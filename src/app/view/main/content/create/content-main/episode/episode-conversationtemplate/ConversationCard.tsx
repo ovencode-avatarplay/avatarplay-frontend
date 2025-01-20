@@ -122,7 +122,7 @@ const ConversationCard: React.FC<ConversationCardProps> = ({card, moveUp, moveDo
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           padding: '4px 1px',
-                          fontFamily: 'Lato, sans-serif',
+                          fontFamily: 'Lato ',
                           fontSize: '14px',
                           color: '#9aa0a6',
                         },
@@ -188,7 +188,7 @@ const ConversationCard: React.FC<ConversationCardProps> = ({card, moveUp, moveDo
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           padding: '4px 1px',
-                          fontFamily: 'Lato, sans-serif',
+                          fontFamily: 'Lato ',
                           fontSize: '14px',
                           color: '#9aa0a6',
                         },

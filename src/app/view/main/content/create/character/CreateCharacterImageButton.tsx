@@ -1,72 +1,39 @@
 import React from 'react';
-import {Button, Typography, Box} from '@mui/material';
 import styles from './CreateCharacterImageButton.module.css';
+import {LineCheck} from '@ui/Icons';
 
 interface ImageButtonProps {
-  width: string;
-  height: string;
-  label: string;
+  sizeType: 'small' | 'middle' | 'large'; // sizeType을 props로 받습니다.
+  label: string | null;
   image: string;
+  color?: string;
   selected: boolean;
   onClick: () => void;
 }
 
-const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({width, height, label, image, selected, onClick}) => {
+const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({sizeType, label, image, color, selected, onClick}) => {
   return (
-    <Button
+    <button
       onClick={onClick}
-      className={styles.imageButton}
-      sx={{
-        position: 'relative',
-        width: width,
-        height: height,
-        padding: 0,
-        border: `2px solid ${selected ? 'blue' : 'red'}`,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        overflow: 'hidden',
-        backgroundColor: 'transparent',
-        transition: 'border-color 0.3s',
-        '&:hover': {
-          borderColor: selected ? 'darkblue' : 'gray',
-        },
-      }}
+      className={`${styles.imageButton} ${selected ? styles.selected : ''}`} // sizeType에 맞는 클래스를 동적으로 추가
     >
-      <Box
-        sx={{
-          flexGrow: 1,
-          backgroundRepeat: 'no-repeat',
-          backgroundImage: `url(${image})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          width: '100%',
+      <div
+        className={`${styles.imageBackGround} ${styles[sizeType]} ${selected ? styles.selected : ''} `}
+        style={{
+          backgroundImage: color
+            ? color // color가 있을 때
+            : selected
+            ? `linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), url(${image})`
+            : `url(${image})`,
         }}
       />
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: 8,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          fontWeight: 'bold',
-          color: 'white',
-          backgroundColor: 'rgba(255, 255, 255, 0.6)',
-          padding: '4px 8px',
-          borderRadius: '4px',
-          width: '80%',
-          height: 30,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          border: `2px solid ${selected ? 'blue' : 'red'}`,
-        }}
-      >
-        <Typography variant="subtitle2" sx={{fontWeight: 'bold', color: 'black'}}>
-          {label}
-        </Typography>
-      </Box>
-    </Button>
+      {label !== null && (
+        <div className={`${styles.label} ${selected ? styles.selected : ''}`}>
+          <span>{label}</span>
+        </div>
+      )}
+      {selected && <img className={`${styles.selectedIcon} ${styles[sizeType]}`} src={LineCheck.src} />}
+    </button>
   );
 };
 

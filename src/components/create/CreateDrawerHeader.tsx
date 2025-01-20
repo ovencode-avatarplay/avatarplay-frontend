@@ -10,15 +10,15 @@ interface Props {
 
 const CreateDrawerHeader: React.FC<Props> = ({title, onClose, children}) => {
   return (
-    <div className={styles.header}>
+    <header className={styles.header}>
       <div className={styles.baseArea}>
         <button className={styles.backButton} onClick={onClose}>
           <img src={BoldArrowLeft.src} className={styles.backIcon} />
         </button>
-        <div className={styles.navTitle}>{title}</div>
+        <h1 className={styles.navTitle}>{title}</h1>
       </div>
       {children && <div className={styles.childrenArea}>{children}</div>}
-    </div>
+    </header>
   );
 };
 
