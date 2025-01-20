@@ -253,7 +253,9 @@ const ChatBar: React.FC<ChatBarProps> = ({
                 paddingBottom: '5px',
               },
               '& .MuiInputBase-input': {
-                fontSize: '14px', // 내부 입력 텍스트의 폰트 크기 설정
+                fontSize: '16px', // 내부 입력 텍스트의 폰트 크기 설정
+                appearance: 'none', // iOS 기본 스타일 비활성화
+                WebkitAppearance: 'none', // Safari 호환
               },
             }}
             style={{padding: '0px'}}
