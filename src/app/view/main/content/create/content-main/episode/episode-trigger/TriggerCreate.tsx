@@ -710,18 +710,20 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
       case 4:
         return (
           <>
-            <CharacterGalleryToggle category={category} onCategoryChange={handleCategoryChange} />
-
-            <CharacterGalleryGrid
-              itemUrl={itemUrl}
-              selectedItemIndex={selectedGalleryIndex}
-              onSelectItem={i => {
-                console.log(i);
-                setSelectedGalleryIndex(i);
-              }}
-              category={category}
-              isTrigger={true}
-            />
+            {/* <CharacterGalleryToggle category={category} onCategoryChange={handleCategoryChange} /> */}
+            <div className={styles.characterScrollArea}>
+              <CharacterGalleryGrid
+                itemUrl={itemUrl}
+                selectedItemIndex={selectedGalleryIndex}
+                onSelectItem={i => {
+                  console.log(i);
+                  setSelectedGalleryIndex(i);
+                }}
+                category={category}
+                isTrigger={true}
+                style={{paddingBottom: '60px'}}
+              />
+            </div>
           </>
         );
       default:
@@ -771,7 +773,13 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
       case 3:
         return (
           <>
-            <CharacterGrid characters={characters || []} onCharacterSelect={handleCharacterSelect} />
+            <div className={styles.characterScrollArea}>
+              <CharacterGrid
+                characters={characters || []}
+                onCharacterSelect={handleCharacterSelect}
+                style={{paddingBottom: '60px'}}
+              />
+            </div>
           </>
         );
       case 4:

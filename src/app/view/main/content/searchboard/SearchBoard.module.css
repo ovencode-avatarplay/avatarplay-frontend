@@ -7,7 +7,7 @@
 
 .scrollArea
 { 
-    height: calc((var(--vh, 1vh) * 100) - 58px - 39px - 78px);
+    height: var(--body-height);
     overflow-y: scroll;
     scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */ 
 }

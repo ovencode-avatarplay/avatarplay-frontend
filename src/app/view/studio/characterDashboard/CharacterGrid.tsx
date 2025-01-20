@@ -7,9 +7,10 @@ import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 interface CharacterGridProps {
   characters: CharacterInfo[] | undefined;
   onCharacterSelect: (id: number) => void;
+  style?: React.CSSProperties;
 }
 
-const CharacterGrid: React.FC<CharacterGridProps> = ({characters, onCharacterSelect}) => {
+const CharacterGrid: React.FC<CharacterGridProps> = ({characters, onCharacterSelect, style}) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const handleSelect = (id: number) => {
@@ -18,7 +19,7 @@ const CharacterGrid: React.FC<CharacterGridProps> = ({characters, onCharacterSel
   };
 
   return (
-    <div className={styles.gridContainer}>
+    <div className={styles.gridContainer} style={style}>
       {characters && characters.length > 0 ? (
         characters.map(character => (
           <CharacterGridItem

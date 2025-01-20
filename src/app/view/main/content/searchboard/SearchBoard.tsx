@@ -366,7 +366,12 @@ const SearchBoard: React.FC = () => {
 
   return (
     <>
-      <Splitter splitters={splitterData} contentStyle={{padding: '0'}} isDark={true} />
+      <Splitter
+        splitters={splitterData}
+        splitterStyle={{height: 'var(--body-height)'}}
+        contentStyle={{padding: '0'}}
+        isDark={true}
+      />
       <LoadingOverlay loading={loading} />
     </>
   );

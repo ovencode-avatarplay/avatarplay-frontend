@@ -56,6 +56,15 @@
     overflow-y: auto;
   }
   
+.stepContent::-webkit-scrollbar {
+  display: none;  
+}
+
+.stepContent {
+  scrollbar-width: none;  
+  -ms-overflow-style: none;  
+}
+  
   
   .buttonContainer {
     display: flex;
