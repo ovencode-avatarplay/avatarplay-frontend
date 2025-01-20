@@ -245,16 +245,16 @@ const SearchBoard: React.FC = () => {
                   <SearchBoardHorizonScroll title="popularList" data={popularList} />
                 )}
                 {malePopularList && malePopularList.length > 0 && (
-                  <SearchBoardHorizonScroll title="malePopularList" data={malePopularList} />
+                  <SearchBoardHorizonScroll title="주간 TOP 10 스토리" data={malePopularList} />
                 )}
                 {femalePopularList && femalePopularList.length > 0 && (
-                  <SearchBoardHorizonScroll title="femalePopularList" data={femalePopularList} />
+                  <SearchBoardHorizonScroll title="추천 토카인 오리지널 스토리" data={femalePopularList} />
                 )}
                 {newContentList && newContentList.length > 0 && (
-                  <SearchBoardHorizonScroll title="newContentList" data={newContentList} />
+                  <SearchBoardHorizonScroll title="따끈따끈 TODAY 신작" data={newContentList} />
                 )}
                 {playingList && playingList.length > 0 && (
-                  <SearchBoardHorizonScroll title="playingList" data={playingList} />
+                  <SearchBoardHorizonScroll title="30대 남성 인기" data={playingList} />
                 )}
                 {recommendationList && recommendationList.length > 0 && (
                   <SearchBoardHorizonScroll title="recommendList" data={recommendationList} />

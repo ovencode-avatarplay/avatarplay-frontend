@@ -34,6 +34,8 @@ export const defaultEpisodeInfo = {
     scenarioDescription: '',
     introDescription: '',
     secret: '',
+    greeting: '',
+    worldScenario: '',
   },
   triggerInfoList: [],
   conversationTemplateList: [],
@@ -59,6 +61,8 @@ export const defaultTriggerInfo = {
     scenarioDescription: '', // 기본 시나리오 설명
     introDescription: '', // 기본 소개 설명
     secret: '', // 기본 비밀 정보
+    greeting: '',
+    worldScenario: '',
   },
   actionIntimacyPoint: 0,
   actionChangeBackground: '',

@@ -49,6 +49,17 @@ export interface ChapterInfo {
   episodeInfoList: EpisodeInfo[];
 }
 
+const getMinEpisodeId = (chapters: ChapterInfo[]): number => {
+  const episodeIds = chapters.flatMap(chapter => chapter.episodeInfoList.map(episode => episode.id));
+
+  if (episodeIds.length === 0) {
+    return 0; // 에피소드가 없는 경우 null 반환 (버그)
+  }
+
+  const minId = Math.min(...episodeIds);
+  return minId > 0 ? 0 : minId;
+};
+
 // Slice 생성
 export const curEditngContentInfoSlice = createSlice({
   name: 'contentInfo',
@@ -80,7 +91,7 @@ export const curEditngContentInfoSlice = createSlice({
       });
 
       // 새로운 ID는 가장 낮은 ID에서 -1을 뺌
-      const newId = minId - 1;
+      const newId = getMinEpisodeId(state.curEditingContentInfo.chapterInfoList) - 1;
 
       // 각 챕터를 순회하며 타겟 에피소드를 찾음
       state.curEditingContentInfo.chapterInfoList.forEach(chapter => {

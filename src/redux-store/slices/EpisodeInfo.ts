@@ -18,6 +18,8 @@ export interface EpisodeDescription {
   scenarioDescription: string;
   introDescription: string;
   secret: string;
+  greeting: string;
+  worldScenario: string;
 }
 
 interface EpisodeInfoState {
@@ -37,9 +39,9 @@ export interface CharacterInfo {
   introduction: string;
   description: string;
 
-  worldScenario: string
-  greeting: string,
-  secret: string,
+  worldScenario: string;
+  greeting: string;
+  secret: string;
 
   genderType: number;
   mainImageUrl: string;

@@ -27,7 +27,7 @@
     
     margin: 0 auto;
     border-radius: var(--radius-md, 10px);
-    background: lightgray 0px -335.272px / 100% 740% no-repeat;
+    background: lightgray 0px -335.272px / 100% 100% no-repeat cover center;
 }
 
  
