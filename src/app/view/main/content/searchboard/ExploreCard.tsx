@@ -95,7 +95,9 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
         <figure
           className={styles.exploreImage}
           style={{
-            backgroundImage: `url(${thumbnail || '/images/001.png'})`,
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
+              thumbnail || '/images/001.png'
+            })`,
             backgroundSize: 'cover',
           }}
           onClick={handleOpenDrawer}
