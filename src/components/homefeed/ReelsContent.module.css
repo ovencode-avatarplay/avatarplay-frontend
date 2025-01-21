@@ -371,3 +371,34 @@ img.button{
     width: 100%;
   height: 100%;
 }
+
+.volumeButton {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 13;
+  cursor: pointer;
+  width:30px; /* 버튼 크기 */
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.volumeCircleIcon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* 검은색 반투명 배경 */
+  border-radius: 50%;
+  z-index: 12;
+}
+
+.volumeIcon {
+  z-index: 13; /* 아이콘이 배경 위에 표시되도록 */
+  width: 20px; /* 아이콘 크기 */
+  height: 20px;
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(238deg) brightness(106%) contrast(101%);
+}

@@ -368,6 +368,11 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
   const handleEpisodeSelect = (chapterIdx: number, episodeIdx: number) => {
     setTargetChapterIdx(chapterIdx);
     setTargetEpisodeIdx(episodeIdx);
+    console.log('episodeIdx', episodeIdx);
+    setTriggerInfo(prevTriggerInfo => ({
+      ...prevTriggerInfo,
+      actionChangeEpisodeId: episodeIdx,
+    }));
   };
 
   useEffect(() => {
