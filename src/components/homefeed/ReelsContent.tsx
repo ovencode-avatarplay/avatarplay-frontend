@@ -17,6 +17,8 @@ import {
   BoldReward,
   BoldShare,
   BoldVideo,
+  BoldVolumeOff,
+  BoldVolumeOn,
   LineArchive,
   LineArrowDown,
   LineArrowLeft,
@@ -62,6 +64,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
   const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
+  const [isVolumeMute, setIsVolumeMute] = useState(true); // 비디오 총 길이
   const [commentCount, setCommentCount] = useState(item.commentCount); // 비디오 총 길이
 
   const [curFollowFeatured, setCurFollowFeatured] = useState(false); // 비디오 총 길이
@@ -255,7 +258,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
             <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
               <ReactPlayer
                 ref={playerRef} // ReactPlayer 참조 연결
-                muted={true}
+                muted={isVolumeMute}
                 url={item.mediaUrlList[0]} // 첫 번째 URL 사용
                 playing={isPlaying} // 재생 상태
                 loop={true}
@@ -431,6 +434,21 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
           >
             <img src={BoldMore.src} className={styles.button}></img>
           </div>
+        </div>
+        <div
+          className={styles.volumeButton}
+          onClick={() => {
+            setIsVolumeMute(!isVolumeMute);
+          }}
+        >
+          {/* 검은색 반투명 배경 */}
+          <div className={styles.volumeCircleIcon}></div>
+
+          {/* 음소거 상태 아이콘 */}
+          {item.mediaState == 2 && isVolumeMute && <img src={BoldVolumeOff.src} className={styles.volumeIcon} />}
+
+          {/* 볼륨 활성 상태 아이콘 */}
+          {item.mediaState == 2 && !isVolumeMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
         </div>
       </div>
 
