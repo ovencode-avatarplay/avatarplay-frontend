@@ -31,7 +31,7 @@ import FullScreenImage, {FullViewImageData} from '@/components/layout/shared/Ful
 import PublishCharacterBottom from './PublishCharacterBottom';
 import CustomStepper from '@/components/layout/shared/CustomStepper';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {BoldRuby, LineArrowLeft, LineArrowRight} from '@ui/Icons';
+import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineUpload} from '@ui/Icons';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 
@@ -365,7 +365,9 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
           <div className={styles.verticalButtonGroup}>
             {characterOptions.genderOptions.map((option, index) => (
               <button className={styles.uploadButton} onClick={() => handleOptionSelect('gender', index, true)}>
-                <img className={styles.buttonIconBack} src={LineArrowLeft.src} />
+                <div className={styles.buttonIconBack}>
+                  <img className={styles.buttonIcon} src={index === 0 ? LineCharacter.src : LineUpload.src} />
+                </div>
                 <div className={styles.buttonText}>{option.label}</div>
               </button>
             ))}
@@ -791,7 +793,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
                   state="IconRight"
                   onClick={addStep}
                   icon={steps[curStep] === 'Summary' && generatedOptions === null ? '' : LineArrowRight.src}
-                  iconClass="blackIcon"
+                  // iconClass="blackIcon"
                   customClassName={[styles.stepButton]}
                 >
                   {steps[curStep] === 'Summary' ? (

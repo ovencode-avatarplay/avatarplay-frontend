@@ -35,7 +35,7 @@ import {
   BoldShare,
 } from '@ui/Icons';
 // MUI
-import {Drawer, Select, MenuItem} from '@mui/material';
+import {Drawer} from '@mui/material';
 
 // Components
 import {getLocalizedLink} from '@/utils/UrlMove';
@@ -283,6 +283,7 @@ const DrawerContentDesc = () => {
         <div className={styles.topArea}>
           <div className={styles.thumbnailArea}>
             <div className={styles.thumbnailContainer}>
+              {/* <div className={styles.thumbnailImage} style={{backgroundImage: `url(${contentThumbnail})`}} /> */}
               <img className={styles.thumbnailImage} src={contentThumbnail} />
             </div>
           </div>

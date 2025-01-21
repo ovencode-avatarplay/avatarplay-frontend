@@ -1,6 +1,7 @@
 import React, {useRef, useEffect, useState, useCallback, useLayoutEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState, store} from '@/redux-store/ReduxStore';
+import {useRouter} from 'next/navigation';
 
 import styles from './ContentMain.module.css';
 import {LinePlus, LineStack} from '@ui/Icons';
@@ -48,9 +49,11 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 // Json
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
@@ -625,6 +628,8 @@ const ContentMain: React.FC = () => {
       handleClosePublishing();
       Init();
       setLoading(false);
+
+      pushLocalizedRoute('/studio/story', router);
     } catch (error) {
       setLoading(false);
       console.error('Error sending save content data:', error);
@@ -805,6 +810,8 @@ const ContentMain: React.FC = () => {
             <button
               className={styles.addEpisode}
               onClick={() => {
+                dispatch(setSelectedChapterIdx(selectedChapterIdx));
+                dispatch(setSelectedEpisodeIdx(editingContentInfo.chapterInfoList.length));
                 setIsEpisodeInitOpen(true);
               }}
             >

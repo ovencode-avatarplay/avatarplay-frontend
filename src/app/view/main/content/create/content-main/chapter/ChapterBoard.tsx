@@ -111,7 +111,7 @@ const ChapterBoard: React.FC<Props> = ({
     ) {
       const tmp: EpisodeInfo = chapterFirstEpisode;
       handleCreateChapter(tmp);
-    } 
+    }
   }, [chapterFirstEpisode]);
 
   //#endregion
@@ -132,7 +132,8 @@ const ChapterBoard: React.FC<Props> = ({
       newEpisode.id = newEpisodeId - 1;
       const newChapter: ChapterInfo = {
         id: newChapterId - 1,
-        name: `New Chapter ${newChapterId - 1}`,
+        // name: `New Chapter ${newChapterId - 1}`,
+        name: `New Chapter ${chapters.length + 1}`,
         episodeInfoList: [newEpisode], // 기본 에피소드 추가
       };
 

@@ -108,10 +108,10 @@
   --background-fill-light-theme-secondary: #f3f4fa;
   --background-fill-light-theme-tertiary: #f8f8f9;
 
-  --background-fill-dark-theme: #000000;
+  /* --background-fill-dark-theme: #000000;
   --background-fill-dark-theme-primary: #000000;
   --background-fill-dark-theme-secondary: #1c1c1e;
-  --background-fill-dark-theme-tertiary: #2c2c2e;
+  --background-fill-dark-theme-tertiary: #2c2c2e; */
 
   --Neutral-900 : #040415;
   --Neutral-800 : #2c3131;
@@ -206,7 +206,7 @@ html, body{height: 100%;}
 
 
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {    
     --background: var(--background-fill-dark-theme);
     --background-primary: var(--background-fill-dark-theme-primary);
@@ -215,7 +215,7 @@ html, body{height: 100%;}
  
     --foreground: #ededed;
   }
-}
+} */
 
 /* @font-face {
   font-family: 'Lato';

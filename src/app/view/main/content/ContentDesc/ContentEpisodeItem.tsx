@@ -29,7 +29,7 @@ const ContentEpisodeItem: React.FC<EpisodeCardProps> = ({
       {/* 이미지 박스 */}
       <div className={styles.imageBox}>
         <img src={thumbnail} alt={`Episode ${episodeId}`} className={styles.episodeImage} />
-        <div className={styles.imageOverlay}>
+        {/* <div className={styles.imageOverlay}>
           <div className={styles.iconInfo}>
             <FavoriteIcon color="error" />
             <Typography variant="body2" className={styles.iconText}>
@@ -42,7 +42,7 @@ const ContentEpisodeItem: React.FC<EpisodeCardProps> = ({
               {imageCount}
             </Typography>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* 텍스트 박스 */}
@@ -56,11 +56,11 @@ const ContentEpisodeItem: React.FC<EpisodeCardProps> = ({
       </div>
 
       {/* 잠김 아이콘 */}
-      {isLock && (
+      {/* {isLock && (
         <div className={styles.lockIconWrapper}>
           <img src="/ui/Icons/Audio/Pause.svg" alt="Pause Icon" />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

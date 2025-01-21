@@ -86,8 +86,8 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   const secretRef = useRef<HTMLTextAreaElement | null>(null);
 
   const LIMIT_WORLD_SCENARIO = 1000; // 월드 시나리오 필드 입력가능 최대값
-  const LIMIT_INTRODUCTION = 3000; // 인트로 필드 입력가능 최대값
-  const LIMIT_SECRET = 3000; // 비밀 필드 입력가능 최대값
+  const LIMIT_INTRODUCTION = 1000; // 인트로 필드 입력가능 최대값
+  const LIMIT_SECRET = 500; // 비밀 필드 입력가능 최대값
 
   // 정보 제출 처리
   const handleSubmit = () => {
@@ -292,7 +292,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
             <MaxTextInput
               promptValue={worldScenario}
               handlePromptChange={e => onChangesetWorldScenario(e.target.value)}
-              maxPromptLength={500}
+              maxPromptLength={LIMIT_WORLD_SCENARIO}
               onFocus={() => handleFocus('worldScenario')}
               onBlur={handleBlur}
               inputRef={worldScenarioRef}
@@ -305,7 +305,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
             <MaxTextInput
               promptValue={introduction}
               handlePromptChange={e => onChangesetIntroduction(e.target.value)}
-              maxPromptLength={500}
+              maxPromptLength={LIMIT_INTRODUCTION}
               onFocus={() => handleFocus('introduction')}
               onBlur={handleBlur}
               inputRef={introductionRef}
@@ -353,7 +353,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
                 },
                 isPrimary: false,
               },
-              {label: 'Cancle', onClick: handleCloseMessageBox, isPrimary: true},
+              {label: 'Cancel', onClick: handleCloseMessageBox, isPrimary: true},
             ]}
           />
         )}

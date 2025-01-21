@@ -16,6 +16,17 @@ button {
   outline: inherit;
 }
 
+input, textarea, select, button, optgroup {
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: inherit;
+	outline: none; /* Prevent outline on focus */
+	box-sizing: border-box; /* Ensures padding and borders don't affect dimensions */
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,

@@ -32,12 +32,14 @@ export default function BottomNav() {
   };
 
   const handleClick = (index: number) => {
-    if (index == 0) {
-      dispatch(setBottomNavColor(0));
-    } else {
-      dispatch(setBottomNavColor(1));
+    if (index === 0 || index === 1 || index === 4) {
+      if (index == 0) {
+        dispatch(setBottomNavColor(0));
+      } else {
+        dispatch(setBottomNavColor(1));
+      }
+      dispatch(setSelectedIndex(index));
     }
-    dispatch(setSelectedIndex(index));
   };
 
   const toggleProfileDrawer = (open: boolean) => {
@@ -168,7 +170,7 @@ export default function BottomNav() {
             const isMy = button.label == 'My';
             if (!isMy) {
               return (
-                <Link key={index} href={getLocalizedLink(button.link)}>
+                <Link key={index} href={index === 0 || index === 1 || index === 4 ? getLocalizedLink(button.link) : ''}>
                   <button
                     className={`${styles.navButton} 
                     ${selectedIndex === index ? styles.selected : ''} 
