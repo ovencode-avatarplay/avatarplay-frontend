@@ -247,7 +247,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                     src={url}
                     alt={`Slide ${idx}`}
                     loading="lazy"
-                    style={{width: '100%', height: '100%', objectFit: 'contain'}}
+                    style={{width: '100%', height: 'calc(100% - 4px)', objectFit: 'contain'}}
                   />
                 </SwiperSlide>
               ))}
@@ -263,7 +263,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                 loop={true}
                 width="100%"
                 playsinline={true}
-                height="100%"
+                height="calc(100% - 4px)"
                 style={{
                   borderRadius: '8px',
                 }}
