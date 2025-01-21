@@ -36,8 +36,8 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
   // Redux에서 conversationTemplateList 가져오기
   const conversationTemplateList = useSelector(
     (state: RootState) =>
-      state.content.curEditingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]
-        .conversationTemplateList,
+      state.content.curEditingContentInfo.chapterInfoList[selectedChapterIdx]?.episodeInfoList[selectedEpisodeIdx]
+        ?.conversationTemplateList,
   );
 
   // 로컬 상태 관리
@@ -47,7 +47,7 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
     let currentId = -1; // CardData의 ID 시작점
     let currentBarId = -1; // Bar의 ID 시작점
 
-    if (conversationTemplateList.length > 0) {
+    if (conversationTemplateList?.length > 0) {
       const initialCards = conversationTemplateList.map(conversation => {
         const assignedId = conversation.id <= 0 ? currentId-- : conversation.id;
 

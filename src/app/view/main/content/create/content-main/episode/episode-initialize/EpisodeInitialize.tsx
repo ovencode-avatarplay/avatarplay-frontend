@@ -398,9 +398,9 @@ const EpisodeInitialize: React.FC<Props> = ({
         name: name,
         backgroundImageUrl: '',
         characterInfo: {
-          greeting: currentSelectedCharacter.greeting,
-          secret: currentSelectedCharacter.secret,
-          worldScenario: currentSelectedCharacter.worldScenario,
+          greeting: currentSelectedCharacter.greeting || '',
+          secret: currentSelectedCharacter.secret || '',
+          worldScenario: currentSelectedCharacter.worldScenario || '',
           id: currentSelectedCharacter.id,
           name: currentSelectedCharacter.name,
           introduction: currentSelectedCharacter.introduction,
