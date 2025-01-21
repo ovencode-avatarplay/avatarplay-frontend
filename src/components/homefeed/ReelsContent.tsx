@@ -31,9 +31,11 @@ import SharePopup from '../layout/shared/SharePopup';
 interface ReelsContentProps {
   item: FeedInfo;
   isActive: boolean; // 현재 슬라이드인지 확인
+  isMute: boolean;
+  setIsMute: (mute: boolean) => void; // boolean 매개변수 추가
 }
 
-const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
+const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setIsMute}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
@@ -64,7 +66,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
   const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
-  const [isVolumeMute, setIsVolumeMute] = useState(true); // 비디오 총 길이
   const [commentCount, setCommentCount] = useState(item.commentCount); // 비디오 총 길이
 
   const [curFollowFeatured, setCurFollowFeatured] = useState(false); // 비디오 총 길이
@@ -188,10 +189,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
 
   React.useEffect(() => {
     setCommentCount(item.commentCount);
-    console.log('id', item.id);
-    console.log('count', item.commentCount);
   }, [item]);
 
+  React.useEffect(() => {}, [isMute]);
   return (
     <div className={styles.reelsContainer}>
       <div className={styles.followingContainer}>
@@ -258,7 +258,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
             <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
               <ReactPlayer
                 ref={playerRef} // ReactPlayer 참조 연결
-                muted={isVolumeMute}
+                muted={isMute}
                 url={item.mediaUrlList[0]} // 첫 번째 URL 사용
                 playing={isPlaying} // 재생 상태
                 loop={true}
@@ -438,17 +438,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
         <div
           className={styles.volumeButton}
           onClick={() => {
-            setIsVolumeMute(!isVolumeMute);
+            setIsMute(!isMute);
           }}
         >
           {/* 검은색 반투명 배경 */}
           <div className={styles.volumeCircleIcon}></div>
 
           {/* 음소거 상태 아이콘 */}
-          {item.mediaState == 2 && isVolumeMute && <img src={BoldVolumeOff.src} className={styles.volumeIcon} />}
+          {item.mediaState == 2 && isMute && <img src={BoldVolumeOff.src} className={styles.volumeIcon} />}
 
           {/* 볼륨 활성 상태 아이콘 */}
-          {item.mediaState == 2 && !isVolumeMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
+          {item.mediaState == 2 && !isMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
         </div>
       </div>
 

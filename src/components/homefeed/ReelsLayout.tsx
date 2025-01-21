@@ -18,6 +18,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   const [allFeeds, setAllFeeds] = useState<FeedInfo[]>([]); // 전체 데이터 저장
   const [info, setInfo] = useState<FeedInfo[]>([]); // 현재 렌더링된 데이터
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 슬라이드 인덱스
+  const [isMute, setIsMute] = useState(true); // 현재 슬라이드 인덱스
 
   const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
     try {
@@ -113,6 +114,9 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
     }
   };
 
+  React.useEffect(() => {
+    console.log(isMute);
+  }, [isMute]);
   return (
     <>
       {/* <Head>
@@ -133,7 +137,12 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
       >
         {info.map((item, index) => (
           <SwiperSlide key={index} className={styles.swiperSlide}>
-            <ReelsContent item={item} isActive={index === currentSlideIndex} />
+            <ReelsContent
+              item={item}
+              isActive={index === currentSlideIndex}
+              isMute={isMute} // 상태 전달
+              setIsMute={setIsMute} // 상태 변경 함수 전달
+            />
           </SwiperSlide>
         ))}
       </Swiper>
