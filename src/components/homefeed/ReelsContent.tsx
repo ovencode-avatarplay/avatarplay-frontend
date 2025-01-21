@@ -68,9 +68,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
   const [commentCount, setCommentCount] = useState(item.commentCount); // 비디오 총 길이
 
-  const [curFollowFeatured, setCurFollowFeatured] = useState(false); // 비디오 총 길이
-  const [isOpenFollowFeatured, setIsOpenFollowFeatured] = useState(false); // 비디오 총 길이
-
   const [isCommentOpen, setCommentIsOpen] = useState(false);
   const handleAddCommentCount = () => {
     setCommentCount(commentCount + 1);
@@ -194,42 +191,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
   React.useEffect(() => {}, [isMute]);
   return (
     <div className={styles.reelsContainer}>
-      <div className={styles.followingContainer}>
-        <div className={styles.followingBox}>
-          <span className={styles.followingText}>
-            {curFollowFeatured && <>Featured</>}
-            {!curFollowFeatured && <>Following</>}
-          </span>
-          <div
-            className={styles.iconArrowDown}
-            onClick={() => {
-              setIsOpenFollowFeatured(!isOpenFollowFeatured);
-            }}
-          >
-            <img src={LineArrowDown.src}></img>
-          </div>
-        </div>
-      </div>
-
-      {isOpenFollowFeatured && (
-        <div
-          className={styles.featuredContainer}
-          onClick={() => {
-            setCurFollowFeatured(!curFollowFeatured);
-          }}
-        >
-          <span className={styles.featuredText}>
-            {' '}
-            {curFollowFeatured && <>Following</>}
-            {!curFollowFeatured && <>Featured</>}
-          </span>
-          <div className={styles.featuredIcon}>
-            <div className={styles.iconCircle}>
-              <img src={LineFeatured.src}></img>
-            </div>
-          </div>
-        </div>
-      )}
       <div className={styles.mainContent}>
         <div className={styles.Image}>
           {item.mediaState === 1 && (
