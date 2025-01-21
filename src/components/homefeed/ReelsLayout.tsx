@@ -9,6 +9,7 @@ import {FeedInfo, sendFeedView, sendGetRecommendFeed} from '@/app/NetWork/Shorts
 import styles from './ReelsLayout.module.css';
 import {setBottomNavColor} from '@/redux-store/slices/MainControl';
 import {useDispatch} from 'react-redux';
+import {LineArrowDown, LineFeatured} from '@ui/Icons';
 
 interface ReelsLayoutProps {
   initialFeed?: FeedInfo; // 특정 URL 키를 통해 전달받은 초기 피드
@@ -113,6 +114,8 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
       setInfo(prev => [...prev, ...nextItems]);
     }
   };
+  const [curFollowFeatured, setCurFollowFeatured] = useState(false); // 비디오 총 길이
+  const [isOpenFollowFeatured, setIsOpenFollowFeatured] = useState(false); // 비디오 총 길이
 
   React.useEffect(() => {
     console.log(isMute);
@@ -126,6 +129,43 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
         <meta property="og:description" content={initialFeed?.description || ''} />
         <meta property="og:image" content={initialFeed?.characterProfileUrl || '/default-image.png'} />
       </Head> 추후 메타 처리*/}
+
+      <div className={styles.followingContainer}>
+        <div className={styles.followingBox}>
+          <span className={styles.followingText}>
+            {curFollowFeatured && <>Featured</>}
+            {!curFollowFeatured && <>Following</>}
+          </span>
+          <div
+            className={styles.iconArrowDown}
+            onClick={() => {
+              setIsOpenFollowFeatured(!isOpenFollowFeatured);
+            }}
+          >
+            <img src={LineArrowDown.src}></img>
+          </div>
+        </div>
+      </div>
+
+      {isOpenFollowFeatured && (
+        <div
+          className={styles.featuredContainer}
+          onClick={() => {
+            setCurFollowFeatured(!curFollowFeatured);
+          }}
+        >
+          <span className={styles.featuredText}>
+            {' '}
+            {curFollowFeatured && <>Following</>}
+            {!curFollowFeatured && <>Featured</>}
+          </span>
+          <div className={styles.featuredIcon}>
+            <div className={styles.iconCircle}>
+              <img src={LineFeatured.src}></img>
+            </div>
+          </div>
+        </div>
+      )}
       <Swiper
         direction="vertical"
         spaceBetween={0}
