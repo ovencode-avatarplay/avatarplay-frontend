@@ -1,8 +1,7 @@
 {
   "genderOptions": [
     { "label": "Girl", "image": "/real.png", "value": 0},
-    { "label": "Guy", "image": "/anime.png", "value": 1 },
-    { "label": "All", "image": "/anime.png", "value": 2 }
+    { "label": "Guy", "image": "/anime.png", "value": 1 }
   ],
   "styleOptions": [
     { "label": "Realistic", "image": "female_style_realistic.png", "value": 0 },
