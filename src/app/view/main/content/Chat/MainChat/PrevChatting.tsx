@@ -77,7 +77,7 @@ const usePrevChatting = (
   // 컴포넌트가 마운트될 때와 userId 또는 episodeId가 변경될 때마다 API 호출
   useEffect(() => {
     fetchChattingData();
-  }, [episodeId]);
+  }, []);
 
   console.log(prevMessages);
   // 이전 메시지와 에러를 반환
