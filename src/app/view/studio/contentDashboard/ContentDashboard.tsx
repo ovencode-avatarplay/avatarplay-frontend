@@ -156,8 +156,6 @@ const ContentDashboard: React.FC = () => {
         // Redux 상태 업데이트
         dispatch(setEditingContentInfo(contentData));
 
-        // TODO : CurEpisode
-        // dispatch(setCurrentEpisodeInfo(contentData.chapterInfoList[0].episodeInfoList[0]));
         dispatch(setPublishInfo(contentData.publishInfo));
       } else {
         throw new Error(`No contentInfo in response for ID: ${contentId}`);

@@ -49,12 +49,6 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   );
 
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (open) {
-      // TODO : CurEpisode
-      // dispatch(setCurrentEpisodeInfo(episodeInfo));
-    }
-  }, [episodeInfo]);
 
   // 상태 초기화
   const [worldScenario, setWorldScenario] = useState<string>(

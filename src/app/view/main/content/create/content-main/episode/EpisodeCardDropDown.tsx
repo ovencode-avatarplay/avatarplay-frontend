@@ -17,12 +17,6 @@ interface EpisodeCardDropDownProps {
 
 const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeInfo, open, close}) => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (open) {
-      // TODO : CurEpisode
-      // dispatch(setCurrentEpisodeInfo(episodeInfo));
-    }
-  }, [episodeInfo]);
 
   const chapterInfo = useSelector((state: RootState) => {
     return state.content.curEditingContentInfo.chapterInfoList.find(chapter =>

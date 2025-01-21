@@ -16,12 +16,7 @@ interface EpisodeImageSetupProps {
 
 const EpisodeImageSetup: React.FC<EpisodeImageSetupProps> = ({open, onClose, episodeInfo}) => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (open) {
-      // TODO : CurEpisode
-      // dispatch(setCurrentEpisodeInfo(episodeInfo));
-    }
-  }, [episodeInfo]);
+
   return (
     <Dialog
       closeAfterTransition={false}

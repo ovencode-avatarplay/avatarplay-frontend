@@ -122,23 +122,11 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({
   console.log(height);
   const chapters = useSelector((state: RootState) => state.content.curEditingContentInfo.chapterInfoList);
   const handleChangeOrderEpisodeIndex = (direction: 'up' | 'down') => {
-    // TODO : CurEpisode
-    // dispatch(setCurrentEpisodeInfo(episodeInfo));
     const targetId = episodeInfo.id;
     dispatch(adjustEpisodeIndex({targetId, direction}));
   };
 
   const [isDropDownOpen, setDropDownOpen] = useState(false);
-
-  // TODO : CurEpisode
-  // useEffect(() => {
-  //   dispatch(updateEpisodeInfoInContent(currentEpisode)); // 상태 업데이트
-  // }, [
-  //   currentEpisode.name,
-  //   currentEpisode.conversationTemplateList.length,
-  //   currentEpisode.triggerInfoList.length,
-  //   currentEpisode.episodeDescription,
-  // ]);
 
   const handleSelectedEpisode = () => {
     console.log('selidxcheck' + chapterIdx + '/' + episodeIdx);

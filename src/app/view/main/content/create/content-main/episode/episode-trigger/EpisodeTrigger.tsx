@@ -34,16 +34,8 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
     setSelectedChapterIdx(chapterIdx);
     setSelectedEpisodeIdx(episodeIdx);
     setModalOpen(false); // 모달 닫기
-    // TODO : CurEpisode
-    // dispatch(setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[chapterIdx].episodeInfoList[episodeIdx]));
   };
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (open) {
-      // TODO : CurEpisode
-      // dispatch(setCurrentEpisodeInfo(episodeInfo));
-    }
-  }, [open, episodeInfo, dispatch]);
 
   // WriteTriggerName 모달 열기
 

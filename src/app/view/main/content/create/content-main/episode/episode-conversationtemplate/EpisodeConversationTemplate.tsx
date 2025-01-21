@@ -29,12 +29,6 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
   episodeInfo,
 }) => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (open) {
-      // TODO : CurEpisode
-      // dispatch(setCurrentEpisodeInfo(episodeInfo));
-    }
-  }, [episodeInfo]);
 
   const selectedChapterIdx = useSelector((state: RootState) => state.content.selectedChapterIdx);
   const selectedEpisodeIdx = useSelector((state: RootState) => state.content.selectedEpisodeIdx);
