@@ -123,7 +123,7 @@ const DrawerCharacterDesc = () => {
       episodeId: Number(episodeId),
       contentUrl: contentUrl,
     };
-    dispatch(setStateChatting(chattingState));
+    // dispatch(setStateChatting(chattingState));
   }, [episodeId]);
 
   useEffect(() => {
