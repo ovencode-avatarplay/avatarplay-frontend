@@ -1,5 +1,5 @@
 // Third-party Imports
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage'; // localStorage를 사용
 
 // Slice Imports
@@ -9,15 +9,14 @@ import drawerContentDescReducer from '@/redux-store/slices/DrawerContentDescSlic
 import drawerCharacterDescReducer from '@/redux-store/slices/DrawerCharacterDescSlice';
 import ContentInfoSlice from './slices/ContentInfo';
 import userInfo from './slices/UserInfo';
-import ContentSelection from './slices/ContentSelection';
 import publishInfoSlice from './slices/PublishInfo';
-import episodeInfoSlice from './slices/EpisodeInfo';
+// import episodeInfoSlice from './slices/EpisodeInfo';
 import myContentDashboardSlice from './slices/MyContentDashboard';
 import emoticonSlice from './slices/EmoticonSlice';
 import modifyQuestionSlice from './slices/ModifyQuestion';
 import mainControl from './slices/MainControl';
 // redux-persist
-import { persistStore, persistReducer } from 'redux-persist';
+import {persistStore, persistReducer} from 'redux-persist';
 import chattingEnterSlice from './slices/ChattingEnter';
 
 const persistConfig = {
@@ -45,9 +44,8 @@ const reducers = combineReducers({
   myContents: myContentDashboardSlice, // 내가 만든 컨텐츠들 (Dashboard 표시용)
 
   content: ContentInfoSlice, // 현재 편집중인 컨텐츠 (서버와 데이터 교환 용)
-  contentselection: ContentSelection, // 현재 선택된 컨텐츠,챕터,에피소드 정보 (ChapterBoard 선택용)
   publish: publishInfoSlice, // 현재 편집중인 컨텐츠의 publish 정보 (Content 수정용)
-  episode: episodeInfoSlice, // 현재 편집중인 에피소드 정보 (Content 수정용)
+  // episode: episodeInfoSlice, // 현재 편집중인 에피소드 정보 (Content 수정용)
   chattingEnter: chattingEnterSlice,
   emoticon: emoticonSlice,
   modifyQuestion: modifyQuestionSlice,
@@ -59,7 +57,7 @@ const persistedReducer = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
   reducer: persistedReducer, // Persisted reducer 사용
-  middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false }),
+  middleware: getDefaultMiddleware => getDefaultMiddleware({serializableCheck: false}),
 });
 
 export const persistor = persistStore(store);

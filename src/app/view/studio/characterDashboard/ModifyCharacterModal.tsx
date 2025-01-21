@@ -4,7 +4,7 @@ import styles from './ModifyCharacterModal.module.css';
 import CreateCharacterTopMenu from '../../main/content/create/character/CreateCharacterTopMenu';
 import CharacterCreateSequence from '../../main/content/create/character/CreateCharacterSequence';
 import PublishCharacter from '../../main/content/create/character/PublishCharacter';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 import PublishCharacterBottom from '../../main/content/create/character/PublishCharacterBottom';
 import {getLocaleUrl} from '@/configs/i18n';
 import {getLocalizedLink} from '@/utils/UrlMove';

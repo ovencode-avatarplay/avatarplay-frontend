@@ -1,10 +1,9 @@
 'use client';
 
-import React, {useState, useEffect, useRef, useMemo} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Modal} from '@mui/material';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {EpisodeInfo, setCurrentEpisodeInfo, updateEpisodeDescription} from '@/redux-store/slices/EpisodeInfo';
 
 import styles from './EpisodeDescription.module.css'; // CSS 모듈 import
 
@@ -14,6 +13,7 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import {BoldAI, BoldCharacter, BoldChatRoundDots} from '@ui/Icons';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import {EpisodeInfo, updateEpisodeDescription} from '@/redux-store/slices/ContentInfo';
 
 interface CharacterDataType {
   userId: number;
@@ -41,12 +41,18 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
   onSubmit,
   episodeInfo,
 }) => {
-  const currentEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
+  const selectedChapterIdx = useSelector((state: RootState) => state.content.selectedChapterIdx);
+  const selectedEpisodeIdx = useSelector((state: RootState) => state.content.selectedEpisodeIdx);
+  const currentEpisodeInfo = useSelector(
+    (state: RootState) =>
+      state.content.curEditingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
+  );
 
   const dispatch = useDispatch();
   useEffect(() => {
     if (open) {
-      dispatch(setCurrentEpisodeInfo(episodeInfo));
+      // TODO : CurEpisode
+      // dispatch(setCurrentEpisodeInfo(episodeInfo));
     }
   }, [episodeInfo]);
 
@@ -314,7 +320,7 @@ export const EpisodeDescription: React.FC<CharacterPopupProps> = ({
             />
           </div>
         </div>
-        {focusedField && (
+        {!focusedField && (
           <div className={styles.supportButtonArea}>
             <button className={styles.supportButton} data-virtual-button onClick={handleClickAutoWrite}>
               <img className={styles.buttonIcon} src={BoldAI.src} />

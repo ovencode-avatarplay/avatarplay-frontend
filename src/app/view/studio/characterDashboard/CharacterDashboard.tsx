@@ -33,9 +33,9 @@ import {
 import {useRouter, useSearchParams} from 'next/navigation';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import CharacterGalleryModal from './CharacterGalleryModal';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
 const CharacterDashboard: React.FC = () => {
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);

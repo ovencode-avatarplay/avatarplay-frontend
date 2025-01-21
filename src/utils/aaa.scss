@@ -1,0 +1,16 @@
+@mixin reset-list {
+    // body 태그에 'en' 클래스가 있는 경우
+    html:lang(en) & {
+      background-color: red;
+    }
+  
+    // body 태그에 'kr' 클래스가 있는 경우
+    html:lang(kr) & {
+      background-color: blue;
+    }
+
+    &{
+      background-color: yellow;
+
+    }
+}

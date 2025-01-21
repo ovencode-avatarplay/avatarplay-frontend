@@ -1,8 +1,7 @@
 import React from 'react';
-import {Box} from '@mui/material';
 import styles from './CharacterGalleryItem.module.css';
-import {GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 import {LineCheck} from '@ui/Icons';
+import {GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
 
 interface CharacterGalleryItemProps {
   url: GalleryImageInfo;

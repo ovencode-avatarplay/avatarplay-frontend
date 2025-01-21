@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import styles from './CharacterGalleryViewer.module.css';
-import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import {SelectImageReq, sendSelectImage} from '@/app/NetWork/CharacterNetwork';
 

@@ -113,7 +113,7 @@ const BottomRenameDrawer: React.FC<Props> = ({
             multiline
             fullWidth
             error={hasError}
-            helperText={hasError ? errorMessage : undefined}
+            // helperText={hasError ? errorMessage : undefined}
             InputProps={{
               style: {
                 borderRadius: '4px',

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Box, Typography, Button} from '@mui/material';
 import styles from './EpisodeCharacterView.module.css';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 interface EpisodeCharacterViewProps {
   open: boolean;
   onClose: () => void;
