@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/scrollbar';
@@ -15,8 +15,10 @@ interface ReelsLayoutProps {
 }
 
 const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
-  const [info, setInfo] = useState<FeedInfo[]>([]);
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 활성 슬라이드 인덱스
+  const [allFeeds, setAllFeeds] = useState<FeedInfo[]>([]); // 전체 데이터 저장
+  const [info, setInfo] = useState<FeedInfo[]>([]); // 현재 렌더링된 데이터
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 슬라이드 인덱스
+
   const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
     try {
       const base64Payload = token.split('.')[1]; // payload 부분 추출
@@ -37,18 +39,19 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
     return null; // JWT가 없을 경우 null 반환
   };
 
+  // API 호출
   const fetchRecommendFeed = async () => {
     dispatch(setBottomNavColor(0));
-    const result = await sendGetRecommendFeed({language: navigator.language || 'en-US'});
-    if (result.resultCode === 0 && result.data) {
-      const feeds = result.data.feedInfoList;
-      if (initialFeed) {
-        // 초기 피드를 배열의 첫 번째로 추가
-        setInfo([initialFeed, ...feeds]);
-        console.log('initialFeed', initialFeed);
-      } else {
-        setInfo(feeds);
+    try {
+      const result = await sendGetRecommendFeed({language: navigator.language || 'en-US'});
+
+      if (result.resultCode === 0 && result.data) {
+        const feeds = result.data.feedInfoList;
+        setAllFeeds(feeds); // 전체 데이터 저장
+        setInfo(feeds.slice(0, 3)); // 초기 렌더링용 첫 10개
       }
+    } catch (error) {
+      console.error('Failed to fetch recommended feed:', error);
     }
   };
 
@@ -57,6 +60,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   }, [initialFeed, getEmailFromJwt()]);
 
   useEffect(() => {
+    console.log('info', info);
     if (typeof window !== 'undefined') {
       const currentPath = window.location.pathname; // 현재 경로
       const basePath = '/ko/main/homefeed'; // 동적 라우팅이 없는 기본 경로
@@ -83,13 +87,14 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   const handleSlideChange = (swiper: any) => {
     const currentIndex = swiper.activeIndex;
     setCurrentSlideIndex(currentIndex);
+
     // 배열 범위 검증
-    if (currentIndex < 0 || currentIndex >= info.length) {
+    if (currentIndex < 0 || currentIndex >= allFeeds.length) {
       console.warn('Slide index out of bounds');
       return;
     }
 
-    const currentItem = info[currentIndex];
+    const currentItem = allFeeds[currentIndex];
 
     if (currentItem && currentItem.urlLinkKey != null) {
       viewFeed(currentItem.id);
@@ -99,6 +104,12 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
       window.history.pushState(null, '', newUrl);
     } else {
       console.warn('Invalid urlLinkKey for current slide');
+    }
+
+    // 추가 데이터 요청: 슬라이드 끝에 도달하면 로드
+    if (currentIndex >= info.length - 1 && info.length < allFeeds.length) {
+      const nextItems = allFeeds.slice(info.length, info.length + 2); // 다음 2개
+      setInfo(prev => [...prev, ...nextItems]);
     }
   };
 

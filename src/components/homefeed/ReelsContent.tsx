@@ -189,8 +189,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
     console.log('count', item.commentCount);
   }, [item]);
 
-  console.log(item.mediaUrlList[0]);
-
   return (
     <div className={styles.reelsContainer}>
       <div className={styles.followingContainer}>
