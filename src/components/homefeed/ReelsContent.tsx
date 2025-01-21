@@ -383,7 +383,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                   : 'none', // 기본 상태는 필터 없음
               }}
             />
-            {likeCount}
+            <div>{likeCount}</div>
           </div>
 
           {/* Dislike Button */}
@@ -405,7 +405,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
           </div>
           <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
             <img src={BoldComment.src} className={styles.button}></img>
-            {commentCount}
+            <div>{commentCount}</div>
           </div>
           <div
             className={styles.noneTextButton}
