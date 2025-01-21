@@ -6,7 +6,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import styles from './EpisodeImageUpload.module.css';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/EpisodeInfo';
+import {setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/ContentInfo';
 import {RootState} from '@/redux-store/ReduxStore';
 
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
@@ -15,7 +15,12 @@ import EpisodeStarringCharacter from './EpisodeStarringCharacter';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const EpisodeUploadCharacter: React.FC = () => {
-  const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
+  const selectedChapterIdx = useSelector((state: RootState) => state.content.selectedChapterIdx);
+  const selectedEpisodeIdx = useSelector((state: RootState) => state.content.selectedEpisodeIdx);
+  const editedEpisodeInfo = useSelector(
+    (state: RootState) =>
+      state.content.curEditingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
+  );
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -80,8 +85,7 @@ const EpisodeUploadCharacter: React.FC = () => {
   };
 
   useEffect(() => {
-    if (editedEpisodeInfo?.currentEpisodeInfo?.characterInfo)
-      setImagePreview(editedEpisodeInfo?.currentEpisodeInfo?.characterInfo?.mainImageUrl);
+    if (editedEpisodeInfo?.characterInfo) setImagePreview(editedEpisodeInfo?.characterInfo?.mainImageUrl);
   }, [editedEpisodeInfo]);
 
   return (

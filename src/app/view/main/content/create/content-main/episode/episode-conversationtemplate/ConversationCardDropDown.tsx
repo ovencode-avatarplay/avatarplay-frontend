@@ -1,20 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import styles from './ConversationCardDropDown.module.css';
-import EditIcon from '@mui/icons-material/Edit';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import DeleteIcon from '@mui/icons-material/Delete';
-import {EpisodeInfo, setCurrentEpisodeInfo, updateEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
-import {useDispatch, useSelector} from 'react-redux';
-import {LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePreview} from '@ui/Icons';
-import {
-  ChapterInfo,
-  duplicateEpisode,
-  removeEpisode,
-  updateEpisodeInfoInContent,
-} from '@/redux-store/slices/ContentInfo';
-import {RootState, store} from '@/redux-store/ReduxStore';
+import {useDispatch} from 'react-redux';
+import {LineArrowSwap, LineCopy, LineDelete} from '@ui/Icons';
+import {duplicateEpisode} from '@/redux-store/slices/ContentInfo';
 
 interface EpisodeCardDropDownProps {
   open: boolean;

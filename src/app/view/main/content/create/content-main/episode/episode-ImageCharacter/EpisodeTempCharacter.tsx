@@ -7,9 +7,8 @@ import ImageIcon from '@mui/icons-material/Image';
 
 import styles from './EpisodeTempCharacter.module.css';
 
-import {useDispatch, useSelector} from 'react-redux';
-import {setCharacterInfo, TriggerInfo} from '@/redux-store/slices/EpisodeInfo';
-import {RootState} from '@/redux-store/ReduxStore';
+import {useDispatch} from 'react-redux';
+import {setCharacterInfo, TriggerInfo} from '@/redux-store/slices/ContentInfo';
 
 import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -30,8 +29,6 @@ interface Props {
 }
 
 const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, setTriggerInfo}) => {
-  const editedEpisodeInfo = useSelector((state: RootState) => state.episode);
-
   const [imagePreview, setImagePreview] = useState<string | undefined>();
 
   const [dialogOpen, setDialogOpen] = useState(false);

@@ -45,7 +45,7 @@ import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import ChatFloatingArea from './MainChat/ChatFloatingArea';
 import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
 import {addNewDateMessage, compareDates, NewDateType, refreshNewDateAll, shiftDates} from './MainChat/NewDate';
-import {TriggerActionType} from '@/redux-store/slices/EpisodeInfo';
+import {TriggerActionType} from '@/redux-store/slices/ContentInfo';
 
 const ChatPage: React.FC = () => {
   const TempIdforSendQuestion: number = -222;

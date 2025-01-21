@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import styles from './CreateCharacterSequence.module.css';
 
 // redux
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
 // Json Data
 import characterOptionsMaleReal from '@/data/create/create-character-male-real.json';

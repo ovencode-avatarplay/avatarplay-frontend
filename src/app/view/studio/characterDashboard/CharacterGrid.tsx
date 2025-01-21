@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Grid, Typography} from '@mui/material';
 import CharacterGridItem from './CharacterGridItem';
 import styles from './CharacterGrid.module.css';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
 interface CharacterGridProps {
   characters: CharacterInfo[] | undefined;

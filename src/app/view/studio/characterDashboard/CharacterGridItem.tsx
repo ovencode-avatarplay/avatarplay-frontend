@@ -1,9 +1,6 @@
 import React from 'react';
-import {Box, Typography} from '@mui/material';
-import MaleIcon from '@mui/icons-material/Male';
-import FemaleIcon from '@mui/icons-material/Female';
 import styles from './CharacterGridItem.module.css';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 import {LineCheck} from '@ui/Icons';
 
 interface CharacterGridItemProps {

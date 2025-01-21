@@ -5,7 +5,7 @@ import styles from './EpisodeImageSetup.module.css';
 import React, {useEffect} from 'react';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CharacterCreateSequence from '../../../character/CreateCharacterSequence';
-import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {EpisodeInfo} from '@/redux-store/slices/ContentInfo';
 import {useDispatch} from 'react-redux';
 
 interface EpisodeImageSetupProps {
@@ -16,11 +16,7 @@ interface EpisodeImageSetupProps {
 
 const EpisodeImageSetup: React.FC<EpisodeImageSetupProps> = ({open, onClose, episodeInfo}) => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (open) {
-      dispatch(setCurrentEpisodeInfo(episodeInfo));
-    }
-  }, [episodeInfo]);
+
   return (
     <Dialog
       closeAfterTransition={false}

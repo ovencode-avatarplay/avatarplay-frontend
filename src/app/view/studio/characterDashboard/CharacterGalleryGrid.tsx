@@ -3,9 +3,9 @@ import {Button} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import styles from './CharacterGalleryGrid.module.css';
 import CharacterGalleryItem from './CharacterGalleryItem';
-import {GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 import EmptyState from '@/components/search/EmptyState';
 import {GalleryCategory} from './CharacterGalleryData';
+import {GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
 
 interface CharacterGalleryGridProps {
   itemUrl: GalleryImageInfo[] | null;

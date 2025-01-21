@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styles from './EpisodeCardDropDown.module.css';
-import {EpisodeInfo, setCurrentEpisodeInfo, updateEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {EpisodeInfo, setSelectedEpisodeIdx, updateEpisodeInfo} from '@/redux-store/slices/ContentInfo';
 import {useDispatch, useSelector} from 'react-redux';
 import {LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePreview} from '@ui/Icons';
 import {ChapterInfo, duplicateEpisode, removeEpisode} from '@/redux-store/slices/ContentInfo';
@@ -17,11 +17,6 @@ interface EpisodeCardDropDownProps {
 
 const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeInfo, open, close}) => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (open) {
-      dispatch(setCurrentEpisodeInfo(episodeInfo));
-    }
-  }, [episodeInfo]);
 
   const chapterInfo = useSelector((state: RootState) => {
     return state.content.curEditingContentInfo.chapterInfoList.find(chapter =>
@@ -72,9 +67,11 @@ const EpisodeCardDropDown: React.FC<EpisodeCardDropDownProps> = ({save, episodeI
     const episodeIndex = chapterInfo?.episodeInfoList.findIndex(episode => episode.id === episodeInfo?.id);
 
     if (episodeIndex !== 0 && chapterInfo?.episodeInfoList[0]) {
-      dispatch(setCurrentEpisodeInfo(chapterInfo.episodeInfoList[0]));
+      dispatch(setSelectedEpisodeIdx(0));
+      // dispatch(setCurrentEpisodeInfo(chapterInfo.episodeInfoList[0]));
     } else if (episodeIndex == 0 && chapterInfo && chapterInfo?.episodeInfoList.length > 1) {
-      dispatch(setCurrentEpisodeInfo(chapterInfo.episodeInfoList[1]));
+      dispatch(setSelectedEpisodeIdx(1));
+      // dispatch(setCurrentEpisodeInfo(chapterInfo.episodeInfoList[1]));
     } else if (episodeIndex == 0 && chapterInfo && chapterInfo?.episodeInfoList.length == 1) {
       alert('해당 에피소드는 삭제할 수 없습니다');
       return;
