@@ -442,7 +442,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
           }}
         >
           {/* 검은색 반투명 배경 */}
-          <div className={styles.volumeCircleIcon}></div>
+          {item.mediaState == 2 && isMute && <div className={styles.volumeCircleIcon}></div>}
 
           {/* 음소거 상태 아이콘 */}
           {item.mediaState == 2 && isMute && <img src={BoldVolumeOff.src} className={styles.volumeIcon} />}
