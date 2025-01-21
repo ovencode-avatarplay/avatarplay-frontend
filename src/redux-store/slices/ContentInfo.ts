@@ -1,10 +1,27 @@
 // Imports
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {EpisodeInfo, TriggerInfo} from './EpisodeInfo';
+import {useSelector} from 'react-redux';
+import {RootState} from '../ReduxStore';
 
 // JSON 파일
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
+//#region export Interface
+
+/*
+// 컨텐츠 (ContentInfo)
+//   ㄴ 챕터 (ChapterInfo)
+//        ㄴ 에피소드 (EpisodeInfo)
+//            ㄴ 캐릭터 (CharacterInfo)
+//                ㄴ 갤러리이미지 (GalleryImageInfo)
+//            ㄴ 설명 (EpisodeDescription)
+//            ㄴ 트리거 (TriggerInfo)
+//            ㄴ 대화템플릿 (ConversationTemplateInfo)
+//   ㄴ 퍼블리시 (PublishInfo)
+//        ㄴ LLM (LLMSetupInfo)
+// */
+
+// 1 Level
 export interface ContentInfo {
   id: number;
   userId: number;
@@ -13,6 +30,7 @@ export interface ContentInfo {
   publishInfo: PublishInfo;
 }
 
+// 2 Level
 export interface PublishInfo {
   languageType: number;
   contentName: string;
@@ -28,26 +46,190 @@ export interface PublishInfo {
   llmSetupInfo: LLMSetupInfo;
 }
 
-export interface LLMSetupInfo {
-  llmModel: number;
-  customApi: string;
-}
-
-// 현재 수정 중인 Content 정보
-interface ContentInfoState {
-  curEditingContentInfo: ContentInfo;
-}
-
-// 초기 상태
-const initialState: ContentInfoState = {
-  curEditingContentInfo: emptyContent.data.contentInfo,
-};
-
 export interface ChapterInfo {
   id: number;
   name: string;
   episodeInfoList: EpisodeInfo[];
 }
+
+// 3 Level
+export interface LLMSetupInfo {
+  llmModel: number;
+  customApi: string;
+}
+
+export interface EpisodeInfo {
+  id: number;
+  name: string;
+  backgroundImageUrl: string;
+  characterInfo: CharacterInfo;
+  episodeDescription: EpisodeDescription;
+  triggerInfoList: TriggerInfo[];
+  conversationTemplateList: Conversation[];
+}
+
+// 4 Level
+export interface EpisodeDescription {
+  scenarioDescription: string;
+  introDescription: string;
+  secret: string;
+  greeting: string;
+  worldScenario: string;
+}
+
+export interface CharacterInfo {
+  id: number;
+  name: string;
+  introduction: string;
+  description: string;
+
+  worldScenario: string;
+  greeting: string;
+  secret: string;
+
+  genderType: number;
+  mainImageUrl: string;
+  portraitGalleryImageUrl: GalleryImageInfo[];
+  poseGalleryImageUrl: GalleryImageInfo[];
+  expressionGalleryImageUrl: GalleryImageInfo[];
+  visibilityType: number;
+  isMonetization: boolean;
+  state: number;
+}
+
+export interface TriggerInfo {
+  episodeId: number;
+  id: number;
+  name: string;
+  triggerType: number;
+  triggerValueIntimacy: number;
+  triggerValueChatCount: number;
+  triggerValueKeyword: string;
+  triggerValueTimeMinute: number;
+  emotionState: EmotionState;
+  triggerActionType: number;
+  actionChangeEpisodeId: number;
+  actionPromptScenarioDescription: string;
+  actionIntimacyPoint: number;
+  maxIntimacyCount: number;
+  actionCharacterInfo: CharacterInfo;
+  actionMediaState: TriggerMediaState;
+  actionMediaUrlList: string[];
+  actionConversationList: Conversation[];
+}
+
+export interface Conversation {
+  id: number;
+  conversationType: number;
+  user: string;
+  character: string;
+}
+
+// 5 Level
+
+export interface GalleryImageInfo {
+  galleryImageId: number;
+  isGenerate: boolean;
+  promptParameter: string;
+  imageUrl: string;
+}
+
+//#endregion
+
+//#region  Trigger State
+export interface ActionChangePrompt {
+  characterName: string;
+  characterDescription: string;
+  scenarioDescription: string;
+  introDescription: string;
+  secret: string;
+}
+
+export enum TriggerMediaState {
+  None = 0,
+  TriggerImage = 1,
+  TriggerVideo = 2,
+  TriggerAudio = 3,
+}
+
+export enum EmotionState {
+  Happy = 0,
+  Angry = 1,
+  Sad = 2,
+  Excited = 3,
+  Scared = 4,
+  Bored = 5,
+}
+export enum TriggerMainDataType {
+  triggerValueIntimacy = 0,
+  triggerValueKeyword = 1,
+  triggerValueChatCount = 2,
+  triggerValueTimeMinute = 3,
+  triggerValueEmotionStatus = 4,
+  triggerValueEpisodeStart = 5,
+}
+
+export enum TriggerTypeNames {
+  Intimacy,
+  Keyword,
+  ChatCount,
+  TimeMinute,
+  EmotionStatus,
+  EpisodeStart,
+}
+
+export enum TriggerActionType {
+  EpisodeChange,
+  ChangePrompt,
+  GetIntimacyPoint,
+  ChangeCharacter,
+  PlayMedia,
+}
+//#endregion
+
+//#region  Conversation State
+
+export interface ConversationTalkInfo {
+  type: ConversationTalkType;
+  talk: string;
+}
+
+export enum ConversationTalkType {
+  Action,
+  Speech,
+}
+
+export enum ConversationPriortyType {
+  Mandatory,
+  DependsOn,
+}
+//#endregion
+
+//#region Slice 변수
+
+// 현재 수정 중인 Content 정보
+interface ContentInfoState {
+  selectedContentId: number;
+  selectedChapterIdx: number;
+  selectedEpisodeIdx: number;
+
+  skipContentInit: boolean;
+  curEditingContentInfo: ContentInfo;
+}
+
+// 초기 상태
+const initialState: ContentInfoState = {
+  selectedContentId: 0,
+  selectedChapterIdx: 0,
+  selectedEpisodeIdx: 0,
+
+  skipContentInit: false,
+  curEditingContentInfo: emptyContent.data.contentInfo,
+};
+
+//#endregion
+
+//#region Function
 
 const getMinEpisodeId = (chapters: ChapterInfo[]): number => {
   const episodeIds = chapters.flatMap(chapter => chapter.episodeInfoList.map(episode => episode.id));
@@ -60,81 +242,30 @@ const getMinEpisodeId = (chapters: ChapterInfo[]): number => {
   return minId > 0 ? 0 : minId;
 };
 
-// Slice 생성
+//#endregion
+
 export const curEditngContentInfoSlice = createSlice({
   name: 'contentInfo',
   initialState,
   reducers: {
+    //#region  편집할 Content, Chapter, Episode 선택
+    setSelectedContentId: (state, action: PayloadAction<number>) => {
+      state.selectedContentId = action.payload;
+    },
+    setSelectedChapterIdx: (state, action: PayloadAction<number>) => {
+      state.selectedChapterIdx = action.payload;
+    },
+    setSelectedEpisodeIdx: (state, action: PayloadAction<number>) => {
+      state.selectedEpisodeIdx = action.payload;
+    },
+    setSkipContentInit: (state, action: PayloadAction<boolean>) => {
+      state.skipContentInit = action.payload;
+    },
+    //#endregion
+
+    //#region Content 자체 수정
     setEditingContentInfo: (state, action: PayloadAction<ContentInfo>) => {
       state.curEditingContentInfo = action.payload;
-    },
-
-    removeEpisode: (state, action: PayloadAction<number>) => {
-      const targetId = action.payload; // 제거할 에피소드 ID
-      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
-        chapter.episodeInfoList = chapter.episodeInfoList.filter(
-          episode => episode.id !== targetId, // ID가 일치하지 않는 에피소드만 유지
-        );
-      });
-    },
-    duplicateEpisode: (state, action: PayloadAction<number>) => {
-      const targetId = action.payload; // 복제할 에피소드 ID
-
-      // 모든 에피소드의 ID를 수집하여 가장 낮은 ID를 계산
-      let minId = Infinity;
-      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
-        chapter.episodeInfoList.forEach(episode => {
-          if (episode.id < minId) {
-            minId = episode.id;
-          }
-        });
-      });
-
-      // 새로운 ID는 가장 낮은 ID에서 -1을 뺌
-      const newId = getMinEpisodeId(state.curEditingContentInfo.chapterInfoList) - 1;
-
-      // 각 챕터를 순회하며 타겟 에피소드를 찾음
-      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
-        const targetIndex = chapter.episodeInfoList.findIndex(episode => episode.id === targetId);
-
-        // 타겟 에피소드가 존재하면 복제
-        if (targetIndex !== -1) {
-          const targetEpisode = chapter.episodeInfoList[targetIndex];
-
-          // 복제된 에피소드 생성
-          const duplicatedEpisode = {
-            ...targetEpisode,
-            id: newId, // 새로운 고유 ID
-            name: `${targetEpisode.name} copy`, // 이름에 ' copy' 추가
-          };
-
-          // 타겟 에피소드 다음 인덱스에 삽입
-          chapter.episodeInfoList.splice(targetIndex + 1, 0, duplicatedEpisode);
-        }
-      });
-    },
-    adjustEpisodeIndex: (state, action: PayloadAction<{targetId: number; direction: 'up' | 'down'}>) => {
-      const {targetId, direction} = action.payload;
-
-      console.log('dada');
-      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
-        const targetIndex = chapter.episodeInfoList.findIndex(episode => episode.id === targetId);
-
-        // 타겟 에피소드가 존재하고 방향에 따른 이동 가능 여부 확인
-        if (targetIndex !== -1) {
-          if (direction === 'up' && targetIndex > 0) {
-            // 위로 이동: 현재 인덱스와 이전 인덱스의 위치를 교체
-            const temp = chapter.episodeInfoList[targetIndex - 1];
-            chapter.episodeInfoList[targetIndex - 1] = chapter.episodeInfoList[targetIndex];
-            chapter.episodeInfoList[targetIndex] = temp;
-          } else if (direction === 'down' && targetIndex < chapter.episodeInfoList.length - 1) {
-            // 아래로 이동: 현재 인덱스와 다음 인덱스의 위치를 교체
-            const temp = chapter.episodeInfoList[targetIndex + 1];
-            chapter.episodeInfoList[targetIndex + 1] = chapter.episodeInfoList[targetIndex];
-            chapter.episodeInfoList[targetIndex] = temp;
-          }
-        }
-      });
     },
 
     updateEditingContentInfo: (state, action: PayloadAction<Partial<ContentInfo>>) => {
@@ -156,6 +287,66 @@ export const curEditngContentInfoSlice = createSlice({
         );
       });
     },
+    //#endregion
+
+    //#region Chapter에서의 Episode 수정
+    removeEpisode: (state, action: PayloadAction<number>) => {
+      const targetId = action.payload; // 제거할 에피소드 ID
+      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
+        chapter.episodeInfoList = chapter.episodeInfoList.filter(
+          episode => episode.id !== targetId, // ID가 일치하지 않는 에피소드만 유지
+        );
+      });
+    },
+
+    // Episode 복제
+    duplicateEpisode: (state, action: PayloadAction<number>) => {
+      const targetId = action.payload;
+
+      // 새로운 ID는 가장 낮은 음수 ID에서 -1을 뺌
+      const newId = getMinEpisodeId(state.curEditingContentInfo.chapterInfoList) - 1;
+
+      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
+        const targetIndex = chapter.episodeInfoList.findIndex(episode => episode.id === targetId);
+
+        if (targetIndex !== -1) {
+          const targetEpisode = chapter.episodeInfoList[targetIndex];
+
+          const duplicatedEpisode = {
+            ...targetEpisode,
+            id: newId,
+            name: `${targetEpisode.name} copy`, // 이름에 ' copy' 추가
+          };
+
+          chapter.episodeInfoList.splice(targetIndex + 1, 0, duplicatedEpisode);
+        }
+      });
+    },
+
+    // Episode 순서 변경
+    adjustEpisodeIndex: (state, action: PayloadAction<{targetId: number; direction: 'up' | 'down'}>) => {
+      const {targetId, direction} = action.payload;
+
+      state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
+        const targetIndex = chapter.episodeInfoList.findIndex(episode => episode.id === targetId);
+
+        if (targetIndex !== -1) {
+          // 위의 아이템과 순서 변경
+          if (direction === 'up' && targetIndex > 0) {
+            const temp = chapter.episodeInfoList[targetIndex - 1];
+            chapter.episodeInfoList[targetIndex - 1] = chapter.episodeInfoList[targetIndex];
+            chapter.episodeInfoList[targetIndex] = temp;
+          }
+          // 아래의 아이템과 순서 변경
+          else if (direction === 'down' && targetIndex < chapter.episodeInfoList.length - 1) {
+            const temp = chapter.episodeInfoList[targetIndex + 1];
+            chapter.episodeInfoList[targetIndex + 1] = chapter.episodeInfoList[targetIndex];
+            chapter.episodeInfoList[targetIndex] = temp;
+          }
+        }
+      });
+    },
+    //#endregion
 
     moveTriggerToEpisode: (
       state,
@@ -198,18 +389,392 @@ export const curEditngContentInfoSlice = createSlice({
 
           const newTrigger = {
             ...triggerToMove,
-            id: newId, // 새로운 ID 할당
+            id: newId,
           };
 
           targetEpisode.triggerInfoList.push(newTrigger as TriggerInfo);
         }
       });
     },
+
+    updateEpisodeInfo: (state, action: PayloadAction<Partial<EpisodeInfo>>) => {
+      const updatedInfo = action.payload;
+      const targetEpisode =
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[state.selectedEpisodeIdx];
+      {
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+          state.selectedEpisodeIdx
+        ] = {
+          ...targetEpisode,
+          ...updatedInfo,
+        };
+      }
+    },
+
+    updateEpisodeDescription(state, action: PayloadAction<EpisodeDescription>) {
+      state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+        state.selectedEpisodeIdx
+      ].episodeDescription = action.payload; // 에피소드 설명 업데이트
+    },
+
+    setEpisodeInfoEmpty(state) {
+      state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[state.selectedEpisodeIdx] =
+        emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0];
+    },
+
+    setCurrentEpisodeBackgroundImage(state, action: PayloadAction<string>) {
+      state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+        state.selectedEpisodeIdx
+      ].backgroundImageUrl = action.payload;
+    },
+
+    //#region Character
+
+    //사용법: dispatch(setCharacterInfo({ name: "New Name", state: 1 }));
+    setCharacterInfo: (state, action: PayloadAction<Partial<CharacterInfo>>) => {
+      state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+        state.selectedEpisodeIdx
+      ].characterInfo = {
+        ...state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+          state.selectedEpisodeIdx
+        ].characterInfo,
+        ...action.payload, // 전달된 속성만 덮어쓰기
+      };
+    },
+    //#endregion
+
+    //#region Trigger
+    // 새로운 TriggerInfo를 추가
+    addTriggerInfo: (state, action: PayloadAction<Omit<TriggerInfo, 'id'>>) => {
+      // 트리거 리스트의 현재 id 중 최소값을 구함
+      const triggerList =
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[state.selectedEpisodeIdx]
+          .triggerInfoList;
+      const minId = triggerList.length > 0 ? Math.min(...triggerList.map(trigger => trigger.id)) : 0;
+
+      const newId = minId > 0 ? -1 : minId - 1; // 음수 id 생성
+
+      const newDataPair: TriggerInfo = {
+        ...action.payload,
+        id: newId, // 자동 생성된 id
+      };
+
+      triggerList.push(newDataPair);
+    },
+
+    // TriggerInfo 업데이트
+    updateTriggerInfo: (state, action: PayloadAction<{id: number; info: Partial<Omit<TriggerInfo, 'id'>>}>) => {
+      const {id, info} = action.payload;
+      const triggerIndex = state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+        state.selectedEpisodeIdx
+      ].triggerInfoList.findIndex(trigger => trigger.id === id);
+
+      if (triggerIndex !== -1) {
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+          state.selectedEpisodeIdx
+        ].triggerInfoList[triggerIndex] = {
+          ...state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].triggerInfoList[triggerIndex],
+          ...info, // Partial로 인해 누락된 필드는 기존 값 유지
+        };
+      }
+    },
+
+    duplicateTriggerInfo: (state, action: PayloadAction<number>) => {
+      const triggerList =
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[state.selectedEpisodeIdx]
+          .triggerInfoList;
+      const sourceTriggerInfo = triggerList.find(trigger => trigger.id === action.payload);
+
+      if (!sourceTriggerInfo) {
+        console.error('Invalid source id for copying TriggerInfo');
+        return;
+      }
+
+      const minId = triggerList.length > 0 ? Math.min(...triggerList.map(trigger => trigger.id)) : 0;
+      const newId = minId > 0 ? -1 : minId - 1; // 새로운 음수 id 생성
+
+      const newTriggerInfo: TriggerInfo = {
+        ...sourceTriggerInfo,
+        id: newId, // 새로운 id 할당
+      };
+
+      // 원본 항목 바로 다음에 삽입
+      const sourceIndex = triggerList.findIndex(trigger => trigger.id === action.payload);
+      triggerList.splice(sourceIndex + 1, 0, newTriggerInfo);
+    },
+
+    // Trigger 이름 업데이트
+    updateTriggerInfoName: (state, action: PayloadAction<{id: number; name: string}>) => {
+      const {id, name} = action.payload;
+      const triggerIndex = state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+        state.selectedEpisodeIdx
+      ].triggerInfoList.findIndex(trigger => trigger.id === id);
+
+      if (triggerIndex !== -1) {
+        // id에 해당하는 항목이 존재하는 경우
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+          state.selectedEpisodeIdx
+        ].triggerInfoList[triggerIndex] = {
+          ...state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].triggerInfoList[triggerIndex],
+          name,
+        };
+      }
+    },
+
+    removeTriggerInfo: (state, action: PayloadAction<number>) => {
+      const id = action.payload;
+      const triggerIndex = state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+        state.selectedEpisodeIdx
+      ].triggerInfoList.findIndex(trigger => trigger.id === id);
+
+      if (triggerIndex !== -1) {
+        // id에 해당하는 항목이 존재하는 경우
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+          state.selectedEpisodeIdx
+        ].triggerInfoList.splice(triggerIndex, 1);
+      }
+    },
+
+    // TriggerInfo 업데이트 (index 기반)
+    updateTriggerInfoByIndex: (state, action: PayloadAction<{index: number; info: Omit<TriggerInfo, 'id'>}>) => {
+      const {index, info} = action.payload;
+
+      if (
+        index >= 0 &&
+        index <
+          state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].triggerInfoList.length
+      ) {
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+          state.selectedEpisodeIdx
+        ].triggerInfoList[index] = {
+          ...info,
+          id: state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].triggerInfoList[index].id, // 기존 id 유지
+        };
+      }
+    },
+
+    // Trigger 이름 업데이트 (index 기반)
+    updateTriggerInfoNameByIndex: (state, action: PayloadAction<{index: number; name: string}>) => {
+      const {index, name} = action.payload;
+
+      if (
+        index >= 0 &&
+        index <
+          state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].triggerInfoList.length
+      ) {
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+          state.selectedEpisodeIdx
+        ].triggerInfoList[index] = {
+          ...state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].triggerInfoList[index],
+          name,
+        };
+      }
+    },
+
+    // Trigger 삭제 (index 기반)
+    removeTriggerInfoByIndex: (state, action: PayloadAction<number>) => {
+      const index = action.payload;
+
+      if (
+        index >= 0 &&
+        index <
+          state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].triggerInfoList.length
+      ) {
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+          state.selectedEpisodeIdx
+        ].triggerInfoList.splice(index, 1);
+      }
+    },
+
+    //#endregion
+
+    //#region conversation
+    // 기존 기능 - conversationTemplateList 관련 액션들
+    saveConversationTemplateList: (state, action: PayloadAction<Conversation[]>) => {
+      state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+        state.selectedEpisodeIdx
+      ].conversationTemplateList = action.payload;
+    },
+    addConversationTalk: (
+      state,
+      action: PayloadAction<{
+        user: ConversationTalkInfo[];
+        character: ConversationTalkInfo[];
+        conversationType: ConversationPriortyType;
+      }>,
+    ) => {
+      const newConversation: Conversation = {
+        id: 0, // id는 초기값 그대로 유지
+        conversationType: action.payload.conversationType,
+        user: JSON.stringify(action.payload.user),
+        character: JSON.stringify(action.payload.character),
+      };
+      state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+        state.selectedEpisodeIdx
+      ].conversationTemplateList.push(newConversation);
+    },
+
+    addConversationTalkItem: (
+      state,
+      action: PayloadAction<{conversationIndex: number; type: 'user' | 'character'; newTalk: string}>,
+    ) => {
+      const conversation =
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[state.selectedEpisodeIdx]
+          .conversationTemplateList[action.payload.conversationIndex];
+      if (conversation) {
+        const newTalkItem: ConversationTalkInfo = {
+          type: action.payload.type === 'user' ? ConversationTalkType.Speech : ConversationTalkType.Action,
+          talk: action.payload.newTalk,
+        };
+
+        let userArray: ConversationTalkInfo[] = [];
+        let characterArray: ConversationTalkInfo[] = [];
+
+        try {
+          userArray = conversation.user ? JSON.parse(conversation.user) : [];
+        } catch (error) {
+          console.error('Failed to parse user conversation:', error);
+        }
+
+        try {
+          characterArray = conversation.character ? JSON.parse(conversation.character) : [];
+        } catch (error) {
+          console.error('Failed to parse character conversation:', error);
+        }
+
+        if (action.payload.type === 'user') {
+          userArray.push(newTalkItem);
+          conversation.user = JSON.stringify(userArray);
+        } else if (action.payload.type === 'character') {
+          characterArray.push(newTalkItem);
+          conversation.character = JSON.stringify(characterArray);
+        }
+      }
+    },
+
+    updateConversationTalk: (
+      state,
+      action: PayloadAction<{
+        conversationIndex: number;
+        itemIndex: number;
+        type: 'user' | 'character';
+        newType: ConversationTalkType;
+        newTalk: string;
+      }>,
+    ) => {
+      const conversation =
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[state.selectedEpisodeIdx]
+          .conversationTemplateList[action.payload.conversationIndex];
+      if (conversation) {
+        let userArray: ConversationTalkInfo[] = [];
+        let characterArray: ConversationTalkInfo[] = [];
+
+        try {
+          userArray = conversation.user ? JSON.parse(conversation.user) : [];
+        } catch (error) {
+          console.error('Failed to parse user conversation:', error);
+        }
+
+        try {
+          characterArray = conversation.character ? JSON.parse(conversation.character) : [];
+        } catch (error) {
+          console.error('Failed to parse character conversation:', error);
+        }
+
+        if (action.payload.type === 'user') {
+          if (userArray[action.payload.itemIndex]) {
+            userArray[action.payload.itemIndex].type = action.payload.newType;
+            userArray[action.payload.itemIndex].talk = action.payload.newTalk;
+            conversation.user = JSON.stringify(userArray);
+          }
+        } else if (action.payload.type === 'character') {
+          if (characterArray[action.payload.itemIndex]) {
+            characterArray[action.payload.itemIndex].type = action.payload.newType;
+            characterArray[action.payload.itemIndex].talk = action.payload.newTalk;
+            conversation.character = JSON.stringify(characterArray);
+          }
+        }
+      }
+    },
+
+    removeConversationItem: (
+      state,
+      action: PayloadAction<{conversationIndex: number; itemIndex: number; type: 'user' | 'character'}>,
+    ) => {
+      const conversation =
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[state.selectedEpisodeIdx]
+          .conversationTemplateList[action.payload.conversationIndex];
+      if (conversation) {
+        let userArray: ConversationTalkInfo[] = [];
+        let characterArray: ConversationTalkInfo[] = [];
+
+        try {
+          userArray = conversation.user ? JSON.parse(conversation.user) : [];
+        } catch (error) {
+          console.error('Failed to parse user conversation:', error);
+        }
+
+        try {
+          characterArray = conversation.character ? JSON.parse(conversation.character) : [];
+        } catch (error) {
+          console.error('Failed to parse character conversation:', error);
+        }
+
+        if (action.payload.type === 'user') {
+          userArray.splice(action.payload.itemIndex, 1);
+          conversation.user = JSON.stringify(userArray);
+        } else if (action.payload.type === 'character') {
+          characterArray.splice(action.payload.itemIndex, 1);
+          conversation.character = JSON.stringify(characterArray);
+        }
+      }
+    },
+
+    removeConversationTalk: (state, action: PayloadAction<number>) => {
+      const index = action.payload;
+      if (
+        index >= 0 &&
+        index <
+          state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].conversationTemplateList.length
+      ) {
+        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+          state.selectedEpisodeIdx
+        ].conversationTemplateList.splice(index, 1);
+      }
+    },
+
+    removeAllConversationTalk: state => {
+      state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+        state.selectedEpisodeIdx
+      ].conversationTemplateList = [];
+    },
+    //#endregion
   },
 });
 
 // 액션과 리듀서 export
 export const {
+  setSelectedContentId,
+  setSelectedChapterIdx,
+  setSelectedEpisodeIdx,
+  setSkipContentInit,
+
   moveTriggerToEpisode,
   setEditingContentInfo,
   updateEditingContentInfo,
@@ -218,5 +783,26 @@ export const {
   removeEpisode,
   updateEpisodeInfoInContent,
   adjustEpisodeIndex,
+
+  updateEpisodeInfo,
+  setCurrentEpisodeBackgroundImage,
+  setEpisodeInfoEmpty,
+  updateEpisodeDescription,
+  addTriggerInfo,
+  updateTriggerInfo,
+  updateTriggerInfoName,
+  removeTriggerInfo,
+  updateTriggerInfoByIndex,
+  updateTriggerInfoNameByIndex,
+  removeTriggerInfoByIndex,
+  duplicateTriggerInfo,
+  addConversationTalk,
+  addConversationTalkItem,
+  updateConversationTalk,
+  removeConversationItem,
+  removeConversationTalk,
+  removeAllConversationTalk,
+  setCharacterInfo,
+  saveConversationTemplateList,
 } = curEditngContentInfoSlice.actions;
 export default curEditngContentInfoSlice.reducer;

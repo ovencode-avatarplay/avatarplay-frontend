@@ -9,15 +9,10 @@ import styles from './ChapterBoard.module.css';
 import {LinePlus} from '@ui/Icons';
 
 // Slice
-import {setSelectedChapterIdx, setSelectedEpisodeIdx} from '@/redux-store/slices/ContentSelection';
+import {setSelectedChapterIdx, setSelectedEpisodeIdx, ChapterInfo, EpisodeInfo} from '@/redux-store/slices/ContentInfo';
 
 // Components
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-
-// Types
-import {ChapterInfo} from '@/redux-store/slices/ContentInfo';
-import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
-import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 
 // Data
 import emptyData from '@/data/create/empty-content-info-data.json';
@@ -50,8 +45,8 @@ const ChapterBoard: React.FC<Props> = ({
 
   const [chapters, setChapters] = useState<ChapterInfo[]>([]);
 
-  const selectedChapterIdx = useSelector((state: RootState) => state.contentselection.selectedChapterIdx);
-  const selectedEpisodeIdx = useSelector((state: RootState) => state.contentselection.selectedEpisodeIdx);
+  const selectedChapterIdx = useSelector((state: RootState) => state.content.selectedChapterIdx);
+  const selectedEpisodeIdx = useSelector((state: RootState) => state.content.selectedEpisodeIdx);
   const editingContentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo);
 
   // 삭제 Dialog
@@ -93,13 +88,12 @@ const ChapterBoard: React.FC<Props> = ({
         editingContentInfo.chapterInfoList[selectedChapterIdx] &&
         editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]
       ) {
-        dispatch(
-          setCurrentEpisodeInfo(
-            editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
-          ),
-        );
+        // dispatch();
+        // setCurrentEpisodeInfo(
+        //   editingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
+        // ),
       } else {
-        dispatch(setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[0].episodeInfoList[0]));
+        // dispatch(setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[0].episodeInfoList[0]));
       }
     }
   }, [selectedChapterIdx, selectedEpisodeIdx]);

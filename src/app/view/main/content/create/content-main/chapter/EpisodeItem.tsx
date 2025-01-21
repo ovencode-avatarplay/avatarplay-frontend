@@ -5,8 +5,7 @@ import {EpisodeItemProps} from './ChapterTypes';
 import styles from './EpisodeItem.module.css';
 import {BoldArrowDown, BoldRadioButton, BoldRadioButtonSelected, LineCorner} from '@ui/Icons';
 import {useDispatch, useSelector} from 'react-redux';
-import {setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
-import {adjustEpisodeIndex} from '@/redux-store/slices/ContentInfo';
+import {adjustEpisodeIndex, setSelectedChapterIdx} from '@/redux-store/slices/ContentInfo';
 import {RootState} from '@/redux-store/ReduxStore';
 
 const EpisodeItem: React.FC<EpisodeItemProps> = ({
@@ -31,7 +30,8 @@ const EpisodeItem: React.FC<EpisodeItemProps> = ({
   };
 
   const handleChangeOrderEpisodeIndex = (direction: 'up' | 'down') => {
-    dispatch(setCurrentEpisodeInfo(episodeInfo));
+    // TODO CurEpisode
+    // dispatch(setCurrentEpisodeInfo(episodeInfo));
     const targetId = episodeInfo.id;
     dispatch(adjustEpisodeIndex({targetId, direction}));
   };

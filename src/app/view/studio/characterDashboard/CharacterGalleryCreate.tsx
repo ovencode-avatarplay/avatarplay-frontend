@@ -3,8 +3,8 @@ import {Box, Typography, Button} from '@mui/material';
 import CurrencyIcon from '@mui/icons-material/AttachMoney';
 import styles from './CharacterGalleryCreate.module.css';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
 interface CategoryCreateProps {
   open: boolean;

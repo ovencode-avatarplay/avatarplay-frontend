@@ -6,14 +6,15 @@ import {BoldArrowDown} from '@ui/Icons';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {ContentInfo, setContentInfoToEmpty} from '@/redux-store/slices/ContentInfo';
-import {setEpisodeInfoEmpty} from '@/redux-store/slices/EpisodeInfo';
 import {
   setSelectedChapterIdx,
   setSelectedContentId,
   setSelectedEpisodeIdx,
   setSkipContentInit,
-} from '@/redux-store/slices/ContentSelection';
+  ContentInfo,
+  setContentInfoToEmpty,
+  setEpisodeInfoEmpty,
+} from '@/redux-store/slices/ContentInfo';
 import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
 
 import {sendContentDelete} from '@/app/NetWork/ContentNetwork';
