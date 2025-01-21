@@ -92,7 +92,8 @@
 
 .contentName
 {
-  color: var(--Neutral-100, #101010);
+  /* color: var(--Neutral-100, #101010); */
+  color: var(--Neutral-800, #101010);
   font-family: Lato;
   font-size: 20px;
   font-style: normal;
@@ -347,7 +348,8 @@
   align-items: flex-start;
   gap: 4px;
   
-  color: var(--Neutral-100, #101010);
+  /* color: var(--Neutral-100, #101010); */
+  color: var(--Neutral-600, #101010);
   font-family: Lato;
   font-size: 16px;
   font-style: normal;

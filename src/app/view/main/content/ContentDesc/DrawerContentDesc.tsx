@@ -35,7 +35,7 @@ import {
   BoldShare,
 } from '@ui/Icons';
 // MUI
-import {Drawer, Select, MenuItem} from '@mui/material';
+import {Drawer} from '@mui/material';
 
 // Components
 import {getLocalizedLink} from '@/utils/UrlMove';
