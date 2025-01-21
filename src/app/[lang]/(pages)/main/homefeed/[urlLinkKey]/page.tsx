@@ -35,7 +35,7 @@ const HomeFeedWithUrlKey: React.FC = () => {
   if (!feedData) return <p>Loading...</p>;
 
   return (
-    <main style={{height: 'var(--body-height)'}}>
+    <main style={{position: 'relative', height: 'var(--body-height)'}}>
       <ReelsLayout initialFeed={feedData}></ReelsLayout>
     </main>
   );

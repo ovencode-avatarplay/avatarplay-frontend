@@ -170,10 +170,13 @@
   --bottom-nav-height : 48px;
   
   --body-height : calc(100% - 58px - 48px);
-  
 }
-
-html, body{height: 100%;}
+html{
+  height:100%;
+}
+body{    
+  height:100dvh;
+}
 
 .safe-area-container {
   padding-top: var(--safe-area-inset-top);
