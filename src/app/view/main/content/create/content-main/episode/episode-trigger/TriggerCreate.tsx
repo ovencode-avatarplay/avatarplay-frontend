@@ -365,7 +365,8 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     setTargetChapterIdx(chapterIdx);
   };
 
-  const handleEpisodeSelect = (episodeIdx: number) => {
+  const handleEpisodeSelect = (chapterIdx: number, episodeIdx: number) => {
+    setTargetChapterIdx(chapterIdx);
     setTargetEpisodeIdx(episodeIdx);
   };
 

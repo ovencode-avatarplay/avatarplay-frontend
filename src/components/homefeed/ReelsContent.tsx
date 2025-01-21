@@ -247,7 +247,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                     src={url}
                     alt={`Slide ${idx}`}
                     loading="lazy"
-                    style={{width: '100%', height: '100%', objectFit: 'contain'}}
+                    style={{width: '100%', height: 'calc(100% - 4px)', objectFit: 'contain'}}
                   />
                 </SwiperSlide>
               ))}
@@ -263,7 +263,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                 loop={true}
                 width="100%"
                 playsinline={true}
-                height="100%"
+                height="calc(100% - 4px)"
                 style={{
                   borderRadius: '8px',
                 }}
@@ -383,7 +383,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                   : 'none', // 기본 상태는 필터 없음
               }}
             />
-            {likeCount}
+            <div className={styles.count}>{likeCount}</div>
           </div>
 
           {/* Dislike Button */}
@@ -405,7 +405,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
           </div>
           <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
             <img src={BoldComment.src} className={styles.button}></img>
-            {commentCount}
+            <div className={styles.count}>{commentCount}</div>
           </div>
           <div
             className={styles.noneTextButton}
