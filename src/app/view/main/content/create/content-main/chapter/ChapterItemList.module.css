@@ -1,7 +1,7 @@
 .drawerContainer {
     display: flex;
     flex-direction: column;
-    height: 82vh ;
+    height: calc(100% - 58px - 46px - 50px - 16px);
     padding: 16px ;
 } 
 
