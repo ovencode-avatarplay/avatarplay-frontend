@@ -191,17 +191,16 @@ const ContentMain: React.FC = () => {
 
   //#region ChapterBoard에서 정보 수정
   function setCurEpisodeInfo() {
-    try {
-      const chapter = editingContentInfo.chapterInfoList?.[selectedChapterIdx];
-      const episode = chapter?.episodeInfoList?.[selectedEpisodeIdx];
-
-      if (!chapter || !episode) {
-        throw new Error('Invalid chapter or episode selection');
-      }
-    } catch (error) {
-      console.error('Error setting episode info:', error);
-      alert('plz select episode');
-    }
+    // try {
+    //   const chapter = editingContentInfo.chapterInfoList?.[selectedChapterIdx];
+    //   const episode = chapter?.episodeInfoList?.[selectedEpisodeIdx];
+    //   if (!chapter || !episode) {
+    //     throw new Error('Invalid chapter or episode selection');
+    //   }
+    // } catch (error) {
+    //   console.error('Error setting episode info:', error);
+    //   alert('plz select episode');
+    // }
   }
 
   // ChapterBoard에서 아이템 선택
