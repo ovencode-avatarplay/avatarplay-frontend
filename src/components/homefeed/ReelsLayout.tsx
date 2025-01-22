@@ -50,7 +50,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
       if (result.resultCode === 0 && result.data) {
         const feeds = result.data.feedInfoList;
         setAllFeeds(feeds); // 전체 데이터 저장
-        setInfo(feeds.slice(0, 3)); // 초기 렌더링용 첫 10개
+        setInfo(feeds.slice(0, 2)); // 초기 렌더링용 첫 10개
       }
     } catch (error) {
       console.error('Failed to fetch recommended feed:', error);
