@@ -28,6 +28,7 @@
   cursor: pointer;
   
   width: calc((var(--second-width) - 12px) * 0.5);
+  max-width: 179px;
   height: 259.172px;
   flex-shrink: 0;
 
@@ -35,15 +36,7 @@
   background:  lightgray 50% / cover no-repeat;
 
 }
-
-@media (min-width:402px)
-{
-  .addImageButton  {
-    width: 179px;
-
-  }
-}
-
+ 
 .emptyMessage
 {
   margin-top: 48.19px;

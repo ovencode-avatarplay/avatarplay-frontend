@@ -2,7 +2,8 @@
 .exploreCard
 {
   position: relative;
-  width: 36.68vw;
+  /* width: calc((var(--second-width)) * 0.4); */  
+  width: 147.467px;
   height: 210px;
   flex-shrink: 0; 
   color: #fff;
@@ -20,22 +21,11 @@
 
 .exploreCard.search
 {
-  width: calc((var(--second-width)) / 3 - 3.5px);
+  /* width: calc((var(--second-width)) / 3 - 3.5px); */
+  width: 120px;
   height: 171.429px; 
 }
-
-@media (min-width: 402px) {
-  .exploreCard {
-    width: 147.467px;
-  }
-  
-  .exploreCard.search
-  {
-    width: 120px;
-    height: 171.429px; 
-  }
-
-}
+ 
 
 .exploreImage
 {
