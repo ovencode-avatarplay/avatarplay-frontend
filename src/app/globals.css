@@ -210,11 +210,11 @@ html,body{
   margin-right: 16px;
 }
 
-@media (max-width: 1366px) {
+/* @media (max-width: 1366px) {
   :root {
     --full-width: 100%;
   }
-}
+} */
 
 
 /* @media (prefers-color-scheme: dark) {
