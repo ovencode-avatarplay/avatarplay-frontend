@@ -47,11 +47,12 @@ import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
 import {addNewDateMessage, compareDates, NewDateType, refreshNewDateAll, shiftDates} from './MainChat/NewDate';
 import {TriggerActionType} from '@/redux-store/slices/EpisodeInfo';
 import useChat from './hooks/useChat';
+import {useStreamMessage} from './hooks/useStreamMessage';
 
 const ChatPage: React.FC = () => {
   const {
     sendMessageAsync,
-    saveChatStreamInfo,
+    //saveChatStreamInfo,
 
     handleBackClick,
     SetChatBarCount,
@@ -74,8 +75,8 @@ const ChatPage: React.FC = () => {
     aiChatHeight,
     isTransitionEnable,
     lastMessage,
-    streamKey,
-    setStreamKey,
+    //streamKey,
+    //setStreamKey,
     setReqPrevCheat,
     isSendingMessage,
     showPopup,
@@ -99,14 +100,14 @@ const ChatPage: React.FC = () => {
     chatId,
     isNarrationActive,
 
-    retryStreamKey,
+    //retryStreamKey,
 
     setChatId,
     isRegeneratingQuestion,
     regenerateQuestion,
-    setIsSendingMessage,
+    //setIsSendingMessage,
 
-    setRetryStreamKey,
+    //setRetryStreamKey,
 
     episodeId,
   } = useChat();
@@ -116,210 +117,7 @@ const ChatPage: React.FC = () => {
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    preventZoom(); // 줌인아웃을 막는다.
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', setFullHeight);
-    window.addEventListener('orientationchange', setFullHeight);
-    setFullHeight();
-
-    // loadEmoticons();
-  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
-
-  function setFullHeight() {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-  }
-
-  const loadEmoticons = async () => {
-    try {
-      const response = await fetchEmoticonGroups();
-      setEmoticonGroupInfoList(response.data.emoticonGroupInfoList);
-    } catch (error) {
-      console.error('Error fetching emoticon groups:', error);
-    }
-  };
-
-  //#region HeaderChat handler
-  const handleMoreClick = () => {
-    console.log('더보기 버튼 클릭');
-  };
-
-  const handleToggleBackground = () => {
-    console.log('배경 보기/숨기기 버튼 클릭');
-    SetHideChat(!isHideChat);
-  };
-
-  useEffect(() => {
-    if (retryStreamKey === '') return;
-    console.log('stream key : ', retryStreamKey);
-
-    const eventSource = new EventSource(
-      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/retryStream?streamKey=${retryStreamKey}`, // 쿼리 파라미터 제대로 추가
-    );
-
-    eventSource.onmessage = event => {
-      try {
-        if (!event.data) {
-          throw new Error('Received null or empty data');
-          setIsLoading(false);
-        }
-
-        setIsLoading(false);
-
-        const newMessage = JSON.parse(event.data);
-        console.log('stream new text====' + newMessage + '====');
-        handleSendMessage(newMessage, false, true, false);
-        if (newMessage.includes('$') === true) {
-          isSendingMessage.state = false;
-
-          eventSource.close();
-          console.log('Stream ended normally');
-        }
-      } catch (error) {
-        console.error('Error processing message:', error);
-        console.error('Received data:', event.data);
-      }
-    };
-
-    eventSource.onerror = error => {
-      isSendingMessage.state = false;
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [retryStreamKey]);
-
-  const sendMessage = async (reqSendChatMessage: SendChatMessageReq) => {
-    try {
-      const response = await sendMessageAsync(reqSendChatMessage);
-      if ('streamKey' in response) {
-        // 성공적인 응답 처리
-        saveChatStreamInfo(reqSendChatMessage, response);
-      } else if ('resultCode' in response) {
-        // 오류 응답 처리
-        if (response.resultCode === 13) {
-          setIsSendingMessage({state: false});
-          SetChatLoading(false);
-          setNotEnoughRubyPopupOpen(true);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      handleSendMessage(`${ESystemError.syserr_chatting_send_post}`, false, false, false);
-
-      SetChatLoading(false);
-    }
-  };
-
-  //#region 메세지 재전송 로직
-  const handleRetryStream = () => {
-    if (streamKey && chatId !== TempIdforSendQuestion) {
-      const retryRequestData = {
-        chatContentId: chatId, // 또는 필요에 따라 다른 ID 사용
-        episodeId: episodeId, // 에피소드 ID
-        text: parsedMessages.Messages[parsedMessages.Messages.length - 2].text, // 재전송할 메시지
-      };
-
-      // const filteredMessages = parsedMessages.Messages.filter(message => message.chatId === chatId);
-
-      // // 필터링된 메시지의 text를 합치기
-      // const combinedText = filteredMessages.map(message => message.text).join(' ');
-
-      // const retryRequestData = {
-      //   chatContentId: chatId, // 메시지의 고유 ID
-      //   episodeId: episodeId, // 에피소드의 고유 ID
-      //   text: combinedText, // chatId가 같은 모든 메시지의 텍스트를 합친 결과
-      // };
-      retryStream(retryRequestData)
-        .then(response => {
-          if ('streamKey' in response) {
-            console.log('Retry successful, StreamKey:', response.streamKey);
-            // 재전송 성공 시 처리 로직
-            setIsLoading(true);
-            setRetryStreamKey(response.streamKey);
-
-            setParsedMessages(prev => ({
-              ...prev,
-              Messages: prev.Messages.filter(msg => !checkChatSystemError(msg.text)),
-            }));
-          } else {
-            if (response.resultCode == 1) {
-              alert('잠시 후 시도해주세요');
-            }
-            console.log('Retry failed:', response.resultMessage);
-            // 재전송 실패 시 처리 로직
-          }
-        })
-        .catch(error => {
-          console.error('Error retrying stream:', error);
-        });
-    } else {
-      console.error('StreamKey or ChatId is not available');
-    }
-  };
-
-  useEffect(() => {
-    if (streamKey === '') return;
-    console.log('stream key : ', streamKey);
-    //let messageCount = 0; // 메시지 수신 횟수 추적
-    const eventSource = new EventSource(
-      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
-    );
-
-    eventSource.onmessage = event => {
-      try {
-        setIsLoading(false);
-        if (!event.data) {
-          throw new Error('Received null or empty data');
-        }
-
-        const newMessage = JSON.parse(event.data);
-        handleSendMessage(newMessage, false, true, false);
-        //console.log('stream new text====' + newMessage + '====');
-        //messageCount++; // 메시지 수신 횟수 증가
-
-        // 메시지가 3번 수신되면 강제로 에러 발생
-        // if (messageCount === 50) {
-        //   console.log('Forcing an error after 3 messages');
-        //   if (eventSource.onerror) {
-        //     const simulatedErrorEvent = new Event('error');
-        //     eventSource.onerror(simulatedErrorEvent);
-        //   } else {
-        //     console.warn('No error handler defined for EventSource');
-        //   }
-        //   return;
-        // }
-
-        if (newMessage.includes('$') === true) {
-          isSendingMessage.state = false;
-
-          eventSource.close();
-          console.log('Stream ended normally');
-        }
-      } catch (error) {
-        console.error('Error processing message:', error);
-        console.error('Received data:', event.data);
-      }
-    };
-
-    eventSource.onerror = error => {
-      console.error('Stream encountered an error or connection was lost');
-      handleSendMessage(`${ESystemError.syserr_chat_stream_error}`, false, false, false);
-      isSendingMessage.state = false;
-
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [streamKey]);
-
+  // 나 또는 상대방의 메시지를 출력하기 위한 함수. ( 상대방의 메시지도 결국은 내가 메시지를 보내야만 오기때문에 이렇게 네이밍 됨. )
   const handleSendMessage = async (
     message: string,
     isMyMessage: boolean,
@@ -608,6 +406,123 @@ const ChatPage: React.FC = () => {
     const updatedMessages = funcSendMessage(parsedMessagesRef.current);
     setParsedMessages(updatedMessages);
     parsedMessagesRef.current = updatedMessages;
+  };
+
+  const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, saveChatStreamInfo} = useStreamMessage({
+    isLoading,
+    setIsLoading,
+    handleSendMessage,
+    isSendingMessage,
+    setChatId,
+    parsedMessages,
+    setParsedMessages,
+    parsedMessagesRef,
+    TempIdforSendQuestion,
+  });
+
+  useEffect(() => {
+    preventZoom(); // 줌인아웃을 막는다.
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', setFullHeight);
+    window.addEventListener('orientationchange', setFullHeight);
+    setFullHeight();
+
+    // loadEmoticons();
+  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
+
+  function setFullHeight() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }
+
+  const loadEmoticons = async () => {
+    try {
+      const response = await fetchEmoticonGroups();
+      setEmoticonGroupInfoList(response.data.emoticonGroupInfoList);
+    } catch (error) {
+      console.error('Error fetching emoticon groups:', error);
+    }
+  };
+
+  //#region HeaderChat handler
+  const handleMoreClick = () => {
+    console.log('더보기 버튼 클릭');
+  };
+
+  const handleToggleBackground = () => {
+    console.log('배경 보기/숨기기 버튼 클릭');
+    SetHideChat(!isHideChat);
+  };
+
+  const sendMessage = async (reqSendChatMessage: SendChatMessageReq) => {
+    try {
+      const response = await sendMessageAsync(reqSendChatMessage);
+      if ('streamKey' in response) {
+        // 성공적인 응답 처리
+        saveChatStreamInfo(reqSendChatMessage, response);
+      } else if ('resultCode' in response) {
+        // 오류 응답 처리
+        if (response.resultCode === 13) {
+          isSendingMessage.current = false;
+          SetChatLoading(false);
+          setNotEnoughRubyPopupOpen(true);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      handleSendMessage(`${ESystemError.syserr_chatting_send_post}`, false, false, false);
+
+      SetChatLoading(false);
+    }
+  };
+
+  //#region 메세지 재전송 로직
+  const handleRetryStream = () => {
+    if (streamKey && chatId !== TempIdforSendQuestion) {
+      const retryRequestData = {
+        chatContentId: chatId, // 또는 필요에 따라 다른 ID 사용
+        episodeId: episodeId, // 에피소드 ID
+        text: parsedMessages.Messages[parsedMessages.Messages.length - 2].text, // 재전송할 메시지
+      };
+
+      // const filteredMessages = parsedMessages.Messages.filter(message => message.chatId === chatId);
+
+      // // 필터링된 메시지의 text를 합치기
+      // const combinedText = filteredMessages.map(message => message.text).join(' ');
+
+      // const retryRequestData = {
+      //   chatContentId: chatId, // 메시지의 고유 ID
+      //   episodeId: episodeId, // 에피소드의 고유 ID
+      //   text: combinedText, // chatId가 같은 모든 메시지의 텍스트를 합친 결과
+      // };
+      retryStream(retryRequestData)
+        .then(response => {
+          if ('streamKey' in response) {
+            console.log('Retry successful, StreamKey:', response.streamKey);
+            // 재전송 성공 시 처리 로직
+            setIsLoading(true);
+            setRetryStreamKey(response.streamKey);
+
+            setParsedMessages(prev => ({
+              ...prev,
+              Messages: prev.Messages.filter(msg => !checkChatSystemError(msg.text)),
+            }));
+          } else {
+            if (response.resultCode == 1) {
+              alert('잠시 후 시도해주세요');
+            }
+            console.log('Retry failed:', response.resultMessage);
+            // 재전송 실패 시 처리 로직
+          }
+        })
+        .catch(error => {
+          console.error('Error retrying stream:', error);
+        });
+    } else {
+      console.error('StreamKey or ChatId is not available');
+    }
   };
 
   const SetChatLoading = (bool: boolean) => {

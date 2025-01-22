@@ -41,8 +41,8 @@ const useChat = () => {
   const parsedMessagesRef = useRef(parsedMessages);
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
-  const [retryStreamKey, setRetryStreamKey] = useState<string>(''); // streamKey 상태 추가
+  //const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
+  //const [retryStreamKey, setRetryStreamKey] = useState<string>(''); // streamKey 상태 추가
   const [chatId, setChatId] = useState<number>(TempIdforSendQuestion);
   const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
   const [currentParsingSender, setCurrentParsingSender] = useState<{current: SenderType}>({current: SenderType.User}); // 현재 파싱중인 sender 상태
@@ -66,7 +66,8 @@ const useChat = () => {
   const contentId = useSelector((state: RootState) => state.chatting.contentId);
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
   const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
-  const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태 (렌더링과 관계 없을때 사용가능한 useState 형태)
+  //const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태 (렌더링과 관계 없을때 사용가능한 useState 형태)
+  const isSendingMessage = useRef<boolean>(false); // useRef로 메시지 전송 상태 관리
 
   const [lastMessage, setLastMessage] = useState<Message>({
     chatId: TempIdforSendQuestion,
@@ -168,7 +169,7 @@ const useChat = () => {
   };
 
   const handlePopupYes = () => {
-    if (isSendingMessage.state) {
+    if (isSendingMessage.current) {
       console.log('메세지 중에는 넘어가지 않습니다');
       return;
     }
@@ -322,30 +323,6 @@ const useChat = () => {
     return response;
   };
 
-  const saveChatStreamInfo = (reqSendChatMessage: SendChatMessageReq, response: SendChatMessageResSuccess) => {
-    // 성공적인 응답 처리
-    setStreamKey(response.streamKey);
-    setChatId(response.chatContentId);
-
-    const currentMessages = parsedMessagesRef.current.Messages;
-
-    const updatedMessages = currentMessages.map(message =>
-      message.chatId === TempIdforSendQuestion ? {...message, chatId: response.chatContentId} : message,
-    );
-
-    // 상태 업데이트
-    setParsedMessages({
-      ...parsedMessagesRef.current,
-      Messages: updatedMessages,
-    });
-    dispatch(
-      setRegeneratingQuestion({
-        lastMessageId: response.chatContentId,
-        lastMessageQuestion: reqSendChatMessage.text,
-      }),
-    );
-  };
-
   return {
     handleBackClick,
     SetChatBarCount,
@@ -368,8 +345,8 @@ const useChat = () => {
     aiChatHeight,
     isTransitionEnable,
     lastMessage,
-    streamKey,
-    setStreamKey,
+    //streamKey,
+    //setStreamKey,
     setReqPrevCheat,
     isSendingMessage,
     showPopup,
@@ -392,18 +369,18 @@ const useChat = () => {
     chatId,
     isNarrationActive,
 
-    retryStreamKey,
-    setIsSendingMessage,
+    //retryStreamKey,
+    //setIsSendingMessage,
 
     setChatId,
     isRegeneratingQuestion,
     regenerateQuestion,
 
-    setRetryStreamKey,
+    //setRetryStreamKey,
 
     episodeId,
     sendMessageAsync,
-    saveChatStreamInfo,
+    //saveChatStreamInfo,
   };
 };
 
