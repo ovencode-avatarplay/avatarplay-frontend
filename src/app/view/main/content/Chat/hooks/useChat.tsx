@@ -28,7 +28,7 @@ import {
   parseMessage,
   timeParser,
 } from '../MainChat/MessageParser';
-import {TriggerActionType} from '@/redux-store/slices/EpisodeInfo';
+import {TriggerActionType} from '@/redux-store/slices/ContentInfo';
 import {addNewDateMessage, compareDates, NewDateType, refreshNewDateAll, shiftDates} from '../MainChat/NewDate';
 import {getWebBrowserUrl, QueryParams} from '@/utils/browserInfo';
 import {preventZoom, useBackHandler} from '@/utils/util-1';
