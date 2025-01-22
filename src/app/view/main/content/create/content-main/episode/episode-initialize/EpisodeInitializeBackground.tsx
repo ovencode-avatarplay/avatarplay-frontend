@@ -12,11 +12,17 @@ interface EpisodeInitializeBackgroundProps {
   data: BackgroundData[];
   selectedIdx: number;
   onSelect: (idx: number) => void;
+  style?: React.CSSProperties;
 }
 
-const EpisodeInitializeBackground: React.FC<EpisodeInitializeBackgroundProps> = ({data, selectedIdx, onSelect}) => {
+const EpisodeInitializeBackground: React.FC<EpisodeInitializeBackgroundProps> = ({
+  data,
+  selectedIdx,
+  onSelect,
+  style,
+}) => {
   return (
-    <div className={styles.imageList}>
+    <div className={styles.imageList} style={style}>
       {data.map((item, idx) => {
         const isSelected = selectedIdx === idx;
         return (

@@ -25,6 +25,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({sizeType, label
             : selected
             ? `linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), url(${image})`
             : `url(${image})`,
+          backgroundColor: color ? color : `linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%),`,
         }}
       />
       {label !== null && (

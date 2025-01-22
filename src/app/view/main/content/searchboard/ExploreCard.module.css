@@ -44,6 +44,8 @@
   object-fit: cover;
   resize: none;
   background: lightgray 50% / cover no-repeat;
+  
+  background:   lightgray 50% / cover no-repeat,   lightgray 50% / cover no-repeat;
 }
 
 .rankArea

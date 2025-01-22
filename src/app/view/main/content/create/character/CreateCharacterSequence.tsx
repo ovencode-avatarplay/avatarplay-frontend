@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import styles from './CreateCharacterSequence.module.css';
 
 // redux
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
 // Json Data
 import characterOptionsMaleReal from '@/data/create/create-character-male-real.json';
@@ -31,7 +31,7 @@ import FullScreenImage, {FullViewImageData} from '@/components/layout/shared/Ful
 import PublishCharacterBottom from './PublishCharacterBottom';
 import CustomStepper from '@/components/layout/shared/CustomStepper';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {BoldRuby, LineArrowLeft, LineArrowRight} from '@ui/Icons';
+import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineUpload} from '@ui/Icons';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 
@@ -279,8 +279,27 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
 
   //#region Function
 
-  const getImgLoc = (imgName: string) => {
+  const getStyleImgLoc = (imgName: string) => {
+    // 스타일은 공통 이미지를 사용
     return imageLoc + imgName;
+  };
+
+  const getImgLoc = (imgName: string) => {
+    const gender = selectedOptions.gender; // 성별
+    const style = selectedOptions.style; // 스타일
+
+    // 성별과 스타일에 따라 가운데 경로 설정
+    let genderStylePath = '';
+    if (gender === 0) {
+      genderStylePath = style === 0 ? 'female_real' : 'female_anime'; // 여성 선택
+    } else if (gender === 1) {
+      genderStylePath = style === 0 ? 'male_real' : 'male_anime'; // 남성 선택
+    } else {
+      genderStylePath = style === 0 ? 'nonbinary_real' : 'nonbinary_anime'; // 논바이너리 선택
+    }
+
+    // 반환하는 이미지 경로
+    return `${imageLoc}${genderStylePath}/${imgName}`;
   };
 
   const getStepText = () => {
@@ -346,7 +365,9 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
           <div className={styles.verticalButtonGroup}>
             {characterOptions.genderOptions.map((option, index) => (
               <button className={styles.uploadButton} onClick={() => handleOptionSelect('gender', index, true)}>
-                <img className={styles.buttonIconBack} src={LineArrowLeft.src} />
+                <div className={styles.buttonIconBack}>
+                  <img className={styles.buttonIcon} src={index === 0 ? LineCharacter.src : LineUpload.src} />
+                </div>
                 <div className={styles.buttonText}>{option.label}</div>
               </button>
             ))}
@@ -361,7 +382,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
                   key={option.label}
                   sizeType="large"
                   label={option.label}
-                  image={getImgLoc(option.image)}
+                  image={getStyleImgLoc(option.image)}
                   selected={selectedOptions.style === index}
                   onClick={() => handleOptionSelect('style', index)}
                 />
@@ -638,34 +659,41 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
         return (
           <div className={styles.createContentBox}>
             <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
-              {summaryOptions.map((option, index) => (
-                <div className={styles.summaryItem}>
-                  <CharacterCreateImageButton
-                    key={index}
-                    label={
-                      option.key === 'personality'
-                        ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label.split(
-                            '\n',
-                          )[0]
-                        : option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label || ''
-                    }
-                    onClick={() => {}}
-                    image={
-                      option.key !== 'hairColor'
-                        ? getImgLoc(option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image)
-                        : ''
-                    }
-                    color={
-                      option.key === 'hairColor'
-                        ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image
-                        : undefined // 다른 경우에는 color를 전달하지 않음
-                    }
-                    selected={false}
-                    sizeType="middle"
-                  />
-                  <div className={styles.summaryLabel}>{option.label}</div>
-                </div>
-              ))}
+              {summaryOptions
+                .filter(
+                  option =>
+                    !(selectedOptions.gender === 1 && (option.key === 'topSize' || option.key === 'bottomSize')),
+                ) // gender가 1일 때 topSize와 bottomSize 제외
+                .map((option, index) => (
+                  <div className={styles.summaryItem}>
+                    <CharacterCreateImageButton
+                      key={index}
+                      label={
+                        option.key === 'personality'
+                          ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label.split(
+                              '\n',
+                            )[0]
+                          : option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label || ''
+                      }
+                      onClick={() => {}}
+                      image={
+                        option.key !== 'hairColor'
+                          ? getImgLoc(
+                              option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image,
+                            )
+                          : ''
+                      }
+                      color={
+                        option.key === 'hairColor'
+                          ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image
+                          : undefined // 다른 경우에는 color를 전달하지 않음
+                      }
+                      selected={false}
+                      sizeType="middle"
+                    />
+                    <div className={styles.summaryLabel}>{option.label}</div>
+                  </div>
+                ))}
               {/* {customClothesActive && (
                   <Typography variant="subtitle1" className={styles.summaryClothes}>
                     Clothes: {clothesInputValue}
@@ -765,7 +793,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
                   state="IconRight"
                   onClick={addStep}
                   icon={steps[curStep] === 'Summary' && generatedOptions === null ? '' : LineArrowRight.src}
-                  iconClass="blackIcon"
+                  // iconClass="blackIcon"
                   customClassName={[styles.stepButton]}
                 >
                   {steps[curStep] === 'Summary' ? (

@@ -72,11 +72,13 @@
 }
 
 .thumbnailImage
-{
-  flex: 1 0 0;
-  align-self: stretch;
+{ 
+  width: 100%;
+  height: auto; 
+  object-fit: cover;  
+  object-position: top;
   
-  background: lightgray 0px -88.577px / 100% 288.915% no-repeat;
+  background: lightgray 0px -88.577px / 100% 288.915% no-repeat ;
 }
 
 .descriptionArea
@@ -90,7 +92,8 @@
 
 .contentName
 {
-  color: var(--Neutral-100, #101010);
+  /* color: var(--Neutral-100, #101010); */
+  color: var(--Neutral-800, #101010);
   font-family: Lato;
   font-size: 20px;
   font-style: normal;
@@ -345,7 +348,8 @@
   align-items: flex-start;
   gap: 4px;
   
-  color: var(--Neutral-100, #101010);
+  /* color: var(--Neutral-100, #101010); */
+  color: var(--Neutral-600, #101010);
   font-family: Lato;
   font-size: 16px;
   font-style: normal;

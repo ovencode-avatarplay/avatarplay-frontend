@@ -9,6 +9,7 @@
   align-content: flex-start;
   gap: 12px;
   flex-wrap: wrap;
+ 
 
   /* /* flex: 1; */
   /* display: grid;
@@ -16,3 +17,12 @@
   overflow-y: auto;
 }
    
+
+.gridContainer::-webkit-scrollbar {
+  display: none;  
+}
+
+.gridContainer {
+  scrollbar-width: none;  
+  -ms-overflow-style: none;  
+}

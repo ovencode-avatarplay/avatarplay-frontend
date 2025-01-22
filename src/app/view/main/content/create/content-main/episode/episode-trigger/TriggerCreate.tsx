@@ -15,7 +15,7 @@ import {
   TriggerMediaState,
   TriggerTypeNames,
   updateTriggerInfo,
-} from '@/redux-store/slices/EpisodeInfo';
+} from '@/redux-store/slices/ContentInfo';
 
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
@@ -116,7 +116,12 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
   //   // 에피소드 생성시 가져올 빈 데이터
   //   let emptyEpisodeInfo = emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0];
   // 편집시 가져올데이터
-  const editingEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
+  const selectedChapterIdx = useSelector((state: RootState) => state.content.selectedChapterIdx);
+  const selectedEpisodeIdx = useSelector((state: RootState) => state.content.selectedEpisodeIdx);
+  const editingEpisodeInfo = useSelector(
+    (state: RootState) =>
+      state.content.curEditingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
+  );
 
   // 스텝
   const [maxStep, setMaxStep] = useState<number>(7);
@@ -365,8 +370,14 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     setTargetChapterIdx(chapterIdx);
   };
 
-  const handleEpisodeSelect = (episodeIdx: number) => {
+  const handleEpisodeSelect = (chapterIdx: number, episodeIdx: number) => {
+    setTargetChapterIdx(chapterIdx);
     setTargetEpisodeIdx(episodeIdx);
+    console.log('episodeIdx', episodeIdx);
+    setTriggerInfo(prevTriggerInfo => ({
+      ...prevTriggerInfo,
+      actionChangeEpisodeId: episodeIdx,
+    }));
   };
 
   useEffect(() => {
@@ -710,18 +721,20 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
       case 4:
         return (
           <>
-            <CharacterGalleryToggle category={category} onCategoryChange={handleCategoryChange} />
-
-            <CharacterGalleryGrid
-              itemUrl={itemUrl}
-              selectedItemIndex={selectedGalleryIndex}
-              onSelectItem={i => {
-                console.log(i);
-                setSelectedGalleryIndex(i);
-              }}
-              category={category}
-              isTrigger={true}
-            />
+            {/* <CharacterGalleryToggle category={category} onCategoryChange={handleCategoryChange} /> */}
+            <div className={styles.characterScrollArea}>
+              <CharacterGalleryGrid
+                itemUrl={itemUrl}
+                selectedItemIndex={selectedGalleryIndex}
+                onSelectItem={i => {
+                  console.log(i);
+                  setSelectedGalleryIndex(i);
+                }}
+                category={category}
+                isTrigger={true}
+                style={{paddingBottom: '60px'}}
+              />
+            </div>
           </>
         );
       default:
@@ -771,7 +784,13 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
       case 3:
         return (
           <>
-            <CharacterGrid characters={characters || []} onCharacterSelect={handleCharacterSelect} />
+            <div className={styles.characterScrollArea}>
+              <CharacterGrid
+                characters={characters || []}
+                onCharacterSelect={handleCharacterSelect}
+                style={{paddingBottom: '60px'}}
+              />
+            </div>
           </>
         );
       case 4:

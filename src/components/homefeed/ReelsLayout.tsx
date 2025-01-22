@@ -1,20 +1,26 @@
 'use client';
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/scrollbar';
 import ReelsContent from './ReelsContent';
 import {FeedInfo, sendFeedView, sendGetRecommendFeed} from '@/app/NetWork/ShortsNetwork';
 import styles from './ReelsLayout.module.css';
+import {setBottomNavColor} from '@/redux-store/slices/MainControl';
+import {useDispatch} from 'react-redux';
+import {LineArrowDown, LineFeatured} from '@ui/Icons';
 
 interface ReelsLayoutProps {
   initialFeed?: FeedInfo; // 특정 URL 키를 통해 전달받은 초기 피드
 }
 
 const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
-  const [info, setInfo] = useState<FeedInfo[]>([]);
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 활성 슬라이드 인덱스
+  const [allFeeds, setAllFeeds] = useState<FeedInfo[]>([]); // 전체 데이터 저장
+  const [info, setInfo] = useState<FeedInfo[]>([]); // 현재 렌더링된 데이터
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 슬라이드 인덱스
+  const [isMute, setIsMute] = useState(true); // 현재 슬라이드 인덱스
+
   const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
     try {
       const base64Payload = token.split('.')[1]; // payload 부분 추출
@@ -25,7 +31,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
       return null;
     }
   };
-
+  const dispatch = useDispatch();
   const getEmailFromJwt = (): string | null => {
     const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
     if (jwt) {
@@ -35,17 +41,19 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
     return null; // JWT가 없을 경우 null 반환
   };
 
+  // API 호출
   const fetchRecommendFeed = async () => {
-    const result = await sendGetRecommendFeed({language: navigator.language || 'en-US'});
-    if (result.resultCode === 0 && result.data) {
-      const feeds = result.data.feedInfoList;
-      if (initialFeed) {
-        // 초기 피드를 배열의 첫 번째로 추가
-        setInfo([initialFeed, ...feeds]);
-        console.log('initialFeed', initialFeed);
-      } else {
-        setInfo(feeds);
+    dispatch(setBottomNavColor(0));
+    try {
+      const result = await sendGetRecommendFeed({language: navigator.language || 'en-US'});
+
+      if (result.resultCode === 0 && result.data) {
+        const feeds = result.data.feedInfoList;
+        setAllFeeds(feeds); // 전체 데이터 저장
+        setInfo(feeds.slice(0, 3)); // 초기 렌더링용 첫 10개
       }
+    } catch (error) {
+      console.error('Failed to fetch recommended feed:', error);
     }
   };
 
@@ -54,6 +62,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   }, [initialFeed, getEmailFromJwt()]);
 
   useEffect(() => {
+    console.log('info', info);
     if (typeof window !== 'undefined') {
       const currentPath = window.location.pathname; // 현재 경로
       const basePath = '/ko/main/homefeed'; // 동적 라우팅이 없는 기본 경로
@@ -80,13 +89,14 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   const handleSlideChange = (swiper: any) => {
     const currentIndex = swiper.activeIndex;
     setCurrentSlideIndex(currentIndex);
+
     // 배열 범위 검증
-    if (currentIndex < 0 || currentIndex >= info.length) {
+    if (currentIndex < 0 || currentIndex >= allFeeds.length) {
       console.warn('Slide index out of bounds');
       return;
     }
 
-    const currentItem = info[currentIndex];
+    const currentItem = allFeeds[currentIndex];
 
     if (currentItem && currentItem.urlLinkKey != null) {
       viewFeed(currentItem.id);
@@ -97,8 +107,19 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
     } else {
       console.warn('Invalid urlLinkKey for current slide');
     }
-  };
 
+    // 추가 데이터 요청: 슬라이드 끝에 도달하면 로드
+    if (currentIndex >= info.length - 1 && info.length < allFeeds.length) {
+      const nextItems = allFeeds.slice(info.length, info.length + 2); // 다음 2개
+      setInfo(prev => [...prev, ...nextItems]);
+    }
+  };
+  const [curFollowFeatured, setCurFollowFeatured] = useState(false); // 비디오 총 길이
+  const [isOpenFollowFeatured, setIsOpenFollowFeatured] = useState(false); // 비디오 총 길이
+
+  React.useEffect(() => {
+    console.log(isMute);
+  }, [isMute]);
   return (
     <>
       {/* <Head>
@@ -108,6 +129,43 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
         <meta property="og:description" content={initialFeed?.description || ''} />
         <meta property="og:image" content={initialFeed?.characterProfileUrl || '/default-image.png'} />
       </Head> 추후 메타 처리*/}
+
+      <div className={styles.followingContainer}>
+        <div className={styles.followingBox}>
+          <span className={styles.followingText}>
+            {curFollowFeatured && <>Featured</>}
+            {!curFollowFeatured && <>Following</>}
+          </span>
+          <div
+            className={styles.iconArrowDown}
+            onClick={() => {
+              setIsOpenFollowFeatured(!isOpenFollowFeatured);
+            }}
+          >
+            <img src={LineArrowDown.src}></img>
+          </div>
+        </div>
+      </div>
+
+      {isOpenFollowFeatured && (
+        <div
+          className={styles.featuredContainer}
+          onClick={() => {
+            setCurFollowFeatured(!curFollowFeatured);
+          }}
+        >
+          <span className={styles.featuredText}>
+            {' '}
+            {curFollowFeatured && <>Following</>}
+            {!curFollowFeatured && <>Featured</>}
+          </span>
+          <div className={styles.featuredIcon}>
+            <div className={styles.iconCircle}>
+              <img src={LineFeatured.src}></img>
+            </div>
+          </div>
+        </div>
+      )}
       <Swiper
         direction="vertical"
         spaceBetween={0}
@@ -119,7 +177,12 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
       >
         {info.map((item, index) => (
           <SwiperSlide key={index} className={styles.swiperSlide}>
-            <ReelsContent item={item} isActive={index === currentSlideIndex} />
+            <ReelsContent
+              item={item}
+              isActive={index === currentSlideIndex}
+              isMute={isMute} // 상태 전달
+              setIsMute={setIsMute} // 상태 변경 함수 전달
+            />
           </SwiperSlide>
         ))}
       </Swiper>

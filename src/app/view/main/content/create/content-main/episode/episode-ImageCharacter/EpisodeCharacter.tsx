@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Button, Box} from '@mui/material';
 import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
 import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo, setCharacterInfo, TriggerInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo, setCharacterInfo, TriggerInfo} from '@/redux-store/slices/ContentInfo';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CharacterGrid from '@/app/view/studio/characterDashboard/CharacterGrid';
 import EpisodeCharacterView from './EpisodeCharacterView'; // Step 3에 사용할 컴포넌트

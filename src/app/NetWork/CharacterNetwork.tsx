@@ -1,7 +1,7 @@
 // src/app/Network/CharacterNetwork.tsx
 
 import api, {ResponseAPI} from './ApiInstance';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 // GetCharacterList
 
 export interface GetCharacterListRes {
@@ -82,7 +82,7 @@ export interface GetCharacterInfoReq {
 
 export interface GetCharacterInfoRes {
   characterInfo: CharacterInfo;
-  urlLinkKey : string;
+  urlLinkKey: string;
 }
 
 export const sendGetCharacterInfo = async (payload: GetCharacterInfoReq): Promise<ResponseAPI<GetCharacterInfoRes>> => {

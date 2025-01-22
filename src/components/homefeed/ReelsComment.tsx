@@ -183,7 +183,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
                 alignContent: 'center',
               },
               '& .MuiInputBase-input': {
-                fontSize: '14px', // 내부 입력 텍스트의 폰트 크기 설정
+                fontSize: '16px', // 내부 입력 텍스트의 폰트 크기 설정
                 color: 'black', // 텍스트 색상 설정
                 minHeight: '28px',
                 alignContent: 'center',

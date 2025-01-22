@@ -3,14 +3,16 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useDispatch} from 'react-redux';
-import {ContentInfo, setContentInfoToEmpty, setEditingContentInfo} from '@/redux-store/slices/ContentInfo';
-import {setCurrentEpisodeInfo, setEpisodeInfoEmpty} from '@/redux-store/slices/EpisodeInfo';
 import {
   setSelectedChapterIdx,
   setSelectedContentId,
   setSelectedEpisodeIdx,
   setSkipContentInit,
-} from '@/redux-store/slices/ContentSelection';
+  ContentInfo,
+  setContentInfoToEmpty,
+  setEditingContentInfo,
+} from '@/redux-store/slices/ContentInfo';
+import {setEpisodeInfoEmpty} from '@/redux-store/slices/ContentInfo';
 import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
 
 // Component
@@ -154,7 +156,6 @@ const ContentDashboard: React.FC = () => {
         // Redux 상태 업데이트
         dispatch(setEditingContentInfo(contentData));
 
-        dispatch(setCurrentEpisodeInfo(contentData.chapterInfoList[0].episodeInfoList[0]));
         dispatch(setPublishInfo(contentData.publishInfo));
       } else {
         throw new Error(`No contentInfo in response for ID: ${contentId}`);

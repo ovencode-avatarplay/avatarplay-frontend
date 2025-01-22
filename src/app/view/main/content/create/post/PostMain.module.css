@@ -111,7 +111,7 @@ line-height: 155%; /* 18.6px */
   position: fixed; /* position을 fixed로 변경 */
   width: var(--full-width);
   height: 70px;
-  left: 0px;
+  
   bottom: 0px;
 }
 

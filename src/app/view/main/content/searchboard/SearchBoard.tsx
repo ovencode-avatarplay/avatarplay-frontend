@@ -2,7 +2,13 @@
 
 import React, {useEffect, useState} from 'react';
 
-import {ExploreItem, PaginationRequest, sendGetExplore, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
+import {
+  BannerUrlList,
+  ExploreItem,
+  PaginationRequest,
+  sendGetExplore,
+  sendSearchExplore,
+} from '@/app/NetWork/ExploreNetwork';
 
 import styles from './SearchBoard.module.css';
 
@@ -22,7 +28,7 @@ const SearchBoard: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   // Featured
-  const [bannerList, setBannerList] = useState<string[] | null>(null);
+  const [bannerList, setBannerList] = useState<BannerUrlList[] | null>(null);
   const [talkainOperatorList, setTalkainOperatorList] = useState<ExploreCardProps[] | null>(null);
   const [popularList, setPopularList] = useState<ExploreCardProps[] | null>(null);
   const [malePopularList, setMalePopularList] = useState<ExploreCardProps[] | null>(null);
@@ -239,16 +245,16 @@ const SearchBoard: React.FC = () => {
                   <SearchBoardHorizonScroll title="popularList" data={popularList} />
                 )}
                 {malePopularList && malePopularList.length > 0 && (
-                  <SearchBoardHorizonScroll title="malePopularList" data={malePopularList} />
+                  <SearchBoardHorizonScroll title="주간 TOP 10 스토리" data={malePopularList} />
                 )}
                 {femalePopularList && femalePopularList.length > 0 && (
-                  <SearchBoardHorizonScroll title="femalePopularList" data={femalePopularList} />
+                  <SearchBoardHorizonScroll title="추천 토카인 오리지널 스토리" data={femalePopularList} />
                 )}
                 {newContentList && newContentList.length > 0 && (
-                  <SearchBoardHorizonScroll title="newContentList" data={newContentList} />
+                  <SearchBoardHorizonScroll title="따끈따끈 TODAY 신작" data={newContentList} />
                 )}
                 {playingList && playingList.length > 0 && (
-                  <SearchBoardHorizonScroll title="playingList" data={playingList} />
+                  <SearchBoardHorizonScroll title="30대 남성 인기" data={playingList} />
                 )}
                 {recommendationList && recommendationList.length > 0 && (
                   <SearchBoardHorizonScroll title="recommendList" data={recommendationList} />
@@ -366,7 +372,12 @@ const SearchBoard: React.FC = () => {
 
   return (
     <>
-      <Splitter splitters={splitterData} contentStyle={{padding: '0'}} isDark={true} />
+      <Splitter
+        splitters={splitterData}
+        splitterStyle={{height: 'var(--body-height)'}}
+        contentStyle={{padding: '0'}}
+        isDark={true}
+      />
       <LoadingOverlay loading={loading} />
     </>
   );

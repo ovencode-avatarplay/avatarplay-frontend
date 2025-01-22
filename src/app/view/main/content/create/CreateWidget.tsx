@@ -1,7 +1,5 @@
 import React, {useState} from 'react';
 
-import {Drawer} from '@mui/material';
-
 import Link from 'next/link';
 
 import styles from './CreateWidget.module.css';

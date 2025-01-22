@@ -3,14 +3,20 @@ import List from '@mui/material/List';
 import {useSelector, useDispatch} from 'react-redux'; // Redux 상태 및 액션 사용
 import {RootState} from '@/redux-store/ReduxStore'; // RootState 타입 가져오기
 import TriggerListItem from './TriggerListItem';
-import {removeTriggerInfo} from '@/redux-store/slices/EpisodeInfo'; // 트리거 삭제 액션 임포트
+import {removeTriggerInfo} from '@/redux-store/slices/ContentInfo'; // 트리거 삭제 액션 임포트
 
 const TriggerList: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null); // 선택된 인덱스를 관리
   const dispatch = useDispatch();
 
   // Redux에서 dataPairs 배열을 가져옴
-  const dataPairs = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList);
+
+  const selectedChapterIdx = useSelector((state: RootState) => state.content.selectedChapterIdx);
+  const selectedEpisodeIdx = useSelector((state: RootState) => state.content.selectedEpisodeIdx);
+  const dataPairs = useSelector(
+    (state: RootState) =>
+      state.content.curEditingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
+  ).triggerInfoList;
 
   const handleToggle = (index: number) => {
     // 인덱스를 받아 선택 상태를 설정

@@ -1,10 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styles from './EpisodeCard.module.css';
-import {Avatar, Box, Typography, IconButton, Badge, Card, Modal} from '@mui/material';
-import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import EditIcon from '@mui/icons-material/Edit';
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import {Box, Typography} from '@mui/material';
 import {
   BoldArrowDown,
   BoldCirclePlus,
@@ -23,9 +19,17 @@ import EpisodeDescription from './episode-description/EpisodeDescription';
 import EpisodeImageSetup from './episode-imagesetup/EpisodeImageSetup';
 import EpisodeConversationTemplate from './episode-conversationtemplate/EpisodeConversationTemplate';
 import EpisodeCardDropDown from './EpisodeCardDropDown';
-import {adjustEpisodeIndex, updateEpisodeInfoInContent} from '@/redux-store/slices/ContentInfo';
+import {
+  setSelectedChapterIdx,
+  setSelectedEpisodeIdx,
+  adjustEpisodeIndex,
+  updateEpisodeInfoInContent,
+} from '@/redux-store/slices/ContentInfo';
+
 interface EpisodeCardProps {
   episodeNum: number;
+  chapterIdx: number;
+  episodeIdx: number;
   episodeId: number;
   onInit: () => void;
   saveDraft: () => void;
@@ -49,16 +53,21 @@ let updateUserDetail: UpdateUserDetail = {
   world_scenario: '',
   thumbnail: '',
 };
-const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit, saveDraft}) => {
+const EpisodeCard: React.FC<EpisodeCardProps> = ({
+  episodeNum,
+  episodeId,
+  chapterIdx,
+  episodeIdx,
+  onInit,
+  saveDraft,
+}) => {
   const episodeInfo = useSelector((state: RootState) => {
     const flatEpisodes = state.content.curEditingContentInfo.chapterInfoList.flatMap(
       chapter => chapter.episodeInfoList,
     );
-
     return flatEpisodes.find(episode => episode.id === episodeId) || flatEpisodes[0]; // 기본값 처리
   });
 
-  const currentEpisode = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
   const [isTriggerModalOpen, setTriggerModalOpen] = useState(false); // Trigger 모달 열림 상태
   const dispatch = useDispatch();
   const [isEpisodeModalOpen, setEpisodeModalOpen] = useState(false);
@@ -113,23 +122,20 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({episodeNum, episodeId, onInit,
   console.log(height);
   const chapters = useSelector((state: RootState) => state.content.curEditingContentInfo.chapterInfoList);
   const handleChangeOrderEpisodeIndex = (direction: 'up' | 'down') => {
-    dispatch(setCurrentEpisodeInfo(episodeInfo));
     const targetId = episodeInfo.id;
     dispatch(adjustEpisodeIndex({targetId, direction}));
   };
 
   const [isDropDownOpen, setDropDownOpen] = useState(false);
-  useEffect(() => {
-    dispatch(updateEpisodeInfoInContent(currentEpisode)); // 상태 업데이트
-  }, [
-    currentEpisode.name,
-    currentEpisode.conversationTemplateList.length,
-    currentEpisode.triggerInfoList.length,
-    currentEpisode.episodeDescription,
-  ]);
+
+  const handleSelectedEpisode = () => {
+    console.log('selidxcheck' + chapterIdx + '/' + episodeIdx);
+    dispatch(setSelectedChapterIdx(chapterIdx));
+    dispatch(setSelectedEpisodeIdx(episodeIdx));
+  };
 
   return (
-    <div className={styles.episodeCard}>
+    <div className={styles.episodeCard} onClick={handleSelectedEpisode}>
       {/* 상단 제목 영역 */}
       <Box className={styles.header}>
         <div style={{display: 'flex'}}>

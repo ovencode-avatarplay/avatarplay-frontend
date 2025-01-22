@@ -1,20 +1,19 @@
 {
   "genderOptions": [
     { "label": "Girl", "image": "/real.png", "value": 0},
-    { "label": "Guy", "image": "/anime.png", "value": 1 },
-    { "label": "All", "image": "/anime.png", "value": 2 }
+    { "label": "Guy", "image": "/anime.png", "value": 1 }
   ],
   "styleOptions": [
-    { "label": "Realistic", "image": "style_realistic.png", "value": 0 },
-    { "label": "Anime", "image": "style_anime.png", "value": 1 }
+    { "label": "Realistic", "image": "female_style_realistic.png", "value": 0 },
+    { "label": "Anime", "image": "female_style_anime.png", "value": 1 }
   ],
   "raceOptions": [
       {"label": "Unspecified", "image": "", "value": 0},
-      {"label": "Caucasian", "image": "realistic_female/ethnicity_1_caucasian.png", "value": 1},
-      {"label": "Asian", "image": "realistic_female/ethnicity_2_asian.png", "value": 2},
-      {"label": "Latina", "image": "realistic_female/ethnicity_3_latina.png", "value": 3},
-      {"label": "Arab", "image": "realistic_female/ethnicity_4_arab.png", "value": 4},
-      {"label": "black", "image": "realistic_female/ethnicity_5_black.png", "value": 5}
+      {"label": "Caucasian", "image": "ethnicity_1_caucasian.png", "value": 1},
+      {"label": "Asian", "image": "ethnicity_2_asian.png", "value": 2},
+      {"label": "Latina", "image": "ethnicity_3_latina.png", "value": 3},
+      {"label": "Arab", "image": "ethnicity_4_arab.png", "value": 4},
+      {"label": "black", "image": "ethnicity_5_black.png", "value": 5}
   ],
   "ageOptions": [
       {"label": "Unspecified", "image": "", "value": 0},
@@ -25,21 +24,21 @@
   ],
   "eyeColorOptions": [
       {"label": "Unspecified", "image": "", "value": 0},
-      {"label": "Brown", "image": "realistic_female/eye_1_brown.png", "value": 1},
-      {"label": "Blue", "image": "realistic_female//eye_2_blue.png", "value": 2},
-      {"label": "Green", "image": "realistic_female/eye_3_green.png", "value": 3}
+      {"label": "Brown", "image": "eye_1_brown.png", "value": 1},
+      {"label": "Blue", "image": "/eye_2_blue.png", "value": 2},
+      {"label": "Green", "image": "eye_3_green.png", "value": 3}
   ],
   "hairStyles": [
       {"label": "Unspecified", "image": "", "value": 0},
-      {"label": "Straight", "image": "realistic_female/hair_1_straight.png", "value": 1},
-      {"label": "Braids", "image": "realistic_female/hair_2_braids.png", "value": 2},
-      {"label": "Bangs", "image": "realistic_female/hair_3_bangs.png", "value": 3},
-      {"label": "Curly", "image": "realistic_female/hair_4_curly.png", "value": 4},
-      {"label": "Bun", "image": "realistic_female/hair_5_bun.png", "value": 5},
-      {"label": "Short", "image": "realistic_female/hair_6_short.png", "value": 6},
-      {"label": "Long", "image": "realistic_female/hair_7_long.png", "value": 7},
-      {"label": "Ponytail", "image": "realistic_female/hair_8_ponytail.png", "value": 8},
-      {"label": "Twintails", "image": "realistic_female/hair_9_pigtails.png", "value": 9}
+      {"label": "Straight", "image": "hair_1_straight.png", "value": 1},
+      {"label": "Braids", "image": "hair_2_braids.png", "value": 2},
+      {"label": "Bangs", "image": "hair_3_bangs.png", "value": 3},
+      {"label": "Curly", "image": "hair_4_curly.png", "value": 4},
+      {"label": "Bun", "image": "hair_5_bun.png", "value": 5},
+      {"label": "Short", "image": "hair_6_short.png", "value": 6},
+      {"label": "Long", "image": "hair_7_long.png", "value": 7},
+      {"label": "Ponytail", "image": "hair_8_ponytail.png", "value": 8},
+      {"label": "Twintails", "image": "hair_9_pigtails.png", "value": 9}
   ],
   "hairColors": [
       {"label": "Unspecified", "image": "", "value": 0},
@@ -52,35 +51,35 @@
   ],
   "bodyTypes": [
       {"label": "Unspecified", "image": "", "value": 0},
-      {"label": "Petite", "image": "realistic_female/body_1_slim.png", "value": 1},
-      {"label": "Slim", "image": "realistic_female/body_2_petite.png", "value": 2},
-      {"label": "Athletic", "image": "realistic_female/body_3_athletic.png", "value": 3},
-      {"label": "Voluptuous", "image": "realistic_female/body_4_voluptuous.png", "value": 4},
-      {"label": "Curvy", "image": "realistic_female/body_5_curvy.png", "value": 5}
+      {"label": "Petite", "image": "body_1_slim.png", "value": 1},
+      {"label": "Slim", "image": "body_2_petite.png", "value": 2},
+      {"label": "Athletic", "image": "body_3_athletic.png", "value": 3},
+      {"label": "Voluptuous", "image": "body_4_voluptuous.png", "value": 4},
+      {"label": "Curvy", "image": "body_5_curvy.png", "value": 5}
   ],
   "topSizes": [
       {"label": "Unspecified", "image": "", "value": 0},
-      {"label": "Flat", "image": "realistic_female/breast_1_flat.png", "value": 1},
-      {"label": "Small", "image": "realistic_female/breast_2_small.png", "value": 2},
-      {"label": "Medium", "image": "realistic_female/breast_3_medium.png", "value": 3},
-      {"label": "Large", "image": "realistic_female/breast_4_large.png", "value": 4},
-      {"label": "Huge", "image": "realistic_female/breast_5_huge.png", "value": 5}
+      {"label": "Flat", "image": "breast_1_flat.png", "value": 1},
+      {"label": "Small", "image": "breast_2_small.png", "value": 2},
+      {"label": "Medium", "image": "breast_3_medium.png", "value": 3},
+      {"label": "Large", "image": "breast_4_large.png", "value": 4},
+      {"label": "Huge", "image": "breast_5_huge.png", "value": 5}
   ],
   "bottomSizes": [
       {"label": "Unspecified", "image": "", "value": 0},
-      {"label": "Small", "image": "realistic_female/butt_1_small.png", "value": 1},
-      {"label": "Medium", "image": "realistic_female/butt_2_medium.png", "value": 2},
-      {"label": "Large", "image": "realistic_female/butt_3_large.png", "value": 3},
-      {"label": "Skinny", "image": "realistic_female/butt_4_skinny.png", "value": 4},
-      {"label": "Athletic", "image": "realistic_female/butt_5_athletic.png", "value": 5}
+      {"label": "Small", "image": "butt_1_small.png", "value": 1},
+      {"label": "Medium", "image": "butt_2_medium.png", "value": 2},
+      {"label": "Large", "image": "butt_3_large.png", "value": 3},
+      {"label": "Skinny", "image": "butt_4_skinny.png", "value": 4},
+      {"label": "Athletic", "image": "butt_5_athletic.png", "value": 5}
   ],
   "clothing": [
     { "label": "Unspecified", "image": "", "value": 0},
-    { "label": "Uniform", "image": "realistic_female/clothes_1_uniform.png", "value": 1},
-    { "label": "Formal Dress", "image": "realistic_female/clothes_2_dress.png", "value": 2},
-    { "label": "Suit", "image": "realistic_female/clothes_3_suit.png", "value": 3},
-    { "label": "Casual", "image": "realistic_female/clothes_4_casual.png", "value": 4 },
-    { "label": "Athletic", "image": "realistic_female/clothes_5_athletic.png", "value": 5 },
+    { "label": "Uniform", "image": "clothes_1_uniform.png", "value": 1},
+    { "label": "Formal Dress", "image": "clothes_2_dress.png", "value": 2},
+    { "label": "Suit", "image": "clothes_3_suit.png", "value": 3},
+    { "label": "Casual", "image": "clothes_4_casual.png", "value": 4 },
+    { "label": "Athletic", "image": "clothes_5_athletic.png", "value": 5 },
     { "label": "Soccer", "image": "/bottom_athletic.png", "value": 6 },
     { "label": "Tennis", "image": "/bottom_athletic.png", "value": 7 },
     { "label": "Swimsuit", "image": "/bottom_athletic.png", "value": 8 },

@@ -48,11 +48,14 @@ import BoldViewGallery from "./Bold/View_Gallery.svg";
 import BoldArrowLeft from "./Bold/Arrow/Left.svg";
 import BoldReward from "./Bold/Reward.svg";
 import BoldArchive from "./Bold/Archive.svg";
+import BoldVolumeOn from "./Bold/volume-high.svg";
+import BoldVolumeOff from "./Bold/volume-slash.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
 import LineArchive from "./Line/Archive.svg";
 import LineArrowLeft from "./Line/Arrow_Left.svg";
+import LineArrowDown from "./Line/Arrow_Down.svg";
 import LineArrowRight from "./Line/Arrow_Right.svg";
 import LineArrowSwap from "./Line/Arrow_swap.svg";
 import LineCharacter from "./Line/Character.svg";
@@ -110,6 +113,8 @@ import EmotionAngry from "./Custom/Angry.svg";
 import CircleClose from "./Custom/CircleClose.svg";
 
 export {
+  BoldVolumeOn,
+  BoldVolumeOff,
   BoldArchive,
   LineComment,
   LineDisLike,
@@ -184,6 +189,7 @@ export {
   LineAIImage,
   LineArchive,
   LineArrowLeft,
+  LineArrowDown,
   LineArrowRight,
   LineArrowSwap,
   LineCharacter,

@@ -17,7 +17,10 @@ import {
   BoldReward,
   BoldShare,
   BoldVideo,
+  BoldVolumeOff,
+  BoldVolumeOn,
   LineArchive,
+  LineArrowDown,
   LineArrowLeft,
   LineFeatured,
 } from '@ui/Icons';
@@ -28,9 +31,11 @@ import SharePopup from '../layout/shared/SharePopup';
 interface ReelsContentProps {
   item: FeedInfo;
   isActive: boolean; // 현재 슬라이드인지 확인
+  isMute: boolean;
+  setIsMute: (mute: boolean) => void; // boolean 매개변수 추가
 }
 
-const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
+const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setIsMute}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
@@ -62,9 +67,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
   const [commentCount, setCommentCount] = useState(item.commentCount); // 비디오 총 길이
-
-  const [curFollowFeatured, setCurFollowFeatured] = useState(false); // 비디오 총 길이
-  const [isOpenFollowFeatured, setIsOpenFollowFeatured] = useState(false); // 비디오 총 길이
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
   const handleAddCommentCount = () => {
@@ -184,47 +186,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
 
   React.useEffect(() => {
     setCommentCount(item.commentCount);
-    console.log('id', item.id);
-    console.log('count', item.commentCount);
   }, [item]);
+
+  React.useEffect(() => {}, [isMute]);
   return (
     <div className={styles.reelsContainer}>
-      <div className={styles.followingContainer}>
-        <div className={styles.followingBox}>
-          <span className={styles.followingText}>
-            {curFollowFeatured && <>Featured</>}
-            {!curFollowFeatured && <>Following</>}
-          </span>
-          <div
-            className={styles.iconArrowDown}
-            onClick={() => {
-              setIsOpenFollowFeatured(!isOpenFollowFeatured);
-            }}
-          >
-            <img src={LineArrowLeft.src} style={{transform: 'rotate(270deg)'}}></img>
-          </div>
-        </div>
-      </div>
-
-      {isOpenFollowFeatured && (
-        <div
-          className={styles.featuredContainer}
-          onClick={() => {
-            setCurFollowFeatured(!curFollowFeatured);
-          }}
-        >
-          <span className={styles.featuredText}>
-            {' '}
-            {curFollowFeatured && <>Following</>}
-            {!curFollowFeatured && <>Featured</>}
-          </span>
-          <div className={styles.featuredIcon}>
-            <div className={styles.iconCircle}>
-              <img src={LineFeatured.src}></img>
-            </div>
-          </div>
-        </div>
-      )}
       <div className={styles.mainContent}>
         <div className={styles.Image}>
           {item.mediaState === 1 && (
@@ -243,7 +209,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                     src={url}
                     alt={`Slide ${idx}`}
                     loading="lazy"
-                    style={{width: '100%', height: '100%', objectFit: 'contain'}}
+                    style={{width: '100%', height: 'calc(100% - 4px)', objectFit: 'contain'}}
                   />
                 </SwiperSlide>
               ))}
@@ -253,12 +219,13 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
             <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
               <ReactPlayer
                 ref={playerRef} // ReactPlayer 참조 연결
-                muted={true}
+                muted={isMute}
                 url={item.mediaUrlList[0]} // 첫 번째 URL 사용
                 playing={isPlaying} // 재생 상태
                 loop={true}
                 width="100%"
-                height="100%"
+                playsinline={true}
+                height="calc(100% - 4px)"
                 style={{
                   borderRadius: '8px',
                 }}
@@ -315,7 +282,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
               <span className={styles.sponsored}>Sponsored</span>
             </div>
             <button
-              className={isFollow ? styles.followButtonOn : styles.followButtonOff}
+              className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
               onClick={() => {
                 setIsFollow(!isFollow);
                 console.log('isfollow', isFollow);
@@ -324,37 +291,37 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
               Follow
             </button>
           </div>
-          <div className={styles.text_container}>
-            <div
-              className={styles.text_content}
-              style={{
-                maxHeight: isExpanded ? 'none' : '20px',
-                overflowY: isExpanded ? 'auto' : 'hidden',
-                width: isExpanded ? '80%' : '100%',
-              }}
-              onClick={() => {
-                toggleExpanded();
-              }}
-            >
-              {isExpanded
-                ? item.description
-                : item.description.length > 20 // 접힌 상태에서 최대 길이 제한
-                ? `${item.description.slice(0, 17)}...` // 첫 17글자 + "..."
-                : item.description}
+          {item?.description && (
+            <div className={styles.text_container}>
+              <div
+                className={styles.text_content}
+                style={{
+                  maxHeight: isExpanded ? 'none' : '20px',
+                  overflowY: isExpanded ? 'auto' : 'hidden',
+                  width: isExpanded ? '80%' : '100%',
+                }}
+                onClick={() => {
+                  toggleExpanded();
+                }}
+              >
+                {isExpanded
+                  ? item.description
+                  : item.description.length > 20 // 접힌 상태에서 최대 길이 제한
+                  ? `${item.description.slice(0, 17)}...` // 첫 17글자 + "..."
+                  : item.description}
+              </div>
             </div>
-          </div>
+          )}
           {/* Video Info */}
           <div className={styles.videoInfo}>
             {item.mediaState == 1 && <>Image</>}
             {item.mediaState == 2 && (
               <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
-                <div style={{height: '16.67px', width: '16.67px'}}>
-                  <img src={BoldVideo.src} style={{height: '100%', width: '100%'}}></img>
-                </div>
+                <img className={styles.iconVideo} src={BoldVideo.src}></img>
                 Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
               </div>
             )}
-            <div>{formatTimeAgo(item.createAt)}</div>
+            <div>{formatTimeAgo(item.createAt.toString())}</div>
           </div>
         </div>
 
@@ -378,7 +345,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
                   : 'none', // 기본 상태는 필터 없음
               }}
             />
-            {likeCount}
+            <div className={styles.count}>{likeCount}</div>
           </div>
 
           {/* Dislike Button */}
@@ -400,7 +367,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
           </div>
           <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
             <img src={BoldComment.src} className={styles.button}></img>
-            {commentCount}
+            <div className={styles.count}>{commentCount}</div>
           </div>
           <div
             className={styles.noneTextButton}
@@ -428,6 +395,21 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive}) => {
           >
             <img src={BoldMore.src} className={styles.button}></img>
           </div>
+        </div>
+        <div
+          className={styles.volumeButton}
+          onClick={() => {
+            setIsMute(!isMute);
+          }}
+        >
+          {/* 검은색 반투명 배경 */}
+          {item.mediaState == 2 && isMute && <div className={styles.volumeCircleIcon}></div>}
+
+          {/* 음소거 상태 아이콘 */}
+          {item.mediaState == 2 && isMute && <img src={BoldVolumeOff.src} className={styles.volumeIcon} />}
+
+          {/* 볼륨 활성 상태 아이콘 */}
+          {item.mediaState == 2 && !isMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
         </div>
       </div>
 

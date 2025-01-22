@@ -50,6 +50,11 @@
     text-align: center;
     color: #ffffff;
     display: flex;
+
+    position:absolute;
+    top:23px;
+    left:50%;
+    transform: translateX(-50%);
   }
   
   .closeButton {
@@ -122,4 +127,9 @@
     justify-content: center;
     align-items: center;
     align-content: center;
+  
+  }
+  .circleBlack img{
+    width:18px;
+    height:18px;
   }

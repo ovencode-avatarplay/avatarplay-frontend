@@ -90,7 +90,7 @@
 .userInfo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  /* gap: 10px; */
 }
 
 .profilePicture {
@@ -101,10 +101,31 @@
 }
 
 .profileDetails {
+  margin-left:8px;
   display: flex;
   flex-direction: column;
 }
+.follow{
+  margin-left:15px;
 
+  /* width: 40px; */
+  /* height: 17px; */
+  padding: 4px 8px;
+  background: #000000;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  background-color: #00000000;
+  color: #FFFFFF;
+  cursor: pointer;
+  z-index: 10;
+  color: var(--White, #FFF);
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.21px;
+}
 .username {
   font-family: 'Lato';
   font-weight: 600;
@@ -120,44 +141,11 @@
 }
 
 .followButtonOff {
-  width: 40px;
-  height: 17px;
 
-  padding: 4px 8px;
-  background: #000000;
-  border-radius: 8px;
-  border: 1px solid rgb(0, 0, 0);
-  background-color: #000000;
-  color: #FFFFFF;
-  cursor: pointer;
-  z-index: 10;
-  color: var(--White, #FFF);
-font-family: Lato;
-font-size: 14px;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-letter-spacing: -0.21px;
 }
 
 .followButtonOn {
-  width: 40px;
-  height: 17px;
-  padding: 4px 8px;
-  background: #000000;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.40);
-  background-color: #00000000;
-  color: #FFFFFF;
-  cursor: pointer;
-  z-index: 10;
-  color: var(--White, #FFF);
-font-family: Lato;
-font-size: 14px;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-letter-spacing: -0.21px;
+
 }
 
 .description {
@@ -178,12 +166,16 @@ letter-spacing: -0.21px;
   gap: 10px;
 }
 
+.iconVideo{
+  margin-left:2px;
+}
+
 .ctaButtons {
   position: absolute;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  bottom: 91px;
+  bottom: 120px;
   right: 13px;
   z-index: 12;
   
@@ -223,6 +215,15 @@ line-height: 18px; /* 150% */
   
   cursor: pointer;
 }
+
+img.button{
+  display:block;
+
+}
+.count{
+  margin-top: 4px;
+}
+
 .text_container {  
   overflow: hidden;
   width: 100%;
@@ -260,48 +261,22 @@ line-height: 18px; /* 150% */
   position: absolute;
   display: flex;
   flex-direction: column;
-  align-items: flex-start
-  ;
-  bottom: 24.5px;
-  left: 16px;
-  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+  bottom: 4px;
+  padding-bottom: 19px;
+  /* left: 16px; */
+  padding-left: 16px;
+  gap: 16px;
   z-index: 10;
-}
-
-.followingContainer {
-  position: absolute;
-  width: 114px;
-  height: 18px;
-  left: 16px;
-  top: 13px;
-  display: flex;
-  align-items: center;
-  z-index: 12;
-}
-
-.followingBox {
-  
-  display: flex;
-  flex-direction: row;
-  gap: 7px;
-  
-}
-
-.followingText {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 22px;
-  line-height: 80%; /* 18px */
-  color: #FFFFFF;
+  background: linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5))
 }
 
 .iconArrowDown {
-  
-  width: 12px;
-  height: 12px;
-  left: 118px;
-  top: 137px;
+  /* width: 12px; */
+  /* height: 12px; */
+  /* left: 118px; */
+  /* top: 137px; */
 }
 
 .vector {
@@ -314,57 +289,33 @@ line-height: 18px; /* 150% */
   box-shadow: 0px 0px 30px rgba(4, 4, 21, 0.8);
 }
 
-/* Container 스타일 */
-.featuredContainer {
+.volumeButton {
   position: absolute;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 14px;
-  gap: 12px;
-
-  position: absolute;
-  width: 150px;
-  height: 46px;
-  left: 16px;
-  top: 48px;
-
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid var(--Neutral-800, #2C3131);
-  border-radius: 10px;
+  top: 15px;
+  right: 15px;
   z-index: 13;
-}
-
-/* 텍스트 스타일 */
-.featuredText {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 160%;
+  cursor: pointer;
+  width:30px; /* 버튼 크기 */
+  height: 30px;
   display: flex;
   align-items: center;
-  letter-spacing: 0.2px;
-  color: #FFFFFF;
-
-  width: 65px;
-  height: 26px;
-}
-
-/* 아이콘 컨테이너 스타일 */
-.featuredIcon {
-  display: flex;
   justify-content: center;
-  align-items: center;
-  width: 24px;
-  height: 24px;
-  position: relative;
 }
 
-/* 원형 아이콘 스타일 */
-.iconCircle {
-    width: 100%;
+.volumeCircleIcon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* 검은색 반투명 배경 */
+  border-radius: 50%;
+  z-index: 12;
+}
+
+.volumeIcon {
+  z-index: 13; /* 아이콘이 배경 위에 표시되도록 */
+  width: 20px; /* 아이콘 크기 */
+  height: 20px;
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(238deg) brightness(106%) contrast(101%);
 }

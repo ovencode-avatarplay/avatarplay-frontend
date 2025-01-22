@@ -28,7 +28,7 @@ import {
   TriggerMediaState,
   TriggerTypeNames,
   updateTriggerInfo,
-} from '@/redux-store/slices/EpisodeInfo';
+} from '@/redux-store/slices/ContentInfo';
 import TriggerChapterList from './TriggerChapterList';
 import {moveTriggerToEpisode} from '@/redux-store/slices/ContentInfo';
 import BottomRenameDrawer from '../BottomRenameDrawer';
@@ -62,19 +62,29 @@ interface TriggerListItemProps {
 const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelected, index}) => {
   const dispatch = useDispatch();
   // Redux 상태에서 triggerInfoList 배열을 가져오고, 전달받은 index를 통해 해당 item을 탐색
-  const item = useSelector((state: RootState) => state.episode.currentEpisodeInfo.triggerInfoList[index]);
-  const ep = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
+  const selectedChapterIdx = useSelector((state: RootState) => state.content.selectedChapterIdx);
+  const selectedEpisodeIdx = useSelector((state: RootState) => state.content.selectedEpisodeIdx);
+  const ep = useSelector(
+    (state: RootState) =>
+      state.content.curEditingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx],
+  );
+
+  const item = useSelector(
+    (state: RootState) =>
+      state.content.curEditingContentInfo.chapterInfoList[selectedChapterIdx].episodeInfoList[selectedEpisodeIdx]
+        .triggerInfoList[index],
+  );
 
   const [openTriggerCreate, SetOpenTriggerCreate] = useState(false); // Trigger name 상태
 
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedChapterIdx, setSelectedChapterIdx] = useState<number | null>(null);
-  const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number | null>(null);
+  const [targetChapterIdx, setTargetChapterIdx] = useState<number | null>(null);
+  const [targetEpisodeIdx, setTargetEpisodeIdx] = useState<number | null>(null);
 
   const editingContentInfo = useSelector((state: RootState) => state.content.curEditingContentInfo); // 현재 수정중인 컨텐츠 정보
   const handleConfirm = (chapterIdx: number, episodeIdx: number) => {
-    setSelectedChapterIdx(chapterIdx);
-    setSelectedEpisodeIdx(episodeIdx);
+    setTargetChapterIdx(chapterIdx);
+    setTargetEpisodeIdx(episodeIdx);
     setModalOpen(false); // 모달 닫기
     dispatch(
       moveTriggerToEpisode({

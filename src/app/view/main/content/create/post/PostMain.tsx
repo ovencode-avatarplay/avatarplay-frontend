@@ -209,7 +209,7 @@ const PostMain: React.FC<Props> = () => {
 
     const feedInfo: FeedInfo = {
       id: 0,
-      urlLinkKey: 0,
+      urlLinkKey: '',
       mediaState: state, // 예시 값
       mediaUrlList: mediaUrls,
       description: text,
@@ -223,7 +223,7 @@ const PostMain: React.FC<Props> = () => {
       characterProfileId: 0,
       characterProfileName: '',
       characterProfileUrl: '',
-      createAt: '',
+      createAt: new Date(),
     };
     setLoading(true);
     const result = await sendCreateFeed(feedInfo);

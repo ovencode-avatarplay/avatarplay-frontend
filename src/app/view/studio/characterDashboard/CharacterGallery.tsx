@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Box, ToggleButton, ToggleButtonGroup, Dialog, DialogContent, Button, Typography} from '@mui/material';
+import {Box, Dialog, DialogContent, Button, Typography} from '@mui/material';
 import styles from './CharacterGallery.module.css';
-
-import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 
 import ImageUploadDialog from '../../main/content/create/content-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaState, sendUpload, MediaUploadReq} from '@/app/NetWork/ImageNetwork';
@@ -11,6 +9,7 @@ import {SaveGalleryReq, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
 import CharacterGalleryGrid from './CharacterGalleryGrid';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CharacterGalleryToggle from './CharacterGalleryToggle';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
 
 interface CharacterGalleryProps {
   characterInfo: CharacterInfo;

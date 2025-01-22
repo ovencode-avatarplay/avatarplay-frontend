@@ -1,9 +1,9 @@
 'use client';
 
 // 리액트
-import React, { useEffect, useRef, useState } from 'react';
-import { RootState } from '@/redux-store/ReduxStore';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useEffect, useRef, useState} from 'react';
+import {RootState} from '@/redux-store/ReduxStore';
+import {useDispatch, useSelector} from 'react-redux';
 import Link from 'next/link';
 
 // Redux
@@ -12,8 +12,8 @@ import {
   openDrawerContentId,
   setDrawerEpisodeId,
 } from '@/redux-store/slices/DrawerCharacterDescSlice';
-import { setStateChatting, ChattingState } from '@/redux-store/slices/Chatting';
-import { setUrlLinkUse } from '@/redux-store/slices/ChattingEnter';
+import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
+import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
 
 // Network
 import {
@@ -35,30 +35,28 @@ import {
   BoldShare,
 } from '@ui/Icons';
 // MUI
-import { Drawer, Select, MenuItem } from '@mui/material';
+import {Drawer} from '@mui/material';
 
 // Components
-import { getLocalizedLink } from '@/utils/UrlMove';
+import {getLocalizedLink} from '@/utils/UrlMove';
 import DrawerContentEpisodeItemList from './ContentEpisodeList';
 import ContentRecommendList from './ContentRecommendList';
-import { EpisodeCardProps } from './ContentDescType';
+import {EpisodeCardProps} from './ContentDescType';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import Splitter from '@/components/layout/shared/CustomSplitter';
-import SelectDrawer, { SelectDrawerItem } from '@/components/create/SelectDrawer';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import { GetCharacterInfoReq, sendGetCharacterInfo } from '@/app/NetWork/CharacterNetwork';
-import { ChapterInfo } from '@/redux-store/slices/ContentInfo';
-import { CharacterInfo } from '@/redux-store/slices/EpisodeInfo';
+import {GetCharacterInfoReq, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
 type ContentWholeDesc = {
   // 필요한 다른 속성들이 있다면 여기서 모두 정의
   characterInfo?: CharacterInfo;
-  urlLinkKey : string;
+  urlLinkKey: string;
 };
 
 const DrawerCharacterDesc = () => {
   const dispatch = useDispatch();
-  const { open, characterId, episodeId: episodeId } = useSelector((state: RootState) => state.drawerCharacterDesc);
+  const {open, characterId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerCharacterDesc);
 
   const [loading, setLoading] = useState(false);
 
@@ -87,8 +85,8 @@ const DrawerCharacterDesc = () => {
   const [authorComment, setAuthorComment] = useState('authorComment');
   const [recommendContentList, setRecommendContentList] = useState<recommendContentInfo[]>([]);
 
-  const [chapters, setChapters] = useState<{ id: number; name: string }[]>([]);
-  const [episodes, setEpisodes] = useState<{ id: number; name: string }[]>([]);
+  const [chapters, setChapters] = useState<{id: number; name: string}[]>([]);
+  const [episodes, setEpisodes] = useState<{id: number; name: string}[]>([]);
   const [chapterSelectDrawerOpen, setChapterSelectDrawerOpen] = useState(false);
   const [drawerItems, setDrawerItems] = useState<SelectDrawerItem[]>([]);
 
@@ -114,7 +112,7 @@ const DrawerCharacterDesc = () => {
     setContentDescExpanded(!contentDescExpanded);
   };
 
-  console.log("contentWholeDesc : ", contentWholeDesc);
+  console.log('contentWholeDesc : ', contentWholeDesc);
   useEffect(() => {
     const chattingState: ChattingState = {
       contentName: currentChattingState.contentName || '',
@@ -123,7 +121,7 @@ const DrawerCharacterDesc = () => {
       episodeId: Number(episodeId),
       contentUrl: contentUrl,
     };
-    dispatch(setStateChatting(chattingState));
+    // dispatch(setStateChatting(chattingState));
   }, [episodeId]);
 
   useEffect(() => {
@@ -153,7 +151,6 @@ const DrawerCharacterDesc = () => {
     //   setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
     // }
     setContentUrl(`?v=${contentWholeDesc?.urlLinkKey}` || `?v=`);
-
   }, [contentWholeDesc]);
 
   // useEffect(() => {
@@ -167,7 +164,6 @@ const DrawerCharacterDesc = () => {
   // chapter가 변경될 때 에피소드 리스트 업데이트
   useEffect(() => {
     setSelectedEpisodeIdx(0);
-
   }, [chapters, selectedChapterIdx]);
 
   useEffect(() => {
@@ -192,7 +188,7 @@ const DrawerCharacterDesc = () => {
     try {
       // const req: GetContentByIdReq = { contentId: contentId, language: navigator.language };
       // const response = await sendContentByIdGet(req);
-      const req: GetCharacterInfoReq = { characterId: contentId };
+      const req: GetCharacterInfoReq = {characterId: contentId};
       const response = await sendGetCharacterInfo(req);
       if (response?.data) {
         setContentWholeDesc(response.data);
@@ -256,7 +252,7 @@ const DrawerCharacterDesc = () => {
     },
   ];
 
-  console.log("contentWholeDesc", contentWholeDesc)
+  console.log('contentWholeDesc', contentWholeDesc);
 
   return (
     <Drawer
@@ -367,7 +363,6 @@ const DrawerCharacterDesc = () => {
               </Link>
             </div>
           </div>
-
         </div>
         <LoadingOverlay loading={loading} />
       </div>

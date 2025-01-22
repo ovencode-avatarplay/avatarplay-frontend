@@ -1,27 +1,10 @@
-import {
-  Box,
-  Button,
-  Drawer,
-  FormControlLabel,
-  IconButton,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography,
-} from '@mui/material';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import InfoIcon from '@mui/icons-material/Info';
-import PublicIcon from '@mui/icons-material/Public';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-
 import styles from './PublishCharacter.module.css';
 
 import {useEffect, useState} from 'react';
 import {CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -205,14 +188,14 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
             labelText="Introduction"
             promptValue={characterIntroduction || ''}
             handlePromptChange={e => setCharacterIntroduction(e.target.value)}
-            maxPromptLength={500}
+            maxPromptLength={1000}
           />
           <MaxTextInput
             displayDataType={displayType.Label}
             labelText="Description"
             promptValue={characterDescription || ''}
             handlePromptChange={e => setCharacterDescription(e.target.value)}
-            maxPromptLength={500}
+            maxPromptLength={1000}
           />
           <MaxTextInput
             displayDataType={displayType.Label}
@@ -223,7 +206,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
               currentCharacter.worldScenario = e.target.value;
               setCurrentCharacter({...currentCharacter});
             }}
-            maxPromptLength={500}
+            maxPromptLength={1000}
           />
           <MaxTextInput
             displayDataType={displayType.Label}
@@ -234,7 +217,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
               currentCharacter.greeting = e.target.value;
               setCurrentCharacter({...currentCharacter});
             }}
-            maxPromptLength={500}
+            maxPromptLength={1000}
           />
           <MaxTextInput
             displayDataType={displayType.Label}
@@ -247,7 +230,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
               currentCharacter.secret = e.target.value;
               setCurrentCharacter({...currentCharacter});
             }}
-            maxPromptLength={500}
+            maxPromptLength={1000}
           />
           <CustomSettingButton
             type="select"

@@ -7,7 +7,7 @@ import {useRouter} from 'next/navigation';
 import styles from './EpisodeInitialize.module.css';
 
 import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo, EpisodeInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo, EpisodeInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
 
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
@@ -75,13 +75,19 @@ const EpisodeInitialize: React.FC<Props> = ({
   // 공통
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
 
   const [isEpisodeNameOn, setIsEpisodeNameOn] = useState<boolean>(false);
 
   // 에피소드 생성시 가져올 빈 데이터
   let emptyEpisodeInfo = emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0];
   // 편집시 가져올데이터
-  const editingEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
+  const selectedChapterIdx = useSelector((state: RootState) => state.content.selectedChapterIdx);
+  const selectedEpisodeIdx = useSelector((state: RootState) => state.content.selectedEpisodeIdx);
+  const editingEpisodeInfo = useSelector(
+    (state: RootState) =>
+      state.content.curEditingContentInfo.chapterInfoList[selectedChapterIdx]?.episodeInfoList[selectedEpisodeIdx],
+  );
 
   // 스텝
   const [maxStep, setMaxStep] = useState<number>(4);
@@ -194,6 +200,11 @@ const EpisodeInitialize: React.FC<Props> = ({
   }
 
   function addStep() {
+    if (hasError) {
+      alert('입력값에 오류가 있습니다.');
+      return;
+    }
+
     if (!checkEssential()) {
       alert('필수 선택 항목이 선택되지 않았습니다.');
       return;
@@ -352,6 +363,11 @@ const EpisodeInitialize: React.FC<Props> = ({
   // 공통
 
   const handleOnSetEpisodeName = () => {
+    if (hasError) {
+      alert('입력값에 오류가 있습니다.');
+      return;
+    }
+
     if (!checkEssential()) {
       alert('필수 선택 항목이 선택되지 않았습니다.');
       return;
@@ -382,9 +398,9 @@ const EpisodeInitialize: React.FC<Props> = ({
         name: name,
         backgroundImageUrl: '',
         characterInfo: {
-          greeting: currentSelectedCharacter.greeting,
-          secret: currentSelectedCharacter.secret,
-          worldScenario: currentSelectedCharacter.worldScenario,
+          greeting: currentSelectedCharacter.greeting || '',
+          secret: currentSelectedCharacter.secret || '',
+          worldScenario: currentSelectedCharacter.worldScenario || '',
           id: currentSelectedCharacter.id,
           name: currentSelectedCharacter.name,
           introduction: currentSelectedCharacter.introduction,
@@ -612,7 +628,11 @@ const EpisodeInitialize: React.FC<Props> = ({
         return (
           <>
             {uploadType === 'SelectCharacter' ? (
-              <CharacterGrid characters={characters || []} onCharacterSelect={handleCharacterSelect} />
+              <CharacterGrid
+                characters={characters || []}
+                onCharacterSelect={handleCharacterSelect}
+                style={{paddingBottom: '60px'}}
+              />
             ) : uploadType === 'UploadImage' ? (
               <>
                 <EpisodeUploadImage imgUrl={curEpisodeCharacterImage} setImgUrl={setCurEpisodeCharacterImage} />
@@ -645,6 +665,7 @@ const EpisodeInitialize: React.FC<Props> = ({
                   }}
                   category={category}
                   isTrigger={true}
+                  style={{paddingBottom: '60px'}}
                 />
               </>
             ) : uploadType === 'UploadImage' ? (
@@ -666,6 +687,7 @@ const EpisodeInitialize: React.FC<Props> = ({
                 data={bgData}
                 selectedIdx={selectedBackground}
                 onSelect={setSelectedBackground}
+                style={{paddingBottom: '60px'}}
               />
             ) : (
               <div>{getInputCharacterDesc()}</div>
@@ -696,6 +718,7 @@ const EpisodeInitialize: React.FC<Props> = ({
             maxPromptLength={maxPromptLength}
             displayDataType={displayType.LabelAndHint}
             labelText="CharacterPrompt"
+            onErrorChange={setHasError}
           />
         </div>
       </div>

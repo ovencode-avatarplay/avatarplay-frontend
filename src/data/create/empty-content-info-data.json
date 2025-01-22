@@ -41,7 +41,9 @@
                 "episodeDescription": {
                   "scenarioDescription": "",
                   "introDescription": "",
-                  "secret": ""
+                  "secret": "",
+                  "greeting" : "",
+                  "worldScenario" : ""
                 },
                 "triggerInfoList": [
                 ],

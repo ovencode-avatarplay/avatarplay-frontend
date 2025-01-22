@@ -16,17 +16,17 @@ const NextEpisodePopup: React.FC<PopupProps> = ({open, onYes, onNo, data}) => {
   const [waitTime, setWaitTime] = useState(10);
 
   useEffect(() => {
-    // const interval = setInterval(() => {
-    //   setWaitTime(prev => {
-    //     if (prev <= 1) {
-    //       clearInterval(interval);
-    //       onYes();
-    //       return 0;
-    //     }
-    //     return prev - 1;
-    //   });
-    // }, 1000);
-    // return () => clearInterval(interval);
+    const interval = setInterval(() => {
+      setWaitTime(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          onYes();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
   }, [onYes]);
 
   return (
