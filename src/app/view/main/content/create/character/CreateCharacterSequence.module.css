@@ -179,17 +179,27 @@
   flex-wrap: wrap;
 }
 
-.horizontalButtonGroup.buttonGap11
+
+.gridButtonGroup3x3 {
+  width: var(--second-width); 
+  max-width: 370px;
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  flex-wrap: wrap;
+}
+
+.buttonGap11
 {
   gap: 11px;
 }
 
-.horizontalButtonGroup.buttonGap10
+.buttonGap10
 {
   gap: 10px;
 }
 
-.horizontalButtonGroup.buttonGap6
+.buttonGap6
 {
   gap: 6px;
 }
