@@ -21,17 +21,26 @@ interface ChatMediaDialogProps {
 const ChatMediaDialog: React.FC<ChatMediaDialogProps> = ({mediaData, isModalOpen, closeModal, type, initNum}) => {
   console.log('type', type);
   return (
-    <Modal open={isModalOpen} onClose={closeModal}>
+    <Modal
+      open={isModalOpen}
+      onClose={closeModal}
+      sx={{
+        '& .MuiBackdrop-root': {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)', // 검은색 배경 (투명도 80%)
+        },
+      }}
+    >
       <Box
         sx={{
           position: 'fixed',
-          top: 0,
-          left: 0,
           width: 'var(--full-width)',
           height: '100vh',
           bgcolor: 'gray',
           zIndex: 1300,
           outline: 'none',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          backgroundColor: 'rgba(0, 0, 0, 0.8)', // 검은색 배경 (투명도 80%)
         }}
       >
         <Box className={styles['modal-header']}>

@@ -23,10 +23,13 @@ import {
   LineArrowDown,
   LineArrowLeft,
   LineFeatured,
+  LineScaleUp,
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
 import ReelsComment from './ReelsComment';
 import SharePopup from '../layout/shared/SharePopup';
+import ChatMediaDialog from '@/app/view/main/content/Chat/MainChat/ChatMediaDialog';
+import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainChat/ChatTypes';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -43,6 +46,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
   const [isDisLike, setIsDisLike] = useState(item.isDisLike);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isShare, setIsShare] = useState(false);
+  const [isImageModal, setIsImageModal] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
   useEffect(() => {
@@ -189,6 +193,12 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
   }, [item]);
 
   React.useEffect(() => {}, [isMute]);
+
+  const imageMediaData: MediaData = {
+    mediaType: TriggerMediaState.TriggerImage, // 기본값 (TriggerMediaState의 기본 상태)
+    mediaUrlList: item.mediaUrlList, // 빈 배열
+  };
+
   return (
     <div className={styles.reelsContainer}>
       <div className={styles.mainContent}>
@@ -399,17 +409,21 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
         <div
           className={styles.volumeButton}
           onClick={() => {
-            setIsMute(!isMute);
+            if (item.mediaState == 2) setIsMute(!isMute);
+            else if (item.mediaState == 1) setIsImageModal(true);
           }}
         >
           {/* 검은색 반투명 배경 */}
-          {item.mediaState == 2 && isMute && <div className={styles.volumeCircleIcon}></div>}
+          {isMute && <div className={styles.volumeCircleIcon}></div>}
 
           {/* 음소거 상태 아이콘 */}
           {item.mediaState == 2 && isMute && <img src={BoldVolumeOff.src} className={styles.volumeIcon} />}
 
           {/* 볼륨 활성 상태 아이콘 */}
           {item.mediaState == 2 && !isMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
+
+          {/* 이미지 확대 아이콘 */}
+          {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />}
         </div>
       </div>
 
@@ -426,6 +440,13 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
         url={window.location.href}
         onClose={() => setIsShare(false)}
       ></SharePopup>
+
+      <ChatMediaDialog
+        isModalOpen={isImageModal}
+        closeModal={() => setIsImageModal(false)}
+        type={TriggerMediaState.TriggerImage}
+        mediaData={imageMediaData}
+      ></ChatMediaDialog>
     </div>
   );
 };
