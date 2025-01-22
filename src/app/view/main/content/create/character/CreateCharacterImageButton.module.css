@@ -20,13 +20,16 @@
 .imageBackGround.large
 {
   width: calc(var(--second-width) * 0.5 - 5.5px);
+  max-width: 180px;
   height: 260px;
 }
 
 .imageBackGround.middle
 {
   width: calc(var(--second-width) * 0.33 - 3.2px);
+  max-width: 116px;
   height: calc(var(--second-width) * 0.33 - 3.2px);
+  max-height: 116px;
 }
 
 .imageBackGround.small
