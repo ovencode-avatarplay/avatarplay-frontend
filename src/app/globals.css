@@ -171,11 +171,14 @@
   
   --body-height : calc(100% - 58px - 48px);
 }
-html{
+/* html{
   height:100%;
 }
 body{    
   height:100dvh;
+} */
+html,body{
+  height: 100%;
 }
 
 .safe-area-container {
