@@ -170,19 +170,22 @@ export default function BottomNav() {
             const isMy = button.label == 'My';
             if (!isMy) {
               return (
-                <Link key={index} href={index === 0 || index === 1 || index === 4 ? getLocalizedLink(button.link) : ''}>
+                <Link
+                  key={index}
+                  href={index === 0 || index === 1 || index === 4 ? getLocalizedLink(button.link) : ''}
+                  onClick={index !== buttonData.length - 1 ? () => handleClick(index) : undefined}
+                  onMouseDown={index === buttonData.length - 1 ? handleLongPressStart : undefined}
+                  onMouseUp={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
+                  onMouseLeave={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
+                  // 모바일 대응
+                  onTouchStart={index === buttonData.length - 1 ? handleLongPressStart : undefined}
+                  onTouchEnd={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
+                  onTouchCancel={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
+                >
                   <button
                     className={`${styles.navButton} 
                     ${selectedIndex === index ? styles.selected : ''} 
                     ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
-                    onClick={index !== buttonData.length - 1 ? () => handleClick(index) : undefined}
-                    onMouseDown={index === buttonData.length - 1 ? handleLongPressStart : undefined}
-                    onMouseUp={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
-                    onMouseLeave={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
-                    // 모바일 대응
-                    onTouchStart={index === buttonData.length - 1 ? handleLongPressStart : undefined}
-                    onTouchEnd={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
-                    onTouchCancel={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
                   >
                     {button.icon}
                   </button>
