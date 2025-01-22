@@ -1,8 +1,11 @@
 .bottomNav {
   position: fixed;
   bottom: 0;
+  left:50%;
+  transform: translateX(-50%);
     
   display: flex;
+  
  
   width: var(--full-width);
   height: var(--bottom-nav-height);
@@ -38,17 +41,23 @@
   align-items: flex-start;
   flex-shrink: 0;
   align-self: stretch;  
+  width:100%;
+  justify-content: space-between;
 }
-
+.bottomNavBox > *{
+  flex:1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .navButton
 {
   display: flex;
   padding: 12px 25.4px 12px 26.2px;
-  width: calc(100vw / 5 - 1vw);
+  /* width: calc(100vw / 5 - 1vw); */
   /*width: 76.58px;*/
   justify-content: center;
   align-items: center;
-  flex: 1 0 0;
   align-self: stretch;
 }
  
