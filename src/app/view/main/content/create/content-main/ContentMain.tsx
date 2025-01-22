@@ -734,6 +734,7 @@ const ContentMain: React.FC = () => {
 
         const episode = chapter.episodeInfoList[selectedEpisodeIdx];
         if (episode) {
+          //dispatch(setCurrentEpisodeInfo(episode));
         } else {
           console.error('Episode not found with idx:', selectedEpisodeIdx);
         }
