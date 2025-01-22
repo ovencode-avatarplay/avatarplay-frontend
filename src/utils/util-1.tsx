@@ -13,6 +13,7 @@ export const useBackHandler = () => {
   return handleBackClick;
 };
 
+// 줌인아웃을 막는다. ( 채팅창에서만 ?? )
 export const preventZoom = () => {
   document.addEventListener(
     'touchstart',

@@ -14,7 +14,13 @@ import ChatBar from './ChatBar';
 import {cheatMessage, isAnyCheatMessageType, cheatManager} from '@/devTool/CheatCommand';
 import {useRouter} from 'next/navigation';
 interface FooterChatProps {
-  onSend: (message: string, isMyMessage: boolean, isClearString: boolean, isShowDate: boolean) => void;
+  onSend: (
+    message: string,
+    isMyMessage: boolean,
+    isClearString: boolean,
+    isShowDate: boolean,
+    //tempIdforSendQuestion: number,
+  ) => void;
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   streamKey: string;
   setStreamKey: (key: string) => void;
@@ -27,11 +33,10 @@ interface FooterChatProps {
   onReqPrevChatting: (isEnter: boolean) => void;
   EmoticonData?: EmoticonGroupInfo[];
 
-  isSendingMessage: {
-    state: boolean;
-  };
+  isSendingMessage: React.MutableRefObject<boolean>; // ref 타입으로 쓰기가능형태로 받아오기
   onRemoveChat: (id: number) => void;
   onCheatChangeDate: (cheat: string) => void;
+  //tempIdforSendQuestion: number;
 }
 
 const FooterChat: React.FC<FooterChatProps> = ({
@@ -139,12 +144,12 @@ const FooterChat: React.FC<FooterChatProps> = ({
       .trim();
 
     if (cleanedMessages == '' || cleanedMessages == null) return;
-    if (isSendingMessage.state === true) return;
-    else isSendingMessage.state = true;
+    if (isSendingMessage.current === true) return;
+    else isSendingMessage.current = true;
 
     // 치트 메시지면 치트키 처리하고 빠져나온다.
     if ((await cheatMessageProcess(messages || '')) === true) {
-      isSendingMessage.state = false;
+      isSendingMessage.current = false;
       return;
     }
     const messageText = messages ? messages : '';
