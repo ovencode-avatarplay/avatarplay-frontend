@@ -43,7 +43,7 @@ export const useStreamMessage = ({
       `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
     );
 
-    eventSource.onmessage = event => {
+    eventSource.onmessage = async event => {
       try {
         setIsLoading(false);
         if (!event.data) {
@@ -51,7 +51,7 @@ export const useStreamMessage = ({
         }
 
         const newMessage = JSON.parse(event.data);
-        handleSendMessage(newMessage, false, true, false);
+        await handleSendMessage(newMessage, false, true, false);
 
         if (newMessage.includes('$') === true) {
           isSendingMessage.current = false;
@@ -65,9 +65,9 @@ export const useStreamMessage = ({
       }
     };
 
-    eventSource.onerror = error => {
+    eventSource.onerror = async error => {
       console.error('Stream encountered an error or connection was lost');
-      handleSendMessage(`${ESystemError.syserr_chat_stream_error}`, false, false, false);
+      await handleSendMessage(`${ESystemError.syserr_chat_stream_error}`, false, false, false);
       isSendingMessage.current = false;
 
       eventSource.close();
@@ -86,7 +86,7 @@ export const useStreamMessage = ({
       `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/retryStream?streamKey=${retryStreamKey}`, // 쿼리 파라미터 제대로 추가
     );
 
-    eventSource.onmessage = event => {
+    eventSource.onmessage = async event => {
       try {
         if (!event.data) {
           throw new Error('Received null or empty data');
@@ -97,7 +97,7 @@ export const useStreamMessage = ({
 
         const newMessage = JSON.parse(event.data);
         console.log('stream new text====' + newMessage + '====');
-        handleSendMessage(newMessage, false, true, false);
+        await handleSendMessage(newMessage, false, true, false);
         if (newMessage.includes('$') === true) {
           isSendingMessage.current = false;
 

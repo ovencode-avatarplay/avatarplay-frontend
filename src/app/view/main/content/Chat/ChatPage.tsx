@@ -117,13 +117,32 @@ const ChatPage: React.FC = () => {
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, saveChatStreamInfo} = useStreamMessage({
+    isLoading,
+    setIsLoading,
+    handleSendMessage,
+    isSendingMessage,
+    setChatId,
+    parsedMessages,
+    setParsedMessages,
+    parsedMessagesRef,
+    TempIdforSendQuestion,
+  });
+
+  useEffect(() => {
+    preventZoom(); // 줌인아웃을 막는다.
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', setFullHeight);
+    window.addEventListener('orientationchange', setFullHeight);
+    setFullHeight();
+
+    // loadEmoticons();
+  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
+
   // 나 또는 상대방의 메시지를 출력하기 위한 함수. ( 상대방의 메시지도 결국은 내가 메시지를 보내야만 오기때문에 이렇게 네이밍 됨. )
-  const handleSendMessage = async (
-    message: string,
-    isMyMessage: boolean,
-    isClearString: boolean,
-    isShowDate: boolean,
-  ) => {
+  async function handleSendMessage(message: string, isMyMessage: boolean, isClearString: boolean, isShowDate: boolean) {
     let currentTime: string = getCurrentLocaleTime();
 
     let isFinish = false;
@@ -406,31 +425,7 @@ const ChatPage: React.FC = () => {
     const updatedMessages = funcSendMessage(parsedMessagesRef.current);
     setParsedMessages(updatedMessages);
     parsedMessagesRef.current = updatedMessages;
-  };
-
-  const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, saveChatStreamInfo} = useStreamMessage({
-    isLoading,
-    setIsLoading,
-    handleSendMessage,
-    isSendingMessage,
-    setChatId,
-    parsedMessages,
-    setParsedMessages,
-    parsedMessagesRef,
-    TempIdforSendQuestion,
-  });
-
-  useEffect(() => {
-    preventZoom(); // 줌인아웃을 막는다.
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', setFullHeight);
-    window.addEventListener('orientationchange', setFullHeight);
-    setFullHeight();
-
-    // loadEmoticons();
-  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
+  }
 
   function setFullHeight() {
     const vh = window.innerHeight * 0.01;
