@@ -137,6 +137,17 @@
     gap: 5px;
     align-self: stretch;
     flex-wrap: wrap;
+
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.resultList li{
+    aspect-ratio: 120 / 171;
+    width:100%;
+    height:100%;
+    /* width:100%; */
+    /* height:100%; */
 }
 
 

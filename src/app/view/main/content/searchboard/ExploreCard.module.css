@@ -22,8 +22,12 @@
 .exploreCard.search
 {
   width: calc((var(--second-width)) / 3 - 3.5px);
-  max-width: 120px;
-  height: 171.429px; 
+  /* max-width: 120px; */
+  /* height: 171.429px;  */
+
+  width:100%;
+  height:100%;
+  max-width:none;
 }
  
 
