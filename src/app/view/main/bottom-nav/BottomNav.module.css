@@ -54,6 +54,7 @@
 }
 .navButton
 {
+  cursor:pointer;
   display: flex;
   /* width: calc(100vw / 5 - 1vw); */
   /*width: 76.58px;*/

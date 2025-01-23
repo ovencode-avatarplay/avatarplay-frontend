@@ -244,12 +244,6 @@ const DrawerCharacterDesc = () => {
         </>
       ),
     },
-    {
-      label: '',
-      preContent: '',
-      content: <></>,
-      isPlaceholder: true,
-    },
   ];
 
   console.log('contentWholeDesc', contentWholeDesc);
