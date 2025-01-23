@@ -250,12 +250,6 @@ const DrawerContentDesc = () => {
         </>
       ),
     },
-    {
-      label: '',
-      preContent: '',
-      content: <></>,
-      isPlaceholder: true,
-    },
   ];
 
   return (

@@ -1,4 +1,4 @@
 .Home-Feed {
     height: var(--body-height);
-    
+    position:relative;
 }

@@ -43,7 +43,7 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({title, data}) => {
     <section className={styles.containerBox}>
       <h2 className={styles.title}>{title}</h2>
 
-      <Swiper slidesPerView={2.5} spaceBetween={'5px'} className={styles.exploreSwiper} grabCursor={true}>
+      <Swiper slidesPerView={'auto'} spaceBetween={5} className={styles.exploreSwiper} grabCursor={true}>
         {content.map((explore, index) => (
           <SwiperSlide key={index}>
             <ExploreCard

@@ -452,7 +452,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>Hair Style</h3>
-              <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
+              <div className={`${styles.gridButtonGroup3x3} ${styles.buttonGap6}`}>
                 {characterOptions.hairStyles.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
@@ -658,7 +658,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
       case CreateCharacterStep.Summary:
         return (
           <div className={styles.createContentBox}>
-            <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
+            <div className={`${styles.gridButtonGroup3x3} ${styles.buttonGap6}`}>
               {summaryOptions
                 .filter(
                   option =>

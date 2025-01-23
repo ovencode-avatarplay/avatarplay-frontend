@@ -15,6 +15,7 @@
   position: relative;
     
   width: calc((var(--second-width)  - 12px) * 0.5);
+  /* width: 179px; */
   height: 259.172px;
   flex-shrink: 0;
     
@@ -27,23 +28,15 @@
   cursor: pointer;     
 }
 
-@media (min-width:402px)
-{
-  .imageItem  {
-    width: 179px;
 
-  }
+.imageItem > .selectedIcon {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-    
-  .imageItem > .selectedIcon {
-    position: absolute;
-
-    width: 60px;
-    height: 60px;
-    flex-shrink: 0;
-
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
   

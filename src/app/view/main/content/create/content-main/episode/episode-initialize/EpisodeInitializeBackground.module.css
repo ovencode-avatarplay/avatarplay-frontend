@@ -16,6 +16,8 @@
     position: relative;
     
     width: calc((var(--second-width) - 12px) * 0.5);
+    max-width: 179px;
+
     height: 259.172px;
     flex-shrink: 0;
     
@@ -27,15 +29,7 @@
     background: lightgray 50% / cover no-repeat;
     cursor: pointer;     
   }
-  
-  @media (min-width:402px)
-{
-  .imageItem  {
-    width: 179px;
-
-  }
-}
-
+   
   .imageList::-webkit-scrollbar {
     display: none; 
 }

@@ -128,6 +128,7 @@
 {
   display: -webkit-box;
   width: calc(var(--second-width) - 27px);
+  max-width: 343px;;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   
@@ -142,14 +143,7 @@
   line-height: 13px; /* 118.182% */
   letter-spacing: -0.4px;
 }
-
-@media (min-width : 402px)
-{
-  .hintText
-  {
-    width: 343px;
-  }
-}
+ 
 
 
 

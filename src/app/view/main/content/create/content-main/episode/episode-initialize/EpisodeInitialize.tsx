@@ -779,11 +779,7 @@ const EpisodeInitialize: React.FC<Props> = ({
               state="IconLeft"
               icon={BoldRuby.src}
               iconClass={`${styles.buttonIcon} ${styles.blackIcon}`}
-              customClassName={[
-                styles.floatButton,
-                styles.centerButton,
-                checkCenterButtonStep() ? styles.centerSideButton : '',
-              ]}
+              customClassName={[styles.floatButton, styles.centerButton]}
             >
               Generate
             </CustomButton>
