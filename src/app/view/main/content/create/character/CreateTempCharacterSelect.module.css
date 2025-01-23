@@ -16,7 +16,7 @@
     
   width: calc((var(--second-width)  - 12px) * 0.5);
   /* width: 179px; */
-  height: 259.172px;
+  height: 260px;
   flex-shrink: 0;
     
   background-size: cover;

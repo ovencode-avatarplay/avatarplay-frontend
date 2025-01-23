@@ -1,13 +1,15 @@
 import React from 'react';
 import styles from './CharacterGridItem.module.css';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
-import {LineCheck} from '@ui/Icons';
+import {LineCheck, LineEdit} from '@ui/Icons';
 
 interface CharacterGridItemProps {
   character: CharacterInfo;
   isSelected: boolean;
   onSelect: () => void;
   hideOverlay?: boolean;
+  canEdit?: boolean;
+  onClickEdit?: () => void;
 }
 export enum CharacterVisibility {
   Private = 0,
@@ -32,9 +34,23 @@ const CharacterGridItem: React.FC<CharacterGridItemProps> = ({
   isSelected,
   onSelect,
   hideOverlay = false,
+  canEdit = false,
+  onClickEdit = null,
 }) => {
+  const handleSelect = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    onSelect();
+  };
+
+  const handleEdit = (event: React.MouseEvent) => {
+    if (onClickEdit) {
+      event.stopPropagation();
+      onClickEdit();
+    }
+  };
+
   return (
-    <div onClick={onSelect} className={`${styles.gridItem}`}>
+    <div onClick={handleSelect} className={`${styles.gridItem}`}>
       {/* Status Overlay */}
       <div className={`${styles.statusOverlay} ${styles.hide}`}>
         <div className={styles.statusText}>{getCharacterStateText(character.visibilityType)}</div>
@@ -53,12 +69,20 @@ const CharacterGridItem: React.FC<CharacterGridItemProps> = ({
       </div>
 
       {/* Character Info */}
-      <div className={styles.characterInfo}>
-        {/* <div className={styles.genderIcon}>{character.name === 'Male' ? <MaleIcon /> : <FemaleIcon />}</div> */}
-        <div className={styles.characterName}>{character.name}</div>
-        <div className={`${styles.monetizationLabel} ${character.isMonetization ? styles.original : styles.fan}`}>
-          {character.isMonetization ? 'Original' : 'Fan'}
+      <div className={styles.infoArea}>
+        <div className={styles.characterInfo}>
+          {/* <div className={styles.genderIcon}>{character.name === 'Male' ? <MaleIcon /> : <FemaleIcon />}</div> */}
+          <div className={styles.nameArea}></div>
+          <div className={styles.characterName}>{character.name}</div>
+          <div className={`${styles.monetizationLabel} ${character.isMonetization ? styles.original : styles.fan}`}>
+            {character.isMonetization ? 'Original' : 'Fan'}
+          </div>
         </div>
+        {canEdit && onClickEdit && (
+          <button className={styles.buttonArea} onClick={handleEdit}>
+            <img className={styles.buttonIcon} src={LineEdit.src} />
+          </button>
+        )}
       </div>
     </div>
   );

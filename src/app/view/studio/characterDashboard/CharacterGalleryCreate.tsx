@@ -5,6 +5,8 @@ import styles from './CharacterGalleryCreate.module.css';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import CustomButton from '@/components/layout/shared/CustomButton';
+import {BoldRuby, LineCheck} from '@ui/Icons';
 
 interface CategoryCreateProps {
   open: boolean;
@@ -81,90 +83,75 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({open, onClose, c
   }, [open]);
 
   return (
-    <Box className={styles.container}>
-      {/* Base Portrait */}
-      <Box className={styles.basePortrait}>
-        <Typography variant="subtitle1">Base Portrait</Typography>
-        <Box
-          sx={{
-            width: '180px',
-            height: '240px',
-            backgroundImage: `url(${characterInfo.mainImageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderRadius: '8px',
-            marginBottom: '8px',
-          }}
-        />
-        <Button variant="outlined" className={styles.changeButton}>
-          Change
-        </Button>
-      </Box>
+    <div className={styles.container}>
+      <div className={styles.editArea}>
+        <div className={styles.basePortraitArea}>
+          <h2 className={styles.title}>Base Portrait</h2>
+          <div className={styles.basePortraitItem}>
+            <div
+              className={styles.portraitImage}
+              style={{
+                backgroundImage: `url(${characterInfo.mainImageUrl})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            />
+            <CustomButton size="Small" type="Tertiary" state="Normal">
+              Change
+            </CustomButton>
+          </div>
+        </div>
 
-      {/* Swiper Section */}
-      <Box className={styles.swiperSection}>
-        <Typography variant="subtitle1">Select {galleryCategoryText[category]}</Typography>
-        <Swiper
-          spaceBetween={10}
-          slidesPerView={3}
-          centeredSlides={true} // 중앙 정렬 활성화
-          onSlideChange={swiper => setSelectedItemIndex(swiper.activeIndex)} // 슬라이드 변경 시 활성화된 인덱스 업데이트
-          onSwiper={swiper => setSelectedItemIndex(swiper.activeIndex)} // Swiper 초기화 시 활성화된 인덱스 설정
-          className={styles.swiper}
-        >
-          {selectionImages.map((url, index) => (
-            <SwiperSlide key={index}>
-              <Box
-                sx={{
-                  width: '100%',
-                  height: '240px',
-                  backgroundImage: `url(${url})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  borderRadius: '8px',
-                  border: selectedItemIndex === index ? '8px solid blue' : 'none', // 선택된 아이템에 파란색 테두리 추가
-                  transition: 'border 0.3s ease', // 테두리 애니메이션 추가
+        {/* Swiper Section */}
+        <div className={styles.swiperSection}>
+          <h2 className={styles.title}>Select {galleryCategoryText[category]}</h2>
+          <Swiper
+            spaceBetween={6}
+            slidesPerView="auto"
+            centeredSlides={true}
+            onSlideChange={swiper => setSelectedItemIndex(swiper.activeIndex)} // 슬라이드 변경 시 활성화된 인덱스 업데이트
+            onSwiper={swiper => setSelectedItemIndex(swiper.activeIndex)} // Swiper 초기화 시 활성화된 인덱스 설정
+            className={styles.swiper}
+          >
+            {selectionImages.map((url, index) => (
+              <SwiperSlide
+                key={index}
+                style={{
+                  width: '138px',
                 }}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </Box>
-
-      {/* Creation Amount Slider */}
-
-      {/* <Typography variant="subtitle1">Creation Amount</Typography>
-      <Box className={styles.sliderbox}>
-        <Slider value={creationAmount} onChange={handleAmountChange} sx={{width: '70%'}} min={1} max={4} step={1} />
-        <Typography align="right">{creationAmount}</Typography>
-      </Box> */}
-
-      {/* Image Quality Slider */}
-      {/* <Typography variant="subtitle1">Image Quality</Typography>
-      <Box className={styles.sliderbox}>
-        <Slider
-          className={styles.slider}
-          value={imageQuality}
-          onChange={handleQualityChange}
-          sx={{width: '70%'}}
-          min={1}
-          max={3}
-          step={1}
-        />
-        <Typography align="right">{imageQuality === 1 ? 'Low' : imageQuality === 2 ? 'Medium' : 'High'}</Typography>
-      </Box> */}
-
-      {/* Generate Button */}
-      <Box className={styles.generateSection}>
-        <Button variant="contained" color="primary" fullWidth onClick={handleGenerate}>
+              >
+                <div
+                  className={`${styles.swiperItem}  ${selectedItemIndex === index ? styles.selected : ''}`}
+                  style={{
+                    backgroundImage:
+                      selectedItemIndex === index
+                        ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${url})`
+                        : `url(${url})`,
+                  }}
+                >
+                  <img className={styles.checkIcon} src={LineCheck.src} />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </div>
+      <div className={styles.generateSection}>
+        <CustomButton
+          size="Large"
+          state="Normal"
+          type="Primary"
+          onClick={handleGenerate}
+          customClassName={[styles.generateButton]}
+        >
           Generate
-          <Box className={styles.currency}>
-            <CurrencyIcon />
+          <div className={styles.currency}>
+            <img src={BoldRuby.src} />
             <Typography>50</Typography>
-          </Box>
-        </Button>
-      </Box>
-    </Box>
+          </div>
+        </CustomButton>
+      </div>
+    </div>
   );
 };
 

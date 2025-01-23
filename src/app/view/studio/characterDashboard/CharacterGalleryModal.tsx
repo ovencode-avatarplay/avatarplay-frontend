@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 // mui, css
-import {Modal, Box, Button, Typography, Snackbar, Alert} from '@mui/material';
+import {Modal, Box, Button, Typography, Snackbar, Alert, Drawer} from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import PreviewIcon from '@mui/icons-material/Preview';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -22,6 +22,7 @@ import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import {getLocalizedLink} from '@/utils/UrlMove';
+import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 interface CharacterGalleryModalProps {
   open: boolean;
@@ -289,18 +290,27 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     }
   }
 
+  const handleOnBackButtonClick = () => {
+    if (isRegenerateOpen) {
+      handleRegenerateClose();
+    } else if (isModifyOpen) {
+      handleModifyClose();
+    } else if (viewerOpen) {
+    } else {
+      onClose();
+    }
+  };
+
   return (
-    <Modal open={open} onClose={handleOnClose}>
-      <Box className={styles.modalContent}>
-        <Box className={styles.container}>
+    <Drawer anchor="bottom" open={open} onClose={handleOnClose}>
+      <div className={styles.modalContent}>
+        <div className={styles.container}>
+          <CreateDrawerHeader
+            title={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]}`}
+            onClose={handleOnBackButtonClick}
+          />
           {isRegenerateOpen ? (
             <>
-              <CreateCharacterTopMenu
-                backButtonAction={handleRegenerateClose}
-                lastUrl={getLocalizedLink('/studio/Character')}
-                contentTitle={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]} Creation`}
-                blockStudioButton={true}
-              />
               <CharacterGalleryCreate
                 open={isRegenerateOpen}
                 onClose={handleRegenerateClose}
@@ -310,14 +320,6 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
             </>
           ) : isModifyOpen ? (
             <>
-              <CreateCharacterTopMenu
-                backButtonAction={handleModifyClose}
-                lastUrl={getLocalizedLink('/studio/Character')}
-                contentTitle={`Modify ${characterInfo.name}`}
-                blockStudioButton={true}
-              />
-              {/* Sorry Modify is not working now */}
-
               <ModifyCharacterModal
                 open={isModifyOpen}
                 onClose={handleModifyClose}
@@ -340,12 +342,6 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
             />
           ) : (
             <>
-              <CreateCharacterTopMenu
-                backButtonAction={onClose}
-                lastUrl={getLocalizedLink('/studio/Character')}
-                contentTitle={`${characterInfo.name}'s Gallery`}
-                blockStudioButton={true}
-              />
               <CharacterGallery
                 characterInfo={characterInfo}
                 onCategorySelected={setSelectedCategory}
@@ -354,16 +350,16 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
                 refreshCharacter={refreshCharacter}
                 initialSelectedItem={selectedItem}
               />
-              <div className={styles.footer}>
+              {/* <div className={styles.footer}>
                 {buttons.map((button, index) => (
                   <Button key={index} className={styles.button} startIcon={button.icon} onClick={button.onClick}>
                     <Typography>{button.text}</Typography>
                   </Button>
                 ))}
-              </div>
+              </div> */}
             </>
           )}
-        </Box>
+        </div>
 
         <Snackbar
           open={!!errorMessage}
@@ -376,8 +372,8 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
           </Alert>
         </Snackbar>
         <LoadingOverlay loading={loading} />
-      </Box>
-    </Modal>
+      </div>
+    </Drawer>
   );
 };
 
