@@ -236,10 +236,12 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
                 width="100%"
                 playsinline={true}
                 height="calc(100% - 4px)"
+                controls={false} // 기본 컨트롤을 비활성화
+                progressInterval={1000} // 진행 상태 업데이트 간격을 늘림
                 style={{
                   borderRadius: '8px',
+                  zIndex: '2000',
                 }}
-                progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
                 onProgress={({playedSeconds}) => {
                   handleVideoProgress(playedSeconds);
 
@@ -281,131 +283,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
           ></div>
         </div>
 
-        <div className={styles.profileBox}>
-          <div className={styles.dim}></div>
-          {/* User Info */}
-          <div className={styles.userInfo}>
-            <Avatar src={item.characterProfileUrl || '/images/001.png'} style={{width: '32px', height: '32px'}} />
-
-            <div className={styles.profileDetails}>
-              <span className={styles.username}>{item.characterProfileName}</span>
-              <span className={styles.sponsored}>Sponsored</span>
-            </div>
-            <button
-              className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
-              onClick={() => {
-                setIsFollow(!isFollow);
-                console.log('isfollow', isFollow);
-              }}
-            >
-              Follow
-            </button>
-          </div>
-          {item?.description && (
-            <div className={styles.text_container}>
-              <div
-                className={styles.text_content}
-                style={{
-                  maxHeight: isExpanded ? 'none' : '20px',
-                  overflowY: isExpanded ? 'auto' : 'hidden',
-                  width: isExpanded ? '80%' : '100%',
-                }}
-                onClick={() => {
-                  toggleExpanded();
-                }}
-              >
-                {isExpanded
-                  ? item.description
-                  : item.description.length > 20 // 접힌 상태에서 최대 길이 제한
-                  ? `${item.description.slice(0, 17)}...` // 첫 17글자 + "..."
-                  : item.description}
-              </div>
-            </div>
-          )}
-          {/* Video Info */}
-          <div className={styles.videoInfo}>
-            {item.mediaState == 1 && <>Image</>}
-            {item.mediaState == 2 && (
-              <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
-                <img className={styles.iconVideo} src={BoldVideo.src}></img>
-                Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
-              </div>
-            )}
-            <div>{formatTimeAgo(item.createAt.toString())}</div>
-          </div>
-        </div>
-
         {/* CTA Buttons */}
-        <div className={styles.ctaButtons}>
-          <div className={styles.textButtons} onClick={() => {}}>
-            <img src={BoldReward.src} className={styles.button}></img>
-          </div>
-          <div
-            className={styles.textButtons}
-            onClick={() => {
-              handleLikeFeed(item.id, !isLike);
-            }}
-          >
-            <img
-              src={BoldLike.src}
-              className={styles.button}
-              style={{
-                filter: isLike
-                  ? 'brightness(0) saturate(100%) invert(47%) sepia(57%) saturate(1806%) hue-rotate(287deg) brightness(102%) contrast(98%)'
-                  : 'none', // 기본 상태는 필터 없음
-              }}
-            />
-            <div className={styles.count}>{likeCount}</div>
-          </div>
 
-          {/* Dislike Button */}
-          <div
-            className={styles.textButtons}
-            onClick={() => {
-              handleDisLikeFeed(item.id, !isDisLike);
-            }}
-          >
-            <img
-              src={BoldDislike.src}
-              className={styles.button}
-              style={{
-                filter: isDisLike
-                  ? 'brightness(0) saturate(100%) invert(69%) sepia(59%) saturate(1244%) hue-rotate(153deg) brightness(102%) contrast(101%)'
-                  : 'none', // 기본 상태는 필터 없음
-              }}
-            />
-          </div>
-          <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
-            <img src={BoldComment.src} className={styles.button}></img>
-            <div className={styles.count}>{commentCount}</div>
-          </div>
-          <div
-            className={styles.noneTextButton}
-            onClick={async () => {
-              handleShare();
-            }}
-          >
-            <img src={BoldShare.src} className={styles.button}></img>
-          </div>
-
-          <div
-            className={styles.noneTextButton}
-            onClick={() => {
-              bookmarkFeed();
-            }}
-          >
-            {isBookmarked && <img src={BoldArchive.src} className={styles.button}></img>}
-            {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
-          </div>
-          <div
-            className={styles.noneTextButton}
-            onClick={() => {
-              alert('추후 신고 기능 추가');
-            }}
-          >
-            <img src={BoldMore.src} className={styles.button}></img>
-          </div>
-        </div>
         <div
           className={styles.volumeButton}
           onClick={() => {

@@ -22,6 +22,12 @@
   background-color: rgba(255, 255, 255, 0.3); /* 배경색 */
   overflow: hidden;
 }
+.progressFill {
+  position: absolute;
+  height: 100%;
+  background-color: #ff0000;
+  transition: width 0.1s linear;
+}
 
 .progressFill {
   height: 100%;

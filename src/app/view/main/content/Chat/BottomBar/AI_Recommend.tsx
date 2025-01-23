@@ -64,9 +64,20 @@ const AI_Recommend: React.FC<AIRecommendProps> = ({open, onClose, onSelectMessag
     const data: RequestAiQuestionReq = {
       episodeId: episodeId,
     };
-    const receive = await recommendQuestion(data);
 
-    setMessages(receive.data?.questionList || []); // 서버에서 받은 데이터로 업데이트
+    try {
+      const receive = await recommendQuestion(data);
+
+      if (receive.resultCode === 0) {
+        setMessages(receive.data?.questionList || []); // 서버에서 받은 데이터로 업데이트
+      } else {
+        alert('Error');
+        onClose();
+      }
+    } catch (error) {
+      alert('Error');
+      onClose();
+    }
   };
 
   const handleClickMessage = (message: string) => {
