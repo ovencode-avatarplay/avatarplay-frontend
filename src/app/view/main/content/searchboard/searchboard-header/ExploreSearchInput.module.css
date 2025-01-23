@@ -33,6 +33,7 @@
 
 .searchInput
 {
+    width:100%;
     flex: 1 0 0;
     color: var(--Neutral-400, #BDC1C6);
     font-family: Lato;
