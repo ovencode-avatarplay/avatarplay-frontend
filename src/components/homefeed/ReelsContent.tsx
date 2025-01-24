@@ -201,8 +201,23 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
 
   const checkMobileOrTablet = useCallback(() => {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const platform = navigator.platform;
+    const maxTouchPoints = navigator.maxTouchPoints || 0;
 
-    return /iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone|Opera Mini|IEMobile|Tablet/i.test(userAgent);
+    console.log('userAgent:', userAgent);
+    console.log('platform:', platform);
+    console.log('maxTouchPoints:', maxTouchPoints);
+
+    const isIOSDevice = /iPhone|iPad|iPod/i.test(userAgent);
+
+    // iPad Pro를 구분하기 위해 추가 체크
+    const isTouchDevice = navigator.maxTouchPoints > 0;
+
+    return (
+      isIOSDevice ||
+      isTouchDevice ||
+      /Android|webOS|BlackBerry|Windows Phone|Opera Mini|IEMobile|Tablet/i.test(userAgent)
+    );
   }, []);
   const isMobile = checkMobileOrTablet();
 
