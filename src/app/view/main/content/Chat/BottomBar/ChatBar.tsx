@@ -112,8 +112,23 @@ const ChatBar: React.FC<ChatBarProps> = ({
       [newId]: toggledIcons.main,
     }));
   };
+  const addChatBarIndata = (content: string = '', toggled: boolean = true, numr: number) => {
+    if (chatBars.length >= 6) return; // 최대 6개 제한
+    const newId = `chatBar-${Date.now()}` + numr;
+
+    setChatBars(prevBars => [newId, ...prevBars]); // 새 chatBar를 배열의 앞에 추가
+    setInputValues(prevValues => ({
+      ...prevValues,
+      [newId]: content, // 전달받은 content 설정
+    }));
+    setToggledIcons(prevIcons => ({
+      ...prevIcons,
+      [newId]: toggled, // 전달받은 toggled 설정
+    }));
+  };
 
   const removeChatBar = (id: string) => {
+    console.log('asd');
     setChatBars(chatBars.filter(barId => barId !== id));
     setInputValues(prevValues => {
       const updatedValues = {...prevValues};
@@ -212,10 +227,26 @@ const ChatBar: React.FC<ChatBarProps> = ({
   };
 
   const selectMessageFromAIRecommend = (_message: string, isSend: boolean) => {
-    setInputValues(prevValues => ({...prevValues, main: _message}));
-    updateMessageText();
+    const parts = _message.split(/\*(.*?)\*/g); // *로 감싸진 텍스트 기준으로 나누기
 
-    setAIRecommendOpen(false); // Close the AI recommendation modal
+    let count = 0;
+    parts.forEach(part => {
+      count++;
+      const trimmedPart = part.trim();
+      if (trimmedPart) {
+        const isToggled = !_message.includes(`*${trimmedPart}*`); // *로 감싸지 않았으면 true
+        addChatBarIndata(trimmedPart, isToggled, count); // addChatBar 호출로 추가
+      }
+    });
+
+    // main 초기화
+    setInputValues(prevValues => ({
+      ...prevValues,
+      main: '', // main은 초기화
+    }));
+
+    // AI 추천 모달 닫기
+    setAIRecommendOpen(false);
   };
 
   const renderChatBars = () =>
