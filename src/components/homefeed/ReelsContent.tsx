@@ -200,7 +200,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
   };
 
   const checkMobileOrTablet = useCallback(() => {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const userAgent = navigator.userAgent || navigator.vendor;
     const platform = navigator.platform;
     const maxTouchPoints = navigator.maxTouchPoints || 0;
 

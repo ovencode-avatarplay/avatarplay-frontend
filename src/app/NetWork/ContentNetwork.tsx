@@ -33,15 +33,27 @@ export const sendContentSave = async (payload: SaveContentReq): Promise<Response
     const response = await api.post<ResponseAPI<SaveContentRes>>('Content/save', payload);
 
     if (response.data.resultCode === 0) {
-      // console.log('제출 결과 성공');
-
       return response.data;
     } else {
-      throw new Error('SaveContentRes' + response.data.resultCode); // 실패 메시지 처리
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 1:
+          alert('Invalid: 유저 정보가 맞지 않습니다.');
+          break;
+        case 2:
+          alert('NotFound: 해당 컨텐츠 정보가 없습니다.');
+          break;
+        case 4:
+          alert('Unauthorized: 로그인 인증 정보가 없습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
+      throw new Error(`SaveContentRes Error: ${response.data.resultCode}`);
     }
   } catch (error: any) {
     console.error('Error sending save content data:', error);
-    throw new Error('Failed to send save content data. Please try again.'); // 에러 처리
+    throw new Error('Failed to send save content data. Please try again.');
   }
 };
 
@@ -72,9 +84,16 @@ export const sendContentByIdGet = async (payload: GetContentByIdReq): Promise<Re
     const response = await api.post<ResponseAPI<GetContentByIdRes>>('Content/get', payload);
 
     if (response.data.resultCode === 0) {
-      // console.log('제출 결과 성공');
       return response.data;
     } else {
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 1:
+          alert('Invalid: 해당 컨텐츠를 찾을 수 없습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
       throw new Error(`GetContentByIdRes Error: ${response.data.resultCode}`);
     }
   } catch (error: any) {
@@ -100,9 +119,16 @@ export const sendContentByIdGetTotal = async (
     const response = await api.post<ResponseAPI<GetTotalContentByIdRes>>('Content/getTotal', payload);
 
     if (response.data.resultCode === 0) {
-      // console.log('제출 결과 성공');
       return response.data;
     } else {
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 1:
+          alert('Invalid: 해당 컨텐츠를 찾을 수 없습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
       throw new Error(`GetTotalContentByIdRes Error: ${response.data.resultCode}`);
     }
   } catch (error: any) {
@@ -150,15 +176,24 @@ export const sendContentDelete = async (payload: DeleteContentReq): Promise<Resp
     const response = await api.post<ResponseAPI<DeleteContentRes>>('Content/delete', payload);
 
     if (response.data.resultCode === 0) {
-      // console.log('삭제 결과 성공');
-
       return response.data;
     } else {
-      throw new Error('DeleteContentRes' + response.data.resultCode); // 실패 메시지 처리
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 1:
+          alert('Invalid: 유저 정보가 맞지 않습니다.');
+          break;
+        case 4:
+          alert('Unauthorized: 로그인 인증 정보가 없습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
+      throw new Error(`DeleteContentRes Error: ${response.data.resultCode}`);
     }
   } catch (error: any) {
     console.error('Error sending delete content data:', error);
-    throw new Error('Failed to send delete content data. Please try again.'); // 에러 처리
+    throw new Error('Failed to send delete content data. Please try again.');
   }
 };
 

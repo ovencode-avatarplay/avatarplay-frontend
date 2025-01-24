@@ -25,6 +25,7 @@ export interface MediaUploadRes {
   url: string; // 메인 URL
   imageUrlList: string[]; // 추가 이미지 URL 리스트
 }
+
 export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<MediaUploadRes>> => {
   try {
     const formData = new FormData();
@@ -34,30 +35,36 @@ export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<M
     if (payload.file) {
       formData.append('File', payload.file);
     } else {
-      // ImageList가 비어있을 때 빈 필드라도 전송
-      formData.append('File', new Blob()); // 빈 Blob을 추가
+      formData.append('File', new Blob()); // 빈 Blob 추가
     }
-    // 메인 파일 추가
 
-    // 추가 이미지 리스트 처리s
     if (Array.isArray(payload.imageList) && payload.imageList.length > 0) {
       payload.imageList.forEach(file => {
-        formData.append('ImageList', file); // 서버가 List<IFormFile>로 수신
+        formData.append('ImageList', file);
       });
     } else {
-      // ImageList가 비어있을 때 빈 필드라도 전송
-      formData.append('ImageList', new Blob([])); // 빈 Blob을 추가
+      formData.append('ImageList', new Blob([])); // 빈 Blob 추가
     }
 
-    // Axios 요청
     const response = await api.post<ResponseAPI<MediaUploadRes>>('Resource/upload', formData, {
       headers: {
-        'Content-Type': 'multipart/form-data', // FormData 요청 설정
+        'Content-Type': 'multipart/form-data',
       },
     });
 
-    // 성공 시 응답 반환
-    return response.data;
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 1:
+          alert('Invalid: 파일 정보가 없습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
+      throw new Error(`MediaUploadRes Error: ${response.data.resultCode}`);
+    }
   } catch (error: any) {
     console.error('Error uploading media:', error);
     throw new Error('Failed to upload media.');
