@@ -33,10 +33,12 @@ filter: blur(10px);
     display: flex;
     justify-content: flex-end;
     margin-bottom: 12px;
+    margin-left:66px;
 }
 
 .chatBubbleProfilePartner
 {
+  margin-right: 26px;
   display: flex;
   flex-direction: row;
   margin-bottom: 4px;
