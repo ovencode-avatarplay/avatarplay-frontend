@@ -21,6 +21,7 @@ import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface CharacterGalleryModalProps {
   open: boolean;
@@ -49,6 +50,8 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setloading] = useState(false);
+
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const handleOnClose = () => {
     onClose();
@@ -110,15 +113,17 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     }
   };
 
-  const handleViewItem = () => {
-    if (selectedCategory !== selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
+  const handleViewItem = (category: GalleryCategory, index: number | null) => {
+    if (index === null) {
       console.error('Invalid selection: ', selectedItem);
       return;
     }
 
+    setSelectedItem([category, index]);
+
     let imageUrls: {url: string; category: GalleryCategory}[] = []; // URL과 카테고리 정보를 함께 저장
 
-    switch (selectedItem[0] as GalleryCategory) {
+    switch (category) {
       case GalleryCategory.All:
         const allUrls = [
           ...(characterInfo.portraitGalleryImageUrl || []).map(img => ({
@@ -135,7 +140,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
           })),
         ];
 
-        if (allUrls[selectedItem[1]]) {
+        if (allUrls[index]) {
           imageUrls = allUrls;
         } else {
           console.error('URL not found for index in All category:', selectedItem[1]);
@@ -143,7 +148,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
         break;
 
       case GalleryCategory.Portrait:
-        if (characterInfo.portraitGalleryImageUrl && characterInfo.portraitGalleryImageUrl[selectedItem[1]]) {
+        if (characterInfo.portraitGalleryImageUrl && characterInfo.portraitGalleryImageUrl[index]) {
           imageUrls = characterInfo.portraitGalleryImageUrl.map(img => ({
             url: img.imageUrl,
             category: GalleryCategory.Portrait,
@@ -154,7 +159,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
         break;
 
       case GalleryCategory.Pose:
-        if (characterInfo.poseGalleryImageUrl && characterInfo.poseGalleryImageUrl[selectedItem[1]]) {
+        if (characterInfo.poseGalleryImageUrl && characterInfo.poseGalleryImageUrl[index]) {
           imageUrls = characterInfo.poseGalleryImageUrl.map(img => ({
             url: img.imageUrl,
             category: GalleryCategory.Pose,
@@ -165,7 +170,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
         break;
 
       case GalleryCategory.Expression:
-        if (characterInfo.expressionGalleryImageUrl && characterInfo.expressionGalleryImageUrl[selectedItem[1]]) {
+        if (characterInfo.expressionGalleryImageUrl && characterInfo.expressionGalleryImageUrl[index]) {
           imageUrls = characterInfo.expressionGalleryImageUrl.map(img => ({
             url: img.imageUrl,
             category: GalleryCategory.Expression,
@@ -184,6 +189,10 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     } else {
       console.error('No valid URLs found for the selected category');
     }
+  };
+
+  const handleDeleteClick = () => {
+    setPopupOpen(true);
   };
 
   const handleDeleteItem = async () => {
@@ -278,6 +287,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
       console.error('Selected item is invalid:', selectedItem);
     }
     setloading(false);
+    setPopupOpen(false);
   };
 
   const handleImageSelect = (category: GalleryCategory, index: number) => {
@@ -328,10 +338,12 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     <Drawer anchor="bottom" open={open} onClose={handleOnClose}>
       <div className={styles.modalContent}>
         <div className={styles.container}>
-          <CreateDrawerHeader
-            title={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]}`}
-            onClose={handleOnBackButtonClick}
-          />
+          {!viewerOpen && (
+            <CreateDrawerHeader
+              title={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]}`}
+              onClose={handleOnBackButtonClick}
+            />
+          )}
           {isRegenerateOpen ? (
             <>
               <CharacterGalleryCreate
@@ -359,9 +371,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
               selectedIndex={selectedItem[1]}
               categoryType={selectedCategory}
               onBack={() => setViewerOpen(false)}
-              onThumbnail={() => console.log('Thumbnail clicked')}
-              onInfo={() => console.log('Info clicked')}
-              onDelete={handleDeleteItem}
+              onDelete={handleDeleteClick}
               onSelectImage={handleImageSelect}
               onRefresh={refreshCharacterList}
             />
@@ -370,7 +380,8 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
               <CharacterGallery
                 characterInfo={characterInfo}
                 onCategorySelected={setSelectedCategory}
-                onCurrentSelected={handleSelectItem}
+                // onCurrentSelected={handleSelectItem}
+                onCurrentSelected={handleViewItem}
                 onGenerateSelected={handleRegenerateItem}
                 refreshCharacter={refreshCharacter}
                 initialSelectedItem={selectedItem}
@@ -387,7 +398,27 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
             </>
           )}
         </div>
-
+        {popupOpen && (
+          <CustomPopup
+            type="alert"
+            title="Are you sure?"
+            description="Delete item is irreversible"
+            buttons={[
+              {
+                label: 'Cancel',
+                onClick: () => {
+                  setPopupOpen(false);
+                },
+                isPrimary: false,
+              },
+              {
+                label: 'Delete',
+                onClick: handleDeleteItem,
+                isPrimary: true,
+              },
+            ]}
+          />
+        )}
         <Snackbar
           open={!!errorMessage}
           autoHideDuration={6000}
