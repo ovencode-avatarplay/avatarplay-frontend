@@ -135,6 +135,28 @@ const ChatPage: React.FC = () => {
       }
 
       const newMessage = JSON.parse(event.data);
+
+      // ResultCode 기반 에러 처리
+      if (newMessage.resultCode !== undefined && newMessage.resultCode !== 0) {
+        switch (newMessage.resultCode) {
+          case 1:
+            alert('Invalid: 번호의 키가 존재하지 않습니다.');
+            break;
+          case 2:
+            alert('NotFound: 에피소드 잠금이 열리지 않았습니다.');
+            break;
+          case 3:
+            alert('NotExist: LLM 모델을 찾을 수 없습니다.');
+            break;
+          case 10:
+            alert('DBError: ResultMessage를 찾을 수 없습니다.');
+            break;
+          default:
+            alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+        }
+        return; // 에러 발생 시 메시지 처리를 중단
+      }
+
       await handleSendMessage(newMessage, false, true, false);
 
       if (newMessage.includes('$') === true) {
