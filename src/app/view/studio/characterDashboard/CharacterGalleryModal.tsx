@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 // mui, css
-import {Modal, Box, Button, Typography, Snackbar, Alert, Drawer} from '@mui/material';
+import {Snackbar, Alert, Drawer} from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import PreviewIcon from '@mui/icons-material/Preview';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -11,17 +11,15 @@ import styles from './CharacterGalleryModal.module.css';
 import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
 
 // Network
-import {DeleteGalleryReq, sendDeleteGallery} from '@/app/NetWork/CharacterNetwork';
+import {DeleteGalleryReq, SaveGalleryReq, sendDeleteGallery, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
 
 // Components
-import CreateCharacterTopMenu from '../../main/content/create/character/CreateCharacterTopMenu';
 import CharacterGallery from './CharacterGallery';
 import CharacterGalleryCreate from './CharacterGalleryCreate';
 import CharacterGalleryViewer from './CharacterGalleryViewer';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import {getLocalizedLink} from '@/utils/UrlMove';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 interface CharacterGalleryModalProps {
@@ -39,16 +37,6 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   refreshCharacter,
   refreshCharacterList,
 }) => {
-  const buttons = [
-    {
-      icon: <StarIcon />,
-      text: 'Regenerate',
-      onClick: () => handleRegenerateItem(),
-    },
-    {icon: <PreviewIcon />, text: 'View', onClick: () => handleViewItem()},
-    {icon: <DeleteIcon />, text: 'Delete', onClick: () => handleDeleteItem()},
-  ];
-
   const [selectedCategory, setSelectedCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
   const [isRegenerateOpen, setIsRegenerateOpen] = useState(false);
   const [isModifyOpen, setIsModifyOpen] = useState(false);
@@ -56,6 +44,8 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
   const [characterInfo, setCharacterInfo] = useState<CharacterInfo>(characterData);
   const [viewerOpen, setViewerOpen] = useState(false);
+
+  const [selectedPortrait, setSelectedPortrait] = useState<string>(characterInfo.mainImageUrl);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setloading] = useState(false);
@@ -76,6 +66,9 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   };
 
   const handleSelectItem = (category: GalleryCategory, index: number | null) => {
+    if (category === GalleryCategory.Portrait && index !== null) {
+      setSelectedPortrait(characterData.portraitGalleryImageUrl[index].imageUrl);
+    }
     setSelectedItem([category, index]);
   };
 
@@ -88,9 +81,34 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     }
   };
 
-  useEffect(() => {
-    setCharacterInfo(characterData);
-  }, [characterData]);
+  // 이미지들을 갤러리로 업로드 함
+  const handleUploadImages = async (category: GalleryCategory, urls: string[], parameter: string = '') => {
+    try {
+      const targetCategory = category;
+
+      if (!targetCategory) {
+        console.error('Target category is not selected.');
+        return;
+      }
+      let updatedGalleryUrls: string[] = [];
+      updatedGalleryUrls = urls;
+
+      const saveReq: SaveGalleryReq = {
+        characterId: characterInfo.id,
+        galleryType: targetCategory,
+        galleryImageUrls: updatedGalleryUrls,
+        debugParameter: parameter,
+      };
+
+      const responseGallery = await sendSaveGallery(saveReq);
+
+      console.log('save gallery success' + responseGallery.resultCode);
+      refreshCharacter(characterInfo.id);
+      setIsRegenerateOpen(false);
+    } catch (error) {
+      console.error('Error uploading images:', error);
+    }
+  };
 
   const handleViewItem = () => {
     if (selectedCategory !== selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
@@ -266,6 +284,21 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     setSelectedItem([category, index]);
   };
 
+  const handleOnBackButtonClick = () => {
+    if (isRegenerateOpen) {
+      handleRegenerateClose();
+    } else if (isModifyOpen) {
+      handleModifyClose();
+    } else if (viewerOpen) {
+    } else {
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    setCharacterInfo(characterData);
+  }, [characterData]);
+
   function getSelectedImageData(): GalleryImageInfo | undefined {
     if (selectedItem[1] === null || selectedItem[1] === undefined) {
       return undefined; // 선택되지 않은 경우 처리
@@ -290,17 +323,6 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     }
   }
 
-  const handleOnBackButtonClick = () => {
-    if (isRegenerateOpen) {
-      handleRegenerateClose();
-    } else if (isModifyOpen) {
-      handleModifyClose();
-    } else if (viewerOpen) {
-    } else {
-      onClose();
-    }
-  };
-
   return (
     <Drawer anchor="bottom" open={open} onClose={handleOnClose}>
       <div className={styles.modalContent}>
@@ -315,7 +337,9 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
                 open={isRegenerateOpen}
                 onClose={handleRegenerateClose}
                 category={selectedCategory}
-                characterInfo={characterInfo}
+                // characterInfo={characterInfo}
+                selectedPortraitUrl={selectedPortrait}
+                onUploadGalleryImages={handleUploadImages}
               />
             </>
           ) : isModifyOpen ? (
@@ -349,6 +373,8 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
                 onGenerateSelected={handleRegenerateItem}
                 refreshCharacter={refreshCharacter}
                 initialSelectedItem={selectedItem}
+                selectedGalleryType={selectedCategory}
+                setSelectedGalleryType={setSelectedCategory}
               />
               {/* <div className={styles.footer}>
                 {buttons.map((button, index) => (

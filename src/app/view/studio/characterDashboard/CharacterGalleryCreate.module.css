@@ -2,7 +2,7 @@
   position: relative;
   width : var(--full-width);
   
-  height: 100%;
+  height: 100vh;
   overflow-y: scroll;
   background-color: white;
   display: flex;
@@ -94,7 +94,7 @@
   width: 60px;
   height: 60px;
   flex-shrink: 0;
-  
+
   position: absolute;  
   top: 50%;   
   left: 50%; 
@@ -135,7 +135,65 @@
   transform: scale(1.1);
 }
 
+.selectGrid
+{
+  display: flex;
+  width: var(--second-width);
+  margin-left: 16px;
+  margin-right: 16px;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+
+.buttonArea
+{
+  display: flex;
+  width: var(--second-width);
+  margin-left: 16px;
+  margin-right: 16px;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
 .generateButton
 {
   width: var(--second-width);
+}
+
+.selectDesc
+{
+  margin-bottom: 22px;
+
+  color: var(--Neutral-500, #9AA0A6);
+  text-align: center;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px; /* 157.143% */
+
+}
+
+.selectButton
+{ 
+  width: var(--basic-button-width);
+  max-width: 120px;  
+}
+
+.regenerateContent
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.grayIcon
+{
+  filter: sepia(1%) saturate(4552%) hue-rotate(225deg) brightness(90%) contrast(77%);
 }

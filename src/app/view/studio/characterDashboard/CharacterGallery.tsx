@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Dialog, DialogContent, Button, Typography} from '@mui/material';
 import styles from './CharacterGallery.module.css';
 
 import ImageUploadDialog from '../../main/content/create/content-main/episode/episode-ImageCharacter/ImageUploadDialog';
@@ -19,6 +18,8 @@ interface CharacterGalleryProps {
   onGenerateSelected: () => void;
   refreshCharacter: (id: number) => void;
   initialSelectedItem?: [GalleryCategory, number | null];
+  selectedGalleryType: GalleryCategory;
+  setSelectedGalleryType: React.Dispatch<React.SetStateAction<GalleryCategory>>;
 }
 
 const CharacterGallery: React.FC<CharacterGalleryProps> = ({
@@ -28,6 +29,8 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   onGenerateSelected,
   refreshCharacter,
   initialSelectedItem,
+  selectedGalleryType,
+  setSelectedGalleryType,
 }) => {
   // 카테고리
   const [category, setCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
@@ -48,7 +51,6 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   const [imageUploadDialogOpen, setImageUploadDialogOpen] = useState(false);
 
   // All 일때 upload
-  const [selectedGalleryType, setSelectedGalleryType] = useState<GalleryCategory>(GalleryCategory.All);
   const [galleryTypeDialogOpen, setGalleryTypeDialogOpen] = useState(false);
 
   const [loading, setloading] = useState(false);
