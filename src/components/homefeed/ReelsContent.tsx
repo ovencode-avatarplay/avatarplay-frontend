@@ -226,26 +226,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
       <div className={`${styles.mainContent}  ${!isMobile && styles.limitWidth}`}>
         <div className={styles.Image}>
           {item.mediaState === 1 && (
-            <Swiper
-              style={{
-                height: '100%',
-              }}
-              navigation={true}
-              className={styles.mySwiper}
-              initialSlide={0}
-              onSlideChange={handleSlideChange} // 슬라이드 변경 이벤트 핸들러 추가
-            >
-              {item?.mediaUrlList.map((url, idx) => (
-                <SwiperSlide key={idx}>
-                  <img
-                    src={url}
-                    alt={`Slide ${idx}`}
-                    loading="lazy"
-                    style={{width: '100%', height: 'calc(100% - 4px)', objectFit: 'cover'}}
-                  />
-                </SwiperSlide>
-              ))}
-            </Swiper>
+            <img
+              src={item?.mediaUrlList[0]}
+              loading="lazy"
+              style={{width: '100%', height: 'calc(100% - 4px)', objectFit: 'contain'}}
+            />
           )}
           {item.mediaState === 2 && (
             <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>

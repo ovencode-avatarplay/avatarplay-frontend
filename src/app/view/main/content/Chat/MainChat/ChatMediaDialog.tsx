@@ -10,6 +10,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import styles from './ChatMediaDialog.module.css';
 import ReactPlayer from 'react-player';
 import {LineArrowLeft} from '@ui/Icons';
+import {displayType} from '@/components/create/MaxTextInput';
 
 interface ChatMediaDialogProps {
   mediaData: MediaData | null;
@@ -17,9 +18,17 @@ interface ChatMediaDialogProps {
   closeModal: () => void;
   type: TriggerMediaState;
   initNum?: number | null;
+  title?: string;
 }
 
-const ChatMediaDialog: React.FC<ChatMediaDialogProps> = ({mediaData, isModalOpen, closeModal, type, initNum}) => {
+const ChatMediaDialog: React.FC<ChatMediaDialogProps> = ({
+  mediaData,
+  isModalOpen,
+  closeModal,
+  type,
+  initNum,
+  title,
+}) => {
   const [isHeaderVisible, setHeaderVisible] = useState(true); // 헤더 가시성 상태
   const hideTimer = useRef<NodeJS.Timeout | null>(null); // 타이머를 관리하기 위한 ref
 
@@ -90,6 +99,7 @@ const ChatMediaDialog: React.FC<ChatMediaDialogProps> = ({mediaData, isModalOpen
           <IconButton onClick={closeModal} className={styles['close-button']}>
             <img src={LineArrowLeft.src}></img>
           </IconButton>
+          <span className={styles['modal-title']}>{title ? <>{title}</> : <>Media</>}</span>
         </Box>
 
         {/* 이미지 슬라이드 */}

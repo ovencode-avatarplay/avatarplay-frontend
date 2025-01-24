@@ -125,3 +125,61 @@ export const sendGenerateImageReq2 = async (payload: GenerateImageReq2): Promise
     throw new Error('Failed to generate image. Please try again.');
   }
 };
+
+//SinkIn으로 포즈 이미지 만들게
+export interface GeneratePoseReq {
+  url: string;
+  pose: string;
+}
+
+export interface GeneratePoseRes {
+  imageUrl: string[];
+}
+export const sendGeneratePoseReq = async (payload: GeneratePoseReq): Promise<ResponseAPI<GeneratePoseRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GeneratePoseRes>>('Resource/generatePose', payload, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`Generate Image Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error generating image:', error);
+    throw new Error('Failed to generate image. Please try again.');
+  }
+};
+
+//SinkIn으로 표정 이미지 만들게
+export interface GenerateExpressionReq {
+  url: string;
+  expression: string;
+}
+
+export interface GenerateExpressionRes {
+  imageUrl: string[];
+}
+export const sendGenerateExpressionReq = async (
+  payload: GenerateExpressionReq,
+): Promise<ResponseAPI<GenerateExpressionRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GenerateExpressionRes>>('Resource/generateExpression', payload, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`Generate Image Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error generating image:', error);
+    throw new Error('Failed to generate image. Please try again.');
+  }
+};
