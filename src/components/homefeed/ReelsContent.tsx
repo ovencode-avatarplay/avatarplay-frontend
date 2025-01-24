@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styles from './ReelsContent.module.css';
 import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
@@ -199,9 +199,16 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
     mediaUrlList: item.mediaUrlList, // 빈 배열
   };
 
+  const checkMobileOrTablet = useCallback(() => {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+    return /iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone|Opera Mini|IEMobile|Tablet/i.test(userAgent);
+  }, []);
+  const isMobile = checkMobileOrTablet();
+
   return (
     <div className={styles.reelsContainer}>
-      <div className={styles.mainContent}>
+      <div className={`${styles.mainContent}  ${!isMobile && styles.limitWidth}`}>
         <div className={styles.Image}>
           {item.mediaState === 1 && (
             <Swiper
@@ -219,7 +226,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
                     src={url}
                     alt={`Slide ${idx}`}
                     loading="lazy"
-                    style={{width: '100%', height: 'calc(100% - 4px)', objectFit: 'contain'}}
+                    style={{width: '100%', height: 'calc(100% - 4px)', objectFit: 'cover'}}
                   />
                 </SwiperSlide>
               ))}
@@ -238,6 +245,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
                 height="calc(100% - 4px)"
                 style={{
                   borderRadius: '8px',
+                }}
+                config={{
+                  file: {
+                    attributes: {
+                      style: {
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      },
+                    },
+                  },
                 }}
                 progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
                 onProgress={({playedSeconds}) => {
