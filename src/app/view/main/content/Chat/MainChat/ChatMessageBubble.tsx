@@ -129,7 +129,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
               }
             >
               {(sender === 'partner' || sender === 'media') && (
-                <Avatar alt="Partner Avatar" src={iconUrl} className={styles.AvatarIcon} />
+                <img alt="Partner Avatar" src={iconUrl} className={styles.AvatarIcon} />
               )}
               <Box className={styles.chatBubbleJustifyPartner}>
                 {selectedIndex === index && checkCanOpenContextTop() && (
