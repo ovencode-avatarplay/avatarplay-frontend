@@ -297,6 +297,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
 
   useEffect(() => {
     setCharacterInfo(characterData);
+    setSelectedPortrait(characterData.mainImageUrl);
   }, [characterData]);
 
   function getSelectedImageData(): GalleryImageInfo | undefined {
