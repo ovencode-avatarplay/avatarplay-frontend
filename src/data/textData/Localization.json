@@ -146,133 +146,6 @@
       "de": ""
     }
   },
-  "CreateWidget": {
-    "widgetCharacter_label_001": {
-      "ko": "캐릭터",
-      "en-US": "Character",
-      "ja": "Character Ja",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
-    "widgetStory_label_001": {
-      "ko": "스토리",
-      "en-US": "Story",
-      "ja": "Story Ja",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
-    "widgetPost_label_001": {
-      "ko": "포스트",
-      "en-US": "Post",
-      "ja": "Post Ja",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    }
-  },
-  "SystemMessage": {
-    "overwriteAlert_label_001": {
-      "ko": "경고",
-      "en-US": "Alert",
-      "ja": "",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
-    "overwriteAlert_desc_001": {
-      "ko": "필드에 이미 텍스트가 존재합니다. 내용을 덮어쓰시겠습니까?",
-      "en-US": "",
-      "ja": "",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
-    "failEpisode_desc_001": {
-      "ko": "다음 에피소드 데이터를 불러오는데 실패했습니다.",
-      "en-US": "Failed to load data for the next episode.",
-      "ja": "",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    }
-  },
-  "UI": {
-    "accept_btn_001": {
-      "ko": "확인",
-      "en-US": "Accept",
-      "ja": "Accept Ja",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
-    "cancel_btn_001": {
-      "ko": "취소",
-      "en-US": "Cancel",
-      "ja": "Cancel Ja",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
-    "yes_btn_001": {
-      "ko": "예",
-      "en-US": "YES",
-      "ja": "",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
-    "no_btn_001": {
-      "ko": "아니오",
-      "en-US": "NO",
-      "ja": "",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
-    "close_btn_001": {
-      "ko": "닫기",
-      "en-US": "Close",
-      "ja": "",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    }
-  },
   "EpisodePopup": {
     "openEpisode_desc_001": {
       "ko": "새로운 에피소드 오픈!",
@@ -299,6 +172,518 @@
     "continueEpisode_desc_001": {
       "ko": "채팅 계속하기",
       "en-US": "Continue Chatting",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    }
+  },
+  "SystemMessage": {
+    "overwriteAlert_desc_001": {
+      "ko": "필드에 이미 텍스트가 존재합니다. 내용을 덮어쓰시겠습니까?",
+      "en-US": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "failEpisode_desc_001": {
+      "ko": "다음 에피소드 데이터를 불러오는데 실패했습니다.",
+      "en-US": "Failed to load data for the next episode.",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "thumbnailChange_desc_001": {
+      "ko": "이미지를 대표 이미지로 변경하시겠습니까?",
+      "en-US": "Would you like me to save this \\nas your thumbnail?",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "thumbnailChange_desc_002": {
+      "ko": "대표 이미지로 변경되었습니다.",
+      "en-US": "This is the current thumbnail image.",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "processing_label_001": {
+      "ko": "생성 중",
+      "en-US": "Processing",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "choosePhoto_desc_001": {
+      "ko": "이미지를 선택해주세요. 중복 선택이 가능합니다.",
+      "en-US": "Choose photo(s) to add. Multiple choose available",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "youSure_desc_001": {
+      "ko": "변경하시겠습니까?",
+      "en-US": "Are you sure?",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "deleteTrigger_desc_001": {
+      "ko": "관련된 트리거가 모두 삭제됩니다",
+      "en-US": "Deleting your {{trigger}} is irreversible",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    }
+  },
+  "Common": {
+    "yes_btn_001": {
+      "ko": "네",
+      "en-US": "Yes",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "cancel_btn_001": {
+      "ko": "취소",
+      "en-US": "Cancel",
+      "ja": "Cancel Ja",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "no_btn_001": {
+      "ko": "아니오",
+      "en-US": "No",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "ok_btn_001": {
+      "ko": "확인",
+      "en-US": "OK",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "confirm_btn_001": {
+      "ko": "확인",
+      "en-US": "Confirm",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "close_btn_001": {
+      "ko": "닫기",
+      "en-US": "Close",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "share_btn_001": {
+      "ko": "공유",
+      "en-US": "Share",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "generate_btn_001": {
+      "ko": "제작",
+      "en-US": "Generate",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "regenerate_btn_001": {
+      "ko": "다시 생성",
+      "en-US": "Regenerate",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "change_btn_001": {
+      "ko": "변경",
+      "en-US": "Change",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "info_btn_001": {
+      "ko": "정보",
+      "en-US": "Info",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "delete_btn_001": {
+      "ko": "삭제",
+      "en-US": "Delete",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "add_btn_001": {
+      "ko": "추가",
+      "en-US": "Add",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "previous_btn_001": {
+      "ko": "이전",
+      "en-US": "Previous",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "next_btn_001": {
+      "ko": "다음",
+      "en-US": "Next",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "story_label_001": {
+      "ko": "스토리",
+      "en-US": "Story",
+      "ja": "Story Ja",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "post_label_001": {
+      "ko": "포스트",
+      "en-US": "Post",
+      "ja": "Post Ja",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "character_label_001": {
+      "ko": "캐릭터",
+      "en-US": "Character",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "create_label_001": {
+      "ko": "생성",
+      "en-US": "Create",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "all_label_001": {
+      "ko": "전체",
+      "en-US": "All",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "alphabetically_label_001": {
+      "ko": "알파벳순",
+      "en-US": "Alphabetically",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "original_label_001": {
+      "ko": "오리지널",
+      "en-US": "Original",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "fan_label_001": {
+      "ko": "팬",
+      "en-US": "Fan",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "unlisted_label_001": {
+      "ko": "임시저장",
+      "en-US": "Unlisted",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "private_label_001": {
+      "ko": "비공개",
+      "en-US": "Private",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "pubic_label_001": {
+      "ko": "공개",
+      "en-US": "Pubic",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "lastModified_label_001": {
+      "ko": "최신 수정 순",
+      "en-US": "Last Modified",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "createdOn_label_001": {
+      "ko": "생성 순",
+      "en-US": "Created On",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "addNew_label_001": {
+      "ko": "새로 추가",
+      "en-US": "Add new",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    }
+  },
+  "Content": {
+    "portrait_label_001": {
+      "ko": "초상화",
+      "en-US": "Portrait",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "pose_label_001": {
+      "ko": "포즈",
+      "en-US": "Pose",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "thumbnail_label_001": {
+      "ko": "썸네일",
+      "en-US": "Thumbnail",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "expressionCreation_label_001": {
+      "ko": "감정표현 생성하기",
+      "en-US": "Expression Creation",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "bestPortrait_label_001": {
+      "ko": "참고할 이미지",
+      "en-US": "Best Portrait",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "selectExpression_label_001": {
+      "ko": "감정표현 선택",
+      "en-US": "Select Expression",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "expression_label_001": {
+      "ko": "감정표현",
+      "en-US": "Expression",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "uploadImage_label_001": {
+      "ko": "이미지 업로드하기",
+      "en-US": "Upload Image",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "poseCreation_label_001": {
+      "ko": "포즈 생성하기",
+      "en-US": "Pose Creation",
       "ja": "",
       "fr": "",
       "es": "",
