@@ -1,11 +1,10 @@
 import React from 'react';
-import {Button} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import styles from './CharacterGalleryGrid.module.css';
 import CharacterGalleryItem from './CharacterGalleryItem';
 import EmptyState from '@/components/search/EmptyState';
 import {GalleryCategory} from './CharacterGalleryData';
 import {GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
+import {LinePlus} from '@ui/Icons';
 
 interface CharacterGalleryGridProps {
   itemUrl: GalleryImageInfo[] | null;
@@ -50,10 +49,12 @@ const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
   return (
     <div className={styles.galleryContainer} style={style}>
       {!isTrigger && (
-        <Button variant="contained" color="primary" onClick={onAddImageClick} className={styles.addImageButton}>
-          <AddIcon />
-          Add Image
-        </Button>
+        <button onClick={onAddImageClick} className={styles.addImageButton}>
+          <div className={styles.buttonArea}>
+            <img className={styles.buttonIcon} src={LinePlus.src} />
+            <div className={styles.buttonText}>Add New </div>
+          </div>
+        </button>
       )}
       {!isEmptyGallery &&
         itemUrl?.map((item, index) => (

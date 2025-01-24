@@ -3,7 +3,7 @@
   width: 100%;
   height: 100%;
   background: #000000;
-  
+ 
 }
 
 
@@ -11,6 +11,12 @@
   position: relative;
   width: 100%;
   height: 100%;
+
+
+}
+.mainContent.limitWidth{
+  max-width:600px;
+  margin: 0 auto;
 }
 
 .progressBar {
@@ -21,6 +27,12 @@
   height: 1.66px; /* 프로그레스 바 높이 */
   background-color: rgba(255, 255, 255, 0.3); /* 배경색 */
   overflow: hidden;
+}
+.progressFill {
+  position: absolute;
+  height: 100%;
+  background-color: #ff0000;
+  transition: width 0.1s linear;
 }
 
 .progressFill {
@@ -192,6 +204,10 @@ font-style: normal;
 font-weight: 700;
 line-height: 18px; /* 150% */
 
+-webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
+filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7));
+
+
 }
 
 .noneTextButton
@@ -204,15 +220,15 @@ font-size: 12px;
 font-style: normal;
 font-weight: 700;
 line-height: 18px; /* 150% */
+
+-webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
+filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7));
 }
 
 .button
 {
   width: 28px;
   height: 28px;
-  -webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
-  filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7));
-  
   cursor: pointer;
 }
 
@@ -300,6 +316,9 @@ img.button{
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* -webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
+  filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7)); */
 }
 
 .volumeCircleIcon {

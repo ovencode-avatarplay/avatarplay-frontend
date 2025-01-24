@@ -36,6 +36,11 @@ import CharacterGalleryModal from './CharacterGalleryModal';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import CustomButton from '@/components/layout/shared/CustomButton';
+import {LinePlus} from '@ui/Icons';
+import CreateFilterButton from '@/components/create/CreateFilterButton';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 const CharacterDashboard: React.FC = () => {
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
@@ -49,14 +54,80 @@ const CharacterDashboard: React.FC = () => {
   const router = useRouter();
   const searchParam = useSearchParams();
 
-  const filters = [
-    {value: 'filter1', label: 'Filter 1'},
-    {value: 'filter2', label: 'Filter 2'},
-    {value: 'filter3', label: 'Filter 3'},
-  ];
-
   const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
+
+  const [filterPublishOpen, setFilterPublishOpen] = useState<boolean>(false);
+  const [selectedPublish, setSelectedPublish] = useState<number>(0);
+
+  const publishItems: SelectDrawerItem[] = [
+    {
+      name: 'All',
+      onClick: () => {
+        setSelectedPublish(0);
+      },
+    },
+    {
+      name: 'Saved',
+      onClick: () => {
+        setSelectedPublish(1);
+      },
+    },
+    {
+      name: 'Published',
+      onClick: () => {
+        setSelectedPublish(2);
+      },
+    },
+  ];
+  const [filterOptionOpen, setFilterOptionOpen] = useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = useState<number>(0);
+
+  const optionItems: SelectDrawerItem[] = [
+    {
+      name: 'Alphabetically',
+      onClick: () => {
+        console.log('Alphabetically Selected');
+        setSelectedOption(0);
+      },
+    },
+    {
+      name: 'Last Modified',
+      onClick: () => {
+        console.log('Last Modified Selected');
+        setSelectedOption(1);
+      },
+    },
+    {
+      name: 'Created On',
+      onClick: () => {
+        console.log('Created On Selected');
+        setSelectedOption(2);
+      },
+    },
+  ];
+
+  const getFilteredAndSortedContent = () => {
+    let filtered = characters;
+
+    // // 필터 적용
+    // if (selectedPublish === 1) {
+    //   filtered = filtered.filter(item => item.visibilityType === 3);
+    // } else if (selectedPublish === 2) {
+    //   filtered = filtered.filter(item => item.visibilityType !== 3);
+    // }
+
+    // // 정렬 적용
+    // if (selectedOption === 0) {
+    //   filtered.sort((a, b) => a.name.localeCompare(b.name)); // 알파벳 순서
+    // } else if (selectedOption === 1) {
+    //   filtered.sort((a, b) => new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime()); // 수정일 역순
+    // } else if (selectedOption === 2) {
+    //   filtered.sort((a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()); // 생성일 역순
+    // }
+
+    return filtered;
+  };
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
@@ -138,20 +209,26 @@ const CharacterDashboard: React.FC = () => {
 
   //#region  handler
 
-  const handleCharacterSelect = (id: number) => {
+  const handleCharacterSelect = async (id: number) => {
     setSelectedCharacterId(id);
+
+    await getCharacterInfo(id);
+
+    setGalleryOpen(true);
   };
 
   //#region  Modify
-  const handleModifyClick = async () => {
-    if (selectedCharacterId === null || selectedCharacterId === -1) {
+  const handleModifyClick = async (id: number) => {
+    setSelectedCharacterId(id);
+
+    if (id === null || id === -1) {
       alert('Please select a character to modify.');
       return;
     }
 
     // alert('Modify is not working now');
     // Modify 용도의 api 생성 전까지 막아둠
-    await getCharacterInfo(selectedCharacterId);
+    await getCharacterInfo(id);
 
     setIsModifyMode(true);
     setModifyOpen(true);
@@ -221,6 +298,12 @@ const CharacterDashboard: React.FC = () => {
   //#endregion
 
   //#region  TopMenu
+  const handleGoHomeClick = () => {
+    const currentLang = searchParam?.get(':lang') || 'en';
+    //router.push(`/${currentLang}/create/character`);
+    pushLocalizedRoute('/main/homefeed', router);
+  };
+
   const handleCreateClick = () => {
     const currentLang = searchParam?.get(':lang') || 'en';
     //router.push(`/${currentLang}/create/character`);
@@ -234,24 +317,44 @@ const CharacterDashboard: React.FC = () => {
 
   //#endregion
 
-  const buttons = [
-    {icon: <EditIcon />, text: 'Edit', onClick: handleModifyClick},
-    {icon: <PhotoLibraryIcon />, text: 'Gallery', onClick: handleGalleryClick},
-    {icon: <DeleteIcon />, text: 'Delete', onClick: handleDeleteClick},
-  ];
-
   return (
     <div className={styles.dashboard}>
-      <StudioTopMenu icon={<StarIcon />} text="Character" />
+      {/* <StudioTopMenu icon={<StarIcon />} text="Character" /> */}
 
-      <StudioFilter
-        filters={filters}
-        selectedFilter={selectedFilter}
-        onFilterChange={handleFilterChange}
-        onCreateClick={handleCreateClick}
+      <CreateDrawerHeader title="Character" onClose={handleGoHomeClick}>
+        <CustomButton
+          size="Small"
+          type="Primary"
+          state="IconLeft"
+          customClassName={[styles.addButton]}
+          icon={LinePlus.src}
+          onClick={handleCreateClick}
+        >
+          Create
+        </CustomButton>
+      </CreateDrawerHeader>
+      <div className={styles.filterContainer}>
+        <CreateFilterButton
+          name=""
+          selectedItem={publishItems[selectedPublish]}
+          onClick={() => setFilterPublishOpen(true)}
+          style={{width: '100px'}}
+        />
+        <CreateFilterButton
+          name=""
+          selectedItem={optionItems[selectedOption]}
+          onClick={() => setFilterOptionOpen(true)}
+          style={{width: '140px'}}
+        />
+      </div>
+      <CharacterGrid
+        characters={characters ? characters : undefined}
+        onCharacterSelect={handleCharacterSelect}
+        style={{marginTop: '0px'}}
+        canEdit={true}
+        onClickEdit={handleModifyClick}
       />
-      <CharacterGrid characters={characters ? characters : undefined} onCharacterSelect={handleCharacterSelect} />
-      <CharacterDashboardFooter buttons={buttons} />
+      {/* <CharacterDashboardFooter buttons={buttons} /> */}
 
       {/* CharacterGallery */}
       {currentSelectedCharacter && (
@@ -292,6 +395,24 @@ const CharacterDashboard: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <SelectDrawer
+        items={publishItems}
+        isOpen={filterPublishOpen}
+        onClose={() => {
+          setFilterPublishOpen(false);
+        }}
+        selectedIndex={selectedPublish}
+      />
+
+      <SelectDrawer
+        items={optionItems}
+        isOpen={filterOptionOpen}
+        onClose={() => {
+          setFilterOptionOpen(false);
+        }}
+        selectedIndex={selectedOption}
+      />
 
       <LoadingOverlay loading={loading} />
     </div>

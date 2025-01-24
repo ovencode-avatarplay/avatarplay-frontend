@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styles from './ReelsContent.module.css';
 import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
@@ -199,31 +199,38 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
     mediaUrlList: item.mediaUrlList, // 빈 배열
   };
 
+  const checkMobileOrTablet = useCallback(() => {
+    const userAgent = navigator.userAgent || navigator.vendor;
+    const platform = navigator.platform;
+    const maxTouchPoints = navigator.maxTouchPoints || 0;
+
+    console.log('userAgent:', userAgent);
+    console.log('platform:', platform);
+    console.log('maxTouchPoints:', maxTouchPoints);
+
+    const isIOSDevice = /iPhone|iPad|iPod/i.test(userAgent);
+
+    // iPad Pro를 구분하기 위해 추가 체크
+    const isTouchDevice = navigator.maxTouchPoints > 0;
+
+    return (
+      isIOSDevice ||
+      isTouchDevice ||
+      /Android|webOS|BlackBerry|Windows Phone|Opera Mini|IEMobile|Tablet/i.test(userAgent)
+    );
+  }, []);
+  const isMobile = checkMobileOrTablet();
+
   return (
     <div className={styles.reelsContainer}>
-      <div className={styles.mainContent}>
+      <div className={`${styles.mainContent}  ${!isMobile && styles.limitWidth}`}>
         <div className={styles.Image}>
           {item.mediaState === 1 && (
-            <Swiper
-              style={{
-                height: '100%',
-              }}
-              navigation={true}
-              className={styles.mySwiper}
-              initialSlide={0}
-              onSlideChange={handleSlideChange} // 슬라이드 변경 이벤트 핸들러 추가
-            >
-              {item?.mediaUrlList.map((url, idx) => (
-                <SwiperSlide key={idx}>
-                  <img
-                    src={url}
-                    alt={`Slide ${idx}`}
-                    loading="lazy"
-                    style={{width: '100%', height: 'calc(100% - 4px)', objectFit: 'contain'}}
-                  />
-                </SwiperSlide>
-              ))}
-            </Swiper>
+            <img
+              src={item?.mediaUrlList[0]}
+              loading="lazy"
+              style={{width: '100%', height: 'calc(100% - 4px)', objectFit: 'contain'}}
+            />
           )}
           {item.mediaState === 2 && (
             <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
@@ -238,6 +245,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
                 height="calc(100% - 4px)"
                 style={{
                   borderRadius: '8px',
+                }}
+                config={{
+                  file: {
+                    attributes: {
+                      style: {
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      },
+                    },
+                  },
                 }}
                 progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
                 onProgress={({playedSeconds}) => {

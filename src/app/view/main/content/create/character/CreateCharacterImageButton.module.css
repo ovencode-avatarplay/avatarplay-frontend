@@ -109,3 +109,53 @@
   transform: translate(-50%, 50%);
   bottom: 50%;
 }
+
+
+.multiSelIcon
+{
+  position: absolute;
+  right: 5px;
+  top: 5px;
+
+  display: flex;
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+} 
+
+.processingArea
+{
+  position:absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.processingIcon
+{
+  width: 40px;
+  height: 40px;
+}
+
+.processingText
+{
+  align-self: stretch;
+
+  color: var(--Labels-Secondary, rgba(60, 60, 67, 0.60));
+  text-align: center;
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px; /* 183.333% */
+  letter-spacing: -0.4px;
+}

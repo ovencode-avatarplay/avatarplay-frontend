@@ -7,7 +7,7 @@ padding: 4px;
 gap: 8px;
 
 width: 260px;
-max-width: 260px;
+/* max-width: 260px; */
 height: 40px;
 
 background: rgba(0, 0, 0, 0.6);

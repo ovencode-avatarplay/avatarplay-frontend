@@ -1,24 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Typography, IconButton, Button, Paper} from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ShareIcon from '@mui/icons-material/Share';
-import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import InfoIcon from '@mui/icons-material/Info';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import styles from './CharacterGalleryViewer.module.css';
 import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
-import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
+import {GalleryCategory} from './CharacterGalleryData';
 import {SelectImageReq, sendSelectImage} from '@/app/NetWork/CharacterNetwork';
+import {BoldMenuDots, LineArrowLeft, LineDelete, LineInfo, LinePin, LineShare} from '@ui/Icons';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface CharacterGalleryViewerProps {
   characterInfo: CharacterInfo;
   selectedIndex: number | null;
   categoryType: GalleryCategory;
   onBack: () => void;
-  onThumbnail: () => void;
-  onInfo: () => void;
   onDelete: () => void;
   onSelectImage: (category: GalleryCategory, index: number) => void;
   onRefresh: () => void;
@@ -33,7 +27,7 @@ const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
   onSelectImage,
   onRefresh,
 }) => {
-  const [currentBackground, setCurrentBackground] = useState<string>('');
+  const [currentBackground, setCurrentBackground] = useState<string>(characterInfo.mainImageUrl);
   const [imageUrls, setImageUrls] = useState<GalleryImageInfo[]>([]);
   const [currentInfo, setCurrentInfo] = useState<string>('');
   const [infoOpen, setInfoOpen] = useState<boolean>(false);
@@ -139,79 +133,92 @@ const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
   };
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column', height: '100vh'}} onClick={() => infoOpen && closeInfo()}>
-      <Box
-        className={styles.thumbnailArea}
+    <div className={styles.viewerContainer} onClick={() => infoOpen && closeInfo()}>
+      <div
+        className={styles.imageArea}
         style={{
           backgroundImage: `url(${currentBackground})`,
         }}
       >
-        <Box className={styles.thumbnailButtonArea}>
-          <IconButton onClick={onBack} className={styles.backButton}>
-            <ArrowBackIcon />
-          </IconButton>
+        <div className={styles.topNavArea}>
+          <button onClick={onBack} className={styles.topNavBackButton}>
+            <img className={styles.buttonIconBack} src={LineArrowLeft.src} />
+          </button>
 
-          <IconButton className={styles.menuButton}>
-            <Typography variant="caption">•••</Typography>
-          </IconButton>
-        </Box>
+          <button className={styles.topNavButton}>
+            <img className={styles.buttonIcon} src={BoldMenuDots.src} />
+          </button>
+        </div>
 
-        {/* Label */}
-        <Typography variant="h6" className={styles.label}>
-          {galleryCategoryText[categoryType]}
-        </Typography>
-      </Box>
+        <div className={styles.swiperArea}>
+          <div className={styles.swiperCounter}>
+            {' '}
+            {selectedIndex === null ? 0 : selectedIndex + 1} / {imageUrls.length}{' '}
+          </div>
+          <Swiper
+            initialSlide={selectedIndex ?? 0}
+            slidesPerView="auto"
+            spaceBetween={5}
+            centeredSlides={true}
+            onSlideChange={handleSwipeChange}
+            className={styles.swiperContainer}
+          >
+            {imageUrls.map((url, index) => (
+              <SwiperSlide key={index} style={{width: '31.452px', height: '50px'}}>
+                <div
+                  className={styles.swiperItem}
+                  style={{
+                    backgroundImage: `url(${url.imageUrl})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </div>
 
       {/* Control Area */}
-      <Box className={styles.controlArea}>
-        {/* Thumbnail Navigation */}
-        <Swiper
-          initialSlide={selectedIndex ?? 0}
-          slidesPerView={4}
-          spaceBetween={1}
-          centeredSlides={true}
-          onSlideChange={handleSwipeChange}
-          className={styles.thumbnailSwiper}
-        >
-          {imageUrls.map((url, index) => (
-            <SwiperSlide key={index}>
-              <Box
-                className={styles.thumbnailSlide}
-                style={{
-                  backgroundImage: `url(${url.imageUrl})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-
-        {/* Info Popup */}
-        {infoOpen && selectedIndex !== null && (
-          <Paper className={styles.infoPopup}>
-            <Typography variant="subtitle1">Info</Typography>
-            <Typography variant="body2">{currentInfo || 'No promptParameter available'}</Typography>
-          </Paper>
-        )}
-
+      <div className={styles.controlArea}>
         {/* Control Button Area */}
-        <Box className={styles.controlButtonArea}>
-          <Button onClick={handleOnShare} className={styles.controlButton} startIcon={<ShareIcon />}>
-            Share
-          </Button>
-          <Button onClick={handleOnThumbnail} className={styles.controlButton} startIcon={<PhotoLibraryIcon />}>
-            Thumbnail
-          </Button>
-          <Button onClick={handleOnInfo} className={styles.controlButton} startIcon={<InfoIcon />}>
-            Info
-          </Button>
-          <Button onClick={onDelete} className={styles.controlButton} startIcon={<DeleteIcon />}>
-            Delete
-          </Button>
-        </Box>
-      </Box>
-    </Box>
+        <div className={styles.controlButtonArea}>
+          <button onClick={handleOnShare} className={styles.controlButton}>
+            <img className={styles.controlButtonIcon} src={LineShare.src} />
+            <div className={styles.controlButtonText}>Share</div>
+          </button>
+          <button onClick={handleOnThumbnail} className={styles.controlButton}>
+            <img className={styles.controlButtonIcon} src={LinePin.src} />
+            <div className={styles.controlButtonText}>Thumbnail</div>
+          </button>
+          <button onClick={handleOnInfo} className={styles.controlButton}>
+            <img className={styles.controlButtonIcon} src={LineInfo.src} />
+            <div className={styles.controlButtonText}>Info</div>
+          </button>
+          <button onClick={onDelete} className={styles.controlButton}>
+            <img className={styles.controlButtonIcon} src={LineDelete.src} />
+            <div className={styles.controlButtonText}>Delete</div>
+          </button>
+        </div>
+      </div>
+      {/* Info Popup */}
+      {infoOpen && selectedIndex !== null && (
+        <CustomPopup
+          title="Info"
+          type="alert"
+          buttons={[
+            {
+              label: 'Ok',
+              onClick: () => {
+                setInfoOpen(false);
+              },
+              isPrimary: true,
+            },
+          ]}
+          description={currentInfo || 'No promptParameter available'}
+        />
+      )}
+    </div>
   );
 };
 

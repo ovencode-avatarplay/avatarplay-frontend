@@ -1,8 +1,4 @@
-.modalContent {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);  
+.modalContent {  
     width: var(--full-width);
     height: 100vh;
     background-color: var(--mui-palette-background-paper); /* MUI Theme Variable */
@@ -15,19 +11,16 @@
 
   
 .container {
-    position: relative;  
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);   
     width: var(--full-width);
     margin: 0 auto;
-    height: 100vh; 
-    max-height: 100vh;
+    height: 100%; 
+    max-height: 100%;
     overflow-x: auto; 
     background-color: white;
     display: flex;
     flex-direction: column;
   }
+
   .footer {
     display: flex;
     justify-content: space-around;

@@ -99,9 +99,11 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
 
   // Step
   const [maxStep, setMaxStep] = useState<number>(11);
-  const showStep = 8;
+  const showCreateStep = 8;
+  const showModifyStep = 3;
+  const [showStep, setShowStep] = useState<number>(showCreateStep);
   const [curStep, setCurStep] = useState<number>(0); // 0일때는 max 수치가 변동이 있을 수 있기때문에 step이 가려집니다.
-  const stepTexts: string[] = [
+  const createStepTexts: string[] = [
     'Step 1. Select gender',
     'Step 2. Select style',
     'Step 3. Choose ethnicity',
@@ -112,6 +114,14 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
     'Step 8. Choose personality',
     '',
     'Step 9. Choose one as a character thumbnail',
+    '',
+  ];
+  const modifyStepTexts: string[] = [
+    'Step 1. Choose hair style',
+    'Step 2. Outfit of clothes',
+    'Step 3. Thumbnail background',
+    '',
+    'Step 4. Choose one as a character thumbnail',
     '',
   ];
   const finalStepText = 'Write the title of the episode';
@@ -232,6 +242,15 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
   //#endregion
 
   //#region Hook
+
+  useEffect(() => {
+    if (isModify) {
+      setShowStep(showModifyStep);
+    } else {
+      setShowStep(showCreateStep);
+    }
+  }, [isModify]);
+
   useEffect(() => {
     if (publishClick) {
       setPublishReqested(true);
@@ -306,7 +325,8 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
     if (curStep >= maxStep) {
       return finalStepText;
     }
-    const currentStep = stepTexts[curStep];
+
+    const currentStep = isModify ? modifyStepTexts[curStep] : createStepTexts[curStep];
     return currentStep || '';
   };
 
@@ -770,7 +790,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
   const renderBottom = () => {
     return (
       <>
-        {curStep > 0 && (
+        {((curStep > 0 && !isModify) || isModify) && (
           <>
             {curStep < steps.length - 1 ? (
               <>

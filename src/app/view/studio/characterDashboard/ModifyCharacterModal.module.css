@@ -1,20 +1,21 @@
-.modalContent {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);  
-    width: var(--full-width);
-    height: 100vh;
-    background-color: white;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
-    overflow-y: auto;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    padding: 16px;
-    box-sizing: border-box;
-  }
+.drawerContent
+{
+  display: flex;
+  flex-direction: column;
+  height: 100vh; 
+  overflow-y: scroll;
+  width: var(--full-width);
+  margin: 0 auto
+}
   
+.drawerContent::-webkit-scrollbar {
+  display: none;  
+}
+
+.drawerContent {
+  scrollbar-width: none;  
+  -ms-overflow-style: none;  
+}
   
 .createBox {
   width: 100%;
@@ -23,9 +24,9 @@
   flex-direction: column;
 }
 
-  .buttonContainer {
-    display: flex;
-    justify-content: space-evenly;
-    padding-bottom: 24px;
-  }
+.buttonContainer {
+  display: flex;
+  justify-content: space-evenly;
+  padding-bottom: 24px;
+}
   

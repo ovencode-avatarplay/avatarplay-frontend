@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 // mui, css
-import {Modal, Box, Button, Typography, Snackbar, Alert} from '@mui/material';
+import {Snackbar, Alert, Drawer} from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import PreviewIcon from '@mui/icons-material/Preview';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -11,17 +11,17 @@ import styles from './CharacterGalleryModal.module.css';
 import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
 
 // Network
-import {DeleteGalleryReq, sendDeleteGallery} from '@/app/NetWork/CharacterNetwork';
+import {DeleteGalleryReq, SaveGalleryReq, sendDeleteGallery, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
 
 // Components
-import CreateCharacterTopMenu from '../../main/content/create/character/CreateCharacterTopMenu';
 import CharacterGallery from './CharacterGallery';
 import CharacterGalleryCreate from './CharacterGalleryCreate';
 import CharacterGalleryViewer from './CharacterGalleryViewer';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import {getLocalizedLink} from '@/utils/UrlMove';
+import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface CharacterGalleryModalProps {
   open: boolean;
@@ -38,16 +38,6 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   refreshCharacter,
   refreshCharacterList,
 }) => {
-  const buttons = [
-    {
-      icon: <StarIcon />,
-      text: 'Regenerate',
-      onClick: () => handleRegenerateItem(),
-    },
-    {icon: <PreviewIcon />, text: 'View', onClick: () => handleViewItem()},
-    {icon: <DeleteIcon />, text: 'Delete', onClick: () => handleDeleteItem()},
-  ];
-
   const [selectedCategory, setSelectedCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
   const [isRegenerateOpen, setIsRegenerateOpen] = useState(false);
   const [isModifyOpen, setIsModifyOpen] = useState(false);
@@ -56,8 +46,12 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   const [characterInfo, setCharacterInfo] = useState<CharacterInfo>(characterData);
   const [viewerOpen, setViewerOpen] = useState(false);
 
+  const [selectedPortrait, setSelectedPortrait] = useState<string>(characterInfo.mainImageUrl);
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setloading] = useState(false);
+
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const handleOnClose = () => {
     onClose();
@@ -75,6 +69,9 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   };
 
   const handleSelectItem = (category: GalleryCategory, index: number | null) => {
+    if (category === GalleryCategory.Portrait && index !== null) {
+      setSelectedPortrait(characterData.portraitGalleryImageUrl[index].imageUrl);
+    }
     setSelectedItem([category, index]);
   };
 
@@ -87,19 +84,46 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     }
   };
 
-  useEffect(() => {
-    setCharacterInfo(characterData);
-  }, [characterData]);
+  // 이미지들을 갤러리로 업로드 함
+  const handleUploadImages = async (category: GalleryCategory, urls: string[], parameter: string = '') => {
+    try {
+      const targetCategory = category;
 
-  const handleViewItem = () => {
-    if (selectedCategory !== selectedItem[0] || selectedItem[1] === null || selectedItem[1] === undefined) {
+      if (!targetCategory) {
+        console.error('Target category is not selected.');
+        return;
+      }
+      let updatedGalleryUrls: string[] = [];
+      updatedGalleryUrls = urls;
+
+      const saveReq: SaveGalleryReq = {
+        characterId: characterInfo.id,
+        galleryType: targetCategory,
+        galleryImageUrls: updatedGalleryUrls,
+        debugParameter: parameter,
+      };
+
+      const responseGallery = await sendSaveGallery(saveReq);
+
+      console.log('save gallery success' + responseGallery.resultCode);
+      refreshCharacter(characterInfo.id);
+      setIsRegenerateOpen(false);
+    } catch (error) {
+      console.error('Error uploading images:', error);
+    }
+  };
+
+  const handleViewItem = (category: GalleryCategory, index: number | null) => {
+    if (index === null) {
       console.error('Invalid selection: ', selectedItem);
       return;
     }
 
+    setSelectedItem([category, index]);
+
     let imageUrls: {url: string; category: GalleryCategory}[] = []; // URL과 카테고리 정보를 함께 저장
 
-    switch (selectedItem[0] as GalleryCategory) {
+    switch (category) {
       case GalleryCategory.All:
         const allUrls = [
           ...(characterInfo.portraitGalleryImageUrl || []).map(img => ({
@@ -116,7 +140,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
           })),
         ];
 
-        if (allUrls[selectedItem[1]]) {
+        if (allUrls[index]) {
           imageUrls = allUrls;
         } else {
           console.error('URL not found for index in All category:', selectedItem[1]);
@@ -124,7 +148,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
         break;
 
       case GalleryCategory.Portrait:
-        if (characterInfo.portraitGalleryImageUrl && characterInfo.portraitGalleryImageUrl[selectedItem[1]]) {
+        if (characterInfo.portraitGalleryImageUrl && characterInfo.portraitGalleryImageUrl[index]) {
           imageUrls = characterInfo.portraitGalleryImageUrl.map(img => ({
             url: img.imageUrl,
             category: GalleryCategory.Portrait,
@@ -135,7 +159,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
         break;
 
       case GalleryCategory.Pose:
-        if (characterInfo.poseGalleryImageUrl && characterInfo.poseGalleryImageUrl[selectedItem[1]]) {
+        if (characterInfo.poseGalleryImageUrl && characterInfo.poseGalleryImageUrl[index]) {
           imageUrls = characterInfo.poseGalleryImageUrl.map(img => ({
             url: img.imageUrl,
             category: GalleryCategory.Pose,
@@ -146,7 +170,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
         break;
 
       case GalleryCategory.Expression:
-        if (characterInfo.expressionGalleryImageUrl && characterInfo.expressionGalleryImageUrl[selectedItem[1]]) {
+        if (characterInfo.expressionGalleryImageUrl && characterInfo.expressionGalleryImageUrl[index]) {
           imageUrls = characterInfo.expressionGalleryImageUrl.map(img => ({
             url: img.imageUrl,
             category: GalleryCategory.Expression,
@@ -165,6 +189,10 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     } else {
       console.error('No valid URLs found for the selected category');
     }
+  };
+
+  const handleDeleteClick = () => {
+    setPopupOpen(true);
   };
 
   const handleDeleteItem = async () => {
@@ -259,11 +287,28 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
       console.error('Selected item is invalid:', selectedItem);
     }
     setloading(false);
+    setPopupOpen(false);
   };
 
   const handleImageSelect = (category: GalleryCategory, index: number) => {
     setSelectedItem([category, index]);
   };
+
+  const handleOnBackButtonClick = () => {
+    if (isRegenerateOpen) {
+      handleRegenerateClose();
+    } else if (isModifyOpen) {
+      handleModifyClose();
+    } else if (viewerOpen) {
+    } else {
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    setCharacterInfo(characterData);
+    setSelectedPortrait(characterData.mainImageUrl);
+  }, [characterData]);
 
   function getSelectedImageData(): GalleryImageInfo | undefined {
     if (selectedItem[1] === null || selectedItem[1] === undefined) {
@@ -290,34 +335,28 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   }
 
   return (
-    <Modal open={open} onClose={handleOnClose}>
-      <Box className={styles.modalContent}>
-        <Box className={styles.container}>
+    <Drawer anchor="bottom" open={open} onClose={handleOnClose}>
+      <div className={styles.modalContent}>
+        <div className={styles.container}>
+          {!viewerOpen && (
+            <CreateDrawerHeader
+              title={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]}`}
+              onClose={handleOnBackButtonClick}
+            />
+          )}
           {isRegenerateOpen ? (
             <>
-              <CreateCharacterTopMenu
-                backButtonAction={handleRegenerateClose}
-                lastUrl={getLocalizedLink('/studio/Character')}
-                contentTitle={`${characterInfo.name} 's ${galleryCategoryText[selectedCategory]} Creation`}
-                blockStudioButton={true}
-              />
               <CharacterGalleryCreate
                 open={isRegenerateOpen}
                 onClose={handleRegenerateClose}
                 category={selectedCategory}
-                characterInfo={characterInfo}
+                // characterInfo={characterInfo}
+                selectedPortraitUrl={selectedPortrait}
+                onUploadGalleryImages={handleUploadImages}
               />
             </>
           ) : isModifyOpen ? (
             <>
-              <CreateCharacterTopMenu
-                backButtonAction={handleModifyClose}
-                lastUrl={getLocalizedLink('/studio/Character')}
-                contentTitle={`Modify ${characterInfo.name}`}
-                blockStudioButton={true}
-              />
-              {/* Sorry Modify is not working now */}
-
               <ModifyCharacterModal
                 open={isModifyOpen}
                 onClose={handleModifyClose}
@@ -332,39 +371,54 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
               selectedIndex={selectedItem[1]}
               categoryType={selectedCategory}
               onBack={() => setViewerOpen(false)}
-              onThumbnail={() => console.log('Thumbnail clicked')}
-              onInfo={() => console.log('Info clicked')}
-              onDelete={handleDeleteItem}
+              onDelete={handleDeleteClick}
               onSelectImage={handleImageSelect}
               onRefresh={refreshCharacterList}
             />
           ) : (
             <>
-              <CreateCharacterTopMenu
-                backButtonAction={onClose}
-                lastUrl={getLocalizedLink('/studio/Character')}
-                contentTitle={`${characterInfo.name}'s Gallery`}
-                blockStudioButton={true}
-              />
               <CharacterGallery
                 characterInfo={characterInfo}
                 onCategorySelected={setSelectedCategory}
-                onCurrentSelected={handleSelectItem}
+                // onCurrentSelected={handleSelectItem}
+                onCurrentSelected={handleViewItem}
                 onGenerateSelected={handleRegenerateItem}
                 refreshCharacter={refreshCharacter}
                 initialSelectedItem={selectedItem}
+                selectedGalleryType={selectedCategory}
+                setSelectedGalleryType={setSelectedCategory}
               />
-              <div className={styles.footer}>
+              {/* <div className={styles.footer}>
                 {buttons.map((button, index) => (
                   <Button key={index} className={styles.button} startIcon={button.icon} onClick={button.onClick}>
                     <Typography>{button.text}</Typography>
                   </Button>
                 ))}
-              </div>
+              </div> */}
             </>
           )}
-        </Box>
-
+        </div>
+        {popupOpen && (
+          <CustomPopup
+            type="alert"
+            title="Are you sure?"
+            description="Delete item is irreversible"
+            buttons={[
+              {
+                label: 'Cancel',
+                onClick: () => {
+                  setPopupOpen(false);
+                },
+                isPrimary: false,
+              },
+              {
+                label: 'Delete',
+                onClick: handleDeleteItem,
+                isPrimary: true,
+              },
+            ]}
+          />
+        )}
         <Snackbar
           open={!!errorMessage}
           autoHideDuration={6000}
@@ -376,8 +430,8 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
           </Alert>
         </Snackbar>
         <LoadingOverlay loading={loading} />
-      </Box>
-    </Modal>
+      </div>
+    </Drawer>
   );
 };
 

@@ -5,7 +5,7 @@
   
   width: calc(var(--second-width) * 0.5 - 6px);
   max-width: 179px;
-  height: 259.172px;
+  height: 260px;
   flex-shrink: 0;
 
   border-radius: 12px;

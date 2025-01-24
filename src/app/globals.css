@@ -170,6 +170,10 @@
   --bottom-nav-height : 48px;
   
   --body-height : calc(100% - 58px - 48px);
+
+
+  /* Component Size 관련*/
+  --basic-button-width: clamp(0px, calc(var(--full-width) * 0.3), 120px);
 }
 /* html{
   height:100%;
