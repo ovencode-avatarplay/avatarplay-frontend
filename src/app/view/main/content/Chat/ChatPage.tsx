@@ -52,7 +52,6 @@ import {useStreamMessage} from './hooks/useStreamMessage';
 const ChatPage: React.FC = () => {
   const {
     sendMessageAsync,
-    //saveChatStreamInfo,
 
     handleBackClick,
     SetChatBarCount,
@@ -117,17 +116,38 @@ const ChatPage: React.FC = () => {
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, saveChatStreamInfo} = useStreamMessage({
-    isLoading,
-    setIsLoading,
+  console.log('1111 isLoading: ' + isLoading);
+
+  const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, changeStreamKey} = useStreamMessage({
     handleSendMessage,
     isSendingMessage,
-    setChatId,
-    parsedMessages,
-    setParsedMessages,
-    parsedMessagesRef,
-    TempIdforSendQuestion,
+    onMessageProps: onMessage,
   });
+
+  async function onMessage(event: any, eventSource: any) {
+    try {
+      console.log('onMessage isLoading: ' + isLoading);
+
+      setIsLoading(false);
+      console.log('onMessage isLoading2: ' + isLoading);
+      if (!event.data) {
+        throw new Error('Received null or empty data');
+      }
+
+      const newMessage = JSON.parse(event.data);
+      await handleSendMessage(newMessage, false, true, false);
+
+      if (newMessage.includes('$') === true) {
+        isSendingMessage.current = false;
+
+        eventSource.close();
+        console.log('Stream ended normally');
+      }
+    } catch (error) {
+      console.error('Error processing message:', error);
+      console.error('Received data:', event.data);
+    }
+  }
 
   useEffect(() => {
     preventZoom(); // 줌인아웃을 막는다.
@@ -456,7 +476,27 @@ const ChatPage: React.FC = () => {
       const response = await sendMessageAsync(reqSendChatMessage);
       if ('streamKey' in response) {
         // 성공적인 응답 처리
-        saveChatStreamInfo(reqSendChatMessage, response);
+        setChatId(response.chatContentId);
+        if (!reqSendChatMessage?.streamKey) {
+          alert('streamkey 비어있음 ');
+          return;
+        }
+        changeStreamKey(response.streamKey);
+
+        const currentMessages = parsedMessagesRef.current.Messages;
+        const updatedMessages = currentMessages.map(message =>
+          message.chatId === TempIdforSendQuestion ? {...message, chatId: response.chatContentId} : message,
+        );
+
+        // 상태 업데이트
+        setParsedMessages({
+          ...parsedMessagesRef.current,
+          Messages: updatedMessages,
+        });
+        setRegeneratingQuestion({
+          lastMessageId: response.chatContentId,
+          lastMessageQuestion: reqSendChatMessage.text,
+        });
       } else if ('resultCode' in response) {
         // 오류 응답 처리
         if (response.resultCode === 13) {

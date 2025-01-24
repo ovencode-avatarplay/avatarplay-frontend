@@ -20,7 +20,6 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
   followerCount,
   thumbnail,
   classType,
-  style,
 }) => {
   const dispatch = useDispatch();
 
