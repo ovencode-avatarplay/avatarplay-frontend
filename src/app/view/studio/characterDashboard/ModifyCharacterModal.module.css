@@ -1,14 +1,11 @@
-.drawerContainer
-{
-  width: 100%;
-  height: 1000px;
-}
-
 .drawerContent
 {
-  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100vh; 
   overflow-y: scroll;
-
+  width: var(--full-width);
+  margin: 0 auto
 }
   
 .drawerContent::-webkit-scrollbar {

@@ -53,7 +53,7 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
 
   return (
     <Drawer anchor="bottom" open={open} onClose={onClose}>
-      <Box className={styles.drawerContent}>
+      <div className={styles.drawerContent}>
         <CreateDrawerHeader title="Modify Character" onClose={onClose} />
 
         {isModifying ? (
@@ -76,19 +76,19 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
               publishFinishAction={handlePublishFinishAction}
             />
 
-            <Box className={styles.buttonContainer}>
+            <div className={styles.buttonContainer}>
               <PublishCharacterBottom
                 onPrevClick={handlePrevClick}
                 onPublishClick={() => {
                   setPublishClick(true);
                 }}
               />
-            </Box>
+            </div>
           </div>
         ) : (
           <div>character is not available</div>
         )}
-      </Box>
+      </div>
     </Drawer>
   );
 };
