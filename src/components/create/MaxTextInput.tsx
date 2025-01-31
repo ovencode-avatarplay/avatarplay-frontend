@@ -88,12 +88,7 @@ const MaxTextInput: React.FC<Props> = ({
 
     // 특수문자 허용 여부 처리
     if (!allowSpecialCharacters) {
-      value = value.replace(/[^가-힣a-zA-Z0-9\s]/g, ''); // 한글, 알파벳, 숫자, 공백만 허용
-    }
-
-    // **NaN 방지: "NaN"이 될 가능성을 사전에 차단**
-    if (isNaN(Number(value))) {
-      value = '0';
+      value = value.replace(/[!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?`~]/g, ''); // 특수 문자만 제거
     }
 
     // 새로운 이벤트 객체 생성하여 안전하게 값 전달
