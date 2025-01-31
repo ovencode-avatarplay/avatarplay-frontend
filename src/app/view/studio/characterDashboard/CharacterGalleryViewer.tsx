@@ -138,6 +138,7 @@ const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
         className={styles.imageArea}
         style={{
           backgroundImage: `url(${currentBackground})`,
+          background: 'cover',
         }}
       >
         <div className={styles.topNavArea}>

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Drawer} from '@mui/material';
+import {Drawer} from '@mui/material';
 import styles from './ModifyCharacterModal.module.css';
 import CharacterCreateSequence from '../../main/content/create/character/CreateCharacterSequence';
 import PublishCharacter from '../../main/content/create/character/PublishCharacter';

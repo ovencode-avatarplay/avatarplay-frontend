@@ -769,9 +769,11 @@ const EpisodeInitialize: React.FC<Props> = ({
             onClick={() => {
               subStep();
             }}
+            style={{visibility: curStep < 1 ? 'hidden' : 'visible'}}
           >
             Previous
           </CustomButton>
+
           {checkCenterButtonStep() && (
             <CustomButton
               size="Medium"

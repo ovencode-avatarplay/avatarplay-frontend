@@ -335,7 +335,20 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
   }
 
   return (
-    <Drawer anchor="bottom" open={open} onClose={handleOnClose}>
+    <Drawer
+      PaperProps={{
+        sx: {
+          background: 'var(--White, #FFF)',
+          overflow: 'hidden',
+          bottom: '0px',
+          width: 'var(--full-width)',
+          margin: '0 auto',
+        },
+      }}
+      anchor="bottom"
+      open={open}
+      onClose={handleOnClose}
+    >
       <div className={styles.modalContent}>
         <div className={styles.container}>
           {!viewerOpen && (
