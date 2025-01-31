@@ -1,11 +1,34 @@
 // src/app/Network/CharacterNetwork.tsx
 
 import api, {ResponseAPI} from './ApiInstance';
-import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
 // GetCharacterList
 
+export interface CharacterInfoDate {
+  id: number;
+  name: string;
+  introduction: string;
+  description: string;
+
+  worldScenario: string;
+  greeting: string;
+  secret: string;
+
+  genderType: number;
+  mainImageUrl: string;
+  portraitGalleryImageUrl: GalleryImageInfo[];
+  poseGalleryImageUrl: GalleryImageInfo[];
+  expressionGalleryImageUrl: GalleryImageInfo[];
+  visibilityType: number;
+  isMonetization: boolean;
+  state: number;
+
+  createAt: Date;
+  updateAt: Date;
+}
+
 export interface GetCharacterListRes {
-  characterInfoList: CharacterInfo[];
+  characterInfoList: CharacterInfoDate[];
 }
 
 export const sendGetCharacterList = async (payload: {}): Promise<ResponseAPI<GetCharacterListRes>> => {

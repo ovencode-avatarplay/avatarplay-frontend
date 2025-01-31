@@ -63,7 +63,7 @@ const MaxTextInput: React.FC<Props> = ({
   const [currentState, setCurrentState] = useState<inputState>(stateDataType);
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    let value = event.target.value.trim(); // 공백 제거
+    let value = event.target.value.replace(/^\s+/, ''); // 첫글자 앞의 공백 제거
 
     // 조합 중에는 입력을 허용
     if (isComposing && inputDataType != inputType.OnlyNum && inputDataType != inputType.OnlyNumMax100) {
