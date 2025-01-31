@@ -63,21 +63,26 @@ const MaxTextInput: React.FC<Props> = ({
   const [currentState, setCurrentState] = useState<inputState>(stateDataType);
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    let value = event.target.value;
+    let value = event.target.value.trim(); // 공백 제거
 
     // 조합 중에는 입력을 허용
-    if (isComposing) {
+    if (isComposing && inputDataType != inputType.OnlyNum && inputDataType != inputType.OnlyNumMax100) {
       handlePromptChange(event);
       return;
     }
 
-    // OnlyNum 및 OnlyNumMax100에 대한 처리
+    // 숫자 입력만 허용 (OnlyNum, OnlyNumMax100)
     if (inputDataType === inputType.OnlyNum || inputDataType === inputType.OnlyNumMax100) {
-      value = value.replace(/[^0-9]/g, ''); // 숫자만 허용
+      value = value.replace(/[^0-9]/g, ''); // 숫자만 남김
+
+      // 빈 문자열이면 "0"으로 설정하여 NaN 방지
+      if (value === '') {
+        value = '0';
+      }
 
       // OnlyNumMax100 제한
       if (inputDataType === inputType.OnlyNumMax100 && Number(value) > 100) {
-        value = '100';
+        value = '100'; // 최대 100까지만 입력 가능
       }
     }
 
@@ -86,12 +91,24 @@ const MaxTextInput: React.FC<Props> = ({
       value = value.replace(/[^가-힣a-zA-Z0-9\s]/g, ''); // 한글, 알파벳, 숫자, 공백만 허용
     }
 
-    // 값 업데이트
-    event.target.value = value;
-    handlePromptChange(event);
+    // **NaN 방지: "NaN"이 될 가능성을 사전에 차단**
+    if (isNaN(Number(value))) {
+      value = '0';
+    }
+
+    // 새로운 이벤트 객체 생성하여 안전하게 값 전달
+    const newEvent = {
+      ...event,
+      target: {
+        ...event.target,
+        value,
+      },
+    };
+
+    handlePromptChange(newEvent as React.ChangeEvent<HTMLTextAreaElement>);
 
     if (!disabled) {
-      setCurrentState(event.target.value ? inputState.Typing : inputState.Focused);
+      setCurrentState(value ? inputState.Typing : inputState.Focused);
     } else {
       setCurrentState(inputState.Disable);
     }

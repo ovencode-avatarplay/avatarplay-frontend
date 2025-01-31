@@ -67,7 +67,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     triggerValueChatCount: 0, // 기본 채팅 횟수
     triggerValueKeyword: '', // 기본 키워드
     triggerValueTimeMinute: 0, // 기본 시간 값
-    triggerActionType: -1, // 기본 액션 유형
+    triggerActionType: 0, // 기본 액션 유형
     emotionState: 0,
     actionChangeEpisodeId: 0, // 기본 에피소드 변경 ID
     actionPromptScenarioDescription: '', // 기본 설명
@@ -220,6 +220,8 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
   function checkEssential() {
     if (curStep == 0) {
       if (triggerInfo.triggerType == -1) return false;
+
+      if (!types.some(item => item.isActive)) return false;
     }
     if (curStep == 1 && triggerInfo.triggerType == TriggerTypeNames.Intimacy) {
       if (triggerInfo.triggerValueIntimacy == 0) return false;
@@ -239,6 +241,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
 
     if (curStep == 2) {
       if (triggerInfo.triggerActionType == -1) return false;
+      if (!actions.some(item => item.isActive)) return false;
     }
     if (curStep == 3 && triggerInfo.triggerActionType == TriggerActionType.PlayMedia) {
       if (triggerInfo.actionMediaUrlList.length == 0) return false;
@@ -424,26 +427,42 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     setActions(prevActions => prevActions.map(action => ({...action, isActive: false})));
     setEmotions(prevEmotions => prevEmotions.map(emotion => ({...emotion, isActive: false})));
   };
+  interface OptionType {
+    text: string;
+    isActive: boolean;
+  }
 
-  //#region 렌더링을 위한 함수
-  const [types, setTypes] = useState([
-    {text: 'Check\nProgress Point', isActive: false},
-    {text: 'Check\nKeyword', isActive: false},
-    {text: 'Check\nChat Count', isActive: false},
-    {text: 'Check\nIdle Time', isActive: false},
-    {text: "Check\nCharacter's Emotion", isActive: false},
-    {text: 'When\nEpisode starts at first', isActive: false},
-  ]);
+  const [types, setTypes] = useState<OptionType[]>([]);
+  const [actions, setActions] = useState<OptionType[]>([]);
 
-  const [actions, setActions] = useState([
-    {text: 'Change\nEpisode', isActive: false},
-    {text: 'Change\nEpisode Guide', isActive: false},
-    {text: 'Get\nProgress Point', isActive: false},
-    {text: 'Change\nCharacter', isActive: false},
-    {text: 'Show\nImage', isActive: false},
-    {text: 'Play\nVideo', isActive: false},
-    {text: 'Play\nAudio', isActive: false},
-  ]);
+  // triggerInfo 변경 시 types, actions 업데이트
+  useEffect(() => {
+    if (!triggerInfo) return;
+
+    const triggerTypeIndex = triggerInfo.triggerType;
+    const triggerActionTypeIndex = triggerInfo.triggerActionType;
+
+    // types 업데이트
+    setTypes([
+      {text: 'Check\nProgress Point', isActive: triggerTypeIndex === 0},
+      {text: 'Check\nKeyword', isActive: triggerTypeIndex === 1},
+      {text: 'Check\nChat Count', isActive: triggerTypeIndex === 2},
+      {text: 'Check\nIdle Time', isActive: triggerTypeIndex === 3},
+      {text: "Check\nCharacter's Emotion", isActive: triggerTypeIndex === 4},
+      {text: 'When\nEpisode starts at first', isActive: triggerTypeIndex === 5},
+    ]);
+
+    // actions 업데이트
+    setActions([
+      {text: 'Change\nEpisode', isActive: triggerActionTypeIndex === 0},
+      {text: 'Change\nEpisode Guide', isActive: triggerActionTypeIndex === 1},
+      {text: 'Get\nProgress Point', isActive: triggerActionTypeIndex === 2},
+      {text: 'Change\nCharacter', isActive: triggerActionTypeIndex === 3},
+      {text: 'Show\nImage', isActive: triggerActionTypeIndex === 4},
+      {text: 'Play\nVideo', isActive: triggerActionTypeIndex === 5},
+      {text: 'Play\nAudio', isActive: triggerActionTypeIndex === 6},
+    ]);
+  }, [triggerInfo.triggerType, triggerInfo.triggerActionType]); // triggerInfo가 변경될 때 실행
 
   const [emotions, setEmotions] = useState([
     {text: 'Happy', isActive: true, src: EmotionHappy},
@@ -906,17 +925,10 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
         <div className={styles.floatButtonArea}>
           <CustomButton
             size="Medium"
-            type="Primary"
-            state="IconRight"
+            type="Tertiary"
+            state="IconLeft"
             icon={LineArrowLeft.src}
-            iconClass={`${styles.floatButton} ${styles.prevButton} ${
-              checkCenterButtonStep() && styles.centerSideButton
-            }`}
-            customClassName={[
-              styles.floatButton,
-              styles.prevButton,
-              checkCenterButtonStep() ? styles.centerSideButton : '',
-            ]}
+            iconClass={styles.blackIcon}
             onClick={() => {
               subStep();
             }}
@@ -929,22 +941,19 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
               <img src={BoldRuby.src} className={`${styles.buttonIcon} ${styles.blackIcon}`} />
             </button>
           )}
-          <button
-            className={`${styles.floatButton} ${styles.nextButton} ${
-              checkCenterButtonStep() && styles.centerSideButton
-            }`}
+          <CustomButton
+            size="Medium"
+            type="Primary"
+            state="IconRight"
+            icon={LineArrowRight.src}
+            iconClass={styles.whiteIcon}
             onClick={() => {
-              {
-                checkFinalStep() === true ? handleOnComplete() : addStep();
-              }
+              checkFinalStep() === true ? handleOnComplete() : addStep();
             }}
+            customClassName={[styles.nextButton]}
           >
-            <div>{checkFinalStep() === true ? 'Complete' : checkCenterButtonStep() ? 'Confirm' : 'Next'}</div>
-            <img
-              src={checkCenterButtonStep() ? LineCheck.src : LineArrowRight.src}
-              className={checkCenterButtonStep() ? styles.buttonCheckIcon : styles.buttonIcon}
-            />
-          </button>
+            {checkFinalStep() === true ? 'Complete' : checkCenterButtonStep() ? 'Confirm' : 'Next'}
+          </CustomButton>
         </div>
         {isCompletePopupOpen && (
           <CustomPopup
