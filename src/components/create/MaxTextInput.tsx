@@ -86,9 +86,9 @@ const MaxTextInput: React.FC<Props> = ({
       }
     }
 
-    // 특수문자 허용 여부 처리
+    // 특수문자만 제거, 띄어쓰기는 허용
     if (!allowSpecialCharacters) {
-      value = value.replace(/[!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?`~]/g, ''); // 특수 문자만 제거
+      value = value.replace(/[!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?`~]/g, '');
     }
 
     // 새로운 이벤트 객체 생성하여 안전하게 값 전달
