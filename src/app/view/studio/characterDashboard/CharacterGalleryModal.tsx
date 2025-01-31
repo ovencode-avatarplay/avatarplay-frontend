@@ -303,6 +303,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     } else if (isModifyOpen) {
       handleModifyClose();
     } else if (viewerOpen) {
+      // empty
     } else {
       onClose();
     }

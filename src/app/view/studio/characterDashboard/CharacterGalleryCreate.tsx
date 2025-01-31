@@ -73,10 +73,10 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
     onClose();
   };
 
-  const handleGenerateClick = () => {
-    switch (category) {
-    }
-  };
+  // const handleGenerateClick = () => {
+  //   switch (category) {
+  //   }
+  // };
 
   const handlePoseCreate = async () => {
     setLoading(true);
