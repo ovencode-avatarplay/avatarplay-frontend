@@ -34,13 +34,20 @@
     letter-spacing: -0.4px;
 }
 
-.floatButtonArea > .prevButton
+.nextButton
+{
+    width: 120px;
+    height: 46px;
+}
+
+.prevButton
 {    
     border-radius: 10px;
     border: 1px solid var(--Border-1, #EAECF0);
     background: var(--White, #FFF);
 
     color: var(--Black, #000);
+    
 }
 
 .floatButtonArea > .floatButton.centerSideButton
@@ -350,7 +357,10 @@ background: #FFF;
 
 
 .blackIcon{
-    filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
+    filter: brightness(0) saturate(100%)
+}
+.whiteIcon{
+    filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
 }
 
 /* 전체 그리드 스타일 */
@@ -370,7 +380,8 @@ background: #FFF;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: calc(50vw - 16px - 5px);
+    width: calc(var(--second-width) * 0.5 - 5px);
+    /*width: 180px;*/
     height: 68px;
     padding: 20px 15px;
     gap: 8px;
@@ -387,14 +398,7 @@ background: #FFF;
     cursor: pointer;
     transition: background 0.3s, border 0.3s, color 0.3s;
   }
-
-  @media (min-width : 402px)
-  {
-    .step_button
-    {
-        width: 180px;
-    }
-  }
+ 
   
   /* 활성화된 버튼 스타일 */
   .step_button.active {

@@ -150,6 +150,9 @@
   padding-right: 16px;
   z-index: 5; 
 }
+.messageBubbleArea.blur{
+  overflow-y: unset;
+}
 
 .messageBubbleArea::-webkit-scrollbar {
   display: none; /* Webkit 브라우저에서 스크롤바 숨기기 */

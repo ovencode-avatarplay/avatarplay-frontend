@@ -69,6 +69,7 @@
 
 .textArea > .contentName{    
     max-width: 49vw;
+    /* max-width: 297px; */
     
     color: var(--White, #FFF);
     font-family: Lato;
@@ -79,18 +80,13 @@
 
     overflow: hidden;  
     text-overflow: ellipsis; 
-    white-space: nowrap;  
-
+    white-space: nowrap;   
 }
-
-@media (min-width: 402px) {
-    .textArea > .contentName{ 
-        max-width: 297px;
-    }
-}
+ 
 
 .textArea > .episodeName{ 
     max-width: 49vw;
+    /* max-width: 297px; */
 
     color: var(--Neutral-400, #BDC1C6);
     font-family: Lato;
@@ -102,14 +98,7 @@
     overflow: hidden; 
     text-overflow: ellipsis; 
     white-space: nowrap; 
-}
-
-
-@media (min-width: 402px) {
-    .textArea > .episodeName{ 
-        max-width: 297px;
-    }
-}
+} 
 
 .topButtonBox {
     display: flex;

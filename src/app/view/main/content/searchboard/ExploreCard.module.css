@@ -2,7 +2,8 @@
 .exploreCard
 {
   position: relative;
-  width: 36.68vw;
+  width: calc((var(--second-width)) * 0.4);
+  max-width: 147.467px;
   height: 210px;
   flex-shrink: 0; 
   color: #fff;
@@ -21,21 +22,14 @@
 .exploreCard.search
 {
   width: calc((var(--second-width)) / 3 - 3.5px);
-  height: 171.429px; 
-}
+  /* max-width: 120px; */
+  /* height: 171.429px;  */
 
-@media (min-width: 402px) {
-  .exploreCard {
-    width: 147.467px;
-  }
-  
-  .exploreCard.search
-  {
-    width: 120px;
-    height: 171.429px; 
-  }
-
+  width:100%;
+  height:100%;
+  max-width:none;
 }
+ 
 
 .exploreImage
 {
@@ -44,6 +38,8 @@
   object-fit: cover;
   resize: none;
   background: lightgray 50% / cover no-repeat;
+  
+  background:   lightgray 50% / cover no-repeat,   lightgray 50% / cover no-repeat;
 }
 
 .rankArea

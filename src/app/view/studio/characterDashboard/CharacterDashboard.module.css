@@ -6,3 +6,38 @@
     padding-bottom: 15vh;
   }
   
+
+  
+.addButton
+{
+  display: flex;
+  width: 90px;
+  height: 30px;
+  padding: 8px 20px;
+  margin-right: 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  
+  border-radius: 8px;
+  background: var(--Neutral-800, #2C3131);
+  
+  color: var(--White, #FFF);
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: 'Lato';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: -0.4px;
+}
+
+.filterContainer {
+  margin-left: 16px;
+  margin-right: 16px;
+  display: flex;
+  width: var(--second-width);
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+} 

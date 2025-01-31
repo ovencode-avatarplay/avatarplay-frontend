@@ -177,6 +177,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     }
   };
   console.log('aiChatHeight', aiChatHeight);
+  const isBlur = selectedBubbleIndex !== null;
   return (
     <>
       <LoadingOverlay loading={loading} />
@@ -237,7 +238,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
         {/* Scrollable content */}
         {isHideChat === false && (
           <Box
-            className={`${styles.messageBubbleArea}`}
+            className={`${styles.messageBubbleArea} ${isBlur && styles.blur}`}
             ref={scrollRef}
             sx={{
               height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 8 : 0}vh - ${aiChatHeight}px)`,

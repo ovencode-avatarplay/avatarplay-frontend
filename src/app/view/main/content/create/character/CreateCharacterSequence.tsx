@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import styles from './CreateCharacterSequence.module.css';
 
 // redux
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
 // Json Data
 import characterOptionsMaleReal from '@/data/create/create-character-male-real.json';
@@ -99,9 +99,11 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
 
   // Step
   const [maxStep, setMaxStep] = useState<number>(11);
-  const showStep = 8;
+  const showCreateStep = 8;
+  const showModifyStep = 3;
+  const [showStep, setShowStep] = useState<number>(showCreateStep);
   const [curStep, setCurStep] = useState<number>(0); // 0일때는 max 수치가 변동이 있을 수 있기때문에 step이 가려집니다.
-  const stepTexts: string[] = [
+  const createStepTexts: string[] = [
     'Step 1. Select gender',
     'Step 2. Select style',
     'Step 3. Choose ethnicity',
@@ -112,6 +114,14 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
     'Step 8. Choose personality',
     '',
     'Step 9. Choose one as a character thumbnail',
+    '',
+  ];
+  const modifyStepTexts: string[] = [
+    'Step 1. Choose hair style',
+    'Step 2. Outfit of clothes',
+    'Step 3. Thumbnail background',
+    '',
+    'Step 4. Choose one as a character thumbnail',
     '',
   ];
   const finalStepText = 'Write the title of the episode';
@@ -232,6 +242,15 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
   //#endregion
 
   //#region Hook
+
+  useEffect(() => {
+    if (isModify) {
+      setShowStep(showModifyStep);
+    } else {
+      setShowStep(showCreateStep);
+    }
+  }, [isModify]);
+
   useEffect(() => {
     if (publishClick) {
       setPublishReqested(true);
@@ -306,7 +325,8 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
     if (curStep >= maxStep) {
       return finalStepText;
     }
-    const currentStep = stepTexts[curStep];
+
+    const currentStep = isModify ? modifyStepTexts[curStep] : createStepTexts[curStep];
     return currentStep || '';
   };
 
@@ -344,9 +364,12 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
       const response = await sendGenerateImageReq(req);
 
       if (response?.data) {
-        setGeneratedOptions(response.data);
+        const newImages = (response.data?.imageUrl || []).filter(url => url.startsWith('https://'));
 
-        /*handleClose();*/
+        setGeneratedOptions({
+          ...response.data,
+          imageUrl: newImages,
+        });
       } else {
         throw new Error(`No response for file`);
       }
@@ -452,7 +475,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>Hair Style</h3>
-              <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
+              <div className={`${styles.gridButtonGroup3x3} ${styles.buttonGap6}`}>
                 {characterOptions.hairStyles.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
@@ -658,7 +681,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
       case CreateCharacterStep.Summary:
         return (
           <div className={styles.createContentBox}>
-            <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
+            <div className={`${styles.gridButtonGroup3x3} ${styles.buttonGap6}`}>
               {summaryOptions
                 .filter(
                   option =>
@@ -770,7 +793,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
   const renderBottom = () => {
     return (
       <>
-        {curStep > 0 && (
+        {((curStep > 0 && !isModify) || isModify) && (
           <>
             {curStep < steps.length - 1 ? (
               <>

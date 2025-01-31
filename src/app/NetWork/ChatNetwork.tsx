@@ -56,13 +56,23 @@ export const sendMessageStream = async (
       // 성공 응답 처리
       return handleSuccessResponse(response);
     } else {
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 10:
+          alert('DBError: ResultMessage를 찾을 수 없습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
       // 오류 응답 처리
       return handleErrorResponse(response);
     }
   } catch (error: any) {
+    console.error('Error sending message stream:', error);
     throw new Error(`${ESystemError.syserr_chatting_send_post}`);
   }
 };
+
 // 요청 데이터 타입
 interface RetryStreamRequest {
   chatContentId: number;
@@ -172,10 +182,20 @@ export const sendChattingEnter = async (
       const responseData = response.data.data as EnterEpisodeChattingRes;
       console.log('enterData', response.data.data);
       // 여기서 이미지 캐싱 로직 제거, URL만 반환
-
       return response.data;
     } else {
-      throw new Error(response.data.resultMessage); // Error handling
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 10:
+          alert('DBError: ResultMessage를 찾을 수 없습니다.');
+          break;
+        case 1:
+          alert('Invalid: 해당 컨텐츠의 에피소드가 활성화되지 않았습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
+      throw new Error(response.data.resultMessage);
     }
   } catch (error) {
     console.error('Error sending Enter:', error);
@@ -192,7 +212,18 @@ export const sendChattingEnterUrl = async (
     if (response.data.resultCode === 0) {
       return response.data;
     } else {
-      throw new Error(response.data.resultMessage); // Error handling
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 10:
+          alert('DBError: ResultMessage를 찾을 수 없습니다.');
+          break;
+        case 1:
+          alert('Invalid: 해당 컨텐츠의 에피소드가 활성화되지 않았습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
+      throw new Error(response.data.resultMessage);
     }
   } catch (error) {
     console.error('Error sending Enter:', error);
@@ -260,16 +291,29 @@ export const sendChattingResult = async (req: ChattingResultReq): Promise<Chatti
   try {
     const response = await api.post<ChattingResultRes>('/Chatting/result', req);
     console.log('Chatting result request:', req, response);
+
     if (response.data.resultCode === 0) {
       return response.data;
     } else {
-      throw new Error(response.data.resultMessage); // 에러 핸들링
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 1:
+          alert('Invalid: 번호의 키가 존재하지 않습니다.');
+          break;
+        case 10:
+          alert('DBError: ResultMessage를 찾을 수 없습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
+      throw new Error(response.data.resultMessage);
     }
   } catch (error) {
     console.error('Error sending Chatting Result:', error);
-    throw new Error('Failed to send Chatting Result. Please try again.'); // 에러 핸들링
+    throw new Error('Failed to send Chatting Result. Please try again.');
   }
 };
+
 // 즐겨찾기 이모티콘 요청 및 응답 인터페이스 정의 ##########################################
 
 export interface FavoriteEmoticonReq {
@@ -296,11 +340,22 @@ export const sendFavoriteEmoticon = async (req: FavoriteEmoticonReq): Promise<Fa
     if (response.data.resultCode === 0) {
       return response.data;
     } else {
-      throw new Error(response.data.resultMessage); // 에러 핸들링
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 1:
+          alert('Invalid: 즐겨찾기 되어 있지 않은 이모티콘입니다.');
+          break;
+        case 10:
+          alert('DBError: ResultMessage를 찾을 수 없습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
+      throw new Error(response.data.resultMessage);
     }
   } catch (error) {
     console.error('Error sending Favorite Emoticon:', error);
-    throw new Error('Failed to send Favorite Emoticon. Please try again.'); // 에러 핸들링
+    throw new Error('Failed to send Favorite Emoticon. Please try again.');
   }
 };
 
@@ -370,13 +425,26 @@ export interface ModifyChatRes {
 export const modifyChatting = async (req: ModifyChatReq): Promise<ResponseAPI<ModifyChatRes>> => {
   try {
     const response = await api.post<ResponseAPI<ModifyChatRes>>('/Chatting/modify', req);
+
     if (response.data.resultCode === 0) {
       return response.data;
     } else {
-      throw new Error(response.data.resultMessage); // Error handling
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 1:
+          alert('Invalid: 채팅에 수정할 문구가 존재하지 않습니다.');
+          break;
+        case 10:
+          alert('DBError: ResultMessage를 찾을 수 없습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
+      throw new Error(response.data.resultMessage);
     }
   } catch (error) {
-    throw new Error('Failed to modify chatting. Please try again.'); // Error handling
+    console.error('Error modifying chatting:', error);
+    throw new Error('Failed to modify chatting. Please try again.');
   }
 };
 
@@ -394,13 +462,26 @@ export interface DeleteChatRes {
 export const deleteChatting = async (req: DeleteChatReq): Promise<ResponseAPI<DeleteChatRes>> => {
   try {
     const response = await api.post<ResponseAPI<DeleteChatRes>>('/Chatting/delete', req);
+
     if (response.data.resultCode === 0) {
       return response.data;
     } else {
-      throw new Error(response.data.resultMessage); // Error handling
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 1:
+          alert('Invalid: 채팅에 삭제할 문구가 존재하지 않습니다.');
+          break;
+        case 10:
+          alert('DBError: ResultMessage를 찾을 수 없습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
+      throw new Error(response.data.resultMessage);
     }
   } catch (error) {
-    throw new Error('Failed to delete chatting. Please try again.'); // Error handling
+    console.error('Error deleting chatting:', error);
+    throw new Error('Failed to delete chatting. Please try again.');
   }
 };
 
@@ -445,12 +526,28 @@ export interface RequestAiQuestionRes {
 export const recommendQuestion = async (req: RequestAiQuestionReq): Promise<ResponseAPI<RequestAiQuestionRes>> => {
   try {
     const response = await api.post<ResponseAPI<RequestAiQuestionRes>>('Chatting/aiQuestion', req);
+
     if (response.data.resultCode === 0) {
       return response.data;
     } else {
-      throw new Error(response.data.resultMessage); // Error handling
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        case 1:
+          alert('Invalid: 지난 대화가 없어 다음 질문을 생성할 수 없습니다.');
+          break;
+        case 3:
+          alert('NotExist: LLM 모델을 찾을 수 없습니다.');
+          break;
+        case 10:
+          alert('DBError: ResultMessage를 찾을 수 없습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
+      throw new Error(response.data.resultMessage);
     }
   } catch (error) {
-    throw new Error('Failed to recommendQuestion. Please try again.'); // Error handling
+    console.error('Error recommending question:', error);
+    throw new Error('Failed to recommendQuestion. Please try again.');
   }
 };

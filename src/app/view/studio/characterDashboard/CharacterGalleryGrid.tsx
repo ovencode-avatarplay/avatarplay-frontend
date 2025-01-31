@@ -1,11 +1,10 @@
 import React from 'react';
-import {Button} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import styles from './CharacterGalleryGrid.module.css';
 import CharacterGalleryItem from './CharacterGalleryItem';
-import {GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 import EmptyState from '@/components/search/EmptyState';
 import {GalleryCategory} from './CharacterGalleryData';
+import {GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
+import {LinePlus} from '@ui/Icons';
 
 interface CharacterGalleryGridProps {
   itemUrl: GalleryImageInfo[] | null;
@@ -15,6 +14,7 @@ interface CharacterGalleryGridProps {
   category: GalleryCategory;
   isTrigger?: boolean;
   style?: React.CSSProperties;
+  hideSelected?: boolean;
 }
 
 const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
@@ -25,6 +25,7 @@ const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
   category,
   isTrigger,
   style,
+  hideSelected = false,
 }) => {
   const isEmptyGallery = !itemUrl || itemUrl.length === 0;
 
@@ -50,10 +51,12 @@ const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
   return (
     <div className={styles.galleryContainer} style={style}>
       {!isTrigger && (
-        <Button variant="contained" color="primary" onClick={onAddImageClick} className={styles.addImageButton}>
-          <AddIcon />
-          Add Image
-        </Button>
+        <button onClick={onAddImageClick} className={styles.addImageButton}>
+          <div className={styles.buttonArea}>
+            <img className={styles.buttonIcon} src={LinePlus.src} />
+            <div className={styles.buttonText}>Add New </div>
+          </div>
+        </button>
       )}
       {!isEmptyGallery &&
         itemUrl?.map((item, index) => (
@@ -62,6 +65,7 @@ const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
             url={item}
             isSelected={selectedItemIndex === index}
             onSelect={() => onSelectItem(index)}
+            hideSelected={hideSelected}
           />
         ))}
       {isTrigger && isEmptyGallery && (

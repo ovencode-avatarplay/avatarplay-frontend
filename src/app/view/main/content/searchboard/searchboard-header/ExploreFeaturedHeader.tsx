@@ -30,7 +30,16 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
         {items.map((item, index) => (
           <SwiperSlide className={styles.swiperItem} key={index}>
             <Link key={index} href={item.imageLinkUrl}>
-              <div className={styles.backImage} style={{backgroundImage: `url(${item.imageUrl})`}}>
+              <div
+                className={styles.backImage}
+                style={{
+                  background: `url(${item.imageUrl}) `,
+                  backgroundPosition: 'center',
+                  // backgroundSize: '100% auto',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundAttachment: 'fixed',
+                }}
+              >
                 <div className={styles.textArea}>
                   <div className={`${styles.text} ${styles.type1}`}>{item.title}</div>
                   <div className={`${styles.text} ${styles.type2}`}>{item.content}</div>

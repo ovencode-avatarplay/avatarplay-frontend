@@ -7,7 +7,7 @@ import {useRouter} from 'next/navigation';
 import styles from './EpisodeInitialize.module.css';
 
 import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo, EpisodeInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo, EpisodeInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
 
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
@@ -82,7 +82,12 @@ const EpisodeInitialize: React.FC<Props> = ({
   // 에피소드 생성시 가져올 빈 데이터
   let emptyEpisodeInfo = emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0];
   // 편집시 가져올데이터
-  const editingEpisodeInfo = useSelector((state: RootState) => state.episode.currentEpisodeInfo);
+  const selectedChapterIdx = useSelector((state: RootState) => state.content.selectedChapterIdx);
+  const selectedEpisodeIdx = useSelector((state: RootState) => state.content.selectedEpisodeIdx);
+  const editingEpisodeInfo = useSelector(
+    (state: RootState) =>
+      state.content.curEditingContentInfo.chapterInfoList[selectedChapterIdx]?.episodeInfoList[selectedEpisodeIdx],
+  );
 
   // 스텝
   const [maxStep, setMaxStep] = useState<number>(4);
@@ -327,8 +332,9 @@ const EpisodeInitialize: React.FC<Props> = ({
       };
 
       const response = await sendGenerateImageReq2(payload); // API 요청
-      const newImages = response.data?.imageUrl || [];
+      const newImages = (response.data?.imageUrl || []).filter(url => url.startsWith('https://'));
 
+      console.log(newImages);
       // 기존 로컬스토리지 값 가져오기
       addToLocalStorage(newImages);
 
@@ -393,9 +399,9 @@ const EpisodeInitialize: React.FC<Props> = ({
         name: name,
         backgroundImageUrl: '',
         characterInfo: {
-          greeting: currentSelectedCharacter.greeting,
-          secret: currentSelectedCharacter.secret,
-          worldScenario: currentSelectedCharacter.worldScenario,
+          greeting: currentSelectedCharacter.greeting || '',
+          secret: currentSelectedCharacter.secret || '',
+          worldScenario: currentSelectedCharacter.worldScenario || '',
           id: currentSelectedCharacter.id,
           name: currentSelectedCharacter.name,
           introduction: currentSelectedCharacter.introduction,
@@ -764,9 +770,11 @@ const EpisodeInitialize: React.FC<Props> = ({
             onClick={() => {
               subStep();
             }}
+            style={{visibility: curStep < 1 ? 'hidden' : 'visible'}}
           >
             Previous
           </CustomButton>
+
           {checkCenterButtonStep() && (
             <CustomButton
               size="Medium"
@@ -774,11 +782,7 @@ const EpisodeInitialize: React.FC<Props> = ({
               state="IconLeft"
               icon={BoldRuby.src}
               iconClass={`${styles.buttonIcon} ${styles.blackIcon}`}
-              customClassName={[
-                styles.floatButton,
-                styles.centerButton,
-                checkCenterButtonStep() ? styles.centerSideButton : '',
-              ]}
+              customClassName={[styles.floatButton, styles.centerButton]}
             >
               Generate
             </CustomButton>

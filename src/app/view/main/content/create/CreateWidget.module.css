@@ -63,31 +63,26 @@
 .drawerButton > .buttonItem
 {
   display: flex;
-width: 5.55vw;
-align-items: center;
-gap: 10px;
-flex-shrink: 0;
-align-self: stretch;
-}
+  width: 100%;
 
-@media (min-width: 402px) {
-  
-.drawerButton > .buttonItem
-{
-  width: 223.5px;
+  /*width: 223.5px;*/
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  align-self: stretch;
 }
-}
+ 
 
 .buttonItem > .buttonIcon
 {
   display: flex;
-width: 24px;
-height: 24px;
-padding: 2.53px 2.499px 2.53px 2px;
-justify-content: center;
-align-items: center;
-flex-shrink: 0;
-filter: brightness(0) saturate(100%) invert(0%) sepia(92%) saturate(7479%) hue-rotate(92deg) brightness(106%) contrast(100%);
+  width: 24px;
+  height: 24px;
+  padding: 2.53px 2.499px 2.53px 2px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  filter: brightness(0) saturate(100%) invert(0%) sepia(92%) saturate(7479%) hue-rotate(92deg) brightness(106%) contrast(100%);
 }
 
 .buttonItem > .buttonText

@@ -1,5 +1,4 @@
-import {ChapterInfo} from '@/redux-store/slices/ContentInfo';
-import {EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {ChapterInfo, EpisodeInfo} from '@/redux-store/slices/ContentInfo';
 
 export interface ChapterItemProps {
   canEdit: boolean;

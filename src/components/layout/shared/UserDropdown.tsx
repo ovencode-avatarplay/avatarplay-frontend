@@ -31,8 +31,21 @@ import {fetchLanguage} from './LanguageSetting';
 import {getLangUrlCode} from '@/configs/i18n';
 import Cookies from 'js-cookie';
 import {getCookiesLanguageType} from '@/utils/browserInfo';
+import {atom, useAtom} from 'jotai';
+
+type UserDropDownType = {
+  onClick: () => void;
+};
+
+export type UserDropDownAtomType = {
+  onClick: () => void;
+};
+export const userDropDownAtom = atom<UserDropDownAtomType>({
+  onClick: () => {},
+});
 
 const UserDropdown = () => {
+  const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   // States
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<Session | null>(null);
@@ -49,10 +62,15 @@ const UserDropdown = () => {
   const router = useRouter();
   const {settings} = {settings: {skin: null}};
 
+  useEffect(() => {
+    dataUserDropDown.onClick = handleDrawerOpen;
+  }, [dataUserDropDown]);
+
   const handleDropdownOpen = async () => {
     const session = await supabase.auth.getSession();
 
     if (!session?.data?.session) {
+      /*  */
       router.push('/auth');
       return;
     }

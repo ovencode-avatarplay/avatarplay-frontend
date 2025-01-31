@@ -31,7 +31,7 @@
   width: 150px;
   height: 46px;
   left: 16px;
-  top: 100px;
+  top: 44px;
 
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid var(--Neutral-800, #2C3131);
@@ -78,7 +78,7 @@
   width: 114px;
   height: 18px;
   left: 16px;
-  top: 72.5px;
+  top: 13px;
   display: flex;
   align-items: center;
   z-index: 12;

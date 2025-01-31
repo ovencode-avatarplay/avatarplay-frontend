@@ -2,9 +2,9 @@
 
 import React, {useEffect, useState} from 'react';
 import styles from './EpisodeTrigger.module.css'; // CSS Module import
-import {Dialog, Button, Box, IconButton} from '@mui/material';
+import {Dialog} from '@mui/material';
 import WriteTriggerName from './WriteTriggerName'; // WriteTriggerName 모달 컴포넌트
-import {EpisodeInfo, setCurrentEpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
+import {EpisodeInfo} from '@/redux-store/slices/ContentInfo';
 import {useDispatch, useSelector} from 'react-redux';
 import {BoldArrowLeft, LineTrigger} from '@ui/Icons';
 import TriggerList from './TriggerList';
@@ -34,14 +34,8 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
     setSelectedChapterIdx(chapterIdx);
     setSelectedEpisodeIdx(episodeIdx);
     setModalOpen(false); // 모달 닫기
-    dispatch(setCurrentEpisodeInfo(editingContentInfo.chapterInfoList[chapterIdx].episodeInfoList[episodeIdx]));
   };
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (open) {
-      dispatch(setCurrentEpisodeInfo(episodeInfo));
-    }
-  }, [open, episodeInfo, dispatch]);
 
   // WriteTriggerName 모달 열기
 

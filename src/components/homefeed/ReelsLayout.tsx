@@ -49,8 +49,12 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
 
       if (result.resultCode === 0 && result.data) {
         const feeds = result.data.feedInfoList;
-        setAllFeeds(feeds); // 전체 데이터 저장
-        setInfo(feeds.slice(0, 3)); // 초기 렌더링용 첫 10개
+
+        // initialFeed가 있다면 feeds 배열 앞에 추가
+        const mergedFeeds = initialFeed ? [initialFeed, ...feeds.filter(feed => feed.id !== initialFeed.id)] : feeds;
+
+        setAllFeeds(mergedFeeds); // 전체 데이터 저장
+        setInfo(mergedFeeds.slice(0, 2)); // 초기 렌더링용 첫 2개
       }
     } catch (error) {
       console.error('Failed to fetch recommended feed:', error);

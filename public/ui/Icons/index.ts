@@ -94,6 +94,8 @@ import LineSearch from "./Line/Search.svg";
 import LineLike from "./Line/Like.svg";
 import LineDisLike from "./Line/Dislike.svg";
 import LineComment from "./Line/Comment.svg";
+import LineScaleUp from "./Line/Scale_up.svg";
+import LinePin from "./Line/Pin.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -113,6 +115,7 @@ import EmotionAngry from "./Custom/Angry.svg";
 import CircleClose from "./Custom/CircleClose.svg";
 
 export {
+  LineScaleUp,
   BoldVolumeOn,
   BoldVolumeOff,
   BoldArchive,
@@ -224,4 +227,5 @@ export {
   LineCorner,
   LineRefresh,
   LineSearch,
+  LinePin,
 };

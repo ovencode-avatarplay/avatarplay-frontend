@@ -44,15 +44,8 @@
 .floatButtonArea > .floatButton.centerSideButton
 {
     width: calc(25vw + 3px);
-}
-
-
-@media (min-width:402px)
-{
-    .floatButtonArea > .floatButton.centerSideButton {
-    width: 106px;
-
-  }
+    max-width: 106px;
+    /*width: 106px;*/
 }
 
 
@@ -61,17 +54,11 @@
     background: var(--White, #FFF);
     
     width: calc(25vw + 32px);
+    max-width: 134px;;
     border-radius: 8px;
     border: 1px solid var(--Neutral-200, #E8EAED);
 }
 
-@media (min-width:402px)
-{
-    .floatButtonArea > .centerButton
-    {
-        width: 134px;
-  }
-}
 
 .floatButtonArea > .nextButton
 {

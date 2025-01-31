@@ -45,206 +45,146 @@ import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import ChatFloatingArea from './MainChat/ChatFloatingArea';
 import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
 import {addNewDateMessage, compareDates, NewDateType, refreshNewDateAll, shiftDates} from './MainChat/NewDate';
-import {TriggerActionType} from '@/redux-store/slices/EpisodeInfo';
+import {TriggerActionType} from '@/redux-store/slices/ContentInfo';
+import useChat from './hooks/useChat';
+import {useStreamMessage} from './hooks/useStreamMessage';
 
 const ChatPage: React.FC = () => {
-  const TempIdforSendQuestion: number = -222;
-  const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: [], mediaData: []});
-  const parsedMessagesRef = useRef(parsedMessages);
-  const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
-  const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [streamKey, setStreamKey] = useState<string>(''); // streamKey 상태 추가
-  const [retryStreamKey, setRetryStreamKey] = useState<string>(''); // streamKey 상태 추가
-  const [chatId, setChatId] = useState<number>(TempIdforSendQuestion);
-  const [isNarrationActive, setIsNarrationActive] = useState<{active: boolean}>({active: false}); // 나레이션 활성화 상태
-  const [currentParsingSender, setCurrentParsingSender] = useState<{current: SenderType}>({current: SenderType.User}); // 현재 파싱중인 sender 상태
-  const [nextEpisodeId, setNextEpisodeId] = useState<number | null>(null); // 다음 에피소드 ID 상태 추가
-  const [nextEpisodeName, setNextEpisodeName] = useState<string | null>(null); // 다음 에피소드 이름
-  const [isHideChat, SetHideChat] = useState<boolean>(false);
-  const [isBlurOn, SetIsBlurOn] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isIdEnter, setIsIdEnter] = useState<boolean>(false);
-  const [chatBarCount, setChatBarCount] = useState<number>(1);
-  const [aiChatHeight, setAiChatHeight] = useState<number>(0);
-  const [nextPopupData, setNextPopupData] = useState<TriggerNextEpisodeInfo>();
+  const {
+    sendMessageAsync,
 
-  const [isTransitionEnable, setIsTransitionEnable] = useState<boolean>(false);
-  const [isReqPrevCheat, setReqPrevCheat] = useState<boolean>(false); // 치트키로 애피소드 초기화.
-  const [isRenderComplete, setRenderComplete] = useState<boolean>(false);
-  const [characterImageUrl, setCharacterImageUrl] = useState<string | undefined>('');
-  const QueryKey = QueryParams.ChattingInfo;
-  const key = getWebBrowserUrl(QueryKey) || null;
-  // console.log('getWebBrowserUrl', key);
+    handleBackClick,
+    SetChatBarCount,
+    SetAiChatHeight,
+    removeParsedMessage,
+    handleChangeNewDate,
+    navigateToNextEpisode,
+    handlePopupYes,
+    handlePopupNo,
+    handleRerender,
 
-  const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
-  const contentId = useSelector((state: RootState) => state.chatting.contentId);
-  const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
-  const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
-  const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태 (렌더링과 관계 없을때 사용가능한 useState 형태)
+    characterImageUrl,
+    isBlurOn,
+    floatingNextEpisode,
+    nextEpisodeName,
+    parsedMessages,
+    enterData,
+    SetIsBlurOn,
+    chatBarCount,
+    aiChatHeight,
+    isTransitionEnable,
+    lastMessage,
+    //streamKey,
+    //setStreamKey,
+    setReqPrevCheat,
+    isSendingMessage,
+    showPopup,
+    nextPopupData,
+    isNotEnoughRubyPopupOpen,
+    setNotEnoughRubyPopupOpen,
+
+    hasFetchedPrevMessages,
+    isReqPrevCheat,
+    isRenderComplete,
+
+    currentParsingSender,
+    TempIdforSendQuestion,
+    parsedMessagesRef,
+    setNextEpisodeId,
+    setNextEpisodeName,
+    setNextPopupData,
+    setShowPopup,
+    setCharacterImageUrl,
+    setParsedMessages,
+    chatId,
+    isNarrationActive,
+
+    //retryStreamKey,
+
+    setChatId,
+    isRegeneratingQuestion,
+    regenerateQuestion,
+    //setIsSendingMessage,
+
+    //setRetryStreamKey,
+
+    episodeId,
+  } = useChat();
+
+  const dispatch = useDispatch();
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
+  const [isHideChat, SetHideChat] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [lastMessage, setLastMessage] = useState<Message>({
-    chatId: TempIdforSendQuestion,
-    text: '',
-    sender: SenderType.System,
-    createDateString: '',
-    createDateLocale: new Date('2024-12-17T10:30:00Z'),
+  console.log('1111 isLoading: ' + isLoading);
+
+  const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, changeStreamKey} = useStreamMessage({
+    handleSendMessage,
+    isSendingMessage,
+    onMessageProps: onMessage,
   });
 
-  const handleBackClick = useBackHandler();
-  const dispatch = useDispatch();
-  // useEffect(() => {}, [isLoading]);
-  const SetChatLoading = (bool: boolean) => {
-    setIsLoading(bool);
-  };
-
-  const SetChatBarCount = (num: number) => {
-    setChatBarCount(num);
-  };
-
-  const SetAiChatHeight = (num: number) => {
-    setAiChatHeight(num);
-  };
-
-  // floatingArea
-  const [floatingNextEpisode, setFloatingNextEpisode] = useState<boolean>(false);
-
-  //#region 메세지 전송 로직
-  const isRegeneratingQuestion = useSelector((state: RootState) => state.modifyQuestion.isRegeneratingQuestion);
-  const regenerateQuestion = useSelector((state: RootState) => state.modifyQuestion.regeneratingQuestion);
-
-  const Send = async (reqSendChatMessage: SendChatMessageReq) => {
+  async function onMessage(event: any, eventSource: any) {
     try {
-      const currentMessages = parsedMessagesRef.current.Messages;
-      const filteredMessages = currentMessages.filter(msg => !checkChatSystemError(msg.text));
+      console.log('onMessage isLoading: ' + isLoading);
 
-      // 상태를 업데이트
-      setParsedMessages({
-        ...parsedMessagesRef.current, // 최신 상태 유지
-        Messages: filteredMessages,
-      });
-
-      if (isRegeneratingQuestion) {
-        reqSendChatMessage.isRegenerate = isRegeneratingQuestion;
-        reqSendChatMessage.regenerateChatId = regenerateQuestion.id;
+      setIsLoading(false);
+      console.log('onMessage isLoading2: ' + isLoading);
+      if (!event.data) {
+        throw new Error('Received null or empty data');
       }
 
-      const response = (await Promise.race([
-        sendMessageStream(reqSendChatMessage),
+      const newMessage = JSON.parse(event.data);
 
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 5000)),
-      ])) as SendChatMessageResSuccess | SendChatMessageResError;
-
-      if ('streamKey' in response) {
-        // 성공적인 응답 처리
-        setStreamKey(response.streamKey);
-        setChatId(response.chatContentId);
-
-        const currentMessages = parsedMessagesRef.current.Messages;
-
-        const updatedMessages = currentMessages.map(message =>
-          message.chatId === TempIdforSendQuestion ? {...message, chatId: response.chatContentId} : message,
-        );
-
-        // 상태 업데이트
-        setParsedMessages({
-          ...parsedMessagesRef.current,
-          Messages: updatedMessages,
-        });
-        dispatch(
-          setRegeneratingQuestion({
-            lastMessageId: response.chatContentId,
-            lastMessageQuestion: reqSendChatMessage.text,
-          }),
-        );
-      } else if ('resultCode' in response) {
-        // 오류 응답 처리
-        if (response.resultCode === 13) {
-          setIsSendingMessage({state: false});
-          SetChatLoading(false);
-          setNotEnoughRubyPopupOpen(true);
+      // ResultCode 기반 에러 처리
+      if (newMessage.resultCode !== undefined && newMessage.resultCode !== 0) {
+        switch (newMessage.resultCode) {
+          case 1:
+            alert('Invalid: 번호의 키가 존재하지 않습니다.');
+            break;
+          case 2:
+            alert('NotFound: 에피소드 잠금이 열리지 않았습니다.');
+            break;
+          case 3:
+            alert('NotExist: LLM 모델을 찾을 수 없습니다.');
+            break;
+          case 10:
+            alert('DBError: ResultMessage를 찾을 수 없습니다.');
+            break;
+          default:
+            alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
         }
+        return; // 에러 발생 시 메시지 처리를 중단
+      }
+
+      await handleSendMessage(newMessage, false, true, false);
+
+      if (newMessage.includes('$') === true) {
+        isSendingMessage.current = false;
+
+        eventSource.close();
+        console.log('Stream ended normally');
       }
     } catch (error) {
-      console.error(error);
-      handleSendMessage(`${ESystemError.syserr_chatting_send_post}`, false, false, false);
-
-      SetChatLoading(false);
+      console.error('Error processing message:', error);
+      console.error('Received data:', event.data);
     }
-  };
+  }
 
   useEffect(() => {
-    if (streamKey === '') return;
-    console.log('stream key : ', streamKey);
-    //let messageCount = 0; // 메시지 수신 횟수 추적
-    const eventSource = new EventSource(
-      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/stream?streamKey=${streamKey}`,
-    );
-
-    eventSource.onmessage = event => {
-      try {
-        setIsLoading(false);
-        if (!event.data) {
-          throw new Error('Received null or empty data');
-        }
-
-        const newMessage = JSON.parse(event.data);
-        handleSendMessage(newMessage, false, true, false);
-        //console.log('stream new text====' + newMessage + '====');
-        //messageCount++; // 메시지 수신 횟수 증가
-
-        // 메시지가 3번 수신되면 강제로 에러 발생
-        // if (messageCount === 50) {
-        //   console.log('Forcing an error after 3 messages');
-        //   if (eventSource.onerror) {
-        //     const simulatedErrorEvent = new Event('error');
-        //     eventSource.onerror(simulatedErrorEvent);
-        //   } else {
-        //     console.warn('No error handler defined for EventSource');
-        //   }
-        //   return;
-        // }
-
-        if (newMessage.includes('$') === true) {
-          isSendingMessage.state = false;
-
-          eventSource.close();
-          console.log('Stream ended normally');
-        }
-      } catch (error) {
-        console.error('Error processing message:', error);
-        console.error('Received data:', event.data);
-      }
-    };
-
-    eventSource.onerror = error => {
-      console.error('Stream encountered an error or connection was lost');
-      handleSendMessage(`${ESystemError.syserr_chat_stream_error}`, false, false, false);
-      isSendingMessage.state = false;
-
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [streamKey]);
+    preventZoom(); // 줌인아웃을 막는다.
+  }, []);
 
   useEffect(() => {
-    if (parsedMessages.Messages.length > 0) {
-      const lastMsg = parsedMessages.Messages[parsedMessages.Messages.length - 1];
-      setLastMessage(lastMsg);
-    }
-    parsedMessagesRef.current = parsedMessages;
-  }, [parsedMessages]);
+    window.addEventListener('resize', setFullHeight);
+    window.addEventListener('orientationchange', setFullHeight);
+    setFullHeight();
 
-  const handleSendMessage = async (
-    message: string,
-    isMyMessage: boolean,
-    isClearString: boolean,
-    isShowDate: boolean,
-  ) => {
-    if (!message || typeof message !== 'string') return;
+    // loadEmoticons();
+  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
+
+  // 나 또는 상대방의 메시지를 출력하기 위한 함수. ( 상대방의 메시지도 결국은 내가 메시지를 보내야만 오기때문에 이렇게 네이밍 됨. )
+  async function handleSendMessage(message: string, isMyMessage: boolean, isClearString: boolean, isShowDate: boolean) {
     let currentTime: string = getCurrentLocaleTime();
 
     let isFinish = false;
@@ -461,7 +401,7 @@ const ChatPage: React.FC = () => {
         // 같은타입의 말풍선이 새로 만들어져야 하는 경우가 있어서 아래 조건 추가함.
         if (isNarrationActive.active === true) currentSender = SenderType.PartnerNarration;
         const tempChatId: number = chatId;
-        console.log('newMessage.text :' + newMessage.text);
+        console.log('newMessage.text :==' + newMessage.text + '==');
         // 2. 메시지를 한 바이트씩 조사해서 새로운 Sender로 만들지 말지 처리한다.
         for (let i = 0; i < newMessage.text.length; i++) {
           let {isAnotherSender, newSender} = isAnotherSenderType(isMyMessage, newMessage.text[i], currentSender);
@@ -527,46 +467,71 @@ const ChatPage: React.FC = () => {
     const updatedMessages = funcSendMessage(parsedMessagesRef.current);
     setParsedMessages(updatedMessages);
     parsedMessagesRef.current = updatedMessages;
+  }
+
+  function setFullHeight() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }
+
+  const loadEmoticons = async () => {
+    try {
+      const response = await fetchEmoticonGroups();
+      setEmoticonGroupInfoList(response.data.emoticonGroupInfoList);
+    } catch (error) {
+      console.error('Error fetching emoticon groups:', error);
+    }
   };
 
-  //#endregion
-
-  //#region 프론트에서 메시지 삭제 로직
-
-  const removeParsedMessage = (removeId: number) => {
-    const filteredMessages = parsedMessagesRef.current.Messages.filter(
-      message => message.chatId !== removeId, // 해당 id만 삭제
-    );
-
-    const updatedParsedMessages = {
-      ...parsedMessagesRef.current,
-      Messages: filteredMessages,
-    };
-
-    setParsedMessages(updatedParsedMessages);
-    parsedMessagesRef.current = updatedParsedMessages;
+  //#region HeaderChat handler
+  const handleMoreClick = () => {
+    console.log('더보기 버튼 클릭');
   };
 
-  //#endregion
+  const handleToggleBackground = () => {
+    console.log('배경 보기/숨기기 버튼 클릭');
+    SetHideChat(!isHideChat);
+  };
 
-  const handleChangeNewDate = (cheat: string) => {
-    switch (cheat) {
-      case '⦿YEAR⦿':
-        const messageGroupYear = shiftDates(NewDateType.YEAR, parsedMessages);
-        setParsedMessages(messageGroupYear);
-        break;
-      case '⦿MONTH⦿':
-        const messageGroupMonth = shiftDates(NewDateType.MONTH, parsedMessages);
-        setParsedMessages(messageGroupMonth);
-        break;
-      case '⦿DAY⦿':
-        const messageGroupDay = shiftDates(NewDateType.DAY, parsedMessages);
-        setParsedMessages(messageGroupDay);
-        break;
-      case '⦿REFRESH_NEW_DAY⦿': // 현재상태에서 모든 시간 말풍선을 갱신한다.
-        const messageGroupRefresh = refreshNewDateAll(parsedMessages);
-        setParsedMessages(messageGroupRefresh);
-        break;
+  const sendMessage = async (reqSendChatMessage: SendChatMessageReq) => {
+    try {
+      const response = await sendMessageAsync(reqSendChatMessage);
+      if ('streamKey' in response) {
+        // 성공적인 응답 처리
+        setChatId(response.chatContentId);
+        if (!reqSendChatMessage?.streamKey) {
+          alert('streamkey 비어있음 ');
+          return;
+        }
+        changeStreamKey(response.streamKey);
+
+        const currentMessages = parsedMessagesRef.current.Messages;
+        const updatedMessages = currentMessages.map(message =>
+          message.chatId === TempIdforSendQuestion ? {...message, chatId: response.chatContentId} : message,
+        );
+
+        // 상태 업데이트
+        setParsedMessages({
+          ...parsedMessagesRef.current,
+          Messages: updatedMessages,
+        });
+        setRegeneratingQuestion({
+          lastMessageId: response.chatContentId,
+          lastMessageQuestion: reqSendChatMessage.text,
+        });
+      } else if ('resultCode' in response) {
+        // 오류 응답 처리
+        if (response.resultCode === 13) {
+          isSendingMessage.current = false;
+          SetChatLoading(false);
+          setNotEnoughRubyPopupOpen(true);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      handleSendMessage(`${ESystemError.syserr_chatting_send_post}`, false, false, false);
+
+      SetChatLoading(false);
     }
   };
 
@@ -617,235 +582,9 @@ const ChatPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (retryStreamKey === '') return;
-    console.log('stream key : ', retryStreamKey);
-
-    const eventSource = new EventSource(
-      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Chatting/retryStream?streamKey=${retryStreamKey}`, // 쿼리 파라미터 제대로 추가
-    );
-
-    eventSource.onmessage = event => {
-      try {
-        if (!event.data) {
-          throw new Error('Received null or empty data');
-          setIsLoading(false);
-        }
-
-        setIsLoading(false);
-
-        const newMessage = JSON.parse(event.data);
-        console.log('stream new text====' + newMessage + '====');
-        handleSendMessage(newMessage, false, true, false);
-        if (newMessage.includes('$') === true) {
-          isSendingMessage.state = false;
-
-          eventSource.close();
-          console.log('Stream ended normally');
-        }
-      } catch (error) {
-        console.error('Error processing message:', error);
-        console.error('Received data:', event.data);
-      }
-    };
-
-    eventSource.onerror = error => {
-      isSendingMessage.state = false;
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [retryStreamKey]);
-
-  //#endregion
-
-  //#region  다음 에피소드 넘어가기
-  const navigateToNextEpisode = async (episodeId: number) => {
-    console.log(`Navigating to episode ID: ${episodeId}`);
-
-    const chattingState: ChattingState = {
-      contentName: `content episode${episodeId}`,
-      episodeName: `episode${episodeId}`,
-      contentId: Number(contentId),
-      episodeId: Number(episodeId),
-      contentUrl: shortsId,
-    };
-    dispatch(setStateChatting(chattingState));
-    setIsTransitionEnable(true);
-    setIsIdEnter(true);
-    setFloatingNextEpisode(false);
+  const SetChatLoading = (bool: boolean) => {
+    setIsLoading(bool);
   };
-
-  const handlePopupYes = () => {
-    if (isSendingMessage.state) {
-      console.log('메세지 중에는 넘어가지 않습니다');
-      return;
-    }
-    console.log('Yes 클릭');
-    // 특정 행동 수행
-    if (nextEpisodeId !== null) {
-      console.log(`에피소드 ID에 대한 행동 수행: ${nextEpisodeId}`);
-      navigateToNextEpisode(nextEpisodeId); // 다음 에피소드로 이동하는 함수 호출
-    }
-    setShowPopup(false);
-  };
-
-  const handlePopupNo = () => {
-    console.log('No 클릭');
-    setShowPopup(false);
-    setFloatingNextEpisode(true);
-  };
-  //#endregion
-
-  //#region HeaderChat handler
-  const handleMoreClick = () => {
-    console.log('더보기 버튼 클릭');
-  };
-
-  const handleToggleBackground = () => {
-    console.log('배경 보기/숨기기 버튼 클릭');
-    SetHideChat(!isHideChat);
-  };
-
-  const handleRerender = (isComplete: boolean) => {
-    setRenderComplete(isComplete);
-  };
-  //#endregion
-
-  const {prevMessages: enterData} = usePrevChatting(episodeId, isReqPrevCheat, handleRerender, isIdEnter);
-
-  useEffect(() => {
-    function setFullHeight() {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
-
-    window.addEventListener('resize', setFullHeight);
-    window.addEventListener('orientationchange', setFullHeight);
-    setFullHeight();
-
-    if (
-      (!hasFetchedPrevMessages && enterData && (enterData?.prevMessageInfoList || enterData?.introPrompt.length > 0)) ||
-      (nextEpisodeId != null && enterData?.episodeId === nextEpisodeId) ||
-      isReqPrevCheat === true ||
-      isRenderComplete === true
-    ) {
-      // flatMap을 통해 parsedPrevMessages를 생성
-      // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
-      const {parsedPrevMessages, emoticonUrl, mediaData} = enterData?.prevMessageInfoList.reduce<{
-        parsedPrevMessages: Message[];
-        emoticonUrl: string[];
-        mediaData: MediaData[];
-      }>(
-        (acc, msg, indexCurrent, array) => {
-          let prevDate: Date | null = null;
-          if (indexCurrent > 0) prevDate = array[indexCurrent - 1].createAt;
-
-          // 메시지 파싱
-          const parsedMessages = parseMessage(msg, prevDate) || [];
-
-          acc.parsedPrevMessages.push(...parsedMessages);
-
-          // 이모티콘 URL 추가
-          const emoticonValue = msg.emoticonUrl || '';
-          acc.emoticonUrl.push(...Array(parsedMessages.length).fill(emoticonValue));
-
-          // MediaData 구성
-          let mediaType = TriggerMediaState.None;
-          switch (msg.triggerMediaState) {
-            case 1:
-              mediaType = TriggerMediaState.TriggerImage;
-              break;
-            case 2:
-              mediaType = TriggerMediaState.TriggerVideo;
-              break;
-            case 3:
-              mediaType = TriggerMediaState.TriggerAudio;
-              break;
-            default:
-              mediaType = TriggerMediaState.None;
-          }
-
-          const mediaDataValue = {
-            mediaType: mediaType,
-            mediaUrlList: msg.mediaUrlList || [],
-          };
-
-          if (parsedMessages.length > 0) {
-            acc.mediaData.push(...Array(parsedMessages.length));
-            acc.mediaData[acc.mediaData.length - 1] = mediaDataValue;
-          } else if (mediaType != TriggerMediaState.None) {
-            let createDate: string = timeParser(msg.createAt);
-            const defaultMessages: Message = {
-              chatId: -1,
-              text: '.',
-              sender: SenderType.media,
-              createDateString: createDate,
-              createDateLocale: new Date(),
-            };
-            acc.parsedPrevMessages.push(defaultMessages);
-            acc.emoticonUrl.push(emoticonValue);
-            acc.mediaData.push(mediaDataValue); // 기본값 추가
-          }
-
-          return acc;
-        },
-        {parsedPrevMessages: [], emoticonUrl: [], mediaData: []},
-      ) || {parsedPrevMessages: [], emoticonUrl: [], mediaData: []};
-
-      const introPrompt2: Message = {
-        chatId: chatId,
-        text: enterData?.introPrompt || '애피소드 도입부가 설정되지 않았습니다',
-        sender: SenderType.IntroPrompt,
-        createDateString: '',
-        createDateLocale: new Date(),
-      };
-
-      // emoticonUrl.unshift('');
-      // const defaultMediaData: MediaData = {
-      //   mediaType: TriggerMediaState.None, // 미디어 타입이 없는 상태를 나타냄
-      //   mediaUrlList: [], // 빈 배열로 초기화
-      // };
-      // mediaData.unshift(defaultMediaData);
-      const messageInfo: MessageGroup = {
-        Messages: parsedPrevMessages, // Message 배열
-        emoticonUrl: emoticonUrl, // 이모티콘 URL
-        mediaData: mediaData,
-      };
-      setParsedMessages(messageInfo);
-      setHasFetchedPrevMessages(true);
-      //에피소드 변경 상황
-      if (nextEpisodeId != null && enterData?.episodeId === nextEpisodeId) {
-        setNextEpisodeId(null);
-        setIsIdEnter(false);
-      }
-      if (isReqPrevCheat === true) setReqPrevCheat(false);
-
-      setCharacterImageUrl(enterData?.characterImageUrl);
-      const loadEmoticons = async () => {
-        try {
-          const response = await fetchEmoticonGroups();
-          setEmoticonGroupInfoList(response.data.emoticonGroupInfoList);
-        } catch (error) {
-          console.error('Error fetching emoticon groups:', error);
-        }
-      };
-      // loadEmoticons();
-
-      // enter 했을 때 에피소드 이동 트리거 발동기록 확인
-      if (enterData?.nextEpisodeId && enterData.nextEpisodeId > 0) {
-        setNextEpisodeId(enterData.nextEpisodeId);
-        setNextEpisodeName(enterData.nextEpisodeName);
-        setFloatingNextEpisode(true);
-      }
-    }
-  }, [enterData, hasFetchedPrevMessages, isReqPrevCheat, isRenderComplete]);
-
-  useEffect(() => {
-    preventZoom();
-  }, []);
 
   return (
     <>
@@ -885,7 +624,7 @@ const ChatPage: React.FC = () => {
             chatBarCount={chatBarCount}
             aiChatHeight={aiChatHeight}
             transitionEnabled={isTransitionEnable}
-            send={Send}
+            send={sendMessage}
             lastMessage={lastMessage}
             retrySend={handleRetryStream}
           />
@@ -903,7 +642,7 @@ const ChatPage: React.FC = () => {
           onUpdateAiChatBarCount={SetAiChatHeight}
           onReqPrevChatting={setReqPrevCheat}
           isSendingMessage={isSendingMessage}
-          send={Send}
+          send={sendMessage}
           onRemoveChat={removeParsedMessage}
           onCheatChangeDate={handleChangeNewDate}
         />

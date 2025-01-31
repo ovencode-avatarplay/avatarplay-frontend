@@ -163,17 +163,27 @@
   --safe-area-inset-right: env(safe-area-inset-right);
 
 
-  --full-width: clamp(0px, 100vw, 402px);
-  --second-width : clamp(0px, calc(100vw - 32px) , calc(402px - 32px));  /* 370px */
-  --third-width : clamp(0px, calc(100vw - 32px - 32px) , calc(402px - 32px - 32px));  /* 338px */
+  --full-width: clamp(0px, 100vw, 1300px);
+  --second-width : clamp(0px, calc(100vw - 32px) , calc(var(--full-width) - 32px));  /* 370px */
+  --third-width : clamp(0px, calc(100vw - 32px - 32px) , calc(var(--full-width) - 32px - 32px));  /* 338px */
 
   --bottom-nav-height : 48px;
   
   --body-height : calc(100% - 58px - 48px);
-  
-}
 
-html, body{height: 100%;}
+
+  /* Component Size 관련*/
+  --basic-button-width: clamp(0px, calc(var(--full-width) * 0.3), 120px);
+}
+/* html{
+  height:100%;
+}
+body{    
+  height:100dvh;
+} */
+html,body{
+  height: 100%;
+}
 
 .safe-area-container {
   padding-top: var(--safe-area-inset-top);
@@ -204,6 +214,11 @@ html, body{height: 100%;}
   margin-right: 16px;
 }
 
+/* @media (max-width: 1366px) {
+  :root {
+    --full-width: 100%;
+  }
+} */
 
 
 /* @media (prefers-color-scheme: dark) {

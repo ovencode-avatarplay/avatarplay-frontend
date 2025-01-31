@@ -1,17 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import styles from './EpisodeConversationTemplate.module.css';
-import {Dialog, DialogTitle, Button, IconButton} from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import {Dialog, IconButton} from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {useDispatch, useSelector} from 'react-redux';
-import {setCurrentEpisodeInfo, saveConversationTemplateList, EpisodeInfo} from '@/redux-store/slices/EpisodeInfo';
 import {Plus} from '@ui/chatting';
 import ConversationCard from './ConversationCard';
 import {RootState} from '@/redux-store/ReduxStore';
-import ConversationCardDropDown from './ConversationCardDropDown';
-import {duplicateEpisode} from '@/redux-store/slices/ContentInfo';
 import {BoldArrowLeft} from '@ui/Icons';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import {EpisodeInfo, saveConversationTemplateList} from '@/redux-store/slices/ContentInfo';
 
 interface Bar {
   id: string;
@@ -32,15 +29,15 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
   episodeInfo,
 }) => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (open) {
-      dispatch(setCurrentEpisodeInfo(episodeInfo));
-    }
-  }, [episodeInfo]);
+
+  const selectedChapterIdx = useSelector((state: RootState) => state.content.selectedChapterIdx);
+  const selectedEpisodeIdx = useSelector((state: RootState) => state.content.selectedEpisodeIdx);
 
   // Redux에서 conversationTemplateList 가져오기
   const conversationTemplateList = useSelector(
-    (state: RootState) => state.episode.currentEpisodeInfo.conversationTemplateList,
+    (state: RootState) =>
+      state.content.curEditingContentInfo.chapterInfoList[selectedChapterIdx]?.episodeInfoList[selectedEpisodeIdx]
+        ?.conversationTemplateList,
   );
 
   // 로컬 상태 관리
@@ -50,7 +47,7 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
     let currentId = -1; // CardData의 ID 시작점
     let currentBarId = -1; // Bar의 ID 시작점
 
-    if (conversationTemplateList.length > 0) {
+    if (conversationTemplateList?.length > 0) {
       const initialCards = conversationTemplateList.map(conversation => {
         const assignedId = conversation.id <= 0 ? currentId-- : conversation.id;
 

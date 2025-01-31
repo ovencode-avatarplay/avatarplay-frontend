@@ -3,7 +3,7 @@
 }
 .count1 {
   width: 260px;
-  max-width: 260px;
+  /* max-width: 260px; */
   height: 372px;
   border-radius: 12px;
   overflow: hidden; /* 추가 */

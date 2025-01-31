@@ -12,14 +12,16 @@ import Link from 'next/link';
 import CreateWidget from '../content/create/CreateWidget';
 import SelectProfileWidget from '../../profile/SelectProfileWidget';
 import {getLocalizedLink} from '@/utils/UrlMove';
-import {setSkipContentInit} from '@/redux-store/slices/ContentSelection';
 import {useDispatch, useSelector} from 'react-redux';
 import {LinePlus} from '@ui/Icons';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
-import UserDropdown from '@/components/layout/shared/UserDropdown';
+import UserDropdown, {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
+import {setSkipContentInit} from '@/redux-store/slices/ContentInfo';
+import {useAtom} from 'jotai';
 
 export default function BottomNav() {
+  const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const dispatch = useDispatch();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
@@ -170,19 +172,22 @@ export default function BottomNav() {
             const isMy = button.label == 'My';
             if (!isMy) {
               return (
-                <Link key={index} href={index === 0 || index === 1 || index === 4 ? getLocalizedLink(button.link) : ''}>
+                <Link
+                  key={index}
+                  href={index === 0 || index === 1 || index === 4 ? getLocalizedLink(button.link) : ''}
+                  onClick={index !== buttonData.length - 1 ? () => handleClick(index) : undefined}
+                  onMouseDown={index === buttonData.length - 1 ? handleLongPressStart : undefined}
+                  onMouseUp={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
+                  onMouseLeave={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
+                  // 모바일 대응
+                  onTouchStart={index === buttonData.length - 1 ? handleLongPressStart : undefined}
+                  onTouchEnd={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
+                  onTouchCancel={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
+                >
                   <button
                     className={`${styles.navButton} 
                     ${selectedIndex === index ? styles.selected : ''} 
                     ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
-                    onClick={index !== buttonData.length - 1 ? () => handleClick(index) : undefined}
-                    onMouseDown={index === buttonData.length - 1 ? handleLongPressStart : undefined}
-                    onMouseUp={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
-                    onMouseLeave={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
-                    // 모바일 대응
-                    onTouchStart={index === buttonData.length - 1 ? handleLongPressStart : undefined}
-                    onTouchEnd={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
-                    onTouchCancel={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
                   >
                     {button.icon}
                   </button>
@@ -194,6 +199,9 @@ export default function BottomNav() {
                   className={`${styles.navButton} 
                         ${selectedIndex === index ? styles.selected : ''} 
                         ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
+                  onClick={() => {
+                    dataUserDropDown.onClick();
+                  }}
                 >
                   <UserDropdown />
                 </button>

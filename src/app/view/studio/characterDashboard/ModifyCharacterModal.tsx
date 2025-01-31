@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Modal, Box} from '@mui/material';
+import {Drawer} from '@mui/material';
 import styles from './ModifyCharacterModal.module.css';
-import CreateCharacterTopMenu from '../../main/content/create/character/CreateCharacterTopMenu';
 import CharacterCreateSequence from '../../main/content/create/character/CreateCharacterSequence';
 import PublishCharacter from '../../main/content/create/character/PublishCharacter';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 import PublishCharacterBottom from '../../main/content/create/character/PublishCharacterBottom';
-import {getLocaleUrl} from '@/configs/i18n';
-import {getLocalizedLink} from '@/utils/UrlMove';
+import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 interface ModifyCharacterProps {
   open: boolean;
@@ -54,14 +52,10 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
   }, [publishClick]);
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Box className={styles.modalContent}>
-        <CreateCharacterTopMenu
-          backButtonAction={handleCloseClick}
-          lastUrl={getLocalizedLink('/lang/studio/Character')}
-          contentTitle={isModify ? 'Modify Character' : 'Create Character'}
-          blockStudioButton={true}
-        />
+    <Drawer anchor="bottom" open={open} onClose={onClose}>
+      <div className={styles.drawerContent}>
+        <CreateDrawerHeader title="Modify Character" onClose={onClose} />
+
         {isModifying ? (
           <CharacterCreateSequence
             closeAction={handleCloseClick}
@@ -82,20 +76,20 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
               publishFinishAction={handlePublishFinishAction}
             />
 
-            <Box className={styles.buttonContainer}>
+            <div className={styles.buttonContainer}>
               <PublishCharacterBottom
                 onPrevClick={handlePrevClick}
                 onPublishClick={() => {
                   setPublishClick(true);
                 }}
               />
-            </Box>
+            </div>
           </div>
         ) : (
           <div>character is not available</div>
         )}
-      </Box>
-    </Modal>
+      </div>
+    </Drawer>
   );
 };
 

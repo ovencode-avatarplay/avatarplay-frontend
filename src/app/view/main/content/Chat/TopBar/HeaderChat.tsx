@@ -27,7 +27,7 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, i
     <>
       {isHideChat === false && (
         <>
-          <Box className={`${styles.topNavigation} ${isBlurOn ? styles.blurOn : ''}`} sx={{width: window.innerWidth}}>
+          <Box className={`${styles.topNavigation} ${isBlurOn ? styles.blurOn : ''}`} sx={{width: '100%'}}>
             <div className={styles.left}>
               <Link className={styles.button} href={getLocalizedLink(`/main/explore`) || '/default-path'}>
                 <img className={styles.buttonImage} src={Left.src} />

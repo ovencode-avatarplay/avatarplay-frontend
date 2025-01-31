@@ -110,7 +110,7 @@ const ConversationCard: React.FC<ConversationCardProps> = ({card, moveUp, moveDo
                       alt="Toggle Icon"
                     />
                   </div>
-                  <div style={{width: '80%'}}>
+                  <div style={{width: '100%'}}>
                     <TextField
                       multiline
                       maxRows={4}
@@ -176,7 +176,7 @@ const ConversationCard: React.FC<ConversationCardProps> = ({card, moveUp, moveDo
                       alt="Toggle Icon"
                     />
                   </div>
-                  <div style={{width: '80%'}}>
+                  <div style={{width: '100%'}}>
                     <TextField
                       multiline
                       maxRows={4}

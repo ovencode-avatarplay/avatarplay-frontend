@@ -1,67 +1,179 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Typography, Button} from '@mui/material';
-import CurrencyIcon from '@mui/icons-material/AttachMoney';
 import styles from './CharacterGalleryCreate.module.css';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {CharacterInfo} from '@/redux-store/slices/EpisodeInfo';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import CustomButton from '@/components/layout/shared/CustomButton';
+import {BoldRuby, LineArrowLeft, LineCheck, LineRegenerate} from '@ui/Icons';
+import {
+  GenerateExpressionReq,
+  GeneratePoseReq,
+  sendGenerateExpressionReq,
+  sendGeneratePoseReq,
+} from '@/app/NetWork/ImageNetwork';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
+import CharacterCreateImageButton from '../../main/content/create/character/CreateCharacterImageButton';
 
 interface CategoryCreateProps {
   open: boolean;
   onClose: () => void;
   category: GalleryCategory;
-  characterInfo: CharacterInfo;
+  // characterInfo: CharacterInfo;
+  selectedPortraitUrl: string;
+  onUploadGalleryImages: (category: GalleryCategory, urls: string[], parameter: string) => void;
 }
 
-const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({open, onClose, category, characterInfo}) => {
-  const [creationAmount, setCreationAmount] = useState(1);
-  const [imageQuality, setImageQuality] = useState(1);
+const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
+  open,
+  onClose,
+  category,
+  // characterInfo,
+  selectedPortraitUrl,
+  onUploadGalleryImages,
+}) => {
+  const [loading, setLoading] = useState(false);
 
-  const handleAmountChange = (_: any, value: number | number[]) => {
-    setCreationAmount(value as number);
-  };
+  const [selectedItemIndex, setSelectedItemIndex] = useState<number>(0);
 
-  const handleQualityChange = (_: any, value: number | number[]) => {
-    setImageQuality(value as number);
+  const [selectedGeneratedItems, setSelectedGeneratedItems] = useState<number[]>([]); // 선택된 아이템의 인덱스를 배열로 저장
+
+  const handleSelectGeneratedItem = (index: number) => {
+    setSelectedGeneratedItems(prevSelectedGeneratedItems => {
+      if (prevSelectedGeneratedItems.includes(index)) {
+        // 이미 선택된 아이템이면 배열에서 제거
+        return prevSelectedGeneratedItems.filter(item => item !== index);
+      } else {
+        // 선택되지 않은 아이템이면 배열에 추가
+        return [...prevSelectedGeneratedItems, index];
+      }
+    });
   };
+  const poseData = [
+    {image: '/create_character/pose/pose_01_sitaside.png', id: 1, prompt: 'sit, a side'},
+    {image: '/create_character/pose/pose_02_standheadtilited.png', id: 2, prompt: 'stand, head tilted'},
+    {image: '/create_character/pose/pose_03_standarchback.png', id: 3, prompt: 'stand, arch back'},
+    {image: '/create_character/pose/pose_04_lyingonback.png', id: 4, prompt: 'lying, on back'},
+    {image: '/create_character/pose/pose_05_sitseiza.png', id: 5, prompt: 'sit, seiza'},
+    {image: '/create_character/pose/pose_06_standarmsup.png', id: 6, prompt: 'stand, arms up'},
+  ];
+
+  const ExpressionData = [
+    {image: '/create_character/expression/expression_01_delight.png', id: 1, prompt: 'delight'},
+    {image: '/create_character/expression/expression_02_angry.png', id: 2, prompt: 'angry'},
+    {image: '/create_character/expression/expression_03_sad.png', id: 3, prompt: 'sad'},
+    {image: '/create_character/expression/expression_04_excited.png', id: 4, prompt: 'excited'},
+    {image: '/create_character/expression/expression_05_boring.png', id: 5, prompt: 'boring'},
+  ];
+
+  const [selectionImages, setSelectionImages] = useState(poseData);
+  const [generatedImages, setGeneratedImages] = useState<string[]>(['', '', '', '']); // 생성된 이미지 URL 저장
+  const [createStep, setCreateStep] = useState<number>(0);
 
   const handleClose = () => {
     onClose();
   };
-  const handleGenerate = () => {
-    const generationData = {
-      mainImageUrl: characterInfo.mainImageUrl,
-      category: category,
-      selectedImage: selectedItemIndex,
-      creationAmount: creationAmount,
-      imageQuality: imageQuality,
-    };
 
-    console.log('Generation Data:', generationData);
+  // const handleGenerateClick = () => {
+  //   switch (category) {
+  //   }
+  // };
+
+  const handlePoseCreate = async () => {
+    setLoading(true);
+    try {
+      setCreateStep(1);
+      const generationData = {
+        // mainImageUrl: characterInfo.mainImageUrl,
+        mainImageUrl: selectedPortraitUrl,
+        category: category,
+        selectedImage: selectedItemIndex,
+      };
+
+      console.log('Generation Data:', generationData);
+
+      const payload: GeneratePoseReq = {
+        // url: characterInfo.mainImageUrl,
+        url: selectedPortraitUrl,
+        pose: selectionImages[selectedItemIndex].prompt,
+        // ID : selectionImages[selectedItemIndex].id
+        // Prompt : selectionImages[selectedItemIndex].prompt,
+      };
+
+      const response = await sendGeneratePoseReq(payload); // API 요청
+      const newImages = response.data?.imageUrl || [
+        selectedPortraitUrl,
+        selectedPortraitUrl,
+        selectedPortraitUrl,
+        selectedPortraitUrl,
+      ]; // API null 나오는경우 임시처리
+
+      if (newImages.length > 0) {
+        setGeneratedImages(prevImages => [...prevImages, ...newImages]); // 상태 업데이트
+        setGeneratedImages(newImages); // 생성된 이미지 갱신
+      }
+    } catch (error) {
+      alert('Failed to generate images. Please try again.');
+      setCreateStep(0);
+    } finally {
+      setLoading(false);
+    }
   };
-  const [selectedItemIndex, setSelectedItemIndex] = useState<number>(0);
-  const poseImages = [
-    '/images/real.png',
-    '/images/real.png',
-    '/images/real.png',
-    '/images/real.png',
-    '/images/real.png',
-    '/images/real.png',
-  ];
 
-  const ExpressionImages = [
-    '/images/001.png',
-    '/images/001.png',
-    '/images/001.png',
-    '/images/001.png',
-    '/images/001.png',
-    '/images/001.png',
-  ];
-  const [selectionImages, setSelectionImages] = useState(poseImages);
+  const handleExpressionCreate = async () => {
+    setLoading(true);
+    try {
+      setCreateStep(1);
+      const generationData = {
+        // mainImageUrl: characterInfo.mainImageUrl,
+        mainImageUrl: selectedPortraitUrl,
+        category: category,
+        selectedImage: selectedItemIndex,
+      };
+
+      console.log('Generation Data:', generationData);
+
+      const payload: GenerateExpressionReq = {
+        // url: characterInfo.mainImageUrl,
+        url: selectedPortraitUrl,
+        expression: selectionImages[selectedItemIndex].prompt,
+        // ID : selectionImages[selectedItemIndex].id
+        // Prompt : selectionImages[selectedItemIndex].prompt,
+      };
+
+      const response = await sendGenerateExpressionReq(payload);
+      const newImages = response.data?.imageUrl || [
+        selectedPortraitUrl,
+        selectedPortraitUrl,
+        selectedPortraitUrl,
+        selectedPortraitUrl,
+      ]; // API null 나오는경우 임시처리
+
+      if (newImages.length > 0) {
+        setGeneratedImages(prevImages => [...prevImages, ...newImages]); // 상태 업데이트
+        setGeneratedImages(newImages); // 생성된 이미지 갱신
+      }
+    } catch (error) {
+      alert('Failed to generate images. Please try again.');
+      setCreateStep(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSelected = () => {
+    let selectedItemList: string[] = selectedGeneratedItems.map(index => generatedImages[index]);
+
+    onUploadGalleryImages(
+      category,
+      selectedItemList,
+      category === GalleryCategory.Pose ? poseData[selectedItemIndex].prompt : ExpressionData[selectedItemIndex].prompt,
+    );
+    //TODO 선택된 아이템 업로드 해서 Character Gallery 갱신
+  };
 
   useEffect(() => {
-    if (category === GalleryCategory.Pose) setSelectionImages(poseImages);
-    else if (category === GalleryCategory.Expression) setSelectionImages(ExpressionImages);
+    if (category === GalleryCategory.Pose) setSelectionImages(poseData);
+    else if (category === GalleryCategory.Expression) setSelectionImages(ExpressionData);
     else {
       console.log('Err');
     }
@@ -81,90 +193,148 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({open, onClose, c
   }, [open]);
 
   return (
-    <Box className={styles.container}>
-      {/* Base Portrait */}
-      <Box className={styles.basePortrait}>
-        <Typography variant="subtitle1">Base Portrait</Typography>
-        <Box
-          sx={{
-            width: '180px',
-            height: '240px',
-            backgroundImage: `url(${characterInfo.mainImageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderRadius: '8px',
-            marginBottom: '8px',
-          }}
-        />
-        <Button variant="outlined" className={styles.changeButton}>
-          Change
-        </Button>
-      </Box>
-
-      {/* Swiper Section */}
-      <Box className={styles.swiperSection}>
-        <Typography variant="subtitle1">Select {galleryCategoryText[category]}</Typography>
-        <Swiper
-          spaceBetween={10}
-          slidesPerView={3}
-          centeredSlides={true} // 중앙 정렬 활성화
-          onSlideChange={swiper => setSelectedItemIndex(swiper.activeIndex)} // 슬라이드 변경 시 활성화된 인덱스 업데이트
-          onSwiper={swiper => setSelectedItemIndex(swiper.activeIndex)} // Swiper 초기화 시 활성화된 인덱스 설정
-          className={styles.swiper}
-        >
-          {selectionImages.map((url, index) => (
-            <SwiperSlide key={index}>
-              <Box
-                sx={{
-                  width: '100%',
-                  height: '240px',
-                  backgroundImage: `url(${url})`,
+    <div className={styles.container}>
+      {createStep === 0 ? (
+        <div className={styles.editArea}>
+          <div className={styles.basePortraitArea}>
+            <h2 className={styles.title}>Base Portrait</h2>
+            <div className={styles.basePortraitItem}>
+              <div
+                className={styles.portraitImage}
+                style={{
+                  // backgroundImage: `url(${characterInfo.mainImageUrl})`,
+                  backgroundImage: `url(${selectedPortraitUrl})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  borderRadius: '8px',
-                  border: selectedItemIndex === index ? '8px solid blue' : 'none', // 선택된 아이템에 파란색 테두리 추가
-                  transition: 'border 0.3s ease', // 테두리 애니메이션 추가
                 }}
               />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </Box>
 
-      {/* Creation Amount Slider */}
+              {/* 기능 기획이 없는 버튼 */
+              /* <CustomButton size="Small" type="Tertiary" state="Normal">
+                Change
+              </CustomButton> */}
+            </div>
+          </div>
 
-      {/* <Typography variant="subtitle1">Creation Amount</Typography>
-      <Box className={styles.sliderbox}>
-        <Slider value={creationAmount} onChange={handleAmountChange} sx={{width: '70%'}} min={1} max={4} step={1} />
-        <Typography align="right">{creationAmount}</Typography>
-      </Box> */}
+          {/* Swiper Section */}
+          <div className={styles.swiperSection}>
+            <h2 className={styles.title}>Select {galleryCategoryText[category]}</h2>
+            <Swiper
+              spaceBetween={6}
+              slidesPerView="auto"
+              centeredSlides={true}
+              onSlideChange={swiper => setSelectedItemIndex(swiper.activeIndex)} // 슬라이드 변경 시 활성화된 인덱스 업데이트
+              onSwiper={swiper => setSelectedItemIndex(swiper.activeIndex)} // Swiper 초기화 시 활성화된 인덱스 설정
+              className={styles.swiper}
+            >
+              {selectionImages.map((data, index) => (
+                <SwiperSlide
+                  key={index}
+                  style={{
+                    width: '138px',
+                  }}
+                >
+                  <div
+                    className={`${styles.swiperItem}  ${selectedItemIndex === index ? styles.selected : ''}`}
+                    style={{
+                      backgroundImage:
+                        selectedItemIndex === index
+                          ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${data.image})`
+                          : `url(${data.image})`,
+                    }}
+                  >
+                    {selectedItemIndex === index && <img className={styles.checkIcon} src={LineCheck.src} />}
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </div>
+      ) : (
+        <div className={styles.selectArea}>
+          <div className={styles.selectDesc}>Choose photo(s) to add. Multiple choose available</div>
+          {
+            <ul className={styles.selectGrid}>
+              {generatedImages.map((image, index) => (
+                <CharacterCreateImageButton
+                  sizeType="large"
+                  selectType="multiple"
+                  image={image}
+                  label={null}
+                  selected={selectedGeneratedItems.includes(index)}
+                  onClick={() => {
+                    handleSelectGeneratedItem(index);
+                  }}
+                  isImageLoading={loading}
+                />
+              ))}
+            </ul>
+          }
+        </div>
+      )}
 
-      {/* Image Quality Slider */}
-      {/* <Typography variant="subtitle1">Image Quality</Typography>
-      <Box className={styles.sliderbox}>
-        <Slider
-          className={styles.slider}
-          value={imageQuality}
-          onChange={handleQualityChange}
-          sx={{width: '70%'}}
-          min={1}
-          max={3}
-          step={1}
-        />
-        <Typography align="right">{imageQuality === 1 ? 'Low' : imageQuality === 2 ? 'Medium' : 'High'}</Typography>
-      </Box> */}
-
-      {/* Generate Button */}
-      <Box className={styles.generateSection}>
-        <Button variant="contained" color="primary" fullWidth onClick={handleGenerate}>
-          Generate
-          <Box className={styles.currency}>
-            <CurrencyIcon />
-            <Typography>50</Typography>
-          </Box>
-        </Button>
-      </Box>
-    </Box>
+      <div className={styles.generateSection}>
+        {createStep === 0 ? (
+          <CustomButton
+            size="Large"
+            state="Normal"
+            type="Primary"
+            onClick={category === GalleryCategory.Pose ? handlePoseCreate : handleExpressionCreate}
+            customClassName={[styles.generateButton]}
+          >
+            Generate
+            <div className={styles.currency}>
+              <img src={BoldRuby.src} />
+              <div>50</div>
+            </div>
+          </CustomButton>
+        ) : (
+          <>
+            {!loading && (
+              <div className={styles.buttonArea}>
+                <CustomButton
+                  size="Large"
+                  state="IconLeft"
+                  type="Tertiary"
+                  onClick={() => {
+                    setCreateStep(0);
+                  }}
+                  icon={LineArrowLeft.src}
+                  customClassName={[styles.selectButton]}
+                >
+                  Previous
+                </CustomButton>
+                <CustomButton
+                  size="Large"
+                  state="Normal"
+                  type="Tertiary"
+                  onClick={handleExpressionCreate}
+                  customClassName={[styles.selectButton]}
+                >
+                  <div className={styles.regenerateContent}>
+                    Regenerate
+                    <div className={styles.currency}>
+                      <img className={styles.grayIcon} src={BoldRuby.src} />
+                      <div>50</div>
+                    </div>
+                  </div>
+                </CustomButton>
+                <CustomButton
+                  size="Large"
+                  state="Normal"
+                  type="Primary"
+                  onClick={handleSelected}
+                  customClassName={[styles.selectButton]}
+                >
+                  Add
+                </CustomButton>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+      <LoadingOverlay loading={loading} />
+    </div>
   );
 };
 

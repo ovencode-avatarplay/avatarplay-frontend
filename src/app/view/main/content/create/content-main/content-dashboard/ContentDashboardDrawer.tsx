@@ -6,14 +6,15 @@ import {BoldArrowDown} from '@ui/Icons';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {ContentInfo, setContentInfoToEmpty} from '@/redux-store/slices/ContentInfo';
-import {setEpisodeInfoEmpty} from '@/redux-store/slices/EpisodeInfo';
 import {
   setSelectedChapterIdx,
   setSelectedContentId,
   setSelectedEpisodeIdx,
   setSkipContentInit,
-} from '@/redux-store/slices/ContentSelection';
+  ContentInfo,
+  setContentInfoToEmpty,
+  setEpisodeInfoEmpty,
+} from '@/redux-store/slices/ContentInfo';
 import {setPublishInfo} from '@/redux-store/slices/PublishInfo';
 
 import {sendContentDelete} from '@/app/NetWork/ContentNetwork';
@@ -24,6 +25,7 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import CreateFilterButton from '@/components/create/CreateFilterButton';
 
 interface Props {
   open: boolean;
@@ -231,21 +233,18 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
         <ContentDashboardHeader title="Story" onClose={onClose} onCreate={handleCreateClick} />
         <div className={styles.drawerContainer}>
           <div className={styles.filterContainer}>
-            <button
-              className={`${styles.filterBase} ${styles.filterPublish}`}
+            <CreateFilterButton
+              name=""
+              selectedItem={publishItems[selectedPublish]}
               onClick={() => setFilterPublishOpen(true)}
-            >
-              <div className={styles.filterData}>
-                <div className={styles.filterName}>{publishItems[selectedPublish].name}</div>
-                <img className={styles.filterIcon} src={BoldArrowDown.src} />
-              </div>
-            </button>
-            <button className={`${styles.filterBase} ${styles.filterOption}`} onClick={() => setFilterOptionOpen(true)}>
-              <div className={styles.filterData}>
-                <div className={styles.filterName}>{optionItems[selectedOption].name}</div>
-                <img className={styles.filterIcon} src={BoldArrowDown.src} />
-              </div>
-            </button>
+              style={{width: '100px'}}
+            />
+            <CreateFilterButton
+              name=""
+              selectedItem={optionItems[selectedOption]}
+              onClick={() => setFilterOptionOpen(true)}
+              style={{width: '140px'}}
+            />
           </div>
 
           {/* Content list */}

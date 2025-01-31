@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, ToggleButton, ToggleButtonGroup, Dialog, DialogContent, Button, Typography} from '@mui/material';
 import styles from './CharacterGallery.module.css';
-
-import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/EpisodeInfo';
 
 import ImageUploadDialog from '../../main/content/create/content-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaState, sendUpload, MediaUploadReq} from '@/app/NetWork/ImageNetwork';
@@ -11,6 +8,8 @@ import {SaveGalleryReq, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
 import CharacterGalleryGrid from './CharacterGalleryGrid';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CharacterGalleryToggle from './CharacterGalleryToggle';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 interface CharacterGalleryProps {
   characterInfo: CharacterInfo;
@@ -19,6 +18,9 @@ interface CharacterGalleryProps {
   onGenerateSelected: () => void;
   refreshCharacter: (id: number) => void;
   initialSelectedItem?: [GalleryCategory, number | null];
+  selectedGalleryType: GalleryCategory;
+  setSelectedGalleryType: React.Dispatch<React.SetStateAction<GalleryCategory>>;
+  hideSelected?: boolean;
 }
 
 const CharacterGallery: React.FC<CharacterGalleryProps> = ({
@@ -28,6 +30,9 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   onGenerateSelected,
   refreshCharacter,
   initialSelectedItem,
+  selectedGalleryType,
+  setSelectedGalleryType,
+  hideSelected = false,
 }) => {
   // 카테고리
   const [category, setCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
@@ -48,7 +53,6 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   const [imageUploadDialogOpen, setImageUploadDialogOpen] = useState(false);
 
   // All 일때 upload
-  const [selectedGalleryType, setSelectedGalleryType] = useState<GalleryCategory>(GalleryCategory.All);
   const [galleryTypeDialogOpen, setGalleryTypeDialogOpen] = useState(false);
 
   const [loading, setloading] = useState(false);
@@ -188,10 +192,44 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
     }
     onCategorySelected(category);
   }, [category, portraitUrl, poseUrl, expressionUrl]);
+
   //#endregion
+  const selectCategoryItems: SelectDrawerItem[] = [
+    {
+      name: 'Portrait',
+      onClick: () => {
+        handleSelectGalleryType(GalleryCategory.Portrait);
+      },
+    },
+    {
+      name: 'Pose',
+      onClick: () => {
+        handleSelectGalleryType(GalleryCategory.Pose);
+      },
+    },
+    {
+      name: 'Expression',
+      onClick: () => {
+        handleSelectGalleryType(GalleryCategory.Expression);
+      },
+    },
+  ];
+
+  const selectUploadModeItems: SelectDrawerItem[] = [
+    {
+      name: 'Upload Image',
+      onClick: () => {
+        handleImageUploadClick();
+      },
+    },
+    {
+      name: `${galleryCategoryText[category === GalleryCategory.All ? selectedGalleryType : category]} Create`,
+      onClick: onGenerateSelected,
+    },
+  ];
 
   return (
-    <Box className={styles.container}>
+    <div className={styles.container}>
       <CharacterGalleryToggle category={category} onCategoryChange={handleCategoryChange} />
 
       <CharacterGalleryGrid
@@ -200,43 +238,29 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
         onSelectItem={handleSelectItem}
         onAddImageClick={handleAddImageClick}
         category={category}
+        hideSelected={hideSelected}
       />
-      <Dialog open={galleryTypeDialogOpen} onClose={() => setGalleryTypeDialogOpen(false)}>
-        <DialogContent>
-          <Typography variant="h6">Choose Gallery Type</Typography>
-          <Box sx={{display: 'flex', flexDirection: 'column', gap: 2, marginTop: 2}}>
-            <Button variant="outlined" onClick={() => handleSelectGalleryType(GalleryCategory.Portrait)}>
-              Portrait
-            </Button>
-            <Button variant="outlined" onClick={() => handleSelectGalleryType(GalleryCategory.Pose)}>
-              Pose
-            </Button>
-            <Button variant="outlined" onClick={() => handleSelectGalleryType(GalleryCategory.Expression)}>
-              Expression
-            </Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={uploadModeDialogOpen} onClose={handleUploadModeDialogClose}>
-        <DialogContent>
-          <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
-            <Button variant="outlined" onClick={handleImageUploadClick}>
-              Upload Image
-            </Button>
-            <Button variant="outlined" onClick={onGenerateSelected}>{`${
-              galleryCategoryText[category === GalleryCategory.All ? selectedGalleryType : category]
-            } Create`}</Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
 
+      <SelectDrawer
+        items={selectCategoryItems}
+        isOpen={galleryTypeDialogOpen}
+        onClose={() => setGalleryTypeDialogOpen(false)}
+        selectedIndex={0}
+      />
+
+      <SelectDrawer
+        items={selectUploadModeItems}
+        isOpen={uploadModeDialogOpen}
+        onClose={handleUploadModeDialogClose}
+        selectedIndex={0}
+      />
       <ImageUploadDialog
         isOpen={imageUploadDialogOpen}
         onClose={handleImageUploadDialogClose}
         onFileSelect={handleUploadImage}
       />
       <LoadingOverlay loading={loading} />
-    </Box>
+    </div>
   );
 };
 

@@ -2,22 +2,16 @@
   position: relative;
   cursor: pointer;
   
-  width: calc((var(--second-width) - 12px) * 0.5);
-  height: 259.172px;
+  
+  width: calc(var(--second-width) * 0.5 - 6px);
+  max-width: 179px;
+  height: 260px;
   flex-shrink: 0;
 
   border-radius: 12px;
   background:  lightgray 50% / cover no-repeat;
   border-radius: 12px;
   border: 1px solid var(--Neutral-200, #E8EAED);
-}
-
-@media (min-width:402px)
-{
-  .galleryItem  {
-    width: 179px;
-
-  }
 }
  
 .selectedIcon 

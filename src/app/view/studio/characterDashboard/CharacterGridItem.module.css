@@ -2,7 +2,8 @@
     position: relative; 
     cursor: pointer; 
  
-    width: calc((var(--second-width) - 12px) * 0.5); /* 12px : gap */
+    width: calc(var(--second-width) * 0.5 - 6px);
+    max-width: 179px;
     height: 303px;
 
     padding-bottom: 10px;
@@ -17,14 +18,7 @@
     border: 1px solid var(--Neutral-200, #E8EAED);
     overflow :hidden;
   }
-  
-@media (min-width:402px)
-{
-  .gridItem {
-    width: 179px;
-
-  }
-}
+   
     
   .statusOverlay {
     position: absolute;
@@ -61,6 +55,14 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+
+  .infoArea
+  {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
   
   .characterInfo {
@@ -115,4 +117,27 @@
     border-radius: 4px;
     border: 1px solid var(--Primary-1, #FD55D3);
     color: var(--Primary-1, #FD55D3);
+  }
+
+
+  .buttonArea
+  {
+    display: flex;
+    padding: 2px;
+    align-items: top;
+    gap: 10px;
+    margin-right: 12px;
+  }
+
+  .buttonIcon
+  {
+    margin-top: 5px;
+    display: flex;
+    width: 16px;
+    height: 16px;
+    padding: 2.244px;
+    justify-content: center;
+    align-items: center;
+
+    filter: var(--black-icon-filter);
   }
