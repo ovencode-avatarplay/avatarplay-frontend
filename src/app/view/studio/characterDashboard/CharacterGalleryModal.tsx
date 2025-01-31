@@ -68,19 +68,22 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     setIsModifyOpen(false);
   };
 
-  const handleSelectItem = (category: GalleryCategory, index: number | null) => {
-    if (category === GalleryCategory.Portrait && index !== null) {
-      setSelectedPortrait(characterData.portraitGalleryImageUrl[index].imageUrl);
-    }
-    setSelectedItem([category, index]);
-  };
+  // const handleSelectItem = (category: GalleryCategory, index: number | null) => {
+  //   if (category === GalleryCategory.Portrait && index !== null) {
+  //     setSelectedPortrait(characterData.portraitGalleryImageUrl[index].imageUrl);
+  //   }
+  //   setSelectedItem([category, index]);
+  // };
+
+  useEffect(() => {
+    console.log(characterData.mainImageUrl);
+    setSelectedPortrait(characterData.mainImageUrl);
+  }, [characterData, characterData.mainImageUrl]);
 
   const handleRegenerateItem = () => {
-    if (selectedItem[0] !== null && selectedItem[1] !== null && selectedItem[1] !== undefined) {
-      if (selectedCategory === GalleryCategory.Portrait) setIsModifyOpen(true);
-      else {
-        setIsRegenerateOpen(true);
-      }
+    if (selectedCategory === GalleryCategory.Portrait) setIsModifyOpen(true);
+    else {
+      setIsRegenerateOpen(true);
     }
   };
 
@@ -300,6 +303,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
     } else if (isModifyOpen) {
       handleModifyClose();
     } else if (viewerOpen) {
+      // empty
     } else {
       onClose();
     }
@@ -333,6 +337,11 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
         return undefined;
     }
   }
+
+  const handleRefreshCharacter = () => {
+    refreshCharacterList();
+    refreshCharacter(characterInfo.id);
+  };
 
   return (
     <Drawer
@@ -375,7 +384,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
                 onClose={handleModifyClose}
                 isModify={isModifyOpen}
                 characterInfo={characterInfo}
-                refreshCharacterList={refreshCharacterList}
+                refreshCharacterList={handleRefreshCharacter}
               />
             </>
           ) : viewerOpen ? (
@@ -386,7 +395,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
               onBack={() => setViewerOpen(false)}
               onDelete={handleDeleteClick}
               onSelectImage={handleImageSelect}
-              onRefresh={refreshCharacterList}
+              onRefresh={handleRefreshCharacter}
             />
           ) : (
             <>
@@ -400,6 +409,7 @@ const CharacterGalleryModal: React.FC<CharacterGalleryModalProps> = ({
                 initialSelectedItem={selectedItem}
                 selectedGalleryType={selectedCategory}
                 setSelectedGalleryType={setSelectedCategory}
+                hideSelected={true}
               />
               {/* <div className={styles.footer}>
                 {buttons.map((button, index) => (

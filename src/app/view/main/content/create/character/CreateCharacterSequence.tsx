@@ -364,9 +364,12 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
       const response = await sendGenerateImageReq(req);
 
       if (response?.data) {
-        setGeneratedOptions(response.data);
+        const newImages = (response.data?.imageUrl || []).filter(url => url.startsWith('https://'));
 
-        /*handleClose();*/
+        setGeneratedOptions({
+          ...response.data,
+          imageUrl: newImages,
+        });
       } else {
         throw new Error(`No response for file`);
       }

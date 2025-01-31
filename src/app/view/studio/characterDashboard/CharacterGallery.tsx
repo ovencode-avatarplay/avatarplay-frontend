@@ -20,6 +20,7 @@ interface CharacterGalleryProps {
   initialSelectedItem?: [GalleryCategory, number | null];
   selectedGalleryType: GalleryCategory;
   setSelectedGalleryType: React.Dispatch<React.SetStateAction<GalleryCategory>>;
+  hideSelected?: boolean;
 }
 
 const CharacterGallery: React.FC<CharacterGalleryProps> = ({
@@ -31,6 +32,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
   initialSelectedItem,
   selectedGalleryType,
   setSelectedGalleryType,
+  hideSelected = false,
 }) => {
   // 카테고리
   const [category, setCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
@@ -236,6 +238,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
         onSelectItem={handleSelectItem}
         onAddImageClick={handleAddImageClick}
         category={category}
+        hideSelected={hideSelected}
       />
 
       <SelectDrawer

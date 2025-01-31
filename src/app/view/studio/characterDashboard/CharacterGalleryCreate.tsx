@@ -73,10 +73,10 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
     onClose();
   };
 
-  const handleGenerateClick = () => {
-    switch (category) {
-    }
-  };
+  // const handleGenerateClick = () => {
+  //   switch (category) {
+  //   }
+  // };
 
   const handlePoseCreate = async () => {
     setLoading(true);
@@ -208,9 +208,11 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
                   backgroundPosition: 'center',
                 }}
               />
-              <CustomButton size="Small" type="Tertiary" state="Normal">
+
+              {/* 기능 기획이 없는 버튼 */
+              /* <CustomButton size="Small" type="Tertiary" state="Normal">
                 Change
-              </CustomButton>
+              </CustomButton> */}
             </div>
           </div>
 

@@ -14,6 +14,7 @@ interface CharacterGalleryGridProps {
   category: GalleryCategory;
   isTrigger?: boolean;
   style?: React.CSSProperties;
+  hideSelected?: boolean;
 }
 
 const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
@@ -24,6 +25,7 @@ const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
   category,
   isTrigger,
   style,
+  hideSelected = false,
 }) => {
   const isEmptyGallery = !itemUrl || itemUrl.length === 0;
 
@@ -63,6 +65,7 @@ const CharacterGalleryGrid: React.FC<CharacterGalleryGridProps> = ({
             url={item}
             isSelected={selectedItemIndex === index}
             onSelect={() => onSelectItem(index)}
+            hideSelected={hideSelected}
           />
         ))}
       {isTrigger && isEmptyGallery && (
