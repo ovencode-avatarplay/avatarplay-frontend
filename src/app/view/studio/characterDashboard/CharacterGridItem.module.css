@@ -66,6 +66,8 @@
   }
   
   .characterInfo {
+    max-width: calc(100% - 32px );
+
     display: flex;
     align-items: center;
     justify-content: space-between; 
@@ -84,12 +86,18 @@
   .characterName {
     align-self: stretch;
     color: var(--Primary-Neutral-500, #111);
+    min-height: 20px;
 
     font-family: 'Lato';
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
     line-height: 20px; /* 142.857% */
+    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;  
+    
   }
 
   .monetizationLabel {

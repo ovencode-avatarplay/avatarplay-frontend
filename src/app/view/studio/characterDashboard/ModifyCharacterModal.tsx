@@ -13,6 +13,7 @@ interface ModifyCharacterProps {
   isModify: boolean;
   characterInfo: CharacterInfo | undefined;
   refreshCharacterList: () => void;
+  onDelete?: () => void;
 }
 
 const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
@@ -21,6 +22,7 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
   isModify,
   characterInfo,
   refreshCharacterList,
+  onDelete,
 }) => {
   const [isModifying, setIsModifying] = useState(false);
 
@@ -74,6 +76,8 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
               }}
               debugparam={''}
               publishFinishAction={handlePublishFinishAction}
+              showDelete={true}
+              deleteAction={onDelete}
             />
 
             <div className={styles.buttonContainer}>

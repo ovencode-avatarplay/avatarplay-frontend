@@ -334,7 +334,6 @@ const EpisodeInitialize: React.FC<Props> = ({
       const response = await sendGenerateImageReq2(payload); // API 요청
       const newImages = (response.data?.imageUrl || []).filter(url => url.startsWith('https://'));
 
-      console.log(newImages);
       // 기존 로컬스토리지 값 가져오기
       addToLocalStorage(newImages);
 

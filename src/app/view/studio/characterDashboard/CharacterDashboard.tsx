@@ -1,23 +1,13 @@
 'use client';
 
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
 
 // Components
-import StudioTopMenu from '../StudioDashboardMenu';
 import CharacterGrid from './CharacterGrid';
-import CharacterDashboardFooter from '.././StudioDashboardFooter';
-import StudioFilter from '../StudioFilter';
 
 // MUI, Styles
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import styles from './CharacterDashboard.module.css';
-import StarIcon from '@mui/icons-material/Star';
-
-import EditIcon from '@mui/icons-material/Edit';
-import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import DeleteIcon from '@mui/icons-material/Delete';
-
 // Network
 import {
   CreateCharacterReq,
@@ -374,6 +364,10 @@ const CharacterDashboard: React.FC = () => {
         isModify={isModifyMode}
         characterInfo={currentSelectedCharacter}
         refreshCharacterList={getCharacterList}
+        onDelete={() => {
+          handleConfirmDelete();
+          handleCloseModify();
+        }}
       />
 
       {/* Dialog */}
