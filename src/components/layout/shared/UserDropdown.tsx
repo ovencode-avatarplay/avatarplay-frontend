@@ -246,7 +246,7 @@ const UserDropdown = () => {
           <Link href={getLocalizedLink('/studio/character')} passHref>
             <MenuItem
               className={styles.menuItem}
-              onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/character'))}
+              // onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/character'))}
             >
               <i className={styles.tabler} />
               <Typography color="text.primary">Character</Typography>
@@ -255,7 +255,7 @@ const UserDropdown = () => {
           <Link href={getLocalizedLink(`/studio/story`)} passHref>
             <MenuItem
               className={styles.menuItem}
-              onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/story'))}
+              // onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/story'))}
             >
               <i className={styles.tabler} />
               <Typography color="text.primary">Story</Typography>
