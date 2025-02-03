@@ -1,28 +1,40 @@
-import CharacterCreateSequence from './../character/CreateCharacterSequence';
-import styles from './CreateCharacterMain2.module.css';
-
-interface CreateCharacterProps {}
+import {useState, useEffect} from 'react';
 
 // publish가 끝나고 다른곳으로 이동하기
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
+
+import {GenerateImageReq2, sendGenerateImageReq2} from '@/app/NetWork/ImageNetwork';
+
+import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
+
+import styles from './CreateCharacterMain2.module.css';
+import {BoldLock, BoldMixture, BoldRuby, BoldUnLock, LineAIImage, LineEdit, LineUpload} from '@ui/Icons';
+
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-import {BoldLock, BoldMixture, BoldRuby, LineAIImage, LineCharacter, LineEdit, LineUpload} from '@ui/Icons';
-import {useState, useEffect} from 'react';
 import Splitters from '@/components/layout/shared/CustomSplitter';
+import {Swiper, SwiperSlide} from 'swiper/react';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import CharacterCreateImageButton from '../character/CreateCharacterImageButton';
-import {Swiper, SwiperSlide} from 'swiper/react';
+import CustomHashtag from '@/components/layout/shared/CustomHashtag';
+
+import CharacterCreateSequence from './../character/CreateCharacterSequence';
+
+interface CreateCharacterProps {}
 
 const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
   const router = useRouter();
+
+  //#region  Thumbnail
   const [imgUrl, setImgUrl] = useState(
     'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
   );
   const [imgUploadOpen, setImgUploadOpen] = useState(false);
+  //#endregion
 
+  //#region Edit Thumbnail
   type UploadType = 'Mixture' | 'AIGenerate' | 'Upload';
   const [imgUploadType, setImgUploadType] = useState<UploadType | null>(null);
 
@@ -37,20 +49,26 @@ Only English is possible, and plese separate with commas. (,)
 ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
 `;
   const [seed, setSeed] = useState<number>(-1);
+  const [seedLock, setSeedLock] = useState<boolean>(false);
+
   const [selectedImgCount, setSelectedImgCount] = useState<number>(4);
 
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [generatedImages, setGeneratedImages] = useState<string[]>(['', '', '', '']);
+  const [selectedGeneratedItems, setSelectedGeneratedItems] = useState<number[]>([]);
+  //#endregion
+
+  const handleOnClose = () => {
+    router.back();
+  };
+
   const handlerPublishFinish = () => {
-    //router.push(`/:lang/studio/character`);
     pushLocalizedRoute('/studio/character', router);
   };
 
   const handlerSetImage = (img: string) => {
     setImgUrl(img);
     setImgUploadOpen(false);
-  };
-
-  const handleOnClose = () => {
-    router.back();
   };
 
   const handleOnClickThumbnail = () => {
@@ -75,6 +93,53 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
     // NaN 방지: 값이 유효한 숫자일 경우에만 setSeed 호출
     if (!isNaN(newSeed)) {
       setSeed(newSeed);
+    }
+  };
+
+  const handleAITagSelect = (index: number) => {
+    setSelectedTags(prevSelectedTags => {
+      if (prevSelectedTags.includes(index)) {
+        return prevSelectedTags.filter(tagIndex => tagIndex !== index);
+      } else {
+        return [...prevSelectedTags, index];
+      }
+    });
+  };
+
+  const handleSelectGeneratedItem = (index: number) => {
+    setSelectedGeneratedItems(prevSelectedGeneratedItems => {
+      if (prevSelectedGeneratedItems.includes(index)) {
+        // 이미 선택된 아이템이면 배열에서 제거
+        return prevSelectedGeneratedItems.filter(item => item !== index);
+      } else {
+        // 선택되지 않은 아이템이면 배열에 추가
+        return [...prevSelectedGeneratedItems, index];
+      }
+    });
+  };
+
+  // 이미지 생성
+  const handleImageGeneration = async () => {
+    try {
+      const selectedModel = loRaStyles.hairStyles.find(style => style.value === selectedLora);
+      const modelId = selectedModel ? selectedModel.label : 'MeinaHentai'; // 선택된 모델 ID 설정
+
+      const payload: GenerateImageReq2 = {
+        modelId: modelId, // 필요한 모델 ID를 지정
+        prompt: positivePrompt,
+        negativePrompt: '',
+        batchSize: 4, // 슬라이더 값 사용
+        seed: -1, // Seed 처리
+      };
+
+      const response = await sendGenerateImageReq2(payload); // API 요청
+      const newImages = (response.data?.imageUrl || []).filter(url => url.startsWith('https://'));
+
+      // 상태도 업데이트
+      setGeneratedImages(prev => [...prev, ...newImages]);
+    } catch (error) {
+      alert('Failed to generate images. Please try again.');
+    } finally {
     }
   };
 
@@ -154,6 +219,51 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
     },
   ];
 
+  const aiTagOption = [
+    {
+      label: '1girl',
+    },
+    {
+      label: '1man',
+    },
+    {
+      label: 'higly detailed',
+    },
+    {
+      label: 'high resolution',
+    },
+    {
+      label: 'high quality',
+    },
+    {
+      label: '8k',
+    },
+    {
+      label: 'illustration',
+    },
+    {
+      label: 'manga',
+    },
+    {
+      label: 'anime',
+    },
+    {
+      label: 'cartoon',
+    },
+    {
+      label: 'japanese anime',
+    },
+    {
+      label: 'full body',
+    },
+    {
+      label: 'bust shot',
+    },
+    {
+      label: 'close up',
+    },
+  ];
+
   const renderSelectImageType = () => {
     return (
       <>
@@ -185,8 +295,8 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
           )}
           {imgUploadType === 'AIGenerate' && (
             <div className={styles.aiGenerateArea}>
+              <h2 className={styles.title2}> Please select AI model used for image</h2>
               <div className={styles.loraArea}>
-                <h2 className={styles.title2}> Please select AI model used for image</h2>
                 <Swiper
                   className={styles.horizonSwiper}
                   initialSlide={selectedLora}
@@ -199,7 +309,7 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
                     <SwiperSlide className={styles.swiperSmall} style={{width: '100px', height: '100px'}}>
                       <CharacterCreateImageButton
                         key={option.label}
-                        sizeType="middle"
+                        sizeType="small"
                         label={option.label}
                         image={option.image}
                         selected={selectedLora === index}
@@ -219,6 +329,16 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
                 promptValue={positivePrompt}
                 handlePromptChange={handlePositivePromptChange}
               />
+              <div className={`${styles.aiTagArea} ${styles.buttonGap6}`}>
+                {aiTagOption.map((tag, index) => (
+                  <CustomHashtag
+                    key={tag.label}
+                    text={tag.label}
+                    onClickAction={() => handleAITagSelect(index)}
+                    isSelected={selectedTags.includes(index)}
+                  />
+                ))}
+              </div>
               <MaxTextInput
                 labelText="Please enter the elements you want to exclude"
                 placeholder={negativePlaceHolder}
@@ -236,15 +356,17 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
                   </button>
                 </div>
                 <div className={styles.seedInputArea}>
-                  <button className={styles.lockButton}>
-                    <img className={styles.lockIcon} src={BoldLock.src} />
+                  <button className={styles.lockButton} onClick={() => setSeedLock(!seedLock)}>
+                    <img className={styles.lockIcon} src={seedLock ? BoldLock.src : BoldUnLock.src} />
                   </button>
                   <CustomInput
                     inputType="Basic"
                     textType="Label"
-                    value={seed.toString()}
+                    value={seed}
                     onChange={handleSeedChange}
                     onlyNumber={true}
+                    disabled={seedLock}
+                    customClassName={[styles.seedInputBox]}
                   />
                 </div>
               </div>
@@ -257,7 +379,6 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
                       key={index}
                       className={`${styles.imageCountButton} ${selectedImgCount === index ? styles.selected : ''}`}
                       onClick={() => {
-                        console.log('aaa' + index);
                         setSelectedImgCount(index);
                       }}
                     >
@@ -269,7 +390,13 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
 
               <div className={styles.generateButtonArea}>
                 <div className={styles.currencyArea}></div>
-                <CustomButton size="Medium" state="Normal" type="Primary" customClassName={[styles.generateButton]}>
+                <CustomButton
+                  size="Medium"
+                  state="Normal"
+                  type="Primary"
+                  customClassName={[styles.generateButton]}
+                  onClick={handleImageGeneration}
+                >
                   <div className={styles.costDesc}>Generate</div>
                   <div className={styles.costArea}>
                     <img src={BoldRuby.src} className={`${styles.costIcon} ${styles.blackIcon}`} alt="cost-icon" />
@@ -280,7 +407,21 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
 
               <div className={styles.generatedImageArea}>
                 <h2 className={styles.title2}>Image generation history</h2>
-                <ul className={styles.generatedImages}></ul>
+                <ul className={styles.selectGrid}>
+                  {generatedImages.map((image, index) => (
+                    <CharacterCreateImageButton
+                      sizeType="large"
+                      selectType="multiple"
+                      image={image}
+                      label={null}
+                      selected={selectedGeneratedItems.includes(index)}
+                      onClick={() => {
+                        handleSelectGeneratedItem(index);
+                      }}
+                      isImageLoading={false}
+                    />
+                  ))}
+                </ul>
               </div>
             </div>
           )}

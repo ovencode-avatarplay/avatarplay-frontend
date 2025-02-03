@@ -186,6 +186,21 @@
     gap: 14px;
 }
 
+.aiTagArea{
+    display: flex;
+    width: var(--second-width);
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 6px;
+    flex-wrap: wrap;
+
+}
+
+.buttonGap6
+{
+    gap:6px;
+}
+
 .seedArea
 {
     display: flex;
@@ -211,12 +226,18 @@
     align-self: stretch; 
 }
 
+.seedInputBox
+{
+    width: 100%;
+}
+
 .lockButton
 {
     width: 47px;
     height: 47px;
     
-    fill: var(--Neutral-500, #9AA0A6);
+    background-color: var(--Neutral-500, #9AA0A6);
+    border-radius: 8px;
 }
 
 .lockIcon
@@ -315,4 +336,14 @@
     font-style: normal;
     font-weight: 400;
     line-height: 155%; /* 18.6px */
+}
+
+.selectGrid
+{
+  display: flex;
+  width: var(--second-width); 
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
 }
