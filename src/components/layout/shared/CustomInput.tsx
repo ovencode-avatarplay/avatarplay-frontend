@@ -20,6 +20,7 @@ interface CustomInputProps {
   disabled?: boolean;
   maxLength?: number;
   customClassName?: string[];
+  onlyNumber?: boolean;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -37,6 +38,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   disabled = false,
   maxLength,
   customClassName = [],
+  onlyNumber,
 }) => {
   const [currentState, setCurrentState] = useState<State>(state);
 
@@ -57,7 +59,11 @@ const CustomInput: React.FC<CustomInputProps> = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e);
+    if (onlyNumber) {
+      value = value.replace(/[^0-9]/g, '');
+    }
+
+    onChange({...e, target: {...e.target, value}});
     if (!disabled) {
       setCurrentState(e.target.value ? 'Typing' : 'Focused');
     } else {

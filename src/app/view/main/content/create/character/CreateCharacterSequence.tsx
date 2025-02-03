@@ -40,9 +40,16 @@ interface Props {
   isModify: boolean;
   characterInfo?: CharacterInfo;
   publishFinishAction?: () => void;
+  createFinishAction?: (imgUrl: string) => void;
 }
 
-const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, characterInfo, publishFinishAction}) => {
+const CharacterCreateSequence: React.FC<Props> = ({
+  closeAction,
+  isModify,
+  characterInfo,
+  publishFinishAction,
+  createFinishAction,
+}) => {
   //#region Pre Define
   const defaultOptions: Record<string, CreateCharacterOption[]> = {
     styleOptions: [],
@@ -181,9 +188,13 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
       return;
     }
 
-    setCurStep(prev => Math.min(prev + 1, maxStep));
-    handleConfirm();
+    if (createFinishAction && steps[curStep] === 'Result') {
+      handleConfirm();
+    } else {
+      setCurStep(prev => Math.min(prev + 1, maxStep));
+    }
   }
+
   function subStep() {
     setCurStep(prev => Math.max(prev - 1, 0));
   }
@@ -197,7 +208,11 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
     return true;
   }
 
-  const handleConfirm = async () => {};
+  const handleConfirm = async () => {
+    if (generatedOptions && createFinishAction) {
+      createFinishAction(generatedOptions?.imageUrl[selectedOptions.result]);
+    }
+  };
 
   const handleCustomToggle = () => {
     setCustomClothesActive(!customClothesActive);

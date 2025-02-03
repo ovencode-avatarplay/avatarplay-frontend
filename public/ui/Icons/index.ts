@@ -50,6 +50,7 @@ import BoldReward from "./Bold/Reward.svg";
 import BoldArchive from "./Bold/Archive.svg";
 import BoldVolumeOn from "./Bold/volume-high.svg";
 import BoldVolumeOff from "./Bold/volume-slash.svg";
+import BoldMixture from "./Bold/Mixture.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -188,6 +189,7 @@ export {
   BoldViewGallery,
   BoldArrowLeft,
   BoldReward,
+  BoldMixture,
   LineAddButton,
   LineAIImage,
   LineArchive,
