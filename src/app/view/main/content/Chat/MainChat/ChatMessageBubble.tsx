@@ -17,6 +17,7 @@ import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import Visualizer from './Visualizer';
 import {checkChatSystemError} from '@/app/NetWork/ESystemError';
 import ImageGrid from './ImageGrid';
+import {BoldPlay} from '@ui/Icons';
 interface ChatMessageBubbleProps {
   text: string;
   sender: 'user' | 'partner' | 'partnerNarration' | 'system' | 'introPrompt' | 'userNarration' | 'media' | 'newDate';
@@ -192,6 +193,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                       sx={{
                         width: '100%',
                         height: '100%', // 원하는 높이로 설정
+                        position: 'relative',
                       }}
                     >
                       {/* ReactPlayer */}
@@ -205,41 +207,19 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                             borderRadius: '8px',
                           }}
                           onDuration={(duration: number) => setVideoDuration(formatDuration(duration))} // 영상 길이 설정
-                        />
+                        ></ReactPlayer>
                       )}
 
                       {/* Play 버튼 */}
 
-                      <IconButton
-                        onClick={() => handleMediaClick()}
-                        sx={{
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%', // ReactPlayer width 70%를 고려하여 중앙에 배치
-                          transform: 'translate(-50%, -50%)', // 중앙 정렬
-                          color: 'white', // 아이콘 색상
-                          fontSize: 48, // 아이콘 크기
-                          zIndex: 10, // 다른 요소 위에 표시
-                          display: 'flex',
-                          flexDirection: 'column',
-                        }}
-                      >
-                        <PlayCircleIcon fontSize="inherit" />
-                        <Typography
-                          sx={{
-                            width: '50px',
-                            height: '15px',
-                            fontStyle: 'normal',
-                            fontWeight: 400,
-                            fontSize: '11px',
-                            lineHeight: '140%',
-                            textAlign: 'center',
-                            color: '#E8EAED',
-                          }}
-                        >
+                      <div className={styles.playButtonWrapper} onClick={() => handleMediaClick()}>
+                        <div className={styles.playButton}>
+                          <img src={BoldPlay.src} style={{width: '17px', height: '17px'}} />
+                        </div>
+                        <p className={styles.videoDuration}>
                           {videoDuration || '0:00'} {/* 영상 길이가 없으면 기본값 0:00 */}
-                        </Typography>
-                      </IconButton>
+                        </p>
+                      </div>
                     </Box>
                   </div>
                 )}

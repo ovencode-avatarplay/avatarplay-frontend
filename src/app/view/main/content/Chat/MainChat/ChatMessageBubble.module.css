@@ -341,3 +341,36 @@ filter: blur(10px);
   .systemGap2 {
     margin: 30px auto;
   }
+
+  .playButtonWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 3px;
+  
+    position: absolute;
+    width: 50px;
+    height: 58px;
+    left: 50%;
+    top: 161px;
+    transform: translate(-50%);
+    cursor: pointer;
+  }
+  
+  .playButton {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .videoDuration {
+    width: 50px;
+    height: 15px;
+    color: #E8EAED;
+  }
+  
