@@ -510,7 +510,12 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
   );
 };
 
-const SelectProfile = ({open, handleCloseDrawer}) => {
+type SelectProfileType = {
+  open: boolean;
+  handleCloseDrawer: () => void;
+};
+
+const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
   return (
     <Drawer
       className={styles.drawer}
