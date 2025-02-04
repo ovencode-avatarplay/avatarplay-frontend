@@ -13,13 +13,14 @@ interface CustomInputProps {
   hint?: string;
   iconLeft?: React.ReactNode; // Left Icon component
   iconRight?: React.ReactNode; // Right Icon component
-  value: string;
+  value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   error?: boolean;
   disabled?: boolean;
   maxLength?: number;
   customClassName?: string[];
+  onlyNumber?: boolean;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -37,6 +38,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   disabled = false,
   maxLength,
   customClassName = [],
+  onlyNumber,
 }) => {
   const [currentState, setCurrentState] = useState<State>(state);
 
@@ -57,9 +59,19 @@ const CustomInput: React.FC<CustomInputProps> = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e);
+    let newValue = e.target.value;
+
+    if (onlyNumber) {
+      newValue = newValue.replace(/[^0-9]/g, '');
+    }
+    if (typeof value === 'number') {
+      newValue = newValue ? parseFloat(newValue).toString() : '0'; // Ensuring number type is maintained but as a string
+    }
+
+    onChange({...e, target: {...e.target, value: newValue}});
+
     if (!disabled) {
-      setCurrentState(e.target.value ? 'Typing' : 'Focused');
+      setCurrentState(newValue ? 'Typing' : 'Focused');
     } else {
       setCurrentState('Disable');
     }

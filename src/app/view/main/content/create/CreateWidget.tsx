@@ -64,11 +64,11 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               <button className={`${styles.drawerButton} ${styles.drawerButtonTop}`} onClick={onClose}>
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineEdit.src} />
-                  <div className={styles.buttonText}>Post</div>
+                  <div className={styles.buttonText}>Feed</div>
                 </div>
               </button>
             </Link>
-            <Link href={getLocalizedLink('/create/character')} passHref>
+            <Link href={getLocalizedLink('/create/character2')} passHref>
               <button className={`${styles.drawerButton} ${styles.drawerButtonMid}`} onClick={onClose}>
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineCharacter.src} />
@@ -80,7 +80,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               <button className={`${styles.drawerButton} ${styles.drawerButtonBot}`} onClick={onClose}>
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineStory.src} />
-                  <div className={styles.buttonText}>Story</div>
+                  <div className={styles.buttonText}>Content</div>
                 </div>
               </button>
             </Link>
