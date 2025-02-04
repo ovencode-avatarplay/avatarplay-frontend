@@ -642,6 +642,10 @@
         justify-content: space-between;
         background: #F8F9FA;
 
+        &.clickable {
+          cursor: pointer;
+        }
+
         .left {
           display: flex;
           align-items: center;

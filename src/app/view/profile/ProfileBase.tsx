@@ -25,6 +25,7 @@ import cx from 'classnames';
 import Select, {components, StylesConfig} from 'react-select';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
+import {useRouter} from 'next/navigation';
 
 enum eTabType {
   Feed,
@@ -516,6 +517,7 @@ type SelectProfileType = {
 };
 
 const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
+  const router = useRouter();
   return (
     <Drawer
       className={styles.drawer}
@@ -565,7 +567,12 @@ const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
               <img className={styles.iconMore} src={BoldMore.src} alt="" />
             </div>
           </li>
-          <li className={styles.item}>
+          <li
+            className={cx(styles.item, styles.clickable)}
+            onClick={() => {
+              router.push('/profile/create');
+            }}
+          >
             <div className={styles.left}>
               <div className={styles.addIconWrap}>
                 <img src={LinePlus.src} alt="" />
