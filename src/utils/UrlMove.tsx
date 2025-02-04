@@ -27,8 +27,6 @@ export const refreshLanaguage = (language: LanguageType | undefined, router: Ret
   try {
     // 서버에서 언어를 가져오지 못한 경우 브라우저 언어 사용
     if (language !== undefined) {
-      if (language === getBrowserLanguage()) return;
-
       // 이미 같은 언어이면 패스
       if (language === getLanguageTypeFromText(getLanguageFromURL())) return;
 
@@ -40,6 +38,7 @@ export const refreshLanaguage = (language: LanguageType | undefined, router: Ret
       //alert('언어를 바꿔요:' + newLocale);
     } else {
       const browserLang = getBrowserLanguage();
+      if (language === browserLang) return; // 이미 같은 언어이면 패스
       dispatch(setLanguage(browserLang));
 
       const newLocale = getLangUrlCode(browserLang) || 'en-US';

@@ -60,7 +60,7 @@ export interface GetLanguageRes {
   languageType: LanguageType;
 }
 
-export const sendGetLanguage = async (payload: GetLanguageReq): Promise<ResponseAPI<GetLanguageRes>> => {
+export const sendGetLanguage = async (payload: GetLanguageReq): Promise<ResponseAPI<GetLanguageRes> | null> => {
   try {
     const response = await api.post<ResponseAPI<GetLanguageRes>>('Auth/getLanguage', payload);
 
@@ -71,7 +71,7 @@ export const sendGetLanguage = async (payload: GetLanguageReq): Promise<Response
     }
   } catch (error) {
     console.error('Error get language :', error);
-    throw new Error('Failed to send get language. Please try again');
+    return null;
   }
 };
 
