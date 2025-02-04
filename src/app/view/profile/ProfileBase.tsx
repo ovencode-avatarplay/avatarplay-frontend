@@ -2,7 +2,7 @@
 
 import React, {useCallback, useState} from 'react';
 
-import {Box, Button} from '@mui/material';
+import {Box, Button, Drawer} from '@mui/material';
 import ProfileTopEditMenu from './ProfileTopEditMenu';
 import ProfileInfo from './ProfileInfo';
 import profileData from 'data/profile/profile-data.json';
@@ -11,11 +11,13 @@ import {
   BoldAltArrowDown,
   BoldHeart,
   BoldMenuDots,
+  BoldMore,
   BoldPin,
   BoldVideo,
   LineArrowDown,
   LineCheck,
   LineMenu,
+  LinePlus,
   LineShare,
 } from '@ui/Icons';
 import styles from './ProfileBase.module.scss';
@@ -33,11 +35,13 @@ enum eTabType {
 
 type ProfileType = {
   indexTab: eTabType;
+  isOpenSelectProfile: boolean;
 };
 // /profile?type=pd?id=123123
 const ProfileBase = () => {
   const [data, setData] = useState<ProfileType>({
     indexTab: eTabType.Feed,
+    isOpenSelectProfile: true,
   });
 
   const SelectBoxArrowComponent = useCallback(
@@ -69,7 +73,13 @@ const ProfileBase = () => {
     <>
       <section className={styles.header}>
         <div className={styles.left}>
-          <div className={styles.selectProfileNameWrap}>
+          <div
+            className={styles.selectProfileNameWrap}
+            onClick={() => {
+              data.isOpenSelectProfile = true;
+              setData({...data});
+            }}
+          >
             <div className={styles.profileName}>Angel_Sasha</div>
             <div className={styles.iconSelect}>
               <img src={LineArrowDown.src} alt="" />
@@ -377,6 +387,13 @@ const ProfileBase = () => {
         </section>
       </section>
       <section className={styles.footer}></section>
+      <SelectProfile
+        open={data.isOpenSelectProfile}
+        handleCloseDrawer={() => {
+          data.isOpenSelectProfile = false;
+          setData({...data});
+        }}
+      />
     </>
   );
 };
@@ -490,5 +507,71 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
       }}
       getOptionValue={option => option.id.toString()}
     />
+  );
+};
+
+const SelectProfile = ({open, handleCloseDrawer}) => {
+  return (
+    <Drawer
+      className={styles.drawer}
+      anchor="bottom"
+      open={open}
+      onClose={() => handleCloseDrawer()}
+      PaperProps={{
+        sx: {
+          // height: 'calc((var(--vh, 1vh) * 100) - 111px)',
+          padding: '8px 20px 45px',
+          borderTopLeftRadius: '24px',
+          borderTopRightRadius: '24px',
+          // background: 'var(--White, #FFF)',
+          // overflow: 'hidden',
+          // bottom: '0px',
+          // width: 'var(--full-width)',
+          // margin: '0 auto',
+        },
+      }}
+    >
+      <div className={styles.handleArea}>
+        <div className={styles.handleBar}></div>
+      </div>
+      <div className={styles.title}>Select Profile</div>
+      <div className={styles.content}>
+        <ul className={styles.profileList}>
+          <li className={styles.item}>
+            <div className={styles.left}>
+              <img className={styles.imgProfile} src="/images/profile_sample/img_sample_profile1.png" alt="" />
+              <div className={styles.nameWrap}>
+                <div className={styles.name}>Angel_Sasha</div>
+              </div>
+            </div>
+            <div className={styles.right}>
+              <img className={styles.iconChecked} src="/ui/profile/icon_select_proflie_checked.svg" alt="" />
+            </div>
+          </li>
+          <li className={styles.item}>
+            <div className={styles.left}>
+              <img className={styles.imgProfile} src="/images/profile_sample/img_sample_profile1.png" alt="" />
+              <div className={styles.nameWrap}>
+                <span className={styles.grade}>Original</span>
+                <div className={styles.name}>Angel_Sasha</div>
+              </div>
+            </div>
+            <div className={styles.right}>
+              <img className={styles.iconMore} src={BoldMore.src} alt="" />
+            </div>
+          </li>
+          <li className={styles.item}>
+            <div className={styles.left}>
+              <div className={styles.addIconWrap}>
+                <img src={LinePlus.src} alt="" />
+              </div>
+              <div className={styles.nameWrap}>
+                <div className={styles.name}>Add New Profile</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </Drawer>
   );
 };
