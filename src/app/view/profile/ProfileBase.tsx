@@ -1,17 +1,70 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 
 import {Box, Button} from '@mui/material';
 import ProfileTopEditMenu from './ProfileTopEditMenu';
 import ProfileInfo from './ProfileInfo';
 import profileData from 'data/profile/profile-data.json';
 import ProfileTopViewMenu from './ProfileTopViewMenu';
-import {BoldAltArrowDown, BoldMenuDots, BoldPin, LineArrowDown, LineMenu, LineShare} from '@ui/Icons';
+import {
+  BoldAltArrowDown,
+  BoldHeart,
+  BoldMenuDots,
+  BoldPin,
+  BoldVideo,
+  LineArrowDown,
+  LineCheck,
+  LineMenu,
+  LineShare,
+} from '@ui/Icons';
 import styles from './ProfileBase.module.scss';
 import cx from 'classnames';
+import Select, {components, StylesConfig} from 'react-select';
+import {Swiper, SwiperSlide} from 'swiper/react';
+import 'swiper/css';
+
+enum eTabType {
+  Feed,
+  Channel,
+  Character,
+  Shared,
+}
+
+type ProfileType = {
+  indexTab: eTabType;
+};
 // /profile?type=pd?id=123123
 const ProfileBase = () => {
+  const [data, setData] = useState<ProfileType>({
+    indexTab: eTabType.Feed,
+  });
+
+  const SelectBoxArrowComponent = useCallback(
+    () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />,
+    [],
+  );
+  const SelectBoxValueComponent = useCallback((data: any) => {
+    return (
+      <div key={data.id} className={styles.label}>
+        {data.value}
+      </div>
+    );
+  }, []);
+  const SelectBoxOptionComponent = useCallback(
+    (data: any, isSelected: boolean) => (
+      <>
+        <div className={styles.optionWrap}>
+          <div key={data.id} className={styles.labelOption}>
+            {data.value}
+          </div>
+          {isSelected && <img className={styles.iconCheck} src={LineCheck.src} alt="altArrowDown" />}
+        </div>
+      </>
+    ),
+    [],
+  );
+
   return (
     <>
       <section className={styles.header}>
@@ -76,37 +129,98 @@ const ProfileBase = () => {
             <button className={styles.ad}>AD</button>
             <button className={styles.friends}>Friends</button>
           </div>
-          <ul className={styles.recruitList}>
-            <li className={cx(styles.item, styles.addRecruit)}>
-              <div className={styles.circle}>
-                <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
-              </div>
-              <div className={styles.label}>Add</div>
-            </li>
-            <li className={styles.item}>
-              <div className={styles.circle}>
-                <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
-                <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                <span className={cx(styles.grade, styles.original)}>Original</span>
-              </div>
-              <div className={styles.label}>Idol University</div>
-            </li>
-            <li className={styles.item}>
-              <div className={styles.circle}>
-                <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
-                <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                <span className={cx(styles.grade, styles.fan)}>Fan</span>
-              </div>
-              <div className={styles.label}>Idol University</div>
-            </li>
-          </ul>
+          {/* <ul className={styles.recruitList}> */}
+          <Swiper
+            className={styles.recruitList}
+            freeMode={true}
+            slidesPerView={'auto'}
+            onSlideChange={() => {}}
+            onSwiper={swiper => {}}
+            spaceBetween={8}
+          >
+            <SwiperSlide>
+              <li className={cx(styles.item, styles.addRecruit)}>
+                <div className={styles.circle}>
+                  <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                </div>
+                <div className={styles.label}>Add</div>
+              </li>
+            </SwiperSlide>
+            <SwiperSlide>
+              <li className={styles.item}>
+                <div className={styles.circle}>
+                  <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                  <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
+                  <span className={cx(styles.grade, styles.original)}>Original</span>
+                </div>
+                <div className={styles.label}>Idol University</div>
+              </li>
+            </SwiperSlide>
+            <SwiperSlide>
+              <li className={styles.item}>
+                <div className={styles.circle}>
+                  <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                  <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
+                  <span className={cx(styles.grade, styles.fan)}>Fan</span>
+                </div>
+                <div className={styles.label}>Idol University</div>
+              </li>
+            </SwiperSlide>
+            <SwiperSlide>
+              <li className={styles.item}>
+                <div className={styles.circle}>
+                  <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                  <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
+                  <span className={cx(styles.grade, styles.fan)}>Fan</span>
+                </div>
+                <div className={styles.label}>Idol University</div>
+              </li>
+            </SwiperSlide>
+            <SwiperSlide>
+              <li className={styles.item}>
+                <div className={styles.circle}>
+                  <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                  <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
+                  <span className={cx(styles.grade, styles.fan)}>Fan</span>
+                </div>
+                <div className={styles.label}>Idol University</div>
+              </li>
+            </SwiperSlide>
+          </Swiper>
         </div>
         <section className={styles.tabSection}>
-          <div className={styles.tabHeader}>
-            <div className={cx(styles.label, styles.active)}>Feed</div>
-            <div className={styles.label}>Channel</div>
-            <div className={styles.label}>Character</div>
-            <div className={styles.label}>Shared</div>
+          <div
+            className={styles.tabHeader}
+            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              const target = e.target as HTMLElement;
+              const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+              if (category) {
+                data.indexTab = parseInt(category);
+              }
+              setData({...data});
+            }}
+          >
+            <div className={cx(styles.label, data.indexTab == eTabType.Feed && styles.active)} data-tab={eTabType.Feed}>
+              Feed
+            </div>
+            <div
+              className={cx(styles.label, data.indexTab == eTabType.Channel && styles.active)}
+              data-tab={eTabType.Channel}
+            >
+              Channel
+            </div>
+            <div
+              className={cx(styles.label, data.indexTab == eTabType.Character && styles.active)}
+              data-tab={eTabType.Character}
+            >
+              Character
+            </div>
+            <div
+              className={cx(styles.label, data.indexTab == eTabType.Shared && styles.active)}
+              data-tab={eTabType.Shared}
+            >
+              Shared
+            </div>
           </div>
           <div className={styles.line}></div>
           <div className={styles.filter}>
@@ -123,8 +237,21 @@ const ProfileBase = () => {
             </div>
             <div className={styles.right}>
               <div className={styles.filterTypeWrap}>
-                <div className={styles.label}>Newest</div>
-                <img className={styles.icon} src={BoldAltArrowDown.src} alt="" />
+                <SelectBox
+                  value={{id: 1, value: 'Most Popular'}}
+                  options={[
+                    {id: 0, value: 'Newest'},
+                    {id: 1, value: 'Most Popular'},
+                    {id: 2, value: 'Weekly Popular'},
+                    {id: 3, value: 'Monthly Popular'},
+                  ]}
+                  ArrowComponent={SelectBoxArrowComponent}
+                  ValueComponent={SelectBoxValueComponent}
+                  OptionComponent={SelectBoxOptionComponent}
+                  onChangedCharacter={id => {}}
+                />
+                {/* <div className={styles.label}>Newest</div> */}
+                {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
               </div>
             </div>
           </div>
@@ -134,6 +261,16 @@ const ProfileBase = () => {
                 <img className={styles.imgThumbnail} src="/images/profile_sample/img_sample_feed1.png" alt="" />
                 <div className={styles.pin}>
                   <img src={BoldPin.src} alt="" />
+                </div>
+                <div className={styles.info}>
+                  <div className={styles.likeWrap}>
+                    <img src={BoldHeart.src} alt="" />
+                    <div className={styles.value}>1,450</div>
+                  </div>
+                  <div className={styles.viewWrap}>
+                    <img src={BoldVideo.src} alt="" />
+                    <div className={styles.value}>23</div>
+                  </div>
                 </div>
                 <div className={styles.titleWrap}>
                   <div className={styles.title}>
@@ -148,8 +285,21 @@ const ProfileBase = () => {
                 <div className={styles.pin}>
                   <img src={BoldPin.src} alt="" />
                 </div>
+                <div className={styles.info}>
+                  <div className={styles.likeWrap}>
+                    <img src={BoldHeart.src} alt="" />
+                    <div className={styles.value}>1,450</div>
+                  </div>
+                  <div className={styles.viewWrap}>
+                    <img src={BoldVideo.src} alt="" />
+                    <div className={styles.value}>23</div>
+                  </div>
+                </div>
                 <div className={styles.titleWrap}>
-                  <div className={styles.title}>Organic Food is Better for Your Health</div>
+                  <div className={styles.title}>
+                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
+                    for Your Health
+                  </div>
                   <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
                 </div>
               </li>
@@ -158,8 +308,21 @@ const ProfileBase = () => {
                 <div className={styles.pin}>
                   <img src={BoldPin.src} alt="" />
                 </div>
+                <div className={styles.info}>
+                  <div className={styles.likeWrap}>
+                    <img src={BoldHeart.src} alt="" />
+                    <div className={styles.value}>1,450</div>
+                  </div>
+                  <div className={styles.viewWrap}>
+                    <img src={BoldVideo.src} alt="" />
+                    <div className={styles.value}>23</div>
+                  </div>
+                </div>
                 <div className={styles.titleWrap}>
-                  <div className={styles.title}>Organic Food is Better for Your Health</div>
+                  <div className={styles.title}>
+                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
+                    for Your Health
+                  </div>
                   <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
                 </div>
               </li>
@@ -168,8 +331,21 @@ const ProfileBase = () => {
                 <div className={styles.pin}>
                   <img src={BoldPin.src} alt="" />
                 </div>
+                <div className={styles.info}>
+                  <div className={styles.likeWrap}>
+                    <img src={BoldHeart.src} alt="" />
+                    <div className={styles.value}>1,450</div>
+                  </div>
+                  <div className={styles.viewWrap}>
+                    <img src={BoldVideo.src} alt="" />
+                    <div className={styles.value}>23</div>
+                  </div>
+                </div>
                 <div className={styles.titleWrap}>
-                  <div className={styles.title}>Organic Food is Better for Your Health</div>
+                  <div className={styles.title}>
+                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
+                    for Your Health
+                  </div>
                   <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
                 </div>
               </li>
@@ -178,8 +354,21 @@ const ProfileBase = () => {
                 <div className={styles.pin}>
                   <img src={BoldPin.src} alt="" />
                 </div>
+                <div className={styles.info}>
+                  <div className={styles.likeWrap}>
+                    <img src={BoldHeart.src} alt="" />
+                    <div className={styles.value}>1,450</div>
+                  </div>
+                  <div className={styles.viewWrap}>
+                    <img src={BoldVideo.src} alt="" />
+                    <div className={styles.value}>23</div>
+                  </div>
+                </div>
                 <div className={styles.titleWrap}>
-                  <div className={styles.title}>Organic Food is Better for Your Health</div>
+                  <div className={styles.title}>
+                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
+                    for Your Health
+                  </div>
                   <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
                 </div>
               </li>
@@ -193,3 +382,113 @@ const ProfileBase = () => {
 };
 
 export default ProfileBase;
+
+export type SelectBoxProps = {
+  value: {id: number; [key: string]: any} | null;
+  options: {id: number; [key: string]: any}[];
+  OptionComponent: (data: {id: number; [key: string]: any}, isSelected: boolean) => JSX.Element;
+  ValueComponent: (data: any) => JSX.Element;
+  ArrowComponent: () => JSX.Element;
+  onChangedCharacter: (id: number) => void;
+};
+
+const customStyles: StylesConfig<{id: number; [key: string]: any}, false> = {
+  control: provided => ({
+    ...provided,
+    borderColor: 'transparent',
+    boxShadow: 'none',
+    '&:hover': {
+      borderColor: 'transparent',
+    },
+    '&:focus': {
+      borderColor: 'transparent',
+    },
+    background: 'transparent',
+    padding: 0,
+    cursor: 'pointer',
+    width: '184px',
+  }),
+  singleValue: provided => ({
+    // value부분
+    ...provided,
+  }),
+  valueContainer: provided => ({
+    ...provided,
+    paddingLeft: 0,
+    textAlign: 'right',
+  }),
+  input: provided => ({
+    ...provided,
+  }),
+  option: (provided, state) => ({
+    // 옵션 부분
+    ...provided,
+    backgroundColor: state.isSelected ? '#ffffff' : 'transparent',
+    color: 'black',
+    ':active': {
+      backgroundColor: state.isSelected ? '#ffffff' : 'transparent',
+    },
+    cursor: 'pointer',
+
+    padding: '11px 14px',
+    boxSizing: 'border-box',
+  }),
+  menu: provided => ({
+    ...provided,
+    marginTop: '7px',
+  }),
+  menuList: provided => ({
+    ...provided,
+    padding: 0,
+    background: 'white',
+    borderRadius: '10px',
+    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+  }),
+  indicatorSeparator: provided => ({
+    ...provided,
+    display: 'none',
+  }),
+  dropdownIndicator: provided => ({
+    ...provided,
+  }),
+};
+
+export const SelectBox: React.FC<SelectBoxProps> = ({
+  value,
+  options,
+  OptionComponent,
+  ValueComponent,
+  ArrowComponent,
+  onChangedCharacter,
+}) => {
+  const [selectedOption, setSelectedOption] = useState<{id: number} | null>(value);
+
+  return (
+    <Select
+      isSearchable={false}
+      value={selectedOption}
+      onChange={option => {
+        if (option) {
+          setSelectedOption(option);
+          onChangedCharacter(option.id);
+        }
+      }}
+      styles={customStyles}
+      options={options}
+      components={{
+        DropdownIndicator: ArrowComponent,
+        Option: props => (
+          <components.Option {...props}>
+            {OptionComponent(props.data, props.isSelected)} {/* 드롭다운에서는 isSingleValue = false */}
+          </components.Option>
+        ),
+        SingleValue: props => (
+          <components.SingleValue {...props}>
+            {ValueComponent(props.data)} {/* 선택된 값에서는 isSingleValue = true */}
+          </components.SingleValue>
+        ),
+      }}
+      getOptionValue={option => option.id.toString()}
+    />
+  );
+};

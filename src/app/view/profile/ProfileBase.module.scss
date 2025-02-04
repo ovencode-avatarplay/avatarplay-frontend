@@ -253,9 +253,17 @@
 
     .recruitList {
       margin-top: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+
+      :global(.swiper-wrapper) {
+        display: flex;
+        align-items: center;
+        overflow: visible;
+        /* 필수 */
+      }
+
+      :global(.swiper-slide) {
+        width: auto !important;
+      }
 
       .item {
         display: flex;
@@ -344,7 +352,7 @@
   }
 
   .tabSection {
-    margin-top: 3px;
+    margin-top: 12px;
 
     .tabHeader {
       margin: 0px 16px;
@@ -371,6 +379,9 @@
         line-height: normal;
         letter-spacing: -0.28px;
 
+        box-sizing: border-box;
+        border-bottom: 2px solid transparent;
+
         &.active {
           border-bottom: 2px solid var(--Black, #000);
         }
@@ -387,12 +398,12 @@
     }
 
     .tabContent {
-      margin: 46px 16px 0;
+      margin: 10px 16px 0;
 
       ul.itemWrap {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 2px;
+        gap: 14px 2px;
 
         li.item {
           width: 100%;
@@ -413,6 +424,39 @@
             left: 6px;
 
             cursor: pointer;
+          }
+
+          .info {
+            position: absolute;
+            left: 7px;
+            bottom: calc(6px + 52px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            color: var(--base-white, #FFF);
+            font-family: Lato;
+            font-size: 13px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 12px;
+
+            img {
+              width: 12px;
+              height: 12px;
+            }
+
+            .likeWrap {
+              display: flex;
+              align-items: center;
+              gap: 2px;
+            }
+
+            .viewWrap {
+              display: flex;
+              align-items: center;
+              gap: 2px;
+            }
           }
 
           .titleWrap {
@@ -491,7 +535,6 @@
     }
 
     .right {
-      filter: brightness(0) saturate(100%) invert(0%) sepia(1%) saturate(7448%) hue-rotate(49deg) brightness(91%) contrast(95%);
 
       .filterTypeWrap {
         cursor: pointer;
@@ -509,9 +552,33 @@
           letter-spacing: -0.28px;
         }
 
+        .optionWrap {
+          display: flex;
+
+          justify-content: space-between;
+
+          .label {
+            color: var(--Black, #000);
+            font-family: Lato;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 160%;
+            /* 22.4px */
+            letter-spacing: 0.2px;
+          }
+        }
+
         .icon {
+          filter: brightness(0) saturate(100%) invert(0%) sepia(1%) saturate(7448%) hue-rotate(49deg) brightness(91%) contrast(95%);
           width: 12px;
           height: 12px;
+        }
+
+        .iconCheck {
+          filter: brightness(0) saturate(100%) invert(0%) sepia(1%) saturate(7448%) hue-rotate(49deg) brightness(91%) contrast(95%);
+          width: 24px;
+          height: 24px;
         }
 
       }
