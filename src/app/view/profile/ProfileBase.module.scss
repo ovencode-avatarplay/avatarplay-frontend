@@ -77,7 +77,7 @@
 
 .main {
   padding-top: 58px;
-  padding-bottom: 25px;
+  padding-bottom: calc(48px + 25px);
 
 
   .buttonWrap {
