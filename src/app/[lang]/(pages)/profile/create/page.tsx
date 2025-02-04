@@ -51,7 +51,7 @@ const ProfileCreate = (props: Props) => {
         <section className={styles.uploadedSection}>
           <ul className={styles.imageList}>
             <li className={styles.item}>
-              <video className={styles.imgProfile} src="/images/profile_sample/video_sample_upload1.mp4" alt="" />
+              <video className={styles.imgProfile} src="/images/profile_sample/video_sample_upload1.mp4" />
               <img src={BoldCircleX.src} alt="" className={styles.iconRemove} />
               <img src="/ui/profile/icon_profile_create_play.svg" alt="" className={styles.iconPlay} />
             </li>
