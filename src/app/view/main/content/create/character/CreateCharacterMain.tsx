@@ -29,7 +29,11 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = () => {
             <img className={`${styles.dashboardIcon} `} src={LineDashboard.src} />
           </button>
         </CreateDrawerHeader>
-        <CharacterCreateSequence closeAction={() => {}} isModify={false} publishFinishAction={handlerPublishFinish} />
+        <CharacterCreateSequence
+          closeAction={() => {}}
+          createType="create"
+          publishFinishAction={handlerPublishFinish}
+        />
       </div>
     </>
   );

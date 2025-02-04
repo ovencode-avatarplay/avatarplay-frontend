@@ -37,7 +37,7 @@ const EpisodeImageSetup: React.FC<EpisodeImageSetupProps> = ({open, onClose, epi
         </Button>
         <span className={styles['modal-title']}>EpisodeImageSetup</span>
       </DialogTitle>
-      <CharacterCreateSequence closeAction={onClose} isModify={false} />
+      <CharacterCreateSequence closeAction={onClose} createType="create" />
     </Dialog>
   );
 };

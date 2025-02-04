@@ -1,3 +1,10 @@
+.characterContainer
+{
+    width: var(--full-width);
+    height: 100%;
+}
+
+
 .createCharacterArea
 {
     width: var(--second-width);
@@ -39,6 +46,7 @@
 
 .editButton
 {
+    cursor: pointer;
     position: absolute;
     right: 8px;
     top: 8px;
@@ -169,9 +177,12 @@
 .imageTypeArea
 {
     width: var(--full-width);
+    height: calc(100% - 58px);
     margin: 0;
+    margin-bottom: 20px;
 
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .aiGenerateArea
@@ -179,7 +190,7 @@
     width: var(--second-width);
     margin: 0 16px;
 
-    overflow: hidden;
+    overflow: hidden; 
 
     display: flex;
     flex-direction: column;
@@ -199,6 +210,13 @@
 .buttonGap6
 {
     gap:6px;
+}
+
+.titleArea
+{
+    display: flex;
+    flex-direction: row;
+    gap : 4px;
 }
 
 .seedArea
@@ -346,4 +364,54 @@
   align-content: flex-start;
   gap: 10px;
   flex-wrap: wrap;
+
+  margin-bottom: 24px;
+}
+
+.bottomNavTab
+{
+    display: flex;
+    width: var(--full-width);
+    padding: 0px 6px 17px 6px;
+    flex-direction: column;
+    align-items: center; 
+}
+
+.bottomButtonArea
+{
+    display: flex;
+    padding: 0px 6px;
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+.bottomButton
+{
+    display: flex;
+    margin: 12px auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex: 1 0 0;
+    align-self: stretch;
+}
+
+.bottomButtonIcon
+{
+    width: 24px;
+    height: 24px;
+    filter: var(--black-icon-filter);
+}
+
+.bottomButtonText
+{
+    color: var(--Neutral-900, #040415);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px; /* 114.286% */
+    letter-spacing: -0.4px;
 }
