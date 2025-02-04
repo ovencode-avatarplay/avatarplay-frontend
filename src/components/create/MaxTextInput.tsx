@@ -17,6 +17,7 @@ interface Props {
   inputRef?: RefObject<HTMLTextAreaElement>;
   labelText?: string;
   hint?: string;
+  inSideHint?: string;
   onErrorChange?: (hasError: boolean) => void;
 }
 
@@ -56,6 +57,7 @@ const MaxTextInput: React.FC<Props> = ({
   inputRef,
   labelText,
   hint,
+  inSideHint,
   onErrorChange,
 }) => {
   const [hasError, setHasError] = useState(false);
@@ -178,6 +180,7 @@ const MaxTextInput: React.FC<Props> = ({
             {promptValue.length} / {maxPromptLength}
           </div>
         )}
+        {inSideHint ? <div className={styles.insideHint}>{inSideHint}</div> : <></>}
       </div>
       {(displayDataType === displayType.Hint || displayDataType === displayType.LabelAndHint) && hint && (
         <div className={styles.hintText}>{hint}</div>
