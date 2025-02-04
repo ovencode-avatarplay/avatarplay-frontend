@@ -9,7 +9,18 @@ import {GenerateImageReq2, sendGenerateImageReq2} from '@/app/NetWork/ImageNetwo
 import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
 
 import styles from './CreateCharacterMain2.module.css';
-import {BoldLock, BoldMixture, BoldRuby, BoldUnLock, LineAIImage, LineEdit, LineUpload} from '@ui/Icons';
+import {
+  BoldLock,
+  BoldMenuDots,
+  BoldMixture,
+  BoldQuestion,
+  BoldRuby,
+  BoldUnLock,
+  LineAIImage,
+  LineEdit,
+  LineScaleUp,
+  LineUpload,
+} from '@ui/Icons';
 
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import Splitters from '@/components/layout/shared/CustomSplitter';
@@ -21,6 +32,7 @@ import CharacterCreateImageButton from '../character/CreateCharacterImageButton'
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 
 import CharacterCreateSequence from './../character/CreateCharacterSequence';
+import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 
 interface CreateCharacterProps {}
 
@@ -39,6 +51,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
   const [imgUploadType, setImgUploadType] = useState<UploadType | null>(null);
 
   const [selectedLora, setSelectedLora] = useState<number>(0);
+  let loraToolTip = `Anime, Pixar, J-film, K-film, Realism, Hollywood models can be used after age verification`;
+
   const [positivePrompt, setPositivePrompt] = useState<string>('');
   const positivePlaceHolder = `Please describe the image you want to create
 ex) yellow hair a girl, walking on the beach, Wearing a blue swimsuit
@@ -50,6 +64,7 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
 `;
   const [seed, setSeed] = useState<number>(-1);
   const [seedLock, setSeedLock] = useState<boolean>(false);
+  let seedToolTip = `The seed is a number that plays the role of a 'starting point' in the image generation process. Just as planting a specific seed in a garden produces a unique flower, this seed value produces a unique and predictable image. If you enter the same seed value, the image generation model will generate the same image every time, and if you use a different seed value, a completely different image will be generated. If you do not enter a seed value, a random value will be used. Seed values can only be integers between -2,147,483,648 and 2,147,483,647`;
 
   const [selectedImgCount, setSelectedImgCount] = useState<number>(4);
 
@@ -80,7 +95,17 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
   };
 
   const handlePositivePromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPositivePrompt(event.target.value);
+    const newPrompt = event.target.value;
+    setPositivePrompt(newPrompt);
+
+    // 입력된 값에 포함된 태그를 찾고 선택 상태로 변경
+    const newSelectedTags = aiTagOption.reduce((selectedTags, tag, index) => {
+      if (newPrompt.includes(tag.label) && !selectedTags.includes(index)) {
+        selectedTags.push(index);
+      }
+      return selectedTags;
+    }, [] as number[]);
+    setSelectedTags(newSelectedTags);
   };
 
   const handleNegativePromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -98,11 +123,19 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
 
   const handleAITagSelect = (index: number) => {
     setSelectedTags(prevSelectedTags => {
+      let updatedTags;
+
       if (prevSelectedTags.includes(index)) {
-        return prevSelectedTags.filter(tagIndex => tagIndex !== index);
+        // 태그를 선택 해제하는 경우
+        updatedTags = prevSelectedTags.filter(tagIndex => tagIndex !== index);
+        setPositivePrompt(prevPrompt => prevPrompt.replace(' ,' + aiTagOption[index].label, '').trim());
       } else {
-        return [...prevSelectedTags, index];
+        // 태그를 선택하는 경우
+        updatedTags = [...prevSelectedTags, index];
+        setPositivePrompt(prevPrompt => prevPrompt + ' ,' + aiTagOption[index].label);
       }
+
+      return updatedTags;
     });
   };
 
@@ -122,21 +155,38 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
   const handleImageGeneration = async () => {
     try {
       const selectedModel = loRaStyles.hairStyles.find(style => style.value === selectedLora);
-      const modelId = selectedModel ? selectedModel.label : 'MeinaHentai'; // 선택된 모델 ID 설정
+      const modelId = selectedModel ? selectedModel.label : 'Animagine XL'; // 선택된 모델 ID 설정
 
       const payload: GenerateImageReq2 = {
-        modelId: modelId, // 필요한 모델 ID를 지정
+        modelId: modelId,
         prompt: positivePrompt,
         negativePrompt: '',
-        batchSize: 4, // 슬라이더 값 사용
-        seed: -1, // Seed 처리
+        batchSize: selectedImgCount,
+        seed: seed,
       };
 
       const response = await sendGenerateImageReq2(payload); // API 요청
       const newImages = (response.data?.imageUrl || []).filter(url => url.startsWith('https://'));
 
-      // 상태도 업데이트
-      setGeneratedImages(prev => [...prev, ...newImages]);
+      setGeneratedImages(prev => {
+        const updatedImages = [...prev];
+
+        // 재귀적으로 빈 자리를 찾고 대체하는 함수
+        const replaceEmptyWithNewImages = (images: string[], newImages: string[]): string[] => {
+          if (newImages.length === 0) return images;
+
+          const firstEmptyIndex = images.findIndex(img => img === '');
+          if (firstEmptyIndex !== -1) {
+            images[firstEmptyIndex] = newImages[0];
+            return replaceEmptyWithNewImages(images, newImages.slice(1));
+          }
+
+          // 빈 자리가 없으면 새로운 이미지를 더해주기
+          return [...images, ...newImages];
+        };
+
+        return replaceEmptyWithNewImages(updatedImages, newImages);
+      });
     } catch (error) {
       alert('Failed to generate images. Please try again.');
     } finally {
@@ -264,6 +314,37 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
     },
   ];
 
+  const bottomButtons = [
+    {
+      label: 'Upscale',
+      icon: LineUpload.src,
+      clickEvent: () => {
+        console.log('Upscale');
+      },
+    },
+    {
+      label: 'Regenerate',
+      icon: LineScaleUp.src,
+      clickEvent: () => {
+        console.log('Regenerate');
+      },
+    },
+    {
+      label: 'Use',
+      icon: LineAIImage.src,
+      clickEvent: () => {
+        console.log('Use');
+      },
+    },
+    {
+      label: 'More',
+      icon: BoldMenuDots.src,
+      clickEvent: () => {
+        console.log('More');
+      },
+    },
+  ];
+
   const renderSelectImageType = () => {
     return (
       <>
@@ -288,14 +369,17 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
           {imgUploadType === 'Mixture' && (
             <CharacterCreateSequence
               closeAction={() => {}}
-              isModify={false}
+              createType="create2"
               publishFinishAction={handlerPublishFinish}
               createFinishAction={handlerSetImage}
             />
           )}
           {imgUploadType === 'AIGenerate' && (
             <div className={styles.aiGenerateArea}>
-              <h2 className={styles.title2}> Please select AI model used for image</h2>
+              <div className={styles.titleArea}>
+                <h2 className={styles.title2}> Please select AI model used for image</h2>
+                <CustomToolTip tooltipText={loraToolTip} tooltipStyle={{transform: 'translateX(-75%)'}}></CustomToolTip>
+              </div>
               <div className={styles.loraArea}>
                 <Swiper
                   className={styles.horizonSwiper}
@@ -351,9 +435,10 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
               <div className={styles.seedArea}>
                 <div className={styles.seedTitleArea}>
                   <h2 className={styles.title2}>Seed</h2>
-                  <button className={styles.btnQuestion}>
-                    <img className={styles.iconQuestion} />
-                  </button>
+                  <CustomToolTip
+                    tooltipText={seedToolTip}
+                    tooltipStyle={{transform: 'translateX(-15%)'}}
+                  ></CustomToolTip>
                 </div>
                 <div className={styles.seedInputArea}>
                   <button className={styles.lockButton} onClick={() => setSeedLock(!seedLock)}>
@@ -422,6 +507,19 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
                     />
                   ))}
                 </ul>
+
+                {generatedImages.length > 0 && (
+                  <div className={styles.bottomNavTab}>
+                    <div className={styles.bottomButtonArea}>
+                      {bottomButtons.map((buttonItem, index) => (
+                        <button key={index} className={styles.bottomButton} onClick={buttonItem.clickEvent}>
+                          <img className={`${styles.bottomButtonIcon}`} src={buttonItem.icon} alt={buttonItem.label} />
+                          <div className={styles.bottomButtonText}>{buttonItem.label}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -431,7 +529,7 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
   };
 
   return (
-    <>
+    <div className={styles.characterContainer}>
       {!imgUploadOpen && (
         <div className={styles.characterMain}>
           <CreateDrawerHeader title="Create" onClose={handleOnClose} />
@@ -471,11 +569,10 @@ ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
               </CustomButton>
             </div>
           </footer>
-          {/* <CharacterCreateSequence closeAction={() => {}} isModify={false} publishFinishAction={handlerPublishFinish} /> */}
         </div>
       )}
       {imgUploadOpen && <>{renderSelectImageType()}</>}
-    </>
+    </div>
   );
 };
 

@@ -61,7 +61,7 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
         {isModifying ? (
           <CharacterCreateSequence
             closeAction={handleCloseClick}
-            isModify={isModify}
+            createType={isModify ? 'modify' : 'create'}
             characterInfo={characterInfo}
             publishFinishAction={handlePublishFinishAction}
           />

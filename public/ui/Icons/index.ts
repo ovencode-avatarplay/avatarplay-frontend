@@ -53,6 +53,7 @@ import BoldVolumeOff from "./Bold/volume-slash.svg";
 import BoldCoin from "./Bold/Coin.svg";
 import BoldMixture from "./Bold/Mixture.svg";
 import BoldUnLock from "./Bold/Unlock.svg";
+import BoldQuestion from "./Bold/Question.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -196,6 +197,7 @@ export {
   BoldReward,
   BoldMixture,
   BoldUnLock,
+  BoldQuestion,
   LineAddButton,
   LineAIImage,
   LineArchive,
