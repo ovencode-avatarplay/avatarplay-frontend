@@ -50,6 +50,7 @@ import BoldReward from "./Bold/Reward.svg";
 import BoldArchive from "./Bold/Archive.svg";
 import BoldVolumeOn from "./Bold/volume-high.svg";
 import BoldVolumeOff from "./Bold/volume-slash.svg";
+import BoldCoin from "./Bold/Coin.svg";
 import BoldMixture from "./Bold/Mixture.svg";
 import BoldUnLock from "./Bold/Unlock.svg";
 
@@ -115,8 +116,11 @@ import EmotionExcited from "./Custom/Excited.svg";
 import EmotionScared from "./Custom/Scared.svg";
 import EmotionAngry from "./Custom/Angry.svg";
 import CircleClose from "./Custom/CircleClose.svg";
+import OrangeCoin from "./Custom/Coin.svg";
 
 export {
+  OrangeCoin,
+  BoldCoin,
   LineScaleUp,
   BoldVolumeOn,
   BoldVolumeOff,

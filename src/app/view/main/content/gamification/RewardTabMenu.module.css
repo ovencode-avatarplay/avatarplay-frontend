@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  height: 35px;
+  margin: 11px 16px 1px;
+}
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  color: #80868B;
+  padding-bottom: 5px;
+}
+
+.tab.active {
+  color: #000000;
+}
+
+.underline {
+  width: 93px;
+  height: 2px;
+  background: #F1F3F4;
+}
+
+.tab.active .underline {
+  background: #000000;
+}
+
+.shopButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 20px;
+  width: 71px;
+  height: 36px;
+  background: #FD55D3;
+  box-shadow: inset 0px 1px 4px rgba(255, 255, 255, 0.25),
+              inset 0px -4px 4px rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  border: none;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.shopButton:hover {
+  background: #E044B5;
+}

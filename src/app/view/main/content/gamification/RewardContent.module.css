@@ -1,0 +1,79 @@
+.rewardContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    
+    margin: 16px;
+    margin-bottom: calc(48px + 10px);
+  }
+  
+.rewardContainer::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .rewardContainer {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .section {
+    background: #F8F9FA;
+    padding: 10px;
+    border-radius: 12px;
+    width: 100%;
+  }
+  
+  .sectionTitle {
+    font-weight: 700;
+    font-size: 16px;
+    color: #040415;
+    margin-bottom: 10px;
+  }
+  
+  .card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FFFFFF;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .cardContent {
+    flex-grow: 1;
+  }
+  
+  .warningText {
+    color: #F75555;
+    font-size: 12px;
+  }
+  
+  .adBadge {
+    display: inline-block;
+    background: #FEBBEA;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  
+  .adReward {
+    margin-left: 10px;
+    font-weight: 600;
+  }
+  
+  .button {
+    background: #2C3131;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .button:hover {
+    background: #1F2424;
+  }
+  
