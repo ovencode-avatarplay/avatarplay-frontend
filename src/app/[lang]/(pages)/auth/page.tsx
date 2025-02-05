@@ -9,6 +9,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {Session} from '@supabase/supabase-js';
 import {env} from 'process';
 import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';
+import {SignInRes} from '@/app/NetWork/AuthNetwork';
 
 const Login = () => {
   const router = useRouter();
@@ -20,7 +21,6 @@ const Login = () => {
       if (event === 'SIGNED_IN') {
         try {
           const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
-
           const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/auth/sign-in`, {
             method: 'POST',
             headers: {
@@ -33,9 +33,10 @@ const Login = () => {
             console.error('Failed to authenticate:', response.statusText);
             return;
           }
+          console.log('response login3 : ', response);
 
-          const data = await response.json();
-          localStorage.setItem('jwt', data.accessToken);
+          const data: {data: SignInRes} = await response.json();
+          localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
           fetchLanguage(router);
           // 서버에 저장한 언어코드로 language 변경
         } catch (error) {

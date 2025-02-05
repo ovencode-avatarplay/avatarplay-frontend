@@ -32,6 +32,7 @@ import {getLangUrlCode} from '@/configs/i18n';
 import Cookies from 'js-cookie';
 import {getCookiesLanguageType} from '@/utils/browserInfo';
 import {atom, useAtom} from 'jotai';
+import {SignInRes} from '@/app/NetWork/AuthNetwork';
 
 type UserDropDownType = {
   onClick: () => void;
@@ -101,7 +102,6 @@ const UserDropdown = () => {
       if (event === 'SIGNED_IN') {
         if (auth?.access_token == session?.access_token) return;
         //alert('여기아');
-
         setAuth(session);
         try {
           console.log('로그인 시작');
@@ -117,15 +117,15 @@ const UserDropdown = () => {
               language: _language,
             }),
           });
-
           if (!response.ok) {
             console.error('Failed to authenticate:', response.statusText);
             console.log('SIGNED_IN  리스폰스 ok 실패');
             return;
           }
 
-          const data = await response.json();
-          localStorage.setItem('jwt', data.accessToken);
+          const data: {data: SignInRes} = await response.json();
+          console.log('response login : ', data);
+          localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
           setTimeout(() => {
             fetchLanguage(router);
           }, 100);

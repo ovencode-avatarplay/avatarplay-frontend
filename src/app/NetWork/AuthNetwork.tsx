@@ -1,6 +1,7 @@
 import {getBrowserLanguage} from '@/utils/browserInfo';
 import api, {ResponseAPI} from './ApiInstance';
 import {getLangUrlCode} from '@/configs/i18n';
+import {AxiosResponse} from 'axios';
 
 export enum LanguageType {
   Korean = 0,
@@ -20,13 +21,34 @@ export interface SignInReq {
 }
 
 export interface SignInRes {
-  language: string;
+  sessionInfo: SessionInfo;
+  profileInfo: ProfileSimpleInfo;
+}
+
+export interface SessionInfo {
+  name: string;
+  accessToken: string;
+}
+
+export interface ProfileSimpleInfo {
+  id: number;
+  type: ProfileType;
+  name: string;
+  iconImageUrl: string;
+}
+
+export enum ProfileType {
+  User = 0,
+  PD = 1,
+  Character = 2,
+  Channel = 3,
 }
 
 export const sendSignIn = async (payload: SignInReq): Promise<boolean> => {
   try {
     const jwtToken = localStorage.getItem('jwt');
     const _language = getLangUrlCode(getBrowserLanguage());
+
     const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/auth/sign-in`, {
       method: 'POST',
       headers: {
@@ -43,8 +65,8 @@ export const sendSignIn = async (payload: SignInReq): Promise<boolean> => {
       return false;
     }
 
-    const data = await response.json();
-    localStorage.setItem('jwt', data.accessToken);
+    const data: {data: SignInRes} = await response.json();
+    localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
     //fetchLanguage(router);
     return true;
   } catch (error) {
