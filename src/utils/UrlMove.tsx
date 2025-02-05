@@ -21,7 +21,9 @@ export const isLogined = async () => {
     return false;
   }
 
-  dispatch(updateProfile(resAuth.data?.profileSimpleInfo));
+  if (resAuth.data?.profileSimpleInfo) {
+    dispatch(updateProfile(resAuth.data?.profileSimpleInfo));
+  }
   return true;
 };
 

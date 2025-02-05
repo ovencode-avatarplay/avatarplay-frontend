@@ -51,6 +51,8 @@ export const userDropDownAtom = atom<UserDropDownAtomType>({
 
 const UserDropdown = () => {
   const dataProfile = useSelector((state: RootState) => state.profile);
+  console.log('dataProfile : ', dataProfile);
+
   const dispatch = useDispatch();
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   // States
@@ -104,8 +106,10 @@ const UserDropdown = () => {
         return;
       }
 
-      dispatch(updateProfile(res?.data?.profileSimpleInfo));
-      pushLocalizedRoute('/profile/' + dataProfile.currentProfile?.id, router);
+      const profile = res?.data?.profileSimpleInfo;
+
+      dispatch(updateProfile(profile));
+      pushLocalizedRoute('/profile/' + profile?.id, router);
     }
     // setDrawerOpen(true);
   };
