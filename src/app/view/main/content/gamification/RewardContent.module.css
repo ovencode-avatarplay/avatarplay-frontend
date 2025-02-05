@@ -8,15 +8,7 @@
     margin-bottom: calc(48px + 10px);
   }
   
-.rewardContainer::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .rewardContainer {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  
+
   .section {
     background: #F8F9FA;
     padding: 10px;

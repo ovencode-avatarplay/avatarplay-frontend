@@ -52,6 +52,7 @@
     width: 22px;
     height: 22px;
     flex-shrink: 0;
+    filter: brightness(0) saturate(100%)
   }
 
   .userProfile {

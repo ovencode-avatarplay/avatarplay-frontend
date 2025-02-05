@@ -14,12 +14,14 @@ import UserDropdown from '@shared/UserDropdown';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {BoldAlert, BoldRuby, BoldStar, LineMenu} from '@ui/Icons';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import HamburgerBar from './HamburgerBar';
 import TestAdModal from './TestAdModal';
+import {RootState} from '@/redux-store/ReduxStore';
 
 const HeaderNavBarWhite = () => {
+  const selectedIndex = useSelector((state: RootState) => state.mainControl.selectedIndex);
   const curRuby = '10.5K';
   const curStar = '100';
 
@@ -61,7 +63,15 @@ const HeaderNavBarWhite = () => {
             </div>
           </Link>
         </div>
-
+        {selectedIndex == 3 && (
+          <div className={styles.rightArea}>
+            <button className={styles.notification} onClick={() => {}}>
+              <img className={styles.notificationIcon} src={BoldAlert.src} />
+              <div className={styles.redDot}></div>
+            </button>
+            {/* <UserDropdown /> */}
+          </div>
+        )}
         <HamburgerBar
           onClose={() => {
             setIsHamOpen(false);

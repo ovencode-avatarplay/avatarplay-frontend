@@ -18,8 +18,8 @@ const Main = ({children}: {children: ReactNode}) => {
 
   return (
     <div className={styles.body}>
-      {selectedIndex != 2 && <HeaderNavBar />}
-      {selectedIndex == 2 && <HeaderNavBarWhite />}
+      {(selectedIndex == 0 || selectedIndex == 1) && <HeaderNavBar />}
+      {(selectedIndex == 2 || selectedIndex == 3) && <HeaderNavBarWhite />}
 
       {children}
       <BottomNav />

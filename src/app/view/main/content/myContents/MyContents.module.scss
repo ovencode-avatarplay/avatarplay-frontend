@@ -1,8 +1,0 @@
-
-@use '/src/utils/aaa.scss' as bbbb;
-
-.myContents
-{
-    @include bbbb.reset-list;
-}
-
