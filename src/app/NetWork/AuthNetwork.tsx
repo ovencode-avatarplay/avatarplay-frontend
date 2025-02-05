@@ -2,6 +2,7 @@ import {getBrowserLanguage} from '@/utils/browserInfo';
 import api, {ResponseAPI} from './ApiInstance';
 import {getLangUrlCode} from '@/configs/i18n';
 import {AxiosResponse} from 'axios';
+import {ProfileSimpleInfo, ProfileType} from './ProfileNetwork';
 
 export enum LanguageType {
   Korean = 0,
@@ -28,20 +29,6 @@ export interface SignInRes {
 export interface SessionInfo {
   name: string;
   accessToken: string;
-}
-
-export interface ProfileSimpleInfo {
-  id: number;
-  type: ProfileType;
-  name: string;
-  iconImageUrl: string;
-}
-
-export enum ProfileType {
-  User = 0,
-  PD = 1,
-  Character = 2,
-  Channel = 3,
 }
 
 export const sendSignIn = async (payload: SignInReq): Promise<boolean> => {
@@ -117,5 +104,23 @@ export const changeLanguage = async (payload: ChangeLanguageReq): Promise<Respon
   } catch (error) {
     console.error('Error change language : ', error);
     throw new Error('Failed to send change language. Please try again');
+  }
+};
+
+interface GetAuthProfileInfoRes {
+  profileSimpleInfo: ProfileSimpleInfo;
+}
+
+export const getAuth = async () => {
+  try {
+    const resProfileInfo: AxiosResponse<ResponseAPI<GetAuthProfileInfoRes>> = await api.post(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Auth/getProfileInfo`,
+      {},
+    );
+    if (resProfileInfo.status != 200) return;
+
+    return resProfileInfo?.data;
+  } catch (e) {
+    alert('api 에러' + e);
   }
 };

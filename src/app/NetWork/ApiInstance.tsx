@@ -1,7 +1,6 @@
 // src/app/Network/ApiInstance.tsx
 
 import axios, {AxiosInstance} from 'axios';
-
 // Axios 인스턴스 생성
 const api: AxiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/`, // 새로운 베이스 URL
@@ -23,7 +22,6 @@ api.interceptors.request.use(
     // 토큰이 존재하면 Authorization 헤더에 Bearer 토큰을 추가
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log(token);
     }
 
     return config;

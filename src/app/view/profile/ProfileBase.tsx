@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import {Box, Button, Drawer} from '@mui/material';
 import ProfileTopEditMenu from './ProfileTopEditMenu';
@@ -26,6 +26,15 @@ import Select, {components, StylesConfig} from 'react-select';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import {useRouter} from 'next/navigation';
+import {
+  getProfileInfo,
+  GetProfileInfoRes,
+  getProfileList,
+  ProfileSimpleInfo,
+  selectProfile,
+} from '@/app/NetWork/ProfileNetwork';
+import {useDispatch} from 'react-redux';
+import {setBottomNavColor} from '@/redux-store/slices/MainControl';
 
 enum eTabType {
   Feed,
@@ -37,13 +46,32 @@ enum eTabType {
 type ProfileType = {
   indexTab: eTabType;
   isOpenSelectProfile: boolean;
+  profileInfo: null | GetProfileInfoRes;
 };
+
+type ProfileBaseProps = {
+  profileId?: number;
+};
+
 // /profile?type=pd?id=123123
-const ProfileBase = () => {
+const ProfileBase = ({profileId}: ProfileBaseProps) => {
   const [data, setData] = useState<ProfileType>({
     indexTab: eTabType.Feed,
-    isOpenSelectProfile: true,
+    isOpenSelectProfile: false,
+    profileInfo: null,
   });
+  const dispatch = useDispatch();
+  useEffect(() => {}, [profileId]);
+  useEffect(() => {
+    dispatch(setBottomNavColor(1));
+  }, []);
+
+  const refreshProfileInfo = async () => {
+    const dataProfileInfo = await getProfileInfo(profileId);
+    if (!dataProfileInfo) return;
+    data.profileInfo = dataProfileInfo;
+    setData({...data});
+  };
 
   const SelectBoxArrowComponent = useCallback(
     () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />,
@@ -517,7 +545,27 @@ type SelectProfileType = {
 };
 
 const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
+  const [data, setData] = useState<{
+    profileList: ProfileSimpleInfo[];
+  }>({
+    profileList: [],
+  });
   const router = useRouter();
+  useEffect(() => {
+    if (!open) return;
+    refreshProfileList();
+  }, [open]);
+
+  const refreshProfileList = async () => {
+    const profileList = await getProfileList();
+    console.log('profileList : ', profileList);
+    if (!profileList) return;
+
+    data.profileList = profileList;
+    console.log('profile data : ', data);
+    setData({...data});
+  };
+
   return (
     <Drawer
       className={styles.drawer}
@@ -544,33 +592,34 @@ const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
       <div className={styles.title}>Select Profile</div>
       <div className={styles.content}>
         <ul className={styles.profileList}>
-          <li className={styles.item}>
-            <div className={styles.left}>
-              <img className={styles.imgProfile} src="/images/profile_sample/img_sample_profile1.png" alt="" />
-              <div className={styles.nameWrap}>
-                <div className={styles.name}>Angel_Sasha</div>
-              </div>
-            </div>
-            <div className={styles.right}>
-              <img className={styles.iconChecked} src="/ui/profile/icon_select_proflie_checked.svg" alt="" />
-            </div>
-          </li>
-          <li className={styles.item}>
-            <div className={styles.left}>
-              <img className={styles.imgProfile} src="/images/profile_sample/img_sample_profile1.png" alt="" />
-              <div className={styles.nameWrap}>
-                <span className={styles.grade}>Original</span>
-                <div className={styles.name}>Angel_Sasha</div>
-              </div>
-            </div>
-            <div className={styles.right}>
-              <img className={styles.iconMore} src={BoldMore.src} alt="" />
-            </div>
-          </li>
+          {data.profileList.map((profile, index) => {
+            return (
+              <li
+                className={styles.item}
+                key={profile.id}
+                onClick={async () => {
+                  const resData = await selectProfile(profile.id);
+                  const accessToken: string = resData?.sessionInfo?.accessToken || '';
+                  localStorage.setItem('jwt', accessToken);
+                }}
+              >
+                <div className={styles.left}>
+                  <img className={styles.imgProfile} src={profile.iconImageUrl} alt="" />
+                  <div className={styles.nameWrap}>
+                    <span className={styles.grade}>Original</span>
+                    <div className={styles.name}>{profile.name}</div>
+                  </div>
+                </div>
+                <div className={styles.right}>
+                  <img className={styles.iconMore} src={BoldMore.src} alt="" />
+                </div>
+              </li>
+            );
+          })}
           <li
             className={cx(styles.item, styles.clickable)}
             onClick={() => {
-              router.push('/profile/create');
+              // router.push('/profile/create');
             }}
           >
             <div className={styles.left}>

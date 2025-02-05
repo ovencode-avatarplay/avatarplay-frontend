@@ -32,7 +32,11 @@ import {getLangUrlCode} from '@/configs/i18n';
 import Cookies from 'js-cookie';
 import {getCookiesLanguageType} from '@/utils/browserInfo';
 import {atom, useAtom} from 'jotai';
-import {SignInRes} from '@/app/NetWork/AuthNetwork';
+import {getAuth, sendGetLanguage, SignInRes} from '@/app/NetWork/AuthNetwork';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {updateProfile} from '@/redux-store/slices/Profile';
+import {ProfileType} from '@/app/NetWork/ProfileNetwork';
 
 type UserDropDownType = {
   onClick: () => void;
@@ -46,6 +50,8 @@ export const userDropDownAtom = atom<UserDropDownAtomType>({
 });
 
 const UserDropdown = () => {
+  const dataProfile = useSelector((state: RootState) => state.profile);
+  const dispatch = useDispatch();
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   // States
   const [open, setOpen] = useState(false);
@@ -80,7 +86,23 @@ const UserDropdown = () => {
   };
 
   const handleDrawerOpen = async () => {
-    setDrawerOpen(true);
+    const jwtToken = localStorage.getItem('jwt');
+    console.log('jwtToken : ', jwtToken);
+    if (!jwtToken) {
+      router.push('/auth');
+      return;
+    }
+
+    const res = await getAuth();
+    console.log('auth res :', res);
+    if (res?.resultCode != 0) {
+      router.push('/auth');
+      return;
+    } else {
+      dispatch(updateProfile(res?.data?.profileSimpleInfo));
+      pushLocalizedRoute('/profile/' + dataProfile.currentProfile?.id, router);
+    }
+    // setDrawerOpen(true);
   };
 
   const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -117,6 +139,8 @@ const UserDropdown = () => {
               language: _language,
             }),
           });
+          console.log('로그인 완료', response.json);
+
           if (!response.ok) {
             console.error('Failed to authenticate:', response.statusText);
             console.log('SIGNED_IN  리스폰스 ok 실패');
@@ -124,6 +148,7 @@ const UserDropdown = () => {
           }
 
           const data: {data: SignInRes} = await response.json();
+          dispatch(updateProfile(data.data.profileInfo));
           console.log('response login : ', data);
           localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
           setTimeout(() => {
@@ -198,12 +223,12 @@ const UserDropdown = () => {
       >
         <Avatar
           alt={auth?.user?.email || ''}
-          src={auth?.user?.user_metadata?.picture || ''}
+          src={dataProfile.currentProfile?.iconImageUrl || ''}
           onClick={handleDrawerOpen}
           className={styles.avatar}
         />
       </Badge>
-      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+      {/* <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
         <MenuList className={styles.menuList}>
           <MenuItem className={styles.menuItem}>
             <Avatar
@@ -220,29 +245,6 @@ const UserDropdown = () => {
             </div>
           </MenuItem>
           <Divider className={styles.menuDivider} />
-          {/* <Link href={getLocalizedUrl(`/studio`, locale as Locale)} passHref> */}
-          {/* <Link href={`/studio`} passHref>
-            <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, 'studio')}>
-              <i className={styles.tabler} />
-              <Typography color="text.primary">Studio</Typography>
-            </MenuItem>
-          </Link>
-          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/activity')}>
-            <i className={styles.tabler} />
-            <Typography color="text.primary">Activity</Typography>
-          </MenuItem>
-          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/notice')}>
-            <i className={styles.tabler} />
-            <Typography color="text.primary">Notice</Typography>
-          </MenuItem>
-          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/setting')}>
-            <i className={styles.tabler} />
-            <Typography color="text.primary">Setting</Typography>
-          </MenuItem>
-          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/supports')}>
-            <i className={styles.tabler} />
-            <Typography color="text.primary">Supports</Typography>
-          </MenuItem> */}
           <Link href={getLocalizedLink('/studio/character')} passHref>
             <MenuItem
               className={styles.menuItem}
@@ -255,7 +257,6 @@ const UserDropdown = () => {
           <Link href={getLocalizedLink(`/studio/story`)} passHref>
             <MenuItem
               className={styles.menuItem}
-              // onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/story'))}
             >
               <i className={styles.tabler} />
               <Typography color="text.primary">Story</Typography>
@@ -334,7 +335,7 @@ const UserDropdown = () => {
           )}
         </Popper>
       </Drawer>
-      <UserInfoModal open={userInfoOpen} onClose={() => setUserInfoOpen(false)} />
+      <UserInfoModal open={userInfoOpen} onClose={() => setUserInfoOpen(false)} /> */}
     </>
   );
 };

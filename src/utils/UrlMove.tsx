@@ -1,15 +1,28 @@
 import {i18n} from 'next-i18next'; // i18n 객체 가져오기
 import {useRouter} from 'next/navigation';
 import Cookies from 'js-cookie';
-import {LanguageType} from '@/app/NetWork/AuthNetwork';
+import {getAuth, LanguageType} from '@/app/NetWork/AuthNetwork';
 import {getLangUrlCode} from '@/configs/i18n';
 import {setLanguage} from '@/redux-store/slices/UserInfo';
 import {store} from '@/redux-store/ReduxStore';
 import {getBrowserLanguage, getLanguageFromURL, getLanguageTypeFromText} from './browserInfo';
+import {updateProfile} from '@/redux-store/slices/Profile';
 
 // 로그인상태인가
-export const isLogined = (): boolean => {
-  return localStorage.getItem('jwt') ? true : false;
+export const isLogined = async () => {
+  const dispatch = store.dispatch;
+  const jwt = localStorage.getItem('jwt');
+  if (!jwt) {
+    return false;
+  }
+
+  const resAuth = await getAuth();
+  if (resAuth?.resultCode != 0) {
+    return false;
+  }
+
+  dispatch(updateProfile(resAuth.data?.profileSimpleInfo));
+  return true;
 };
 
 // 현지 언어로 변경
