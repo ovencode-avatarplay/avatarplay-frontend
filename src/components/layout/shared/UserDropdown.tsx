@@ -99,6 +99,11 @@ const UserDropdown = () => {
       router.push('/auth');
       return;
     } else {
+      if (!res?.data?.profileSimpleInfo) {
+        console.error('/auth에서 profileSimpleInfo 못받음');
+        return;
+      }
+
       dispatch(updateProfile(res?.data?.profileSimpleInfo));
       pushLocalizedRoute('/profile/' + dataProfile.currentProfile?.id, router);
     }

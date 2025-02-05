@@ -33,8 +33,10 @@ import {
   ProfileSimpleInfo,
   selectProfile,
 } from '@/app/NetWork/ProfileNetwork';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setBottomNavColor} from '@/redux-store/slices/MainControl';
+import {RootState} from '@/redux-store/ReduxStore';
+import {updateProfile} from '@/redux-store/slices/Profile';
 
 enum eTabType {
   Feed,
@@ -54,7 +56,7 @@ type ProfileBaseProps = {
 };
 
 // /profile?type=pd?id=123123
-const ProfileBase = ({profileId}: ProfileBaseProps) => {
+const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
   const [data, setData] = useState<ProfileType>({
     indexTab: eTabType.Feed,
     isOpenSelectProfile: false,
@@ -545,6 +547,8 @@ type SelectProfileType = {
 };
 
 const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
+  const dataProfile = useSelector((state: RootState) => state.profile);
+  const dispatch = useDispatch();
   const [data, setData] = useState<{
     profileList: ProfileSimpleInfo[];
   }>({
@@ -593,12 +597,17 @@ const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
       <div className={styles.content}>
         <ul className={styles.profileList}>
           {data.profileList.map((profile, index) => {
+            const isSelected = profile.id == dataProfile.currentProfile?.id;
             return (
               <li
                 className={styles.item}
                 key={profile.id}
                 onClick={async () => {
                   const resData = await selectProfile(profile.id);
+                  if (!resData?.profileSimpleInfo) return;
+
+                  dispatch(updateProfile(resData?.profileSimpleInfo));
+
                   const accessToken: string = resData?.sessionInfo?.accessToken || '';
                   localStorage.setItem('jwt', accessToken);
                 }}
@@ -611,7 +620,10 @@ const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                   </div>
                 </div>
                 <div className={styles.right}>
-                  <img className={styles.iconMore} src={BoldMore.src} alt="" />
+                  {isSelected && (
+                    <img className={styles.iconChecked} src="/ui/profile/icon_select_proflie_checked.svg" alt="" />
+                  )}
+                  {!isSelected && <img className={styles.iconMore} src={BoldMore.src} alt="" />}
                 </div>
               </li>
             );

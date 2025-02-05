@@ -1,4 +1,5 @@
-import { LanguageType, ProfileSimpleInfo } from '@/app/NetWork/AuthNetwork';
+import { LanguageType } from '@/app/NetWork/AuthNetwork';
+import { ProfileSimpleInfo } from '@/app/NetWork/ProfileNetwork';
 import { RestaurantRounded } from '@mui/icons-material';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
