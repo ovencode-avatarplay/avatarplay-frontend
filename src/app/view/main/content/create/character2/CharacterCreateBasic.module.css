@@ -10,8 +10,18 @@
     overflow-y: scroll;
 
     margin-top: 14px;
-    margin-bottom: 46px;
+    margin-bottom: calc(46px + 20px);
 }
+
+.basicContainer::-webkit-scrollbar {
+    display: none;  
+  }
+  
+  .basicContainer {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+  }
+
 
 .inputArea
 {

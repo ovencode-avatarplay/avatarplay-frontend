@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Drawer, Modal} from '@mui/material';
+import {Modal} from '@mui/material';
 import {useDispatch} from 'react-redux'; // Redux 액션을 디스패치하기 위한 훅
 
 import styles from './ContentLLMsetup.module.css'; // 스타일 파일
@@ -22,9 +22,10 @@ interface ModelOption {
 interface ContentLLMSetupProps {
   open: boolean;
   onClose: () => void;
+  onModelSelected?: (selectedmodel: number) => void;
 }
 
-const ContentLLMSetup: React.FC<ContentLLMSetupProps> = ({open, onClose}) => {
+const ContentLLMSetup: React.FC<ContentLLMSetupProps> = ({open, onClose, onModelSelected = null}) => {
   const dispatch = useDispatch(); // Redux 액션 디스패치 훅
 
   const [modelOptions] = useState<ModelOption[]>(llmModelData);
@@ -50,15 +51,20 @@ const ContentLLMSetup: React.FC<ContentLLMSetupProps> = ({open, onClose}) => {
 
   // 모달 닫기 및 Redux에 데이터 저장
   const handleSaveAndClose = () => {
-    const llmSetupInfo: LLMSetupInfo = {
-      llmModel: selectedModel,
-      customApi: selectedModel === 9 ? customApiKey : '', // CustomAPI 선택 시 API 키 저장
-    };
+    if (onModelSelected !== null) {
+      onModelSelected(selectedModel);
+      onClose();
+    } else {
+      const llmSetupInfo: LLMSetupInfo = {
+        llmModel: selectedModel,
+        customApi: selectedModel === 9 ? customApiKey : '', // CustomAPI 선택 시 API 키 저장
+      };
 
-    // Redux 스토어에 LLM 설정 정보 저장
-    dispatch(setLlmSetupInfo(llmSetupInfo));
+      // Redux 스토어에 LLM 설정 정보 저장
+      dispatch(setLlmSetupInfo(llmSetupInfo));
 
-    onClose(); // 모달 닫기
+      onClose(); // 모달 닫기
+    }
   };
 
   const handleSelection = (value: number) => {

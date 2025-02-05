@@ -15,6 +15,9 @@ import CharacterCreateSequence from './../character/CreateCharacterSequence';
 import CharacterImageSet from './CharacterImageSet';
 import CharacterCreateBasic from './CharacterCreateBasic';
 import CharacterCreateLLM from './CharacterCreateLLM';
+import CharacterCreateMedia from './CharacterCreateMedia';
+import CharacterCreateConversation from './CharacterCreateConversation';
+import CharacterCreatePolicy from './CharacterCreatePolicy';
 
 interface CreateCharacterProps {}
 
@@ -87,17 +90,17 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
     {
       label: 'Media',
       preContent: '',
-      content: <>Media Content</>,
+      content: <CharacterCreateMedia />,
     },
     {
       label: 'Conversation',
       preContent: '',
-      content: <>Conversation Content</>,
+      content: <CharacterCreateConversation />,
     },
     {
       label: 'Policy',
       preContent: '',
-      content: <>Policy Content</>,
+      content: <CharacterCreatePolicy />,
     },
   ];
 

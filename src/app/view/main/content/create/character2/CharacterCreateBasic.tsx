@@ -17,6 +17,7 @@ const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
 }) => {
   let characterNameDesc = `Avoid ambiguous names like “Rose”, “Joy”, “lvy” that can be interpreted in multiple ways.
 Use a name that is clearly recognized as a name. Use a short name. Long names ard difficult to enter during the chat`;
+  let characterDescPlaceholder = `This is the description of the character (Character description is also public to other users)`;
 
   return (
     <div className={styles.basicContainer}>
@@ -49,8 +50,8 @@ Use a name that is clearly recognized as a name. Use a short name. Long names ar
           displayDataType={displayType.Default}
           promptValue={characterDesc}
           handlePromptChange={e => setCharacterDesc(e.target.value)}
-          placeholder="This is the description of the character (Character description is also public to other users)"
-          inSideHint="Abount 18 tokens"
+          placeholder={characterDescPlaceholder}
+          inSideHint={`About ${characterDesc.length} tokens (임시처리 텍스트 길이)`}
         />
       </div>
     </div>

@@ -45,7 +45,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, ...
         style: {
           transform: `translateY(${translateY}px)`,
           transition: startY === null ? 'transform 0.3s ease' : 'none',
-          maxHeight: 'calc((var(--vh, 1vh) * 100) - 111px)',
+          maxHeight: 'var(--body-height))',
         },
       }}
       {...rest}

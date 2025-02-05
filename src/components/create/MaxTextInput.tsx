@@ -19,6 +19,7 @@ interface Props {
   hint?: string;
   inSideHint?: string;
   onErrorChange?: (hasError: boolean) => void;
+  style?: React.CSSProperties;
 }
 
 export enum inputType {
@@ -59,6 +60,7 @@ const MaxTextInput: React.FC<Props> = ({
   hint,
   inSideHint,
   onErrorChange,
+  style,
 }) => {
   const [hasError, setHasError] = useState(false);
   const [isComposing, setIsComposing] = useState(false); // 한글 입력 상태
@@ -161,6 +163,7 @@ const MaxTextInput: React.FC<Props> = ({
           currentState === inputState.Focused && styles.inputAreaFocused
         } ${currentState === inputState.Typing && styles.inputAreaTyping}
         ${currentState === inputState.Disable && styles.inputAreaDisable}`}
+        style={style}
       >
         <textarea
           className={`${styles.inputPrompt} ${hasError ? styles.inputError : ''}`}

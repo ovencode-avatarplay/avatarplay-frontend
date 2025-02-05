@@ -7,7 +7,7 @@
     gap: 15px;
   
     justify-self: center;
-    max-height: 75vh;
+    max-height: var(--body-height);
   
     border-radius: 24px 24px 0px 0px;
     background: var(--White, #FFF); 

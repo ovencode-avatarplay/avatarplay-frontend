@@ -53,7 +53,7 @@
 }
 
 .typeTertiary {
-  background-color: var(--background-fill-light-primary);
+  background-color: var( --background-fill-light-theme-primary);
   border: 1px solid var(--Border-1, #EAECF0);
   color: var(--Black, #000);
 }
