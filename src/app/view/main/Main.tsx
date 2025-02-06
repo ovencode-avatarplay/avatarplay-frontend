@@ -11,15 +11,16 @@ import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainCont
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import HeaderNavBarWhite from './header/header-nav-bar/HeaderNavBarWhite';
+import {useRouter} from 'next/router';
 
 const Main = ({children}: {children: ReactNode}) => {
   const selectedIndex = useSelector((state: RootState) => state.mainControl.selectedIndex);
-  console.log('selectedIndex', selectedIndex);
 
   return (
     <div className={styles.body}>
       {(selectedIndex == 0 || selectedIndex == 1) && <HeaderNavBar />}
-      {(selectedIndex == 2 || selectedIndex == 3) && <HeaderNavBarWhite />}
+      {/* 2번은 Shop로 접근 시 헤더를 가려야 해서 예외 적으로 페이지에 직접 Header를 넣음 */}
+      {/*selectedIndex == 2 || */ selectedIndex == 3 && <HeaderNavBarWhite />}
 
       {children}
       <BottomNav />

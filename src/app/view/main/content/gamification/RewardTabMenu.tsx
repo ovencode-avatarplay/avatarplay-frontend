@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import styles from './RewardTabMenu.module.css';
+import Link from 'next/link';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface RewardTabMenuProps {
   onTabChange?: (tab: 'Reward' | 'Event') => void;
@@ -34,11 +36,10 @@ const RewardTabMenu: React.FC<RewardTabMenuProps> = ({onTabChange}) => {
           <div className={styles.underline} />
         </div>
       </div>
-
-      {/* Shop 버튼 */}
-      <button className={styles.shopButton} onClick={() => alert('Shop clicked!')}>
-        Shop
-      </button>
+      <Link href={getLocalizedLink(`/main/game/shop`)}>
+        {/* Shop 버튼 */}
+        <button className={styles.shopButton}>Shop</button>
+      </Link>
     </div>
   );
 };

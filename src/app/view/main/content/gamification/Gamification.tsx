@@ -5,6 +5,7 @@ import ExploreFeaturedHeader from '../searchboard/searchboard-header/ExploreFeat
 import RewardGoods from './RewardGoods'; // 새로 만든 컴포넌트 불러오기
 import {BannerUrlList} from '@/app/NetWork/ExploreNetwork';
 import RewardContent from './RewardContent';
+import HeaderNavBarWhite from '../../header/header-nav-bar/HeaderNavBarWhite';
 
 export const dummyBannerList: BannerUrlList[] = [
   {
@@ -49,8 +50,9 @@ const Gamification: React.FC = () => {
 
   return (
     <>
+      {' '}
+      <HeaderNavBarWhite />
       <RewardTabMenu onTabChange={setSelectedTab} />
-
       <div className={styles.scrollArea}>
         {selectedTab == 'Reward' && (
           <>

@@ -1,0 +1,195 @@
+.shopContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  
+  padding: 16px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  
+  background: #F8F9FA;
+  padding: 10px;
+  border-radius: 12px;
+  width: 100%;
+  height: 295px;
+  gap: 5px
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+}
+
+.icon
+{
+  width: 20px;
+  height: 20px;
+}
+
+.icon.ruby {
+  
+  filter: brightness(0) saturate(100%) invert(50%) sepia(48%) saturate(4347%) hue-rotate(332deg) brightness(114%) contrast(94%);
+}
+
+.icon.star {
+  filter: brightness(0) saturate(100%) invert(73%) sepia(98%) saturate(929%) hue-rotate(358deg) brightness(100%) contrast(106%);
+}
+.title {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #000000;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #FFFFFF;
+  padding: 11px;
+  border-radius: 12px;
+  width: 102px;
+  height: 114px;
+  justify-content: space-between;
+  
+}
+
+.amount {
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  color: #000000;
+}
+
+.itemInfo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.itemIcon {
+  width: 26px;
+  height: 26px;
+}
+
+.bonus {
+  font-weight: 700;
+  font-size: 12px;
+  color: #000000;
+}
+
+.redPriceButton {
+  background: #F75555;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  width: 51px;
+  height: 30px;
+}
+
+.redPriceButton:hover {
+  background: #D94444;
+}
+
+.yellowPriceButton {
+  background: #FFD000;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  width: 51px;
+  height: 30px;
+}
+
+.yellowPriceButton:hover {
+  background: #d1ac06;
+}
+
+
+
+.planCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 10px;
+  gap: 30px;
+  
+  width: 113.33px;
+  height: 250px;
+
+  background: #F8F9FA;
+  border-radius: 12px;
+}
+
+.title {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 100%;
+  text-align: center;
+  color: #000000;
+}
+
+.price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dollar {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 180%;
+  text-align: center;
+  color: #000000;
+}
+
+.perMonth {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  text-align: center;
+  color: #000000;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.detailItem {
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 139%;
+  text-align: center;
+  color: #000000;
+}
+
+.planGroup{
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-self: center;
+}

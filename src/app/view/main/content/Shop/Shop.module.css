@@ -1,0 +1,134 @@
+
+.scrollArea
+{
+    overflow-y: auto;
+    margin-bottom: calc(48px + 2px);
+    
+    
+}
+.scrollArea::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollArea {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .content
+  {
+    justify-items: center;
+  }
+
+  .navbar {
+    display: flex;  
+    width: var(--full-width);
+    height: 58px;
+    padding: 0px 10px 0px 16px;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    
+    background: var(--Black, #000);
+  }
+   
+    
+  .logoArea {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer
+  }
+    
+    .rightArea {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 2px;
+    }
+  
+    .currencyArea{
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .currencyItem{
+      display: flex;
+      padding: 5px 8px 6px 8px;
+      align-items: center;
+      gap: 4px;
+      border-radius: 30px;
+      background: var(--Neutral-100, #F1F3F4);
+    }
+  
+    .currencyIcon{
+      width: 12px;
+      height: 12px;
+      filter: brightness(0) saturate(100%) invert(77%) sepia(7%) saturate(270%) hue-rotate(169deg) brightness(83%) contrast(86%);
+    }
+  
+    .currencyText{
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      
+      overflow: hidden;
+      color: var(--Black, #FFF);
+      text-align: center;
+      text-overflow: ellipsis;
+      font-family: Lato;
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 100%; /* 11px */
+    }
+  
+    .notification{
+      display: flex;
+      width: 40px;
+      height: 40px;
+      padding: 9px;
+      justify-content: center;
+      align-items: center;
+  
+      position:relative;
+  
+  
+    }
+    .redDot{
+      position:absolute;
+      top:10px;
+      right:9px;
+  
+      width:4px;
+      height:4px;
+      border-radius: 50%;
+      background:#F93052;
+    }
+    .notificationIcon{
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      filter: brightness(0) saturate(100%);
+    }
+  
+    .userProfile {
+      position: relative; 
+      margin-left: 15px; 
+    }
+    
+    .dot {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 10px; 
+      height: 10px; 
+      background-color: green; 
+      border-radius: 50%; 
+      border: 2px solid white; 
+    }
+    
