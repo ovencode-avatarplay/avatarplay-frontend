@@ -63,7 +63,7 @@ const MaxTextInput: React.FC<Props> = ({
   const [currentState, setCurrentState] = useState<inputState>(stateDataType);
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    let value = event.target.value.trim(); // 공백 제거
+    let value = event.target.value.replace(/^\s+/, ''); // 첫글자 앞의 공백 제거
 
     // 조합 중에는 입력을 허용
     if (isComposing && inputDataType != inputType.OnlyNum && inputDataType != inputType.OnlyNumMax100) {
@@ -86,9 +86,9 @@ const MaxTextInput: React.FC<Props> = ({
       }
     }
 
-    // 특수문자 허용 여부 처리
+    // 특수문자만 제거, 띄어쓰기는 허용
     if (!allowSpecialCharacters) {
-      value = value.replace(/[!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?`~]/g, ''); // 특수 문자만 제거
+      value = value.replace(/[!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?`~]/g, '');
     }
 
     // 새로운 이벤트 객체 생성하여 안전하게 값 전달
