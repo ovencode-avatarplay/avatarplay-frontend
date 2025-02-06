@@ -85,7 +85,7 @@ export const getLocalizedLink = (path: string): string => {
 };
 
 // 현재 언어에 맞는 URL로 라우팅 함수
-export const pushLocalizedRoute = (path: string, router: ReturnType<typeof useRouter>) => {
+export const pushLocalizedRoute = (path: string, router: ReturnType<typeof useRouter>, isReload = true) => {
   const localizedUrl = getLocalizedLink(path);
 
   // 브라우저에서 현재 URL 확인
@@ -93,7 +93,11 @@ export const pushLocalizedRoute = (path: string, router: ReturnType<typeof useRo
   const newUrl = new URL(localizedUrl, window.location.origin);
 
   if (currentUrl !== newUrl.href) {
-    router.push(localizedUrl);
+    if (isReload) {
+      router.push(localizedUrl);
+    } else {
+      window.history.replaceState(null, '', localizedUrl);
+    }
   }
 };
 

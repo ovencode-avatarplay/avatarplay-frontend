@@ -26,7 +26,6 @@ export const getProfileList = async () => {
   };
   try {
     const resProfileList: AxiosResponse<ResponseAPI<GetProfileListRes>> = await api.post(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getMyList`, {});
-    console.log("gdgd ", resProfileList);
     if (resProfileList.status != 200) return;
     return resProfileList.data?.data?.profileList;
 
@@ -154,9 +153,94 @@ export const getProfileInfo = async (profileId: number) => {
     const resProfileSelect: AxiosResponse<ResponseAPI<GetProfileInfoRes>> = await api.post(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/get`, data);
     if (resProfileSelect.status != 200) return;
 
-    const feedInfoList = resProfileSelect.data?.data?.feedInfoList;
-    const isMyProfile = resProfileSelect.data?.data?.isMyProfile;
-    const profileInfo = resProfileSelect.data?.data?.profileInfo;
+    return resProfileSelect.data?.data;
+
+  } catch (e) {
+    alert("api 에러" + e)
+  }
+
+}
+export interface GetPdTabInfoeReq {
+  languageType: string;
+  profileId: number;
+  tabType: PdProfileTabType;
+}
+
+export enum PdProfileTabType {
+  Feed = 0,
+  Channel = 1,
+  Character = 2,
+  Shared = 3
+}
+export interface GetPdTabInfoeRes {
+  tabInfoList: ProfileTabItemInfo[];
+}
+
+export interface ProfileTabItemInfo {
+  id: number;
+  name: string;
+  mediaState: MediaState;
+  mediaUrl: string;
+  likeCount: number;
+  mediaCount: number;
+  playTime: string;
+  isFavorite: boolean;
+}
+
+export const getProfilePdTabInfo = async (profileId: number, tabType: PdProfileTabType) => {
+  const data: GetPdTabInfoeReq = {
+    languageType: getCurrentLanguage(),
+    profileId: profileId,
+    tabType: tabType
+  };
+  try {
+    const resProfileSelect: AxiosResponse<ResponseAPI<GetPdTabInfoeRes>> = await api.post(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getPdTabInfo`, data);
+    if (resProfileSelect.status != 200) return;
+
+    return resProfileSelect.data?.data;
+
+  } catch (e) {
+    alert("api 에러" + e)
+  }
+}
+
+export interface GetCharacterTabInfoeReq {
+  languageType: string;
+  profileId: number;
+  tabType: CharacterProfileTabType;
+}
+
+export enum CharacterProfileTabType {
+  Feed = 0,
+  Contents = 1,
+  Story = 2,
+  Joined = 3
+}
+
+export interface GetCharacterTabInfoeRes {
+  tabInfoList: ProfileTabItemInfo[];
+}
+
+export interface ProfileTabItemInfo {
+  id: number;
+  name: string;
+  mediaState: MediaState;
+  mediaUrl: string;
+  likeCount: number;
+  mediaCount: number;
+  playTime: string;
+  isFavorite: boolean;
+}
+
+export const getProfileCharacterTabInfo = async (profileId: number, tabType: CharacterProfileTabType) => {
+  const data: GetCharacterTabInfoeReq = {
+    languageType: getCurrentLanguage(),
+    profileId: profileId,
+    tabType: tabType
+  };
+  try {
+    const resProfileSelect: AxiosResponse<ResponseAPI<GetCharacterTabInfoeRes>> = await api.post(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getCharacterTabInfo`, data);
+    if (resProfileSelect.status != 200) return;
 
     return resProfileSelect.data?.data;
 
