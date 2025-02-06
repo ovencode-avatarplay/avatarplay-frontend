@@ -86,7 +86,11 @@ const UserDropdown = () => {
     !open ? setOpen(true) : setOpen(false);
   };
 
-  const handleDrawerOpen = async () => {
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
+  };
+
+  const routeProfile = async () => {
     const jwtToken = localStorage.getItem('jwt');
     console.log('jwtToken : ', jwtToken);
     if (!jwtToken) {
@@ -110,16 +114,15 @@ const UserDropdown = () => {
       dispatch(updateProfile(profile));
       pushLocalizedRoute('/profile/' + profile?.id, router);
     }
-    // setDrawerOpen(true);
   };
 
-  const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-    if (
-      event.type === 'keydown' &&
-      ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
-    ) {
-      return;
-    }
+  const toggleDrawer = (open: boolean) => {
+    // if (
+    //   event.type === 'keydown' &&
+    //   ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
+    // ) {
+    //   return;
+    // }
     setDrawerOpen(open);
   };
 
@@ -226,17 +229,23 @@ const UserDropdown = () => {
       <Badge
         style={{padding: '12px 25px', margin: '12px -25px'}}
         overlap="circular"
-        badgeContent={<span className={styles.avatarBadge} onClick={handleDrawerOpen} />}
+        badgeContent={<span className={styles.avatarBadge} onClick={routeProfile} />}
         anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
       >
         <Avatar
           alt={auth?.user?.email || ''}
           src={dataProfile.currentProfile?.iconImageUrl || ''}
-          onClick={handleDrawerOpen}
+          onClick={routeProfile}
           className={styles.avatar}
         />
       </Badge>
-      {/* <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => {
+          toggleDrawer(false);
+        }}
+      >
         <MenuList className={styles.menuList}>
           <MenuItem className={styles.menuItem}>
             <Avatar
@@ -263,9 +272,7 @@ const UserDropdown = () => {
             </MenuItem>
           </Link>
           <Link href={getLocalizedLink(`/studio/story`)} passHref>
-            <MenuItem
-              className={styles.menuItem}
-            >
+            <MenuItem className={styles.menuItem}>
               <i className={styles.tabler} />
               <Typography color="text.primary">Story</Typography>
             </MenuItem>
@@ -343,7 +350,7 @@ const UserDropdown = () => {
           )}
         </Popper>
       </Drawer>
-      <UserInfoModal open={userInfoOpen} onClose={() => setUserInfoOpen(false)} /> */}
+      <UserInfoModal open={userInfoOpen} onClose={() => setUserInfoOpen(false)} />
     </>
   );
 };

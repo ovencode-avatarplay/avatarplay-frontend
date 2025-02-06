@@ -21,7 +21,6 @@ import {setSkipContentInit} from '@/redux-store/slices/ContentInfo';
 import {useAtom} from 'jotai';
 
 export default function BottomNav() {
-  const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const dispatch = useDispatch();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
@@ -197,9 +196,6 @@ export default function BottomNav() {
                   className={`${styles.navButton} 
                         ${selectedIndex === index ? styles.selected : ''} 
                         ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
-                  onClick={() => {
-                    dataUserDropDown.onClick();
-                  }}
                 >
                   <UserDropdown />
                 </button>

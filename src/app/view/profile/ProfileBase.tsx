@@ -44,6 +44,8 @@ import {setBottomNavColor} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateProfile} from '@/redux-store/slices/Profile';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
+import {useAtom} from 'jotai';
 
 enum eTabType {
   Feed,
@@ -65,6 +67,7 @@ type ProfileBaseProps = {
 
 // /profile?type=pd?id=123123
 const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
+  const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const pathname = usePathname();
   const [data, setData] = useState<DataProfileType>({
     indexTab: eTabType.Feed,
@@ -170,7 +173,14 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
         </div>
         <div className={styles.right}>
           <img className={cx(styles.icon, styles.iconShare)} src={LineShare.src} alt="" />
-          <img className={cx(styles.icon, styles.iconMenu)} src={LineMenu.src} alt="" />
+          <img
+            className={cx(styles.icon, styles.iconMenu)}
+            onClick={e => {
+              dataUserDropDown.onClick();
+            }}
+            src={LineMenu.src}
+            alt=""
+          />
         </div>
       </section>
       <section className={styles.main}>
