@@ -1,4 +1,4 @@
-import {BoldArrowDown} from '@ui/Icons';
+import {BoldArrowDown, BoldAudioPlay, LineRegenerate} from '@ui/Icons';
 import styles from './CharacterCreatePolicy.module.css';
 import {useEffect, useState} from 'react';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -8,6 +8,13 @@ import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {sendGetTagList} from '@/app/NetWork/ContentNetwork';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
+import CustomToolTip from '@/components/layout/shared/CustomToolTip';
+import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
+import getLocalizedText from '@/utils/getLocalizedText';
+import CustomDropDown from '@/components/layout/shared/CustomDropDown';
+import CustomInput from '@/components/layout/shared/CustomInput';
+import CustomButton from '@/components/layout/shared/CustomButton';
+import Splitters from '@/components/layout/shared/CustomSplitter';
 
 interface Props {}
 
@@ -26,8 +33,124 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
   const maxTagCount = 5;
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
 
-  let PositionCountryData = {label: 'Position Country', items: ['USA', 'Korea', 'Japan']};
-  const [PositionCountry, setPositionCountry] = useState('USA');
+  let positionCountryData = {label: 'Position Country', items: ['USA', 'Korea', 'Japan']};
+  const [positionCountry, setPositionCountry] = useState('USA');
+
+  let characterIpData = {
+    items: [
+      {label: 'Original', data: 'Original', monetization: 'possible'},
+      {label: 'Fan', data: 'Fan', monetization: 'impossible'},
+      {label: 'Recruited', data: 'Recruited', monetization: 'possible'},
+    ],
+  };
+  const [selectedCharacterIp, setSelectedCharacterIp] = useState('Original');
+
+  let invitationOption = {
+    items: [
+      {label: 'Owner', value: 'owner'},
+      {label: 'Can edit', value: 'canEdit'},
+      {label: 'Only Comments', value: 'onlyComments'},
+      {label: 'Waiting', value: 'waiting'},
+    ],
+  };
+  const [operatorInviteOpen, setOperatorInviteOpen] = useState(false);
+
+  const [voiceOpen, setVoiceOpen] = useState(false);
+
+  interface SoundItem {
+    address: string;
+    description: string;
+  }
+
+  // api 만들어지기 전에 사용할 임시 데이터
+  const voiceData = [
+    {
+      label: 'Voice 1',
+      gender: 0,
+      voiceDesc: 'Voice Desc 1',
+      soundData: [
+        {address: 'url-to-sound1.mp3', description: 'Sound 1'},
+        {address: 'url-to-sound2.mp3', description: 'Sound 2'},
+        {address: 'url-to-sound3.mp3', description: 'Sound 3'},
+      ],
+    },
+    {
+      label: 'Voice 2',
+      gender: 1,
+      voiceDesc: 'Voice Desc 3',
+      soundData: [
+        {address: 'url-to-sound4.mp3', description: 'Sound 4'},
+        {address: 'url-to-sound5.mp3', description: 'Sound 5'},
+        {address: 'url-to-sound6.mp3', description: 'Sound 6'},
+      ],
+    },
+    // 추가 데이터
+    {
+      label: 'Voice 3',
+      gender: 0,
+      voiceDesc: 'Voice Desc 2',
+      soundData: [
+        {address: 'url-to-sound7.mp3', description: 'Sound 7'},
+        {address: 'url-to-sound8.mp3', description: 'Sound 8'},
+        {address: 'url-to-sound9.mp3', description: 'Sound 9'},
+      ],
+    },
+    {
+      label: 'Voice 4',
+      gender: 1,
+      voiceDesc: 'Voice Desc 4',
+      soundData: [
+        {address: 'url-to-sound10.mp3', description: 'Sound 10'},
+        {address: 'url-to-sound11.mp3', description: 'Sound 11'},
+        {address: 'url-to-sound12.mp3', description: 'Sound 12'},
+      ],
+    },
+    {
+      label: 'Voice 5',
+      gender: 0,
+      voiceDesc: 'Voice Desc 5',
+      soundData: [
+        {address: 'url-to-sound13.mp3', description: 'Sound 13'},
+        {address: 'url-to-sound14.mp3', description: 'Sound 14'},
+        {address: 'url-to-sound15.mp3', description: 'Sound 15'},
+      ],
+    },
+    {
+      label: 'Voice 6',
+      gender: 1,
+      voiceDesc: 'Voice Desc 6',
+      soundData: [
+        {address: 'url-to-sound16.mp3', description: 'Sound 16'},
+        {address: 'url-to-sound17.mp3', description: 'Sound 17'},
+        {address: 'url-to-sound18.mp3', description: 'Sound 18'},
+      ],
+    },
+    {
+      label: 'Voice 7',
+      gender: 0,
+      voiceDesc: 'Voice Desc 7',
+      soundData: [
+        {address: 'url-to-sound19.mp3', description: 'Sound 19'},
+        {address: 'url-to-sound20.mp3', description: 'Sound 20'},
+        {address: 'url-to-sound21.mp3', description: 'Sound 21'},
+      ],
+    },
+  ];
+
+  const [pitchShift, setPitchShift] = useState(0); // 기본 값 0
+  const [pitchVariance, setPitchVariance] = useState(0); // 기본 값 0
+  const [speed, setSpeed] = useState(1); // 기본 값 1
+
+  // 각 슬라이더의 최솟값과 최댓값 설정
+  const pitchShiftMin = -12;
+  const pitchShiftMax = 12;
+  const pitchVarianceMin = 0;
+  const pitchVarianceMax = 10;
+  const speedMin = 0.5;
+  const speedMax = 2;
+
+  const [selectedMonetization, setSelectedMonetization] = useState('Off');
+  const [selectedNSWF, setSelectedNSWF] = useState('Off');
 
   const handleSelectVisibilityItem = (value: string) => {
     setVisibility(value);
@@ -73,6 +196,18 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
     setPositionCountry(value);
   };
 
+  const handleSelectCharacterIp = (value: string) => {
+    setSelectedCharacterIp(value);
+  };
+
+  const handleSelectMonetization = (value: string) => {
+    setSelectedMonetization(value);
+  };
+
+  const handleSelectNSWF = (value: string) => {
+    setSelectedNSWF(value);
+  };
+
   const renderDropDownSelectDrawer = (
     title: string,
     items: string[],
@@ -87,7 +222,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
     }));
 
     return (
-      <div className={styles.titleArea}>
+      <div className={styles.dropDownArea}>
         <h2 className={styles.title2}>{title}</h2>
         <div className={styles.selectItem}>
           <div className={styles.selectItemText}>{selectedItem}</div>
@@ -111,7 +246,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
   ) => {
     return (
-      <div className={styles.titleArea}>
+      <div className={styles.dropDownArea}>
         <h2 className={styles.title2}>{title}</h2>
         <div className={styles.selectItem}>
           <div className={styles.selectItemText}>{selectedItem}</div>
@@ -126,22 +261,16 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
     );
   };
 
-  useEffect(() => {
-    if (tagOpen) {
-      handleGetTagList();
-    }
-  }, [tagOpen]);
-
-  return (
-    <div className={styles.policyContainer}>
-      <div className={styles.selectItemsArea}>
-        {renderDropDownSelectDrawer(VisibilityData.label, VisibilityData.items, visibility, handleSelectVisibilityItem)}
-        {renderDropDown('LLM', llmModelData[selectedllmIdx].label, setLlmOpen)}
-        <ContentLLMSetup open={llmOpen} onClose={() => setLlmOpen(false)} onModelSelected={setSelectedLlmIdx} />
-        {renderDropDown('Tag', selectedTags[0], setTagOpen)}
+  const renderTag = () => {
+    return (
+      <>
         {
-          <CustomDrawer open={tagOpen} onClose={() => setTagOpen(false)}>
+          <CustomDrawer open={tagOpen} onClose={() => setTagOpen(false)} title="Tag">
             <div className={styles.tagArea}>
+              <button className={styles.tagRefreshButton} onClick={() => setSelectedTags([])}>
+                <div className={styles.tagRefreshText}>Refresh</div>
+                <img className={styles.tagRefreshIcon} src={LineRegenerate.src} />
+              </button>
               {/* 태그 선택 부분 */}
               <div className={styles.tagSelect}>
                 {tagList?.map(tag => (
@@ -149,7 +278,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
                     text={tag}
                     onClickAction={() => handleTagSelect(tag)}
                     isSelected={selectedTags.includes(tag)}
-                  ></CustomHashtag>
+                  />
                 ))}
               </div>
             </div>
@@ -170,15 +299,382 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
             ]}
           />
         )}
+      </>
+    );
+  };
+
+  const renderCharacterIP = () => {
+    return (
+      <>
+        <div className={styles.radioButtonContainer}>
+          <div className={styles.radioTitleArea}>
+            <h2 className={styles.title2}>Character IP</h2>
+            <CustomToolTip tooltipText="ToolTip Character IP" />
+          </div>
+          <div className={styles.ipButtonArea}>
+            {characterIpData.items.map(item => (
+              <div className={styles.ipButton} key={item.data}>
+                <CustomRadioButton
+                  shapeType="circle"
+                  displayType="buttonText"
+                  value={item.data}
+                  // label={getLocalizedText('', item.label)}
+                  label={item.label}
+                  onSelect={() => handleSelectCharacterIp(item.data)}
+                  selectedValue={selectedCharacterIp}
+                />
+                <CustomHashtag
+                  // text={getLocalizedText('', item.monetization)}
+                  text={item.monetization}
+                  isSelected={false}
+                  onClickAction={() => {}}
+                  color=""
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  const renderRecruit = () => {
+    return <>{renderDropDownSelectDrawer('Recruited', [], '', () => {})}</>;
+  };
+
+  const renderOperatorInvite = () => {
+    return (
+      <>
+        <div className={styles.radioButtonContainer}>
+          <div className={styles.operatorTitle}>
+            <div className={styles.radioTitleArea}>
+              <h2 className={styles.title2}>Operator invitation</h2>
+              <CustomToolTip tooltipText="ToolTip Monetization" />
+            </div>
+            <button className={styles.operatorButton} onClick={() => setOperatorInviteOpen(true)}>
+              Invite
+            </button>
+          </div>
+          {renderOperatorList(false)}
+        </div>
+        <CustomDrawer
+          title="Operator Invitation"
+          open={operatorInviteOpen}
+          onClose={() => setOperatorInviteOpen(false)}
+        >
+          <div className={styles.inviteDrawerContainer}>
+            <div className={styles.inviteInputArea}>
+              <CustomInput
+                inputType="Basic"
+                textType="InputOnly"
+                value={''}
+                onChange={() => {}}
+                customClassName={[styles.inviteInput]}
+              />
+              <CustomButton size="Medium" state="Normal" type="ColorPrimary" onClick={() => {}}>
+                Invite
+              </CustomButton>
+            </div>
+            {renderOperatorList(true)}
+            <div className={styles.inviteLinkArea}>
+              <h2 className={styles.title2}>Invitation link</h2>
+              <div className={styles.inviteLinkInputArea}>
+                <CustomInput
+                  inputType="Basic"
+                  textType="InputOnly"
+                  value={'link'}
+                  disabled={true}
+                  onChange={() => {}}
+                  customClassName={[styles.inviteInput]}
+                />
+                <CustomButton size="Medium" state="Normal" type="Primary" onClick={() => {}}>
+                  Copy
+                </CustomButton>
+              </div>
+            </div>
+          </div>
+        </CustomDrawer>
+      </>
+    );
+  };
+
+  const renderOperatorList = (canedit: boolean) => {
+    return (
+      <ul className={styles.operatorList}>
+        <div className={styles.operatorItem}>
+          <div className={styles.operatorProfile}>
+            <img className={styles.operatorProfileImage} src={'/images/001.png'} />
+          </div>
+          <div className={styles.operatorProfileTextArea}>
+            <div className={styles.operatorProfileText}>OperatorName</div>
+            {canedit ? (
+              <CustomDropDown
+                displayType="Text"
+                items={invitationOption.items}
+                onSelect={() => {}}
+                style={{width: '180px', maxWidth: '100%'}}
+              />
+            ) : (
+              <div className={styles.operatorProfileState}>Owner</div>
+            )}
+          </div>
+        </div>
+      </ul>
+    );
+  };
+
+  const renderMonetization = () => {
+    return (
+      <div className={styles.radioButtonContainer}>
+        <div className={styles.radioTitleArea}>
+          <h2 className={styles.title2}>Monetization</h2>
+          <CustomToolTip tooltipText="ToolTip Monetization" />
+        </div>
+        <div className={styles.verticalRadioButtonArea}>
+          <CustomRadioButton
+            shapeType="circle"
+            displayType="buttonText"
+            value="On"
+            label="On"
+            onSelect={() => handleSelectMonetization('On')}
+            selectedValue={selectedMonetization}
+          />
+          <CustomRadioButton
+            shapeType="circle"
+            displayType="buttonText"
+            value="Off"
+            label="Off"
+            onSelect={() => handleSelectMonetization('Off')}
+            selectedValue={selectedMonetization}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const renderNSFW = () => {
+    return (
+      <div className={styles.radioButtonContainer}>
+        <div className={styles.radioTitleArea}>
+          <h2 className={styles.title2}>NSFW*</h2>
+          <CustomToolTip tooltipText="NSFW Monetization" />
+        </div>
+        <div className={styles.verticalRadioButtonArea}>
+          <CustomRadioButton
+            shapeType="circle"
+            displayType="buttonText"
+            value="On"
+            label="On"
+            onSelect={() => handleSelectNSWF('On')}
+            selectedValue={selectedNSWF}
+          />
+          <CustomRadioButton
+            shapeType="circle"
+            displayType="buttonText"
+            value="Off"
+            label="Off"
+            onSelect={() => handleSelectNSWF('Off')}
+            selectedValue={selectedNSWF}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const renderMembershipPlan = () => {
+    return (
+      <>
+        <div className={styles.membershipPlanArea}>
+          <div className={styles.bigTitle}>Membership Plan</div>
+          <button className={styles.membershipButton}>setting</button>
+        </div>
+      </>
+    );
+  };
+
+  const renderSuperVoiceSetting = () => {
+    return (
+      <>
+        <div className={styles.voiceSettingArea}>
+          <h2 className={styles.titleVoice}>Super Voice Setting</h2>
+          <div className={styles.voiceSettingDescArea}>
+            <CustomToolTip tooltipText="Voice Setting" />
+            <div className={styles.voiceSettingText}>
+              Each AI voice actor has a variety of speaking styles. Select the style that best suits each sentence and
+              print it.
+            </div>
+          </div>
+          {renderDropDown('', 'No Voice Selected', setVoiceOpen)}
+        </div>
+        <CustomDrawer open={voiceOpen} onClose={() => setVoiceOpen(false)} title="Select Voices">
+          <div className={styles.voiceDrawerContainer}>
+            <CustomRadioButton
+              displayType="buttonText"
+              shapeType="circle"
+              label="I will not set the voice"
+              value="False"
+              selectedValue={'False'}
+              onSelect={() => {}}
+            />
+            <Splitters
+              splitters={voiceSplitter}
+              placeholderWidth="40%"
+              headerStyle={{padding: '0'}}
+              contentStyle={{padding: '0'}}
+            />
+          </div>
+          <div className={styles.pitchArea}>
+            <div className={styles.sliderContainer}>
+              <label htmlFor="pitchShift" className={styles.sliderLabel}>
+                Pitch Shift {pitchShift}
+              </label>
+              <div className={styles.sliderWrapper}>
+                <input
+                  id="pitchShift"
+                  type="range"
+                  min={pitchShiftMin}
+                  max={pitchShiftMax}
+                  value={pitchShift}
+                  onChange={e => setPitchShift(Number(e.target.value))}
+                  className={styles.slider}
+                />
+              </div>
+            </div>
+            <div className={styles.sliderContainer}>
+              <label htmlFor="pitchVariance" className={styles.sliderLabel}>
+                Pitch Variance {pitchVariance}
+              </label>
+              <div className={styles.sliderWrapper}>
+                <input
+                  id="pitchVariance"
+                  type="range"
+                  min={pitchVarianceMin}
+                  max={pitchVarianceMax}
+                  value={pitchVariance}
+                  onChange={e => setPitchVariance(Number(e.target.value))}
+                  className={styles.slider}
+                />
+              </div>
+            </div>
+            <div className={styles.sliderContainer}>
+              <label htmlFor="speed" className={styles.sliderLabel}>
+                Speed {speed}
+              </label>
+              <div className={styles.sliderWrapper}>
+                <input
+                  id="speed"
+                  type="range"
+                  min={speedMin}
+                  max={speedMax}
+                  step="0.1"
+                  value={speed}
+                  onChange={e => setSpeed(Number(e.target.value))}
+                  className={styles.slider}
+                />
+              </div>
+            </div>
+          </div>
+        </CustomDrawer>
+      </>
+    );
+  };
+
+  const renderVoiceItem = (label: string, desc: string, soundData: SoundItem[]) => {
+    return (
+      <div className={styles.voiceItem}>
+        <CustomRadioButton
+          displayType="buttonOnly"
+          shapeType="circle"
+          value=""
+          onSelect={() => {}}
+          selectedValue={''}
+        />
+        <div className={styles.voiceInfoArea}>
+          <div className={styles.voiceTitle}>{label}</div>
+          <div className={styles.voiceDesc}>{desc}</div>
+          <ul className={styles.soundList}>
+            {soundData.map((item, index) => (
+              <div className={styles.soundItem} key={index}>
+                <button className={styles.soundButton}>
+                  <img className={styles.soundIcon} src={BoldAudioPlay.src} alt="Play Icon" />
+                </button>
+                <div className={styles.soundText}>{item.description}</div>
+              </div>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  };
+
+  const voiceSplitter = [
+    {
+      label: 'All',
+      content: (
+        <ul className={styles.voiceList}>
+          {voiceData.map((item, index) => (
+            <div className={styles.voiceItem}>{renderVoiceItem(item.label, item.voiceDesc, item.soundData)}</div>
+          ))}
+        </ul>
+      ),
+    },
+    {
+      label: 'Male',
+      content: (
+        <ul className={styles.voiceList}>
+          {voiceData
+            .filter(item => item.gender === 0)
+            .map((item, index) => (
+              <div key={index}>{renderVoiceItem(item.label, item.voiceDesc, item.soundData)}</div>
+            ))}
+        </ul>
+      ),
+    },
+    {
+      label: 'Female',
+      content: (
+        <ul className={styles.voiceList}>
+          {voiceData
+            .filter(item => item.gender === 1)
+            .map((item, index) => (
+              <div key={index}>{renderVoiceItem(item.label, item.voiceDesc, item.soundData)}</div>
+            ))}
+        </ul>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    if (tagOpen) {
+      handleGetTagList();
+    }
+  }, [tagOpen]);
+
+  return (
+    <div className={styles.policyContainer}>
+      <div className={styles.selectItemsArea1}>
+        {renderDropDownSelectDrawer(VisibilityData.label, VisibilityData.items, visibility, handleSelectVisibilityItem)}
+        {renderDropDown('LLM', llmModelData[selectedllmIdx].label, setLlmOpen)}
+        <ContentLLMSetup open={llmOpen} onClose={() => setLlmOpen(false)} onModelSelected={setSelectedLlmIdx} />
+        {renderDropDown('Tag', selectedTags.join(', '), setTagOpen)}
+        {renderTag()}
 
         {renderDropDownSelectDrawer(
-          PositionCountryData.label,
-          PositionCountryData.items,
-          PositionCountry,
+          positionCountryData.label,
+          positionCountryData.items,
+          positionCountry,
           handleSelectPositionCountryItem,
         )}
       </div>
-      <div className={styles.radioButtonsArea}></div>
+      <div className={styles.selectItemsArea2}>
+        {renderCharacterIP()}
+        {renderRecruit()}
+        {renderOperatorInvite()}
+        {renderMonetization()}
+        {renderMembershipPlan()}
+        {renderNSFW()}
+        {renderSuperVoiceSetting()}
+      </div>
     </div>
   );
 };

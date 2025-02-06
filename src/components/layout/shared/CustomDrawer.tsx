@@ -6,10 +6,11 @@ import styles from './CustomDrawer.module.css';
 interface CustomDrawerProps extends Omit<DrawerProps, 'onClose' | 'open'> {
   open: boolean;
   onClose: () => void;
+  title?: string;
   children: React.ReactNode;
 }
 
-const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, ...rest}) => {
+const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, title, ...rest}) => {
   const [startY, setStartY] = useState<number | null>(null);
   const [translateY, setTranslateY] = useState(0);
 
@@ -59,6 +60,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, ...
         <div className={styles.handleArea}>
           <div className={styles.handle} />
         </div>
+        {title && title !== '' && <div className={styles.titleArea}>{title}</div>}
         <div className={styles.contentArea}>{children}</div>
       </div>
     </Drawer>
