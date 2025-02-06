@@ -47,15 +47,22 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {useAtom} from 'jotai';
 
-enum eTabType {
+enum eTabPDType {
   Feed,
   Channel,
   Character,
   Shared,
 }
 
+enum eTabCharacterType {
+  Feed,
+  Contents,
+  Story,
+  Joined,
+}
+
 type DataProfileType = {
-  indexTab: eTabType;
+  indexTab: eTabPDType;
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
   profileTabInfo: {[key: number]: any};
@@ -70,7 +77,7 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const pathname = usePathname();
   const [data, setData] = useState<DataProfileType>({
-    indexTab: eTabType.Feed,
+    indexTab: eTabPDType.Feed,
     isOpenSelectProfile: false,
     profileInfo: null,
     profileTabInfo: {},
@@ -121,11 +128,11 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
   const refreshProfileInfo = async (profileId: number) => {
     const resProfileInfo = await getProfileInfo(profileId);
     if (!resProfileInfo) return;
+    data.profileInfo = resProfileInfo;
 
     const indexTab = Number(data?.indexTab);
     await refreshProfileTab(profileId, indexTab);
 
-    data.profileInfo = resProfileInfo;
     setData({...data});
   };
 
@@ -153,6 +160,21 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
     ),
     [],
   );
+
+  const getTabList = (profileType: number) => {
+    if (profileType == ProfileType.User || profileType == ProfileType.PD) {
+      return Object.values(eTabPDType)
+        .filter(value => typeof value === 'number') // 숫자 타입만 필터링
+        .map(type => ({type, label: eTabPDType[type]}));
+    } else if (profileType == ProfileType.Character) {
+      return Object.values(eTabCharacterType)
+        .filter(value => typeof value === 'number')
+        .map(type => ({type, label: eTabCharacterType[type]}));
+    }
+    return [];
+  };
+  const profileType = Number(data.profileInfo?.profileInfo?.type);
+  const tabList = getTabList(profileType);
 
   return (
     <>
@@ -303,27 +325,36 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
               setData({...data});
             }}
           >
-            <div className={cx(styles.label, data.indexTab == eTabType.Feed && styles.active)} data-tab={eTabType.Feed}>
-              Feed
-            </div>
-            <div
-              className={cx(styles.label, data.indexTab == eTabType.Channel && styles.active)}
-              data-tab={eTabType.Channel}
+            {tabList?.map((tab, index) => {
+              return (
+                <div
+                  key={tab.type}
+                  className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
+                  data-tab={tab?.type}
+                >
+                  {tab.label}
+                </div>
+              );
+            })}
+
+            {/* <div
+              className={cx(styles.label, data.indexTab == eTabPDType.Channel && styles.active)}
+              data-tab={eTabPDType.Channel}
             >
               Channel
             </div>
             <div
-              className={cx(styles.label, data.indexTab == eTabType.Character && styles.active)}
-              data-tab={eTabType.Character}
+              className={cx(styles.label, data.indexTab == eTabPDType.Character && styles.active)}
+              data-tab={eTabPDType.Character}
             >
               Character
             </div>
             <div
-              className={cx(styles.label, data.indexTab == eTabType.Shared && styles.active)}
-              data-tab={eTabType.Shared}
+              className={cx(styles.label, data.indexTab == eTabPDType.Shared && styles.active)}
+              data-tab={eTabPDType.Shared}
             >
               Shared
-            </div>
+            </div> */}
           </div>
           <div className={styles.line}></div>
           <div className={styles.filter}>
