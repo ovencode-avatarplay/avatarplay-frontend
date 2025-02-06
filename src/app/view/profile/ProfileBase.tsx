@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import {Box, Button, Drawer} from '@mui/material';
 import ProfileTopEditMenu from './ProfileTopEditMenu';
@@ -25,7 +25,25 @@ import cx from 'classnames';
 import Select, {components, StylesConfig} from 'react-select';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
-import {useRouter} from 'next/navigation';
+import {redirect, RedirectType, usePathname, useRouter} from 'next/navigation';
+import {
+  GetPdTabInfoeRes,
+  getProfileCharacterTabInfo,
+  getProfileInfo,
+  GetProfileInfoRes,
+  getProfileList,
+  getProfilePdTabInfo,
+  MediaState,
+  PdProfileTabType,
+  ProfileSimpleInfo,
+  ProfileType,
+  selectProfile,
+} from '@/app/NetWork/ProfileNetwork';
+import {useDispatch, useSelector} from 'react-redux';
+import {setBottomNavColor} from '@/redux-store/slices/MainControl';
+import {RootState} from '@/redux-store/ReduxStore';
+import {updateProfile} from '@/redux-store/slices/Profile';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
 
 enum eTabType {
   Feed,
@@ -34,16 +52,80 @@ enum eTabType {
   Shared,
 }
 
-type ProfileType = {
+type DataProfileType = {
   indexTab: eTabType;
   isOpenSelectProfile: boolean;
+  profileInfo: null | GetProfileInfoRes;
+  profileTabInfo: {[key: number]: any};
 };
+
+type ProfileBaseProps = {
+  profileId?: number;
+};
+
 // /profile?type=pd?id=123123
-const ProfileBase = () => {
-  const [data, setData] = useState<ProfileType>({
+const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
+  const pathname = usePathname();
+  const [data, setData] = useState<DataProfileType>({
     indexTab: eTabType.Feed,
-    isOpenSelectProfile: true,
+    isOpenSelectProfile: false,
+    profileInfo: null,
+    profileTabInfo: {},
   });
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const id = pathname.split('/').filter(Boolean).pop();
+    if (id == undefined) return;
+
+    const profileId = parseInt(id);
+    refreshProfileInfo(profileId);
+  }, [pathname]);
+
+  useEffect(() => {}, [profileId]);
+  useEffect(() => {
+    dispatch(setBottomNavColor(1));
+    refreshProfileInfo(profileId);
+  }, []);
+
+  const getTabInfo = (typeProfile: ProfileType): ((profileId: number, tabType: number) => Promise<any>) => {
+    if (typeProfile === ProfileType.User || typeProfile === ProfileType.PD) {
+      return getProfilePdTabInfo;
+    } else if (typeProfile === ProfileType.Character) {
+      return getProfileCharacterTabInfo; // 타입 캐스팅 추가
+    } else if (typeProfile === ProfileType.Channel) {
+      return async (profileId: number, tabType: PdProfileTabType) => {
+        return null;
+      };
+    } else {
+      return async (profileId: number, tabType: PdProfileTabType) => {
+        return null;
+      };
+    }
+  };
+
+  const refreshProfileTab = async (profileId: number, indexTab: number) => {
+    const profileType = data.profileInfo?.profileInfo?.type;
+    if (profileType == undefined) return;
+
+    const resProfileTabInfo = await getTabInfo(profileType)(profileId, indexTab);
+    if (!resProfileTabInfo) return;
+
+    data.profileTabInfo[indexTab] = resProfileTabInfo?.tabInfoList;
+    setData({...data});
+  };
+
+  const refreshProfileInfo = async (profileId: number) => {
+    const resProfileInfo = await getProfileInfo(profileId);
+    if (!resProfileInfo) return;
+
+    const indexTab = Number(data?.indexTab);
+    await refreshProfileTab(profileId, indexTab);
+
+    data.profileInfo = resProfileInfo;
+    setData({...data});
+  };
 
   const SelectBoxArrowComponent = useCallback(
     () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />,
@@ -81,7 +163,7 @@ const ProfileBase = () => {
               setData({...data});
             }}
           >
-            <div className={styles.profileName}>Angel_Sasha</div>
+            <div className={styles.profileName}>{data.profileInfo?.profileInfo.name}</div>
             <div className={styles.iconSelect}>
               <img src={LineArrowDown.src} alt="" />
             </div>
@@ -100,7 +182,7 @@ const ProfileBase = () => {
         </div>
         <div className={styles.profileStatisticsWrap}>
           <div className={styles.imgProfileWrap}>
-            <img className={styles.imgProfile} src="/images/profile_sample/img_sample_profile1.png" alt="" />
+            <img className={styles.imgProfile} src={data.profileInfo?.profileInfo.iconImageUrl} alt="" />
             <div className={styles.iconProfileEditWrap}>
               <img className={styles.icon} src="/ui/profile/icon_edit.svg" alt="" />
             </div>
@@ -120,7 +202,7 @@ const ProfileBase = () => {
           </div>
         </div>
         <div className={styles.profileDetail}>
-          <div className={styles.name}>Angel_Sasha</div>
+          <div className={styles.name}>{data.profileInfo?.profileInfo?.name}</div>
           <div className={styles.verify}>
             <span className={styles.label}>Creator</span>
             <img className={styles.icon} src="/ui/profile/icon_verify.svg" alt="" />
@@ -202,12 +284,13 @@ const ProfileBase = () => {
         <section className={styles.tabSection}>
           <div
             className={styles.tabHeader}
-            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
               const target = e.target as HTMLElement;
               const category = target.closest('[data-tab]')?.getAttribute('data-tab');
               if (category) {
                 data.indexTab = parseInt(category);
               }
+              await refreshProfileTab(profileId, data.indexTab);
               setData({...data});
             }}
           >
@@ -268,121 +351,37 @@ const ProfileBase = () => {
           </div>
           <div className={styles.tabContent}>
             <ul className={styles.itemWrap}>
-              <li className={styles.item}>
-                <img className={styles.imgThumbnail} src="/images/profile_sample/img_sample_feed1.png" alt="" />
-                <div className={styles.pin}>
-                  <img src={BoldPin.src} alt="" />
-                </div>
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>1,450</div>
-                  </div>
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>23</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>
-                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
-                    for Your Health
-                  </div>
-                  <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                </div>
-              </li>
-              <li className={styles.item}>
-                <img className={styles.imgThumbnail} src="/images/profile_sample/img_sample_feed1.png" alt="" />
-                <div className={styles.pin}>
-                  <img src={BoldPin.src} alt="" />
-                </div>
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>1,450</div>
-                  </div>
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>23</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>
-                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
-                    for Your Health
-                  </div>
-                  <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                </div>
-              </li>
-              <li className={styles.item}>
-                <img className={styles.imgThumbnail} src="/images/profile_sample/img_sample_feed1.png" alt="" />
-                <div className={styles.pin}>
-                  <img src={BoldPin.src} alt="" />
-                </div>
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>1,450</div>
-                  </div>
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>23</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>
-                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
-                    for Your Health
-                  </div>
-                  <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                </div>
-              </li>
-              <li className={styles.item}>
-                <img className={styles.imgThumbnail} src="/images/profile_sample/img_sample_feed1.png" alt="" />
-                <div className={styles.pin}>
-                  <img src={BoldPin.src} alt="" />
-                </div>
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>1,450</div>
-                  </div>
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>23</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>
-                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
-                    for Your Health
-                  </div>
-                  <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                </div>
-              </li>
-              <li className={styles.item}>
-                <img className={styles.imgThumbnail} src="/images/profile_sample/img_sample_feed1.png" alt="" />
-                <div className={styles.pin}>
-                  <img src={BoldPin.src} alt="" />
-                </div>
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>1,450</div>
-                  </div>
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>23</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>
-                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
-                    for Your Health
-                  </div>
-                  <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                </div>
-              </li>
+              {data?.profileTabInfo?.[data.indexTab]?.map((one: any, index: number) => {
+                return (
+                  <li className={styles.item} key={one?.id}>
+                    {one.mediaState == MediaState.Image && (
+                      <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
+                    )}
+                    {one.mediaState == MediaState.Video && (
+                      <video className={styles.imgThumbnail} src={one?.mediaUrl} />
+                    )}
+                    {one?.isFavorite && (
+                      <div className={styles.pin}>
+                        <img src={BoldPin.src} alt="" />
+                      </div>
+                    )}
+                    <div className={styles.info}>
+                      <div className={styles.likeWrap}>
+                        <img src={BoldHeart.src} alt="" />
+                        <div className={styles.value}>{one?.likeCount}</div>
+                      </div>
+                      <div className={styles.viewWrap}>
+                        <img src={BoldVideo.src} alt="" />
+                        <div className={styles.value}>{one?.mediaCount}</div>
+                      </div>
+                    </div>
+                    <div className={styles.titleWrap}>
+                      <div className={styles.title}>{one?.name}</div>
+                      <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </section>
@@ -517,7 +516,27 @@ type SelectProfileType = {
 };
 
 const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
+  const dataProfile = useSelector((state: RootState) => state.profile);
+  const dispatch = useDispatch();
+  const [data, setData] = useState<{
+    profileList: ProfileSimpleInfo[];
+  }>({
+    profileList: [],
+  });
   const router = useRouter();
+  useEffect(() => {
+    if (!open) return;
+    refreshProfileList();
+  }, [open]);
+
+  const refreshProfileList = async () => {
+    const profileList = await getProfileList();
+    if (!profileList) return;
+
+    data.profileList = profileList;
+    setData({...data});
+  };
+
   return (
     <Drawer
       className={styles.drawer}
@@ -544,33 +563,43 @@ const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
       <div className={styles.title}>Select Profile</div>
       <div className={styles.content}>
         <ul className={styles.profileList}>
-          <li className={styles.item}>
-            <div className={styles.left}>
-              <img className={styles.imgProfile} src="/images/profile_sample/img_sample_profile1.png" alt="" />
-              <div className={styles.nameWrap}>
-                <div className={styles.name}>Angel_Sasha</div>
-              </div>
-            </div>
-            <div className={styles.right}>
-              <img className={styles.iconChecked} src="/ui/profile/icon_select_proflie_checked.svg" alt="" />
-            </div>
-          </li>
-          <li className={styles.item}>
-            <div className={styles.left}>
-              <img className={styles.imgProfile} src="/images/profile_sample/img_sample_profile1.png" alt="" />
-              <div className={styles.nameWrap}>
-                <span className={styles.grade}>Original</span>
-                <div className={styles.name}>Angel_Sasha</div>
-              </div>
-            </div>
-            <div className={styles.right}>
-              <img className={styles.iconMore} src={BoldMore.src} alt="" />
-            </div>
-          </li>
+          {data.profileList.map((profile, index) => {
+            const isSelected = profile.id == dataProfile.currentProfile?.id;
+            return (
+              <li
+                className={styles.item}
+                key={profile.id}
+                onClick={async () => {
+                  const resData = await selectProfile(profile.id);
+                  if (!resData?.profileSimpleInfo) return;
+
+                  dispatch(updateProfile(resData?.profileSimpleInfo));
+
+                  const accessToken: string = resData?.sessionInfo?.accessToken || '';
+                  localStorage.setItem('jwt', accessToken);
+                  pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.id, router, false);
+                }}
+              >
+                <div className={styles.left}>
+                  <img className={styles.imgProfile} src={profile.iconImageUrl} alt="" />
+                  <div className={styles.nameWrap}>
+                    <span className={styles.grade}>Original</span>
+                    <div className={styles.name}>{profile.name}</div>
+                  </div>
+                </div>
+                <div className={styles.right}>
+                  {isSelected && (
+                    <img className={styles.iconChecked} src="/ui/profile/icon_select_proflie_checked.svg" alt="" />
+                  )}
+                  {!isSelected && <img className={styles.iconMore} src={BoldMore.src} alt="" />}
+                </div>
+              </li>
+            );
+          })}
           <li
             className={cx(styles.item, styles.clickable)}
             onClick={() => {
-              router.push('/profile/create');
+              // router.push('/profile/create');
             }}
           >
             <div className={styles.left}>

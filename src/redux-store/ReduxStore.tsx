@@ -14,6 +14,7 @@ import publishInfoSlice from './slices/PublishInfo';
 import myContentDashboardSlice from './slices/MyContentDashboard';
 import emoticonSlice from './slices/EmoticonSlice';
 import modifyQuestionSlice from './slices/ModifyQuestion';
+import profileReducer from './slices/Profile';
 import mainControl from './slices/MainControl';
 // redux-persist
 import {persistStore, persistReducer} from 'redux-persist';
@@ -28,6 +29,7 @@ const persistConfig = {
 const reducers = combineReducers({
   sample: sampleReducer,
   user: userInfo,
+  profile: profileReducer,
 
   //#region Main
   mainControl: mainControl,

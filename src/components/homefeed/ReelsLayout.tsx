@@ -10,6 +10,7 @@ import styles from './ReelsLayout.module.css';
 import {setBottomNavColor} from '@/redux-store/slices/MainControl';
 import {useDispatch} from 'react-redux';
 import {LineArrowDown, LineFeatured} from '@ui/Icons';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 interface ReelsLayoutProps {
   initialFeed?: FeedInfo; // 특정 URL 키를 통해 전달받은 초기 피드
@@ -45,7 +46,8 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   const fetchRecommendFeed = async () => {
     dispatch(setBottomNavColor(0));
     try {
-      const result = await sendGetRecommendFeed({language: navigator.language || 'en-US'});
+      const lang = getCurrentLanguage();
+      const result = await sendGetRecommendFeed({language: lang});
 
       if (result.resultCode === 0 && result.data) {
         const feeds = result.data.feedInfoList;
