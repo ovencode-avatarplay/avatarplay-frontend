@@ -16,7 +16,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {LinePlus} from '@ui/Icons';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
-import UserDropdown, {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
+import UserDropdown, {SelectProfile, userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {setSkipContentInit} from '@/redux-store/slices/ContentInfo';
 import {useAtom} from 'jotai';
 

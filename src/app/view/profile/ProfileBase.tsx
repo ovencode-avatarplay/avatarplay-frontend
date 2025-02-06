@@ -44,7 +44,7 @@ import {setBottomNavColor} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateProfile} from '@/redux-store/slices/Profile';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
-import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
+import {SelectProfile, userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {useAtom} from 'jotai';
 
 enum eTabPDType {
@@ -84,6 +84,7 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
   });
 
   const dispatch = useDispatch();
+  const isMyProfile = data.profileInfo?.isMyProfile;
 
   useEffect(() => {
     const id = pathname.split('/').filter(Boolean).pop();
@@ -183,14 +184,18 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
           <div
             className={styles.selectProfileNameWrap}
             onClick={() => {
-              data.isOpenSelectProfile = true;
-              setData({...data});
+              if (!isMyProfile) return;
+              dataUserDropDown.onClickLong();
+              // data.isOpenSelectProfile = true;
+              // setData({...data});
             }}
           >
             <div className={styles.profileName}>{data.profileInfo?.profileInfo.name}</div>
-            <div className={styles.iconSelect}>
-              <img src={LineArrowDown.src} alt="" />
-            </div>
+            {isMyProfile && (
+              <div className={styles.iconSelect}>
+                <img src={LineArrowDown.src} alt="" />
+              </div>
+            )}
           </div>
         </div>
         <div className={styles.right}>
@@ -214,9 +219,11 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
         <div className={styles.profileStatisticsWrap}>
           <div className={styles.imgProfileWrap}>
             <img className={styles.imgProfile} src={data.profileInfo?.profileInfo.iconImageUrl} alt="" />
-            <div className={styles.iconProfileEditWrap}>
-              <img className={styles.icon} src="/ui/profile/icon_edit.svg" alt="" />
-            </div>
+            {isMyProfile && (
+              <div className={styles.iconProfileEditWrap}>
+                <img className={styles.icon} src="/ui/profile/icon_edit.svg" alt="" />
+              </div>
+            )}
           </div>
 
           <div className={styles.itemStatistic}>
@@ -427,13 +434,6 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
         </section>
       </section>
       <section className={styles.footer}></section>
-      <SelectProfile
-        open={data.isOpenSelectProfile}
-        handleCloseDrawer={() => {
-          data.isOpenSelectProfile = false;
-          setData({...data});
-        }}
-      />
     </>
   );
 };
@@ -547,112 +547,5 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
       }}
       getOptionValue={option => option.id.toString()}
     />
-  );
-};
-
-type SelectProfileType = {
-  open: boolean;
-  handleCloseDrawer: () => void;
-};
-
-const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
-  const dataProfile = useSelector((state: RootState) => state.profile);
-  const dispatch = useDispatch();
-  const [data, setData] = useState<{
-    profileList: ProfileSimpleInfo[];
-  }>({
-    profileList: [],
-  });
-  const router = useRouter();
-  useEffect(() => {
-    if (!open) return;
-    refreshProfileList();
-  }, [open]);
-
-  const refreshProfileList = async () => {
-    const profileList = await getProfileList();
-    if (!profileList) return;
-
-    data.profileList = profileList;
-    setData({...data});
-  };
-
-  return (
-    <Drawer
-      className={styles.drawer}
-      anchor="bottom"
-      open={open}
-      onClose={() => handleCloseDrawer()}
-      PaperProps={{
-        sx: {
-          // height: 'calc((var(--vh, 1vh) * 100) - 111px)',
-          padding: '8px 20px 45px',
-          borderTopLeftRadius: '24px',
-          borderTopRightRadius: '24px',
-          // background: 'var(--White, #FFF)',
-          // overflow: 'hidden',
-          // bottom: '0px',
-          // width: 'var(--full-width)',
-          // margin: '0 auto',
-        },
-      }}
-    >
-      <div className={styles.handleArea}>
-        <div className={styles.handleBar}></div>
-      </div>
-      <div className={styles.title}>Select Profile</div>
-      <div className={styles.content}>
-        <ul className={styles.profileList}>
-          {data.profileList.map((profile, index) => {
-            const isSelected = profile.id == dataProfile.currentProfile?.id;
-            return (
-              <li
-                className={styles.item}
-                key={profile.id}
-                onClick={async () => {
-                  const resData = await selectProfile(profile.id);
-                  if (!resData?.profileSimpleInfo) return;
-
-                  dispatch(updateProfile(resData?.profileSimpleInfo));
-
-                  const accessToken: string = resData?.sessionInfo?.accessToken || '';
-                  localStorage.setItem('jwt', accessToken);
-                  pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.id, router, false);
-                }}
-              >
-                <div className={styles.left}>
-                  <img className={styles.imgProfile} src={profile.iconImageUrl} alt="" />
-                  <div className={styles.nameWrap}>
-                    <span className={styles.grade}>Original</span>
-                    <div className={styles.name}>{profile.name}</div>
-                  </div>
-                </div>
-                <div className={styles.right}>
-                  {isSelected && (
-                    <img className={styles.iconChecked} src="/ui/profile/icon_select_proflie_checked.svg" alt="" />
-                  )}
-                  {!isSelected && <img className={styles.iconMore} src={BoldMore.src} alt="" />}
-                </div>
-              </li>
-            );
-          })}
-          <li
-            className={cx(styles.item, styles.clickable)}
-            onClick={() => {
-              // router.push('/profile/create');
-            }}
-          >
-            <div className={styles.left}>
-              <div className={styles.addIconWrap}>
-                <img src={LinePlus.src} alt="" />
-              </div>
-              <div className={styles.nameWrap}>
-                <div className={styles.name}>Add New Profile</div>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </Drawer>
   );
 };

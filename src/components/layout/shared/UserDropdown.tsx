@@ -36,7 +36,11 @@ import {getAuth, sendGetLanguage, SignInRes} from '@/app/NetWork/AuthNetwork';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateProfile} from '@/redux-store/slices/Profile';
-import {ProfileType} from '@/app/NetWork/ProfileNetwork';
+import {getProfileList, ProfileSimpleInfo, ProfileType, selectProfile} from '@/app/NetWork/ProfileNetwork';
+import {DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSensors} from '@dnd-kit/core';
+import {BoldMore, LinePlus} from '@ui/Icons';
+import cx from 'classnames';
+import SelectProfile from '@/app/view/profile/SelectProfile';
 
 type UserDropDownType = {
   onClick: () => void;
@@ -44,20 +48,22 @@ type UserDropDownType = {
 
 export type UserDropDownAtomType = {
   onClick: () => void;
+  onClickLong: () => void;
 };
 export const userDropDownAtom = atom<UserDropDownAtomType>({
   onClick: () => {},
+  onClickLong: () => {},
 });
 
 const UserDropdown = () => {
-  const dataProfile = useSelector((state: RootState) => state.profile);
-
-  const dispatch = useDispatch();
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
+  const dataProfile = useSelector((state: RootState) => state.profile);
+  const dispatch = useDispatch();
   // States
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<Session | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerProfileOpen, setDrawerProfileOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(0);
 
   // 임시 - UserInfo Modal
@@ -72,6 +78,7 @@ const UserDropdown = () => {
 
   useEffect(() => {
     dataUserDropDown.onClick = handleDrawerOpen;
+    dataUserDropDown.onClickLong = OpenSelectProfile;
   }, [dataUserDropDown]);
 
   const handleDropdownOpen = async () => {
@@ -88,6 +95,10 @@ const UserDropdown = () => {
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
+  };
+
+  const OpenSelectProfile = () => {
+    setDrawerProfileOpen(true);
   };
 
   const routeProfile = async () => {
@@ -224,21 +235,91 @@ const UserDropdown = () => {
     }
   };
 
+  type DndButtonProps = {
+    onClick: () => void;
+    onLongClick: () => void;
+    children: JSX.Element;
+  };
+  const DndButton = (props: DndButtonProps) => {
+    const {attributes, listeners, setNodeRef} = useDraggable({
+      id: 'draggable',
+    });
+
+    const mouseSensor = useSensor(MouseSensor, {
+      activationConstraint: {
+        delay: 500, // 500ms 동안 누르면 드래그 활성화
+        tolerance: 5, // 살짝 움직여도 롱클릭 인정
+      },
+    });
+
+    const touchSensor = useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 500, // 500ms 동안 터치 유지 시 드래그 활성화
+        tolerance: 5,
+      },
+    });
+
+    const sensors = useSensors(mouseSensor, touchSensor);
+
+    let longPressTimer: NodeJS.Timeout;
+    let isDragging = false; // 드래그 여부 확인
+
+    const handleMouseDown = () => {
+      longPressTimer = setTimeout(() => {
+        if (!isDragging) {
+          props.onLongClick();
+        }
+      }, 500);
+    };
+
+    const handleMouseUp = () => {
+      clearTimeout(longPressTimer);
+    };
+
+    const handleDragStart = () => {
+      isDragging = true;
+      clearTimeout(longPressTimer);
+    };
+
+    const handleDragEnd = () => {
+      isDragging = false;
+    };
+
+    return (
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <button
+          ref={setNodeRef}
+          {...listeners}
+          {...attributes}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onTouchStart={handleMouseDown}
+          onTouchEnd={handleMouseUp}
+          onClick={props.onClick} // 일반 클릭 처리
+        >
+          {props.children}
+        </button>
+      </DndContext>
+    );
+  };
+
   return (
     <>
-      <Badge
-        style={{padding: '12px 25px', margin: '12px -25px'}}
-        overlap="circular"
-        badgeContent={<span className={styles.avatarBadge} onClick={routeProfile} />}
-        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-      >
-        <Avatar
-          alt={auth?.user?.email || ''}
-          src={dataProfile.currentProfile?.iconImageUrl || ''}
-          onClick={routeProfile}
-          className={styles.avatar}
-        />
-      </Badge>
+      <DndButton onClick={() => routeProfile} onLongClick={() => dataUserDropDown.onClickLong()}>
+        <Badge
+          style={{padding: '12px 25px', margin: '12px -25px'}}
+          overlap="circular"
+          badgeContent={<span className={styles.avatarBadge} />}
+          anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+        >
+          <Avatar
+            alt={auth?.user?.email || ''}
+            src={dataProfile.currentProfile?.iconImageUrl || ''}
+            onClick={routeProfile}
+            className={styles.avatar}
+          />
+        </Badge>
+      </DndButton>
       <Drawer
         anchor="right"
         open={drawerOpen}
@@ -351,6 +432,12 @@ const UserDropdown = () => {
         </Popper>
       </Drawer>
       <UserInfoModal open={userInfoOpen} onClose={() => setUserInfoOpen(false)} />
+      <SelectProfile
+        open={drawerProfileOpen}
+        handleCloseDrawer={() => {
+          setDrawerProfileOpen(false);
+        }}
+      />
     </>
   );
 };
