@@ -83,10 +83,9 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
     refreshProfileInfo(profileId);
   }, [pathname]);
 
-  useEffect(() => {}, [profileId]);
   useEffect(() => {
     dispatch(setBottomNavColor(1));
-    refreshProfileInfo(profileId);
+    // refreshProfileInfo(profileId);
   }, []);
 
   const getTabInfo = (typeProfile: ProfileType): ((profileId: number, tabType: number) => Promise<any>) => {
