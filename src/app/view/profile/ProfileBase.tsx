@@ -44,7 +44,7 @@ import {setBottomNavColor} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateProfile} from '@/redux-store/slices/Profile';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
-import {SelectProfile, userDropDownAtom} from '@/components/layout/shared/UserDropdown';
+import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {useAtom} from 'jotai';
 
 enum eTabPDType {

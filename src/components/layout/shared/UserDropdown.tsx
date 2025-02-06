@@ -26,7 +26,7 @@ import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
 import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
 import LanguageSelectDropBox from './LanguageSelectDropBox';
-import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink, isLogined, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
 import {fetchLanguage} from './LanguageSetting';
 import {getLangUrlCode} from '@/configs/i18n';
 import Cookies from 'js-cookie';
@@ -41,6 +41,7 @@ import {DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSensor
 import {BoldMore, LinePlus} from '@ui/Icons';
 import cx from 'classnames';
 import SelectProfile from '@/app/view/profile/SelectProfile';
+import {middleware} from '../../../../middleware.mjs';
 
 type UserDropDownType = {
   onClick: () => void;
@@ -97,7 +98,10 @@ const UserDropdown = () => {
     setDrawerOpen(true);
   };
 
-  const OpenSelectProfile = () => {
+  const OpenSelectProfile = async () => {
+    const isLogin = await isLogined();
+    if (!isLogin) return;
+
     setDrawerProfileOpen(true);
   };
 
@@ -227,6 +231,7 @@ const UserDropdown = () => {
       setOpen(false);
       setAuth(null);
       localStorage.removeItem('jwt');
+      dispatch(updateProfile(null));
     } catch (error) {
       console.error(error);
 

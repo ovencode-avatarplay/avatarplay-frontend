@@ -18,8 +18,7 @@ const profileSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    updateProfile: (state, action: PayloadAction<ProfileSimpleInfo>) => {
-      if (!action.payload) return;
+    updateProfile: (state, action: PayloadAction<ProfileSimpleInfo | null>) => {
       state.currentProfile = action.payload;
     },
   },
