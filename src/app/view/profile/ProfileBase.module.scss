@@ -7,7 +7,8 @@
   padding: 9px 6px 9px 16px;
   box-sizing: border-box;
   position: fixed;
-  width: calc(var(--full-width));
+  width: 100%;
+  max-width: 1300px;
   top: 0;
   left: 50%;
   transform: translateX(calc(-50%));
@@ -19,6 +20,22 @@
   z-index: 2;
 
   .left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .backBtn {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+
+      img {
+        width: 100%;
+        height: 100%;
+
+      }
+    }
+
     .selectProfileNameWrap {
       cursor: pointer;
       display: flex;
@@ -67,6 +84,18 @@
     }
 
     .iconMenu {
+      width: 24px;
+      height: 24px;
+      filter: brightness(0) saturate(100%)
+    }
+
+    .iconNotification {
+      width: 24px;
+      height: 24px;
+      filter: brightness(0) saturate(100%)
+    }
+
+    .iconSetting {
       width: 24px;
       height: 24px;
       filter: brightness(0) saturate(100%)
@@ -172,15 +201,28 @@
   .profileDetail {
     margin: 5px 16px 0px;
 
-    .name {
-      color: var(--Color-Tokens-Text, #0C0C0C);
-      font-family: Lato;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 700;
-      line-height: normal;
-      letter-spacing: -0.28px;
+    .nameWrap {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+
+      .name {
+        color: var(--Color-Tokens-Text, #0C0C0C);
+        font-family: Lato;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: -0.28px;
+      }
+
+      .iconCopy {
+        filter: brightness(0) saturate(100%);
+        width: 16px;
+        height: 16px;
+      }
     }
+
 
     .verify {
       color: var(--Primary-1, #FD55D3);
@@ -248,6 +290,120 @@
         line-height: 20px;
         /* 142.857% */
         letter-spacing: -0.4px;
+      }
+    }
+
+    .buttonsOtherPD {
+      margin-top: 12px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+
+      &>* {
+        height: 36px;
+        cursor: pointer;
+      }
+
+      .follow {
+        flex: 244;
+        border-radius: 8px;
+        background: var(--Neutral-800, #2C3131);
+
+        color: var(--White, #FFF);
+        font-feature-settings: 'liga' off, 'clig' off;
+        font-family: Lato;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 20px;
+        /* 142.857% */
+        letter-spacing: -0.4px;
+      }
+
+      .gift {
+        flex: 80;
+        border-radius: 8px;
+        border: 1px solid var(--Border-1, #EAECF0);
+        background: var(--White, #FFF);
+      }
+    }
+
+    .buttonsOtherCharacter {
+      margin-top: 12px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+
+      &>* {
+        height: 36px;
+        cursor: pointer;
+      }
+
+      .subscribe {
+        flex: 115;
+        border-radius: 8px;
+        background: var(--Primary-1, #FD55D3);
+        /* Inner Button */
+        box-shadow: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset, 0px -4px 4px 0px rgba(255, 255, 255, 0.20) inset;
+
+        color: var(--Grays-White, #FFF);
+        font-feature-settings: 'liga' off, 'clig' off;
+        font-family: Lato;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 20px;
+        /* 142.857% */
+        letter-spacing: -0.4px;
+      }
+
+      .follow {
+        flex: 115;
+        border-radius: 8px;
+        background: var(--Neutral-800, #2C3131);
+
+        color: var(--Grays-White, #FFF);
+        font-feature-settings: 'liga' off, 'clig' off;
+        font-family: Lato;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 20px;
+        /* 142.857% */
+        letter-spacing: -0.4px;
+      }
+
+      .giftWrap {
+        flex: 61;
+
+        border-radius: 8px;
+        border: 1px solid var(--Border-1, #EAECF0);
+        background: var(--White, #FFF);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .icon {
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      .chat {
+        flex: 61;
+
+        border-radius: 8px;
+        border: 1px solid var(--Border-1, #EAECF0);
+        background: var(--White, #FFF);
+
+        a {
+          text-decoration: none;
+          color: inherit;
+        }
       }
     }
 
@@ -364,10 +520,9 @@
 
       position: sticky;
       top: 58px;
-      background: white;
       z-index: 2;
-      /* header 높이 */
 
+      /* header 높이 */
       .label {
         padding: 10px 7px 14px;
         text-align: center;
@@ -394,6 +549,8 @@
     .line {
       position: relative;
       height: 1px;
+      top: -1px;
+
       width: calc(100%);
       background: #DDD4D0;
     }

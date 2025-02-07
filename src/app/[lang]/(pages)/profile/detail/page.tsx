@@ -14,6 +14,7 @@ import {
   LineClose,
 } from '@ui/Icons';
 import cx from 'classnames';
+import {useRouter} from 'next/navigation';
 
 type Props = {};
 
@@ -36,6 +37,7 @@ type ProfileType = {
 };
 
 const PageProfileDetail = (props: Props) => {
+  const router = useRouter();
   const [data, setData] = useState<ProfileType>({
     indexTab: eTabType.Feed,
     indexSessionTab: eTabSessionType.NewSession,
@@ -45,7 +47,7 @@ const PageProfileDetail = (props: Props) => {
     <>
       <header className={styles.header}>
         <div className={styles.title}>Title</div>
-        <img className={styles.iconClose} src={LineClose.src} />
+        <img className={styles.iconClose} src={LineClose.src} onClick={() => router.back()} />
       </header>
       <main className={styles.main}>
         <section className={styles.characterMainImageWrap}>

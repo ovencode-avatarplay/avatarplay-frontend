@@ -9,6 +9,7 @@ import profileData from 'data/profile/profile-data.json';
 import ProfileTopViewMenu from './ProfileTopViewMenu';
 import {
   BoldAltArrowDown,
+  BoldArrowLeft,
   BoldHeart,
   BoldMenuDots,
   BoldMore,
@@ -16,6 +17,7 @@ import {
   BoldVideo,
   LineArrowDown,
   LineCheck,
+  LineCopy,
   LineMenu,
   LinePlus,
   LineShare,
@@ -43,9 +45,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setBottomNavColor} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateProfile} from '@/redux-store/slices/Profile';
-import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {useAtom} from 'jotai';
+import Link from 'next/link';
 
 enum eTabPDType {
   Feed,
@@ -74,6 +77,7 @@ type ProfileBaseProps = {
 
 // /profile?type=pd?id=123123
 const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
+  const router = useRouter();
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const pathname = usePathname();
   const [data, setData] = useState<DataProfileType>({
@@ -84,8 +88,12 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
   });
 
   const dispatch = useDispatch();
-  const isMyProfile = data.profileInfo?.isMyProfile;
-
+  const isMine = data.profileInfo?.isMyProfile;
+  const profileType = Number(data.profileInfo?.profileInfo?.type);
+  const isMyPD = isMine && profileType == ProfileType.PD;
+  const isMyCharacter = isMine && profileType == ProfileType.Character;
+  const isOtherPD = !isMine && profileType == ProfileType.PD;
+  const isOtherCharacter = !isMine && profileType == ProfileType.Character;
   useEffect(() => {
     const id = pathname.split('/').filter(Boolean).pop();
     if (id == undefined) return;
@@ -174,24 +182,31 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
     }
     return [];
   };
-  const profileType = Number(data.profileInfo?.profileInfo?.type);
   const tabList = getTabList(profileType);
 
   return (
     <>
       <section className={styles.header}>
         <div className={styles.left}>
+          {!isMine && (
+            <div
+              className={styles.backBtn}
+              onClick={() => {
+                router.back();
+              }}
+            >
+              <img src={BoldArrowLeft.src} alt="" />
+            </div>
+          )}
           <div
             className={styles.selectProfileNameWrap}
             onClick={() => {
-              if (!isMyProfile) return;
+              if (!isMine) return;
               dataUserDropDown.onClickLong();
-              // data.isOpenSelectProfile = true;
-              // setData({...data});
             }}
           >
             <div className={styles.profileName}>{data.profileInfo?.profileInfo.name}</div>
-            {isMyProfile && (
+            {isMine && (
               <div className={styles.iconSelect}>
                 <img src={LineArrowDown.src} alt="" />
               </div>
@@ -200,26 +215,35 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
         </div>
         <div className={styles.right}>
           <img className={cx(styles.icon, styles.iconShare)} src={LineShare.src} alt="" />
-          <img
-            className={cx(styles.icon, styles.iconMenu)}
-            onClick={e => {
-              dataUserDropDown.onClick();
-            }}
-            src={LineMenu.src}
-            alt=""
-          />
+          {isMine && (
+            <img
+              className={cx(styles.icon, styles.iconMenu)}
+              onClick={e => {
+                dataUserDropDown.onClick();
+              }}
+              src={LineMenu.src}
+              alt=""
+            />
+          )}
+
+          {!isMine && (
+            <img className={cx(styles.icon, styles.iconNotification)} src="/ui/profile/icon_notification.svg" alt="" />
+          )}
+          {!isMine && <img className={cx(styles.icon, styles.iconSetting)} src={BoldMenuDots.src} alt="" />}
         </div>
       </section>
       <section className={styles.main}>
-        <div className={styles.buttonWrap}>
-          <button className={styles.subscribe}>Subscribe</button>
-          <button className={styles.favorite}>Favorites</button>
-          <button className={styles.playlist}>Playlist</button>
-        </div>
+        {isMyPD && (
+          <div className={styles.buttonWrap}>
+            <button className={styles.subscribe}>Subscribe</button>
+            <button className={styles.favorite}>Favorites</button>
+            <button className={styles.playlist}>Playlist</button>
+          </div>
+        )}
         <div className={styles.profileStatisticsWrap}>
           <div className={styles.imgProfileWrap}>
             <img className={styles.imgProfile} src={data.profileInfo?.profileInfo.iconImageUrl} alt="" />
-            {isMyProfile && (
+            {isMine && (
               <div className={styles.iconProfileEditWrap}>
                 <img className={styles.icon} src="/ui/profile/icon_edit.svg" alt="" />
               </div>
@@ -240,7 +264,10 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
           </div>
         </div>
         <div className={styles.profileDetail}>
-          <div className={styles.name}>{data.profileInfo?.profileInfo?.name}</div>
+          <div className={styles.nameWrap}>
+            <div className={styles.name}>{data.profileInfo?.profileInfo?.name}</div>
+            {!isMine && <img className={styles.iconCopy} src={LineCopy.src} alt="" />}
+          </div>
           <div className={styles.verify}>
             <span className={styles.label}>Creator</span>
             <img className={styles.icon} src="/ui/profile/icon_verify.svg" alt="" />
@@ -255,12 +282,41 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
             </ul>
           </div>
           <div className={styles.showMore}>Show more...</div>
-          <div className={styles.buttons}>
-            <button className={styles.edit}>Edit</button>
-            <button className={styles.ad}>AD</button>
-            <button className={styles.friends}>Friends</button>
-          </div>
-          {/* <ul className={styles.recruitList}> */}
+          {isMyPD && (
+            <div className={styles.buttons}>
+              <button className={styles.edit}>Edit</button>
+              <button className={styles.ad}>AD</button>
+              <button className={styles.friends}>Friends</button>
+            </div>
+          )}
+          {isMyCharacter && (
+            <div className={styles.buttons}>
+              <button className={styles.edit}>Edit</button>
+              <button className={styles.ad}>AD</button>
+              <button className={styles.friends}>Friends</button>
+            </div>
+          )}
+          {isOtherPD && (
+            <div className={styles.buttonsOtherPD}>
+              <button className={styles.follow}>Follow</button>
+              <button className={styles.gift}>
+                <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
+              </button>
+            </div>
+          )}
+          {isOtherCharacter && (
+            <div className={styles.buttonsOtherCharacter}>
+              <button className={styles.subscribe}>Subscribe</button>
+              <button className={styles.follow}>Follow</button>
+              <button className={styles.giftWrap}>
+                <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
+              </button>
+              <button className={styles.chat}>
+                <Link href={getLocalizedLink(`/profile/detail`)}>Chat</Link>
+              </button>
+            </div>
+          )}
+
           <Swiper
             className={styles.recruitList}
             freeMode={true}
@@ -269,14 +325,16 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
             onSwiper={swiper => {}}
             spaceBetween={8}
           >
-            <SwiperSlide>
-              <li className={cx(styles.item, styles.addRecruit)}>
-                <div className={styles.circle}>
-                  <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
-                </div>
-                <div className={styles.label}>Add</div>
-              </li>
-            </SwiperSlide>
+            {isMine && (
+              <SwiperSlide>
+                <li className={cx(styles.item, styles.addRecruit)}>
+                  <div className={styles.circle}>
+                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                  </div>
+                  <div className={styles.label}>Add</div>
+                </li>
+              </SwiperSlide>
+            )}
             <SwiperSlide>
               <li className={styles.item}>
                 <div className={styles.circle}>
@@ -343,25 +401,6 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
                 </div>
               );
             })}
-
-            {/* <div
-              className={cx(styles.label, data.indexTab == eTabPDType.Channel && styles.active)}
-              data-tab={eTabPDType.Channel}
-            >
-              Channel
-            </div>
-            <div
-              className={cx(styles.label, data.indexTab == eTabPDType.Character && styles.active)}
-              data-tab={eTabPDType.Character}
-            >
-              Character
-            </div>
-            <div
-              className={cx(styles.label, data.indexTab == eTabPDType.Shared && styles.active)}
-              data-tab={eTabPDType.Shared}
-            >
-              Shared
-            </div> */}
           </div>
           <div className={styles.line}></div>
           <div className={styles.filter}>
@@ -489,6 +528,10 @@ const customStyles: StylesConfig<{id: number; [key: string]: any}, false> = {
 
     padding: '11px 14px',
     boxSizing: 'border-box',
+    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+    '&:first-of-type': {
+      borderTop: 'none', // 첫 번째 옵션에는 border 제거
+    },
   }),
   menu: provided => ({
     ...provided,
