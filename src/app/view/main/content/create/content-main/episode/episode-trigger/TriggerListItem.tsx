@@ -34,7 +34,7 @@ import {moveTriggerToEpisode} from '@/redux-store/slices/ContentInfo';
 import BottomRenameDrawer from '../BottomRenameDrawer';
 import {inputType} from '@/components/create/MaxTextInput';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 
 const mediaTypeConfig = {
   image: {
@@ -384,13 +384,13 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
   const handleOnFileSelect = async (files: File[]) => {
     try {
       // MediaState 설정
-      let state = MediaState.None;
+      let state = UploadMediaState.None;
       if (mediaType === 'audio') {
-        state = MediaState.TriggerAudio;
+        state = UploadMediaState.TriggerAudio;
       } else if (mediaType === 'image') {
-        state = MediaState.TriggerImage;
+        state = UploadMediaState.TriggerImage;
       } else if (mediaType === 'video') {
-        state = MediaState.TriggerVideo;
+        state = UploadMediaState.TriggerVideo;
       }
 
       // 업로드 요청 객체 생성
@@ -399,7 +399,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
       };
 
       // 이미지일 경우 다중 파일 처리, 그 외 단일 파일 처리
-      if (state === MediaState.TriggerImage) {
+      if (state === UploadMediaState.TriggerImage) {
         req.imageList = files;
       } else {
         req.file = files[0];

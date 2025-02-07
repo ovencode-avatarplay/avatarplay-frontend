@@ -10,7 +10,7 @@ import styles from './EpisodeTempCharacter.module.css';
 import {useDispatch} from 'react-redux';
 import {setCharacterInfo, TriggerInfo} from '@/redux-store/slices/ContentInfo';
 
-import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EpisodeAiImageGeneration from './EpisodeAiImageGeneration';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
@@ -102,7 +102,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
     setLoading(true);
     try {
       const req: MediaUploadReq = {
-        mediaState: MediaState.CharacterImage,
+        mediaState: UploadMediaState.CharacterImage,
         file: file,
       };
       const response = await sendUpload(req);

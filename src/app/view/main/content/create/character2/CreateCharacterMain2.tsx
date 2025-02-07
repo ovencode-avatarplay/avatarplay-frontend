@@ -19,6 +19,9 @@ import CharacterCreateMedia from './CharacterCreateMedia';
 import CharacterCreateConversation from './CharacterCreateConversation';
 import CharacterCreatePolicy from './CharacterCreatePolicy';
 import {CreateCharacter2Req, CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
+import ImageUploadDialog from '../content-main/episode/episode-ImageCharacter/ImageUploadDialog';
+import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
+import {CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
 
 interface CreateCharacterProps {}
 
@@ -33,12 +36,47 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
   const [mainimageUrl, setMainImageUrl] = useState(
     'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
   );
+
+  const [mediaCreateImage, setMediaCreateImage] = useState(
+    'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
+  );
   const [imgUploadOpen, setImgUploadOpen] = useState(false);
   //#endregion
 
   //#region Edit Thumbnail
   type UploadType = 'Mixture' | 'AIGenerate' | 'Upload';
   const [imgUploadType, setImgUploadType] = useState<UploadType | null>(null);
+  const [mediaCreate, setMediaCreate] = useState<boolean>(false);
+
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+
+  const [mediaItems, setMediaItems] = useState<CharacterMediaInfo[]>([]);
+  const [selectedMediaItemIdx, setSelectedMediaItemIdx] = useState<number>(0);
+  const handleMediaPromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+    const updatedMediaItems = [...mediaItems];
+    updatedMediaItems[index].description = event.target.value;
+    setMediaItems(updatedMediaItems);
+  };
+
+  const handleMediaSelected = (value: number) => {
+    setSelectedMediaItemIdx(value);
+  };
+
+  const handleAddMediaItem = (id: number, imageUrl: string, description: string, isProfileImage: boolean) => {
+    const newItem: CharacterMediaInfo = {
+      id: id,
+      imageUrl: imageUrl,
+      description: description,
+      isProfileImage: isProfileImage,
+    };
+
+    setMediaItems([...mediaItems, newItem]);
+  };
+
+  const handleDeleteMediaItem = (index: number) => {
+    const updatedMediaItems = mediaItems.filter((_, i) => i !== index);
+    setMediaItems(updatedMediaItems);
+  };
   //#endregion
 
   //#region  Basic
@@ -84,12 +122,52 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
   };
 
   const handlerSetImage = (img: string) => {
-    setMainImageUrl(img);
+    if (mediaCreate) {
+      setMediaCreateImage(img);
+      handleAddMediaItem(-1, img, '', false);
+    } else {
+      setMainImageUrl(img);
+    }
     setImgUploadOpen(false);
   };
+  //#region File Upload
+  // const handleOnUploadImageClick = () => {
+  //   setUploadDialogOpen(true);
+  // };
+
+  const handleFileSelection = async (file: File) => {
+    // handlerSetImage(
+    //   'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
+    // );
+    try {
+      const req: MediaUploadReq = {
+        mediaState: UploadMediaState.CharacterImage,
+        file: file,
+      };
+      const response = await sendUpload(req);
+      if (response?.data) {
+        const imgUrl: string = response.data.url;
+
+        handlerSetImage(imgUrl);
+      } else {
+        throw new Error('Unexpected API response: No data');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    } finally {
+    }
+  };
+
+  //#endregion
 
   const handleOnClickThumbnail = () => {
     setImgUploadOpen(true);
+    setMediaCreate(false);
+  };
+
+  const handleOnClickMediaCreate = () => {
+    setImgUploadOpen(true);
+    setMediaCreate(true);
   };
 
   const handleCreateCharacter = async () => {
@@ -235,7 +313,17 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
     {
       label: 'Media',
       preContent: '',
-      content: <CharacterCreateMedia />,
+      content: (
+        <CharacterCreateMedia
+          mediaItems={mediaItems}
+          selectedItemIdx={selectedMediaItemIdx}
+          onClickCreateMedia={handleOnClickMediaCreate}
+          handlePromptChange={handleMediaPromptChange}
+          handleSelected={handleMediaSelected}
+          handleAddMediaItem={() => handleAddMediaItem(-1, mediaCreateImage, '', false)}
+          handleDeleteMediaItem={handleDeleteMediaItem}
+        />
+      ),
     },
     {
       label: 'Conversation',
@@ -313,7 +401,13 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
             />
           )}
           {imgUploadType === 'AIGenerate' && <CharacterImageSet createFinishAction={handlerSetImage} />}
-          {imgUploadType === 'Upload' && <>Upload</>}
+          {imgUploadType === 'Upload' && (
+            <ImageUploadDialog
+              isOpen={true}
+              onClose={() => setImgUploadType(null)}
+              onFileSelect={handleFileSelection}
+            />
+          )}
         </div>
       </>
     );

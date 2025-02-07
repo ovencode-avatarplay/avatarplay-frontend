@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 import styles from './EpisodeUploadImage.module.css';
 
-import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import {BoldCircleX, LineUpload} from '@ui/Icons';
@@ -26,7 +26,7 @@ const EpisodeUploadImage: React.FC<Props> = ({imgUrl, setImgUrl}) => {
     setLoading(true);
     try {
       const req: MediaUploadReq = {
-        mediaState: MediaState.CharacterImage,
+        mediaState: UploadMediaState.CharacterImage,
         file: file,
       };
       const response = await sendUpload(req);
