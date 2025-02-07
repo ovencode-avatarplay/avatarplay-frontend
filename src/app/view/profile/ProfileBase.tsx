@@ -87,7 +87,7 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
   const isMyProfile = data.profileInfo?.isMyProfile;
 
   useEffect(() => {
-    const id = pathname.split('/').filter(Boolean).pop();
+    const id = pathname?.split('/').filter(Boolean).pop();
     if (id == undefined) return;
 
     const profileId = parseInt(id);
