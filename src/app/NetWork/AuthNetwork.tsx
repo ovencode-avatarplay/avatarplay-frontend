@@ -113,13 +113,26 @@ interface GetAuthProfileInfoRes {
 
 export const getAuth = async () => {
   try {
-    const resProfileInfo: AxiosResponse<ResponseAPI<GetAuthProfileInfoRes>> = await api.post(
-      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Auth/getProfileInfo`,
-      {},
-    );
-    if (resProfileInfo.status != 200) return;
+    const jwtToken = localStorage.getItem('jwt');
+    const _language = getLangUrlCode(getBrowserLanguage());
 
-    return resProfileInfo?.data;
+    const resProfileInfo = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Auth/getProfileInfo`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${jwtToken}`, // JWT를 Authorization 헤더에 포함
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
+    });
+
+    if (!resProfileInfo.ok) {
+      console.error('Failed to auth:', resProfileInfo.statusText);
+      console.log('Auth  리스폰스 ok 실패');
+      return;
+    }
+
+    const data: ResponseAPI<GetAuthProfileInfoRes> = await resProfileInfo.json();
+    return data;
   } catch (e) {
     alert('api 에러' + e);
   }
