@@ -6,6 +6,7 @@ import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {BoldAlert, BoldRuby, BoldStar} from '@ui/Icons';
 import SinglePlanContent from './SinglePlanContent';
 import ShopTabMenu, {ShopTabType} from './ShopTabMenu';
+import SubscriptionPlan from './SubscriptionPlan';
 
 export const dummyBannerList: BannerUrlList[] = [
   {
@@ -81,6 +82,11 @@ const Shop: React.FC = () => {
           {selectedTab == ShopTabType.SinglePlan && (
             <>
               <SinglePlanContent></SinglePlanContent>
+            </>
+          )}
+          {selectedTab == ShopTabType.SubscriptionPlan && (
+            <>
+              <SubscriptionPlan></SubscriptionPlan>
             </>
           )}
         </div>
