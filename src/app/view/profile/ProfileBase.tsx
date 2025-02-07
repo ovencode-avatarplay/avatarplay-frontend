@@ -95,7 +95,7 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
   const isOtherPD = !isMine && profileType == ProfileType.PD;
   const isOtherCharacter = !isMine && profileType == ProfileType.Character;
   useEffect(() => {
-    const id = pathname.split('/').filter(Boolean).pop();
+    const id = pathname?.split('/').filter(Boolean).pop();
     if (id == undefined) return;
 
     const profileId = parseInt(id);
