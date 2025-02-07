@@ -252,14 +252,14 @@ const UserDropdown = () => {
 
     const mouseSensor = useSensor(MouseSensor, {
       activationConstraint: {
-        delay: 500, // 500ms 동안 누르면 드래그 활성화
+        delay: 2000, // 500ms 동안 누르면 드래그 활성화
         tolerance: 5, // 살짝 움직여도 롱클릭 인정
       },
     });
 
     const touchSensor = useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 500, // 500ms 동안 터치 유지 시 드래그 활성화
+        delay: 2000, // 500ms 동안 터치 유지 시 드래그 활성화
         tolerance: 5,
       },
     });
@@ -301,6 +301,7 @@ const UserDropdown = () => {
           onTouchStart={handleMouseDown}
           onTouchEnd={handleMouseUp}
           onClick={props.onClick} // 일반 클릭 처리
+          draggable="false"
         >
           {props.children}
         </button>
