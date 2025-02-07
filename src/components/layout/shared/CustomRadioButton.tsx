@@ -10,9 +10,9 @@ import {
 interface CustomRadioButtonProps {
   shapeType: 'circle' | 'square';
   displayType: 'buttonOnly' | 'buttonText';
-  onSelect: (value: string) => void;
-  value: string;
-  selectedValue: string | null;
+  onSelect: (value: string | number) => void;
+  value: string | number;
+  selectedValue: string | number | null;
   label?: string;
 }
 

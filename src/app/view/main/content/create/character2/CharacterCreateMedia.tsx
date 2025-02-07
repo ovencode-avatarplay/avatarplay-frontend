@@ -77,7 +77,7 @@ const CharacterCreateMedia: React.FC<Props> = ({}) => {
                   shapeType="square"
                   value={item.index.toString()}
                   selectedValue={item.selectedValue}
-                  onSelect={handlerSelected}
+                  onSelect={(value: string | number) => handlerSelected(String(value))}
                 />
               </div>
             </div>

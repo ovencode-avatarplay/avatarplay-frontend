@@ -4,10 +4,43 @@ import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import {BoldAI, BoldArrowDown, LineDelete} from '@ui/Icons';
 import {useState} from 'react';
+interface Props {
+  selectedLang: number;
+  characterDesc: string;
+  worldScenario: string;
+  greeting: string;
+  secret: string;
+  selectedLLM: number;
+  selectedPrompt: string;
+  selectedLorebook: string;
+  onLangChange: (lang: number) => void;
+  onCharacterDescChange: (desc: string) => void;
+  onWorldScenarioChange: (scenario: string) => void;
+  onGreetingChange: (greeting: string) => void;
+  onSecretChange: (secret: string) => void;
+  onSelectedLLMChange: (llm: number) => void;
+  onSelectedPromptChange: (prompt: string) => void;
+  onSelectedLorebookChange: (lorebook: string) => void;
+}
 
-interface Props {}
-
-const CharacterCreateLLM: React.FC<Props> = ({}) => {
+const CharacterCreateLLM: React.FC<Props> = ({
+  selectedLang,
+  characterDesc,
+  worldScenario,
+  greeting,
+  secret,
+  selectedLLM,
+  selectedPrompt,
+  selectedLorebook,
+  onLangChange,
+  onCharacterDescChange,
+  onWorldScenarioChange,
+  onGreetingChange,
+  onSecretChange,
+  onSelectedLLMChange,
+  onSelectedPromptChange,
+  onSelectedLorebookChange,
+}) => {
   const langItems = [
     {label: 'Lang 1', value: '1'},
     {label: 'Lang 2', value: '2'},
@@ -32,31 +65,20 @@ const CharacterCreateLLM: React.FC<Props> = ({}) => {
     {label: 'lorebook 3', value: '3'},
   ];
 
-  const [selectedLang, setSelectedLang] = useState('');
-
-  const [characterDesc, setCharacterDesc] = useState<string>('');
-  const [worldScenario, setWorldScenario] = useState<string>('');
-  const [greeting, setGreeting] = useState<string>('');
-  const [secret, setSecret] = useState<string>('');
-
-  const [selectedLLM, setSelectedLLm] = useState('');
-  const [selectedPrompt, setSelectedPrompt] = useState('');
-  const [selectedLorebook, setSelectedLorebook] = useState('');
-
-  const handleSelectLang = (value: string) => {
-    setSelectedLang(value);
+  const handleSelectLang = (value: number) => {
+    onLangChange(value);
   };
 
-  const handleSelectLLM = (value: string) => {
-    setSelectedLLm(value);
+  const handleSelectLLM = (value: number) => {
+    onSelectedLLMChange(value);
   };
 
   const handleSelectPrompt = (value: string) => {
-    setSelectedPrompt(value);
+    onSelectedPromptChange(value);
   };
 
   const handleSelectLoreBook = (value: string) => {
-    setSelectedLorebook(value);
+    onSelectedLorebookChange(value);
   };
 
   const renderTitle = (title: string, desc: string) => {
@@ -160,7 +182,7 @@ const CharacterCreateLLM: React.FC<Props> = ({}) => {
                 </button>
               </div>
             </div>
-            {renderMaxTextInput(greeting, setGreeting)}
+            {renderMaxTextInput(greeting, onGreetingChange)}
           </div>
         </ul>
       </>
@@ -172,35 +194,51 @@ const CharacterCreateLLM: React.FC<Props> = ({}) => {
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`Reference Language *`, `Please let me know which language you'd like to use`)}
         <div className={styles.dropBox}></div>
-        <CustomDropDown items={langItems} displayType="Icon" onSelect={handleSelectLang} />
+        <CustomDropDown
+          items={langItems}
+          displayType="Icon"
+          onSelect={(value: string | number) => handleSelectLang(Number(value))}
+        />
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(
           `Character Description *`,
           `Use{{User}}to replace with the name of the user in the conversation. Use{{Char}}to replace with the charater’s name.`,
         )}
-        {renderMaxTextInput(characterDesc, setCharacterDesc)}
+        {renderMaxTextInput(characterDesc, onCharacterDescChange)}
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`World Scenario`, '')}
-        {renderMaxTextInput(worldScenario, setWorldScenario)}
+        {renderMaxTextInput(worldScenario, onWorldScenarioChange)}
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`Greeting`, '')}
-        {renderMaxTextInput(greeting, setGreeting)}
+        {renderMaxTextInput(greeting, onGreetingChange)}
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`Secrets`, '')}
-        {renderMaxTextInput(secret, setSecret)}
+        {renderMaxTextInput(secret, onSecretChange)}
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`LLM`, '')}
-        <CustomDropDown items={llmItems} displayType="Text" onSelect={handleSelectLLM} />
+        <CustomDropDown
+          items={llmItems}
+          displayType="Text"
+          onSelect={(value: string | number) => handleSelectLLM(Number(value))}
+        />
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`Custom Modules`, 'text description')}
-        <CustomDropDown items={promptItems} displayType="Text" onSelect={handleSelectPrompt} />
-        <CustomDropDown items={lorebookItems} displayType="Text" onSelect={handleSelectLoreBook} />
+        <CustomDropDown
+          items={promptItems}
+          displayType="Text"
+          onSelect={(value: string | number) => handleSelectPrompt(String(value))}
+        />
+        <CustomDropDown
+          items={lorebookItems}
+          displayType="Text"
+          onSelect={(value: string | number) => handleSelectLoreBook(String(value))}
+        />
       </div>
 
       {renderTitle(

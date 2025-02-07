@@ -74,7 +74,7 @@ const CharacterGalleryViewer: React.FC<CharacterGalleryViewerProps> = ({
   useEffect(() => {
     if (imageUrls != null && imageUrls.length > 0 && selectedIndex !== null) {
       setCurrentBackground(imageUrls[selectedIndex].imageUrl);
-      setCurrentInfo(imageUrls[selectedIndex].promptParameter);
+      setCurrentInfo(imageUrls[selectedIndex].debugParameter);
       onSelectImage(categoryType, selectedIndex);
     }
   }, [imageUrls, selectedIndex]);
