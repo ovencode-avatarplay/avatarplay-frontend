@@ -14,9 +14,10 @@ interface CustomDropDownProps {
   }>;
   displayType: 'Text' | 'Icon' | 'TwoIcon' | 'Profile' | 'Logo';
   onSelect: (value: string) => void;
+  style?: React.CSSProperties;
 }
 
-const CustomDropDown: React.FC<CustomDropDownProps> = ({items, displayType, onSelect}) => {
+const CustomDropDown: React.FC<CustomDropDownProps> = ({items, displayType, onSelect, style}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
@@ -72,7 +73,7 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({items, displayType, onSe
   };
 
   return (
-    <div className={styles.dropdown}>
+    <div className={styles.dropdown} style={style}>
       <div className={styles.selectedItem} onClick={toggleDropdown}>
         {selectedItem ? (
           <>
