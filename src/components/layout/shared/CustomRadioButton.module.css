@@ -1,0 +1,38 @@
+/* 기본 라디오 버튼 컨테이너 스타일 */
+.radioButtonContainer {  
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .buttonImage {
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+  }
+  
+  .buttonText {
+    color: #000;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
+  } 
+
+  .buttonOnly {
+    width: 19px;
+    height: 19px;
+  }
+  
+  .buttonText {
+    display: flex;
+    align-items: center;
+  }
+  
+  .buttonText .buttonImage {
+    margin-right: 8px;
+  }
+  

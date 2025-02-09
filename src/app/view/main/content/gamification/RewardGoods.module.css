@@ -1,0 +1,56 @@
+.container
+{
+    
+    margin: 22px 16px 0 16px;
+}
+
+.resourceContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    padding: 10px;  
+    height: 47px;  
+    background: #FFF5FD;
+    border-radius: 12px;
+}
+
+.resource {
+  display: flex;
+  align-items: center; 
+  
+  justify-content: center;
+  width: 33%;
+  gap: 4px;
+  padding: 5px 12px;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}
+
+.ruby {
+  filter: brightness(0) saturate(100%) invert(45%) sepia(33%) saturate(2984%) hue-rotate(326deg) brightness(103%) contrast(108%);
+}
+
+.coin {
+
+}
+
+.star {
+  filter: brightness(0) saturate(100%) invert(67%) sepia(99%) saturate(433%) hue-rotate(360deg) brightness(102%) contrast(108%);
+}
+
+.value {
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #000000;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: #E8EAED;
+}

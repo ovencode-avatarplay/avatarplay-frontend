@@ -30,6 +30,8 @@ import ReelsComment from './ReelsComment';
 import SharePopup from '../layout/shared/SharePopup';
 import ChatMediaDialog from '@/app/view/main/content/Chat/MainChat/ChatMediaDialog';
 import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainChat/ChatTypes';
+import {useRouter} from 'next/navigation';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -39,6 +41,7 @@ interface ReelsContentProps {
 }
 
 const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setIsMute}) => {
+  const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
@@ -303,9 +306,20 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
           <div className={styles.dim}></div>
           {/* User Info */}
           <div className={styles.userInfo}>
-            <Avatar src={item.characterProfileUrl || '/images/001.png'} style={{width: '32px', height: '32px'}} />
+            <Avatar
+              src={item.characterProfileUrl || '/images/001.png'}
+              style={{width: '32px', height: '32px'}}
+              onClick={() => {
+                pushLocalizedRoute('/profile/' + item?.characterProfileId, router);
+              }}
+            />
 
-            <div className={styles.profileDetails}>
+            <div
+              className={styles.profileDetails}
+              onClick={() => {
+                pushLocalizedRoute('/profile/' + item?.characterProfileId, router);
+              }}
+            >
               <span className={styles.username}>{item.characterProfileName}</span>
               <span className={styles.sponsored}>Sponsored</span>
             </div>

@@ -7,7 +7,7 @@ import {Box, IconButton, Typography} from '@mui/material';
 import ReactPlayer from 'react-player';
 
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
-import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 interface TriggerCreateMediaProps {
   mediaType: 'image' | 'video' | 'audio'; // 미디어 타입
   onMediaUrlsChange: (urls: string[]) => void; // mediaUrls 전달 콜백
@@ -47,13 +47,13 @@ const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType, onMed
   const handleOnFileSelect = async (files: File[]) => {
     try {
       // MediaState 설정
-      let state = MediaState.None;
+      let state = UploadMediaState.None;
       if (mediaType === 'audio') {
-        state = MediaState.TriggerAudio;
+        state = UploadMediaState.TriggerAudio;
       } else if (mediaType === 'image') {
-        state = MediaState.TriggerImage;
+        state = UploadMediaState.TriggerImage;
       } else if (mediaType === 'video') {
-        state = MediaState.TriggerVideo;
+        state = UploadMediaState.TriggerVideo;
       }
 
       // 업로드 요청 객체 생성
@@ -62,7 +62,7 @@ const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType, onMed
       };
 
       // 이미지일 경우 다중 파일 처리, 그 외 단일 파일 처리
-      if (state === MediaState.TriggerImage) {
+      if (state === UploadMediaState.TriggerImage) {
         req.imageList = files;
       } else {
         req.file = files[0];

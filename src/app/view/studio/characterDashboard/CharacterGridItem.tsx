@@ -1,13 +1,13 @@
 import React from 'react';
 import styles from './CharacterGridItem.module.css';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
-import {LineCheck, LineEdit} from '@ui/Icons';
+import {BoldLock, LineCheck, LineEdit} from '@ui/Icons';
 
 interface CharacterGridItemProps {
   character: CharacterInfo;
   isSelected: boolean;
   onSelect: () => void;
-  hideOverlay?: boolean;
+  showVisibilityType?: boolean;
   canEdit?: boolean;
   onClickEdit?: () => void;
 }
@@ -33,7 +33,7 @@ const CharacterGridItem: React.FC<CharacterGridItemProps> = ({
   character,
   isSelected,
   onSelect,
-  hideOverlay = false,
+  showVisibilityType = false,
   canEdit = false,
   onClickEdit = null,
 }) => {
@@ -66,6 +66,14 @@ const CharacterGridItem: React.FC<CharacterGridItemProps> = ({
         }}
       >
         {isSelected && <img src={LineCheck.src} className={styles.selectedIcon} />}
+        {showVisibilityType && character.visibilityType < 2 && (
+          <div className={styles.visibilityOverlay}>
+            {character.visibilityType === 0 && <img className={styles.visibilityIcon} src={BoldLock.src} alt="lock" />}
+            <div className={styles.visibilityText}>
+              {character.visibilityType === 0 ? 'Private' : character.visibilityType === 1 ? 'Unlisted' : ''}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Character Info */}

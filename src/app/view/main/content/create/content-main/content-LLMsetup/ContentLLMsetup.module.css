@@ -75,6 +75,7 @@
 .categoryArea
 {
     overflow-y: auto;
+    background-color: white;
 }
 
 .categoryArea::-webkit-scrollbar {

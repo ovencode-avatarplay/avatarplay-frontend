@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  
+  height: 36px;
+  margin: 7px 16px 1px;
+}
+
+.tags {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1; /* 각 탭이 동일한 너비를 가지도록 설정 */
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  color: #80868B;
+  padding-bottom: 5px;
+}

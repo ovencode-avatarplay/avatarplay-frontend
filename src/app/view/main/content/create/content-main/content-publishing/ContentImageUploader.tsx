@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setThumbnail} from '@/redux-store/slices/PublishInfo';
 import {RootState} from '@/redux-store/ReduxStore';
 
-import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ImageUploadDialog from '../episode/episode-ImageCharacter/ImageUploadDialog';
 import {BoldCircleX, LineUpload} from '@ui/Icons';
@@ -58,7 +58,7 @@ const ContentImageUpload: React.FC<Props> = ({
     try {
       // Upload 객체 생성
       const req: MediaUploadReq = {
-        mediaState: MediaState.ContentImage, // 적절한 MediaState 설정
+        mediaState: UploadMediaState.ContentImage, // 적절한 MediaState 설정
         file,
       };
 

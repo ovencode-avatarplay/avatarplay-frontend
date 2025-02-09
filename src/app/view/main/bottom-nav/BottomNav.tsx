@@ -16,12 +16,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import {LinePlus} from '@ui/Icons';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
-import UserDropdown, {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
+import UserDropdown from '@/components/layout/shared/UserDropdown';
 import {setSkipContentInit} from '@/redux-store/slices/ContentInfo';
 import {useAtom} from 'jotai';
 
 export default function BottomNav() {
-  const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const dispatch = useDispatch();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
@@ -34,14 +33,12 @@ export default function BottomNav() {
   };
 
   const handleClick = (index: number) => {
-    if (index === 0 || index === 1 || index === 4) {
-      if (index == 0) {
-        dispatch(setBottomNavColor(0));
-      } else {
-        dispatch(setBottomNavColor(1));
-      }
-      dispatch(setSelectedIndex(index));
+    if (index == 0) {
+      dispatch(setBottomNavColor(0));
+    } else {
+      dispatch(setBottomNavColor(1));
     }
+    dispatch(setSelectedIndex(index));
   };
 
   const toggleProfileDrawer = (open: boolean) => {
@@ -174,7 +171,7 @@ export default function BottomNav() {
               return (
                 <Link
                   key={index}
-                  href={index === 0 || index === 1 || index === 4 ? getLocalizedLink(button.link) : ''}
+                  href={getLocalizedLink(button.link)}
                   onClick={index !== buttonData.length - 1 ? () => handleClick(index) : undefined}
                   onMouseDown={index === buttonData.length - 1 ? handleLongPressStart : undefined}
                   onMouseUp={index === buttonData.length - 1 ? handleLongPressEnd : undefined}
@@ -195,16 +192,14 @@ export default function BottomNav() {
               );
             } else {
               return (
-                <button
+                <div
+                  key={index}
                   className={`${styles.navButton} 
                         ${selectedIndex === index ? styles.selected : ''} 
                         ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
-                  onClick={() => {
-                    dataUserDropDown.onClick();
-                  }}
                 >
                   <UserDropdown />
-                </button>
+                </div>
               );
             }
           })}

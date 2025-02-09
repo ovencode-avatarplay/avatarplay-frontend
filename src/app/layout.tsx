@@ -12,10 +12,15 @@ export default function Layout({children}: {children: React.ReactNode}) {
   const router = useRouter(); // useRouter는 클라이언트에서만 사용
   const paddingRef = useRef();
   useEffect(() => {
+    refreshLanguage();
     // useRouter를 useEffect 안에서 호출하여 클라이언트 측에서만 실행되도록 설정
+  }, [hasRun, router]); // hasRun과 router가 변경될 때마다 실행
+
+  const refreshLanguage = async () => {
     if (!hasRun) {
+      const isLogin = await isLogined();
       // 로그인되지 않은 유저면 Language 쿠키값을 현지언어로
-      if (isLogined() === false) {
+      if (isLogin === false) {
         refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
       } else {
         // 서버에 로그인 상태 갱신을 요청한다.
@@ -30,7 +35,7 @@ export default function Layout({children}: {children: React.ReactNode}) {
 
       setHasRun(true); // 상태를 업데이트하여 이후에는 실행되지 않도록 함
     }
-  }, [hasRun, router]); // hasRun과 router가 변경될 때마다 실행
+  };
 
   // useEffect(() => {
   //   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);

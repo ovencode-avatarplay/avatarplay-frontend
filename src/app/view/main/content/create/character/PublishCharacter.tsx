@@ -9,6 +9,7 @@ import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import CustomSettingButton from '@/components/layout/shared/CustomSettingButton';
+import {LineDelete} from '@ui/Icons';
 
 interface PublishCharacterProps {
   characterInfo: Partial<CharacterInfo>;
@@ -16,6 +17,8 @@ interface PublishCharacterProps {
   publishRequested: boolean;
   publishRequestedAction: () => void;
   publishFinishAction: () => void;
+  showDelete?: boolean;
+  deleteAction?: () => void;
 }
 
 const PublishCharacter: React.FC<PublishCharacterProps> = ({
@@ -24,9 +27,12 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
   publishRequested,
   publishRequestedAction,
   publishFinishAction,
+  showDelete = false,
+  deleteAction,
 }) => {
   const [isVisibilityOpen, setIsVisibilityOpen] = useState(false);
   const [isMonetizationOpen, setIsMonetizationOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const defaultCharacterInfo: CharacterInfo = {
@@ -239,12 +245,10 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
             items={visibilityItems}
             onClick={() => {
               setIsVisibilityOpen(true);
-              console.log(isVisibilityOpen);
             }}
             isOpen={isVisibilityOpen}
             onClose={() => {
               setIsVisibilityOpen(false);
-              console.log(isVisibilityOpen);
             }}
             selectedIndex={visibilityType}
           />
@@ -258,6 +262,34 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
             onClose={() => setIsMonetizationOpen(false)}
             selectedIndex={monetization ? 1 : 0}
           />
+          {showDelete && (
+            <CustomSettingButton
+              type="popup"
+              name="Delete"
+              icon={LineDelete.src}
+              selectedValue={''}
+              textClick={true}
+              items={null}
+              onClick={() => setIsDeleteOpen(true)}
+              isOpen={isDeleteOpen}
+              onClose={() => {
+                setIsDeleteOpen(false);
+              }}
+              onAction={() => {
+                if (deleteAction) {
+                  deleteAction();
+                }
+                setIsDeleteOpen(false);
+              }}
+              selectedIndex={null}
+              iconStyle={{
+                filter: 'invert(48%) sepia(100%) saturate(1249%) hue-rotate(285deg) brightness(97%) contrast(105%)',
+              }}
+              nameStyle={{
+                color: '#FD55D3',
+              }}
+            />
+          )}
         </div>
       </div>
     </>

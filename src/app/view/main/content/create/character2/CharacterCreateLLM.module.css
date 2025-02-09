@@ -1,0 +1,198 @@
+.llmContainer
+{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    align-self: stretch;
+
+    overflow-y: scroll;
+
+    margin-top: 14px;
+    margin-bottom: calc(46px + 20px + 43px);
+}
+
+.llmContainer::-webkit-scrollbar {
+    display: none;  
+  }
+  
+  .llmContainer {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+  }
+
+
+.inputDataBoxArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+}
+
+
+
+.titleArea{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    align-self: stretch; 
+}
+
+.title2
+{
+    color: var(--Neutral-900, #040415);
+    font-feature-settings: 'liga' off, 'clig' off;    
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px; /* 114.286% */
+    letter-spacing: -0.4px;
+}
+
+.desc
+{
+    color: var(--Neutral-700, #5F6368);
+    font-feature-settings: 'liga' off, 'clig' off;    
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; /* 15.6px */
+    letter-spacing: -0.4px;
+}
+
+
+.maxTextInputArea
+{
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    align-self: stretch;
+}
+
+.maxTextButtonArea
+{
+    display: flex;
+    width: 50px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.maxTextButton
+{
+    display: flex;
+    width: 100%;
+    padding-top: 11px;
+    padding-bottom: 11px;
+
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    cursor: pointer;
+
+    border-radius: 8px;
+    background-color: var(--Neutral-900, #040415);
+    
+    color: var(--White, #FFF);
+    font-feature-settings: 'liga' off, 'clig' off; 
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; /* 15.6px */
+    letter-spacing: -0.4px;
+}
+
+.maxTextButtonIcon
+{
+    width: 25.067px;
+    height: 25.067px;
+}
+
+.greetingDescArea
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.addGreetingButton
+{
+    display: flex;
+    width: 100px;
+    height: 46px;
+    padding: 14px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+
+    border-radius: 10px;
+    border: 1px solid var(--Border-1, #EAECF0);
+    background: var(--White, #FFF);
+}
+
+
+
+/*이하 사용 안함*/
+.greetingListArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
+}
+
+.greetingItem
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
+}
+
+.greetingTitleArea
+{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    align-self: stretch;
+    justify-content: space-between;
+}
+
+.greetingButtonArea
+{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.greetingButton
+{
+    display: flex;
+    width: 44px;
+    height: 46px;
+    padding: 14px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    
+    border-radius: 10px;
+    background: var(--Neutral-100, #F1F3F4);
+}
+
+.greetingButtonIcon
+{
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);
+}

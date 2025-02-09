@@ -21,7 +21,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
 import {
   GenerateImageReq2,
-  MediaState,
+  UploadMediaState,
   MediaUploadReq,
   sendGenerateImageReq2,
   sendUpload,
@@ -334,7 +334,6 @@ const EpisodeInitialize: React.FC<Props> = ({
       const response = await sendGenerateImageReq2(payload); // API 요청
       const newImages = (response.data?.imageUrl || []).filter(url => url.startsWith('https://'));
 
-      console.log(newImages);
       // 기존 로컬스토리지 값 가져오기
       addToLocalStorage(newImages);
 
@@ -521,7 +520,7 @@ const EpisodeInitialize: React.FC<Props> = ({
     setLoading(true);
     try {
       const req: MediaUploadReq = {
-        mediaState: MediaState.CharacterImage,
+        mediaState: UploadMediaState.CharacterImage,
         file: file,
       };
       const response = await sendUpload(req);

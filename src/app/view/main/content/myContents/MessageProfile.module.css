@@ -1,0 +1,97 @@
+/* 전체 컨테이너 */
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  height: 77px;
+  border-bottom: 1px solid #F1F3F4;
+  padding: 10px 16px;
+}
+
+/* 프로필 컨테이너 */
+.profileContainer {
+  position: relative;
+  width: 45px;
+  height: 45px;
+}
+
+.profileImage {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 0.5px solid rgba(0, 0, 0, 0.4);
+}
+
+/* 상태 표시 (핑크색 원) */
+.statusIndicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  background-color: #FD55D3;
+  border-radius: 50%;
+}
+
+/* 프로필 정보 */
+.profileInfo {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 8px;
+}
+
+/* 상단 프로필 라인 */
+.profileTop {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 프로필 이름 */
+.profileName {
+  font-weight: 600;
+  font-size: 14px;
+  color: #000;
+}
+
+/* 레벨 뱃지 */
+.levelBadge {
+  background: #FFE6F8;
+  color: #FD55D3;
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 999px;
+}
+
+/* 타임스탬프 */
+.timestamp {
+  font-size: 12px;
+  color: #9AA0A6;
+}
+
+/* 정보 아이콘 */
+.infoIcon {
+  width: 20px;
+  height: 20px;
+  color: #DADCE0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-right: 16px;
+  
+}
+.info
+{
+  filter: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(114%) hue-rotate(184deg) brightness(90%) contrast(97%);
+}
+
+.delete
+{
+  filter: brightness(0) saturate(100%)
+}

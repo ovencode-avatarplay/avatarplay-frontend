@@ -1,6 +1,5 @@
 import CharacterCreateSequence from './CreateCharacterSequence';
 import styles from './CreateCharacterMain.module.css';
-import CreateCharacterTopMenu from './CreateCharacterTopMenu';
 
 interface CreateCharacterProps {}
 
@@ -8,7 +7,6 @@ interface CreateCharacterProps {}
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-import ContentHeader from '../content-main/ContentHeader';
 import {LineDashboard} from '@ui/Icons';
 
 const CreateCharacterMain: React.FC<CreateCharacterProps> = () => {
@@ -31,7 +29,11 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = () => {
             <img className={`${styles.dashboardIcon} `} src={LineDashboard.src} />
           </button>
         </CreateDrawerHeader>
-        <CharacterCreateSequence closeAction={() => {}} isModify={false} publishFinishAction={handlerPublishFinish} />
+        <CharacterCreateSequence
+          closeAction={() => {}}
+          createType="create"
+          publishFinishAction={handlerPublishFinish}
+        />
       </div>
     </>
   );

@@ -20,6 +20,8 @@ import {useRouter} from 'next/navigation';
 
 export const fetchLanguage = async (router: ReturnType<typeof useRouter>) => {
   const response = await sendGetLanguage({});
-  const language = response.data?.languageType;
-  refreshLanaguage(language, router);
+  if (response) {
+    const language = response.data?.languageType;
+    refreshLanaguage(language, router);
+  }
 };

@@ -14,6 +14,16 @@
     border-style: solid;
     width: 38px;
     height: 38px;
+
+    -webkit-touch-callout: none; /* iOS Safari에서 컨텍스트 메뉴 차단 */
+    -webkit-user-select: none;  /* 텍스트 선택 방지 */
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none; /* 터치 이벤트 비활성화 (필요시 사용) */
+  
+    -webkit-user-drag: none;
+    pointer-events: auto; /* 버튼 이벤트 정상적으로 동작하게 유지 */
   }
   
   .menuList {

@@ -26,12 +26,22 @@ import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
 import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
 import LanguageSelectDropBox from './LanguageSelectDropBox';
-import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink, isLogined, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
 import {fetchLanguage} from './LanguageSetting';
 import {getLangUrlCode} from '@/configs/i18n';
 import Cookies from 'js-cookie';
 import {getCookiesLanguageType} from '@/utils/browserInfo';
 import {atom, useAtom} from 'jotai';
+import {getAuth, sendGetLanguage, SignInRes} from '@/app/NetWork/AuthNetwork';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {updateProfile} from '@/redux-store/slices/Profile';
+import {getProfileList, ProfileSimpleInfo, ProfileType, selectProfile} from '@/app/NetWork/ProfileNetwork';
+import {DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSensors} from '@dnd-kit/core';
+import {BoldMore, LinePlus} from '@ui/Icons';
+import cx from 'classnames';
+import SelectProfile from '@/app/view/profile/SelectProfile';
+import {middleware} from '../../../../middleware.mjs';
 
 type UserDropDownType = {
   onClick: () => void;
@@ -39,17 +49,22 @@ type UserDropDownType = {
 
 export type UserDropDownAtomType = {
   onClick: () => void;
+  onClickLong: () => void;
 };
 export const userDropDownAtom = atom<UserDropDownAtomType>({
   onClick: () => {},
+  onClickLong: () => {},
 });
 
 const UserDropdown = () => {
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
+  const dataProfile = useSelector((state: RootState) => state.profile);
+  const dispatch = useDispatch();
   // States
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<Session | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerProfileOpen, setDrawerProfileOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(0);
 
   // 임시 - UserInfo Modal
@@ -64,6 +79,7 @@ const UserDropdown = () => {
 
   useEffect(() => {
     dataUserDropDown.onClick = handleDrawerOpen;
+    dataUserDropDown.onClickLong = OpenSelectProfile;
   }, [dataUserDropDown]);
 
   const handleDropdownOpen = async () => {
@@ -78,17 +94,50 @@ const UserDropdown = () => {
     !open ? setOpen(true) : setOpen(false);
   };
 
-  const handleDrawerOpen = async () => {
+  const handleDrawerOpen = () => {
     setDrawerOpen(true);
   };
 
-  const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-    if (
-      event.type === 'keydown' &&
-      ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
-    ) {
+  const OpenSelectProfile = async () => {
+    const isLogin = await isLogined();
+    if (!isLogin) return;
+
+    setDrawerProfileOpen(true);
+  };
+
+  const routeProfile = async () => {
+    const jwtToken = localStorage.getItem('jwt');
+    console.log('jwtToken : ', jwtToken);
+    if (!jwtToken) {
+      router.push('/auth');
       return;
     }
+
+    const res = await getAuth();
+    console.log('auth res :', res);
+    if (res?.resultCode != 0) {
+      router.push('/auth');
+      return;
+    } else {
+      if (!res?.data?.profileSimpleInfo) {
+        console.error('/auth에서 profileSimpleInfo 못받음');
+        return;
+      }
+
+      const profile = res?.data?.profileSimpleInfo;
+
+      dispatch(updateProfile(profile));
+      pushLocalizedRoute('/profile/' + profile?.id, router);
+    }
+  };
+
+  const toggleDrawer = (open: boolean) => {
+    // if (
+    //   event.type === 'keydown' &&
+    //   ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
+    // ) {
+    //   return;
+    // }
     setDrawerOpen(open);
   };
 
@@ -99,9 +148,13 @@ const UserDropdown = () => {
   useEffect(() => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
       if (event === 'SIGNED_IN') {
-        if (auth?.access_token == session?.access_token) return;
-        //alert('여기아');
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
 
+        // 최신 세션의 access_token과 전달받은 session의 access_token을 비교합니다.
+        if (currentSession?.access_token === session?.access_token) {
+          setAuth(session);
+          return;
+        }
         setAuth(session);
         try {
           console.log('로그인 시작');
@@ -117,6 +170,7 @@ const UserDropdown = () => {
               language: _language,
             }),
           });
+          console.log('로그인 완료', response.json);
 
           if (!response.ok) {
             console.error('Failed to authenticate:', response.statusText);
@@ -124,8 +178,10 @@ const UserDropdown = () => {
             return;
           }
 
-          const data = await response.json();
-          localStorage.setItem('jwt', data.accessToken);
+          const data: {data: SignInRes} = await response.json();
+          dispatch(updateProfile(data.data.profileInfo));
+          console.log('response login : ', data);
+          localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
           setTimeout(() => {
             fetchLanguage(router);
           }, 100);
@@ -180,6 +236,7 @@ const UserDropdown = () => {
       setOpen(false);
       setAuth(null);
       localStorage.removeItem('jwt');
+      dispatch(updateProfile(null));
     } catch (error) {
       console.error(error);
 
@@ -188,22 +245,99 @@ const UserDropdown = () => {
     }
   };
 
+  type DndButtonProps = {
+    onClick: () => void;
+    onLongClick: () => void;
+    children: JSX.Element;
+  };
+  const DndButton = (props: DndButtonProps) => {
+    const {attributes, listeners, setNodeRef} = useDraggable({
+      id: 'draggable',
+    });
+
+    const mouseSensor = useSensor(MouseSensor, {
+      activationConstraint: {
+        delay: 2000, // 500ms 동안 누르면 드래그 활성화
+        tolerance: 5, // 살짝 움직여도 롱클릭 인정
+      },
+    });
+
+    const touchSensor = useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 2000, // 500ms 동안 터치 유지 시 드래그 활성화
+        tolerance: 5,
+      },
+    });
+
+    const sensors = useSensors(mouseSensor, touchSensor);
+
+    let longPressTimer: NodeJS.Timeout;
+    let isDragging = false; // 드래그 여부 확인
+
+    const handleMouseDown = () => {
+      longPressTimer = setTimeout(() => {
+        if (!isDragging) {
+          props.onLongClick();
+        }
+      }, 500);
+    };
+
+    const handleMouseUp = () => {
+      clearTimeout(longPressTimer);
+    };
+
+    const handleDragStart = () => {
+      isDragging = true;
+      clearTimeout(longPressTimer);
+    };
+
+    const handleDragEnd = () => {
+      isDragging = false;
+    };
+
+    return (
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <button
+          ref={setNodeRef}
+          {...listeners}
+          {...attributes}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onTouchStart={handleMouseDown}
+          onTouchEnd={handleMouseUp}
+          onClick={props.onClick} // 일반 클릭 처리
+          draggable="false"
+        >
+          {props.children}
+        </button>
+      </DndContext>
+    );
+  };
+
   return (
     <>
-      <Badge
-        style={{padding: '12px 25px', margin: '12px -25px'}}
-        overlap="circular"
-        badgeContent={<span className={styles.avatarBadge} onClick={handleDrawerOpen} />}
-        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+      <DndButton onClick={() => routeProfile} onLongClick={() => dataUserDropDown.onClickLong()}>
+        <Badge
+          style={{padding: '12px 25px', margin: '12px -25px'}}
+          overlap="circular"
+          badgeContent={<span className={styles.avatarBadge} />}
+          anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+        >
+          <Avatar
+            alt={auth?.user?.email || ''}
+            src={dataProfile.currentProfile?.iconImageUrl || ''}
+            onClick={routeProfile}
+            className={styles.avatar}
+          />
+        </Badge>
+      </DndButton>
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => {
+          toggleDrawer(false);
+        }}
       >
-        <Avatar
-          alt={auth?.user?.email || ''}
-          src={auth?.user?.user_metadata?.picture || ''}
-          onClick={handleDrawerOpen}
-          className={styles.avatar}
-        />
-      </Badge>
-      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
         <MenuList className={styles.menuList}>
           <MenuItem className={styles.menuItem}>
             <Avatar
@@ -220,43 +354,17 @@ const UserDropdown = () => {
             </div>
           </MenuItem>
           <Divider className={styles.menuDivider} />
-          {/* <Link href={getLocalizedUrl(`/studio`, locale as Locale)} passHref> */}
-          {/* <Link href={`/studio`} passHref>
-            <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, 'studio')}>
-              <i className={styles.tabler} />
-              <Typography color="text.primary">Studio</Typography>
-            </MenuItem>
-          </Link>
-          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/activity')}>
-            <i className={styles.tabler} />
-            <Typography color="text.primary">Activity</Typography>
-          </MenuItem>
-          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/notice')}>
-            <i className={styles.tabler} />
-            <Typography color="text.primary">Notice</Typography>
-          </MenuItem>
-          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/setting')}>
-            <i className={styles.tabler} />
-            <Typography color="text.primary">Setting</Typography>
-          </MenuItem>
-          <MenuItem className={styles.menuItem} onClick={e => handleDropdownClose(e, '/pages/supports')}>
-            <i className={styles.tabler} />
-            <Typography color="text.primary">Supports</Typography>
-          </MenuItem> */}
           <Link href={getLocalizedLink('/studio/character')} passHref>
             <MenuItem
               className={styles.menuItem}
-              onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/character'))}
+              // onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/character'))}
             >
               <i className={styles.tabler} />
               <Typography color="text.primary">Character</Typography>
             </MenuItem>
           </Link>
           <Link href={getLocalizedLink(`/studio/story`)} passHref>
-            <MenuItem
-              className={styles.menuItem}
-              onClick={e => handleDropdownClose(e, getLocalizedLink('/studio/story'))}
-            >
+            <MenuItem className={styles.menuItem}>
               <i className={styles.tabler} />
               <Typography color="text.primary">Story</Typography>
             </MenuItem>
@@ -335,6 +443,12 @@ const UserDropdown = () => {
         </Popper>
       </Drawer>
       <UserInfoModal open={userInfoOpen} onClose={() => setUserInfoOpen(false)} />
+      <SelectProfile
+        open={drawerProfileOpen}
+        handleCloseDrawer={() => {
+          setDrawerProfileOpen(false);
+        }}
+      />
     </>
   );
 };

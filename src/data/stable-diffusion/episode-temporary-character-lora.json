@@ -1,6 +1,6 @@
 { 
   "hairStyles": [
-      {"label": "AbsoluteReality", "image": "/lora/absoluteReality.png", "value": 0},
+      {"label": "Animagine XL", "image": "/lora/absoluteReality.png", "value": 0},
       {"label": "majicMIX realistic", "image": "/lora/majicmix.jpeg", "value": 1},
       {"label": "AnyLoRA - Checkpoint", "image": "/lora/anylora.png", "value": 2},
       {"label": "MeinaHentai", "image": "/lora/meina_hentai.png", "value": 3},

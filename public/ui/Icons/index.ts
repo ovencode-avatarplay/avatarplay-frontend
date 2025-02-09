@@ -50,6 +50,12 @@ import BoldReward from "./Bold/Reward.svg";
 import BoldArchive from "./Bold/Archive.svg";
 import BoldVolumeOn from "./Bold/volume-high.svg";
 import BoldVolumeOff from "./Bold/volume-slash.svg";
+import BoldCoin from "./Bold/Coin.svg";
+import BoldMixture from "./Bold/Mixture.svg";
+import BoldUnLock from "./Bold/Unlock.svg";
+import BoldQuestion from "./Bold/Question.svg";
+import BoldRadioButtonSquare from "./Bold/Radio_Button_Square.svg";
+import BoldRadioButtonSquareSelected from "./Bold/Radio_Button_Square_selected.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -113,8 +119,11 @@ import EmotionExcited from "./Custom/Excited.svg";
 import EmotionScared from "./Custom/Scared.svg";
 import EmotionAngry from "./Custom/Angry.svg";
 import CircleClose from "./Custom/CircleClose.svg";
+import OrangeCoin from "./Custom/Coin.svg";
 
 export {
+  OrangeCoin,
+  BoldCoin,
   LineScaleUp,
   BoldVolumeOn,
   BoldVolumeOff,
@@ -188,6 +197,11 @@ export {
   BoldViewGallery,
   BoldArrowLeft,
   BoldReward,
+  BoldMixture,
+  BoldUnLock,
+  BoldQuestion,
+  BoldRadioButtonSquare,
+  BoldRadioButtonSquareSelected,
   LineAddButton,
   LineAIImage,
   LineArchive,

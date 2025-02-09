@@ -1,0 +1,522 @@
+.policyContainer
+{
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   gap: 14px;
+   align-self: stretch;
+
+   overflow-x: hidden;
+   overflow-y: scroll;
+
+   margin-top: 14px;
+   margin-bottom: calc(46px + 20px + 43px);
+
+}
+
+.policyContainer::-webkit-scrollbar {
+  display: none;  
+}
+
+.policyContainer {
+  scrollbar-width: none;  
+  -ms-overflow-style: none;  
+}
+
+.dropDownArea 
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+    width: 100%;
+}
+
+.title2
+{
+    color: var(--Neutral-900, #040415);
+    font-feature-settings: 'liga' off, 'clig' off;    
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px; /* 114.286% */
+    letter-spacing: -0.4px;
+}
+
+.selectItem
+{
+    display: flex;
+    width: 100%;
+    height: 46px;
+    padding: 14px 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    align-self: stretch;
+    
+    border-radius: 10px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--Neutral-50, #F8F9FA);
+}
+
+.selectItemText
+{
+    flex: 1 0 0;
+
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 120% */
+    letter-spacing: -0.4px;
+
+    white-space: nowrap;     
+    overflow: hidden;        
+    text-overflow: ellipsis; 
+}
+
+.selectItemButton
+{
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+}
+
+.selectItemIcon
+{
+    width: 24px;
+    height: 24px;
+
+    filter: var(--black-icon-filter);
+}
+
+.selectItemsArea1
+{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.selectItemsArea2
+{
+    display: inline-flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.tagArea
+{
+    display: flex;
+    flex-direction: column;
+    min-height: 100px; 
+}
+
+.tagRefreshButton
+{
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 5px;
+    align-self: stretch;
+}
+
+.tagRefreshText
+{
+    color: var(--Neutral-500, #9AA0A6);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 160%; /* 22.4px */
+    letter-spacing: 0.2px;
+}
+
+.tagRefreshIcon
+{
+    display: flex;
+    width: 20px;
+    height: 20px;
+    padding: 1.068px 1.761px 1.068px 1.76px;
+    justify-content: center;
+    align-items: center;
+    filter: brightness(0) saturate(100%) invert(91%) sepia(8%) saturate(161%) hue-rotate(174deg) brightness(86%) contrast(88%);
+}
+
+
+.tagSelect
+{
+    display: flex;
+    padding: 20px 0px;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 6px;
+    align-self: stretch;
+    flex-wrap: wrap;
+}
+
+
+.radioButtonContainer
+{
+    display: flex;
+    width: var(--second-width);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.radioTitleArea
+{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    align-self: stretch;
+}
+.ipButtonArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    align-self: stretch;
+}
+
+.ipButton
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+}
+ 
+.operatorTitle
+{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.operatorList
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+.operatorItem
+{
+    display: flex;
+    padding: 12px 0px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.operatorProfile
+{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: var(--sds-size-space-0);
+    align-items: center;
+}
+
+.operatorProfileImage
+{
+    width: 100%;
+    height: 100%;
+
+    border-radius: 50%;
+}
+
+.operatorProfileTextArea
+{ 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 0 0;    
+}
+
+.operatorProfileText
+{
+    color: var(--Black, #000);
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.3px;
+}
+
+.inviteDrawerContainer
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.inviteInputArea
+{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+    align-self: stretch;
+}
+
+.inviteInput
+{
+    width: 100%;
+}
+
+.inviteLinkArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+}
+
+.inviteLinkInputArea
+{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+    align-self: stretch;
+}
+
+.verticalRadioButtonArea
+{
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    align-self: stretch;
+}
+
+.bigTitle
+{
+    color: var(--Black, #000);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 155%; /* 24.8px */
+
+}
+
+.membershipPlanArea
+{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+ 
+
+.voiceSettingArea
+{
+    display: flex;
+    width: var(--second-width);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    margin-bottom: 40px;
+}
+
+.titleVoice
+{
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off; 
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 16px; /* 114.286% */
+    letter-spacing: -0.4px;
+}
+
+.voiceSettingDescArea
+{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 5px;
+}
+
+.voiceSettingText
+{
+    color: var(--Black, #000); 
+    font-feature-settings: 'liga' off, 'clig' off; 
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 21px */
+}
+
+.voiceDrawerContainer
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.voiceList
+{
+    display: flex;
+    height: 400px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+
+    overflow-y: scroll;
+}
+
+.voiceList::-webkit-scrollbar {
+    display: none;  
+  }
+  
+  .voiceList {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+  }
+
+
+.voiceItem
+{
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    gap: 7px;
+    align-self: stretch;
+}
+
+.voiceInfoArea
+{
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1 0 0;
+    align-self: stretch; 
+}
+
+.voiceTitle
+{
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px; /* 142.857% */
+}
+
+.voiceDesc
+{
+    color: var(--Neutral-500, #9AA0A6);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
+}
+
+.soundList
+{
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 7px;
+    align-self: stretch;
+    flex-wrap: wrap;
+}
+
+.soundItem
+{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.soundButton
+{
+    display: flex;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    
+    border-radius: 999px;
+    background: var(--Neutral-200, #E8EAED);
+}
+
+.soundIcon
+{
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);
+}
+
+.soundText
+{
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
+}
+
+.pitchArea
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1 0 0;
+}
+
+.sliderContainer
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    align-self: stretch;
+}
+
+.sliderLabel
+{
+    align-self: stretch;
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
+}
+
+.sliderWrapper
+{
+    width : var(--third-width); 
+}
+
+.slider
+{
+    width : var(--third-width); 
+    
+}
+ 

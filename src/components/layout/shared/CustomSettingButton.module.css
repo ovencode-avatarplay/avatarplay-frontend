@@ -57,6 +57,12 @@
     flex: 1 0 0;
 }
 
+.nameArea
+{
+    display: flex;
+    flex-direction: row;
+}
+
 .settingName
 {
     color: var(--Neutral-900, #040415);
@@ -79,8 +85,7 @@
     font-size: 15px;
     font-style: normal;
     font-weight: 700;
-    line-height: 150%; /* 22.5px */
-
+    line-height: 150%; /* 22.5px */ 
 }
 
 .settingState

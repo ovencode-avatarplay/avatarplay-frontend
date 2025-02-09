@@ -6,10 +6,11 @@ import styles from './CustomDrawer.module.css';
 interface CustomDrawerProps extends Omit<DrawerProps, 'onClose' | 'open'> {
   open: boolean;
   onClose: () => void;
+  title?: string;
   children: React.ReactNode;
 }
 
-const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, ...rest}) => {
+const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, title, ...rest}) => {
   const [startY, setStartY] = useState<number | null>(null);
   const [translateY, setTranslateY] = useState(0);
 
@@ -45,7 +46,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, ...
         style: {
           transform: `translateY(${translateY}px)`,
           transition: startY === null ? 'transform 0.3s ease' : 'none',
-          maxHeight: 'calc((var(--vh, 1vh) * 100) - 111px)',
+          maxHeight: 'var(--body-height))',
         },
       }}
       {...rest}
@@ -59,6 +60,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, ...
         <div className={styles.handleArea}>
           <div className={styles.handle} />
         </div>
+        {title && title !== '' && <div className={styles.titleArea}>{title}</div>}
         <div className={styles.contentArea}>{children}</div>
       </div>
     </Drawer>

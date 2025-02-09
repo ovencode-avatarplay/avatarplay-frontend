@@ -1,15 +1,30 @@
 import {i18n} from 'next-i18next'; // i18n 객체 가져오기
 import {useRouter} from 'next/navigation';
 import Cookies from 'js-cookie';
-import {LanguageType} from '@/app/NetWork/AuthNetwork';
+import {getAuth, LanguageType} from '@/app/NetWork/AuthNetwork';
 import {getLangUrlCode} from '@/configs/i18n';
 import {setLanguage} from '@/redux-store/slices/UserInfo';
 import {store} from '@/redux-store/ReduxStore';
 import {getBrowserLanguage, getLanguageFromURL, getLanguageTypeFromText} from './browserInfo';
+import {updateProfile} from '@/redux-store/slices/Profile';
 
 // 로그인상태인가
-export const isLogined = (): boolean => {
-  return localStorage.getItem('jwt') ? true : false;
+export const isLogined = async () => {
+  const dispatch = store.dispatch;
+  const jwt = localStorage.getItem('jwt');
+  if (!jwt) {
+    return false;
+  }
+
+  const resAuth = await getAuth();
+  if (resAuth?.resultCode != 0) {
+    return false;
+  }
+
+  if (resAuth.data?.profileSimpleInfo) {
+    dispatch(updateProfile(resAuth.data?.profileSimpleInfo));
+  }
+  return true;
 };
 
 // 현지 언어로 변경
@@ -27,8 +42,6 @@ export const refreshLanaguage = (language: LanguageType | undefined, router: Ret
   try {
     // 서버에서 언어를 가져오지 못한 경우 브라우저 언어 사용
     if (language !== undefined) {
-      if (language === getBrowserLanguage()) return;
-
       // 이미 같은 언어이면 패스
       if (language === getLanguageTypeFromText(getLanguageFromURL())) return;
 
@@ -40,6 +53,7 @@ export const refreshLanaguage = (language: LanguageType | undefined, router: Ret
       //alert('언어를 바꿔요:' + newLocale);
     } else {
       const browserLang = getBrowserLanguage();
+      if (language === browserLang) return; // 이미 같은 언어이면 패스
       dispatch(setLanguage(browserLang));
 
       const newLocale = getLangUrlCode(browserLang) || 'en-US';
@@ -71,7 +85,7 @@ export const getLocalizedLink = (path: string): string => {
 };
 
 // 현재 언어에 맞는 URL로 라우팅 함수
-export const pushLocalizedRoute = (path: string, router: ReturnType<typeof useRouter>) => {
+export const pushLocalizedRoute = (path: string, router: ReturnType<typeof useRouter>, isReload = true) => {
   const localizedUrl = getLocalizedLink(path);
 
   // 브라우저에서 현재 URL 확인
@@ -79,7 +93,11 @@ export const pushLocalizedRoute = (path: string, router: ReturnType<typeof useRo
   const newUrl = new URL(localizedUrl, window.location.origin);
 
   if (currentUrl !== newUrl.href) {
-    router.push(localizedUrl);
+    if (isReload) {
+      router.push(localizedUrl);
+    } else {
+      window.history.replaceState(null, '', localizedUrl);
+    }
   }
 };
 

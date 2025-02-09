@@ -35,14 +35,23 @@ import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineUpload} from
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 
+export type CreateType = 'create' | 'modify' | 'create2';
+
 interface Props {
   closeAction: () => void;
-  isModify: boolean;
   characterInfo?: CharacterInfo;
   publishFinishAction?: () => void;
+  createType?: CreateType;
+  createFinishAction?: (imgUrl: string) => void;
 }
 
-const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, characterInfo, publishFinishAction}) => {
+const CharacterCreateSequence: React.FC<Props> = ({
+  closeAction,
+  characterInfo,
+  publishFinishAction,
+  createType = 'create',
+  createFinishAction,
+}) => {
   //#region Pre Define
   const defaultOptions: Record<string, CreateCharacterOption[]> = {
     styleOptions: [],
@@ -80,6 +89,14 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
     CreateCharacterStep.Result,
     CreateCharacterStep.Publish,
   ];
+  const Create2Steps: CreateCharacterStep[] = [
+    CreateCharacterStep.HairStyle,
+    CreateCharacterStep.OutfitClothes,
+    CreateCharacterStep.ThumbnailBackground,
+    CreateCharacterStep.Summary,
+    CreateCharacterStep.Result,
+    CreateCharacterStep.Publish,
+  ];
 
   const maxLength = 200;
 
@@ -100,6 +117,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
   // Step
   const [maxStep, setMaxStep] = useState<number>(11);
   const showCreateStep = 8;
+  const showCreate2Step = 7;
   const showModifyStep = 3;
   const [showStep, setShowStep] = useState<number>(showCreateStep);
   const [curStep, setCurStep] = useState<number>(0); // 0일때는 max 수치가 변동이 있을 수 있기때문에 step이 가려집니다.
@@ -128,7 +146,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
 
   const CreateSteps: CreateCharacterStep[] = Object.values(CreateCharacterStep);
 
-  const steps = isModify ? ModifySteps : CreateSteps;
+  const steps = createType === 'modify' ? ModifySteps : createType === 'create2' ? Create2Steps : CreateSteps;
 
   const [selectedOptions, setSelectedOptions] = useState({
     gender: 0,
@@ -181,9 +199,13 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
       return;
     }
 
-    setCurStep(prev => Math.min(prev + 1, maxStep));
-    handleConfirm();
+    if (createFinishAction && steps[curStep] === 'Result') {
+      handleConfirm();
+    } else {
+      setCurStep(prev => Math.min(prev + 1, maxStep));
+    }
   }
+
   function subStep() {
     setCurStep(prev => Math.max(prev - 1, 0));
   }
@@ -197,7 +219,11 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
     return true;
   }
 
-  const handleConfirm = async () => {};
+  const handleConfirm = async () => {
+    if (generatedOptions && createFinishAction) {
+      createFinishAction(generatedOptions?.imageUrl[selectedOptions.result]);
+    }
+  };
 
   const handleCustomToggle = () => {
     setCustomClothesActive(!customClothesActive);
@@ -244,12 +270,14 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
   //#region Hook
 
   useEffect(() => {
-    if (isModify) {
+    if (createType === 'modify') {
       setShowStep(showModifyStep);
+    } else if (createType === 'create2') {
+      setShowStep(showCreate2Step);
     } else {
       setShowStep(showCreateStep);
     }
-  }, [isModify]);
+  }, [createType]);
 
   useEffect(() => {
     if (publishClick) {
@@ -326,7 +354,12 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
       return finalStepText;
     }
 
-    const currentStep = isModify ? modifyStepTexts[curStep] : createStepTexts[curStep];
+    const currentStep =
+      createType === 'modify'
+        ? modifyStepTexts[curStep]
+        : createType === 'create2'
+        ? Create2Steps[curStep]
+        : createStepTexts[curStep];
     return currentStep || '';
   };
 
@@ -793,7 +826,7 @@ const CharacterCreateSequence: React.FC<Props> = ({closeAction, isModify, charac
   const renderBottom = () => {
     return (
       <>
-        {((curStep > 0 && !isModify) || isModify) && (
+        {((curStep > 0 && createType === 'create') || createType !== 'create') && (
           <>
             {curStep < steps.length - 1 ? (
               <>

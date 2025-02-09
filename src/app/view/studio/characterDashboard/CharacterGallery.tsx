@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styles from './CharacterGallery.module.css';
 
 import ImageUploadDialog from '../../main/content/create/content-main/episode/episode-ImageCharacter/ImageUploadDialog';
-import {MediaState, sendUpload, MediaUploadReq} from '@/app/NetWork/ImageNetwork';
+import {UploadMediaState, sendUpload, MediaUploadReq} from '@/app/NetWork/ImageNetwork';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import {SaveGalleryReq, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
 import CharacterGalleryGrid from './CharacterGalleryGrid';
@@ -101,7 +101,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
       }
 
       const req: MediaUploadReq = {
-        mediaState: MediaState.GalleryImage,
+        mediaState: UploadMediaState.GalleryImage,
         file: file,
         imageList: [],
       };

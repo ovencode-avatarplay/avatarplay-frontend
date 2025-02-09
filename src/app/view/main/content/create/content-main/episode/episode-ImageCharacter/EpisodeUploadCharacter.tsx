@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentEpisodeBackgroundImage} from '@/redux-store/slices/ContentInfo';
 import {RootState} from '@/redux-store/ReduxStore';
 
-import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import EpisodeTempArtist from './EpisodeTempCharacter';
 import EpisodeStarringCharacter from './EpisodeStarringCharacter';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
@@ -61,7 +61,7 @@ const EpisodeUploadCharacter: React.FC = () => {
     try {
       // Upload 객체 생성
       const req: MediaUploadReq = {
-        mediaState: MediaState.BackgroundImage, // 적절한 MediaState 설정
+        mediaState: UploadMediaState.BackgroundImage, // 적절한 MediaState 설정
         file: image,
       };
 

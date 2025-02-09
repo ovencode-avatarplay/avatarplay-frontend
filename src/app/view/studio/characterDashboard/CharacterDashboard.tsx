@@ -1,25 +1,15 @@
 'use client';
 
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
 
 // Components
-import StudioTopMenu from '../StudioDashboardMenu';
 import CharacterGrid from './CharacterGrid';
-import CharacterDashboardFooter from '.././StudioDashboardFooter';
-import StudioFilter from '../StudioFilter';
 
-// MUI, Styles
-import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+//  Styles
 import styles from './CharacterDashboard.module.css';
-import StarIcon from '@mui/icons-material/Star';
-
-import EditIcon from '@mui/icons-material/Edit';
-import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import DeleteIcon from '@mui/icons-material/Delete';
-
 // Network
 import {
+  CharacterInfoDate,
   CreateCharacterReq,
   DeleteCharacterReq,
   GetCharacterInfoReq,
@@ -48,14 +38,16 @@ const CharacterDashboard: React.FC = () => {
   const [isModifyMode, setIsModifyMode] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('filter1');
   const [loading, setLoading] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
 
   const router = useRouter();
   const searchParam = useSearchParams();
 
-  const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
+  const [characters, setCharacters] = useState<CharacterInfoDate[] | undefined>();
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
+  const [sortedCharacters, setSortedCharacters] = useState<CharacterInfoDate[] | undefined>(characters);
+  const [resultCharacters, setResultCharacters] = useState<CharacterInfoDate[] | undefined>(characters);
+  const [refreshReq, setRefreshReq] = useState<boolean>(false);
 
   const [filterPublishOpen, setFilterPublishOpen] = useState<boolean>(false);
   const [selectedPublish, setSelectedPublish] = useState<number>(0);
@@ -68,15 +60,21 @@ const CharacterDashboard: React.FC = () => {
       },
     },
     {
-      name: 'Saved',
+      name: 'Private',
       onClick: () => {
         setSelectedPublish(1);
       },
     },
     {
-      name: 'Published',
+      name: 'Unlisted',
       onClick: () => {
         setSelectedPublish(2);
+      },
+    },
+    {
+      name: 'Public',
+      onClick: () => {
+        setSelectedPublish(3);
       },
     },
   ];
@@ -107,27 +105,54 @@ const CharacterDashboard: React.FC = () => {
     },
   ];
 
-  const getFilteredAndSortedContent = () => {
+  const getFilteredAndSortedCharacter = () => {
     let filtered = characters;
 
-    // // 필터 적용
-    // if (selectedPublish === 1) {
-    //   filtered = filtered.filter(item => item.visibilityType === 3);
-    // } else if (selectedPublish === 2) {
-    //   filtered = filtered.filter(item => item.visibilityType !== 3);
-    // }
+    // 필터링 (publishType에 따른 필터링)
+    if (selectedPublish === 1) {
+      filtered = filtered?.filter(item => item.visibilityType === 0); // Private
+    } else if (selectedPublish === 2) {
+      filtered = filtered?.filter(item => item.visibilityType === 1); // Unlisted
+    } else if (selectedPublish === 3) {
+      filtered = filtered?.filter(item => item.visibilityType === 2); // Public
+    }
 
-    // // 정렬 적용
-    // if (selectedOption === 0) {
-    //   filtered.sort((a, b) => a.name.localeCompare(b.name)); // 알파벳 순서
-    // } else if (selectedOption === 1) {
-    //   filtered.sort((a, b) => new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime()); // 수정일 역순
-    // } else if (selectedOption === 2) {
-    //   filtered.sort((a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()); // 생성일 역순
-    // }
+    // 정렬 적용
+    if (selectedOption === 0) {
+      filtered = filtered?.sort((a, b) => a.name.localeCompare(b.name)); // 알파벳 순서
+    } else if (selectedOption === 1) {
+      filtered = filtered?.sort((a, b) => {
+        // updateAt이 null인 경우를 처리 null이면 가장 작은 값
+        const dateA = a.updateAt ? new Date(a.updateAt).getTime() : -Infinity;
+        const dateB = b.updateAt ? new Date(b.updateAt).getTime() : -Infinity;
+        return dateB - dateA; // 수정일 역순
+      });
+    } else if (selectedOption === 2) {
+      filtered = filtered?.sort((a, b) => {
+        // createAt이 null인 경우를 처리 null이면 가장 작은 값
+        const dateA = a.createAt ? new Date(a.createAt).getTime() : -Infinity;
+        const dateB = b.createAt ? new Date(b.createAt).getTime() : -Infinity;
+        return dateB - dateA; // 생성일 역순
+      });
+    }
 
     return filtered;
   };
+
+  useEffect(() => {
+    if (filterOptionOpen == false && filterPublishOpen == false) {
+      const filteredAndSorted = getFilteredAndSortedCharacter();
+      setSortedCharacters(filteredAndSorted);
+      setRefreshReq(true);
+    }
+  }, [filterOptionOpen, filterPublishOpen, characters]);
+
+  useEffect(() => {
+    if (refreshReq) {
+      setResultCharacters(sortedCharacters);
+      setRefreshReq(false);
+    }
+  }, [refreshReq]);
 
   // 렌더링 전에 Init 실행
   useLayoutEffect(() => {
@@ -147,7 +172,7 @@ const CharacterDashboard: React.FC = () => {
       const response = await sendGetCharacterList({});
 
       if (response.data) {
-        const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
+        const characterInfoList: CharacterInfoDate[] = response.data?.characterInfoList;
         setCharacters(characterInfoList);
       } else {
         throw new Error(`No contentInfo in response for ID: `);
@@ -257,14 +282,6 @@ const CharacterDashboard: React.FC = () => {
   //#endregion
 
   //#region  Delete
-  const handleDeleteClick = () => {
-    setIsDialogOpen(true); // 팝업 열기
-  };
-
-  const handleDeleteDialogClose = () => {
-    setIsDialogOpen(false); // 팝업 닫기
-    setSelectedCharacterId(null);
-  };
 
   const handleConfirmDelete = async () => {
     if (selectedCharacterId === null) return;
@@ -288,7 +305,7 @@ const CharacterDashboard: React.FC = () => {
           setSelectedCharacterId(null);
           alert(`캐릭터 "${characterName}"가 성공적으로 지워졌습니다.`);
         }
-        handleDeleteDialogClose();
+        setSelectedCharacterId(null);
       }
     } catch (error) {
       console.error('Error deleting character:', error);
@@ -348,13 +365,13 @@ const CharacterDashboard: React.FC = () => {
         />
       </div>
       <CharacterGrid
-        characters={characters ? characters : undefined}
+        characters={resultCharacters ? resultCharacters : undefined}
         onCharacterSelect={handleCharacterSelect}
         style={{marginTop: '0px'}}
         canEdit={true}
         onClickEdit={handleModifyClick}
+        showVisibilityType={true}
       />
-      {/* <CharacterDashboardFooter buttons={buttons} /> */}
 
       {/* CharacterGallery */}
       {currentSelectedCharacter && (
@@ -374,27 +391,11 @@ const CharacterDashboard: React.FC = () => {
         isModify={isModifyMode}
         characterInfo={currentSelectedCharacter}
         refreshCharacterList={getCharacterList}
+        onDelete={() => {
+          handleConfirmDelete();
+          handleCloseModify();
+        }}
       />
-
-      {/* Dialog */}
-      <Dialog open={isDialogOpen} onClose={handleDeleteDialogClose}>
-        <DialogTitle>Discard Character '{currentSelectedCharacter?.name}'?</DialogTitle>
-        <DialogContent sx={{justifyContent: 'center'}}>
-          <DialogContentText>
-            All Data of this character will be deleted.
-            <br />
-            Are you sure?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button onClick={handleDeleteDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleConfirmDelete} color="error">
-            Okay
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       <SelectDrawer
         items={publishItems}

@@ -1,6 +1,8 @@
 import {getBrowserLanguage} from '@/utils/browserInfo';
 import api, {ResponseAPI} from './ApiInstance';
 import {getLangUrlCode} from '@/configs/i18n';
+import {AxiosResponse} from 'axios';
+import {ProfileSimpleInfo, ProfileType} from './ProfileNetwork';
 
 export enum LanguageType {
   Korean = 0,
@@ -20,13 +22,20 @@ export interface SignInReq {
 }
 
 export interface SignInRes {
-  language: string;
+  sessionInfo: SessionInfo;
+  profileInfo: ProfileSimpleInfo;
+}
+
+export interface SessionInfo {
+  name: string;
+  accessToken: string;
 }
 
 export const sendSignIn = async (payload: SignInReq): Promise<boolean> => {
   try {
     const jwtToken = localStorage.getItem('jwt');
     const _language = getLangUrlCode(getBrowserLanguage());
+
     const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/auth/sign-in`, {
       method: 'POST',
       headers: {
@@ -43,8 +52,8 @@ export const sendSignIn = async (payload: SignInReq): Promise<boolean> => {
       return false;
     }
 
-    const data = await response.json();
-    localStorage.setItem('jwt', data.accessToken);
+    const data: {data: SignInRes} = await response.json();
+    localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
     //fetchLanguage(router);
     return true;
   } catch (error) {
@@ -60,7 +69,7 @@ export interface GetLanguageRes {
   languageType: LanguageType;
 }
 
-export const sendGetLanguage = async (payload: GetLanguageReq): Promise<ResponseAPI<GetLanguageRes>> => {
+export const sendGetLanguage = async (payload: GetLanguageReq): Promise<ResponseAPI<GetLanguageRes> | null> => {
   try {
     const response = await api.post<ResponseAPI<GetLanguageRes>>('Auth/getLanguage', payload);
 
@@ -71,7 +80,7 @@ export const sendGetLanguage = async (payload: GetLanguageReq): Promise<Response
     }
   } catch (error) {
     console.error('Error get language :', error);
-    throw new Error('Failed to send get language. Please try again');
+    return null;
   }
 };
 
@@ -95,5 +104,36 @@ export const changeLanguage = async (payload: ChangeLanguageReq): Promise<Respon
   } catch (error) {
     console.error('Error change language : ', error);
     throw new Error('Failed to send change language. Please try again');
+  }
+};
+
+interface GetAuthProfileInfoRes {
+  profileSimpleInfo: ProfileSimpleInfo;
+}
+
+export const getAuth = async () => {
+  try {
+    const jwtToken = localStorage.getItem('jwt');
+    const _language = getLangUrlCode(getBrowserLanguage());
+
+    const resProfileInfo = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Auth/getProfileInfo`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${jwtToken}`, // JWT를 Authorization 헤더에 포함
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
+    });
+
+    if (!resProfileInfo.ok) {
+      console.error('Failed to auth:', resProfileInfo.statusText);
+      console.log('Auth  리스폰스 ok 실패');
+      return;
+    }
+
+    const data: ResponseAPI<GetAuthProfileInfoRes> = await resProfileInfo.json();
+    return data;
+  } catch (e) {
+    alert('api 에러' + e);
   }
 };
