@@ -257,6 +257,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
             <ul className={styles.selectGrid}>
               {generatedImages.map((image, index) => (
                 <CharacterCreateImageButton
+                  key={index}
                   sizeType="large"
                   selectType="multiple"
                   image={image}

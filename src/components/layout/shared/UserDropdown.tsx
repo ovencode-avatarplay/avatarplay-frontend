@@ -152,6 +152,7 @@ const UserDropdown = () => {
 
         // 최신 세션의 access_token과 전달받은 session의 access_token을 비교합니다.
         if (currentSession?.access_token === session?.access_token) {
+          setAuth(session);
           return;
         }
         setAuth(session);

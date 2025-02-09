@@ -192,13 +192,14 @@ export default function BottomNav() {
               );
             } else {
               return (
-                <button
+                <div
+                  key={index}
                   className={`${styles.navButton} 
                         ${selectedIndex === index ? styles.selected : ''} 
                         ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
                 >
                   <UserDropdown />
-                </button>
+                </div>
               );
             }
           })}
