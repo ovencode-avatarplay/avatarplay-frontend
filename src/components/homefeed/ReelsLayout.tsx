@@ -92,37 +92,31 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
     }
   };
 
-  // 슬라이드 변경 이벤트 핸들러
   const handleScroll = () => {
     const sectionHeight = window.innerHeight;
     const scrollPosition = window.scrollY;
     const newIndex = Math.round(scrollPosition / sectionHeight);
 
-    // ✅ 배열 범위 검증
-    if (newIndex < 0 || newIndex >= allFeeds.length) {
-      console.warn('Slide index out of bounds');
-      return;
-    }
+    if (newIndex < 0 || newIndex >= allFeeds.length) return;
 
     if (newIndex !== currentSlideIndex) {
       setCurrentSlideIndex(newIndex);
-
       const currentItem = allFeeds[newIndex];
 
       if (currentItem && currentItem.urlLinkKey) {
-        // ✅ 피드 조회 API 호출
-        viewFeed(currentItem.id);
-
-        // ✅ URL 업데이트
+        // ✅ 현재 URL과 다를 때만 변경하여 불필요한 pushState 방지
         const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
-        window.history.pushState(null, '', newUrl);
-      } else {
-        console.warn('Invalid urlLinkKey for current slide');
+        if (window.location.pathname !== newUrl) {
+          window.history.pushState(null, '', newUrl);
+        }
+
+        // ✅ API 호출도 꼭 필요할 때만 실행
+        viewFeed(currentItem.id);
       }
 
-      // ✅ 추가 데이터 요청: 슬라이드 끝에 도달하면 로드
+      // ✅ 다음 데이터를 미리 로드하는 로직 유지
       if (newIndex >= info.length - 1 && info.length < allFeeds.length) {
-        const nextItems = allFeeds.slice(info.length, info.length + 2); // 다음 2개 로드
+        const nextItems = allFeeds.slice(info.length, info.length + 2);
         setInfo(prev => [...prev, ...nextItems]);
       }
     }

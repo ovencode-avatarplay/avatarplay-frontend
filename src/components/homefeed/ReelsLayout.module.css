@@ -104,8 +104,6 @@
 .reelsContainer {
   width: 100%;
   height: auto; /* ✅ 자동 높이 */
-  scroll-snap-type: y mandatory; /* ✅ 스냅 스크롤 유지 */
-  -webkit-overflow-scrolling: touch;
 }
 
 .reelsWrapper {
