@@ -1,6 +1,7 @@
 import CustomButton from '@/components/layout/shared/CustomButton';
 import styles from './CharacterCreateConversation.module.css';
 import {LinePlus} from '@ui/Icons';
+import ConversationCard from '../content-main/episode/episode-conversationtemplate/ConversationCard';
 
 interface Props {}
 
@@ -26,6 +27,7 @@ Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]`;
       >
         Add example new
       </CustomButton>
+      <ul className={styles.conversationList}>{/* <ConversationCard card={} /> */}</ul>
     </div>
   );
 };

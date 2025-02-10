@@ -1,7 +1,12 @@
 import styles from './PublishCharacter.module.css';
 
 import {useEffect, useState} from 'react';
-import {CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
+import {
+  CreateCharacter2Req,
+  CreateCharacterReq,
+  sendCreateCharacter,
+  sendCreateCharacter2,
+} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
 import LoadingOverlay from '@/components/create/LoadingOverlay';
@@ -53,6 +58,28 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
     visibilityType: 0,
     isMonetization: false,
     state: 0,
+    characterDescription: '',
+    characterIP: 0,
+    conversationTemplateList: [],
+    createAt: '2025-02-06T06:22:46.701Z',
+    customModulesLorebook: '',
+    customModulesPrompt: '',
+    languageType: 0,
+    llmModel: 0,
+    mediaTemplateList: [],
+    membershipSetting: {
+      benefits: '',
+      paymentAmount: 0,
+      paymentType: 0,
+      subscription: 0,
+    },
+    nsfw: false,
+    operatorInvitationProfileId: [],
+    positionCountry: 0,
+    recruitedProfileId: 0,
+    tag: '',
+    updateAt: '2025-02-06T06:22:46.701Z',
+    urlLinkKey: '',
   };
 
   const mergedCharacterInfo: CharacterInfo = {
@@ -110,7 +137,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
 
     try {
       // 사용자의 입력 데이터를 수집하여 CreateCharacterReq로 구성
-      const req: CreateCharacterReq = {
+      const req: CreateCharacter2Req = {
         characterInfo: {
           id: currentCharacter.id ?? 0,
           name: characterName,
@@ -130,12 +157,35 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
           visibilityType: visibilityType, // Visibility를 숫자로 변환
           isMonetization: monetization,
           state: 1,
+
+          characterDescription: '',
+          characterIP: 0,
+          conversationTemplateList: [],
+          createAt: '2025-02-06T06:22:46.701Z',
+          customModulesLorebook: '',
+          customModulesPrompt: '',
+          languageType: 0,
+          llmModel: 0,
+          mediaTemplateList: [],
+          membershipSetting: {
+            benefits: '',
+            paymentAmount: 0,
+            paymentType: 0,
+            subscription: 0,
+          },
+          nsfw: false,
+          operatorInvitationProfileId: [],
+          positionCountry: 0,
+          recruitedProfileId: 0,
+          tag: '',
+          updateAt: '2025-02-06T06:22:46.701Z',
+          urlLinkKey: '',
         },
         debugParameter: debugparam,
       };
 
       // API 호출
-      const response = await sendCreateCharacter(req);
+      const response = await sendCreateCharacter2(req);
 
       if (response.data) {
         console.log('Character created successfully:', response.data);

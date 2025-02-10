@@ -1,7 +1,7 @@
 // Imports
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { useSelector } from 'react-redux';
-import { RootState } from '../ReduxStore';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {useSelector} from 'react-redux';
+import {RootState} from '../ReduxStore';
 
 // JSON 파일
 import emptyContent from '@/data/create/empty-content-info-data.json';
@@ -28,7 +28,7 @@ export interface ContentInfo {
   userId: number;
   urlLinkKey: string;
   chapterInfoList: ChapterInfo[];
-  publishInfo?: PublishInfo;
+  publishInfo: PublishInfo;
 }
 
 // 2 Level
@@ -63,8 +63,8 @@ export interface EpisodeInfo {
   id: number;
   name: string;
   backgroundImageUrl: string;
-  characterInfo: CharacterInfo | null;
-  episodeDescription: EpisodeDescription | null;
+  characterInfo: CharacterInfo;
+  episodeDescription: EpisodeDescription;
   triggerInfoList: TriggerInfo[];
   conversationTemplateList: Conversation[];
 }
@@ -80,35 +80,40 @@ export interface EpisodeDescription {
 
 export interface CharacterInfo {
   id: number;
-  languageType: LanguageType;
+  languageType: number;
   name: string;
   characterDescription: string;
   urlLinkKey: string;
-  genderType: GenderType;
+  genderType: number;
+
   introduction: string;
   description: string;
   worldScenario: string;
   greeting: string;
   secret: string;
+
   customModulesPrompt: string;
   customModulesLorebook: string;
+
   mainImageUrl: string;
   portraitGalleryImageUrl: GalleryImageInfo[];
   poseGalleryImageUrl: GalleryImageInfo[];
   expressionGalleryImageUrl: GalleryImageInfo[];
   mediaTemplateList: CharacterMediaInfo[];
-  conversationTemplateList: ConversationInfo[];
-  visibilityType: VisibilityType;
-  lLMModel: LLMModel;
+  conversationTemplateList: Conversation[];
+  visibilityType: number;
+  llmModel: number;
   tag: string;
-  positionCountry: LanguageType;
-  characterIP: CharacterIP;
+  positionCountry: number;
+  characterIP: number;
   recruitedProfileId: number;
   operatorInvitationProfileId: number[];
+
   isMonetization: boolean;
-  nSFW: boolean;
+  nsfw: boolean;
   membershipSetting: MembershipSetting;
-  state: CharacterState;
+  state: number;
+
   createAt: string;
   updateAt: string;
 }
@@ -129,13 +134,13 @@ export enum LanguageType {
   ChineseSimplified = 5,
   ChineseTraditional = 6,
   Portuguese = 7,
-  German = 8
+  German = 8,
 }
 
 export enum GenderType {
   Female = 0,
   Male = 1,
-  None = 2
+  None = 2,
 }
 
 export interface ConversationInfo {
@@ -147,14 +152,14 @@ export interface ConversationInfo {
 
 export enum ConversationType {
   Important,
-  AlwaysImportant
+  AlwaysImportant,
 }
 
 export enum VisibilityType {
   Private = 0,
   Unlisted = 1,
   Public = 2,
-  Create = 3
+  Create = 3,
 }
 
 export enum UploadMediaState {
@@ -170,12 +175,12 @@ export enum UploadMediaState {
   FeedVideo = 9,
   FeedImage = 10,
   CompressFeedVideo = 11,
-  CompressFeedImage = 12
+  CompressFeedImage = 12,
 }
 
 export enum CharacterIP {
   Original,
-  Fan
+  Fan,
 }
 
 export interface MembershipSetting {
@@ -187,18 +192,18 @@ export interface MembershipSetting {
 
 export enum Subscription {
   IP,
-  Contents
+  Contents,
 }
 
 export enum PaymentType {
   USA,
-  Korea
+  Korea,
 }
 
 export enum CharacterState {
   None = 0,
   Create = 1,
-  Delete = 2
+  Delete = 2,
 }
 
 export enum LLMModel {
@@ -210,7 +215,7 @@ export enum LLMModel {
   Claude_3_Sonnet = 5,
   Claude_3_5_Sonnet = 6,
   Claude_3_5_Sonnet_V2 = 7,
-  Claude_3_Haiku = 8
+  Claude_3_Haiku = 8,
 }
 
 export interface GalleryImageInfo {
@@ -440,7 +445,7 @@ export const curEditngContentInfoSlice = createSlice({
 
     updateEditingContentInfo: (state, action: PayloadAction<Partial<ContentInfo>>) => {
       if (state.curEditingContentInfo) {
-        state.curEditingContentInfo = { ...state.curEditingContentInfo, ...action.payload };
+        state.curEditingContentInfo = {...state.curEditingContentInfo, ...action.payload};
       }
     },
 
@@ -453,7 +458,7 @@ export const curEditngContentInfoSlice = createSlice({
       // 모든 챕터를 순회하면서 에피소드 ID를 기준으로 업데이트
       state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
         chapter.episodeInfoList = chapter.episodeInfoList.map(episode =>
-          episode.id === updatedEpisode.id ? { ...episode, ...updatedEpisode } : episode,
+          episode.id === updatedEpisode.id ? {...episode, ...updatedEpisode} : episode,
         );
       });
     },
@@ -494,8 +499,8 @@ export const curEditngContentInfoSlice = createSlice({
     },
 
     // Episode 순서 변경
-    adjustEpisodeIndex: (state, action: PayloadAction<{ targetId: number; direction: 'up' | 'down' }>) => {
-      const { targetId, direction } = action.payload;
+    adjustEpisodeIndex: (state, action: PayloadAction<{targetId: number; direction: 'up' | 'down'}>) => {
+      const {targetId, direction} = action.payload;
 
       state.curEditingContentInfo.chapterInfoList.forEach(chapter => {
         const targetIndex = chapter.episodeInfoList.findIndex(episode => episode.id === targetId);
@@ -520,9 +525,9 @@ export const curEditngContentInfoSlice = createSlice({
 
     moveTriggerToEpisode: (
       state,
-      action: PayloadAction<{ sourceEpisodeId: number; triggerId: number; targetEpisodeId: number }>,
+      action: PayloadAction<{sourceEpisodeId: number; triggerId: number; targetEpisodeId: number}>,
     ) => {
-      const { sourceEpisodeId, triggerId, targetEpisodeId } = action.payload;
+      const {sourceEpisodeId, triggerId, targetEpisodeId} = action.payload;
 
       let triggerToMove: TriggerInfo | null = null;
 
@@ -633,8 +638,8 @@ export const curEditngContentInfoSlice = createSlice({
     },
 
     // TriggerInfo 업데이트
-    updateTriggerInfo: (state, action: PayloadAction<{ id: number; info: Partial<Omit<TriggerInfo, 'id'>> }>) => {
-      const { id, info } = action.payload;
+    updateTriggerInfo: (state, action: PayloadAction<{id: number; info: Partial<Omit<TriggerInfo, 'id'>>}>) => {
+      const {id, info} = action.payload;
       const triggerIndex = state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
         state.selectedEpisodeIdx
       ].triggerInfoList.findIndex(trigger => trigger.id === id);
@@ -676,8 +681,8 @@ export const curEditngContentInfoSlice = createSlice({
     },
 
     // Trigger 이름 업데이트
-    updateTriggerInfoName: (state, action: PayloadAction<{ id: number; name: string }>) => {
-      const { id, name } = action.payload;
+    updateTriggerInfoName: (state, action: PayloadAction<{id: number; name: string}>) => {
+      const {id, name} = action.payload;
       const triggerIndex = state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
         state.selectedEpisodeIdx
       ].triggerInfoList.findIndex(trigger => trigger.id === id);
@@ -710,15 +715,15 @@ export const curEditngContentInfoSlice = createSlice({
     },
 
     // TriggerInfo 업데이트 (index 기반)
-    updateTriggerInfoByIndex: (state, action: PayloadAction<{ index: number; info: Omit<TriggerInfo, 'id'> }>) => {
-      const { index, info } = action.payload;
+    updateTriggerInfoByIndex: (state, action: PayloadAction<{index: number; info: Omit<TriggerInfo, 'id'>}>) => {
+      const {index, info} = action.payload;
 
       if (
         index >= 0 &&
         index <
-        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
-          state.selectedEpisodeIdx
-        ].triggerInfoList.length
+          state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].triggerInfoList.length
       ) {
         state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
           state.selectedEpisodeIdx
@@ -732,15 +737,15 @@ export const curEditngContentInfoSlice = createSlice({
     },
 
     // Trigger 이름 업데이트 (index 기반)
-    updateTriggerInfoNameByIndex: (state, action: PayloadAction<{ index: number; name: string }>) => {
-      const { index, name } = action.payload;
+    updateTriggerInfoNameByIndex: (state, action: PayloadAction<{index: number; name: string}>) => {
+      const {index, name} = action.payload;
 
       if (
         index >= 0 &&
         index <
-        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
-          state.selectedEpisodeIdx
-        ].triggerInfoList.length
+          state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].triggerInfoList.length
       ) {
         state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
           state.selectedEpisodeIdx
@@ -760,9 +765,9 @@ export const curEditngContentInfoSlice = createSlice({
       if (
         index >= 0 &&
         index <
-        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
-          state.selectedEpisodeIdx
-        ].triggerInfoList.length
+          state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].triggerInfoList.length
       ) {
         state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
           state.selectedEpisodeIdx
@@ -800,7 +805,7 @@ export const curEditngContentInfoSlice = createSlice({
 
     addConversationTalkItem: (
       state,
-      action: PayloadAction<{ conversationIndex: number; type: 'user' | 'character'; newTalk: string }>,
+      action: PayloadAction<{conversationIndex: number; type: 'user' | 'character'; newTalk: string}>,
     ) => {
       const conversation =
         state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[state.selectedEpisodeIdx]
@@ -883,7 +888,7 @@ export const curEditngContentInfoSlice = createSlice({
 
     removeConversationItem: (
       state,
-      action: PayloadAction<{ conversationIndex: number; itemIndex: number; type: 'user' | 'character' }>,
+      action: PayloadAction<{conversationIndex: number; itemIndex: number; type: 'user' | 'character'}>,
     ) => {
       const conversation =
         state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[state.selectedEpisodeIdx]
@@ -919,9 +924,9 @@ export const curEditngContentInfoSlice = createSlice({
       if (
         index >= 0 &&
         index <
-        state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
-          state.selectedEpisodeIdx
-        ].conversationTemplateList.length
+          state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
+            state.selectedEpisodeIdx
+          ].conversationTemplateList.length
       ) {
         state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
           state.selectedEpisodeIdx

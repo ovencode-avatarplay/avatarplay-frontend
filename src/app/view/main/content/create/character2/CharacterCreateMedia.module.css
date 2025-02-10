@@ -46,14 +46,21 @@
 
  .mediaButtonArea
  {
-   width: var(--second-width);
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   gap: 10px;
-   align-self: stretch;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+ }
 
-   overflow: hidden;
+ .mediaAddButton
+ {
+  display: flex;
+  width: 89px;
+  padding: 6px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
  }
 
  .mediaButton
@@ -134,12 +141,13 @@
    flex: 1 0 0;
  }
 
- .mediaButtonArea
+ .mediaItemButtonArea
  {
    width : 100%;
    height: 55px;
    display: flex;
    justify-content: space-between;
+   padding-right: 5px;
    align-items: center;
    align-self: stretch;
    
@@ -174,13 +182,9 @@
  }
 
  .rightButtonGroup
- {
-   display: flex;
-   padding-right: 10px;
-   justify-content: center;
-   justify-items: center;
-   align-items: center;
-   gap: 8px;
+ {display: flex;
+  align-items: center;
+  gap: 4px;
  }
 
  .mediaRadioButton
@@ -192,4 +196,25 @@
    border-radius: 8px;
    border-width: 2px;
    border-color: #E8EAED;
+ }
+
+ .moveItemIndexButton
+ {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  
+  border-radius: 6px;
+  background: var(--Neutral-800, #2C3131);
+ }
+
+ .moveItemIndexIcon
+ {width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  aspect-ratio: 1/1;
  }

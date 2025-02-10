@@ -178,7 +178,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
           languageType: languageType,
           name: characterName,
           characterDescription: characterDescription,
-          urlLinkKey: 'string', // 서버에서 지정
+          urlLinkKey: '-1', // 서버에서 지정
           genderType: 0, // 지정하는 장소 없음
           introduction: 'string', // 지정하는 장소 없음
           description: description,
@@ -188,38 +188,22 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
           customModulesPrompt: selectedPrompt,
           customModulesLorebook: selectedLorebook,
           mainImageUrl: mainimageUrl,
-          portraitGalleryImageUrl: [
-            {
-              galleryImageId: 0,
+          portraitGalleryImageUrl: mediaItems
+            .filter(item => !item.isProfileImage) // isProfileImage가 false인 항목만 필터링
+            .map(item => ({
+              galleryImageId: -1,
               isGenerate: true,
-              debugParameter: 'string',
-              imageUrl: 'string',
-            },
-          ],
-          poseGalleryImageUrl: [
-            {
-              galleryImageId: 0,
-              isGenerate: true,
-              debugParameter: 'string',
-              imageUrl: 'string',
-            },
-          ],
-          expressionGalleryImageUrl: [
-            {
-              galleryImageId: 0,
-              isGenerate: true,
-              debugParameter: 'string',
-              imageUrl: 'string',
-            },
-          ],
-          mediaTemplateList: [
-            {
-              id: 0,
-              imageUrl: 'string',
-              description: 'string',
-              isProfileImage: true,
-            },
-          ],
+              debugParameter: item.description,
+              imageUrl: item.imageUrl,
+            })),
+          poseGalleryImageUrl: [],
+          expressionGalleryImageUrl: [],
+          mediaTemplateList: mediaItems.map(item => ({
+            id: -1,
+            imageUrl: item.imageUrl,
+            description: item.description,
+            isProfileImage: item.isProfileImage,
+          })),
           conversationTemplateList: [
             {
               id: 0,

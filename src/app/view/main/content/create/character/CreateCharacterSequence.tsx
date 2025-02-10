@@ -90,7 +90,11 @@ const CharacterCreateSequence: React.FC<Props> = ({
     CreateCharacterStep.Publish,
   ];
   const Create2Steps: CreateCharacterStep[] = [
+    CreateCharacterStep.Gender,
+    CreateCharacterStep.Style,
+    CreateCharacterStep.Race,
     CreateCharacterStep.HairStyle,
+    CreateCharacterStep.BodyShape,
     CreateCharacterStep.OutfitClothes,
     CreateCharacterStep.ThumbnailBackground,
     CreateCharacterStep.Summary,
@@ -132,6 +136,17 @@ const CharacterCreateSequence: React.FC<Props> = ({
     'Step 8. Choose personality',
     '',
     'Step 9. Choose one as a character thumbnail',
+    '',
+  ];
+  const create2StepTexts: string[] = [
+    'Step 1. Select gender ',
+    'Step 2. Select style',
+    'Step 3. Choose ethnicity',
+    'Step 4. Choose hair style',
+    'Step 5. Body shape',
+    'Step 6. Outfit of clothes',
+    'Step 7. Thumbnail background',
+    '',
     '',
   ];
   const modifyStepTexts: string[] = [
@@ -358,7 +373,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
       createType === 'modify'
         ? modifyStepTexts[curStep]
         : createType === 'create2'
-        ? Create2Steps[curStep]
+        ? create2StepTexts[curStep]
         : createStepTexts[curStep];
     return currentStep || '';
   };

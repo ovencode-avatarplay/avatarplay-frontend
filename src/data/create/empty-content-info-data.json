@@ -18,28 +18,37 @@
               "backgroundImageUrl": "",
               "characterInfo": {
                 "id": 0,
+                "languageType": 0,
                 "name": "",
+                "characterDescription": "",
+                "urlLinkKey": "", 
+                "genderType": 0,
+                
+                "introduction": "",
+                "description": "",
                 "worldScenario": "",
                 "greeting": "",
                 "secret": "",
-                "genderType": 0,
-                "introduction": "",
-                "description": "",
+                
+                "customModulesPrompt": "",
+                "customModulesLorebook": "",
+
                 "mainImageUrl": "",
                 "portraitGalleryImageUrl": [],
                 "poseGalleryImageUrl": [],
                 "expressionGalleryImageUrl": [],
+                "mediaTemplateList": [],
+                "conversationTemplateList": [],
+
                 "visibilityType": 0,
-                "isMonetization": false,
-                "state": 1,
-                "languageType": 0,
-                "customModulesPrompt": "",
-                "customModulesLorebook": "",
+                "llmModel" :"",
                 "tag": "",
                 "positionCountry": 0,
                 "characterIP": 0,
                 "recruitedProfileId": 0,
                 "operatorInvitationProfileId": [],
+                
+                "isMonetization": false,
                 "nsfw": false,
                 "membershipSetting": {
                   "subscription": 0,
@@ -47,8 +56,10 @@
                   "paymentAmount": 0,
                   "benefits": ""
                 },
+                "state": 1,
+                
                 "createAt": "2025-02-10T00:00:00.000Z",
-                "updateAt": "2025-02-10T00:00:00.000Z"
+                "updateAt": "2025-02-10T00:00:00.000Z"                
               },
               "episodeDescription": {
                 "scenarioDescription": "",

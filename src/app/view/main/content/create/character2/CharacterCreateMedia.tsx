@@ -1,4 +1,4 @@
-import {BoldInfo, LineDelete, LineEdit} from '@ui/Icons';
+import {BoldInfo, LineArrowDown, LineDelete, LineEdit} from '@ui/Icons';
 import styles from './CharacterCreateMedia.module.css';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
@@ -48,7 +48,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
               placeholder="Image Explain"
               style={{width: '100%'}}
             />
-            <div className={styles.mediaButtonArea}>
+            <div className={styles.mediaItemButtonArea}>
               <div className={styles.leftButtonGroup}>
                 <button className={styles.mediaItemButton} onClick={() => handleDelete(index)}>
                   <img className={styles.mediaButtonIcon} src={LineDelete.src} />
@@ -59,14 +59,24 @@ const CharacterCreateMedia: React.FC<Props> = ({
               </div>
 
               <div className={styles.rightButtonGroup}>
-                Profile Image
+                {/* Profile Image
                 <CustomRadioButton
                   displayType="buttonOnly"
                   shapeType="square"
                   value={index}
                   selectedValue={selectedItemIdx}
                   onSelect={(value: string | number) => handlerSelected(Number(value))}
-                />
+                /> */}
+                <button className={styles.moveItemIndexButton} onClick={() => {}}>
+                  <img
+                    className={styles.moveItemIndexIcon}
+                    src={LineArrowDown.src}
+                    style={{transform: 'rotate(180deg)'}}
+                  />
+                </button>
+                <button className={styles.moveItemIndexButton} onClick={() => {}}>
+                  <img className={styles.moveItemIndexIcon} src={LineArrowDown.src} />
+                </button>
               </div>
             </div>
           </div>
@@ -83,44 +93,17 @@ const CharacterCreateMedia: React.FC<Props> = ({
         </div>
         <div className={styles.mediaInfoDecs}>{mediaInfoDesc}</div>
       </div>
-      <ul className={styles.mediaButtonArea}>
+      <div className={styles.mediaButtonArea}>
         <CustomButton
-          size="Medium"
+          size="Small"
           state="Normal"
-          type="Tertiary"
+          type="Primary"
           onClick={onClickCreateMedia}
-          customClassName={[styles.mediaButton]}
+          customClassName={[styles.mediaAddButton]}
         >
           Create
         </CustomButton>
-        {/* <CustomButton
-          size="Medium"
-          state="Normal"
-          type="Tertiary"
-          onClick={() => {}}
-          customClassName={[styles.mediaButton]}
-        >
-          Gallery
-        </CustomButton>
-        <CustomButton
-          size="Medium"
-          state="Normal"
-          type="Tertiary"
-          onClick={() => {}}
-          customClassName={[styles.mediaButton]}
-        >
-          Workroom
-        </CustomButton>
-        <CustomButton
-          size="Medium"
-          state="Normal"
-          type="Tertiary"
-          onClick={() => {}}
-          customClassName={[styles.mediaButton]}
-        >
-          My device
-        </CustomButton> */}
-      </ul>
+      </div>
 
       <ul className={styles.mediaList}>
         {mediaItems.map((item, index) =>

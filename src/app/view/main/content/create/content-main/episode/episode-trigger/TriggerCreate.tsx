@@ -89,6 +89,28 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
       visibilityType: 0,
       isMonetization: false,
       state: 0,
+      characterDescription: '',
+      characterIP: 0,
+      conversationTemplateList: [],
+      createAt: '2025-02-06T06:22:46.701Z',
+      customModulesLorebook: '',
+      customModulesPrompt: '',
+      languageType: 0,
+      llmModel: 0,
+      mediaTemplateList: [],
+      membershipSetting: {
+        benefits: '',
+        paymentAmount: 0,
+        paymentType: 0,
+        subscription: 0,
+      },
+      nsfw: false,
+      operatorInvitationProfileId: [],
+      positionCountry: 0,
+      recruitedProfileId: 0,
+      tag: '',
+      updateAt: '2025-02-06T06:22:46.701Z',
+      urlLinkKey: '',
     }, // 기본 캐릭터 정보
     actionMediaState: 0, // 기본 미디어 상태
     actionMediaUrlList: [], // 기본 미디어 URL 리스트

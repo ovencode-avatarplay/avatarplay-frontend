@@ -2,8 +2,10 @@ import styles from './CharacterCreateLLM.module.css';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
+import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAI, BoldArrowDown, LineDelete} from '@ui/Icons';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+
 interface Props {
   selectedLang: number;
   characterDesc: string;
@@ -41,6 +43,11 @@ const CharacterCreateLLM: React.FC<Props> = ({
   onSelectedPromptChange,
   onSelectedLorebookChange,
 }) => {
+  const [autoWriteCharacterDesc, setAutoWriteCharacterDesc] = useState<string[]>([]);
+  const [autoWriteCharacterWorldScenario, setAutoWriteCharacterWorldScenario] = useState<string[]>([]);
+  const [autoWriteCharacterGreeting, setAutoWriteCharacterGreeting] = useState<string[]>([]);
+  const [autoWriteCharacterSecret, setAutoWriteCharacterSecret] = useState<string[]>([]);
+
   const langItems = [
     {label: 'Lang 1', value: '1'},
     {label: 'Lang 2', value: '2'},
@@ -65,6 +72,39 @@ const CharacterCreateLLM: React.FC<Props> = ({
     {label: 'lorebook 3', value: '3'},
   ];
 
+  useEffect(() => {
+    //  TODO : Localize 테이블에서 가져올 키값과 헤드 이름 변경필요
+    const data1: string[] = [
+      getLocalizedText('EpisodeDescription', 'episodeDescription_label_001'),
+      getLocalizedText('EpisodeDescription', 'episodeDescription_label_002'),
+      getLocalizedText('EpisodeDescription', 'episodeDescription_label_003'),
+      getLocalizedText('EpisodeDescription', 'episodeDescription_label_004'),
+    ];
+    const data2: string[] = [
+      getLocalizedText('EpisodeDescription', 'scenarioIntroduction_desc_001'),
+      getLocalizedText('EpisodeDescription', 'scenarioIntroduction_desc_002'),
+      getLocalizedText('EpisodeDescription', 'scenarioIntroduction_desc_003'),
+      getLocalizedText('EpisodeDescription', 'scenarioIntroduction_desc_004'),
+    ];
+    const data3: string[] = [
+      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_001'),
+      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_002'),
+      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_003'),
+      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_004'),
+    ];
+    const data4: string[] = [
+      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_001'),
+      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_002'),
+      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_003'),
+      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_004'),
+    ];
+
+    setAutoWriteCharacterDesc(data1);
+    setAutoWriteCharacterWorldScenario(data2);
+    setAutoWriteCharacterGreeting(data3);
+    setAutoWriteCharacterSecret(data4);
+  }, []);
+
   const handleSelectLang = (value: number) => {
     onLangChange(value);
   };
@@ -79,6 +119,26 @@ const CharacterCreateLLM: React.FC<Props> = ({
 
   const handleSelectLoreBook = (value: string) => {
     onSelectedLorebookChange(value);
+  };
+
+  const handleAutoWriteCharacterDesc = () => {
+    const randomIndex = Math.floor(Math.random() * autoWriteCharacterDesc.length);
+    onCharacterDescChange(autoWriteCharacterDesc[randomIndex]);
+  };
+
+  const handleAutoWriteCharacterWorldScenario = () => {
+    const randomIndex = Math.floor(Math.random() * autoWriteCharacterWorldScenario.length);
+    onWorldScenarioChange(autoWriteCharacterWorldScenario[randomIndex]);
+  };
+
+  const handleAutoWriteCharacterGreeting = () => {
+    const randomIndex = Math.floor(Math.random() * autoWriteCharacterGreeting.length);
+    onGreetingChange(autoWriteCharacterGreeting[randomIndex]);
+  };
+
+  const handleAutoWriteCharacterSecret = () => {
+    const randomIndex = Math.floor(Math.random() * autoWriteCharacterSecret.length);
+    onSecretChange(autoWriteCharacterSecret[randomIndex]);
   };
 
   const renderTitle = (title: string, desc: string) => {
@@ -117,7 +177,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
     );
   };
 
-  const renderMaxTextInput = (value: string, handlePromptChange: (newValue: string) => void) => {
+  const renderMaxTextInput = (value: string, handlePromptChange: (newValue: string) => void, onClickAI: () => void) => {
     const handleButtonClick = (text: string) => {
       // 버튼 클릭 시 기존 텍스트에 {{User}} 또는 {{Char}} 추가
       handlePromptChange(value + `{{${text}}}`);
@@ -135,7 +195,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         />
         <div className={styles.maxTextButtonArea}>
           <button className={styles.maxTextButton}>
-            <img className={styles.maxTextButtonIcon} src={BoldAI.src} />
+            <img className={styles.maxTextButtonIcon} src={BoldAI.src} onClick={onClickAI} />
           </button>
           <button className={styles.maxTextButton} onClick={() => handleButtonClick('User')}>
             {'{{User}}'}
@@ -182,7 +242,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
                 </button>
               </div>
             </div>
-            {renderMaxTextInput(greeting, onGreetingChange)}
+            {renderMaxTextInput(greeting, onGreetingChange, handleAutoWriteCharacterGreeting)}
           </div>
         </ul>
       </>
@@ -205,19 +265,19 @@ const CharacterCreateLLM: React.FC<Props> = ({
           `Character Description *`,
           `Use{{User}}to replace with the name of the user in the conversation. Use{{Char}}to replace with the charater’s name.`,
         )}
-        {renderMaxTextInput(characterDesc, onCharacterDescChange)}
+        {renderMaxTextInput(characterDesc, onCharacterDescChange, handleAutoWriteCharacterDesc)}
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`World Scenario`, '')}
-        {renderMaxTextInput(worldScenario, onWorldScenarioChange)}
+        {renderMaxTextInput(worldScenario, onWorldScenarioChange, handleAutoWriteCharacterWorldScenario)}
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`Greeting`, '')}
-        {renderMaxTextInput(greeting, onGreetingChange)}
+        {renderMaxTextInput(greeting, onGreetingChange, handleAutoWriteCharacterGreeting)}
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`Secrets`, '')}
-        {renderMaxTextInput(secret, onSecretChange)}
+        {renderMaxTextInput(secret, onSecretChange, handleAutoWriteCharacterSecret)}
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`LLM`, '')}

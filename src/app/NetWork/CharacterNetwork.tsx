@@ -27,8 +27,29 @@ export interface CharacterInfoDate {
   isMonetization: boolean;
   state: number;
 
-  createAt: Date;
-  updateAt: Date;
+  createAt: string;
+  updateAt: string;
+
+  characterDescription: '';
+  characterIP: 0;
+  conversationTemplateList: [];
+  customModulesLorebook: '';
+  customModulesPrompt: '';
+  languageType: 0;
+  llmModel: 0;
+  mediaTemplateList: [];
+  membershipSetting: {
+    benefits: '';
+    paymentAmount: 0;
+    paymentType: 0;
+    subscription: 0;
+  };
+  nsfw: false;
+  operatorInvitationProfileId: [];
+  positionCountry: 0;
+  recruitedProfileId: 0;
+  tag: '';
+  urlLinkKey: '';
 }
 
 export interface GetCharacterListRes {
