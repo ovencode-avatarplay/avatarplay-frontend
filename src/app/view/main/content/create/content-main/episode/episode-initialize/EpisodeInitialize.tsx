@@ -452,7 +452,7 @@ const EpisodeInitialize: React.FC<Props> = ({
           characterDescription: '',
           characterIP: 0,
           conversationTemplateList: [],
-          createAt: '',
+          createAt: '2025-02-06T06:22:46.701Z',
           customModulesLorebook: '',
           customModulesPrompt: '',
           languageType: 0,
@@ -469,7 +469,7 @@ const EpisodeInitialize: React.FC<Props> = ({
           positionCountry: 0,
           recruitedProfileId: 0,
           tag: '',
-          updateAt: '',
+          updateAt: '2025-02-06T06:22:46.701Z',
           urlLinkKey: '',
         },
       };
