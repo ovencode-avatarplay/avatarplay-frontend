@@ -294,7 +294,9 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
               <button className={styles.edit}>Edit</button>
               <button className={styles.ad}>AD</button>
               <button className={styles.chat}>
-                <Link href={getLocalizedLink(`/profile/detail/` + profileId)}>Chat</Link>
+                <Link href={getLocalizedLink(`/profile/detail/` + data.profileInfo?.profileInfo.typeValueId)}>
+                  Chat
+                </Link>
               </button>
             </div>
           )}
@@ -314,7 +316,7 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
               </button>
               <button className={styles.chat}>
-                <Link href={getLocalizedLink(`/profile/detail`)}>Chat</Link>
+                <Link href={getLocalizedLink(`/profile/detail` + data.profileInfo?.profileInfo.typeValueId)}>Chat</Link>
               </button>
             </div>
           )}

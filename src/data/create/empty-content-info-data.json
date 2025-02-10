@@ -1,76 +1,85 @@
 {
-    "resultCode": 0,
-    "resultMessage": "",
-    "data": {
-      "contentInfo": {
-        "id": 0,
-        "userId": 0,
-        "urlLinkKey" : "",
-        "chapterInfoList": [
-          {
-            "id": -1,
-            "name": "",
-            "thumbnail": "",
-            "episodeInfoList": [
-              {
-                "id": -1,
-                "name": "",
-                "backgroundImageUrl": "",
-                "characterInfo": {
-                  "id": 0,
-                  "name": "",
-                  
-                  "worldScenario":"",
-                  "greeting":"",
-                  "secret":"",
-
-                  "genderType" : 0,
-                  "introduction": "",
-                  "description" : "",
-                  "mainImageUrl": "",
-                  "portraitGalleryImageUrl": [
-                  ],
-                  "poseGalleryImageUrl": [
-                  ],
-                  "expressionGalleryImageUrl": [
-                  ],
-                  "visibilityType": 0,
-                  "isMonetization": false,
-                  "state": 1
-                },
-                "episodeDescription": {
-                  "scenarioDescription": "",
-                  "introDescription": "",
-                  "secret": "",
-                  "greeting" : "",
-                  "worldScenario" : ""
-                },
-                "triggerInfoList": [
-                ],
-                "conversationTemplateList": [
-                ]
-              }
-            ]
-          }
-        ],
-        "publishInfo": {
-          "languageType": 0,
-          "contentName": "",
+  "resultCode": 0,
+  "resultMessage": "",
+  "data": {
+    "contentInfo": {
+      "id": 0,
+      "userId": 0,
+      "urlLinkKey": "",
+      "chapterInfoList": [
+        {
+          "id": -1,
+          "name": "",
           "thumbnail": "",
-          "contentDescription": "",
-          "authorName": "",
-          "authorComment": "",
-          "tagList": [],
-          "selectTagList": [],
-          "visibilityType": 0,
-          "monetization": false,
-          "nsfw": 0,
-          "llmSetupInfo": {
-            "llmModel": 6,
-            "customApi": ""
-          }
+          "episodeInfoList": [
+            {
+              "id": -1,
+              "name": "",
+              "backgroundImageUrl": "",
+              "characterInfo": {
+                "id": 0,
+                "name": "",
+                "worldScenario": "",
+                "greeting": "",
+                "secret": "",
+                "genderType": 0,
+                "introduction": "",
+                "description": "",
+                "mainImageUrl": "",
+                "portraitGalleryImageUrl": [],
+                "poseGalleryImageUrl": [],
+                "expressionGalleryImageUrl": [],
+                "visibilityType": 0,
+                "isMonetization": false,
+                "state": 1,
+                "languageType": 0,
+                "customModulesPrompt": "",
+                "customModulesLorebook": "",
+                "tag": "",
+                "positionCountry": 0,
+                "characterIP": 0,
+                "recruitedProfileId": 0,
+                "operatorInvitationProfileId": [],
+                "nsfw": false,
+                "membershipSetting": {
+                  "subscription": 0,
+                  "paymentType": 0,
+                  "paymentAmount": 0,
+                  "benefits": ""
+                },
+                "createAt": "2025-02-10T00:00:00.000Z",
+                "updateAt": "2025-02-10T00:00:00.000Z"
+              },
+              "episodeDescription": {
+                "scenarioDescription": "",
+                "introDescription": "",
+                "secret": "",
+                "greeting": "",
+                "worldScenario": ""
+              },
+              "triggerInfoList": [],
+              "conversationTemplateList": []
+            }
+          ]
+        }
+      ],
+      "publishInfo": {
+        "languageType": 0,
+        "contentName": "",
+        "thumbnail": "",
+        "contentDescription": "",
+        "authorName": "",
+        "authorComment": "",
+        "tagList": [],
+        "selectTagList": [],
+        "visibilityType": 0,
+        "monetization": false,
+        "nsfw": 0,
+        "llmSetupInfo": {
+          "llmModel": 6,
+          "customApi": ""
         }
       }
     }
   }
-  
+}

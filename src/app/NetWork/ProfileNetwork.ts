@@ -81,17 +81,6 @@ export interface GetProfileInfoRes {
   feedInfoList: ProfileTabItemInfo[];
 }
 
-export interface ProfileInfo {
-  id: number;
-  type: ProfileType;
-  name: string;
-  description: string;
-  iconImageUrl: string;
-  postCount: number;
-  followerCount: number;
-  followingCount: number;
-}
-
 export interface ProfileTabItemInfo {
   id: number;
   name: string;
@@ -117,6 +106,7 @@ export interface GetProfileInfoRes {
 export interface ProfileInfo {
   id: number;
   type: ProfileType;
+  typeValueId: number;
   name: string;
   description: string;
   iconImageUrl: string;
