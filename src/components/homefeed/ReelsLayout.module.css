@@ -101,3 +101,26 @@
   line-height: 80%; /* 18px */
   color: #FFFFFF;
 }
+.reelsContainer {
+  width: 100%;
+  height: auto; /* ✅ 자동 높이 */
+  scroll-snap-type: y mandatory; /* ✅ 스냅 스크롤 유지 */
+  -webkit-overflow-scrolling: touch;
+}
+
+.reelsWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+}
+
+.reelSlide {
+  width: 100%;
+  height: 100vh;
+  scroll-snap-align: start; /* ✅ 스냅 정렬 유지 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+}
