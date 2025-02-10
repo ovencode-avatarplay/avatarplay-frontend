@@ -374,7 +374,7 @@ const SearchBoard: React.FC = () => {
     <>
       <Splitter
         splitters={splitterData}
-        splitterStyle={{height: 'var(--body-height)'}}
+        splitterStyle={{height: 'var(--header-removed-height)', paddingTop: '58px'}}
         contentStyle={{padding: '0'}}
         isDark={true}
       />

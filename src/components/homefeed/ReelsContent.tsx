@@ -69,6 +69,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
+
   const [activeIndex, setActiveIndex] = useState(0); // 현재 슬라이드 인덱스 상태
   const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
@@ -206,10 +207,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
     const userAgent = navigator.userAgent || navigator.vendor;
     const platform = navigator.platform;
     const maxTouchPoints = navigator.maxTouchPoints || 0;
-
-    console.log('userAgent:', userAgent);
-    console.log('platform:', platform);
-    console.log('maxTouchPoints:', maxTouchPoints);
 
     const isIOSDevice = /iPhone|iPad|iPod/i.test(userAgent);
 

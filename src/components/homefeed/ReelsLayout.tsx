@@ -21,6 +21,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   const [info, setInfo] = useState<FeedInfo[]>([]); // 현재 렌더링된 데이터
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 슬라이드 인덱스
   const [isMute, setIsMute] = useState(true); // 현재 슬라이드 인덱스
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
     try {
@@ -91,43 +92,48 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
     }
   };
 
-  // 슬라이드 변경 이벤트 핸들러
-  const handleSlideChange = (swiper: any) => {
-    const currentIndex = swiper.activeIndex;
-    setCurrentSlideIndex(currentIndex);
+  const handleScroll = () => {
+    const sectionHeight = window.innerHeight;
+    const scrollPosition = window.scrollY;
+    const newIndex = Math.round(scrollPosition / sectionHeight);
 
-    // 배열 범위 검증
-    if (currentIndex < 0 || currentIndex >= allFeeds.length) {
-      console.warn('Slide index out of bounds');
-      return;
-    }
+    if (newIndex < 0 || newIndex >= allFeeds.length) return;
 
-    const currentItem = allFeeds[currentIndex];
+    if (newIndex !== currentSlideIndex) {
+      setCurrentSlideIndex(newIndex);
+      const currentItem = allFeeds[newIndex];
 
-    if (currentItem && currentItem.urlLinkKey != null) {
-      viewFeed(currentItem.id);
+      if (currentItem && currentItem.urlLinkKey) {
+        // ✅ 현재 URL과 다를 때만 변경하여 불필요한 pushState 방지
+        const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
+        if (window.location.pathname !== newUrl) {
+          window.history.pushState(null, '', newUrl);
+        }
 
-      // URL 업데이트
-      const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
-      window.history.pushState(null, '', newUrl);
-    } else {
-      console.warn('Invalid urlLinkKey for current slide');
-    }
+        // ✅ API 호출도 꼭 필요할 때만 실행
+        viewFeed(currentItem.id);
+      }
 
-    // 추가 데이터 요청: 슬라이드 끝에 도달하면 로드
-    if (currentIndex >= info.length - 1 && info.length < allFeeds.length) {
-      const nextItems = allFeeds.slice(info.length, info.length + 2); // 다음 2개
-      setInfo(prev => [...prev, ...nextItems]);
+      // ✅ 다음 데이터를 미리 로드하는 로직 유지
+      if (newIndex >= info.length - 1 && info.length < allFeeds.length) {
+        const nextItems = allFeeds.slice(info.length, info.length + 2);
+        setInfo(prev => [...prev, ...nextItems]);
+      }
     }
   };
+
   const [curFollowFeatured, setCurFollowFeatured] = useState(false); // 비디오 총 길이
   const [isOpenFollowFeatured, setIsOpenFollowFeatured] = useState(false); // 비디오 총 길이
-
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [allFeeds, currentSlideIndex]);
   React.useEffect(() => {
     console.log(isMute);
   }, [isMute]);
+
   return (
-    <>
+    <div ref={containerRef} className={styles.reelsContainer}>
       {/* <Head>
         <title>{initialFeed?.characterProfileName || 'Home Feed'}</title>
         <meta name="description" content={initialFeed?.description || 'Welcome to the home feed'} />
@@ -172,27 +178,14 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
           </div>
         </div>
       )}
-      <Swiper
-        direction="vertical"
-        spaceBetween={0}
-        slidesPerView={1}
-        centeredSlides={true}
-        scrollbar={{draggable: true}}
-        onSlideChange={handleSlideChange}
-        className={styles.mySwiper}
-      >
+      <div className={styles.reelsWrapper}>
         {info.map((item, index) => (
-          <SwiperSlide key={index} className={styles.swiperSlide}>
-            <ReelsContent
-              item={item}
-              isActive={index === currentSlideIndex}
-              isMute={isMute} // 상태 전달
-              setIsMute={setIsMute} // 상태 변경 함수 전달
-            />
-          </SwiperSlide>
+          <div key={index} className={styles.reelSlide}>
+            <ReelsContent item={item} isActive={index === currentSlideIndex} isMute={isMute} setIsMute={setIsMute} />
+          </div>
         ))}
-      </Swiper>
-    </>
+      </div>
+    </div>
   );
 };
 
