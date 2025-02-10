@@ -289,7 +289,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
   const getCharacterInfo = async (id: number) => {
     setLoading(true);
     try {
-      const req: GetCharacterInfoReq = {characterProfileId: id};
+      const req: GetCharacterInfoReq = {characterId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {

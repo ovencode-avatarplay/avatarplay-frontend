@@ -130,7 +130,7 @@ export const sendDeleteCharacter = async (payload: DeleteCharacterReq): Promise<
 // Get CharacterData by Id
 
 export interface GetCharacterInfoReq {
-  characterProfileId: number;
+  characterId: number;
 }
 
 export interface GetCharacterInfoRes {

@@ -61,7 +61,7 @@ const PageProfileDetail = ({profileId}: Props) => {
 
   const getCharacterInfo = async (profileId: number) => {
     const reqGetcharacterInfo: GetCharacterInfoReq = {
-      characterProfileId: profileId,
+      characterId: profileId,
     };
     const resGetcharacterInfo = await sendGetCharacterInfo(reqGetcharacterInfo);
     data.characterInfo = resGetcharacterInfo.data?.characterInfo || null;
@@ -167,22 +167,16 @@ const PageProfileDetail = ({profileId}: Props) => {
           <div className={styles.tabContent}>
             <div className={styles.textWrap}>
               <div className={styles.label}>World Senario</div>
-              <TextArea
-                value={`This is a boy-meets-girl type of love story.~~~김경아 gets stranded in the remote mountain town, Everpine, Colorado, during a snowstorm while delivering a special christmas present to their grandmother. Forced to seek shelter at a charming, but slightly rundown, lodge, they meet Elliot. Elliot's family owns the lodge, and it is currently in threat of financial crisis. In a last ditch effort, Elliot is trying to save the family lodge from closing by hosting an art auction and gala on Christmas Eve. She hopes to turn the cozy, but rundown lodge into a thriving community hub. Unfortunately, everything that can go wrong for Elli, does. Now she is praying for a Christmas miracle. It is currently one week before Christmas eve and the auction when 김경아 enters the picture.`}
-              />
+              <TextArea value={data.characterInfo?.worldScenario || ''} />
             </div>
             <div className={styles.textWrap}>
               <div className={styles.label}>Greeting</div>
-              <TextArea
-                value={`This is a boy-meets-girl type of love story.~~~김경아 gets stranded in the remote mountain town, Everpine, Colorado, during a snowstorm while delivering a special christmas present to their grandmother. Forced to seek shelter at a charming, but slightly rundown, lodge, they meet Elliot. Elliot's family owns the lodge, and it is currently in threat of financial crisis. In a last ditch effort, Elliot is trying to save the family lodge from closing by hosting an art auction and gala on Christmas Eve. She hopes to turn the cozy, but rundown lodge into a thriving community hub. Unfortunately, everything that can go wrong for Elli, does. Now she is praying for a Christmas miracle. It is currently one week before Christmas eve and the auction when 김경아 enters the picture.`}
-              />
+              <TextArea value={data.characterInfo?.greeting || ''} />
             </div>
 
             <div className={styles.textWrap}>
               <div className={styles.label}>Creator Comment</div>
-              <TextArea
-                value={`This is a boy-meets-girl type of love story.~~~김경아 gets stranded in the remote mountain town, Everpine, Colorado, during a snowstorm while delivering a special christmas present to their grandmother. Forced to seek shelter at a charming, but slightly rundown, lodge, they meet Elliot. Elliot's family owns the lodge, and it is currently in threat of financial crisis. In a last ditch effort, Elliot is trying to save the family lodge from closing by hosting an art auction and gala on Christmas Eve. She hopes to turn the cozy, but rundown lodge into a thriving community hub. Unfortunately, everything that can go wrong for Elli, does. Now she is praying for a Christmas miracle. It is currently one week before Christmas eve and the auction when 김경아 enters the picture.`}
-              />
+              <TextArea value={data.characterInfo?.characterDescription || ''} />
             </div>
           </div>
         </section>

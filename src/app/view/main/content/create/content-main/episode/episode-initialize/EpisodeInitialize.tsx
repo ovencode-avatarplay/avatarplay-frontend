@@ -292,7 +292,7 @@ const EpisodeInitialize: React.FC<Props> = ({
   const getCharacterInfo = async (id: number) => {
     setLoading(true);
     try {
-      const req: GetCharacterInfoReq = {characterProfileId: id};
+      const req: GetCharacterInfoReq = {characterId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {

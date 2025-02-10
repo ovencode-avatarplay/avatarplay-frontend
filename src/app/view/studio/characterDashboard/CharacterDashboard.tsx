@@ -189,7 +189,7 @@ const CharacterDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetCharacterInfoReq = {characterProfileId: id};
+      const req: GetCharacterInfoReq = {characterId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {
