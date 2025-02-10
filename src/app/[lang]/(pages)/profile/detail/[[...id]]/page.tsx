@@ -78,11 +78,11 @@ const PageProfileDetail = ({profileId}: Props) => {
       </header>
       <main className={styles.main}>
         <section className={styles.characterMainImageWrap}>
-          <img src="/images/profile_sample/img_sample_profile1.png" alt="" className={styles.characterMainImage} />
+          <img src={data.characterInfo?.mainImageUrl} alt="" className={styles.characterMainImage} />
           <div className={styles.infoWrap}>
             <div className={styles.left}>
-              <img src="/images/profile_sample/img_sample_profile1.png" alt="" className={styles.profileMaker} />
-              <div className={styles.name}>namehere</div>
+              <img src={data.characterInfo?.mainImageUrl} alt="" className={styles.profileMaker} />
+              <div className={styles.name}>{data.characterInfo?.name}</div>
             </div>
             <div className={styles.right}>
               <div className={styles.statistics}>
@@ -109,24 +109,13 @@ const PageProfileDetail = ({profileId}: Props) => {
         </ul>
 
         <ul className={styles.thumbnails}>
-          <li className={styles.item}>
-            <img src="/images/profile_sample/img_sample_profile1.png" alt="" />
-          </li>
-          <li className={styles.item}>
-            <img src="/images/profile_sample/img_sample_profile1.png" alt="" />
-          </li>
-          <li className={styles.item}>
-            <img src="/images/profile_sample/img_sample_profile1.png" alt="" />
-          </li>
-          <li className={styles.item}>
-            <img src="/images/profile_sample/img_sample_profile1.png" alt="" />
-          </li>
-          <li className={styles.item}>
-            <img src="/images/profile_sample/img_sample_profile1.png" alt="" />
-          </li>
-          <li className={styles.item}>
-            <img src="/images/profile_sample/img_sample_profile1.png" alt="" />
-          </li>
+          {data.characterInfo?.portraitGalleryImageUrl.map((one, index) => {
+            return (
+              <li className={styles.item}>
+                <img src={one.imageUrl} alt="" />
+              </li>
+            );
+          })}
         </ul>
 
         <section className={styles.tabSection}>
@@ -176,7 +165,7 @@ const PageProfileDetail = ({profileId}: Props) => {
 
             <div className={styles.textWrap}>
               <div className={styles.label}>Creator Comment</div>
-              <TextArea value={data.characterInfo?.characterDescription || ''} />
+              <TextArea value={data.characterInfo?.description || ''} />
             </div>
           </div>
         </section>
