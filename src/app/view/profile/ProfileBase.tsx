@@ -111,6 +111,7 @@ const ProfileBase = ({profileId = 0, isPath = false}: ProfileBaseProps) => {
   }, [pathname]);
 
   useEffect(() => {
+    if (!isPath) return;
     dispatch(setBottomNavColor(1));
     // refreshProfileInfo(profileId);
   }, []);
@@ -196,7 +197,7 @@ const ProfileBase = ({profileId = 0, isPath = false}: ProfileBaseProps) => {
     <>
       <section className={styles.header}>
         <div className={styles.left}>
-          {!isMine && (
+          {!isMine && isPath && (
             <div
               className={styles.backBtn}
               onClick={() => {
