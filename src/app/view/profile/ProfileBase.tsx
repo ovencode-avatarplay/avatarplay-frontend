@@ -74,11 +74,12 @@ type DataProfileType = {
 
 type ProfileBaseProps = {
   profileId?: number;
+  onClickBack?: () => void;
   isPath?: boolean;
 };
 
 // /profile?type=pd?id=123123
-const ProfileBase = ({profileId = 0, isPath = false}: ProfileBaseProps) => {
+const ProfileBase = ({profileId = 0, onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
   const router = useRouter();
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const pathname = usePathname();
@@ -197,11 +198,15 @@ const ProfileBase = ({profileId = 0, isPath = false}: ProfileBaseProps) => {
     <>
       <section className={styles.header}>
         <div className={styles.left}>
-          {!isMine && isPath && (
+          {!isMine && (
             <div
               className={styles.backBtn}
               onClick={() => {
-                router.back();
+                if (isPath) {
+                  router.back();
+                } else {
+                  onClickBack();
+                }
               }}
             >
               <img src={BoldArrowLeft.src} alt="" />
