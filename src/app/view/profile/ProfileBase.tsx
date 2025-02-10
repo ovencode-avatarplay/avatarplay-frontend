@@ -38,6 +38,7 @@ import {
   MediaState,
   PdProfileTabType,
   ProfileSimpleInfo,
+  ProfileTabItemInfo,
   ProfileType,
   selectProfile,
 } from '@/app/NetWork/ProfileNetwork';
@@ -68,7 +69,7 @@ type DataProfileType = {
   indexTab: eTabPDType;
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
-  profileTabInfo: {[key: number]: any};
+  profileTabInfo: {[key: number]: ProfileTabItemInfo[]};
 };
 
 type ProfileBaseProps = {
@@ -441,35 +442,37 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
           </div>
           <div className={styles.tabContent}>
             <ul className={styles.itemWrap}>
-              {data?.profileTabInfo?.[data.indexTab]?.map((one: any, index: number) => {
+              {data?.profileTabInfo?.[data.indexTab]?.map((one, index: number) => {
                 return (
-                  <li className={styles.item} key={one?.id}>
-                    {one.mediaState == MediaState.Image && (
-                      <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
-                    )}
-                    {one.mediaState == MediaState.Video && (
-                      <video className={styles.imgThumbnail} src={one?.mediaUrl} />
-                    )}
-                    {one?.isFavorite && (
-                      <div className={styles.pin}>
-                        <img src={BoldPin.src} alt="" />
+                  <Link href={getLocalizedLink(`/profile/` + one?.id)}>
+                    <li className={styles.item} key={one?.id}>
+                      {one.mediaState == MediaState.Image && (
+                        <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
+                      )}
+                      {one.mediaState == MediaState.Video && (
+                        <video className={styles.imgThumbnail} src={one?.mediaUrl} />
+                      )}
+                      {one?.isFavorite && (
+                        <div className={styles.pin}>
+                          <img src={BoldPin.src} alt="" />
+                        </div>
+                      )}
+                      <div className={styles.info}>
+                        <div className={styles.likeWrap}>
+                          <img src={BoldHeart.src} alt="" />
+                          <div className={styles.value}>{one?.likeCount}</div>
+                        </div>
+                        <div className={styles.viewWrap}>
+                          <img src={BoldVideo.src} alt="" />
+                          <div className={styles.value}>{one?.mediaCount}</div>
+                        </div>
                       </div>
-                    )}
-                    <div className={styles.info}>
-                      <div className={styles.likeWrap}>
-                        <img src={BoldHeart.src} alt="" />
-                        <div className={styles.value}>{one?.likeCount}</div>
+                      <div className={styles.titleWrap}>
+                        <div className={styles.title}>{one?.name}</div>
+                        <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
                       </div>
-                      <div className={styles.viewWrap}>
-                        <img src={BoldVideo.src} alt="" />
-                        <div className={styles.value}>{one?.mediaCount}</div>
-                      </div>
-                    </div>
-                    <div className={styles.titleWrap}>
-                      <div className={styles.title}>{one?.name}</div>
-                      <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                    </div>
-                  </li>
+                    </li>
+                  </Link>
                 );
               })}
             </ul>
