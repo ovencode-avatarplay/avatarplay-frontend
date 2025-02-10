@@ -1,15 +1,16 @@
 .reelsContainer {
   position: relative;
   width: 100%;  
-  background: #000000; 
-  height: calc(100% - 48px - 48px)
+  background: #000000;   
+  height: var(--body-height)
+
 }
-
-
 .mainContent {
   position: relative;
   width: 100%;
   height: 100%;
+
+
 }
 
 .mainContent.limitWidth{

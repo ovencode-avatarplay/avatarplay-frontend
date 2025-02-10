@@ -243,7 +243,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
                 <img
                   src={item?.mediaUrlList[0]}
                   loading="lazy"
-                  style={{width: '100%', height: '100%', objectFit: 'contain'}}
+                  style={{width: '100%', height: '100%', objectFit: 'cover'}}
                 />
               )}
               {item.mediaState === 2 && (
