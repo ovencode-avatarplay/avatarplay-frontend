@@ -8,6 +8,10 @@
   flex-shrink: 0;
   
   background: var(--Black, #000);
+  position: fixed;  /* ✅ 헤더를 고정 */
+  top: 0;           /* ✅ 페이지 최상단에 위치 */
+  
+  z-index: 1000;    /* ✅ 다른 요소보다 위에 위치 */
 }
  
   
