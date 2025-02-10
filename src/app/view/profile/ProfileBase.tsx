@@ -293,7 +293,9 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
             <div className={styles.buttons}>
               <button className={styles.edit}>Edit</button>
               <button className={styles.ad}>AD</button>
-              <button className={styles.friends}>Friends</button>
+              <button className={styles.chat}>
+                <Link href={getLocalizedLink(`/profile/detail/` + profileId)}>Chat</Link>
+              </button>
             </div>
           )}
           {isOtherPD && (

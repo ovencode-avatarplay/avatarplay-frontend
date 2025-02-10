@@ -15,8 +15,14 @@ import {
 } from '@ui/Icons';
 import cx from 'classnames';
 import {useRouter} from 'next/navigation';
+import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import Link from 'next/link';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
-type Props = {};
+type Props = {
+  profileId: number;
+};
 
 enum eTabType {
   Feed,
@@ -34,19 +40,40 @@ type ProfileType = {
   indexTab: eTabType;
   indexSessionTab: eTabSessionType;
   isOpenSelectProfile: boolean;
+  characterInfo: CharacterInfo | null;
+  urlLinkKey: string;
 };
 
-const PageProfileDetail = (props: Props) => {
+const PageProfileDetail = ({profileId}: Props) => {
+  console.log(profileId);
   const router = useRouter();
   const [data, setData] = useState<ProfileType>({
     indexTab: eTabType.Feed,
     indexSessionTab: eTabSessionType.NewSession,
     isOpenSelectProfile: true,
+    characterInfo: null,
+    urlLinkKey: '',
   });
+
+  useEffect(() => {
+    getCharacterInfo(profileId);
+  }, [profileId]);
+
+  const getCharacterInfo = async (profileId: number) => {
+    const reqGetcharacterInfo: GetCharacterInfoReq = {
+      characterProfileId: profileId,
+    };
+    const resGetcharacterInfo = await sendGetCharacterInfo(reqGetcharacterInfo);
+    data.characterInfo = resGetcharacterInfo.data?.characterInfo || null;
+    data.urlLinkKey = `?v=${resGetcharacterInfo.data?.urlLinkKey}` || `?v=`;
+
+    setData({...data});
+  };
+
   return (
     <>
       <header className={styles.header}>
-        <div className={styles.title}>Title</div>
+        <div className={styles.title}>{data.characterInfo?.name}</div>
         <img className={styles.iconClose} src={LineClose.src} onClick={() => router.back()} />
       </header>
       <main className={styles.main}>
@@ -145,7 +172,7 @@ const PageProfileDetail = (props: Props) => {
               />
             </div>
             <div className={styles.textWrap}>
-              <div className={styles.label}>World Senario</div>
+              <div className={styles.label}>Greeting</div>
               <TextArea
                 value={`This is a boy-meets-girl type of love story.~~~김경아 gets stranded in the remote mountain town, Everpine, Colorado, during a snowstorm while delivering a special christmas present to their grandmother. Forced to seek shelter at a charming, but slightly rundown, lodge, they meet Elliot. Elliot's family owns the lodge, and it is currently in threat of financial crisis. In a last ditch effort, Elliot is trying to save the family lodge from closing by hosting an art auction and gala on Christmas Eve. She hopes to turn the cozy, but rundown lodge into a thriving community hub. Unfortunately, everything that can go wrong for Elli, does. Now she is praying for a Christmas miracle. It is currently one week before Christmas eve and the auction when 김경아 enters the picture.`}
               />
@@ -325,7 +352,9 @@ const PageProfileDetail = (props: Props) => {
             </ul>
           </div>
         </section>
-        <button className={styles.startNewChat}>Start New Chat</button>
+        <Link href={getLocalizedLink(`/chat${data.urlLinkKey}`)}>
+          <button className={styles.startNewChat}>Start New Chat</button>
+        </Link>
       </main>
       <footer className={styles.footer}></footer>
     </>

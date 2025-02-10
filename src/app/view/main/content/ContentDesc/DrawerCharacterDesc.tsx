@@ -188,7 +188,7 @@ const DrawerCharacterDesc = () => {
     try {
       // const req: GetContentByIdReq = { contentId: contentId, language: navigator.language };
       // const response = await sendContentByIdGet(req);
-      const req: GetCharacterInfoReq = {characterId: contentId};
+      const req: GetCharacterInfoReq = {characterProfileId: contentId};
       const response = await sendGetCharacterInfo(req);
       if (response?.data) {
         setContentWholeDesc(response.data);

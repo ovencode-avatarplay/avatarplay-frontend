@@ -273,7 +273,7 @@
       gap: 6px;
 
       button {
-        padding: 8px 20px;
+        height: 36px;
         flex: 1;
         border-radius: 8px;
         border: 1px solid var(--Border-1, #EAECF0);
@@ -290,6 +290,17 @@
         line-height: 20px;
         /* 142.857% */
         letter-spacing: -0.4px;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
       }
     }
 
