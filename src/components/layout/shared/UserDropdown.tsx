@@ -148,13 +148,8 @@ const UserDropdown = () => {
   useEffect(() => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
       if (event === 'SIGNED_IN') {
-        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        if (auth?.access_token == session?.access_token) return;
 
-        // 최신 세션의 access_token과 전달받은 session의 access_token을 비교합니다.
-        if (currentSession?.access_token === session?.access_token) {
-          setAuth(session);
-          return;
-        }
         setAuth(session);
         try {
           console.log('로그인 시작');
