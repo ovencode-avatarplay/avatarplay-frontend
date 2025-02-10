@@ -1,7 +1,7 @@
 // src/app/Network/ImageNetwork.ts
 
 import api, {ResponseAPI} from './ApiInstance';
-export enum MediaState {
+export enum UploadMediaState {
   None = 0,
   CharacterImage = 1,
   GalleryImage = 2,

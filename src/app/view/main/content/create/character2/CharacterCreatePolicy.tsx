@@ -16,34 +16,62 @@ import CustomInput from '@/components/layout/shared/CustomInput';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 
-interface Props {}
+interface Props {
+  visibility: number;
+  onVisibilityChange: (value: number) => void;
+  llmModel: number;
+  onLlmModelChange: (value: number) => void;
+  tag: string;
+  onTagChange: (value: string) => void;
+  positionCountry: number;
+  onPositionCountryChange: (value: number) => void;
+  characterIP: number;
+  onCharacterIPChange: (value: number) => void;
+  operatorInvitationProfileId: number[];
+  onOperatorInvitationProfileIdChange: (value: number[]) => void;
+  isMonetization: boolean;
+  onIsMonetizationChange: (value: boolean) => void;
+  nsfw: boolean;
+  onNsfwChange: (value: boolean) => void;
+}
 
-const CharacterCreatePolicy: React.FC<Props> = ({}) => {
+const CharacterCreatePolicy: React.FC<Props> = ({
+  visibility,
+  onVisibilityChange,
+  llmModel,
+  onLlmModelChange,
+  tag,
+  onTagChange,
+  positionCountry,
+  onPositionCountryChange,
+  characterIP,
+  onCharacterIPChange,
+  operatorInvitationProfileId,
+  onOperatorInvitationProfileIdChange,
+  isMonetization,
+  onIsMonetizationChange,
+  nsfw,
+  onNsfwChange,
+}) => {
   let VisibilityData = {label: 'Visibility', items: ['Private', 'UnListed', 'Public']};
-  const [visibility, setVisibility] = useState('Private');
 
-  const [selectedllmIdx, setSelectedLlmIdx] = useState(0);
   const [llmOpen, setLlmOpen] = useState(false);
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tagOpen, setTagOpen] = useState(false);
-
   const [tagList, setTagList] = useState<string[]>([]);
-  const [showMoreTags, setShowMoreTags] = useState(false);
   const maxTagCount = 5;
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
 
   let positionCountryData = {label: 'Position Country', items: ['USA', 'Korea', 'Japan']};
-  const [positionCountry, setPositionCountry] = useState('USA');
 
   let characterIpData = {
     items: [
-      {label: 'Original', data: 'Original', monetization: 'possible'},
-      {label: 'Fan', data: 'Fan', monetization: 'impossible'},
-      {label: 'Recruited', data: 'Recruited', monetization: 'possible'},
+      {label: 'Original', data: 0, monetization: 'Monetization possible'},
+      {label: 'Fan', data: 1, monetization: 'Monetization impossible'},
+      {label: 'Recruited', data: 2, monetization: 'Monetization possible'},
     ],
   };
-  const [selectedCharacterIp, setSelectedCharacterIp] = useState('Original');
 
   let invitationOption = {
     items: [
@@ -54,6 +82,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
     ],
   };
   const [operatorInviteOpen, setOperatorInviteOpen] = useState(false);
+  const [inviteSearchValue, setInviteSearchValue] = useState<string>('');
 
   const [voiceOpen, setVoiceOpen] = useState(false);
 
@@ -142,23 +171,22 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
   const [speed, setSpeed] = useState(1); // 기본 값 1
 
   // 각 슬라이더의 최솟값과 최댓값 설정
-  const pitchShiftMin = -12;
-  const pitchShiftMax = 12;
+  const pitchShiftMin = -24;
+  const pitchShiftMax = 24;
   const pitchVarianceMin = 0;
-  const pitchVarianceMax = 10;
+  const pitchVarianceMax = 2;
+  const pitchVarianceStep = 0.1;
   const speedMin = 0.5;
   const speedMax = 2;
+  const speedStep = 0.1;
 
-  const [selectedMonetization, setSelectedMonetization] = useState('Off');
-  const [selectedNSWF, setSelectedNSWF] = useState('Off');
-
-  const handleSelectVisibilityItem = (value: string) => {
-    setVisibility(value);
+  const handleSelectVisibilityItem = (value: number) => {
+    onVisibilityChange(value);
   };
 
   const handleGetTagList = async () => {
     try {
-      const response = await sendGetTagList({}); // 수정된 반환 타입 반영
+      const response = await sendGetTagList({});
 
       if (response.data) {
         const tagData: string[] = response.data?.tagList;
@@ -188,44 +216,45 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
     setSelectedTags(selectedTags.filter(t => t !== tag));
   };
 
-  const handleMoreTagsToggle = () => {
-    setShowMoreTags(prev => !prev);
+  const handleSelectPositionCountryItem = (value: number) => {
+    onPositionCountryChange(value);
   };
 
-  const handleSelectPositionCountryItem = (value: string) => {
-    setPositionCountry(value);
+  const handleSelectCharacterIp = (value: number) => {
+    onCharacterIPChange(value);
   };
 
-  const handleSelectCharacterIp = (value: string) => {
-    setSelectedCharacterIp(value);
+  const handleSelectMonetization = (value: boolean) => {
+    onIsMonetizationChange(value);
   };
 
-  const handleSelectMonetization = (value: string) => {
-    setSelectedMonetization(value);
+  const handleSelectNSWF = (value: boolean) => {
+    onNsfwChange(value);
   };
 
-  const handleSelectNSWF = (value: string) => {
-    setSelectedNSWF(value);
-  };
+  useEffect(() => {
+    onTagChange(selectedTags.join(', '));
+    console.log(selectedTags.join(', '));
+  }, [selectedTags, onTagChange]);
 
   const renderDropDownSelectDrawer = (
     title: string,
     items: string[],
-    selectedItem: string,
-    handler: (value: string) => void,
+    selectedItem: number,
+    handler: (value: number) => void,
   ) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    const drawerItems: SelectDrawerItem[] = items.map(item => ({
-      name: item,
-      onClick: () => handler(item),
+    const drawerItems: SelectDrawerItem[] = items.map((item, index) => ({
+      name: item.toString(),
+      onClick: () => handler(index),
     }));
 
     return (
       <div className={styles.dropDownArea}>
         <h2 className={styles.title2}>{title}</h2>
         <div className={styles.selectItem}>
-          <div className={styles.selectItemText}>{selectedItem}</div>
+          <div className={styles.selectItemText}>{items[selectedItem]}</div>
           <button className={styles.selectItemButton} onClick={() => setIsOpen(!isOpen)}>
             <img className={styles.selectItemIcon} src={BoldArrowDown.src} />
           </button>
@@ -234,7 +263,9 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
           isOpen={isOpen}
           items={drawerItems}
           onClose={() => setIsOpen(false)}
-          selectedIndex={items.indexOf(selectedItem)}
+          selectedIndex={
+            selectedItem // selectedItem이 number라면 바로 인덱스를 사용
+          }
         />
       </div>
     );
@@ -321,7 +352,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
                   // label={getLocalizedText('', item.label)}
                   label={item.label}
                   onSelect={() => handleSelectCharacterIp(item.data)}
-                  selectedValue={selectedCharacterIp}
+                  selectedValue={characterIP}
                 />
                 <CustomHashtag
                   // text={getLocalizedText('', item.monetization)}
@@ -339,10 +370,12 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
   };
 
   const renderRecruit = () => {
-    return <>{renderDropDownSelectDrawer('Recruited', [], '', () => {})}</>;
+    // TODO : 별도 API 추가 된 후 작업 (다른 사람의 Profile 연동 관련)
+    return <>{renderDropDownSelectDrawer('Recruited', [], 0, () => {})}</>;
   };
 
   const renderOperatorInvite = () => {
+    // TODO : 별도 API 추가 된 후 작업 (다른 사람의 Profile 연동 관련)
     return (
       <>
         <div className={styles.radioButtonContainer}>
@@ -367,8 +400,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
-                value={''}
-                onChange={() => {}}
+                value={inviteSearchValue}
+                onChange={() => {
+                  setInviteSearchValue;
+                }}
                 customClassName={[styles.inviteInput]}
               />
               <CustomButton size="Medium" state="Normal" type="ColorPrimary" onClick={() => {}}>
@@ -436,16 +471,16 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
             displayType="buttonText"
             value="On"
             label="On"
-            onSelect={() => handleSelectMonetization('On')}
-            selectedValue={selectedMonetization}
+            onSelect={() => handleSelectMonetization(true)}
+            selectedValue={isMonetization ? 'On' : 'Off'}
           />
           <CustomRadioButton
             shapeType="circle"
             displayType="buttonText"
             value="Off"
             label="Off"
-            onSelect={() => handleSelectMonetization('Off')}
-            selectedValue={selectedMonetization}
+            onSelect={() => handleSelectMonetization(false)}
+            selectedValue={isMonetization ? 'On' : 'Off'}
           />
         </div>
       </div>
@@ -465,16 +500,16 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
             displayType="buttonText"
             value="On"
             label="On"
-            onSelect={() => handleSelectNSWF('On')}
-            selectedValue={selectedNSWF}
+            onSelect={() => handleSelectNSWF(true)}
+            selectedValue={nsfw ? 'On' : 'Off'}
           />
           <CustomRadioButton
             shapeType="circle"
             displayType="buttonText"
             value="Off"
             label="Off"
-            onSelect={() => handleSelectNSWF('Off')}
-            selectedValue={selectedNSWF}
+            onSelect={() => handleSelectNSWF(false)}
+            selectedValue={nsfw ? 'On' : 'Off'}
           />
         </div>
       </div>
@@ -551,6 +586,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
                   min={pitchVarianceMin}
                   max={pitchVarianceMax}
                   value={pitchVariance}
+                  step={pitchVarianceStep}
                   onChange={e => setPitchVariance(Number(e.target.value))}
                   className={styles.slider}
                 />
@@ -566,8 +602,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
                   type="range"
                   min={speedMin}
                   max={speedMax}
-                  step="0.1"
                   value={speed}
+                  step={speedStep}
                   onChange={e => setSpeed(Number(e.target.value))}
                   className={styles.slider}
                 />
@@ -653,9 +689,11 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
   return (
     <div className={styles.policyContainer}>
       <div className={styles.selectItemsArea1}>
-        {renderDropDownSelectDrawer(VisibilityData.label, VisibilityData.items, visibility, handleSelectVisibilityItem)}
-        {renderDropDown('LLM', llmModelData[selectedllmIdx].label, setLlmOpen)}
-        <ContentLLMSetup open={llmOpen} onClose={() => setLlmOpen(false)} onModelSelected={setSelectedLlmIdx} />
+        {renderDropDownSelectDrawer(VisibilityData.label, VisibilityData.items, visibility, (value: string | number) =>
+          handleSelectVisibilityItem(Number(value)),
+        )}
+        {renderDropDown('LLM', llmModelData[llmModel].label, setLlmOpen)}
+        <ContentLLMSetup open={llmOpen} onClose={() => setLlmOpen(false)} onModelSelected={onLlmModelChange} />
         {renderDropDown('Tag', selectedTags.join(', '), setTagOpen)}
         {renderTag()}
 
@@ -663,7 +701,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({}) => {
           positionCountryData.label,
           positionCountryData.items,
           positionCountry,
-          handleSelectPositionCountryItem,
+          (value: string | number) => handleSelectPositionCountryItem(Number(value)),
         )}
       </div>
       <div className={styles.selectItemsArea2}>

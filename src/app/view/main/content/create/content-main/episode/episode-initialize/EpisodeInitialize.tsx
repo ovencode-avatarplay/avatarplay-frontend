@@ -21,7 +21,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import ImageUploadDialog from '../episode-ImageCharacter/ImageUploadDialog';
 import {
   GenerateImageReq2,
-  MediaState,
+  UploadMediaState,
   MediaUploadReq,
   sendGenerateImageReq2,
   sendUpload,
@@ -520,7 +520,7 @@ const EpisodeInitialize: React.FC<Props> = ({
     setLoading(true);
     try {
       const req: MediaUploadReq = {
-        mediaState: MediaState.CharacterImage,
+        mediaState: UploadMediaState.CharacterImage,
         file: file,
       };
       const response = await sendUpload(req);

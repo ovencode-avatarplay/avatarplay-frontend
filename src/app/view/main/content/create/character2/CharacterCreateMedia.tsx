@@ -4,65 +4,53 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {useState} from 'react';
+import {CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
 
-interface MediaItem {
-  index: number;
-  promptValue: string;
-  selectedValue: string;
+interface Props {
+  mediaItems: CharacterMediaInfo[];
+  selectedItemIdx: number;
+  onClickCreateMedia: () => void;
+  handlePromptChange: (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => void;
+  handleSelected: (value: number) => void;
+  handleAddMediaItem: () => void;
+  handleDeleteMediaItem: (index: number) => void;
 }
 
-interface MediaListProps {
-  mediaItems: MediaItem[];
-  handlerPromptChange: (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => void;
-  handlerSelected: (value: string) => void;
-}
-
-interface Props {}
-
-const CharacterCreateMedia: React.FC<Props> = ({}) => {
+const CharacterCreateMedia: React.FC<Props> = ({
+  mediaItems,
+  selectedItemIdx,
+  onClickCreateMedia,
+  handlePromptChange,
+  handleSelected,
+  handleAddMediaItem,
+  handleDeleteMediaItem,
+}) => {
   let mediaInfoDesc = `This image is displayed during conversation. If you describe each scene, AI shows it according to the situation. Please write the scene description in English if possible. {{char}} and {{user}} can also be used.`;
-  const [mediaItems, setMediaItems] = useState([
-    {index: 0, promptValue: 'Image 1 description', selectedValue: ''},
-    {index: 1, promptValue: 'Image 2 description', selectedValue: ''},
-    {index: 2, promptValue: 'Image 3 description', selectedValue: ''},
-  ]);
-
-  const handlePromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
-    const updatedMediaItems = [...mediaItems];
-    updatedMediaItems[index].promptValue = event.target.value;
-    setMediaItems(updatedMediaItems);
-  };
-
-  const handleSelected = (value: string) => {
-    const updatedMediaItems = [...mediaItems];
-    updatedMediaItems.forEach(item => {
-      item.selectedValue = item.index.toString() === value ? 'selected' : ''; // selected 상태 설정
-    });
-    setMediaItems(updatedMediaItems);
-  };
 
   const renderMediaItem = (
-    item: MediaItem,
+    item: CharacterMediaInfo,
+    index: number,
     handlerPromptChange: (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => void,
-    handlerSelected: (value: string) => void,
+    handlerSelected: (value: number) => void,
+    handleDelete: (index: number) => void,
   ) => {
     return (
       <div className={styles.mediaItem}>
         <div className={styles.mediaItemContent}>
-          <div className={styles.mediaImage}></div>
+          <img className={styles.mediaImage} src={item.imageUrl} />
           <div className={styles.imageExplainArea}>
             <MaxTextInput
               inputDataType={inputType.None}
               stateDataType={inputState.Normal}
               displayDataType={displayType.Default}
-              promptValue={item.promptValue}
-              handlePromptChange={event => handlerPromptChange(event, item.index)}
+              promptValue={item.description}
+              handlePromptChange={event => handlerPromptChange(event, index)}
               placeholder="Image Explain"
               style={{width: '100%'}}
             />
             <div className={styles.mediaButtonArea}>
               <div className={styles.leftButtonGroup}>
-                <button className={styles.mediaItemButton}>
+                <button className={styles.mediaItemButton} onClick={() => handleDelete(index)}>
                   <img className={styles.mediaButtonIcon} src={LineDelete.src} />
                 </button>
                 <button className={styles.mediaItemButton}>
@@ -75,9 +63,9 @@ const CharacterCreateMedia: React.FC<Props> = ({}) => {
                 <CustomRadioButton
                   displayType="buttonOnly"
                   shapeType="square"
-                  value={item.index.toString()}
-                  selectedValue={item.selectedValue}
-                  onSelect={handlerSelected}
+                  value={index}
+                  selectedValue={selectedItemIdx}
+                  onSelect={(value: string | number) => handlerSelected(Number(value))}
                 />
               </div>
             </div>
@@ -100,12 +88,12 @@ const CharacterCreateMedia: React.FC<Props> = ({}) => {
           size="Medium"
           state="Normal"
           type="Tertiary"
-          onClick={() => {}}
+          onClick={onClickCreateMedia}
           customClassName={[styles.mediaButton]}
         >
           Create
         </CustomButton>
-        <CustomButton
+        {/* <CustomButton
           size="Medium"
           state="Normal"
           type="Tertiary"
@@ -131,11 +119,13 @@ const CharacterCreateMedia: React.FC<Props> = ({}) => {
           customClassName={[styles.mediaButton]}
         >
           My device
-        </CustomButton>
+        </CustomButton> */}
       </ul>
 
       <ul className={styles.mediaList}>
-        {mediaItems.map(item => renderMediaItem(item, handlePromptChange, handleSelected))}
+        {mediaItems.map((item, index) =>
+          renderMediaItem(item, index, handlePromptChange, handleSelected, handleDeleteMediaItem),
+        )}
       </ul>
     </div>
   );

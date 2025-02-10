@@ -1,9 +1,13 @@
 .characterContainer
 {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; 
+    overflow-x: hidden;
+    overflow-y: scroll;
     width: var(--full-width);
-    height: 100%;
+    margin: 0 auto
 }
-
 
 .createCharacterArea
 {

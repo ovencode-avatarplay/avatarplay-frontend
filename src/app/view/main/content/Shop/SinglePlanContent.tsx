@@ -60,46 +60,6 @@ const SinglePlanContent: React.FC = () => {
           ))}
         </div>
       </div>
-
-      {/* Plan Card */}
-      <div className={styles.planGroup}>
-        <div className={styles.planCard}>
-          <div className={styles.title}>{planData.title}</div>
-          <div className={styles.price}>
-            <span className={styles.dollar}>${planData.price}</span>
-            <span className={styles.perMonth}>per month</span>
-          </div>
-          <div className={styles.details}>
-            <div className={styles.detailItem}>루비 {planData.ruby}개</div>
-            <div className={styles.detailItem}>보너스 {planData.bonus}개</div>
-            <div className={styles.detailItem}>{planData.increaseRate}% UP</div>
-          </div>
-        </div>
-        <div className={styles.planCard}>
-          <div className={styles.title}>{planData.title}</div>
-          <div className={styles.price}>
-            <span className={styles.dollar}>${planData.price}</span>
-            <span className={styles.perMonth}>per month</span>
-          </div>
-          <div className={styles.details}>
-            <div className={styles.detailItem}>루비 {planData.ruby}개</div>
-            <div className={styles.detailItem}>보너스 {planData.bonus}개</div>
-            <div className={styles.detailItem}>{planData.increaseRate}% UP</div>
-          </div>
-        </div>
-        <div className={styles.planCard}>
-          <div className={styles.title}>{planData.title}</div>
-          <div className={styles.price}>
-            <span className={styles.dollar}>${planData.price}</span>
-            <span className={styles.perMonth}>per month</span>
-          </div>
-          <div className={styles.details}>
-            <div className={styles.detailItem}>루비 {planData.ruby}개</div>
-            <div className={styles.detailItem}>보너스 {planData.bonus}개</div>
-            <div className={styles.detailItem}>{planData.increaseRate}% UP</div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

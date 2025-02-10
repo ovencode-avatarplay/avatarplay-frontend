@@ -1,7 +1,11 @@
 // src/app/Network/CharacterNetwork.tsx
 
 import api, {ResponseAPI} from './ApiInstance';
-import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
+import {
+  CharacterInfo,
+  CharacterInfoForCreate as CharacterInfoForCreate2,
+  GalleryImageInfo,
+} from '@/redux-store/slices/ContentInfo';
 // GetCharacterList
 
 export interface CharacterInfoDate {
@@ -60,6 +64,32 @@ export interface CreateCharacterRes {
 export const sendCreateCharacter = async (payload: CreateCharacterReq): Promise<ResponseAPI<CreateCharacterRes>> => {
   try {
     const response = await api.post<ResponseAPI<CreateCharacterRes>>('Character/create', payload);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`CreateCharacterRes Error : ${response.data.resultCode}`);
+    }
+  } catch (error) {
+    console.error('Error sending create character :', error);
+    throw new Error('Failed to send create character. Please try again.');
+  }
+};
+
+// Create Character2
+
+export interface CreateCharacter2Req {
+  characterInfo: CharacterInfoForCreate2;
+  debugParameter: string;
+}
+
+export interface CreateCharacter2Res {
+  characterInfo: CharacterInfoForCreate2;
+}
+
+export const sendCreateCharacter2 = async (payload: CreateCharacter2Req): Promise<ResponseAPI<CreateCharacter2Res>> => {
+  try {
+    const response = await api.post<ResponseAPI<CreateCharacter2Res>>('Character/create', payload);
 
     if (response.data.resultCode === 0) {
       return response.data;

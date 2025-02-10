@@ -1,27 +1,16 @@
  .mediaContainer
  {
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
     align-self: stretch;
 
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow: hidden; 
 
     margin-top: 14px;
     margin-bottom: calc(46px + 20px + 43px);
 
- }
-
- .mediaContainer::-webkit-scrollbar {
-   display: none;  
- }
- 
- .mediaContainer {
-   scrollbar-width: none;  
-   -ms-overflow-style: none;  
  }
 
  .mediaInfoArea
@@ -33,6 +22,7 @@
 
  .mediaInfoButton
  {
+    cursor: pointer;
     width: 24px;
     height: 24px;
  }
@@ -68,6 +58,7 @@
 
  .mediaButton
  {
+  cursor: pointer;
    width: calc(var(--second-width) * 0.25 - 10px);
    display: flex;
    height: 46px;
@@ -84,8 +75,21 @@
    display: flex;
    flex-direction: column;
    width: var(--second-width);
+   height: 100%;
+
+   overflow-y: scroll;
    gap: 14px;
  }
+ 
+ .mediaList::-webkit-scrollbar {
+  display: none;  
+}
+
+.mediaList {
+  scrollbar-width: none;  
+  -ms-overflow-style: none;  
+}
+
 
  .mediaItem
  {
@@ -151,6 +155,7 @@
 
  .mediaItemButton
  {
+  cursor: pointer;
    display: flex;
    width: 30px;
    height: 30px;
@@ -180,6 +185,7 @@
 
  .mediaRadioButton
  {
+  cursor: pointer;
    width: 19px;
    height: 19px;
 

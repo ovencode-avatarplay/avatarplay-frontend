@@ -4,7 +4,7 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import styles from './PostMain.module.css';
 import {BoldPlay, CircleClose, LineUpload} from '@ui/Icons';
-import {MediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import TriggerImageGrid from '../content-main/episode/episode-trigger/TriggerImageGrid';
 import ReactPlayer from 'react-player';
@@ -69,16 +69,16 @@ const PostMain: React.FC<Props> = () => {
   const handleOnFileSelect = async (files: File[]) => {
     try {
       // MediaState 설정
-      let state = MediaState.None;
-      if (mediaType == 'image') state = MediaState.FeedImage;
-      if (mediaType == 'video') state = MediaState.FeedVideo;
+      let state = UploadMediaState.None;
+      if (mediaType == 'image') state = UploadMediaState.FeedImage;
+      if (mediaType == 'video') state = UploadMediaState.FeedVideo;
 
       // 업로드 요청 객체 생성
       const req: MediaUploadReq = {
         mediaState: state, // 적절한 MediaState 설정
       };
 
-      if (state === MediaState.FeedImage) {
+      if (state === UploadMediaState.FeedImage) {
         req.imageList = files;
       } else {
         req.file = files[0];

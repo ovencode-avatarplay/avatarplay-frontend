@@ -10,22 +10,22 @@ interface CustomDropDownProps {
     icon?: string;
     profileImage?: string;
     logoImage?: string;
-    value: string;
+    value: string | number;
   }>;
   displayType: 'Text' | 'Icon' | 'TwoIcon' | 'Profile' | 'Logo';
-  onSelect: (value: string) => void;
+  onSelect: (value: string | number) => void;
   style?: React.CSSProperties;
 }
 
 const CustomDropDown: React.FC<CustomDropDownProps> = ({items, displayType, onSelect, style}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<string | number | null>(null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleItemClick = (value: string) => {
+  const handleItemClick = (value: string | number) => {
     setSelectedItem(value);
     onSelect(value);
     setIsOpen(false);

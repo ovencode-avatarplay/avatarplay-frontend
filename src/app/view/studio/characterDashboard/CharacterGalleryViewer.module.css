@@ -8,8 +8,7 @@
   height: calc(100% - 92px); 
   
   position: relative;
-  background-size: contain;
-  background: no-repeat;
+  background-size: cover;
   background-position: center;
 }
 
