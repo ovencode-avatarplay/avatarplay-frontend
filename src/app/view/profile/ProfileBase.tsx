@@ -74,10 +74,11 @@ type DataProfileType = {
 
 type ProfileBaseProps = {
   profileId?: number;
+  isPath?: boolean;
 };
 
 // /profile?type=pd?id=123123
-const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
+const ProfileBase = ({profileId = 0, isPath = false}: ProfileBaseProps) => {
   const router = useRouter();
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const pathname = usePathname();
@@ -96,11 +97,17 @@ const ProfileBase = ({profileId = 0}: ProfileBaseProps) => {
   const isOtherPD = !isMine && profileType == ProfileType.PD;
   const isOtherCharacter = !isMine && profileType == ProfileType.Character;
   useEffect(() => {
-    const id = pathname?.split('/').filter(Boolean).pop();
-    if (id == undefined) return;
-
-    const profileId = parseInt(id);
-    refreshProfileInfo(profileId);
+    if (!isPath) {
+      refreshProfileInfo(profileId);
+      return;
+    } else {
+      //컴포넌트로 가져다 쓰는 경우 isPath=fase
+      const id = pathname?.split('/').filter(Boolean).pop();
+      if (id == undefined) return;
+      const profileIdPath = parseInt(id);
+      refreshProfileInfo(profileIdPath);
+      return;
+    }
   }, [pathname]);
 
   useEffect(() => {
