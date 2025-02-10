@@ -69,6 +69,33 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
+
+  const [addressBarHeight, setAddressBarHeight] = useState(0);
+
+  useEffect(() => {
+    const updateAddressBarHeight = () => {
+      if (window.visualViewport) {
+        const heightDifference = window.innerHeight - window.visualViewport.height;
+        setAddressBarHeight(heightDifference);
+      }
+    };
+
+    updateAddressBarHeight(); // 초기 실행
+
+    // 이벤트 리스너 추가
+    window.visualViewport?.addEventListener('resize', updateAddressBarHeight);
+    window.addEventListener('resize', updateAddressBarHeight); // window에도 등록
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', updateAddressBarHeight);
+      window.removeEventListener('resize', updateAddressBarHeight);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log(`현재 주소창 높이: ${addressBarHeight}px`);
+  }, [addressBarHeight]); // addressBarHeight 변경될 때만 실행
+
   const [activeIndex, setActiveIndex] = useState(0); // 현재 슬라이드 인덱스 상태
   const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
@@ -206,10 +233,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
     const userAgent = navigator.userAgent || navigator.vendor;
     const platform = navigator.platform;
     const maxTouchPoints = navigator.maxTouchPoints || 0;
-
-    console.log('userAgent:', userAgent);
-    console.log('platform:', platform);
-    console.log('maxTouchPoints:', maxTouchPoints);
 
     const isIOSDevice = /iPhone|iPad|iPod/i.test(userAgent);
 
@@ -387,7 +410,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
                   : 'none', // 기본 상태는 필터 없음
               }}
             />
-            <div className={styles.count}>{likeCount}</div>
+            <div className={styles.count}>{addressBarHeight}</div>
           </div>
 
           {/* Dislike Button */}
