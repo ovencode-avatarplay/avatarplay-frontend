@@ -49,6 +49,12 @@ const CharacterCreateLLM: React.FC<Props> = ({
   const [autoWriteCharacterGreeting, setAutoWriteCharacterGreeting] = useState<string[]>([]);
   const [autoWriteCharacterSecret, setAutoWriteCharacterSecret] = useState<string[]>([]);
 
+  const langItems = [
+    {label: 'Korean', value: '0'},
+    {label: 'English', value: '1'},
+    {label: 'Japan', value: '2'},
+  ];
+
   const llmItems = [
     {label: 'Llm 1', value: '1'},
     {label: 'Llm 2', value: '2'},
@@ -250,10 +256,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         {renderTitle(`Reference Language *`, `Please let me know which language you'd like to use`)}
         <div className={styles.dropBox}></div>
         <CustomDropDown
-          items={Object.values(LanguageType).map(langKey => ({
-            label: `${langKey}`,
-            value: langKey,
-          }))}
+          items={langItems}
           displayType="Text"
           onSelect={(value: string | number) => handleSelectLang(Number(value))}
         />
