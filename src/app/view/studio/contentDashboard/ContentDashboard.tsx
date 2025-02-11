@@ -224,7 +224,7 @@ const ContentDashboard: React.FC = () => {
     {value: 'filter3', label: 'Filter 3'},
   ];
   return (
-    <>
+    <div style={{marginTop: '58px'}}>
       <div className={styles.dashboard}>
         <StudioTopMenu icon={<AutoStoriesIcon />} text="Story" />
         <StudioFilter
@@ -248,7 +248,7 @@ const ContentDashboard: React.FC = () => {
       )}
 
       <LoadingOverlay loading={loading} />
-    </>
+    </div>
   );
 };
 
