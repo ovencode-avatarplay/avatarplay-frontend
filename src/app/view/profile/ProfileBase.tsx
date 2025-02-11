@@ -546,6 +546,7 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
   onChangedCharacter,
   customStyles = {},
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<{id: number} | null>(value);
   const styleDefault: StylesConfig<{id: number; [key: string]: any}, false> = {
     control: provided => ({
@@ -616,20 +617,44 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
     }),
   };
 
+  const CustomControl = ({children, ...props}: any) => {
+    return (
+      <components.Control
+        {...props}
+        innerProps={{
+          ...props.innerProps,
+          onClick: e => {
+            e.stopPropagation(); // doesn't do anything, sadly
+            e.preventDefault(); // doesn't do anything, sadly
+            // still unsure how to preven the menu from opening
+            setIsOpen(true);
+          },
+        }}
+      >
+        {children}
+      </components.Control>
+    );
+  };
+
   return (
     <Select
-      // menuIsOpen={true}
+      menuIsOpen={isOpen}
       isSearchable={false}
       value={selectedOption}
       onChange={option => {
         if (option) {
           setSelectedOption(option);
           onChangedCharacter(option.id);
+          setIsOpen(false);
         }
+      }}
+      onBlur={() => {
+        setIsOpen(false);
       }}
       styles={styleDefault}
       options={options}
       components={{
+        Control: CustomControl,
         DropdownIndicator: ArrowComponent,
         Option: props => (
           <components.Option {...props}>
