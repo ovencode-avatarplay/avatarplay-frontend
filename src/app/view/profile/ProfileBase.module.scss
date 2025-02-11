@@ -4,6 +4,21 @@
   background: white;
 }
 
+
+.header.headerNoPath {
+  position: inherit;
+  max-width: 600px;
+  transform: inherit;
+}
+
+.main.mainNoPath {
+  padding-top: 1px;
+
+  .tabHeader {
+    position: inherit !important;
+  }
+}
+
 .header {
   padding: 9px 6px 9px 16px;
   box-sizing: border-box;
