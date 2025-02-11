@@ -23,6 +23,7 @@ import ImageUploadDialog from '../content-main/episode/episode-ImageCharacter/Im
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
 import {CardData} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
+import CharacterCreateViewImage from './CharacterCreateViewImage';
 
 interface CreateCharacterProps {}
 
@@ -42,14 +43,16 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
     'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
   );
   const [imgUploadOpen, setImgUploadOpen] = useState(false);
+
+  const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
+  const [imageViewUrl, setImageViewUrl] = useState(mainimageUrl);
+
   //#endregion
 
   //#region Edit Thumbnail
   type UploadType = 'Mixture' | 'AIGenerate' | 'Upload';
   const [imgUploadType, setImgUploadType] = useState<UploadType | null>(null);
   const [mediaCreate, setMediaCreate] = useState<boolean>(false);
-
-  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   //#endregion
   const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
@@ -245,6 +248,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
 
   const handleMediaSelected = (value: number) => {
     setSelectedMediaItemIdx(value);
+    setImageViewUrl(mediaItems[value].imageUrl);
+    setImageViewOpen(true);
   };
 
   const handleAddMediaItem = (id: number, imageUrl: string, description: string, isProfileImage: boolean) => {
@@ -504,14 +509,27 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
           <div className={styles.createCharacterArea}>
             <div className={styles.thumbnailArea}>
               <h2 className={styles.title2}>Thumbnail</h2>
-              <div
-                className={styles.thumbnailImage}
-                style={{background: `url(${mainimageUrl}) lightgray 50% / cover no-repeat`}}
+              <button
+                onClick={() => {
+                  setImageViewUrl(mainimageUrl);
+                  setImageViewOpen(true);
+                }}
               >
-                <button className={styles.editButton} onClick={handleOnClickThumbnail}>
-                  <img className={styles.editIcon} src={LineEdit.src} />
-                </button>
-              </div>
+                <div
+                  className={styles.thumbnailImage}
+                  style={{background: `url(${mainimageUrl}) lightgray 50% / cover no-repeat`}}
+                >
+                  <button
+                    className={styles.editButton}
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleOnClickThumbnail();
+                    }}
+                  >
+                    <img className={styles.editIcon} src={LineEdit.src} />
+                  </button>
+                </div>
+              </button>
             </div>
             <Splitters
               splitters={splitterData}
@@ -546,6 +564,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
         </div>
       )}
       {imgUploadOpen && <>{renderSelectImageType()}</>}
+      {imageViewOpen && <CharacterCreateViewImage imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
     </div>
   );
 };
