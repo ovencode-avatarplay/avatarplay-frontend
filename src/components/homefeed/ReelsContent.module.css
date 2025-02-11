@@ -190,8 +190,8 @@ pointer-events: auto;
   position: absolute;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  bottom: 120px;
+  gap: 12px;
+  bottom: 48px;
   right: 13px;
   z-index: 12;
   
