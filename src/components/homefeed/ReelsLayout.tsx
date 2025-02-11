@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/scrollbar';
@@ -21,7 +21,8 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
   const [info, setInfo] = useState<FeedInfo[]>([]); // 현재 렌더링된 데이터
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 슬라이드 인덱스
   const [isMute, setIsMute] = useState(true); // 현재 슬라이드 인덱스
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [isProfile, setIsProfile] = useState(false); // 현재 슬라이드 인덱스
+  const reelsWrapperRef = useRef<HTMLDivElement | null>(null);
 
   const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
     try {
@@ -92,9 +93,12 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
     }
   };
 
-  const handleScroll = () => {
-    const sectionHeight = window.innerHeight;
-    const scrollPosition = window.scrollY;
+  const handleScroll = useCallback(() => {
+    if (!reelsWrapperRef.current) return;
+
+    const container = reelsWrapperRef.current;
+    const sectionHeight = container.clientHeight; // 컨테이너 높이
+    const scrollPosition = container.scrollTop; // 컨테이너 내부 스크롤 위치
     const newIndex = Math.round(scrollPosition / sectionHeight);
 
     if (newIndex < 0 || newIndex >= allFeeds.length) return;
@@ -104,36 +108,34 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
       const currentItem = allFeeds[newIndex];
 
       if (currentItem && currentItem.urlLinkKey) {
-        // ✅ 현재 URL과 다를 때만 변경하여 불필요한 pushState 방지
         const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
         if (window.location.pathname !== newUrl) {
           window.history.pushState(null, '', newUrl);
         }
 
-        // ✅ API 호출도 꼭 필요할 때만 실행
         viewFeed(currentItem.id);
       }
 
-      // ✅ 다음 데이터를 미리 로드하는 로직 유지
       if (newIndex >= info.length - 1 && info.length < allFeeds.length) {
         const nextItems = allFeeds.slice(info.length, info.length + 2);
         setInfo(prev => [...prev, ...nextItems]);
       }
     }
-  };
+  }, [allFeeds, currentSlideIndex, info]);
+
+  useEffect(() => {
+    const container = reelsWrapperRef.current;
+    if (!container) return;
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   const [curFollowFeatured, setCurFollowFeatured] = useState(false); // 비디오 총 길이
   const [isOpenFollowFeatured, setIsOpenFollowFeatured] = useState(false); // 비디오 총 길이
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [allFeeds, currentSlideIndex]);
-  React.useEffect(() => {
-    console.log(isMute);
-  }, [isMute]);
 
   return (
-    <div ref={containerRef} className={styles.reelsContainer}>
+    <div className={styles.reelsContainer}>
       {/* <Head>
         <title>{initialFeed?.characterProfileName || 'Home Feed'}</title>
         <meta name="description" content={initialFeed?.description || 'Welcome to the home feed'} />
@@ -178,10 +180,16 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
           </div>
         </div>
       )}
-      <div className={styles.reelsWrapper}>
+      <div ref={reelsWrapperRef} className={`${styles.reelsWrapper} ${isProfile === true ? styles.cantScroll : ''}`}>
         {info.map((item, index) => (
           <div key={index} className={styles.reelSlide}>
-            <ReelsContent item={item} isActive={index === currentSlideIndex} isMute={isMute} setIsMute={setIsMute} />
+            <ReelsContent
+              item={item}
+              isActive={index === currentSlideIndex}
+              isMute={isMute}
+              setIsMute={setIsMute}
+              setIsProfile={setIsProfile}
+            />
           </div>
         ))}
       </div>

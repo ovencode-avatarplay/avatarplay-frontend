@@ -39,9 +39,10 @@ interface ReelsContentProps {
   isActive: boolean; // 현재 슬라이드인지 확인
   isMute: boolean;
   setIsMute: (mute: boolean) => void; // boolean 매개변수 추가
+  setIsProfile: (profile: boolean) => void; // boolean 매개변수 추가
 }
 
-const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setIsMute}) => {
+const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setIsMute, setIsProfile}) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
@@ -225,6 +226,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
 
   const handleSlideChangeProfile = (swiper: any) => {
     setActiveIndexProfile(swiper.activeIndex);
+    if (activeIndexProfile === 1) setIsProfile(false);
+    else if (activeIndexProfile === 0) setIsProfile(true);
   };
   return (
     <div className={styles.reelsContainer}>
