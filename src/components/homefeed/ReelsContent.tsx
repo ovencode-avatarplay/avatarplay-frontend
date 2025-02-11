@@ -239,20 +239,13 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
         onSlideChange={handleSlideChangeProfile}
         className={`${styles.mainContent}  ${!isMobile && styles.limitWidth}`}
       >
-        <SwiperSlide style={{height: '100%', overflow: 'hidden'}}>
+        <SwiperSlide style={{height: '100%'}}>
           <div className={styles.Image}>
             {item.mediaState === 1 && (
-              <img
-                src={item?.mediaUrlList[0]}
-                loading="lazy"
-                style={{width: '100%', height: '100%', objectFit: 'contain'}}
-              />
+              <img src={item?.mediaUrlList[0]} loading="lazy" style={{width: '100%', height: '100%'}} />
             )}
             {item.mediaState === 2 && (
-              <div
-                onClick={handleClick}
-                style={{position: 'relative', width: '100%', height: '100%', overflow: 'hidden'}}
-              >
+              <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
                 <ReactPlayer
                   ref={playerRef} // ReactPlayer 참조 연결
                   muted={isMute}
