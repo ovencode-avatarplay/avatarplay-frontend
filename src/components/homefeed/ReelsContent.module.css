@@ -1,18 +1,25 @@
 .reelsContainer {
   position: relative;
   width: 100%;  
-  background: #000000;   
-  height: var(--body-height)
+  background: #000000; 
+  height: calc(100% - 48px - 48px)
+}
+
+.mySwiper
+{
 
 }
+
 .mainContent {
   position: relative;
   width: 100%;
   height: 100%;
-
-
 }
 
+.mainContent :global(.swiper-slide) {
+  overflow-y: auto;
+pointer-events: auto;
+}
 .mainContent.limitWidth{
   max-width:600px;
   margin: 0 auto;
@@ -77,6 +84,7 @@
 .Image {
   width: 100%;
   height: 100%;     
+  overflow: 'hidden'
 }
 
 .dim {

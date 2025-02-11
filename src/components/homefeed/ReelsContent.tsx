@@ -236,238 +236,240 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
         onSlideChange={handleSlideChangeProfile}
         className={`${styles.mainContent}  ${!isMobile && styles.limitWidth}`}
       >
-        <SwiperSlide>
-          <div>
-            <div className={styles.Image}>
-              {item.mediaState === 1 && (
-                <img
-                  src={item?.mediaUrlList[0]}
-                  loading="lazy"
-                  style={{width: '100%', height: '100%', objectFit: 'cover'}}
-                />
-              )}
-              {item.mediaState === 2 && (
-                <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
-                  <ReactPlayer
-                    ref={playerRef} // ReactPlayer 참조 연결
-                    muted={isMute}
-                    url={item.mediaUrlList[0]} // 첫 번째 URL 사용
-                    playing={isPlaying} // 재생 상태
-                    loop={true}
-                    width="100%"
-                    playsinline={true}
-                    height="calc(100% - 4px)"
-                    style={{
-                      borderRadius: '8px',
-                    }}
-                    config={{
-                      file: {
-                        attributes: {
-                          style: {
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                          },
+        <SwiperSlide style={{height: '100%', overflow: 'hidden'}}>
+          <div className={styles.Image}>
+            {item.mediaState === 1 && (
+              <img
+                src={item?.mediaUrlList[0]}
+                loading="lazy"
+                style={{width: '100%', height: '100%', objectFit: 'contain'}}
+              />
+            )}
+            {item.mediaState === 2 && (
+              <div
+                onClick={handleClick}
+                style={{position: 'relative', width: '100%', height: '100%', overflow: 'hidden'}}
+              >
+                <ReactPlayer
+                  ref={playerRef} // ReactPlayer 참조 연결
+                  muted={isMute}
+                  url={item.mediaUrlList[0]} // 첫 번째 URL 사용
+                  playing={isPlaying} // 재생 상태
+                  loop={true}
+                  width="100%"
+                  playsinline={true}
+                  height="calc(100% - 4px)"
+                  style={{
+                    borderRadius: '8px',
+                    objectFit: 'contain',
+                  }}
+                  config={{
+                    file: {
+                      attributes: {
+                        style: {
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain',
                         },
                       },
-                    }}
-                    progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
-                    onProgress={({playedSeconds}) => {
-                      handleVideoProgress(playedSeconds);
-
-                      setCurrentProgress(formatDuration(playedSeconds));
-                    }} // 비디오 진행도 업데이트
-                    onDuration={(duration: number) => {
-                      setVideoDuration(duration);
-                    }} // 영상 길이 설정
-                  />
-
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      zIndex: 10,
-                    }}
-                  >
-                    <div className={`${styles.playCircleIcon} ${isClicked ? styles.fadeAndGrow : ''}`}>
-                      <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Progress Bar */}
-            <div className={styles.progressBar}>
-              <div
-                className={styles.progressFill}
-                style={{
-                  width:
-                    item.mediaState === 1
-                      ? `${((activeIndex + 1) / item.mediaUrlList.length) * 100}%` // 이미지 슬라이드 진행도
-                      : `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
-                  transition: 'width 0.1s linear', // 부드러운 진행도 애니메이션
-                }}
-              ></div>
-            </div>
-
-            <div className={styles.profileBox}>
-              <div className={styles.dim}></div>
-              {/* User Info */}
-              <div className={styles.userInfo}>
-                <Avatar
-                  src={item.characterProfileUrl || '/images/001.png'}
-                  style={{width: '32px', height: '32px'}}
-                  onClick={() => {
-                    pushLocalizedRoute('/profile/' + item?.characterProfileId, router);
+                    },
                   }}
+                  progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
+                  onProgress={({playedSeconds}) => {
+                    handleVideoProgress(playedSeconds);
+
+                    setCurrentProgress(formatDuration(playedSeconds));
+                  }} // 비디오 진행도 업데이트
+                  onDuration={(duration: number) => {
+                    setVideoDuration(duration);
+                  }} // 영상 길이 설정
                 />
 
                 <div
-                  className={styles.profileDetails}
-                  onClick={() => {
-                    pushLocalizedRoute('/profile/' + item?.characterProfileId, router);
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 10,
                   }}
                 >
-                  <span className={styles.username}>{item.characterProfileName}</span>
-                  <span className={styles.sponsored}>Sponsored</span>
-                </div>
-                <button
-                  className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
-                  onClick={() => {
-                    setIsFollow(!isFollow);
-                    console.log('isfollow', isFollow);
-                  }}
-                >
-                  Follow
-                </button>
-              </div>
-              {item?.description && (
-                <div className={styles.text_container}>
-                  <div
-                    className={styles.text_content}
-                    style={{
-                      maxHeight: isExpanded ? 'none' : '20px',
-                      overflowY: isExpanded ? 'auto' : 'hidden',
-                      width: isExpanded ? '80%' : '100%',
-                    }}
-                    onClick={() => {
-                      toggleExpanded();
-                    }}
-                  >
-                    {isExpanded
-                      ? item.description
-                      : item.description.length > 20 // 접힌 상태에서 최대 길이 제한
-                      ? `${item.description.slice(0, 17)}...` // 첫 17글자 + "..."
-                      : item.description}
+                  <div className={`${styles.playCircleIcon} ${isClicked ? styles.fadeAndGrow : ''}`}>
+                    <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
                   </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Progress Bar */}
+          <div className={styles.progressBar}>
+            <div
+              className={styles.progressFill}
+              style={{
+                width:
+                  item.mediaState === 1
+                    ? `${((activeIndex + 1) / item.mediaUrlList.length) * 100}%` // 이미지 슬라이드 진행도
+                    : `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
+                transition: 'width 0.1s linear', // 부드러운 진행도 애니메이션
+              }}
+            ></div>
+          </div>
+
+          <div className={styles.profileBox}>
+            <div className={styles.dim}></div>
+            {/* User Info */}
+            <div className={styles.userInfo}>
+              <Avatar
+                src={item.characterProfileUrl || '/images/001.png'}
+                style={{width: '32px', height: '32px'}}
+                onClick={() => {
+                  pushLocalizedRoute('/profile/' + item?.characterProfileId, router);
+                }}
+              />
+
+              <div
+                className={styles.profileDetails}
+                onClick={() => {
+                  pushLocalizedRoute('/profile/' + item?.characterProfileId, router);
+                }}
+              >
+                <span className={styles.username}>{item.characterProfileName}</span>
+                <span className={styles.sponsored}>Sponsored</span>
+              </div>
+              <button
+                className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
+                onClick={() => {
+                  setIsFollow(!isFollow);
+                  console.log('isfollow', isFollow);
+                }}
+              >
+                Follow
+              </button>
+            </div>
+            {item?.description && (
+              <div className={styles.text_container}>
+                <div
+                  className={styles.text_content}
+                  style={{
+                    maxHeight: isExpanded ? 'none' : '20px',
+                    overflowY: isExpanded ? 'auto' : 'hidden',
+                    width: isExpanded ? '80%' : '100%',
+                  }}
+                  onClick={() => {
+                    toggleExpanded();
+                  }}
+                >
+                  {isExpanded
+                    ? item.description
+                    : item.description.length > 20 // 접힌 상태에서 최대 길이 제한
+                    ? `${item.description.slice(0, 17)}...` // 첫 17글자 + "..."
+                    : item.description}
+                </div>
+              </div>
+            )}
+            {/* Video Info */}
+            <div className={styles.videoInfo}>
+              {item.mediaState == 1 && <>Image</>}
+              {item.mediaState == 2 && (
+                <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
+                  <img className={styles.iconVideo} src={BoldVideo.src}></img>
+                  Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
                 </div>
               )}
-              {/* Video Info */}
-              <div className={styles.videoInfo}>
-                {item.mediaState == 1 && <>Image</>}
-                {item.mediaState == 2 && (
-                  <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
-                    <img className={styles.iconVideo} src={BoldVideo.src}></img>
-                    Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
-                  </div>
-                )}
-                <div>{formatTimeAgo(item.createAt.toString())}</div>
-              </div>
+              <div>{formatTimeAgo(item.createAt.toString())}</div>
             </div>
+          </div>
 
-            {/* CTA Buttons */}
-            <div className={styles.ctaButtons}>
-              <div className={styles.textButtons} onClick={() => {}}>
-                <img src={BoldReward.src} className={styles.button}></img>
-              </div>
-              <div
-                className={styles.textButtons}
-                onClick={() => {
-                  handleLikeFeed(item.id, !isLike);
-                }}
-              >
-                <img
-                  src={BoldLike.src}
-                  className={styles.button}
-                  style={{
-                    filter: isLike
-                      ? 'brightness(0) saturate(100%) invert(47%) sepia(57%) saturate(1806%) hue-rotate(287deg) brightness(102%) contrast(98%)'
-                      : 'none', // 기본 상태는 필터 없음
-                  }}
-                />
-                <div className={styles.count}>{likeCount}</div>
-              </div>
-
-              {/* Dislike Button */}
-              <div
-                className={styles.textButtons}
-                onClick={() => {
-                  handleDisLikeFeed(item.id, !isDisLike);
-                }}
-              >
-                <img
-                  src={BoldDislike.src}
-                  className={styles.button}
-                  style={{
-                    filter: isDisLike
-                      ? 'brightness(0) saturate(100%) invert(69%) sepia(59%) saturate(1244%) hue-rotate(153deg) brightness(102%) contrast(101%)'
-                      : 'none', // 기본 상태는 필터 없음
-                  }}
-                />
-              </div>
-              <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
-                <img src={BoldComment.src} className={styles.button}></img>
-                <div className={styles.count}>{commentCount}</div>
-              </div>
-              <div
-                className={styles.noneTextButton}
-                onClick={async () => {
-                  handleShare();
-                }}
-              >
-                <img src={BoldShare.src} className={styles.button}></img>
-              </div>
-
-              <div
-                className={styles.noneTextButton}
-                onClick={() => {
-                  bookmarkFeed();
-                }}
-              >
-                {isBookmarked && <img src={BoldArchive.src} className={styles.button}></img>}
-                {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
-              </div>
-              <div
-                className={styles.noneTextButton}
-                onClick={() => {
-                  alert('추후 신고 기능 추가');
-                }}
-              >
-                <img src={BoldMore.src} className={styles.button}></img>
-              </div>
+          {/* CTA Buttons */}
+          <div className={styles.ctaButtons}>
+            <div className={styles.textButtons} onClick={() => {}}>
+              <img src={BoldReward.src} className={styles.button}></img>
             </div>
             <div
-              className={styles.volumeButton}
+              className={styles.textButtons}
               onClick={() => {
-                if (item.mediaState == 2) setIsMute(!isMute);
-                else if (item.mediaState == 1) setIsImageModal(true);
+                handleLikeFeed(item.id, !isLike);
               }}
             >
-              {/* 검은색 반투명 배경 */}
-              {isMute && <div className={styles.volumeCircleIcon}></div>}
-
-              {/* 음소거 상태 아이콘 */}
-              {item.mediaState == 2 && isMute && <img src={BoldVolumeOff.src} className={styles.volumeIcon} />}
-
-              {/* 볼륨 활성 상태 아이콘 */}
-              {item.mediaState == 2 && !isMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
-
-              {/* 이미지 확대 아이콘 */}
-              {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />}
+              <img
+                src={BoldLike.src}
+                className={styles.button}
+                style={{
+                  filter: isLike
+                    ? 'brightness(0) saturate(100%) invert(47%) sepia(57%) saturate(1806%) hue-rotate(287deg) brightness(102%) contrast(98%)'
+                    : 'none', // 기본 상태는 필터 없음
+                }}
+              />
+              <div className={styles.count}>{likeCount}</div>
             </div>
+
+            {/* Dislike Button */}
+            <div
+              className={styles.textButtons}
+              onClick={() => {
+                handleDisLikeFeed(item.id, !isDisLike);
+              }}
+            >
+              <img
+                src={BoldDislike.src}
+                className={styles.button}
+                style={{
+                  filter: isDisLike
+                    ? 'brightness(0) saturate(100%) invert(69%) sepia(59%) saturate(1244%) hue-rotate(153deg) brightness(102%) contrast(101%)'
+                    : 'none', // 기본 상태는 필터 없음
+                }}
+              />
+            </div>
+            <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
+              <img src={BoldComment.src} className={styles.button}></img>
+              <div className={styles.count}>{commentCount}</div>
+            </div>
+            <div
+              className={styles.noneTextButton}
+              onClick={async () => {
+                handleShare();
+              }}
+            >
+              <img src={BoldShare.src} className={styles.button}></img>
+            </div>
+
+            <div
+              className={styles.noneTextButton}
+              onClick={() => {
+                bookmarkFeed();
+              }}
+            >
+              {isBookmarked && <img src={BoldArchive.src} className={styles.button}></img>}
+              {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
+            </div>
+            <div
+              className={styles.noneTextButton}
+              onClick={() => {
+                alert('추후 신고 기능 추가');
+              }}
+            >
+              <img src={BoldMore.src} className={styles.button}></img>
+            </div>
+          </div>
+          <div
+            className={styles.volumeButton}
+            onClick={() => {
+              if (item.mediaState == 2) setIsMute(!isMute);
+              else if (item.mediaState == 1) setIsImageModal(true);
+            }}
+          >
+            {/* 검은색 반투명 배경 */}
+            {isMute && <div className={styles.volumeCircleIcon}></div>}
+
+            {/* 음소거 상태 아이콘 */}
+            {item.mediaState == 2 && isMute && <img src={BoldVolumeOff.src} className={styles.volumeIcon} />}
+
+            {/* 볼륨 활성 상태 아이콘 */}
+            {item.mediaState == 2 && !isMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
+
+            {/* 이미지 확대 아이콘 */}
+            {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />}
           </div>
         </SwiperSlide>
         <SwiperSlide>
