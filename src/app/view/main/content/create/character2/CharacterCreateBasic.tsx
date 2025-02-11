@@ -51,7 +51,7 @@ Use a name that is clearly recognized as a name. Use a short name. Long names ar
           promptValue={characterDesc}
           handlePromptChange={e => setCharacterDesc(e.target.value)}
           placeholder={characterDescPlaceholder}
-          inSideHint={`About ${characterDesc.length} tokens (임시처리 텍스트 길이)`}
+          inSideHint={`About ${characterDesc?.length} tokens (임시처리 텍스트 길이)`}
         />
       </div>
     </div>

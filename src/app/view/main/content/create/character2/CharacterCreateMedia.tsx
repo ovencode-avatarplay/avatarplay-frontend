@@ -107,7 +107,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
       </div>
 
       <ul className={styles.mediaList}>
-        {mediaItems.map((item, index) =>
+        {mediaItems?.map((item, index) =>
           renderMediaItem(item, index, handlePromptChange, handleSelected, handleDeleteMediaItem, handleMoveMediaItem),
         )}
       </ul>
