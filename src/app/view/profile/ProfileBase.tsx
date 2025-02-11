@@ -198,15 +198,11 @@ const ProfileBase = ({profileId = 0, onClickBack = () => {}, isPath = false}: Pr
     <>
       <section className={styles.header}>
         <div className={styles.left}>
-          {!isMine && (
+          {!isMine && isPath && (
             <div
               className={styles.backBtn}
               onClick={() => {
-                if (isPath) {
-                  router.back();
-                } else {
-                  onClickBack();
-                }
+                router.back();
               }}
             >
               <img src={BoldArrowLeft.src} alt="" />
@@ -447,6 +443,25 @@ const ProfileBase = ({profileId = 0, onClickBack = () => {}, isPath = false}: Pr
                   ValueComponent={SelectBoxValueComponent}
                   OptionComponent={SelectBoxOptionComponent}
                   onChangedCharacter={id => {}}
+                  customStyles={{
+                    control: {
+                      width: '184px',
+                      display: 'flex',
+                      gap: '10px',
+                    },
+                    menuList: {
+                      borderRadius: '10px',
+                      boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                    },
+                    option: {
+                      padding: '11px 14px',
+                      boxSizing: 'border-box',
+                      '&:first-of-type': {
+                        borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                      },
+                      borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                    },
+                  }}
                 />
                 {/* <div className={styles.label}>Newest</div> */}
                 {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
@@ -506,71 +521,17 @@ export type SelectBoxProps = {
   ValueComponent: (data: any) => JSX.Element;
   ArrowComponent: () => JSX.Element;
   onChangedCharacter: (id: number) => void;
-};
-
-const customStyles: StylesConfig<{id: number; [key: string]: any}, false> = {
-  control: provided => ({
-    ...provided,
-    borderColor: 'transparent',
-    boxShadow: 'none',
-    '&:hover': {
-      borderColor: 'transparent',
-    },
-    '&:focus': {
-      borderColor: 'transparent',
-    },
-    background: 'transparent',
-    padding: 0,
-    cursor: 'pointer',
-    width: '184px',
-  }),
-  singleValue: provided => ({
-    // value부분
-    ...provided,
-  }),
-  valueContainer: provided => ({
-    ...provided,
-    paddingLeft: 0,
-    textAlign: 'right',
-  }),
-  input: provided => ({
-    ...provided,
-  }),
-  option: (provided, state) => ({
-    // 옵션 부분
-    ...provided,
-    backgroundColor: state.isSelected ? '#ffffff' : 'transparent',
-    color: 'black',
-    ':active': {
-      backgroundColor: state.isSelected ? '#ffffff' : 'transparent',
-    },
-    cursor: 'pointer',
-
-    padding: '11px 14px',
-    boxSizing: 'border-box',
-    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-    '&:first-of-type': {
-      borderTop: 'none', // 첫 번째 옵션에는 border 제거
-    },
-  }),
-  menu: provided => ({
-    ...provided,
-    marginTop: '7px',
-  }),
-  menuList: provided => ({
-    ...provided,
-    padding: 0,
-    background: 'white',
-    borderRadius: '10px',
-    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-  }),
-  indicatorSeparator: provided => ({
-    ...provided,
-    display: 'none',
-  }),
-  dropdownIndicator: provided => ({
-    ...provided,
-  }),
+  customStyles?: {
+    control?: object; // 함수 또는 객체 허용
+    singleValue?: object;
+    valueContainer?: object;
+    input?: object;
+    option?: object;
+    menu?: object;
+    menuList?: object;
+    indicatorSeparator?: object;
+    dropdownIndicator?: object;
+  };
 };
 
 export const SelectBox: React.FC<SelectBoxProps> = ({
@@ -580,11 +541,81 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
   ValueComponent,
   ArrowComponent,
   onChangedCharacter,
+  customStyles = {},
 }) => {
   const [selectedOption, setSelectedOption] = useState<{id: number} | null>(value);
+  const styleDefault: StylesConfig<{id: number; [key: string]: any}, false> = {
+    control: provided => ({
+      ...provided,
+      borderColor: 'transparent',
+      boxShadow: 'none',
+      border: 'none',
+      '&:hover': {
+        borderColor: 'transparent',
+      },
+      '&:focus': {
+        borderColor: 'transparent',
+      },
+      background: 'transparent',
+      padding: 0,
+      cursor: 'pointer',
+      width: '100%',
+      ...customStyles?.control,
+    }),
+    singleValue: provided => ({
+      // value부분
+      ...provided,
+      margin: '0',
+      ...customStyles?.singleValue,
+    }),
+    valueContainer: provided => ({
+      ...provided,
+      paddingLeft: 0,
+      textAlign: 'right',
+      padding: '0',
+      ...customStyles?.valueContainer,
+    }),
+    input: provided => ({
+      ...provided,
+      ...customStyles?.input,
+    }),
+    option: (provided, state) => ({
+      // 옵션 부분
+      ...provided,
+      backgroundColor: state.isSelected ? '#ffffff' : 'transparent',
+      color: 'black',
+      ':active': {
+        backgroundColor: state.isSelected ? '#ffffff' : 'transparent',
+      },
+      cursor: 'pointer',
+      ...customStyles?.option,
+    }),
+    menu: provided => ({
+      ...provided,
+      marginTop: '7px',
+      boxShadow: 'none',
+      ...customStyles?.menu,
+    }),
+    menuList: provided => ({
+      ...provided,
+      padding: 0,
+      background: 'white',
+      ...customStyles?.menuList,
+    }),
+    indicatorSeparator: provided => ({
+      ...provided,
+      display: 'none',
+      ...customStyles?.indicatorSeparator,
+    }),
+    dropdownIndicator: provided => ({
+      ...provided,
+      ...customStyles?.dropdownIndicator,
+    }),
+  };
 
   return (
     <Select
+      // menuIsOpen={true}
       isSearchable={false}
       value={selectedOption}
       onChange={option => {
@@ -593,7 +624,7 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
           onChangedCharacter(option.id);
         }
       }}
-      styles={customStyles}
+      styles={styleDefault}
       options={options}
       components={{
         DropdownIndicator: ArrowComponent,

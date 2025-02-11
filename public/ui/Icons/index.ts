@@ -91,6 +91,7 @@ import LineSelected from "./Line/Selected.svg";
 import LineShare from "./Line/Share.svg";
 import LineStack from "./Line/Stack.svg";
 import LineStory from "./Line/Story.svg";
+import LineChannel from "./Line/Channel.svg";
 import LineUpload from "./Line/Upload.svg";
 import LineVoicePlay from "./Line/Voice_Play.svg";
 import LineCorner from "./Line/Arrow_Corner.svg";
@@ -242,4 +243,5 @@ export {
   LineRefresh,
   LineSearch,
   LinePin,
+  LineChannel
 };
