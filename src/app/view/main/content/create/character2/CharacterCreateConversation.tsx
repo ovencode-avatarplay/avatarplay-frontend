@@ -1,14 +1,46 @@
 import CustomButton from '@/components/layout/shared/CustomButton';
 import styles from './CharacterCreateConversation.module.css';
 import {LinePlus} from '@ui/Icons';
-import ConversationCard from '../content-main/episode/episode-conversationtemplate/ConversationCard';
+import ConversationCard, {CardData, Bar} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
+import {useEffect, useState} from 'react';
 
-interface Props {}
+interface Props {
+  cardList: CardData[];
+  setCardList: React.Dispatch<React.SetStateAction<CardData[]>>;
+  onAddCard: () => void;
+  onRemoveCard: (id: string) => void;
+  onUpdateCard: (updatedCard: CardData) => void;
+  onMoveCard: (index: number, direction: 'up' | 'down') => void;
+  onDuplicateCard: (index: number) => void;
+}
 
-const CharacterCreateConversation: React.FC<Props> = ({}) => {
+const CharacterCreateConversation: React.FC<Props> = ({
+  cardList,
+  setCardList,
+  onAddCard,
+  onRemoveCard,
+  onUpdateCard,
+  onMoveCard,
+  onDuplicateCard,
+}) => {
   let title = 'Conversation Example';
   let desc = `Appropriate dialogue examples help to show the character's dialogue style.
 Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]`;
+
+  const handleUpdateCard = (updatedCard: Partial<CardData>) => {
+    // if (!updatedCard.id) return;
+
+    let id: string;
+    if (updatedCard.id) {
+      id = updatedCard.id;
+    } else if (updatedCard.userBars && updatedCard.userBars.length > 0) {
+      id = updatedCard.userBars[0].id;
+    } else if (updatedCard.charBars && updatedCard.charBars.length > 0) {
+      id = updatedCard.charBars[0].id;
+    }
+
+    setCardList(prevCards => prevCards.map(card => (id.includes(card.id) ? {...card, ...updatedCard} : card)));
+  };
 
   return (
     <div className={styles.conversationContainer}>
@@ -20,14 +52,26 @@ Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]`;
         size="Large"
         type="Tertiary"
         state="IconLeft"
-        onClick={() => {}}
+        onClick={onAddCard}
         iconClass={styles.buttonIcon}
         icon={LinePlus.src}
         customClassName={[styles.newButton]}
       >
         Add example new
       </CustomButton>
-      <ul className={styles.conversationList}>{/* <ConversationCard card={} /> */}</ul>
+      <ul className={styles.conversationList}>
+        {cardList.map((cardData, index) => (
+          <ConversationCard
+            key={cardData.id}
+            card={cardData}
+            remove={() => onRemoveCard(cardData.id)}
+            onUpdate={handleUpdateCard}
+            moveDown={() => onMoveCard(index, 'down')}
+            moveUp={() => onMoveCard(index, 'up')}
+            duplicate={() => onDuplicateCard(index)}
+          />
+        ))}
+      </ul>
     </div>
   );
 };
