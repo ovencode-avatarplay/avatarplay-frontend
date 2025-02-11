@@ -63,6 +63,9 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   const maxTagCount = 5;
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
 
+  const [isVisibilityOpen, setIsVisibilityOpen] = useState(false);
+  const [isPositionCountryOpen, setIsPositionCountryOpen] = useState(false);
+
   let positionCountryData = {label: 'Position Country', items: ['USA', 'Korea', 'Japan']};
 
   let characterIpData = {
@@ -242,9 +245,9 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     items: string[],
     selectedItem: number,
     handler: (value: number) => void,
+    isOpen: boolean,
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
   ) => {
-    const [isOpen, setIsOpen] = useState(false);
-
     const drawerItems: SelectDrawerItem[] = items.map((item, index) => ({
       name: item.toString(),
       onClick: () => handler(index),
@@ -371,7 +374,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   const renderRecruit = () => {
     // TODO : 별도 API 추가 된 후 작업 (다른 사람의 Profile 연동 관련)
-    return <>{renderDropDownSelectDrawer('Recruited', [], 0, () => {})}</>;
+    return <>{/* {renderDropDownSelectDrawer('Recruited', [], 0, () => {})} */}</>;
   };
 
   const renderOperatorInvite = () => {
@@ -689,8 +692,13 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   return (
     <div className={styles.policyContainer}>
       <div className={styles.selectItemsArea1}>
-        {renderDropDownSelectDrawer(VisibilityData.label, VisibilityData.items, visibility, (value: string | number) =>
-          handleSelectVisibilityItem(Number(value)),
+        {renderDropDownSelectDrawer(
+          VisibilityData.label,
+          VisibilityData.items,
+          visibility,
+          (value: string | number) => handleSelectVisibilityItem(Number(value)),
+          isVisibilityOpen,
+          setIsVisibilityOpen,
         )}
         {renderDropDown('LLM', llmModelData[llmModel].label, setLlmOpen)}
         <ContentLLMSetup open={llmOpen} onClose={() => setLlmOpen(false)} onModelSelected={onLlmModelChange} />
@@ -702,6 +710,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           positionCountryData.items,
           positionCountry,
           (value: string | number) => handleSelectPositionCountryItem(Number(value)),
+          isPositionCountryOpen,
+          setIsPositionCountryOpen,
         )}
       </div>
       <div className={styles.selectItemsArea2}>
