@@ -54,3 +54,12 @@
 {
     filter: var(--black-icon-filter);
 }
+
+
+.conversationList
+{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width : var(--second-width);
+}

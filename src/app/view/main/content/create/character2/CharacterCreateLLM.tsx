@@ -2,6 +2,7 @@ import styles from './CharacterCreateLLM.module.css';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
+import {LanguageType} from '@/redux-store/slices/ContentInfo';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAI, BoldArrowDown, LineDelete} from '@ui/Icons';
 import {useEffect, useState} from 'react';
@@ -47,12 +48,6 @@ const CharacterCreateLLM: React.FC<Props> = ({
   const [autoWriteCharacterWorldScenario, setAutoWriteCharacterWorldScenario] = useState<string[]>([]);
   const [autoWriteCharacterGreeting, setAutoWriteCharacterGreeting] = useState<string[]>([]);
   const [autoWriteCharacterSecret, setAutoWriteCharacterSecret] = useState<string[]>([]);
-
-  const langItems = [
-    {label: 'Lang 1', value: '1'},
-    {label: 'Lang 2', value: '2'},
-    {label: 'Lang 3', value: '3'},
-  ];
 
   const llmItems = [
     {label: 'Llm 1', value: '1'},
@@ -255,8 +250,11 @@ const CharacterCreateLLM: React.FC<Props> = ({
         {renderTitle(`Reference Language *`, `Please let me know which language you'd like to use`)}
         <div className={styles.dropBox}></div>
         <CustomDropDown
-          items={langItems}
-          displayType="Icon"
+          items={Object.values(LanguageType).map(langKey => ({
+            label: `${langKey}`,
+            value: langKey,
+          }))}
+          displayType="Text"
           onSelect={(value: string | number) => handleSelectLang(Number(value))}
         />
       </div>

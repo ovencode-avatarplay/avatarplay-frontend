@@ -14,6 +14,7 @@ interface Props {
   handleSelected: (value: number) => void;
   handleAddMediaItem: () => void;
   handleDeleteMediaItem: (index: number) => void;
+  handleMoveMediaItem: (index: number, direction: 'up' | 'down') => void;
 }
 
 const CharacterCreateMedia: React.FC<Props> = ({
@@ -24,6 +25,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
   handleSelected,
   handleAddMediaItem,
   handleDeleteMediaItem,
+  handleMoveMediaItem,
 }) => {
   let mediaInfoDesc = `This image is displayed during conversation. If you describe each scene, AI shows it according to the situation. Please write the scene description in English if possible. {{char}} and {{user}} can also be used.`;
 
@@ -33,6 +35,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
     handlerPromptChange: (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => void,
     handlerSelected: (value: number) => void,
     handleDelete: (index: number) => void,
+    handleMove: (index: number, direction: 'up' | 'down') => void,
   ) => {
     return (
       <div className={styles.mediaItem}>
@@ -50,10 +53,10 @@ const CharacterCreateMedia: React.FC<Props> = ({
             />
             <div className={styles.mediaItemButtonArea}>
               <div className={styles.leftButtonGroup}>
-                <button className={styles.mediaItemButton} onClick={() => handleDelete(index)}>
+                <button className={styles.mediaItemButton} onClick={() => handleDelete}>
                   <img className={styles.mediaButtonIcon} src={LineDelete.src} />
                 </button>
-                <button className={styles.mediaItemButton}>
+                <button className={styles.mediaItemButton} onClick={() => {}}>
                   <img className={styles.mediaButtonIcon} src={LineEdit.src} />
                 </button>
               </div>
@@ -67,14 +70,14 @@ const CharacterCreateMedia: React.FC<Props> = ({
                   selectedValue={selectedItemIdx}
                   onSelect={(value: string | number) => handlerSelected(Number(value))}
                 /> */}
-                <button className={styles.moveItemIndexButton} onClick={() => {}}>
+                <button className={styles.moveItemIndexButton} onClick={() => handleMove(index, 'up')}>
                   <img
                     className={styles.moveItemIndexIcon}
                     src={LineArrowDown.src}
                     style={{transform: 'rotate(180deg)'}}
                   />
                 </button>
-                <button className={styles.moveItemIndexButton} onClick={() => {}}>
+                <button className={styles.moveItemIndexButton} onClick={() => handleMove(index, 'down')}>
                   <img className={styles.moveItemIndexIcon} src={LineArrowDown.src} />
                 </button>
               </div>
@@ -107,7 +110,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
 
       <ul className={styles.mediaList}>
         {mediaItems.map((item, index) =>
-          renderMediaItem(item, index, handlePromptChange, handleSelected, handleDeleteMediaItem),
+          renderMediaItem(item, index, handlePromptChange, handleSelected, handleDeleteMediaItem, handleMoveMediaItem),
         )}
       </ul>
     </div>

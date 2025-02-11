@@ -61,7 +61,7 @@ const ImageUploadDialog: React.FC<Props> = ({isOpen, onClose, onFileSelect}) => 
 
   const uploadImageItems: SelectDrawerItem[] = [
     {
-      name: 'Take a photo or video',
+      name: 'Take a photo',
       onClick: () => {
         handleTakePhoto();
       },

@@ -22,6 +22,7 @@ import {CreateCharacter2Req, CreateCharacterReq, sendCreateCharacter} from '@/ap
 import ImageUploadDialog from '../content-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
+import {CardData} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
 
 interface CreateCharacterProps {}
 
@@ -50,34 +51,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
 
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
-  const [mediaItems, setMediaItems] = useState<CharacterMediaInfo[]>([]);
-  const [selectedMediaItemIdx, setSelectedMediaItemIdx] = useState<number>(0);
-  const handleMediaPromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
-    const updatedMediaItems = [...mediaItems];
-    updatedMediaItems[index].description = event.target.value;
-    setMediaItems(updatedMediaItems);
-  };
-
-  const handleMediaSelected = (value: number) => {
-    setSelectedMediaItemIdx(value);
-  };
-
-  const handleAddMediaItem = (id: number, imageUrl: string, description: string, isProfileImage: boolean) => {
-    const newItem: CharacterMediaInfo = {
-      id: id,
-      imageUrl: imageUrl,
-      description: description,
-      isProfileImage: isProfileImage,
-    };
-
-    setMediaItems([...mediaItems, newItem]);
-  };
-
-  const handleDeleteMediaItem = (index: number) => {
-    const updatedMediaItems = mediaItems.filter((_, i) => i !== index);
-    setMediaItems(updatedMediaItems);
-  };
   //#endregion
+  const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
 
   //#region  Basic
   const [characterName, setCharacterName] = useState<string>('');
@@ -94,6 +69,17 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
   const [selectedPrompt, setSelectedPrompt] = useState(''); // 서버 추가 필요
   const [selectedLorebook, setSelectedLorebook] = useState(''); // 서버 추가 필요
 
+  //#endregion
+
+  //#region Media
+
+  const [mediaItems, setMediaItems] = useState<CharacterMediaInfo[]>([]);
+  const [selectedMediaItemIdx, setSelectedMediaItemIdx] = useState<number>(0);
+
+  //#endregion
+
+  //#region Conversation
+  const [conversationCards, setConversationCards] = useState<CardData[]>([]);
   //#endregion
 
   //#region Policy
@@ -199,19 +185,17 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
           poseGalleryImageUrl: [],
           expressionGalleryImageUrl: [],
           mediaTemplateList: mediaItems.map(item => ({
-            id: -1,
+            id: 0,
             imageUrl: item.imageUrl,
             description: item.description,
             isProfileImage: item.isProfileImage,
           })),
-          conversationTemplateList: [
-            {
-              id: 0,
-              conversationType: 0,
-              user: 'string',
-              character: 'string',
-            },
-          ],
+          conversationTemplateList: conversationCards.map(item => ({
+            id: 0,
+            conversationType: item.priorityType,
+            user: JSON.stringify(item.userBars),
+            character: JSON.stringify(item.charBars),
+          })),
           visibilityType: visibility,
           llmModel: llmModel,
           tag: tag,
@@ -249,6 +233,109 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
     } finally {
     }
   };
+  //#endregion
+
+  //#region Media
+
+  const handleMediaPromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+    const updatedMediaItems = [...mediaItems];
+    updatedMediaItems[index].description = event.target.value;
+    setMediaItems(updatedMediaItems);
+  };
+
+  const handleMediaSelected = (value: number) => {
+    setSelectedMediaItemIdx(value);
+  };
+
+  const handleAddMediaItem = (id: number, imageUrl: string, description: string, isProfileImage: boolean) => {
+    const newItem: CharacterMediaInfo = {
+      id: id,
+      imageUrl: imageUrl,
+      description: description,
+      isProfileImage: isProfileImage,
+    };
+
+    setMediaItems([...mediaItems, newItem]);
+  };
+
+  const handleDeleteMediaItem = (index: number) => {
+    const updatedMediaItems = mediaItems.filter((_, i) => i !== index);
+    setMediaItems(updatedMediaItems);
+  };
+
+  const handleMoveMediaItem = (index: number, direction: 'up' | 'down') => {
+    setMediaItems(prevItems => {
+      const newItems = [...prevItems];
+      const newIndex = direction === 'up' ? index - 1 : index + 1;
+
+      // 경계를 벗어나면 무시
+      if (newIndex < 0 || newIndex >= newItems.length) {
+        return newItems;
+      }
+
+      const [movedItem] = newItems.splice(index, 1);
+      newItems.splice(newIndex, 0, movedItem);
+      return newItems;
+    });
+  };
+  //#endregion
+
+  //#region Conversation
+
+  const handleAddCard = () => {
+    const newCard: CardData = {
+      id: Date.now().toString(),
+      priorityType: 0,
+      userBars: [{id: Date.now().toString() + '_user', inputValue: '', type: 'dots'}],
+      charBars: [{id: Date.now().toString() + '_char', inputValue: '', type: 'dots'}],
+    };
+    setConversationCards([...conversationCards, newCard]);
+  };
+
+  const handleRemoveCard = (id: string) => {
+    setConversationCards(prevCards => prevCards.filter(card => card.id !== id));
+  };
+
+  const handleUpdateCard = (updatedCard: CardData) => {
+    setConversationCards(prevCards =>
+      prevCards.map(card => (card.id === updatedCard.id ? {...card, ...updatedCard} : card)),
+    );
+  };
+
+  const handleMoveCard = (index: number, direction: 'up' | 'down') => {
+    setConversationCards(prevCards => {
+      const newCards = [...prevCards];
+      const newIndex = direction === 'up' ? index - 1 : index + 1;
+
+      if (newIndex < 0 || newIndex >= newCards.length) return newCards;
+
+      const [movedCard] = newCards.splice(index, 1);
+      newCards.splice(newIndex, 0, movedCard);
+      return newCards;
+    });
+  };
+
+  const handleDuplicateCard = (index: number) => {
+    setConversationCards(prevCards => {
+      const newCards = [...prevCards];
+      const cardToDuplicate = newCards[index];
+      const duplicatedCard: CardData = {
+        ...cardToDuplicate,
+        id: Date.now().toString(),
+        userBars: cardToDuplicate.userBars.map(bar => ({
+          ...bar,
+          id: Date.now().toString() + '_user',
+        })),
+        charBars: cardToDuplicate.charBars.map(bar => ({
+          ...bar,
+          id: Date.now().toString() + '_char',
+        })),
+      };
+      newCards.splice(index + 1, 0, duplicatedCard);
+      return newCards;
+    });
+  };
+
   //#endregion
 
   useEffect(() => {
@@ -306,13 +393,24 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
           handleSelected={handleMediaSelected}
           handleAddMediaItem={() => handleAddMediaItem(-1, mediaCreateImage, '', false)}
           handleDeleteMediaItem={handleDeleteMediaItem}
+          handleMoveMediaItem={handleMoveMediaItem}
         />
       ),
     },
     {
       label: 'Conversation',
       preContent: '',
-      content: <CharacterCreateConversation />,
+      content: (
+        <CharacterCreateConversation
+          cardList={conversationCards}
+          setCardList={setConversationCards}
+          onAddCard={handleAddCard}
+          onRemoveCard={handleRemoveCard}
+          onUpdateCard={handleUpdateCard}
+          onMoveCard={handleMoveCard}
+          onDuplicateCard={handleDuplicateCard}
+        />
+      ),
     },
     {
       label: 'Policy',
@@ -415,7 +513,13 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
                 </button>
               </div>
             </div>
-            <Splitters splitters={splitterData} headerStyle={{padding: '0'}} contentStyle={{padding: '0'}} />
+            <Splitters
+              splitters={splitterData}
+              initialActiveSplitter={selectedSplitMenu}
+              onSelectSplitButton={setSelectedSplitMenu}
+              headerStyle={{padding: '0'}}
+              contentStyle={{padding: '0'}}
+            />
           </div>
           <footer>
             <div className={styles.floatButtonArea}>

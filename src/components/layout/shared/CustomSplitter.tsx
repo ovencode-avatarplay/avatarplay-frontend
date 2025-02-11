@@ -11,6 +11,7 @@ interface Splitter {
 interface SplittersProps {
   splitters: Splitter[];
   initialActiveSplitter?: number;
+  onSelectSplitButton?: (index: number) => void;
   splitterStyle?: React.CSSProperties;
   headerStyle?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
@@ -21,6 +22,7 @@ interface SplittersProps {
 const Splitters: React.FC<SplittersProps> = ({
   splitters,
   initialActiveSplitter = 0,
+  onSelectSplitButton,
   splitterStyle,
   headerStyle,
   contentStyle,
@@ -53,7 +55,10 @@ const Splitters: React.FC<SplittersProps> = ({
               className={`${styles.splitterLabel} ${activeSplitter === index ? styles.activeSplitter : ''} ${
                 isDark ? styles.darkSplitterLabel : ''
               }`}
-              onClick={() => setActiveSplitter(index)}
+              onClick={() => {
+                setActiveSplitter(index);
+                if (onSelectSplitButton) onSelectSplitButton(index);
+              }}
             >
               {splitter.label}
               {activeSplitter === index && (
