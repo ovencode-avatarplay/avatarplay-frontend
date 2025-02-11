@@ -7,6 +7,8 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import styles from './CreateCharacterMain2.module.css';
 import {BoldMixture, LineAIImage, LineEdit, LineUpload} from '@ui/Icons';
 
+import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
+
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 import CustomButton from '@/components/layout/shared/CustomButton';
@@ -21,23 +23,25 @@ import CharacterCreatePolicy from './CharacterCreatePolicy';
 import {CreateCharacter2Req, CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
 import ImageUploadDialog from '../content-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo, CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
 import {CardData} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
 
-interface CreateCharacterProps {}
+interface CreateCharacterProps {
+  characterInfo?: CharacterInfo;
+}
 
-const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
+const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) => {
   const router = useRouter();
 
   //#region Data
-
+  const character: CharacterInfo = characterInfo
+    ? characterInfo
+    : EmptyContentInfo.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo;
   //#endregion
 
   //#region  Thumbnail
-  const [mainimageUrl, setMainImageUrl] = useState(
-    'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
-  );
+  const [mainimageUrl, setMainImageUrl] = useState(character.mainImageUrl);
 
   const [mediaCreateImage, setMediaCreateImage] = useState(
     'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
@@ -58,25 +62,25 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
   const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
 
   //#region  Basic
-  const [characterName, setCharacterName] = useState<string>('');
-  const [characterDescription, setCharacterDescription] = useState<string>('');
+  const [characterName, setCharacterName] = useState<string>(character.name);
+  const [characterDescription, setCharacterDescription] = useState<string>(character.characterDescription);
 
   //#endregion
 
   //#region  LLM
-  const [languageType, setLanguageType] = useState<number>(0);
-  const [description, setDescription] = useState('');
-  const [worldScenario, setWorldScenario] = useState('');
-  const [greeting, setGreeting] = useState('');
-  const [secret, setSecret] = useState('');
-  const [selectedPrompt, setSelectedPrompt] = useState(''); // 서버 추가 필요
-  const [selectedLorebook, setSelectedLorebook] = useState(''); // 서버 추가 필요
+  const [languageType, setLanguageType] = useState<number>(character.languageType);
+  const [description, setDescription] = useState(character.description);
+  const [worldScenario, setWorldScenario] = useState(character.worldScenario);
+  const [greeting, setGreeting] = useState(character.greeting);
+  const [secret, setSecret] = useState(character.secret);
+  const [customModulesPrompt, setCustomModulesPrompt] = useState(character.customModulesPrompt);
+  const [customModulesLorebook, setCustomModulesLorebook] = useState(character.customModulesLorebook);
 
   //#endregion
 
   //#region Media
 
-  const [mediaItems, setMediaItems] = useState<CharacterMediaInfo[]>([]);
+  const [mediaTemplateList, setMediaTemplateList] = useState<CharacterMediaInfo[]>(character.mediaTemplateList);
   const [selectedMediaItemIdx, setSelectedMediaItemIdx] = useState<number>(0);
 
   //#endregion
@@ -87,16 +91,18 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
 
   //#region Policy
 
-  const [visibility, setVisibility] = useState<number>(0);
-  const [llmModel, setLlmModel] = useState<number>(6);
-  const [tag, setTag] = useState<string>('');
-  const [positionCountry, setPositionCountry] = useState<number>(0);
-  const [characterIP, setCharacterIP] = useState<number>(0);
-  const [recruitedProfileId, setRecruitedProfileId] = useState<number>(0);
-  const [operatorInvitationProfileId, setOperatorInvitationProfileId] = useState<number[]>([]);
+  const [visibilityType, setvisibilityType] = useState<number>(character.visibilityType);
+  const [llmModel, setLlmModel] = useState<number>(character.llmModel);
+  const [tag, setTag] = useState<string>(character.tag);
+  const [positionCountry, setPositionCountry] = useState<number>(character.positionCountry);
+  const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
+  const [recruitedProfileId, setRecruitedProfileId] = useState<number>(character.recruitedProfileId);
+  const [operatorInvitationProfileId, setOperatorInvitationProfileId] = useState<number[]>(
+    character.operatorInvitationProfileId,
+  );
 
-  const [isMonetization, setIsMonetization] = useState<boolean>(false);
-  const [nsfw, setNsfw] = useState<boolean>(false);
+  const [isMonetization, setIsMonetization] = useState<boolean>(character.isMonetization);
+  const [nsfw, setNsfw] = useState<boolean>(character.nsfw);
 
   //#endregion
 
@@ -120,14 +126,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
     setImgUploadOpen(false);
   };
   //#region File Upload
-  // const handleOnUploadImageClick = () => {
-  //   setUploadDialogOpen(true);
-  // };
 
   const handleFileSelection = async (file: File) => {
-    // handlerSetImage(
-    //   'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
-    // );
     try {
       const req: MediaUploadReq = {
         mediaState: UploadMediaState.CharacterImage,
@@ -174,32 +174,33 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
           worldScenario: worldScenario,
           greeting: greeting,
           secret: secret,
-          customModulesPrompt: selectedPrompt,
-          customModulesLorebook: selectedLorebook,
+          customModulesPrompt: customModulesPrompt,
+          customModulesLorebook: customModulesLorebook,
           mainImageUrl: mainimageUrl,
-          portraitGalleryImageUrl: mediaItems
-            .filter(item => !item.isProfileImage) // isProfileImage가 false인 항목만 필터링
-            .map(item => ({
-              galleryImageId: -1,
-              isGenerate: true,
-              debugParameter: item.description,
-              imageUrl: item.imageUrl,
-            })),
+          // portraitGalleryImageUrl: mediaTemplateList
+          //   .filter(item => !item.isProfileImage) // isProfileImage가 false인 항목만 필터링
+          //   .map(item => ({
+          //     galleryImageId: -1,
+          //     isGenerate: true,
+          //     debugParameter: item.description,
+          //     imageUrl: item.imageUrl,
+          //   })),
+          portraitGalleryImageUrl: [],
           poseGalleryImageUrl: [],
           expressionGalleryImageUrl: [],
-          mediaTemplateList: mediaItems.map(item => ({
+          mediaTemplateList: mediaTemplateList?.map(item => ({
             id: 0,
             imageUrl: item.imageUrl,
             description: item.description,
             isProfileImage: item.isProfileImage,
           })),
-          conversationTemplateList: conversationCards.map(item => ({
+          conversationTemplateList: conversationCards?.map(item => ({
             id: 0,
             conversationType: item.priorityType,
             user: JSON.stringify(item.userBars),
             character: JSON.stringify(item.charBars),
           })),
-          visibilityType: visibility,
+          visibilityType: visibilityType,
           llmModel: llmModel,
           tag: tag,
           positionCountry: positionCountry,
@@ -241,14 +242,14 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
   //#region Media
 
   const handleMediaPromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
-    const updatedMediaItems = [...mediaItems];
+    const updatedMediaItems = [...mediaTemplateList];
     updatedMediaItems[index].description = event.target.value;
-    setMediaItems(updatedMediaItems);
+    setMediaTemplateList(updatedMediaItems);
   };
 
   const handleMediaSelected = (value: number) => {
     setSelectedMediaItemIdx(value);
-    setImageViewUrl(mediaItems[value].imageUrl);
+    setImageViewUrl(mediaTemplateList[value].imageUrl);
     setImageViewOpen(true);
   };
 
@@ -260,16 +261,16 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
       isProfileImage: isProfileImage,
     };
 
-    setMediaItems([...mediaItems, newItem]);
+    setMediaTemplateList([...mediaTemplateList, newItem]);
   };
 
   const handleDeleteMediaItem = (index: number) => {
-    const updatedMediaItems = mediaItems.filter((_, i) => i !== index);
-    setMediaItems(updatedMediaItems);
+    const updatedMediaItems = mediaTemplateList.filter((_, i) => i !== index);
+    setMediaTemplateList(updatedMediaItems);
   };
 
   const handleMoveMediaItem = (index: number, direction: 'up' | 'down') => {
-    setMediaItems(prevItems => {
+    setMediaTemplateList(prevItems => {
       const newItems = [...prevItems];
       const newIndex = direction === 'up' ? index - 1 : index + 1;
 
@@ -373,16 +374,16 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
           greeting={greeting}
           secret={secret}
           selectedLLM={llmModel}
-          selectedPrompt={selectedPrompt}
-          selectedLorebook={selectedLorebook}
+          selectedPrompt={customModulesPrompt}
+          selectedLorebook={customModulesLorebook}
           onLangChange={setLanguageType}
           onCharacterDescChange={setDescription}
           onWorldScenarioChange={setWorldScenario}
           onGreetingChange={setGreeting}
           onSecretChange={setSecret}
           onSelectedLLMChange={setLlmModel}
-          onSelectedPromptChange={setSelectedPrompt}
-          onSelectedLorebookChange={setSelectedLorebook}
+          onSelectedPromptChange={setCustomModulesPrompt}
+          onSelectedLorebookChange={setCustomModulesLorebook}
         />
       ),
     },
@@ -391,7 +392,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
       preContent: '',
       content: (
         <CharacterCreateMedia
-          mediaItems={mediaItems}
+          mediaItems={mediaTemplateList}
           selectedItemIdx={selectedMediaItemIdx}
           onClickCreateMedia={handleOnClickMediaCreate}
           handlePromptChange={handleMediaPromptChange}
@@ -422,8 +423,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = () => {
       preContent: '',
       content: (
         <CharacterCreatePolicy
-          visibility={visibility}
-          onVisibilityChange={setVisibility}
+          visibility={visibilityType}
+          onVisibilityChange={setvisibilityType}
           llmModel={llmModel}
           onLlmModelChange={setLlmModel}
           tag={tag}

@@ -6,6 +6,7 @@ import PublishCharacter from '../../main/content/create/character/PublishCharact
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 import PublishCharacterBottom from '../../main/content/create/character/PublishCharacterBottom';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import CreateCharacterMain2 from '../../main/content/create/character2/CreateCharacterMain2';
 
 interface ModifyCharacterProps {
   open: boolean;
@@ -58,7 +59,9 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
       <div className={styles.drawerContent}>
         <CreateDrawerHeader title="Modify Character" onClose={onClose} />
 
-        {isModifying ? (
+        <CreateCharacterMain2 characterInfo={characterInfo} />
+
+        {/* {isModifying ? (
           <CharacterCreateSequence
             closeAction={handleCloseClick}
             createType={isModify ? 'modify' : 'create'}
@@ -91,7 +94,7 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
           </div>
         ) : (
           <div>character is not available</div>
-        )}
+        )} */}
       </div>
     </Drawer>
   );
