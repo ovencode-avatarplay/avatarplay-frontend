@@ -2,8 +2,6 @@ import {BoldInfo, LineArrowDown, LineDelete, LineEdit} from '@ui/Icons';
 import styles from './CharacterCreateMedia.module.css';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
-import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
-import {useState} from 'react';
 import {CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
 
 interface Props {
@@ -40,7 +38,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
     return (
       <div className={styles.mediaItem}>
         <div className={styles.mediaItemContent}>
-          <img className={styles.mediaImage} src={item.imageUrl} />
+          <img className={styles.mediaImage} src={item.imageUrl} onClick={() => handlerSelected(index)} />
           <div className={styles.imageExplainArea}>
             <MaxTextInput
               inputDataType={inputType.None}
