@@ -476,7 +476,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
           </div>
         </SwiperSlide>
         <SwiperSlide>
-          <div>{activeIndexProfile === 1 && <ProfileBase profileId={item.characterProfileId} />}</div>
+          <div>
+            {activeIndexProfile === 1 && <ProfileBase profileId={item.characterProfileId} maxWidth={'600px'} />}
+          </div>
         </SwiperSlide>
       </Swiper>
       <ReelsComment
