@@ -70,17 +70,6 @@ export const selectProfile = async (profileId: number) => {
   }
 }
 
-export interface GetProfileInfoReq {
-  languageType: string;
-  profileId: number;
-}
-
-export interface GetProfileInfoRes {
-  isMyProfile: boolean;
-  profileInfo: ProfileInfo;
-  feedInfoList: ProfileTabItemInfo[];
-}
-
 export interface ProfileTabItemInfo {
   id: number;
   name: string;
@@ -92,7 +81,21 @@ export interface ProfileTabItemInfo {
   isFavorite: boolean;
 }
 
+export enum ExploreSortType {
+  Newest,
+  MostPopular,
+  WeeklyPopular,
+  MonthPopular
+}
+
+export enum FeedMediaType {
+  Total,
+  Image = 1,
+  Video = 2
+}
+
 export interface GetProfileInfoReq {
+
   languageType: string;
   profileId: number;
 }
@@ -151,6 +154,8 @@ export const getProfileInfo = async (profileId: number) => {
 
 }
 export interface GetPdTabInfoeReq {
+  feedMediaType: FeedMediaType;
+  feedSortType: ExploreSortType;
   languageType: string;
   profileId: number;
   tabType: PdProfileTabType;
@@ -177,8 +182,10 @@ export interface ProfileTabItemInfo {
   isFavorite: boolean;
 }
 
-export const getProfilePdTabInfo = async (profileId: number, tabType: PdProfileTabType) => {
+export const getProfilePdTabInfo = async (profileId: number, tabType: PdProfileTabType, feedSortType: ExploreSortType = ExploreSortType.Newest, feedMediaType: FeedMediaType = FeedMediaType.Total) => {
   const data: GetPdTabInfoeReq = {
+    feedSortType: feedSortType,
+    feedMediaType: feedMediaType,
     languageType: getCurrentLanguage(),
     profileId: profileId,
     tabType: tabType
@@ -195,6 +202,8 @@ export const getProfilePdTabInfo = async (profileId: number, tabType: PdProfileT
 }
 
 export interface GetCharacterTabInfoeReq {
+  feedMediaType: FeedMediaType;
+  feedSortType: ExploreSortType;
   languageType: string;
   profileId: number;
   tabType: CharacterProfileTabType;
@@ -222,8 +231,10 @@ export interface ProfileTabItemInfo {
   isFavorite: boolean;
 }
 
-export const getProfileCharacterTabInfo = async (profileId: number, tabType: CharacterProfileTabType) => {
+export const getProfileCharacterTabInfo = async (profileId: number, tabType: CharacterProfileTabType, feedSortType: ExploreSortType = ExploreSortType.Newest, feedMediaType: FeedMediaType = FeedMediaType.Total) => {
   const data: GetCharacterTabInfoeReq = {
+    feedMediaType: feedMediaType,
+    feedSortType: feedSortType,
     languageType: getCurrentLanguage(),
     profileId: profileId,
     tabType: tabType

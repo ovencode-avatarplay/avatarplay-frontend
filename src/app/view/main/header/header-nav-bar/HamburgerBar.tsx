@@ -1,18 +1,28 @@
 import React from 'react';
 import Drawer from '@mui/material/Drawer';
 import styles from './HamburgerBar.module.css';
+import {useAtom} from 'jotai';
+import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 
 interface HamburgerBarProps {
   open: boolean;
+  isLeft?: boolean;
   onClose: () => void;
 }
 
-const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose}) => {
+const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true}) => {
+  const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
+
   return (
-    <Drawer open={open} onClose={onClose} anchor="left" classes={{paper: styles.drawerPaper}}>
+    <Drawer open={open} onClose={onClose} anchor={isLeft ? 'left' : 'right'} classes={{paper: styles.drawerPaper}}>
       <div className={styles.drawerContent}>
         {/* 프로필 섹션 */}
-        <div className={styles.profileSection}>
+        <div
+          className={styles.profileSection}
+          onClick={() => {
+            dataUserDropDown.onClick();
+          }}
+        >
           <img
             src="https://lh3.googleusercontent.com/a/ACg8ocIcO1zSwxnycGO-Acbr2hoS8uVf0ZjRzLMpVIgchUsXI3cDTA=s96-c"
             alt="Profile"

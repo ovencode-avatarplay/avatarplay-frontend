@@ -31,6 +31,8 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import {redirect, RedirectType, usePathname, useRouter} from 'next/navigation';
 import {
+  ExploreSortType,
+  FeedMediaType,
   GetPdTabInfoeRes,
   getProfileCharacterTabInfo,
   getProfileInfo,
@@ -52,6 +54,7 @@ import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {useAtom} from 'jotai';
 import Link from 'next/link';
+import HamburgerBar from '../main/header/header-nav-bar/HamburgerBar';
 
 enum eTabPDType {
   Feed,
@@ -78,8 +81,10 @@ type DataProfileType = {
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
   profileTabInfo: {[key: number]: ProfileTabItemInfo[]};
-  indexFilterImage: eImageFilter;
+  indexFilterMedia: FeedMediaType;
+  indexSort: ExploreSortType;
   isShowMore: boolean;
+  isMyMenuOpened: boolean;
 };
 
 type ProfileBaseProps = {
@@ -91,16 +96,18 @@ type ProfileBaseProps = {
 
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
-  const router = useRouter();
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
+  const router = useRouter();
   const pathname = usePathname();
   const [data, setData] = useState<DataProfileType>({
     indexTab: eTabPDType.Feed,
     isOpenSelectProfile: false,
     profileInfo: null,
     profileTabInfo: {},
-    indexFilterImage: eImageFilter.all,
+    indexFilterMedia: FeedMediaType.Total,
+    indexSort: ExploreSortType.MostPopular,
     isShowMore: false,
+    isMyMenuOpened: false,
   });
 
   const dispatch = useDispatch();
@@ -130,7 +137,14 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     // refreshProfileInfo(profileId);
   }, []);
 
-  const getTabInfo = (typeProfile: ProfileType): ((profileId: number, tabType: number) => Promise<any>) => {
+  const getTabInfo = (
+    typeProfile: ProfileType,
+  ): ((
+    profileId: number,
+    tabType: number,
+    indexSort: ExploreSortType,
+    indexFilterMedia: FeedMediaType,
+  ) => Promise<any>) => {
     if (typeProfile === ProfileType.User || typeProfile === ProfileType.PD) {
       return getProfilePdTabInfo;
     } else if (typeProfile === ProfileType.Character) {
@@ -150,7 +164,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     const profileType = data.profileInfo?.profileInfo?.type;
     if (profileType == undefined) return;
 
-    const resProfileTabInfo = await getTabInfo(profileType)(profileId, indexTab);
+    const resProfileTabInfo = await getTabInfo(profileType)(profileId, indexTab, data.indexSort, data.indexFilterMedia);
     if (!resProfileTabInfo) return;
 
     data.profileTabInfo[indexTab] = resProfileTabInfo?.tabInfoList;
@@ -242,7 +256,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             <img
               className={cx(styles.icon, styles.iconMenu)}
               onClick={e => {
-                dataUserDropDown.onClick();
+                setData(v => ({...v, isMyMenuOpened: true}));
               }}
               src={LineMenu.src}
               alt=""
@@ -452,27 +466,28 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                 const target = e.target as HTMLElement;
                 const category = target.closest('[data-tab]')?.getAttribute('data-tab');
                 if (category) {
-                  data.indexFilterImage = parseInt(category);
+                  data.indexFilterMedia = parseInt(category);
                 }
+                await refreshProfileTab(profileId, data.indexTab);
                 // await refreshProfileTab(profileId, data.indexTab);
                 setData({...data});
               }}
             >
               <div
-                className={cx(styles.iconWrap, data.indexFilterImage == eImageFilter.all && styles.active)}
-                data-tab={eImageFilter.all}
+                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Total && styles.active)}
+                data-tab={FeedMediaType.Total}
               >
                 <img src={BoldViewGallery.src} alt="" />
               </div>
               <div
-                className={cx(styles.iconWrap, data.indexFilterImage == eImageFilter.video && styles.active)}
-                data-tab={eImageFilter.video}
+                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Video && styles.active)}
+                data-tab={FeedMediaType.Video}
               >
                 <img src={BoldVideo.src} alt="" />
               </div>
               <div
-                className={cx(styles.iconWrap, data.indexFilterImage == eImageFilter.image && styles.active)}
-                data-tab={eImageFilter.image}
+                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Image && styles.active)}
+                data-tab={FeedMediaType.Image}
               >
                 <img src={BoldImage.src} alt="" />
               </div>
@@ -480,17 +495,21 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             <div className={styles.right}>
               <div className={styles.filterTypeWrap}>
                 <SelectBox
-                  value={{id: 1, value: 'Most Popular'}}
+                  value={{id: ExploreSortType.MostPopular, value: 'Most Popular'}}
                   options={[
-                    {id: 0, value: 'Newest'},
-                    {id: 1, value: 'Most Popular'},
-                    {id: 2, value: 'Weekly Popular'},
-                    {id: 3, value: 'Monthly Popular'},
+                    {id: ExploreSortType.Newest, value: 'Newest'},
+                    {id: ExploreSortType.MostPopular, value: 'Most Popular'},
+                    {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
+                    {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
                   ]}
                   ArrowComponent={SelectBoxArrowComponent}
                   ValueComponent={SelectBoxValueComponent}
                   OptionComponent={SelectBoxOptionComponent}
-                  onChangedCharacter={id => {}}
+                  onChangedCharacter={async id => {
+                    data.indexSort = id;
+                    setData({...data});
+                    await refreshProfileTab(profileId, data.indexTab);
+                  }}
                   customStyles={{
                     control: {
                       width: '184px',
@@ -568,6 +587,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         </section>
       </section>
       <section className={styles.footer}></section>
+      <HamburgerBar
+        isLeft={false}
+        onClose={() => {
+          setData(v => ({...v, isMyMenuOpened: false}));
+        }}
+        open={data.isMyMenuOpened}
+      ></HamburgerBar>
     </>
   );
 });
