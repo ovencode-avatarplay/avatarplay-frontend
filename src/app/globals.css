@@ -184,6 +184,11 @@ body{
 } */
 html,body{
   height: 100%;  
+  scroll-snap-type: y mandatory; /* 📌 스냅 스크롤 유지 */
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-top: 58px;
+  scroll-padding-bottom: 48px;
+  
 }
 
 .safe-area-container {

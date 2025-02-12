@@ -21,6 +21,7 @@ const Main = ({children}: {children: ReactNode}) => {
       {(selectedIndex == 0 || selectedIndex == 1) && <HeaderNavBar />}
       {/* 2번은 Shop로 접근 시 헤더를 가려야 해서 예외 적으로 페이지에 직접 Header를 넣음 */}
       {/*selectedIndex == 2 || */ selectedIndex == 3 && <HeaderNavBarWhite />}
+      {(selectedIndex == 0 || selectedIndex == 1) && <div></div>}
 
       {children}
       <BottomNav />
