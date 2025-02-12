@@ -468,7 +468,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
             {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />}
           </div>
         </SwiperSlide>
-        <SwiperSlide>
+        <SwiperSlide style={{overflowY: 'scroll'}}>
           <div>
             {activeIndexProfile === 1 && <ProfileBase profileId={item.characterProfileId} maxWidth={'600px'} />}
           </div>
