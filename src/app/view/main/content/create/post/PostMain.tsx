@@ -224,6 +224,7 @@ const PostMain: React.FC<Props> = () => {
       characterProfileName: '',
       characterProfileUrl: '',
       createAt: new Date(),
+      isFollowing: false,
     };
     setLoading(true);
     const result = await sendCreateFeed(feedInfo);

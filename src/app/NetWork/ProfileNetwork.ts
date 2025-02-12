@@ -266,3 +266,40 @@ export const getProfileCharacterTabInfo = async (
     alert('api 에러' + e);
   }
 };
+
+export interface FollowProfileReq {
+  followProfileId: number;
+  isFollow: boolean;
+}
+
+export interface FollowProfileRes {
+  resultCode: number;
+  errorCode: string;
+  resultMessage: string;
+  data: {};
+}
+
+export const followProfile = async (profileId: number, isFollow: boolean) => {
+  const data: FollowProfileReq = {
+    followProfileId: profileId,
+    isFollow: isFollow,
+  };
+
+  try {
+    const res: AxiosResponse<ResponseAPI<FollowProfileRes>> = await api.post(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/follow`,
+      data,
+    );
+
+    if (res.status !== 200) {
+      console.error('Follow API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data?.data;
+  } catch (e) {
+    console.error('Follow API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};

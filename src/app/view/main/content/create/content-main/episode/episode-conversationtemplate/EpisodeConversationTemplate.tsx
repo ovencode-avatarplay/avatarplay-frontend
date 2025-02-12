@@ -97,19 +97,17 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
       const duplicatedCard: CardData = {
         ...cardToDuplicate,
         id: Date.now().toString(), // 새로운 고유 ID
-        userBars: cardToDuplicate.userBars.map(bar => ({
+        userBars: cardToDuplicate.userBars.map((bar, idx) => ({
           ...bar,
-          id: Date.now().toString() + '_user', // 새로운 고유 ID
+          id: `${Date.now()}_user_${idx}`, // ✅ userBars의 인덱스 추가
         })),
-        charBars: cardToDuplicate.charBars.map(bar => ({
+        charBars: cardToDuplicate.charBars.map((bar, idx) => ({
           ...bar,
-          id: Date.now().toString() + '_char', // 새로운 고유 ID
+          id: `${Date.now()}_char_${idx}`, // ✅ charBars의 인덱스 추가
         })),
       };
 
-      // 복사한 카드를 해당 인덱스 다음에 삽입
-      newCards.splice(index + 1, 0, duplicatedCard);
-
+      newCards.splice(index + 1, 0, duplicatedCard); // 원본 카드 뒤에 삽입
       return newCards;
     });
   };
