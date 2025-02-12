@@ -88,6 +88,10 @@
     letter-spacing: -0.4px;
 }
 
+.descArea p {
+    margin: 4px 0;
+  }
+
 .inputBox
 {
     width: 100%;
@@ -97,6 +101,6 @@
 {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
 
 }

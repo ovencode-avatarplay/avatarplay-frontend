@@ -55,8 +55,9 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
 
   //#region Edit Thumbnail
   type UploadType = 'Mixture' | 'AIGenerate' | 'Upload';
+  type ImageCreateType = 'Thumbnail' | 'MediaCreate' | 'MediaEdit';
   const [imgUploadType, setImgUploadType] = useState<UploadType | null>(null);
-  const [mediaCreate, setMediaCreate] = useState<boolean>(false);
+  const [imageCreate, setImageCreate] = useState<ImageCreateType>('Thumbnail');
 
   //#endregion
   const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
@@ -117,10 +118,18 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   };
 
   const handlerSetImage = (img: string) => {
-    if (mediaCreate) {
+    if (imageCreate === 'MediaCreate') {
       setMediaCreateImage(img);
-      handleAddMediaItem(-1, img, '', false);
-    } else {
+      handleAddMediaItem(getMinMediaItemId(mediaTemplateList) - 1, img, '', false);
+    } else if (imageCreate === 'MediaEdit') {
+      setMediaCreateImage(img);
+      handleEditMediaItem(
+        mediaTemplateList[selectedMediaItemIdx].id,
+        img,
+        mediaTemplateList[selectedMediaItemIdx].description,
+        mediaTemplateList[selectedMediaItemIdx].isProfileImage,
+      );
+    } else if (imageCreate === 'Thumbnail') {
       setMainImageUrl(img);
     }
     setImgUploadOpen(false);
@@ -151,12 +160,18 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
 
   const handleOnClickThumbnail = () => {
     setImgUploadOpen(true);
-    setMediaCreate(false);
+    setImageCreate('Thumbnail');
   };
 
   const handleOnClickMediaCreate = () => {
     setImgUploadOpen(true);
-    setMediaCreate(true);
+    setImageCreate('MediaCreate');
+  };
+
+  const handleOnClickMediaEdit = (index: number) => {
+    setImgUploadOpen(true);
+    setImageCreate('MediaEdit');
+    setSelectedMediaItemIdx(index);
   };
 
   const handleCreateCharacter = async () => {
@@ -253,7 +268,23 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
     setImageViewOpen(true);
   };
 
-  const handleAddMediaItem = (id: number, imageUrl: string, description: string, isProfileImage: boolean) => {
+  const getMinMediaItemId = (mediaList: CharacterMediaInfo[]): number => {
+    const mediaIds = mediaList.map(item => item.id);
+
+    if (mediaIds.length === 0) {
+      return 0; // 미디어 없는 경우 0 반환
+    }
+
+    const minId = Math.min(...mediaIds);
+    return minId > 0 ? 0 : minId;
+  };
+
+  const handleAddMediaItem = (
+    id: number,
+    imageUrl: string,
+    description: string = '',
+    isProfileImage: boolean = false,
+  ) => {
     const newItem: CharacterMediaInfo = {
       id: id,
       imageUrl: imageUrl,
@@ -267,6 +298,17 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   const handleDeleteMediaItem = (index: number) => {
     const updatedMediaItems = mediaTemplateList.filter((_, i) => i !== index);
     setMediaTemplateList(updatedMediaItems);
+  };
+
+  const handleEditMediaItem = (
+    id: number,
+    imageUrl: string,
+    description: string = '',
+    isProfileImage: boolean = false,
+  ) => {
+    setMediaTemplateList(prevList =>
+      prevList.map(item => (item.id === id ? {...item, imageUrl, description, isProfileImage} : item)),
+    );
   };
 
   const handleMoveMediaItem = (index: number, direction: 'up' | 'down') => {
@@ -397,8 +439,9 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           onClickCreateMedia={handleOnClickMediaCreate}
           handlePromptChange={handleMediaPromptChange}
           handleSelected={handleMediaSelected}
-          handleAddMediaItem={() => handleAddMediaItem(-1, mediaCreateImage, '', false)}
+          handleAddMediaItem={() => handleAddMediaItem(getMinMediaItemId(mediaTemplateList) - 1, mediaCreateImage)}
           handleDeleteMediaItem={handleDeleteMediaItem}
+          handleEditMediaItem={handleOnClickMediaEdit}
           handleMoveMediaItem={handleMoveMediaItem}
         />
       ),
@@ -536,7 +579,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
               splitters={splitterData}
               initialActiveSplitter={selectedSplitMenu}
               onSelectSplitButton={setSelectedSplitMenu}
-              headerStyle={{padding: '0'}}
+              headerStyle={{padding: '0', gap: '10px'}}
               contentStyle={{padding: '0'}}
             />
           </div>

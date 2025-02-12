@@ -10,6 +10,16 @@
     margin: 0 auto
 }
 
+.characterContainer::-webkit-scrollbar {
+    display: none;  
+}
+  
+.characterContainer {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+}
+
+
 .createCharacterArea
 {
     display: flex;

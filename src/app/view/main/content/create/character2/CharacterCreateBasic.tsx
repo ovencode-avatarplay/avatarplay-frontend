@@ -15,8 +15,10 @@ const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
   characterDesc,
   setCharacterDesc,
 }) => {
-  let characterNameDesc = `Avoid ambiguous names like “Rose”, “Joy”, “lvy” that can be interpreted in multiple ways.
-Use a name that is clearly recognized as a name. Use a short name. Long names ard difficult to enter during the chat`;
+  const characterNameDesc: string[] = [
+    'Avoid ambiguous names like “Rose”, “Joy”, “Ivy” that can be interpreted in multiple ways.',
+    'Use a name that is clearly recognized as a name. Use a short name. Long names are difficult to enter during the chat.',
+  ];
   let characterDescPlaceholder = `This is the description of the character (Character description is also public to other users)`;
 
   return (
@@ -27,7 +29,13 @@ Use a name that is clearly recognized as a name. Use a short name. Long names ar
             <h2 className={styles.title2}> Character name</h2>
             <h2 className={styles.titleAstric}>*</h2>
           </div>
-          <div className={styles.descArea}>{characterNameDesc}</div>
+          <div className={styles.descArea}>
+            {characterNameDesc.map((sentence, index) => (
+              <p key={index}>
+                {index + 1}. {sentence}
+              </p>
+            ))}
+          </div>
         </div>
         <CustomInput
           inputType="Basic"
