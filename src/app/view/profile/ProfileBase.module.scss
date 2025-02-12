@@ -4,7 +4,6 @@
   background: white;
 }
 
-
 .header.headerNoPath {
   position: inherit;
   max-width: 600px;
@@ -14,8 +13,8 @@
 .main.mainNoPath {
   padding-top: 1px;
 
-  .tabHeader {
-    position: inherit !important;
+  .tabHeaderWrap {
+    position: relative !important;
   }
 }
 
@@ -123,7 +122,7 @@
 .main {
   padding-top: 58px;
   padding-bottom: calc(48px + 25px);
-
+  min-height: calc(100% - 58px);
 
   .buttonWrap {
     margin: 11px 16px;
@@ -268,6 +267,17 @@
       line-height: 130%;
       /* 18.2px */
       letter-spacing: -0.28px;
+
+
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      /* 3줄까지만 표시 */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+
+      &.showAll {
+        display: block;
+      }
     }
 
     .showMore {
@@ -539,6 +549,11 @@
   .tabSection {
     margin-top: 12px;
 
+    .tabHeaderWrap {
+      position: sticky;
+      background: white;
+    }
+
     .tabHeader {
       padding: 0px 16px;
       display: flex;
@@ -548,8 +563,6 @@
 
       position: sticky;
       top: 57px;
-      z-index: 2;
-      background: white;
 
       /* header 높이 */
       .label {
@@ -565,32 +578,49 @@
         letter-spacing: -0.28px;
 
         box-sizing: border-box;
-        border-bottom: 2px solid transparent;
 
         &.active {
           border-bottom: 2px solid var(--Black, #000);
         }
       }
 
-
+      z-index:2;
     }
 
     .line {
-      position: relative;
+      position: absolute;
       height: 1px;
-      top: -1px;
+      bottom: 0;
 
       width: calc(100%);
       background: #DDD4D0;
+      z-index: 1;
     }
 
     .tabContent {
       margin: 10px 16px 0;
 
+      .emptyWrap {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .text {
+          text-align: center;
+        }
+      }
+
       ul.itemWrap {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 14px 2px;
+
+        @media (max-width: 600px) {
+
+          /* 최소 2개 */
+          grid-template-columns: repeat(2, 1fr);
+        }
 
         li.item {
           width: 100%;
@@ -708,8 +738,16 @@
         align-items: center;
         justify-content: center;
 
+        img {
+          filter: brightness(0) saturate(100%) invert(70%) sepia(8%) saturate(241%) hue-rotate(169deg) brightness(88%) contrast(93%);
+        }
+
         &.active {
           background: var(--Neutral-100, #F1F3F4);
+
+          img {
+            filter: brightness(0) saturate(100%);
+          }
         }
       }
 

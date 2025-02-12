@@ -11,10 +11,12 @@ import {
   BoldAltArrowDown,
   BoldArrowLeft,
   BoldHeart,
+  BoldImage,
   BoldMenuDots,
   BoldMore,
   BoldPin,
   BoldVideo,
+  BoldViewGallery,
   LineArrowDown,
   LineCheck,
   LineCopy,
@@ -58,6 +60,12 @@ enum eTabPDType {
   Shared,
 }
 
+enum eImageFilter {
+  all = -1,
+  image = 1,
+  video = 2,
+}
+
 enum eTabCharacterType {
   Feed,
   Contents,
@@ -70,6 +78,8 @@ type DataProfileType = {
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
   profileTabInfo: {[key: number]: ProfileTabItemInfo[]};
+  indexFilterImage: eImageFilter;
+  isShowMore: boolean;
 };
 
 type ProfileBaseProps = {
@@ -89,6 +99,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     isOpenSelectProfile: false,
     profileInfo: null,
     profileTabInfo: {},
+    indexFilterImage: eImageFilter.all,
+    isShowMore: false,
   });
 
   const dispatch = useDispatch();
@@ -194,7 +206,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     return [];
   };
   const tabList = getTabList(profileType);
-
+  const isEmptyProfileTab = !data?.profileTabInfo?.[data.indexTab]?.length;
   return (
     <>
       <section className={cx(styles.header, !isPath && styles.headerNoPath)}>
@@ -283,7 +295,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             <span className={styles.label}>Creator</span>
             <img className={styles.icon} src="/ui/profile/icon_verify.svg" alt="" />
           </div>
-          <div className={styles.hashTag}>
+          <div className={cx(styles.hashTag, data.isShowMore && styles.showAll)}>
             <ul>
               <li className={styles.item}>#HauntingMelody</li>
               <li className={styles.item}>#HauntingMelody</li>
@@ -292,7 +304,17 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <li className={styles.item}>#HauntingMelody</li>
             </ul>
           </div>
-          <div className={styles.showMore}>Show more...</div>
+          {!data.isShowMore && (
+            <div
+              className={styles.showMore}
+              onClick={() => {
+                data.isShowMore = true;
+                setData({...data});
+              }}
+            >
+              Show more...
+            </div>
+          )}
           {isMyPD && (
             <div className={styles.buttons}>
               <button className={styles.edit}>Edit</button>
@@ -395,41 +417,64 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           </Swiper>
         </div>
         <section className={styles.tabSection}>
-          <div
-            className={styles.tabHeader}
-            onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-              const target = e.target as HTMLElement;
-              const category = target.closest('[data-tab]')?.getAttribute('data-tab');
-              if (category) {
-                data.indexTab = parseInt(category);
-              }
-              await refreshProfileTab(profileId, data.indexTab);
-              setData({...data});
-            }}
-          >
-            {tabList?.map((tab, index) => {
-              return (
-                <div
-                  key={tab.type}
-                  className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
-                  data-tab={tab?.type}
-                >
-                  {tab.label}
-                </div>
-              );
-            })}
+          <div className={styles.tabHeaderWrap}>
+            <div
+              className={styles.tabHeader}
+              onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                const target = e.target as HTMLElement;
+                const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+                if (category) {
+                  data.indexTab = parseInt(category);
+                }
+                await refreshProfileTab(profileId, data.indexTab);
+                setData({...data});
+              }}
+            >
+              {tabList?.map((tab, index) => {
+                return (
+                  <div
+                    key={tab.type}
+                    className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
+                    data-tab={tab?.type}
+                  >
+                    {tab.label}
+                  </div>
+                );
+              })}
+            </div>
+            <div className={styles.line}></div>
           </div>
-          <div className={styles.line}></div>
+
           <div className={styles.filter}>
-            <div className={styles.left}>
-              <div className={cx(styles.iconWrap, styles.active)}>
-                <img src="/ui/profile/icon_grid.svg" alt="" />
+            <div
+              className={styles.left}
+              onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                const target = e.target as HTMLElement;
+                const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+                if (category) {
+                  data.indexFilterImage = parseInt(category);
+                }
+                // await refreshProfileTab(profileId, data.indexTab);
+                setData({...data});
+              }}
+            >
+              <div
+                className={cx(styles.iconWrap, data.indexFilterImage == eImageFilter.all && styles.active)}
+                data-tab={eImageFilter.all}
+              >
+                <img src={BoldViewGallery.src} alt="" />
               </div>
-              <div className={styles.iconWrap}>
-                <img src="/ui/profile/icon_video.svg" alt="" />
+              <div
+                className={cx(styles.iconWrap, data.indexFilterImage == eImageFilter.video && styles.active)}
+                data-tab={eImageFilter.video}
+              >
+                <img src={BoldVideo.src} alt="" />
               </div>
-              <div className={styles.iconWrap}>
-                <img src="/ui/profile/icon_image.svg" alt="" />
+              <div
+                className={cx(styles.iconWrap, data.indexFilterImage == eImageFilter.image && styles.active)}
+                data-tab={eImageFilter.image}
+              >
+                <img src={BoldImage.src} alt="" />
               </div>
             </div>
             <div className={styles.right}>
@@ -472,41 +517,53 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             </div>
           </div>
           <div className={styles.tabContent}>
-            <ul className={styles.itemWrap}>
-              {data?.profileTabInfo?.[data.indexTab]?.map((one, index: number) => {
-                return (
-                  <Link href={getLocalizedLink(`/profile/` + one?.id)}>
-                    <li className={styles.item} key={one?.id}>
-                      {one.mediaState == MediaState.Image && (
-                        <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
-                      )}
-                      {one.mediaState == MediaState.Video && (
-                        <video className={styles.imgThumbnail} src={one?.mediaUrl} />
-                      )}
-                      {one?.isFavorite && (
-                        <div className={styles.pin}>
-                          <img src={BoldPin.src} alt="" />
+            {!isEmptyProfileTab && (
+              <ul className={styles.itemWrap}>
+                {data?.profileTabInfo?.[data.indexTab]?.map((one, index: number) => {
+                  return (
+                    <Link href={getLocalizedLink(`/profile/` + one?.id)}>
+                      <li className={styles.item} key={one?.id}>
+                        {one.mediaState == MediaState.Image && (
+                          <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
+                        )}
+                        {one.mediaState == MediaState.Video && (
+                          <video className={styles.imgThumbnail} src={one?.mediaUrl} />
+                        )}
+                        {one?.isFavorite && (
+                          <div className={styles.pin}>
+                            <img src={BoldPin.src} alt="" />
+                          </div>
+                        )}
+                        <div className={styles.info}>
+                          <div className={styles.likeWrap}>
+                            <img src={BoldHeart.src} alt="" />
+                            <div className={styles.value}>{one?.likeCount}</div>
+                          </div>
+                          <div className={styles.viewWrap}>
+                            <img src={BoldVideo.src} alt="" />
+                            <div className={styles.value}>{one?.mediaCount}</div>
+                          </div>
                         </div>
-                      )}
-                      <div className={styles.info}>
-                        <div className={styles.likeWrap}>
-                          <img src={BoldHeart.src} alt="" />
-                          <div className={styles.value}>{one?.likeCount}</div>
+                        <div className={styles.titleWrap}>
+                          <div className={styles.title}>{one?.name}</div>
+                          <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
                         </div>
-                        <div className={styles.viewWrap}>
-                          <img src={BoldVideo.src} alt="" />
-                          <div className={styles.value}>{one?.mediaCount}</div>
-                        </div>
-                      </div>
-                      <div className={styles.titleWrap}>
-                        <div className={styles.title}>{one?.name}</div>
-                        <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                      </div>
-                    </li>
-                  </Link>
-                );
-              })}
-            </ul>
+                      </li>
+                    </Link>
+                  );
+                })}
+              </ul>
+            )}
+            {isEmptyProfileTab && (
+              <div className={styles.emptyWrap}>
+                <img src="/ui/profile/image_empty.svg" alt="" />
+                <div className={styles.text}>
+                  Its pretty lonely out here.
+                  <br />
+                  Make a Post
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </section>
