@@ -104,7 +104,7 @@
 .reelsContainer {
   width: 100%;
   height: auto; /* ✅ 자동 높이 */
-  padding-top: 78px;
+  margin-top: 58px;
   
   padding-bottom: 48px;
   background-color: black;
