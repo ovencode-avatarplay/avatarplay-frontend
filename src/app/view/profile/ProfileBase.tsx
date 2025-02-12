@@ -33,6 +33,7 @@ import {redirect, RedirectType, usePathname, useRouter} from 'next/navigation';
 import {
   ExploreSortType,
   FeedMediaType,
+  followProfile,
   GetPdTabInfoeRes,
   getProfileCharacterTabInfo,
   getProfileInfo,
@@ -56,6 +57,7 @@ import {useAtom} from 'jotai';
 import Link from 'next/link';
 import HamburgerBar from '../main/header/header-nav-bar/HamburgerBar';
 import SharePopup from '@/components/layout/shared/SharePopup';
+import {FeedInfo} from '@/app/NetWork/ShortsNetwork';
 
 enum eTabPDType {
   Feed,
@@ -81,7 +83,13 @@ type DataProfileType = {
   indexTab: eTabPDType;
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
-  profileTabInfo: {[key: number]: ProfileTabItemInfo[]};
+  profileTabInfo: {
+    [key: number]: {
+      feedInfoList: FeedInfo[];
+      channelInfoList: ProfileTabItemInfo[];
+      characterInfoList: ProfileTabItemInfo[];
+    };
+  };
   indexFilterMedia: FeedMediaType;
   indexSort: ExploreSortType;
   isShowMore: boolean;
@@ -188,7 +196,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     const resProfileTabInfo = await getTabInfo(profileType)(profileId, indexTab, data.indexSort, data.indexFilterMedia);
     if (!resProfileTabInfo) return;
 
-    data.profileTabInfo[indexTab] = resProfileTabInfo?.tabInfoList;
+    data.profileTabInfo[indexTab] = resProfileTabInfo;
     setData({...data});
   };
 
@@ -260,10 +268,23 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     }
   };
 
-  const tabList = getTabList(profileType);
-  const isEmptyProfileTab = !data?.profileTabInfo?.[data.indexTab]?.length;
+  const handleFollow = async (profileId: number, value: boolean) => {
+    try {
+      const response = await followProfile(profileId, value);
+    } catch (error) {
+      console.error('An error occurred while Following:', error);
+    }
+  };
 
-  console.log('isNeedShowMore : ', data.isNeedShowMore);
+  const tabList = getTabList(profileType);
+  let isEmptyTab = false;
+  if (data.indexTab == eTabPDType.Feed) {
+    isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.feedInfoList?.length;
+  } else if (data.indexTab == eTabPDType.Character) {
+    isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList?.length;
+  } else if (data.indexTab == eTabPDType.Channel) {
+    isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
+  }
   return (
     <>
       <section className={cx(styles.header, !isPath && styles.headerNoPath)}>
@@ -409,7 +430,14 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           )}
           {isOtherPD && (
             <div className={styles.buttonsOtherPD}>
-              <button className={styles.follow}>Follow</button>
+              <button
+                className={styles.follow}
+                onClick={() => {
+                  handleFollow(profileId, true);
+                }}
+              >
+                Follow
+              </button>
               <button className={styles.gift}>
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
               </button>
@@ -597,9 +625,46 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             </div>
           </div>
           <div className={styles.tabContent}>
-            {!isEmptyProfileTab && (
+            {!isEmptyTab && data.indexTab == eTabPDType.Feed && (
               <ul className={styles.itemWrap}>
-                {data?.profileTabInfo?.[data.indexTab]?.map((one, index: number) => {
+                {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
+                  return (
+                    <Link href={getLocalizedLink(`/profile/` + one?.id)}>
+                      <li className={styles.item} key={one?.id}>
+                        {one.mediaState == MediaState.Image && (
+                          <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
+                        )}
+                        {one.mediaState == MediaState.Video && (
+                          <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
+                        )}
+                        {one?.isBookmark && (
+                          <div className={styles.pin}>
+                            <img src={BoldPin.src} alt="" />
+                          </div>
+                        )}
+                        <div className={styles.info}>
+                          <div className={styles.likeWrap}>
+                            <img src={BoldHeart.src} alt="" />
+                            <div className={styles.value}>{one?.likeCount}</div>
+                          </div>
+                          <div className={styles.viewWrap}>
+                            <img src={BoldVideo.src} alt="" />
+                            <div className={styles.value}>{one?.commentCount}</div>
+                          </div>
+                        </div>
+                        <div className={styles.titleWrap}>
+                          <div className={styles.title}>{one?.description}</div>
+                          <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
+                        </div>
+                      </li>
+                    </Link>
+                  );
+                })}
+              </ul>
+            )}
+            {!isEmptyTab && data.indexTab == eTabPDType.Character && (
+              <ul className={styles.itemWrap}>
+                {data?.profileTabInfo?.[data.indexTab]?.characterInfoList.map((one, index: number) => {
                   return (
                     <Link href={getLocalizedLink(`/profile/` + one?.id)}>
                       <li className={styles.item} key={one?.id}>
@@ -621,7 +686,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                           </div>
                           <div className={styles.viewWrap}>
                             <img src={BoldVideo.src} alt="" />
-                            <div className={styles.value}>{one?.mediaCount}</div>
+                            <div className={styles.value}>{one?.likeCount}</div>
                           </div>
                         </div>
                         <div className={styles.titleWrap}>
@@ -634,7 +699,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                 })}
               </ul>
             )}
-            {isEmptyProfileTab && (
+            {isEmptyTab && (
               <div className={styles.emptyWrap}>
                 <img src="/ui/profile/image_empty.svg" alt="" />
                 <div className={styles.text}>

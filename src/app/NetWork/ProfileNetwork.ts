@@ -1,6 +1,7 @@
 import axios, {AxiosResponse} from 'axios';
 import api, {ResponseAPI} from './ApiInstance';
 import {getCurrentLanguage} from '@/utils/UrlMove';
+import {FeedInfo} from './ShortsNetwork';
 
 export interface GetProfileListRes {
   profileList: ProfileSimpleInfo[];
@@ -170,9 +171,33 @@ export enum PdProfileTabType {
   Character = 2,
   Shared = 3,
 }
+
 export interface GetPdTabInfoeRes {
-  tabInfoList: ProfileTabItemInfo[];
+  feedInfoList: FeedInfo[];
+  channelInfoList: ProfileTabItemInfo[];
+  characterInfoList: ProfileTabItemInfo[];
 }
+
+// export interface FeedInfo {
+//     id: number;
+//     profileId: number;
+//     urlLinkKey: string;
+//     mediaState: MediaState;
+//     mediaUrlList: string[];
+//     description: string;
+//     hashTag: string;
+//     commentCount: number;
+//     likeCount: number;
+//     isLike: boolean;
+//     isDisLike: boolean;
+//     isBookmark: boolean;
+//     isFollowing: boolean;
+//     playTime: string;
+//     characterProfileId: number;
+//     characterProfileName: string;
+//     characterProfileUrl: string;
+//     createAt: string;
+// }
 
 export interface ProfileTabItemInfo {
   id: number;
@@ -227,7 +252,9 @@ export enum CharacterProfileTabType {
 }
 
 export interface GetCharacterTabInfoeRes {
-  tabInfoList: ProfileTabItemInfo[];
+  feedInfoList: FeedInfo[];
+  channelInfoList: ProfileTabItemInfo[];
+  characterInfoList: ProfileTabItemInfo[];
 }
 
 export interface ProfileTabItemInfo {
