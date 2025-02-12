@@ -182,7 +182,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           languageType: languageType,
           name: characterName,
           characterDescription: characterDescription,
-          urlLinkKey: '-1', // 서버에서 지정
+          urlLinkKey: 'string', // 서버에서 지정
           genderType: 0, // 지정하는 장소 없음
           introduction: 'string', // 지정하는 장소 없음
           description: description,
@@ -221,7 +221,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           positionCountry: positionCountry,
           characterIP: characterIP,
           recruitedProfileId: recruitedProfileId,
-          operatorInvitationProfileId: [0],
+          operatorInvitationProfileId: [],
           isMonetization: isMonetization,
           nsfw: nsfw,
           membershipSetting: {
@@ -370,13 +370,13 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
       const duplicatedCard: CardData = {
         ...cardToDuplicate,
         id: Date.now().toString(),
-        userBars: cardToDuplicate.userBars.map(bar => ({
+        userBars: cardToDuplicate.userBars.map((bar, idx) => ({
           ...bar,
-          id: Date.now().toString() + '_user',
+          id: `${Date.now()}_user_${idx}`,
         })),
-        charBars: cardToDuplicate.charBars.map(bar => ({
+        charBars: cardToDuplicate.charBars.map((bar, idx) => ({
           ...bar,
-          id: Date.now().toString() + '_char',
+          id: `${Date.now()}_char_${idx}`,
         })),
       };
       newCards.splice(index + 1, 0, duplicatedCard);

@@ -364,6 +364,12 @@ const UserDropdown = () => {
               <Typography color="text.primary">Story</Typography>
             </MenuItem>
           </Link>
+          <Link href={getLocalizedLink(`/studio/prompt`)} passHref>
+            <MenuItem className={styles.menuItem}>
+              <i className={styles.tabler} />
+              <Typography color="text.primary">CustomPrompt</Typography>
+            </MenuItem>
+          </Link>
           <LanguageSelectDropBox />
         </MenuList>
         <Popper
