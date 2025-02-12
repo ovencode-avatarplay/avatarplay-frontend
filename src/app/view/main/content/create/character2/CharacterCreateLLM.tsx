@@ -55,11 +55,11 @@ const CharacterCreateLLM: React.FC<Props> = ({
     {label: 'Japan', value: '2'},
   ];
 
-  const llmItems = [
-    {label: 'Llm 1', value: '1'},
-    {label: 'Llm 2', value: '2'},
-    {label: 'Llm 3', value: '3'},
-  ];
+  // const llmItems = [
+  //   {label: 'Llm 1', value: '1'},
+  //   {label: 'Llm 2', value: '2'},
+  //   {label: 'Llm 3', value: '3'},
+  // ];
 
   const promptItems = [
     {label: 'prompt 1', value: '1'},
@@ -279,14 +279,14 @@ const CharacterCreateLLM: React.FC<Props> = ({
         {renderTitle(`Secrets`, '')}
         {renderMaxTextInput(secret, onSecretChange, handleAutoWriteCharacterSecret)}
       </div>
-      <div className={styles.inputDataBoxArea}>
+      {/* <div className={styles.inputDataBoxArea}>
         {renderTitle(`LLM`, '')}
         <CustomDropDown
           items={llmItems}
           displayType="Text"
           onSelect={(value: string | number) => handleSelectLLM(Number(value))}
         />
-      </div>
+      </div> */}
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`Custom Modules`, 'text description')}
         <CustomDropDown
