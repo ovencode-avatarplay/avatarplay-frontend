@@ -1,6 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
-import api, { ResponseAPI } from './ApiInstance';
-import { getCurrentLanguage } from '@/utils/UrlMove';
+import axios, {AxiosResponse} from 'axios';
+import api, {ResponseAPI} from './ApiInstance';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 export interface GetProfileListRes {
   profileList: ProfileSimpleInfo[];
@@ -17,22 +17,22 @@ export enum ProfileType {
   User = 0,
   PD = 1,
   Character = 2,
-  Channel = 3
+  Channel = 3,
 }
 
 export const getProfileList = async () => {
-  const data = {
-
-  };
+  const data = {};
   try {
-    const resProfileList: AxiosResponse<ResponseAPI<GetProfileListRes>> = await api.post(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getMyList`, {});
+    const resProfileList: AxiosResponse<ResponseAPI<GetProfileListRes>> = await api.post(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getMyList`,
+      {},
+    );
     if (resProfileList.status != 200) return;
     return resProfileList.data?.data?.profileList;
-
   } catch (e) {
-    alert("api 에러" + e)
+    alert('api 에러' + e);
   }
-}
+};
 
 export interface SelectProfileReq {
   profileId: number;
@@ -60,15 +60,17 @@ export const selectProfile = async (profileId: number) => {
     profileId: profileId,
   };
   try {
-    const resProfileSelect: AxiosResponse<ResponseAPI<SelectProfileRes>> = await api.post(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/select`, data);
+    const resProfileSelect: AxiosResponse<ResponseAPI<SelectProfileRes>> = await api.post(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/select`,
+      data,
+    );
     if (resProfileSelect.status != 200) return;
 
     return resProfileSelect.data?.data;
-
   } catch (e) {
-    alert("api 에러" + e)
+    alert('api 에러' + e);
   }
-}
+};
 
 export interface ProfileTabItemInfo {
   id: number;
@@ -133,9 +135,8 @@ export enum MediaState {
   None = 0,
   Image = 1,
   Video = 2,
-  Audio = 3
+  Audio = 3,
 }
-
 
 export const getProfileInfo = async (profileId: number) => {
   const data: GetProfileInfoReq = {
@@ -143,16 +144,17 @@ export const getProfileInfo = async (profileId: number) => {
     profileId: profileId,
   };
   try {
-    const resProfileSelect: AxiosResponse<ResponseAPI<GetProfileInfoRes>> = await api.post(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/get`, data);
+    const resProfileSelect: AxiosResponse<ResponseAPI<GetProfileInfoRes>> = await api.post(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/get`,
+      data,
+    );
     if (resProfileSelect.status != 200) return;
 
     return resProfileSelect.data?.data;
-
   } catch (e) {
-    alert("api 에러" + e)
+    alert('api 에러' + e);
   }
-
-}
+};
 export interface GetPdTabInfoeReq {
   feedMediaType: FeedMediaType;
   feedSortType: ExploreSortType;
@@ -165,7 +167,7 @@ export enum PdProfileTabType {
   Feed = 0,
   Channel = 1,
   Character = 2,
-  Shared = 3
+  Shared = 3,
 }
 export interface GetPdTabInfoeRes {
   tabInfoList: ProfileTabItemInfo[];
@@ -188,18 +190,20 @@ export const getProfilePdTabInfo = async (profileId: number, tabType: PdProfileT
     feedMediaType: feedMediaType,
     languageType: getCurrentLanguage(),
     profileId: profileId,
-    tabType: tabType
+    tabType: tabType,
   };
   try {
-    const resProfileSelect: AxiosResponse<ResponseAPI<GetPdTabInfoeRes>> = await api.post(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getPdTabInfo`, data);
+    const resProfileSelect: AxiosResponse<ResponseAPI<GetPdTabInfoeRes>> = await api.post(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getPdTabInfo`,
+      data,
+    );
     if (resProfileSelect.status != 200) return;
 
     return resProfileSelect.data?.data;
-
   } catch (e) {
-    alert("api 에러" + e)
+    alert('api 에러' + e);
   }
-}
+};
 
 export interface GetCharacterTabInfoeReq {
   feedMediaType: FeedMediaType;
@@ -213,7 +217,7 @@ export enum CharacterProfileTabType {
   Feed = 0,
   Contents = 1,
   Story = 2,
-  Joined = 3
+  Joined = 3,
 }
 
 export interface GetCharacterTabInfoeRes {
@@ -237,15 +241,54 @@ export const getProfileCharacterTabInfo = async (profileId: number, tabType: Cha
     feedSortType: feedSortType,
     languageType: getCurrentLanguage(),
     profileId: profileId,
-    tabType: tabType
+    tabType: tabType,
   };
   try {
-    const resProfileSelect: AxiosResponse<ResponseAPI<GetCharacterTabInfoeRes>> = await api.post(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getCharacterTabInfo`, data);
+    const resProfileSelect: AxiosResponse<ResponseAPI<GetCharacterTabInfoeRes>> = await api.post(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getCharacterTabInfo`,
+      data,
+    );
     if (resProfileSelect.status != 200) return;
 
     return resProfileSelect.data?.data;
-
   } catch (e) {
-    alert("api 에러" + e)
+    alert('api 에러' + e);
   }
+};
+
+export interface FollowProfileReq {
+  followProfileId: number;
+  isFollow: boolean;
 }
+
+export interface FollowProfileRes {
+  resultCode: number;
+  errorCode: string;
+  resultMessage: string;
+  data: {};
+}
+
+export const followProfile = async (profileId: number, isFollow: boolean) => {
+  const data: FollowProfileReq = {
+    followProfileId: profileId,
+    isFollow: isFollow,
+  };
+
+  try {
+    const res: AxiosResponse<ResponseAPI<FollowProfileRes>> = await api.post(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/follow`,
+      data,
+    );
+
+    if (res.status !== 200) {
+      console.error('Follow API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data?.data;
+  } catch (e) {
+    console.error('Follow API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};

@@ -33,6 +33,7 @@ import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainCha
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
+import {followProfile} from '@/app/NetWork/ProfileNetwork';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -127,6 +128,13 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
       }
     } catch (error) {
       console.error('An error occurred while liking/unliking the feed:', error);
+    }
+  };
+  const handleFollow = async (profileId: number, value: boolean) => {
+    try {
+      const response = await followProfile(profileId, value);
+    } catch (error) {
+      console.error('An error occurred while Following:', error);
     }
   };
   const sendShare = async () => {
@@ -344,10 +352,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
                 className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
                 onClick={() => {
                   setIsFollow(!isFollow);
+                  handleFollow(item.characterProfileId, !isFollow);
                   console.log('isfollow', isFollow);
                 }}
               >
-                Follow
+                Following
               </button>
             </div>
             {item?.description && (

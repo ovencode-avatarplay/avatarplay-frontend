@@ -85,18 +85,31 @@ export const getLocalizedLink = (path: string): string => {
 };
 
 // 현재 언어에 맞는 URL로 라우팅 함수
-export const pushLocalizedRoute = (path: string, router: ReturnType<typeof useRouter>, isReload = true) => {
+export const pushLocalizedRoute = (
+  path: string,
+  router: ReturnType<typeof useRouter>,
+  isReload = true,
+  forceReload = false,
+) => {
   const localizedUrl = getLocalizedLink(path);
 
-  // 브라우저에서 현재 URL 확인
+  // 현재 브라우저 URL 확인
   const currentUrl = window.location.href;
   const newUrl = new URL(localizedUrl, window.location.origin);
 
   if (currentUrl !== newUrl.href) {
+    // ✅ 다른 URL일 경우, 일반적인 라우팅 수행
     if (isReload) {
       router.push(localizedUrl);
     } else {
       window.history.replaceState(null, '', localizedUrl);
+    }
+  } else if (forceReload) {
+    // ✅ 같은 URL이지만 강제 리로드할 경우
+    if (isReload) {
+      router.replace(localizedUrl); // Next.js의 히스토리 변경 방식
+    } else {
+      window.location.reload(); // 완전한 새로고침
     }
   }
 };

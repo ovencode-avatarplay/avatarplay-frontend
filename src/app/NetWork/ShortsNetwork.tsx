@@ -58,6 +58,7 @@ export interface FeedInfo {
   characterProfileName: string;
   characterProfileUrl: string;
   createAt: Date;
+  isFollowing: boolean;
 }
 
 interface RequestCreateFeed {
@@ -103,6 +104,7 @@ export const sendCreateFeed = async (
 };
 // Recommend Feed API Types
 export interface RecommendFeedReq {
+  recommendState: number;
   language: string;
 }
 

@@ -4,6 +4,8 @@ import React, {useState, useEffect} from 'react';
 import {useParams} from 'next/navigation';
 import ReelsLayout from '@/components/homefeed/ReelsLayout';
 import {FeedInfo, sendGetFeed} from '@/app/NetWork/ShortsNetwork';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
 
 const HomeFeedWithUrlKey: React.FC = () => {
   const params = useParams();
@@ -12,6 +14,7 @@ const HomeFeedWithUrlKey: React.FC = () => {
 
   const [feedData, setFeedData] = useState<FeedInfo>();
 
+  const recommendState = useSelector((state: RootState) => state.mainControl.homeFeedRecommendState);
   useEffect(() => {
     const fetchFeed = async () => {
       const payload = {
@@ -36,7 +39,7 @@ const HomeFeedWithUrlKey: React.FC = () => {
 
   return (
     <main style={{position: 'relative', height: 'var(--body-height)'}}>
-      <ReelsLayout initialFeed={feedData}></ReelsLayout>
+      <ReelsLayout initialFeed={feedData} recommendState={recommendState}></ReelsLayout>
     </main>
   );
 };
