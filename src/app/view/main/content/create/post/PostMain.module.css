@@ -122,7 +122,7 @@ line-height: 155%; /* 18.6px */
   padding: 14px 20px;
   gap: 4px;
 
-  width: 92.5vw;
+  width: var(--second-width);
   height: 50px;
 
   background: #2C3131;

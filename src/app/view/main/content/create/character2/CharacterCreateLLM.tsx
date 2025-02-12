@@ -173,7 +173,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
     return (
       <div className={styles.titleArea}>
         <h2 className={styles.title2}>{highlightText(title)}</h2>
-        <div className={styles.desc}>{highlightText(desc)}</div>
+        {desc !== '' && <div className={styles.desc}>{highlightText(desc)}</div>}
       </div>
     );
   };
@@ -195,7 +195,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
           inSideHint={`About ${value.length} tokens (임시처리 텍스트 길이)`}
         />
         <div className={styles.maxTextButtonArea}>
-          <button className={styles.maxTextButton}>
+          <button className={`${styles.maxTextButton} ${styles.aiButton}`}>
             <img className={styles.maxTextButtonIcon} src={BoldAI.src} onClick={onClickAI} />
           </button>
           <button className={styles.maxTextButton} onClick={() => handleButtonClick('User')}>
@@ -253,8 +253,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
   return (
     <div className={styles.llmContainer}>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(`Reference Language *`, `Please let me know which language you'd like to use`)}
-        <div className={styles.dropBox}></div>
+        {renderTitle(`Reference Language`, `Please let me know which language you'd like to use`)}
         <CustomDropDown
           items={langItems}
           displayType="Text"

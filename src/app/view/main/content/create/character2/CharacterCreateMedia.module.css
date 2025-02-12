@@ -44,6 +44,13 @@
 
  }
 
+ .mediaItemArea
+ {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+ }
+
  .mediaButtonArea
  {
   display: flex;
@@ -85,7 +92,7 @@
    height: 100%;
 
    overflow-y: scroll;
-   gap: 14px;
+   gap: 6px;
  }
  
  .mediaList::-webkit-scrollbar {

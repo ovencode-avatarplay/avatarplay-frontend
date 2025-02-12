@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './CharacterCreateViewImage.module.css';
 import {LineClose} from '@ui/Icons';
+import EmptyState from '@/components/search/EmptyState';
 
 interface Props {
   imageUrl: string;
@@ -14,7 +15,21 @@ const CharacterCreateViewImage: React.FC<Props> = ({imageUrl, onClose}) => {
         <button className={styles.closeButton} onClick={onClose}>
           <img src={LineClose.src} className={styles.blackIcon} />
         </button>
-        <img src={imageUrl} alt="Character Preview" className={styles.image} />
+        {imageUrl ? (
+          <div
+            className={styles.imageContainer}
+            style={{
+              backgroundImage: `url(${imageUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+            }}
+          />
+        ) : (
+          <div className={styles.emptyStateWrapper}>
+            <EmptyState stateText="It's Empty!" />
+          </div>
+        )}
       </div>
     </div>
   );
