@@ -70,6 +70,8 @@ const PageProfileDetail = ({profileId}: Props) => {
     setData({...data});
   };
 
+  const metatags = data.characterInfo?.tag?.split(',') || [];
+  const characterImages = data.characterInfo?.portraitGalleryImageUrl || [];
   return (
     <>
       <header className={styles.header}>
@@ -80,46 +82,53 @@ const PageProfileDetail = ({profileId}: Props) => {
         <section className={styles.characterMainImageWrap}>
           <img src={data.characterInfo?.mainImageUrl} alt="" className={styles.characterMainImage} />
           <div className={styles.infoWrap}>
-            <div className={styles.left}>
-              <img src={data.characterInfo?.mainImageUrl} alt="" className={styles.profileMaker} />
-              <div className={styles.name}>{data.characterInfo?.name}</div>
-            </div>
+            <Link href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.id)}>
+              <div className={styles.left}>
+                <img
+                  src={data.characterInfo?.pdProfileSimpleInfo.iconImageUrl}
+                  alt=""
+                  className={styles.profileMaker}
+                />
+                <div className={styles.name}>{data.characterInfo?.pdProfileSimpleInfo.name}</div>
+              </div>
+            </Link>
             <div className={styles.right}>
               <div className={styles.statistics}>
                 <div className={styles.commentWrap}>
                   <img src={BoldComment.src} alt="" className={styles.icon} />
-                  <div className={styles.count}>1,450</div>
+                  <div className={styles.count}>{data.characterInfo?.chatCount}</div>
                 </div>
                 <div className={styles.viewsWrap}>
                   <img src={BoldFollowers.src} alt="" className={styles.icon} />
-                  <div className={styles.count}>23</div>
+                  <div className={styles.count}>{data.characterInfo?.chatUserCount}</div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <ul className={styles.metatags}>
-          <li className={styles.item}>Male</li>
-          <li className={styles.item}>Femail</li>
-          <li className={styles.item}>Male</li>
-          <li className={styles.item}>Femail</li>
-          <li className={styles.item}>Male</li>
-          <li className={styles.item}>Femail</li>
-        </ul>
+        {metatags?.length != 0 && (
+          <ul className={styles.metatags}>
+            {metatags?.map((one, index) => {
+              return <li className={styles.item}>{one}</li>;
+            })}
+          </ul>
+        )}
 
-        <ul className={styles.thumbnails}>
-          {data.characterInfo?.portraitGalleryImageUrl.map((one, index) => {
-            return (
-              <li className={styles.item}>
-                <img src={one.imageUrl} alt="" />
-              </li>
-            );
-          })}
-        </ul>
+        {characterImages?.length != 0 && (
+          <ul className={styles.thumbnails}>
+            {data.characterInfo?.portraitGalleryImageUrl.map((one, index) => {
+              return (
+                <li className={styles.item}>
+                  <img src={one.imageUrl} alt="" />
+                </li>
+              );
+            })}
+          </ul>
+        )}
 
         <section className={styles.tabSection}>
-          <div
+          {/* <div
             className={styles.tabHeader}
             onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
               const target = e.target as HTMLElement;
@@ -152,7 +161,7 @@ const PageProfileDetail = ({profileId}: Props) => {
               Shared
             </div>
           </div>
-          <div className={styles.line}></div>
+          <div className={styles.line}></div> */}
           <div className={styles.tabContent}>
             <div className={styles.textWrap}>
               <div className={styles.label}>World Senario</div>
@@ -219,7 +228,7 @@ const PageProfileDetail = ({profileId}: Props) => {
           <div className={styles.recentSetting}>Recent Setting</div>
         </section>
 
-        <section className={styles.relatedCharactersSection}>
+        {/* <section className={styles.relatedCharactersSection}>
           <div className={styles.label}>Related Characters</div>
           <div className={styles.tabContent}>
             <ul className={styles.itemWrap}>
@@ -334,7 +343,7 @@ const PageProfileDetail = ({profileId}: Props) => {
               </li>
             </ul>
           </div>
-        </section>
+        </section> */}
         <Link href={getLocalizedLink(`/chat${data.urlLinkKey}`)}>
           <button className={styles.startNewChat}>Start New Chat</button>
         </Link>

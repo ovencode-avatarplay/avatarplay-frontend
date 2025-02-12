@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {Box, Button, Drawer} from '@mui/material';
 import ProfileTopEditMenu from './ProfileTopEditMenu';
@@ -85,6 +85,7 @@ type DataProfileType = {
   indexFilterMedia: FeedMediaType;
   indexSort: ExploreSortType;
   isShowMore: boolean;
+  isNeedShowMore: boolean;
   isMyMenuOpened: boolean;
   isShareOpened: boolean;
 };
@@ -101,6 +102,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const router = useRouter();
   const pathname = usePathname();
+  const refDescription = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState<DataProfileType>({
     indexTab: eTabPDType.Feed,
     isOpenSelectProfile: false,
@@ -109,11 +111,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     indexFilterMedia: FeedMediaType.Total,
     indexSort: ExploreSortType.MostPopular,
     isShowMore: false,
+    isNeedShowMore: false,
     isMyMenuOpened: false,
     isShareOpened: false,
   });
 
   const dispatch = useDispatch();
+
   const isMine = data.profileInfo?.isMyProfile;
   const profileType = Number(data.profileInfo?.profileInfo?.type);
   const isMyPD = isMine && profileType == ProfileType.PD;
@@ -139,6 +143,17 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     dispatch(setBottomNavColor(1));
     // refreshProfileInfo(profileId);
   }, []);
+
+  useEffect(() => {
+    if (refDescription.current) {
+      const element = refDescription.current;
+      const lineHeight = parseFloat(window.getComputedStyle(element).lineHeight);
+      const height = element.clientHeight;
+      const lineCount = Math.round(height / lineHeight);
+      data.isNeedShowMore = lineCount > 3;
+      setData({...data});
+    }
+  }, [data.profileInfo?.profileInfo.description]); // 내용이 바뀔 때마다 검사
 
   const getTabInfo = (
     typeProfile: ProfileType,
@@ -244,6 +259,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
   const tabList = getTabList(profileType);
   const isEmptyProfileTab = !data?.profileTabInfo?.[data.indexTab]?.length;
+
+  console.log('isNeedShowMore : ', data.isNeedShowMore);
   return (
     <>
       <section className={cx(styles.header, !isPath && styles.headerNoPath)}>
@@ -318,15 +335,15 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           </div>
 
           <div className={styles.itemStatistic}>
-            <div className={styles.count}>200</div>
+            <div className={styles.count}>{data.profileInfo?.profileInfo.postCount}</div>
             <div className={styles.label}>Posts</div>
           </div>
           <div className={styles.itemStatistic}>
-            <div className={styles.count}>120k</div>
+            <div className={styles.count}>{data.profileInfo?.profileInfo.followerCount}</div>
             <div className={styles.label}>Followers</div>
           </div>
           <div className={styles.itemStatistic}>
-            <div className={styles.count}>3.4k</div>
+            <div className={styles.count}>{data.profileInfo?.profileInfo.followingCount}</div>
             <div className={styles.label}>Following</div>
           </div>
         </div>
@@ -335,20 +352,30 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             <div className={styles.name}>{data.profileInfo?.profileInfo?.name}</div>
             {!isMine && <img className={styles.iconCopy} src={LineCopy.src} alt="" />}
           </div>
-          <div className={styles.verify}>
-            <span className={styles.label}>Creator</span>
-            <img className={styles.icon} src="/ui/profile/icon_verify.svg" alt="" />
+          {[ProfileType.PD, ProfileType.User].includes(profileType) && (
+            <div className={styles.verify}>
+              <span className={styles.label}>Creator</span>
+              <img className={styles.icon} src="/ui/profile/icon_verify.svg" alt="" />
+            </div>
+          )}
+          {profileType == ProfileType.Character && (
+            <div className={styles.verify}>
+              <Link href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileId)}>
+                <span className={styles.label}>Manager: {data.profileInfo?.profileInfo?.pdEmail}</span>
+              </Link>
+            </div>
+          )}
+          <div
+            ref={refDescription}
+            className={cx(
+              styles.hashTag,
+              data.isNeedShowMore && styles.needShowMore,
+              data.isShowMore && styles.showAll,
+            )}
+          >
+            {data.profileInfo?.profileInfo.description}
           </div>
-          <div className={cx(styles.hashTag, data.isShowMore && styles.showAll)}>
-            <ul>
-              <li className={styles.item}>#HauntingMelody</li>
-              <li className={styles.item}>#HauntingMelody</li>
-              <li className={styles.item}>#HauntingMelody</li>
-              <li className={styles.item}>#HauntingMelody</li>
-              <li className={styles.item}>#HauntingMelody</li>
-            </ul>
-          </div>
-          {!data.isShowMore && (
+          {data.isNeedShowMore && !data.isShowMore && (
             <div
               className={styles.showMore}
               onClick={() => {

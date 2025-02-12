@@ -2,6 +2,11 @@
 .main {
   box-sizing: content-box;
   background: white;
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 
 .header.headerNoPath {
@@ -268,12 +273,14 @@
       /* 18.2px */
       letter-spacing: -0.28px;
 
+      &.needShowMore {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        /* 3줄까지만 표시 */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
 
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      /* 3줄까지만 표시 */
-      -webkit-box-orient: vertical;
-      overflow: hidden;
 
       &.showAll {
         display: block;

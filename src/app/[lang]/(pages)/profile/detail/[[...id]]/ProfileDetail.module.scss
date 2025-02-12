@@ -431,6 +431,7 @@ section.sessionTab .tabHeader {
 }
 
 button.startNewChat {
+  max-width: 1300px;
   height: 50px;
   padding: 14px 20px;
 
@@ -438,8 +439,8 @@ button.startNewChat {
   left: 14px;
   bottom: 20px;
   width: calc(100% - 28px);
-
-
+  left: 50%;
+  transform: translateX(-50%);
   border-radius: 12px;
   background: var(--Primary-1, #FD55D3);
   backdrop-filter: blur(0px);
