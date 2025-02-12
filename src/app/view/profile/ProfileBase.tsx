@@ -120,10 +120,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
   const isMine = data.profileInfo?.isMyProfile;
   const profileType = Number(data.profileInfo?.profileInfo?.type);
-  const isMyPD = isMine && profileType == ProfileType.PD;
-  const isMyCharacter = isMine && profileType == ProfileType.Character;
-  const isOtherPD = !isMine && profileType == ProfileType.PD;
-  const isOtherCharacter = !isMine && profileType == ProfileType.Character;
+  const isPD = [ProfileType.PD, ProfileType.User].includes(profileType);
+  const isCharacter = [ProfileType.Character].includes(profileType);
+  const isMyPD = isMine && isPD;
+  const isMyCharacter = isMine && isCharacter;
+  const isOtherPD = !isMine && isPD;
+  const isOtherCharacter = !isMine && isCharacter;
+
   useEffect(() => {
     if (!isPath) {
       refreshProfileInfo(profileId);
@@ -352,13 +355,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             <div className={styles.name}>{data.profileInfo?.profileInfo?.name}</div>
             {!isMine && <img className={styles.iconCopy} src={LineCopy.src} alt="" />}
           </div>
-          {[ProfileType.PD, ProfileType.User].includes(profileType) && (
+          {isPD && (
             <div className={styles.verify}>
               <span className={styles.label}>Creator</span>
               <img className={styles.icon} src="/ui/profile/icon_verify.svg" alt="" />
             </div>
           )}
-          {profileType == ProfileType.Character && (
+          {isCharacter && (
             <div className={styles.verify}>
               <Link href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileId)}>
                 <span className={styles.label}>Manager: {data.profileInfo?.profileInfo?.pdEmail}</span>
@@ -424,68 +427,69 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               </button>
             </div>
           )}
-
-          <Swiper
-            className={styles.recruitList}
-            freeMode={true}
-            slidesPerView={'auto'}
-            onSlideChange={() => {}}
-            onSwiper={swiper => {}}
-            spaceBetween={8}
-            preventClicks={false}
-            simulateTouch={false}
-          >
-            {isMine && (
+          {!isPD && (
+            <Swiper
+              className={styles.recruitList}
+              freeMode={true}
+              slidesPerView={'auto'}
+              onSlideChange={() => {}}
+              onSwiper={swiper => {}}
+              spaceBetween={8}
+              preventClicks={false}
+              simulateTouch={false}
+            >
+              {isMine && (
+                <SwiperSlide>
+                  <li className={cx(styles.item, styles.addRecruit)}>
+                    <div className={styles.circle}>
+                      <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                    </div>
+                    <div className={styles.label}>Add</div>
+                  </li>
+                </SwiperSlide>
+              )}
               <SwiperSlide>
-                <li className={cx(styles.item, styles.addRecruit)}>
+                <li className={styles.item}>
                   <div className={styles.circle}>
                     <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                    <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
+                    <span className={cx(styles.grade, styles.original)}>Original</span>
                   </div>
-                  <div className={styles.label}>Add</div>
+                  <div className={styles.label}>Idol University</div>
                 </li>
               </SwiperSlide>
-            )}
-            <SwiperSlide>
-              <li className={styles.item}>
-                <div className={styles.circle}>
-                  <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
-                  <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                  <span className={cx(styles.grade, styles.original)}>Original</span>
-                </div>
-                <div className={styles.label}>Idol University</div>
-              </li>
-            </SwiperSlide>
-            <SwiperSlide>
-              <li className={styles.item}>
-                <div className={styles.circle}>
-                  <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
-                  <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                  <span className={cx(styles.grade, styles.fan)}>Fan</span>
-                </div>
-                <div className={styles.label}>Idol University</div>
-              </li>
-            </SwiperSlide>
-            <SwiperSlide>
-              <li className={styles.item}>
-                <div className={styles.circle}>
-                  <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
-                  <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                  <span className={cx(styles.grade, styles.fan)}>Fan</span>
-                </div>
-                <div className={styles.label}>Idol University</div>
-              </li>
-            </SwiperSlide>
-            <SwiperSlide>
-              <li className={styles.item}>
-                <div className={styles.circle}>
-                  <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
-                  <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                  <span className={cx(styles.grade, styles.fan)}>Fan</span>
-                </div>
-                <div className={styles.label}>Idol University</div>
-              </li>
-            </SwiperSlide>
-          </Swiper>
+              <SwiperSlide>
+                <li className={styles.item}>
+                  <div className={styles.circle}>
+                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                    <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
+                    <span className={cx(styles.grade, styles.fan)}>Fan</span>
+                  </div>
+                  <div className={styles.label}>Idol University</div>
+                </li>
+              </SwiperSlide>
+              <SwiperSlide>
+                <li className={styles.item}>
+                  <div className={styles.circle}>
+                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                    <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
+                    <span className={cx(styles.grade, styles.fan)}>Fan</span>
+                  </div>
+                  <div className={styles.label}>Idol University</div>
+                </li>
+              </SwiperSlide>
+              <SwiperSlide>
+                <li className={styles.item}>
+                  <div className={styles.circle}>
+                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                    <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
+                    <span className={cx(styles.grade, styles.fan)}>Fan</span>
+                  </div>
+                  <div className={styles.label}>Idol University</div>
+                </li>
+              </SwiperSlide>
+            </Swiper>
+          )}
         </div>
         <section className={styles.tabSection}>
           <div className={styles.tabHeaderWrap}>
