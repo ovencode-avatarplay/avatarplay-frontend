@@ -225,9 +225,13 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
   const [activeIndexProfile, setActiveIndexProfile] = useState(0);
 
   const handleSlideChangeProfile = (swiper: any) => {
+    swiper.allowSlidePrev = true; // 다시 이동 가능하게 설정
+    swiper.allowSlideNext = true;
+
+    // 기존 onSlideChange 로직 추가
     setActiveIndexProfile(swiper.activeIndex);
-    if (activeIndexProfile === 1) setIsProfile(false);
-    else if (activeIndexProfile === 0) setIsProfile(true);
+    if (swiper.activeIndex === 1) setIsProfile(true);
+    else if (swiper.activeIndex === 0) setIsProfile(false);
   };
   return (
     <div className={styles.reelsContainer}>
@@ -238,6 +242,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
         scrollbar={{draggable: true}}
         onSlideChange={handleSlideChangeProfile}
         className={`${styles.mainContent}  ${!isMobile && styles.limitWidth}`}
+        resistanceRatio={0}
+        touchReleaseOnEdges={true} // ✅ 끝에서 터치 이벤트 해제 (빈 공간 방지)
+        preventClicks={true} // ✅ 클릭 시 이벤트가 Swiper 내부에서만 처리되도록 함
       >
         <SwiperSlide style={{height: '100%'}}>
           <div className={styles.Image}>
