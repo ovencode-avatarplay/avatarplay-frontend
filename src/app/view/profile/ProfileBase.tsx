@@ -55,6 +55,7 @@ import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {useAtom} from 'jotai';
 import Link from 'next/link';
 import HamburgerBar from '../main/header/header-nav-bar/HamburgerBar';
+import SharePopup from '@/components/layout/shared/SharePopup';
 
 enum eTabPDType {
   Feed,
@@ -85,6 +86,7 @@ type DataProfileType = {
   indexSort: ExploreSortType;
   isShowMore: boolean;
   isMyMenuOpened: boolean;
+  isShareOpened: boolean;
 };
 
 type ProfileBaseProps = {
@@ -108,6 +110,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     indexSort: ExploreSortType.MostPopular,
     isShowMore: false,
     isMyMenuOpened: false,
+    isShareOpened: false,
   });
 
   const dispatch = useDispatch();
@@ -219,6 +222,26 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     }
     return [];
   };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: '공유하기 제목',
+      text: '이 링크를 확인해보세요!',
+      url: window.location.href, // 현재 페이지 URL
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData); // 네이티브 공유 UI 호출
+      } catch (error) {
+        console.error('공유 실패:', error);
+      }
+    } else {
+      data.isShareOpened = true;
+      setData({...data});
+    }
+  };
+
   const tabList = getTabList(profileType);
   const isEmptyProfileTab = !data?.profileTabInfo?.[data.indexTab]?.length;
   return (
@@ -251,7 +274,14 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           </div>
         </div>
         <div className={styles.right}>
-          <img className={cx(styles.icon, styles.iconShare)} src={LineShare.src} alt="" />
+          <img
+            className={cx(styles.icon, styles.iconShare)}
+            src={LineShare.src}
+            alt=""
+            onClick={() => {
+              handleShare();
+            }}
+          />
           {isMine && (
             <img
               className={cx(styles.icon, styles.iconMenu)}
@@ -594,6 +624,15 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         }}
         open={data.isMyMenuOpened}
       ></HamburgerBar>
+
+      <SharePopup
+        open={data.isShareOpened}
+        title={data.profileInfo?.profileInfo?.name || ''}
+        url={window.location.href}
+        onClose={() => {
+          setData(v => ({...v, isShareOpened: false}));
+        }}
+      ></SharePopup>
     </>
   );
 });
