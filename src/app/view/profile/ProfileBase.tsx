@@ -618,27 +618,35 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
   };
 
   const CustomControl = ({children, ...props}: any) => {
+    const {selectProps} = props;
+
+    const handleClick = (e: any) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!selectProps.menuIsOpen) {
+        setIsOpen(true);
+      } else {
+        // setMenuIsOpen(false);
+      }
+    };
+
     return (
-      <components.Control
-        {...props}
-        innerProps={{
-          ...props.innerProps,
-          onClick: e => {
-            e.stopPropagation(); // doesn't do anything, sadly
-            e.preventDefault(); // doesn't do anything, sadly
-            // still unsure how to preven the menu from opening
-            setIsOpen(true);
-          },
-        }}
-      >
-        {children}
+      <components.Control {...props}>
+        <div
+          style={{
+            ...(styleDefault?.control?.({}, props) as React.CSSProperties | {}),
+          }}
+          onClick={handleClick}
+          onPointerDown={handleClick}
+        >
+          {children}
+        </div>
       </components.Control>
     );
   };
 
   return (
     <Select
-      menuIsOpen={isOpen}
       isSearchable={false}
       value={selectedOption}
       onChange={option => {
@@ -648,9 +656,9 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
           setIsOpen(false);
         }
       }}
-      onBlur={() => {
-        setIsOpen(false);
-      }}
+      menuIsOpen={isOpen}
+      onMenuOpen={() => setIsOpen(true)}
+      onMenuClose={() => setIsOpen(false)}
       styles={styleDefault}
       options={options}
       components={{
