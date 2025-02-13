@@ -1,59 +1,11 @@
 // src/app/Network/CharacterNetwork.tsx
 
 import api, {ResponseAPI} from './ApiInstance';
-import {
-  CharacterInfo,
-  CharacterInfoForCreate as CharacterInfoForCreate2,
-  GalleryImageInfo,
-} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
 // GetCharacterList
 
-export interface CharacterInfoDate {
-  id: number;
-  name: string;
-  introduction: string;
-  description: string;
-
-  worldScenario: string;
-  greeting: string;
-  secret: string;
-
-  genderType: number;
-  mainImageUrl: string;
-  portraitGalleryImageUrl: GalleryImageInfo[];
-  poseGalleryImageUrl: GalleryImageInfo[];
-  expressionGalleryImageUrl: GalleryImageInfo[];
-  visibilityType: number;
-  isMonetization: boolean;
-  state: number;
-
-  createAt: string;
-  updateAt: string;
-
-  characterDescription: '';
-  characterIP: 0;
-  conversationTemplateList: [];
-  customModulesLorebook: '';
-  customModulesPrompt: '';
-  languageType: 0;
-  llmModel: 0;
-  mediaTemplateList: [];
-  membershipSetting: {
-    benefits: '';
-    paymentAmount: 0;
-    paymentType: 0;
-    subscription: 0;
-  };
-  nsfw: false;
-  operatorInvitationProfileId: [];
-  positionCountry: 0;
-  recruitedProfileId: 0;
-  tag: '';
-  urlLinkKey: '';
-}
-
 export interface GetCharacterListRes {
-  characterInfoList: CharacterInfoDate[];
+  characterInfoList: CharacterInfo[];
 }
 
 export const sendGetCharacterList = async (payload: {}): Promise<ResponseAPI<GetCharacterListRes>> => {
@@ -100,12 +52,12 @@ export const sendCreateCharacter = async (payload: CreateCharacterReq): Promise<
 // Create Character2
 
 export interface CreateCharacter2Req {
-  characterInfo: CharacterInfoForCreate2;
+  characterInfo: CharacterInfo;
   debugParameter: string;
 }
 
 export interface CreateCharacter2Res {
-  characterInfo: CharacterInfoForCreate2;
+  characterInfo: CharacterInfo;
 }
 
 export const sendCreateCharacter2 = async (payload: CreateCharacter2Req): Promise<ResponseAPI<CreateCharacter2Res>> => {

@@ -14,16 +14,16 @@ interface Props {
   greeting: string;
   secret: string;
   selectedLLM: number;
-  selectedPrompt: string;
-  selectedLorebook: string;
+  selectedPromptIdx: number;
+  selectedLorebookIdx: number;
   onLangChange: (lang: number) => void;
   onCharacterDescChange: (desc: string) => void;
   onWorldScenarioChange: (scenario: string) => void;
   onGreetingChange: (greeting: string) => void;
   onSecretChange: (secret: string) => void;
   onSelectedLLMChange: (llm: number) => void;
-  onSelectedPromptChange: (prompt: string) => void;
-  onSelectedLorebookChange: (lorebook: string) => void;
+  onSelectedPromptChange: (prompt: number) => void;
+  onSelectedLorebookChange: (lorebook: number) => void;
 }
 
 const CharacterCreateLLM: React.FC<Props> = ({
@@ -33,8 +33,8 @@ const CharacterCreateLLM: React.FC<Props> = ({
   greeting,
   secret,
   selectedLLM,
-  selectedPrompt,
-  selectedLorebook,
+  selectedPromptIdx,
+  selectedLorebookIdx,
   onLangChange,
   onCharacterDescChange,
   onWorldScenarioChange,
@@ -114,11 +114,11 @@ const CharacterCreateLLM: React.FC<Props> = ({
     onSelectedLLMChange(value);
   };
 
-  const handleSelectPrompt = (value: string) => {
+  const handleSelectPrompt = (value: number) => {
     onSelectedPromptChange(value);
   };
 
-  const handleSelectLoreBook = (value: string) => {
+  const handleSelectLoreBook = (value: number) => {
     onSelectedLorebookChange(value);
   };
 
@@ -292,12 +292,12 @@ const CharacterCreateLLM: React.FC<Props> = ({
         <CustomDropDown
           items={promptItems}
           displayType="Text"
-          onSelect={(value: string | number) => handleSelectPrompt(String(value))}
+          onSelect={(value: string | number) => handleSelectPrompt(Number(value))}
         />
         <CustomDropDown
           items={lorebookItems}
           displayType="Text"
-          onSelect={(value: string | number) => handleSelectLoreBook(String(value))}
+          onSelect={(value: string | number) => handleSelectLoreBook(Number(value))}
         />
       </div>
 

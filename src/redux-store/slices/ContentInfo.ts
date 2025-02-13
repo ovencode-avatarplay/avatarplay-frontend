@@ -240,46 +240,6 @@ export interface GalleryImageInfo {
   imageUrl: string;
 }
 
-export interface CharacterInfoForCreate {
-  id: number;
-  languageType: number;
-  name: string;
-  characterDescription: string;
-  urlLinkKey: string;
-  genderType: number;
-
-  introduction: string;
-  description: string;
-  worldScenario: string;
-  greeting: string;
-  secret: string;
-
-  customModulesPrompt: string;
-  customModulesLorebook: string;
-
-  mainImageUrl: string;
-  portraitGalleryImageUrl: GalleryImageInfo[];
-  poseGalleryImageUrl: GalleryImageInfo[];
-  expressionGalleryImageUrl: GalleryImageInfo[];
-  mediaTemplateList: CharacterMediaInfo[];
-  conversationTemplateList: Conversation[];
-  visibilityType: number;
-  llmModel: number;
-  tag: string;
-  positionCountry: number;
-  characterIP: number;
-  recruitedProfileId: number;
-  operatorInvitationProfileId: number[];
-
-  isMonetization: boolean;
-  nsfw: boolean;
-  membershipSetting: MembershipSetting;
-  state: number;
-
-  createAt: string;
-  updateAt: string;
-}
-
 export interface CharacterMediaInfo {
   id: number;
   imageUrl: string;

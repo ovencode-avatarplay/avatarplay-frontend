@@ -9,7 +9,6 @@ import CharacterGrid from './CharacterGrid';
 import styles from './CharacterDashboard.module.css';
 // Network
 import {
-  CharacterInfoDate,
   CreateCharacterReq,
   DeleteCharacterReq,
   GetCharacterInfoReq,
@@ -43,10 +42,10 @@ const CharacterDashboard: React.FC = () => {
   const router = useRouter();
   const searchParam = useSearchParams();
 
-  const [characters, setCharacters] = useState<CharacterInfoDate[] | undefined>();
+  const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
-  const [sortedCharacters, setSortedCharacters] = useState<CharacterInfoDate[] | undefined>(characters);
-  const [resultCharacters, setResultCharacters] = useState<CharacterInfoDate[] | undefined>(characters);
+  const [sortedCharacters, setSortedCharacters] = useState<CharacterInfo[] | undefined>(characters);
+  const [resultCharacters, setResultCharacters] = useState<CharacterInfo[] | undefined>(characters);
   const [refreshReq, setRefreshReq] = useState<boolean>(false);
 
   const [filterPublishOpen, setFilterPublishOpen] = useState<boolean>(false);
@@ -172,7 +171,7 @@ const CharacterDashboard: React.FC = () => {
       const response = await sendGetCharacterList({});
 
       if (response.data) {
-        const characterInfoList: CharacterInfoDate[] = response.data?.characterInfoList;
+        const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
         setCharacters(characterInfoList);
       } else {
         throw new Error(`No contentInfo in response for ID: `);
