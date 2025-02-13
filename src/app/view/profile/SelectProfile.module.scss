@@ -7,6 +7,7 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  overflow: hidden;
 
   .handleArea {
     margin: 16px auto 22px;
@@ -35,9 +36,11 @@
     // overflow: hidden;
 
     .profileList {
+
+      height: 50vh;
       border-radius: 12px;
       border: 1px solid var(--Border-1, #EAECF0);
-      overflow: hidden;
+      overflow: auto;
 
       .item+.item {
         border-top: 1px solid var(--Border-1, #EAECF0);

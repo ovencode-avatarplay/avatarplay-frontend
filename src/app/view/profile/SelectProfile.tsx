@@ -46,15 +46,11 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
       onClose={() => handleCloseDrawer()}
       PaperProps={{
         sx: {
-          // height: 'calc((var(--vh, 1vh) * 100) - 111px)',
+          maxHeight: '80vh',
+          overflow: 'hidden',
           padding: '8px 20px 45px',
           borderTopLeftRadius: '24px',
           borderTopRightRadius: '24px',
-          // background: 'var(--White, #FFF)',
-          // overflow: 'hidden',
-          // bottom: '0px',
-          // width: 'var(--full-width)',
-          // margin: '0 auto',
         },
       }}
     >
@@ -97,21 +93,6 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
               </li>
             );
           })}
-          <li
-            className={cx(styles.item, styles.clickable)}
-            onClick={() => {
-              // router.push('/profile/create');
-            }}
-          >
-            <div className={styles.left}>
-              <div className={styles.addIconWrap}>
-                <img src={LinePlus.src} alt="" />
-              </div>
-              <div className={styles.nameWrap}>
-                <div className={styles.name}>Add New Profile</div>
-              </div>
-            </div>
-          </li>
         </ul>
       </div>
     </Drawer>

@@ -323,6 +323,21 @@
         line-height: 20px;
         /* 142.857% */
         letter-spacing: -0.4px;
+
+        &.friends {
+          color: var(--White, #FFF);
+          font-feature-settings: 'liga' off, 'clig' off;
+          font-family: Lato;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 20px;
+          /* 142.857% */
+          letter-spacing: -0.4px;
+
+          border-radius: 8px;
+          background: var(--Neutral-800, #2C3131);
+        }
       }
 
       a {

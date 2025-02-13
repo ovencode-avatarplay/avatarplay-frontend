@@ -29,7 +29,7 @@ import cx from 'classnames';
 import Select, {components, StylesConfig} from 'react-select';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
-import {redirect, RedirectType, usePathname, useRouter} from 'next/navigation';
+import {redirect, RedirectType, usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {
   ExploreSortType,
   FeedMediaType,
@@ -58,12 +58,19 @@ import Link from 'next/link';
 import HamburgerBar from '../main/header/header-nav-bar/HamburgerBar';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import {FeedInfo} from '@/app/NetWork/ShortsNetwork';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 enum eTabPDType {
   Feed,
   Channel,
   Character,
   Shared,
+}
+
+enum eTabPDOtherType {
+  Feed,
+  Channel,
+  Character,
 }
 
 enum eImageFilter {
@@ -74,6 +81,14 @@ enum eImageFilter {
 
 enum eTabCharacterType {
   Feed,
+  Info,
+  Contents,
+  Story,
+  Joined,
+}
+enum eTabCharacterOtherType {
+  Feed,
+  Info,
   Contents,
   Story,
   Joined,
@@ -96,6 +111,7 @@ type DataProfileType = {
   isNeedShowMore: boolean;
   isMyMenuOpened: boolean;
   isShareOpened: boolean;
+  isSettingOpen: boolean;
 };
 
 type ProfileBaseProps = {
@@ -107,6 +123,9 @@ type ProfileBaseProps = {
 
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
+  const searchParams = useSearchParams();
+  const isNeedBackBtn = searchParams.get('from'); // "from" 쿼리 파라미터 값 가져오기
+  console.log('searchParams : ', searchParams);
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const router = useRouter();
   const pathname = usePathname();
@@ -122,6 +141,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     isNeedShowMore: false,
     isMyMenuOpened: false,
     isShareOpened: false,
+    isSettingOpen: false,
   });
 
   const dispatch = useDispatch();
@@ -236,15 +256,28 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     [],
   );
 
-  const getTabList = (profileType: number) => {
+  const getTabList = (profileType: number, isMine = false) => {
+    if (isMine) {
+      if (profileType == ProfileType.User || profileType == ProfileType.PD) {
+        return Object.values(eTabPDType)
+          .filter(value => typeof value === 'number') // 숫자 타입만 필터링
+          .map(type => ({type, label: eTabPDType[type]}));
+      } else if (profileType == ProfileType.Character) {
+        return Object.values(eTabCharacterType)
+          .filter(value => typeof value === 'number')
+          .map(type => ({type, label: eTabCharacterType[type]}));
+      }
+    }
+
+    //other
     if (profileType == ProfileType.User || profileType == ProfileType.PD) {
-      return Object.values(eTabPDType)
+      return Object.values(eTabPDOtherType)
         .filter(value => typeof value === 'number') // 숫자 타입만 필터링
-        .map(type => ({type, label: eTabPDType[type]}));
+        .map(type => ({type, label: eTabPDOtherType[type]}));
     } else if (profileType == ProfileType.Character) {
-      return Object.values(eTabCharacterType)
+      return Object.values(eTabCharacterOtherType)
         .filter(value => typeof value === 'number')
-        .map(type => ({type, label: eTabCharacterType[type]}));
+        .map(type => ({type, label: eTabCharacterOtherType[type]}));
     }
     return [];
   };
@@ -289,7 +322,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     <>
       <section className={cx(styles.header, !isPath && styles.headerNoPath)}>
         <div className={styles.left}>
-          {!isMine && isPath && (
+          {((!isMine && isPath) || isNeedBackBtn) && (
             <div
               className={styles.backBtn}
               onClick={() => {
@@ -412,14 +445,12 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           )}
           {isMyPD && (
             <div className={styles.buttons}>
-              <button className={styles.edit}>Edit</button>
               <button className={styles.ad}>AD</button>
-              <button className={styles.friends}>Friends</button>
+              <button className={styles.friends}>Add Friends</button>
             </div>
           )}
           {isMyCharacter && (
             <div className={styles.buttons}>
-              <button className={styles.edit}>Edit</button>
               <button className={styles.ad}>AD</button>
               <button className={styles.chat}>
                 <Link href={getLocalizedLink(`/profile/detail/` + data.profileInfo?.profileInfo.typeValueId)}>
@@ -446,12 +477,21 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           {isOtherCharacter && (
             <div className={styles.buttonsOtherCharacter}>
               <button className={styles.subscribe}>Subscribe</button>
-              <button className={styles.follow}>Follow</button>
+              <button
+                className={styles.follow}
+                onClick={() => {
+                  handleFollow(profileId, true);
+                }}
+              >
+                Follow
+              </button>
               <button className={styles.giftWrap}>
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
               </button>
               <button className={styles.chat}>
-                <Link href={getLocalizedLink(`/profile/detail` + data.profileInfo?.profileInfo.typeValueId)}>Chat</Link>
+                <Link href={getLocalizedLink(`/profile/detail/` + data.profileInfo?.profileInfo.typeValueId)}>
+                  Chat
+                </Link>
               </button>
             </div>
           )}
@@ -654,7 +694,17 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                         </div>
                         <div className={styles.titleWrap}>
                           <div className={styles.title}>{one?.description}</div>
-                          <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
+                          <img
+                            src={BoldMenuDots.src}
+                            alt=""
+                            className={styles.iconSetting}
+                            onClick={e => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              data.isSettingOpen = true;
+                              setData({...data});
+                            }}
+                          />
                         </div>
                       </li>
                     </Link>
@@ -729,11 +779,49 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           setData(v => ({...v, isShareOpened: false}));
         }}
       ></SharePopup>
+      <ContentSetting
+        isOpen={data.isSettingOpen}
+        onClose={() => {
+          data.isSettingOpen = false;
+          setData({...data});
+        }}
+        isMine={isMine}
+      />
     </>
   );
 });
 
 export default ProfileBase;
+
+const ContentSetting = ({isOpen = false, isMine = false, onClose = () => {}}) => {
+  let uploadImageItems: SelectDrawerItem[] = [
+    {
+      name: 'Link Copy',
+      onClick: () => {},
+    },
+    {
+      name: 'Edit',
+      onClick: () => {},
+    },
+    {
+      name: 'Share',
+      onClick: () => {},
+    },
+    {
+      name: 'Delete',
+      onClick: () => {},
+    },
+    {
+      name: 'Report',
+      onClick: () => {},
+    },
+  ];
+  if (isMine) {
+    uploadImageItems = uploadImageItems.filter(v => v.name != 'Report');
+  }
+
+  return <SelectDrawer isOpen={isOpen} onClose={onClose} items={uploadImageItems} selectedIndex={-1} />;
+};
 
 export type SelectBoxProps = {
   value: {id: number; [key: string]: any} | null;
