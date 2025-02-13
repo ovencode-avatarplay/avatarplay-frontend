@@ -74,8 +74,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   const [worldScenario, setWorldScenario] = useState(character.worldScenario);
   const [greeting, setGreeting] = useState(character.greeting);
   const [secret, setSecret] = useState(character.secret);
-  const [customModulesPrompt, setCustomModulesPrompt] = useState(character.customModulesPrompt);
-  const [customModulesLorebook, setCustomModulesLorebook] = useState(character.customModulesLorebook);
+  const [customModulesPromptIdx, setCustomModulesPromptIdx] = useState<number>(0);
+  const [customModulesLorebook, setCustomModulesLorebook] = useState<number>(0);
 
   //#endregion
 
@@ -93,7 +93,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   //#region Policy
 
   const [visibilityType, setvisibilityType] = useState<number>(character.visibilityType);
-  const [llmModel, setLlmModel] = useState<number>(character.llmModel);
+  const [llmModel, setLlmModel] = useState<number>(character.lLMModel);
   const [tag, setTag] = useState<string>(character.tag);
   const [positionCountry, setPositionCountry] = useState<number>(character.positionCountry);
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
@@ -103,7 +103,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   );
 
   const [isMonetization, setIsMonetization] = useState<boolean>(character.isMonetization);
-  const [nsfw, setNsfw] = useState<boolean>(character.nsfw);
+  const [nsfw, setNsfw] = useState<boolean>(character.nSFW);
 
   //#endregion
 
@@ -181,6 +181,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           id: 0, // 서버에서 지정
           languageType: languageType,
           name: characterName,
+          chatCount: 0,
+          chatUserCount: 0,
           characterDescription: characterDescription,
           urlLinkKey: 'string', // 서버에서 지정
           genderType: 0, // 지정하는 장소 없음
@@ -189,8 +191,6 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           worldScenario: worldScenario,
           greeting: greeting,
           secret: secret,
-          customModulesPrompt: customModulesPrompt,
-          customModulesLorebook: customModulesLorebook,
           mainImageUrl: mainimageUrl,
           // portraitGalleryImageUrl: mediaTemplateList
           //   .filter(item => !item.isProfileImage) // isProfileImage가 false인 항목만 필터링
@@ -216,19 +216,31 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
             character: JSON.stringify(item.charBars),
           })),
           visibilityType: visibilityType,
-          llmModel: llmModel,
+          lLMModel: llmModel,
           tag: tag,
           positionCountry: positionCountry,
           characterIP: characterIP,
           recruitedProfileId: recruitedProfileId,
           operatorInvitationProfileId: [],
           isMonetization: isMonetization,
-          nsfw: nsfw,
+          nSFW: nsfw,
           membershipSetting: {
             subscription: 0,
             paymentType: 0,
             paymentAmount: 0,
             benefits: 'string',
+          },
+          customModulesInfo: {
+            lorebookInfoList: [],
+            promptInfoList: [],
+            selectLorebookIndex: 0,
+            selectPromptIndex: 0,
+          },
+          pdProfileSimpleInfo: {
+            id: 0,
+            type: 0,
+            name: 'string',
+            iconImageUrl: 'string',
           },
           state: 0,
           createAt: '2025-02-06T06:22:46.701Z',
@@ -416,15 +428,15 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           greeting={greeting}
           secret={secret}
           selectedLLM={llmModel}
-          selectedPrompt={customModulesPrompt}
-          selectedLorebook={customModulesLorebook}
+          selectedPromptIdx={customModulesPromptIdx}
+          selectedLorebookIdx={customModulesLorebook}
           onLangChange={setLanguageType}
           onCharacterDescChange={setDescription}
           onWorldScenarioChange={setWorldScenario}
           onGreetingChange={setGreeting}
           onSecretChange={setSecret}
           onSelectedLLMChange={setLlmModel}
-          onSelectedPromptChange={setCustomModulesPrompt}
+          onSelectedPromptChange={setCustomModulesPromptIdx}
           onSelectedLorebookChange={setCustomModulesLorebook}
         />
       ),
