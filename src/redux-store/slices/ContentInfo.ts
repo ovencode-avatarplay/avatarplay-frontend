@@ -23,7 +23,6 @@ import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 // */
 
 // 1 Level
-// 1 Level
 export interface ContentInfo {
   id: number;
   userId: number;
@@ -67,7 +66,7 @@ export interface EpisodeInfo {
   characterInfo: CharacterInfo;
   episodeDescription: EpisodeDescription;
   triggerInfoList: TriggerInfo[];
-  conversationTemplateList: Conversation[];
+  conversationTemplateList: ConversationInfo[];
 }
 
 // 4 Level
@@ -84,7 +83,7 @@ export interface CharacterInfo {
   languageType: LanguageType;
   name: string;
   characterDescription: string;
-  urlLinkKey: string | null;
+  urlLinkKey: string;
   genderType: GenderType;
   introduction: string;
   description: string;
@@ -158,13 +157,6 @@ export enum GenderType {
   None = 2,
 }
 
-export interface ConversationInfo {
-  id: number;
-  conversationType: ConversationType;
-  user: string;
-  character: string;
-}
-
 export enum ConversationType {
   Important,
   AlwaysImportant,
@@ -194,8 +186,8 @@ export enum UploadMediaState {
 }
 
 export enum CharacterIP {
-  Original,
-  Fan,
+  Original = 0,
+  Fan = 1,
 }
 
 export interface MembershipSetting {
@@ -206,8 +198,8 @@ export interface MembershipSetting {
 }
 
 export enum Subscription {
-  IP,
-  Contents,
+  IP = 0,
+  Contents = 1,
 }
 
 export enum PaymentType {
@@ -262,7 +254,7 @@ export interface CharacterInfoForCreate {
   poseGalleryImageUrl: GalleryImageInfo[];
   expressionGalleryImageUrl: GalleryImageInfo[];
   mediaTemplateList: CharacterMediaInfo[];
-  conversationTemplateList: Conversation[];
+  conversationTemplateList: ConversationInfo[];
   visibilityType: number;
   llmModel: number;
   tag: string;
@@ -305,12 +297,12 @@ export interface TriggerInfo {
   actionCharacterInfo: CharacterInfo;
   actionMediaState: TriggerMediaState;
   actionMediaUrlList: string[];
-  actionConversationList: Conversation[];
+  actionConversationList: ConversationInfo[];
 }
 
-export interface Conversation {
+export interface ConversationInfo {
   id: number;
-  conversationType: number;
+  conversationType: ConversationType;
   user: string;
   character: string;
 }
@@ -794,7 +786,7 @@ export const curEditngContentInfoSlice = createSlice({
 
     //#region conversation
     // 기존 기능 - conversationTemplateList 관련 액션들
-    saveConversationTemplateList: (state, action: PayloadAction<Conversation[]>) => {
+    saveConversationTemplateList: (state, action: PayloadAction<ConversationInfo[]>) => {
       state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
         state.selectedEpisodeIdx
       ].conversationTemplateList = action.payload;
@@ -807,7 +799,7 @@ export const curEditngContentInfoSlice = createSlice({
         conversationType: ConversationPriortyType;
       }>,
     ) => {
-      const newConversation: Conversation = {
+      const newConversation: ConversationInfo = {
         id: 0, // id는 초기값 그대로 유지
         conversationType: action.payload.conversationType,
         user: JSON.stringify(action.payload.user),

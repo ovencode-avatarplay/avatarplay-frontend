@@ -65,7 +65,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
     customModulesLorebook: '',
     customModulesPrompt: '',
     languageType: 0,
-    llmModel: 0,
+    lLMModel: 0,
     mediaTemplateList: [],
     membershipSetting: {
       benefits: '',
@@ -73,7 +73,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
       paymentType: 0,
       subscription: 0,
     },
-    nsfw: false,
+    nSFW: false,
     operatorInvitationProfileId: [],
     positionCountry: 0,
     recruitedProfileId: 0,
