@@ -74,12 +74,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   const [worldScenario, setWorldScenario] = useState(character.worldScenario);
   const [greeting, setGreeting] = useState(character.greeting);
   const [secret, setSecret] = useState(character.secret);
-  const [customModulesPrompt, setCustomModulesPrompt] = useState(
-    character.customModulesInfo.promptInfoList[character.customModulesInfo.selectPromptIndex],
-  );
-  const [customModulesLorebook, setCustomModulesLorebook] = useState(
-    character.customModulesInfo.lorebookInfoList[character.customModulesInfo.selectLorebookIndex],
-  );
+  const [customModulesPrompt, setCustomModulesPrompt] = useState(character.customModulesPrompt);
+  const [customModulesLorebook, setCustomModulesLorebook] = useState(character.customModulesLorebook);
 
   //#endregion
 
@@ -97,7 +93,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   //#region Policy
 
   const [visibilityType, setvisibilityType] = useState<number>(character.visibilityType);
-  const [llmModel, setLlmModel] = useState<number>(character.lLMModel);
+  const [llmModel, setLlmModel] = useState<number>(character.llmModel);
   const [tag, setTag] = useState<string>(character.tag);
   const [positionCountry, setPositionCountry] = useState<number>(character.positionCountry);
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
@@ -107,7 +103,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   );
 
   const [isMonetization, setIsMonetization] = useState<boolean>(character.isMonetization);
-  const [nsfw, setNsfw] = useState<boolean>(character.nSFW);
+  const [nsfw, setNsfw] = useState<boolean>(character.nsfw);
 
   //#endregion
 
@@ -193,8 +189,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           worldScenario: worldScenario,
           greeting: greeting,
           secret: secret,
-          customModulesPrompt: customModulesPrompt.name,
-          customModulesLorebook: customModulesLorebook.name,
+          customModulesPrompt: customModulesPrompt,
+          customModulesLorebook: customModulesLorebook,
           mainImageUrl: mainimageUrl,
           // portraitGalleryImageUrl: mediaTemplateList
           //   .filter(item => !item.isProfileImage) // isProfileImage가 false인 항목만 필터링

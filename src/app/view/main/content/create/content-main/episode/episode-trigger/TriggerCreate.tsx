@@ -96,7 +96,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
       customModulesLorebook: '',
       customModulesPrompt: '',
       languageType: 0,
-      lLMModel: 0,
+      llmModel: 0,
       mediaTemplateList: [],
       membershipSetting: {
         benefits: '',
@@ -104,7 +104,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
         paymentType: 0,
         subscription: 0,
       },
-      nSFW: false,
+      nsfw: false,
       operatorInvitationProfileId: [],
       positionCountry: 0,
       recruitedProfileId: 0,

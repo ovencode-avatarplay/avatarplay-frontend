@@ -28,9 +28,9 @@
                 "worldScenario": "",
                 "greeting": "",
                 "secret": "",
-
-                "chatCount" : 0,
-                "chatUserCount" : 0,
+                
+                "customModulesPrompt": "",
+                "customModulesLorebook": "",
 
                 "mainImageUrl": "",
                 "portraitGalleryImageUrl": [],
@@ -40,7 +40,7 @@
                 "conversationTemplateList": [],
 
                 "visibilityType": 0,
-                "lLMModel" : 0,
+                "llmModel" : 0,
                 "tag": "",
                 "positionCountry": 0,
                 "characterIP": 0,
@@ -48,26 +48,12 @@
                 "operatorInvitationProfileId": [],
                 
                 "isMonetization": false,
-                "nSFW": false,
+                "nsfw": false,
                 "membershipSetting": {
                   "subscription": 0,
                   "paymentType": 0,
                   "paymentAmount": 0,
                   "benefits": ""
-                },
-                "customModulesInfo": 
-                {
-                  "promptInfoList" : [],
-                  "selectPromptIndex" : 0,
-                  "lorebookInfoList" : [],
-                  "selectLorebookIndex" : 0
-                },
-                "pdProfileSimpleInfo" : 
-                {
-                  "id" : 0,
-                  "type" : 0,
-                  "name" : "",
-                  "iconImageUrl" : ""
                 },
                 "state": 1,
                 
