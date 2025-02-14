@@ -179,7 +179,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                 </div>
               </button>
             </Link>
-            <Link href={getLocalizedLink('/create/story')} passHref>
+            <Link href={getLocalizedLink('/create/content')} passHref>
               <button className={`${styles.drawerButton} ${styles.drawerButtonBot}`} onClick={onClose}>
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineStory.src} />
