@@ -26,6 +26,7 @@ import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageN
 import {CharacterInfo, CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
 import {CardData} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
+import {OperatorAuthorityType} from '@/app/NetWork/ProfileNetwork';
 
 interface CreateCharacterProps {
   characterInfo?: CharacterInfo;
@@ -244,6 +245,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
             profileType: 0,
             name: 'string',
             iconImageUrl: 'string',
+            operatorAuthorityType: OperatorAuthorityType.Owner,
           },
           state: 0,
           createAt: '2025-02-06T06:22:46.701Z',

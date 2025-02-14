@@ -63,13 +63,6 @@ export interface SessionInfo {
   accessToken: string;
 }
 
-export interface ProfileSimpleInfo {
-  profileId: number;
-  profileType: ProfileType;
-  name: string;
-  iconImageUrl: string;
-}
-
 export const selectProfile = async (profileId: number, profileTabType: ProfileTabType = ProfileTabType.My) => {
   const data: SelectProfileReq = {
     profileId: profileId,
