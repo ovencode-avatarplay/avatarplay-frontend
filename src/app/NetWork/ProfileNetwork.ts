@@ -120,6 +120,12 @@ export interface ProfileInfo {
   postCount: number;
   followerCount: number;
   followingCount: number;
+  followState: FollowState;
+}
+
+export enum FollowState {
+  UnFollow = 0,
+  Follow = 1,
 }
 
 export interface ProfileTabItemInfo {

@@ -35,6 +35,7 @@ import {
   ExploreSortType,
   FeedMediaType,
   followProfile,
+  FollowState,
   GetCharacterTabInfoeRes,
   GetPdTabInfoeRes,
   getProfileCharacterTabInfo,
@@ -136,7 +137,6 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
 const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
   const searchParams = useSearchParams();
   const isNeedBackBtn = searchParams?.get('from'); // "from" 쿼리 파라미터 값 가져오기
-  console.log('isNeedBackBtn : ', isNeedBackBtn);
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const router = useRouter();
   const pathname = usePathname();
@@ -324,6 +324,11 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   const handleFollow = async (profileId: number, value: boolean) => {
     try {
       const response = await followProfile(profileId, value);
+
+      const resProfileInfo = await getProfileInfo(profileId);
+      if (!resProfileInfo) return;
+      data.profileInfo = resProfileInfo;
+      setData({...data});
     } catch (error) {
       console.error('An error occurred while Following:', error);
     }
@@ -560,6 +565,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     }
   });
 
+  const isFollow = data.profileInfo?.profileInfo.followState == FollowState.Follow;
+
   return (
     <>
       <section className={cx(styles.header, !isPath && styles.headerNoPath)}>
@@ -706,10 +713,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <button
                 className={styles.follow}
                 onClick={() => {
-                  handleFollow(profileId, true);
+                  handleFollow(profileId, !isFollow);
                 }}
               >
-                Follow
+                {isFollow ? 'Following' : 'Follow'}
               </button>
               <button className={styles.gift}>
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
@@ -722,10 +729,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <button
                 className={styles.follow}
                 onClick={() => {
-                  handleFollow(profileId, true);
+                  handleFollow(profileId, !isFollow);
                 }}
               >
-                Follow
+                {isFollow ? 'Following' : 'Follow'}
               </button>
               <button className={styles.giftWrap}>
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
