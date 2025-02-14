@@ -16,7 +16,10 @@ import CustomInput from '@/components/layout/shared/CustomInput';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 import {sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo, LanguageType} from '@/redux-store/slices/ContentInfo';
+import {getCurrentLanguage} from '@/utils/UrlMove';
+import ExploreSearchInput from '../../searchboard/searchboard-header/ExploreSearchInput';
+import DrawerPostCountry from '../common/DrawerPostCountry';
 
 interface Props {
   visibility: number;
@@ -25,8 +28,8 @@ interface Props {
   onLlmModelChange: (value: number) => void;
   tag: string;
   onTagChange: (value: string) => void;
-  positionCountry: number;
-  onPositionCountryChange: (value: number) => void;
+  positionCountry: number[];
+  onPositionCountryChange: (value: number[]) => void;
   characterIP: number;
   onCharacterIPChange: (value: number) => void;
   connectCharacterId: number;
@@ -71,8 +74,6 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   const [isVisibilityOpen, setIsVisibilityOpen] = useState(false);
   const [isPositionCountryOpen, setIsPositionCountryOpen] = useState(false);
-
-  let positionCountryData = {label: 'Position Country', items: ['USA', 'Korea', 'Japan']};
 
   let characterIpData = {
     items: [
@@ -229,9 +230,9 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     setSelectedTags(selectedTags.filter(t => t !== tag));
   };
 
-  const handleSelectPositionCountryItem = (value: number) => {
-    onPositionCountryChange(value);
-  };
+  // const handleSelectPositionCountryItem = (value: number) => {
+  //   onPositionCountryChange(value);
+  // };
 
   const handleSelectCharacterIp = (value: number) => {
     onCharacterIPChange(value);
@@ -247,6 +248,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   const handleSelectConnectCharacter = (value: number) => {
     onConnectCharacterIdChange(value);
+  };
+
+  const handlePositionCountryChange = (value: number[]) => {
+    onPositionCountryChange(value);
   };
 
   useEffect(() => {
@@ -380,6 +385,18 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     );
   };
 
+  const renderPositionCountry = () => {
+    return (
+      <DrawerPostCountry
+        isOpen={isPositionCountryOpen}
+        onClose={() => setIsPositionCountryOpen(false)}
+        selectableCountryList={Object.values(LanguageType).filter(value => typeof value === 'number') as LanguageType[]}
+        postCountryList={positionCountry}
+        onUpdatePostCountry={handlePositionCountryChange}
+      />
+    );
+  };
+
   const renderCharacterIP = () => {
     return (
       <>
@@ -417,7 +434,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   const getCharacterList = async () => {
     try {
-      const response = await sendGetCharacterList({});
+      const response = await sendGetCharacterList({languageType: getCurrentLanguage()});
       if (response.data) {
         const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
         setConnectableCharacterList(characterInfoList);
@@ -781,15 +798,20 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         <ContentLLMSetup open={llmOpen} onClose={() => setLlmOpen(false)} onModelSelected={onLlmModelChange} />
         {renderDropDown('Tag', selectedTags.join(', '), setTagOpen)}
         {renderTag()}
-
-        {renderDropDownSelectDrawer(
+        {renderDropDown(
+          'Position Country',
+          positionCountry.map(country => LanguageType[country]).join(', '),
+          setIsPositionCountryOpen,
+        )}
+        {/*renderDropDownSelectDrawer(
           positionCountryData.label,
           positionCountryData.items,
           positionCountry,
           (value: string | number) => handleSelectPositionCountryItem(Number(value)),
           isPositionCountryOpen,
           setIsPositionCountryOpen,
-        )}
+        )*/}
+        {renderPositionCountry()}
       </div>
       <div className={styles.selectItemsArea2}>
         {renderCharacterIP()}

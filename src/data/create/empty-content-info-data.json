@@ -42,7 +42,7 @@
                 "visibilityType": 0,
                 "lLMModel" : 0,
                 "tag": "",
-                "positionCountry": 0,
+                "positionCountryList": [],
                 "characterIP": 0,
                 "recruitedProfileId": 0,
                 "operatorInvitationProfileId": [],

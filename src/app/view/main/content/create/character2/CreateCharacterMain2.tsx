@@ -96,7 +96,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   const [visibilityType, setvisibilityType] = useState<number>(character.visibilityType);
   const [llmModel, setLlmModel] = useState<number>(character.lLMModel);
   const [tag, setTag] = useState<string>(character.tag);
-  const [positionCountry, setPositionCountry] = useState<number>(character.positionCountry);
+  const [positionCountryList, setPositionCountryList] = useState<number[]>(character.positionCountryList);
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
   const [connectCharacterId, setConnectCharacterId] = useState<number>(0);
   const [recruitedProfileId, setRecruitedProfileId] = useState<number>(character.recruitedProfileId);
@@ -222,7 +222,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           visibilityType: visibilityType,
           lLMModel: llmModel,
           tag: tag,
-          positionCountry: positionCountry,
+          positionCountryList: positionCountryList,
           characterIP: characterIP,
           recruitedProfileId: recruitedProfileId,
           operatorInvitationProfileId: [],
@@ -488,12 +488,12 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           onLlmModelChange={setLlmModel}
           tag={tag}
           onTagChange={setTag}
-          positionCountry={positionCountry}
-          onPositionCountryChange={setPositionCountry}
+          positionCountry={positionCountryList}
+          onPositionCountryChange={setPositionCountryList}
           characterIP={characterIP}
           onCharacterIPChange={setCharacterIP}
-          connectCharacterId={connectCharacterId}
-          onConnectCharacterIdChange={setConnectCharacterId}
+          connectCharacterId={recruitedProfileId}
+          onConnectCharacterIdChange={setRecruitedProfileId}
           operatorInvitationProfileId={operatorInvitationProfileId}
           onOperatorInvitationProfileIdChange={setOperatorInvitationProfileId}
           isMonetization={isMonetization}

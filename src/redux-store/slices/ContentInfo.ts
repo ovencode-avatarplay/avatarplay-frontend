@@ -102,7 +102,7 @@ export interface CharacterInfo {
   visibilityType: VisibilityType;
   lLMModel: LLMModel;
   tag: string;
-  positionCountry: LanguageType;
+  positionCountryList: LanguageType[];
   characterIP: CharacterIP;
   recruitedProfileId: number;
   operatorInvitationProfileId: number[];
