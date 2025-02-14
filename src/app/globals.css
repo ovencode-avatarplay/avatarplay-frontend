@@ -188,7 +188,11 @@ html,body{
   -webkit-overflow-scrolling: touch;
   scroll-padding-top: 58px;
   scroll-padding-bottom: 48px;
-  
+}
+
+body{
+  margin:0 auto !important;
+  max-width:var(--full-width) !important;
 }
 
 .safe-area-container {
