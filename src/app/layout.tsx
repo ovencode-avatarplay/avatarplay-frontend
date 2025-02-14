@@ -1,11 +1,17 @@
 'use client'; // 이 파일은 클라이언트 전용 컴포넌트입니다.
 
 import {useEffect, useRef, useState} from 'react';
-import {useRouter} from 'next/navigation'; // 클라이언트 사이드에서만 사용
+import {usePathname, useRouter, useSearchParams} from 'next/navigation'; // 클라이언트 사이드에서만 사용
 import Root from './Root';
 import '@/app/globals.css';
 import '@/app/reset.css';
 import {isLogined, refreshLanaguage} from '@/utils/UrlMove';
+
+export const getBackUrl = () => {
+  const storage = globalThis?.sessionStorage;
+  const prevPath = storage.getItem('prevPath');
+  return prevPath;
+};
 
 export default function Layout({children}: {children: React.ReactNode}) {
   const [hasRun, setHasRun] = useState(false); // 상태를 관리하여 최초 실행 여부 판단
@@ -37,34 +43,25 @@ export default function Layout({children}: {children: React.ReactNode}) {
     }
   };
 
-  // useEffect(() => {
-  //   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  //   if (!isMobile) return;
-  //   if (isMobile) {
-  //     paddingRef.current.style.height = '1px';
-  //   }
-  //   const resize = () => {
-  //     const vh = window.innerHeight;
-  //     const dvh = window.visualViewport ? window.visualViewport.height : vh;
-  //     const htmlElement = document.documentElement;
-  //     const windowHeight = htmlElement.offsetHeight; // 100%;
-  //     console.log('vh : ', vh, 'dvh : ', dvh);
-  //     console.log('html Height : ', windowHeight);
-  //     if (vh > windowHeight && paddingRef.current) {
-  //       paddingRef.current.style.height = '0px';
-  //       return;
-  //     }
-  //     if (vh == windowHeight && paddingRef.current) {
-  //       paddingRef.current.style.height = '1px';
-  //       return;
-  //     }
-  //   };
-  //   window.addEventListener('resize', resize);
-  //   // 이벤트 정리
-  //   return () => {
-  //     window.removeEventListener('resize', resize);
-  //   };
-  // }, [paddingRef]);
+  const pathname = usePathname();
+  const searchParams = useSearchParams(); // Query params 감지
+
+  //storing the pathnames when the value changes.
+  useEffect(() => {
+    storePathValues();
+  }, [pathname, searchParams]);
+
+  function storePathValues() {
+    const storage = globalThis?.sessionStorage;
+    if (!storage) return;
+
+    // Set the previous path as the value of the current path.
+    const prevPath = storage.getItem('currentPath');
+
+    storage.setItem('prevPath', prevPath ?? '');
+    // Set the current path value by looking at the browser's location object.
+    storage.setItem('currentPath', globalThis.location.pathname + globalThis.location.search);
+  }
 
   return (
     <html lang="en">

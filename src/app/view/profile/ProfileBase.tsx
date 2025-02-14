@@ -65,6 +65,7 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 import {CharacterProfileDetailComponent} from '@/app/[lang]/(pages)/profile/detail/[[...id]]/page';
+import {getBackUrl} from '@/app/layout';
 
 enum eTabPDType {
   Feed,
@@ -334,7 +335,16 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     }
   };
 
-  const tabContentList = getTabHeaderList(profileType);
+  const routerBack = () => {
+    // you can get the prevPath like this
+    const prevPath = getBackUrl();
+    if (!prevPath || prevPath == '') {
+      router.replace(getLocalizedLink('/'));
+    } else {
+      router.replace(prevPath);
+    }
+  };
+
   const getIsEmptyTab = () => {
     let isEmptyTab = false;
     if (isPD) {
@@ -364,7 +374,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     }
     return isEmptyTab;
   };
-  let isEmptyTab = getIsEmptyTab();
 
   type TabContentProps = {
     profileType: ProfileType;
@@ -647,6 +656,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   );
 
   const isFollow = data.profileInfo?.profileInfo.followState == FollowState.Follow;
+  const tabContentList = getTabHeaderList(profileType);
+  let isEmptyTab = getIsEmptyTab();
 
   return (
     <>
@@ -656,7 +667,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             <div
               className={styles.backBtn}
               onClick={() => {
-                router.back();
+                routerBack();
               }}
             >
               <img src={BoldArrowLeft.src} alt="" />
