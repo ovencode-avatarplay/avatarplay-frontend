@@ -53,7 +53,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setBottomNavColor} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateProfile} from '@/redux-store/slices/Profile';
-import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {useAtom} from 'jotai';
 import Link from 'next/link';
@@ -222,6 +222,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     let resProfileTabInfo = null;
     if (isCharacter && indexTab == eTabCharacterType.Info) {
       const reqSendGetCharacterInfo: GetCharacterInfoReq = {
+        languageType: getCurrentLanguage(),
         characterId: data.profileInfo?.profileInfo?.typeValueId || 0,
       };
       const resGetCharacterInfo = await sendGetCharacterInfo(reqSendGetCharacterInfo);
