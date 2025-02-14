@@ -6,6 +6,7 @@ import ReelsLayout from '@/components/homefeed/ReelsLayout';
 import {FeedInfo, sendGetFeed} from '@/app/NetWork/ShortsNetwork';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 const HomeFeedWithUrlKey: React.FC = () => {
   const params = useParams();
@@ -19,7 +20,7 @@ const HomeFeedWithUrlKey: React.FC = () => {
     const fetchFeed = async () => {
       const payload = {
         urlLinkKey: urlLinkKey as string, // 명시적으로 string 타입으로 캐스팅
-        languageType: navigator.language || 'en-US',
+        languageType: getCurrentLanguage(),
       };
 
       const response = await sendGetFeed(payload);

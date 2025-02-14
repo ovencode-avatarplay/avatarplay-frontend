@@ -7,8 +7,6 @@ import {
   sendCreateCharacter,
   sendCreateCharacter2,
 } from '@/app/NetWork/CharacterNetwork';
-import {LineDelete} from '@ui/Icons';
-
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
 import emptyContentInfo from '@/data/create/empty-content-info-data.json';
@@ -18,6 +16,8 @@ import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import CustomSettingButton from '@/components/layout/shared/CustomSettingButton';
+import {LineDelete} from '@ui/Icons';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 interface PublishCharacterProps {
   characterInfo: Partial<CharacterInfo>;
@@ -102,6 +102,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
     try {
       // 사용자의 입력 데이터를 수집하여 CreateCharacterReq로 구성
       const req: CreateCharacter2Req = {
+        languageType: getCurrentLanguage(),
         characterInfo: {
           ...emptyContentInfo.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo,
 

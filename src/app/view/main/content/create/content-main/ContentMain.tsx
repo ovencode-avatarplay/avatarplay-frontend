@@ -50,7 +50,7 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 // Json
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 
 const ContentMain: React.FC = () => {
   const dispatch = useDispatch();
@@ -101,6 +101,7 @@ const ContentMain: React.FC = () => {
   const prevEpisodeRef = useRef<number | null>(null);
 
   const defaultSaveContentReq = (): SaveContentReq => ({
+    languageType: getCurrentLanguage(),
     contentInfo: editingContentInfo ?? emptyContentInfo,
   });
 
@@ -138,7 +139,7 @@ const ContentMain: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetContentsByUserIdReq = {userId};
+      const req: GetContentsByUserIdReq = {languageType: getCurrentLanguage()};
       const response = await sendContentByUserIdGet(req);
 
       if (response?.data) {
@@ -160,7 +161,7 @@ const ContentMain: React.FC = () => {
       setLoading(true);
 
       try {
-        const req: GetTotalContentByIdReq = {contentId: contentId, language: navigator.language};
+        const req: GetTotalContentByIdReq = {contentId: contentId, language: getCurrentLanguage()};
         const response = await sendContentByIdGetTotal(req);
 
         if (response?.data) {
@@ -608,6 +609,7 @@ const ContentMain: React.FC = () => {
     };
 
     const tmp: SaveContentReq = {
+      languageType: getCurrentLanguage(),
       contentInfo: updatedContent,
     };
 
@@ -663,6 +665,7 @@ const ContentMain: React.FC = () => {
     };
 
     const tmp: SaveContentReq = {
+      languageType: getCurrentLanguage(),
       contentInfo: updatedContent,
     };
 

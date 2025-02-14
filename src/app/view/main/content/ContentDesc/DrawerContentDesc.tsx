@@ -38,7 +38,7 @@ import {
 import {Drawer} from '@mui/material';
 
 // Components
-import {getLocalizedLink} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import DrawerContentEpisodeItemList from './ContentEpisodeList';
 import ContentRecommendList from './ContentRecommendList';
 import {EpisodeCardProps} from './ContentDescType';
@@ -193,7 +193,7 @@ const DrawerContentDesc = () => {
     setLoading(true);
 
     try {
-      const req: GetContentByIdReq = {contentId: contentId, language: navigator.language};
+      const req: GetContentByIdReq = {contentId: contentId, languageType: getCurrentLanguage()};
       const response = await sendContentByIdGet(req);
 
       if (response?.data) {

@@ -34,7 +34,7 @@ import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slice
 
 import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 const ContentDashboard: React.FC = () => {
@@ -66,7 +66,7 @@ const ContentDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetContentsByUserIdReq = {};
+      const req: GetContentsByUserIdReq = {languageType: getCurrentLanguage()};
       const response = await sendContentByUserIdGet(req);
 
       if (response?.data) {
@@ -147,7 +147,7 @@ const ContentDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetTotalContentByIdReq = {contentId: contentId, language: navigator.language};
+      const req: GetTotalContentByIdReq = {contentId: contentId, language: getCurrentLanguage()};
       const response = await sendContentByIdGetTotal(req);
 
       if (response?.data) {

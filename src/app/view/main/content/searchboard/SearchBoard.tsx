@@ -23,6 +23,7 @@ import {BoldArrowDown} from '@ui/Icons';
 import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import ExploreCard from './ExploreCard';
 import {FilterDataItem} from '@/components/search/FilterSelector';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 const SearchBoard: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -151,7 +152,7 @@ const SearchBoard: React.FC = () => {
     const minLoadingTime = new Promise<void>(resolve => setTimeout(resolve, 1000));
     try {
       const result = await sendSearchExplore({
-        language: navigator.language || 'en-US',
+        languageType: getCurrentLanguage(),
         search: searchValue,
         category: search === 'All' ? 0 : search === 'Story' ? 1 : 2,
         sort: selectedSort,

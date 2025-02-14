@@ -55,7 +55,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed, recommendState = 
     dispatch(setBottomNavColor(0));
     try {
       const lang = getCurrentLanguage();
-      const result = await sendGetRecommendFeed({recommendState: recommendState, language: lang});
+      const result = await sendGetRecommendFeed({recommendState: recommendState, languageType: lang});
 
       if (result.resultCode === 0 && result.data) {
         const feeds = result.data.feedInfoList;

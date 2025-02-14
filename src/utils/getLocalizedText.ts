@@ -51,6 +51,7 @@ const localizationSources: LocalizationStrings = transformLocalizationData(local
  */
 const getLocalizedText = (head: keyof LocalizationStrings, key: string, language?: string): string => {
   const effectiveLanguage = language || getLanguageFromURL();
+
   const group = localizationSources[head];
 
   // Head가 없거나 Key가 없을 경우 빈 문자열 반환
@@ -60,6 +61,8 @@ const getLocalizedText = (head: keyof LocalizationStrings, key: string, language
   }
 
   const localizedItem = group[key];
+
+  if (effectiveLanguage === null) return localizedItem['en-US'] || '';
 
   // 언어별 데이터가 없으면 영어 기본값 반환
   return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';

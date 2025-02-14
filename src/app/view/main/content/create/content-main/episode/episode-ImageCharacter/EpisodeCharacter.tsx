@@ -11,6 +11,7 @@ import styles from './EpisodeCharacter.module.css';
 import {useDispatch} from 'react-redux';
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 interface EpisodeCharacterProps {
   currentStep: number;
@@ -39,7 +40,7 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({
   const getCharacterList = async () => {
     setLoading(true);
     try {
-      const response = await sendGetCharacterList({});
+      const response = await sendGetCharacterList({languageType: getCurrentLanguage()});
       if (response.data) {
         const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
         setCharacters(characterInfoList);
@@ -57,7 +58,7 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({
   const getCharacterInfo = async (id: number) => {
     setLoading(true);
     try {
-      const req: GetCharacterInfoReq = {characterId: id};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {

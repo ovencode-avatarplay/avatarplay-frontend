@@ -41,6 +41,7 @@ import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomInput from '@/components/layout/shared/CustomInput';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 interface Props {
   open: boolean;
@@ -275,7 +276,7 @@ const EpisodeInitialize: React.FC<Props> = ({
     }
     setLoading(true);
     try {
-      const response = await sendGetCharacterList({});
+      const response = await sendGetCharacterList({languageType: getCurrentLanguage()});
       if (response.data) {
         const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
         setCharacters(characterInfoList);
@@ -292,7 +293,7 @@ const EpisodeInitialize: React.FC<Props> = ({
   const getCharacterInfo = async (id: number) => {
     setLoading(true);
     try {
-      const req: GetCharacterInfoReq = {characterId: id};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {

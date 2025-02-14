@@ -30,7 +30,7 @@ export default function Layout({children}: {children: React.ReactNode}) {
         //   language: _language,
         // };
         // sendSignIn(reqData);
-        // refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
+        refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
       }
 
       setHasRun(true); // 상태를 업데이트하여 이후에는 실행되지 않도록 함

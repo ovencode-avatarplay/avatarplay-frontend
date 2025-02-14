@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 
 // publish가 끝나고 다른곳으로 이동하기
 import {useRouter} from 'next/navigation';
-import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 
 import styles from './CreateCharacterMain2.module.css';
 import {BoldMixture, LineAIImage, LineEdit, LineUpload} from '@ui/Icons';
@@ -153,6 +153,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
     } catch (error) {
       console.error('Error uploading image:', error);
     } finally {
+      // 빈블럭
     }
   };
 
@@ -177,6 +178,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   const handleCreateCharacter = async () => {
     try {
       const req: CreateCharacter2Req = {
+        languageType: getCurrentLanguage(),
         characterInfo: {
           id: 0, // 서버에서 지정
           languageType: languageType,
@@ -262,6 +264,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
     } catch (error) {
       console.error('Error creating character:', error);
     } finally {
+      // 빈블럭
     }
   };
   //#endregion

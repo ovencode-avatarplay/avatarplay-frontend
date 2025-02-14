@@ -5,7 +5,7 @@ import {getAuth, LanguageType} from '@/app/NetWork/AuthNetwork';
 import {getLangUrlCode} from '@/configs/i18n';
 import {setLanguage} from '@/redux-store/slices/UserInfo';
 import {store} from '@/redux-store/ReduxStore';
-import {getBrowserLanguage, getLanguageFromURL, getLanguageTypeFromText} from './browserInfo';
+import {getBrowserLanguage, getLanguageFromURL, getLanguageTypeFromText, getWebBrowserUrl} from './browserInfo';
 import {updateProfile} from '@/redux-store/slices/Profile';
 
 // 로그인상태인가
@@ -45,21 +45,21 @@ export const refreshLanaguage = (language: LanguageType | undefined, router: Ret
       // 이미 같은 언어이면 패스
       if (language === getLanguageTypeFromText(getLanguageFromURL())) return;
 
-      dispatch(setLanguage(language));
+      //dispatch(setLanguage(language));
 
-      const newLocale = getLangUrlCode(language) || 'en-US';
-      Cookies.set('language', String(newLocale), {expires: 365});
-      changeLanguageAndRoute(language, router, i18n);
+      //const newLocale = getLangUrlCode(language) || 'en-US';
+      //Cookies.set('language', String(newLocale), {expires: 365});
+      //changeLanguageAndRoute(language, router, i18n);
       //alert('언어를 바꿔요:' + newLocale);
     } else {
       const browserLang = getBrowserLanguage();
       if (language === browserLang) return; // 이미 같은 언어이면 패스
-      dispatch(setLanguage(browserLang));
+      //dispatch(setLanguage(browserLang));
 
-      const newLocale = getLangUrlCode(browserLang) || 'en-US';
-      Cookies.set('language', String(newLocale), {expires: 365});
+      //const newLocale = getLangUrlCode(browserLang) || 'en-US';
+      //Cookies.set('language', String(newLocale), {expires: 365});
 
-      changeLanguageAndRoute(browserLang, router, i18n);
+      //changeLanguageAndRoute(browserLang, router, i18n);
 
       //alert('언어를 바꿔요:' + newLocale);
     }
@@ -73,9 +73,12 @@ export const refreshLanaguage = (language: LanguageType | undefined, router: Ret
   }
 };
 
-// 현재 언어 가져오기 (쿠키에서)
+// 현재 언어 가져오기 (url에서..)
 export const getCurrentLanguage = (): string => {
-  return Cookies.get('language') || 'en-US';
+  //return Cookies.get('language') || 'en-US';
+  const language: string | null = getLanguageFromURL();
+  if (language === null) return /*Cookies.get('language') ||*/ navigator.language; // 기본값은 브라우저 설정언어
+  else return language;
 };
 
 // 언어에 맞는 URL 생성 함수
