@@ -44,8 +44,145 @@ type ProfileType = {
   urlLinkKey: string;
 };
 
+export const CharacterProfileDetailComponent = ({
+  characterInfo = null,
+  urlLinkKey = '',
+  isPath = false,
+}: {
+  characterInfo: CharacterInfo | null;
+  urlLinkKey: string;
+  isPath?: boolean;
+}) => {
+  const [data, setData] = useState<ProfileType>({
+    indexTab: eTabType.Feed,
+    indexSessionTab: eTabSessionType.NewSession,
+    isOpenSelectProfile: true,
+    characterInfo: characterInfo,
+    urlLinkKey: urlLinkKey,
+  });
+
+  const metatags = data.characterInfo?.tag?.split(',') || [];
+  const characterImages = data.characterInfo?.portraitGalleryImageUrl || [];
+  return (
+    <>
+      <section className={styles.characterMainImageWrap}>
+        <img src={data.characterInfo?.mainImageUrl} alt="" className={styles.characterMainImage} />
+        <div className={styles.infoWrap}>
+          <Link href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.id + '?from=""')}>
+            <div className={styles.left}>
+              <img src={data.characterInfo?.pdProfileSimpleInfo.iconImageUrl} alt="" className={styles.profileMaker} />
+              <div className={styles.name}>{data.characterInfo?.pdProfileSimpleInfo.name}</div>
+            </div>
+          </Link>
+          <div className={styles.right}>
+            <div className={styles.statistics}>
+              <div className={styles.commentWrap}>
+                <img src={BoldComment.src} alt="" className={styles.icon} />
+                <div className={styles.count}>{data.characterInfo?.chatCount}</div>
+              </div>
+              <div className={styles.viewsWrap}>
+                <img src={BoldFollowers.src} alt="" className={styles.icon} />
+                <div className={styles.count}>{data.characterInfo?.chatUserCount}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {metatags?.length != 0 && (
+        <ul className={styles.metatags}>
+          {metatags?.map((one, index) => {
+            return <li className={styles.item}>{one}</li>;
+          })}
+        </ul>
+      )}
+
+      {characterImages?.length != 0 && (
+        <ul className={styles.thumbnails}>
+          {data.characterInfo?.portraitGalleryImageUrl.map((one, index) => {
+            return (
+              <li className={styles.item}>
+                <img src={one.imageUrl} alt="" />
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      <section className={styles.tabSection}>
+        <div className={styles.tabContent}>
+          <div className={styles.textWrap}>
+            <div className={styles.label}>World Senario</div>
+            <TextArea value={data.characterInfo?.worldScenario || ''} />
+          </div>
+          <div className={styles.textWrap}>
+            <div className={styles.label}>Greeting</div>
+            <TextArea value={data.characterInfo?.greeting || ''} />
+          </div>
+
+          <div className={styles.textWrap}>
+            <div className={styles.label}>Creator Comment</div>
+            <TextArea value={data.characterInfo?.description || ''} />
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.sessionTab}>
+        <div
+          className={styles.tabHeader}
+          onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            const target = e.target as HTMLElement;
+            const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+            if (category) {
+              data.indexSessionTab = parseInt(category);
+            }
+            setData({...data});
+          }}
+        >
+          <div
+            className={cx(styles.label, data.indexSessionTab == eTabSessionType.NewSession && styles.active)}
+            data-tab={eTabSessionType.NewSession}
+          >
+            New Session
+          </div>
+          <div
+            className={cx(styles.label, data.indexSessionTab == eTabSessionType.LastSession && styles.active)}
+            data-tab={eTabSessionType.LastSession}
+          >
+            Last Session
+          </div>
+        </div>
+        <div className={styles.line}></div>
+      </section>
+
+      <section className={styles.myNameSection}>
+        <div className={styles.label}>
+          My Name <span className={styles.highlight}>*</span>
+        </div>
+        <div className={styles.description}>You will be called "Sally"</div>
+        <div className={styles.inputWrap}>
+          <input placeholder="Sally" type="text" className={styles.inputName} />
+          <button className={styles.changeNameWrap}>
+            <img src={'/ui/profile/icon_profiledetail_changename.svg'} alt="" />
+          </button>
+        </div>
+      </section>
+
+      <section className={styles.myRoleSection}>
+        <div className={styles.roleWrap}>
+          <div className={styles.label}>My role (optional)</div>
+          <img src={LineArrowDown.src} alt="" />
+        </div>
+        <div className={styles.recentSetting}>Recent Setting</div>
+        <Link href={getLocalizedLink(`/chat${data.urlLinkKey}`)}>
+          <button className={cx(styles.startNewChat, !isPath && styles.embedded)}>Start New Chat</button>
+        </Link>
+      </section>
+    </>
+  );
+};
+
 const PageProfileDetail = ({profileId}: Props) => {
-  console.log(profileId);
   const router = useRouter();
   const [data, setData] = useState<ProfileType>({
     indexTab: eTabType.Feed,
@@ -70,8 +207,6 @@ const PageProfileDetail = ({profileId}: Props) => {
     setData({...data});
   };
 
-  const metatags = data.characterInfo?.tag?.split(',') || [];
-  const characterImages = data.characterInfo?.portraitGalleryImageUrl || [];
   return (
     <>
       <header className={styles.header}>
@@ -79,274 +214,7 @@ const PageProfileDetail = ({profileId}: Props) => {
         <img className={styles.iconClose} src={LineClose.src} onClick={() => router.back()} />
       </header>
       <main className={styles.main}>
-        <section className={styles.characterMainImageWrap}>
-          <img src={data.characterInfo?.mainImageUrl} alt="" className={styles.characterMainImage} />
-          <div className={styles.infoWrap}>
-            <Link href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.id + '?from=""')}>
-              <div className={styles.left}>
-                <img
-                  src={data.characterInfo?.pdProfileSimpleInfo.iconImageUrl}
-                  alt=""
-                  className={styles.profileMaker}
-                />
-                <div className={styles.name}>{data.characterInfo?.pdProfileSimpleInfo.name}</div>
-              </div>
-            </Link>
-            <div className={styles.right}>
-              <div className={styles.statistics}>
-                <div className={styles.commentWrap}>
-                  <img src={BoldComment.src} alt="" className={styles.icon} />
-                  <div className={styles.count}>{data.characterInfo?.chatCount}</div>
-                </div>
-                <div className={styles.viewsWrap}>
-                  <img src={BoldFollowers.src} alt="" className={styles.icon} />
-                  <div className={styles.count}>{data.characterInfo?.chatUserCount}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {metatags?.length != 0 && (
-          <ul className={styles.metatags}>
-            {metatags?.map((one, index) => {
-              return <li className={styles.item}>{one}</li>;
-            })}
-          </ul>
-        )}
-
-        {characterImages?.length != 0 && (
-          <ul className={styles.thumbnails}>
-            {data.characterInfo?.portraitGalleryImageUrl.map((one, index) => {
-              return (
-                <li className={styles.item}>
-                  <img src={one.imageUrl} alt="" />
-                </li>
-              );
-            })}
-          </ul>
-        )}
-
-        <section className={styles.tabSection}>
-          {/* <div
-            className={styles.tabHeader}
-            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-              const target = e.target as HTMLElement;
-              const category = target.closest('[data-tab]')?.getAttribute('data-tab');
-              if (category) {
-                data.indexTab = parseInt(category);
-              }
-              setData({...data});
-            }}
-          >
-            <div className={cx(styles.label, data.indexTab == eTabType.Feed && styles.active)} data-tab={eTabType.Feed}>
-              Feed
-            </div>
-            <div
-              className={cx(styles.label, data.indexTab == eTabType.Channel && styles.active)}
-              data-tab={eTabType.Channel}
-            >
-              Channel
-            </div>
-            <div
-              className={cx(styles.label, data.indexTab == eTabType.Character && styles.active)}
-              data-tab={eTabType.Character}
-            >
-              Character
-            </div>
-            <div
-              className={cx(styles.label, data.indexTab == eTabType.Shared && styles.active)}
-              data-tab={eTabType.Shared}
-            >
-              Shared
-            </div>
-          </div>
-          <div className={styles.line}></div> */}
-          <div className={styles.tabContent}>
-            <div className={styles.textWrap}>
-              <div className={styles.label}>World Senario</div>
-              <TextArea value={data.characterInfo?.worldScenario || ''} />
-            </div>
-            <div className={styles.textWrap}>
-              <div className={styles.label}>Greeting</div>
-              <TextArea value={data.characterInfo?.greeting || ''} />
-            </div>
-
-            <div className={styles.textWrap}>
-              <div className={styles.label}>Creator Comment</div>
-              <TextArea value={data.characterInfo?.description || ''} />
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.sessionTab}>
-          <div
-            className={styles.tabHeader}
-            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-              const target = e.target as HTMLElement;
-              const category = target.closest('[data-tab]')?.getAttribute('data-tab');
-              if (category) {
-                data.indexSessionTab = parseInt(category);
-              }
-              setData({...data});
-            }}
-          >
-            <div
-              className={cx(styles.label, data.indexSessionTab == eTabSessionType.NewSession && styles.active)}
-              data-tab={eTabSessionType.NewSession}
-            >
-              New Session
-            </div>
-            <div
-              className={cx(styles.label, data.indexSessionTab == eTabSessionType.LastSession && styles.active)}
-              data-tab={eTabSessionType.LastSession}
-            >
-              Last Session
-            </div>
-          </div>
-          <div className={styles.line}></div>
-        </section>
-
-        <section className={styles.myNameSection}>
-          <div className={styles.label}>
-            My Name <span className={styles.highlight}>*</span>
-          </div>
-          <div className={styles.description}>You will be called "Sally"</div>
-          <div className={styles.inputWrap}>
-            <input placeholder="Sally" type="text" className={styles.inputName} />
-            <button className={styles.changeNameWrap}>
-              <img src={'/ui/profile/icon_profiledetail_changename.svg'} alt="" />
-            </button>
-          </div>
-        </section>
-
-        <section className={styles.myRoleSection}>
-          <div className={styles.roleWrap}>
-            <div className={styles.label}>My role (optional)</div>
-            <img src={LineArrowDown.src} alt="" />
-          </div>
-          <div className={styles.recentSetting}>Recent Setting</div>
-        </section>
-
-        {/* <section className={styles.relatedCharactersSection}>
-          <div className={styles.label}>Related Characters</div>
-          <div className={styles.tabContent}>
-            <ul className={styles.itemWrap}>
-              <li className={styles.item}>
-                <img className={styles.imgThumbnail} src="/images/profile_sample/img_sample_feed1.png" alt="" />
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>1,450</div>
-                  </div>
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>23</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>
-                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
-                    for Your Health
-                  </div>
-                  <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                </div>
-              </li>
-              <li className={styles.item}>
-                <img className={styles.imgThumbnail} src="/images/profile_sample/img_sample_feed1.png" alt="" />
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>1,450</div>
-                  </div>
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>23</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>
-                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
-                    for Your Health
-                  </div>
-                  <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                </div>
-              </li>
-              <li className={styles.item}>
-                <img className={styles.imgThumbnail} src="/images/profile_sample/img_sample_feed1.png" alt="" />
-                <div className={styles.pin}>
-                  <img src={BoldPin.src} alt="" />
-                </div>
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>1,450</div>
-                  </div>
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>23</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>
-                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
-                    for Your Health
-                  </div>
-                  <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                </div>
-              </li>
-              <li className={styles.item}>
-                <img className={styles.imgThumbnail} src="/images/profile_sample/img_sample_feed1.png" alt="" />
-                <div className={styles.pin}>
-                  <img src={BoldPin.src} alt="" />
-                </div>
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>1,450</div>
-                  </div>
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>23</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>
-                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
-                    for Your Health
-                  </div>
-                  <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                </div>
-              </li>
-              <li className={styles.item}>
-                <img className={styles.imgThumbnail} src="/images/profile_sample/img_sample_feed1.png" alt="" />
-                <div className={styles.pin}>
-                  <img src={BoldPin.src} alt="" />
-                </div>
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>1,450</div>
-                  </div>
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>23</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>
-                    Organic Food is Better for Your Health Organic Food is Better for Your Health Organic Food is Better
-                    for Your Health
-                  </div>
-                  <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                </div>
-              </li>
-            </ul>
-          </div>
-        </section> */}
-        <Link href={getLocalizedLink(`/chat${data.urlLinkKey}`)}>
-          <button className={styles.startNewChat}>Start New Chat</button>
-        </Link>
+        <CharacterProfileDetailComponent characterInfo={data?.characterInfo} urlLinkKey={data.urlLinkKey} isPath />
       </main>
       <footer className={styles.footer}></footer>
     </>

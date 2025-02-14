@@ -61,6 +61,9 @@ import HamburgerBar from '../main/header/header-nav-bar/HamburgerBar';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import {FeedInfo} from '@/app/NetWork/ShortsNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
+import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterProfileDetailComponent} from '@/app/[lang]/(pages)/profile/detail/[[...id]]/page';
 
 enum eTabPDType {
   Feed,
@@ -101,7 +104,7 @@ type DataProfileType = {
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
   profileTabInfo: {
-    [key: number]: GetCharacterTabInfoeRes & GetPdTabInfoeRes;
+    [key: number]: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes;
   };
   indexFilterMedia: FeedMediaType;
   indexSort: ExploreSortType;
@@ -216,7 +219,20 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     const profileType = data.profileInfo?.profileInfo?.type;
     if (profileType == undefined) return;
 
-    const resProfileTabInfo = await getTabInfo(profileType)(profileId, indexTab, data.indexSort, data.indexFilterMedia);
+    let resProfileTabInfo = null;
+    if (isCharacter && indexTab == eTabCharacterType.Info) {
+      const reqSendGetCharacterInfo: GetCharacterInfoReq = {
+        characterId: data.profileInfo?.profileInfo?.typeValueId || 0,
+      };
+      const resGetCharacterInfo = await sendGetCharacterInfo(reqSendGetCharacterInfo);
+      if (resGetCharacterInfo.resultCode != 0) {
+        console.error('api error : ', resGetCharacterInfo.resultMessage);
+        return;
+      }
+      resProfileTabInfo = resGetCharacterInfo.data;
+    } else {
+      resProfileTabInfo = await getTabInfo(profileType)(profileId, indexTab, data.indexSort, data.indexFilterMedia);
+    }
     if (!resProfileTabInfo) return;
 
     data.profileTabInfo[indexTab] = resProfileTabInfo;
@@ -332,6 +348,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentsInfoList?.length;
       } else if (data.indexTab == eTabCharacterType.Story) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.storyInfoList?.length;
+      } else if (data.indexTab == eTabCharacterType.Info) {
+        isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
       } else {
         isEmptyTab = true;
       }
@@ -366,51 +384,129 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
     if ((isPD && tabIndex == PdProfileTabType.Feed) || (isCharacter && tabIndex == CharacterProfileTabType.Feed)) {
       return (
-        <ul className={styles.itemWrap}>
-          {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
-            return (
-              <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
-                <li className={styles.item} key={one?.id}>
-                  {one.mediaState == MediaState.Image && (
-                    <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
-                  )}
-                  {one.mediaState == MediaState.Video && (
-                    <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
-                  )}
-                  {one?.isBookmark && (
-                    <div className={styles.pin}>
-                      <img src={BoldPin.src} alt="" />
+        <>
+          <div className={styles.filter}>
+            <div
+              className={styles.left}
+              onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                const target = e.target as HTMLElement;
+                const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+                if (category) {
+                  data.indexFilterMedia = parseInt(category);
+                }
+                await refreshProfileTab(profileId, data.indexTab);
+                // await refreshProfileTab(profileId, data.indexTab);
+                setData({...data});
+              }}
+            >
+              <div
+                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Total && styles.active)}
+                data-tab={FeedMediaType.Total}
+              >
+                <img src={BoldViewGallery.src} alt="" />
+              </div>
+              <div
+                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Video && styles.active)}
+                data-tab={FeedMediaType.Video}
+              >
+                <img src={BoldVideo.src} alt="" />
+              </div>
+              <div
+                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Image && styles.active)}
+                data-tab={FeedMediaType.Image}
+              >
+                <img src={BoldImage.src} alt="" />
+              </div>
+            </div>
+            <div className={styles.right}>
+              <div className={styles.filterTypeWrap}>
+                <SelectBox
+                  value={{id: ExploreSortType.MostPopular, value: 'Most Popular'}}
+                  options={[
+                    {id: ExploreSortType.Newest, value: 'Newest'},
+                    {id: ExploreSortType.MostPopular, value: 'Most Popular'},
+                    {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
+                    {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
+                  ]}
+                  ArrowComponent={SelectBoxArrowComponent}
+                  ValueComponent={SelectBoxValueComponent}
+                  OptionComponent={SelectBoxOptionComponent}
+                  onChangedCharacter={async id => {
+                    data.indexSort = id;
+                    setData({...data});
+                    await refreshProfileTab(profileId, data.indexTab);
+                  }}
+                  customStyles={{
+                    control: {
+                      width: '184px',
+                      display: 'flex',
+                      gap: '10px',
+                    },
+                    menuList: {
+                      borderRadius: '10px',
+                      boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                    },
+                    option: {
+                      padding: '11px 14px',
+                      boxSizing: 'border-box',
+                      '&:first-of-type': {
+                        borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                      },
+                      borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                    },
+                  }}
+                />
+                {/* <div className={styles.label}>Newest</div> */}
+                {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
+              </div>
+            </div>
+          </div>
+          <ul className={styles.itemWrap}>
+            {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
+              return (
+                <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
+                  <li className={styles.item} key={one?.id}>
+                    {one.mediaState == MediaState.Image && (
+                      <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
+                    )}
+                    {one.mediaState == MediaState.Video && (
+                      <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
+                    )}
+                    {one?.isBookmark && (
+                      <div className={styles.pin}>
+                        <img src={BoldPin.src} alt="" />
+                      </div>
+                    )}
+                    <div className={styles.info}>
+                      <div className={styles.likeWrap}>
+                        <img src={BoldHeart.src} alt="" />
+                        <div className={styles.value}>{one?.likeCount}</div>
+                      </div>
+                      <div className={styles.viewWrap}>
+                        <img src={BoldVideo.src} alt="" />
+                        <div className={styles.value}>{one?.commentCount}</div>
+                      </div>
                     </div>
-                  )}
-                  <div className={styles.info}>
-                    <div className={styles.likeWrap}>
-                      <img src={BoldHeart.src} alt="" />
-                      <div className={styles.value}>{one?.likeCount}</div>
+                    <div className={styles.titleWrap}>
+                      <div className={styles.title}>{one?.description}</div>
+                      <img
+                        src={BoldMenuDots.src}
+                        alt=""
+                        className={styles.iconSetting}
+                        onClick={e => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          data.isSettingOpen = true;
+                          setData({...data});
+                        }}
+                      />
                     </div>
-                    <div className={styles.viewWrap}>
-                      <img src={BoldVideo.src} alt="" />
-                      <div className={styles.value}>{one?.commentCount}</div>
-                    </div>
-                  </div>
-                  <div className={styles.titleWrap}>
-                    <div className={styles.title}>{one?.description}</div>
-                    <img
-                      src={BoldMenuDots.src}
-                      alt=""
-                      className={styles.iconSetting}
-                      onClick={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        data.isSettingOpen = true;
-                        setData({...data});
-                      }}
-                    />
-                  </div>
-                </li>
-              </Link>
-            );
-          })}
-        </ul>
+                  </li>
+                </Link>
+              );
+            })}
+          </ul>
+        </>
       );
     }
     if (isPD && tabIndex == PdProfileTabType.Character) {
@@ -448,6 +544,17 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             );
           })}
         </ul>
+      );
+    }
+
+    if (isCharacter && tabIndex == eTabCharacterType.Info) {
+      return (
+        <>
+          <CharacterProfileDetailComponent
+            characterInfo={data?.profileTabInfo?.[data.indexTab].characterInfo}
+            urlLinkKey={data?.profileTabInfo?.[data.indexTab].urlLinkKey}
+          />
+        </>
       );
     }
   });
@@ -708,6 +815,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               }}
             >
               {tabContentList?.map((tab, index) => {
+                console.log('tab : ', tab);
                 return (
                   <div
                     key={tab.type}
@@ -722,82 +830,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             <div className={styles.line}></div>
           </div>
 
-          <div className={styles.filter}>
-            <div
-              className={styles.left}
-              onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                const target = e.target as HTMLElement;
-                const category = target.closest('[data-tab]')?.getAttribute('data-tab');
-                if (category) {
-                  data.indexFilterMedia = parseInt(category);
-                }
-                await refreshProfileTab(profileId, data.indexTab);
-                // await refreshProfileTab(profileId, data.indexTab);
-                setData({...data});
-              }}
-            >
-              <div
-                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Total && styles.active)}
-                data-tab={FeedMediaType.Total}
-              >
-                <img src={BoldViewGallery.src} alt="" />
-              </div>
-              <div
-                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Video && styles.active)}
-                data-tab={FeedMediaType.Video}
-              >
-                <img src={BoldVideo.src} alt="" />
-              </div>
-              <div
-                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Image && styles.active)}
-                data-tab={FeedMediaType.Image}
-              >
-                <img src={BoldImage.src} alt="" />
-              </div>
-            </div>
-            <div className={styles.right}>
-              <div className={styles.filterTypeWrap}>
-                <SelectBox
-                  value={{id: ExploreSortType.MostPopular, value: 'Most Popular'}}
-                  options={[
-                    {id: ExploreSortType.Newest, value: 'Newest'},
-                    {id: ExploreSortType.MostPopular, value: 'Most Popular'},
-                    {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
-                    {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
-                  ]}
-                  ArrowComponent={SelectBoxArrowComponent}
-                  ValueComponent={SelectBoxValueComponent}
-                  OptionComponent={SelectBoxOptionComponent}
-                  onChangedCharacter={async id => {
-                    data.indexSort = id;
-                    setData({...data});
-                    await refreshProfileTab(profileId, data.indexTab);
-                  }}
-                  customStyles={{
-                    control: {
-                      width: '184px',
-                      display: 'flex',
-                      gap: '10px',
-                    },
-                    menuList: {
-                      borderRadius: '10px',
-                      boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                    },
-                    option: {
-                      padding: '11px 14px',
-                      boxSizing: 'border-box',
-                      '&:first-of-type': {
-                        borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                      },
-                      borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                    },
-                  }}
-                />
-                {/* <div className={styles.label}>Newest</div> */}
-                {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
-              </div>
-            </div>
-          </div>
           <div className={styles.tabContent}>
             <TabContentComponent
               isMine={isMine}
