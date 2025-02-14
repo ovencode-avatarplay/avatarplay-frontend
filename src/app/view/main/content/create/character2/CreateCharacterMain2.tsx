@@ -97,6 +97,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   const [tag, setTag] = useState<string>(character.tag);
   const [positionCountry, setPositionCountry] = useState<number>(character.positionCountry);
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
+  const [connectCharacterId, setConnectCharacterId] = useState<number>(0);
   const [recruitedProfileId, setRecruitedProfileId] = useState<number>(character.recruitedProfileId);
   const [operatorInvitationProfileId, setOperatorInvitationProfileId] = useState<number[]>(
     character.operatorInvitationProfileId,
@@ -430,7 +431,6 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           worldScenario={worldScenario}
           greeting={greeting}
           secret={secret}
-          selectedLLM={llmModel}
           selectedPromptIdx={customModulesPromptIdx}
           selectedLorebookIdx={customModulesLorebook}
           onLangChange={setLanguageType}
@@ -438,7 +438,6 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           onWorldScenarioChange={setWorldScenario}
           onGreetingChange={setGreeting}
           onSecretChange={setSecret}
-          onSelectedLLMChange={setLlmModel}
           onSelectedPromptChange={setCustomModulesPromptIdx}
           onSelectedLorebookChange={setCustomModulesLorebook}
         />
@@ -491,6 +490,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           onPositionCountryChange={setPositionCountry}
           characterIP={characterIP}
           onCharacterIPChange={setCharacterIP}
+          connectCharacterId={connectCharacterId}
+          onConnectCharacterIdChange={setConnectCharacterId}
           operatorInvitationProfileId={operatorInvitationProfileId}
           onOperatorInvitationProfileIdChange={setOperatorInvitationProfileId}
           isMonetization={isMonetization}
@@ -560,71 +561,73 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   };
 
   return (
-    <div className={styles.characterContainer}>
-      {!imgUploadOpen && (
-        <div className={styles.characterMain}>
-          <CreateDrawerHeader title="Create" onClose={handleOnClose} />
+    <>
+      <div className={styles.characterContainer}>
+        {!imgUploadOpen && (
+          <div className={styles.characterMain}>
+            <CreateDrawerHeader title="Create" onClose={handleOnClose} />
 
-          <div className={styles.createCharacterArea}>
-            <div className={styles.thumbnailArea}>
-              <h2 className={styles.title2}>Thumbnail</h2>
-              <button
-                onClick={() => {
-                  setImageViewUrl(mainimageUrl);
-                  setImageViewOpen(true);
-                }}
-              >
-                <div
-                  className={styles.thumbnailImage}
-                  style={{background: `url(${mainimageUrl}) lightgray 50% / cover no-repeat`}}
+            <div className={styles.createCharacterArea}>
+              <div className={styles.thumbnailArea}>
+                <h2 className={styles.title2}>Thumbnail</h2>
+                <button
+                  onClick={() => {
+                    setImageViewUrl(mainimageUrl);
+                    setImageViewOpen(true);
+                  }}
                 >
-                  <button
-                    className={styles.editButton}
-                    onClick={e => {
-                      e.stopPropagation();
-                      handleOnClickThumbnail();
-                    }}
+                  <div
+                    className={styles.thumbnailImage}
+                    style={{background: `url(${mainimageUrl}) lightgray 50% / cover no-repeat`}}
                   >
-                    <img className={styles.editIcon} src={LineEdit.src} />
-                  </button>
-                </div>
-              </button>
+                    <button
+                      className={styles.editButton}
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleOnClickThumbnail();
+                      }}
+                    >
+                      <img className={styles.editIcon} src={LineEdit.src} />
+                    </button>
+                  </div>
+                </button>
+              </div>
+              <Splitters
+                splitters={splitterData}
+                initialActiveSplitter={selectedSplitMenu}
+                onSelectSplitButton={setSelectedSplitMenu}
+                headerStyle={{padding: '0', gap: '10px'}}
+                contentStyle={{padding: '0'}}
+              />
             </div>
-            <Splitters
-              splitters={splitterData}
-              initialActiveSplitter={selectedSplitMenu}
-              onSelectSplitButton={setSelectedSplitMenu}
-              headerStyle={{padding: '0', gap: '10px'}}
-              contentStyle={{padding: '0'}}
-            />
+            <footer>
+              <div className={styles.floatButtonArea}>
+                <CustomButton
+                  size="Medium"
+                  type="Tertiary"
+                  state="Normal"
+                  customClassName={[styles.floatButton]}
+                  onClick={() => {}}
+                >
+                  Import
+                </CustomButton>
+                <CustomButton
+                  size="Medium"
+                  type="Primary"
+                  state="Normal"
+                  customClassName={[styles.floatButton]}
+                  onClick={handleCreateCharacter}
+                >
+                  Submit
+                </CustomButton>
+              </div>
+            </footer>
           </div>
-          <footer>
-            <div className={styles.floatButtonArea}>
-              <CustomButton
-                size="Medium"
-                type="Tertiary"
-                state="Normal"
-                customClassName={[styles.floatButton]}
-                onClick={() => {}}
-              >
-                Import
-              </CustomButton>
-              <CustomButton
-                size="Medium"
-                type="Primary"
-                state="Normal"
-                customClassName={[styles.floatButton]}
-                onClick={handleCreateCharacter}
-              >
-                Submit
-              </CustomButton>
-            </div>
-          </footer>
-        </div>
-      )}
-      {imgUploadOpen && <>{renderSelectImageType()}</>}
+        )}
+        {imgUploadOpen && <>{renderSelectImageType()}</>}
+      </div>
       {imageViewOpen && <CharacterCreateViewImage imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
-    </div>
+    </>
   );
 };
 

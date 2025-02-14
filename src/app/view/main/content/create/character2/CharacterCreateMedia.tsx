@@ -63,14 +63,6 @@ const CharacterCreateMedia: React.FC<Props> = ({
               </div>
 
               <div className={styles.rightButtonGroup}>
-                {/* Profile Image
-                <CustomRadioButton
-                  displayType="buttonOnly"
-                  shapeType="square"
-                  value={index}
-                  selectedValue={selectedItemIdx}
-                  onSelect={(value: string | number) => handlerSelected(Number(value))}
-                /> */}
                 <button className={styles.moveItemIndexButton} onClick={() => handleMove(index, 'up')}>
                   <img
                     className={styles.moveItemIndexIcon}

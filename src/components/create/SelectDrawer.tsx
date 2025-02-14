@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Children, ReactNode} from 'react';
 import styles from './SelectDrawer.module.css';
 import {LineCheck} from '@ui/Icons';
 import {Drawer} from '@mui/material';
@@ -15,9 +15,10 @@ interface SelectDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   selectedIndex: number;
+  children?: ReactNode;
 }
 
-const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, selectedIndex}) => {
+const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, selectedIndex, children}) => {
   return (
     <>
       {isOpen && <div className={styles.selectDrawerBack} onClick={onClose}></div>}
@@ -47,6 +48,7 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, sele
         <div className={styles.handleArea}>
           <div className={styles.handleBar}></div>
         </div>
+        {children && <div className={styles.customContent}>{children}</div>}
         <div className={cx(styles.drawerBox, styles.maxHeight)}>
           {items.map((item, idx) => (
             <button

@@ -14,6 +14,7 @@ interface CustomRadioButtonProps {
   value: string | number;
   selectedValue: string | number | null;
   label?: string;
+  containterStyle?: React.CSSProperties;
 }
 
 const CustomRadioButton: React.FC<CustomRadioButtonProps> = ({
@@ -23,6 +24,7 @@ const CustomRadioButton: React.FC<CustomRadioButtonProps> = ({
   onSelect,
   value,
   selectedValue,
+  containterStyle,
 }) => {
   const isSelected = selectedValue === value;
 
@@ -38,7 +40,11 @@ const CustomRadioButton: React.FC<CustomRadioButtonProps> = ({
   const buttonClass = displayType === 'buttonOnly' ? styles.buttonOnly : styles.buttonText;
 
   return (
-    <div className={`${styles.radioButtonContainer} ${radioButtonStyle} ${buttonClass}`} onClick={handleClick}>
+    <div
+      className={`${styles.radioButtonContainer} ${radioButtonStyle} ${buttonClass}`}
+      onClick={handleClick}
+      style={containterStyle}
+    >
       <img
         className={styles.buttonImage}
         src={isSelected ? selectedImg : buttonImage} // 선택된 상태이면 selectedImg 사용

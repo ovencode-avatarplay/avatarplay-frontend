@@ -1,23 +1,16 @@
 .characterContainer
 {
     position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
     display: flex;
     flex-direction: column;
     height: 100vh; 
-    overflow-x: hidden;
-    overflow-y: scroll;
     width: var(--full-width);
-    margin: 0 auto
+    margin: 0 auto;
+    overflow: hidden;
 }
 
-.characterContainer::-webkit-scrollbar {
-    display: none;  
-}
-  
-.characterContainer {
-    scrollbar-width: none;  
-    -ms-overflow-style: none;  
-}
 
 
 .createCharacterArea
@@ -27,6 +20,18 @@
     width: var(--second-width);
     margin:0  16px;
     gap: 14px;
+    height: calc(100vh - 58px); 
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.createCharacterArea::-webkit-scrollbar {
+    display: none;  
+}
+  
+.createCharacterArea {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
 }
 
 .thumbnailArea
@@ -192,3 +197,14 @@
     overflow-x: hidden;
     overflow-y: scroll;
 }
+
+.imageTypeArea::-webkit-scrollbar {
+    display: none;  
+}
+  
+.imageTypeArea {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+}
+
+

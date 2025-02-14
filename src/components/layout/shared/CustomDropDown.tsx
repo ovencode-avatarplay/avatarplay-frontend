@@ -7,17 +7,19 @@ import {BoldArrowDown, LineArrowDown, LineCheck} from '@ui/Icons';
 interface CustomDropDownProps {
   items: Array<{
     label: string;
+    value: string | number;
     icon?: string;
     profileImage?: string;
     logoImage?: string;
-    value: string | number;
+    title?: string;
   }>;
   displayType: 'Text' | 'Icon' | 'TwoIcon' | 'Profile' | 'Logo';
+  textType?: 'Label' | 'TitleLabel';
   onSelect: (value: string | number) => void;
   style?: React.CSSProperties;
 }
 
-const CustomDropDown: React.FC<CustomDropDownProps> = ({items, displayType, onSelect, style}) => {
+const CustomDropDown: React.FC<CustomDropDownProps> = ({items, displayType, textType = 'Label', onSelect, style}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | number | null>(null);
 
@@ -41,32 +43,23 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({items, displayType, onSe
         className={`${styles.item} ${itemClass} ${isSelected ? styles.selected : ''} ${styles.focused}`}
         onClick={() => handleItemClick(item.value)}
       >
-        {displayType === 'Text' && <span>{item.label}</span>}
-        {displayType === 'Icon' && (
-          <>
-            <img src={item.icon} alt={item.label} className={styles.icon} />
-            <span>{item.label}</span>
-          </>
-        )}
-        {displayType === 'TwoIcon' && (
-          <>
-            <img src={item.icon} alt={item.label} className={styles.icon} />
-            <span>{item.label}</span>
-            <img src={item.icon} alt="right icon" className={styles.iconRight} />
-          </>
-        )}
+        {displayType === 'Icon' && <img src={item.icon} alt={item.label} className={styles.icon} />}
+        {displayType === 'TwoIcon' && <img src={item.icon} alt={item.label} className={styles.icon} />}
         {displayType === 'Profile' && item.profileImage && (
-          <>
-            <img src={item.profileImage} alt="profile" className={styles.profileImage} />
-            <span>{item.label}</span>
-          </>
+          <img src={item.profileImage} alt="profile" className={styles.profileImage} />
         )}
         {displayType === 'Logo' && item.logoImage && (
-          <>
-            <img src={item.logoImage} alt="logo" className={styles.logoImage} />
-            <span>{item.label}</span>
-          </>
+          <img src={item.logoImage} alt="logo" className={styles.logoImage} />
         )}
+        {textType === 'Label' && <span className={styles.label}>{item.label}</span>}
+        {textType === 'TitleLabel' && (
+          <div className={styles.textArea}>
+            <span className={styles.title}>{item.title}</span>
+            <span className={styles.label}>{item.label}</span>
+          </div>
+        )}
+
+        {displayType === 'TwoIcon' && <img src={item.icon} alt="right icon" className={styles.iconRight} />}
         {isSelected && <img src={LineCheck.src} alt="selected" className={styles.checkIcon} />}
       </div>
     );
@@ -78,14 +71,37 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({items, displayType, onSe
         {selectedItem ? (
           <>
             <div className={styles.titleArea}>
-              {items.find(item => item.value === selectedItem)?.icon && (
-                <img
-                  src={items.find(item => item.value === selectedItem)?.icon || ''}
-                  alt="selected icon"
-                  className={styles.icon}
-                />
-              )}
-              <span>{items.find(item => item.value === selectedItem)?.label}</span>
+              {(() => {
+                const selected = items.find(item => item.value === selectedItem);
+                if (!selected) return null;
+
+                return (
+                  <>
+                    {displayType === 'Icon' && selected.icon && (
+                      <img src={selected.icon} alt="selected icon" className={styles.icon} />
+                    )}
+                    {displayType === 'TwoIcon' && selected.icon && (
+                      <>
+                        <img src={selected.icon} alt="selected icon" className={styles.icon} />
+                        <img src={selected.icon} alt="selected right icon" className={styles.iconRight} />
+                      </>
+                    )}
+                    {displayType === 'Profile' && selected.profileImage && (
+                      <img src={selected.profileImage} alt="profile" className={styles.profileImage} />
+                    )}
+                    {displayType === 'Logo' && selected.logoImage && (
+                      <img src={selected.logoImage} alt="logo" className={styles.logoImage} />
+                    )}
+                    {textType === 'Label' && <span className={styles.label}>{selected.label}</span>}
+                    {textType === 'TitleLabel' && (
+                      <div className={styles.textArea}>
+                        <span className={styles.title}>{selected.title}</span>
+                        <span className={styles.label}>{selected.label}</span>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
             <img
               className={styles.dropdownArrow}

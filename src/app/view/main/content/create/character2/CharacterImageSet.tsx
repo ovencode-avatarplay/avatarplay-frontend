@@ -5,7 +5,7 @@ import CharacterCreateImageButton from '../character/CreateCharacterImageButton'
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import MaxTextInput from '@/components/create/MaxTextInput';
 import {inputType, inputState, displayType} from '@/components/create/MaxTextInput';
-import {BoldLock, BoldMenuDots, BoldRuby, BoldUnLock, LineAIImage, LineScaleUp, LineUpload} from '@ui/Icons';
+import {BoldLock, BoldMenuDots, BoldRuby, BoldStar, BoldUnLock, LineAIImage, LineScaleUp, LineUpload} from '@ui/Icons';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
@@ -345,6 +345,17 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
               {index + 1}
             </button>
           ))}
+        </div>
+      </div>
+
+      <div className={styles.currencyArea}>
+        <div className={styles.currencyItem}>
+          <img className={styles.currencyIcon} src={BoldRuby.src} />
+          <span className={styles.currencyText}>10.5K</span>
+        </div>
+        <div className={styles.currencyItem}>
+          <img className={styles.currencyIcon} src={BoldStar.src} />
+          <span className={styles.currencyText}>100</span>
         </div>
       </div>
 

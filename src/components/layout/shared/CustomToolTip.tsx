@@ -1,12 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react';
 import styles from './CustomToolTip.module.css'; // 툴팁 스타일
+import {BoldInfo, BoldQuestion} from '@ui/Icons';
 
 interface CustomToolTipProps {
   tooltipText: string;
   tooltipStyle?: React.CSSProperties;
+  icon?: '?' | 'info';
 }
 
-const CustomToolTip: React.FC<CustomToolTipProps> = ({tooltipText, tooltipStyle}) => {
+const CustomToolTip: React.FC<CustomToolTipProps> = ({tooltipText, tooltipStyle, icon = '?'}) => {
   const [tooltipClicked, setTooltipClicked] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -53,10 +55,14 @@ const CustomToolTip: React.FC<CustomToolTipProps> = ({tooltipText, tooltipStyle}
         onMouseLeave={handleMouseLeave}
         onClick={handleOnClick}
       >
-        <img className={styles.iconQuestion} src={require('@ui/Icons').BoldQuestion.src} alt="Question" />
+        <img
+          className={`${styles.iconToolTip} ${icon !== '?' ? styles.grayIcon : ''}`}
+          src={icon === '?' ? BoldQuestion.src : icon === 'info' ? BoldInfo.src : BoldQuestion.src}
+          alt="ToolTip"
+        />
       </button>
       {(tooltipClicked || (!tooltipClicked && showTooltip)) && (
-        <div ref={tooltipRef} className={styles.tooltip} style={tooltipStyle}>
+        <div ref={tooltipRef} className={`${styles.tooltip} `} style={tooltipStyle}>
           <div className={styles.tooltipText}>{tooltipText}</div>
         </div>
       )}

@@ -8,9 +8,10 @@ interface CustomDrawerProps extends Omit<DrawerProps, 'onClose' | 'open'> {
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
+  contentStyle?: React.CSSProperties;
 }
 
-const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, title, ...rest}) => {
+const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, title, contentStyle, ...rest}) => {
   const [startY, setStartY] = useState<number | null>(null);
   const [translateY, setTranslateY] = useState(0);
 
@@ -61,7 +62,9 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, tit
           <div className={styles.handle} />
         </div>
         {title && title !== '' && <div className={styles.titleArea}>{title}</div>}
-        <div className={styles.contentArea}>{children}</div>
+        <div className={styles.contentArea} style={contentStyle}>
+          {children}
+        </div>
       </div>
     </Drawer>
   );

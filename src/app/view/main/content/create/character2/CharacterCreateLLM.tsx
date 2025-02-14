@@ -13,7 +13,6 @@ interface Props {
   worldScenario: string;
   greeting: string;
   secret: string;
-  selectedLLM: number;
   selectedPromptIdx: number;
   selectedLorebookIdx: number;
   onLangChange: (lang: number) => void;
@@ -21,7 +20,6 @@ interface Props {
   onWorldScenarioChange: (scenario: string) => void;
   onGreetingChange: (greeting: string) => void;
   onSecretChange: (secret: string) => void;
-  onSelectedLLMChange: (llm: number) => void;
   onSelectedPromptChange: (prompt: number) => void;
   onSelectedLorebookChange: (lorebook: number) => void;
 }
@@ -32,7 +30,6 @@ const CharacterCreateLLM: React.FC<Props> = ({
   worldScenario,
   greeting,
   secret,
-  selectedLLM,
   selectedPromptIdx,
   selectedLorebookIdx,
   onLangChange,
@@ -40,7 +37,6 @@ const CharacterCreateLLM: React.FC<Props> = ({
   onWorldScenarioChange,
   onGreetingChange,
   onSecretChange,
-  onSelectedLLMChange,
   onSelectedPromptChange,
   onSelectedLorebookChange,
 }) => {
@@ -54,12 +50,6 @@ const CharacterCreateLLM: React.FC<Props> = ({
     {label: 'English', value: '1'},
     {label: 'Japan', value: '2'},
   ];
-
-  // const llmItems = [
-  //   {label: 'Llm 1', value: '1'},
-  //   {label: 'Llm 2', value: '2'},
-  //   {label: 'Llm 3', value: '3'},
-  // ];
 
   const promptItems = [
     {label: 'prompt 1', value: '1'},
@@ -108,10 +98,6 @@ const CharacterCreateLLM: React.FC<Props> = ({
 
   const handleSelectLang = (value: number) => {
     onLangChange(value);
-  };
-
-  const handleSelectLLM = (value: number) => {
-    onSelectedLLMChange(value);
   };
 
   const handleSelectPrompt = (value: number) => {
