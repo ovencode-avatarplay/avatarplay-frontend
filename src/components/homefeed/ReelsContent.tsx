@@ -335,14 +335,14 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
                 src={item.characterProfileUrl || '/images/001.png'}
                 style={{width: '32px', height: '32px'}}
                 onClick={() => {
-                  pushLocalizedRoute('/profile/' + item?.characterProfileId + '?from', router);
+                  pushLocalizedRoute('/profile/' + item?.characterProfileId + '?from=""', router);
                 }}
               />
 
               <div
                 className={styles.profileDetails}
                 onClick={() => {
-                  pushLocalizedRoute('/profile/' + item?.characterProfileId + '?from', router);
+                  pushLocalizedRoute('/profile/' + item?.characterProfileId + '?from=""', router);
                 }}
               >
                 <span className={styles.username}>{item.characterProfileName}</span>

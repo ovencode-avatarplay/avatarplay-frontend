@@ -125,7 +125,7 @@ type ProfileBaseProps = {
 const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
   const searchParams = useSearchParams();
   const isNeedBackBtn = searchParams.get('from'); // "from" 쿼리 파라미터 값 가져오기
-  console.log('searchParams : ', searchParams);
+  console.log('isNeedBackBtn : ', isNeedBackBtn);
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const router = useRouter();
   const pathname = usePathname();
@@ -417,7 +417,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           )}
           {isCharacter && (
             <div className={styles.verify}>
-              <Link href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileId)}>
+              <Link href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileId + '?from=""')}>
                 <span className={styles.label}>Manager: {data.profileInfo?.profileInfo?.pdEmail}</span>
               </Link>
             </div>
@@ -669,7 +669,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <ul className={styles.itemWrap}>
                 {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
                   return (
-                    <Link href={getLocalizedLink(`/profile/` + one?.id)}>
+                    <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
                       <li className={styles.item} key={one?.id}>
                         {one.mediaState == MediaState.Image && (
                           <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
@@ -716,7 +716,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <ul className={styles.itemWrap}>
                 {data?.profileTabInfo?.[data.indexTab]?.characterInfoList.map((one, index: number) => {
                   return (
-                    <Link href={getLocalizedLink(`/profile/` + one?.id)}>
+                    <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
                       <li className={styles.item} key={one?.id}>
                         {one.mediaState == MediaState.Image && (
                           <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />

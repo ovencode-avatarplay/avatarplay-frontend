@@ -82,7 +82,7 @@ const PageProfileDetail = ({profileId}: Props) => {
         <section className={styles.characterMainImageWrap}>
           <img src={data.characterInfo?.mainImageUrl} alt="" className={styles.characterMainImage} />
           <div className={styles.infoWrap}>
-            <Link href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.id)}>
+            <Link href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.id + '?from=""')}>
               <div className={styles.left}>
                 <img
                   src={data.characterInfo?.pdProfileSimpleInfo.iconImageUrl}
