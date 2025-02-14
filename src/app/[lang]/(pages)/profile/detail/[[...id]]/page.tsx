@@ -60,6 +60,9 @@ export const CharacterProfileDetailComponent = ({
     characterInfo: characterInfo,
     urlLinkKey: urlLinkKey,
   });
+  useEffect(() => {
+    setData(v => ({...v, characterInfo: characterInfo, urlLinkKey: urlLinkKey}));
+  }, [characterInfo, urlLinkKey]);
 
   const metatags = data.characterInfo?.tag?.split(',') || [];
   const characterImages = data.characterInfo?.portraitGalleryImageUrl || [];
@@ -174,7 +177,7 @@ export const CharacterProfileDetailComponent = ({
           <img src={LineArrowDown.src} alt="" />
         </div>
         <div className={styles.recentSetting}>Recent Setting</div>
-        <Link href={getLocalizedLink(`/chat${data.urlLinkKey}`)}>
+        <Link href={getLocalizedLink(`/chat/?v=${data?.urlLinkKey}` || `?v=`)}>
           <button className={cx(styles.startNewChat, !isPath && styles.embedded)}>Start New Chat</button>
         </Link>
       </section>
@@ -203,7 +206,7 @@ const PageProfileDetail = ({profileId}: Props) => {
     };
     const resGetcharacterInfo = await sendGetCharacterInfo(reqGetcharacterInfo);
     data.characterInfo = resGetcharacterInfo.data?.characterInfo || null;
-    data.urlLinkKey = `?v=${resGetcharacterInfo.data?.urlLinkKey}` || `?v=`;
+    data.urlLinkKey = resGetcharacterInfo.data?.urlLinkKey || '';
 
     setData({...data});
   };
