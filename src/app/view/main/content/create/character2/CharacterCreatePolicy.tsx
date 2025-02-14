@@ -1,4 +1,4 @@
-import {BoldArrowDown, BoldAudioPlay, LineRegenerate} from '@ui/Icons';
+import {BoldArrowDown, BoldAudioPlay, BoldInfo, LineRegenerate} from '@ui/Icons';
 import styles from './CharacterCreatePolicy.module.css';
 import {useEffect, useState} from 'react';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -15,6 +15,8 @@ import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import Splitters from '@/components/layout/shared/CustomSplitter';
+import {sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
+import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
 interface Props {
   visibility: number;
@@ -27,6 +29,8 @@ interface Props {
   onPositionCountryChange: (value: number) => void;
   characterIP: number;
   onCharacterIPChange: (value: number) => void;
+  connectCharacterId: number;
+  onConnectCharacterIdChange: (value: number) => void;
   operatorInvitationProfileId: number[];
   onOperatorInvitationProfileIdChange: (value: number[]) => void;
   isMonetization: boolean;
@@ -46,6 +50,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   onPositionCountryChange,
   characterIP,
   onCharacterIPChange,
+  connectCharacterId,
+  onConnectCharacterIdChange,
   operatorInvitationProfileId,
   onOperatorInvitationProfileIdChange,
   isMonetization,
@@ -72,9 +78,13 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     items: [
       {label: 'Original', data: 0, monetization: 'Monetization possible'},
       {label: 'Fan', data: 1, monetization: 'Monetization impossible'},
-      {label: 'Recruited', data: 2, monetization: 'Monetization possible'},
     ],
   };
+
+  const [connectableCharacterList, setConnectableCharacterList] = useState<CharacterInfo[]>([]);
+  const [connectCharacterItems, setConnectCharacterItems] = useState<
+    {label: string; title: string; value: string; profileImage: string}[]
+  >([]);
 
   let invitationOption = {
     items: [
@@ -235,10 +245,25 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     onNsfwChange(value);
   };
 
+  const handleSelectConnectCharacter = (value: number) => {
+    onConnectCharacterIdChange(value);
+  };
+
   useEffect(() => {
     onTagChange(selectedTags.join(', '));
     console.log(selectedTags.join(', '));
   }, [selectedTags, onTagChange]);
+
+  useEffect(() => {
+    const updatedItems = connectableCharacterList.map((character, index) => ({
+      title: character.name,
+      label: 'Character',
+      value: index.toString(),
+      profileImage: character.mainImageUrl || '/images/default-profile.png', // 기본 이미지 설정
+    }));
+
+    setConnectCharacterItems(updatedItems);
+  }, [connectableCharacterList]);
 
   const renderDropDownSelectDrawer = (
     title: string,
@@ -247,6 +272,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     handler: (value: number) => void,
     isOpen: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    drawerTitle?: string,
+    tooltip?: string,
   ) => {
     const drawerItems: SelectDrawerItem[] = items.map((item, index) => ({
       name: item.toString(),
@@ -269,7 +296,18 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           selectedIndex={
             selectedItem // selectedItem이 number라면 바로 인덱스를 사용
           }
-        />
+        >
+          {drawerTitle && (
+            <div className={styles.drawerTitleArea}>
+              <div className={styles.drawerTitle}>{drawerTitle}</div>
+              {tooltip && (
+                <div className={styles.infoButton}>
+                  <CustomToolTip tooltipText={tooltip} icon="info" tooltipStyle={{transform: 'translate(-100%)'}} />
+                </div>
+              )}
+            </div>
+          )}
+        </SelectDrawer>
       </div>
     );
   };
@@ -299,7 +337,12 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     return (
       <>
         {
-          <CustomDrawer open={tagOpen} onClose={() => setTagOpen(false)} title="Tag">
+          <CustomDrawer
+            open={tagOpen}
+            onClose={() => setTagOpen(false)}
+            title="Tag"
+            contentStyle={{padding: '0px', marginTop: '20px'}}
+          >
             <div className={styles.tagArea}>
               <button className={styles.tagRefreshButton} onClick={() => setSelectedTags([])}>
                 <div className={styles.tagRefreshText}>Refresh</div>
@@ -356,14 +399,9 @@ const CharacterCreatePolicy: React.FC<Props> = ({
                   label={item.label}
                   onSelect={() => handleSelectCharacterIp(item.data)}
                   selectedValue={characterIP}
+                  containterStyle={{gap: '0'}}
                 />
-                <CustomHashtag
-                  // text={getLocalizedText('', item.monetization)}
-                  text={item.monetization}
-                  isSelected={false}
-                  onClickAction={() => {}}
-                  color=""
-                />
+                <div className={styles.ipMonetizationTag}>{item.monetization}</div>
               </div>
             ))}
           </div>
@@ -377,6 +415,35 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     return <>{/* {renderDropDownSelectDrawer('Recruited', [], 0, () => {})} */}</>;
   };
 
+  const getCharacterList = async () => {
+    try {
+      const response = await sendGetCharacterList({});
+      if (response.data) {
+        const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
+        setConnectableCharacterList(characterInfoList);
+      } else {
+        throw new Error(`No contentInfo in response`);
+      }
+    } catch (error) {
+      console.error('Error fetching character list:', error);
+    }
+  };
+
+  const renderConnect = () => {
+    return (
+      <div className={styles.connectArea} onClick={() => getCharacterList()}>
+        {/* 드롭다운을 누를때 마다 API 요청 */}
+        <h2 className={styles.title2}>Connect</h2>
+        <CustomDropDown
+          displayType="Profile"
+          textType="TitleLabel"
+          items={connectCharacterItems}
+          onSelect={(value: string | number) => handleSelectConnectCharacter(Number(value))}
+        />
+      </div>
+    );
+  };
+
   const renderOperatorInvite = () => {
     // TODO : 별도 API 추가 된 후 작업 (다른 사람의 Profile 연동 관련)
     return (
@@ -387,7 +454,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
               <h2 className={styles.title2}>Operator invitation</h2>
               <CustomToolTip tooltipText="ToolTip Monetization" />
             </div>
-            <button className={styles.operatorButton} onClick={() => setOperatorInviteOpen(true)}>
+            <button className={styles.subButton} onClick={() => setOperatorInviteOpen(true)}>
               Invite
             </button>
           </div>
@@ -476,6 +543,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             label="On"
             onSelect={() => handleSelectMonetization(true)}
             selectedValue={isMonetization ? 'On' : 'Off'}
+            containterStyle={{gap: '0'}}
           />
           <CustomRadioButton
             shapeType="circle"
@@ -484,6 +552,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             label="Off"
             onSelect={() => handleSelectMonetization(false)}
             selectedValue={isMonetization ? 'On' : 'Off'}
+            containterStyle={{gap: '0'}}
           />
         </div>
       </div>
@@ -505,6 +574,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             label="On"
             onSelect={() => handleSelectNSWF(true)}
             selectedValue={nsfw ? 'On' : 'Off'}
+            containterStyle={{gap: '0'}}
           />
           <CustomRadioButton
             shapeType="circle"
@@ -513,6 +583,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             label="Off"
             onSelect={() => handleSelectNSWF(false)}
             selectedValue={nsfw ? 'On' : 'Off'}
+            containterStyle={{gap: '0'}}
           />
         </div>
       </div>
@@ -524,7 +595,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       <>
         <div className={styles.membershipPlanArea}>
           <div className={styles.bigTitle}>Membership Plan</div>
-          <button className={styles.membershipButton}>setting</button>
+          <button className={styles.subButton}>setting</button>
         </div>
       </>
     );
@@ -534,7 +605,12 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     return (
       <>
         <div className={styles.voiceSettingArea}>
-          <h2 className={styles.titleVoice}>Super Voice Setting</h2>
+          <div className={styles.voiceSettingTitleArea}>
+            <h2 className={styles.titleVoice}>Super Voice Setting</h2>
+            <button className={styles.subButton} onClick={() => setVoiceOpen(true)}>
+              Setting
+            </button>
+          </div>
           <div className={styles.voiceSettingDescArea}>
             <CustomToolTip tooltipText="Voice Setting" />
             <div className={styles.voiceSettingText}>
@@ -542,7 +618,6 @@ const CharacterCreatePolicy: React.FC<Props> = ({
               print it.
             </div>
           </div>
-          {renderDropDown('', 'No Voice Selected', setVoiceOpen)}
         </div>
         <CustomDrawer open={voiceOpen} onClose={() => setVoiceOpen(false)} title="Select Voices">
           <div className={styles.voiceDrawerContainer}>
@@ -699,6 +774,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           (value: string | number) => handleSelectVisibilityItem(Number(value)),
           isVisibilityOpen,
           setIsVisibilityOpen,
+          'Visibility',
+          'Visibility Info',
         )}
         {renderDropDown('LLM', llmModelData[llmModel].label, setLlmOpen)}
         <ContentLLMSetup open={llmOpen} onClose={() => setLlmOpen(false)} onModelSelected={onLlmModelChange} />
@@ -717,6 +794,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       <div className={styles.selectItemsArea2}>
         {renderCharacterIP()}
         {renderRecruit()}
+        {renderConnect()}
         {renderOperatorInvite()}
         {renderMonetization()}
         {renderMembershipPlan()}
