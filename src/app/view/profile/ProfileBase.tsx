@@ -372,196 +372,279 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     tabIndex: number;
     isEmptyTab: boolean;
   };
-  const TabContentComponent = React.memo(({profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
-    const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
+  const TabContentComponent = React.useCallback(
+    ({profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
+      const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
 
-    if (isEmptyTab) {
-      return (
-        <div className={styles.emptyWrap}>
-          <img src="/ui/profile/image_empty.svg" alt="" />
-          <div className={styles.text}>
-            Its pretty lonely out here.
-            <br />
-            Make a Post
-          </div>
-        </div>
-      );
-    }
-
-    if ((isPD && tabIndex == PdProfileTabType.Feed) || (isCharacter && tabIndex == CharacterProfileTabType.Feed)) {
-      return (
-        <>
-          <div className={styles.filter}>
-            <div
-              className={styles.left}
-              onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                const target = e.target as HTMLElement;
-                const category = target.closest('[data-tab]')?.getAttribute('data-tab');
-                if (category) {
-                  data.indexFilterMedia = parseInt(category);
-                }
-                await refreshProfileTab(profileId, data.indexTab);
-                // await refreshProfileTab(profileId, data.indexTab);
-                setData({...data});
-              }}
-            >
+      if (isEmptyTab) {
+        return (
+          <>
+            <div className={styles.filter}>
               <div
-                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Total && styles.active)}
-                data-tab={FeedMediaType.Total}
+                className={styles.left}
+                onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                  const target = e.target as HTMLElement;
+                  const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+                  if (category) {
+                    data.indexFilterMedia = parseInt(category);
+                  }
+                  await refreshProfileTab(profileId, data.indexTab);
+                  // await refreshProfileTab(profileId, data.indexTab);
+                  setData({...data});
+                }}
               >
-                <img src={BoldViewGallery.src} alt="" />
+                <div
+                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Total && styles.active)}
+                  data-tab={FeedMediaType.Total}
+                >
+                  <img src={BoldViewGallery.src} alt="" />
+                </div>
+                <div
+                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Video && styles.active)}
+                  data-tab={FeedMediaType.Video}
+                >
+                  <img src={BoldVideo.src} alt="" />
+                </div>
+                <div
+                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Image && styles.active)}
+                  data-tab={FeedMediaType.Image}
+                >
+                  <img src={BoldImage.src} alt="" />
+                </div>
               </div>
-              <div
-                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Video && styles.active)}
-                data-tab={FeedMediaType.Video}
-              >
-                <img src={BoldVideo.src} alt="" />
-              </div>
-              <div
-                className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Image && styles.active)}
-                data-tab={FeedMediaType.Image}
-              >
-                <img src={BoldImage.src} alt="" />
-              </div>
-            </div>
-            <div className={styles.right}>
-              <div className={styles.filterTypeWrap}>
-                <SelectBox
-                  value={{id: ExploreSortType.MostPopular, value: 'Most Popular'}}
-                  options={[
-                    {id: ExploreSortType.Newest, value: 'Newest'},
-                    {id: ExploreSortType.MostPopular, value: 'Most Popular'},
-                    {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
-                    {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
-                  ]}
-                  ArrowComponent={SelectBoxArrowComponent}
-                  ValueComponent={SelectBoxValueComponent}
-                  OptionComponent={SelectBoxOptionComponent}
-                  onChangedCharacter={async id => {
-                    data.indexSort = id;
-                    setData({...data});
-                    await refreshProfileTab(profileId, data.indexTab);
-                  }}
-                  customStyles={{
-                    control: {
-                      width: '184px',
-                      display: 'flex',
-                      gap: '10px',
-                    },
-                    menuList: {
-                      borderRadius: '10px',
-                      boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                    },
-                    option: {
-                      padding: '11px 14px',
-                      boxSizing: 'border-box',
-                      '&:first-of-type': {
-                        borderTop: 'none', // 첫 번째 옵션에는 border 제거
+              <div className={styles.right}>
+                <div className={styles.filterTypeWrap}>
+                  <SelectBox
+                    value={{id: ExploreSortType.MostPopular, value: 'Most Popular'}}
+                    options={[
+                      {id: ExploreSortType.Newest, value: 'Newest'},
+                      {id: ExploreSortType.MostPopular, value: 'Most Popular'},
+                      {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
+                      {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
+                    ]}
+                    ArrowComponent={SelectBoxArrowComponent}
+                    ValueComponent={SelectBoxValueComponent}
+                    OptionComponent={SelectBoxOptionComponent}
+                    onChangedCharacter={async id => {
+                      data.indexSort = id;
+                      setData({...data});
+                      await refreshProfileTab(profileId, data.indexTab);
+                    }}
+                    customStyles={{
+                      control: {
+                        width: '184px',
+                        display: 'flex',
+                        gap: '10px',
                       },
-                      borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                    },
-                  }}
-                />
-                {/* <div className={styles.label}>Newest</div> */}
-                {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
+                      menuList: {
+                        borderRadius: '10px',
+                        boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                      },
+                      option: {
+                        padding: '11px 14px',
+                        boxSizing: 'border-box',
+                        '&:first-of-type': {
+                          borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                        },
+                        borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                      },
+                    }}
+                  />
+                  {/* <div className={styles.label}>Newest</div> */}
+                  {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
+                </div>
               </div>
             </div>
-          </div>
+            <div className={styles.emptyWrap}>
+              <img src="/ui/profile/image_empty.svg" alt="" />
+              <div className={styles.text}>
+                Its pretty lonely out here.
+                <br />
+                Make a Post
+              </div>
+            </div>
+          </>
+        );
+      }
+
+      if ((isPD && tabIndex == PdProfileTabType.Feed) || (isCharacter && tabIndex == CharacterProfileTabType.Feed)) {
+        return (
+          <>
+            <div className={styles.filter}>
+              <div
+                className={styles.left}
+                onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                  const target = e.target as HTMLElement;
+                  const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+                  if (category) {
+                    data.indexFilterMedia = parseInt(category);
+                  }
+                  await refreshProfileTab(profileId, data.indexTab);
+                  // await refreshProfileTab(profileId, data.indexTab);
+                  setData({...data});
+                }}
+              >
+                <div
+                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Total && styles.active)}
+                  data-tab={FeedMediaType.Total}
+                >
+                  <img src={BoldViewGallery.src} alt="" />
+                </div>
+                <div
+                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Video && styles.active)}
+                  data-tab={FeedMediaType.Video}
+                >
+                  <img src={BoldVideo.src} alt="" />
+                </div>
+                <div
+                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Image && styles.active)}
+                  data-tab={FeedMediaType.Image}
+                >
+                  <img src={BoldImage.src} alt="" />
+                </div>
+              </div>
+              <div className={styles.right}>
+                <div className={styles.filterTypeWrap}>
+                  <SelectBox
+                    value={{id: ExploreSortType.MostPopular, value: 'Most Popular'}}
+                    options={[
+                      {id: ExploreSortType.Newest, value: 'Newest'},
+                      {id: ExploreSortType.MostPopular, value: 'Most Popular'},
+                      {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
+                      {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
+                    ]}
+                    ArrowComponent={SelectBoxArrowComponent}
+                    ValueComponent={SelectBoxValueComponent}
+                    OptionComponent={SelectBoxOptionComponent}
+                    onChangedCharacter={async id => {
+                      data.indexSort = id;
+                      setData({...data});
+                      await refreshProfileTab(profileId, data.indexTab);
+                    }}
+                    customStyles={{
+                      control: {
+                        width: '184px',
+                        display: 'flex',
+                        gap: '10px',
+                      },
+                      menuList: {
+                        borderRadius: '10px',
+                        boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                      },
+                      option: {
+                        padding: '11px 14px',
+                        boxSizing: 'border-box',
+                        '&:first-of-type': {
+                          borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                        },
+                        borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                      },
+                    }}
+                  />
+                  {/* <div className={styles.label}>Newest</div> */}
+                  {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
+                </div>
+              </div>
+            </div>
+            <ul className={styles.itemWrap}>
+              {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
+                return (
+                  <li className={styles.item} key={one?.id}>
+                    {one.mediaState == MediaState.Image && (
+                      <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
+                    )}
+                    {one.mediaState == MediaState.Video && (
+                      <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
+                    )}
+                    {one?.isBookmark && (
+                      <div className={styles.pin}>
+                        <img src={BoldPin.src} alt="" />
+                      </div>
+                    )}
+                    <div className={styles.info}>
+                      <div className={styles.likeWrap}>
+                        <img src={BoldHeart.src} alt="" />
+                        <div className={styles.value}>{one?.likeCount}</div>
+                      </div>
+                      <div className={styles.viewWrap}>
+                        <img src={BoldVideo.src} alt="" />
+                        <div className={styles.value}>{one?.commentCount}</div>
+                      </div>
+                    </div>
+                    <div className={styles.titleWrap}>
+                      <div className={styles.title}>{one?.description}</div>
+                      <img
+                        src={BoldMenuDots.src}
+                        alt=""
+                        className={styles.iconSetting}
+                        onClick={e => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          data.isSettingOpen = true;
+                          setData({...data});
+                        }}
+                      />
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        );
+      }
+      if (isPD && tabIndex == PdProfileTabType.Character) {
+        return (
           <ul className={styles.itemWrap}>
-            {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
+            {data?.profileTabInfo?.[data.indexTab]?.characterInfoList.map((one, index: number) => {
               return (
-                <li className={styles.item} key={one?.id}>
-                  {one.mediaState == MediaState.Image && (
-                    <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
-                  )}
-                  {one.mediaState == MediaState.Video && (
-                    <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
-                  )}
-                  {one?.isBookmark && (
-                    <div className={styles.pin}>
-                      <img src={BoldPin.src} alt="" />
+                <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
+                  <li className={styles.item} key={one?.id}>
+                    {one.mediaState == MediaState.Image && (
+                      <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
+                    )}
+                    {one.mediaState == MediaState.Video && (
+                      <video className={styles.imgThumbnail} src={one?.mediaUrl} />
+                    )}
+                    {one?.isFavorite && (
+                      <div className={styles.pin}>
+                        <img src={BoldPin.src} alt="" />
+                      </div>
+                    )}
+                    <div className={styles.info}>
+                      <div className={styles.likeWrap}>
+                        <img src={BoldHeart.src} alt="" />
+                        <div className={styles.value}>{one?.likeCount}</div>
+                      </div>
+                      <div className={styles.viewWrap}>
+                        <img src={BoldVideo.src} alt="" />
+                        <div className={styles.value}>{one?.likeCount}</div>
+                      </div>
                     </div>
-                  )}
-                  <div className={styles.info}>
-                    <div className={styles.likeWrap}>
-                      <img src={BoldHeart.src} alt="" />
-                      <div className={styles.value}>{one?.likeCount}</div>
+                    <div className={styles.titleWrap}>
+                      <div className={styles.title}>{one?.name}</div>
+                      <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
                     </div>
-                    <div className={styles.viewWrap}>
-                      <img src={BoldVideo.src} alt="" />
-                      <div className={styles.value}>{one?.commentCount}</div>
-                    </div>
-                  </div>
-                  <div className={styles.titleWrap}>
-                    <div className={styles.title}>{one?.description}</div>
-                    <img
-                      src={BoldMenuDots.src}
-                      alt=""
-                      className={styles.iconSetting}
-                      onClick={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        data.isSettingOpen = true;
-                        setData({...data});
-                      }}
-                    />
-                  </div>
-                </li>
+                  </li>
+                </Link>
               );
             })}
           </ul>
-        </>
-      );
-    }
-    if (isPD && tabIndex == PdProfileTabType.Character) {
-      return (
-        <ul className={styles.itemWrap}>
-          {data?.profileTabInfo?.[data.indexTab]?.characterInfoList.map((one, index: number) => {
-            return (
-              <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
-                <li className={styles.item} key={one?.id}>
-                  {one.mediaState == MediaState.Image && (
-                    <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
-                  )}
-                  {one.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={one?.mediaUrl} />}
-                  {one?.isFavorite && (
-                    <div className={styles.pin}>
-                      <img src={BoldPin.src} alt="" />
-                    </div>
-                  )}
-                  <div className={styles.info}>
-                    <div className={styles.likeWrap}>
-                      <img src={BoldHeart.src} alt="" />
-                      <div className={styles.value}>{one?.likeCount}</div>
-                    </div>
-                    <div className={styles.viewWrap}>
-                      <img src={BoldVideo.src} alt="" />
-                      <div className={styles.value}>{one?.likeCount}</div>
-                    </div>
-                  </div>
-                  <div className={styles.titleWrap}>
-                    <div className={styles.title}>{one?.name}</div>
-                    <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                  </div>
-                </li>
-              </Link>
-            );
-          })}
-        </ul>
-      );
-    }
+        );
+      }
 
-    if (isCharacter && tabIndex == eTabCharacterType.Info) {
-      return (
-        <>
-          <CharacterProfileDetailComponent
-            characterInfo={data?.profileTabInfo?.[data.indexTab].characterInfo}
-            urlLinkKey={data?.profileTabInfo?.[data.indexTab].urlLinkKey}
-          />
-        </>
-      );
-    }
-  });
+      if (isCharacter && tabIndex == eTabCharacterType.Info) {
+        return (
+          <>
+            <CharacterProfileDetailComponent
+              characterInfo={data?.profileTabInfo?.[data.indexTab].characterInfo}
+              urlLinkKey={data?.profileTabInfo?.[data.indexTab].urlLinkKey}
+            />
+          </>
+        );
+      }
+    },
+    [data.indexTab, data.profileTabInfo],
+  );
 
   const isFollow = data.profileInfo?.profileInfo.followState == FollowState.Follow;
 
