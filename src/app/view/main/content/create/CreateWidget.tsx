@@ -150,7 +150,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                   console.log('pathname : ', pathname);
                   const isProfilePage = /^\/[a-z]{2}\/profile(\/.*)?$/.test(pathname ? pathname : 'empty pathname');
                   if (isProfilePage) {
-                    pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.id + "?from=''", router, false);
+                    pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.profileId + "?from=''", router, false);
                   }
                 }}
                 customStyles={{

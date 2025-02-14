@@ -60,21 +60,21 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
       <div className={styles.content}>
         <ul className={styles.profileList}>
           {data.profileList?.map((profile, index) => {
-            const isSelected = profile.id == dataProfile.currentProfile?.id;
+            const isSelected = profile.profileId == dataProfile.currentProfile?.id;
             return (
               <li
                 className={styles.item}
-                key={profile.id}
+                key={profile.profileId}
                 onClick={async () => {
                   handleCloseDrawer();
-                  const resData = await selectProfile(profile.id);
+                  const resData = await selectProfile(profile.profileId);
                   if (!resData?.profileSimpleInfo) return;
 
                   dispatch(updateProfile(resData?.profileSimpleInfo));
 
                   const accessToken: string = resData?.sessionInfo?.accessToken || '';
                   localStorage.setItem('jwt', accessToken);
-                  pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.id + "?from=''", router, false);
+                  pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.profileId + "?from=''", router, false);
                 }}
               >
                 <div className={styles.left}>

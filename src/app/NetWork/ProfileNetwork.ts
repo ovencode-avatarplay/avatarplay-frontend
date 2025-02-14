@@ -8,10 +8,18 @@ export interface GetProfileListRes {
 }
 
 export interface ProfileSimpleInfo {
-  id: number;
-  type: ProfileType;
+  profileId: number;
+  profileType: ProfileType;
   name: string;
   iconImageUrl: string;
+  operatorAuthorityType: OperatorAuthorityType;
+}
+
+export enum OperatorAuthorityType {
+  None,
+  Owner,
+  CanEdit,
+  OnlyComments,
 }
 
 export enum ProfileType {
@@ -56,8 +64,8 @@ export interface SessionInfo {
 }
 
 export interface ProfileSimpleInfo {
-  id: number;
-  type: ProfileType;
+  profileId: number;
+  profileType: ProfileType;
   name: string;
   iconImageUrl: string;
 }

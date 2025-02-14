@@ -127,7 +127,7 @@ const UserDropdown = () => {
       const profile = res?.data?.profileSimpleInfo;
 
       dispatch(updateProfile(profile));
-      pushLocalizedRoute('/profile/' + profile?.id, router);
+      pushLocalizedRoute('/profile/' + profile?.profileId, router);
     }
   };
 

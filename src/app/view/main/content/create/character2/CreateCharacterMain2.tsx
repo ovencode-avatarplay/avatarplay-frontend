@@ -240,8 +240,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
             selectPromptIndex: 0,
           },
           pdProfileSimpleInfo: {
-            id: 0,
-            type: 0,
+            profileId: 0,
+            profileType: 0,
             name: 'string',
             iconImageUrl: 'string',
           },
