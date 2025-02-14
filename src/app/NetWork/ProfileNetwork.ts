@@ -253,8 +253,8 @@ export enum CharacterProfileTabType {
 
 export interface GetCharacterTabInfoeRes {
   feedInfoList: FeedInfo[];
-  channelInfoList: ProfileTabItemInfo[];
-  characterInfoList: ProfileTabItemInfo[];
+  contentsInfoList: ProfileTabItemInfo[];
+  storyInfoList: ProfileTabItemInfo[];
 }
 
 export interface ProfileTabItemInfo {

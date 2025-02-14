@@ -31,9 +31,11 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import {redirect, RedirectType, usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {
+  CharacterProfileTabType,
   ExploreSortType,
   FeedMediaType,
   followProfile,
+  GetCharacterTabInfoeRes,
   GetPdTabInfoeRes,
   getProfileCharacterTabInfo,
   getProfileInfo,
@@ -95,15 +97,11 @@ enum eTabCharacterOtherType {
 }
 
 type DataProfileType = {
-  indexTab: eTabPDType;
+  indexTab: eTabPDType | eTabCharacterType;
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
   profileTabInfo: {
-    [key: number]: {
-      feedInfoList: FeedInfo[];
-      channelInfoList: ProfileTabItemInfo[];
-      characterInfoList: ProfileTabItemInfo[];
-    };
+    [key: number]: GetCharacterTabInfoeRes & GetPdTabInfoeRes;
   };
   indexFilterMedia: FeedMediaType;
   indexSort: ExploreSortType;
@@ -119,6 +117,16 @@ type ProfileBaseProps = {
   onClickBack?: () => void;
   isPath?: boolean;
   maxWidth?: string;
+};
+
+const getUserType = (isMine: boolean, profileType: ProfileType) => {
+  const isPD = [ProfileType.PD, ProfileType.User].includes(profileType);
+  const isCharacter = [ProfileType.Character].includes(profileType);
+  const isMyPD = isMine && isPD;
+  const isMyCharacter = isMine && isCharacter;
+  const isOtherPD = !isMine && isPD;
+  const isOtherCharacter = !isMine && isCharacter;
+  return {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter};
 };
 
 // /profile?type=pd?id=123123
@@ -146,14 +154,9 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
   const dispatch = useDispatch();
 
-  const isMine = data.profileInfo?.isMyProfile;
+  const isMine = data.profileInfo?.isMyProfile || false;
   const profileType = Number(data.profileInfo?.profileInfo?.type);
-  const isPD = [ProfileType.PD, ProfileType.User].includes(profileType);
-  const isCharacter = [ProfileType.Character].includes(profileType);
-  const isMyPD = isMine && isPD;
-  const isMyCharacter = isMine && isCharacter;
-  const isOtherPD = !isMine && isPD;
-  const isOtherCharacter = !isMine && isCharacter;
+  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
 
   useEffect(() => {
     if (!isPath) {
@@ -190,7 +193,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     typeProfile: ProfileType,
   ): ((
     profileId: number,
-    tabType: number,
+    tabIndex: number,
     indexSort: ExploreSortType,
     indexFilterMedia: FeedMediaType,
   ) => Promise<any>) => {
@@ -256,7 +259,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     [],
   );
 
-  const getTabList = (profileType: number, isMine = false) => {
+  const getTabHeaderList = (profileType: number, isMine = false) => {
     if (isMine) {
       if (profileType == ProfileType.User || profileType == ProfileType.PD) {
         return Object.values(eTabPDType)
@@ -309,15 +312,146 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     }
   };
 
-  const tabList = getTabList(profileType);
-  let isEmptyTab = false;
-  if (data.indexTab == eTabPDType.Feed) {
-    isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.feedInfoList?.length;
-  } else if (data.indexTab == eTabPDType.Character) {
-    isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList?.length;
-  } else if (data.indexTab == eTabPDType.Channel) {
-    isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
-  }
+  const tabContentList = getTabHeaderList(profileType);
+  const getIsEmptyTab = () => {
+    let isEmptyTab = false;
+    if (isPD) {
+      if (data.indexTab == eTabPDType.Feed) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.feedInfoList?.length;
+      } else if (data.indexTab == eTabPDType.Character) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList?.length;
+      } else if (data.indexTab == eTabPDType.Channel) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
+      } else {
+        isEmptyTab = true;
+      }
+    } else if (isCharacter) {
+      if (data.indexTab == eTabCharacterType.Feed) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.feedInfoList?.length;
+      } else if (data.indexTab == eTabCharacterType.Contents) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentsInfoList?.length;
+      } else if (data.indexTab == eTabCharacterType.Story) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.storyInfoList?.length;
+      } else {
+        isEmptyTab = true;
+      }
+    } else {
+      isEmptyTab = true;
+    }
+    return isEmptyTab;
+  };
+  let isEmptyTab = getIsEmptyTab();
+
+  type TabContentProps = {
+    profileType: ProfileType;
+    isMine: boolean;
+    tabIndex: number;
+    isEmptyTab: boolean;
+  };
+  const TabContentComponent = React.memo(({profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
+    const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
+
+    if (isEmptyTab) {
+      return (
+        <div className={styles.emptyWrap}>
+          <img src="/ui/profile/image_empty.svg" alt="" />
+          <div className={styles.text}>
+            Its pretty lonely out here.
+            <br />
+            Make a Post
+          </div>
+        </div>
+      );
+    }
+
+    if ((isPD && tabIndex == PdProfileTabType.Feed) || (isCharacter && tabIndex == CharacterProfileTabType.Feed)) {
+      return (
+        <ul className={styles.itemWrap}>
+          {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
+            return (
+              <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
+                <li className={styles.item} key={one?.id}>
+                  {one.mediaState == MediaState.Image && (
+                    <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
+                  )}
+                  {one.mediaState == MediaState.Video && (
+                    <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
+                  )}
+                  {one?.isBookmark && (
+                    <div className={styles.pin}>
+                      <img src={BoldPin.src} alt="" />
+                    </div>
+                  )}
+                  <div className={styles.info}>
+                    <div className={styles.likeWrap}>
+                      <img src={BoldHeart.src} alt="" />
+                      <div className={styles.value}>{one?.likeCount}</div>
+                    </div>
+                    <div className={styles.viewWrap}>
+                      <img src={BoldVideo.src} alt="" />
+                      <div className={styles.value}>{one?.commentCount}</div>
+                    </div>
+                  </div>
+                  <div className={styles.titleWrap}>
+                    <div className={styles.title}>{one?.description}</div>
+                    <img
+                      src={BoldMenuDots.src}
+                      alt=""
+                      className={styles.iconSetting}
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        data.isSettingOpen = true;
+                        setData({...data});
+                      }}
+                    />
+                  </div>
+                </li>
+              </Link>
+            );
+          })}
+        </ul>
+      );
+    }
+    if (isPD && tabIndex == PdProfileTabType.Character) {
+      return (
+        <ul className={styles.itemWrap}>
+          {data?.profileTabInfo?.[data.indexTab]?.characterInfoList.map((one, index: number) => {
+            return (
+              <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
+                <li className={styles.item} key={one?.id}>
+                  {one.mediaState == MediaState.Image && (
+                    <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
+                  )}
+                  {one.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={one?.mediaUrl} />}
+                  {one?.isFavorite && (
+                    <div className={styles.pin}>
+                      <img src={BoldPin.src} alt="" />
+                    </div>
+                  )}
+                  <div className={styles.info}>
+                    <div className={styles.likeWrap}>
+                      <img src={BoldHeart.src} alt="" />
+                      <div className={styles.value}>{one?.likeCount}</div>
+                    </div>
+                    <div className={styles.viewWrap}>
+                      <img src={BoldVideo.src} alt="" />
+                      <div className={styles.value}>{one?.likeCount}</div>
+                    </div>
+                  </div>
+                  <div className={styles.titleWrap}>
+                    <div className={styles.title}>{one?.name}</div>
+                    <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
+                  </div>
+                </li>
+              </Link>
+            );
+          })}
+        </ul>
+      );
+    }
+  });
+
   return (
     <>
       <section className={cx(styles.header, !isPath && styles.headerNoPath)}>
@@ -573,7 +707,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                 setData({...data});
               }}
             >
-              {tabList?.map((tab, index) => {
+              {tabContentList?.map((tab, index) => {
                 return (
                   <div
                     key={tab.type}
@@ -665,100 +799,12 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             </div>
           </div>
           <div className={styles.tabContent}>
-            {!isEmptyTab && data.indexTab == eTabPDType.Feed && (
-              <ul className={styles.itemWrap}>
-                {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
-                  return (
-                    <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
-                      <li className={styles.item} key={one?.id}>
-                        {one.mediaState == MediaState.Image && (
-                          <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
-                        )}
-                        {one.mediaState == MediaState.Video && (
-                          <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
-                        )}
-                        {one?.isBookmark && (
-                          <div className={styles.pin}>
-                            <img src={BoldPin.src} alt="" />
-                          </div>
-                        )}
-                        <div className={styles.info}>
-                          <div className={styles.likeWrap}>
-                            <img src={BoldHeart.src} alt="" />
-                            <div className={styles.value}>{one?.likeCount}</div>
-                          </div>
-                          <div className={styles.viewWrap}>
-                            <img src={BoldVideo.src} alt="" />
-                            <div className={styles.value}>{one?.commentCount}</div>
-                          </div>
-                        </div>
-                        <div className={styles.titleWrap}>
-                          <div className={styles.title}>{one?.description}</div>
-                          <img
-                            src={BoldMenuDots.src}
-                            alt=""
-                            className={styles.iconSetting}
-                            onClick={e => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              data.isSettingOpen = true;
-                              setData({...data});
-                            }}
-                          />
-                        </div>
-                      </li>
-                    </Link>
-                  );
-                })}
-              </ul>
-            )}
-            {!isEmptyTab && data.indexTab == eTabPDType.Character && (
-              <ul className={styles.itemWrap}>
-                {data?.profileTabInfo?.[data.indexTab]?.characterInfoList.map((one, index: number) => {
-                  return (
-                    <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
-                      <li className={styles.item} key={one?.id}>
-                        {one.mediaState == MediaState.Image && (
-                          <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
-                        )}
-                        {one.mediaState == MediaState.Video && (
-                          <video className={styles.imgThumbnail} src={one?.mediaUrl} />
-                        )}
-                        {one?.isFavorite && (
-                          <div className={styles.pin}>
-                            <img src={BoldPin.src} alt="" />
-                          </div>
-                        )}
-                        <div className={styles.info}>
-                          <div className={styles.likeWrap}>
-                            <img src={BoldHeart.src} alt="" />
-                            <div className={styles.value}>{one?.likeCount}</div>
-                          </div>
-                          <div className={styles.viewWrap}>
-                            <img src={BoldVideo.src} alt="" />
-                            <div className={styles.value}>{one?.likeCount}</div>
-                          </div>
-                        </div>
-                        <div className={styles.titleWrap}>
-                          <div className={styles.title}>{one?.name}</div>
-                          <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
-                        </div>
-                      </li>
-                    </Link>
-                  );
-                })}
-              </ul>
-            )}
-            {isEmptyTab && (
-              <div className={styles.emptyWrap}>
-                <img src="/ui/profile/image_empty.svg" alt="" />
-                <div className={styles.text}>
-                  Its pretty lonely out here.
-                  <br />
-                  Make a Post
-                </div>
-              </div>
-            )}
+            <TabContentComponent
+              isMine={isMine}
+              profileType={profileType}
+              tabIndex={data.indexTab}
+              isEmptyTab={isEmptyTab}
+            />
           </div>
         </section>
       </section>
