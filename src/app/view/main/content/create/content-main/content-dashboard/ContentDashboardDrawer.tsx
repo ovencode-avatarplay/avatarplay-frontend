@@ -35,6 +35,14 @@ interface Props {
   onClickCreate: () => void;
 }
 
+enum FilterTypes {
+  All = 0,
+  Edit = 1,
+  Create = 2,
+  Name = 3,
+  Popularity = 4,
+}
+
 const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, onRefreshItem, onClickCreate}) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);

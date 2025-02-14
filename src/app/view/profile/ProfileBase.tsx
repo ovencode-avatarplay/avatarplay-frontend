@@ -631,7 +631,17 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                     </div>
                     <div className={styles.titleWrap}>
                       <div className={styles.title}>{one?.name}</div>
-                      <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
+                      <img
+                        src={BoldMenuDots.src}
+                        alt=""
+                        className={styles.iconSetting}
+                        onClick={e => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          data.isSettingOpen = true;
+                          setData({...data});
+                        }}
+                      />
                     </div>
                   </li>
                 </Link>

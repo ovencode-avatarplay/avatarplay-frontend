@@ -36,7 +36,13 @@ export const getProfileList = async () => {
 };
 
 export interface SelectProfileReq {
+  profileTabType: ProfileTabType;
   profileId: number;
+}
+
+export enum ProfileTabType {
+  My = 0,
+  Shared = 1,
 }
 
 export interface SelectProfileRes {
@@ -56,9 +62,10 @@ export interface ProfileSimpleInfo {
   iconImageUrl: string;
 }
 
-export const selectProfile = async (profileId: number) => {
+export const selectProfile = async (profileId: number, profileTabType: ProfileTabType = ProfileTabType.My) => {
   const data: SelectProfileReq = {
     profileId: profileId,
+    profileTabType: profileTabType,
   };
   try {
     const resProfileSelect: AxiosResponse<ResponseAPI<SelectProfileRes>> = await api.post(
