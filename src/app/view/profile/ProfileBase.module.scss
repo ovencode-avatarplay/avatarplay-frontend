@@ -12,6 +12,7 @@
 .header.headerNoPath {
   position: inherit;
   transform: inherit;
+  left: 0;
 }
 
 .main.mainNoPath {
@@ -27,7 +28,7 @@
   box-sizing: border-box;
   position: fixed;
   width: 100%;
-  max-width: 1300px; //js 변경요소
+  max-width: var(--full-width); //js 변경요소
   top: 0;
   left: 50%;
   transform: translateX(calc(-50%));

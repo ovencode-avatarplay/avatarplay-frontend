@@ -274,6 +274,7 @@ img.button{
 
 .profileBox
 {  
+  box-sizing: border-box;
   position: absolute;
   display: flex;
   flex-direction: column;
