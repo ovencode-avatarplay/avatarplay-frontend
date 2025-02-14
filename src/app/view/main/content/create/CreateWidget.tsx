@@ -134,8 +134,8 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
             </div>
             <div className={styles.selectBoxWrap}>
               <SelectBox
-                value={dataProfile.currentProfile}
-                options={data?.profileList}
+                value={{...dataProfile.currentProfile, id: dataProfile.currentProfile?.profileId}}
+                options={data?.profileList.map(v => ({...v, id: v.profileId}))}
                 ArrowComponent={SelectBoxArrowComponent}
                 ValueComponent={SelectBoxValueComponent}
                 OptionComponent={SelectBoxOptionComponent}
