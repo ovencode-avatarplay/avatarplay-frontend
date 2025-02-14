@@ -470,45 +470,43 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           <ul className={styles.itemWrap}>
             {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
               return (
-                <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
-                  <li className={styles.item} key={one?.id}>
-                    {one.mediaState == MediaState.Image && (
-                      <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
-                    )}
-                    {one.mediaState == MediaState.Video && (
-                      <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
-                    )}
-                    {one?.isBookmark && (
-                      <div className={styles.pin}>
-                        <img src={BoldPin.src} alt="" />
-                      </div>
-                    )}
-                    <div className={styles.info}>
-                      <div className={styles.likeWrap}>
-                        <img src={BoldHeart.src} alt="" />
-                        <div className={styles.value}>{one?.likeCount}</div>
-                      </div>
-                      <div className={styles.viewWrap}>
-                        <img src={BoldVideo.src} alt="" />
-                        <div className={styles.value}>{one?.commentCount}</div>
-                      </div>
+                <li className={styles.item} key={one?.id}>
+                  {one.mediaState == MediaState.Image && (
+                    <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
+                  )}
+                  {one.mediaState == MediaState.Video && (
+                    <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
+                  )}
+                  {one?.isBookmark && (
+                    <div className={styles.pin}>
+                      <img src={BoldPin.src} alt="" />
                     </div>
-                    <div className={styles.titleWrap}>
-                      <div className={styles.title}>{one?.description}</div>
-                      <img
-                        src={BoldMenuDots.src}
-                        alt=""
-                        className={styles.iconSetting}
-                        onClick={e => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          data.isSettingOpen = true;
-                          setData({...data});
-                        }}
-                      />
+                  )}
+                  <div className={styles.info}>
+                    <div className={styles.likeWrap}>
+                      <img src={BoldHeart.src} alt="" />
+                      <div className={styles.value}>{one?.likeCount}</div>
                     </div>
-                  </li>
-                </Link>
+                    <div className={styles.viewWrap}>
+                      <img src={BoldVideo.src} alt="" />
+                      <div className={styles.value}>{one?.commentCount}</div>
+                    </div>
+                  </div>
+                  <div className={styles.titleWrap}>
+                    <div className={styles.title}>{one?.description}</div>
+                    <img
+                      src={BoldMenuDots.src}
+                      alt=""
+                      className={styles.iconSetting}
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        data.isSettingOpen = true;
+                        setData({...data});
+                      }}
+                    />
+                  </div>
+                </li>
               );
             })}
           </ul>
