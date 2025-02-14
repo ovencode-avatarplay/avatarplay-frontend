@@ -18,7 +18,7 @@ import {useRouter} from 'next/navigation';
 import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 import Link from 'next/link';
-import {getLocalizedLink} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 
 type Props = {
   profileId: number;
@@ -198,6 +198,7 @@ const PageProfileDetail = ({profileId}: Props) => {
 
   const getCharacterInfo = async (profileId: number) => {
     const reqGetcharacterInfo: GetCharacterInfoReq = {
+      languageType: getCurrentLanguage(),
       characterId: profileId,
     };
     const resGetcharacterInfo = await sendGetCharacterInfo(reqGetcharacterInfo);

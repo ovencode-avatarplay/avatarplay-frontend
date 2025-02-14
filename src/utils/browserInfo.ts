@@ -2,6 +2,7 @@
 
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import Cookies from 'js-cookie';
+import {getCurrentLanguage} from './UrlMove';
 
 // 브라우저에서 파싱해서 추출할 key를 추가하면 됩니다
 export enum QueryParams {
@@ -21,16 +22,16 @@ export const getWebBrowserUrl = (param: QueryParams): string | null => {
 /**
  * URL에서 언어 코드 추출
  */
-export const getLanguageFromURL = (): string => {
+export const getLanguageFromURL = (): string | null => {
   const pathSegments = window.location.pathname.split('/');
   const lang = pathSegments[1] as string;
   const supportedLocales = ['ko', 'en-US', 'ja', 'fr', 'es', 'zh-CN', 'zh-TW', 'pt-PT', 'de'];
-  return supportedLocales.includes(lang) ? lang : 'ko'; // 기본 언어
+  return supportedLocales.includes(lang) ? lang : null;
 };
 
 // 브라우저 언어 설정을 LanguageType으로 변환
 export const getBrowserLanguage = (): LanguageType => {
-  const browserLang = navigator.language || 'en'; // 기본값으로 안전 처리
+  const browserLang = getCurrentLanguage(); // 기본값으로 안전 처리
 
   if (browserLang.startsWith('ko')) return LanguageType.Korean;
   if (browserLang.startsWith('en')) return LanguageType.English;
@@ -56,7 +57,7 @@ export const getBrowserLanguage = (): LanguageType => {
 
 // 쿠키에 저장딘 언어 설정을 LanguageType으로 변환
 export const getCookiesLanguageType = (): LanguageType => {
-  const langType = Cookies.get('language') || 'en-US';
+  const langType = Cookies.get('language') || 'ko';
 
   if (langType.startsWith('ko')) return LanguageType.Korean;
   if (langType.startsWith('en')) return LanguageType.English;
@@ -73,7 +74,9 @@ export const getCookiesLanguageType = (): LanguageType => {
 };
 
 // 문자열에 맞는 언어타입
-export const getLanguageTypeFromText = (language: string): LanguageType => {
+export const getLanguageTypeFromText = (language: string | null): LanguageType | undefined => {
+  if (language === null) return undefined;
+
   if (language.startsWith('ko')) return LanguageType.Korean;
   if (language.startsWith('en')) return LanguageType.English;
   if (language.startsWith('ja')) return LanguageType.Japanese;
@@ -85,5 +88,5 @@ export const getLanguageTypeFromText = (language: string): LanguageType => {
   if (language.startsWith('pt')) return LanguageType.Portuguese;
   if (language.startsWith('de')) return LanguageType.German;
 
-  return LanguageType.English; // 기본값
+  return LanguageType.English; // 기본값은 영어
 };

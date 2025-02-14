@@ -135,7 +135,7 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
   const searchParams = useSearchParams();
-  const isNeedBackBtn = searchParams.get('from'); // "from" 쿼리 파라미터 값 가져오기
+  const isNeedBackBtn = searchParams?.get('from'); // "from" 쿼리 파라미터 값 가져오기
   console.log('isNeedBackBtn : ', isNeedBackBtn);
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const router = useRouter();

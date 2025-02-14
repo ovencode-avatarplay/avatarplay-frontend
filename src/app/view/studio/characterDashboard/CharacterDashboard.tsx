@@ -12,6 +12,7 @@ import {
   CreateCharacterReq,
   DeleteCharacterReq,
   GetCharacterInfoReq,
+  GetCharacterListReq,
   sendCreateCharacter,
   sendDeleteCharacter,
   sendGetCharacterInfo,
@@ -23,7 +24,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import CharacterGalleryModal from './CharacterGalleryModal';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import CustomButton from '@/components/layout/shared/CustomButton';
@@ -168,7 +169,10 @@ const CharacterDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await sendGetCharacterList({});
+      const characterListreq: GetCharacterListReq = {
+        languageType: getCurrentLanguage(),
+      };
+      const response = await sendGetCharacterList(characterListreq);
 
       if (response.data) {
         const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
@@ -188,7 +192,7 @@ const CharacterDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetCharacterInfoReq = {characterId: id};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {
@@ -209,7 +213,11 @@ const CharacterDashboard: React.FC = () => {
     setLoading(true);
     try {
       if (currentSelectedCharacter) {
-        const req: CreateCharacterReq = {characterInfo: newinfo, debugParameter: debugparam /*, createOption: []*/};
+        const req: CreateCharacterReq = {
+          languageType: getCurrentLanguage(),
+          characterInfo: newinfo,
+          debugParameter: debugparam /*, createOption: []*/,
+        };
         const response = await sendCreateCharacter(req);
 
         if (response.data) {

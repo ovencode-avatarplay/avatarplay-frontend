@@ -6,6 +6,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {setContentId, setContentName, setEpisodeId, setEpisodeName, setStreamKey} from '@/redux-store/slices/Chatting';
 import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 const usePrevChatting = (
   episodeId: number,
@@ -33,7 +34,7 @@ const usePrevChatting = (
       const ReqDataUrl: UrlEnterEpisodeChattingReq = {
         urlLinkKey: key !== null ? key : '',
         episodeId: episodeId,
-        language: navigator.language,
+        language: getCurrentLanguage(),
         isUrlEnter: isUsedUrlLink,
       };
       // 서버로부터 이전 채팅 데이터를 가져옴

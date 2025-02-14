@@ -2,6 +2,7 @@
 
 import api, {ResponseAPI} from './ApiInstance';
 import {ExploreCardProps} from '../view/main/content/searchboard/SearchBoardTypes';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 export interface BannerUrlList {
   id: number;
@@ -53,7 +54,7 @@ export const sendGetExplore = async (
     const reqData: ReqExploreSearch = {
       search: search,
       onlyAdults: onlyAdults,
-      language: navigator.language || 'en-US',
+      language: getCurrentLanguage(),
     };
 
     // GET 요청을 보내기 위한 기본적인 정의
@@ -121,7 +122,7 @@ interface filterList {
 }
 
 interface ReqSearchExplore {
-  language: string;
+  languageType: string;
   search: string;
   category: number;
   sort: number;

@@ -126,7 +126,7 @@ const parseAnswer = (
 
 /*const timeParser = (dateTimeUTC: Date): string => {
   const dateUTC: Date = new Date(dateTimeUTC.toString() + 'Z'); // 표준시간이면 끝에 Z를 붙여줘야한다.( 서버에서 안붙여서 보내줌 )
-  const date = dateUTC.toLocaleTimeString(navigator.language, {
+  const date = dateUTC.toLocaleTimeString(getCurrentLanguage(), {
     hour: 'numeric',
     minute: 'numeric',
     hour12: true,

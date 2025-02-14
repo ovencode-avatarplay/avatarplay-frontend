@@ -30,7 +30,7 @@ import {getCurrentLanguage, getLocalizedLink, isLogined, pushLocalizedRoute, ref
 import {fetchLanguage} from './LanguageSetting';
 import {getLangUrlCode} from '@/configs/i18n';
 import Cookies from 'js-cookie';
-import {getCookiesLanguageType} from '@/utils/browserInfo';
+import {getCookiesLanguageType, getLanguageTypeFromText} from '@/utils/browserInfo';
 import {atom, useAtom} from 'jotai';
 import {getAuth, sendGetLanguage, SignInRes} from '@/app/NetWork/AuthNetwork';
 import {useDispatch, useSelector} from 'react-redux';
@@ -41,7 +41,7 @@ import {DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSensor
 import {BoldMore, LinePlus} from '@ui/Icons';
 import cx from 'classnames';
 import SelectProfile from '@/app/view/profile/SelectProfile';
-import {middleware} from '../../../../middleware.mjs';
+//import {middleware} from '../../../../middleware.js';
 
 type UserDropDownType = {
   onClick: () => void;
@@ -187,8 +187,7 @@ const UserDropdown = () => {
         }
       } else if (event === 'INITIAL_SESSION') {
         setAuth(session);
-        const cookieLang = Cookies.get('language') || 'en-US';
-        const language = getCookiesLanguageType();
+        const language = getLanguageTypeFromText(getCurrentLanguage());
         refreshLanaguage(language, router);
         console.log('브라우저에 저장된 언어로 가져오자');
       }

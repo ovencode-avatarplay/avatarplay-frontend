@@ -148,7 +148,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                   const accessToken: string = resData?.sessionInfo?.accessToken || '';
                   localStorage.setItem('jwt', accessToken);
                   console.log('pathname : ', pathname);
-                  const isProfilePage = /^\/[a-z]{2}\/profile(\/.*)?$/.test(pathname);
+                  const isProfilePage = /^\/[a-z]{2}\/profile(\/.*)?$/.test(pathname ? pathname : 'empty pathname');
                   if (isProfilePage) {
                     pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.id + "?from=''", router, false);
                   }

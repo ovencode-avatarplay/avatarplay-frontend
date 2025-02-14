@@ -4,11 +4,14 @@ import api, {ResponseAPI} from './ApiInstance';
 import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
 // GetCharacterList
 
+export interface GetCharacterListReq {
+  languageType: string;
+}
 export interface GetCharacterListRes {
   characterInfoList: CharacterInfo[];
 }
 
-export const sendGetCharacterList = async (payload: {}): Promise<ResponseAPI<GetCharacterListRes>> => {
+export const sendGetCharacterList = async (payload: GetCharacterListReq): Promise<ResponseAPI<GetCharacterListRes>> => {
   try {
     const response = await api.post<ResponseAPI<GetCharacterListRes>>('Character/getCharacterList', payload);
 
@@ -26,6 +29,7 @@ export const sendGetCharacterList = async (payload: {}): Promise<ResponseAPI<Get
 // Create Character
 
 export interface CreateCharacterReq {
+  languageType: string;
   characterInfo: CharacterInfo;
   debugParameter: string;
 }
@@ -52,6 +56,7 @@ export const sendCreateCharacter = async (payload: CreateCharacterReq): Promise<
 // Create Character2
 
 export interface CreateCharacter2Req {
+  languageType: string;
   characterInfo: CharacterInfo;
   debugParameter: string;
 }
@@ -103,6 +108,7 @@ export const sendDeleteCharacter = async (payload: DeleteCharacterReq): Promise<
 // Get CharacterData by Id
 
 export interface GetCharacterInfoReq {
+  languageType: string;
   characterId: number;
 }
 

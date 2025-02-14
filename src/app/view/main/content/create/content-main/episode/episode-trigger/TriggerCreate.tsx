@@ -47,6 +47,7 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {useDispatch} from 'react-redux';
 import ChapterItemList from '../../chapter/ChapterItemList';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -256,7 +257,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     }
     setLoading(true);
     try {
-      const response = await sendGetCharacterList({});
+      const response = await sendGetCharacterList({languageType: getCurrentLanguage()});
       if (response.data) {
         const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
         setCharacters(characterInfoList);
@@ -273,7 +274,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
   const getCharacterInfo = async (id: number) => {
     setLoading(true);
     try {
-      const req: GetCharacterInfoReq = {characterId: id};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {
