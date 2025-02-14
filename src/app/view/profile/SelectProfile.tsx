@@ -60,7 +60,7 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
       <div className={styles.content}>
         <ul className={styles.profileList}>
           {data.profileList?.map((profile, index) => {
-            const isSelected = profile.profileId == dataProfile.currentProfile?.id;
+            const isSelected = profile.profileId == dataProfile.currentProfile?.profileId;
             return (
               <li
                 className={styles.item}
