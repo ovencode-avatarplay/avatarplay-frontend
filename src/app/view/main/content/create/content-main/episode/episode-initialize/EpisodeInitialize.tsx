@@ -41,6 +41,7 @@ import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomInput from '@/components/layout/shared/CustomInput';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 interface Props {
   open: boolean;
@@ -275,7 +276,7 @@ const EpisodeInitialize: React.FC<Props> = ({
     }
     setLoading(true);
     try {
-      const response = await sendGetCharacterList({});
+      const response = await sendGetCharacterList({languageType: getCurrentLanguage()});
       if (response.data) {
         const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
         setCharacters(characterInfoList);
@@ -292,7 +293,7 @@ const EpisodeInitialize: React.FC<Props> = ({
   const getCharacterInfo = async (id: number) => {
     setLoading(true);
     try {
-      const req: GetCharacterInfoReq = {characterId: id};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {
@@ -398,6 +399,7 @@ const EpisodeInitialize: React.FC<Props> = ({
         name: name,
         backgroundImageUrl: '',
         characterInfo: {
+          ...emptyEpisodeInfo.characterInfo,
           greeting: currentSelectedCharacter.greeting || '',
           secret: currentSelectedCharacter.secret || '',
           worldScenario: currentSelectedCharacter.worldScenario || '',
@@ -413,28 +415,6 @@ const EpisodeInitialize: React.FC<Props> = ({
           visibilityType: currentSelectedCharacter.visibilityType,
           isMonetization: currentSelectedCharacter.isMonetization,
           state: currentSelectedCharacter.state,
-          characterDescription: '',
-          characterIP: 0,
-          conversationTemplateList: [],
-          createAt: '2025-02-06T06:22:46.701Z',
-          customModulesLorebook: '',
-          customModulesPrompt: '',
-          languageType: 0,
-          llmModel: 0,
-          mediaTemplateList: [],
-          membershipSetting: {
-            benefits: '',
-            paymentAmount: 0,
-            paymentType: 0,
-            subscription: 0,
-          },
-          nsfw: false,
-          operatorInvitationProfileId: [],
-          positionCountry: 0,
-          recruitedProfileId: 0,
-          tag: '',
-          updateAt: '2025-02-06T06:22:46.701Z',
-          urlLinkKey: '',
         },
       };
     } else if (uploadType === 'UploadImage' || uploadType === 'GenerateImage') {
@@ -446,31 +426,6 @@ const EpisodeInitialize: React.FC<Props> = ({
           name: nameValue,
           description: promptValue,
           mainImageUrl: curEpisodeCharacterImage,
-          secret: '',
-          worldScenario: '',
-          greeting: '',
-          characterDescription: '',
-          characterIP: 0,
-          conversationTemplateList: [],
-          createAt: '',
-          customModulesLorebook: '',
-          customModulesPrompt: '',
-          languageType: 0,
-          llmModel: 0,
-          mediaTemplateList: [],
-          membershipSetting: {
-            benefits: '',
-            paymentAmount: 0,
-            paymentType: 0,
-            subscription: 0,
-          },
-          nsfw: false,
-          operatorInvitationProfileId: [],
-          positionCountry: 0,
-          recruitedProfileId: 0,
-          tag: '',
-          updateAt: '',
-          urlLinkKey: '',
         },
       };
     } else {

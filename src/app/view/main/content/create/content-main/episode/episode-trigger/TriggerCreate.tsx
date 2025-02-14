@@ -47,6 +47,7 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {useDispatch} from 'react-redux';
 import ChapterItemList from '../../chapter/ChapterItemList';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -73,45 +74,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     actionPromptScenarioDescription: '', // 기본 설명
     actionIntimacyPoint: 0, // 기본 친밀도 포인트
     maxIntimacyCount: 0, // 기본 최대 친밀도 횟수
-    actionCharacterInfo: {
-      id: 0,
-      name: '',
-      greeting: '',
-      secret: '',
-      worldScenario: '',
-      introduction: '',
-      description: '',
-      genderType: 0,
-      mainImageUrl: '',
-      portraitGalleryImageUrl: [],
-      poseGalleryImageUrl: [],
-      expressionGalleryImageUrl: [],
-      visibilityType: 0,
-      isMonetization: false,
-      state: 0,
-      characterDescription: '',
-      characterIP: 0,
-      conversationTemplateList: [],
-      createAt: '2025-02-06T06:22:46.701Z',
-      customModulesLorebook: '',
-      customModulesPrompt: '',
-      languageType: 0,
-      llmModel: 0,
-      mediaTemplateList: [],
-      membershipSetting: {
-        benefits: '',
-        paymentAmount: 0,
-        paymentType: 0,
-        subscription: 0,
-      },
-      nsfw: false,
-      operatorInvitationProfileId: [],
-      positionCountry: 0,
-      recruitedProfileId: 0,
-      tag: '',
-      updateAt: '2025-02-06T06:22:46.701Z',
-      urlLinkKey: '',
-    }, // 기본 캐릭터 정보
+    actionCharacterInfo: emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo,
     actionMediaState: 0, // 기본 미디어 상태
     actionMediaUrlList: [], // 기본 미디어 URL 리스트
     actionConversationList: [], // 기본 대화 리스트
@@ -294,7 +257,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     }
     setLoading(true);
     try {
-      const response = await sendGetCharacterList({});
+      const response = await sendGetCharacterList({languageType: getCurrentLanguage()});
       if (response.data) {
         const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
         setCharacters(characterInfoList);
@@ -311,7 +274,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
   const getCharacterInfo = async (id: number) => {
     setLoading(true);
     try {
-      const req: GetCharacterInfoReq = {characterId: id};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {

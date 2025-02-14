@@ -2,9 +2,13 @@
   position: relative;
   width: 100%;  
   background: #000000; 
-  height: var(--body-height)
+  height: 100%;
 }
 
+.mySwiper
+{
+
+}
 
 .mainContent {
   position: relative;
@@ -75,9 +79,10 @@
 
 .Image {
   width: 100%;
-  height: 100%;   
-  object-fit: contain;
-  
+  height: 100%;    
+}
+.Image img{
+  object-fit: contain; 
 }
 
 .dim {
@@ -151,11 +156,11 @@
 }
 
 .followButtonOff {
-
+  
 }
 
 .followButtonOn {
-
+  background-color: black;
 }
 
 .description {
@@ -184,8 +189,8 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  bottom: 120px;
+  gap: 12px;
+  bottom: 48px;
   right: 13px;
   z-index: 12;
   
@@ -272,6 +277,7 @@ img.button{
 
 .profileBox
 {  
+  box-sizing: border-box;
   position: absolute;
   display: flex;
   flex-direction: column;

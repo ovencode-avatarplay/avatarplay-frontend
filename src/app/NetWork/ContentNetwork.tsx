@@ -21,6 +21,7 @@ export interface EpisodeInfoForContentGet {
 
 // Save Content
 export interface SaveContentReq {
+  languageType: string;
   contentInfo: ContentInfo;
 }
 
@@ -62,7 +63,7 @@ export const sendContentSave = async (payload: SaveContentReq): Promise<Response
 // Get Content By ContnetId for ExploreItem
 export interface GetContentByIdReq {
   contentId: number;
-  language: string;
+  languageType: string;
 }
 
 export interface GetContentByIdRes {
@@ -138,7 +139,9 @@ export const sendContentByIdGetTotal = async (
 };
 
 // Get Contents By UserId
-export interface GetContentsByUserIdReq {}
+export interface GetContentsByUserIdReq {
+  languageType: string;
+}
 
 export interface GetContentsByUserIdRes<> {
   contentDashBoardList: ContentDashboardItem[];

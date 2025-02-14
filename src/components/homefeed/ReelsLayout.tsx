@@ -7,22 +7,29 @@ import 'swiper/css/scrollbar';
 import ReelsContent from './ReelsContent';
 import {FeedInfo, sendFeedView, sendGetRecommendFeed} from '@/app/NetWork/ShortsNetwork';
 import styles from './ReelsLayout.module.css';
-import {setBottomNavColor} from '@/redux-store/slices/MainControl';
+import {setBottomNavColor, setRecommendState, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {useDispatch} from 'react-redux';
 import {LineArrowDown, LineFeatured} from '@ui/Icons';
-import {getCurrentLanguage} from '@/utils/UrlMove';
-
+import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
+enum RecommendState {
+  Following = 1,
+  ForYou = 0,
+}
 interface ReelsLayoutProps {
   initialFeed?: FeedInfo; // 특정 URL 키를 통해 전달받은 초기 피드
+  recommendState?: RecommendState;
 }
 
-const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
+const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed, recommendState = 0}) => {
   const [allFeeds, setAllFeeds] = useState<FeedInfo[]>([]); // 전체 데이터 저장
   const [info, setInfo] = useState<FeedInfo[]>([]); // 현재 렌더링된 데이터
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 슬라이드 인덱스
   const [isMute, setIsMute] = useState(true); // 현재 슬라이드 인덱스
   const containerRef = useRef<HTMLDivElement>(null);
-
+  const [isProfile, setIsProfile] = useState(false); // 현재 슬라이드 인덱스
+  const [selectedTab, setSelectedTab] = useState<RecommendState>(recommendState);
+  const router = useRouter();
   const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
     try {
       const base64Payload = token.split('.')[1]; // payload 부분 추출
@@ -48,7 +55,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
     dispatch(setBottomNavColor(0));
     try {
       const lang = getCurrentLanguage();
-      const result = await sendGetRecommendFeed({language: lang});
+      const result = await sendGetRecommendFeed({recommendState: recommendState, languageType: lang});
 
       if (result.resultCode === 0 && result.data) {
         const feeds = result.data.feedInfoList;
@@ -63,6 +70,9 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
       console.error('Failed to fetch recommended feed:', error);
     }
   };
+  useEffect(() => {
+    fetchRecommendFeed();
+  }, [selectedTab]);
 
   useEffect(() => {
     fetchRecommendFeed();
@@ -122,8 +132,22 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
     }
   };
 
-  const [curFollowFeatured, setCurFollowFeatured] = useState(false); // 비디오 총 길이
-  const [isOpenFollowFeatured, setIsOpenFollowFeatured] = useState(false); // 비디오 총 길이
+  useEffect(() => {
+    if (isProfile) {
+      document.body.style.overflowY = 'hidden'; // 스냅 비활성화
+      document.body.style.overflowX = 'hidden';
+    } else {
+      document.body.style.overflowY = 'scroll'; // 스냅 활성화
+      document.body.style.overflowX = 'hidden';
+    }
+
+    return () => {
+      // 💡 cleanup: 기본 상태로 복구
+      document.body.style.overflowY = 'scroll';
+      document.body.style.overflowX = 'hidden';
+    };
+  }, [isProfile]);
+
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -142,46 +166,42 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed}) => {
         <meta property="og:image" content={initialFeed?.characterProfileUrl || '/default-image.png'} />
       </Head> 추후 메타 처리*/}
 
-      <div className={styles.followingContainer}>
-        <div className={styles.followingBox}>
-          <span className={styles.followingText}>
-            {curFollowFeatured && <>Featured</>}
-            {!curFollowFeatured && <>Following</>}
-          </span>
-          <div
-            className={styles.iconArrowDown}
-            onClick={() => {
-              setIsOpenFollowFeatured(!isOpenFollowFeatured);
-            }}
-          >
-            <img src={LineArrowDown.src}></img>
+      {!isProfile && (
+        <>
+          <div className={styles.tabContainer}>
+            <button
+              className={`${styles.tab} ${selectedTab === RecommendState.Following ? styles.active : ''}`}
+              onClick={() => {
+                setSelectedTab(RecommendState.Following);
+                dispatch(setRecommendState(1));
+                pushLocalizedRoute('/main/homefeed', router, true, true);
+              }}
+            >
+              Following
+            </button>
+            <button
+              className={`${styles.tab} ${selectedTab === RecommendState.ForYou ? styles.active : ''}`}
+              onClick={() => {
+                setSelectedTab(RecommendState.ForYou);
+                dispatch(setRecommendState(0));
+                pushLocalizedRoute('/main/homefeed', router, true, true);
+              }}
+            >
+              For You
+            </button>
           </div>
-        </div>
-      </div>
-
-      {isOpenFollowFeatured && (
-        <div
-          className={styles.featuredContainer}
-          onClick={() => {
-            setCurFollowFeatured(!curFollowFeatured);
-          }}
-        >
-          <span className={styles.featuredText}>
-            {' '}
-            {curFollowFeatured && <>Following</>}
-            {!curFollowFeatured && <>Featured</>}
-          </span>
-          <div className={styles.featuredIcon}>
-            <div className={styles.iconCircle}>
-              <img src={LineFeatured.src}></img>
-            </div>
-          </div>
-        </div>
+        </>
       )}
       <div className={styles.reelsWrapper}>
         {info.map((item, index) => (
           <div key={index} className={styles.reelSlide}>
-            <ReelsContent item={item} isActive={index === currentSlideIndex} isMute={isMute} setIsMute={setIsMute} />
+            <ReelsContent
+              item={item}
+              isActive={index === currentSlideIndex}
+              isMute={isMute}
+              setIsMute={setIsMute}
+              setIsProfile={setIsProfile}
+            />
           </div>
         ))}
       </div>

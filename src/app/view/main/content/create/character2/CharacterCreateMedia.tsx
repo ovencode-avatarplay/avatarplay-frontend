@@ -2,8 +2,6 @@ import {BoldInfo, LineArrowDown, LineDelete, LineEdit} from '@ui/Icons';
 import styles from './CharacterCreateMedia.module.css';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
-import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
-import {useState} from 'react';
 import {CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
 
 interface Props {
@@ -14,6 +12,8 @@ interface Props {
   handleSelected: (value: number) => void;
   handleAddMediaItem: () => void;
   handleDeleteMediaItem: (index: number) => void;
+  handleEditMediaItem: (index: number) => void;
+  handleMoveMediaItem: (index: number, direction: 'up' | 'down') => void;
 }
 
 const CharacterCreateMedia: React.FC<Props> = ({
@@ -24,6 +24,8 @@ const CharacterCreateMedia: React.FC<Props> = ({
   handleSelected,
   handleAddMediaItem,
   handleDeleteMediaItem,
+  handleEditMediaItem,
+  handleMoveMediaItem,
 }) => {
   let mediaInfoDesc = `This image is displayed during conversation. If you describe each scene, AI shows it according to the situation. Please write the scene description in English if possible. {{char}} and {{user}} can also be used.`;
 
@@ -33,11 +35,13 @@ const CharacterCreateMedia: React.FC<Props> = ({
     handlerPromptChange: (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => void,
     handlerSelected: (value: number) => void,
     handleDelete: (index: number) => void,
+    handleEdit: (index: number) => void,
+    handleMove: (index: number, direction: 'up' | 'down') => void,
   ) => {
     return (
       <div className={styles.mediaItem}>
         <div className={styles.mediaItemContent}>
-          <img className={styles.mediaImage} src={item.imageUrl} />
+          <img className={styles.mediaImage} src={item.imageUrl} onClick={() => handlerSelected(index)} />
           <div className={styles.imageExplainArea}>
             <MaxTextInput
               inputDataType={inputType.None}
@@ -53,28 +57,20 @@ const CharacterCreateMedia: React.FC<Props> = ({
                 <button className={styles.mediaItemButton} onClick={() => handleDelete(index)}>
                   <img className={styles.mediaButtonIcon} src={LineDelete.src} />
                 </button>
-                <button className={styles.mediaItemButton}>
+                <button className={styles.mediaItemButton} onClick={() => handleEdit(index)}>
                   <img className={styles.mediaButtonIcon} src={LineEdit.src} />
                 </button>
               </div>
 
               <div className={styles.rightButtonGroup}>
-                {/* Profile Image
-                <CustomRadioButton
-                  displayType="buttonOnly"
-                  shapeType="square"
-                  value={index}
-                  selectedValue={selectedItemIdx}
-                  onSelect={(value: string | number) => handlerSelected(Number(value))}
-                /> */}
-                <button className={styles.moveItemIndexButton} onClick={() => {}}>
+                <button className={styles.moveItemIndexButton} onClick={() => handleMove(index, 'up')}>
                   <img
                     className={styles.moveItemIndexIcon}
                     src={LineArrowDown.src}
                     style={{transform: 'rotate(180deg)'}}
                   />
                 </button>
-                <button className={styles.moveItemIndexButton} onClick={() => {}}>
+                <button className={styles.moveItemIndexButton} onClick={() => handleMove(index, 'down')}>
                   <img className={styles.moveItemIndexIcon} src={LineArrowDown.src} />
                 </button>
               </div>
@@ -93,23 +89,35 @@ const CharacterCreateMedia: React.FC<Props> = ({
         </div>
         <div className={styles.mediaInfoDecs}>{mediaInfoDesc}</div>
       </div>
-      <div className={styles.mediaButtonArea}>
-        <CustomButton
-          size="Small"
-          state="Normal"
-          type="Primary"
-          onClick={onClickCreateMedia}
-          customClassName={[styles.mediaAddButton]}
-        >
-          Create
-        </CustomButton>
-      </div>
+      <div className={styles.mediaItemArea}>
+        <div className={styles.mediaButtonArea}>
+          <CustomButton
+            size="Small"
+            state="Normal"
+            type="Primary"
+            onClick={onClickCreateMedia}
+            customClassName={[styles.mediaAddButton]}
+          >
+            Add
+          </CustomButton>
+        </div>
 
-      <ul className={styles.mediaList}>
-        {mediaItems.map((item, index) =>
-          renderMediaItem(item, index, handlePromptChange, handleSelected, handleDeleteMediaItem),
-        )}
-      </ul>
+        <ul className={styles.mediaList}>
+          {mediaItems?.map((item, index) => (
+            <li key={item.id ?? index}>
+              {renderMediaItem(
+                item,
+                index,
+                handlePromptChange,
+                handleSelected,
+                handleDeleteMediaItem,
+                handleEditMediaItem,
+                handleMoveMediaItem,
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

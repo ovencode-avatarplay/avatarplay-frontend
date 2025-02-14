@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {Children, ReactNode} from 'react';
 import styles from './SelectDrawer.module.css';
 import {LineCheck} from '@ui/Icons';
 import {Drawer} from '@mui/material';
+import cx from 'classnames';
 
 export interface SelectDrawerItem {
   name: string;
@@ -14,9 +15,10 @@ interface SelectDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   selectedIndex: number;
+  children?: ReactNode;
 }
 
-const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, selectedIndex}) => {
+const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, selectedIndex, children}) => {
   return (
     <>
       {isOpen && <div className={styles.selectDrawerBack} onClick={onClose}></div>}
@@ -34,9 +36,11 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, sele
             borderTopRightRadius: '24px',
           },
         }}
-        BackdropProps={{
-          sx: {
-            background: 'rgba(0, 0, 0, 0.70)',
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: 'inherit', // 원하는 배경색 적용
+            },
           },
         }}
         style={{zIndex: '1399'}}
@@ -44,7 +48,8 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, sele
         <div className={styles.handleArea}>
           <div className={styles.handleBar}></div>
         </div>
-        <div className={styles.drawerBox}>
+        {children && <div className={styles.customContent}>{children}</div>}
+        <div className={cx(styles.drawerBox, styles.maxHeight)}>
           {items.map((item, idx) => (
             <button
               key={idx}

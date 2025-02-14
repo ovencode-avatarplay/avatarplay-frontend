@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import ContentDashboardHeader from '../content-main/content-dashboard/ContentDashboardHeader';
-import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import styles from './PostMain.module.css';
 import {BoldPlay, CircleClose, LineUpload} from '@ui/Icons';
@@ -10,7 +10,7 @@ import TriggerImageGrid from '../content-main/episode/episode-trigger/TriggerIma
 import ReactPlayer from 'react-player';
 import {stat} from 'fs';
 import PostImageGrid from './PostImageGrid';
-import {FeedInfo, sendCreateFeed} from '@/app/NetWork/ShortsNetwork';
+import {FeedInfo, RequestCreateFeed, sendCreateFeed} from '@/app/NetWork/ShortsNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 
@@ -207,7 +207,7 @@ const PostMain: React.FC<Props> = () => {
       return;
     }
 
-    const feedInfo: FeedInfo = {
+    const _feedInfo: FeedInfo = {
       id: 0,
       urlLinkKey: '',
       mediaState: state, // 예시 값
@@ -224,9 +224,15 @@ const PostMain: React.FC<Props> = () => {
       characterProfileName: '',
       characterProfileUrl: '',
       createAt: new Date(),
+      isFollowing: false,
+    };
+
+    const createFeedReq: RequestCreateFeed = {
+      languageType: getCurrentLanguage(),
+      feedInfo: _feedInfo,
     };
     setLoading(true);
-    const result = await sendCreateFeed(feedInfo);
+    const result = await sendCreateFeed(createFeedReq);
     setLoading(false);
     if (result.resultCode === 0) {
       setPublishPopup(true);

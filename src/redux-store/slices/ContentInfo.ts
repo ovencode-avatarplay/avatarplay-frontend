@@ -5,6 +5,7 @@ import {RootState} from '../ReduxStore';
 
 // JSON 파일
 import emptyContent from '@/data/create/empty-content-info-data.json';
+import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 
 //#region export Interface
 
@@ -80,42 +81,56 @@ export interface EpisodeDescription {
 
 export interface CharacterInfo {
   id: number;
-  languageType: number;
+  languageType: LanguageType;
   name: string;
   characterDescription: string;
-  urlLinkKey: string;
-  genderType: number;
-
+  urlLinkKey: string | null;
+  genderType: GenderType;
   introduction: string;
   description: string;
   worldScenario: string;
   greeting: string;
   secret: string;
-
-  customModulesPrompt: string;
-  customModulesLorebook: string;
-
+  chatCount: number;
+  chatUserCount: number;
   mainImageUrl: string;
   portraitGalleryImageUrl: GalleryImageInfo[];
   poseGalleryImageUrl: GalleryImageInfo[];
   expressionGalleryImageUrl: GalleryImageInfo[];
   mediaTemplateList: CharacterMediaInfo[];
-  conversationTemplateList: Conversation[];
-  visibilityType: number;
-  llmModel: number;
+  conversationTemplateList: ConversationInfo[];
+  visibilityType: VisibilityType;
+  lLMModel: LLMModel;
   tag: string;
-  positionCountry: number;
-  characterIP: number;
+  positionCountryList: LanguageType[];
+  characterIP: CharacterIP;
   recruitedProfileId: number;
   operatorInvitationProfileId: number[];
-
   isMonetization: boolean;
-  nsfw: boolean;
+  nSFW: boolean;
   membershipSetting: MembershipSetting;
-  state: number;
-
+  customModulesInfo: CustomModulesInfo;
+  pdProfileSimpleInfo: ProfileSimpleInfo;
+  state: CharacterState;
   createAt: string;
   updateAt: string;
+}
+
+export interface CustomModulesInfo {
+  promptInfoList: PromptInfo[];
+  selectPromptIndex: number;
+  lorebookInfoList: LorebookInfo[];
+  selectLorebookIndex: number;
+}
+
+export interface PromptInfo {
+  id: number;
+  name: string;
+}
+
+export interface LorebookInfo {
+  id: number;
+  name: string;
 }
 
 export interface CharacterMediaInfo {
@@ -223,46 +238,6 @@ export interface GalleryImageInfo {
   isGenerate: boolean;
   debugParameter: string;
   imageUrl: string;
-}
-
-export interface CharacterInfoForCreate {
-  id: number;
-  languageType: number;
-  name: string;
-  characterDescription: string;
-  urlLinkKey: string;
-  genderType: number;
-
-  introduction: string;
-  description: string;
-  worldScenario: string;
-  greeting: string;
-  secret: string;
-
-  customModulesPrompt: string;
-  customModulesLorebook: string;
-
-  mainImageUrl: string;
-  portraitGalleryImageUrl: GalleryImageInfo[];
-  poseGalleryImageUrl: GalleryImageInfo[];
-  expressionGalleryImageUrl: GalleryImageInfo[];
-  mediaTemplateList: CharacterMediaInfo[];
-  conversationTemplateList: Conversation[];
-  visibilityType: number;
-  llmModel: number;
-  tag: string;
-  positionCountry: number;
-  characterIP: number;
-  recruitedProfileId: number;
-  operatorInvitationProfileId: number[];
-
-  isMonetization: boolean;
-  nsfw: boolean;
-  membershipSetting: MembershipSetting;
-  state: number;
-
-  createAt: string;
-  updateAt: string;
 }
 
 export interface CharacterMediaInfo {

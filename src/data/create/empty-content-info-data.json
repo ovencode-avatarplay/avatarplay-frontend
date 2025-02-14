@@ -9,8 +9,7 @@
       "chapterInfoList": [
         {
           "id": -1,
-          "name": "",
-          "thumbnail": "",
+          "name": "", 
           "episodeInfoList": [
             {
               "id": -1,
@@ -30,8 +29,8 @@
                 "greeting": "",
                 "secret": "",
                 
-                "customModulesPrompt": "",
-                "customModulesLorebook": "",
+                "chatCount": 0,
+                "chatUserCount": 0, 
 
                 "mainImageUrl": "",
                 "portraitGalleryImageUrl": [],
@@ -41,20 +40,42 @@
                 "conversationTemplateList": [],
 
                 "visibilityType": 0,
-                "llmModel" :"",
+                "lLMModel" : 0,
                 "tag": "",
-                "positionCountry": 0,
+                "positionCountryList": [],
                 "characterIP": 0,
                 "recruitedProfileId": 0,
                 "operatorInvitationProfileId": [],
                 
                 "isMonetization": false,
-                "nsfw": false,
+                "nSFW": false,
                 "membershipSetting": {
                   "subscription": 0,
                   "paymentType": 0,
                   "paymentAmount": 0,
                   "benefits": ""
+                },
+                "customModulesInfo": {
+                  "promptInfoList": [
+                    {
+                      "id": 0,
+                      "name": "string"
+                    }
+                  ],
+                  "selectPromptIndex": 0,
+                  "lorebookInfoList": [
+                    {
+                      "id": 0,
+                      "name": "string"
+                    }
+                  ],
+                  "selectLorebookIndex": 0
+                },
+                "pdProfileSimpleInfo": {
+                  "id": 0,
+                  "type": 0,
+                  "name": "string",
+                  "iconImageUrl": "string"
                 },
                 "state": 1,
                 

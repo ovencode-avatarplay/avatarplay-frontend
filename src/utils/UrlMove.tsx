@@ -5,7 +5,7 @@ import {getAuth, LanguageType} from '@/app/NetWork/AuthNetwork';
 import {getLangUrlCode} from '@/configs/i18n';
 import {setLanguage} from '@/redux-store/slices/UserInfo';
 import {store} from '@/redux-store/ReduxStore';
-import {getBrowserLanguage, getLanguageFromURL, getLanguageTypeFromText} from './browserInfo';
+import {getBrowserLanguage, getLanguageFromURL, getLanguageTypeFromText, getWebBrowserUrl} from './browserInfo';
 import {updateProfile} from '@/redux-store/slices/Profile';
 
 // 로그인상태인가
@@ -45,21 +45,21 @@ export const refreshLanaguage = (language: LanguageType | undefined, router: Ret
       // 이미 같은 언어이면 패스
       if (language === getLanguageTypeFromText(getLanguageFromURL())) return;
 
-      dispatch(setLanguage(language));
+      //dispatch(setLanguage(language));
 
-      const newLocale = getLangUrlCode(language) || 'en-US';
-      Cookies.set('language', String(newLocale), {expires: 365});
-      changeLanguageAndRoute(language, router, i18n);
+      //const newLocale = getLangUrlCode(language) || 'en-US';
+      //Cookies.set('language', String(newLocale), {expires: 365});
+      //changeLanguageAndRoute(language, router, i18n);
       //alert('언어를 바꿔요:' + newLocale);
     } else {
       const browserLang = getBrowserLanguage();
       if (language === browserLang) return; // 이미 같은 언어이면 패스
-      dispatch(setLanguage(browserLang));
+      //dispatch(setLanguage(browserLang));
 
-      const newLocale = getLangUrlCode(browserLang) || 'en-US';
-      Cookies.set('language', String(newLocale), {expires: 365});
+      //const newLocale = getLangUrlCode(browserLang) || 'en-US';
+      //Cookies.set('language', String(newLocale), {expires: 365});
 
-      changeLanguageAndRoute(browserLang, router, i18n);
+      //changeLanguageAndRoute(browserLang, router, i18n);
 
       //alert('언어를 바꿔요:' + newLocale);
     }
@@ -73,9 +73,12 @@ export const refreshLanaguage = (language: LanguageType | undefined, router: Ret
   }
 };
 
-// 현재 언어 가져오기 (쿠키에서)
+// 현재 언어 가져오기 (url에서..)
 export const getCurrentLanguage = (): string => {
-  return Cookies.get('language') || 'en-US';
+  //return Cookies.get('language') || 'en-US';
+  const language: string | null = getLanguageFromURL();
+  if (language === null) return /*Cookies.get('language') ||*/ navigator.language; // 기본값은 브라우저 설정언어
+  else return language;
 };
 
 // 언어에 맞는 URL 생성 함수
@@ -85,18 +88,31 @@ export const getLocalizedLink = (path: string): string => {
 };
 
 // 현재 언어에 맞는 URL로 라우팅 함수
-export const pushLocalizedRoute = (path: string, router: ReturnType<typeof useRouter>, isReload = true) => {
+export const pushLocalizedRoute = (
+  path: string,
+  router: ReturnType<typeof useRouter>,
+  isReload = true,
+  forceReload = false,
+) => {
   const localizedUrl = getLocalizedLink(path);
 
-  // 브라우저에서 현재 URL 확인
+  // 현재 브라우저 URL 확인
   const currentUrl = window.location.href;
   const newUrl = new URL(localizedUrl, window.location.origin);
 
   if (currentUrl !== newUrl.href) {
+    // ✅ 다른 URL일 경우, 일반적인 라우팅 수행
     if (isReload) {
       router.push(localizedUrl);
     } else {
       window.history.replaceState(null, '', localizedUrl);
+    }
+  } else if (forceReload) {
+    // ✅ 같은 URL이지만 강제 리로드할 경우
+    if (isReload) {
+      router.replace(localizedUrl); // Next.js의 히스토리 변경 방식
+    } else {
+      window.location.reload(); // 완전한 새로고침
     }
   }
 };

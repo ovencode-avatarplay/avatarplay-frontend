@@ -13,7 +13,7 @@ import logoTalkain from '@ui/logo_talkain.png';
 import UserDropdown from '@shared/UserDropdown';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
-import {BoldAlert, BoldRuby, BoldStar, LineMenu} from '@ui/Icons';
+import {BoldAlert, BoldReward, BoldRuby, BoldStar, LineMenu} from '@ui/Icons';
 import {useDispatch} from 'react-redux';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import HamburgerBar from './HamburgerBar';
@@ -53,10 +53,23 @@ const HeaderNavBar = () => {
             <div className={styles.currencyText}>{curStar}</div>
           </div>
         </div>
-        <button className={styles.notification} onClick={() => {}}>
-          <img className={styles.notificationIcon} src={BoldAlert.src} />
-          <div className={styles.redDot}></div>
-        </button>
+
+        <div className={styles.buttons}>
+          <Link href={getLocalizedLink('/main/game')}>
+            <button
+              onClick={() => {
+                dispatch(setSelectedIndex(2));
+                dispatch(setBottomNavColor(1));
+              }}
+            >
+              <img className={styles.rewardIcon} src={BoldReward.src} />
+            </button>
+          </Link>
+          <button className={styles.notification} onClick={() => {}}>
+            <img className={styles.notificationIcon} src={BoldAlert.src} />
+            <div className={styles.redDot}></div>
+          </button>
+        </div>
         {/* <UserDropdown /> */}
       </div>
       <HamburgerBar

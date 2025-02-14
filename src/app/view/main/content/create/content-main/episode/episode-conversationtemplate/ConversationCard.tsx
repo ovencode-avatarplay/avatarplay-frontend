@@ -5,13 +5,13 @@ import {ChatRoundDots, Close, Description2} from '@ui/chatting';
 import TextField from '@mui/material/TextField';
 import ConversationCardDropDown from './ConversationCardDropDown';
 
-interface Bar {
+export interface Bar {
   id: string;
   inputValue: string;
   type: 'dots' | 'description';
 }
 
-interface CardData {
+export interface CardData {
   id: string; // 고유 ID
   priorityType: number;
   userBars: Bar[]; // User 데이터
@@ -56,170 +56,109 @@ const ConversationCard: React.FC<ConversationCardProps> = ({card, moveUp, moveDo
     onUpdate({priorityType: newPriorityType});
   };
 
+  const renderChatGroup = (type: 'userBars' | 'charBars', avatarSrc: string, label: string) => (
+    <div className={styles.chatGroup}>
+      <div className={styles.userAvatar}>
+        <img src={avatarSrc} width={30} height={48} alt={`${label} Avatar`} />
+        {label}
+      </div>
+      <div className={styles.barGroup}>
+        {card[type].map((bar, index) => (
+          <div key={bar.id} className={styles.inputBar}>
+            <div className={styles.body}>
+              <div className={styles.inputGroup}>
+                <button
+                  type="button"
+                  className={styles.iconButton}
+                  onClick={() => handleTypeToggle(type, bar.id)}
+                  aria-label="Toggle Chat Type"
+                >
+                  <img
+                    src={bar.type === 'dots' ? ChatRoundDots.src : Description2.src}
+                    width={bar.type === 'dots' ? 16 : 24}
+                    height={bar.type === 'dots' ? 16 : 24}
+                    alt="Toggle Icon"
+                  />
+                </button>
+                <TextField
+                  multiline
+                  maxRows={4}
+                  value={bar.inputValue}
+                  onChange={e => handleInputChange(type, bar.id, e.target.value)}
+                  placeholder="Write a message"
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      padding: '4px 1px',
+                      fontFamily: 'Lato',
+                      fontSize: '14px',
+                      color: '#9aa0a6',
+                    },
+                    '& .MuiOutlinedInput-notchedOutline': {borderColor: 'transparent'},
+                    '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {borderColor: '#e8eaed'},
+                    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {borderColor: '#e8eaed'},
+                  }}
+                />
+                {index > 0 && (
+                  <button type="button" className={styles.closeButton} onClick={() => handleRemoveBar(type, bar.id)}>
+                    <img src={Close.src} alt="Remove" />
+                  </button>
+                )}
+              </div>
+            </div>
+            {index === 0 && (
+              <button
+                type="button"
+                className={styles.plusButton}
+                onClick={() => handleAddBar(type)}
+                aria-label="Add Bar"
+              >
+                <img src={PlusBubble.src} alt="Add" />
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className={styles.card}>
       {/* 헤더 영역 */}
       <div className={styles.header}>
         {card.priorityType === 0 ? 'Mandatory' : 'Depends on Situation'}
         <div style={{display: 'flex'}}>
-          <div
-            className={styles.arrowIcon}
+          <button
+            className={styles.arrowButton}
             onClick={() => {
               moveUp();
             }}
           >
             <img src={BoldArrowDown.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
-          </div>
-          <div
-            className={styles.arrowIcon}
+          </button>
+          <button
+            className={styles.arrowButton}
             onClick={() => {
               moveDown();
             }}
           >
             <img src={BoldArrowDown.src} alt="Main" />
-          </div>
-          <div
-            className={styles.blackIcon}
+          </button>
+          <button
+            className={styles.menuDotButton}
             onClick={() => {
               setIsDropDown(true);
             }}
           >
             <img src={BoldMenuDots.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
-          </div>
+          </button>
         </div>
       </div>
 
-      {/* 유저 영역 */}
-      <div className={styles.chatGroup}>
-        <div className={styles.userAvatar}>
-          <img src={ProfileUser.src} style={{width: '30px', height: '48px'}} alt="User Avatar" />
-          User
-        </div>
-        <div className={styles.barGroup}>
-          {card.userBars.map((bar, index) => (
-            <div key={bar.id} className={styles.inputBar}>
-              <div className={styles.body}>
-                <div className={styles.inputGroup}>
-                  <div className={styles.icon} onClick={() => handleTypeToggle('userBars', bar.id)}>
-                    <img
-                      src={bar.type === 'dots' ? ChatRoundDots.src : Description2.src}
-                      style={{
-                        width: bar.type === 'dots' ? '16px' : '24px',
-                        height: bar.type === 'dots' ? '16px' : '24px',
-                      }}
-                      alt="Toggle Icon"
-                    />
-                  </div>
-                  <div style={{width: '100%'}}>
-                    <TextField
-                      multiline
-                      maxRows={4}
-                      value={bar.inputValue} // Redux 데이터를 바인딩
-                      onChange={e => handleInputChange('userBars', bar.id, e.target.value)}
-                      placeholder="Write a message"
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          padding: '4px 1px',
-                          fontFamily: 'Lato ',
-                          fontSize: '14px',
-                          color: '#9aa0a6',
-                        },
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'transparent',
-                        },
-                        '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#e8eaed',
-                        },
-                        '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#e8eaed',
-                        },
-                      }}
-                    />
-                  </div>
-                  {index > 0 && (
-                    <div onClick={() => handleRemoveBar('userBars', bar.id)} className={styles.closeButton}>
-                      <img src={Close.src} alt="Close Button" />
-                    </div>
-                  )}
-                </div>
-              </div>
-              {index === 0 && (
-                <div className={styles.plusButton} onClick={() => handleAddBar('userBars')}>
-                  <img src={PlusBubble.src} alt="Add Button" />
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
+      {renderChatGroup('userBars', ProfileUser.src, 'User')}
+      {renderChatGroup('charBars', ProfileChar.src, 'Char')}
 
-      {/* 캐릭터 영역 */}
-      <div className={styles.chatGroup}>
-        <div className={styles.userAvatar}>
-          <img src={ProfileChar.src} style={{width: '30px', height: '48px'}} alt="Char Avatar" />
-          Char
-        </div>
-        <div className={styles.barGroup}>
-          {card.charBars.map((bar, index) => (
-            <div key={bar.id} className={styles.inputBar}>
-              <div className={styles.body}>
-                <div className={styles.inputGroup}>
-                  <div className={styles.icon} onClick={() => handleTypeToggle('charBars', bar.id)}>
-                    <img
-                      src={bar.type === 'dots' ? ChatRoundDots.src : Description2.src}
-                      style={{
-                        width: bar.type === 'dots' ? '16px' : '24px',
-                        height: bar.type === 'dots' ? '16px' : '24px',
-                      }}
-                      alt="Toggle Icon"
-                    />
-                  </div>
-                  <div style={{width: '100%'}}>
-                    <TextField
-                      multiline
-                      maxRows={4}
-                      value={bar.inputValue} // Redux 데이터를 바인딩
-                      onChange={e => handleInputChange('charBars', bar.id, e.target.value)}
-                      placeholder="Write a message"
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          padding: '4px 1px',
-                          fontFamily: 'Lato ',
-                          fontSize: '14px',
-                          color: '#9aa0a6',
-                        },
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'transparent',
-                        },
-                        '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#e8eaed',
-                        },
-                        '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#e8eaed',
-                        },
-                      }}
-                    />
-                  </div>
-                  {index > 0 && (
-                    <div onClick={() => handleRemoveBar('charBars', bar.id)} className={styles.closeButton}>
-                      <img src={Close.src} alt="Close Button" />
-                    </div>
-                  )}
-                </div>
-              </div>
-              {index === 0 && (
-                <div className={styles.plusButton} onClick={() => handleAddBar('charBars')}>
-                  <img src={PlusBubble.src} alt="Add Button" />
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
       {isDropDown && (
         <>
           <div className={styles.editDropdDownBack} onClick={() => setIsDropDown(false)}></div>

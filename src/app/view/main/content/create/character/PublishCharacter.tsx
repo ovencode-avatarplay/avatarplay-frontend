@@ -9,12 +9,15 @@ import {
 } from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 
+import emptyContentInfo from '@/data/create/empty-content-info-data.json';
+
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import CustomSettingButton from '@/components/layout/shared/CustomSettingButton';
 import {LineDelete} from '@ui/Icons';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 interface PublishCharacterProps {
   characterInfo: Partial<CharacterInfo>;
@@ -40,47 +43,8 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const defaultCharacterInfo: CharacterInfo = {
-    id: 0,
-    name: '',
-    introduction: '',
-    description: '',
-
-    worldScenario: '',
-    greeting: '',
-    secret: '',
-
-    genderType: 0,
-    mainImageUrl: '',
-    portraitGalleryImageUrl: [],
-    poseGalleryImageUrl: [],
-    expressionGalleryImageUrl: [],
-    visibilityType: 0,
-    isMonetization: false,
-    state: 0,
-    characterDescription: '',
-    characterIP: 0,
-    conversationTemplateList: [],
-    createAt: '2025-02-06T06:22:46.701Z',
-    customModulesLorebook: '',
-    customModulesPrompt: '',
-    languageType: 0,
-    llmModel: 0,
-    mediaTemplateList: [],
-    membershipSetting: {
-      benefits: '',
-      paymentAmount: 0,
-      paymentType: 0,
-      subscription: 0,
-    },
-    nsfw: false,
-    operatorInvitationProfileId: [],
-    positionCountry: 0,
-    recruitedProfileId: 0,
-    tag: '',
-    updateAt: '2025-02-06T06:22:46.701Z',
-    urlLinkKey: '',
-  };
+  const defaultCharacterInfo: CharacterInfo =
+    emptyContentInfo.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo;
 
   const mergedCharacterInfo: CharacterInfo = {
     ...defaultCharacterInfo,
@@ -138,7 +102,10 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
     try {
       // 사용자의 입력 데이터를 수집하여 CreateCharacterReq로 구성
       const req: CreateCharacter2Req = {
+        languageType: getCurrentLanguage(),
         characterInfo: {
+          ...emptyContentInfo.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo,
+
           id: currentCharacter.id ?? 0,
           name: characterName,
           introduction: characterIntroduction,
@@ -151,35 +118,13 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
           genderType: currentCharacter.genderType,
           mainImageUrl: currentCharacter.mainImageUrl,
 
-          portraitGalleryImageUrl: [],
-          poseGalleryImageUrl: [],
-          expressionGalleryImageUrl: [],
-          visibilityType: visibilityType, // Visibility를 숫자로 변환
+          visibilityType: visibilityType,
           isMonetization: monetization,
           state: 1,
 
-          characterDescription: '',
           characterIP: 0,
-          conversationTemplateList: [],
           createAt: '2025-02-06T06:22:46.701Z',
-          customModulesLorebook: '',
-          customModulesPrompt: '',
-          languageType: 0,
-          llmModel: 0,
-          mediaTemplateList: [],
-          membershipSetting: {
-            benefits: '',
-            paymentAmount: 0,
-            paymentType: 0,
-            subscription: 0,
-          },
-          nsfw: false,
-          operatorInvitationProfileId: [],
-          positionCountry: 0,
-          recruitedProfileId: 0,
-          tag: '',
-          updateAt: '2025-02-06T06:22:46.701Z',
-          urlLinkKey: '',
+          nSFW: false,
         },
         debugParameter: debugparam,
       };

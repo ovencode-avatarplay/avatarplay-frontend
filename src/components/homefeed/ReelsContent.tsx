@@ -32,19 +32,22 @@ import ChatMediaDialog from '@/app/view/main/content/Chat/MainChat/ChatMediaDial
 import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainChat/ChatTypes';
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
+import ProfileBase from '@/app/view/profile/ProfileBase';
+import {followProfile} from '@/app/NetWork/ProfileNetwork';
 
 interface ReelsContentProps {
   item: FeedInfo;
   isActive: boolean; // 현재 슬라이드인지 확인
   isMute: boolean;
   setIsMute: (mute: boolean) => void; // boolean 매개변수 추가
+  setIsProfile: (profile: boolean) => void; // boolean 매개변수 추가
 }
 
-const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setIsMute}) => {
+const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setIsMute, setIsProfile}) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-  const [isFollow, setIsFollow] = useState(false);
+  const [isFollow, setIsFollow] = useState(item.isFollowing);
   const [isLike, setIsLike] = useState(item.isLike);
   const [isDisLike, setIsDisLike] = useState(item.isDisLike);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -125,6 +128,13 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
       }
     } catch (error) {
       console.error('An error occurred while liking/unliking the feed:', error);
+    }
+  };
+  const handleFollow = async (profileId: number, value: boolean) => {
+    try {
+      const response = await followProfile(profileId, value);
+    } catch (error) {
+      console.error('An error occurred while Following:', error);
     }
   };
   const sendShare = async () => {
@@ -220,242 +230,264 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
     );
   }, []);
   const isMobile = checkMobileOrTablet();
+  const [activeIndexProfile, setActiveIndexProfile] = useState(0);
 
+  const handleSlideChangeProfile = (swiper: any) => {
+    swiper.allowSlidePrev = true; // 다시 이동 가능하게 설정
+    swiper.allowSlideNext = true;
+
+    // 기존 onSlideChange 로직 추가
+    setActiveIndexProfile(swiper.activeIndex);
+    if (swiper.activeIndex === 1) setIsProfile(true);
+    else if (swiper.activeIndex === 0) setIsProfile(false);
+  };
   return (
     <div className={styles.reelsContainer}>
-      <div className={`${styles.mainContent}  ${!isMobile && styles.limitWidth}`}>
-        <div className={styles.Image}>
-          {item.mediaState === 1 && (
-            <img
-              src={item?.mediaUrlList[0]}
-              loading="lazy"
-              style={{width: '100%', height: 'calc(100% - 4px)', objectFit: 'contain'}}
-            />
-          )}
-          {item.mediaState === 2 && (
-            <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
-              <ReactPlayer
-                ref={playerRef} // ReactPlayer 참조 연결
-                muted={isMute}
-                url={item.mediaUrlList[0]} // 첫 번째 URL 사용
-                playing={isPlaying} // 재생 상태
-                loop={true}
-                width="100%"
-                playsinline={true}
-                height="calc(100% - 4px)"
-                style={{
-                  borderRadius: '8px',
-                }}
-                config={{
-                  file: {
-                    attributes: {
-                      style: {
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
+      <Swiper
+        direction="horizontal"
+        slidesPerView={1}
+        centeredSlides={true}
+        scrollbar={{draggable: true}}
+        onSlideChange={handleSlideChangeProfile}
+        className={`${styles.mainContent}  ${!isMobile && styles.limitWidth}`}
+        resistanceRatio={0}
+        touchReleaseOnEdges={true} // ✅ 끝에서 터치 이벤트 해제 (빈 공간 방지)
+        preventClicks={true} // ✅ 클릭 시 이벤트가 Swiper 내부에서만 처리되도록 함
+      >
+        <SwiperSlide style={{height: '100%'}}>
+          <div className={styles.Image}>
+            {item.mediaState === 1 && (
+              <img src={item?.mediaUrlList[0]} loading="lazy" style={{width: '100%', height: '100%'}} />
+            )}
+            {item.mediaState === 2 && (
+              <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
+                <ReactPlayer
+                  ref={playerRef} // ReactPlayer 참조 연결
+                  muted={isMute}
+                  url={item.mediaUrlList[0]} // 첫 번째 URL 사용
+                  playing={isPlaying} // 재생 상태
+                  loop={true}
+                  width="100%"
+                  playsinline={true}
+                  height="calc(100% - 4px)"
+                  style={{
+                    borderRadius: '8px',
+                    objectFit: 'contain',
+                  }}
+                  config={{
+                    file: {
+                      attributes: {
+                        style: {
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain',
+                        },
                       },
                     },
-                  },
-                }}
-                progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
-                onProgress={({playedSeconds}) => {
-                  handleVideoProgress(playedSeconds);
+                  }}
+                  progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
+                  onProgress={({playedSeconds}) => {
+                    handleVideoProgress(playedSeconds);
 
-                  setCurrentProgress(formatDuration(playedSeconds));
-                }} // 비디오 진행도 업데이트
-                onDuration={(duration: number) => {
-                  setVideoDuration(duration);
-                }} // 영상 길이 설정
+                    setCurrentProgress(formatDuration(playedSeconds));
+                  }} // 비디오 진행도 업데이트
+                  onDuration={(duration: number) => {
+                    setVideoDuration(duration);
+                  }} // 영상 길이 설정
+                />
+
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 10,
+                  }}
+                >
+                  <div className={`${styles.playCircleIcon} ${isClicked ? styles.fadeAndGrow : ''}`}>
+                    <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Progress Bar */}
+          <div className={styles.progressBar}>
+            <div
+              className={styles.progressFill}
+              style={{
+                width:
+                  item.mediaState === 1
+                    ? `${((activeIndex + 1) / item.mediaUrlList.length) * 100}%` // 이미지 슬라이드 진행도
+                    : `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
+                transition: 'width 0.1s linear', // 부드러운 진행도 애니메이션
+              }}
+            ></div>
+          </div>
+
+          <div className={styles.profileBox}>
+            <div className={styles.dim}></div>
+            {/* User Info */}
+            <div className={styles.userInfo}>
+              <Avatar
+                src={item.characterProfileUrl || '/images/001.png'}
+                style={{width: '32px', height: '32px'}}
+                onClick={() => {
+                  pushLocalizedRoute('/profile/' + item?.characterProfileId + '?from=""', router);
+                }}
               />
 
               <div
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  zIndex: 10,
+                className={styles.profileDetails}
+                onClick={() => {
+                  pushLocalizedRoute('/profile/' + item?.characterProfileId + '?from=""', router);
                 }}
               >
-                <div className={`${styles.playCircleIcon} ${isClicked ? styles.fadeAndGrow : ''}`}>
-                  <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
+                <span className={styles.username}>{item.characterProfileName}</span>
+                <span className={styles.sponsored}>Sponsored</span>
+              </div>
+              <button
+                className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
+                onClick={() => {
+                  setIsFollow(!isFollow);
+                  handleFollow(item.characterProfileId, !isFollow);
+                  console.log('isfollow', isFollow);
+                }}
+              >
+                Following
+              </button>
+            </div>
+            {item?.description && (
+              <div className={styles.text_container}>
+                <div
+                  className={styles.text_content}
+                  style={{
+                    maxHeight: isExpanded ? 'none' : '20px',
+                    overflowY: isExpanded ? 'auto' : 'hidden',
+                    width: isExpanded ? '80%' : '100%',
+                  }}
+                  onClick={() => {
+                    toggleExpanded();
+                  }}
+                >
+                  {isExpanded
+                    ? item.description
+                    : item.description.length > 20 // 접힌 상태에서 최대 길이 제한
+                    ? `${item.description.slice(0, 17)}...` // 첫 17글자 + "..."
+                    : item.description}
                 </div>
               </div>
+            )}
+            {/* Video Info */}
+            <div className={styles.videoInfo}>
+              {item.mediaState == 1 && <>Image</>}
+              {item.mediaState == 2 && (
+                <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
+                  <img className={styles.iconVideo} src={BoldVideo.src}></img>
+                  Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
+                </div>
+              )}
+              <div>{formatTimeAgo(item.createAt.toString())}</div>
             </div>
-          )}
-        </div>
+          </div>
 
-        {/* Progress Bar */}
-        <div className={styles.progressBar}>
-          <div
-            className={styles.progressFill}
-            style={{
-              width:
-                item.mediaState === 1
-                  ? `${((activeIndex + 1) / item.mediaUrlList.length) * 100}%` // 이미지 슬라이드 진행도
-                  : `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
-              transition: 'width 0.1s linear', // 부드러운 진행도 애니메이션
-            }}
-          ></div>
-        </div>
-
-        <div className={styles.profileBox}>
-          <div className={styles.dim}></div>
-          {/* User Info */}
-          <div className={styles.userInfo}>
-            <Avatar
-              src={item.characterProfileUrl || '/images/001.png'}
-              style={{width: '32px', height: '32px'}}
+          {/* CTA Buttons */}
+          <div className={styles.ctaButtons}>
+            <div className={styles.textButtons} onClick={() => {}}>
+              <img src={BoldReward.src} className={styles.button}></img>
+            </div>
+            <div
+              className={styles.textButtons}
               onClick={() => {
-                pushLocalizedRoute('/profile/' + item?.characterProfileId, router);
+                handleLikeFeed(item.id, !isLike);
               }}
-            />
+            >
+              <img
+                src={BoldLike.src}
+                className={styles.button}
+                style={{
+                  filter: isLike
+                    ? 'brightness(0) saturate(100%) invert(47%) sepia(57%) saturate(1806%) hue-rotate(287deg) brightness(102%) contrast(98%)'
+                    : 'none', // 기본 상태는 필터 없음
+                }}
+              />
+              <div className={styles.count}>{likeCount}</div>
+            </div>
+
+            {/* Dislike Button */}
+            <div
+              className={styles.textButtons}
+              onClick={() => {
+                handleDisLikeFeed(item.id, !isDisLike);
+              }}
+            >
+              <img
+                src={BoldDislike.src}
+                className={styles.button}
+                style={{
+                  filter: isDisLike
+                    ? 'brightness(0) saturate(100%) invert(69%) sepia(59%) saturate(1244%) hue-rotate(153deg) brightness(102%) contrast(101%)'
+                    : 'none', // 기본 상태는 필터 없음
+                }}
+              />
+            </div>
+            <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
+              <img src={BoldComment.src} className={styles.button}></img>
+              <div className={styles.count}>{commentCount}</div>
+            </div>
+            <div
+              className={styles.noneTextButton}
+              onClick={async () => {
+                handleShare();
+              }}
+            >
+              <img src={BoldShare.src} className={styles.button}></img>
+            </div>
 
             <div
-              className={styles.profileDetails}
+              className={styles.noneTextButton}
               onClick={() => {
-                pushLocalizedRoute('/profile/' + item?.characterProfileId, router);
+                bookmarkFeed();
               }}
             >
-              <span className={styles.username}>{item.characterProfileName}</span>
-              <span className={styles.sponsored}>Sponsored</span>
+              {isBookmarked && <img src={BoldArchive.src} className={styles.button}></img>}
+              {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
             </div>
-            <button
-              className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
+            <div
+              className={styles.noneTextButton}
               onClick={() => {
-                setIsFollow(!isFollow);
-                console.log('isfollow', isFollow);
+                alert('추후 신고 기능 추가');
               }}
             >
-              Follow
-            </button>
-          </div>
-          {item?.description && (
-            <div className={styles.text_container}>
-              <div
-                className={styles.text_content}
-                style={{
-                  maxHeight: isExpanded ? 'none' : '20px',
-                  overflowY: isExpanded ? 'auto' : 'hidden',
-                  width: isExpanded ? '80%' : '100%',
-                }}
-                onClick={() => {
-                  toggleExpanded();
-                }}
-              >
-                {isExpanded
-                  ? item.description
-                  : item.description.length > 20 // 접힌 상태에서 최대 길이 제한
-                  ? `${item.description.slice(0, 17)}...` // 첫 17글자 + "..."
-                  : item.description}
-              </div>
+              <img src={BoldMore.src} className={styles.button}></img>
             </div>
-          )}
-          {/* Video Info */}
-          <div className={styles.videoInfo}>
-            {item.mediaState == 1 && <>Image</>}
-            {item.mediaState == 2 && (
-              <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
-                <img className={styles.iconVideo} src={BoldVideo.src}></img>
-                Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
-              </div>
-            )}
-            <div>{formatTimeAgo(item.createAt.toString())}</div>
-          </div>
-        </div>
-
-        {/* CTA Buttons */}
-        <div className={styles.ctaButtons}>
-          <div className={styles.textButtons} onClick={() => {}}>
-            <img src={BoldReward.src} className={styles.button}></img>
           </div>
           <div
-            className={styles.textButtons}
+            className={styles.volumeButton}
             onClick={() => {
-              handleLikeFeed(item.id, !isLike);
+              if (item.mediaState == 2) setIsMute(!isMute);
+              else if (item.mediaState == 1) setIsImageModal(true);
             }}
           >
-            <img
-              src={BoldLike.src}
-              className={styles.button}
-              style={{
-                filter: isLike
-                  ? 'brightness(0) saturate(100%) invert(47%) sepia(57%) saturate(1806%) hue-rotate(287deg) brightness(102%) contrast(98%)'
-                  : 'none', // 기본 상태는 필터 없음
-              }}
-            />
-            <div className={styles.count}>{likeCount}</div>
-          </div>
+            {/* 검은색 반투명 배경 */}
+            {isMute && <div className={styles.volumeCircleIcon}></div>}
 
-          {/* Dislike Button */}
-          <div
-            className={styles.textButtons}
-            onClick={() => {
-              handleDisLikeFeed(item.id, !isDisLike);
-            }}
-          >
-            <img
-              src={BoldDislike.src}
-              className={styles.button}
-              style={{
-                filter: isDisLike
-                  ? 'brightness(0) saturate(100%) invert(69%) sepia(59%) saturate(1244%) hue-rotate(153deg) brightness(102%) contrast(101%)'
-                  : 'none', // 기본 상태는 필터 없음
-              }}
-            />
-          </div>
-          <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
-            <img src={BoldComment.src} className={styles.button}></img>
-            <div className={styles.count}>{commentCount}</div>
-          </div>
-          <div
-            className={styles.noneTextButton}
-            onClick={async () => {
-              handleShare();
-            }}
-          >
-            <img src={BoldShare.src} className={styles.button}></img>
-          </div>
+            {/* 음소거 상태 아이콘 */}
+            {item.mediaState == 2 && isMute && <img src={BoldVolumeOff.src} className={styles.volumeIcon} />}
 
-          <div
-            className={styles.noneTextButton}
-            onClick={() => {
-              bookmarkFeed();
-            }}
-          >
-            {isBookmarked && <img src={BoldArchive.src} className={styles.button}></img>}
-            {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
+            {/* 볼륨 활성 상태 아이콘 */}
+            {item.mediaState == 2 && !isMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
+
+            {/* 이미지 확대 아이콘 */}
+            {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />}
           </div>
-          <div
-            className={styles.noneTextButton}
-            onClick={() => {
-              alert('추후 신고 기능 추가');
-            }}
-          >
-            <img src={BoldMore.src} className={styles.button}></img>
-          </div>
-        </div>
-        <div
-          className={styles.volumeButton}
-          onClick={() => {
-            if (item.mediaState == 2) setIsMute(!isMute);
-            else if (item.mediaState == 1) setIsImageModal(true);
-          }}
-        >
-          {/* 검은색 반투명 배경 */}
-          {isMute && <div className={styles.volumeCircleIcon}></div>}
-
-          {/* 음소거 상태 아이콘 */}
-          {item.mediaState == 2 && isMute && <img src={BoldVolumeOff.src} className={styles.volumeIcon} />}
-
-          {/* 볼륨 활성 상태 아이콘 */}
-          {item.mediaState == 2 && !isMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
-
-          {/* 이미지 확대 아이콘 */}
-          {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />}
-        </div>
-      </div>
-
+        </SwiperSlide>
+        <SwiperSlide style={{overflowY: 'scroll'}}>
+          {activeIndexProfile === 1 && <ProfileBase profileId={item.characterProfileId} maxWidth={'600px'} />}
+        </SwiperSlide>
+      </Swiper>
       <ReelsComment
         feedId={item.id}
         isOpen={isCommentOpen}

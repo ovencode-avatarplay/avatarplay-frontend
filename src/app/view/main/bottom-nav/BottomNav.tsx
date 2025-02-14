@@ -13,7 +13,7 @@ import CreateWidget from '../content/create/CreateWidget';
 import SelectProfileWidget from '../../profile/SelectProfileWidget';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {useDispatch, useSelector} from 'react-redux';
-import {LinePlus} from '@ui/Icons';
+import {Add_Button, LinePlus} from '@ui/Icons';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
 import UserDropdown from '@/components/layout/shared/UserDropdown';
@@ -96,8 +96,8 @@ export default function BottomNav() {
     // </svg>
   );
 
-  const rewardSvg = (
-    <img style={{filter: checkColor(2)}} src={'/ui/Icons/Bold/Reward.svg'} />
+  const Add_Button = (
+    <img src={'/ui/Icons/Custom/Add_Button.svg'} />
     // <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
     //   <path
     //     fillRule="evenodd"
@@ -146,7 +146,7 @@ export default function BottomNav() {
   const buttonData = [
     {label: 'Home', icon: homeSvg, link: '/main/homefeed'},
     {label: 'Explore', icon: exploreSvg, link: '/main/explore'},
-    {label: 'Reward', icon: rewardSvg, link: '/main/game'},
+    {label: 'Plus', icon: Add_Button, link: ''},
     {label: 'Content', icon: contentSvg, link: '/main/mycontent'},
     {label: 'My', icon: profileSvg, link: '/profile'},
   ];
@@ -167,7 +167,8 @@ export default function BottomNav() {
         <div className={styles.bottomNavBox}>
           {buttonData.map((button, index) => {
             const isMy = button.label == 'My';
-            if (!isMy) {
+            const isPlus = button.label == 'Plus';
+            if (!isMy && !isPlus) {
               return (
                 <Link
                   key={index}
@@ -190,7 +191,7 @@ export default function BottomNav() {
                   </button>
                 </Link>
               );
-            } else {
+            } else if (isMy) {
               return (
                 <div
                   key={index}
@@ -201,18 +202,25 @@ export default function BottomNav() {
                   <UserDropdown />
                 </div>
               );
+            } else if (isPlus) {
+              return (
+                <button
+                  key={index}
+                  className={`${styles.navButton} 
+                    ${selectedIndex === index ? styles.selected : ''} 
+                    ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
+                  onClick={() => {
+                    dispatch(setSkipContentInit(false));
+                    toggleDrawer(!drawerOpen);
+                  }}
+                >
+                  {button.icon}
+                </button>
+              );
             }
           })}
         </div>
-        <button
-          className={styles.createSpeedDial}
-          onClick={() => {
-            dispatch(setSkipContentInit(false));
-            toggleDrawer(!drawerOpen);
-          }}
-        >
-          <img className={styles.speedDialIcon} src={LinePlus.src} />
-        </button>
+
         <CreateWidget open={drawerOpen} onClose={() => toggleDrawer(false)} />
         <SelectProfileWidget
           open={profileDrawerOpen}

@@ -9,10 +9,15 @@
     height: 20px;
 }
 
-.iconQuestion
+.iconToolTip
 {
     width: 20px;
     height: 20px;
+}
+
+.grayIcon
+{
+    filter: brightness(0) saturate(100%) invert(79%) sepia(8%) saturate(148%) hue-rotate(173deg) brightness(97%) contrast(93%);
 }
 
 .tooltip 

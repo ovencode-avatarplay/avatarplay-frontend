@@ -9,10 +9,10 @@ import CharacterGrid from './CharacterGrid';
 import styles from './CharacterDashboard.module.css';
 // Network
 import {
-  CharacterInfoDate,
   CreateCharacterReq,
   DeleteCharacterReq,
   GetCharacterInfoReq,
+  GetCharacterListReq,
   sendCreateCharacter,
   sendDeleteCharacter,
   sendGetCharacterInfo,
@@ -24,7 +24,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import CharacterGalleryModal from './CharacterGalleryModal';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import CustomButton from '@/components/layout/shared/CustomButton';
@@ -43,10 +43,10 @@ const CharacterDashboard: React.FC = () => {
   const router = useRouter();
   const searchParam = useSearchParams();
 
-  const [characters, setCharacters] = useState<CharacterInfoDate[] | undefined>();
+  const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
-  const [sortedCharacters, setSortedCharacters] = useState<CharacterInfoDate[] | undefined>(characters);
-  const [resultCharacters, setResultCharacters] = useState<CharacterInfoDate[] | undefined>(characters);
+  const [sortedCharacters, setSortedCharacters] = useState<CharacterInfo[] | undefined>(characters);
+  const [resultCharacters, setResultCharacters] = useState<CharacterInfo[] | undefined>(characters);
   const [refreshReq, setRefreshReq] = useState<boolean>(false);
 
   const [filterPublishOpen, setFilterPublishOpen] = useState<boolean>(false);
@@ -169,10 +169,13 @@ const CharacterDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await sendGetCharacterList({});
+      const characterListreq: GetCharacterListReq = {
+        languageType: getCurrentLanguage(),
+      };
+      const response = await sendGetCharacterList(characterListreq);
 
       if (response.data) {
-        const characterInfoList: CharacterInfoDate[] = response.data?.characterInfoList;
+        const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
         setCharacters(characterInfoList);
       } else {
         throw new Error(`No contentInfo in response for ID: `);
@@ -189,7 +192,7 @@ const CharacterDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetCharacterInfoReq = {characterId: id};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {
@@ -210,7 +213,11 @@ const CharacterDashboard: React.FC = () => {
     setLoading(true);
     try {
       if (currentSelectedCharacter) {
-        const req: CreateCharacterReq = {characterInfo: newinfo, debugParameter: debugparam /*, createOption: []*/};
+        const req: CreateCharacterReq = {
+          languageType: getCurrentLanguage(),
+          characterInfo: newinfo,
+          debugParameter: debugparam /*, createOption: []*/,
+        };
         const response = await sendCreateCharacter(req);
 
         if (response.data) {

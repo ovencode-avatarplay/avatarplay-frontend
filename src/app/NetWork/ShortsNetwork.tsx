@@ -58,9 +58,11 @@ export interface FeedInfo {
   characterProfileName: string;
   characterProfileUrl: string;
   createAt: Date;
+  isFollowing: boolean;
 }
 
-interface RequestCreateFeed {
+export interface RequestCreateFeed {
+  languageType: string;
   feedInfo: FeedInfo;
 }
 
@@ -72,17 +74,15 @@ interface ResponseCreateFeed {
 
 /**
  * Feed 생성 API 호출 함수
- * @param feedInfo - 생성할 Feed 정보
+ * @param payload - 생성할 Feed 정보
  * @returns API 응답 결과
  */
 export const sendCreateFeed = async (
-  feedInfo: FeedInfo,
+  payload: RequestCreateFeed,
 ): Promise<{resultCode: number; resultMessage: string; data: any | null}> => {
   try {
     // POST 요청 전송
-    const response = await api.post<ResponseCreateFeed>('/Feed/create', {
-      feedInfo,
-    });
+    const response = await api.post<ResponseCreateFeed>('/Feed/create', payload);
 
     const {resultCode, resultMessage, data} = response.data;
 
@@ -103,7 +103,8 @@ export const sendCreateFeed = async (
 };
 // Recommend Feed API Types
 export interface RecommendFeedReq {
-  language: string;
+  recommendState: number;
+  languageType: string;
 }
 
 export interface RecommendFeedRes {
@@ -132,12 +133,17 @@ export const sendGetRecommendFeed = async (payload: RecommendFeedReq): Promise<R
   }
 };
 
+export interface getFeedListReq {
+  languageType: string;
+  characterProfileId: number;
+}
+
 // GET Feed List API 호출 함수
 export const sendGetFeedList = async (
-  characterProfileId: number,
+  payLoad: getFeedListReq,
 ): Promise<{resultCode: number; resultMessage: string; data: FeedInfo[] | null}> => {
   try {
-    const response = await api.post('/Feed/getFeedList', {characterProfileId});
+    const response = await api.post('/Feed/getFeedList', payLoad);
     const {resultCode, resultMessage, data} = response.data;
 
     if (resultCode === 0) {

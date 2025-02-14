@@ -91,6 +91,7 @@ import LineSelected from "./Line/Selected.svg";
 import LineShare from "./Line/Share.svg";
 import LineStack from "./Line/Stack.svg";
 import LineStory from "./Line/Story.svg";
+import LineChannel from "./Line/Channel.svg";
 import LineUpload from "./Line/Upload.svg";
 import LineVoicePlay from "./Line/Voice_Play.svg";
 import LineCorner from "./Line/Arrow_Corner.svg";
@@ -120,8 +121,10 @@ import EmotionScared from "./Custom/Scared.svg";
 import EmotionAngry from "./Custom/Angry.svg";
 import CircleClose from "./Custom/CircleClose.svg";
 import OrangeCoin from "./Custom/Coin.svg";
+import Add_Button from "./Custom/Add_Button.svg";
 
 export {
+  Add_Button,
   OrangeCoin,
   BoldCoin,
   LineScaleUp,
@@ -242,4 +245,5 @@ export {
   LineRefresh,
   LineSearch,
   LinePin,
+  LineChannel
 };

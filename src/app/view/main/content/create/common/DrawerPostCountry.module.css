@@ -1,0 +1,148 @@
+.searchArea{
+
+}
+
+.positionCountryArea
+{
+    display: flex;
+    height: 362px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    align-self: stretch;
+}
+
+.allButtonArea
+{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkBox
+{
+    width: 24px;
+    height: 24px;
+}
+
+.checkBoxIcon
+{
+
+}
+
+.allButtonText
+{
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px; /* 142.857% */
+}
+
+.settingArea
+{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+}
+
+.selectableCountryArea
+{
+    width: 50%;
+    display: flex;
+    height: 319px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1 0 0;
+    
+    border-right: 1px solid var(--Neutral-100, #F1F3F4);
+}
+
+.selectableCountryList
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+}
+
+
+.postCountryArea
+{
+    width: 50%;
+
+}
+
+.postCountryList
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 12px;
+
+}
+
+.postItem
+{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.postItemName
+{
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px; /* 142.857% */
+
+}
+
+.deleteButton
+{
+    display: flex;
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+
+}
+
+.deleteIcon
+{
+    display: flex;
+    width: 16px;
+    height: 16px;
+    padding: 3.499px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+
+    filter: var(--black-icon-filter);
+}
+
+.listTitle{
+    width: 100%;
+    justify-self: center;
+    align-self: stretch;
+
+    color: var(--Black, #000);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: 20px; /* 133.333% */
+
+}

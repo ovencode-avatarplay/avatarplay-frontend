@@ -9,6 +9,8 @@ import {ChattingState} from '@/redux-store/slices/Chatting';
 import {Left, Image, MenuDots} from '@ui/chatting';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
+import {getBackUrl} from '@/app/layout';
 
 interface ChatTopBarProps {
   onBackClick: () => void;
@@ -19,19 +21,35 @@ interface ChatTopBarProps {
 }
 
 const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, isHideChat, isBlurOn}) => {
+  const router = useRouter();
   const chattingState1: ChattingState = useSelector((state: RootState) => state.chatting);
   useEffect(() => {
     console.log('chattingState ', chattingState1);
   }, [chattingState1]);
+
+  const routerBack = () => {
+    // you can get the prevPath like this
+    const prevPath = getBackUrl();
+    if (!prevPath || prevPath == '') {
+      router.replace(getLocalizedLink('/main/explore'));
+    } else {
+      router.replace(prevPath);
+    }
+  };
+
   return (
     <>
       {isHideChat === false && (
         <>
           <Box className={`${styles.topNavigation} ${isBlurOn ? styles.blurOn : ''}`} sx={{width: '100%'}}>
             <div className={styles.left}>
-              <Link className={styles.button} href={getLocalizedLink(`/main/explore`) || '/default-path'}>
-                <img className={styles.buttonImage} src={Left.src} />
-              </Link>
+              <img
+                className={styles.buttonImage}
+                src={Left.src}
+                onClick={() => {
+                  routerBack();
+                }}
+              />
             </div>
             <div className={styles.chat}>
               <Avatar

@@ -40,21 +40,16 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
 
   return (
     <Drawer
-      className={styles.drawer}
       anchor="bottom"
       open={open}
       onClose={() => handleCloseDrawer()}
       PaperProps={{
+        className: styles.drawer,
         sx: {
-          // height: 'calc((var(--vh, 1vh) * 100) - 111px)',
+          overflow: 'hidden',
           padding: '8px 20px 45px',
           borderTopLeftRadius: '24px',
           borderTopRightRadius: '24px',
-          // background: 'var(--White, #FFF)',
-          // overflow: 'hidden',
-          // bottom: '0px',
-          // width: 'var(--full-width)',
-          // margin: '0 auto',
         },
       }}
     >
@@ -64,21 +59,22 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
       <div className={styles.title}>Select Profile</div>
       <div className={styles.content}>
         <ul className={styles.profileList}>
-          {data.profileList.map((profile, index) => {
-            const isSelected = profile.id == dataProfile.currentProfile?.id;
+          {data.profileList?.map((profile, index) => {
+            const isSelected = profile.profileId == dataProfile.currentProfile?.profileId;
             return (
               <li
                 className={styles.item}
-                key={profile.id}
+                key={profile.profileId}
                 onClick={async () => {
-                  const resData = await selectProfile(profile.id);
+                  handleCloseDrawer();
+                  const resData = await selectProfile(profile.profileId);
                   if (!resData?.profileSimpleInfo) return;
 
                   dispatch(updateProfile(resData?.profileSimpleInfo));
 
                   const accessToken: string = resData?.sessionInfo?.accessToken || '';
                   localStorage.setItem('jwt', accessToken);
-                  pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.id, router, false);
+                  pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.profileId + "?from=''", router, false);
                 }}
               >
                 <div className={styles.left}>
@@ -97,21 +93,6 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
               </li>
             );
           })}
-          <li
-            className={cx(styles.item, styles.clickable)}
-            onClick={() => {
-              // router.push('/profile/create');
-            }}
-          >
-            <div className={styles.left}>
-              <div className={styles.addIconWrap}>
-                <img src={LinePlus.src} alt="" />
-              </div>
-              <div className={styles.nameWrap}>
-                <div className={styles.name}>Add New Profile</div>
-              </div>
-            </div>
-          </li>
         </ul>
       </div>
     </Drawer>

@@ -1,109 +1,43 @@
+.tabContainer {
+  position: fixed;
 
-.mySwiper {
-  width: 100%;
-  height: calc(100%);
-  margin: 0; /* 기본 마진 제거 */
-  padding: 0; /* 기본 패딩 제거 */
-  --swiper-navigation-size: 0px; /* 네비게이션 버튼 크기 제거 (필요 시) */
-  --swiper-pagination-bottom: 0px; /* 페이지네이션 여백 제거 */
-  background-color: black;
-}
-
-.swiperSlide {
-  height: 100%;
-  margin: 0; /* 슬라이드 간 마진 제거 */
-  padding: 0; /* 슬라이드 간 패딩 제거 */
-}
-
-
-/* Container 스타일 */
-.featuredContainer {
-  position: absolute;
-  box-sizing: border-box;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 14px;
-  gap: 12px;
-
-  position: absolute;
-  width: 150px;
-  height: 46px;
-  left: 16px;
-  top: 44px;
-
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid var(--Neutral-800, #2C3131);
-  border-radius: 10px;
-  z-index: 13;
-}
-
-/* 텍스트 스타일 */
-.featuredText {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 160%;
-  display: flex;
-  align-items: center;
-  letter-spacing: 0.2px;
-  color: #FFFFFF;
-
-  width: 65px;
+  gap: 24px;
+  width: 162px;
   height: 26px;
+  left: 50%;  
+  top: calc(58px + 15px);
+  transform: translateX(-50%);
+  z-index: 2;
 }
 
-/* 아이콘 컨테이너 스타일 */
-.featuredIcon {
+.tab {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 24px;
-  height: 24px;
-  position: relative;
-}
-
-/* 원형 아이콘 스타일 */
-.iconCircle {
-    width: 100%;
-  height: 100%;
-}
-
-
-
-.followingContainer {
-  position: absolute;
-  width: 114px;
-  height: 18px;
-  left: 16px;
-  top: 13px;
-  display: flex;
-  align-items: center;
-  z-index: 12;
-}
-
-.followingBox {
-  
-  display: flex;
-  flex-direction: row;
-  gap: 7px;
-  
-  align-items: center;
-}
-
-.followingText {
-  font-family: 'Lato';
-  font-style: normal;
+  padding-bottom: 12px;
   font-weight: 700;
-  font-size: 22px;
-  line-height: 80%; /* 18px */
-  color: #FFFFFF;
+  font-size: 18px;
+  line-height: 80%;
+  color: #ffffff;
+  cursor: pointer;
+  user-select: none; /* ✅ 텍스트 선택 방지 */
+  -webkit-tap-highlight-color: transparent; /* ✅ 모바일 터치 시 파란 배경 제거 */
 }
+
+.active {
+  border-bottom: 2px solid #ffffff;
+}
+
 .reelsContainer {
   width: 100%;
   height: auto; /* ✅ 자동 높이 */
+  margin-top: 58px;
+  
+  padding-bottom: 48px;
+  background-color: black;
 }
 
 .reelsWrapper {
@@ -115,7 +49,7 @@
 
 .reelSlide {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 58px - 48px);
   scroll-snap-align: start; /* ✅ 스냅 정렬 유지 */
   display: flex;
   justify-content: center;

@@ -2,6 +2,7 @@ import styles from './CharacterCreateLLM.module.css';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
+import {LanguageType} from '@/redux-store/slices/ContentInfo';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAI, BoldArrowDown, LineDelete} from '@ui/Icons';
 import {useEffect, useState} from 'react';
@@ -12,17 +13,15 @@ interface Props {
   worldScenario: string;
   greeting: string;
   secret: string;
-  selectedLLM: number;
-  selectedPrompt: string;
-  selectedLorebook: string;
+  selectedPromptIdx: number;
+  selectedLorebookIdx: number;
   onLangChange: (lang: number) => void;
   onCharacterDescChange: (desc: string) => void;
   onWorldScenarioChange: (scenario: string) => void;
   onGreetingChange: (greeting: string) => void;
   onSecretChange: (secret: string) => void;
-  onSelectedLLMChange: (llm: number) => void;
-  onSelectedPromptChange: (prompt: string) => void;
-  onSelectedLorebookChange: (lorebook: string) => void;
+  onSelectedPromptChange: (prompt: number) => void;
+  onSelectedLorebookChange: (lorebook: number) => void;
 }
 
 const CharacterCreateLLM: React.FC<Props> = ({
@@ -31,15 +30,13 @@ const CharacterCreateLLM: React.FC<Props> = ({
   worldScenario,
   greeting,
   secret,
-  selectedLLM,
-  selectedPrompt,
-  selectedLorebook,
+  selectedPromptIdx,
+  selectedLorebookIdx,
   onLangChange,
   onCharacterDescChange,
   onWorldScenarioChange,
   onGreetingChange,
   onSecretChange,
-  onSelectedLLMChange,
   onSelectedPromptChange,
   onSelectedLorebookChange,
 }) => {
@@ -49,15 +46,9 @@ const CharacterCreateLLM: React.FC<Props> = ({
   const [autoWriteCharacterSecret, setAutoWriteCharacterSecret] = useState<string[]>([]);
 
   const langItems = [
-    {label: 'Lang 1', value: '1'},
-    {label: 'Lang 2', value: '2'},
-    {label: 'Lang 3', value: '3'},
-  ];
-
-  const llmItems = [
-    {label: 'Llm 1', value: '1'},
-    {label: 'Llm 2', value: '2'},
-    {label: 'Llm 3', value: '3'},
+    {label: 'Korean', value: '0'},
+    {label: 'English', value: '1'},
+    {label: 'Japan', value: '2'},
   ];
 
   const promptItems = [
@@ -109,15 +100,11 @@ const CharacterCreateLLM: React.FC<Props> = ({
     onLangChange(value);
   };
 
-  const handleSelectLLM = (value: number) => {
-    onSelectedLLMChange(value);
-  };
-
-  const handleSelectPrompt = (value: string) => {
+  const handleSelectPrompt = (value: number) => {
     onSelectedPromptChange(value);
   };
 
-  const handleSelectLoreBook = (value: string) => {
+  const handleSelectLoreBook = (value: number) => {
     onSelectedLorebookChange(value);
   };
 
@@ -172,7 +159,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
     return (
       <div className={styles.titleArea}>
         <h2 className={styles.title2}>{highlightText(title)}</h2>
-        <div className={styles.desc}>{highlightText(desc)}</div>
+        {desc !== '' && <div className={styles.desc}>{highlightText(desc)}</div>}
       </div>
     );
   };
@@ -194,7 +181,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
           inSideHint={`About ${value.length} tokens (임시처리 텍스트 길이)`}
         />
         <div className={styles.maxTextButtonArea}>
-          <button className={styles.maxTextButton}>
+          <button className={`${styles.maxTextButton} ${styles.aiButton}`}>
             <img className={styles.maxTextButtonIcon} src={BoldAI.src} onClick={onClickAI} />
           </button>
           <button className={styles.maxTextButton} onClick={() => handleButtonClick('User')}>
@@ -252,11 +239,10 @@ const CharacterCreateLLM: React.FC<Props> = ({
   return (
     <div className={styles.llmContainer}>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(`Reference Language *`, `Please let me know which language you'd like to use`)}
-        <div className={styles.dropBox}></div>
+        {renderTitle(`Reference Language`, `Please let me know which language you'd like to use`)}
         <CustomDropDown
           items={langItems}
-          displayType="Icon"
+          displayType="Text"
           onSelect={(value: string | number) => handleSelectLang(Number(value))}
         />
       </div>
@@ -279,25 +265,25 @@ const CharacterCreateLLM: React.FC<Props> = ({
         {renderTitle(`Secrets`, '')}
         {renderMaxTextInput(secret, onSecretChange, handleAutoWriteCharacterSecret)}
       </div>
-      <div className={styles.inputDataBoxArea}>
+      {/* <div className={styles.inputDataBoxArea}>
         {renderTitle(`LLM`, '')}
         <CustomDropDown
           items={llmItems}
           displayType="Text"
           onSelect={(value: string | number) => handleSelectLLM(Number(value))}
         />
-      </div>
+      </div> */}
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`Custom Modules`, 'text description')}
         <CustomDropDown
           items={promptItems}
           displayType="Text"
-          onSelect={(value: string | number) => handleSelectPrompt(String(value))}
+          onSelect={(value: string | number) => handleSelectPrompt(Number(value))}
         />
         <CustomDropDown
           items={lorebookItems}
           displayType="Text"
-          onSelect={(value: string | number) => handleSelectLoreBook(String(value))}
+          onSelect={(value: string | number) => handleSelectLoreBook(Number(value))}
         />
       </div>
 

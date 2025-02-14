@@ -167,6 +167,7 @@
   --second-width : clamp(0px, calc(100vw - 32px) , calc(var(--full-width) - 32px));  /* 370px */
   --third-width : clamp(0px, calc(100vw - 32px - 32px) , calc(var(--full-width) - 32px - 32px));  /* 338px */
   --header-removed-height : calc(100% - 58px);
+
   --bottom-nav-height : 48px;
   
   --body-height : calc(100% - 58px - 48px);
@@ -182,9 +183,16 @@ body{
   height:100dvh;
 } */
 html,body{
-  height: 100%;
+  height: 100%;  
   scroll-snap-type: y mandatory; /* 📌 스냅 스크롤 유지 */
   -webkit-overflow-scrolling: touch;
+  scroll-padding-top: 58px;
+  scroll-padding-bottom: 48px;
+}
+
+body{
+  margin:0 auto !important;
+  max-width:var(--full-width) !important;
 }
 
 .safe-area-container {

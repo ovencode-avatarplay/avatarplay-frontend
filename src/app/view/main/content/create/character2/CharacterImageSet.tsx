@@ -5,19 +5,22 @@ import CharacterCreateImageButton from '../character/CreateCharacterImageButton'
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import MaxTextInput from '@/components/create/MaxTextInput';
 import {inputType, inputState, displayType} from '@/components/create/MaxTextInput';
-import {BoldLock, BoldMenuDots, BoldRuby, BoldUnLock, LineAIImage, LineScaleUp, LineUpload} from '@ui/Icons';
+import {BoldLock, BoldMenuDots, BoldRuby, BoldStar, BoldUnLock, LineAIImage, LineScaleUp, LineUpload} from '@ui/Icons';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import {GenerateImageReq2, sendGenerateImageReq2} from '@/app/NetWork/ImageNetwork';
 import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 interface CharacterImageSetProps {
   createFinishAction?: (imgUrl: string) => void;
 }
 
 const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction}) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedLora, setSelectedLora] = useState<number>(0);
+
   let loraToolTip = `Anime, Pixar, J-film, K-film, Realism, Hollywood models can be used after age verification`;
 
   const [positivePrompt, setPositivePrompt] = useState<string>('');
@@ -33,10 +36,10 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
   const [seedLock, setSeedLock] = useState<boolean>(false);
   let seedToolTip = `The seed is a number that plays the role of a 'starting point' in the image generation process. Just as planting a specific seed in a garden produces a unique flower, this seed value produces a unique and predictable image. If you enter the same seed value, the image generation model will generate the same image every time, and if you use a different seed value, a completely different image will be generated. If you do not enter a seed value, a random value will be used. Seed values can only be integers between -2,147,483,648 and 2,147,483,647`;
 
-  const [selectedImgCount, setSelectedImgCount] = useState<number>(4);
+  const [selectedImgCount, setSelectedImgCount] = useState<number>(3);
 
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
-  const [generatedImages, setGeneratedImages] = useState<string[]>(['', '', '', '']);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [selectedGeneratedItems, setSelectedGeneratedItems] = useState<number[]>([]);
 
   const loraOption = [
@@ -208,6 +211,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
   // 이미지 생성
   const handleImageGeneration = async () => {
     try {
+      setIsLoading(true);
       const selectedModel = loRaStyles.hairStyles.find(style => style.value === selectedLora);
       const modelId = selectedModel ? selectedModel.label : 'Animagine XL'; // 선택된 모델 ID 설정
 
@@ -244,6 +248,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
     } catch (error) {
       alert('Failed to generate images. Please try again.');
     } finally {
+      setIsLoading(false);
     }
   };
 
@@ -343,6 +348,17 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
         </div>
       </div>
 
+      <div className={styles.currencyArea}>
+        <div className={styles.currencyItem}>
+          <img className={styles.currencyIcon} src={BoldRuby.src} />
+          <span className={styles.currencyText}>10.5K</span>
+        </div>
+        <div className={styles.currencyItem}>
+          <img className={styles.currencyIcon} src={BoldStar.src} />
+          <span className={styles.currencyText}>100</span>
+        </div>
+      </div>
+
       <div className={styles.generateButtonArea}>
         <CustomButton
           size="Medium"
@@ -359,36 +375,39 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
         </CustomButton>
       </div>
 
-      <div className={styles.generatedImageArea}>
-        <h2 className={styles.title2}>Image generation history</h2>
-        <ul className={styles.selectGrid}>
-          {generatedImages.map((image, index) => (
-            <CharacterCreateImageButton
-              key={index}
-              sizeType="large"
-              selectType="multiple"
-              image={image}
-              label={null}
-              selected={selectedGeneratedItems.includes(index)}
-              onClick={() => handleSelectGeneratedItem(index)}
-              isImageLoading={false}
-            />
-          ))}
-        </ul>
+      {generatedImages.length > 0 && (
+        <div className={styles.generatedImageArea}>
+          <h2 className={styles.title2}>Image generation history</h2>
+          <ul className={styles.selectGrid}>
+            {generatedImages.map((image, index) => (
+              <CharacterCreateImageButton
+                key={index}
+                sizeType="large"
+                selectType="multiple"
+                image={image}
+                label={null}
+                selected={selectedGeneratedItems.includes(index)}
+                onClick={() => handleSelectGeneratedItem(index)}
+                isImageLoading={false}
+              />
+            ))}
+          </ul>
 
-        {generatedImages.length > 0 && (
-          <div className={styles.bottomNavTab}>
-            <div className={styles.bottomButtonArea}>
-              {bottomButtons.map((buttonItem, index) => (
-                <button key={index} className={styles.bottomButton} onClick={buttonItem.clickEvent}>
-                  <img className={styles.bottomButtonIcon} src={buttonItem.icon} alt={buttonItem.label} />
-                  <div className={styles.bottomButtonText}>{buttonItem.label}</div>
-                </button>
-              ))}
+          {generatedImages.length > 0 && (
+            <div className={styles.bottomNavTab}>
+              <div className={styles.bottomButtonArea}>
+                {bottomButtons.map((buttonItem, index) => (
+                  <button key={index} className={styles.bottomButton} onClick={buttonItem.clickEvent}>
+                    <img className={styles.bottomButtonIcon} src={buttonItem.icon} alt={buttonItem.label} />
+                    <div className={styles.bottomButtonText}>{buttonItem.label}</div>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
+      <LoadingOverlay loading={isLoading} />
     </div>
   );
 };
