@@ -1,5 +1,7 @@
 .drawer {
-  width: 100%;
+  width: var(--full-width);
+  left: 50% !important;
+  transform: translateX((-50%)) !important;
   border-radius: 24px 24px 0 0;
 
   -webkit-user-drag: none;
@@ -39,6 +41,7 @@
       border-radius: 12px;
       border: 1px solid var(--Border-1, #EAECF0);
       overflow: auto;
+      max-height: 80vh;
 
       .item+.item {
         border-top: 1px solid var(--Border-1, #EAECF0);

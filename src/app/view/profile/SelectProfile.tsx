@@ -40,13 +40,12 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
 
   return (
     <Drawer
-      className={styles.drawer}
       anchor="bottom"
       open={open}
       onClose={() => handleCloseDrawer()}
       PaperProps={{
+        className: styles.drawer,
         sx: {
-          maxHeight: '80vh',
           overflow: 'hidden',
           padding: '8px 20px 45px',
           borderTopLeftRadius: '24px',
@@ -60,13 +59,14 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
       <div className={styles.title}>Select Profile</div>
       <div className={styles.content}>
         <ul className={styles.profileList}>
-          {data.profileList.map((profile, index) => {
+          {data.profileList?.map((profile, index) => {
             const isSelected = profile.id == dataProfile.currentProfile?.id;
             return (
               <li
                 className={styles.item}
                 key={profile.id}
                 onClick={async () => {
+                  handleCloseDrawer();
                   const resData = await selectProfile(profile.id);
                   if (!resData?.profileSimpleInfo) return;
 
