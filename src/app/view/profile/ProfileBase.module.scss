@@ -18,7 +18,7 @@
 .main.mainNoPath {
   padding-top: 1px;
 
-  .tabHeaderWrap {
+  .tabHeaderContainer {
     position: relative !important;
   }
 }
@@ -579,10 +579,8 @@
     }
 
     .tabHeaderWrap {
-      position: sticky;
-      top: 57px;
+      position: relative;
       background: white;
-      z-index: 2;
     }
 
     .tabHeader {
