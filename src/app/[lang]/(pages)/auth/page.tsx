@@ -5,7 +5,6 @@ import {useEffect} from 'react';
 import {supabase} from 'utils/supabaseClient';
 import {Auth} from '@supabase/auth-ui-react';
 import {ThemeSupa} from '@supabase/auth-ui-shared';
-import {useRouter, useSearchParams} from 'next/navigation';
 import {Session} from '@supabase/supabase-js';
 import {env} from 'process';
 import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';

@@ -1,7 +1,7 @@
 'use client'; // 이 파일은 클라이언트 전용 컴포넌트입니다.
 
 import {useEffect, useRef, useState} from 'react';
-import {usePathname, useRouter, useSearchParams} from 'next/navigation'; // 클라이언트 사이드에서만 사용
+import {usePathname, useRouter} from 'next/navigation'; // 클라이언트 사이드에서만 사용
 import Root from './Root';
 import '@/app/globals.css';
 import '@/app/reset.css';
@@ -17,7 +17,13 @@ export const getBackUrl = () => {
   return prevPath;
 };
 
-export default function Layout({children}: {children: React.ReactNode}) {
+export default function Layout({
+  children,
+  searchParams,
+}: {
+  children: React.ReactNode;
+  searchParams: {[key: string]: string};
+}) {
   const [hasRun, setHasRun] = useState(false); // 상태를 관리하여 최초 실행 여부 판단
   const router = useRouter(); // useRouter는 클라이언트에서만 사용
   const paddingRef = useRef();
@@ -48,7 +54,6 @@ export default function Layout({children}: {children: React.ReactNode}) {
   };
 
   const pathname = usePathname();
-  const searchParams = useSearchParams(); // Query params 감지
 
   //storing the pathnames when the value changes.
   useEffect(() => {
