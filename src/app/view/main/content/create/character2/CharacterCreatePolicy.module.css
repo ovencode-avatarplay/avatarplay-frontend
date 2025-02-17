@@ -174,7 +174,19 @@
     display: flex;
     flex-direction: column;
     min-height: 100px; 
+    max-height: 246px;
+    overflow-y: scroll;
 }
+
+.tagArea::-webkit-scrollbar {
+    display: none;  
+}
+  
+.tagArea {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+}
+
 
 .tagRefreshButton
 {

@@ -93,6 +93,7 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
             checked={isAll}
             onToggle={handleToggleAll}
             label="All"
+            containerStyle={{marginTop: '12px'}}
           />
         </div>
         <div className={styles.settingArea}>

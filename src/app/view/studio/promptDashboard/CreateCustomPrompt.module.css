@@ -81,6 +81,82 @@
     flex-shrink: 0;
 }
 
+.promptInputArea
+{
+    width: var(--second-width);
+    display: flex;
+    flex-direction: row;
+
+    height: 30vh;
+    overflow-y: scroll;
+}
+
+.promptInputList
+{
+    flex: 1 0 0;
+    width: 50%;
+
+}
+
+.promptInput
+{
+    width: 100%;
+
+}
+
+.promptTitle
+{
+
+}
+
+.promptPreview
+{
+    flex: 1 0 0;
+    width: 50%;
+    background-color: red;
+
+}
+
+.previewContainer
+{
+
+}
+
+.keywordTable
+{
+    width: 100%;
+
+}
+
+.previewTitle
+{
+
+}
+
+.previewDescArea
+{
+
+}
+
+.previewKeyword
+{
+
+}
+
+.previewDesc
+{
+
+}
+
+.previewExample
+{
+    flex : 1 0 0;
+}
+
+.previewExampleInput
+{
+    width: 100%;
+}
 
 .promptGuide
 {

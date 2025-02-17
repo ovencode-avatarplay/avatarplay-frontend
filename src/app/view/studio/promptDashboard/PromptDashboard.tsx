@@ -3,12 +3,12 @@ import styles from './PromptDashboard.module.css';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import {useRouter} from 'next/navigation';
 import Splitters from '@/components/layout/shared/CustomSplitter';
-import {LineUpload} from '@ui/Icons';
+import {LineDelete, LineUpload} from '@ui/Icons';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CreateCustomPrompt from './CreateCustomPrompt';
 import CreateCustomLorebook from './CreateCustomLorebook';
 
-export interface PromptData {
+export interface CustomPromptData {
   id: number;
   type: number;
   name: string;
@@ -27,13 +27,14 @@ export interface PromptTemplateMandarin {
 
 const PromptDashboard: React.FC = () => {
   const router = useRouter();
-  const [promptList, setPromptList] = useState<PromptData[]>([]);
-  const [lorebookList, setLorebookList] = useState<PromptData[]>([]);
+  const [promptList, setPromptList] = useState<CustomPromptData[]>([]);
+  const [lorebookList, setLorebookList] = useState<CustomPromptData[]>([]);
   const [namePopupOpen, setNamePopupOpen] = useState<boolean>(false);
   const [popupType, setPopupType] = useState<'dashboard' | 'prompt' | 'lorebook'>('dashboard');
   const [newItemName, setNewItemName] = useState<string>('');
   const [displayState, setDisplayState] = useState<'dashboard' | 'prompt' | 'lorebook'>('dashboard');
   const [createState, setCreateState] = useState<'prompt' | 'lorebook'>('prompt');
+  const [selectedItem, setSelectedItem] = useState<CustomPromptData | null>(null);
 
   const handleOnClose = () => {
     if (displayState === 'dashboard') router.back();
@@ -48,7 +49,7 @@ const PromptDashboard: React.FC = () => {
     setNamePopupOpen(true);
   };
 
-  const getMinId = (list: PromptData[]): number => {
+  const getMinId = (list: CustomPromptData[]): number => {
     const listId = list.flatMap(list => list.id);
 
     if (listId.length === 0) {
@@ -76,9 +77,29 @@ const PromptDashboard: React.FC = () => {
     setNamePopupOpen(false);
   };
 
-  const handleItemClick = (item: PromptData) => {
+  const handleItemClick = (item: CustomPromptData) => {
+    setSelectedItem(item);
     setDisplayState(item.type === 0 ? 'prompt' : item.type === 1 ? 'lorebook' : 'prompt');
     setCreateState(item.type === 0 ? 'prompt' : item.type === 1 ? 'lorebook' : 'prompt');
+  };
+
+  const handleDeleteItem = () => {
+    if (!selectedItem) return;
+
+    if (selectedItem.type === 0) {
+      setPromptList(prev => prev.filter(item => item.id !== selectedItem.id));
+    } else {
+      setLorebookList(prev => prev.filter(item => item.id !== selectedItem.id));
+    }
+
+    setSelectedItem(null);
+    setDisplayState('dashboard');
+  };
+
+  const handleSavePrompt = (updatedPrompt: CustomPromptData) => {
+    setPromptList(prevPrompts => prevPrompts.map(p => (p.id === updatedPrompt.id ? updatedPrompt : p)));
+    setDisplayState('dashboard');
+    setSelectedItem(null);
   };
 
   const renderAddButton = (onClickAction: () => void) => {
@@ -90,7 +111,7 @@ const PromptDashboard: React.FC = () => {
     );
   };
 
-  const renderItem = (item: PromptData) => {
+  const renderItem = (item: CustomPromptData) => {
     return (
       <li key={item.name} className={styles.promptItem} onClick={() => handleItemClick(item)}>
         <div className={styles.itemName}>{item.name}</div>
@@ -132,16 +153,28 @@ const PromptDashboard: React.FC = () => {
 
   return (
     <div style={{marginTop: '58px'}}>
+      <CreateDrawerHeader title="Create Content" onClose={handleOnClose}>
+        {displayState !== 'dashboard' ? (
+          <button className={styles.deleteButton} onClick={handleDeleteItem}>
+            <img className={styles.deleteIcon} src={LineDelete.src} />
+          </button>
+        ) : (
+          ''
+        )}
+      </CreateDrawerHeader>
       <div className={styles.promptContainer}>
-        <CreateDrawerHeader title="Create Content" onClose={handleOnClose} />
         {displayState === 'dashboard' && (
           <Splitters
             splitters={splitData}
             initialActiveSplitter={createState === 'prompt' ? 0 : createState === 'lorebook' ? 1 : 0}
           />
         )}
-        {displayState === 'prompt' && <CreateCustomPrompt name="" />}
-        {displayState === 'lorebook' && <CreateCustomLorebook name="" />}
+        {displayState === 'prompt' && selectedItem && (
+          <CreateCustomPrompt prompt={selectedItem} onSave={handleSavePrompt} />
+        )}
+        {displayState === 'lorebook' && selectedItem && (
+          <CreateCustomLorebook lorebook={selectedItem} onSave={handleSavePrompt} />
+        )}
       </div>
       {namePopupOpen && (
         <CustomPopup

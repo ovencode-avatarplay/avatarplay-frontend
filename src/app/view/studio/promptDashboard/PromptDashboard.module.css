@@ -107,3 +107,24 @@
     font-weight: 400;
     line-height: 160%; /* 24px */
 }
+
+.deleteButton
+{
+    cursor: pointer;
+
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.deleteIcon
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);
+}

@@ -1,0 +1,103 @@
+.createContainer
+{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+ 
+}
+
+.lorebookDesc
+{
+
+}
+
+.title2
+{
+
+}
+
+.addButton
+{
+    cursor: pointer;
+    
+    width: 100%;
+    display: flex;
+    padding: 13px 0px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex: 1 0 0; 
+    
+    border-radius: 10px;
+    border: 1px dashed var(--Neutral-400, #BDC1C6);
+    background: var(--White, #FFF);
+}
+
+.addIcon
+{
+    display: flex;
+    width: 20px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+
+    filter: var(--black-icon-filter);
+}
+
+.addButtonText
+{
+    color: var(--Black, #000);
+    text-align: center;
+    font-family: Lato;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 155%; /* 20.15px */
+}
+
+.lorebookItemList
+{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    height: 35vh;
+
+    overflow-y: scroll;
+}
+
+.lorebookItem
+{
+
+}
+
+.deleteButton
+{
+    cursor: pointer;
+
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.deleteIcon
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);
+}
+
+.itemInputArea
+{
+
+}
+
+.itemTitle
+{
+
+}

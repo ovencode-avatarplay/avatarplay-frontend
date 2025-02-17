@@ -6,6 +6,7 @@ interface Splitter {
   preContent?: React.ReactNode;
   content: React.ReactNode;
   isPlaceholder?: boolean;
+  isDisabled?: boolean;
 }
 
 interface SplittersProps {
@@ -54,10 +55,12 @@ const Splitters: React.FC<SplittersProps> = ({
               key={index}
               className={`${styles.splitterLabel} ${activeSplitter === index ? styles.activeSplitter : ''} ${
                 isDark ? styles.darkSplitterLabel : ''
-              }`}
+              } ${splitter.isDisabled ? styles.disabledSplitter : ''}`}
               onClick={() => {
-                setActiveSplitter(index);
-                if (onSelectSplitButton) onSelectSplitButton(index);
+                if (!splitter.isDisabled) {
+                  setActiveSplitter(index);
+                  if (onSelectSplitButton) onSelectSplitButton(index);
+                }
               }}
             >
               {splitter.label}
