@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  //
   reactStrictMode: false,
-  basePath: process.env.BASEPATH || "", // basePath는 비워두거나 설정된 환경변수 사용
+  basePath: process?.env?.BASEPATH || "", // basePath는 비워두거나 설정된 환경변수 사용
   // redirects: async () => {
   //   return [
   //     {
