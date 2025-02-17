@@ -153,7 +153,7 @@ export default function BottomNav() {
 
   React.useEffect(() => {
     const currentPath = window.location.pathname; // 현재 경로 가져오기
-    const foundIndex = buttonData.findIndex(button => currentPath.includes(button.link));
+    const foundIndex = buttonData.findIndex(button => currentPath.includes(button.link) && button.link != '');
     if (foundIndex !== -1 && foundIndex !== selectedIndex) {
       dispatch(setSelectedIndex(foundIndex));
     }
