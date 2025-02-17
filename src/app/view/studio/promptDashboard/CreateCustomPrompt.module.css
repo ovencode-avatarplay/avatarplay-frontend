@@ -1,0 +1,111 @@
+.createContainer
+{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+ 
+}
+
+.promptArea
+{
+
+}
+
+.promptTitleArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.title2
+{
+    color: var(--Black, #000);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 155%; /* 21.7px */
+}
+
+
+.astrisk
+{
+    color: var(--Secondary-Red-1, #F75555);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 155%;
+
+}
+
+.titleButtonArea
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+}
+
+.previewButtonArea
+{
+    display: flex;
+    align-items: center;
+}
+
+.buttonContainer
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.settingButton
+{
+    cursor: pointer;
+
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 8px 7.5px 8px 8.5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.settingIcon
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+
+.promptGuide
+{
+    align-self: stretch;
+    color: var(--Neutral-700, #5F6368);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; /* 18.2px */
+    letter-spacing: -0.4px;
+}
+
+.bottomButtonArea
+{
+    position: fixed;
+    bottom: 8px;
+    width: var(--second-width);
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.bottomButton
+{
+    width: calc(50% - 8px);
+
+}

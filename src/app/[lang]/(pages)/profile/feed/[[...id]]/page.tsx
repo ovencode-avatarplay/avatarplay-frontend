@@ -1,7 +1,7 @@
 'use client';
 import {ExploreSortType, FeedMediaType} from '@/app/NetWork/ProfileNetwork';
 import ReelsLayout from '@/components/homefeed/ReelsLayout';
-import {useParams, useRouter, useSearchParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import cx from 'classnames';
 import styles from './profileFeed.module.scss';
@@ -10,20 +10,21 @@ import {getBackUrl} from '@/app/layout';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import BottomNav from '@/app/view/main/bottom-nav/BottomNav';
 
-type Props = {};
+type Props = {
+  searchParams: {feedMediaType?: string; feedSortType?: string; index: string; type: string};
+};
 
-const PageFeedView = (props: Props) => {
+const PageFeedView = ({searchParams}: Props) => {
   const router = useRouter();
   const query = useParams();
-  const params = useSearchParams();
   const id = parseInt(query?.id?.[0] || '0');
   const [data, setData] = useState(() => ({
     id: id,
   }));
-  const feedMediaType = parseInt(params?.get('feedMediaType') || '0');
-  const feedSortType = parseInt(params?.get('feedSortType') || '0');
-  const index = parseInt(params?.get('index') || '0');
-  const profileType = parseInt(params?.get('type') || '0');
+  const feedMediaType = parseInt(searchParams?.feedMediaType || '0');
+  const feedSortType = parseInt(searchParams?.feedSortType || '0');
+  const index = parseInt(searchParams?.index || '0');
+  const profileType = parseInt(searchParams?.type || '0');
   const routerBack = () => {
     router.replace(getLocalizedLink(`/profile/${id}`));
   };

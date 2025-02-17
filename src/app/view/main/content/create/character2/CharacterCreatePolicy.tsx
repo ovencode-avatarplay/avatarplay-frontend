@@ -74,6 +74,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   const [isVisibilityOpen, setIsVisibilityOpen] = useState(false);
   const [isPositionCountryOpen, setIsPositionCountryOpen] = useState(false);
+  const [isAll, setIsAll] = useState<boolean>(false);
 
   let characterIpData = {
     items: [
@@ -254,10 +255,16 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     onPositionCountryChange(value);
   };
 
+  const totalLanguages = Object.values(LanguageType).filter(value => typeof value === 'number').length;
+
   useEffect(() => {
     onTagChange(selectedTags.join(', '));
     console.log(selectedTags.join(', '));
   }, [selectedTags, onTagChange]);
+
+  useEffect(() => {
+    setIsAll(positionCountry.length === totalLanguages);
+  }, [positionCountry]);
 
   useEffect(() => {
     const updatedItems = connectableCharacterList.map((character, index) => ({
@@ -393,6 +400,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         selectableCountryList={Object.values(LanguageType).filter(value => typeof value === 'number') as LanguageType[]}
         postCountryList={positionCountry}
         onUpdatePostCountry={handlePositionCountryChange}
+        isAll={isAll}
+        setIsAll={setIsAll}
       />
     );
   };
