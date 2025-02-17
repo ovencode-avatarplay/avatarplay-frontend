@@ -1,0 +1,110 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #ffffff;
+    overflow-y: scroll;
+    position: relative;
+    padding: 0 20px 20px 20px;
+    gap: 20px
+    
+  }
+  
+  /* 탭 스타일 */
+  .tabs {
+    display: flex;
+    justify-content: space-between;
+    background: #ffffff;
+    border-bottom: 1px solid #e8eaed;
+  }
+  
+  .tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    background: none;
+  }
+  
+  .active {
+    border-bottom: 2px solid black;
+  }
+  
+  /* 버튼 컨테이너 */
+  .buttonContainer {
+    display: flex;
+    
+    justify-content: center;
+    width: 100%;
+  }
+  
+  
+  .rightArea {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+  }
+  .dashBoard{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 9px;
+    justify-content: center;
+    align-items: center;
+  
+    position:relative;
+  
+  
+  }
+  .redDot{
+    position:absolute;
+    top:10px;
+    right:9px;
+  
+    width:4px;
+    height:4px;
+    border-radius: 50%;
+    background:#F93052;
+  }
+  .dashBoardIcon{
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    filter: brightness(0) saturate(100%);
+  }
+  .filterButton {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    width: 100%;
+    padding: 0 12px 0 12px;
+    font-size: 14px;
+    font-weight: 700;
+    gap: 10px;
+    cursor: pointer;
+  }
+  
+  .filtterArrow
+  {
+    filter: brightness(0) saturate(100%);
+    width: 12px;
+    height: 12px;
+    
+  }
+  
+  .filterContainer {
+    position: relative;
+  }
+  
+  .cardGroup
+  {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    align-items: center;
+  }

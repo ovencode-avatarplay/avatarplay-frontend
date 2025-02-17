@@ -1,0 +1,73 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 16px;
+    gap: 20px;
+    
+    height: 100vh;
+  }
+  
+  .contentBox {
+    width: 370px;
+    height: 548.75px;
+    background: #f8f9fa;
+    border: 1px solid #e8eaed;
+    border-radius: 12px;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .titleText
+  {
+font-weight: 400;
+font-size: 14px;
+line-height: 22px;
+letter-spacing: 0%;
+text-align: center;
+
+    color: #9aa0a6;
+  }
+  .termsText {
+    font-family: 'Lato';
+    font-size: 12px;
+    line-height: 160%;
+    color: #000000;
+    text-align: justify;
+  }
+  
+  .checkboxContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 370px;
+  }
+  
+  .checkbox {
+    width: 19px;
+    height: 19px;
+    border: 1px solid #e8eaed;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .agreeText {
+    font-family: 'Lato';
+    font-size: 14px;
+    font-weight: 500;
+    color: #000000;
+  }
+  
+  .confirmButton {
+    width: 370px;
+    height: 50px;
+    background: #2c3131;
+    color: #ffffff;
+    font-family: 'Lato';
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  
