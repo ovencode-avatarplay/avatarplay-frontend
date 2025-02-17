@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './CustomCheckbox.module.css';
+import styles from './CustomCheckBox.module2.css';
 import {LineCheckBoxFill, LineCheckBoxEmpty} from '@ui/Icons';
 
 interface CustomCheckboxProps {
