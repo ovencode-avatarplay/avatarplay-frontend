@@ -381,100 +381,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     tabIndex: number;
     isEmptyTab: boolean;
   };
-  const TabContentComponent = React.useCallback(
+
+  const TabFilterComponent = React.useCallback(
     ({profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
       const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
-
-      if (isEmptyTab) {
-        return (
-          <>
-            <div className={styles.filter}>
-              <div
-                className={styles.left}
-                onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                  const target = e.target as HTMLElement;
-                  const category = target.closest('[data-tab]')?.getAttribute('data-tab');
-                  if (category) {
-                    data.indexFilterMedia = parseInt(category);
-                  }
-                  await refreshProfileTab(profileId, data.indexTab);
-                  // await refreshProfileTab(profileId, data.indexTab);
-                  setData({...data});
-                }}
-              >
-                <div
-                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Total && styles.active)}
-                  data-tab={FeedMediaType.Total}
-                >
-                  <img src={BoldViewGallery.src} alt="" />
-                </div>
-                <div
-                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Video && styles.active)}
-                  data-tab={FeedMediaType.Video}
-                >
-                  <img src={BoldVideo.src} alt="" />
-                </div>
-                <div
-                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Image && styles.active)}
-                  data-tab={FeedMediaType.Image}
-                >
-                  <img src={BoldImage.src} alt="" />
-                </div>
-              </div>
-              <div className={styles.right}>
-                <div className={styles.filterTypeWrap}>
-                  <SelectBox
-                    value={{id: ExploreSortType.MostPopular, value: 'Most Popular'}}
-                    options={[
-                      {id: ExploreSortType.Newest, value: 'Newest'},
-                      {id: ExploreSortType.MostPopular, value: 'Most Popular'},
-                      {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
-                      {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
-                    ]}
-                    ArrowComponent={SelectBoxArrowComponent}
-                    ValueComponent={SelectBoxValueComponent}
-                    OptionComponent={SelectBoxOptionComponent}
-                    onChangedCharacter={async id => {
-                      data.indexSort = id;
-                      setData({...data});
-                      await refreshProfileTab(profileId, data.indexTab);
-                    }}
-                    customStyles={{
-                      control: {
-                        width: '184px',
-                        display: 'flex',
-                        gap: '10px',
-                      },
-                      menuList: {
-                        borderRadius: '10px',
-                        boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                      },
-                      option: {
-                        padding: '11px 14px',
-                        boxSizing: 'border-box',
-                        '&:first-of-type': {
-                          borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                        },
-                        borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                      },
-                    }}
-                  />
-                  {/* <div className={styles.label}>Newest</div> */}
-                  {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
-                </div>
-              </div>
-            </div>
-            <div className={styles.emptyWrap}>
-              <img src="/ui/profile/image_empty.svg" alt="" />
-              <div className={styles.text}>
-                Its pretty lonely out here.
-                <br />
-                Make a Post
-              </div>
-            </div>
-          </>
-        );
-      }
 
       if ((isPD && tabIndex == PdProfileTabType.Feed) || (isCharacter && tabIndex == CharacterProfileTabType.Feed)) {
         return (
@@ -555,6 +465,42 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                 </div>
               </div>
             </div>
+          </>
+        );
+      }
+      if (isPD && tabIndex == PdProfileTabType.Character) {
+        return <></>;
+      }
+
+      if (isCharacter && tabIndex == eTabCharacterType.Info) {
+        return <></>;
+      }
+    },
+    [data.indexTab, data.profileTabInfo],
+  );
+
+  const TabContentComponent = React.useCallback(
+    ({profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
+      const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
+
+      if (isEmptyTab) {
+        return (
+          <>
+            <div className={styles.emptyWrap}>
+              <img src="/ui/profile/image_empty.svg" alt="" />
+              <div className={styles.text}>
+                Its pretty lonely out here.
+                <br />
+                Make a Post
+              </div>
+            </div>
+          </>
+        );
+      }
+
+      if ((isPD && tabIndex == PdProfileTabType.Feed) || (isCharacter && tabIndex == CharacterProfileTabType.Feed)) {
+        return (
+          <>
             <ul className={styles.itemWrap}>
               {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
                 return (
@@ -918,33 +864,41 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           )}
         </div>
         <section className={styles.tabSection}>
-          <div className={styles.tabHeaderWrap}>
-            <div
-              className={styles.tabHeader}
-              onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                const target = e.target as HTMLElement;
-                const category = target.closest('[data-tab]')?.getAttribute('data-tab');
-                if (category) {
-                  data.indexTab = parseInt(category);
-                }
-                await refreshProfileTab(profileId, data.indexTab);
-                setData({...data});
-              }}
-            >
-              {tabContentList?.map((tab, index) => {
-                console.log('tab : ', tab);
-                return (
-                  <div
-                    key={tab.type}
-                    className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
-                    data-tab={tab?.type}
-                  >
-                    {tab.label}
-                  </div>
-                );
-              })}
+          <div className={styles.tabHeaderContainer}>
+            <div className={styles.tabHeaderWrap}>
+              <div
+                className={styles.tabHeader}
+                onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                  const target = e.target as HTMLElement;
+                  const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+                  if (category) {
+                    data.indexTab = parseInt(category);
+                  }
+                  await refreshProfileTab(profileId, data.indexTab);
+                  setData({...data});
+                }}
+              >
+                {tabContentList?.map((tab, index) => {
+                  console.log('tab : ', tab);
+                  return (
+                    <div
+                      key={tab.type}
+                      className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
+                      data-tab={tab?.type}
+                    >
+                      {tab.label}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className={styles.line}></div>
             </div>
-            <div className={styles.line}></div>
+            <TabFilterComponent
+              isMine={isMine}
+              profileType={profileType}
+              tabIndex={data.indexTab}
+              isEmptyTab={isEmptyTab}
+            />
           </div>
 
           <div className={styles.tabContent}>
