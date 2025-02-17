@@ -81,17 +81,6 @@ export const selectProfile = async (profileId: number, profileTabType: ProfileTa
   }
 };
 
-export interface ProfileTabItemInfo {
-  id: number;
-  name: string;
-  mediaState: MediaState;
-  mediaUrl: string;
-  likeCount: number;
-  mediaCount: number;
-  playTime: string;
-  isFavorite: boolean;
-}
-
 export enum ExploreSortType {
   Newest,
   MostPopular,
@@ -213,17 +202,6 @@ export interface GetPdTabInfoeRes {
 //     createAt: string;
 // }
 
-export interface ProfileTabItemInfo {
-  id: number;
-  name: string;
-  mediaState: MediaState;
-  mediaUrl: string;
-  likeCount: number;
-  mediaCount: number;
-  playTime: string;
-  isFavorite: boolean;
-}
-
 export const getProfilePdTabInfo = async (
   profileId: number,
   tabType: PdProfileTabType,
@@ -269,17 +247,6 @@ export interface GetCharacterTabInfoeRes {
   feedInfoList: FeedInfo[];
   contentsInfoList: ProfileTabItemInfo[];
   storyInfoList: ProfileTabItemInfo[];
-}
-
-export interface ProfileTabItemInfo {
-  id: number;
-  name: string;
-  mediaState: MediaState;
-  mediaUrl: string;
-  likeCount: number;
-  mediaCount: number;
-  playTime: string;
-  isFavorite: boolean;
 }
 
 export const getProfileCharacterTabInfo = async (
