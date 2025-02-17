@@ -18,7 +18,7 @@
 .main.mainNoPath {
   padding-top: 1px;
 
-  .tabHeaderWrap {
+  .tabHeaderContainer {
     position: relative !important;
   }
 }
@@ -571,8 +571,15 @@
   .tabSection {
     margin-top: 12px;
 
-    .tabHeaderWrap {
+    .tabHeaderContainer {
       position: sticky;
+      top: 57px;
+      background: white;
+      z-index: 2;
+    }
+
+    .tabHeaderWrap {
+      position: relative;
       background: white;
     }
 
@@ -582,9 +589,8 @@
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
+      position: relative;
 
-      position: sticky;
-      top: 57px;
 
       /* header 높이 */
       .label {
@@ -753,7 +759,8 @@
   }
 
   .filter {
-    margin: 10px 0;
+    padding: 10px 10px;
+    margin-bottom: -10px;
 
     display: flex;
     align-items: center;
