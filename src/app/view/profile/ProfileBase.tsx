@@ -1072,65 +1072,59 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
     }),
   };
 
-  const CustomControl = ({children, ...props}: any) => {
-    const {selectProps} = props;
-
-    const handleClick = (e: any) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!selectProps.menuIsOpen) {
-        setIsOpen(true);
-      } else {
-        // setMenuIsOpen(false);
-      }
-    };
-
-    return (
-      <components.Control {...props}>
-        <div
-          style={{
-            ...(styleDefault?.control?.({}, props) as React.CSSProperties | {}),
-          }}
-          onClick={handleClick}
-          onPointerDown={handleClick}
-        >
-          {children}
-        </div>
-      </components.Control>
-    );
-  };
-
   return (
-    <Select
-      isSearchable={false}
-      value={selectedOption}
-      onChange={option => {
-        if (option) {
-          setSelectedOption(option);
-          onChangedCharacter(option.id);
-          setIsOpen(false);
+    <div
+      onClick={() => {
+        if (!isOpen) {
+          setIsOpen(true);
         }
       }}
-      menuIsOpen={isOpen}
-      onMenuOpen={() => setIsOpen(true)}
-      onMenuClose={() => setIsOpen(false)}
-      styles={styleDefault}
-      options={options}
-      components={{
-        Control: CustomControl,
-        DropdownIndicator: ArrowComponent,
-        Option: props => (
-          <components.Option {...props}>
-            {OptionComponent(props.data, props.isSelected)} {/* 드롭다운에서는 isSingleValue = false */}
-          </components.Option>
-        ),
-        SingleValue: props => (
-          <components.SingleValue {...props}>
-            {ValueComponent(props.data)} {/* 선택된 값에서는 isSingleValue = true */}
-          </components.SingleValue>
-        ),
-      }}
-      getOptionValue={option => option.id.toString()}
-    />
+    >
+      {isOpen && (
+        <div
+          onClick={() => {
+            setIsOpen(false);
+          }}
+          style={{
+            position: 'fixed',
+            left: 0,
+            top: 0,
+            backgroundColor: 'rgba(0, 0, 0,0)',
+            width: '100vw',
+            height: '100vh',
+          }}
+        />
+      )}
+      <Select
+        isSearchable={false}
+        value={selectedOption}
+        onChange={option => {
+          if (option) {
+            setSelectedOption(option);
+            onChangedCharacter(option.id);
+            setIsOpen(false);
+          }
+        }}
+        menuIsOpen={isOpen}
+        onMenuOpen={() => setIsOpen(true)}
+        // onMenuClose={() => setIsOpen(false)}
+        styles={styleDefault}
+        options={options}
+        components={{
+          DropdownIndicator: ArrowComponent,
+          Option: props => (
+            <components.Option {...props}>
+              {OptionComponent(props.data, props.isSelected)} {/* 드롭다운에서는 isSingleValue = false */}
+            </components.Option>
+          ),
+          SingleValue: props => (
+            <components.SingleValue {...props}>
+              {ValueComponent(props.data)} {/* 선택된 값에서는 isSingleValue = true */}
+            </components.SingleValue>
+          ),
+        }}
+        getOptionValue={option => option.id.toString()}
+      />
+    </div>
   );
 };
