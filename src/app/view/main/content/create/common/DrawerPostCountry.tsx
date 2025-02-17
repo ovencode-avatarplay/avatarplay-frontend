@@ -5,6 +5,7 @@ import ExploreSearchInput from '../../searchboard/searchboard-header/ExploreSear
 import {LanguageType} from '@/redux-store/slices/ContentInfo';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {LineClose} from '@ui/Icons';
+import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
 
 interface DrawerPostCountryProps {
   isOpen: boolean;
@@ -12,6 +13,8 @@ interface DrawerPostCountryProps {
   selectableCountryList: LanguageType[];
   postCountryList: LanguageType[];
   onUpdatePostCountry: (updatedList: LanguageType[]) => void;
+  isAll: boolean;
+  setIsAll: (checked: boolean) => void;
 }
 
 const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
@@ -20,6 +23,8 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
   selectableCountryList,
   postCountryList,
   onUpdatePostCountry,
+  isAll,
+  setIsAll,
 }) => {
   const [searchValue, setSearchValue] = useState<string>('');
 
@@ -37,12 +42,21 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
     onUpdatePostCountry(updatedList);
   };
 
+  const handleToggleAll = (checked: boolean) => {
+    setIsAll(checked);
+    if (checked) {
+      onUpdatePostCountry(selectableCountryList);
+    } else {
+      onUpdatePostCountry([]);
+    }
+  };
+
   const renderSelectCountryItem = (item: LanguageType) =>
     !postCountryList.includes(item) && (
       <li key={item}>
         <CustomRadioButton
           displayType="buttonText"
-          shapeType="circle"
+          shapeType="square"
           label={LanguageType[item]}
           value={item}
           onSelect={() => handleAddPostCountry(item)}
@@ -73,10 +87,13 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
       </div>
       <div className={styles.positionCountryArea}>
         <div className={styles.allButtonArea}>
-          <button className={styles.checkBox} onClick={() => onUpdatePostCountry(selectableCountryList)}>
-            <img className={styles.checkBoxIcon} alt="CheckBox Icon" />
-          </button>
-          <span className={styles.allButtonText}>All</span>
+          <CustomCheckbox
+            displayType="buttonText"
+            shapeType="square"
+            checked={isAll}
+            onToggle={handleToggleAll}
+            label="All"
+          />
         </div>
         <div className={styles.settingArea}>
           <div className={styles.selectableCountryArea}>

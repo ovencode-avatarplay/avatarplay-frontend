@@ -103,6 +103,9 @@ import LineDisLike from "./Line/Dislike.svg";
 import LineComment from "./Line/Comment.svg";
 import LineScaleUp from "./Line/Scale_up.svg";
 import LinePin from "./Line/Pin.svg";
+import LineCheckBoxFill from "./Line/CheckBoxFill.svg";
+import LineCheckBoxEmpty from "./Line/CheckBoxEmpty.svg";
+import LineSetting from "./Line/Setting.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -245,5 +248,8 @@ export {
   LineRefresh,
   LineSearch,
   LinePin,
-  LineChannel
+  LineChannel,
+  LineCheckBoxFill,
+  LineCheckBoxEmpty,
+  LineSetting,
 };

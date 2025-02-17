@@ -1,0 +1,28 @@
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    gap: 8px;
+  }
+  
+  .buttonOnly {
+    justify-content: center;
+  }
+  
+  .buttonText {
+    justify-content: flex-start;
+  }
+  
+  .circle .buttonImage,
+  .square .buttonImage {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .buttonText .buttonText {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+  }
+  

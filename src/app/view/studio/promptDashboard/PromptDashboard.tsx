@@ -5,22 +5,41 @@ import {useRouter} from 'next/navigation';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 import {LineUpload} from '@ui/Icons';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import CreateCustomPrompt from './CreateCustomPrompt';
+import CreateCustomLorebook from './CreateCustomLorebook';
 
-interface ListItem {
+export interface PromptData {
+  id: number;
+  type: number;
   name: string;
   updateAt: Date;
 }
 
+export interface PromptTemplateChatGPT {
+  system: string;
+}
+
+export interface PromptTemplateMandarin {
+  input: string;
+  instruction: string;
+  output: string;
+}
+
 const PromptDashboard: React.FC = () => {
   const router = useRouter();
-  const [promptList, setPromptList] = useState<ListItem[]>([]);
-  const [lorebookList, setLorebookList] = useState<ListItem[]>([]);
+  const [promptList, setPromptList] = useState<PromptData[]>([]);
+  const [lorebookList, setLorebookList] = useState<PromptData[]>([]);
   const [namePopupOpen, setNamePopupOpen] = useState<boolean>(false);
-  const [popupType, setPopupType] = useState<'prompt' | 'lorebook'>('prompt');
+  const [popupType, setPopupType] = useState<'dashboard' | 'prompt' | 'lorebook'>('dashboard');
   const [newItemName, setNewItemName] = useState<string>('');
+  const [displayState, setDisplayState] = useState<'dashboard' | 'prompt' | 'lorebook'>('dashboard');
+  const [createState, setCreateState] = useState<'prompt' | 'lorebook'>('prompt');
 
   const handleOnClose = () => {
-    router.back();
+    if (displayState === 'dashboard') router.back();
+    else if (displayState === 'prompt' || displayState === 'lorebook') {
+      setDisplayState('dashboard');
+    }
   };
 
   const handleOpenNamePopup = (type: 'prompt' | 'lorebook') => {
@@ -29,9 +48,25 @@ const PromptDashboard: React.FC = () => {
     setNamePopupOpen(true);
   };
 
+  const getMinId = (list: PromptData[]): number => {
+    const listId = list.flatMap(list => list.id);
+
+    if (listId.length === 0) {
+      return 0; // 에피소드가 없는 경우 null 반환 (버그)
+    }
+
+    const minId = Math.min(...listId);
+    return minId > 0 ? 0 : minId;
+  };
+
   const handleConfirmAddItem = () => {
     if (newItemName.trim() === '') return;
-    const newItem = {name: newItemName, updateAt: new Date()};
+    const newItem = {
+      name: newItemName,
+      updateAt: new Date(),
+      id: popupType === 'prompt' ? getMinId(promptList) - 1 : getMinId(lorebookList),
+      type: popupType === 'prompt' ? 0 : 1,
+    };
 
     if (popupType === 'prompt') {
       setPromptList([...promptList, newItem]);
@@ -39,6 +74,11 @@ const PromptDashboard: React.FC = () => {
       setLorebookList([...lorebookList, newItem]);
     }
     setNamePopupOpen(false);
+  };
+
+  const handleItemClick = (item: PromptData) => {
+    setDisplayState(item.type === 0 ? 'prompt' : item.type === 1 ? 'lorebook' : 'prompt');
+    setCreateState(item.type === 0 ? 'prompt' : item.type === 1 ? 'lorebook' : 'prompt');
   };
 
   const renderAddButton = (onClickAction: () => void) => {
@@ -50,9 +90,9 @@ const PromptDashboard: React.FC = () => {
     );
   };
 
-  const renderItem = (item: ListItem) => {
+  const renderItem = (item: PromptData) => {
     return (
-      <li key={item.name} className={styles.promptItem}>
+      <li key={item.name} className={styles.promptItem} onClick={() => handleItemClick(item)}>
         <div className={styles.itemName}>{item.name}</div>
         <div className={styles.updateAt}>{item.updateAt.toDateString()}</div>
       </li>
@@ -94,7 +134,14 @@ const PromptDashboard: React.FC = () => {
     <div style={{marginTop: '58px'}}>
       <div className={styles.promptContainer}>
         <CreateDrawerHeader title="Create Content" onClose={handleOnClose} />
-        <Splitters splitters={splitData} />
+        {displayState === 'dashboard' && (
+          <Splitters
+            splitters={splitData}
+            initialActiveSplitter={createState === 'prompt' ? 0 : createState === 'lorebook' ? 1 : 0}
+          />
+        )}
+        {displayState === 'prompt' && <CreateCustomPrompt name="" />}
+        {displayState === 'lorebook' && <CreateCustomLorebook name="" />}
       </div>
       {namePopupOpen && (
         <CustomPopup

@@ -5,7 +5,7 @@ interface Props {
 }
 
 const CreateCustomLorebook: React.FC<Props> = ({name}) => {
-  return <></>;
+  return <>Create Custom Lorebook</>;
 };
 
 export default CreateCustomLorebook;
