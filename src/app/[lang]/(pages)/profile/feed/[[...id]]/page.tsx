@@ -12,7 +12,7 @@ import BottomNav from '@/app/view/main/bottom-nav/BottomNav';
 
 type Props = {};
 
-const PageFeedView2 = (props: Props) => {
+const PageFeedView = (props: Props) => {
   const router = useRouter();
   const query = useParams();
   const params = useSearchParams();
@@ -53,4 +53,4 @@ const PageFeedView2 = (props: Props) => {
   );
 };
 
-export default PageFeedView2;
+export default PageFeedView;
