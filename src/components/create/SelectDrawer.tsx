@@ -16,9 +16,10 @@ interface SelectDrawerProps {
   onClose: () => void;
   selectedIndex: number;
   children?: ReactNode;
+  name?: string;
 }
 
-const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, selectedIndex, children}) => {
+const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, selectedIndex, children, name}) => {
   return (
     <>
       {isOpen && <div className={styles.selectDrawerBack} onClick={onClose}></div>}
@@ -48,6 +49,7 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, sele
         <div className={styles.handleArea}>
           <div className={styles.handleBar}></div>
         </div>
+        {name && <div className={styles.nameText}>{name}</div>}
         {children && <div className={styles.customContent}>{children}</div>}
         <div className={cx(styles.drawerBox, styles.maxHeight)}>
           {items.map((item, idx) => (

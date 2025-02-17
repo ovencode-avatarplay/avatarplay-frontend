@@ -48,6 +48,15 @@
     background: #E0E0E0;
 }
 
+.nameText{
+    color: var(--Black, #000);
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
 .drawerBox {
     display: flex;
     flex-direction: column;

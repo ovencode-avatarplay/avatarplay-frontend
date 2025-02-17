@@ -133,6 +133,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({on
 
       {/* 필터 선택 드로어 */}
       <SelectDrawer
+        name="Filter"
         items={publishItems}
         isOpen={filterDrawerOpen}
         onClose={() => setFilterDrawerOpen(false)}

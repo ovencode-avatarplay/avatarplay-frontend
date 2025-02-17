@@ -2,12 +2,13 @@ import React, {useState} from 'react';
 import styles from './CreateContent.module.css';
 import CreateContentIntroduction from './CreateContentIntroduction';
 import TermsAndConditions from './TermsAndConditions';
+import CreateSeriesContent from './CreateSeriesContent';
 
 // 스텝을 관리하는 ENUM
 enum Step {
   Introduction = 0,
   TermsAndConditions = 1,
-  Review = 2,
+  CreateSeriesContent = 2,
 }
 
 const CreateContent: React.FC = () => {
@@ -20,10 +21,15 @@ const CreateContent: React.FC = () => {
         return <CreateContentIntroduction onNext={() => setCurrentStep(Step.TermsAndConditions)} />;
       case Step.TermsAndConditions:
         return (
-          <TermsAndConditions onNext={() => {}} onPrev={() => setCurrentStep(Step.Introduction)}></TermsAndConditions>
+          <TermsAndConditions
+            onPrev={() => setCurrentStep(Step.Introduction)}
+            onNext={() => setCurrentStep(Step.CreateSeriesContent)}
+          ></TermsAndConditions>
         );
-      case Step.Review:
-        return <></>;
+      case Step.CreateSeriesContent:
+        return (
+          <CreateSeriesContent onPrev={() => setCurrentStep(Step.Introduction)} onNext={() => {}}></CreateSeriesContent>
+        );
       default:
         return null;
     }
