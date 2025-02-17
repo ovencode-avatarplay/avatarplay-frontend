@@ -10,6 +10,10 @@ import {isLogined, refreshLanaguage} from '@/utils/UrlMove';
 export const getBackUrl = () => {
   const storage = globalThis?.sessionStorage;
   const prevPath = storage.getItem('prevPath');
+  const curPath = storage.getItem('currentPath');
+  if (prevPath == curPath) {
+    return null;
+  }
   return prevPath;
 };
 

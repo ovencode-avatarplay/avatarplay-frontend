@@ -8,10 +8,12 @@ import ReelsContent from './ReelsContent';
 import {FeedInfo, sendFeedView, sendGetRecommendFeed} from '@/app/NetWork/ShortsNetwork';
 import styles from './ReelsLayout.module.css';
 import {setBottomNavColor, setRecommendState, setSelectedIndex} from '@/redux-store/slices/MainControl';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {LineArrowDown, LineFeatured} from '@ui/Icons';
 import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
+import {ExploreSortType, FeedMediaType, getProfilePdTabInfo, PdProfileTabType} from '@/app/NetWork/ProfileNetwork';
+import {RootState} from '@/redux-store/ReduxStore';
 enum RecommendState {
   Following = 1,
   ForYou = 0,
@@ -19,9 +21,21 @@ enum RecommendState {
 interface ReelsLayoutProps {
   initialFeed?: FeedInfo; // 특정 URL 키를 통해 전달받은 초기 피드
   recommendState?: RecommendState;
+
+  profileId?: number;
+  feedSortType?: ExploreSortType;
+  feedMediaType?: FeedMediaType;
 }
 
-const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed, recommendState = 0}) => {
+const ReelsLayout: React.FC<ReelsLayoutProps> = ({
+  initialFeed,
+  recommendState = 0,
+
+  profileId = 0,
+  feedSortType = ExploreSortType.MostPopular,
+  feedMediaType = FeedMediaType.Total,
+}) => {
+  const dataProfile = useSelector((state: RootState) => state.profile);
   const [allFeeds, setAllFeeds] = useState<FeedInfo[]>([]); // 전체 데이터 저장
   const [info, setInfo] = useState<FeedInfo[]>([]); // 현재 렌더링된 데이터
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 슬라이드 인덱스
@@ -30,6 +44,10 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed, recommendState = 
   const [isProfile, setIsProfile] = useState(false); // 현재 슬라이드 인덱스
   const [selectedTab, setSelectedTab] = useState<RecommendState>(recommendState);
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const isSpecificProfile = profileId != 0;
+
   const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
     try {
       const base64Payload = token.split('.')[1]; // payload 부분 추출
@@ -40,7 +58,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed, recommendState = 
       return null;
     }
   };
-  const dispatch = useDispatch();
+
   const getEmailFromJwt = (): string | null => {
     const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
     if (jwt) {
@@ -53,21 +71,30 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed, recommendState = 
   // API 호출
   const fetchRecommendFeed = async () => {
     dispatch(setBottomNavColor(0));
-    try {
-      const lang = getCurrentLanguage();
-      const result = await sendGetRecommendFeed({recommendState: recommendState, languageType: lang});
+    if (isSpecificProfile) {
+      const result = await getProfilePdTabInfo(profileId || 0, PdProfileTabType.Feed, feedSortType, feedMediaType);
+      const mergedFeeds = result?.feedInfoList || [];
+      setAllFeeds(mergedFeeds); // 전체 데이터 저장
+      setInfo(mergedFeeds.slice(0, 2)); // 초기 렌더링용 첫 2개
+    }
 
-      if (result.resultCode === 0 && result.data) {
-        const feeds = result.data.feedInfoList;
+    if (!isSpecificProfile) {
+      try {
+        const lang = getCurrentLanguage();
+        const result = await sendGetRecommendFeed({recommendState: recommendState, languageType: lang});
 
-        // initialFeed가 있다면 feeds 배열 앞에 추가
-        const mergedFeeds = initialFeed ? [initialFeed, ...feeds.filter(feed => feed.id !== initialFeed.id)] : feeds;
+        if (result.resultCode === 0 && result.data) {
+          const feeds = result.data.feedInfoList;
 
-        setAllFeeds(mergedFeeds); // 전체 데이터 저장
-        setInfo(mergedFeeds.slice(0, 2)); // 초기 렌더링용 첫 2개
+          // initialFeed가 있다면 feeds 배열 앞에 추가
+          const mergedFeeds = initialFeed ? [initialFeed, ...feeds.filter(feed => feed.id !== initialFeed.id)] : feeds;
+
+          setAllFeeds(mergedFeeds); // 전체 데이터 저장
+          setInfo(mergedFeeds.slice(0, 2)); // 초기 렌더링용 첫 2개
+        }
+      } catch (error) {
+        console.error('Failed to fetch recommended feed:', error);
       }
-    } catch (error) {
-      console.error('Failed to fetch recommended feed:', error);
     }
   };
   useEffect(() => {
@@ -201,6 +228,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({initialFeed, recommendState = 
               isMute={isMute}
               setIsMute={setIsMute}
               setIsProfile={setIsProfile}
+              isShowProfile={!isSpecificProfile}
             />
           </div>
         ))}

@@ -41,9 +41,18 @@ interface ReelsContentProps {
   isMute: boolean;
   setIsMute: (mute: boolean) => void; // boolean 매개변수 추가
   setIsProfile: (profile: boolean) => void; // boolean 매개변수 추가
+
+  isShowProfile: boolean;
 }
 
-const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setIsMute, setIsProfile}) => {
+const ReelsContent: React.FC<ReelsContentProps> = ({
+  item,
+  isActive,
+  isMute,
+  setIsMute,
+  setIsProfile,
+  isShowProfile = true,
+}) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
@@ -484,9 +493,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({item, isActive, isMute, setI
             {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />}
           </div>
         </SwiperSlide>
-        <SwiperSlide style={{overflowY: 'scroll'}}>
-          {activeIndexProfile === 1 && <ProfileBase profileId={item.characterProfileId} maxWidth={'600px'} />}
-        </SwiperSlide>
+        {isShowProfile && (
+          <SwiperSlide style={{overflowY: 'scroll'}}>
+            {activeIndexProfile === 1 && <ProfileBase profileId={item.characterProfileId} maxWidth={'600px'} />}
+          </SwiperSlide>
+        )}
       </Swiper>
       <ReelsComment
         feedId={item.id}
