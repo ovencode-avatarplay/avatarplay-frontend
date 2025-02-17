@@ -133,13 +133,6 @@ export interface LorebookInfo {
   name: string;
 }
 
-export interface CharacterMediaInfo {
-  id: number;
-  imageUrl: string;
-  description: string;
-  isProfileImage: boolean;
-}
-
 export enum LanguageType {
   Korean = 0,
   English = 1,
@@ -276,13 +269,6 @@ export interface Conversation {
 }
 
 // 5 Level
-
-export interface GalleryImageInfo {
-  galleryImageId: number;
-  isGenerate: boolean;
-  debugParameter: string;
-  imageUrl: string;
-}
 
 //#endregion
 

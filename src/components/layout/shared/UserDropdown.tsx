@@ -87,7 +87,7 @@ const UserDropdown = () => {
 
     if (!session?.data?.session) {
       /*  */
-      router.push('/auth');
+      pushLocalizedRoute('/auth', router);
       return;
     }
 
@@ -109,14 +109,14 @@ const UserDropdown = () => {
     const jwtToken = localStorage.getItem('jwt');
     console.log('jwtToken : ', jwtToken);
     if (!jwtToken) {
-      router.push('/auth');
+      pushLocalizedRoute('/auth', router);
       return;
     }
 
     const res = await getAuth();
     console.log('auth res :', res);
     if (res?.resultCode != 0) {
-      router.push('/auth');
+      pushLocalizedRoute('/auth', router);
       return;
     } else {
       if (!res?.data?.profileSimpleInfo) {

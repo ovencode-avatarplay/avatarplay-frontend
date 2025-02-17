@@ -339,7 +339,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     // you can get the prevPath like this
     const prevPath = getBackUrl();
     if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/'));
+      router.replace(getLocalizedLink('/main/homefeed'));
     } else {
       router.replace(prevPath);
     }
@@ -484,7 +484,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                 className={styles.left}
                 onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
                   const target = e.target as HTMLElement;
-                  const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+                  const category = target.closest('[data-filter]')?.getAttribute('data-filter');
                   if (category) {
                     data.indexFilterMedia = parseInt(category);
                   }
@@ -495,19 +495,19 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               >
                 <div
                   className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Total && styles.active)}
-                  data-tab={FeedMediaType.Total}
+                  data-filter={FeedMediaType.Total}
                 >
                   <img src={BoldViewGallery.src} alt="" />
                 </div>
                 <div
                   className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Video && styles.active)}
-                  data-tab={FeedMediaType.Video}
+                  data-filter={FeedMediaType.Video}
                 >
                   <img src={BoldVideo.src} alt="" />
                 </div>
                 <div
                   className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Image && styles.active)}
-                  data-tab={FeedMediaType.Image}
+                  data-filter={FeedMediaType.Image}
                 >
                   <img src={BoldImage.src} alt="" />
                 </div>
@@ -558,43 +558,50 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             <ul className={styles.itemWrap}>
               {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
                 return (
-                  <li className={styles.item} key={one?.id}>
-                    {one.mediaState == MediaState.Image && (
-                      <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
-                    )}
-                    {one.mediaState == MediaState.Video && (
-                      <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
-                    )}
-                    {one?.isBookmark && (
-                      <div className={styles.pin}>
-                        <img src={BoldPin.src} alt="" />
+                  <Link
+                    href={
+                      getLocalizedLink(`/profile/feed/` + data.profileInfo?.profileInfo.id) +
+                      `?type=${profileType}&index=${index}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}&index=${index}`
+                    }
+                  >
+                    <li className={styles.item} key={one?.id}>
+                      {one.mediaState == MediaState.Image && (
+                        <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
+                      )}
+                      {one.mediaState == MediaState.Video && (
+                        <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
+                      )}
+                      {one?.isBookmark && (
+                        <div className={styles.pin}>
+                          <img src={BoldPin.src} alt="" />
+                        </div>
+                      )}
+                      <div className={styles.info}>
+                        <div className={styles.likeWrap}>
+                          <img src={BoldHeart.src} alt="" />
+                          <div className={styles.value}>{one?.likeCount}</div>
+                        </div>
+                        <div className={styles.viewWrap}>
+                          <img src={BoldVideo.src} alt="" />
+                          <div className={styles.value}>{one?.commentCount}</div>
+                        </div>
                       </div>
-                    )}
-                    <div className={styles.info}>
-                      <div className={styles.likeWrap}>
-                        <img src={BoldHeart.src} alt="" />
-                        <div className={styles.value}>{one?.likeCount}</div>
+                      <div className={styles.titleWrap}>
+                        <div className={styles.title}>{one?.description}</div>
+                        <img
+                          src={BoldMenuDots.src}
+                          alt=""
+                          className={styles.iconSetting}
+                          onClick={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            data.isSettingOpen = true;
+                            setData({...data});
+                          }}
+                        />
                       </div>
-                      <div className={styles.viewWrap}>
-                        <img src={BoldVideo.src} alt="" />
-                        <div className={styles.value}>{one?.commentCount}</div>
-                      </div>
-                    </div>
-                    <div className={styles.titleWrap}>
-                      <div className={styles.title}>{one?.description}</div>
-                      <img
-                        src={BoldMenuDots.src}
-                        alt=""
-                        className={styles.iconSetting}
-                        onClick={e => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          data.isSettingOpen = true;
-                          setData({...data});
-                        }}
-                      />
-                    </div>
-                  </li>
+                    </li>
+                  </Link>
                 );
               })}
             </ul>

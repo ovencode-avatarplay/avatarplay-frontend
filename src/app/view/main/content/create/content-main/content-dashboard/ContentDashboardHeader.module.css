@@ -25,10 +25,12 @@
 
 .headerLeft > .backButton{
     display: flex;
-height: 40px;
-padding: 14px 0px 14px 16px;
-align-items: center;
-gap: 8px;
+    height: 40px;
+    padding: 14px 0px 14px 16px;
+    align-items: center;
+    gap: 8px;
+    filter: brightness(0) saturate(100%);
+
 }
 
 .backButton > .backIcon {
@@ -36,6 +38,8 @@ gap: 8px;
     width: 20px;
     height: 20px;
     align-items: center;
+    filter: brightness(0) saturate(100%);
+
 }
 
 .headerLeft > .navTitle{

@@ -72,10 +72,11 @@
                   "selectLorebookIndex": 0
                 },
                 "pdProfileSimpleInfo": {
-                  "id": 0,
-                  "type": 0,
+                  "profileId": 0,
+                  "profileType": 0,
                   "name": "string",
-                  "iconImageUrl": "string"
+                  "iconImageUrl": "string",
+                  "operatorAuthorityType": 0
                 },
                 "state": 1,
                 

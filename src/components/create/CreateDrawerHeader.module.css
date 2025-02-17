@@ -33,6 +33,7 @@
     width: 20px;
     height: 20px;
     align-items: center;
+    filter: brightness(0) saturate(100%);
 }
 
 .baseArea > .navTitle{
