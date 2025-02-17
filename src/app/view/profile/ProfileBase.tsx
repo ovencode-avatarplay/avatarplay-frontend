@@ -557,12 +557,11 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             </div>
             <ul className={styles.itemWrap}>
               {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
-                console.log('profileId : ', data.profileInfo?.profileInfo);
                 return (
                   <Link
                     href={
                       getLocalizedLink(`/profile/feed/` + data.profileInfo?.profileInfo.id) +
-                      `?index=${index}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}`
+                      `?type=${profileType}&index=${index}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}&index=${index}`
                     }
                   >
                     <li className={styles.item} key={one?.id}>

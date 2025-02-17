@@ -12,8 +12,17 @@ import {useDispatch, useSelector} from 'react-redux';
 import {LineArrowDown, LineFeatured} from '@ui/Icons';
 import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
-import {ExploreSortType, FeedMediaType, getProfilePdTabInfo, PdProfileTabType} from '@/app/NetWork/ProfileNetwork';
+import {
+  CharacterProfileTabType,
+  ExploreSortType,
+  FeedMediaType,
+  getProfileCharacterTabInfo,
+  getProfilePdTabInfo,
+  PdProfileTabType,
+  ProfileType,
+} from '@/app/NetWork/ProfileNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
+import {getCharacterStateText} from '@/app/view/studio/characterDashboard/CharacterGridItem';
 enum RecommendState {
   Following = 1,
   ForYou = 0,
@@ -23,8 +32,10 @@ interface ReelsLayoutProps {
   recommendState?: RecommendState;
 
   profileId?: number;
+  profileType?: ProfileType;
   feedSortType?: ExploreSortType;
   feedMediaType?: FeedMediaType;
+  indexContent?: number;
 }
 
 const ReelsLayout: React.FC<ReelsLayoutProps> = ({
@@ -32,8 +43,10 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   recommendState = 0,
 
   profileId = 0,
+  profileType = ProfileType.PD,
   feedSortType = ExploreSortType.MostPopular,
   feedMediaType = FeedMediaType.Total,
+  indexContent = 0,
 }) => {
   const dataProfile = useSelector((state: RootState) => state.profile);
   const [allFeeds, setAllFeeds] = useState<FeedInfo[]>([]); // 전체 데이터 저장
@@ -72,10 +85,31 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const fetchRecommendFeed = async () => {
     dispatch(setBottomNavColor(0));
     if (isSpecificProfile) {
-      const result = await getProfilePdTabInfo(profileId || 0, PdProfileTabType.Feed, feedSortType, feedMediaType);
+      const isPD = [ProfileType.PD, ProfileType.User].includes(profileType);
+      let result = null;
+
+      if (isPD) {
+        result = await getProfilePdTabInfo(profileId || 0, PdProfileTabType.Feed, feedSortType, feedMediaType);
+      } else {
+        result = await getProfileCharacterTabInfo(
+          profileId || 0,
+          CharacterProfileTabType.Feed,
+          feedSortType,
+          feedMediaType,
+        );
+      }
+
       const mergedFeeds = result?.feedInfoList || [];
       setAllFeeds(mergedFeeds); // 전체 데이터 저장
-      setInfo(mergedFeeds.slice(0, 2)); // 초기 렌더링용 첫 2개
+      setInfo(mergedFeeds.slice(0, indexContent + 2)); // 초기 렌더링용 첫 2개
+      setCurrentSlideIndex(indexContent);
+
+      setTimeout(() => {
+        const sectionHeight = window.innerHeight;
+        const scrollY = sectionHeight * indexContent;
+        window.scrollTo(0, scrollY);
+        handleScroll();
+      }, 100);
     }
 
     if (!isSpecificProfile) {

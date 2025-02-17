@@ -22,11 +22,8 @@ const pageFeedView = (props: Props) => {
   }));
   const feedMediaType = parseInt(params?.get('feedMediaType') || '0');
   const feedSortType = parseInt(params?.get('feedSortType') || '0');
-  console.log('query : ', query);
-  console.log('params : ', params);
-
-  console.log('id : ', id);
-
+  const index = parseInt(params?.get('index') || '0');
+  const profileType = parseInt(params?.get('type') || '0');
   const routerBack = () => {
     router.replace(getLocalizedLink(`/profile/${id}`));
   };
@@ -44,7 +41,13 @@ const pageFeedView = (props: Props) => {
           </div>
         </div>
       </section>
-      <ReelsLayout profileId={id} feedMediaType={feedMediaType} feedSortType={feedSortType} />
+      <ReelsLayout
+        profileId={id}
+        profileType={profileType}
+        feedMediaType={feedMediaType}
+        feedSortType={feedSortType}
+        indexContent={index}
+      />
       <BottomNav />
     </>
   );
