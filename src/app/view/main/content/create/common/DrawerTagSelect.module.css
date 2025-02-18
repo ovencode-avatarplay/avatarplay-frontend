@@ -1,0 +1,61 @@
+
+.tagArea
+{
+    display: flex;
+    flex-direction: column;
+    min-height: 100px; 
+    max-height: 246px;
+    overflow-y: scroll;
+}
+
+.tagArea::-webkit-scrollbar {
+    display: none;  
+}
+  
+.tagArea {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+}
+
+
+.tagRefreshButton
+{
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 5px;
+    align-self: stretch;
+}
+
+.tagRefreshText
+{
+    color: var(--Neutral-500, #9AA0A6);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 160%; /* 22.4px */
+    letter-spacing: 0.2px;
+}
+
+.tagRefreshIcon
+{
+    display: flex;
+    width: 20px;
+    height: 20px;
+    padding: 1.068px 1.761px 1.068px 1.76px;
+    justify-content: center;
+    align-items: center;
+    filter: brightness(0) saturate(100%) invert(91%) sepia(8%) saturate(161%) hue-rotate(174deg) brightness(86%) contrast(88%);
+}
+
+
+.tagSelect
+{
+    display: flex;
+    padding: 20px 0px;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 6px;
+    align-self: stretch;
+    flex-wrap: wrap;
+}

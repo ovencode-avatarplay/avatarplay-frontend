@@ -26,7 +26,7 @@ import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageN
 import {CharacterInfo, CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
 import {CardData} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
-import {OperatorAuthorityType} from '@/app/NetWork/ProfileNetwork';
+import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 
 interface CreateCharacterProps {
   characterInfo?: CharacterInfo;
@@ -100,8 +100,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
   const [connectCharacterId, setConnectCharacterId] = useState<number>(0);
   const [recruitedProfileId, setRecruitedProfileId] = useState<number>(character.recruitedProfileId);
-  const [operatorInvitationProfileId, setOperatorInvitationProfileId] = useState<number[]>(
-    character.operatorInvitationProfileId,
+  const [operatorProfileIdList, setOperatorProfileIdList] = useState<ProfileSimpleInfo[]>(
+    character.operatorProfileIdList,
   );
 
   const [isMonetization, setIsMonetization] = useState<boolean>(character.isMonetization);
@@ -196,14 +196,6 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           greeting: greeting,
           secret: secret,
           mainImageUrl: mainimageUrl,
-          // portraitGalleryImageUrl: mediaTemplateList
-          //   .filter(item => !item.isProfileImage) // isProfileImage가 false인 항목만 필터링
-          //   .map(item => ({
-          //     galleryImageId: -1,
-          //     isGenerate: true,
-          //     debugParameter: item.description,
-          //     imageUrl: item.imageUrl,
-          //   })),
           portraitGalleryImageUrl: [],
           poseGalleryImageUrl: [],
           expressionGalleryImageUrl: [],
@@ -225,7 +217,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           positionCountryList: positionCountryList,
           characterIP: characterIP,
           recruitedProfileId: recruitedProfileId,
-          operatorInvitationProfileId: [],
+          operatorProfileIdList: operatorProfileIdList,
           isMonetization: isMonetization,
           nSFW: nsfw,
           membershipSetting: {
@@ -241,6 +233,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
             selectPromptIndex: 0,
           },
           pdProfileSimpleInfo: {
+            profileTabType: 0,
             profileId: 0,
             profileType: 0,
             name: 'string',
@@ -494,8 +487,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           onCharacterIPChange={setCharacterIP}
           connectCharacterId={recruitedProfileId}
           onConnectCharacterIdChange={setRecruitedProfileId}
-          operatorInvitationProfileId={operatorInvitationProfileId}
-          onOperatorInvitationProfileIdChange={setOperatorInvitationProfileId}
+          operatorProfileIdList={operatorProfileIdList}
+          onOperatorProfileIdListChange={setOperatorProfileIdList}
           isMonetization={isMonetization}
           onIsMonetizationChange={setIsMonetization}
           nsfw={nsfw}

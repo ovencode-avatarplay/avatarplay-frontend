@@ -45,7 +45,7 @@
                 "positionCountryList": [],
                 "characterIP": 0,
                 "recruitedProfileId": 0,
-                "operatorInvitationProfileId": [],
+                "operatorProfileIdList": [],
                 
                 "isMonetization": false,
                 "nSFW": false,
@@ -56,27 +56,20 @@
                   "benefits": ""
                 },
                 "customModulesInfo": {
-                  "promptInfoList": [
-                    {
-                      "id": 0,
-                      "name": "string"
-                    }
+                  "promptInfoList": [ 
                   ],
                   "selectPromptIndex": 0,
-                  "lorebookInfoList": [
-                    {
-                      "id": 0,
-                      "name": "string"
-                    }
+                  "lorebookInfoList": [ 
                   ],
                   "selectLorebookIndex": 0
                 },
                 "pdProfileSimpleInfo": {
+                  "profileTabType" : 0,
+                  "operatorAuthorityType": 0,
                   "profileId": 0,
                   "profileType": 0,
                   "name": "string",
-                  "iconImageUrl": "string",
-                  "operatorAuthorityType": 0
+                  "iconImageUrl": "string"
                 },
                 "state": 1,
                 
