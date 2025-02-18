@@ -1,4 +1,4 @@
-import {getProfileList, ProfileSimpleInfo, selectProfile} from '@/app/NetWork/ProfileNetwork';
+import {getProfileList, OperatorAuthorityType, ProfileSimpleInfo, selectProfile} from '@/app/NetWork/ProfileNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {Drawer} from '@mui/material';
 import {useRouter} from 'next/navigation';
@@ -21,17 +21,23 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
   const dispatch = useDispatch();
   const [data, setData] = useState<{
     profileList: ProfileSimpleInfo[];
+    indexSharedTab: number;
   }>({
     profileList: [],
+    indexSharedTab: 0,
   });
   const router = useRouter();
   useEffect(() => {
     if (!open) return;
+    const isMyProfile = dataProfile.currentProfile?.operatorAuthorityType == OperatorAuthorityType.None;
+    data.indexSharedTab = Number(!isMyProfile);
+    console.log('isMyProfile : ', isMyProfile);
+    setData({...data});
     refreshProfileList();
   }, [open]);
 
   const refreshProfileList = async () => {
-    const profileList = await getProfileList();
+    const profileList = await getProfileList(data.indexSharedTab);
     if (!profileList) return;
 
     data.profileList = profileList;
@@ -57,6 +63,25 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
         <div className={styles.handleBar}></div>
       </div>
       <div className={styles.title}>Select Profile</div>
+      <div
+        className={styles.mySharedWrap}
+        onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          const target = e.target as HTMLElement;
+          const indexTab = target.closest('[data-index]')?.getAttribute('data-index');
+          if (indexTab) {
+            data.indexSharedTab = parseInt(indexTab);
+            setData({...data});
+            refreshProfileList();
+          }
+        }}
+      >
+        <div className={cx(styles.My, data.indexSharedTab == 0 && styles.active)} data-index={0}>
+          My
+        </div>
+        <div className={cx(styles.Shared, data.indexSharedTab == 1 && styles.active)} data-index={1}>
+          Shared
+        </div>
+      </div>
       <div className={styles.content}>
         <ul className={styles.profileList}>
           {data.profileList?.map((profile, index) => {

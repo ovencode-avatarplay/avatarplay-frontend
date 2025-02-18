@@ -31,6 +31,59 @@
     line-height: normal;
   }
 
+  .mySharedWrap {
+    margin-top: 22px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+
+
+
+    &>div {
+      cursor: pointer;
+      box-sizing: border-box;
+      width: 89px;
+      height: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      color: var(--Black, #000);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 20px;
+      /* 142.857% */
+      letter-spacing: -0.4px;
+
+
+
+      border-radius: 7px;
+      border: 1px solid var(--Border-1, #EAECF0);
+      background: var(--White, #FFF);
+
+      &.active {
+        background: var(--Neutral-800, #2C3131);
+        border: none;
+
+        color: var(--White, #FFF);
+        font-feature-settings: 'liga' off, 'clig' off;
+        font-family: Lato;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 20px;
+        /* 142.857% */
+        letter-spacing: -0.4px;
+      }
+    }
+  }
+
+
   .content {
     margin-top: 22px;
     border-radius: 12px;
