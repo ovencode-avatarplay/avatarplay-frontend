@@ -6,7 +6,9 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import {LineArrowDown} from '@ui/Icons';
 import {
   InviteProfileReq,
+  OperatorAuthorityType,
   ProfileInfo,
+  ProfileSimpleInfo,
   SearchProfileReq,
   sendInviteProfileReq,
   sendSearchProfileReq,
@@ -18,16 +20,9 @@ interface Props {
   onClose: () => void;
   inviteSearchValue: string;
   setInviteSearchValue: (value: string) => void;
-  operatorList: OperatorData[];
-  onUpdateOperatorList: (updatedList: OperatorData[]) => void;
-  renderOperatorList: (list: OperatorData[], canEdit: boolean) => React.ReactNode;
-}
-
-export interface OperatorData {
-  id: number;
-  name: string;
-  profileImage: string;
-  role: string;
+  operatorList: ProfileSimpleInfo[];
+  onUpdateOperatorList: (updatedList: ProfileSimpleInfo[]) => void;
+  renderOperatorList: (list: ProfileSimpleInfo[], canEdit: boolean) => React.ReactNode;
 }
 
 const OperatorInviteDrawer: React.FC<Props> = ({
@@ -39,8 +34,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
   onUpdateOperatorList,
   renderOperatorList,
 }) => {
-  const roleOptions = ['Owner', 'CanEdit', 'OnlyComment'];
-  const [selectedRole, setSelectedRole] = useState(roleOptions[0]);
+  const [selectedAuthType, setSelectedAuthType] = useState<OperatorAuthorityType>(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const [searchedList, setSearchedList] = useState<ProfileInfo[]>([]);
@@ -56,7 +50,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     if (!searchSelected && inviteSearchValue.trim() !== '') {
       const timeout = setTimeout(() => {
         handleOnSearch();
-      }, 2000);
+      }, 1000);
       setSearchTimeout(timeout);
     }
 
@@ -79,7 +73,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
       const response = await sendSearchProfileReq(payload);
 
       if (response && response.data) {
-        setSearchedList(response.data.memeberProfileList);
+        setSearchedList(response.data.memberProfileList);
         setSearchListOpen(true);
       } else {
         setSearchedList([]);
@@ -101,18 +95,16 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     const payload: InviteProfileReq = {
       languageType: getCurrentLanguage(),
       search: inviteSearchValue,
-      operatorAuthorityType: roleOptions.indexOf(selectedRole),
+      operatorAuthorityType: selectedAuthType,
     };
 
     try {
       const response = await sendInviteProfileReq(payload);
 
       if (response && response.data) {
-        const newProfile: OperatorData = {
-          id: response.data.inviteProfileInfo.profileId,
-          name: response.data.inviteProfileInfo.name,
-          profileImage: response.data.inviteProfileInfo.iconImageUrl || '/default-profile.png',
-          role: selectedRole,
+        const newProfile: ProfileSimpleInfo = {
+          ...response.data.inviteProfileInfo,
+          operatorAuthorityType: selectedAuthType,
         };
 
         const updatedList = [...operatorList, newProfile];
@@ -173,7 +165,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
             )}
             <div className={styles.dropdownContainer}>
               <button className={styles.dropdownButton} onClick={() => setDropdownOpen(!dropdownOpen)}>
-                {selectedRole}
+                {OperatorAuthorityType[selectedAuthType]}
                 <img
                   className={styles.dropdownIcon}
                   src={LineArrowDown.src}
@@ -182,18 +174,20 @@ const OperatorInviteDrawer: React.FC<Props> = ({
               </button>
               {dropdownOpen && (
                 <ul className={styles.authDropdown}>
-                  {roleOptions.map((role, index) => (
-                    <li
-                      key={index}
-                      className={styles.authDropdownItem}
-                      onClick={() => {
-                        setSelectedRole(role);
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      {role}
-                    </li>
-                  ))}
+                  {Object.keys(OperatorAuthorityType)
+                    .filter(key => isNaN(Number(key)))
+                    .map((authType, index) => (
+                      <li
+                        key={index}
+                        className={styles.authDropdownItem}
+                        onClick={() => {
+                          setSelectedAuthType(OperatorAuthorityType[authType as keyof typeof OperatorAuthorityType]);
+                          setDropdownOpen(false);
+                        }}
+                      >
+                        {authType}
+                      </li>
+                    ))}
                 </ul>
               )}
             </div>

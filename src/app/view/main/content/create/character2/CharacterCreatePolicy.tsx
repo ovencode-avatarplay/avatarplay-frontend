@@ -14,8 +14,9 @@ import {CharacterInfo, LanguageType} from '@/redux-store/slices/ContentInfo';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import DrawerPostCountry from '../common/DrawerPostCountry';
 import CharacterCreateVoiceSetting from './CharacterCreateVoiceSetting';
-import OperatorInviteDrawer, {OperatorData} from './OperatorInviteDrawer';
+import OperatorInviteDrawer from './OperatorInviteDrawer';
 import DrawerTagSelect from '../common/DrawerTagSelect';
+import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 
 interface Props {
   visibility: number;
@@ -30,8 +31,8 @@ interface Props {
   onCharacterIPChange: (value: number) => void;
   connectCharacterId: number;
   onConnectCharacterIdChange: (value: number) => void;
-  operatorInvitationProfileId: number[];
-  onOperatorInvitationProfileIdChange: (value: number[]) => void;
+  operatorProfileIdList: ProfileSimpleInfo[];
+  onOperatorProfileIdListChange: (value: ProfileSimpleInfo[]) => void;
   isMonetization: boolean;
   onIsMonetizationChange: (value: boolean) => void;
   nsfw: boolean;
@@ -51,8 +52,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   onCharacterIPChange,
   connectCharacterId,
   onConnectCharacterIdChange,
-  operatorInvitationProfileId,
-  onOperatorInvitationProfileIdChange,
+  operatorProfileIdList,
+  onOperatorProfileIdListChange,
   isMonetization,
   onIsMonetizationChange,
   nsfw,
@@ -92,8 +93,6 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       {label: 'Waiting', value: 'waiting'},
     ],
   };
-
-  const [operatorList, setOperatorList] = useState<OperatorData[]>([]);
 
   const [operatorInviteOpen, setOperatorInviteOpen] = useState(false);
   const [inviteSearchValue, setInviteSearchValue] = useState<string>('');
@@ -358,14 +357,14 @@ const CharacterCreatePolicy: React.FC<Props> = ({
               Invite
             </button>
           </div>
-          {renderOperatorList(operatorList, false)}
+          {renderOperatorList(operatorProfileIdList, false)}
         </div>
         <OperatorInviteDrawer
           isOpen={operatorInviteOpen}
           onClose={() => setOperatorInviteOpen(false)}
           inviteSearchValue={inviteSearchValue}
-          operatorList={operatorList}
-          onUpdateOperatorList={setOperatorList}
+          operatorList={operatorProfileIdList}
+          onUpdateOperatorList={onOperatorProfileIdListChange}
           setInviteSearchValue={setInviteSearchValue}
           renderOperatorList={renderOperatorList}
         />
@@ -373,14 +372,14 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     );
   };
 
-  const renderOperatorList = (list: OperatorData[], canEdit: boolean) => {
+  const renderOperatorList = (list: ProfileSimpleInfo[], canEdit: boolean) => {
     return <ul className={styles.operatorList}>{list.map(operator => renderOperatorItem(operator, canEdit))}</ul>;
   };
 
-  const renderOperatorItem = (operator: OperatorData, canEdit: boolean) => (
-    <div key={operator.id} className={styles.operatorItem}>
+  const renderOperatorItem = (operator: ProfileSimpleInfo, canEdit: boolean) => (
+    <div key={operator.profileId} className={styles.operatorItem}>
       <div className={styles.operatorProfile}>
-        <img className={styles.operatorProfileImage} src={operator.profileImage} />
+        <img className={styles.operatorProfileImage} src={operator.iconImageUrl} />
       </div>
       <div className={styles.operatorProfileTextArea}>
         <div className={styles.operatorProfileText}>{operator.name}</div>
@@ -392,7 +391,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             style={{width: '180px', maxWidth: '100%'}}
           />
         ) : (
-          <div className={styles.operatorProfileState}>{operator.role}</div>
+          <div className={styles.operatorProfileState}>{OperatorAuthorityType[operator.operatorAuthorityType]}</div>
         )}
       </div>
     </div>

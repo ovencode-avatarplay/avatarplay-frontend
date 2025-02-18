@@ -5,7 +5,7 @@ import {RootState} from '../ReduxStore';
 
 // JSON 파일
 import emptyContent from '@/data/create/empty-content-info-data.json';
-import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {ProfileInfo, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 
 //#region export Interface
 
@@ -105,7 +105,7 @@ export interface CharacterInfo {
   positionCountryList: LanguageType[];
   characterIP: CharacterIP;
   recruitedProfileId: number;
-  operatorInvitationProfileId: number[];
+  operatorProfileIdList: ProfileSimpleInfo[];
   isMonetization: boolean;
   nSFW: boolean;
   membershipSetting: MembershipSetting;
