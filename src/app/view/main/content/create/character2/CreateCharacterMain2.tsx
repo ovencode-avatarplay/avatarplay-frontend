@@ -217,7 +217,10 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           positionCountryList: positionCountryList,
           characterIP: characterIP,
           recruitedProfileId: recruitedProfileId,
-          operatorProfileIdList: operatorProfileIdList,
+          operatorProfileIdList: operatorProfileIdList.map(profile => ({
+            ...profile,
+            operatorAuthorityType: profile.operatorAuthorityType as number,
+          })),
           isMonetization: isMonetization,
           nSFW: nsfw,
           membershipSetting: {

@@ -14,7 +14,14 @@ const CustomDropDownSelectDrawer: React.FC<CustomDropDownSelectDrawerProps> = ({
       <h2 className={styles.title2}>{title}</h2>
       <div className={styles.selectItem}>
         <div className={styles.selectItemText}>{selectedItem}</div>
-        <button className={styles.selectItemButton} onClick={() => onClick()}>
+        <button
+          className={styles.selectItemButton}
+          onClick={() => {
+            if (onClick) {
+              onClick();
+            }
+          }}
+        >
           <img className={styles.selectItemIcon} src={BoldArrowDown.src} alt="Dropdown Icon" />
         </button>
       </div>

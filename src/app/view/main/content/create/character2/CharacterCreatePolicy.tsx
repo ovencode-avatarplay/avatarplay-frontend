@@ -88,7 +88,12 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   const [operatorInviteOpen, setOperatorInviteOpen] = useState(false);
   const [inviteSearchValue, setInviteSearchValue] = useState<string>('');
 
-  const [voiceOpen, setVoiceOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState<boolean>(false);
+  const [notSetVoice, setNotSetVoice] = useState<boolean>(false);
+  const [selectedVoiceId, setSelectedVoiceId] = useState<number>(0);
+  const [pitchShift, setPitchShift] = useState<number>(0);
+  const [pitchVariance, setPitchVariance] = useState<number>(0);
+  const [speed, setSpeed] = useState<number>(0);
 
   const handleSelectVisibilityItem = (value: number) => {
     onVisibilityChange(value);
@@ -410,7 +415,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             style={{width: '180px', maxWidth: '100%'}}
           />
         ) : (
-          <div className={styles.operatorProfileState}>{operator.operatorAuthorityType}</div>
+          <div className={styles.operatorProfileState}>{getOperatorAuthorityLabel(operator.operatorAuthorityType)}</div>
         )}
       </div>
     </div>
@@ -507,7 +512,20 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             </div>
           </div>
         </div>
-        <CharacterCreateVoiceSetting voiceOpen={voiceOpen} setVoiceOpen={setVoiceOpen} />
+        <CharacterCreateVoiceSetting
+          voiceOpen={voiceOpen}
+          setVoiceOpen={setVoiceOpen}
+          notSetVoice={notSetVoice}
+          setNotSetVoice={setNotSetVoice}
+          selectedVoiceId={selectedVoiceId}
+          setSelectedVoiceId={setSelectedVoiceId}
+          pitchShift={pitchShift}
+          setPitchShift={setPitchShift}
+          pitchVariance={pitchVariance}
+          setPitchVariance={setPitchVariance}
+          speed={speed}
+          setSpeed={setSpeed}
+        />
       </>
     );
   };
