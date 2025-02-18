@@ -624,6 +624,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
   return (
     <>
+      {isMine && (
+        <div className={styles.buttonWrap}>
+          <button className={styles.subscribe}>Subscribe</button>
+          <button className={styles.favorite}>Favorites</button>
+          <button className={styles.playlist}>Playlist</button>
+        </div>
+      )}
       <section className={cx(styles.header, !isPath && styles.headerNoPath)}>
         <div className={styles.left}>
           {((!isMine && isPath) || isNeedBackBtn) && (
@@ -678,13 +685,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         </div>
       </section>
       <section className={cx(styles.main, !isPath && styles.mainNoPath)}>
-        {isMyPD && (
-          <div className={styles.buttonWrap}>
-            <button className={styles.subscribe}>Subscribe</button>
-            <button className={styles.favorite}>Favorites</button>
-            <button className={styles.playlist}>Playlist</button>
-          </div>
-        )}
         <div className={styles.profileStatisticsWrap}>
           <div className={styles.imgProfileWrap}>
             <img className={styles.imgProfile} src={data.profileInfo?.profileInfo.iconImageUrl} alt="" />
