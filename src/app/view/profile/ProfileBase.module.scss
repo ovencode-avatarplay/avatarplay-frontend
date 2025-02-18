@@ -766,6 +766,38 @@
     }
   }
 
+  .filter.character {
+    .left {
+      .textWrap {
+        margin-left: 5px;
+        padding: 9px 10px;
+        border-radius: 4px;
+        background: var(--Neutral-100, #F1F3F4);
+
+        .text {
+          color: var(--Neutral-400, #BDC1C6);
+          font-family: Lato;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 14px;
+          /* 100% */
+          letter-spacing: -0.28px;
+
+        }
+
+        &.active {
+          background: var(--Primary-1, #FD55D3);
+
+          .text {
+            color: var(--White, #FFF);
+          }
+        }
+      }
+
+    }
+  }
+
   .filter {
     padding: 10px 10px;
     margin-bottom: -10px;

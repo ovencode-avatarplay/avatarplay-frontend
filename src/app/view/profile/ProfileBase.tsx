@@ -101,6 +101,12 @@ enum eTabCharacterOtherType {
   Joined,
 }
 
+export enum eCharacterFilterType {
+  Total,
+  Original = 1,
+  Fan = 2,
+}
+
 type DataProfileType = {
   indexTab: eTabPDType | eTabCharacterType;
   isOpenSelectProfile: boolean;
@@ -109,6 +115,7 @@ type DataProfileType = {
     [key: number]: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes;
   };
   indexFilterMedia: FeedMediaType;
+  indexFilterCharacter: number;
   indexSort: ExploreSortType;
   isShowMore: boolean;
   isNeedShowMore: boolean;
@@ -148,6 +155,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     profileInfo: null,
     profileTabInfo: {},
     indexFilterMedia: FeedMediaType.Total,
+    indexFilterCharacter: 0,
     indexSort: ExploreSortType.MostPopular,
     isShowMore: false,
     isNeedShowMore: false,
@@ -233,7 +241,16 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       }
       resProfileTabInfo = resGetCharacterInfo.data;
     } else {
-      resProfileTabInfo = await getTabInfo(profileType)(profileId, indexTab, data.indexSort, data.indexFilterMedia);
+      if (indexTab == eTabPDType.Character) {
+        resProfileTabInfo = await getTabInfo(profileType)(
+          profileId,
+          indexTab,
+          data.indexSort,
+          data.indexFilterCharacter,
+        );
+      } else {
+        resProfileTabInfo = await getTabInfo(profileType)(profileId, indexTab, data.indexSort, data.indexFilterMedia);
+      }
     }
     if (!resProfileTabInfo) return;
 
@@ -386,7 +403,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     ({profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
       const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
 
-      if ((isPD && tabIndex == PdProfileTabType.Feed) || (isCharacter && tabIndex == CharacterProfileTabType.Feed)) {
+      if (
+        (isPD && [PdProfileTabType.Feed, PdProfileTabType.Channel].includes(tabIndex)) ||
+        (isCharacter && tabIndex == CharacterProfileTabType.Feed)
+      ) {
         return (
           <>
             <div className={styles.filter}>
@@ -469,7 +489,95 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         );
       }
       if (isPD && tabIndex == PdProfileTabType.Character) {
-        return <></>;
+        return (
+          <>
+            <div className={cx(styles.filter, styles.character)}>
+              <div
+                className={styles.left}
+                onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                  const target = e.target as HTMLElement;
+                  const category = target.closest('[data-filter]')?.getAttribute('data-filter');
+                  if (category) {
+                    data.indexFilterCharacter = parseInt(category);
+                  }
+                  await refreshProfileTab(profileId, data.indexTab);
+                  // await refreshProfileTab(profileId, data.indexTab);
+                  setData({...data});
+                }}
+              >
+                <div
+                  className={cx(
+                    styles.iconWrap,
+                    data.indexFilterCharacter == eCharacterFilterType.Total && styles.active,
+                  )}
+                  data-filter={eCharacterFilterType.Total}
+                >
+                  <img src={BoldViewGallery.src} alt="" />
+                </div>
+                <div
+                  className={cx(
+                    styles.textWrap,
+                    data.indexFilterCharacter == eCharacterFilterType.Original && styles.active,
+                  )}
+                  data-filter={eCharacterFilterType.Original}
+                >
+                  <div className={styles.text}>Original</div>
+                </div>
+                <div
+                  className={cx(
+                    styles.textWrap,
+                    data.indexFilterCharacter == eCharacterFilterType.Fan && styles.active,
+                  )}
+                  data-filter={eCharacterFilterType.Fan}
+                >
+                  <div className={styles.text}>Fan</div>
+                </div>
+              </div>
+              <div className={styles.right}>
+                <div className={styles.filterTypeWrap}>
+                  <SelectBox
+                    value={{id: ExploreSortType.MostPopular, value: 'Most Popular'}}
+                    options={[
+                      {id: ExploreSortType.Newest, value: 'Newest'},
+                      {id: ExploreSortType.MostPopular, value: 'Most Popular'},
+                      {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
+                      {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
+                    ]}
+                    ArrowComponent={SelectBoxArrowComponent}
+                    ValueComponent={SelectBoxValueComponent}
+                    OptionComponent={SelectBoxOptionComponent}
+                    onChangedCharacter={async id => {
+                      data.indexSort = id;
+                      setData({...data});
+                      await refreshProfileTab(profileId, data.indexTab);
+                    }}
+                    customStyles={{
+                      control: {
+                        width: '184px',
+                        display: 'flex',
+                        gap: '10px',
+                      },
+                      menuList: {
+                        borderRadius: '10px',
+                        boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                      },
+                      option: {
+                        padding: '11px 14px',
+                        boxSizing: 'border-box',
+                        '&:first-of-type': {
+                          borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                        },
+                        borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                      },
+                    }}
+                  />
+                  {/* <div className={styles.label}>Newest</div> */}
+                  {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
+                </div>
+              </div>
+            </div>
+          </>
+        );
       }
 
       if (isCharacter && tabIndex == eTabCharacterType.Info) {
