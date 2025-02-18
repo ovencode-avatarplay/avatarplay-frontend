@@ -22,7 +22,11 @@ interface Props {
   setInviteSearchValue: (value: string) => void;
   operatorList: ProfileSimpleInfo[];
   onUpdateOperatorList: (updatedList: ProfileSimpleInfo[]) => void;
-  renderOperatorList: (list: ProfileSimpleInfo[], canEdit: boolean) => React.ReactNode;
+  renderOperatorList: (
+    list: ProfileSimpleInfo[],
+    canEdit: boolean,
+    onUpdateRole: (id: number, role: OperatorAuthorityType) => void,
+  ) => React.ReactNode;
 }
 
 const OperatorInviteDrawer: React.FC<Props> = ({
@@ -121,6 +125,13 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     }
   };
 
+  const handleAuthTypeChange = (id: number, newAuthType: OperatorAuthorityType) => {
+    const updatedList = operatorList.map(operator =>
+      operator.profileId === id ? {...operator, operatorAuthorityType: newAuthType} : operator,
+    );
+    onUpdateOperatorList(updatedList);
+  };
+
   return (
     <CustomDrawer
       title="Operator Invitation"
@@ -202,7 +213,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
             Invite
           </CustomButton>
         </div>
-        {renderOperatorList(operatorList, true)}
+        {renderOperatorList(operatorList, true, handleAuthTypeChange)}
         <div className={styles.inviteLinkArea}>
           <h2 className={styles.title2}>Invitation link</h2>
           <div className={styles.inviteLinkInputArea}>

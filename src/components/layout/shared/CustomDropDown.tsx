@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './CustomDropDown.module.css'; // 드롭다운 스타일
 
 // 아이콘들
@@ -15,13 +15,21 @@ interface CustomDropDownProps {
   }>;
   displayType: 'Text' | 'Icon' | 'TwoIcon' | 'Profile' | 'Logo';
   textType?: 'Label' | 'TitleLabel';
+  initialValue?: string | number;
   onSelect: (value: string | number) => void;
   style?: React.CSSProperties;
 }
 
-const CustomDropDown: React.FC<CustomDropDownProps> = ({items, displayType, textType = 'Label', onSelect, style}) => {
+const CustomDropDown: React.FC<CustomDropDownProps> = ({
+  items,
+  displayType,
+  textType = 'Label',
+  initialValue,
+  onSelect,
+  style,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<string | number | null>(null);
+  const [selectedItem, setSelectedItem] = useState<string | number | null>(initialValue || null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -32,6 +40,12 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({items, displayType, text
     onSelect(value);
     setIsOpen(false);
   };
+
+  useEffect(() => {
+    if (initialValue !== undefined) {
+      setSelectedItem(initialValue);
+    }
+  }, [initialValue]);
 
   const renderItem = (item: any, index: number) => {
     const isSelected = selectedItem === item.value;
@@ -96,7 +110,7 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({items, displayType, text
                     {textType === 'TitleLabel' && (
                       <div className={styles.textArea}>
                         <span className={styles.title}>{selected.title}</span>
-                        <span className={styles.label}>{selected.label}</span>
+                        <span className={styles.label}>{selected.label ? selected.label : selected.value}</span>
                       </div>
                     )}
                   </>
