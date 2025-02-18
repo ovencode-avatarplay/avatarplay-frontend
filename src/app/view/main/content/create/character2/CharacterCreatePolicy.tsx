@@ -85,15 +85,6 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     {label: string; title: string; value: string; profileImage: string}[]
   >([]);
 
-  let invitationOption = {
-    items: [
-      {label: 'Owner', value: 'owner'},
-      {label: 'Can edit', value: 'canEdit'},
-      {label: 'Only Comments', value: 'onlyComments'},
-      {label: 'Waiting', value: 'waiting'},
-    ],
-  };
-
   const [operatorInviteOpen, setOperatorInviteOpen] = useState(false);
   const [inviteSearchValue, setInviteSearchValue] = useState<string>('');
 
@@ -160,6 +151,14 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   };
 
   const totalLanguages = Object.values(LanguageType).filter(value => typeof value === 'number').length;
+
+  const getOperatorAuthorityLabel = (value: number): string => {
+    return (
+      Object.keys(OperatorAuthorityType).find(
+        key => OperatorAuthorityType[key as keyof typeof OperatorAuthorityType] === value,
+      ) || 'Unknown'
+    );
+  };
 
   useEffect(() => {
     onTagChange(selectedTags.join(', '));
@@ -372,11 +371,23 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     );
   };
 
-  const renderOperatorList = (list: ProfileSimpleInfo[], canEdit: boolean) => {
-    return <ul className={styles.operatorList}>{list.map(operator => renderOperatorItem(operator, canEdit))}</ul>;
+  const renderOperatorList = (
+    list: ProfileSimpleInfo[],
+    canEdit: boolean,
+    onUpdateRole?: (id: number, role: OperatorAuthorityType) => void,
+  ) => {
+    return (
+      <ul className={styles.operatorList}>
+        {list.map(operator => renderOperatorItem(operator, canEdit, onUpdateRole))}
+      </ul>
+    );
   };
 
-  const renderOperatorItem = (operator: ProfileSimpleInfo, canEdit: boolean) => (
+  const renderOperatorItem = (
+    operator: ProfileSimpleInfo,
+    canEdit: boolean,
+    onUpdateRole?: (id: number, role: OperatorAuthorityType) => void,
+  ) => (
     <div key={operator.profileId} className={styles.operatorItem}>
       <div className={styles.operatorProfile}>
         <img className={styles.operatorProfileImage} src={operator.iconImageUrl} />
@@ -386,12 +397,20 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         {canEdit ? (
           <CustomDropDown
             displayType="Text"
-            items={invitationOption.items}
-            onSelect={selected => console.log(`Selected ${selected} for ${operator.name}`)}
+            initialValue={operator.operatorAuthorityType}
+            items={Object.keys(OperatorAuthorityType)
+              .filter(key => isNaN(Number(key)))
+              .map(key => ({label: key, value: OperatorAuthorityType[key as keyof typeof OperatorAuthorityType]}))}
+            onSelect={selected => {
+              if (onUpdateRole) {
+                const selectedRole = OperatorAuthorityType[selected as keyof typeof OperatorAuthorityType];
+                onUpdateRole(operator.profileId, selectedRole);
+              }
+            }}
             style={{width: '180px', maxWidth: '100%'}}
           />
         ) : (
-          <div className={styles.operatorProfileState}>{OperatorAuthorityType[operator.operatorAuthorityType]}</div>
+          <div className={styles.operatorProfileState}>{operator.operatorAuthorityType}</div>
         )}
       </div>
     </div>
