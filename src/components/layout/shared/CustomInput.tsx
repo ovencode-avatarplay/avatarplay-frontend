@@ -9,7 +9,7 @@ interface CustomInputProps {
   textType: Text;
   inputType: Type;
   state?: State;
-  label?: string;
+  label?: string | React.ReactNode;
   hint?: string;
   iconLeft?: React.ReactNode; // Left Icon component
   iconRight?: React.ReactNode; // Right Icon component
