@@ -1,25 +1,21 @@
-import {BoldArrowDown, BoldAudioPlay, BoldInfo, LineRegenerate} from '@ui/Icons';
+import {BoldArrowDown} from '@ui/Icons';
 import styles from './CharacterCreatePolicy.module.css';
 import {useEffect, useState} from 'react';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import ContentLLMSetup from '../content-main/content-LLMsetup/ContentLLMsetup';
 import llmModelData from '../content-main/content-LLMsetup/ContentLLMsetup.json';
-import CustomDrawer from '@/components/layout/shared/CustomDrawer';
-import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {sendGetTagList} from '@/app/NetWork/ContentNetwork';
-import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
-import CustomInput from '@/components/layout/shared/CustomInput';
-import CustomButton from '@/components/layout/shared/CustomButton';
-import Splitters from '@/components/layout/shared/CustomSplitter';
 import {sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo, LanguageType} from '@/redux-store/slices/ContentInfo';
 import {getCurrentLanguage} from '@/utils/UrlMove';
-import ExploreSearchInput from '../../searchboard/searchboard-header/ExploreSearchInput';
 import DrawerPostCountry from '../common/DrawerPostCountry';
+import CharacterCreateVoiceSetting from './CharacterCreateVoiceSetting';
+import OperatorInviteDrawer, {OperatorData} from './OperatorInviteDrawer';
+import DrawerTagSelect from '../common/DrawerTagSelect';
 
 interface Props {
   visibility: number;
@@ -96,104 +92,13 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       {label: 'Waiting', value: 'waiting'},
     ],
   };
+
+  const [operatorList, setOperatorList] = useState<OperatorData[]>([]);
+
   const [operatorInviteOpen, setOperatorInviteOpen] = useState(false);
   const [inviteSearchValue, setInviteSearchValue] = useState<string>('');
 
   const [voiceOpen, setVoiceOpen] = useState(false);
-
-  interface SoundItem {
-    address: string;
-    description: string;
-  }
-
-  // api 만들어지기 전에 사용할 임시 데이터
-  const voiceData = [
-    {
-      label: 'Voice 1',
-      gender: 0,
-      voiceDesc: 'Voice Desc 1',
-      soundData: [
-        {address: 'url-to-sound1.mp3', description: 'Sound 1'},
-        {address: 'url-to-sound2.mp3', description: 'Sound 2'},
-        {address: 'url-to-sound3.mp3', description: 'Sound 3'},
-      ],
-    },
-    {
-      label: 'Voice 2',
-      gender: 1,
-      voiceDesc: 'Voice Desc 3',
-      soundData: [
-        {address: 'url-to-sound4.mp3', description: 'Sound 4'},
-        {address: 'url-to-sound5.mp3', description: 'Sound 5'},
-        {address: 'url-to-sound6.mp3', description: 'Sound 6'},
-      ],
-    },
-    // 추가 데이터
-    {
-      label: 'Voice 3',
-      gender: 0,
-      voiceDesc: 'Voice Desc 2',
-      soundData: [
-        {address: 'url-to-sound7.mp3', description: 'Sound 7'},
-        {address: 'url-to-sound8.mp3', description: 'Sound 8'},
-        {address: 'url-to-sound9.mp3', description: 'Sound 9'},
-      ],
-    },
-    {
-      label: 'Voice 4',
-      gender: 1,
-      voiceDesc: 'Voice Desc 4',
-      soundData: [
-        {address: 'url-to-sound10.mp3', description: 'Sound 10'},
-        {address: 'url-to-sound11.mp3', description: 'Sound 11'},
-        {address: 'url-to-sound12.mp3', description: 'Sound 12'},
-      ],
-    },
-    {
-      label: 'Voice 5',
-      gender: 0,
-      voiceDesc: 'Voice Desc 5',
-      soundData: [
-        {address: 'url-to-sound13.mp3', description: 'Sound 13'},
-        {address: 'url-to-sound14.mp3', description: 'Sound 14'},
-        {address: 'url-to-sound15.mp3', description: 'Sound 15'},
-      ],
-    },
-    {
-      label: 'Voice 6',
-      gender: 1,
-      voiceDesc: 'Voice Desc 6',
-      soundData: [
-        {address: 'url-to-sound16.mp3', description: 'Sound 16'},
-        {address: 'url-to-sound17.mp3', description: 'Sound 17'},
-        {address: 'url-to-sound18.mp3', description: 'Sound 18'},
-      ],
-    },
-    {
-      label: 'Voice 7',
-      gender: 0,
-      voiceDesc: 'Voice Desc 7',
-      soundData: [
-        {address: 'url-to-sound19.mp3', description: 'Sound 19'},
-        {address: 'url-to-sound20.mp3', description: 'Sound 20'},
-        {address: 'url-to-sound21.mp3', description: 'Sound 21'},
-      ],
-    },
-  ];
-
-  const [pitchShift, setPitchShift] = useState(0); // 기본 값 0
-  const [pitchVariance, setPitchVariance] = useState(0); // 기본 값 0
-  const [speed, setSpeed] = useState(1); // 기본 값 1
-
-  // 각 슬라이더의 최솟값과 최댓값 설정
-  const pitchShiftMin = -24;
-  const pitchShiftMax = 24;
-  const pitchVarianceMin = 0;
-  const pitchVarianceMax = 2;
-  const pitchVarianceStep = 0.1;
-  const speedMin = 0.5;
-  const speedMax = 2;
-  const speedStep = 0.1;
 
   const handleSelectVisibilityItem = (value: number) => {
     onVisibilityChange(value);
@@ -347,48 +252,17 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   const renderTag = () => {
     return (
-      <>
-        {
-          <CustomDrawer
-            open={tagOpen}
-            onClose={() => setTagOpen(false)}
-            title="Tag"
-            contentStyle={{padding: '0px', marginTop: '20px'}}
-          >
-            <div className={styles.tagArea}>
-              <button className={styles.tagRefreshButton} onClick={() => setSelectedTags([])}>
-                <div className={styles.tagRefreshText}>Refresh</div>
-                <img className={styles.tagRefreshIcon} src={LineRegenerate.src} />
-              </button>
-              {/* 태그 선택 부분 */}
-              <div className={styles.tagSelect}>
-                {tagList?.map(tag => (
-                  <CustomHashtag
-                    text={tag}
-                    onClickAction={() => handleTagSelect(tag)}
-                    isSelected={selectedTags.includes(tag)}
-                  />
-                ))}
-              </div>
-            </div>
-          </CustomDrawer>
-        }
-        {selectedTagAlertOn && (
-          <CustomPopup
-            type="alert"
-            title="Max Tag Count Alert"
-            description={`maxTagCount : ${maxTagCount}`}
-            buttons={[
-              {
-                label: 'Close',
-                onClick: () => {
-                  setSelectedTagAlertOn(false);
-                },
-              },
-            ]}
-          />
-        )}
-      </>
+      <DrawerTagSelect
+        isOpen={tagOpen}
+        onClose={() => setTagOpen(false)}
+        tagList={tagList}
+        selectedTags={selectedTags}
+        onTagSelect={handleTagSelect}
+        onRefreshTags={() => setSelectedTags([])}
+        maxTagCount={maxTagCount}
+        selectedTagAlertOn={selectedTagAlertOn}
+        setSelectedTagAlertOn={setSelectedTagAlertOn}
+      />
     );
   };
 
@@ -484,75 +358,45 @@ const CharacterCreatePolicy: React.FC<Props> = ({
               Invite
             </button>
           </div>
-          {renderOperatorList(false)}
+          {renderOperatorList(operatorList, false)}
         </div>
-        <CustomDrawer
-          title="Operator Invitation"
-          open={operatorInviteOpen}
+        <OperatorInviteDrawer
+          isOpen={operatorInviteOpen}
           onClose={() => setOperatorInviteOpen(false)}
-        >
-          <div className={styles.inviteDrawerContainer}>
-            <div className={styles.inviteInputArea}>
-              <CustomInput
-                inputType="Basic"
-                textType="InputOnly"
-                value={inviteSearchValue}
-                onChange={() => {
-                  setInviteSearchValue;
-                }}
-                customClassName={[styles.inviteInput]}
-              />
-              <CustomButton size="Medium" state="Normal" type="ColorPrimary" onClick={() => {}}>
-                Invite
-              </CustomButton>
-            </div>
-            {renderOperatorList(true)}
-            <div className={styles.inviteLinkArea}>
-              <h2 className={styles.title2}>Invitation link</h2>
-              <div className={styles.inviteLinkInputArea}>
-                <CustomInput
-                  inputType="Basic"
-                  textType="InputOnly"
-                  value={'link'}
-                  disabled={true}
-                  onChange={() => {}}
-                  customClassName={[styles.inviteInput]}
-                />
-                <CustomButton size="Medium" state="Normal" type="Primary" onClick={() => {}}>
-                  Copy
-                </CustomButton>
-              </div>
-            </div>
-          </div>
-        </CustomDrawer>
+          inviteSearchValue={inviteSearchValue}
+          operatorList={operatorList}
+          onUpdateOperatorList={setOperatorList}
+          setInviteSearchValue={setInviteSearchValue}
+          renderOperatorList={renderOperatorList}
+        />
       </>
     );
   };
 
-  const renderOperatorList = (canedit: boolean) => {
-    return (
-      <ul className={styles.operatorList}>
-        <div className={styles.operatorItem}>
-          <div className={styles.operatorProfile}>
-            <img className={styles.operatorProfileImage} src={'/images/001.png'} />
-          </div>
-          <div className={styles.operatorProfileTextArea}>
-            <div className={styles.operatorProfileText}>OperatorName</div>
-            {canedit ? (
-              <CustomDropDown
-                displayType="Text"
-                items={invitationOption.items}
-                onSelect={() => {}}
-                style={{width: '180px', maxWidth: '100%'}}
-              />
-            ) : (
-              <div className={styles.operatorProfileState}>Owner</div>
-            )}
-          </div>
-        </div>
-      </ul>
-    );
+  const renderOperatorList = (list: OperatorData[], canEdit: boolean) => {
+    return <ul className={styles.operatorList}>{list.map(operator => renderOperatorItem(operator, canEdit))}</ul>;
   };
+
+  const renderOperatorItem = (operator: OperatorData, canEdit: boolean) => (
+    <div key={operator.id} className={styles.operatorItem}>
+      <div className={styles.operatorProfile}>
+        <img className={styles.operatorProfileImage} src={operator.profileImage} />
+      </div>
+      <div className={styles.operatorProfileTextArea}>
+        <div className={styles.operatorProfileText}>{operator.name}</div>
+        {canEdit ? (
+          <CustomDropDown
+            displayType="Text"
+            items={invitationOption.items}
+            onSelect={selected => console.log(`Selected ${selected} for ${operator.name}`)}
+            style={{width: '180px', maxWidth: '100%'}}
+          />
+        ) : (
+          <div className={styles.operatorProfileState}>{operator.role}</div>
+        )}
+      </div>
+    </div>
+  );
 
   const renderMonetization = () => {
     return (
@@ -645,144 +489,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             </div>
           </div>
         </div>
-        <CustomDrawer open={voiceOpen} onClose={() => setVoiceOpen(false)} title="Select Voices">
-          <div className={styles.voiceDrawerContainer}>
-            <CustomRadioButton
-              displayType="buttonText"
-              shapeType="circle"
-              label="I will not set the voice"
-              value="False"
-              selectedValue={'False'}
-              onSelect={() => {}}
-            />
-            <Splitters
-              splitters={voiceSplitter}
-              placeholderWidth="40%"
-              headerStyle={{padding: '0'}}
-              contentStyle={{padding: '0'}}
-            />
-          </div>
-          <div className={styles.pitchArea}>
-            <div className={styles.sliderContainer}>
-              <label htmlFor="pitchShift" className={styles.sliderLabel}>
-                Pitch Shift {pitchShift}
-              </label>
-              <div className={styles.sliderWrapper}>
-                <input
-                  id="pitchShift"
-                  type="range"
-                  min={pitchShiftMin}
-                  max={pitchShiftMax}
-                  value={pitchShift}
-                  onChange={e => setPitchShift(Number(e.target.value))}
-                  className={styles.slider}
-                />
-              </div>
-            </div>
-            <div className={styles.sliderContainer}>
-              <label htmlFor="pitchVariance" className={styles.sliderLabel}>
-                Pitch Variance {pitchVariance}
-              </label>
-              <div className={styles.sliderWrapper}>
-                <input
-                  id="pitchVariance"
-                  type="range"
-                  min={pitchVarianceMin}
-                  max={pitchVarianceMax}
-                  value={pitchVariance}
-                  step={pitchVarianceStep}
-                  onChange={e => setPitchVariance(Number(e.target.value))}
-                  className={styles.slider}
-                />
-              </div>
-            </div>
-            <div className={styles.sliderContainer}>
-              <label htmlFor="speed" className={styles.sliderLabel}>
-                Speed {speed}
-              </label>
-              <div className={styles.sliderWrapper}>
-                <input
-                  id="speed"
-                  type="range"
-                  min={speedMin}
-                  max={speedMax}
-                  value={speed}
-                  step={speedStep}
-                  onChange={e => setSpeed(Number(e.target.value))}
-                  className={styles.slider}
-                />
-              </div>
-            </div>
-          </div>
-        </CustomDrawer>
+        <CharacterCreateVoiceSetting voiceOpen={voiceOpen} setVoiceOpen={setVoiceOpen} />
       </>
     );
   };
-
-  const renderVoiceItem = (label: string, desc: string, soundData: SoundItem[]) => {
-    return (
-      <div className={styles.voiceItem}>
-        <CustomRadioButton
-          displayType="buttonOnly"
-          shapeType="circle"
-          value=""
-          onSelect={() => {}}
-          selectedValue={''}
-        />
-        <div className={styles.voiceInfoArea}>
-          <div className={styles.voiceTitle}>{label}</div>
-          <div className={styles.voiceDesc}>{desc}</div>
-          <ul className={styles.soundList}>
-            {soundData.map((item, index) => (
-              <div className={styles.soundItem} key={index}>
-                <button className={styles.soundButton}>
-                  <img className={styles.soundIcon} src={BoldAudioPlay.src} alt="Play Icon" />
-                </button>
-                <div className={styles.soundText}>{item.description}</div>
-              </div>
-            ))}
-          </ul>
-        </div>
-      </div>
-    );
-  };
-
-  const voiceSplitter = [
-    {
-      label: 'All',
-      content: (
-        <ul className={styles.voiceList}>
-          {voiceData.map((item, index) => (
-            <div className={styles.voiceItem}>{renderVoiceItem(item.label, item.voiceDesc, item.soundData)}</div>
-          ))}
-        </ul>
-      ),
-    },
-    {
-      label: 'Male',
-      content: (
-        <ul className={styles.voiceList}>
-          {voiceData
-            .filter(item => item.gender === 0)
-            .map((item, index) => (
-              <div key={index}>{renderVoiceItem(item.label, item.voiceDesc, item.soundData)}</div>
-            ))}
-        </ul>
-      ),
-    },
-    {
-      label: 'Female',
-      content: (
-        <ul className={styles.voiceList}>
-          {voiceData
-            .filter(item => item.gender === 1)
-            .map((item, index) => (
-              <div key={index}>{renderVoiceItem(item.label, item.voiceDesc, item.soundData)}</div>
-            ))}
-        </ul>
-      ),
-    },
-  ];
 
   useEffect(() => {
     if (tagOpen) {
@@ -812,14 +522,6 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           positionCountry.map(country => LanguageType[country]).join(', '),
           setIsPositionCountryOpen,
         )}
-        {/*renderDropDownSelectDrawer(
-          positionCountryData.label,
-          positionCountryData.items,
-          positionCountry,
-          (value: string | number) => handleSelectPositionCountryItem(Number(value)),
-          isPositionCountryOpen,
-          setIsPositionCountryOpen,
-        )*/}
         {renderPositionCountry()}
       </div>
       <div className={styles.selectItemsArea2}>

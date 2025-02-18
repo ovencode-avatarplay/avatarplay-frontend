@@ -311,3 +311,55 @@ export const followProfile = async (profileId: number, isFollow: boolean) => {
     return null;
   }
 };
+
+export interface InviteProfileReq {
+  languageType: string;
+  search: string;
+  operatorAuthorityType: number;
+}
+
+export interface InviteProfileRes {
+  inviteProfileInfo: ProfileSimpleInfo;
+}
+
+export const sendInviteProfileReq = async (payload: InviteProfileReq) => {
+  try {
+    const res = await api.post<ResponseAPI<InviteProfileRes>>('Profile/invite', payload);
+
+    if (res.status !== 200) {
+      console.error('Follow API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('Follow API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface SearchProfileReq {
+  search: string;
+}
+
+export interface SearchProfileRes {
+  memeberProfileList: ProfileInfo[];
+}
+
+export const sendSearchProfileReq = async (payload: SearchProfileReq) => {
+  try {
+    const res = await api.post<ResponseAPI<SearchProfileRes>>('Profile/search', payload);
+
+    if (res.status !== 200) {
+      console.error('Follow API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('Follow API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
