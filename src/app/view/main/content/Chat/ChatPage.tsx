@@ -539,7 +539,7 @@ const ChatPage: React.FC = () => {
   const handleRetryStream = () => {
     if (streamKey && chatId !== TempIdforSendQuestion) {
       const retryRequestData = {
-        chatContentId: chatId, // 또는 필요에 따라 다른 ID 사용
+        chatStoryId: chatId, // 또는 필요에 따라 다른 ID 사용
         episodeId: episodeId, // 에피소드 ID
         text: parsedMessages.Messages[parsedMessages.Messages.length - 2].text, // 재전송할 메시지
       };

@@ -11,7 +11,7 @@ import {
   setSelectedContentId,
   setSelectedEpisodeIdx,
   setSkipContentInit,
-  ContentInfo,
+  StoryInfo,
   setContentInfoToEmpty,
   setEpisodeInfoEmpty,
 } from '@/redux-store/slices/ContentInfo';
@@ -48,7 +48,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
   const listRef = useRef<HTMLDivElement | null>(null);
   const contentInfo = useSelector((state: RootState) => state.myContents.contentDashBoardList ?? []);
   const dispatch = useDispatch();
-  const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
+  const emptyContentInfo: StoryInfo = EmptyContentInfo.data.storyInfo as StoryInfo;
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
@@ -185,7 +185,7 @@ const ContentDashboardDrawer: React.FC<Props> = ({open, onClose, onSelectItem, o
       if (selectedItemId) {
         try {
           // 콘텐츠 삭제 API 호출
-          const response = await sendContentDelete({contentId: selectedItemId});
+          const response = await sendContentDelete({storyId: selectedItemId});
 
           if (response.data) {
             // console.log('삭제된 콘텐츠 ID:', response.data.contentId);

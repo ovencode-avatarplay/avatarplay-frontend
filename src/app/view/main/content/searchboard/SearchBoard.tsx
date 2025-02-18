@@ -158,7 +158,7 @@ const SearchBoard: React.FC = () => {
         sort: selectedSort,
         filterList: generateFilterList(),
         isOnlyAdults: adultToggleOn,
-        contentPage,
+        storyPage: contentPage,
         characterPage,
       });
 
@@ -167,7 +167,7 @@ const SearchBoard: React.FC = () => {
           const newList = result.data?.searchExploreList || [];
           return (contentPage.offset > 0 || characterPage.offset > 0) && prevList ? [...prevList, ...newList] : newList;
         });
-        setContentPage(result.data.contentPage);
+        setContentPage(result.data.storyPage);
         setCharacterPage(result.data.characterPage);
       } else {
         console.error('Failed to fetch explore data:', result.resultMessage);
@@ -348,12 +348,12 @@ const SearchBoard: React.FC = () => {
                       return true;
                     })
                     .map(item => (
-                      <li key={item.contentId} className={styles.resultItem}>
+                      <li key={item.storyId} className={styles.resultItem}>
                         <ExploreCard
                           exploreItemType={item.exploreItemType}
                           updateExplorState={item.updateExplorState}
-                          contentId={item.contentId}
-                          contentName={item.contentName}
+                          contentId={item.storyId}
+                          contentName={item.storyName}
                           chatCount={item.chatCount}
                           episodeCount={item.episodeCount}
                           followerCount={item.followerCount}

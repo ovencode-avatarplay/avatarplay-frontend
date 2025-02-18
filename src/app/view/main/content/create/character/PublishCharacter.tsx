@@ -44,7 +44,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
   const [loading, setLoading] = useState(false);
 
   const defaultCharacterInfo: CharacterInfo =
-    emptyContentInfo.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo;
+    emptyContentInfo.data.storyInfo.chapterInfoList[0].episodeInfoList[0].characterInfo;
 
   const mergedCharacterInfo: CharacterInfo = {
     ...defaultCharacterInfo,
@@ -104,7 +104,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
       const req: CreateCharacter2Req = {
         languageType: getCurrentLanguage(),
         characterInfo: {
-          ...emptyContentInfo.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo,
+          ...emptyContentInfo.data.storyInfo.chapterInfoList[0].episodeInfoList[0].characterInfo,
 
           id: currentCharacter.id ?? 0,
           name: characterName,

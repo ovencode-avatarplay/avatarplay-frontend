@@ -16,7 +16,7 @@ interface ContentHeaderProps {
 }
 
 const ContentHeader: React.FC<ContentHeaderProps> = ({lastUrl, onOpenContentName, onOpenDrawer, onTitleChange}) => {
-  const contentName = useSelector((state: RootState) => state.publish.contentName);
+  const contentName = useSelector((state: RootState) => state.publish.storyName);
   const defaultUrl = '../main/homefeed';
   const dispatch = useDispatch();
   const router = useRouter();

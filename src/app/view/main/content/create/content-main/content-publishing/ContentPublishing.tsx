@@ -38,9 +38,15 @@ interface Props {
 
 const ContentPublishing: React.FC<Props> = ({open, onClose, onPublish, LLMOpen, setLLMOpen, onLLMClose}) => {
   const dispatch = useDispatch();
-  const {thumbnail, contentDescription, authorComment, visibilityType, monetization, nsfw, selectTagList} = useSelector(
-    (state: RootState) => state.publish,
-  );
+  const {
+    thumbnail,
+    storyDescription: contentDescription,
+    authorComment,
+    visibilityType,
+    monetization,
+    nsfw,
+    selectTagList,
+  } = useSelector((state: RootState) => state.publish);
 
   const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
   const [isVisibilityOpen, setIsVisibilityOpen] = useState(false);

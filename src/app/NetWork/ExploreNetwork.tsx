@@ -128,15 +128,15 @@ interface ReqSearchExplore {
   sort: number;
   filterList: filterList[];
   isOnlyAdults: boolean;
-  contentPage: PaginationRequest;
+  storyPage: PaginationRequest;
   characterPage: PaginationRequest;
 }
 
 export interface ExploreItem {
   exploreItemType: number;
   updateExplorState: number;
-  contentId: number;
-  contentName: string;
+  storyId: number;
+  storyName: string;
   chatCount: number;
   followerCount: number;
   episodeCount: number;
@@ -147,7 +147,7 @@ export interface ExploreItem {
 
 interface ResSearchExplore {
   searchExploreList: ExploreItem[];
-  contentPage: PaginationRequest;
+  storyPage: PaginationRequest;
   characterPage: PaginationRequest;
 }
 
@@ -165,7 +165,7 @@ export const sendSearchExplore = async (payload: ReqSearchExplore): Promise<Resp
       resultMessage: 'Failed to fetch explore search info',
       data: {
         searchExploreList: [],
-        contentPage: {offset: 0, limit: 0},
+        storyPage: {offset: 0, limit: 0},
         characterPage: {offset: 0, limit: 0},
       },
     };

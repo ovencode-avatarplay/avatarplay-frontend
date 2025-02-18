@@ -22,12 +22,12 @@ import EpisodeCard from './episode/EpisodeCard';
 
 // 네트워크
 import {
-  sendContentSave,
-  SaveContentReq,
-  GetTotalContentByIdReq,
+  sendStorySave,
+  SaveStoryReq,
+  GetTotalStoryByIdReq,
   sendContentByIdGetTotal,
   GetContentsByUserIdReq,
-  sendContentByUserIdGet,
+  sendStoryByUserIdGet,
 } from '@/app/NetWork/ContentNetwork';
 
 // Redux Import
@@ -43,7 +43,7 @@ import {
 import {setPublishInfo, setContentName, PublishInfoSlice} from '@/redux-store/slices/PublishInfo';
 
 // Interface
-import {ContentInfo, ChapterInfo} from '@/redux-store/slices/ContentInfo';
+import {StoryInfo, ChapterInfo} from '@/redux-store/slices/ContentInfo';
 import {EpisodeInfo} from '@/redux-store/slices/ContentInfo';
 import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/MyContentDashboard';
 
@@ -57,7 +57,7 @@ const ContentMain: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
+  const emptyContentInfo: StoryInfo = EmptyContentInfo.data.storyInfo as StoryInfo;
 
   // Redux Selector
   // 자주 렌더링 되거나 독립적이지 않을 때 버그가 발생하면 개별선언
@@ -100,9 +100,9 @@ const ContentMain: React.FC = () => {
   const prevChapterRef = useRef<number | null>(null);
   const prevEpisodeRef = useRef<number | null>(null);
 
-  const defaultSaveContentReq = (): SaveContentReq => ({
+  const defaultSaveContentReq = (): SaveStoryReq => ({
     languageType: getCurrentLanguage(),
-    contentInfo: editingContentInfo ?? emptyContentInfo,
+    storyInfo: editingContentInfo ?? emptyContentInfo,
   });
 
   function Init() {
@@ -140,10 +140,10 @@ const ContentMain: React.FC = () => {
 
     try {
       const req: GetContentsByUserIdReq = {languageType: getCurrentLanguage()};
-      const response = await sendContentByUserIdGet(req);
+      const response = await sendStoryByUserIdGet(req);
 
       if (response?.data) {
-        const contentData: ContentDashboardItem[] = response.data.contentDashBoardList;
+        const contentData: ContentDashboardItem[] = response.data.storyDashBoardList;
         dispatch(setContentDashboardList(contentData));
       } else {
         throw new Error(`No contentInfo in response for ID: ${userId}`);
@@ -161,11 +161,11 @@ const ContentMain: React.FC = () => {
       setLoading(true);
 
       try {
-        const req: GetTotalContentByIdReq = {contentId: contentId, language: getCurrentLanguage()};
+        const req: GetTotalStoryByIdReq = {storyId: contentId, language: getCurrentLanguage()};
         const response = await sendContentByIdGetTotal(req);
 
         if (response?.data) {
-          const contentData: ContentInfo = response.data.contentInfo;
+          const contentData: StoryInfo = response.data.storyInfo;
 
           // Redux 상태 업데이트
           dispatch(setEditingContentInfo(contentData));
@@ -549,7 +549,7 @@ const ContentMain: React.FC = () => {
 
   //#region SaveContent
 
-  const [saveData, setSaveData] = useState<SaveContentReq>(defaultSaveContentReq);
+  const [saveData, setSaveData] = useState<SaveStoryReq>(defaultSaveContentReq);
 
   // ChapterBoard를 열면 Episode 수정을 완료했다고 판단해서 현재까지 수정한 정보를 저장함
   useEffect(() => {
@@ -608,16 +608,16 @@ const ContentMain: React.FC = () => {
       publishInfo: sanitizeStringFields(editedPublishInfo), // editedPublishInfo의 null 값 처리
     };
 
-    const tmp: SaveContentReq = {
+    const tmp: SaveStoryReq = {
       languageType: getCurrentLanguage(),
-      contentInfo: updatedContent,
+      storyInfo: updatedContent,
     };
 
     setSaveData(tmp);
 
     try {
       setLoading(true);
-      const result = await sendContentSave(tmp);
+      const result = await sendStorySave(tmp);
       handleClosePublishing();
       Init();
       setLoading(false);
@@ -664,19 +664,19 @@ const ContentMain: React.FC = () => {
       },
     };
 
-    const tmp: SaveContentReq = {
+    const tmp: SaveStoryReq = {
       languageType: getCurrentLanguage(),
-      contentInfo: updatedContent,
+      storyInfo: updatedContent,
     };
 
     setSaveData(tmp);
 
     try {
       setLoading(true);
-      const result = await sendContentSave(tmp);
+      const result = await sendStorySave(tmp);
 
       if (result.data) {
-        GetContentByContentId(result.data?.contentId);
+        GetContentByContentId(result.data?.storyId);
       }
 
       handleClosePublishing();
@@ -874,7 +874,7 @@ const ContentMain: React.FC = () => {
           open={isContentNameOpen}
           onClose={() => setIsContentNameOpen(false)}
           onComplete={handleSetContentNameComplete}
-          lastValue={editingContentInfo.publishInfo.contentName}
+          lastValue={editingContentInfo.publishInfo.storyName}
         />
 
         {/* ChapterName 변경 Drawer */}

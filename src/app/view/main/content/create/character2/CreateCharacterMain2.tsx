@@ -38,7 +38,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   //#region Data
   const character: CharacterInfo = characterInfo
     ? characterInfo
-    : EmptyContentInfo.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo;
+    : EmptyContentInfo.data.storyInfo.chapterInfoList[0].episodeInfoList[0].characterInfo;
   //#endregion
 
   //#region  Thumbnail

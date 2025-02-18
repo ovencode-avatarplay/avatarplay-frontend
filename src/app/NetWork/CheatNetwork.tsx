@@ -3,13 +3,13 @@ import api, {ResponseAPI} from './ApiInstance';
 import {ESystemError} from './ESystemError';
 
 export interface ChattingCheatReq {
-  contentId: number;
+  storyId: number;
   episodeId: number;
   text: string;
 }
 
 export interface ChattingCheatRes {
-  isContentInit: boolean;
+  isStoryInit: boolean;
   isEpisodeInit: boolean;
   resultText: string;
 }

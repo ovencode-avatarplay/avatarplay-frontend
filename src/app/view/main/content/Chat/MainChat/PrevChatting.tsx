@@ -44,9 +44,9 @@ const usePrevChatting = (
       if (response.resultCode === 0 && response.data) {
         // 가져온 데이터를 상태에 저장
         setPrevMessages(response.data);
-        dispatch(setContentName(response.data.contentName));
+        dispatch(setContentName(response.data.storyName));
         dispatch(setEpisodeName(response.data.episodeName));
-        dispatch(setContentId(response.data.contentId));
+        dispatch(setContentId(response.data.storyId));
         dispatch(setEpisodeId(response.data.episodeId));
         dispatch(setStreamKey(response.data.streamKey));
       } else {

@@ -2,7 +2,7 @@
   "resultCode": 0,
   "resultMessage": "",
   "data": {
-    "contentInfo": {
+    "storyInfo": {
       "id": 0,
       "userId": 0,
       "urlLinkKey": "",
@@ -91,9 +91,9 @@
       ],
       "publishInfo": {
         "languageType": 0,
-        "contentName": "",
+        "storyName": "",
         "thumbnail": "",
-        "contentDescription": "",
+        "storyDescription": "",
         "authorName": "",
         "authorComment": "",
         "tagList": [],

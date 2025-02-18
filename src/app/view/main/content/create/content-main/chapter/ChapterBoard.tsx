@@ -101,7 +101,7 @@ const ChapterBoard: React.FC<Props> = ({
   useEffect(() => {
     if (
       chapterFirstEpisode !== null &&
-      chapterFirstEpisode !== emptyData.data.contentInfo.chapterInfoList[0].episodeInfoList[0]
+      chapterFirstEpisode !== emptyData.data.storyInfo.chapterInfoList[0].episodeInfoList[0]
     ) {
       const tmp: EpisodeInfo = chapterFirstEpisode;
       handleCreateChapter(tmp);

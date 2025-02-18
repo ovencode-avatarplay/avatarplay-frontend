@@ -3,10 +3,10 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import ContentRecommendItem from './ContentRecommendItem';
-import {recommendContentInfo} from '@/app/NetWork/ContentNetwork';
+import {recommendStoryInfo} from '@/app/NetWork/ContentNetwork';
 
 interface ContentRecommendListProps {
-  recommendContents: recommendContentInfo[];
+  recommendContents: recommendStoryInfo[];
   onSelectContent: (contentId: number) => void; // 부모에 선택된 contentId 전달
 }
 
@@ -15,7 +15,7 @@ const ContentRecommendList: React.FC<ContentRecommendListProps> = ({recommendCon
     <>
       {recommendContents.map(content => (
         // <SwiperSlide key={content.contentId}>
-        <ContentRecommendItem contentId={content.contentId} imageUrl={content.imageUrl} onSelect={onSelectContent} />
+        <ContentRecommendItem contentId={content.storyId} imageUrl={content.imageUrl} onSelect={onSelectContent} />
         // </SwiperSlide>
       ))}
     </>

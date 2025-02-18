@@ -24,7 +24,7 @@ import {ProfileInfo, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 
 // 1 Level
 // 1 Level
-export interface ContentInfo {
+export interface StoryInfo {
   id: number;
   userId: number;
   urlLinkKey: string;
@@ -35,9 +35,9 @@ export interface ContentInfo {
 // 2 Level
 export interface PublishInfo {
   languageType: number;
-  contentName: string;
+  storyName: string;
   thumbnail: string;
-  contentDescription: string;
+  storyDescription: string;
   authorName: string;
   authorComment: string;
   tagList: string[];
@@ -350,7 +350,7 @@ interface ContentInfoState {
   selectedEpisodeIdx: number;
 
   skipContentInit: boolean;
-  curEditingContentInfo: ContentInfo;
+  curEditingContentInfo: StoryInfo;
 }
 
 // 초기 상태
@@ -360,7 +360,7 @@ const initialState: ContentInfoState = {
   selectedEpisodeIdx: 0,
 
   skipContentInit: false,
-  curEditingContentInfo: emptyContent.data.contentInfo,
+  curEditingContentInfo: emptyContent.data.storyInfo,
 };
 
 //#endregion
@@ -400,18 +400,18 @@ export const curEditngContentInfoSlice = createSlice({
     //#endregion
 
     //#region Content 자체 수정
-    setEditingContentInfo: (state, action: PayloadAction<ContentInfo>) => {
+    setEditingContentInfo: (state, action: PayloadAction<StoryInfo>) => {
       state.curEditingContentInfo = action.payload;
     },
 
-    updateEditingContentInfo: (state, action: PayloadAction<Partial<ContentInfo>>) => {
+    updateEditingContentInfo: (state, action: PayloadAction<Partial<StoryInfo>>) => {
       if (state.curEditingContentInfo) {
         state.curEditingContentInfo = {...state.curEditingContentInfo, ...action.payload};
       }
     },
 
     setContentInfoToEmpty: state => {
-      state.curEditingContentInfo = emptyContent.data.contentInfo;
+      state.curEditingContentInfo = emptyContent.data.storyInfo;
     },
     updateEpisodeInfoInContent: (state, action: PayloadAction<EpisodeInfo>) => {
       const updatedEpisode = action.payload;
@@ -555,7 +555,7 @@ export const curEditngContentInfoSlice = createSlice({
 
     setEpisodeInfoEmpty(state) {
       state.curEditingContentInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[state.selectedEpisodeIdx] =
-        emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0];
+        emptyContent.data.storyInfo.chapterInfoList[0].episodeInfoList[0];
     },
 
     setCurrentEpisodeBackgroundImage(state, action: PayloadAction<string>) {

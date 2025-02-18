@@ -9,7 +9,7 @@ const ContentInfoManager: React.FC = () => {
 
   const handleSearch = () => {
     if (contentInfo) {
-      setResult(`Content Name: ${contentInfo.publishInfo?.contentName}`);
+      setResult(`Content Name: ${contentInfo.publishInfo?.storyName}`);
     } else {
       setResult('Content not found');
     }
