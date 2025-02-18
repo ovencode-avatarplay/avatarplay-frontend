@@ -32,6 +32,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({on
     {name: 'Popularity', onClick: () => setSelectedFilter(FilterTypes.Popularity)},
   ];
 
+  const isActive = false;
   return (
     <>
       {/* 상단 네비게이션 */}
@@ -106,7 +107,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({on
         {activeTab == 'single' && (
           <>
             {/* 콘텐츠 리스트 */}
-            {false ? (
+            {isActive ? (
               <>
                 <button className={styles.filterButton} onClick={() => setFilterDrawerOpen(true)}>
                   {FilterTypes[selectedFilter]}
