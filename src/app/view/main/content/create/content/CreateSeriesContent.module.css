@@ -77,3 +77,11 @@
     line-height: 16px; /* 114.286% */
     letter-spacing: -0.4px;
 }
+
+.radioButtonGroup
+{
+    align-self: flex-start;
+    display: flex;
+    gap: 24px;
+
+}

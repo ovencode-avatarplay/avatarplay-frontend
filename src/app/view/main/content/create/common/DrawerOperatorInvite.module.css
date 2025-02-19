@@ -1,0 +1,296 @@
+.inviteDrawerContainer
+{
+
+}
+
+
+.operatorList
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+
+    min-height: 200px;
+}
+
+.operatorItem
+{
+    display: flex;
+    padding: 12px 0px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.operatorProfile
+{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: var(--sds-size-space-0);
+    align-items: center;
+}
+
+.operatorProfileState
+{
+    flex: 1 0 0;
+    color: var(--Black, #000);
+    text-align: right;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.26px;
+}
+
+
+.operatorProfileImage
+{
+    width: 100%;
+    height: 100%;
+
+    border-radius: 50%;
+}
+
+.operatorProfileTextArea
+{ 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 0 0;    
+}
+
+.operatorProfileText
+{
+    color: var(--Black, #000);
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.3px;
+}
+
+.inviteDrawerContainer
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.inviteInputArea
+{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+    align-self: stretch;
+}
+
+.inviteInput
+{
+    width: 100%;
+}
+
+.inviteLinkArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+}
+
+.inviteLinkInputArea
+{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+    align-self: stretch;
+}
+
+.inviteInputArea
+{
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    align-self: stretch;
+}
+
+.inviteInputBox
+{
+    display: flex; 
+    width: 100%;
+    height: 47px;
+    padding: 14px 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex: 1 0 0;
+    
+    border-radius: 10px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--White, #FFF);
+}
+
+.inviteInputText
+{  
+    width: 100%;
+    min-width: 170px;
+    color: var(--Neutral-400, #BDC1C6);
+    font-family: Lato;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%; /* 24px */
+}
+
+.searchResultContainer
+{
+    position: absolute;
+    top: 40px;
+    background-color: white;
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+
+    z-index: 200;
+}
+
+.searchResultTitle
+{
+
+}
+
+.searchResultList
+{
+
+}
+
+.searchResultItem
+{
+    cursor: pointer;
+    
+    display: flex;
+    flex-direction: row; 
+
+}
+
+.profileImage
+{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: var(--sds-size-space-0);
+    align-items: center;
+
+}
+
+.profileName
+{
+
+}
+
+.dropdownContainer
+{ 
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+}
+
+.dropdownButton
+{
+    width: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px; 
+}
+
+.dropdownIcon
+{
+    filter: var(--black-icon-filter);
+
+}
+
+.authDropdown
+{
+    position: absolute;
+
+    display: flex;
+    min-width: 138px;
+    padding: 10px 5px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    
+    border-radius: 10px;
+    border: 1px solid #BFBFBF;
+    background: #FFF;
+    box-shadow: 0px 4px 40px 0px rgba(0, 0, 0, 0.25);    
+
+    top: 35px;
+    right: -10px;
+    z-index: 100; 
+}
+
+.authDropdown.itemDropDown
+{
+    right: 0px;
+}
+
+.authDropdownItem
+{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    align-self: stretch;
+}
+
+.checkIcon
+{
+    width: 12px;
+    height: 12px;
+}
+
+.selectedIcon
+{
+    filter: var(--black-icon-filter);
+
+}
+ 
+
+.title2
+{
+    
+}
+
+
+.inviteLinkArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch; 
+}
+
+.inviteLinkInputArea
+{
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    align-self: stretch; 
+}
+
+.inviteInput
+{
+    flex: 1 0 0;
+
+}

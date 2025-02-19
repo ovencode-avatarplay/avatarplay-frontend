@@ -32,51 +32,62 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({on
     {name: 'Popularity', onClick: () => setSelectedFilter(FilterTypes.Popularity)},
   ];
 
+  const isActive = false;
   return (
-    <>
-      {/* 상단 네비게이션 */}
-      <CustomArrowHeader
-        title="Create Series Contents"
-        backLink="/"
-        children={
-          <div className={styles.rightArea}>
-            <button className={styles.dashBoard} onClick={() => {}}>
-              <img className={styles.dashBoardIcon} src={LineDashboard.src} />
+    <div className={styles.parent}>
+      <div className={styles.header}>
+        {/* 상단 네비게이션 */}
+        <CustomArrowHeader
+          title="Create Series Contents"
+          backLink="/"
+          children={
+            <div className={styles.rightArea}>
+              <button className={styles.dashBoard} onClick={() => {}}>
+                <img className={styles.dashBoardIcon} src={LineDashboard.src} />
+              </button>
+            </div>
+          }
+        />
+
+        <div className={styles.container}>
+          {/* 탭 메뉴 */}
+          <div className={styles.tabs}>
+            <button
+              className={`${styles.tab} ${activeTab === 'series' ? styles.active : ''}`}
+              onClick={() => setActiveTab('series')}
+            >
+              Series Contents
+            </button>
+            <button
+              className={`${styles.tab} ${activeTab === 'single' ? styles.active : ''}`}
+              onClick={() => setActiveTab('single')}
+            >
+              Single Contents
             </button>
           </div>
-        }
-      />
 
+          {/* 버튼 영역 */}
+          <div className={styles.buttonContainer}>
+            <CustomButton
+              size="Large"
+              style={{width: '100%', height: '46px'}}
+              state="Normal"
+              type="Secondary"
+              onClick={onNext}
+            >
+              {activeTab == 'series' ? '+ New Series' : '+ New Single'}
+            </CustomButton>
+          </div>
+          {/* {isActive ||
+            (mockContentInfo.length > 0 && (
+              <button className={styles.filterButton} onClick={() => setFilterDrawerOpen(true)}>
+                {FilterTypes[selectedFilter]}
+                <img src={BoldAltArrowDown.src} className={styles.filtterArrow} />
+              </button>
+            ))} */}
+        </div>
+      </div>
       <div className={styles.container}>
-        {/* 탭 메뉴 */}
-        <div className={styles.tabs}>
-          <button
-            className={`${styles.tab} ${activeTab === 'series' ? styles.active : ''}`}
-            onClick={() => setActiveTab('series')}
-          >
-            Series Contents
-          </button>
-          <button
-            className={`${styles.tab} ${activeTab === 'single' ? styles.active : ''}`}
-            onClick={() => setActiveTab('single')}
-          >
-            Single Contents
-          </button>
-        </div>
-
-        {/* 버튼 영역 */}
-        <div className={styles.buttonContainer}>
-          <CustomButton
-            size="Large"
-            style={{width: '100%', height: '46px'}}
-            state="Normal"
-            type="Secondary"
-            onClick={onNext}
-          >
-            {activeTab == 'series' ? '+ New Series' : '+ New Single'}
-          </CustomButton>
-        </div>
-
         {activeTab == 'series' && (
           <>
             {/* 콘텐츠 리스트 */}
@@ -106,7 +117,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({on
         {activeTab == 'single' && (
           <>
             {/* 콘텐츠 리스트 */}
-            {false ? (
+            {isActive ? (
               <>
                 <button className={styles.filterButton} onClick={() => setFilterDrawerOpen(true)}>
                   {FilterTypes[selectedFilter]}
@@ -139,7 +150,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({on
         onClose={() => setFilterDrawerOpen(false)}
         selectedIndex={selectedFilter}
       />
-    </>
+    </div>
   );
 };
 

@@ -14,7 +14,7 @@ import {CharacterInfo, LanguageType} from '@/redux-store/slices/ContentInfo';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import DrawerPostCountry from '../common/DrawerPostCountry';
 import CharacterCreateVoiceSetting from './CharacterCreateVoiceSetting';
-import OperatorInviteDrawer from './OperatorInviteDrawer';
+import OperatorInviteDrawer from '../common/DrawerOperatorInvite';
 import DrawerTagSelect from '../common/DrawerTagSelect';
 import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 
@@ -85,19 +85,15 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     {label: string; title: string; value: string; profileImage: string}[]
   >([]);
 
-  let invitationOption = {
-    items: [
-      {label: 'Owner', value: 'owner'},
-      {label: 'Can edit', value: 'canEdit'},
-      {label: 'Only Comments', value: 'onlyComments'},
-      {label: 'Waiting', value: 'waiting'},
-    ],
-  };
-
   const [operatorInviteOpen, setOperatorInviteOpen] = useState(false);
   const [inviteSearchValue, setInviteSearchValue] = useState<string>('');
 
-  const [voiceOpen, setVoiceOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState<boolean>(false);
+  const [notSetVoice, setNotSetVoice] = useState<boolean>(false);
+  const [selectedVoiceId, setSelectedVoiceId] = useState<number>(0);
+  const [pitchShift, setPitchShift] = useState<number>(0);
+  const [pitchVariance, setPitchVariance] = useState<number>(0);
+  const [speed, setSpeed] = useState<number>(0);
 
   const handleSelectVisibilityItem = (value: number) => {
     onVisibilityChange(value);
@@ -160,6 +156,14 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   };
 
   const totalLanguages = Object.values(LanguageType).filter(value => typeof value === 'number').length;
+
+  const getOperatorAuthorityLabel = (value: number): string => {
+    return (
+      Object.keys(OperatorAuthorityType).find(
+        key => OperatorAuthorityType[key as keyof typeof OperatorAuthorityType] === value,
+      ) || 'Unknown'
+    );
+  };
 
   useEffect(() => {
     onTagChange(selectedTags.join(', '));
@@ -366,17 +370,28 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           operatorList={operatorProfileIdList}
           onUpdateOperatorList={onOperatorProfileIdListChange}
           setInviteSearchValue={setInviteSearchValue}
-          renderOperatorList={renderOperatorList}
         />
       </>
     );
   };
 
-  const renderOperatorList = (list: ProfileSimpleInfo[], canEdit: boolean) => {
-    return <ul className={styles.operatorList}>{list.map(operator => renderOperatorItem(operator, canEdit))}</ul>;
+  const renderOperatorList = (
+    list: ProfileSimpleInfo[],
+    canEdit: boolean,
+    onUpdateRole?: (id: number, role: OperatorAuthorityType) => void,
+  ) => {
+    return (
+      <ul className={styles.operatorList}>
+        {list.map(operator => renderOperatorItem(operator, canEdit, onUpdateRole))}
+      </ul>
+    );
   };
 
-  const renderOperatorItem = (operator: ProfileSimpleInfo, canEdit: boolean) => (
+  const renderOperatorItem = (
+    operator: ProfileSimpleInfo,
+    canEdit: boolean,
+    onUpdateRole?: (id: number, role: OperatorAuthorityType) => void,
+  ) => (
     <div key={operator.profileId} className={styles.operatorItem}>
       <div className={styles.operatorProfile}>
         <img className={styles.operatorProfileImage} src={operator.iconImageUrl} />
@@ -386,12 +401,20 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         {canEdit ? (
           <CustomDropDown
             displayType="Text"
-            items={invitationOption.items}
-            onSelect={selected => console.log(`Selected ${selected} for ${operator.name}`)}
+            initialValue={operator.operatorAuthorityType}
+            items={Object.keys(OperatorAuthorityType)
+              .filter(key => isNaN(Number(key)))
+              .map(key => ({label: key, value: OperatorAuthorityType[key as keyof typeof OperatorAuthorityType]}))}
+            onSelect={selected => {
+              if (onUpdateRole) {
+                const selectedRole = OperatorAuthorityType[selected as keyof typeof OperatorAuthorityType];
+                onUpdateRole(operator.profileId, selectedRole);
+              }
+            }}
             style={{width: '180px', maxWidth: '100%'}}
           />
         ) : (
-          <div className={styles.operatorProfileState}>{OperatorAuthorityType[operator.operatorAuthorityType]}</div>
+          <div className={styles.operatorProfileState}>{getOperatorAuthorityLabel(operator.operatorAuthorityType)}</div>
         )}
       </div>
     </div>
@@ -488,7 +511,20 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             </div>
           </div>
         </div>
-        <CharacterCreateVoiceSetting voiceOpen={voiceOpen} setVoiceOpen={setVoiceOpen} />
+        <CharacterCreateVoiceSetting
+          voiceOpen={voiceOpen}
+          setVoiceOpen={setVoiceOpen}
+          notSetVoice={notSetVoice}
+          setNotSetVoice={setNotSetVoice}
+          selectedVoiceId={selectedVoiceId}
+          setSelectedVoiceId={setSelectedVoiceId}
+          pitchShift={pitchShift}
+          setPitchShift={setPitchShift}
+          pitchVariance={pitchVariance}
+          setPitchVariance={setPitchVariance}
+          speed={speed}
+          setSpeed={setSpeed}
+        />
       </>
     );
   };

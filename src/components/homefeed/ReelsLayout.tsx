@@ -204,8 +204,9 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
     return () => {
       // 💡 cleanup: 기본 상태로 복구
-      document.body.style.overflowY = 'scroll';
-      document.body.style.overflowX = 'hidden';
+      // document.body.style.overflowY = 'scroll';
+      // document.body.style.overflowX = 'hidden';
+      document.body.style.removeProperty('overflow');
     };
   }, [isProfile]);
 

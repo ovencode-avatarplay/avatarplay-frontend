@@ -54,7 +54,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setBottomNavColor} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateProfile} from '@/redux-store/slices/Profile';
-import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {getBackUrl, getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {useAtom} from 'jotai';
 import Link from 'next/link';
@@ -65,7 +65,6 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 import {CharacterProfileDetailComponent} from '@/app/[lang]/(pages)/profile/detail/[[...id]]/page';
-import {getBackUrl} from '@/app/layout';
 
 enum eTabPDType {
   Feed,

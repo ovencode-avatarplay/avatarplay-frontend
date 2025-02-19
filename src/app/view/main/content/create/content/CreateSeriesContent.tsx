@@ -10,6 +10,7 @@ import DrawerTagSelect from '../common/DrawerTagSelect';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import DrawerPostCountry from '../common/DrawerPostCountry';
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
+import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -160,26 +161,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
 
   const [descValue, setrDescription] = useState<string>('');
 
-  const renderDropDown = (
-    title: string,
-    selectedItem: string,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  ) => {
-    return (
-      <div className={styles.dropDownArea}>
-        <h2 className={styles.title2}>{title}</h2>
-        <div className={styles.selectItem}>
-          <div className={styles.selectItemText}>{selectedItem}</div>
-          <button
-            className={styles.selectItemButton}
-            onClick={() => setIsOpen(prev => !prev)} // 상태 토글
-          >
-            <img className={styles.selectItemIcon} src={BoldArrowDown.src} />
-          </button>
-        </div>
-      </div>
-    );
-  };
+  const [isMonetization, setIsMonetization] = useState<boolean>(false);
 
   return (
     <div className={styles.parent}>
@@ -226,7 +208,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
         />
 
         <span className={styles.label}>
-          One Line Summary <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+          Description <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
         </span>
         <MaxTextInput
           displayDataType={displayType.Hint}
@@ -271,6 +253,29 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
           selectedItem={VisibilityType[selectedVisibility]}
           onClick={() => setVisibilityDrawerOpen(true)}
         ></CustomDropDownSelectDrawer>
+        <span className={styles.label}>
+          NSFW <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+        </span>
+        <div className={styles.radioButtonGroup}>
+          <CustomRadioButton
+            shapeType="circle"
+            displayType="buttonText"
+            value="On"
+            label="On"
+            onSelect={() => setIsMonetization(true)}
+            selectedValue={isMonetization ? 'On' : 'Off'}
+            containterStyle={{gap: '0'}}
+          />
+          <CustomRadioButton
+            shapeType="circle"
+            displayType="buttonText"
+            value="Off"
+            label="Off"
+            onSelect={() => setIsMonetization(false)}
+            selectedValue={isMonetization ? 'On' : 'Off'}
+            containterStyle={{gap: '0'}}
+          />
+        </div>
 
         <button className={styles.confirmButton} onClick={handleConfirm}>
           Confirm

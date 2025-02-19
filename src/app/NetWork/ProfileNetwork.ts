@@ -17,10 +17,10 @@ export interface ProfileSimpleInfo {
 }
 
 export enum OperatorAuthorityType {
-  None,
-  Owner,
-  CanEdit,
-  OnlyComments,
+  None = 0,
+  Owner = 1,
+  CanEdit = 2,
+  OnlyComments = 3,
 }
 
 export enum ProfileType {

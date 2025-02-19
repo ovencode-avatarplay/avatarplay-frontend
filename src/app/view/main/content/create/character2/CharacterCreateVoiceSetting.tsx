@@ -9,6 +9,16 @@ import Splitters from '@/components/layout/shared/CustomSplitter';
 interface Props {
   voiceOpen: boolean;
   setVoiceOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  notSetVoice: boolean;
+  setNotSetVoice: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedVoiceId: number;
+  setSelectedVoiceId: React.Dispatch<React.SetStateAction<number>>;
+  pitchShift: number;
+  setPitchShift: React.Dispatch<React.SetStateAction<number>>;
+  pitchVariance: number;
+  setPitchVariance: React.Dispatch<React.SetStateAction<number>>;
+  speed: number;
+  setSpeed: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface SoundItem {
@@ -17,17 +27,27 @@ interface SoundItem {
 }
 
 interface VoiceData {
+  id: number;
   label: string;
   gender: number;
   voiceDesc: string;
   soundData: SoundItem[];
 }
 
-const CharacterCreateVoiceSetting: React.FC<Props> = ({voiceOpen, setVoiceOpen}) => {
-  const [pitchShift, setPitchShift] = useState(0);
-  const [pitchVariance, setPitchVariance] = useState(0);
-  const [speed, setSpeed] = useState(1);
-
+const CharacterCreateVoiceSetting: React.FC<Props> = ({
+  voiceOpen,
+  setVoiceOpen,
+  notSetVoice,
+  setNotSetVoice,
+  selectedVoiceId,
+  setSelectedVoiceId,
+  pitchShift,
+  setPitchShift,
+  pitchVariance,
+  setPitchVariance,
+  speed,
+  setSpeed,
+}) => {
   // 슬라이더 값 설정
   const pitchShiftMin = -24,
     pitchShiftMax = 24;
@@ -40,6 +60,7 @@ const CharacterCreateVoiceSetting: React.FC<Props> = ({voiceOpen, setVoiceOpen})
 
   const voiceData: VoiceData[] = [
     {
+      id: 1,
       label: 'Voice 1',
       gender: 0,
       voiceDesc: 'Voice Desc 1',
@@ -49,18 +70,21 @@ const CharacterCreateVoiceSetting: React.FC<Props> = ({voiceOpen, setVoiceOpen})
       ],
     },
     {
+      id: 2,
       label: 'Voice 2',
       gender: 1,
       voiceDesc: 'Voice Desc 2',
       soundData: [{address: 'url-to-sound2.mp3', description: 'Sound 2'}],
     },
     {
+      id: 3,
       label: 'Voice 3',
       gender: 0,
       voiceDesc: 'Voice Desc 3',
       soundData: [{address: 'url-to-sound3.mp3', description: 'Sound 3'}],
     },
     {
+      id: 4,
       label: 'Voice 4',
       gender: 1,
       voiceDesc: 'Voice Desc 4',
@@ -68,14 +92,24 @@ const CharacterCreateVoiceSetting: React.FC<Props> = ({voiceOpen, setVoiceOpen})
     },
   ];
 
-  const renderVoiceItem = (label: string, desc: string, soundData: SoundItem[]) => (
-    <div className={styles.voiceItem}>
-      <CustomRadioButton displayType="buttonOnly" shapeType="circle" value="" onSelect={() => {}} selectedValue={''} />
+  const renderVoiceItem = (voice: VoiceData) => (
+    <div className={`${styles.voiceItem} ${notSetVoice ? styles.disabled : ''}`} key={voice.id}>
+      <CustomRadioButton
+        displayType="buttonOnly"
+        shapeType="circle"
+        value={voice.id}
+        onSelect={() => {
+          if (!notSetVoice) {
+            setSelectedVoiceId(voice.id);
+          }
+        }}
+        selectedValue={selectedVoiceId}
+      />
       <div className={styles.voiceInfoArea}>
-        <div className={styles.voiceTitle}>{label}</div>
-        <div className={styles.voiceDesc}>{desc}</div>
+        <div className={styles.voiceTitle}>{voice.label}</div>
+        <div className={styles.voiceDesc}>{voice.voiceDesc}</div>
         <ul className={styles.soundList}>
-          {soundData.map((item, index) => (
+          {voice.soundData.map((item, index) => (
             <div className={styles.soundItem} key={index}>
               <button className={styles.soundButton}>
                 <img className={styles.soundIcon} src={BoldAudioPlay.src} alt="Play Icon" />
@@ -91,37 +125,15 @@ const CharacterCreateVoiceSetting: React.FC<Props> = ({voiceOpen, setVoiceOpen})
   const voiceSplitter = [
     {
       label: 'All',
-      content: (
-        <ul className={styles.voiceList}>
-          {voiceData.map(item => (
-            <div className={styles.voiceItem}>{renderVoiceItem(item.label, item.voiceDesc, item.soundData)}</div>
-          ))}
-        </ul>
-      ),
+      content: <ul className={styles.voiceList}>{voiceData.map(renderVoiceItem)}</ul>,
     },
     {
       label: 'Male',
-      content: (
-        <ul className={styles.voiceList}>
-          {voiceData
-            .filter(item => item.gender === 0)
-            .map(item => (
-              <div>{renderVoiceItem(item.label, item.voiceDesc, item.soundData)}</div>
-            ))}
-        </ul>
-      ),
+      content: <ul className={styles.voiceList}>{voiceData.filter(v => v.gender === 0).map(renderVoiceItem)}</ul>,
     },
     {
       label: 'Female',
-      content: (
-        <ul className={styles.voiceList}>
-          {voiceData
-            .filter(item => item.gender === 1)
-            .map(item => (
-              <div>{renderVoiceItem(item.label, item.voiceDesc, item.soundData)}</div>
-            ))}
-        </ul>
-      ),
+      content: <ul className={styles.voiceList}>{voiceData.filter(v => v.gender === 1).map(renderVoiceItem)}</ul>,
     },
   ];
 
@@ -133,9 +145,11 @@ const CharacterCreateVoiceSetting: React.FC<Props> = ({voiceOpen, setVoiceOpen})
             displayType="buttonText"
             shapeType="circle"
             label="I will not set the voice"
-            value="False"
-            selectedValue={'False'}
-            onSelect={() => {}}
+            value={0}
+            selectedValue={notSetVoice ? 0 : selectedVoiceId}
+            onSelect={() => {
+              setNotSetVoice(prev => !prev);
+            }}
           />
           <Splitters
             splitters={voiceSplitter}
