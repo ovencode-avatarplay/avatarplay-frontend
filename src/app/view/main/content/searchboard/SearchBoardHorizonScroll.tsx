@@ -27,9 +27,9 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({title, data}) => {
       const mappedData: ExploreCardProps[] = data.map(explore => ({
         exploreItemType: explore.exploreItemType,
         updateExplorState: explore.updateExplorState,
-        contentId: explore.contentId,
-        contentRank: explore.contentRank,
-        contentName: explore.contentName,
+        storyId: explore.storyId,
+        // contentRank: explore.storyRank,
+        storyName: explore.storyName,
         chatCount: explore.chatCount,
         episodeCount: explore.episodeCount,
         followerCount: explore.followerCount,
@@ -49,9 +49,9 @@ const SearchBoardHorizonScroll: React.FC<Props> = ({title, data}) => {
             <ExploreCard
               exploreItemType={explore.exploreItemType}
               updateExplorState={explore.updateExplorState}
-              contentId={explore.contentId}
-              contentRank={index + 1}
-              contentName={explore.contentName}
+              storyId={explore.storyId}
+              storyRank={index + 1}
+              storyName={explore.storyName}
               chatCount={explore.chatCount}
               episodeCount={explore.episodeCount}
               followerCount={explore.followerCount}

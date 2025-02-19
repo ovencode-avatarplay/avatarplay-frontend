@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import styles from './ExploreCard.module.css'; // CSS 파일 임포트
 
@@ -12,9 +12,9 @@ import {BoldChatRoundDots, BoldEpisodes, BoldFollowers} from '@ui/Icons';
 const ExploreCard: React.FC<ExploreCardProps> = ({
   exploreItemType,
   updateExplorState,
-  contentId,
-  contentRank,
-  contentName,
+  storyId: contentId,
+  storyRank: contentRank,
+  storyName: contentName,
   chatCount,
   episodeCount,
   followerCount,
@@ -24,6 +24,10 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
   const dispatch = useDispatch();
 
   const RankCount = 3 + 1;
+
+  useEffect(() => {
+    console.log(contentId);
+  }, [contentId]);
 
   const handleOpenDrawer = () => {
     if (exploreItemType === 0) {

@@ -352,8 +352,8 @@ const SearchBoard: React.FC = () => {
                         <ExploreCard
                           exploreItemType={item.exploreItemType}
                           updateExplorState={item.updateExplorState}
-                          contentId={item.storyId}
-                          contentName={item.storyName}
+                          storyId={item.storyId}
+                          storyName={item.storyName}
                           chatCount={item.chatCount}
                           episodeCount={item.episodeCount}
                           followerCount={item.followerCount}

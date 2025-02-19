@@ -6,6 +6,7 @@ import React, {useState} from 'react';
 import cx from 'classnames';
 import styles from './profileFeed.module.scss';
 import {BoldArrowLeft, BoldMenuDots, LineMenu, LineShare} from '@ui/Icons';
+import {getBackUrl} from '@/utils/util-1';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import BottomNav from '@/app/view/main/bottom-nav/BottomNav';
 

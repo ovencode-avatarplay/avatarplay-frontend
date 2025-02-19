@@ -8,8 +8,9 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {ChattingState} from '@/redux-store/slices/Chatting';
 import {Left, Image, MenuDots} from '@ui/chatting';
 import Link from 'next/link';
-import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
+import {getBackUrl} from '@/utils/util-1';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface ChatTopBarProps {
   onBackClick: () => void;

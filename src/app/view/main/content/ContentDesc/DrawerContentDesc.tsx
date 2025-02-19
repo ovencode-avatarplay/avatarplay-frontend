@@ -44,7 +44,7 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 
 const DrawerContentDesc = () => {
   const dispatch = useDispatch();
-  const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
+  const {open, contentId, episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
 
   const [loading, setLoading] = useState(false);
 

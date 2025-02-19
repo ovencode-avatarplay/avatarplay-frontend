@@ -2,7 +2,7 @@ import Root from './Root';
 import '@/app/globals.css';
 import '@/app/reset.css';
 
-export default function Layout({children}: {children: React.ReactNode}) {
+export default async function Layout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en">
       <head>
