@@ -7,22 +7,12 @@ import '@/app/globals.css';
 import '@/app/reset.css';
 import {isLogined, refreshLanaguage} from '@/utils/UrlMove';
 
-export const getBackUrl = () => {
-  const storage = globalThis?.sessionStorage;
-  const prevPath = storage.getItem('prevPath');
-  const curPath = storage.getItem('currentPath');
-  if (prevPath == curPath) {
-    return null;
-  }
-  return prevPath;
-};
-
 export default function Layout({
   children,
   searchParams,
 }: {
   children: React.ReactNode;
-  searchParams: {[key: string]: string};
+  searchParams: {[key: string]: never};
 }) {
   const [hasRun, setHasRun] = useState(false); // 상태를 관리하여 최초 실행 여부 판단
   const router = useRouter(); // useRouter는 클라이언트에서만 사용

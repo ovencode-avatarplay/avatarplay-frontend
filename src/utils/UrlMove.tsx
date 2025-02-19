@@ -8,6 +8,16 @@ import {store} from '@/redux-store/ReduxStore';
 import {getBrowserLanguage, getLanguageFromURL, getLanguageTypeFromText, getWebBrowserUrl} from './browserInfo';
 import {updateProfile} from '@/redux-store/slices/Profile';
 
+export const getBackUrl = () => {
+  const storage = globalThis?.sessionStorage;
+  const prevPath = storage.getItem('prevPath');
+  const curPath = storage.getItem('currentPath');
+  if (prevPath == curPath) {
+    return null;
+  }
+  return prevPath;
+};
+
 // 로그인상태인가
 export const isLogined = async () => {
   const dispatch = store.dispatch;
