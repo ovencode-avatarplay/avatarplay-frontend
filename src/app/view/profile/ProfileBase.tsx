@@ -109,6 +109,7 @@ export enum eCharacterFilterType {
 }
 
 type DataProfileType = {
+  profileId: number;
   indexTab: eTabPDType | eTabCharacterType;
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
@@ -151,6 +152,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   const pathname = usePathname();
   const refDescription = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState<DataProfileType>({
+    profileId: profileId,
     indexTab: eTabPDType.Feed,
     isOpenSelectProfile: false,
     profileInfo: null,
@@ -179,13 +181,15 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
     refreshTab();
   }, [inView]);
+
   const refreshTab = async () => {
-    await refreshProfileTab(profileId, data.indexTab);
+    await refreshProfileTab(data.profileId, data.indexTab);
     // await refreshProfileTab(profileId, data.indexTab);
     setData({...data});
   };
 
   useEffect(() => {
+    clearProfileTab();
     if (!isPath) {
       refreshProfileInfo(profileId);
       return;
@@ -194,7 +198,9 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       const id = pathname?.split('/').filter(Boolean).pop();
       if (id == undefined) return;
       const profileIdPath = parseInt(id);
+      data.profileId = profileIdPath;
       refreshProfileInfo(profileIdPath);
+      setData({...data});
       return;
     }
   }, [pathname]);
@@ -265,6 +271,11 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       count = 0;
     }
     return count;
+  };
+
+  const clearProfileTab = () => {
+    data.profileTabInfo = {};
+    setData({...data});
   };
 
   const refreshProfileTab = async (profileId: number, indexTab: number) => {
@@ -837,7 +848,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               dataUserDropDown.onClickLong();
             }}
           >
-            <div className={styles.profileName}>{data.profileInfo?.profileInfo.name}</div>
+            <div className={styles.left}>
+              {isCharacter && <div className={styles.originalFan}>Original</div>}
+              <div className={styles.profileName}>{data.profileInfo?.profileInfo.name}</div>
+            </div>
             {isMine && (
               <div className={styles.iconSelect}>
                 <img src={LineArrowDown.src} alt="" />
