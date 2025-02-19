@@ -48,6 +48,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
     'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
   );
   const [imgUploadOpen, setImgUploadOpen] = useState(false);
+  const [imgUploadModalOpen, setImgUploadModalOpen] = useState(false);
 
   const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
   const [imageViewUrl, setImageViewUrl] = useState(mainimageUrl);
@@ -167,7 +168,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   };
 
   const handleOnClickMediaCreate = () => {
-    setImgUploadOpen(true);
+    setImgUploadModalOpen(true);
     setImageCreate('MediaCreate');
   };
 
@@ -401,7 +402,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   //#endregion
 
   useEffect(() => {
-    if (imgUploadOpen === true) {
+    if (imgUploadOpen === false) {
       setImgUploadType(null);
     }
   }, [imgUploadOpen]);
@@ -519,7 +520,13 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   const renderSelectImageType = () => {
     return (
       <>
-        <CreateDrawerHeader title="Create" onClose={() => setImgUploadOpen(false)} />
+        <CreateDrawerHeader
+          title="Create"
+          onClose={() => {
+            setImgUploadOpen(false);
+            setImgUploadModalOpen(false);
+          }}
+        />
         <div className={styles.imageTypeArea}>
           {imgUploadType === null && (
             <div className={styles.verticalButtonGroup}>
@@ -555,6 +562,68 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           )}
         </div>
       </>
+    );
+  };
+
+  const renderUploadSelectModal = () => {
+    return (
+      <div
+        className={styles.backdrop}
+        onClick={() => {
+          setImgUploadType(null);
+          setImgUploadModalOpen(false);
+        }}
+      >
+        <div className={styles.modalContainer} onClick={e => e.stopPropagation()}>
+          <div className={styles.imageUploadTitleArea}>
+            <div className={styles.imageUploadTitle}>Create Character</div>
+            <div className={styles.imageUploadDesc}>How to create an image?</div>
+          </div>
+          <div className={styles.uploadImageTypeArea}>
+            {imgUploadType === null && (
+              <div className={styles.uploadModalButtonGroup}>
+                {typeOption.map((option, index) => (
+                  <div className={styles.uploadModalButton} key={index}>
+                    {index > 0 && (
+                      <button
+                        key={index}
+                        className={styles.uploadButton}
+                        onClick={() => {
+                          setImgUploadType(option.type);
+                          if (option.type === 'AIGenerate') {
+                            setImgUploadModalOpen(false);
+                            setImgUploadOpen(true);
+                          }
+                        }}
+                      >
+                        <div className={styles.buttonIconBack}>
+                          <img
+                            className={styles.buttonIcon}
+                            src={index === 0 ? BoldMixture.src : index === 1 ? LineAIImage.src : LineUpload.src}
+                            alt={option.label}
+                          />
+                        </div>
+                        <div className={styles.buttonText}>{option.label}</div>
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            {/* {imgUploadType === 'AIGenerate' && <CharacterImageSet createFinishAction={handlerSetImage} />} */}
+            {imgUploadType === 'Upload' && (
+              <ImageUploadDialog
+                isOpen={true}
+                onClose={() => {
+                  setImgUploadType(null);
+                  setImgUploadModalOpen(false);
+                }}
+                onFileSelect={handleFileSelection}
+              />
+            )}
+          </div>
+        </div>
+      </div>
     );
   };
 
@@ -623,6 +692,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           </div>
         )}
         {imgUploadOpen && <>{renderSelectImageType()}</>}
+        {imgUploadModalOpen && <>{renderUploadSelectModal()}</>}
       </div>
       {imageViewOpen && <CharacterCreateViewImage imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
     </>

@@ -185,3 +185,18 @@
     width: calc(50% - 8px);
 
 }
+
+
+.cm-chip {
+    display: inline-block;
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin: 2px;
+    cursor: pointer;
+  }
+  .cm-keyword {
+    font-weight: bold;
+  }
+  

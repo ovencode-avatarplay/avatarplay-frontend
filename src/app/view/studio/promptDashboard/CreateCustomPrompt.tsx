@@ -1,22 +1,65 @@
 import CustomInput from '@/components/layout/shared/CustomInput';
 import styles from './CreateCustomPrompt.module.css';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
 import {LineSetting} from '@ui/Icons';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import {CustomPromptData} from './PromptDashboard';
+import AutoCompleteCustomPrompt from './AutoCompleteCustomPrompt';
 
 interface Props {
   prompt: CustomPromptData;
   onSave: (updatedPrompt: CustomPromptData) => void;
 }
 
+const KEYWORDS: Record<string, string> = {
+  '{{user}}': 'User',
+  '{{char}}': 'Character',
+  '{{char_persona}}': 'Character Persona',
+  '{{world_scenario}}': 'World Scenario',
+  '{{secrets}}': 'Secrets',
+};
+
+const keywordData = [
+  {keyword: '{{char}}', description: '캐릭터 이름', example: 'Kate'},
+  {
+    keyword: '{{char_persona}}',
+    description: "캐릭터 생성시 '캐릭터 설명'에 입력한 내용",
+    example: 'Kate is very kind and friendly.',
+  },
+  {
+    keyword: '{{world_scenario}}',
+    description: "캐릭터 생성시 '세계관'에 입력한 내용",
+    example: 'Kate is in a coffee shop. and Mark is her friend. They are talking about their future plan.',
+  },
+  {keyword: '{{secrets}}', description: "캐릭터 생성시 '비공개 정보'에 입력한 내용", example: 'Kate loves Mark.'},
+  {keyword: '{{user}}', description: '채팅 시작시 사용자가 입력한 본인의 이름', example: 'Mark'},
+  {
+    keyword: '{{user_desc}}',
+    description: '채팅 시작시 사용자가 입력한 본인의 역할, 소개',
+    example: 'Mark is a very smart guy. He is a student of MIT.',
+  },
+  {
+    keyword: '{{lores}}',
+    description: '채팅 시 사용자가 입력한 내용 중 로어북에 추가된 단어 정보',
+    example:
+      'MIT is a world-renowned research university known for its advancements in science, engineering, and technology.',
+  },
+];
+
 const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   const [promptName, setPromptName] = useState(prompt.name);
   const [selectedModel, setSelectedModel] = useState<number>(0);
   const [previewOn, setPreviewOn] = useState<boolean>(false);
   const [previewOptionOpen, setPreviewOptionOpen] = useState<boolean>(false);
+
+  const [content, setContent] = useState<string>('');
+
+  const [showAutoCompleteMain, setShowAutoCompleteMain] = useState(false);
+  const [showAutoCompleteInstruction, setShowAutoCompleteInstruction] = useState(false);
+  const [showAutoCompleteResponse, setShowAutoCompleteResponse] = useState(false);
+  const [showAutoCompleteGpt, setShowAutoCompleteGpt] = useState(false);
 
   //#region Mandarin
   const [mainPrompt, setMainPrompt] = useState('');
@@ -39,36 +82,121 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
 
   //#endregion
 
-  const keywordData = [
-    {keyword: '{{char}}', description: '캐릭터 이름', example: 'Kate'},
-    {
-      keyword: '{{char_persona}}',
-      description: "캐릭터 생성시 '캐릭터 설명'에 입력한 내용",
-      example: 'Kate is very kind and friendly.',
-    },
-    {
-      keyword: '{{world_scenario}}',
-      description: "캐릭터 생성시 '세계관'에 입력한 내용",
-      example: 'Kate is in a coffee shop. and Mark is her friend. They are talking about their future plan.',
-    },
-    {keyword: '{{secrets}}', description: "캐릭터 생성시 '비공개 정보'에 입력한 내용", example: 'Kate loves Mark.'},
-    {keyword: '{{user}}', description: '채팅 시작시 사용자가 입력한 본인의 이름', example: 'Mark'},
-    {
-      keyword: '{{user_desc}}',
-      description: '채팅 시작시 사용자가 입력한 본인의 역할, 소개',
-      example: 'Mark is a very smart guy. He is a student of MIT.',
-    },
-    {
-      keyword: '{{lores}}',
-      description: '채팅 시 사용자가 입력한 내용 중 로어북에 추가된 단어 정보',
-      example:
-        'MIT is a world-renowned research university known for its advancements in science, engineering, and technology.',
-    },
-  ];
+  const promptRefs = {
+    main: useRef<HTMLDivElement>(null),
+    instruction: useRef<HTMLDivElement>(null),
+    response: useRef<HTMLDivElement>(null),
+    gpt: useRef<HTMLDivElement>(null),
+  };
 
   const [editableExamples, setEditableExamples] = useState<{[key: string]: string}>(
     keywordData.reduce((acc, item) => ({...acc, [item.keyword]: item.example}), {}),
   );
+
+  const handleMainPromptInput = (e: React.FormEvent<HTMLDivElement>) => {
+    handleInput(e, setMainPrompt);
+    checkForAutoComplete(e, setShowAutoCompleteMain);
+  };
+
+  const handleInstructionInput = (e: React.FormEvent<HTMLDivElement>) => {
+    handleInput(e, setInstruction);
+    checkForAutoComplete(e, setShowAutoCompleteInstruction);
+  };
+
+  const handleResponseInput = (e: React.FormEvent<HTMLDivElement>) => {
+    handleInput(e, setResponse);
+    checkForAutoComplete(e, setShowAutoCompleteResponse);
+  };
+
+  const handleGptPromptInput = (e: React.FormEvent<HTMLDivElement>) => {
+    handleInput(e, setGptPrompt);
+    checkForAutoComplete(e, setShowAutoCompleteGpt);
+  };
+  const checkForAutoComplete = (
+    e: React.FormEvent<HTMLDivElement>,
+    setShowAutoComplete: React.Dispatch<React.SetStateAction<boolean>>,
+  ) => {
+    const text = e.currentTarget.innerText;
+    if (text.includes('{') && !text.includes('}')) {
+      setShowAutoComplete(true);
+    } else {
+      setShowAutoComplete(false);
+    }
+  };
+
+  const handleInput = (e: React.FormEvent<HTMLDivElement>, setState: React.Dispatch<React.SetStateAction<string>>) => {
+    const div = e.currentTarget;
+    let html = div.innerHTML;
+
+    // 키워드 감지 후 변환
+    Object.keys(KEYWORDS).forEach(keyword => {
+      const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g'); // 안전한 정규식 처리
+      html = html.replace(
+        regex,
+        `<span class="${styles['cm-chip']} ${styles['cm-keyword']}" contenteditable="false">${KEYWORDS[keyword]}</span>`,
+      );
+    });
+
+    div.innerHTML = html;
+    setState(html);
+    placeCaretAtEnd(div);
+  };
+
+  const decodeHTMLEntities = (html: string): string => {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+
+    return txt.value;
+  };
+
+  const replaceChipsWithKeywords = (html: string): string => {
+    // Step 1: HTML 엔티티 변환 (HTML 태그 방지 추가)
+    html = decodeHTMLEntities(html);
+
+    // Step 2: Chip을 원래 키워드로 변환
+    Object.keys(KEYWORDS).forEach(keyword => {
+      const regex = new RegExp(`<span[^>]*?contenteditable="false"[^>]*?>${KEYWORDS[keyword]}</span>`, 'g');
+      html = html.replace(regex, keyword);
+    });
+
+    // Step 3: <, >를 안전하게 변환 (HTML 해석 방지) -> 서버 api에서 다시 <, >로 변환 해야 할 수도 있음
+    html = html.replace(/</g, '〈').replace(/>/g, '〉');
+
+    // Step 4: <div>, <br> 태그를 개행 문자로 변환
+    html = html.replace(/<div><br><\/div>/g, '\n');
+    html = html.replace(/<div>/g, '\n');
+    html = html.replace(/<\/div>/g, '');
+    html = html.replace(/<br>/g, '\n');
+
+    // Step 5: 모든 HTML 태그 제거
+    html = html.replace(/<[^>]*>/g, '');
+
+    return html === '〈br〉' || html.trim() === '' ? '' : html;
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const selection = window.getSelection();
+    const range = selection?.getRangeAt(0);
+    const node = range?.startContainer;
+
+    // Chip을 삭제할 때
+    if (e.key === 'Backspace' && node?.nodeType === Node.ELEMENT_NODE) {
+      const chip = node as HTMLElement;
+      if (chip.classList.contains('cm-chip')) {
+        chip.remove();
+        e.preventDefault();
+      }
+    }
+  };
+
+  const placeCaretAtEnd = (el: HTMLElement) => {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+  };
 
   const handleExampleChange = (keyword: string, e: React.ChangeEvent<HTMLInputElement>) => {
     setEditableExamples(prev => ({
@@ -140,9 +268,13 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
             readOnly
             value={
               selectedModel === 0
-                ? `### Main Prompt:\n${mainPrompt}\n\n### Instruction:\n${instruction}\n\n### Response:\n${response}`
+                ? `### Main Prompt:\n${replaceChipsWithKeywords(
+                    mainPrompt,
+                  )}\n\n### Instruction:\n${replaceChipsWithKeywords(
+                    instruction,
+                  )}\n\n### Response:\n${replaceChipsWithKeywords(response)}`
                 : selectedModel === 1
-                ? `${prefixGPT}${gptPrompt}${suffixGPT}`
+                ? `${replaceChipsWithKeywords(prefixGPT + gptPrompt + suffixGPT)}`
                 : ''
             }
           />
@@ -154,29 +286,58 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   const renderPromptTemplateMandarin = () => {
     return (
       <div className={styles.promptInputList}>
-        <textarea
+        <div
           className={styles.promptInput}
-          placeholder="Enter Prompt..."
-          value={mainPrompt}
-          onChange={e => setMainPrompt(e.target.value)}
-        />
+          ref={promptRefs.main}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={handleMainPromptInput}
+          onKeyDown={handleKeyDown}
+        ></div>
+        {showAutoCompleteMain && (
+          <AutoCompleteCustomPrompt
+            keywords={KEYWORDS}
+            inputRef={promptRefs.main}
+            onInput={handleMainPromptInput}
+            onKeyDown={handleKeyDown}
+          />
+        )}
 
         <div className={styles.promptTitle}>### Instruction :</div>
-
-        <textarea
+        <div
           className={styles.promptInput}
-          placeholder="Enter instruction..."
-          value={instruction}
-          onChange={e => setInstruction(e.target.value)}
-        />
+          ref={promptRefs.instruction}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={handleInstructionInput}
+          onKeyDown={handleKeyDown}
+        ></div>
+        {showAutoCompleteInstruction && (
+          <AutoCompleteCustomPrompt
+            keywords={KEYWORDS}
+            inputRef={promptRefs.instruction}
+            onInput={handleInstructionInput}
+            onKeyDown={handleKeyDown}
+          />
+        )}
+
         <div className={styles.promptTitle}>### Response :</div>
-
-        <textarea
+        <div
           className={styles.promptInput}
-          placeholder="Enter response..."
-          value={response}
-          onChange={e => setResponse(e.target.value)}
-        />
+          ref={promptRefs.response}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={handleResponseInput}
+          onKeyDown={handleKeyDown}
+        ></div>
+        {showAutoCompleteResponse && (
+          <AutoCompleteCustomPrompt
+            keywords={KEYWORDS}
+            inputRef={promptRefs.response}
+            onInput={handleResponseInput}
+            onKeyDown={handleKeyDown}
+          />
+        )}
       </div>
     );
   };
@@ -185,13 +346,23 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     return (
       <div className={styles.promptInputList}>
         <div className={styles.fixedPrompt}>{prefixGPT}</div>
-        <textarea
+        <div
           className={styles.promptInput}
-          placeholder="Enter Prompt..."
-          value={gptPrompt}
-          onChange={e => setGptPrompt(e.target.value)}
-        />
+          ref={promptRefs.gpt}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={handleGptPromptInput}
+          onKeyDown={handleKeyDown}
+        ></div>
         <div className={styles.fixedPrompt}> {suffixGPT}</div>
+        {showAutoCompleteGpt && (
+          <AutoCompleteCustomPrompt
+            keywords={KEYWORDS}
+            inputRef={promptRefs.main}
+            onInput={handleGptPromptInput}
+            onKeyDown={handleKeyDown}
+          />
+        )}
       </div>
     );
   };
