@@ -14,7 +14,7 @@ import {CharacterInfo, LanguageType} from '@/redux-store/slices/ContentInfo';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import DrawerPostCountry from '../common/DrawerPostCountry';
 import CharacterCreateVoiceSetting from './CharacterCreateVoiceSetting';
-import OperatorInviteDrawer from './OperatorInviteDrawer';
+import OperatorInviteDrawer from '../common/DrawerOperatorInvite';
 import DrawerTagSelect from '../common/DrawerTagSelect';
 import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 
@@ -370,7 +370,6 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           operatorList={operatorProfileIdList}
           onUpdateOperatorList={onOperatorProfileIdListChange}
           setInviteSearchValue={setInviteSearchValue}
-          renderOperatorList={renderOperatorList}
         />
       </>
     );
