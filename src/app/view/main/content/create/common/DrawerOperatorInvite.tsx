@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import styles from './OperatorInviteDrawer.module.css';
+import styles from './DrawerOperatorInvite.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {LineArrowDown} from '@ui/Icons';
+import {LineArrowDown, LineCheck} from '@ui/Icons';
 import {
   InviteProfileReq,
   OperatorAuthorityType,
@@ -14,6 +14,7 @@ import {
   sendSearchProfileReq,
 } from '@/app/NetWork/ProfileNetwork';
 import {getCurrentLanguage} from '@/utils/UrlMove';
+import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 
 interface Props {
   isOpen: boolean;
@@ -22,11 +23,6 @@ interface Props {
   setInviteSearchValue: (value: string) => void;
   operatorList: ProfileSimpleInfo[];
   onUpdateOperatorList: (updatedList: ProfileSimpleInfo[]) => void;
-  renderOperatorList: (
-    list: ProfileSimpleInfo[],
-    canEdit: boolean,
-    onUpdateRole: (id: number, role: OperatorAuthorityType) => void,
-  ) => React.ReactNode;
 }
 
 const OperatorInviteDrawer: React.FC<Props> = ({
@@ -36,15 +32,24 @@ const OperatorInviteDrawer: React.FC<Props> = ({
   setInviteSearchValue,
   operatorList,
   onUpdateOperatorList,
-  renderOperatorList,
 }) => {
-  const [selectedAuthType, setSelectedAuthType] = useState<OperatorAuthorityType>(0);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedSearchAuthType, setSelectedSearchAuthType] = useState<OperatorAuthorityType>(0);
+  const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
 
   const [searchedList, setSearchedList] = useState<ProfileInfo[]>([]);
   const [searchListOpen, setSearchListOpen] = useState<boolean>(false);
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
   const [searchSelected, setSearchSelected] = useState<boolean>(false);
+  const [selectedItemAuthTypes, setSelectedItemAuthTypes] = useState<{[key: number]: OperatorAuthorityType}>({});
+  const [itemDropdownOpenStates, setItemDropdownOpenStates] = useState<{[key: number]: boolean}>({});
+
+  const getOperatorAuthorityLabel = (value: number): string => {
+    return (
+      Object.keys(OperatorAuthorityType).find(
+        key => OperatorAuthorityType[key as keyof typeof OperatorAuthorityType] === value,
+      ) || 'Unknown'
+    );
+  };
 
   useEffect(() => {
     if (searchTimeout) {
@@ -99,7 +104,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     const payload: InviteProfileReq = {
       languageType: getCurrentLanguage(),
       search: inviteSearchValue,
-      operatorAuthorityType: selectedAuthType,
+      operatorAuthorityType: selectedSearchAuthType,
     };
 
     try {
@@ -108,7 +113,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
       if (response && response.data) {
         const newProfile: ProfileSimpleInfo = {
           ...response.data.inviteProfileInfo,
-          operatorAuthorityType: selectedAuthType,
+          operatorAuthorityType: selectedSearchAuthType,
         };
 
         const updatedList = [...operatorList, newProfile];
@@ -125,11 +130,122 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     }
   };
 
-  const handleAuthTypeChange = (id: number, newAuthType: OperatorAuthorityType) => {
+  const handleSearchAuthTypeChange = (id: number, newAuthType: OperatorAuthorityType) => {
     const updatedList = operatorList.map(operator =>
       operator.profileId === id ? {...operator, operatorAuthorityType: newAuthType} : operator,
     );
     onUpdateOperatorList(updatedList);
+  };
+
+  const toggleDropdown = (index: number) => {
+    setItemDropdownOpenStates(prev => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+
+  const handleItemAuthTypeChange = (
+    profileId: number,
+    index: number,
+    authType: string,
+    onUpdateAuthType?: (id: number, authType: OperatorAuthorityType) => void,
+  ) => {
+    const newAuthType = OperatorAuthorityType[authType as keyof typeof OperatorAuthorityType];
+    setSelectedItemAuthTypes(prev => ({
+      ...prev,
+      [profileId]: newAuthType,
+    }));
+    setItemDropdownOpenStates(prev => ({
+      ...prev,
+      [index]: false,
+    }));
+
+    if (onUpdateAuthType) {
+      onUpdateAuthType(profileId, newAuthType);
+    }
+  };
+
+  const renderOperatorList = (
+    list: ProfileSimpleInfo[],
+    canEdit: boolean,
+    onUpdateRole?: (id: number, role: OperatorAuthorityType) => void,
+  ) => {
+    return (
+      <ul className={styles.operatorList}>
+        {list.map((operator, index) => renderOperatorItem(operator, index, canEdit, onUpdateRole))}
+      </ul>
+    );
+  };
+
+  const renderOperatorItem = (
+    operator: ProfileSimpleInfo,
+    index: number,
+    canEdit: boolean,
+    onUpdateRole?: (id: number, role: OperatorAuthorityType) => void,
+  ) => {
+    return (
+      <div key={operator.profileId} className={styles.operatorItem}>
+        <div className={styles.operatorProfile}>
+          <img className={styles.operatorProfileImage} src={operator.iconImageUrl} />
+        </div>
+        <div className={styles.operatorProfileTextArea}>
+          <div className={styles.operatorProfileText}>{operator.name}</div>
+          {canEdit ? (
+            renderOperatorDropDown(
+              itemDropdownOpenStates[index] || false,
+              authType => handleItemAuthTypeChange(operator.profileId, index, authType, onUpdateRole),
+              selectedItemAuthTypes[index] || operator.operatorAuthorityType,
+              () => toggleDropdown(index),
+              true,
+            )
+          ) : (
+            <div className={styles.operatorProfileState}>
+              {getOperatorAuthorityLabel(operator.operatorAuthorityType)}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderOperatorDropDown = (
+    isOpen: boolean,
+    onClickAction: (authType: string) => void,
+    selectedAuthType: OperatorAuthorityType,
+    toggleDropdown: () => void,
+    isItem?: boolean,
+  ) => {
+    return (
+      <div className={styles.dropdownContainer}>
+        <button className={styles.dropdownButton} onClick={toggleDropdown}>
+          {OperatorAuthorityType[selectedAuthType]}
+          <img
+            className={styles.dropdownIcon}
+            src={LineArrowDown.src}
+            style={isOpen ? {transform: 'rotate(180deg)'} : {}}
+          />
+        </button>
+        {isOpen && (
+          <ul className={`${styles.authDropdown} ${isItem ? styles.itemDropDown : ''}`}>
+            {Object.keys(OperatorAuthorityType)
+              .filter(key => isNaN(Number(key)))
+              .map((authType, index) => (
+                <li key={index} className={styles.authDropdownItem} onClick={() => onClickAction(authType)}>
+                  {authType}
+                  <img
+                    className={`${styles.checkIcon} ${
+                      selectedAuthType === OperatorAuthorityType[authType as keyof typeof OperatorAuthorityType]
+                        ? styles.selectedIcon
+                        : ''
+                    }`}
+                    src={LineCheck.src}
+                  />
+                </li>
+              ))}
+          </ul>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -156,52 +272,31 @@ const OperatorInviteDrawer: React.FC<Props> = ({
               <div className={styles.searchResultContainer}>
                 <ul className={styles.searchResultList}>
                   {searchedList?.map(profile => (
-                    <li key={profile.id} className={styles.searchResultItem}>
+                    <li
+                      key={profile.id}
+                      className={styles.searchResultItem}
+                      onClick={() => {
+                        setInviteSearchValue(profile.name);
+                        setSearchListOpen(false);
+                        setSearchSelected(true);
+                      }}
+                    >
                       <img className={styles.profileImage} src={profile.iconImageUrl || '/default-profile.png'} />
                       <div className={styles.profileName}>{profile.name}</div>
-                      <button
-                        className={styles.inviteButton}
-                        onClick={() => {
-                          setInviteSearchValue(profile.name);
-                          setSearchListOpen(false);
-                          setSearchSelected(true);
-                        }}
-                      >
-                        Select
-                      </button>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
-            <div className={styles.dropdownContainer}>
-              <button className={styles.dropdownButton} onClick={() => setDropdownOpen(!dropdownOpen)}>
-                {OperatorAuthorityType[selectedAuthType]}
-                <img
-                  className={styles.dropdownIcon}
-                  src={LineArrowDown.src}
-                  style={dropdownOpen ? {transform: 'rotate(180deg)'} : {}}
-                />
-              </button>
-              {dropdownOpen && (
-                <ul className={styles.authDropdown}>
-                  {Object.keys(OperatorAuthorityType)
-                    .filter(key => isNaN(Number(key)))
-                    .map((authType, index) => (
-                      <li
-                        key={index}
-                        className={styles.authDropdownItem}
-                        onClick={() => {
-                          setSelectedAuthType(OperatorAuthorityType[authType as keyof typeof OperatorAuthorityType]);
-                          setDropdownOpen(false);
-                        }}
-                      >
-                        {authType}
-                      </li>
-                    ))}
-                </ul>
-              )}
-            </div>
+            {renderOperatorDropDown(
+              searchDropdownOpen,
+              authType => {
+                setSelectedSearchAuthType(OperatorAuthorityType[authType as keyof typeof OperatorAuthorityType]);
+                setSearchDropdownOpen(false);
+              },
+              selectedSearchAuthType,
+              () => setSearchDropdownOpen(!searchDropdownOpen),
+            )}
           </div>
           <CustomButton
             size="Medium"
@@ -213,7 +308,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
             Invite
           </CustomButton>
         </div>
-        {renderOperatorList(operatorList, true, handleAuthTypeChange)}
+        {renderOperatorList(operatorList, true, handleSearchAuthTypeChange)}
         <div className={styles.inviteLinkArea}>
           <h2 className={styles.title2}>Invitation link</h2>
           <div className={styles.inviteLinkInputArea}>
