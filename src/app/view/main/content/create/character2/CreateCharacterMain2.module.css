@@ -124,6 +124,7 @@
   
 .uploadButton
 {
+    width: 100%;
     display: flex;
     padding: var(--Gap-and-Padding-Positive-GapPadding-16, 16px) var(--Gap-and-Padding-Positive-GapPadding-24, 24px) var(--Gap-and-Padding-Positive-GapPadding-16, 16px) var(--Gap-and-Padding-Positive-GapPadding-20, 20px);
     align-items: center;
@@ -208,3 +209,98 @@
 }
 
 
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+  
+.modalContainer {
+    display: flex;
+    width: 320px;
+    max-height: var(--sds-size-icon-small);
+    padding: 32px;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+
+    
+    background-color: white; 
+    border-radius: 24px;
+    
+    z-index: 1001;
+}
+  
+.imageUploadTitleArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    gap: 18px;
+    align-self: stretch; 
+}
+
+.imageUploadTitle
+{
+    justify-self: center;
+    color: var(--Black, #000);
+    text-align: center;    
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 120%; /* 25.2px */
+    letter-spacing: -0.42px;
+}
+
+.imageUploadDesc
+{
+    justify-self: center;
+    color: var(--Neutral-600, #80868B);
+    text-align: center;
+    font-size: var(--sds-typography-body-size-small);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%; /* 19.6px */
+}
+
+.uploadImageTypeArea
+{
+    width: 100%;
+    height: calc(100% - 58px);
+    margin: 0;
+    margin-bottom: 20px;
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.uploadImageTypeArea::-webkit-scrollbar {
+    display: none;  
+}
+  
+.uploadImageTypeArea {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+}
+
+
+.uploadModalButtonGroup
+{
+    display: flex;
+    width: 100%; 
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;  
+}
+
+.uploadModalButton
+{
+    width: 100%;
+}
