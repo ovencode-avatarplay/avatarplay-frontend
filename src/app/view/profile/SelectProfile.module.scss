@@ -149,6 +149,14 @@
           }
 
           .nameWrap {
+            .top {
+              display: flex;
+              align-items: center;
+              gap: 5px;
+
+
+            }
+
             .grade {
               border-radius: 4px;
               border: 1px solid var(--Primary-1, #FD55D3);
@@ -165,7 +173,33 @@
               letter-spacing: -0.2px;
             }
 
+            .type {
+              color: var(--Neutral-800, #2C3131);
+              font-family: Lato;
+              font-size: 10px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: normal;
+              letter-spacing: -0.2px;
+
+              &.pd {
+                padding: 1px 6px 2px 6px;
+                border-radius: 4px;
+                background: var(--Neutral-800, #2C3131);
+
+                color: var(--White, #FFF);
+                font-family: Lato;
+                font-size: 10px;
+                font-style: normal;
+                font-weight: 700;
+                line-height: normal;
+                letter-spacing: -0.2px;
+              }
+            }
+
+
             .name {
+              margin-top: 2px;
               color: var(--Black, #000);
               font-family: Lato;
               font-size: 15px;

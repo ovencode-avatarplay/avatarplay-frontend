@@ -1,4 +1,10 @@
-import {getProfileList, OperatorAuthorityType, ProfileSimpleInfo, selectProfile} from '@/app/NetWork/ProfileNetwork';
+import {
+  getProfileList,
+  OperatorAuthorityType,
+  ProfileSimpleInfo,
+  ProfileType,
+  selectProfile,
+} from '@/app/NetWork/ProfileNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {Drawer} from '@mui/material';
 import {useRouter} from 'next/navigation';
@@ -86,6 +92,9 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
         <ul className={styles.profileList}>
           {data.profileList?.map((profile, index) => {
             const isSelected = profile.profileId == dataProfile.currentProfile?.profileId;
+            const isPD = [ProfileType.PD, ProfileType.User].includes(profile.profileType);
+            const isCharacter = [ProfileType.Character].includes(profile.profileType);
+            const isChannel = [ProfileType.Channel].includes(profile.profileType);
             return (
               <li
                 className={styles.item}
@@ -105,7 +114,17 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                 <div className={styles.left}>
                   <img className={styles.imgProfile} src={profile.iconImageUrl} alt="" />
                   <div className={styles.nameWrap}>
-                    <span className={styles.grade}>Original</span>
+                    {isCharacter && (
+                      <div className={styles.top}>
+                        <span className={styles.grade}>Original</span>
+                        <div className={styles.type}>Character</div>
+                      </div>
+                    )}
+                    {isPD && (
+                      <div className={styles.top}>
+                        <div className={cx(styles.type, styles.pd)}>My</div>
+                      </div>
+                    )}
                     <div className={styles.name}>{profile.name}</div>
                   </div>
                 </div>
