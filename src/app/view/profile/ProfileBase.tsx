@@ -66,6 +66,7 @@ import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterInfo} from '@/
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
 import {CharacterProfileDetailComponent} from '@/app/[lang]/(pages)/profile/detail/[[...id]]/page';
 import {getBackUrl} from '@/app/layout';
+import {useInView} from 'react-intersection-observer';
 
 enum eTabPDType {
   Feed,
@@ -163,12 +164,26 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     isShareOpened: false,
     isSettingOpen: false,
   });
-
+  const {ref: observerRef, inView} = useInView();
   const dispatch = useDispatch();
 
   const isMine = data.profileInfo?.isMyProfile || false;
   const profileType = Number(data.profileInfo?.profileInfo?.type);
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
+
+  useEffect(() => {
+    if (!inView) return;
+
+    const isEmpty = getIsEmptyTab();
+    if (isEmpty) return;
+
+    refreshTab();
+  }, [inView]);
+  const refreshTab = async () => {
+    await refreshProfileTab(profileId, data.indexTab);
+    // await refreshProfileTab(profileId, data.indexTab);
+    setData({...data});
+  };
 
   useEffect(() => {
     if (!isPath) {
@@ -208,6 +223,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     tabIndex: number,
     indexSort: ExploreSortType,
     indexFilterMedia: FeedMediaType,
+    offset: number,
   ) => Promise<any>) => {
     if (typeProfile === ProfileType.User || typeProfile === ProfileType.PD) {
       return getProfilePdTabInfo;
@@ -222,6 +238,33 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         return null;
       };
     }
+  };
+  const getTabContentCount = (indexTab: number) => {
+    let count = 0;
+    if (isPD) {
+      if (indexTab == eTabPDType.Feed) {
+        count = data.profileTabInfo[indexTab]?.feedInfoList?.length;
+      } else if (indexTab == eTabPDType.Character) {
+        count = data.profileTabInfo[indexTab]?.characterInfoList?.length;
+      } else if (indexTab == eTabPDType.Channel) {
+        count = data.profileTabInfo[indexTab]?.channelInfoList?.length;
+      } else if (indexTab == eTabPDType.Shared) {
+        count = 0;
+      } else {
+        count = 0;
+      }
+    } else if (isCharacter) {
+      if (indexTab == eTabCharacterType.Feed) {
+        count = data.profileTabInfo[indexTab]?.feedInfoList?.length;
+      } else if (indexTab == eTabCharacterType.Contents) {
+        count = data.profileTabInfo[indexTab]?.contentsInfoList?.length;
+      } else if (indexTab == eTabCharacterType.Story) {
+        count = data.profileTabInfo[indexTab]?.storyInfoList?.length;
+      } else count = 0;
+    } else {
+      count = 0;
+    }
+    return count;
   };
 
   const refreshProfileTab = async (profileId: number, indexTab: number) => {
@@ -247,15 +290,50 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           indexTab,
           data.indexSort,
           data.indexFilterCharacter,
+          getTabContentCount(indexTab),
         );
       } else {
-        resProfileTabInfo = await getTabInfo(profileType)(profileId, indexTab, data.indexSort, data.indexFilterMedia);
+        resProfileTabInfo = await getTabInfo(profileType)(
+          profileId,
+          indexTab,
+          data.indexSort,
+          data.indexFilterMedia,
+          getTabContentCount(indexTab),
+        );
       }
     }
     if (!resProfileTabInfo) return;
 
-    data.profileTabInfo[indexTab] = resProfileTabInfo;
+    // data.profileTabInfo[indexTab] = resProfileTabInfo;
+    addTabContent(indexTab, resProfileTabInfo);
     setData({...data});
+  };
+
+  const addTabContent = (
+    indexTab: number,
+    resProfileTabInfo: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes,
+  ) => {
+    const {feedInfoList, characterInfoList, channelInfoList, contentsInfoList, storyInfoList} = resProfileTabInfo;
+
+    if (!data.profileTabInfo[indexTab]) {
+      data.profileTabInfo[indexTab] = resProfileTabInfo;
+      return;
+    }
+    if (!!feedInfoList) {
+      data.profileTabInfo[indexTab]?.feedInfoList.push(...feedInfoList);
+    }
+    if (!!characterInfoList) {
+      data.profileTabInfo[indexTab]?.characterInfoList.push(...characterInfoList);
+    }
+    if (!!channelInfoList) {
+      data.profileTabInfo[indexTab]?.channelInfoList.push(...channelInfoList);
+    }
+    if (!!contentsInfoList) {
+      data.profileTabInfo[indexTab].contentsInfoList.push(...contentsInfoList);
+    }
+    if (!!storyInfoList) {
+      data.profileTabInfo[indexTab].storyInfoList.push(...storyInfoList);
+    }
   };
 
   const refreshProfileInfo = async (profileId: number) => {
@@ -658,6 +736,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                   </Link>
                 );
               })}
+              <div ref={observerRef}></div>
             </ul>
           </>
         );
@@ -987,7 +1066,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                 }}
               >
                 {tabContentList?.map((tab, index) => {
-                  console.log('tab : ', tab);
                   return (
                     <div
                       key={tab.type}
