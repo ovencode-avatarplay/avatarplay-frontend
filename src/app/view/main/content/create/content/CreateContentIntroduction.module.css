@@ -1,3 +1,12 @@
+.parent
+{
+    display: flex;
+    flex-direction: column;
+    height: 100dvh; 
+    width: 100%;
+    overflow: hidden;
+}
+
 .container {
     display: flex;
     flex-direction: column;

@@ -30,6 +30,42 @@ export const mockContentInfo: ContentInfo[] = [
     views: 5900,
     comments: 230,
   },
+  {
+    imageUrl: 'https://example.com/webtoon3.jpg',
+    title: '그림자 속 그녀',
+    description: '그림자 속에서 살아가는 그녀의 비밀...',
+    genre: 'Thriller / Mystery',
+    status: 'Saving',
+    views: 5900,
+    comments: 230,
+  },
+  {
+    imageUrl: 'https://example.com/webtoon3.jpg',
+    title: '그림자 속 그녀',
+    description: '그림자 속에서 살아가는 그녀의 비밀...',
+    genre: 'Thriller / Mystery',
+    status: 'Saving',
+    views: 5900,
+    comments: 230,
+  },
+  {
+    imageUrl: 'https://example.com/webtoon3.jpg',
+    title: '그림자 속 그녀',
+    description: '그림자 속에서 살아가는 그녀의 비밀...',
+    genre: 'Thriller / Mystery',
+    status: 'Saving',
+    views: 5900,
+    comments: 230,
+  },
+  {
+    imageUrl: 'https://example.com/webtoon3.jpg',
+    title: '그림자 속 그녀',
+    description: '그림자 속에서 살아가는 그녀의 비밀...',
+    genre: 'Thriller / Mystery',
+    status: 'Saving',
+    views: 5900,
+    comments: 230,
+  },
 ];
 
 export interface ContentInfo {
