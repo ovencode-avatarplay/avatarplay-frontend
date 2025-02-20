@@ -270,7 +270,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
       if (response.data) {
         console.log('Character created successfully:', response.data);
 
-        pushLocalizedRoute('/studio/character', router);
+        pushLocalizedRoute('/studio/character', router, false, true);
       } else {
         throw new Error('Character creation failed.');
       }
