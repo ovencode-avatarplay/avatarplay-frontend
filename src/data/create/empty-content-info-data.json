@@ -40,7 +40,7 @@
                 "conversationTemplateList": [],
 
                 "visibilityType": 0,
-                "lLMModel" : 0,
+                "llmModel" : 0,
                 "tag": "",
                 "positionCountryList": [],
                 "characterIP": 0,

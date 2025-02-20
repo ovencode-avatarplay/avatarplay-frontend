@@ -100,7 +100,7 @@ export interface CharacterInfo {
   mediaTemplateList: CharacterMediaInfo[];
   conversationTemplateList: ConversationInfo[];
   visibilityType: VisibilityType;
-  lLMModel: LLMModel;
+  llmModel: LLMModel;
   tag: string;
   positionCountryList: LanguageType[];
   characterIP: CharacterIP;

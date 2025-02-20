@@ -166,6 +166,15 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   };
 
   useEffect(() => {
+    if (tag) {
+      const parsedTags = tag.split(', ').map(tag => tag.trim());
+      setSelectedTags(parsedTags);
+    } else {
+      setSelectedTags([]);
+    }
+  }, []);
+
+  useEffect(() => {
     onTagChange(selectedTags.join(', '));
     console.log(selectedTags.join(', '));
   }, [selectedTags, onTagChange]);

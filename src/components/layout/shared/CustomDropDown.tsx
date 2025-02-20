@@ -42,10 +42,13 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({
   };
 
   useEffect(() => {
-    if (initialValue !== undefined) {
-      setSelectedItem(initialValue);
+    if (initialValue !== undefined && items.length > 0) {
+      const foundItem = items.find(item => item.value === initialValue);
+      if (foundItem) {
+        setSelectedItem(initialValue);
+      }
     }
-  }, [initialValue]);
+  }, [initialValue, items]);
 
   const renderItem = (item: any, index: number) => {
     const isSelected = selectedItem === item.value;

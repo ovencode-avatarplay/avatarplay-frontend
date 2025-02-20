@@ -1,8 +1,7 @@
 import CustomButton from '@/components/layout/shared/CustomButton';
 import styles from './CharacterCreateConversation.module.css';
 import {LinePlus} from '@ui/Icons';
-import ConversationCard, {CardData, Bar} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
-import {useEffect, useState} from 'react';
+import ConversationCard, {CardData} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
 
 interface Props {
   cardList: CardData[];
@@ -28,18 +27,22 @@ const CharacterCreateConversation: React.FC<Props> = ({
 Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]`;
 
   const handleUpdateCard = (updatedCard: Partial<CardData>) => {
-    // if (!updatedCard.id) return;
+    if (!updatedCard.id) {
+      const foundCard = cardList.find(
+        card =>
+          updatedCard.userBars?.some(bar => bar.id.includes(card.id)) ||
+          updatedCard.charBars?.some(bar => bar.id.includes(card.id)),
+      );
 
-    let id: string;
-    if (updatedCard.id) {
-      id = updatedCard.id;
-    } else if (updatedCard.userBars && updatedCard.userBars.length > 0) {
-      id = updatedCard.userBars[0].id;
-    } else if (updatedCard.charBars && updatedCard.charBars.length > 0) {
-      id = updatedCard.charBars[0].id;
+      if (foundCard) {
+        updatedCard.id = foundCard.id;
+      } else {
+        console.error('No matching card found for update:', updatedCard);
+        return;
+      }
     }
 
-    setCardList(prevCards => prevCards.map(card => (id.includes(card.id) ? {...card, ...updatedCard} : card)));
+    setCardList(prevCards => prevCards.map(card => (card.id === updatedCard.id ? {...card, ...updatedCard} : card)));
   };
 
   return (
