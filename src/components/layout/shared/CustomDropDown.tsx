@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styles from './CustomDropDown.module.css'; // 드롭다운 스타일
 
 // 아이콘들
@@ -41,12 +41,23 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({
     setIsOpen(false);
   };
 
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
-    if (initialValue !== undefined && items.length > 0) {
-      const foundItem = items.find(item => item.value === initialValue);
-      if (foundItem) {
-        setSelectedItem(initialValue);
+    if (isFirstRender.current) {
+      if (initialValue !== undefined && items.length > 0) {
+        const foundItem = items.find(item => String(item.value) === String(initialValue));
+
+        if (foundItem) {
+          handleItemClick(foundItem.value);
+        } else {
+          console.warn(
+            `Initial value "${initialValue}" does not match any item in dropdown.
+            Ensure that initialValue and items[].value are of the same type.`,
+          );
+        }
       }
+      isFirstRender.current = false;
     }
   }, [initialValue, items]);
 
