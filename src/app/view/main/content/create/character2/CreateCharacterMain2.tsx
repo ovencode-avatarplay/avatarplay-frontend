@@ -95,7 +95,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   //#region Policy
 
   const [visibilityType, setvisibilityType] = useState<number>(character.visibilityType);
-  const [llmModel, setLlmModel] = useState<number>(character.lLMModel);
+  const [llmModel, setLlmModel] = useState<number>(character.llmModel);
   const [tag, setTag] = useState<string>(character.tag);
   const [positionCountryList, setPositionCountryList] = useState<number[]>(character.positionCountryList);
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
@@ -213,7 +213,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
             character: JSON.stringify(item.charBars),
           })),
           visibilityType: visibilityType,
-          lLMModel: llmModel,
+          llmModel: llmModel,
           tag: tag,
           positionCountryList: positionCountryList,
           characterIP: characterIP,
