@@ -11,7 +11,13 @@ import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {components, StylesConfig} from 'react-select';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {getProfileList, ProfileSimpleInfo, ProfileType, selectProfile} from '@/app/NetWork/ProfileNetwork';
+import {
+  getProfileList,
+  OperatorAuthorityType,
+  ProfileSimpleInfo,
+  ProfileType,
+  selectProfile,
+} from '@/app/NetWork/ProfileNetwork';
 import {updateProfile} from '@/redux-store/slices/Profile';
 import {usePathname, useRouter} from 'next/navigation';
 
@@ -32,17 +38,24 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
   };
   const [data, setData] = useState<{
     profileList: ProfileSimpleInfo[];
+    indexSharedTab: number;
   }>({
     profileList: [],
+    indexSharedTab: 0,
   });
 
   useEffect(() => {
     if (!open) return;
+
+    const isMyProfile = dataProfile.currentProfile?.operatorAuthorityType == OperatorAuthorityType.None;
+    data.indexSharedTab = Number(!isMyProfile);
+    console.log('isMyProfile : ', isMyProfile);
+    setData({...data});
     refreshProfileList();
   }, [open]);
 
   const refreshProfileList = async () => {
-    const profileList = await getProfileList();
+    const profileList = await getProfileList(data.indexSharedTab);
     if (!profileList) return;
 
     data.profileList = profileList;
@@ -128,9 +141,24 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         <div className={styles.drawerArea}>
           <div className={styles.drawerTitle}>Create</div>
           <div className={styles.buttonArea}>
-            <div className={styles.mySharedWrap}>
-              <div className={cx(styles.My, styles.active)}>My</div>
-              <div className={cx(styles.Shared)}>Shared</div>
+            <div
+              className={styles.mySharedWrap}
+              onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                const target = e.target as HTMLElement;
+                const indexTab = target.closest('[data-index]')?.getAttribute('data-index');
+                if (indexTab) {
+                  data.indexSharedTab = parseInt(indexTab);
+                  setData({...data});
+                  refreshProfileList();
+                }
+              }}
+            >
+              <div className={cx(styles.My, data.indexSharedTab == 0 && styles.active)} data-index={0}>
+                My
+              </div>
+              <div className={cx(styles.Shared, data.indexSharedTab == 1 && styles.active)} data-index={1}>
+                Shared
+              </div>
             </div>
             <div className={styles.selectBoxWrap}>
               <SelectBox

@@ -30,12 +30,18 @@ export enum ProfileType {
   Channel = 3,
 }
 
-export const getProfileList = async () => {
-  const data = {};
+export interface GetMyProfileListReq {
+  profileTabType: ProfileTabType;
+}
+
+export const getProfileList = async (profileTabType: ProfileTabType = ProfileTabType.My) => {
+  const data: GetMyProfileListReq = {
+    profileTabType,
+  };
   try {
     const resProfileList: AxiosResponse<ResponseAPI<GetProfileListRes>> = await api.post(
       `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getMyList`,
-      {},
+      data,
     );
     if (resProfileList.status != 200) return;
     return resProfileList.data?.data?.profileList;
@@ -167,6 +173,12 @@ export interface GetPdTabInfoeReq {
   languageType: string;
   profileId: number;
   tabType: PdProfileTabType;
+  page: PaginationRequest;
+}
+
+export interface PaginationRequest {
+  offset: number;
+  limit: number;
 }
 
 export enum PdProfileTabType {
@@ -208,6 +220,8 @@ export const getProfilePdTabInfo = async (
   tabType: PdProfileTabType,
   feedSortType: ExploreSortType = ExploreSortType.Newest,
   feedMediaType: FeedMediaType = FeedMediaType.Total,
+  offset: number = 0,
+  limit: number = 10,
 ) => {
   const data: GetPdTabInfoeReq = {
     feedSortType: feedSortType,
@@ -215,6 +229,10 @@ export const getProfilePdTabInfo = async (
     languageType: getCurrentLanguage(),
     profileId: profileId,
     tabType: tabType,
+    page: {
+      offset: offset,
+      limit: limit,
+    },
   };
   try {
     const resProfileSelect: AxiosResponse<ResponseAPI<GetPdTabInfoeRes>> = await api.post(
@@ -235,6 +253,7 @@ export interface GetCharacterTabInfoeReq {
   languageType: string;
   profileId: number;
   tabType: CharacterProfileTabType;
+  page: PaginationRequest;
 }
 
 export enum CharacterProfileTabType {
@@ -255,6 +274,8 @@ export const getProfileCharacterTabInfo = async (
   tabType: CharacterProfileTabType,
   feedSortType: ExploreSortType = ExploreSortType.Newest,
   feedMediaType: FeedMediaType = FeedMediaType.Total,
+  offset: number = 0,
+  limit: number = 10,
 ) => {
   const data: GetCharacterTabInfoeReq = {
     feedMediaType: feedMediaType,
@@ -262,6 +283,10 @@ export const getProfileCharacterTabInfo = async (
     languageType: getCurrentLanguage(),
     profileId: profileId,
     tabType: tabType,
+    page: {
+      offset: offset,
+      limit: limit,
+    },
   };
   try {
     const resProfileSelect: AxiosResponse<ResponseAPI<GetCharacterTabInfoeRes>> = await api.post(

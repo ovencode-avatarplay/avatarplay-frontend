@@ -13,6 +13,7 @@
   position: inherit;
   transform: inherit;
   left: 0;
+
 }
 
 .main.mainNoPath {
@@ -22,17 +23,44 @@
     position: relative !important;
     top: inherit !important;
   }
+
+
+}
+
+.buttonWrap {
+  margin: 8px 16px;
+  display: flex;
+  gap: 6px;
+
+  button {
+    cursor: pointer;
+    flex: 1;
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--Border-1, #EAECF0);
+
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    /* 142.857% */
+    letter-spacing: -0.4px;
+  }
 }
 
 .header {
   padding: 9px 6px 9px 16px;
   box-sizing: border-box;
-  position: fixed;
+  position: sticky;
   width: 100%;
   max-width: var(--full-width); //js 변경요소
   top: 0;
-  left: 50%;
-  transform: translateX(calc(-50%));
+  left: 0;
+  // left: 50%;
+  // transform: translateX(calc(-50%));
   background: white;
 
   display: flex;
@@ -53,7 +81,7 @@
       img {
         width: 100%;
         height: 100%;
-
+        filter: brightness(0) saturate(100%);
       }
     }
 
@@ -62,6 +90,30 @@
       display: flex;
       align-items: center;
       gap: 6px;
+
+      .left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+
+        .originalFan {
+          padding: 4px 6px 5px 6px;
+
+          color: var(--White, #FFF);
+          font-family: Lato;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: normal;
+          letter-spacing: -0.28px;
+
+
+          border-radius: 4px;
+          border: 1px solid var(--Primary-1, #FD55D3);
+          background: var(--Primary-1, #FD55D3);
+        }
+      }
 
       .profileName {
         overflow: hidden;
@@ -125,34 +177,13 @@
 }
 
 
+
 .main {
-  padding-top: 58px;
+  padding-top: 3px;
   padding-bottom: calc(48px + 25px);
   min-height: calc(100% - 58px);
 
-  .buttonWrap {
-    margin: 11px 16px;
-    display: flex;
-    gap: 6px;
 
-    button {
-      cursor: pointer;
-      flex: 1;
-      padding: 8px 20px;
-      border-radius: 8px;
-      border: 1px solid var(--Border-1, #EAECF0);
-
-      color: var(--Black, #000);
-      font-feature-settings: 'liga' off, 'clig' off;
-      font-family: Lato;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 600;
-      line-height: 20px;
-      /* 142.857% */
-      letter-spacing: -0.4px;
-    }
-  }
 
   .profileStatisticsWrap {
     margin: 3px 16px 0;
@@ -756,6 +787,38 @@
           }
         }
       }
+    }
+  }
+
+  .filter.character {
+    .left {
+      .textWrap {
+        margin-left: 5px;
+        padding: 9px 10px;
+        border-radius: 4px;
+        background: var(--Neutral-100, #F1F3F4);
+
+        .text {
+          color: var(--Neutral-400, #BDC1C6);
+          font-family: Lato;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 14px;
+          /* 100% */
+          letter-spacing: -0.28px;
+
+        }
+
+        &.active {
+          background: var(--Primary-1, #FD55D3);
+
+          .text {
+            color: var(--White, #FFF);
+          }
+        }
+      }
+
     }
   }
 
