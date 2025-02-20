@@ -236,7 +236,7 @@ export interface GalleryImageInfo {
 export interface CharacterMediaInfo {
   id: number;
   imageUrl: string;
-  description: string;
+  activationCondition: string;
   isProfileImage: boolean;
 }
 
