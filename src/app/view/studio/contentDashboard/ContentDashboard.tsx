@@ -8,7 +8,7 @@ import {
   setSelectedContentId,
   setSelectedEpisodeIdx,
   setSkipContentInit,
-  ContentInfo,
+  StoryInfo,
   setContentInfoToEmpty,
   setEditingContentInfo,
 } from '@/redux-store/slices/ContentInfo';
@@ -25,9 +25,9 @@ import styles from './ContentDashboard.module.css';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import {
   GetContentsByUserIdReq,
-  GetTotalContentByIdReq,
+  GetTotalStoryByIdReq,
   sendContentByIdGetTotal,
-  sendContentByUserIdGet,
+  sendStoryByUserIdGet,
   sendContentDelete,
 } from '@/app/NetWork/ContentNetwork';
 import {ContentDashboardItem, setContentDashboardList} from '@/redux-store/slices/MyContentDashboard';
@@ -44,7 +44,7 @@ const ContentDashboard: React.FC = () => {
 
   const [selectedFilter, setSelectedFilter] = useState('filter1');
 
-  const emptyContentInfo: ContentInfo = EmptyContentInfo.data.contentInfo as ContentInfo;
+  const emptyContentInfo: StoryInfo = EmptyContentInfo.data.storyInfo as StoryInfo;
 
   const [loading, setLoading] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
@@ -67,10 +67,10 @@ const ContentDashboard: React.FC = () => {
 
     try {
       const req: GetContentsByUserIdReq = {languageType: getCurrentLanguage()};
-      const response = await sendContentByUserIdGet(req);
+      const response = await sendStoryByUserIdGet(req);
 
       if (response?.data) {
-        const contentData: ContentDashboardItem[] = response.data.contentDashBoardList;
+        const contentData: ContentDashboardItem[] = response.data.storyDashBoardList;
         dispatch(setContentDashboardList(contentData));
       } else {
         throw new Error(`No contentInfo in response for ID: `);
@@ -147,11 +147,11 @@ const ContentDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetTotalContentByIdReq = {contentId: contentId, language: getCurrentLanguage()};
+      const req: GetTotalStoryByIdReq = {storyId: contentId, language: getCurrentLanguage()};
       const response = await sendContentByIdGetTotal(req);
 
       if (response?.data) {
-        const contentData: ContentInfo = response.data.contentInfo;
+        const contentData: StoryInfo = response.data.storyInfo;
 
         // Redux 상태 업데이트
         dispatch(setEditingContentInfo(contentData));
@@ -177,7 +177,7 @@ const ContentDashboard: React.FC = () => {
       if (selectedItemId) {
         try {
           // 콘텐츠 삭제 API 호출
-          const response = await sendContentDelete({contentId: selectedItemId});
+          const response = await sendContentDelete({storyId: selectedItemId});
 
           if (response.data) {
             // console.log('삭제된 콘텐츠 ID:', response.data.contentId);

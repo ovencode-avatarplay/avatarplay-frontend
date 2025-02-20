@@ -4,7 +4,7 @@ import {LLMSetupInfo, PublishInfo} from './ContentInfo';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import emptyContent from '@/data/create/empty-content-info-data.json';
 
-const initialState: PublishInfo = emptyContent.data.contentInfo.publishInfo;
+const initialState: PublishInfo = emptyContent.data.storyInfo.publishInfo;
 
 export const PublishInfoSlice = createSlice({
   name: 'PublishInfo',
@@ -13,8 +13,8 @@ export const PublishInfoSlice = createSlice({
     setPublishInfo: (state, action: PayloadAction<PublishInfo>) => {
       state.languageType = action.payload.languageType;
       state.thumbnail = action.payload.thumbnail;
-      state.contentName = action.payload.contentName;
-      state.contentDescription = action.payload.contentDescription;
+      state.storyName = action.payload.storyName;
+      state.storyDescription = action.payload.storyDescription;
       state.authorComment = action.payload.authorComment;
       state.selectTagList = action.payload.selectTagList;
       state.visibilityType = action.payload.visibilityType;
@@ -29,10 +29,10 @@ export const PublishInfoSlice = createSlice({
       state.thumbnail = action.payload;
     },
     setContentName: (state, action: PayloadAction<string>) => {
-      state.contentName = action.payload;
+      state.storyName = action.payload;
     },
     setContentDescription: (state, action: PayloadAction<string>) => {
-      state.contentDescription = action.payload;
+      state.storyDescription = action.payload;
     },
     setAuthorName: (state, action: PayloadAction<string>) => {
       state.authorName = action.payload;

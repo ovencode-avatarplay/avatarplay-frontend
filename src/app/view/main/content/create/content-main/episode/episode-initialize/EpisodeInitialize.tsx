@@ -81,7 +81,7 @@ const EpisodeInitialize: React.FC<Props> = ({
   const [isEpisodeNameOn, setIsEpisodeNameOn] = useState<boolean>(false);
 
   // 에피소드 생성시 가져올 빈 데이터
-  let emptyEpisodeInfo = emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0];
+  let emptyEpisodeInfo = emptyContent.data.storyInfo.chapterInfoList[0].episodeInfoList[0];
   // 편집시 가져올데이터
   const selectedChapterIdx = useSelector((state: RootState) => state.content.selectedChapterIdx);
   const selectedEpisodeIdx = useSelector((state: RootState) => state.content.selectedEpisodeIdx);

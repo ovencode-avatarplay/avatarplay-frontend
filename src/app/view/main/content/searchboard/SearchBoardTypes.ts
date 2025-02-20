@@ -1,9 +1,9 @@
 export interface ExploreCardProps {
   exploreItemType: number;
   updateExplorState: number;
-  contentId: number;
-  contentRank?: number;
-  contentName: string;
+  storyId: number;
+  storyRank?: number;
+  storyName: string;
   chatCount: number;
   episodeCount: number;
   followerCount: number;

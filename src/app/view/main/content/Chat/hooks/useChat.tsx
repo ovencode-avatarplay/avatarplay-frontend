@@ -63,7 +63,7 @@ const useChat = () => {
   // console.log('getWebBrowserUrl', key);
 
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
-  const contentId = useSelector((state: RootState) => state.chatting.contentId);
+  const contentId = useSelector((state: RootState) => state.chatting.storyId);
   const shortsId = useSelector((state: RootState) => state.chatting.contentUrl);
   const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
   //const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태 (렌더링과 관계 없을때 사용가능한 useState 형태)
@@ -156,9 +156,9 @@ const useChat = () => {
     console.log(`Navigating to episode ID: ${episodeId}`);
 
     const chattingState: ChattingState = {
-      contentName: `content episode${episodeId}`,
+      storyName: `content episode${episodeId}`,
       episodeName: `episode${episodeId}`,
-      contentId: Number(contentId),
+      storyId: Number(contentId),
       episodeId: Number(episodeId),
       contentUrl: shortsId,
     };

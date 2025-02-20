@@ -16,12 +16,7 @@ import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
 import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
 
 // Network
-import {
-  GetContentByIdReq,
-  GetContentByIdRes,
-  sendContentByIdGet,
-  recommendContentInfo,
-} from '@/app/NetWork/ContentNetwork';
+import {GetStoryByIdReq, GetStoryByIdRes, sendStoryByIdGet, recommendStoryInfo} from '@/app/NetWork/ContentNetwork';
 
 // Css
 import styles from './DrawerCharacterDesc.module.scss';
@@ -83,7 +78,7 @@ const DrawerCharacterDesc = () => {
   const [tagList, setTaglist] = useState<string[]>(['tag1', 'tag2']);
   const [selectTagList, setSelectTaglist] = useState<string[]>(['tag1', 'tag2']);
   const [authorComment, setAuthorComment] = useState('authorComment');
-  const [recommendContentList, setRecommendContentList] = useState<recommendContentInfo[]>([]);
+  const [recommendContentList, setRecommendContentList] = useState<recommendStoryInfo[]>([]);
 
   const [chapters, setChapters] = useState<{id: number; name: string}[]>([]);
   const [episodes, setEpisodes] = useState<{id: number; name: string}[]>([]);
@@ -115,9 +110,9 @@ const DrawerCharacterDesc = () => {
   console.log('contentWholeDesc : ', contentWholeDesc);
   useEffect(() => {
     const chattingState: ChattingState = {
-      contentName: currentChattingState.contentName || '',
+      storyName: currentChattingState.storyName || '',
       episodeName: currentChattingState.episodeName || '',
-      contentId: Number(characterId),
+      storyId: Number(characterId),
       episodeId: Number(episodeId),
       contentUrl: contentUrl,
     };

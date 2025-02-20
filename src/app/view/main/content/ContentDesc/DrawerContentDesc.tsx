@@ -16,12 +16,7 @@ import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
 import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
 
 // Network
-import {
-  GetContentByIdReq,
-  GetContentByIdRes,
-  sendContentByIdGet,
-  recommendContentInfo,
-} from '@/app/NetWork/ContentNetwork';
+import {GetStoryByIdReq, GetStoryByIdRes, sendStoryByIdGet, recommendStoryInfo} from '@/app/NetWork/ContentNetwork';
 
 // Css
 import styles from './DrawerContentDesc.module.css';
@@ -49,7 +44,7 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 
 const DrawerContentDesc = () => {
   const dispatch = useDispatch();
-  const {open, contentId, episodeId: episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
+  const {open, contentId, episodeId} = useSelector((state: RootState) => state.drawerContentDesc);
 
   const [loading, setLoading] = useState(false);
 
@@ -59,7 +54,7 @@ const DrawerContentDesc = () => {
   const [selectedEpisodeIdx, setSelectedEpisodeIdx] = useState<number>(-1);
   const userId = useSelector((state: RootState) => state.user.userId);
 
-  const [contentWholeDesc, setContentWholeDesc] = useState<GetContentByIdRes>(); // 컨텐츠 설명 전체
+  const [contentWholeDesc, setContentWholeDesc] = useState<GetStoryByIdRes>(); // 컨텐츠 설명 전체
 
   // Content, Chapter, Episode 혼동 때문에 Name, Thumbnail은 접두사
   const [contentName, setContentName] = useState('contentName');
@@ -76,7 +71,7 @@ const DrawerContentDesc = () => {
   const [tagList, setTaglist] = useState<string[]>(['tag1', 'tag2']);
   const [selectTagList, setSelectTaglist] = useState<string[]>(['tag1', 'tag2']);
   const [authorComment, setAuthorComment] = useState('authorComment');
-  const [recommendContentList, setRecommendContentList] = useState<recommendContentInfo[]>([]);
+  const [recommendContentList, setRecommendContentList] = useState<recommendStoryInfo[]>([]);
 
   const [chapters, setChapters] = useState<{id: number; name: string}[]>([]);
   const [episodes, setEpisodes] = useState<{id: number; name: string}[]>([]);
@@ -107,9 +102,9 @@ const DrawerContentDesc = () => {
 
   useEffect(() => {
     const chattingState: ChattingState = {
-      contentName: currentChattingState.contentName || '',
+      storyName: currentChattingState.storyName || '',
       episodeName: currentChattingState.episodeName || '',
-      contentId: Number(contentId),
+      storyId: Number(contentId),
       episodeId: Number(episodeId),
       contentUrl: contentUrl,
     };
@@ -120,9 +115,9 @@ const DrawerContentDesc = () => {
 
   useEffect(() => {
     if (contentWholeDesc) {
-      setContentName(contentWholeDesc.publishInfo.contentName);
+      setContentName(contentWholeDesc.publishInfo.storyName);
       setContentThumbnail(contentWholeDesc.publishInfo.thumbnail);
-      setContentDescription(contentWholeDesc.publishInfo.contentDescription);
+      setContentDescription(contentWholeDesc.publishInfo.storyDescription);
       setAuthorName(contentWholeDesc.publishInfo.authorName);
       setAuthorComment(contentWholeDesc.publishInfo.authorComment);
       setChatCount(contentWholeDesc.chatCount);
@@ -137,7 +132,7 @@ const DrawerContentDesc = () => {
         setChapters(chaptersData);
       }
       setSelectedChapterIdx(0);
-      setRecommendContentList(contentWholeDesc.recommandContentInfoList);
+      setRecommendContentList(contentWholeDesc.recommandStoryInfoList);
       setSelectedEpisodeIdx(0);
       setEpisodes(contentWholeDesc.chapterInfoList[0].episodeInfoList);
       dispatch(setDrawerEpisodeId(contentWholeDesc.chapterInfoList[0].episodeInfoList[0].id));
@@ -193,8 +188,8 @@ const DrawerContentDesc = () => {
     setLoading(true);
 
     try {
-      const req: GetContentByIdReq = {contentId: contentId, languageType: getCurrentLanguage()};
-      const response = await sendContentByIdGet(req);
+      const req: GetStoryByIdReq = {storyId: contentId, languageType: getCurrentLanguage()};
+      const response = await sendStoryByIdGet(req);
 
       if (response?.data) {
         setContentWholeDesc(response.data);

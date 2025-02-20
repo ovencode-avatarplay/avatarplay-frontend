@@ -38,7 +38,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
   const [isMobile, setIsMobile] = useState(false); // 모바일 여부 확인
   const [isAiModalOpen, setIsAiModalOpen] = useState(false); // AI 모달 상태 추가
   const [tempCharacterInfo, setTempCharacterInfo] = useState(
-    emptyContent.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo,
+    emptyContent.data.storyInfo.chapterInfoList[0].episodeInfoList[0].characterInfo,
   );
 
   const handleChange = (key: keyof typeof tempCharacterInfo, value: any) => {

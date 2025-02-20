@@ -2,8 +2,8 @@
 
 import {PublishInfo} from '@/redux-store/slices/ContentInfo';
 import api, {ResponseAPI} from './ApiInstance';
-import {ContentInfo} from '@/redux-store/slices/ContentInfo';
-import {ContentDashboardItem} from '@/redux-store/slices/MyContentDashboard';
+import {StoryInfo as StoryInfo} from '@/redux-store/slices/ContentInfo';
+import {ContentDashboardItem as StoryDashboardItem} from '@/redux-store/slices/MyContentDashboard';
 
 export interface ChapterInfoForContentGet {
   id: number;
@@ -19,19 +19,19 @@ export interface EpisodeInfoForContentGet {
   intimacyProgress: number;
 }
 
-// Save Content
-export interface SaveContentReq {
+// Save Story
+export interface SaveStoryReq {
   languageType: string;
-  contentInfo: ContentInfo;
+  storyInfo: StoryInfo;
 }
 
-export interface SaveContentRes {
-  contentId: number;
+export interface SaveStoryRes {
+  storyId: number;
 }
 
-export const sendContentSave = async (payload: SaveContentReq): Promise<ResponseAPI<SaveContentRes>> => {
+export const sendStorySave = async (payload: SaveStoryReq): Promise<ResponseAPI<SaveStoryRes>> => {
   try {
-    const response = await api.post<ResponseAPI<SaveContentRes>>('Content/save', payload);
+    const response = await api.post<ResponseAPI<SaveStoryRes>>('Story/save', payload);
 
     if (response.data.resultCode === 0) {
       return response.data;
@@ -53,36 +53,36 @@ export const sendContentSave = async (payload: SaveContentReq): Promise<Response
       throw new Error(`SaveContentRes Error: ${response.data.resultCode}`);
     }
   } catch (error: any) {
-    console.error('Error sending save content data:', error);
-    throw new Error('Failed to send save content data. Please try again.');
+    console.error('Error sending save Story data:', error);
+    throw new Error('Failed to send save Story data. Please try again.');
   }
 };
 
-// Get Content
+// Get Story
 
-// Get Content By ContnetId for ExploreItem
-export interface GetContentByIdReq {
-  contentId: number;
+// Get Story By ContnetId for ExploreItem
+export interface GetStoryByIdReq {
+  storyId: number;
   languageType: string;
 }
 
-export interface GetContentByIdRes {
+export interface GetStoryByIdRes {
   chatCount: number;
   chatUserCount: number;
   urlLinkKey: string;
   publishInfo: PublishInfo;
   chapterInfoList: ChapterInfoForContentGet[];
-  recommandContentInfoList: recommendContentInfo[];
+  recommandStoryInfoList: recommendStoryInfo[];
 }
 
-export interface recommendContentInfo {
-  contentId: number;
+export interface recommendStoryInfo {
+  storyId: number;
   imageUrl: string;
 }
 
-export const sendContentByIdGet = async (payload: GetContentByIdReq): Promise<ResponseAPI<GetContentByIdRes>> => {
+export const sendStoryByIdGet = async (payload: GetStoryByIdReq): Promise<ResponseAPI<GetStoryByIdRes>> => {
   try {
-    const response = await api.post<ResponseAPI<GetContentByIdRes>>('Content/get', payload);
+    const response = await api.post<ResponseAPI<GetStoryByIdRes>>('Story/get', payload);
 
     if (response.data.resultCode === 0) {
       return response.data;
@@ -98,26 +98,26 @@ export const sendContentByIdGet = async (payload: GetContentByIdReq): Promise<Re
       throw new Error(`GetContentByIdRes Error: ${response.data.resultCode}`);
     }
   } catch (error: any) {
-    console.error('Error sending get content data:', error);
-    throw new Error('Failed to send get content data. Please try again.');
+    console.error('Error sending get Story data:', error);
+    throw new Error('Failed to send get Story data. Please try again.');
   }
 };
 
-// Get TotalContent By ContentId
-export interface GetTotalContentByIdReq {
-  contentId: number;
+// Get TotalContent By StoryId
+export interface GetTotalStoryByIdReq {
+  storyId: number;
   language: string;
 }
 
-export interface GetTotalContentByIdRes {
-  contentInfo: ContentInfo;
+export interface GetTotalStoryByIdRes {
+  storyInfo: StoryInfo;
 }
 
 export const sendContentByIdGetTotal = async (
-  payload: GetTotalContentByIdReq,
-): Promise<ResponseAPI<GetTotalContentByIdRes>> => {
+  payload: GetTotalStoryByIdReq,
+): Promise<ResponseAPI<GetTotalStoryByIdRes>> => {
   try {
-    const response = await api.post<ResponseAPI<GetTotalContentByIdRes>>('Content/getTotal', payload);
+    const response = await api.post<ResponseAPI<GetTotalStoryByIdRes>>('Story/getTotal', payload);
 
     if (response.data.resultCode === 0) {
       return response.data;
@@ -133,25 +133,25 @@ export const sendContentByIdGetTotal = async (
       throw new Error(`GetTotalContentByIdRes Error: ${response.data.resultCode}`);
     }
   } catch (error: any) {
-    console.error('Error sending get total content data:', error);
-    throw new Error('Failed to send get total content data. Please try again.');
+    console.error('Error sending get total Story data:', error);
+    throw new Error('Failed to send get total Story data. Please try again.');
   }
 };
 
-// Get Contents By UserId
+// Get Storys By UserId
 export interface GetContentsByUserIdReq {
   languageType: string;
 }
 
 export interface GetContentsByUserIdRes<> {
-  contentDashBoardList: ContentDashboardItem[];
+  storyDashBoardList: StoryDashboardItem[];
 }
 
-export const sendContentByUserIdGet = async (
+export const sendStoryByUserIdGet = async (
   payload: GetContentsByUserIdReq,
 ): Promise<ResponseAPI<GetContentsByUserIdRes>> => {
   try {
-    const response = await api.post<ResponseAPI<GetContentsByUserIdRes>>('Content/dashboard', payload);
+    const response = await api.post<ResponseAPI<GetContentsByUserIdRes>>('Story/dashboard', payload);
 
     if (response.data.resultCode === 0) {
       // console.log('제출 결과 성공');
@@ -160,23 +160,23 @@ export const sendContentByUserIdGet = async (
       throw new Error(`GetContentByUserIdRes Error: ${response.data.resultCode}`);
     }
   } catch (error: any) {
-    console.error('Error sending get content data:', error);
-    throw new Error('Failed to send get content data. Please try again.');
+    console.error('Error sending get Story data:', error);
+    throw new Error('Failed to send get Story data. Please try again.');
   }
 };
 
-// Delete Content
+// Delete Story
 export interface DeleteContentReq {
-  contentId: number;
+  storyId: number;
 }
 
 export interface DeleteContentRes {
-  contentId: number;
+  storyId: number;
 }
 
 export const sendContentDelete = async (payload: DeleteContentReq): Promise<ResponseAPI<DeleteContentRes>> => {
   try {
-    const response = await api.post<ResponseAPI<DeleteContentRes>>('Content/delete', payload);
+    const response = await api.post<ResponseAPI<DeleteContentRes>>('Story/delete', payload);
 
     if (response.data.resultCode === 0) {
       return response.data;
@@ -195,8 +195,8 @@ export const sendContentDelete = async (payload: DeleteContentReq): Promise<Resp
       throw new Error(`DeleteContentRes Error: ${response.data.resultCode}`);
     }
   } catch (error: any) {
-    console.error('Error sending delete content data:', error);
-    throw new Error('Failed to send delete content data. Please try again.');
+    console.error('Error sending delete Story data:', error);
+    throw new Error('Failed to send delete Story data. Please try again.');
   }
 };
 
@@ -209,7 +209,7 @@ export interface GetTagListRes {
 
 export const sendGetTagList = async (payload: GetTagListReq): Promise<ResponseAPI<GetTagListRes>> => {
   try {
-    const response = await api.post<ResponseAPI<GetTagListRes>>('Content/getTagList', payload);
+    const response = await api.post<ResponseAPI<GetTagListRes>>('Story/getTagList', payload);
 
     if (response.data.resultCode === 0) {
       return response.data;
