@@ -14,6 +14,7 @@ const PageProfileUpdate = (props: Props) => {
     register,
     handleSubmit,
     watch,
+    unregister,
     formState: {errors, isSubmitted},
   } = useForm();
   const [data, setData] = useState({
@@ -23,6 +24,9 @@ const PageProfileUpdate = (props: Props) => {
         {isActive: true, value: 'Dating'},
         {isActive: false, value: 'Love'},
         {isActive: true, value: 'Man'},
+        {isActive: true, value: 'Friends'},
+        {isActive: true, value: 'Relationships'},
+        {isActive: true, value: 'Adults'},
       ],
       drawerTitle: 'Interests',
       drawerDescription: 'Please select your area of interests',
@@ -37,8 +41,8 @@ const PageProfileUpdate = (props: Props) => {
         {isActive: true, value: 'Create Music'},
         {isActive: true, value: 'Create Webtoon'},
       ],
-      drawerTitle: 'Interests',
-      drawerDescription: 'Please select your area of interests',
+      drawerTitle: 'Skills',
+      drawerDescription: 'Please add the skills you have',
     },
   });
 
@@ -102,13 +106,6 @@ const PageProfileUpdate = (props: Props) => {
               className={cx(styles.selectWrap, errors.interests && isSubmitted && styles.error)}
               onClick={() => {
                 data.dataInterests.isOpenTagsDrawer = true;
-                data.dataInterests.tagList = [
-                  {isActive: true, value: 'Dating'},
-                  {isActive: false, value: 'Love'},
-                  {isActive: true, value: 'Man'},
-                ];
-                data.dataInterests.drawerTitle = 'Interests';
-                data.dataInterests.drawerDescription = 'Please select your area of interests';
                 setData({...data});
               }}
             >
@@ -116,61 +113,68 @@ const PageProfileUpdate = (props: Props) => {
               <img src={'/ui/profile/update/icon_select.svg'} alt="" />
             </div>
             <div className={styles.tagWrap}>
-              <div className={styles.tag}>
-                <div className={styles.value}>
-                  <input value={'Dating'} type="hidden" {...register('interests.0', {required: true})} />
-                  Dating
-                </div>
-                <div className={styles.btnRemoveWrap}>
-                  <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
-                </div>
-              </div>
-              <div className={styles.tag}>
-                <div className={styles.value}>
-                  <input value={'Man'} type="hidden" {...register('interests.1', {required: true})} />
-                  Man
-                </div>
-                <div className={styles.btnRemoveWrap}>
-                  <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
-                </div>
-              </div>
+              {!watch('interests') && <input type="hidden" {...register(`interests`, {required: true})} />}
+
+              {data.dataInterests.tagList.map((one, index) => {
+                if (!one.isActive) return;
+
+                return (
+                  <div className={styles.tag} key={index}>
+                    <div className={styles.value}>
+                      <input value={one.value} type="hidden" {...register(`interests.${index}`, {required: true})} />
+                      {one.value}
+                    </div>
+                    <div
+                      className={styles.btnRemoveWrap}
+                      onClick={() => {
+                        unregister(`interests.${index}`);
+                        data.dataInterests.tagList[index].isActive = false;
+                        setData({...data});
+                      }}
+                    >
+                      <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </section>
           <section className={styles.skillSection}>
             <h2 className={styles.label}>Skill</h2>
             <div
-              className={styles.selectWrap}
+              className={cx(styles.selectWrap, errors.skills && isSubmitted && styles.error)}
               onClick={() => {
                 data.dataSkills.isOpenTagsDrawer = true;
-                data.dataSkills.tagList = [
-                  {isActive: true, value: 'Create Image'},
-                  {isActive: false, value: 'Create LLM'},
-                  {isActive: true, value: 'Create Video Edit'},
-                  {isActive: true, value: 'Persona'},
-                  {isActive: true, value: 'Create Music'},
-                  {isActive: true, value: 'Create Webtoon'},
-                ];
-                data.dataSkills.drawerTitle = 'Skill';
-                data.dataSkills.drawerDescription = 'Please add the skills you have';
                 setData({...data});
               }}
             >
               <div className={styles.placeholder}>Select</div>
               <img src={'/ui/profile/update/icon_select.svg'} alt="" />
             </div>
-            <div className={styles.tagWrap}>
-              <div className={styles.tag}>
-                <div className={styles.value}>Dating</div>
-                <div className={styles.btnRemoveWrap}>
-                  <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
-                </div>
-              </div>
-              <div className={styles.tag}>
-                <div className={styles.value}>Man</div>
-                <div className={styles.btnRemoveWrap}>
-                  <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
-                </div>
-              </div>
+            <div className={cx(styles.tagWrap)}>
+              {!watch('skills') && <input type="hidden" {...register(`skills`, {required: true})} />}
+              {data.dataSkills.tagList.map((one, index) => {
+                if (!one.isActive) return;
+
+                return (
+                  <div className={styles.tag} key={index}>
+                    <div className={styles.value}>
+                      <input value={one.value} type="hidden" {...register(`skills.${index}`, {required: true})} />
+                      {one.value}
+                    </div>
+                    <div
+                      className={styles.btnRemoveWrap}
+                      onClick={() => {
+                        unregister(`skills.${index}`);
+                        data.dataSkills.tagList[index].isActive = false;
+                        setData({...data});
+                      }}
+                    >
+                      <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </section>
           <section className={styles.personalHistorySection}></section>
@@ -226,7 +230,18 @@ const PageProfileUpdate = (props: Props) => {
             data.dataInterests.isOpenTagsDrawer = false;
             setData({...data});
           }}
-          onChange={() => {}}
+          onChange={(dataChanged: any) => {
+            data.dataInterests.tagList = dataChanged;
+
+            for (let i = 0; i < dataChanged.length; i++) {
+              if (!dataChanged[i].isActive) {
+                unregister(`interests.${i}`);
+              } else {
+                setValue(`interests.${i}`, dataChanged[i].value, {shouldValidate: true});
+              }
+            }
+            setData({...data});
+          }}
         />
         <DrawerSelectTags
           title={data.dataSkills.drawerTitle}
@@ -237,7 +252,18 @@ const PageProfileUpdate = (props: Props) => {
             data.dataSkills.isOpenTagsDrawer = false;
             setData({...data});
           }}
-          onChange={() => {}}
+          onChange={(dataChanged: any) => {
+            data.dataSkills.tagList = dataChanged;
+
+            for (let i = 0; i < dataChanged.length; i++) {
+              if (!dataChanged[i].isActive) {
+                unregister(`skills.${i}`);
+              } else {
+                setValue(`skills.${i}`, dataChanged[i].value, {shouldValidate: true});
+              }
+            }
+            setData({...data});
+          }}
         />
       </main>
       <footer className={styles.footer}></footer>
@@ -286,7 +312,6 @@ const DrawerSelectTags = ({title, description, tags, open, onClose, onChange}: D
             if (index >= 0) {
               data.tagList[index].isActive = !data.tagList[index].isActive;
               setData({...data});
-              onChange(data.tagList);
             }
           }}
         >
@@ -299,7 +324,15 @@ const DrawerSelectTags = ({title, description, tags, open, onClose, onChange}: D
           })}
         </div>
       </div>
-      <button className={styles.submitBtn}>Submit</button>
+      <button
+        className={styles.submitBtn}
+        onClick={() => {
+          onChange(data.tagList);
+          onClose();
+        }}
+      >
+        Submit
+      </button>
     </Drawer>
   );
 };
