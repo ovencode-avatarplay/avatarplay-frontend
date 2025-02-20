@@ -196,15 +196,15 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
       const req: CreateCharacter2Req = {
         languageType: getCurrentLanguage(),
         characterInfo: {
-          id: 0, // 서버에서 지정
+          id: character.id, // 서버에서 지정
           languageType: languageType,
           name: characterName,
-          chatCount: 0,
-          chatUserCount: 0,
+          chatCount: character.chatCount,
+          chatUserCount: character.chatUserCount,
           characterDescription: characterDescription,
-          urlLinkKey: 'string', // 서버에서 지정
-          genderType: 0, // 지정하는 장소 없음
-          introduction: 'string', // 지정하는 장소 없음
+          urlLinkKey: character.urlLinkKey, // 서버에서 지정
+          genderType: character.genderType, // 지정하는 장소 없음
+          introduction: character.introduction, // 지정하는 장소 없음
           description: description,
           worldScenario: worldScenario,
           greeting: greeting,
@@ -214,13 +214,13 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           poseGalleryImageUrl: [],
           expressionGalleryImageUrl: [],
           mediaTemplateList: mediaTemplateList?.map(item => ({
-            id: 0,
+            id: item.id,
             imageUrl: item.imageUrl,
             activationCondition: item.activationCondition,
             isProfileImage: item.isProfileImage,
           })),
           conversationTemplateList: conversationCards?.map(item => ({
-            id: 0,
+            id: Number(item.id),
             conversationType: item.priorityType,
             user: JSON.stringify(item.userBars),
             character: JSON.stringify(item.charBars),

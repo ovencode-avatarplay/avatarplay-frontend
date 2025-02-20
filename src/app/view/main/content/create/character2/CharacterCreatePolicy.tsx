@@ -574,7 +574,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         {renderConnect()}
         {renderOperatorInvite()}
         {renderMonetization()}
-        {renderMembershipPlan()}
+        {/* {renderMembershipPlan()} */}
         {renderNSFW()}
         {renderSuperVoiceSetting()}
       </div>
