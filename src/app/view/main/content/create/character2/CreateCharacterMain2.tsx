@@ -23,8 +23,8 @@ import CharacterCreatePolicy from './CharacterCreatePolicy';
 import {CreateCharacter2Req, CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
 import ImageUploadDialog from '../content-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {CharacterInfo, CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
-import {CardData} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
+import {CharacterInfo, CharacterMediaInfo, ConversationInfo} from '@/redux-store/slices/ContentInfo';
+import {Bar, CardData} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
 import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 
@@ -89,13 +89,26 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   //#endregion
 
   //#region Conversation
-  const [conversationCards, setConversationCards] = useState<CardData[]>([]);
+  const convertToCardData = (conversationList: ConversationInfo[]): CardData[] => {
+    return conversationList.map(conversation => {
+      return {
+        id: conversation.id.toString(),
+        priorityType: conversation.conversationType,
+        userBars: JSON.parse(conversation.user) as Bar[],
+        charBars: JSON.parse(conversation.character) as Bar[],
+      };
+    });
+  };
+
+  const [conversationCards, setConversationCards] = useState<CardData[]>(
+    convertToCardData(character.conversationTemplateList),
+  );
   //#endregion
 
   //#region Policy
 
   const [visibilityType, setvisibilityType] = useState<number>(character.visibilityType);
-  const [llmModel, setLlmModel] = useState<number>(character.lLMModel);
+  const [llmModel, setLlmModel] = useState<number>(character.llmModel);
   const [tag, setTag] = useState<string>(character.tag);
   const [positionCountryList, setPositionCountryList] = useState<number[]>(character.positionCountryList);
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
@@ -183,15 +196,15 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
       const req: CreateCharacter2Req = {
         languageType: getCurrentLanguage(),
         characterInfo: {
-          id: 0, // 서버에서 지정
+          id: character.id, // 서버에서 지정
           languageType: languageType,
           name: characterName,
-          chatCount: 0,
-          chatUserCount: 0,
+          chatCount: character.chatCount,
+          chatUserCount: character.chatUserCount,
           characterDescription: characterDescription,
-          urlLinkKey: 'string', // 서버에서 지정
-          genderType: 0, // 지정하는 장소 없음
-          introduction: 'string', // 지정하는 장소 없음
+          urlLinkKey: character.urlLinkKey, // 서버에서 지정
+          genderType: character.genderType, // 지정하는 장소 없음
+          introduction: character.introduction, // 지정하는 장소 없음
           description: description,
           worldScenario: worldScenario,
           greeting: greeting,
@@ -201,19 +214,19 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           poseGalleryImageUrl: [],
           expressionGalleryImageUrl: [],
           mediaTemplateList: mediaTemplateList?.map(item => ({
-            id: 0,
+            id: item.id,
             imageUrl: item.imageUrl,
             activationCondition: item.activationCondition,
             isProfileImage: item.isProfileImage,
           })),
           conversationTemplateList: conversationCards?.map(item => ({
-            id: 0,
+            id: Number(item.id),
             conversationType: item.priorityType,
             user: JSON.stringify(item.userBars),
             character: JSON.stringify(item.charBars),
           })),
           visibilityType: visibilityType,
-          lLMModel: llmModel,
+          llmModel: llmModel,
           tag: tag,
           positionCountryList: positionCountryList,
           characterIP: characterIP,

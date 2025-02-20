@@ -243,6 +243,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         <CustomDropDown
           items={langItems}
           displayType="Text"
+          initialValue={selectedLang}
           onSelect={(value: string | number) => handleSelectLang(Number(value))}
         />
       </div>
@@ -265,24 +266,18 @@ const CharacterCreateLLM: React.FC<Props> = ({
         {renderTitle(`Secrets`, '')}
         {renderMaxTextInput(secret, onSecretChange, handleAutoWriteCharacterSecret)}
       </div>
-      {/* <div className={styles.inputDataBoxArea}>
-        {renderTitle(`LLM`, '')}
-        <CustomDropDown
-          items={llmItems}
-          displayType="Text"
-          onSelect={(value: string | number) => handleSelectLLM(Number(value))}
-        />
-      </div> */}
       <div className={styles.inputDataBoxArea}>
         {renderTitle(`Custom Modules`, 'text description')}
         <CustomDropDown
           items={promptItems}
           displayType="Text"
+          initialValue={selectedPromptIdx}
           onSelect={(value: string | number) => handleSelectPrompt(Number(value))}
         />
         <CustomDropDown
           items={lorebookItems}
           displayType="Text"
+          initialValue={selectedLorebookIdx}
           onSelect={(value: string | number) => handleSelectLoreBook(Number(value))}
         />
       </div>
