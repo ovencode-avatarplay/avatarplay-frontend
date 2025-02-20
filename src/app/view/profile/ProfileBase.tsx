@@ -797,6 +797,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                 </Link>
               );
             })}
+            <div ref={observerRef}></div>
           </ul>
         );
       }

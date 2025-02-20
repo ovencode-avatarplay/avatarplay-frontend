@@ -6,9 +6,9 @@ import {useForm} from 'react-hook-form';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {Drawer} from '@mui/material';
 import cx from 'classnames';
-import {getBackUrl} from '@/app/layout';
-import {getLocalizedLink} from '@/utils/UrlMove';
+import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
+
 type Props = {};
 
 export enum DragStatusType {
@@ -38,16 +38,23 @@ type DataProfileUpdateType = {
   dragStatus: DragStatusType;
   dataInterests: TagDrawerType;
   dataSkills: TagDrawerType;
+  countValid: {
+    total: number;
+    valid: number;
+  };
 };
 
 const PageProfileUpdate = (props: Props) => {
   const router = useRouter();
   const {
+    control,
     setValue,
     register,
     handleSubmit,
     watch,
     unregister,
+    trigger,
+    clearErrors,
     formState: {errors, isSubmitted},
   } = useForm();
   const [data, setData] = useState<DataProfileUpdateType>({
@@ -79,6 +86,11 @@ const PageProfileUpdate = (props: Props) => {
       drawerTitle: 'Skills',
       drawerDescription: 'Please add the skills you have',
     },
+
+    countValid: {
+      total: 7,
+      valid: 0,
+    },
   });
 
   const onSubmit = (data: any) => {
@@ -88,6 +100,10 @@ const PageProfileUpdate = (props: Props) => {
   useEffect(() => {
     setValue('introduction', '초기값 introduction'); // API 데이터로 값 설정
   }, []);
+
+  useEffect(() => {
+    checkValid();
+  }, [errors]);
 
   const routerBack = () => {
     // you can get the prevPath like this
@@ -179,6 +195,19 @@ const PageProfileUpdate = (props: Props) => {
     }
   };
 
+  const checkValid = async () => {
+    const isValid = await trigger(undefined, {shouldFocus: false});
+    const countValidTotal = Object.keys(control._fields || {}).length;
+    console.log('errors : ', errors);
+    const countValidError = Object.keys(errors).length;
+    const countValidCorrect = countValidTotal - countValidError;
+    console.log(countValidTotal, countValidError, countValidCorrect);
+
+    data.countValid.total = countValidTotal;
+    data.countValid.valid = countValidCorrect;
+    setData({...data});
+  };
+
   return (
     <>
       <header className={styles.header}>
@@ -190,10 +219,15 @@ const PageProfileUpdate = (props: Props) => {
         >
           <img src={LineArrowLeft.src} className={styles.backBtn}></img>
         </div>
-        <div className={styles.progressBar}>
-          <div style={{width: '50%'}} className={styles.progressInner}></div>
+        <div className={styles.progressBar} onClick={async () => {}}>
+          <div
+            style={{width: `${(data.countValid.valid / data.countValid.total) * 100}%`}}
+            className={styles.progressInner}
+          ></div>
         </div>
-        <div className={styles.progressNumber}>1/9</div>
+        <div className={styles.progressNumber}>
+          {data.countValid.valid}/{data.countValid.total}
+        </div>
       </header>
       <main className={styles.main}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -233,13 +267,18 @@ const PageProfileUpdate = (props: Props) => {
             </label>
           </section>
           <section className={styles.nicknameSection}>
-            <h2 className={styles.label}>NickName</h2>
+            <h2 className={styles.label}>Nickname</h2>
             <input
               className={cx(errors.nickname && isSubmitted && styles.error)}
               {...register('nickname', {required: true})}
               type="text"
               placeholder="Please enter a nickname"
               maxLength={30}
+              onChange={async e => {
+                setValue('nickname', e.target.value);
+                clearErrors('nickname');
+                checkValid();
+              }}
             />
           </section>
           <section className={styles.introductionSection}>
@@ -249,11 +288,13 @@ const PageProfileUpdate = (props: Props) => {
                 {...register('introduction', {required: true})}
                 placeholder="Add a description or hashtag"
                 maxLength={500}
-                onChange={e => {
+                onChange={async e => {
                   const target = e.target as HTMLTextAreaElement;
                   target.style.height = 'auto';
                   target.style.height = `${target.scrollHeight}px`;
-                  setValue('introduction', target.value, {shouldValidate: true}); // 강제 업데이트
+                  setValue('introduction', target.value, {shouldValidate: false}); // 강제 업데이트
+                  clearErrors('introduction');
+                  checkValid();
                 }}
               />
               <div className={styles.textCount}>{`${watch('introduction', '').length}/500`}</div>
@@ -285,10 +326,12 @@ const PageProfileUpdate = (props: Props) => {
                     </div>
                     <div
                       className={styles.btnRemoveWrap}
-                      onClick={() => {
+                      onClick={e => {
                         unregister(`interests.${index}`);
                         data.dataInterests.tagList[index].isActive = false;
+                        setValue(`interests.${index}`, one.value);
                         setData({...data});
+                        checkValid();
                       }}
                     >
                       <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
@@ -323,10 +366,12 @@ const PageProfileUpdate = (props: Props) => {
                     </div>
                     <div
                       className={styles.btnRemoveWrap}
-                      onClick={() => {
+                      onClick={e => {
                         unregister(`skills.${index}`);
+                        setValue(`skills.${index}`, one.value);
                         data.dataSkills.tagList[index].isActive = false;
                         setData({...data});
+                        checkValid();
                       }}
                     >
                       <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
@@ -345,9 +390,15 @@ const PageProfileUpdate = (props: Props) => {
             <h2 className={styles.label}>Personal History</h2>
             <input
               {...register('personalHistory', {required: true})}
+              className={cx(styles.inputPersonalHistory, errors.personalHistory && isSubmitted && styles.error)}
               type="text"
               placeholder="Ex) 2024. 10~2025.01 Design (Zero to One CB)"
               maxLength={30}
+              onChange={e => {
+                clearErrors('personalHistory');
+                setValue('personalHistory', e.target.value);
+                checkValid();
+              }}
             />
           </section>
 
@@ -356,8 +407,14 @@ const PageProfileUpdate = (props: Props) => {
             <input
               {...register('honorawards', {required: true})}
               type="text"
+              className={cx(styles.inputHonorawards, errors.honorawards && isSubmitted && styles.error)}
               placeholder="Ex) 2024.10.00Advertisement contest winner(korea)"
               maxLength={30}
+              onChange={e => {
+                clearErrors('honorawards');
+                setValue('honorawards', e.target.value);
+                checkValid();
+              }}
             />
           </section>
 
@@ -373,7 +430,18 @@ const PageProfileUpdate = (props: Props) => {
 
           <section className={styles.urlSection}>
             <h2 className={styles.label}>URL</h2>
-            <input {...register('url', {required: true})} type="text" placeholder="https://" maxLength={30} />
+            <input
+              {...register('url', {required: true})}
+              className={cx(errors.url && isSubmitted && styles.error)}
+              type="text"
+              placeholder="https://"
+              maxLength={30}
+              onChange={e => {
+                clearErrors('url');
+                setValue('url', e.target.value);
+                checkValid();
+              }}
+            />
           </section>
 
           <button type="submit" className={styles.submitBtn}>
@@ -390,13 +458,16 @@ const PageProfileUpdate = (props: Props) => {
             setData({...data});
           }}
           onChange={(dataChanged: any) => {
+            clearErrors('interests');
+
             data.dataInterests.tagList = dataChanged;
 
             for (let i = 0; i < dataChanged.length; i++) {
               if (!dataChanged[i].isActive) {
                 unregister(`interests.${i}`);
               } else {
-                setValue(`interests.${i}`, dataChanged[i].value, {shouldValidate: true});
+                setValue(`interests.${i}`, dataChanged[i].value, {shouldValidate: false});
+                checkValid();
               }
             }
             setData({...data});
@@ -412,13 +483,15 @@ const PageProfileUpdate = (props: Props) => {
             setData({...data});
           }}
           onChange={(dataChanged: any) => {
+            clearErrors('skills');
             data.dataSkills.tagList = dataChanged;
 
             for (let i = 0; i < dataChanged.length; i++) {
               if (!dataChanged[i].isActive) {
                 unregister(`skills.${i}`);
               } else {
-                setValue(`skills.${i}`, dataChanged[i].value, {shouldValidate: true});
+                setValue(`skills.${i}`, dataChanged[i].value, {shouldValidate: false});
+                checkValid();
               }
             }
             setData({...data});
