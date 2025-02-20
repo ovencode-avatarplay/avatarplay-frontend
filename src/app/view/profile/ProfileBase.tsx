@@ -812,7 +812,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         );
       }
     },
-    [data.indexTab, data.profileTabInfo],
+    [data],
   );
 
   const isFollow = data.profileInfo?.profileInfo.followState == FollowState.Follow;
