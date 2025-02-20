@@ -508,7 +508,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                     data.indexFilterMedia = parseInt(category);
                   }
                   await refreshProfileTab(profileId, data.indexTab);
-                  // await refreshProfileTab(profileId, data.indexTab);
                   setData({...data});
                 }}
               >
@@ -673,7 +672,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         return <></>;
       }
     },
-    [data.indexTab, data.profileTabInfo],
+    [data],
   );
 
   const TabContentComponent = React.useCallback(
@@ -890,7 +889,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           <div className={styles.imgProfileWrap}>
             <img className={styles.imgProfile} src={data.profileInfo?.profileInfo.iconImageUrl} alt="" />
             {isMine && (
-              <div className={styles.iconProfileEditWrap}>
+              <div className={styles.iconProfileEditWrap} onClick={() => {}}>
                 <img className={styles.icon} src="/ui/profile/icon_edit.svg" alt="" />
               </div>
             )}
