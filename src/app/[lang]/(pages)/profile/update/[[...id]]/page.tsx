@@ -6,9 +6,10 @@ import {useForm} from 'react-hook-form';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {Drawer} from '@mui/material';
 import cx from 'classnames';
-import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
-import {useRouter} from 'next/navigation';
 
+import {getLocalizedLink} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
+import {getBackUrl} from '@/utils/util-1';
 type Props = {};
 
 export enum DragStatusType {

@@ -27,6 +27,7 @@ import {ProfileInfo, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 export interface StoryInfo {
   id: number;
   userId: number;
+  profileId: number;
   urlLinkKey: string;
   chapterInfoList: ChapterInfo[];
   publishInfo: PublishInfo;
