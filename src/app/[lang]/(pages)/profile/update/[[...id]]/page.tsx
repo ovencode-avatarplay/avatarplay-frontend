@@ -1,14 +1,47 @@
 'use client';
 import {LineArrowDown, LineArrowLeft, LineClose, LineUpload} from '@ui/Icons';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import styles from './ProfileUpdate.module.scss';
 import {useForm} from 'react-hook-form';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {Drawer} from '@mui/material';
 import cx from 'classnames';
+import {getBackUrl} from '@/app/layout';
+import {getLocalizedLink} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
 type Props = {};
 
+export enum DragStatusType {
+  OuterClick,
+  InnerClick = 1,
+  PictureClick = 2,
+}
+
+type FileType = {
+  fileName: string;
+  index: number;
+  file: string;
+  fileBlob: Blob;
+};
+
+type TagDrawerType = {
+  isOpenTagsDrawer: boolean;
+  tagList: {
+    isActive: boolean;
+    value: string;
+  }[];
+  drawerTitle: string;
+  drawerDescription: string;
+};
+type DataProfileUpdateType = {
+  thumbnail: FileType | null;
+  dragStatus: DragStatusType;
+  dataInterests: TagDrawerType;
+  dataSkills: TagDrawerType;
+};
+
 const PageProfileUpdate = (props: Props) => {
+  const router = useRouter();
   const {
     setValue,
     register,
@@ -17,7 +50,9 @@ const PageProfileUpdate = (props: Props) => {
     unregister,
     formState: {errors, isSubmitted},
   } = useForm();
-  const [data, setData] = useState({
+  const [data, setData] = useState<DataProfileUpdateType>({
+    thumbnail: null,
+    dragStatus: DragStatusType.OuterClick,
     dataInterests: {
       isOpenTagsDrawer: false,
       tagList: [
@@ -54,10 +89,105 @@ const PageProfileUpdate = (props: Props) => {
     setValue('introduction', '초기값 introduction'); // API 데이터로 값 설정
   }, []);
 
+  const routerBack = () => {
+    // you can get the prevPath like this
+    const prevPath = getBackUrl();
+    if (!prevPath || prevPath == '') {
+      router.replace(getLocalizedLink('/main/homefeed'));
+    } else {
+      router.replace(prevPath);
+    }
+  };
+
+  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+
+    if (data.dragStatus >= DragStatusType.InnerClick) {
+      data.dragStatus = DragStatusType.OuterClick;
+      return;
+    }
+
+    DropOuter(e);
+    data.dragStatus = DragStatusType.OuterClick;
+    setData({...data});
+  };
+
+  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const extractFileExtension = (fileName: string) => {
+    let fileLength = fileName.length;
+    let fileDot = fileName.lastIndexOf('.');
+    let fileExtension = fileName.substring(fileDot + 1, fileLength)?.toLowerCase();
+    return fileExtension;
+  };
+
+  const DropOuter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (e.dataTransfer.items) {
+      let index = 0;
+      Array.from(e.dataTransfer.items).forEach(async (item, i) => {
+        if (item.kind === 'file') {
+          const file = item.getAsFile();
+          if (file == null) return;
+          const fileExtension = extractFileExtension(file.name);
+          if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+            const fileName = file.name.replace(/\.[^/.]+$/, '');
+            data.thumbnail = {
+              fileName: fileName,
+              index: 0,
+              fileBlob: file,
+              file: URL.createObjectURL(file),
+            };
+            setData({...data});
+          }
+        }
+      });
+    } else {
+      // Use DataTransfer interface to access the file(s)
+      Array.from(e.dataTransfer.items).forEach((file, i) => {});
+    }
+  };
+
+  const onDragStartInner = (e: React.DragEvent<HTMLDivElement>) => {
+    data.dragStatus = DragStatusType.InnerClick;
+    // e.preventDefault();
+  };
+
+  const onUploadClicked = async (e: ChangeEvent<HTMLInputElement>) => {
+    let files = e.target.files;
+    let index = 0;
+    if (!files?.length) {
+      return;
+    }
+
+    for (let i = 0; i < files?.length; i++) {
+      const file = files[i];
+      const fileExtension = extractFileExtension(file.name);
+      if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+        index++;
+        const fileName = file.name.replace(/\.[^/.]+$/, '');
+        data.thumbnail = {
+          fileName: fileName,
+          index: 0,
+          fileBlob: file,
+          file: URL.createObjectURL(file),
+        };
+        setData({...data});
+      }
+    }
+  };
+
   return (
     <>
       <header className={styles.header}>
-        <div className={styles.backBtnWrap}>
+        <div
+          className={styles.backBtnWrap}
+          onClick={() => {
+            routerBack();
+          }}
+        >
           <img src={LineArrowLeft.src} className={styles.backBtn}></img>
         </div>
         <div className={styles.progressBar}>
@@ -68,10 +198,39 @@ const PageProfileUpdate = (props: Props) => {
       <main className={styles.main}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <section className={styles.uploadThumbnailSection}>
-            <div className={styles.uploadWrap}>
-              <img src={LineUpload.src} alt="" />
-              <div className={styles.text}>Upload</div>
-            </div>
+            <label className={styles.uploadBtn} htmlFor="file-upload">
+              {/* UPLOAD */}
+              <img src="/editor/images/icon_upload.svg" alt="" />
+              <input
+                className={styles.hidden}
+                id="file-upload"
+                type="file"
+                accept="image/png, image/jpeg, image/jpg, image/gif"
+                onChange={onUploadClicked}
+              />
+              {!data.thumbnail?.file && (
+                <div
+                  className={styles.uploadWrap}
+                  onDrop={onDrop}
+                  onDragOver={onDragOver}
+                  onDragStart={onDragStartInner}
+                >
+                  <img src={LineUpload.src} alt="" />
+                  <div className={styles.text}>Upload</div>
+                </div>
+              )}
+
+              {data.thumbnail?.file && (
+                <div className={styles.thumbnailContainer}>
+                  <div className={styles.thumbnailWrap}>
+                    <img className={styles.thumbnail} src={data.thumbnail?.file} alt="" />
+                    <div className={styles.iconEditWrap}>
+                      <img src="/ui/profile/update/icon_thumbnail_edit.svg" alt="" className={styles.iconEdit} />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </label>
           </section>
           <section className={styles.nicknameSection}>
             <h2 className={styles.label}>NickName</h2>

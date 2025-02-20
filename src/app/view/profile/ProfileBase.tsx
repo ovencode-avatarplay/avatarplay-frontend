@@ -889,9 +889,11 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           <div className={styles.imgProfileWrap}>
             <img className={styles.imgProfile} src={data.profileInfo?.profileInfo.iconImageUrl} alt="" />
             {isMine && (
-              <div className={styles.iconProfileEditWrap} onClick={() => {}}>
-                <img className={styles.icon} src="/ui/profile/icon_edit.svg" alt="" />
-              </div>
+              <Link href={getLocalizedLink(`/profile/update/` + data.profileInfo?.profileInfo.id)}>
+                <div className={styles.iconProfileEditWrap}>
+                  <img className={styles.icon} src="/ui/profile/icon_edit.svg" alt="" />
+                </div>
+              </Link>
             )}
           </div>
 
