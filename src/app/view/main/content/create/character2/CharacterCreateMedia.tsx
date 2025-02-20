@@ -47,7 +47,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
               inputDataType={inputType.None}
               stateDataType={inputState.Normal}
               displayDataType={displayType.Default}
-              promptValue={item.description}
+              promptValue={item.activationCondition}
               handlePromptChange={event => handlerPromptChange(event, index)}
               placeholder="Image Explain"
               style={{width: '100%'}}

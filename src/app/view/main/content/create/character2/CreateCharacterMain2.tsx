@@ -129,7 +129,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
       handleEditMediaItem(
         mediaTemplateList[selectedMediaItemIdx].id,
         img,
-        mediaTemplateList[selectedMediaItemIdx].description,
+        mediaTemplateList[selectedMediaItemIdx].activationCondition,
         mediaTemplateList[selectedMediaItemIdx].isProfileImage,
       );
     } else if (imageCreate === 'Thumbnail') {
@@ -203,7 +203,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           mediaTemplateList: mediaTemplateList?.map(item => ({
             id: 0,
             imageUrl: item.imageUrl,
-            description: item.description,
+            activationCondition: item.activationCondition,
             isProfileImage: item.isProfileImage,
           })),
           conversationTemplateList: conversationCards?.map(item => ({
@@ -273,7 +273,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
 
   const handleMediaPromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
     const updatedMediaItems = [...mediaTemplateList];
-    updatedMediaItems[index].description = event.target.value;
+    updatedMediaItems[index].activationCondition = event.target.value;
     setMediaTemplateList(updatedMediaItems);
   };
 
@@ -297,13 +297,13 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   const handleAddMediaItem = (
     id: number,
     imageUrl: string,
-    description: string = '',
+    activationCondition: string = '',
     isProfileImage: boolean = false,
   ) => {
     const newItem: CharacterMediaInfo = {
       id: id,
       imageUrl: imageUrl,
-      description: description,
+      activationCondition: activationCondition,
       isProfileImage: isProfileImage,
     };
 
@@ -318,11 +318,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   const handleEditMediaItem = (
     id: number,
     imageUrl: string,
-    description: string = '',
+    activationCondition: string = '',
     isProfileImage: boolean = false,
   ) => {
     setMediaTemplateList(prevList =>
-      prevList.map(item => (item.id === id ? {...item, imageUrl, description, isProfileImage} : item)),
+      prevList.map(item => (item.id === id ? {...item, imageUrl, activationCondition, isProfileImage} : item)),
     );
   };
 
