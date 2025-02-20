@@ -5,7 +5,8 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import EmptyState from '@/components/search/EmptyState';
 import {BoldAltArrowDown, LineDashboard} from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import ContentCard, {mockContentInfo} from './ContentCard';
+import ContentCard, {ContentInfo, mockContentInfo} from './ContentCard';
+import {mockSeries, SeriesInfo} from './SeriesDetail';
 
 enum FilterTypes {
   All = 0,
@@ -17,9 +18,15 @@ enum FilterTypes {
 
 interface CreateContentIntroductionProps {
   onNext: () => void;
+  onNextSeriesDetail: () => void;
+  setCurContentInfo: (info: SeriesInfo) => void;
 }
 
-const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({onNext}) => {
+const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
+  onNextSeriesDetail,
+  onNext,
+  setCurContentInfo,
+}) => {
   const [activeTab, setActiveTab] = useState<'series' | 'single'>('series');
   const [selectedFilter, setSelectedFilter] = useState<FilterTypes>(FilterTypes.All);
   const [filterDrawerOpen, setFilterDrawerOpen] = useState<boolean>(false);
@@ -103,8 +110,10 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({on
                     <ContentCard
                       key={index}
                       content={content}
-                      onEdit={() => alert(`${content.title} 수정`)}
-                      onDelete={() => alert(`${content.title} 삭제`)}
+                      onAddEpisode={() => {
+                        setCurContentInfo(mockSeries);
+                        onNextSeriesDetail();
+                      }}
                     />
                   ))}
                 </div>
@@ -129,8 +138,10 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({on
                     <ContentCard
                       key={index}
                       content={content}
-                      onEdit={() => alert(`${content.title} 수정`)}
-                      onDelete={() => alert(`${content.title} 삭제`)}
+                      onAddEpisode={() => {
+                        setCurContentInfo(mockSeries);
+                        onNextSeriesDetail();
+                      }}
                     />
                   ))}
                 </div>

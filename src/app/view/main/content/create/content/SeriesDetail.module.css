@@ -1,0 +1,146 @@
+.container {
+    width: 100%;
+    background-color: black;
+    color: white;
+    font-family: 'Lato', sans-serif;
+  }
+  
+  /* 헤더 배경 */
+  .header {
+    width: 100%;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .topNav {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  
+  .iconButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    filter: brightness(0) invert(1);
+  }
+  
+  .genreShare {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+  }
+  
+  .genres {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  .tabs {
+    display: flex;
+    padding: 12px 16px;
+    border-bottom: 1px solid gray;
+  }
+  
+  .activeTab {
+    font-weight: 700;
+    border-bottom: 2px solid white;
+    padding-bottom: 4px;
+  }
+  
+  .inactiveTab {
+    margin-left: 20px;
+    color: gray;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+  }
+  
+  .seasonButton, .seasonDropdown {
+    background: #2C3131;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .addEpisode {
+    width: 90%;
+    margin: 12px auto;
+    display: block;
+    padding: 14px;
+    background: white;
+    color: black;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .episodeList {
+    padding: 16px;
+  }
+  
+  .episodeItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .episodeThumbnail {
+    width: 100px;
+    height: 83px;
+    background-size: cover;
+    border-radius: 12px;
+    position: relative;
+  }
+  
+  .lockIcon {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+  }
+  
+  .episodeStats {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    display: flex;
+    gap: 6px;
+  }
+  
+  .statIcon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .episodeInfo {
+    flex-grow: 1;
+    padding-left: 16px;
+  }
+  
+  .episodeActions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #FD55D3;
+  }
+  
+  .starIcon {
+    width: 16px;
+    height: 16px;
+  }
+  

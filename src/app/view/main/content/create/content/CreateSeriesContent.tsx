@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styles from './CreateSeriesContent.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
-import {BoldArrowDown, LineDashboard} from '@ui/Icons';
+import {BoldArrowDown, LineClose, LineDashboard} from '@ui/Icons';
 import MediaUpload from './MediaUpload/MediaUpload';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
@@ -136,6 +136,9 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
   const handlePositionCountryChange = (value: number[]) => {
     setPositionCountryList(value);
   };
+  const handlePositionCountryRemove = (country: LanguageType) => {
+    setPositionCountryList(positionCountryList.filter(c => c !== country));
+  };
   const [isAll, setIsAll] = useState<boolean>(false);
 
   const [positionCountryList, setPositionCountryList] = useState<LanguageType[]>([]);
@@ -223,31 +226,76 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
           selectedItem={CategoryTypes[selectedCategory]}
           onClick={() => setCategoryDrawerOpen(true)}
         ></CustomDropDownSelectDrawer>
-        <CustomDropDownSelectDrawer
-          title="Genre"
-          selectedItem={selectedGenres.length > 0 ? selectedGenres.join(', ') : 'Select'}
-          onClick={() => {
-            setGenreList(tagGroups[0].tags);
-            setGenreOpen(true);
-          }}
-        ></CustomDropDownSelectDrawer>
-        <CustomDropDownSelectDrawer
-          title="Tag"
-          selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : 'Select'}
-          onClick={() => {
-            setTagList(tagGroups[1].tags);
-            setTagOpen(true);
-          }}
-        ></CustomDropDownSelectDrawer>
-        <CustomDropDownSelectDrawer
-          title="Post Country"
-          selectedItem={
-            positionCountryList.map(country => LanguageType[country]).length > 0
-              ? positionCountryList.map(country => LanguageType[country]).join(', ')
-              : 'Select'
-          }
-          onClick={() => setIsPositionCountryOpen(true)}
-        ></CustomDropDownSelectDrawer>
+
+        <div className={styles.tagContainer}>
+          <CustomDropDownSelectDrawer
+            title="Genre"
+            selectedItem={selectedGenres.length > 0 ? selectedGenres.join(', ') : 'Select'}
+            onClick={() => {
+              setGenreList(tagGroups[0].tags);
+              setGenreOpen(true);
+            }}
+          ></CustomDropDownSelectDrawer>
+          <div className={styles.blackTagContainer}>
+            {selectedGenres.map((tag, index) => (
+              <div key={index} className={styles.blackTag}>
+                {tag}
+                <img
+                  src={LineClose.src}
+                  className={styles.lineClose}
+                  onClick={() => handleGenreRemove(tag)} // 클릭하면 해당 태그 삭제
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.tagContainer}>
+          <CustomDropDownSelectDrawer
+            title="Tag"
+            selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : 'Select'}
+            onClick={() => {
+              setTagList(tagGroups[1].tags);
+              setTagOpen(true);
+            }}
+          ></CustomDropDownSelectDrawer>
+          <div className={styles.blackTagContainer}>
+            {selectedTags.map((tag, index) => (
+              <div key={index} className={styles.blackTag}>
+                {tag}
+                <img
+                  src={LineClose.src}
+                  className={styles.lineClose}
+                  onClick={() => handleTagRemove(tag)} // 클릭하면 해당 태그 삭제
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.tagContainer}>
+          <CustomDropDownSelectDrawer
+            title="Post Country"
+            selectedItem={
+              positionCountryList.map(country => LanguageType[country]).length > 0
+                ? positionCountryList.map(country => LanguageType[country]).join(', ')
+                : 'Select'
+            }
+            onClick={() => setIsPositionCountryOpen(true)}
+          ></CustomDropDownSelectDrawer>
+          <div className={styles.blackTagContainer}>
+            {positionCountryList.map((tag, index) => (
+              <div key={index} className={styles.blackTag}>
+                {LanguageType[tag]}
+                <img
+                  src={LineClose.src}
+                  className={styles.lineClose}
+                  onClick={() => handlePositionCountryRemove(tag)} // 클릭하면 해당 태그 삭제
+                />
+              </div>
+            ))}
+          </div>
+        </div>
         <CustomDropDownSelectDrawer
           title="Visibility"
           selectedItem={VisibilityType[selectedVisibility]}
@@ -256,6 +304,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
         <span className={styles.label}>
           NSFW <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
         </span>
+
         <div className={styles.radioButtonGroup}>
           <CustomRadioButton
             shapeType="circle"
