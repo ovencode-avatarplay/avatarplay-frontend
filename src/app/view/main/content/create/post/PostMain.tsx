@@ -1,3 +1,5 @@
+'use client';
+
 import React, {useEffect, useState} from 'react';
 import ContentDashboardHeader from '../content-main/content-dashboard/ContentDashboardHeader';
 import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
@@ -14,7 +16,10 @@ import {FeedInfo, RequestCreateFeed, sendCreateFeed} from '@/app/NetWork/ShortsN
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 
-interface Props {}
+interface Props {
+  id?: number;
+  isUpdate?: boolean;
+}
 const mediaTypeConfig = {
   image: {
     label: 'Write Image File Type',
@@ -27,7 +32,8 @@ const mediaTypeConfig = {
     accept: 'video/*', // 비디오 파일
   },
 };
-const PostMain: React.FC<Props> = () => {
+const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
+  console.log('id update', id, isUpdate);
   const router = useRouter();
   const [text, setText] = useState(''); // 입력된 텍스트 상태
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
@@ -39,6 +45,13 @@ const PostMain: React.FC<Props> = () => {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoDuration, setVideoDuration] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isUpdate) {
+      //api 추가 필요
+      // setDate()
+    }
+  }, []);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
