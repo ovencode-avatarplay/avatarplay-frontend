@@ -1247,10 +1247,16 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           handleShare(url);
         }}
         onDelete={() => {
-          alert('delete 추후 연동');
+          alert('delete api 연동 필요');
         }}
         onEdit={() => {
-          alert('edit 추후 연동');
+          alert('수정 페이지 Link 연동');
+        }}
+        onHide={() => {
+          alert('hide api 연동 필요');
+        }}
+        onReport={() => {
+          alert('report api 연동 필요');
         }}
       />
     </>
@@ -1267,6 +1273,8 @@ type ContentSettingType = {
   onShare: () => void;
   onDelete: () => void;
   onEdit: () => void;
+  onReport: () => void;
+  onHide: () => void;
 };
 const ContentSetting = ({
   isMine = false,
@@ -1276,12 +1284,16 @@ const ContentSetting = ({
   onShare = () => {},
   onDelete = () => {},
   onEdit = () => {},
+  onReport = () => {},
+  onHide = () => {},
 }: ContentSettingType) => {
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItemsMine: SelectDrawerItem[] = [
     {
       name: 'Edit',
-      onClick: () => {},
+      onClick: () => {
+        onEdit();
+      },
     },
     {
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
@@ -1302,13 +1314,17 @@ const ContentSetting = ({
     },
     {
       name: 'Delete',
-      onClick: () => {},
+      onClick: () => {
+        onDelete();
+      },
     },
   ];
   let uploadImageItems: SelectDrawerItem[] = [
     {
       name: 'Edit',
-      onClick: () => {},
+      onClick: () => {
+        onEdit();
+      },
     },
     {
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
@@ -1316,11 +1332,15 @@ const ContentSetting = ({
     },
     {
       name: 'Hide',
-      onClick: () => {},
+      onClick: () => {
+        onHide();
+      },
     },
     {
       name: 'Report',
-      onClick: () => {},
+      onClick: () => {
+        onReport();
+      },
     },
   ];
 
