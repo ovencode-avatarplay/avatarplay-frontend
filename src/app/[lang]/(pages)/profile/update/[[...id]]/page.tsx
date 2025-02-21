@@ -52,6 +52,7 @@ const PageProfileUpdate = (props: Props) => {
     setValue,
     register,
     handleSubmit,
+    getValues,
     watch,
     unregister,
     trigger,
@@ -94,8 +95,10 @@ const PageProfileUpdate = (props: Props) => {
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = (e: React.MouseEvent<HTMLFormElement, MouseEvent>) => {
+    e.preventDefault(); // 기본 제출 방지
+    const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
+    console.log('제출 데이터:', data);
   };
 
   useEffect(() => {
@@ -231,11 +234,10 @@ const PageProfileUpdate = (props: Props) => {
         </div>
       </header>
       <main className={styles.main}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onSubmit}>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
               {/* UPLOAD */}
-              <img src="/editor/images/icon_upload.svg" alt="" />
               <input
                 className={styles.hidden}
                 id="file-upload"
@@ -389,13 +391,15 @@ const PageProfileUpdate = (props: Props) => {
 
           <section className={styles.personalHistorySection}>
             <h2 className={styles.label}>Personal History</h2>
-            <input
+            <textarea
               {...register('personalHistory', {required: true})}
               className={cx(styles.inputPersonalHistory, errors.personalHistory && isSubmitted && styles.error)}
-              type="text"
               placeholder="Ex) 2024. 10~2025.01 Design (Zero to One CB)"
-              maxLength={30}
               onChange={e => {
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = 'auto';
+                target.style.height = `${target.scrollHeight}px`;
+
                 clearErrors('personalHistory');
                 setValue('personalHistory', e.target.value);
                 checkValid();
@@ -405,13 +409,15 @@ const PageProfileUpdate = (props: Props) => {
 
           <section className={styles.honorAwardsSection}>
             <h2 className={styles.label}>Honor & Awards</h2>
-            <input
+            <textarea
               {...register('honorawards', {required: true})}
-              type="text"
               className={cx(styles.inputHonorawards, errors.honorawards && isSubmitted && styles.error)}
               placeholder="Ex) 2024.10.00Advertisement contest winner(korea)"
-              maxLength={30}
               onChange={e => {
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = 'auto';
+                target.style.height = `${target.scrollHeight}px`;
+
                 clearErrors('honorawards');
                 setValue('honorawards', e.target.value);
                 checkValid();
@@ -436,7 +442,6 @@ const PageProfileUpdate = (props: Props) => {
               className={cx(errors.url && isSubmitted && styles.error)}
               type="text"
               placeholder="https://"
-              maxLength={30}
               onChange={e => {
                 clearErrors('url');
                 setValue('url', e.target.value);

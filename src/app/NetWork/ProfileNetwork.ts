@@ -141,6 +141,7 @@ export interface ProfileTabItemInfo {
   mediaCount: number;
   playTime: string;
   isFavorite: boolean;
+  isPinFix: boolean;
 }
 
 export enum MediaState {
@@ -193,27 +194,6 @@ export interface GetPdTabInfoeRes {
   channelInfoList: ProfileTabItemInfo[];
   characterInfoList: ProfileTabItemInfo[];
 }
-
-// export interface FeedInfo {
-//     id: number;
-//     profileId: number;
-//     urlLinkKey: string;
-//     mediaState: MediaState;
-//     mediaUrlList: string[];
-//     description: string;
-//     hashTag: string;
-//     commentCount: number;
-//     likeCount: number;
-//     isLike: boolean;
-//     isDisLike: boolean;
-//     isBookmark: boolean;
-//     isFollowing: boolean;
-//     playTime: string;
-//     characterProfileId: number;
-//     characterProfileName: string;
-//     characterProfileUrl: string;
-//     createAt: string;
-// }
 
 export const getProfilePdTabInfo = async (
   profileId: number,

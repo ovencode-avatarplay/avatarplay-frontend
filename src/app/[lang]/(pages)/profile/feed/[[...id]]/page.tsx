@@ -11,7 +11,7 @@ import {getLocalizedLink} from '@/utils/UrlMove';
 import BottomNav from '@/app/view/main/bottom-nav/BottomNav';
 
 type Props = {
-  searchParams: {feedMediaType?: string; feedSortType?: string; index: string; type: string};
+  searchParams: {feedMediaType?: string; feedSortType?: string; idContent: string; type: string};
 };
 
 const PageFeedView = ({searchParams}: Props) => {
@@ -23,7 +23,7 @@ const PageFeedView = ({searchParams}: Props) => {
   }));
   const feedMediaType = parseInt(searchParams?.feedMediaType || '0');
   const feedSortType = parseInt(searchParams?.feedSortType || '0');
-  const index = parseInt(searchParams?.index || '0');
+  const idContent = parseInt(searchParams?.idContent || '0');
   const profileType = parseInt(searchParams?.type || '0');
   const routerBack = () => {
     router.replace(getLocalizedLink(`/profile/${id}`));
@@ -47,7 +47,7 @@ const PageFeedView = ({searchParams}: Props) => {
         profileType={profileType}
         feedMediaType={feedMediaType}
         feedSortType={feedSortType}
-        indexContent={index}
+        idContent={idContent}
       />
       <BottomNav />
     </>
