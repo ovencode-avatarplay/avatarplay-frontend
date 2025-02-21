@@ -141,7 +141,7 @@ export interface ProfileTabItemInfo {
   mediaCount: number;
   playTime: string;
   isFavorite: boolean;
-  isPinFixed: boolean;
+  isPinFix: boolean;
 }
 
 export enum MediaState {
