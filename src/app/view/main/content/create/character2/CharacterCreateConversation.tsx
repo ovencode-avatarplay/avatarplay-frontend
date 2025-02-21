@@ -7,7 +7,7 @@ interface Props {
   cardList: CardData[];
   setCardList: React.Dispatch<React.SetStateAction<CardData[]>>;
   onAddCard: () => void;
-  onRemoveCard: (id: string) => void;
+  onRemoveCard: (id: number) => void;
   onUpdateCard: (updatedCard: CardData) => void;
   onMoveCard: (index: number, direction: 'up' | 'down') => void;
   onDuplicateCard: (index: number) => void;
@@ -30,8 +30,8 @@ Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]`;
     if (!updatedCard.id) {
       const foundCard = cardList.find(
         card =>
-          updatedCard.userBars?.some(bar => bar.id.includes(card.id)) ||
-          updatedCard.charBars?.some(bar => bar.id.includes(card.id)),
+          updatedCard.userBars?.some(bar => bar.id === card.id) ||
+          updatedCard.charBars?.some(bar => bar.id === card.id),
       );
 
       if (foundCard) {

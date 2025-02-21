@@ -11,13 +11,13 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import {EpisodeInfo, saveConversationTemplateList} from '@/redux-store/slices/ContentInfo';
 
 interface Bar {
-  id: string;
+  id: number;
   inputValue: string;
   type: 'dots' | 'description';
 }
 
 interface CardData {
-  id: string;
+  id: number;
   priorityType: number;
   userBars: Bar[];
   charBars: Bar[];
@@ -43,92 +43,77 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
   // 로컬 상태 관리
   const [cards, setCards] = useState<CardData[]>([]);
 
+  const getMinId = (list: CardData[]): number => {
+    const listId = list.flatMap(item => item.id);
+    if (listId.length === 0) return 0;
+    const minId = Math.min(...listId);
+    return minId > 0 ? 0 : minId - 1;
+  };
+
   useEffect(() => {
-    let currentId = -1; // CardData의 ID 시작점
-    let currentBarId = -1; // Bar의 ID 시작점
-
     if (conversationTemplateList?.length > 0) {
+      let minCardId = -1;
+      let minBarId = -1;
+
       const initialCards = conversationTemplateList.map(conversation => {
-        const assignedId = conversation.id <= 0 ? currentId-- : conversation.id;
+        const assignedId = conversation.id > 0 ? conversation.id : minCardId--;
 
-        // userBars 생성
-        const userBars = JSON.parse(conversation.user || '[]').map((bar: any): Bar => {
-          const newBar: Bar = {
-            id: (currentBarId--).toString(),
-            inputValue: bar.talk || '', // talk를 inputValue로 설정
-            type: bar.type === 0 ? 'dots' : 'description', // 정확히 "dots" | "description"으로 변환
-          };
-          return newBar;
-        });
+        const userBars = JSON.parse(conversation.user || '[]').map(
+          (bar: any): Bar => ({
+            id: minBarId--,
+            inputValue: bar.talk || '',
+            type: bar.type === 0 ? 'dots' : 'description',
+          }),
+        );
 
-        // charBars 생성
-        const charBars = JSON.parse(conversation.character || '[]').map((bar: any): Bar => {
-          const newBar: Bar = {
-            id: (currentBarId--).toString(),
-            inputValue: bar.talk || '', // talk를 inputValue로 설정
-            type: bar.type === 0 ? 'dots' : 'description', // 정확히 "dots" | "description"으로 변환
-          };
-          return newBar;
-        });
+        const charBars = JSON.parse(conversation.character || '[]').map(
+          (bar: any): Bar => ({
+            id: minBarId--,
+            inputValue: bar.talk || '',
+            type: bar.type === 0 ? 'dots' : 'description',
+          }),
+        );
 
-        // CardData 생성
-        const newCard: CardData = {
-          id: assignedId.toString(),
-          priorityType: conversation.conversationType,
-          userBars,
-          charBars,
-        };
-
-        return newCard;
+        return {id: assignedId, priorityType: conversation.conversationType, userBars, charBars};
       });
 
-      setCards(initialCards); // 초기값으로 cards 상태 설정
-      console.log('Initialized Cards:', initialCards);
-    } else {
-      // 기본값 생성
+      setCards(initialCards);
     }
   }, [conversationTemplateList]);
+
   const handleDuplicateCard = (index: number) => {
     setCards(prevCards => {
       const newCards = [...prevCards];
       const cardToDuplicate = newCards[index];
+      const newId = getMinId(newCards);
 
-      // 복사한 데이터에 새로운 ID 부여
       const duplicatedCard: CardData = {
         ...cardToDuplicate,
-        id: Date.now().toString(), // 새로운 고유 ID
+        id: newId,
         userBars: cardToDuplicate.userBars.map((bar, idx) => ({
           ...bar,
-          id: `${Date.now()}_user_${idx}`, // ✅ userBars의 인덱스 추가
+          id: newId - idx,
         })),
         charBars: cardToDuplicate.charBars.map((bar, idx) => ({
           ...bar,
-          id: `${Date.now()}_char_${idx}`, // ✅ charBars의 인덱스 추가
+          id: newId - idx,
         })),
       };
 
-      newCards.splice(index + 1, 0, duplicatedCard); // 원본 카드 뒤에 삽입
+      newCards.splice(index + 1, 0, duplicatedCard);
       return newCards;
     });
   };
+
   const handleMoveCard = (index: number, direction: 'up' | 'down') => {
     setCards(prevCards => {
       const newCards = [...prevCards];
-
-      // 이동할 새로운 위치 계산
       const newIndex = direction === 'up' ? index - 1 : index + 1;
 
-      // 경계를 벗어나면 무시
-      if (newIndex < 0 || newIndex >= newCards.length) {
-        return newCards;
-      }
+      if (newIndex < 0 || newIndex >= newCards.length) return newCards;
 
-      // 현재 카드 추출
       const [movedCard] = newCards.splice(index, 1);
-
-      // 새로운 위치에 삽입
       newCards.splice(newIndex, 0, movedCard);
-
       return newCards;
     });
   };
@@ -137,23 +122,22 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
     setCards(prevCards => [
       ...prevCards,
       {
-        id: Date.now().toString(),
+        id: getMinId(prevCards),
         priorityType: 0,
-        userBars: [{id: Date.now().toString() + '_user', inputValue: '', type: 'dots'}],
-        charBars: [{id: Date.now().toString() + '_char', inputValue: '', type: 'dots'}],
+        userBars: [{id: getMinId(prevCards), inputValue: '', type: 'dots'}],
+        charBars: [{id: getMinId(prevCards), inputValue: '', type: 'dots'}],
       },
     ]);
   };
 
-  const handleRemoveCard = (id: string) => {
+  const handleRemoveCard = (id: number) => {
     setCards(prevCards => prevCards.filter(card => card.id !== id));
   };
 
   const handleConfirm = () => {
-    // Redux 저장 형식으로 변환
     const updatedTemplateList = cards.map(card => ({
-      id: 0, // 서버에서 부여받는 값
-      conversationType: card.priorityType, // 기본 타입 (필요시 수정 가능)
+      id: card.id > 0 ? card.id : 0,
+      conversationType: card.priorityType,
       user: JSON.stringify(
         card.userBars.map(bar => ({
           type: bar.type === 'dots' ? 0 : 1,
@@ -168,7 +152,6 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
       ),
     }));
 
-    // Redux에 저장
     dispatch(saveConversationTemplateList(updatedTemplateList));
     closeModal();
   };

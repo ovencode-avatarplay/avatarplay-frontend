@@ -23,7 +23,7 @@ import CharacterCreatePolicy from './CharacterCreatePolicy';
 import {CreateCharacter2Req, CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
 import ImageUploadDialog from '../content-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {CharacterInfo, CharacterMediaInfo, ConversationInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo, CharacterMediaInfo, Conversation, ConversationInfo} from '@/redux-store/slices/ContentInfo';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
 import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
@@ -89,20 +89,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   //#endregion
 
   //#region Conversation
-  const convertToCardData = (conversationList: ConversationInfo[]): CardData[] => {
-    return conversationList.map(conversation => {
-      return {
-        id: conversation.id.toString(),
-        priorityType: conversation.conversationType,
-        userBars: JSON.parse(conversation.user) as Bar[],
-        charBars: JSON.parse(conversation.character) as Bar[],
-      };
-    });
-  };
-
-  const [conversationCards, setConversationCards] = useState<CardData[]>(
-    convertToCardData(character.conversationTemplateList),
-  );
+  const [conversationCards, setConversationCards] = useState<CardData[]>([]);
+  const [conversationTemplateList, setConversationTemplateList] = useState<Conversation[]>([]);
   //#endregion
 
   //#region Policy
@@ -358,36 +346,72 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
 
   //#region Conversation
 
-  // const getMinId = (list: CardData[]): number => {
-  //   const listId = list.flatMap(list => list.id);
-
-  //   if (listId.length === 0) {
-  //     return 0; // 에피소드가 없는 경우 null 반환 (버그)
-  //   }
-
-  //   const minId = Math.min(...listId);
-  //   return minId > 0 ? 0 : minId;
-  // };
-
-  const handleAddCard = () => {
-    // const tmpId = getMinId(conversationCards);
-    const newCard: CardData = {
-      id: Date.now().toString(),
-      priorityType: 0,
-      userBars: [{id: Date.now().toString() + '_user', inputValue: '', type: 'dots'}],
-      charBars: [{id: Date.now().toString() + '_char', inputValue: '', type: 'dots'}],
-    };
-    setConversationCards([...conversationCards, newCard]);
+  const getMinId = (list: CardData[]): number => {
+    const listId = list.flatMap(item => item.id);
+    if (listId.length === 0) return 0;
+    const minId = Math.min(...listId);
+    return minId > 0 ? 0 : minId - 1;
   };
 
-  const handleRemoveCard = (id: string) => {
-    setConversationCards(prevCards => prevCards.filter(card => card.id !== id));
-  };
+  useEffect(() => {
+    if (conversationTemplateList?.length > 0) {
+      let minCardId = -1;
+      let minBarId = -1;
 
-  const handleUpdateCard = (updatedCard: CardData) => {
+      const initialCards = conversationTemplateList.map(conversation => {
+        const assignedId = conversation.id > 0 ? conversation.id : minCardId--;
+
+        const userBars = JSON.parse(conversation.user || '[]').map(
+          (bar: any): Bar => ({
+            id: minBarId--,
+            inputValue: bar.talk || '',
+            type: bar.type === 0 ? 'dots' : 'description',
+          }),
+        );
+
+        const charBars = JSON.parse(conversation.character || '[]').map(
+          (bar: any): Bar => ({
+            id: minBarId--,
+            inputValue: bar.talk || '',
+            type: bar.type === 0 ? 'dots' : 'description',
+          }),
+        );
+
+        return {id: assignedId, priorityType: conversation.conversationType, userBars, charBars};
+      });
+
+      setConversationCards(initialCards);
+    }
+  }, [conversationTemplateList]);
+
+  const handleOnUpdate = (updatedCard: CardData) => {
     setConversationCards(prevCards =>
       prevCards.map(card => (card.id === updatedCard.id ? {...card, ...updatedCard} : card)),
     );
+  };
+
+  const handleDuplicateCard = (index: number) => {
+    setConversationCards(prevCards => {
+      const newCards = [...prevCards];
+      const cardToDuplicate = newCards[index];
+      const newId = getMinId(newCards);
+
+      const duplicatedCard: CardData = {
+        ...cardToDuplicate,
+        id: newId,
+        userBars: cardToDuplicate.userBars.map((bar, idx) => ({
+          ...bar,
+          id: newId - idx,
+        })),
+        charBars: cardToDuplicate.charBars.map((bar, idx) => ({
+          ...bar,
+          id: newId - idx,
+        })),
+      };
+
+      newCards.splice(index + 1, 0, duplicatedCard);
+      return newCards;
+    });
   };
 
   const handleMoveCard = (index: number, direction: 'up' | 'down') => {
@@ -403,25 +427,20 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
     });
   };
 
-  const handleDuplicateCard = (index: number) => {
-    setConversationCards(prevCards => {
-      const newCards = [...prevCards];
-      const cardToDuplicate = newCards[index];
-      const duplicatedCard: CardData = {
-        ...cardToDuplicate,
-        id: Date.now().toString(),
-        userBars: cardToDuplicate.userBars.map((bar, idx) => ({
-          ...bar,
-          id: `${Date.now()}_user_${idx}`,
-        })),
-        charBars: cardToDuplicate.charBars.map((bar, idx) => ({
-          ...bar,
-          id: `${Date.now()}_char_${idx}`,
-        })),
-      };
-      newCards.splice(index + 1, 0, duplicatedCard);
-      return newCards;
-    });
+  const handleAddCard = () => {
+    setConversationCards(prevCards => [
+      ...prevCards,
+      {
+        id: getMinId(prevCards),
+        priorityType: 0,
+        userBars: [{id: getMinId(prevCards), inputValue: '', type: 'dots'}],
+        charBars: [{id: getMinId(prevCards), inputValue: '', type: 'dots'}],
+      },
+    ]);
+  };
+
+  const handleRemoveCard = (id: number) => {
+    setConversationCards(prevCards => prevCards.filter(card => card.id !== id));
   };
 
   //#endregion
@@ -493,7 +512,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
           setCardList={setConversationCards}
           onAddCard={handleAddCard}
           onRemoveCard={handleRemoveCard}
-          onUpdateCard={handleUpdateCard}
+          onUpdateCard={handleOnUpdate}
           onMoveCard={handleMoveCard}
           onDuplicateCard={handleDuplicateCard}
         />
@@ -681,7 +700,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
 
             <div className={styles.createCharacterArea}>
               <div className={styles.thumbnailArea}>
-                <h2 className={styles.title2}>Thumbnail</h2>
+                <h2 className={styles.title2}>Profile Image</h2>
                 <button
                   onClick={() => {
                     if (mainimageUrl === '') {
