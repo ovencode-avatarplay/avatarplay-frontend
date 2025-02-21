@@ -389,7 +389,7 @@
     padding: 8px 16px;
     position: fixed;
     bottom: 8px;
-    width: calc(100% - 16px * 2);
+    width: calc(var(--full-width) - 16px * 2);
     height: 46px;
     box-sizing: border-box;
 
