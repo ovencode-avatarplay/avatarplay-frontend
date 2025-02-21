@@ -35,7 +35,7 @@ interface ReelsLayoutProps {
   profileType?: ProfileType;
   feedSortType?: ExploreSortType;
   feedMediaType?: FeedMediaType;
-  indexContent?: number;
+  idContent?: number;
 }
 
 const ReelsLayout: React.FC<ReelsLayoutProps> = ({
@@ -46,7 +46,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   profileType = ProfileType.PD,
   feedSortType = ExploreSortType.MostPopular,
   feedMediaType = FeedMediaType.Total,
-  indexContent = 0,
+  idContent = 0,
 }) => {
   const dataProfile = useSelector((state: RootState) => state.profile);
   const [allFeeds, setAllFeeds] = useState<FeedInfo[]>([]); // 전체 데이터 저장
@@ -89,27 +89,30 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       let result = null;
 
       if (isPD) {
-        result = await getProfilePdTabInfo(profileId || 0, PdProfileTabType.Feed, feedSortType, feedMediaType);
+        result = await getProfilePdTabInfo(profileId || 0, PdProfileTabType.Feed, feedSortType, feedMediaType, 0, 1000);
       } else {
         result = await getProfileCharacterTabInfo(
           profileId || 0,
           CharacterProfileTabType.Feed,
           feedSortType,
           feedMediaType,
+          0,
+          1000,
         );
-      }
+      } //TODO : 1000개로 임시 처리, oh, feed가 많은 경우 일부만 뿌리고 id를 찾아서 보여주는 처리가 필요해보임, 무한 스크롤
 
       const mergedFeeds = result?.feedInfoList || [];
       setAllFeeds(mergedFeeds); // 전체 데이터 저장
+      const indexContent = mergedFeeds.findIndex(v => v.id == idContent);
       setInfo(mergedFeeds.slice(0, indexContent + 2)); // 초기 렌더링용 첫 2개
       setCurrentSlideIndex(indexContent);
 
       setTimeout(() => {
-        const sectionHeight = window.innerHeight;
+        const sectionHeight = window.innerHeight - 58 - 48; //58 : header , 48 : footer
         const scrollY = sectionHeight * indexContent;
         window.scrollTo(0, scrollY);
         handleScroll();
-      }, 100);
+      }, 1);
     }
 
     if (!isSpecificProfile) {
