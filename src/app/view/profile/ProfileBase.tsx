@@ -59,7 +59,7 @@ import {useAtom} from 'jotai';
 import Link from 'next/link';
 import HamburgerBar from '../main/header/header-nav-bar/HamburgerBar';
 import SharePopup from '@/components/layout/shared/SharePopup';
-import {FeedInfo} from '@/app/NetWork/ShortsNetwork';
+import {FeedInfo, PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
@@ -108,6 +108,12 @@ export enum eCharacterFilterType {
   Fan = 2,
 }
 
+type TabContentMenuType = {
+  isSettingOpen: boolean;
+  isPin: boolean;
+  id: number;
+};
+
 type DataProfileType = {
   profileId: number;
   indexTab: eTabPDType | eTabCharacterType;
@@ -123,7 +129,8 @@ type DataProfileType = {
   isNeedShowMore: boolean;
   isMyMenuOpened: boolean;
   isShareOpened: boolean;
-  isSettingOpen: boolean;
+
+  tabContentMenu: TabContentMenuType;
 };
 
 type ProfileBaseProps = {
@@ -164,7 +171,12 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     isNeedShowMore: false,
     isMyMenuOpened: false,
     isShareOpened: false,
-    isSettingOpen: false,
+
+    tabContentMenu: {
+      isSettingOpen: false,
+      isPin: false,
+      id: 0,
+    },
   });
   const {ref: observerRef, inView} = useInView();
   const dispatch = useDispatch();
@@ -230,6 +242,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     indexSort: ExploreSortType,
     indexFilterMedia: FeedMediaType,
     offset: number,
+    limit: number,
   ) => Promise<any>) => {
     if (typeProfile === ProfileType.User || typeProfile === ProfileType.PD) {
       return getProfilePdTabInfo;
@@ -278,7 +291,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     setData({...data});
   };
 
-  const refreshProfileTab = async (profileId: number, indexTab: number) => {
+  const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll: boolean = false) => {
     const profileType = data.profileInfo?.profileInfo?.type;
     if (profileType == undefined) return;
 
@@ -301,7 +314,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           indexTab,
           data.indexSort,
           data.indexFilterCharacter,
-          getTabContentCount(indexTab),
+          isRefreshAll ? 0 : getTabContentCount(indexTab),
+          isRefreshAll ? getTabContentCount(indexTab) : 10,
         );
       } else {
         resProfileTabInfo = await getTabInfo(profileType)(
@@ -309,41 +323,62 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           indexTab,
           data.indexSort,
           data.indexFilterMedia,
-          getTabContentCount(indexTab),
+          isRefreshAll ? 0 : getTabContentCount(indexTab),
+          isRefreshAll ? getTabContentCount(indexTab) : 10,
         );
       }
     }
     if (!resProfileTabInfo) return;
 
     // data.profileTabInfo[indexTab] = resProfileTabInfo;
-    addTabContent(indexTab, resProfileTabInfo);
+    addTabContent(indexTab, resProfileTabInfo, isRefreshAll);
     setData({...data});
   };
 
   const addTabContent = (
     indexTab: number,
     resProfileTabInfo: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes,
+    isRefreshAll: boolean,
   ) => {
     const {feedInfoList, characterInfoList, channelInfoList, contentsInfoList, storyInfoList} = resProfileTabInfo;
-
     if (!data.profileTabInfo[indexTab]) {
       data.profileTabInfo[indexTab] = resProfileTabInfo;
       return;
     }
     if (!!feedInfoList) {
-      data.profileTabInfo[indexTab]?.feedInfoList.push(...feedInfoList);
+      if (isRefreshAll) {
+        data.profileTabInfo[indexTab].feedInfoList = feedInfoList;
+      } else {
+        data.profileTabInfo[indexTab]?.feedInfoList.push(...feedInfoList);
+      }
     }
     if (!!characterInfoList) {
-      data.profileTabInfo[indexTab]?.characterInfoList.push(...characterInfoList);
+      if (isRefreshAll) {
+        data.profileTabInfo[indexTab].characterInfoList = characterInfoList;
+      } else {
+        data.profileTabInfo[indexTab]?.characterInfoList.push(...characterInfoList);
+      }
     }
     if (!!channelInfoList) {
-      data.profileTabInfo[indexTab]?.channelInfoList.push(...channelInfoList);
+      if (isRefreshAll) {
+        data.profileTabInfo[indexTab].channelInfoList = channelInfoList;
+      } else {
+        data.profileTabInfo[indexTab]?.channelInfoList.push(...channelInfoList);
+      }
     }
     if (!!contentsInfoList) {
-      data.profileTabInfo[indexTab].contentsInfoList.push(...contentsInfoList);
+      if (isRefreshAll) {
+        data.profileTabInfo[indexTab].contentsInfoList = contentsInfoList;
+      } else {
+        data.profileTabInfo[indexTab].contentsInfoList.push(...contentsInfoList);
+      }
     }
     if (!!storyInfoList) {
-      data.profileTabInfo[indexTab].storyInfoList.push(...storyInfoList);
+      if (isRefreshAll) {
+        data.profileTabInfo[indexTab].storyInfoList = storyInfoList;
+      } else {
+        data.profileTabInfo[indexTab].storyInfoList.push(...storyInfoList);
+      }
     }
   };
 
@@ -409,11 +444,11 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     return [];
   };
 
-  const handleShare = async () => {
+  const handleShare = async (url: string = window.location.href) => {
     const shareData = {
       title: '공유하기 제목',
       text: '이 링크를 확인해보세요!',
-      url: window.location.href, // 현재 페이지 URL
+      url: url, // 현재 페이지 URL
     };
 
     if (navigator.share) {
@@ -703,7 +738,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                   <Link
                     href={
                       getLocalizedLink(`/profile/feed/` + data.profileInfo?.profileInfo.id) +
-                      `?type=${profileType}&index=${index}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}&index=${index}`
+                      `?type=${profileType}&idContent=${one.id}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}`
                     }
                   >
                     <li className={styles.item} key={one?.id}>
@@ -713,7 +748,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                       {one.mediaState == MediaState.Video && (
                         <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
                       )}
-                      {one?.isBookmark && (
+                      {one?.isPinFix && (
                         <div className={styles.pin}>
                           <img src={BoldPin.src} alt="" />
                         </div>
@@ -737,7 +772,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                           onClick={e => {
                             e.preventDefault();
                             e.stopPropagation();
-                            data.isSettingOpen = true;
+
+                            data.tabContentMenu = {
+                              id: one.id,
+                              isPin: one?.isPinFix,
+                              isSettingOpen: true,
+                            };
+
                             setData({...data});
                           }}
                         />
@@ -788,7 +829,12 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                         onClick={e => {
                           e.preventDefault();
                           e.stopPropagation();
-                          data.isSettingOpen = true;
+
+                          data.tabContentMenu = {
+                            id: one.id,
+                            isPin: one?.isPinFix || false,
+                            isSettingOpen: true,
+                          };
                           setData({...data});
                         }}
                       />
@@ -1131,12 +1177,27 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         }}
       ></SharePopup>
       <ContentSetting
-        isOpen={data.isSettingOpen}
         onClose={() => {
-          data.isSettingOpen = false;
+          data.tabContentMenu.isSettingOpen = false;
           setData({...data});
         }}
         isMine={isMine}
+        tabContentMenu={data.tabContentMenu}
+        refreshTabAll={async () => {
+          await refreshProfileTab(profileId, data.indexTab, true);
+        }}
+        onShare={() => {
+          const url =
+            getLocalizedLink(`/profile/feed/` + data.profileInfo?.profileInfo.id) +
+            `?type=${profileType}&idContent=${data.tabContentMenu.id}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}`;
+          handleShare(url);
+        }}
+        onDelete={() => {
+          alert('delete 추후 연동');
+        }}
+        onEdit={() => {
+          alert('edit 추후 연동');
+        }}
       />
     </>
   );
@@ -1144,22 +1205,63 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
 export default ProfileBase;
 
-const ContentSetting = ({isOpen = false, isMine = false, onClose = () => {}}) => {
-  let uploadImageItems: SelectDrawerItem[] = [
-    {
-      name: 'Link Copy',
-      onClick: () => {},
-    },
+type ContentSettingType = {
+  isMine: boolean;
+  onClose: () => void;
+  tabContentMenu: TabContentMenuType;
+  refreshTabAll: () => void;
+  onShare: () => void;
+  onDelete: () => void;
+  onEdit: () => void;
+};
+const ContentSetting = ({
+  isMine = false,
+  onClose = () => {},
+  tabContentMenu = {id: 0, isPin: false, isSettingOpen: false},
+  refreshTabAll = () => {},
+  onShare = () => {},
+  onDelete = () => {},
+  onEdit = () => {},
+}: ContentSettingType) => {
+  // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
+  let uploadImageItemsMine: SelectDrawerItem[] = [
     {
       name: 'Edit',
       onClick: () => {},
     },
     {
+      name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
+      onClick: async () => {
+        const dataUpdatePin: PinFixFeedReq = {
+          feedId: tabContentMenu.id,
+          isFix: !tabContentMenu.isPin,
+        };
+        await updatePin(dataUpdatePin);
+        refreshTabAll();
+      },
+    },
+    {
       name: 'Share',
-      onClick: () => {},
+      onClick: () => {
+        onShare();
+      },
     },
     {
       name: 'Delete',
+      onClick: () => {},
+    },
+  ];
+  let uploadImageItems: SelectDrawerItem[] = [
+    {
+      name: 'Edit',
+      onClick: () => {},
+    },
+    {
+      name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
+      onClick: () => {},
+    },
+    {
+      name: 'Hide',
       onClick: () => {},
     },
     {
@@ -1167,11 +1269,14 @@ const ContentSetting = ({isOpen = false, isMine = false, onClose = () => {}}) =>
       onClick: () => {},
     },
   ];
+
   if (isMine) {
-    uploadImageItems = uploadImageItems.filter(v => v.name != 'Report');
+    uploadImageItems = isMine ? uploadImageItemsMine : uploadImageItems;
   }
 
-  return <SelectDrawer isOpen={isOpen} onClose={onClose} items={uploadImageItems} selectedIndex={-1} />;
+  return (
+    <SelectDrawer isOpen={tabContentMenu.isSettingOpen} onClose={onClose} items={uploadImageItems} selectedIndex={-1} />
+  );
 };
 
 export type SelectBoxProps = {

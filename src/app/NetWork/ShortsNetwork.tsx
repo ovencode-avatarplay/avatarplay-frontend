@@ -1,6 +1,7 @@
 // src/app/Network/ShortsNetwork.ts
 
 import api, {ResponseAPI} from './ApiInstance';
+import {MediaState} from './ProfileNetwork';
 
 // 쇼츠 정보 타입
 export interface ShortsInfo {
@@ -43,22 +44,25 @@ export const sendGetHomeFeedShorts = async (): Promise<{
 
 export interface FeedInfo {
   id: number;
+  profileId: number;
   urlLinkKey: string;
-  mediaState: number;
+  mediaState: MediaState;
   mediaUrlList: string[];
   description: string;
   hashTag: string;
   commentCount: number;
   likeCount: number;
+  disLikeCount: number;
   isLike: boolean;
   isDisLike: boolean;
   isBookmark: boolean;
+  isPinFix: boolean;
+  isFollowing: boolean;
   playTime: string;
   characterProfileId: number;
   characterProfileName: string;
   characterProfileUrl: string;
-  createAt: Date;
-  isFollowing: boolean;
+  createAt: string;
 }
 
 export interface RequestCreateFeed {
@@ -547,6 +551,33 @@ export const sendGetComment = async (
       resultCode: -1,
       resultMessage: 'Failed to fetch comment',
       data: null,
+    };
+  }
+};
+
+export interface PinFixFeedReq {
+  feedId: number;
+  isFix: boolean;
+}
+
+export interface PinFixFeedRes {}
+
+export const updatePin = async (payload: PinFixFeedReq): Promise<PinFixFeedRes> => {
+  try {
+    const response = await api.post('/Feed/pin', payload);
+    const {resultCode, resultMessage, data} = response.data;
+
+    return {
+      resultCode,
+      resultMessage,
+      data: data || {}, // 데이터가 없을 경우 빈 객체 반환
+    };
+  } catch (error) {
+    console.error('Failed to pin feed:', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to pin feed',
+      data: {},
     };
   }
 };
