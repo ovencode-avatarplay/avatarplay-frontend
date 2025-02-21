@@ -59,42 +59,7 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
       <div className={styles.drawerContent}>
         <CreateDrawerHeader title="Modify Character" onClose={onClose} />
 
-        <CreateCharacterMain2 characterInfo={characterInfo} />
-
-        {/* {isModifying ? (
-          <CharacterCreateSequence
-            closeAction={handleCloseClick}
-            createType={isModify ? 'modify' : 'create'}
-            characterInfo={characterInfo}
-            publishFinishAction={handlePublishFinishAction}
-          />
-        ) : characterInfo ? (
-          <div className={styles.createBox}>
-            <PublishCharacter
-              characterInfo={characterInfo}
-              publishRequested={publishReqested}
-              publishRequestedAction={() => {
-                setPublishClick(false);
-                setPublishReqested(false);
-              }}
-              debugparam={''}
-              publishFinishAction={handlePublishFinishAction}
-              showDelete={true}
-              deleteAction={onDelete}
-            />
-
-            <div className={styles.buttonContainer}>
-              <PublishCharacterBottom
-                onPrevClick={handlePrevClick}
-                onPublishClick={() => {
-                  setPublishClick(true);
-                }}
-              />
-            </div>
-          </div>
-        ) : (
-          <div>character is not available</div>
-        )} */}
+        <CreateCharacterMain2 characterInfo={characterInfo} onClose={handleCloseClick} />
       </div>
     </Drawer>
   );

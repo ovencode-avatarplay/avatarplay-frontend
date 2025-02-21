@@ -30,9 +30,10 @@ import {Bar, CardData} from '../content-main/episode/episode-conversationtemplat
 
 interface CreateCharacterProps {
   characterInfo?: CharacterInfo;
+  onClose?: () => void;
 }
 
-const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) => {
+const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, onClose}) => {
   const router = useRouter();
 
   //#region Data
@@ -89,8 +90,65 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   //#endregion
 
   //#region Conversation
-  const [conversationCards, setConversationCards] = useState<CardData[]>([]);
-  const [conversationTemplateList, setConversationTemplateList] = useState<Conversation[]>([]);
+  const [conversationTemplateList, setConversationTemplateList] = useState<Conversation[]>(
+    character.conversationTemplateList,
+  );
+
+  /**
+   * Conversation[] → CardData[] 변환
+   */
+  const convertConversationsToCards = (conversations: Conversation[]): CardData[] => {
+    return conversations.map(conversation => {
+      const userBars: Bar[] = JSON.parse(conversation.user || '[]').map(
+        (bar: any): Bar => ({
+          id: bar.id,
+          inputValue: bar.talk || '',
+          type: bar.type === 0 ? 'dots' : 'description',
+        }),
+      );
+
+      const charBars: Bar[] = JSON.parse(conversation.character || '[]').map(
+        (bar: any): Bar => ({
+          id: bar.id,
+          inputValue: bar.talk || '',
+          type: bar.type === 0 ? 'dots' : 'description',
+        }),
+      );
+
+      return {
+        id: conversation.id,
+        priorityType: conversation.conversationType,
+        userBars,
+        charBars,
+      };
+    });
+  };
+
+  /**
+   * CardData[] → Conversation[] 변환
+   */
+  const convertCardsToConversations = (cards: CardData[]): Conversation[] => {
+    return cards.map(card => ({
+      id: card.id,
+      conversationType: card.priorityType,
+      user: JSON.stringify(
+        card.userBars.map(bar => ({
+          type: bar.type === 'dots' ? 0 : 1,
+          talk: bar.inputValue,
+        })),
+      ),
+      character: JSON.stringify(
+        card.charBars.map(bar => ({
+          type: bar.type === 'dots' ? 0 : 1,
+          talk: bar.inputValue,
+        })),
+      ),
+    }));
+  };
+
+  const [conversationCards, setConversationCards] = useState<CardData[]>(
+    convertConversationsToCards(conversationTemplateList),
+  );
   //#endregion
 
   //#region Policy
@@ -114,7 +172,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   //#region Handler
 
   const handleOnClose = () => {
-    router.back();
+    if (onClose) {
+      onClose();
+    } else {
+      router.back();
+    }
   };
 
   const handlerPublishFinish = () => {
@@ -208,7 +270,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
             isProfileImage: item.isProfileImage,
           })),
           conversationTemplateList: conversationCards?.map(item => ({
-            id: Number(item.id),
+            id: item.id,
             conversationType: item.priorityType,
             user: JSON.stringify(item.userBars),
             character: JSON.stringify(item.charBars),
@@ -345,7 +407,6 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
   //#endregion
 
   //#region Conversation
-
   const getMinId = (list: CardData[]): number => {
     const listId = list.flatMap(item => item.id);
     if (listId.length === 0) return 0;
@@ -355,30 +416,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
 
   useEffect(() => {
     if (conversationTemplateList?.length > 0) {
-      let minCardId = -1;
-      let minBarId = -1;
-
-      const initialCards = conversationTemplateList.map(conversation => {
-        const assignedId = conversation.id > 0 ? conversation.id : minCardId--;
-
-        const userBars = JSON.parse(conversation.user || '[]').map(
-          (bar: any): Bar => ({
-            id: minBarId--,
-            inputValue: bar.talk || '',
-            type: bar.type === 0 ? 'dots' : 'description',
-          }),
-        );
-
-        const charBars = JSON.parse(conversation.character || '[]').map(
-          (bar: any): Bar => ({
-            id: minBarId--,
-            inputValue: bar.talk || '',
-            type: bar.type === 0 ? 'dots' : 'description',
-          }),
-        );
-
-        return {id: assignedId, priorityType: conversation.conversationType, userBars, charBars};
-      });
+      const initialCards = convertConversationsToCards(conversationTemplateList);
 
       setConversationCards(initialCards);
     }
@@ -401,11 +439,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo}) =
         id: newId,
         userBars: cardToDuplicate.userBars.map((bar, idx) => ({
           ...bar,
-          id: newId - idx,
+          id: newId,
         })),
         charBars: cardToDuplicate.charBars.map((bar, idx) => ({
           ...bar,
-          id: newId - idx,
+          id: newId,
         })),
       };
 

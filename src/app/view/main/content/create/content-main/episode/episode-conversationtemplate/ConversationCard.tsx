@@ -30,7 +30,6 @@ interface ConversationCardProps {
 const ConversationCard: React.FC<ConversationCardProps> = ({card, moveUp, moveDown, duplicate, onUpdate, remove}) => {
   const [isDropDown, setIsDropDown] = useState<boolean>(false);
 
-  // 🔹 getMinId: 새로운 ID를 -1씩 감소하여 부여
   const getMinId = (list: Bar[]): number => {
     if (list.length === 0) return -1;
     const minId = Math.min(...list.map(bar => bar.id));
