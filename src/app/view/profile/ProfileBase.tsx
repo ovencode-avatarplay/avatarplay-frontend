@@ -77,6 +77,7 @@ enum eTabPDType {
 
 enum eTabPDOtherType {
   Feed,
+  Info,
   Channel,
   Character,
 }

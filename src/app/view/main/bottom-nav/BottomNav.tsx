@@ -197,7 +197,7 @@ export default function BottomNav() {
                   key={index}
                   className={`${styles.navButton} 
                         ${selectedIndex === index ? styles.selected : ''} 
-                        ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
+                        ${selectedIndex === index && colorMode === 0 ? '' : ''}`}
                 >
                   <UserDropdown />
                 </div>

@@ -369,3 +369,75 @@ export const sendSearchProfileReq = async (payload: SearchProfileReq) => {
     return null;
   }
 };
+
+export interface UpdatePdInfoReq {
+  profileId: number;
+  name: string;
+  iconUrl: string;
+  introduce: string;
+  interests: string[];
+  skills: string[];
+  personalHistory: string;
+  honorAwards: string;
+  url: string;
+  pdPortfolioInfoList: PdPortfolioInfo[];
+}
+
+export interface PdPortfolioInfo {
+  id: number;
+  description: string;
+  image_url: string;
+}
+
+export interface UpdatePdInfoRes {}
+
+export const updatePdInfo = async (payload: UpdatePdInfoReq) => {
+  try {
+    const res = await api.post<ResponseAPI<UpdatePdInfoRes>>('Profile/updatePdInfo', payload);
+
+    if (res.status !== 200) {
+      console.error('UpdatePDInfo API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('UpdatePDInfo API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface GetPdInfoReq {
+  profileId: number;
+}
+
+export interface GetPdInfoRes {
+  profileId: number;
+  name: string;
+  iconUrl: string;
+  introduce: string;
+  interests: string[];
+  skills: string[];
+  personalHistory: string;
+  honorAwards: string;
+  url: string;
+  pdPortfolioInfoList: PdPortfolioInfo[];
+}
+
+export const getPdInfo = async (payload: GetPdInfoReq) => {
+  try {
+    const res = await api.get<ResponseAPI<GetPdInfoRes>>('Profile/getPdInfo/' + `?profileId=${payload.profileId}`);
+
+    if (res.status !== 200) {
+      console.error('getPdInfo API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getPdInfo API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
