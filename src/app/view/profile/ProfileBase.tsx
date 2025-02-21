@@ -37,6 +37,8 @@ import {
   followProfile,
   FollowState,
   GetCharacterTabInfoeRes,
+  getPdInfo,
+  GetPdInfoRes,
   GetPdTabInfoeRes,
   getProfileCharacterTabInfo,
   getProfileInfo,
@@ -117,11 +119,11 @@ type TabContentMenuType = {
 
 type DataProfileType = {
   profileId: number;
-  indexTab: eTabPDType | eTabCharacterType;
+  indexTab: eTabPDType | eTabCharacterType | eTabPDOtherType | eTabCharacterOtherType;
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
   profileTabInfo: {
-    [key: number]: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes;
+    [key: number]: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes};
   };
   indexFilterMedia: FeedMediaType;
   indexFilterCharacter: number;
@@ -308,6 +310,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         return;
       }
       resProfileTabInfo = resGetCharacterInfo.data;
+    } else if (isOtherPD && indexTab == eTabPDOtherType.Info) {
+      const resPdInfo = await getPdInfo({profileId: profileId});
+      if (resPdInfo?.resultCode != 0) {
+        console.error('api error : ', resPdInfo?.resultMessage);
+        return;
+      }
+      resProfileTabInfo = {dataResPdInfo: resPdInfo?.data};
     } else {
       if (indexTab == eTabPDType.Character) {
         resProfileTabInfo = await getTabInfo(profileType)(
@@ -338,14 +347,19 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
   const addTabContent = (
     indexTab: number,
-    resProfileTabInfo: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes,
+    resProfileTabInfo: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes},
     isRefreshAll: boolean,
   ) => {
-    const {feedInfoList, characterInfoList, channelInfoList, contentsInfoList, storyInfoList} = resProfileTabInfo;
+    const {feedInfoList, characterInfoList, channelInfoList, contentsInfoList, storyInfoList, dataResPdInfo} =
+      resProfileTabInfo;
     if (!data.profileTabInfo[indexTab]) {
       data.profileTabInfo[indexTab] = resProfileTabInfo;
       return;
     }
+    if (!!dataResPdInfo) {
+      data.profileTabInfo[indexTab].dataResPdInfo = dataResPdInfo;
+    }
+
     if (!!feedInfoList) {
       if (isRefreshAll) {
         data.profileTabInfo[indexTab].feedInfoList = feedInfoList;
@@ -496,6 +510,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList?.length;
       } else if (data.indexTab == eTabPDType.Channel) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
+      } else if (isOtherPD && data.indexTab == eTabPDOtherType.Info) {
+        isEmptyTab = false;
       } else {
         isEmptyTab = true;
       }
@@ -582,9 +598,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                     OptionComponent={SelectBoxOptionComponent}
                     onChange={async id => {
                       data.indexSort = id;
-                      console.log('data 1: ', JSON.stringify(data));
                       await refreshProfileTab(profileId, data.indexTab);
-                      console.log('data 2: ', JSON.stringify(data));
                       setData({...data});
                     }}
                     customStyles={{
@@ -663,13 +677,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <div className={styles.right}>
                 <div className={styles.filterTypeWrap}>
                   <SelectBox
-                    value={{id: ExploreSortType.MostPopular, value: 'Most Popular'}}
-                    options={[
-                      {id: ExploreSortType.Newest, value: 'Newest'},
-                      {id: ExploreSortType.MostPopular, value: 'Most Popular'},
-                      {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
-                      {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
-                    ]}
+                    value={sortOptionList[data.indexSort]}
+                    options={sortOptionList}
                     ArrowComponent={SelectBoxArrowComponent}
                     ValueComponent={SelectBoxValueComponent}
                     OptionComponent={SelectBoxOptionComponent}
@@ -855,7 +864,44 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           </ul>
         );
       }
+      if (isOtherPD && tabIndex == eTabPDOtherType.Info) {
+        const pdInfo = data?.profileTabInfo?.[data.indexTab]?.dataResPdInfo;
+        return (
+          <>
+            <section className={styles.pdInfo}>
+              <div className={styles.label}>Introduce</div>
+              <div className={styles.value}>{pdInfo?.introduce}</div>
+              <div className={styles.label}>Interests</div>
+              <ul className={styles.tags}>
+                {pdInfo?.interests.map((one, index) => {
+                  return (
+                    <li key={index} className={styles.tag}>
+                      {one}
+                    </li>
+                  );
+                })}
+              </ul>
 
+              <div className={styles.label}>Skill</div>
+              <ul className={styles.tags}>
+                {pdInfo?.skills.map((one, index) => {
+                  return (
+                    <li key={index} className={styles.tag}>
+                      {one}
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className={styles.label}>Personal History</div>
+              <div className={styles.value}>{pdInfo?.personalHistory}</div>
+              <div className={styles.label}>Honor & Awards</div>
+              <div className={styles.value}>{pdInfo?.honorAwards}</div>
+              <div className={styles.label}>URL</div>
+              <div className={styles.value}>{pdInfo?.url}</div>
+            </section>
+          </>
+        );
+      }
       if (isCharacter && tabIndex == eTabCharacterType.Info) {
         return (
           <>
