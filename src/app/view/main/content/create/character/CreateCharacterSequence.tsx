@@ -129,8 +129,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
     'Step 1. Select gender',
     'Step 2. Select style',
     'Step 3. Choose ethnicity',
-    'Step 4. Choose hair style',
-    'Step 5. Body shape',
+    'Step 4. Choose Hair Style',
+    'Step 5. Body Type',
     'Step 6. Outfit of clothes',
     'Step 7. Thumbnail background',
     'Step 8. Choose personality',
@@ -142,8 +142,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
     'Step 1. Select gender ',
     'Step 2. Select style',
     'Step 3. Choose ethnicity',
-    'Step 4. Choose hair style',
-    'Step 5. Body shape',
+    'Step 4. Choose Hair Style',
+    'Step 5. Body Type',
     'Step 6. Outfit of clothes',
     'Step 7. Thumbnail background',
     '',
@@ -465,7 +465,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
         return (
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
-              <h3 className={styles.createSubTitle}>Ethnicity</h3>
+              <h3 className={styles.createSubTitle}>
+                Ethnicity<span className={styles.redAstrisk}>*</span>
+              </h3>
               <Swiper
                 className={styles.horizonSwiper}
                 initialSlide={selectedOptions.race}
@@ -489,7 +491,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
               </Swiper>
             </article>
             <article className={styles.createContentArea}>
-              <h3 className={styles.createSubTitle}>Age</h3>
+              <h3 className={styles.createSubTitle}>
+                Age<span className={styles.redAstrisk}>*</span>
+              </h3>
               <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
                 {characterOptions.ageOptions.map((age, index) => (
                   <CustomHashtag
@@ -502,7 +506,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
               </div>
             </article>
             <article className={styles.createContentArea}>
-              <h3 className={styles.createSubTitle}>Eye Color</h3>
+              <h3 className={styles.createSubTitle}>
+                Eyes<span className={styles.redAstrisk}>*</span>
+              </h3>
               <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
                 {characterOptions.eyeColorOptions.map((eyeColor, index) => (
                   <CharacterCreateImageButton
@@ -522,7 +528,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
         return (
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
-              <h3 className={styles.createSubTitle}>Hair Style</h3>
+              <h3 className={styles.createSubTitle}>
+                Hair Style<span className={styles.redAstrisk}>*</span>
+              </h3>
               <div className={`${styles.gridButtonGroup3x3} ${styles.buttonGap6}`}>
                 {characterOptions.hairStyles.map((style, index) => (
                   <CharacterCreateImageButton
@@ -535,7 +543,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   />
                 ))}
               </div>
-              <h3 className={styles.createSubTitle}>Hair Color</h3>
+              <h3 className={styles.createSubTitle}>
+                Color<span className={styles.redAstrisk}>*</span>
+              </h3>
               <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
                 {characterOptions.hairColors.map((color, index) => (
                   <CustomHashtag
@@ -554,7 +564,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
         return (
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
-              <h3 className={styles.createSubTitle}>Body Type</h3>
+              <h3 className={styles.createSubTitle}>
+                Body Type<span className={styles.redAstrisk}>*</span>
+              </h3>
               <Swiper
                 className={styles.horizonSwiper}
                 initialSlide={selectedOptions.bodyType}
@@ -581,7 +593,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
               </Swiper>
               {selectedOptions.gender === 0 && (
                 <>
-                  <h3 className={styles.createSubTitle}>Top Size</h3>
+                  <h3 className={styles.createSubTitle}>
+                    Breast Size<span className={styles.redAstrisk}>*</span>
+                  </h3>
                   <Swiper
                     className={styles.horizonSwiper}
                     initialSlide={selectedOptions.topSize}
@@ -607,7 +621,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     ))}
                   </Swiper>
 
-                  <h3 className={styles.createSubTitle}>Bottom Size</h3>
+                  <h3 className={styles.createSubTitle}>
+                    The Butt Size<span className={styles.redAstrisk}>*</span>
+                  </h3>
                   <Swiper
                     className={styles.horizonSwiper}
                     initialSlide={selectedOptions.bottomSize}
@@ -641,7 +657,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
         return (
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
-              <h3 className={styles.createSubTitle}>Outfit Style</h3>
+              <h3 className={styles.createSubTitle}>
+                Outfit Style<span className={styles.redAstrisk}>*</span>
+              </h3>
               <Swiper
                 className={styles.horizonSwiper}
                 slidesPerView="auto"
@@ -670,7 +688,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   </SwiperSlide>
                 ))}
               </Swiper>
-              <h3 className={styles.createSubTitle}>Theme Color</h3>
+              <h3 className={styles.createSubTitle}>
+                Theme Color<span className={styles.redAstrisk}>*</span>
+              </h3>
               <div
                 className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}
                 style={{pointerEvents: customClothesActive ? 'none' : 'auto', opacity: customClothesActive ? 0.5 : 1}}

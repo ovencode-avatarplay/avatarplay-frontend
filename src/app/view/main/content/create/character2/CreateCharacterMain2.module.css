@@ -67,6 +67,29 @@
     border-radius: 12px;
 }
 
+.thumbnailImage.emptyImage
+{
+    border-radius: 12px;
+    border: 1px solid #000;
+}
+
+.createImageText
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    color: var(--Black, #000);
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.28px;
+
+}
+
 .editButton
 {
     cursor: pointer;
@@ -303,4 +326,26 @@
 .uploadModalButton
 {
     width: 100%;
+}
+
+.dashboardButton
+{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+
+    margin-right: 21px;
+}
+
+.dashboardIcon
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);
+
 }
