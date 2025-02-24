@@ -149,6 +149,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
 
   const [visibilityType, setvisibilityType] = useState<number>(character.visibilityType);
   const [llmModel, setLlmModel] = useState<number>(character.llmModel);
+  const [llmCustomAPIKey, setLlmCustomAPIKey] = useState<string>('');
   const [tag, setTag] = useState<string>(character.tag);
   const [positionCountryList, setPositionCountryList] = useState<number[]>(character.positionCountryList);
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
@@ -561,6 +562,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
           onVisibilityChange={setvisibilityType}
           llmModel={llmModel}
           onLlmModelChange={setLlmModel}
+          llmCustomAPIKey={llmCustomAPIKey}
+          onLlmCustomAPIKeyChange={setLlmCustomAPIKey}
           tag={tag}
           onTagChange={setTag}
           positionCountry={positionCountryList}

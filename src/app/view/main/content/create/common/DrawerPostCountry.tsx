@@ -13,6 +13,7 @@ interface DrawerPostCountryProps {
   selectableCountryList: LanguageType[];
   postCountryList: LanguageType[];
   onUpdatePostCountry: (updatedList: LanguageType[]) => void;
+  onRemovePostCountry?: (country: LanguageType) => void;
   isAll: boolean;
   setIsAll: (checked: boolean) => void;
 }
@@ -23,6 +24,7 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
   selectableCountryList,
   postCountryList,
   onUpdatePostCountry,
+  onRemovePostCountry,
   isAll,
   setIsAll,
 }) => {
@@ -37,9 +39,14 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
       onUpdatePostCountry([...postCountryList, country]);
     }
   };
+
   const handleRemovePostCountry = (country: LanguageType) => {
-    const updatedList = postCountryList.filter(item => item !== country);
-    onUpdatePostCountry(updatedList);
+    if (onRemovePostCountry) {
+      onRemovePostCountry(country);
+    } else {
+      const updatedList = postCountryList.filter(item => item !== country);
+      onUpdatePostCountry(updatedList);
+    }
   };
 
   const handleToggleAll = (checked: boolean) => {

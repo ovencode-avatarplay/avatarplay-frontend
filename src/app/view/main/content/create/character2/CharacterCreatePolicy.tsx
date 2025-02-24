@@ -1,4 +1,4 @@
-import {BoldArrowDown} from '@ui/Icons';
+import {BoldArrowDown, LineClose} from '@ui/Icons';
 import styles from './CharacterCreatePolicy.module.css';
 import {useEffect, useState} from 'react';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -17,12 +17,15 @@ import CharacterCreateVoiceSetting from './CharacterCreateVoiceSetting';
 import OperatorInviteDrawer from '../common/DrawerOperatorInvite';
 import DrawerTagSelect from '../common/DrawerTagSelect';
 import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {SetStateAction} from 'jotai';
 
 interface Props {
   visibility: number;
   onVisibilityChange: (value: number) => void;
   llmModel: number;
   onLlmModelChange: (value: number) => void;
+  llmCustomAPIKey: string;
+  onLlmCustomAPIKeyChange: React.Dispatch<SetStateAction<string>>;
   tag: string;
   onTagChange: (value: string) => void;
   positionCountry: number[];
@@ -44,6 +47,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   onVisibilityChange,
   llmModel,
   onLlmModelChange,
+  llmCustomAPIKey,
+  onLlmCustomAPIKeyChange,
   tag,
   onTagChange,
   positionCountry,
@@ -66,7 +71,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tagOpen, setTagOpen] = useState(false);
   const [tagList, setTagList] = useState<string[]>([]);
-  const maxTagCount = 5;
+  const maxTagCount = 10;
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
 
   const [isVisibilityOpen, setIsVisibilityOpen] = useState(false);
@@ -558,15 +563,52 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           'Visibility Info',
         )}
         {renderDropDown('LLM', llmModelData[llmModel].label, setLlmOpen)}
-        <ContentLLMSetup open={llmOpen} onClose={() => setLlmOpen(false)} onModelSelected={onLlmModelChange} />
-        {renderDropDown('Tag', selectedTags.join(', '), setTagOpen)}
-        {renderTag()}
-        {renderDropDown(
-          'Position Country',
-          positionCountry.map(country => LanguageType[country]).join(', '),
-          setIsPositionCountryOpen,
-        )}
-        {renderPositionCountry()}
+        <ContentLLMSetup
+          open={llmOpen}
+          onClose={() => setLlmOpen(false)}
+          onModelSelected={onLlmModelChange}
+          initialValue={llmModel}
+          customAPIKey={llmCustomAPIKey}
+          onCustomAPIKeyChange={onLlmCustomAPIKeyChange}
+        />
+
+        <div className={styles.tagContainer}>
+          {renderDropDown('Tag', selectedTags.join(', '), setTagOpen)}
+          {renderTag()}
+          <div className={styles.blackTagContainer}>
+            {selectedTags.map((tag, index) => (
+              <div key={index} className={styles.blackTag}>
+                {tag}
+                <img
+                  src={LineClose.src}
+                  className={styles.lineClose}
+                  onClick={() => handleTagSelect(tag)} // 클릭하면 해당 태그 삭제
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.tagContainer}>
+          {renderDropDown(
+            'Position Country',
+            positionCountry.map(country => LanguageType[country]).join(', '),
+            setIsPositionCountryOpen,
+          )}
+          {renderPositionCountry()}
+          <div className={styles.blackTagContainer}>
+            {positionCountry.map((tag, index) => (
+              <div key={index} className={styles.blackTag}>
+                {LanguageType[tag]}
+                <img
+                  src={LineClose.src}
+                  className={styles.lineClose}
+                  onClick={() => onPositionCountryChange(positionCountry.filter((_, i) => i !== index))}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
       <div className={styles.selectItemsArea2}>
         {renderCharacterIP()}

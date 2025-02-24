@@ -22,6 +22,17 @@
     -ms-overflow-style: none;  
   }
 
+.basicGuide
+{
+    width: var(--second-width);
+    color: #000;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.28px;
+    margin-bottom: -6px;
+}
 
 .inputArea
 {

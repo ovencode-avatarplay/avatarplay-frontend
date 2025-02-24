@@ -23,6 +23,11 @@ const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
 
   return (
     <div className={styles.basicContainer}>
+      <div className={styles.basicGuide}>
+        "This is where you set the character's basic information (name, description). However, the content entered here
+        does not directly affect the actual chat. To reflect the character's personality in the chat, you must enter it
+        in the LLM tab."
+      </div>
       <div className={styles.inputArea}>
         <div className={styles.inputTextArea}>
           <div className={styles.titleArea}>
