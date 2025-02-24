@@ -12,6 +12,7 @@ import {useRouter} from 'next/navigation';
 import {getBackUrl} from '@/utils/util-1';
 import {getPdInfo, MediaState, updatePdInfo, UpdatePdInfoReq} from '@/app/NetWork/ProfileNetwork';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {Swiper, SwiperSlide} from 'swiper/react';
 type Props = {
   params: {
     id?: string[];
@@ -31,7 +32,7 @@ type FileType = {
   fileBlob?: Blob;
 };
 
-type TagDrawerType = {
+export type TagDrawerType = {
   isOpenTagsDrawer: boolean;
   tagList: {
     isActive: boolean;
@@ -494,13 +495,34 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
           </section>
 
           <section className={styles.portfolioSection}>
-            <h2 className={styles.label}>Portfolio</h2>
-            <div className={styles.uploadArea}>
-              <div className={styles.uploadWrap}>
-                <img src={LineUpload.src} alt="" />
-                <div className={styles.text}>Upload</div>
-              </div>
+            <div className={styles.labelWrap}>
+              <h2 className={styles.label}>Portfolio</h2>
+              <div className={styles.btnPreview}>Preview</div>
             </div>
+            {/* <div className={styles.uploadArea}> */}
+            <Swiper
+              className={styles.uploadArea}
+              freeMode={true}
+              slidesPerView={'auto'}
+              onSlideChange={() => {}}
+              onSwiper={swiper => {}}
+              spaceBetween={8}
+              preventClicks={false}
+              simulateTouch={false}
+            >
+              <SwiperSlide>
+                <div className={styles.uploadWrap}>
+                  <img src={LineUpload.src} alt="" />
+                  <div className={styles.text}>Upload</div>
+                </div>
+              </SwiperSlide>
+              <SwiperSlide>
+                <div className={styles.thumbnailWrap}>
+                  <img src={'/images/profile_sample/img_sample_profile1.png'} alt="" />
+                </div>
+              </SwiperSlide>
+            </Swiper>
+            {/* </div> */}
           </section>
 
           <section className={styles.urlSection}>
@@ -576,7 +598,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
   );
 };
 
-type DrawerSelectTagsType = {
+export type DrawerSelectTagsType = {
   title: string;
   description: string;
   tags: {isActive: boolean; value: string}[];
@@ -584,7 +606,7 @@ type DrawerSelectTagsType = {
   onClose: () => void;
   onChange: (tags: {isActive: boolean; value: string}[]) => void;
 };
-const DrawerSelectTags = ({title, description, tags, open, onClose, onChange}: DrawerSelectTagsType) => {
+export const DrawerSelectTags = ({title, description, tags, open, onClose, onChange}: DrawerSelectTagsType) => {
   const [data, setData] = useState({
     tagList: tags,
   });

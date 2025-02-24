@@ -1117,7 +1117,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                 <SwiperSlide>
                   <li className={cx(styles.item, styles.addRecruit)}>
                     <div className={styles.circle}>
-                      <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                      <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
                     </div>
                     <div className={styles.label}>Add</div>
                   </li>
@@ -1126,7 +1126,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <SwiperSlide>
                 <li className={styles.item}>
                   <div className={styles.circle}>
-                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
                     <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
                     <span className={cx(styles.grade, styles.original)}>Original</span>
                   </div>
@@ -1136,7 +1136,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <SwiperSlide>
                 <li className={styles.item}>
                   <div className={styles.circle}>
-                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
                     <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
                     <span className={cx(styles.grade, styles.fan)}>Fan</span>
                   </div>
@@ -1146,7 +1146,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <SwiperSlide>
                 <li className={styles.item}>
                   <div className={styles.circle}>
-                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
                     <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
                     <span className={cx(styles.grade, styles.fan)}>Fan</span>
                   </div>
@@ -1156,7 +1156,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <SwiperSlide>
                 <li className={styles.item}>
                   <div className={styles.circle}>
-                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.png" alt="" />
+                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
                     <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
                     <span className={cx(styles.grade, styles.fan)}>Fan</span>
                   </div>
