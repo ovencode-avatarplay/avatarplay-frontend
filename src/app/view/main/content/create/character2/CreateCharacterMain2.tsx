@@ -97,16 +97,16 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
   const convertConversationsToCards = (conversations: Conversation[]): CardData[] => {
     return conversations.map(conversation => {
       const userBars: Bar[] = JSON.parse(conversation.user || '[]').map(
-        (bar: any): Bar => ({
-          id: bar.id,
+        (bar: any, index: number): Bar => ({
+          id: index,
           inputValue: bar.talk || '',
           type: bar.type === 0 ? 'dots' : 'description',
         }),
       );
 
       const charBars: Bar[] = JSON.parse(conversation.character || '[]').map(
-        (bar: any): Bar => ({
-          id: bar.id,
+        (bar: any, index: number): Bar => ({
+          id: index,
           inputValue: bar.talk || '',
           type: bar.type === 0 ? 'dots' : 'description',
         }),
@@ -121,12 +121,9 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
     });
   };
 
-  /**
-   * CardData[] → Conversation[] 변환
-   */
   const convertCardsToConversations = (cards: CardData[]): Conversation[] => {
     return cards.map(card => ({
-      id: card.id,
+      id: card.id > 0 ? card.id : 0,
       conversationType: card.priorityType,
       user: JSON.stringify(
         card.userBars.map(bar => ({
@@ -266,12 +263,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
             activationCondition: item.activationCondition,
             isSpoiler: item.isSpoiler,
           })),
-          conversationTemplateList: conversationCards?.map(item => ({
-            id: item.id,
-            conversationType: item.priorityType,
-            user: JSON.stringify(item.userBars),
-            character: JSON.stringify(item.charBars),
-          })),
+          conversationTemplateList: convertCardsToConversations(conversationCards),
           visibilityType: visibilityType,
           llmModel: llmModel,
           tag: tag,
@@ -442,11 +434,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
         id: newId,
         userBars: cardToDuplicate.userBars.map((bar, idx) => ({
           ...bar,
-          id: newId,
+          id: idx,
         })),
         charBars: cardToDuplicate.charBars.map((bar, idx) => ({
           ...bar,
-          id: newId,
+          id: idx,
         })),
       };
 

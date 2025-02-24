@@ -10,6 +10,7 @@ interface CharacterGridProps {
   style?: React.CSSProperties;
   canEdit?: boolean;
   onClickEdit?: (id: number) => void;
+  onClickDelete?: (id: number) => void;
   showVisibilityType?: boolean;
 }
 
@@ -18,6 +19,7 @@ const CharacterGrid: React.FC<CharacterGridProps> = ({
   onCharacterSelect,
   style,
   onClickEdit,
+  onClickDelete,
   showVisibilityType = false,
 }) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -33,6 +35,12 @@ const CharacterGrid: React.FC<CharacterGridProps> = ({
     }
   };
 
+  const handleClickDelete = (id: number) => {
+    if (onClickDelete) {
+      onClickDelete(id);
+    }
+  };
+
   return (
     <div className={styles.gridContainer} style={style}>
       {characters && characters.length > 0 ? (
@@ -44,6 +52,7 @@ const CharacterGrid: React.FC<CharacterGridProps> = ({
             onSelect={() => handleSelect(character.id)}
             canEdit={onClickEdit !== null ? true : false}
             onClickEdit={() => handleClickEdit(character.id)}
+            onClickDelete={() => handleClickDelete(character.id)}
             showVisibilityType={showVisibilityType}
           />
         ))
