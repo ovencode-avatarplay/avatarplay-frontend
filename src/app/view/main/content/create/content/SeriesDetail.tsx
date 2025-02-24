@@ -176,7 +176,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, seriesInfo})
       {/* 상단 배경 및 네비게이션 */}
       <div className={styles.header} style={{backgroundImage: `url(${seriesInfo.coverImage})`}}>
         <div className={styles.topNav}>
-          <button className={styles.iconButton}>
+          <button className={styles.iconButton} onClick={() => onPrev()}>
             <img src={BoldArrowLeft.src} alt="Back" />
           </button>
           <button className={styles.iconButton}>
@@ -221,7 +221,9 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, seriesInfo})
         </div>
 
         {/* 새로운 에피소드 추가 버튼 */}
-        <button className={styles.addEpisode}>+ New Episode</button>
+        <button className={styles.addEpisode} onClick={() => onNext()}>
+          + New Episode
+        </button>
 
         {/* 에피소드 리스트 */}
         <div className={styles.episodeList}>

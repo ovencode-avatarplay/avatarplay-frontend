@@ -8,7 +8,9 @@ import MediaUploadGrid from './MediaUploadGrid';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 
-interface Props {}
+interface Props {
+  title?: string;
+}
 const mediaTypeConfig = {
   image: {
     label: 'Write Image File Type',
@@ -21,7 +23,7 @@ const mediaTypeConfig = {
     accept: 'video/*', // 비디오 파일
   },
 };
-const MediaUpload: React.FC<Props> = () => {
+const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)'}) => {
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
   const [publishPopup, setPublishPopup] = useState<boolean>(false); // 입력된 텍스트 상태
   const [isOpenSelectDrawer, setIsOpenSelectDrawer] = useState<boolean>(false);
@@ -179,7 +181,7 @@ const MediaUpload: React.FC<Props> = () => {
     input.click();
   };
 
-  const thumbnailText = 'Thumbnail (Photo / Video)';
+  const thumbnailText = title;
   return (
     <div className={styles.box}>
       <div className={styles.container}>

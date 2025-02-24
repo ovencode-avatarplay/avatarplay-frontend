@@ -185,6 +185,11 @@ export enum UploadMediaState {
   FeedImage = 10,
   CompressFeedVideo = 11,
   CompressFeedImage = 12,
+  ContentVideo = 13,
+  ContentSubtitle = 14,
+  ContentDubbing = 15,
+  ContentWebtoonImage = 16,
+  ContentWebtoonSubtitle = 17,
 }
 
 export enum CharacterIP {
