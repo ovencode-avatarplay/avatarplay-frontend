@@ -132,11 +132,38 @@
 
  .mediaImage
  {
+  position: relative;
    width: 89px;
    height: 128px;border-radius: 8px;
    flex-shrink: 0;
    background: lightgray 50% / cover no-repeat;
  }
+ 
+.lockButton
+{
+  position: absolute;
+  bottom: 2.5px;
+  right: 6px;
+  display: flex;
+  width: 26px;
+  height: 26px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  border-radius: 100px;
+  background: #FFF;
+}
+
+.lockIcon
+{
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+
+  filter: var(--black-icon-filter);
+}
 
  .imageExplainArea
  {

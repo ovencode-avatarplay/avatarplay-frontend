@@ -183,6 +183,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
 
   const [clothesInputValue, setClothesInputValue] = useState('');
   const [customClothesActive, setCustomClothesActive] = useState(false);
+
+  const [backgroundInputValue, setBackgroundInputValue] = useState('');
   //#endregion
 
   //#region Post Define
@@ -272,6 +274,12 @@ const CharacterCreateSequence: React.FC<Props> = ({
   const handleClothesInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= maxLength) {
       setClothesInputValue(e.target.value);
+    }
+  };
+
+  const handleBackgroundInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.value.length <= maxLength) {
+      setBackgroundInputValue(e.target.value);
     }
   };
 
@@ -543,6 +551,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   />
                 ))}
               </div>
+            </article>
+
+            <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>
                 Color<span className={styles.redAstrisk}>*</span>
               </h3>
@@ -591,8 +602,10 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   </SwiperSlide>
                 ))}
               </Swiper>
-              {selectedOptions.gender === 0 && (
-                <>
+            </article>
+            {selectedOptions.gender === 0 && (
+              <>
+                <article className={styles.createContentArea}>
                   <h3 className={styles.createSubTitle}>
                     Breast Size<span className={styles.redAstrisk}>*</span>
                   </h3>
@@ -620,7 +633,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       </SwiperSlide>
                     ))}
                   </Swiper>
+                </article>
 
+                <article className={styles.createContentArea}>
                   <h3 className={styles.createSubTitle}>
                     The Butt Size<span className={styles.redAstrisk}>*</span>
                   </h3>
@@ -648,9 +663,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       </SwiperSlide>
                     ))}
                   </Swiper>
-                </>
-              )}
-            </article>
+                </article>
+              </>
+            )}
           </div>
         );
       case CreateCharacterStep.OutfitClothes:
@@ -688,6 +703,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   </SwiperSlide>
                 ))}
               </Swiper>
+            </article>
+
+            <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>
                 Theme Color<span className={styles.redAstrisk}>*</span>
               </h3>
@@ -705,11 +723,13 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   />
                 ))}
               </div>
+            </article>
+            <article className={styles.createContentArea}>
               <MaxTextInput
                 displayDataType={displayType.Label}
                 promptValue={clothesInputValue}
                 handlePromptChange={handleClothesInputChange}
-                maxPromptLength={500}
+                maxPromptLength={maxLength}
                 labelText="Custom Setup"
               />
             </article>
@@ -730,6 +750,15 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   />
                 ))}
               </div>
+            </article>
+            <article className={styles.createContentArea}>
+              <MaxTextInput
+                displayDataType={displayType.Label}
+                promptValue={backgroundInputValue}
+                handlePromptChange={handleBackgroundInputChange}
+                maxPromptLength={maxLength}
+                labelText="Custom Setup"
+              />
             </article>
           </div>
         );
@@ -757,6 +786,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 ) // gender가 1일 때 topSize와 bottomSize 제외
                 .map((option, index) => (
                   <div className={styles.summaryItem}>
+                    <div className={styles.summaryLabel}>{option.label}</div>
                     <CharacterCreateImageButton
                       key={index}
                       label={
@@ -782,7 +812,6 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       selected={false}
                       sizeType="middle"
                     />
-                    <div className={styles.summaryLabel}>{option.label}</div>
                   </div>
                 ))}
               {/* {customClothesActive && (

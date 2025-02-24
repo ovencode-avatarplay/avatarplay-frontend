@@ -377,7 +377,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
 
       {generatedImages.length > 0 && (
         <div className={styles.generatedImageArea}>
-          <h2 className={styles.title2}>Image generation history</h2>
+          <h2 className={styles.generatedImageTitle}>Image generation history</h2>
           <ul className={styles.selectGrid}>
             {generatedImages.map((image, index) => (
               <CharacterCreateImageButton
@@ -394,16 +394,28 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
           </ul>
 
           {generatedImages.length > 0 && (
-            <div className={styles.bottomNavTab}>
-              <div className={styles.bottomButtonArea}>
-                {bottomButtons.map((buttonItem, index) => (
-                  <button key={index} className={styles.bottomButton} onClick={buttonItem.clickEvent}>
-                    <img className={styles.bottomButtonIcon} src={buttonItem.icon} alt={buttonItem.label} />
-                    <div className={styles.bottomButtonText}>{buttonItem.label}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
+            <CustomButton
+              type="Primary"
+              size="Medium"
+              state="Normal"
+              onClick={() => {
+                if (createFinishAction) {
+                  createFinishAction(generatedImages[selectedGeneratedItems[0]]);
+                }
+              }}
+            >
+              Confirm
+            </CustomButton>
+            // <div className={styles.bottomNavTab}>
+            //   <div className={styles.bottomButtonArea}>
+            //     {bottomButtons.map((buttonItem, index) => (
+            //       <button key={index} className={styles.bottomButton} onClick={buttonItem.clickEvent}>
+            //         <img className={styles.bottomButtonIcon} src={buttonItem.icon} alt={buttonItem.label} />
+            //         <div className={styles.bottomButtonText}>{buttonItem.label}</div>
+            //       </button>
+            //     ))}
+            //   </div>
+            // </div>
           )}
         </div>
       )}

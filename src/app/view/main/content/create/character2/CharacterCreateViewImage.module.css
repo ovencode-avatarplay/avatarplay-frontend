@@ -17,9 +17,9 @@
     width: 100%;
     max-width: 402px;
     height: 100%;
-    max-height: 793px;
+    max-height: 874px;
     padding-top: 58px;
-    border-radius: 8px;
+    /* border-radius: 8px; */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
   }
   
@@ -28,7 +28,7 @@
     height: 100%;
     flex-shrink: 0;
     object-fit: cover;
-    border-radius: 4px;
+    /* border-radius: 4px; */
   }
   
   .closeButton {

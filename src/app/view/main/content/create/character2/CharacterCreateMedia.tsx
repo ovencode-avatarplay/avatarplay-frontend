@@ -1,4 +1,4 @@
-import {BoldInfo, LineArrowDown, LineDelete, LineEdit} from '@ui/Icons';
+import {BoldInfo, BoldLock, BoldUnLock, LineArrowDown, LineDelete, LineEdit} from '@ui/Icons';
 import styles from './CharacterCreateMedia.module.css';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
@@ -10,6 +10,7 @@ interface Props {
   onClickCreateMedia: () => void;
   handlePromptChange: (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => void;
   handleSelected: (value: number) => void;
+  handleSetSpoiler: (value: boolean, index: number) => void;
   handleAddMediaItem: () => void;
   handleDeleteMediaItem: (index: number) => void;
   handleEditMediaItem: (index: number) => void;
@@ -22,6 +23,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
   onClickCreateMedia,
   handlePromptChange,
   handleSelected,
+  handleSetSpoiler,
   handleAddMediaItem,
   handleDeleteMediaItem,
   handleEditMediaItem,
@@ -34,6 +36,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
     index: number,
     handlerPromptChange: (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => void,
     handlerSelected: (value: number) => void,
+    handlerSetSpoiler: (value: boolean, index: number) => void,
     handleDelete: (index: number) => void,
     handleEdit: (index: number) => void,
     handleMove: (index: number, direction: 'up' | 'down') => void,
@@ -41,7 +44,21 @@ const CharacterCreateMedia: React.FC<Props> = ({
     return (
       <div className={styles.mediaItem}>
         <div className={styles.mediaItemContent}>
-          <img className={styles.mediaImage} src={item.imageUrl} onClick={() => handlerSelected(index)} />
+          <div
+            className={`${styles.mediaImage}`}
+            style={{backgroundImage: item.imageUrl ? `url(${item.imageUrl})` : 'none'}}
+            onClick={() => handlerSelected(index)}
+          >
+            <button
+              className={styles.lockButton}
+              onClick={e => {
+                e.stopPropagation();
+                handlerSetSpoiler(!item.isSpoiler, index);
+              }}
+            >
+              <img className={styles.lockIcon} src={item.isSpoiler ? BoldLock.src : BoldUnLock.src} />
+            </button>
+          </div>
           <div className={styles.imageExplainArea}>
             <MaxTextInput
               inputDataType={inputType.None}
@@ -110,6 +127,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
                 index,
                 handlePromptChange,
                 handleSelected,
+                handleSetSpoiler,
                 handleDeleteMediaItem,
                 handleEditMediaItem,
                 handleMoveMediaItem,

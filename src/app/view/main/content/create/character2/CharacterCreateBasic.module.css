@@ -89,9 +89,12 @@
 }
 
 .descArea p {
-    margin: 4px 0;
-  }
-
+    margin: 0;
+    padding-left: 12px; 
+    text-indent: -10px;  
+    line-height: 1.5;  
+    white-space: pre-line; 
+}
 .inputBox
 {
     width: 100%;

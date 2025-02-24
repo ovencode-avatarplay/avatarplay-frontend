@@ -238,7 +238,7 @@ export interface CharacterMediaInfo {
   id: number;
   imageUrl: string;
   activationCondition: string;
-  isProfileImage: boolean;
+  isSpoiler: boolean;
 }
 
 export interface TriggerInfo {

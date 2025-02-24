@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './CharacterCreateViewImage.module.css';
-import {LineClose} from '@ui/Icons';
+import {BoldLock, LineClose} from '@ui/Icons';
 import EmptyState from '@/components/search/EmptyState';
 
 interface Props {

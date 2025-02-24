@@ -47,8 +47,8 @@
 {
     display: flex;
     height: 22px;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: start;
     align-self: stretch;
     
     color: var(--Black, #000);
@@ -65,6 +65,9 @@
     height: 260px;
     flex-shrink: 0;
     border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .thumbnailImage.emptyImage
@@ -132,7 +135,7 @@
 
 .floatButton
 {
-    width: calc(var(--full-width) * 0.5 - 24px);
+    width: var(--second-width);
 }
 
 .verticalButtonGroup {
@@ -140,6 +143,7 @@
     width: var(--second-width);
     margin-left: 16px;
     margin-right: 16px;
+    margin-top: 30px;
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;  
@@ -347,5 +351,15 @@
     flex-shrink: 0;
 
     filter: var(--black-icon-filter);
+
+}
+
+.astrisk
+{
+    color: var(--Secondary-Red-1, #F75555);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 155%;
 
 }
