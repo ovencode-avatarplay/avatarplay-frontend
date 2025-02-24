@@ -126,6 +126,8 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
     const res = await getPdInfo({profileId: profileId});
     data.thumbnail = {file: res?.data?.iconUrl || ''};
     setValue('iconUrl', data.thumbnail.file);
+
+    setValue(`interests`, []);
     if (res?.data?.interests) {
       for (let i = 0; i < data.dataInterests.tagList.length; i++) {
         // const interest = res?.data?.interests[i]
@@ -138,6 +140,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
       }
     }
 
+    setValue(`skills`, []);
     if (res?.data?.skills) {
       for (let i = 0; i < data.dataSkills.tagList.length; i++) {
         // const interest = res?.data?.interests[i]
