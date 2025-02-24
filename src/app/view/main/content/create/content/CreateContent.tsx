@@ -5,6 +5,7 @@ import TermsAndConditions from './TermsAndConditions';
 import CreateSeriesContent from './CreateSeriesContent';
 import SeriesDetail, {SeriesInfo} from './SeriesDetail';
 import {ContentInfo} from './ContentCard';
+import CreateContentEpisode from './CreateContentEpisode';
 
 // 스텝을 관리하는 ENUM
 enum Step {
@@ -12,6 +13,7 @@ enum Step {
   TermsAndConditions = 1,
   CreateSeriesContent = 2,
   SeriesDetail = 3,
+  CreateEpisode = 4,
 }
 
 const CreateContent: React.FC = () => {
@@ -47,10 +49,17 @@ const CreateContent: React.FC = () => {
               <SeriesDetail
                 seriesInfo={SeriesInfo}
                 onPrev={() => setCurrentStep(Step.Introduction)}
-                onNext={() => {}}
+                onNext={() => setCurrentStep(Step.CreateEpisode)}
               ></SeriesDetail>
             )}
           </>
+        );
+      case Step.CreateEpisode:
+        return (
+          <CreateContentEpisode
+            onPrev={() => setCurrentStep(Step.SeriesDetail)}
+            onNext={() => setCurrentStep(Step.SeriesDetail)}
+          ></CreateContentEpisode>
         );
       default:
         return null;
