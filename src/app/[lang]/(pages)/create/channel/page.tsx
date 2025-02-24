@@ -2,7 +2,15 @@
 
 import React, {ChangeEvent, useEffect, useState} from 'react';
 import styles from './CreateChannel.module.scss';
-import {BoldArrowLeft, BoldRadioButton, BoldRadioButtonSelected, LineUpload} from '@ui/Icons';
+import {
+  BoldArrowLeft,
+  BoldRadioButton,
+  BoldRadioButtonSelected,
+  LineCheck,
+  LineDelete,
+  LineRegenerate,
+  LineUpload,
+} from '@ui/Icons';
 import {useForm} from 'react-hook-form';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {MediaState, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
@@ -45,28 +53,45 @@ const CreateChannel = (props: Props) => {
   const [data, setData] = useState<DataProfileUpdateType>({
     thumbnail: null,
     dragStatus: DragStatusType.OuterClick,
-    indexTab: 2,
+    indexTab: 1,
     dataVisibility: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: false, value: 'Dating'},
-        {isActive: false, value: 'Love'},
-        {isActive: false, value: 'Man'},
-        {isActive: false, value: 'Friends'},
-        {isActive: false, value: 'Relationships'},
-        {isActive: false, value: 'Adults'},
-      ],
-      drawerTitle: 'Interests',
-      drawerDescription: 'Please select your area of interests',
-    },
-    dataTag: {
-      isOpenTagsDrawer: false,
-      tagList: [
-        {isActive: false, value: 'Private'},
+        {isActive: true, value: 'Private'},
         {isActive: false, value: 'Unlisted'},
         {isActive: false, value: 'Public'},
       ],
       drawerTitle: 'Visibility',
+      drawerDescription: '',
+    },
+    dataTag: {
+      isOpenTagsDrawer: false,
+      tagList: [
+        {isActive: false, value: 'Male'},
+        {isActive: false, value: 'Female'},
+        {isActive: false, value: 'Boyfriend'},
+        {isActive: false, value: 'Girlfriend'},
+        {isActive: false, value: 'Hero'},
+        {isActive: false, value: 'Elf'},
+        {isActive: false, value: 'Romance'},
+        {isActive: false, value: 'Vanilla'},
+        {isActive: false, value: 'Contemporary Fantasy'},
+        {isActive: false, value: 'Isekai'},
+        {isActive: false, value: 'Flirting'},
+        {isActive: false, value: 'Dislike'},
+        {isActive: false, value: 'Comedy'},
+        {isActive: false, value: 'Noir'},
+        {isActive: false, value: 'Horror'},
+        {isActive: false, value: 'Demon'},
+        {isActive: false, value: 'SF'},
+        {isActive: false, value: 'Vampire'},
+        {isActive: false, value: 'Office'},
+        {isActive: false, value: 'Monster'},
+        {isActive: false, value: 'Anime'},
+        {isActive: false, value: 'Books'},
+        {isActive: false, value: 'Aliens'},
+      ],
+      drawerTitle: 'Tag',
       drawerDescription: '',
     },
     dataCountry: {
@@ -290,66 +315,46 @@ const CreateChannel = (props: Props) => {
             )}
             {data.indexTab == 1 && (
               <section className={styles.membersSection}>
-                <div className={styles.label}>0 Members</div>
-                <Swiper
-                  className={styles.recruitList}
-                  freeMode={true}
-                  slidesPerView={'auto'}
-                  onSlideChange={() => {}}
-                  onSwiper={swiper => {}}
-                  spaceBetween={8}
-                  preventClicks={false}
-                  simulateTouch={false}
-                >
-                  <SwiperSlide>
-                    <li className={cx(styles.item, styles.addRecruit)}>
-                      <div className={styles.circle}>
-                        <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
+                <div className={styles.addBtnWrap}>
+                  <div className={styles.circle}>
+                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
+                  </div>
+                  <div className={styles.labelAdd}>Add</div>
+                </div>
+                <div className={styles.label}>3 Members</div>
+
+                <ul className={styles.memberList}>
+                  <li className={styles.memberWrap}>
+                    <div className={styles.left}>
+                      <img className={styles.thumbnail} src="/images/profile_sample/img_sample_profile1.png" alt="" />
+                      <div className={styles.info}>
+                        <div className={styles.name}>Character name</div>
+                        <div className={styles.description}>
+                          She tries to hide her feelings, but the jealousy inside her keeps growing...
+                        </div>
                       </div>
-                      <div className={styles.label}>Add</div>
-                    </li>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <li className={styles.item}>
-                      <div className={styles.circle}>
-                        <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
-                        <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                        <span className={cx(styles.grade, styles.original)}>Original</span>
+                      <div className={styles.nsfw}>18</div>
+                    </div>
+                    <div className={styles.right}>
+                      <img src={LineDelete.src} alt="" />
+                    </div>
+                  </li>
+                  <li className={styles.memberWrap}>
+                    <div className={styles.left}>
+                      <img className={styles.thumbnail} src="/images/profile_sample/img_sample_profile1.png" alt="" />
+                      <div className={styles.info}>
+                        <div className={styles.name}>Character name</div>
+                        <div className={styles.description}>
+                          She tries to hide her feelings, but the jealousy inside her keeps growing...
+                        </div>
                       </div>
-                      <div className={styles.label}>Idol University</div>
-                    </li>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <li className={styles.item}>
-                      <div className={styles.circle}>
-                        <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
-                        <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                        <span className={cx(styles.grade, styles.fan)}>Fan</span>
-                      </div>
-                      <div className={styles.label}>Idol University</div>
-                    </li>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <li className={styles.item}>
-                      <div className={styles.circle}>
-                        <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
-                        <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                        <span className={cx(styles.grade, styles.fan)}>Fan</span>
-                      </div>
-                      <div className={styles.label}>Idol University</div>
-                    </li>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <li className={styles.item}>
-                      <div className={styles.circle}>
-                        <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
-                        <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                        <span className={cx(styles.grade, styles.fan)}>Fan</span>
-                      </div>
-                      <div className={styles.label}>Idol University</div>
-                    </li>
-                  </SwiperSlide>
-                </Swiper>
+                      <div className={styles.nsfw}>18</div>
+                    </div>
+                    <div className={styles.right}>
+                      <img src={LineDelete.src} alt="" />
+                    </div>
+                  </li>
+                </ul>
               </section>
             )}
             {data.indexTab == 2 && (
@@ -528,7 +533,7 @@ const CreateChannel = (props: Props) => {
       </main>
       <footer></footer>
 
-      <DrawerSelectTags
+      <DrawerSelect
         title={data.dataVisibility.drawerTitle}
         description={data.dataVisibility.drawerDescription}
         tags={JSON.parse(JSON.stringify(data.dataVisibility.tagList))}
@@ -616,7 +621,7 @@ const CreateChannel = (props: Props) => {
 
 export default CreateChannel;
 
-export type DrawerSelectTagsType = {
+export type DrawerSelectType = {
   title: string;
   description: string;
   tags: {isActive: boolean; value: string}[];
@@ -624,7 +629,7 @@ export type DrawerSelectTagsType = {
   onClose: () => void;
   onChange: (tags: {isActive: boolean; value: string}[]) => void;
 };
-export const DrawerSelectTags = ({title, description, tags, open, onClose, onChange}: DrawerSelectTagsType) => {
+export const DrawerSelect = ({title, description, tags, open, onClose, onChange}: DrawerSelectType) => {
   const [data, setData] = useState({
     tagList: tags,
   });
@@ -642,7 +647,7 @@ export const DrawerSelectTags = ({title, description, tags, open, onClose, onCha
       open={open}
       onClose={() => onClose()}
       PaperProps={{
-        className: styles.drawer,
+        className: `${styles.drawer} ${styles.drawerSelect}`,
         sx: {
           overflow: 'hidden',
           borderTopLeftRadius: '24px',
@@ -653,16 +658,22 @@ export const DrawerSelectTags = ({title, description, tags, open, onClose, onCha
       <div className={styles.handleArea}>
         <div className={styles.handleBar}></div>
       </div>
-      <div className={styles.title}>{title}</div>
-      <div className={styles.handleContent}>
-        <div className={styles.description}>{description}</div>
+      <div className={cx(styles.titleWrap, styles.drawalSelectHeader)}>
+        <div className={styles.blank}></div>
+        <div className={styles.title}>{title}</div>
+        <CustomToolTip tooltipText="Channel IP" />
+      </div>
+      <div className={cx(styles.drawalSelectContent)}>
         <div
           className={styles.tagWrap}
           onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             const target = e.target as HTMLElement;
             const index = parseInt(target.closest('[data-tag]')?.getAttribute('data-tag') || '-1');
             if (index >= 0) {
-              data.tagList[index].isActive = !data.tagList[index].isActive;
+              for (let i = 0; i < data.tagList.length; i++) {
+                data.tagList[i].isActive = false;
+              }
+              data.tagList[index].isActive = true;
               setData({...data});
             }
           }}
@@ -671,20 +682,12 @@ export const DrawerSelectTags = ({title, description, tags, open, onClose, onCha
             return (
               <div className={cx(styles.tag, tag.isActive && styles.active)} data-tag={index}>
                 <div className={styles.value}>{tag.value}</div>
+                <div className={styles.iconCheckWrap}>{tag.isActive && <img src={LineCheck.src} alt="" />}</div>
               </div>
             );
           })}
         </div>
       </div>
-      <button
-        className={styles.submitBtn}
-        onClick={() => {
-          onChange(data.tagList);
-          onClose();
-        }}
-      >
-        Submit
-      </button>
     </Drawer>
   );
 };
@@ -697,7 +700,7 @@ export type DrawerMultipleTagsType = {
   onClose: () => void;
   onChange: (tags: {isActive: boolean; value: string}[]) => void;
 };
-export const DrawerMultipleTags = ({title, description, tags, open, onClose, onChange}: DrawerSelectTagsType) => {
+export const DrawerMultipleTags = ({title, description, tags, open, onClose, onChange}: DrawerSelectType) => {
   const [data, setData] = useState({
     tagList: tags,
   });
@@ -727,8 +730,19 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
         <div className={styles.handleBar}></div>
       </div>
       <div className={styles.title}>{title}</div>
-      <div className={styles.handleContent}>
-        <div className={styles.description}>{description}</div>
+      <div className={cx(styles.handleContent, styles.drawerMultipleTags)}>
+        <div
+          className={styles.refreshWrap}
+          onClick={() => {
+            const dataReset = tags.map(v => ({...v, isActive: false}));
+            data.tagList = dataReset;
+            setData({...data});
+            onChange(dataReset);
+          }}
+        >
+          <div className={styles.labelRefresh}>Refresh</div>
+          <img src={LineRegenerate.src} alt="" />
+        </div>
         <div
           className={styles.tagWrap}
           onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
