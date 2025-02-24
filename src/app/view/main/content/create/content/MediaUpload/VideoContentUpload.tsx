@@ -1,16 +1,9 @@
 import React, {useState} from 'react';
-import styles from './CreateContentEpisode.module.css';
-import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
+import styles from './VideoContentUpload.module.css';
 import {BoldArrowDown, BoldQuestion, LineArrowDown, LineClose, LineDashboard, LineDelete, LineUpload} from '@ui/Icons';
-import MediaUpload from './MediaUpload/MediaUpload';
-import CustomInput from '@/components/layout/shared/CustomInput';
-import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import {LanguageType} from '@/app/NetWork/AuthNetwork';
-import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {UploadMediaState} from '@/redux-store/slices/ContentInfo';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
-import VideoContentUpload from './MediaUpload/VideoContentUpload';
 enum CountryTypes {
   Korea = 0,
   Japan = 1,
@@ -20,27 +13,9 @@ interface UploadField {
   selectedCountry: CountryTypes;
   fileUrl?: string; // 업로드된 파일의 URL 저장
 }
-interface CreateContentEpisodeProps {
-  onNext: () => void;
-  onPrev: () => void;
-}
+interface CreateContentEpisodeProps {}
 
-const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({onNext, onPrev}) => {
-  const handleConfirm = () => {
-    onNext();
-  };
-
-  const [nameValue, setNameValue] = useState<string>('');
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length <= 20) {
-      setNameValue(e.target.value);
-    }
-  };
-
-  const [descValue, setrDescription] = useState<string>('');
-
-  const [isMonetization, setIsMonetization] = useState<boolean>(false);
-
+const VideoContentUpload: React.FC<CreateContentEpisodeProps> = ({}) => {
   const [subtitleFields, setSubtitleFields] = useState<UploadField[]>([]);
   const [dubbingFields, setDubbingFields] = useState<UploadField[]>([]);
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle' | 'dubbing'; index: number} | null>(
@@ -191,101 +166,66 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({onNext, onPr
   };
 
   return (
-    <div className={styles.parent}>
-      <div className={styles.header}>
-        <CustomArrowHeader
-          title="Create Series Contents"
-          onClose={onPrev}
-          children={
-            <div className={styles.rightArea}>
-              <button className={styles.dashBoard} onClick={() => {}}>
-                <img className={styles.dashBoardIcon} src={LineDashboard.src} />
-              </button>
-            </div>
-          }
-        />
-      </div>
-      <div className={styles.container}>
-        <span className={styles.label}>Series Name</span>
-        <div className={styles.dropdown}>
-          <span className={styles.text}>A Person I met by chance</span>
-        </div>
-        <div className={styles.tags}>
-          <span className={styles.label}>video/action</span>
-          <span className={styles.label}>#love #text2</span>
-        </div>
-        <div className={styles.infoGroup}>
-          <span className={styles.seasonLabel}>Season 1</span>
-          <span className={styles.epLabel}>Episode No.20</span>
-          <span className={styles.tokenLabel}>The total token count is calulated based on the</span>
-          <span className={styles.tokenLabel}>introduction with the highest number of tokens</span>
+    <>
+      <span className={styles.previewLabel}>Preview</span>
+      <div className={styles.videoUploadContainer}>
+        <span className={styles.label}>Video</span>
+        <div className={styles.uploadGroup}>
+          <div className={styles.videoUploadBox}>
+            {videoFile ? <video src={videoFile} controls width="100%" /> : <span>No video uploaded</span>}
+          </div>
 
-          <MediaUpload title=""></MediaUpload>
+          <div className={styles.videoButtonContainer}>
+            <button
+              className={styles.uploadButton}
+              onClick={() => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'video/*';
+                input.onchange = e => {
+                  const files = (e.target as HTMLInputElement).files;
+                  if (files) {
+                    handleFileUpload('video', Array.from(files));
+                  }
+                };
+                input.click();
+              }}
+            >
+              <img src={LineUpload.src} alt="Upload" className={styles.icon} />
+              Upload
+            </button>
+
+            {videoFile ? (
+              <button className={styles.deleteButton} onClick={() => handleRemoveFile('video')}>
+                <img src={LineDelete.src} alt="Delete" className={styles.icon} />
+                Delete
+              </button>
+            ) : (
+              <button className={styles.deleteButton}>
+                <img src={LineDelete.src} alt="Delete" className={styles.icon} />
+                Delete
+              </button>
+            )}
+          </div>
         </div>
-        <CustomInput
-          inputType="Basic"
-          textType="Label"
-          value={nameValue}
-          onChange={handleNameChange}
-          label={
-            <span>
-              Episode Name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
-            </span>
-          }
-          placeholder="Please enter a title for your post"
-          customClassName={[styles.textInput]}
-        />
-        <span className={styles.label}>
-          Episode Description <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
-        </span>
-        <MaxTextInput
-          displayDataType={displayType.Hint}
-          labelText="Introduction"
-          promptValue={descValue}
-          handlePromptChange={e => setrDescription(e.target.value)}
-          maxPromptLength={500}
-          style={{minHeight: '190px', width: '100%'}}
-          placeholder="Add a description or hastag"
-        />
-        <VideoContentUpload></VideoContentUpload>
-        <div className={styles.moenetization}>
-          <span className={styles.label}>Moenetization</span>
-          <button className={styles.questionButton}>
-            <img src={BoldQuestion.src} className={styles.questionimg}></img>
+        <div className={styles.subtitleContainer}>
+          <span className={styles.label}>Subtitle</span>
+          <button className={styles.addButton} onClick={() => handleAddUploader('subtitle')}>
+            + Add
+          </button>
+        </div>{' '}
+        {subtitleFields.map((field, index) => renderUploader('subtitle', field, index))}
+        <div className={styles.dubbingContainer}>
+          <span className={styles.label}>Dubbing</span>
+          <button className={styles.addButton} onClick={() => handleAddUploader('dubbing')}>
+            + Add
           </button>
         </div>
-        <div className={styles.radioButtonGroup}>
-          <CustomRadioButton
-            shapeType="circle"
-            displayType="buttonText"
-            value="On"
-            label="On"
-            onSelect={() => setIsMonetization(true)}
-            selectedValue={isMonetization ? 'On' : 'Off'}
-            containterStyle={{gap: '0'}}
-          />
-          <CustomRadioButton
-            shapeType="circle"
-            displayType="buttonText"
-            value="Off"
-            label="Off"
-            onSelect={() => setIsMonetization(false)}
-            selectedValue={isMonetization ? 'On' : 'Off'}
-            containterStyle={{gap: '0'}}
-          />
-        </div>
-        <div className={styles.salesStar}>
-          <span className={styles.label} style={{lineHeight: '24px'}}>
-            Sales Star EA
-          </span>
-          <div className={styles.salesStarSetting}> Setting</div>
-        </div>
-        <button className={styles.confirmButton} onClick={handleConfirm}>
-          Confirm
-        </button>
+        {dubbingFields.map((field, index) => renderUploader('dubbing', field, index))}
       </div>
-    </div>
+      <span className={styles.grayLabel}>write media file type</span>
+    </>
   );
 };
 
-export default CreateContentEpisode;
+export default VideoContentUpload;
