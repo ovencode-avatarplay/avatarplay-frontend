@@ -165,6 +165,7 @@
 
 .searchResultList
 {
+    background-color: red;
 
 }
 
@@ -223,16 +224,17 @@
     position: absolute;
 
     display: flex;
-    min-width: 138px;
+    min-width: 200px;
     padding: 10px 5px;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-    
+
     border-radius: 10px;
-    border: 1px solid #BFBFBF;
-    background: #FFF;
-    box-shadow: 0px 4px 40px 0px rgba(0, 0, 0, 0.25);    
+    background: var(--White, #FFF);
+
+    /* Dropdown Shadow */
+    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.10);
 
     top: 35px;
     right: -10px;
@@ -247,10 +249,12 @@
 .authDropdownItem
 {
     display: flex;
-    justify-content: flex-end;
+    padding: 10px 14px;
+    justify-content: space-between;
     align-items: center;
-    gap: 6px;
     align-self: stretch;
+    
+    border-bottom: 1px solid var(--Border-1, #EAECF0);
 }
 
 .checkIcon

@@ -167,7 +167,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                 ArrowComponent={SelectBoxArrowComponent}
                 ValueComponent={SelectBoxValueComponent}
                 OptionComponent={SelectBoxOptionComponent}
-                onChangedCharacter={async id => {
+                onChange={async id => {
                   const resData = await selectProfile(id);
                   if (!resData?.profileSimpleInfo) return;
 

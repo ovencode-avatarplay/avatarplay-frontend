@@ -2,6 +2,9 @@ import BoldAI from "./Bold/AI.svg";
 import BoldAlertOn from "./Bold/Alert_on.svg";
 import BoldAlert from "./Bold/Alert.svg";
 import BoldAltArrowDown from "./Bold/Alt_Arrow_Down.svg";
+import BoldAltArrowDownTwo from "./Bold/Alt_Arrow_Down_Two.svg";
+import BoldAltArrowUp from "./Bold/Alt_Arrow_Up.svg";
+import BoldAltArrowUpTwo from "./Bold/Alt_Arrow_Up_Two.svg";
 import BoldArrowDown from "./Bold/Arrow_Down.svg";
 import BoldAudioPause from "./Bold/Audio_Pause.svg";
 import BoldAudioPlay from "./Bold/Audio_Play.svg";
@@ -158,6 +161,9 @@ export {
   BoldAlertOn,
   BoldAlert,
   BoldAltArrowDown,
+  BoldAltArrowDownTwo,
+  BoldAltArrowUp,
+  BoldAltArrowUpTwo,
   BoldArrowDown,
   BoldAudioPause,
   BoldAudioPlay,

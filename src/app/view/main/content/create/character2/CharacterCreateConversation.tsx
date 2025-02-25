@@ -26,25 +26,6 @@ const CharacterCreateConversation: React.FC<Props> = ({
   let desc = `Appropriate dialogue examples help to show the character's dialogue style.
 Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]`;
 
-  const handleUpdateCard = (updatedCard: Partial<CardData>) => {
-    if (!updatedCard.id) {
-      const foundCard = cardList.find(
-        card =>
-          updatedCard.userBars?.some(bar => bar.id === card.id) ||
-          updatedCard.charBars?.some(bar => bar.id === card.id),
-      );
-
-      if (foundCard) {
-        updatedCard.id = foundCard.id;
-      } else {
-        console.error('No matching card found for update:', updatedCard);
-        return;
-      }
-    }
-
-    setCardList(prevCards => prevCards.map(card => (card.id === updatedCard.id ? {...card, ...updatedCard} : card)));
-  };
-
   return (
     <div className={styles.conversationContainer}>
       <div className={styles.titleArea}>
@@ -68,7 +49,9 @@ Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]`;
             key={cardData.id}
             card={cardData}
             remove={() => onRemoveCard(cardData.id)}
-            onUpdate={handleUpdateCard}
+            onUpdate={updatedCard => {
+              setCardList(prevCards => prevCards.map(c => (c.id === cardData.id ? {...c, ...updatedCard} : c)));
+            }}
             moveDown={() => onMoveCard(index, 'down')}
             moveUp={() => onMoveCard(index, 'up')}
             duplicate={() => onDuplicateCard(index)}

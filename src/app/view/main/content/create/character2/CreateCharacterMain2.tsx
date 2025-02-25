@@ -94,22 +94,19 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
     character.conversationTemplateList,
   );
 
-  /**
-   * Conversation[] → CardData[] 변환
-   */
   const convertConversationsToCards = (conversations: Conversation[]): CardData[] => {
     return conversations.map(conversation => {
       const userBars: Bar[] = JSON.parse(conversation.user || '[]').map(
-        (bar: any): Bar => ({
-          id: bar.id,
+        (bar: any, index: number): Bar => ({
+          id: index,
           inputValue: bar.talk || '',
           type: bar.type === 0 ? 'dots' : 'description',
         }),
       );
 
       const charBars: Bar[] = JSON.parse(conversation.character || '[]').map(
-        (bar: any): Bar => ({
-          id: bar.id,
+        (bar: any, index: number): Bar => ({
+          id: index,
           inputValue: bar.talk || '',
           type: bar.type === 0 ? 'dots' : 'description',
         }),
@@ -124,12 +121,9 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
     });
   };
 
-  /**
-   * CardData[] → Conversation[] 변환
-   */
   const convertCardsToConversations = (cards: CardData[]): Conversation[] => {
     return cards.map(card => ({
-      id: card.id,
+      id: card.id > 0 ? card.id : 0,
       conversationType: card.priorityType,
       user: JSON.stringify(
         card.userBars.map(bar => ({
@@ -155,10 +149,12 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
 
   const [visibilityType, setvisibilityType] = useState<number>(character.visibilityType);
   const [llmModel, setLlmModel] = useState<number>(character.llmModel);
+  const [llmCustomApi, setLlmCustomApi] = useState<string>(character.customApi);
   const [tag, setTag] = useState<string>(character.tag);
   const [positionCountryList, setPositionCountryList] = useState<number[]>(character.positionCountryList);
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
-  const [connectCharacterId, setConnectCharacterId] = useState<number>(0);
+  const [connectCharacterInfo, setConnectCharacterInfo] = useState<ProfileSimpleInfo>(character.connectCharacterInfo);
+  const [connectCharacterId, setConnectCharacterId] = useState<number>(character.connectCharacterId);
   const [recruitedProfileId, setRecruitedProfileId] = useState<number>(character.recruitedProfileId);
   const [operatorProfileIdList, setOperatorProfileIdList] = useState<ProfileSimpleInfo[]>(
     character.operatorProfileIdList,
@@ -193,7 +189,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
         mediaTemplateList[selectedMediaItemIdx].id,
         img,
         mediaTemplateList[selectedMediaItemIdx].activationCondition,
-        mediaTemplateList[selectedMediaItemIdx].isProfileImage,
+        mediaTemplateList[selectedMediaItemIdx].isSpoiler,
       );
     } else if (imageCreate === 'Thumbnail') {
       setMainImageUrl(img);
@@ -267,19 +263,17 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
             id: item.id,
             imageUrl: item.imageUrl,
             activationCondition: item.activationCondition,
-            isProfileImage: item.isProfileImage,
+            isSpoiler: item.isSpoiler,
           })),
-          conversationTemplateList: conversationCards?.map(item => ({
-            id: item.id,
-            conversationType: item.priorityType,
-            user: JSON.stringify(item.userBars),
-            character: JSON.stringify(item.charBars),
-          })),
+          conversationTemplateList: convertCardsToConversations(conversationCards),
           visibilityType: visibilityType,
           llmModel: llmModel,
+          customApi: llmCustomApi,
           tag: tag,
           positionCountryList: positionCountryList,
           characterIP: characterIP,
+          connectCharacterInfo: connectCharacterInfo,
+          connectCharacterId: connectCharacterId,
           recruitedProfileId: recruitedProfileId,
           operatorProfileIdList: operatorProfileIdList.map(profile => ({
             ...profile,
@@ -346,6 +340,12 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
     setImageViewOpen(true);
   };
 
+  const handleSpoilerSelected = (value: boolean, index: number) => {
+    const updatedMediaItems = [...mediaTemplateList];
+    updatedMediaItems[index].isSpoiler = value;
+    setMediaTemplateList(updatedMediaItems);
+  };
+
   const getMinMediaItemId = (mediaList: CharacterMediaInfo[]): number => {
     const mediaIds = mediaList.map(item => item.id);
 
@@ -361,13 +361,13 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
     id: number,
     imageUrl: string,
     activationCondition: string = '',
-    isProfileImage: boolean = false,
+    isSpoiler: boolean = false,
   ) => {
     const newItem: CharacterMediaInfo = {
       id: id,
       imageUrl: imageUrl,
       activationCondition: activationCondition,
-      isProfileImage: isProfileImage,
+      isSpoiler: isSpoiler,
     };
 
     setMediaTemplateList([...mediaTemplateList, newItem]);
@@ -382,10 +382,10 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
     id: number,
     imageUrl: string,
     activationCondition: string = '',
-    isProfileImage: boolean = false,
+    isSpoiler: boolean = false,
   ) => {
     setMediaTemplateList(prevList =>
-      prevList.map(item => (item.id === id ? {...item, imageUrl, activationCondition, isProfileImage} : item)),
+      prevList.map(item => (item.id === id ? {...item, imageUrl, activationCondition, isSpoiler: isSpoiler} : item)),
     );
   };
 
@@ -439,11 +439,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
         id: newId,
         userBars: cardToDuplicate.userBars.map((bar, idx) => ({
           ...bar,
-          id: newId,
+          id: idx,
         })),
         charBars: cardToDuplicate.charBars.map((bar, idx) => ({
           ...bar,
-          id: newId,
+          id: idx,
         })),
       };
 
@@ -534,6 +534,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
           onClickCreateMedia={handleOnClickMediaCreate}
           handlePromptChange={handleMediaPromptChange}
           handleSelected={handleMediaSelected}
+          handleSetSpoiler={handleSpoilerSelected}
           handleAddMediaItem={() => handleAddMediaItem(getMinMediaItemId(mediaTemplateList) - 1, mediaCreateImage)}
           handleDeleteMediaItem={handleDeleteMediaItem}
           handleEditMediaItem={handleOnClickMediaEdit}
@@ -565,14 +566,18 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
           onVisibilityChange={setvisibilityType}
           llmModel={llmModel}
           onLlmModelChange={setLlmModel}
+          llmCustomAPIKey={llmCustomApi}
+          onLlmCustomAPIKeyChange={setLlmCustomApi}
           tag={tag}
           onTagChange={setTag}
           positionCountry={positionCountryList}
           onPositionCountryChange={setPositionCountryList}
           characterIP={characterIP}
           onCharacterIPChange={setCharacterIP}
-          connectCharacterId={recruitedProfileId}
-          onConnectCharacterIdChange={setRecruitedProfileId}
+          connectCharacterInfo={connectCharacterInfo}
+          onConnectCharacterInfoChange={setConnectCharacterInfo}
+          connectCharacterId={connectCharacterId}
+          onConnectCharacterIdChange={setConnectCharacterId}
           operatorProfileIdList={operatorProfileIdList}
           onOperatorProfileIdListChange={setOperatorProfileIdList}
           isMonetization={isMonetization}
@@ -734,11 +739,18 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
       <div className={styles.characterContainer}>
         {!imgUploadOpen && (
           <div className={styles.characterMain}>
-            <CreateDrawerHeader title="Create" onClose={handleOnClose} />
+            <CreateDrawerHeader title="Create Character" onClose={handleOnClose}>
+              <button className={styles.dashboardButton}>
+                <img className={styles.dashboardIcon} src={LineDashboard.src} />
+              </button>{' '}
+            </CreateDrawerHeader>
 
             <div className={styles.createCharacterArea}>
               <div className={styles.thumbnailArea}>
-                <h2 className={styles.title2}>Profile Image</h2>
+                <h2 className={styles.title2}>
+                  Profile Image<span className={styles.astrisk}>*</span>
+                </h2>
+
                 <button
                   onClick={() => {
                     if (mainimageUrl === '') {
@@ -751,7 +763,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
                 >
                   <div
                     className={`${styles.thumbnailImage} ${mainimageUrl === '' && styles.emptyImage}`}
-                    style={{background: `url(${mainimageUrl})`}}
+                    style={{backgroundImage: mainimageUrl ? `url(${mainimageUrl})` : 'none'}}
                   >
                     <button
                       className={styles.editButton}
@@ -762,7 +774,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
                     >
                       <img className={styles.editIcon} src={LineEdit.src} />
                     </button>
-                    <div className={styles.createImageText}>Create</div>
+                    {mainimageUrl === '' && <div className={styles.createImageText}>Create</div>}
                   </div>
                 </button>
               </div>
@@ -778,29 +790,20 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
               <div className={styles.floatButtonArea}>
                 <CustomButton
                   size="Medium"
-                  type="Tertiary"
-                  state="Normal"
-                  customClassName={[styles.floatButton]}
-                  onClick={() => {}}
-                >
-                  Import
-                </CustomButton>
-                <CustomButton
-                  size="Medium"
                   type="Primary"
                   state="Normal"
                   customClassName={[styles.floatButton]}
                   onClick={handleCreateCharacter}
                 >
-                  Submit
+                  Save
                 </CustomButton>
               </div>
             </footer>
           </div>
         )}
         {imgUploadOpen && <>{renderSelectImageType()}</>}
-        {imgUploadModalOpen && <>{renderUploadSelectModal()}</>}
       </div>
+      {imgUploadModalOpen && <>{renderUploadSelectModal()}</>}
       {imageViewOpen && <CharacterCreateViewImage imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
     </>
   );

@@ -10,7 +10,13 @@ import cx from 'classnames';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {getBackUrl} from '@/utils/util-1';
-type Props = {};
+import {getPdInfo, MediaState, updatePdInfo, UpdatePdInfoReq} from '@/app/NetWork/ProfileNetwork';
+import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+type Props = {
+  params: {
+    id?: string[];
+  };
+};
 
 export enum DragStatusType {
   OuterClick,
@@ -19,10 +25,10 @@ export enum DragStatusType {
 }
 
 type FileType = {
-  fileName: string;
-  index: number;
+  fileName?: string;
+  index?: number;
   file: string;
-  fileBlob: Blob;
+  fileBlob?: Blob;
 };
 
 type TagDrawerType = {
@@ -43,9 +49,11 @@ type DataProfileUpdateType = {
     total: number;
     valid: number;
   };
+  triggerError: boolean;
 };
 
-const PageProfileUpdate = (props: Props) => {
+const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
+  const profileId = parseInt(id[0]);
   const router = useRouter();
   const {
     control,
@@ -58,19 +66,19 @@ const PageProfileUpdate = (props: Props) => {
     trigger,
     clearErrors,
     formState: {errors, isSubmitted},
-  } = useForm();
+  } = useForm<UpdatePdInfoReq>();
   const [data, setData] = useState<DataProfileUpdateType>({
     thumbnail: null,
     dragStatus: DragStatusType.OuterClick,
     dataInterests: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: true, value: 'Dating'},
+        {isActive: false, value: 'Dating'},
         {isActive: false, value: 'Love'},
-        {isActive: true, value: 'Man'},
-        {isActive: true, value: 'Friends'},
-        {isActive: true, value: 'Relationships'},
-        {isActive: true, value: 'Adults'},
+        {isActive: false, value: 'Man'},
+        {isActive: false, value: 'Friends'},
+        {isActive: false, value: 'Relationships'},
+        {isActive: false, value: 'Adults'},
       ],
       drawerTitle: 'Interests',
       drawerDescription: 'Please select your area of interests',
@@ -78,12 +86,12 @@ const PageProfileUpdate = (props: Props) => {
     dataSkills: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: true, value: 'Create Image'},
+        {isActive: false, value: 'Create Image'},
         {isActive: false, value: 'Create LLM'},
-        {isActive: true, value: 'Create Video Edit'},
-        {isActive: true, value: 'Persona'},
-        {isActive: true, value: 'Create Music'},
-        {isActive: true, value: 'Create Webtoon'},
+        {isActive: false, value: 'Create Video Edit'},
+        {isActive: false, value: 'Persona'},
+        {isActive: false, value: 'Create Music'},
+        {isActive: false, value: 'Create Webtoon'},
       ],
       drawerTitle: 'Skills',
       drawerDescription: 'Please add the skills you have',
@@ -93,21 +101,69 @@ const PageProfileUpdate = (props: Props) => {
       total: 7,
       valid: 0,
     },
+    triggerError: false,
   });
 
-  const onSubmit = (e: React.MouseEvent<HTMLFormElement, MouseEvent>) => {
+  const onSubmit = async (e: React.MouseEvent<HTMLFormElement, MouseEvent>) => {
     e.preventDefault(); // 기본 제출 방지
     const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
-    console.log('제출 데이터:', data);
+
+    const dataUpdatePdInfo: UpdatePdInfoReq = {
+      ...data,
+      profileId: profileId,
+      iconUrl: '',
+      url: '',
+    };
+    await updatePdInfo(dataUpdatePdInfo);
+    routerBack();
   };
 
   useEffect(() => {
-    setValue('introduction', '초기값 introduction'); // API 데이터로 값 설정
+    refrestPdInfo();
   }, []);
+
+  const refrestPdInfo = async () => {
+    const res = await getPdInfo({profileId: profileId});
+    data.thumbnail = {file: res?.data?.iconUrl || ''};
+    setValue('iconUrl', data.thumbnail.file);
+
+    setValue(`interests`, []);
+    if (res?.data?.interests) {
+      for (let i = 0; i < data.dataInterests.tagList.length; i++) {
+        // const interest = res?.data?.interests[i]
+        const tag = data.dataInterests.tagList[i].value;
+        const index = res?.data?.interests.findIndex(v => v == tag);
+        if (index >= 0) {
+          data.dataInterests.tagList[index].isActive = true;
+          setValue(`interests.${index}`, tag, {shouldValidate: false});
+        }
+      }
+    }
+
+    setValue(`skills`, []);
+    if (res?.data?.skills) {
+      for (let i = 0; i < data.dataSkills.tagList.length; i++) {
+        // const interest = res?.data?.interests[i]
+        const tag = data.dataSkills.tagList[i].value;
+        const index = res?.data?.skills.findIndex(v => v == tag);
+        if (index >= 0) {
+          data.dataSkills.tagList[index].isActive = true;
+          setValue(`skills.${index}`, tag, {shouldValidate: false});
+        }
+      }
+    }
+    setValue('name', res?.data?.name || '', {shouldValidate: false}); // API 데이터로 값 설정
+    setValue('introduce', res?.data?.introduce || '', {shouldValidate: false}); // API 데이터로 값 설정
+    setValue('personalHistory', res?.data?.personalHistory || '', {shouldValidate: false}); // API 데이터로 값 설정
+    setValue('honorAwards', res?.data?.honorAwards || '', {shouldValidate: false}); // API 데이터로 값 설정
+    setValue('url', res?.data?.url || '', {shouldValidate: false}); // API 데이터로 값 설정
+    data.triggerError = true;
+    setData({...data});
+  };
 
   useEffect(() => {
     checkValid();
-  }, [errors]);
+  }, [errors, data.triggerError]);
 
   const routerBack = () => {
     // you can get the prevPath like this
@@ -194,6 +250,21 @@ const PageProfileUpdate = (props: Props) => {
           fileBlob: file,
           file: URL.createObjectURL(file),
         };
+
+        const dataUpload: MediaUploadReq = {
+          mediaState: MediaState.Image,
+          file: file,
+          imageList: [],
+        };
+        const resUpload = await sendUpload(dataUpload);
+
+        data.thumbnail = {
+          fileName: fileName,
+          index: 0,
+          fileBlob: file,
+          file: resUpload.data?.url || '',
+        };
+        setValue('iconUrl', data.thumbnail.file);
         setData({...data});
       }
     }
@@ -202,10 +273,8 @@ const PageProfileUpdate = (props: Props) => {
   const checkValid = async () => {
     const isValid = await trigger(undefined, {shouldFocus: false});
     const countValidTotal = Object.keys(control._fields || {}).length;
-    console.log('errors : ', errors);
     const countValidError = Object.keys(errors).length;
     const countValidCorrect = countValidTotal - countValidError;
-    console.log(countValidTotal, countValidError, countValidCorrect);
 
     data.countValid.total = countValidTotal;
     data.countValid.valid = countValidCorrect;
@@ -237,7 +306,7 @@ const PageProfileUpdate = (props: Props) => {
         <form onSubmit={onSubmit}>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
-              {/* UPLOAD */}
+              <input {...register('iconUrl', {required: true})} type="hidden" />
               <input
                 className={styles.hidden}
                 id="file-upload"
@@ -272,35 +341,35 @@ const PageProfileUpdate = (props: Props) => {
           <section className={styles.nicknameSection}>
             <h2 className={styles.label}>Nickname</h2>
             <input
-              className={cx(errors.nickname && isSubmitted && styles.error)}
-              {...register('nickname', {required: true})}
+              className={cx(errors.name && isSubmitted && styles.error)}
+              {...register('name', {required: true})}
               type="text"
               placeholder="Please enter a nickname"
               maxLength={30}
               onChange={async e => {
-                setValue('nickname', e.target.value);
-                clearErrors('nickname');
+                setValue('name', e.target.value);
+                clearErrors('name');
                 checkValid();
               }}
             />
           </section>
           <section className={styles.introductionSection}>
             <h2 className={styles.label}>Introduction</h2>
-            <div className={cx(styles.textAreaWrap, errors.introduction && isSubmitted && styles.error)}>
+            <div className={cx(styles.textAreaWrap, errors.introduce && isSubmitted && styles.error)}>
               <textarea
-                {...register('introduction', {required: true})}
+                {...register('introduce', {required: true})}
                 placeholder="Add a description or hashtag"
                 maxLength={500}
                 onChange={async e => {
                   const target = e.target as HTMLTextAreaElement;
                   target.style.height = 'auto';
                   target.style.height = `${target.scrollHeight}px`;
-                  setValue('introduction', target.value, {shouldValidate: false}); // 강제 업데이트
-                  clearErrors('introduction');
+                  setValue('introduce', target.value, {shouldValidate: false}); // 강제 업데이트
+                  clearErrors('introduce');
                   checkValid();
                 }}
               />
-              <div className={styles.textCount}>{`${watch('introduction', '').length}/500`}</div>
+              <div className={styles.textCount}>{`${watch('introduce', '').length}/500`}</div>
             </div>
           </section>
           <section className={styles.interestSection}>
@@ -332,7 +401,6 @@ const PageProfileUpdate = (props: Props) => {
                       onClick={e => {
                         unregister(`interests.${index}`);
                         data.dataInterests.tagList[index].isActive = false;
-                        setValue(`interests.${index}`, one.value);
                         setData({...data});
                         checkValid();
                       }}
@@ -410,16 +478,16 @@ const PageProfileUpdate = (props: Props) => {
           <section className={styles.honorAwardsSection}>
             <h2 className={styles.label}>Honor & Awards</h2>
             <textarea
-              {...register('honorawards', {required: true})}
-              className={cx(styles.inputHonorawards, errors.honorawards && isSubmitted && styles.error)}
+              {...register('honorAwards', {required: true})}
+              className={cx(styles.inputHonorawards, errors.honorAwards && isSubmitted && styles.error)}
               placeholder="Ex) 2024.10.00Advertisement contest winner(korea)"
               onChange={e => {
                 const target = e.target as HTMLTextAreaElement;
                 target.style.height = 'auto';
                 target.style.height = `${target.scrollHeight}px`;
 
-                clearErrors('honorawards');
-                setValue('honorawards', e.target.value);
+                clearErrors('honorAwards');
+                setValue('honorAwards', e.target.value);
                 checkValid();
               }}
             />
@@ -457,7 +525,7 @@ const PageProfileUpdate = (props: Props) => {
         <DrawerSelectTags
           title={data.dataInterests.drawerTitle}
           description={data.dataInterests.drawerDescription}
-          tags={data.dataInterests.tagList}
+          tags={JSON.parse(JSON.stringify(data.dataInterests.tagList))}
           open={data.dataInterests.isOpenTagsDrawer}
           onClose={() => {
             data.dataInterests.isOpenTagsDrawer = false;
@@ -465,7 +533,6 @@ const PageProfileUpdate = (props: Props) => {
           }}
           onChange={(dataChanged: any) => {
             clearErrors('interests');
-
             data.dataInterests.tagList = dataChanged;
 
             for (let i = 0; i < dataChanged.length; i++) {
@@ -482,7 +549,7 @@ const PageProfileUpdate = (props: Props) => {
         <DrawerSelectTags
           title={data.dataSkills.drawerTitle}
           description={data.dataSkills.drawerDescription}
-          tags={data.dataSkills.tagList}
+          tags={JSON.parse(JSON.stringify(data.dataSkills.tagList))}
           open={data.dataSkills.isOpenTagsDrawer}
           onClose={() => {
             data.dataSkills.isOpenTagsDrawer = false;
@@ -521,6 +588,13 @@ const DrawerSelectTags = ({title, description, tags, open, onClose, onChange}: D
   const [data, setData] = useState({
     tagList: tags,
   });
+
+  useEffect(() => {
+    if (!open) return;
+
+    data.tagList = tags;
+    setData({...data});
+  }, [open]);
 
   return (
     <Drawer

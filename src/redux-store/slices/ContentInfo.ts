@@ -102,10 +102,13 @@ export interface CharacterInfo {
   conversationTemplateList: ConversationInfo[];
   visibilityType: VisibilityType;
   llmModel: LLMModel;
+  customApi: string;
   tag: string;
   positionCountryList: LanguageType[];
   characterIP: CharacterIP;
-  recruitedProfileId: number;
+  connectCharacterInfo: ProfileSimpleInfo;
+  connectCharacterId: number;
+  recruitedProfileId: number; // TODO : 추후 추가 계획
   operatorProfileIdList: ProfileSimpleInfo[];
   isMonetization: boolean;
   nSFW: boolean;
@@ -185,6 +188,11 @@ export enum UploadMediaState {
   FeedImage = 10,
   CompressFeedVideo = 11,
   CompressFeedImage = 12,
+  ContentVideo = 13,
+  ContentSubtitle = 14,
+  ContentDubbing = 15,
+  ContentWebtoonImage = 16,
+  ContentWebtoonSubtitle = 17,
 }
 
 export enum CharacterIP {
@@ -238,7 +246,7 @@ export interface CharacterMediaInfo {
   id: number;
   imageUrl: string;
   activationCondition: string;
-  isProfileImage: boolean;
+  isSpoiler: boolean;
 }
 
 export interface TriggerInfo {

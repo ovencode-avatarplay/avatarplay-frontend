@@ -217,6 +217,30 @@
     line-height: 155%; /* 18.6px */
 }
 
+.generatedImageArea
+{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;    
+}
+
+.generatedImageTitle
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: stretch;
+    
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px; /* 114.286% */
+    letter-spacing: -0.4px;
+
+}
+
 .selectGrid
 {
   display: flex;

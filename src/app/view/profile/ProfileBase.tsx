@@ -37,6 +37,8 @@ import {
   followProfile,
   FollowState,
   GetCharacterTabInfoeRes,
+  getPdInfo,
+  GetPdInfoRes,
   GetPdTabInfoeRes,
   getProfileCharacterTabInfo,
   getProfileInfo,
@@ -70,15 +72,16 @@ import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 
 enum eTabPDType {
   Feed,
-  Channel,
-  Character,
-  Shared,
+  Channel = 1,
+  Character = 2,
+  Shared = 3,
 }
 
 enum eTabPDOtherType {
   Feed,
-  Channel,
-  Character,
+  Info = 3, //Info를 앞에 배치하되 api랑 sync를 맞춰야해서 3으로 줌
+  Channel = 1,
+  Character = 2,
 }
 
 enum eImageFilter {
@@ -116,11 +119,11 @@ type TabContentMenuType = {
 
 type DataProfileType = {
   profileId: number;
-  indexTab: eTabPDType | eTabCharacterType;
+  indexTab: eTabPDType | eTabCharacterType | eTabPDOtherType | eTabCharacterOtherType;
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
   profileTabInfo: {
-    [key: number]: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes;
+    [key: number]: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes};
   };
   indexFilterMedia: FeedMediaType;
   indexFilterCharacter: number;
@@ -307,6 +310,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         return;
       }
       resProfileTabInfo = resGetCharacterInfo.data;
+    } else if (isOtherPD && indexTab == eTabPDOtherType.Info) {
+      const resPdInfo = await getPdInfo({profileId: profileId});
+      if (resPdInfo?.resultCode != 0) {
+        console.error('api error : ', resPdInfo?.resultMessage);
+        return;
+      }
+      resProfileTabInfo = {dataResPdInfo: resPdInfo?.data};
     } else {
       if (indexTab == eTabPDType.Character) {
         resProfileTabInfo = await getTabInfo(profileType)(
@@ -337,14 +347,19 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
   const addTabContent = (
     indexTab: number,
-    resProfileTabInfo: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes,
+    resProfileTabInfo: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes},
     isRefreshAll: boolean,
   ) => {
-    const {feedInfoList, characterInfoList, channelInfoList, contentsInfoList, storyInfoList} = resProfileTabInfo;
+    const {feedInfoList, characterInfoList, channelInfoList, contentsInfoList, storyInfoList, dataResPdInfo} =
+      resProfileTabInfo;
     if (!data.profileTabInfo[indexTab]) {
       data.profileTabInfo[indexTab] = resProfileTabInfo;
       return;
     }
+    if (!!dataResPdInfo) {
+      data.profileTabInfo[indexTab].dataResPdInfo = dataResPdInfo;
+    }
+
     if (!!feedInfoList) {
       if (isRefreshAll) {
         data.profileTabInfo[indexTab].feedInfoList = feedInfoList;
@@ -495,6 +510,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList?.length;
       } else if (data.indexTab == eTabPDType.Channel) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
+      } else if (isOtherPD && data.indexTab == eTabPDOtherType.Info) {
+        isEmptyTab = false;
       } else {
         isEmptyTab = true;
       }
@@ -526,6 +543,12 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   const TabFilterComponent = React.useCallback(
     ({profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
       const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
+      const sortOptionList = [
+        {id: ExploreSortType.Newest, value: 'Newest'},
+        {id: ExploreSortType.MostPopular, value: 'Most Popular'},
+        {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
+        {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
+      ];
 
       if (
         (isPD && [PdProfileTabType.Feed, PdProfileTabType.Channel].includes(tabIndex)) ||
@@ -543,7 +566,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                     data.indexFilterMedia = parseInt(category);
                   }
                   await refreshProfileTab(profileId, data.indexTab);
-                  setData({...data});
+                  setData(v => ({...data}));
                 }}
               >
                 <div
@@ -568,20 +591,15 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <div className={styles.right}>
                 <div className={styles.filterTypeWrap}>
                   <SelectBox
-                    value={{id: ExploreSortType.MostPopular, value: 'Most Popular'}}
-                    options={[
-                      {id: ExploreSortType.Newest, value: 'Newest'},
-                      {id: ExploreSortType.MostPopular, value: 'Most Popular'},
-                      {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
-                      {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
-                    ]}
+                    value={sortOptionList[data.indexSort]}
+                    options={sortOptionList}
                     ArrowComponent={SelectBoxArrowComponent}
                     ValueComponent={SelectBoxValueComponent}
                     OptionComponent={SelectBoxOptionComponent}
-                    onChangedCharacter={async id => {
+                    onChange={async id => {
                       data.indexSort = id;
-                      setData({...data});
                       await refreshProfileTab(profileId, data.indexTab);
+                      setData({...data});
                     }}
                     customStyles={{
                       control: {
@@ -659,20 +677,15 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <div className={styles.right}>
                 <div className={styles.filterTypeWrap}>
                   <SelectBox
-                    value={{id: ExploreSortType.MostPopular, value: 'Most Popular'}}
-                    options={[
-                      {id: ExploreSortType.Newest, value: 'Newest'},
-                      {id: ExploreSortType.MostPopular, value: 'Most Popular'},
-                      {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
-                      {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
-                    ]}
+                    value={sortOptionList[data.indexSort]}
+                    options={sortOptionList}
                     ArrowComponent={SelectBoxArrowComponent}
                     ValueComponent={SelectBoxValueComponent}
                     OptionComponent={SelectBoxOptionComponent}
-                    onChangedCharacter={async id => {
+                    onChange={async id => {
                       data.indexSort = id;
-                      setData({...data});
                       await refreshProfileTab(profileId, data.indexTab);
+                      setData({...data});
                     }}
                     customStyles={{
                       control: {
@@ -704,6 +717,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       }
 
       if (isCharacter && tabIndex == eTabCharacterType.Info) {
+        return <></>;
+      }
+
+      if (isPD && tabIndex == eTabPDOtherType.Info) {
         return <></>;
       }
     },
@@ -847,7 +864,44 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           </ul>
         );
       }
+      if (isOtherPD && tabIndex == eTabPDOtherType.Info) {
+        const pdInfo = data?.profileTabInfo?.[data.indexTab]?.dataResPdInfo;
+        return (
+          <>
+            <section className={styles.pdInfo}>
+              <div className={styles.label}>Introduce</div>
+              <div className={styles.value}>{pdInfo?.introduce}</div>
+              <div className={styles.label}>Interests</div>
+              <ul className={styles.tags}>
+                {pdInfo?.interests.map((one, index) => {
+                  return (
+                    <li key={index} className={styles.tag}>
+                      {one}
+                    </li>
+                  );
+                })}
+              </ul>
 
+              <div className={styles.label}>Skill</div>
+              <ul className={styles.tags}>
+                {pdInfo?.skills.map((one, index) => {
+                  return (
+                    <li key={index} className={styles.tag}>
+                      {one}
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className={styles.label}>Personal History</div>
+              <div className={styles.value}>{pdInfo?.personalHistory}</div>
+              <div className={styles.label}>Honor & Awards</div>
+              <div className={styles.value}>{pdInfo?.honorAwards}</div>
+              <div className={styles.label}>URL</div>
+              <div className={styles.value}>{pdInfo?.url}</div>
+            </section>
+          </>
+        );
+      }
       if (isCharacter && tabIndex == eTabCharacterType.Info) {
         return (
           <>
@@ -863,7 +917,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   );
 
   const isFollow = data.profileInfo?.profileInfo.followState == FollowState.Follow;
-  const tabContentList = getTabHeaderList(profileType);
+  const tabContentList = getTabHeaderList(profileType, isMine);
   let isEmptyTab = getIsEmptyTab();
 
   return (
@@ -1193,10 +1247,16 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           handleShare(url);
         }}
         onDelete={() => {
-          alert('delete 추후 연동');
+          alert('delete api 연동 필요');
         }}
         onEdit={() => {
-          alert('edit 추후 연동');
+          alert('수정 페이지 Link 연동');
+        }}
+        onHide={() => {
+          alert('hide api 연동 필요');
+        }}
+        onReport={() => {
+          alert('report api 연동 필요');
         }}
       />
     </>
@@ -1213,6 +1273,8 @@ type ContentSettingType = {
   onShare: () => void;
   onDelete: () => void;
   onEdit: () => void;
+  onReport: () => void;
+  onHide: () => void;
 };
 const ContentSetting = ({
   isMine = false,
@@ -1222,12 +1284,16 @@ const ContentSetting = ({
   onShare = () => {},
   onDelete = () => {},
   onEdit = () => {},
+  onReport = () => {},
+  onHide = () => {},
 }: ContentSettingType) => {
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItemsMine: SelectDrawerItem[] = [
     {
       name: 'Edit',
-      onClick: () => {},
+      onClick: () => {
+        onEdit();
+      },
     },
     {
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
@@ -1248,13 +1314,17 @@ const ContentSetting = ({
     },
     {
       name: 'Delete',
-      onClick: () => {},
+      onClick: () => {
+        onDelete();
+      },
     },
   ];
   let uploadImageItems: SelectDrawerItem[] = [
     {
       name: 'Edit',
-      onClick: () => {},
+      onClick: () => {
+        onEdit();
+      },
     },
     {
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
@@ -1262,11 +1332,15 @@ const ContentSetting = ({
     },
     {
       name: 'Hide',
-      onClick: () => {},
+      onClick: () => {
+        onHide();
+      },
     },
     {
       name: 'Report',
-      onClick: () => {},
+      onClick: () => {
+        onReport();
+      },
     },
   ];
 
@@ -1285,7 +1359,7 @@ export type SelectBoxProps = {
   OptionComponent: (data: {id: number; [key: string]: any}, isSelected: boolean) => JSX.Element;
   ValueComponent: (data: any) => JSX.Element;
   ArrowComponent: () => JSX.Element;
-  onChangedCharacter: (id: number) => void;
+  onChange: (id: number) => void;
   customStyles?: {
     control?: object; // 함수 또는 객체 허용
     singleValue?: object;
@@ -1305,7 +1379,7 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
   OptionComponent,
   ValueComponent,
   ArrowComponent,
-  onChangedCharacter,
+  onChange,
   customStyles = {},
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -1408,7 +1482,7 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
         onChange={option => {
           if (option) {
             setSelectedOption(option);
-            onChangedCharacter(option.id);
+            onChange(option.id);
             setIsOpen(false);
           }
         }}

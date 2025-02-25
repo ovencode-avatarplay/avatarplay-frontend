@@ -290,7 +290,7 @@ const CharacterDashboard: React.FC = () => {
 
   //#region  Delete
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = async (id: number) => {
     if (selectedCharacterId === null) return;
 
     const characterName = characters?.find(char => char.id === selectedCharacterId)?.name || 'Unknown';
@@ -377,6 +377,7 @@ const CharacterDashboard: React.FC = () => {
         style={{marginTop: '0px'}}
         canEdit={true}
         onClickEdit={handleModifyClick}
+        onClickDelete={handleConfirmDelete}
         showVisibilityType={true}
       />
 
@@ -399,7 +400,7 @@ const CharacterDashboard: React.FC = () => {
         characterInfo={currentSelectedCharacter}
         refreshCharacterList={getCharacterList}
         onDelete={() => {
-          handleConfirmDelete();
+          // handleConfirmDelete();
           handleCloseModify();
         }}
       />
