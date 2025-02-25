@@ -1,6 +1,17 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './VideoContentUpload.module.css';
-import {BoldArrowDown, BoldQuestion, LineArrowDown, LineClose, LineDashboard, LineDelete, LineUpload} from '@ui/Icons';
+import {
+  BoldArrowDown,
+  BoldCirclePlus,
+  BoldFolderPlus,
+  BoldQuestion,
+  CircleClose,
+  LineArrowDown,
+  LineClose,
+  LineDashboard,
+  LineDelete,
+  LineUpload,
+} from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {UploadMediaState} from '@/redux-store/slices/ContentInfo';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
@@ -13,9 +24,9 @@ interface UploadField {
   selectedCountry: CountryTypes;
   fileUrl?: string; // 업로드된 파일의 URL 저장
 }
-interface CreateContentEpisodeProps {}
+interface VideoContentUploadProps {}
 
-const VideoContentUpload: React.FC<CreateContentEpisodeProps> = ({}) => {
+const VideoContentUpload: React.FC<VideoContentUploadProps> = ({}) => {
   const [subtitleFields, setSubtitleFields] = useState<UploadField[]>([]);
   const [dubbingFields, setDubbingFields] = useState<UploadField[]>([]);
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle' | 'dubbing'; index: number} | null>(
@@ -36,11 +47,28 @@ const VideoContentUpload: React.FC<CreateContentEpisodeProps> = ({}) => {
     }
   };
 
-  const handleRemoveUploader = (type: 'subtitle' | 'dubbing', id: number) => {
+  const handleRemoveSpecificField = (type: 'subtitle' | 'dubbing', index: number) => {
     if (type === 'subtitle') {
-      setSubtitleFields(subtitleFields.filter(field => field.id !== id));
-    } else {
-      setDubbingFields(dubbingFields.filter(field => field.id !== id));
+      let id = subtitleFields[index].id;
+      setSubtitleFields(prevFields => prevFields.filter(field => field.id !== Number(id)));
+      console.log('로그', id, subtitleFields);
+    } else if (type === 'dubbing') {
+      let id = dubbingFields[index].id;
+      setDubbingFields(prevFields => prevFields.filter(field => field.id !== Number(id)));
+    }
+  };
+
+  const handleClearFileUrl = (type: 'subtitle' | 'dubbing', index: number) => {
+    if (type === 'subtitle') {
+      let id = subtitleFields[index].id;
+      setSubtitleFields(prevFields =>
+        prevFields.map(field => (field.id === id ? {...field, fileUrl: undefined} : field)),
+      );
+    } else if (type === 'dubbing') {
+      let id = dubbingFields[index].id;
+      setDubbingFields(prevFields =>
+        prevFields.map(field => (field.id === id ? {...field, fileUrl: undefined} : field)),
+      );
     }
   };
 
@@ -112,7 +140,12 @@ const VideoContentUpload: React.FC<CreateContentEpisodeProps> = ({}) => {
         {/* 업로드된 파일 표시 */}
         <div className={styles.videoUploadBox}>
           {field.fileUrl ? (
-            <span>{field.fileUrl.split('/').pop()}</span> // 파일명 표시
+            <>
+              <div className={styles.textInBoxGroup}>
+                <span className={styles.textInBox}>{field.fileUrl.split('/').pop()}</span> // 파일명 표시
+                <img src={CircleClose.src} className={styles.circleClose}></img>
+              </div>
+            </>
           ) : (
             <span>No file uploaded</span>
           )}
@@ -138,17 +171,10 @@ const VideoContentUpload: React.FC<CreateContentEpisodeProps> = ({}) => {
             <img src={LineUpload.src} alt="Upload" className={styles.icon} />
             Upload
           </button>
-          {field.fileUrl ? (
-            <button className={styles.deleteButton} onClick={() => handleRemoveFile(type, index)}>
-              <img src={LineDelete.src} alt="Delete" className={styles.icon} />
-              Delete
-            </button>
-          ) : (
-            <button className={styles.deleteButton}>
-              <img src={LineDelete.src} alt="Delete" className={styles.icon} />
-              Delete
-            </button>
-          )}
+          <button className={styles.deleteButton} onClick={() => handleRemoveSpecificField(type, index)}>
+            <img src={LineDelete.src} alt="Delete" className={styles.icon} />
+            Delete
+          </button>
         </div>
 
         {/* 국가 선택 드롭다운 */}
@@ -172,12 +198,22 @@ const VideoContentUpload: React.FC<CreateContentEpisodeProps> = ({}) => {
         <span className={styles.label}>Video</span>
         <div className={styles.uploadGroup}>
           <div className={styles.videoUploadBox}>
-            {videoFile ? <video src={videoFile} controls width="100%" /> : <span>No video uploaded</span>}
+            {videoFile ? (
+              <>
+                <div className={styles.textInBoxGroup}>
+                  <span className={styles.textInBox}>{videoFile.split('/').pop()}</span>{' '}
+                  <img src={CircleClose.src} className={styles.circleClose}></img>
+                </div>
+              </>
+            ) : (
+              <span>No video uploaded</span>
+            )}
           </div>
 
           <div className={styles.videoButtonContainer}>
             <button
               className={styles.uploadButton}
+              style={{width: '100%'}}
               onClick={() => {
                 const input = document.createElement('input');
                 input.type = 'file';
@@ -194,18 +230,6 @@ const VideoContentUpload: React.FC<CreateContentEpisodeProps> = ({}) => {
               <img src={LineUpload.src} alt="Upload" className={styles.icon} />
               Upload
             </button>
-
-            {videoFile ? (
-              <button className={styles.deleteButton} onClick={() => handleRemoveFile('video')}>
-                <img src={LineDelete.src} alt="Delete" className={styles.icon} />
-                Delete
-              </button>
-            ) : (
-              <button className={styles.deleteButton}>
-                <img src={LineDelete.src} alt="Delete" className={styles.icon} />
-                Delete
-              </button>
-            )}
           </div>
         </div>
         <div className={styles.subtitleContainer}>

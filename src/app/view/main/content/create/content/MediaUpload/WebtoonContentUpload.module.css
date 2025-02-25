@@ -263,7 +263,7 @@ color: var(--Neutral-400);
   
   .videoUploadBox {    
     width: 100%;
-    height: 40px;
+    height: 120px;
     border-radius: 10px;
     border: 1px solid #e8eaed;
     border-radius: 4px;
@@ -275,6 +275,7 @@ font-size: 13px;
 font-style: normal;
 font-weight: 400;
 line-height: 155%; /* 20.15px */
+overflow: auto;
   }
   .countryUploadBox
   {
@@ -304,10 +305,12 @@ height: 20px;
 aspect-ratio: 1/1;
 cursor: pointer;
   }
-  .videoButtonContainer {
+  .videoButtonContainer {    
     display: flex;
     justify-content: space-between;
     width: 100%;
+    gap: 8px;
+    
   }
   
   .uploadButton,
@@ -365,20 +368,58 @@ border-radius: 10px;
 background: var(--White, #FFF);
   }
   
-  .textInBoxGroup
-  {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-  }
-
-  .textInBox
-  {
-    line-height: 120%;
-  }
-
+ 
   .circleClose
   {
     width: 18px;
     height: 18px;
   }
+
+  .arrowButton
+  {
+    filter: brightness(0) saturate(100%)
+  }
+
+  .fileList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .fileItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    
+  }
+  
+  .fileItem:hover {
+    background-color: #f0f0f0; /* 마우스 호버 시 */
+  }
+  
+  .selected {
+    background: var(--Neutral-200, #E8EAED)  !important;
+  }
+  
+  .fileName {
+    flex-grow: 1;
+    font-size: 14px;
+
+    padding:0 5px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+
+  }
+  
+  .deleteIcon {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin-left: 8px;
+  }
+  

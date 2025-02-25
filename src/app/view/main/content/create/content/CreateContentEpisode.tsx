@@ -11,6 +11,7 @@ import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {UploadMediaState} from '@/redux-store/slices/ContentInfo';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import VideoContentUpload from './MediaUpload/VideoContentUpload';
+import WebtoonContentUpload from './MediaUpload/WebtoonContentUpload';
 enum CountryTypes {
   Korea = 0,
   Japan = 1,
@@ -247,7 +248,8 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({onNext, onPr
           style={{minHeight: '190px', width: '100%'}}
           placeholder="Add a description or hastag"
         />
-        <VideoContentUpload></VideoContentUpload>
+        {/* <VideoContentUpload></VideoContentUpload> */}
+        <WebtoonContentUpload></WebtoonContentUpload>
         <div className={styles.moenetization}>
           <span className={styles.label}>Moenetization</span>
           <button className={styles.questionButton}>
