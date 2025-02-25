@@ -2,7 +2,7 @@ import styles from './CharacterCreateLLM.module.css';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
-import {LanguageType} from '@/redux-store/slices/ContentInfo';
+import {LanguageType} from '@/redux-store/slices/StoryInfo';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAI, BoldArrowDown, LineDelete} from '@ui/Icons';
 import {useEffect, useState} from 'react';

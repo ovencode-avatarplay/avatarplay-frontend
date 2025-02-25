@@ -6,7 +6,7 @@ export enum UploadMediaState {
   CharacterImage = 1,
   GalleryImage = 2,
   BackgroundImage = 3,
-  ContentImage = 4,
+  StoryImage = 4,
   TtsVoice = 5,
   TriggerImage = 6,
   TriggerVideo = 7,

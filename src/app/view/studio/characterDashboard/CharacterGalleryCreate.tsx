@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styles from './CharacterGalleryCreate.module.css';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
-import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {BoldRuby, LineArrowLeft, LineCheck, LineRegenerate} from '@ui/Icons';
 import {

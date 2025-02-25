@@ -1,7 +1,7 @@
 'use client';
 
-import ContentDashboard from '@/app/view/studio/contentDashboard/ContentDashboard';
+import StoryDashboard from '@/app/view/studio/storyDashboard/StoryDashboard';
 
-export default function ContentDashboardPage() {
-  return <ContentDashboard />;
+export default function StoryDashboardPage() {
+  return <StoryDashboard />;
 }
