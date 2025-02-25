@@ -137,7 +137,7 @@
 .inviteInputText
 {  
     width: 100%;
-    min-width: 170px;
+    min-width: 130px;
     color: var(--Neutral-400, #BDC1C6);
     font-family: Lato;
     font-size: 15px;
@@ -273,33 +273,19 @@
     letter-spacing: -0.4px;
 }
 
-.profileImage
-{
-    display: flex;
-    width: 40px;
-    height: 40px;
-    padding: var(--sds-size-space-0);
-    align-items: center;
-
-}
-
-.profileName
-{
-
-}
-
 .dropdownContainer
 { 
-    position: relative;
     display: flex;
-    justify-content: space-between;
+    padding: 6px 8px;
     align-items: center;
-    gap: 6px;
+    gap: 3px;
+    border-radius: 6px;
+    background: var(--Neutral-300, #DADCE0);
 }
 
 .dropdownButton
 {
-    width: 80px;
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -331,8 +317,8 @@
     /* Dropdown Shadow */
     box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.10);
 
-    /* top: 35px; */
-    right: -10px;
+    top: 5px;
+    right: 20px;
     z-index: 100; 
 }
 
@@ -350,6 +336,29 @@
     align-self: stretch;
     
     border-bottom: 1px solid var(--Border-1, #EAECF0);
+}
+
+.authIcon
+{
+    display: flex;
+    width: 22px;
+    height: 22px;
+    padding: 3.085px;
+    justify-content: center;
+    align-items: center;
+    
+    filter: var(--black-icon-filter);
+}
+
+.isRed
+{
+    color: #F75555; 
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 160%; /* 22.4px */
+    letter-spacing: 0.2px;
+    filter: brightness(0) saturate(100%) invert(47%) sepia(37%) saturate(3106%) hue-rotate(331deg) brightness(110%) contrast(94%);
 }
 
 .checkIcon

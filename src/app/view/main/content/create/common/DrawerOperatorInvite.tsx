@@ -3,7 +3,7 @@ import styles from './DrawerOperatorInvite.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {BoldLetter, LineArrowDown, LineCheck} from '@ui/Icons';
+import {BoldLetter, LineArrowDown, LineCheck, LineComment, LineDelete, LineEdit} from '@ui/Icons';
 import {
   InviteProfileReq,
   OperatorAuthorityType,
@@ -41,7 +41,13 @@ const OperatorInviteDrawer: React.FC<Props> = ({
   const [searchSelected, setSearchSelected] = useState<boolean>(false);
   const [selectedItemAuthTypes, setSelectedItemAuthTypes] = useState<{[key: number]: OperatorAuthorityType}>({});
   const [itemDropdownOpenStates, setItemDropdownOpenStates] = useState<{[key: number]: boolean}>({});
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchDropdownRef = useRef<HTMLDivElement>(null);
+
+  const [authDropdownOpen, setAuthDropdownOpen] = useState(false);
+  const authDropdownRef = useRef<HTMLDivElement | null>(null);
+  const setAuthDropdownRef = (el: HTMLDivElement | null) => {
+    authDropdownRef.current = el;
+  };
 
   const dropdownRefs = useRef<{[key: number]: HTMLDivElement | null}>({});
   const setDropdownRef = (index: number) => (el: HTMLDivElement | null) => {
@@ -214,6 +220,23 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     );
   };
 
+  const handleDeleteOperator = (deleteIndex: number) => {
+    if (!onUpdateOperatorList || !operatorList) return;
+    const updatedList = operatorList.filter((_, idx) => idx !== deleteIndex);
+    onUpdateOperatorList(updatedList);
+  };
+
+  const getOperatorIcon = (authType: string) => {
+    switch (authType) {
+      case 'Edit':
+        return LineEdit.src;
+      case 'Comment':
+        return LineComment.src;
+      default:
+        return null;
+    }
+  };
+
   const renderOperatorDropDown = (
     isOpen: boolean,
     onClickAction: (authType: string) => void,
@@ -223,7 +246,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     isItem?: boolean,
   ) => {
     return (
-      <div className={styles.dropdownContainer} ref={setDropdownRef(index)}>
+      <div className={styles.dropdownContainer} ref={isItem ? setDropdownRef(index) : authDropdownRef}>
         <button className={styles.dropdownButton} onClick={toggleDropdown}>
           {OperatorAuthorityType[selectedAuthType]}
           <img
@@ -235,23 +258,26 @@ const OperatorInviteDrawer: React.FC<Props> = ({
         {isOpen && (
           <ul className={styles.authDropdown}>
             {Object.keys(OperatorAuthorityType)
-              .filter(key => isNaN(Number(key)))
+              .filter(
+                key =>
+                  isNaN(Number(key)) && Number(OperatorAuthorityType[key as keyof typeof OperatorAuthorityType]) > 1,
+              )
               .map((authType, idx) => (
                 <li key={idx} className={styles.authDropdownItem} onClick={() => onClickAction(authType)}>
                   {authType}
-                  <img
-                    className={`${styles.checkIcon} ${
-                      selectedAuthType === OperatorAuthorityType[authType as keyof typeof OperatorAuthorityType]
-                        ? styles.selectedIcon
-                        : ''
-                    }`}
-                    src={LineCheck.src}
-                  />
+                  <img className={styles.authIcon} src={idx === 0 ? LineEdit.src : idx === 1 ? LineComment.src : ''} />
                 </li>
               ))}
-            <li key="delete" className={`${styles.authDropdownItem} ${styles.isRed}`}>
-              Delete
-            </li>
+            {isItem && (
+              <li
+                key="delete"
+                className={`${styles.lastItem} ${styles.authDropdownItem} ${styles.isRed} `}
+                onClick={() => handleDeleteOperator(index)}
+              >
+                Delete
+                <img className={styles.authIcon} src={LineDelete.src} />
+              </li>
+            )}
           </ul>
         )}
       </div>
@@ -260,7 +286,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target as Node)) {
         setSearchListOpen(false);
       }
     };
@@ -275,7 +301,6 @@ const OperatorInviteDrawer: React.FC<Props> = ({
       document.removeEventListener('touchstart', handleClickOutside);
     };
   }, [searchListOpen, setSearchListOpen]);
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       let updatedStates = {...itemDropdownOpenStates};
@@ -289,12 +314,21 @@ const OperatorInviteDrawer: React.FC<Props> = ({
         }
       });
 
+      if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target as Node)) {
+        setSearchDropdownOpen(false);
+      }
+
+      if (authDropdownRef.current && !authDropdownRef.current.contains(event.target as Node)) {
+        setAuthDropdownOpen(false);
+        hasChanges = true;
+      }
+
       if (hasChanges) {
         setItemDropdownOpenStates(updatedStates);
       }
     };
 
-    if (Object.values(itemDropdownOpenStates).some(isOpen => isOpen)) {
+    if (searchListOpen || authDropdownOpen || Object.values(itemDropdownOpenStates).some(isOpen => isOpen)) {
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('touchstart', handleClickOutside);
     }
@@ -303,7 +337,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('touchstart', handleClickOutside);
     };
-  }, [itemDropdownOpenStates]);
+  }, [searchListOpen, authDropdownOpen, itemDropdownOpenStates]);
 
   return (
     <CustomDrawer
@@ -326,7 +360,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
               }}
             />
             {searchedList?.length > 0 && searchListOpen && (
-              <div className={styles.searchResultContainer} ref={dropdownRef}>
+              <div className={styles.searchResultContainer} ref={searchDropdownRef}>
                 <ul className={styles.searchResultList}>
                   {searchedList?.map((profile, index) => {
                     const isIncluded = operatorList.some(operator => operator.profileId === profile.id);
@@ -365,14 +399,14 @@ const OperatorInviteDrawer: React.FC<Props> = ({
               </div>
             )}
             {renderOperatorDropDown(
-              searchDropdownOpen,
+              authDropdownOpen,
               authType => {
                 setSelectedSearchAuthType(OperatorAuthorityType[authType as keyof typeof OperatorAuthorityType]);
-                setSearchDropdownOpen(false);
+                setAuthDropdownOpen(false);
               },
               selectedSearchAuthType,
-              () => setSearchDropdownOpen(!searchDropdownOpen),
-              0,
+              () => setAuthDropdownOpen(!authDropdownOpen),
+              -1,
             )}
           </div>
           <button className={styles.inviteButton} onClick={handleOnClickInvite}>

@@ -343,25 +343,12 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   const renderConnect = () => {
     return (
-      <>
-        <DrawerConnectCharacter
-          connectOpen={connectOpen}
-          setConnectOpen={setConnectOpen}
-          connectCharacterInfo={connectCharacterInfo}
-          onConnectCharacterInfoChange={onConnectCharacterInfoChange}
-        />
-
-        <div className={styles.connectArea}>
-          {/* 드롭다운을 누를때 마다 API 요청 */}
-          <h2 className={styles.title2}>Connect</h2>
-          <CustomDropDown
-            displayType="Profile"
-            textType="TitleLabel"
-            items={connectCharacterItems}
-            onSelect={(value: string | number) => handleSelectConnectCharacter(Number(value))}
-          />
-        </div>
-      </>
+      <DrawerConnectCharacter
+        connectOpen={connectOpen}
+        setConnectOpen={setConnectOpen}
+        connectCharacterInfo={connectCharacterInfo}
+        onConnectCharacterInfoChange={onConnectCharacterInfoChange}
+      />
     );
   };
 

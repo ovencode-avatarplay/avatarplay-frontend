@@ -27,6 +27,7 @@ import {CharacterInfo, CharacterMediaInfo, Conversation, ConversationInfo} from 
 import CharacterCreateViewImage from './CharacterCreateViewImage';
 import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface CreateCharacterProps {
   characterInfo?: CharacterInfo;
@@ -768,32 +769,38 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
                   Profile Image<span className={styles.astrisk}>*</span>
                 </h2>
 
-                <button
-                  onClick={() => {
-                    if (mainimageUrl === '') {
-                      handleOnClickThumbnail();
-                    } else {
-                      setImageViewUrl(mainimageUrl);
-                      setImageViewOpen(true);
-                    }
-                  }}
-                >
-                  <div
-                    className={`${styles.thumbnailImage} ${mainimageUrl === '' && styles.emptyImage}`}
-                    style={{backgroundImage: mainimageUrl ? `url(${mainimageUrl})` : 'none'}}
-                  >
-                    <button
-                      className={styles.editButton}
-                      onClick={e => {
-                        e.stopPropagation();
+                <div className={styles.thumbnailButtonArea}>
+                  <button
+                    className={styles.thumbnailButton}
+                    onClick={() => {
+                      if (mainimageUrl === '') {
                         handleOnClickThumbnail();
-                      }}
+                      } else {
+                        setImageViewUrl(mainimageUrl);
+                        setImageViewOpen(true);
+                      }
+                    }}
+                  >
+                    <div
+                      className={`${styles.thumbnailImage} ${mainimageUrl === '' && styles.emptyImage}`}
+                      style={{backgroundImage: mainimageUrl ? `url(${mainimageUrl})` : 'none'}}
                     >
-                      <img className={styles.editIcon} src={LineEdit.src} />
-                    </button>
-                    {mainimageUrl === '' && <div className={styles.createImageText}>Create</div>}
-                  </div>
-                </button>
+                      <button
+                        className={styles.editButton}
+                        onClick={e => {
+                          e.stopPropagation();
+                          handleOnClickThumbnail();
+                        }}
+                      >
+                        <img className={styles.editIcon} src={LineEdit.src} />
+                      </button>
+                      {mainimageUrl === '' && <div className={styles.createImageText}>Create</div>}
+                    </div>
+                  </button>
+                  <CustomButton size="Small" state="Normal" type="Primary">
+                    Regenerate
+                  </CustomButton>
+                </div>
               </div>
               <Splitters
                 splitters={splitterData}
