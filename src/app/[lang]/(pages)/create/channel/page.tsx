@@ -1,19 +1,30 @@
 'use client';
 
-import React, {ChangeEvent, useEffect, useState} from 'react';
+import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import styles from './CreateChannel.module.scss';
 import {
+  BoldAltArrowDown,
   BoldArrowLeft,
   BoldRadioButton,
   BoldRadioButtonSelected,
+  BoldRadioButtonSquare,
+  BoldRadioButtonSquareSelected,
   LineCheck,
   LineDelete,
   LineRegenerate,
+  LineSearch,
   LineUpload,
 } from '@ui/Icons';
 import {useForm} from 'react-hook-form';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
-import {MediaState, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {
+  ExploreSortType,
+  MediaState,
+  OperatorAuthorityType,
+  ProfileSimpleInfo,
+  ProfileTabType,
+  ProfileType,
+} from '@/app/NetWork/ProfileNetwork';
 import {DragStatusType, TagDrawerType} from '../../profile/update/[[...id]]/page';
 import cx from 'classnames';
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -22,6 +33,12 @@ import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostC
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
+import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
+import {ChannelInfo, CreateChannelReq, createUpdateChannel} from '@/app/NetWork/ChannelNetwork';
+import {profile} from 'console';
+import {SelectBox} from '@/app/view/profile/ProfileBase';
+import {VisibilityType} from '@/redux-store/slices/ContentInfo';
 type Props = {};
 
 type FileType = {
@@ -37,6 +54,7 @@ type DataProfileUpdateType = {
   indexTab: number;
   dataVisibility: TagDrawerType;
   dataTag: TagDrawerType;
+  dataCharacterSearch: DrawerCharacterSearchType;
   dataCountry: {
     isOpenDrawer: boolean;
     tagList: number[];
@@ -49,15 +67,20 @@ type DataProfileUpdateType = {
   };
 };
 
+interface ChannelInfoForm extends Omit<ChannelInfo, 'tag'> {
+  tag: string[];
+}
+
 const CreateChannel = (props: Props) => {
+  const router = useRouter();
   const [data, setData] = useState<DataProfileUpdateType>({
     thumbnail: null,
     dragStatus: DragStatusType.OuterClick,
-    indexTab: 1,
+    indexTab: 2,
     dataVisibility: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: true, value: 'Private'},
+        {isActive: false, value: 'Private'},
         {isActive: false, value: 'Unlisted'},
         {isActive: false, value: 'Public'},
       ],
@@ -104,6 +127,26 @@ const CreateChannel = (props: Props) => {
       inviteSearchValue: '',
       operatorProfileIdList: [],
     },
+    dataCharacterSearch: {
+      open: false,
+      title: 'Character',
+      description: '',
+      profileList: [
+        {
+          isActive: true,
+          profileSimpleInfo: {
+            name: 'ㅎㅇㅎㅇ',
+            iconImageUrl: '/images/profile_sample/img_sample_profile1.png',
+            operatorAuthorityType: OperatorAuthorityType.None,
+            profileId: 0,
+            profileTabType: ProfileTabType.My,
+            profileType: ProfileType.Character,
+          },
+        },
+      ],
+      onClose: () => {},
+      onChange: (profileList: {isActive: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => {},
+    },
   });
 
   const {
@@ -117,7 +160,25 @@ const CreateChannel = (props: Props) => {
     trigger,
     clearErrors,
     formState: {errors, isSubmitted},
-  } = useForm();
+  } = useForm<ChannelInfoForm>();
+
+  useEffect(() => {
+    if (!errors) {
+      return;
+    }
+
+    if (errors.mediaUrl || errors.name || errors.description) {
+      data.indexTab = 0;
+      setData({...data});
+      return;
+    }
+
+    if (errors.visibilityType || errors.tag || errors.postCountry) {
+      data.indexTab = 2;
+      setData({...data});
+      return;
+    }
+  }, [errors]);
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -208,11 +269,39 @@ const CreateChannel = (props: Props) => {
           fileBlob: file,
           file: resUpload.data?.url || '',
         };
-        setValue('iconUrl', data.thumbnail.file);
+        setValue('mediaUrl', data.thumbnail.file);
         setData({...data});
       }
     }
   };
+
+  const routerBack = () => {
+    // you can get the prevPath like this
+    const prevPath = getBackUrl();
+    if (!prevPath || prevPath == '') {
+      router.replace(getLocalizedLink('/main/homefeed'));
+    } else {
+      router.replace(prevPath);
+    }
+  };
+  const onSubmit = async (data: any) => {
+    // e.preventDefault(); // 기본 제출 방지
+    // const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
+    console.log('data : ', data);
+    let tag = '';
+    if (data?.tag?.length > 0) {
+      tag = data?.tag?.join(',') || '';
+    }
+    const dataUpdatePdInfo: CreateChannelReq = {
+      channelInfo: {...data, id: 0, tag: tag},
+    };
+    await createUpdateChannel(dataUpdatePdInfo);
+    // routerBack();
+  };
+
+  const keys = Object.keys(VisibilityType).filter(key => isNaN(Number(key)));
+  const visibilityType = getValues('visibilityType');
+  const visibilityTypeStr = keys[visibilityType];
 
   return (
     <>
@@ -221,105 +310,118 @@ const CreateChannel = (props: Props) => {
         <div className={styles.title}>Create Channel</div>
       </header>
       <main className={styles.main}>
-        <div className={styles.label}>Thumbnail (Photo/Video)</div>
-        <section className={styles.uploadThumbnailSection}>
-          <label className={styles.uploadBtn} htmlFor="file-upload">
-            <input {...register('iconUrl', {required: true})} type="hidden" />
-            <input
-              className={styles.hidden}
-              id="file-upload"
-              type="file"
-              accept="image/png, image/jpeg, image/jpg, image/gif"
-              onChange={onUploadClicked}
-            />
-            {!data.thumbnail?.file && (
-              <div className={styles.uploadWrap} onDrop={onDrop} onDragOver={onDragOver} onDragStart={onDragStartInner}>
-                <img src={LineUpload.src} alt="" />
-                <div className={styles.text}>Upload</div>
-              </div>
-            )}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className={styles.label}>Thumbnail (Photo/Video)</div>
+          <section className={styles.uploadThumbnailSection}>
+            <label className={styles.uploadBtn} htmlFor="file-upload">
+              <input {...register('mediaUrl', {required: true})} type="hidden" />
+              <input
+                className={styles.hidden}
+                id="file-upload"
+                type="file"
+                accept="image/png, image/jpeg, image/jpg, image/gif"
+                onChange={onUploadClicked}
+              />
+              {!data.thumbnail?.file && (
+                <div
+                  className={styles.uploadWrap}
+                  onDrop={onDrop}
+                  onDragOver={onDragOver}
+                  onDragStart={onDragStartInner}
+                >
+                  <img src={LineUpload.src} alt="" />
+                  <div className={styles.text}>Upload</div>
+                </div>
+              )}
 
-            {data.thumbnail?.file && (
-              <div className={styles.thumbnailContainer}>
-                <div className={styles.thumbnailWrap}>
-                  <img className={styles.thumbnail} src={data.thumbnail?.file} alt="" />
-                  <div className={styles.iconEditWrap}>
-                    <img src="/ui/profile/update/icon_thumbnail_edit.svg" alt="" className={styles.iconEdit} />
+              {data.thumbnail?.file && (
+                <div className={styles.thumbnailContainer}>
+                  <div className={styles.thumbnailWrap}>
+                    <img className={styles.thumbnail} src={data.thumbnail?.file} alt="" />
+                    <div className={styles.iconEditWrap}>
+                      <img src="/ui/profile/update/icon_thumbnail_edit.svg" alt="" className={styles.iconEdit} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </label>
-        </section>
+              )}
+            </label>
+          </section>
 
-        <section className={styles.tabSection}>
-          <div className={styles.tabHeaderContainer}>
-            <div className={styles.tabHeaderWrap}>
-              <div
-                className={styles.tabHeader}
-                onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                  const target = e.target as HTMLElement;
-                  const category = target.closest('[data-tab]')?.getAttribute('data-tab');
-                  if (category) {
-                    data.indexTab = parseInt(category);
-                  }
-                  setData({...data});
-                }}
-              >
-                <div className={styles.tabItem} data-tab={0}>
-                  <div className={cx(styles.labelTab, data.indexTab == 0 && styles.active)}>Basic</div>
+          <section className={styles.tabSection}>
+            <div className={styles.tabHeaderContainer}>
+              <div className={styles.tabHeaderWrap}>
+                <div
+                  className={styles.tabHeader}
+                  onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                    const target = e.target as HTMLElement;
+                    const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+                    if (category) {
+                      data.indexTab = parseInt(category);
+                    }
+                    setData({...data});
+                  }}
+                >
+                  <div className={styles.tabItem} data-tab={0}>
+                    <div className={cx(styles.labelTab, data.indexTab == 0 && styles.active)}>Basic</div>
+                  </div>
+                  <div className={styles.tabItem} data-tab={1}>
+                    <div className={cx(styles.labelTab, data.indexTab == 1 && styles.active)}>Members</div>
+                  </div>
+                  <div className={styles.tabItem} data-tab={2}>
+                    <div className={cx(styles.labelTab, data.indexTab == 2 && styles.active)}>Policy</div>
+                  </div>
                 </div>
-                <div className={styles.tabItem} data-tab={1}>
-                  <div className={cx(styles.labelTab, data.indexTab == 1 && styles.active)}>Members</div>
-                </div>
-                <div className={styles.tabItem} data-tab={2}>
-                  <div className={cx(styles.labelTab, data.indexTab == 2 && styles.active)}>Policy</div>
-                </div>
+                <div className={styles.line}></div>
               </div>
-              <div className={styles.line}></div>
             </div>
-          </div>
 
-          <div className={styles.tabContent}>
-            {data.indexTab == 0 && (
-              <section className={styles.channelSection}>
+            <div className={styles.tabContent}>
+              <section className={cx(styles.channelSection, data.indexTab == 0 && styles.active)}>
                 <div className={styles.label}>Channel name</div>
                 <input
-                  {...register('channelName', {required: true})}
-                  className={cx(errors.channelName && isSubmitted && styles.error)}
+                  {...register('name', {required: true})}
+                  className={cx(errors.name && isSubmitted && styles.error)}
                   type="text"
                   placeholder="Please enter a title for your post"
                   onChange={e => {
-                    clearErrors('channelName');
-                    setValue('channelName', e.target.value);
+                    clearErrors('name');
+                    setValue('name', e.target.value);
                   }}
                 />
 
                 <div className={styles.label}>Channel description</div>
-                <div className={cx(styles.textAreaWrap, errors.introduce && isSubmitted && styles.error)}>
+                <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
                   <textarea
-                    {...register('introduce', {required: true})}
+                    {...register('description', {required: true})}
                     placeholder="Add a description or hashtag"
                     maxLength={250}
                     onChange={async e => {
                       const target = e.target as HTMLTextAreaElement;
                       target.style.height = 'auto';
                       target.style.height = `${target.scrollHeight}px`;
-                      setValue('introduce', target.value, {shouldValidate: false}); // 강제 업데이트
-                      clearErrors('introduce');
+                      setValue('description', target.value, {shouldValidate: false}); // 강제 업데이트
+                      clearErrors('description');
                     }}
                   />
-                  <div className={styles.textCount}>{`${watch('introduce', '').length}/500`}</div>
+                  <div className={styles.textCount}>{`${watch('description', '').length}/500`}</div>
                 </div>
               </section>
-            )}
-            {data.indexTab == 1 && (
-              <section className={styles.membersSection}>
-                <div className={styles.addBtnWrap}>
+              <section className={cx(styles.membersSection, data.indexTab == 1 && styles.active)}>
+                <div
+                  className={styles.addBtnWrap}
+                  onClick={() => {
+                    data.dataCharacterSearch.open = true;
+                    setData({...data});
+                  }}
+                >
                   <div className={styles.circle}>
                     <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
                   </div>
-                  <div className={styles.labelAdd}>Add</div>
+                  <div className={styles.labelAdd}>
+                    Character
+                    <br />
+                    name
+                  </div>
                 </div>
                 <div className={styles.label}>3 Members</div>
 
@@ -356,18 +458,18 @@ const CreateChannel = (props: Props) => {
                   </li>
                 </ul>
               </section>
-            )}
-            {data.indexTab == 2 && (
-              <section className={styles.policySection}>
+              <section className={cx(styles.policySection, data.indexTab == 2 && styles.active)}>
                 <div className={styles.label}>Visibility</div>
                 <div
-                  className={cx(styles.selectWrap, errors.visibility && isSubmitted && styles.error)}
+                  className={cx(styles.selectWrap, errors.visibilityType && isSubmitted && styles.error)}
                   onClick={() => {
                     data.dataVisibility.isOpenTagsDrawer = true;
                     setData({...data});
                   }}
                 >
-                  <div className={styles.placeholder}>Select</div>
+                  <input {...register('visibilityType', {required: true})} type="hidden" />
+                  {!visibilityTypeStr && <div className={styles.placeholder}>Select</div>}
+                  {visibilityTypeStr && <div className={styles.value}>{visibilityTypeStr}</div>}
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
                 </div>
                 <div className={styles.label}>Tag</div>
@@ -378,13 +480,40 @@ const CreateChannel = (props: Props) => {
                     setData({...data});
                   }}
                 >
+                  <input type="hidden" {...register('tag')} />
                   <div className={styles.placeholder}>Select</div>
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
+                </div>
+                <div className={styles.tagWrap}>
+                  {!watch('tag') && <input type="hidden" {...register(`tag`, {required: true})} />}
+
+                  {data.dataTag.tagList.map((one, index) => {
+                    if (!one.isActive) return;
+
+                    return (
+                      <div className={styles.tag} key={index}>
+                        <div className={styles.value}>
+                          <input value={one.value} type="hidden" {...register(`tag.${index}`, {required: true})} />
+                          {one.value}
+                        </div>
+                        <div
+                          className={styles.btnRemoveWrap}
+                          onClick={e => {
+                            unregister(`tag.${index}`);
+                            data.dataTag.tagList[index].isActive = false;
+                            setData({...data});
+                          }}
+                        >
+                          <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className={styles.label}>Post country</div>
                 <div
-                  className={cx(styles.selectWrap, errors.country && isSubmitted && styles.error)}
+                  className={cx(styles.selectWrap, errors.postCountry && isSubmitted && styles.error)}
                   onClick={() => {
                     data.dataCountry.isOpenDrawer = true;
                     setData({...data});
@@ -392,6 +521,33 @@ const CreateChannel = (props: Props) => {
                 >
                   <div className={styles.placeholder}>Select</div>
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
+                </div>
+                <div className={styles.tagWrap}>
+                  {!watch('postCountry') && <input type="hidden" {...register(`postCountry`, {required: true})} />}
+
+                  {data.dataCountry.tagList.map((one, index) => {
+                    const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
+                    const countryStr = keys[one];
+
+                    return (
+                      <div className={styles.tag} key={index}>
+                        <div className={styles.value}>
+                          <input value={one} type="hidden" {...register(`postCountry.${index}`, {required: true})} />
+                          {countryStr}
+                        </div>
+                        <div
+                          className={styles.btnRemoveWrap}
+                          onClick={e => {
+                            unregister(`postCountry.${index}`);
+                            data.dataCountry.tagList = data.dataCountry.tagList.filter(v => v != one);
+                            setData({...data});
+                          }}
+                        >
+                          <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className={styles.operatorInvitationHeader}>
@@ -409,21 +565,22 @@ const CreateChannel = (props: Props) => {
                     Invite
                   </div>
                 </div>
-                <div className={styles.operatorInvitationContent}>
-                  {data.dataOperatorInvitation.operatorProfileIdList.map(() => {
+                <ul className={styles.operatorInvitationList}>
+                  {data.dataOperatorInvitation.operatorProfileIdList.map((one, index) => {
+                    const keys = Object.keys(OperatorAuthorityType).filter(key => isNaN(Number(key)));
                     return (
-                      <div className={styles.operatorProfileWrap}>
+                      <li key={one.profileId} className={styles.operatorInviation}>
                         <div className={styles.left}>
-                          <img src="" alt="" className={styles.profile} />
-                          <div className={styles.name}>Angel_Sasha</div>
+                          <img src={one.iconImageUrl} alt="" />
+                          <div className={styles.name}>{one.name}</div>
                         </div>
                         <div className={styles.right}>
-                          <div className={styles.authority}>Owner</div>
+                          <div className={styles.authority}>{keys[one.operatorAuthorityType]}</div>
                         </div>
-                      </div>
+                      </li>
                     );
                   })}
-                </div>
+                </ul>
 
                 <div className={styles.labelWrap}>
                   <div className={styles.label}>Channel IP</div>
@@ -432,7 +589,12 @@ const CreateChannel = (props: Props) => {
                 <div className={cx(styles.channelIP, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" name="channelIP" value="1" defaultChecked />
+                      <input
+                        type="radio"
+                        value={1}
+                        defaultChecked
+                        {...register('characterIP', {setValueAs: v => (v === '' ? 0 : Number(v))})}
+                      />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -443,7 +605,11 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" name="channelIP" value="2" />
+                      <input
+                        type="radio"
+                        value={0}
+                        {...register('characterIP', {setValueAs: v => (v === '' ? 0 : Number(v))})}
+                      />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -474,7 +640,12 @@ const CreateChannel = (props: Props) => {
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" name="monetization" value="1" defaultChecked />
+                      <input
+                        type="radio"
+                        value={1}
+                        defaultChecked
+                        {...register('isMonetization', {setValueAs: v => (v === '' ? 0 : Boolean(v))})}
+                      />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -484,7 +655,11 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" name="monetization" value="2" />
+                      <input
+                        type="radio"
+                        value={0}
+                        {...register('isMonetization', {setValueAs: v => (v === '' ? 0 : Boolean(v))})}
+                      />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -503,7 +678,12 @@ const CreateChannel = (props: Props) => {
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" name="nsfw" value="1" defaultChecked />
+                      <input
+                        type="radio"
+                        value={1}
+                        defaultChecked
+                        {...register('nSFW', {setValueAs: v => (v === '' ? 0 : Boolean(v))})}
+                      />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -513,7 +693,11 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" name="nsfw" value="2" />
+                      <input
+                        type="radio"
+                        value={0}
+                        {...register('nSFW', {setValueAs: v => (v === '' ? 0 : Boolean(v))})}
+                      />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -523,13 +707,13 @@ const CreateChannel = (props: Props) => {
                   </div>
                 </div>
               </section>
-            )}
-          </div>
-        </section>
+            </div>
+          </section>
 
-        <button type="submit" className={styles.submitBtn}>
-          Submit
-        </button>
+          <button type="submit" className={styles.submitBtn}>
+            Submit
+          </button>
+        </form>
       </main>
       <footer></footer>
 
@@ -542,17 +726,12 @@ const CreateChannel = (props: Props) => {
           data.dataVisibility.isOpenTagsDrawer = false;
           setData({...data});
         }}
-        onChange={(dataChanged: any) => {
-          clearErrors('visibility');
+        onChange={(dataChanged: {isActive: boolean; value: string}[]) => {
+          clearErrors('visibilityType');
           data.dataVisibility.tagList = dataChanged;
 
-          for (let i = 0; i < dataChanged.length; i++) {
-            if (!dataChanged[i].isActive) {
-              unregister(`visibility.${i}`);
-            } else {
-              setValue(`visibility.${i}`, dataChanged[i].value, {shouldValidate: false});
-            }
-          }
+          const index = dataChanged.findIndex(v => v.isActive);
+          setValue('visibilityType', index);
           setData({...data});
         }}
       />
@@ -608,10 +787,40 @@ const CreateChannel = (props: Props) => {
         inviteSearchValue={data.dataOperatorInvitation.inviteSearchValue}
         operatorList={data.dataOperatorInvitation.operatorProfileIdList}
         onUpdateOperatorList={(updatedList: ProfileSimpleInfo[]) => {
-          console.log('updatedList : ', updatedList);
+          data.dataOperatorInvitation.operatorProfileIdList = updatedList;
+          if (updatedList.length == 0) {
+            unregister(`operatorInvitationProfileIdList`);
+          } else {
+            setValue('operatorInvitationProfileIdList', updatedList);
+          }
+          setData({...data});
         }}
         setInviteSearchValue={searchValue => {
           data.dataOperatorInvitation.inviteSearchValue = searchValue;
+          setData({...data});
+        }}
+      />
+
+      <DrawerCharacterSearch
+        title={data.dataCharacterSearch.title}
+        description={data.dataCharacterSearch.description}
+        profileList={JSON.parse(JSON.stringify(data.dataCharacterSearch.profileList))}
+        open={data.dataCharacterSearch.open}
+        onClose={() => {
+          data.dataCharacterSearch.open = false;
+          setData({...data});
+        }}
+        onChange={(dataChanged: any) => {
+          clearErrors('tag');
+          data.dataCharacterSearch.profileList = dataChanged;
+
+          for (let i = 0; i < dataChanged.length; i++) {
+            if (!dataChanged[i].isActive) {
+              unregister(`memberProfileIdList.${i}`);
+            } else {
+              setValue(`memberProfileIdList.${i}`, dataChanged[i].value, {shouldValidate: false});
+            }
+          }
           setData({...data});
         }}
       />
@@ -675,6 +884,7 @@ export const DrawerSelect = ({title, description, tags, open, onClose, onChange}
               }
               data.tagList[index].isActive = true;
               setData({...data});
+              onChange(data.tagList);
             }
           }}
         >
@@ -737,7 +947,7 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
             const dataReset = tags.map(v => ({...v, isActive: false}));
             data.tagList = dataReset;
             setData({...data});
-            onChange(dataReset);
+            // onChange(dataReset);
           }}
         >
           <div className={styles.labelRefresh}>Refresh</div>
@@ -772,6 +982,189 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
       >
         Submit
       </button>
+    </Drawer>
+  );
+};
+
+export type DrawerCharacterSearchType = {
+  title: string;
+  description: string;
+  profileList: {isActive: boolean; profileSimpleInfo: ProfileSimpleInfo}[];
+  open: boolean;
+  onClose: () => void;
+  onChange: (profileList: {isActive: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => void;
+};
+export const DrawerCharacterSearch = ({
+  title,
+  description,
+  profileList,
+  open,
+  onClose,
+  onChange,
+}: DrawerCharacterSearchType) => {
+  const [data, setData] = useState<{
+    profileList: {
+      isActive: boolean;
+      profileSimpleInfo: ProfileSimpleInfo;
+    }[];
+    indexSort: number;
+  }>({
+    profileList: [],
+    indexSort: 0,
+  });
+
+  useEffect(() => {
+    if (!open) return;
+
+    data.profileList = profileList;
+    setData({...data});
+  }, [open]);
+
+  const sortOptionList = [
+    {id: ExploreSortType.Newest, value: 'Newest'},
+    {id: ExploreSortType.MostPopular, value: 'Most Popular'},
+    {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
+    {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
+  ];
+
+  const SelectBoxArrowComponent = useCallback(
+    () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />,
+    [],
+  );
+  const SelectBoxValueComponent = useCallback((data: any) => {
+    return (
+      <div key={data.id} className={styles.label}>
+        {data.value}
+      </div>
+    );
+  }, []);
+  const SelectBoxOptionComponent = useCallback(
+    (data: any, isSelected: boolean) => (
+      <>
+        <div className={styles.optionWrap}>
+          <div key={data.id} className={styles.labelOption}>
+            {data.value}
+          </div>
+          {isSelected && <img className={styles.iconCheck} src={LineCheck.src} alt="altArrowDown" />}
+        </div>
+      </>
+    ),
+    [],
+  );
+
+  return (
+    <Drawer
+      anchor="bottom"
+      open={open}
+      onClose={() => onClose()}
+      PaperProps={{
+        className: `${styles.drawer} ${styles.drawerSearchCharacter}`,
+        sx: {
+          overflow: 'hidden',
+          borderTopLeftRadius: '24px',
+          borderTopRightRadius: '24px',
+        },
+      }}
+    >
+      <div className={styles.handleArea}>
+        <div className={styles.handleBar}></div>
+      </div>
+      <div className={styles.title}>{title}</div>
+      <div className={cx(styles.content)}>
+        <div className={styles.searchWrap}>
+          <img className={styles.iconSearch} src={LineSearch.src} alt="" />
+          <input placeholder="Search" />
+        </div>
+        <div className={styles.filterWrap}>
+          <div className={styles.left}>
+            <label htmlFor="">
+              <input type="checkbox" name="" id="" />
+              <img src={BoldRadioButtonSquareSelected.src} alt="" className={styles.iconOn} />
+              <img src={BoldRadioButtonSquare.src} alt="" className={styles.iconOff} />
+              <div className={styles.labelAll}>All</div>
+            </label>
+          </div>
+          <div className={styles.right}>
+            <SelectBox
+              value={sortOptionList[data.indexSort]}
+              options={sortOptionList}
+              ArrowComponent={SelectBoxArrowComponent}
+              ValueComponent={SelectBoxValueComponent}
+              OptionComponent={SelectBoxOptionComponent}
+              onChange={async id => {
+                data.indexSort = id;
+                setData({...data});
+              }}
+              customStyles={{
+                control: {
+                  width: '184px',
+                  display: 'flex',
+                  gap: '10px',
+                },
+                menuList: {
+                  borderRadius: '10px',
+                  boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                },
+                option: {
+                  padding: '11px 14px',
+                  boxSizing: 'border-box',
+                  '&:first-of-type': {
+                    borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                  },
+                  borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                },
+              }}
+            />
+          </div>
+        </div>
+        <ul className={styles.memberList}>
+          {data.profileList.map((profile, index) => {
+            return (
+              <li className={styles.memberWrap}>
+                <label htmlFor={`profile_1`}>
+                  <div className={styles.left}>
+                    <div className={styles.checkboxWrap}>
+                      <input type="checkbox" name={`profile_1`} id={`profile_1`} defaultChecked />
+                      <img src={BoldRadioButtonSquareSelected.src} alt="" className={styles.iconOn} />
+                      <img src={BoldRadioButtonSquare.src} alt="" className={styles.iconOff} />
+                    </div>
+
+                    <img className={styles.thumbnail} src="/images/profile_sample/img_sample_profile1.png" alt="" />
+                    <div className={styles.info}>
+                      <div className={styles.name}>Character name</div>
+                      <div className={styles.description}>
+                        She tries to hide her feelings, but the jealousy inside her keeps growing...
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.right}>
+                    <div className={styles.nsfw}>18</div>
+                  </div>
+                </label>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      <div className={styles.submitWrap}>
+        <button
+          className={styles.cancelBtn}
+          onClick={() => {
+            onClose();
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          className={styles.confirmBtn}
+          onClick={() => {
+            onChange(data.profileList);
+            onClose();
+          }}
+        >
+          Confirm
+        </button>
+      </div>
     </Drawer>
   );
 };
