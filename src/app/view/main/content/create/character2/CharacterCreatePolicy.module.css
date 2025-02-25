@@ -258,12 +258,6 @@
     line-height: 20px; /* 142.857% */
 }
 
-.connectArea
-{
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
  
 .operatorTitle
 {

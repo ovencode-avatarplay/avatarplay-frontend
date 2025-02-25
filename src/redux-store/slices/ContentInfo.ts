@@ -102,10 +102,13 @@ export interface CharacterInfo {
   conversationTemplateList: ConversationInfo[];
   visibilityType: VisibilityType;
   llmModel: LLMModel;
+  customApi: string;
   tag: string;
   positionCountryList: LanguageType[];
   characterIP: CharacterIP;
-  recruitedProfileId: number;
+  connectCharacterInfo: ProfileSimpleInfo;
+  connectCharacterId: number;
+  recruitedProfileId: number; // TODO : 추후 추가 계획
   operatorProfileIdList: ProfileSimpleInfo[];
   isMonetization: boolean;
   nSFW: boolean;

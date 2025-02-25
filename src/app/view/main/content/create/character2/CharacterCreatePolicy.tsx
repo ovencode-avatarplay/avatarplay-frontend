@@ -16,8 +16,11 @@ import DrawerPostCountry from '../common/DrawerPostCountry';
 import CharacterCreateVoiceSetting from './CharacterCreateVoiceSetting';
 import OperatorInviteDrawer from '../common/DrawerOperatorInvite';
 import DrawerTagSelect from '../common/DrawerTagSelect';
-import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {getProfileList, OperatorAuthorityType, ProfileSimpleInfo, ProfileTabType} from '@/app/NetWork/ProfileNetwork';
 import {SetStateAction} from 'jotai';
+import CustomDrawer from '@/components/layout/shared/CustomDrawer';
+import CustomButton from '@/components/layout/shared/CustomButton';
+import DrawerConnectCharacter from '../common/DrawerConnectCharacter';
 
 interface Props {
   visibility: number;
@@ -32,6 +35,8 @@ interface Props {
   onPositionCountryChange: (value: number[]) => void;
   characterIP: number;
   onCharacterIPChange: (value: number) => void;
+  connectCharacterInfo: ProfileSimpleInfo;
+  onConnectCharacterInfoChange: (value: ProfileSimpleInfo) => void;
   connectCharacterId: number;
   onConnectCharacterIdChange: (value: number) => void;
   operatorProfileIdList: ProfileSimpleInfo[];
@@ -55,6 +60,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   onPositionCountryChange,
   characterIP,
   onCharacterIPChange,
+  connectCharacterInfo,
+  onConnectCharacterInfoChange,
   connectCharacterId,
   onConnectCharacterIdChange,
   operatorProfileIdList,
@@ -85,7 +92,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     ],
   };
 
-  const [connectableCharacterList, setConnectableCharacterList] = useState<CharacterInfo[]>([]);
+  const [connectOpen, setConnectOpen] = useState(false);
+  const [connectableCharacterList, setConnectableCharacterList] = useState<ProfileSimpleInfo[]>([]);
   const [connectCharacterItems, setConnectCharacterItems] = useState<
     {label: string; title: string; value: string; profileImage: string}[]
   >([]);
@@ -154,6 +162,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   const handleSelectConnectCharacter = (value: number) => {
     onConnectCharacterIdChange(value);
+    onConnectCharacterInfoChange(connectableCharacterList[value]);
   };
 
   const handlePositionCountryChange = (value: number[]) => {
@@ -193,7 +202,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       title: character.name,
       label: 'Character',
       value: index.toString(),
-      profileImage: character.mainImageUrl || '/images/default-profile.png', // 기본 이미지 설정
+      profileImage: character.iconImageUrl || '/images/001.png',
     }));
 
     setConnectCharacterItems(updatedItems);
@@ -332,32 +341,27 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     return <>{/* {renderDropDownSelectDrawer('Recruited', [], 0, () => {})} */}</>;
   };
 
-  const getCharacterList = async () => {
-    try {
-      const response = await sendGetCharacterList({languageType: getCurrentLanguage()});
-      if (response.data) {
-        const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
-        setConnectableCharacterList(characterInfoList);
-      } else {
-        throw new Error(`No contentInfo in response`);
-      }
-    } catch (error) {
-      console.error('Error fetching character list:', error);
-    }
-  };
-
   const renderConnect = () => {
     return (
-      <div className={styles.connectArea} onClick={() => getCharacterList()}>
-        {/* 드롭다운을 누를때 마다 API 요청 */}
-        <h2 className={styles.title2}>Connect</h2>
-        <CustomDropDown
-          displayType="Profile"
-          textType="TitleLabel"
-          items={connectCharacterItems}
-          onSelect={(value: string | number) => handleSelectConnectCharacter(Number(value))}
+      <>
+        <DrawerConnectCharacter
+          connectOpen={connectOpen}
+          setConnectOpen={setConnectOpen}
+          connectCharacterInfo={connectCharacterInfo}
+          onConnectCharacterInfoChange={onConnectCharacterInfoChange}
         />
-      </div>
+
+        <div className={styles.connectArea}>
+          {/* 드롭다운을 누를때 마다 API 요청 */}
+          <h2 className={styles.title2}>Connect</h2>
+          <CustomDropDown
+            displayType="Profile"
+            textType="TitleLabel"
+            items={connectCharacterItems}
+            onSelect={(value: string | number) => handleSelectConnectCharacter(Number(value))}
+          />
+        </div>
+      </>
     );
   };
 

@@ -149,11 +149,12 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
 
   const [visibilityType, setvisibilityType] = useState<number>(character.visibilityType);
   const [llmModel, setLlmModel] = useState<number>(character.llmModel);
-  const [llmCustomAPIKey, setLlmCustomAPIKey] = useState<string>('');
+  const [llmCustomApi, setLlmCustomApi] = useState<string>(character.customApi);
   const [tag, setTag] = useState<string>(character.tag);
   const [positionCountryList, setPositionCountryList] = useState<number[]>(character.positionCountryList);
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
-  const [connectCharacterId, setConnectCharacterId] = useState<number>(0);
+  const [connectCharacterInfo, setConnectCharacterInfo] = useState<ProfileSimpleInfo>(character.connectCharacterInfo);
+  const [connectCharacterId, setConnectCharacterId] = useState<number>(character.connectCharacterId);
   const [recruitedProfileId, setRecruitedProfileId] = useState<number>(character.recruitedProfileId);
   const [operatorProfileIdList, setOperatorProfileIdList] = useState<ProfileSimpleInfo[]>(
     character.operatorProfileIdList,
@@ -267,9 +268,12 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
           conversationTemplateList: convertCardsToConversations(conversationCards),
           visibilityType: visibilityType,
           llmModel: llmModel,
+          customApi: llmCustomApi,
           tag: tag,
           positionCountryList: positionCountryList,
           characterIP: characterIP,
+          connectCharacterInfo: connectCharacterInfo,
+          connectCharacterId: connectCharacterId,
           recruitedProfileId: recruitedProfileId,
           operatorProfileIdList: operatorProfileIdList.map(profile => ({
             ...profile,
@@ -562,16 +566,18 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
           onVisibilityChange={setvisibilityType}
           llmModel={llmModel}
           onLlmModelChange={setLlmModel}
-          llmCustomAPIKey={llmCustomAPIKey}
-          onLlmCustomAPIKeyChange={setLlmCustomAPIKey}
+          llmCustomAPIKey={llmCustomApi}
+          onLlmCustomAPIKeyChange={setLlmCustomApi}
           tag={tag}
           onTagChange={setTag}
           positionCountry={positionCountryList}
           onPositionCountryChange={setPositionCountryList}
           characterIP={characterIP}
           onCharacterIPChange={setCharacterIP}
-          connectCharacterId={recruitedProfileId}
-          onConnectCharacterIdChange={setRecruitedProfileId}
+          connectCharacterInfo={connectCharacterInfo}
+          onConnectCharacterInfoChange={setConnectCharacterInfo}
+          connectCharacterId={connectCharacterId}
+          onConnectCharacterIdChange={setConnectCharacterId}
           operatorProfileIdList={operatorProfileIdList}
           onOperatorProfileIdListChange={setOperatorProfileIdList}
           isMonetization={isMonetization}

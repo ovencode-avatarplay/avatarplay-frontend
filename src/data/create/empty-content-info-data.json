@@ -42,9 +42,19 @@
 
                 "visibilityType": 0,
                 "llmModel" : 0,
+                "customApi": "",
                 "tag": "",
                 "positionCountryList": [],
-                "characterIP": 0,
+                "characterIP": 0,    
+                "connectCharacterInfo": {
+                  "profileTabType": 0,
+                  "operatorAuthorityType": 0,
+                  "profileId": 0,
+                  "profileType": 0,
+                  "name": "string",
+                  "iconImageUrl": "string"
+                },
+                "connectCharacterId" : 0,
                 "recruitedProfileId": 0,
                 "operatorProfileIdList": [],
                 
