@@ -17,7 +17,7 @@ import {Add_Button, LinePlus} from '@ui/Icons';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
 import UserDropdown from '@/components/layout/shared/UserDropdown';
-import {setSkipContentInit} from '@/redux-store/slices/ContentInfo';
+import {setSkipStoryInit} from '@/redux-store/slices/StoryInfo';
 import {useAtom} from 'jotai';
 
 export default function BottomNav() {
@@ -210,7 +210,7 @@ export default function BottomNav() {
                     ${selectedIndex === index ? styles.selected : ''} 
                     ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
                   onClick={() => {
-                    dispatch(setSkipContentInit(false));
+                    dispatch(setSkipStoryInit(false));
                     toggleDrawer(!drawerOpen);
                   }}
                 >

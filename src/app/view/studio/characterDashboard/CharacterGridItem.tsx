@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './CharacterGridItem.module.css';
-import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {BoldLock, LineCheck, LineDelete, LineEdit} from '@ui/Icons';
 
 interface CharacterGridItemProps {

@@ -2,7 +2,7 @@ import {BoldInfo, BoldLock, BoldUnLock, LineArrowDown, LineDelete, LineEdit} fro
 import styles from './CharacterCreateMedia.module.css';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
-import {CharacterMediaInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterMediaInfo} from '@/redux-store/slices/StoryInfo';
 
 interface Props {
   mediaItems: CharacterMediaInfo[];

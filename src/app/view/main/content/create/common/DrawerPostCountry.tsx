@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import styles from './DrawerPostCountry.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import ExploreSearchInput from '../../searchboard/searchboard-header/ExploreSearchInput';
-import {LanguageType} from '@/redux-store/slices/ContentInfo';
+import {LanguageType} from '@/redux-store/slices/StoryInfo';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {LineClose} from '@ui/Icons';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';

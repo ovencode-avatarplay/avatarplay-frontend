@@ -1,8 +1,8 @@
 // publishInfo.ts
 
-import {LLMSetupInfo, PublishInfo} from './ContentInfo';
+import {LLMSetupInfo, PublishInfo} from './StoryInfo';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import emptyContent from '@/data/create/empty-content-info-data.json';
+import emptyContent from '@/data/create/empty-story-info-data.json';
 
 const initialState: PublishInfo = emptyContent.data.storyInfo.publishInfo;
 
@@ -28,10 +28,10 @@ export const PublishInfoSlice = createSlice({
     setThumbnail: (state, action: PayloadAction<string>) => {
       state.thumbnail = action.payload;
     },
-    setContentName: (state, action: PayloadAction<string>) => {
+    setStoryName: (state, action: PayloadAction<string>) => {
       state.storyName = action.payload;
     },
-    setContentDescription: (state, action: PayloadAction<string>) => {
+    setStoryDescription: (state, action: PayloadAction<string>) => {
       state.storyDescription = action.payload;
     },
     setAuthorName: (state, action: PayloadAction<string>) => {
@@ -62,8 +62,8 @@ export const {
   setPublishInfo,
   setLanguageType,
   setThumbnail,
-  setContentName,
-  setContentDescription,
+  setStoryName,
+  setStoryDescription,
   setAuthorName,
   setAuthorComment,
   setSelectedTags,

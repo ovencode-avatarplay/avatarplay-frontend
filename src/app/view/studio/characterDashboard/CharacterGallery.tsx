@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import styles from './CharacterGallery.module.css';
 
-import ImageUploadDialog from '../../main/content/create/content-main/episode/episode-ImageCharacter/ImageUploadDialog';
+import ImageUploadDialog from '../../main/content/create/story-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {UploadMediaState, sendUpload, MediaUploadReq} from '@/app/NetWork/ImageNetwork';
 import {GalleryCategory, galleryCategoryText} from './CharacterGalleryData';
 import {SaveGalleryReq, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
 import CharacterGalleryGrid from './CharacterGalleryGrid';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CharacterGalleryToggle from './CharacterGalleryToggle';
-import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/StoryInfo';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 interface CharacterGalleryProps {

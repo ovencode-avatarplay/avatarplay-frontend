@@ -1,14 +1,14 @@
 'use client';
 
 import React, {useEffect, useState} from 'react';
-import ContentDashboardHeader from '../content-main/content-dashboard/ContentDashboardHeader';
+import StoryDashboardHeader from '../story-main/story-dashboard/StoryDashboardHeader';
 import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import styles from './PostMain.module.css';
 import {BoldPlay, CircleClose, LineUpload} from '@ui/Icons';
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import TriggerImageGrid from '../content-main/episode/episode-trigger/TriggerImageGrid';
+import TriggerImageGrid from '../story-main/episode/episode-trigger/TriggerImageGrid';
 import ReactPlayer from 'react-player';
 import {stat} from 'fs';
 import PostImageGrid from './PostImageGrid';
@@ -257,13 +257,13 @@ const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
 
   return (
     <div className={styles.box}>
-      <ContentDashboardHeader
+      <StoryDashboardHeader
         title="Title"
         onClose={() => {
           pushLocalizedRoute('/main/homefeed', router);
         }}
         onCreate={() => {}}
-      ></ContentDashboardHeader>
+      ></StoryDashboardHeader>
 
       <div className={styles.container}>
         <div className={styles.label}>Photo / Video</div>
