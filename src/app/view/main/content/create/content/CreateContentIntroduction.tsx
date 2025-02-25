@@ -7,6 +7,7 @@ import {BoldAltArrowDown, LineDashboard} from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import ContentCard, {ContentInfo, mockContentInfo} from './ContentCard';
 import {mockSeries, SeriesInfo} from './SeriesDetail';
+import {mockSingle, SingleInfo} from './SingleDetail';
 
 enum FilterTypes {
   All = 0,
@@ -19,13 +20,19 @@ enum FilterTypes {
 interface CreateContentIntroductionProps {
   onNext: () => void;
   onNextSeriesDetail: () => void;
+  onNextSingleDetail: () => void;
   setCurContentInfo: (info: SeriesInfo) => void;
+  setCurSingleInfo: (info: SingleInfo) => void;
+  isSingle: (value: boolean) => void;
 }
 
 const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
   onNextSeriesDetail,
   onNext,
   setCurContentInfo,
+  isSingle,
+  setCurSingleInfo,
+  onNextSingleDetail,
 }) => {
   const [activeTab, setActiveTab] = useState<'series' | 'single'>('series');
   const [selectedFilter, setSelectedFilter] = useState<FilterTypes>(FilterTypes.All);
@@ -61,13 +68,19 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
           <div className={styles.tabs}>
             <button
               className={`${styles.tab} ${activeTab === 'series' ? styles.active : ''}`}
-              onClick={() => setActiveTab('series')}
+              onClick={() => {
+                setActiveTab('series');
+                isSingle(false);
+              }}
             >
               Series Contents
             </button>
             <button
               className={`${styles.tab} ${activeTab === 'single' ? styles.active : ''}`}
-              onClick={() => setActiveTab('single')}
+              onClick={() => {
+                setActiveTab('single');
+                isSingle(true);
+              }}
             >
               Single Contents
             </button>
@@ -126,7 +139,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
         {activeTab == 'single' && (
           <>
             {/* 콘텐츠 리스트 */}
-            {isActive ? (
+            {mockContentInfo.length > 0 ? (
               <>
                 <button className={styles.filterButton} onClick={() => setFilterDrawerOpen(true)}>
                   {FilterTypes[selectedFilter]}
@@ -139,8 +152,8 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
                       key={index}
                       content={content}
                       onAddEpisode={() => {
-                        setCurContentInfo(mockSeries);
-                        onNextSeriesDetail();
+                        setCurSingleInfo(mockSingle);
+                        onNextSingleDetail();
                       }}
                     />
                   ))}

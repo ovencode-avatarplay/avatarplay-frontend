@@ -286,7 +286,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
     <>
       <span className={styles.previewLabel}>Preview</span>
       <div className={styles.videoUploadContainer}>
-        <span className={styles.label}>Video</span>
+        <span className={styles.label}>Webottn</span>
         <div className={styles.uploadGroup}>
           <div className={styles.videoUploadBox}>
             {imageFiles.length > 0 ? (
