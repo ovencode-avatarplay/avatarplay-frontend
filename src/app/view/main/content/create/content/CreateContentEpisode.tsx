@@ -8,7 +8,7 @@ import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
-import {UploadMediaState} from '@/redux-store/slices/ContentInfo';
+import {UploadMediaState} from '@/redux-store/slices/StoryInfo';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import VideoContentUpload from './MediaUpload/VideoContentUpload';
 import WebtoonContentUpload from './MediaUpload/WebtoonContentUpload';

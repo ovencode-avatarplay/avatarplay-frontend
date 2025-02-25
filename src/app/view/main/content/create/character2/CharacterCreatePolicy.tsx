@@ -567,7 +567,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           'Visibility Info',
         )}
         {renderDropDown('LLM', llmModelData[llmModel].label, setLlmOpen)}
-        <ContentLLMSetup
+        <StoryLLMSetup
           open={llmOpen}
           onClose={() => setLlmOpen(false)}
           onModelSelected={onLlmModelChange}
