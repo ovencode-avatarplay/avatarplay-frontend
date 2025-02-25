@@ -1,7 +1,7 @@
 // src/app/Network/CharacterNetwork.tsx
 
 import api, {ResponseAPI} from './ApiInstance';
-import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/StoryInfo';
 // GetCharacterList
 
 export interface GetCharacterListReq {

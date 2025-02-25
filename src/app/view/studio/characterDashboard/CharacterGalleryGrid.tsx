@@ -3,7 +3,7 @@ import styles from './CharacterGalleryGrid.module.css';
 import CharacterGalleryItem from './CharacterGalleryItem';
 import EmptyState from '@/components/search/EmptyState';
 import {GalleryCategory} from './CharacterGalleryData';
-import {GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
+import {GalleryImageInfo} from '@/redux-store/slices/StoryInfo';
 import {LinePlus} from '@ui/Icons';
 
 interface CharacterGalleryGridProps {

@@ -2,15 +2,15 @@ import {BoldArrowDown, LineClose} from '@ui/Icons';
 import styles from './CharacterCreatePolicy.module.css';
 import {useEffect, useState} from 'react';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import ContentLLMSetup from '../content-main/content-LLMsetup/ContentLLMsetup';
-import llmModelData from '../content-main/content-LLMsetup/ContentLLMsetup.json';
-import {sendGetTagList} from '@/app/NetWork/ContentNetwork';
+import StoryLLMSetup from '../story-main/story-LLMsetup/StoryLLMsetup';
+import llmModelData from '../story-main/story-LLMsetup/StoryLLMsetup.json';
+import {sendGetTagList} from '@/app/NetWork/StoryNetwork';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import {sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo, LanguageType} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo, LanguageType} from '@/redux-store/slices/StoryInfo';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import DrawerPostCountry from '../common/DrawerPostCountry';
 import CharacterCreateVoiceSetting from './CharacterCreateVoiceSetting';
@@ -567,7 +567,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           'Visibility Info',
         )}
         {renderDropDown('LLM', llmModelData[llmModel].label, setLlmOpen)}
-        <ContentLLMSetup
+        <StoryLLMSetup
           open={llmOpen}
           onClose={() => setLlmOpen(false)}
           onModelSelected={onLlmModelChange}

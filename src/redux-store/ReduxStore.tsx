@@ -5,13 +5,13 @@ import storage from 'redux-persist/lib/storage'; // localStorage를 사용
 // Slice Imports
 import sampleReducer from '@/redux-store/slices/ReduxSample';
 import chattingReducer from '@/redux-store/slices/Chatting';
-import drawerContentDescReducer from '@/redux-store/slices/DrawerContentDescSlice';
+import drawerStoryDescReducer from '@/redux-store/slices/DrawerContentDescSlice';
 import drawerCharacterDescReducer from '@/redux-store/slices/DrawerCharacterDescSlice';
-import ContentInfoSlice from './slices/ContentInfo';
+import StoryInfoSlice from './slices/StoryInfo';
 import userInfo from './slices/UserInfo';
 import publishInfoSlice from './slices/PublishInfo';
 // import episodeInfoSlice from './slices/EpisodeInfo';
-import myContentDashboardSlice from './slices/MyContentDashboard';
+import myStoryDashboardSlice from './slices/MyStoryDashboard';
 import emoticonSlice from './slices/EmoticonSlice';
 import modifyQuestionSlice from './slices/ModifyQuestion';
 import profileReducer from './slices/Profile';
@@ -38,14 +38,14 @@ const reducers = combineReducers({
   chatting: chattingReducer, // 서버데이터 Chatting/
 
   //#region  Explore
-  drawerContentDesc: drawerContentDescReducer, // 현재
+  drawerStoryDesc: drawerStoryDescReducer, // 현재
   drawerCharacterDesc: drawerCharacterDescReducer, // 현재
   //#endregion
 
   //#region  Create
-  myContents: myContentDashboardSlice, // 내가 만든 컨텐츠들 (Dashboard 표시용)
+  myStories: myStoryDashboardSlice, // 내가 만든 컨텐츠들 (Dashboard 표시용)
 
-  content: ContentInfoSlice, // 현재 편집중인 컨텐츠 (서버와 데이터 교환 용)
+  story: StoryInfoSlice, // 현재 편집중인 컨텐츠 (서버와 데이터 교환 용)
   publish: publishInfoSlice, // 현재 편집중인 컨텐츠의 publish 정보 (Content 수정용)
   // episode: episodeInfoSlice, // 현재 편집중인 에피소드 정보 (Content 수정용)
   chattingEnter: chattingEnterSlice,

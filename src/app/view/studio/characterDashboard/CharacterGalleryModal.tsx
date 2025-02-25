@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import styles from './CharacterGalleryModal.module.css';
 
 // redux
-import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/StoryInfo';
 
 // Network
 import {DeleteGalleryReq, SaveGalleryReq, sendDeleteGallery, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';

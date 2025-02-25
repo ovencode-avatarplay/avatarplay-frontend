@@ -4,9 +4,9 @@ import React, {ReactNode} from 'react';
 
 import HeaderNavBar from '@/app/view/main/header/header-nav-bar/HeaderNavBar';
 import BottomNav from '@/app/view/main/bottom-nav/BottomNav';
-import DrawerContentDesc from '@/app/view/main/content/ContentDesc/DrawerContentDesc';
+import DrawerContentDesc from '@/app/view/main/content/storyDesc/DrawerStoryDesc';
 import styles from './Main.module.css';
-import DrawerCharacterDesc from './content/ContentDesc/DrawerCharacterDesc';
+import DrawerCharacterDesc from './content/storyDesc/DrawerCharacterDesc';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';

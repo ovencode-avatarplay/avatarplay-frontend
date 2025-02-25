@@ -7,7 +7,7 @@ import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 import styles from './CreateCharacterMain2.module.css';
 import {BoldMixture, LineAIImage, LineDashboard, LineEdit, LineUpload} from '@ui/Icons';
 
-import EmptyContentInfo from '@/data/create/empty-content-info-data.json';
+import EmptyStoryInfo from '@/data/create/empty-story-info-data.json';
 
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import Splitters from '@/components/layout/shared/CustomSplitter';
@@ -21,13 +21,12 @@ import CharacterCreateMedia from './CharacterCreateMedia';
 import CharacterCreateConversation from './CharacterCreateConversation';
 import CharacterCreatePolicy from './CharacterCreatePolicy';
 import {CreateCharacter2Req, CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
-import ImageUploadDialog from '../content-main/episode/episode-ImageCharacter/ImageUploadDialog';
+import ImageUploadDialog from '../story-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {CharacterInfo, CharacterMediaInfo, Conversation, ConversationInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo, CharacterMediaInfo, Conversation, ConversationInfo} from '@/redux-store/slices/StoryInfo';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
 import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
-import {Bar, CardData} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
-import CustomPopup from '@/components/layout/shared/CustomPopup';
+import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 
 interface CreateCharacterProps {
   characterInfo?: CharacterInfo;
@@ -40,7 +39,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
   //#region Data
   const character: CharacterInfo = characterInfo
     ? characterInfo
-    : EmptyContentInfo.data.storyInfo.chapterInfoList[0].episodeInfoList[0].characterInfo;
+    : EmptyStoryInfo.data.storyInfo.chapterInfoList[0].episodeInfoList[0].characterInfo;
   //#endregion
 
   //#region  Thumbnail

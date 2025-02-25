@@ -12,9 +12,9 @@ import {BoldChatRoundDots, BoldEpisodes, BoldFollowers} from '@ui/Icons';
 const ExploreCard: React.FC<ExploreCardProps> = ({
   exploreItemType,
   updateExplorState,
-  storyId: contentId,
-  storyRank: contentRank,
-  storyName: contentName,
+  storyId,
+  storyRank,
+  storyName,
   chatCount,
   episodeCount,
   followerCount,
@@ -26,14 +26,14 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
   const RankCount = 3 + 1;
 
   useEffect(() => {
-    console.log(contentId);
-  }, [contentId]);
+    console.log(storyId);
+  }, [storyId]);
 
   const handleOpenDrawer = () => {
     if (exploreItemType === 0) {
-      dispatch(openDrawerContentId(contentId));
+      dispatch(openDrawerContentId(storyId));
     } else if (exploreItemType === 1) {
-      dispatch(openDrawerCharacterId(contentId));
+      dispatch(openDrawerCharacterId(storyId));
 
       // alert('캐릭터는 프로필로 갈 예정입니다. (프로필 작업 완료후 연결 필요)');
     }
@@ -107,14 +107,14 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
           onClick={handleOpenDrawer}
         />
 
-        {contentRank && contentRank < RankCount && (
+        {storyRank && storyRank < RankCount && (
           <div className={styles.rankArea}>
-            <span className={styles.rankText}>{contentRank}</span>
+            <span className={styles.rankText}>{storyRank}</span>
           </div>
         )}
 
         <div className={styles.exploreOverlay}>
-          <span className={styles.contentName}>{contentName}</span>
+          <span className={styles.contentName}>{storyName}</span>
           {updateExplorState !== 0 && exploreItemType !== 1 && (
             <div className={styles.isNewLabel}>{getUpdateState(updateExplorState)}</div>
           )}

@@ -7,9 +7,9 @@ import {
   sendCreateCharacter,
   sendCreateCharacter2,
 } from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 
-import emptyContentInfo from '@/data/create/empty-content-info-data.json';
+import emptyContentInfo from '@/data/create/empty-story-info-data.json';
 
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomInput from '@/components/layout/shared/CustomInput';

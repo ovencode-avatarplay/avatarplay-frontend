@@ -1,7 +1,7 @@
 import CustomButton from '@/components/layout/shared/CustomButton';
 import styles from './CharacterCreateConversation.module.css';
 import {LinePlus} from '@ui/Icons';
-import ConversationCard, {CardData} from '../content-main/episode/episode-conversationtemplate/ConversationCard';
+import ConversationCard, {CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 
 interface Props {
   cardList: CardData[];
