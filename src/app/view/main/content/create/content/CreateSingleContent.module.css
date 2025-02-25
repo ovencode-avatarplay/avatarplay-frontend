@@ -1,0 +1,165 @@
+
+.parent
+{
+  display: flex;
+  flex-direction: column;
+  height: 100dvh; 
+  width: 100%;
+  overflow: hidden;
+}
+.header
+{
+  
+}
+.dashBoard{
+  display: flex;
+  width: 40px;
+  height: 40px;
+  padding: 9px;
+  justify-content: center;
+  align-items: center;
+
+  position:relative;  
+
+}
+.container
+{
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+  padding: 0 16px 0 16px;
+  margin-bottom: 120px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.textInput
+{
+  width: 100%;
+}
+
+.dashBoardIcon{
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  filter: brightness(0) saturate(100%);
+}
+.confirmButton {
+  position: fixed;
+  bottom: 43.25px;
+  left: 50%;    
+  transform: translate(-50%, 0%);
+  width: calc(100% - 28px);
+  height: 50px;
+  background: #2c3131;
+  color: #ffffff;
+  font-family: 'Lato';
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;    
+}
+.label 
+{    
+  align-self: flex-start;
+  color: var(--Neutral-900, #040415);
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 114.286% */
+  letter-spacing: -0.4px;
+}
+
+.radioButtonGroup
+{
+  align-self: flex-start;
+  display: flex;
+  gap: 24px;
+
+}
+
+.blackTag
+{
+display: flex;
+height: 36px;
+padding: 10px 18px;
+justify-content: center;
+align-items: center;
+gap: 8px;
+border-radius: 100px;
+border: 1px solid var(--Border-1, #EAECF0);
+background: var(--Neutral-800, #2C3131);
+color: #ffffff;
+}
+.lineClose
+{
+filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(1%) hue-rotate(157deg) brightness(102%) contrast(101%);
+width: 12px;
+height: 12px;
+}
+
+.blackTagContainer {
+display: flex;
+align-self: flex-start;
+flex-wrap: wrap;
+gap: 8px;
+}
+
+.tagContainer{
+display: flex;
+flex-direction: column;
+width: 100%;
+gap: 8px;
+}
+
+
+.moenetization
+{
+  display: flex;    
+  align-self: flex-start;
+  gap: 4px;
+}
+
+.questionButton
+{
+  width: 20px;
+  height: 20px;
+}
+
+.questionimg
+{
+  width: 18px;
+  height: 18px;
+}
+
+
+.salesStar
+{
+  
+  display: flex;
+  height: 24px;
+  align-self: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.salesStarSetting
+{
+  width: 60px;
+  height: 24px;
+  gap: 10px;
+  padding-right: 7px;
+  padding-left: 7px;
+  border-radius: 999px;
+background-color: var(--Neutral-100);
+color: var(--Neutral-400);
+
+}

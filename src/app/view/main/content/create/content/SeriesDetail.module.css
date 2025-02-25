@@ -92,13 +92,14 @@
   
   .controls {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     padding: 16px;
-    gap: 10px;
+    gap: 4px;
   }
   
   .seasonButton, .seasonDropdown {
-    width: 370px;
+    width: 100%;
     height: 46px;
     background: #2C3131;
     color: white;
@@ -106,7 +107,25 @@
     border-radius: 8px;
     border: none;
     cursor: pointer;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
   }
+
+  .onSeasonDropdown
+{
+  display: flex;
+
+padding: 14px 12px;
+
+align-items: center;
+gap: 6px;
+align-self: stretch;
+border-radius: 10px;
+border: 1px solid var(--Primary-1, #FD55D3);
+background: var(--Neutral-50, #F8F9FA);
+color: var(--Primary-1, #FD55D3);
+}
   
   .addEpisode {
     width: calc(100% - 32px);
@@ -234,4 +253,71 @@ line-height: 24px; /* 150% */
     font-size: 14px;
     font-weight: 500;
     line-height: 24px; /* 171.429% */
+  }
+
+
+  .lineArrowDown
+  {
+    filter: brightness(0) saturate(100%) invert(98%) sepia(100%) saturate(0%) hue-rotate(350deg) brightness(103%) contrast(102%);
+    width: 20px;
+    height: 20px;
+    aspect-ratio: 1/1;
+    cursor: pointer;
+  }
+
+  .onLineArrowDown
+  {
+    filter: brightness(0) saturate(100%) invert(58%) sepia(11%) saturate(207%) hue-rotate(166deg) brightness(89%) contrast(84%);
+    transform: rotate(180deg);
+  }
+
+  .seasonDropdownContainer {
+    width: 374px;
+    border: 1px solid #f1f3f4;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.1);
+    padding: 12px 0;
+  }
+  
+
+
+  .seasonDropdownAddButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f3f4;
+    color: black
+  }
+  
+  .seasonDropdownEpisodeItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    font-size: 13px;
+    border-bottom: 1px solid #f1f3f4;
+  }
+  
+  .seasonDropdownEpisodeItem:last-child {
+    border-bottom: none;
+  }
+  
+  .seasonDropdownEpisodeItem span {
+    flex-grow: 1;
+  }
+  
+  .seasonDropdownEpisodeItem button {
+    color: #2c3131;
+  }
+  .blackFilter
+  {
+    filter: brightness(0) saturate(100%) invert(0%) sepia(98%) saturate(2%) hue-rotate(208deg) brightness(95%) contrast(100%);
+  }
+  .seasonDropdownContainer{
+    width: 100%;
   }
