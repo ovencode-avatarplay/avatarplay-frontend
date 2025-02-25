@@ -146,16 +146,50 @@
     line-height: 160%; /* 24px */
 }
 
+.inviteButton
+{
+    display: flex;
+    width: 46px;
+    height: 46px;
+    padding: 14px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    
+    border-radius: 999px;
+    background: var(--Primary-1, #FD55D3);
+    
+    /* Inner Button */
+    box-shadow: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset, 0px -4px 4px 0px rgba(255, 255, 255, 0.20) inset;
+
+}
+
+.inviteIcon
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;    
+}
+
 .searchResultContainer
 {
     position: absolute;
-    top: 40px;
-    background-color: white;
-    width: 75%;
-    display: flex;
-    flex-direction: column;
+    
+    top: 51px;
+    left : 0px;
 
+    display: flex;
+    width: calc(100% - 52px);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    border: 1px solid var(--Neutral-100, #F1F3F4);
+    background: var(--White, #FFF);
+    box-shadow: 0px 20px 24px -4px rgba(45, 54, 67, 0.04), 0px 8px 11px -4px rgba(45, 54, 67, 0.04);
     z-index: 200;
+
+    overflow: hidden;
 }
 
 .searchResultTitle
@@ -165,17 +199,78 @@
 
 .searchResultList
 {
-    background-color: red;
+    width: 100%;
 
 }
 
 .searchResultItem
 {
     cursor: pointer;
-    
-    display: flex;
-    flex-direction: row; 
 
+    display: flex;
+    height: 42px;
+    padding: 12px;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--Border-1, #EAECF0);
+     
+    background: var(--White, #FFF);
+}
+
+.searchResultItem:hover {
+    background-color: #f8f8f8;
+  }
+
+.lastItem{
+    border-bottom: none;
+}
+
+.headArea
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+
+}
+
+.tailArea
+{
+    align-items: center;
+}
+
+.tailText
+{
+    color: var(--Neutral-500, #9AA0A6);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 150% */
+    letter-spacing: -0.4px;
+}
+
+.searchProfileImage
+{
+    display: flex;
+    width: 26px;
+    height: 26px;
+    padding: var(--sds-size-space-0);
+    align-items: center;
+    gap: var(--sds-size-space-300);
+    aspect-ratio: 1/1;
+    border-radius: 100px;
+}
+
+.searchProfileName
+{
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 128.571% */
+    letter-spacing: -0.4px;
 }
 
 .profileImage
@@ -236,7 +331,7 @@
     /* Dropdown Shadow */
     box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.10);
 
-    top: 35px;
+    /* top: 35px; */
     right: -10px;
     z-index: 100; 
 }

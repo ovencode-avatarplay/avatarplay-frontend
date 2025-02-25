@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styles from './DrawerOperatorInvite.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {LineArrowDown, LineCheck} from '@ui/Icons';
+import {BoldLetter, LineArrowDown, LineCheck} from '@ui/Icons';
 import {
   InviteProfileReq,
   OperatorAuthorityType,
@@ -14,7 +14,6 @@ import {
   sendSearchProfileReq,
 } from '@/app/NetWork/ProfileNetwork';
 import {getCurrentLanguage} from '@/utils/UrlMove';
-import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 
 interface Props {
   isOpen: boolean;
@@ -42,6 +41,12 @@ const OperatorInviteDrawer: React.FC<Props> = ({
   const [searchSelected, setSearchSelected] = useState<boolean>(false);
   const [selectedItemAuthTypes, setSelectedItemAuthTypes] = useState<{[key: number]: OperatorAuthorityType}>({});
   const [itemDropdownOpenStates, setItemDropdownOpenStates] = useState<{[key: number]: boolean}>({});
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const dropdownRefs = useRef<{[key: number]: HTMLDivElement | null}>({});
+  const setDropdownRef = (index: number) => (el: HTMLDivElement | null) => {
+    dropdownRefs.current[index] = el;
+  };
 
   const getOperatorAuthorityLabel = (value: number): string => {
     return (
@@ -196,6 +201,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
               authType => handleItemAuthTypeChange(operator.profileId, index, authType, onUpdateRole),
               selectedItemAuthTypes[index] || operator.operatorAuthorityType,
               () => toggleDropdown(index),
+              index,
               true,
             )
           ) : (
@@ -213,10 +219,11 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     onClickAction: (authType: string) => void,
     selectedAuthType: OperatorAuthorityType,
     toggleDropdown: () => void,
+    index: number,
     isItem?: boolean,
   ) => {
     return (
-      <div className={styles.dropdownContainer}>
+      <div className={styles.dropdownContainer} ref={setDropdownRef(index)}>
         <button className={styles.dropdownButton} onClick={toggleDropdown}>
           {OperatorAuthorityType[selectedAuthType]}
           <img
@@ -226,11 +233,11 @@ const OperatorInviteDrawer: React.FC<Props> = ({
           />
         </button>
         {isOpen && (
-          <ul className={`${styles.authDropdown} ${isItem ? styles.itemDropDown : ''}`}>
+          <ul className={styles.authDropdown}>
             {Object.keys(OperatorAuthorityType)
               .filter(key => isNaN(Number(key)))
-              .map((authType, index) => (
-                <li key={index} className={styles.authDropdownItem} onClick={() => onClickAction(authType)}>
+              .map((authType, idx) => (
+                <li key={idx} className={styles.authDropdownItem} onClick={() => onClickAction(authType)}>
                   {authType}
                   <img
                     className={`${styles.checkIcon} ${
@@ -242,11 +249,61 @@ const OperatorInviteDrawer: React.FC<Props> = ({
                   />
                 </li>
               ))}
+            <li key="delete" className={`${styles.authDropdownItem} ${styles.isRed}`}>
+              Delete
+            </li>
           </ul>
         )}
       </div>
     );
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setSearchListOpen(false);
+      }
+    };
+
+    if (searchListOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [searchListOpen, setSearchListOpen]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      let updatedStates = {...itemDropdownOpenStates};
+      let hasChanges = false;
+
+      Object.keys(dropdownRefs.current).forEach(key => {
+        const dropdownRef = dropdownRefs.current[Number(key)];
+        if (dropdownRef && !dropdownRef.contains(event.target as Node)) {
+          updatedStates[Number(key)] = false;
+          hasChanges = true;
+        }
+      });
+
+      if (hasChanges) {
+        setItemDropdownOpenStates(updatedStates);
+      }
+    };
+
+    if (Object.values(itemDropdownOpenStates).some(isOpen => isOpen)) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [itemDropdownOpenStates]);
 
   return (
     <CustomDrawer
@@ -269,22 +326,41 @@ const OperatorInviteDrawer: React.FC<Props> = ({
               }}
             />
             {searchedList?.length > 0 && searchListOpen && (
-              <div className={styles.searchResultContainer}>
+              <div className={styles.searchResultContainer} ref={dropdownRef}>
                 <ul className={styles.searchResultList}>
-                  {searchedList?.map(profile => (
-                    <li
-                      key={profile.id}
-                      className={styles.searchResultItem}
-                      onClick={() => {
-                        setInviteSearchValue(profile.name);
-                        setSearchListOpen(false);
-                        setSearchSelected(true);
-                      }}
-                    >
-                      <img className={styles.profileImage} src={profile.iconImageUrl || '/default-profile.png'} />
-                      <div className={styles.profileName}>{profile.name}</div>
-                    </li>
-                  ))}
+                  {searchedList?.map((profile, index) => {
+                    const isIncluded = operatorList.some(operator => operator.profileId === profile.id);
+
+                    return (
+                      <li
+                        key={profile.id}
+                        className={`${styles.searchResultItem} ${
+                          searchedList.length - 1 === index ? styles.lastItem : ''
+                        } ${isIncluded ? styles.disabledItem : ''}`}
+                        onClick={() => {
+                          if (!isIncluded) {
+                            setInviteSearchValue(profile.name);
+                            setSearchListOpen(false);
+                            setSearchSelected(true);
+                          }
+                        }}
+                      >
+                        <div className={styles.headArea}>
+                          <img
+                            className={styles.searchProfileImage}
+                            src={profile.iconImageUrl || '/default-profile.png'}
+                          />
+                          <div className={styles.searchProfileName}>{profile.name}</div>
+                        </div>
+
+                        {isIncluded && (
+                          <div className={styles.tailArea}>
+                            <div className={styles.tailText}>Already Added</div>
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             )}
@@ -296,17 +372,12 @@ const OperatorInviteDrawer: React.FC<Props> = ({
               },
               selectedSearchAuthType,
               () => setSearchDropdownOpen(!searchDropdownOpen),
+              0,
             )}
           </div>
-          <CustomButton
-            size="Medium"
-            state="Normal"
-            type="ColorPrimary"
-            customClassName={[styles.inviteButton]}
-            onClick={handleOnClickInvite}
-          >
-            Invite
-          </CustomButton>
+          <button className={styles.inviteButton} onClick={handleOnClickInvite}>
+            <img className={styles.inviteIcon} src={BoldLetter.src} />
+          </button>
         </div>
         {renderOperatorList(operatorList, true, handleSearchAuthTypeChange)}
         <div className={styles.inviteLinkArea}>
