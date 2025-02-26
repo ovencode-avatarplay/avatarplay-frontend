@@ -42,7 +42,7 @@ import {useRouter} from 'next/navigation';
 import {ChannelInfo, CreateChannelReq, createUpdateChannel, sendSearchChannel} from '@/app/NetWork/ChannelNetwork';
 import {profile} from 'console';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
-import {VisibilityType} from '@/redux-store/slices/ContentInfo';
+import {VisibilityType} from '@/redux-store/slices/StoryInfo';
 import {on} from 'events';
 type Props = {};
 
