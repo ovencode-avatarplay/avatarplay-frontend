@@ -52,7 +52,9 @@
                   "profileId": 0,
                   "profileType": 0,
                   "name": "string",
-                  "iconImageUrl": "string"
+                  "iconImageUrl": "string",
+                  "description" : "string",
+                  "nSFW": false 
                 },
                 "connectCharacterId" : 0,
                 "recruitedProfileId": 0,
@@ -80,7 +82,9 @@
                   "profileId": 0,
                   "profileType": 0,
                   "name": "string",
-                  "iconImageUrl": "string"
+                  "iconImageUrl": "string",
+                  "description" : "string",
+                  "nSFW": false 
                 },
                 "state": 1,
                 

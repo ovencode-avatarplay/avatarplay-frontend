@@ -15,6 +15,7 @@ import {
   sendSearchProfileReq,
 } from '@/app/NetWork/ProfileNetwork';
 import {getCurrentLanguage} from '@/utils/UrlMove';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface Props {
   isOpen: boolean;
@@ -54,6 +55,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
   const setDropdownRef = (index: number) => (el: HTMLDivElement | null) => {
     dropdownRefs.current[index] = el;
   };
+  const [deleteConfirmIndex, setDeleteConfirmIndex] = useState<number | null>(null);
 
   const getOperatorAuthorityLabel = (value: number): string => {
     return (
@@ -130,9 +132,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
 
         const updatedList = [...operatorList, newProfile];
         onUpdateOperatorList(updatedList);
-
-        console.log('New Operator:', newProfile);
-        alert(`Invited: ${newProfile.name}`);
+        setInviteSearchValue('');
       } else {
         alert('No matching profile found.');
       }
@@ -222,20 +222,19 @@ const OperatorInviteDrawer: React.FC<Props> = ({
   };
 
   const handleDeleteOperator = (deleteIndex: number) => {
-    if (!onUpdateOperatorList || !operatorList) return;
-    const updatedList = operatorList.filter((_, idx) => idx !== deleteIndex);
-    onUpdateOperatorList(updatedList);
+    setDeleteConfirmIndex(deleteIndex);
   };
 
-  const getOperatorIcon = (authType: string) => {
-    switch (authType) {
-      case 'Edit':
-        return LineEdit.src;
-      case 'Comment':
-        return LineComment.src;
-      default:
-        return null;
-    }
+  const confirmDeleteOperator = () => {
+    if (deleteConfirmIndex === null) return;
+
+    const updatedList = operatorList.filter((_, idx) => idx !== deleteConfirmIndex);
+    onUpdateOperatorList(updatedList);
+    setDeleteConfirmIndex(null); // 팝업 닫기
+  };
+
+  const cancelDeleteOperator = () => {
+    setDeleteConfirmIndex(null); // 삭제 취소 시 팝업 닫기
   };
 
   const renderOperatorDropDown = (
@@ -246,6 +245,9 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     index: number,
     isItem?: boolean,
   ) => {
+    const tmpList = Object.keys(OperatorAuthorityType).filter(
+      key => isNaN(Number(key)) && Number(OperatorAuthorityType[key as keyof typeof OperatorAuthorityType]) > 1,
+    );
     return (
       <div className={styles.dropdownContainer} ref={isItem ? setDropdownRef(index) : authDropdownRef}>
         <button className={styles.dropdownButton} onClick={toggleDropdown}>
@@ -258,22 +260,23 @@ const OperatorInviteDrawer: React.FC<Props> = ({
         </button>
         {isOpen && (
           <ul className={styles.authDropdown}>
-            {Object.keys(OperatorAuthorityType)
-              .filter(
-                key =>
-                  isNaN(Number(key)) && Number(OperatorAuthorityType[key as keyof typeof OperatorAuthorityType]) > 1,
-              )
-              .map((authType, idx) => (
-                <li key={idx} className={styles.authDropdownItem} onClick={() => onClickAction(authType)}>
-                  {authType}
-                  <img className={styles.authIcon} src={idx === 0 ? LineEdit.src : idx === 1 ? LineComment.src : ''} />
-                </li>
-              ))}
+            {tmpList.map((authType, idx) => (
+              <li
+                key={idx}
+                className={styles.authDropdownItem}
+                onClick={() => onClickAction(authType)}
+                style={!isItem && tmpList.length - 1 === idx ? {borderBottom: 'none'} : {}}
+              >
+                {authType}
+                <img className={styles.authIcon} src={idx === 0 ? LineEdit.src : idx === 1 ? LineComment.src : ''} />
+              </li>
+            ))}
             {isItem && (
               <li
                 key="delete"
-                className={`${styles.lastItem} ${styles.authDropdownItem} ${styles.isRed} `}
+                className={`${styles.authDropdownItem} ${styles.isRed} `}
                 onClick={() => handleDeleteOperator(index)}
+                style={{borderBottom: 'none'}}
               >
                 Delete
                 <img className={styles.authIcon} src={LineDelete.src} />
@@ -432,6 +435,17 @@ const OperatorInviteDrawer: React.FC<Props> = ({
           </div>
         </div>
       </div>
+      {deleteConfirmIndex !== null && (
+        <CustomPopup
+          type="alert"
+          title={`If you proceed, "${operatorList[deleteConfirmIndex].name}" will lose their channel management privileges.`}
+          buttons={[
+            {label: 'Cancel', onClick: cancelDeleteOperator},
+            {label: 'Delete', onClick: confirmDeleteOperator, isPrimary: true},
+          ]}
+          onClose={cancelDeleteOperator}
+        />
+      )}
     </CustomDrawer>
   );
 };

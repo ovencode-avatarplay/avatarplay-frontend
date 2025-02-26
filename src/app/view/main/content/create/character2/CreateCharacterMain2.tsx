@@ -36,11 +36,13 @@ import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface CreateCharacterProps {
+  id?: number;
+  isUpdate?: boolean;
   characterInfo?: CharacterInfo;
   onClose?: () => void;
 }
 
-const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, onClose}) => {
+const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = false, characterInfo, onClose}) => {
   const router = useRouter();
 
   //#region Data
@@ -319,6 +321,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
             name: 'string',
             iconImageUrl: 'string',
             operatorAuthorityType: OperatorAuthorityType.Owner,
+            description: 'string',
+            nSFW: false,
           },
           state: 0,
           createAt: '2025-02-06T06:22:46.701Z', // 서버에서 지정
