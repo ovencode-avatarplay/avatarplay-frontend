@@ -616,12 +616,46 @@
     }
 
     .tabHeader {
-      padding: 0px 16px;
+      // padding: 0px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
       position: relative;
+
+      .tabItem {
+        flex: 1; // 탭이 균등하게 배치되도록 설정
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      /* 실제 텍스트 부분 */
+      .labelTab {
+        padding: 10px 7px 10px;
+
+
+        color: var(--Neutral-400, #BDC1C6);
+        font-family: Lato;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        letter-spacing: -0.32px;
+
+        &.active {
+          border-bottom: 2px solid var(--Black, #000);
+
+          text-align: center;
+          color: var(--Color-Tokens-Text, #0C0C0C);
+          font-family: Lato;
+          font-size: 14px;
+          font-weight: 700;
+          letter-spacing: -0.28px;
+          box-sizing: border-box;
+        }
+      }
 
 
       /* header 높이 */

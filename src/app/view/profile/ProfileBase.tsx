@@ -1183,13 +1183,18 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               >
                 {tabContentList?.map((tab, index) => {
                   return (
-                    <div
-                      key={tab.type}
-                      className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
-                      data-tab={tab?.type}
-                    >
-                      {tab.label}
+                    // <div
+                    //   key={tab.type}
+                    //   className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
+                    //   data-tab={tab?.type}
+                    // >
+                    <div className={styles.tabItem} data-tab={tab?.type}>
+                      <div className={cx(styles.labelTab, data.indexTab == tab?.type && styles.active)}>
+                        {tab.label}
+                      </div>
                     </div>
+                    // {tab.label}
+                    // </div>
                   );
                 })}
               </div>
