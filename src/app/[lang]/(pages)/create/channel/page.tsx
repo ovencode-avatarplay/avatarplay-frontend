@@ -286,8 +286,8 @@ const CreateChannel = (props: Props) => {
       tag = data?.tag?.join(',') || '';
     }
 
-    let isMonetization = Boolean(data.isMonetization);
-    let nSFW = Boolean(data.nSFW);
+    let isMonetization = Boolean(Number(data.isMonetization));
+    let nSFW = Boolean(Number(data.nSFW));
     let characterIP = Number(data.characterIP);
     const dataUpdatePdInfo: CreateChannelReq = {
       channelInfo: {...data, id: 0, tag: tag, isMonetization, nSFW, characterIP},
@@ -633,7 +633,7 @@ const CreateChannel = (props: Props) => {
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" value={'true'} defaultChecked {...register('isMonetization')} />
+                      <input type="radio" value={1} defaultChecked {...register('isMonetization')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -643,7 +643,7 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" value={'false'} {...register('isMonetization')} />
+                      <input type="radio" value={0} {...register('isMonetization')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -662,7 +662,7 @@ const CreateChannel = (props: Props) => {
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" value={'true'} defaultChecked {...register('nSFW')} />
+                      <input type="radio" value={1} defaultChecked {...register('nSFW')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -672,7 +672,7 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" value={'false'} {...register('nSFW')} />
+                      <input type="radio" value={0} {...register('nSFW')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
