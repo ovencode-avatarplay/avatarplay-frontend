@@ -703,6 +703,7 @@ const CreateChannel = (props: Props) => {
         }}
         onChange={(dataChanged: {isActive: boolean; value: string}[]) => {
           clearErrors('visibilityType');
+          data.dataVisibility.isOpenTagsDrawer = false;
           data.dataVisibility.tagList = dataChanged;
 
           const index = dataChanged.findIndex(v => v.isActive);
