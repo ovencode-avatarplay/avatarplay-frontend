@@ -280,7 +280,6 @@ const CreateChannel = (props: Props) => {
   const onSubmit = async (data: any) => {
     // e.preventDefault(); // 기본 제출 방지
     // const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
-    console.log('data : ', data);
     let tag = '';
     if (data?.tag?.length > 0) {
       tag = data?.tag?.join(',') || '';
@@ -288,8 +287,11 @@ const CreateChannel = (props: Props) => {
     const dataUpdatePdInfo: CreateChannelReq = {
       channelInfo: {...data, id: 0, tag: tag},
     };
-    await createUpdateChannel(dataUpdatePdInfo);
-    // routerBack();
+    const res = await createUpdateChannel(dataUpdatePdInfo);
+    console.log('res : ', res);
+    if (res) {
+      routerBack();
+    }
   };
 
   const keys = Object.keys(VisibilityType).filter(key => isNaN(Number(key)));
@@ -298,9 +300,6 @@ const CreateChannel = (props: Props) => {
 
   const countMembers = data.dataCharacterSearch.profileList.length;
 
-  const onError = (dataError: any) => {
-    console.log(dataError);
-  };
   return (
     <>
       <header className={styles.header}>
@@ -308,7 +307,7 @@ const CreateChannel = (props: Props) => {
         <div className={styles.title}>Create Channel</div>
       </header>
       <main className={styles.main}>
-        <form onSubmit={handleSubmit(onSubmit, onError)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.label}>Thumbnail (Photo/Video)</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
@@ -1079,7 +1078,6 @@ export const DrawerCharacterSearch = ({
 
       data.profileListSaved = data.profileListSaved.filter(v => v.isActive);
 
-      console.log('API 호출:', searchValue);
       // 여기에서 API 호출하면 됨
       const payload: SearchProfileReq = {
         type: SearchProfileType.CreateCharacter,
@@ -1088,8 +1086,6 @@ export const DrawerCharacterSearch = ({
 
       try {
         const response = await sendSearchProfileReq(payload);
-        console.log('res : ', response);
-
         const searchProfileList =
           response?.data?.memberProfileList?.map(v => ({
             isActive: false,
@@ -1107,7 +1103,6 @@ export const DrawerCharacterSearch = ({
             : searchProfile;
         });
 
-        console.log('searchProfileListModified : ', searchProfileListModified);
         data.profileList = searchProfileListModified;
         setData({...data});
       } catch (err) {
@@ -1121,7 +1116,6 @@ export const DrawerCharacterSearch = ({
     // setQuery(e.target.value);
     fetchResults(e.target.value);
   };
-  console.log('data.profileList : ', data.profileList);
 
   const countSelected = data.profileList.filter(v => v.isActive).length;
   return (
