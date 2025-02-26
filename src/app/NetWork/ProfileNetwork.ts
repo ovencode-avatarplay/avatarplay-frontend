@@ -242,13 +242,14 @@ export enum CharacterProfileTabType {
   Feed = 0,
   Contents = 1,
   Story = 2,
-  Joined = 3,
+  Character = 3,
+  Game = 4,
 }
 
 export interface GetCharacterTabInfoeRes {
   feedInfoList: FeedInfo[];
-  contentsInfoList: ProfileTabItemInfo[];
   storyInfoList: ProfileTabItemInfo[];
+  characterInfoList: ProfileTabItemInfo[];
 }
 
 export const getProfileCharacterTabInfo = async (
