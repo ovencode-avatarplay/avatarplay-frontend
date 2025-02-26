@@ -31,7 +31,6 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import {LinePlus} from '@ui/Icons';
 import CreateFilterButton from '@/components/create/CreateFilterButton';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-
 const CharacterDashboard: React.FC = () => {
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
   const [modifyOpen, setModifyOpen] = useState(false);
@@ -260,10 +259,15 @@ const CharacterDashboard: React.FC = () => {
 
     // alert('Modify is not working now');
     // Modify 용도의 api 생성 전까지 막아둠
-    await getCharacterInfo(id);
 
-    setIsModifyMode(true);
-    setModifyOpen(true);
+    // Page 이동으로 수정
+    pushLocalizedRoute(`/update/character2/${id}`, router);
+
+    // Page 이동으로 수정
+    // await getCharacterInfo(id);
+
+    // setIsModifyMode(true);
+    // setModifyOpen(true);
   };
 
   const handleCloseModify = () => {

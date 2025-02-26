@@ -1,4 +1,4 @@
-import {CharacterIP, MembershipSetting, VisibilityType} from '@/redux-store/slices/ContentInfo';
+import {CharacterIP, MembershipSetting, VisibilityType} from '@/redux-store/slices/StoryInfo';
 import api, {ResponseAPI} from './ApiInstance';
 import {ProfileInfo, ProfileSimpleInfo} from './ProfileNetwork';
 import {getCurrentLanguage} from '@/utils/UrlMove';
