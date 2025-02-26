@@ -672,6 +672,7 @@
         letter-spacing: -0.28px;
 
         box-sizing: border-box;
+        border-bottom: 2px solid transparent;
 
         &.active {
           border-bottom: 2px solid var(--Black, #000);

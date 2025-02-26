@@ -79,30 +79,44 @@ enum eTabPDType {
 
 enum eTabPDOtherType {
   Feed,
-  Info = 3, //Info를 앞에 배치하되 api랑 sync를 맞춰야해서 3으로 줌
+  Info = 90, //Info를 앞에 배치하되 api랑 sync를 맞춰야해서 3으로 줌
   Channel = 1,
   Character = 2,
 }
 
-enum eImageFilter {
-  all = -1,
-  image = 1,
-  video = 2,
-}
-
 enum eTabCharacterType {
   Feed,
-  Info,
-  Contents,
+  Info = 90,
+  Contents = 1,
   Story,
-  Joined,
+  Character,
+  Game,
 }
+
 enum eTabCharacterOtherType {
   Feed,
-  Info,
-  Contents,
+  Info = 90,
+  Contents = 1,
   Story,
-  Joined,
+  Character,
+  Game,
+}
+enum eTabChannelType {
+  Feed,
+  Info = 90,
+  Contents = 1,
+  Story,
+  Character,
+  Game,
+}
+
+enum eTabChannelOtherType {
+  Feed,
+  Info = 90,
+  Contents = 1,
+  Story,
+  Character,
+  Game,
 }
 
 export enum eCharacterFilterType {
@@ -119,7 +133,13 @@ type TabContentMenuType = {
 
 type DataProfileType = {
   profileId: number;
-  indexTab: eTabPDType | eTabCharacterType | eTabPDOtherType | eTabCharacterOtherType;
+  indexTab:
+    | eTabPDType
+    | eTabCharacterType
+    | eTabPDOtherType
+    | eTabCharacterOtherType
+    | eTabChannelType
+    | eTabChannelOtherType;
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
   profileTabInfo: {
@@ -146,11 +166,14 @@ type ProfileBaseProps = {
 const getUserType = (isMine: boolean, profileType: ProfileType) => {
   const isPD = [ProfileType.PD, ProfileType.User].includes(profileType);
   const isCharacter = [ProfileType.Character].includes(profileType);
+  const isChannel = [ProfileType.Channel].includes(profileType);
   const isMyPD = isMine && isPD;
   const isMyCharacter = isMine && isCharacter;
+  const isMyChannel = isMine && isChannel;
   const isOtherPD = !isMine && isPD;
   const isOtherCharacter = !isMine && isCharacter;
-  return {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter};
+  const isOtherChannel = !isMine && isChannel;
+  return {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel};
 };
 
 // /profile?type=pd?id=123123
@@ -186,7 +209,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
   const isMine = data.profileInfo?.isMyProfile || false;
   const profileType = Number(data.profileInfo?.profileInfo?.type);
-  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
+  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+    getUserType(isMine, profileType);
 
   useEffect(() => {
     if (!inView) return;
@@ -252,9 +276,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     } else if (typeProfile === ProfileType.Character) {
       return getProfileCharacterTabInfo; // 타입 캐스팅 추가
     } else if (typeProfile === ProfileType.Channel) {
-      return async (profileId: number, tabType: PdProfileTabType) => {
-        return null;
-      };
+      return getProfileCharacterTabInfo;
     } else {
       return async (profileId: number, tabType: PdProfileTabType) => {
         return null;
@@ -278,10 +300,26 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     } else if (isCharacter) {
       if (indexTab == eTabCharacterType.Feed) {
         count = data.profileTabInfo[indexTab]?.feedInfoList?.length;
-      } else if (indexTab == eTabCharacterType.Contents) {
-        count = data.profileTabInfo[indexTab]?.contentsInfoList?.length;
-      } else if (indexTab == eTabCharacterType.Story) {
+      }
+      // else if (indexTab == eTabCharacterType.Contents) {
+      //   count = data.profileTabInfo[indexTab]?.contentsInfoList?.length;
+      // }
+      else if (indexTab == eTabCharacterType.Story) {
         count = data.profileTabInfo[indexTab]?.storyInfoList?.length;
+      } else if (indexTab == eTabCharacterType.Character) {
+        count = data.profileTabInfo[indexTab]?.characterInfoList?.length;
+      } else count = 0;
+    } else if (isChannel) {
+      if (indexTab == eTabChannelType.Feed) {
+        count = data.profileTabInfo[indexTab]?.feedInfoList?.length;
+      }
+      // else if (indexTab == eTabChannelType.Contents) {
+      //   count = data.profileTabInfo[indexTab]?.contentsInfoList?.length;
+      // }
+      else if (indexTab == eTabChannelType.Story) {
+        count = data.profileTabInfo[indexTab]?.storyInfoList?.length;
+      } else if (indexTab == eTabCharacterType.Character) {
+        count = data.profileTabInfo[indexTab]?.characterInfoList?.length;
       } else count = 0;
     } else {
       count = 0;
@@ -350,8 +388,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     resProfileTabInfo: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes},
     isRefreshAll: boolean,
   ) => {
-    const {feedInfoList, characterInfoList, channelInfoList, contentsInfoList, storyInfoList, dataResPdInfo} =
-      resProfileTabInfo;
+    const {feedInfoList, characterInfoList, channelInfoList, storyInfoList, dataResPdInfo} = resProfileTabInfo;
     if (!data.profileTabInfo[indexTab]) {
       data.profileTabInfo[indexTab] = resProfileTabInfo;
       return;
@@ -381,13 +418,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         data.profileTabInfo[indexTab]?.channelInfoList.push(...channelInfoList);
       }
     }
-    if (!!contentsInfoList) {
-      if (isRefreshAll) {
-        data.profileTabInfo[indexTab].contentsInfoList = contentsInfoList;
-      } else {
-        data.profileTabInfo[indexTab].contentsInfoList.push(...contentsInfoList);
-      }
-    }
+    // if (!!contentsInfoList) {
+    //   if (isRefreshAll) {
+    //     data.profileTabInfo[indexTab].contentsInfoList = contentsInfoList;
+    //   } else {
+    //     data.profileTabInfo[indexTab].contentsInfoList.push(...contentsInfoList);
+    //   }
+    // }
     if (!!storyInfoList) {
       if (isRefreshAll) {
         data.profileTabInfo[indexTab].storyInfoList = storyInfoList;
@@ -443,6 +480,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         return Object.values(eTabCharacterType)
           .filter(value => typeof value === 'number')
           .map(type => ({type, label: eTabCharacterType[type]}));
+      } else if (profileType == ProfileType.Channel) {
+        return Object.values(eTabChannelType)
+          .filter(value => typeof value === 'number')
+          .map(type => ({type, label: eTabChannelType[type]}));
       }
     }
 
@@ -455,6 +496,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       return Object.values(eTabCharacterOtherType)
         .filter(value => typeof value === 'number')
         .map(type => ({type, label: eTabCharacterOtherType[type]}));
+    } else if (profileType == ProfileType.Channel) {
+      return Object.values(eTabChannelOtherType)
+        .filter(value => typeof value === 'number')
+        .map(type => ({type, label: eTabChannelOtherType[type]}));
     }
     return [];
   };
@@ -518,12 +563,32 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     } else if (isCharacter) {
       if (data.indexTab == eTabCharacterType.Feed) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.feedInfoList?.length;
-      } else if (data.indexTab == eTabCharacterType.Contents) {
-        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentsInfoList?.length;
-      } else if (data.indexTab == eTabCharacterType.Story) {
+      }
+      // else if (data.indexTab == eTabCharacterType.Contents){
+      //   isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentsInfoList?.length;
+      // }
+      else if (data.indexTab == eTabCharacterType.Story) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.storyInfoList?.length;
       } else if (data.indexTab == eTabCharacterType.Info) {
         isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
+      } else if (data.indexTab == eTabCharacterType.Character) {
+        isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfoList;
+      } else {
+        isEmptyTab = true;
+      }
+    } else if (isChannel) {
+      if (data.indexTab == eTabCharacterType.Feed) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.feedInfoList?.length;
+      }
+      // else if (data.indexTab == eTabCharacterType.Contents) {
+      //   isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentsInfoList?.length;
+      // }
+      else if (data.indexTab == eTabCharacterType.Story) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.storyInfoList?.length;
+      } else if (data.indexTab == eTabCharacterType.Info) {
+        isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
+      } else if (data.indexTab == eTabCharacterType.Character) {
+        isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfoList;
       } else {
         isEmptyTab = true;
       }
@@ -542,7 +607,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
   const TabFilterComponent = React.useCallback(
     ({profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
-      const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
+      const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+        getUserType(isMine, profileType);
       const sortOptionList = [
         {id: ExploreSortType.Newest, value: 'Newest'},
         {id: ExploreSortType.MostPopular, value: 'Most Popular'},
@@ -551,8 +617,9 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       ];
 
       if (
-        (isPD && [PdProfileTabType.Feed, PdProfileTabType.Channel].includes(tabIndex)) ||
-        (isCharacter && tabIndex == CharacterProfileTabType.Feed)
+        (isPD && [eTabPDType.Feed, eTabPDType.Channel].includes(tabIndex)) ||
+        (isCharacter && [eTabCharacterType.Feed].includes(tabIndex)) ||
+        (isChannel && [eTabChannelType.Feed].includes(tabIndex))
       ) {
         return (
           <>
@@ -629,7 +696,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           </>
         );
       }
-      if (isPD && tabIndex == PdProfileTabType.Character) {
+      if ((isPD && tabIndex == eTabPDType.Character) || (isChannel && tabIndex == eTabCharacterType.Character)) {
         return (
           <>
             <div className={cx(styles.filter, styles.character)}>
@@ -729,7 +796,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
   const TabContentComponent = React.useCallback(
     ({profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
-      const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter} = getUserType(isMine, profileType);
+      const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+        getUserType(isMine, profileType);
 
       if (isEmptyTab) {
         return (
@@ -746,7 +814,11 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         );
       }
 
-      if ((isPD && tabIndex == PdProfileTabType.Feed) || (isCharacter && tabIndex == CharacterProfileTabType.Feed)) {
+      if (
+        (isPD && tabIndex == eTabPDType.Feed) ||
+        (isCharacter && tabIndex == eTabCharacterType.Feed) ||
+        (isChannel && tabIndex == eTabChannelType.Feed)
+      ) {
         return (
           <>
             <ul className={styles.itemWrap}>
@@ -809,7 +881,11 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           </>
         );
       }
-      if (isPD && tabIndex == PdProfileTabType.Character) {
+      if (
+        (isPD && tabIndex == eTabPDType.Character) ||
+        (isCharacter && tabIndex == eTabCharacterType.Character) ||
+        (isChannel && tabIndex == eTabChannelType.Character)
+      ) {
         return (
           <ul className={styles.itemWrap}>
             {data?.profileTabInfo?.[data.indexTab]?.characterInfoList.map((one, index: number) => {
@@ -1101,69 +1177,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                 </Link>
               </button>
             </div>
-          )}
-          {!isPD && (
-            <Swiper
-              className={styles.recruitList}
-              freeMode={true}
-              slidesPerView={'auto'}
-              onSlideChange={() => {}}
-              onSwiper={swiper => {}}
-              spaceBetween={8}
-              preventClicks={false}
-              simulateTouch={false}
-            >
-              {isMine && (
-                <SwiperSlide>
-                  <li className={cx(styles.item, styles.addRecruit)}>
-                    <div className={styles.circle}>
-                      <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
-                    </div>
-                    <div className={styles.label}>Add</div>
-                  </li>
-                </SwiperSlide>
-              )}
-              <SwiperSlide>
-                <li className={styles.item}>
-                  <div className={styles.circle}>
-                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
-                    <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                    <span className={cx(styles.grade, styles.original)}>Original</span>
-                  </div>
-                  <div className={styles.label}>Idol University</div>
-                </li>
-              </SwiperSlide>
-              <SwiperSlide>
-                <li className={styles.item}>
-                  <div className={styles.circle}>
-                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
-                    <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                    <span className={cx(styles.grade, styles.fan)}>Fan</span>
-                  </div>
-                  <div className={styles.label}>Idol University</div>
-                </li>
-              </SwiperSlide>
-              <SwiperSlide>
-                <li className={styles.item}>
-                  <div className={styles.circle}>
-                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
-                    <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                    <span className={cx(styles.grade, styles.fan)}>Fan</span>
-                  </div>
-                  <div className={styles.label}>Idol University</div>
-                </li>
-              </SwiperSlide>
-              <SwiperSlide>
-                <li className={styles.item}>
-                  <div className={styles.circle}>
-                    <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
-                    <img className={styles.thumbnail} src="/images/profile_sample/img_sample_recruit1.png" alt="" />
-                    <span className={cx(styles.grade, styles.fan)}>Fan</span>
-                  </div>
-                  <div className={styles.label}>Idol University</div>
-                </li>
-              </SwiperSlide>
-            </Swiper>
           )}
         </div>
         <section className={styles.tabSection}>
