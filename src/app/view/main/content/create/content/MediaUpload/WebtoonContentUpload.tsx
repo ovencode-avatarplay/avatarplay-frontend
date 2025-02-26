@@ -17,8 +17,7 @@ import {
   LineUpload,
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import {UploadMediaState} from '@/redux-store/slices/StoryInfo';
-import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 enum CountryTypes {
   Korea = 0,
   Japan = 1,

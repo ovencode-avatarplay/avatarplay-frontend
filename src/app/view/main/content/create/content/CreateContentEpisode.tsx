@@ -8,8 +8,7 @@ import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
-import {UploadMediaState} from '@/redux-store/slices/StoryInfo';
-import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import VideoContentUpload from './MediaUpload/VideoContentUpload';
 import WebtoonContentUpload from './MediaUpload/WebtoonContentUpload';
 enum CountryTypes {
@@ -37,6 +36,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({onNext, onPr
       setNameValue(e.target.value);
     }
   };
+  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
 
   const [descValue, setrDescription] = useState<string>('');
 
@@ -88,9 +88,9 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({onNext, onPr
     try {
       let mediaState: UploadMediaState;
 
-      if (type === 'video') mediaState = UploadMediaState.ContentVideo;
-      else if (type === 'subtitle') mediaState = UploadMediaState.ContentSubtitle;
-      else mediaState = UploadMediaState.ContentDubbing;
+      if (type === 'video') mediaState = UploadMediaState.ContentEpisodeVideo;
+      else if (type === 'subtitle') mediaState = UploadMediaState.ContentEpisodeSubtitle;
+      else mediaState = UploadMediaState.ContentEpisodeDubbing;
 
       const req: MediaUploadReq = {mediaState, file: files[0]};
       const response = await sendUpload(req);
@@ -221,7 +221,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({onNext, onPr
           <span className={styles.tokenLabel}>The total token count is calulated based on the</span>
           <span className={styles.tokenLabel}>introduction with the highest number of tokens</span>
 
-          <MediaUpload title=""></MediaUpload>
+          <MediaUpload title="" setContentMediaUrls={setMediaUrls}></MediaUpload>
         </div>
         <CustomInput
           inputType="Basic"

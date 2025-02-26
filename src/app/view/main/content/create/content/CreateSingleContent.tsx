@@ -39,6 +39,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
   const maxTagCount = 5;
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
   const [selectedGenreAlertOn, setSelectedGenreAlertOn] = useState(false);
+  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
   const handleTagRemove = (tag: string) => {
     setSelectedTags(selectedTags.filter(t => t !== tag));
   };
@@ -184,7 +185,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
         />
       </div>
       <div className={styles.container}>
-        <MediaUpload></MediaUpload>
+        <MediaUpload setContentMediaUrls={setMediaUrls}></MediaUpload>
         <CustomInput
           inputType="Basic"
           textType="Label"

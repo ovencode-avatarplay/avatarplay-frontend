@@ -173,28 +173,6 @@ export enum VisibilityType {
   Public = 2,
   Create = 3,
 }
-
-export enum UploadMediaState {
-  None = 0,
-  CharacterImage = 1,
-  GalleryImage = 2,
-  BackgroundImage = 3,
-  ContentImage = 4,
-  TtsVoice = 5,
-  TriggerImage = 6,
-  TriggerVideo = 7,
-  TriggerAudio = 8,
-  FeedVideo = 9,
-  FeedImage = 10,
-  CompressFeedVideo = 11,
-  CompressFeedImage = 12,
-  ContentVideo = 13,
-  ContentSubtitle = 14,
-  ContentDubbing = 15,
-  ContentWebtoonImage = 16,
-  ContentWebtoonSubtitle = 17,
-}
-
 export enum CharacterIP {
   Original,
   Fan,

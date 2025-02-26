@@ -3,11 +3,11 @@ import styles from './CreateContent.module.css';
 import CreateContentIntroduction from './CreateContentIntroduction';
 import TermsAndConditions from './TermsAndConditions';
 import CreateSeriesContent from './CreateSeriesContent';
-import SeriesDetail, {SeriesInfo} from './SeriesDetail';
-import {ContentInfo} from './ContentCard';
+import SeriesDetail from './SeriesDetail';
 import CreateContentEpisode from './CreateContentEpisode';
 import CreateSingleContent from './CreateSingleContent';
 import SingleDetail, {mockSingle, SingleInfo} from './SingleDetail';
+import {ContentListInfo} from '@/app/NetWork/ContentNetwork';
 
 // 스텝을 관리하는 ENUM
 enum Step {
@@ -22,8 +22,7 @@ enum Step {
 
 const CreateContent: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<Step>(Step.Introduction);
-  const [seriesInfo, setCurSeriesInfo] = useState<SeriesInfo>();
-  const [singleInfo, setCurSingleInfo] = useState<SingleInfo>(mockSingle);
+  const [contentInfo, setCurSeriesInfo] = useState<ContentListInfo>();
   const [isSingle, setIssingle] = useState<boolean>(false);
   useEffect(() => {
     console.log('asda', isSingle, currentStep);
@@ -36,7 +35,6 @@ const CreateContent: React.FC = () => {
         return (
           <CreateContentIntroduction
             setCurContentInfo={setCurSeriesInfo}
-            setCurSingleInfo={setCurSingleInfo}
             onNext={() => setCurrentStep(Step.TermsAndConditions)}
             onNextSeriesDetail={() => setCurrentStep(Step.SeriesDetail)}
             onNextSingleDetail={() => setCurrentStep(Step.SingleDetail)}
@@ -60,9 +58,9 @@ const CreateContent: React.FC = () => {
       case Step.SeriesDetail:
         return (
           <>
-            {seriesInfo && (
+            {contentInfo && (
               <SeriesDetail
-                seriesInfo={seriesInfo}
+                contentInfo={contentInfo}
                 onPrev={() => setCurrentStep(Step.Introduction)}
                 onNext={() => setCurrentStep(Step.CreateEpisode)}
               ></SeriesDetail>
@@ -86,9 +84,9 @@ const CreateContent: React.FC = () => {
       case Step.SingleDetail:
         return (
           <>
-            {singleInfo && (
+            {contentInfo && (
               <SingleDetail
-                singleInfo={singleInfo}
+                contentInfo={contentInfo}
                 onPrev={() => setCurrentStep(Step.Introduction)}
                 onNext={() => setCurrentStep(Step.CreateEpisode)}
               ></SingleDetail>
