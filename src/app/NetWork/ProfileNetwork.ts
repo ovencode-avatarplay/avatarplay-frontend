@@ -8,12 +8,14 @@ export interface GetProfileListRes {
 }
 
 export interface ProfileSimpleInfo {
+  profileId: number;
   profileTabType: ProfileTabType;
   operatorAuthorityType: OperatorAuthorityType;
-  profileId: number;
   profileType: ProfileType;
   name: string;
+  description: string;
   iconImageUrl: string;
+  nSFW: boolean;
 }
 
 export enum OperatorAuthorityType {
@@ -347,6 +349,11 @@ export const sendInviteProfileReq = async (payload: InviteProfileReq) => {
 
 export interface SearchProfileReq {
   search: string;
+}
+
+export enum SearchProfileType {
+  CreateCharacter = 0,
+  CreateChannel = 1,
 }
 
 export interface SearchProfileRes {

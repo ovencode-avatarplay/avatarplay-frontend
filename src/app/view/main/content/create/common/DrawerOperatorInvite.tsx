@@ -10,6 +10,7 @@ import {
   ProfileInfo,
   ProfileSimpleInfo,
   SearchProfileReq,
+  SearchProfileType,
   sendInviteProfileReq,
   sendSearchProfileReq,
 } from '@/app/NetWork/ProfileNetwork';
