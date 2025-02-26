@@ -10,6 +10,7 @@ import {
   ProfileInfo,
   ProfileSimpleInfo,
   SearchProfileReq,
+  SearchProfileType,
   sendInviteProfileReq,
   sendSearchProfileReq,
 } from '@/app/NetWork/ProfileNetwork';
@@ -75,6 +76,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     }
 
     const payload: SearchProfileReq = {
+      type: SearchProfileType.CreateCharacter,
       search: inviteSearchValue,
     };
 
