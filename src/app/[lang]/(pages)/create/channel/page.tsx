@@ -37,7 +37,7 @@ import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostC
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
-import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
+import {getBackUrl, getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {ChannelInfo, CreateChannelReq, createUpdateChannel, sendSearchChannel} from '@/app/NetWork/ChannelNetwork';
 import {profile} from 'console';
@@ -290,6 +290,7 @@ const CreateChannel = (props: Props) => {
     let nSFW = Boolean(Number(data.nSFW));
     let characterIP = Number(data.characterIP);
     const dataUpdatePdInfo: CreateChannelReq = {
+      languageType: getCurrentLanguage(),
       channelInfo: {...data, id: 0, tag: tag, isMonetization, nSFW, characterIP},
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
