@@ -10,7 +10,7 @@ import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import {sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo, LanguageType} from '@/redux-store/slices/StoryInfo';
+import {CharacterInfo, LanguageType, MembershipSetting} from '@/redux-store/slices/StoryInfo';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import DrawerPostCountry from '../common/DrawerPostCountry';
 import CharacterCreateVoiceSetting from './CharacterCreateVoiceSetting';
@@ -21,6 +21,7 @@ import {SetStateAction} from 'jotai';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import DrawerConnectCharacter from '../common/DrawerConnectCharacter';
+import DrawerMembershipSetting from '../common/DrawerMembershipSetting';
 
 interface Props {
   visibility: number;
@@ -35,6 +36,8 @@ interface Props {
   onPositionCountryChange: (value: number[]) => void;
   characterIP: number;
   onCharacterIPChange: (value: number) => void;
+  membershipSetting: MembershipSetting;
+  onMembershipSettingChange: (updatedInfo: MembershipSetting) => void;
   connectCharacterInfo: ProfileSimpleInfo;
   onConnectCharacterInfoChange: (value: ProfileSimpleInfo) => void;
   connectCharacterId: number;
@@ -60,6 +63,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   onPositionCountryChange,
   characterIP,
   onCharacterIPChange,
+  membershipSetting,
+  onMembershipSettingChange,
   connectCharacterInfo,
   onConnectCharacterInfoChange,
   connectCharacterId,
@@ -489,12 +494,11 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   const renderMembershipPlan = () => {
     return (
-      <>
-        <div className={styles.membershipPlanArea}>
-          <div className={styles.bigTitle}>Membership Plan</div>
-          <button className={styles.subButton}>setting</button>
-        </div>
-      </>
+      <DrawerMembershipSetting
+        onClose={() => {}}
+        membershipSetting={membershipSetting}
+        onMembershipSettingChange={onMembershipSettingChange}
+      />
     );
   };
 
@@ -603,6 +607,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       </div>
       <div className={styles.selectItemsArea2}>
         {renderCharacterIP()}
+        {renderMembershipPlan()}
         {renderRecruit()}
         {renderConnect()}
         {renderOperatorInvite()}

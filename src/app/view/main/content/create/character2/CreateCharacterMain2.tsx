@@ -23,7 +23,13 @@ import CharacterCreatePolicy from './CharacterCreatePolicy';
 import {CreateCharacter2Req, CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
 import ImageUploadDialog from '../story-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {CharacterInfo, CharacterMediaInfo, Conversation, ConversationInfo} from '@/redux-store/slices/StoryInfo';
+import {
+  CharacterInfo,
+  CharacterMediaInfo,
+  Conversation,
+  ConversationInfo,
+  MembershipSetting,
+} from '@/redux-store/slices/StoryInfo';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
 import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
@@ -156,6 +162,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
   const [tag, setTag] = useState<string>(character.tag);
   const [positionCountryList, setPositionCountryList] = useState<number[]>(character.positionCountryList);
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
+  const [membershipSetting, setMembershipSetting] = useState<MembershipSetting>(character.membershipSetting);
   const [connectCharacterInfo, setConnectCharacterInfo] = useState<ProfileSimpleInfo>(character.connectCharacterInfo);
   const [connectCharacterId, setConnectCharacterId] = useState<number>(character.connectCharacterId);
   const [recruitedProfileId, setRecruitedProfileId] = useState<number>(character.recruitedProfileId);
@@ -296,13 +303,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
           })),
           isMonetization: isMonetization,
           nSFW: nsfw,
-          membershipSetting: {
-            // TODO
-            subscription: 0,
-            paymentType: 0,
-            paymentAmount: 0,
-            benefits: 'string',
-          },
+          membershipSetting: membershipSetting,
           customModulesInfo: {
             // TODO
             lorebookInfoList: [],
@@ -501,6 +502,10 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
 
   //#endregion
 
+  const handleMembershipSettingChange = (updated: Partial<MembershipSetting>) => {
+    setMembershipSetting(prev => ({...prev, ...updated}));
+  };
+
   useEffect(() => {
     if (imgUploadOpen === false) {
       setImgUploadType(null);
@@ -592,6 +597,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
           onPositionCountryChange={setPositionCountryList}
           characterIP={characterIP}
           onCharacterIPChange={setCharacterIP}
+          membershipSetting={membershipSetting}
+          onMembershipSettingChange={handleMembershipSettingChange}
           connectCharacterInfo={connectCharacterInfo}
           onConnectCharacterInfoChange={setConnectCharacterInfo}
           connectCharacterId={connectCharacterId}
@@ -797,9 +804,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({characterInfo, on
                       {mainimageUrl === '' && <div className={styles.createImageText}>Create</div>}
                     </div>
                   </button>
-                  <CustomButton size="Small" state="Normal" type="Primary">
-                    Regenerate
-                  </CustomButton>
+                  {mainimageUrl !== '' && (
+                    <CustomButton size="Small" state="Normal" type="Primary">
+                      Regenerate
+                    </CustomButton>
+                  )}
                 </div>
               </div>
               <Splitters

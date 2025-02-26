@@ -96,7 +96,7 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({
   return (
     <div className={styles.dropdown} style={style}>
       <div className={styles.selectedItem} onClick={toggleDropdown}>
-        {selectedItem ? (
+        {selectedItem !== null && selectedItem !== undefined ? (
           <>
             <div className={styles.titleArea}>
               {(() => {
