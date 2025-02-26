@@ -15,7 +15,7 @@ export interface ChannelInfo {
   name: string;
   description: string;
   mediaUrl: string;
-  memberProfileIdList: ProfileInfo[];
+  memberProfileIdList: ProfileSimpleInfo[];
   visibilityType: VisibilityType;
   tag: string;
   characterIP: CharacterIP;
@@ -46,6 +46,31 @@ export const createUpdateChannel = async (payload: CreateChannelReq) => {
     return res.data;
   } catch (e) {
     console.error('createUpdateChannel API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface SearchChannelMemberReq {
+  search: string;
+}
+
+export interface SearchChannelMemberRes {
+  memberProfileList: ProfileSimpleInfo[];
+}
+
+export const sendSearchChannel = async (payload: SearchChannelMemberReq) => {
+  try {
+    const res = await api.post<ResponseAPI<SearchChannelMemberRes>>('channel/searchMemeber', payload);
+
+    if (res.status !== 200) {
+      console.error('sendSearchChannel API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('sendSearchChannel API 요청 실패:', e);
     alert('API 요청 중 에러 발생: ' + e);
     return null;
   }

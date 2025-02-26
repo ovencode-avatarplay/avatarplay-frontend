@@ -76,7 +76,6 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     }
 
     const payload: SearchProfileReq = {
-      type: SearchProfileType.CreateCharacter,
       search: inviteSearchValue,
     };
 

@@ -39,7 +39,7 @@ import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
 import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
-import {ChannelInfo, CreateChannelReq, createUpdateChannel} from '@/app/NetWork/ChannelNetwork';
+import {ChannelInfo, CreateChannelReq, createUpdateChannel, sendSearchChannel} from '@/app/NetWork/ChannelNetwork';
 import {profile} from 'console';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {VisibilityType} from '@/redux-store/slices/ContentInfo';
@@ -138,7 +138,7 @@ const CreateChannel = (props: Props) => {
       description: '',
       profileList: [],
       onClose: () => {},
-      onChange: (profileList: {isActive: boolean; profileSimpleInfo: ProfileInfo}[]) => {},
+      onChange: (profileList: {isActive: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => {},
     },
   });
 
@@ -277,15 +277,20 @@ const CreateChannel = (props: Props) => {
       router.replace(prevPath);
     }
   };
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: ChannelInfoForm) => {
+    console.log('data : ', data);
     // e.preventDefault(); // 기본 제출 방지
     // const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
     let tag = '';
     if (data?.tag?.length > 0) {
       tag = data?.tag?.join(',') || '';
     }
+
+    let isMonetization = Boolean(data.isMonetization);
+    let nSFW = Boolean(data.nSFW);
+    let characterIP = Number(data.characterIP);
     const dataUpdatePdInfo: CreateChannelReq = {
-      channelInfo: {...data, id: 0, tag: tag},
+      channelInfo: {...data, id: 0, tag: tag, isMonetization, nSFW, characterIP},
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     console.log('res : ', res);
@@ -426,7 +431,7 @@ const CreateChannel = (props: Props) => {
                   {data.dataCharacterSearch.profileList.map((one, index) => {
                     return (
                       <>
-                        <li key={one.profileSimpleInfo.id} className={styles.memberWrap}>
+                        <li key={one.profileSimpleInfo.profileId} className={styles.memberWrap}>
                           <div className={styles.left}>
                             <img className={styles.thumbnail} src={one.profileSimpleInfo.iconImageUrl} alt="" />
                             <div className={styles.info}>
@@ -441,7 +446,7 @@ const CreateChannel = (props: Props) => {
                             className={styles.right}
                             onClick={() => {
                               const profileList = data.dataCharacterSearch.profileList.filter(
-                                v => v.profileSimpleInfo.id != one.profileSimpleInfo.id,
+                                v => v.profileSimpleInfo.profileId != one.profileSimpleInfo.profileId,
                               );
                               data.dataCharacterSearch.profileList = profileList;
                               setData({...data});
@@ -586,12 +591,7 @@ const CreateChannel = (props: Props) => {
                 <div className={cx(styles.channelIP, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
-                      <input
-                        type="radio"
-                        value={1}
-                        defaultChecked
-                        {...register('characterIP', {setValueAs: v => (v === '' ? 0 : Number(v))})}
-                      />
+                      <input type="radio" value={0} defaultChecked {...register('characterIP')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -602,11 +602,7 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input
-                        type="radio"
-                        value={0}
-                        {...register('characterIP', {setValueAs: v => (v === '' ? 0 : Number(v))})}
-                      />
+                      <input type="radio" value={1} {...register('characterIP')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -637,12 +633,7 @@ const CreateChannel = (props: Props) => {
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
-                      <input
-                        type="radio"
-                        value={'true'}
-                        defaultChecked
-                        {...register('isMonetization', {setValueAs: v => v === 'true'})}
-                      />
+                      <input type="radio" value={'true'} defaultChecked {...register('isMonetization')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -652,11 +643,7 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input
-                        type="radio"
-                        value={'false'}
-                        {...register('isMonetization', {setValueAs: v => v === 'true'})}
-                      />
+                      <input type="radio" value={'false'} {...register('isMonetization')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -675,12 +662,7 @@ const CreateChannel = (props: Props) => {
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
-                      <input
-                        type="radio"
-                        value={'true'}
-                        defaultChecked
-                        {...register('nSFW', {setValueAs: v => v === 'true'})}
-                      />
+                      <input type="radio" value={'true'} defaultChecked {...register('nSFW')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -690,7 +672,7 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" value={'false'} {...register('nSFW', {setValueAs: v => v === 'true'})} />
+                      <input type="radio" value={'false'} {...register('nSFW')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -809,7 +791,7 @@ const CreateChannel = (props: Props) => {
           data.dataCharacterSearch.open = false;
           setData({...data});
         }}
-        onChange={(dataChanged: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileInfo}[]) => {
+        onChange={(dataChanged: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => {
           clearErrors('memberProfileIdList');
           data.dataCharacterSearch.profileList = dataChanged;
           unregister(`memberProfileIdList`);
@@ -985,10 +967,10 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
 export type DrawerCharacterSearchType = {
   title: string;
   description: string;
-  profileList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileInfo}[];
+  profileList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[];
   open: boolean;
   onClose: () => void;
-  onChange: (profileList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileInfo}[]) => void;
+  onChange: (profileList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => void;
 };
 export const DrawerCharacterSearch = ({
   title,
@@ -1003,12 +985,12 @@ export const DrawerCharacterSearch = ({
     profileListSaved: {
       isActive: boolean;
       isOriginal: boolean;
-      profileSimpleInfo: ProfileInfo;
+      profileSimpleInfo: ProfileSimpleInfo;
     }[];
     profileList: {
       isActive: boolean;
       isOriginal: boolean;
-      profileSimpleInfo: ProfileInfo;
+      profileSimpleInfo: ProfileSimpleInfo;
     }[];
     indexSort: number;
   }>({
@@ -1063,7 +1045,7 @@ export const DrawerCharacterSearch = ({
     const searchProfileListActived = data.profileList.filter(v => v.isActive);
 
     const mergedList = [...searchProfileListActived, ...data.profileListSaved];
-    const uniqueList = Array.from(new Map(mergedList.map(item => [item.profileSimpleInfo.id, item])).values());
+    const uniqueList = Array.from(new Map(mergedList.map(item => [item.profileSimpleInfo.profileId, item])).values());
     data.profileList = uniqueList;
     data.profileListSaved = uniqueList;
     setData({...data});
@@ -1080,12 +1062,11 @@ export const DrawerCharacterSearch = ({
 
       // 여기에서 API 호출하면 됨
       const payload: SearchProfileReq = {
-        type: SearchProfileType.CreateCharacter,
         search: searchValue,
       };
 
       try {
-        const response = await sendSearchProfileReq(payload);
+        const response = await sendSearchChannel(payload);
         const searchProfileList =
           response?.data?.memberProfileList?.map(v => ({
             isActive: false,
@@ -1095,7 +1076,7 @@ export const DrawerCharacterSearch = ({
 
         const searchProfileListModified = searchProfileList.map(searchProfile => {
           const matchedProfile = data.profileListSaved.find(
-            profile => profile.profileSimpleInfo.id === searchProfile.profileSimpleInfo.id,
+            profile => profile.profileSimpleInfo.profileId === searchProfile.profileSimpleInfo.profileId,
           );
 
           return matchedProfile
@@ -1201,14 +1182,14 @@ export const DrawerCharacterSearch = ({
         <ul className={styles.memberList}>
           {data.profileList.map((profile, index) => {
             return (
-              <li key={profile.profileSimpleInfo.id} className={styles.memberWrap}>
-                <label htmlFor={`profile_${profile.profileSimpleInfo.id}`}>
+              <li key={profile.profileSimpleInfo.profileId} className={styles.memberWrap}>
+                <label htmlFor={`profile_${profile.profileSimpleInfo.profileId}`}>
                   <div className={styles.left}>
                     <div className={styles.checkboxWrap}>
                       <input
                         type="checkbox"
-                        name={`profile_${profile.profileSimpleInfo.id}`}
-                        id={`profile_${profile.profileSimpleInfo.id}`}
+                        name={`profile_${profile.profileSimpleInfo.profileId}`}
+                        id={`profile_${profile.profileSimpleInfo.profileId}`}
                         defaultChecked={profile.isActive}
                         onClick={e => {
                           const target = e.target as HTMLInputElement;
