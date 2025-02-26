@@ -346,7 +346,13 @@ export const sendInviteProfileReq = async (payload: InviteProfileReq) => {
 };
 
 export interface SearchProfileReq {
+  type: SearchProfileType;
   search: string;
+}
+
+export enum SearchProfileType {
+  CreateCharacter = 0,
+  CreateChannel = 1,
 }
 
 export interface SearchProfileRes {

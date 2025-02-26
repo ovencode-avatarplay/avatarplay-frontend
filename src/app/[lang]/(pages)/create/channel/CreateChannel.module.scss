@@ -378,8 +378,10 @@
       gap: 10px;
 
       .memberWrap {
+        padding: 10px 0;
         width: 100%;
-
+        height: 55px;
+        box-sizing: content-box;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -390,6 +392,8 @@
           display: flex;
           align-items: center;
           gap: 9px;
+          box-sizing: border-box;
+          height: 100%;
 
           .thumbnail {
             width: 55px;
@@ -422,29 +426,36 @@
 
           }
 
-          .nsfw {
-            margin-left: 10px;
-            border-radius: 999px;
-            background: var(--Secondary-Red-1, #F75555);
-
+          .nsfwWrap {
+            height: 100%;
             display: flex;
-            width: 26px;
-            height: 26px;
-            padding: 7px;
-            justify-content: center;
-            align-items: center;
-            gap: 4px;
+            align-items: flex-start;
 
-            color: var(--White, #FFF);
-            font-feature-settings: 'liga' off, 'clig' off;
-            font-family: Lato;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 600;
-            line-height: 20px;
-            /* 142.857% */
-            letter-spacing: -0.4px;
+            .nsfw {
+              margin-left: 10px;
+              border-radius: 999px;
+              background: var(--Secondary-Red-1, #F75555);
+
+              display: flex;
+              width: 26px;
+              height: 26px;
+              padding: 7px;
+              justify-content: center;
+              align-items: center;
+              gap: 4px;
+
+              color: var(--White, #FFF);
+              font-feature-settings: 'liga' off, 'clig' off;
+              font-family: Lato;
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 600;
+              line-height: 20px;
+              /* 142.857% */
+              letter-spacing: -0.4px;
+            }
           }
+
         }
 
         .right {
@@ -1146,6 +1157,7 @@
 
 .drawerSearchCharacter {
   padding-bottom: 99px;
+  max-height: 90vh;
 
   .content {
     margin-top: 22px;
@@ -1192,6 +1204,8 @@
   }
 
   .filterWrap {
+    margin-top: 12px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1210,6 +1224,35 @@
         font-weight: 700;
         line-height: 20px;
         /* 142.857% */
+
+        input {
+          display: none;
+        }
+
+        .iconOn {
+          display: none;
+        }
+
+        .iconOff {
+          display: none;
+        }
+
+
+        input[type="checkbox"]:not(:checked)~.iconOn {
+          display: none;
+        }
+
+        input[type="checkbox"]:not(:checked)~.iconOff {
+          display: block;
+        }
+
+        input[type="checkbox"]:checked~.iconOn {
+          display: block;
+        }
+
+        input[type="checkbox"]:checked~.iconOff {
+          display: none;
+        }
       }
     }
 
@@ -1255,25 +1298,39 @@
     }
   }
 
+  .countSelected {
+    margin-top: 12px;
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+    /* 142.857% */
+  }
 
 
 
   .memberList {
-    margin-top: 14px;
+    margin-top: 12px;
 
     display: flex;
     align-items: center;
     flex-direction: column;
-    gap: 10px;
+
+    max-height: calc(90vh - 213px - 99px);
+    overflow-y: auto;
 
     .memberWrap {
+      padding: 10px 0;
       width: 100%;
 
       label {
         width: 100%;
         display: flex;
-        align-items: center;
         justify-content: space-between;
+        align-items: flex-start;
       }
 
       .left {
@@ -1351,6 +1408,9 @@
 
       .right {
         margin-left: 10px;
+        display: flex;
+        align-items: center;
+        height: 100%;
 
         .nsfw {
           margin-left: 10px;

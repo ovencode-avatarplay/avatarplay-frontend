@@ -1,6 +1,6 @@
 'use client';
 
-import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
+import React, {ChangeEvent, useCallback, useEffect, useRef, useState} from 'react';
 import styles from './CreateChannel.module.scss';
 import {
   BoldAltArrowDown,
@@ -21,14 +21,18 @@ import {
   ExploreSortType,
   MediaState,
   OperatorAuthorityType,
+  ProfileInfo,
   ProfileSimpleInfo,
   ProfileTabType,
   ProfileType,
+  SearchProfileReq,
+  SearchProfileType,
+  sendSearchProfileReq,
 } from '@/app/NetWork/ProfileNetwork';
 import {DragStatusType, TagDrawerType} from '../../profile/update/[[...id]]/page';
 import cx from 'classnames';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {Drawer} from '@mui/material';
+import {debounce, Drawer} from '@mui/material';
 import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostCountry';
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
@@ -39,6 +43,7 @@ import {ChannelInfo, CreateChannelReq, createUpdateChannel} from '@/app/NetWork/
 import {profile} from 'console';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {VisibilityType} from '@/redux-store/slices/ContentInfo';
+import {on} from 'events';
 type Props = {};
 
 type FileType = {
@@ -76,7 +81,7 @@ const CreateChannel = (props: Props) => {
   const [data, setData] = useState<DataProfileUpdateType>({
     thumbnail: null,
     dragStatus: DragStatusType.OuterClick,
-    indexTab: 2,
+    indexTab: 0,
     dataVisibility: {
       isOpenTagsDrawer: false,
       tagList: [
@@ -131,21 +136,9 @@ const CreateChannel = (props: Props) => {
       open: false,
       title: 'Character',
       description: '',
-      profileList: [
-        {
-          isActive: true,
-          profileSimpleInfo: {
-            name: 'ㅎㅇㅎㅇ',
-            iconImageUrl: '/images/profile_sample/img_sample_profile1.png',
-            operatorAuthorityType: OperatorAuthorityType.None,
-            profileId: 0,
-            profileTabType: ProfileTabType.My,
-            profileType: ProfileType.Character,
-          },
-        },
-      ],
+      profileList: [],
       onClose: () => {},
-      onChange: (profileList: {isActive: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => {},
+      onChange: (profileList: {isActive: boolean; profileSimpleInfo: ProfileInfo}[]) => {},
     },
   });
 
@@ -303,6 +296,8 @@ const CreateChannel = (props: Props) => {
   const visibilityType = getValues('visibilityType');
   const visibilityTypeStr = keys[visibilityType];
 
+  const countMembers = data.dataCharacterSearch.profileList.length;
+
   return (
     <>
       <header className={styles.header}>
@@ -423,39 +418,39 @@ const CreateChannel = (props: Props) => {
                     name
                   </div>
                 </div>
-                <div className={styles.label}>3 Members</div>
+                <div className={styles.label}>{countMembers} Members</div>
 
                 <ul className={styles.memberList}>
-                  <li className={styles.memberWrap}>
-                    <div className={styles.left}>
-                      <img className={styles.thumbnail} src="/images/profile_sample/img_sample_profile1.png" alt="" />
-                      <div className={styles.info}>
-                        <div className={styles.name}>Character name</div>
-                        <div className={styles.description}>
-                          She tries to hide her feelings, but the jealousy inside her keeps growing...
-                        </div>
-                      </div>
-                      <div className={styles.nsfw}>18</div>
-                    </div>
-                    <div className={styles.right}>
-                      <img src={LineDelete.src} alt="" />
-                    </div>
-                  </li>
-                  <li className={styles.memberWrap}>
-                    <div className={styles.left}>
-                      <img className={styles.thumbnail} src="/images/profile_sample/img_sample_profile1.png" alt="" />
-                      <div className={styles.info}>
-                        <div className={styles.name}>Character name</div>
-                        <div className={styles.description}>
-                          She tries to hide her feelings, but the jealousy inside her keeps growing...
-                        </div>
-                      </div>
-                      <div className={styles.nsfw}>18</div>
-                    </div>
-                    <div className={styles.right}>
-                      <img src={LineDelete.src} alt="" />
-                    </div>
-                  </li>
+                  {data.dataCharacterSearch.profileList.map((one, index) => {
+                    return (
+                      <>
+                        <li key={one.profileSimpleInfo.id} className={styles.memberWrap}>
+                          <div className={styles.left}>
+                            <img className={styles.thumbnail} src={one.profileSimpleInfo.iconImageUrl} alt="" />
+                            <div className={styles.info}>
+                              <div className={styles.name}>{one.profileSimpleInfo.name}</div>
+                              <div className={styles.description}>{one.profileSimpleInfo.name}</div>
+                            </div>
+                            <div className={styles.nsfwWrap}>
+                              <div className={styles.nsfw}>18</div>
+                            </div>
+                          </div>
+                          <div
+                            className={styles.right}
+                            onClick={() => {
+                              const profileList = data.dataCharacterSearch.profileList.filter(
+                                v => v.profileSimpleInfo.id != one.profileSimpleInfo.id,
+                              );
+                              data.dataCharacterSearch.profileList = profileList;
+                              setData({...data});
+                            }}
+                          >
+                            <img src={LineDelete.src} alt="" />
+                          </div>
+                        </li>
+                      </>
+                    );
+                  })}
                 </ul>
               </section>
               <section className={cx(styles.policySection, data.indexTab == 2 && styles.active)}>
@@ -642,9 +637,9 @@ const CreateChannel = (props: Props) => {
                     <label>
                       <input
                         type="radio"
-                        value={1}
+                        value={'true'}
                         defaultChecked
-                        {...register('isMonetization', {setValueAs: v => (v === '' ? 0 : Boolean(v))})}
+                        {...register('isMonetization', {setValueAs: v => v === 'true'})}
                       />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
@@ -657,8 +652,8 @@ const CreateChannel = (props: Props) => {
                     <label>
                       <input
                         type="radio"
-                        value={0}
-                        {...register('isMonetization', {setValueAs: v => (v === '' ? 0 : Boolean(v))})}
+                        value={'false'}
+                        {...register('isMonetization', {setValueAs: v => v === 'true'})}
                       />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
@@ -680,9 +675,9 @@ const CreateChannel = (props: Props) => {
                     <label>
                       <input
                         type="radio"
-                        value={1}
+                        value={'true'}
                         defaultChecked
-                        {...register('nSFW', {setValueAs: v => (v === '' ? 0 : Boolean(v))})}
+                        {...register('nSFW', {setValueAs: v => v === 'true'})}
                       />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
@@ -693,11 +688,7 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input
-                        type="radio"
-                        value={0}
-                        {...register('nSFW', {setValueAs: v => (v === '' ? 0 : Boolean(v))})}
-                      />
+                      <input type="radio" value={'false'} {...register('nSFW', {setValueAs: v => v === 'true'})} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -810,16 +801,13 @@ const CreateChannel = (props: Props) => {
           data.dataCharacterSearch.open = false;
           setData({...data});
         }}
-        onChange={(dataChanged: any) => {
-          clearErrors('tag');
+        onChange={(dataChanged: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileInfo}[]) => {
+          clearErrors('memberProfileIdList');
           data.dataCharacterSearch.profileList = dataChanged;
+          unregister(`memberProfileIdList`);
 
           for (let i = 0; i < dataChanged.length; i++) {
-            if (!dataChanged[i].isActive) {
-              unregister(`memberProfileIdList.${i}`);
-            } else {
-              setValue(`memberProfileIdList.${i}`, dataChanged[i].value, {shouldValidate: false});
-            }
+            setValue(`memberProfileIdList.${i}`, dataChanged[i].profileSimpleInfo, {shouldValidate: false});
           }
           setData({...data});
         }}
@@ -989,10 +977,10 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
 export type DrawerCharacterSearchType = {
   title: string;
   description: string;
-  profileList: {isActive: boolean; profileSimpleInfo: ProfileSimpleInfo}[];
+  profileList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileInfo}[];
   open: boolean;
   onClose: () => void;
-  onChange: (profileList: {isActive: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => void;
+  onChange: (profileList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileInfo}[]) => void;
 };
 export const DrawerCharacterSearch = ({
   title,
@@ -1002,13 +990,21 @@ export const DrawerCharacterSearch = ({
   onClose,
   onChange,
 }: DrawerCharacterSearchType) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [data, setData] = useState<{
+    profileListSaved: {
+      isActive: boolean;
+      isOriginal: boolean;
+      profileSimpleInfo: ProfileInfo;
+    }[];
     profileList: {
       isActive: boolean;
-      profileSimpleInfo: ProfileSimpleInfo;
+      isOriginal: boolean;
+      profileSimpleInfo: ProfileInfo;
     }[];
     indexSort: number;
   }>({
+    profileListSaved: [],
     profileList: [],
     indexSort: 0,
   });
@@ -1017,6 +1013,10 @@ export const DrawerCharacterSearch = ({
     if (!open) return;
 
     data.profileList = profileList;
+    for (let i = 0; i < data.profileList.length; i++) {
+      data.profileList[i].isOriginal = true;
+    }
+    data.profileListSaved = JSON.parse(JSON.stringify(data.profileList));
     setData({...data});
   }, [open]);
 
@@ -1051,7 +1051,70 @@ export const DrawerCharacterSearch = ({
     ),
     [],
   );
+  const saveProfileList = () => {
+    const searchProfileListActived = data.profileList.filter(v => v.isActive);
 
+    const mergedList = [...searchProfileListActived, ...data.profileListSaved];
+    const uniqueList = Array.from(new Map(mergedList.map(item => [item.profileSimpleInfo.id, item])).values());
+    data.profileList = uniqueList;
+    data.profileListSaved = uniqueList;
+    setData({...data});
+  };
+
+  const fetchResults = useCallback(
+    debounce(async searchValue => {
+      if (searchValue == '') {
+        saveProfileList();
+        return;
+      }
+
+      data.profileListSaved = data.profileListSaved.filter(v => v.isActive);
+
+      console.log('API 호출:', searchValue);
+      // 여기에서 API 호출하면 됨
+      const payload: SearchProfileReq = {
+        type: SearchProfileType.CreateCharacter,
+        search: searchValue,
+      };
+
+      try {
+        const response = await sendSearchProfileReq(payload);
+        console.log('res : ', response);
+
+        const searchProfileList =
+          response?.data?.memberProfileList?.map(v => ({
+            isActive: false,
+            isOriginal: false,
+            profileSimpleInfo: v,
+          })) || [];
+
+        const searchProfileListModified = searchProfileList.map(searchProfile => {
+          const matchedProfile = data.profileListSaved.find(
+            profile => profile.profileSimpleInfo.id === searchProfile.profileSimpleInfo.id,
+          );
+
+          return matchedProfile
+            ? {...searchProfile, isActive: matchedProfile.isActive, isOriginal: matchedProfile.isOriginal}
+            : searchProfile;
+        });
+
+        console.log('searchProfileListModified : ', searchProfileListModified);
+        data.profileList = searchProfileListModified;
+        setData({...data});
+      } catch (err) {
+        alert('error ' + 'sendSearchProfile 에러');
+      }
+    }, 400),
+    [],
+  );
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // setQuery(e.target.value);
+    fetchResults(e.target.value);
+  };
+  console.log('data.profileList : ', data.profileList);
+
+  const countSelected = data.profileList.filter(v => v.isActive).length;
   return (
     <Drawer
       anchor="bottom"
@@ -1073,12 +1136,26 @@ export const DrawerCharacterSearch = ({
       <div className={cx(styles.content)}>
         <div className={styles.searchWrap}>
           <img className={styles.iconSearch} src={LineSearch.src} alt="" />
-          <input placeholder="Search" />
+          <input ref={inputRef} placeholder="Search" onChange={handleChange} />
         </div>
         <div className={styles.filterWrap}>
           <div className={styles.left}>
-            <label htmlFor="">
-              <input type="checkbox" name="" id="" />
+            <label htmlFor="all">
+              <input
+                type="checkbox"
+                name="all"
+                id="all"
+                onChange={e => {
+                  let profileList = [];
+                  if (e.target.value) {
+                    profileList = data.profileList.map(v => (v.isOriginal ? v : {...v, isActive: true}));
+                  } else {
+                    profileList = data.profileList.map(v => (v.isOriginal ? v : {...v, isActive: true}));
+                  }
+                  data.profileList = profileList;
+                  setData({...data});
+                }}
+              />
               <img src={BoldRadioButtonSquareSelected.src} alt="" className={styles.iconOn} />
               <img src={BoldRadioButtonSquare.src} alt="" className={styles.iconOff} />
               <div className={styles.labelAll}>All</div>
@@ -1117,24 +1194,36 @@ export const DrawerCharacterSearch = ({
             />
           </div>
         </div>
+        <div className={styles.countSelected}>Selected {countSelected}</div>
         <ul className={styles.memberList}>
           {data.profileList.map((profile, index) => {
             return (
-              <li className={styles.memberWrap}>
-                <label htmlFor={`profile_1`}>
+              <li key={profile.profileSimpleInfo.id} className={styles.memberWrap}>
+                <label htmlFor={`profile_${profile.profileSimpleInfo.id}`}>
                   <div className={styles.left}>
                     <div className={styles.checkboxWrap}>
-                      <input type="checkbox" name={`profile_1`} id={`profile_1`} defaultChecked />
+                      <input
+                        type="checkbox"
+                        name={`profile_${profile.profileSimpleInfo.id}`}
+                        id={`profile_${profile.profileSimpleInfo.id}`}
+                        defaultChecked={profile.isActive}
+                        onClick={e => {
+                          const target = e.target as HTMLInputElement;
+                          if (profile.isOriginal) {
+                            e.preventDefault();
+                          }
+                          profile.isActive = target.checked;
+                          setData({...data});
+                        }}
+                      />
                       <img src={BoldRadioButtonSquareSelected.src} alt="" className={styles.iconOn} />
                       <img src={BoldRadioButtonSquare.src} alt="" className={styles.iconOff} />
                     </div>
 
-                    <img className={styles.thumbnail} src="/images/profile_sample/img_sample_profile1.png" alt="" />
+                    <img className={styles.thumbnail} src={profile.profileSimpleInfo.iconImageUrl} alt="" />
                     <div className={styles.info}>
-                      <div className={styles.name}>Character name</div>
-                      <div className={styles.description}>
-                        She tries to hide her feelings, but the jealousy inside her keeps growing...
-                      </div>
+                      <div className={styles.name}>{profile.profileSimpleInfo.name}</div>
+                      <div className={styles.description}>{profile.profileSimpleInfo.name}</div>
                     </div>
                   </div>
                   <div className={styles.right}>
@@ -1158,6 +1247,7 @@ export const DrawerCharacterSearch = ({
         <button
           className={styles.confirmBtn}
           onClick={() => {
+            saveProfileList();
             onChange(data.profileList);
             onClose();
           }}

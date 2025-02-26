@@ -1,6 +1,6 @@
 import {CharacterIP, MembershipSetting, VisibilityType} from '@/redux-store/slices/ContentInfo';
 import api, {ResponseAPI} from './ApiInstance';
-import {ProfileSimpleInfo} from './ProfileNetwork';
+import {ProfileInfo, ProfileSimpleInfo} from './ProfileNetwork';
 
 export interface CreateChannelReq {
   channelInfo: ChannelInfo;
@@ -15,7 +15,7 @@ export interface ChannelInfo {
   name: string;
   description: string;
   mediaUrl: string;
-  memberProfileIdList: ProfileSimpleInfo[];
+  memberProfileIdList: ProfileInfo[];
   visibilityType: VisibilityType;
   tag: string;
   characterIP: CharacterIP;
