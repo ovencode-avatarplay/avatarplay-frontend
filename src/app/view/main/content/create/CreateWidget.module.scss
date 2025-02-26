@@ -33,6 +33,16 @@
   align-items: center;
   gap: 10px;
   background: var(--Neutral-50, #F8F9FA);
+
+  &.disable {
+    & .buttonIcon {
+      filter: brightness(0) saturate(100%) invert(90%) sepia(7%) saturate(173%) hue-rotate(173deg) brightness(86%) contrast(88%);
+    }
+
+    & .buttonText {
+      color: var(--Neutral-400, #BDC1C6);
+    }
+  }
 }
 
 

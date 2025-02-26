@@ -130,6 +130,18 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
     [],
   );
 
+  const profileType = dataProfile.currentProfile?.profileType || ProfileType.User;
+  const canCreateFeed = [ProfileType.User, ProfileType.PD, ProfileType.Character, ProfileType.Channel].includes(
+    profileType,
+  );
+  const canCreateCharacter = [ProfileType.User, ProfileType.PD].includes(profileType);
+  const canCreateContent = [ProfileType.Character, ProfileType.Channel].includes(profileType);
+  const canCreateChannel = [ProfileType.User, ProfileType.PD].includes(profileType);
+  /* 프로필 타입별 생성 권한
+   PD: Feed, Character, Channel;
+  Character: Feed, Contents;
+  Channel: Feed, Contents, Play(게임);
+  */
   return (
     <CustomDrawer open={open} onClose={onClose}>
       <div
@@ -191,32 +203,59 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               />
             </div>
 
-            <Link href={getLocalizedLink('/create/post')} passHref>
-              <button className={`${styles.drawerButton} ${styles.drawerButtonTop}`} onClick={onClose}>
+            <Link href={canCreateFeed ? getLocalizedLink('/create/post') : ''} passHref>
+              <button
+                className={`${styles.drawerButton} ${styles.drawerButtonTop} ${canCreateFeed ? '' : styles.disable}`}
+                onClick={() => {
+                  if (!canCreateFeed) return;
+                  console.log('canCreateFeed : ', canCreateFeed);
+                  onClose();
+                }}
+              >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineEdit.src} />
                   <div className={styles.buttonText}>Feed</div>
                 </div>
               </button>
             </Link>
-            <Link href={getLocalizedLink('/create/character2')} passHref>
-              <button className={`${styles.drawerButton} ${styles.drawerButtonMid}`} onClick={onClose}>
+            <Link href={canCreateCharacter ? getLocalizedLink('/create/character2') : ''} passHref>
+              <button
+                className={`${styles.drawerButton} ${styles.drawerButtonMid} ${
+                  canCreateCharacter ? '' : styles.disable
+                }`}
+                onClick={() => {
+                  if (!canCreateCharacter) return;
+                  onClose();
+                }}
+              >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineCharacter.src} />
                   <div className={styles.buttonText}>Character</div>
                 </div>
               </button>
             </Link>
-            <Link href={getLocalizedLink('/create/content')} passHref>
-              <button className={`${styles.drawerButton} ${styles.drawerButtonBot}`} onClick={onClose}>
+            <Link href={canCreateContent ? getLocalizedLink('/create/content') : ''} passHref>
+              <button
+                className={`${styles.drawerButton} ${styles.drawerButtonBot} ${canCreateContent ? '' : styles.disable}`}
+                onClick={() => {
+                  if (!canCreateContent) return;
+                  onClose();
+                }}
+              >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineStory.src} />
                   <div className={styles.buttonText}>Content</div>
                 </div>
               </button>
             </Link>
-            <Link href={getLocalizedLink('/create/channel')} passHref>
-              <button className={`${styles.drawerButton} ${styles.drawerButtonBot}`} onClick={onClose}>
+            <Link href={canCreateChannel ? getLocalizedLink('/create/channel') : ''} passHref>
+              <button
+                className={`${styles.drawerButton} ${styles.drawerButtonBot} ${canCreateChannel ? '' : styles.disable}`}
+                onClick={() => {
+                  if (!canCreateChannel) return;
+                  onClose();
+                }}
+              >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineChannel.src} />
                   <div className={styles.buttonText}>Channel</div>
