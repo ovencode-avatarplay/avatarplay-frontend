@@ -151,6 +151,11 @@
         line-height: 155%;
         /* 20.15px */
       }
+
+      &.error {
+        border: 1px solid var(--Primary-2, #FEBBEA);
+        background: var(--Primary-4, #FFF5FD);
+      }
     }
 
     .thumbnailContainer {

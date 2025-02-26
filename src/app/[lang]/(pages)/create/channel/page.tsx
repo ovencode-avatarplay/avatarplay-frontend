@@ -298,6 +298,9 @@ const CreateChannel = (props: Props) => {
 
   const countMembers = data.dataCharacterSearch.profileList.length;
 
+  const onError = (dataError: any) => {
+    console.log(dataError);
+  };
   return (
     <>
       <header className={styles.header}>
@@ -305,7 +308,7 @@ const CreateChannel = (props: Props) => {
         <div className={styles.title}>Create Channel</div>
       </header>
       <main className={styles.main}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit, onError)}>
           <div className={styles.label}>Thumbnail (Photo/Video)</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
@@ -319,7 +322,7 @@ const CreateChannel = (props: Props) => {
               />
               {!data.thumbnail?.file && (
                 <div
-                  className={styles.uploadWrap}
+                  className={cx(styles.uploadWrap, errors.mediaUrl && styles.error)}
                   onDrop={onDrop}
                   onDragOver={onDragOver}
                   onDragStart={onDragStartInner}
@@ -760,7 +763,13 @@ const CreateChannel = (props: Props) => {
         selectableCountryList={Object.values(LanguageType).filter(value => typeof value === 'number') as LanguageType[]}
         postCountryList={data.dataCountry.tagList}
         onUpdatePostCountry={(updatedList: LanguageType[]) => {
+          clearErrors('postCountry');
           data.dataCountry.tagList = updatedList;
+
+          unregister(`postCountry`);
+          for (let i = 0; i < updatedList.length; i++) {
+            setValue(`postCountry.${i}`, updatedList[i].toString(), {shouldValidate: false});
+          }
           setData({...data});
         }}
         isAll={data.dataCountry.isAll}
