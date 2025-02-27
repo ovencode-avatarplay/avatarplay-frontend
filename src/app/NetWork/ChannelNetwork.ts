@@ -23,7 +23,7 @@ export interface ChannelInfo {
   characterIP: CharacterIP;
   operatorInvitationProfileIdList: ProfileSimpleInfo[];
   isMonetization: boolean;
-  nSFW: boolean;
+  nsfw: boolean;
   postCountry: string[];
   membershipSetting: MembershipSetting;
   state: ChannelState;
@@ -73,6 +73,31 @@ export const sendSearchChannel = async (payload: SearchChannelMemberReq) => {
     return res.data;
   } catch (e) {
     console.error('sendSearchChannel API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface GetChannelReq {
+  channelProfileId: number;
+}
+
+export interface GetChannelRes {
+  channelInfo: ChannelInfo;
+}
+
+export const getChannelInfo = async (payload: GetChannelReq) => {
+  try {
+    const res = await api.post<ResponseAPI<GetChannelRes>>('channel/get', payload);
+
+    if (res.status !== 200) {
+      console.error('getChannelInfo API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getChannelInfo API 요청 실패:', e);
     alert('API 요청 중 에러 발생: ' + e);
     return null;
   }

@@ -154,14 +154,43 @@ export interface UpdateSeasonNoRes {
   updatedSeasonNo: number;
 }
 
-export const sendUpdateSeasonNo = async (payload: UpdateSeasonNoReq): Promise<ResponseAPI<UpdateSeasonNoRes>> => {
+export const sendAddSeasonNo = async (payload: UpdateSeasonNoReq): Promise<ResponseAPI<UpdateSeasonNoRes>> => {
   try {
-    const response = await api.post<ResponseAPI<UpdateSeasonNoRes>>('/Content/updateSeasonNo', payload);
+    const response = await api.post<ResponseAPI<UpdateSeasonNoRes>>('/Content/addSeasonNo', payload);
     if (response.data.resultCode === 0) return response.data;
     throw new Error(`UpdateSeasonNoRes Error: ${response.data.resultCode}`);
   } catch (error) {
     console.error('Error updating season number:', error);
     throw new Error('Failed to update season number. Please try again.');
+  }
+};
+
+// 📌 시즌 삭제 요청 타입
+export interface DeleteSeasonNoReq {
+  contentId: number;
+  deleteSeasonNo: number;
+}
+
+// 📌 시즌 삭제 응답 타입
+export interface DeleteSeasonNoRes {
+  contentId: number;
+  deleteSeasonNo: number;
+  lastSeasonNo: number; // 삭제 후 남은 마지막 시즌 번호
+}
+
+// 📌 시즌 삭제 API 호출 함수
+export const sendDeleteSeasonNo = async (payload: DeleteSeasonNoReq): Promise<ResponseAPI<DeleteSeasonNoRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<DeleteSeasonNoRes>>('/api/v1/Content/deleteSeasonNo', payload);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`DeleteSeasonNoRes Error: ${response.data.resultCode}`);
+    }
+  } catch (error) {
+    console.error('Error deleting season:', error);
+    throw new Error('Failed to delete season. Please try again.');
   }
 };
 

@@ -179,7 +179,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
     }
     const payload: CreateContentReq = {
       contentInfo: {
-        profileId: dataProfile.currentProfile ? dataProfile.currentProfile?.profileId : 0, // 예제 Profile ID
+        profileId: 0,
         contentType: ContentType.Series, // 시리즈로 고정
         name: nameValue || 'Untitled Series',
         oneLineSummary: summaryValue || '',

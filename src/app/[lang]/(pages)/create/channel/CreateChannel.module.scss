@@ -136,7 +136,7 @@
       .thumbnail {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
       }
 
 
@@ -174,7 +174,7 @@
       .thumbnail {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
       }
 
       .iconEditWrap {
@@ -242,17 +242,19 @@
         font-weight: 600;
         line-height: normal;
         letter-spacing: -0.32px;
+        border-bottom: 2px solid transparent;
+
 
         &.active {
           border-bottom: 2px solid var(--Black, #000);
 
-          text-align: center;
-          color: var(--Color-Tokens-Text, #0C0C0C);
+          color: var(--Black, #000);
           font-family: Lato;
-          font-size: 14px;
-          font-weight: 700;
-          letter-spacing: -0.28px;
-          box-sizing: border-box;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: normal;
+          letter-spacing: -0.32px;
         }
       }
     }
@@ -356,6 +358,8 @@
       width: 66px;
       gap: 4px;
 
+      cursor: pointer;
+
       .circle {}
 
       .labelAdd {
@@ -395,7 +399,7 @@
 
         .left {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           gap: 9px;
           box-sizing: border-box;
           height: 100%;
@@ -403,7 +407,7 @@
           .thumbnail {
             width: 55px;
             height: 55px;
-            object-fit: contain;
+            object-fit: cover;
             border-radius: 100%;
           }
 
@@ -442,9 +446,9 @@
               background: var(--Secondary-Red-1, #F75555);
 
               display: flex;
-              width: 26px;
-              height: 26px;
-              padding: 7px;
+              width: 22px;
+              height: 22px;
+              padding: 6px 3px;
               justify-content: center;
               align-items: center;
               gap: 4px;
@@ -458,6 +462,7 @@
               line-height: 20px;
               /* 142.857% */
               letter-spacing: -0.4px;
+
             }
           }
 
@@ -1340,7 +1345,7 @@
 
       .left {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 9px;
 
         .checkboxWrap {
@@ -1380,7 +1385,7 @@
         .thumbnail {
           width: 55px;
           height: 55px;
-          object-fit: contain;
+          object-fit: cover;
           border-radius: 100%;
         }
 
@@ -1403,6 +1408,8 @@
             font-weight: 400;
             line-height: normal;
             letter-spacing: -0.24px;
+
+            word-wrap: break-word;
           }
 
 
@@ -1423,9 +1430,9 @@
           background: var(--Secondary-Red-1, #F75555);
 
           display: flex;
-          width: 26px;
-          height: 26px;
-          padding: 7px;
+          width: 22px;
+          height: 22px;
+          padding: 6px 3px;
           justify-content: center;
           align-items: center;
           gap: 4px;

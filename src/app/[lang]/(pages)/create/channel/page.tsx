@@ -39,12 +39,21 @@ import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
 import {getBackUrl, getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
-import {ChannelInfo, CreateChannelReq, createUpdateChannel, sendSearchChannel} from '@/app/NetWork/ChannelNetwork';
+import {
+  ChannelInfo,
+  CreateChannelReq,
+  createUpdateChannel,
+  getChannelInfo,
+  sendSearchChannel,
+} from '@/app/NetWork/ChannelNetwork';
 import {profile} from 'console';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {VisibilityType} from '@/redux-store/slices/StoryInfo';
 import {on} from 'events';
-type Props = {};
+type Props = {
+  id: number;
+  isUpdate: boolean;
+};
 
 type FileType = {
   fileName?: string;
@@ -54,6 +63,7 @@ type FileType = {
 };
 
 type DataProfileUpdateType = {
+  idChannel: number;
   thumbnail: FileType | null;
   dragStatus: DragStatusType;
   indexTab: number;
@@ -72,13 +82,16 @@ type DataProfileUpdateType = {
   };
 };
 
-interface ChannelInfoForm extends Omit<ChannelInfo, 'tag'> {
+interface ChannelInfoForm extends Omit<ChannelInfo, 'tag' | 'id' | 'isMonetization' | 'nsfw'> {
   tag: string[];
+  isMonetization: number;
+  nsfw: number;
 }
 
-const CreateChannel = (props: Props) => {
+const CreateChannel = ({id, isUpdate}: Props) => {
   const router = useRouter();
   const [data, setData] = useState<DataProfileUpdateType>({
+    idChannel: 0,
     thumbnail: null,
     dragStatus: DragStatusType.OuterClick,
     indexTab: 0,
@@ -151,9 +164,63 @@ const CreateChannel = (props: Props) => {
     watch,
     unregister,
     trigger,
+    reset,
     clearErrors,
     formState: {errors, isSubmitted},
-  } = useForm<ChannelInfoForm>();
+  } = useForm<ChannelInfoForm>({
+    defaultValues: {
+      isMonetization: 0,
+    },
+  });
+
+  useEffect(() => {
+    if (!isUpdate) return;
+    if (id <= 0) return;
+    refreshChannelInfo(id);
+  }, [isUpdate, id]);
+
+  const refreshChannelInfo = async (id: number) => {
+    const res = await getChannelInfo({channelProfileId: id});
+    console.log('res : ', res);
+    const channelInfo = res?.data?.channelInfo;
+    if (!channelInfo) return;
+
+    data.idChannel = res?.data?.channelInfo?.id || 0;
+
+    let tag = channelInfo?.tag?.split(',') || [];
+    tag = tag.filter(v => !!v && v != '');
+    let isMonetization = 0;
+    let nsfw = 0;
+    const channelInfoForm: ChannelInfoForm = {...channelInfo, tag, isMonetization, nsfw};
+
+    data.thumbnail = {file: channelInfo.mediaUrl || ''};
+
+    setValue('tag', []);
+    for (let i = 0; i < data.dataTag.tagList.length; i++) {
+      // const interest = res?.data?.interests[i]
+      const tagValue = data.dataTag.tagList[i].value;
+      const index = tag.findIndex(v => v == tagValue);
+      if (index >= 0) {
+        data.dataTag.tagList[index].isActive = true;
+        setValue(`tag.${index}`, tagValue, {shouldValidate: false});
+      }
+    }
+
+    const memberList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[] =
+      res.data?.channelInfo.memberProfileIdList?.map(v => ({
+        isActive: true,
+        isOriginal: true,
+        profileSimpleInfo: v,
+      })) || [];
+    data.dataCharacterSearch.profileList = memberList;
+    reset(channelInfoForm, {}); //한번에 form 값 초기화
+    setTimeout(() => {
+      setValue('isMonetization', Number(channelInfo.isMonetization));
+      setValue('nsfw', Number(channelInfo.nsfw));
+      setValue('characterIP', channelInfo.characterIP);
+    }, 1);
+    setData({...data});
+  };
 
   useEffect(() => {
     if (!errors) {
@@ -277,27 +344,32 @@ const CreateChannel = (props: Props) => {
       router.replace(prevPath);
     }
   };
-  const onSubmit = async (data: ChannelInfoForm) => {
+  const onSubmit = async (dataForm: ChannelInfoForm) => {
     console.log('data : ', data);
     // e.preventDefault(); // 기본 제출 방지
     // const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
     let tag = '';
-    if (data?.tag?.length > 0) {
-      tag = data?.tag?.join(',') || '';
+    if (dataForm?.tag?.length > 0) {
+      tag = dataForm?.tag?.join(',') || '';
     }
 
-    let isMonetization = Boolean(Number(data.isMonetization));
-    let nSFW = Boolean(Number(data.nSFW));
-    let characterIP = Number(data.characterIP);
+    const idChannel = isUpdate ? data.idChannel : 0;
+    let isMonetization = Boolean(Number(dataForm.isMonetization));
+    let nsfw = Boolean(Number(dataForm.nsfw));
+    let characterIP = Number(dataForm.characterIP);
     const dataUpdatePdInfo: CreateChannelReq = {
       languageType: getCurrentLanguage(),
-      channelInfo: {...data, id: 0, tag: tag, isMonetization, nSFW, characterIP},
+      channelInfo: {...dataForm, id: idChannel, tag: tag, isMonetization, nsfw, characterIP},
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     console.log('res : ', res);
-    if (res) {
+    if (res?.resultCode == 0) {
       routerBack();
     }
+  };
+
+  const forceTypeBoolean = (value: string | null | boolean): boolean | null => {
+    return typeof value === 'boolean' ? value : value === 'true' ? true : value === 'false' ? false : null;
   };
 
   const keys = Object.keys(VisibilityType).filter(key => isNaN(Number(key)));
@@ -306,14 +378,19 @@ const CreateChannel = (props: Props) => {
 
   const countMembers = data.dataCharacterSearch.profileList.length;
 
+  const onError = (data: any) => {
+    console.log('errorr : ', data);
+  };
+
+  console.log('characterIP : ', watch('characterIP'));
   return (
     <>
       <header className={styles.header}>
-        <img className={styles.btnBack} src={BoldArrowLeft.src} alt="" />
-        <div className={styles.title}>Create Channel</div>
+        <img className={styles.btnBack} src={BoldArrowLeft.src} alt="" onClick={routerBack} />
+        <div className={styles.title}>{isUpdate ? 'Edit' : 'Create Channel'}</div>
       </header>
       <main className={styles.main}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit, onError)}>
           <div className={styles.label}>Thumbnail (Photo/Video)</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
@@ -397,7 +474,7 @@ const CreateChannel = (props: Props) => {
                   <textarea
                     {...register('description', {required: true})}
                     placeholder="Add a description or hashtag"
-                    maxLength={250}
+                    maxLength={500}
                     onChange={async e => {
                       const target = e.target as HTMLTextAreaElement;
                       target.style.height = 'auto';
@@ -592,7 +669,12 @@ const CreateChannel = (props: Props) => {
                 <div className={cx(styles.channelIP, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" value={0} defaultChecked {...register('characterIP')} />
+                      <input
+                        type="radio"
+                        value={0}
+                        checked={watch('characterIP', 0) == 0}
+                        {...register('characterIP')}
+                      />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -603,7 +685,12 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" value={1} {...register('characterIP')} />
+                      <input
+                        type="radio"
+                        value={1}
+                        checked={watch('characterIP', 0) == 1}
+                        {...register('characterIP')}
+                      />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -634,7 +721,12 @@ const CreateChannel = (props: Props) => {
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" value={1} defaultChecked {...register('isMonetization')} />
+                      <input
+                        type="radio"
+                        value={1}
+                        checked={watch('isMonetization', 0) == 1}
+                        {...register('isMonetization')}
+                      />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -644,7 +736,12 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" value={0} {...register('isMonetization')} />
+                      <input
+                        type="radio"
+                        value={0}
+                        checked={watch('isMonetization', 0) == 0}
+                        {...register('isMonetization')}
+                      />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -663,7 +760,7 @@ const CreateChannel = (props: Props) => {
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" value={1} defaultChecked {...register('nSFW')} />
+                      <input type="radio" value={1} checked={watch('nsfw', 0) == 1} {...register('nsfw')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -673,7 +770,7 @@ const CreateChannel = (props: Props) => {
                   </div>
                   <div className={styles.item}>
                     <label>
-                      <input type="radio" value={0} {...register('nSFW')} />
+                      <input type="radio" value={0} checked={watch('nsfw', 0) == 0} {...register('nsfw')} />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
@@ -687,7 +784,7 @@ const CreateChannel = (props: Props) => {
           </section>
 
           <button type="submit" className={styles.submitBtn}>
-            Submit
+            {isUpdate ? 'Submit' : 'Publish'}
           </button>
         </form>
       </main>

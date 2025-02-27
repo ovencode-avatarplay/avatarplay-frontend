@@ -1,4 +1,5 @@
 .drawer {
+  max-height: 90vh !important;
   width: var(--full-width);
   left: 50% !important;
   transform: translateX((-50%)) !important;
@@ -88,13 +89,12 @@
     margin-top: 22px;
     border-radius: 12px;
     // border: 1px solid var(--Border-1, #EAECF0);
-    // overflow: hidden;
+    overflow: auto;
 
     .profileList {
       border-radius: 12px;
       border: 1px solid var(--Border-1, #EAECF0);
       overflow: auto;
-      max-height: 80vh;
 
       .item+.item {
         border-top: 1px solid var(--Border-1, #EAECF0);

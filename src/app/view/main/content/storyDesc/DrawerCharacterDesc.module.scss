@@ -76,7 +76,7 @@
 .thumbnailImage {
   flex: 1 0 0;
   align-self: stretch;
-  object-fit: contain;
+  object-fit: cover;
   // background: lightgray 0px -88.577px / 100% 288.915% no-repeat;
   background: white;
 }
