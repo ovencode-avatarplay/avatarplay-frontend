@@ -1,5 +1,6 @@
 // src/app/Network/ContentNetwork.ts
 
+import {en} from '@supabase/auth-ui-shared';
 import api, {ResponseAPI} from './ApiInstance';
 
 // 📌 Content 생성 요청
@@ -98,8 +99,6 @@ export interface ContentEpisodeInfo {
   thumbnailUrl: string;
   name: string;
   description: string;
-  categoryType: number;
-  nsfw: boolean;
   monetization: boolean;
   salesStarEa: number;
   likeCount: number;
@@ -181,7 +180,7 @@ export interface DeleteSeasonNoRes {
 // 📌 시즌 삭제 API 호출 함수
 export const sendDeleteSeasonNo = async (payload: DeleteSeasonNoReq): Promise<ResponseAPI<DeleteSeasonNoRes>> => {
   try {
-    const response = await api.post<ResponseAPI<DeleteSeasonNoRes>>('/api/v1/Content/deleteSeasonNo', payload);
+    const response = await api.post<ResponseAPI<DeleteSeasonNoRes>>('/Content/deleteSeasonNo', payload);
 
     if (response.data.resultCode === 0) {
       return response.data;
@@ -241,7 +240,14 @@ export interface ContentListInfo {
   episodeCount: number;
   visibility: number;
   subscriberCount: number;
+  categoryType: ContentCategoryType;
+  tags: string[];
   createAt: Date;
+}
+
+export enum ContentCategoryType {
+  Webtoon = 0,
+  Video = 1,
 }
 
 export enum ContentType {

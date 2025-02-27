@@ -1,7 +1,16 @@
 import React, {useState} from 'react';
 import styles from './CreateContentEpisode.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
-import {BoldArrowDown, BoldQuestion, LineArrowDown, LineClose, LineDashboard, LineDelete, LineUpload} from '@ui/Icons';
+import {
+  BoldArrowDown,
+  BoldQuestion,
+  BoldStar,
+  LineArrowDown,
+  LineClose,
+  LineDashboard,
+  LineDelete,
+  LineUpload,
+} from '@ui/Icons';
 import MediaUpload from './MediaUpload/MediaUpload';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
@@ -11,184 +20,150 @@ import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import VideoContentUpload from './MediaUpload/VideoContentUpload';
 import WebtoonContentUpload from './MediaUpload/WebtoonContentUpload';
+import {
+  ContentCategoryType,
+  ContentEpisodeInfo,
+  ContentInfo,
+  ContentListInfo,
+  CreateEpisodeReq,
+  EpisodeVideoInfo,
+  EpisodeWebtoonInfo,
+  sendCreateEpisode,
+} from '@/app/NetWork/ContentNetwork';
+import {Seasons} from './SeriesDetail';
+import {Category} from '@mui/icons-material';
+import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 enum CountryTypes {
   Korea = 0,
   Japan = 1,
 }
-interface UploadField {
-  id: number;
-  selectedCountry: CountryTypes;
-  fileUrl?: string; // 업로드된 파일의 URL 저장
-}
 interface CreateContentEpisodeProps {
   onNext: () => void;
   onPrev: () => void;
+  contentInfo?: ContentListInfo;
+  curSeason: number;
+  curEpisodeCount: number;
 }
 
-const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({onNext, onPrev}) => {
+const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
+  onNext,
+  onPrev,
+  contentInfo,
+  curSeason,
+  curEpisodeCount,
+}) => {
   const handleConfirm = () => {
     onNext();
   };
-
+  const [onSeta, setOnSeta] = useState<boolean>(false);
   const [nameValue, setNameValue] = useState<string>('');
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length <= 20) {
       setNameValue(e.target.value);
     }
   };
+
+  const [priceValue, setPriceValue] = useState<string>('');
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // if (e.target.value.length <= 20) {
+    setPriceValue(e.target.value);
+    // }
+  };
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
 
   const [descValue, setrDescription] = useState<string>('');
 
   const [isMonetization, setIsMonetization] = useState<boolean>(false);
+  const [isFree, setIsFree] = useState<boolean>(false);
 
-  const [subtitleFields, setSubtitleFields] = useState<UploadField[]>([]);
-  const [dubbingFields, setDubbingFields] = useState<UploadField[]>([]);
-  const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle' | 'dubbing'; index: number} | null>(
-    null,
-  );
-  const [videoFile, setVideoFile] = useState<string | null>(null); // 비디오 업로드 상태
+  const [episodeVideoInfo, setEpisodeVideoInfo] = useState<EpisodeVideoInfo>({
+    videoSourceFileUrl: '',
+    videoSourceFileName: '',
+    playTime: '',
+    likeCount: 0,
+    subtitleFileUrls: [],
+    subtitleFileNames: [],
+    dubbingFileUrls: [],
+    dubbingFileNames: [],
+  });
 
-  const CountryItems = (type: 'subtitle' | 'dubbing', index: number): SelectDrawerItem[] => [
-    {name: 'Korea', onClick: () => handleCountryChange(type, index, CountryTypes.Korea)},
-    {name: 'Japan', onClick: () => handleCountryChange(type, index, CountryTypes.Japan)},
-  ];
+  const [episodeWebtoonInfo, setEpisodeWebtoonInfo] = useState<EpisodeWebtoonInfo>({
+    likeCount: 0,
+    webtoonSourceUrls: [],
+    webtoonSourceNames: [],
+    languagePackUrls: [],
+    languagePackNames: [],
+  });
 
-  const handleAddUploader = (type: 'subtitle' | 'dubbing') => {
-    if (type === 'subtitle') {
-      setSubtitleFields([...subtitleFields, {id: Date.now(), selectedCountry: CountryTypes.Korea}]);
-    } else {
-      setDubbingFields([...dubbingFields, {id: Date.now(), selectedCountry: CountryTypes.Korea}]);
+  const createNewEpisode = async () => {
+    if (!contentInfo) return;
+    const newEpisode: ContentEpisodeInfo = {
+      contentId: contentInfo?.id, // 필수: 콘텐츠 ID
+      seasonNo: curSeason, // 필수: 시즌 번호
+      episodeNo: curEpisodeCount + 1, // 필수: 에피소드 번호
+      thumbnailUrl: mediaUrls[0], // 필수: 썸네일
+      name: nameValue, // 필수: 이름
+      description: descValue, // 필수: 설명
+      monetization: isMonetization,
+      salesStarEa: 50,
+      likeCount: 0,
+      episodeVideoInfo: {
+        videoSourceFileUrl: 'https://example.com/video.mp4',
+        videoSourceFileName: 'video.mp4',
+        playTime: '00:10:30',
+        likeCount: 0,
+        subtitleFileUrls: ['https://example.com/subtitle.srt'],
+        subtitleFileNames: ['subtitle.srt'],
+        dubbingFileUrls: ['https://example.com/dubbing.mp3'],
+        dubbingFileNames: ['dubbing.mp3'],
+      },
+      episodeWebtoonInfo: {
+        likeCount: 0,
+        webtoonSourceUrls: ['https://example.com/webtoon.jpg'],
+        webtoonSourceNames: ['웹툰 1'],
+        languagePackUrls: ['https://example.com/lang.zip'],
+        languagePackNames: ['한국어 패키지'],
+      },
+    };
+
+    // 📌 필수 입력값 검증 (비어있을 경우 alert)
+    if (!newEpisode.contentId) {
+      alert('콘텐츠 ID가 없습니다.');
+      return;
     }
-  };
-
-  const handleRemoveUploader = (type: 'subtitle' | 'dubbing', id: number) => {
-    if (type === 'subtitle') {
-      setSubtitleFields(subtitleFields.filter(field => field.id !== id));
-    } else {
-      setDubbingFields(dubbingFields.filter(field => field.id !== id));
+    if (!newEpisode.seasonNo) {
+      alert('시즌 번호를 입력해주세요.');
+      return;
     }
-  };
-
-  const handleCountryChange = (type: 'subtitle' | 'dubbing', index: number, country: CountryTypes) => {
-    if (type === 'subtitle') {
-      setSubtitleFields(prevFields =>
-        prevFields.map((field, i) => (i === index ? {...field, selectedCountry: country} : field)),
-      );
-    } else {
-      setDubbingFields(prevFields =>
-        prevFields.map((field, i) => (i === index ? {...field, selectedCountry: country} : field)),
-      );
+    if (!newEpisode.episodeNo) {
+      alert('에피소드 번호를 입력해주세요.');
+      return;
     }
-    setCountryDrawerOpen(null);
-  };
+    if (!newEpisode.thumbnailUrl.trim()) {
+      alert('썸네일을 업로드해주세요.');
+      return;
+    }
+    if (!newEpisode.name.trim()) {
+      alert('에피소드 이름을 입력해주세요.');
+      return;
+    }
+    if (!newEpisode.description.trim()) {
+      alert('에피소드 설명을 입력해주세요.');
+      return;
+    }
 
-  // 파일 업로드 처리
-  const handleFileUpload = async (type: 'video' | 'subtitle' | 'dubbing', files: File[], index?: number) => {
+    const payload: CreateEpisodeReq = {episodeInfo: newEpisode};
+
     try {
-      let mediaState: UploadMediaState;
-
-      if (type === 'video') mediaState = UploadMediaState.ContentEpisodeVideo;
-      else if (type === 'subtitle') mediaState = UploadMediaState.ContentEpisodeSubtitle;
-      else mediaState = UploadMediaState.ContentEpisodeDubbing;
-
-      const req: MediaUploadReq = {mediaState, file: files[0]};
-      const response = await sendUpload(req);
-
-      if (response?.data) {
-        const fileUrl = response.data.url;
-
-        if (type === 'video') {
-          setVideoFile(fileUrl);
-        } else if (type === 'subtitle' && index !== undefined) {
-          setSubtitleFields(prevFields => prevFields.map((field, i) => (i === index ? {...field, fileUrl} : field)));
-        } else if (type === 'dubbing' && index !== undefined) {
-          setDubbingFields(prevFields => prevFields.map((field, i) => (i === index ? {...field, fileUrl} : field)));
-        }
+      const response = await sendCreateEpisode(payload);
+      if (response.data) {
+        console.log('에피소드 생성 성공:', response.data.episodeId);
+        alert(`에피소드가 성공적으로 생성되었습니다! (ID: ${response.data.episodeId})`);
       }
     } catch (error) {
-      console.error('파일 업로드 중 오류 발생:', error);
+      console.error('에피소드 생성 실패:', error);
+      alert('에피소드 생성에 실패했습니다. 다시 시도해주세요.');
     }
-  };
-
-  // 파일 삭제 처리
-  const handleRemoveFile = (type: 'video' | 'subtitle' | 'dubbing', index?: number) => {
-    if (type === 'video') {
-      setVideoFile(null);
-    } else if (type === 'subtitle' && index !== undefined) {
-      setSubtitleFields(prevFields =>
-        prevFields.map((field, i) => (i === index ? {...field, fileUrl: undefined} : field)),
-      );
-    } else if (type === 'dubbing' && index !== undefined) {
-      setDubbingFields(prevFields =>
-        prevFields.map((field, i) => (i === index ? {...field, fileUrl: undefined} : field)),
-      );
-    }
-  };
-
-  const renderUploader = (type: 'subtitle' | 'dubbing', field: UploadField, index: number) => {
-    return (
-      <div key={field.id} className={styles.uploadGroup}>
-        {/* 국가 선택 드롭다운 */}
-        <div className={styles.countryUploadBox} onClick={() => setCountryDrawerOpen({type, index})}>
-          {field.selectedCountry === CountryTypes.Korea ? 'Korea' : 'Japan'}
-          <img src={LineArrowDown.src} className={styles.lineArrowDown} />
-        </div>
-
-        {/* 업로드된 파일 표시 */}
-        <div className={styles.videoUploadBox}>
-          {field.fileUrl ? (
-            <span>{field.fileUrl.split('/').pop()}</span> // 파일명 표시
-          ) : (
-            <span>No file uploaded</span>
-          )}
-        </div>
-
-        {/* 업로드 및 삭제 버튼 */}
-        <div className={styles.videoButtonContainer}>
-          <button
-            className={styles.uploadButton}
-            onClick={() => {
-              const input = document.createElement('input');
-              input.type = 'file';
-              input.accept = type === 'subtitle' ? '.srt,.txt' : 'audio/*';
-              input.onchange = e => {
-                const files = (e.target as HTMLInputElement).files;
-                if (files) {
-                  handleFileUpload(type, Array.from(files), index);
-                }
-              };
-              input.click();
-            }}
-          >
-            <img src={LineUpload.src} alt="Upload" className={styles.icon} />
-            Upload
-          </button>
-          {field.fileUrl ? (
-            <button className={styles.deleteButton} onClick={() => handleRemoveFile(type, index)}>
-              <img src={LineDelete.src} alt="Delete" className={styles.icon} />
-              Delete
-            </button>
-          ) : (
-            <button className={styles.deleteButton}>
-              <img src={LineDelete.src} alt="Delete" className={styles.icon} />
-              Delete
-            </button>
-          )}
-        </div>
-
-        {/* 국가 선택 드롭다운 */}
-        {CountryDrawerOpen?.type === type && CountryDrawerOpen.index === index && (
-          <SelectDrawer
-            name="Filter"
-            items={CountryItems(type, index)}
-            isOpen={true}
-            onClose={() => setCountryDrawerOpen(null)}
-            selectedIndex={field.selectedCountry}
-          />
-        )}
-      </div>
-    );
   };
 
   return (
@@ -207,17 +182,19 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({onNext, onPr
         />
       </div>
       <div className={styles.container}>
-        <span className={styles.label}>Series Name</span>
+        <span className={styles.label}>Series name</span>
         <div className={styles.dropdown}>
-          <span className={styles.text}>A Person I met by chance</span>
+          <span className={styles.text}>{contentInfo?.name}</span>
         </div>
         <div className={styles.tags}>
-          <span className={styles.label}>video/action</span>
-          <span className={styles.label}>#love #text2</span>
+          <span className={styles.label}>
+            {ContentCategoryType[contentInfo ? contentInfo?.categoryType : 0]}/{contentInfo?.genre}
+          </span>
+          <span className={styles.label}>contoent</span>
         </div>
         <div className={styles.infoGroup}>
-          <span className={styles.seasonLabel}>Season 1</span>
-          <span className={styles.epLabel}>Episode No.20</span>
+          <span className={styles.seasonLabel}>Season {curSeason}</span>
+          <span className={styles.epLabel}>Episode No.{curEpisodeCount + 1}</span>
           <span className={styles.tokenLabel}>The total token count is calulated based on the</span>
           <span className={styles.tokenLabel}>introduction with the highest number of tokens</span>
 
@@ -248,8 +225,12 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({onNext, onPr
           style={{minHeight: '190px', width: '100%'}}
           placeholder="Add a description or hastag"
         />
-        {/* <VideoContentUpload></VideoContentUpload> */}
-        <WebtoonContentUpload></WebtoonContentUpload>
+
+        {contentInfo?.categoryType == ContentCategoryType.Video && (
+          <VideoContentUpload setEpisodeVideoInfo={setEpisodeVideoInfo}></VideoContentUpload>
+        )}
+        {contentInfo?.categoryType == ContentCategoryType.Webtoon && <WebtoonContentUpload></WebtoonContentUpload>}
+
         <div className={styles.moenetization}>
           <span className={styles.label}>Moenetization</span>
           <button className={styles.questionButton}>
@@ -280,12 +261,57 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({onNext, onPr
           <span className={styles.label} style={{lineHeight: '24px'}}>
             Sales Star EA
           </span>
-          <div className={styles.salesStarSetting}> Setting</div>
+          <div className={styles.salesStarSetting} onClick={() => setOnSeta(true)}>
+            {' '}
+            Setting
+          </div>
         </div>
         <button className={styles.confirmButton} onClick={handleConfirm}>
           Confirm
         </button>
       </div>
+
+      <SelectDrawer
+        isOpen={onSeta}
+        onClose={() => setOnSeta(false)}
+        items={[]}
+        selectedIndex={0}
+        tooltip=""
+        name="Individual Episode Amount"
+      >
+        {' '}
+        <div className={styles.setaTitleGroup}>
+          <div style={{gap: '5px', display: 'flex', flexDirection: 'column', marginTop: '22px'}}>
+            <span className={styles.setaEp}>EP.{curEpisodeCount + 1}</span>
+            <span className={styles.setaName}> {nameValue != '' ? nameValue : 'No name'} </span>
+          </div>
+          <CustomRadioButton
+            shapeType="square"
+            displayType="buttonText"
+            value={0}
+            label="Free Episode"
+            onSelect={() => setIsFree(!isFree)}
+            selectedValue={isFree == false ? 0 : 1}
+            containterStyle={{gap: '0'}}
+          ></CustomRadioButton>
+          <div style={{gap: '10px', display: 'flex', flexDirection: 'column'}}>
+            {isFree != false && (
+              <div className={styles.inputBox}>
+                <img src={BoldStar.src} className={styles.starstar}></img>
+                <input
+                  type="text"
+                  className={styles.inputField}
+                  placeholder="Enter Price..."
+                  value={priceValue}
+                  onChange={handlePriceChange}
+                />
+                <span className={styles.starlabel}>EA</span>
+              </div>
+            )}
+            <button className={styles.setaConfirm}>Confirm</button>
+          </div>
+        </div>
+      </SelectDrawer>
     </div>
   );
 };

@@ -22,7 +22,7 @@ enum CountryTypes {
   Korea = 0,
   Japan = 1,
 }
-interface UploadField {
+export interface WebtoonUploadField {
   id: number;
   selectedCountry: CountryTypes;
   fileUrl: string[]; // 업로드된 파일의 URL 저장
@@ -30,7 +30,7 @@ interface UploadField {
 interface WebtoonContentUploadProps {}
 
 const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
-  const [subtitleFields, setSubtitleFields] = useState<UploadField[]>([]);
+  const [subtitleFields, setSubtitleFields] = useState<WebtoonUploadField[]>([]);
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle'; index: number} | null>(null);
   const [imageFiles, setImageFiles] = useState<string[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // 선택된 파일의 인덱스
@@ -183,7 +183,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
     );
   };
   console.log(selectedIndexes);
-  const renderUploader = (type: 'subtitle', field: UploadField, fieldIndex: number) => {
+  const renderUploader = (type: 'subtitle', field: WebtoonUploadField, fieldIndex: number) => {
     return (
       <div className={styles.uploadGroup}>
         {/* 국가 선택 드롭다운 버튼 */}

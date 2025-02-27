@@ -33,13 +33,15 @@ interface SeriesDetailProps {
   contentInfo: ContentListInfo;
   onNext: () => void;
   onPrev: () => void;
+  setCurSeason: (num: number) => void;
+  setEpisodeCount: (num: number) => void;
 }
 
-interface Seasons {
+export interface Seasons {
   id: number;
   name: string;
 }
-const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}) => {
+const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo, setCurSeason, setEpisodeCount}) => {
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedTab, setSelectedTab] = useState<'Episodes' | 'About'>('Episodes');
   const [onSeasonDropdown, setSeasonDropdown] = useState(false);
@@ -48,7 +50,6 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}
 
   const [seriesInfo, setSeriesInfo] = useState<ContentInfo>();
   const [episodeList, setEpisodeList] = useState<ContentEpisodeInfo[]>(); // 타입 변경
-  console.log('asd', seriesInfo);
 
   useEffect(() => {}, [episodeList]);
 
@@ -81,6 +82,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}
   const removeSeason = async (seasonNo: number) => {
     if (!seriesInfo) return;
 
+    console.log(seasonNo);
     const payload: DeleteSeasonNoReq = {
       contentId: seriesInfo.id!,
       deleteSeasonNo: seasonNo,
@@ -184,6 +186,10 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}
     fetchContent(contentInfo.id);
   }, []);
 
+  useEffect(() => {
+    fetchSeasonEpisodes(selectedSeason);
+  }, [seriesInfo]);
+
   return (
     <div className={styles.container}>
       {/* 상단 배경 및 네비게이션 */}
@@ -265,7 +271,14 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}
           )}
         </div>
         {/* 새로운 에피소드 추가 버튼 */}
-        <button className={styles.addEpisode} onClick={() => onNext()}>
+        <button
+          className={styles.addEpisode}
+          onClick={() => {
+            setEpisodeCount(episodeList ? episodeList?.length : 0);
+            setCurSeason(selectedSeason);
+            onNext();
+          }}
+        >
           + New Episode
         </button>
 
@@ -279,7 +292,9 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}
                   <div className={styles.epTitleText}>
                     {index}. {ep.name}
                   </div>
-                  {ep.categoryType == 1 && <div className={styles.epDuration}>{ep.episodeVideoInfo?.playTime}</div>}
+                  {contentInfo.categoryType == 1 && (
+                    <div className={styles.epDuration}>{ep.episodeVideoInfo?.playTime}</div>
+                  )}
                 </div>
                 <div className={styles.episodeActions}>
                   <button className={styles.iconButton}>

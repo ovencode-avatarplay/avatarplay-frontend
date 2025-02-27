@@ -12,7 +12,7 @@ interface CustomInputProps {
   label?: string | React.ReactNode;
   hint?: string;
   iconLeft?: React.ReactNode; // Left Icon component
-  iconRight?: React.ReactNode; // Right Icon component
+  iconRight?: string | React.ReactNode; // Right Icon component
   value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;

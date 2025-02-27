@@ -168,6 +168,24 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
   const [descValue, setrDescription] = useState<string>('');
 
   const [isMonetization, setIsMonetization] = useState<boolean>(false);
+  const [episodeVideoInfo, setEpisodeVideoInfo] = useState<EpisodeVideoInfo>({
+    videoSourceFileUrl: '',
+    videoSourceFileName: '',
+    playTime: '',
+    likeCount: 0,
+    subtitleFileUrls: [],
+    subtitleFileNames: [],
+    dubbingFileUrls: [],
+    dubbingFileNames: [],
+  });
+
+  const [episodeWebtoonInfo, setEpisodeWebtoonInfo] = useState<EpisodeWebtoonInfo>({
+    likeCount: 0,
+    webtoonSourceUrls: [],
+    webtoonSourceNames: [],
+    languagePackUrls: [],
+    languagePackNames: [],
+  });
 
   return (
     <div className={styles.parent}>

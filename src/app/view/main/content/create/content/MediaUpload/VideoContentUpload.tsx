@@ -14,20 +14,23 @@ import {
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
+import {EpisodeVideoInfo} from '@/app/NetWork/ContentNetwork';
 enum CountryTypes {
   Korea = 0,
   Japan = 1,
 }
-interface UploadField {
+export interface VideoUploadField {
   id: number;
   selectedCountry: CountryTypes;
   fileUrl?: string; // 업로드된 파일의 URL 저장
 }
-interface VideoContentUploadProps {}
+interface VideoContentUploadProps {
+  setEpisodeVideoInfo: (value: EpisodeVideoInfo) => void;
+}
 
 const VideoContentUpload: React.FC<VideoContentUploadProps> = ({}) => {
-  const [subtitleFields, setSubtitleFields] = useState<UploadField[]>([]);
-  const [dubbingFields, setDubbingFields] = useState<UploadField[]>([]);
+  const [subtitleFields, setSubtitleFields] = useState<VideoUploadField[]>([]);
+  const [dubbingFields, setDubbingFields] = useState<VideoUploadField[]>([]);
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle' | 'dubbing'; index: number} | null>(
     null,
   );
@@ -127,7 +130,7 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({}) => {
     }
   };
 
-  const renderUploader = (type: 'subtitle' | 'dubbing', field: UploadField, index: number) => {
+  const renderUploader = (type: 'subtitle' | 'dubbing', field: VideoUploadField, index: number) => {
     return (
       <div key={field.id} className={styles.uploadGroup}>
         {/* 국가 선택 드롭다운 */}
