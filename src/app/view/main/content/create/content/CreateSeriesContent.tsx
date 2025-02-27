@@ -11,6 +11,9 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import DrawerPostCountry from '../common/DrawerPostCountry';
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
+import {ContentType, CreateContentReq, sendCreateContent} from '@/app/NetWork/ContentNetwork';
+import {RootState} from '@/redux-store/ReduxStore';
+import {useSelector} from 'react-redux';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -37,6 +40,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
   const maxTagCount = 5;
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
   const [selectedGenreAlertOn, setSelectedGenreAlertOn] = useState(false);
+  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
   const handleTagRemove = (tag: string) => {
     setSelectedTags(selectedTags.filter(t => t !== tag));
   };
@@ -143,9 +147,65 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
 
   const [positionCountryList, setPositionCountryList] = useState<LanguageType[]>([]);
   const normalizedPostCountryList: LanguageType[] = positionCountryList ?? [];
+  const dataProfile = useSelector((state: RootState) => state.profile);
+  const handleConfirm = async () => {
+    if (!nameValue.trim()) {
+      alert('Name을 입력해주세요.');
+      return;
+    }
+    if (!summaryValue.trim()) {
+      alert('One Line Summary를 입력해주세요.');
+      return;
+    }
+    if (!descValue.trim()) {
+      alert('Description을 입력해주세요.');
+      return;
+    }
+    if (!mediaUrls[0]) {
+      alert('Thumbnail을 업로드해주세요.');
+      return;
+    }
+    if (selectedGenres.length === 0) {
+      alert('최소 하나의 Genre를 선택해주세요.');
+      return;
+    }
+    if (selectedTags.length === 0) {
+      alert('최소 하나의 Tag를 선택해주세요.');
+      return;
+    }
+    if (positionCountryList.length === 0) {
+      alert('Post Country를 선택해주세요.');
+      return;
+    }
+    const payload: CreateContentReq = {
+      contentInfo: {
+        profileId: dataProfile.currentProfile ? dataProfile.currentProfile?.profileId : 0, // 예제 Profile ID
+        contentType: ContentType.Series, // 시리즈로 고정
+        name: nameValue || 'Untitled Series',
+        oneLineSummary: summaryValue || '',
+        description: descValue || '',
+        thumbnailUrl: mediaUrls[0], // 썸네일 업로드 구현 필요
+        categoryType: selectedCategory,
+        genre: selectedGenres.length > 0 ? selectedGenres.join(', ') : '',
+        tags: selectedTags,
+        postCountry: positionCountryList.map(country => LanguageType[country]), // 국가 정보
+        visibility: selectedVisibility,
+        nsfw: isNsfw, // 기본값
+        monetization: false,
+        salesStarEa: 0, //추후 구현 필요
+        maxSeasonNo: 1, // 기본 시즌 1개부터 시작
+      },
+    };
 
-  const handleConfirm = () => {
-    onNext();
+    try {
+      const response = await sendCreateContent(payload);
+      if (response.data) {
+        console.log('콘텐츠 생성 성공:', response.data.contentId);
+        onNext();
+      }
+    } catch (error) {
+      console.error('콘텐츠 생성 실패:', error);
+    }
   };
 
   const [nameValue, setNameValue] = useState<string>('');
@@ -164,7 +224,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
 
   const [descValue, setrDescription] = useState<string>('');
 
-  const [isMonetization, setIsMonetization] = useState<boolean>(false);
+  const [isNsfw, setIsNsfw] = useState<boolean>(false);
 
   return (
     <div className={styles.parent}>
@@ -182,7 +242,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
         />
       </div>
       <div className={styles.container}>
-        <MediaUpload></MediaUpload>
+        <MediaUpload setContentMediaUrls={setMediaUrls}></MediaUpload>
         <CustomInput
           inputType="Basic"
           textType="Label"
@@ -311,8 +371,8 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
             displayType="buttonText"
             value="On"
             label="On"
-            onSelect={() => setIsMonetization(true)}
-            selectedValue={isMonetization ? 'On' : 'Off'}
+            onSelect={() => setIsNsfw(true)}
+            selectedValue={isNsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
           />
           <CustomRadioButton
@@ -320,8 +380,8 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
             displayType="buttonText"
             value="Off"
             label="Off"
-            onSelect={() => setIsMonetization(false)}
-            selectedValue={isMonetization ? 'On' : 'Off'}
+            onSelect={() => setIsNsfw(false)}
+            selectedValue={isNsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
           />
         </div>
@@ -348,7 +408,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
         selectedTags={selectedGenres}
         onTagSelect={handleGenreSelect}
         onRefreshTags={() => setSelectedGenres([])}
-        maxTagCount={maxTagCount}
+        maxTagCount={1}
         selectedTagAlertOn={selectedGenreAlertOn}
         setSelectedTagAlertOn={setSelectedGenreAlertOn}
       />

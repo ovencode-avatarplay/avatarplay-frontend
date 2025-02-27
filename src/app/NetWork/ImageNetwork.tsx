@@ -13,6 +13,16 @@ export enum UploadMediaState {
   TriggerAudio = 8,
   FeedVideo = 9,
   FeedImage = 10,
+  CompressFeedVideo = 11,
+  CompressFeedImage = 12,
+
+  ContentEpisodeVideo = 13,
+  ContentEpisodeSubtitle = 14,
+  ContentEpisodeDubbing = 15,
+  ContentEpisodeWebtoonImage = 16,
+  ContentEpisodeWebtoonSubtitle = 17,
+  ContentImage = 18,
+  ContentVideo = 19,
 }
 
 export interface MediaUploadReq {

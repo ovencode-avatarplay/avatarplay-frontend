@@ -1,6 +1,13 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './SeriesDetail.module.css';
 import {BoldArrowLeft, BoldShare, BoldLock, BoldHeart, BoldVideo, BoldStar, LineEdit, LinePlus} from '@ui/Icons';
+import {
+  ContentInfo,
+  ContentListInfo,
+  CreateContentReq,
+  GetContentReq,
+  sendGetContent,
+} from '@/app/NetWork/ContentNetwork';
 export const mockSingle = {
   title: 'The White King',
   genres: ['Comedy', 'Love', 'Drama'],
@@ -38,19 +45,38 @@ export interface SingleInfo {
 }
 
 interface SingleDetailProps {
-  singleInfo: SingleInfo;
+  contentInfo: ContentListInfo;
   onNext: () => void;
   onPrev: () => void;
 }
 
-const SingleDetail: React.FC<SingleDetailProps> = ({onNext, onPrev, singleInfo}) => {
+const SingleDetail: React.FC<SingleDetailProps> = ({onNext, onPrev, contentInfo}) => {
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedTab, setSelectedTab] = useState<'Episodes' | 'About'>('Episodes');
+  const [singleInfo, setSingleInfo] = useState<ContentInfo>();
+
+  useEffect(() => {
+    const fetchContent = async (contentId: number) => {
+      const payload: GetContentReq = {contentId};
+
+      try {
+        const response = await sendGetContent(payload);
+        if (response.data) {
+          console.log('콘텐츠 정보:', response.data.contentInfo);
+          setSingleInfo(response.data.contentInfo);
+        }
+      } catch (error) {
+        console.error('콘텐츠 조회 실패:', error);
+      }
+    };
+
+    fetchContent(contentInfo.id);
+  }, []);
 
   return (
     <div className={styles.container}>
       {/* 상단 배경 및 네비게이션 */}
-      <div className={styles.header} style={{backgroundImage: `url(${singleInfo.coverImage})`}}>
+      <div className={styles.header} style={{backgroundImage: `url(${singleInfo?.thumbnailUrl})`}}>
         <div className={styles.topNav}>
           <button className={styles.iconButton} onClick={() => onPrev()}>
             <img src={BoldArrowLeft.src} alt="Back" />
@@ -64,7 +90,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({onNext, onPrev, singleInfo})
       <div className={styles.contentContainer}>
         {/* 장르 및 공유 버튼 */}
         <div className={styles.genreShare}>
-          <span className={styles.genres}>{singleInfo.genres.join(' / ')}</span>
+          <span className={styles.genres}>{singleInfo?.genre}</span>
           <button className={styles.iconButton}>
             <img src={BoldShare.src} alt="Share" />
           </button>
@@ -95,21 +121,15 @@ const SingleDetail: React.FC<SingleDetailProps> = ({onNext, onPrev, singleInfo})
             {/* 에피소드 리스트 */}
             <div className={styles.episodeList}>
               <div className={styles.episodeItem}>
-                <div className={styles.episodeThumbnail} style={{backgroundImage: `url(${singleInfo.thumbnail})`}}>
-                  <div className={styles.episodeStats}>
-                    <span className={styles.stats}>
-                      <img src={BoldHeart.src} className={styles.statIcon} /> {singleInfo.likes}
-                    </span>
-                    <span className={styles.stats}>
-                      <img src={BoldVideo.src} className={styles.statIcon} /> {singleInfo.comments}
-                    </span>
-                  </div>
-                </div>
+                <div
+                  className={styles.episodeThumbnail}
+                  style={{backgroundImage: `url(${singleInfo?.thumbnailUrl})`}}
+                ></div>
                 <div className={styles.episodeInfo}>
-                  <div className={styles.epTitleText}>
-                    {singleInfo.id}. {singleInfo.title}
-                  </div>
-                  <div className={styles.epDuration}>{singleInfo.duration}</div>
+                  <div className={styles.epTitleText}>{singleInfo?.name}</div>
+                  {singleInfo?.categoryType == 1 && (
+                    <div className={styles.epDuration}>{singleInfo?.contentVideoInfo?.playTime}</div>
+                  )}
                 </div>
                 <div className={styles.episodeActions}>
                   <button className={styles.iconButton}>
@@ -117,7 +137,12 @@ const SingleDetail: React.FC<SingleDetailProps> = ({onNext, onPrev, singleInfo})
                   </button>
                   <div className={styles.rating}>
                     <img src={BoldStar.src} className={styles.starIcon} />
-                    <span className={styles.rateText}>{singleInfo.rating}</span>
+                    {singleInfo?.categoryType == 0 && (
+                      <span className={styles.rateText}>{singleInfo?.contentWebtoonInfo?.likeCount}</span>
+                    )}
+                    {singleInfo?.categoryType == 1 && (
+                      <span className={styles.rateText}>{singleInfo?.contentVideoInfo?.likeCount}</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -125,7 +150,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({onNext, onPrev, singleInfo})
           </>
         ) : (
           <>
-            <div className={styles.episodeList}>{singleInfo.description}</div>
+            <div className={styles.episodeList}>{singleInfo?.description}</div>
           </>
         )}
       </div>

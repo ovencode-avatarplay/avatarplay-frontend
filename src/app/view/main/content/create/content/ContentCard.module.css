@@ -14,10 +14,13 @@
 .topMenu {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   padding: 0px 12px;
   width: 100%;
+  font-size: 16px;
+  font-weight: 700;
+  color: #040415;
 }
 
 .menuDots {
@@ -43,6 +46,7 @@
   border-radius: 8px;
   overflow: hidden;
   position: relative;
+  
 }
 
 .thumbnail img {

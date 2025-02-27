@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import styles from './MediaUpload.module.css';
-import {BoldPlay, CircleClose, LineUpload} from '@ui/Icons';
+import {BoldPlay, CircleClose, editCircle, LineUpload} from '@ui/Icons';
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import ReactPlayer from 'react-player';
-import MediaUploadGrid from './MediaUploadGrid';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface Props {
   title?: string;
+  setContentMediaUrls: (urls: string[]) => void;
 }
 const mediaTypeConfig = {
   image: {
@@ -23,7 +23,7 @@ const mediaTypeConfig = {
     accept: 'video/*', // 비디오 파일
   },
 };
-const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)'}) => {
+const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)', setContentMediaUrls}) => {
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
   const [publishPopup, setPublishPopup] = useState<boolean>(false); // 입력된 텍스트 상태
   const [isOpenSelectDrawer, setIsOpenSelectDrawer] = useState<boolean>(false);
@@ -54,16 +54,16 @@ const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)'}) => 
     try {
       // MediaState 설정
       let state = UploadMediaState.None;
-      if (mediaType == 'image') state = UploadMediaState.FeedImage;
-      if (mediaType == 'video') state = UploadMediaState.FeedVideo;
+      if (mediaType == 'image') state = UploadMediaState.ContentImage;
+      if (mediaType == 'video') state = UploadMediaState.ContentVideo;
 
       // 업로드 요청 객체 생성
       const req: MediaUploadReq = {
         mediaState: state, // 적절한 MediaState 설정
       };
 
-      if (state === UploadMediaState.FeedImage) {
-        req.imageList = files;
+      if (state === UploadMediaState.ContentImage) {
+        req.file = files[0];
       } else {
         req.file = files[0];
       }
@@ -79,7 +79,7 @@ const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)'}) => 
 
         // Redux 상태 업데이트를 위한 URL 리스트 생성
         const validImageUrls = [imgUrl, ...additionalUrls].filter(url => url !== null);
-
+        setContentMediaUrls(validImageUrls);
         // 상태 업데이트: 새로운 이미지 추가
         setMediaUrls(prevUrls => {
           const combinedUrls = [...validImageUrls];
@@ -186,24 +186,31 @@ const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)'}) => 
     <div className={styles.box}>
       <div className={styles.container}>
         <div className={styles.label}>{thumbnailText}</div>
-        <div
-          className={styles.inputBox}
-          onClick={() => {
-            setIsOpenMediaDrawer(true);
-          }}
-        >
-          <div className={styles.uploadIcon}>
-            <img src={LineUpload.src} alt="upload-icon" />
+
+        {mediaUrls.length == 0 && (
+          <div
+            className={styles.inputBox}
+            onClick={() => {
+              setIsOpenMediaDrawer(true);
+            }}
+          >
+            <div className={styles.uploadIcon}>
+              <img src={LineUpload.src} alt="upload-icon" />
+            </div>
+            <div className={styles.hintText}>Upload</div>
           </div>
-          <div className={styles.hintText}>Upload</div>
-        </div>
-        {/* 이미지 그리드 */}
-        {mediaType === 'image' && (
-          <div>
-            <MediaUploadGrid
-              imageUrls={mediaUrls}
-              onRemove={handleMediaRemove} // 인덱스를 기반으로 삭제
-            />
+        )}
+        {mediaType === 'image' && mediaUrls.length > 0 && (
+          <div className={styles.imageContainer}>
+            <img src={mediaUrls[0]} alt="uploaded-image" className={styles.uploadedImage} />
+            <button
+              className={styles.deleteButton}
+              onClick={() => {
+                handleMediaRemove(0);
+              }}
+            >
+              <img src={editCircle.src} alt="Delete" />
+            </button>
           </div>
         )}
 
@@ -217,14 +224,13 @@ const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)'}) => 
             }}
           >
             <ReactPlayer
+              className={styles.reactPlayer} // 추가
               muted={true}
               url={mediaUrls[0]} // 첫 번째 URL 사용
               playing={isPlaying} // 재생 상태
-              width="100%" // 비율 유지하며 너비 자동 조정
-              height="100%" // 비율 유지하며 높이 자동 조정
-              style={{
-                borderRadius: '8px',
-              }}
+              width="100%"
+              height="100%"
+              style={{borderRadius: '8px'}}
               onDuration={(duration: number) => setVideoDuration(formatDuration(duration))} // 영상 길이 설정
             />
             {!isPlaying && (
@@ -241,7 +247,7 @@ const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)'}) => 
                 handleMediaRemove(0);
               }}
             >
-              <img src={CircleClose.src}></img>
+              <img src={editCircle.src} alt="Delete" />
             </button>
           </div>
         )}

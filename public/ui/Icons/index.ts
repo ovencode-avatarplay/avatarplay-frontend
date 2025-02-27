@@ -129,8 +129,10 @@ import EmotionAngry from "./Custom/Angry.svg";
 import CircleClose from "./Custom/CircleClose.svg";
 import OrangeCoin from "./Custom/Coin.svg";
 import Add_Button from "./Custom/Add_Button.svg";
+import editCircle from "./Custom/editCircle.svg";
 
 export {
+  editCircle,
   Add_Button,
   OrangeCoin,
   BoldCoin,

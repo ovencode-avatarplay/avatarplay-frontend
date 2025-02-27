@@ -222,22 +222,25 @@ const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
 
     const _feedInfo: FeedInfo = {
       id: 0,
+      profileId: 0, // 추가
       urlLinkKey: '',
       mediaState: state, // 예시 값
       mediaUrlList: mediaUrls,
       description: text,
       hashTag: '',
-      likeCount: 0,
       commentCount: 0,
+      likeCount: 0,
+      disLikeCount: 0, // 추가
       isLike: false,
       isDisLike: false,
       isBookmark: false,
+      isPinFix: false, // 추가
+      isFollowing: false,
       playTime: '', // 예시 값
       characterProfileId: 0,
       characterProfileName: '',
       characterProfileUrl: '',
-      createAt: new Date(),
-      isFollowing: false,
+      createAt: '',
     };
 
     const createFeedReq: RequestCreateFeed = {
