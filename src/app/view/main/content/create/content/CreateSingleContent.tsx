@@ -13,6 +13,7 @@ import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import VideoContentUpload from './MediaUpload/VideoContentUpload';
 import WebtoonContentUpload from './MediaUpload/WebtoonContentUpload';
+import {EpisodeVideoInfo, EpisodeWebtoonInfo} from '@/app/NetWork/ContentNetwork';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -323,11 +324,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
           onClick={() => setVisibilityDrawerOpen(true)}
         ></CustomDropDownSelectDrawer>
 
-        {selectedCategory === CategoryTypes.Drama && (
-          <>
-            <VideoContentUpload></VideoContentUpload>
-          </>
-        )}
+        {selectedCategory === CategoryTypes.Drama && <>{/* <VideoContentUpload></VideoContentUpload> */}</>}
         {selectedCategory === CategoryTypes.Webtoon && (
           <>
             <WebtoonContentUpload></WebtoonContentUpload>
