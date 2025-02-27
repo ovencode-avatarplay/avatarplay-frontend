@@ -359,7 +359,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     console.log('res : ', res);
-    if (res) {
+    if (res?.resultCode == 0) {
       routerBack();
     }
   };
