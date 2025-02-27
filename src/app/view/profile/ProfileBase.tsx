@@ -10,6 +10,8 @@ import ProfileTopViewMenu from './ProfileTopViewMenu';
 import {
   BoldAltArrowDown,
   BoldArrowLeft,
+  BoldComment,
+  BoldFollowers,
   BoldHeart,
   BoldImage,
   BoldMenuDots,
@@ -69,6 +71,8 @@ import {CharacterProfileDetailComponent} from '@/app/[lang]/(pages)/profile/deta
 import {getBackUrl} from '@/utils/util-1';
 import {useInView} from 'react-intersection-observer';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
+import {getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
+import {channel} from 'diagnostics_channel';
 
 enum eTabPDType {
   Feed,
@@ -86,7 +90,6 @@ enum eTabPDOtherType {
 
 enum eTabCharacterType {
   Feed,
-  Info = 90,
   Contents = 1,
   Story,
   Character,
@@ -103,7 +106,6 @@ enum eTabCharacterOtherType {
 }
 enum eTabChannelType {
   Feed,
-  Info = 90,
   Contents = 1,
   Story,
   Character,
@@ -143,7 +145,9 @@ type DataProfileType = {
   isOpenSelectProfile: boolean;
   profileInfo: null | GetProfileInfoRes;
   profileTabInfo: {
-    [key: number]: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes};
+    [key: number]: GetCharacterTabInfoeRes &
+      GetPdTabInfoeRes &
+      GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes} & GetChannelRes;
   };
   indexFilterMedia: FeedMediaType;
   indexFilterCharacter: number;
@@ -328,9 +332,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll: boolean = false) => {
     const profileType = data.profileInfo?.profileInfo?.type;
     if (profileType == undefined) return;
-
     let resProfileTabInfo = null;
-    if (isCharacter && indexTab == eTabCharacterType.Info) {
+    if (isCharacter && indexTab == eTabCharacterOtherType.Info) {
       const reqSendGetCharacterInfo: GetCharacterInfoReq = {
         languageType: getCurrentLanguage(),
         characterId: data.profileInfo?.profileInfo?.typeValueId || 0,
@@ -348,6 +351,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         return;
       }
       resProfileTabInfo = {dataResPdInfo: resPdInfo?.data};
+    } else if (isOtherChannel && indexTab == eTabChannelOtherType.Info) {
+      const resChannelInfo = await getChannelInfo({channelProfileId: profileId});
+      if (resChannelInfo?.resultCode != 0) {
+        console.error('api error : ', resChannelInfo?.resultMessage);
+        return;
+      }
+      resProfileTabInfo = resChannelInfo?.data;
     } else {
       if (indexTab == eTabPDType.Character) {
         resProfileTabInfo = await getTabInfo(profileType)(
@@ -378,16 +388,20 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
   const addTabContent = (
     indexTab: number,
-    resProfileTabInfo: GetCharacterTabInfoeRes & GetPdTabInfoeRes & GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes},
+    resProfileTabInfo: GetCharacterTabInfoeRes &
+      GetPdTabInfoeRes &
+      GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes} & GetChannelRes,
     isRefreshAll: boolean,
   ) => {
-    const {feedInfoList, characterInfoList, channelInfoList, storyInfoList, dataResPdInfo} = resProfileTabInfo;
+    const {feedInfoList, characterInfoList, channelInfoList, storyInfoList, dataResPdInfo, channelInfo} =
+      resProfileTabInfo;
     if (!data.profileTabInfo[indexTab]) {
       data.profileTabInfo[indexTab] = resProfileTabInfo;
       return;
     }
-    if (!!dataResPdInfo) {
-      data.profileTabInfo[indexTab].dataResPdInfo = dataResPdInfo;
+
+    if (!!channelInfo) {
+      data.profileTabInfo[indexTab].channelInfo = channelInfo;
     }
 
     if (!!feedInfoList) {
@@ -537,7 +551,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       // }
       else if (data.indexTab == eTabCharacterType.Story) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.storyInfoList?.length;
-      } else if (data.indexTab == eTabCharacterType.Info) {
+      } else if (data.indexTab == eTabCharacterOtherType.Info) {
         isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
       } else if (data.indexTab == eTabCharacterType.Character) {
         isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfoList;
@@ -545,17 +559,17 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         isEmptyTab = true;
       }
     } else if (isChannel) {
-      if (data.indexTab == eTabCharacterType.Feed) {
+      if (data.indexTab == eTabChannelType.Feed) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.feedInfoList?.length;
       }
       // else if (data.indexTab == eTabCharacterType.Contents) {
       //   isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentsInfoList?.length;
       // }
-      else if (data.indexTab == eTabCharacterType.Story) {
+      else if (data.indexTab == eTabChannelType.Story) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.storyInfoList?.length;
-      } else if (data.indexTab == eTabCharacterType.Info) {
+      } else if (data.indexTab == eTabChannelOtherType.Info) {
         isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
-      } else if (data.indexTab == eTabCharacterType.Character) {
+      } else if (data.indexTab == eTabChannelType.Character) {
         isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfoList;
       } else {
         isEmptyTab = true;
@@ -1542,6 +1556,38 @@ const TabContentComponent = ({
           urlLinkKey={data?.profileTabInfo?.[data.indexTab].urlLinkKey}
         />
       </>
+    );
+  }
+
+  if (isChannel && tabIndex == eTabChannelOtherType.Info) {
+    const channelInfo = data?.profileTabInfo?.[data.indexTab]?.channelInfo;
+    console.log('channelInfo : ', channelInfo);
+    return (
+      <section className={styles.channelInfoTabSection}>
+        <section className={styles.characterMainImageWrap}>
+          <img src={channelInfo?.mediaUrl} alt="" className={styles.characterMainImage} />
+          <div className={styles.infoWrap}>
+            <Link href={getLocalizedLink(`/profile/` + channelInfo?.id + '?from=""')}>
+              <div className={styles.left}>
+                <img src={channelInfo?.mediaUrl} alt="" className={styles.profileMaker} />
+                <div className={styles.name}>{channelInfo?.name}</div>
+              </div>
+            </Link>
+            <div className={styles.right}>
+              <div className={styles.statistics}>
+                <div className={styles.commentWrap}>
+                  <img src={BoldComment.src} alt="" className={styles.icon} />
+                  <div className={styles.count}>{99}</div>
+                </div>
+                <div className={styles.viewsWrap}>
+                  <img src={BoldFollowers.src} alt="" className={styles.icon} />
+                  <div className={styles.count}>{99}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
     );
   }
 };
