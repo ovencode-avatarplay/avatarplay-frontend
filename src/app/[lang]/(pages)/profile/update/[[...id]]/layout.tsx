@@ -1,9 +1,8 @@
 import type {Metadata} from 'next';
-import '@/app/globals.css';
 
 export const metadata: Metadata = {
   title: 'Talkain',
-  description: 'Update channel',
+  description: 'Update profile',
   icons: '/images/Talkain_icon_256_green.png',
 };
 
