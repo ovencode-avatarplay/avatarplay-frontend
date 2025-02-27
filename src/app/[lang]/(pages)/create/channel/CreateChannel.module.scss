@@ -136,7 +136,7 @@
       .thumbnail {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
       }
 
 
@@ -174,7 +174,7 @@
       .thumbnail {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
       }
 
       .iconEditWrap {
@@ -405,7 +405,7 @@
           .thumbnail {
             width: 55px;
             height: 55px;
-            object-fit: contain;
+            object-fit: cover;
             border-radius: 100%;
           }
 
@@ -1383,7 +1383,7 @@
         .thumbnail {
           width: 55px;
           height: 55px;
-          object-fit: contain;
+          object-fit: cover;
           border-radius: 100%;
         }
 
