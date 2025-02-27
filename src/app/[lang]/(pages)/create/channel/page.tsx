@@ -382,8 +382,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   return (
     <>
       <header className={styles.header}>
-        <img className={styles.btnBack} src={BoldArrowLeft.src} alt="" />
-        <div className={styles.title}>Create Channel</div>
+        <img className={styles.btnBack} src={BoldArrowLeft.src} alt="" onClick={routerBack} />
+        <div className={styles.title}>{isUpdate ? 'Edit' : 'Create Channel'}</div>
       </header>
       <main className={styles.main}>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
