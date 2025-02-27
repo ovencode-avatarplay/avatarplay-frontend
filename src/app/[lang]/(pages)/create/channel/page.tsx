@@ -204,7 +204,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
     const memberList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[] =
       res.data?.channelInfo.memberProfileIdList?.map(v => ({
-        isActive: false,
+        isActive: true,
         isOriginal: true,
         profileSimpleInfo: v,
       })) || [];
