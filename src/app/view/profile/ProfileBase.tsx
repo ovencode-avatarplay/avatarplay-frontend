@@ -179,7 +179,17 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
   const isOtherPD = !isMine && isPD;
   const isOtherCharacter = !isMine && isCharacter;
   const isOtherChannel = !isMine && isChannel;
-  return {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel};
+  return {
+    isPD,
+    isCharacter,
+    isMyPD,
+    isMyCharacter,
+    isOtherPD,
+    isOtherCharacter,
+    isChannel,
+    isMyChannel,
+    isOtherChannel,
+  };
 };
 
 // /profile?type=pd?id=123123
@@ -214,7 +224,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   });
   const dispatch = useDispatch();
 
-  const isMine = data.profileInfo?.isMyProfile || false;
+  const isMine = false; //data.profileInfo?.isMyProfile || false;
   const profileType = Number(data.profileInfo?.profileInfo?.type);
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
     getUserType(isMine, profileType);
@@ -1334,7 +1344,7 @@ const TabFilterComponent = ({profileId, profileType, isMine, tabIndex, isEmptyTa
     );
   }
 
-  if (isCharacter && tabIndex == eTabCharacterType.Info) {
+  if (isCharacter && tabIndex == eTabCharacterOtherType.Info) {
     return <></>;
   }
 
@@ -1548,7 +1558,7 @@ const TabContentComponent = ({
       </>
     );
   }
-  if (isCharacter && tabIndex == eTabCharacterType.Info) {
+  if (isCharacter && tabIndex == eTabCharacterOtherType.Info) {
     return (
       <>
         <CharacterProfileDetailComponent
@@ -1562,6 +1572,7 @@ const TabContentComponent = ({
   if (isChannel && tabIndex == eTabChannelOtherType.Info) {
     const channelInfo = data?.profileTabInfo?.[data.indexTab]?.channelInfo;
     console.log('channelInfo : ', channelInfo);
+    const tagList = channelInfo?.tag?.split(',')?.filter(v => v != '') || [];
     return (
       <section className={styles.channelInfoTabSection}>
         <section className={styles.characterMainImageWrap}>
@@ -1586,6 +1597,45 @@ const TabContentComponent = ({
               </div>
             </div>
           </div>
+        </section>
+        <section className={styles.tagSection}>
+          <ul className={styles.metatags}>
+            {tagList.map((tag, index) => {
+              return <li className={styles.item}>{tag}</li>;
+            })}
+          </ul>
+        </section>
+        <section className={styles.memberSection}>
+          <div className={styles.label}>{channelInfo?.memberProfileIdList?.length} Members</div>
+          <Swiper
+            className={styles.recruitList}
+            freeMode={true}
+            slidesPerView={'auto'}
+            onSlideChange={() => {}}
+            onSwiper={swiper => {}}
+            spaceBetween={8}
+            preventClicks={false}
+            simulateTouch={false}
+          >
+            {channelInfo?.memberProfileIdList?.map((profile, index) => {
+              return (
+                <SwiperSlide>
+                  <li className={styles.item}>
+                    <div className={styles.circle}>
+                      <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
+                      <img className={styles.thumbnail} src={profile.iconImageUrl} alt="" />
+                      {/* <span className={cx(styles.grade, styles.original)}>Original</span> */}
+                    </div>
+                    <div className={styles.label}>{profile.name}</div>
+                  </li>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        </section>
+        <section className={styles.descriptionSection}>
+          <div className={styles.label}>Description</div>
+          <div className={styles.value}>{channelInfo?.description}</div>
         </section>
       </section>
     );
