@@ -356,6 +356,8 @@
       width: 66px;
       gap: 4px;
 
+      cursor: pointer;
+
       .circle {}
 
       .labelAdd {
@@ -395,7 +397,7 @@
 
         .left {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           gap: 9px;
           box-sizing: border-box;
           height: 100%;
@@ -442,9 +444,9 @@
               background: var(--Secondary-Red-1, #F75555);
 
               display: flex;
-              width: 26px;
-              height: 26px;
-              padding: 7px;
+              width: 22px;
+              height: 22px;
+              padding: 6px 3px;
               justify-content: center;
               align-items: center;
               gap: 4px;
@@ -458,6 +460,7 @@
               line-height: 20px;
               /* 142.857% */
               letter-spacing: -0.4px;
+
             }
           }
 
@@ -1340,7 +1343,7 @@
 
       .left {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 9px;
 
         .checkboxWrap {
@@ -1403,6 +1406,8 @@
             font-weight: 400;
             line-height: normal;
             letter-spacing: -0.24px;
+
+            word-wrap: break-word;
           }
 
 
@@ -1423,9 +1428,9 @@
           background: var(--Secondary-Red-1, #F75555);
 
           display: flex;
-          width: 26px;
-          height: 26px;
-          padding: 7px;
+          width: 22px;
+          height: 22px;
+          padding: 6px 3px;
           justify-content: center;
           align-items: center;
           gap: 4px;

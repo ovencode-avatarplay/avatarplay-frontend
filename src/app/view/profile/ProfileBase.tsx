@@ -570,6 +570,17 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   const tabHeaderList = getTabHeaderList(profileType, isMine);
   let isEmptyTab = getIsEmptyTab();
 
+  const getEditUrl = (profileType: ProfileType, profileId: number) => {
+    if ([ProfileType.User, ProfileType.PD].includes(profileType)) {
+      return getLocalizedLink(`/profile/update/` + profileId);
+    } else if ([ProfileType.Character].includes(profileType)) {
+      return getLocalizedLink(`/update/character/` + profileId);
+    } else if ([ProfileType.Channel].includes(profileType)) {
+      return getLocalizedLink(`/update/channel/` + profileId);
+    }
+    return getLocalizedLink(``);
+  };
+
   return (
     <>
       {isMine && (
@@ -640,7 +651,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           <div className={styles.imgProfileWrap}>
             <img className={styles.imgProfile} src={data.profileInfo?.profileInfo.iconImageUrl} alt="" />
             {isMine && (
-              <Link href={getLocalizedLink(`/profile/update/` + data.profileInfo?.profileInfo.id)}>
+              <Link href={getEditUrl(profileType, data.profileInfo?.profileInfo?.id || 0)}>
                 <div className={styles.iconProfileEditWrap}>
                   <img className={styles.icon} src="/ui/profile/icon_edit.svg" alt="" />
                 </div>
