@@ -224,7 +224,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   });
   const dispatch = useDispatch();
 
-  const isMine = false; //data.profileInfo?.isMyProfile || false;
+  const isMine = data.profileInfo?.isMyProfile || false;
   const profileType = Number(data.profileInfo?.profileInfo?.type);
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
     getUserType(isMine, profileType);
