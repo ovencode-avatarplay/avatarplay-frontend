@@ -40,8 +40,8 @@ section.characterMainImageWrap {
     max-height: 516px;
     height: 100%;
     width: 100%;
-    object-fit: cover;
-    background: black;
+    object-fit: contain;
+    background: white;
   }
 
   .infoWrap {
