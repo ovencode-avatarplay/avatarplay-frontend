@@ -154,6 +154,8 @@ type DataProfileType = {
   isShareOpened: boolean;
 
   tabContentMenu: TabContentMenuType;
+  refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
+  getIsEmptyTab: () => boolean;
 };
 
 type ProfileBaseProps = {
@@ -203,8 +205,9 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       isPin: false,
       id: 0,
     },
+    refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
+    getIsEmptyTab: () => true,
   });
-  const {ref: observerRef, inView} = useInView();
   const dispatch = useDispatch();
 
   const isMine = data.profileInfo?.isMyProfile || false;
@@ -213,19 +216,9 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     getUserType(isMine, profileType);
 
   useEffect(() => {
-    if (!inView) return;
-
-    const isEmpty = getIsEmptyTab();
-    if (isEmpty) return;
-
-    refreshTab();
-  }, [inView]);
-
-  const refreshTab = async () => {
-    await refreshProfileTab(data.profileId, data.indexTab);
-    // await refreshProfileTab(profileId, data.indexTab);
-    setData({...data});
-  };
+    data.refreshProfileTab = refreshProfileTab;
+    data.getIsEmptyTab = getIsEmptyTab;
+  }, [data]);
 
   useEffect(() => {
     clearProfileTab();
@@ -445,31 +438,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     setData({...data});
   };
 
-  const SelectBoxArrowComponent = useCallback(
-    () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />,
-    [],
-  );
-  const SelectBoxValueComponent = useCallback((data: any) => {
-    return (
-      <div key={data.id} className={styles.label}>
-        {data.value}
-      </div>
-    );
-  }, []);
-  const SelectBoxOptionComponent = useCallback(
-    (data: any, isSelected: boolean) => (
-      <>
-        <div className={styles.optionWrap}>
-          <div key={data.id} className={styles.labelOption}>
-            {data.value}
-          </div>
-          {isSelected && <img className={styles.iconCheck} src={LineCheck.src} alt="altArrowDown" />}
-        </div>
-      </>
-    ),
-    [],
-  );
-
   const getTabHeaderList = (profileType: number, isMine = false) => {
     if (isMine) {
       if (profileType == ProfileType.User || profileType == ProfileType.PD) {
@@ -598,402 +566,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     return isEmptyTab;
   };
 
-  type TabContentProps = {
-    profileType: ProfileType;
-    isMine: boolean;
-    tabIndex: number;
-    isEmptyTab: boolean;
-  };
-
-  const TabFilterComponent = React.useCallback(
-    ({profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
-      const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
-        getUserType(isMine, profileType);
-      const sortOptionList = [
-        {id: ExploreSortType.Newest, value: 'Newest'},
-        {id: ExploreSortType.MostPopular, value: 'Most Popular'},
-        {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
-        {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
-      ];
-
-      if (
-        (isPD && [eTabPDType.Feed, eTabPDType.Channel].includes(tabIndex)) ||
-        (isCharacter && [eTabCharacterType.Feed].includes(tabIndex)) ||
-        (isChannel && [eTabChannelType.Feed].includes(tabIndex))
-      ) {
-        return (
-          <>
-            <div className={styles.filter}>
-              <div
-                className={styles.left}
-                onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                  const target = e.target as HTMLElement;
-                  const category = target.closest('[data-filter]')?.getAttribute('data-filter');
-                  if (category) {
-                    data.indexFilterMedia = parseInt(category);
-                  }
-                  await refreshProfileTab(profileId, data.indexTab);
-                  setData(v => ({...data}));
-                }}
-              >
-                <div
-                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Total && styles.active)}
-                  data-filter={FeedMediaType.Total}
-                >
-                  <img src={BoldViewGallery.src} alt="" />
-                </div>
-                <div
-                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Video && styles.active)}
-                  data-filter={FeedMediaType.Video}
-                >
-                  <img src={BoldVideo.src} alt="" />
-                </div>
-                <div
-                  className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Image && styles.active)}
-                  data-filter={FeedMediaType.Image}
-                >
-                  <img src={BoldImage.src} alt="" />
-                </div>
-              </div>
-              <div className={styles.right}>
-                <div className={styles.filterTypeWrap}>
-                  <SelectBox
-                    value={sortOptionList[data.indexSort]}
-                    options={sortOptionList}
-                    ArrowComponent={SelectBoxArrowComponent}
-                    ValueComponent={SelectBoxValueComponent}
-                    OptionComponent={SelectBoxOptionComponent}
-                    onChange={async id => {
-                      data.indexSort = id;
-                      await refreshProfileTab(profileId, data.indexTab);
-                      setData({...data});
-                    }}
-                    customStyles={{
-                      control: {
-                        width: '184px',
-                        display: 'flex',
-                        gap: '10px',
-                      },
-                      menuList: {
-                        borderRadius: '10px',
-                        boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                      },
-                      option: {
-                        padding: '11px 14px',
-                        boxSizing: 'border-box',
-                        '&:first-of-type': {
-                          borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                        },
-                        borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                      },
-                    }}
-                  />
-                  {/* <div className={styles.label}>Newest</div> */}
-                  {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
-                </div>
-              </div>
-            </div>
-          </>
-        );
-      }
-      if ((isPD && tabIndex == eTabPDType.Character) || (isChannel && tabIndex == eTabCharacterType.Character)) {
-        return (
-          <>
-            <div className={cx(styles.filter, styles.character)}>
-              <div
-                className={styles.left}
-                onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                  const target = e.target as HTMLElement;
-                  const category = target.closest('[data-filter]')?.getAttribute('data-filter');
-                  if (category) {
-                    data.indexFilterCharacter = parseInt(category);
-                  }
-                  await refreshProfileTab(profileId, data.indexTab);
-                  // await refreshProfileTab(profileId, data.indexTab);
-                  setData({...data});
-                }}
-              >
-                <div
-                  className={cx(
-                    styles.iconWrap,
-                    data.indexFilterCharacter == eCharacterFilterType.Total && styles.active,
-                  )}
-                  data-filter={eCharacterFilterType.Total}
-                >
-                  <img src={BoldViewGallery.src} alt="" />
-                </div>
-                <div
-                  className={cx(
-                    styles.textWrap,
-                    data.indexFilterCharacter == eCharacterFilterType.Original && styles.active,
-                  )}
-                  data-filter={eCharacterFilterType.Original}
-                >
-                  <div className={styles.text}>Original</div>
-                </div>
-                <div
-                  className={cx(
-                    styles.textWrap,
-                    data.indexFilterCharacter == eCharacterFilterType.Fan && styles.active,
-                  )}
-                  data-filter={eCharacterFilterType.Fan}
-                >
-                  <div className={styles.text}>Fan</div>
-                </div>
-              </div>
-              <div className={styles.right}>
-                <div className={styles.filterTypeWrap}>
-                  <SelectBox
-                    value={sortOptionList[data.indexSort]}
-                    options={sortOptionList}
-                    ArrowComponent={SelectBoxArrowComponent}
-                    ValueComponent={SelectBoxValueComponent}
-                    OptionComponent={SelectBoxOptionComponent}
-                    onChange={async id => {
-                      data.indexSort = id;
-                      await refreshProfileTab(profileId, data.indexTab);
-                      setData({...data});
-                    }}
-                    customStyles={{
-                      control: {
-                        width: '184px',
-                        display: 'flex',
-                        gap: '10px',
-                      },
-                      menuList: {
-                        borderRadius: '10px',
-                        boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                      },
-                      option: {
-                        padding: '11px 14px',
-                        boxSizing: 'border-box',
-                        '&:first-of-type': {
-                          borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                        },
-                        borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                      },
-                    }}
-                  />
-                  {/* <div className={styles.label}>Newest</div> */}
-                  {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
-                </div>
-              </div>
-            </div>
-          </>
-        );
-      }
-
-      if (isCharacter && tabIndex == eTabCharacterType.Info) {
-        return <></>;
-      }
-
-      if (isPD && tabIndex == eTabPDOtherType.Info) {
-        return <></>;
-      }
-    },
-    [data],
-  );
-
-  const TabContentComponent = React.useCallback(
-    ({profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
-      const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
-        getUserType(isMine, profileType);
-
-      if (isEmptyTab) {
-        return (
-          <>
-            <div className={styles.emptyWrap}>
-              <img src="/ui/profile/image_empty.svg" alt="" />
-              <div className={styles.text}>
-                Its pretty lonely out here.
-                <br />
-                Make a Post
-              </div>
-            </div>
-          </>
-        );
-      }
-
-      if (
-        (isPD && tabIndex == eTabPDType.Feed) ||
-        (isCharacter && tabIndex == eTabCharacterType.Feed) ||
-        (isChannel && tabIndex == eTabChannelType.Feed)
-      ) {
-        return (
-          <>
-            <ul className={styles.itemWrap}>
-              {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
-                return (
-                  <Link
-                    href={
-                      getLocalizedLink(`/profile/feed/` + data.profileInfo?.profileInfo.id) +
-                      `?type=${profileType}&idContent=${one.id}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}`
-                    }
-                  >
-                    <li className={styles.item} key={one?.id}>
-                      {one.mediaState == MediaState.Image && (
-                        <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
-                      )}
-                      {one.mediaState == MediaState.Video && (
-                        <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
-                      )}
-                      {one?.isPinFix && (
-                        <div className={styles.pin}>
-                          <img src={BoldPin.src} alt="" />
-                        </div>
-                      )}
-                      <div className={styles.info}>
-                        <div className={styles.likeWrap}>
-                          <img src={BoldHeart.src} alt="" />
-                          <div className={styles.value}>{one?.likeCount}</div>
-                        </div>
-                        <div className={styles.viewWrap}>
-                          <img src={BoldVideo.src} alt="" />
-                          <div className={styles.value}>{one?.commentCount}</div>
-                        </div>
-                      </div>
-                      <div className={styles.titleWrap}>
-                        <div className={styles.title}>{one?.description}</div>
-                        <img
-                          src={BoldMenuDots.src}
-                          alt=""
-                          className={styles.iconSetting}
-                          onClick={e => {
-                            e.preventDefault();
-                            e.stopPropagation();
-
-                            data.tabContentMenu = {
-                              id: one.id,
-                              isPin: one?.isPinFix,
-                              isSettingOpen: true,
-                            };
-
-                            setData({...data});
-                          }}
-                        />
-                      </div>
-                    </li>
-                  </Link>
-                );
-              })}
-              <div ref={observerRef}></div>
-            </ul>
-          </>
-        );
-      }
-      if (
-        (isPD && tabIndex == eTabPDType.Character) ||
-        (isCharacter && tabIndex == eTabCharacterType.Character) ||
-        (isChannel && tabIndex == eTabChannelType.Character)
-      ) {
-        return (
-          <ul className={styles.itemWrap}>
-            {data?.profileTabInfo?.[data.indexTab]?.characterInfoList.map((one, index: number) => {
-              return (
-                <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
-                  <li className={styles.item} key={one?.id}>
-                    {one.mediaState == MediaState.Image && (
-                      <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
-                    )}
-                    {one.mediaState == MediaState.Video && (
-                      <video className={styles.imgThumbnail} src={one?.mediaUrl} />
-                    )}
-                    {one?.isFavorite && (
-                      <div className={styles.pin}>
-                        <img src={BoldPin.src} alt="" />
-                      </div>
-                    )}
-                    <div className={styles.info}>
-                      <div className={styles.likeWrap}>
-                        <img src={BoldHeart.src} alt="" />
-                        <div className={styles.value}>{one?.likeCount}</div>
-                      </div>
-                      <div className={styles.viewWrap}>
-                        <img src={BoldVideo.src} alt="" />
-                        <div className={styles.value}>{one?.likeCount}</div>
-                      </div>
-                    </div>
-                    <div className={styles.titleWrap}>
-                      <div className={styles.title}>{one?.name}</div>
-                      <img
-                        src={BoldMenuDots.src}
-                        alt=""
-                        className={styles.iconSetting}
-                        onClick={e => {
-                          e.preventDefault();
-                          e.stopPropagation();
-
-                          data.tabContentMenu = {
-                            id: one.id,
-                            isPin: one?.isPinFix || false,
-                            isSettingOpen: true,
-                          };
-                          setData({...data});
-                        }}
-                      />
-                    </div>
-                  </li>
-                </Link>
-              );
-            })}
-            <div ref={observerRef}></div>
-          </ul>
-        );
-      }
-      if (isOtherPD && tabIndex == eTabPDOtherType.Info) {
-        const pdInfo = data?.profileTabInfo?.[data.indexTab]?.dataResPdInfo;
-        return (
-          <>
-            <section className={styles.pdInfo}>
-              <div className={styles.label}>Introduce</div>
-              <div className={styles.value}>{pdInfo?.introduce}</div>
-              <div className={styles.label}>Interests</div>
-              <ul className={styles.tags}>
-                {pdInfo?.interests.map((one, index) => {
-                  return (
-                    <li key={index} className={styles.tag}>
-                      {one}
-                    </li>
-                  );
-                })}
-              </ul>
-
-              <div className={styles.label}>Skill</div>
-              <ul className={styles.tags}>
-                {pdInfo?.skills.map((one, index) => {
-                  return (
-                    <li key={index} className={styles.tag}>
-                      {one}
-                    </li>
-                  );
-                })}
-              </ul>
-              <div className={styles.label}>Personal History</div>
-              <div className={styles.value}>{pdInfo?.personalHistory}</div>
-              <div className={styles.label}>Honor & Awards</div>
-              <div className={styles.value}>{pdInfo?.honorAwards}</div>
-              <div className={styles.label}>URL</div>
-              <div className={styles.value}>{pdInfo?.url}</div>
-            </section>
-          </>
-        );
-      }
-      if (isCharacter && tabIndex == eTabCharacterType.Info) {
-        return (
-          <>
-            <CharacterProfileDetailComponent
-              characterInfo={data?.profileTabInfo?.[data.indexTab].characterInfo}
-              urlLinkKey={data?.profileTabInfo?.[data.indexTab].urlLinkKey}
-            />
-          </>
-        );
-      }
-    },
-    [data],
-  );
-
   const isFollow = data.profileInfo?.profileInfo.followState == FollowState.Follow;
-  const tabContentList = getTabHeaderList(profileType, isMine);
+  const tabHeaderList = getTabHeaderList(profileType, isMine);
   let isEmptyTab = getIsEmptyTab();
 
   return (
@@ -1194,7 +768,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                   setData({...data});
                 }}
               >
-                {tabContentList?.map((tab, index) => {
+                {tabHeaderList?.map((tab, index) => {
                   return (
                     <div
                       key={tab.type}
@@ -1214,19 +788,25 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <div className={styles.line}></div>
             </div>
             <TabFilterComponent
+              profileId={profileId}
               isMine={isMine}
               profileType={profileType}
               tabIndex={data.indexTab}
               isEmptyTab={isEmptyTab}
+              data={data}
+              setData={setData}
             />
           </div>
 
           <div className={styles.tabContent}>
             <TabContentComponent
+              profileId={profileId}
               isMine={isMine}
               profileType={profileType}
               tabIndex={data.indexTab}
               isEmptyTab={isEmptyTab}
+              data={data}
+              setData={setData}
             />
           </div>
         </section>
@@ -1526,4 +1106,431 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
       />
     </div>
   );
+};
+
+const SelectBoxArrowComponent = () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />;
+
+const SelectBoxValueComponent = (data: any) => {
+  return (
+    <div key={data.id} className={styles.label}>
+      {data.value}
+    </div>
+  );
+};
+const SelectBoxOptionComponent = (data: any, isSelected: boolean) => (
+  <>
+    <div className={styles.optionWrap}>
+      <div key={data.id} className={styles.labelOption}>
+        {data.value}
+      </div>
+      {isSelected && <img className={styles.iconCheck} src={LineCheck.src} alt="altArrowDown" />}
+    </div>
+  </>
+);
+
+type TabContentProps = {
+  profileId: number;
+  profileType: ProfileType;
+  isMine: boolean;
+  tabIndex: number;
+  isEmptyTab: boolean;
+  data: DataProfileType;
+  setData: React.Dispatch<React.SetStateAction<DataProfileType>>;
+};
+
+const TabFilterComponent = ({profileId, profileType, isMine, tabIndex, isEmptyTab, data, setData}: TabContentProps) => {
+  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+    getUserType(isMine, profileType);
+  const sortOptionList = [
+    {id: ExploreSortType.Newest, value: 'Newest'},
+    {id: ExploreSortType.MostPopular, value: 'Most Popular'},
+    {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
+    {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
+  ];
+
+  if (
+    (isPD && [eTabPDType.Feed, eTabPDType.Channel].includes(tabIndex)) ||
+    (isCharacter && [eTabCharacterType.Feed].includes(tabIndex)) ||
+    (isChannel && [eTabChannelType.Feed].includes(tabIndex))
+  ) {
+    return (
+      <>
+        <div className={styles.filter}>
+          <div
+            className={styles.left}
+            onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              const target = e.target as HTMLElement;
+              const category = target.closest('[data-filter]')?.getAttribute('data-filter');
+              if (category) {
+                data.indexFilterMedia = parseInt(category);
+              }
+              await data.refreshProfileTab(profileId, data.indexTab);
+              setData(v => ({...data}));
+            }}
+          >
+            <div
+              className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Total && styles.active)}
+              data-filter={FeedMediaType.Total}
+            >
+              <img src={BoldViewGallery.src} alt="" />
+            </div>
+            <div
+              className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Video && styles.active)}
+              data-filter={FeedMediaType.Video}
+            >
+              <img src={BoldVideo.src} alt="" />
+            </div>
+            <div
+              className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Image && styles.active)}
+              data-filter={FeedMediaType.Image}
+            >
+              <img src={BoldImage.src} alt="" />
+            </div>
+          </div>
+          <div className={styles.right}>
+            <div className={styles.filterTypeWrap}>
+              <SelectBox
+                value={sortOptionList[data.indexSort]}
+                options={sortOptionList}
+                ArrowComponent={SelectBoxArrowComponent}
+                ValueComponent={SelectBoxValueComponent}
+                OptionComponent={SelectBoxOptionComponent}
+                onChange={async id => {
+                  data.indexSort = id;
+                  await data.refreshProfileTab(profileId, data.indexTab);
+                  setData({...data});
+                }}
+                customStyles={{
+                  control: {
+                    width: '184px',
+                    display: 'flex',
+                    gap: '10px',
+                  },
+                  menuList: {
+                    borderRadius: '10px',
+                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                  },
+                  option: {
+                    padding: '11px 14px',
+                    boxSizing: 'border-box',
+                    '&:first-of-type': {
+                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                    },
+                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                }}
+              />
+              {/* <div className={styles.label}>Newest</div> */}
+              {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+  if ((isPD && tabIndex == eTabPDType.Character) || (isChannel && tabIndex == eTabCharacterType.Character)) {
+    return (
+      <>
+        <div className={cx(styles.filter, styles.character)}>
+          <div
+            className={styles.left}
+            onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              const target = e.target as HTMLElement;
+              const category = target.closest('[data-filter]')?.getAttribute('data-filter');
+              if (category) {
+                data.indexFilterCharacter = parseInt(category);
+              }
+              await data.refreshProfileTab(profileId, data.indexTab);
+              // await data.refreshProfileTab(profileId, data.indexTab);
+              setData({...data});
+            }}
+          >
+            <div
+              className={cx(styles.iconWrap, data.indexFilterCharacter == eCharacterFilterType.Total && styles.active)}
+              data-filter={eCharacterFilterType.Total}
+            >
+              <img src={BoldViewGallery.src} alt="" />
+            </div>
+            <div
+              className={cx(
+                styles.textWrap,
+                data.indexFilterCharacter == eCharacterFilterType.Original && styles.active,
+              )}
+              data-filter={eCharacterFilterType.Original}
+            >
+              <div className={styles.text}>Original</div>
+            </div>
+            <div
+              className={cx(styles.textWrap, data.indexFilterCharacter == eCharacterFilterType.Fan && styles.active)}
+              data-filter={eCharacterFilterType.Fan}
+            >
+              <div className={styles.text}>Fan</div>
+            </div>
+          </div>
+          <div className={styles.right}>
+            <div className={styles.filterTypeWrap}>
+              <SelectBox
+                value={sortOptionList[data.indexSort]}
+                options={sortOptionList}
+                ArrowComponent={SelectBoxArrowComponent}
+                ValueComponent={SelectBoxValueComponent}
+                OptionComponent={SelectBoxOptionComponent}
+                onChange={async id => {
+                  data.indexSort = id;
+                  await data.refreshProfileTab(profileId, data.indexTab);
+                  setData({...data});
+                }}
+                customStyles={{
+                  control: {
+                    width: '184px',
+                    display: 'flex',
+                    gap: '10px',
+                  },
+                  menuList: {
+                    borderRadius: '10px',
+                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                  },
+                  option: {
+                    padding: '11px 14px',
+                    boxSizing: 'border-box',
+                    '&:first-of-type': {
+                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                    },
+                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                }}
+              />
+              {/* <div className={styles.label}>Newest</div> */}
+              {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (isCharacter && tabIndex == eTabCharacterType.Info) {
+    return <></>;
+  }
+
+  if (isPD && tabIndex == eTabPDOtherType.Info) {
+    return <></>;
+  }
+};
+
+const TabContentComponent = ({
+  profileId,
+  profileType,
+  isMine,
+  tabIndex,
+  isEmptyTab,
+  data,
+  setData,
+}: TabContentProps) => {
+  const {ref: observerRef, inView} = useInView();
+  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+    getUserType(isMine, profileType);
+
+  useEffect(() => {
+    if (!inView) return;
+
+    const isEmpty = data.getIsEmptyTab();
+    if (isEmpty) return;
+
+    refreshTab();
+  }, [inView]);
+
+  const refreshTab = async () => {
+    await data.refreshProfileTab(data.profileId, data.indexTab);
+    // await refreshProfileTab(profileId, data.indexTab);
+    setData({...data});
+  };
+
+  if (isEmptyTab) {
+    return (
+      <>
+        <div className={styles.emptyWrap}>
+          <img src="/ui/profile/image_empty.svg" alt="" />
+          <div className={styles.text}>
+            Its pretty lonely out here.
+            <br />
+            Make a Post
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (
+    (isPD && tabIndex == eTabPDType.Feed) ||
+    (isCharacter && tabIndex == eTabCharacterType.Feed) ||
+    (isChannel && tabIndex == eTabChannelType.Feed)
+  ) {
+    return (
+      <>
+        <ul className={styles.itemWrap}>
+          {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
+            return (
+              <Link
+                href={
+                  getLocalizedLink(`/profile/feed/` + data.profileInfo?.profileInfo.id) +
+                  `?type=${profileType}&idContent=${one.id}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}`
+                }
+              >
+                <li className={styles.item} key={one?.id}>
+                  {one.mediaState == MediaState.Image && (
+                    <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
+                  )}
+                  {one.mediaState == MediaState.Video && (
+                    <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
+                  )}
+                  {one?.isPinFix && (
+                    <div className={styles.pin}>
+                      <img src={BoldPin.src} alt="" />
+                    </div>
+                  )}
+                  <div className={styles.info}>
+                    <div className={styles.likeWrap}>
+                      <img src={BoldHeart.src} alt="" />
+                      <div className={styles.value}>{one?.likeCount}</div>
+                    </div>
+                    <div className={styles.viewWrap}>
+                      <img src={BoldVideo.src} alt="" />
+                      <div className={styles.value}>{one?.commentCount}</div>
+                    </div>
+                  </div>
+                  <div className={styles.titleWrap}>
+                    <div className={styles.title}>{one?.description}</div>
+                    <img
+                      src={BoldMenuDots.src}
+                      alt=""
+                      className={styles.iconSetting}
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        data.tabContentMenu = {
+                          id: one.id,
+                          isPin: one?.isPinFix,
+                          isSettingOpen: true,
+                        };
+
+                        setData({...data});
+                      }}
+                    />
+                  </div>
+                </li>
+              </Link>
+            );
+          })}
+          <div ref={observerRef}></div>
+        </ul>
+      </>
+    );
+  }
+  if (
+    (isPD && tabIndex == eTabPDType.Character) ||
+    (isCharacter && tabIndex == eTabCharacterType.Character) ||
+    (isChannel && tabIndex == eTabChannelType.Character)
+  ) {
+    return (
+      <ul className={styles.itemWrap}>
+        {data?.profileTabInfo?.[data.indexTab]?.characterInfoList.map((one, index: number) => {
+          return (
+            <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
+              <li className={styles.item} key={one?.id}>
+                {one.mediaState == MediaState.Image && (
+                  <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
+                )}
+                {one.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={one?.mediaUrl} />}
+                {one?.isFavorite && (
+                  <div className={styles.pin}>
+                    <img src={BoldPin.src} alt="" />
+                  </div>
+                )}
+                <div className={styles.info}>
+                  <div className={styles.likeWrap}>
+                    <img src={BoldHeart.src} alt="" />
+                    <div className={styles.value}>{one?.likeCount}</div>
+                  </div>
+                  <div className={styles.viewWrap}>
+                    <img src={BoldVideo.src} alt="" />
+                    <div className={styles.value}>{one?.likeCount}</div>
+                  </div>
+                </div>
+                <div className={styles.titleWrap}>
+                  <div className={styles.title}>{one?.name}</div>
+                  <img
+                    src={BoldMenuDots.src}
+                    alt=""
+                    className={styles.iconSetting}
+                    onClick={e => {
+                      e.preventDefault();
+                      e.stopPropagation();
+
+                      data.tabContentMenu = {
+                        id: one.id,
+                        isPin: one?.isPinFix || false,
+                        isSettingOpen: true,
+                      };
+                      setData({...data});
+                    }}
+                  />
+                </div>
+              </li>
+            </Link>
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+  if (isOtherPD && tabIndex == eTabPDOtherType.Info) {
+    const pdInfo = data?.profileTabInfo?.[data.indexTab]?.dataResPdInfo;
+    return (
+      <>
+        <section className={styles.pdInfo}>
+          <div className={styles.label}>Introduce</div>
+          <div className={styles.value}>{pdInfo?.introduce}</div>
+          <div className={styles.label}>Interests</div>
+          <ul className={styles.tags}>
+            {pdInfo?.interests.map((one, index) => {
+              return (
+                <li key={index} className={styles.tag}>
+                  {one}
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className={styles.label}>Skill</div>
+          <ul className={styles.tags}>
+            {pdInfo?.skills.map((one, index) => {
+              return (
+                <li key={index} className={styles.tag}>
+                  {one}
+                </li>
+              );
+            })}
+          </ul>
+          <div className={styles.label}>Personal History</div>
+          <div className={styles.value}>{pdInfo?.personalHistory}</div>
+          <div className={styles.label}>Honor & Awards</div>
+          <div className={styles.value}>{pdInfo?.honorAwards}</div>
+          <div className={styles.label}>URL</div>
+          <div className={styles.value}>{pdInfo?.url}</div>
+        </section>
+      </>
+    );
+  }
+  if (isCharacter && tabIndex == eTabCharacterType.Info) {
+    return (
+      <>
+        <CharacterProfileDetailComponent
+          characterInfo={data?.profileTabInfo?.[data.indexTab].characterInfo}
+          urlLinkKey={data?.profileTabInfo?.[data.indexTab].urlLinkKey}
+        />
+      </>
+    );
+  }
 };
