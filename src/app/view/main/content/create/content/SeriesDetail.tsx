@@ -21,8 +21,10 @@ import {
   GetSeasonEpisodesReq,
   sendGetContent,
   sendGetSeasonEpisodes,
-  sendUpdateSeasonNo,
+  sendAddSeasonNo,
   UpdateSeasonNoReq,
+  sendDeleteSeasonNo,
+  DeleteSeasonNoReq,
 } from '@/app/NetWork/ContentNetwork';
 import {EpisodeInfo} from '@/redux-store/slices/StoryInfo';
 import {Category} from '@mui/icons-material';
@@ -44,9 +46,14 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}
 
   const [seasons, setSeasons] = useState<Seasons[]>([]);
 
+  const [seriesInfo, setSeriesInfo] = useState<ContentInfo>();
+  const [episodeList, setEpisodeList] = useState<ContentEpisodeInfo[]>(); // 타입 변경
+  console.log('asd', seriesInfo);
+
+  useEffect(() => {}, [episodeList]);
+
   const addSeason = async () => {
     if (!seriesInfo) return;
-
     const newSeasonNo = (seriesInfo.maxSeasonNo || 0) + 1; // 현재 maxSeasonNo + 1
     const payload: UpdateSeasonNoReq = {
       contentId: seriesInfo.id!,
@@ -54,7 +61,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}
     };
 
     try {
-      const response = await sendUpdateSeasonNo(payload);
+      const response = await sendAddSeasonNo(payload);
       if (response.data) {
         console.log(`시즌 ${newSeasonNo} 추가됨`);
 
@@ -63,6 +70,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}
 
         // 시즌 리스트 업데이트
         setSeasons(prevSeasons => [...prevSeasons, {id: newSeasonNo, name: `Season ${newSeasonNo}`}]);
+        fetchSeasonEpisodes(selectedSeason);
       }
     } catch (error) {
       console.error('시즌 추가 실패:', error);
@@ -73,19 +81,19 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}
   const removeSeason = async (seasonNo: number) => {
     if (!seriesInfo) return;
 
-    const payload: UpdateSeasonNoReq = {
+    const payload: DeleteSeasonNoReq = {
       contentId: seriesInfo.id!,
-      seasonNo,
+      deleteSeasonNo: seasonNo,
     };
 
     try {
-      const response = await sendUpdateSeasonNo(payload);
-      if (response.data) {
-        console.log(`시즌 ${seasonNo} 삭제됨`);
+      const response = await sendDeleteSeasonNo(payload);
 
-        // maxSeasonNo 업데이트 (삭제 후 서버에서 maxSeasonNo가 업데이트될 가능성이 있음)
-        const newMaxSeasonNo = seriesInfo.maxSeasonNo ? seriesInfo.maxSeasonNo - 1 : 0;
-        setSeriesInfo(prev => (prev ? {...prev, maxSeasonNo: newMaxSeasonNo} : prev));
+      if (response.data && response.data.lastSeasonNo !== undefined) {
+        console.log(`시즌 ${seasonNo} 삭제됨, 마지막 시즌 번호: ${response.data.lastSeasonNo}`);
+
+        // maxSeasonNo 업데이트
+        setSeriesInfo(prev => prev && {...prev, maxSeasonNo: response.data!.lastSeasonNo});
 
         // 시즌 리스트 업데이트 (자동으로 번호 재정렬)
         setSeasons(
@@ -94,13 +102,16 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}
               .filter(season => season.id !== seasonNo) // 삭제된 시즌 제거
               .map((season, index) => ({id: index + 1, name: `Season ${index + 1}`})), // ID 재정렬
         );
+
+        fetchSeasonEpisodes(selectedSeason);
+      } else {
+        console.warn('서버 응답에 lastSeasonNo가 없습니다.');
       }
     } catch (error) {
       console.error('시즌 삭제 실패:', error);
+      alert('시즌 삭제에 실패했습니다. 다시 시도해주세요.');
     }
   };
-  const [seriesInfo, setSeriesInfo] = useState<ContentInfo>();
-  const [episodeList, setEpisodeList] = useState<ContentEpisodeInfo[]>(); // 타입 변경
 
   useEffect(() => {
     if (seriesInfo?.maxSeasonNo) {
@@ -234,10 +245,17 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo}
                 </div>
                 <div className={styles.seasonDropdownBox}>
                   {seasons.map(season => (
-                    <div key={season.id} className={styles.seasonDropdownEpisodeItem}>
+                    <div
+                      key={season.id}
+                      className={styles.seasonDropdownEpisodeItem}
+                      onClick={() => {
+                        setSelectedSeason(season.id);
+                        setSeasonDropdown(false);
+                      }}
+                    >
                       <span style={{color: 'black'}}>{season.name}</span>
                       <button onClick={() => removeSeason(season.id)}>
-                        <img src={LineDelete.src} className={styles.blackFilter}></img>
+                        {seasons.length > 1 && <img src={LineDelete.src} className={styles.blackFilter}></img>}
                       </button>
                     </div>
                   ))}
