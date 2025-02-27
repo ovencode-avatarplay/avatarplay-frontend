@@ -63,6 +63,7 @@ type FileType = {
 };
 
 type DataProfileUpdateType = {
+  idChannel: number;
   thumbnail: FileType | null;
   dragStatus: DragStatusType;
   indexTab: number;
@@ -90,6 +91,7 @@ interface ChannelInfoForm extends Omit<ChannelInfo, 'tag' | 'id' | 'isMonetizati
 const CreateChannel = ({id, isUpdate}: Props) => {
   const router = useRouter();
   const [data, setData] = useState<DataProfileUpdateType>({
+    idChannel: 0,
     thumbnail: null,
     dragStatus: DragStatusType.OuterClick,
     indexTab: 0,
@@ -182,6 +184,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     console.log('res : ', res);
     const channelInfo = res?.data?.channelInfo;
     if (!channelInfo) return;
+
+    data.idChannel = res?.data?.channelInfo?.id || 0;
 
     let tag = channelInfo?.tag?.split(',') || [];
     tag = tag.filter(v => !!v && v != '');
@@ -340,22 +344,22 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       router.replace(prevPath);
     }
   };
-  const onSubmit = async (data: ChannelInfoForm) => {
+  const onSubmit = async (dataForm: ChannelInfoForm) => {
     console.log('data : ', data);
     // e.preventDefault(); // 기본 제출 방지
     // const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
     let tag = '';
-    if (data?.tag?.length > 0) {
-      tag = data?.tag?.join(',') || '';
+    if (dataForm?.tag?.length > 0) {
+      tag = dataForm?.tag?.join(',') || '';
     }
 
-    const idProfile = isUpdate ? id : 0;
-    let isMonetization = Boolean(Number(data.isMonetization));
-    let nsfw = Boolean(Number(data.nsfw));
-    let characterIP = Number(data.characterIP);
+    const idChannel = isUpdate ? data.idChannel : 0;
+    let isMonetization = Boolean(Number(dataForm.isMonetization));
+    let nsfw = Boolean(Number(dataForm.nsfw));
+    let characterIP = Number(dataForm.characterIP);
     const dataUpdatePdInfo: CreateChannelReq = {
       languageType: getCurrentLanguage(),
-      channelInfo: {...data, id: idProfile, tag: tag, isMonetization, nsfw, characterIP},
+      channelInfo: {...dataForm, id: idChannel, tag: tag, isMonetization, nsfw, characterIP},
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     console.log('res : ', res);
