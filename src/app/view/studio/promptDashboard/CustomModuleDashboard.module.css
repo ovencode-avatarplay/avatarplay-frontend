@@ -1,4 +1,4 @@
-.promptContainer
+.customModuleContainer
 {
     width: var(--second-width);
     margin: auto 16px;
@@ -46,7 +46,7 @@
     line-height: 155%; /* 20.15px */
 }
 
-.promptList
+.customModuleList
 {
     display: flex;
     flex-direction: column;
@@ -60,17 +60,17 @@
 }
 
 
-.promptList::-webkit-scrollbar {
+.customModuleList::-webkit-scrollbar {
     display: none;  
 }
   
-.promptList {
+.customModuleList {
     scrollbar-width: none;  
     -ms-overflow-style: none;  
 }
 
 
-.promptItem
+.customModuleItem
 {
     display: flex;
     height: 46px;

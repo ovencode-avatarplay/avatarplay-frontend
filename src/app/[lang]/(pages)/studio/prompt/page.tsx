@@ -1,7 +1,7 @@
 'use client';
 
-import PromptDashboard from '@/app/view/studio/promptDashboard/PromptDashboard';
+import CustomModuleDashboard from '@/app/view/studio/promptDashboard/CustomModuleDashboard';
 
 export default function CreatePromptPage() {
-  return <PromptDashboard />;
+  return <CustomModuleDashboard />;
 }

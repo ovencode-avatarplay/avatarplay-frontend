@@ -1,16 +1,16 @@
 import CustomInput from '@/components/layout/shared/CustomInput';
 import styles from './CreateCustomPrompt.module.css';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
 import {LineSetting} from '@ui/Icons';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
-import {CustomPromptData} from './PromptDashboard';
 import AutoCompleteCustomPrompt from './AutoCompleteCustomPrompt';
+import {CustomModulePrompt} from '@/app/NetWork/CustomModulesNetwork';
 
 interface Props {
-  prompt: CustomPromptData;
-  onSave: (updatedPrompt: CustomPromptData) => void;
+  prompt: CustomModulePrompt;
+  onSave: (updatedPrompt: CustomModulePrompt) => void;
 }
 
 const KEYWORDS: Record<string, string> = {
@@ -49,12 +49,10 @@ const keywordData = [
 ];
 
 const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
-  const [promptName, setPromptName] = useState(prompt.name);
+  const [promptName, setPromptName] = useState(prompt.title);
   const [selectedModel, setSelectedModel] = useState<number>(0);
   const [previewOn, setPreviewOn] = useState<boolean>(false);
   const [previewOptionOpen, setPreviewOptionOpen] = useState<boolean>(false);
-
-  const [content, setContent] = useState<string>('');
 
   const [showAutoCompleteMain, setShowAutoCompleteMain] = useState(false);
   const [showAutoCompleteInstruction, setShowAutoCompleteInstruction] = useState(false);
@@ -68,7 +66,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   //#endregion
 
   //#region  GPT
-  const [gptPrompt, setGptPrompt] = useState('');
+  const [gptPrompt, setGptPrompt] = useState(prompt.chatGPT);
 
   const prefixGPT = `[{"role":"system", "content":"`;
   const suffixGPT = `"},
@@ -109,7 +107,8 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   };
 
   const handleGptPromptInput = (e: React.FormEvent<HTMLDivElement>) => {
-    handleInput(e, setGptPrompt);
+    const text = e.currentTarget.innerText;
+    setGptPrompt(text);
     checkForAutoComplete(e, setShowAutoCompleteGpt);
   };
   const checkForAutoComplete = (
@@ -206,7 +205,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   };
 
   const handleSavePrompt = () => {
-    onSave({...prompt, name: promptName});
+    onSave({...prompt, title: promptName, claude: '', chatGPT: gptPrompt});
   };
 
   const handleResetPrompt = () => {
@@ -353,7 +352,9 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
           suppressContentEditableWarning
           onInput={handleGptPromptInput}
           onKeyDown={handleKeyDown}
-        ></div>
+        >
+          {gptPrompt}
+        </div>
         <div className={styles.fixedPrompt}> {suffixGPT}</div>
         {showAutoCompleteGpt && (
           <AutoCompleteCustomPrompt

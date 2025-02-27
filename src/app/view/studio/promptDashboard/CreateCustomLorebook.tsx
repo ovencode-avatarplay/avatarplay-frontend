@@ -1,37 +1,36 @@
 import CustomInput from '@/components/layout/shared/CustomInput';
 import styles from './CreateCustomLorebook.module.css';
-import {useState} from 'react';
-import {CustomPromptData} from './PromptDashboard';
-import CustomButton from '@/components/layout/shared/CustomButton';
+import {useEffect, useState} from 'react';
 import {LineDelete, LineUpload} from '@ui/Icons';
+import {CustomModuleLorebook, LorebookItem} from '@/app/NetWork/CustomModulesNetwork';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 interface Props {
-  lorebook: CustomPromptData;
-  onSave: (updatedPrompt: CustomPromptData) => void;
+  lorebook: CustomModuleLorebook;
+  onSave: (updatedPrompt: CustomModuleLorebook) => void;
+  onRemove: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export interface LorebookItem {
-  id: number;
-  keyword: string;
-  content: string;
-}
+const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave, onRemove}) => {
+  const [beforeEditLorebook, setBeforeEditLorebook] = useState<CustomModuleLorebook>(lorebook);
+  const [lorebookName, setLorebookName] = useState(lorebook.title);
+  const [lorebookData, setLorebookData] = useState<CustomModuleLorebook>(lorebook);
 
-export interface LorebookData {
-  id: number;
-  items: LorebookItem[];
-}
+  const getLorebookMinId = (list: LorebookItem[]): number => {
+    const listId = list.flatMap(list => list.lorebookItemId);
 
-const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave}) => {
-  const [lorebookName, setLorebookName] = useState(lorebook.name);
-  const [lorebookData, setLorebookData] = useState<LorebookData>({
-    id: lorebook.id,
-    items: [],
-  });
+    if (listId.length === 0) {
+      return 0;
+    }
+
+    const minId = Math.min(...listId);
+    return minId > 0 ? 0 : minId;
+  };
 
   const handleAddItem = () => {
     if (lorebookData.items.length >= 10) return; // 최대 10개 제한
     const newItem: LorebookItem = {
-      id: lorebookData.items.length > 0 ? Math.min(...lorebookData.items.map(item => item.id)) - 1 : -1,
+      lorebookItemId: getLorebookMinId(lorebookData.items) - 1,
       keyword: '',
       content: '',
     };
@@ -45,7 +44,7 @@ const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave}) => {
     setLorebookData(prevData => ({
       ...prevData,
       items: prevData.items.map(item =>
-        item.id === id
+        item.lorebookItemId === id
           ? {
               ...item,
               [field]: value,
@@ -54,6 +53,47 @@ const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave}) => {
       ),
     }));
   };
+
+  const handleDeleteLorebookItem = (id: number) => {
+    setLorebookData(prevData => {
+      const updatedItems = prevData.items.filter(item => item.lorebookItemId !== id);
+
+      if (id > 0) {
+        onRemove(prevRemovedItems => [...prevRemovedItems, id]);
+      }
+
+      return {
+        ...prevData,
+        items: updatedItems,
+      };
+    });
+  };
+
+  const handleOnClickSave = () => {
+    const updatedItems = lorebookData.items.filter(
+      item =>
+        !beforeEditLorebook.items.some(
+          oldItem =>
+            oldItem.lorebookItemId === item.lorebookItemId &&
+            oldItem.keyword === item.keyword &&
+            oldItem.content === item.content,
+        ),
+    );
+
+    const isTitleChanged = beforeEditLorebook.title !== lorebookName;
+
+    const updatedLorebook = {
+      ...lorebookData,
+      title: isTitleChanged ? lorebookName : beforeEditLorebook.title,
+      items: updatedItems,
+    };
+
+    onSave(updatedLorebook);
+  };
+
+  useEffect(() => {
+    setBeforeEditLorebook(lorebook);
+  }, []);
 
   const renderAddButton = () => (
     <button className={styles.addButton} onClick={handleAddItem}>
@@ -80,8 +120,8 @@ const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave}) => {
 
       <ul className={styles.lorebookItemList}>
         {lorebookData.items.map(item => (
-          <li key={item.id} className={styles.lorebookItem}>
-            <button className={styles.deleteButton}>
+          <li key={item.lorebookItemId} className={styles.lorebookItem}>
+            <button className={styles.deleteButton} onClick={() => handleDeleteLorebookItem(item.lorebookItemId)}>
               <img className={styles.deleteIcon} src={LineDelete.src} />
             </button>
             <div className={styles.itemInputArea}>
@@ -90,7 +130,7 @@ const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave}) => {
                 inputType="Basic"
                 textType="Label"
                 value={item.keyword}
-                onChange={e => handleInputChange(item.id, 'keyword', e.target.value)}
+                onChange={e => handleInputChange(item.lorebookItemId, 'keyword', e.target.value)}
                 maxLength={50}
               />
               <div className={styles.itemTitle}>Content</div>
@@ -98,13 +138,17 @@ const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave}) => {
                 inputType="Basic"
                 textType="Label"
                 value={item.content}
-                onChange={e => handleInputChange(item.id, 'content', e.target.value)}
+                onChange={e => handleInputChange(item.lorebookItemId, 'content', e.target.value)}
                 maxLength={400}
               />
             </div>
           </li>
         ))}
       </ul>
+
+      <CustomButton size="Medium" state="Normal" type="Primary" onClick={handleOnClickSave}>
+        Save
+      </CustomButton>
     </div>
   );
 };
