@@ -1,5 +1,5 @@
 'use client';
-import {LineArrowDown, LineArrowLeft, LineClose, LineUpload} from '@ui/Icons';
+import {BoldArrowLeft, BoldMenuDots, LineArrowDown, LineArrowLeft, LineClose, LineUpload} from '@ui/Icons';
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import styles from './ProfileUpdate.module.scss';
 import {useForm} from 'react-hook-form';
@@ -10,9 +10,13 @@ import cx from 'classnames';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {getBackUrl} from '@/utils/util-1';
-import {getPdInfo, MediaState, updatePdInfo, UpdatePdInfoReq} from '@/app/NetWork/ProfileNetwork';
+import {getPdInfo, MediaState, PdPortfolioInfo, updatePdInfo, UpdatePdInfoReq} from '@/app/NetWork/ProfileNetwork';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {Swiper, SwiperSlide} from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation'; // 필요시 다른 모듈도 가져오기
+import {DataUsageSharp} from '@mui/icons-material';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 type Props = {
   params: {
     id?: string[];
@@ -41,6 +45,18 @@ export type TagDrawerType = {
   drawerTitle: string;
   drawerDescription: string;
 };
+
+export type PortfolioType = {
+  isOpenDrawer: boolean;
+};
+
+export type PortfolioDrawerType = {
+  isOpenPreview: boolean;
+  isOpenDrawer: boolean;
+  dataList: PdPortfolioInfo[];
+  idSelected: number;
+};
+
 type DataProfileUpdateType = {
   thumbnail: FileType | null;
   dragStatus: DragStatusType;
@@ -51,6 +67,8 @@ type DataProfileUpdateType = {
     valid: number;
   };
   triggerError: boolean;
+
+  dataPortfolio: PortfolioDrawerType;
 };
 
 const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
@@ -103,6 +121,12 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
       valid: 0,
     },
     triggerError: false,
+    dataPortfolio: {
+      isOpenPreview: false,
+      isOpenDrawer: false,
+      dataList: [],
+      idSelected: -1,
+    },
   });
 
   const onSubmit = async (e: React.MouseEvent<HTMLFormElement, MouseEvent>) => {
@@ -303,7 +327,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
           {data.countValid.valid}/{data.countValid.total}
         </div>
       </header>
-      <main className={styles.main}>
+      <main className={cx(styles.main, data.dataPortfolio.isOpenPreview && styles.hide)}>
         <form onSubmit={onSubmit}>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
@@ -497,8 +521,18 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
           <section className={styles.portfolioSection}>
             <div className={styles.labelWrap}>
               <h2 className={styles.label}>Portfolio</h2>
-              <div className={styles.btnPreview}>Preview</div>
+              <div
+                className={styles.btnPreview}
+                onClick={() => {
+                  data.dataPortfolio.isOpenPreview = true;
+                  setData({...data});
+                }}
+              >
+                Preview
+              </div>
             </div>
+            <input {...register('pdPortfolioInfoList', {required: true})} type="hidden" />
+
             {/* <div className={styles.uploadArea}> */}
             <Swiper
               className={styles.uploadArea}
@@ -507,20 +541,36 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               onSlideChange={() => {}}
               onSwiper={swiper => {}}
               spaceBetween={8}
-              preventClicks={false}
-              simulateTouch={false}
             >
               <SwiperSlide>
-                <div className={styles.uploadWrap}>
+                <div
+                  className={styles.uploadWrap}
+                  onClick={() => {
+                    data.dataPortfolio.isOpenDrawer = true;
+                    data.dataPortfolio.idSelected = -1;
+                    setData({...data});
+                  }}
+                >
                   <img src={LineUpload.src} alt="" />
                   <div className={styles.text}>Upload</div>
                 </div>
               </SwiperSlide>
-              <SwiperSlide>
-                <div className={styles.thumbnailWrap}>
-                  <img src={'/images/profile_sample/img_sample_profile1.png'} alt="" />
-                </div>
-              </SwiperSlide>
+              {data.dataPortfolio.dataList.map((one, index) => {
+                return (
+                  <SwiperSlide
+                    key={index}
+                    onClick={() => {
+                      data.dataPortfolio.isOpenDrawer = true;
+                      data.dataPortfolio.idSelected = index;
+                      setData({...data});
+                    }}
+                  >
+                    <div className={styles.thumbnailWrap}>
+                      <img src={one.image_url} alt="" />
+                    </div>
+                  </SwiperSlide>
+                );
+              })}
             </Swiper>
             {/* </div> */}
           </section>
@@ -592,9 +642,288 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
             setData({...data});
           }}
         />
+        <DrawerCreatePortfolio
+          dataList={data.dataPortfolio.dataList}
+          id={data.dataPortfolio.idSelected}
+          open={data.dataPortfolio.isOpenDrawer}
+          onChange={dataList => {
+            data.dataPortfolio.dataList = dataList;
+
+            clearErrors('pdPortfolioInfoList');
+            setValue('pdPortfolioInfoList', []);
+            for (let i = 0; i < data.dataPortfolio.dataList.length; i++) {
+              const value = data.dataPortfolio.dataList[i];
+              setValue(`pdPortfolioInfoList.${i}`, value);
+            }
+
+            setData({...data});
+          }}
+          onClose={() => {
+            data.dataPortfolio.isOpenDrawer = false;
+            setData({...data});
+          }}
+        />
       </main>
       <footer className={styles.footer}></footer>
+      {data.dataPortfolio.isOpenPreview && (
+        <PortfolioListPopup
+          dataList={JSON.parse(JSON.stringify(data.dataPortfolio.dataList))}
+          onChange={dataList => {
+            data.dataPortfolio.dataList = dataList;
+            clearErrors('pdPortfolioInfoList');
+            setValue('pdPortfolioInfoList', []);
+            for (let i = 0; i < data.dataPortfolio.dataList.length; i++) {
+              const value = data.dataPortfolio.dataList[i];
+              setValue(`pdPortfolioInfoList.${i}`, value);
+            }
+            setData({...data});
+          }}
+          onClose={() => {
+            data.dataPortfolio.isOpenPreview = false;
+            setData({...data});
+          }}
+        />
+      )}
     </>
+  );
+};
+
+export type DrawerCreatePortfolioType = {
+  dataList: PdPortfolioInfo[];
+  id: number;
+  open: boolean;
+  onClose: () => void;
+  onChange: (data: PdPortfolioInfo[]) => void;
+};
+
+export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: DrawerCreatePortfolioType) => {
+  const {
+    control,
+    setValue,
+    register,
+    handleSubmit,
+    getValues,
+    watch,
+    unregister,
+    trigger,
+    clearErrors,
+    formState: {errors, isSubmitted},
+  } = useForm<PdPortfolioInfo>();
+  const [data, setData] = useState<{
+    iconUrl: string;
+    dragStatus: DragStatusType;
+  }>({
+    iconUrl: '',
+    dragStatus: DragStatusType.OuterClick,
+  });
+
+  useEffect(() => {
+    let iconUrl = '';
+    let description = '';
+    if (id != -1) {
+      iconUrl = dataList[id]?.image_url || '';
+      description = dataList[id]?.description || '';
+    }
+    setValue('image_url', iconUrl);
+    setValue('description', description);
+    data.iconUrl = iconUrl;
+    setData({...data});
+  }, [dataList, id]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    setData({...data});
+  }, [open]);
+
+  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+
+    if (data.dragStatus >= DragStatusType.InnerClick) {
+      data.dragStatus = DragStatusType.OuterClick;
+      return;
+    }
+
+    DropOuter(e);
+    data.dragStatus = DragStatusType.OuterClick;
+    setData({...data});
+  };
+
+  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const extractFileExtension = (fileName: string) => {
+    let fileLength = fileName.length;
+    let fileDot = fileName.lastIndexOf('.');
+    let fileExtension = fileName.substring(fileDot + 1, fileLength)?.toLowerCase();
+    return fileExtension;
+  };
+
+  const DropOuter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (e.dataTransfer.items) {
+      let index = 0;
+      Array.from(e.dataTransfer.items).forEach(async (item, i) => {
+        if (item.kind === 'file') {
+          const file = item.getAsFile();
+          if (file == null) return;
+          const fileExtension = extractFileExtension(file.name);
+          if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+            const fileName = file.name.replace(/\.[^/.]+$/, '');
+            const dataUpload: MediaUploadReq = {
+              mediaState: MediaState.Image,
+              file: file,
+              imageList: [],
+            };
+            const resUpload = await sendUpload(dataUpload);
+            const iconUrl = resUpload.data?.url || '';
+            data.iconUrl = iconUrl;
+            setValue('image_url', iconUrl);
+            setData({...data});
+          }
+        }
+      });
+    } else {
+      // Use DataTransfer interface to access the file(s)
+      Array.from(e.dataTransfer.items).forEach((file, i) => {});
+    }
+  };
+
+  const onDragStartInner = (e: React.DragEvent<HTMLDivElement>) => {
+    data.dragStatus = DragStatusType.InnerClick;
+    // e.preventDefault();
+  };
+
+  const onUploadClicked = async (e: ChangeEvent<HTMLInputElement>) => {
+    let files = e.target.files;
+    let index = 0;
+    if (!files?.length) {
+      return;
+    }
+
+    for (let i = 0; i < files?.length; i++) {
+      const file = files[i];
+      const fileExtension = extractFileExtension(file.name);
+      if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+        index++;
+        const fileName = file.name.replace(/\.[^/.]+$/, '');
+        const dataUpload: MediaUploadReq = {
+          mediaState: MediaState.Image,
+          file: file,
+          imageList: [],
+        };
+        const resUpload = await sendUpload(dataUpload);
+        const iconUrl = resUpload.data?.url || '';
+        data.iconUrl = iconUrl;
+        setValue('image_url', iconUrl);
+        setData({...data});
+      }
+    }
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault(); // 기본 제출 방지
+    const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
+
+    if (id == -1) {
+      data.id = 0;
+      dataList.push(data);
+    } else {
+      dataList[id] = data;
+    }
+    onChange(dataList);
+    onClose();
+  };
+
+  return (
+    <Drawer
+      anchor="bottom"
+      open={open}
+      onClose={() => onClose()}
+      PaperProps={{
+        className: cx(styles.drawer, styles.uploadPortfolio),
+        sx: {
+          overflow: 'hidden',
+          borderTopLeftRadius: '24px',
+          borderTopRightRadius: '24px',
+        },
+      }}
+    >
+      <div className={styles.handleArea}>
+        <div className={styles.handleBar}></div>
+      </div>
+      <div className={styles.handleContent}>
+        <form onSubmit={onSubmit}>
+          <section className={styles.uploadThumbnailSection}>
+            <label className={styles.uploadBtn} htmlFor="file-upload2">
+              <input {...register('image_url', {required: true})} type="hidden" />
+              <input
+                className={styles.hidden}
+                id="file-upload2"
+                type="file"
+                accept="image/png, image/jpeg, image/jpg, image/gif"
+                onChange={onUploadClicked}
+              />
+              {!data.iconUrl && (
+                <div
+                  className={styles.uploadWrap}
+                  onDrop={onDrop}
+                  onDragOver={onDragOver}
+                  onDragStart={onDragStartInner}
+                >
+                  <img src={LineUpload.src} alt="" />
+                  <div className={styles.text}>Upload</div>
+                </div>
+              )}
+
+              {data.iconUrl && (
+                <div className={styles.thumbnailContainer}>
+                  <div className={styles.thumbnailWrap}>
+                    <img className={styles.thumbnail} src={data.iconUrl} alt="" />
+                    <div className={styles.iconEditWrap}>
+                      <img src="/ui/profile/update/icon_thumbnail_edit.svg" alt="" className={styles.iconEdit} />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </label>
+          </section>
+          <div className={styles.label}>
+            Episode Description<span className={styles.highlight}> *</span>
+          </div>
+          <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
+            <textarea
+              {...register('description', {required: true})}
+              placeholder="Add a description or hashtag"
+              maxLength={500}
+              onChange={async e => {
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = 'auto';
+                target.style.height = `${target.scrollHeight}px`;
+                setValue('description', target.value, {shouldValidate: false}); // 강제 업데이트
+                clearErrors('description');
+              }}
+            />
+            <div className={styles.textCount}>{`${watch('description', '').length}/500`}</div>
+          </div>
+          <div className={styles.buttonWrap}>
+            <button
+              type="button"
+              className={styles.cancelBtn}
+              onClick={() => {
+                onClose();
+              }}
+            >
+              Cancel
+            </button>
+            <button type="submit" className={styles.saveBtn}>
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </Drawer>
   );
 };
 
@@ -672,3 +1001,117 @@ export const DrawerSelectTags = ({title, description, tags, open, onClose, onCha
 };
 
 export default PageProfileUpdate;
+
+export type PortfolioListPopupType = {
+  dataList: PdPortfolioInfo[];
+  onClose: () => void;
+  onChange: (data: PdPortfolioInfo[]) => void;
+};
+
+const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListPopupType) => {
+  const [data, setData] = useState<{
+    isSettingOpen: boolean;
+    idSelected: number;
+    portfolioList: PdPortfolioInfo[];
+    isOpenEditDrawer: boolean;
+  }>({
+    isSettingOpen: false,
+    idSelected: 0,
+    portfolioList: [],
+    isOpenEditDrawer: false,
+  });
+  useEffect(() => {
+    data.portfolioList = dataList || [];
+    setData({...data});
+  }, [dataList]);
+
+  let settingItems: SelectDrawerItem[] = [
+    {
+      name: 'Edit',
+      onClick: () => {
+        data.isOpenEditDrawer = true;
+        setData({...data});
+      },
+    },
+    {
+      name: 'Share',
+      onClick: () => {},
+    },
+    {
+      name: 'Delete',
+      onClick: () => {
+        data.portfolioList.splice(data.idSelected, 1);
+        setData({...data});
+        onChange(data.portfolioList);
+      },
+    },
+  ];
+  return (
+    <>
+      <section className={styles.portfolioPreviewSection}>
+        <header>
+          <img
+            src={BoldArrowLeft.src}
+            alt="back"
+            className={styles.back}
+            onClick={() => {
+              onChange;
+              onClose();
+            }}
+          />
+          <div className={styles.title}>Portfolio</div>
+        </header>
+        <main>
+          <div className={styles.countPortfolio}>Portfolio {data.portfolioList.length}</div>
+          <ul className={styles.itemList}>
+            {data.portfolioList.map((one, index) => {
+              return (
+                <li className={styles.item} key={index}>
+                  <img className={styles.thumbnail} src={one.image_url} alt="" />
+                  <div className={styles.description}>{one.description}</div>
+                  <div className={styles.dateRegistration}>Date Registration 2025.02.10</div>
+                  <div className={styles.settingWrap}>
+                    <img
+                      src={BoldMenuDots.src}
+                      alt=""
+                      className={styles.setting}
+                      onClick={() => {
+                        data.isSettingOpen = true;
+                        data.idSelected = index;
+                        setData({...data});
+                      }}
+                    />
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          <SelectDrawer
+            isOpen={data.isSettingOpen}
+            onClose={() => {
+              data.isSettingOpen = false;
+              setData({...data});
+            }}
+            items={settingItems}
+            selectedIndex={-1}
+          />
+          <DrawerCreatePortfolio
+            dataList={data.portfolioList}
+            id={data.idSelected}
+            open={data.isOpenEditDrawer}
+            onChange={dataList => {
+              data.portfolioList = dataList;
+              setData({...data});
+              onChange(data.portfolioList);
+            }}
+            onClose={() => {
+              data.isOpenEditDrawer = false;
+              setData({...data});
+            }}
+          />
+        </main>
+        <footer></footer>
+      </section>
+    </>
+  );
+};

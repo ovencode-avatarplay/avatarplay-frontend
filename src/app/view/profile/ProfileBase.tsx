@@ -73,6 +73,8 @@ import {useInView} from 'react-intersection-observer';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {channel} from 'diagnostics_channel';
+import 'swiper/css';
+import 'swiper/css/navigation'; // 필요시 다른 모듈도 가져오기
 
 enum eTabPDType {
   Feed,
@@ -1614,8 +1616,6 @@ const TabContentComponent = ({
             onSlideChange={() => {}}
             onSwiper={swiper => {}}
             spaceBetween={8}
-            preventClicks={false}
-            simulateTouch={false}
           >
             {channelInfo?.memberProfileIdList?.map((profile, index) => {
               return (

@@ -190,6 +190,10 @@ html,body{
   scroll-padding-bottom: 48px;
 }
 
+body.hidescroll{
+  overflow:hidden;
+}
+
 body{
   margin:0 auto !important;
   max-width:var(--full-width) !important;
