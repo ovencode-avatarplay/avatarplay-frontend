@@ -114,6 +114,11 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                 <div className={styles.left}>
                   <img className={styles.imgProfile} src={profile.iconImageUrl} alt="" />
                   <div className={styles.nameWrap}>
+                    {isChannel && (
+                      <div className={styles.top}>
+                        <div className={styles.type}>Channel</div>
+                      </div>
+                    )}
                     {isCharacter && (
                       <div className={styles.top}>
                         <span className={styles.grade}>Original</span>
