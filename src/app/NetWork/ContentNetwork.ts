@@ -122,10 +122,21 @@ export interface EpisodeWebtoonInfo {
   likeCount: number;
   webtoonSourceUrlList: WebtoonSourceUrl[];
 }
-
+export enum WebtoonLanguageType {
+  Korean = 0,
+  English = 1,
+  Japanese = 2,
+  French = 3,
+  Spanish = 4,
+  ChineseSimplified = 5,
+  ChineseTraditional = 6,
+  Portuguese = 7,
+  German = 8,
+  WebtoonSource = 8,
+}
 // 📌 웹툰 언어별 소스 리스트
 export interface WebtoonSourceUrl {
-  webtoonLanguageType: number;
+  webtoonLanguageType: WebtoonLanguageType;
   webtoonSourceUrls: string[];
   webtoonSourceNames: string[];
 }

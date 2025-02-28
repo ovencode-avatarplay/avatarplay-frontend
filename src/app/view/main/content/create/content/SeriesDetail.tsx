@@ -290,7 +290,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo,
                 <div className={styles.episodeThumbnail} style={{backgroundImage: `url(${ep.thumbnailUrl})`}}></div>
                 <div className={styles.episodeInfo}>
                   <div className={styles.epTitleText}>
-                    {index}. {ep.name}
+                    {index + 1}. {ep.name}
                   </div>
                   {contentInfo.categoryType == 1 && (
                     <div className={styles.epDuration}>{ep.episodeVideoInfo?.playTime}</div>

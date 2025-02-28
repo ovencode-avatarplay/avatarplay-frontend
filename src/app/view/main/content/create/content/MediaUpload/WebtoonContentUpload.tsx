@@ -18,29 +18,80 @@ import {
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {EpisodeWebtoonInfo} from '@/app/NetWork/ContentNetwork';
-enum CountryTypes {
-  Korea = 0,
-  Japan = 1,
+import {EpisodeWebtoonInfo, WebtoonLanguageType, WebtoonSourceUrl} from '@/app/NetWork/ContentNetwork';
+export enum CountryTypes {
+  Korean = 0,
+  English = 1,
+  Japanese = 2,
+  French = 3,
+  Spanish = 4,
+  ChineseSimplified = 5,
+  ChineseTraditional = 6,
+  Portuguese = 7,
+  German = 8,
 }
 export interface WebtoonUploadField {
   id: number;
   selectedCountry: CountryTypes;
   fileUrl: string[]; // 업로드된 파일의 URL 저장
+  fileName: string[];
 }
+
 interface WebtoonContentUploadProps {
   setEpisodeWebtoonInfo: (value: EpisodeWebtoonInfo) => void;
 }
 
-const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
-  const [subtitleFields, setSubtitleFields] = useState<WebtoonUploadField[]>([]);
+const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({setEpisodeWebtoonInfo}) => {
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle'; index: number} | null>(null);
-  const [imageFiles, setImageFiles] = useState<string[]>([]);
+
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // 선택된 파일의 인덱스
 
+  const [subtitleFields, setSubtitleFields] = useState<WebtoonUploadField[]>([]);
+  const [imageFiles, setImageFiles] = useState<string[]>([]);
+  const [imageNames, setImageNames] = useState<string[]>([]);
+
+  useEffect(() => {
+    // 📌 웹툰 원본 이미지 리스트 업데이트
+    const webtoonSourceUrls: WebtoonSourceUrl[] = [];
+
+    // ✅ 웹툰 원본 이미지 추가 (webtoonLanguageType = WebtoonSource)
+    if (imageFiles.length > 0) {
+      webtoonSourceUrls.push({
+        webtoonLanguageType: WebtoonLanguageType.WebtoonSource,
+        webtoonSourceUrls: imageFiles,
+        webtoonSourceNames: imageNames,
+      });
+    }
+
+    // ✅ 자막 파일 추가 (Korean, Japanese 등)
+    subtitleFields.forEach(field => {
+      if (field.fileUrl.length > 0) {
+        webtoonSourceUrls.push({
+          webtoonLanguageType: Number(field.selectedCountry) as WebtoonLanguageType, // ✅ number로 변환하여 할당
+          webtoonSourceUrls: field.fileUrl,
+          webtoonSourceNames: field.fileName,
+        });
+      }
+    });
+
+    // 📌 최종 업데이트 적용
+    setEpisodeWebtoonInfo({
+      likeCount: 0, // 기본값 (필요하면 수정)
+      webtoonSourceUrlList: webtoonSourceUrls,
+    });
+  }, [imageFiles, imageNames, subtitleFields, setEpisodeWebtoonInfo]);
+  // ✅ `setEpisodeWebtoonInfo`도 의존성 배열에 포함 (최신 상태 유지)
+
   const CountryItems = (type: 'subtitle', index: number): SelectDrawerItem[] => [
-    {name: 'Korea', onClick: () => handleCountryChange(type, index, CountryTypes.Korea)},
-    {name: 'Japan', onClick: () => handleCountryChange(type, index, CountryTypes.Japan)},
+    {name: 'Korean', onClick: () => handleCountryChange(type, index, CountryTypes.Korean)},
+    {name: 'English', onClick: () => handleCountryChange(type, index, CountryTypes.English)},
+    {name: 'Japanese', onClick: () => handleCountryChange(type, index, CountryTypes.Japanese)},
+    {name: 'French', onClick: () => handleCountryChange(type, index, CountryTypes.French)},
+    {name: 'Spanish', onClick: () => handleCountryChange(type, index, CountryTypes.Spanish)},
+    {name: 'Chinese (Simplified)', onClick: () => handleCountryChange(type, index, CountryTypes.ChineseSimplified)},
+    {name: 'Chinese (Traditional)', onClick: () => handleCountryChange(type, index, CountryTypes.ChineseTraditional)},
+    {name: 'Portuguese', onClick: () => handleCountryChange(type, index, CountryTypes.Portuguese)},
+    {name: 'German', onClick: () => handleCountryChange(type, index, CountryTypes.German)},
   ];
 
   const handleCountryChange = (type: 'subtitle', index: number, country: CountryTypes) => {
@@ -53,21 +104,19 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
 
   const handleFileUpload = async (files: FileList) => {
     try {
-      const newImages = await Promise.all(
-        Array.from(files).map(async file => {
-          const req: MediaUploadReq = {
-            mediaState: UploadMediaState.BackgroundImage,
-            file,
-          };
-          const response = await sendUpload(req);
-          return response?.data?.url; // 업로드된 URL 반환 (undefined 가능성 있음)
-        }),
-      );
+      const req: MediaUploadReq = {
+        mediaState: UploadMediaState.ContentEpisodeWebtoonImage,
+        imageList: Array.from(files), // ✅ 여러 개의 파일을 imageList로 보냄
+      };
 
-      // undefined 제거 후 string[] 타입으로 변환
-      const validImages: string[] = newImages.filter((url): url is string => typeof url === 'string');
+      const response = await sendUpload(req);
+      if (!response.data) return;
+
+      const validImages = response.data.imageUrlList.filter((url): url is string => !!url);
+      const validImageNames = response.data.imageNameList.filter((name): name is string => !!name);
 
       setImageFiles(prev => [...prev, ...validImages]);
+      setImageNames(prev => [...prev, ...validImageNames]);
     } catch (error) {
       console.error('파일 업로드 중 오류 발생:', error);
     }
@@ -79,24 +128,38 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
     setSelectedIndex(null);
   };
 
-  // 파일 순서 변경
   const handleMoveImage = (direction: 'top' | 'up' | 'down' | 'bottom') => {
     if (selectedIndex === null) return;
-    setImageFiles(prev => {
-      const newArr = [...prev];
-      const target = newArr[selectedIndex];
 
-      newArr.splice(selectedIndex, 1); // 현재 위치에서 삭제
+    setImageFiles(prev => {
+      const newImages = [...prev];
+      const newNames = [...imageNames]; // ✅ imageNames도 복사해서 조작
+      const targetImage = newImages[selectedIndex];
+      const targetName = newNames[selectedIndex]; // ✅ 선택된 파일 이름도 가져오기
+
+      newImages.splice(selectedIndex, 1);
+      newNames.splice(selectedIndex, 1); // ✅ 이름도 같이 삭제
 
       let newIndex = selectedIndex;
-      if (direction === 'top') newIndex = 0; // 최상단으로 이동
-      else if (direction === 'bottom') newIndex = newArr.length; // 최하단으로 이동
-      else if (direction === 'up' && selectedIndex > 0) newIndex = selectedIndex - 1; // 한 칸 위로
-      else if (direction === 'down' && selectedIndex < newArr.length) newIndex = selectedIndex + 1; // 한 칸 아래로
+      if (direction === 'top') newIndex = 0;
+      else if (direction === 'bottom') newIndex = newImages.length;
+      else if (direction === 'up' && selectedIndex > 0) newIndex = selectedIndex - 1;
+      else if (direction === 'down' && selectedIndex < newImages.length) newIndex = selectedIndex + 1;
 
-      newArr.splice(newIndex, 0, target); // 새로운 위치에 삽입
-      setSelectedIndex(newIndex); // 새로운 위치로 선택 업데이트
-      return newArr;
+      newImages.splice(newIndex, 0, targetImage);
+      newNames.splice(newIndex, 0, targetName); // ✅ 새로운 위치에 파일 이름도 같이 추가
+
+      setImageNames(newNames); // ✅ imageNames도 상태 업데이트
+      return newImages;
+    });
+
+    setSelectedIndex(prevIndex => {
+      if (prevIndex === null) return null;
+      if (direction === 'top') return 0;
+      if (direction === 'bottom') return imageFiles.length - 1;
+      if (direction === 'up') return Math.max(0, prevIndex - 1);
+      if (direction === 'down') return Math.min(imageFiles.length - 1, prevIndex + 1);
+      return prevIndex;
     });
   };
 
@@ -104,7 +167,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
   const handleAddField = () => {
     setSubtitleFields(prevFields => [
       ...prevFields,
-      {id: Date.now(), selectedCountry: CountryTypes.Korea, fileUrl: []}, // 새 필드 추가
+      {id: Date.now(), selectedCountry: CountryTypes.Korean, fileUrl: [], fileName: []}, // 새 필드 추가
     ]);
   };
 
@@ -112,25 +175,28 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
   const handleRemoveField = (index: number) => {
     setSubtitleFields(prevFields => prevFields.filter((_, i) => i !== index));
   };
-
   // 필드별 파일 업로드 처리
   const handleFileUploadForField = async (files: FileList, fieldIndex: number) => {
     try {
-      const newImages = await Promise.all(
-        Array.from(files).map(async file => {
-          const req: MediaUploadReq = {
-            mediaState: UploadMediaState.BackgroundImage,
-            file,
-          };
-          const response = await sendUpload(req);
-          return response?.data?.url; // 업로드된 URL 반환
-        }),
-      );
+      const req: MediaUploadReq = {
+        mediaState: UploadMediaState.ContentEpisodeWebtoonSubtitle,
+        imageList: Array.from(files), // ✅ 여러 개의 파일을 imageList로 보냄
+      };
+
+      const response = await sendUpload(req);
+      if (!response.data) return;
+
+      const validUrls = response.data.imageUrlList.filter((url): url is string => !!url);
+      const validFileNames = response.data.imageNameList.filter((name): name is string => !!name);
 
       setSubtitleFields(prevFields =>
         prevFields.map((field, i) =>
           i === fieldIndex
-            ? {...field, fileUrl: [...field.fileUrl, ...newImages.filter((url): url is string => !!url)]}
+            ? {
+                ...field,
+                fileUrl: [...field.fileUrl, ...validUrls],
+                fileName: [...field.fileName, ...validFileNames],
+              }
             : field,
         ),
       );
@@ -163,10 +229,14 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
         if (selectedIndex === undefined || selectedIndex === null) return field;
 
         const newArr = [...field.fileUrl];
-        const target = newArr[selectedIndex];
+        const newNames = [...field.fileName]; // ✅ fileName도 복사해서 조작
+
+        const targetUrl = newArr[selectedIndex];
+        const targetName = newNames[selectedIndex]; // ✅ 선택된 파일 이름도 가져오기
 
         // 기존 위치에서 제거
         newArr.splice(selectedIndex, 1);
+        newNames.splice(selectedIndex, 1); // ✅ fileName도 함께 제거
 
         // 이동할 위치 계산
         let newIndex = selectedIndex;
@@ -176,22 +246,23 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
         else if (direction === 'down' && selectedIndex < newArr.length) newIndex = selectedIndex + 1;
 
         // 새로운 위치에 삽입
-        newArr.splice(newIndex, 0, target);
+        newArr.splice(newIndex, 0, targetUrl);
+        newNames.splice(newIndex, 0, targetName); // ✅ 새로운 위치에 fileName도 추가
 
         // 선택한 이미지 인덱스 업데이트
         setSelectedIndexes(prev => ({...prev, [fieldIndex]: newIndex}));
 
-        return {...field, fileUrl: newArr};
+        return {...field, fileUrl: newArr, fileName: newNames}; // ✅ fileName까지 반영
       }),
     );
   };
-  console.log(selectedIndexes);
+
   const renderUploader = (type: 'subtitle', field: WebtoonUploadField, fieldIndex: number) => {
     return (
       <div className={styles.uploadGroup}>
         {/* 국가 선택 드롭다운 버튼 */}
         <div className={styles.countryUploadBox} onClick={() => setCountryDrawerOpen({type, index: fieldIndex})}>
-          {field.selectedCountry === CountryTypes.Korea ? 'Korea' : 'Japan'}
+          {CountryTypes[field.selectedCountry]}
           <img src={LineArrowDown.src} className={styles.lineArrowDown} />
         </div>
 
@@ -206,7 +277,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
                   className={`${styles.fileItem} ${selectedIndexes[fieldIndex] === imageIndex ? styles.selected : ''}`}
                   onClick={() => handleSelectImage(fieldIndex, imageIndex)}
                 >
-                  <span className={styles.fileName}>{image.split('/').pop()}</span>
+                  <span className={styles.fileName}>{field.fileName[imageIndex]}</span>
                   <img
                     src={CircleClose.src}
                     className={styles.circleClose}
@@ -283,7 +354,6 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
       </div>
     );
   };
-
   return (
     <>
       <span className={styles.previewLabel}>Preview</span>
@@ -293,13 +363,13 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
           <div className={styles.videoUploadBox}>
             {imageFiles.length > 0 ? (
               <ul className={styles.fileList}>
-                {imageFiles.map((image, index) => (
+                {imageNames.map((name, index) => (
                   <li
                     key={index}
                     className={`${styles.fileItem} ${selectedIndex === index ? styles.selected : ''}`}
                     onClick={() => setSelectedIndex(index)}
                   >
-                    <span className={styles.fileName}>{image.split('/').pop()}</span> {/* 파일명 */}
+                    <span className={styles.fileName}>{name}</span> {/* 파일명 */}
                     <img
                       src={CircleClose.src}
                       className={styles.circleClose}

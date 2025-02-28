@@ -15,10 +15,8 @@ import {
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {EpisodeVideoInfo} from '@/app/NetWork/ContentNetwork';
-enum CountryTypes {
-  Korea = 0,
-  Japan = 1,
-}
+import {CountryTypes} from './WebtoonContentUpload';
+
 export interface VideoUploadField {
   id: number;
   selectedCountry: CountryTypes;
@@ -39,15 +37,22 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
   const [videoName, setVideoName] = useState<string | null>(null); // 비디오 업로드 상태
 
   const CountryItems = (type: 'subtitle' | 'dubbing', index: number): SelectDrawerItem[] => [
-    {name: 'Korea', onClick: () => handleCountryChange(type, index, CountryTypes.Korea)},
-    {name: 'Japan', onClick: () => handleCountryChange(type, index, CountryTypes.Japan)},
+    {name: 'Korean', onClick: () => handleCountryChange(type, index, CountryTypes.Korean)},
+    {name: 'English', onClick: () => handleCountryChange(type, index, CountryTypes.English)},
+    {name: 'Japanese', onClick: () => handleCountryChange(type, index, CountryTypes.Japanese)},
+    {name: 'French', onClick: () => handleCountryChange(type, index, CountryTypes.French)},
+    {name: 'Spanish', onClick: () => handleCountryChange(type, index, CountryTypes.Spanish)},
+    {name: 'Chinese (Simplified)', onClick: () => handleCountryChange(type, index, CountryTypes.ChineseSimplified)},
+    {name: 'Chinese (Traditional)', onClick: () => handleCountryChange(type, index, CountryTypes.ChineseTraditional)},
+    {name: 'Portuguese', onClick: () => handleCountryChange(type, index, CountryTypes.Portuguese)},
+    {name: 'German', onClick: () => handleCountryChange(type, index, CountryTypes.German)},
   ];
 
   const handleAddUploader = (type: 'subtitle' | 'dubbing') => {
     if (type === 'subtitle') {
-      setSubtitleFields([...subtitleFields, {id: Date.now(), selectedCountry: CountryTypes.Korea}]);
+      setSubtitleFields([...subtitleFields, {id: Date.now(), selectedCountry: CountryTypes.Korean}]);
     } else {
-      setDubbingFields([...dubbingFields, {id: Date.now(), selectedCountry: CountryTypes.Korea}]);
+      setDubbingFields([...dubbingFields, {id: Date.now(), selectedCountry: CountryTypes.Korean}]);
     }
   };
 
@@ -159,7 +164,7 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
       <div key={field.id} className={styles.uploadGroup}>
         {/* 국가 선택 드롭다운 */}
         <div className={styles.countryUploadBox} onClick={() => setCountryDrawerOpen({type, index})}>
-          {field.selectedCountry === CountryTypes.Korea ? 'Korea' : 'Japan'}
+          {CountryTypes[field.selectedCountry]}
           <img src={LineArrowDown.src} className={styles.lineArrowDown} />
         </div>
 

@@ -88,14 +88,14 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
     dubbingFileNames: [],
   });
 
-  useEffect(() => {
-    console.log('episodeVideoInfo', episodeVideoInfo);
-  }, [episodeVideoInfo]);
-
   const [episodeWebtoonInfo, setEpisodeWebtoonInfo] = useState<EpisodeWebtoonInfo>({
     likeCount: 0,
     webtoonSourceUrlList: [], // 언어별 웹툰 소스 리스트 (초기값: 빈 배열)
   });
+
+  useEffect(() => {
+    console.log('episodeWebtoonInfo', episodeWebtoonInfo);
+  }, [episodeVideoInfo, episodeWebtoonInfo]);
 
   const createNewEpisode = async () => {
     if (!contentInfo?.id || curSeason === 0 || curEpisodeCount + 1 === 0) {
@@ -114,10 +114,16 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
       alert('에피소드 설명을 입력해주세요.');
       return;
     }
-    if (!episodeVideoInfo.videoSourceFileUrl) {
+    if (contentInfo.categoryType == 1 && !episodeVideoInfo.videoSourceFileUrl) {
       alert('비디오 파일이 업로드되지 않았습니다.');
       return;
     }
+
+    if (contentInfo.categoryType == 0 && episodeWebtoonInfo.webtoonSourceUrlList.length == 0) {
+      alert('이미지 파일이 업로드되지 않았습니다.');
+      return;
+    }
+
     const newEpisode: ContentEpisodeInfo = {
       contentId: contentInfo ? contentInfo?.id : 0, // 필수: 콘텐츠 ID
       seasonNo: curSeason, // 필수: 시즌 번호
