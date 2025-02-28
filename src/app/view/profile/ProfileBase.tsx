@@ -675,7 +675,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           <div className={styles.imgProfileWrap}>
             <img className={styles.imgProfile} src={data.profileInfo?.profileInfo.iconImageUrl} alt="" />
             {isMine && (
-              <Link href={getEditUrl(profileType, data.profileInfo?.profileInfo?.id || 0)}>
+              <Link href={getEditUrl(profileType)}>
                 <div className={styles.iconProfileEditWrap}>
                   <img className={styles.icon} src="/ui/profile/icon_edit.svg" alt="" />
                 </div>
@@ -1572,7 +1572,7 @@ const TabContentComponent = ({
   if (isChannel && tabIndex == eTabChannelOtherType.Info) {
     const channelInfo = data?.profileTabInfo?.[data.indexTab]?.channelInfo;
     console.log('channelInfo : ', channelInfo);
-    const tagList = channelInfo?.tags?.split(',')?.filter(v => v != '') || [];
+    const tagList = channelInfo?.tags || [];
     return (
       <section className={styles.channelInfoTabSection}>
         <section className={styles.characterMainImageWrap}>
