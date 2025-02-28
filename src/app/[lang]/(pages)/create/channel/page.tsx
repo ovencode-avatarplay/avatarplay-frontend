@@ -72,7 +72,7 @@ type DataProfileUpdateType = {
   dataCharacterSearch: DrawerCharacterSearchType;
   dataCountry: {
     isOpenDrawer: boolean;
-    tagList: number[];
+    tagList: string[];
     isAll: boolean;
   };
   dataOperatorInvitation: {
@@ -82,8 +82,7 @@ type DataProfileUpdateType = {
   };
 };
 
-interface ChannelInfoForm extends Omit<ChannelInfo, 'tag' | 'id' | 'isMonetization' | 'nsfw'> {
-  tag: string[];
+interface ChannelInfoForm extends Omit<ChannelInfo, 'id' | 'isMonetization' | 'nsfw'> {
   isMonetization: number;
   nsfw: number;
 }
@@ -187,23 +186,32 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
     data.idChannel = res?.data?.channelInfo?.id || 0;
 
-    let tag = channelInfo?.tag?.split(',') || [];
+    let tag = channelInfo?.tags || [];
     tag = tag.filter(v => !!v && v != '');
     let isMonetization = 0;
     let nsfw = 0;
-    const channelInfoForm: ChannelInfoForm = {...channelInfo, tag, isMonetization, nsfw};
+    const channelInfoForm: ChannelInfoForm = {...channelInfo, tags: tag, isMonetization, nsfw};
 
     data.thumbnail = {file: channelInfo.mediaUrl || ''};
 
-    setValue('tag', []);
+    setValue('tags', []);
     for (let i = 0; i < data.dataTag.tagList.length; i++) {
       // const interest = res?.data?.interests[i]
       const tagValue = data.dataTag.tagList[i].value;
       const index = tag.findIndex(v => v == tagValue);
       if (index >= 0) {
         data.dataTag.tagList[index].isActive = true;
-        setValue(`tag.${index}`, tagValue, {shouldValidate: false});
+        setValue(`tags.${index}`, tagValue, {shouldValidate: false});
       }
+    }
+
+    setValue('postCountry', []);
+    data.dataCountry.tagList = [];
+    for (let i = 0; i < channelInfo.postCountry.length; i++) {
+      // const interest = res?.data?.interests[i]
+      const value = channelInfo.postCountry[i];
+      data.dataCountry.tagList.push(value);
+      setValue(`postCountry.${i}`, value, {shouldValidate: false});
     }
 
     const memberList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[] =
@@ -213,6 +221,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         profileSimpleInfo: v,
       })) || [];
     data.dataCharacterSearch.profileList = memberList;
+
     reset(channelInfoForm, {}); //한번에 form 값 초기화
     setTimeout(() => {
       setValue('isMonetization', Number(channelInfo.isMonetization));
@@ -233,7 +242,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       return;
     }
 
-    if (errors.visibilityType || errors.tag || errors.postCountry) {
+    if (errors.visibilityType || errors.tags || errors.postCountry) {
       data.indexTab = 2;
       setData({...data});
       return;
@@ -348,10 +357,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     console.log('data : ', data);
     // e.preventDefault(); // 기본 제출 방지
     // const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
-    let tag = '';
-    if (dataForm?.tag?.length > 0) {
-      tag = dataForm?.tag?.join(',') || '';
-    }
+    let tag = dataForm?.tags;
 
     const idChannel = isUpdate ? data.idChannel : 0;
     let isMonetization = Boolean(Number(dataForm.isMonetization));
@@ -359,7 +365,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     let characterIP = Number(dataForm.characterIP);
     const dataUpdatePdInfo: CreateChannelReq = {
       languageType: getCurrentLanguage(),
-      channelInfo: {...dataForm, id: idChannel, tag: tag, isMonetization, nsfw, characterIP},
+      channelInfo: {...dataForm, id: idChannel, tags: tag, isMonetization, nsfw, characterIP},
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     console.log('res : ', res);
@@ -554,18 +560,18 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </div>
                 <div className={styles.label}>Tag</div>
                 <div
-                  className={cx(styles.selectWrap, errors.tag && isSubmitted && styles.error)}
+                  className={cx(styles.selectWrap, errors.tags && isSubmitted && styles.error)}
                   onClick={() => {
                     data.dataTag.isOpenTagsDrawer = true;
                     setData({...data});
                   }}
                 >
-                  <input type="hidden" {...register('tag')} />
+                  <input type="hidden" {...register('tags')} />
                   <div className={styles.placeholder}>Select</div>
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
                 </div>
                 <div className={styles.tagWrap}>
-                  {!watch('tag') && <input type="hidden" {...register(`tag`, {required: true})} />}
+                  {!watch('tags') && <input type="hidden" {...register(`tags`, {required: true})} />}
 
                   {data.dataTag.tagList.map((one, index) => {
                     if (!one.isActive) return;
@@ -573,13 +579,13 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     return (
                       <div className={styles.tag} key={index}>
                         <div className={styles.value}>
-                          <input value={one.value} type="hidden" {...register(`tag.${index}`, {required: true})} />
+                          <input value={one.value} type="hidden" {...register(`tags.${index}`, {required: true})} />
                           {one.value}
                         </div>
                         <div
                           className={styles.btnRemoveWrap}
                           onClick={e => {
-                            unregister(`tag.${index}`);
+                            unregister(`tags.${index}`);
                             data.dataTag.tagList[index].isActive = false;
                             setData({...data});
                           }}
@@ -607,7 +613,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
                   {data.dataCountry.tagList.map((one, index) => {
                     const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
-                    const countryStr = keys[one];
+                    const countryStr = keys[Number(one)];
 
                     return (
                       <div className={styles.tag} key={index}>
@@ -820,14 +826,14 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           setData({...data});
         }}
         onChange={(dataChanged: any) => {
-          clearErrors('tag');
+          clearErrors('tags');
           data.dataTag.tagList = dataChanged;
 
           for (let i = 0; i < dataChanged.length; i++) {
             if (!dataChanged[i].isActive) {
-              unregister(`tag.${i}`);
+              unregister(`tags.${i}`);
             } else {
-              setValue(`tag.${i}`, dataChanged[i].value, {shouldValidate: false});
+              setValue(`tags.${i}`, dataChanged[i].value, {shouldValidate: false});
             }
           }
           setData({...data});
@@ -844,7 +850,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         postCountryList={data.dataCountry.tagList}
         onUpdatePostCountry={(updatedList: LanguageType[]) => {
           clearErrors('postCountry');
-          data.dataCountry.tagList = updatedList;
+          data.dataCountry.tagList = updatedList.map(v => v.toString());
 
           unregister(`postCountry`);
           for (let i = 0; i < updatedList.length; i++) {

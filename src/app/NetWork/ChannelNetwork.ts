@@ -19,7 +19,7 @@ export interface ChannelInfo {
   mediaUrl: string;
   memberProfileIdList: ProfileSimpleInfo[];
   visibilityType: VisibilityType;
-  tag: string;
+  tags: string[];
   characterIP: CharacterIP;
   operatorInvitationProfileIdList: ProfileSimpleInfo[];
   isMonetization: boolean;

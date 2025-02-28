@@ -1572,7 +1572,7 @@ const TabContentComponent = ({
   if (isChannel && tabIndex == eTabChannelOtherType.Info) {
     const channelInfo = data?.profileTabInfo?.[data.indexTab]?.channelInfo;
     console.log('channelInfo : ', channelInfo);
-    const tagList = channelInfo?.tag?.split(',')?.filter(v => v != '') || [];
+    const tagList = channelInfo?.tags?.split(',')?.filter(v => v != '') || [];
     return (
       <section className={styles.channelInfoTabSection}>
         <section className={styles.characterMainImageWrap}>
