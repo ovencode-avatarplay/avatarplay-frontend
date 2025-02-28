@@ -594,13 +594,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   const tabHeaderList = getTabHeaderList(profileType, isMine);
   let isEmptyTab = getIsEmptyTab();
 
-  const getEditUrl = (profileType: ProfileType, profileId: number) => {
+  const getEditUrl = (profileType: ProfileType) => {
     if ([ProfileType.User, ProfileType.PD].includes(profileType)) {
-      return getLocalizedLink(`/profile/update/` + profileId);
+      return getLocalizedLink(`/profile/update/` + data.profileId);
     } else if ([ProfileType.Character].includes(profileType)) {
-      return getLocalizedLink(`/update/character/` + profileId);
+      return getLocalizedLink(`/update/character2/` + data.profileInfo?.profileInfo.typeValueId);
     } else if ([ProfileType.Channel].includes(profileType)) {
-      return getLocalizedLink(`/update/channel/` + profileId);
+      return getLocalizedLink(`/update/channel/` + data.profileId);
     }
     return getLocalizedLink(``);
   };
