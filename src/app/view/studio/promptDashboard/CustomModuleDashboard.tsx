@@ -49,6 +49,9 @@ const CustomModuleDashboard: React.FC = () => {
   const [selectedLorebook, setSelectedLorebook] = useState<CustomModuleLorebook | null>(null);
   const [removedLorebookItems, setRemovedLorebookItems] = useState<number[]>([]);
 
+  const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
   let defaultPromptItem: CustomModulePrompt = {
     promptId: 0,
     title: '',
@@ -63,11 +66,19 @@ const CustomModuleDashboard: React.FC = () => {
     editList: [],
   };
 
+  function onCancel() {
+    if (isEditing) {
+      setIsCloseConfirmOpen(true);
+    } else {
+      setDisplayState('dashboard');
+    }
+  }
+
   //#region  handler
   const handleOnClose = () => {
     if (displayState === 'dashboard') router.back();
     else if (displayState === 'prompt' || displayState === 'lorebook') {
-      setDisplayState('dashboard');
+      onCancel();
     }
   };
 
@@ -231,7 +242,7 @@ const CustomModuleDashboard: React.FC = () => {
     return (
       <li key={item.title} className={styles.customModuleItem} onClick={() => handlePromptItemClick(item)}>
         <div className={styles.itemName}>{item.title}</div>
-        <div className={styles.updateAt}>{item.createdAt}</div>
+        <div className={styles.itemUpdateAt}>{item.createdAt}</div>
       </li>
     );
   };
@@ -240,7 +251,7 @@ const CustomModuleDashboard: React.FC = () => {
     return (
       <li key={item.title} className={styles.customModuleItem} onClick={() => handleLorebookItemClick(item)}>
         <div className={styles.itemName}>{item.title}</div>
-        <div className={styles.updateAt}>{item.createdAt}</div>
+        <div className={styles.itemUpdateAt}>{item.createdAt}</div>
       </li>
     );
   };
@@ -325,13 +336,15 @@ const CustomModuleDashboard: React.FC = () => {
           />
         )}
         {displayState === 'prompt' && selectedPrompt && (
-          <CreateCustomPrompt prompt={selectedPrompt} onSave={handleSavePrompt} />
+          <CreateCustomPrompt prompt={selectedPrompt} onSave={handleSavePrompt} setIsEditing={setIsEditing} />
         )}
         {displayState === 'lorebook' && selectedLorebook && (
           <CreateCustomLorebook
             lorebook={selectedLorebook}
             onSave={handleSaveLorebook}
+            onCancel={() => onCancel()}
             onRemove={setRemovedLorebookItems}
+            setIsEditing={setIsEditing}
           />
         )}
       </div>
@@ -364,6 +377,29 @@ const CustomModuleDashboard: React.FC = () => {
                         //error
                       };
                 }
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
+      {isCloseConfirmOpen && (
+        <CustomPopup
+          type="alert"
+          title="Are you sure you want to exit ‘title of lorebook’ "
+          description="If you don't save it, all the information you entered will be lost."
+          buttons={[
+            {
+              label: 'Cancel',
+              onClick: () => setIsCloseConfirmOpen(false),
+            },
+            {
+              label: 'Confirm',
+              onClick: () => {
+                setIsCloseConfirmOpen(false);
+                setDisplayState('dashboard');
+                setSelectedPrompt(null);
+                setSelectedLorebook(null);
               },
               isPrimary: true,
             },

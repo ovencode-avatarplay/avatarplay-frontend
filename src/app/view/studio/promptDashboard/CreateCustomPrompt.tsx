@@ -11,6 +11,7 @@ import {CustomModulePrompt} from '@/app/NetWork/CustomModulesNetwork';
 interface Props {
   prompt: CustomModulePrompt;
   onSave: (updatedPrompt: CustomModulePrompt) => void;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const KEYWORDS: Record<string, string> = {
@@ -409,7 +410,11 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
         textType="Label"
         value={promptName}
         onChange={e => setPromptName(e.target.value)}
-        label="Custom prompt name *"
+        label={
+          <span>
+            Name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+          </span>
+        }
         placeholder="please enter a title for your post"
       />
       <div className={styles.promptArea}>

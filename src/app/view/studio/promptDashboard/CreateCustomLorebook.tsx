@@ -1,20 +1,34 @@
 import CustomInput from '@/components/layout/shared/CustomInput';
 import styles from './CreateCustomLorebook.module.css';
-import {useEffect, useState} from 'react';
-import {LineDelete, LineUpload} from '@ui/Icons';
+import React, {useEffect, useState} from 'react';
+import {LinePlus, LineUpload} from '@ui/Icons';
 import {CustomModuleLorebook, LorebookItem} from '@/app/NetWork/CustomModulesNetwork';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface Props {
   lorebook: CustomModuleLorebook;
   onSave: (updatedPrompt: CustomModuleLorebook) => void;
+  onCancel: () => void;
   onRemove: React.Dispatch<React.SetStateAction<number[]>>;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave, onRemove}) => {
+const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave, onCancel, onRemove, setIsEditing}) => {
   const [beforeEditLorebook, setBeforeEditLorebook] = useState<CustomModuleLorebook>(lorebook);
   const [lorebookName, setLorebookName] = useState(lorebook.title);
   const [lorebookData, setLorebookData] = useState<CustomModuleLorebook>(lorebook);
+  const [isSavePopupOpen, setIsSavePopupOpen] = useState<boolean>(false);
+
+  let keywordMaxCount = 50;
+  let keywordMaxTextLength = 400;
+  let descriptionMaxTextLength = 400;
+  const keywordCount = (keyword: string): number => {
+    return keyword.split(',').filter(k => k.trim() !== '').length;
+  };
+  const isMaxKeywordReached = (keywordCount: number): boolean => {
+    return keywordCount >= keywordMaxCount;
+  };
 
   const getLorebookMinId = (list: LorebookItem[]): number => {
     const listId = list.flatMap(list => list.lorebookItemId);
@@ -28,6 +42,7 @@ const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave, onRemove}) => 
   };
 
   const handleAddItem = () => {
+    setIsEditing(true);
     if (lorebookData.items.length >= 10) return; // 최대 10개 제한
     const newItem: LorebookItem = {
       lorebookItemId: getLorebookMinId(lorebookData.items) - 1,
@@ -41,6 +56,7 @@ const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave, onRemove}) => 
   };
 
   const handleInputChange = (id: number, field: 'keyword' | 'content', value: string) => {
+    setIsEditing(true);
     setLorebookData(prevData => ({
       ...prevData,
       items: prevData.items.map(item =>
@@ -55,6 +71,7 @@ const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave, onRemove}) => 
   };
 
   const handleDeleteLorebookItem = (id: number) => {
+    setIsEditing(true);
     setLorebookData(prevData => {
       const updatedItems = prevData.items.filter(item => item.lorebookItemId !== id);
 
@@ -89,6 +106,9 @@ const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave, onRemove}) => 
     };
 
     onSave(updatedLorebook);
+
+    setIsSavePopupOpen(false);
+    setIsEditing(false);
   };
 
   useEffect(() => {
@@ -111,44 +131,99 @@ const CreateCustomLorebook: React.FC<Props> = ({lorebook, onSave, onRemove}) => 
         inputType="Basic"
         textType="Label"
         value={lorebookName}
-        onChange={e => setLorebookName(e.target.value)}
-        label="Custom lorebook name *"
+        onChange={e => {
+          setLorebookName(e.target.value);
+
+          setIsEditing(true);
+        }}
+        label={
+          <span>
+            Name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+          </span>
+        }
         placeholder="please enter a title for your post"
       />
-      <h2 className={styles.title2}>Data : {lorebookData.items.length}</h2>
+      <h2 className={styles.title2}>{`Data (${lorebookData.items.length})`}</h2>
       {renderAddButton()}
 
       <ul className={styles.lorebookItemList}>
         {lorebookData.items.map(item => (
           <li key={item.lorebookItemId} className={styles.lorebookItem}>
-            <button className={styles.deleteButton} onClick={() => handleDeleteLorebookItem(item.lorebookItemId)}>
-              <img className={styles.deleteIcon} src={LineDelete.src} />
-            </button>
+            <div className={styles.deleteArea}>
+              <button className={styles.deleteButton} onClick={() => handleDeleteLorebookItem(item.lorebookItemId)}>
+                <img className={styles.deleteIcon} src={LinePlus.src} />
+              </button>
+            </div>
             <div className={styles.itemInputArea}>
-              <div className={styles.itemTitle}>Keyword</div>
-              <CustomInput
-                inputType="Basic"
-                textType="Label"
+              <div className={styles.itemTitle}>{`Keywords ${keywordCount(item.keyword)} / ${keywordMaxCount}`}</div>
+              <textarea
+                className={styles.itemInput}
                 value={item.keyword}
-                onChange={e => handleInputChange(item.lorebookItemId, 'keyword', e.target.value)}
-                maxLength={50}
+                onChange={e => {
+                  if (!isMaxKeywordReached(keywordCount(item.keyword)) || e.target.value.length < item.keyword.length) {
+                    handleInputChange(item.lorebookItemId, 'keyword', e.target.value);
+                  }
+                }}
+                maxLength={keywordMaxTextLength}
+                placeholder="Enter keyword"
               />
-              <div className={styles.itemTitle}>Content</div>
-              <CustomInput
-                inputType="Basic"
-                textType="Label"
+              <div
+                className={styles.itemTitle}
+              >{`Description ${item.content.length} / ${descriptionMaxTextLength}`}</div>
+              <textarea
+                className={styles.itemInput}
                 value={item.content}
                 onChange={e => handleInputChange(item.lorebookItemId, 'content', e.target.value)}
-                maxLength={400}
+                maxLength={descriptionMaxTextLength}
+                placeholder="Enter keyword"
               />
             </div>
           </li>
         ))}
       </ul>
 
-      <CustomButton size="Medium" state="Normal" type="Primary" onClick={handleOnClickSave}>
-        Save
-      </CustomButton>
+      <div className={styles.buttonArea}>
+        <CustomButton
+          size="Medium"
+          state="Normal"
+          type="Tertiary"
+          customClassName={[styles.bottomButton]}
+          onClick={() => onCancel()}
+        >
+          Cancel
+        </CustomButton>
+        <CustomButton
+          size="Medium"
+          state="Normal"
+          type="Primary"
+          customClassName={[styles.bottomButton]}
+          onClick={() => {
+            setIsSavePopupOpen(true);
+          }}
+        >
+          Submit
+        </CustomButton>
+      </div>
+      {isSavePopupOpen && (
+        <CustomPopup
+          type="alert"
+          title="Do you want to submit
+this lorebook?"
+          buttons={[
+            {
+              label: 'No',
+              onClick: () => {
+                setIsSavePopupOpen(false);
+              },
+            },
+            {
+              label: 'Yes',
+              isPrimary: true,
+              onClick: handleOnClickSave,
+            },
+          ]}
+        />
+      )}
     </div>
   );
 };
