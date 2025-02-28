@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './CreateContentEpisode.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {
@@ -53,7 +53,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
   curEpisodeCount,
 }) => {
   const handleConfirm = () => {
-    onNext();
+    createNewEpisode();
   };
   const [onSeta, setOnSeta] = useState<boolean>(false);
   const [nameValue, setNameValue] = useState<string>('');
@@ -63,12 +63,13 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
     }
   };
 
-  const [priceValue, setPriceValue] = useState<string>('');
+  const [priceValue, setPriceValue] = useState<number>(0);
+
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // if (e.target.value.length <= 20) {
-    setPriceValue(e.target.value);
-    // }
+    const value = parseInt(e.target.value, 10); // 정수 변환
+    setPriceValue(isNaN(value) ? 0 : value); // 숫자가 아닐 경우 기본값 0 설정
   };
+
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
 
   const [descValue, setrDescription] = useState<string>('');
@@ -87,70 +88,49 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
     dubbingFileNames: [],
   });
 
+  useEffect(() => {
+    console.log('episodeVideoInfo', episodeVideoInfo);
+  }, [episodeVideoInfo]);
+
   const [episodeWebtoonInfo, setEpisodeWebtoonInfo] = useState<EpisodeWebtoonInfo>({
     likeCount: 0,
-    webtoonSourceUrls: [],
-    webtoonSourceNames: [],
-    languagePackUrls: [],
-    languagePackNames: [],
+    webtoonSourceUrlList: [], // 언어별 웹툰 소스 리스트 (초기값: 빈 배열)
   });
 
   const createNewEpisode = async () => {
-    if (!contentInfo) return;
+    if (!contentInfo?.id || curSeason === 0 || curEpisodeCount + 1 === 0) {
+      alert('필수 요소 (콘텐츠 ID, 시즌 번호, 에피소드 번호) 누락');
+      return;
+    }
+    if (!mediaUrls[0]) {
+      alert('썸네일이 설정되지 않았습니다.');
+      return;
+    }
+    if (!nameValue.trim()) {
+      alert('에피소드 이름을 입력해주세요.');
+      return;
+    }
+    if (!descValue.trim()) {
+      alert('에피소드 설명을 입력해주세요.');
+      return;
+    }
+    if (!episodeVideoInfo.videoSourceFileUrl) {
+      alert('비디오 파일이 업로드되지 않았습니다.');
+      return;
+    }
     const newEpisode: ContentEpisodeInfo = {
-      contentId: contentInfo?.id, // 필수: 콘텐츠 ID
+      contentId: contentInfo ? contentInfo?.id : 0, // 필수: 콘텐츠 ID
       seasonNo: curSeason, // 필수: 시즌 번호
       episodeNo: curEpisodeCount + 1, // 필수: 에피소드 번호
       thumbnailUrl: mediaUrls[0], // 필수: 썸네일
       name: nameValue, // 필수: 이름
       description: descValue, // 필수: 설명
       monetization: isMonetization,
-      salesStarEa: 50,
+      salesStarEa: priceValue,
       likeCount: 0,
-      episodeVideoInfo: {
-        videoSourceFileUrl: 'https://example.com/video.mp4',
-        videoSourceFileName: 'video.mp4',
-        playTime: '00:10:30',
-        likeCount: 0,
-        subtitleFileUrls: ['https://example.com/subtitle.srt'],
-        subtitleFileNames: ['subtitle.srt'],
-        dubbingFileUrls: ['https://example.com/dubbing.mp3'],
-        dubbingFileNames: ['dubbing.mp3'],
-      },
-      episodeWebtoonInfo: {
-        likeCount: 0,
-        webtoonSourceUrls: ['https://example.com/webtoon.jpg'],
-        webtoonSourceNames: ['웹툰 1'],
-        languagePackUrls: ['https://example.com/lang.zip'],
-        languagePackNames: ['한국어 패키지'],
-      },
+      episodeVideoInfo: episodeVideoInfo,
+      episodeWebtoonInfo: episodeWebtoonInfo,
     };
-
-    // 📌 필수 입력값 검증 (비어있을 경우 alert)
-    if (!newEpisode.contentId) {
-      alert('콘텐츠 ID가 없습니다.');
-      return;
-    }
-    if (!newEpisode.seasonNo) {
-      alert('시즌 번호를 입력해주세요.');
-      return;
-    }
-    if (!newEpisode.episodeNo) {
-      alert('에피소드 번호를 입력해주세요.');
-      return;
-    }
-    if (!newEpisode.thumbnailUrl.trim()) {
-      alert('썸네일을 업로드해주세요.');
-      return;
-    }
-    if (!newEpisode.name.trim()) {
-      alert('에피소드 이름을 입력해주세요.');
-      return;
-    }
-    if (!newEpisode.description.trim()) {
-      alert('에피소드 설명을 입력해주세요.');
-      return;
-    }
 
     const payload: CreateEpisodeReq = {episodeInfo: newEpisode};
 
@@ -159,6 +139,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
       if (response.data) {
         console.log('에피소드 생성 성공:', response.data.episodeId);
         alert(`에피소드가 성공적으로 생성되었습니다! (ID: ${response.data.episodeId})`);
+        onNext();
       }
     } catch (error) {
       console.error('에피소드 생성 실패:', error);
@@ -229,7 +210,9 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
         {contentInfo?.categoryType == ContentCategoryType.Video && (
           <VideoContentUpload setEpisodeVideoInfo={setEpisodeVideoInfo}></VideoContentUpload>
         )}
-        {contentInfo?.categoryType == ContentCategoryType.Webtoon && <WebtoonContentUpload></WebtoonContentUpload>}
+        {contentInfo?.categoryType == ContentCategoryType.Webtoon && (
+          <WebtoonContentUpload setEpisodeWebtoonInfo={setEpisodeWebtoonInfo}></WebtoonContentUpload>
+        )}
 
         <div className={styles.moenetization}>
           <span className={styles.label}>Moenetization</span>
@@ -308,7 +291,14 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
                 <span className={styles.starlabel}>EA</span>
               </div>
             )}
-            <button className={styles.setaConfirm}>Confirm</button>
+            <button
+              className={styles.setaConfirm}
+              onClick={() => {
+                setOnSeta(false);
+              }}
+            >
+              Confirm
+            </button>
           </div>
         </div>
       </SelectDrawer>

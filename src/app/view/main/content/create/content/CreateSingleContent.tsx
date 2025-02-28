@@ -169,6 +169,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
   const [descValue, setrDescription] = useState<string>('');
 
   const [isMonetization, setIsMonetization] = useState<boolean>(false);
+
   const [episodeVideoInfo, setEpisodeVideoInfo] = useState<EpisodeVideoInfo>({
     videoSourceFileUrl: '',
     videoSourceFileName: '',
@@ -182,12 +183,8 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
 
   const [episodeWebtoonInfo, setEpisodeWebtoonInfo] = useState<EpisodeWebtoonInfo>({
     likeCount: 0,
-    webtoonSourceUrls: [],
-    webtoonSourceNames: [],
-    languagePackUrls: [],
-    languagePackNames: [],
+    webtoonSourceUrlList: [], // 언어별 웹툰 소스 리스트 (초기값: 빈 배열)
   });
-
   return (
     <div className={styles.parent}>
       <div className={styles.header}>
@@ -324,10 +321,14 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
           onClick={() => setVisibilityDrawerOpen(true)}
         ></CustomDropDownSelectDrawer>
 
-        {selectedCategory === CategoryTypes.Drama && <>{/* <VideoContentUpload></VideoContentUpload> */}</>}
+        {selectedCategory === CategoryTypes.Drama && (
+          <>
+            <VideoContentUpload setEpisodeVideoInfo={setEpisodeVideoInfo}></VideoContentUpload>
+          </>
+        )}
         {selectedCategory === CategoryTypes.Webtoon && (
           <>
-            <WebtoonContentUpload></WebtoonContentUpload>
+            <WebtoonContentUpload setEpisodeWebtoonInfo={setEpisodeWebtoonInfo}></WebtoonContentUpload>
           </>
         )}
 

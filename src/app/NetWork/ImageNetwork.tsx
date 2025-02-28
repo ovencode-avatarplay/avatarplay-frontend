@@ -34,6 +34,9 @@ export interface MediaUploadReq {
 export interface MediaUploadRes {
   url: string; // 메인 URL
   imageUrlList: string[]; // 추가 이미지 URL 리스트
+  imageNameList: string[]; // 추가 이미지 URL 리스트
+  playTime: string;
+  fileName: string;
 }
 
 export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<MediaUploadRes>> => {

@@ -23,18 +23,20 @@ export interface VideoUploadField {
   id: number;
   selectedCountry: CountryTypes;
   fileUrl?: string; // 업로드된 파일의 URL 저장
+  fileName?: string;
 }
 interface VideoContentUploadProps {
-  setEpisodeVideoInfo: (value: EpisodeVideoInfo) => void;
+  setEpisodeVideoInfo: (value: (prev: EpisodeVideoInfo) => EpisodeVideoInfo) => void;
 }
 
-const VideoContentUpload: React.FC<VideoContentUploadProps> = ({}) => {
+const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoInfo}) => {
   const [subtitleFields, setSubtitleFields] = useState<VideoUploadField[]>([]);
   const [dubbingFields, setDubbingFields] = useState<VideoUploadField[]>([]);
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle' | 'dubbing'; index: number} | null>(
     null,
   );
   const [videoFile, setVideoFile] = useState<string | null>(null); // 비디오 업로드 상태
+  const [videoName, setVideoName] = useState<string | null>(null); // 비디오 업로드 상태
 
   const CountryItems = (type: 'subtitle' | 'dubbing', index: number): SelectDrawerItem[] => [
     {name: 'Korea', onClick: () => handleCountryChange(type, index, CountryTypes.Korea)},
@@ -87,11 +89,9 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({}) => {
     setCountryDrawerOpen(null);
   };
 
-  // 파일 업로드 처리
   const handleFileUpload = async (type: 'video' | 'subtitle' | 'dubbing', files: File[], index?: number) => {
     try {
       let mediaState: UploadMediaState;
-
       if (type === 'video') mediaState = UploadMediaState.ContentEpisodeVideo;
       else if (type === 'subtitle') mediaState = UploadMediaState.ContentEpisodeSubtitle;
       else mediaState = UploadMediaState.ContentEpisodeDubbing;
@@ -101,13 +101,37 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({}) => {
 
       if (response?.data) {
         const fileUrl = response.data.url;
+        const fileName = response.data.fileName; // 📌 추가된 fileName
+        const playTime = response.data.playTime;
+        console.log(`${type} uploaded:`, fileUrl, fileName);
 
         if (type === 'video') {
           setVideoFile(fileUrl);
+          setVideoName(fileName); // 📌 추가된 fileName 저장
+          setEpisodeVideoInfo(prev => ({
+            ...prev,
+            videoSourceFileUrl: fileUrl,
+            videoSourceFileName: fileName, // 📌 기존 files[0].name → fileName으로 변경
+            playTime: playTime,
+          }));
         } else if (type === 'subtitle' && index !== undefined) {
-          setSubtitleFields(prevFields => prevFields.map((field, i) => (i === index ? {...field, fileUrl} : field)));
+          setSubtitleFields(prevFields =>
+            prevFields.map((field, i) => (i === index ? {...field, fileUrl, fileName} : field)),
+          );
+          setEpisodeVideoInfo(prev => ({
+            ...prev,
+            subtitleFileUrls: prev.subtitleFileUrls.map((url, i) => (i === index ? fileUrl : url)),
+            subtitleFileNames: prev.subtitleFileNames.map((name, i) => (i === index ? fileName : name)), // 📌 추가된 fileName 적용
+          }));
         } else if (type === 'dubbing' && index !== undefined) {
-          setDubbingFields(prevFields => prevFields.map((field, i) => (i === index ? {...field, fileUrl} : field)));
+          setDubbingFields(prevFields =>
+            prevFields.map((field, i) => (i === index ? {...field, fileUrl, fileName} : field)),
+          );
+          setEpisodeVideoInfo(prev => ({
+            ...prev,
+            dubbingFileUrls: prev.dubbingFileUrls.map((url, i) => (i === index ? fileUrl : url)),
+            dubbingFileNames: prev.dubbingFileNames.map((name, i) => (i === index ? fileName : name)), // 📌 추가된 fileName 적용
+          }));
         }
       }
     } catch (error) {
@@ -144,7 +168,7 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({}) => {
           {field.fileUrl ? (
             <>
               <div className={styles.textInBoxGroup}>
-                <span className={styles.textInBox}>{field.fileUrl.split('/').pop()}</span> // 파일명 표시
+                <span className={styles.textInBox}>{field.fileName}</span> // 파일명 표시
                 <img src={CircleClose.src} className={styles.circleClose}></img>
               </div>
             </>
@@ -203,8 +227,21 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({}) => {
             {videoFile ? (
               <>
                 <div className={styles.textInBoxGroup}>
-                  <span className={styles.textInBox}>{videoFile.split('/').pop()}</span>{' '}
-                  <img src={CircleClose.src} className={styles.circleClose}></img>
+                  <span className={styles.textInBox}>{videoName}</span>{' '}
+                  <img
+                    src={CircleClose.src}
+                    className={styles.circleClose}
+                    onClick={() => {
+                      setVideoFile(null);
+                      setVideoName('');
+                      setEpisodeVideoInfo(prev => ({
+                        ...prev,
+                        videoSourceFileUrl: '',
+                        videoSourceFileName: '', // 📌 기존 files[0].name → fileName으로 변경
+                        playTime: '',
+                      }));
+                    }}
+                  ></img>
                 </div>
               </>
             ) : (

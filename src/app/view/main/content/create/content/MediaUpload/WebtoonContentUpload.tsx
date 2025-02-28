@@ -18,6 +18,7 @@ import {
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
+import {EpisodeWebtoonInfo} from '@/app/NetWork/ContentNetwork';
 enum CountryTypes {
   Korea = 0,
   Japan = 1,
@@ -27,7 +28,9 @@ export interface WebtoonUploadField {
   selectedCountry: CountryTypes;
   fileUrl: string[]; // 업로드된 파일의 URL 저장
 }
-interface WebtoonContentUploadProps {}
+interface WebtoonContentUploadProps {
+  setEpisodeWebtoonInfo: (value: EpisodeWebtoonInfo) => void;
+}
 
 const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({}) => {
   const [subtitleFields, setSubtitleFields] = useState<WebtoonUploadField[]>([]);

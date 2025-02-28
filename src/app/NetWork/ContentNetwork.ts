@@ -84,7 +84,6 @@ export const sendGetContent = async (payload: GetContentReq): Promise<ResponseAP
     throw new Error('Failed to fetch content. Please try again.');
   }
 };
-
 // 📌 에피소드 생성 요청
 export interface CreateEpisodeReq {
   episodeInfo: ContentEpisodeInfo;
@@ -118,19 +117,25 @@ export interface EpisodeVideoInfo {
   dubbingFileNames: string[];
 }
 
-// 📌 에피소드 웹툰 정보
+// 📌 새로운 에피소드 웹툰 정보 (변경됨)
 export interface EpisodeWebtoonInfo {
   likeCount: number;
-  webtoonSourceUrls: string[];
-  webtoonSourceNames: string[];
-  languagePackUrls: string[];
-  languagePackNames: string[];
+  webtoonSourceUrlList: WebtoonSourceUrl[];
 }
 
+// 📌 웹툰 언어별 소스 리스트
+export interface WebtoonSourceUrl {
+  webtoonLanguageType: number;
+  webtoonSourceUrls: string[];
+  webtoonSourceNames: string[];
+}
+
+// 📌 에피소드 생성 응답
 export interface CreateEpisodeRes {
   episodeId: number;
 }
 
+// 📌 에피소드 생성 API 호출
 export const sendCreateEpisode = async (payload: CreateEpisodeReq): Promise<ResponseAPI<CreateEpisodeRes>> => {
   try {
     const response = await api.post<ResponseAPI<CreateEpisodeRes>>('/Content/createEpisode', payload);
