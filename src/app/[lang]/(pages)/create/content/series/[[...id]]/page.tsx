@@ -1,3 +1,5 @@
+'use client';
+import CreateSeriesContent from '@/app/view/main/content/create/content/CreateSeriesContent';
 import SeriesDetail from '@/app/view/main/content/create/content/SeriesDetail';
 
 type Props = {
@@ -11,9 +13,7 @@ const page = ({params}: Props) => {
   console.log('id', id);
 
   return (
-    <>
-      <SeriesDetail id={id}></SeriesDetail>
-    </>
+    <>{params?.id == undefined ? <CreateSeriesContent></CreateSeriesContent> : <SeriesDetail id={id}></SeriesDetail>}</>
   );
 };
 
