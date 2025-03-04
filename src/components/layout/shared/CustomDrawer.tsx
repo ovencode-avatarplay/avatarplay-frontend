@@ -42,6 +42,9 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, tit
       anchor="bottom"
       open={open}
       onClose={onClose}
+      ModalProps={{
+        style: {zIndex: 3000}, // 원하는 값으로 변경
+      }}
       PaperProps={{
         className: styles.drawerContainer,
         style: {
