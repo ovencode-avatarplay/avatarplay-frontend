@@ -55,6 +55,9 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
       anchor="bottom"
       open={open}
       onClose={() => handleCloseDrawer()}
+      ModalProps={{
+        style: {zIndex: 3000}, // 원하는 값으로 변경
+      }}
       PaperProps={{
         className: styles.drawer,
         sx: {
