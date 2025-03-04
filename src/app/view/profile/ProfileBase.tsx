@@ -75,6 +75,7 @@ import {getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {channel} from 'diagnostics_channel';
 import 'swiper/css';
 import 'swiper/css/navigation'; // 필요시 다른 모듈도 가져오기
+import PopupSubscription from '../main/content/create/common/PopupSubscription';
 
 enum eTabPDType {
   Feed,
@@ -160,6 +161,8 @@ type DataProfileType = {
   isShareOpened: boolean;
 
   tabContentMenu: TabContentMenuType;
+
+  isOpenPopupSubscription: boolean;
   refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
   getIsEmptyTab: () => boolean;
 };
@@ -221,6 +224,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       isPin: false,
       id: 0,
     },
+
+    isOpenPopupSubscription: false,
     refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
     getIsEmptyTab: () => true,
   });
@@ -770,7 +775,15 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           )}
           {isOtherCharacter && (
             <div className={styles.buttonsOtherCharacter}>
-              <button className={styles.subscribe}>Subscribe</button>
+              <button
+                className={styles.subscribe}
+                onClick={() => {
+                  data.isOpenPopupSubscription = true;
+                  setData({...data});
+                }}
+              >
+                Subscribe
+              </button>
               <button
                 className={styles.follow}
                 onClick={() => {
@@ -894,6 +907,15 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           alert('report api 연동 필요');
         }}
       />
+      {data.isOpenPopupSubscription && (
+        <PopupSubscription
+          id={profileId}
+          onClose={() => {
+            data.isOpenPopupSubscription = false;
+            setData({...data});
+          }}
+        />
+      )}
     </>
   );
 });
