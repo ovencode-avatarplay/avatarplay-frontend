@@ -116,34 +116,191 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     checkForAutoComplete(e, setShowAutoCompleteClaude);
   };
 
-  const checkForAutoComplete = (
-    e: React.FormEvent<HTMLDivElement>,
-    setShowAutoComplete: React.Dispatch<React.SetStateAction<boolean>>,
-  ) => {
-    const text = e.currentTarget.innerText;
-    if (text.includes('{') && !text.includes('}')) {
-      setShowAutoComplete(true);
-    } else {
-      setShowAutoComplete(false);
-    }
-  };
-
+  //#region  키 입력 대응
   const handleInput = (e: React.FormEvent<HTMLDivElement>, setState: React.Dispatch<React.SetStateAction<string>>) => {
     const div = e.currentTarget;
-    let html = div.innerHTML;
 
-    // 키워드 감지 후 변환
-    Object.keys(KEYWORDS).forEach(keyword => {
-      const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
-      html = html.replace(
-        regex,
-        `<span class="${styles['cm-chip']} ${styles['cm-keyword']}" contenteditable="false">${KEYWORDS[keyword]}</span>`,
-      );
-    });
+    let html = div.innerHTML.trim();
+
+    // 무한 루프 방지
+    if (html === setState.toString()) return;
+
+    // 모든 내용이 삭제된 경우 기본 공백 추가
+    if (!html || html === '<br>') {
+      div.innerHTML = '&nbsp;';
+    } else {
+      let changed = false;
+
+      Object.keys(KEYWORDS).forEach(keyword => {
+        const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
+
+        if (html.includes(keyword)) {
+          html = html.replace(
+            regex,
+            `<span class="${styles['chip']} ${styles['chipUser']}" contenteditable="false">${KEYWORDS[keyword]}</span>`,
+          );
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        div.innerHTML = html;
+
+        // 마지막으로 변경된 chip 요소를 찾고, 그 뒤로 커서를 이동
+        const chips = div.querySelectorAll(`.${styles['chip']}`);
+        if (chips.length > 0) {
+          moveCaretAfterNode(chips[chips.length - 1]); // 가장 마지막 chip 뒤로 이동
+        }
+      }
+    }
+
+    setState(html);
+  };
+
+  //   새로운 chip 뒤로 캐럿 이동
+  const moveCaretAfterNode = (node: Node) => {
+    const range = document.createRange();
+    const sel = window.getSelection();
+
+    if (!node || !sel) return;
+
+    range.setStartAfter(node); // chip 요소 뒤로 커서 이동
+    range.collapse(true);
+
+    sel.removeAllRanges();
+    sel.addRange(range);
+  };
+
+  // Handle change in the editor content
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const selection = window.getSelection();
+    if (!selection) return;
+
+    const range = selection.getRangeAt(0);
+    const node = e.target as HTMLElement;
+
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+      const div = e.currentTarget;
+
+      // 모든 내용을 삭제했을 경우 <br> 추가하여 커서 유지
+      if (div.innerText.trim() === '') {
+        e.preventDefault();
+        div.innerHTML = '&nbsp;';
+        moveCaretToEnd(div);
+      }
+    }
+
+    if (e.key === 'Enter') {
+      e.preventDefault(); // 기본 엔터 동작 방지
+
+      const newLine = document.createElement('div');
+      newLine.innerHTML = '<br>';
+
+      range.insertNode(newLine);
+
+      moveCaretToEnd(newLine);
+    }
+
+    if (e.key === 'Backspace' && node.classList.contains('chip')) {
+      node.remove();
+      e.preventDefault();
+    }
+  };
+  //#endregion
+
+  //#region  캐럿 (커서) 관련
+  // 캐럿 위치 저장
+  const saveCaretPosition = (container: HTMLElement): number | null => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return null;
+    const range = selection.getRangeAt(0);
+    const preSelectionRange = range.cloneRange();
+    preSelectionRange.selectNodeContents(container);
+    preSelectionRange.setEnd(range.startContainer, range.startOffset);
+    return preSelectionRange.toString().length; // 캐럿 위치 반환
+  };
+
+  // 캐럿 위치 복원
+  const restoreCaretPosition = (container: HTMLElement, pos: number | null) => {
+    if (pos === null) return;
+    const selection = window.getSelection();
+    if (!selection) return;
+
+    const range = document.createRange();
+    range.setStart(container, 0);
+    range.collapse(true);
+
+    let node: ChildNode | null = container;
+    let nodeStack: ChildNode[] = [];
+    let charIndex = 0;
+
+    while (node) {
+      if (node.nodeType === 3) {
+        let nextCharIndex = charIndex + node.nodeValue!.length;
+        if (pos <= nextCharIndex) {
+          range.setStart(node, pos - charIndex);
+          break;
+        }
+        charIndex = nextCharIndex;
+      }
+
+      if (node.firstChild) {
+        nodeStack.push(node);
+        node = node.firstChild;
+      } else if (node.nextSibling) {
+        node = node.nextSibling;
+      } else {
+        while (nodeStack.length > 0) {
+          node = nodeStack.pop()!;
+          if (node.nextSibling) {
+            node = node.nextSibling;
+            break;
+          }
+        }
+      }
+    }
+
+    // 불필요한 반복 방지: 현재 커서 위치가 동일하면 변경하지 않음
+    if (selection.rangeCount > 0 && selection.getRangeAt(0).startOffset === range.startOffset) {
+      return;
+    }
+
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
+
+  // 개행 후, 캐럿을 새로운 줄 끝으로 이동
+  const moveCaretToEnd = (el: HTMLElement) => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+
+    const sel = window.getSelection();
+    if (sel) {
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  };
+  //#endregion
+
+  //#region  Chip 관련
+  const handleKeywordInsert = (div: HTMLDivElement, keyword: string) => {
+    if (!div) return;
+
+    let html = div.innerHTML.trim();
+
+    //  키워드를 바로 `chip`으로 변환
+    html += ` <span class="${styles['chip']} ${styles['chipUser']}" contenteditable="false">${KEYWORDS[keyword]}</span> `;
 
     div.innerHTML = html;
-    setState(html);
-    placeCaretAtEnd(div);
+    setGptPrompt(html);
+
+    //  캐럿을 `chip` 뒤로 이동
+    const chips = div.querySelectorAll(`.${styles['chip']}`);
+    if (chips.length > 0) {
+      moveCaretAfterNode(chips[chips.length - 1]);
+    }
   };
 
   const decodeHTMLEntities = (html: string): string => {
@@ -178,32 +335,29 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     return html === '〈br〉' || html.trim() === '' ? '' : html;
   };
 
-  const placeCaretAtEnd = (el: HTMLElement) => {
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    range.collapse(false);
-    const sel = window.getSelection();
-    if (sel) {
-      sel.removeAllRanges();
-      sel.addRange(range);
+  //#endregion
+
+  //#region  자동완성 관련
+  const checkForAutoComplete = (
+    e: React.FormEvent<HTMLDivElement>,
+    setShowAutoComplete: React.Dispatch<React.SetStateAction<boolean>>,
+  ) => {
+    const text = e.currentTarget.innerText;
+    if (text.includes('{') && !text.includes('}')) {
+      setShowAutoComplete(true);
+    } else {
+      setShowAutoComplete(false);
     }
   };
 
+  //#endregion
+
+  //#region  버튼 액션, 등등
   const handleExampleChange = (keyword: string, e: React.ChangeEvent<HTMLInputElement>) => {
     setEditableExamples(prev => ({
       ...prev,
       [keyword]: e.target.value,
     }));
-  };
-
-  // Handle change in the editor content
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const node = e.target as HTMLElement;
-    if (e.key === 'Backspace' && node.classList.contains('cm-chip')) {
-      node.remove();
-      e.preventDefault();
-    }
   };
 
   const handleSavePrompt = () => {
@@ -213,7 +367,9 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   const handleResetPrompt = () => {
     setPromptName('');
   };
+  //#endregion
 
+  //#region  Render
   const renderPromptTitleArea = () => {
     return (
       <div className={styles.promptTitleArea}>
@@ -261,7 +417,17 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   const renderPromptInputArea = () => {
     return (
       <div className={styles.promptInputArea}>
-        {selectedModel === 0 && renderPromptTemplateChatGPT()}
+        {selectedModel === 0 && (
+          <>
+            {renderPromptTemplateChatGPT()}
+            <AutoCompleteCustomPrompt
+              keywords={KEYWORDS}
+              inputRef={promptRefs.gpt}
+              onKeywordInsert={handleKeywordInsert}
+            />
+          </>
+        )}
+
         {selectedModel === 1 && renderPromptTemplateClaude()}
         {previewOn && (
           <textarea
@@ -358,6 +524,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
       </div>
     );
   };
+  //#endregion
 
   return (
     <div className={styles.createContainer}>

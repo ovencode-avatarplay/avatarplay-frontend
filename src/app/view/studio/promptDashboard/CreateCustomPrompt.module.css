@@ -83,6 +83,7 @@
 
 .promptInputArea
 {
+    position: relative;
     width: var(--second-width);
     display: flex;
     flex-direction: row;
@@ -192,7 +193,7 @@
 }
 
 
-.cm-chip { 
+.chip { 
     display: inline-flex;
     height: 24px;
     padding: 10px 12px;
@@ -214,7 +215,12 @@
     cursor: pointer;
   } 
 
-  .cm-keyword
-  {
+.chipChar
+{
     background-color: red;
-  }
+}
+
+.chipUser
+{
+    background-color: orange;
+}
