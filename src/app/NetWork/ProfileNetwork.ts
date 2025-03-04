@@ -450,7 +450,9 @@ export const getPdInfo = async (payload: GetPdInfoReq) => {
   }
 };
 
-export interface GetSubscriptionListReq {}
+export interface GetSubscriptionListReq {
+  isValidSubscription: boolean;
+}
 
 export interface GetSubscriptionListRes {
   subscriptionList: MembershipSubscribe[];
@@ -535,13 +537,38 @@ export const subscribeProfile = async (payload: ProfileSubscribeReq) => {
     const res = await api.post<ResponseAPI<ProfileSubscribeRes>>('Profile/subscribe', payload);
 
     if (res.status !== 200) {
-      console.error('getPaymentAmountMenu API 응답 오류:', res);
+      console.error('subscribeProfile API 응답 오류:', res);
       return null;
     }
 
     return res.data;
   } catch (e) {
-    console.error('getPaymentAmountMenu API 요청 실패:', e);
+    console.error('subscribeProfile API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface SubscribeCancelReq {
+  subscribeId: number;
+}
+
+export interface SubscribeCancelRes {
+  subscribeId: number;
+}
+
+export const cancelSubscribe = async (payload: SubscribeCancelReq) => {
+  try {
+    const res = await api.post<ResponseAPI<SubscribeCancelRes>>('Profile/subscribeCancel', payload);
+
+    if (res.status !== 200) {
+      console.error('cancelSubscribe API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('cancelSubscribe API 요청 실패:', e);
     alert('API 요청 중 에러 발생: ' + e);
     return null;
   }

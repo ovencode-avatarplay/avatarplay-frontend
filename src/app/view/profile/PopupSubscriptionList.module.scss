@@ -1,9 +1,9 @@
 .popup {
   margin: 0 auto;
   width: calc(var(--full-width));
-  height: 100%;
+  min-height: calc(100% - 48px);
   min-width: calc(var(--full-width));
-  min-height: 100vh;
+  min-height: calc(100% - 48px);
   overflow-y: auto; // 내부 콘텐츠가 길면 스크롤 가능
 
   background: white;

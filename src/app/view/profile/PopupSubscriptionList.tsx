@@ -3,10 +3,16 @@ import React, {useEffect, useState} from 'react';
 import styles from './PopupSubscriptionList.module.scss';
 import {BoldAltArrowDown, BoldArrowLeft, BoldMenuDots, LineCheck} from '@ui/Icons';
 import cx from 'classnames';
-import {getSubscriptionList, GetSubscriptionListRes, MembershipSubscribe} from '@/app/NetWork/ProfileNetwork';
+import {
+  cancelSubscribe,
+  getSubscriptionList,
+  GetSubscriptionListRes,
+  MembershipSubscribe,
+} from '@/app/NetWork/ProfileNetwork';
 import {SelectBox} from './ProfileBase';
 import PopupSubscription, {getUnit} from '../main/content/create/common/PopupSubscription';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
+import BottomNav from '../main/bottom-nav/BottomNav';
 
 type Props = {
   onClose: () => void;
@@ -17,6 +23,8 @@ const PopupSubscriptionList = ({onClose}: Props) => {
     indexTab: number;
     indexSort: number;
     subscriptionList: MembershipSubscribe[];
+    subscriptionInactiveList: MembershipSubscribe[];
+
     dataSubScriptionSetting: {
       idProfile: number;
       isOpen: boolean;
@@ -29,6 +37,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
     indexTab: 0,
     indexSort: 0,
     subscriptionList: [],
+    subscriptionInactiveList: [],
     dataSubScriptionSetting: {
       idProfile: 0,
       isOpen: false,
@@ -40,13 +49,23 @@ const PopupSubscriptionList = ({onClose}: Props) => {
   });
 
   useEffect(() => {
-    refreshList();
+    refreshAll();
   }, []);
 
-  const refreshList = async () => {
-    const resSubscriptionList = await getSubscriptionList({});
+  const refreshAll = async () => {
+    await refreshList(true);
+    await refreshList(false);
+  };
+
+  const refreshList = async (isValidSubscription: boolean = true) => {
+    const resSubscriptionList = await getSubscriptionList({isValidSubscription});
     console.log('resSubScriptionList : ', resSubscriptionList);
-    data.subscriptionList = resSubscriptionList?.data?.subscriptionList || [];
+    if (isValidSubscription) {
+      data.subscriptionList = resSubscriptionList?.data?.subscriptionList || [];
+    } else {
+      data.subscriptionInactiveList = resSubscriptionList?.data?.subscriptionList || [];
+    }
+    setData({...data});
   };
 
   const sortOptionList = [
@@ -194,34 +213,55 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                 })}
               </ul>
 
-              <div className={styles.label}>Inactive Subscription</div>
+              {data.subscriptionInactiveList.length > 0 && <div className={styles.label}>Inactive Subscription</div>}
               <ul className={styles.subscriptionList}>
-                <li className={styles.item}>
-                  <div className={styles.left}>
-                    <img src="/images/profile_sample/img_sample_profile1.png" alt="" className={styles.thumbnail} />
-                    <div className={styles.infoWrap}>
-                      <div className={styles.name}>Character Name</div>
-                      <div className={styles.price}>$25 Monthly Price</div>
-                      <div className={styles.dateExpired}>Next Billing Date 2025.03.02</div>
-                    </div>
-                  </div>
-                  <div className={cx(styles.right, styles.renewalWrap)}>
-                    <div
-                      className={styles.renewal}
-                      onClick={() => {
-                        alert('renewal 예정');
-                        data.dataRenewal.idProfile = 0;
-                        setData({...data});
-                      }}
-                    >
-                      Renewal
-                    </div>
-                  </div>
-                </li>
+                {data.subscriptionInactiveList.map((one, index) => {
+                  const unit = getUnit(one?.paymentType);
+                  const amount = one?.paymentAmount;
+                  const expireAt = formatDate(one?.expireAt);
+                  const isFree = amount == 0;
+                  const priceStr = isFree ? 'free' : `${unit}${amount} Monthly Price`;
+
+                  function formatDate(dateString: string) {
+                    const date = new Date(dateString);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+                    const day = String(date.getDate()).padStart(2, '0');
+
+                    return `${year}.${month}.${day}`;
+                  }
+                  return (
+                    <li className={styles.item}>
+                      <div className={styles.left}>
+                        <img src={one.iconUrl} alt="" className={styles.thumbnail} />
+                        <div className={styles.infoWrap}>
+                          <div className={styles.name}>{one.name}</div>
+                          <div className={styles.price}>{priceStr} </div>
+                          <div className={styles.dateExpired}>Next Billing Date {expireAt}</div>
+                        </div>
+                      </div>
+                      <div className={cx(styles.right, styles.renewalWrap)}>
+                        <div
+                          className={styles.renewal}
+                          onClick={() => {
+                            alert('renewal 예정');
+                            data.dataRenewal.idProfile = 0;
+                            setData({...data});
+                          }}
+                        >
+                          Renewal
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </section>
             <button className={styles.btnSubscription}>Subscribe Now</button>
           </main>
+          <footer>
+            <BottomNav />
+          </footer>
         </div>
       </Dialog>
       <ContentSetting
@@ -230,8 +270,10 @@ const PopupSubscriptionList = ({onClose}: Props) => {
           data.dataSubScriptionSetting.isOpen = false;
           setData({...data});
         }}
-        onCancel={() => {
-          alert('구독 취소 예정' + data.dataSubScriptionSetting.idProfile);
+        onCancel={async () => {
+          const idProfile = data.dataSubScriptionSetting.idProfile;
+          await cancelSubscribe({subscribeId: idProfile});
+          await refreshAll();
         }}
       />
       {data.dataRenewal.isOpen && (
