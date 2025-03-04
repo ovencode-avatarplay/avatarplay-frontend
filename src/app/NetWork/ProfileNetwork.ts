@@ -523,3 +523,26 @@ export const getPaymentAmountMenu = async (payload: GetSubscribePaymentReq) => {
     return null;
   }
 };
+
+export interface ProfileSubscribeReq {
+  profileId: number;
+}
+
+export interface ProfileSubscribeRes {}
+
+export const subscribeProfile = async (payload: ProfileSubscribeReq) => {
+  try {
+    const res = await api.post<ResponseAPI<ProfileSubscribeRes>>('Profile/subscribe', payload);
+
+    if (res.status !== 200) {
+      console.error('getPaymentAmountMenu API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getPaymentAmountMenu API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};

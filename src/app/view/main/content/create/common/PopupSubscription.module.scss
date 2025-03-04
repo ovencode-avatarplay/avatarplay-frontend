@@ -1,7 +1,8 @@
 .popup {
-  width: 100%;
+  margin: 0 auto;
+  width: calc(var(--full-width));
   height: 100%;
-  min-width: 100vw;
+  min-width: calc(var(--full-width));
   min-height: 100vh;
   overflow-y: auto; // 내부 콘텐츠가 길면 스크롤 가능
 
@@ -48,6 +49,7 @@
 
     .tab {
       flex: 1;
+      padding: 0 7px;
       padding-bottom: 14px;
 
       color: var(--Neutral-600, #80868B);
@@ -61,6 +63,7 @@
 
       border-bottom: solid #F1F3F4 2px;
       cursor: pointer;
+      white-space: nowrap;
 
       &.active {
         color: var(--Black, #000);
@@ -75,6 +78,8 @@
         border-bottom: solid black 2px;
       }
     }
+
+    .tab:last-of-type {}
 
     .shop {
       width: 64px;
@@ -147,5 +152,27 @@
     line-height: 21px;
     /* 150% */
     letter-spacing: -0.4px;
+  }
+
+  .btnSubscription {
+    position: fixed;
+    bottom: 40px;
+    height: 50px;
+    width: calc(var(--full-width) - 14px * 2);
+
+    border-radius: 12px;
+    background: var(--Neutral-800, #2C3131);
+
+    color: var(--White, #FFF);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 21px;
+    /* 150% */
+    letter-spacing: -0.4px;
+
+    cursor: pointer;
   }
 }

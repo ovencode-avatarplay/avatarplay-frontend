@@ -76,6 +76,7 @@ import {channel} from 'diagnostics_channel';
 import 'swiper/css';
 import 'swiper/css/navigation'; // 필요시 다른 모듈도 가져오기
 import PopupSubscription from '../main/content/create/common/PopupSubscription';
+import PopupSubscriptionList from './PopupSubscriptionList';
 
 enum eTabPDType {
   Feed,
@@ -163,6 +164,10 @@ type DataProfileType = {
   tabContentMenu: TabContentMenuType;
 
   isOpenPopupSubscription: boolean;
+  isOpenPopupSubscriptionList: boolean;
+  isOpenPopupFavoritesList: boolean;
+  isOpenPopupPlayList: boolean;
+
   refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
   getIsEmptyTab: () => boolean;
 };
@@ -226,6 +231,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     },
 
     isOpenPopupSubscription: false,
+    isOpenPopupSubscriptionList: false,
+    isOpenPopupFavoritesList: false,
+    isOpenPopupPlayList: false,
+
     refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
     getIsEmptyTab: () => true,
   });
@@ -616,7 +625,15 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     <>
       {isMine && (
         <div className={styles.buttonWrap}>
-          <button className={styles.subscribe}>Subscribe</button>
+          <button
+            className={styles.subscribe}
+            onClick={() => {
+              data.isOpenPopupSubscriptionList = true;
+              setData({...data});
+            }}
+          >
+            Subscribe
+          </button>
           <button className={styles.favorite}>Favorites</button>
           <button className={styles.playlist}>Playlist</button>
         </div>
@@ -912,6 +929,14 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           id={profileId}
           onClose={() => {
             data.isOpenPopupSubscription = false;
+            setData({...data});
+          }}
+        />
+      )}
+      {data.isOpenPopupSubscriptionList && (
+        <PopupSubscriptionList
+          onClose={() => {
+            data.isOpenPopupSubscriptionList = false;
             setData({...data});
           }}
         />

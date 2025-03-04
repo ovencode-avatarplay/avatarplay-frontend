@@ -1,17 +1,42 @@
 import {Dialog} from '@mui/material';
 import React, {useEffect, useState} from 'react';
-import styles from 'PopupSubscriptionList.module.scss';
-import {BoldArrowLeft} from '@ui/Icons';
+import styles from './PopupSubscriptionList.module.scss';
+import {BoldAltArrowDown, BoldArrowLeft, BoldMenuDots, LineCheck} from '@ui/Icons';
 import cx from 'classnames';
-import {getSubscriptionList} from '@/app/NetWork/ProfileNetwork';
+import {getSubscriptionList, GetSubscriptionListRes, MembershipSubscribe} from '@/app/NetWork/ProfileNetwork';
+import {SelectBox} from './ProfileBase';
+import PopupSubscription, {getUnit} from '../main/content/create/common/PopupSubscription';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 type Props = {
   onClose: () => void;
 };
 
-const SubscriptionListPopup = ({onClose}: Props) => {
-  const [data, setData] = useState({
+const PopupSubscriptionList = ({onClose}: Props) => {
+  const [data, setData] = useState<{
+    indexTab: number;
+    indexSort: number;
+    subscriptionList: MembershipSubscribe[];
+    dataSubScriptionSetting: {
+      idProfile: number;
+      isOpen: boolean;
+    };
+    dataRenewal: {
+      idProfile: number;
+      isOpen: boolean;
+    };
+  }>({
     indexTab: 0,
+    indexSort: 0,
+    subscriptionList: [],
+    dataSubScriptionSetting: {
+      idProfile: 0,
+      isOpen: false,
+    },
+    dataRenewal: {
+      idProfile: 0,
+      isOpen: false,
+    },
   });
 
   useEffect(() => {
@@ -21,7 +46,34 @@ const SubscriptionListPopup = ({onClose}: Props) => {
   const refreshList = async () => {
     const resSubscriptionList = await getSubscriptionList({});
     console.log('resSubScriptionList : ', resSubscriptionList);
+    data.subscriptionList = resSubscriptionList?.data?.subscriptionList || [];
   };
+
+  const sortOptionList = [
+    {id: 0, value: 'All'},
+    {id: 1, value: 'Character'},
+    {id: 2, value: 'Channel'},
+  ];
+
+  const SelectBoxArrowComponent = () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />;
+
+  const SelectBoxValueComponent = (data: any) => {
+    return (
+      <div key={data.id} className={styles.label}>
+        {data.value}
+      </div>
+    );
+  };
+  const SelectBoxOptionComponent = (data: any, isSelected: boolean) => (
+    <>
+      <div className={styles.optionWrap}>
+        <div key={data.id} className={styles.label}>
+          {data.value}
+        </div>
+        {isSelected && <img className={styles.iconCheck} src={LineCheck.src} alt="altArrowDown" />}
+      </div>
+    </>
+  );
 
   return (
     <>
@@ -39,47 +91,184 @@ const SubscriptionListPopup = ({onClose}: Props) => {
             <h1 className={styles.title}>Subscription</h1>
           </header>
           <main className={styles.main}>
-            <div
-              className={styles.tabHeader}
-              onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                const target = e.target as HTMLElement;
-                const category = target.closest('[data-tab]')?.getAttribute('data-tab');
-                if (category == '1') {
-                  alert('추후 제공');
-                  return;
-                }
-                if (category) {
-                  data.indexTab = parseInt(category);
-                }
-                setData({...data});
-              }}
-            >
-              <div className={cx(styles.tab, data.indexTab == 0 && styles.active)} data-tab={0}>
-                Charactder Contents
+            <div className={styles.tabHeaderWrap}>
+              <div className={styles.line}></div>
+              <div
+                className={styles.tabHeader}
+                onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                  const target = e.target as HTMLElement;
+                  const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+                  if (category == '1') {
+                    alert('추후 제공');
+                    return;
+                  }
+                  if (category) {
+                    data.indexTab = parseInt(category);
+                  }
+                  setData({...data});
+                }}
+              >
+                <div className={cx(styles.tab, data.indexTab == 0 && styles.active)} data-tab={0}>
+                  Contents
+                </div>
+                <div className={cx(styles.tab, data.indexTab == 1 && styles.active)} data-tab={1}>
+                  IP
+                </div>
               </div>
-              <div className={cx(styles.tab, data.indexTab == 1 && styles.active)} data-tab={1}>
-                Character IP
-              </div>
-              <div className={styles.shop}>Shop</div>
             </div>
-
+            <section className={styles.filtersection}>
+              <SelectBox
+                value={sortOptionList[data.indexSort]}
+                options={sortOptionList}
+                ArrowComponent={SelectBoxArrowComponent}
+                ValueComponent={SelectBoxValueComponent}
+                OptionComponent={SelectBoxOptionComponent}
+                onChange={async id => {
+                  data.indexSort = id;
+                  setData({...data});
+                }}
+                customStyles={{
+                  control: {
+                    width: '132px',
+                    display: 'flex',
+                    gap: '10px',
+                    minHeight: '52px',
+                  },
+                  menuList: {
+                    borderbottomLeftRadius: '10px',
+                    borderbottomRightRadius: '10px',
+                    boxShadow: '0px 0px 30px 0 rgba(0, 0, 0, 0.10)',
+                  },
+                  option: {
+                    padding: '11px 14px',
+                    boxSizing: 'border-box',
+                    '&:first-of-type': {
+                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                    },
+                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                }}
+              />
+            </section>
             <section className={styles.contentSection}>
-              <div className={styles.title}>$00 / month</div>
-              <div className={styles.description}>
-                Text Here
-                <br />
-                Text Here
-                <br />
-                Text Here
-                <br />
-              </div>
+              <ul className={styles.subscriptionList}>
+                {data.subscriptionList.map((one, index) => {
+                  const unit = getUnit(one?.paymentType);
+                  const amount = one?.paymentAmount;
+                  const expireAt = formatDate(one?.expireAt);
+                  const isFree = amount == 0;
+                  const priceStr = isFree ? 'free' : `${unit}${amount} Monthly Price`;
+
+                  function formatDate(dateString: string) {
+                    const date = new Date(dateString);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+                    const day = String(date.getDate()).padStart(2, '0');
+
+                    return `${year}.${month}.${day}`;
+                  }
+
+                  return (
+                    <li className={styles.item}>
+                      <div className={styles.left}>
+                        <img src={one.iconUrl} alt="" className={styles.thumbnail} />
+                        <div className={styles.infoWrap}>
+                          <div className={styles.name}>{one.name}</div>
+                          <div className={styles.price}>{priceStr} </div>
+                          <div className={styles.dateExpired}>Next Billing Date {expireAt}</div>
+                        </div>
+                      </div>
+                      <div className={styles.right}>
+                        <img
+                          src={BoldMenuDots.src}
+                          alt=""
+                          onClick={() => {
+                            data.dataSubScriptionSetting.idProfile = one?.profileId;
+                            data.dataSubScriptionSetting.isOpen = true;
+                            setData({...data});
+                          }}
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <div className={styles.label}>Inactive Subscription</div>
+              <ul className={styles.subscriptionList}>
+                <li className={styles.item}>
+                  <div className={styles.left}>
+                    <img src="/images/profile_sample/img_sample_profile1.png" alt="" className={styles.thumbnail} />
+                    <div className={styles.infoWrap}>
+                      <div className={styles.name}>Character Name</div>
+                      <div className={styles.price}>$25 Monthly Price</div>
+                      <div className={styles.dateExpired}>Next Billing Date 2025.03.02</div>
+                    </div>
+                  </div>
+                  <div className={cx(styles.right, styles.renewalWrap)}>
+                    <div
+                      className={styles.renewal}
+                      onClick={() => {
+                        alert('renewal 예정');
+                        data.dataRenewal.idProfile = 0;
+                        setData({...data});
+                      }}
+                    >
+                      Renewal
+                    </div>
+                  </div>
+                </li>
+              </ul>
             </section>
             <button className={styles.btnSubscription}>Subscribe Now</button>
           </main>
         </div>
       </Dialog>
+      <ContentSetting
+        dataSubScriptionSetting={data.dataSubScriptionSetting}
+        onClose={() => {
+          data.dataSubScriptionSetting.isOpen = false;
+          setData({...data});
+        }}
+        onCancel={() => {
+          alert('구독 취소 예정' + data.dataSubScriptionSetting.idProfile);
+        }}
+      />
+      {data.dataRenewal.isOpen && (
+        <PopupSubscription
+          id={data.dataRenewal.idProfile}
+          onClose={() => {
+            data.dataRenewal.isOpen = false;
+            setData({...data});
+          }}
+        />
+      )}
     </>
   );
 };
 
-export default SubscriptionListPopup;
+export default PopupSubscriptionList;
+
+type SubscriptionSettingType = {
+  dataSubScriptionSetting: {
+    isOpen: boolean;
+  };
+  onClose: () => void;
+  onCancel: () => void;
+};
+const ContentSetting = ({
+  dataSubScriptionSetting: {isOpen},
+  onClose = () => {},
+  onCancel = () => {},
+}: SubscriptionSettingType) => {
+  let itemList: SelectDrawerItem[] = [
+    {
+      name: 'Subscription Cancel',
+      onClick: () => {
+        onCancel();
+      },
+    },
+  ];
+
+  return <SelectDrawer isOpen={isOpen} onClose={onClose} items={itemList} selectedIndex={-1} />;
+};

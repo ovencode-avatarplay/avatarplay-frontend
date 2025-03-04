@@ -1,7 +1,8 @@
 .popup {
-  width: 100%;
+  margin: 0 auto;
+  width: calc(var(--full-width));
   height: 100%;
-  min-width: 100vw;
+  min-width: calc(var(--full-width));
   min-height: 100vh;
   overflow-y: auto; // 내부 콘텐츠가 길면 스크롤 가능
 
@@ -40,9 +41,23 @@
 }
 
 .main {
-  padding: 10px 16px;
+
+  // padding: 10px 16px;
+  // position: relative;
+  .tabHeaderWrap {
+    position: relative;
+
+    .line {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      border-bottom: solid #F1F3F4 2px;
+      z-index: -1;
+    }
+  }
 
   .tabHeader {
+    padding: 0 16px;
     display: flex;
     align-items: center;
 
@@ -61,6 +76,7 @@
 
       border-bottom: solid #F1F3F4 2px;
       cursor: pointer;
+      white-space: nowrap;
 
       &.active {
         color: var(--Black, #000);
@@ -77,33 +93,110 @@
     }
   }
 
-  .contentSection {
-    margin-top: 15px;
-    padding: 15px 10px;
-    border-radius: 12px;
-    background: var(--Neutral-50, #F8F9FA);
 
-    .title {
-      overflow: hidden;
+
+  .contentSection {
+    .label {
+      margin-top: 25px;
+      padding-left: 16px;
       color: var(--Black, #000);
-      text-align: center;
-      text-overflow: ellipsis;
       font-family: Lato;
-      font-size: 18px;
+      font-size: 16px;
       font-style: normal;
       font-weight: 700;
-      line-height: 100%;
+      line-height: normal;
+      letter-spacing: -0.32px;
     }
 
-    .description {
-      margin-top: 15px;
+    ul.subscriptionList {
+      li.item {
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
-      color: var(--Black, #000);
-      font-family: Lato;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 500;
-      line-height: 150%;
+        .left {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          img.thumbnail {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            aspect-ratio: 1 / 1;
+          }
+
+          .infoWrap {
+            .name {
+              color: var(--Black, #000);
+              font-family: Lato;
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: normal;
+              letter-spacing: -0.32px;
+            }
+
+            .price {
+              margin-top: 12px;
+              color: var(--Black, #000);
+              font-family: Lato;
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: normal;
+              letter-spacing: -0.28px;
+            }
+
+            .dateExpired {
+              margin-top: 2px;
+              color: var(--Black, #000);
+              font-family: Lato;
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: normal;
+              letter-spacing: -0.28px;
+            }
+          }
+        }
+
+        .right {
+          align-self: flex-start;
+
+          img {
+            filter: brightness(0) saturate(100%) invert(92%) sepia(8%) saturate(155%) hue-rotate(173deg) brightness(83%) contrast(91%);
+            cursor: pointer;
+          }
+
+          .renewal {
+            display: flex;
+            height: 24px;
+            padding: 0px 12px;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+
+            border-radius: 999px;
+            background: var(--Black, #000);
+
+            color: var(--White, #FFF);
+            font-feature-settings: 'liga' off, 'clig' off;
+            font-family: Lato;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 20px;
+            /* 142.857% */
+            cursor: pointer;
+          }
+
+          &.renewalWrap {
+            align-self: center;
+          }
+        }
+      }
     }
   }
 
@@ -121,4 +214,54 @@
     /* 150% */
     letter-spacing: -0.4px;
   }
+}
+
+.filtersection {
+  padding-right: 16px;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  // align-items: flex-end;
+  justify-content: flex-end;
+  gap: 10px;
+
+  .label {
+    color: var(--Color-Tokens-Text, #0C0C0C);
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.28px;
+  }
+
+  .optionWrap {
+    display: flex;
+
+    justify-content: space-between;
+
+    .label {
+      color: var(--Black, #000);
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 160%;
+      /* 22.4px */
+      letter-spacing: 0.2px;
+    }
+  }
+
+  .icon {
+    filter: brightness(0) saturate(100%) invert(0%) sepia(1%) saturate(7448%) hue-rotate(49deg) brightness(91%) contrast(95%);
+    width: 12px;
+    height: 12px;
+  }
+
+  .iconCheck {
+    filter: brightness(0) saturate(100%) invert(0%) sepia(1%) saturate(7448%) hue-rotate(49deg) brightness(91%) contrast(95%);
+    width: 24px;
+    height: 24px;
+  }
+
 }

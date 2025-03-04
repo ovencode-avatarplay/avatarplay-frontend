@@ -3,16 +3,44 @@ import styles from './PopupSubscription.module.scss';
 import {BoldArrowLeft} from '@ui/Icons';
 import cx from 'classnames';
 import {Dialog, Modal} from '@mui/material';
-import {getPaymentAmountMenu, getSubscriptionList, SubscriptionType} from '@/app/NetWork/ProfileNetwork';
+import {
+  getPaymentAmountMenu,
+  GetSubscribePaymentRes,
+  getSubscriptionList,
+  PaymentType,
+  subscribeProfile,
+  SubscriptionType,
+} from '@/app/NetWork/ProfileNetwork';
 
 type Props = {
   id: number;
   onClose: () => void;
 };
 
+export const getUnit = (paymentType: PaymentType = PaymentType.USD) => {
+  switch (paymentType) {
+    case PaymentType.USD:
+      return '$';
+    case PaymentType.KRW:
+      return '₩';
+    case PaymentType.EUR:
+      return '€';
+    case PaymentType.JPY:
+      return '¥';
+    case PaymentType.GBP:
+      return '£';
+    default:
+      return ''; // 기본값 설정 (예: 지원하지 않는 결제 타입일 경우)
+  }
+};
+
 const PopupSubscription = ({id, onClose}: Props) => {
-  const [data, setData] = useState({
+  const [data, setData] = useState<{
+    indexTab: number;
+    subscriptionInfo: GetSubscribePaymentRes | null;
+  }>({
     indexTab: 0,
+    subscriptionInfo: {benefit: '', paymentAmount: 0, paymentType: PaymentType.USD},
   });
   const popupRef = useRef<HTMLDivElement | null>(null);
 
@@ -27,7 +55,18 @@ const PopupSubscription = ({id, onClose}: Props) => {
     };
     const resInfo = await getPaymentAmountMenu(reqSubscriptionInfo);
     console.log('resInfo : ', resInfo);
+    data.subscriptionInfo = resInfo?.data || null;
   };
+
+  const onSubscribe = async () => {
+    await subscribeProfile({profileId: id});
+  };
+
+  const unit = getUnit(data.subscriptionInfo?.paymentType);
+  const amount = data.subscriptionInfo?.paymentAmount;
+  const benefit = data.subscriptionInfo?.benefit;
+  const isFree = amount == 0;
+  const priceStr = isFree ? 'free' : `${unit}${amount} / month`;
 
   return (
     <Dialog open={true} onClose={onClose} fullScreen>
@@ -69,17 +108,12 @@ const PopupSubscription = ({id, onClose}: Props) => {
           </div>
 
           <section className={styles.contentSection}>
-            <div className={styles.title}>$00 / month</div>
-            <div className={styles.description}>
-              Text Here
-              <br />
-              Text Here
-              <br />
-              Text Here
-              <br />
-            </div>
+            <div className={styles.title}>{priceStr}</div>
+            {benefit != '' && <div className={styles.description}>{benefit}</div>}
           </section>
-          <button className={styles.btnSubscription}>Subscribe Now</button>
+          <button className={styles.btnSubscription} onClick={onSubscribe}>
+            Subscribe Now
+          </button>
         </main>
       </div>
     </Dialog>
