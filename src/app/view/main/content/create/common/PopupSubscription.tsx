@@ -3,6 +3,7 @@ import styles from './PopupSubscription.module.scss';
 import {BoldArrowLeft} from '@ui/Icons';
 import cx from 'classnames';
 import {Dialog, Modal} from '@mui/material';
+import {getPaymentAmountMenu, getSubscriptionList, SubscriptionType} from '@/app/NetWork/ProfileNetwork';
 
 type Props = {
   id: number;
@@ -14,9 +15,19 @@ const PopupSubscription = ({id, onClose}: Props) => {
     indexTab: 0,
   });
   const popupRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
-    return () => {};
+    refreshInfo();
   }, []);
+
+  const refreshInfo = async () => {
+    const reqSubscriptionInfo = {
+      type: SubscriptionType.Contents,
+      paymentProfileId: id,
+    };
+    const resInfo = await getPaymentAmountMenu(reqSubscriptionInfo);
+    console.log('resInfo : ', resInfo);
+  };
 
   return (
     <Dialog open={true} onClose={onClose} fullScreen>
