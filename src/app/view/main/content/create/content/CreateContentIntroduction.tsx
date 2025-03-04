@@ -10,6 +10,8 @@ import {ContentListInfo, ContentType, GetContentListReq, sendGetContentList} fro
 import ContentCard from './ContentCard';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
 
 enum FilterTypes {
   All = 0,
@@ -19,24 +21,13 @@ enum FilterTypes {
   Popularity = 4,
 }
 
-interface CreateContentIntroductionProps {
-  onNext: () => void;
-  onNextSeriesDetail: () => void;
-  onNextSingleDetail: () => void;
-  setCurContentInfo: (info: ContentListInfo) => void;
-  isSingle: (value: boolean) => void;
-}
+interface CreateContentIntroductionProps {}
 
-const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
-  onNextSeriesDetail,
-  onNext,
-  setCurContentInfo,
-  isSingle,
-  onNextSingleDetail,
-}) => {
+const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({}) => {
   const [activeTab, setActiveTab] = useState<ContentType>(ContentType.Series);
   const [selectedFilter, setSelectedFilter] = useState<FilterTypes>(FilterTypes.All);
   const [filterDrawerOpen, setFilterDrawerOpen] = useState<boolean>(false);
+  const router = useRouter();
 
   const [contentList, setContentList] = useState<ContentListInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -102,7 +93,6 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
               className={`${styles.tab} ${activeTab === ContentType.Series ? styles.active : ''}`}
               onClick={() => {
                 setActiveTab(ContentType.Series);
-                isSingle(false);
               }}
             >
               Series Contents
@@ -111,7 +101,6 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
               className={`${styles.tab} ${activeTab === ContentType.Single ? styles.active : ''}`}
               onClick={() => {
                 setActiveTab(ContentType.Single);
-                isSingle(true);
               }}
             >
               Single Contents
@@ -125,7 +114,10 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
               style={{width: '100%', height: '46px'}}
               state="Normal"
               type="Secondary"
-              onClick={onNext}
+              onClick={() => {
+                if (activeTab == ContentType.Series) pushLocalizedRoute(`/create/content/condition/series`, router);
+                else pushLocalizedRoute(`/create/content/condition/single`, router);
+              }}
             >
               {activeTab == ContentType.Series ? '+ New Series' : '+ New Single'}
             </CustomButton>
@@ -156,8 +148,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
                       key={index}
                       content={content}
                       onAddEpisode={() => {
-                        setCurContentInfo(content);
-                        onNextSeriesDetail();
+                        pushLocalizedRoute(`/create/content/series/${content.id}`, router);
                       }}
                     />
                   ))}
@@ -184,8 +175,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
                       key={index}
                       content={content}
                       onAddEpisode={() => {
-                        setCurContentInfo(content);
-                        onNextSingleDetail();
+                        pushLocalizedRoute(`/create/content/single/${content.id}`, router);
                       }}
                     />
                   ))}

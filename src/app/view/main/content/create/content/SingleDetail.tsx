@@ -45,12 +45,9 @@ export interface SingleInfo {
 }
 
 interface SingleDetailProps {
-  contentInfo: ContentListInfo;
-  onNext: () => void;
-  onPrev: () => void;
+  id: number;
 }
-
-const SingleDetail: React.FC<SingleDetailProps> = ({onNext, onPrev, contentInfo}) => {
+const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedTab, setSelectedTab] = useState<'Episodes' | 'About'>('Episodes');
   const [singleInfo, setSingleInfo] = useState<ContentInfo>();
@@ -70,7 +67,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({onNext, onPrev, contentInfo}
       }
     };
 
-    fetchContent(contentInfo.id);
+    fetchContent(id);
   }, []);
 
   return (
@@ -78,7 +75,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({onNext, onPrev, contentInfo}
       {/* 상단 배경 및 네비게이션 */}
       <div className={styles.header} style={{backgroundImage: `url(${singleInfo?.thumbnailUrl})`}}>
         <div className={styles.topNav}>
-          <button className={styles.iconButton} onClick={() => onPrev()}>
+          <button className={styles.iconButton} onClick={() => {}}>
             <img src={BoldArrowLeft.src} alt="Back" />
           </button>
           <button className={styles.iconButton}>

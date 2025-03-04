@@ -30,18 +30,14 @@ import {EpisodeInfo} from '@/redux-store/slices/StoryInfo';
 import {Category} from '@mui/icons-material';
 
 interface SeriesDetailProps {
-  contentInfo: ContentListInfo;
-  onNext: () => void;
-  onPrev: () => void;
-  setCurSeason: (num: number) => void;
-  setEpisodeCount: (num: number) => void;
+  id: number;
 }
 
 export interface Seasons {
   id: number;
   name: string;
 }
-const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo, setCurSeason, setEpisodeCount}) => {
+const SeriesDetail: React.FC<SeriesDetailProps> = ({id}) => {
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedTab, setSelectedTab] = useState<'Episodes' | 'About'>('Episodes');
   const [onSeasonDropdown, setSeasonDropdown] = useState(false);
@@ -183,7 +179,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo,
       }
     };
 
-    fetchContent(contentInfo.id);
+    fetchContent(id);
   }, []);
 
   useEffect(() => {
@@ -195,7 +191,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo,
       {/* 상단 배경 및 네비게이션 */}
       <div className={styles.header} style={{backgroundImage: `url(${seriesInfo?.thumbnailUrl})`}}>
         <div className={styles.topNav}>
-          <button className={styles.iconButton} onClick={() => onPrev()}>
+          <button className={styles.iconButton} onClick={() => {}}>
             <img src={BoldArrowLeft.src} alt="Back" />
           </button>
           <button className={styles.iconButton}>
@@ -271,14 +267,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo,
           )}
         </div>
         {/* 새로운 에피소드 추가 버튼 */}
-        <button
-          className={styles.addEpisode}
-          onClick={() => {
-            setEpisodeCount(episodeList ? episodeList?.length : 0);
-            setCurSeason(selectedSeason);
-            onNext();
-          }}
-        >
+        <button className={styles.addEpisode} onClick={() => {}}>
           + New Episode
         </button>
 
@@ -292,7 +281,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo,
                   <div className={styles.epTitleText}>
                     {index + 1}. {ep.name}
                   </div>
-                  {contentInfo.categoryType == 1 && (
+                  {seriesInfo?.categoryType == 1 && (
                     <div className={styles.epDuration}>{ep.episodeVideoInfo?.videoSourcePlayTime}</div>
                   )}
                 </div>

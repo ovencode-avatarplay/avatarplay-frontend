@@ -2,18 +2,22 @@ import React, {useState} from 'react';
 import styles from './TermsAndConditions.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {LineDashboard} from '@ui/Icons';
+import {useRouter} from 'next/navigation';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
 
 interface TermsAndConditionsProps {
-  onNext: () => void;
-  onPrev: () => void;
+  isSingle: boolean;
 }
 
-const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({onNext, onPrev}) => {
+const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({isSingle}) => {
   const [isChecked, setIsChecked] = useState(false);
 
+  const router = useRouter();
   const handleConfirm = () => {
     if (isChecked) {
-      onNext();
+      if (!isSingle) {
+        pushLocalizedRoute(`/create/content/series`, router);
+      } else pushLocalizedRoute(`/create/content/single`, router);
     } else {
       alert('You need to agree to the terms before proceeding.');
     }
@@ -23,7 +27,9 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({onNext, onPrev})
     <div className={styles.container}>
       <CustomArrowHeader
         title="Terms and conditions"
-        onClose={onPrev}
+        onClose={() => {
+          pushLocalizedRoute(`/create/content`, router);
+        }}
         children={
           <div className={styles.rightArea}>
             <button className={styles.dashBoard} onClick={() => {}}>

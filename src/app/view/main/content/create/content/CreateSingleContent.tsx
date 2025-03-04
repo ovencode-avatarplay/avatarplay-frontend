@@ -21,6 +21,8 @@ import {
   ContentLanguageType,
   ContentEpisodeVideoInfo,
 } from '@/app/NetWork/ContentNetwork';
+import {useRouter} from 'next/navigation';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -32,12 +34,10 @@ enum VisibilityType {
   Public = 2,
 }
 
-interface CreateSingleContentProps {
-  onNext: () => void;
-  onPrev: () => void;
-}
+interface CreateSingleContentProps {}
 
-const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev}) => {
+const CreateSingleContent: React.FC<CreateSingleContentProps> = ({}) => {
+  const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [tagOpen, setTagOpen] = useState(false);
@@ -256,19 +256,21 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
       const response = await sendCreateContent(payload);
       if (response.data) {
         console.log('콘텐츠 생성 성공:', response.data.contentId);
-        onNext();
+
+        pushLocalizedRoute(`/create/content`, router);
       }
     } catch (error) {
       console.error('콘텐츠 생성 실패:', error);
     }
   };
-
   return (
     <div className={styles.parent}>
       <div className={styles.header}>
         <CustomArrowHeader
           title="Create Series Contents"
-          onClose={onPrev}
+          onClose={() => {
+            pushLocalizedRoute(`/create/content/condition/single`, router);
+          }}
           children={
             <div className={styles.rightArea}>
               <button className={styles.dashBoard} onClick={() => {}}>

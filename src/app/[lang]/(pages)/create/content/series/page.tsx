@@ -2,9 +2,14 @@
 
 import CreateContent from '@/app/view/main/content/create/content/CreateContent';
 import CreateContentIntroduction from '@/app/view/main/content/create/content/CreateContentIntroduction';
+import CreateSeriesContent from '@/app/view/main/content/create/content/CreateSeriesContent';
 
 export default function CreateCharacterPage() {
-  return <CreateContentIntroduction />;
+  return (
+    <>
+      <CreateSeriesContent></CreateSeriesContent>
+    </>
+  );
 }
 
 //dash

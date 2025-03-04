@@ -31,6 +31,7 @@ const CreateContent: React.FC = () => {
 
   // 현재 스텝에 따라 렌더링할 컴포넌트 선택
   const renderStepContent = () => {
+    <div className="2">33</div>;
     switch (currentStep) {
       case Step.Introduction:
         return (
@@ -43,15 +44,7 @@ const CreateContent: React.FC = () => {
           />
         );
       case Step.TermsAndConditions:
-        return (
-          <TermsAndConditions
-            onPrev={() => setCurrentStep(Step.Introduction)}
-            onNext={() => {
-              if (!isSingle) setCurrentStep(Step.CreateSeriesContent);
-              else setCurrentStep(Step.CreateSingleContent);
-            }}
-          ></TermsAndConditions>
-        );
+        return <TermsAndConditions></TermsAndConditions>;
       case Step.CreateSeriesContent:
         return (
           <CreateSeriesContent onPrev={() => setCurrentStep(Step.Introduction)} onNext={() => {}}></CreateSeriesContent>

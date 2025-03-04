@@ -14,6 +14,8 @@ import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {ContentType, CreateContentReq, sendCreateContent} from '@/app/NetWork/ContentNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
+import {useRouter} from 'next/navigation';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -25,12 +27,11 @@ enum VisibilityType {
   Public = 2,
 }
 
-interface CreateSeriesContentProps {
-  onNext: () => void;
-  onPrev: () => void;
-}
+interface CreateSeriesContentProps {}
 
-const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev}) => {
+const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({}) => {
+  const router = useRouter();
+
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [tagOpen, setTagOpen] = useState(false);
@@ -201,7 +202,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
       const response = await sendCreateContent(payload);
       if (response.data) {
         console.log('콘텐츠 생성 성공:', response.data.contentId);
-        onNext();
+        pushLocalizedRoute(`/create/content`, router);
       }
     } catch (error) {
       console.error('콘텐츠 생성 실패:', error);
@@ -231,7 +232,9 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({onNext, onPrev
       <div className={styles.header}>
         <CustomArrowHeader
           title="Create Series Contents"
-          onClose={onPrev}
+          onClose={() => {
+            pushLocalizedRoute(`/create/content/condition/series`, router);
+          }}
           children={
             <div className={styles.rightArea}>
               <button className={styles.dashBoard} onClick={() => {}}>
