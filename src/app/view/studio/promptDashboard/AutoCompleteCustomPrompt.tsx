@@ -3,8 +3,8 @@ import styles from './AutoCompleteCustomPrompt.module.css';
 
 interface Props {
   keywords: Record<string, string>;
-  inputRef: React.RefObject<HTMLDivElement>;
-  onInput: (e: React.FormEvent<HTMLDivElement>) => void;
+  inputRef: React.RefObject<HTMLTextAreaElement>;
+  onInput: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 

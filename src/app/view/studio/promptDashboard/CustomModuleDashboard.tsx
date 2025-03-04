@@ -55,8 +55,16 @@ const CustomModuleDashboard: React.FC = () => {
   let defaultPromptItem: CustomModulePrompt = {
     promptId: 0,
     title: '',
-    claude: 'default Claude',
-    chatGPT: 'default GPT',
+    claude: `###About {{char}}: \n
+    ###Lore Book : \n
+    ###About {{user}} : \n
+    ###Instruction : \n
+    ###Response :`,
+    chatGPT: `###About {{char}}: \n
+    ###Lore Book : \n
+    ###About {{user}} : \n
+    ###Instruction : \n
+    ###Response :`,
   };
 
   let defaultLorebookItem: EditLorebookReq = {
@@ -239,19 +247,35 @@ const CustomModuleDashboard: React.FC = () => {
   };
 
   const renderPromptItem = (item: CustomModulesPromptInfo) => {
+    const formatDateTime = (isoString: string) => {
+      const date = new Date(isoString);
+
+      const localDateTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+      return localDateTime.toISOString().slice(0, 16).replace('T', ' ');
+    };
+
     return (
       <li key={item.title} className={styles.customModuleItem} onClick={() => handlePromptItemClick(item)}>
         <div className={styles.itemName}>{item.title}</div>
-        <div className={styles.itemUpdateAt}>{item.createdAt}</div>
+        <div className={styles.itemUpdateAt}>{formatDateTime(item.createdAt)}</div>
       </li>
     );
   };
 
   const renderLorebookItem = (item: CustomModulesLorebookInfo) => {
+    const formatDateTime = (isoString: string) => {
+      const date = new Date(isoString);
+
+      const localDateTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+      return localDateTime.toISOString().slice(0, 16).replace('T', ' ');
+    };
+
     return (
       <li key={item.title} className={styles.customModuleItem} onClick={() => handleLorebookItemClick(item)}>
         <div className={styles.itemName}>{item.title}</div>
-        <div className={styles.itemUpdateAt}>{item.createdAt}</div>
+        <div className={styles.itemUpdateAt}>{formatDateTime(item.createdAt)}</div>
       </li>
     );
   };

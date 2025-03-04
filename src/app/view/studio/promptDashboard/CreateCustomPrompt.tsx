@@ -55,22 +55,29 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   const [previewOn, setPreviewOn] = useState<boolean>(false);
   const [previewOptionOpen, setPreviewOptionOpen] = useState<boolean>(false);
 
-  const [showAutoCompleteMain, setShowAutoCompleteMain] = useState(false);
-  const [showAutoCompleteInstruction, setShowAutoCompleteInstruction] = useState(false);
-  const [showAutoCompleteResponse, setShowAutoCompleteResponse] = useState(false);
   const [showAutoCompleteGpt, setShowAutoCompleteGpt] = useState(false);
-
-  //#region Mandarin
-  const [mainPrompt, setMainPrompt] = useState('');
-  const [instruction, setInstruction] = useState('');
-  const [response, setResponse] = useState('');
-  //#endregion
+  const [showAutoCompleteClaude, setShowAutoCompleteClaude] = useState(false);
 
   //#region  GPT
   const [gptPrompt, setGptPrompt] = useState(prompt.chatGPT);
 
-  const prefixGPT = `[{"role":"system", "content":"`;
-  const suffixGPT = `"},
+  const prefixGpt = `[{"role":"system", "content":"`;
+  const suffixGpt = `"},
+{"role":"assistant","content":"Hello good to see you buddy."},
+{"role":"user","content":"Hello Kate. How are you?"},
+{"role":"assistant","content":"I'm fine. How about you?"},
+{"role":"user","content":"I'm fine too. What are you doing now?"},
+{"role":"assistant","content":"I'm reading a book."},
+{"role":"user","content":"What are you going to do this vacation?"}
+]`;
+
+  //#endregion
+
+  //#region Claude
+  const [claudePrompt, setClaudePrompt] = useState(prompt.claude);
+
+  const prefixClaude = `[{"role":"system", "content":"`;
+  const suffixClaude = `"},
 {"role":"assistant","content":"Hello good to see you buddy."},
 {"role":"user","content":"Hello Kate. How are you?"},
 {"role":"assistant","content":"I'm fine. How about you?"},
@@ -82,36 +89,33 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   //#endregion
 
   const promptRefs = {
-    main: useRef<HTMLDivElement>(null),
-    instruction: useRef<HTMLDivElement>(null),
-    response: useRef<HTMLDivElement>(null),
     gpt: useRef<HTMLDivElement>(null),
+    gptViewer: useRef<HTMLDivElement>(null),
+    claude: useRef<HTMLTextAreaElement>(null),
+    claudeViewer: useRef<HTMLDivElement>(null),
   };
+  //#region  초기화 용도의 useEffect
+
+  useEffect(() => {
+    if (promptRefs.gpt.current) promptRefs.gpt.current.innerText = prompt.chatGPT;
+    if (promptRefs.claude.current) promptRefs.claude.current.innerText = prompt.claude;
+  }, [prompt.chatGPT, prompt.claude]);
+  //#endregion
 
   const [editableExamples, setEditableExamples] = useState<{[key: string]: string}>(
     keywordData.reduce((acc, item) => ({...acc, [item.keyword]: item.example}), {}),
   );
 
-  const handleMainPromptInput = (e: React.FormEvent<HTMLDivElement>) => {
-    handleInput(e, setMainPrompt);
-    checkForAutoComplete(e, setShowAutoCompleteMain);
-  };
-
-  const handleInstructionInput = (e: React.FormEvent<HTMLDivElement>) => {
-    handleInput(e, setInstruction);
-    checkForAutoComplete(e, setShowAutoCompleteInstruction);
-  };
-
-  const handleResponseInput = (e: React.FormEvent<HTMLDivElement>) => {
-    handleInput(e, setResponse);
-    checkForAutoComplete(e, setShowAutoCompleteResponse);
-  };
-
   const handleGptPromptInput = (e: React.FormEvent<HTMLDivElement>) => {
-    const text = e.currentTarget.innerText;
-    setGptPrompt(text);
+    handleInput(e, setGptPrompt);
     checkForAutoComplete(e, setShowAutoCompleteGpt);
   };
+
+  const handleClaudePromptInput = (e: React.FormEvent<HTMLDivElement>) => {
+    handleInput(e, setClaudePrompt);
+    checkForAutoComplete(e, setShowAutoCompleteClaude);
+  };
+
   const checkForAutoComplete = (
     e: React.FormEvent<HTMLDivElement>,
     setShowAutoComplete: React.Dispatch<React.SetStateAction<boolean>>,
@@ -130,7 +134,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
 
     // 키워드 감지 후 변환
     Object.keys(KEYWORDS).forEach(keyword => {
-      const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g'); // 안전한 정규식 처리
+      const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
       html = html.replace(
         regex,
         `<span class="${styles['cm-chip']} ${styles['cm-keyword']}" contenteditable="false">${KEYWORDS[keyword]}</span>`,
@@ -174,28 +178,15 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     return html === '〈br〉' || html.trim() === '' ? '' : html;
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const selection = window.getSelection();
-    const range = selection?.getRangeAt(0);
-    const node = range?.startContainer;
-
-    // Chip을 삭제할 때
-    if (e.key === 'Backspace' && node?.nodeType === Node.ELEMENT_NODE) {
-      const chip = node as HTMLElement;
-      if (chip.classList.contains('cm-chip')) {
-        chip.remove();
-        e.preventDefault();
-      }
-    }
-  };
-
   const placeCaretAtEnd = (el: HTMLElement) => {
     const range = document.createRange();
-    const sel = window.getSelection();
     range.selectNodeContents(el);
     range.collapse(false);
-    sel?.removeAllRanges();
-    sel?.addRange(range);
+    const sel = window.getSelection();
+    if (sel) {
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
   };
 
   const handleExampleChange = (keyword: string, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -205,8 +196,18 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     }));
   };
 
+  // Handle change in the editor content
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const node = e.target as HTMLElement;
+    if (e.key === 'Backspace' && node.classList.contains('cm-chip')) {
+      node.remove();
+      e.preventDefault();
+    }
+  };
+
   const handleSavePrompt = () => {
-    onSave({...prompt, title: promptName, claude: '', chatGPT: gptPrompt});
+    onSave({...prompt, title: promptName, chatGPT: gptPrompt});
   };
 
   const handleResetPrompt = () => {
@@ -228,7 +229,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
               type={selectedModel === 0 ? 'Primary' : 'Tertiary'}
               onClick={() => setSelectedModel(0)}
             >
-              Mandarin
+              ChatGpt
             </CustomButton>
             <CustomButton
               size="Small"
@@ -236,7 +237,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
               type={selectedModel === 1 ? 'Primary' : 'Tertiary'}
               onClick={() => setSelectedModel(1)}
             >
-              ChatGpt
+              Claude
             </CustomButton>
           </div>
 
@@ -260,82 +261,19 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   const renderPromptInputArea = () => {
     return (
       <div className={styles.promptInputArea}>
-        {selectedModel === 0 && renderPromptTemplateMandarin()}
-        {selectedModel === 1 && renderPromptTemplateChatGPT()}
+        {selectedModel === 0 && renderPromptTemplateChatGPT()}
+        {selectedModel === 1 && renderPromptTemplateClaude()}
         {previewOn && (
           <textarea
             className={styles.promptPreview}
             readOnly
             value={
               selectedModel === 0
-                ? `### Main Prompt:\n${replaceChipsWithKeywords(
-                    mainPrompt,
-                  )}\n\n### Instruction:\n${replaceChipsWithKeywords(
-                    instruction,
-                  )}\n\n### Response:\n${replaceChipsWithKeywords(response)}`
+                ? `${replaceChipsWithKeywords(prefixGpt + gptPrompt + suffixGpt)}`
                 : selectedModel === 1
-                ? `${replaceChipsWithKeywords(prefixGPT + gptPrompt + suffixGPT)}`
+                ? `${replaceChipsWithKeywords(prefixClaude + claudePrompt + suffixClaude)}`
                 : ''
             }
-          />
-        )}
-      </div>
-    );
-  };
-
-  const renderPromptTemplateMandarin = () => {
-    return (
-      <div className={styles.promptInputList}>
-        <div
-          className={styles.promptInput}
-          ref={promptRefs.main}
-          contentEditable
-          suppressContentEditableWarning
-          onInput={handleMainPromptInput}
-          onKeyDown={handleKeyDown}
-        ></div>
-        {showAutoCompleteMain && (
-          <AutoCompleteCustomPrompt
-            keywords={KEYWORDS}
-            inputRef={promptRefs.main}
-            onInput={handleMainPromptInput}
-            onKeyDown={handleKeyDown}
-          />
-        )}
-
-        <div className={styles.promptTitle}>### Instruction :</div>
-        <div
-          className={styles.promptInput}
-          ref={promptRefs.instruction}
-          contentEditable
-          suppressContentEditableWarning
-          onInput={handleInstructionInput}
-          onKeyDown={handleKeyDown}
-        ></div>
-        {showAutoCompleteInstruction && (
-          <AutoCompleteCustomPrompt
-            keywords={KEYWORDS}
-            inputRef={promptRefs.instruction}
-            onInput={handleInstructionInput}
-            onKeyDown={handleKeyDown}
-          />
-        )}
-
-        <div className={styles.promptTitle}>### Response :</div>
-        <div
-          className={styles.promptInput}
-          ref={promptRefs.response}
-          contentEditable
-          suppressContentEditableWarning
-          onInput={handleResponseInput}
-          onKeyDown={handleKeyDown}
-        ></div>
-        {showAutoCompleteResponse && (
-          <AutoCompleteCustomPrompt
-            keywords={KEYWORDS}
-            inputRef={promptRefs.response}
-            onInput={handleResponseInput}
-            onKeyDown={handleKeyDown}
           />
         )}
       </div>
@@ -345,26 +283,44 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   const renderPromptTemplateChatGPT = () => {
     return (
       <div className={styles.promptInputList}>
-        <div className={styles.fixedPrompt}>{prefixGPT}</div>
-        <div
-          className={styles.promptInput}
-          ref={promptRefs.gpt}
-          contentEditable
-          suppressContentEditableWarning
-          onInput={handleGptPromptInput}
-          onKeyDown={handleKeyDown}
-        >
-          {gptPrompt}
-        </div>
-        <div className={styles.fixedPrompt}> {suffixGPT}</div>
-        {showAutoCompleteGpt && (
-          <AutoCompleteCustomPrompt
-            keywords={KEYWORDS}
-            inputRef={promptRefs.main}
+        <div className={styles.fixedPrompt}>{prefixGpt}</div>
+
+        <div className={styles.promptInputArea}>
+          <div
+            ref={promptRefs.gpt}
+            className={styles.promptInput}
+            contentEditable
+            suppressContentEditableWarning
             onInput={handleGptPromptInput}
             onKeyDown={handleKeyDown}
           />
-        )}
+        </div>
+        <div className={styles.fixedPrompt}>{suffixGpt}</div>
+      </div>
+    );
+  };
+
+  const renderPromptTemplateClaude = () => {
+    return (
+      <div className={styles.promptInputList}>
+        {/* <div className={styles.fixedPrompt}>{prefixClaude}</div>
+        <div
+          className={styles.promptInput}
+          ref={promptRefs.claude}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={e => handlePromptInput(e, setClaudePrompt, promptRefs.claude)}
+          onKeyDown={handleKeyDown}
+        />
+        <div className={styles.fixedPrompt}> {suffixClaude}</div>
+        {showAutoCompleteClaude && (
+          <AutoCompleteCustomPrompt
+            keywords={KEYWORDS}
+            inputRef={promptRefs.claude}
+            onInput={e => handlePromptInput(e, setClaudePrompt, promptRefs.claude)}
+            onKeyDown={handleKeyDown}
+          />
+        )} */}
       </div>
     );
   };
@@ -412,18 +368,16 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
         onChange={e => setPromptName(e.target.value)}
         label={
           <span>
-            Name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+            Custom prompt name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
           </span>
         }
         placeholder="please enter a title for your post"
       />
-      <div className={styles.promptArea}>
-        {renderPromptTitleArea()}
-        {renderPromptInputArea()}
-        <div className={styles.promptGuide}>
-          Custom prompt input is optimized for PC. We recommend using it on a PC. You must write in English. Click the
-          gear icon next to the preview to check the available keywords.
-        </div>
+      {renderPromptTitleArea()}
+      {renderPromptInputArea()}
+      <div className={styles.promptGuide}>
+        Custom prompt input is optimized for PC. We recommend using it on a PC. You must write in English. Click the
+        gear icon next to the preview to check the available keywords.
       </div>
       <div className={styles.bottomButtonArea}>
         <CustomButton
