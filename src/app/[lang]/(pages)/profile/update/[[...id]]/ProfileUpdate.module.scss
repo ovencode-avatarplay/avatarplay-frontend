@@ -859,6 +859,7 @@
 
         .thumbnail {
           width: 100%;
+          max-height: 362px;
           object-fit: contain;
           border-radius: 12px;
         }

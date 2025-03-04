@@ -177,6 +177,14 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
         }
       }
     }
+
+    const portfolioInfoList = res?.data?.pdPortfolioInfoList || [];
+    for (let i = 0; i < portfolioInfoList.length; i++) {
+      const value = portfolioInfoList[i];
+      setValue(`pdPortfolioInfoList.${i}`, value);
+    }
+    data.dataPortfolio.dataList = portfolioInfoList;
+
     setValue('name', res?.data?.name || '', {shouldValidate: false}); // API 데이터로 값 설정
     setValue('introduce', res?.data?.introduce || '', {shouldValidate: false}); // API 데이터로 값 설정
     setValue('personalHistory', res?.data?.personalHistory || '', {shouldValidate: false}); // API 데이터로 값 설정
