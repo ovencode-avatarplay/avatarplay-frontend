@@ -26,9 +26,10 @@ import {
   ContentInfo,
   ContentListInfo,
   CreateEpisodeReq,
-  EpisodeVideoInfo,
-  EpisodeWebtoonInfo,
+  ContentEpisodeWebtoonInfo,
   sendCreateEpisode,
+  ContentEpisodeVideoInfo,
+  ContentLanguageType,
 } from '@/app/NetWork/ContentNetwork';
 import {Seasons} from './SeriesDetail';
 import {Category} from '@mui/icons-material';
@@ -77,18 +78,18 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
   const [isMonetization, setIsMonetization] = useState<boolean>(false);
   const [isFree, setIsFree] = useState<boolean>(false);
 
-  const [episodeVideoInfo, setEpisodeVideoInfo] = useState<EpisodeVideoInfo>({
-    videoSourceFileUrl: '',
-    videoSourceFileName: '',
-    playTime: '',
-    likeCount: 0,
-    subtitleFileUrls: [],
-    subtitleFileNames: [],
-    dubbingFileUrls: [],
-    dubbingFileNames: [],
+  const [episodeVideoInfo, setEpisodeVideoInfo] = useState<ContentEpisodeVideoInfo>({
+    likeCount: 0, // 기본 값: 0
+    videoSourcePlayTime: '00:00', // 기본 값: 빈 시간 또는 "00:00"
+    videoSourceFileInfo: {
+      videoLanguageType: ContentLanguageType.Korean, // 기본 언어 설정
+      videoSourceUrl: '', // 비디오 URL 초기값
+      videoSourceName: '', // 비디오 이름 초기값
+    },
+    subTitleFileInfos: [], // 자막 파일 정보 (빈 배열)
+    dubbingFileInfos: [], // 더빙 파일 정보 (빈 배열)
   });
-
-  const [episodeWebtoonInfo, setEpisodeWebtoonInfo] = useState<EpisodeWebtoonInfo>({
+  const [episodeWebtoonInfo, setEpisodeWebtoonInfo] = useState<ContentEpisodeWebtoonInfo>({
     likeCount: 0,
     webtoonSourceUrlList: [], // 언어별 웹툰 소스 리스트 (초기값: 빈 배열)
   });
@@ -114,7 +115,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
       alert('에피소드 설명을 입력해주세요.');
       return;
     }
-    if (contentInfo.categoryType == 1 && !episodeVideoInfo.videoSourceFileUrl) {
+    if (contentInfo.categoryType == 1 && !episodeVideoInfo.videoSourceFileInfo.videoSourceUrl) {
       alert('비디오 파일이 업로드되지 않았습니다.');
       return;
     }

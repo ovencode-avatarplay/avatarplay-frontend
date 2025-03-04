@@ -128,7 +128,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({onNext, onPrev, contentInfo}
                 <div className={styles.episodeInfo}>
                   <div className={styles.epTitleText}>{singleInfo?.name}</div>
                   {singleInfo?.categoryType == 1 && (
-                    <div className={styles.epDuration}>{singleInfo?.contentVideoInfo?.playTime}</div>
+                    <div className={styles.epDuration}>{singleInfo?.contentVideoInfo?.videoSourcePlayTime}</div>
                   )}
                 </div>
                 <div className={styles.episodeActions}>

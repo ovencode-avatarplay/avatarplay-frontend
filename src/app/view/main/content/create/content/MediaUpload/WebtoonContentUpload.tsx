@@ -18,27 +18,17 @@ import {
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {EpisodeWebtoonInfo, WebtoonLanguageType, WebtoonSourceUrl} from '@/app/NetWork/ContentNetwork';
-export enum CountryTypes {
-  Korean = 0,
-  English = 1,
-  Japanese = 2,
-  French = 3,
-  Spanish = 4,
-  ChineseSimplified = 5,
-  ChineseTraditional = 6,
-  Portuguese = 7,
-  German = 8,
-}
+import {ContentEpisodeWebtoonInfo, ContentLanguageType, WebtoonSourceUrl} from '@/app/NetWork/ContentNetwork';
+
 export interface WebtoonUploadField {
   id: number;
-  selectedCountry: CountryTypes;
+  selectedCountry: ContentLanguageType;
   fileUrl: string[]; // 업로드된 파일의 URL 저장
   fileName: string[];
 }
 
 interface WebtoonContentUploadProps {
-  setEpisodeWebtoonInfo: (value: EpisodeWebtoonInfo) => void;
+  setEpisodeWebtoonInfo: (value: ContentEpisodeWebtoonInfo) => void;
 }
 
 const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({setEpisodeWebtoonInfo}) => {
@@ -57,7 +47,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({setEpisodeWe
     // ✅ 웹툰 원본 이미지 추가 (webtoonLanguageType = WebtoonSource)
     if (imageFiles.length > 0) {
       webtoonSourceUrls.push({
-        webtoonLanguageType: WebtoonLanguageType.WebtoonSource,
+        webtoonLanguageType: ContentLanguageType.Source,
         webtoonSourceUrls: imageFiles,
         webtoonSourceNames: imageNames,
       });
@@ -67,7 +57,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({setEpisodeWe
     subtitleFields.forEach(field => {
       if (field.fileUrl.length > 0) {
         webtoonSourceUrls.push({
-          webtoonLanguageType: Number(field.selectedCountry) as WebtoonLanguageType, // ✅ number로 변환하여 할당
+          webtoonLanguageType: Number(field.selectedCountry) as ContentLanguageType, // ✅ number로 변환하여 할당
           webtoonSourceUrls: field.fileUrl,
           webtoonSourceNames: field.fileName,
         });
@@ -83,18 +73,24 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({setEpisodeWe
   // ✅ `setEpisodeWebtoonInfo`도 의존성 배열에 포함 (최신 상태 유지)
 
   const CountryItems = (type: 'subtitle', index: number): SelectDrawerItem[] => [
-    {name: 'Korean', onClick: () => handleCountryChange(type, index, CountryTypes.Korean)},
-    {name: 'English', onClick: () => handleCountryChange(type, index, CountryTypes.English)},
-    {name: 'Japanese', onClick: () => handleCountryChange(type, index, CountryTypes.Japanese)},
-    {name: 'French', onClick: () => handleCountryChange(type, index, CountryTypes.French)},
-    {name: 'Spanish', onClick: () => handleCountryChange(type, index, CountryTypes.Spanish)},
-    {name: 'Chinese (Simplified)', onClick: () => handleCountryChange(type, index, CountryTypes.ChineseSimplified)},
-    {name: 'Chinese (Traditional)', onClick: () => handleCountryChange(type, index, CountryTypes.ChineseTraditional)},
-    {name: 'Portuguese', onClick: () => handleCountryChange(type, index, CountryTypes.Portuguese)},
-    {name: 'German', onClick: () => handleCountryChange(type, index, CountryTypes.German)},
+    {name: 'Korean', onClick: () => handleCountryChange(type, index, ContentLanguageType.Korean)},
+    {name: 'English', onClick: () => handleCountryChange(type, index, ContentLanguageType.English)},
+    {name: 'Japanese', onClick: () => handleCountryChange(type, index, ContentLanguageType.Japanese)},
+    {name: 'French', onClick: () => handleCountryChange(type, index, ContentLanguageType.French)},
+    {name: 'Spanish', onClick: () => handleCountryChange(type, index, ContentLanguageType.Spanish)},
+    {
+      name: 'Chinese (Simplified)',
+      onClick: () => handleCountryChange(type, index, ContentLanguageType.ChineseSimplified),
+    },
+    {
+      name: 'Chinese (Traditional)',
+      onClick: () => handleCountryChange(type, index, ContentLanguageType.ChineseTraditional),
+    },
+    {name: 'Portuguese', onClick: () => handleCountryChange(type, index, ContentLanguageType.Portuguese)},
+    {name: 'German', onClick: () => handleCountryChange(type, index, ContentLanguageType.German)},
   ];
 
-  const handleCountryChange = (type: 'subtitle', index: number, country: CountryTypes) => {
+  const handleCountryChange = (type: 'subtitle', index: number, country: ContentLanguageType) => {
     if (type === 'subtitle') {
       setSubtitleFields(prevFields =>
         prevFields.map((field, i) => (i === index ? {...field, selectedCountry: country} : field)),
@@ -167,7 +163,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({setEpisodeWe
   const handleAddField = () => {
     setSubtitleFields(prevFields => [
       ...prevFields,
-      {id: Date.now(), selectedCountry: CountryTypes.Korean, fileUrl: [], fileName: []}, // 새 필드 추가
+      {id: Date.now(), selectedCountry: ContentLanguageType.Korean, fileUrl: [], fileName: []}, // 새 필드 추가
     ]);
   };
 
@@ -262,7 +258,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({setEpisodeWe
       <div className={styles.uploadGroup}>
         {/* 국가 선택 드롭다운 버튼 */}
         <div className={styles.countryUploadBox} onClick={() => setCountryDrawerOpen({type, index: fieldIndex})}>
-          {CountryTypes[field.selectedCountry]}
+          {ContentLanguageType[field.selectedCountry]}
           <img src={LineArrowDown.src} className={styles.lineArrowDown} />
         </div>
 

@@ -27,9 +27,7 @@ const CreateContent: React.FC = () => {
   const [curEpisodeCount, setEpisodeCount] = useState<number>(0);
   const [isSingle, setIssingle] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log('asda', isSingle, currentStep);
-  }, [isSingle, currentStep]);
+  useEffect(() => {}, [isSingle, currentStep]);
 
   // 현재 스텝에 따라 렌더링할 컴포넌트 선택
   const renderStepContent = () => {

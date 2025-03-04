@@ -293,7 +293,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({onNext, onPrev, contentInfo,
                     {index + 1}. {ep.name}
                   </div>
                   {contentInfo.categoryType == 1 && (
-                    <div className={styles.epDuration}>{ep.episodeVideoInfo?.playTime}</div>
+                    <div className={styles.epDuration}>{ep.episodeVideoInfo?.videoSourcePlayTime}</div>
                   )}
                 </div>
                 <div className={styles.episodeActions}>

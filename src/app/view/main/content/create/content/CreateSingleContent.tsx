@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styles from './CreateSingleContent.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
-import {BoldArrowDown, BoldQuestion, LineClose, LineDashboard} from '@ui/Icons';
+import {BoldArrowDown, BoldQuestion, BoldStar, LineClose, LineDashboard} from '@ui/Icons';
 import MediaUpload from './MediaUpload/MediaUpload';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
@@ -13,7 +13,14 @@ import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import VideoContentUpload from './MediaUpload/VideoContentUpload';
 import WebtoonContentUpload from './MediaUpload/WebtoonContentUpload';
-import {EpisodeVideoInfo, EpisodeWebtoonInfo} from '@/app/NetWork/ContentNetwork';
+import {
+  ContentType,
+  CreateContentReq,
+  ContentEpisodeWebtoonInfo,
+  sendCreateContent,
+  ContentLanguageType,
+  ContentEpisodeVideoInfo,
+} from '@/app/NetWork/ContentNetwork';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -41,6 +48,17 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
   const [selectedGenreAlertOn, setSelectedGenreAlertOn] = useState(false);
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+
+  const [onSeta, setOnSeta] = useState<boolean>(false);
+  const [isNsfw, setIsNsfw] = useState<boolean>(false);
+  const [isFree, setIsFree] = useState<boolean>(false);
+  const [priceValue, setPriceValue] = useState<number>(0);
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10); // 정수 변환
+    setPriceValue(isNaN(value) ? 0 : value); // 숫자가 아닐 경우 기본값 0 설정
+  };
+
   const handleTagRemove = (tag: string) => {
     setSelectedTags(selectedTags.filter(t => t !== tag));
   };
@@ -148,10 +166,6 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
   const [positionCountryList, setPositionCountryList] = useState<LanguageType[]>([]);
   const normalizedPostCountryList: LanguageType[] = positionCountryList ?? [];
 
-  const handleConfirm = () => {
-    onNext();
-  };
-
   const [nameValue, setNameValue] = useState<string>('');
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length <= 20) {
@@ -170,21 +184,85 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
 
   const [isMonetization, setIsMonetization] = useState<boolean>(false);
 
-  const [episodeVideoInfo, setEpisodeVideoInfo] = useState<EpisodeVideoInfo>({
-    videoSourceFileUrl: '',
-    videoSourceFileName: '',
-    playTime: '',
-    likeCount: 0,
-    subtitleFileUrls: [],
-    subtitleFileNames: [],
-    dubbingFileUrls: [],
-    dubbingFileNames: [],
+  const [episodeVideoInfo, setEpisodeVideoInfo] = useState<ContentEpisodeVideoInfo>({
+    likeCount: 0, // 기본 값: 0
+    videoSourcePlayTime: '00:00', // 기본 값: 빈 시간 또는 "00:00"
+    videoSourceFileInfo: {
+      videoLanguageType: ContentLanguageType.Korean, // 기본 언어 설정
+      videoSourceUrl: '', // 비디오 URL 초기값
+      videoSourceName: '', // 비디오 이름 초기값
+    },
+    subTitleFileInfos: [], // 자막 파일 정보 (빈 배열)
+    dubbingFileInfos: [], // 더빙 파일 정보 (빈 배열)
   });
 
-  const [episodeWebtoonInfo, setEpisodeWebtoonInfo] = useState<EpisodeWebtoonInfo>({
+  const [episodeWebtoonInfo, setEpisodeWebtoonInfo] = useState<ContentEpisodeWebtoonInfo>({
     likeCount: 0,
-    webtoonSourceUrlList: [], // 언어별 웹툰 소스 리스트 (초기값: 빈 배열)
+    webtoonSourceUrlList: [],
   });
+
+  const handleConfirm = async () => {
+    if (!nameValue.trim()) {
+      alert('Name을 입력해주세요.');
+      return;
+    }
+    if (!summaryValue.trim()) {
+      alert('One Line Summary를 입력해주세요.');
+      return;
+    }
+    if (!descValue.trim()) {
+      alert('Description을 입력해주세요.');
+      return;
+    }
+    if (!mediaUrls[0]) {
+      alert('Thumbnail을 업로드해주세요.');
+      return;
+    }
+    if (selectedGenres.length === 0) {
+      alert('최소 하나의 Genre를 선택해주세요.');
+      return;
+    }
+    if (selectedTags.length === 0) {
+      alert('최소 하나의 Tag를 선택해주세요.');
+      return;
+    }
+    if (positionCountryList.length === 0) {
+      alert('Post Country를 선택해주세요.');
+      return;
+    }
+    const payload: CreateContentReq = {
+      contentInfo: {
+        profileId: 0,
+        contentType: ContentType.Single, // 시리즈로 고정
+        name: nameValue || 'Untitled Series',
+        oneLineSummary: summaryValue || '',
+        description: descValue || '',
+        thumbnailUrl: mediaUrls[0], // 썸네일 업로드 구현 필요
+        categoryType: selectedCategory,
+        genre: selectedGenres.length > 0 ? selectedGenres.join(', ') : '',
+        tags: selectedTags,
+        postCountry: positionCountryList.map(country => LanguageType[country]), // 국가 정보
+        visibility: selectedVisibility,
+        nsfw: isNsfw, // 기본값
+        monetization: false,
+        salesStarEa: 0, //추후 구현 필요
+        maxSeasonNo: 1, // 기본 시즌 1개부터 시작
+        contentWebtoonInfo: selectedCategory == CategoryTypes.Webtoon ? episodeWebtoonInfo : undefined,
+        contentVideoInfo: selectedCategory == CategoryTypes.Drama ? episodeVideoInfo : undefined,
+      },
+    };
+
+    try {
+      const response = await sendCreateContent(payload);
+      if (response.data) {
+        console.log('콘텐츠 생성 성공:', response.data.contentId);
+        onNext();
+      }
+    } catch (error) {
+      console.error('콘텐츠 생성 실패:', error);
+    }
+  };
+
   return (
     <div className={styles.parent}>
       <div className={styles.header}>
@@ -362,7 +440,10 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
           <span className={styles.label} style={{lineHeight: '24px'}}>
             Sales Star EA
           </span>
-          <div className={styles.salesStarSetting}> Setting</div>
+          <div className={styles.salesStarSetting} onClick={() => setOnSeta(true)}>
+            {' '}
+            Setting
+          </div>
         </div>
         <span className={styles.label}>
           NSFW <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
@@ -374,8 +455,8 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
             displayType="buttonText"
             value="On"
             label="On"
-            onSelect={() => setIsMonetization(true)}
-            selectedValue={isMonetization ? 'On' : 'Off'}
+            onSelect={() => setIsNsfw(true)}
+            selectedValue={isNsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
           />
           <CustomRadioButton
@@ -383,8 +464,8 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
             displayType="buttonText"
             value="Off"
             label="Off"
-            onSelect={() => setIsMonetization(false)}
-            selectedValue={isMonetization ? 'On' : 'Off'}
+            onSelect={() => setIsNsfw(false)}
+            selectedValue={isNsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
           />
         </div>
@@ -438,6 +519,53 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({onNext, onPrev
         isAll={isAll}
         setIsAll={setIsAll}
       />
+      <SelectDrawer
+        isOpen={onSeta}
+        onClose={() => setOnSeta(false)}
+        items={[]}
+        selectedIndex={0}
+        tooltip=""
+        name="Individual Episode Amount"
+      >
+        {' '}
+        <div className={styles.setaTitleGroup}>
+          <div style={{gap: '5px', display: 'flex', flexDirection: 'column', marginTop: '22px'}}>
+            <span className={styles.setaName}> {nameValue != '' ? nameValue : 'No name'} </span>
+          </div>
+          <CustomRadioButton
+            shapeType="square"
+            displayType="buttonText"
+            value={0}
+            label="Free Episode"
+            onSelect={() => setIsFree(!isFree)}
+            selectedValue={isFree == false ? 0 : 1}
+            containterStyle={{gap: '0'}}
+          ></CustomRadioButton>
+          <div style={{gap: '10px', display: 'flex', flexDirection: 'column'}}>
+            {isFree != false && (
+              <div className={styles.inputBox}>
+                <img src={BoldStar.src} className={styles.starstar}></img>
+                <input
+                  type="text"
+                  className={styles.inputField}
+                  placeholder="Enter Price..."
+                  value={priceValue}
+                  onChange={handlePriceChange}
+                />
+                <span className={styles.starlabel}>EA</span>
+              </div>
+            )}
+            <button
+              className={styles.setaConfirm}
+              onClick={() => {
+                setOnSeta(false);
+              }}
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </SelectDrawer>
     </div>
   );
 };

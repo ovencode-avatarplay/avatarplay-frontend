@@ -56,6 +56,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
 
         // API 호출
         const response = await sendGetContentList(payload);
+        console.log('response.data', response.data?.contentList);
 
         // 결과 저장
         if (response.data) setContentList(response.data.contentList);
@@ -68,8 +69,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({
     };
 
     fetchContentList();
-  }, [, activeTab]);
-
+  }, [activeTab]);
   const publishItems: SelectDrawerItem[] = [
     {name: 'All', onClick: () => setSelectedFilter(FilterTypes.All)},
     {name: 'Edit', onClick: () => setSelectedFilter(FilterTypes.Edit)},

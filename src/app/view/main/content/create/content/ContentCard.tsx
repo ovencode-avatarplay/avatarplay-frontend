@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from './ContentCard.module.css';
-import {BoldChatRoundDots, BoldFollowers, BoldMenuDots, BoldStar, LineMenu} from '@ui/Icons';
+import {BoldChatRoundDots, BoldFollowers, BoldMenuDots, BoldStar, LineDelete, LineEdit, LineMenu} from '@ui/Icons';
 import {ContentListInfo, VisibilityType} from '@/app/NetWork/ContentNetwork';
+import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 
 interface ContentCardProps {
   content: ContentListInfo;
@@ -9,18 +10,44 @@ interface ContentCardProps {
 }
 
 const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode}) => {
+  const isVideo = content.thumbnailUrl.match(/\.(mp4|webm|ogg)$/i);
+  const [dropBoxOpen, setDropBoxOpen] = useState<boolean>(false);
+  const dropDownMenuItems: DropDownMenuItem[] = [
+    {
+      name: 'Rename',
+      icon: LineEdit.src,
+      onClick: () => {},
+    },
+    {
+      name: 'Delete',
+      icon: LineDelete.src,
+      onClick: () => {},
+      isRed: true, // Delete는 위험 동작으로 표시
+    },
+  ];
   return (
     <div className={styles.card}>
       {/* 상단 메뉴 */}
       <div className={styles.topMenu}>
         {content.name}
-        <img src={BoldMenuDots.src} className={styles.menuDots}></img>
+        <img src={BoldMenuDots.src} className={styles.menuDots} onClick={() => setDropBoxOpen(true)}></img>
       </div>
 
       {/* 콘텐츠 정보 */}
       <div className={styles.contentSection}>
         <div className={styles.thumbnail}>
-          <img src={content.thumbnailUrl} alt="Webtoon Thumbnail" />
+          {isVideo ? (
+            <video
+              src={content.thumbnailUrl}
+              className={styles.video}
+              controls={false}
+              muted
+              autoPlay={false}
+              style={{width: '100%', height: '100%', objectFit: 'cover'}}
+            />
+          ) : (
+            <img src={content.thumbnailUrl} alt="Webtoon Thumbnail" />
+          )}
           <span className={styles.status}>{VisibilityType[content.visibility]}</span>
         </div>
 
@@ -52,6 +79,16 @@ const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode}) => {
       <button className={styles.addButton} onClick={onAddEpisode}>
         Add Episode
       </button>
+      {dropBoxOpen && (
+        <>
+          <DropDownMenu
+            items={dropDownMenuItems}
+            onClose={() => setDropBoxOpen(false)}
+            className={styles.DropDown}
+            useSelected={false}
+          />
+        </>
+      )}
     </div>
   );
 };

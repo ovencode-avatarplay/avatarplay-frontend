@@ -14,17 +14,16 @@ import {
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {EpisodeVideoInfo} from '@/app/NetWork/ContentNetwork';
-import {CountryTypes} from './WebtoonContentUpload';
+import {ContentEpisodeVideoInfo, ContentLanguageType} from '@/app/NetWork/ContentNetwork';
 
 export interface VideoUploadField {
   id: number;
-  selectedCountry: CountryTypes;
+  selectedCountry: ContentLanguageType;
   fileUrl?: string; // 업로드된 파일의 URL 저장
   fileName?: string;
 }
 interface VideoContentUploadProps {
-  setEpisodeVideoInfo: (value: (prev: EpisodeVideoInfo) => EpisodeVideoInfo) => void;
+  setEpisodeVideoInfo: (value: (prev: ContentEpisodeVideoInfo) => ContentEpisodeVideoInfo) => void;
 }
 
 const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoInfo}) => {
@@ -37,22 +36,28 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
   const [videoName, setVideoName] = useState<string | null>(null); // 비디오 업로드 상태
 
   const CountryItems = (type: 'subtitle' | 'dubbing', index: number): SelectDrawerItem[] => [
-    {name: 'Korean', onClick: () => handleCountryChange(type, index, CountryTypes.Korean)},
-    {name: 'English', onClick: () => handleCountryChange(type, index, CountryTypes.English)},
-    {name: 'Japanese', onClick: () => handleCountryChange(type, index, CountryTypes.Japanese)},
-    {name: 'French', onClick: () => handleCountryChange(type, index, CountryTypes.French)},
-    {name: 'Spanish', onClick: () => handleCountryChange(type, index, CountryTypes.Spanish)},
-    {name: 'Chinese (Simplified)', onClick: () => handleCountryChange(type, index, CountryTypes.ChineseSimplified)},
-    {name: 'Chinese (Traditional)', onClick: () => handleCountryChange(type, index, CountryTypes.ChineseTraditional)},
-    {name: 'Portuguese', onClick: () => handleCountryChange(type, index, CountryTypes.Portuguese)},
-    {name: 'German', onClick: () => handleCountryChange(type, index, CountryTypes.German)},
+    {name: 'Korean', onClick: () => handleCountryChange(type, index, ContentLanguageType.Korean)},
+    {name: 'English', onClick: () => handleCountryChange(type, index, ContentLanguageType.English)},
+    {name: 'Japanese', onClick: () => handleCountryChange(type, index, ContentLanguageType.Japanese)},
+    {name: 'French', onClick: () => handleCountryChange(type, index, ContentLanguageType.French)},
+    {name: 'Spanish', onClick: () => handleCountryChange(type, index, ContentLanguageType.Spanish)},
+    {
+      name: 'Chinese (Simplified)',
+      onClick: () => handleCountryChange(type, index, ContentLanguageType.ChineseSimplified),
+    },
+    {
+      name: 'Chinese (Traditional)',
+      onClick: () => handleCountryChange(type, index, ContentLanguageType.ChineseTraditional),
+    },
+    {name: 'Portuguese', onClick: () => handleCountryChange(type, index, ContentLanguageType.Portuguese)},
+    {name: 'German', onClick: () => handleCountryChange(type, index, ContentLanguageType.German)},
   ];
 
   const handleAddUploader = (type: 'subtitle' | 'dubbing') => {
     if (type === 'subtitle') {
-      setSubtitleFields([...subtitleFields, {id: Date.now(), selectedCountry: CountryTypes.Korean}]);
+      setSubtitleFields([...subtitleFields, {id: Date.now(), selectedCountry: ContentLanguageType.Korean}]);
     } else {
-      setDubbingFields([...dubbingFields, {id: Date.now(), selectedCountry: CountryTypes.Korean}]);
+      setDubbingFields([...dubbingFields, {id: Date.now(), selectedCountry: ContentLanguageType.Korean}]);
     }
   };
 
@@ -81,7 +86,7 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
     }
   };
 
-  const handleCountryChange = (type: 'subtitle' | 'dubbing', index: number, country: CountryTypes) => {
+  const handleCountryChange = (type: 'subtitle' | 'dubbing', index: number, country: ContentLanguageType) => {
     if (type === 'subtitle') {
       setSubtitleFields(prevFields =>
         prevFields.map((field, i) => (i === index ? {...field, selectedCountry: country} : field)),
@@ -106,18 +111,21 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
 
       if (response?.data) {
         const fileUrl = response.data.url;
-        const fileName = response.data.fileName; // 📌 추가된 fileName
+        const fileName = response.data.fileName;
         const playTime = response.data.playTime;
         console.log(`${type} uploaded:`, fileUrl, fileName);
 
         if (type === 'video') {
           setVideoFile(fileUrl);
-          setVideoName(fileName); // 📌 추가된 fileName 저장
+          setVideoName(fileName);
           setEpisodeVideoInfo(prev => ({
             ...prev,
-            videoSourceFileUrl: fileUrl,
-            videoSourceFileName: fileName, // 📌 기존 files[0].name → fileName으로 변경
-            playTime: playTime,
+            videoSourcePlayTime: playTime || '00:00', // 플레이 타임 업데이트
+            videoSourceFileInfo: {
+              ...prev.videoSourceFileInfo,
+              videoSourceUrl: fileUrl,
+              videoSourceName: fileName,
+            },
           }));
         } else if (type === 'subtitle' && index !== undefined) {
           setSubtitleFields(prevFields =>
@@ -125,8 +133,9 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
           );
           setEpisodeVideoInfo(prev => ({
             ...prev,
-            subtitleFileUrls: prev.subtitleFileUrls.map((url, i) => (i === index ? fileUrl : url)),
-            subtitleFileNames: prev.subtitleFileNames.map((name, i) => (i === index ? fileName : name)), // 📌 추가된 fileName 적용
+            subTitleFileInfos: prev.subTitleFileInfos.map((info, i) =>
+              i === index ? {...info, videoSourceUrl: fileUrl, videoSourceName: fileName} : info,
+            ),
           }));
         } else if (type === 'dubbing' && index !== undefined) {
           setDubbingFields(prevFields =>
@@ -134,8 +143,9 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
           );
           setEpisodeVideoInfo(prev => ({
             ...prev,
-            dubbingFileUrls: prev.dubbingFileUrls.map((url, i) => (i === index ? fileUrl : url)),
-            dubbingFileNames: prev.dubbingFileNames.map((name, i) => (i === index ? fileName : name)), // 📌 추가된 fileName 적용
+            dubbingFileInfos: prev.dubbingFileInfos.map((info, i) =>
+              i === index ? {...info, videoSourceUrl: fileUrl, videoSourceName: fileName} : info,
+            ),
           }));
         }
       }
@@ -148,14 +158,35 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
   const handleRemoveFile = (type: 'video' | 'subtitle' | 'dubbing', index?: number) => {
     if (type === 'video') {
       setVideoFile(null);
+      setVideoName(null);
+      setEpisodeVideoInfo(prev => ({
+        ...prev,
+        videoSourceFileInfo: {
+          ...prev.videoSourceFileInfo,
+          videoSourceUrl: '',
+          videoSourceName: '',
+        },
+      }));
     } else if (type === 'subtitle' && index !== undefined) {
       setSubtitleFields(prevFields =>
         prevFields.map((field, i) => (i === index ? {...field, fileUrl: undefined} : field)),
       );
+      setEpisodeVideoInfo(prev => ({
+        ...prev,
+        subTitleFileInfos: prev.subTitleFileInfos.map((info, i) =>
+          i === index ? {...info, videoSourceUrl: '', videoSourceName: ''} : info,
+        ),
+      }));
     } else if (type === 'dubbing' && index !== undefined) {
       setDubbingFields(prevFields =>
         prevFields.map((field, i) => (i === index ? {...field, fileUrl: undefined} : field)),
       );
+      setEpisodeVideoInfo(prev => ({
+        ...prev,
+        dubbingFileInfos: prev.dubbingFileInfos.map((info, i) =>
+          i === index ? {...info, videoSourceUrl: '', videoSourceName: ''} : info,
+        ),
+      }));
     }
   };
 
@@ -164,7 +195,7 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
       <div key={field.id} className={styles.uploadGroup}>
         {/* 국가 선택 드롭다운 */}
         <div className={styles.countryUploadBox} onClick={() => setCountryDrawerOpen({type, index})}>
-          {CountryTypes[field.selectedCountry]}
+          {ContentLanguageType[field.selectedCountry]}
           <img src={LineArrowDown.src} className={styles.lineArrowDown} />
         </div>
 
