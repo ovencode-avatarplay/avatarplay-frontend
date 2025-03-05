@@ -1,6 +1,5 @@
 'use client';
 
-import CreateContent from '@/app/view/main/content/create/content/CreateContent';
 import CreateContentIntroduction from '@/app/view/main/content/create/content/CreateContentIntroduction';
 
 export default function CreateCharacterPage() {
@@ -28,4 +27,3 @@ export default function CreateCharacterPage() {
 ('http://localhost:3000/ko/update/content/single/[[id1]]');
 
 ('http://localhost:3000/ko/update/content/series/episode/[[id2]]');
-('http://localhost:3000/ko/update/content/single/episode/[[id2]]');

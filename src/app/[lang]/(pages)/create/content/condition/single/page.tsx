@@ -1,6 +1,5 @@
 'use client';
 
-import CreateContent from '@/app/view/main/content/create/content/CreateContent';
 import CreateContentIntroduction from '@/app/view/main/content/create/content/CreateContentIntroduction';
 import TermsAndConditions from '@/app/view/main/content/create/content/TermsAndConditions';
 

@@ -2,6 +2,7 @@
 
 import {en} from '@supabase/auth-ui-shared';
 import api, {ResponseAPI} from './ApiInstance';
+import {AxiosError} from 'axios';
 
 // 📌 Content 생성 요청
 export interface CreateContentReq {
@@ -271,5 +272,37 @@ export const sendGetContentList = async (payload: GetContentListReq): Promise<Re
   } catch (error) {
     console.error('Error fetching content list:', error);
     throw new Error('Failed to fetch content list. Please try again.');
+  }
+};
+
+/** 콘텐츠 삭제 요청 타입 */
+interface DeleteContentReq {
+  contentId: number;
+}
+
+/** 콘텐츠 삭제 응답 타입 */
+interface DeleteContentRes {
+  resultCode: number;
+  errorCode: string;
+  resultMessage: string;
+  data: {};
+}
+
+/**
+ * 콘텐츠 삭제 API 요청
+ * @param payload 삭제할 콘텐츠의 ID 정보
+ * @returns API 응답 데이터
+ */
+export const sendDeleteContent = async (payload: DeleteContentReq): Promise<ResponseAPI<DeleteContentRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<DeleteContentRes>>('/Content/delete', payload);
+
+    if (response.data.resultCode === 0) return response.data;
+
+    throw new Error(`DeleteContent Error: ${response.data.resultCode}`);
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    console.error('Error deleting content:', axiosError.message);
+    throw new Error('Failed to delete content. Please try again.');
   }
 };

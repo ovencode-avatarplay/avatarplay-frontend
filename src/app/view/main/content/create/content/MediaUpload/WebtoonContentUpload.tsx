@@ -29,17 +29,44 @@ export interface WebtoonUploadField {
 
 interface WebtoonContentUploadProps {
   setEpisodeWebtoonInfo: (value: ContentEpisodeWebtoonInfo) => void;
+  defaultEpisodeWebtoonInfo?: ContentEpisodeWebtoonInfo; // 기존 데이터가 있으면 전달받음
 }
 
-const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({setEpisodeWebtoonInfo}) => {
+const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
+  setEpisodeWebtoonInfo,
+  defaultEpisodeWebtoonInfo,
+}) => {
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle'; index: number} | null>(null);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // 선택된 파일의 인덱스
-
+  console.log(defaultEpisodeWebtoonInfo);
   const [subtitleFields, setSubtitleFields] = useState<WebtoonUploadField[]>([]);
   const [imageFiles, setImageFiles] = useState<string[]>([]);
   const [imageNames, setImageNames] = useState<string[]>([]);
+  // ✅ 기존 데이터가 있으면 초기값 설정
+  useEffect(() => {
+    if (defaultEpisodeWebtoonInfo) {
+      const webtoonSource = defaultEpisodeWebtoonInfo.webtoonSourceUrlList.find(
+        info => info.webtoonLanguageType === ContentLanguageType.Source,
+      );
 
+      if (webtoonSource) {
+        setImageFiles(webtoonSource.webtoonSourceUrls);
+        setImageNames(webtoonSource.webtoonSourceNames);
+      }
+
+      setSubtitleFields(
+        defaultEpisodeWebtoonInfo.webtoonSourceUrlList
+          .filter(info => info.webtoonLanguageType !== ContentLanguageType.Source)
+          .map((info, index) => ({
+            id: index,
+            selectedCountry: info.webtoonLanguageType,
+            fileUrl: info.webtoonSourceUrls,
+            fileName: info.webtoonSourceNames,
+          })),
+      );
+    }
+  }, [defaultEpisodeWebtoonInfo]);
   useEffect(() => {
     // 📌 웹툰 원본 이미지 리스트 업데이트
     const webtoonSourceUrls: WebtoonSourceUrl[] = [];

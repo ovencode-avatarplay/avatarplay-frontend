@@ -7,21 +7,27 @@ import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 interface ContentCardProps {
   content: ContentListInfo;
   onAddEpisode: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode}) => {
+const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit, onDelete}) => {
   const isVideo = content.thumbnailUrl.match(/\.(mp4|webm|ogg)$/i);
   const [dropBoxOpen, setDropBoxOpen] = useState<boolean>(false);
   const dropDownMenuItems: DropDownMenuItem[] = [
     {
-      name: 'Rename',
+      name: 'Edit',
       icon: LineEdit.src,
-      onClick: () => {},
+      onClick: () => {
+        onEdit();
+      },
     },
     {
       name: 'Delete',
       icon: LineDelete.src,
-      onClick: () => {},
+      onClick: () => {
+        onDelete();
+      },
       isRed: true, // Delete는 위험 동작으로 표시
     },
   ];

@@ -28,6 +28,9 @@ import {
 } from '@/app/NetWork/ContentNetwork';
 import {EpisodeInfo} from '@/redux-store/slices/StoryInfo';
 import {Category} from '@mui/icons-material';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
+import {CreateContentEpisodeProps} from './CreateContentEpisode';
 
 interface SeriesDetailProps {
   id: number;
@@ -37,7 +40,7 @@ export interface Seasons {
   id: number;
   name: string;
 }
-const SeriesDetail: React.FC<SeriesDetailProps> = ({id}) => {
+const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedTab, setSelectedTab] = useState<'Episodes' | 'About'>('Episodes');
   const [onSeasonDropdown, setSeasonDropdown] = useState(false);
@@ -49,6 +52,14 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id}) => {
 
   useEffect(() => {}, [episodeList]);
 
+  const router = useRouter();
+  const navigateToCreateContentEpisode = ({contentId, curSeason, curEpisodeCount}: CreateContentEpisodeProps) => {
+    // id 배열 생성 (contentId가 있을 경우 포함)
+    const ids = contentId ? [contentId, curSeason, curEpisodeCount] : [curSeason, curEpisodeCount];
+
+    // 기존의 pushLocalizedRoute 함수를 활용하여 라우팅 수행
+    pushLocalizedRoute(`/create/content/episode/series/${ids.join('/')}`, router);
+  };
   const addSeason = async () => {
     if (!seriesInfo) return;
     const newSeasonNo = (seriesInfo.maxSeasonNo || 0) + 1; // 현재 maxSeasonNo + 1
@@ -179,7 +190,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id}) => {
       }
     };
 
-    fetchContent(id);
+    fetchContent(contentId);
   }, []);
 
   useEffect(() => {
@@ -191,7 +202,12 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id}) => {
       {/* 상단 배경 및 네비게이션 */}
       <div className={styles.header} style={{backgroundImage: `url(${seriesInfo?.thumbnailUrl})`}}>
         <div className={styles.topNav}>
-          <button className={styles.iconButton} onClick={() => {}}>
+          <button
+            className={styles.iconButton}
+            onClick={() => {
+              pushLocalizedRoute(`/create/content`, router);
+            }}
+          >
             <img src={BoldArrowLeft.src} alt="Back" />
           </button>
           <button className={styles.iconButton}>
@@ -267,7 +283,16 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id}) => {
           )}
         </div>
         {/* 새로운 에피소드 추가 버튼 */}
-        <button className={styles.addEpisode} onClick={() => {}}>
+        <button
+          className={styles.addEpisode}
+          onClick={() => {
+            navigateToCreateContentEpisode({
+              contentId: contentId,
+              curSeason: selectedSeason,
+              curEpisodeCount: episodeList ? episodeList.length : 0,
+            });
+          }}
+        >
           + New Episode
         </button>
 

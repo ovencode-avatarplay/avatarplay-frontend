@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './CreateSingleContent.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {BoldArrowDown, BoldQuestion, BoldStar, LineClose, LineDashboard} from '@ui/Icons';
@@ -20,6 +20,8 @@ import {
   sendCreateContent,
   ContentLanguageType,
   ContentEpisodeVideoInfo,
+  sendGetContent,
+  ContentInfo,
 } from '@/app/NetWork/ContentNetwork';
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
@@ -34,9 +36,11 @@ enum VisibilityType {
   Public = 2,
 }
 
-interface CreateSingleContentProps {}
+interface CreateSingleContentProps {
+  id?: number;
+}
 
-const CreateSingleContent: React.FC<CreateSingleContentProps> = ({}) => {
+const CreateSingleContent: React.FC<CreateSingleContentProps> = ({id}) => {
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
@@ -201,6 +205,50 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({}) => {
     webtoonSourceUrlList: [],
   });
 
+  const [editContentInfo, setEditContentInfo] = useState<ContentInfo>();
+
+  const [defaultImage, setDefaultImage] = useState<string>();
+
+  useEffect(() => {
+    if (id === undefined) return;
+
+    const fetchData = async () => {
+      try {
+        const response = await sendGetContent({contentId: id});
+
+        if (response.data) {
+          console.log('콘텐츠 정보:', response.data.contentInfo);
+          const content = response.data.contentInfo;
+          setEditContentInfo(content);
+
+          // 기존 데이터로 초기화
+          setNameValue(content.name || '');
+          setSummaryValue(content.oneLineSummary || '');
+          setrDescription(content.description || '');
+          setMediaUrls([content.thumbnailUrl || '']);
+          setSelectedCategory(content.categoryType);
+          setSelectedGenres(content.genre ? content.genre.split(', ') : []);
+          setSelectedTags(content.tags || []);
+          setPositionCountryList(
+            content.postCountry
+              ? content.postCountry.map(country => LanguageType[country as keyof typeof LanguageType]).filter(Boolean) // 유효한 값만 필터링
+              : [],
+          );
+
+          setSelectedVisibility(content.visibility);
+          setIsNsfw(content.nsfw);
+          setDefaultImage(content.thumbnailUrl);
+          if (content.contentVideoInfo) setEpisodeVideoInfo(content.contentVideoInfo);
+          if (content.contentWebtoonInfo) setEpisodeWebtoonInfo(content.contentWebtoonInfo);
+        }
+      } catch (error) {
+        console.error('콘텐츠 조회 실패:', error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
   const handleConfirm = async () => {
     if (!nameValue.trim()) {
       alert('Name을 입력해주세요.');
@@ -281,7 +329,10 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({}) => {
         />
       </div>
       <div className={styles.container}>
-        <MediaUpload setContentMediaUrls={setMediaUrls}></MediaUpload>
+        <MediaUpload
+          setContentMediaUrls={setMediaUrls}
+          defaultImage={defaultImage ? defaultImage : undefined}
+        ></MediaUpload>
         <CustomInput
           inputType="Basic"
           textType="Label"
@@ -402,14 +453,17 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({}) => {
         ></CustomDropDownSelectDrawer>
 
         {selectedCategory === CategoryTypes.Drama && (
-          <>
-            <VideoContentUpload setEpisodeVideoInfo={setEpisodeVideoInfo}></VideoContentUpload>
-          </>
+          <VideoContentUpload
+            setEpisodeVideoInfo={setEpisodeVideoInfo}
+            defaultEpisodeVideoInfo={editContentInfo?.contentVideoInfo} // 기존 데이터 전달
+          />
         )}
+
         {selectedCategory === CategoryTypes.Webtoon && (
-          <>
-            <WebtoonContentUpload setEpisodeWebtoonInfo={setEpisodeWebtoonInfo}></WebtoonContentUpload>
-          </>
+          <WebtoonContentUpload
+            setEpisodeWebtoonInfo={setEpisodeWebtoonInfo}
+            defaultEpisodeWebtoonInfo={editContentInfo?.contentWebtoonInfo} // 기존 데이터 전달
+          />
         )}
 
         <div className={styles.moenetization}>

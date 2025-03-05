@@ -8,6 +8,8 @@ import {
   GetContentReq,
   sendGetContent,
 } from '@/app/NetWork/ContentNetwork';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
 export const mockSingle = {
   title: 'The White King',
   genres: ['Comedy', 'Love', 'Drama'],
@@ -70,12 +72,19 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
     fetchContent(id);
   }, []);
 
+  const router = useRouter();
+
   return (
     <div className={styles.container}>
       {/* 상단 배경 및 네비게이션 */}
       <div className={styles.header} style={{backgroundImage: `url(${singleInfo?.thumbnailUrl})`}}>
         <div className={styles.topNav}>
-          <button className={styles.iconButton} onClick={() => {}}>
+          <button
+            className={styles.iconButton}
+            onClick={() => {
+              pushLocalizedRoute(`/create/content`, router);
+            }}
+          >
             <img src={BoldArrowLeft.src} alt="Back" />
           </button>
           <button className={styles.iconButton}>
