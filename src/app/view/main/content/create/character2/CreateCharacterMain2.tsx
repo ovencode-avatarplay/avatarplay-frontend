@@ -88,8 +88,12 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   const [worldScenario, setWorldScenario] = useState(character.worldScenario);
   const [greeting, setGreeting] = useState(character.greeting);
   const [secret, setSecret] = useState(character.secret);
-  const [customModulesPromptIdx, setCustomModulesPromptIdx] = useState<number>(0);
-  const [customModulesLorebook, setCustomModulesLorebook] = useState<number>(0);
+  const [customModulesPromptIdx, setCustomModulesPromptIdx] = useState<number>(
+    character.customModulesInfo.selectPromptIndex,
+  );
+  const [customModulesLorebookIdx, setCustomModulesLorebookIdx] = useState<number>(
+    character.customModulesInfo.selectLorebookIndex,
+  );
 
   //#endregion
 
@@ -540,14 +544,14 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           greeting={greeting}
           secret={secret}
           selectedPromptIdx={customModulesPromptIdx}
-          selectedLorebookIdx={customModulesLorebook}
+          selectedLorebookIdx={customModulesLorebookIdx}
           onLangChange={setLanguageType}
           onCharacterDescChange={setDescription}
           onWorldScenarioChange={setWorldScenario}
           onGreetingChange={setGreeting}
           onSecretChange={setSecret}
           onSelectedPromptChange={setCustomModulesPromptIdx}
-          onSelectedLorebookChange={setCustomModulesLorebook}
+          onSelectedLorebookChange={setCustomModulesLorebookIdx}
         />
       ),
     },
