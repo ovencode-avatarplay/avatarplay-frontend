@@ -78,22 +78,23 @@ import 'swiper/css/navigation'; // 필요시 다른 모듈도 가져오기
 import PopupSubscription from '../main/content/create/common/PopupSubscription';
 import PopupSubscriptionList from './PopupSubscriptionList';
 import PopupFavoriteList from './PopupFavoriteList';
+import PopupPlaylist from './PopupPlaylist';
 
-enum eTabPDType {
+export enum eTabPDType {
   Feed,
   Channel = 1,
   Character = 2,
   Shared = 3,
 }
 
-enum eTabPDOtherType {
+export enum eTabPDOtherType {
   Feed,
   Info = 90, //Info를 앞에 배치하되 api랑 sync를 맞춰야해서 3으로 줌
   Channel = 1,
   Character = 2,
 }
 
-enum eTabCharacterType {
+export enum eTabCharacterType {
   Feed,
   Contents = 1,
   Story,
@@ -101,7 +102,7 @@ enum eTabCharacterType {
   Game,
 }
 
-enum eTabCharacterOtherType {
+export enum eTabCharacterOtherType {
   Feed,
   Info = 90,
   Contents = 1,
@@ -109,7 +110,7 @@ enum eTabCharacterOtherType {
   Character,
   Game,
 }
-enum eTabChannelType {
+export enum eTabChannelType {
   Feed,
   Contents = 1,
   Story,
@@ -117,7 +118,7 @@ enum eTabChannelType {
   Game,
 }
 
-enum eTabChannelOtherType {
+export enum eTabChannelOtherType {
   Feed,
   Info = 90,
   Contents = 1,
@@ -154,6 +155,7 @@ type DataProfileType = {
       GetPdTabInfoeRes &
       GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes} & GetChannelRes;
   };
+
   indexFilterMedia: FeedMediaType;
   indexFilterCharacter: number;
   indexSort: ExploreSortType;
@@ -610,7 +612,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             onClick={() => {
               data.isOpenPopupFavoritesList = true;
               setData({...data});
-              alert('Favorites 구현 예정');
             }}
           >
             Favorites
@@ -620,7 +621,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             onClick={() => {
               data.isOpenPopupPlayList = true;
               setData({...data});
-              alert('playlist 구현 예정');
             }}
           >
             Playlist
@@ -830,13 +830,28 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               }}
             />
             <TabFilterComponent
-              profileId={profileId}
               isMine={isMine}
               profileType={profileType}
               tabIndex={data.indexTab}
-              isEmptyTab={isEmptyTab}
-              data={data}
-              setData={setData}
+              filterCluster={data}
+              onChange={async (filterCluster: FilterClusterType) => {
+                if ((filterCluster?.indexFilterMedia ?? -1) >= 0) {
+                  data.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
+                  await data.refreshProfileTab(profileId, data.indexTab);
+                  setData(v => ({...data}));
+                }
+                if ((filterCluster?.indexFilterCharacter ?? -1) >= 0) {
+                  data.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
+                  await data.refreshProfileTab(profileId, data.indexTab);
+                  setData(v => ({...data}));
+                }
+
+                if ((filterCluster?.indexSort ?? -1) >= 0) {
+                  data.indexSort = filterCluster?.indexSort ?? -1;
+                  await data.refreshProfileTab(profileId, data.indexTab);
+                  setData(v => ({...data}));
+                }
+              }}
             />
           </div>
 
@@ -916,14 +931,29 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           }}
         />
       )}
-      {/* {data.isOpenPopupFavoritesList && (
+      {data.isOpenPopupFavoritesList && (
         <PopupFavoriteList
+          isMine={isMine}
+          profileId={profileId}
+          profileType={profileType}
           onClose={() => {
             data.isOpenPopupFavoritesList = false;
             setData({...data});
           }}
         />
-      )} */}
+      )}
+
+      {data.isOpenPopupPlayList && (
+        <PopupPlaylist
+          isMine={isMine}
+          profileId={profileId}
+          profileType={profileType}
+          onClose={() => {
+            data.isOpenPopupPlayList = false;
+            setData({...data});
+          }}
+        />
+      )}
     </>
   );
 });
@@ -1205,7 +1235,21 @@ type TabContentProps = {
   setData: React.Dispatch<React.SetStateAction<DataProfileType>>;
 };
 
-const TabFilterComponent = ({profileId, profileType, isMine, tabIndex, isEmptyTab, data, setData}: TabContentProps) => {
+type TabFilterProps = {
+  profileType: ProfileType;
+  isMine: boolean;
+  tabIndex: number;
+  filterCluster: FilterClusterType;
+  onChange: (data: FilterClusterType) => {};
+};
+
+export type FilterClusterType = {
+  indexFilterMedia?: number;
+  indexSort?: number;
+  indexFilterCharacter?: number;
+};
+
+export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster, onChange}: TabFilterProps) => {
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
     getUserType(isMine, profileType);
   const sortOptionList = [
@@ -1229,26 +1273,25 @@ const TabFilterComponent = ({profileId, profileType, isMine, tabIndex, isEmptyTa
               const target = e.target as HTMLElement;
               const category = target.closest('[data-filter]')?.getAttribute('data-filter');
               if (category) {
-                data.indexFilterMedia = parseInt(category);
+                const indexFilterMedia = parseInt(category);
+                onChange({indexFilterMedia: indexFilterMedia});
               }
-              await data.refreshProfileTab(profileId, data.indexTab);
-              setData(v => ({...data}));
             }}
           >
             <div
-              className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Total && styles.active)}
+              className={cx(styles.iconWrap, filterCluster.indexFilterMedia == FeedMediaType.Total && styles.active)}
               data-filter={FeedMediaType.Total}
             >
               <img src={BoldViewGallery.src} alt="" />
             </div>
             <div
-              className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Video && styles.active)}
+              className={cx(styles.iconWrap, filterCluster.indexFilterMedia == FeedMediaType.Video && styles.active)}
               data-filter={FeedMediaType.Video}
             >
               <img src={BoldVideo.src} alt="" />
             </div>
             <div
-              className={cx(styles.iconWrap, data.indexFilterMedia == FeedMediaType.Image && styles.active)}
+              className={cx(styles.iconWrap, filterCluster.indexFilterMedia == FeedMediaType.Image && styles.active)}
               data-filter={FeedMediaType.Image}
             >
               <img src={BoldImage.src} alt="" />
@@ -1257,15 +1300,14 @@ const TabFilterComponent = ({profileId, profileType, isMine, tabIndex, isEmptyTa
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBox
-                value={sortOptionList[data.indexSort]}
+                value={sortOptionList[filterCluster?.indexSort || 0]}
                 options={sortOptionList}
                 ArrowComponent={SelectBoxArrowComponent}
                 ValueComponent={SelectBoxValueComponent}
                 OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
-                  data.indexSort = id;
-                  await data.refreshProfileTab(profileId, data.indexTab);
-                  setData({...data});
+                  const indexSort = id;
+                  onChange({indexSort: indexSort});
                 }}
                 customStyles={{
                   control: {
@@ -1305,15 +1347,16 @@ const TabFilterComponent = ({profileId, profileType, isMine, tabIndex, isEmptyTa
               const target = e.target as HTMLElement;
               const category = target.closest('[data-filter]')?.getAttribute('data-filter');
               if (category) {
-                data.indexFilterCharacter = parseInt(category);
+                const indexFilterCharacter = parseInt(category);
+                onChange({indexFilterCharacter: indexFilterCharacter});
               }
-              await data.refreshProfileTab(profileId, data.indexTab);
-              // await data.refreshProfileTab(profileId, data.indexTab);
-              setData({...data});
             }}
           >
             <div
-              className={cx(styles.iconWrap, data.indexFilterCharacter == eCharacterFilterType.Total && styles.active)}
+              className={cx(
+                styles.iconWrap,
+                filterCluster.indexFilterCharacter == eCharacterFilterType.Total && styles.active,
+              )}
               data-filter={eCharacterFilterType.Total}
             >
               <img src={BoldViewGallery.src} alt="" />
@@ -1321,14 +1364,17 @@ const TabFilterComponent = ({profileId, profileType, isMine, tabIndex, isEmptyTa
             <div
               className={cx(
                 styles.textWrap,
-                data.indexFilterCharacter == eCharacterFilterType.Original && styles.active,
+                filterCluster.indexFilterCharacter == eCharacterFilterType.Original && styles.active,
               )}
               data-filter={eCharacterFilterType.Original}
             >
               <div className={styles.text}>Original</div>
             </div>
             <div
-              className={cx(styles.textWrap, data.indexFilterCharacter == eCharacterFilterType.Fan && styles.active)}
+              className={cx(
+                styles.textWrap,
+                filterCluster.indexFilterCharacter == eCharacterFilterType.Fan && styles.active,
+              )}
               data-filter={eCharacterFilterType.Fan}
             >
               <div className={styles.text}>Fan</div>
@@ -1337,15 +1383,14 @@ const TabFilterComponent = ({profileId, profileType, isMine, tabIndex, isEmptyTa
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBox
-                value={sortOptionList[data.indexSort]}
+                value={sortOptionList[filterCluster?.indexSort || 0]}
                 options={sortOptionList}
                 ArrowComponent={SelectBoxArrowComponent}
                 ValueComponent={SelectBoxValueComponent}
                 OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
-                  data.indexSort = id;
-                  await data.refreshProfileTab(profileId, data.indexTab);
-                  setData({...data});
+                  const indexSort = id;
+                  onChange({indexSort: indexSort});
                 }}
                 customStyles={{
                   control: {
@@ -1399,7 +1444,7 @@ type TabHeaderComponentType = {
   isMine: boolean;
   onTabChange: (indexTab: number) => void;
 };
-const TabHeaderComponent = ({indexTab, profileId, profileType, isMine, onTabChange}: TabHeaderComponentType) => {
+export const TabHeaderComponent = ({indexTab, profileId, profileType, isMine, onTabChange}: TabHeaderComponentType) => {
   const [data, setData] = useState<{
     indexTab:
       | eTabPDType
@@ -1587,7 +1632,7 @@ const TabContentComponent = ({
     return (
       <>
         <ul className={styles.itemWrap}>
-          {data?.profileTabInfo?.[data.indexTab]?.feedInfoList.map((one, index: number) => {
+          {data?.profileTabInfo?.[data.indexTab]?.feedInfoList?.map((one, index: number) => {
             return (
               <Link
                 href={

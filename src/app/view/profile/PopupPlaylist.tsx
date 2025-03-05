@@ -1,6 +1,6 @@
 import {Dialog} from '@mui/material';
 import React, {useEffect, useState} from 'react';
-import styles from './PopupFavoriteList.module.scss';
+import styles from './PopupPlaylist.module.scss';
 import {BoldAltArrowDown, BoldArrowLeft, BoldMenuDots, LineCheck} from '@ui/Icons';
 import cx from 'classnames';
 import {
@@ -35,7 +35,7 @@ type Props = {
   isMine: boolean;
 };
 
-const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Props) => {
+const PopupPlaylist = ({profileId, profileType, isMine = true, onClose}: Props) => {
   const [data, setData] = useState<{
     indexTab:
       | eTabPDType
@@ -79,7 +79,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
                 onClose();
               }}
             />
-            <h1 className={styles.title}>Favorites</h1>
+            <h1 className={styles.title}>Record</h1>
           </header>
           <main className={styles.main}>
             <section className={styles.tabSection}>
@@ -134,4 +134,4 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
   );
 };
 
-export default PopupFavoriteList;
+export default PopupPlaylist;
