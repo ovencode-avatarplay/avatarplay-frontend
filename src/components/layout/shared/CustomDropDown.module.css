@@ -40,9 +40,9 @@
     z-index: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    align-self: stretch;
+    justify-content: flex-start;  
+    align-items: flex-start;  
+    
     gap: 15px;
     
     border-radius: 12px;
@@ -150,6 +150,11 @@
     font-weight: 700;
     line-height: normal;
     letter-spacing: -0.3px;
+}
+
+.normal
+{
+
 }
 
 .label

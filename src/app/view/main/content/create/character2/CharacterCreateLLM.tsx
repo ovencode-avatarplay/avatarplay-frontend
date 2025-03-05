@@ -1,3 +1,8 @@
+import {
+  CustomModulesLorebookInfo,
+  CustomModulesPromptInfo,
+  sendGetCustomModules,
+} from '@/app/NetWork/CustomModulesNetwork';
 import styles from './CharacterCreateLLM.module.css';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
@@ -45,23 +50,29 @@ const CharacterCreateLLM: React.FC<Props> = ({
   const [autoWriteCharacterGreeting, setAutoWriteCharacterGreeting] = useState<string[]>([]);
   const [autoWriteCharacterSecret, setAutoWriteCharacterSecret] = useState<string[]>([]);
 
-  const langItems = [
-    {label: 'Korean', value: '0'},
-    {label: 'English', value: '1'},
-    {label: 'Japan', value: '2'},
-  ];
+  const langItems = Object.values(LanguageType)
+    .filter(value => typeof value === 'string')
+    .map(value => ({
+      label: value as string,
+      value: LanguageType[value as keyof typeof LanguageType],
+    }));
 
-  const promptItems = [
-    {label: 'prompt 1', value: '1'},
-    {label: 'prompt 2', value: '2'},
-    {label: 'prompt 3', value: '3'},
-  ];
+  const [promptItems, setPromptItems] = useState<{label: string; value: number}[]>([]);
+  const [lorebookItems, setLorebookItems] = useState<{label: string; value: number}[]>([]);
 
-  const lorebookItems = [
-    {label: 'lorebook 1', value: '1'},
-    {label: 'lorebook 2', value: '2'},
-    {label: 'lorebook 3', value: '3'},
-  ];
+  const handleGetCustomModules = async () => {
+    const response = await sendGetCustomModules();
+    if (response.data) {
+      const prompts = response.data?.prompts;
+      const lorebooks = response.data?.lorebooks;
+      setPromptItems(prompts.map(prompt => ({label: prompt.title, value: prompt.promptId})));
+      setLorebookItems(lorebooks.map(lorebook => ({label: lorebook.title, value: lorebook.lorebookId})));
+    }
+  };
+
+  useEffect(() => {
+    handleGetCustomModules();
+  }, []);
 
   useEffect(() => {
     //  TODO : Localize 테이블에서 가져올 키값과 헤드 이름 변경필요
