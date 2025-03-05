@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './CustomPopup.module.css';
 import CustomButton from './CustomButton';
-import CustomInput from './CustomInput';
+import CustomInput, {InputTextType} from './CustomInput';
 
 type PopupType = 'alert' | 'error' | 'input';
 
@@ -16,6 +16,8 @@ interface InputField {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string; // 입력 필드의 힌트 텍스트
   maxLength?: number; // 최대 글자 수
+  textType?: InputTextType;
+  label?: string;
 }
 
 interface PopupProps {
@@ -48,7 +50,8 @@ const CustomPopup: React.FC<PopupProps> = ({type, title, description, buttons, t
           <div className={styles.popupInputField}>
             <CustomInput
               inputType="Basic"
-              textType="InputOnly"
+              textType={inputField.textType ? inputField.textType : 'InputOnly'}
+              label={inputField.textType !== 'InputOnly' && inputField.label ? inputField.label : ''}
               value={inputField.value}
               onChange={e => {
                 inputField.onChange(e);

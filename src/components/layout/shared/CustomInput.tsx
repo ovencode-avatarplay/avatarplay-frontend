@@ -2,11 +2,11 @@ import React, {useState} from 'react';
 import styles from './CustomInput.module.css';
 
 type Type = 'Basic' | 'LeftIcon' | 'RightIcon' | 'TwoIcon';
-type Text = 'InputOnly' | 'Label' | 'Hint' | 'LabelandHint';
+export type InputTextType = 'InputOnly' | 'Label' | 'Hint' | 'LabelandHint';
 type State = 'Default' | 'Focused' | 'Typing' | 'Error' | 'Disable';
 
 interface CustomInputProps {
-  textType: Text;
+  textType: InputTextType;
   inputType: Type;
   state?: State;
   label?: string | React.ReactNode;

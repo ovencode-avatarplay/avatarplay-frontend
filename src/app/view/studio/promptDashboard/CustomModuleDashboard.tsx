@@ -55,8 +55,16 @@ const CustomModuleDashboard: React.FC = () => {
   let defaultPromptItem: CustomModulePrompt = {
     promptId: 0,
     title: '',
-    claude: 'default Claude',
-    chatGPT: 'default GPT',
+    claude: `###About {{char}}: \n
+    ###Lore Book : \n
+    ###About {{user}} : \n
+    ###Instruction : \n
+    ###Response :`,
+    chatGPT: `###About {{char}}: \n
+    ###Lore Book : \n
+    ###About {{user}} : \n
+    ###Instruction : \n
+    ###Response :`,
   };
 
   let defaultLorebookItem: EditLorebookReq = {
@@ -239,19 +247,35 @@ const CustomModuleDashboard: React.FC = () => {
   };
 
   const renderPromptItem = (item: CustomModulesPromptInfo) => {
+    const formatDateTime = (isoString: string) => {
+      const date = new Date(isoString);
+
+      const localDateTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+      return localDateTime.toISOString().slice(0, 16).replace('T', ' ');
+    };
+
     return (
       <li key={item.title} className={styles.customModuleItem} onClick={() => handlePromptItemClick(item)}>
         <div className={styles.itemName}>{item.title}</div>
-        <div className={styles.itemUpdateAt}>{item.createdAt}</div>
+        <div className={styles.itemUpdateAt}>{formatDateTime(item.createdAt)}</div>
       </li>
     );
   };
 
   const renderLorebookItem = (item: CustomModulesLorebookInfo) => {
+    const formatDateTime = (isoString: string) => {
+      const date = new Date(isoString);
+
+      const localDateTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+      return localDateTime.toISOString().slice(0, 16).replace('T', ' ');
+    };
+
     return (
       <li key={item.title} className={styles.customModuleItem} onClick={() => handleLorebookItemClick(item)}>
         <div className={styles.itemName}>{item.title}</div>
-        <div className={styles.itemUpdateAt}>{item.createdAt}</div>
+        <div className={styles.itemUpdateAt}>{formatDateTime(item.createdAt)}</div>
       </li>
     );
   };
@@ -353,22 +377,18 @@ const CustomModuleDashboard: React.FC = () => {
         <CustomPopup
           type="alert"
           title={`Make New Custom ${popupType === 'prompt' ? 'Prompt' : 'Lorebook'}`}
-          description={`Input new custom ${popupType === 'prompt' ? 'prompt' : 'lorebook'} name`}
           inputField={{
             value: newItemName,
             onChange: e => setNewItemName(e.target.value),
             placeholder: `Enter ${popupType === 'prompt' ? 'prompt' : 'lorebook'} name`,
+            textType: 'Label',
+            label: `Input new custom ${popupType === 'prompt' ? 'prompt' : 'lorebook'} name`,
           }}
           buttons={[
             {
-              label: 'Cancel',
-              onClick: () => setNamePopupOpen(false),
-            },
-            {
-              label: 'OK',
+              label: 'submit',
               onClick: () => {
                 {
-                  console.log(popupType);
                   popupType === 'prompt'
                     ? handleConfirmAddPromptItem()
                     : popupType === 'lorebook'
@@ -386,7 +406,13 @@ const CustomModuleDashboard: React.FC = () => {
       {isCloseConfirmOpen && (
         <CustomPopup
           type="alert"
-          title="Are you sure you want to exit ‘title of lorebook’ "
+          title={`Are you sure you want to exit ‘${
+            displayState === 'prompt'
+              ? selectedPrompt?.title
+              : displayState === 'lorebook'
+              ? selectedLorebook?.title
+              : 'err'
+          }’ `}
           description="If you don't save it, all the information you entered will be lost."
           buttons={[
             {
