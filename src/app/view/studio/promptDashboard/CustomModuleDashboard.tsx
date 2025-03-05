@@ -52,6 +52,8 @@ const CustomModuleDashboard: React.FC = () => {
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState<boolean>(false);
+
   let defaultPromptItem: CustomModulePrompt = {
     promptId: 0,
     title: '',
@@ -337,13 +339,7 @@ const CustomModuleDashboard: React.FC = () => {
           <button
             className={styles.deleteButton}
             onClick={() => {
-              displayState === 'prompt'
-                ? handlePromptDeleteItem()
-                : displayState === 'lorebook'
-                ? handleLorebookDeleteItem()
-                : {
-                    //empty
-                  };
+              setIsDeleteConfirmOpen(true);
             }}
           >
             <img className={styles.deleteIcon} src={LineDelete.src} />
@@ -424,6 +420,42 @@ const CustomModuleDashboard: React.FC = () => {
               onClick: () => {
                 setIsCloseConfirmOpen(false);
                 setDisplayState('dashboard');
+                setSelectedPrompt(null);
+                setSelectedLorebook(null);
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
+      {isDeleteConfirmOpen && (
+        <CustomPopup
+          type="alert"
+          title={`Are you sure you want to delete ‘${
+            displayState === 'prompt'
+              ? selectedPrompt?.title
+              : displayState === 'lorebook'
+              ? selectedLorebook?.title
+              : 'err'
+          }’ `}
+          description="really?"
+          buttons={[
+            {
+              label: 'Cancel',
+              onClick: () => setIsDeleteConfirmOpen(false),
+            },
+            {
+              label: 'Confirm',
+              onClick: () => {
+                setIsDeleteConfirmOpen(false);
+                setDisplayState('dashboard');
+                displayState === 'prompt'
+                  ? handlePromptDeleteItem()
+                  : displayState === 'lorebook'
+                  ? handleLorebookDeleteItem()
+                  : {
+                      //empty
+                    };
                 setSelectedPrompt(null);
                 setSelectedLorebook(null);
               },
