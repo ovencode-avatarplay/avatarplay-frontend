@@ -13,7 +13,7 @@ export interface ProfileSimpleInfo {
   operatorAuthorityType: OperatorAuthorityType;
   profileType: ProfileType;
   name: string;
-  description: string;
+  description?: string;
   iconImageUrl: string;
   nSFW: boolean;
 }

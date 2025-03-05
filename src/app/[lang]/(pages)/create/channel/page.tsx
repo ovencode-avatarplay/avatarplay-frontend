@@ -48,8 +48,9 @@ import {
 } from '@/app/NetWork/ChannelNetwork';
 import {profile} from 'console';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
-import {VisibilityType} from '@/redux-store/slices/StoryInfo';
+import {PaymentType, Subscription, VisibilityType} from '@/redux-store/slices/StoryInfo';
 import {on} from 'events';
+import DrawerMembershipSetting from '@/app/view/main/content/create/common/DrawerMembershipSetting';
 type Props = {
   id: number;
   isUpdate: boolean;
@@ -171,6 +172,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     shouldFocusError: true,
     defaultValues: {
       isMonetization: 0,
+      mediaUrl: '',
     },
   });
 
@@ -182,7 +184,6 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
   const refreshChannelInfo = async (id: number) => {
     const res = await getChannelInfo({channelProfileId: id});
-    console.log('res : ', res);
     const channelInfo = res?.data?.channelInfo;
     if (!channelInfo) return;
 
@@ -352,7 +353,6 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       channelInfo: {...dataForm, id: idChannel, tags: tag, isMonetization, nsfw, characterIP},
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
-    console.log('res : ', res);
     if (res?.resultCode == 0) {
       routerBack();
     }
@@ -406,11 +406,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       setFocus('postCountry');
       return;
     }
-
-    if (errors.visibilityType) console.log('errorr : ', data);
   };
 
-  console.log('characterIP : ', watch('characterIP'));
   return (
     <>
       <header className={styles.header}>
@@ -422,7 +419,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           <div className={styles.label}>Thumbnail (Photo/Video)</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
-              <input type={'hidden'} defaultValue={''} {...register('mediaUrl', {required: true})} />
+              <input type={'hidden'} {...register('mediaUrl', {required: true})} />
               <input
                 className={styles.hidden}
                 id="file-upload"
@@ -575,7 +572,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     setData({...data});
                   }}
                 >
-                  <input {...register('visibilityType', {required: true})} type="hidden" defaultValue={''} />
+                  <input {...register('visibilityType', {required: true})} type="hidden" />
                   {!visibilityTypeStr && <div className={styles.placeholder}>Select</div>}
                   {visibilityTypeStr && <div className={styles.value}>{visibilityTypeStr}</div>}
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
@@ -593,7 +590,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
                 </div>
                 <div className={styles.tagWrap}>
-                  {!watch('tags') && <input type="hidden" {...register(`tags`, {required: true})} defaultValue={''} />}
+                  {!watch('tags') && <input type="hidden" {...register(`tags`, {required: true})} />}
 
                   {data.dataTag.tagList.map((one, index) => {
                     if (!one.isActive) return;
@@ -601,12 +598,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     return (
                       <div className={styles.tag} key={index}>
                         <div className={styles.value}>
-                          <input
-                            value={one.value}
-                            type="hidden"
-                            {...register(`tags.${index}`, {required: true})}
-                            defaultValue={''}
-                          />
+                          <input value={one.value} type="hidden" {...register(`tags.${index}`, {required: true})} />
                           {one.value}
                         </div>
                         <div
@@ -636,9 +628,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
                 </div>
                 <div className={styles.tagWrap}>
-                  {!watch('postCountry') && (
-                    <input type="hidden" {...register(`postCountry`, {required: true})} defaultValue={''} />
-                  )}
+                  {!watch('postCountry') && <input type="hidden" {...register(`postCountry`, {required: true})} />}
 
                   {data.dataCountry.tagList.map((one, index) => {
                     const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
@@ -647,12 +637,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     return (
                       <div className={styles.tag} key={index}>
                         <div className={styles.value}>
-                          <input
-                            value={one}
-                            type="hidden"
-                            {...register(`postCountry.${index}`, {required: true})}
-                            defaultValue={''}
-                          />
+                          <input value={one} type="hidden" {...register(`postCountry.${index}`, {required: true})} />
                           {countryStr}
                         </div>
                         <div
@@ -741,6 +726,11 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   </div>
                 </div>
 
+                <div className={styles.labelWrap}>
+                  <div className={styles.label}>Monetization</div>
+                  <CustomToolTip tooltipText="Channel IP" />
+                </div>
+
                 <div className={styles.membershipPlan}>
                   <div className={styles.labelSuper}>Membership Plan</div>
                   <div
@@ -752,11 +742,6 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   >
                     Setting
                   </div>
-                </div>
-
-                <div className={styles.labelWrap}>
-                  <div className={styles.label}>Monetization</div>
-                  <CustomToolTip tooltipText="Channel IP" />
                 </div>
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
@@ -939,6 +924,19 @@ const CreateChannel = ({id, isUpdate}: Props) => {
             setValue(`memberProfileIdList.${i}`, dataChanged[i].profileSimpleInfo, {shouldValidate: false});
           }
           setData({...data});
+        }}
+      />
+
+      <DrawerMembershipSetting
+        membershipSetting={{
+          benefits: '123123123',
+          paymentAmount: 50000,
+          paymentType: PaymentType.Korea,
+          subscription: Subscription.Contents,
+        }}
+        onClose={() => {}}
+        onMembershipSettingChange={dataChanged => {
+          console.log('dataChanged : ', dataChanged);
         }}
       />
     </>
