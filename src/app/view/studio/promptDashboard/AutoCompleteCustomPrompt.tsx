@@ -1,106 +1,100 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import styles from './AutoCompleteCustomPrompt.module.css';
 
 interface Props {
   keywords: Record<string, string>;
   inputRef: React.RefObject<HTMLDivElement>;
-  onInput: (e: React.FormEvent<HTMLDivElement>) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
+  onKeywordInsert: (e: HTMLDivElement, keyword: string) => void;
+  dropdownPosition: {top: number; left: number};
 }
 
-const AutoCompleteCustomPrompt: React.FC<Props> = ({keywords, inputRef, onInput, onKeyDown}) => {
+const AutoCompleteCustomPrompt: React.FC<Props> = ({keywords, inputRef, onKeywordInsert, dropdownPosition}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [inputValue, setInputValue] = useState(''); // 부모의 값이 변경될 때 추적
-
+  const [matchedKeywords, setMatchedKeywords] = useState<string[]>([]);
+  const [currentTriggerWord, setCurrentTriggerWord] = useState<string>(''); // 현재 `{`로 시작하는 단어
   const dropdownRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    if (showDropdown) {
-      setSelectedIndex(0);
-    }
+    if (showDropdown) setSelectedIndex(0);
   }, [showDropdown]);
 
   useEffect(() => {
     if (!inputRef.current) return;
 
-    // 부모의 `contentEditable` 값이 변경될 때 감지
-    const observer = new MutationObserver(() => {
-      const newText = inputRef.current?.innerText || '';
-      if (newText !== inputValue) {
-        setInputValue(newText);
-        handleLocalInput(newText);
+    const handleInput = () => {
+      if (!inputRef.current) return;
+
+      const text = inputRef.current.innerText;
+      const words = text.split(/\s+/);
+      const lastWord = words.pop() || '';
+
+      if (lastWord.startsWith('{')) {
+        setCurrentTriggerWord(lastWord);
+        const filteredKeywords = Object.keys(keywords).filter(kw => kw.startsWith(lastWord));
+        setMatchedKeywords(filteredKeywords);
+        setShowDropdown(filteredKeywords.length > 0);
+      } else {
+        setShowDropdown(false);
       }
-    });
+    };
 
-    observer.observe(inputRef.current, {
-      childList: true,
-      subtree: true,
-      characterData: true,
-    });
-
-    return () => observer.disconnect();
-  }, [inputRef, inputValue]);
+    inputRef.current.addEventListener('input', handleInput);
+    return () => inputRef.current?.removeEventListener('input', handleInput);
+  }, [inputRef]);
 
   useEffect(() => {
-    if (!inputRef.current) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!showDropdown) return;
 
-    const inputElement = inputRef.current;
-    inputElement.addEventListener('keydown', handleLocalKeyDown as EventListener);
-
-    return () => inputElement.removeEventListener('keydown', handleLocalKeyDown as EventListener);
-  }, [inputRef, inputValue]);
-
-  const handleLocalInput = (text: string) => {
-    if (text.includes('{') && !text.includes('}')) {
-      setShowDropdown(true);
-    } else {
-      setShowDropdown(false);
-    }
-
-    if (inputRef.current) {
-      const event = new Event('input', {bubbles: true});
-      inputRef.current.dispatchEvent(event);
-    }
-  };
-
-  const handleLocalKeyDown = (e: KeyboardEvent) => {
-    if (showDropdown) {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev + 1) % Object.keys(keywords).length);
+        setSelectedIndex(prev => (prev + 1) % matchedKeywords.length);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev - 1 + Object.keys(keywords).length) % Object.keys(keywords).length);
+        setSelectedIndex(prev => (prev - 1 + matchedKeywords.length) % matchedKeywords.length);
       } else if (e.key === 'Enter') {
         e.preventDefault();
-        insertKeyword(Object.keys(keywords)[selectedIndex]);
+        insertKeyword(matchedKeywords[selectedIndex]);
       } else if (e.key === 'Escape') {
         setShowDropdown(false);
       }
-    }
-  };
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showDropdown, selectedIndex, matchedKeywords]);
 
   const insertKeyword = (keyword: string) => {
-    if (!inputRef.current) return;
+    if (!inputRef.current || !currentTriggerWord) return;
 
-    document.execCommand('insertText', false, keyword);
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+
+    // 🔹 기존 `{`를 포함한 현재 단어를 제거 후, 키워드 삽입
+    range.setStart(range.startContainer, range.startOffset - currentTriggerWord.length);
+    range.deleteContents();
+
+    // 🔹 handleKeywordInsert 호출하여 즉시 chip으로 변환
+    onKeywordInsert(inputRef.current, keyword);
+
     setShowDropdown(false);
-
-    if (inputRef.current) {
-      const event = new Event('input', {bubbles: true});
-      inputRef.current.dispatchEvent(event);
-    }
+    setCurrentTriggerWord('');
   };
 
   return (
-    <div className={styles.autoCompleteContainer}>
+    <div
+      className={styles.autoCompleteContainer}
+      style={{position: 'absolute', top: dropdownPosition.top, left: dropdownPosition.left}}
+    >
       {showDropdown && (
         <ul ref={dropdownRef} className={styles.dropdown}>
-          {Object.keys(keywords).map((keyword, index) => (
+          {matchedKeywords.map((keyword, index) => (
             <li
               key={keyword}
-              className={`${styles.dropdownItem} ${index === selectedIndex ? styles.selected : ''}`}
+              className={`${styles.autoCompleteItem} ${index === selectedIndex ? styles.selected : ''}`}
               onClick={() => insertKeyword(keyword)}
             >
               {keyword} - {keywords[keyword]}
