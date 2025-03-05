@@ -15,7 +15,7 @@ import {
   LineSearch,
   LineUpload,
 } from '@ui/Icons';
-import {useForm} from 'react-hook-form';
+import {FieldErrors, useForm} from 'react-hook-form';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {
   ExploreSortType,
@@ -165,8 +165,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     trigger,
     reset,
     clearErrors,
+    setFocus,
     formState: {errors, isSubmitted},
   } = useForm<ChannelInfoForm>({
+    shouldFocusError: true,
     defaultValues: {
       isMonetization: 0,
     },
@@ -230,24 +232,6 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     }, 1);
     setData({...data});
   };
-
-  useEffect(() => {
-    if (!errors) {
-      return;
-    }
-
-    if (errors.mediaUrl || errors.name || errors.description) {
-      data.indexTab = 0;
-      setData({...data});
-      return;
-    }
-
-    if (errors.visibilityType || errors.tags || errors.postCountry) {
-      data.indexTab = 2;
-      setData({...data});
-      return;
-    }
-  }, [errors]);
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -384,8 +368,46 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
   const countMembers = data.dataCharacterSearch.profileList.length;
 
-  const onError = (data: any) => {
-    console.log('errorr : ', data);
+  const onError = (errors: FieldErrors<ChannelInfoForm>) => {
+    console.log('errors : ', errors);
+    if (!errors) {
+      return;
+    }
+
+    if (errors.name || errors.description) {
+      data.indexTab = 0;
+      setData({...data});
+    } else if (errors.visibilityType || errors.tags || errors.postCountry) {
+      data.indexTab = 2;
+      setData({...data});
+    }
+
+    if (errors.mediaUrl) {
+      setFocus('mediaUrl');
+      return;
+    }
+    if (errors.name) {
+      setFocus('name');
+      return;
+    }
+    if (errors.description) {
+      setFocus('description');
+      return;
+    }
+    if (errors.visibilityType) {
+      setFocus('visibilityType');
+      return;
+    }
+    if (errors.tags) {
+      setFocus('tags');
+      return;
+    }
+    if (errors.postCountry) {
+      setFocus('postCountry');
+      return;
+    }
+
+    if (errors.visibilityType) console.log('errorr : ', data);
   };
 
   console.log('characterIP : ', watch('characterIP'));
@@ -400,7 +422,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           <div className={styles.label}>Thumbnail (Photo/Video)</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
-              <input {...register('mediaUrl', {required: true})} type="hidden" />
+              <input type={'hidden'} defaultValue={''} {...register('mediaUrl', {required: true})} />
               <input
                 className={styles.hidden}
                 id="file-upload"
@@ -553,7 +575,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     setData({...data});
                   }}
                 >
-                  <input {...register('visibilityType', {required: true})} type="hidden" />
+                  <input {...register('visibilityType', {required: true})} type="hidden" defaultValue={''} />
                   {!visibilityTypeStr && <div className={styles.placeholder}>Select</div>}
                   {visibilityTypeStr && <div className={styles.value}>{visibilityTypeStr}</div>}
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
@@ -571,7 +593,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
                 </div>
                 <div className={styles.tagWrap}>
-                  {!watch('tags') && <input type="hidden" {...register(`tags`, {required: true})} />}
+                  {!watch('tags') && <input type="hidden" {...register(`tags`, {required: true})} defaultValue={''} />}
 
                   {data.dataTag.tagList.map((one, index) => {
                     if (!one.isActive) return;
@@ -579,7 +601,12 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     return (
                       <div className={styles.tag} key={index}>
                         <div className={styles.value}>
-                          <input value={one.value} type="hidden" {...register(`tags.${index}`, {required: true})} />
+                          <input
+                            value={one.value}
+                            type="hidden"
+                            {...register(`tags.${index}`, {required: true})}
+                            defaultValue={''}
+                          />
                           {one.value}
                         </div>
                         <div
@@ -609,7 +636,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
                 </div>
                 <div className={styles.tagWrap}>
-                  {!watch('postCountry') && <input type="hidden" {...register(`postCountry`, {required: true})} />}
+                  {!watch('postCountry') && (
+                    <input type="hidden" {...register(`postCountry`, {required: true})} defaultValue={''} />
+                  )}
 
                   {data.dataCountry.tagList.map((one, index) => {
                     const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
@@ -618,7 +647,12 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     return (
                       <div className={styles.tag} key={index}>
                         <div className={styles.value}>
-                          <input value={one} type="hidden" {...register(`postCountry.${index}`, {required: true})} />
+                          <input
+                            value={one}
+                            type="hidden"
+                            {...register(`postCountry.${index}`, {required: true})}
+                            defaultValue={''}
+                          />
                           {countryStr}
                         </div>
                         <div
