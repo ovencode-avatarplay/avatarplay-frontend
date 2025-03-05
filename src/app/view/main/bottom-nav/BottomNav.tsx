@@ -11,7 +11,7 @@ import profileData from 'data/profile/profile-data.json';
 import Link from 'next/link';
 import CreateWidget from '../content/create/CreateWidget';
 import SelectProfileWidget from '../../profile/SelectProfileWidget';
-import {getLocalizedLink} from '@/utils/UrlMove';
+import {getLocalizedLink, isLogined} from '@/utils/UrlMove';
 import {useDispatch, useSelector} from 'react-redux';
 import {Add_Button, LinePlus} from '@ui/Icons';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
@@ -19,8 +19,10 @@ import {RootState} from '@/redux-store/ReduxStore';
 import UserDropdown from '@/components/layout/shared/UserDropdown';
 import {setSkipStoryInit} from '@/redux-store/slices/StoryInfo';
 import {useAtom} from 'jotai';
+import {useRouter} from 'next/navigation';
 
 export default function BottomNav() {
+  const router = useRouter();
   const dispatch = useDispatch();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
@@ -209,9 +211,15 @@ export default function BottomNav() {
                   className={`${styles.navButton} 
                     ${selectedIndex === index ? styles.selected : ''} 
                     ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
-                  onClick={() => {
-                    dispatch(setSkipStoryInit(false));
-                    toggleDrawer(!drawerOpen);
+                  onClick={async () => {
+                    const isLogin = await isLogined();
+                    if (isLogin) {
+                      dispatch(setSkipStoryInit(false));
+                      toggleDrawer(!drawerOpen);
+                    } else {
+                      const urlLogin = getLocalizedLink('/auth');
+                      router.push(urlLogin);
+                    }
                   }}
                 >
                   {button.icon}

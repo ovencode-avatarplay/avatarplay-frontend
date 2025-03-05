@@ -48,7 +48,7 @@ export const getProfileList = async (profileTabType: ProfileTabType = ProfileTab
     if (resProfileList.status != 200) return;
     return resProfileList.data?.data?.profileList;
   } catch (e) {
-    alert('api 에러' + e);
+    // alert('api 에러' + e);
   }
 };
 
