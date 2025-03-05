@@ -550,9 +550,9 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       else if (data.indexTab == eTabCharacterType.Story) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.storyInfoList?.length;
       } else if (data.indexTab == eTabCharacterOtherType.Info) {
-        isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
       } else if (data.indexTab == eTabCharacterType.Character) {
-        isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfoList;
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList;
       } else {
         isEmptyTab = true;
       }
@@ -566,9 +566,9 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       else if (data.indexTab == eTabChannelType.Story) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.storyInfoList?.length;
       } else if (data.indexTab == eTabChannelOtherType.Info) {
-        isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
       } else if (data.indexTab == eTabChannelType.Character) {
-        isEmptyTab == !data?.profileTabInfo?.[data.indexTab]?.characterInfoList;
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList?.length;
       } else {
         isEmptyTab = true;
       }
