@@ -377,22 +377,18 @@ const CustomModuleDashboard: React.FC = () => {
         <CustomPopup
           type="alert"
           title={`Make New Custom ${popupType === 'prompt' ? 'Prompt' : 'Lorebook'}`}
-          description={`Input new custom ${popupType === 'prompt' ? 'prompt' : 'lorebook'} name`}
           inputField={{
             value: newItemName,
             onChange: e => setNewItemName(e.target.value),
             placeholder: `Enter ${popupType === 'prompt' ? 'prompt' : 'lorebook'} name`,
+            textType: 'Label',
+            label: `Input new custom ${popupType === 'prompt' ? 'prompt' : 'lorebook'} name`,
           }}
           buttons={[
             {
-              label: 'Cancel',
-              onClick: () => setNamePopupOpen(false),
-            },
-            {
-              label: 'OK',
+              label: 'submit',
               onClick: () => {
                 {
-                  console.log(popupType);
                   popupType === 'prompt'
                     ? handleConfirmAddPromptItem()
                     : popupType === 'lorebook'
@@ -410,7 +406,13 @@ const CustomModuleDashboard: React.FC = () => {
       {isCloseConfirmOpen && (
         <CustomPopup
           type="alert"
-          title="Are you sure you want to exit ‘title of lorebook’ "
+          title={`Are you sure you want to exit ‘${
+            displayState === 'prompt'
+              ? selectedPrompt?.title
+              : displayState === 'lorebook'
+              ? selectedLorebook?.title
+              : 'err'
+          }’ `}
           description="If you don't save it, all the information you entered will be lost."
           buttons={[
             {

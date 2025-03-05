@@ -76,8 +76,7 @@ const DrawerCustomPromptPreview: React.FC<Props> = ({keywordData, editableExampl
                     {ex.user !== undefined && (
                       <div className={styles.dialogueItem}>
                         {/* "{{user}}" 기본값 출력 */}
-                        {editableExamples[`{{user}}`] ?? '{{user}}'}
-
+                        <div className={styles.dialogueTitle}>{editableExamples[`{{user}}`] ?? '{{user}}'}</div>
                         <CustomInput
                           textType="InputOnly"
                           inputType="Basic"

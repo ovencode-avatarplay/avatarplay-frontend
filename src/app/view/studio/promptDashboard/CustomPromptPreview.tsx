@@ -38,8 +38,8 @@ const CustomPromptPreview: React.FC<Props> = ({textValue, keywordData, isOpen, o
   return (
     <Modal open={isOpen} onClose={onClose} aria-labelledby="prompt-preview-title">
       <Box className={styles.modalBox}>
+        <CreateDrawerHeader title="Prompt" onClose={onClose} />
         <div className={styles.modalContainer}>
-          <CreateDrawerHeader title="Prompt" onClose={onClose} />
           <pre className={styles.processedText}>{processedText}</pre>
         </div>
       </Box>

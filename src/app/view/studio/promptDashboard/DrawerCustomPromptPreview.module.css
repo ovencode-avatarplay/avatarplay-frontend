@@ -60,13 +60,23 @@
     width: 100%;
 }
 
-.dialougeItem
+.dialogueItem
 {
     display: flex;
     flex-direction: row; 
     align-items: center;
     gap: 10px;
     align-self: stretch;
+}
+
+.dialogueTitle
+{
+    color: var(--Black, #000); 
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 155%; /* 21.7px */
+    
 }
 
 .previewExampleInput

@@ -9,12 +9,15 @@ import AutoCompleteCustomPrompt from './AutoCompleteCustomPrompt';
 import {CustomModulePrompt} from '@/app/NetWork/CustomModulesNetwork';
 import DrawerCustomPromptPreview from './DrawerCustomPromptPreview';
 import CustomPromptPreview from './CustomPromptPreview';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface Props {
   prompt: CustomModulePrompt;
   onSave: (updatedPrompt: CustomModulePrompt) => void;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+//#region  Data
 
 const KEYWORDS: Record<string, string> = {
   '{{user}}': 'User',
@@ -23,6 +26,7 @@ const KEYWORDS: Record<string, string> = {
   '{{world_scenario}}': 'World Scenario',
   '{{secrets}}': 'Secrets',
 };
+
 const keywordData = (user: string, char: string) => [
   {keyword: '{{char}}', description: '캐릭터 이름', example: char, type: 0},
   {
@@ -82,93 +86,74 @@ const keywordData = (user: string, char: string) => [
   },
 ];
 
-const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
+const prefixGpt = `[{"role":"system", "content":"`;
+const suffixGpt = `"},
+{"role":"assistant","content":"Hello good to see you buddy."},
+{"role":"user","content":"Hello Kate. How are you?"},
+{"role":"assistant","content":"I'm fine. How about you?"},
+{"role":"user","content":"I'm fine too. What are you doing now?"},
+{"role":"assistant","content":"I'm reading a book."},
+{"role":"user","content":"What are you going to do this vacation?"}
+]`;
+
+const prefixClaude = `[{"role":"system", "content":"`;
+const suffixClaude = `"},
+{"role":"assistant","content":"Hello good to see you buddy."},
+{"role":"user","content":"Hello Kate. How are you?"},
+{"role":"assistant","content":"I'm fine. How about you?"},
+{"role":"user","content":"I'm fine too. What are you doing now?"},
+{"role":"assistant","content":"I'm reading a book."},
+{"role":"user","content":"What are you going to do this vacation?"}
+]`;
+
+//#endregion
+
+const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => {
+  //#region  선언
   const [promptName, setPromptName] = useState(prompt.title);
+
+  //#region  메뉴 컨트롤
   const [selectedModel, setSelectedModel] = useState<number>(0);
   const [previewOn, setPreviewOn] = useState<boolean>(false);
   const [previewOptionOpen, setPreviewOptionOpen] = useState<boolean>(false);
 
-  const [showAutoCompleteGpt, setShowAutoCompleteGpt] = useState(false);
-  const [showAutoCompleteClaude, setShowAutoCompleteClaude] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState<{top: number; left: number}>({top: 0, left: 0});
-
-  //#region  GPT
-  const [gptPrompt, setGptPrompt] = useState(prompt.chatGPT);
-
-  const prefixGpt = `[{"role":"system", "content":"`;
-  const suffixGpt = `"},
-{"role":"assistant","content":"Hello good to see you buddy."},
-{"role":"user","content":"Hello Kate. How are you?"},
-{"role":"assistant","content":"I'm fine. How about you?"},
-{"role":"user","content":"I'm fine too. What are you doing now?"},
-{"role":"assistant","content":"I'm reading a book."},
-{"role":"user","content":"What are you going to do this vacation?"}
-]`;
-
-  //#endregion
-
-  //#region Claude
-  const [claudePrompt, setClaudePrompt] = useState(prompt.claude);
-
-  const prefixClaude = `[{"role":"system", "content":"`;
-  const suffixClaude = `"},
-{"role":"assistant","content":"Hello good to see you buddy."},
-{"role":"user","content":"Hello Kate. How are you?"},
-{"role":"assistant","content":"I'm fine. How about you?"},
-{"role":"user","content":"I'm fine too. What are you doing now?"},
-{"role":"assistant","content":"I'm reading a book."},
-{"role":"user","content":"What are you going to do this vacation?"}
-]`;
-
-  //#endregion
-
-  //#region  Preveiw
-  const [focusedStates, setFocusedStates] = useState<{[key: string]: boolean}>({});
-  const [typingStates, setTypingStates] = useState<{[key: string]: boolean}>({});
-
-  const [user, setUser] = useState('Mark');
-  const [char, setChar] = useState('Kate');
-
-  const keywords = keywordData(user, char);
-
-  const handleFocus = (key: string) => {
-    setFocusedStates(prev => ({...prev, [key]: true}));
-  };
-
-  const handleBlur = (key: string) => {
-    setFocusedStates(prev => ({...prev, [key]: false}));
-  };
-
-  const handleTyping = (key: string, e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    handleExampleChange(key, e);
-    setTypingStates(prev => ({...prev, [key]: true}));
-
-    setTimeout(() => {
-      setTypingStates(prev => ({...prev, [key]: false}));
-    }, 1000); // 1초 후 typing 상태 해제 (디바운스 효과)
-  };
-  //#endregion
-
+  const [isSavePopupOpen, setIsSavePopupOpen] = useState<boolean>(false);
   const promptRefs = {
     gpt: useRef<HTMLDivElement>(null),
     gptViewer: useRef<HTMLDivElement>(null),
     claude: useRef<HTMLDivElement>(null),
     claudeViewer: useRef<HTMLDivElement>(null),
   };
-  //#region  초기화 용도의 useEffect
+  //#endregion
 
-  useEffect(() => {
-    if (promptRefs.gpt.current) promptRefs.gpt.current.innerText = prompt.chatGPT;
-    if (promptRefs.claude.current) promptRefs.claude.current.innerText = prompt.claude;
-  }, [prompt.chatGPT, prompt.claude]);
+  //#region  LLM
+  const [gptPrompt, setGptPrompt] = useState(prompt.chatGPT);
+  const [claudePrompt, setClaudePrompt] = useState(prompt.claude);
 
-  useEffect(() => {
-    if (selectedModel === 0 && promptRefs.gpt.current) {
-      promptRefs.gpt.current.innerHTML = convertTextToHTML(gptPrompt);
-    } else if (selectedModel === 1 && promptRefs.claude.current) {
-      promptRefs.claude.current.innerHTML = convertTextToHTML(claudePrompt);
-    }
-  }, [selectedModel]);
+  //#endregion
+
+  //#region  Auto Complete
+
+  const [showAutoCompleteGpt, setShowAutoCompleteGpt] = useState(false);
+  const [showAutoCompleteClaude, setShowAutoCompleteClaude] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState<{top: number; left: number}>({top: 0, left: 0});
+
+  //#endregion
+
+  //#region  Preveiw
+  const [user, setUser] = useState('Mark');
+  const [char, setChar] = useState('Kate');
+
+  const keywords = keywordData(user, char);
+
+  const [editableExamples, setEditableExamples] = useState<{[key: string]: string}>(
+    keywords.reduce((acc, item) => ({...acc, [item.keyword]: item.example}), {}),
+  );
+  //#endregion
+
+  //#endregion
+
+  //#region  함수
 
   const convertTextToHTML = (text: string): string => {
     let html = text.trim();
@@ -184,8 +169,6 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     return html;
   };
 
-  //#endregion
-
   const updateDropdownPosition = () => {
     if (!promptRefs.gpt.current) return;
 
@@ -200,6 +183,31 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
       left: rect.left + window.scrollX - 20,
     });
   };
+
+  const decodeHTMLEntities = (html: string): string => {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+
+    return txt.value;
+  };
+  //#endregion
+
+  //#region  초기화 용도의 useEffect
+
+  useEffect(() => {
+    if (promptRefs.gpt.current) promptRefs.gpt.current.innerText = prompt.chatGPT;
+    if (promptRefs.claude.current) promptRefs.claude.current.innerText = prompt.claude;
+  }, [prompt.chatGPT, prompt.claude]);
+
+  useEffect(() => {
+    if (selectedModel === 0 && promptRefs.gpt.current) {
+      promptRefs.gpt.current.innerHTML = convertTextToHTML(gptPrompt);
+    } else if (selectedModel === 1 && promptRefs.claude.current) {
+      promptRefs.claude.current.innerHTML = convertTextToHTML(claudePrompt);
+    }
+  }, [selectedModel]);
+
+  //#endregion
 
   //#region  키 입력 대응
 
@@ -222,6 +230,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     // 무한 루프 방지
     if (html === setState.toString()) return;
 
+    setIsEditing(true);
     // 모든 내용이 삭제된 경우 기본 공백 추가
     if (!html || html === '<br>') {
       div.innerHTML = '&nbsp;';
@@ -252,20 +261,6 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     }
 
     setState(html);
-  };
-
-  //   새로운 chip 뒤로 캐럿 이동
-  const moveCaretAfterNode = (node: Node) => {
-    const range = document.createRange();
-    const sel = window.getSelection();
-
-    if (!node || !sel) return;
-
-    range.setStartAfter(node); // chip 요소 뒤로 커서 이동
-    range.collapse(true);
-
-    sel.removeAllRanges();
-    sel.addRange(range);
   };
 
   // Handle change in the editor content
@@ -303,71 +298,19 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
       e.preventDefault();
     }
   };
+
+  const handleOnClickSave = () => {
+    handleSavePrompt();
+
+    setIsSavePopupOpen(false);
+    setIsEditing(false);
+  };
+
   //#endregion
 
   //#region  캐럿 (커서) 관련
-  // 캐럿 위치 저장
-  const saveCaretPosition = (container: HTMLElement): number | null => {
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return null;
-    const range = selection.getRangeAt(0);
-    const preSelectionRange = range.cloneRange();
-    preSelectionRange.selectNodeContents(container);
-    preSelectionRange.setEnd(range.startContainer, range.startOffset);
-    return preSelectionRange.toString().length; // 캐럿 위치 반환
-  };
 
-  // 캐럿 위치 복원
-  const restoreCaretPosition = (container: HTMLElement, pos: number | null) => {
-    if (pos === null) return;
-    const selection = window.getSelection();
-    if (!selection) return;
-
-    const range = document.createRange();
-    range.setStart(container, 0);
-    range.collapse(true);
-
-    let node: ChildNode | null = container;
-    let nodeStack: ChildNode[] = [];
-    let charIndex = 0;
-
-    while (node) {
-      if (node.nodeType === 3) {
-        let nextCharIndex = charIndex + node.nodeValue!.length;
-        if (pos <= nextCharIndex) {
-          range.setStart(node, pos - charIndex);
-          break;
-        }
-        charIndex = nextCharIndex;
-      }
-
-      if (node.firstChild) {
-        nodeStack.push(node);
-        node = node.firstChild;
-      } else if (node.nextSibling) {
-        node = node.nextSibling;
-      } else {
-        while (nodeStack.length > 0) {
-          node = nodeStack.pop()!;
-          if (node.nextSibling) {
-            node = node.nextSibling;
-            break;
-          }
-        }
-      }
-    }
-
-    // 불필요한 반복 방지: 현재 커서 위치가 동일하면 변경하지 않음
-    if (selection.rangeCount > 0 && selection.getRangeAt(0).startOffset === range.startOffset) {
-      return;
-    }
-
-    range.collapse(true);
-    selection.removeAllRanges();
-    selection.addRange(range);
-  };
-
-  // 개행 후, 캐럿을 새로운 줄 끝으로 이동
+  // 엔터로 개행 후, 캐럿을 새로운 줄 끝으로 이동
   const moveCaretToEnd = (el: HTMLElement) => {
     const range = document.createRange();
     range.selectNodeContents(el);
@@ -379,9 +322,26 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
       sel.addRange(range);
     }
   };
+
+  // Chip 만들어 지고 캐럿을 Chip 뒤로 배치
+  const moveCaretAfterNode = (node: Node) => {
+    const range = document.createRange();
+    const sel = window.getSelection();
+
+    if (!node || !sel) return;
+
+    range.setStartAfter(node);
+    range.collapse(true);
+
+    sel.removeAllRanges();
+    sel.addRange(range);
+  };
+
   //#endregion
 
   //#region  Chip 관련
+
+  // {{User}} -> 칩
   const handleKeywordInsert = (div: HTMLDivElement, keyword: string) => {
     if (!div) return;
 
@@ -400,13 +360,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     }
   };
 
-  const decodeHTMLEntities = (html: string): string => {
-    const txt = document.createElement('textarea');
-    txt.innerHTML = html;
-
-    return txt.value;
-  };
-
+  // 칩 -> {{User}}
   const replaceChipsWithKeywords = (html: string): string => {
     // Step 1: HTML 엔티티 변환 (HTML 태그 방지 추가)
     html = decodeHTMLEntities(html);
@@ -455,11 +409,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
 
   //#endregion
 
-  //#region  버튼 액션, 등등
-
-  const [editableExamples, setEditableExamples] = useState<{[key: string]: string}>(
-    keywords.reduce((acc, item) => ({...acc, [item.keyword]: item.example}), {}),
-  );
+  //#region 프리뷰 편집
 
   useEffect(() => {
     setEditableExamples(keywordData(user, char).reduce((acc, item) => ({...acc, [item.keyword]: item.example}), {}));
@@ -481,6 +431,9 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
       setChar(newValue);
     }
   };
+  //#endregion
+
+  //#region  버튼 액션
 
   const handleSavePrompt = () => {
     onSave({...prompt, title: promptName, chatGPT: replaceChipsWithKeywords(gptPrompt)});
@@ -488,6 +441,8 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
 
   const handleResetPrompt = () => {
     setPromptName('');
+    setGptPrompt('');
+    setClaudePrompt('');
   };
   //#endregion
 
@@ -635,7 +590,10 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
         inputType="Basic"
         textType="Label"
         value={promptName}
-        onChange={e => setPromptName(e.target.value)}
+        onChange={e => {
+          setPromptName(e.target.value);
+          setIsEditing(true);
+        }}
         label={
           <span>
             Custom prompt name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
@@ -663,7 +621,9 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
           size="Medium"
           state="Normal"
           type="Primary"
-          onClick={handleSavePrompt}
+          onClick={() => {
+            setIsSavePopupOpen(true);
+          }}
           customClassName={[styles.bottomButton]}
         >
           Save
@@ -684,6 +644,26 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
           />
         )}
       </CustomDrawer>
+      {isSavePopupOpen && (
+        <CustomPopup
+          type="alert"
+          title="Do you want to submit
+this prompt?"
+          buttons={[
+            {
+              label: 'No',
+              onClick: () => {
+                setIsSavePopupOpen(false);
+              },
+            },
+            {
+              label: 'Yes',
+              isPrimary: true,
+              onClick: handleOnClickSave,
+            },
+          ]}
+        />
+      )}
     </div>
   );
 };
