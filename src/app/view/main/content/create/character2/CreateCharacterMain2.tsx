@@ -322,7 +322,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
             iconImageUrl: 'string',
             operatorAuthorityType: OperatorAuthorityType.Owner,
             description: 'string',
-            nSFW: false,
+            nsfw: false,
           },
           state: 0,
           createAt: '2025-02-06T06:22:46.701Z', // 서버에서 지정

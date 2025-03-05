@@ -15,7 +15,7 @@ export interface ProfileSimpleInfo {
   name: string;
   description?: string;
   iconImageUrl: string;
-  nSFW: boolean;
+  nsfw: boolean;
 }
 
 export enum OperatorAuthorityType {

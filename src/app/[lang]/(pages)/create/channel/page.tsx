@@ -541,9 +541,11 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                               <div className={styles.name}>{one.profileSimpleInfo.name}</div>
                               <div className={styles.description}>{one.profileSimpleInfo.name}</div>
                             </div>
-                            <div className={styles.nsfwWrap}>
-                              <div className={styles.nsfw}>18</div>
-                            </div>
+                            {one.profileSimpleInfo.nsfw && (
+                              <div className={styles.nsfwWrap}>
+                                <div className={styles.nsfw}>18</div>
+                              </div>
+                            )}
                           </div>
                           <div
                             className={styles.right}
@@ -730,19 +732,6 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <div className={styles.label}>Monetization</div>
                   <CustomToolTip tooltipText="Channel IP" />
                 </div>
-
-                <div className={styles.membershipPlan}>
-                  <div className={styles.labelSuper}>Membership Plan</div>
-                  <div
-                    className={styles.right}
-                    onClick={() => {
-                      // data.dataMembershipPlan.isOpenDrawer = true;
-                      // setData({...data});
-                    }}
-                  >
-                    Setting
-                  </div>
-                </div>
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
                     <label>
@@ -774,6 +763,31 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       </div>
                     </label>
                   </div>
+                </div>
+
+                <div className={styles.membershipPlan}>
+                  <DrawerMembershipSetting
+                    membershipSetting={{
+                      benefits: '123123123',
+                      paymentAmount: 50000,
+                      paymentType: PaymentType.Korea,
+                      subscription: Subscription.Contents,
+                    }}
+                    onClose={() => {}}
+                    onMembershipSettingChange={dataChanged => {
+                      console.log('dataChanged : ', dataChanged);
+                    }}
+                  />
+                  {/* <div className={styles.labelSuper}>Membership Plan</div>
+                  <div
+                    className={styles.right}
+                    onClick={() => {
+                      // data.dataMembershipPlan.isOpenDrawer = true;
+                      // setData({...data});
+                    }}
+                  >
+                    Setting
+                  </div> */}
                 </div>
 
                 <div className={cx(styles.labelWrap, styles.nsfw)}>
@@ -917,26 +931,15 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         }}
         onChange={(dataChanged: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => {
           clearErrors('memberProfileIdList');
-          data.dataCharacterSearch.profileList = dataChanged;
+          data.dataCharacterSearch.profileList = [...dataChanged];
           unregister(`memberProfileIdList`);
 
-          for (let i = 0; i < dataChanged.length; i++) {
-            setValue(`memberProfileIdList.${i}`, dataChanged[i].profileSimpleInfo, {shouldValidate: false});
+          for (let i = 0; i < data.dataCharacterSearch.profileList.length; i++) {
+            setValue(`memberProfileIdList.${i}`, data.dataCharacterSearch.profileList[i].profileSimpleInfo, {
+              shouldValidate: false,
+            });
           }
           setData({...data});
-        }}
-      />
-
-      <DrawerMembershipSetting
-        membershipSetting={{
-          benefits: '123123123',
-          paymentAmount: 50000,
-          paymentType: PaymentType.Korea,
-          subscription: Subscription.Contents,
-        }}
-        onClose={() => {}}
-        onMembershipSettingChange={dataChanged => {
-          console.log('dataChanged : ', dataChanged);
         }}
       />
     </>
@@ -1135,7 +1138,8 @@ export const DrawerCharacterSearch = ({
     profileList: [],
     indexSort: 0,
   });
-
+  console.log('data profileListSaved : ', data.profileListSaved);
+  console.log('data profileList : ', data.profileList);
   useEffect(() => {
     if (!open) return;
 
@@ -1179,10 +1183,15 @@ export const DrawerCharacterSearch = ({
     [],
   );
   const saveProfileList = () => {
-    const searchProfileListActived = data.profileList.filter(v => v.isActive);
+    // console.log('data.profileListSaved : ', data.profileListSaved);
+    const searchProfileListActived = data.profileList.filter(v => v.isActive && !v.isOriginal);
+    const profileListSaved = data.profileListSaved.filter(v => v.isActive);
+    const mergedList = [...searchProfileListActived, ...profileListSaved];
 
-    const mergedList = [...searchProfileListActived, ...data.profileListSaved];
-    const uniqueList = Array.from(new Map(mergedList.map(item => [item.profileSimpleInfo.profileId, item])).values());
+    // console.log('mergedList : ', mergedList);
+    let uniqueList = Array.from(new Map(mergedList.map(item => [item.profileSimpleInfo.profileId, item])).values());
+    uniqueList = uniqueList.map(v => ({...v, isActive: true}));
+    // console.log('uniqueList : ', uniqueList);
     data.profileList = uniqueList;
     data.profileListSaved = uniqueList;
     setData({...data});
@@ -1195,6 +1204,7 @@ export const DrawerCharacterSearch = ({
         return;
       }
 
+      // console.log('data.profileListSaved : ', JSON.stringify(data.profileListSaved));
       data.profileListSaved = data.profileListSaved.filter(v => v.isActive);
 
       // 여기에서 API 호출하면 됨
@@ -1211,30 +1221,30 @@ export const DrawerCharacterSearch = ({
             profileSimpleInfo: v,
           })) || [];
 
+        // console.log('data.profileListSaved : ', data.profileListSaved);
+        // console.log('data.profileList : ', data.profileList);
         const searchProfileListModified = searchProfileList.map(searchProfile => {
           const matchedProfile = data.profileListSaved.find(
             profile => profile.profileSimpleInfo.profileId === searchProfile.profileSimpleInfo.profileId,
           );
-
+          // console.log('matchedProfile ', matchedProfile);
           return matchedProfile
             ? {...searchProfile, isActive: matchedProfile.isActive, isOriginal: matchedProfile.isOriginal}
             : searchProfile;
         });
-
         data.profileList = searchProfileListModified;
         setData({...data});
       } catch (err) {
         alert('error ' + 'sendSearchProfile 에러');
       }
     }, 400),
-    [],
+    [data],
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // setQuery(e.target.value);
     fetchResults(e.target.value);
   };
-
   const countSelected = data.profileList.filter(v => v.isActive).length;
   return (
     <Drawer
@@ -1268,10 +1278,10 @@ export const DrawerCharacterSearch = ({
                 id="all"
                 onChange={e => {
                   let profileList = [];
-                  if (e.target.value) {
+                  if (e.target.checked) {
                     profileList = data.profileList.map(v => (v.isOriginal ? v : {...v, isActive: true}));
                   } else {
-                    profileList = data.profileList.map(v => (v.isOriginal ? v : {...v, isActive: true}));
+                    profileList = data.profileList.map(v => (v.isOriginal ? v : {...v, isActive: false}));
                   }
                   data.profileList = profileList;
                   setData({...data});
@@ -1327,11 +1337,12 @@ export const DrawerCharacterSearch = ({
                         type="checkbox"
                         name={`profile_${profile.profileSimpleInfo.profileId}`}
                         id={`profile_${profile.profileSimpleInfo.profileId}`}
-                        defaultChecked={profile.isActive}
+                        checked={profile.isActive}
                         onClick={e => {
                           const target = e.target as HTMLInputElement;
                           if (profile.isOriginal) {
                             e.preventDefault();
+                            return;
                           }
                           profile.isActive = target.checked;
                           setData({...data});
@@ -1348,7 +1359,7 @@ export const DrawerCharacterSearch = ({
                     </div>
                   </div>
                   <div className={styles.right}>
-                    <div className={styles.nsfw}>18</div>
+                    {profile.profileSimpleInfo.nsfw && <div className={styles.nsfw}>18</div>}
                   </div>
                 </label>
               </li>
