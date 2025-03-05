@@ -374,6 +374,11 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       return;
     }
 
+    if (errors.mediaUrl) {
+      setFocus('mediaUrl');
+      return;
+    }
+
     if (errors.name || errors.description) {
       data.indexTab = 0;
       setData({...data});
@@ -382,10 +387,6 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       setData({...data});
     }
 
-    if (errors.mediaUrl) {
-      setFocus('mediaUrl');
-      return;
-    }
     if (errors.name) {
       setFocus('name');
       return;
@@ -419,7 +420,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           <div className={styles.label}>Thumbnail (Photo/Video)</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
-              <input type={'hidden'} {...register('mediaUrl', {required: true})} />
+              <input className={styles.hide} autoComplete="off" {...register('mediaUrl', {required: true})} />
               <input
                 className={styles.hidden}
                 id="file-upload"
@@ -574,7 +575,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     setData({...data});
                   }}
                 >
-                  <input {...register('visibilityType', {required: true})} type="hidden" />
+                  <input {...register('visibilityType', {required: true})} className={styles.hide} autoComplete="off" />
                   {!visibilityTypeStr && <div className={styles.placeholder}>Select</div>}
                   {visibilityTypeStr && <div className={styles.value}>{visibilityTypeStr}</div>}
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
@@ -587,12 +588,14 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     setData({...data});
                   }}
                 >
-                  <input type="hidden" {...register('tags')} />
+                  <input className={styles.hide} autoComplete="off" {...register('tags')} />
                   <div className={styles.placeholder}>Select</div>
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
                 </div>
                 <div className={styles.tagWrap}>
-                  {!watch('tags') && <input type="hidden" {...register(`tags`, {required: true})} />}
+                  {!watch('tags') && (
+                    <input className={styles.hide} autoComplete="off" {...register(`tags`, {required: true})} />
+                  )}
 
                   {data.dataTag.tagList.map((one, index) => {
                     if (!one.isActive) return;
@@ -600,7 +603,12 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     return (
                       <div className={styles.tag} key={index}>
                         <div className={styles.value}>
-                          <input value={one.value} type="hidden" {...register(`tags.${index}`, {required: true})} />
+                          <input
+                            value={one.value}
+                            className={styles.hide}
+                            autoComplete="off"
+                            {...register(`tags.${index}`, {required: true})}
+                          />
                           {one.value}
                         </div>
                         <div
@@ -630,7 +638,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <img src={'/ui/profile/update/icon_select.svg'} alt="" />
                 </div>
                 <div className={styles.tagWrap}>
-                  {!watch('postCountry') && <input type="hidden" {...register(`postCountry`, {required: true})} />}
+                  {!watch('postCountry') && (
+                    <input className={styles.hide} autoComplete="off" {...register(`postCountry`, {required: true})} />
+                  )}
 
                   {data.dataCountry.tagList.map((one, index) => {
                     const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
@@ -639,7 +649,12 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     return (
                       <div className={styles.tag} key={index}>
                         <div className={styles.value}>
-                          <input value={one} type="hidden" {...register(`postCountry.${index}`, {required: true})} />
+                          <input
+                            value={one}
+                            className={styles.hide}
+                            autoComplete="off"
+                            {...register(`postCountry.${index}`, {required: true})}
+                          />
                           {countryStr}
                         </div>
                         <div
@@ -724,7 +739,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                         <div className={styles.labelRadio}>Fan</div>
                       </div>
                     </label>
-                    <div className={styles.right}>Monetization possible</div>
+                    {/* <div className={styles.right}>Monetization possible</div> */}
                   </div>
                 </div>
 
@@ -740,6 +755,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                         value={1}
                         checked={watch('isMonetization', 0) == 1}
                         {...register('isMonetization')}
+                        onChange={e => {
+                          // alert('ㅇㅎㅇㅎㅇ');
+                          setValue('isMonetization', 1);
+                        }}
                       />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
@@ -755,6 +774,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                         value={0}
                         checked={watch('isMonetization', 0) == 0}
                         {...register('isMonetization')}
+                        onChange={e => {
+                          // alert('ㅇㅎㅇㅎㅇ2');
+                          setValue('isMonetization', 0);
+                        }}
                       />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
@@ -766,18 +789,20 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </div>
 
                 <div className={styles.membershipPlan}>
-                  <DrawerMembershipSetting
-                    membershipSetting={{
-                      benefits: '123123123',
-                      paymentAmount: 50000,
-                      paymentType: PaymentType.Korea,
-                      subscription: Subscription.Contents,
-                    }}
-                    onClose={() => {}}
-                    onMembershipSettingChange={dataChanged => {
-                      console.log('dataChanged : ', dataChanged);
-                    }}
-                  />
+                  {watch('isMonetization') == 1 && (
+                    <DrawerMembershipSetting
+                      membershipSetting={{
+                        benefits: '123123123',
+                        paymentAmount: 50000,
+                        paymentType: PaymentType.Korea,
+                        subscription: Subscription.Contents,
+                      }}
+                      onClose={() => {}}
+                      onMembershipSettingChange={dataChanged => {
+                        console.log('dataChanged : ', dataChanged);
+                      }}
+                    />
+                  )}
                   {/* <div className={styles.labelSuper}>Membership Plan</div>
                   <div
                     className={styles.right}
