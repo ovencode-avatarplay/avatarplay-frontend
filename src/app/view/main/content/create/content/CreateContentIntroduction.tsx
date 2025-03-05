@@ -6,7 +6,14 @@ import EmptyState from '@/components/search/EmptyState';
 import {BoldAltArrowDown, LineDashboard} from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {SingleInfo} from './SingleDetail';
-import {ContentListInfo, ContentType, GetContentListReq, sendGetContentList} from '@/app/NetWork/ContentNetwork';
+import {
+  ContentCategoryType,
+  ContentListInfo,
+  ContentType,
+  GetContentListReq,
+  sendDeleteContent,
+  sendGetContentList,
+} from '@/app/NetWork/ContentNetwork';
 import ContentCard from './ContentCard';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
@@ -33,34 +40,58 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({})
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const dataProfile = useSelector((state: RootState) => state.profile);
-  useEffect(() => {
-    const fetchContentList = async () => {
+
+  const deleteContente = (id: number) => {
+    const handleDeleteContent = async (contentId: number) => {
       try {
-        setLoading(true);
-        setError(null);
+        const response = await sendDeleteContent({contentId});
 
-        // 요청할 데이터
-        const payload: GetContentListReq = {
-          profileId: dataProfile.currentProfile ? dataProfile.currentProfile?.profileId : -1, // 예제 Profile ID
-          contentType: activeTab, // 예제 Content Type
-        };
-
-        // API 호출
-        const response = await sendGetContentList(payload);
-        console.log('response.data', response.data?.contentList);
-
-        // 결과 저장
-        if (response.data) setContentList(response.data.contentList);
-      } catch (err) {
-        setError('콘텐츠 목록을 불러오는 데 실패했습니다.');
-        console.error('Error fetching content list:', err);
-      } finally {
-        setLoading(false);
+        if (response.resultCode === 0) {
+          console.log('✅ 콘텐츠 삭제 성공:', response.resultMessage);
+        } else {
+          console.error('❌ 콘텐츠 삭제 실패:', response.resultMessage);
+        }
+        fetchContentList();
+      } catch (error) {
+        console.error('🚨 API 호출 중 오류 발생:', error);
       }
     };
 
+    // 사용 예제
+    handleDeleteContent(id); // 콘텐츠 ID 123 삭제 시도
+  };
+  const editContente = (id: number, type: ContentType) => {
+    if (type == ContentType.Series) pushLocalizedRoute(`/update/content/series/${id}`, router);
+    else if (type == ContentType.Single) pushLocalizedRoute(`/update/content/single/${id}`, router);
+  };
+  const fetchContentList = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // 요청할 데이터
+      const payload: GetContentListReq = {
+        profileId: dataProfile.currentProfile ? dataProfile.currentProfile?.profileId : -1, // 예제 Profile ID
+        contentType: activeTab, // 예제 Content Type
+      };
+
+      // API 호출
+      const response = await sendGetContentList(payload);
+      console.log('response.data', response.data?.contentList);
+
+      // 결과 저장
+      if (response.data) setContentList(response.data.contentList);
+    } catch (err) {
+      setError('콘텐츠 목록을 불러오는 데 실패했습니다.');
+      console.error('Error fetching content list:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchContentList();
   }, [activeTab]);
+
   const publishItems: SelectDrawerItem[] = [
     {name: 'All', onClick: () => setSelectedFilter(FilterTypes.All)},
     {name: 'Edit', onClick: () => setSelectedFilter(FilterTypes.Edit)},
@@ -150,6 +181,12 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({})
                       onAddEpisode={() => {
                         pushLocalizedRoute(`/create/content/series/${content.id}`, router);
                       }}
+                      onDelete={() => {
+                        deleteContente(content.id);
+                      }}
+                      onEdit={() => {
+                        editContente(content.id, activeTab);
+                      }}
                     />
                   ))}
                 </div>
@@ -176,6 +213,12 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({})
                       content={content}
                       onAddEpisode={() => {
                         pushLocalizedRoute(`/create/content/single/${content.id}`, router);
+                      }}
+                      onDelete={() => {
+                        deleteContente(content.id);
+                      }}
+                      onEdit={() => {
+                        editContente(content.id, activeTab);
                       }}
                     />
                   ))}

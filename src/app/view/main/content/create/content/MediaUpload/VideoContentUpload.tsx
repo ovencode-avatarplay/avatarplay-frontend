@@ -24,9 +24,10 @@ export interface VideoUploadField {
 }
 interface VideoContentUploadProps {
   setEpisodeVideoInfo: (value: (prev: ContentEpisodeVideoInfo) => ContentEpisodeVideoInfo) => void;
+  defaultEpisodeVideoInfo?: ContentEpisodeVideoInfo; // 기존 데이터가 있으면 전달받음
 }
 
-const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoInfo}) => {
+const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoInfo, defaultEpisodeVideoInfo}) => {
   const [subtitleFields, setSubtitleFields] = useState<VideoUploadField[]>([]);
   const [dubbingFields, setDubbingFields] = useState<VideoUploadField[]>([]);
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle' | 'dubbing'; index: number} | null>(
@@ -34,6 +35,32 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
   );
   const [videoFile, setVideoFile] = useState<string | null>(null); // 비디오 업로드 상태
   const [videoName, setVideoName] = useState<string | null>(null); // 비디오 업로드 상태
+
+  // ✅ 기존 데이터가 있으면 초기값 설정
+  useEffect(() => {
+    if (defaultEpisodeVideoInfo) {
+      setVideoFile(defaultEpisodeVideoInfo.videoSourceFileInfo.videoSourceUrl || null);
+      setVideoName(defaultEpisodeVideoInfo.videoSourceFileInfo.videoSourceName || null);
+
+      setSubtitleFields(
+        defaultEpisodeVideoInfo.subTitleFileInfos.map((info, index) => ({
+          id: index,
+          selectedCountry: info.videoLanguageType,
+          fileUrl: info.videoSourceUrl,
+          fileName: info.videoSourceName,
+        })),
+      );
+
+      setDubbingFields(
+        defaultEpisodeVideoInfo.dubbingFileInfos.map((info, index) => ({
+          id: index,
+          selectedCountry: info.videoLanguageType,
+          fileUrl: info.videoSourceUrl,
+          fileName: info.videoSourceName,
+        })),
+      );
+    }
+  }, [defaultEpisodeVideoInfo]);
 
   const CountryItems = (type: 'subtitle' | 'dubbing', index: number): SelectDrawerItem[] => [
     {name: 'Korean', onClick: () => handleCountryChange(type, index, ContentLanguageType.Korean)},
@@ -220,7 +247,8 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
             onClick={() => {
               const input = document.createElement('input');
               input.type = 'file';
-              input.accept = type === 'subtitle' ? '.srt,.txt' : 'audio/*';
+              // input.accept = type === 'subtitle' ? '.srt,.txt' : 'audio/*';
+              input.accept = type === 'subtitle' ? '' : '';
               input.onchange = e => {
                 const files = (e.target as HTMLInputElement).files;
                 if (files) {

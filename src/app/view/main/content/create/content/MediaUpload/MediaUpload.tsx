@@ -10,6 +10,7 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 interface Props {
   title?: string;
   setContentMediaUrls: (urls: string[]) => void;
+  defaultImage?: string;
 }
 const mediaTypeConfig = {
   image: {
@@ -23,7 +24,7 @@ const mediaTypeConfig = {
     accept: 'video/*', // 비디오 파일
   },
 };
-const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)', setContentMediaUrls}) => {
+const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)', setContentMediaUrls, defaultImage}) => {
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
   const [publishPopup, setPublishPopup] = useState<boolean>(false); // 입력된 텍스트 상태
   const [isOpenSelectDrawer, setIsOpenSelectDrawer] = useState<boolean>(false);
@@ -38,6 +39,12 @@ const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)', setC
 
   const [mediaType, setMediaType] = useState<'image' | 'video'>('image'); // State for media type
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (defaultImage == undefined) return;
+    setMediaUrls([defaultImage]); // defaultImage를 0번 인덱스로 설정
+  }, [defaultImage]); // defaultImage가 변경될 때만 실행
+
   useEffect(() => {}, [mediaUrls]);
   useEffect(() => {
     setMediaUrls([]); // 미디어 URL 초기화

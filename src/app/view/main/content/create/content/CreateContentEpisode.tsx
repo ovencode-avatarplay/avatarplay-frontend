@@ -30,29 +30,42 @@ import {
   sendCreateEpisode,
   ContentEpisodeVideoInfo,
   ContentLanguageType,
+  sendGetContent,
 } from '@/app/NetWork/ContentNetwork';
 import {Seasons} from './SeriesDetail';
 import {Category} from '@mui/icons-material';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
 enum CountryTypes {
   Korea = 0,
   Japan = 1,
 }
-interface CreateContentEpisodeProps {
-  onNext: () => void;
-  onPrev: () => void;
-  contentInfo?: ContentListInfo;
+export interface CreateContentEpisodeProps {
+  contentId?: number;
   curSeason: number;
   curEpisodeCount: number;
 }
 
-const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
-  onNext,
-  onPrev,
-  contentInfo,
-  curSeason,
-  curEpisodeCount,
-}) => {
+const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({contentId, curSeason, curEpisodeCount}) => {
+  const [contentInfo, setContentInfo] = useState<ContentInfo>();
+
+  const fetchContent = async (contentId: number) => {
+    try {
+      const response = await sendGetContent({contentId});
+      setContentInfo(response.data?.contentInfo);
+      console.log('📌 조회된 Content 정보:', response.data?.contentInfo);
+    } catch (error) {
+      console.error('❌ Content 불러오기 실패:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (contentId) fetchContent(contentId); // contentId가 123인 콘텐츠 조회
+  }, []);
+
+  // 사용 예시
+
   const handleConfirm = () => {
     createNewEpisode();
   };
@@ -146,7 +159,8 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
       if (response.data) {
         console.log('에피소드 생성 성공:', response.data.episodeId);
         alert(`에피소드가 성공적으로 생성되었습니다! (ID: ${response.data.episodeId})`);
-        onNext();
+
+        pushLocalizedRoute(`/create/content/series/${contentId}`, router);
       }
     } catch (error) {
       console.error('에피소드 생성 실패:', error);
@@ -154,12 +168,15 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
     }
   };
 
+  const router = useRouter();
   return (
     <div className={styles.parent}>
       <div className={styles.header}>
         <CustomArrowHeader
           title="Create Series Contents"
-          onClose={onPrev}
+          onClose={() => {
+            pushLocalizedRoute(`/create/content/series/${contentId}`, router);
+          }}
           children={
             <div className={styles.rightArea}>
               <button className={styles.dashBoard} onClick={() => {}}>

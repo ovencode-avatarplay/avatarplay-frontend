@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './CreateSeriesContent.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {BoldArrowDown, LineClose, LineDashboard} from '@ui/Icons';
@@ -11,7 +11,14 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import DrawerPostCountry from '../common/DrawerPostCountry';
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
-import {ContentType, CreateContentReq, sendCreateContent} from '@/app/NetWork/ContentNetwork';
+import {
+  ContentInfo,
+  ContentType,
+  CreateContentReq,
+  GetContentReq,
+  sendCreateContent,
+  sendGetContent,
+} from '@/app/NetWork/ContentNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
 import {useRouter} from 'next/navigation';
@@ -27,9 +34,11 @@ enum VisibilityType {
   Public = 2,
 }
 
-interface CreateSeriesContentProps {}
+interface CreateSeriesContentProps {
+  id?: number;
+}
 
-const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({}) => {
+const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({id}) => {
   const router = useRouter();
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -148,7 +157,49 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({}) => {
 
   const [positionCountryList, setPositionCountryList] = useState<LanguageType[]>([]);
   const normalizedPostCountryList: LanguageType[] = positionCountryList ?? [];
-  const dataProfile = useSelector((state: RootState) => state.profile);
+
+  const [editContentInfo, setEditContentInfo] = useState<ContentInfo>();
+
+  const [defaultImage, setDefaultImage] = useState<string>();
+
+  useEffect(() => {
+    if (id === undefined) return;
+
+    const fetchData = async () => {
+      try {
+        const response = await sendGetContent({contentId: id});
+
+        if (response.data) {
+          console.log('콘텐츠 정보:', response.data.contentInfo);
+          const content = response.data.contentInfo;
+          setEditContentInfo(content);
+
+          // 기존 데이터로 초기화
+          setNameValue(content.name || '');
+          setSummaryValue(content.oneLineSummary || '');
+          setrDescription(content.description || '');
+          setMediaUrls([content.thumbnailUrl || '']);
+          setSelectedCategory(content.categoryType);
+          setSelectedGenres(content.genre ? content.genre.split(', ') : []);
+          setSelectedTags(content.tags || []);
+          setPositionCountryList(
+            content.postCountry
+              ? content.postCountry.map(country => LanguageType[country as keyof typeof LanguageType]).filter(Boolean) // 유효한 값만 필터링
+              : [],
+          );
+
+          setSelectedVisibility(content.visibility);
+          setIsNsfw(content.nsfw);
+          setDefaultImage(content.thumbnailUrl);
+        }
+      } catch (error) {
+        console.error('콘텐츠 조회 실패:', error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
   const handleConfirm = async () => {
     if (!nameValue.trim()) {
       alert('Name을 입력해주세요.');
@@ -180,6 +231,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({}) => {
     }
     const payload: CreateContentReq = {
       contentInfo: {
+        id: editContentInfo?.id,
         profileId: 0,
         contentType: ContentType.Series, // 시리즈로 고정
         name: nameValue || 'Untitled Series',
@@ -245,7 +297,10 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({}) => {
         />
       </div>
       <div className={styles.container}>
-        <MediaUpload setContentMediaUrls={setMediaUrls}></MediaUpload>
+        <MediaUpload
+          setContentMediaUrls={setMediaUrls}
+          defaultImage={defaultImage ? defaultImage : undefined}
+        ></MediaUpload>
         <CustomInput
           inputType="Basic"
           textType="Label"
