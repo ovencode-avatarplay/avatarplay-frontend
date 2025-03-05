@@ -24,6 +24,16 @@
   }
 }
 
+.hide {
+  width: 0px !important;
+  height: 0px !important;
+  opacity: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  margin: 0 !important;
+  position: absolute !important;
+}
+
 .hidden {
   display: none;
 }
