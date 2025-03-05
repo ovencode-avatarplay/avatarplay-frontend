@@ -881,7 +881,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           setData({...data});
         }}
         selectableCountryList={Object.values(LanguageType).filter(value => typeof value === 'number') as LanguageType[]}
-        postCountryList={data.dataCountry.tagList}
+        postCountryList={data.dataCountry.tagList.map(v => Number(v))}
         onUpdatePostCountry={(updatedList: LanguageType[]) => {
           clearErrors('postCountry');
           data.dataCountry.tagList = updatedList.map(v => v.toString());
