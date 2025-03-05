@@ -48,10 +48,14 @@ type UserDropDownType = {
 };
 
 export type UserDropDownAtomType = {
+  drawerOpen: boolean;
+  drawerProfileOpen: boolean;
   onClick: () => void;
   onClickLong: () => void;
 };
 export const userDropDownAtom = atom<UserDropDownAtomType>({
+  drawerOpen: false,
+  drawerProfileOpen: false,
   onClick: () => {},
   onClickLong: () => {},
 });
@@ -63,8 +67,8 @@ const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<Session | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerProfileOpen, setDrawerProfileOpen] = useState(false);
+  // const [drawerOpen, setDrawerOpen] = useState(false);
+  // const [drawerProfileOpen, setDrawerProfileOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(0);
 
   // 임시 - UserInfo Modal
@@ -94,16 +98,18 @@ const UserDropdown = () => {
     !open ? setOpen(true) : setOpen(false);
   };
 
-  const handleDrawerOpen = () => {
-    setDrawerOpen(true);
-  };
+  function handleDrawerOpen() {
+    dataUserDropDown.drawerOpen = true;
+    setUserDropDown({...dataUserDropDown});
+  }
 
-  const OpenSelectProfile = async () => {
+  async function OpenSelectProfile() {
     const isLogin = await isLogined();
     if (!isLogin) return;
 
-    setDrawerProfileOpen(true);
-  };
+    dataUserDropDown.drawerProfileOpen = true;
+    setUserDropDown({...dataUserDropDown});
+  }
 
   const routeProfile = async () => {
     const jwtToken = localStorage.getItem('jwt');
@@ -138,7 +144,9 @@ const UserDropdown = () => {
     // ) {
     //   return;
     // }
-    setDrawerOpen(open);
+    dataUserDropDown.drawerProfileOpen = open;
+    setUserDropDown({...dataUserDropDown});
+    // setDrawerOpen(open);
   };
 
   const handleLanguageChange = (event: SelectChangeEvent<number>) => {
@@ -327,7 +335,7 @@ const UserDropdown = () => {
       </DndButton>
       <Drawer
         anchor="right"
-        open={drawerOpen}
+        open={dataUserDropDown.drawerOpen}
         onClose={() => {
           toggleDrawer(false);
         }}
@@ -444,9 +452,10 @@ const UserDropdown = () => {
       </Drawer>
       <UserInfoModal open={userInfoOpen} onClose={() => setUserInfoOpen(false)} />
       <SelectProfile
-        open={drawerProfileOpen}
+        open={dataUserDropDown.drawerProfileOpen}
         handleCloseDrawer={() => {
-          setDrawerProfileOpen(false);
+          dataUserDropDown.drawerProfileOpen = false;
+          setUserDropDown({...dataUserDropDown});
         }}
       />
     </>

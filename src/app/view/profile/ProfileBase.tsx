@@ -75,6 +75,9 @@ import {getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {channel} from 'diagnostics_channel';
 import 'swiper/css';
 import 'swiper/css/navigation'; // 필요시 다른 모듈도 가져오기
+import PopupSubscription from '../main/content/create/common/PopupSubscription';
+import PopupSubscriptionList from './PopupSubscriptionList';
+import PopupFavoriteList from './PopupFavoriteList';
 
 enum eTabPDType {
   Feed,
@@ -160,6 +163,14 @@ type DataProfileType = {
   isShareOpened: boolean;
 
   tabContentMenu: TabContentMenuType;
+
+  isOpenPopupSubscription: boolean;
+  isOpenPopupSubscriptionList: boolean;
+  isOpenPopupFavoritesList: boolean;
+  isOpenPopupPlayList: boolean;
+
+  gap: number;
+
   refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
   getIsEmptyTab: () => boolean;
 };
@@ -221,6 +232,14 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       isPin: false,
       id: 0,
     },
+
+    isOpenPopupSubscription: false,
+    isOpenPopupSubscriptionList: false,
+    isOpenPopupFavoritesList: false,
+    isOpenPopupPlayList: false,
+
+    gap: 0,
+
     refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
     getIsEmptyTab: () => true,
   });
@@ -464,40 +483,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     setData({...data});
   };
 
-  const getTabHeaderList = (profileType: number, isMine = false) => {
-    if (isMine) {
-      if (profileType == ProfileType.User || profileType == ProfileType.PD) {
-        return Object.values(eTabPDType)
-          .filter(value => typeof value === 'number') // 숫자 타입만 필터링
-          .map(type => ({type, label: eTabPDType[type]}));
-      } else if (profileType == ProfileType.Character) {
-        return Object.values(eTabCharacterType)
-          .filter(value => typeof value === 'number')
-          .map(type => ({type, label: eTabCharacterType[type]}));
-      } else if (profileType == ProfileType.Channel) {
-        return Object.values(eTabChannelType)
-          .filter(value => typeof value === 'number')
-          .map(type => ({type, label: eTabChannelType[type]}));
-      }
-    }
-
-    //other
-    if (profileType == ProfileType.User || profileType == ProfileType.PD) {
-      return Object.values(eTabPDOtherType)
-        .filter(value => typeof value === 'number') // 숫자 타입만 필터링
-        .map(type => ({type, label: eTabPDOtherType[type]}));
-    } else if (profileType == ProfileType.Character) {
-      return Object.values(eTabCharacterOtherType)
-        .filter(value => typeof value === 'number')
-        .map(type => ({type, label: eTabCharacterOtherType[type]}));
-    } else if (profileType == ProfileType.Channel) {
-      return Object.values(eTabChannelOtherType)
-        .filter(value => typeof value === 'number')
-        .map(type => ({type, label: eTabChannelOtherType[type]}));
-    }
-    return [];
-  };
-
   const handleShare = async (url: string = window.location.href) => {
     const shareData = {
       title: '공유하기 제목',
@@ -549,6 +534,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList?.length;
       } else if (data.indexTab == eTabPDType.Channel) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
+        console.log('length : ', data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length);
       } else if (isOtherPD && data.indexTab == eTabPDOtherType.Info) {
         isEmptyTab = false;
       } else {
@@ -593,7 +579,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   };
 
   const isFollow = data.profileInfo?.profileInfo.followState == FollowState.Follow;
-  const tabHeaderList = getTabHeaderList(profileType, isMine);
   let isEmptyTab = getIsEmptyTab();
 
   const getEditUrl = (profileType: ProfileType) => {
@@ -611,9 +596,35 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     <>
       {isMine && (
         <div className={styles.buttonWrap}>
-          <button className={styles.subscribe}>Subscribe</button>
-          <button className={styles.favorite}>Favorites</button>
-          <button className={styles.playlist}>Playlist</button>
+          <button
+            className={styles.subscribe}
+            onClick={() => {
+              data.isOpenPopupSubscriptionList = true;
+              setData({...data});
+            }}
+          >
+            Subscribe
+          </button>
+          <button
+            className={styles.favorite}
+            onClick={() => {
+              data.isOpenPopupFavoritesList = true;
+              setData({...data});
+              alert('Favorites 구현 예정');
+            }}
+          >
+            Favorites
+          </button>
+          <button
+            className={styles.playlist}
+            onClick={() => {
+              data.isOpenPopupPlayList = true;
+              setData({...data});
+              alert('playlist 구현 예정');
+            }}
+          >
+            Playlist
+          </button>
         </div>
       )}
       <section className={cx(styles.header, !isPath && styles.headerNoPath)}>
@@ -740,7 +751,14 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           {isMyPD && (
             <div className={styles.buttons}>
               <button className={styles.ad}>AD</button>
-              <button className={styles.friends}>Add Friends</button>
+              <button
+                className={styles.friends}
+                onClick={() => {
+                  alert('Add friends 구현 예정');
+                }}
+              >
+                Add Friends
+              </button>
             </div>
           )}
           {isMyCharacter && (
@@ -770,7 +788,15 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           )}
           {isOtherCharacter && (
             <div className={styles.buttonsOtherCharacter}>
-              <button className={styles.subscribe}>Subscribe</button>
+              <button
+                className={styles.subscribe}
+                onClick={() => {
+                  data.isOpenPopupSubscription = true;
+                  setData({...data});
+                }}
+              >
+                Subscribe
+              </button>
               <button
                 className={styles.follow}
                 onClick={() => {
@@ -792,38 +818,17 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         </div>
         <section className={styles.tabSection}>
           <div className={styles.tabHeaderContainer}>
-            <div className={styles.tabHeaderWrap}>
-              <div
-                className={styles.tabHeader}
-                onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                  const target = e.target as HTMLElement;
-                  const category = target.closest('[data-tab]')?.getAttribute('data-tab');
-                  if (category) {
-                    data.indexTab = parseInt(category);
-                  }
-                  await refreshProfileTab(profileId, data.indexTab);
-                  setData({...data});
-                }}
-              >
-                {tabHeaderList?.map((tab, index) => {
-                  return (
-                    <div
-                      key={tab.type}
-                      className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
-                      data-tab={tab?.type}
-                    >
-                      {/* <div className={styles.tabItem} data-tab={tab?.type}>
-                      <div className={cx(styles.labelTab, data.indexTab == tab?.type && styles.active)}>
-                        {tab.label}
-                      </div>
-                    </div> */}
-                      {tab.label}
-                    </div>
-                  );
-                })}
-              </div>
-              <div className={styles.line}></div>
-            </div>
+            <TabHeaderComponent
+              indexTab={data.indexTab}
+              isMine
+              profileId={profileId}
+              profileType={profileType}
+              onTabChange={async indexTab => {
+                data.indexTab = indexTab;
+                await refreshProfileTab(profileId, data.indexTab);
+                setData({...data});
+              }}
+            />
             <TabFilterComponent
               profileId={profileId}
               isMine={isMine}
@@ -894,6 +899,31 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           alert('report api 연동 필요');
         }}
       />
+      {data.isOpenPopupSubscription && (
+        <PopupSubscription
+          id={profileId}
+          onClose={() => {
+            data.isOpenPopupSubscription = false;
+            setData({...data});
+          }}
+        />
+      )}
+      {data.isOpenPopupSubscriptionList && (
+        <PopupSubscriptionList
+          onClose={() => {
+            data.isOpenPopupSubscriptionList = false;
+            setData({...data});
+          }}
+        />
+      )}
+      {/* {data.isOpenPopupFavoritesList && (
+        <PopupFavoriteList
+          onClose={() => {
+            data.isOpenPopupFavoritesList = false;
+            setData({...data});
+          }}
+        />
+      )} */}
     </>
   );
 });
@@ -1353,6 +1383,157 @@ const TabFilterComponent = ({profileId, profileType, isMine, tabIndex, isEmptyTa
   if (isPD && tabIndex == eTabPDOtherType.Info) {
     return <></>;
   }
+  return <></>;
+};
+
+type TabHeaderComponentType = {
+  indexTab:
+    | eTabPDType
+    | eTabCharacterType
+    | eTabPDOtherType
+    | eTabCharacterOtherType
+    | eTabChannelType
+    | eTabChannelOtherType;
+  profileId: number;
+  profileType: ProfileType;
+  isMine: boolean;
+  onTabChange: (indexTab: number) => void;
+};
+const TabHeaderComponent = ({indexTab, profileId, profileType, isMine, onTabChange}: TabHeaderComponentType) => {
+  const [data, setData] = useState<{
+    indexTab:
+      | eTabPDType
+      | eTabCharacterType
+      | eTabPDOtherType
+      | eTabCharacterOtherType
+      | eTabChannelType
+      | eTabChannelOtherType;
+  }>({indexTab: indexTab});
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const onResize = () => {
+      setData({...data});
+    };
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
+  }, [data]);
+
+  useEffect(() => {
+    data.indexTab = indexTab;
+    setData({...data});
+  }, [indexTab]);
+
+  const getTabHeaderList = (profileType: number, isMine = false) => {
+    if (isMine) {
+      if (profileType == ProfileType.User || profileType == ProfileType.PD) {
+        return Object.values(eTabPDType)
+          .filter(value => typeof value === 'number') // 숫자 타입만 필터링
+          .map(type => ({type, label: eTabPDType[type]}));
+      } else if (profileType == ProfileType.Character) {
+        return Object.values(eTabCharacterType)
+          .filter(value => typeof value === 'number')
+          .map(type => ({type, label: eTabCharacterType[type]}));
+      } else if (profileType == ProfileType.Channel) {
+        return Object.values(eTabChannelType)
+          .filter(value => typeof value === 'number')
+          .map(type => ({type, label: eTabChannelType[type]}));
+      }
+    }
+
+    //other
+    if (profileType == ProfileType.User || profileType == ProfileType.PD) {
+      return Object.values(eTabPDOtherType)
+        .filter(value => typeof value === 'number') // 숫자 타입만 필터링
+        .map(type => ({type, label: eTabPDOtherType[type]}));
+    } else if (profileType == ProfileType.Character) {
+      return Object.values(eTabCharacterOtherType)
+        .filter(value => typeof value === 'number')
+        .map(type => ({type, label: eTabCharacterOtherType[type]}));
+    } else if (profileType == ProfileType.Channel) {
+      return Object.values(eTabChannelOtherType)
+        .filter(value => typeof value === 'number')
+        .map(type => ({type, label: eTabChannelOtherType[type]}));
+    }
+    return [];
+  };
+  const tabHeaderList = getTabHeaderList(profileType, isMine);
+
+  const calculateGap = () => {
+    if (containerRef.current) {
+      const containerWidth = Math.min(document.documentElement.clientWidth, document.body.clientWidth) - 32;
+      // data-tab 속성이 붙은 모든 자식 요소 선택
+      const tabItems = Array.from(containerRef.current.querySelectorAll('[data-tablabel]')) as HTMLElement[];
+      if (tabItems.length > 1) {
+        let totalChildrenWidth = 0;
+        tabItems.forEach(item => {
+          totalChildrenWidth += item.offsetWidth;
+        });
+        const gap = (containerWidth - totalChildrenWidth) / (tabItems.length - 1);
+        return gap;
+      }
+      return 0;
+    } else {
+      return 0;
+    }
+  };
+  const tabGap = calculateGap();
+
+  return (
+    <>
+      <div className={styles.tabHeaderWrap}>
+        <div
+          ref={containerRef}
+          className={styles.tabHeader}
+          onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            const target = e.target as HTMLElement;
+            const category = target.closest('[data-tab]')?.getAttribute('data-tab');
+            let indexTab = 0;
+            if (category) {
+              const indexTab = parseInt(category);
+              onTabChange(indexTab);
+            } else {
+              return;
+            }
+          }}
+        >
+          {tabHeaderList?.map((tab, index) => {
+            let paddingLeft = tabGap / 2;
+            let paddingRight = tabGap / 2;
+            if (tabHeaderList.length - 1 == index) {
+              paddingRight = 0;
+            }
+            if (index == 0) {
+              paddingLeft = 0;
+            }
+            return (
+              <div
+                key={tab.type}
+                className={styles.labelWrap}
+                style={{paddingLeft: paddingLeft, paddingRight: paddingRight}}
+                data-tab={tab?.type}
+              >
+                <div
+                  className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
+                  data-tablabel={tab?.type}
+                >
+                  {/* <div className={styles.tabItem} data-tab={tab?.type}>
+                      <div className={cx(styles.labelTab, data.indexTab == tab?.type && styles.active)}>
+                        {tab.label}
+                      </div>
+                    </div> */}
+                  {tab.label}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className={styles.line}></div>
+      </div>
+    </>
+  );
 };
 
 const TabContentComponent = ({
@@ -1522,6 +1703,61 @@ const TabContentComponent = ({
       </ul>
     );
   }
+
+  if (isPD && tabIndex == eTabPDType.Channel) {
+    return (
+      <ul className={styles.itemWrap}>
+        {data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.map((one, index: number) => {
+          return (
+            <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
+              <li className={styles.item} key={one?.id}>
+                {one.mediaState == MediaState.Image && (
+                  <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
+                )}
+                {one.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={one?.mediaUrl} />}
+                {one?.isFavorite && (
+                  <div className={styles.pin}>
+                    <img src={BoldPin.src} alt="" />
+                  </div>
+                )}
+                <div className={styles.info}>
+                  <div className={styles.likeWrap}>
+                    <img src={BoldHeart.src} alt="" />
+                    <div className={styles.value}>{one?.likeCount}</div>
+                  </div>
+                  <div className={styles.viewWrap}>
+                    <img src={BoldVideo.src} alt="" />
+                    <div className={styles.value}>{one?.likeCount}</div>
+                  </div>
+                </div>
+                <div className={styles.titleWrap}>
+                  <div className={styles.title}>{one?.name}</div>
+                  <img
+                    src={BoldMenuDots.src}
+                    alt=""
+                    className={styles.iconSetting}
+                    onClick={e => {
+                      e.preventDefault();
+                      e.stopPropagation();
+
+                      data.tabContentMenu = {
+                        id: one.id,
+                        isPin: one?.isPinFix || false,
+                        isSettingOpen: true,
+                      };
+                      setData({...data});
+                    }}
+                  />
+                </div>
+              </li>
+            </Link>
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+
   if (isOtherPD && tabIndex == eTabPDOtherType.Info) {
     const pdInfo = data?.profileTabInfo?.[data.indexTab]?.dataResPdInfo;
     return (
@@ -1573,7 +1809,6 @@ const TabContentComponent = ({
 
   if (isChannel && tabIndex == eTabChannelOtherType.Info) {
     const channelInfo = data?.profileTabInfo?.[data.indexTab]?.channelInfo;
-    console.log('channelInfo : ', channelInfo);
     const tagList = channelInfo?.tags || [];
     return (
       <section className={styles.channelInfoTabSection}>

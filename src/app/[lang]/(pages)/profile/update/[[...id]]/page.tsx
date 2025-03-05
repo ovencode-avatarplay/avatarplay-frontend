@@ -4,7 +4,7 @@ import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import styles from './ProfileUpdate.module.scss';
 import {useForm} from 'react-hook-form';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
-import {Drawer} from '@mui/material';
+import {Dialog, Drawer} from '@mui/material';
 import cx from 'classnames';
 
 import {getLocalizedLink} from '@/utils/UrlMove';
@@ -335,7 +335,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
           {data.countValid.valid}/{data.countValid.total}
         </div>
       </header>
-      <main className={cx(styles.main, data.dataPortfolio.isOpenPreview && styles.hide)}>
+      <main className={cx(styles.main)}>
         <form onSubmit={onSubmit}>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
@@ -1056,70 +1056,72 @@ const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListPopupTyp
   ];
   return (
     <>
-      <section className={styles.portfolioPreviewSection}>
-        <header>
-          <img
-            src={BoldArrowLeft.src}
-            alt="back"
-            className={styles.back}
-            onClick={() => {
-              onChange;
-              onClose();
-            }}
-          />
-          <div className={styles.title}>Portfolio</div>
-        </header>
-        <main>
-          <div className={styles.countPortfolio}>Portfolio {data.portfolioList.length}</div>
-          <ul className={styles.itemList}>
-            {data.portfolioList.map((one, index) => {
-              return (
-                <li className={styles.item} key={index}>
-                  <img className={styles.thumbnail} src={one.image_url} alt="" />
-                  <div className={styles.description}>{one.description}</div>
-                  <div className={styles.dateRegistration}>Date Registration 2025.02.10</div>
-                  <div className={styles.settingWrap}>
-                    <img
-                      src={BoldMenuDots.src}
-                      alt=""
-                      className={styles.setting}
-                      onClick={() => {
-                        data.isSettingOpen = true;
-                        data.idSelected = index;
-                        setData({...data});
-                      }}
-                    />
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-          <SelectDrawer
-            isOpen={data.isSettingOpen}
-            onClose={() => {
-              data.isSettingOpen = false;
-              setData({...data});
-            }}
-            items={settingItems}
-            selectedIndex={-1}
-          />
-          <DrawerCreatePortfolio
-            dataList={data.portfolioList}
-            id={data.idSelected}
-            open={data.isOpenEditDrawer}
-            onChange={dataList => {
-              data.portfolioList = dataList;
-              setData({...data});
-              onChange(data.portfolioList);
-            }}
-            onClose={() => {
-              data.isOpenEditDrawer = false;
-              setData({...data});
-            }}
-          />
-        </main>
-        <footer></footer>
-      </section>
+      <Dialog open={true} onClose={onClose} fullScreen>
+        <section className={styles.portfolioPreviewSection}>
+          <header>
+            <img
+              src={BoldArrowLeft.src}
+              alt="back"
+              className={styles.back}
+              onClick={() => {
+                onChange;
+                onClose();
+              }}
+            />
+            <div className={styles.title}>Portfolio</div>
+          </header>
+          <main>
+            <div className={styles.countPortfolio}>Portfolio {data.portfolioList.length}</div>
+            <ul className={styles.itemList}>
+              {data.portfolioList.map((one, index) => {
+                return (
+                  <li className={styles.item} key={index}>
+                    <img className={styles.thumbnail} src={one.image_url} alt="" />
+                    <div className={styles.description}>{one.description}</div>
+                    <div className={styles.dateRegistration}>Date Registration 2025.02.10</div>
+                    <div className={styles.settingWrap}>
+                      <img
+                        src={BoldMenuDots.src}
+                        alt=""
+                        className={styles.setting}
+                        onClick={() => {
+                          data.isSettingOpen = true;
+                          data.idSelected = index;
+                          setData({...data});
+                        }}
+                      />
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+            <SelectDrawer
+              isOpen={data.isSettingOpen}
+              onClose={() => {
+                data.isSettingOpen = false;
+                setData({...data});
+              }}
+              items={settingItems}
+              selectedIndex={-1}
+            />
+            <DrawerCreatePortfolio
+              dataList={data.portfolioList}
+              id={data.idSelected}
+              open={data.isOpenEditDrawer}
+              onChange={dataList => {
+                data.portfolioList = dataList;
+                setData({...data});
+                onChange(data.portfolioList);
+              }}
+              onClose={() => {
+                data.isOpenEditDrawer = false;
+                setData({...data});
+              }}
+            />
+          </main>
+          <footer></footer>
+        </section>
+      </Dialog>
     </>
   );
 };

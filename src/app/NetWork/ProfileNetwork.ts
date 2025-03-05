@@ -449,3 +449,127 @@ export const getPdInfo = async (payload: GetPdInfoReq) => {
     return null;
   }
 };
+
+export interface GetSubscriptionListReq {
+  isValidSubscription: boolean;
+}
+
+export interface GetSubscriptionListRes {
+  subscriptionList: MembershipSubscribe[];
+}
+
+export interface MembershipSubscribe {
+  id: number;
+  profileId: number;
+  iconUrl: string;
+  name: string;
+  paymentType: PaymentType;
+  paymentAmount: number;
+  expireAt: string;
+}
+
+export enum PaymentType {
+  USD,
+  KRW,
+  EUR,
+  JPY,
+  GBP,
+}
+
+export const getSubscriptionList = async (payload: GetSubscriptionListReq) => {
+  try {
+    const res = await api.post<ResponseAPI<GetSubscriptionListRes>>('Profile/getSubscriptionList', payload);
+
+    if (res.status !== 200) {
+      console.error('getSubscriptionList API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getSubscriptionList API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface GetSubscribePaymentReq {
+  type: SubscriptionType;
+  paymentProfileId: number;
+}
+
+export interface GetSubscribePaymentRes {
+  paymentType: PaymentType;
+  paymentAmount: number;
+  benefit: string;
+}
+
+export enum SubscriptionType {
+  Contents = 1,
+  IP = 2,
+}
+
+export const getPaymentAmountMenu = async (payload: GetSubscribePaymentReq) => {
+  try {
+    const res = await api.post<ResponseAPI<GetSubscribePaymentRes>>('Profile/getSubscribePayment', payload);
+
+    if (res.status !== 200) {
+      console.error('getPaymentAmountMenu API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getPaymentAmountMenu API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface ProfileSubscribeReq {
+  profileId: number;
+}
+
+export interface ProfileSubscribeRes {}
+
+export const subscribeProfile = async (payload: ProfileSubscribeReq) => {
+  try {
+    const res = await api.post<ResponseAPI<ProfileSubscribeRes>>('Profile/subscribe', payload);
+
+    if (res.status !== 200) {
+      console.error('subscribeProfile API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('subscribeProfile API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface SubscribeCancelReq {
+  subscribeId: number;
+}
+
+export interface SubscribeCancelRes {
+  subscribeId: number;
+}
+
+export const cancelSubscribe = async (payload: SubscribeCancelReq) => {
+  try {
+    const res = await api.post<ResponseAPI<SubscribeCancelRes>>('Profile/subscribeCancel', payload);
+
+    if (res.status !== 200) {
+      console.error('cancelSubscribe API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('cancelSubscribe API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
