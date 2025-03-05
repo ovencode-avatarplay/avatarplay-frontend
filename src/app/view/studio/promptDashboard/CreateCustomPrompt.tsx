@@ -8,6 +8,7 @@ import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import AutoCompleteCustomPrompt from './AutoCompleteCustomPrompt';
 import {CustomModulePrompt} from '@/app/NetWork/CustomModulesNetwork';
 import DrawerCustomPromptPreview from './DrawerCustomPromptPreview';
+import CustomPromptPreview from './CustomPromptPreview';
 
 interface Props {
   prompt: CustomModulePrompt;
@@ -204,7 +205,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
 
   const handleGptPromptInput = (e: React.FormEvent<HTMLDivElement>) => {
     handleInput(e, setGptPrompt);
-    setGptPrompt(e.currentTarget.innerText);
+    // setGptPrompt(e.currentTarget.innerText);
     checkForAutoComplete(e, setShowAutoCompleteGpt);
   };
 
@@ -482,7 +483,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   };
 
   const handleSavePrompt = () => {
-    onSave({...prompt, title: promptName, chatGPT: gptPrompt});
+    onSave({...prompt, title: promptName, chatGPT: replaceChipsWithKeywords(gptPrompt)});
   };
 
   const handleResetPrompt = () => {
@@ -531,6 +532,14 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
             </button>
           </div>
         </div>
+        <CustomPromptPreview
+          textValue={selectedModel === 0 ? replaceChipsWithKeywords(gptPrompt) : replaceChipsWithKeywords(claudePrompt)}
+          keywordData={keywords}
+          isOpen={previewOn}
+          onClose={() => {
+            setPreviewOn(false);
+          }}
+        />
       </div>
     );
   };
