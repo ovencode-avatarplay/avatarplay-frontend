@@ -7,6 +7,7 @@ import {LineSetting} from '@ui/Icons';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import AutoCompleteCustomPrompt from './AutoCompleteCustomPrompt';
 import {CustomModulePrompt} from '@/app/NetWork/CustomModulesNetwork';
+import DrawerCustomPromptPreview from './DrawerCustomPromptPreview';
 
 interface Props {
   prompt: CustomModulePrompt;
@@ -21,31 +22,62 @@ const KEYWORDS: Record<string, string> = {
   '{{world_scenario}}': 'World Scenario',
   '{{secrets}}': 'Secrets',
 };
-
-const keywordData = [
-  {keyword: '{{char}}', description: '캐릭터 이름', example: 'Kate'},
+const keywordData = (user: string, char: string) => [
+  {keyword: '{{char}}', description: '캐릭터 이름', example: char, type: 0},
   {
     keyword: '{{char_persona}}',
     description: "캐릭터 생성시 '캐릭터 설명'에 입력한 내용",
-    example: 'Kate is very kind and friendly.',
+    example: `${char} is very kind and friendly.`,
+    type: 1,
   },
   {
     keyword: '{{world_scenario}}',
     description: "캐릭터 생성시 '세계관'에 입력한 내용",
-    example: 'Kate is in a coffee shop. and Mark is her friend. They are talking about their future plan.',
+    example: `${char} is in a coffee shop. and ${user} is her friend. They are talking about their future plan.`,
+    type: 1,
   },
-  {keyword: '{{secrets}}', description: "캐릭터 생성시 '비공개 정보'에 입력한 내용", example: 'Kate loves Mark.'},
-  {keyword: '{{user}}', description: '채팅 시작시 사용자가 입력한 본인의 이름', example: 'Mark'},
+  {
+    keyword: '{{secrets}}',
+    description: "캐릭터 생성시 '비공개 정보'에 입력한 내용",
+    example: `${char} loves ${user}.`,
+    type: 1,
+  },
+  {keyword: '{{user}}', description: '채팅 시작시 사용자가 입력한 본인의 이름', example: user, type: 0},
   {
     keyword: '{{user_desc}}',
     description: '채팅 시작시 사용자가 입력한 본인의 역할, 소개',
-    example: 'Mark is a very smart guy. He is a student of MIT.',
+    example: `${user} is a very smart guy. He is a student of MIT.`,
+    type: 1,
   },
   {
     keyword: '{{lores}}',
     description: '채팅 시 사용자가 입력한 내용 중 로어북에 추가된 단어 정보',
-    example:
-      'MIT is a world-renowned research university known for its advancements in science, engineering, and technology.',
+    example: `MIT is a world-renowned research university known for its advancements in science, engineering, and technology.`,
+    type: 1,
+  },
+  {
+    keyword: '{{query}}',
+    description: '채팅 시 사용자가 입력한 내용 중 로어북에 추가된 단어 정보',
+    example: `MIT is a world-renowned research university known for its advancements in science, engineering, and technology.`,
+    type: 1,
+  },
+  {
+    keyword: '{{example_dialogues}}',
+    description: `캐릭터의 예시 대화 내용.(ChatGPT의 경우 이 키워드를 사용 할 수 없습니다.)`,
+    example: [{user: `Nice weather.`}, {char: `It's good for a walk.`}],
+    type: 2,
+  },
+  {
+    keyword: '{{dialogues}}',
+    description: `사용자와 캐릭터가 주고받은 대화 내용.(ChatGPT의 경우 이 키워드를 사용 할 수 없습니다.)`,
+    example: [
+      {char: `Hello good to see you buddy.`},
+      {user: `Hello ${char}. How are you?`},
+      {char: `I'm fine. How about you?`},
+      {user: `I'm fine too. What are you doing now?`},
+      {char: `I'm reading a book.`},
+    ],
+    type: 2,
   },
 ];
 
@@ -57,6 +89,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
 
   const [showAutoCompleteGpt, setShowAutoCompleteGpt] = useState(false);
   const [showAutoCompleteClaude, setShowAutoCompleteClaude] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState<{top: number; left: number}>({top: 0, left: 0});
 
   //#region  GPT
   const [gptPrompt, setGptPrompt] = useState(prompt.chatGPT);
@@ -88,10 +121,37 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
 
   //#endregion
 
+  //#region  Preveiw
+  const [focusedStates, setFocusedStates] = useState<{[key: string]: boolean}>({});
+  const [typingStates, setTypingStates] = useState<{[key: string]: boolean}>({});
+
+  const [user, setUser] = useState('Mark');
+  const [char, setChar] = useState('Kate');
+
+  const keywords = keywordData(user, char);
+
+  const handleFocus = (key: string) => {
+    setFocusedStates(prev => ({...prev, [key]: true}));
+  };
+
+  const handleBlur = (key: string) => {
+    setFocusedStates(prev => ({...prev, [key]: false}));
+  };
+
+  const handleTyping = (key: string, e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    handleExampleChange(key, e);
+    setTypingStates(prev => ({...prev, [key]: true}));
+
+    setTimeout(() => {
+      setTypingStates(prev => ({...prev, [key]: false}));
+    }, 1000); // 1초 후 typing 상태 해제 (디바운스 효과)
+  };
+  //#endregion
+
   const promptRefs = {
     gpt: useRef<HTMLDivElement>(null),
     gptViewer: useRef<HTMLDivElement>(null),
-    claude: useRef<HTMLTextAreaElement>(null),
+    claude: useRef<HTMLDivElement>(null),
     claudeViewer: useRef<HTMLDivElement>(null),
   };
   //#region  초기화 용도의 useEffect
@@ -100,14 +160,51 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     if (promptRefs.gpt.current) promptRefs.gpt.current.innerText = prompt.chatGPT;
     if (promptRefs.claude.current) promptRefs.claude.current.innerText = prompt.claude;
   }, [prompt.chatGPT, prompt.claude]);
+
+  useEffect(() => {
+    if (selectedModel === 0 && promptRefs.gpt.current) {
+      promptRefs.gpt.current.innerHTML = convertTextToHTML(gptPrompt);
+    } else if (selectedModel === 1 && promptRefs.claude.current) {
+      promptRefs.claude.current.innerHTML = convertTextToHTML(claudePrompt);
+    }
+  }, [selectedModel]);
+
+  const convertTextToHTML = (text: string): string => {
+    let html = text.trim();
+
+    Object.keys(KEYWORDS).forEach(keyword => {
+      const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
+      html = html.replace(
+        regex,
+        `<span class="${styles['chip']} ${styles['chipUser']}" contenteditable="false">${KEYWORDS[keyword]}</span>`,
+      );
+    });
+
+    return html;
+  };
+
   //#endregion
 
-  const [editableExamples, setEditableExamples] = useState<{[key: string]: string}>(
-    keywordData.reduce((acc, item) => ({...acc, [item.keyword]: item.example}), {}),
-  );
+  const updateDropdownPosition = () => {
+    if (!promptRefs.gpt.current) return;
+
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+
+    setDropdownPosition({
+      top: rect.bottom + window.scrollY - 285, // 약간 아래 위치
+      left: rect.left + window.scrollX - 20,
+    });
+  };
+
+  //#region  키 입력 대응
 
   const handleGptPromptInput = (e: React.FormEvent<HTMLDivElement>) => {
     handleInput(e, setGptPrompt);
+    setGptPrompt(e.currentTarget.innerText);
     checkForAutoComplete(e, setShowAutoCompleteGpt);
   };
 
@@ -116,7 +213,6 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     checkForAutoComplete(e, setShowAutoCompleteClaude);
   };
 
-  //#region  키 입력 대응
   const handleInput = (e: React.FormEvent<HTMLDivElement>, setState: React.Dispatch<React.SetStateAction<string>>) => {
     const div = e.currentTarget;
 
@@ -350,14 +446,39 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
     }
   };
 
+  useEffect(() => {
+    if (showAutoCompleteGpt) {
+      updateDropdownPosition();
+    }
+  }, [showAutoCompleteGpt, gptPrompt]);
+
   //#endregion
 
   //#region  버튼 액션, 등등
-  const handleExampleChange = (keyword: string, e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const [editableExamples, setEditableExamples] = useState<{[key: string]: string}>(
+    keywords.reduce((acc, item) => ({...acc, [item.keyword]: item.example}), {}),
+  );
+
+  useEffect(() => {
+    setEditableExamples(keywordData(user, char).reduce((acc, item) => ({...acc, [item.keyword]: item.example}), {}));
+  }, [user, char]);
+
+  // 예제 값 변경 핸들러
+  const handleExampleChange = (keyword: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
     setEditableExamples(prev => ({
       ...prev,
-      [keyword]: e.target.value,
+      [keyword]: newValue,
     }));
+
+    // user 또는 char가 변경될 경우 상태 업데이트
+    if (keyword === `{{user}}`) {
+      setUser(newValue);
+    }
+    if (keyword === `{{char}}`) {
+      setChar(newValue);
+    }
   };
 
   const handleSavePrompt = () => {
@@ -420,15 +541,30 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
         {selectedModel === 0 && (
           <>
             {renderPromptTemplateChatGPT()}
-            <AutoCompleteCustomPrompt
-              keywords={KEYWORDS}
-              inputRef={promptRefs.gpt}
-              onKeywordInsert={handleKeywordInsert}
-            />
+            {showAutoCompleteGpt && (
+              <AutoCompleteCustomPrompt
+                keywords={KEYWORDS}
+                inputRef={promptRefs.gpt}
+                onKeywordInsert={handleKeywordInsert}
+                dropdownPosition={dropdownPosition}
+              />
+            )}
           </>
         )}
 
-        {selectedModel === 1 && renderPromptTemplateClaude()}
+        {selectedModel === 1 && (
+          <>
+            {renderPromptTemplateClaude()}
+            {showAutoCompleteClaude && (
+              <AutoCompleteCustomPrompt
+                keywords={KEYWORDS}
+                inputRef={promptRefs.claude}
+                onKeywordInsert={handleKeywordInsert}
+                dropdownPosition={dropdownPosition}
+              />
+            )}
+          </>
+        )}
         {previewOn && (
           <textarea
             className={styles.promptPreview}
@@ -451,16 +587,14 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
       <div className={styles.promptInputList}>
         <div className={styles.fixedPrompt}>{prefixGpt}</div>
 
-        <div className={styles.promptInputArea}>
-          <div
-            ref={promptRefs.gpt}
-            className={styles.promptInput}
-            contentEditable
-            suppressContentEditableWarning
-            onInput={handleGptPromptInput}
-            onKeyDown={handleKeyDown}
-          />
-        </div>
+        <div
+          ref={promptRefs.gpt}
+          className={styles.promptInput}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={handleGptPromptInput}
+          onKeyDown={handleKeyDown}
+        />
         <div className={styles.fixedPrompt}>{suffixGpt}</div>
       </div>
     );
@@ -469,61 +603,21 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
   const renderPromptTemplateClaude = () => {
     return (
       <div className={styles.promptInputList}>
-        {/* <div className={styles.fixedPrompt}>{prefixClaude}</div>
+        <div className={styles.fixedPrompt}>{prefixGpt}</div>
+
         <div
-          className={styles.promptInput}
           ref={promptRefs.claude}
+          className={styles.promptInput}
           contentEditable
           suppressContentEditableWarning
-          onInput={e => handlePromptInput(e, setClaudePrompt, promptRefs.claude)}
+          onInput={handleClaudePromptInput}
           onKeyDown={handleKeyDown}
         />
-        <div className={styles.fixedPrompt}> {suffixClaude}</div>
-        {showAutoCompleteClaude && (
-          <AutoCompleteCustomPrompt
-            keywords={KEYWORDS}
-            inputRef={promptRefs.claude}
-            onInput={e => handlePromptInput(e, setClaudePrompt, promptRefs.claude)}
-            onKeyDown={handleKeyDown}
-          />
-        )} */}
+        <div className={styles.fixedPrompt}>{suffixGpt}</div>
       </div>
     );
   };
 
-  const renderPreviewOption = () => {
-    return (
-      <div className={styles.previewContainer}>
-        <table className={styles.keywordTable}>
-          <thead>
-            <tr>
-              <th className={styles.previewTitle}>Keyword</th>
-              <th className={styles.previewTitle}>Example</th>
-            </tr>
-          </thead>
-          <tbody>
-            {keywordData.map((item, index) => (
-              <tr key={index}>
-                <td className={styles.previewDescArea}>
-                  <div className={styles.previewKeyword}>{item.keyword}</div>
-                  <div className={styles.previewDesc}>{item.description}</div>
-                </td>
-                <td className={styles.previewExample}>
-                  <CustomInput
-                    textType="InputOnly"
-                    inputType="Basic"
-                    value={editableExamples[item.keyword]}
-                    onChange={e => handleExampleChange(item.keyword, e)}
-                    customClassName={[styles.previewExampleInput]}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
   //#endregion
 
   return (
@@ -573,7 +667,13 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave}) => {
         }}
         title="Preview Options"
       >
-        {previewOptionOpen && renderPreviewOption()}
+        {previewOptionOpen && (
+          <DrawerCustomPromptPreview
+            keywordData={keywords}
+            editableExamples={editableExamples}
+            handleExampleChange={handleExampleChange}
+          />
+        )}
       </CustomDrawer>
     </div>
   );

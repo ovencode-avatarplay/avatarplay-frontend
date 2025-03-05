@@ -1,7 +1,6 @@
 .autoCompleteContainer {
     position: absolute;
-    width: 100%;
-    top: 50px;
+    width: 50%;  
   }
    
   .dropdown { 

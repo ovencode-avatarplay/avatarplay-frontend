@@ -5,9 +5,10 @@ interface Props {
   keywords: Record<string, string>;
   inputRef: React.RefObject<HTMLDivElement>;
   onKeywordInsert: (e: HTMLDivElement, keyword: string) => void;
+  dropdownPosition: {top: number; left: number};
 }
 
-const AutoCompleteCustomPrompt: React.FC<Props> = ({keywords, inputRef, onKeywordInsert}) => {
+const AutoCompleteCustomPrompt: React.FC<Props> = ({keywords, inputRef, onKeywordInsert, dropdownPosition}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [matchedKeywords, setMatchedKeywords] = useState<string[]>([]);
@@ -83,49 +84,11 @@ const AutoCompleteCustomPrompt: React.FC<Props> = ({keywords, inputRef, onKeywor
     setCurrentTriggerWord('');
   };
 
-  const convertToChip = () => {
-    if (!inputRef.current) return;
-
-    let html = inputRef.current.innerHTML.trim();
-    let changed = false;
-
-    Object.keys(keywords).forEach(keyword => {
-      const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
-
-      if (html.includes(keyword)) {
-        html = html.replace(
-          regex,
-          `<span class="${styles['chip']} ${styles['chipUser']}" contenteditable="false">${keywords[keyword]}</span>`,
-        );
-        changed = true;
-      }
-    });
-
-    if (changed) {
-      inputRef.current.innerHTML = html;
-
-      const chips = inputRef.current.querySelectorAll(`.${styles['chip']}`);
-      if (chips.length > 0) {
-        moveCaretAfterNode(chips[chips.length - 1]);
-      }
-    }
-  };
-
-  const moveCaretAfterNode = (node: Node) => {
-    const range = document.createRange();
-    const sel = window.getSelection();
-
-    if (!node || !sel) return;
-
-    range.setStartAfter(node);
-    range.collapse(true);
-
-    sel.removeAllRanges();
-    sel.addRange(range);
-  };
-
   return (
-    <div className={styles.autoCompleteContainer}>
+    <div
+      className={styles.autoCompleteContainer}
+      style={{position: 'absolute', top: dropdownPosition.top, left: dropdownPosition.left}}
+    >
       {showDropdown && (
         <ul ref={dropdownRef} className={styles.dropdown}>
           {matchedKeywords.map((keyword, index) => (

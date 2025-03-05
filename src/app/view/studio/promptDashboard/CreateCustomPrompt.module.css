@@ -87,15 +87,32 @@
     width: var(--second-width);
     display: flex;
     flex-direction: row;
-
-    height: 30vh;
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: flex-start; 
+    align-self: stretch;
+    height: 300px;
     overflow-y: scroll;
+    
+    border-radius: 10px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--White, #FFF); 
+}
+
+
+.promptInputArea::-webkit-scrollbar {
+    display: none;  
+}
+  
+.promptInputArea {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
 }
 
 .promptInputList
 {
     flex: 1 0 0;
-    width: 50%;
+    width: 100%;
 
 }
 
@@ -103,6 +120,14 @@
 {
     width: 100%;
 
+}
+
+.promptInput:focus {
+    outline: none; 
+}
+  
+.promptInput:focus-visible {
+    outline: none;  
 }
 
 .fixedPrompt
@@ -123,46 +148,9 @@
 
 }
 
-.previewContainer
-{
 
-}
+ 
 
-.keywordTable
-{
-    width: 100%;
-
-}
-
-.previewTitle
-{
-
-}
-
-.previewDescArea
-{
-
-}
-
-.previewKeyword
-{
-
-}
-
-.previewDesc
-{
-
-}
-
-.previewExample
-{
-    flex : 1 0 0;
-}
-
-.previewExampleInput
-{
-    width: 100%;
-}
 
 .promptGuide
 {
