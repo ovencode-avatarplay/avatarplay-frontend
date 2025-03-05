@@ -38,22 +38,22 @@ const DrawerMembershipSetting: React.FC<Props> = ({
   const payAmountUSA = [
     {
       label: 'US $35',
-      value: 0,
+      value: 35,
     },
     {
       label: 'US $45',
-      value: 1,
+      value: 45,
     },
   ];
 
   const payAmountKorea = [
     {
       label: 'KOR 50000₩',
-      value: 0,
+      value: 50000,
     },
     {
       label: 'KOR 65000₩',
-      value: 1,
+      value: 65000,
     },
   ];
 
@@ -192,7 +192,15 @@ const DrawerMembershipSetting: React.FC<Props> = ({
             style={{width: '100%', marginTop: '8px', marginBottom: '10px'}}
           />
           <div className={styles.completeButtonArea}>
-            <CustomButton size="Large" state="Normal" type="Primary" style={{width: '100%'}}>
+            <CustomButton
+              size="Large"
+              state="Normal"
+              type="Primary"
+              style={{width: '100%'}}
+              onClick={() => {
+                handleOnClose();
+              }}
+            >
               Complete
             </CustomButton>
           </div>

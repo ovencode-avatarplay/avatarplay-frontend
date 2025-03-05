@@ -339,7 +339,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     }
   };
   const onSubmit = async (dataForm: ChannelInfoForm) => {
-    console.log('data : ', data);
+    console.log('dataForm : ', dataForm);
     // e.preventDefault(); // 기본 제출 방지
     // const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
     let tag = dataForm?.tags;
@@ -789,17 +789,27 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </div>
 
                 <div className={styles.membershipPlan}>
+                  <input
+                    className={styles.hide}
+                    autoComplete="off"
+                    {...register('membershipSetting', {required: false})}
+                  />
+
                   {watch('isMonetization') == 1 && (
                     <DrawerMembershipSetting
                       membershipSetting={{
-                        benefits: '123123123',
-                        paymentAmount: 50000,
-                        paymentType: PaymentType.Korea,
-                        subscription: Subscription.Contents,
+                        benefits: watch('membershipSetting.benefits', ''),
+                        paymentAmount: watch('membershipSetting.paymentAmount', 0),
+                        paymentType: watch('membershipSetting.paymentType', PaymentType.USA),
+                        subscription: watch('membershipSetting.subscription', Subscription.Contents),
                       }}
                       onClose={() => {}}
                       onMembershipSettingChange={dataChanged => {
                         console.log('dataChanged : ', dataChanged);
+                        setValue('membershipSetting.benefits', dataChanged.benefits);
+                        setValue('membershipSetting.paymentAmount', dataChanged.paymentAmount);
+                        setValue('membershipSetting.paymentType', dataChanged.paymentType);
+                        setValue('membershipSetting.subscription', dataChanged.subscription);
                       }}
                     />
                   )}
