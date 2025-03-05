@@ -610,6 +610,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             onClick={() => {
               data.isOpenPopupFavoritesList = true;
               setData({...data});
+              alert('Favorites 구현 예정');
             }}
           >
             Favorites
@@ -619,6 +620,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             onClick={() => {
               data.isOpenPopupPlayList = true;
               setData({...data});
+              alert('playlist 구현 예정');
             }}
           >
             Playlist
@@ -749,7 +751,14 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           {isMyPD && (
             <div className={styles.buttons}>
               <button className={styles.ad}>AD</button>
-              <button className={styles.friends}>Add Friends</button>
+              <button
+                className={styles.friends}
+                onClick={() => {
+                  alert('Add friends 구현 예정');
+                }}
+              >
+                Add Friends
+              </button>
             </div>
           )}
           {isMyCharacter && (
@@ -907,14 +916,14 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           }}
         />
       )}
-      {data.isOpenPopupFavoritesList && (
+      {/* {data.isOpenPopupFavoritesList && (
         <PopupFavoriteList
           onClose={() => {
             data.isOpenPopupFavoritesList = false;
             setData({...data});
           }}
         />
-      )}
+      )} */}
     </>
   );
 });
