@@ -163,7 +163,7 @@
   --safe-area-inset-right: env(safe-area-inset-right);
 
 
-  --full-width: clamp(0px, 100vw, 1300px);
+  --full-width: clamp(0px, 100%, 1300px);
   --second-width : clamp(0px, calc(100vw - 32px) , calc(var(--full-width) - 32px));  /* 370px */
   --third-width : clamp(0px, calc(100vw - 32px - 32px) , calc(var(--full-width) - 32px - 32px));  /* 338px */
   --header-removed-height : calc(100% - 58px);
