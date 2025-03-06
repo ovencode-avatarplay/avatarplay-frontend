@@ -111,7 +111,7 @@ export interface CharacterInfo {
   recruitedProfileId: number; // TODO : 추후 추가 계획
   operatorProfileIdList: ProfileSimpleInfo[];
   isMonetization: boolean;
-  nSFW: boolean;
+  nsfw: boolean;
   membershipSetting: MembershipSetting;
   customModulesInfo: CustomModulesInfo;
   pdProfileSimpleInfo: ProfileSimpleInfo;

@@ -177,7 +177,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   );
 
   const [isMonetization, setIsMonetization] = useState<boolean>(character.isMonetization);
-  const [nsfw, setNsfw] = useState<boolean>(character.nSFW);
+  const [nsfw, setNsfw] = useState<boolean>(character.nsfw);
 
   //#endregion
 
@@ -258,7 +258,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
 
     if (characterName === '') return false;
 
-    if (characterDescription === '') return false;
+    if (description === '') return false;
 
     if (positionCountryList.length < 1) return false;
 
@@ -308,7 +308,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
             operatorAuthorityType: profile.operatorAuthorityType as number,
           })),
           isMonetization: isMonetization,
-          nSFW: nsfw,
+          nsfw: nsfw,
           membershipSetting: membershipSetting,
           customModulesInfo: {
             // TODO
@@ -525,36 +525,54 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
       label: 'Basic',
       preContent: '',
       content: (
-        <CharacterCreateBasic
-          characterName={characterName}
-          setCharacterName={setCharacterName}
-          characterDesc={characterDescription}
-          setCharacterDesc={setCharacterDescription}
-        />
+        <>
+          <CharacterCreateBasic
+            characterName={characterName}
+            setCharacterName={setCharacterName}
+            // characterDesc={characterDescription}
+            // setCharacterDesc={setCharacterDescription}
+          />
+          <CharacterCreateLLM
+            selectedLang={languageType}
+            characterDesc={description}
+            worldScenario={worldScenario}
+            greeting={greeting}
+            secret={secret}
+            selectedPromptIdx={customModulesPromptIdx}
+            selectedLorebookIdx={customModulesLorebookIdx}
+            onLangChange={setLanguageType}
+            onCharacterDescChange={setDescription}
+            onWorldScenarioChange={setWorldScenario}
+            onGreetingChange={setGreeting}
+            onSecretChange={setSecret}
+            onSelectedPromptChange={setCustomModulesPromptIdx}
+            onSelectedLorebookChange={setCustomModulesLorebookIdx}
+          />
+        </>
       ),
     },
-    {
-      label: 'LLM',
-      preContent: '',
-      content: (
-        <CharacterCreateLLM
-          selectedLang={languageType}
-          characterDesc={description}
-          worldScenario={worldScenario}
-          greeting={greeting}
-          secret={secret}
-          selectedPromptIdx={customModulesPromptIdx}
-          selectedLorebookIdx={customModulesLorebookIdx}
-          onLangChange={setLanguageType}
-          onCharacterDescChange={setDescription}
-          onWorldScenarioChange={setWorldScenario}
-          onGreetingChange={setGreeting}
-          onSecretChange={setSecret}
-          onSelectedPromptChange={setCustomModulesPromptIdx}
-          onSelectedLorebookChange={setCustomModulesLorebookIdx}
-        />
-      ),
-    },
+    // {
+    //   label: 'LLM',
+    //   preContent: '',
+    //   content: (
+    //     <CharacterCreateLLM
+    //       selectedLang={languageType}
+    //       characterDesc={description}
+    //       worldScenario={worldScenario}
+    //       greeting={greeting}
+    //       secret={secret}
+    //       selectedPromptIdx={customModulesPromptIdx}
+    //       selectedLorebookIdx={customModulesLorebookIdx}
+    //       onLangChange={setLanguageType}
+    //       onCharacterDescChange={setDescription}
+    //       onWorldScenarioChange={setWorldScenario}
+    //       onGreetingChange={setGreeting}
+    //       onSecretChange={setSecret}
+    //       onSelectedPromptChange={setCustomModulesPromptIdx}
+    //       onSelectedLorebookChange={setCustomModulesLorebookIdx}
+    //     />
+    //   ),
+    // },
     {
       label: 'Media',
       preContent: '',
@@ -617,6 +635,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           onIsMonetizationChange={setIsMonetization}
           nsfw={nsfw}
           onNsfwChange={setNsfw}
+          characterDesc={characterDescription}
+          setCharacterDesc={setCharacterDescription}
         />
       ),
     },
@@ -812,11 +832,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
                       {mainimageUrl === '' && <div className={styles.createImageText}>Create</div>}
                     </div>
                   </button>
-                  {mainimageUrl !== '' && (
+                  {/* {mainimageUrl !== '' && (
                     <CustomButton size="Small" state="Normal" type="Primary">
                       Regenerate
                     </CustomButton>
-                  )}
+                  )} */}
                 </div>
               </div>
               <Splitters

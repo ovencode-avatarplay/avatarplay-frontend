@@ -5,15 +5,15 @@ import MaxTextInput, {displayType, inputState, inputType} from '@/components/cre
 interface CharacterCreateBasicProps {
   characterName: string;
   setCharacterName: React.Dispatch<React.SetStateAction<string>>;
-  characterDesc: string;
-  setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
+  // characterDesc: string;
+  // setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
   characterName,
   setCharacterName,
-  characterDesc,
-  setCharacterDesc,
+  // characterDesc,
+  // setCharacterDesc,
 }) => {
   const characterNameDesc: string[] = [
     'Avoid ambiguous names like “Rose”, “Joy”, “Ivy” that can be interpreted in multiple ways.',
@@ -52,7 +52,7 @@ const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
           customClassName={[styles.inputBox]}
         />
       </div>
-      <div className={styles.descriptionInputArea}>
+      {/* <div className={styles.descriptionInputArea}>
         <div className={styles.titleArea}>
           <h2 className={styles.title2}> Character Description</h2>
           <h2 className={styles.titleAstric}>*</h2>
@@ -66,7 +66,7 @@ const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
           placeholder={characterDescPlaceholder}
           inSideHint={`About ${characterDesc?.length} tokens (임시처리 텍스트 길이)`}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

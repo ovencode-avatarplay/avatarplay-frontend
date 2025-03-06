@@ -22,6 +22,8 @@ import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import DrawerConnectCharacter from '../common/DrawerConnectCharacter';
 import DrawerMembershipSetting from '../common/DrawerMembershipSetting';
+import CustomSelector from '@/components/layout/shared/CustomSelector';
+import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 
 interface Props {
   visibility: number;
@@ -48,6 +50,8 @@ interface Props {
   onIsMonetizationChange: (value: boolean) => void;
   nsfw: boolean;
   onNsfwChange: (value: boolean) => void;
+  characterDesc: string;
+  setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const CharacterCreatePolicy: React.FC<Props> = ({
@@ -75,6 +79,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   onIsMonetizationChange,
   nsfw,
   onNsfwChange,
+  characterDesc,
+  setCharacterDesc,
 }) => {
   let VisibilityData = {label: 'Visibility', items: ['Private', 'UnListed', 'Public']};
 
@@ -112,6 +118,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   const [pitchShift, setPitchShift] = useState<number>(0);
   const [pitchVariance, setPitchVariance] = useState<number>(0);
   const [speed, setSpeed] = useState<number>(0);
+
+  let characterDescPlaceholder = `This is the description of the character (Character description is also public to other users)`;
 
   const handleSelectVisibilityItem = (value: number) => {
     onVisibilityChange(value);
@@ -231,12 +239,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     return (
       <div className={styles.dropDownArea}>
         <h2 className={styles.title2}>{title}</h2>
-        <div className={styles.selectItem}>
-          <div className={styles.selectItemText}>{items[selectedItem]}</div>
-          <button className={styles.selectItemButton} onClick={() => setIsOpen(!isOpen)}>
-            <img className={styles.selectItemIcon} src={BoldArrowDown.src} />
-          </button>
-        </div>
+        <CustomSelector value={items[selectedItem]} onClick={() => setIsOpen(!isOpen)} />
         <SelectDrawer
           isOpen={isOpen}
           items={drawerItems}
@@ -264,19 +267,16 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     title: string,
     selectedItem: string,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    essential?: boolean,
   ) => {
     return (
       <div className={styles.dropDownArea}>
-        <h2 className={styles.title2}>{title}</h2>
-        <div className={styles.selectItem}>
-          <div className={styles.selectItemText}>{selectedItem}</div>
-          <button
-            className={styles.selectItemButton}
-            onClick={() => setIsOpen(prev => !prev)} // 상태 토글
-          >
-            <img className={styles.selectItemIcon} src={BoldArrowDown.src} />
-          </button>
-        </div>
+        <h2 className={styles.title2}>
+          {title}
+          {essential && <h2 className={styles.titleAstric}>*</h2>}
+        </h2>
+
+        <CustomSelector value={selectedItem} onClick={() => setIsOpen(prev => !prev)} />
       </div>
     );
   };
@@ -538,6 +538,26 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     );
   };
 
+  const renderComment = () => {
+    return (
+      <div className={styles.commentInputArea}>
+        <div className={styles.commentTitleArea}>
+          <h2 className={styles.title2}> Comment</h2>
+          {/* <h2 className={styles.titleAstric}>*</h2> */}
+        </div>
+        <MaxTextInput
+          stateDataType={inputState.Normal}
+          inputDataType={inputType.None}
+          displayDataType={displayType.Default}
+          promptValue={characterDesc}
+          handlePromptChange={e => setCharacterDesc(e.target.value)}
+          placeholder={characterDescPlaceholder}
+          inSideHint={`About ${characterDesc?.length} tokens (임시처리 텍스트 길이)`}
+        />
+      </div>
+    );
+  };
+
   useEffect(() => {
     if (tagOpen) {
       handleGetTagList();
@@ -589,6 +609,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             'Position Country',
             positionCountry.map(country => LanguageType[country]).join(', '),
             setIsPositionCountryOpen,
+            true,
           )}
           {renderPositionCountry()}
           <div className={styles.blackTagContainer}>
@@ -615,6 +636,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         {/* {renderMembershipPlan()} */}
         {renderNSFW()}
         {renderSuperVoiceSetting()}
+        {renderComment()}
       </div>
     </div>
   );

@@ -54,14 +54,14 @@
                   "name": "string",
                   "iconImageUrl": "string",
                   "description" : "string",
-                  "nSFW": false 
+                  "nsfw": false 
                 },
                 "connectCharacterId" : 0,
                 "recruitedProfileId": 0,
                 "operatorProfileIdList": [],
                 
                 "isMonetization": false,
-                "nSFW": false,
+                "nsfw": false,
                 "membershipSetting": {
                   "subscription": 0,
                   "paymentType": 0,
@@ -84,7 +84,7 @@
                   "name": "string",
                   "iconImageUrl": "string",
                   "description" : "string",
-                  "nSFW": false 
+                  "nsfw": false 
                 },
                 "state": 1,
                 

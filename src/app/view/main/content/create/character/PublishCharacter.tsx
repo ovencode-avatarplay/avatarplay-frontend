@@ -124,7 +124,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
 
           characterIP: 0,
           createAt: '2025-02-06T06:22:46.701Z',
-          nSFW: false,
+          nsfw: false,
         },
         debugParameter: debugparam,
       };

@@ -93,6 +93,8 @@
 
 .title2
 {
+    display: flex;
+    flex-direction: row;
     color: var(--Neutral-900, #040415);
     font-feature-settings: 'liga' off, 'clig' off;    
     font-size: 14px;
@@ -445,4 +447,28 @@
     font-style: normal;
     font-weight: 500;
     line-height: 150%; /* 21px */
+}
+
+.commentInputArea
+{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+}
+.commentTitleArea
+{
+    display: flex;
+    flex-direction: row;
+}
+
+.titleAstric
+{
+    color: var(--Secondary-Red-1, #F75555);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: -0.4px;
 }
