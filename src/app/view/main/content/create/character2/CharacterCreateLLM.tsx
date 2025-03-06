@@ -270,7 +270,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         {renderMaxTextInput(worldScenario, onWorldScenarioChange, handleAutoWriteCharacterWorldScenario)}
       </div>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(`Greeting`, '')}
+        {renderTitle(`Introduction`, '')}
         {renderMaxTextInput(greeting, onGreetingChange, handleAutoWriteCharacterGreeting)}
       </div>
       <div className={styles.inputDataBoxArea}>

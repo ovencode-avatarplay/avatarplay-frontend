@@ -20,7 +20,12 @@ import CharacterCreateLLM from './CharacterCreateLLM';
 import CharacterCreateMedia from './CharacterCreateMedia';
 import CharacterCreateConversation from './CharacterCreateConversation';
 import CharacterCreatePolicy from './CharacterCreatePolicy';
-import {CreateCharacter2Req, CreateCharacterReq, sendCreateCharacter} from '@/app/NetWork/CharacterNetwork';
+import {
+  CreateCharacter2Req,
+  CreateCharacterReq,
+  sendCreateCharacter,
+  sendCreateCharacter2,
+} from '@/app/NetWork/CharacterNetwork';
 import ImageUploadDialog from '../story-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {
@@ -78,7 +83,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
 
   //#region  Basic
   const [characterName, setCharacterName] = useState<string>(character.name);
-  const [characterDescription, setCharacterDescription] = useState<string>(character.characterDescription);
+  const [creatorComment, setCreatorComment] = useState<string>(character.creatorComment);
 
   //#endregion
 
@@ -86,13 +91,13 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   const [languageType, setLanguageType] = useState<number>(character.languageType);
   const [description, setDescription] = useState(character.description);
   const [worldScenario, setWorldScenario] = useState(character.worldScenario);
-  const [greeting, setGreeting] = useState(character.greeting);
+  const [introduction, setIntroduction] = useState(character.introduction);
   const [secret, setSecret] = useState(character.secret);
   const [customModulesPromptIdx, setCustomModulesPromptIdx] = useState<number>(
-    character.customModulesInfo.selectPromptIndex,
+    character.customModulesInfo.selectPromptId,
   );
   const [customModulesLorebookIdx, setCustomModulesLorebookIdx] = useState<number>(
-    character.customModulesInfo.selectLorebookIndex,
+    character.customModulesInfo.selectLorebookId,
   );
 
   //#endregion
@@ -269,24 +274,15 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
     try {
       const req: CreateCharacter2Req = {
         languageType: getCurrentLanguage(),
-        characterInfo: {
-          id: character.id, // 서버에서 지정
-          languageType: languageType,
+        payload: {
+          id: character.id,
+          referenceLanguage: languageType,
           name: characterName,
-          chatCount: character.chatCount,
-          chatUserCount: character.chatUserCount,
-          characterDescription: characterDescription,
-          urlLinkKey: character.urlLinkKey, // 서버에서 지정
-          genderType: character.genderType, // 지정하는 장소 없음
-          introduction: character.introduction, // 지정하는 장소 없음
+          introduction: introduction, // 지정하는 장소 없음
           description: description,
           worldScenario: worldScenario,
-          greeting: greeting,
           secret: secret,
           mainImageUrl: mainimageUrl,
-          portraitGalleryImageUrl: [],
-          poseGalleryImageUrl: [],
-          expressionGalleryImageUrl: [],
           mediaTemplateList: mediaTemplateList?.map(item => ({
             id: item.id,
             imageUrl: item.imageUrl,
@@ -300,43 +296,22 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           tag: tag,
           positionCountryList: positionCountryList,
           characterIP: characterIP,
-          connectCharacterInfo: connectCharacterInfo,
           connectCharacterId: connectCharacterId,
-          recruitedProfileId: recruitedProfileId,
           operatorProfileIdList: operatorProfileIdList.map(profile => ({
             ...profile,
             operatorAuthorityType: profile.operatorAuthorityType as number,
           })),
           isMonetization: isMonetization,
           nsfw: nsfw,
-          membershipSetting: membershipSetting,
-          customModulesInfo: {
-            // TODO
-            lorebookInfoList: [],
-            promptInfoList: [],
-            selectLorebookIndex: 0,
-            selectPromptIndex: 0,
-          },
-          pdProfileSimpleInfo: {
-            // 서버에서 지정
-            profileTabType: 0,
-            profileId: 0,
-            profileType: 0,
-            name: 'string',
-            iconImageUrl: 'string',
-            operatorAuthorityType: OperatorAuthorityType.Owner,
-            description: 'string',
-            nsfw: false,
-          },
-          state: 0,
-          createAt: '2025-02-06T06:22:46.701Z', // 서버에서 지정
-          updateAt: '2025-02-06T06:22:46.701Z', // 서버에서 지정
+          selectLorebookId: customModulesLorebookIdx,
+          selectPromptId: customModulesPromptIdx,
+          creatorComment: creatorComment,
         },
         debugParameter: 'string',
       };
 
       // API 호출
-      const response = await sendCreateCharacter(req);
+      const response = await sendCreateCharacter2(req);
 
       if (response.data) {
         console.log('Character created successfully:', response.data);
@@ -526,24 +501,19 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
       preContent: '',
       content: (
         <>
-          <CharacterCreateBasic
-            characterName={characterName}
-            setCharacterName={setCharacterName}
-            // characterDesc={characterDescription}
-            // setCharacterDesc={setCharacterDescription}
-          />
+          <CharacterCreateBasic characterName={characterName} setCharacterName={setCharacterName} />
           <CharacterCreateLLM
             selectedLang={languageType}
             characterDesc={description}
             worldScenario={worldScenario}
-            greeting={greeting}
+            greeting={introduction}
             secret={secret}
             selectedPromptIdx={customModulesPromptIdx}
             selectedLorebookIdx={customModulesLorebookIdx}
             onLangChange={setLanguageType}
             onCharacterDescChange={setDescription}
             onWorldScenarioChange={setWorldScenario}
-            onGreetingChange={setGreeting}
+            onGreetingChange={setIntroduction}
             onSecretChange={setSecret}
             onSelectedPromptChange={setCustomModulesPromptIdx}
             onSelectedLorebookChange={setCustomModulesLorebookIdx}
@@ -635,8 +605,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           onIsMonetizationChange={setIsMonetization}
           nsfw={nsfw}
           onNsfwChange={setNsfw}
-          characterDesc={characterDescription}
-          setCharacterDesc={setCharacterDescription}
+          characterDesc={creatorComment}
+          setCharacterDesc={setCreatorComment}
         />
       ),
     },

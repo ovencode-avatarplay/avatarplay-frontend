@@ -624,14 +624,11 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       </div>
       <div className={styles.selectItemsArea2}>
         {renderCharacterIP()}
-        {renderMembershipPlan()}
         {renderRecruit()}
         {renderConnect()}
-        {renderOperatorInvite()}
         {renderMonetization()}
         {/* {renderMembershipPlan()} */}
         {renderNSFW()}
-        {renderSuperVoiceSetting()}
         {renderComment()}
       </div>
     </div>
