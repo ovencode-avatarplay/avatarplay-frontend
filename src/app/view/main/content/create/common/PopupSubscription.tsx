@@ -60,6 +60,7 @@ const PopupSubscription = ({id, onClose}: Props) => {
 
   const onSubscribe = async () => {
     await subscribeProfile({profileId: id});
+    onClose();
   };
 
   const unit = getUnit(data.subscriptionInfo?.paymentType);

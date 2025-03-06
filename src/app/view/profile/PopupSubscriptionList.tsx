@@ -30,7 +30,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
       isOpen: boolean;
     };
     dataRenewal: {
-      idProfile: number;
+      id: number;
       isOpen: boolean;
     };
   }>({
@@ -43,7 +43,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
       isOpen: false,
     },
     dataRenewal: {
-      idProfile: 0,
+      id: 0,
       isOpen: false,
     },
   });
@@ -244,8 +244,8 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                         <div
                           className={styles.renewal}
                           onClick={() => {
-                            alert('renewal 예정');
-                            data.dataRenewal.idProfile = 0;
+                            data.dataRenewal.isOpen = true;
+                            data.dataRenewal.id = one.id;
                             setData({...data});
                           }}
                         >
@@ -278,7 +278,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
       />
       {data.dataRenewal.isOpen && (
         <PopupSubscription
-          id={data.dataRenewal.idProfile}
+          id={data.dataRenewal.id}
           onClose={() => {
             data.dataRenewal.isOpen = false;
             setData({...data});
