@@ -349,7 +349,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     let isMonetization = Boolean(Number(dataForm.isMonetization));
     let nsfw = Boolean(Number(dataForm.nsfw));
     let characterIP = Number(dataForm.characterIP);
-    const membershipSetting = isMonetization ? dataForm.membershipSetting : null;
+    const membershipSetting = isMonetization ? dataForm.membershipSetting : undefined;
     const dataUpdatePdInfo: CreateChannelReq = {
       languageType: getCurrentLanguage(),
       channelInfo: {...dataForm, id: idChannel, tags: tag, isMonetization, nsfw, characterIP, membershipSetting},
@@ -580,17 +580,15 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 />
                 <div className={styles.label}>Tag</div>
-                <div
-                  className={cx(styles.selectWrap, errors.tags && isSubmitted && styles.error)}
+                <input className={styles.hide} autoComplete="off" {...register('tags')} />
+                <CustomSelector
+                  value={''}
+                  error={errors.tags && isSubmitted}
                   onClick={() => {
                     data.dataTag.isOpenTagsDrawer = true;
                     setData({...data});
                   }}
-                >
-                  <input className={styles.hide} autoComplete="off" {...register('tags')} />
-                  <div className={styles.placeholder}>Select</div>
-                  <img src={'/ui/profile/update/icon_select.svg'} alt="" />
-                </div>
+                />
                 <div className={styles.tagWrap}>
                   {!watch('tags') && (
                     <input className={styles.hide} autoComplete="off" {...register(`tags`, {required: true})} />
@@ -626,16 +624,14 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </div>
 
                 <div className={styles.label}>Post country</div>
-                <div
-                  className={cx(styles.selectWrap, errors.postCountry && isSubmitted && styles.error)}
+                <CustomSelector
+                  value={''}
+                  error={errors.postCountry && isSubmitted}
                   onClick={() => {
                     data.dataCountry.isOpenDrawer = true;
                     setData({...data});
                   }}
-                >
-                  <div className={styles.placeholder}>Select</div>
-                  <img src={'/ui/profile/update/icon_select.svg'} alt="" />
-                </div>
+                />
                 <div className={styles.tagWrap}>
                   {!watch('postCountry') && (
                     <input className={styles.hide} autoComplete="off" {...register(`postCountry`, {required: true})} />

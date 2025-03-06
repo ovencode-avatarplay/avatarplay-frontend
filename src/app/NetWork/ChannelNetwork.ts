@@ -25,7 +25,7 @@ export interface ChannelInfo {
   isMonetization: boolean;
   nsfw: boolean;
   postCountry: string[];
-  membershipSetting: MembershipSetting;
+  membershipSetting?: MembershipSetting;
   state: ChannelState;
   createAt: string;
   updateAt: string;
