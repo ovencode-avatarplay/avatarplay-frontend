@@ -1,6 +1,7 @@
 import Root from './Root';
 import '@/app/globals.css';
 import '@/app/reset.css';
+import {Suspense} from 'react';
 
 export default async function Layout({children}: {children: React.ReactNode}) {
   return (
@@ -13,7 +14,9 @@ export default async function Layout({children}: {children: React.ReactNode}) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
       </head>
       <body>
-        <Root>{children} </Root> {/* 설정 정보를 Provider를 통해 자식 컴포넌트에 전달 */}
+        <Suspense>
+          <Root>{children} </Root> {/* 설정 정보를 Provider를 통해 자식 컴포넌트에 전달 */}
+        </Suspense>
         {/* <div ref={paddingRef} style={{height: '0px', width: '100%'}}></div> */}
       </body>
     </html>

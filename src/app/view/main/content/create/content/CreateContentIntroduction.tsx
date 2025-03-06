@@ -30,7 +30,7 @@ enum FilterTypes {
 
 interface CreateContentIntroductionProps {}
 
-const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = ({}) => {
+const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () => {
   const [activeTab, setActiveTab] = useState<ContentType>(ContentType.Series);
   const [selectedFilter, setSelectedFilter] = useState<FilterTypes>(FilterTypes.All);
   const [filterDrawerOpen, setFilterDrawerOpen] = useState<boolean>(false);
