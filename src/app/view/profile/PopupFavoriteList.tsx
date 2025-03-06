@@ -23,6 +23,8 @@ import {
   SelectBox,
   TabFilterComponent,
   TabHeaderComponent,
+  TabHeaderWrapAllComponent,
+  TabHeaderWrapComponent,
 } from './ProfileBase';
 import PopupSubscription, {getUnit} from '../main/content/create/common/PopupSubscription';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -84,7 +86,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
           <main className={styles.main}>
             <section className={styles.tabSection}>
               <div className={styles.tabHeaderContainer}>
-                <TabHeaderComponent
+                <TabHeaderWrapAllComponent
                   indexTab={data.indexTab}
                   isMine
                   profileId={profileId}

@@ -80,6 +80,14 @@ import PopupSubscriptionList from './PopupSubscriptionList';
 import PopupFavoriteList from './PopupFavoriteList';
 import PopupPlaylist from './PopupPlaylist';
 
+export enum eTabCommonType {
+  Feed,
+  Character,
+  Channel,
+  Contents,
+  Game,
+}
+
 export enum eTabPDType {
   Feed,
   Channel = 1,
@@ -818,7 +826,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         </div>
         <section className={styles.tabSection}>
           <div className={styles.tabHeaderContainer}>
-            <TabHeaderComponent
+            <TabHeaderWrapComponent
               indexTab={data.indexTab}
               isMine
               profileId={profileId}
@@ -856,14 +864,16 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           </div>
 
           <div className={styles.tabContent}>
-            <TabContentComponent
+            <TabContentComponentWrap
               profileId={profileId}
               isMine={isMine}
               profileType={profileType}
               tabIndex={data.indexTab}
               isEmptyTab={isEmptyTab}
-              data={data}
-              setData={setData}
+              onRefreshTab={async () => {
+                await data.refreshProfileTab(profileId, data.indexTab, true);
+              }}
+              profileTabInfo={data.profileTabInfo}
             />
           </div>
         </section>
@@ -885,35 +895,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           setData(v => ({...v, isShareOpened: false}));
         }}
       ></SharePopup>
-      <ContentSetting
-        onClose={() => {
-          data.tabContentMenu.isSettingOpen = false;
-          setData({...data});
-        }}
-        isMine={isMine}
-        tabContentMenu={data.tabContentMenu}
-        refreshTabAll={async () => {
-          await refreshProfileTab(profileId, data.indexTab, true);
-        }}
-        onShare={() => {
-          const url =
-            getLocalizedLink(`/profile/feed/` + data.profileInfo?.profileInfo.id) +
-            `?type=${profileType}&idContent=${data.tabContentMenu.id}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}`;
-          handleShare(url);
-        }}
-        onDelete={() => {
-          alert('delete api 연동 필요');
-        }}
-        onEdit={() => {
-          alert('수정 페이지 Link 연동');
-        }}
-        onHide={() => {
-          alert('hide api 연동 필요');
-        }}
-        onReport={() => {
-          alert('report api 연동 필요');
-        }}
-      />
+
       {data.isOpenPopupSubscription && (
         <PopupSubscription
           id={profileId}
@@ -1231,8 +1213,14 @@ type TabContentProps = {
   isMine: boolean;
   tabIndex: number;
   isEmptyTab: boolean;
-  data: DataProfileType;
-  setData: React.Dispatch<React.SetStateAction<DataProfileType>>;
+  // data: DataProfileType;
+  // setData: React.Dispatch<React.SetStateAction<DataProfileType>>;
+  profileTabInfo: {
+    [key: number]: GetCharacterTabInfoeRes &
+      GetPdTabInfoeRes &
+      GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes} & GetChannelRes;
+  };
+  onRefreshTab: () => void;
 };
 
 type TabFilterProps = {
@@ -1431,46 +1419,40 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   return <></>;
 };
 
-type TabHeaderComponentType = {
-  indexTab:
-    | eTabPDType
-    | eTabCharacterType
-    | eTabPDOtherType
-    | eTabCharacterOtherType
-    | eTabChannelType
-    | eTabChannelOtherType;
-  profileId: number;
-  profileType: ProfileType;
-  isMine: boolean;
-  onTabChange: (indexTab: number) => void;
+export const TabHeaderWrapAllComponent = ({
+  indexTab,
+  profileId,
+  profileType,
+  isMine,
+  onTabChange,
+}: TabHeaderComponentType) => {
+  const getTabHeaderList = () => {
+    return Object.values(eTabCommonType)
+      .filter(value => typeof value === 'number') // 숫자 타입만 필터링
+      .map(type => ({type, label: eTabCommonType[type]}));
+  };
+  const tabHeaderList = getTabHeaderList();
+  return (
+    <>
+      <TabHeaderComponent
+        indexTab={indexTab}
+        profileId={profileId}
+        profileType={profileType}
+        isMine={isMine}
+        onTabChange={onTabChange}
+        tabHeaderList={tabHeaderList}
+      />
+    </>
+  );
 };
-export const TabHeaderComponent = ({indexTab, profileId, profileType, isMine, onTabChange}: TabHeaderComponentType) => {
-  const [data, setData] = useState<{
-    indexTab:
-      | eTabPDType
-      | eTabCharacterType
-      | eTabPDOtherType
-      | eTabCharacterOtherType
-      | eTabChannelType
-      | eTabChannelOtherType;
-  }>({indexTab: indexTab});
-  const containerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const onResize = () => {
-      setData({...data});
-    };
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, [data]);
-
-  useEffect(() => {
-    data.indexTab = indexTab;
-    setData({...data});
-  }, [indexTab]);
-
+export const TabHeaderWrapComponent = ({
+  indexTab,
+  profileId,
+  profileType,
+  isMine,
+  onTabChange,
+}: TabHeaderComponentType) => {
   const getTabHeaderList = (profileType: number, isMine = false) => {
     if (isMine) {
       if (profileType == ProfileType.User || profileType == ProfileType.PD) {
@@ -1505,6 +1487,69 @@ export const TabHeaderComponent = ({indexTab, profileId, profileType, isMine, on
     return [];
   };
   const tabHeaderList = getTabHeaderList(profileType, isMine);
+  return (
+    <>
+      <TabHeaderComponent
+        indexTab={indexTab}
+        profileId={profileId}
+        profileType={profileType}
+        isMine={isMine}
+        onTabChange={onTabChange}
+        tabHeaderList={tabHeaderList}
+      />
+    </>
+  );
+};
+
+type TabHeaderComponentType = {
+  indexTab:
+    | eTabPDType
+    | eTabCharacterType
+    | eTabPDOtherType
+    | eTabCharacterOtherType
+    | eTabChannelType
+    | eTabChannelOtherType
+    | eTabCommonType;
+  profileId: number;
+  profileType: ProfileType;
+  isMine: boolean;
+  onTabChange: (indexTab: number) => void;
+  tabHeaderList?: {type: number; label: string}[];
+};
+export const TabHeaderComponent = ({
+  indexTab,
+  profileId,
+  profileType,
+  isMine,
+  tabHeaderList,
+  onTabChange,
+}: TabHeaderComponentType) => {
+  const [data, setData] = useState<{
+    indexTab:
+      | eTabPDType
+      | eTabCharacterType
+      | eTabPDOtherType
+      | eTabCharacterOtherType
+      | eTabChannelType
+      | eTabChannelOtherType
+      | eTabCommonType;
+  }>({indexTab: indexTab});
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const onResize = () => {
+      setData({...data});
+    };
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
+  }, [data]);
+
+  useEffect(() => {
+    data.indexTab = indexTab;
+    setData({...data});
+  }, [indexTab]);
 
   const calculateGap = () => {
     if (containerRef.current) {
@@ -1525,7 +1570,6 @@ export const TabHeaderComponent = ({indexTab, profileId, profileType, isMine, on
     }
   };
   const tabGap = calculateGap();
-
   return (
     <>
       <div className={styles.tabHeaderWrap}>
@@ -1581,15 +1625,92 @@ export const TabHeaderComponent = ({indexTab, profileId, profileType, isMine, on
   );
 };
 
-const TabContentComponent = ({
+const TabContentComponentWrap = ({
   profileId,
   profileType,
   isMine,
   tabIndex,
   isEmptyTab,
-  data,
-  setData,
+  profileTabInfo,
+  onRefreshTab,
 }: TabContentProps) => {
+  const [data, setData] = useState<{
+    tabContentMenu: TabContentMenuType;
+    isShareOpened: boolean;
+  }>({
+    tabContentMenu: {
+      id: 0,
+      isPin: false,
+      isSettingOpen: false,
+    },
+    isShareOpened: false,
+  });
+  const handleShare = async (url: string = window.location.href) => {
+    const shareData = {
+      title: '공유하기 제목',
+      text: '이 링크를 확인해보세요!',
+      url: url, // 현재 페이지 URL
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData); // 네이티브 공유 UI 호출
+      } catch (error) {
+        console.error('공유 실패:', error);
+      }
+    } else {
+      data.isShareOpened = true;
+      setData({...data});
+    }
+  };
+
+  return (
+    <>
+      <TabContentComponent
+        profileId={profileId}
+        profileType={profileType}
+        isMine={isMine}
+        tabIndex={tabIndex}
+        isEmptyTab={isEmptyTab}
+        // data={data}
+        // setData={setData}
+        profileTabInfo={profileTabInfo}
+        onRefreshTab={onRefreshTab}
+      />
+      <ContentSetting
+        onClose={() => {
+          data.tabContentMenu.isSettingOpen = false;
+          setData({...data});
+        }}
+        isMine={isMine}
+        tabContentMenu={data.tabContentMenu}
+        refreshTabAll={async () => {
+          onRefreshTab();
+        }}
+        onShare={() => {
+          const url =
+            getLocalizedLink(`/profile/feed/` + data.profileInfo?.profileInfo.id) +
+            `?type=${profileType}&idContent=${data.tabContentMenu.id}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}`;
+          handleShare(url);
+        }}
+        onDelete={() => {
+          alert('delete api 연동 필요');
+        }}
+        onEdit={() => {
+          alert('수정 페이지 Link 연동');
+        }}
+        onHide={() => {
+          alert('hide api 연동 필요');
+        }}
+        onReport={() => {
+          alert('report api 연동 필요');
+        }}
+      />
+    </>
+  );
+};
+
+const TabContentComponent = ({profileId, profileType, isMine, tabIndex, isEmptyTab}: TabContentProps) => {
   const {ref: observerRef, inView} = useInView();
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
     getUserType(isMine, profileType);
