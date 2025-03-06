@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Snackbar} from '@mui/material';
 
 import {useDispatch} from 'react-redux';
@@ -31,6 +31,8 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const [modifyQuestionOpen, setModifyQuestionOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [menuClass, setMenuClass] = useState<string>('');
 
   const MinByte = 30;
 
@@ -46,6 +48,21 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
         console.error('Failed to copy text: ', err);
       });
   };
+
+  useEffect(() => {
+    if (menuRef.current) {
+      const rect = menuRef.current.getBoundingClientRect();
+      const windowWidth = window.innerWidth;
+
+      if (rect.left < 10) {
+        setMenuClass('leftEdge');
+      } else if (rect.right > windowWidth - 10) {
+        setMenuClass('rightEdge');
+      } else {
+        setMenuClass('');
+      }
+    }
+  }, [text]);
 
   //#region 기획상 사용 안하게 바뀜
   // const handleDelete = async () => {
@@ -116,12 +133,13 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
 
   return (
     <div
+      ref={menuRef}
       className={
         isUserChat
           ? getTextByteLength(text) > MinByte
             ? styles.bottomMenuContainerUser
             : styles.bottomMenuContainerUserShort
-          : styles.bottomMenuContainerAI
+          : `${styles.bottomMenuContainerAI} ${styles[menuClass]}`
       }
     >
       {/* {id} */}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {
   BannerUrlList,
@@ -55,6 +55,7 @@ const SearchBoard: React.FC = () => {
 
   // Search Scroll
   const searchLimit = 20;
+  const [hasSearchResult, setHasSearchResult] = useState(true);
   const [searchOffset, setSearchOffset] = useState<number>(0);
   const [contentPage, setContentPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
   const [characterPage, setCharacterPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
@@ -103,22 +104,43 @@ const SearchBoard: React.FC = () => {
     setSearch(value);
   };
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const target = e.currentTarget;
-    const THRESHOLD = 200; // 데이터 불러오기 전에 남겨둘 여유 공간 (픽셀 단위)
-    const isScrollingDown = target.scrollTop > previousScrollTop;
+  // 25.03.06 tr : 스크롤 대응해서 search 요청 -> observer로 변경
+  // const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+  //   const target = e.currentTarget;
+  //   const THRESHOLD = 200; // 데이터 불러오기 전에 남겨둘 여유 공간 (픽셀 단위)
+  //   const isScrollingDown = target.scrollTop > previousScrollTop;
+  //   setPreviousScrollTop(target.scrollTop);
+  //   // 스크롤 끝에 도달하기 직전인지 확인
+  //   if (isScrollingDown && target.scrollTop + target.clientHeight >= target.scrollHeight - THRESHOLD && !loading) {
+  //     setSearchOffset(prevSearchOffset => {
+  //       const newSearchOffset = prevSearchOffset + 1;
+  //       fetchExploreData(searchValue, adultToggleOn, contentPage, characterPage);
+  //       return newSearchOffset;
+  //     });
+  //   }
+  // };
 
-    setPreviousScrollTop(target.scrollTop);
+  // scroll 조건 외에 마지막 아이템이 보이면 search 호출
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastElementRef = useCallback(
+    (node: HTMLLIElement | null) => {
+      if (loading || !hasSearchResult) return;
+      if (observer.current) observer.current.disconnect();
 
-    // 스크롤 끝에 도달하기 직전인지 확인
-    if (isScrollingDown && target.scrollTop + target.clientHeight >= target.scrollHeight - THRESHOLD && !loading) {
-      setSearchOffset(prevSearchOffset => {
-        const newSearchOffset = prevSearchOffset + 1;
-        fetchExploreData(searchValue, adultToggleOn, contentPage, characterPage);
-        return newSearchOffset;
+      observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          setSearchOffset(prevSearchOffset => {
+            const newSearchOffset = prevSearchOffset + 1;
+            fetchExploreData(searchValue, adultToggleOn, contentPage, characterPage);
+            return newSearchOffset;
+          });
+        }
       });
-    }
-  };
+
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasSearchResult, searchValue, adultToggleOn, contentPage, characterPage],
+  );
 
   // Func
   const generateFilterList = (): {searchFilterType: number; searchFilterState: number}[] => {
@@ -163,17 +185,23 @@ const SearchBoard: React.FC = () => {
       });
 
       if (result.data !== undefined && result.resultCode === 0) {
+        const newList = result.data?.searchExploreList || [];
         setSearchResultList(prevList => {
-          const newList = result.data?.searchExploreList || [];
           return (contentPage.offset > 0 || characterPage.offset > 0) && prevList ? [...prevList, ...newList] : newList;
         });
         setContentPage(result.data.storyPage);
         setCharacterPage(result.data.characterPage);
+
+        if (newList.length === 0) {
+          setHasSearchResult(false);
+        }
       } else {
         console.error('Failed to fetch explore data:', result.resultMessage);
+        setHasSearchResult(false);
       }
     } catch (error) {
       console.error('Error fetching explore data:', error);
+      setHasSearchResult(false);
     } finally {
       await minLoadingTime;
       setLoading(false);
@@ -271,7 +299,10 @@ const SearchBoard: React.FC = () => {
       label: 'Search',
       content: (
         <section className={styles.searchContainer}>
-          <div className={styles.scrollArea} onScroll={handleScroll}>
+          <div
+            className={styles.scrollArea}
+            // onScroll={handleScroll}
+          >
             <SearchBoardHeader
               setSearchResultList={setSearchResultList}
               adultToggleOn={adultToggleOn}
@@ -347,8 +378,12 @@ const SearchBoard: React.FC = () => {
                       }
                       return true;
                     })
-                    .map(item => (
-                      <li key={item.storyId} className={styles.resultItem}>
+                    .map((item, index) => (
+                      <li
+                        key={item.storyId}
+                        className={styles.resultItem}
+                        ref={index === searchResultList.length - 1 ? lastElementRef : null}
+                      >
                         <ExploreCard
                           exploreItemType={item.exploreItemType}
                           updateExplorState={item.updateExplorState}
