@@ -380,7 +380,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({id}) => {
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title="Genre"
-            selectedItem={selectedGenres.length > 0 ? selectedGenres.join(', ') : 'Select'}
+            selectedItem={selectedGenres.length > 0 ? selectedGenres.join(', ') : ''}
             onClick={() => {
               setGenreList(tagGroups[0].tags);
               setGenreOpen(true);
@@ -403,7 +403,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({id}) => {
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title="Tag"
-            selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : 'Select'}
+            selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : ''}
             onClick={() => {
               setTagList(tagGroups[1].tags);
               setTagOpen(true);

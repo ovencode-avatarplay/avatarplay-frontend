@@ -51,6 +51,7 @@ import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {PaymentType, Subscription, VisibilityType} from '@/redux-store/slices/StoryInfo';
 import {on} from 'events';
 import DrawerMembershipSetting from '@/app/view/main/content/create/common/DrawerMembershipSetting';
+import CustomSelector from '@/components/layout/shared/CustomSelector';
 type Props = {
   id: number;
   isUpdate: boolean;
@@ -348,9 +349,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     let isMonetization = Boolean(Number(dataForm.isMonetization));
     let nsfw = Boolean(Number(dataForm.nsfw));
     let characterIP = Number(dataForm.characterIP);
+    const membershipSetting = isMonetization ? dataForm.membershipSetting : null;
     const dataUpdatePdInfo: CreateChannelReq = {
       languageType: getCurrentLanguage(),
-      channelInfo: {...dataForm, id: idChannel, tags: tag, isMonetization, nsfw, characterIP},
+      channelInfo: {...dataForm, id: idChannel, tags: tag, isMonetization, nsfw, characterIP, membershipSetting},
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     if (res?.resultCode == 0) {
@@ -568,18 +570,15 @@ const CreateChannel = ({id, isUpdate}: Props) => {
               </section>
               <section className={cx(styles.policySection, data.indexTab == 2 && styles.active)}>
                 <div className={styles.label}>Visibility</div>
-                <div
-                  className={cx(styles.selectWrap, errors.visibilityType && isSubmitted && styles.error)}
+                <input {...register('visibilityType', {required: true})} className={styles.hide} autoComplete="off" />
+                <CustomSelector
+                  value={visibilityTypeStr}
+                  error={errors.visibilityType && isSubmitted}
                   onClick={() => {
                     data.dataVisibility.isOpenTagsDrawer = true;
                     setData({...data});
                   }}
-                >
-                  <input {...register('visibilityType', {required: true})} className={styles.hide} autoComplete="off" />
-                  {!visibilityTypeStr && <div className={styles.placeholder}>Select</div>}
-                  {visibilityTypeStr && <div className={styles.value}>{visibilityTypeStr}</div>}
-                  <img src={'/ui/profile/update/icon_select.svg'} alt="" />
-                </div>
+                />
                 <div className={styles.label}>Tag</div>
                 <div
                   className={cx(styles.selectWrap, errors.tags && isSubmitted && styles.error)}
