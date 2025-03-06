@@ -573,3 +573,23 @@ export const cancelSubscribe = async (payload: SubscribeCancelReq) => {
     return null;
   }
 };
+
+export interface GetConnectListReq {
+  // empty
+}
+
+export const getConnectList = async (profileTabType: ProfileTabType = ProfileTabType.My) => {
+  const data: GetConnectListReq = {
+    profileTabType,
+  };
+  try {
+    const resProfileList: AxiosResponse<ResponseAPI<GetProfileListRes>> = await api.post(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getConnectList`,
+      data,
+    );
+    if (resProfileList.status != 200) return;
+    return resProfileList.data?.data?.profileList;
+  } catch (e) {
+    // alert('api 에러' + e);
+  }
+};

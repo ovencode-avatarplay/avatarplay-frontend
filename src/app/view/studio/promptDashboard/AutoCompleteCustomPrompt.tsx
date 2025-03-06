@@ -1,14 +1,21 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, SetStateAction} from 'react';
 import styles from './AutoCompleteCustomPrompt.module.css';
 
 interface Props {
   keywords: Record<string, string>;
   inputRef: React.RefObject<HTMLDivElement>;
-  onKeywordInsert: (e: HTMLDivElement, keyword: string) => void;
+  onKeywordInsert: (e: HTMLDivElement, setState: React.Dispatch<SetStateAction<string>>, keyword: string) => void;
   dropdownPosition: {top: number; left: number};
+  setState: React.Dispatch<SetStateAction<string>>;
 }
 
-const AutoCompleteCustomPrompt: React.FC<Props> = ({keywords, inputRef, onKeywordInsert, dropdownPosition}) => {
+const AutoCompleteCustomPrompt: React.FC<Props> = ({
+  keywords,
+  inputRef,
+  onKeywordInsert,
+  dropdownPosition,
+  setState,
+}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [matchedKeywords, setMatchedKeywords] = useState<string[]>([]);
@@ -73,12 +80,10 @@ const AutoCompleteCustomPrompt: React.FC<Props> = ({keywords, inputRef, onKeywor
 
     const range = selection.getRangeAt(0);
 
-    // 🔹 기존 `{`를 포함한 현재 단어를 제거 후, 키워드 삽입
     range.setStart(range.startContainer, range.startOffset - currentTriggerWord.length);
     range.deleteContents();
 
-    // 🔹 handleKeywordInsert 호출하여 즉시 chip으로 변환
-    onKeywordInsert(inputRef.current, keyword);
+    onKeywordInsert(inputRef.current, setState, keyword);
 
     setShowDropdown(false);
     setCurrentTriggerWord('');
