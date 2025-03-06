@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {useRouter, useSearchParams} from 'next/navigation';
+import {useRouter} from 'next/navigation';
 import {useDispatch} from 'react-redux';
 import {
   setSelectedChapterIdx,
@@ -39,7 +39,7 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 const ContentDashboard: React.FC = () => {
   const router = useRouter();
-  const searchParam = useSearchParams();
+
   const dispatch = useDispatch();
 
   const [selectedFilter, setSelectedFilter] = useState('filter1');
@@ -105,7 +105,7 @@ const ContentDashboard: React.FC = () => {
           dispatch(setSelectedChapterIdx(0));
           dispatch(setSelectedEpisodeIdx(0));
           setLoading(false);
-          const currentLang = searchParam?.get(':lang') || 'en';
+
           //router.push(`/${currentLang}/create/story`);
           pushLocalizedRoute('/create/story', router);
         } catch (error) {
@@ -115,7 +115,7 @@ const ContentDashboard: React.FC = () => {
       }
     } else {
       setLoading(false);
-      const currentLang = searchParam?.get(':lang') || 'en';
+
       //router.push(`/${currentLang}/create/story`);
       pushLocalizedRoute('/create/story', router);
       dispatch(setSkipStoryInit(false));
@@ -212,7 +212,7 @@ const ContentDashboard: React.FC = () => {
     dispatch(setSelectedStoryId(0));
     dispatch(setSelectedChapterIdx(0));
     dispatch(setSelectedEpisodeIdx(0));
-    const currentLang = searchParam?.get(':lang') || 'en';
+
     //router.push(`/${currentLang}/create/story`);
     pushLocalizedRoute('/create/story', router);
   };

@@ -31,7 +31,7 @@ const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
       <div className={styles.inputArea}>
         <div className={styles.inputTextArea}>
           <div className={styles.titleArea}>
-            <h2 className={styles.title2}> Character name</h2>
+            <h2 className={styles.title2}>Character Name</h2>
             <h2 className={styles.titleAstric}>*</h2>
           </div>
           <div className={styles.descArea}>

@@ -3,7 +3,7 @@ import styles from './DrawerConnectCharacter.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {BoldArrowDown} from '@ui/Icons';
-import {getProfileList, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {getConnectList, getProfileList, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 
 interface DrawerConnectCharacterProps {
   connectOpen: boolean;
@@ -22,7 +22,7 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
 
   const getConnectableCharacterList = async () => {
     try {
-      const response = await getProfileList(); // {languageType: getCurrentLanguage()}
+      const response = await getConnectList(); // {languageType: getCurrentLanguage()}
       if (response) {
         const characterInfoList: ProfileSimpleInfo[] = response;
         setConnectableCharacterList(characterInfoList);

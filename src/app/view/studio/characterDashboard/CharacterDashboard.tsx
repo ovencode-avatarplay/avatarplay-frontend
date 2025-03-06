@@ -20,7 +20,7 @@ import {
 } from '@/app/NetWork/CharacterNetwork';
 
 // Link
-import {useRouter, useSearchParams} from 'next/navigation';
+import {useRouter} from 'next/navigation';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import CharacterGalleryModal from './CharacterGalleryModal';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
@@ -40,7 +40,6 @@ const CharacterDashboard: React.FC = () => {
   const [galleryOpen, setGalleryOpen] = useState(false);
 
   const router = useRouter();
-  const searchParam = useSearchParams();
 
   const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
@@ -327,13 +326,11 @@ const CharacterDashboard: React.FC = () => {
 
   //#region  TopMenu
   const handleGoHomeClick = () => {
-    const currentLang = searchParam?.get(':lang') || 'en';
     //router.push(`/${currentLang}/create/character`);
     pushLocalizedRoute('/main/homefeed', router);
   };
 
   const handleCreateClick = () => {
-    const currentLang = searchParam?.get(':lang') || 'en';
     //router.push(`/${currentLang}/create/character`);
     pushLocalizedRoute('/create/character', router);
   };

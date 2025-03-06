@@ -1,4 +1,4 @@
-import {BoldArrowDown, LineClose} from '@ui/Icons';
+import {LineClose} from '@ui/Icons';
 import styles from './CharacterCreatePolicy.module.css';
 import {useEffect, useState} from 'react';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -9,17 +9,13 @@ import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
-import {sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo, LanguageType, MembershipSetting} from '@/redux-store/slices/StoryInfo';
-import {getCurrentLanguage} from '@/utils/UrlMove';
+import {LanguageType, MembershipSetting} from '@/redux-store/slices/StoryInfo';
 import DrawerPostCountry from '../common/DrawerPostCountry';
 import CharacterCreateVoiceSetting from './CharacterCreateVoiceSetting';
 import OperatorInviteDrawer from '../common/DrawerOperatorInvite';
 import DrawerTagSelect from '../common/DrawerTagSelect';
-import {getProfileList, OperatorAuthorityType, ProfileSimpleInfo, ProfileTabType} from '@/app/NetWork/ProfileNetwork';
+import {OperatorAuthorityType, ProfileSimpleInfo, ProfileTabType} from '@/app/NetWork/ProfileNetwork';
 import {SetStateAction} from 'jotai';
-import CustomDrawer from '@/components/layout/shared/CustomDrawer';
-import CustomButton from '@/components/layout/shared/CustomButton';
 import DrawerConnectCharacter from '../common/DrawerConnectCharacter';
 import DrawerMembershipSetting from '../common/DrawerMembershipSetting';
 import CustomSelector from '@/components/layout/shared/CustomSelector';
@@ -628,14 +624,11 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       </div>
       <div className={styles.selectItemsArea2}>
         {renderCharacterIP()}
-        {renderMembershipPlan()}
         {renderRecruit()}
         {renderConnect()}
-        {renderOperatorInvite()}
         {renderMonetization()}
         {/* {renderMembershipPlan()} */}
         {renderNSFW()}
-        {renderSuperVoiceSetting()}
         {renderComment()}
       </div>
     </div>

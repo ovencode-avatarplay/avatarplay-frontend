@@ -84,13 +84,12 @@ export interface CharacterInfo {
   id: number;
   languageType: LanguageType;
   name: string;
-  characterDescription: string;
+  creatorComment: string;
   urlLinkKey: string | null;
   genderType: GenderType;
   introduction: string;
   description: string;
   worldScenario: string;
-  greeting: string;
   secret: string;
   chatCount: number;
   chatUserCount: number;
@@ -122,9 +121,9 @@ export interface CharacterInfo {
 
 export interface CustomModulesInfo {
   promptInfoList: PromptInfo[];
-  selectPromptIndex: number;
+  selectPromptId: number;
   lorebookInfoList: LorebookInfo[];
-  selectLorebookIndex: number;
+  selectLorebookId: number;
 }
 
 export interface PromptInfo {
