@@ -10,10 +10,14 @@ import ProfileTopViewMenu from './ProfileTopViewMenu';
 import {
   BoldAltArrowDown,
   BoldArrowLeft,
+  BoldCharacter,
   BoldComment,
+  BoldContentLists,
+  BoldDislike,
   BoldFollowers,
   BoldHeart,
   BoldImage,
+  BoldLike,
   BoldMenuDots,
   BoldMore,
   BoldPin,
@@ -105,8 +109,8 @@ export enum eTabPDOtherType {
 export enum eTabCharacterType {
   Feed,
   Contents = 1,
-  Story,
   Character,
+  Channel,
   Game,
 }
 
@@ -114,14 +118,13 @@ export enum eTabCharacterOtherType {
   Feed,
   Info = 90,
   Contents = 1,
-  Story,
   Character,
+  Channel,
   Game,
 }
 export enum eTabChannelType {
   Feed,
   Contents = 1,
-  Story,
   Character,
   Game,
 }
@@ -130,7 +133,6 @@ export enum eTabChannelOtherType {
   Feed,
   Info = 90,
   Contents = 1,
-  Story,
   Character,
   Game,
 }
@@ -139,6 +141,12 @@ export enum eCharacterFilterType {
   Total,
   Original = 1,
   Fan = 2,
+}
+
+export enum eSharedFilterType {
+  Total,
+  Channel = 1,
+  Character = 2,
 }
 
 type TabContentMenuType = {
@@ -163,10 +171,8 @@ type DataProfileType = {
       GetPdTabInfoeRes &
       GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes} & GetChannelRes;
   };
+  filterCluster: FilterClusterType;
 
-  indexFilterMedia: FeedMediaType;
-  indexFilterCharacter: number;
-  indexSort: ExploreSortType;
   isShowMore: boolean;
   isNeedShowMore: boolean;
   isMyMenuOpened: boolean;
@@ -229,9 +235,14 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     isOpenSelectProfile: false,
     profileInfo: null,
     profileTabInfo: {},
-    indexFilterMedia: FeedMediaType.Total,
-    indexFilterCharacter: 0,
-    indexSort: ExploreSortType.MostPopular,
+
+    filterCluster: {
+      indexFilterMedia: FeedMediaType.Total,
+      indexFilterCharacter: 0,
+      indexFilterShared: 0,
+      indexFilterChannel: 0,
+      indexSort: ExploreSortType.MostPopular,
+    },
     isShowMore: false,
     isNeedShowMore: false,
     isMyMenuOpened: false,
@@ -404,8 +415,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         resProfileTabInfo = await getTabInfo(profileType)(
           profileId,
           indexTab,
-          data.indexSort,
-          data.indexFilterCharacter,
+          data.filterCluster?.indexSort || 0,
+          data.filterCluster?.indexFilterCharacter || 0,
           isRefreshAll ? 0 : getTabContentCount(indexTab),
           isRefreshAll ? getTabContentCount(indexTab) : 10,
         );
@@ -413,8 +424,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         resProfileTabInfo = await getTabInfo(profileType)(
           profileId,
           indexTab,
-          data.indexSort,
-          data.indexFilterMedia,
+          data?.filterCluster.indexSort || 0,
+          data?.filterCluster.indexFilterMedia || 0,
           isRefreshAll ? 0 : getTabContentCount(indexTab),
           isRefreshAll ? getTabContentCount(indexTab) : 10,
         );
@@ -841,21 +852,33 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               isMine={isMine}
               profileType={profileType}
               tabIndex={data.indexTab}
-              filterCluster={data}
+              filterCluster={data.filterCluster}
               onChange={async (filterCluster: FilterClusterType) => {
                 if ((filterCluster?.indexFilterMedia ?? -1) >= 0) {
-                  data.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
+                  data.filterCluster.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
                   await data.refreshProfileTab(profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
                 if ((filterCluster?.indexFilterCharacter ?? -1) >= 0) {
-                  data.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
+                  data.filterCluster.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
                   await data.refreshProfileTab(profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
 
                 if ((filterCluster?.indexSort ?? -1) >= 0) {
-                  data.indexSort = filterCluster?.indexSort ?? -1;
+                  data.filterCluster.indexSort = filterCluster?.indexSort ?? -1;
+                  await data.refreshProfileTab(profileId, data.indexTab);
+                  setData(v => ({...data}));
+                }
+
+                if ((filterCluster?.indexFilterChannel ?? -1) >= 0) {
+                  data.filterCluster.indexFilterChannel = filterCluster?.indexFilterChannel ?? -1;
+                  await data.refreshProfileTab(profileId, data.indexTab);
+                  setData(v => ({...data}));
+                }
+
+                if ((filterCluster?.indexFilterShared ?? -1) >= 0) {
+                  data.filterCluster.indexFilterShared = filterCluster?.indexFilterShared ?? -1;
                   await data.refreshProfileTab(profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
@@ -874,7 +897,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                 await data.refreshProfileTab(profileId, data.indexTab, true);
               }}
               profileTabInfo={data.profileTabInfo}
-              filterCluster={data}
+              filterCluster={data.filterCluster}
             />
           </div>
         </section>
@@ -1239,6 +1262,8 @@ export type FilterClusterType = {
   indexFilterMedia?: number;
   indexSort?: number;
   indexFilterCharacter?: number;
+  indexFilterChannel?: number;
+  indexFilterShared?: number;
 };
 
 export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster, onChange}: TabFilterProps) => {
@@ -1246,13 +1271,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
     getUserType(isMine, profileType);
   const sortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.MostPopular, value: 'Most Popular'},
-    {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
-    {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
+    {id: ExploreSortType.MostPopular, value: 'Popular'},
+    {id: ExploreSortType.WeeklyPopular, value: 'Name'},
   ];
 
   if (
-    (isPD && [eTabPDType.Feed, eTabPDType.Channel].includes(tabIndex)) ||
+    (isPD && [eTabPDType.Feed].includes(tabIndex)) ||
     (isCharacter && [eTabCharacterType.Feed].includes(tabIndex)) ||
     (isChannel && [eTabChannelType.Feed].includes(tabIndex))
   ) {
@@ -1329,7 +1353,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
       </>
     );
   }
-  if ((isPD && tabIndex == eTabPDType.Character) || (isChannel && tabIndex == eTabCharacterType.Character)) {
+
+  if (
+    (isPD && [eTabPDType.Channel, eTabPDType.Character].includes(tabIndex)) ||
+    (isCharacter && [eTabCharacterType.Character].includes(tabIndex)) ||
+    (isChannel && [eTabChannelType.Character].includes(tabIndex))
+  ) {
     return (
       <>
         <div className={cx(styles.filter, styles.character)}>
@@ -1339,15 +1368,22 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               const target = e.target as HTMLElement;
               const category = target.closest('[data-filter]')?.getAttribute('data-filter');
               if (category) {
-                const indexFilterCharacter = parseInt(category);
-                onChange({indexFilterCharacter: indexFilterCharacter});
+                const indexFilter = parseInt(category);
+                if (tabIndex == eTabPDType.Channel) {
+                  onChange({indexFilterChannel: indexFilter});
+                } else if (tabIndex == eTabPDType.Character) {
+                  onChange({indexFilterCharacter: indexFilter});
+                }
               }
             }}
           >
             <div
               className={cx(
                 styles.iconWrap,
-                filterCluster.indexFilterCharacter == eCharacterFilterType.Total && styles.active,
+                ((tabIndex == eTabPDType.Channel && filterCluster.indexFilterChannel == eCharacterFilterType.Total) ||
+                  (tabIndex == eTabPDType.Character &&
+                    filterCluster.indexFilterCharacter == eCharacterFilterType.Total)) &&
+                  styles.active,
               )}
               data-filter={eCharacterFilterType.Total}
             >
@@ -1356,7 +1392,11 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.textWrap,
-                filterCluster.indexFilterCharacter == eCharacterFilterType.Original && styles.active,
+                ((tabIndex == eTabPDType.Channel &&
+                  filterCluster.indexFilterChannel == eCharacterFilterType.Original) ||
+                  (tabIndex == eTabPDType.Character &&
+                    filterCluster.indexFilterCharacter == eCharacterFilterType.Original)) &&
+                  styles.active,
               )}
               data-filter={eCharacterFilterType.Original}
             >
@@ -1365,7 +1405,10 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.textWrap,
-                filterCluster.indexFilterCharacter == eCharacterFilterType.Fan && styles.active,
+                ((tabIndex == eTabPDType.Channel && filterCluster.indexFilterChannel == eCharacterFilterType.Fan) ||
+                  (tabIndex == eTabPDType.Character &&
+                    filterCluster.indexFilterCharacter == eCharacterFilterType.Fan)) &&
+                  styles.active,
               )}
               data-filter={eCharacterFilterType.Fan}
             >
@@ -1420,6 +1463,91 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   if (isPD && tabIndex == eTabPDOtherType.Info) {
     return <></>;
   }
+
+  if (isPD && [eTabPDType.Shared].includes(tabIndex)) {
+    return (
+      <>
+        <div className={cx(styles.filter, styles.character)}>
+          <div
+            className={styles.left}
+            onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              const target = e.target as HTMLElement;
+              const category = target.closest('[data-filter]')?.getAttribute('data-filter');
+              if (category) {
+                const indexFilter = parseInt(category);
+                onChange({indexFilterShared: indexFilter});
+              }
+            }}
+          >
+            <div
+              className={cx(
+                styles.iconWrap,
+                filterCluster.indexFilterShared == eSharedFilterType.Total && styles.active,
+              )}
+              data-filter={eSharedFilterType.Total}
+            >
+              <img src={BoldViewGallery.src} alt="" />
+            </div>
+            <div
+              className={cx(
+                styles.textWrap,
+                filterCluster.indexFilterShared == eSharedFilterType.Channel && styles.active,
+              )}
+              data-filter={eSharedFilterType.Channel}
+            >
+              <div className={styles.text}>Channel</div>
+            </div>
+            <div
+              className={cx(
+                styles.textWrap,
+                filterCluster.indexFilterShared == eSharedFilterType.Character && styles.active,
+              )}
+              data-filter={eSharedFilterType.Character}
+            >
+              <div className={styles.text}>Character</div>
+            </div>
+          </div>
+          <div className={styles.right}>
+            <div className={styles.filterTypeWrap}>
+              <SelectBox
+                value={sortOptionList[filterCluster?.indexFilterShared || 0]}
+                options={sortOptionList}
+                ArrowComponent={SelectBoxArrowComponent}
+                ValueComponent={SelectBoxValueComponent}
+                OptionComponent={SelectBoxOptionComponent}
+                onChange={async id => {
+                  const indexSort = id;
+                  onChange({indexSort: indexSort});
+                }}
+                customStyles={{
+                  control: {
+                    width: '160px',
+                    display: 'flex',
+                    gap: '10px',
+                  },
+                  menuList: {
+                    borderRadius: '10px',
+                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                  },
+                  option: {
+                    padding: '11px 14px',
+                    boxSizing: 'border-box',
+                    '&:first-of-type': {
+                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                    },
+                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                }}
+              />
+              {/* <div className={styles.label}>Newest</div> */}
+              {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return <></>;
 };
 
@@ -1794,9 +1922,15 @@ const TabContentComponent = ({
                   )}
                   <div className={styles.info}>
                     <div className={styles.likeWrap}>
-                      <img src={BoldHeart.src} alt="" />
+                      <img src={BoldLike.src} alt="" />
                       <div className={styles.value}>{one?.likeCount}</div>
                     </div>
+                    {isMine && (
+                      <div className={styles.likeWrap}>
+                        <img src={BoldDislike.src} alt="" />
+                        <div className={styles.value}>{one?.disLikeCount}</div>
+                      </div>
+                    )}
                     <div className={styles.viewWrap}>
                       <img src={BoldVideo.src} alt="" />
                       <div className={styles.value}>{one?.commentCount}</div>
@@ -1851,9 +1985,15 @@ const TabContentComponent = ({
                 )}
                 <div className={styles.info}>
                   <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
+                    <img src={BoldLike.src} alt="" />
                     <div className={styles.value}>{one?.likeCount}</div>
                   </div>
+                  {isMine && (
+                    <div className={styles.likeWrap}>
+                      <img src={BoldDislike.src} alt="" />
+                      <div className={styles.value}>99</div>
+                    </div>
+                  )}
                   <div className={styles.viewWrap}>
                     <img src={BoldVideo.src} alt="" />
                     <div className={styles.value}>{one?.likeCount}</div>
@@ -1904,9 +2044,15 @@ const TabContentComponent = ({
                 )}
                 <div className={styles.info}>
                   <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>{one?.likeCount}</div>
+                    <img src={BoldContentLists.src} alt="" />
+                    <div className={styles.value}>{one?.mediaCount}</div>
                   </div>
+                  {isMine && (
+                    <div className={styles.likeWrap}>
+                      <img src={BoldCharacter.src} alt="" />
+                      <div className={styles.value}>99</div>
+                    </div>
+                  )}
                   <div className={styles.viewWrap}>
                     <img src={BoldVideo.src} alt="" />
                     <div className={styles.value}>{one?.likeCount}</div>

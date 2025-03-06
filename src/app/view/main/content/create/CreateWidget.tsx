@@ -92,44 +92,6 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
     onClose;
   };
 
-  const SelectBoxArrowComponent = useCallback(() => <></>, []);
-  const SelectBoxValueComponent = useCallback((data: any) => {
-    return (
-      <div className={styles.boxValueWrap}>
-        <div className={styles.left}>
-          <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
-          <data value="" className={styles.nameWrap}>
-            <div className={styles.name}>{data.name}</div>
-            <div className={styles.role}>{ProfileType[data.type]}</div>
-          </data>
-        </div>
-        <div className={styles.right}>
-          <img className={styles.iconDropDown} src={'/ui/create/icon_arrow_down.svg'} alt="altArrowDown" />
-        </div>
-      </div>
-    );
-  }, []);
-  const SelectBoxOptionComponent = useCallback(
-    (data: any, isSelected: boolean) => (
-      <>
-        <div className={styles.optionWrap}>
-          <div className={styles.left}>
-            <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
-            <data value="" className={styles.nameWrap}>
-              <div className={styles.name}>{data.name}</div>
-              <div className={styles.role}>{ProfileType[data.type]}</div>
-            </data>
-          </div>
-          <div className={styles.right}>
-            {isSelected && <img className={styles.iconDropDown} src={LineCheck.src} alt="altArrowDown" />}
-            {/* <img className={styles.iconDropDown} src={'/ui/create/icon_arrow_down.svg'} alt="altArrowDown" /> */}
-          </div>
-        </div>
-      </>
-    ),
-    [],
-  );
-
   const profileType = dataProfile.currentProfile?.profileType || ProfileType.User;
   const canCreateFeed = [ProfileType.User, ProfileType.PD, ProfileType.Character, ProfileType.Channel].includes(
     profileType,
@@ -270,3 +232,38 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
 };
 
 export default CreateWidget;
+
+const SelectBoxArrowComponent = () => <></>;
+const SelectBoxValueComponent = (data: any) => {
+  return (
+    <div className={styles.boxValueWrap}>
+      <div className={styles.left}>
+        <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
+        <data value="" className={styles.nameWrap}>
+          <div className={styles.name}>{data.name}</div>
+          <div className={styles.role}>{ProfileType[data.type]}</div>
+        </data>
+      </div>
+      <div className={styles.right}>
+        <img className={styles.iconDropDown} src={'/ui/create/icon_arrow_down.svg'} alt="altArrowDown" />
+      </div>
+    </div>
+  );
+};
+const SelectBoxOptionComponent = (data: any, isSelected: boolean) => (
+  <>
+    <div className={styles.optionWrap}>
+      <div className={styles.left}>
+        <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
+        <data value="" className={styles.nameWrap}>
+          <div className={styles.name}>{data.name}</div>
+          <div className={styles.role}>{ProfileType[data.type]}</div>
+        </data>
+      </div>
+      <div className={styles.right}>
+        {isSelected && <img className={styles.iconDropDown} src={LineCheck.src} alt="altArrowDown" />}
+        {/* <img className={styles.iconDropDown} src={'/ui/create/icon_arrow_down.svg'} alt="altArrowDown" /> */}
+      </div>
+    </div>
+  </>
+);
