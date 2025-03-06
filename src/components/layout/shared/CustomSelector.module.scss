@@ -45,7 +45,7 @@
 
     width: 24px;
     height: 24px;
-    filter: brightness(0) saturate(100%);
+    filter: brightness(0) saturate(100%) invert(71%) sepia(0%) saturate(3317%) hue-rotate(61deg) brightness(73%) contrast(86%);
   }
 
   .iconArrowDown {

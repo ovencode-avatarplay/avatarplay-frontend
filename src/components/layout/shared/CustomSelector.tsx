@@ -15,7 +15,7 @@ const CustomSelector = ({onClick, error, value}: Props) => {
       <div className={cx(styles.selectWrap, error && styles.error)} onClick={onClick}>
         {!value && <div className={styles.placeholder}>Select</div>}
         {value && <div className={styles.value}>{value}</div>}
-        <img src={'/ui/shared/icon_select.svg'} alt="" />
+        <img className={styles.arrowDown} src={'/ui/shared/icon_select.svg'} alt="" />
       </div>
     </>
   );
