@@ -1090,6 +1090,10 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<{id: number} | null>(value);
   const styleDefault: StylesConfig<{id: number; [key: string]: any}, false> = {
+    container: provided => ({
+      ...provided,
+      zIndex: 5,
+    }),
     control: provided => ({
       ...provided,
       borderColor: 'transparent',
@@ -1178,6 +1182,7 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
             backgroundColor: 'rgba(0, 0, 0,0)',
             width: '100vw',
             height: '100vh',
+            zIndex: 4,
           }}
         />
       )}
