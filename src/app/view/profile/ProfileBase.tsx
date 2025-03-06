@@ -143,6 +143,12 @@ export enum eCharacterFilterType {
   Fan = 2,
 }
 
+export enum eContentFilterType {
+  Total,
+  Series = 1,
+  Single = 2,
+}
+
 export enum eSharedFilterType {
   Total,
   Channel = 1,
@@ -241,6 +247,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       indexFilterCharacter: 0,
       indexFilterShared: 0,
       indexFilterChannel: 0,
+      indexFilterContent: 0,
       indexSort: ExploreSortType.MostPopular,
     },
     isShowMore: false,
@@ -349,24 +356,18 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     } else if (isCharacter) {
       if (indexTab == eTabCharacterType.Feed) {
         count = data.profileTabInfo[indexTab]?.feedInfoList?.length;
-      }
-      // else if (indexTab == eTabCharacterType.Contents) {
-      //   count = data.profileTabInfo[indexTab]?.contentsInfoList?.length;
-      // }
-      else if (indexTab == eTabCharacterType.Story) {
-        count = data.profileTabInfo[indexTab]?.storyInfoList?.length;
+      } else if (indexTab == eTabCharacterType.Channel) {
+        count = data.profileTabInfo[indexTab]?.channelInfoList?.length;
+      } else if (indexTab == eTabCharacterType.Contents) {
+        count = data.profileTabInfo[indexTab]?.contentInfoList?.length;
       } else if (indexTab == eTabCharacterType.Character) {
         count = data.profileTabInfo[indexTab]?.characterInfoList?.length;
       } else count = 0;
     } else if (isChannel) {
       if (indexTab == eTabChannelType.Feed) {
         count = data.profileTabInfo[indexTab]?.feedInfoList?.length;
-      }
-      // else if (indexTab == eTabChannelType.Contents) {
-      //   count = data.profileTabInfo[indexTab]?.contentsInfoList?.length;
-      // }
-      else if (indexTab == eTabChannelType.Story) {
-        count = data.profileTabInfo[indexTab]?.storyInfoList?.length;
+      } else if (indexTab == eTabChannelType.Contents) {
+        count = data.profileTabInfo[indexTab]?.contentInfoList?.length;
       } else if (indexTab == eTabCharacterType.Character) {
         count = data.profileTabInfo[indexTab]?.characterInfoList?.length;
       } else count = 0;
@@ -564,12 +565,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     } else if (isCharacter) {
       if (data.indexTab == eTabCharacterType.Feed) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.feedInfoList?.length;
-      }
-      // else if (data.indexTab == eTabCharacterType.Contents){
-      //   isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentsInfoList?.length;
-      // }
-      else if (data.indexTab == eTabCharacterType.Story) {
-        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.storyInfoList?.length;
+      } else if (data.indexTab == eTabCharacterType.Contents) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentInfoList?.length;
+      } else if (data.indexTab == eTabCharacterType.Channel) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
       } else if (data.indexTab == eTabCharacterOtherType.Info) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
       } else if (data.indexTab == eTabCharacterType.Character) {
@@ -584,8 +583,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       // else if (data.indexTab == eTabCharacterType.Contents) {
       //   isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentsInfoList?.length;
       // }
-      else if (data.indexTab == eTabChannelType.Story) {
-        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.storyInfoList?.length;
+      else if (data.indexTab == eTabChannelType.Contents) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentInfoList?.length;
       } else if (data.indexTab == eTabChannelOtherType.Info) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
       } else if (data.indexTab == eTabChannelType.Character) {
@@ -879,6 +878,11 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
                 if ((filterCluster?.indexFilterShared ?? -1) >= 0) {
                   data.filterCluster.indexFilterShared = filterCluster?.indexFilterShared ?? -1;
+                  await data.refreshProfileTab(profileId, data.indexTab);
+                  setData(v => ({...data}));
+                }
+                if ((filterCluster?.indexFilterContent ?? -1) >= 0) {
+                  data.filterCluster.indexFilterContent = filterCluster?.indexFilterContent ?? -1;
                   await data.refreshProfileTab(profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
@@ -1264,6 +1268,7 @@ export type FilterClusterType = {
   indexFilterCharacter?: number;
   indexFilterChannel?: number;
   indexFilterShared?: number;
+  indexFilterContent?: number;
 };
 
 export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster, onChange}: TabFilterProps) => {
@@ -1355,6 +1360,93 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   }
 
   if (
+    (isCharacter && [eTabCharacterType.Contents].includes(tabIndex)) ||
+    (isChannel && [eTabChannelType.Contents].includes(tabIndex))
+  ) {
+    return (
+      <>
+        <div className={cx(styles.filter, styles.character)}>
+          <div
+            className={styles.left}
+            onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              const target = e.target as HTMLElement;
+              const category = target.closest('[data-filter]')?.getAttribute('data-filter');
+              if (category) {
+                const indexFilter = parseInt(category);
+                onChange({indexFilterContent: indexFilter});
+              }
+            }}
+          >
+            <div
+              className={cx(
+                styles.iconWrap,
+                filterCluster.indexFilterContent == eContentFilterType.Total && styles.active,
+              )}
+              data-filter={eContentFilterType.Total}
+            >
+              <img src={BoldViewGallery.src} alt="" />
+            </div>
+            <div
+              className={cx(
+                styles.textWrap,
+                filterCluster.indexFilterContent == eContentFilterType.Series && styles.active,
+              )}
+              data-filter={eContentFilterType.Series}
+            >
+              <div className={styles.text}>Series</div>
+            </div>
+            <div
+              className={cx(
+                styles.textWrap,
+                filterCluster.indexFilterContent == eContentFilterType.Single && styles.active,
+              )}
+              data-filter={eContentFilterType.Single}
+            >
+              <div className={styles.text}>Single</div>
+            </div>
+          </div>
+          <div className={styles.right}>
+            <div className={styles.filterTypeWrap}>
+              <SelectBox
+                value={sortOptionList[filterCluster?.indexSort || 0]}
+                options={sortOptionList}
+                ArrowComponent={SelectBoxArrowComponent}
+                ValueComponent={SelectBoxValueComponent}
+                OptionComponent={SelectBoxOptionComponent}
+                onChange={async id => {
+                  const indexSort = id;
+                  onChange({indexSort: indexSort});
+                }}
+                customStyles={{
+                  control: {
+                    width: '184px',
+                    display: 'flex',
+                    gap: '10px',
+                  },
+                  menuList: {
+                    borderRadius: '10px',
+                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                  },
+                  option: {
+                    padding: '11px 14px',
+                    boxSizing: 'border-box',
+                    '&:first-of-type': {
+                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                    },
+                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                }}
+              />
+              {/* <div className={styles.label}>Newest</div> */}
+              {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (
     (isPD && [eTabPDType.Channel, eTabPDType.Character].includes(tabIndex)) ||
     (isCharacter && [eTabCharacterType.Character].includes(tabIndex)) ||
     (isChannel && [eTabChannelType.Character].includes(tabIndex))
@@ -1392,6 +1484,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.textWrap,
+
                 ((tabIndex == eTabPDType.Channel &&
                   filterCluster.indexFilterChannel == eCharacterFilterType.Original) ||
                   (tabIndex == eTabPDType.Character &&
@@ -1405,10 +1498,100 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.textWrap,
+
                 ((tabIndex == eTabPDType.Channel && filterCluster.indexFilterChannel == eCharacterFilterType.Fan) ||
                   (tabIndex == eTabPDType.Character &&
                     filterCluster.indexFilterCharacter == eCharacterFilterType.Fan)) &&
                   styles.active,
+              )}
+              data-filter={eCharacterFilterType.Fan}
+            >
+              <div className={styles.text}>Fan</div>
+            </div>
+          </div>
+          <div className={styles.right}>
+            <div className={styles.filterTypeWrap}>
+              <SelectBox
+                value={sortOptionList[filterCluster?.indexSort || 0]}
+                options={sortOptionList}
+                ArrowComponent={SelectBoxArrowComponent}
+                ValueComponent={SelectBoxValueComponent}
+                OptionComponent={SelectBoxOptionComponent}
+                onChange={async id => {
+                  const indexSort = id;
+                  onChange({indexSort: indexSort});
+                }}
+                customStyles={{
+                  control: {
+                    width: '184px',
+                    display: 'flex',
+                    gap: '10px',
+                  },
+                  menuList: {
+                    borderRadius: '10px',
+                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                  },
+                  option: {
+                    padding: '11px 14px',
+                    boxSizing: 'border-box',
+                    '&:first-of-type': {
+                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                    },
+                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                }}
+              />
+              {/* <div className={styles.label}>Newest</div> */}
+              {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (
+    (isPD && [eTabPDType.Channel, eTabPDType.Channel].includes(tabIndex)) ||
+    (isCharacter && [eTabCharacterType.Channel].includes(tabIndex))
+  ) {
+    return (
+      <>
+        <div className={cx(styles.filter, styles.character)}>
+          <div
+            className={styles.left}
+            onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              const target = e.target as HTMLElement;
+              const category = target.closest('[data-filter]')?.getAttribute('data-filter');
+              if (category) {
+                const indexFilter = parseInt(category);
+                onChange({indexFilterChannel: indexFilter});
+              }
+            }}
+          >
+            <div
+              className={cx(
+                styles.iconWrap,
+                filterCluster.indexFilterChannel == eCharacterFilterType.Total && styles.active,
+              )}
+              data-filter={eCharacterFilterType.Total}
+            >
+              <img src={BoldViewGallery.src} alt="" />
+            </div>
+            <div
+              className={cx(
+                styles.textWrap,
+
+                filterCluster.indexFilterChannel == eCharacterFilterType.Original && styles.active,
+              )}
+              data-filter={eCharacterFilterType.Original}
+            >
+              <div className={styles.text}>Original</div>
+            </div>
+            <div
+              className={cx(
+                styles.textWrap,
+
+                filterCluster.indexFilterChannel == eCharacterFilterType.Fan && styles.active,
               )}
               data-filter={eCharacterFilterType.Fan}
             >
@@ -1991,12 +2174,71 @@ const TabContentComponent = ({
                   {isMine && (
                     <div className={styles.likeWrap}>
                       <img src={BoldDislike.src} alt="" />
-                      <div className={styles.value}>99</div>
+                      <div className={styles.value}>{one?.dislikeCount}</div>
                     </div>
                   )}
                   <div className={styles.viewWrap}>
                     <img src={BoldVideo.src} alt="" />
+                    <div className={styles.value}>{one?.mediaCount}</div>
+                  </div>
+                </div>
+                <div className={styles.titleWrap}>
+                  <div className={styles.title}>{one?.name}</div>
+                  <img
+                    src={BoldMenuDots.src}
+                    alt=""
+                    className={styles.iconSetting}
+                    onClick={e => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const dataContextMenu = {
+                        id: one.id,
+                        isPin: one?.isPinFix || false,
+                        isSettingOpen: true,
+                      };
+                      if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+                    }}
+                  />
+                </div>
+              </li>
+            </Link>
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+
+  if ((isCharacter && tabIndex == eTabCharacterType.Contents) || (isChannel && tabIndex == eTabChannelType.Contents)) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.contentInfoList.map((one, index: number) => {
+          return (
+            <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
+              <li className={styles.item} key={one?.id}>
+                {one.mediaState == MediaState.Image && (
+                  <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
+                )}
+                {one.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={one?.mediaUrl} />}
+                {one?.isFavorite && (
+                  <div className={styles.pin}>
+                    <img src={BoldPin.src} alt="" />
+                  </div>
+                )}
+                <div className={styles.info}>
+                  <div className={styles.likeWrap}>
+                    <img src={BoldLike.src} alt="" />
                     <div className={styles.value}>{one?.likeCount}</div>
+                  </div>
+                  {isMine && (
+                    <div className={styles.likeWrap}>
+                      <img src={BoldDislike.src} alt="" />
+                      <div className={styles.value}>{one?.dislikeCount}</div>
+                    </div>
+                  )}
+                  <div className={styles.viewWrap}>
+                    <img src={BoldVideo.src} alt="" />
+                    <div className={styles.value}>{one?.mediaCount}</div>
                   </div>
                 </div>
                 <div className={styles.titleWrap}>
@@ -2047,15 +2289,9 @@ const TabContentComponent = ({
                     <img src={BoldContentLists.src} alt="" />
                     <div className={styles.value}>{one?.mediaCount}</div>
                   </div>
-                  {isMine && (
-                    <div className={styles.likeWrap}>
-                      <img src={BoldCharacter.src} alt="" />
-                      <div className={styles.value}>99</div>
-                    </div>
-                  )}
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>{one?.likeCount}</div>
+                  <div className={styles.likeWrap}>
+                    <img src={BoldCharacter.src} alt="" />
+                    <div className={styles.value}>{one?.memberCount}</div>
                   </div>
                 </div>
                 <div className={styles.titleWrap}>

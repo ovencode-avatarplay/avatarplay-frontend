@@ -2,6 +2,7 @@ import axios, {AxiosResponse} from 'axios';
 import api, {ResponseAPI} from './ApiInstance';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {FeedInfo} from './ShortsNetwork';
+import {CharacterIP} from '@/redux-store/slices/StoryInfo';
 
 export interface GetProfileListRes {
   profileList: ProfileSimpleInfo[];
@@ -140,10 +141,22 @@ export interface ProfileTabItemInfo {
   mediaState: MediaState;
   mediaUrl: string;
   likeCount: number;
+  dislikeCount: number;
   mediaCount: number;
+  contentCount: number;
+  memberCount: number;
   playTime: string;
   isFavorite: boolean;
+  characterIP: CharacterIP;
+  sharedItemType: SharedItemType;
+  createAt: string;
   isPinFix: boolean;
+}
+
+export enum SharedItemType {
+  None = 0,
+  Character = 1,
+  Channel = 2,
 }
 
 export enum MediaState {
@@ -195,6 +208,7 @@ export interface GetPdTabInfoeRes {
   feedInfoList: FeedInfo[];
   channelInfoList: ProfileTabItemInfo[];
   characterInfoList: ProfileTabItemInfo[];
+  sharedInfoList: ProfileTabItemInfo[];
 }
 
 export const getProfilePdTabInfo = async (
@@ -250,6 +264,8 @@ export interface GetCharacterTabInfoeRes {
   feedInfoList: FeedInfo[];
   storyInfoList: ProfileTabItemInfo[];
   characterInfoList: ProfileTabItemInfo[];
+  channelInfoList: ProfileTabItemInfo[];
+  contentInfoList: ProfileTabItemInfo[];
 }
 
 export const getProfileCharacterTabInfo = async (
