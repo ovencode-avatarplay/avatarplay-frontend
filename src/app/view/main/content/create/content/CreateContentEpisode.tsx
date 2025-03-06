@@ -45,9 +45,15 @@ export interface CreateContentEpisodeProps {
   contentId?: number;
   curSeason: number;
   curEpisodeCount: number;
+  episodeId?: number;
 }
 
-const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({contentId, curSeason, curEpisodeCount}) => {
+const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
+  contentId,
+  curSeason,
+  curEpisodeCount,
+  episodeId,
+}) => {
   const [contentInfo, setContentInfo] = useState<ContentInfo>();
 
   const fetchContent = async (contentId: number) => {
@@ -59,6 +65,39 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({contentId, c
       console.error('❌ Content 불러오기 실패:', error);
     }
   };
+
+  const [editContentInfo, setEditContentInfo] = useState<ContentInfo>();
+
+  const [defaultImage, setDefaultImage] = useState<string>();
+
+  useEffect(() => {
+    if (episodeId === undefined) return;
+
+    const fetchData = async () => {
+      try {
+        const response = await sendGetContent({contentId: episodeId});
+
+        if (response.data) {
+          console.log('콘텐츠 정보:', response.data.contentInfo);
+          const content = response.data.contentInfo;
+          setEditContentInfo(content);
+
+          // 기존 데이터로 초기화
+          setNameValue(content.name || '');
+          setrDescription(content.description || '');
+          setMediaUrls([content.thumbnailUrl || '']);
+
+          setDefaultImage(content.thumbnailUrl);
+          if (content.contentVideoInfo) setEpisodeVideoInfo(content.contentVideoInfo);
+          if (content.contentWebtoonInfo) setEpisodeWebtoonInfo(content.contentWebtoonInfo);
+        }
+      } catch (error) {
+        console.error('콘텐츠 조회 실패:', error);
+      }
+    };
+
+    fetchData();
+  }, [episodeId]);
 
   useEffect(() => {
     if (contentId) fetchContent(contentId); // contentId가 123인 콘텐츠 조회

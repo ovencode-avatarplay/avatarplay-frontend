@@ -1,7 +1,8 @@
 'use client';
-import CreateContentEpisode from '@/app/view/main/content/create/content/CreateContentEpisode';
-import CreateSeriesContent from '@/app/view/main/content/create/content/CreateSeriesContent';
-import SeriesDetail from '@/app/view/main/content/create/content/SeriesDetail';
+
+import CreateContentEpisode, {
+  CreateContentEpisodeProps,
+} from '@/app/view/main/content/create/content/CreateContentEpisode';
 
 type Props = {
   params: {
@@ -9,16 +10,20 @@ type Props = {
   };
 };
 
-const page = ({params}: Props) => {
-  const id = parseInt(params?.id?.[0] || '0');
-  console.log('id', id);
+const Page = ({params}: Props) => {
+  console.log('params.id', params?.id);
 
-  return (
-    <>
-      {' '}
-      <CreateContentEpisode></CreateContentEpisode>
-    </>
-  );
+  // params.id가 존재할 경우 변환
+  const [contentId, curSeason, curEpisodeCount, episodeId] = params?.id?.map(Number) ?? [];
+
+  const props: CreateContentEpisodeProps = {
+    contentId: !isNaN(contentId) ? contentId : undefined,
+    curSeason: !isNaN(curSeason) ? curSeason : 1, // 기본값 1
+    curEpisodeCount: !isNaN(curEpisodeCount) ? curEpisodeCount : 0, // 기본값 0
+    episodeId: !isNaN(episodeId) ? episodeId : undefined,
+  };
+
+  return <CreateContentEpisode {...props} />;
 };
 
-export default page;
+export default Page;
