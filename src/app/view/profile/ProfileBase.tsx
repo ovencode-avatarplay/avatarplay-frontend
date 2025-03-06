@@ -1202,17 +1202,22 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
         styles={styleDefault}
         options={options}
         components={{
-          DropdownIndicator: ArrowComponent,
-          Option: props => (
-            <components.Option {...props}>
-              {OptionComponent(props.data, props.isSelected)} {/* 드롭다운에서는 isSingleValue = false */}
-            </components.Option>
+          DropdownIndicator: React.useCallback(() => {
+            return ArrowComponent();
+          }, []),
+          Option: React.useCallback(
+            (props: any) => (
+              <components.Option {...props}>{OptionComponent(props.data, props.isSelected)}</components.Option>
+            ),
+            [],
           ),
-          SingleValue: props => (
-            <components.SingleValue {...props}>
-              {ValueComponent(props.data)} {/* 선택된 값에서는 isSingleValue = true */}
-            </components.SingleValue>
-          ),
+          SingleValue: React.useCallback((props: any) => {
+            return (
+              <components.SingleValue {...props}>
+                {ValueComponent(props.data)} {/* 선택된 값에서는 isSingleValue = true */}
+              </components.SingleValue>
+            );
+          }, []),
         }}
         getOptionValue={option => option.id.toString()}
       />
