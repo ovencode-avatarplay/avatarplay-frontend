@@ -53,7 +53,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
 }) => {
   const [answerTextMessage, setAnswerTextMessage] = useState(text);
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (sender === 'system' || sender === 'introPrompt') {
+    if (sender === 'system' || sender === 'introPrompt' || sender === 'newDate') {
       // System, IntroPrompt는 클릭되지 않게
     } else {
       onClick(e);
