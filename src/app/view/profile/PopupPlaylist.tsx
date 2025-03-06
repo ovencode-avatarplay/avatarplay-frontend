@@ -17,12 +17,15 @@ import {
   eTabChannelType,
   eTabCharacterOtherType,
   eTabCharacterType,
+  eTabCommonType,
   eTabPDOtherType,
   eTabPDType,
   FilterClusterType,
   SelectBox,
   TabFilterComponent,
   TabHeaderComponent,
+  TabHeaderWrapAllComponent,
+  TabHeaderWrapComponent,
 } from './ProfileBase';
 import PopupSubscription, {getUnit} from '../main/content/create/common/PopupSubscription';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -37,13 +40,7 @@ type Props = {
 
 const PopupPlaylist = ({profileId, profileType, isMine = true, onClose}: Props) => {
   const [data, setData] = useState<{
-    indexTab:
-      | eTabPDType
-      | eTabCharacterType
-      | eTabPDOtherType
-      | eTabCharacterOtherType
-      | eTabChannelType
-      | eTabChannelOtherType;
+    indexTab: eTabCommonType;
     indexFilterMedia: FeedMediaType;
     indexFilterCharacter: number;
     indexSort: ExploreSortType;
@@ -84,7 +81,7 @@ const PopupPlaylist = ({profileId, profileType, isMine = true, onClose}: Props) 
           <main className={styles.main}>
             <section className={styles.tabSection}>
               <div className={styles.tabHeaderContainer}>
-                <TabHeaderComponent
+                <TabHeaderWrapAllComponent
                   indexTab={data.indexTab}
                   isMine
                   profileId={profileId}

@@ -10,10 +10,14 @@ import ProfileTopViewMenu from './ProfileTopViewMenu';
 import {
   BoldAltArrowDown,
   BoldArrowLeft,
+  BoldCharacter,
   BoldComment,
+  BoldContentLists,
+  BoldDislike,
   BoldFollowers,
   BoldHeart,
   BoldImage,
+  BoldLike,
   BoldMenuDots,
   BoldMore,
   BoldPin,
@@ -80,6 +84,14 @@ import PopupSubscriptionList from './PopupSubscriptionList';
 import PopupFavoriteList from './PopupFavoriteList';
 import PopupPlaylist from './PopupPlaylist';
 
+export enum eTabCommonType {
+  Feed,
+  Character,
+  Channel,
+  Contents,
+  Game,
+}
+
 export enum eTabPDType {
   Feed,
   Channel = 1,
@@ -97,8 +109,8 @@ export enum eTabPDOtherType {
 export enum eTabCharacterType {
   Feed,
   Contents = 1,
-  Story,
   Character,
+  Channel,
   Game,
 }
 
@@ -106,14 +118,13 @@ export enum eTabCharacterOtherType {
   Feed,
   Info = 90,
   Contents = 1,
-  Story,
   Character,
+  Channel,
   Game,
 }
 export enum eTabChannelType {
   Feed,
   Contents = 1,
-  Story,
   Character,
   Game,
 }
@@ -122,7 +133,6 @@ export enum eTabChannelOtherType {
   Feed,
   Info = 90,
   Contents = 1,
-  Story,
   Character,
   Game,
 }
@@ -131,6 +141,12 @@ export enum eCharacterFilterType {
   Total,
   Original = 1,
   Fan = 2,
+}
+
+export enum eSharedFilterType {
+  Total,
+  Channel = 1,
+  Character = 2,
 }
 
 type TabContentMenuType = {
@@ -155,10 +171,8 @@ type DataProfileType = {
       GetPdTabInfoeRes &
       GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes} & GetChannelRes;
   };
+  filterCluster: FilterClusterType;
 
-  indexFilterMedia: FeedMediaType;
-  indexFilterCharacter: number;
-  indexSort: ExploreSortType;
   isShowMore: boolean;
   isNeedShowMore: boolean;
   isMyMenuOpened: boolean;
@@ -221,9 +235,14 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     isOpenSelectProfile: false,
     profileInfo: null,
     profileTabInfo: {},
-    indexFilterMedia: FeedMediaType.Total,
-    indexFilterCharacter: 0,
-    indexSort: ExploreSortType.MostPopular,
+
+    filterCluster: {
+      indexFilterMedia: FeedMediaType.Total,
+      indexFilterCharacter: 0,
+      indexFilterShared: 0,
+      indexFilterChannel: 0,
+      indexSort: ExploreSortType.MostPopular,
+    },
     isShowMore: false,
     isNeedShowMore: false,
     isMyMenuOpened: false,
@@ -396,8 +415,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         resProfileTabInfo = await getTabInfo(profileType)(
           profileId,
           indexTab,
-          data.indexSort,
-          data.indexFilterCharacter,
+          data.filterCluster?.indexSort || 0,
+          data.filterCluster?.indexFilterCharacter || 0,
           isRefreshAll ? 0 : getTabContentCount(indexTab),
           isRefreshAll ? getTabContentCount(indexTab) : 10,
         );
@@ -405,8 +424,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         resProfileTabInfo = await getTabInfo(profileType)(
           profileId,
           indexTab,
-          data.indexSort,
-          data.indexFilterMedia,
+          data?.filterCluster.indexSort || 0,
+          data?.filterCluster.indexFilterMedia || 0,
           isRefreshAll ? 0 : getTabContentCount(indexTab),
           isRefreshAll ? getTabContentCount(indexTab) : 10,
         );
@@ -818,7 +837,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         </div>
         <section className={styles.tabSection}>
           <div className={styles.tabHeaderContainer}>
-            <TabHeaderComponent
+            <TabHeaderWrapComponent
               indexTab={data.indexTab}
               isMine
               profileId={profileId}
@@ -833,21 +852,33 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               isMine={isMine}
               profileType={profileType}
               tabIndex={data.indexTab}
-              filterCluster={data}
+              filterCluster={data.filterCluster}
               onChange={async (filterCluster: FilterClusterType) => {
                 if ((filterCluster?.indexFilterMedia ?? -1) >= 0) {
-                  data.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
+                  data.filterCluster.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
                   await data.refreshProfileTab(profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
                 if ((filterCluster?.indexFilterCharacter ?? -1) >= 0) {
-                  data.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
+                  data.filterCluster.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
                   await data.refreshProfileTab(profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
 
                 if ((filterCluster?.indexSort ?? -1) >= 0) {
-                  data.indexSort = filterCluster?.indexSort ?? -1;
+                  data.filterCluster.indexSort = filterCluster?.indexSort ?? -1;
+                  await data.refreshProfileTab(profileId, data.indexTab);
+                  setData(v => ({...data}));
+                }
+
+                if ((filterCluster?.indexFilterChannel ?? -1) >= 0) {
+                  data.filterCluster.indexFilterChannel = filterCluster?.indexFilterChannel ?? -1;
+                  await data.refreshProfileTab(profileId, data.indexTab);
+                  setData(v => ({...data}));
+                }
+
+                if ((filterCluster?.indexFilterShared ?? -1) >= 0) {
+                  data.filterCluster.indexFilterShared = filterCluster?.indexFilterShared ?? -1;
                   await data.refreshProfileTab(profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
@@ -856,14 +887,17 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           </div>
 
           <div className={styles.tabContent}>
-            <TabContentComponent
+            <TabContentComponentWrap
               profileId={profileId}
               isMine={isMine}
               profileType={profileType}
               tabIndex={data.indexTab}
               isEmptyTab={isEmptyTab}
-              data={data}
-              setData={setData}
+              onRefreshTab={async () => {
+                await data.refreshProfileTab(profileId, data.indexTab, true);
+              }}
+              profileTabInfo={data.profileTabInfo}
+              filterCluster={data.filterCluster}
             />
           </div>
         </section>
@@ -885,35 +919,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           setData(v => ({...v, isShareOpened: false}));
         }}
       ></SharePopup>
-      <ContentSetting
-        onClose={() => {
-          data.tabContentMenu.isSettingOpen = false;
-          setData({...data});
-        }}
-        isMine={isMine}
-        tabContentMenu={data.tabContentMenu}
-        refreshTabAll={async () => {
-          await refreshProfileTab(profileId, data.indexTab, true);
-        }}
-        onShare={() => {
-          const url =
-            getLocalizedLink(`/profile/feed/` + data.profileInfo?.profileInfo.id) +
-            `?type=${profileType}&idContent=${data.tabContentMenu.id}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}`;
-          handleShare(url);
-        }}
-        onDelete={() => {
-          alert('delete api 연동 필요');
-        }}
-        onEdit={() => {
-          alert('수정 페이지 Link 연동');
-        }}
-        onHide={() => {
-          alert('hide api 연동 필요');
-        }}
-        onReport={() => {
-          alert('report api 연동 필요');
-        }}
-      />
+
       {data.isOpenPopupSubscription && (
         <PopupSubscription
           id={profileId}
@@ -1231,8 +1237,17 @@ type TabContentProps = {
   isMine: boolean;
   tabIndex: number;
   isEmptyTab: boolean;
-  data: DataProfileType;
-  setData: React.Dispatch<React.SetStateAction<DataProfileType>>;
+  // data: DataProfileType;
+  // setData: React.Dispatch<React.SetStateAction<DataProfileType>>;
+  profileTabInfo: {
+    [key: number]: GetCharacterTabInfoeRes &
+      GetPdTabInfoeRes &
+      GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes} & GetChannelRes;
+  };
+
+  filterCluster: FilterClusterType;
+  onRefreshTab: () => void;
+  onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
 type TabFilterProps = {
@@ -1247,6 +1262,8 @@ export type FilterClusterType = {
   indexFilterMedia?: number;
   indexSort?: number;
   indexFilterCharacter?: number;
+  indexFilterChannel?: number;
+  indexFilterShared?: number;
 };
 
 export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster, onChange}: TabFilterProps) => {
@@ -1254,13 +1271,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
     getUserType(isMine, profileType);
   const sortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.MostPopular, value: 'Most Popular'},
-    {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
-    {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
+    {id: ExploreSortType.MostPopular, value: 'Popular'},
+    {id: ExploreSortType.WeeklyPopular, value: 'Name'},
   ];
 
   if (
-    (isPD && [eTabPDType.Feed, eTabPDType.Channel].includes(tabIndex)) ||
+    (isPD && [eTabPDType.Feed].includes(tabIndex)) ||
     (isCharacter && [eTabCharacterType.Feed].includes(tabIndex)) ||
     (isChannel && [eTabChannelType.Feed].includes(tabIndex))
   ) {
@@ -1337,7 +1353,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
       </>
     );
   }
-  if ((isPD && tabIndex == eTabPDType.Character) || (isChannel && tabIndex == eTabCharacterType.Character)) {
+
+  if (
+    (isPD && [eTabPDType.Channel, eTabPDType.Character].includes(tabIndex)) ||
+    (isCharacter && [eTabCharacterType.Character].includes(tabIndex)) ||
+    (isChannel && [eTabChannelType.Character].includes(tabIndex))
+  ) {
     return (
       <>
         <div className={cx(styles.filter, styles.character)}>
@@ -1347,15 +1368,22 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               const target = e.target as HTMLElement;
               const category = target.closest('[data-filter]')?.getAttribute('data-filter');
               if (category) {
-                const indexFilterCharacter = parseInt(category);
-                onChange({indexFilterCharacter: indexFilterCharacter});
+                const indexFilter = parseInt(category);
+                if (tabIndex == eTabPDType.Channel) {
+                  onChange({indexFilterChannel: indexFilter});
+                } else if (tabIndex == eTabPDType.Character) {
+                  onChange({indexFilterCharacter: indexFilter});
+                }
               }
             }}
           >
             <div
               className={cx(
                 styles.iconWrap,
-                filterCluster.indexFilterCharacter == eCharacterFilterType.Total && styles.active,
+                ((tabIndex == eTabPDType.Channel && filterCluster.indexFilterChannel == eCharacterFilterType.Total) ||
+                  (tabIndex == eTabPDType.Character &&
+                    filterCluster.indexFilterCharacter == eCharacterFilterType.Total)) &&
+                  styles.active,
               )}
               data-filter={eCharacterFilterType.Total}
             >
@@ -1364,7 +1392,11 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.textWrap,
-                filterCluster.indexFilterCharacter == eCharacterFilterType.Original && styles.active,
+                ((tabIndex == eTabPDType.Channel &&
+                  filterCluster.indexFilterChannel == eCharacterFilterType.Original) ||
+                  (tabIndex == eTabPDType.Character &&
+                    filterCluster.indexFilterCharacter == eCharacterFilterType.Original)) &&
+                  styles.active,
               )}
               data-filter={eCharacterFilterType.Original}
             >
@@ -1373,7 +1405,10 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.textWrap,
-                filterCluster.indexFilterCharacter == eCharacterFilterType.Fan && styles.active,
+                ((tabIndex == eTabPDType.Channel && filterCluster.indexFilterChannel == eCharacterFilterType.Fan) ||
+                  (tabIndex == eTabPDType.Character &&
+                    filterCluster.indexFilterCharacter == eCharacterFilterType.Fan)) &&
+                  styles.active,
               )}
               data-filter={eCharacterFilterType.Fan}
             >
@@ -1428,49 +1463,128 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   if (isPD && tabIndex == eTabPDOtherType.Info) {
     return <></>;
   }
+
+  if (isPD && [eTabPDType.Shared].includes(tabIndex)) {
+    return (
+      <>
+        <div className={cx(styles.filter, styles.character)}>
+          <div
+            className={styles.left}
+            onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              const target = e.target as HTMLElement;
+              const category = target.closest('[data-filter]')?.getAttribute('data-filter');
+              if (category) {
+                const indexFilter = parseInt(category);
+                onChange({indexFilterShared: indexFilter});
+              }
+            }}
+          >
+            <div
+              className={cx(
+                styles.iconWrap,
+                filterCluster.indexFilterShared == eSharedFilterType.Total && styles.active,
+              )}
+              data-filter={eSharedFilterType.Total}
+            >
+              <img src={BoldViewGallery.src} alt="" />
+            </div>
+            <div
+              className={cx(
+                styles.textWrap,
+                filterCluster.indexFilterShared == eSharedFilterType.Channel && styles.active,
+              )}
+              data-filter={eSharedFilterType.Channel}
+            >
+              <div className={styles.text}>Channel</div>
+            </div>
+            <div
+              className={cx(
+                styles.textWrap,
+                filterCluster.indexFilterShared == eSharedFilterType.Character && styles.active,
+              )}
+              data-filter={eSharedFilterType.Character}
+            >
+              <div className={styles.text}>Character</div>
+            </div>
+          </div>
+          <div className={styles.right}>
+            <div className={styles.filterTypeWrap}>
+              <SelectBox
+                value={sortOptionList[filterCluster?.indexFilterShared || 0]}
+                options={sortOptionList}
+                ArrowComponent={SelectBoxArrowComponent}
+                ValueComponent={SelectBoxValueComponent}
+                OptionComponent={SelectBoxOptionComponent}
+                onChange={async id => {
+                  const indexSort = id;
+                  onChange({indexSort: indexSort});
+                }}
+                customStyles={{
+                  control: {
+                    width: '160px',
+                    display: 'flex',
+                    gap: '10px',
+                  },
+                  menuList: {
+                    borderRadius: '10px',
+                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+                  },
+                  option: {
+                    padding: '11px 14px',
+                    boxSizing: 'border-box',
+                    '&:first-of-type': {
+                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
+                    },
+                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                }}
+              />
+              {/* <div className={styles.label}>Newest</div> */}
+              {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return <></>;
 };
 
-type TabHeaderComponentType = {
-  indexTab:
-    | eTabPDType
-    | eTabCharacterType
-    | eTabPDOtherType
-    | eTabCharacterOtherType
-    | eTabChannelType
-    | eTabChannelOtherType;
-  profileId: number;
-  profileType: ProfileType;
-  isMine: boolean;
-  onTabChange: (indexTab: number) => void;
+export const TabHeaderWrapAllComponent = ({
+  indexTab,
+  profileId,
+  profileType,
+  isMine,
+  onTabChange,
+}: TabHeaderComponentType) => {
+  const getTabHeaderList = () => {
+    return Object.values(eTabCommonType)
+      .filter(value => typeof value === 'number') // 숫자 타입만 필터링
+      .map(type => ({type, label: eTabCommonType[type]}));
+  };
+  const tabHeaderList = getTabHeaderList();
+  return (
+    <>
+      <TabHeaderComponent
+        indexTab={indexTab}
+        profileId={profileId}
+        profileType={profileType}
+        isMine={isMine}
+        onTabChange={onTabChange}
+        tabHeaderList={tabHeaderList}
+      />
+    </>
+  );
 };
-export const TabHeaderComponent = ({indexTab, profileId, profileType, isMine, onTabChange}: TabHeaderComponentType) => {
-  const [data, setData] = useState<{
-    indexTab:
-      | eTabPDType
-      | eTabCharacterType
-      | eTabPDOtherType
-      | eTabCharacterOtherType
-      | eTabChannelType
-      | eTabChannelOtherType;
-  }>({indexTab: indexTab});
-  const containerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const onResize = () => {
-      setData({...data});
-    };
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, [data]);
-
-  useEffect(() => {
-    data.indexTab = indexTab;
-    setData({...data});
-  }, [indexTab]);
-
+export const TabHeaderWrapComponent = ({
+  indexTab,
+  profileId,
+  profileType,
+  isMine,
+  onTabChange,
+}: TabHeaderComponentType) => {
   const getTabHeaderList = (profileType: number, isMine = false) => {
     if (isMine) {
       if (profileType == ProfileType.User || profileType == ProfileType.PD) {
@@ -1505,6 +1619,69 @@ export const TabHeaderComponent = ({indexTab, profileId, profileType, isMine, on
     return [];
   };
   const tabHeaderList = getTabHeaderList(profileType, isMine);
+  return (
+    <>
+      <TabHeaderComponent
+        indexTab={indexTab}
+        profileId={profileId}
+        profileType={profileType}
+        isMine={isMine}
+        onTabChange={onTabChange}
+        tabHeaderList={tabHeaderList}
+      />
+    </>
+  );
+};
+
+type TabHeaderComponentType = {
+  indexTab:
+    | eTabPDType
+    | eTabCharacterType
+    | eTabPDOtherType
+    | eTabCharacterOtherType
+    | eTabChannelType
+    | eTabChannelOtherType
+    | eTabCommonType;
+  profileId: number;
+  profileType: ProfileType;
+  isMine: boolean;
+  onTabChange: (indexTab: number) => void;
+  tabHeaderList?: {type: number; label: string}[];
+};
+export const TabHeaderComponent = ({
+  indexTab,
+  profileId,
+  profileType,
+  isMine,
+  tabHeaderList,
+  onTabChange,
+}: TabHeaderComponentType) => {
+  const [data, setData] = useState<{
+    indexTab:
+      | eTabPDType
+      | eTabCharacterType
+      | eTabPDOtherType
+      | eTabCharacterOtherType
+      | eTabChannelType
+      | eTabChannelOtherType
+      | eTabCommonType;
+  }>({indexTab: indexTab});
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const onResize = () => {
+      setData({...data});
+    };
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
+  }, [data]);
+
+  useEffect(() => {
+    data.indexTab = indexTab;
+    setData({...data});
+  }, [indexTab]);
 
   const calculateGap = () => {
     if (containerRef.current) {
@@ -1525,7 +1702,6 @@ export const TabHeaderComponent = ({indexTab, profileId, profileType, isMine, on
     }
   };
   const tabGap = calculateGap();
-
   return (
     <>
       <div className={styles.tabHeaderWrap}>
@@ -1581,14 +1757,109 @@ export const TabHeaderComponent = ({indexTab, profileId, profileType, isMine, on
   );
 };
 
+export const TabContentComponentWrap = ({
+  profileId,
+  profileType,
+  isMine,
+  tabIndex,
+  isEmptyTab,
+  profileTabInfo,
+  onRefreshTab,
+  filterCluster,
+}: TabContentProps) => {
+  const [data, setData] = useState<{
+    tabContentMenu: TabContentMenuType;
+    isShareOpened: boolean;
+  }>({
+    tabContentMenu: {
+      id: 0,
+      isPin: false,
+      isSettingOpen: false,
+    },
+    isShareOpened: false,
+  });
+  const handleShare = async (url: string = window.location.href) => {
+    const shareData = {
+      title: '공유하기 제목',
+      text: '이 링크를 확인해보세요!',
+      url: url, // 현재 페이지 URL
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData); // 네이티브 공유 UI 호출
+      } catch (error) {
+        console.error('공유 실패:', error);
+      }
+    } else {
+      data.isShareOpened = true;
+      setData({...data});
+    }
+  };
+
+  const onOpenContentMenu = (dataContentMenu: TabContentMenuType) => {
+    data.tabContentMenu = dataContentMenu;
+    setData({...data});
+  };
+
+  return (
+    <>
+      <TabContentComponent
+        profileId={profileId}
+        profileType={profileType}
+        isMine={isMine}
+        tabIndex={tabIndex}
+        isEmptyTab={isEmptyTab}
+        // data={data}
+        // setData={setData}
+        profileTabInfo={profileTabInfo}
+        onRefreshTab={onRefreshTab}
+        filterCluster={filterCluster}
+        onOpenContentMenu={onOpenContentMenu}
+      />
+      <ContentSetting
+        onClose={() => {
+          data.tabContentMenu.isSettingOpen = false;
+          setData({...data});
+        }}
+        isMine={isMine}
+        tabContentMenu={data.tabContentMenu}
+        refreshTabAll={async () => {
+          onRefreshTab();
+        }}
+        onShare={() => {
+          const url =
+            getLocalizedLink(`/profile/feed/` + profileId) +
+            `?type=${profileType}&idContent=${data.tabContentMenu.id}&feedMediaType=${filterCluster.indexFilterMedia}&feedSortType=${filterCluster.indexSort}`;
+          handleShare(url);
+        }}
+        onDelete={() => {
+          alert('delete api 연동 필요');
+        }}
+        onEdit={() => {
+          alert('수정 페이지 Link 연동');
+        }}
+        onHide={() => {
+          alert('hide api 연동 필요');
+        }}
+        onReport={() => {
+          alert('report api 연동 필요');
+        }}
+      />
+    </>
+  );
+};
+
 const TabContentComponent = ({
   profileId,
   profileType,
   isMine,
   tabIndex,
   isEmptyTab,
-  data,
-  setData,
+  profileTabInfo,
+  filterCluster,
+  onRefreshTab,
+  onOpenContentMenu,
 }: TabContentProps) => {
   const {ref: observerRef, inView} = useInView();
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
@@ -1597,16 +1868,13 @@ const TabContentComponent = ({
   useEffect(() => {
     if (!inView) return;
 
-    const isEmpty = data.getIsEmptyTab();
-    if (isEmpty) return;
+    if (isEmptyTab) return;
 
     refreshTab();
   }, [inView]);
 
   const refreshTab = async () => {
-    await data.refreshProfileTab(data.profileId, data.indexTab);
-    // await refreshProfileTab(profileId, data.indexTab);
-    setData({...data});
+    onRefreshTab();
   };
 
   if (isEmptyTab) {
@@ -1632,12 +1900,12 @@ const TabContentComponent = ({
     return (
       <>
         <ul className={styles.itemWrap}>
-          {data?.profileTabInfo?.[data.indexTab]?.feedInfoList?.map((one, index: number) => {
+          {profileTabInfo?.[tabIndex]?.feedInfoList?.map((one, index: number) => {
             return (
               <Link
                 href={
-                  getLocalizedLink(`/profile/feed/` + data.profileInfo?.profileInfo.id) +
-                  `?type=${profileType}&idContent=${one.id}&feedMediaType=${data.indexFilterMedia}&feedSortType=${data.indexSort}`
+                  getLocalizedLink(`/profile/feed/` + profileId) +
+                  `?type=${profileType}&idContent=${one.id}&feedMediaType=${filterCluster.indexFilterMedia}&feedSortType=${filterCluster.indexSort}`
                 }
               >
                 <li className={styles.item} key={one?.id}>
@@ -1654,9 +1922,15 @@ const TabContentComponent = ({
                   )}
                   <div className={styles.info}>
                     <div className={styles.likeWrap}>
-                      <img src={BoldHeart.src} alt="" />
+                      <img src={BoldLike.src} alt="" />
                       <div className={styles.value}>{one?.likeCount}</div>
                     </div>
+                    {isMine && (
+                      <div className={styles.likeWrap}>
+                        <img src={BoldDislike.src} alt="" />
+                        <div className={styles.value}>{one?.disLikeCount}</div>
+                      </div>
+                    )}
                     <div className={styles.viewWrap}>
                       <img src={BoldVideo.src} alt="" />
                       <div className={styles.value}>{one?.commentCount}</div>
@@ -1671,14 +1945,12 @@ const TabContentComponent = ({
                       onClick={e => {
                         e.preventDefault();
                         e.stopPropagation();
-
-                        data.tabContentMenu = {
+                        const dataContextMenu = {
                           id: one.id,
-                          isPin: one?.isPinFix,
+                          isPin: one?.isPinFix || false,
                           isSettingOpen: true,
                         };
-
-                        setData({...data});
+                        if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
                       }}
                     />
                   </div>
@@ -1698,7 +1970,7 @@ const TabContentComponent = ({
   ) {
     return (
       <ul className={styles.itemWrap}>
-        {data?.profileTabInfo?.[data.indexTab]?.characterInfoList.map((one, index: number) => {
+        {profileTabInfo?.[tabIndex]?.characterInfoList.map((one, index: number) => {
           return (
             <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
               <li className={styles.item} key={one?.id}>
@@ -1713,9 +1985,15 @@ const TabContentComponent = ({
                 )}
                 <div className={styles.info}>
                   <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
+                    <img src={BoldLike.src} alt="" />
                     <div className={styles.value}>{one?.likeCount}</div>
                   </div>
+                  {isMine && (
+                    <div className={styles.likeWrap}>
+                      <img src={BoldDislike.src} alt="" />
+                      <div className={styles.value}>99</div>
+                    </div>
+                  )}
                   <div className={styles.viewWrap}>
                     <img src={BoldVideo.src} alt="" />
                     <div className={styles.value}>{one?.likeCount}</div>
@@ -1730,13 +2008,12 @@ const TabContentComponent = ({
                     onClick={e => {
                       e.preventDefault();
                       e.stopPropagation();
-
-                      data.tabContentMenu = {
+                      const dataContextMenu = {
                         id: one.id,
                         isPin: one?.isPinFix || false,
                         isSettingOpen: true,
                       };
-                      setData({...data});
+                      if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
                     }}
                   />
                 </div>
@@ -1752,7 +2029,7 @@ const TabContentComponent = ({
   if (isPD && tabIndex == eTabPDType.Channel) {
     return (
       <ul className={styles.itemWrap}>
-        {data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.map((one, index: number) => {
+        {profileTabInfo?.[tabIndex]?.channelInfoList?.map((one, index: number) => {
           return (
             <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
               <li className={styles.item} key={one?.id}>
@@ -1767,9 +2044,15 @@ const TabContentComponent = ({
                 )}
                 <div className={styles.info}>
                   <div className={styles.likeWrap}>
-                    <img src={BoldHeart.src} alt="" />
-                    <div className={styles.value}>{one?.likeCount}</div>
+                    <img src={BoldContentLists.src} alt="" />
+                    <div className={styles.value}>{one?.mediaCount}</div>
                   </div>
+                  {isMine && (
+                    <div className={styles.likeWrap}>
+                      <img src={BoldCharacter.src} alt="" />
+                      <div className={styles.value}>99</div>
+                    </div>
+                  )}
                   <div className={styles.viewWrap}>
                     <img src={BoldVideo.src} alt="" />
                     <div className={styles.value}>{one?.likeCount}</div>
@@ -1784,13 +2067,12 @@ const TabContentComponent = ({
                     onClick={e => {
                       e.preventDefault();
                       e.stopPropagation();
-
-                      data.tabContentMenu = {
+                      const dataContextMenu = {
                         id: one.id,
                         isPin: one?.isPinFix || false,
                         isSettingOpen: true,
                       };
-                      setData({...data});
+                      if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
                     }}
                   />
                 </div>
@@ -1804,7 +2086,7 @@ const TabContentComponent = ({
   }
 
   if (isOtherPD && tabIndex == eTabPDOtherType.Info) {
-    const pdInfo = data?.profileTabInfo?.[data.indexTab]?.dataResPdInfo;
+    const pdInfo = profileTabInfo?.[tabIndex]?.dataResPdInfo;
     return (
       <>
         <section className={styles.pdInfo}>
@@ -1845,15 +2127,15 @@ const TabContentComponent = ({
     return (
       <>
         <CharacterProfileDetailComponent
-          characterInfo={data?.profileTabInfo?.[data.indexTab].characterInfo}
-          urlLinkKey={data?.profileTabInfo?.[data.indexTab].urlLinkKey}
+          characterInfo={profileTabInfo?.[tabIndex].characterInfo}
+          urlLinkKey={profileTabInfo?.[tabIndex].urlLinkKey}
         />
       </>
     );
   }
 
   if (isChannel && tabIndex == eTabChannelOtherType.Info) {
-    const channelInfo = data?.profileTabInfo?.[data.indexTab]?.channelInfo;
+    const channelInfo = profileTabInfo?.[tabIndex]?.channelInfo;
     const tagList = channelInfo?.tags || [];
     return (
       <section className={styles.channelInfoTabSection}>

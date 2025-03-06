@@ -7,6 +7,9 @@ import {
   cancelSubscribe,
   ExploreSortType,
   FeedMediaType,
+  GetCharacterTabInfoeRes,
+  GetPdInfoRes,
+  GetPdTabInfoeRes,
   getSubscriptionList,
   GetSubscriptionListRes,
   MembershipSubscribe,
@@ -21,12 +24,17 @@ import {
   eTabPDType,
   FilterClusterType,
   SelectBox,
+  TabContentComponentWrap,
   TabFilterComponent,
   TabHeaderComponent,
+  TabHeaderWrapAllComponent,
+  TabHeaderWrapComponent,
 } from './ProfileBase';
 import PopupSubscription, {getUnit} from '../main/content/create/common/PopupSubscription';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import BottomNav from '../main/bottom-nav/BottomNav';
+import {GetCharacterInfoRes} from '@/app/NetWork/CharacterNetwork';
+import {GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 
 type Props = {
   onClose: () => void;
@@ -47,11 +55,17 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
     indexFilterMedia: FeedMediaType;
     indexFilterCharacter: number;
     indexSort: ExploreSortType;
+    profileTabInfo: {
+      [key: number]: GetCharacterTabInfoeRes &
+        GetPdTabInfoeRes &
+        GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes} & GetChannelRes;
+    };
   }>({
     indexTab: 0,
     indexFilterMedia: FeedMediaType.Total,
     indexFilterCharacter: 0,
     indexSort: ExploreSortType.MostPopular,
+    profileTabInfo: {},
   });
 
   useEffect(() => {
@@ -64,8 +78,9 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
 
   const refreshList = async () => {};
 
-  const refreshProfileTab = async (profileId: number, indexTab: number) => {};
+  const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll?: boolean) => {};
 
+  const isEmptyTab = false;
   return (
     <>
       <Dialog open={true} onClose={onClose} fullScreen>
@@ -84,7 +99,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
           <main className={styles.main}>
             <section className={styles.tabSection}>
               <div className={styles.tabHeaderContainer}>
-                <TabHeaderComponent
+                <TabHeaderWrapAllComponent
                   indexTab={data.indexTab}
                   isMine
                   profileId={profileId}
@@ -121,7 +136,20 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
                 />
               </div>
 
-              <div className={styles.tabContent}></div>
+              <div className={styles.tabContent}>
+                <TabContentComponentWrap
+                  profileId={profileId}
+                  isMine={isMine}
+                  profileType={profileType}
+                  tabIndex={data.indexTab}
+                  isEmptyTab={isEmptyTab}
+                  onRefreshTab={async () => {
+                    await refreshProfileTab(profileId, data.indexTab, true);
+                  }}
+                  profileTabInfo={data.profileTabInfo}
+                  filterCluster={data}
+                />
+              </div>
             </section>
             <button className={styles.btnSubscription}>Subscribe Now</button>
           </main>

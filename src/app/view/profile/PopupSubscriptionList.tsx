@@ -26,7 +26,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
     subscriptionInactiveList: MembershipSubscribe[];
 
     dataSubScriptionSetting: {
-      idProfile: number;
+      id: number;
       isOpen: boolean;
     };
     dataRenewal: {
@@ -39,7 +39,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
     subscriptionList: [],
     subscriptionInactiveList: [],
     dataSubScriptionSetting: {
-      idProfile: 0,
+      id: 0,
       isOpen: false,
     },
     dataRenewal: {
@@ -202,7 +202,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                           src={BoldMenuDots.src}
                           alt=""
                           onClick={() => {
-                            data.dataSubScriptionSetting.idProfile = one?.profileId;
+                            data.dataSubScriptionSetting.id = one?.id;
                             data.dataSubScriptionSetting.isOpen = true;
                             setData({...data});
                           }}
@@ -271,8 +271,8 @@ const PopupSubscriptionList = ({onClose}: Props) => {
           setData({...data});
         }}
         onCancel={async () => {
-          const idProfile = data.dataSubScriptionSetting.idProfile;
-          await cancelSubscribe({subscribeId: idProfile});
+          const id = data.dataSubScriptionSetting.id;
+          await cancelSubscribe({subscribeId: id});
           await refreshAll();
         }}
       />

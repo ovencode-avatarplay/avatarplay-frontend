@@ -1183,9 +1183,8 @@ export const DrawerCharacterSearch = ({
 
   const sortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.MostPopular, value: 'Most Popular'},
-    {id: ExploreSortType.WeeklyPopular, value: 'Weekly Popular'},
-    {id: ExploreSortType.MonthPopular, value: 'Monthly Popular'},
+    {id: ExploreSortType.MostPopular, value: 'Popular'},
+    {id: ExploreSortType.WeeklyPopular, value: 'Name'},
   ];
 
   const SelectBoxArrowComponent = useCallback(

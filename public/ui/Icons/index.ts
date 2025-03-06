@@ -60,6 +60,7 @@ import BoldQuestion from "./Bold/Question.svg";
 import BoldRadioButtonSquare from "./Bold/Radio_Button_Square.svg";
 import BoldRadioButtonSquareSelected from "./Bold/Radio_Button_Square_selected.svg";
 import BoldLetter from "./Bold/Letter.svg";
+import BoldContentLists from "./Bold/ContentsList.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -218,6 +219,7 @@ export {
   BoldRadioButtonSquare,
   BoldRadioButtonSquareSelected,
   BoldLetter,
+  BoldContentLists,
   LineAddButton,
   LineAIImage,
   LineArchive,
