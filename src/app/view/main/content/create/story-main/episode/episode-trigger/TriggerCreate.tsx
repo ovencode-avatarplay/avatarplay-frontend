@@ -74,6 +74,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     actionPromptScenarioDescription: '', // 기본 설명
     actionIntimacyPoint: 0, // 기본 친밀도 포인트
     maxIntimacyCount: 0, // 기본 최대 친밀도 횟수
+
     actionCharacterInfo: emptyStory.data.storyInfo.chapterInfoList[0].episodeInfoList[0].characterInfo,
     actionMediaState: 0, // 기본 미디어 상태
     actionMediaUrlList: [], // 기본 미디어 URL 리스트

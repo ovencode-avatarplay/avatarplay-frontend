@@ -240,6 +240,10 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({id}) => {
           setDefaultImage(content.thumbnailUrl);
           if (content.contentVideoInfo) setEpisodeVideoInfo(content.contentVideoInfo);
           if (content.contentWebtoonInfo) setEpisodeWebtoonInfo(content.contentWebtoonInfo);
+          if (content.salesStarEa > 0) {
+            setIsFree(true);
+            setPriceValue(content.salesStarEa);
+          }
         }
       } catch (error) {
         console.error('콘텐츠 조회 실패:', error);

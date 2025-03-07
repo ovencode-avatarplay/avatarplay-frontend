@@ -45,6 +45,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   const [imageNames, setImageNames] = useState<string[]>([]);
   // ✅ 기존 데이터가 있으면 초기값 설정
   useEffect(() => {
+    console.log('asdasd');
     if (defaultEpisodeWebtoonInfo) {
       const webtoonSource = defaultEpisodeWebtoonInfo.webtoonSourceUrlList.find(
         info => info.webtoonLanguageType === ContentLanguageType.Source,
