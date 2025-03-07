@@ -19,13 +19,11 @@ import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 enum FilterTypes {
   All = 0,
-  Edit = 1,
-  Create = 2,
-  Name = 3,
-  Popularity = 4,
+  Publishing = 1,
 }
 
 interface CreateContentIntroductionProps {}
@@ -40,7 +38,8 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const dataProfile = useSelector((state: RootState) => state.profile);
-
+  const [isDeletePopup, setIsDeletePopup] = useState<boolean>(false);
+  const [isDeleteNum, setIsDeleteNum] = useState<number>(0);
   const deleteContente = (id: number) => {
     const handleDeleteContent = async (contentId: number) => {
       try {
@@ -94,10 +93,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
 
   const publishItems: SelectDrawerItem[] = [
     {name: 'All', onClick: () => setSelectedFilter(FilterTypes.All)},
-    {name: 'Edit', onClick: () => setSelectedFilter(FilterTypes.Edit)},
-    {name: 'Create', onClick: () => setSelectedFilter(FilterTypes.Create)},
-    {name: 'Name', onClick: () => setSelectedFilter(FilterTypes.Name)},
-    {name: 'Popularity', onClick: () => setSelectedFilter(FilterTypes.Popularity)},
+    {name: 'Publishing', onClick: () => setSelectedFilter(FilterTypes.Publishing)},
   ];
 
   const isActive = false;
@@ -182,7 +178,8 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
                         pushLocalizedRoute(`/create/content/series/${content.id}`, router);
                       }}
                       onDelete={() => {
-                        deleteContente(content.id);
+                        setIsDeleteNum(content.id);
+                        setIsDeletePopup(true);
                       }}
                       onEdit={() => {
                         editContente(content.id, activeTab);
@@ -239,6 +236,28 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
         onClose={() => setFilterDrawerOpen(false)}
         selectedIndex={selectedFilter}
       />
+      {isDeletePopup && (
+        <CustomPopup
+          type="alert"
+          title="Are you sure you want to delete this series?"
+          description="All episodes within the series will also be deleted and cannot be recovered."
+          buttons={[
+            {
+              label: 'Cancel',
+              onClick: () => setIsDeletePopup(false),
+              isPrimary: false,
+            },
+            {
+              label: 'Confirm',
+              onClick: () => {
+                deleteContente(isDeleteNum);
+                setIsDeletePopup(false);
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
     </div>
   );
 };

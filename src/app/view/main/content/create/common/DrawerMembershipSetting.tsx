@@ -7,7 +7,7 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
-import {MembershipSetting, PaymentType} from '@/redux-store/slices/StoryInfo';
+import {MembershipSetting, PaymentType} from '@/app/NetWork/network-interface/CommonEnums';
 
 interface Props {
   onClose: () => void;

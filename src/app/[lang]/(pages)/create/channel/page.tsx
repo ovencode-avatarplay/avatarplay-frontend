@@ -48,10 +48,11 @@ import {
 } from '@/app/NetWork/ChannelNetwork';
 import {profile} from 'console';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
-import {PaymentType, Subscription, VisibilityType} from '@/redux-store/slices/StoryInfo';
+
 import {on} from 'events';
 import DrawerMembershipSetting from '@/app/view/main/content/create/common/DrawerMembershipSetting';
 import CustomSelector from '@/components/layout/shared/CustomSelector';
+import {PaymentType, Subscription, VisibilityType} from '@/app/NetWork/network-interface/CommonEnums';
 type Props = {
   id: number;
   isUpdate: boolean;

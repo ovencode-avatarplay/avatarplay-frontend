@@ -1,6 +1,5 @@
 import CustomInput from '@/components/layout/shared/CustomInput';
 import styles from './CharacterCreateBasic.module.css';
-import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 
 interface CharacterCreateBasicProps {
   characterName: string;

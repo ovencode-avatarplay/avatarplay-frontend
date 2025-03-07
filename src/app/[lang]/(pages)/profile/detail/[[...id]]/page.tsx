@@ -120,7 +120,7 @@ export const CharacterProfileDetailComponent = ({
           </div>
           <div className={styles.textWrap}>
             <div className={styles.label}>Greeting</div>
-            <TextArea value={data.characterInfo?.greeting || ''} />
+            <TextArea value={data.characterInfo?.introduction || ''} />
           </div>
 
           <div className={styles.textWrap}>

@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styles from './CharacterCreateVoiceSetting.module.css';
-import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {BoldAudioPlay} from '@ui/Icons';

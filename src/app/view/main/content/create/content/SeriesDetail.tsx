@@ -33,6 +33,7 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {CreateContentEpisodeProps} from './CreateContentEpisode';
 import SharePopup from '@/components/layout/shared/SharePopup';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface SeriesDetailProps {
   id: number;
@@ -53,6 +54,9 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
   const [episodeList, setEpisodeList] = useState<ContentEpisodeInfo[]>(); // 타입 변경
 
   const [isShare, setIsShare] = useState(false);
+  const [onAddSeasonPopup, setOnAddSeasonPopup] = useState(false);
+  const [onDeleteEpisodePopup, setOnDeleteEpisodePopup] = useState(false);
+  const [onDeleteEpisodeNum, setOnDeleteEpisodeNum] = useState(0);
   useEffect(() => {}, [episodeList]);
   const handleShare = async () => {
     const shareData = {
@@ -304,7 +308,12 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
           {onSeasonDropdown && (
             <>
               <div className={styles.seasonDropdownContainer}>
-                <div className={styles.seasonDropdownAddButton} onClick={addSeason}>
+                <div
+                  className={styles.seasonDropdownAddButton}
+                  onClick={() => {
+                    setOnAddSeasonPopup(true);
+                  }}
+                >
                   + Add Season
                 </div>
                 <div className={styles.seasonDropdownBox}>
@@ -361,7 +370,10 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
                     <button
                       className={styles.iconButton}
                       onClick={() => {
-                        if (ep.id) deleteEpisode(ep.id);
+                        if (ep.id) {
+                          setOnDeleteEpisodeNum(ep.id);
+                          setOnDeleteEpisodePopup(true);
+                        }
                       }}
                     >
                       <img src={LineDelete.src} alt="Delete" className={styles.editIcon} />
@@ -395,6 +407,50 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
         url={window.location.href}
         onClose={() => setIsShare(false)}
       ></SharePopup>
+      {onAddSeasonPopup && (
+        <CustomPopup
+          type="alert"
+          title={`Would you like to add a new Season ${(seriesInfo?.maxSeasonNo || 0) + 1}?"`}
+          description=""
+          buttons={[
+            {
+              label: 'No',
+              onClick: () => setOnAddSeasonPopup(false),
+              isPrimary: false,
+            },
+            {
+              label: 'Yes',
+              onClick: () => {
+                addSeason();
+                setOnAddSeasonPopup(false);
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
+      {onDeleteEpisodePopup && (
+        <CustomPopup
+          type="alert"
+          title="Are you sure you want to delete this series?"
+          description="All episodes within the series will also be deleted and cannot be recovered."
+          buttons={[
+            {
+              label: 'Cancel',
+              onClick: () => setOnDeleteEpisodePopup(false),
+              isPrimary: false,
+            },
+            {
+              label: 'Confirm',
+              onClick: () => {
+                deleteEpisode(onDeleteEpisodeNum);
+                setOnDeleteEpisodePopup(false);
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
     </div>
   );
 };

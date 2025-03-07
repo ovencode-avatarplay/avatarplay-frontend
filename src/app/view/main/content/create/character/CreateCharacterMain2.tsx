@@ -13,32 +13,22 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 import CustomButton from '@/components/layout/shared/CustomButton';
 
-import CharacterCreateSequence from './../character/CreateCharacterSequence';
+import CharacterCreateSequence from './CreateCharacterSequence';
 import CharacterImageSet from './CharacterImageSet';
 import CharacterCreateBasic from './CharacterCreateBasic';
 import CharacterCreateLLM from './CharacterCreateLLM';
 import CharacterCreateMedia from './CharacterCreateMedia';
 import CharacterCreateConversation from './CharacterCreateConversation';
 import CharacterCreatePolicy from './CharacterCreatePolicy';
-import {
-  CreateCharacter2Req,
-  CreateCharacterReq,
-  sendCreateCharacter,
-  sendCreateCharacter2,
-} from '@/app/NetWork/CharacterNetwork';
+import {CharacterMediaInfo, CreateCharacter2Req, sendCreateCharacter2} from '@/app/NetWork/CharacterNetwork';
 import ImageUploadDialog from '../story-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {
-  CharacterInfo,
-  CharacterMediaInfo,
-  Conversation,
-  ConversationInfo,
-  MembershipSetting,
-} from '@/redux-store/slices/StoryInfo';
+import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
-import {OperatorAuthorityType, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import {MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 
 interface CreateCharacterProps {
   id?: number;
@@ -110,11 +100,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   //#endregion
 
   //#region Conversation
-  const [conversationTemplateList, setConversationTemplateList] = useState<Conversation[]>(
+  const [conversationTemplateList, setConversationTemplateList] = useState<ConversationInfo[]>(
     character.conversationTemplateList,
   );
 
-  const convertConversationsToCards = (conversations: Conversation[]): CardData[] => {
+  const convertConversationsToCards = (conversations: ConversationInfo[]): CardData[] => {
     return conversations.map(conversation => {
       const userBars: Bar[] = JSON.parse(conversation.user || '[]').map(
         (bar: any, index: number): Bar => ({
@@ -141,7 +131,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
     });
   };
 
-  const convertCardsToConversations = (cards: CardData[]): Conversation[] => {
+  const convertCardsToConversations = (cards: CardData[]): ConversationInfo[] => {
     return cards.map(card => ({
       id: card.id > 0 ? card.id : 0,
       conversationType: card.priorityType,

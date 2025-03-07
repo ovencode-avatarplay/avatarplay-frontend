@@ -1,16 +1,12 @@
-import {
-  CustomModulesLorebookInfo,
-  CustomModulesPromptInfo,
-  sendGetCustomModules,
-} from '@/app/NetWork/CustomModulesNetwork';
+import {sendGetCustomModules} from '@/app/NetWork/CustomModulesNetwork';
 import styles from './CharacterCreateLLM.module.css';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
-import {LanguageType} from '@/redux-store/slices/StoryInfo';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAI, BoldArrowDown, LineDelete} from '@ui/Icons';
 import {useEffect, useState} from 'react';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 
 interface Props {
   selectedLang: number;

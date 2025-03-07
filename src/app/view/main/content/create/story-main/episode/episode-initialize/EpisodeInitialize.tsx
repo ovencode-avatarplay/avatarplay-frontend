@@ -6,8 +6,13 @@ import {useRouter} from 'next/navigation';
 
 import styles from './EpisodeInitialize.module.css';
 
-import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo, EpisodeInfo, GalleryImageInfo} from '@/redux-store/slices/StoryInfo';
+import {
+  GalleryImageInfo,
+  GetCharacterInfoReq,
+  sendGetCharacterInfo,
+  sendGetCharacterList,
+} from '@/app/NetWork/CharacterNetwork';
+import {CharacterInfo, EpisodeInfo} from '@/redux-store/slices/StoryInfo';
 
 import emptyStory from '@/data/create/empty-story-info-data.json';
 
@@ -34,8 +39,8 @@ import styleData from './EpisodeGenerateInputStyles.json';
 import bgData from './EpisodeBackground.json';
 import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json';
 
-import CreateTempCharacterImage from '../../../character/CreateTempCharacterImage';
-import CreateTempCharacterSelect from '../../../character/CreateTempCharacterSelect';
+import CreateTempCharacterImage from '../../tmpCharacter/CreateTempCharacterImage';
+import CreateTempCharacterSelect from '../../tmpCharacter/CreateTempCharacterSelect';
 import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineCheck, LineUpload} from '@ui/Icons';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import CustomButton from '@/components/layout/shared/CustomButton';
@@ -400,7 +405,7 @@ const EpisodeInitialize: React.FC<Props> = ({
         backgroundImageUrl: '',
         characterInfo: {
           ...emptyEpisodeInfo.characterInfo,
-          greeting: currentSelectedCharacter.greeting || '',
+          // greeting: currentSelectedCharacter.greeting || '',
           secret: currentSelectedCharacter.secret || '',
           worldScenario: currentSelectedCharacter.worldScenario || '',
           id: currentSelectedCharacter.id,

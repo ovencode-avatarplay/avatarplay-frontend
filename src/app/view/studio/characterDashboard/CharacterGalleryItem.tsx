@@ -1,8 +1,7 @@
 import React from 'react';
 import styles from './CharacterGalleryItem.module.css';
 import {LineCheck} from '@ui/Icons';
-import {GalleryImageInfo} from '@/redux-store/slices/StoryInfo';
-
+import {GalleryImageInfo} from '@/app/NetWork/CharacterNetwork';
 interface CharacterGalleryItemProps {
   url: GalleryImageInfo;
   isSelected: boolean;

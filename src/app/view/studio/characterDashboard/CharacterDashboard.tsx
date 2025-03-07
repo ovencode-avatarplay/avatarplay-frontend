@@ -260,7 +260,7 @@ const CharacterDashboard: React.FC = () => {
     // Modify 용도의 api 생성 전까지 막아둠
 
     // Page 이동으로 수정
-    pushLocalizedRoute(`/update/character2/${id}`, router);
+    pushLocalizedRoute(`/update/character/${id}`, router);
 
     // Page 이동으로 수정
     // await getCharacterInfo(id);

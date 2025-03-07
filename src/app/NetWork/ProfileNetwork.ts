@@ -2,7 +2,7 @@ import axios, {AxiosResponse} from 'axios';
 import api, {ResponseAPI} from './ApiInstance';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {FeedInfo} from './ShortsNetwork';
-import {CharacterIP} from '@/redux-store/slices/StoryInfo';
+import {CharacterIP} from './CharacterNetwork';
 
 export interface GetProfileListRes {
   profileList: ProfileSimpleInfo[];

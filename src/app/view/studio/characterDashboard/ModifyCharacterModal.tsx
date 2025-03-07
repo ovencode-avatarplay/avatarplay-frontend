@@ -1,12 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Drawer} from '@mui/material';
 import styles from './ModifyCharacterModal.module.css';
-import CharacterCreateSequence from '../../main/content/create/character/CreateCharacterSequence';
-import PublishCharacter from '../../main/content/create/character/PublishCharacter';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
-import PublishCharacterBottom from '../../main/content/create/character/PublishCharacterBottom';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-import CreateCharacterMain2 from '../../main/content/create/character2/CreateCharacterMain2';
+import CreateCharacterMain2 from '../../main/content/create/character/CreateCharacterMain2';
 
 interface ModifyCharacterProps {
   open: boolean;
