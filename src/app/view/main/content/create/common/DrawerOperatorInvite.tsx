@@ -249,7 +249,10 @@ const OperatorInviteDrawer: React.FC<Props> = ({
       key => isNaN(Number(key)) && Number(OperatorAuthorityType[key as keyof typeof OperatorAuthorityType]) > 1,
     );
     return (
-      <div className={styles.dropdownContainer} ref={isItem ? setDropdownRef(index) : authDropdownRef}>
+      <div
+        className={isItem ? `${styles.selectedDropdownContainer}` : `${styles.dropdownContainer}`}
+        ref={isItem ? setDropdownRef(index) : authDropdownRef}
+      >
         <button className={styles.dropdownButton} onClick={toggleDropdown}>
           {OperatorAuthorityType[selectedAuthType]}
           <img
