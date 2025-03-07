@@ -12,7 +12,13 @@ import TriggerImageGrid from '../story-main/episode/episode-trigger/TriggerImage
 import ReactPlayer from 'react-player';
 import {stat} from 'fs';
 import PostImageGrid from './PostImageGrid';
-import {FeedInfo, CreateFeedInfo, RequestCreateFeed, sendCreateFeed} from '@/app/NetWork/ShortsNetwork';
+import {
+  FeedInfo,
+  CreateFeedInfo,
+  RequestCreateFeed,
+  sendCreateFeed,
+  sendGetFeedList,
+} from '@/app/NetWork/ShortsNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomInput from '@/components/layout/shared/CustomInput';
@@ -22,6 +28,10 @@ import {VisibilityType} from '@/app/NetWork/ContentNetwork';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import DrawerTagSelect from '../common/DrawerTagSelect';
 import {title} from 'process';
+import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
 interface Props {
   id?: number;
@@ -39,8 +49,8 @@ const mediaTypeConfig = {
     accept: 'video/*', // 비디오 파일
   },
 };
-const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
-  console.log('id update', id, isUpdate);
+const PostMain: React.FC<Props> = ({id}) => {
+  console.log('feedid', id);
   const router = useRouter();
   const [text, setText] = useState(''); // 입력된 텍스트 상태
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
@@ -127,12 +137,38 @@ const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
       ],
     },
   ];
+  const dataProfile = useSelector((state: RootState) => state.profile);
+
   useEffect(() => {
-    if (isUpdate) {
-      //api 추가 필요
-      // setDate()
+    if (id) {
+      (async () => {
+        try {
+          const response = await sendGetFeedList({
+            languageType: getCurrentLanguage(),
+            characterProfileId: dataProfile.currentProfile?.profileId ? dataProfile.currentProfile?.profileId : 0, // 필요한 경우 적절한 값으로 변경
+          });
+
+          if (response.resultCode === 0 && response.data) {
+            const existingFeed = response.data.find(feed => feed.id === id);
+            if (existingFeed) {
+              setMediaUrls(existingFeed.mediaUrlList || []);
+              if (existingFeed.mediaState == MediaState.Image) setMediaType('image');
+              else if (existingFeed.mediaState == MediaState.Video) setMediaType('video');
+
+              // setText(existingFeed.description || '');
+              // setNameValue(existingFeed.characterProfileName || '');
+              setrDescription(existingFeed.description || '');
+              // setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
+              // setSelectedVisibility(existingFeed.isPinFix ? VisibilityType.Public : VisibilityType.Private);
+              // setIsNsfw(existingFeed.isBookmark || false);
+            }
+          }
+        } catch (error) {
+          console.error('Failed to fetch existing feed info:', error);
+        }
+      })();
     }
-  }, []);
+  }, [id]);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -336,13 +372,12 @@ const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
   const [isNsfw, setIsNsfw] = useState<boolean>(false);
   return (
     <div className={styles.box}>
-      <StoryDashboardHeader
+      <CustomArrowHeader
         title="Title"
         onClose={() => {
           pushLocalizedRoute('/main/homefeed', router);
         }}
-        onCreate={() => {}}
-      ></StoryDashboardHeader>
+      ></CustomArrowHeader>
 
       <div className={styles.container}>
         <div className={styles.label}>Photo / Video</div>
@@ -453,16 +488,17 @@ const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
           </div>
         </div>
 
-        <CustomDropDownSelectDrawer
-          title={
-            <span>
-              Visibility <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
-            </span>
-          }
-          selectedItem={VisibilityType[selectedVisibility]}
-          onClick={() => setVisibilityDrawerOpen(true)}
-        ></CustomDropDownSelectDrawer>
-
+        <div style={{boxSizing: 'border-box', width: '100%'}}>
+          <CustomDropDownSelectDrawer
+            title={
+              <span>
+                Visibility <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+              </span>
+            }
+            selectedItem={VisibilityType[selectedVisibility]}
+            onClick={() => setVisibilityDrawerOpen(true)}
+          ></CustomDropDownSelectDrawer>
+        </div>
         <span className={styles.label}>
           NSFW <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
         </span>

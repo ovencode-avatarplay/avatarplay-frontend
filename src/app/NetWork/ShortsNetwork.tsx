@@ -62,7 +62,7 @@ export interface FeedInfo {
   characterProfileId: number;
   characterProfileName: string;
   characterProfileUrl: string;
-  createAt: string;
+  createAt?: string;
 }
 
 export interface CreateFeedInfo {
