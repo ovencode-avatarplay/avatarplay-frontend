@@ -297,6 +297,7 @@
     }
 
     .hashTag {
+      margin-top: 5px;
       color: var(--Black, #000);
       font-family: Lato;
       font-size: 14px;
@@ -305,6 +306,7 @@
       line-height: 130%;
       /* 18.2px */
       letter-spacing: -0.28px;
+      white-space: pre-line;
 
       &.needShowMore {
         display: -webkit-box;
