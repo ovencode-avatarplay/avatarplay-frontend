@@ -102,3 +102,26 @@ export const getChannelInfo = async (payload: GetChannelReq) => {
     return null;
   }
 };
+
+export interface DeleteChannelReq {
+  channelId: number;
+}
+
+export interface DeleteChannelRes {}
+
+export const deleteChannel = async (payload: DeleteChannelReq) => {
+  try {
+    const res = await api.post<ResponseAPI<DeleteChannelRes>>('channel/delete', payload);
+
+    if (res.status !== 200) {
+      console.error('deleteChannel API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('deleteChannel API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};

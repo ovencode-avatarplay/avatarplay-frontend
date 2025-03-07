@@ -67,15 +67,20 @@ import {useAtom} from 'jotai';
 import Link from 'next/link';
 import HamburgerBar from '../main/header/header-nav-bar/HamburgerBar';
 import SharePopup from '@/components/layout/shared/SharePopup';
-import {FeedInfo, PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
+import {deleteFeed, FeedInfo, PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
+import {
+  GetCharacterInfoReq,
+  GetCharacterInfoRes,
+  sendDeleteCharacter,
+  sendGetCharacterInfo,
+} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {CharacterProfileDetailComponent} from '@/app/[lang]/(pages)/profile/detail/[[...id]]/page';
 import {getBackUrl} from '@/utils/util-1';
 import {useInView} from 'react-intersection-observer';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
-import {getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
+import {deleteChannel, getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {channel} from 'diagnostics_channel';
 import 'swiper/css';
 import 'swiper/css/navigation'; // 필요시 다른 모듈도 가져오기
@@ -83,6 +88,7 @@ import PopupSubscription from '../main/content/create/common/PopupSubscription';
 import PopupSubscriptionList from './PopupSubscriptionList';
 import PopupFavoriteList from './PopupFavoriteList';
 import PopupPlaylist from './PopupPlaylist';
+import {sendDeleteContent} from '@/app/NetWork/ContentNetwork';
 
 export enum eTabCommonType {
   Feed,
@@ -906,7 +912,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               profileType={profileType}
               tabIndex={data.indexTab}
               isEmptyTab={isEmptyTab}
-              onRefreshTab={async () => {
+              onRefreshTab={async (isRefreshAll: boolean) => {
                 await data.refreshProfileTab(profileId, data.indexTab, true);
               }}
               profileTabInfo={data.profileTabInfo}
@@ -1034,12 +1040,6 @@ const ContentSetting = ({
     },
   ];
   let uploadImageItems: SelectDrawerItem[] = [
-    {
-      name: 'Edit',
-      onClick: () => {
-        onEdit();
-      },
-    },
     {
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
       onClick: () => {},
@@ -1267,7 +1267,7 @@ type TabContentProps = {
   };
 
   filterCluster: FilterClusterType;
-  onRefreshTab: () => void;
+  onRefreshTab: (isRefreshAll: boolean) => void;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
@@ -2013,7 +2013,7 @@ export const TabContentComponentWrap = ({
         isMine={isMine}
         tabContentMenu={data.tabContentMenu}
         refreshTabAll={async () => {
-          onRefreshTab();
+          onRefreshTab(true);
         }}
         onShare={() => {
           const url =
@@ -2021,8 +2021,34 @@ export const TabContentComponentWrap = ({
             `?type=${profileType}&idContent=${data.tabContentMenu.id}&feedMediaType=${filterCluster.indexFilterMedia}&feedSortType=${filterCluster.indexSort}`;
           handleShare(url);
         }}
-        onDelete={() => {
-          alert('delete api 연동 필요');
+        onDelete={async () => {
+          if (
+            (isPD && tabIndex == eTabPDType.Character) ||
+            (isCharacter && tabIndex == eTabCharacterType.Character) ||
+            (isChannel && tabIndex == eTabChannelType.Character)
+          ) {
+            await sendDeleteCharacter({characterId: data.tabContentMenu.id});
+          }
+
+          if (
+            (isPD && tabIndex == eTabPDType.Feed) ||
+            (isCharacter && tabIndex == eTabCharacterType.Feed) ||
+            (isChannel && tabIndex == eTabChannelType.Feed)
+          ) {
+            await deleteFeed({feedId: data.tabContentMenu.id});
+          }
+
+          if (
+            (isCharacter && tabIndex == eTabCharacterType.Contents) ||
+            (isChannel && tabIndex == eTabChannelType.Contents)
+          ) {
+            await sendDeleteContent({contentId: data.tabContentMenu.id});
+          }
+
+          if ((isPD && tabIndex == eTabPDOtherType.Channel) || (isCharacter && tabIndex == eTabCharacterType.Channel)) {
+            await deleteChannel({channelId: data.tabContentMenu.id});
+          }
+          onRefreshTab(true);
         }}
         onEdit={() => {
           if (

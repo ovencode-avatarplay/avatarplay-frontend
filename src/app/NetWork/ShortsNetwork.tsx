@@ -581,3 +581,26 @@ export const updatePin = async (payload: PinFixFeedReq): Promise<PinFixFeedRes> 
     };
   }
 };
+
+export interface DeleteFeedeReq {
+  feedId: number;
+}
+
+export interface DeleteFeedRes {}
+
+export const deleteFeed = async (payload: DeleteFeedeReq) => {
+  try {
+    const res = await api.post<ResponseAPI<DeleteFeedRes>>('feed/delete', payload);
+
+    if (res.status !== 200) {
+      console.error('deleteFeed API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('deleteFeed API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
