@@ -25,6 +25,7 @@ import {
   UpdateSeasonNoReq,
   sendDeleteSeasonNo,
   DeleteSeasonNoReq,
+  sendDeleteEpisode,
 } from '@/app/NetWork/ContentNetwork';
 import {EpisodeInfo} from '@/redux-store/slices/StoryInfo';
 import {Category} from '@mui/icons-material';
@@ -69,6 +70,23 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
     if (!episodeId) pushLocalizedRoute(`/create/content/episode/series/${ids.join('/')}`, router);
     else pushLocalizedRoute(`/update/content/series/episode/${ids.join('/')}`, router);
   };
+
+  const deleteEpisode = async (contentEpisodeId: number) => {
+    try {
+      const response = await sendDeleteEpisode({contentEpisodeId});
+
+      if (response.resultCode === 0) {
+        console.log('✅ 에피소드 삭제 완료');
+
+        fetchSeasonEpisodes(selectedSeason);
+      } else {
+        console.error('❌ 에피소드 삭제 실패:', response.resultMessage);
+      }
+    } catch (error) {
+      console.error('🚨 API 호출 중 오류 발생:', error);
+    }
+  };
+
   const addSeason = async () => {
     if (!seriesInfo) return;
     const newSeasonNo = (seriesInfo.maxSeasonNo || 0) + 1; // 현재 maxSeasonNo + 1
@@ -320,19 +338,29 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
                   )}
                 </div>
                 <div className={styles.episodeActions}>
-                  <button
-                    className={styles.iconButton}
-                    onClick={() => {
-                      navigateToCreateContentEpisode({
-                        contentId: contentId,
-                        curSeason: selectedSeason,
-                        curEpisodeCount: episodeList ? episodeList.length : 0,
-                        episodeId: ep.id,
-                      });
-                    }}
-                  >
-                    <img src={LineEdit.src} alt="Edit" className={styles.editIcon} />
-                  </button>
+                  <div style={{display: 'flex', gap: '10px'}}>
+                    <button
+                      className={styles.iconButton}
+                      onClick={() => {
+                        if (ep.id) deleteEpisode(ep.id);
+                      }}
+                    >
+                      <img src={LineDelete.src} alt="Delete" className={styles.editIcon} />
+                    </button>
+                    <button
+                      className={styles.iconButton}
+                      onClick={() => {
+                        navigateToCreateContentEpisode({
+                          contentId: contentId,
+                          curSeason: selectedSeason,
+                          curEpisodeCount: episodeList ? episodeList.length : 0,
+                          episodeId: ep.id,
+                        });
+                      }}
+                    >
+                      <img src={LineEdit.src} alt="Edit" className={styles.editIcon} />
+                    </button>
+                  </div>
                   <div className={styles.rating}>
                     <img src={BoldStar.src} className={styles.starIcon} />
                     <span className={styles.rateText}>{ep.likeCount}</span>

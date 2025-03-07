@@ -200,6 +200,7 @@ width: 100px;
     align-items: center;
     gap: 5px;
     color: #FD55D3;
+    /* align-self: flex-end; */
   }
   
   .editIcon
