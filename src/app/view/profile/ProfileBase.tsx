@@ -243,6 +243,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   const router = useRouter();
   const pathname = usePathname();
   const refDescription = useRef<HTMLDivElement | null>(null);
+  const refHeader = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState<DataProfileType>({
     profileId: profileId,
     indexTab: eTabPDType.Feed,
@@ -661,7 +662,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           </button>
         </div>
       )}
-      <section className={cx(styles.header, !isPath && styles.headerNoPath)}>
+      <section ref={refHeader} className={cx(styles.header, !isPath && styles.headerNoPath)}>
         <div className={styles.left}>
           {((!isMine && isPath) || isNeedBackBtn) && (
             <div
@@ -851,7 +852,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           )}
         </div>
         <section className={styles.tabSection}>
-          <div className={styles.tabHeaderContainer}>
+          <div className={styles.tabHeaderContainer} style={{top: refHeader?.current?.clientHeight || 0}}>
             <TabHeaderWrapComponent
               indexTab={data.indexTab}
               isMine
@@ -1301,6 +1302,10 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
     {id: ExploreSortType.MostPopular, value: 'Popular'},
     {id: ExploreSortType.WeeklyPopular, value: 'Name'},
   ];
+  const feedSortOptionList = [
+    {id: ExploreSortType.Newest, value: 'Newest'},
+    {id: ExploreSortType.MostPopular, value: 'Popular'},
+  ];
 
   if (
     (isPD && [eTabPDType.Feed].includes(tabIndex)) ||
@@ -1343,8 +1348,8 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBox
-                value={sortOptionList[filterCluster?.indexSort || 0]}
-                options={sortOptionList}
+                value={feedSortOptionList[filterCluster?.indexSort || 0]}
+                options={feedSortOptionList}
                 ArrowComponent={SelectBoxArrowComponent}
                 ValueComponent={SelectBoxValueComponent}
                 OptionComponent={SelectBoxOptionComponent}
