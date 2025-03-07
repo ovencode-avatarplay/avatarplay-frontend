@@ -245,7 +245,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                           className={styles.renewal}
                           onClick={() => {
                             data.dataRenewal.isOpen = true;
-                            data.dataRenewal.id = one.id;
+                            data.dataRenewal.id = one.profileId;
                             setData({...data});
                           }}
                         >
