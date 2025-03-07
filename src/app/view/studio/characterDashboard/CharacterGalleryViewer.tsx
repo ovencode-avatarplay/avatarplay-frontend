@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import styles from './CharacterGalleryViewer.module.css';
-import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/StoryInfo';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {GalleryCategory} from './CharacterGalleryData';
-import {SelectImageReq, sendSelectImage} from '@/app/NetWork/CharacterNetwork';
+import {GalleryImageInfo, SelectImageReq, sendSelectImage} from '@/app/NetWork/CharacterNetwork';
 import {BoldMenuDots, LineArrowLeft, LineDelete, LineInfo, LinePin, LineShare} from '@ui/Icons';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 

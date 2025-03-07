@@ -1,11 +1,23 @@
 // Imports
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {useSelector} from 'react-redux';
-import {RootState} from '../ReduxStore';
 
 // JSON 파일
 import emptyStory from '@/data/create/empty-story-info-data.json';
-import {ProfileInfo, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {CustomModulesInfo} from '@/app/NetWork/PromptNetwork';
+import {
+  LanguageType,
+  LLMModel,
+  MembershipSetting,
+  VisibilityType,
+} from '../../app/NetWork/network-interface/CommonEnums';
+import {
+  CharacterIP,
+  CharacterMediaInfo,
+  CharacterState,
+  GalleryImageInfo,
+  GenderType,
+} from '@/app/NetWork/CharacterNetwork';
 
 //#region export Interface
 
@@ -68,7 +80,7 @@ export interface EpisodeInfo {
   characterInfo: CharacterInfo;
   episodeDescription: EpisodeDescription;
   triggerInfoList: TriggerInfo[];
-  conversationTemplateList: Conversation[];
+  conversationTemplateList: ConversationInfo[];
 }
 
 // 4 Level
@@ -119,39 +131,6 @@ export interface CharacterInfo {
   updateAt: string;
 }
 
-export interface CustomModulesInfo {
-  selectPromptId: number;
-  selectLorebookId: number;
-}
-
-export interface PromptInfo {
-  id: number;
-  name: string;
-}
-
-export interface LorebookInfo {
-  id: number;
-  name: string;
-}
-
-export enum LanguageType {
-  Korean = 0,
-  English = 1,
-  Japanese = 2,
-  French = 3,
-  Spanish = 4,
-  ChineseSimplified = 5,
-  ChineseTraditional = 6,
-  Portuguese = 7,
-  German = 8,
-}
-
-export enum GenderType {
-  Female = 0,
-  Male = 1,
-  None = 2,
-}
-
 export interface ConversationInfo {
   id: number;
   conversationType: ConversationType;
@@ -162,66 +141,6 @@ export interface ConversationInfo {
 export enum ConversationType {
   Important,
   AlwaysImportant,
-}
-
-export enum VisibilityType {
-  Private = 0,
-  Unlisted = 1,
-  Public = 2,
-  Create = 3,
-}
-export enum CharacterIP {
-  Original,
-  Fan,
-}
-
-export interface MembershipSetting {
-  subscription: Subscription;
-  paymentType: PaymentType;
-  paymentAmount: number;
-  benefits: string;
-}
-
-export enum Subscription {
-  IP,
-  Contents,
-}
-
-export enum PaymentType {
-  USA,
-  Korea,
-}
-
-export enum CharacterState {
-  None = 0,
-  Create = 1,
-  Delete = 2,
-}
-
-export enum LLMModel {
-  GPT_4o = 0,
-  GPT_4 = 1,
-  GPT_3_5 = 2,
-  Claude_V2 = 3,
-  Claude_3_Opus = 4,
-  Claude_3_Sonnet = 5,
-  Claude_3_5_Sonnet = 6,
-  Claude_3_5_Sonnet_V2 = 7,
-  Claude_3_Haiku = 8,
-}
-
-export interface GalleryImageInfo {
-  galleryImageId: number;
-  isGenerate: boolean;
-  debugParameter: string;
-  imageUrl: string;
-}
-
-export interface CharacterMediaInfo {
-  id: number;
-  imageUrl: string;
-  activationCondition: string;
-  isSpoiler: boolean;
 }
 
 export interface TriggerInfo {
@@ -242,14 +161,7 @@ export interface TriggerInfo {
   actionCharacterInfo: CharacterInfo;
   actionMediaState: TriggerMediaState;
   actionMediaUrlList: string[];
-  actionConversationList: Conversation[];
-}
-
-export interface Conversation {
-  id: number;
-  conversationType: number;
-  user: string;
-  character: string;
+  actionConversationList: ConversationInfo[];
 }
 
 // 5 Level
@@ -719,7 +631,7 @@ export const curEditngStoryInfoSlice = createSlice({
 
     //#region conversation
     // 기존 기능 - conversationTemplateList 관련 액션들
-    saveConversationTemplateList: (state, action: PayloadAction<Conversation[]>) => {
+    saveConversationTemplateList: (state, action: PayloadAction<ConversationInfo[]>) => {
       state.curEditingStoryInfo.chapterInfoList[state.selectedChapterIdx].episodeInfoList[
         state.selectedEpisodeIdx
       ].conversationTemplateList = action.payload;
@@ -732,9 +644,9 @@ export const curEditngStoryInfoSlice = createSlice({
         conversationType: ConversationPriortyType;
       }>,
     ) => {
-      const newConversation: Conversation = {
+      const newConversation: ConversationInfo = {
         id: 0, // id는 초기값 그대로 유지
-        conversationType: action.payload.conversationType,
+        conversationType: Number(action.payload.conversationType),
         user: JSON.stringify(action.payload.user),
         character: JSON.stringify(action.payload.character),
       };

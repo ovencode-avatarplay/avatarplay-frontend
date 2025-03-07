@@ -180,7 +180,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                 </div>
               </button>
             </Link>
-            <Link href={canCreateCharacter ? getLocalizedLink('/create/character2') : ''} passHref>
+            <Link href={canCreateCharacter ? getLocalizedLink('/create/character') : ''} passHref>
               <button
                 className={`${styles.drawerButton} ${styles.drawerButtonMid} ${
                   canCreateCharacter ? '' : styles.disable

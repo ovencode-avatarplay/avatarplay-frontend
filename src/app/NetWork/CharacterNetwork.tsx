@@ -1,7 +1,42 @@
 // src/app/Network/CharacterNetwork.tsx
 
+import {LanguageType, LLMModel} from '@/app/NetWork/network-interface/CommonEnums';
 import api, {ResponseAPI} from './ApiInstance';
-import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/StoryInfo';
+import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
+import {VisibilityType} from './ContentNetwork';
+import {ProfileSimpleInfo} from './ProfileNetwork';
+
+export interface CharacterMediaInfo {
+  id: number;
+  imageUrl: string;
+  activationCondition: string;
+  isSpoiler: boolean;
+}
+
+export enum GenderType {
+  Female = 0,
+  Male = 1,
+  None = 2,
+}
+
+export enum CharacterIP {
+  Original,
+  Fan,
+}
+
+export enum CharacterState {
+  None = 0,
+  Create = 1,
+  Delete = 2,
+}
+
+export interface GalleryImageInfo {
+  galleryImageId: number;
+  isGenerate: boolean;
+  debugParameter: string;
+  imageUrl: string;
+}
+
 // GetCharacterList
 
 export interface GetCharacterListReq {
@@ -59,124 +94,6 @@ export interface CreateCharacter2Req {
   languageType: string;
   payload: CharacterProfilePayload;
   debugParameter: string;
-}
-
-export enum LanguageType {
-  Korean = 0,
-  English = 1,
-  Japanese = 2,
-  French = 3,
-  Spanish = 4,
-  ChineseSimplified = 5,
-  ChineseTraditional = 6,
-  Portuguese = 7,
-  German = 8,
-}
-
-export enum LLMModel {
-  GPT_4o = 0,
-  GPT_4 = 1,
-  GPT_3_5 = 2,
-  Claude_V2 = 3,
-  Claude_3_Opus = 4,
-  Claude_3_Sonnet = 5,
-  Claude_3_5_Sonnet = 6,
-  Claude_3_5_Sonnet_V2 = 7,
-  Claude_3_Haiku = 8,
-}
-export interface CharacterMediaInfo {
-  id: number;
-  imageUrl: string;
-  activationCondition: string;
-  isSpoiler: boolean;
-}
-
-export interface ConversationInfo {
-  id: number;
-  conversationType: ConversationType;
-  user: string;
-  character: string;
-}
-
-export enum ConversationType {
-  Important,
-  AlwaysImportant,
-}
-
-export enum VisibilityType {
-  Private = 0,
-  Unlisted = 1,
-  Public = 2,
-  Create = 3,
-}
-
-export enum CharacterIP {
-  Original,
-  Fan,
-}
-
-export enum ProfileTabType {
-  My = 0,
-  Shared = 1,
-}
-
-export enum OperatorAuthorityType {
-  None = 0,
-  Owner = 1,
-  CanEdit = 2,
-  OnlyComments = 3,
-}
-
-export enum ProfileType {
-  User = 0,
-  PD = 1,
-  Character = 2,
-  Channel = 3,
-}
-
-export interface ProfileSimpleInfo {
-  profileId: number;
-  profileTabType: ProfileTabType;
-  operatorAuthorityType: OperatorAuthorityType;
-  profileType: ProfileType;
-  name: string;
-  description?: string;
-  iconImageUrl: string;
-  nsfw: boolean;
-}
-
-export enum Subscription {
-  IP,
-  Contents,
-}
-
-export enum PaymentType {
-  USA,
-  Korea,
-}
-
-export interface MembershipSetting {
-  subscription: Subscription;
-  paymentType: PaymentType;
-  paymentAmount: number;
-  benefits: string;
-}
-
-export interface PromptInfo {
-  id: number;
-  name: string;
-}
-
-export interface LorebookInfo {
-  id: number;
-  name: string;
-}
-
-export interface CustomModulesInfo {
-  promptInfoList: PromptInfo[];
-  selectPromptIndex: number;
-  lorebookInfoList: LorebookInfo[];
-  selectLorebookIndex: number;
 }
 
 export interface CharacterProfilePayload {

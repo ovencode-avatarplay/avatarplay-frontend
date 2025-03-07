@@ -2,16 +2,19 @@ import React, {useEffect, useState} from 'react';
 
 // mui, css
 import {Snackbar, Alert, Drawer} from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
-import PreviewIcon from '@mui/icons-material/Preview';
-import DeleteIcon from '@mui/icons-material/Delete';
 import styles from './CharacterGalleryModal.module.css';
 
 // redux
-import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/StoryInfo';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 
 // Network
-import {DeleteGalleryReq, SaveGalleryReq, sendDeleteGallery, sendSaveGallery} from '@/app/NetWork/CharacterNetwork';
+import {
+  DeleteGalleryReq,
+  GalleryImageInfo,
+  SaveGalleryReq,
+  sendDeleteGallery,
+  sendSaveGallery,
+} from '@/app/NetWork/CharacterNetwork';
 
 // Components
 import CharacterGallery from './CharacterGallery';

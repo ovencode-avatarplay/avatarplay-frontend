@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styles from './CharacterImageSet.module.css';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import CharacterCreateImageButton from '../character/CreateCharacterImageButton';
+import CharacterCreateImageButton from './CreateCharacterImageButton';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import MaxTextInput from '@/components/create/MaxTextInput';
 import {inputType, inputState, displayType} from '@/components/create/MaxTextInput';

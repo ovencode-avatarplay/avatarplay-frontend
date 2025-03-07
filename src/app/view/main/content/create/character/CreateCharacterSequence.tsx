@@ -26,7 +26,6 @@ import 'swiper/css/pagination';
 // Components
 import CharacterCreateImageButton from './CreateCharacterImageButton';
 import PublishCharacter from './PublishCharacter';
-import {CreateCharacterOption} from './CreateCharacterType';
 import FullScreenImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
 import PublishCharacterBottom from './PublishCharacterBottom';
 import CustomStepper from '@/components/layout/shared/CustomStepper';
@@ -53,6 +52,12 @@ const CharacterCreateSequence: React.FC<Props> = ({
   createFinishAction,
 }) => {
   //#region Pre Define
+  interface CreateCharacterOption {
+    label: string;
+    image: string;
+    value: number;
+  }
+
   const defaultOptions: Record<string, CreateCharacterOption[]> = {
     styleOptions: [],
     genderOptions: [],
@@ -850,38 +855,38 @@ const CharacterCreateSequence: React.FC<Props> = ({
               ))}
           </article>
         );
-      case CreateCharacterStep.Publish:
-        return (
-          <div className={styles.createBox}>
-            <PublishCharacter
-              characterInfo={{
-                ...(characterInfo ?? {
-                  id: 0,
-                  name: '',
-                  introduction: '',
-                  description: '',
-                  genderType: selectedOptions.gender,
-                  mainImageUrl: generatedOptions?.imageUrl[selectedOptions.result] ?? '',
-                  portraitGalleryImageUrl: [],
-                  poseGalleryImageUrl: [],
-                  expressionGalleryImageUrl: [],
-                  visibilityType: 0,
-                  isMonetization: false,
-                  state: 0,
-                }),
-                mainImageUrl: generatedOptions?.imageUrl[selectedOptions.result] ?? '',
-                genderType: selectedOptions.gender,
-              }}
-              // createOption={generatePrompts(summaryOptions, selectedOptions)}
-              debugparam={generatedOptions?.debugParameter ?? 'not generated image'}
-              publishRequested={publishReqested}
-              publishRequestedAction={() => {
-                setPublishReqested(false);
-              }}
-              publishFinishAction={handlePublishFinishAction}
-            />
-          </div>
-        );
+      // case CreateCharacterStep.Publish:
+      //   return (
+      //     <div className={styles.createBox}>
+      //       <PublishCharacter
+      //         characterInfo={{
+      //           ...(characterInfo ?? {
+      //             id: 0,
+      //             name: '',
+      //             introduction: '',
+      //             description: '',
+      //             genderType: selectedOptions.gender,
+      //             mainImageUrl: generatedOptions?.imageUrl[selectedOptions.result] ?? '',
+      //             portraitGalleryImageUrl: [],
+      //             poseGalleryImageUrl: [],
+      //             expressionGalleryImageUrl: [],
+      //             visibilityType: 0,
+      //             isMonetization: false,
+      //             state: 0,
+      //           }),
+      //           mainImageUrl: generatedOptions?.imageUrl[selectedOptions.result] ?? '',
+      //           genderType: selectedOptions.gender,
+      //         }}
+      //         // createOption={generatePrompts(summaryOptions, selectedOptions)}
+      //         debugparam={generatedOptions?.debugParameter ?? 'not generated image'}
+      //         publishRequested={publishReqested}
+      //         publishRequestedAction={() => {
+      //           setPublishReqested(false);
+      //         }}
+      //         publishFinishAction={handlePublishFinishAction}
+      //       />
+      //     </div>
+      //   );
       default:
         return 'Unknown step';
     }

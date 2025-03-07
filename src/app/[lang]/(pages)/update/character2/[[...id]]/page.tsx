@@ -1,7 +1,7 @@
 'use client';
 
 import {GetCharacterInfoReq, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
-import CreateCharacterMain2 from '@/app/view/main/content/create/character2/CreateCharacterMain2';
+import CreateCharacterMain2 from '@/app/view/main/content/create/character/CreateCharacterMain2';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {useEffect, useState} from 'react';

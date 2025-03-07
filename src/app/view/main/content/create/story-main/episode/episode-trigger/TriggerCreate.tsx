@@ -3,13 +3,17 @@ import {useSelector} from 'react-redux';
 
 import styles from './TriggerCreate.module.css';
 
-import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
+import {
+  GalleryImageInfo,
+  GetCharacterInfoReq,
+  sendGetCharacterInfo,
+  sendGetCharacterList,
+} from '@/app/NetWork/CharacterNetwork';
 import {
   addTriggerInfo,
   CharacterInfo,
   duplicateTriggerInfo,
   EpisodeInfo,
-  GalleryImageInfo,
   TriggerActionType,
   TriggerInfo,
   TriggerMediaState,

@@ -619,7 +619,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     if ([ProfileType.User, ProfileType.PD].includes(profileType)) {
       return getLocalizedLink(`/profile/update/` + data.profileId);
     } else if ([ProfileType.Character].includes(profileType)) {
-      return getLocalizedLink(`/update/character2/` + data.profileInfo?.profileInfo.typeValueId);
+      return getLocalizedLink(`/update/character/` + data.profileInfo?.profileInfo.typeValueId);
     } else if ([ProfileType.Channel].includes(profileType)) {
       return getLocalizedLink(`/update/channel/` + data.profileId);
     }
@@ -2056,7 +2056,7 @@ export const TabContentComponentWrap = ({
             (isCharacter && tabIndex == eTabCharacterType.Character) ||
             (isChannel && tabIndex == eTabChannelType.Character)
           ) {
-            router.push(getLocalizedLink(`/update/character2/` + data.tabContentMenu.id));
+            router.push(getLocalizedLink(`/update/character/` + data.tabContentMenu.id));
           }
 
           if (

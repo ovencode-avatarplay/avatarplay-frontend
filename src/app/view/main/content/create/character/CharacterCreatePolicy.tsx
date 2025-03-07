@@ -9,7 +9,6 @@ import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
-import {LanguageType, MembershipSetting} from '@/redux-store/slices/StoryInfo';
 import DrawerPostCountry from '../common/DrawerPostCountry';
 import CharacterCreateVoiceSetting from './CharacterCreateVoiceSetting';
 import OperatorInviteDrawer from '../common/DrawerOperatorInvite';
@@ -20,6 +19,7 @@ import DrawerConnectCharacter from '../common/DrawerConnectCharacter';
 import DrawerMembershipSetting from '../common/DrawerMembershipSetting';
 import CustomSelector from '@/components/layout/shared/CustomSelector';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
+import {LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 
 interface Props {
   visibility: number;
