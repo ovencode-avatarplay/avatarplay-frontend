@@ -27,6 +27,18 @@
   line-height: 22px;
   color: #000000;
 }
+.desclabel 
+{    
+  align-self: flex-start;
+  color: var(--Neutral-900, #040415);
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 114.286% */
+  letter-spacing: -0.4px;
+}
 
 .inputBox {
   display: flex;
@@ -162,3 +174,51 @@ line-height: 155%; /* 18.6px */
   overflow: hidden;
   background-color: #000000;
 }
+
+.textInput
+{
+  width: 100%;
+}
+
+.radioButtonGroup
+{
+  align-self: flex-start;
+  display: flex;
+  gap: 24px;
+
+}
+
+.blackTag
+{
+display: flex;
+height: 36px;
+padding: 10px 18px;
+justify-content: center;
+align-items: center;
+gap: 8px;
+border-radius: 100px;
+border: 1px solid var(--Border-1, #EAECF0);
+background: var(--Neutral-800, #2C3131);
+color: #ffffff;
+}
+.lineClose
+{
+filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(1%) hue-rotate(157deg) brightness(102%) contrast(101%);
+width: 12px;
+height: 12px;
+}
+
+.blackTagContainer {
+display: flex;
+align-self: flex-start;
+flex-wrap: wrap;
+gap: 8px;
+}
+
+.tagContainer{
+display: flex;
+flex-direction: column;
+width: 100%;
+gap: 8px;
+}
+
