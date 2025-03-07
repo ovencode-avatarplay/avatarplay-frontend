@@ -83,10 +83,10 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   const [worldScenario, setWorldScenario] = useState(character.worldScenario);
   const [introduction, setIntroduction] = useState(character.introduction);
   const [secret, setSecret] = useState(character.secret);
-  const [customModulesPromptIdx, setCustomModulesPromptIdx] = useState<number>(
+  const [customModulesPromptId, setCustomModulesPromptId] = useState<number>(
     character.customModulesInfo.selectPromptId,
   );
-  const [customModulesLorebookIdx, setCustomModulesLorebookIdx] = useState<number>(
+  const [customModulesLorebookId, setCustomModulesLorebookId] = useState<number>(
     character.customModulesInfo.selectLorebookId,
   );
 
@@ -293,8 +293,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           })),
           isMonetization: isMonetization,
           nsfw: nsfw,
-          selectLorebookId: customModulesLorebookIdx,
-          selectPromptId: customModulesPromptIdx,
+          selectLorebookId: customModulesLorebookId,
+          selectPromptId: customModulesPromptId,
           creatorComment: creatorComment,
         },
         debugParameter: 'string',
@@ -498,15 +498,15 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
             worldScenario={worldScenario}
             greeting={introduction}
             secret={secret}
-            selectedPromptIdx={customModulesPromptIdx}
-            selectedLorebookIdx={customModulesLorebookIdx}
+            selectedPromptId={customModulesPromptId}
+            selectedLorebookId={customModulesLorebookId}
             onLangChange={setLanguageType}
             onCharacterDescChange={setDescription}
             onWorldScenarioChange={setWorldScenario}
             onGreetingChange={setIntroduction}
             onSecretChange={setSecret}
-            onSelectedPromptChange={setCustomModulesPromptIdx}
-            onSelectedLorebookChange={setCustomModulesLorebookIdx}
+            onSelectedPromptChange={setCustomModulesPromptId}
+            onSelectedLorebookChange={setCustomModulesLorebookId}
           />
         </>
       ),

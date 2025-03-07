@@ -283,6 +283,13 @@
     background: var(--Neutral-300, #DADCE0);
 }
 
+.selectedDropdownContainer
+{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 .dropdownButton
 {
     width: 100%;

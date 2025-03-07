@@ -14,8 +14,8 @@ interface Props {
   worldScenario: string;
   greeting: string;
   secret: string;
-  selectedPromptIdx: number;
-  selectedLorebookIdx: number;
+  selectedPromptId: number;
+  selectedLorebookId: number;
   onLangChange: (lang: number) => void;
   onCharacterDescChange: (desc: string) => void;
   onWorldScenarioChange: (scenario: string) => void;
@@ -31,8 +31,8 @@ const CharacterCreateLLM: React.FC<Props> = ({
   worldScenario,
   greeting,
   secret,
-  selectedPromptIdx,
-  selectedLorebookIdx,
+  selectedPromptId,
+  selectedLorebookId,
   onLangChange,
   onCharacterDescChange,
   onWorldScenarioChange,
@@ -278,13 +278,13 @@ const CharacterCreateLLM: React.FC<Props> = ({
         <CustomDropDown
           items={promptItems}
           displayType="Text"
-          initialValue={selectedPromptIdx}
+          initialValue={selectedPromptId}
           onSelect={(value: string | number) => handleSelectPrompt(Number(value))}
         />
         <CustomDropDown
           items={lorebookItems}
           displayType="Text"
-          initialValue={selectedLorebookIdx}
+          initialValue={selectedLorebookId}
           onSelect={(value: string | number) => handleSelectLoreBook(Number(value))}
         />
       </div>

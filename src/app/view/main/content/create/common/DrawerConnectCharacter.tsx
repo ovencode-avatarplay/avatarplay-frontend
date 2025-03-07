@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import styles from './DrawerConnectCharacter.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {BoldArrowDown} from '@ui/Icons';
+import {BoldArrowDown, LineCheck} from '@ui/Icons';
 import {getConnectList, getProfileList, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 
 interface DrawerConnectCharacterProps {
@@ -37,7 +37,14 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
   return (
     <div className={styles.dropDownArea}>
       <h2 className={styles.title2}>Connect</h2>
-      <div className={styles.connectItem} onClick={getConnectableCharacterList}>
+      <div
+        className={styles.connectItem}
+        onClick={e => {
+          e.stopPropagation();
+          getConnectableCharacterList();
+          setConnectOpen(!connectOpen);
+        }}
+      >
         {!connectCharacterInfo || connectCharacterInfo.profileId === 0 ? (
           <div className={styles.connectItemText}>Select</div>
         ) : (
@@ -47,14 +54,7 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
           </div>
         )}
 
-        <button
-          className={styles.dropdownButton}
-          onClick={e => {
-            e.stopPropagation();
-            getConnectableCharacterList();
-            setConnectOpen(!connectOpen);
-          }}
-        >
+        <button className={styles.dropdownButton}>
           <img className={styles.dropdownIcon} src={BoldArrowDown.src} alt="Toggle" />
         </button>
       </div>
@@ -73,16 +73,19 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
             {connectableCharacterList.map((item, index) => (
               <li
                 key={item.profileId || index}
-                className={styles.connectItem}
+                className={styles.dropdownItem}
                 onClick={() => {
                   onConnectCharacterInfoChange(item);
                   setConnectOpen(false);
                 }}
               >
-                <div className={styles.connectItemInfo}>
+                <div className={styles.dropdownInfo}>
                   <img className={styles.connectItemProfile} src={item.iconImageUrl} alt="Character" />
                   <div className={styles.connectItemTitle}>{item.name}</div>
                 </div>
+                {connectCharacterInfo?.profileId === item.profileId && (
+                  <img className={styles.checkIcon} src={LineCheck.src}></img>
+                )}
               </li>
             ))}
           </ul>
