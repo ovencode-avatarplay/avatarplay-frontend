@@ -4,7 +4,7 @@ import {BoldArrowDown} from '@ui/Icons';
 import CustomSelector from './CustomSelector';
 
 interface CustomDropDownSelectDrawerProps {
-  title: string;
+  title: string | React.ReactNode;
   selectedItem: string;
   onClick?: () => void;
   error?: boolean;

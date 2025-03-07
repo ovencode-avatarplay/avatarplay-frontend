@@ -432,8 +432,8 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
       {onDeleteEpisodePopup && (
         <CustomPopup
           type="alert"
-          title="Are you sure you want to delete this series?"
-          description="All episodes within the series will also be deleted and cannot be recovered."
+          title="Are you sure you want to delete this Episode?"
+          description="Episodes cannot be recovered once deleted."
           buttons={[
             {
               label: 'Cancel',

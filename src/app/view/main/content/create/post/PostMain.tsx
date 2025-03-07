@@ -5,7 +5,7 @@ import StoryDashboardHeader from '../story-main/story-dashboard/StoryDashboardHe
 import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import styles from './PostMain.module.css';
-import {BoldPlay, CircleClose, LineUpload} from '@ui/Icons';
+import {BoldPlay, CircleClose, LineClose, LineUpload} from '@ui/Icons';
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import TriggerImageGrid from '../story-main/episode/episode-trigger/TriggerImageGrid';
@@ -15,6 +15,12 @@ import PostImageGrid from './PostImageGrid';
 import {FeedInfo, RequestCreateFeed, sendCreateFeed} from '@/app/NetWork/ShortsNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import CustomInput from '@/components/layout/shared/CustomInput';
+import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
+import CustomDropDownSelectDrawer from '@/components/layout/shared/CustomDropDownSelectDrawer';
+import {VisibilityType} from '@/app/NetWork/ContentNetwork';
+import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
+import DrawerTagSelect from '../common/DrawerTagSelect';
 
 interface Props {
   id?: number;
@@ -45,7 +51,81 @@ const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoDuration, setVideoDuration] = useState<string | null>(null);
+  const [nameValue, setNameValue] = useState<string>('');
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length <= 20) {
+      setNameValue(e.target.value);
+    }
+  };
 
+  const [descValue, setrDescription] = useState<string>('');
+
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [tagOpen, setTagOpen] = useState(false);
+  const [tagList, setTagList] = useState<string[]>([]);
+  const maxTagCount = 5;
+  const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
+  const handleTagRemove = (tag: string) => {
+    setSelectedTags(selectedTags.filter(t => t !== tag));
+  };
+
+  const handleTagSelect = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      handleTagRemove(tag);
+    } else {
+      if (selectedTags.length >= maxTagCount) {
+        setSelectedTagAlertOn(true);
+        return;
+      }
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+  const tagGroups = [
+    {
+      category: 'Genre',
+      tags: [
+        'Romance',
+        'Fantasy',
+        'Action',
+        'Daily Life',
+        'Thriller',
+        'Comedy',
+        'Martial Arts',
+        'Drama',
+        'Historical Drama',
+        'Emotion',
+        'Sports',
+      ],
+    },
+    {
+      category: 'Theme',
+      tags: [
+        'Male',
+        'Female',
+        'Boyfriend',
+        'Girlfriend',
+        'Hero',
+        'Elf',
+        'Romance',
+        'Vanilla',
+        'Contemporary Fantasy',
+        'Isekai',
+        'Flirting',
+        'Dislike',
+        'Comedy',
+        'Noir',
+        'Horror',
+        'Demon',
+        'SF',
+        'Vampire',
+        'Office',
+        'Monster',
+        'Anime',
+        'Books',
+        'Aliens',
+      ],
+    },
+  ];
   useEffect(() => {
     if (isUpdate) {
       //api 추가 필요
@@ -210,6 +290,14 @@ const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
     input.click();
   };
 
+  const [selectedVisibility, setSelectedVisibility] = useState<VisibilityType>(VisibilityType.Private);
+  const [visibilityDrawerOpen, setVisibilityDrawerOpen] = useState<boolean>(false);
+  const publishItemsVisibility: SelectDrawerItem[] = [
+    {name: 'Private', onClick: () => setSelectedVisibility(VisibilityType.Private)},
+    {name: 'Unlisted', onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
+    {name: 'Public', onClick: () => setSelectedVisibility(VisibilityType.Public)},
+  ];
+
   const createFeed = async () => {
     let state = 0;
     if (mediaType == 'image') state = 1;
@@ -258,6 +346,7 @@ const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
     }
   };
 
+  const [isNsfw, setIsNsfw] = useState<boolean>(false);
   return (
     <div className={styles.box}>
       <StoryDashboardHeader
@@ -329,19 +418,90 @@ const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
             </button>
           </div>
         )}
-        <div className={styles.infoText}>Photo 0/9 or Video 0/1</div>
+        <CustomInput
+          inputType="Basic"
+          textType="Label"
+          value={nameValue}
+          onChange={handleNameChange}
+          label={
+            <span>
+              Name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+            </span>
+          }
+          placeholder="Enter a title for your post"
+          customClassName={[styles.textInput]}
+        />
+        <span className={styles.desclabel}>
+          Description <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+        </span>
+        <MaxTextInput
+          displayDataType={displayType.Hint}
+          labelText="Introduction"
+          promptValue={descValue}
+          handlePromptChange={e => setrDescription(e.target.value)}
+          maxPromptLength={500}
+          style={{minHeight: '190px', width: '100%'}}
+        />
 
-        <div className={styles.label} style={{marginTop: '28px'}}>
-          Description
-        </div>
-
-        <div className={styles.inputArea}>
-          <textarea placeholder="Text..." className={styles.textArea} value={text} onChange={handleTextChange} />
-          <div className={styles.charCount}>
-            {text.length}/{maxLength}
+        <div className={styles.tagContainer}>
+          <CustomDropDownSelectDrawer
+            title="Tag"
+            selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : ''}
+            onClick={() => {
+              setTagList(tagGroups[1].tags);
+              setTagOpen(true);
+            }}
+          ></CustomDropDownSelectDrawer>
+          <div className={styles.blackTagContainer}>
+            {selectedTags.map((tag, index) => (
+              <div key={index} className={styles.blackTag}>
+                {tag}
+                <img
+                  src={LineClose.src}
+                  className={styles.lineClose}
+                  onClick={() => handleTagRemove(tag)} // 클릭하면 해당 태그 삭제
+                />
+              </div>
+            ))}
           </div>
         </div>
+
+        <CustomDropDownSelectDrawer
+          title={
+            <span>
+              Visibility <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+            </span>
+          }
+          selectedItem={VisibilityType[selectedVisibility]}
+          onClick={() => setVisibilityDrawerOpen(true)}
+        ></CustomDropDownSelectDrawer>
+
+        <span className={styles.label}>
+          NSFW <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+        </span>
+
+        <div className={styles.radioButtonGroup}>
+          <CustomRadioButton
+            shapeType="circle"
+            displayType="buttonText"
+            value="On"
+            label="On"
+            onSelect={() => setIsNsfw(true)}
+            selectedValue={isNsfw ? 'On' : 'Off'}
+            containterStyle={{gap: '0'}}
+          />
+          <CustomRadioButton
+            shapeType="circle"
+            displayType="buttonText"
+            value="Off"
+            label="Off"
+            onSelect={() => setIsNsfw(false)}
+            selectedValue={isNsfw ? 'On' : 'Off'}
+            containterStyle={{gap: '0'}}
+          />
+        </div>
       </div>
+
       <div className={styles.contentBottom}>
         <div
           className={styles.setupButtons}
@@ -404,6 +564,24 @@ const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
           ]}
         />
       )}
+      <SelectDrawer
+        name="Filter"
+        items={publishItemsVisibility}
+        isOpen={visibilityDrawerOpen}
+        onClose={() => setVisibilityDrawerOpen(false)}
+        selectedIndex={selectedVisibility}
+      />
+      <DrawerTagSelect
+        isOpen={tagOpen}
+        onClose={() => setTagOpen(false)}
+        tagList={tagList}
+        selectedTags={selectedTags}
+        onTagSelect={handleTagSelect}
+        onRefreshTags={() => setSelectedTags([])}
+        maxTagCount={maxTagCount}
+        selectedTagAlertOn={selectedTagAlertOn}
+        setSelectedTagAlertOn={setSelectedTagAlertOn}
+      />
     </div>
   );
 };

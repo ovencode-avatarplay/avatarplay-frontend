@@ -568,7 +568,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({id}) => {
         items={publishItemsVisibility}
         isOpen={visibilityDrawerOpen}
         onClose={() => setVisibilityDrawerOpen(false)}
-        selectedIndex={selectedCategory}
+        selectedIndex={selectedVisibility}
       />
       <DrawerPostCountry
         isOpen={isPositionCountryOpen}
