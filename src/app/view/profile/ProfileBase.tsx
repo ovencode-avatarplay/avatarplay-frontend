@@ -2118,7 +2118,7 @@ const TabContentComponent = ({
   }, [inView]);
 
   const refreshTab = async () => {
-    onRefreshTab();
+    onRefreshTab(true);
   };
 
   if (isEmptyTab) {
