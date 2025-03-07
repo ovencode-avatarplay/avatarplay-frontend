@@ -12,7 +12,7 @@ import TriggerImageGrid from '../story-main/episode/episode-trigger/TriggerImage
 import ReactPlayer from 'react-player';
 import {stat} from 'fs';
 import PostImageGrid from './PostImageGrid';
-import {FeedInfo, RequestCreateFeed, sendCreateFeed} from '@/app/NetWork/ShortsNetwork';
+import {FeedInfo, CreateFeedInfo, RequestCreateFeed, sendCreateFeed} from '@/app/NetWork/ShortsNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomInput from '@/components/layout/shared/CustomInput';
@@ -21,6 +21,7 @@ import CustomDropDownSelectDrawer from '@/components/layout/shared/CustomDropDow
 import {VisibilityType} from '@/app/NetWork/ContentNetwork';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import DrawerTagSelect from '../common/DrawerTagSelect';
+import {title} from 'process';
 
 interface Props {
   id?: number;
@@ -308,27 +309,13 @@ const PostMain: React.FC<Props> = ({id, isUpdate = false}) => {
       return;
     }
 
-    const _feedInfo: FeedInfo = {
-      id: 0,
-      profileId: 0, // 추가
-      urlLinkKey: '',
-      mediaState: state, // 예시 값
+    const _feedInfo: CreateFeedInfo = {
       mediaUrlList: mediaUrls,
+      title: nameValue,
       description: text,
       hashTag: '',
-      commentCount: 0,
-      likeCount: 0,
-      disLikeCount: 0, // 추가
-      isLike: false,
-      isDisLike: false,
-      isBookmark: false,
-      isPinFix: false, // 추가
-      isFollowing: false,
-      playTime: '', // 예시 값
-      characterProfileId: 0,
-      characterProfileName: '',
-      characterProfileUrl: '',
-      createAt: '',
+      mediaState: state, // 예시 값
+      id: 0,
     };
 
     const createFeedReq: RequestCreateFeed = {

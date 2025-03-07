@@ -65,9 +65,18 @@ export interface FeedInfo {
   createAt: string;
 }
 
+export interface CreateFeedInfo {
+  id: number;
+  mediaUrlList: string[];
+  title: string;
+  description: string;
+  hashTag: string;
+  mediaState: MediaState;
+}
+
 export interface RequestCreateFeed {
   languageType: string;
-  feedInfo: FeedInfo;
+  feedInfo: CreateFeedInfo;
 }
 
 interface ResponseCreateFeed {
