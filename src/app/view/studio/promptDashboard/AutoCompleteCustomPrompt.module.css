@@ -3,8 +3,9 @@
     width: 50%;  
   }
    
-  .dropdown { 
-    overflow-y: auto;
+  .dropdown {  
+    height: 200px;
+    overflow-y: scroll;
     border: 1px solid #ccc;
     border-radius: 6px;
     background-color: white;

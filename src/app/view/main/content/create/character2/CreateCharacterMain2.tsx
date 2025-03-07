@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 
 // publish가 끝나고 다른곳으로 이동하기
 import {useRouter} from 'next/navigation';
-import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 
 import styles from './CreateCharacterMain2.module.css';
 import {BoldMixture, LineAIImage, LineDashboard, LineEdit, LineUpload} from '@ui/Icons';
@@ -313,10 +313,10 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
       // API 호출
       const response = await sendCreateCharacter2(req);
 
-      if (response.data) {
+      if (response.data || response.resultCode === 0) {
         console.log('Character created successfully:', response.data);
 
-        pushLocalizedRoute('/studio/character', router, false, true);
+        pushLocalizedRoute('/studio/character', router);
       } else {
         throw new Error('Character creation failed.');
       }

@@ -120,9 +120,7 @@ export interface CharacterInfo {
 }
 
 export interface CustomModulesInfo {
-  promptInfoList: PromptInfo[];
   selectPromptId: number;
-  lorebookInfoList: LorebookInfo[];
   selectLorebookId: number;
 }
 

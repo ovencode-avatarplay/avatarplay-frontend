@@ -19,15 +19,13 @@
               "characterInfo": {
                 "id": 0,
                 "languageType": 0,
-                "name": "",
-                "characterDescription": "",
+                "name": "", 
                 "urlLinkKey": "", 
                 "genderType": 0,
                 
                 "introduction": "",
                 "description": "",
-                "worldScenario": "",
-                "greeting": "",
+                "worldScenario": "", 
                 "secret": "",
                 
                 "chatCount": 0,
@@ -68,13 +66,9 @@
                   "paymentAmount": 0,
                   "benefits": ""
                 },
-                "customModulesInfo": {
-                  "promptInfoList": [ 
-                  ],
-                  "selectPromptIndex": 0,
-                  "lorebookInfoList": [ 
-                  ],
-                  "selectLorebookIndex": 0
+                "customModulesInfo": { 
+                  "selectPromptId": 0, 
+                  "selectLorebookId": 0
                 },
                 "pdProfileSimpleInfo": {
                   "profileTabType" : 0,
@@ -89,7 +83,8 @@
                 "state": 1,
                 
                 "createAt": "2025-02-10T00:00:00.000Z",
-                "updateAt": "2025-02-10T00:00:00.000Z"                
+                "updateAt": "2025-02-10T00:00:00.000Z"   ,
+                "creatorComment" : "string"                  
               },
               "episodeDescription": {
                 "scenarioDescription": "",
