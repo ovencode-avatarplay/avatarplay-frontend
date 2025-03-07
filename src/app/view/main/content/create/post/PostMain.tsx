@@ -375,7 +375,7 @@ const PostMain: React.FC<Props> = ({id}) => {
       <CustomArrowHeader
         title="Title"
         onClose={() => {
-          pushLocalizedRoute('/main/homefeed', router);
+          router.back();
         }}
       ></CustomArrowHeader>
 
