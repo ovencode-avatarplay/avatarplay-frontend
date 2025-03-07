@@ -852,7 +852,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
           )}
         </div>
         <section className={styles.tabSection}>
-          <div className={styles.tabHeaderContainer} style={{top: refHeader?.current?.clientHeight || 0}}>
+          <div className={styles.tabHeaderContainer} style={{top: (refHeader?.current?.clientHeight || 0) - 1}}>
             <TabHeaderWrapComponent
               indexTab={data.indexTab}
               isMine
