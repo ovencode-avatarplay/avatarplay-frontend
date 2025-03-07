@@ -231,7 +231,7 @@ type TextAreaType = {
   value: string;
 };
 
-const TextArea = ({value}: TextAreaType) => {
+export const TextArea = ({value}: TextAreaType) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const resizeTextarea = () => {

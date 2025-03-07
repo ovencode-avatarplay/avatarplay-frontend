@@ -1073,7 +1073,7 @@ export type SelectBoxProps = {
   value: {id: number; [key: string]: any} | null;
   options: {id: number; [key: string]: any}[];
   OptionComponent: (data: {id: number; [key: string]: any}, isSelected: boolean) => JSX.Element;
-  ValueComponent: (data: any) => JSX.Element;
+  ValueComponent: (data: any, isSelected?: boolean) => JSX.Element;
   ArrowComponent: () => JSX.Element;
   onChange: (id: number) => void;
   customStyles?: {
@@ -1225,7 +1225,7 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
           SingleValue: React.useCallback((props: any) => {
             return (
               <components.SingleValue {...props}>
-                {ValueComponent(props.data)} {/* 선택된 값에서는 isSingleValue = true */}
+                {ValueComponent(props.data, props.isSelected)} {/* 선택된 값에서는 isSingleValue = true */}
               </components.SingleValue>
             );
           }, []),
@@ -2275,7 +2275,7 @@ const TabContentComponent = ({
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.contentInfoList.map((one, index: number) => {
           return (
-            <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
+            <Link href={getLocalizedLink(`/content/series/` + one?.id + '?from=""')}>
               <li className={styles.item} key={one?.id}>
                 {one.mediaState == MediaState.Image && (
                   <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
