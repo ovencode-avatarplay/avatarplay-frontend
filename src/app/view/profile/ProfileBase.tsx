@@ -108,6 +108,7 @@ export enum eTabPDOtherType {
 
 export enum eTabCharacterType {
   Feed,
+  Info = 90,
   Contents = 1,
   Channel,
   Character,
