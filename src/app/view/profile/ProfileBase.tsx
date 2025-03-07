@@ -77,7 +77,6 @@ import {
   sendGetCharacterInfo,
 } from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
-import {CharacterProfileDetailComponent} from '@/app/[lang]/(pages)/profile/detail/[[...id]]/page';
 import {getBackUrl} from '@/utils/util-1';
 import {useInView} from 'react-intersection-observer';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
@@ -90,6 +89,7 @@ import PopupSubscriptionList from './PopupSubscriptionList';
 import PopupFavoriteList from './PopupFavoriteList';
 import PopupPlaylist from './PopupPlaylist';
 import {sendDeleteContent} from '@/app/NetWork/ContentNetwork';
+import {CharacterProfileDetailComponent} from './ProfileDetail';
 
 export enum eTabCommonType {
   Feed,
@@ -295,7 +295,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   useEffect(() => {
     clearProfileTab();
     if (!isPath) {
-      refreshProfileInfo(profileId);
+      refreshProfileInfo(data.profileId);
       return;
     } else {
       //컴포넌트로 가져다 쓰는 경우 isPath=fase
@@ -307,7 +307,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       setData({...data});
       return;
     }
-  }, [pathname]);
+  }, [pathname, data.profileId]);
 
   useEffect(() => {
     if (!isPath) return;
@@ -800,9 +800,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             <div className={styles.buttons}>
               <button className={styles.ad}>AD</button>
               <button className={styles.chat}>
-                <Link href={getLocalizedLink(`/profile/detail/` + data.profileInfo?.profileInfo.typeValueId)}>
-                  Chat
-                </Link>
+                <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}>Chat</Link>
               </button>
             </div>
           )}
@@ -844,9 +842,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
               </button>
               <button className={styles.chat}>
-                <Link href={getLocalizedLink(`/profile/detail/` + data.profileInfo?.profileInfo.typeValueId)}>
-                  Chat
-                </Link>
+                <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}>Chat</Link>
               </button>
             </div>
           )}
@@ -860,7 +856,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               profileType={profileType}
               onTabChange={async indexTab => {
                 data.indexTab = indexTab;
-                await refreshProfileTab(profileId, data.indexTab);
+                await refreshProfileTab(data.profileId, data.indexTab);
                 setData({...data});
               }}
             />
@@ -872,35 +868,35 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               onChange={async (filterCluster: FilterClusterType) => {
                 if ((filterCluster?.indexFilterMedia ?? -1) >= 0) {
                   data.filterCluster.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
-                  await data.refreshProfileTab(profileId, data.indexTab);
+                  await data.refreshProfileTab(data.profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
                 if ((filterCluster?.indexFilterCharacter ?? -1) >= 0) {
                   data.filterCluster.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
-                  await data.refreshProfileTab(profileId, data.indexTab);
+                  await data.refreshProfileTab(data.profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
 
                 if ((filterCluster?.indexSort ?? -1) >= 0) {
                   data.filterCluster.indexSort = filterCluster?.indexSort ?? -1;
-                  await data.refreshProfileTab(profileId, data.indexTab);
+                  await data.refreshProfileTab(data.profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
 
                 if ((filterCluster?.indexFilterChannel ?? -1) >= 0) {
                   data.filterCluster.indexFilterChannel = filterCluster?.indexFilterChannel ?? -1;
-                  await data.refreshProfileTab(profileId, data.indexTab);
+                  await data.refreshProfileTab(data.profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
 
                 if ((filterCluster?.indexFilterShared ?? -1) >= 0) {
                   data.filterCluster.indexFilterShared = filterCluster?.indexFilterShared ?? -1;
-                  await data.refreshProfileTab(profileId, data.indexTab);
+                  await data.refreshProfileTab(data.profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
                 if ((filterCluster?.indexFilterContent ?? -1) >= 0) {
                   data.filterCluster.indexFilterContent = filterCluster?.indexFilterContent ?? -1;
-                  await data.refreshProfileTab(profileId, data.indexTab);
+                  await data.refreshProfileTab(data.profileId, data.indexTab);
                   setData(v => ({...data}));
                 }
               }}
@@ -915,7 +911,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               tabIndex={data.indexTab}
               isEmptyTab={isEmptyTab}
               onRefreshTab={async (isRefreshAll: boolean) => {
-                await data.refreshProfileTab(profileId, data.indexTab, true);
+                await data.refreshProfileTab(data.profileId, data.indexTab, true);
               }}
               profileTabInfo={data.profileTabInfo}
               filterCluster={data.filterCluster}
@@ -943,7 +939,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
       {data.isOpenPopupSubscription && (
         <PopupSubscription
-          id={profileId}
+          id={data.profileId}
           onClose={() => {
             data.isOpenPopupSubscription = false;
             setData({...data});
@@ -965,7 +961,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       {data.isOpenPopupFavoritesList && (
         <PopupFavoriteList
           isMine={isMine}
-          profileId={profileId}
+          profileId={data.profileId}
           profileType={profileType}
           onClose={() => {
             data.isOpenPopupFavoritesList = false;
@@ -977,7 +973,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       {data.isOpenPopupPlayList && (
         <PopupPlaylist
           isMine={isMine}
-          profileId={profileId}
+          profileId={data.profileId}
           profileType={profileType}
           onClose={() => {
             data.isOpenPopupPlayList = false;
