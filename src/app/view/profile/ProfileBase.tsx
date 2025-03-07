@@ -38,6 +38,7 @@ import 'swiper/css';
 import {redirect, RedirectType, useParams, usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {
   CharacterProfileTabType,
+  deleteProfile,
   ExploreSortType,
   FeedMediaType,
   followProfile,
