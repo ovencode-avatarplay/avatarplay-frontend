@@ -1952,6 +1952,9 @@ export const TabContentComponentWrap = ({
   onRefreshTab,
   filterCluster,
 }: TabContentProps) => {
+  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+    getUserType(isMine, profileType);
+  const router = useRouter();
   const [data, setData] = useState<{
     tabContentMenu: TabContentMenuType;
     isShareOpened: boolean;
@@ -2022,7 +2025,32 @@ export const TabContentComponentWrap = ({
           alert('delete api 연동 필요');
         }}
         onEdit={() => {
-          alert('수정 페이지 Link 연동');
+          if (
+            (isPD && tabIndex == eTabPDType.Character) ||
+            (isCharacter && tabIndex == eTabCharacterType.Character) ||
+            (isChannel && tabIndex == eTabChannelType.Character)
+          ) {
+            router.push(getLocalizedLink(`/update/character2/` + data.tabContentMenu.id));
+          }
+
+          if (
+            (isPD && tabIndex == eTabPDType.Feed) ||
+            (isCharacter && tabIndex == eTabCharacterType.Feed) ||
+            (isChannel && tabIndex == eTabChannelType.Feed)
+          ) {
+            router.push(getLocalizedLink(`/update/post/` + data.tabContentMenu.id));
+          }
+
+          if (
+            (isCharacter && tabIndex == eTabCharacterType.Contents) ||
+            (isChannel && tabIndex == eTabChannelType.Contents)
+          ) {
+            router.push(getLocalizedLink(`/update/content/series/` + data.tabContentMenu.id));
+          }
+
+          if ((isPD && tabIndex == eTabPDOtherType.Channel) || (isCharacter && tabIndex == eTabCharacterType.Channel)) {
+            router.push(getLocalizedLink(`/update/channel/` + data.tabContentMenu.id));
+          }
         }}
         onHide={() => {
           alert('hide api 연동 필요');
