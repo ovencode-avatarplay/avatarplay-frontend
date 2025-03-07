@@ -4,7 +4,7 @@
   position: fixed;
   width: 100%;
   height: 58px;
-  max-width: var(--full-width); //js 변경요소
+  max-width: var(--full-width-percent); //js 변경요소
   top: 0;
   left: 50%;
   transform: translateX(calc(-50%));

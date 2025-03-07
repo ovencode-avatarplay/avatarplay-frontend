@@ -1,8 +1,8 @@
 .popup {
   margin: 0 auto;
-  width: calc(var(--full-width));
+  width: calc(var(--full-width-percent));
   height: 100%;
-  min-width: calc(var(--full-width));
+  min-width: calc(var(--full-width-percent));
   min-height: 100%;
   overflow-y: auto; // 내부 콘텐츠가 길면 스크롤 가능
 
@@ -141,7 +141,7 @@
 
   .btnSubscription {
     height: 50px;
-    width: calc(var(--full-width) - 14px * 2);
+    width: calc(var(--full-width-percent) - 14px * 2);
 
     color: var(--White, #FFF);
     font-feature-settings: 'liga' off, 'clig' off;
@@ -158,7 +158,7 @@
     position: fixed;
     bottom: 40px;
     height: 50px;
-    width: calc(var(--full-width) - 14px * 2);
+    width: calc(var(--full-width-percent) - 14px * 2);
 
     border-radius: 12px;
     background: var(--Neutral-800, #2C3131);

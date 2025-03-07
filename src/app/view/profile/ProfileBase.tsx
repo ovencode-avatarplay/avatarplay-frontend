@@ -1862,7 +1862,6 @@ export const TabHeaderComponent = ({
       | eTabCommonType;
   }>({indexTab: indexTab});
   const containerRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     const onResize = () => {
       setData({...data});
@@ -1880,7 +1879,8 @@ export const TabHeaderComponent = ({
 
   const calculateGap = () => {
     if (containerRef.current) {
-      const containerWidth = Math.min(document.documentElement.clientWidth, document.body.clientWidth) - 32;
+      const containerWidth = (containerRef.current?.clientWidth || 0) - 32;
+      // const containerWidth = Math.min(document.documentElement.clientWidth, document.body.clientWidth) - 32;
       // data-tab 속성이 붙은 모든 자식 요소 선택
       const tabItems = Array.from(containerRef.current.querySelectorAll('[data-tablabel]')) as HTMLElement[];
       if (tabItems.length > 1) {
