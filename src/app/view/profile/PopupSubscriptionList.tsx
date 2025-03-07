@@ -279,7 +279,12 @@ const PopupSubscriptionList = ({onClose}: Props) => {
       {data.dataRenewal.isOpen && (
         <PopupSubscription
           id={data.dataRenewal.id}
-          onClose={() => {
+          onClose={async () => {
+            data.dataRenewal.isOpen = false;
+            setData({...data});
+          }}
+          onComplete={async () => {
+            await refreshAll();
             data.dataRenewal.isOpen = false;
             setData({...data});
           }}

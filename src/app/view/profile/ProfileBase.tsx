@@ -946,6 +946,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             data.isOpenPopupSubscription = false;
             setData({...data});
           }}
+          onComplete={() => {
+            data.isOpenPopupSubscription = false;
+            setData({...data});
+          }}
         />
       )}
       {data.isOpenPopupSubscriptionList && (

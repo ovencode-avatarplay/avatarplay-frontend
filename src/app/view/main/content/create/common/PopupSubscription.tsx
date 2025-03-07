@@ -15,6 +15,7 @@ import {
 type Props = {
   id: number;
   onClose: () => void;
+  onComplete: () => void;
 };
 
 export const getUnit = (paymentType: PaymentType = PaymentType.USD) => {
@@ -34,7 +35,7 @@ export const getUnit = (paymentType: PaymentType = PaymentType.USD) => {
   }
 };
 
-const PopupSubscription = ({id, onClose}: Props) => {
+const PopupSubscription = ({id, onClose, onComplete}: Props) => {
   const [data, setData] = useState<{
     indexTab: number;
     subscriptionInfo: GetSubscribePaymentRes | null;
@@ -60,7 +61,7 @@ const PopupSubscription = ({id, onClose}: Props) => {
 
   const onSubscribe = async () => {
     await subscribeProfile({profileId: id});
-    onClose();
+    onComplete();
   };
 
   const unit = getUnit(data.subscriptionInfo?.paymentType);
