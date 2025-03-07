@@ -2031,7 +2031,7 @@ export const TabContentComponentWrap = ({
             (isCharacter && tabIndex == eTabCharacterType.Character) ||
             (isChannel && tabIndex == eTabChannelType.Character)
           ) {
-            await sendDeleteCharacter({characterId: data.tabContentMenu.id});
+            await deleteProfile({profileId: data.tabContentMenu.id});
           }
 
           if (
@@ -2050,7 +2050,7 @@ export const TabContentComponentWrap = ({
           }
 
           if ((isPD && tabIndex == eTabPDOtherType.Channel) || (isCharacter && tabIndex == eTabCharacterType.Channel)) {
-            await deleteChannel({channelId: data.tabContentMenu.id});
+            await deleteProfile({profileId: data.tabContentMenu.id});
           }
           onRefreshTab(true);
         }}

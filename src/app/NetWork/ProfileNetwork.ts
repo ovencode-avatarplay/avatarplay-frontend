@@ -2,7 +2,7 @@ import axios, {AxiosResponse} from 'axios';
 import api, {ResponseAPI} from './ApiInstance';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {FeedInfo} from './ShortsNetwork';
-import {CharacterIP} from './CharacterNetwork';
+import {CharacterIP, DeleteCharacterRes} from './CharacterNetwork';
 
 export interface GetProfileListRes {
   profileList: ProfileSimpleInfo[];
@@ -607,5 +607,26 @@ export const getConnectList = async (profileTabType: ProfileTabType = ProfileTab
     return resProfileList.data?.data?.profileList;
   } catch (e) {
     // alert('api 에러' + e);
+  }
+};
+
+export interface DeleteProfileReq {
+  profileId: number;
+}
+
+export const deleteProfile = async (payload: DeleteProfileReq) => {
+  try {
+    const res = await api.post<ResponseAPI<DeleteCharacterRes>>('Profile/delete', payload);
+
+    if (res.status !== 200) {
+      console.error('deleteProfile API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('deleteProfile API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
   }
 };
