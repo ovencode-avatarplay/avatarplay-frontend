@@ -139,6 +139,24 @@ export const sendCreateEpisode = async (payload: CreateEpisodeReq): Promise<Resp
     throw new Error('Failed to create episode. Please try again.');
   }
 };
+export interface GetEpisodeReq {
+  episodeId: number;
+}
+
+export interface GetEpisodeRes {
+  episodeInfo: ContentEpisodeInfo;
+}
+// 📌 에피소드 조회 API 호출
+export const sendGetEpisode = async (payload: GetEpisodeReq): Promise<ResponseAPI<GetEpisodeRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetEpisodeRes>>('/Content/getEpisode', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`GetEpisodeRes Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error fetching episode:', error);
+    throw new Error('Failed to fetch episode. Please try again.');
+  }
+};
 
 // 📌 시즌 번호 업데이트
 export interface UpdateSeasonNoReq {
@@ -304,5 +322,22 @@ export const sendDeleteContent = async (payload: DeleteContentReq): Promise<Resp
     const axiosError = error as AxiosError;
     console.error('Error deleting content:', axiosError.message);
     throw new Error('Failed to delete content. Please try again.');
+  }
+};
+
+export interface DeleteEpisodeReq {
+  contentEpisodeId: number;
+}
+
+export interface DeleteEpisodeRes {}
+
+export const sendDeleteEpisode = async (payload: DeleteEpisodeReq): Promise<ResponseAPI<DeleteEpisodeRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<DeleteEpisodeRes>>('/Content/deleteEpisode', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`DeleteEpisodeRes Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error deleting episode:', error);
+    throw new Error('Failed to delete episode. Please try again.');
   }
 };

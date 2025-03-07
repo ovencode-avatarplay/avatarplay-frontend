@@ -31,16 +31,11 @@ import {
   ContentEpisodeVideoInfo,
   ContentLanguageType,
   sendGetContent,
+  sendGetEpisode,
 } from '@/app/NetWork/ContentNetwork';
-import {Seasons} from './SeriesDetail';
-import {Category} from '@mui/icons-material';
-import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
-enum CountryTypes {
-  Korea = 0,
-  Japan = 1,
-}
+
 export interface CreateContentEpisodeProps {
   contentId?: number;
   curSeason: number;
@@ -56,6 +51,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
 }) => {
   const [contentInfo, setContentInfo] = useState<ContentInfo>();
 
+  console.log('alert(episodeId);', contentId, curSeason, curEpisodeCount, episodeId);
   const fetchContent = async (contentId: number) => {
     try {
       const response = await sendGetContent({contentId});
@@ -66,21 +62,22 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
     }
   };
 
-  const [editContentInfo, setEditContentInfo] = useState<ContentInfo>();
+  const [editContentInfo, setEditContentInfo] = useState<ContentEpisodeInfo>();
 
   const [defaultImage, setDefaultImage] = useState<string>();
 
   useEffect(() => {
+    if (contentId === undefined) return;
     if (episodeId === undefined) return;
 
     const fetchData = async () => {
       try {
-        const response = await sendGetContent({contentId: episodeId});
+        const response = await sendGetEpisode({episodeId});
 
         if (response.data) {
-          console.log('콘텐츠 정보:', response.data.contentInfo);
-          const content = response.data.contentInfo;
-          setEditContentInfo(content);
+          console.log('콘텐츠 정보:', response.data.episodeInfo);
+          const content = response.data.episodeInfo;
+          if (content) setEditContentInfo(content);
 
           // 기존 데이터로 초기화
           setNameValue(content.name || '');
@@ -88,8 +85,12 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
           setMediaUrls([content.thumbnailUrl || '']);
 
           setDefaultImage(content.thumbnailUrl);
-          if (content.contentVideoInfo) setEpisodeVideoInfo(content.contentVideoInfo);
-          if (content.contentWebtoonInfo) setEpisodeWebtoonInfo(content.contentWebtoonInfo);
+          if (content.episodeVideoInfo) setEpisodeVideoInfo(content.episodeVideoInfo);
+          if (content.episodeWebtoonInfo) setEpisodeWebtoonInfo(content.episodeWebtoonInfo);
+          if (content.salesStarEa > 0) {
+            setIsFree(true);
+            setPriceValue(content.salesStarEa);
+          }
         }
       } catch (error) {
         console.error('콘텐츠 조회 실패:', error);
@@ -178,6 +179,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
     }
 
     const newEpisode: ContentEpisodeInfo = {
+      id: editContentInfo?.id,
       contentId: contentInfo ? contentInfo?.id : 0, // 필수: 콘텐츠 ID
       seasonNo: curSeason, // 필수: 시즌 번호
       episodeNo: curEpisodeCount + 1, // 필수: 에피소드 번호
@@ -242,7 +244,10 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
           <span className={styles.tokenLabel}>The total token count is calulated based on the</span>
           <span className={styles.tokenLabel}>introduction with the highest number of tokens</span>
 
-          <MediaUpload title="" setContentMediaUrls={setMediaUrls}></MediaUpload>
+          <MediaUpload
+            setContentMediaUrls={setMediaUrls}
+            defaultImage={defaultImage ? defaultImage : undefined}
+          ></MediaUpload>
         </div>
         <CustomInput
           inputType="Basic"
@@ -271,10 +276,16 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
         />
 
         {contentInfo?.categoryType == ContentCategoryType.Video && (
-          <VideoContentUpload setEpisodeVideoInfo={setEpisodeVideoInfo}></VideoContentUpload>
+          <VideoContentUpload
+            setEpisodeVideoInfo={setEpisodeVideoInfo}
+            defaultEpisodeVideoInfo={editContentInfo?.episodeVideoInfo} // 기존 데이터 전달
+          />
         )}
         {contentInfo?.categoryType == ContentCategoryType.Webtoon && (
-          <WebtoonContentUpload setEpisodeWebtoonInfo={setEpisodeWebtoonInfo}></WebtoonContentUpload>
+          <WebtoonContentUpload
+            setEpisodeWebtoonInfo={setEpisodeWebtoonInfo}
+            defaultEpisodeWebtoonInfo={editContentInfo?.episodeWebtoonInfo} // 기존 데이터 전달
+          />
         )}
 
         <div className={styles.moenetization}>

@@ -53,12 +53,21 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
   useEffect(() => {}, [episodeList]);
 
   const router = useRouter();
-  const navigateToCreateContentEpisode = ({contentId, curSeason, curEpisodeCount}: CreateContentEpisodeProps) => {
+  const navigateToCreateContentEpisode = ({
+    contentId,
+    curSeason,
+    curEpisodeCount,
+    episodeId,
+  }: CreateContentEpisodeProps) => {
     // id 배열 생성 (contentId가 있을 경우 포함)
-    const ids = contentId ? [contentId, curSeason, curEpisodeCount] : [curSeason, curEpisodeCount];
+    console.log('episodeId', episodeId);
+    const ids = contentId
+      ? [contentId, curSeason, curEpisodeCount, episodeId]
+      : [curSeason, curEpisodeCount, episodeId];
 
     // 기존의 pushLocalizedRoute 함수를 활용하여 라우팅 수행
-    pushLocalizedRoute(`/create/content/episode/series/${ids.join('/')}`, router);
+    if (!episodeId) pushLocalizedRoute(`/create/content/episode/series/${ids.join('/')}`, router);
+    else pushLocalizedRoute(`/update/content/series/episode/${ids.join('/')}`, router);
   };
   const addSeason = async () => {
     if (!seriesInfo) return;
@@ -311,7 +320,17 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
                   )}
                 </div>
                 <div className={styles.episodeActions}>
-                  <button className={styles.iconButton}>
+                  <button
+                    className={styles.iconButton}
+                    onClick={() => {
+                      navigateToCreateContentEpisode({
+                        contentId: contentId,
+                        curSeason: selectedSeason,
+                        curEpisodeCount: episodeList ? episodeList.length : 0,
+                        episodeId: ep.id,
+                      });
+                    }}
+                  >
                     <img src={LineEdit.src} alt="Edit" className={styles.editIcon} />
                   </button>
                   <div className={styles.rating}>
