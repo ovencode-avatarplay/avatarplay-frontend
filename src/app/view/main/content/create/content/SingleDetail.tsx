@@ -10,6 +10,7 @@ import {
 } from '@/app/NetWork/ContentNetwork';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
+import SharePopup from '@/components/layout/shared/SharePopup';
 export const mockSingle = {
   title: 'The White King',
   genres: ['Comedy', 'Love', 'Drama'],
@@ -73,7 +74,24 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
   }, []);
 
   const router = useRouter();
+  const [isShare, setIsShare] = useState(false);
+  const handleShare = async () => {
+    const shareData = {
+      title: '공유하기 제목',
+      text: '이 링크를 확인해보세요!',
+      url: window.location.href, // 현재 페이지 URL
+    };
 
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData); // 네이티브 공유 UI 호출
+      } catch (error) {
+        console.error('공유 실패:', error);
+      }
+    } else {
+      setIsShare(true);
+    }
+  };
   return (
     <div className={styles.container}>
       {/* 상단 배경 및 네비게이션 */}
@@ -87,9 +105,9 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
           >
             <img src={BoldArrowLeft.src} alt="Back" />
           </button>
-          <button className={styles.iconButton}>
+          {/* <button className={styles.iconButton}>
             <img src={LineEdit.src} alt="Edit" />
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -97,7 +115,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
         {/* 장르 및 공유 버튼 */}
         <div className={styles.genreShare}>
           <span className={styles.genres}>{singleInfo?.genre}</span>
-          <button className={styles.iconButton}>
+          <button className={styles.iconButton} onClick={() => handleShare()}>
             <img src={BoldShare.src} alt="Share" />
           </button>
         </div>
@@ -138,9 +156,9 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
                   )}
                 </div>
                 <div className={styles.episodeActions}>
-                  <button className={styles.iconButton}>
+                  {/* <button className={styles.iconButton}>
                     <img src={LineEdit.src} alt="Edit" className={styles.editIcon} />
-                  </button>
+                  </button> */}
                   <div className={styles.rating}>
                     <img src={BoldStar.src} className={styles.starIcon} />
                     {singleInfo?.categoryType == 0 && (
@@ -160,6 +178,13 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
           </>
         )}
       </div>
+
+      <SharePopup
+        open={isShare}
+        title={'Share'}
+        url={window.location.href}
+        onClose={() => setIsShare(false)}
+      ></SharePopup>
     </div>
   );
 };

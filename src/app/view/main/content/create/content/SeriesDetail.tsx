@@ -32,6 +32,7 @@ import {Category} from '@mui/icons-material';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {CreateContentEpisodeProps} from './CreateContentEpisode';
+import SharePopup from '@/components/layout/shared/SharePopup';
 
 interface SeriesDetailProps {
   id: number;
@@ -51,7 +52,25 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
   const [seriesInfo, setSeriesInfo] = useState<ContentInfo>();
   const [episodeList, setEpisodeList] = useState<ContentEpisodeInfo[]>(); // 타입 변경
 
+  const [isShare, setIsShare] = useState(false);
   useEffect(() => {}, [episodeList]);
+  const handleShare = async () => {
+    const shareData = {
+      title: '공유하기 제목',
+      text: '이 링크를 확인해보세요!',
+      url: window.location.href, // 현재 페이지 URL
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData); // 네이티브 공유 UI 호출
+      } catch (error) {
+        console.error('공유 실패:', error);
+      }
+    } else {
+      setIsShare(true);
+    }
+  };
 
   const router = useRouter();
   const navigateToCreateContentEpisode = ({
@@ -237,9 +256,9 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
           >
             <img src={BoldArrowLeft.src} alt="Back" />
           </button>
-          <button className={styles.iconButton}>
+          {/* <button className={styles.iconButton}>
             <img src={LineEdit.src} alt="Edit" />
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -247,7 +266,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
         {/* 장르 및 공유 버튼 */}
         <div className={styles.genreShare}>
           <span className={styles.genres}>{seriesInfo?.genre}</span>
-          <button className={styles.iconButton}>
+          <button className={styles.iconButton} onClick={() => handleShare()}>
             <img src={BoldShare.src} alt="Share" />
           </button>
         </div>
@@ -370,6 +389,12 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
             ))}
         </div>
       </div>
+      <SharePopup
+        open={isShare}
+        title={'Share'}
+        url={window.location.href}
+        onClose={() => setIsShare(false)}
+      ></SharePopup>
     </div>
   );
 };
