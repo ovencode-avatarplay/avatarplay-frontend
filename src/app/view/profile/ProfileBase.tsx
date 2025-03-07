@@ -35,7 +35,7 @@ import cx from 'classnames';
 import Select, {components, StylesConfig} from 'react-select';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
-import {redirect, RedirectType, usePathname, useRouter, useSearchParams} from 'next/navigation';
+import {redirect, RedirectType, useParams, usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {
   CharacterProfileTabType,
   ExploreSortType,
@@ -109,8 +109,8 @@ export enum eTabPDOtherType {
 export enum eTabCharacterType {
   Feed,
   Contents = 1,
-  Character,
   Channel,
+  Character,
   Game,
 }
 
@@ -118,8 +118,8 @@ export enum eTabCharacterOtherType {
   Feed,
   Info = 90,
   Contents = 1,
-  Character,
   Channel,
+  Character,
   Game,
 }
 export enum eTabChannelType {
@@ -446,8 +446,15 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes} & GetChannelRes,
     isRefreshAll: boolean,
   ) => {
-    const {feedInfoList, characterInfoList, channelInfoList, storyInfoList, dataResPdInfo, channelInfo} =
-      resProfileTabInfo;
+    const {
+      feedInfoList,
+      characterInfoList,
+      channelInfoList,
+      storyInfoList,
+      dataResPdInfo,
+      channelInfo,
+      contentInfoList,
+    } = resProfileTabInfo;
     if (!data.profileTabInfo[indexTab]) {
       data.profileTabInfo[indexTab] = resProfileTabInfo;
       return;
@@ -478,13 +485,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
         data.profileTabInfo[indexTab]?.channelInfoList.push(...channelInfoList);
       }
     }
-    // if (!!contentsInfoList) {
-    //   if (isRefreshAll) {
-    //     data.profileTabInfo[indexTab].contentsInfoList = contentsInfoList;
-    //   } else {
-    //     data.profileTabInfo[indexTab].contentsInfoList.push(...contentsInfoList);
-    //   }
-    // }
+    if (!!contentInfoList) {
+      if (isRefreshAll) {
+        data.profileTabInfo[indexTab].contentInfoList = contentInfoList;
+      } else {
+        data.profileTabInfo[indexTab].contentInfoList.push(...contentInfoList);
+      }
+    }
     if (!!storyInfoList) {
       if (isRefreshAll) {
         data.profileTabInfo[indexTab].storyInfoList = storyInfoList;
@@ -572,7 +579,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
       } else if (data.indexTab == eTabCharacterOtherType.Info) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
       } else if (data.indexTab == eTabCharacterType.Character) {
-        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList;
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList.length;
       } else {
         isEmptyTab = true;
       }
@@ -612,6 +619,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     return getLocalizedLink(``);
   };
 
+  console.log('profileId : ', profileId);
   return (
     <>
       {isMine && (
@@ -839,7 +847,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
             <TabHeaderWrapComponent
               indexTab={data.indexTab}
               isMine
-              profileId={profileId}
+              profileId={data.profileId}
               profileType={profileType}
               onTabChange={async indexTab => {
                 data.indexTab = indexTab;
@@ -892,7 +900,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
 
           <div className={styles.tabContent}>
             <TabContentComponentWrap
-              profileId={profileId}
+              profileId={data.profileId}
               isMine={isMine}
               profileType={profileType}
               tabIndex={data.indexTab}
@@ -1251,8 +1259,6 @@ type TabContentProps = {
   isMine: boolean;
   tabIndex: number;
   isEmptyTab: boolean;
-  // data: DataProfileType;
-  // setData: React.Dispatch<React.SetStateAction<DataProfileType>>;
   profileTabInfo: {
     [key: number]: GetCharacterTabInfoeRes &
       GetPdTabInfoeRes &
@@ -1360,8 +1366,6 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                   },
                 }}
               />
-              {/* <div className={styles.label}>Newest</div> */}
-              {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
             </div>
           </div>
         </div>
@@ -1447,8 +1451,6 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                   },
                 }}
               />
-              {/* <div className={styles.label}>Newest</div> */}
-              {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
             </div>
           </div>
         </div>
@@ -1551,8 +1553,6 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                   },
                 }}
               />
-              {/* <div className={styles.label}>Newest</div> */}
-              {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
             </div>
           </div>
         </div>
@@ -1640,8 +1640,6 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                   },
                 }}
               />
-              {/* <div className={styles.label}>Newest</div> */}
-              {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
             </div>
           </div>
         </div>
@@ -1732,8 +1730,6 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                   },
                 }}
               />
-              {/* <div className={styles.label}>Newest</div> */}
-              {/* <img className={styles.icon} src={BoldAltArrowDown.src} alt="" /> */}
             </div>
           </div>
         </div>
@@ -1933,11 +1929,6 @@ export const TabHeaderComponent = ({
                   className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
                   data-tablabel={tab?.type}
                 >
-                  {/* <div className={styles.tabItem} data-tab={tab?.type}>
-                      <div className={cx(styles.labelTab, data.indexTab == tab?.type && styles.active)}>
-                        {tab.label}
-                      </div>
-                    </div> */}
                   {tab.label}
                 </div>
               </div>
@@ -2084,7 +2075,6 @@ const TabContentComponent = ({
       </>
     );
   }
-
   if (
     (isPD && tabIndex == eTabPDType.Feed) ||
     (isCharacter && tabIndex == eTabCharacterType.Feed) ||
@@ -2278,7 +2268,7 @@ const TabContentComponent = ({
     );
   }
 
-  if (isPD && tabIndex == eTabPDType.Channel) {
+  if ((isPD && tabIndex == eTabPDType.Channel) || (isCharacter && tabIndex == eTabCharacterType.Channel)) {
     return (
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.channelInfoList?.map((one, index: number) => {
