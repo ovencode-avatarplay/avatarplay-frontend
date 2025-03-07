@@ -185,7 +185,7 @@ export const CharacterProfileDetailComponent = ({
   );
 };
 
-const PageProfileDetail = ({profileId}: Props) => {
+const ProfileDetail = ({profileId}: Props) => {
   const router = useRouter();
   const [data, setData] = useState<ProfileType>({
     indexTab: eTabType.Feed,
@@ -225,7 +225,7 @@ const PageProfileDetail = ({profileId}: Props) => {
   );
 };
 
-export default PageProfileDetail;
+export default ProfileDetail;
 
 type TextAreaType = {
   value: string;
