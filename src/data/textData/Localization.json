@@ -1696,7 +1696,7 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_aimodel_gpt3.5": {
+    "common_aimodel_gpt35": {
       "en-US": "GPT-3.5",
       "ko": "",
       "ja": "",
@@ -1707,7 +1707,7 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_aimodel_gpt3.5description": {
+    "common_aimodel_gpt35description": {
       "en-US": "GPT-3.5 description",
       "ko": "",
       "ja": "",
@@ -1784,7 +1784,7 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_aimodel_claude3.5sonnet": {
+    "common_aimodel_claude35sonnet": {
       "en-US": "Claude 3.5 Sonnet",
       "ko": "",
       "ja": "",
@@ -1795,7 +1795,7 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_aimodel_claude3.5sonnetdescription": {
+    "common_aimodel_claude35sonnetdescription": {
       "en-US": "Claude 3.5 Sonnet description",
       "ko": "",
       "ja": "",
@@ -3566,7 +3566,7 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_button_showmore...": {
+    "common_button_showmore": {
       "en-US": "Show more...",
       "ko": "",
       "ja": "",
@@ -6129,7 +6129,7 @@
       "pt-PT": "Terror",
       "de": "Horror"
     },
-    "common_tag_movies&tv": {
+    "common_tag_moviestv": {
       "en-US": "Movies & TV",
       "ko": "영화 & 티비",
       "ja": "映画 & テレビ",
@@ -7460,7 +7460,7 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_triggercondition_checkcharacter’semotion": {
+    "common_triggercondition_checkcharactersemotion": {
       "en-US": "Check Character’s Emotion",
       "ko": "",
       "ja": "",
