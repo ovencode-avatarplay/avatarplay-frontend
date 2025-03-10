@@ -1021,7 +1021,7 @@ const ContentSetting = ({
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
       onClick: async () => {
         const dataUpdatePin: PinFixFeedReq = {
-          feedId: tabContentMenu.id,
+          feedId: Number(tabContentMenu.id),
           isFix: !tabContentMenu.isPin,
         };
         await updatePin(dataUpdatePin);
