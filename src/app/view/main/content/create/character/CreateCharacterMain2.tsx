@@ -789,7 +789,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
                       >
                         <img className={styles.editIcon} src={LineEdit.src} />
                       </button>
-                      {mainimageUrl === '' && <div className={styles.createImageText}>Create</div>}
+                      {mainimageUrl === '' && <div className={styles.createImageText}>Upload</div>}
                     </div>
                   </button>
                   {/* {mainimageUrl !== '' && (
