@@ -130,6 +130,7 @@ export interface ProfileInfo {
   followingCount: number;
   followState: FollowState;
   urlLinkKey: string;
+  pdProfileUrlLinkKey: string;
 }
 
 export enum FollowState {
@@ -168,7 +169,7 @@ export enum MediaState {
   Audio = 3,
 }
 
-export const getProfileInfo = async (urlLinkKey: number) => {
+export const getProfileInfo = async (urlLinkKey: string) => {
   const data: GetProfileInfoReq = {
     languageType: getCurrentLanguage(),
     urlLinkKey: urlLinkKey,

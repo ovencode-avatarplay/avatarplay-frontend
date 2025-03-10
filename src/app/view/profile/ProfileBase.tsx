@@ -625,9 +625,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     if ([ProfileType.User, ProfileType.PD].includes(profileType)) {
       return getLocalizedLink(`/profile/update/` + data.profileId);
     } else if ([ProfileType.Character].includes(profileType)) {
-      return getLocalizedLink(`/update/character/` + data.profileInfo?.profileInfo.typeValueId);
+      return getLocalizedLink(`/update/character/` + data.urlLinkKey);
     } else if ([ProfileType.Channel].includes(profileType)) {
-      return getLocalizedLink(`/update/channel/` + data.profileId);
+      return getLocalizedLink(`/update/channel/` + data.urlLinkKey);
     }
     return getLocalizedLink(``);
   };
@@ -760,7 +760,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           )}
           {isCharacter && (
             <div className={styles.verify}>
-              <Link href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileId + '?from=""')}>
+              <Link
+                href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileUrlLinkKey + '?from=""')}
+              >
                 <span className={styles.label}>Manager: {data.profileInfo?.profileInfo?.pdEmail}</span>
               </Link>
             </div>
