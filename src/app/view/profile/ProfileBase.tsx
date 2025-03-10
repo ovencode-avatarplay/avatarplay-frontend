@@ -166,7 +166,7 @@ export enum eSharedFilterType {
 type TabContentMenuType = {
   isSettingOpen: boolean;
   isPin: boolean;
-  id: number;
+  id: number | string;
 };
 
 type DataProfileType = {
@@ -2190,7 +2190,7 @@ const TabContentComponent = ({
                         e.preventDefault();
                         e.stopPropagation();
                         const dataContextMenu = {
-                          id: one.id,
+                          id: one.urlLinkKey,
                           isPin: one?.isPinFix || false,
                           isSettingOpen: true,
                         };
@@ -2252,6 +2252,7 @@ const TabContentComponent = ({
                     onClick={e => {
                       e.preventDefault();
                       e.stopPropagation();
+
                       const dataContextMenu = {
                         id: one.id,
                         isPin: one?.isPinFix || false,
