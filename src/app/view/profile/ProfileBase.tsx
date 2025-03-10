@@ -1172,6 +1172,10 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
       ...customStyles?.dropdownIndicator,
     }),
   };
+  useEffect(() => {
+    if (!value) return;
+    setSelectedOption(value);
+  }, [value]);
 
   return (
     <div

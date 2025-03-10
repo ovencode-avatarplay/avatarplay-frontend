@@ -1,5 +1,5 @@
 'use client';
-
+import parse from 'html-react-parser';
 import {
   BoldAltArrowDown,
   BoldArchive,
@@ -15,27 +15,46 @@ import {
   LineCheck,
   LineEdit,
 } from '@ui/Icons';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './ContentSeriesDetail.module.scss';
 import cx from 'classnames';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {TextArea} from '@/app/view/profile/ProfileDetail';
 import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
+import {
+  GetContentReq,
+  GetContentRes,
+  GetSeasonEpisodesReq,
+  GetSeasonEpisodesRes,
+  sendGetContent,
+  sendGetSeasonEpisodes,
+} from '@/app/NetWork/ContentNetwork';
+import SharePopup from '@/components/layout/shared/SharePopup';
 
-type Props = {};
+type Props = {
+  id: number;
+};
 
 enum eTabType {
   Episodes,
   About,
 }
 
-const ContentSeriesDetail = (props: Props) => {
+const ContentSeriesDetail = ({id}: Props) => {
   const router = useRouter();
   const [data, setData] = useState<{
     indexTab: eTabType;
+    dataContent: GetContentRes | null;
+    dataEpisodes: GetSeasonEpisodesRes | null;
+    season: number;
+    isShareOpened: boolean;
   }>({
     indexTab: eTabType.Episodes,
+    dataContent: null,
+    dataEpisodes: null,
+    season: 0,
+    isShareOpened: false,
   });
 
   const routerBack = () => {
@@ -45,6 +64,60 @@ const ContentSeriesDetail = (props: Props) => {
       router.replace(getLocalizedLink('/main/homefeed'));
     } else {
       router.replace(prevPath);
+    }
+  };
+
+  useEffect(() => {
+    refreshInfo();
+  }, []);
+
+  const refreshInfo = async () => {
+    const dataGetContent: GetContentReq = {
+      contentId: id,
+    };
+    const resGetContent = await sendGetContent(dataGetContent);
+    const seasonNo = 1;
+    console.log('resGetContnet', resGetContent.data);
+
+    if (resGetContent?.data) {
+      data.dataContent = resGetContent?.data;
+    }
+    const dataGetSeasonEpisodesReq: GetSeasonEpisodesReq = {contentId: id, seasonNo: seasonNo};
+
+    const resGetSeasonEpisodes = await sendGetSeasonEpisodes(dataGetSeasonEpisodesReq);
+    console.log('rsGetSeasonEpisodes : ', resGetSeasonEpisodes.data);
+    if (resGetSeasonEpisodes.data) {
+      data.dataEpisodes = resGetSeasonEpisodes.data;
+    }
+    setData({...data});
+  };
+
+  const genreList = data.dataContent?.contentInfo.genre.split(',').map(v => v.trim());
+  const genreStr = genreList?.join('&nbsp;&nbsp;/&nbsp;&nbsp;') || '';
+
+  const seasonCount = data.dataContent?.contentInfo?.maxSeasonNo || 0;
+  const seasonList = Array.from({length: seasonCount}, (_, i) => ({
+    value: `Season ${i + 1}`,
+    id: i,
+  }));
+  console.log(seasonList[0]);
+
+  const handleShare = async (url: string = window.location.href) => {
+    const shareData = {
+      title: '공유하기 제목',
+      text: '이 링크를 확인해보세요!',
+      url: url, // 현재 페이지 URL
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData); // 네이티브 공유 UI 호출
+      } catch (error) {
+        console.error('공유 실패:', error);
+      }
+    } else {
+      data.isShareOpened = true;
+      setData({...data});
     }
   };
 
@@ -63,7 +136,7 @@ const ContentSeriesDetail = (props: Props) => {
       </header>
       <main className={styles.main}>
         <section className={styles.thumbnailWrap}>
-          <img src="/images/profile_sample/img_sample_profile1.png" alt="" />
+          <img src={data.dataContent?.contentInfo.thumbnailUrl} alt="" />
         </section>
         <button className={styles.btnPlayWrap}>
           <img src={BoldAudioPlay.src} alt="" />
@@ -76,7 +149,12 @@ const ContentSeriesDetail = (props: Props) => {
               <div className={styles.label}>Favorite</div>
             </div>
             <div className={styles.lineVertical}></div>
-            <div className={styles.iconWrap}>
+            <div
+              className={styles.iconWrap}
+              onClick={() => {
+                handleShare();
+              }}
+            >
               <img src={BoldShare.src} alt="" />
               <div className={styles.label}>Share</div>
             </div>
@@ -92,7 +170,7 @@ const ContentSeriesDetail = (props: Props) => {
               <div className={styles.label}>Gift</div>
             </div>
           </ul>
-          <div className={styles.genreWrap}> Comedy&nbsp;&nbsp;/&nbsp;&nbsp;Love&nbsp;&nbsp;/&nbsp;&nbsp;Drama</div>
+          <div className={styles.genreWrap}> {parse(genreStr)}</div>
         </section>
         <section className={styles.contentSection}>
           <ul
@@ -125,11 +203,8 @@ const ContentSeriesDetail = (props: Props) => {
               <>
                 <div className={styles.selectSeason}>
                   <SelectBox
-                    value={{value: 'Season 1', id: 0}}
-                    options={[
-                      {value: 'Season 1', id: 0},
-                      {value: 'Season 2', id: 1},
-                    ]}
+                    value={seasonList?.[0]}
+                    options={seasonList}
                     ArrowComponent={SelectBoxArrowComponent}
                     ValueComponent={SelectBoxValueComponent}
                     OptionComponent={SelectBoxOptionComponent}
@@ -151,55 +226,47 @@ const ContentSeriesDetail = (props: Props) => {
                 </div>
 
                 <ul className={styles.episodeList}>
-                  <li className={styles.item}>
-                    <div className={styles.left}>
-                      <div className={styles.imgWrap}>
-                        <img className={styles.thumbnail} src="/images/profile_sample/img_sample_profile1.png" alt="" />
-                        <img src={BoldLock.src} alt="" className={styles.iconLock} />
-                      </div>
+                  {data.dataEpisodes?.episodeList.map((one, index) => {
+                    return (
+                      <li className={styles.item} key={`${data.season}_${one.episodeId}`}>
+                        <div className={styles.left}>
+                          <div className={styles.imgWrap}>
+                            <img className={styles.thumbnail} src={one.thumbnailUrl} alt="" />
+                            <img src={BoldLock.src} alt="" className={styles.iconLock} />
+                          </div>
 
-                      <div className={styles.name}>1. Pilot</div>
-                    </div>
-                    <div className={styles.right}>
-                      <div className={styles.starWrap}>
-                        <img src={BoldStar.src} alt="" className={styles.iconStar} />
-                        <div className={styles.count}>12</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li className={styles.item}>
-                    <div className={styles.left}>
-                      <div className={styles.imgWrap}>
-                        <img className={styles.thumbnail} src="/images/profile_sample/img_sample_profile1.png" alt="" />
-                        <img src={BoldLock.src} alt="" className={styles.iconLock} />
-                      </div>
-
-                      <div className={styles.name}>1. Pilot</div>
-                    </div>
-                    <div className={styles.right}>
-                      <div className={styles.starWrap}>
-                        <img src={BoldStar.src} alt="" className={styles.iconStar} />
-                        <div className={styles.count}>12</div>
-                      </div>
-                    </div>
-                  </li>
+                          <div className={styles.name}>{`${one.episodeNo}.${one.episodeName}`}</div>
+                        </div>
+                        <div className={styles.right}>
+                          <div className={styles.starWrap}>
+                            <img src={BoldStar.src} alt="" className={styles.iconStar} />
+                            <div className={styles.count}>99</div>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
               </>
             )}
 
             {data.indexTab == eTabType.About && (
               <div className={styles.textareaWrap}>
-                <TextArea
-                  value={
-                    "In Ruben Östlund's wickedly funny Palme d'Or winner, social hierarchy is turned upside down, revealing the tawdry relationship between power and beauty. Celebrity model couple, Carl (Harris Dickinson) and Yaya (Charlbi Dean), are invited on a luxury cruise for the uber-rich, helmed by an unhinged boat captain (Woody Harrelson). What first appeared instagrammable ends catastrophically, leaving the survivors stranded on a desert island and fighting for survival."
-                  }
-                ></TextArea>
+                <TextArea value={data.dataContent?.contentInfo?.description || ''}></TextArea>
               </div>
             )}
           </section>
         </section>
       </main>
       <footer></footer>
+      <SharePopup
+        open={data.isShareOpened}
+        title={data.dataContent?.contentInfo.name || ''}
+        url={window.location.href}
+        onClose={() => {
+          setData(v => ({...v, isShareOpened: false}));
+        }}
+      ></SharePopup>
     </>
   );
 };

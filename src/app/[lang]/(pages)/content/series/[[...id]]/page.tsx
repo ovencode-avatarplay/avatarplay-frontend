@@ -1,12 +1,18 @@
 import Series from '@/app/view/main/content/contents/series/ContentSeriesDetail';
 import React from 'react';
 
-type Props = {};
+type Props = {
+  params: {
+    id?: string[];
+  };
+};
 
-const page = (props: Props) => {
+const page = ({params}: Props) => {
+  console.log('params : ', params);
+  const id = parseInt(params?.id?.[0] ?? '0') || 0;
   return (
     <>
-      <Series />
+      <Series id={id} />
     </>
   );
 };
