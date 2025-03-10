@@ -15,7 +15,7 @@ import {
   LineCheck,
   LineEdit,
 } from '@ui/Icons';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styles from './ContentSeriesDetail.module.scss';
 import cx from 'classnames';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
@@ -31,6 +31,7 @@ import {
   sendGetSeasonEpisodes,
 } from '@/app/NetWork/ContentNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
+import Link from 'next/link';
 
 type Props = {
   id: number;
@@ -42,6 +43,7 @@ enum eTabType {
 }
 
 const ContentSeriesDetail = ({id}: Props) => {
+  const refThumbnailWrap = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   const [data, setData] = useState<{
     indexTab: eTabType;
@@ -121,21 +123,25 @@ const ContentSeriesDetail = ({id}: Props) => {
     }
   };
 
+  const onEdit = () => {};
+
   return (
     <>
-      <header className={styles.header}>
-        <img
-          className={styles.btnBack}
-          src={BoldArrowLeft.src}
-          alt=""
-          onClick={() => {
-            routerBack();
-          }}
-        />
-        <img className={styles.btnEdit} src={LineEdit.src} alt="" />
-      </header>
       <main className={styles.main}>
-        <section className={styles.thumbnailWrap}>
+        <header className={styles.header}>
+          <img
+            className={styles.btnBack}
+            src={BoldArrowLeft.src}
+            alt=""
+            onClick={() => {
+              routerBack();
+            }}
+          />
+          <Link href={getLocalizedLink(`/create/content/series/${id}`)}>
+            <img className={styles.btnEdit} src={LineEdit.src} alt="" />
+          </Link>
+        </header>
+        <section ref={refThumbnailWrap} className={styles.thumbnailWrap}>
           <img src={data.dataContent?.contentInfo.thumbnailUrl} alt="" />
         </section>
         <button className={styles.btnPlayWrap}>
@@ -171,8 +177,7 @@ const ContentSeriesDetail = ({id}: Props) => {
             </div>
           </ul>
           <div className={styles.genreWrap}> {parse(genreStr)}</div>
-        </section>
-        <section className={styles.contentSection}>
+
           <ul
             className={styles.tabs}
             onClick={async (e: React.MouseEvent<HTMLUListElement, MouseEvent>) => {
@@ -198,33 +203,34 @@ const ContentSeriesDetail = ({id}: Props) => {
               About
             </li>
           </ul>
+          <div className={styles.selectSeason}>
+            <SelectBox
+              value={seasonList?.[0]}
+              options={seasonList}
+              ArrowComponent={SelectBoxArrowComponent}
+              ValueComponent={SelectBoxValueComponent}
+              OptionComponent={SelectBoxOptionComponent}
+              onChange={async id => {}}
+              customStyles={{
+                menuList: {
+                  borderRadius: '10px',
+                  border: '1px solid var(--Border-1, #EAECF0)',
+                  background: 'var(--White, #FFF)',
+                },
+                option: {
+                  padding: 0,
+                },
+                menu: {
+                  marginTop: '4px',
+                },
+              }}
+            />
+          </div>
+        </section>
+        <section className={styles.contentSection}>
           <section className={styles.tabContentSection}>
             {data.indexTab == eTabType.Episodes && (
               <>
-                <div className={styles.selectSeason}>
-                  <SelectBox
-                    value={seasonList?.[0]}
-                    options={seasonList}
-                    ArrowComponent={SelectBoxArrowComponent}
-                    ValueComponent={SelectBoxValueComponent}
-                    OptionComponent={SelectBoxOptionComponent}
-                    onChange={async id => {}}
-                    customStyles={{
-                      menuList: {
-                        borderRadius: '10px',
-                        border: '1px solid var(--Border-1, #EAECF0)',
-                        background: 'var(--White, #FFF)',
-                      },
-                      option: {
-                        padding: 0,
-                      },
-                      menu: {
-                        marginTop: '4px',
-                      },
-                    }}
-                  />
-                </div>
-
                 <ul className={styles.episodeList}>
                   {data.dataEpisodes?.episodeList.map((one, index) => {
                     return (
