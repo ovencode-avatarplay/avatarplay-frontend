@@ -2033,7 +2033,7 @@ export const TabContentComponentWrap = ({
             (isCharacter && tabIndex == eTabCharacterType.Character) ||
             (isChannel && tabIndex == eTabChannelType.Character)
           ) {
-            await deleteProfile({profileId: data.tabContentMenu.id});
+            await deleteProfile({profileId: Number(data.tabContentMenu.id)});
           }
 
           if (
@@ -2041,18 +2041,18 @@ export const TabContentComponentWrap = ({
             (isCharacter && tabIndex == eTabCharacterType.Feed) ||
             (isChannel && tabIndex == eTabChannelType.Feed)
           ) {
-            await deleteFeed({feedId: data.tabContentMenu.id});
+            await deleteFeed({feedId: Number(data.tabContentMenu.id)});
           }
 
           if (
             (isCharacter && tabIndex == eTabCharacterType.Contents) ||
             (isChannel && tabIndex == eTabChannelType.Contents)
           ) {
-            await sendDeleteContent({contentId: data.tabContentMenu.id});
+            await sendDeleteContent({contentId: Number(data.tabContentMenu.id)});
           }
 
           if ((isPD && tabIndex == eTabPDOtherType.Channel) || (isCharacter && tabIndex == eTabCharacterType.Channel)) {
-            await deleteProfile({profileId: data.tabContentMenu.id});
+            await deleteProfile({profileId: Number(data.tabContentMenu.id)});
           }
           onRefreshTab(true);
         }}
