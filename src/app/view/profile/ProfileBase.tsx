@@ -90,6 +90,7 @@ import PopupFavoriteList from './PopupFavoriteList';
 import PopupPlaylist from './PopupPlaylist';
 import {sendDeleteContent} from '@/app/NetWork/ContentNetwork';
 import {CharacterProfileDetailComponent} from './ProfileDetail';
+import PopupFriends from './PopupFriends';
 
 export enum eTabCommonType {
   Feed,
@@ -199,6 +200,7 @@ type DataProfileType = {
   isOpenPopupSubscriptionList: boolean;
   isOpenPopupFavoritesList: boolean;
   isOpenPopupPlayList: boolean;
+  isOpenPopupFriendsList: boolean;
 
   gap: number;
 
@@ -277,6 +279,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     isOpenPopupSubscriptionList: false,
     isOpenPopupFavoritesList: false,
     isOpenPopupPlayList: false,
+    isOpenPopupFriendsList: false,
 
     gap: 0,
 
@@ -627,7 +630,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     } else if ([ProfileType.Character].includes(profileType)) {
       return getLocalizedLink(`/update/character/` + data.urlLinkKey);
     } else if ([ProfileType.Channel].includes(profileType)) {
-      return getLocalizedLink(`/update/channel/` + data.urlLinkKey);
+      return getLocalizedLink(`/update/channel/` + data.profileId);
     }
     return getLocalizedLink(``);
   };
@@ -794,7 +797,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               <button
                 className={styles.friends}
                 onClick={() => {
-                  alert('Add friends 구현 예정');
+                  data.isOpenPopupFriendsList = true;
+                  setData({...data});
                 }}
               >
                 Add Friends
@@ -982,6 +986,15 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           profileType={profileType}
           onClose={() => {
             data.isOpenPopupPlayList = false;
+            setData({...data});
+          }}
+        />
+      )}
+
+      {data.isOpenPopupFriendsList && (
+        <PopupFriends
+          onClose={() => {
+            data.isOpenPopupFriendsList = false;
             setData({...data});
           }}
         />

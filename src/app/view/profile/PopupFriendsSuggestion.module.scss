@@ -1,0 +1,216 @@
+.header {
+  width: calc(var(--full-width-percent));
+  padding: 9px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+
+  img {
+    box-sizing: content-box;
+    cursor: pointer;
+  }
+
+  .left {
+    display: flex;
+    align-items: center;
+
+
+    .btnBack {
+      padding: 10px 0 10px 16px;
+      width: 20px;
+      height: 20px;
+      filter: brightness(0) saturate(100%);
+    }
+
+    .title {
+      color: var(--Black, #000);
+      font-family: Lato;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 20px;
+      /* 100% */
+      letter-spacing: -0.4px;
+    }
+  }
+
+  .right {
+    .btnAdd {
+      filter: brightness(0) saturate(100%);
+      padding-right: 16px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+
+
+
+}
+
+.main {
+  margin-top: 15px;
+  padding: 0 16px;
+
+  .searchWrap {
+    padding: 9px 12px;
+    display: flex;
+    align-items: center;
+
+    border-radius: 36px;
+    background: var(--Neutral-100, #F1F3F4);
+
+    .iconSearch {
+      width: 15px;
+      height: 15px;
+    }
+
+    input {
+      margin-left: 10px;
+      width: 100%;
+
+      color: var(--Text-Color-Placeholder, var(--Neutral-700, #5F6368));
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Lato;
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 18px;
+      /* 120% */
+      letter-spacing: -0.4px;
+
+      &::placeholder {
+        color: var(--Neutral-400, #BDC1C6);
+        font-family: Lato;
+        font-size: 15px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: -0.3px;
+      }
+    }
+  }
+
+  .shareWrap {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .btnAdd {
+      width: 24px;
+      height: 24px;
+
+      filter: brightness(0) saturate(100%);
+
+    }
+
+    .label {
+      color: var(--Black, #000);
+      font-family: Lato;
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+      letter-spacing: -0.3px;
+    }
+
+    cursor: pointer;
+  }
+
+  .count {
+    margin-top: 14px;
+
+    color: var(--Black, #000);
+    font-family: Lato;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.3px;
+  }
+
+  .followList {
+    margin-top: 22px;
+
+    li.item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        .thumbnail {
+          width: 54px;
+          height: 54px;
+          border-radius: 50%;
+
+        }
+
+        .infoWrap {
+          .name {
+            color: var(--Black, #000);
+            font-family: Lato;
+            font-size: 15px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            letter-spacing: -0.3px;
+          }
+
+          .role {
+            color: var(--Black, #000);
+            font-family: Lato;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            letter-spacing: -0.24px;
+          }
+        }
+      }
+
+      .right {
+        .follow {
+          width: 75px;
+          height: 36px;
+
+          border-radius: 8px;
+          background: var(--Neutral-800, #2C3131);
+
+          color: var(--White, #FFF);
+          font-feature-settings: 'liga' off, 'clig' off;
+          font-family: Lato;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 20px;
+          /* 142.857% */
+          letter-spacing: -0.4px;
+
+          &.active {
+            background: var(--Neutral-100, #F1F3F4);
+
+            color: var(--Black, #000);
+            font-feature-settings: 'liga' off, 'clig' off;
+            font-family: Lato;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 20px;
+            /* 142.857% */
+            letter-spacing: -0.4px;
+          }
+        }
+      }
+    }
+
+    li.item+li.item {
+      margin-top: 14px;
+    }
+  }
+}
