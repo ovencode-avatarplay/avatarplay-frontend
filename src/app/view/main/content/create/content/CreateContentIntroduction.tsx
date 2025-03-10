@@ -13,6 +13,7 @@ import {
   GetContentListReq,
   sendDeleteContent,
   sendGetContentList,
+  VisibilityType,
 } from '@/app/NetWork/ContentNetwork';
 import ContentCard from './ContentCard';
 import {useSelector} from 'react-redux';
@@ -170,22 +171,29 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
                 </button>
 
                 <div className={styles.cardGroup}>
-                  {contentList.map((content, index) => (
-                    <ContentCard
-                      key={index}
-                      content={content}
-                      onAddEpisode={() => {
-                        pushLocalizedRoute(`/create/content/series/${content.id}`, router);
-                      }}
-                      onDelete={() => {
-                        setIsDeleteNum(content.id);
-                        setIsDeletePopup(true);
-                      }}
-                      onEdit={() => {
-                        editContente(content.id, activeTab);
-                      }}
-                    />
-                  ))}
+                  {contentList
+                    .filter(
+                      content => selectedFilter === FilterTypes.All || content.visibility === VisibilityType.Public,
+                    )
+                    .map((content, index) => (
+                      <ContentCard
+                        key={index}
+                        content={content}
+                        onAddEpisode={() => {
+                          pushLocalizedRoute(
+                            `/create/content/${activeTab === ContentType.Series ? 'series' : 'single'}/${content.id}`,
+                            router,
+                          );
+                        }}
+                        onDelete={() => {
+                          setIsDeleteNum(content.id);
+                          setIsDeletePopup(true);
+                        }}
+                        onEdit={() => {
+                          editContente(content.id, activeTab);
+                        }}
+                      />
+                    ))}
                 </div>
               </>
             ) : (
@@ -204,21 +212,25 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
                 </button>
 
                 <div className={styles.cardGroup}>
-                  {contentList.map((content, index) => (
-                    <ContentCard
-                      key={index}
-                      content={content}
-                      onAddEpisode={() => {
-                        pushLocalizedRoute(`/create/content/single/${content.id}`, router);
-                      }}
-                      onDelete={() => {
-                        deleteContente(content.id);
-                      }}
-                      onEdit={() => {
-                        editContente(content.id, activeTab);
-                      }}
-                    />
-                  ))}
+                  {contentList
+                    .filter(
+                      content => selectedFilter === FilterTypes.All || content.visibility === VisibilityType.Public,
+                    )
+                    .map((content, index) => (
+                      <ContentCard
+                        key={index}
+                        content={content}
+                        onAddEpisode={() => {
+                          pushLocalizedRoute(`/create/content/single/${content.id}`, router);
+                        }}
+                        onDelete={() => {
+                          deleteContente(content.id);
+                        }}
+                        onEdit={() => {
+                          editContente(content.id, activeTab);
+                        }}
+                      />
+                    ))}
                 </div>
               </>
             ) : (
