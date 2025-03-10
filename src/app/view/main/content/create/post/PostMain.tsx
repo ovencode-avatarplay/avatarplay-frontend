@@ -160,7 +160,6 @@ const PostMain: React.FC<Props> = ({id}) => {
               if (existingFeed.mediaState == MediaState.Image) setMediaType('image');
               else if (existingFeed.mediaState == MediaState.Video) setMediaType('video');
 
-              setText(existingFeed.description || '');
               setNameValue(existingFeed.characterProfileName || '');
               setrDescription(existingFeed.description || '');
               setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
@@ -357,7 +356,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           mediaState: state, // 예: 이미지 = 1, 비디오 = 2 (서버 문서 참고)
           mediaUrlList: mediaUrls,
           title: nameValue,
-          description: text,
+          description: descValue,
           hashTag: selectedTags.join(', '),
           visibilityType: selectedVisibility, // 예: 공개 = 1, 비공개 = 2
           nsfw: isNsfw,
@@ -369,6 +368,7 @@ const PostMain: React.FC<Props> = ({id}) => {
       setLoading(false);
       if (response.resultCode === 0) {
         console.log('✅ Feed created successfully');
+        router.back();
       } else {
         console.error('❌ Failed to create feed:', response.resultMessage);
       }
