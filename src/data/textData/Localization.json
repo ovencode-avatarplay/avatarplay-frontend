@@ -2093,7 +2093,7 @@
       "de": ""
     },
     "common_alert_023": {
-      "en-US": "Do you want to submit<br>this lorebook?",
+      "en-US": "Do you want to submit<br>{0}?",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2665,7 +2665,7 @@
       "de": ""
     },
     "common_alert_075": {
-      "en-US": "Are you sure you want to<br>exit ‘title of lorebook’ ",
+      "en-US": "Are you sure you want to<br>exit {0} ",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2689,6 +2689,28 @@
     "common_alert_077": {
       "en-US": "Please select all required<br>options before proceeding.",
       "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_alert_078": {
+      "en-US": "Make New Custom Prompt",
+      "ko": "로어북 이름을 정하는 팝업 타이틀",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_alert_079": {
+      "en-US": "Input new custom prompt name",
+      "ko": "로어북 이름을 입력하세요",
       "ja": "",
       "fr": "",
       "es": "",
@@ -3753,30 +3775,41 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_button_usercompletion": {
-      "en-US": "{{user}}",
-      "ko": "",
-      "ja": "",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
-    "common_button_charactercompletion": {
-      "en-US": "{{character}}",
-      "ko": "",
-      "ja": "",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
     "common_button_mixture": {
       "en-US": "Mixture",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_button_char": {
+      "en-US": "Char",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_button_usercommand": {
+      "en-US": "{{User}}",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_button_charcommand": {
+      "en-US": "{{Char}}",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -4348,7 +4381,7 @@
       "de": ""
     },
     "common_sample_001": {
-      "en-US": "{{User}}",
+      "en-US": "Write a comment",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -4359,7 +4392,7 @@
       "de": ""
     },
     "common_sample_002": {
-      "en-US": "{{Character}}",
+      "en-US": "Write a message",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -4371,7 +4404,7 @@
     },
     "common_sample_003": {
       "en-US": 208181629,
-      "ko": "AI 이미지 생성 시 랜덤 시프 예시 텍스트",
+      "ko": "AI 이미지 생성 시 랜덤 시드 예시 텍스트",
       "ja": "",
       "fr": "",
       "es": "",
@@ -4381,7 +4414,7 @@
       "de": ""
     },
     "common_sample_004": {
-      "en-US": "###About {{char}} : <br>Lore<br>###About {{user}} : <br>###Instruction <br>###Response:",
+      "en-US": "###About {{char}}: <br>Lore<br>###About {{user}}: <br>###Instruction <br>###Response:",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -4515,7 +4548,7 @@
     "common_sample_016": {
       "en-US": "#add an annotation",
       "ko": "김경아",
-      "ja": "",
+      "ja": "프로필 캐릭터 이름 샘플 텍스트",
       "fr": "",
       "es": "",
       "zh-CN": "",
@@ -4899,7 +4932,7 @@
     },
     "common_sample_051": {
       "en-US": "Character name",
-      "ko": "커스텀 모듈의 Preview 기능을 사용할 때 표시할 {{example_dialogues}} Mark예시 텍스트1",
+      "ko": "커스텀 모듈의 Preview 기능을 사용할 때 표시할 {{example_dialogues}} {0}예시 텍스트1 *캐릭터",
       "ja": "",
       "fr": "",
       "es": "",
@@ -4910,7 +4943,7 @@
     },
     "common_sample_052": {
       "en-US": "Character name",
-      "ko": "커스텀 모듈의 Preview 기능을 사용할 때 표시할 {{example_dialogues}} Mark예시 텍스트2",
+      "ko": "커스텀 모듈의 Preview 기능을 사용할 때 표시할 {{example_dialogues}} {0}예시 텍스트2 *캐릭터",
       "ja": "",
       "fr": "",
       "es": "",
@@ -5251,28 +5284,6 @@
     },
     "common_sample_083": {
       "en-US": "This is the description of the character<br>(Character description is also public to other<br>users)",
-      "ko": "",
-      "ja": "",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
-    "common_sample_084": {
-      "en-US": "Write a comment",
-      "ko": "",
-      "ja": "",
-      "fr": "",
-      "es": "",
-      "zh-CN": "",
-      "zh-TW": "",
-      "pt-PT": "",
-      "de": ""
-    },
-    "common_sample_085": {
-      "en-US": "Write a message",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -7262,7 +7273,7 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_tagprompty_1girl": {
+    "common_tagprompty_onegirl": {
       "en-US": "1girl",
       "ko": "",
       "ja": "",
@@ -7273,7 +7284,7 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_tagprompty_1man": {
+    "common_tagprompty_oneman": {
       "en-US": "1man",
       "ko": "",
       "ja": "",
@@ -7317,7 +7328,7 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_tagprompty_8k": {
+    "common_tagprompty_uhd": {
       "en-US": "8K",
       "ko": "",
       "ja": "",
@@ -8156,7 +8167,7 @@
       "de": ""
     },
     "createcharacter015_desc_001": {
-      "en-US": "This image is displayed during conversation. If you<br>describe each scene, AI shows it according to the<br>situation. Please write the scene description in English if<br>possible. {{char}} and {{user}} can also be used.",
+      "en-US": "This image is displayed during conversation. If you<br>describe each scene, AI shows it according to the<br>situation. Please write the scene description in English if<br>possible. 'char' and 'user' can also be used.",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -8422,7 +8433,7 @@
       "de": ""
     },
     "createmodules002_desc_002": {
-      "en-US": "{{char}}<br>‘Character name’ from character creation form",
+      "en-US": "char<br>‘Character name’ from character creation form",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -8433,7 +8444,7 @@
       "de": ""
     },
     "createmodules002_desc_003": {
-      "en-US": "{{char}}<br>‘Character name’ from character creation form",
+      "en-US": "char<br>‘Character name’ from character creation form",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -8444,7 +8455,7 @@
       "de": ""
     },
     "createmodules002_desc_004": {
-      "en-US": "{{example_dialogues}}<br>‘Character name’ from character creation form ",
+      "en-US": "example_dialogues<br>‘Character name’ from character creation form ",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -8455,7 +8466,7 @@
       "de": ""
     },
     "createmodules002_desc_005": {
-      "en-US": "{{example_dialogues}}<br>‘Character name’ from character creation form ",
+      "en-US": "example_dialogues<br>‘Character name’ from character creation form ",
       "ko": "",
       "ja": "",
       "fr": "",
