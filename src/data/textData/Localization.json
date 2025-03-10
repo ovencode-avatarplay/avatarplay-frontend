@@ -6492,8 +6492,30 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_tagaimodel_j-film": {
+    "common_tagaimodel_jfilm": {
       "en-US": "J-Film",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_tagaimodel_realistic": {
+      "en-US": "Realistic",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_tagaimodel_anime": {
+      "en-US": "Anime",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -6857,6 +6879,17 @@
     },
     "common_tagbutt_athletic": {
       "en-US": "Athletic",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_tagcolor_beige": {
+      "en-US": "Beige",
       "ko": "",
       "ja": "",
       "fr": "",
