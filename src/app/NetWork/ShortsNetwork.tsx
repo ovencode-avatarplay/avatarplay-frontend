@@ -65,55 +65,36 @@ export interface FeedInfo {
   createAt?: string;
 }
 
+export interface CreateFeedReq {
+  languageType: string;
+  profileId?: number;
+  feedInfo: CreateFeedInfo;
+}
+
 export interface CreateFeedInfo {
   id: number;
+  mediaState: number;
   mediaUrlList: string[];
   title: string;
   description: string;
   hashTag: string;
-  mediaState: MediaState;
+  visibilityType: number;
+  nsfw: boolean;
 }
 
-export interface RequestCreateFeed {
-  languageType: string;
-  feedInfo: CreateFeedInfo;
-}
+export interface CreateFeedRes {}
 
-interface ResponseCreateFeed {
-  resultCode: number;
-  resultMessage: string;
-  data: any; // API 응답 데이터 구조에 따라 수정 가능
-}
-
-/**
- * Feed 생성 API 호출 함수
- * @param payload - 생성할 Feed 정보
- * @returns API 응답 결과
- */
-export const sendCreateFeed = async (
-  payload: RequestCreateFeed,
-): Promise<{resultCode: number; resultMessage: string; data: any | null}> => {
+export const sendCreateFeed = async (payload: CreateFeedReq): Promise<ResponseAPI<CreateFeedRes>> => {
   try {
-    // POST 요청 전송
-    const response = await api.post<ResponseCreateFeed>('/Feed/create', payload);
-
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0) {
-      return {resultCode, resultMessage, data};
-    } else {
-      console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage, data: null};
-    }
+    const response = await api.post<ResponseAPI<CreateFeedRes>>('/Feed/create', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`CreateFeedRes Error: ${response.data.resultCode}`);
   } catch (error) {
-    console.error('Failed to create feed:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to create feed',
-      data: null,
-    };
+    console.error('Error creating feed:', error);
+    throw new Error('Failed to create feed. Please try again.');
   }
 };
+
 // Recommend Feed API Types
 export interface RecommendFeedReq {
   recommendState: number;

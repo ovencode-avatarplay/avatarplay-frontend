@@ -15,9 +15,10 @@ import PostImageGrid from './PostImageGrid';
 import {
   FeedInfo,
   CreateFeedInfo,
-  RequestCreateFeed,
   sendCreateFeed,
   sendGetFeedList,
+  CreateFeedReq,
+  sendGetFeed,
 } from '@/app/NetWork/ShortsNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
@@ -34,7 +35,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
 interface Props {
-  id?: number;
+  id?: string;
   isUpdate?: boolean;
 }
 const mediaTypeConfig = {
@@ -137,30 +138,34 @@ const PostMain: React.FC<Props> = ({id}) => {
       ],
     },
   ];
-  const dataProfile = useSelector((state: RootState) => state.profile);
+
+  const [feedId, setFeedId] = useState(-1);
 
   useEffect(() => {
     if (id) {
       (async () => {
         try {
-          const response = await sendGetFeedList({
+          const payload = {
+            urlLinkKey: id, // 명시적으로 string 타입으로 캐스팅
             languageType: getCurrentLanguage(),
-            characterProfileId: dataProfile.currentProfile?.profileId ? dataProfile.currentProfile?.profileId : 0, // 필요한 경우 적절한 값으로 변경
-          });
+          };
+
+          const response = await sendGetFeed(payload);
 
           if (response.resultCode === 0 && response.data) {
-            const existingFeed = response.data.find(feed => feed.id === id);
+            const existingFeed = response.data.feedInfo;
             if (existingFeed) {
+              setFeedId(existingFeed.id);
               setMediaUrls(existingFeed.mediaUrlList || []);
               if (existingFeed.mediaState == MediaState.Image) setMediaType('image');
               else if (existingFeed.mediaState == MediaState.Video) setMediaType('video');
 
-              // setText(existingFeed.description || '');
-              // setNameValue(existingFeed.characterProfileName || '');
+              setText(existingFeed.description || '');
+              setNameValue(existingFeed.characterProfileName || '');
               setrDescription(existingFeed.description || '');
-              // setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
-              // setSelectedVisibility(existingFeed.isPinFix ? VisibilityType.Public : VisibilityType.Private);
-              // setIsNsfw(existingFeed.isBookmark || false);
+              setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
+              setSelectedVisibility(existingFeed.isPinFix ? VisibilityType.Public : VisibilityType.Private);
+              setIsNsfw(existingFeed.isBookmark || false);
             }
           }
         } catch (error) {
@@ -344,28 +349,31 @@ const PostMain: React.FC<Props> = ({id}) => {
       setWarnPopup(true);
       return;
     }
+    try {
+      const requestPayload: CreateFeedReq = {
+        languageType: getCurrentLanguage(),
+        feedInfo: {
+          id: feedId != -1 ? feedId : 0,
+          mediaState: state, // 예: 이미지 = 1, 비디오 = 2 (서버 문서 참고)
+          mediaUrlList: mediaUrls,
+          title: nameValue,
+          description: text,
+          hashTag: selectedTags.join(', '),
+          visibilityType: selectedVisibility, // 예: 공개 = 1, 비공개 = 2
+          nsfw: isNsfw,
+        },
+      };
 
-    const _feedInfo: CreateFeedInfo = {
-      mediaUrlList: mediaUrls,
-      title: nameValue,
-      description: text,
-      hashTag: '',
-      mediaState: state, // 예시 값
-      id: 0,
-    };
-
-    const createFeedReq: RequestCreateFeed = {
-      languageType: getCurrentLanguage(),
-      feedInfo: _feedInfo,
-    };
-    setLoading(true);
-    const result = await sendCreateFeed(createFeedReq);
-    setLoading(false);
-    if (result.resultCode === 0) {
-      setPublishPopup(true);
-      console.log('Feed created successfully:', result.data);
-    } else {
-      console.error('Failed to create feed:', result.resultMessage);
+      setLoading(true);
+      const response = await sendCreateFeed(requestPayload);
+      setLoading(false);
+      if (response.resultCode === 0) {
+        console.log('✅ Feed created successfully');
+      } else {
+        console.error('❌ Failed to create feed:', response.resultMessage);
+      }
+    } catch (error) {
+      console.error('🚨 API 호출 중 오류 발생:', error);
     }
   };
 

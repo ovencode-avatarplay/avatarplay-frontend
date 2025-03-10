@@ -361,9 +361,9 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
                   <div className={styles.epTitleText}>
                     {index + 1}. {ep.name}
                   </div>
-                  {seriesInfo?.categoryType == 1 && (
+                  {/* {seriesInfo?.categoryType == 1 && (
                     <div className={styles.epDuration}>{ep.episodeVideoInfo?.videoSourcePlayTime}</div>
-                  )}
+                  )} */}
                 </div>
                 <div className={styles.episodeActions}>
                   <div style={{display: 'flex', gap: '10px'}}>
@@ -392,10 +392,10 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
                       <img src={LineEdit.src} alt="Edit" className={styles.editIcon} />
                     </button>
                   </div>
-                  <div className={styles.rating}>
+                  {/* <div className={styles.rating}>
                     <img src={BoldStar.src} className={styles.starIcon} />
                     <span className={styles.rateText}>{ep.likeCount}</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ))}

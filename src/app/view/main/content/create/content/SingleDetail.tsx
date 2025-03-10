@@ -151,15 +151,15 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
                 ></div>
                 <div className={styles.episodeInfo}>
                   <div className={styles.epTitleText}>{singleInfo?.name}</div>
-                  {singleInfo?.categoryType == 1 && (
+                  {/* {singleInfo?.categoryType == 1 && (
                     <div className={styles.epDuration}>{singleInfo?.contentVideoInfo?.videoSourcePlayTime}</div>
-                  )}
+                  )} */}
                 </div>
                 <div className={styles.episodeActions}>
                   {/* <button className={styles.iconButton}>
                     <img src={LineEdit.src} alt="Edit" className={styles.editIcon} />
                   </button> */}
-                  <div className={styles.rating}>
+                  {/* <div className={styles.rating}>
                     <img src={BoldStar.src} className={styles.starIcon} />
                     {singleInfo?.categoryType == 0 && (
                       <span className={styles.rateText}>{singleInfo?.contentWebtoonInfo?.likeCount}</span>
@@ -167,7 +167,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
                     {singleInfo?.categoryType == 1 && (
                       <span className={styles.rateText}>{singleInfo?.contentVideoInfo?.likeCount}</span>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
