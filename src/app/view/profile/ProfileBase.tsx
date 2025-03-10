@@ -207,7 +207,8 @@ type DataProfileType = {
 };
 
 type ProfileBaseProps = {
-  profileId?: number;
+  // profileId?: string;
+  urlLinkKey: string;
   onClickBack?: () => void;
   isPath?: boolean;
   maxWidth?: string;
@@ -237,7 +238,7 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
 };
 
 // /profile?type=pd?id=123123
-const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
+const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
   const searchParams = useSearchParams();
   const isNeedBackBtn = searchParams?.get('from'); // "from" 쿼리 파라미터 값 가져오기
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
@@ -246,8 +247,8 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   const refDescription = useRef<HTMLDivElement | null>(null);
   const refHeader = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState<DataProfileType>({
-    urlLinkKey: '',
-    profileId: profileId,
+    urlLinkKey: urlLinkKey,
+    profileId: 0,
     indexTab: eTabPDType.Feed,
     isOpenSelectProfile: false,
     profileInfo: null,
@@ -515,8 +516,10 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     const resProfileInfo = await getProfileInfo(urlLink);
     if (!resProfileInfo) return;
     data.profileInfo = resProfileInfo;
+    data.profileId = resProfileInfo.profileInfo.id;
 
     const indexTab = Number(data?.indexTab);
+    console.log('profileId : ', resProfileInfo.profileInfo.id);
     await refreshProfileTab(resProfileInfo.profileInfo.id, indexTab);
 
     setData({...data});
@@ -629,7 +632,6 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     return getLocalizedLink(``);
   };
 
-  console.log('profileId : ', profileId);
   return (
     <>
       {isMine && (
@@ -810,7 +812,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <button
                 className={styles.follow}
                 onClick={() => {
-                  handleFollow(profileId, !isFollow, data.urlLinkKey);
+                  handleFollow(data.profileId, !isFollow, data.urlLinkKey);
                 }}
               >
                 {isFollow ? 'Following' : 'Follow'}
@@ -834,7 +836,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <button
                 className={styles.follow}
                 onClick={() => {
-                  handleFollow(profileId, !isFollow, data.urlLinkKey);
+                  handleFollow(data.profileId, !isFollow, data.urlLinkKey);
                 }}
               >
                 {isFollow ? 'Following' : 'Follow'}

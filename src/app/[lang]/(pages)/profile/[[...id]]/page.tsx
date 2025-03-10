@@ -14,7 +14,7 @@ type Props = {
 export default function PostPage({params}: Props) {
   return (
     <>
-      <ProfileBase profileId={parseInt(params?.id?.[0] || '0')} isPath />
+      <ProfileBase urlLinkKey={params?.id?.[0] || '0'} isPath />
       <BottomNav />
     </>
   );
