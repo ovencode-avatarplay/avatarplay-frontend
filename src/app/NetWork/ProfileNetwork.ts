@@ -17,6 +17,7 @@ export interface ProfileSimpleInfo {
   description?: string;
   iconImageUrl: string;
   nsfw: boolean;
+  urlLinkKey: string;
 }
 
 export enum OperatorAuthorityType {
@@ -106,7 +107,7 @@ export enum FeedMediaType {
 
 export interface GetProfileInfoReq {
   languageType: string;
-  profileId: number;
+  urlLinkKey: string;
 }
 
 export interface GetProfileInfoRes {
@@ -128,6 +129,7 @@ export interface ProfileInfo {
   followerCount: number;
   followingCount: number;
   followState: FollowState;
+  urlLinkKey: string;
 }
 
 export enum FollowState {
@@ -166,10 +168,10 @@ export enum MediaState {
   Audio = 3,
 }
 
-export const getProfileInfo = async (profileId: number) => {
+export const getProfileInfo = async (urlLinkKey: number) => {
   const data: GetProfileInfoReq = {
     languageType: getCurrentLanguage(),
-    profileId: profileId,
+    urlLinkKey: urlLinkKey,
   };
   try {
     const resProfileSelect: AxiosResponse<ResponseAPI<GetProfileInfoRes>> = await api.post(
@@ -626,6 +628,41 @@ export const deleteProfile = async (payload: DeleteProfileReq) => {
     return res.data;
   } catch (e) {
     console.error('deleteProfile API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface BookMarkReq {
+  interactionType: InteractionType;
+  typeValueId: number;
+  isBookMark: boolean;
+}
+
+export interface BookMarkRes {
+  isBookMark: boolean;
+}
+
+export enum InteractionType {
+  Story = 0,
+  Feed = 1,
+  Contents = 2,
+  Character = 3,
+  Channel = 4,
+}
+
+export const bookmark = async (payload: BookMarkReq) => {
+  try {
+    const res = await api.post<ResponseAPI<BookMarkRes>>('Profile/bookmark', payload);
+
+    if (res.status !== 200) {
+      console.error('bookmark API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('bookmark API 요청 실패:', e);
     alert('API 요청 중 에러 발생: ' + e);
     return null;
   }

@@ -33,7 +33,7 @@ import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainCha
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
-import {followProfile} from '@/app/NetWork/ProfileNetwork';
+import {bookmark, BookMarkReq, followProfile, InteractionType} from '@/app/NetWork/ProfileNetwork';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -177,17 +177,20 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
   const [isBookmarked, setIsBookmarked] = useState(item.isBookmark);
   const bookmarkFeed = async () => {
-    const payload = {
-      feedId: item.id, // 북마크할 피드 ID
-      isSave: !isBookmarked, // 북마크 저장 여부 (true: 저장, false: 해제)
+    const payload: BookMarkReq = {
+      interactionType: InteractionType.Feed,
+      typeValueId: item.id, // 북마크할 피드 ID
+      isBookMark: !isBookmarked,
+      // feedId: item.id, // 북마크할 피드 ID
+      // isSave: !isBookmarked, // 북마크 저장 여부 (true: 저장, false: 해제)
     };
 
-    const response = await sendFeedBookmark(payload);
+    const response = await bookmark(payload);
     setIsBookmarked(!isBookmarked);
-    if (response.resultCode === 0) {
+    if (response && response.resultCode === 0) {
       console.log('Bookmark operation successful:', response);
     } else {
-      console.error('Failed to bookmark feed:', response.resultMessage);
+      console.error('Failed to bookmark feed:', response?.resultMessage || '');
     }
   };
 

@@ -170,6 +170,7 @@ type TabContentMenuType = {
 };
 
 type DataProfileType = {
+  urlLinkKey: string;
   profileId: number;
   indexTab:
     | eTabPDType
@@ -245,6 +246,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   const refDescription = useRef<HTMLDivElement | null>(null);
   const refHeader = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState<DataProfileType>({
+    urlLinkKey: '',
     profileId: profileId,
     indexTab: eTabPDType.Feed,
     isOpenSelectProfile: false,
@@ -295,15 +297,14 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
   useEffect(() => {
     clearProfileTab();
     if (!isPath) {
-      refreshProfileInfo(data.profileId);
+      refreshProfileInfo(data.urlLinkKey);
       return;
     } else {
       //컴포넌트로 가져다 쓰는 경우 isPath=fase
       const id = pathname?.split('/').filter(Boolean).pop();
       if (id == undefined) return;
-      const profileIdPath = parseInt(id);
-      data.profileId = profileIdPath;
-      refreshProfileInfo(profileIdPath);
+      data.urlLinkKey = id;
+      refreshProfileInfo(data.urlLinkKey);
       setData({...data});
       return;
     }
@@ -510,13 +511,13 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     }
   };
 
-  const refreshProfileInfo = async (profileId: number) => {
-    const resProfileInfo = await getProfileInfo(profileId);
+  const refreshProfileInfo = async (urlLink: string) => {
+    const resProfileInfo = await getProfileInfo(urlLink);
     if (!resProfileInfo) return;
     data.profileInfo = resProfileInfo;
 
     const indexTab = Number(data?.indexTab);
-    await refreshProfileTab(profileId, indexTab);
+    await refreshProfileTab(resProfileInfo.profileInfo.id, indexTab);
 
     setData({...data});
   };
@@ -540,11 +541,11 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
     }
   };
 
-  const handleFollow = async (profileId: number, value: boolean) => {
+  const handleFollow = async (profileId: number, value: boolean, urlLinkKey: string = '') => {
     try {
       const response = await followProfile(profileId, value);
 
-      const resProfileInfo = await getProfileInfo(profileId);
+      const resProfileInfo = await getProfileInfo(urlLinkKey);
       if (!resProfileInfo) return;
       data.profileInfo = resProfileInfo;
       setData({...data});
@@ -809,7 +810,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <button
                 className={styles.follow}
                 onClick={() => {
-                  handleFollow(profileId, !isFollow);
+                  handleFollow(profileId, !isFollow, data.urlLinkKey);
                 }}
               >
                 {isFollow ? 'Following' : 'Follow'}
@@ -833,7 +834,7 @@ const ProfileBase = React.memo(({profileId = 0, onClickBack = () => {}, isPath =
               <button
                 className={styles.follow}
                 onClick={() => {
-                  handleFollow(profileId, !isFollow);
+                  handleFollow(profileId, !isFollow, data.urlLinkKey);
                 }}
               >
                 {isFollow ? 'Following' : 'Follow'}

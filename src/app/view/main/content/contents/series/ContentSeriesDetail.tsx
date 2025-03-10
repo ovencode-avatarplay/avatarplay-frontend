@@ -11,6 +11,7 @@ import {
   BoldReward,
   BoldShare,
   BoldStar,
+  LineArchive,
   LineArrowDown,
   LineCheck,
   LineEdit,
@@ -32,6 +33,7 @@ import {
 } from '@/app/NetWork/ContentNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import Link from 'next/link';
+import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/ProfileNetwork';
 
 type Props = {
   id: number;
@@ -150,8 +152,20 @@ const ContentSeriesDetail = ({id}: Props) => {
         </button>
         <section className={styles.infoHeaderSection}>
           <ul className={styles.iconsWrap}>
-            <div className={styles.iconWrap}>
+            <div
+              className={styles.iconWrap}
+              onClick={async () => {
+                const dataReq: BookMarkReq = {
+                  interactionType: InteractionType.Contents,
+                  isBookMark: true,
+                  typeValueId: data.dataContent?.contentInfo?.id || 0,
+                };
+                const response = await bookmark(dataReq);
+                //TODO : 북마크 이후 리프레쉬로 북마크 여부 갱신해야함
+              }}
+            >
               <img src={BoldArchive.src} alt="" />
+              <img src={LineArchive.src} alt="" />
               <div className={styles.label}>Favorite</div>
             </div>
             <div className={styles.lineVertical}></div>
