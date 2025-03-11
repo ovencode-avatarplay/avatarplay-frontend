@@ -404,7 +404,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     if (isCharacter && indexTab == eTabCharacterOtherType.Info) {
       const reqSendGetCharacterInfo: GetCharacterInfoReq = {
         languageType: getCurrentLanguage(),
-        characterId: data.profileInfo?.profileInfo?.typeValueId || 0,
+        profileId: data.profileInfo?.profileInfo?.id || 0,
       };
       const resGetCharacterInfo = await sendGetCharacterInfo(reqSendGetCharacterInfo);
       if (resGetCharacterInfo.resultCode != 0) {

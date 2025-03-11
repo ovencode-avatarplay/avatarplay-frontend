@@ -202,7 +202,7 @@ const ProfileDetail = ({profileId}: Props) => {
   const getCharacterInfo = async (profileId: number) => {
     const reqGetcharacterInfo: GetCharacterInfoReq = {
       languageType: getCurrentLanguage(),
-      characterId: profileId,
+      profileId: profileId,
     };
     const resGetcharacterInfo = await sendGetCharacterInfo(reqGetcharacterInfo);
     data.characterInfo = resGetcharacterInfo.data?.characterInfo || null;
