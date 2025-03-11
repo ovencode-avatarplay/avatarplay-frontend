@@ -15,15 +15,20 @@ import {
   GetSubscriptionListRes,
   InteractionType,
   MembershipSubscribe,
+  ProfileTabItemInfo,
   ProfileType,
 } from '@/app/NetWork/ProfileNetwork';
 import {
+  ChannelComponent,
+  CharacterComponent,
+  ContentComponent,
   eTabChannelOtherType,
   eTabChannelType,
   eTabCharacterOtherType,
   eTabCharacterType,
   eTabPDOtherType,
   eTabPDType,
+  FeedComponent,
   FilterClusterType,
   SelectBox,
   TabContentComponentWrap,
@@ -37,7 +42,8 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import BottomNav from '../main/bottom-nav/BottomNav';
 import {GetCharacterInfoRes} from '@/app/NetWork/CharacterNetwork';
 import {GetChannelRes} from '@/app/NetWork/ChannelNetwork';
-import {getCurrentLanguage} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
+import {useInView} from 'react-intersection-observer';
 
 type Props = {
   onClose: () => void;
@@ -59,9 +65,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
     indexFilterCharacter: number;
     indexSort: ExploreSortType;
     profileTabInfo: {
-      [key: number]: GetCharacterTabInfoeRes &
-        GetPdTabInfoeRes &
-        GetCharacterInfoRes & {dataResPdInfo: GetPdInfoRes} & GetChannelRes;
+      [key: number]: ProfileTabItemInfo[];
     };
   }>({
     indexTab: 0,
@@ -81,10 +85,10 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
 
   const refreshList = async () => {
     const resBookmarkList = await getBookmarkList({
-      interactionType: InteractionType.Feed,
+      interactionType: Number(data.indexTab),
       languageType: getCurrentLanguage(),
     });
-    data.profileTabInfo[InteractionType.Feed] = resBookmarkList?.data?.bookMarkInfoList;
+    data.profileTabInfo[InteractionType.Feed] = resBookmarkList?.data?.bookMarkInfoList || [];
 
     // console.log(bookmarkList?.data.);
   };
@@ -147,20 +151,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
                 />
               </div>
 
-              <div className={styles.tabContent}>
-                <TabContentComponentWrap
-                  profileId={profileId}
-                  isMine={isMine}
-                  profileType={profileType}
-                  tabIndex={data.indexTab}
-                  isEmptyTab={isEmptyTab}
-                  onRefreshTab={async () => {
-                    await refreshProfileTab(profileId, data.indexTab, true);
-                  }}
-                  profileTabInfo={data.profileTabInfo}
-                  filterCluster={data}
-                />
-              </div>
+              <div className={styles.tabContent}>{/* <TabContentComponent  /> */}</div>
             </section>
             <button className={styles.btnSubscription}>Subscribe Now</button>
           </main>
@@ -174,3 +165,137 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
 };
 
 export default PopupFavoriteList;
+
+type TabContentMenuType = {
+  isSettingOpen: boolean;
+  isPin: boolean;
+  id: number | string;
+};
+
+type TabContentProps = {
+  profileId: number;
+  profileType: ProfileType;
+  isMine: boolean;
+  tabIndex: number;
+  isEmptyTab: boolean;
+  profileTabInfo: {
+    [key: number]: ProfileTabItemInfo[];
+  };
+
+  filterCluster: FilterClusterType;
+  onRefreshTab: (isRefreshAll: boolean) => void;
+  onOpenContentMenu?: (data: TabContentMenuType) => void;
+};
+
+const TabContentComponent = ({
+  profileId,
+  profileType,
+  isMine,
+  tabIndex,
+  isEmptyTab,
+  profileTabInfo,
+  filterCluster,
+  onRefreshTab,
+  onOpenContentMenu,
+}: TabContentProps) => {
+  const {ref: observerRef, inView} = useInView();
+  // const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+  //   getUserType(isMine, profileType);
+
+  useEffect(() => {
+    if (!inView) return;
+
+    if (isEmptyTab) return;
+
+    refreshTab();
+  }, [inView]);
+
+  const refreshTab = async () => {
+    onRefreshTab(true);
+  };
+
+  if (isEmptyTab) {
+    return (
+      <>
+        <div className={styles.emptyWrap}>
+          <img src="/ui/profile/image_empty.svg" alt="" />
+          <div className={styles.text}>
+            Its pretty lonely out here.
+            <br />
+            Make a Post
+          </div>
+        </div>
+      </>
+    );
+  }
+  if (tabIndex == InteractionType.Feed) {
+    return (
+      <>
+        <ul className={styles.itemWrap}>
+          {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
+            return (
+              <CharacterComponent
+                isMine={isMine}
+                itemInfo={one}
+                onOpenContentMenu={onOpenContentMenu}
+                urlLinkThumbnail={getLocalizedLink(`/main/homefeed/`)}
+              />
+            );
+          })}
+          <div ref={observerRef}></div>
+        </ul>
+      </>
+    );
+  }
+  if (tabIndex == InteractionType.Character) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
+          return (
+            <CharacterComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.id + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+  if (tabIndex == InteractionType.Contents) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
+          return (
+            <ContentComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/content/series/` + one?.urlLinkKey + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+  if (tabIndex == InteractionType.Channel) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
+          return (
+            <ChannelComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+};

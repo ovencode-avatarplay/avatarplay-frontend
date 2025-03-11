@@ -88,7 +88,7 @@ import PopupSubscription from '../main/content/create/common/PopupSubscription';
 import PopupSubscriptionList from './PopupSubscriptionList';
 import PopupFavoriteList from './PopupFavoriteList';
 import PopupPlaylist from './PopupPlaylist';
-import {sendDeleteContent} from '@/app/NetWork/ContentNetwork';
+import {ContentType, sendDeleteContent} from '@/app/NetWork/ContentNetwork';
 import {CharacterProfileDetailComponent} from './ProfileDetail';
 import PopupFriends from './PopupFriends';
 
@@ -169,6 +169,7 @@ type TabContentMenuType = {
   isSettingOpen: boolean;
   isPin: boolean;
   id: number | string;
+  isSingle?: boolean;
 };
 
 type DataProfileType = {
@@ -1998,6 +1999,7 @@ export const TabContentComponentWrap = ({
       id: 0,
       isPin: false,
       isSettingOpen: false,
+      isSingle: false,
     },
     isShareOpened: false,
   });
@@ -2106,7 +2108,11 @@ export const TabContentComponentWrap = ({
             (isCharacter && tabIndex == eTabCharacterType.Contents) ||
             (isChannel && tabIndex == eTabChannelType.Contents)
           ) {
-            router.push(getLocalizedLink(`/update/content/series/` + data.tabContentMenu.id));
+            if (data.tabContentMenu.isSingle) {
+              router.push(getLocalizedLink(`/update/content/single/` + data.tabContentMenu.id));
+            } else {
+              router.push(getLocalizedLink(`/update/content/series/` + data.tabContentMenu.id));
+            }
           }
 
           if ((isPD && tabIndex == eTabPDOtherType.Channel) || (isCharacter && tabIndex == eTabCharacterType.Channel)) {
@@ -2122,132 +2128,6 @@ export const TabContentComponentWrap = ({
       />
     </>
   );
-};
-
-const TabContentAllComponent = ({
-  profileId,
-  profileType,
-  isMine,
-  tabIndex,
-  isEmptyTab,
-  profileTabInfo,
-  filterCluster,
-  onRefreshTab,
-  onOpenContentMenu,
-}: TabContentProps) => {
-  const {ref: observerRef, inView} = useInView();
-  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
-    getUserType(isMine, profileType);
-
-  useEffect(() => {
-    if (!inView) return;
-
-    if (isEmptyTab) return;
-
-    refreshTab();
-  }, [inView]);
-
-  const refreshTab = async () => {
-    onRefreshTab(true);
-  };
-
-  if (isEmptyTab) {
-    return (
-      <>
-        <div className={styles.emptyWrap}>
-          <img src="/ui/profile/image_empty.svg" alt="" />
-          <div className={styles.text}>
-            Its pretty lonely out here.
-            <br />
-            Make a Post
-          </div>
-        </div>
-      </>
-    );
-  }
-  if (
-    (isPD && tabIndex == eTabPDType.Feed) ||
-    (isCharacter && tabIndex == eTabCharacterType.Feed) ||
-    (isChannel && tabIndex == eTabChannelType.Feed)
-  ) {
-    return (
-      <>
-        <ul className={styles.itemWrap}>
-          {profileTabInfo?.[tabIndex]?.feedInfoList?.map((one, index: number) => {
-            return (
-              <FeedComponent
-                feedInfo={one}
-                isMine={isMine}
-                onOpenContentMenu={onOpenContentMenu}
-                urlLinkThumbnail={
-                  getLocalizedLink(`/profile/feed/` + profileId) +
-                  `?type=${profileType}&idContent=${one.id}&feedMediaType=${filterCluster.indexFilterMedia}&feedSortType=${filterCluster.indexSort}`
-                }
-              />
-            );
-          })}
-          <div ref={observerRef}></div>
-        </ul>
-      </>
-    );
-  }
-  if (
-    (isPD && tabIndex == eTabPDType.Character) ||
-    (isCharacter && tabIndex == eTabCharacterType.Character) ||
-    (isChannel && tabIndex == eTabChannelType.Character)
-  ) {
-    return (
-      <ul className={styles.itemWrap}>
-        {profileTabInfo?.[tabIndex]?.characterInfoList.map((one, index: number) => {
-          return (
-            <CharacterComponent
-              isMine={isMine}
-              itemInfo={one}
-              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.id + '?from=""')}
-              onOpenContentMenu={onOpenContentMenu}
-            />
-          );
-        })}
-        <div ref={observerRef}></div>
-      </ul>
-    );
-  }
-
-  if ((isCharacter && tabIndex == eTabCharacterType.Contents) || (isChannel && tabIndex == eTabChannelType.Contents)) {
-    return (
-      <ul className={styles.itemWrap}>
-        {profileTabInfo?.[tabIndex]?.contentInfoList.map((one, index: number) => {
-          return (
-            <ContentComponent
-              isMine={isMine}
-              itemInfo={one}
-              urlLinkThumbnail={getLocalizedLink(`/content/series/` + one?.urlLinkKey + '?from=""')}
-              onOpenContentMenu={onOpenContentMenu}
-            />
-          );
-        })}
-        <div ref={observerRef}></div>
-      </ul>
-    );
-  }
-
-  if ((isPD && tabIndex == eTabPDType.Channel) || (isCharacter && tabIndex == eTabCharacterType.Channel)) {
-    return (
-      <ul className={styles.itemWrap}>
-        {profileTabInfo?.[tabIndex]?.channelInfoList?.map((one, index: number) => {
-          return (
-            <ChannelComponent
-              isMine={isMine}
-              itemInfo={one}
-              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
-              onOpenContentMenu={onOpenContentMenu}
-            />
-          );
-        })}
-        <div ref={observerRef}></div>
-      </ul>
-    );
-  }
 };
 
 const TabContentComponent = ({
@@ -2343,11 +2223,13 @@ const TabContentComponent = ({
     return (
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.contentInfoList.map((one, index: number) => {
+          const isSingle = one.contentType == ContentType.Single;
+          const urlLink = isSingle ? '/content/single/' : '/content/series/';
           return (
             <ContentComponent
               isMine={isMine}
               itemInfo={one}
-              urlLinkThumbnail={getLocalizedLink(`/content/series/` + one?.urlLinkKey + '?from=""')}
+              urlLinkThumbnail={getLocalizedLink(urlLink + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
             />
           );
@@ -2495,14 +2377,14 @@ const TabContentComponent = ({
   }
 };
 
-type ChannelComponentType = {
+export type ChannelComponentType = {
   isMine: boolean;
   urlLinkThumbnail: string;
   itemInfo: ProfileTabItemInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ChannelComponentType) => {
+export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ChannelComponentType) => {
   return (
     <Link href={urlLinkThumbnail}>
       <li className={styles.item} key={itemInfo?.id}>
@@ -2548,14 +2430,14 @@ const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu
   );
 };
 
-type ContentComponentType = {
+export type ContentComponentType = {
   isMine: boolean;
   urlLinkThumbnail: string;
   itemInfo: ProfileTabItemInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ContentComponentType) => {
+export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ContentComponentType) => {
   return (
     <Link href={getLocalizedLink(`/content/series/` + itemInfo?.urlLinkKey + '?from=""')}>
       <li className={styles.item} key={itemInfo?.id}>
@@ -2593,10 +2475,14 @@ const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu
             onClick={e => {
               e.preventDefault();
               e.stopPropagation();
+
+              const isSingle = itemInfo?.contentType == ContentType.Single;
+
               const dataContextMenu = {
                 id: itemInfo.urlLinkKey,
                 isPin: itemInfo?.isPinFix || false,
                 isSettingOpen: true,
+                isSingle: isSingle,
               };
               if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
             }}
@@ -2607,14 +2493,14 @@ const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu
   );
 };
 
-type CharacterComponentType = {
+export type CharacterComponentType = {
   isMine: boolean;
   urlLinkThumbnail: string;
   itemInfo: ProfileTabItemInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: CharacterComponentType) => {
+export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: CharacterComponentType) => {
   return (
     <Link href={urlLinkThumbnail}>
       <li className={styles.item} key={itemInfo?.id}>
@@ -2667,14 +2553,14 @@ const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMe
   );
 };
 
-type FeedComponentType = {
+export type FeedComponentType = {
   isMine: boolean;
   urlLinkThumbnail: string;
   feedInfo: FeedInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContentMenu}: FeedComponentType) => {
+export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContentMenu}: FeedComponentType) => {
   return (
     <Link href={urlLinkThumbnail}>
       <li className={styles.item} key={feedInfo?.id}>

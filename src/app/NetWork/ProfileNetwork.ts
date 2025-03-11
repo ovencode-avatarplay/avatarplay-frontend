@@ -3,6 +3,7 @@ import api, {ResponseAPI} from './ApiInstance';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {FeedInfo} from './ShortsNetwork';
 import {CharacterIP, DeleteCharacterRes} from './CharacterNetwork';
+import {ContentType} from './ContentNetwork';
 
 export interface GetProfileListRes {
   profileList: ProfileSimpleInfo[];
@@ -156,6 +157,7 @@ export interface ProfileTabItemInfo {
   createAt: string;
   isPinFix: boolean;
   urlLinkKey: string;
+  contentType: ContentType;
 }
 
 export enum SharedItemType {

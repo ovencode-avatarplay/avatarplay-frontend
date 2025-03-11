@@ -80,6 +80,9 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   }, []);
 
   const refreshInfo = async () => {
+    const isSingle = type == ContentType.Single;
+    data.isSingle = isSingle;
+
     const dataGetContent: GetContentReq = {
       urlLinkKey: id,
     };
@@ -91,12 +94,10 @@ const ContentSeriesDetail = ({id, type}: Props) => {
       data.dataContent = resGetContent?.data;
     }
     const dataGetSeasonEpisodesReq: GetSeasonEpisodesReq = {
-      contentId: resGetContent.data?.contentInfo?.id || 0,
+      urlLinkKey: id,
       seasonNo: seasonNo,
     };
 
-    const isSingle = type == ContentType.Single;
-    data.isSingle = isSingle;
     if (isSingle) {
       data.indexTab = eTabType.About;
     } else {
