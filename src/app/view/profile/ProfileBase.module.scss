@@ -254,7 +254,7 @@
   }
 
   .profileDetail {
-    margin: 5px 16px 0px;
+    margin: 5px 16px 0;
 
     .nameWrap {
       display: flex;
@@ -339,7 +339,7 @@
     }
 
     .buttons {
-      margin-top: 12px;
+      margin-top: 6px;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -509,11 +509,10 @@
   }
 
   .tabSection {
-    margin-top: 12px;
+    margin-top: 10px;
 
     .tabHeaderContainer {
       position: sticky;
-      top: 57px;
       background: white;
       z-index: 2;
     }
@@ -717,6 +716,7 @@
 .tabHeaderWrap {
   position: relative;
   background: white;
+  height: 38px;
 }
 
 .tabHeader {
@@ -726,6 +726,7 @@
   justify-content: space-between;
   cursor: pointer;
   position: relative;
+  height: 100%;
 
   .tabItem {
     flex: 1; // 탭이 균등하게 배치되도록 설정
@@ -737,9 +738,7 @@
 
   /* 실제 텍스트 부분 */
   .labelTab {
-    padding: 10px 7px 10px;
-
-
+    margin: 10px 7px 10px;
     color: var(--Neutral-400, #BDC1C6);
     font-family: Lato;
     font-size: 16px;
@@ -750,7 +749,6 @@
 
     &.active {
       border-bottom: 2px solid var(--Black, #000);
-
       text-align: center;
       color: var(--Color-Tokens-Text, #0C0C0C);
       font-family: Lato;
@@ -764,7 +762,7 @@
 
   /* header 높이 */
   .label {
-    padding: 10px 7px 14px;
+    padding: 10px 7px 10px;
     text-align: center;
 
     color: var(--Color-Tokens-Text, #0C0C0C);
@@ -792,7 +790,7 @@
   bottom: 0;
 
   width: calc(100%);
-  background: #DDD4D0;
+  background: #EAECF0;
   z-index: 1;
 }
 
