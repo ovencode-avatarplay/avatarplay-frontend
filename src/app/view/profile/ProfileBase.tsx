@@ -581,7 +581,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       } else if (data.indexTab == eTabPDType.Channel) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
         console.log('length : ', data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length);
-      } else if (isOtherPD && data.indexTab == eTabPDOtherType.Info) {
+      } else if (data.indexTab == eTabPDOtherType.Info) {
         isEmptyTab = false;
       } else {
         isEmptyTab = true;
@@ -2412,7 +2412,7 @@ const TabContentComponent = ({
     );
   }
 
-  if (isOtherPD && tabIndex == eTabPDOtherType.Info) {
+  if ((isPD && tabIndex == eTabPDType.Info) || (isOtherPD && tabIndex == eTabPDOtherType.Info)) {
     const pdInfo = profileTabInfo?.[tabIndex]?.dataResPdInfo;
     return (
       <>
@@ -2422,6 +2422,7 @@ const TabContentComponent = ({
           <div className={styles.label}>Interests</div>
           <ul className={styles.tags}>
             {pdInfo?.interests.map((one, index) => {
+              if (one == '') return;
               return (
                 <li key={index} className={styles.tag}>
                   {one}
