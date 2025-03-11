@@ -236,3 +236,9 @@ line-height: 24px; /* 150% */
   font-weight: 500;
   line-height: 24px; /* 171.429% */
 }
+.about
+{
+width: 100%;
+height: 100%;
+padding:  14px 16px;
+}

@@ -212,7 +212,7 @@ export const sendDeleteSeasonNo = async (payload: DeleteSeasonNoReq): Promise<Re
 
 // 📌 특정 시즌의 에피소드 리스트 가져오기
 export interface GetSeasonEpisodesReq {
-  contentId: number;
+  urlLinkKey: string;
   seasonNo: number;
 }
 
@@ -224,9 +224,15 @@ export interface SeasonEpisodeInfo {
 }
 
 export interface GetSeasonEpisodesRes {
+  contentId: 0;
   contentThumbnailUrl: string;
   seasonNo: number;
   episodeList: SeasonEpisodeInfo[];
+  tags: string[];
+  genre: string;
+  maxSeasonNo: number;
+  description: string;
+  isBookMark: boolean;
 }
 
 export const sendGetSeasonEpisodes = async (

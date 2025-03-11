@@ -48,6 +48,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
   const [tagList, setTagList] = useState<string[]>([]);
   const [genreList, setGenreList] = useState<string[]>([]);
   const maxTagCount = 5;
+  const maxGenreCount = 1;
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
   const [selectedGenreAlertOn, setSelectedGenreAlertOn] = useState(false);
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
@@ -75,7 +76,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
     if (selectedGenres.includes(tag)) {
       handleGenreRemove(tag);
     } else {
-      if (selectedGenres.length >= maxTagCount) {
+      if (selectedGenres.length >= maxGenreCount) {
         setSelectedGenreAlertOn(true);
         return;
       }
@@ -467,7 +468,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         selectedTags={selectedGenres}
         onTagSelect={handleGenreSelect}
         onRefreshTags={() => setSelectedGenres([])}
-        maxTagCount={1}
+        maxTagCount={maxGenreCount}
         selectedTagAlertOn={selectedGenreAlertOn}
         setSelectedTagAlertOn={setSelectedGenreAlertOn}
       />

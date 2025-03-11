@@ -114,7 +114,10 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
       <div className={styles.contentContainer}>
         {/* 장르 및 공유 버튼 */}
         <div className={styles.genreShare}>
-          <span className={styles.genres}>{singleInfo?.genre}</span>
+          <span className={styles.genres}>
+            {[singleInfo?.genre, ...(singleInfo?.tags ?? [])].filter(Boolean).join(' / ')}
+          </span>
+
           <button className={styles.iconButton} onClick={() => handleShare()}>
             <img src={BoldShare.src} alt="Share" />
           </button>
@@ -133,7 +136,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
             <div className={styles.tabUnderline} style={{left: '0px'}} />
           </div>
         </div>
-        <div className={styles.episodeList}>{singleInfo?.description}</div>
+        <div className={styles.about}>{singleInfo?.description}</div>
       </div>
 
       <SharePopup
