@@ -11,6 +11,8 @@ import CustomPromptPreview from './CustomPromptPreview';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import PromptInput from './PromptInput';
 import {replaceChipsWithKeywords} from './FuncPrompt';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 interface Props {
   prompt: CustomModulePrompt;
@@ -36,13 +38,13 @@ const keywordData = (user: string, char: string) => [
   {keyword: '{{char}}', description: '캐릭터 이름', example: char, type: 0},
   {
     keyword: '{{char_persona}}',
-    description: "캐릭터 생성시 '캐릭터 설명'에 입력한 내용",
+    description: getLocalizedText('CreateModules', 'createmodules002_desc_002'),
     example: `${char} is very kind and friendly.`,
     type: 1,
   },
   {
     keyword: '{{world_scenario}}',
-    description: "캐릭터 생성시 '세계관'에 입력한 내용",
+    description: "캐릭터 생성시 '세계관'에 입력한 내용", //TODO : LQA
     example: `${char} is in a coffee shop. and ${user} is her friend. They are talking about their future plan.`,
     type: 1,
   },
@@ -91,25 +93,33 @@ const keywordData = (user: string, char: string) => [
   },
 ];
 
-const prefixGpt = `[{"role":"system", "content":"`;
-const suffixGpt = `"},
-{"role":"assistant","content":"Hello good to see you buddy."},
-{"role":"user","content":"Hello Kate. How are you?"},
-{"role":"assistant","content":"I'm fine. How about you?"},
-{"role":"user","content":"I'm fine too. What are you doing now?"},
-{"role":"assistant","content":"I'm reading a book."},
-{"role":"user","content":"What are you going to do this vacation?"}
-]`;
+const prefixGpt =
+  //  `[{"role":"system", "content":"`;
+  '';
+const suffixGpt =
+  // `"},
+  // {"role":"assistant","content":"Hello good to see you buddy."},
+  // {"role":"user","content":"Hello Kate. How are you?"},
+  // {"role":"assistant","content":"I'm fine. How about you?"},
+  // {"role":"user","content":"I'm fine too. What are you doing now?"},
+  // {"role":"assistant","content":"I'm reading a book."},
+  // {"role":"user","content":"What are you going to do this vacation?"}
+  // ]`;
+  '';
 
-const prefixClaude = `[{"role":"system", "content":"`;
-const suffixClaude = `"},
-{"role":"assistant","content":"Hello good to see you buddy."},
-{"role":"user","content":"Hello Kate. How are you?"},
-{"role":"assistant","content":"I'm fine. How about you?"},
-{"role":"user","content":"I'm fine too. What are you doing now?"},
-{"role":"assistant","content":"I'm reading a book."},
-{"role":"user","content":"What are you going to do this vacation?"}
-]`;
+const prefixClaude =
+  // `[{"role":"system", "content":"`;
+  '';
+const suffixClaude =
+  // `"},
+  // {"role":"assistant","content":"Hello good to see you buddy."},
+  // {"role":"user","content":"Hello Kate. How are you?"},
+  // {"role":"assistant","content":"I'm fine. How about you?"},
+  // {"role":"user","content":"I'm fine too. What are you doing now?"},
+  // {"role":"assistant","content":"I'm reading a book."},
+  // {"role":"user","content":"What are you going to do this vacation?"}
+  // ]`;
+  '';
 
 //#endregion
 
@@ -242,7 +252,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
     return (
       <div className={styles.promptTitleArea}>
         <h2 className={styles.title2}>
-          Prompt Template
+          {getLocalizedText('CreateModules', 'createmodules001_label_003')}
           <span className={styles.astrisk}>*</span>
         </h2>
         <div className={styles.titleButtonArea}>
@@ -253,7 +263,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
               type={selectedModel === 0 ? 'Primary' : 'Tertiary'}
               onClick={() => setSelectedModel(0)}
             >
-              ChatGpt
+              {getLocalizedText('Common', 'common_button_chatgpt')}
             </CustomButton>
             <CustomButton
               size="Small"
@@ -261,7 +271,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
               type={selectedModel === 1 ? 'Primary' : 'Tertiary'}
               onClick={() => setSelectedModel(1)}
             >
-              Claude
+              {getLocalizedText('Common', 'common_button_claude')}
             </CustomButton>
           </div>
 
@@ -271,7 +281,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
               shapeType="square"
               checked={previewOn}
               onToggle={setPreviewOn}
-              label="preview"
+              label={getLocalizedText('common', 'common_button_preview')}
             />
             <button className={styles.settingButton} onClick={() => setPreviewOptionOpen(!previewOptionOpen)}>
               <img className={styles.settingIcon} src={LineSetting.src} />
@@ -355,16 +365,16 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
         }}
         label={
           <span>
-            Custom prompt name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+            {getLocalizedText('CreateModules', 'createmodules001_label_002')}
+            <span className={styles.astrisk}>*</span>
           </span>
         }
-        placeholder="please enter a title for your post"
+        placeholder={getLocalizedText('Common', 'common_sample_073')}
       />
       {renderPromptTitleArea()}
       {renderPromptInputArea()}
       <div className={styles.promptGuide}>
-        Custom prompt input is optimized for PC. We recommend using it on a PC. You must write in English. Click the
-        gear icon next to the preview to check the available keywords.
+        {formatText(getLocalizedText('CreateModules', 'createmodules001_desc_004'))}
       </div>
       <div className={styles.bottomButtonArea}>
         <CustomButton
@@ -374,7 +384,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
           onClick={handleResetPrompt}
           customClassName={[styles.bottomButton]}
         >
-          Reset
+          {getLocalizedText('Common', 'common_button_reset')}
         </CustomButton>
         <CustomButton
           size="Medium"
@@ -385,7 +395,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
           }}
           customClassName={[styles.bottomButton]}
         >
-          Save
+          {getLocalizedText('Common', 'common_button_save')}
         </CustomButton>
       </div>
       <CustomDrawer
@@ -393,7 +403,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
         onClose={() => {
           setPreviewOptionOpen(false);
         }}
-        title="Preview Options"
+        title={getLocalizedText('CreateModules', 'createmodules002_title_001')}
       >
         {previewOptionOpen && (
           <DrawerCustomPromptPreview

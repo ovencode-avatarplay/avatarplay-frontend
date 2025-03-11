@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Modal, Box, Typography} from '@mui/material';
 import styles from './CustomPromptPreview.module.css';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface KeywordData {
   keyword: string;
@@ -38,7 +39,7 @@ const CustomPromptPreview: React.FC<Props> = ({textValue, keywordData, isOpen, o
   return (
     <Modal open={isOpen} onClose={onClose} aria-labelledby="prompt-preview-title">
       <Box className={styles.modalBox}>
-        <CreateDrawerHeader title="Prompt" onClose={onClose} />
+        <CreateDrawerHeader title={getLocalizedText('CreateModules', 'createmodules003_title_001')} onClose={onClose} />
         <div className={styles.modalContainer}>
           <pre className={styles.processedText}>{processedText}</pre>
         </div>

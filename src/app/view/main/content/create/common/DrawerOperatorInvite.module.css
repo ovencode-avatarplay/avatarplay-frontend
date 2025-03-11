@@ -1,6 +1,6 @@
 .inviteDrawerContainer
 {
-
+    width: 100%;
 }
 
 
@@ -191,11 +191,7 @@
 
     overflow: hidden;
 }
-
-.searchResultTitle
-{
-
-}
+ 
 
 .searchResultList
 {
@@ -383,6 +379,11 @@
 
 .title2
 {
+    color: var(--Black, #000);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 155%; /* 21.7px */
     
 }
 

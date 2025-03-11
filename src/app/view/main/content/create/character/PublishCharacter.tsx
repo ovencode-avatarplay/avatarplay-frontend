@@ -117,7 +117,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
       //   debugParameter: debugparam,
       // };
       // API 호출
-      // const response = await sendCreateCharacter2(req);
+      // const response = await sendCreateCharacter(req);
       // if (response.data) {
       //   console.log('Character created successfully:', response.data);
       //   publishFinishAction();

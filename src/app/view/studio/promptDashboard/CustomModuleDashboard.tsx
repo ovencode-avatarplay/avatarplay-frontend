@@ -25,6 +25,8 @@ import {
   GetPromptReq,
   sendGetPrompt,
 } from '@/app/NetWork/CustomModulesNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 export interface PromptTemplateChatGPT {
   system: string;
@@ -57,16 +59,18 @@ const CustomModuleDashboard: React.FC = () => {
   let defaultPromptItem: CustomModulePrompt = {
     promptId: 0,
     title: '',
-    claude: `###About {{char}}: \n
-    ###Lore Book : \n
-    ###About {{user}} : \n
-    ###Instruction : \n
-    ###Response :`,
-    chatGPT: `###About {{char}}: \n
-    ###Lore Book : \n
-    ###About {{user}} : \n
-    ###Instruction : \n
-    ###Response :`,
+    claude: getLocalizedText('Common', 'common_sample_004'),
+    // `###About {{char}}: \n
+    // ###Lore Book : \n
+    // ###About {{user}} : \n
+    // ###Instruction : \n
+    // ###Response :`,
+    chatGPT: getLocalizedText('Common', 'common_sample_004'),
+    // `###About {{char}}: \n
+    // ###Lore Book : \n
+    // ###About {{user}} : \n
+    // ###Instruction : \n
+    // ###Response :`,
   };
 
   let defaultLorebookItem: EditLorebookReq = {
@@ -243,7 +247,7 @@ const CustomModuleDashboard: React.FC = () => {
     return (
       <button className={styles.addButton} onClick={onClickAction}>
         <img className={styles.addIcon} src={LineUpload.src} />
-        <span className={styles.addButtonText}>Add New</span>
+        <span className={styles.addButtonText}>{getLocalizedText('Common', 'common_button_addnew')}</span>
       </button>
     );
   };
@@ -302,12 +306,12 @@ const CustomModuleDashboard: React.FC = () => {
 
   const splitData = [
     {
-      label: 'Prompt',
+      label: getLocalizedText('CreateModules', 'createmodules004_label_002'),
       preContent: '',
       content: <>{renderPromptArea()}</>,
     },
     {
-      label: 'Lorebook',
+      label: getLocalizedText('CreateModules', 'createmodules004_label_003'),
       preContent: '',
       content: <>{renderLoreBookArea()}</>,
     },
@@ -326,11 +330,11 @@ const CustomModuleDashboard: React.FC = () => {
       <CreateDrawerHeader
         title={
           displayState === 'dashboard'
-            ? 'Create Custom Modules'
+            ? getLocalizedText('CreateModules', 'createmodules004_title_001')
             : displayState === 'prompt'
-            ? 'Edit Prompt'
+            ? getLocalizedText('CreateModules', 'createmodules001_title_001')
             : displayState === 'lorebook'
-            ? 'Edit Lorebook'
+            ? getLocalizedText('CreateModules', 'createmodules007_title_001')
             : 'err'
         }
         onClose={handleOnClose}
@@ -382,7 +386,7 @@ const CustomModuleDashboard: React.FC = () => {
           }}
           buttons={[
             {
-              label: 'submit',
+              label: getLocalizedText('Common', 'common_button_submit'),
               onClick: () => {
                 {
                   popupType === 'prompt'
@@ -402,21 +406,28 @@ const CustomModuleDashboard: React.FC = () => {
       {isCloseConfirmOpen && (
         <CustomPopup
           type="alert"
-          title={`Are you sure you want to exit ‘${
+          title={formatText(getLocalizedText('Common', 'common_alert_075'), [
             displayState === 'prompt'
-              ? selectedPrompt?.title
+              ? selectedPrompt?.title ?? ''
               : displayState === 'lorebook'
-              ? selectedLorebook?.title
-              : 'err'
-          }’ `}
-          description="If you don't save it, all the information you entered will be lost."
+              ? selectedLorebook?.title ?? ''
+              : 'err',
+          ])}
+          // {`Are you sure you want to exit ‘${
+          //   displayState === 'prompt'
+          //     ? selectedPrompt?.title
+          //     : displayState === 'lorebook'
+          //     ? selectedLorebook?.title
+          //     : 'err'
+          // }’ `}
+          description={getLocalizedText('Common', 'common_alert_076')}
           buttons={[
             {
-              label: 'Cancel',
+              label: getLocalizedText('Common', 'common_button_cancel'),
               onClick: () => setIsCloseConfirmOpen(false),
             },
             {
-              label: 'Confirm',
+              label: getLocalizedText('Common', 'common_button_confirm'),
               onClick: () => {
                 setIsCloseConfirmOpen(false);
                 setDisplayState('dashboard');
@@ -431,21 +442,27 @@ const CustomModuleDashboard: React.FC = () => {
       {isDeleteConfirmOpen && (
         <CustomPopup
           type="alert"
-          title={`Are you sure you want to delete ‘${
-            displayState === 'prompt'
-              ? selectedPrompt?.title
-              : displayState === 'lorebook'
-              ? selectedLorebook?.title
-              : 'err'
-          }’ `}
-          description="really?"
+          title={
+            // {getLocalizedText('Common', 'common_alert_075')}
+            `Are you sure you want to delete ‘${
+              displayState === 'prompt'
+                ? selectedPrompt?.title
+                : displayState === 'lorebook'
+                ? selectedLorebook?.title
+                : 'err'
+            }’ `
+          }
+          description={
+            // {getLocalizedText('Common', 'common_alert_076')}
+            `really?`
+          }
           buttons={[
             {
-              label: 'Cancel',
+              label: getLocalizedText('Common', 'common_button_cancel'),
               onClick: () => setIsDeleteConfirmOpen(false),
             },
             {
-              label: 'Confirm',
+              label: getLocalizedText('Common', 'common_button_confirm'),
               onClick: () => {
                 setIsDeleteConfirmOpen(false);
                 setDisplayState('dashboard');
