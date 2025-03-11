@@ -811,7 +811,12 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             <div className={styles.buttons}>
               <button className={styles.ad}>AD</button>
               <button className={styles.chat}>
-                <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}>Chat</Link>
+                {/* <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}> */}
+                <Link
+                  href={getLocalizedLink(`/chat/?v=${data?.profileInfo?.profileInfo?.characterUrlLinkKey}` || `?v=`)}
+                >
+                  Chat
+                </Link>
               </button>
             </div>
           )}
