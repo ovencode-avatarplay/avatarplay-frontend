@@ -1884,7 +1884,7 @@
       "de": ""
     },
     "common_alert_004": {
-      "en-US": "Anime, Pixar, J-film, K-film, Realism, Hollywood models<br>can be used after age verification",
+      "en-US": "Anime, Pixar, J-film, K-film, Realism, Hollywood models can be used after age verification",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -1906,7 +1906,7 @@
       "de": ""
     },
     "common_alert_006": {
-      "en-US": "Are you sure you want to<br>delete ‘title of lorebook’",
+      "en-US": "Are you sure you want to<br>delete ‘{0}’",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2038,7 +2038,7 @@
       "de": ""
     },
     "common_alert_018": {
-      "en-US": "Created characters will not be<br>deleted. Please delete them yourself<br>before withdrawing if necessary.",
+      "en-US": "Created characters will not be deleted. Please delete them yourself before withdrawing if necessary.",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2049,8 +2049,8 @@
       "de": ""
     },
     "common_alert_019": {
-      "en-US": "Deleting your {{trigger}} is irreversible",
-      "ko": "",
+      "en-US": "Deleting your {0} is irreversible",
+      "ko": "* 트리거 이름",
       "ja": "",
       "fr": "",
       "es": "",
@@ -2093,7 +2093,7 @@
       "de": ""
     },
     "common_alert_023": {
-      "en-US": "Do you want to submit<br>{0}?",
+      "en-US": "Do you want to submit<br>'{0}'?",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2203,7 +2203,7 @@
       "de": ""
     },
     "common_alert_033": {
-      "en-US": "If you don't save it, all the information<br>you entered will be lost.",
+      "en-US": "If you don't save it, all the information you entered will be lost.",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2357,7 +2357,7 @@
       "de": ""
     },
     "common_alert_047": {
-      "en-US": "Once your member information is<br>deleted, it cannot be recovered by any<br>means.",
+      "en-US": "Once your member information is deleted, it cannot be recovered by any means.",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2412,7 +2412,7 @@
       "de": ""
     },
     "common_alert_052": {
-      "en-US": "Remove from<br>“Channel name”",
+      "en-US": "Remove from<br>\"(0}\"",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2511,7 +2511,7 @@
       "de": ""
     },
     "common_alert_061": {
-      "en-US": "The seed is a number that plays the role of a 'starting<br>point' in the image generation process. Just as planting a<br>specific seed in a garden produces a unique flower, this<br>seed value produces a unique and predictable image.<br>If you enter the same seed value, the image generation<br>model will generate the same image every time, and if you<br>use a different seed value, a completely different image<br>will be generated. If you do not enter a<br>seed value, a random value will be used. Seed values can only be<br>integers between -2,147,483,648 and 2,147,483,647",
+      "en-US": "The seed is a number that plays the role of a 'starting point' in the image generation process. Just as planting a specific seed in a garden produces a unique flower, this<br>seed value produces a unique and predictable image. If you enter the same seed value, the image generation model will generate the same image every time, and if you use a different seed value, a completely different image will be generated. If you do not enter a seed value, a random value will be used. Seed values can only be integers between -2,147,483,648 and 2,147,483,647",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2533,7 +2533,7 @@
       "de": ""
     },
     "common_alert_063": {
-      "en-US": "This is used as the default in<br>conversations and can be changed<br>in Edit Profile. If you do not set a nickname, your name will be displayed.",
+      "en-US": "This is used as the default in conversations and can be changed in Edit Profile. If you do not set a nickname, your name will be displayed.",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2555,7 +2555,7 @@
       "de": ""
     },
     "common_alert_065": {
-      "en-US": "Upon withdrawal, profile information<br>and other member data created on<br>Caveduck will be deleted.",
+      "en-US": "Upon withdrawal, profile information and other member data created on Caveduck will be deleted.",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2599,7 +2599,7 @@
       "de": ""
     },
     "common_alert_069": {
-      "en-US": "Withdraw Membership<br>Data Destruction and Privacy<br>Protection Measures",
+      "en-US": "Withdraw Membership Data Destruction and Privacy Protection Measures",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2621,7 +2621,7 @@
       "de": ""
     },
     "common_alert_071": {
-      "en-US": "You cannot sign up with the same<br>email account for 7 days.",
+      "en-US": "You cannot sign up with the same email account for 7 days.",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2665,7 +2665,7 @@
       "de": ""
     },
     "common_alert_075": {
-      "en-US": "Are you sure you want to<br>exit {0} ",
+      "en-US": "Are you sure you want to<br>exit ‘{0}'",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -2711,6 +2711,39 @@
     "common_alert_079": {
       "en-US": "Input new custom prompt name",
       "ko": "로어북 이름을 입력하세요",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_alert_080": {
+      "en-US": "{0}’s intimacy has increased",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_alert_081": {
+      "en-US": "Promotion Reward",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_alert_082": {
+      "en-US": "There is something wrong. Please try again.",
+      "ko": "",
       "ja": "",
       "fr": "",
       "es": "",
@@ -3161,6 +3194,17 @@
     },
     "common_button_generatedbyai": {
       "en-US": "Generated by AI",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_button_gift": {
+      "en-US": "Gift",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -3775,8 +3819,8 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_button_mixture": {
-      "en-US": "Mixture",
+    "common_button_char": {
+      "en-US": "Char",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -3786,8 +3830,8 @@
       "pt-PT": "",
       "de": ""
     },
-    "common_button_char": {
-      "en-US": "Char",
+    "common_button_mixture": {
+      "en-US": "Mixture",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -3810,6 +3854,28 @@
     },
     "common_button_charcommand": {
       "en-US": "{{Char}}",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_button_nextepisode": {
+      "en-US": "Next Episode",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_button_featured": {
+      "en-US": "Featured",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -4094,6 +4160,39 @@
       "pt-PT": "",
       "de": ""
     },
+    "common_dropown_copy": {
+      "en-US": "Copy",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_dropown_delete": {
+      "en-US": "Delete",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_dropown_regenerate": {
+      "en-US": "Regenerate",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
     "common_dropown_unlisted": {
       "en-US": "Unlisted",
       "ko": "",
@@ -4107,6 +4206,39 @@
     },
     "common_dropown_select": {
       "en-US": "Select",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_filter_all": {
+      "en-US": "All",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_filter_story": {
+      "en-US": "Story",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_filter_character": {
+      "en-US": "Character",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -4151,6 +4283,17 @@
     },
     "common_filter_drama": {
       "en-US": "Drama",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_filter_video": {
+      "en-US": "Video",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -4404,7 +4547,7 @@
     },
     "common_sample_003": {
       "en-US": 208181629,
-      "ko": "AI 이미지 생성 시 랜덤 시드 예시 텍스트",
+      "ko": "AI 이미지 생성 시 랜덤 시프 예시 텍스트",
       "ja": "",
       "fr": "",
       "es": "",
@@ -4414,7 +4557,7 @@
       "de": ""
     },
     "common_sample_004": {
-      "en-US": "###About {{char}}: <br>Lore<br>###About {{user}}: <br>###Instruction <br>###Response:",
+      "en-US": "###About {0} : <br>Lore<br>###About {1} : <br>###Instruction <br>###Response:",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -4548,7 +4691,7 @@
     "common_sample_016": {
       "en-US": "#add an annotation",
       "ko": "김경아",
-      "ja": "프로필 캐릭터 이름 샘플 텍스트",
+      "ja": "",
       "fr": "",
       "es": "",
       "zh-CN": "",
@@ -4932,7 +5075,7 @@
     },
     "common_sample_051": {
       "en-US": "Character name",
-      "ko": "커스텀 모듈의 Preview 기능을 사용할 때 표시할 {{example_dialogues}} {0}예시 텍스트1 *캐릭터",
+      "ko": "커스텀 모듈의 Preview 기능을 사용할 때 표시할 {{example_dialogues}} Mark예시 텍스트1",
       "ja": "",
       "fr": "",
       "es": "",
@@ -4943,7 +5086,7 @@
     },
     "common_sample_052": {
       "en-US": "Character name",
-      "ko": "커스텀 모듈의 Preview 기능을 사용할 때 표시할 {{example_dialogues}} {0}예시 텍스트2 *캐릭터",
+      "ko": "커스텀 모듈의 Preview 기능을 사용할 때 표시할 {{example_dialogues}} Mark예시 텍스트2",
       "ja": "",
       "fr": "",
       "es": "",
@@ -5107,7 +5250,7 @@
       "de": ""
     },
     "common_sample_067": {
-      "en-US": "Keywords ({0}/50)<br>horror, movie<br>Description ({0}/400)<br>blah blah",
+      "en-US": "Keywords ({0}/50)<br>Enter Keyword<br>Description ({0}/400)<br>Enter Keyword",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -5151,7 +5294,7 @@
       "de": ""
     },
     "common_sample_071": {
-      "en-US": "Please describe the image you want to create<br>ex) yellow hair a<br>girl, walking on the beach, Wearing a blue swimsuit",
+      "en-US": "Please describe the image you want to create<br>ex) yellow hair a girl, walking on the beach, Wearing a blue swimsuit",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -5195,7 +5338,7 @@
       "de": ""
     },
     "common_sample_075": {
-      "en-US": "Please entr the elements you want to exclude.<br>Only English is possible, and plese separate<br>with commas. (,)<br>ex) Worst quality. low quality:1.4), monochrome,<br>zombile, (interlocked fingers)",
+      "en-US": "Please entr the elements you want to exclude. Only English is possible, and plese separate with commas. (,)<br>ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -5261,7 +5404,7 @@
       "de": ""
     },
     "common_sample_081": {
-      "en-US": "This information will not be exposed to the<br>user in conversation. and will be passed to the<br>prompt generator",
+      "en-US": "This information will not be exposed to the user in conversation. and will be passed to the prompt generator",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -5272,8 +5415,8 @@
       "de": ""
     },
     "common_sample_082": {
-      "en-US": "This is the description of the character (Character<br>description is also public to other users)",
-      "ko": "",
+      "en-US": "This is the description of the character (Character description is also public to other users)",
+      "ko": "캐릭터 설명에 대해서 작성하세요 예시 텍스트",
       "ja": "",
       "fr": "",
       "es": "",
@@ -5283,7 +5426,18 @@
       "de": ""
     },
     "common_sample_083": {
-      "en-US": "This is the description of the character<br>(Character description is also public to other<br>users)",
+      "en-US": "This is the description of the character (Character description is also public to other users)",
+      "ko": "환영 인사에 대해서 작성하세요 예시 텍스트",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "common_sample_084": {
+      "en-US": "Enter the character name",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -7571,6 +7725,135 @@
       "de": ""
     }
   },
+  "Login": {
+    "login001_label_001": {
+      "en-US": "or",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "login001_desc_002": {
+      "en-US": "Join us and enjoy<br>daily free {0} rubies",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "login001_label_003": {
+      "en-US": "Privacy Policy",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "login001_label_004": {
+      "en-US": "Terms of Service",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    }
+  },
+  "Home": {
+    "home001_label_001": {
+      "en-US": "For You",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "home001_label_002": {
+      "en-US": "Following",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "home001_label_003": {
+      "en-US": "Sponsored",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    }
+  },
+  "ContentHome": {
+    "contenthome003_label_001": {
+      "en-US": "Complete",
+      "ko": "완결",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    }
+  },
+  "Explore": {
+    "explore006_label_001": {
+      "en-US": "Recent Searches",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "explore006_desc_002": {
+      "en-US": "No search results found.",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    },
+    "explore006_desc_003": {
+      "en-US": "We can create the character you have in mind!",
+      "ko": "",
+      "ja": "",
+      "fr": "",
+      "es": "",
+      "zh-CN": "",
+      "zh-TW": "",
+      "pt-PT": "",
+      "de": ""
+    }
+  },
   "CreateCharacter": {
     "createcharacter001_title_001": {
       "en-US": "Create Character",
@@ -7650,7 +7933,7 @@
       "de": ""
     },
     "createcharacter001_desc_008": {
-      "en-US": "\"This is where you set the character's basic information (name, description).<br>However, the content entered here does not directly affect the actual chat.<br>To reflect the character's personality in the chat, you must enter it in the<br>LLM tab.\"",
+      "en-US": "\"This is where you set the character's basic information (name, description). However, the content entered here does not directly affect the actual chat. To reflect the character's personality in the chat, you must enter it in the LLM tab.\"",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -7683,7 +7966,7 @@
       "de": ""
     },
     "createcharacter001_desc_011": {
-      "en-US": "2. Use a name that is clearly recognized as a name.<br>Use a short name. Long names ard difficult to enter during the chat",
+      "en-US": "2. Use a name that is clearly recognized as a name. Use a short name. Long names ard difficult to enter during the chat",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -7749,7 +8032,7 @@
       "de": ""
     },
     "createcharacter001_desc_017": {
-      "en-US": "Use{{User}}to replace with the name of the user in the conversation.<br>Use{{char}}to replace with the charater’s name.",
+      "en-US": "Use{{User}}to replace with the name of the user in the conversation. Use{{char}}to replace with the charater’s name.",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -7782,7 +8065,7 @@
       "de": ""
     },
     "createcharacter001_desc_020": {
-      "en-US": "The total token count is calulated based on the<br>introduction with the highest number of tokens",
+      "en-US": "The total token count is calulated based on the introduction with the highest number of tokens",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -7837,7 +8120,7 @@
       "de": ""
     },
     "createcharacter001_desc_025": {
-      "en-US": "Selects the translated version to write prompts based on the<br>language of the user in conversation. if this option is turned off,<br>the original text will always be used to create the prompt instead<br>of the translation.",
+      "en-US": "Selects the translated version to write prompts based on the language of the user in conversation. if this option is turned off, the original text will always be used to create the prompt instead of the translation.",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -8167,7 +8450,7 @@
       "de": ""
     },
     "createcharacter015_desc_001": {
-      "en-US": "This image is displayed during conversation. If you<br>describe each scene, AI shows it according to the<br>situation. Please write the scene description in English if<br>possible. 'char' and 'user' can also be used.",
+      "en-US": "This image is displayed during conversation. If you describe each scene, AI shows it according to the<br>situation. Please write the scene description in English if possible. {{char}} and {{user}} can also be used.",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -8189,7 +8472,7 @@
       "de": ""
     },
     "createcharacter016_desc_002": {
-      "en-US": "Appropriate dialogue examples help to show the character's<br>dialogue style.<br>Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]",
+      "en-US": "Appropriate dialogue examples help to show the character's dialogue style.<br>Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -8332,7 +8615,7 @@
       "de": ""
     },
     "createcharacter017_desc_013": {
-      "en-US": "Each AI voice actor has a variety of speaking styles.<br>Select the style that best suits each sentence and print<br>it.",
+      "en-US": "Each AI voice actor has a variety of speaking styles. Select the style that best suits each sentence and print it.",
       "ko": "",
       "ja": "",
       "fr": "",
@@ -8466,7 +8749,7 @@
       "de": ""
     },
     "createmodules002_desc_005": {
-      "en-US": "example_dialogues<br>‘Character name’ from character creation form ",
+      "en-US": "‘Character name’ from character creation form ",
       "ko": "",
       "ja": "",
       "fr": "",
