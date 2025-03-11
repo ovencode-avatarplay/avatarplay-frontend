@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import styles from './ViewerCommentItem.module.css';
+import styles from './ViwerCommentItem.module.css';
 import {BoldComment, BoldDislike, BoldLike, LineComment, LineDisLike, LineFolderPlus, LineLike} from '@ui/Icons';
-import ReelsComment from './ViewerComment';
-import {CommentInfo, ReplieInfo, sendCommentLike} from '@/app/NetWork/ShortsNetwork';
+import ViwerComment from './ViwerComment';
 import {Avatar, Menu, MenuItem} from '@mui/material';
-import ReelsCommentEdit from './ViewerCommentEdit';
+import ViwerCommentEdit from './ViwerCommentEdit';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {ClassNames} from '@emotion/react';
+import {CommentInfo, ReplieInfo, sendCommentLike} from '@/app/NetWork/CommonNetwork';
 
 export enum CommentType {
   default = 0,
@@ -15,7 +15,7 @@ export enum CommentType {
   replies = 2,
 }
 
-interface ReelsCommentItemProps {
+interface ViwerCommentItemProps {
   feedId: number;
   comment: CommentInfo | ReplieInfo;
   type?: CommentType;
@@ -24,7 +24,7 @@ interface ReelsCommentItemProps {
   onAddTotalCommentCount: () => void;
 }
 
-const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
+const ViwerCommentItem: React.FC<ViwerCommentItemProps> = ({
   onComplete,
   feedId,
   comment,
@@ -154,10 +154,10 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
               onClick={() => setIsExpanded(!isExpanded)}
             >
               {isExpanded ? (
-                comment.content
-              ) : comment.content.length > 100 ? (
+                comment?.content
+              ) : (comment?.content?.length ?? 0) > 100 ? (
                 <>
-                  {comment.content.slice(0, 92)}
+                  {comment?.content?.slice(0, 92)}
                   <span
                     style={{
                       color: '#99A3AD', // 원하는 색상 코드
@@ -168,7 +168,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
                   </span>
                 </>
               ) : (
-                comment.content
+                comment?.content
               )}
             </p>
             {/* Actions */}
@@ -215,7 +215,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
       <div className={styles.menuIcon} onClick={event => handleClick(event)}>
         <div className={styles.menuDots}></div>
       </div>
-      <ReelsComment
+      <ViwerComment
         feedId={feedId}
         isOpen={isCommentOpen}
         toggleDrawer={v => setCommentIsOpen(v)}
@@ -258,15 +258,15 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
           Delete
         </MenuItem>
       </Menu>
-      <ReelsCommentEdit
+      <ViwerCommentEdit
         commentId={comment.commentId}
         isOpen={isEditOpen}
         prevChat={comment.content}
         toggleDrawer={setIsEditOpen}
         onComplete={() => onComplete()}
-      ></ReelsCommentEdit>
+      ></ViwerCommentEdit>
     </div>
   );
 };
 
-export default ReelsCommentItem;
+export default ViwerCommentItem;

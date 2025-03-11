@@ -5,7 +5,7 @@
     height: 70%; /* Adjust height as needed */
     overflow: hidden;
     
-    max-width: 402px;
+    
     margin: 0 auto; /* 수평 중앙 정렬 */
   }
   
@@ -114,6 +114,7 @@
   .circleBlack
   {
     border-radius: 50%;
+    background-color: var(--Neutral-900);
     width: 30px;
     height: 30px;
     padding: 6px;
@@ -121,4 +122,9 @@
     justify-content: center;
     align-items: center;
     align-content: center;
+  
+  }
+  .circleBlack img{
+    width:18px;
+    height:18px;
   }

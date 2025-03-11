@@ -42,6 +42,7 @@ export interface AddCommentReq {
 export enum CommentContentType {
   Feed,
   Content,
+  Episode,
 }
 export interface AddCommentRes {
   commentId: number;

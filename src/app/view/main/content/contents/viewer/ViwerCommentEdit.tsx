@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Drawer from '@mui/material/Drawer';
-import styles from './ViewerCommentEdit.module.css';
+import styles from './ViwerCommentEdit.module.css';
 import {BoldSend} from '@ui/Icons';
 import {InputAdornment, TextField} from '@mui/material';
-import {sendUpdateComment} from '@/app/NetWork/ShortsNetwork';
+import {sendUpdateComment} from '@/app/NetWork/CommonNetwork';
 
 interface Props {
   commentId: number;
@@ -13,7 +13,7 @@ interface Props {
   onComplete: () => void;
 }
 
-const ReelsCommentEdit: React.FC<Props> = ({onComplete, prevChat, isOpen, toggleDrawer, commentId}) => {
+const ViwerCommentEdit: React.FC<Props> = ({onComplete, prevChat, isOpen, toggleDrawer, commentId}) => {
   const [chat, setChat] = useState<string>(prevChat);
   const inputRef = useRef<HTMLInputElement>(null); // TextField의 input 참조 생성
 
@@ -92,7 +92,7 @@ const ReelsCommentEdit: React.FC<Props> = ({onComplete, prevChat, isOpen, toggle
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  {chat.length > 0 && (
+                  {chat?.length > 0 && (
                     <div
                       className={styles.circleBlack}
                       style={{
@@ -118,4 +118,4 @@ const ReelsCommentEdit: React.FC<Props> = ({onComplete, prevChat, isOpen, toggle
   );
 };
 
-export default ReelsCommentEdit;
+export default ViwerCommentEdit;

@@ -2,13 +2,13 @@ import React, {useEffect, useState} from 'react';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import styles from './ViewerComment.module.css';
-import ReelsCommentItem, {CommentType} from './ViewerCommentItem';
+import styles from './ViwerComment.module.css';
+import ViwerCommentItem, {CommentType} from './ViwerCommentItem';
 import {BoldSend, LeftArrow} from '@ui/Icons';
 import {InputAdornment, TextField} from '@mui/material';
-import {CommentInfo, sendAddComment, sendGetCommentList} from '@/app/NetWork/ShortsNetwork';
+import {CommentContentType, CommentInfo, sendAddComment, sendGetCommentList} from '@/app/NetWork/CommonNetwork';
 
-interface ReelsCommentProps {
+interface ViwerCommentProps {
   feedId: number;
   isOpen: boolean;
   toggleDrawer: (open: boolean) => void;
@@ -18,7 +18,7 @@ interface ReelsCommentProps {
   onAddTotalCommentCount: () => void;
 }
 
-const ReelsComment: React.FC<ReelsCommentProps> = ({
+const ViwerComment: React.FC<ViwerCommentProps> = ({
   isOpen,
   toggleDrawer,
   feedId,
@@ -38,7 +38,8 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
   // 댓글 리스트 가져오기
   const getCommentList = async () => {
     const payload = {
-      feedId: feedId, // 댓글을 가져올 피드 ID
+      typeValueId: feedId,
+      type: CommentContentType.Feed,
     };
 
     try {
@@ -70,9 +71,10 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
   }, [isOpen]);
   const handleSendAddComment = async (feedId: number, parentCommentId: number, content: string) => {
     const payload = {
-      feedId: feedId, // 댓글을 추가할 피드 ID
-      parentCommentId: parentCommentId, // 대댓글의 경우 부모 댓글 ID, 아니면 0
-      content: content, // 댓글 내용
+      typeValueId: feedId,
+      type: CommentContentType.Content,
+      comment: content, // 댓글 내용
+      parentCommentId: parentCommentId,
     };
 
     try {
@@ -126,7 +128,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
         {/* Comments Section */}
         {!isReplies &&
           commentList.map((comment, index) => (
-            <ReelsCommentItem
+            <ViwerCommentItem
               onComplete={() => getCommentList()}
               key={index}
               feedId={feedId}
@@ -137,7 +139,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
           ))}
 
         {isReplies && parentComment && (
-          <ReelsCommentItem
+          <ViwerCommentItem
             feedId={feedId}
             comment={parentComment}
             type={CommentType.parent}
@@ -147,7 +149,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
         )}
         {isReplies &&
           parentComment?.replies.map((comment, index) => (
-            <ReelsCommentItem
+            <ViwerCommentItem
               feedId={feedId}
               comment={comment}
               type={CommentType.replies}
@@ -211,4 +213,4 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
   );
 };
 
-export default ReelsComment;
+export default ViwerComment;
