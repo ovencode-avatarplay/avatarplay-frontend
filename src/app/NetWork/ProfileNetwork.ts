@@ -131,6 +131,7 @@ export interface ProfileInfo {
   followState: FollowState;
   urlLinkKey: string;
   pdProfileUrlLinkKey: string;
+  characterUrlLinkKey: string;
 }
 
 export enum FollowState {

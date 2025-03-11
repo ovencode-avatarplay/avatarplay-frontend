@@ -16,7 +16,7 @@ import {
   LineCheck,
   LineEdit,
 } from '@ui/Icons';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import styles from './ContentSeriesDetail.module.scss';
 import cx from 'classnames';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
@@ -24,6 +24,7 @@ import {TextArea} from '@/app/view/profile/ProfileDetail';
 import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {
+  ContentType,
   GetContentReq,
   GetContentRes,
   GetSeasonEpisodesReq,
@@ -53,12 +54,14 @@ const ContentSeriesDetail = ({id}: Props) => {
     dataEpisodes: GetSeasonEpisodesRes | null;
     season: number;
     isShareOpened: boolean;
+    isSingle: boolean;
   }>({
     indexTab: eTabType.Episodes,
     dataContent: null,
     dataEpisodes: null,
     season: 0,
     isShareOpened: false,
+    isSingle: false,
   });
 
   const routerBack = () => {
@@ -71,7 +74,7 @@ const ContentSeriesDetail = ({id}: Props) => {
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     refreshInfo();
   }, []);
 
@@ -95,6 +98,12 @@ const ContentSeriesDetail = ({id}: Props) => {
     console.log('rsGetSeasonEpisodes : ', resGetSeasonEpisodes.data);
     if (resGetSeasonEpisodes.data) {
       data.dataEpisodes = resGetSeasonEpisodes.data;
+    }
+
+    const isSingle = data.dataContent?.contentInfo.contentType == ContentType.Single;
+    data.isSingle = isSingle;
+    if (isSingle) {
+      data.indexTab = eTabType.About;
     }
     setData({...data});
   };
@@ -164,6 +173,7 @@ const ContentSeriesDetail = ({id}: Props) => {
                   typeValueId: data.dataContent?.contentInfo?.id || 0,
                 };
                 const response = await bookmark(dataReq);
+                console.log('response : ', response);
                 //TODO : 북마크 이후 리프레쉬로 북마크 여부 갱신해야함
               }}
             >
@@ -210,44 +220,47 @@ const ContentSeriesDetail = ({id}: Props) => {
               }
             }}
           >
-            <li
-              className={cx(styles.tab, data.indexTab == eTabType.Episodes && styles.active)}
-              data-tab={eTabType.Episodes}
-            >
-              Episodes
-            </li>
+            {!data.isSingle && (
+              <li
+                className={cx(styles.tab, data.indexTab == eTabType.Episodes && styles.active)}
+                data-tab={eTabType.Episodes}
+              >
+                Episodes
+              </li>
+            )}
             <li className={cx(styles.tab, data.indexTab == eTabType.About && styles.active)} data-tab={eTabType.About}>
               About
             </li>
           </ul>
-          <div className={styles.selectSeason}>
-            <SelectBox
-              value={seasonList?.[0]}
-              options={seasonList}
-              ArrowComponent={SelectBoxArrowComponent}
-              ValueComponent={SelectBoxValueComponent}
-              OptionComponent={SelectBoxOptionComponent}
-              onChange={async id => {}}
-              customStyles={{
-                menuList: {
-                  borderRadius: '10px',
-                  border: '1px solid var(--Border-1, #EAECF0)',
-                  background: 'var(--White, #FFF)',
-                },
-                option: {
-                  padding: 0,
-                },
-                menu: {
-                  marginTop: '4px',
-                },
-              }}
-            />
-          </div>
         </section>
         <section className={styles.contentSection}>
           <section className={styles.tabContentSection}>
             {data.indexTab == eTabType.Episodes && (
               <>
+                <div className={styles.selectSeason}>
+                  <SelectBox
+                    value={seasonList?.[0]}
+                    options={seasonList}
+                    ArrowComponent={SelectBoxArrowComponent}
+                    ValueComponent={SelectBoxValueComponent}
+                    OptionComponent={SelectBoxOptionComponent}
+                    onChange={async id => {}}
+                    customStyles={{
+                      menuList: {
+                        borderRadius: '10px',
+                        border: '1px solid var(--Border-1, #EAECF0)',
+                        background: 'var(--White, #FFF)',
+                      },
+                      option: {
+                        padding: 0,
+                      },
+                      menu: {
+                        marginTop: '4px',
+                      },
+                    }}
+                  />
+                </div>
+
                 <ul className={styles.episodeList}>
                   {data.dataEpisodes?.episodeList.map((one, index) => {
                     return (
