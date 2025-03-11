@@ -9,13 +9,13 @@ type Props = {
 };
 
 const page = ({params}: Props) => {
-  const id = parseInt(params?.id?.[0] || '0');
+  const id = params?.id?.[0] || '0';
   console.log('id', id);
 
   return (
     <>
       {' '}
-      <CreateSeriesContent id={id}></CreateSeriesContent>
+      <CreateSeriesContent urlLinkKey={id}></CreateSeriesContent>
     </>
   );
 };

@@ -11,13 +11,14 @@ type Props = {
 };
 
 const Page = ({params}: Props) => {
+  console.log('params', params);
   // id가 배열인지 확인하고 변환
-  const numericParams = Array.isArray(params?.id) ? params.id.map(Number) : [];
+  const numericParams = Array.isArray(params?.id) ? params.id.map(String) : [];
   const [contentId, curSeason, curEpisodeCount, episodeId] = [
     numericParams[0] ?? undefined,
-    numericParams[1] ?? 1, // 기본값 1
-    numericParams[2] ?? 0, // 기본값 0
-    numericParams[3] ?? undefined,
+    parseInt(numericParams[1]) ?? 1, // 기본값 1
+    parseInt(numericParams[2]) ?? 0, // 기본값 0
+    parseInt(numericParams[3]) ?? undefined,
   ];
 
   const props: CreateContentEpisodeProps = {

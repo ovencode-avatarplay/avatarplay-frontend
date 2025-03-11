@@ -37,7 +37,7 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 
 export interface CreateContentEpisodeProps {
-  contentId?: number;
+  contentId?: string;
   curSeason: number;
   curEpisodeCount: number;
   episodeId?: number;
@@ -52,9 +52,9 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
   const [contentInfo, setContentInfo] = useState<ContentInfo>();
 
   console.log('alert(episodeId);', contentId, curSeason, curEpisodeCount, episodeId);
-  const fetchContent = async (contentId: number) => {
+  const fetchContent = async (urlLinkKey: string) => {
     try {
-      const response = await sendGetContent({contentId});
+      const response = await sendGetContent({urlLinkKey});
       setContentInfo(response.data?.contentInfo);
       console.log('📌 조회된 Content 정보:', response.data?.contentInfo);
     } catch (error) {

@@ -37,10 +37,10 @@ enum VisibilityType {
 }
 
 interface CreateSingleContentProps {
-  id?: number;
+  urlLinkKey?: string;
 }
 
-const CreateSingleContent: React.FC<CreateSingleContentProps> = ({id}) => {
+const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) => {
   const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
@@ -210,11 +210,11 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({id}) => {
   const [defaultImage, setDefaultImage] = useState<string>();
 
   useEffect(() => {
-    if (id === undefined) return;
+    if (urlLinkKey === undefined) return;
 
     const fetchData = async () => {
       try {
-        const response = await sendGetContent({contentId: id});
+        const response = await sendGetContent({urlLinkKey});
 
         if (response.data) {
           console.log('콘텐츠 정보:', response.data.contentInfo);
@@ -251,7 +251,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({id}) => {
     };
 
     fetchData();
-  }, [id]);
+  }, [urlLinkKey]);
 
   const handleConfirm = async () => {
     if (!nameValue.trim()) {

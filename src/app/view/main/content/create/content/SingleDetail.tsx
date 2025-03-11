@@ -48,7 +48,7 @@ export interface SingleInfo {
 }
 
 interface SingleDetailProps {
-  id: number;
+  id: string;
 }
 const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
   const [selectedSeason, setSelectedSeason] = useState(1);
@@ -56,8 +56,8 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
   const [singleInfo, setSingleInfo] = useState<ContentInfo>();
 
   useEffect(() => {
-    const fetchContent = async (contentId: number) => {
-      const payload: GetContentReq = {contentId};
+    const fetchContent = async (urlLinkKey: string) => {
+      const payload: GetContentReq = {urlLinkKey};
 
       try {
         const response = await sendGetContent(payload);

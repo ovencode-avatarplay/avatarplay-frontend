@@ -36,14 +36,14 @@ import SharePopup from '@/components/layout/shared/SharePopup';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface SeriesDetailProps {
-  id: number;
+  urlLinkKey: string;
 }
 
 export interface Seasons {
   id: number;
   name: string;
 }
-const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
+const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey: contentId}) => {
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedTab, setSelectedTab] = useState<'Episodes' | 'About'>('Episodes');
   const [onSeasonDropdown, setSeasonDropdown] = useState(false);
@@ -225,8 +225,8 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({id: contentId}) => {
   };
 
   useEffect(() => {
-    const fetchContent = async (contentId: number) => {
-      const payload: GetContentReq = {contentId};
+    const fetchContent = async (urlLinkKey: string) => {
+      const payload: GetContentReq = {urlLinkKey};
 
       try {
         const response = await sendGetContent(payload);

@@ -60,6 +60,11 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
     // 사용 예제
     handleDeleteContent(id); // 콘텐츠 ID 123 삭제 시도
   };
+
+  const handleGo = (id: string) => {
+    pushLocalizedRoute(`/create/content/${activeTab === ContentType.Series ? 'series' : 'single'}/${id}`, router);
+  };
+
   const editContente = (id: number, type: ContentType) => {
     if (type == ContentType.Series) pushLocalizedRoute(`/update/content/series/${id}`, router);
     else if (type == ContentType.Single) pushLocalizedRoute(`/update/content/single/${id}`, router);
@@ -180,10 +185,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
                         key={index}
                         content={content}
                         onAddEpisode={() => {
-                          pushLocalizedRoute(
-                            `/create/content/${activeTab === ContentType.Series ? 'series' : 'single'}/${content.id}`,
-                            router,
-                          );
+                          handleGo(content.urlLinkKey);
                         }}
                         onDelete={() => {
                           setIsDeleteNum(content.id);
@@ -221,7 +223,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
                         key={index}
                         content={content}
                         onAddEpisode={() => {
-                          pushLocalizedRoute(`/create/content/single/${content.id}`, router);
+                          pushLocalizedRoute(`/create/content/single/${content.urlLinkKey}`, router);
                         }}
                         onDelete={() => {
                           deleteContente(content.id);

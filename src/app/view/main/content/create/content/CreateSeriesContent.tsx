@@ -35,10 +35,10 @@ enum VisibilityType {
 }
 
 interface CreateSeriesContentProps {
-  id?: number;
+  urlLinkKey?: string;
 }
 
-const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({id}) => {
+const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) => {
   const router = useRouter();
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -163,11 +163,11 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({id}) => {
   const [defaultImage, setDefaultImage] = useState<string>();
 
   useEffect(() => {
-    if (id === undefined) return;
+    if (urlLinkKey === undefined) return;
 
     const fetchData = async () => {
       try {
-        const response = await sendGetContent({contentId: id});
+        const response = await sendGetContent({urlLinkKey});
 
         if (response.data) {
           console.log('콘텐츠 정보:', response.data.contentInfo);
@@ -198,7 +198,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({id}) => {
     };
 
     fetchData();
-  }, [id]);
+  }, [urlLinkKey]);
 
   const handleConfirm = async () => {
     if (!nameValue.trim()) {
@@ -247,6 +247,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({id}) => {
         monetization: false,
         salesStarEa: 0, //추후 구현 필요
         maxSeasonNo: 1, // 기본 시즌 1개부터 시작
+        urlLinkKey: '',
       },
     };
 

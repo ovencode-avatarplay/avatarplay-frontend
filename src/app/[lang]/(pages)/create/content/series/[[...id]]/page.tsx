@@ -9,11 +9,17 @@ type Props = {
 };
 
 const page = ({params}: Props) => {
-  const id = parseInt(params?.id?.[0] || '0');
+  const id = params?.id?.[0] || '0';
   console.log('id', id);
 
   return (
-    <>{params?.id == undefined ? <CreateSeriesContent></CreateSeriesContent> : <SeriesDetail id={id}></SeriesDetail>}</>
+    <>
+      {params?.id == undefined ? (
+        <CreateSeriesContent></CreateSeriesContent>
+      ) : (
+        <SeriesDetail urlLinkKey={id}></SeriesDetail>
+      )}
+    </>
   );
 };
 

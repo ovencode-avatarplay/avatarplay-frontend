@@ -28,6 +28,7 @@ export interface ContentInfo {
   salesStarEa: number;
   contentWebtoonInfo?: ContentEpisodeWebtoonInfo;
   contentVideoInfo?: ContentEpisodeVideoInfo;
+  urlLinkKey?: string;
 }
 
 export interface CreateContentRes {
@@ -47,7 +48,7 @@ export const sendCreateContent = async (payload: CreateContentReq): Promise<Resp
 
 // 📌 Content 조회 요청
 export interface GetContentReq {
-  contentId: number;
+  urlLinkKey: string;
 }
 
 export interface GetContentRes {
@@ -249,6 +250,7 @@ export interface GetContentListReq {
 
 export interface ContentListInfo {
   id: number;
+  urlLinkKey: string;
   name: string;
   description: string;
   genre: string;
