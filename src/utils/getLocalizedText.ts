@@ -60,11 +60,21 @@ const getLocalizedText = (head: keyof LocalizationStrings, key: string, language
     return '';
   }
 
+  //   const localizedItem = group[key];
+
+  //   if (effectiveLanguage === null) return localizedItem['en-US'] || '';
+
+  //   // 언어별 데이터가 없으면 영어 기본값 반환
+  //   return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
+  // };
+  // export default getLocalizedText;
+
   const localizedItem = group[key];
 
-  if (effectiveLanguage === null) return localizedItem['en-US'] || '';
+  if (effectiveLanguage === null) return '';
 
-  // 언어별 데이터가 없으면 영어 기본값 반환
-  return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
+  // 언어별 데이터가 없으면 빈 문자열 반환 ( LQA 용도 )
+  return localizedItem[effectiveLanguage] || '';
 };
+
 export default getLocalizedText;

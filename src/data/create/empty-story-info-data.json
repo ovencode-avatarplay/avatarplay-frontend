@@ -52,7 +52,8 @@
                   "name": "string",
                   "iconImageUrl": "string",
                   "description" : "string",
-                  "nsfw": false 
+                  "nsfw": false ,
+                  "urlLinkKey" : "string"
                 },
                 "connectCharacterId" : 0,
                 "recruitedProfileId": 0,
@@ -78,7 +79,8 @@
                   "name": "string",
                   "iconImageUrl": "string",
                   "description" : "string",
-                  "nsfw": false 
+                  "nsfw": false ,
+                  "urlLinkKey" : "string"
                 },
                 "state": 1,
                 

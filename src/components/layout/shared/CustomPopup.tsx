@@ -22,7 +22,7 @@ interface InputField {
 
 interface PopupProps {
   type: PopupType;
-  title: string;
+  title: string | React.ReactNode;
   description?: string;
   buttons: PopupButton[];
   textButton?: PopupButton;
@@ -36,11 +36,27 @@ const CustomPopup: React.FC<PopupProps> = ({type, title, description, buttons, t
       <div className={styles.popupContainer} onClick={e => e.stopPropagation()}>
         <div className={styles.popupTextArea}>
           {/* Title */}
-          <div className={styles.popupTitle}>{title}</div>
+          <div className={styles.popupTitle}>
+            {typeof title === 'string'
+              ? title.split('<br>').map((line, index) => (
+                  <React.Fragment key={index}>
+                    {index > 0 && <br />}
+                    {line}
+                  </React.Fragment>
+                ))
+              : title}
+          </div>
           {/* Description */}
           {description && (
             <div className={styles.popupDescription} style={{whiteSpace: 'pre-wrap'}}>
-              {description}
+              {typeof description === 'string'
+                ? description.split('<br>').map((line, index) => (
+                    <React.Fragment key={index}>
+                      {index > 0 && <br />}
+                      {line}
+                    </React.Fragment>
+                  ))
+                : description}
             </div>
           )}
         </div>
