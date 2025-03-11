@@ -143,6 +143,7 @@ export interface ExploreItem {
   thumbnail: string;
   sortCount: number;
   sortCreateAt: string;
+  profileUrlLinkKey: string;
 }
 
 interface ResSearchExplore {

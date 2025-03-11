@@ -8,6 +8,8 @@ import {openDrawerCharacterId} from '@/redux-store/slices/DrawerCharacterDescSli
 
 import {ExploreCardProps} from './SearchBoardTypes';
 import {BoldChatRoundDots, BoldEpisodes, BoldFollowers} from '@ui/Icons';
+import Link from 'next/link';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 const ExploreCard: React.FC<ExploreCardProps> = ({
   exploreItemType,
@@ -20,6 +22,7 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
   followerCount,
   thumbnail,
   classType,
+  urlLinkKey,
 }) => {
   const dispatch = useDispatch();
 
@@ -33,8 +36,7 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
     if (exploreItemType === 0) {
       dispatch(openDrawerContentId(storyId));
     } else if (exploreItemType === 1) {
-      dispatch(openDrawerCharacterId(storyId));
-
+      // dispatch(openDrawerCharacterId(storyId));
       // alert('캐릭터는 프로필로 갈 예정입니다. (프로필 작업 완료후 연결 필요)');
     }
   };
@@ -96,16 +98,18 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
   return (
     <>
       <article className={`${styles.exploreCard} ${classType && getClassType(classType)}`}>
-        <figure
-          className={styles.exploreImage}
-          style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
-              thumbnail || '/images/001.png'
-            })`,
-            backgroundSize: 'cover',
-          }}
-          onClick={handleOpenDrawer}
-        />
+        <Link href={getLocalizedLink('/profile/' + urlLinkKey)}>
+          <figure
+            className={styles.exploreImage}
+            style={{
+              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
+                thumbnail || '/images/001.png'
+              })`,
+              backgroundSize: 'cover',
+            }}
+            onClick={handleOpenDrawer}
+          />
+        </Link>
 
         {storyRank && storyRank < RankCount && (
           <div className={styles.rankArea}>

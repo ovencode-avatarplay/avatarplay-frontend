@@ -9,4 +9,5 @@ export interface ExploreCardProps {
   followerCount: number;
   thumbnail: string;
   classType?: string;
+  urlLinkKey?: string;
 }

@@ -394,6 +394,7 @@ const SearchBoard: React.FC = () => {
                           followerCount={item.followerCount}
                           thumbnail={item.thumbnail}
                           classType="search"
+                          urlLinkKey={item.profileUrlLinkKey}
                         />
                       </li>
                     ))}
