@@ -2337,7 +2337,7 @@ const TabContentComponent = ({
                       e.preventDefault();
                       e.stopPropagation();
                       const dataContextMenu = {
-                        id: one.id,
+                        id: one.urlLinkKey,
                         isPin: one?.isPinFix || false,
                         isSettingOpen: true,
                       };
