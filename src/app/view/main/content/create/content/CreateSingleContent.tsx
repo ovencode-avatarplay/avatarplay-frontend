@@ -301,6 +301,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         maxSeasonNo: 1, // 기본 시즌 1개부터 시작
         contentWebtoonInfo: selectedCategory == CategoryTypes.Webtoon ? episodeWebtoonInfo : undefined,
         contentVideoInfo: selectedCategory == CategoryTypes.Drama ? episodeVideoInfo : undefined,
+        urlLinkKey: '',
       },
     };
 

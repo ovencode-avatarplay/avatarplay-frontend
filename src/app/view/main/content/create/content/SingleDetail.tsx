@@ -52,7 +52,7 @@ interface SingleDetailProps {
 }
 const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
   const [selectedSeason, setSelectedSeason] = useState(1);
-  const [selectedTab, setSelectedTab] = useState<'Episodes' | 'About'>('Episodes');
+  const [selectedTab, setSelectedTab] = useState<'About'>('About');
   const [singleInfo, setSingleInfo] = useState<ContentInfo>();
 
   useEffect(() => {
@@ -124,59 +124,16 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
         <div className={styles.tabs}>
           <div className={styles.tabContainer}>
             <button
-              className={`${styles.tabButton} ${selectedTab === 'Episodes' ? styles.activeTab : ''}`}
-              onClick={() => setSelectedTab('Episodes')}
-            >
-              Content
-            </button>
-            <button
               className={`${styles.tabButton} ${selectedTab === 'About' ? styles.activeTab : ''}`}
               onClick={() => setSelectedTab('About')}
             >
               About
             </button>
             {/* 이동하는 밑줄 */}
-            <div className={styles.tabUnderline} style={{left: selectedTab === 'Episodes' ? '0px' : '80px'}} />
+            <div className={styles.tabUnderline} style={{left: '0px'}} />
           </div>
         </div>
-
-        {selectedTab === 'Episodes' ? (
-          <>
-            {/* 에피소드 리스트 */}
-            <div className={styles.episodeList}>
-              <div className={styles.episodeItem}>
-                <div
-                  className={styles.episodeThumbnail}
-                  style={{backgroundImage: `url(${singleInfo?.thumbnailUrl})`}}
-                ></div>
-                <div className={styles.episodeInfo}>
-                  <div className={styles.epTitleText}>{singleInfo?.name}</div>
-                  {/* {singleInfo?.categoryType == 1 && (
-                    <div className={styles.epDuration}>{singleInfo?.contentVideoInfo?.videoSourcePlayTime}</div>
-                  )} */}
-                </div>
-                <div className={styles.episodeActions}>
-                  {/* <button className={styles.iconButton}>
-                    <img src={LineEdit.src} alt="Edit" className={styles.editIcon} />
-                  </button> */}
-                  {/* <div className={styles.rating}>
-                    <img src={BoldStar.src} className={styles.starIcon} />
-                    {singleInfo?.categoryType == 0 && (
-                      <span className={styles.rateText}>{singleInfo?.contentWebtoonInfo?.likeCount}</span>
-                    )}
-                    {singleInfo?.categoryType == 1 && (
-                      <span className={styles.rateText}>{singleInfo?.contentVideoInfo?.likeCount}</span>
-                    )}
-                  </div> */}
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className={styles.episodeList}>{singleInfo?.description}</div>
-          </>
-        )}
+        <div className={styles.episodeList}>{singleInfo?.description}</div>
       </div>
 
       <SharePopup

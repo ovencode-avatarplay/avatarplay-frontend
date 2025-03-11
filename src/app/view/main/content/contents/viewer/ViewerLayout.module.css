@@ -1,0 +1,58 @@
+.tabContainer {
+  position: fixed;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  width: 162px;
+  height: 26px;
+  left: 50%;  
+  top: calc(58px + 15px);
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.tab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 80%;
+  color: #ffffff;
+  cursor: pointer;
+  user-select: none; /* ✅ 텍스트 선택 방지 */
+  -webkit-tap-highlight-color: transparent; /* ✅ 모바일 터치 시 파란 배경 제거 */
+}
+
+.active {
+  border-bottom: 2px solid #ffffff;
+}
+
+.reelsContainer {
+  width: 100%;
+  height: auto; /* ✅ 자동 높이 */
+  margin-top: 58px;
+  
+  padding-bottom: 48px;
+  background-color: black;
+}
+
+.reelsWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+}
+
+.reelSlide {
+  width: 100%;
+  height: calc(100vh - 58px - 48px);
+  scroll-snap-align: start; /* ✅ 스냅 정렬 유지 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+}
