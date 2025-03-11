@@ -49,6 +49,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
   const [tagList, setTagList] = useState<string[]>([]);
   const [genreList, setGenreList] = useState<string[]>([]);
   const maxTagCount = 5;
+  const maxGenreCount = 1;
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
   const [selectedGenreAlertOn, setSelectedGenreAlertOn] = useState(false);
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
@@ -87,7 +88,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
     if (selectedGenres.includes(tag)) {
       handleGenreRemove(tag);
     } else {
-      if (selectedGenres.length >= maxTagCount) {
+      if (selectedGenres.length >= maxGenreCount) {
         setSelectedGenreAlertOn(true);
         return;
       }
@@ -301,6 +302,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         maxSeasonNo: 1, // 기본 시즌 1개부터 시작
         contentWebtoonInfo: selectedCategory == CategoryTypes.Webtoon ? episodeWebtoonInfo : undefined,
         contentVideoInfo: selectedCategory == CategoryTypes.Drama ? episodeVideoInfo : undefined,
+        urlLinkKey: '',
       },
     };
 
@@ -552,7 +554,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         selectedTags={selectedGenres}
         onTagSelect={handleGenreSelect}
         onRefreshTags={() => setSelectedGenres([])}
-        maxTagCount={maxTagCount}
+        maxTagCount={maxGenreCount}
         selectedTagAlertOn={selectedGenreAlertOn}
         setSelectedTagAlertOn={setSelectedGenreAlertOn}
       />

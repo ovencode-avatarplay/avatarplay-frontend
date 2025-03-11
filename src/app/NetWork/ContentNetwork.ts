@@ -236,6 +236,11 @@ export interface GetSeasonEpisodesRes {
   isBookMark: boolean;
   profileUrlLinkKey: string;
   episodeList: SeasonEpisodeInfo[];
+  tags: string[];
+  genre: string;
+  maxSeasonNo: number;
+  description: string;
+  isBookMark: boolean;
 }
 
 export const sendGetSeasonEpisodes = async (

@@ -9,9 +9,10 @@ interface ContentCardProps {
   onAddEpisode: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  isSingle?: boolean;
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit, onDelete}) => {
+const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit, onDelete, isSingle = false}) => {
   const isVideo = content.thumbnailUrl.match(/\.(mp4|webm|ogg)$/i);
   const [dropBoxOpen, setDropBoxOpen] = useState<boolean>(false);
   const dropDownMenuItems: DropDownMenuItem[] = [
@@ -70,7 +71,7 @@ const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit,
 
           {/* 에피소드 정보 */}
           <div className={styles.episodeInfo}>
-            <strong>Episode {content.episodeCount}</strong>
+            {isSingle != true && <strong>Episode {content.episodeCount}</strong>}
             <div className={styles.stats}>
               <div className={styles.stat}>
                 <img src={BoldFollowers.src} className={styles.icon} alt="views" />
@@ -83,8 +84,9 @@ const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit,
 
       {/* 하단 버튼 */}
       <button className={styles.addButton} onClick={onAddEpisode}>
-        Add Episode
+        Detail
       </button>
+
       {dropBoxOpen && (
         <>
           <DropDownMenu
