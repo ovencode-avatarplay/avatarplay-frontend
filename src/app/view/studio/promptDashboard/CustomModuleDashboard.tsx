@@ -376,13 +376,20 @@ const CustomModuleDashboard: React.FC = () => {
       {namePopupOpen && (
         <CustomPopup
           type="alert"
-          title={`Make New Custom ${popupType === 'prompt' ? 'Prompt' : 'Lorebook'}`}
+          title={
+            popupType === 'prompt'
+              ? formatText(getLocalizedText('Common', 'common_alert_039'))
+              : formatText(getLocalizedText('Common', 'common_alert_078'))
+          }
           inputField={{
             value: newItemName,
             onChange: e => setNewItemName(e.target.value),
-            placeholder: `Enter ${popupType === 'prompt' ? 'prompt' : 'lorebook'} name`,
+            placeholder: getLocalizedText('Common', 'common_sample_060'),
             textType: 'Label',
-            label: `Input new custom ${popupType === 'prompt' ? 'prompt' : 'lorebook'} name`,
+            label:
+              popupType === 'prompt'
+                ? formatText(getLocalizedText('Common', 'common_alert_037'))
+                : formatText(getLocalizedText('Common', 'common_alert_079')),
           }}
           buttons={[
             {
@@ -413,13 +420,6 @@ const CustomModuleDashboard: React.FC = () => {
               ? selectedLorebook?.title ?? ''
               : 'err',
           ])}
-          // {`Are you sure you want to exit ‘${
-          //   displayState === 'prompt'
-          //     ? selectedPrompt?.title
-          //     : displayState === 'lorebook'
-          //     ? selectedLorebook?.title
-          //     : 'err'
-          // }’ `}
           description={getLocalizedText('Common', 'common_alert_076')}
           buttons={[
             {
@@ -442,20 +442,11 @@ const CustomModuleDashboard: React.FC = () => {
       {isDeleteConfirmOpen && (
         <CustomPopup
           type="alert"
-          title={
-            // {getLocalizedText('Common', 'common_alert_075')}
-            `Are you sure you want to delete ‘${
-              displayState === 'prompt'
-                ? selectedPrompt?.title
-                : displayState === 'lorebook'
-                ? selectedLorebook?.title
-                : 'err'
-            }’ `
-          }
-          description={
-            // {getLocalizedText('Common', 'common_alert_076')}
-            `really?`
-          }
+          title={getLocalizedText('Common', 'common_alert_006')}
+          // description={
+          //   // {getLocalizedText('Common', 'common_alert_076')}
+          //   `really?`
+          // }
           buttons={[
             {
               label: getLocalizedText('Common', 'common_button_cancel'),

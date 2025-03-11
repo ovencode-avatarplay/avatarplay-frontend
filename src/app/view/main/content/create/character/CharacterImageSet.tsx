@@ -12,16 +12,18 @@ import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import {GenerateImageReq2, sendGenerateImageReq2} from '@/app/NetWork/ImageNetwork';
 import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface CharacterImageSetProps {
   createFinishAction?: (imgUrl: string) => void;
 }
 
+const Header = 'CreateCharacter';
+const Common = 'Common';
+
 const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedLora, setSelectedLora] = useState<number>(0);
-
-  let loraToolTip = `Anime, Pixar, J-film, K-film, Realism, Hollywood models can be used after age verification`;
 
   const [positivePrompt, setPositivePrompt] = useState<string>('');
   const positivePlaceHolder = `Please describe the image you want to create
@@ -71,46 +73,60 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
 
   const aiTagOption = [
     {
-      label: '1girl',
+      label: 'common_tagprompty_onegirl',
+      value: '1girl',
     },
     {
-      label: '1man',
+      label: 'common_tagprompty_oneman',
+      value: '1man',
     },
     {
-      label: 'higly detailed',
+      label: 'common_tagprompty_highlydetailed',
+      value: 'highly detailed',
     },
     {
-      label: 'high resolution',
+      label: 'common_tagprompty_highresolution',
+      value: 'high resolution',
     },
     {
-      label: 'high quality',
+      label: 'common_tagprompty_highquality',
+      value: 'high quality',
     },
     {
-      label: '8k',
+      label: 'common_tagprompty_uhd',
+      value: '8K',
     },
     {
-      label: 'illustration',
+      label: 'common_tagprompty_illustration',
+      value: 'illustration',
     },
     {
-      label: 'manga',
+      label: 'common_tagprompty_manga',
+      value: 'manga',
     },
     {
-      label: 'anime',
+      label: 'common_tagprompty_anime',
+      value: 'anime',
     },
     {
-      label: 'cartoon',
+      label: 'common_tagprompty_cartoon',
+      value: 'cartoon',
     },
     {
-      label: 'japanese anime',
+      label: 'common_tagprompty_japaneseanime',
+      value: 'japanese anime',
     },
     {
-      label: 'full body',
+      label: 'common_tagprompty_fullbody',
+      value: 'full body',
     },
     {
-      label: 'bust shot',
+      label: 'common_tagprompty_bustshot',
+      value: 'bust shot',
     },
     {
-      label: 'close up',
+      label: 'common_tagprompty_closeup',
+      value: 'close up',
     },
   ];
 
@@ -154,7 +170,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
 
     // 입력된 값에 포함된 태그를 찾고 선택 상태로 변경
     const newSelectedTags = aiTagOption.reduce((selectedTags, tag, index) => {
-      if (newPrompt.includes(tag.label) && !selectedTags.includes(index)) {
+      if (newPrompt.includes(tag.value) && !selectedTags.includes(index)) {
         selectedTags.push(index);
       }
       return selectedTags;
@@ -182,11 +198,11 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
       if (prevSelectedTags.includes(index)) {
         // 태그를 선택 해제하는 경우
         updatedTags = prevSelectedTags.filter(tagIndex => tagIndex !== index);
-        setPositivePrompt(prevPrompt => prevPrompt.replace(' ,' + aiTagOption[index].label, '').trim());
+        setPositivePrompt(prevPrompt => prevPrompt.replace(' ,' + aiTagOption[index].value, '').trim());
       } else {
         // 태그를 선택하는 경우
         updatedTags = [...prevSelectedTags, index];
-        setPositivePrompt(prevPrompt => prevPrompt + ' ,' + aiTagOption[index].label);
+        setPositivePrompt(prevPrompt => prevPrompt + ' ,' + aiTagOption[index].value);
       }
 
       return updatedTags;
@@ -255,8 +271,11 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
   return (
     <div className={styles.aiGenerateArea}>
       <div className={styles.titleArea}>
-        <h2 className={styles.title2}>Please select AI model used for image</h2>
-        <CustomToolTip tooltipText={loraToolTip} tooltipStyle={{transform: 'translateX(-75%)'}}></CustomToolTip>
+        <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter011_desc_002')}</h2>
+        <CustomToolTip
+          tooltipText={getLocalizedText(Common, 'common_alert_004')}
+          tooltipStyle={{transform: 'translateX(-75%)'}}
+        ></CustomToolTip>
       </div>
       <div className={styles.loraArea}>
         <Swiper
@@ -272,7 +291,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
               <CharacterCreateImageButton
                 key={option.label}
                 sizeType="small"
-                label={option.label}
+                label={getLocalizedText(Common, option.label)}
                 image={option.image}
                 selected={selectedLora === index}
                 onClick={() => handleSelectedLora(index)}
@@ -283,7 +302,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
       </div>
 
       <MaxTextInput
-        labelText="Please enter a describe the image you want to create."
+        labelText={getLocalizedText(Header, 'createcharacter011_desc_003')}
         placeholder={positivePlaceHolder}
         inputDataType={inputType.None}
         stateDataType={inputState.Normal}
@@ -295,7 +314,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
         {aiTagOption.map((tag, index) => (
           <CustomHashtag
             key={tag.label}
-            text={tag.label}
+            text={getLocalizedText(Common, tag.label)}
             onClickAction={() => handleAITagSelect(index)}
             isSelected={selectedTags.includes(index)}
           />

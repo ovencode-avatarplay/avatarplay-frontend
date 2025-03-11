@@ -7,10 +7,8 @@ import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 // Json Data
 import characterOptionsMaleReal from '@/data/create/create-character-male-real.json';
 import characterOptionsFemaleReal from '@/data/create/create-character-female-real.json';
-import characterOptionsNonBinaryReal from '@/data/create/create-character-non-binary-real.json';
 import characterOptionsMaleAnime from '@/data/create/create-character-male-anime.json';
 import characterOptionsFemaleAnime from '@/data/create/create-character-female-anime.json';
-import characterOptionsNonBinaryAnime from '@/data/create/create-character-non-binary-anime.json';
 
 // Network
 import {GenerateImageReq, GenerateImageRes, GenerateParameter, sendGenerateImageReq} from '@/app/NetWork/ImageNetwork';
@@ -25,7 +23,6 @@ import 'swiper/css/pagination';
 
 // Components
 import CharacterCreateImageButton from './CreateCharacterImageButton';
-import PublishCharacter from './PublishCharacter';
 import FullScreenImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
 import PublishCharacterBottom from './PublishCharacterBottom';
 import CustomStepper from '@/components/layout/shared/CustomStepper';
@@ -33,6 +30,7 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineUpload} from '@ui/Icons';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 export type CreateType = 'create' | 'modify' | 'create2';
 
@@ -43,6 +41,9 @@ interface Props {
   createType?: CreateType;
   createFinishAction?: (imgUrl: string) => void;
 }
+
+const Header = 'CreateCharacter';
+const Common = 'Common';
 
 const CharacterCreateSequence: React.FC<Props> = ({
   closeAction,
@@ -131,26 +132,26 @@ const CharacterCreateSequence: React.FC<Props> = ({
   const [showStep, setShowStep] = useState<number>(showCreateStep);
   const [curStep, setCurStep] = useState<number>(0); // 0일때는 max 수치가 변동이 있을 수 있기때문에 step이 가려집니다.
   const createStepTexts: string[] = [
-    'Step 1. Select gender',
-    'Step 2. Select style',
-    'Step 3. Choose ethnicity',
-    'Step 4. Choose Hair Style',
-    'Step 5. Body Type',
-    'Step 6. Outfit of clothes',
-    'Step 7. Thumbnail background',
-    'Step 8. Choose personality',
+    getLocalizedText(Header, 'createcharacter003_desc_002'),
+    getLocalizedText(Header, 'createcharacter004_desc_001'),
+    getLocalizedText(Header, 'createcharacter005_desc_001'),
+    getLocalizedText(Header, 'createcharacter006_desc_001'),
+    getLocalizedText(Header, 'createcharacter007_desc_001'),
+    getLocalizedText(Header, 'createcharacter008_desc_001'),
+    getLocalizedText(Header, 'createcharacter009_desc_001'),
+    '',
     '',
     'Step 9. Choose one as a character thumbnail',
     '',
   ];
   const create2StepTexts: string[] = [
-    'Step 1. Select gender ',
-    'Step 2. Select style',
-    'Step 3. Choose ethnicity',
-    'Step 4. Choose Hair Style',
-    'Step 5. Body Type',
-    'Step 6. Outfit of clothes',
-    'Step 7. Thumbnail background',
+    getLocalizedText(Header, 'createcharacter003_desc_002'),
+    getLocalizedText(Header, 'createcharacter004_desc_001'),
+    getLocalizedText(Header, 'createcharacter005_desc_001'),
+    getLocalizedText(Header, 'createcharacter006_desc_001'),
+    getLocalizedText(Header, 'createcharacter007_desc_001'),
+    getLocalizedText(Header, 'createcharacter008_desc_001'),
+    getLocalizedText(Header, 'createcharacter009_desc_001'),
     '',
     '',
   ];
@@ -194,18 +195,62 @@ const CharacterCreateSequence: React.FC<Props> = ({
 
   //#region Post Define
   const summaryOptions = [
-    {key: 'style', label: 'Style', options: characterOptions.styleOptions},
-    {key: 'race', label: 'Race', options: characterOptions.raceOptions},
-    {key: 'age', label: 'Age', options: characterOptions.ageOptions},
-    {key: 'eyeColor', label: 'Eye Color', options: characterOptions.eyeColorOptions},
-    {key: 'hairStyle', label: 'Hair Style', options: characterOptions.hairStyles},
-    {key: 'hairColor', label: 'Hair Color', options: characterOptions.hairColors},
-    {key: 'bodyType', label: 'Body Type', options: characterOptions.bodyTypes},
-    {key: 'topSize', label: 'Top Size', options: characterOptions.topSizes},
-    {key: 'bottomSize', label: 'Bottom Size', options: characterOptions.bottomSizes},
-    {key: 'clothing', label: 'Clothing', options: characterOptions.clothing},
-    {key: 'background', label: 'Background', options: characterOptions.background},
-    {key: 'personality', label: 'Personality', options: characterOptions.personality},
+    {
+      key: 'style',
+      label: getLocalizedText(Header, 'createcharacter010_label_001'),
+      options: characterOptions.styleOptions,
+    },
+    {
+      key: 'race',
+      label: getLocalizedText(Header, 'createcharacter005_label_002'),
+      options: characterOptions.raceOptions,
+    },
+    {key: 'age', label: getLocalizedText(Header, 'createcharacter005_label_003'), options: characterOptions.ageOptions},
+    {
+      key: 'eyeColor',
+      label: getLocalizedText(Header, 'createcharacter005_label_004'),
+      options: characterOptions.eyeColorOptions,
+    },
+    {
+      key: 'hairStyle',
+      label: getLocalizedText(Header, 'createcharacter006_label_002'),
+      options: characterOptions.hairStyles,
+    },
+    {
+      key: 'hairColor',
+      label: getLocalizedText(Header, 'createcharacter006_label_003'),
+      options: characterOptions.hairColors,
+    },
+    {
+      key: 'bodyType',
+      label: getLocalizedText(Header, 'createcharacter007_label_002'),
+      options: characterOptions.bodyTypes,
+    },
+    {
+      key: 'topSize',
+      label: getLocalizedText(Header, 'createcharacter007_label_003'),
+      options: characterOptions.topSizes,
+    },
+    {
+      key: 'bottomSize',
+      label: getLocalizedText(Header, 'createcharacter007_label_004'),
+      options: characterOptions.bottomSizes,
+    },
+    {
+      key: 'clothing',
+      label: getLocalizedText(Header, 'createcharacter008_label_002'),
+      options: characterOptions.clothing,
+    },
+    {
+      key: 'clothingColor',
+      label: getLocalizedText(Header, 'createcharacter008_label_003'),
+      options: characterOptions.clothingColor,
+    },
+    {
+      key: 'background',
+      label: getLocalizedText(Header, 'createcharacter009_label_002'),
+      options: characterOptions.background,
+    },
   ];
 
   //#endregion
@@ -342,9 +387,10 @@ const CharacterCreateSequence: React.FC<Props> = ({
         ? selectedOptions.style === 0
           ? characterOptionsMaleReal
           : characterOptionsMaleAnime
-        : selectedOptions.style === 0
-        ? characterOptionsNonBinaryReal
-        : characterOptionsNonBinaryAnime;
+        : characterOptionsFemaleReal;
+    // : selectedOptions.style === 0
+    // ? characterOptionsNonBinaryReal
+    // : characterOptionsNonBinaryAnime;
 
     // Update character options
     setCharacterOptions(newCharacterOptions);
@@ -452,7 +498,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 <div className={styles.buttonIconBack}>
                   <img className={styles.buttonIcon} src={index === 0 ? LineCharacter.src : LineUpload.src} />
                 </div>
-                <div className={styles.buttonText}>{option.label}</div>
+                <div className={styles.buttonText}>{getLocalizedText(Common, option.label)}</div>
               </button>
             ))}
           </div>
@@ -479,7 +525,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>
-                Ethnicity<span className={styles.redAstrisk}>*</span>
+                {getLocalizedText(Header, 'createcharacter005_label_002')}
+                <span className={styles.redAstrisk}>*</span>
               </h3>
               <Swiper
                 className={styles.horizonSwiper}
@@ -505,13 +552,14 @@ const CharacterCreateSequence: React.FC<Props> = ({
             </article>
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>
-                Age<span className={styles.redAstrisk}>*</span>
+                {getLocalizedText(Header, 'createcharacter005_label_003')}
+                <span className={styles.redAstrisk}>*</span>
               </h3>
               <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
                 {characterOptions.ageOptions.map((age, index) => (
                   <CustomHashtag
                     key={age.label}
-                    text={age.label}
+                    text={getLocalizedText(Common, age.label)}
                     onClickAction={() => handleOptionSelect('age', index)}
                     isSelected={selectedOptions.age === index}
                   />
@@ -520,7 +568,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
             </article>
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>
-                Eyes<span className={styles.redAstrisk}>*</span>
+                {getLocalizedText(Header, 'createcharacter005_label_004')}
+                <span className={styles.redAstrisk}>*</span>
               </h3>
               <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
                 {characterOptions.eyeColorOptions.map((eyeColor, index) => (
@@ -542,7 +591,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>
-                Hair Style<span className={styles.redAstrisk}>*</span>
+                {getLocalizedText(Header, 'createcharacter006_label_002')}
+                <span className={styles.redAstrisk}>*</span>
               </h3>
               <div className={`${styles.gridButtonGroup3x3} ${styles.buttonGap6}`}>
                 {characterOptions.hairStyles.map((style, index) => (
@@ -560,7 +610,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
 
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>
-                Color<span className={styles.redAstrisk}>*</span>
+                {getLocalizedText(Header, 'createcharacter006_label_003')}
+                <span className={styles.redAstrisk}>*</span>
               </h3>
               <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
                 {characterOptions.hairColors.map((color, index) => (
@@ -581,7 +632,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>
-                Body Type<span className={styles.redAstrisk}>*</span>
+                {getLocalizedText(Header, 'createcharacter007_label_002')}
+                <span className={styles.redAstrisk}>*</span>
               </h3>
               <Swiper
                 className={styles.horizonSwiper}
@@ -612,7 +664,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
               <>
                 <article className={styles.createContentArea}>
                   <h3 className={styles.createSubTitle}>
-                    Breast Size<span className={styles.redAstrisk}>*</span>
+                    {getLocalizedText(Header, 'createcharacter007_label_003')}
+                    <span className={styles.redAstrisk}>*</span>
                   </h3>
                   <Swiper
                     className={styles.horizonSwiper}
@@ -642,7 +695,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
 
                 <article className={styles.createContentArea}>
                   <h3 className={styles.createSubTitle}>
-                    The Butt Size<span className={styles.redAstrisk}>*</span>
+                    {getLocalizedText(Header, 'createcharacter007_label_004')}
+                    <span className={styles.redAstrisk}>*</span>
                   </h3>
                   <Swiper
                     className={styles.horizonSwiper}
@@ -678,7 +732,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>
-                Outfit Style<span className={styles.redAstrisk}>*</span>
+                {getLocalizedText(Header, 'createcharacter008_label_002')}
+                <span className={styles.redAstrisk}>*</span>
               </h3>
               <Swiper
                 className={styles.horizonSwiper}
@@ -712,7 +767,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
 
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>
-                Theme Color<span className={styles.redAstrisk}>*</span>
+                {getLocalizedText(Header, 'createcharacter008_label_003')}
+                <span className={styles.redAstrisk}>*</span>
               </h3>
               <div
                 className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}
@@ -721,7 +777,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 {characterOptions.clothingColor.map((style, index) => (
                   <CustomHashtag
                     key={style.label}
-                    text={style.label}
+                    text={getLocalizedText(Common, style.label)}
                     onClickAction={() => handleOptionSelect('clothingColor', index)}
                     isSelected={selectedOptions.clothingColor === index}
                     color={style.image}
@@ -735,7 +791,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 promptValue={clothesInputValue}
                 handlePromptChange={handleClothesInputChange}
                 maxPromptLength={maxLength}
-                labelText="Custom Setup"
+                labelText={getLocalizedText(Header, 'createcharacter008_label_004')}
               />
             </article>
           </div>
@@ -744,12 +800,12 @@ const CharacterCreateSequence: React.FC<Props> = ({
         return (
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
-              <h3 className={styles.createSubTitle}>Background</h3>
+              <h3 className={styles.createSubTitle}>{getLocalizedText(Header, 'createcharacter009_label_002')}</h3>
               <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
                 {characterOptions.background.map((style, index) => (
                   <CustomHashtag
                     key={style.label}
-                    text={style.label}
+                    text={getLocalizedText(Common, style.label)}
                     onClickAction={() => handleOptionSelect('background', index)}
                     isSelected={selectedOptions.background === index}
                   />
@@ -762,23 +818,24 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 promptValue={backgroundInputValue}
                 handlePromptChange={handleBackgroundInputChange}
                 maxPromptLength={maxLength}
-                labelText="Custom Setup"
+                labelText={getLocalizedText(Header, 'createcharacter009_label_003')}
               />
             </article>
           </div>
         );
       case CreateCharacterStep.Personality:
         return (
-          <div className={styles.createContentBox}>
-            <article className={styles.createContentArea}>
-              <h3 className={styles.createSubTitle}>Personality</h3>
-              <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap10}`}>
-                {characterOptions.personality.map((style, index) =>
-                  getSplitedPersonalityButton(style.label, index, selectedOptions.personality === index),
-                )}
-              </div>
-            </article>
-          </div>
+          <div>not use</div>
+          // <div className={styles.createContentBox}>
+          //   <article className={styles.createContentArea}>
+          //     <h3 className={styles.createSubTitle}>Personality</h3>
+          //     <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap10}`}>
+          //       {characterOptions.personality.map((style, index) =>
+          //         getSplitedPersonalityButton(style.label, index, selectedOptions.personality === index),
+          //       )}
+          //     </div>
+          //   </article>
+          // </div>
         );
       case CreateCharacterStep.Summary:
         return (
@@ -909,7 +966,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   iconClass="blackIcon"
                   customClassName={[styles.stepButton]}
                 >
-                  {'Previous'}
+                  {getLocalizedText(Common, 'common_button_previous')}
                 </CustomButton>
 
                 <CustomButton
@@ -924,17 +981,17 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   {steps[curStep] === 'Summary' ? (
                     generatedOptions === null /* 이미 생성된 후에는 Regenerate 버튼으로 수정 가능 */ ? (
                       <>
-                        Generate
+                        {getLocalizedText(Common, 'common_button_generate')}
                         <img className={styles.rubyIcon} src={BoldRuby.src} />
-                        50
+                        50 {/*- TODO : Currency*/}
                       </>
                     ) : (
-                      'Next (isGenerated)'
+                      getLocalizedText(Common, 'common_button_next')
                     )
                   ) : steps[curStep] === 'Result' ? (
-                    'Confirm'
+                    getLocalizedText(Common, 'common_button_confirm')
                   ) : (
-                    'Next'
+                    getLocalizedText(Common, 'common_button_next')
                   )}
                 </CustomButton>
               </>

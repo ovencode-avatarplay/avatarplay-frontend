@@ -17,13 +17,13 @@ interface InputField {
   placeholder?: string; // 입력 필드의 힌트 텍스트
   maxLength?: number; // 최대 글자 수
   textType?: InputTextType;
-  label?: string;
+  label?: string | React.ReactNode;
 }
 
 interface PopupProps {
   type: PopupType;
   title: string | React.ReactNode;
-  description?: string;
+  description?: string | React.ReactNode;
   buttons: PopupButton[];
   textButton?: PopupButton;
   inputField?: InputField;

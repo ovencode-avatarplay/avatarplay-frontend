@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styles from './CreateCharacterImageButton.module.css';
 import {BoldRadioButton, BoldRadioButtonSelected, LineCheck} from '@ui/Icons';
 import {NextEpisodeWait} from '@ui/chatting';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface ImageButtonProps {
   sizeType: 'small' | 'middle' | 'large';
@@ -62,7 +63,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({
       </div>
       {label !== null && (
         <div className={`${styles.label} ${selected ? styles.selected : ''}`}>
-          <span>{label}</span>
+          <span>{getLocalizedText('Common', label)}</span>
         </div>
       )}
       {selected && selectType !== 'multiple' && (

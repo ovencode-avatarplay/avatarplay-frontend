@@ -3,6 +3,7 @@ import styles from './CharacterCreateMedia.module.css';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import {CharacterMediaInfo} from '@/app/NetWork/CharacterNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface Props {
   mediaItems: CharacterMediaInfo[];
@@ -17,6 +18,8 @@ interface Props {
   handleMoveMediaItem: (index: number, direction: 'up' | 'down') => void;
 }
 
+const Header = 'CreateCharacter';
+
 const CharacterCreateMedia: React.FC<Props> = ({
   mediaItems,
   selectedItemIdx,
@@ -29,8 +32,6 @@ const CharacterCreateMedia: React.FC<Props> = ({
   handleEditMediaItem,
   handleMoveMediaItem,
 }) => {
-  let mediaInfoDesc = `This image is displayed during conversation. If you describe each scene, AI shows it according to the situation. Please write the scene description in English if possible. {{char}} and {{user}} can also be used.`;
-
   const renderMediaItem = (
     item: CharacterMediaInfo,
     index: number,
@@ -66,7 +67,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
               displayDataType={displayType.Default}
               promptValue={item.activationCondition}
               handlePromptChange={event => handlerPromptChange(event, index)}
-              placeholder="Image Explain"
+              placeholder={getLocalizedText('Common', 'common_sample_057')}
               style={{width: '100%'}}
             />
             <div className={styles.mediaItemButtonArea}>
@@ -104,7 +105,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
         <div className={styles.mediaInfoButton}>
           <img className={styles.mediaInfoIcon} src={BoldInfo.src} />
         </div>
-        <div className={styles.mediaInfoDecs}>{mediaInfoDesc}</div>
+        <div className={styles.mediaInfoDecs}>{getLocalizedText(Header, 'createcharacter015_desc_001')}</div>
       </div>
       <div className={styles.mediaItemArea}>
         <div className={styles.mediaButtonArea}>
@@ -115,7 +116,7 @@ const CharacterCreateMedia: React.FC<Props> = ({
             onClick={onClickCreateMedia}
             customClassName={[styles.mediaAddButton]}
           >
-            Add
+            {getLocalizedText('Common', 'common_button_add')}
           </CustomButton>
         </div>
 

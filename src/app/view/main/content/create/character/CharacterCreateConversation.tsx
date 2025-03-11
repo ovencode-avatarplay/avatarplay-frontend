@@ -2,6 +2,7 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import styles from './CharacterCreateConversation.module.css';
 import {LinePlus} from '@ui/Icons';
 import ConversationCard, {CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface Props {
   cardList: CardData[];
@@ -22,15 +23,11 @@ const CharacterCreateConversation: React.FC<Props> = ({
   onMoveCard,
   onDuplicateCard,
 }) => {
-  let title = 'Conversation Example';
-  let desc = `Appropriate dialogue examples help to show the character's dialogue style.
-Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]`;
-
   return (
     <div className={styles.conversationContainer}>
       <div className={styles.titleArea}>
-        <h2 className={styles.title2}>{title}</h2>
-        <div className={styles.desc}>{desc}</div>
+        <h2 className={styles.title2}>{getLocalizedText('CreateCharacter', 'createcharacter016_desc_001')}</h2>
+        <div className={styles.desc}>{getLocalizedText('CreateCharacter', 'createcharacter016_desc_002')}</div>
       </div>
       <CustomButton
         size="Large"
@@ -41,7 +38,7 @@ Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]`;
         icon={LinePlus.src}
         customClassName={[styles.newButton]}
       >
-        Add example new
+        {getLocalizedText('Common', 'common_button_addexamplenewaltn')}
       </CustomButton>
       <ul className={styles.conversationList}>
         {cardList.map((cardData, index) => (

@@ -5,8 +5,9 @@ import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAI, BoldArrowDown, LineDelete} from '@ui/Icons';
-import {useEffect, useState} from 'react';
+import {ReactNode, useEffect, useState} from 'react';
 import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
+import formatText from '@/utils/formatText';
 
 interface Props {
   selectedLang: number;
@@ -24,6 +25,9 @@ interface Props {
   onSelectedPromptChange: (prompt: number) => void;
   onSelectedLorebookChange: (lorebook: number) => void;
 }
+
+const Header = 'CreateCharacter';
+const Common = 'Common';
 
 const CharacterCreateLLM: React.FC<Props> = ({
   selectedLang,
@@ -137,7 +141,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
 
   const renderTitle = (title: string, desc: string) => {
     const highlightText = (text: string) => {
-      return text.split(/(\*|{{.*?}})/g).map((part, index) => {
+      return text.split(/(<br>|\*|{{.*?}})/g).map((part, index) => {
         if (part === '*') {
           return (
             <span key={index} style={{color: 'var(--Secondary-Red-1, #F75555)'}}>
@@ -152,17 +156,19 @@ const CharacterCreateLLM: React.FC<Props> = ({
             </span>
           );
         }
-        if (part === '{{Char}}') {
+        if (part === '{{char}}') {
           return (
             <span key={index} style={{color: 'var(--Colors-Orange, #FF9500)'}}>
               {part}
             </span>
           );
         }
+        if (part === '<br>') {
+          return <br />;
+        }
         return part;
       });
     };
-
     return (
       <div className={styles.titleArea}>
         <h2 className={styles.title2}>{highlightText(title)}</h2>
@@ -171,7 +177,12 @@ const CharacterCreateLLM: React.FC<Props> = ({
     );
   };
 
-  const renderMaxTextInput = (value: string, handlePromptChange: (newValue: string) => void, onClickAI: () => void) => {
+  const renderMaxTextInput = (
+    value: string,
+    handlePromptChange: (newValue: string) => void,
+    onClickAI: () => void,
+    placeholder?: string,
+  ) => {
     const handleButtonClick = (text: string) => {
       // 버튼 클릭 시 기존 텍스트에 {{User}} 또는 {{Char}} 추가
       handlePromptChange(value + `{{${text}}}`);
@@ -184,18 +195,19 @@ const CharacterCreateLLM: React.FC<Props> = ({
           stateDataType={inputState.Normal}
           displayDataType={displayType.Default}
           promptValue={value}
+          placeholder={placeholder}
           handlePromptChange={event => handlePromptChange(event.target.value)}
-          inSideHint={`About ${value.length} tokens (임시처리 텍스트 길이)`}
+          inSideHint={formatText(getLocalizedText(Header, 'createcharacter001_label_013'), [value.length.toString()])}
         />
         <div className={styles.maxTextButtonArea}>
           <button className={`${styles.maxTextButton} ${styles.aiButton}`}>
             <img className={styles.maxTextButtonIcon} src={BoldAI.src} onClick={onClickAI} />
           </button>
           <button className={styles.maxTextButton} onClick={() => handleButtonClick('User')}>
-            {'{{User}}'}
+            {getLocalizedText(Common, 'common_button_usercommand')}
           </button>
           <button className={styles.maxTextButton} onClick={() => handleButtonClick('Char')}>
-            {'{{Char}}'}
+            {getLocalizedText(Common, 'common_button_charcommand')}
           </button>
         </div>
       </div>
@@ -207,11 +219,9 @@ const CharacterCreateLLM: React.FC<Props> = ({
     return (
       <>
         <div className={styles.greetingDescArea}>
-          <div className={styles.desc}>
-            The total token count is calulated based on the introduction with the highest number of tokens
-          </div>
+          <div className={styles.desc}>{getLocalizedText(Header, 'createcharacter001_desc_020')}</div>
           <button className={styles.addGreetingButton} onClick={() => {}}>
-            Add
+            {getLocalizedText(Common, 'cummon_button_add')}
           </button>
         </div>
         <ul className={styles.greetingListArea}>
@@ -246,7 +256,10 @@ const CharacterCreateLLM: React.FC<Props> = ({
   return (
     <div className={styles.llmContainer}>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(`Reference Language`, `Please let me know which language you'd like to use`)}
+        {renderTitle(
+          getLocalizedText(Header, 'createcharacter001_label_014'),
+          getLocalizedText(Header, 'createcharacter001_desc_015'),
+        )}
         <CustomDropDown
           items={langItems}
           displayType="Text"
@@ -256,42 +269,67 @@ const CharacterCreateLLM: React.FC<Props> = ({
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(
-          `Character Description *`,
-          `Use{{User}}to replace with the name of the user in the conversation. Use{{Char}}to replace with the charater’s name.`,
+          `${getLocalizedText(Header, 'createcharacter001_label_016')}*`,
+          `${getLocalizedText(Header, 'createcharacter001_desc_017')}`,
         )}
-        {renderMaxTextInput(characterDesc, onCharacterDescChange, handleAutoWriteCharacterDesc)}
+        {renderMaxTextInput(
+          characterDesc,
+          onCharacterDescChange,
+          handleAutoWriteCharacterDesc,
+          getLocalizedText(Common, 'common_sample_082'),
+        )}
       </div>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(`World Scenario`, '')}
-        {renderMaxTextInput(worldScenario, onWorldScenarioChange, handleAutoWriteCharacterWorldScenario)}
+        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_018'), '')}
+        {renderMaxTextInput(
+          worldScenario,
+          onWorldScenarioChange,
+          handleAutoWriteCharacterWorldScenario,
+          getLocalizedText(Common, 'common_sample_058'),
+        )}
       </div>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(`Introduction`, '')}
-        {renderMaxTextInput(greeting, onGreetingChange, handleAutoWriteCharacterGreeting)}
+        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_019'), '')}
+        {renderMaxTextInput(
+          greeting,
+          onGreetingChange,
+          handleAutoWriteCharacterGreeting,
+          getLocalizedText(Common, 'common_sample_083'),
+        )}
       </div>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(`Secrets`, '')}
-        {renderMaxTextInput(secret, onSecretChange, handleAutoWriteCharacterSecret)}
+        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_021'), '')}
+        {renderMaxTextInput(
+          secret,
+          onSecretChange,
+          handleAutoWriteCharacterSecret,
+          getLocalizedText(Common, 'common_sample_081'),
+        )}
       </div>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(`Custom Modules`, 'text description')}
+        {renderTitle(
+          getLocalizedText(Header, 'createcharacter001_label_022'),
+          getLocalizedText(Header, 'createcharacter001_label_023'),
+        )}
         <CustomDropDown
           items={promptItems}
           displayType="Text"
           initialValue={selectedPromptId}
           onSelect={(value: string | number) => handleSelectPrompt(Number(value))}
+          placeholder={getLocalizedText(Common, 'common_sample_076')}
         />
         <CustomDropDown
           items={lorebookItems}
           displayType="Text"
           initialValue={selectedLorebookId}
           onSelect={(value: string | number) => handleSelectLoreBook(Number(value))}
+          placeholder={getLocalizedText(Common, 'common_sample_068')}
         />
       </div>
 
       {renderTitle(
-        `Use translated version when constructing prompts`,
-        'Selects the translated version to write prompts based on the language of the user in conversation. if this option is turned off, the original text will always be used to create the prompt instead of the translation.',
+        getLocalizedText(Header, 'createcharacter001_desc_024'),
+        getLocalizedText(Header, 'createcharacter001_desc_025'),
       )}
     </div>
   );
