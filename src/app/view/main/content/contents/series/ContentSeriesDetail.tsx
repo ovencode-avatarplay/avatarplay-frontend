@@ -24,6 +24,7 @@ import {TextArea} from '@/app/view/profile/ProfileDetail';
 import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {
+  ContentInfo,
   ContentType,
   GetContentReq,
   GetContentRes,
@@ -51,16 +52,17 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   const router = useRouter();
   const [data, setData] = useState<{
     indexTab: eTabType;
-    dataContent: GetContentRes | null;
+    // dataContent: GetContentRes | null;
     dataEpisodes: GetSeasonEpisodesRes | null;
+    dataMix?: Partial<GetSeasonEpisodesRes & ContentInfo>;
     season: number;
     isShareOpened: boolean;
     isSingle: boolean;
   }>({
     indexTab: eTabType.Episodes,
-    dataContent: null,
+    // dataContent: null,
     dataEpisodes: null,
-    season: 0,
+    season: 1,
     isShareOpened: false,
     isSingle: false,
   });
@@ -69,7 +71,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
     // you can get the prevPath like this
     const prevPath = getBackUrl();
     if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/main/homefeed'));
+      router.replace(getLocalizedLink('/profile/' + data.dataMix?.profileUrlLinkKey));
     } else {
       router.replace(prevPath);
     }
@@ -83,38 +85,42 @@ const ContentSeriesDetail = ({id, type}: Props) => {
     const isSingle = type == ContentType.Single;
     data.isSingle = isSingle;
 
-    const dataGetContent: GetContentReq = {
-      urlLinkKey: id,
-    };
-    const resGetContent = await sendGetContent(dataGetContent);
-    const seasonNo = 1;
-    console.log('resGetContent', resGetContent.data);
-
-    if (resGetContent?.data) {
-      data.dataContent = resGetContent?.data;
-    }
-    const dataGetSeasonEpisodesReq: GetSeasonEpisodesReq = {
-      urlLinkKey: id,
-      seasonNo: seasonNo,
-    };
-
     if (isSingle) {
       data.indexTab = eTabType.About;
+      const dataGetContent: GetContentReq = {
+        urlLinkKey: id,
+      };
+
+      const resGetContent = await sendGetContent(dataGetContent);
+      console.log('resGetContent', resGetContent.data);
+
+      if (resGetContent?.data) {
+        data.dataMix = resGetContent?.data.contentInfo;
+      }
     } else {
+      const seasonNo = data.season;
+      const dataGetSeasonEpisodesReq: GetSeasonEpisodesReq = {
+        urlLinkKey: id,
+        seasonNo: seasonNo,
+      };
       const resGetSeasonEpisodes = await sendGetSeasonEpisodes(dataGetSeasonEpisodesReq);
-      console.log('rsGetSeasonEpisodes : ', resGetSeasonEpisodes.data);
+      console.log('resGetSeasonEpisodes : ', resGetSeasonEpisodes.data);
       if (resGetSeasonEpisodes.data) {
         data.dataEpisodes = resGetSeasonEpisodes.data;
+        data.dataMix = resGetSeasonEpisodes.data;
       }
     }
 
     setData({...data});
   };
 
-  const genreList = data.dataContent?.contentInfo.genre.split(',').map(v => v.trim());
-  const genreStr = genreList?.join('&nbsp;&nbsp;/&nbsp;&nbsp;') || '';
+  const genreList = data.dataMix?.genre?.split(',').map(v => v.trim());
+  console.log('genreStr : ', genreList);
 
-  const seasonCount = data.dataContent?.contentInfo?.maxSeasonNo || 0;
+  const genreStr = genreList?.join('&nbsp;&nbsp;/&nbsp;&nbsp;') || '';
+  console.log('genreStr : ', genreStr);
+
+  const seasonCount = data.dataMix?.maxSeasonNo || 0;
   const seasonList = Array.from({length: seasonCount}, (_, i) => ({
     value: `Season ${i + 1}`,
     id: i,
@@ -161,7 +167,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           </Link>
         </header>
         <section ref={refThumbnailWrap} className={styles.thumbnailWrap}>
-          <img src={data.dataContent?.contentInfo.thumbnailUrl} alt="" />
+          <img src={data.dataMix?.contentThumbnailUrl || data.dataMix?.thumbnailUrl} alt="" />
         </section>
         <button className={styles.btnPlayWrap}>
           <img src={BoldAudioPlay.src} alt="" />
@@ -174,16 +180,19 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               onClick={async () => {
                 const dataReq: BookMarkReq = {
                   interactionType: InteractionType.Contents,
-                  isBookMark: true,
-                  typeValueId: data.dataContent?.contentInfo?.id || 0,
+                  isBookMark: !data.dataMix?.isBookMark,
+                  typeValueId: data.dataMix?.contentId || 0,
                 };
                 const response = await bookmark(dataReq);
+                await refreshInfo();
                 console.log('response : ', response);
                 //TODO : 북마크 이후 리프레쉬로 북마크 여부 갱신해야함
               }}
             >
-              <img src={BoldArchive.src} alt="" />
-              <img src={LineArchive.src} alt="" />
+              <div className={styles.iconArea}>
+                {data.dataMix?.isBookMark && <img src={BoldArchive.src} alt="" />}
+                {!data.dataMix?.isBookMark && <img src={LineArchive.src} alt="" />}
+              </div>
               <div className={styles.label}>Favorite</div>
             </div>
             <div className={styles.lineVertical}></div>
@@ -268,6 +277,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
 
                 <ul className={styles.episodeList}>
                   {data.dataEpisodes?.episodeList.map((one, index) => {
+                    const isFree = one.salesStarEa == 0;
                     return (
                       <li className={styles.item} key={`${data.season}_${one.episodeId}`}>
                         <div className={styles.left}>
@@ -279,10 +289,12 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           <div className={styles.name}>{`${one.episodeNo}.${one.episodeName}`}</div>
                         </div>
                         <div className={styles.right}>
-                          <div className={styles.starWrap}>
-                            <img src={BoldStar.src} alt="" className={styles.iconStar} />
-                            <div className={styles.count}>99</div>
-                          </div>
+                          {!isFree && (
+                            <div className={styles.starWrap}>
+                              <img src={BoldStar.src} alt="" className={styles.iconStar} />
+                              <div className={styles.count}>{one.salesStarEa}</div>
+                            </div>
+                          )}
                         </div>
                       </li>
                     );
@@ -293,7 +305,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
 
             {data.indexTab == eTabType.About && (
               <div className={styles.textareaWrap}>
-                <TextArea value={data.dataContent?.contentInfo?.description || ''}></TextArea>
+                <TextArea value={data.dataMix?.description || ''}></TextArea>
               </div>
             )}
           </section>
@@ -302,7 +314,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
       <footer></footer>
       <SharePopup
         open={data.isShareOpened}
-        title={data.dataContent?.contentInfo.name || ''}
+        title={data.dataMix?.name || ''}
         url={window.location.href}
         onClose={() => {
           setData(v => ({...v, isShareOpened: false}));

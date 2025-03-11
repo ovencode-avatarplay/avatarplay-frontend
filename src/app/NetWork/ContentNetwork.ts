@@ -52,6 +52,7 @@ export interface GetContentReq {
 }
 
 export interface GetContentRes {
+  profileUrlLinkKey: string;
   contentInfo: ContentInfo;
 }
 
@@ -221,11 +222,19 @@ export interface SeasonEpisodeInfo {
   episodeNo: number;
   episodeName: string;
   thumbnailUrl: string;
+  salesStarEa: number;
 }
 
 export interface GetSeasonEpisodesRes {
+  contentId: number;
   contentThumbnailUrl: string;
   seasonNo: number;
+  genre: string;
+  tags: string[];
+  maxSeasonNo: number;
+  description: string;
+  isBookMark: boolean;
+  profileUrlLinkKey: string;
   episodeList: SeasonEpisodeInfo[];
 }
 

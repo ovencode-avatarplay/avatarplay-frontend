@@ -2439,7 +2439,7 @@ export type ContentComponentType = {
 
 export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ContentComponentType) => {
   return (
-    <Link href={getLocalizedLink(`/content/series/` + itemInfo?.urlLinkKey + '?from=""')}>
+    <Link href={urlLinkThumbnail}>
       <li className={styles.item} key={itemInfo?.id}>
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
