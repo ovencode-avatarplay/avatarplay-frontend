@@ -6,7 +6,7 @@ import styles from './ReelsComment.module.css';
 import ReelsCommentItem, {CommentType} from './ReelsCommentItem';
 import {BoldSend, LeftArrow} from '@ui/Icons';
 import {InputAdornment, TextField} from '@mui/material';
-import {CommentInfo, sendAddComment, sendGetCommentList} from '@/app/NetWork/ShortsNetwork';
+import {CommentContentType, CommentInfo, sendAddComment, sendGetCommentList} from '@/app/NetWork/CommonNetwork';
 
 interface ReelsCommentProps {
   feedId: number;
@@ -38,7 +38,8 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
   // 댓글 리스트 가져오기
   const getCommentList = async () => {
     const payload = {
-      feedId: feedId, // 댓글을 가져올 피드 ID
+      typeValueId: feedId,
+      type: CommentContentType.Feed,
     };
 
     try {
@@ -70,9 +71,9 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
   }, [isOpen]);
   const handleSendAddComment = async (feedId: number, parentCommentId: number, content: string) => {
     const payload = {
-      feedId: feedId, // 댓글을 추가할 피드 ID
-      parentCommentId: parentCommentId, // 대댓글의 경우 부모 댓글 ID, 아니면 0
-      content: content, // 댓글 내용
+      typeValueId: feedId,
+      type: CommentContentType.Feed,
+      comment: content, // 댓글 내용
     };
 
     try {

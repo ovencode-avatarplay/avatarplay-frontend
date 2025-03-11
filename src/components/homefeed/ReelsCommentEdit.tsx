@@ -3,7 +3,7 @@ import Drawer from '@mui/material/Drawer';
 import styles from './ReelsCommentEdit.module.css';
 import {BoldSend} from '@ui/Icons';
 import {InputAdornment, TextField} from '@mui/material';
-import {sendUpdateComment} from '@/app/NetWork/ShortsNetwork';
+import {sendUpdateComment} from '@/app/NetWork/CommonNetwork';
 
 interface Props {
   commentId: number;
@@ -24,7 +24,7 @@ const ReelsCommentEdit: React.FC<Props> = ({onComplete, prevChat, isOpen, toggle
   const handleSendUpdateComment = async () => {
     const payload = {
       commentId: commentId,
-      content: chat,
+      comment: chat,
     };
 
     try {

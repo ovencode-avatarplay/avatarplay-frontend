@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import styles from './ReelsCommentItem.module.css';
 import {BoldComment, BoldDislike, BoldLike, LineComment, LineDisLike, LineFolderPlus, LineLike} from '@ui/Icons';
 import ReelsComment from './ReelsComment';
-import {CommentInfo, ReplieInfo, sendCommentLike} from '@/app/NetWork/ShortsNetwork';
 import {Avatar, Menu, MenuItem} from '@mui/material';
 import ReelsCommentEdit from './ReelsCommentEdit';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {ClassNames} from '@emotion/react';
+import {CommentInfo, ReplieInfo, sendCommentLike} from '@/app/NetWork/CommonNetwork';
 
 export enum CommentType {
   default = 0,
@@ -154,10 +154,10 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
               onClick={() => setIsExpanded(!isExpanded)}
             >
               {isExpanded ? (
-                comment.content
-              ) : comment.content.length > 100 ? (
+                comment.comment
+              ) : comment.comment.length > 100 ? (
                 <>
-                  {comment.content.slice(0, 92)}
+                  {comment.comment.slice(0, 92)}
                   <span
                     style={{
                       color: '#99A3AD', // 원하는 색상 코드
@@ -168,7 +168,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
                   </span>
                 </>
               ) : (
-                comment.content
+                comment.comment
               )}
             </p>
             {/* Actions */}
@@ -261,7 +261,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
       <ReelsCommentEdit
         commentId={comment.commentId}
         isOpen={isEditOpen}
-        prevChat={comment.content}
+        prevChat={comment.comment}
         toggleDrawer={setIsEditOpen}
         onComplete={() => onComplete()}
       ></ReelsCommentEdit>

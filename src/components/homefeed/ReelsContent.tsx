@@ -4,7 +4,7 @@ import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
-import {FeedInfo, sendFeedBookmark, sendFeedDisLike, sendFeedLike, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
+import {FeedInfo, sendFeedDisLike, sendFeedLike, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
 import {
   BoldArchive,

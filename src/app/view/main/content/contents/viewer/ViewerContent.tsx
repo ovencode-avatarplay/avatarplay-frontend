@@ -34,9 +34,10 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
 import {bookmark, BookMarkReq, followProfile, InteractionType} from '@/app/NetWork/ProfileNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
+import {ContentEpisodeInfo} from '@/app/NetWork/ContentNetwork';
 
 interface ReelsContentProps {
-  item: FeedInfo;
+  item: ContentEpisodeInfo;
   isActive: boolean; // 현재 슬라이드인지 확인
   isMute: boolean;
   setIsMute: (mute: boolean) => void; // boolean 매개변수 추가
@@ -56,9 +57,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-  const [isFollow, setIsFollow] = useState(item.isFollowing);
-  const [isLike, setIsLike] = useState(item.isLike);
-  const [isDisLike, setIsDisLike] = useState(item.isDisLike);
+  const [isFollow, setIsFollow] = useState(false); //데이터 초기값 필요
+  const [isLike, setIsLike] = useState(false); //데이터 초기값 필요
+  const [isDisLike, setIsDisLike] = useState(false); //데이터 초기값 필요
   const [isExpanded, setIsExpanded] = useState(false);
   const [isShare, setIsShare] = useState(false);
   const [isImageModal, setIsImageModal] = useState(false);
