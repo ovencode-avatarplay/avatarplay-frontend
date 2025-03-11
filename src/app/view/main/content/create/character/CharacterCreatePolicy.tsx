@@ -50,6 +50,9 @@ interface Props {
   setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
 }
 
+const Header = 'CreateCharacter';
+const Common = 'Common';
+
 const CharacterCreatePolicy: React.FC<Props> = ({
   visibility,
   onVisibilityChange,
@@ -78,7 +81,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   characterDesc,
   setCharacterDesc,
 }) => {
-  let VisibilityData = {label: 'Visibility', items: ['Private', 'UnListed', 'Public']};
+  let VisibilityData = {items: ['Private', 'UnListed', 'Public']};
 
   const [llmOpen, setLlmOpen] = useState(false);
 
@@ -94,8 +97,16 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   let characterIpData = {
     items: [
-      {label: 'Original', data: 0, monetization: 'Monetization possible'},
-      {label: 'Fan', data: 1, monetization: 'Monetization impossible'},
+      {
+        label: getLocalizedText(Common, 'common_button_original'),
+        data: 0,
+        monetization: getLocalizedText(Header, 'createcharacter017_label_006'),
+      },
+      {
+        label: getLocalizedText(Common, 'common_button_fan'),
+        data: 1,
+        monetization: getLocalizedText(Header, 'createcharacter017_label_006'),
+      },
     ],
   };
 
@@ -115,7 +126,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   const [pitchVariance, setPitchVariance] = useState<number>(0);
   const [speed, setSpeed] = useState<number>(0);
 
-  let characterDescPlaceholder = `This is the description of the character (Character description is also public to other users)`;
+  let commentPlaceholder = `TODO : Comment PlaceHolder`;
 
   const handleSelectVisibilityItem = (value: number) => {
     onVisibilityChange(value);
@@ -269,7 +280,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       <div className={styles.dropDownArea}>
         <h2 className={styles.title2}>
           {title}
-          {essential && <h2 className={styles.titleAstric}>*</h2>}
+          {essential && <h2 className={styles.titleAstrisk}>*</h2>}
         </h2>
 
         <CustomSelector value={selectedItem} onClick={() => setIsOpen(prev => !prev)} />
@@ -312,8 +323,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       <>
         <div className={styles.radioButtonContainer}>
           <div className={styles.radioTitleArea}>
-            <h2 className={styles.title2}>Character IP</h2>
-            <CustomToolTip tooltipText="ToolTip Character IP" />
+            <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_005')}</h2>
+            <CustomToolTip tooltipText="TODO : character IP ToolTip" />
           </div>
           <div className={styles.ipButtonArea}>
             {characterIpData.items.map(item => (
@@ -322,7 +333,6 @@ const CharacterCreatePolicy: React.FC<Props> = ({
                   shapeType="circle"
                   displayType="buttonText"
                   value={item.data}
-                  // label={getLocalizedText('', item.label)}
                   label={item.label}
                   onSelect={() => handleSelectCharacterIp(item.data)}
                   selectedValue={characterIP}
@@ -360,11 +370,11 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         <div className={styles.radioButtonContainer}>
           <div className={styles.operatorTitle}>
             <div className={styles.radioTitleArea}>
-              <h2 className={styles.title2}>Operator invitation</h2>
-              <CustomToolTip tooltipText="ToolTip Monetization" />
+              <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_008')}</h2>
+              <CustomToolTip tooltipText="TODO : Tooltip Operator Invitation" />
             </div>
             <button className={styles.subButton} onClick={() => setOperatorInviteOpen(true)}>
-              Invite
+              {getLocalizedText(Common, 'common_button_invite')}
             </button>
           </div>
           {renderOperatorList(operatorProfileIdList, false)}
@@ -430,7 +440,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     return (
       <div className={styles.radioButtonContainer}>
         <div className={styles.radioTitleArea}>
-          <h2 className={styles.title2}>Monetization</h2>
+          <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_009')}</h2>
           <CustomToolTip tooltipText="ToolTip Monetization" />
         </div>
         <div className={styles.verticalRadioButtonArea}>
@@ -438,7 +448,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             shapeType="circle"
             displayType="buttonText"
             value="On"
-            label="On"
+            label={getLocalizedText(Common, 'common_button_on')}
             onSelect={() => handleSelectMonetization(true)}
             selectedValue={isMonetization ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -447,7 +457,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             shapeType="circle"
             displayType="buttonText"
             value="Off"
-            label="Off"
+            label={getLocalizedText(Common, 'common_button_off')}
             onSelect={() => handleSelectMonetization(false)}
             selectedValue={isMonetization ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -461,7 +471,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     return (
       <div className={styles.radioButtonContainer}>
         <div className={styles.radioTitleArea}>
-          <h2 className={styles.title2}>NSFW*</h2>
+          <h2 className={styles.title2}>
+            {getLocalizedText(Header, 'createcharacter017_label_011')}
+            <span className={styles.titleAstrisk}>*</span>
+          </h2>
           <CustomToolTip tooltipText="NSFW Monetization" />
         </div>
         <div className={styles.verticalRadioButtonArea}>
@@ -469,7 +482,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             shapeType="circle"
             displayType="buttonText"
             value="On"
-            label="On"
+            label={getLocalizedText(Common, 'common_button_on')}
             onSelect={() => handleSelectNSWF(true)}
             selectedValue={nsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -478,7 +491,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             shapeType="circle"
             displayType="buttonText"
             value="Off"
-            label="Off"
+            label={getLocalizedText(Common, 'common_button_off')}
             onSelect={() => handleSelectNSWF(false)}
             selectedValue={nsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -503,17 +516,14 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       <>
         <div className={styles.voiceSettingArea}>
           <div className={styles.voiceSettingTitleArea}>
-            <h2 className={styles.titleVoice}>Super Voice Setting</h2>
+            <h2 className={styles.titleVoice}>{getLocalizedText(Header, 'createcharacter017_label_012')}</h2>
             <button className={styles.subButton} onClick={() => setVoiceOpen(true)}>
-              Setting
+              {getLocalizedText(Common, 'common_button_setting')}
             </button>
           </div>
           <div className={styles.voiceSettingDescArea}>
             <CustomToolTip tooltipText="Voice Setting" />
-            <div className={styles.voiceSettingText}>
-              Each AI voice actor has a variety of speaking styles. Select the style that best suits each sentence and
-              print it.
-            </div>
+            <div className={styles.voiceSettingText}>{getLocalizedText(Header, 'createcharacter017_desc_013')}</div>
           </div>
         </div>
         <CharacterCreateVoiceSetting
@@ -539,7 +549,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       <div className={styles.commentInputArea}>
         <div className={styles.commentTitleArea}>
           <h2 className={styles.title2}> Comment</h2>
-          {/* <h2 className={styles.titleAstric}>*</h2> */}
+          {/* <h2 className={styles.titleAstrisk}>*</h2> */}
         </div>
         <MaxTextInput
           stateDataType={inputState.Normal}
@@ -547,7 +557,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           displayDataType={displayType.Default}
           promptValue={characterDesc}
           handlePromptChange={e => setCharacterDesc(e.target.value)}
-          placeholder={characterDescPlaceholder}
+          placeholder={commentPlaceholder}
           inSideHint={`About ${characterDesc?.length} tokens (임시처리 텍스트 길이)`}
         />
       </div>
@@ -564,16 +574,20 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     <div className={styles.policyContainer}>
       <div className={styles.selectItemsArea1}>
         {renderDropDownSelectDrawer(
-          VisibilityData.label,
+          getLocalizedText(Header, 'createcharacter017_label_001'),
           VisibilityData.items,
           visibility,
           (value: string | number) => handleSelectVisibilityItem(Number(value)),
           isVisibilityOpen,
           setIsVisibilityOpen,
-          'Visibility',
-          'Visibility Info',
+          getLocalizedText(Header, 'createcharacter017_label_001'),
+          'TODO : visibiltiy tooltip',
         )}
-        {renderDropDown('LLM', llmModelData[llmModel].label, setLlmOpen)}
+        {renderDropDown(
+          getLocalizedText(Header, 'createcharacter017_label_002'),
+          getLocalizedText(Common, llmModelData[llmModel].label),
+          setLlmOpen,
+        )}
         <StoryLLMSetup
           open={llmOpen}
           onClose={() => setLlmOpen(false)}
@@ -584,7 +598,11 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         />
 
         <div className={styles.tagContainer}>
-          {renderDropDown('Tag', selectedTags.join(', '), setTagOpen)}
+          {renderDropDown(
+            getLocalizedText(Header, 'createcharacter017_label_003'),
+            selectedTags.join(', '),
+            setTagOpen,
+          )}
           {renderTag()}
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
@@ -602,7 +620,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
         <div className={styles.tagContainer}>
           {renderDropDown(
-            'Position Country',
+            getLocalizedText(Header, 'createcharacter017_label_004'),
             positionCountry.map(country => LanguageType[country]).join(', '),
             setIsPositionCountryOpen,
             true,
@@ -626,8 +644,9 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         {renderCharacterIP()}
         {renderRecruit()}
         {renderConnect()}
+        {renderOperatorInvite()}
         {renderMonetization()}
-        {/* {renderMembershipPlan()} */}
+        {renderMembershipPlan()}
         {renderNSFW()}
         {renderComment()}
       </div>

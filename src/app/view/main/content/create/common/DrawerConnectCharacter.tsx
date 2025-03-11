@@ -4,6 +4,7 @@ import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {BoldArrowDown, LineCheck} from '@ui/Icons';
 import {getConnectList, getProfileList, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface DrawerConnectCharacterProps {
   connectOpen: boolean;
@@ -36,7 +37,7 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
 
   return (
     <div className={styles.dropDownArea}>
-      <h2 className={styles.title2}>Connect</h2>
+      <h2 className={styles.title2}>{getLocalizedText('CreateCharacter', 'createcharacter017_label_007')}</h2>
       <div
         className={styles.connectItem}
         onClick={e => {
@@ -46,7 +47,7 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
         }}
       >
         {!connectCharacterInfo || connectCharacterInfo.profileId === 0 ? (
-          <div className={styles.connectItemText}>Select</div>
+          <div className={styles.connectItemText}>{getLocalizedText('Common', 'common_sample_079')}</div>
         ) : (
           <div className={styles.connectItemInfo}>
             <img className={styles.connectItemProfile} src={connectCharacterInfo.iconImageUrl} alt="Character" />
