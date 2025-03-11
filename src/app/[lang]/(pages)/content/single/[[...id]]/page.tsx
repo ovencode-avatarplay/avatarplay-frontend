@@ -12,7 +12,7 @@ const page = ({params}: Props) => {
   const id = params?.id?.[0] ?? '0';
   return (
     <>
-      <ContentSeriesDetail id={id} type={ContentType.Series} />
+      <ContentSeriesDetail id={id} type={ContentType.Single} />
     </>
   );
 };

@@ -7,7 +7,7 @@ type Props = {
 
 export const metadata: Metadata = {
   title: 'Talkain',
-  description: 'content series',
+  description: 'content single',
   icons: '/images/Talkain_icon_256_green.png',
 };
 

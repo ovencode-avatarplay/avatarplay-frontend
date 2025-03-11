@@ -37,6 +37,7 @@ import Link from 'next/link';
 import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/ProfileNetwork';
 
 type Props = {
+  type: ContentType;
   id: string;
 };
 
@@ -45,7 +46,7 @@ enum eTabType {
   About,
 }
 
-const ContentSeriesDetail = ({id}: Props) => {
+const ContentSeriesDetail = ({id, type}: Props) => {
   const refThumbnailWrap = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   const [data, setData] = useState<{
@@ -84,7 +85,7 @@ const ContentSeriesDetail = ({id}: Props) => {
     };
     const resGetContent = await sendGetContent(dataGetContent);
     const seasonNo = 1;
-    console.log('resGetContnet', resGetContent.data);
+    console.log('resGetContent', resGetContent.data);
 
     if (resGetContent?.data) {
       data.dataContent = resGetContent?.data;
@@ -94,17 +95,18 @@ const ContentSeriesDetail = ({id}: Props) => {
       seasonNo: seasonNo,
     };
 
-    const resGetSeasonEpisodes = await sendGetSeasonEpisodes(dataGetSeasonEpisodesReq);
-    console.log('rsGetSeasonEpisodes : ', resGetSeasonEpisodes.data);
-    if (resGetSeasonEpisodes.data) {
-      data.dataEpisodes = resGetSeasonEpisodes.data;
-    }
-
-    const isSingle = data.dataContent?.contentInfo.contentType == ContentType.Single;
+    const isSingle = type == ContentType.Single;
     data.isSingle = isSingle;
     if (isSingle) {
       data.indexTab = eTabType.About;
+    } else {
+      const resGetSeasonEpisodes = await sendGetSeasonEpisodes(dataGetSeasonEpisodesReq);
+      console.log('rsGetSeasonEpisodes : ', resGetSeasonEpisodes.data);
+      if (resGetSeasonEpisodes.data) {
+        data.dataEpisodes = resGetSeasonEpisodes.data;
+      }
     }
+
     setData({...data});
   };
 
@@ -139,6 +141,8 @@ const ContentSeriesDetail = ({id}: Props) => {
 
   const onEdit = () => {};
 
+  const urlEdit = data.isSingle ? '/update/content/single' : '/create/content/series';
+
   return (
     <>
       <main className={styles.main}>
@@ -151,7 +155,7 @@ const ContentSeriesDetail = ({id}: Props) => {
               routerBack();
             }}
           />
-          <Link href={getLocalizedLink(`/create/content/series/${id}`)}>
+          <Link href={getLocalizedLink(`${urlEdit}/${id}`)}>
             <img className={styles.btnEdit} src={LineEdit.src} alt="" />
           </Link>
         </header>
