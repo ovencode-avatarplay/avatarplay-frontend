@@ -36,7 +36,7 @@ import Link from 'next/link';
 import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/ProfileNetwork';
 
 type Props = {
-  id: number;
+  id: string;
 };
 
 enum eTabType {
@@ -77,7 +77,7 @@ const ContentSeriesDetail = ({id}: Props) => {
 
   const refreshInfo = async () => {
     const dataGetContent: GetContentReq = {
-      contentId: id,
+      urlLinkKey: id,
     };
     const resGetContent = await sendGetContent(dataGetContent);
     const seasonNo = 1;
@@ -86,7 +86,10 @@ const ContentSeriesDetail = ({id}: Props) => {
     if (resGetContent?.data) {
       data.dataContent = resGetContent?.data;
     }
-    const dataGetSeasonEpisodesReq: GetSeasonEpisodesReq = {contentId: id, seasonNo: seasonNo};
+    const dataGetSeasonEpisodesReq: GetSeasonEpisodesReq = {
+      contentId: resGetContent.data?.contentInfo?.id || 0,
+      seasonNo: seasonNo,
+    };
 
     const resGetSeasonEpisodes = await sendGetSeasonEpisodes(dataGetSeasonEpisodesReq);
     console.log('rsGetSeasonEpisodes : ', resGetSeasonEpisodes.data);

@@ -8,8 +8,7 @@ type Props = {
 };
 
 const page = ({params}: Props) => {
-  console.log('params : ', params);
-  const id = parseInt(params?.id?.[0] ?? '0') || 0;
+  const id = params?.id?.[0] ?? '0';
   return (
     <>
       <Series id={id} />

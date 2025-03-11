@@ -2298,7 +2298,7 @@ const TabContentComponent = ({
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.contentInfoList.map((one, index: number) => {
           return (
-            <Link href={getLocalizedLink(`/content/series/` + one?.id + '?from=""')}>
+            <Link href={getLocalizedLink(`/content/series/` + one?.urlLinkKey + '?from=""')}>
               <li className={styles.item} key={one?.id}>
                 {one.mediaState == MediaState.Image && (
                   <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />

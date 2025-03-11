@@ -154,6 +154,7 @@ export interface ProfileTabItemInfo {
   sharedItemType: SharedItemType;
   createAt: string;
   isPinFix: boolean;
+  urlLinkKey: string;
 }
 
 export enum SharedItemType {
