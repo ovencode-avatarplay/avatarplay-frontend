@@ -6,7 +6,7 @@ import api, {ResponseAPI} from './ApiInstance';
 export interface CommentInfo {
   email: string;
   commentId: number;
-  comment: string;
+  content: string;
   parentCommentId: number;
   userName: string;
   likeCount: number;
@@ -21,7 +21,7 @@ export interface CommentInfo {
 // 대댓글 정보
 export interface ReplieInfo {
   commentId: number;
-  comment: string;
+  content: string;
   parentCommentId: number;
   userName: string;
   likeCount: number;
@@ -36,7 +36,7 @@ export interface ReplieInfo {
 export interface AddCommentReq {
   typeValueId: number;
   type: CommentContentType;
-  parentCommentId?: number;
+  parentCommentId: number;
   comment: string;
 }
 export enum CommentContentType {
@@ -69,7 +69,7 @@ export const sendAddComment = async (payload: AddCommentReq): Promise<ResponseAP
 // 댓글 수정하기
 export interface UpdateCommentReq {
   commentId: number;
-  comment: string;
+  content: string;
 }
 
 export interface UpdateCommentRes {

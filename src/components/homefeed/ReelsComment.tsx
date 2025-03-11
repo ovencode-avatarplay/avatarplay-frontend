@@ -74,6 +74,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
       typeValueId: feedId,
       type: CommentContentType.Feed,
       comment: content, // 댓글 내용
+      parentCommentId: parentCommentId,
     };
 
     try {

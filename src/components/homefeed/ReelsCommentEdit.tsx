@@ -24,7 +24,7 @@ const ReelsCommentEdit: React.FC<Props> = ({onComplete, prevChat, isOpen, toggle
   const handleSendUpdateComment = async () => {
     const payload = {
       commentId: commentId,
-      comment: chat,
+      content: chat,
     };
 
     try {
@@ -92,7 +92,7 @@ const ReelsCommentEdit: React.FC<Props> = ({onComplete, prevChat, isOpen, toggle
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  {chat.length > 0 && (
+                  {chat?.length > 0 && (
                     <div
                       className={styles.circleBlack}
                       style={{

@@ -154,10 +154,10 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
               onClick={() => setIsExpanded(!isExpanded)}
             >
               {isExpanded ? (
-                comment.comment
-              ) : comment.comment.length > 100 ? (
+                comment?.content
+              ) : (comment?.content?.length ?? 0) > 100 ? (
                 <>
-                  {comment.comment.slice(0, 92)}
+                  {comment?.content?.slice(0, 92)}
                   <span
                     style={{
                       color: '#99A3AD', // 원하는 색상 코드
@@ -168,7 +168,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
                   </span>
                 </>
               ) : (
-                comment.comment
+                comment?.content
               )}
             </p>
             {/* Actions */}
@@ -261,7 +261,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
       <ReelsCommentEdit
         commentId={comment.commentId}
         isOpen={isEditOpen}
-        prevChat={comment.comment}
+        prevChat={comment.content}
         toggleDrawer={setIsEditOpen}
         onComplete={() => onComplete()}
       ></ReelsCommentEdit>
