@@ -2124,6 +2124,132 @@ export const TabContentComponentWrap = ({
   );
 };
 
+const TabContentAllComponent = ({
+  profileId,
+  profileType,
+  isMine,
+  tabIndex,
+  isEmptyTab,
+  profileTabInfo,
+  filterCluster,
+  onRefreshTab,
+  onOpenContentMenu,
+}: TabContentProps) => {
+  const {ref: observerRef, inView} = useInView();
+  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+    getUserType(isMine, profileType);
+
+  useEffect(() => {
+    if (!inView) return;
+
+    if (isEmptyTab) return;
+
+    refreshTab();
+  }, [inView]);
+
+  const refreshTab = async () => {
+    onRefreshTab(true);
+  };
+
+  if (isEmptyTab) {
+    return (
+      <>
+        <div className={styles.emptyWrap}>
+          <img src="/ui/profile/image_empty.svg" alt="" />
+          <div className={styles.text}>
+            Its pretty lonely out here.
+            <br />
+            Make a Post
+          </div>
+        </div>
+      </>
+    );
+  }
+  if (
+    (isPD && tabIndex == eTabPDType.Feed) ||
+    (isCharacter && tabIndex == eTabCharacterType.Feed) ||
+    (isChannel && tabIndex == eTabChannelType.Feed)
+  ) {
+    return (
+      <>
+        <ul className={styles.itemWrap}>
+          {profileTabInfo?.[tabIndex]?.feedInfoList?.map((one, index: number) => {
+            return (
+              <FeedComponent
+                feedInfo={one}
+                isMine={isMine}
+                onOpenContentMenu={onOpenContentMenu}
+                urlLinkThumbnail={
+                  getLocalizedLink(`/profile/feed/` + profileId) +
+                  `?type=${profileType}&idContent=${one.id}&feedMediaType=${filterCluster.indexFilterMedia}&feedSortType=${filterCluster.indexSort}`
+                }
+              />
+            );
+          })}
+          <div ref={observerRef}></div>
+        </ul>
+      </>
+    );
+  }
+  if (
+    (isPD && tabIndex == eTabPDType.Character) ||
+    (isCharacter && tabIndex == eTabCharacterType.Character) ||
+    (isChannel && tabIndex == eTabChannelType.Character)
+  ) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.characterInfoList.map((one, index: number) => {
+          return (
+            <CharacterComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.id + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+
+  if ((isCharacter && tabIndex == eTabCharacterType.Contents) || (isChannel && tabIndex == eTabChannelType.Contents)) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.contentInfoList.map((one, index: number) => {
+          return (
+            <ContentComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/content/series/` + one?.urlLinkKey + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+
+  if ((isPD && tabIndex == eTabPDType.Channel) || (isCharacter && tabIndex == eTabCharacterType.Channel)) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.channelInfoList?.map((one, index: number) => {
+          return (
+            <ChannelComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+};
+
 const TabContentComponent = ({
   profileId,
   profileType,
@@ -2175,60 +2301,15 @@ const TabContentComponent = ({
         <ul className={styles.itemWrap}>
           {profileTabInfo?.[tabIndex]?.feedInfoList?.map((one, index: number) => {
             return (
-              <Link
-                href={
+              <FeedComponent
+                feedInfo={one}
+                isMine={isMine}
+                onOpenContentMenu={onOpenContentMenu}
+                urlLinkThumbnail={
                   getLocalizedLink(`/profile/feed/` + profileId) +
                   `?type=${profileType}&idContent=${one.id}&feedMediaType=${filterCluster.indexFilterMedia}&feedSortType=${filterCluster.indexSort}`
                 }
-              >
-                <li className={styles.item} key={one?.id}>
-                  {one.mediaState == MediaState.Image && (
-                    <img className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} alt="" />
-                  )}
-                  {one.mediaState == MediaState.Video && (
-                    <video className={styles.imgThumbnail} src={one?.mediaUrlList?.[0]} />
-                  )}
-                  {one?.isPinFix && (
-                    <div className={styles.pin}>
-                      <img src={BoldPin.src} alt="" />
-                    </div>
-                  )}
-                  <div className={styles.info}>
-                    <div className={styles.likeWrap}>
-                      <img src={BoldLike.src} alt="" />
-                      <div className={styles.value}>{one?.likeCount}</div>
-                    </div>
-                    {isMine && (
-                      <div className={styles.likeWrap}>
-                        <img src={BoldDislike.src} alt="" />
-                        <div className={styles.value}>{one?.disLikeCount}</div>
-                      </div>
-                    )}
-                    <div className={styles.viewWrap}>
-                      <img src={BoldVideo.src} alt="" />
-                      <div className={styles.value}>{one?.commentCount}</div>
-                    </div>
-                  </div>
-                  <div className={styles.titleWrap}>
-                    <div className={styles.title}>{one?.description}</div>
-                    <img
-                      src={BoldMenuDots.src}
-                      alt=""
-                      className={styles.iconSetting}
-                      onClick={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const dataContextMenu = {
-                          id: one.urlLinkKey,
-                          isPin: one?.isPinFix || false,
-                          isSettingOpen: true,
-                        };
-                        if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-                      }}
-                    />
-                  </div>
-                </li>
-              </Link>
+              />
             );
           })}
           <div ref={observerRef}></div>
@@ -2245,54 +2326,12 @@ const TabContentComponent = ({
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.characterInfoList.map((one, index: number) => {
           return (
-            <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
-              <li className={styles.item} key={one?.id}>
-                {one.mediaState == MediaState.Image && (
-                  <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
-                )}
-                {one.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={one?.mediaUrl} />}
-                {one?.isFavorite && (
-                  <div className={styles.pin}>
-                    <img src={BoldPin.src} alt="" />
-                  </div>
-                )}
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldLike.src} alt="" />
-                    <div className={styles.value}>{one?.likeCount}</div>
-                  </div>
-                  {isMine && (
-                    <div className={styles.likeWrap}>
-                      <img src={BoldDislike.src} alt="" />
-                      <div className={styles.value}>{one?.dislikeCount}</div>
-                    </div>
-                  )}
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>{one?.mediaCount}</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>{one?.name}</div>
-                  <img
-                    src={BoldMenuDots.src}
-                    alt=""
-                    className={styles.iconSetting}
-                    onClick={e => {
-                      e.preventDefault();
-                      e.stopPropagation();
-
-                      const dataContextMenu = {
-                        id: one.id,
-                        isPin: one?.isPinFix || false,
-                        isSettingOpen: true,
-                      };
-                      if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-                    }}
-                  />
-                </div>
-              </li>
-            </Link>
+            <CharacterComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.id + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
           );
         })}
         <div ref={observerRef}></div>
@@ -2305,53 +2344,12 @@ const TabContentComponent = ({
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.contentInfoList.map((one, index: number) => {
           return (
-            <Link href={getLocalizedLink(`/content/series/` + one?.urlLinkKey + '?from=""')}>
-              <li className={styles.item} key={one?.id}>
-                {one.mediaState == MediaState.Image && (
-                  <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
-                )}
-                {one.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={one?.mediaUrl} />}
-                {one?.isFavorite && (
-                  <div className={styles.pin}>
-                    <img src={BoldPin.src} alt="" />
-                  </div>
-                )}
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldLike.src} alt="" />
-                    <div className={styles.value}>{one?.likeCount}</div>
-                  </div>
-                  {isMine && (
-                    <div className={styles.likeWrap}>
-                      <img src={BoldDislike.src} alt="" />
-                      <div className={styles.value}>{one?.dislikeCount}</div>
-                    </div>
-                  )}
-                  <div className={styles.viewWrap}>
-                    <img src={BoldVideo.src} alt="" />
-                    <div className={styles.value}>{one?.mediaCount}</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>{one?.name}</div>
-                  <img
-                    src={BoldMenuDots.src}
-                    alt=""
-                    className={styles.iconSetting}
-                    onClick={e => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const dataContextMenu = {
-                        id: one.urlLinkKey,
-                        isPin: one?.isPinFix || false,
-                        isSettingOpen: true,
-                      };
-                      if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-                    }}
-                  />
-                </div>
-              </li>
-            </Link>
+            <ContentComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/content/series/` + one?.urlLinkKey + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
           );
         })}
         <div ref={observerRef}></div>
@@ -2364,47 +2362,12 @@ const TabContentComponent = ({
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.channelInfoList?.map((one, index: number) => {
           return (
-            <Link href={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}>
-              <li className={styles.item} key={one?.id}>
-                {one.mediaState == MediaState.Image && (
-                  <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
-                )}
-                {one.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={one?.mediaUrl} />}
-                {one?.isFavorite && (
-                  <div className={styles.pin}>
-                    <img src={BoldPin.src} alt="" />
-                  </div>
-                )}
-                <div className={styles.info}>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldContentLists.src} alt="" />
-                    <div className={styles.value}>{one?.mediaCount}</div>
-                  </div>
-                  <div className={styles.likeWrap}>
-                    <img src={BoldCharacter.src} alt="" />
-                    <div className={styles.value}>{one?.memberCount}</div>
-                  </div>
-                </div>
-                <div className={styles.titleWrap}>
-                  <div className={styles.title}>{one?.name}</div>
-                  <img
-                    src={BoldMenuDots.src}
-                    alt=""
-                    className={styles.iconSetting}
-                    onClick={e => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const dataContextMenu = {
-                        id: one.id,
-                        isPin: one?.isPinFix || false,
-                        isSettingOpen: true,
-                      };
-                      if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-                    }}
-                  />
-                </div>
-              </li>
-            </Link>
+            <ChannelComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
           );
         })}
         <div ref={observerRef}></div>
@@ -2530,4 +2493,237 @@ const TabContentComponent = ({
       </section>
     );
   }
+};
+
+type ChannelComponentType = {
+  isMine: boolean;
+  urlLinkThumbnail: string;
+  itemInfo: ProfileTabItemInfo;
+  onOpenContentMenu?: (data: TabContentMenuType) => void;
+};
+
+const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ChannelComponentType) => {
+  return (
+    <Link href={urlLinkThumbnail}>
+      <li className={styles.item} key={itemInfo?.id}>
+        {itemInfo.mediaState == MediaState.Image && (
+          <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
+        )}
+        {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        {itemInfo?.isFavorite && (
+          <div className={styles.pin}>
+            <img src={BoldPin.src} alt="" />
+          </div>
+        )}
+        <div className={styles.info}>
+          <div className={styles.likeWrap}>
+            <img src={BoldContentLists.src} alt="" />
+            <div className={styles.value}>{itemInfo?.mediaCount}</div>
+          </div>
+          <div className={styles.likeWrap}>
+            <img src={BoldCharacter.src} alt="" />
+            <div className={styles.value}>{itemInfo?.memberCount}</div>
+          </div>
+        </div>
+        <div className={styles.titleWrap}>
+          <div className={styles.title}>{itemInfo?.name}</div>
+          <img
+            src={BoldMenuDots.src}
+            alt=""
+            className={styles.iconSetting}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              const dataContextMenu = {
+                id: itemInfo.id,
+                isPin: itemInfo?.isPinFix || false,
+                isSettingOpen: true,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          />
+        </div>
+      </li>
+    </Link>
+  );
+};
+
+type ContentComponentType = {
+  isMine: boolean;
+  urlLinkThumbnail: string;
+  itemInfo: ProfileTabItemInfo;
+  onOpenContentMenu?: (data: TabContentMenuType) => void;
+};
+
+const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ContentComponentType) => {
+  return (
+    <Link href={getLocalizedLink(`/content/series/` + itemInfo?.urlLinkKey + '?from=""')}>
+      <li className={styles.item} key={itemInfo?.id}>
+        {itemInfo.mediaState == MediaState.Image && (
+          <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
+        )}
+        {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        {itemInfo?.isFavorite && (
+          <div className={styles.pin}>
+            <img src={BoldPin.src} alt="" />
+          </div>
+        )}
+        <div className={styles.info}>
+          <div className={styles.likeWrap}>
+            <img src={BoldLike.src} alt="" />
+            <div className={styles.value}>{itemInfo?.likeCount}</div>
+          </div>
+          {isMine && (
+            <div className={styles.likeWrap}>
+              <img src={BoldDislike.src} alt="" />
+              <div className={styles.value}>{itemInfo?.dislikeCount}</div>
+            </div>
+          )}
+          <div className={styles.viewWrap}>
+            <img src={BoldVideo.src} alt="" />
+            <div className={styles.value}>{itemInfo?.mediaCount}</div>
+          </div>
+        </div>
+        <div className={styles.titleWrap}>
+          <div className={styles.title}>{itemInfo?.name}</div>
+          <img
+            src={BoldMenuDots.src}
+            alt=""
+            className={styles.iconSetting}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              const dataContextMenu = {
+                id: itemInfo.urlLinkKey,
+                isPin: itemInfo?.isPinFix || false,
+                isSettingOpen: true,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          />
+        </div>
+      </li>
+    </Link>
+  );
+};
+
+type CharacterComponentType = {
+  isMine: boolean;
+  urlLinkThumbnail: string;
+  itemInfo: ProfileTabItemInfo;
+  onOpenContentMenu?: (data: TabContentMenuType) => void;
+};
+
+const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: CharacterComponentType) => {
+  return (
+    <Link href={urlLinkThumbnail}>
+      <li className={styles.item} key={itemInfo?.id}>
+        {itemInfo.mediaState == MediaState.Image && (
+          <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
+        )}
+        {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        {itemInfo?.isFavorite && (
+          <div className={styles.pin}>
+            <img src={BoldPin.src} alt="" />
+          </div>
+        )}
+        <div className={styles.info}>
+          <div className={styles.likeWrap}>
+            <img src={BoldLike.src} alt="" />
+            <div className={styles.value}>{itemInfo?.likeCount}</div>
+          </div>
+          {isMine && (
+            <div className={styles.likeWrap}>
+              <img src={BoldDislike.src} alt="" />
+              <div className={styles.value}>{itemInfo?.dislikeCount}</div>
+            </div>
+          )}
+          <div className={styles.viewWrap}>
+            <img src={BoldVideo.src} alt="" />
+            <div className={styles.value}>{itemInfo?.mediaCount}</div>
+          </div>
+        </div>
+        <div className={styles.titleWrap}>
+          <div className={styles.title}>{itemInfo?.name}</div>
+          <img
+            src={BoldMenuDots.src}
+            alt=""
+            className={styles.iconSetting}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              const dataContextMenu = {
+                id: itemInfo.id,
+                isPin: itemInfo?.isPinFix || false,
+                isSettingOpen: true,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          />
+        </div>
+      </li>
+    </Link>
+  );
+};
+
+type FeedComponentType = {
+  isMine: boolean;
+  urlLinkThumbnail: string;
+  feedInfo: FeedInfo;
+  onOpenContentMenu?: (data: TabContentMenuType) => void;
+};
+
+const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContentMenu}: FeedComponentType) => {
+  return (
+    <Link href={urlLinkThumbnail}>
+      <li className={styles.item} key={feedInfo?.id}>
+        {feedInfo.mediaState == MediaState.Image && (
+          <img className={styles.imgThumbnail} src={feedInfo?.mediaUrlList?.[0]} alt="" />
+        )}
+        {feedInfo.mediaState == MediaState.Video && (
+          <video className={styles.imgThumbnail} src={feedInfo?.mediaUrlList?.[0]} />
+        )}
+        {feedInfo?.isPinFix && (
+          <div className={styles.pin}>
+            <img src={BoldPin.src} alt="" />
+          </div>
+        )}
+        <div className={styles.info}>
+          <div className={styles.likeWrap}>
+            <img src={BoldLike.src} alt="" />
+            <div className={styles.value}>{feedInfo?.likeCount}</div>
+          </div>
+          {isMine && (
+            <div className={styles.likeWrap}>
+              <img src={BoldDislike.src} alt="" />
+              <div className={styles.value}>{feedInfo?.disLikeCount}</div>
+            </div>
+          )}
+          <div className={styles.viewWrap}>
+            <img src={BoldVideo.src} alt="" />
+            <div className={styles.value}>{feedInfo?.commentCount}</div>
+          </div>
+        </div>
+        <div className={styles.titleWrap}>
+          <div className={styles.title}>{feedInfo?.description}</div>
+          <img
+            src={BoldMenuDots.src}
+            alt=""
+            className={styles.iconSetting}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              const dataContextMenu = {
+                id: feedInfo.urlLinkKey,
+                isPin: feedInfo?.isPinFix || false,
+                isSettingOpen: true,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          />
+        </div>
+      </li>
+    </Link>
+  );
 };

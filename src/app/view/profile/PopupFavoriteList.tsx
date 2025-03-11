@@ -7,11 +7,13 @@ import {
   cancelSubscribe,
   ExploreSortType,
   FeedMediaType,
+  getBookmarkList,
   GetCharacterTabInfoeRes,
   GetPdInfoRes,
   GetPdTabInfoeRes,
   getSubscriptionList,
   GetSubscriptionListRes,
+  InteractionType,
   MembershipSubscribe,
   ProfileType,
 } from '@/app/NetWork/ProfileNetwork';
@@ -35,6 +37,7 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import BottomNav from '../main/bottom-nav/BottomNav';
 import {GetCharacterInfoRes} from '@/app/NetWork/CharacterNetwork';
 import {GetChannelRes} from '@/app/NetWork/ChannelNetwork';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 
 type Props = {
   onClose: () => void;
@@ -76,7 +79,15 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
     await refreshList();
   };
 
-  const refreshList = async () => {};
+  const refreshList = async () => {
+    const resBookmarkList = await getBookmarkList({
+      interactionType: InteractionType.Feed,
+      languageType: getCurrentLanguage(),
+    });
+    data.profileTabInfo[InteractionType.Feed] = resBookmarkList?.data?.bookMarkInfoList;
+
+    // console.log(bookmarkList?.data.);
+  };
 
   const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll?: boolean) => {};
 

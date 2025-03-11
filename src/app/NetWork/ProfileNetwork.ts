@@ -670,3 +670,55 @@ export const bookmark = async (payload: BookMarkReq) => {
     return null;
   }
 };
+
+export interface GetBookMarkListReq {
+  interactionType: InteractionType;
+  languageType: string;
+}
+
+export interface GetBookMarkListRes {
+  bookMarkInfoList: ProfileTabItemInfo[];
+}
+
+export const getBookmarkList = async (payload: GetBookMarkListReq) => {
+  try {
+    const res = await api.post<ResponseAPI<GetBookMarkListRes>>('Profile/getBookMarkList', payload);
+
+    if (res.status !== 200) {
+      console.error('getBookmarkList API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getBookmarkList API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface GetRecordListReq {
+  interactionType: InteractionType;
+  languageType: string;
+}
+
+export interface GetRecordListRes {
+  recordInfoList: ProfileTabItemInfo[];
+}
+
+export const getRecordList = async (payload: GetRecordListReq) => {
+  try {
+    const res = await api.post<ResponseAPI<GetRecordListRes>>('Profile/getRecordList', payload);
+
+    if (res.status !== 200) {
+      console.error('getRecordList API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getRecordList API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
