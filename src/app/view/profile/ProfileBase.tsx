@@ -102,6 +102,7 @@ export enum eTabCommonType {
 
 export enum eTabPDType {
   Feed,
+  Info = 90,
   Channel = 1,
   Character = 2,
   Shared = 3,
@@ -411,7 +412,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         return;
       }
       resProfileTabInfo = resGetCharacterInfo.data;
-    } else if (isOtherPD && indexTab == eTabPDOtherType.Info) {
+    } else if ((isPD && indexTab == eTabPDType.Info) || (isOtherPD && indexTab == eTabPDOtherType.Info)) {
       const resPdInfo = await getPdInfo({profileId: profileId});
       if (resPdInfo?.resultCode != 0) {
         console.error('api error : ', resPdInfo?.resultMessage);
@@ -628,7 +629,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     if ([ProfileType.User, ProfileType.PD].includes(profileType)) {
       return getLocalizedLink(`/profile/update/` + data.profileId);
     } else if ([ProfileType.Character].includes(profileType)) {
-      return getLocalizedLink(`/update/character/` + data.urlLinkKey);
+      return getLocalizedLink(`/update/character/` + data.profileId);
     } else if ([ProfileType.Channel].includes(profileType)) {
       return getLocalizedLink(`/update/channel/` + data.profileId);
     }
@@ -797,8 +798,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               <button
                 className={styles.friends}
                 onClick={() => {
-                  data.isOpenPopupFriendsList = true;
-                  setData({...data});
+                  alert('6월에 기능 추가 예정');
+                  // data.isOpenPopupFriendsList = true;
+                  // setData({...data});
                 }}
               >
                 Add Friends
@@ -2357,7 +2359,7 @@ const TabContentComponent = ({
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.channelInfoList?.map((one, index: number) => {
           return (
-            <Link href={getLocalizedLink(`/profile/` + one?.id + '?from=""')}>
+            <Link href={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}>
               <li className={styles.item} key={one?.id}>
                 {one.mediaState == MediaState.Image && (
                   <img className={styles.imgThumbnail} src={one?.mediaUrl} alt="" />
