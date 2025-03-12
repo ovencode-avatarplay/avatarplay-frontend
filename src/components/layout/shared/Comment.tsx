@@ -2,30 +2,32 @@ import React, {useEffect, useState} from 'react';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import styles from './ReelsComment.module.css';
-import ReelsCommentItem, {CommentType} from './ReelsCommentItem';
+import styles from './Comment.module.css';
+import CommentItem, {CommentType} from './CommentItem';
 import {BoldSend, LeftArrow} from '@ui/Icons';
 import {InputAdornment, TextField} from '@mui/material';
 import {CommentContentType, CommentInfo, sendAddComment, sendGetCommentList} from '@/app/NetWork/CommonNetwork';
 
-interface ReelsCommentProps {
-  feedId: number;
+interface Props {
+  contentId: number;
   isOpen: boolean;
   toggleDrawer: (open: boolean) => void;
   isReplies?: boolean;
   parentCommentId?: number;
   onRepliesBack?: () => void;
   onAddTotalCommentCount: () => void;
+  commentType: CommentContentType;
 }
 
-const ReelsComment: React.FC<ReelsCommentProps> = ({
+const Comment: React.FC<Props> = ({
   isOpen,
   toggleDrawer,
-  feedId,
+  contentId: feedId,
   parentCommentId = 0,
   isReplies = false,
   onRepliesBack = () => {},
   onAddTotalCommentCount,
+  commentType,
 }) => {
   const [chat, setChat] = useState<string>('');
   const handleInputChange = (value: string) => {
@@ -39,7 +41,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
   const getCommentList = async () => {
     const payload = {
       typeValueId: feedId,
-      type: CommentContentType.Feed,
+      type: commentType,
     };
 
     try {
@@ -128,33 +130,36 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
         {/* Comments Section */}
         {!isReplies &&
           commentList.map((comment, index) => (
-            <ReelsCommentItem
+            <CommentItem
               onComplete={() => getCommentList()}
               key={index}
               feedId={feedId}
               comment={comment}
               onRepliesBack={() => getCommentList()}
               onAddTotalCommentCount={() => onAddTotalCommentCount()}
+              commentType={commentType}
             />
           ))}
 
         {isReplies && parentComment && (
-          <ReelsCommentItem
+          <CommentItem
             feedId={feedId}
             comment={parentComment}
             type={CommentType.parent}
             onComplete={() => getCommentList()}
             onAddTotalCommentCount={() => onAddTotalCommentCount()}
+            commentType={commentType}
           />
         )}
         {isReplies &&
           parentComment?.replies.map((comment, index) => (
-            <ReelsCommentItem
+            <CommentItem
               feedId={feedId}
               comment={comment}
               type={CommentType.replies}
               onComplete={() => getCommentList()}
               onAddTotalCommentCount={() => onAddTotalCommentCount()}
+              commentType={commentType}
             />
           ))}
       </div>
@@ -213,4 +218,4 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
   );
 };
 
-export default ReelsComment;
+export default Comment;
