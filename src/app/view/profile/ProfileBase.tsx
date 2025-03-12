@@ -429,6 +429,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       resProfileTabInfo = resChannelInfo?.data;
     } else {
       if (indexTab == eTabPDType.Character) {
+        console.trace('isRefreshAll : ', isRefreshAll);
         resProfileTabInfo = await getTabInfo(profileType)(
           profileId,
           indexTab,
@@ -928,7 +929,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               tabIndex={data.indexTab}
               isEmptyTab={isEmptyTab}
               onRefreshTab={async (isRefreshAll: boolean) => {
-                await data.refreshProfileTab(data.profileId, data.indexTab, true);
+                await data.refreshProfileTab(data.profileId, data.indexTab, isRefreshAll);
               }}
               profileTabInfo={data.profileTabInfo}
               filterCluster={data.filterCluster}
@@ -2154,7 +2155,7 @@ const TabContentComponent = ({
   }, [inView]);
 
   const refreshTab = async () => {
-    onRefreshTab(true);
+    onRefreshTab(false);
   };
 
   if (isEmptyTab) {
