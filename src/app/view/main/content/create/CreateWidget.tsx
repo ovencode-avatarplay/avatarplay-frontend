@@ -156,10 +156,11 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                   }
                 }}
                 customStyles={{
-                  menuList: {
+                  menu: {
                     borderRadius: '12px',
                     border: '1px solid var(--Border-1, #EAECF0)',
                     background: 'var(--White, #FFF)',
+                    overflow: 'hidden',
                   },
                 }}
               />
