@@ -20,7 +20,7 @@
     width: var(--second-width);
     margin:0  16px;
     gap: 14px;
-    height: calc(100vh - 58px); 
+    height: 100vh; 
     overflow-x: hidden;
     overflow-y: scroll;
 }
@@ -40,7 +40,8 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-    align-self: stretch;
+    align-self: stretch
+    
 }
 
 .title2
@@ -73,6 +74,8 @@
     height: 100px;
 
     border-radius: 12px;
+
+
 }
 
 .thumbnailImage
@@ -92,6 +95,7 @@
     border-radius: 10px;
     border: 1px dashed var(--Neutral-400, #BDC1C6);
     background: var(--White, #FFF);
+    cursor: pointer;
 }
 
 .emptyImageButton
@@ -125,11 +129,17 @@
     font-family: Lato;
     font-size: 14px;
     font-style: normal;
-    font-weight: 700;
+    font-weight: 400;
     line-height: normal;
     letter-spacing: -0.28px;
 
 }
+
+.uploadIcon {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) saturate(100%);
+  }
 
 .editButton
 {

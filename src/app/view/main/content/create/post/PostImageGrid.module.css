@@ -1,10 +1,10 @@
-.gridContainer {
+/* .gridContainer {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   width: var(--second-width);
   padding: 0;
-}
+} */
 
 .imageWrapper {
   position: relative;
