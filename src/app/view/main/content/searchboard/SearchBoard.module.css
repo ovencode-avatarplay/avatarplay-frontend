@@ -24,10 +24,8 @@
 
 
 .content {
-    flex: 1; 
-
+    flex: 1;
     height:  100%;
-    
     margin-left: 16px;  
 }
  
@@ -45,7 +43,7 @@
 .searchContainer
 {
     height: 100%;
-    margin: 0 16px;  
+    margin: 0 15px;  
 }
 
 .filterArea
