@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './CustomSplitter.module.css';
 
 interface Splitter {
@@ -33,7 +33,9 @@ const Splitters: React.FC<SplittersProps> = ({
   placeholderWidth = '50vw',
 }) => {
   const [activeSplitter, setActiveSplitter] = useState(initialActiveSplitter);
-
+  useEffect(() => {
+    setActiveSplitter(initialActiveSplitter);
+  }, [initialActiveSplitter]);
   const calculateMaxWidth = () => {
     if (placeholderWidth.endsWith('vw')) {
       const vwValue = parseFloat(placeholderWidth.replace('vw', ''));

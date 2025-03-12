@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 
 import {
   BannerUrlList,
@@ -24,8 +24,12 @@ import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import ExploreCard from './ExploreCard';
 import {FilterDataItem} from '@/components/search/FilterSelector';
 import {getCurrentLanguage} from '@/utils/UrlMove';
+import useChangeParams from '@/utils/useChangeParams';
 
 const SearchBoard: React.FC = () => {
+  const [data, setData] = useState({
+    indexTab: 0,
+  });
   const [loading, setLoading] = useState(false);
 
   // Featured
@@ -63,6 +67,7 @@ const SearchBoard: React.FC = () => {
 
   const [selectedSort, setSelectedSort] = useState<number>(0);
   const [sortDropDownOpen, setSortDropDownOpen] = useState<boolean>(false);
+  const {changeParams, getParam} = useChangeParams();
   const dropDownMenuItems: DropDownMenuItem[] = [
     {
       name: 'Newest',
@@ -98,6 +103,17 @@ const SearchBoard: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+    const search = getParam('search');
+    const indexTab = getParam('indexTab');
+    data.indexTab = Number(indexTab);
+    setData({...data});
+
+    if (search && ['All', 'Story', 'Character'].includes(search)) {
+      handleSearchChange(search);
+    }
+  }, []);
+  console.log('data : ', data);
   // Handle
 
   const handleSearchChange = (value: 'All' | 'Story' | 'Character') => {
@@ -323,6 +339,7 @@ const SearchBoard: React.FC = () => {
                   className={`${styles.tag} ${search === 'All' ? styles.selected : ''}`}
                   onClick={() => {
                     handleSearchChange('All');
+                    changeParams('search', 'all');
                   }}
                 >
                   All
@@ -331,6 +348,7 @@ const SearchBoard: React.FC = () => {
                   className={`${styles.tag} ${search === 'Story' ? styles.selected : ''}`}
                   onClick={() => {
                     handleSearchChange('Story');
+                    changeParams('search', 'Story');
                   }}
                 >
                   Story
@@ -339,6 +357,7 @@ const SearchBoard: React.FC = () => {
                   className={`${styles.tag} ${search === 'Character' ? styles.selected : ''}`}
                   onClick={() => {
                     handleSearchChange('Character');
+                    changeParams('search', 'Character');
                   }}
                 >
                   Character
@@ -410,6 +429,7 @@ const SearchBoard: React.FC = () => {
   return (
     <>
       <Splitter
+        initialActiveSplitter={data.indexTab}
         splitters={splitterData}
         splitterStyle={{
           height: 'var(--header-removed-height)',
@@ -422,6 +442,12 @@ const SearchBoard: React.FC = () => {
         }}
         itemStyle={{width: 'calc(50%)'}}
         isDark={true}
+        onSelectSplitButton={index => {
+          changeParams('indexTab', index);
+          if (index == 0) {
+            changeParams('search', null);
+          }
+        }}
       />
       <LoadingOverlay loading={loading} />
     </>

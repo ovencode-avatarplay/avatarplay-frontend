@@ -11,6 +11,7 @@ import {BoldChatRoundDots, BoldEpisodes, BoldFollowers} from '@ui/Icons';
 import Link from 'next/link';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {sendStoryByIdGet} from '@/app/NetWork/StoryNetwork';
+import {useRouter} from 'next/navigation';
 
 const ExploreCard: React.FC<ExploreCardProps> = ({
   exploreItemType,
@@ -26,6 +27,7 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
   urlLinkKey,
 }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const RankCount = 3 + 1;
 
@@ -44,6 +46,12 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
         dispatch(openDrawerContentId(storyId));
       }
     } else if (exploreItemType === 1) {
+      if (!urlLinkKey) {
+        alert('프로필이 지원되지 않는 캐릭터입니다.');
+        return;
+      }
+      router.push(getLocalizedLink('/profile/' + urlLinkKey + "?from=''"));
+
       // dispatch(openDrawerCharacterId(storyId));
       // alert('캐릭터는 프로필로 갈 예정입니다. (프로필 작업 완료후 연결 필요)');
     }
@@ -119,18 +127,16 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
           />
         )}
         {exploreItemType === 1 && (
-          <Link href={getLocalizedLink('/profile/' + urlLinkKey + "?from=''")}>
-            <figure
-              className={styles.exploreImage}
-              style={{
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
-                  thumbnail || '/images/001.png'
-                })`,
-                backgroundSize: 'cover',
-              }}
-              onClick={handleOpenDrawer}
-            />
-          </Link>
+          <figure
+            className={styles.exploreImage}
+            style={{
+              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
+                thumbnail || '/images/001.png'
+              })`,
+              backgroundSize: 'cover',
+            }}
+            onClick={handleOpenDrawer}
+          />
         )}
 
         {storyRank && storyRank < RankCount && (

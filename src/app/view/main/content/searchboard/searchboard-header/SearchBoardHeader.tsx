@@ -8,6 +8,7 @@ import {BoldFilter, BoldFilterOn} from '@ui/Icons';
 import ExploreSearchInput from './ExploreSearchInput';
 import {ExploreItem, PaginationRequest, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
 import FilterSelector, {FilterDataItem} from '@/components/search/FilterSelector';
+import useChangeParams from '@/utils/useChangeParams';
 
 interface Props {
   setSearchResultList: React.Dispatch<React.SetStateAction<ExploreItem[] | null>>;
