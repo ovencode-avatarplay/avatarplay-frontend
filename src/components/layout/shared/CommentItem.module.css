@@ -57,22 +57,27 @@ justify-items: center;
   }
   
   .actions {
-    display: flex;
-    gap: 40px;
+    display: flex;    
   }
   
   .actionItem {
     display: flex;
-    align-items: center;
-    filter: brightness(0) saturate(100%) invert(0%) sepia(56%) saturate(7437%) hue-rotate(55deg) brightness(85%) contrast(113%);
+    align-items: center;    
     gap: 4px;
     cursor: pointer;
-    width: 16px;
+    width: 44px;
     height: 16px;
+    
   }
   .actionItem img{
     width:16px;
     height:16px;
+    align-content: flex-start;
+    align-items: flex-start;
+    align-self: flex-start;
+    justify-content: flex-start;
+    justify-self: flex-start;
+    justify-items: flex-start;
   }
   
   .iconLike,
@@ -148,4 +153,21 @@ font-weight: 600;
 line-height: 150%; /* 19.5px */
 letter-spacing: -0.032px;
 cursor: pointer;
+  }
+
+  .like{
+    filter: brightness(0) saturate(100%) invert(67%) sepia(63%) saturate(5060%) hue-rotate(285deg) brightness(98%) contrast(104%);
+  }
+
+  .disLike{
+    filter: brightness(0) saturate(100%) invert(76%) sepia(47%) saturate(3433%) hue-rotate(156deg) brightness(105%) contrast(100%);    
+  }
+  .button
+  {
+    filter: brightness(0) saturate(100%) invert(0%) sepia(56%) saturate(7437%) hue-rotate(55deg) brightness(85%) contrast(113%);    
+  }
+
+  .likeButton
+  {
+    width: 16px;
   }

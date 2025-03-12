@@ -7,7 +7,13 @@ import CommentEdit from './CommentEdit';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {ClassNames} from '@emotion/react';
-import {CommentContentType, CommentInfo, ReplieInfo, sendCommentLike} from '@/app/NetWork/CommonNetwork';
+import {
+  CommentContentType,
+  CommentInfo,
+  ReplieInfo,
+  sendCommentDislike,
+  sendCommentLike,
+} from '@/app/NetWork/CommonNetwork';
 
 export enum CommentType {
   default = 0,
@@ -37,6 +43,8 @@ const CommentItem: React.FC<CommentItemProps> = ({
   console.log('comment.userImage', comment.userImage);
   const [isLike, setIsLike] = useState(comment.isLike);
   const [likeCount, setLikeCount] = useState(comment.likeCount);
+  const [isDisLike, setIsDisLike] = useState(comment.isDisLike);
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [formattedTime, setFormattedTime] = useState('');
   const [repleCount, setRepleCount] = useState(() => {
@@ -76,6 +84,25 @@ const CommentItem: React.FC<CommentItemProps> = ({
       console.error('An error occurred while liking/unliking the feed:', error);
     }
   };
+
+  const handleDisLikeComment = async (commentId: number, isDisLike: boolean) => {
+    try {
+      // if (isDisLike == true) {
+      //   await handleDisLikeFeed(item.id, !isDisLike);
+      // }
+      const response = await sendCommentDislike({commentId, isDisLike: isDisLike});
+
+      if (response.resultCode === 0) {
+        console.log(`Feed ${commentId} has been ${isDisLike ? 'liked' : 'unliked'} successfully!`);
+        setIsDisLike(isDisLike);
+      } else {
+        console.error(`Failed to like/unlike feed: ${response.resultMessage}`);
+      }
+    } catch (error) {
+      console.error('An error occurred while liking/unliking the feed:', error);
+    }
+  };
+
   const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
     try {
       const base64Payload = token.split('.')[1]; // payload 부분 추출
@@ -186,16 +213,31 @@ const CommentItem: React.FC<CommentItemProps> = ({
                 {isLike && (
                   <img
                     src={BoldLike.src}
-                    className={styles.button}
+                    className={styles.like}
                     onClick={() => handleLikeComment(comment.commentId, !isLike)}
                   />
                 )}
                 <div className={styles.actionText}>{likeCount}</div>
               </div>
-
+              <div className={styles.actionItem}>
+                {!isDisLike && (
+                  <img
+                    src={LineDisLike.src}
+                    className={styles.button}
+                    onClick={() => handleDisLikeComment(comment.commentId, !isDisLike)}
+                  />
+                )}
+                {isDisLike && (
+                  <img
+                    src={BoldDislike.src}
+                    className={styles.disLike}
+                    onClick={() => handleDisLikeComment(comment.commentId, !isDisLike)}
+                  />
+                )}
+              </div>
               {type == CommentType.default && (
                 <div className={styles.actionItem} onClick={() => setCommentIsOpen(true)}>
-                  <img src={LineComment.src}></img>
+                  <img src={LineComment.src} className={styles.button}></img>
                 </div>
               )}
             </div>
