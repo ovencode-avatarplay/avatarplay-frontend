@@ -73,6 +73,12 @@
   align-items: center;
   align-self: stretch;
 }
+
+.buttonIconPlus
+{
+  width: 45px;
+  height: 45px;
+}
  
 
 .buttonIcon
