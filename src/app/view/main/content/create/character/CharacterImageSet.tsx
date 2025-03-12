@@ -26,18 +26,10 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
   const [selectedLora, setSelectedLora] = useState<number>(0);
 
   const [positivePrompt, setPositivePrompt] = useState<string>('');
-  const positivePlaceHolder = `Please describe the image you want to create
-    ex) yellow hair a girl, walking on the beach, Wearing a blue swimsuit
-    `;
   const [negativePrompt, setNegativePrompt] = useState<string>('');
-  const negativePlaceHolder = `Please entr the elements you want to exclude.
-    Only English is possible, and plese separate with commas. (,)
-    ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)
-    `;
+
   const [seed, setSeed] = useState<number>(-1);
   const [seedLock, setSeedLock] = useState<boolean>(false);
-  let seedToolTip = `The seed is a number that plays the role of a 'starting point' in the image generation process. Just as planting a specific seed in a garden produces a unique flower, this seed value produces a unique and predictable image. If you enter the same seed value, the image generation model will generate the same image every time, and if you use a different seed value, a completely different image will be generated. If you do not enter a seed value, a random value will be used. Seed values can only be integers between -2,147,483,648 and 2,147,483,647`;
-
   const [selectedImgCount, setSelectedImgCount] = useState<number>(3);
 
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
@@ -303,7 +295,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
 
       <MaxTextInput
         labelText={getLocalizedText(Header, 'createcharacter011_desc_003')}
-        placeholder={positivePlaceHolder}
+        placeholder={getLocalizedText(Common, 'common_sample_071')}
         inputDataType={inputType.None}
         stateDataType={inputState.Normal}
         displayDataType={displayType.Label}
@@ -321,8 +313,8 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
         ))}
       </div>
       <MaxTextInput
-        labelText="Please enter the elements you want to exclude"
-        placeholder={negativePlaceHolder}
+        labelText={getLocalizedText(Header, 'createcharacter011_desc_004')}
+        placeholder={getLocalizedText(Common, 'common_sample_075')}
         inputDataType={inputType.None}
         stateDataType={inputState.Normal}
         displayDataType={displayType.Label}
@@ -331,8 +323,11 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
       />
       <div className={styles.seedArea}>
         <div className={styles.seedTitleArea}>
-          <h2 className={styles.title2}>Seed</h2>
-          <CustomToolTip tooltipText={seedToolTip} tooltipStyle={{transform: 'translateX(-15%)'}}></CustomToolTip>
+          <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter011_label_005')}</h2>
+          <CustomToolTip
+            tooltipText={getLocalizedText(Common, 'common_alert_061')}
+            tooltipStyle={{transform: 'translateX(-15%)'}}
+          ></CustomToolTip>
         </div>
         <div className={styles.seedInputArea}>
           <button className={styles.lockButton} onClick={() => setSeedLock(!seedLock)}>
@@ -351,7 +346,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
       </div>
 
       <div className={styles.imageCountArea}>
-        <h2 className={styles.title2}>Number of images</h2>
+        <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter011_label_006')}</h2>
         <div className={styles.imageCountButtons}>
           {Array.from({length: 4}, (_, index) => (
             <button
@@ -370,11 +365,11 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
       <div className={styles.currencyArea}>
         <div className={styles.currencyItem}>
           <img className={styles.currencyIcon} src={BoldRuby.src} />
-          <span className={styles.currencyText}>10.5K</span>
+          <span className={styles.currencyText}>10.5K</span> {/* TODO : Currency */}
         </div>
         <div className={styles.currencyItem}>
           <img className={styles.currencyIcon} src={BoldStar.src} />
-          <span className={styles.currencyText}>100</span>
+          <span className={styles.currencyText}>100</span> {/* TODO : Currency */}
         </div>
       </div>
 
@@ -386,17 +381,17 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
           customClassName={[styles.generateButton]}
           onClick={handleImageGeneration}
         >
-          <div className={styles.costDesc}>Generate</div>
+          <div className={styles.costDesc}>{getLocalizedText(Common, 'common_button_generate')}</div>
           <div className={styles.costArea}>
             <img src={BoldRuby.src} className={`${styles.costIcon} ${styles.blackIcon}`} alt="cost-icon" />
-            <div className={styles.costText}>50</div>
+            <div className={styles.costText}>50</div> {/* TODO : Currency */}
           </div>
         </CustomButton>
       </div>
 
       {generatedImages.length > 0 && (
         <div className={styles.generatedImageArea}>
-          <h2 className={styles.generatedImageTitle}>Image generation history</h2>
+          <h2 className={styles.generatedImageTitle}>{getLocalizedText(Header, 'createcharacter012_label_001')}</h2>
           <ul className={styles.selectGrid}>
             {generatedImages.map((image, index) => (
               <CharacterCreateImageButton
@@ -423,18 +418,8 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
                 }
               }}
             >
-              Confirm
+              {getLocalizedText(Common, 'common_button_confirm')}
             </CustomButton>
-            // <div className={styles.bottomNavTab}>
-            //   <div className={styles.bottomButtonArea}>
-            //     {bottomButtons.map((buttonItem, index) => (
-            //       <button key={index} className={styles.bottomButton} onClick={buttonItem.clickEvent}>
-            //         <img className={styles.bottomButtonIcon} src={buttonItem.icon} alt={buttonItem.label} />
-            //         <div className={styles.bottomButtonText}>{buttonItem.label}</div>
-            //       </button>
-            //     ))}
-            //   </div>
-            // </div>
           )}
         </div>
       )}

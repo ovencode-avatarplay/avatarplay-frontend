@@ -17,8 +17,7 @@
   background: var(--background);
   border: 1px solid #E8EAED;
   border-radius: 10px;
-}
- 
+} 
 
 .inputAreaError
 { 
@@ -66,6 +65,11 @@
   vertical-align: top;
 }
 
+.inputArea >.inputPrompt.textExist
+{
+  color: var(--Neutral-900, #040415);
+}
+ 
 
 .inputArea >.inputPrompt:focus {
   outline: none; 
@@ -74,6 +78,7 @@
 .inputArea >.inputPrompt:focus-visible {
   outline: none;  
 }
+
    
 .inputArea >.inputError
 {
