@@ -26,7 +26,7 @@ import {
   LineScaleUp,
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
-import ReelsComment from './ReelsComment';
+import Comment from '../layout/shared/Comment';
 import SharePopup from '../layout/shared/SharePopup';
 import ChatMediaDialog from '@/app/view/main/content/Chat/MainChat/ChatMediaDialog';
 import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainChat/ChatTypes';
@@ -34,6 +34,7 @@ import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
 import {bookmark, BookMarkReq, followProfile, InteractionType} from '@/app/NetWork/ProfileNetwork';
+import {CommentContentType} from '@/app/NetWork/CommonNetwork';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -502,11 +503,12 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           </SwiperSlide>
         )}
       </Swiper>
-      <ReelsComment
-        feedId={item.id}
+      <Comment
+        contentId={item.id}
         isOpen={isCommentOpen}
         toggleDrawer={v => setCommentIsOpen(v)}
         onAddTotalCommentCount={() => handleAddCommentCount()}
+        commentType={CommentContentType.Feed}
       />
 
       <SharePopup

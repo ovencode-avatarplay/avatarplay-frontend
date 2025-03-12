@@ -353,9 +353,9 @@ type EpisodeComponentType = {
   key: string;
   thumbnailUrl: string;
   name: string;
-  price: boolean;
+  price: number;
 };
-const EpisodeComponent = ({key, thumbnailUrl, name, price}) => {
+const EpisodeComponent = ({key, thumbnailUrl, name, price}: EpisodeComponentType) => {
   const isFree = price == 0;
   return (
     <li className={styles.item} key={key}>
