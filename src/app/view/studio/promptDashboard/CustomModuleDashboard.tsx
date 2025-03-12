@@ -442,7 +442,13 @@ const CustomModuleDashboard: React.FC = () => {
       {isDeleteConfirmOpen && (
         <CustomPopup
           type="alert"
-          title={getLocalizedText('Common', 'common_alert_006')}
+          title={formatText(getLocalizedText('Common', 'common_alert_006'), [
+            displayState === 'prompt'
+              ? selectedPrompt?.title ?? ''
+              : displayState === 'lorebook'
+              ? selectedLorebook?.title ?? ''
+              : 'err',
+          ])}
           // description={
           //   // {getLocalizedText('Common', 'common_alert_076')}
           //   `really?`

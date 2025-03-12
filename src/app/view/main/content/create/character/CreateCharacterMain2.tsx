@@ -74,6 +74,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
 
   const [essentialPopupOpen, setEssentialPopupOpen] = useState<boolean>(false);
+  const [successPopupOpen, setSuccessPopupOpen] = useState<boolean>(false);
 
   //#region  Basic
   const [characterName, setCharacterName] = useState<string>(character.name);
@@ -309,8 +310,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
 
       if (response.data || response.resultCode === 0) {
         console.log('Character created successfully:', response.data);
-
-        pushLocalizedRoute('/studio/character', router);
+        setSuccessPopupOpen(true);
       } else {
         throw new Error('Character creation failed.');
       }
@@ -779,22 +779,24 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
                       className={`${styles.thumbnailImage} ${mainimageUrl === '' && styles.emptyImage}`}
                       style={{backgroundImage: mainimageUrl ? `url(${mainimageUrl})` : 'none'}}
                     >
-                      <button
-                        className={styles.editButton}
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleOnClickThumbnail();
-                        }}
-                      >
-                        <img className={styles.editIcon} src={LineEdit.src} />
-                      </button>
+                      {mainimageUrl !== '' && (
+                        <button
+                          className={styles.editButton}
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleOnClickThumbnail();
+                          }}
+                        >
+                          <img className={styles.editIcon} src={LineEdit.src} />
+                        </button>
+                      )}
                       {mainimageUrl === '' && (
                         <div className={styles.emptyImageButton}>
                           <img className={styles.uploadImage} src={LineUpload.src} />
                           <div className={styles.createImageText}>
                             {getLocalizedText(Common, 'common_button_upload')}
-                        </div>
                           </div>
+                        </div>
                       )}
                     </div>
                   </button>
@@ -843,6 +845,25 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
               label: getLocalizedText(Common, 'common_button_confirm'),
               onClick: () => {
                 setEssentialPopupOpen(false);
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
+      {successPopupOpen && (
+        <CustomPopup
+          type="alert"
+          title={getLocalizedText(Common, 'TmpText (Save Success!)')}
+          buttons={[
+            {
+              label: getLocalizedText(Common, 'common_button_confirm'),
+              onClick: () => {
+                setSuccessPopupOpen(false);
+                const urlLinkKey = '';
+                router.replace(getLocalizedLink('/profile/' + urlLinkKey + "?from=''&tab=Character"));
+
+                // pushLocalizedRoute('/studio/character', router);
               },
               isPrimary: true,
             },
