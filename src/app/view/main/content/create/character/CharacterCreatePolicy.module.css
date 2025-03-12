@@ -462,7 +462,7 @@
     flex-direction: row;
 }
 
-.titleAstric
+.titleAstrisk
 {
     color: var(--Secondary-Red-1, #F75555);
     font-feature-settings: 'liga' off, 'clig' off;

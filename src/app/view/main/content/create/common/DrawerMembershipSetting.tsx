@@ -8,6 +8,7 @@ import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import {MembershipSetting, PaymentType} from '@/app/NetWork/network-interface/CommonEnums';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface Props {
   onClose: () => void;
@@ -91,14 +92,17 @@ const DrawerMembershipSetting: React.FC<Props> = ({
     <div className={styles.membershipSetting}>
       <div className={styles.membershipArea}>
         <div className={styles.settingArea}>
-          <div className={styles.settingTitle}>MembershipSetting</div>
+          <div className={styles.settingTitle}>
+            {getLocalizedText('CreateCharacter', 'createcharacter017_label_010')}
+            {/* 나중에 Common에서 Localize 지정되면 거기서 지정된 값으로 바꿔도 됩니다. */}
+          </div>
           <button
             className={styles.settingButton}
             onClick={() => {
               setDrawerOpen(true);
             }}
           >
-            <div className={styles.settingButtonText}>Setting</div>
+            <div className={styles.settingButtonText}>{getLocalizedText('Common', 'common_button_setting')}</div>
           </button>
         </div>
       </div>

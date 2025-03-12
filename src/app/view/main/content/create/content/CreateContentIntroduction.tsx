@@ -65,7 +65,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
     pushLocalizedRoute(`/create/content/${activeTab === ContentType.Series ? 'series' : 'single'}/${id}`, router);
   };
 
-  const editContente = (id: number, type: ContentType) => {
+  const editContente = (id: string, type: ContentType) => {
     if (type == ContentType.Series) pushLocalizedRoute(`/update/content/series/${id}`, router);
     else if (type == ContentType.Single) pushLocalizedRoute(`/update/content/single/${id}`, router);
   };
@@ -192,7 +192,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
                           setIsDeletePopup(true);
                         }}
                         onEdit={() => {
-                          editContente(content.id, activeTab);
+                          editContente(content.urlLinkKey, activeTab);
                         }}
                       />
                     ))}
@@ -229,8 +229,9 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
                           deleteContente(content.id);
                         }}
                         onEdit={() => {
-                          editContente(content.id, activeTab);
+                          editContente(content.urlLinkKey, activeTab);
                         }}
+                        isSingle={true}
                       />
                     ))}
                 </div>

@@ -2,13 +2,13 @@ import React, {useEffect, useState} from 'react';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import styles from './ReelsComment.module.css';
-import ReelsCommentItem, {CommentType} from './ReelsCommentItem';
+import styles from './ViwerComment.module.css';
+import ViwerCommentItem, {CommentType} from './ViwerCommentItem';
 import {BoldSend, LeftArrow} from '@ui/Icons';
 import {InputAdornment, TextField} from '@mui/material';
 import {CommentContentType, CommentInfo, sendAddComment, sendGetCommentList} from '@/app/NetWork/CommonNetwork';
 
-interface ReelsCommentProps {
+interface ViwerCommentProps {
   feedId: number;
   isOpen: boolean;
   toggleDrawer: (open: boolean) => void;
@@ -18,7 +18,7 @@ interface ReelsCommentProps {
   onAddTotalCommentCount: () => void;
 }
 
-const ReelsComment: React.FC<ReelsCommentProps> = ({
+const ViwerComment: React.FC<ViwerCommentProps> = ({
   isOpen,
   toggleDrawer,
   feedId,
@@ -72,7 +72,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
   const handleSendAddComment = async (feedId: number, parentCommentId: number, content: string) => {
     const payload = {
       typeValueId: feedId,
-      type: CommentContentType.Feed,
+      type: CommentContentType.Content,
       comment: content, // 댓글 내용
       parentCommentId: parentCommentId,
     };
@@ -128,7 +128,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
         {/* Comments Section */}
         {!isReplies &&
           commentList.map((comment, index) => (
-            <ReelsCommentItem
+            <ViwerCommentItem
               onComplete={() => getCommentList()}
               key={index}
               feedId={feedId}
@@ -139,7 +139,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
           ))}
 
         {isReplies && parentComment && (
-          <ReelsCommentItem
+          <ViwerCommentItem
             feedId={feedId}
             comment={parentComment}
             type={CommentType.parent}
@@ -149,7 +149,7 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
         )}
         {isReplies &&
           parentComment?.replies.map((comment, index) => (
-            <ReelsCommentItem
+            <ViwerCommentItem
               feedId={feedId}
               comment={comment}
               type={CommentType.replies}
@@ -213,4 +213,4 @@ const ReelsComment: React.FC<ReelsCommentProps> = ({
   );
 };
 
-export default ReelsComment;
+export default ViwerComment;

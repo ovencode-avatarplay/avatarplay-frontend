@@ -11,6 +11,7 @@ import {LLMSetupInfo} from '@/redux-store/slices/StoryInfo';
 import {setLlmSetupInfo} from '@/redux-store/slices/PublishInfo';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import MaxTextInput from '@/components/create/MaxTextInput';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface ModelOption {
   value: number;
@@ -99,13 +100,16 @@ const StoryLLMSetup: React.FC<StoryLLMSetupProps> = ({
       }}
     >
       <div className={styles.modalContainer}>
-        <CreateDrawerHeader title="LLM" onClose={onClose}>
+        <CreateDrawerHeader
+          title={getLocalizedText('CreateCharacter', 'createcharacter018_title_001')}
+          onClose={onClose}
+        >
           <div className={styles.costArea}>
             <div className={styles.costButton}>
               <img className={styles.costIcon} src={BoldRuby.src} />
               <div className={styles.costText}>150</div>
             </div>
-            <div className={styles.costDesc}>per chat</div>
+            <div className={styles.costDesc}>{getLocalizedText('CreateCharacter', 'createcharacter018_label_002')}</div>
           </div>
         </CreateDrawerHeader>
         <div className={styles.categoryArea}>
@@ -122,23 +126,25 @@ const StoryLLMSetup: React.FC<StoryLLMSetupProps> = ({
                   alt="Radio Button"
                 />
                 <div className={styles.textArea}>
-                  <div className={styles.llmName}>{option.label}</div>
-                  <div className={styles.llmDesc}>{option.description}</div>
+                  <div className={styles.llmName}>{getLocalizedText('Common', option.label)}</div>
+                  {option.description !== '' && (
+                    <div className={styles.llmDesc}>{getLocalizedText('Common', option.description)}</div>
+                  )}
                 </div>
               </div>
             ))}
             <MaxTextInput
               promptValue={customApiKey}
-              disabled={selectedModel !== 9}
+              disabled={selectedModel !== 8}
               handlePromptChange={handleApiKeyChange}
-              hint="You can validate your API Key on OpenAI API"
+              hint={getLocalizedText('CreateCharacter', 'createcharacter018_desc_003')}
             />
           </div>
         </div>
 
         {/* 저장 버튼 */}
         <button className={styles.confirmButton} onClick={handleSaveAndClose}>
-          Confirm
+          {getLocalizedText('Common', 'common_button_confirm')}
         </button>
       </div>
     </Modal>

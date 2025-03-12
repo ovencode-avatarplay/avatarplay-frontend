@@ -1,5 +1,7 @@
 import CustomInput from '@/components/layout/shared/CustomInput';
 import styles from './CharacterCreateBasic.module.css';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 interface CharacterCreateBasicProps {
   characterName: string;
@@ -8,37 +10,27 @@ interface CharacterCreateBasicProps {
   // setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
 }
 
+const Header = 'CreateCharacter';
+const Common = 'Common';
+
 const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
   characterName,
   setCharacterName,
   // characterDesc,
   // setCharacterDesc,
 }) => {
-  const characterNameDesc: string[] = [
-    'Avoid ambiguous names like “Rose”, “Joy”, “Ivy” that can be interpreted in multiple ways.',
-    'Use a name that is clearly recognized as a name. Use a short name. Long names are difficult to enter during the chat.',
-  ];
-  let characterDescPlaceholder = `This is the description of the character (Character description is also public to other users)`;
-
   return (
     <div className={styles.basicContainer}>
-      <div className={styles.basicGuide}>
-        "This is where you set the character's basic information (name, description). However, the content entered here
-        does not directly affect the actual chat. To reflect the character's personality in the chat, you must enter it
-        in the LLM tab."
-      </div>
+      <div className={styles.basicGuide}>{formatText(getLocalizedText(Header, 'createcharacter001_desc_008'))}</div>
       <div className={styles.inputArea}>
         <div className={styles.inputTextArea}>
           <div className={styles.titleArea}>
-            <h2 className={styles.title2}>Character Name</h2>
+            <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter001_label_009')}</h2>
             <h2 className={styles.titleAstric}>*</h2>
           </div>
           <div className={styles.descArea}>
-            {characterNameDesc.map((sentence, index) => (
-              <p key={index}>
-                {index + 1}. {sentence}
-              </p>
-            ))}
+            <div>{formatText(getLocalizedText(Header, 'createcharacter001_desc_010'))}</div>
+            <div>{formatText(getLocalizedText(Header, 'createcharacter001_desc_011'))}</div>
           </div>
         </div>
         <CustomInput
@@ -46,7 +38,7 @@ const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
           textType="InputOnly"
           state="Default"
           value={characterName}
-          placeholder="Enter the character name "
+          placeholder={getLocalizedText(Common, 'common_sample_084')}
           onChange={e => setCharacterName(e.target.value)}
           customClassName={[styles.inputBox]}
         />

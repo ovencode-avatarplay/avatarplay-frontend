@@ -1,4 +1,4 @@
-import React, {useState, useEffect, RefObject} from 'react';
+import React, {useState, useEffect, RefObject, ReactNode} from 'react';
 import styles from './MaxTextInput.module.css';
 import ErrorMessage from './ErrorMessage';
 
@@ -17,7 +17,7 @@ interface Props {
   inputRef?: RefObject<HTMLTextAreaElement>;
   labelText?: string;
   hint?: string;
-  inSideHint?: string;
+  inSideHint?: string | ReactNode;
   onErrorChange?: (hasError: boolean) => void;
   style?: React.CSSProperties;
 }
@@ -153,6 +153,18 @@ const MaxTextInput: React.FC<Props> = ({
     }
   };
 
+  const formatTextForTextArea = (text: string): string => {
+    return text.replace(/<br\s*\/?>/g, '\n');
+  };
+
+  const [formattedPlaceholder, setFormattedPlaceholder] = useState<string>(
+    placeholder ? formatTextForTextArea(placeholder) : '',
+  );
+
+  useEffect(() => {
+    setFormattedPlaceholder(placeholder ? formatTextForTextArea(placeholder) : '');
+  }, [placeholder]);
+
   return (
     <>
       {(displayDataType === displayType.Label || displayDataType === displayType.LabelAndHint) && labelText && (
@@ -167,7 +179,7 @@ const MaxTextInput: React.FC<Props> = ({
       >
         <textarea
           className={`${styles.inputPrompt} ${hasError ? styles.inputError : ''}`}
-          placeholder={placeholder ? placeholder : 'Text Placeholder'}
+          placeholder={formattedPlaceholder || ''}
           value={promptValue}
           onChange={handleInput}
           onCompositionStart={handleCompositionStart} // 조합 시작

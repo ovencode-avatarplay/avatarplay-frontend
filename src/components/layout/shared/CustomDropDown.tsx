@@ -18,6 +18,7 @@ interface CustomDropDownProps {
   initialValue?: string | number;
   onSelect: (value: string | number) => void;
   style?: React.CSSProperties;
+  placeholder?: string;
 }
 
 const CustomDropDown: React.FC<CustomDropDownProps> = ({
@@ -27,6 +28,7 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({
   initialValue,
   onSelect,
   style,
+  placeholder,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | number | null>(initialValue || null);
@@ -138,7 +140,7 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({
             />
           </>
         ) : (
-          'Select an option'
+          placeholder
         )}
       </div>
       {isOpen && <div className={styles.dropdownMenu}>{items.map((item, index) => renderItem(item, index))}</div>}

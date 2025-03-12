@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import styles from './ReelsCommentItem.module.css';
+import styles from './ViwerCommentItem.module.css';
 import {BoldComment, BoldDislike, BoldLike, LineComment, LineDisLike, LineFolderPlus, LineLike} from '@ui/Icons';
-import ReelsComment from './ReelsComment';
+import ViwerComment from './ViwerComment';
 import {Avatar, Menu, MenuItem} from '@mui/material';
-import ReelsCommentEdit from './ReelsCommentEdit';
+import ViwerCommentEdit from './ViwerCommentEdit';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {ClassNames} from '@emotion/react';
@@ -15,7 +15,7 @@ export enum CommentType {
   replies = 2,
 }
 
-interface ReelsCommentItemProps {
+interface ViwerCommentItemProps {
   feedId: number;
   comment: CommentInfo | ReplieInfo;
   type?: CommentType;
@@ -24,7 +24,7 @@ interface ReelsCommentItemProps {
   onAddTotalCommentCount: () => void;
 }
 
-const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
+const ViwerCommentItem: React.FC<ViwerCommentItemProps> = ({
   onComplete,
   feedId,
   comment,
@@ -215,7 +215,7 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
       <div className={styles.menuIcon} onClick={event => handleClick(event)}>
         <div className={styles.menuDots}></div>
       </div>
-      <ReelsComment
+      <ViwerComment
         feedId={feedId}
         isOpen={isCommentOpen}
         toggleDrawer={v => setCommentIsOpen(v)}
@@ -258,15 +258,15 @@ const ReelsCommentItem: React.FC<ReelsCommentItemProps> = ({
           Delete
         </MenuItem>
       </Menu>
-      <ReelsCommentEdit
+      <ViwerCommentEdit
         commentId={comment.commentId}
         isOpen={isEditOpen}
         prevChat={comment.content}
         toggleDrawer={setIsEditOpen}
         onComplete={() => onComplete()}
-      ></ReelsCommentEdit>
+      ></ViwerCommentEdit>
     </div>
   );
 };
 
-export default ReelsCommentItem;
+export default ViwerCommentItem;
