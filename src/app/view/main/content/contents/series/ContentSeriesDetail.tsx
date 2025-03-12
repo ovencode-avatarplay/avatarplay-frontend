@@ -71,6 +71,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
       contentId: number;
       episodeId: number;
       price: number;
+      contentType: ContentType;
     };
   }>({
     indexTab: eTabType.Episodes,
@@ -85,6 +86,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
       contentId: 0,
       episodeId: 0,
       price: 0,
+      contentType: ContentType.Series,
     },
   });
 
@@ -323,6 +325,8 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                             data.dataPurchase.contentId = data.dataMix?.contentId || 0;
                             data.dataPurchase.episodeId = 0;
                             data.dataPurchase.price = price;
+                            data.dataPurchase.contentType = ContentType.Single;
+
                             setData({...data});
                             refreshInfo();
                           }}
@@ -355,6 +359,8 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                             data.dataPurchase.contentId = data.dataMix?.contentId || 0;
                             data.dataPurchase.episodeId = one.episodeId;
                             data.dataPurchase.price = one.salesStarEa;
+                            data.dataPurchase.contentType = ContentType.Series;
+
                             setData({...data});
                             refreshInfo();
                           }}
@@ -388,6 +394,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           contentId={data.dataPurchase.contentId}
           episodeId={data.dataPurchase.episodeId}
           price={data.dataPurchase.price}
+          contentType={data.dataPurchase.contentType}
           onClose={() => {
             data.dataPurchase.isOpenPopupPurchase = false;
             setData({...data});
@@ -459,9 +466,10 @@ type PopupPurchaseType = {
   contentId: number;
   episodeId: number;
   price: number;
+  contentType: ContentType;
   onClose: () => void;
 };
-const PopupPurchase = ({price, contentId, episodeId, onClose}: PopupPurchaseType) => {
+const PopupPurchase = ({price, contentId, episodeId, contentType, onClose}: PopupPurchaseType) => {
   const onPurchase = async () => {
     const dataBuyReq: BuyContentEpisodeReq = {
       contentId: contentId,
@@ -469,6 +477,13 @@ const PopupPurchase = ({price, contentId, episodeId, onClose}: PopupPurchaseType
     };
     const resBuy = await buyContentEpisode(dataBuyReq);
     console.log('resBuy : ', resBuy);
+    onClose();
+
+    if (contentType == ContentType.Series) {
+      alert('구매완료, Play Series 처리예정');
+    } else {
+      alert('구매완료, Play Single 처리예정');
+    }
   };
   return (
     <Dialog
