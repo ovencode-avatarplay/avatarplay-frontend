@@ -38,7 +38,8 @@
     flex: 1;
     padding: 8px 20px;
     border-radius: 8px;
-    border: 1px solid var(--Border-1, #EAECF0);
+    outline: 1px solid var(--Border-1, #EAECF0); 
+    outline-offset: -1px;
 
     color: var(--Black, #000);
     font-feature-settings: 'liga' off, 'clig' off;
@@ -199,8 +200,8 @@
 
     div.imgProfileWrap {
       flex: 0;
-
       position: relative;
+
 
       .imgProfile {
         width: 90px;
@@ -211,7 +212,7 @@
 
       .iconProfileEditWrap {
         position: absolute;
-        bottom: 0;
+        bottom: 5px;
         right: 0;
         border-radius: 50%;
         width: 27px;
@@ -253,7 +254,7 @@
   }
 
   .profileDetail {
-    margin: 5px 16px 0px;
+    margin: 5px 16px 0;
 
     .nameWrap {
       display: flex;
@@ -274,12 +275,13 @@
         filter: brightness(0) saturate(100%);
         width: 16px;
         height: 16px;
+    
       }
     }
 
 
     .verify {
-      margin-top: 3.5px;
+      height: 24px;
       color: var(--Primary-1, #FD55D3);
       font-family: Lato;
       font-size: 14px;
@@ -337,7 +339,7 @@
     }
 
     .buttons {
-      margin-top: 12px;
+      margin-top: 6px;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -507,11 +509,10 @@
   }
 
   .tabSection {
-    margin-top: 12px;
+    margin-top: 10px;
 
     .tabHeaderContainer {
       position: sticky;
-      top: 57px;
       background: white;
       z-index: 2;
     }
@@ -527,6 +528,7 @@
         justify-content: center;
         align-items: center;
         gap: 24px;
+        margin-top: 30px;
 
         .text {
           text-align: center;
@@ -620,6 +622,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            
           }
 
           .pin {
@@ -764,6 +767,7 @@
 .tabHeaderWrap {
   position: relative;
   background: white;
+  height: 38px;
 }
 
 .tabHeader {
@@ -773,6 +777,7 @@
   justify-content: space-between;
   cursor: pointer;
   position: relative;
+  height: 100%;
 
   .tabItem {
     flex: 1; // 탭이 균등하게 배치되도록 설정
@@ -784,9 +789,7 @@
 
   /* 실제 텍스트 부분 */
   .labelTab {
-    padding: 10px 7px 10px;
-
-
+    margin: 10px 7px 10px;
     color: var(--Neutral-400, #BDC1C6);
     font-family: Lato;
     font-size: 16px;
@@ -797,7 +800,6 @@
 
     &.active {
       border-bottom: 2px solid var(--Black, #000);
-
       text-align: center;
       color: var(--Color-Tokens-Text, #0C0C0C);
       font-family: Lato;
@@ -811,7 +813,7 @@
 
   /* header 높이 */
   .label {
-    padding: 10px 7px 14px;
+    padding: 10px 7px 10px;
     text-align: center;
 
     color: var(--Color-Tokens-Text, #0C0C0C);
@@ -839,7 +841,7 @@
   bottom: 0;
 
   width: calc(100%);
-  background: #DDD4D0;
+  background: #EAECF0;
   z-index: 1;
 }
 
@@ -877,7 +879,7 @@
 }
 
 .filter {
-  padding: 10px 16px;
+  padding: 7px 16px;
   margin-bottom: -10px;
 
   display: flex;
@@ -937,8 +939,8 @@
 
       .optionWrap {
         display: flex;
-
         justify-content: space-between;
+      
 
         .label {
           color: var(--Black, #000);

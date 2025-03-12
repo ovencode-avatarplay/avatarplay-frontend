@@ -793,8 +793,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
                           <img className={styles.uploadImage} src={LineUpload.src} />
                           <div className={styles.createImageText}>
                             {getLocalizedText(Common, 'common_button_upload')}
-                          </div>
                         </div>
+                          </div>
                       )}
                     </div>
                   </button>
