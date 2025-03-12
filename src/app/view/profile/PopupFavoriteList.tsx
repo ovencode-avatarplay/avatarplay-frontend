@@ -13,7 +13,6 @@ import {
   GetPdTabInfoeRes,
   getSubscriptionList,
   GetSubscriptionListRes,
-  InteractionType,
   MembershipSubscribe,
   ProfileTabItemInfo,
   ProfileType,
@@ -44,6 +43,7 @@ import {GetCharacterInfoRes} from '@/app/NetWork/CharacterNetwork';
 import {GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
+import {InteractionType} from '@/app/NetWork/CommonNetwork';
 
 type Props = {
   onClose: () => void;

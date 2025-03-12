@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import styles from './ViwerContent.module.css';
+import styles from './ViewerContent.module.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import {FeedInfo, sendFeedDisLike, sendFeedLike, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
+import {FeedInfo, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
 import {
   BoldArchive,
@@ -26,56 +26,122 @@ import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainCha
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
-import {bookmark, BookMarkReq, followProfile, InteractionType} from '@/app/NetWork/ProfileNetwork';
+import {followProfile} from '@/app/NetWork/ProfileNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
-import {ContentCategoryType, ContentType} from '@/app/NetWork/ContentNetwork';
+import {
+  ContentCategoryType,
+  ContentPlayInfo,
+  ContentType,
+  PlayButtonReq,
+  PlayReq,
+  RecordPlayReq,
+  sendPlay,
+  sendPlayButton,
+  sendRecordPlay,
+} from '@/app/NetWork/ContentNetwork';
 import Comment from '@/components/layout/shared/Comment';
-import {CommentContentType} from '@/app/NetWork/CommonNetwork';
-export interface ViewInfo {
-  id: number;
-  mediaState: ContentCategoryType;
-  contentType: ContentType;
-  mediaUrlList: string[];
-  commentCount: number;
-  likeCount: number;
-  disLikeCount: number;
-  isLike: boolean;
-  isDisLike: boolean;
-  isBookmark: boolean;
-  playTime: string;
-  profileUrlLinkKey: string;
-  characterProfileUrl: string;
-  characterProfileName: string;
-}
+import {
+  bookmark,
+  BookMarkReq,
+  CommentContentType,
+  InteractionType,
+  sendFeedDisLike,
+  sendFeedLike,
+} from '@/app/NetWork/CommonNetwork';
+// export interface ViewInfo {
+//   id: number;
+//   mediaState: ContentCategoryType;
+//   contentType: ContentType;
+//   mediaUrlList: string[];
+//   commentCount: number;
+//   likeCount: number;
+//   disLikeCount: number;
+//   isLike: boolean;
+//   isDisLike: boolean;
+//   isBookmark: boolean;
+//   playTime: string;
+//   profileUrlLinkKey: string;
+//   characterProfileUrl: string;
+//   characterProfileName: string;
+// }
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  item: ViewInfo;
-  isActive: boolean; // 현재 슬라이드인지 확인
-  isMute: boolean;
-  setIsMute: (mute: boolean) => void; // boolean 매개변수 추가
+
+  isPlayButon: boolean;
+  contentId: number;
+  episodeId?: number;
 }
 
-const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open, onClose}) => {
+const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, episodeId = 0}) => {
+  const [info, setInfo] = useState<ContentPlayInfo>();
+
+  const handlePlayRecent = async () => {
+    try {
+      const playRequest: PlayButtonReq = {
+        contentId: 1001,
+      };
+
+      const playResponse = await sendPlayButton(playRequest);
+      console.log('✅ PlayButton API 응답:', playResponse.data);
+      setInfo(playResponse.data?.recentlyPlayInfo);
+    } catch (error) {
+      console.error('🚨 Play 관련 API 호출 오류:', error);
+    }
+  };
+
+  const handlePlayNew = async () => {
+    try {
+      const playRequest: PlayReq = {
+        contentId: 1001,
+        episodeId: 2002,
+      };
+
+      const playData = await sendPlay(playRequest);
+      console.log('✅ Play API 응답:', playData.data);
+      setInfo(playData.data?.recentlyPlayInfo);
+    } catch (error) {
+      console.error('🚨 Play 관련 API 호출 오류:', error);
+    }
+  };
+
+  const handleRecordPlay = async () => {
+    try {
+      const recordPlayRequest: RecordPlayReq = {
+        episodeRecordPlayInfo: {
+          contentId: 1001,
+          episodeId: 2002,
+          categoryType: 1,
+          playTimeSecond: 120,
+        },
+      };
+
+      const recordPlayResponse = await sendRecordPlay(recordPlayRequest);
+      console.log('✅ RecordPlay API 응답:', recordPlayResponse.data);
+    } catch (error) {
+      console.error('🚨 RecordPlay API 호출 오류:', error);
+    }
+  };
+  useEffect(() => {
+    if (isPlayButon) {
+      handlePlayRecent();
+    } else {
+      handlePlayNew();
+    }
+  }, []);
+
   const router = useRouter();
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
-  const [isLike, setIsLike] = useState(item.isLike);
-  const [isDisLike, setIsDisLike] = useState(item.isDisLike);
+  const [isLike, setIsLike] = useState(info?.commonMediaViewInfo.isLike);
+  const [isDisLike, setIsDisLike] = useState(info?.commonMediaViewInfo.isDisLike);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isShare, setIsShare] = useState(false);
   const [isImageModal, setIsImageModal] = useState(false);
-  const [likeCount, setLikeCount] = useState(item.likeCount);
+  const [isMute, setIsMute] = useState(true);
+  const [likeCount, setLikeCount] = useState(info?.commonMediaViewInfo.likeCount);
   const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
-  useEffect(() => {
-    if (isActive) {
-      setIsPlaying(true); // 활성화된 경우 자동 재생
-    } else {
-      setIsPlaying(false); // 비활성화된 경우 재생 중지
-    }
-    playerRef.current?.seekTo(0); // 재생 위치를 0으로 설정
-  }, [isActive]);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -90,11 +156,11 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
   const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
-  const [commentCount, setCommentCount] = useState(item.commentCount);
+  const [commentCount, setCommentCount] = useState(info?.commonMediaViewInfo.commentCount);
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
   const handleAddCommentCount = () => {
-    setCommentCount(commentCount + 1);
+    if (info) setCommentCount(info?.commonMediaViewInfo.commentCount + 1);
   };
   const handleClick = () => {
     setIsPlaying(!isPlaying);
@@ -109,7 +175,11 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
       // if (isDisLike == true) {
       //   await handleDisLikeFeed(item.id, !isDisLike);
       // }
-      const response = await sendFeedLike(feedId, isLike);
+      const response = await sendFeedLike(
+        episodeId ? InteractionType.Episode : InteractionType.Contents,
+        feedId,
+        isLike,
+      );
 
       if (response.resultCode === 0) {
         console.log(`content ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
@@ -127,7 +197,11 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
       // if (isLike == true) {
       //   await handleLikeFeed(item.id, !isLike);
       // }
-      const response = await sendFeedDisLike(feedId, isLike);
+      const response = await sendFeedDisLike(
+        episodeId ? InteractionType.Episode : InteractionType.Contents,
+        feedId,
+        isLike,
+      );
 
       if (response.resultCode === 0) {
         console.log(`content ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
@@ -140,18 +214,18 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
     }
   };
 
-  const sendShare = async () => {
-    const response = await sendFeedShare(item.id);
-    const {resultCode, resultMessage} = response;
+  // const sendShare = async () => {
+  //   const response = await sendFeedShare(info.id);
+  //   const {resultCode, resultMessage} = response;
 
-    if (resultCode === 0) {
-      console.log('공유 성공!');
-    } else {
-      console.log(`공유 실패: ${resultMessage}`);
-    }
-  };
+  //   if (resultCode === 0) {
+  //     console.log('공유 성공!');
+  //   } else {
+  //     console.log(`공유 실패: ${resultMessage}`);
+  //   }
+  // };
   const handleShare = async () => {
-    sendShare();
+    //sendShare();
     const shareData = {
       title: '공유하기 제목',
       text: '이 링크를 확인해보세요!',
@@ -169,11 +243,11 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
     }
   };
 
-  const [isBookmarked, setIsBookmarked] = useState(item.isBookmark);
+  const [isBookmarked, setIsBookmarked] = useState(info?.commonMediaViewInfo.isBookmark);
   const bookmarkFeed = async () => {
     const payload: BookMarkReq = {
-      interactionType: InteractionType.Contents,
-      typeValueId: item.id, // 북마크할 피드 ID
+      interactionType: episodeId ? InteractionType.Episode : InteractionType.Contents,
+      typeValueId: episodeId ? episodeId : contentId, // 북마크할 피드 ID
       isBookMark: !isBookmarked,
       // feedId: item.id, // 북마크할 피드 ID
       // isSave: !isBookmarked, // 북마크 저장 여부 (true: 저장, false: 해제)
@@ -209,15 +283,8 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
   };
 
   React.useEffect(() => {
-    setCommentCount(item.commentCount);
-  }, [item]);
-
-  React.useEffect(() => {}, [isMute]);
-
-  const imageMediaData: MediaData = {
-    mediaType: TriggerMediaState.TriggerImage, // 기본값 (TriggerMediaState의 기본 상태)
-    mediaUrlList: item.mediaUrlList, // 빈 배열
-  };
+    setCommentCount(info?.commonMediaViewInfo.commentCount);
+  }, [info]);
 
   const checkMobileOrTablet = useCallback(() => {
     const userAgent = navigator.userAgent || navigator.vendor;
@@ -261,17 +328,36 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
         }}
       >
         <div className={styles.reelsContainer}>
+          <div className={styles.header}>
+            <CustomArrowHeader
+              title="Create Series Contents"
+              onClose={() => {
+                pushLocalizedRoute(`/create/content/series/${contentId}`, router);
+              }}
+              children={
+                <div className={styles.rightArea}>
+                  <button className={styles.dashBoard} onClick={() => {}}>
+                    <img className={styles.dashBoardIcon} src={LineDashboard.src} />
+                  </button>
+                </div>
+              }
+            />
+          </div>
           <div style={{height: '100%'}}>
             <div className={styles.Image}>
-              {item.mediaState === ContentCategoryType.Webtoon && (
-                <img src={item?.mediaUrlList[0]} loading="lazy" style={{width: '100%', height: '100%'}} />
+              {info?.categoryType === ContentCategoryType.Webtoon && (
+                <img
+                  src={info?.episodeWebtoonInfo?.webtoonSourceUrlList[0].webtoonSourceUrls[0]} //추후 자막 합쳐야함
+                  loading="lazy"
+                  style={{width: '100%', height: '100%'}}
+                />
               )}
-              {item.mediaState === ContentCategoryType.Video && (
+              {info?.categoryType === ContentCategoryType.Video && (
                 <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
                   <ReactPlayer
                     ref={playerRef} // ReactPlayer 참조 연결
                     muted={isMute}
-                    url={item.mediaUrlList[0]} // 첫 번째 URL 사용
+                    url={info.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl} //추후 더빙 자막 합쳐야함
                     playing={isPlaying} // 재생 상태
                     loop={true}
                     width="100%"
@@ -326,8 +412,8 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
                 className={styles.progressFill}
                 style={{
                   width:
-                    item.mediaState === 1
-                      ? `${((activeIndex + 1) / item.mediaUrlList.length) * 100}%` // 이미지 슬라이드 진행도
+                    info?.categoryType === 0
+                      ? '' // 이미지 슬라이드 진행도
                       : `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
                   transition: 'width 0.1s linear', // 부드러운 진행도 애니메이션
                 }}
@@ -339,17 +425,17 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
               {/* User Info */}
               <div className={styles.userInfo}>
                 <Avatar
-                  src={item.characterProfileUrl || '/images/001.png'}
+                  src={info?.profileIconUrl || '/images/001.png'}
                   style={{width: '32px', height: '32px'}}
                   onClick={() => {
-                    pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
+                    pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
                   }}
                 />
 
                 <div
                   className={styles.profileDetails}
                   onClick={() => {
-                    pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
+                    pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
                   }}
                 >
                   <span className={styles.sponsored}>Sponsored</span>
@@ -358,8 +444,8 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
 
               {/* Video Info */}
               <div className={styles.videoInfo}>
-                {item.mediaState == ContentCategoryType.Webtoon && <>Image</>}
-                {item.mediaState == ContentCategoryType.Video && (
+                {info?.categoryType == ContentCategoryType.Webtoon && <>Image</>}
+                {info?.categoryType == ContentCategoryType.Video && (
                   <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
                     <img className={styles.iconVideo} src={BoldVideo.src}></img>
                     Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
@@ -376,7 +462,9 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
               <div
                 className={styles.textButtons}
                 onClick={() => {
-                  handleLikeFeed(item.id, !isLike);
+                  let id = contentId;
+                  if (episodeId) id = episodeId;
+                  handleLikeFeed(id, !isLike);
                 }}
               >
                 <img
@@ -395,7 +483,9 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
               <div
                 className={styles.textButtons}
                 onClick={() => {
-                  handleDisLikeFeed(item.id, !isDisLike);
+                  let id = contentId;
+                  if (episodeId) id = episodeId;
+                  handleDisLikeFeed(id, !isDisLike);
                 }}
               >
                 <img
@@ -442,31 +532,31 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
             <div
               className={styles.volumeButton}
               onClick={() => {
-                if (item.mediaState == ContentCategoryType.Video) setIsMute(!isMute);
-                else if (item.mediaState == ContentCategoryType.Webtoon) setIsImageModal(true);
+                if (info?.categoryType == ContentCategoryType.Video) setIsMute(!isMute);
+                else if (info?.categoryType == ContentCategoryType.Webtoon) setIsImageModal(true);
               }}
             >
               {/* 검은색 반투명 배경 */}
               {isMute && <div className={styles.volumeCircleIcon}></div>}
 
               {/* 음소거 상태 아이콘 */}
-              {item.mediaState == ContentCategoryType.Video && isMute && (
+              {info?.categoryType == ContentCategoryType.Video && isMute && (
                 <img src={BoldVolumeOff.src} className={styles.volumeIcon} />
               )}
 
               {/* 볼륨 활성 상태 아이콘 */}
-              {item.mediaState == ContentCategoryType.Video && !isMute && (
+              {info?.categoryType == ContentCategoryType.Video && !isMute && (
                 <img src={BoldVolumeOn.src} className={styles.volumeIcon} />
               )}
 
               {/* 이미지 확대 아이콘 */}
-              {item.mediaState == ContentCategoryType.Webtoon && (
+              {info?.categoryType == ContentCategoryType.Webtoon && (
                 <img src={LineScaleUp.src} className={styles.volumeIcon} />
               )}
             </div>
           </div>
           <Comment
-            contentId={item.id}
+            contentId={episodeId ? episodeId : contentId}
             isOpen={isCommentOpen}
             toggleDrawer={v => setCommentIsOpen(v)}
             onAddTotalCommentCount={() => handleAddCommentCount()}
@@ -475,17 +565,10 @@ const ViewerContent: React.FC<Props> = ({item, isActive, isMute, setIsMute, open
 
           <SharePopup
             open={isShare}
-            title={item.characterProfileName}
+            title={''}
             url={window.location.href}
             onClose={() => setIsShare(false)}
           ></SharePopup>
-
-          <ChatMediaDialog
-            isModalOpen={isImageModal}
-            closeModal={() => setIsImageModal(false)}
-            type={TriggerMediaState.TriggerImage}
-            mediaData={imageMediaData}
-          ></ChatMediaDialog>
         </div>
       </Box>
     </Modal>

@@ -4,7 +4,7 @@ import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
-import {FeedInfo, sendFeedDisLike, sendFeedLike, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
+import {FeedInfo, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
 import {
   BoldArchive,
@@ -31,8 +31,15 @@ import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainCha
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
-import {bookmark, BookMarkReq, followProfile, InteractionType} from '@/app/NetWork/ProfileNetwork';
-import {CommentContentType} from '@/app/NetWork/CommonNetwork';
+import {followProfile} from '@/app/NetWork/ProfileNetwork';
+import {
+  bookmark,
+  BookMarkReq,
+  CommentContentType,
+  InteractionType,
+  sendFeedDisLike,
+  sendFeedLike,
+} from '@/app/NetWork/CommonNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 
 interface ReelsContentProps {
@@ -113,7 +120,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       // if (isDisLike == true) {
       //   await handleDisLikeFeed(item.id, !isDisLike);
       // }
-      const response = await sendFeedLike(feedId, isLike);
+      const response = await sendFeedLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
@@ -131,7 +138,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       // if (isLike == true) {
       //   await handleLikeFeed(item.id, !isLike);
       // }
-      const response = await sendFeedDisLike(feedId, isLike);
+      const response = await sendFeedDisLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);

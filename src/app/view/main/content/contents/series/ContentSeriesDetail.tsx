@@ -40,9 +40,11 @@ import {
 } from '@/app/NetWork/ContentNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import Link from 'next/link';
-import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/ProfileNetwork';
 import {Dialog} from '@mui/material';
 import {TurnedIn} from '@mui/icons-material';
+import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/CommonNetwork';
+import ViewerContent from '../viewer/ViewerContent';
+import {setEpisodeId} from '@/redux-store/slices/Chatting';
 
 type Props = {
   type: ContentType;
@@ -56,6 +58,11 @@ enum eTabType {
 
 const ContentSeriesDetail = ({id, type}: Props) => {
   const refThumbnailWrap = useRef<HTMLDivElement | null>(null);
+  const [onPlay, setOnPlay] = useState(false);
+  const [isPlayButton, setIsPlayButton] = useState(false);
+  const [playContentId, setPlayContentId] = useState(0);
+  const [playEpisodeId, setPlayEpisodeId] = useState<number>(0);
+
   const router = useRouter();
   const [data, setData] = useState<{
     indexTab: eTabType;
@@ -316,7 +323,10 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           onClick={() => {
                             if (isFree || !isLock) {
                               //TODO : play처리
-                              alert('Play Single 처리예정');
+                              setOnPlay(true);
+                              setIsPlayButton(false);
+                              if (data.dataEpisodes) setPlayContentId(data.dataEpisodes?.contentId);
+                              setEpisodeId(0);
                               return;
                             }
 
@@ -350,7 +360,10 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           onClick={() => {
                             if (isFree || !isLock) {
                               //TODO : play처리
-                              alert('Play Series 처리예정');
+                              setOnPlay(true);
+                              setIsPlayButton(false);
+                              if (data.dataEpisodes) setPlayContentId(data.dataEpisodes?.contentId);
+                              setEpisodeId(one.episodeId);
                               return;
                             }
 
@@ -401,6 +414,13 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           }}
         />
       )}
+      <ViewerContent
+        open={onPlay}
+        onClose={() => setOnPlay(false)}
+        isPlayButon={isPlayButton}
+        contentId={playContentId}
+        episodeId={playContentId != 0 ? playEpisodeId : undefined}
+      ></ViewerContent>
     </>
   );
 };

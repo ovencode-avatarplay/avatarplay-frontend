@@ -250,3 +250,100 @@ export const sendGetComment = async (
     };
   }
 };
+export enum InteractionType {
+  Story = 0,
+  Feed = 1,
+  Contents = 2,
+  Character = 3,
+  Channel = 4,
+  Episode = 5,
+}
+// Feed Like API 호출 함수
+export const sendFeedLike = async (
+  interactionType: InteractionType,
+  typeValueId: number,
+  isLike: boolean,
+): Promise<{
+  resultCode: number;
+  resultMessage: string;
+  data: {feedId: number; isLike: boolean; likeCount: number} | null;
+}> => {
+  try {
+    const response = await api.post('/Common/like', {interactionType, typeValueId, isLike});
+    const {resultCode, resultMessage, data} = response.data;
+
+    if (resultCode === 0) {
+      return {
+        resultCode,
+        resultMessage,
+        data: data || null, // 데이터가 없을 경우 null 반환
+      };
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {
+        resultCode,
+        resultMessage,
+        data: null, // 실패 시 data를 null로 반환
+      };
+    }
+  } catch (error) {
+    console.error('Failed to like :', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to like ',
+      data: null,
+    };
+  }
+};
+
+// Feed Like API 호출 함수
+export const sendFeedDisLike = async (
+  interactionType: InteractionType,
+  typeValueId: number,
+  isDisLike: boolean,
+): Promise<{resultCode: number; resultMessage: string}> => {
+  try {
+    const response = await api.post('/Common/dislike', {interactionType, typeValueId, isDisLike});
+    const {resultCode, resultMessage} = response.data;
+
+    if (resultCode === 0) {
+      return {resultCode, resultMessage};
+    } else {
+      console.error(`Error: ${resultMessage}`);
+      return {resultCode, resultMessage};
+    }
+  } catch (error) {
+    console.error('Failed to like :', error);
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to like ',
+    };
+  }
+};
+
+export interface BookMarkReq {
+  interactionType: InteractionType;
+  typeValueId: number;
+  isBookMark: boolean;
+}
+
+export interface BookMarkRes {
+  isBookMark: boolean;
+}
+
+export const bookmark = async (payload: BookMarkReq) => {
+  try {
+    const res = await api.post<ResponseAPI<BookMarkRes>>('Common/bookmark', payload);
+
+    if (res.status !== 200) {
+      console.error('bookmark API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('bookmark API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};

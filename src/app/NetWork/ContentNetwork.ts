@@ -375,3 +375,94 @@ export const buyContentEpisode = async (payload: BuyContentEpisodeReq): Promise<
     throw new Error('Failed to buyContentEpisode. Please try again.');
   }
 };
+export interface PlayButtonReq {
+  contentId: number;
+}
+export interface PlayReq {
+  contentId: number;
+  episodeId: number;
+}
+export interface PlayButtonRes {
+  recentlyPlayInfo: ContentPlayInfo;
+}
+
+export interface ContentPlayInfo {
+  contentId: number;
+  episodeId: number;
+  categoryType: ContentCategoryType;
+  playTimeSecond: number;
+  profileIconUrl: string;
+  profileUrlLinkKey: string;
+  commonMediaViewInfo: CommonMediaViewInfo;
+  episodeVideoInfo?: EpisodeVideoInfo;
+  episodeWebtoonInfo?: EpisodeWebtoonInfo;
+}
+
+export interface CommonMediaViewInfo {
+  likeCount: number;
+  isLike: boolean;
+  dislikeCount: number;
+  isDisLike: boolean;
+  commentCount: number;
+  isBookmark: boolean;
+  isReport: boolean;
+}
+
+export interface EpisodeVideoInfo {
+  likeCount: number;
+  videoSourceFileInfo: VideoFileInfo;
+  subTitleFileInfos: VideoFileInfo[];
+  dubbingFileInfos: VideoFileInfo[];
+}
+
+export interface EpisodeWebtoonInfo {
+  likeCount: number;
+  webtoonSourceUrlList: WebtoonSourceInfo[];
+}
+
+export interface WebtoonSourceInfo {
+  webtoonLanguageType: number;
+  webtoonSourceUrls: string[];
+  webtoonSourceNames: string[];
+}
+
+export const sendPlayButton = async (payload: PlayButtonReq): Promise<ResponseAPI<PlayButtonRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<PlayButtonRes>>('/Content/playButton', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`PlayButtonRes Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error calling playButton API:', error);
+    throw new Error('Failed to execute playButton. Please try again.');
+  }
+};
+export const sendPlay = async (payload: PlayButtonReq): Promise<ResponseAPI<PlayButtonRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<PlayButtonRes>>('/Content/play', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`PlayRes Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error calling play API:', error);
+    throw new Error('Failed to execute play. Please try again.');
+  }
+};
+export interface RecordPlayReq {
+  episodeRecordPlayInfo: {
+    contentId: number;
+    episodeId: number;
+    categoryType: number;
+    playTimeSecond: number;
+  };
+}
+
+export interface RecordPlayRes {}
+export const sendRecordPlay = async (payload: RecordPlayReq): Promise<ResponseAPI<RecordPlayRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<RecordPlayRes>>('/api/v1/Content/recordPlay', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`RecordPlayRes Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error calling recordPlay API:', error);
+    throw new Error('Failed to record play. Please try again.');
+  }
+};
