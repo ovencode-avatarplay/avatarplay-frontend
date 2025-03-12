@@ -86,7 +86,6 @@ const ContentSeriesDetail = ({id, type}: Props) => {
     data.isSingle = isSingle;
 
     if (isSingle) {
-      data.indexTab = eTabType.About;
       const dataGetContent: GetContentReq = {
         urlLinkKey: id,
       };
@@ -115,10 +114,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   };
 
   const genreList = data.dataMix?.genre?.split(',').map(v => v.trim());
-  console.log('genreStr : ', genreList);
-
   const genreStr = genreList?.join('&nbsp;&nbsp;/&nbsp;&nbsp;') || '';
-  console.log('genreStr : ', genreStr);
 
   const seasonCount = data.dataMix?.maxSeasonNo || 0;
   const seasonList = Array.from({length: seasonCount}, (_, i) => ({
@@ -234,14 +230,12 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               }
             }}
           >
-            {!data.isSingle && (
-              <li
-                className={cx(styles.tab, data.indexTab == eTabType.Episodes && styles.active)}
-                data-tab={eTabType.Episodes}
-              >
-                Episodes
-              </li>
-            )}
+            <li
+              className={cx(styles.tab, data.indexTab == eTabType.Episodes && styles.active)}
+              data-tab={eTabType.Episodes}
+            >
+              Episodes
+            </li>
             <li className={cx(styles.tab, data.indexTab == eTabType.About && styles.active)} data-tab={eTabType.About}>
               About
             </li>
@@ -251,55 +245,61 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           <section className={styles.tabContentSection}>
             {data.indexTab == eTabType.Episodes && (
               <>
-                <div className={styles.selectSeason}>
-                  <SelectBox
-                    value={seasonList?.[0]}
-                    options={seasonList}
-                    ArrowComponent={SelectBoxArrowComponent}
-                    ValueComponent={SelectBoxValueComponent}
-                    OptionComponent={SelectBoxOptionComponent}
-                    onChange={async id => {}}
-                    customStyles={{
-                      menuList: {
-                        borderRadius: '10px',
-                        border: '1px solid var(--Border-1, #EAECF0)',
-                        background: 'var(--White, #FFF)',
-                      },
-                      option: {
-                        padding: 0,
-                      },
-                      menu: {
-                        marginTop: '4px',
-                      },
-                    }}
-                  />
-                </div>
-
-                <ul className={styles.episodeList}>
-                  {data.dataEpisodes?.episodeList.map((one, index) => {
-                    const isFree = one.salesStarEa == 0;
-                    return (
-                      <li className={styles.item} key={`${data.season}_${one.episodeId}`}>
-                        <div className={styles.left}>
-                          <div className={styles.imgWrap}>
-                            <img className={styles.thumbnail} src={one.thumbnailUrl} alt="" />
-                            <img src={BoldLock.src} alt="" className={styles.iconLock} />
-                          </div>
-
-                          <div className={styles.name}>{`${one.episodeNo}.${one.episodeName}`}</div>
-                        </div>
-                        <div className={styles.right}>
-                          {!isFree && (
-                            <div className={styles.starWrap}>
-                              <img src={BoldStar.src} alt="" className={styles.iconStar} />
-                              <div className={styles.count}>{one.salesStarEa}</div>
-                            </div>
-                          )}
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
+                {!data.isSingle && (
+                  <div className={styles.selectSeason}>
+                    <SelectBox
+                      value={seasonList?.[0]}
+                      options={seasonList}
+                      ArrowComponent={SelectBoxArrowComponent}
+                      ValueComponent={SelectBoxValueComponent}
+                      OptionComponent={SelectBoxOptionComponent}
+                      onChange={async id => {}}
+                      customStyles={{
+                        menuList: {
+                          borderRadius: '10px',
+                          border: '1px solid var(--Border-1, #EAECF0)',
+                          background: 'var(--White, #FFF)',
+                        },
+                        option: {
+                          padding: 0,
+                        },
+                        menu: {
+                          marginTop: '4px',
+                        },
+                      }}
+                    />
+                  </div>
+                )}
+                {data.isSingle && (
+                  <ul className={styles.episodeList}>
+                    {[''].map((one, index) => {
+                      const isFree = data.dataMix?.salesStarEa == 0;
+                      return (
+                        <EpisodeComponent
+                          key={`${data.season}_${data.dataMix?.id}`}
+                          name={data.dataMix?.name}
+                          price={data.dataMix?.salesStarEa}
+                          thumbnailUrl={data.dataMix?.thumbnailUrl}
+                        />
+                      );
+                    })}
+                  </ul>
+                )}
+                {!data.isSingle && (
+                  <ul className={styles.episodeList}>
+                    {data.dataEpisodes?.episodeList.map((one, index) => {
+                      const isFree = one.salesStarEa == 0;
+                      return (
+                        <EpisodeComponent
+                          key={`${data.season}_${one.episodeId}`}
+                          name={`${one.episodeNo}.${one.episodeName}`}
+                          price={one.salesStarEa}
+                          thumbnailUrl={one.thumbnailUrl}
+                        />
+                      );
+                    })}
+                  </ul>
+                )}
               </>
             )}
 
@@ -348,3 +348,33 @@ const SelectBoxOptionComponent = (data: any, isSelected: boolean) => (
     </div>
   </>
 );
+
+type EpisodeComponentType = {
+  key: string;
+  thumbnailUrl: string;
+  name: string;
+  price: boolean;
+};
+const EpisodeComponent = ({key, thumbnailUrl, name, price}) => {
+  const isFree = price == 0;
+  return (
+    <li className={styles.item} key={key}>
+      <div className={styles.left}>
+        <div className={styles.imgWrap}>
+          <img className={styles.thumbnail} src={thumbnailUrl} alt="" />
+          <img src={BoldLock.src} alt="" className={styles.iconLock} />
+        </div>
+
+        <div className={styles.name}>{name}</div>
+      </div>
+      <div className={styles.right}>
+        {!isFree && (
+          <div className={styles.starWrap}>
+            <img src={BoldStar.src} alt="" className={styles.iconStar} />
+            <div className={styles.count}>{price}</div>
+          </div>
+        )}
+      </div>
+    </li>
+  );
+};
