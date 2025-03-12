@@ -18,6 +18,7 @@ import {
   BoldVolumeOff,
   BoldVolumeOn,
   LineArchive,
+  LineDashboard,
   LineScaleUp,
 } from '@ui/Icons';
 import {Avatar, Box, Modal} from '@mui/material';
@@ -48,6 +49,7 @@ import {
   sendFeedDisLike,
   sendFeedLike,
 } from '@/app/NetWork/CommonNetwork';
+import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 // export interface ViewInfo {
 //   id: number;
 //   mediaState: ContentCategoryType;
