@@ -51,19 +51,21 @@ const Splitters: React.FC<SplittersProps> = ({
               style={{width: placeholderWidth, maxWidth: calculateMaxWidth()}}
             ></div>
           ) : (
-            <div
-              key={index}
-              className={`${styles.splitterLabel} ${activeSplitter === index ? styles.activeSplitter : ''} ${
-                isDark ? styles.darkSplitterLabel : ''
-              } ${splitter.isDisabled ? styles.disabledSplitter : ''}`}
-              onClick={() => {
-                if (!splitter.isDisabled) {
-                  setActiveSplitter(index);
-                  if (onSelectSplitButton) onSelectSplitButton(index);
-                }
-              }}
-            >
-              {splitter.label}
+            <div className={styles.splitterItem}>
+              <div
+                key={index}
+                className={`${styles.splitterLabel} ${activeSplitter === index ? styles.activeSplitter : ''} ${
+                  isDark ? styles.darkSplitterLabel : ''
+                } ${splitter.isDisabled ? styles.disabledSplitter : ''}`}
+                onClick={() => {
+                  if (!splitter.isDisabled) {
+                    setActiveSplitter(index);
+                    if (onSelectSplitButton) onSelectSplitButton(index);
+                  }
+                }}
+              >
+                {splitter.label}
+              </div>
               {activeSplitter === index && (
                 <div className={`${styles.splitterDivider} ${isDark ? styles.darkDivider : ''}`}></div>
               )}

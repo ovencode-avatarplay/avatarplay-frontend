@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -6,24 +6,32 @@ import {Pagination} from 'swiper/modules';
 import styles from './ExploreFeaturedHeader.module.css';
 import {BannerUrlList} from '@/app/NetWork/ExploreNetwork';
 import Link from 'next/link';
-import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface ExploreFeaturedHeaderProps {
   items: BannerUrlList[];
 }
 
 const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) => {
+  useEffect(() => {
+    const paginationElement = document.querySelector(`.${styles.customPagination}`);
+    if (paginationElement) {
+      paginationElement.classList.add('swiper-pagination'); // Swiper가 인식하도록 클래스 추가
+    }
+  }, []);
+
   return (
     <div className={styles.swiperContainer}>
+      {/* Swiper */}
       <Swiper
-        spaceBetween={'11px'} // 아이템 간격
+        spaceBetween={11} // 아이템 간격
         slidesPerView={1.08}
         centeredSlides={true}
         grabCursor={true}
         pagination={{
+          el: `.${styles.customPagination}`, // Swiper가 pagination을 제대로 인식할 수 있도록 설정
           clickable: true,
           renderBullet: (index, className) =>
-            `<span class="${className}" style="background-color: ${index > -1 ? 'white' : ''};"></span>`,
+            `<span class="${className} ${styles.paginationBullet} ${index > -1 ? styles.selected : ''}"></span>`,
         }}
         modules={[Pagination]}
       >
@@ -35,7 +43,6 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
                 style={{
                   background: `url(${item.imageUrl}) `,
                   backgroundPosition: 'center',
-                  // backgroundSize: '100% auto',
                   backgroundRepeat: 'no-repeat',
                   backgroundAttachment: 'fixed',
                 }}
@@ -49,6 +56,9 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
           </SwiperSlide>
         ))}
       </Swiper>
+
+      {/* Pagination 요소 추가 */}
+      <div className={`${styles.customPagination} swiper-pagination`}></div>
     </div>
   );
 };

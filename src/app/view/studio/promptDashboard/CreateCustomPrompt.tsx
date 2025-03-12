@@ -281,7 +281,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
               shapeType="square"
               checked={previewOn}
               onToggle={setPreviewOn}
-              label={getLocalizedText('common', 'common_button_preview')}
+              label={getLocalizedText('Common', 'common_button_preview')}
             />
             <button className={styles.settingButton} onClick={() => setPreviewOptionOpen(!previewOptionOpen)}>
               <img className={styles.settingIcon} src={LineSetting.src} />

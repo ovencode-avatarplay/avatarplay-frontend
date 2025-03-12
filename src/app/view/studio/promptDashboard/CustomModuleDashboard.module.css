@@ -72,6 +72,8 @@
 
 .customModuleItem
 {
+    cursor: pointer;
+
     display: flex;
     height: 46px;
     padding: 14px 12px;
