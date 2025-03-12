@@ -249,7 +249,7 @@ const UserDropdown = () => {
 
   return (
     <>
-      <DndButton onClick={() => routeProfile} onLongClick={() => dataUserDropDown.onClickLong()}>
+      <DndButton onClick={() => routeProfile()} onLongClick={() => dataUserDropDown.onClickLong()}>
         <Badge
           style={{padding: '12px 25px', margin: '12px -25px'}}
           overlap="circular"
@@ -259,7 +259,7 @@ const UserDropdown = () => {
           <Avatar
             alt={auth?.user?.email || ''}
             src={dataProfile.currentProfile?.iconImageUrl || ''}
-            onClick={routeProfile}
+            // onClick={routeProfile}
             className={styles.avatar}
           />
         </Badge>
