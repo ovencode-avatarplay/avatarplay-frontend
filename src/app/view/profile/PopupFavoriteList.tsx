@@ -93,7 +93,9 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
     // console.log(bookmarkList?.data.);
   };
 
-  const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll?: boolean) => {};
+  const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll?: boolean) => {
+    refreshList();
+  };
 
   const isEmptyTab = false;
   return (
@@ -255,7 +257,7 @@ const TabContentComponent = ({
             <CharacterComponent
               isMine={isMine}
               itemInfo={one}
-              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.id + '?from=""')}
+              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
             />
           );
