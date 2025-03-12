@@ -71,6 +71,7 @@ import SharePopup from '@/components/layout/shared/SharePopup';
 import {deleteFeed, FeedInfo, PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {
+  CharacterIP,
   GetCharacterInfoReq,
   GetCharacterInfoRes,
   sendDeleteCharacter,
@@ -2385,6 +2386,8 @@ export type ChannelComponentType = {
 };
 
 export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ChannelComponentType) => {
+  const isOriginal = itemInfo.characterIP == CharacterIP.Original;
+  const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
     <Link href={urlLinkThumbnail}>
       <li className={styles.item} key={itemInfo?.id}>
@@ -2408,22 +2411,27 @@ export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
           </div>
         </div>
         <div className={styles.titleWrap}>
-          <div className={styles.title}>{itemInfo?.name}</div>
-          <img
-            src={BoldMenuDots.src}
-            alt=""
-            className={styles.iconSetting}
-            onClick={e => {
-              e.preventDefault();
-              e.stopPropagation();
-              const dataContextMenu = {
-                id: itemInfo.id,
-                isPin: itemInfo?.isPinFix || false,
-                isSettingOpen: true,
-              };
-              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-            }}
-          />
+          <div className={styles.left}>
+            <div className={styles.name}>{itemInfo?.name}</div>
+            <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
+          </div>
+          <div className={styles.right}>
+            <img
+              src={BoldMenuDots.src}
+              alt=""
+              className={styles.iconSetting}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                const dataContextMenu = {
+                  id: itemInfo.id,
+                  isPin: itemInfo?.isPinFix || false,
+                  isSettingOpen: true,
+                };
+                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+              }}
+            />
+          </div>
         </div>
       </li>
     </Link>
@@ -2467,26 +2475,30 @@ export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
           </div>
         </div>
         <div className={styles.titleWrap}>
-          <div className={styles.title}>{itemInfo?.name}</div>
-          <img
-            src={BoldMenuDots.src}
-            alt=""
-            className={styles.iconSetting}
-            onClick={e => {
-              e.preventDefault();
-              e.stopPropagation();
+          <div className={styles.left}>
+            <div className={styles.title}>{itemInfo?.name}</div>
+          </div>
+          <div className={styles.right}>
+            <img
+              src={BoldMenuDots.src}
+              alt=""
+              className={styles.iconSetting}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
 
-              const isSingle = itemInfo?.contentType == ContentType.Single;
+                const isSingle = itemInfo?.contentType == ContentType.Single;
 
-              const dataContextMenu = {
-                id: itemInfo.urlLinkKey,
-                isPin: itemInfo?.isPinFix || false,
-                isSettingOpen: true,
-                isSingle: isSingle,
-              };
-              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-            }}
-          />
+                const dataContextMenu = {
+                  id: itemInfo.urlLinkKey,
+                  isPin: itemInfo?.isPinFix || false,
+                  isSettingOpen: true,
+                  isSingle: isSingle,
+                };
+                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+              }}
+            />
+          </div>
         </div>
       </li>
     </Link>
@@ -2501,6 +2513,8 @@ export type CharacterComponentType = {
 };
 
 export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: CharacterComponentType) => {
+  const isOriginal = itemInfo.characterIP == CharacterIP.Original;
+  const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
     <Link href={urlLinkThumbnail}>
       <li className={styles.item} key={itemInfo?.id}>
@@ -2530,23 +2544,28 @@ export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCo
           </div>
         </div>
         <div className={styles.titleWrap}>
-          <div className={styles.title}>{itemInfo?.name}</div>
-          <img
-            src={BoldMenuDots.src}
-            alt=""
-            className={styles.iconSetting}
-            onClick={e => {
-              e.preventDefault();
-              e.stopPropagation();
+          <div className={styles.left}>
+            <div className={styles.name}>{itemInfo?.name}</div>
+            <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
+          </div>
+          <div className={styles.right}>
+            <img
+              src={BoldMenuDots.src}
+              alt=""
+              className={styles.iconSetting}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
 
-              const dataContextMenu = {
-                id: itemInfo.id,
-                isPin: itemInfo?.isPinFix || false,
-                isSettingOpen: true,
-              };
-              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-            }}
-          />
+                const dataContextMenu = {
+                  id: itemInfo.id,
+                  isPin: itemInfo?.isPinFix || false,
+                  isSettingOpen: true,
+                };
+                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+              }}
+            />
+          </div>
         </div>
       </li>
     </Link>
@@ -2592,22 +2611,26 @@ export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContent
           </div>
         </div>
         <div className={styles.titleWrap}>
-          <div className={styles.title}>{feedInfo?.description}</div>
-          <img
-            src={BoldMenuDots.src}
-            alt=""
-            className={styles.iconSetting}
-            onClick={e => {
-              e.preventDefault();
-              e.stopPropagation();
-              const dataContextMenu = {
-                id: feedInfo.urlLinkKey,
-                isPin: feedInfo?.isPinFix || false,
-                isSettingOpen: true,
-              };
-              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-            }}
-          />
+          <div className={styles.left}>
+            <div className={styles.title}>{feedInfo?.description}</div>
+          </div>
+          <div className={styles.right}>
+            <img
+              src={BoldMenuDots.src}
+              alt=""
+              className={styles.iconSetting}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                const dataContextMenu = {
+                  id: feedInfo.urlLinkKey,
+                  isPin: feedInfo?.isPinFix || false,
+                  isSettingOpen: true,
+                };
+                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+              }}
+            />
+          </div>
         </div>
       </li>
     </Link>
