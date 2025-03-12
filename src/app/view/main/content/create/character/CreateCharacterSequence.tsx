@@ -617,7 +617,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 {characterOptions.hairColors.map((color, index) => (
                   <CustomHashtag
                     key={color.label}
-                    text={color.label}
+                    text={getLocalizedText(Common, color.label)}
                     onClickAction={() => handleOptionSelect('hairColor', index)}
                     isSelected={selectedOptions.hairColor === index}
                     color={color.image}
@@ -860,14 +860,14 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       }
                       onClick={() => {}}
                       image={
-                        option.key !== 'hairColor'
+                        option.key !== 'hairColor' && option.key !== 'clothingColor'
                           ? getImgLoc(
                               option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image,
                             )
                           : ''
                       }
                       color={
-                        option.key === 'hairColor'
+                        option.key === 'hairColor' || option.key === 'clothingColor'
                           ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image
                           : undefined // 다른 경우에는 color를 전달하지 않음
                       }

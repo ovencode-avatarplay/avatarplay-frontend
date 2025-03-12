@@ -4,6 +4,7 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import {CharacterMediaInfo} from '@/app/NetWork/CharacterNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 interface Props {
   mediaItems: CharacterMediaInfo[];
@@ -105,7 +106,9 @@ const CharacterCreateMedia: React.FC<Props> = ({
         <div className={styles.mediaInfoButton}>
           <img className={styles.mediaInfoIcon} src={BoldInfo.src} />
         </div>
-        <div className={styles.mediaInfoDecs}>{getLocalizedText(Header, 'createcharacter015_desc_001')}</div>
+        <div className={styles.mediaInfoDecs}>
+          {formatText(getLocalizedText(Header, 'createcharacter015_desc_001'))}
+        </div>
       </div>
       <div className={styles.mediaItemArea}>
         <div className={styles.mediaButtonArea}>

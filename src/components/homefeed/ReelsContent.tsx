@@ -31,6 +31,7 @@ import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainCha
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
+import DrawerDonation from '@/app/view/main/content/create/common/DrawerDonation';
 import {followProfile} from '@/app/NetWork/ProfileNetwork';
 import {
   bookmark,
@@ -64,6 +65,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isFollow, setIsFollow] = useState(item.isFollowing);
+  const [isDonation, setDonation] = useState(false);
   const [isLike, setIsLike] = useState(item.isLike);
   const [isDisLike, setIsDisLike] = useState(item.isDisLike);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -115,6 +117,15 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const handleVideoProgress = (playedSeconds: number) => {
     setVideoProgress(playedSeconds);
   };
+
+  const handleDonation = () => {
+    setDonation(true);
+  };
+
+  const handleDonationclose = () => {
+    setDonation(false);
+  };
+
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
       // if (isDisLike == true) {
@@ -424,7 +435,12 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
           {/* CTA Buttons */}
           <div className={styles.ctaButtons}>
-            <div className={styles.textButtons} onClick={() => {}}>
+            <div
+              className={styles.textButtons}
+              onClick={() => {
+                handleDonation();
+              }}
+            >
               <img src={BoldReward.src} className={styles.button}></img>
             </div>
             <div
@@ -519,6 +535,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           </SwiperSlide>
         )}
       </Swiper>
+      <DrawerDonation isOpen={isDonation} onClose={handleDonationclose} />
       <Comment
         contentId={item.id}
         isOpen={isCommentOpen}

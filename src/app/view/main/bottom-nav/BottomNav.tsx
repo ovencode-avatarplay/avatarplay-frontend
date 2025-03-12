@@ -13,7 +13,7 @@ import CreateWidget from '../content/create/CreateWidget';
 import SelectProfileWidget from '../../profile/SelectProfileWidget';
 import {getLocalizedLink, isLogined} from '@/utils/UrlMove';
 import {useDispatch, useSelector} from 'react-redux';
-import {Add_Button, LinePlus} from '@ui/Icons';
+import {Add_Button, BoldHome, LinePlus} from '@ui/Icons';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {RootState} from '@/redux-store/ReduxStore';
 import UserDropdown from '@/components/layout/shared/UserDropdown';
@@ -222,7 +222,7 @@ export default function BottomNav() {
                     }
                   }}
                 >
-                  {button.icon}
+                  <img className={styles.buttonIconPlus} src={'/ui/Icons/Custom/Add_Button.svg'} />
                 </button>
               );
             }

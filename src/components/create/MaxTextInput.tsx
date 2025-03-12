@@ -178,7 +178,9 @@ const MaxTextInput: React.FC<Props> = ({
         style={style}
       >
         <textarea
-          className={`${styles.inputPrompt} ${hasError ? styles.inputError : ''}`}
+          className={`${styles.inputPrompt} ${hasError ? styles.inputError : ''} ${
+            promptValue !== '' ? styles.textExist : ''
+          }`}
           placeholder={formattedPlaceholder || ''}
           value={promptValue}
           onChange={handleInput}

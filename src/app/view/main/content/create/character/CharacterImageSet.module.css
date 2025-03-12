@@ -70,6 +70,8 @@
     
     background-color: var(--Neutral-500, #9AA0A6);
     border-radius: 8px;
+
+    cursor: pointer;
 }
 
 .lockIcon
@@ -116,7 +118,7 @@
     font-weight: 700;
     line-height: 12px; /* 100% */
     
-    
+    cursor: pointer;
 }
 
 .imageCountButton.selected

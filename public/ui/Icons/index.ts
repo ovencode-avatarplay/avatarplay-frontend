@@ -37,6 +37,7 @@ import BoldPin from "./Bold/Pin.svg";
 import BoldPlay from "./Bold/Play.svg";
 import BoldProfile from "./Bold/Profile.svg";
 import BoldRadioButtonSelected from "./Bold/Radio_Button_Selected.svg";
+import BoldRadioButtonSelectedBlack from "./Bold/Radio_Button_Selected_Black.svg";
 import BoldRadioButtonSubtract from "./Bold/Radio_Button_Subtract.svg";
 import BoldRadioButton from "./Bold/Radio_Button.svg";
 import BoldRuby from "./Bold/Ruby.svg";
@@ -201,6 +202,7 @@ export {
   BoldPlay,
   BoldProfile,
   BoldRadioButtonSelected,
+  BoldRadioButtonSelectedBlack,
   BoldRadioButtonSubtract,
   BoldRadioButton,
   BoldRuby,
