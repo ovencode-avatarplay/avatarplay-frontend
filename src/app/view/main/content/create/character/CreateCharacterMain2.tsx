@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 
 // publish가 끝나고 다른곳으로 이동하기
 import {useRouter} from 'next/navigation';
-import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {getBackUrl, getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 
 import styles from './CreateCharacterMain2.module.css';
 import {BoldMixture, LineAIImage, LineDashboard, LineEdit, LineUpload} from '@ui/Icons';
@@ -743,6 +743,16 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
     );
   };
 
+  const routerBack = () => {
+    // you can get the prevPath like this
+    const prevPath = getBackUrl();
+    if (!prevPath || prevPath == '') {
+      router.replace(getLocalizedLink('/main/homefeed'));
+    } else {
+      router.replace(prevPath);
+    }
+  };
+
   return (
     <>
       <div className={styles.characterContainer}>
@@ -861,7 +871,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
               onClick: () => {
                 setSuccessPopupOpen(false);
                 const urlLinkKey = '';
-                router.replace(getLocalizedLink('/profile/' + urlLinkKey + "?from=''&tab=Character"));
+                routerBack();
+                // router.replace(getLocalizedLink('/profile/' + urlLinkKey + "?from=''&tab=Character"));
 
                 // pushLocalizedRoute('/studio/character', router);
               },
