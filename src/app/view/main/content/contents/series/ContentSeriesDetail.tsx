@@ -470,6 +470,15 @@ type PopupPurchaseType = {
   onClose: () => void;
 };
 const PopupPurchase = ({price, contentId, episodeId, contentType, onClose}: PopupPurchaseType) => {
+  const [data, setData] = useState<{isOpenNotEnoughStars: boolean}>({
+    isOpenNotEnoughStars: false,
+  });
+
+  const openPopupNotEnoughStars = () => {
+    data.isOpenNotEnoughStars = true;
+    setData({...data});
+  };
+
   const onPurchase = async () => {
     const dataBuyReq: BuyContentEpisodeReq = {
       contentId: contentId,
@@ -533,6 +542,52 @@ const PopupPurchase = ({price, contentId, episodeId, contentType, onClose}: Popu
           </button>
           <button className={styles.watch} onClick={onPurchase}>
             Watch
+          </button>
+        </div>
+      </section>
+      {data.isOpenNotEnoughStars && (
+        <PopupNotEnoughStars
+          onClose={() => {
+            data.isOpenNotEnoughStars = false;
+            setData({...data});
+          }}
+          onCharge={() => {
+            alert('충전 페이지로 이동 예정');
+          }}
+        />
+      )}
+    </Dialog>
+  );
+};
+
+type PopupNotEnoughStarsType = {
+  onClose: () => void;
+  onCharge: () => void;
+};
+const PopupNotEnoughStars = ({onClose, onCharge}: PopupNotEnoughStarsType) => {
+  return (
+    <Dialog
+      open={true}
+      onClose={onClose}
+      PaperProps={{
+        sx: {
+          borderRadius: '24px',
+          background: 'white',
+        },
+      }}
+    >
+      <section className={styles.popupNotEnoughStars}>
+        <div className={styles.title}>Not Enough Stars</div>
+        <div className={styles.description}>
+          You do not have enough stars. <br />
+          Please rechange your stars
+        </div>
+        <div className={styles.buttonWrap}>
+          <button className={styles.cancel} onClick={onClose}>
+            Cancel
+          </button>
+          <button className={styles.watch} onClick={onCharge}>
+            Charge
           </button>
         </div>
       </section>
