@@ -71,7 +71,7 @@ export const CharacterProfileDetailComponent = ({
       <section className={styles.characterMainImageWrap}>
         <img src={data.characterInfo?.mainImageUrl} alt="" className={styles.characterMainImage} />
         <div className={styles.infoWrap}>
-          <Link href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.profileId + '?from=""')}>
+          <Link href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.urlLinkKey + '?from=""')}>
             <div className={styles.left}>
               <img src={data.characterInfo?.pdProfileSimpleInfo.iconImageUrl} alt="" className={styles.profileMaker} />
               <div className={styles.name}>{data.characterInfo?.pdProfileSimpleInfo.name}</div>

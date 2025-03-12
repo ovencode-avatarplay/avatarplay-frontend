@@ -134,6 +134,7 @@ export enum eTabCharacterOtherType {
 }
 export enum eTabChannelType {
   Feed,
+  Info = 90,
   Contents = 1,
   Character = 3,
   Game,
@@ -420,7 +421,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         return;
       }
       resProfileTabInfo = {dataResPdInfo: resPdInfo?.data};
-    } else if (isOtherChannel && indexTab == eTabChannelOtherType.Info) {
+    } else if (isChannel && indexTab == eTabChannelOtherType.Info) {
       const resChannelInfo = await getChannelInfo({channelProfileId: profileId});
       if (resChannelInfo?.resultCode != 0) {
         console.error('api error : ', resChannelInfo?.resultMessage);
@@ -612,7 +613,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       else if (data.indexTab == eTabChannelType.Contents) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentInfoList?.length;
       } else if (data.indexTab == eTabChannelOtherType.Info) {
-        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
+        isEmptyTab = false;
       } else if (data.indexTab == eTabChannelType.Character) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList?.length;
       } else {
@@ -2215,7 +2216,7 @@ const TabContentComponent = ({
             <CharacterComponent
               isMine={isMine}
               itemInfo={one}
-              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.id + '?from=""')}
+              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
             />
           );
