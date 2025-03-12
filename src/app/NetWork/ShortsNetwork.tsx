@@ -64,6 +64,7 @@ export interface FeedInfo {
   characterProfileUrl: string;
   createAt?: string;
   profileUrlLinkKey: string;
+  title: string;
 }
 
 export interface CreateFeedReq {

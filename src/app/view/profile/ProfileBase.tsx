@@ -93,11 +93,11 @@ import {CharacterProfileDetailComponent} from './ProfileDetail';
 import PopupFriends from './PopupFriends';
 
 export enum eTabCommonType {
-  Feed,
-  Character,
-  Channel,
-  Contents,
-  Game,
+  Feed = 1,
+  Character = 3,
+  Channel = 4,
+  Contents = 2,
+  Game = 0,
 }
 
 export enum eTabPDType {
@@ -336,7 +336,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   const getTabInfo = (
     typeProfile: ProfileType,
   ): ((
-    profileId: number,
+    profileUrlLinkKey: string,
     tabIndex: number,
     indexSort: ExploreSortType,
     indexFilterMedia: FeedMediaType,
@@ -350,7 +350,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     } else if (typeProfile === ProfileType.Channel) {
       return getProfileCharacterTabInfo;
     } else {
-      return async (profileId: number, tabType: PdProfileTabType) => {
+      return async (profileUrlLinkKey: string, tabType: PdProfileTabType) => {
         return null;
       };
     }
@@ -431,7 +431,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       if (indexTab == eTabPDType.Character) {
         console.trace('isRefreshAll : ', isRefreshAll);
         resProfileTabInfo = await getTabInfo(profileType)(
-          profileId,
+          urlLinkKey,
           indexTab,
           data.filterCluster?.indexSort || 0,
           data.filterCluster?.indexFilterCharacter || 0,
@@ -440,7 +440,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         );
       } else {
         resProfileTabInfo = await getTabInfo(profileType)(
-          profileId,
+          urlLinkKey,
           indexTab,
           data?.filterCluster.indexSort || 0,
           data?.filterCluster.indexFilterMedia || 0,
@@ -933,6 +933,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               }}
               profileTabInfo={data.profileTabInfo}
               filterCluster={data.filterCluster}
+              profileUrlLinkKey={urlLinkKey}
             />
           </div>
         </section>
@@ -1300,6 +1301,7 @@ type TabContentProps = {
   };
 
   filterCluster: FilterClusterType;
+  profileUrlLinkKey: string;
   onRefreshTab: (isRefreshAll: boolean) => void;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
@@ -1988,6 +1990,7 @@ export const TabContentComponentWrap = ({
   profileTabInfo,
   onRefreshTab,
   filterCluster,
+  profileUrlLinkKey,
 }: TabContentProps) => {
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
     getUserType(isMine, profileType);
@@ -2042,6 +2045,7 @@ export const TabContentComponentWrap = ({
         onRefreshTab={onRefreshTab}
         filterCluster={filterCluster}
         onOpenContentMenu={onOpenContentMenu}
+        profileUrlLinkKey={profileUrlLinkKey}
       />
       <ContentSetting
         onClose={() => {
@@ -2141,6 +2145,7 @@ const TabContentComponent = ({
   filterCluster,
   onRefreshTab,
   onOpenContentMenu,
+  profileUrlLinkKey,
 }: TabContentProps) => {
   const {ref: observerRef, inView} = useInView();
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
@@ -2187,7 +2192,7 @@ const TabContentComponent = ({
                 isMine={isMine}
                 onOpenContentMenu={onOpenContentMenu}
                 urlLinkThumbnail={
-                  getLocalizedLink(`/profile/feed/` + profileId) +
+                  getLocalizedLink(`/profile/feed/` + profileUrlLinkKey) +
                   `?type=${profileType}&idContent=${one.id}&feedMediaType=${filterCluster.indexFilterMedia}&feedSortType=${filterCluster.indexSort}`
                 }
               />
@@ -2612,8 +2617,8 @@ export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContent
         </div>
         <div className={styles.titleWrap}>
           <div className={styles.left}>
-            <div className={styles.name}>{feedInfo?.name}</div>
-            <div className={(!!feedInfo?.name || '') && styles.name}>{feedInfo?.description}</div>
+            <div className={styles.name}>{feedInfo?.title}</div>
+            <div className={(!!feedInfo?.title || '') && styles.name}>{feedInfo?.description}</div>
           </div>
           <div className={styles.right}>
             <img

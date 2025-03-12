@@ -17,7 +17,7 @@ type Props = {
 const PageFeedView = ({searchParams}: Props) => {
   const router = useRouter();
   const query = useParams();
-  const id = parseInt(query?.id?.[0] || '0');
+  const id = query?.id?.[0] || '0';
   const [data, setData] = useState(() => ({
     id: id,
   }));

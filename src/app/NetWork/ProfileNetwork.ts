@@ -194,7 +194,7 @@ export interface GetPdTabInfoeReq {
   feedMediaType: FeedMediaType;
   feedSortType: ExploreSortType;
   languageType: string;
-  profileId: number;
+  profileUrlLinkKey: string;
   tabType: PdProfileTabType;
   page: PaginationRequest;
 }
@@ -219,7 +219,7 @@ export interface GetPdTabInfoeRes {
 }
 
 export const getProfilePdTabInfo = async (
-  profileId: number,
+  profileUrlLinkKey = '',
   tabType: PdProfileTabType,
   feedSortType: ExploreSortType = ExploreSortType.Newest,
   feedMediaType: FeedMediaType = FeedMediaType.Total,
@@ -230,7 +230,7 @@ export const getProfilePdTabInfo = async (
     feedSortType: feedSortType,
     feedMediaType: feedMediaType,
     languageType: getCurrentLanguage(),
-    profileId: profileId,
+    profileUrlLinkKey: profileUrlLinkKey,
     tabType: tabType,
     page: {
       offset: offset,
@@ -254,7 +254,7 @@ export interface GetCharacterTabInfoeReq {
   feedMediaType: FeedMediaType;
   feedSortType: ExploreSortType;
   languageType: string;
-  profileId: number;
+  profileUrlLinkKey: string;
   tabType: CharacterProfileTabType;
   page: PaginationRequest;
 }
@@ -276,7 +276,7 @@ export interface GetCharacterTabInfoeRes {
 }
 
 export const getProfileCharacterTabInfo = async (
-  profileId: number,
+  profileUrlLinkKey: string = '',
   tabType: CharacterProfileTabType,
   feedSortType: ExploreSortType = ExploreSortType.Newest,
   feedMediaType: FeedMediaType = FeedMediaType.Total,
@@ -287,7 +287,7 @@ export const getProfileCharacterTabInfo = async (
     feedMediaType: feedMediaType,
     feedSortType: feedSortType,
     languageType: getCurrentLanguage(),
-    profileId: profileId,
+    profileUrlLinkKey: profileUrlLinkKey,
     tabType: tabType,
     page: {
       offset: offset,

@@ -33,18 +33,18 @@ interface ReelsLayoutProps {
   initialFeed?: FeedInfo; // 특정 URL 키를 통해 전달받은 초기 피드
   recommendState?: RecommendState;
 
-  profileId?: number;
   profileType?: ProfileType;
   feedSortType?: ExploreSortType;
   feedMediaType?: FeedMediaType;
   idContent?: number;
+  profileUrlLinkKey?: string;
 }
 
 const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   initialFeed,
   recommendState = 0,
 
-  profileId = 0,
+  profileUrlLinkKey = '',
   profileType = ProfileType.PD,
   feedSortType = ExploreSortType.MostPopular,
   feedMediaType = FeedMediaType.Total,
@@ -61,7 +61,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const isSpecificProfile = profileId != 0;
+  const isSpecificProfile = !!profileUrlLinkKey;
 
   const Header = 'Home';
   const Common = 'Common';
@@ -93,10 +93,17 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       let result = null;
 
       if (isPD) {
-        result = await getProfilePdTabInfo(profileId || 0, PdProfileTabType.Feed, feedSortType, feedMediaType, 0, 1000);
+        result = await getProfilePdTabInfo(
+          profileUrlLinkKey,
+          PdProfileTabType.Feed,
+          feedSortType,
+          feedMediaType,
+          0,
+          1000,
+        );
       } else {
         result = await getProfileCharacterTabInfo(
-          profileId || 0,
+          profileUrlLinkKey,
           CharacterProfileTabType.Feed,
           feedSortType,
           feedMediaType,
