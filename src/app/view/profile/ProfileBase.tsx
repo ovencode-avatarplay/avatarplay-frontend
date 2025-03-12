@@ -136,7 +136,7 @@ export enum eTabCharacterOtherType {
 export enum eTabChannelType {
   Feed,
   Contents = 1,
-  Character,
+  Character = 3,
   Game,
 }
 
@@ -144,7 +144,7 @@ export enum eTabChannelOtherType {
   Feed,
   Info = 90,
   Contents = 1,
-  Character,
+  Character = 3,
   Game,
 }
 
