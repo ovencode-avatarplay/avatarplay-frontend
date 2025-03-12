@@ -43,7 +43,7 @@ const PageFeedView = ({searchParams}: Props) => {
         </div>
       </section>
       <ReelsLayout
-        profileId={id}
+        profileUrlLinkKey={id}
         profileType={profileType}
         feedMediaType={feedMediaType}
         feedSortType={feedSortType}
