@@ -21,14 +21,13 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
 
   return (
     <div className={styles.swiperContainer}>
-      {/* Swiper */}
       <Swiper
-        spaceBetween={11} // 아이템 간격
+        spaceBetween={'11px'} // 아이템 간격
         slidesPerView={1.08}
         centeredSlides={true}
         grabCursor={true}
         pagination={{
-          el: `.${styles.customPagination}`, // Swiper가 pagination을 제대로 인식할 수 있도록 설정
+          el: `.${styles.customPagination}`,
           clickable: true,
           renderBullet: (index, className) =>
             `<span class="${className} ${styles.paginationBullet} ${index > -1 ? styles.selected : ''}"></span>`,
@@ -37,12 +36,13 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
       >
         {items.map((item, index) => (
           <SwiperSlide className={styles.swiperItem} key={index}>
-            <Link key={index} href={item.imageLinkUrl}>
+            <Link className={styles.link} key={index} href={item.imageLinkUrl}>
               <div
                 className={styles.backImage}
                 style={{
                   background: `url(${item.imageUrl}) `,
                   backgroundPosition: 'center',
+                  backgroundSize: '100% auto',
                   backgroundRepeat: 'no-repeat',
                   backgroundAttachment: 'fixed',
                 }}
@@ -57,7 +57,6 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
         ))}
       </Swiper>
 
-      {/* Pagination 요소 추가 */}
       <div className={`${styles.customPagination} swiper-pagination`}></div>
     </div>
   );
