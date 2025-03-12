@@ -1,7 +1,6 @@
 'use client';
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-
 import {Box, Button, Drawer} from '@mui/material';
 import ProfileTopEditMenu from './ProfileTopEditMenu';
 import ProfileInfo from './ProfileInfo';
@@ -2612,7 +2611,8 @@ export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContent
         </div>
         <div className={styles.titleWrap}>
           <div className={styles.left}>
-            <div className={styles.title}>{feedInfo?.description}</div>
+            <div className={styles.name}>{feedInfo?.name}</div>
+            <div className={(!!feedInfo?.name || '') && styles.name}>{feedInfo?.description}</div>
           </div>
           <div className={styles.right}>
             <img
