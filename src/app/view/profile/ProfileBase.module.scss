@@ -38,7 +38,7 @@
     flex: 1;
     padding: 8px 20px;
     border-radius: 8px;
-    outline: 1px solid var(--Border-1, #EAECF0); 
+    outline: 1px solid var(--Border-1, #EAECF0);
     outline-offset: -1px;
 
     color: var(--Black, #000);
@@ -275,7 +275,7 @@
         filter: brightness(0) saturate(100%);
         width: 16px;
         height: 16px;
-    
+
       }
     }
 
@@ -622,7 +622,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            
+
           }
 
           .pin {
@@ -838,7 +838,7 @@
 .line {
   position: absolute;
   height: 1px;
-  bottom: 0;
+  bottom: -1px;
 
   width: calc(100%);
   background: #EAECF0;
@@ -940,7 +940,7 @@
       .optionWrap {
         display: flex;
         justify-content: space-between;
-      
+
 
         .label {
           color: var(--Black, #000);
