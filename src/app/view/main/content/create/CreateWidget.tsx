@@ -162,6 +162,9 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                     background: 'var(--White, #FFF)',
                     overflow: 'hidden',
                   },
+                  menuList: {
+                    maxHeight: '250px',
+                  },
                 }}
               />
             </div>
