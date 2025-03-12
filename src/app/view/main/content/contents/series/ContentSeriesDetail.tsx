@@ -277,9 +277,9 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                       return (
                         <EpisodeComponent
                           key={`${data.season}_${data.dataMix?.id}`}
-                          name={data.dataMix?.name}
-                          price={data.dataMix?.salesStarEa}
-                          thumbnailUrl={data.dataMix?.thumbnailUrl}
+                          name={data.dataMix?.name || ''}
+                          price={data.dataMix?.salesStarEa || 0}
+                          thumbnailUrl={data.dataMix?.thumbnailUrl || ''}
                         />
                       );
                     })}
