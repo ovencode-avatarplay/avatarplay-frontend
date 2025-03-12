@@ -26,7 +26,7 @@ const Main = ({children}: {children: ReactNode}) => {
       {children}
       <BottomNav />
       <DrawerContentDesc />
-      <DrawerCharacterDesc />
+      {/* <DrawerCharacterDesc /> */}
     </div>
   );
 };

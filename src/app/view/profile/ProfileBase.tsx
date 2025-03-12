@@ -1171,6 +1171,7 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
     option: (provided, state) => ({
       // 옵션 부분
       ...provided,
+      padding: 0,
       backgroundColor: state.isSelected ? '#ffffff' : 'transparent',
       color: 'black',
       ':active': {
