@@ -23,6 +23,8 @@ import {
 } from '@/app/NetWork/ProfileNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {getCharacterStateText} from '@/app/view/studio/characterDashboard/CharacterGridItem';
+import formatText from '@/utils/formatText';
+import getLocalizedText from '@/utils/getLocalizedText';
 enum RecommendState {
   Following = 1,
   ForYou = 0,
@@ -61,6 +63,8 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
   const isSpecificProfile = profileId != 0;
 
+  const Header = 'Home';
+  const Common = 'Common';
   const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
     try {
       const base64Payload = token.split('.')[1]; // payload 부분 추출
@@ -242,7 +246,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
                 pushLocalizedRoute('/main/homefeed', router, true, true);
               }}
             >
-              Following
+              {getLocalizedText(Header, 'home001_label_002')}
             </button>
             <button
               className={`${styles.tab} ${selectedTab === RecommendState.ForYou ? styles.active : ''}`}
@@ -252,7 +256,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
                 pushLocalizedRoute('/main/homefeed', router, true, true);
               }}
             >
-              For You
+              {getLocalizedText(Header, 'home001_label_001')}
             </button>
           </div>
         </>

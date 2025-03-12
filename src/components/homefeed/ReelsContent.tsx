@@ -10,6 +10,7 @@ import {
   BoldArchive,
   BoldComment,
   BoldDislike,
+  BoldImage,
   BoldLike,
   BoldMore,
   BoldPause,
@@ -20,9 +21,6 @@ import {
   BoldVolumeOff,
   BoldVolumeOn,
   LineArchive,
-  LineArrowDown,
-  LineArrowLeft,
-  LineFeatured,
   LineScaleUp,
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
@@ -35,6 +33,7 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
 import {bookmark, BookMarkReq, followProfile, InteractionType} from '@/app/NetWork/ProfileNetwork';
 import {CommentContentType} from '@/app/NetWork/CommonNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -65,6 +64,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const [isImageModal, setIsImageModal] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
+
+  const Header = 'Home';
+  const Common = 'Common';
+
   useEffect(() => {
     if (isActive) {
       setIsPlaying(true); // 활성화된 경우 자동 재생
@@ -359,7 +362,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 }}
               >
                 <span className={styles.username}>{item.characterProfileName}</span>
-                <span className={styles.sponsored}>Sponsored</span>
+                <span className={styles.sponsored}>{getLocalizedText(Header, 'home001_label_003')}</span>
               </div>
               <button
                 className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
@@ -369,7 +372,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   console.log('isfollow', isFollow);
                 }}
               >
-                Following
+                {getLocalizedText(Common, 'common_button_follow')}
               </button>
             </div>
             {item?.description && (
@@ -395,11 +398,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             )}
             {/* Video Info */}
             <div className={styles.videoInfo}>
-              {item.mediaState == 1 && <>Image</>}
+              {item.mediaState == 1 && (
+                <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
+                  <img className={styles.iconVideo} src={BoldImage.src}></img>
+                  {getLocalizedText(Common, 'common_filter_photo')}
+                </div>
+              )}
               {item.mediaState == 2 && (
                 <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
                   <img className={styles.iconVideo} src={BoldVideo.src}></img>
-                  Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
+                  {getLocalizedText(Common, 'common_filter_video')} · {currentProgress ? currentProgress : '0:00'}/
+                  {formatDuration(videoDuration)}
                 </div>
               )}
               <div>{formatTimeAgo(item.createAt ? item.createAt.toString() : '0')}</div>
