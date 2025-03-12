@@ -432,7 +432,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       if (indexTab == eTabPDType.Character) {
         console.trace('isRefreshAll : ', isRefreshAll);
         resProfileTabInfo = await getTabInfo(profileType)(
-          urlLinkKey,
+          data.urlLinkKey,
           indexTab,
           data.filterCluster?.indexSort || 0,
           data.filterCluster?.indexFilterCharacter || 0,
@@ -441,7 +441,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         );
       } else {
         resProfileTabInfo = await getTabInfo(profileType)(
-          urlLinkKey,
+          data.urlLinkKey,
           indexTab,
           data?.filterCluster.indexSort || 0,
           data?.filterCluster.indexFilterMedia || 0,
@@ -934,7 +934,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               }}
               profileTabInfo={data.profileTabInfo}
               filterCluster={data.filterCluster}
-              profileUrlLinkKey={urlLinkKey}
+              profileUrlLinkKey={data.urlLinkKey}
             />
           </div>
         </section>
