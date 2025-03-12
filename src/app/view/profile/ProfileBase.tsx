@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {Box, Button, Drawer} from '@mui/material';
 import ProfileTopEditMenu from './ProfileTopEditMenu';
 import ProfileInfo from './ProfileInfo';
@@ -91,6 +91,7 @@ import PopupPlaylist from './PopupPlaylist';
 import {ContentType, sendDeleteContent} from '@/app/NetWork/ContentNetwork';
 import {CharacterProfileDetailComponent} from './ProfileDetail';
 import PopupFriends from './PopupFriends';
+import useChangeParams from '@/utils/useChangeParams';
 
 export enum eTabCommonType {
   Feed = 1,
@@ -244,6 +245,7 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
 
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
+  const {changeParams, getParam} = useChangeParams();
   const searchParams = useSearchParams();
   const isNeedBackBtn = searchParams?.get('from'); // "from" 쿼리 파라미터 값 가져오기
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
@@ -333,6 +335,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       setData({...data});
     }
   }, [data.profileInfo?.profileInfo.description]); // 내용이 바뀔 때마다 검사
+
+  useLayoutEffect(() => {
+    data.indexTab = Number(getParam('indexTab')) || 0;
+    setData({...data});
+  }, []);
 
   const getTabInfo = (
     typeProfile: ProfileType,
@@ -875,6 +882,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               profileType={profileType}
               onTabChange={async indexTab => {
                 data.indexTab = indexTab;
+                changeParams('indexTab', indexTab);
                 await refreshProfileTab(data.profileId, data.indexTab);
                 setData({...data});
               }}

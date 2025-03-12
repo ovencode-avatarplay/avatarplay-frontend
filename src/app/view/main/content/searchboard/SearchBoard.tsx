@@ -103,14 +103,14 @@ const SearchBoard: React.FC = () => {
     },
   ];
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const search = getParam('search');
     const indexTab = getParam('indexTab');
     data.indexTab = Number(indexTab);
     setData({...data});
 
     if (search && ['All', 'Story', 'Character'].includes(search)) {
-      handleSearchChange(search);
+      handleSearchChange(search as 'All' | 'Story' | 'Character');
     }
   }, []);
   console.log('data : ', data);
