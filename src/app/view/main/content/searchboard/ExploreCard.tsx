@@ -98,7 +98,7 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
   return (
     <>
       <article className={`${styles.exploreCard} ${classType && getClassType(classType)}`}>
-        <Link href={getLocalizedLink('/profile/' + urlLinkKey)}>
+        <Link href={getLocalizedLink('/profile/' + urlLinkKey + "?from=''")}>
           <figure
             className={styles.exploreImage}
             style={{
