@@ -603,7 +603,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
             selectedValue={isFree == false ? 0 : 1}
             containterStyle={{gap: '0'}}
           ></CustomRadioButton>
-          <div style={{gap: '10px', display: 'flex', flexDirection: 'column'}}>
+          <div style={{gap: '10px', display: 'flex', flexDirection: 'column', width: '100%'}}>
             {isFree != false && (
               <div className={styles.inputBox}>
                 <img src={BoldStar.src} className={styles.starstar}></img>
