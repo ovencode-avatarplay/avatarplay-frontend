@@ -8,7 +8,10 @@ import {
   BoldAudioPlay,
   BoldDownloadMini,
   BoldLock,
+  BoldRadioButtonSquare,
+  BoldRadioButtonSquareSelected,
   BoldReward,
+  BoldRuby,
   BoldShare,
   BoldStar,
   LineArchive,
@@ -24,6 +27,8 @@ import {TextArea} from '@/app/view/profile/ProfileDetail';
 import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {
+  buyContentEpisode,
+  BuyContentEpisodeReq,
   ContentInfo,
   ContentType,
   GetContentReq,
@@ -36,6 +41,8 @@ import {
 import SharePopup from '@/components/layout/shared/SharePopup';
 import Link from 'next/link';
 import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/ProfileNetwork';
+import {Dialog} from '@mui/material';
+import {TurnedIn} from '@mui/icons-material';
 
 type Props = {
   type: ContentType;
@@ -54,10 +61,17 @@ const ContentSeriesDetail = ({id, type}: Props) => {
     indexTab: eTabType;
     // dataContent: GetContentRes | null;
     dataEpisodes: GetSeasonEpisodesRes | null;
-    dataMix?: Partial<GetSeasonEpisodesRes & ContentInfo>;
+    dataMix?: Partial<GetSeasonEpisodesRes & ContentInfo & {isSingleContentLock: boolean}>;
     season: number;
     isShareOpened: boolean;
     isSingle: boolean;
+
+    dataPurchase: {
+      isOpenPopupPurchase: boolean;
+      contentId: number;
+      episodeId: number;
+      price: number;
+    };
   }>({
     indexTab: eTabType.Episodes,
     // dataContent: null,
@@ -65,6 +79,13 @@ const ContentSeriesDetail = ({id, type}: Props) => {
     season: 1,
     isShareOpened: false,
     isSingle: false,
+
+    dataPurchase: {
+      isOpenPopupPurchase: false,
+      contentId: 0,
+      episodeId: 0,
+      price: 0,
+    },
   });
 
   const routerBack = () => {
@@ -95,6 +116,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
 
       if (resGetContent?.data) {
         data.dataMix = resGetContent?.data.contentInfo;
+        data.dataMix.isSingleContentLock = resGetContent?.data.isSingleContentLock;
       }
     } else {
       const seasonNo = data.season;
@@ -102,6 +124,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         urlLinkKey: id,
         seasonNo: seasonNo,
       };
+      console.log('data : ', data);
       const resGetSeasonEpisodes = await sendGetSeasonEpisodes(dataGetSeasonEpisodesReq);
       console.log('resGetSeasonEpisodes : ', resGetSeasonEpisodes.data);
       if (resGetSeasonEpisodes.data) {
@@ -119,7 +142,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   const seasonCount = data.dataMix?.maxSeasonNo || 0;
   const seasonList = Array.from({length: seasonCount}, (_, i) => ({
     value: `Season ${i + 1}`,
-    id: i,
+    id: i + 1,
   }));
   console.log(seasonList[0]);
 
@@ -248,12 +271,16 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                 {!data.isSingle && (
                   <div className={styles.selectSeason}>
                     <SelectBox
-                      value={seasonList?.[0]}
+                      value={seasonList?.[(data?.season || 1) - 1]}
                       options={seasonList}
                       ArrowComponent={SelectBoxArrowComponent}
                       ValueComponent={SelectBoxValueComponent}
                       OptionComponent={SelectBoxOptionComponent}
-                      onChange={async id => {}}
+                      onChange={async id => {
+                        data.season = id;
+                        setData({...data});
+                        refreshInfo();
+                      }}
                       customStyles={{
                         menuList: {
                           borderRadius: '10px',
@@ -273,13 +300,32 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                 {data.isSingle && (
                   <ul className={styles.episodeList}>
                     {[''].map((one, index) => {
-                      const isFree = data.dataMix?.salesStarEa == 0;
+                      const price = data.dataMix?.salesStarEa || 0;
+                      const isFree = price == 0;
+                      const isLock = data.dataMix?.isSingleContentLock || false;
+
                       return (
                         <EpisodeComponent
                           key={`${data.season}_${data.dataMix?.id}`}
                           name={data.dataMix?.name || ''}
                           price={data.dataMix?.salesStarEa || 0}
                           thumbnailUrl={data.dataMix?.thumbnailUrl || ''}
+                          isLock={data.dataMix?.isSingleContentLock || false}
+                          onClick={() => {
+                            if (isFree || !isLock) {
+                              //TODO : play처리
+                              alert('Play Single 처리예정');
+                              return;
+                            }
+
+                            //TODO 플레이 할수 없으면 구매처리
+                            data.dataPurchase.isOpenPopupPurchase = true;
+                            data.dataPurchase.contentId = data.dataMix?.contentId || 0;
+                            data.dataPurchase.episodeId = 0;
+                            data.dataPurchase.price = price;
+                            setData({...data});
+                            refreshInfo();
+                          }}
                         />
                       );
                     })}
@@ -289,12 +335,29 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                   <ul className={styles.episodeList}>
                     {data.dataEpisodes?.episodeList.map((one, index) => {
                       const isFree = one.salesStarEa == 0;
+                      const isLock = one.isLock;
                       return (
                         <EpisodeComponent
                           key={`${data.season}_${one.episodeId}`}
                           name={`${one.episodeNo}.${one.episodeName}`}
                           price={one.salesStarEa}
                           thumbnailUrl={one.thumbnailUrl}
+                          isLock={one.isLock}
+                          onClick={() => {
+                            if (isFree || !isLock) {
+                              //TODO : play처리
+                              alert('Play Series 처리예정');
+                              return;
+                            }
+
+                            //TODO 플레이 할수 없으면 구매처리
+                            data.dataPurchase.isOpenPopupPurchase = true;
+                            data.dataPurchase.contentId = data.dataMix?.contentId || 0;
+                            data.dataPurchase.episodeId = one.episodeId;
+                            data.dataPurchase.price = one.salesStarEa;
+                            setData({...data});
+                            refreshInfo();
+                          }}
                         />
                       );
                     })}
@@ -320,6 +383,17 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           setData(v => ({...v, isShareOpened: false}));
         }}
       ></SharePopup>
+      {data.dataPurchase.isOpenPopupPurchase && (
+        <PopupPurchase
+          contentId={data.dataPurchase.contentId}
+          episodeId={data.dataPurchase.episodeId}
+          price={data.dataPurchase.price}
+          onClose={() => {
+            data.dataPurchase.isOpenPopupPurchase = false;
+            setData({...data});
+          }}
+        />
+      )}
     </>
   );
 };
@@ -354,15 +428,17 @@ type EpisodeComponentType = {
   thumbnailUrl: string;
   name: string;
   price: number;
+  isLock: boolean;
+  onClick: () => void;
 };
-const EpisodeComponent = ({key, thumbnailUrl, name, price}: EpisodeComponentType) => {
+const EpisodeComponent = ({key, thumbnailUrl, name, price, isLock, onClick}: EpisodeComponentType) => {
   const isFree = price == 0;
   return (
-    <li className={styles.item} key={key}>
+    <li className={styles.item} key={key} onClick={onClick}>
       <div className={styles.left}>
         <div className={styles.imgWrap}>
           <img className={styles.thumbnail} src={thumbnailUrl} alt="" />
-          <img src={BoldLock.src} alt="" className={styles.iconLock} />
+          {isLock && <img src={BoldLock.src} alt="" className={styles.iconLock} />}
         </div>
 
         <div className={styles.name}>{name}</div>
@@ -376,5 +452,75 @@ const EpisodeComponent = ({key, thumbnailUrl, name, price}: EpisodeComponentType
         )}
       </div>
     </li>
+  );
+};
+
+type PopupPurchaseType = {
+  contentId: number;
+  episodeId: number;
+  price: number;
+  onClose: () => void;
+};
+const PopupPurchase = ({price, contentId, episodeId, onClose}: PopupPurchaseType) => {
+  const onPurchase = async () => {
+    const dataBuyReq: BuyContentEpisodeReq = {
+      contentId: contentId,
+      episodeId: episodeId,
+    };
+    const resBuy = await buyContentEpisode(dataBuyReq);
+    console.log('resBuy : ', resBuy);
+  };
+  return (
+    <Dialog
+      open={true}
+      onClose={onClose}
+      PaperProps={{
+        sx: {
+          borderRadius: '24px',
+          background: 'white',
+        },
+      }}
+    >
+      <section className={styles.popupPurchaseSection}>
+        <div className={styles.categoryWrap}>
+          <div className={styles.left}>
+            <div className={styles.category}>Balance</div>
+          </div>
+          <div className={styles.right}>
+            <div className={styles.balanceWrap}>
+              <img src={BoldRuby.src} alt="" />
+              <div className={styles.amount}>10.5k</div>
+            </div>
+            <div className={styles.balanceWrap}>
+              <img src={BoldStar.src} alt="" />
+              <div className={styles.amount}>10.5k</div>
+            </div>
+          </div>
+        </div>
+        <div className={styles.title}>{price} stars will be deducted</div>
+        <div className={styles.description}>Do you want to proceed?</div>
+
+        <div className={styles.dontshowWrap}>
+          <label htmlFor="dontshow">
+            <div className={styles.left}>
+              <input type="checkbox" name="dontshow" id="dontshow" onChange={e => {}} />
+              <img src={BoldRadioButtonSquareSelected.src} alt="" className={styles.iconOn} />
+              <img src={BoldRadioButtonSquare.src} alt="" className={styles.iconOff} />
+            </div>
+            <div className={styles.right}>
+              <div className={styles.dontshow}>Don’t show this pop-up anymore</div>
+            </div>
+          </label>
+        </div>
+        <div className={styles.buttonWrap}>
+          <button className={styles.cancel} onClick={onClose}>
+            Cancel
+          </button>
+          <button className={styles.watch} onClick={onPurchase}>
+            Watch
+          </button>
+        </div>
+      </section>
+    </Dialog>
   );
 };

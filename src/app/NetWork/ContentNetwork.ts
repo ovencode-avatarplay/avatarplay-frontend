@@ -54,6 +54,7 @@ export interface GetContentReq {
 export interface GetContentRes {
   profileUrlLinkKey: string;
   contentInfo: ContentInfo;
+  isSingleContentLock: boolean;
 }
 
 export const sendGetContent = async (payload: GetContentReq): Promise<ResponseAPI<GetContentRes>> => {
@@ -223,6 +224,7 @@ export interface SeasonEpisodeInfo {
   episodeName: string;
   thumbnailUrl: string;
   salesStarEa: number;
+  isLock: boolean;
 }
 
 export interface GetSeasonEpisodesRes {
@@ -350,5 +352,26 @@ export const sendDeleteEpisode = async (payload: DeleteEpisodeReq): Promise<Resp
   } catch (error) {
     console.error('Error deleting episode:', error);
     throw new Error('Failed to delete episode. Please try again.');
+  }
+};
+
+export interface BuyContentEpisodeReq {
+  contentId: number;
+  episodeId: number;
+}
+
+export interface BuyContentEpisodeRes {
+  contentId: number;
+  episodeId: number;
+}
+
+export const buyContentEpisode = async (payload: BuyContentEpisodeReq): Promise<ResponseAPI<DeleteEpisodeRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<BuyContentEpisodeRes>>('/Content/buyEpisode', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`buyContentEpisode Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error buyContentEpisode:', error);
+    throw new Error('Failed to buyContentEpisode. Please try again.');
   }
 };
