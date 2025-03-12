@@ -1398,7 +1398,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                 }}
                 customStyles={{
                   control: {
-                    width: '120px',
+                    width: '150px',
                     display: 'flex',
                     gap: '10px',
                   },
@@ -1483,7 +1483,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                 }}
                 customStyles={{
                   control: {
-                    width: '120px',
+                    width: '150px',
                     display: 'flex',
                     gap: '10px',
                   },
@@ -1585,7 +1585,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                 }}
                 customStyles={{
                   control: {
-                    width: '124px',
+                    width: '150px',
                     display: 'flex',
                     gap: '10px',
                   },
@@ -1672,7 +1672,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                 }}
                 customStyles={{
                   control: {
-                    width: '124px',
+                    width: '150px',
                     display: 'flex',
                     gap: '10px',
                   },
@@ -1762,7 +1762,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                 }}
                 customStyles={{
                   control: {
-                    width: '120px',
+                    width: '150px',
                     display: 'flex',
                     gap: '10px',
                   },
