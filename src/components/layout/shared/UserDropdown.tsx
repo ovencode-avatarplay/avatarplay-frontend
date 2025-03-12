@@ -247,75 +247,6 @@ const UserDropdown = () => {
     }
   };
 
-  type DndButtonProps = {
-    onClick: () => void;
-    onLongClick: () => void;
-    children: JSX.Element;
-  };
-  const DndButton = (props: DndButtonProps) => {
-    const {attributes, listeners, setNodeRef} = useDraggable({
-      id: 'draggable',
-    });
-
-    const mouseSensor = useSensor(MouseSensor, {
-      activationConstraint: {
-        delay: 2000, // 500ms 동안 누르면 드래그 활성화
-        tolerance: 5, // 살짝 움직여도 롱클릭 인정
-      },
-    });
-
-    const touchSensor = useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 2000, // 500ms 동안 터치 유지 시 드래그 활성화
-        tolerance: 5,
-      },
-    });
-
-    const sensors = useSensors(mouseSensor, touchSensor);
-
-    let longPressTimer: NodeJS.Timeout;
-    let isDragging = false; // 드래그 여부 확인
-
-    const handleMouseDown = () => {
-      longPressTimer = setTimeout(() => {
-        if (!isDragging) {
-          props.onLongClick();
-        }
-      }, 500);
-    };
-
-    const handleMouseUp = () => {
-      clearTimeout(longPressTimer);
-    };
-
-    const handleDragStart = () => {
-      isDragging = true;
-      clearTimeout(longPressTimer);
-    };
-
-    const handleDragEnd = () => {
-      isDragging = false;
-    };
-
-    return (
-      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <button
-          ref={setNodeRef}
-          {...listeners}
-          {...attributes}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onTouchStart={handleMouseDown}
-          onTouchEnd={handleMouseUp}
-          onClick={props.onClick} // 일반 클릭 처리
-          draggable="false"
-        >
-          {props.children}
-        </button>
-      </DndContext>
-    );
-  };
-
   return (
     <>
       <DndButton onClick={() => routeProfile} onLongClick={() => dataUserDropDown.onClickLong()}>
@@ -463,3 +394,73 @@ const UserDropdown = () => {
 };
 
 export default UserDropdown;
+
+type DndButtonProps = {
+  onClick: () => void;
+  onLongClick: () => void;
+  children: JSX.Element;
+};
+const DndButton = (props: DndButtonProps) => {
+  const {attributes, listeners, setNodeRef} = useDraggable({
+    id: 'draggable',
+  });
+
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      delay: 2000, // 500ms 동안 누르면 드래그 활성화
+      tolerance: 5, // 살짝 움직여도 롱클릭 인정
+    },
+  });
+
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 2000, // 500ms 동안 터치 유지 시 드래그 활성화
+      tolerance: 5,
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, touchSensor);
+
+  let longPressTimer: NodeJS.Timeout;
+  let isDragging = false; // 드래그 여부 확인
+
+  const handleMouseDown = () => {
+    longPressTimer = setTimeout(() => {
+      if (!isDragging) {
+        props.onLongClick();
+      }
+    }, 500);
+  };
+
+  const handleMouseUp = () => {
+    clearTimeout(longPressTimer);
+  };
+
+  const handleDragStart = () => {
+    isDragging = true;
+    clearTimeout(longPressTimer);
+  };
+
+  const handleDragEnd = () => {
+    isDragging = false;
+  };
+
+  return (
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <button
+        style={{flex: 1}}
+        ref={setNodeRef}
+        {...listeners}
+        {...attributes}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onTouchStart={handleMouseDown}
+        onTouchEnd={handleMouseUp}
+        onClick={props.onClick} // 일반 클릭 처리
+        draggable="false"
+      >
+        {props.children}
+      </button>
+    </DndContext>
+  );
+};
