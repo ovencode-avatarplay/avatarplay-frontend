@@ -42,7 +42,7 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
                 style={{
                   background: `url(${item.imageUrl}) `,
                   backgroundPosition: 'center',
-                  backgroundSize: '100% auto',
+                  backgroundSize: '100% cover',
                   backgroundRepeat: 'no-repeat',
                   backgroundAttachment: 'fixed',
                 }}

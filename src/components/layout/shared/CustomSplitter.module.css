@@ -14,6 +14,11 @@
   
 }
 
+.darkMode
+{
+
+}
+
 .splittersHeader.darkHeader
 {
   background: var(--Black, #000);

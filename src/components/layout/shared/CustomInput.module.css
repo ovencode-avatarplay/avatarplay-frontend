@@ -44,8 +44,7 @@
     flex: 1;
     background-color: transparent;
     color: var(--Neutral-400, #BDC1C6);
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: Lato;
+    font-feature-settings: 'liga' off, 'clig' off; 
     font-size: 15px;
     font-style: normal;
     font-weight: 400;
@@ -109,30 +108,18 @@
     border: 1px solid var(--Primary-1, #FD55D3);
     background: var(--background-fill-light-theme-tertiary, #F8F8F9);
 }
-
-.Focused > .textInput
+ 
+.textExist
 {
-    color: var(--Neutral-700, #5F6368);
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: Lato;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px; /* 128.571% */
-    letter-spacing: -0.4px;
+    color: var(--Neutral-900, #040415);
 }
 
-.Typing > .textInput
+.Focused .textExist,
+.Typing .textExist
 {
-    color: var(--Neutral-700, #5F6368);
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: Lato;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px; /* 128.571% */
-    letter-spacing: -0.4px;
+    color: var(--Neutral-700, #5F6368); 
 }
+
   
 .Error {
     border: 1px solid var(--Primary-2, #FEBBEA);

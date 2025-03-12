@@ -16,6 +16,7 @@ interface SplittersProps {
   splitterStyle?: React.CSSProperties;
   headerStyle?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
+  itemStyle?: React.CSSProperties;
   isDark?: boolean;
   placeholderWidth?: string;
 }
@@ -27,6 +28,7 @@ const Splitters: React.FC<SplittersProps> = ({
   splitterStyle,
   headerStyle,
   contentStyle,
+  itemStyle,
   isDark = false,
   placeholderWidth = '50vw',
 }) => {
@@ -51,7 +53,7 @@ const Splitters: React.FC<SplittersProps> = ({
               style={{width: placeholderWidth, maxWidth: calculateMaxWidth()}}
             ></div>
           ) : (
-            <div className={styles.splitterItem}>
+            <div className={styles.splitterItem} style={itemStyle}>
               <div
                 key={index}
                 className={`${styles.splitterLabel} ${activeSplitter === index ? styles.activeSplitter : ''} ${

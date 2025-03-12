@@ -91,7 +91,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         {(inputType === 'LeftIcon' || inputType === 'TwoIcon') && <div className={styles.iconLeft}>{iconLeft}</div>}
         <input
           type="text"
-          className={styles.textInput}
+          className={`${styles.textInput} ${value !== '' ? styles.textExist : ''}`}
           value={value}
           onChange={handleChange}
           onFocus={handleFocus}
