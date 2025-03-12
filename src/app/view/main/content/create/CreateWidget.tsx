@@ -202,7 +202,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
             </Link>
             <Link href={canCreateContent ? getLocalizedLink('/create/content') : ''} passHref>
               <button
-                className={`${styles.drawerButton} ${styles.drawerButtonBot} ${canCreateContent ? '' : styles.disable}`}
+                className={`${styles.drawerButton} ${styles.drawerButtonMid} ${canCreateContent ? '' : styles.disable}`}
                 onClick={() => {
                   if (!canCreateContent) return;
                   onClose();
@@ -239,13 +239,14 @@ export default CreateWidget;
 
 const SelectBoxArrowComponent = () => <></>;
 const SelectBoxValueComponent = (data: any) => {
+  console.log('data : ', data);
   return (
     <div className={styles.boxValueWrap}>
       <div className={styles.left}>
         <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
         <data value="" className={styles.nameWrap}>
           <div className={styles.name}>{data.name}</div>
-          <div className={styles.role}>{ProfileType[data.type]}</div>
+          <div className={styles.role}>{ProfileType[data.profileType]}</div>
         </data>
       </div>
       <div className={styles.right}>
@@ -254,20 +255,26 @@ const SelectBoxValueComponent = (data: any) => {
     </div>
   );
 };
-const SelectBoxOptionComponent = (data: any, isSelected: boolean) => (
-  <>
-    <div className={styles.optionWrap}>
-      <div className={styles.left}>
-        <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
-        <data value="" className={styles.nameWrap}>
-          <div className={styles.name}>{data.name}</div>
-          <div className={styles.role}>{ProfileType[data.type]}</div>
-        </data>
+const SelectBoxOptionComponent = (data: any, isSelected: boolean) => {
+  const isPD = [ProfileType.PD, ProfileType.User].includes(data.profileType);
+  const isCharacter = [ProfileType.Character].includes(data.profileType);
+  const isChannel = [ProfileType.Channel].includes(data.profileType);
+
+  return (
+    <>
+      <div className={styles.optionWrap}>
+        <div className={styles.left}>
+          <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
+          <data value="" className={styles.nameWrap}>
+            <div className={styles.name}>{data.name}</div>
+            <div className={styles.role}>{ProfileType[data.profileType]}</div>
+          </data>
+        </div>
+        <div className={styles.right}>
+          {isSelected && <img className={styles.iconDropDown} src={LineCheck.src} alt="altArrowDown" />}
+          {/* <img className={styles.iconDropDown} src={'/ui/create/icon_arrow_down.svg'} alt="altArrowDown" /> */}
+        </div>
       </div>
-      <div className={styles.right}>
-        {isSelected && <img className={styles.iconDropDown} src={LineCheck.src} alt="altArrowDown" />}
-        {/* <img className={styles.iconDropDown} src={'/ui/create/icon_arrow_down.svg'} alt="altArrowDown" /> */}
-      </div>
-    </div>
-  </>
-);
+    </>
+  );
+};
