@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import styles from './ViwerCommentItem.module.css';
+import styles from './CommentItem.module.css';
 import {BoldComment, BoldDislike, BoldLike, LineComment, LineDisLike, LineFolderPlus, LineLike} from '@ui/Icons';
-import ViwerComment from './ViwerComment';
+import Comment from './Comment';
 import {Avatar, Menu, MenuItem} from '@mui/material';
-import ViwerCommentEdit from './ViwerCommentEdit';
+import CommentEdit from './CommentEdit';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {ClassNames} from '@emotion/react';
-import {CommentInfo, ReplieInfo, sendCommentLike} from '@/app/NetWork/CommonNetwork';
+import {CommentContentType, CommentInfo, ReplieInfo, sendCommentLike} from '@/app/NetWork/CommonNetwork';
 
 export enum CommentType {
   default = 0,
@@ -15,22 +15,24 @@ export enum CommentType {
   replies = 2,
 }
 
-interface ViwerCommentItemProps {
+interface CommentItemProps {
   feedId: number;
   comment: CommentInfo | ReplieInfo;
   type?: CommentType;
   onComplete: () => void;
   onRepliesBack?: () => void;
   onAddTotalCommentCount: () => void;
+  commentType: CommentContentType;
 }
 
-const ViwerCommentItem: React.FC<ViwerCommentItemProps> = ({
+const CommentItem: React.FC<CommentItemProps> = ({
   onComplete,
   feedId,
   comment,
   type = CommentType.default,
   onRepliesBack = () => {},
   onAddTotalCommentCount,
+  commentType,
 }) => {
   console.log('comment.userImage', comment.userImage);
   const [isLike, setIsLike] = useState(comment.isLike);
@@ -215,14 +217,15 @@ const ViwerCommentItem: React.FC<ViwerCommentItemProps> = ({
       <div className={styles.menuIcon} onClick={event => handleClick(event)}>
         <div className={styles.menuDots}></div>
       </div>
-      <ViwerComment
-        feedId={feedId}
+      <Comment
+        contentId={feedId}
         isOpen={isCommentOpen}
         toggleDrawer={v => setCommentIsOpen(v)}
         isReplies={true}
         parentCommentId={comment.commentId}
         onRepliesBack={() => onRepliesBack()}
         onAddTotalCommentCount={() => onAddTotalCommentCount()}
+        commentType={commentType}
       />
       <Menu
         id="demo-positioned-menu"
@@ -258,15 +261,15 @@ const ViwerCommentItem: React.FC<ViwerCommentItemProps> = ({
           Delete
         </MenuItem>
       </Menu>
-      <ViwerCommentEdit
+      <CommentEdit
         commentId={comment.commentId}
         isOpen={isEditOpen}
         prevChat={comment.content}
         toggleDrawer={setIsEditOpen}
         onComplete={() => onComplete()}
-      ></ViwerCommentEdit>
+      ></CommentEdit>
     </div>
   );
 };
 
-export default ViwerCommentItem;
+export default CommentItem;
