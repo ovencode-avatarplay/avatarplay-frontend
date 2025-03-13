@@ -32,6 +32,7 @@ import {followProfile} from '@/app/NetWork/ProfileNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import {
   ContentCategoryType,
+  ContentLanguageType,
   ContentPlayInfo,
   ContentType,
   PlayButtonReq,
@@ -50,23 +51,6 @@ import {
   sendFeedDisLike,
   sendFeedLike,
 } from '@/app/NetWork/CommonNetwork';
-import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
-// export interface ViewInfo {
-//   id: number;
-//   mediaState: ContentCategoryType;
-//   contentType: ContentType;
-//   mediaUrlList: string[];
-//   commentCount: number;
-//   likeCount: number;
-//   disLikeCount: number;
-//   isLike: boolean;
-//   isDisLike: boolean;
-//   isBookmark: boolean;
-//   playTime: string;
-//   profileUrlLinkKey: string;
-//   characterProfileUrl: string;
-//   characterProfileName: string;
-// }
 
 interface Props {
   open: boolean;
@@ -76,6 +60,82 @@ interface Props {
   contentId: number;
   episodeId?: number;
 }
+const dummyContentPlayInfo: ContentPlayInfo = {
+  contentId: 1,
+  episodeId: 101,
+  categoryType: ContentCategoryType.Webtoon,
+  playTimeSecond: 3600,
+  profileIconUrl: 'https://example.com/profile-icon.png',
+  profileUrlLinkKey: 'user123',
+  commonMediaViewInfo: {
+    likeCount: 120,
+    isLike: true,
+    dislikeCount: 5,
+    isDisLike: false,
+    commentCount: 30,
+    isBookmark: true,
+    isReport: false,
+  },
+  episodeWebtoonInfo: {
+    likeCount: 90,
+    webtoonSourceUrlList: [
+      {
+        webtoonLanguageType: 0,
+        webtoonSourceUrls: ['https://example.com/webtoon1.jpg', 'https://example.com/webtoon2.jpg'],
+        webtoonSourceNames: ['Webtoon Page 1', 'Webtoon Page 2'],
+      },
+    ],
+  },
+};
+const dummyContentPlayInfoVideo: ContentPlayInfo = {
+  contentId: 2,
+  episodeId: 102,
+  categoryType: ContentCategoryType.Video,
+  playTimeSecond: 5400,
+  profileIconUrl: '/dummyFile/animeVideo.mp4',
+  profileUrlLinkKey: 'user456',
+  commonMediaViewInfo: {
+    likeCount: 200,
+    isLike: false,
+    dislikeCount: 20,
+    isDisLike: true,
+    commentCount: 50,
+    isBookmark: false,
+    isReport: true,
+  },
+  episodeVideoInfo: {
+    likeCount: 150,
+    videoSourceFileInfo: {
+      videoLanguageType: ContentLanguageType.Korean,
+      videoSourceUrl: '/dummyFile/animeVideo.mp4',
+      videoSourceName: 'Example Korean Video',
+    },
+    subTitleFileInfos: [
+      {
+        videoLanguageType: ContentLanguageType.English,
+        videoSourceUrl: 'https://example.com/subtitle_en.srt',
+        videoSourceName: 'English Subtitle',
+      },
+      {
+        videoLanguageType: ContentLanguageType.Japanese,
+        videoSourceUrl: 'https://example.com/subtitle_jp.srt',
+        videoSourceName: 'Japanese Subtitle',
+      },
+    ],
+    dubbingFileInfos: [
+      {
+        videoLanguageType: ContentLanguageType.French,
+        videoSourceUrl: 'https://example.com/dubbing_fr.mp3',
+        videoSourceName: 'French Dubbing',
+      },
+      {
+        videoLanguageType: ContentLanguageType.Spanish,
+        videoSourceUrl: 'https://example.com/dubbing_es.mp3',
+        videoSourceName: 'Spanish Dubbing',
+      },
+    ],
+  },
+};
 
 const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, episodeId = 0}) => {
   const [info, setInfo] = useState<ContentPlayInfo>();
@@ -91,6 +151,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setInfo(playResponse.data?.recentlyPlayInfo);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
+      setInfo(dummyContentPlayInfoVideo);
     }
   };
 
@@ -106,6 +167,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setInfo(playData.data?.recentlyPlayInfo);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
+      setInfo(dummyContentPlayInfoVideo);
     }
   };
 
@@ -134,6 +196,11 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     }
   }, [contentId, episodeId]);
 
+  const [isVisible, setIsVisible] = useState(true);
+
+  const handleTrigger = () => {
+    setIsVisible(!isVisible); // 트리거 발생 시 서서히 사라짐
+  };
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
@@ -165,11 +232,13 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleAddCommentCount = () => {
     if (info) setCommentCount(info?.commonMediaViewInfo.commentCount + 1);
   };
-  const handleClick = () => {
+  const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
+    event.stopPropagation(); // 부모로 이벤트 전파 방지
     setIsPlaying(!isPlaying);
     setIsClicked(true);
-    setTimeout(() => setIsClicked(false), 300); // 애니메이션이 끝난 후 상태 초기화
+    setTimeout(() => setIsClicked(false), 300);
   };
+
   const handleVideoProgress = (playedSeconds: number) => {
     setVideoProgress(playedSeconds);
   };
@@ -312,17 +381,19 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       onClose={onClose}
       aria-labelledby="viwer-content-modal"
       aria-describedby="viwer-content-modal-description"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+      className={styles.body}
+      hideBackdrop
+      // componentsProps={{
+      //   backdrop: {
+      //     style: {backgroundColor: 'rgba(0, 0, 0, 0.8)'}, // 원하는 색상 설정
+      //   },
+      // }}
     >
       <Box
         sx={{
           position: 'relative',
-          width: '100vw',
-          height: '100vh',
+          width: '100%',
+          height: '100%',
           bgcolor: 'black',
           display: 'flex',
           alignItems: 'center',
@@ -331,7 +402,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
         }}
       >
         <div className={styles.reelsContainer}>
-          <div className={styles.header}>
+          <div className={`${styles.header} ${!isVisible ? styles.fadeOutT : ''}`}>
             <header className={styles.header}>
               <div className={styles.baseArea}>
                 <button className={styles.backButton} onClick={onClose}>
@@ -342,7 +413,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               </div>
             </header>
           </div>
-          <div style={{height: '100%'}}>
+          <div style={{height: '100%'}} onClick={() => handleTrigger()}>
             <div className={styles.Image}>
               {info?.categoryType === ContentCategoryType.Webtoon && (
                 <img
@@ -352,7 +423,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 />
               )}
               {info?.categoryType === ContentCategoryType.Video && (
-                <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
+                <div style={{position: 'relative', width: '100%', height: '100%'}}>
                   <ReactPlayer
                     ref={playerRef} // ReactPlayer 참조 연결
                     muted={isMute}
@@ -394,11 +465,13 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      zIndex: 10,
+                      zIndex: 13,
                     }}
                   >
-                    <div className={`${styles.playCircleIcon} ${isClicked ? styles.fadeAndGrow : ''}`}>
-                      <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
+                    <div
+                      className={`${styles.playCircleIcon} ${isVisible ? styles.fadeAndGrow : styles.fadeOutAndShrink}`}
+                    >
+                      <img src={isPlaying ? BoldPause.src : BoldPlay.src} onClick={event => handleClick(event)} />
                     </div>
                   </div>
                 </div>
@@ -406,7 +479,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             </div>
 
             {/* Progress Bar */}
-            <div className={styles.progressBar}>
+            <div className={`${styles.progressBar} ${!isVisible ? styles.fadeOutB : ''}`}>
               <div
                 className={styles.progressFill}
                 style={{
@@ -419,24 +492,11 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               ></div>
             </div>
 
-            <div className={styles.profileBox}>
+            <div className={`${styles.profileBox} ${!isVisible ? styles.fadeOutB : ''}`}>
               <div className={styles.dim}></div>
               {/* User Info */}
               <div className={styles.userInfo}>
-                <Avatar
-                  src={info?.profileIconUrl || '/images/001.png'}
-                  style={{width: '32px', height: '32px'}}
-                  onClick={() => {
-                    pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
-                  }}
-                />
-
-                <div
-                  className={styles.profileDetails}
-                  onClick={() => {
-                    pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
-                  }}
-                >
+                <div className={styles.profileDetails}>
                   <span className={styles.sponsored}>Sponsored</span>
                 </div>
               </div>
@@ -452,9 +512,25 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 )}
               </div>
             </div>
-
             {/* CTA Buttons */}
-            <div className={styles.ctaButtons}>
+            <div className={`${styles.ctaButtons} ${!isVisible ? styles.fadeOutR : ''}`}>
+              <div
+                className={styles.textButtons}
+                onClick={() => {
+                  let id = contentId;
+                  if (episodeId) id = episodeId;
+                  handleDisLikeFeed(id, !isDisLike);
+                }}
+              >
+                <Avatar
+                  src={info?.profileIconUrl || '/images/001.png'}
+                  style={{width: '32px', height: '32px'}}
+                  onClick={() => {
+                    pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
+                  }}
+                />
+              </div>
+
               <div className={styles.textButtons} onClick={() => {}}>
                 <img src={BoldReward.src} className={styles.button}></img>
               </div>
@@ -529,7 +605,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               </div>
             </div>
             <div
-              className={styles.volumeButton}
+              className={`${styles.volumeButton} ${!isVisible ? styles.fadeOutR : ''}`}
               onClick={() => {
                 if (info?.categoryType == ContentCategoryType.Video) setIsMute(!isMute);
                 else if (info?.categoryType == ContentCategoryType.Webtoon) setIsImageModal(true);

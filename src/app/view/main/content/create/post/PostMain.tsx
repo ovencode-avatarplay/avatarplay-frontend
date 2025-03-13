@@ -157,10 +157,11 @@ const PostMain: React.FC<Props> = ({id}) => {
             if (existingFeed) {
               setFeedId(existingFeed.id);
               setMediaUrls(existingFeed.mediaUrlList || []);
+              console.log('mediaUrls', mediaUrls);
               if (existingFeed.mediaState == MediaState.Image) setMediaType('image');
               else if (existingFeed.mediaState == MediaState.Video) setMediaType('video');
 
-              setNameValue(existingFeed.characterProfileName || '');
+              setNameValue(existingFeed.title || '');
               setrDescription(existingFeed.description || '');
               setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
               setSelectedVisibility(existingFeed.isPinFix ? VisibilityType.Public : VisibilityType.Private);
@@ -188,9 +189,6 @@ const PostMain: React.FC<Props> = ({id}) => {
   const [mediaType, setMediaType] = useState<'image' | 'video'>('image'); // State for media type
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
   useEffect(() => {}, [mediaUrls]);
-  useEffect(() => {
-    setMediaUrls([]); // 미디어 URL 초기화
-  }, [mediaType]);
 
   const [loading, setLoading] = useState(false);
   const {label, hint, accept} = mediaTypeConfig[mediaType];
@@ -275,6 +273,7 @@ const PostMain: React.FC<Props> = ({id}) => {
     {
       name: 'Select Image',
       onClick: () => {
+        setMediaUrls([]);
         setMediaType('image');
         setIsOpenSelectDrawer(true);
       },
@@ -282,6 +281,7 @@ const PostMain: React.FC<Props> = ({id}) => {
     {
       name: 'Select Video',
       onClick: () => {
+        setMediaUrls([]);
         setMediaType('video');
         setIsOpenSelectDrawer(true);
       },
@@ -430,14 +430,14 @@ const PostMain: React.FC<Props> = ({id}) => {
               }}
               onDuration={(duration: number) => setVideoDuration(formatDuration(duration))} // 영상 길이 설정
             />
-            {!isPlaying && (
+            {/* {!isPlaying && (
               <button
                 className={styles.playButton}
                 onClick={() => setIsPlaying(true)} // 재생 시작
               >
                 <img src={BoldPlay.src} alt="Play" />
               </button>
-            )}
+            )} */}
             <button
               className={styles.deleteButton}
               onClick={() => {

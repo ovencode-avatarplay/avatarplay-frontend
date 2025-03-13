@@ -14,10 +14,12 @@
   align-items: flex-start;
   gap: 14px;
   width: var(--second-width);
-  height: auto;
-  padding: 12px 16px 12px 16px;
-  box-sizing: content-box;
+  
+  margin: 12px 16px 12px 16px;
   overflow-y: scroll;
+  scrollbar-gutter: stable; /* ✅ 추가 */
+    min-height: 100%; /* ✅ 변경 */
+  overflow-y: auto;
   margin-bottom: 70px;
   
 }
@@ -48,14 +50,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px 12px;
   gap: 4px;
-  width: 76px;
-  height: 80px;
   background: var(--background);
   border: 1px dashed #bdc1c6;
   border-radius: 10px;
-  cursor: pointer;
+  cursor: pointer;  
+  width: 100px;
+  height: 100px;
+  box-sizing: border-box;
 }
 
 .uploadIcon {
@@ -128,6 +130,7 @@ line-height: 155%; /* 18.6px */
   height: 70px;
   
   bottom: 0px;
+  background-color: white;
 }
 
 .setupButtons { 
@@ -226,3 +229,13 @@ box-sizing: border-box;
 gap: 6px;
 }
 
+.playButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
