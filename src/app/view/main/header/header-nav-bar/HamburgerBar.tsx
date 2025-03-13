@@ -203,7 +203,13 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
         {/* 메뉴 섹션 */}
         <ul className={styles.menuList}>
           {renderMenuItem(LineSetting.src, 'Account Center', () => {})}
-          <li className={styles.menuItem} onClick={() => {}}>
+          <li
+            className={styles.menuItem}
+            onClick={() => {
+              pushLocalizedRoute('/main/game/shop', router);
+              onClose();
+            }}
+          >
             <div className={styles.menuRow}>
               <div className={styles.menuContent}>
                 <div className={styles.menuInfo}>
