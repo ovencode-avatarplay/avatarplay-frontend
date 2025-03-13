@@ -25,7 +25,8 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {getCharacterStateText} from '@/app/view/studio/characterDashboard/CharacterGridItem';
 import formatText from '@/utils/formatText';
 import getLocalizedText from '@/utils/getLocalizedText';
-enum RecommendState {
+import CustomPopup from '../layout/shared/CustomPopup';
+export enum RecommendState {
   Following = 1,
   ForYou = 0,
 }
@@ -141,6 +142,8 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
           setInfo(mergedFeeds.slice(0, 2)); // 초기 렌더링용 첫 2개
         }
       } catch (error) {
+        setAllFeeds([]);
+        setInfo([]);
         console.error('Failed to fetch recommended feed:', error);
       }
     }
@@ -278,10 +281,29 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
               setIsMute={setIsMute}
               setIsProfile={setIsProfile}
               isShowProfile={!isSpecificProfile}
+              recommendState={selectedTab}
             />
           </div>
         ))}
       </div>
+      {selectedTab == RecommendState.Following && info.length == 0 && (
+        <CustomPopup
+          type="alert"
+          title="Sorry"
+          description="팔로우한 프로필이 없거나, 피드가 아직 없습니다."
+          buttons={[
+            {
+              label: 'OK',
+              onClick: () => {
+                setSelectedTab(RecommendState.ForYou);
+                dispatch(setRecommendState(0));
+                pushLocalizedRoute('/main/homefeed', router, true, true);
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
     </div>
   );
 };

@@ -323,6 +323,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           onClick={() => {
                             if (isFree || !isLock) {
                               //TODO : play처리
+                              console.log('data', data, one);
                               setOnPlay(true);
                               setIsPlayButton(false);
                               if (data.dataEpisodes) setPlayContentId(data.dataEpisodes?.contentId);
@@ -360,10 +361,11 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           onClick={() => {
                             if (isFree || !isLock) {
                               //TODO : play처리
+                              console.log('data', data, one);
                               setOnPlay(true);
                               setIsPlayButton(false);
                               if (data.dataEpisodes) setPlayContentId(data.dataEpisodes?.contentId);
-                              setEpisodeId(one.episodeId);
+                              setPlayEpisodeId(one.episodeId);
                               return;
                             }
 
@@ -414,13 +416,15 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           }}
         />
       )}
-      <ViewerContent
-        open={onPlay}
-        onClose={() => setOnPlay(false)}
-        isPlayButon={isPlayButton}
-        contentId={playContentId}
-        episodeId={playContentId != 0 ? playEpisodeId : undefined}
-      ></ViewerContent>
+      {onPlay && (
+        <ViewerContent
+          open={onPlay}
+          onClose={() => setOnPlay(false)}
+          isPlayButon={isPlayButton}
+          contentId={playContentId}
+          episodeId={playContentId != 0 ? playEpisodeId : undefined}
+        ></ViewerContent>
+      )}
     </>
   );
 };
