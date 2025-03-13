@@ -541,7 +541,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           </SwiperSlide>
         )}
       </Swiper>
-      <DrawerDonation isOpen={isDonation} onClose={handleDonationclose} />
+      <DrawerDonation isOpen={isDonation} sponsoredName={item.characterProfileName} onClose={handleDonationclose} />
       <Comment
         contentId={item.id}
         isOpen={isCommentOpen}
