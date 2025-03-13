@@ -172,6 +172,7 @@ type TabContentMenuType = {
   isPin: boolean;
   id: number | string;
   isSingle?: boolean;
+  urlLinkKey?: string;
 };
 
 type DataProfileType = {
@@ -1057,7 +1058,6 @@ const ContentSetting = ({
     {
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
       onClick: async () => {
-        console.log('tabContentMenu : ', tabContentMenu);
         const dataUpdatePin: PinFixFeedReq = {
           feedId: Number(tabContentMenu.id),
           isFix: !tabContentMenu.isPin,
@@ -2117,7 +2117,7 @@ export const TabContentComponentWrap = ({
             (isCharacter && tabIndex == eTabCharacterType.Feed) ||
             (isChannel && tabIndex == eTabChannelType.Feed)
           ) {
-            router.push(getLocalizedLink(`/update/post/` + data.tabContentMenu.id));
+            router.push(getLocalizedLink(`/update/post/` + data.tabContentMenu.urlLinkKey));
           }
 
           if (
@@ -2644,7 +2644,8 @@ export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContent
                 e.preventDefault();
                 e.stopPropagation();
                 const dataContextMenu = {
-                  id: feedInfo.urlLinkKey,
+                  id: feedInfo.id,
+                  urlLinkKey: feedInfo.urlLinkKey,
                   isPin: feedInfo?.isPinFix || false,
                   isSettingOpen: true,
                 };
