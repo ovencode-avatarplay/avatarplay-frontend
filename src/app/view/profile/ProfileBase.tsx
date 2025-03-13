@@ -2336,10 +2336,10 @@ const TabContentComponent = ({
         <section className={styles.characterMainImageWrap}>
           <img src={channelInfo?.mediaUrl} alt="" className={styles.characterMainImage} />
           <div className={styles.infoWrap}>
-            <Link href={getLocalizedLink(`/profile/` + channelInfo?.id + '?from=""')}>
+            <Link href={getLocalizedLink(`/profile/` + channelInfo?.pdProfileSimpleInfo.urlLinkKey + '?from=""')}>
               <div className={styles.left}>
                 <img src={channelInfo?.mediaUrl} alt="" className={styles.profileMaker} />
-                <div className={styles.name}>{channelInfo?.name}</div>
+                <div className={styles.name}>{channelInfo?.pdProfileSimpleInfo.name}</div>
               </div>
             </Link>
             <div className={styles.right}>

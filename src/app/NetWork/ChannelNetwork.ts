@@ -31,6 +31,7 @@ export interface ChannelInfo {
   state: ChannelState;
   createAt: string;
   updateAt: string;
+  pdProfileSimpleInfo: ProfileSimpleInfo;
 }
 
 export enum ChannelState {
