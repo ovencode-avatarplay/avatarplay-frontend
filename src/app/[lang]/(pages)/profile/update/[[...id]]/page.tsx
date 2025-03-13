@@ -1131,7 +1131,6 @@ const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListPopupTyp
             <div className={styles.countPortfolio}>Portfolio {data.portfolioList.length}</div>
             <ul className={styles.itemList}>
               {data.portfolioList.map((one, index) => {
-                console.log('data : ', one);
                 const date = one?.createAt ? new Date(one?.createAt) : new Date();
                 const formattedDate = date.toLocaleDateString('ko-KR').replace(/-/g, '.');
                 return (
