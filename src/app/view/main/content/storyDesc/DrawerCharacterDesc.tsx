@@ -183,7 +183,7 @@ const DrawerCharacterDesc = () => {
     try {
       // const req: GetContentByIdReq = { contentId: contentId, language: getCurrentLanguage() };
       // const response = await sendContentByIdGet(req);
-      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: contentId};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId: contentId};
       const response = await sendGetCharacterInfo(req);
       if (response?.data) {
         setContentWholeDesc(response.data);

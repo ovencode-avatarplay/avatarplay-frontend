@@ -19,16 +19,16 @@ const Page = ({params}: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   // 캐릭터 정보를 가져오는 함수
-  const getCharacterInfo = async (characterId: number) => {
+  const getCharacterInfo = async (profileId: number) => {
     try {
-      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {
         const characterInfo: CharacterInfo = response.data.characterInfo;
         setCurrentSelectedCharacter(characterInfo);
       } else {
-        throw new Error(`No characterInfo in response : ${characterId}`);
+        throw new Error(`No characterInfo in response : ${profileId}`);
       }
     } catch (error) {
       console.error('Error fetching Character Info:', error);

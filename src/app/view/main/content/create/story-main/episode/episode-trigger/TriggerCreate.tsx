@@ -279,7 +279,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
   const getCharacterInfo = async (id: number) => {
     setLoading(true);
     try {
-      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {
