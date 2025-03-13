@@ -435,7 +435,7 @@ const SearchBoard: React.FC = () => {
           height: 'var(--header-removed-height)',
           paddingTop: '58px',
         }}
-        contentStyle={{padding: '10px'}}
+        // contentStyle={{padding: '10px'}}
         headerStyle={{
           paddingLeft: '16px',
           paddingRight: '16px',

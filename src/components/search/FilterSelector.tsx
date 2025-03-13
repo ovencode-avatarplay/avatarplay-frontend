@@ -22,7 +22,8 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
 
   const handleToggleFilter = (name: string) => {
     setSelectedFilters(prevState => {
-      const currentState = prevState[name];
+      const currentState = prevState[name] ?? 'empty';
+
       const newState = currentState === 'empty' ? 'selected' : currentState === 'selected' ? 'remove' : 'empty';
       return {...prevState, [name]: newState};
     });

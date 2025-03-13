@@ -92,6 +92,7 @@ import {ContentType, sendDeleteContent} from '@/app/NetWork/ContentNetwork';
 import {CharacterProfileDetailComponent} from './ProfileDetail';
 import PopupFriends from './PopupFriends';
 import useChangeParams from '@/utils/useChangeParams';
+import {PortfolioListPopup} from '@/app/[lang]/(pages)/profile/update/[[...id]]/page';
 
 export enum eTabCommonType {
   Feed = 1,
@@ -318,7 +319,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       setData({...data});
       return;
     }
-  }, [pathname, data.profileId]);
+  }, [pathname]);
 
   useEffect(() => {
     if (!isPath) return;
@@ -1219,9 +1220,9 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
   return (
     <div
       onClick={() => {
-        if (!isOpen) {
-          setIsOpen(true);
-        }
+        // if (!isOpen) {
+        //   setIsOpen(true);
+        // }
       }}
     >
       {isOpen && (
@@ -1265,13 +1266,22 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
             ),
             [],
           ),
-          SingleValue: React.useCallback((props: any) => {
-            return (
-              <components.SingleValue {...props}>
-                {ValueComponent(props.data, props.isSelected)} {/* 선택된 값에서는 isSingleValue = true */}
-              </components.SingleValue>
-            );
-          }, []),
+          SingleValue: React.useCallback(
+            (props: any) => {
+              return (
+                <components.SingleValue {...props}>
+                  <div
+                    onMouseDown={() => {
+                      setIsOpen(!isOpen);
+                    }}
+                  >
+                    {ValueComponent(props.data, props.isSelected)}
+                  </div>
+                </components.SingleValue>
+              );
+            },
+            [isOpen],
+          ),
         }}
         getOptionValue={option => option.id.toString()}
       />
@@ -1313,6 +1323,7 @@ type TabContentProps = {
 
   filterCluster: FilterClusterType;
   profileUrlLinkKey: string;
+
   onRefreshTab: (isRefreshAll: boolean) => void;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
@@ -2009,6 +2020,8 @@ export const TabContentComponentWrap = ({
   const [data, setData] = useState<{
     tabContentMenu: TabContentMenuType;
     isShareOpened: boolean;
+
+    isOpenPreview: boolean;
   }>({
     tabContentMenu: {
       id: 0,
@@ -2017,6 +2030,8 @@ export const TabContentComponentWrap = ({
       isSingle: false,
     },
     isShareOpened: false,
+
+    isOpenPreview: false,
   });
   const handleShare = async (url: string = window.location.href) => {
     const shareData = {
@@ -2161,7 +2176,11 @@ const TabContentComponent = ({
   const {ref: observerRef, inView} = useInView();
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
     getUserType(isMine, profileType);
-
+  const [data, setData] = useState<{
+    isOpenPreview: boolean;
+  }>({
+    isOpenPreview: false,
+  });
   useEffect(() => {
     if (!inView) return;
 
@@ -2313,7 +2332,49 @@ const TabContentComponent = ({
           {!!pdInfo?.honorAwards && <div className={styles.value}>{pdInfo?.honorAwards}</div>}
           {!!pdInfo?.url && <div className={styles.label}>URL</div>}
           {!!pdInfo?.url && <div className={styles.value}>{pdInfo?.url}</div>}
+          {pdInfo?.pdPortfolioInfoList.length != 0 && <div className={styles.label}>Portfolio</div>}
+          {pdInfo?.pdPortfolioInfoList.length != 0 && (
+            <div className={styles.value}>
+              <Swiper
+                className={styles.uploadArea}
+                freeMode={true}
+                slidesPerView={'auto'}
+                onSlideChange={() => {}}
+                onSwiper={swiper => {}}
+                spaceBetween={8}
+              >
+                {pdInfo?.pdPortfolioInfoList.map((one, index) => {
+                  return (
+                    <SwiperSlide
+                      key={index}
+                      onClick={() => {
+                        data.isOpenPreview = true;
+                        setData({...data});
+                        // data.dataPortfolio.isOpenDrawer = true;
+                        // data.dataPortfolio.idSelected = index;
+                        // setData({...data});
+                      }}
+                    >
+                      <div className={styles.thumbnailWrap}>
+                        <img src={one.imageUrl} alt="" />
+                      </div>
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </div>
+          )}
         </section>
+        {data.isOpenPreview && (
+          <PortfolioListPopup
+            onChange={() => {}}
+            onClose={() => {
+              data.isOpenPreview = false;
+              setData({...data});
+            }}
+            dataList={pdInfo.pdPortfolioInfoList}
+          />
+        )}
       </>
     );
   }

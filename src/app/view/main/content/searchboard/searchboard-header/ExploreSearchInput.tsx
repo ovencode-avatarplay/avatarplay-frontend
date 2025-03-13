@@ -32,7 +32,7 @@ const ExploreSearchInput: React.FC<ExploreSearchInputProps> = ({
       </div>
       <input
         type="text"
-        className={styles.searchInput}
+        className={`${styles.searchInput} ${value !== '' ? styles.textExist : ''}`}
         placeholder={placeholder}
         value={value}
         onChange={onChange}

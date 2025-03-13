@@ -573,6 +573,73 @@
           /* 21.7px */
         }
 
+        .uploadArea {
+          padding: 16px;
+          border-radius: 8px;
+          background: var(--Neutral-50, #F8F9FA);
+
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+
+          :global(.swiper-wrapper) {
+            display: flex;
+            align-items: center;
+            overflow: visible;
+            /* 필수 */
+          }
+
+          :global(.swiper-slide) {
+            width: auto !important;
+          }
+
+          .thumbnailWrap {
+            cursor: pointer;
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            overflow: hidden;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+
+          .uploadWrap {
+            cursor: pointer;
+            width: 100px;
+            height: 100px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            border-radius: 10px;
+            border: 1px dashed var(--Neutral-400, #BDC1C6);
+            background: var(--White, #FFF);
+
+            img {
+              width: 24px;
+              height: 24px;
+              filter: brightness(0) saturate(100%)
+            }
+
+            div.text {
+              color: var(--Black, #000);
+              text-align: center;
+              font-family: Lato;
+              font-size: 13px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 155%;
+              /* 20.15px */
+            }
+          }
+        }
+
         ul.tags {
           margin-top: 5px;
           display: flex;
