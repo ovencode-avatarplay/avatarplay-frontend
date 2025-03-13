@@ -409,7 +409,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   };
 
   const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll: boolean = false) => {
-    const profileType = data.profileInfo?.profileInfo?.type;
+    const isMine = data.profileInfo?.isMyProfile || false;
+    const profileType = Number(data.profileInfo?.profileInfo?.type);
+    const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+      getUserType(isMine, profileType);
+
     if (profileType == undefined) return;
     let resProfileTabInfo = null;
     if (isCharacter && indexTab == eTabCharacterOtherType.Info) {
