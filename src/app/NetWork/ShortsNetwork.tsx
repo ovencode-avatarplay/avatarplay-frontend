@@ -64,7 +64,6 @@ export interface FeedInfo {
   characterProfileUrl: string;
   createAt?: string;
   profileUrlLinkKey: string;
-  title: string;
 }
 
 export interface CreateFeedReq {
@@ -178,67 +177,6 @@ export const sendFeedView = async (
       resultCode: -1,
       resultMessage: 'Failed to view feed',
       data: null,
-    };
-  }
-};
-
-// Feed Like API 호출 함수
-export const sendFeedLike = async (
-  feedId: number,
-  isLike: boolean,
-): Promise<{
-  resultCode: number;
-  resultMessage: string;
-  data: {feedId: number; isLike: boolean; likeCount: number} | null;
-}> => {
-  try {
-    const response = await api.post('/Feed/like', {feedId, isLike});
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0) {
-      return {
-        resultCode,
-        resultMessage,
-        data: data || null, // 데이터가 없을 경우 null 반환
-      };
-    } else {
-      console.error(`Error: ${resultMessage}`);
-      return {
-        resultCode,
-        resultMessage,
-        data: null, // 실패 시 data를 null로 반환
-      };
-    }
-  } catch (error) {
-    console.error('Failed to like feed:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to like feed',
-      data: null,
-    };
-  }
-};
-
-// Feed Like API 호출 함수
-export const sendFeedDisLike = async (
-  feedId: number,
-  isDisLike: boolean,
-): Promise<{resultCode: number; resultMessage: string}> => {
-  try {
-    const response = await api.post('/Feed/dislike', {feedId, isDisLike});
-    const {resultCode, resultMessage} = response.data;
-
-    if (resultCode === 0) {
-      return {resultCode, resultMessage};
-    } else {
-      console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage};
-    }
-  } catch (error) {
-    console.error('Failed to like feed:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to like feed',
     };
   }
 };

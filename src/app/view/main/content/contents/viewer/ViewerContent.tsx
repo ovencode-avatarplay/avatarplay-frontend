@@ -6,6 +6,7 @@ import {FeedInfo, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
 import {
   BoldArchive,
+  BoldArrowLeft,
   BoldComment,
   BoldDislike,
   BoldLike,
@@ -82,7 +83,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handlePlayRecent = async () => {
     try {
       const playRequest: PlayButtonReq = {
-        contentId: 1001,
+        contentId: contentId,
       };
 
       const playResponse = await sendPlayButton(playRequest);
@@ -96,8 +97,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handlePlayNew = async () => {
     try {
       const playRequest: PlayReq = {
-        contentId: 1001,
-        episodeId: 2002,
+        contentId: contentId,
+        episodeId: episodeId,
       };
 
       const playData = await sendPlay(playRequest);
@@ -131,7 +132,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     } else {
       handlePlayNew();
     }
-  }, []);
+  }, [contentId, episodeId]);
 
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(true);
@@ -331,19 +332,15 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       >
         <div className={styles.reelsContainer}>
           <div className={styles.header}>
-            <CustomArrowHeader
-              title="Create Series Contents"
-              onClose={() => {
-                pushLocalizedRoute(`/create/content/series/${contentId}`, router);
-              }}
-              children={
-                <div className={styles.rightArea}>
-                  <button className={styles.dashBoard} onClick={() => {}}>
-                    <img className={styles.dashBoardIcon} src={LineDashboard.src} />
-                  </button>
-                </div>
-              }
-            />
+            <header className={styles.header}>
+              <div className={styles.baseArea}>
+                <button className={styles.backButton} onClick={onClose}>
+                  <img src={BoldArrowLeft.src} className={styles.backIcon} />
+                </button>
+
+                <h1 className={styles.navTitle}>adads</h1>
+              </div>
+            </header>
           </div>
           <div style={{height: '100%'}}>
             <div className={styles.Image}>

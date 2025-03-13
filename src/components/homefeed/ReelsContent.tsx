@@ -42,6 +42,7 @@ import {
   sendFeedLike,
 } from '@/app/NetWork/CommonNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {RecommendState} from './ReelsLayout';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -49,7 +50,7 @@ interface ReelsContentProps {
   isMute: boolean;
   setIsMute: (mute: boolean) => void; // boolean 매개변수 추가
   setIsProfile: (profile: boolean) => void; // boolean 매개변수 추가
-
+  recommendState: RecommendState;
   isShowProfile: boolean;
 }
 
@@ -60,6 +61,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   setIsMute,
   setIsProfile,
   isShowProfile = true,
+  recommendState,
 }) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -382,16 +384,20 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 <span className={styles.username}>{item.characterProfileName}</span>
                 <span className={styles.sponsored}>{getLocalizedText(Header, 'home001_label_003')}</span>
               </div>
-              <button
-                className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
-                onClick={() => {
-                  setIsFollow(!isFollow);
-                  handleFollow(item.characterProfileId, !isFollow);
-                  console.log('isfollow', isFollow);
-                }}
-              >
-                {getLocalizedText(Common, 'common_button_follow')}
-              </button>
+              {recommendState == RecommendState.ForYou && (
+                <button
+                  className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
+                  onClick={() => {
+                    setIsFollow(!isFollow);
+                    handleFollow(item.characterProfileId, !isFollow);
+                    console.log('isfollow', isFollow);
+                  }}
+                >
+                  {isFollow
+                    ? getLocalizedText(Common, 'common_button_following')
+                    : getLocalizedText(Common, 'common_button_follow')}
+                </button>
+              )}
             </div>
             {item?.description && (
               <div className={styles.text_container}>
