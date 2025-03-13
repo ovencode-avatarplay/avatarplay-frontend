@@ -95,7 +95,7 @@
 /* Splitter Content */
 .splitterContent {
   height: calc(100% - 39px);
-  padding: 16px;
+  /* padding: 16px; */
   font-family: 'Lato' ;
   font-size: 14px;
   color: #80868b;

@@ -217,7 +217,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
         <ul className={styles.menuList}>
           {renderMenuItem(LineSetting.src, 'Account Center', () => {})}
           <li
-            className={styles.menuItem}
+            className={`${styles.menuItem} ${styles.divideItem}`}
             onClick={() => {
               pushLocalizedRoute('/main/game/shop', router);
               onClose();
