@@ -7,7 +7,7 @@ import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {Dialog, Drawer} from '@mui/material';
 import cx from 'classnames';
 
-import {getLocalizedLink} from '@/utils/UrlMove';
+import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {getBackUrl} from '@/utils/util-1';
 import {getPdInfo, MediaState, PdPortfolioInfo, updatePdInfo, UpdatePdInfoReq} from '@/app/NetWork/ProfileNetwork';
@@ -17,6 +17,9 @@ import 'swiper/css';
 import 'swiper/css/navigation'; // 필요시 다른 모듈도 가져오기
 import {DataUsageSharp} from '@mui/icons-material';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
+import {getAuth} from '@/app/NetWork/AuthNetwork';
+import {updateProfile} from '@/redux-store/slices/Profile';
+import {useDispatch} from 'react-redux';
 type Props = {
   params: {
     id?: string[];
@@ -73,6 +76,7 @@ type DataProfileUpdateType = {
 
 const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
   const profileId = parseInt(id[0]);
+  const dispatch = useDispatch();
   const router = useRouter();
   const {
     control,
@@ -146,7 +150,26 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
     };
     console.log('dataUpdatePdInfo : ', dataUpdatePdInfo);
     await updatePdInfo(dataUpdatePdInfo);
+    await refreshProfileInfo();
     routerBack();
+  };
+
+  const refreshProfileInfo = async () => {
+    const res = await getAuth();
+    console.log('auth res :', res);
+    if (res?.resultCode != 0) {
+      pushLocalizedRoute('/auth', router);
+      return;
+    } else {
+      if (!res?.data?.profileSimpleInfo) {
+        console.error('/auth에서 profileSimpleInfo 못받음');
+        return;
+      }
+
+      const profile = res?.data?.profileSimpleInfo;
+
+      dispatch(updateProfile(profile));
+    }
   };
 
   useEffect(() => {

@@ -1057,6 +1057,7 @@ const ContentSetting = ({
     {
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
       onClick: async () => {
+        console.log('tabContentMenu : ', tabContentMenu);
         const dataUpdatePin: PinFixFeedReq = {
           feedId: Number(tabContentMenu.id),
           isFix: !tabContentMenu.isPin,
@@ -2278,36 +2279,40 @@ const TabContentComponent = ({
     return (
       <>
         <section className={styles.pdInfo}>
-          <div className={styles.label}>Introduce</div>
-          <div className={styles.value}>{pdInfo?.introduce}</div>
-          <div className={styles.label}>Interests</div>
-          <ul className={styles.tags}>
-            {pdInfo?.interests.map((one, index) => {
-              if (one == '') return;
-              return (
-                <li key={index} className={styles.tag}>
-                  {one}
-                </li>
-              );
-            })}
-          </ul>
+          {!!pdInfo?.introduce && <div className={styles.label}>Introduce</div>}
+          {!!pdInfo?.introduce && <div className={styles.value}>{pdInfo?.introduce}</div>}
+          {pdInfo?.interests.length != 0 && <div className={styles.label}>Interests</div>}
+          {pdInfo?.interests.length != 0 && (
+            <ul className={styles.tags}>
+              {pdInfo?.interests.map((one, index) => {
+                if (one == '') return;
+                return (
+                  <li key={index} className={styles.tag}>
+                    {one}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
 
-          <div className={styles.label}>Skill</div>
-          <ul className={styles.tags}>
-            {pdInfo?.skills.map((one, index) => {
-              return (
-                <li key={index} className={styles.tag}>
-                  {one}
-                </li>
-              );
-            })}
-          </ul>
-          <div className={styles.label}>Personal History</div>
-          <div className={styles.value}>{pdInfo?.personalHistory}</div>
-          <div className={styles.label}>Honor & Awards</div>
-          <div className={styles.value}>{pdInfo?.honorAwards}</div>
-          <div className={styles.label}>URL</div>
-          <div className={styles.value}>{pdInfo?.url}</div>
+          {pdInfo?.skills.length != 0 && <div className={styles.label}>Skill</div>}
+          {pdInfo?.skills.length != 0 && (
+            <ul className={styles.tags}>
+              {pdInfo?.skills.map((one, index) => {
+                return (
+                  <li key={index} className={styles.tag}>
+                    {one}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+          {!!pdInfo?.personalHistory && <div className={styles.label}>Personal History</div>}
+          {!!pdInfo?.personalHistory && <div className={styles.value}>{pdInfo?.personalHistory}</div>}
+          {!!pdInfo?.honorAwards && <div className={styles.label}>Honor & Awards</div>}
+          {!!pdInfo?.honorAwards && <div className={styles.value}>{pdInfo?.honorAwards}</div>}
+          {!!pdInfo?.url && <div className={styles.label}>URL</div>}
+          {!!pdInfo?.url && <div className={styles.value}>{pdInfo?.url}</div>}
         </section>
       </>
     );
