@@ -8,7 +8,6 @@
     align-self: stretch;
     overflow-y: scroll;
     margin-top: 14px;
-    margin-bottom: 40px;
 }
 
 .llmContainer::-webkit-scrollbar {
