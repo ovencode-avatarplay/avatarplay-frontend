@@ -1385,7 +1385,7 @@ export const DrawerCharacterSearch = ({
                     <img className={styles.thumbnail} src={profile.profileSimpleInfo.iconImageUrl} alt="" />
                     <div className={styles.info}>
                       <div className={styles.name}>{profile.profileSimpleInfo.name}</div>
-                      <div className={styles.description}>{profile.profileSimpleInfo.name}</div>
+                      <div className={styles.description}>{profile.profileSimpleInfo.description}</div>
                     </div>
                   </div>
                   <div className={styles.right}>
