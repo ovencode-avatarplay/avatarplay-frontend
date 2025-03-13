@@ -113,6 +113,7 @@ import LinePin from "./Line/Pin.svg";
 import LineCheckBoxFill from "./Line/CheckBoxFill.svg";
 import LineCheckBoxEmpty from "./Line/CheckBoxEmpty.svg";
 import LineSetting from "./Line/Setting.svg";
+import LineWallet from "./Line/Wallet.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -133,6 +134,7 @@ import CircleClose from "./Custom/CircleClose.svg";
 import OrangeCoin from "./Custom/Coin.svg";
 import Add_Button from "./Custom/Add_Button.svg";
 import editCircle from "./Custom/editCircle.svg";
+import VerifiedLabel from "./Custom/VerifiedLabel.svg";
 
 export {
   editCircle,
@@ -268,4 +270,6 @@ export {
   LineCheckBoxFill,
   LineCheckBoxEmpty,
   LineSetting,
+  LineWallet,
+  VerifiedLabel,
 };
