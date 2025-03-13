@@ -4,17 +4,18 @@ import styles from './HamburgerBar.module.css';
 import {useAtom} from 'jotai';
 import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {Session} from '@supabase/supabase-js';
-import {getCurrentLanguage, refreshLanaguage} from '@/utils/UrlMove';
+import {getCurrentLanguage, isLogined, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateProfile} from '@/redux-store/slices/Profile';
 import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';
-import {SignInRes} from '@/app/NetWork/AuthNetwork';
+import {getAuth, SignInRes} from '@/app/NetWork/AuthNetwork';
 import {useRouter} from 'next/navigation';
 import {getLanguageTypeFromText} from '@/utils/browserInfo';
 import {supabase} from '@/utils/supabaseClient';
 import {RootState} from '@/redux-store/ReduxStore';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {BoldRuby, BoldStar, LineArrowRight, LineSetting, LineWallet, VerifiedLabel} from '@ui/Icons';
+import {Avatar} from '@mui/material';
 
 interface HamburgerBarProps {
   open: boolean;
@@ -107,22 +108,72 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
     );
   };
 
+  const routeProfile = async () => {
+    const jwtToken = localStorage.getItem('jwt');
+    console.log('jwtToken : ', jwtToken);
+    if (!jwtToken) {
+      pushLocalizedRoute('/auth', router);
+      return;
+    }
+
+    const res = await getAuth();
+    console.log('auth res :', res);
+    if (res?.resultCode != 0) {
+      pushLocalizedRoute('/auth', router);
+      return;
+    } else {
+      if (!res?.data?.profileSimpleInfo) {
+        console.error('/auth에서 profileSimpleInfo 못받음');
+        return;
+      }
+
+      const profile = res?.data?.profileSimpleInfo;
+
+      dispatch(updateProfile(profile));
+      pushLocalizedRoute('/profile/' + profile?.urlLinkKey, router);
+    }
+  };
+  async function OpenSelectProfile() {
+    const isLogin = await isLogined();
+    if (!isLogin) return;
+
+    // dataUserDropDown.drawerProfileOpen = true;
+    // setUserDropDown({...dataUserDropDown});
+  }
+
+  const handleUserLogout = async () => {
+    try {
+      // Sign out from the app
+      //await signOut({callbackUrl: process.env.NEXT_PUBLIC_APP_URL});
+      await supabase.auth.signOut();
+      setAuth(null);
+      localStorage.removeItem('jwt');
+      dispatch(updateProfile(null));
+    } catch (error) {
+      console.error(error);
+
+      // Show above error in a toast like following
+      // toastService.error((err as Error).message)
+    }
+  };
+
   return (
     <Drawer open={open} onClose={onClose} anchor={isLeft ? 'left' : 'right'} classes={{paper: styles.drawerPaper}}>
       <div className={styles.drawerContent}>
         {/* 프로필 섹션 */}
-        <div
-          className={styles.profileSection}
-          onClick={() => {
-            // dataUserDropDown.onClick();
-          }}
-        >
+        <div className={styles.profileSection} onClick={routeProfile}>
           <div className={styles.profileArea}>
-            <img
+            <Avatar
+              alt={auth?.user?.email || ''}
+              src={dataProfile.currentProfile?.iconImageUrl || ''}
+              // onClick={routeProfile}
+              className={styles.profileImage}
+            />
+            {/* <img
               src={dataProfile.currentProfile?.iconImageUrl || ''}
               alt={auth?.user?.email || ''}
               className={styles.profileImage}
-            />
+            /> */}
             <div className={styles.profileBox}>
               <div className={styles.profileInfo}>
                 <div className={styles.profileNameArea}>
@@ -189,7 +240,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
               {renderMenuItem('', 'Terms and Policies', () => {}, 1)}
             </>
           )}
-          {renderMenuItem('', 'Logout', () => {})}
+          {renderMenuItem('', 'Logout', handleUserLogout)}
         </ul>
       </div>
       {languageOpen && <>Language 작업?</>}
