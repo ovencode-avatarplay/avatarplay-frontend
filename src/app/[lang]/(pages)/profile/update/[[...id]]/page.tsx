@@ -2,7 +2,7 @@
 import {BoldArrowLeft, BoldMenuDots, LineArrowDown, LineArrowLeft, LineClose, LineUpload} from '@ui/Icons';
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import styles from './ProfileUpdate.module.scss';
-import {useForm} from 'react-hook-form';
+import {useFieldArray, useForm} from 'react-hook-form';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {Dialog, Drawer} from '@mui/material';
 import cx from 'classnames';
@@ -85,7 +85,14 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
     trigger,
     clearErrors,
     formState: {errors, isSubmitted},
-  } = useForm<UpdatePdInfoReq>();
+  } = useForm<UpdatePdInfoReq>({
+    defaultValues: {
+      interests: [],
+      skills: [],
+      pdPortfolioInfoList: [],
+    },
+  });
+
   const [data, setData] = useState<DataProfileUpdateType>({
     thumbnail: null,
     dragStatus: DragStatusType.OuterClick,
@@ -137,6 +144,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
       ...data,
       profileId: profileId,
     };
+    console.log('dataUpdatePdInfo : ', dataUpdatePdInfo);
     await updatePdInfo(dataUpdatePdInfo);
     routerBack();
   };
@@ -158,10 +166,11 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
         const index = res?.data?.interests.findIndex(v => v == tag);
         if (index >= 0) {
           data.dataInterests.tagList[index].isActive = true;
-          setValue(`interests.${index}`, tag, {shouldValidate: false});
         }
       }
     }
+    const interests = data.dataInterests.tagList.filter(v => v.isActive).map(v => v.value);
+    setValue('interests', interests);
 
     setValue(`skills`, []);
     if (res?.data?.skills) {
@@ -171,16 +180,16 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
         const index = res?.data?.skills.findIndex(v => v == tag);
         if (index >= 0) {
           data.dataSkills.tagList[index].isActive = true;
-          setValue(`skills.${index}`, tag, {shouldValidate: false});
         }
       }
     }
+    const skills = data.dataSkills.tagList.filter(v => v.isActive).map(v => v.value);
+    setValue('skills', skills);
 
     const portfolioInfoList = res?.data?.pdPortfolioInfoList || [];
-    for (let i = 0; i < portfolioInfoList.length; i++) {
-      const value = portfolioInfoList[i];
-      setValue(`pdPortfolioInfoList.${i}`, value);
-    }
+    setValue(`pdPortfolioInfoList`, portfolioInfoList, {
+      shouldValidate: false,
+    });
     data.dataPortfolio.dataList = portfolioInfoList;
 
     setValue('name', res?.data?.name || '', {shouldValidate: false}); // API 데이터로 값 설정
@@ -190,6 +199,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
     setValue('url', res?.data?.url || '', {shouldValidate: false}); // API 데이터로 값 설정
     data.triggerError = true;
     setData({...data});
+    console.log('1 update ');
   };
 
   useEffect(() => {
@@ -303,6 +313,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
   };
 
   const checkValid = async () => {
+    const list = getValues('pdPortfolioInfoList');
     const isValid = await trigger(undefined, {shouldFocus: false});
     const countValidTotal = Object.keys(control._fields || {}).length;
     const countValidError = Object.keys(errors).length;
@@ -417,7 +428,15 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               <img src={'/ui/profile/update/icon_select.svg'} alt="" />
             </div>
             <div className={styles.tagWrap}>
-              {!watch('interests') && <input type="hidden" {...register(`interests`, {required: true})} />}
+              <input
+                type="hidden"
+                {...register(`interests`, {
+                  required: true,
+                  validate: {
+                    array: value => (value?.length || 0) > 0,
+                  },
+                })}
+              />
 
               {data.dataInterests.tagList.map((one, index) => {
                 if (!one.isActive) return;
@@ -425,14 +444,16 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 return (
                   <div className={styles.tag} key={index}>
                     <div className={styles.value}>
-                      <input value={one.value} type="hidden" {...register(`interests.${index}`, {required: true})} />
+                      {/* <input value={one.value} type="hidden" {...register(`interests.${index}`, {required: true})} /> */}
                       {one.value}
                     </div>
                     <div
                       className={styles.btnRemoveWrap}
                       onClick={e => {
-                        unregister(`interests.${index}`);
                         data.dataInterests.tagList[index].isActive = false;
+
+                        const interests = data.dataInterests.tagList.filter(v => v.isActive).map(v => v.value);
+                        setValue('interests', interests);
                         setData({...data});
                         checkValid();
                       }}
@@ -457,22 +478,30 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               <img src={'/ui/profile/update/icon_select.svg'} alt="" />
             </div>
             <div className={cx(styles.tagWrap)}>
-              {!watch('skills') && <input type="hidden" {...register(`skills`, {required: true})} />}
+              <input
+                type="hidden"
+                {...register(`skills`, {
+                  required: true,
+                  validate: {
+                    array: value => (value?.length || 0) > 0,
+                  },
+                })}
+              />
               {data.dataSkills.tagList.map((one, index) => {
                 if (!one.isActive) return;
 
                 return (
                   <div className={styles.tag} key={index}>
                     <div className={styles.value}>
-                      <input value={one.value} type="hidden" {...register(`skills.${index}`, {required: true})} />
+                      {/* <input value={one.value} type="hidden" {...register(`skills.${index}`, {required: true})} /> */}
                       {one.value}
                     </div>
                     <div
                       className={styles.btnRemoveWrap}
                       onClick={e => {
-                        unregister(`skills.${index}`);
-                        setValue(`skills.${index}`, one.value);
                         data.dataSkills.tagList[index].isActive = false;
+                        const skills = data.dataSkills.tagList.filter(v => v.isActive).map(v => v.value);
+                        setValue('skills', skills);
                         setData({...data});
                         checkValid();
                       }}
@@ -538,9 +567,15 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 Preview
               </div>
             </div>
-            <input {...register('pdPortfolioInfoList', {required: true})} type="hidden" />
-
-            {/* <div className={styles.uploadArea}> */}
+            <input
+              {...register('pdPortfolioInfoList', {
+                required: true,
+                validate: {
+                  array: value => (value?.length || 0) > 0,
+                },
+              })}
+              type="hidden"
+            />
             <Swiper
               className={styles.uploadArea}
               freeMode={true}
@@ -614,14 +649,9 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
             clearErrors('interests');
             data.dataInterests.tagList = dataChanged;
 
-            for (let i = 0; i < dataChanged.length; i++) {
-              if (!dataChanged[i].isActive) {
-                unregister(`interests.${i}`);
-              } else {
-                setValue(`interests.${i}`, dataChanged[i].value, {shouldValidate: false});
-                checkValid();
-              }
-            }
+            const interests = data.dataInterests.tagList.filter(v => v.isActive).map(v => v.value);
+            setValue('interests', interests);
+            checkValid();
             setData({...data});
           }}
         />
@@ -638,14 +668,10 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
             clearErrors('skills');
             data.dataSkills.tagList = dataChanged;
 
-            for (let i = 0; i < dataChanged.length; i++) {
-              if (!dataChanged[i].isActive) {
-                unregister(`skills.${i}`);
-              } else {
-                setValue(`skills.${i}`, dataChanged[i].value, {shouldValidate: false});
-                checkValid();
-              }
-            }
+            const skills = data.dataSkills.tagList.filter(v => v.isActive).map(v => v.value);
+            setValue('skills', skills);
+
+            checkValid();
             setData({...data});
           }}
         />
@@ -655,14 +681,11 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
           open={data.dataPortfolio.isOpenDrawer}
           onChange={dataList => {
             data.dataPortfolio.dataList = dataList;
-
             clearErrors('pdPortfolioInfoList');
-            setValue('pdPortfolioInfoList', []);
-            for (let i = 0; i < data.dataPortfolio.dataList.length; i++) {
-              const value = data.dataPortfolio.dataList[i];
-              setValue(`pdPortfolioInfoList.${i}`, value);
-            }
 
+            const portfolioList = data.dataPortfolio.dataList;
+            setValue('pdPortfolioInfoList', portfolioList);
+            checkValid();
             setData({...data});
           }}
           onClose={() => {
@@ -678,11 +701,9 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
           onChange={dataList => {
             data.dataPortfolio.dataList = dataList;
             clearErrors('pdPortfolioInfoList');
-            setValue('pdPortfolioInfoList', []);
-            for (let i = 0; i < data.dataPortfolio.dataList.length; i++) {
-              const value = data.dataPortfolio.dataList[i];
-              setValue(`pdPortfolioInfoList.${i}`, value);
-            }
+            const portfolioList = data.dataPortfolio.dataList;
+            setValue('pdPortfolioInfoList', portfolioList);
+            checkValid();
             setData({...data});
           }}
           onClose={() => {
@@ -725,8 +746,19 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
   });
 
   useEffect(() => {
+    refresh();
+  }, [dataList, id]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    refresh();
+  }, [open]);
+
+  const refresh = () => {
     let iconUrl = '';
     let description = '';
+    console.log('id : ', id);
     if (id != -1) {
       iconUrl = dataList[id]?.image_url || '';
       description = dataList[id]?.description || '';
@@ -735,13 +767,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
     setValue('description', description);
     data.iconUrl = iconUrl;
     setData({...data});
-  }, [dataList, id]);
-
-  useEffect(() => {
-    if (!open) return;
-
-    setData({...data});
-  }, [open]);
+  };
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -919,10 +945,14 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
               type="button"
               className={styles.cancelBtn}
               onClick={() => {
+                // onClose();
+                dataList.splice(id, 1);
+                setData({...data});
+                onChange(dataList);
                 onClose();
               }}
             >
-              Cancel
+              Delete
             </button>
             <button type="submit" className={styles.saveBtn}>
               Submit
@@ -1078,7 +1108,7 @@ const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListPopupTyp
                     <img className={styles.thumbnail} src={one.image_url} alt="" />
                     <div className={styles.description}>{one.description}</div>
                     <div className={styles.dateRegistration}>Date Registration 2025.02.10</div>
-                    <div className={styles.settingWrap}>
+                    {/* <div className={styles.settingWrap}>
                       <img
                         src={BoldMenuDots.src}
                         alt=""
@@ -1089,7 +1119,7 @@ const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListPopupTyp
                           setData({...data});
                         }}
                       />
-                    </div>
+                    </div> */}
                   </li>
                 );
               })}
