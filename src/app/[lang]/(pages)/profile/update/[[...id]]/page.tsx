@@ -631,7 +631,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                     }}
                   >
                     <div className={styles.thumbnailWrap}>
-                      <img src={one.image_url} alt="" />
+                      <img src={one.imageUrl} alt="" />
                     </div>
                   </SwiperSlide>
                 );
@@ -783,10 +783,10 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
     let description = '';
     console.log('id : ', id);
     if (id != -1) {
-      iconUrl = dataList[id]?.image_url || '';
+      iconUrl = dataList[id]?.imageUrl || '';
       description = dataList[id]?.description || '';
     }
-    setValue('image_url', iconUrl);
+    setValue('imageUrl', iconUrl);
     setValue('description', description);
     data.iconUrl = iconUrl;
     setData({...data});
@@ -835,7 +835,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             const resUpload = await sendUpload(dataUpload);
             const iconUrl = resUpload.data?.url || '';
             data.iconUrl = iconUrl;
-            setValue('image_url', iconUrl);
+            setValue('imageUrl', iconUrl);
             setData({...data});
           }
         }
@@ -872,7 +872,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
         const resUpload = await sendUpload(dataUpload);
         const iconUrl = resUpload.data?.url || '';
         data.iconUrl = iconUrl;
-        setValue('image_url', iconUrl);
+        setValue('imageUrl', iconUrl);
         setData({...data});
       }
     }
@@ -891,6 +891,8 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
     onChange(dataList);
     onClose();
   };
+
+  const isCreate = id == -1;
 
   return (
     <Drawer
@@ -913,7 +915,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
         <form onSubmit={onSubmit}>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload2">
-              <input {...register('image_url', {required: true})} type="hidden" />
+              <input {...register('imageUrl', {required: true})} type="hidden" />
               <input
                 className={styles.hidden}
                 id="file-upload2"
@@ -968,14 +970,17 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
               type="button"
               className={styles.cancelBtn}
               onClick={() => {
-                // onClose();
-                dataList.splice(id, 1);
-                setData({...data});
-                onChange(dataList);
-                onClose();
+                if (isCreate) {
+                  onClose();
+                } else {
+                  dataList.splice(id, 1);
+                  setData({...data});
+                  onChange(dataList);
+                  onClose();
+                }
               }}
             >
-              Delete
+              {isCreate ? 'Cancel' : 'Delete'}
             </button>
             <button type="submit" className={styles.saveBtn}>
               Submit
@@ -1126,11 +1131,14 @@ const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListPopupTyp
             <div className={styles.countPortfolio}>Portfolio {data.portfolioList.length}</div>
             <ul className={styles.itemList}>
               {data.portfolioList.map((one, index) => {
+                console.log('data : ', one);
+                const date = one?.createAt ? new Date(one?.createAt) : new Date();
+                const formattedDate = date.toLocaleDateString('ko-KR').replace(/-/g, '.');
                 return (
                   <li className={styles.item} key={index}>
-                    <img className={styles.thumbnail} src={one.image_url} alt="" />
+                    <img className={styles.thumbnail} src={one.imageUrl} alt="" />
                     <div className={styles.description}>{one.description}</div>
-                    <div className={styles.dateRegistration}>Date Registration 2025.02.10</div>
+                    <div className={styles.dateRegistration}>Date Registration {formattedDate}</div>
                     {/* <div className={styles.settingWrap}>
                       <img
                         src={BoldMenuDots.src}

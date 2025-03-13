@@ -418,7 +418,8 @@ export interface UpdatePdInfoReq {
 export interface PdPortfolioInfo {
   id: number;
   description: string;
-  image_url: string;
+  imageUrl: string;
+  createAt: Date;
 }
 
 export interface UpdatePdInfoRes {}
