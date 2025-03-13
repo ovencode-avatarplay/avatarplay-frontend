@@ -1,0 +1,132 @@
+.customModuleContainer
+{
+    width: var(--second-width);
+    margin: auto 16px;
+
+}
+
+
+
+.addButton
+{
+    cursor: pointer;
+    
+    width: 100%;
+    display: flex;
+    padding: 13px 0px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex: 1 0 0; 
+    
+    border-radius: 10px;
+    border: 1px dashed var(--Neutral-400, #BDC1C6);
+    background: var(--White, #FFF);
+}
+
+.addIcon
+{
+    display: flex;
+    width: 20px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+
+    filter: var(--black-icon-filter);
+}
+
+.addButtonText
+{
+    color: var(--Black, #000);
+    text-align: center;
+    font-family: Lato;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 155%; /* 20.15px */
+}
+
+.customModuleList
+{
+    display: flex;
+    flex-direction: column;
+
+    height: calc(100vh - 300px);
+
+    margin-top: 14px;
+
+    gap: 6px;
+    overflow-y: scroll;
+}
+
+
+.customModuleList::-webkit-scrollbar {
+    display: none;  
+}
+  
+.customModuleList {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+}
+
+
+.customModuleItem
+{
+    cursor: pointer;
+
+    display: flex;
+    height: 46px;
+    padding: 14px 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    align-self: stretch;
+
+    border-radius: 10px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--Neutral-50, #F8F9FA);
+}
+
+.itemName
+{
+    flex: 1 0 0;
+    
+    color: var(--Black, #000);
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 160%; /* 24px */
+}
+
+.itemUpdateAt
+{
+    flex: 1 0 0;
+
+    color: var(--Black, #000);
+    text-align: right;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%; /* 24px */
+}
+
+.deleteButton
+{
+    cursor: pointer;
+
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.deleteIcon
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);
+}

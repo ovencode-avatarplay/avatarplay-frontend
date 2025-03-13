@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './CustomSplitter.module.css';
 
 interface Splitter {
@@ -16,6 +16,7 @@ interface SplittersProps {
   splitterStyle?: React.CSSProperties;
   headerStyle?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
+  itemStyle?: React.CSSProperties;
   isDark?: boolean;
   placeholderWidth?: string;
 }
@@ -27,11 +28,14 @@ const Splitters: React.FC<SplittersProps> = ({
   splitterStyle,
   headerStyle,
   contentStyle,
+  itemStyle,
   isDark = false,
   placeholderWidth = '50vw',
 }) => {
   const [activeSplitter, setActiveSplitter] = useState(initialActiveSplitter);
-
+  useEffect(() => {
+    setActiveSplitter(initialActiveSplitter);
+  }, [initialActiveSplitter]);
   const calculateMaxWidth = () => {
     if (placeholderWidth.endsWith('vw')) {
       const vwValue = parseFloat(placeholderWidth.replace('vw', ''));
@@ -51,19 +55,21 @@ const Splitters: React.FC<SplittersProps> = ({
               style={{width: placeholderWidth, maxWidth: calculateMaxWidth()}}
             ></div>
           ) : (
-            <div
-              key={index}
-              className={`${styles.splitterLabel} ${activeSplitter === index ? styles.activeSplitter : ''} ${
-                isDark ? styles.darkSplitterLabel : ''
-              } ${splitter.isDisabled ? styles.disabledSplitter : ''}`}
-              onClick={() => {
-                if (!splitter.isDisabled) {
-                  setActiveSplitter(index);
-                  if (onSelectSplitButton) onSelectSplitButton(index);
-                }
-              }}
-            >
-              {splitter.label}
+            <div className={styles.splitterItem} style={itemStyle}>
+              <div
+                key={index}
+                className={`${styles.splitterLabel} ${activeSplitter === index ? styles.activeSplitter : ''} ${
+                  isDark ? styles.darkSplitterLabel : ''
+                } ${splitter.isDisabled ? styles.disabledSplitter : ''}`}
+                onClick={() => {
+                  if (!splitter.isDisabled) {
+                    setActiveSplitter(index);
+                    if (onSelectSplitButton) onSelectSplitButton(index);
+                  }
+                }}
+              >
+                {splitter.label}
+              </div>
               {activeSplitter === index && (
                 <div className={`${styles.splitterDivider} ${isDark ? styles.darkDivider : ''}`}></div>
               )}

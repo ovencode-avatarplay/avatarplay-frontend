@@ -1,15 +1,9 @@
 import styles from './PublishCharacter.module.css';
 
 import {useEffect, useState} from 'react';
-import {
-  CreateCharacter2Req,
-  CreateCharacterReq,
-  sendCreateCharacter,
-  sendCreateCharacter2,
-} from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 
-import emptyContentInfo from '@/data/create/empty-content-info-data.json';
+import emptyContentInfo from '@/data/create/empty-story-info-data.json';
 
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomInput from '@/components/layout/shared/CustomInput';
@@ -17,7 +11,6 @@ import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import CustomSettingButton from '@/components/layout/shared/CustomSettingButton';
 import {LineDelete} from '@ui/Icons';
-import {getCurrentLanguage} from '@/utils/UrlMove';
 
 interface PublishCharacterProps {
   characterInfo: Partial<CharacterInfo>;
@@ -44,7 +37,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
   const [loading, setLoading] = useState(false);
 
   const defaultCharacterInfo: CharacterInfo =
-    emptyContentInfo.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo;
+    emptyContentInfo.data.storyInfo.chapterInfoList[0].episodeInfoList[0].characterInfo;
 
   const mergedCharacterInfo: CharacterInfo = {
     ...defaultCharacterInfo,
@@ -101,44 +94,36 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
 
     try {
       // 사용자의 입력 데이터를 수집하여 CreateCharacterReq로 구성
-      const req: CreateCharacter2Req = {
-        languageType: getCurrentLanguage(),
-        characterInfo: {
-          ...emptyContentInfo.data.contentInfo.chapterInfoList[0].episodeInfoList[0].characterInfo,
-
-          id: currentCharacter.id ?? 0,
-          name: characterName,
-          introduction: characterIntroduction,
-          description: characterDescription,
-
-          worldScenario: currentCharacter.worldScenario,
-          greeting: currentCharacter.greeting,
-          secret: currentCharacter.secret,
-
-          genderType: currentCharacter.genderType,
-          mainImageUrl: currentCharacter.mainImageUrl,
-
-          visibilityType: visibilityType,
-          isMonetization: monetization,
-          state: 1,
-
-          characterIP: 0,
-          createAt: '2025-02-06T06:22:46.701Z',
-          nSFW: false,
-        },
-        debugParameter: debugparam,
-      };
-
+      // const req: CreateCharacter2Req = {
+      //   languageType: getCurrentLanguage(),
+      //   characterInfo: {
+      //     ...emptyContentInfo.data.storyInfo.chapterInfoList[0].episodeInfoList[0].characterInfo,
+      //     id: currentCharacter.id ?? 0,
+      //     name: characterName,
+      //     introduction: characterIntroduction,
+      //     description: characterDescription,
+      //     worldScenario: currentCharacter.worldScenario,
+      //     // greeting: currentCharacter.greeting,
+      //     secret: currentCharacter.secret,
+      //     genderType: currentCharacter.genderType,
+      //     mainImageUrl: currentCharacter.mainImageUrl,
+      //     visibilityType: visibilityType,
+      //     isMonetization: monetization,
+      //     state: 1,
+      //     characterIP: 0,
+      //     createAt: '2025-02-06T06:22:46.701Z',
+      //     nsfw: false,
+      //   },
+      //   debugParameter: debugparam,
+      // };
       // API 호출
-      const response = await sendCreateCharacter2(req);
-
-      if (response.data) {
-        console.log('Character created successfully:', response.data);
-
-        publishFinishAction();
-      } else {
-        throw new Error('Character creation failed.');
-      }
+      // const response = await sendCreateCharacter(req);
+      // if (response.data) {
+      //   console.log('Character created successfully:', response.data);
+      //   publishFinishAction();
+      // } else {
+      //   throw new Error('Character creation failed.');
+      // }
     } catch (error) {
       console.error('Error creating character:', error);
     } finally {
@@ -209,7 +194,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
             }}
             maxPromptLength={1000}
           />
-          <MaxTextInput
+          {/* <MaxTextInput
             displayDataType={displayType.Label}
             labelText="Greeting"
             promptValue={currentCharacter.greeting || ''}
@@ -219,7 +204,7 @@ const PublishCharacter: React.FC<PublishCharacterProps> = ({
               setCurrentCharacter({...currentCharacter});
             }}
             maxPromptLength={1000}
-          />
+          /> */}
           <MaxTextInput
             displayDataType={displayType.Label}
             labelText="Secrets"

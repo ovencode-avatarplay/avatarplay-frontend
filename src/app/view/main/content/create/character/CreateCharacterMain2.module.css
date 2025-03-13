@@ -1,0 +1,415 @@
+.characterContainer
+{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    display: flex;
+    flex-direction: column;
+    height: 100vh; 
+    width: var(--full-width);
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+
+
+.createCharacterArea
+{
+    display: flex;
+    flex-direction: column;
+    width: var(--second-width);
+    margin:0  16px;
+    gap: 14px;
+    height: 100vh; 
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.createCharacterArea::-webkit-scrollbar {
+    display: none;  
+}
+  
+.createCharacterArea {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+}
+
+.thumbnailArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch
+    
+}
+
+.title2
+{
+    display: flex;
+    height: 22px;
+    flex-direction: row;
+    justify-content: start;
+    align-self: stretch;
+    
+    color: var(--Black, #000);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 155%; /* 21.7px */
+}
+
+.thumbnailButtonArea
+{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+
+    align-items: end;
+}
+
+.thumbnailButton
+{
+    width: 100px;
+    height: 100px;
+
+    border-radius: 12px;
+
+
+}
+
+.thumbnailImage
+{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.thumbnailImage.emptyImage
+{ 
+    border-radius: 10px;
+    border: 1px dashed var(--Neutral-400, #BDC1C6);
+    background: var(--White, #FFF);
+    cursor: pointer;
+}
+
+.emptyImageButton
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    gap: 4px;
+}
+.uploadImage
+{
+    display: flex;
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);
+}
+
+.createImageText
+{
+
+    color: var(--Black, #000);
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: -0.28px;
+
+}
+
+.uploadIcon {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) saturate(100%);
+  }
+
+.editButton
+{
+    cursor: pointer;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    border: 1px solid white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+
+.editIcon
+{
+    display: flex;
+    width: 14px;
+    height: 14px;
+    padding: 1.963px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+ 
+.floatButtonArea
+{
+    bottom: 8px;
+    position: fixed;
+    display: flex;
+    width: var(--second-width);
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 16px;
+    margin-right: 16px;
+    gap: 12px;
+} 
+
+.floatButton
+{
+    width: var(--second-width);
+}
+
+.verticalButtonGroup {
+    display: flex;
+    width: var(--second-width);
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 30px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;  
+}
+  
+.uploadButton
+{
+    width: 100%;
+    display: flex;
+    padding: var(--Gap-and-Padding-Positive-GapPadding-16, 16px) var(--Gap-and-Padding-Positive-GapPadding-24, 24px) var(--Gap-and-Padding-Positive-GapPadding-16, 16px) var(--Gap-and-Padding-Positive-GapPadding-20, 20px);
+    align-items: center;
+    gap: 18px;
+    align-self: stretch;      
+    
+    border-radius: 12px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--Neutral-50, #F8F9FA);
+      
+    color: var(--Black, #000);
+    text-align: justify;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 160%;     
+
+    cursor: pointer;
+  }
+    
+.uploadButton:hover
+{
+    border-radius: 12px;
+    background: var(--Neutral-800, #2C3131);
+      
+    color: var(--White, #FFF);
+}
+  
+.uploadButton > .buttonIconBack
+{
+    display: flex;
+    width: 50px;
+    height: 50px;
+    padding: 13px;
+    justify-content: center;
+    align-items: center;
+    
+    border-radius: 100px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: #FFF;
+}
+    
+    
+.uploadButton > .buttonIconBack > .buttonIcon
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    filter: var(--black-icon-filter);
+}
+
+.horizontalButtonGroup {
+    width: var(--second-width); 
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    flex-wrap: wrap;
+}
+
+.horizonSwiper
+{
+  width: calc(var(--full-width) - 16px);
+
+}
+
+.imageTypeArea
+{
+    width: var(--full-width);
+    height: calc(100% - 58px);
+    margin: 0;
+    margin-bottom: 20px;
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.imageTypeArea::-webkit-scrollbar {
+    display: none;  
+}
+  
+.imageTypeArea {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+}
+
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+  
+.modalContainer {
+    display: flex;
+    width: 320px;
+    max-height: var(--sds-size-icon-small);
+    padding: 32px;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+
+    
+    background-color: white; 
+    border-radius: 24px;
+    
+    z-index: 1001;
+}
+  
+.imageUploadTitleArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    gap: 18px;
+    align-self: stretch; 
+}
+
+.imageUploadTitle
+{
+    justify-self: center;
+    color: var(--Black, #000);
+    text-align: center;    
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 120%; /* 25.2px */
+    letter-spacing: -0.42px;
+}
+
+.imageUploadDesc
+{
+    justify-self: center;
+    color: var(--Neutral-600, #80868B);
+    text-align: center;
+    font-size: var(--sds-typography-body-size-small);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%; /* 19.6px */
+}
+
+.uploadImageTypeArea
+{
+    width: 100%;
+    height: calc(100% - 58px);
+    margin: 0;
+    margin-bottom: 20px;
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.uploadImageTypeArea::-webkit-scrollbar {
+    display: none;  
+}
+  
+.uploadImageTypeArea {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+}
+
+
+.uploadModalButtonGroup
+{
+    display: flex;
+    width: 100%; 
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;  
+}
+
+.uploadModalButton
+{
+    width: 100%;
+}
+
+.dashboardButton
+{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+
+    margin-right: 21px;
+}
+
+.dashboardIcon
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);
+
+}
+
+.astrisk
+{
+    color: var(--Secondary-Red-1, #F75555);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 155%;
+
+}

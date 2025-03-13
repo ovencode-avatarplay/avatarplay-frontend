@@ -9,9 +9,18 @@ interface CustomDrawerProps extends Omit<DrawerProps, 'onClose' | 'open'> {
   title?: string;
   children: React.ReactNode;
   contentStyle?: React.CSSProperties;
+  customTitle?: string;
 }
 
-const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, title, contentStyle, ...rest}) => {
+const CustomDrawer: React.FC<CustomDrawerProps> = ({
+  open,
+  onClose,
+  children,
+  title,
+  contentStyle,
+  customTitle,
+  ...rest
+}) => {
   const [startY, setStartY] = useState<number | null>(null);
   const [translateY, setTranslateY] = useState(0);
 
@@ -42,6 +51,9 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, tit
       anchor="bottom"
       open={open}
       onClose={onClose}
+      ModalProps={{
+        style: {zIndex: 3000}, // 원하는 값으로 변경
+      }}
       PaperProps={{
         className: styles.drawerContainer,
         style: {
@@ -61,7 +73,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({open, onClose, children, tit
         <div className={styles.handleArea}>
           <div className={styles.handle} />
         </div>
-        {title && title !== '' && <div className={styles.titleArea}>{title}</div>}
+        {title && title !== '' && <div className={`${styles.titleArea} ${customTitle}`}>{title}</div>}
         <div className={styles.contentArea} style={contentStyle}>
           {children}
         </div>

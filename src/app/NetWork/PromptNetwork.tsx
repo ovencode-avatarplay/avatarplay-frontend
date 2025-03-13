@@ -2,6 +2,21 @@
 
 import api, {ResponseAPI} from './ApiInstance';
 
+export interface CustomModulesInfo {
+  selectPromptId: number;
+  selectLorebookId: number;
+}
+
+export interface PromptInfo {
+  id: number;
+  name: string;
+}
+
+export interface LorebookInfo {
+  id: number;
+  name: string;
+}
+
 // 채팅 프롬프트 템플릿 요청
 export interface ReqPromptTemplate {}
 

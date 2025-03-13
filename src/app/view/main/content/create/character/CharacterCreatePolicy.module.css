@@ -1,0 +1,474 @@
+.policyContainer
+{
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   gap: 14px;
+   align-self: stretch;
+
+   overflow-x: hidden;
+   overflow-y: scroll;
+
+   margin-top: 14px;
+   margin-bottom: calc(46px + 20px + 43px);
+
+}
+
+.policyContainer::-webkit-scrollbar {
+  display: none;  
+}
+
+.policyContainer {
+  scrollbar-width: none;  
+  -ms-overflow-style: none;  
+}
+
+.dropDownArea 
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+    width: 100%;
+}
+
+.subButton
+{
+    display: flex;
+    width: 60px;
+    height: 24px;
+    padding: 0px 7px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    
+    border-radius: 999px;
+    background: var(--Black, #000);
+    
+    color: var(--White, #FFF);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
+
+    cursor: pointer;
+}
+
+.drawerTitleArea
+{
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    position: relative;
+    width: 100%;
+}
+
+
+.drawerTitle 
+{
+    color: var(--Black, #000);
+    text-align: center; 
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.infoButton
+{
+    position: absolute;
+    right: 16px; 
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.infoIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.title2
+{
+    display: flex;
+    flex-direction: row;
+    color: var(--Neutral-900, #040415);
+    font-feature-settings: 'liga' off, 'clig' off;    
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px; /* 114.286% */
+    letter-spacing: -0.4px;
+}
+
+.selectItem
+{
+    display: flex;
+    width: 100%;
+    height: 46px;
+    padding: 14px 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    align-self: stretch;
+    
+    border-radius: 10px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--Neutral-50, #F8F9FA);
+}
+
+.selectItemText
+{
+    flex: 1 0 0;
+
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 120% */
+    letter-spacing: -0.4px;
+
+    white-space: nowrap;     
+    overflow: hidden;        
+    text-overflow: ellipsis; 
+}
+
+.selectItemButton
+{
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+}
+
+.selectItemIcon
+{
+    width: 24px;
+    height: 24px;
+
+    filter: var(--black-icon-filter);
+}
+
+.selectItemsArea1
+{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.selectItemsArea2
+{
+    display: inline-flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.tagContainer
+{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.blackTag
+{
+    display: flex;
+    height: 36px;
+    padding: 10px 18px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-radius: 100px;
+    border: 1px solid var(--Border-1, #EAECF0);
+    background: var(--Neutral-800, #2C3131);
+    color: #ffffff;
+}
+
+.lineClose
+{
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(1%) hue-rotate(157deg) brightness(102%) contrast(101%);
+    width: 12px;
+    height: 12px;
+}
+
+.blackTagContainer {
+    display: flex;
+    align-self: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+
+
+.radioButtonContainer
+{
+    display: flex;
+    width: var(--second-width);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.radioTitleArea
+{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    align-self: stretch;
+}
+.ipButtonArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    align-self: stretch;
+}
+
+.ipButton
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+}
+
+.ipMonetizationTag
+{
+    display: flex;
+    padding: 0px 7px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 999px;
+    background: var(--Neutral-200, #E8EAED);
+    
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
+}
+
+ 
+.operatorTitle
+{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.operatorList
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch; 
+}
+
+.operatorItem
+{
+    display: flex;
+    padding: 12px 0px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.operatorProfile
+{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: var(--sds-size-space-0);
+    align-items: center;
+}
+
+.operatorProfileState
+{
+    flex: 1 0 0;
+    color: var(--Black, #000);
+    text-align: right;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.26px;
+}
+
+
+.operatorProfileImage
+{
+    width: 100%;
+    height: 100%;
+
+    border-radius: 50%;
+}
+
+.operatorProfileTextArea
+{ 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 0 0;    
+}
+
+.operatorProfileText
+{
+    color: var(--Black, #000);
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.3px;
+}
+
+.inviteDrawerContainer
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.inviteInputArea
+{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+    align-self: stretch;
+}
+
+.inviteInput
+{
+    width: 100%;
+}
+
+.inviteLinkArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+}
+
+.inviteLinkInputArea
+{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+    align-self: stretch;
+}
+
+.verticalRadioButtonArea
+{
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    align-self: stretch;
+}
+
+.bigTitle
+{
+    color: var(--Black, #000);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 155%; /* 24.8px */
+
+}
+
+.membershipPlanArea
+{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+ 
+
+.voiceSettingArea
+{
+    display: flex;
+    width: var(--second-width);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    margin-bottom: 40px;
+}
+
+.voiceSettingTitleArea
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.titleVoice
+{
+    flex: 1 0 0;
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off; 
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 16px; /* 114.286% */
+    letter-spacing: -0.4px;
+}
+
+.voiceSettingDescArea
+{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 5px;
+}
+
+.voiceSettingText
+{
+    color: var(--Black, #000); 
+    font-feature-settings: 'liga' off, 'clig' off; 
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 21px */
+}
+
+.commentInputArea
+{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+}
+.commentTitleArea
+{
+    display: flex;
+    flex-direction: row;
+}
+
+.titleAstrisk
+{
+    color: var(--Secondary-Red-1, #F75555);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: -0.4px;
+}

@@ -2,6 +2,9 @@ import axios, {AxiosResponse} from 'axios';
 import api, {ResponseAPI} from './ApiInstance';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {FeedInfo} from './ShortsNetwork';
+import {CharacterIP, DeleteCharacterRes} from './CharacterNetwork';
+import {ContentType} from './ContentNetwork';
+import {InteractionType} from './CommonNetwork';
 
 export interface GetProfileListRes {
   profileList: ProfileSimpleInfo[];
@@ -9,17 +12,21 @@ export interface GetProfileListRes {
 
 export interface ProfileSimpleInfo {
   profileId: number;
+  profileTabType: ProfileTabType;
+  operatorAuthorityType: OperatorAuthorityType;
   profileType: ProfileType;
   name: string;
+  description?: string;
   iconImageUrl: string;
-  operatorAuthorityType: OperatorAuthorityType;
+  nsfw: boolean;
+  urlLinkKey: string;
 }
 
 export enum OperatorAuthorityType {
-  None,
-  Owner,
-  CanEdit,
-  OnlyComments,
+  None = 0,
+  Owner = 1,
+  CanEdit = 2,
+  OnlyComments = 3,
 }
 
 export enum ProfileType {
@@ -29,17 +36,23 @@ export enum ProfileType {
   Channel = 3,
 }
 
-export const getProfileList = async () => {
-  const data = {};
+export interface GetMyProfileListReq {
+  profileTabType: ProfileTabType;
+}
+
+export const getProfileList = async (profileTabType: ProfileTabType = ProfileTabType.My) => {
+  const data: GetMyProfileListReq = {
+    profileTabType,
+  };
   try {
     const resProfileList: AxiosResponse<ResponseAPI<GetProfileListRes>> = await api.post(
       `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getMyList`,
-      {},
+      data,
     );
     if (resProfileList.status != 200) return;
     return resProfileList.data?.data?.profileList;
   } catch (e) {
-    alert('api 에러' + e);
+    // alert('api 에러' + e);
   }
 };
 
@@ -96,7 +109,7 @@ export enum FeedMediaType {
 
 export interface GetProfileInfoReq {
   languageType: string;
-  profileId: number;
+  urlLinkKey: string;
 }
 
 export interface GetProfileInfoRes {
@@ -118,6 +131,9 @@ export interface ProfileInfo {
   followerCount: number;
   followingCount: number;
   followState: FollowState;
+  urlLinkKey: string;
+  pdProfileUrlLinkKey: string;
+  characterUrlLinkKey: string;
 }
 
 export enum FollowState {
@@ -131,9 +147,24 @@ export interface ProfileTabItemInfo {
   mediaState: MediaState;
   mediaUrl: string;
   likeCount: number;
+  dislikeCount: number;
   mediaCount: number;
+  contentCount: number;
+  memberCount: number;
   playTime: string;
   isFavorite: boolean;
+  characterIP: CharacterIP;
+  sharedItemType: SharedItemType;
+  createAt: string;
+  isPinFix: boolean;
+  urlLinkKey: string;
+  contentType: ContentType;
+}
+
+export enum SharedItemType {
+  None = 0,
+  Character = 1,
+  Channel = 2,
 }
 
 export enum MediaState {
@@ -143,10 +174,10 @@ export enum MediaState {
   Audio = 3,
 }
 
-export const getProfileInfo = async (profileId: number) => {
+export const getProfileInfo = async (urlLinkKey: string) => {
   const data: GetProfileInfoReq = {
     languageType: getCurrentLanguage(),
-    profileId: profileId,
+    urlLinkKey: urlLinkKey,
   };
   try {
     const resProfileSelect: AxiosResponse<ResponseAPI<GetProfileInfoRes>> = await api.post(
@@ -164,8 +195,14 @@ export interface GetPdTabInfoeReq {
   feedMediaType: FeedMediaType;
   feedSortType: ExploreSortType;
   languageType: string;
-  profileId: number;
+  profileUrlLinkKey: string;
   tabType: PdProfileTabType;
+  page: PaginationRequest;
+}
+
+export interface PaginationRequest {
+  offset: number;
+  limit: number;
 }
 
 export enum PdProfileTabType {
@@ -179,41 +216,27 @@ export interface GetPdTabInfoeRes {
   feedInfoList: FeedInfo[];
   channelInfoList: ProfileTabItemInfo[];
   characterInfoList: ProfileTabItemInfo[];
+  sharedInfoList: ProfileTabItemInfo[];
 }
 
-// export interface FeedInfo {
-//     id: number;
-//     profileId: number;
-//     urlLinkKey: string;
-//     mediaState: MediaState;
-//     mediaUrlList: string[];
-//     description: string;
-//     hashTag: string;
-//     commentCount: number;
-//     likeCount: number;
-//     isLike: boolean;
-//     isDisLike: boolean;
-//     isBookmark: boolean;
-//     isFollowing: boolean;
-//     playTime: string;
-//     characterProfileId: number;
-//     characterProfileName: string;
-//     characterProfileUrl: string;
-//     createAt: string;
-// }
-
 export const getProfilePdTabInfo = async (
-  profileId: number,
+  profileUrlLinkKey = '',
   tabType: PdProfileTabType,
   feedSortType: ExploreSortType = ExploreSortType.Newest,
   feedMediaType: FeedMediaType = FeedMediaType.Total,
+  offset: number = 0,
+  limit: number = 10,
 ) => {
   const data: GetPdTabInfoeReq = {
     feedSortType: feedSortType,
     feedMediaType: feedMediaType,
     languageType: getCurrentLanguage(),
-    profileId: profileId,
+    profileUrlLinkKey: profileUrlLinkKey,
     tabType: tabType,
+    page: {
+      offset: offset,
+      limit: limit,
+    },
   };
   try {
     const resProfileSelect: AxiosResponse<ResponseAPI<GetPdTabInfoeRes>> = await api.post(
@@ -232,35 +255,45 @@ export interface GetCharacterTabInfoeReq {
   feedMediaType: FeedMediaType;
   feedSortType: ExploreSortType;
   languageType: string;
-  profileId: number;
+  profileUrlLinkKey: string;
   tabType: CharacterProfileTabType;
+  page: PaginationRequest;
 }
 
 export enum CharacterProfileTabType {
   Feed = 0,
   Contents = 1,
   Story = 2,
-  Joined = 3,
+  Character = 3,
+  Game = 4,
 }
 
 export interface GetCharacterTabInfoeRes {
   feedInfoList: FeedInfo[];
-  contentsInfoList: ProfileTabItemInfo[];
   storyInfoList: ProfileTabItemInfo[];
+  characterInfoList: ProfileTabItemInfo[];
+  channelInfoList: ProfileTabItemInfo[];
+  contentInfoList: ProfileTabItemInfo[];
 }
 
 export const getProfileCharacterTabInfo = async (
-  profileId: number,
+  profileUrlLinkKey: string = '',
   tabType: CharacterProfileTabType,
   feedSortType: ExploreSortType = ExploreSortType.Newest,
   feedMediaType: FeedMediaType = FeedMediaType.Total,
+  offset: number = 0,
+  limit: number = 10,
 ) => {
   const data: GetCharacterTabInfoeReq = {
     feedMediaType: feedMediaType,
     feedSortType: feedSortType,
     languageType: getCurrentLanguage(),
-    profileId: profileId,
+    profileUrlLinkKey: profileUrlLinkKey,
     tabType: tabType,
+    page: {
+      offset: offset,
+      limit: limit,
+    },
   };
   try {
     const resProfileSelect: AxiosResponse<ResponseAPI<GetCharacterTabInfoeRes>> = await api.post(
@@ -307,6 +340,352 @@ export const followProfile = async (profileId: number, isFollow: boolean) => {
     return res.data?.data;
   } catch (e) {
     console.error('Follow API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface InviteProfileReq {
+  languageType: string;
+  search: string;
+  operatorAuthorityType: OperatorAuthorityType;
+}
+
+export interface InviteProfileRes {
+  inviteProfileInfo: ProfileSimpleInfo;
+}
+
+export const sendInviteProfileReq = async (payload: InviteProfileReq) => {
+  try {
+    const res = await api.post<ResponseAPI<InviteProfileRes>>('Profile/invite', payload);
+
+    if (res.status !== 200) {
+      console.error('Follow API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('Follow API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface SearchProfileReq {
+  search: string;
+}
+
+export enum SearchProfileType {
+  CreateCharacter = 0,
+  CreateChannel = 1,
+}
+
+export interface SearchProfileRes {
+  memberProfileList: ProfileInfo[];
+}
+
+export const sendSearchProfileReq = async (payload: SearchProfileReq) => {
+  try {
+    const res = await api.post<ResponseAPI<SearchProfileRes>>('Profile/search', payload);
+
+    if (res.status !== 200) {
+      console.error('Follow API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('Follow API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface UpdatePdInfoReq {
+  profileId: number;
+  name: string;
+  iconUrl: string;
+  introduce: string;
+  interests: string[];
+  skills: string[];
+  personalHistory: string;
+  honorAwards: string;
+  url: string;
+  pdPortfolioInfoList: PdPortfolioInfo[];
+}
+
+export interface PdPortfolioInfo {
+  id: number;
+  description: string;
+  image_url: string;
+}
+
+export interface UpdatePdInfoRes {}
+
+export const updatePdInfo = async (payload: UpdatePdInfoReq) => {
+  try {
+    const res = await api.post<ResponseAPI<UpdatePdInfoRes>>('Profile/updatePdInfo', payload);
+
+    if (res.status !== 200) {
+      console.error('UpdatePDInfo API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('UpdatePDInfo API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface GetPdInfoReq {
+  profileId: number;
+}
+
+export interface GetPdInfoRes {
+  profileId: number;
+  name: string;
+  iconUrl: string;
+  introduce: string;
+  interests: string[];
+  skills: string[];
+  personalHistory: string;
+  honorAwards: string;
+  url: string;
+  pdPortfolioInfoList: PdPortfolioInfo[];
+}
+
+export const getPdInfo = async (payload: GetPdInfoReq) => {
+  try {
+    const res = await api.get<ResponseAPI<GetPdInfoRes>>('Profile/getPdInfo/' + `?profileId=${payload.profileId}`);
+
+    if (res.status !== 200) {
+      console.error('getPdInfo API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getPdInfo API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface GetSubscriptionListReq {
+  isValidSubscription: boolean;
+}
+
+export interface GetSubscriptionListRes {
+  subscriptionList: MembershipSubscribe[];
+}
+
+export interface MembershipSubscribe {
+  id: number;
+  profileId: number;
+  iconUrl: string;
+  name: string;
+  paymentType: PaymentType;
+  paymentAmount: number;
+  expireAt: string;
+}
+
+export enum PaymentType {
+  USD,
+  KRW,
+  EUR,
+  JPY,
+  GBP,
+}
+
+export const getSubscriptionList = async (payload: GetSubscriptionListReq) => {
+  try {
+    const res = await api.post<ResponseAPI<GetSubscriptionListRes>>('Profile/getSubscriptionList', payload);
+
+    if (res.status !== 200) {
+      console.error('getSubscriptionList API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getSubscriptionList API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface GetSubscribePaymentReq {
+  type: SubscriptionType;
+  paymentProfileId: number;
+}
+
+export interface GetSubscribePaymentRes {
+  paymentType: PaymentType;
+  paymentAmount: number;
+  benefit: string;
+}
+
+export enum SubscriptionType {
+  Contents = 1,
+  IP = 2,
+}
+
+export const getPaymentAmountMenu = async (payload: GetSubscribePaymentReq) => {
+  try {
+    const res = await api.post<ResponseAPI<GetSubscribePaymentRes>>('Profile/getSubscribePayment', payload);
+
+    if (res.status !== 200) {
+      console.error('getPaymentAmountMenu API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getPaymentAmountMenu API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface ProfileSubscribeReq {
+  profileId: number;
+}
+
+export interface ProfileSubscribeRes {}
+
+export const subscribeProfile = async (payload: ProfileSubscribeReq) => {
+  try {
+    const res = await api.post<ResponseAPI<ProfileSubscribeRes>>('Profile/subscribe', payload);
+
+    if (res.status !== 200) {
+      console.error('subscribeProfile API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('subscribeProfile API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface SubscribeCancelReq {
+  subscribeId: number;
+}
+
+export interface SubscribeCancelRes {
+  subscribeId: number;
+}
+
+export const cancelSubscribe = async (payload: SubscribeCancelReq) => {
+  try {
+    const res = await api.post<ResponseAPI<SubscribeCancelRes>>('Profile/subscribeCancel', payload);
+
+    if (res.status !== 200) {
+      console.error('cancelSubscribe API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('cancelSubscribe API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface GetConnectListReq {
+  // empty
+}
+
+export const getConnectList = async (profileTabType: ProfileTabType = ProfileTabType.My) => {
+  const data: GetConnectListReq = {
+    profileTabType,
+  };
+  try {
+    const resProfileList: AxiosResponse<ResponseAPI<GetProfileListRes>> = await api.post(
+      `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getConnectList`,
+      data,
+    );
+    if (resProfileList.status != 200) return;
+    return resProfileList.data?.data?.profileList;
+  } catch (e) {
+    // alert('api 에러' + e);
+  }
+};
+
+export interface DeleteProfileReq {
+  profileId: number;
+}
+
+export const deleteProfile = async (payload: DeleteProfileReq) => {
+  try {
+    const res = await api.post<ResponseAPI<DeleteCharacterRes>>('Profile/delete', payload);
+
+    if (res.status !== 200) {
+      console.error('deleteProfile API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('deleteProfile API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface GetBookMarkListReq {
+  interactionType: InteractionType;
+  languageType: string;
+}
+
+export interface GetBookMarkListRes {
+  bookMarkInfoList: ProfileTabItemInfo[];
+}
+
+export const getBookmarkList = async (payload: GetBookMarkListReq) => {
+  try {
+    const res = await api.post<ResponseAPI<GetBookMarkListRes>>('Profile/getBookMarkList', payload);
+
+    if (res.status !== 200) {
+      console.error('getBookmarkList API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getBookmarkList API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export interface GetRecordListReq {
+  interactionType: InteractionType;
+  languageType: string;
+}
+
+export interface GetRecordListRes {
+  recordInfoList: ProfileTabItemInfo[];
+}
+
+export const getRecordList = async (payload: GetRecordListReq) => {
+  try {
+    const res = await api.post<ResponseAPI<GetRecordListRes>>('Profile/getRecordList', payload);
+
+    if (res.status !== 200) {
+      console.error('getRecordList API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('getRecordList API 요청 실패:', e);
     alert('API 요청 중 에러 발생: ' + e);
     return null;
   }

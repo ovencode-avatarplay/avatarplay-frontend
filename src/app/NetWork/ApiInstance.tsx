@@ -1,5 +1,6 @@
 // src/app/Network/ApiInstance.tsx
 
+import {getLocalizedLink} from '@/utils/UrlMove';
 import axios, {AxiosInstance} from 'axios';
 // Axios 인스턴스 생성
 const api: AxiosInstance = axios.create({
@@ -41,7 +42,7 @@ api.interceptors.response.use(
     // 401 에러가 발생했을 때 처리
     if (error.response && error.response.status === 401) {
       // 여기서 auth 페이지로 리다이렉트
-      window.location.href = '/auth';
+      window.location.href = getLocalizedLink('/auth');
     }
     return Promise.reject(error);
   },

@@ -1,0 +1,120 @@
+.popup {
+  margin: 0 auto;
+  width: calc(var(--full-width-percent));
+  min-height: calc(100% - 48px);
+  min-width: calc(var(--full-width-percent));
+  min-height: calc(100% - 48px);
+  overflow-y: auto; // 내부 콘텐츠가 길면 스크롤 가능
+
+  background: white;
+  z-index: 10;
+
+  overflow-y: auto;
+  /* 내부 스크롤 허용 */
+  overscroll-behavior: contain;
+}
+
+.header {
+  padding: 9px 10px 9px 0;
+  display: flex;
+  align-items: center;
+
+  .iconBack {
+    box-sizing: content-box;
+    width: 20px;
+    height: 20px;
+    padding: 14px 0 14px 16px;
+    filter: brightness(0) saturate(100%);
+    cursor: pointer;
+  }
+
+  .title {
+    color: var(--Black, #000);
+    font-family: Lato;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    /* 100% */
+    letter-spacing: -0.4px;
+  }
+}
+
+.main {
+
+  // padding: 10px 16px;
+  // position: relative;
+  .tabHeaderWrap {
+    position: relative;
+
+    .line {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      border-bottom: solid #F1F3F4 2px;
+      z-index: -1;
+    }
+  }
+
+  .tabHeader {
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+
+    .tab {
+      flex: 1;
+      padding-bottom: 14px;
+
+      color: var(--Neutral-600, #80868B);
+      text-align: center;
+      font-family: Lato;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+      letter-spacing: -0.32px;
+
+      border-bottom: solid #F1F3F4 2px;
+      cursor: pointer;
+      white-space: nowrap;
+
+      &.active {
+        color: var(--Black, #000);
+        text-align: center;
+        font-family: Lato;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: -0.32px;
+
+        border-bottom: solid black 2px;
+      }
+    }
+  }
+
+
+  .tabSection {
+    .tabHeaderContainer {
+      position: sticky;
+      top: 57px;
+      background: white;
+      z-index: 2;
+    }
+  }
+
+  .btnSubscription {
+    height: 50px;
+    width: calc(var(--full-width-percent) - 14px * 2);
+
+    color: var(--White, #FFF);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 21px;
+    /* 150% */
+    letter-spacing: -0.4px;
+  }
+}

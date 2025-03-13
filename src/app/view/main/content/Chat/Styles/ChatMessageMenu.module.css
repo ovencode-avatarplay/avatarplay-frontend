@@ -96,9 +96,20 @@
     align-items: center; 
     padding: 0px;
     background: var(--background);
-    border-radius: 10px;
+    border-radius: 10px; 
   }
   
+  .bottomMenuContainerAI.leftEdge {
+    left: 0;
+    transform: translateX(0);
+    margin-left: 40px;
+  }
+
+  .bottomMenuContainerAI.rightEdge {
+    right: 0;
+    transform: translateX(0);
+  }
+
   .iconButton {
     display: flex;
     align-items: center;

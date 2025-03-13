@@ -1,0 +1,395 @@
+.reelsContainer {
+  position: relative;
+  width: 100%;  
+  background: #000000; 
+  height: 100%;
+}
+
+.mySwiper
+{
+
+}
+
+.mainContent {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.mainContent.limitWidth{
+  max-width:600px;
+  margin: 0 auto;
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+  width: 100%;
+  height: 1.66px; /* 프로그레스 바 높이 */
+  background-color: rgba(255, 255, 255, 0.3); /* 배경색 */
+  overflow: hidden;
+}
+.progressFill {
+  position: absolute;
+  height: 100%;
+  background-color: #ff0000;
+  transition: width 0.1s linear;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--background); /* 흰색 진행도 */
+  transition: width 0.2s ease; /* 부드러운 진행 애니메이션 */
+}
+.playCircleIcon {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0; /* 기본적으로 숨김 상태 */
+  transition: opacity 0.3s ease, transform 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+.fadeAndGrow {
+  animation: fadeAndGrow 0.3s ease forwards;
+}
+
+@keyframes fadeAndGrow {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+.Image {
+  width: 100%;
+  height: 100%;    
+}
+.Image img{
+  object-fit: contain; 
+}
+
+.dim {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0.3) 90%);
+}
+
+.pauseButton {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  /* gap: 10px; */
+}
+
+.profilePicture {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--background);
+}
+
+.profileDetails {
+  margin-left:8px;
+  display: flex;
+  flex-direction: column;
+}
+.follow{
+  margin-left:15px;
+
+  /* width: 40px; */
+  /* height: 17px; */
+  padding: 4px 8px;
+  background: #000000;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  background-color: #00000000;
+  color: #FFFFFF;
+  cursor: pointer;
+  z-index: 10;
+  color: var(--White, #FFF);
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.21px;
+}
+.username {
+  font-family: 'Lato';
+  font-weight: 600;
+  font-size: 14px;
+  color: #FFFFFF;
+}
+
+.sponsored {
+  font-family: 'Lato';
+  font-weight: 400;
+  font-size: 12px;
+  color: #FFFFFF;
+}
+
+.followButtonOff {
+  
+}
+
+.followButtonOn {
+  background-color: black;
+}
+
+.description {
+  bottom: 60px;
+  left: 16px;
+  font-family: 'Lato';
+  font-size: 14px;
+  color: #FFFFFF;
+}
+
+.videoInfo {
+  display: flex;
+  bottom: 40px;
+  left: 16px;
+  font-family: 'Lato';
+  font-size: 14px;
+  color: #FFFFFF;
+  gap: 10px;
+}
+
+.iconVideo{
+  margin-left:2px;
+}
+
+.ctaButtons {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  bottom: 48px;
+  right: 13px;
+  z-index: 12;
+  
+}
+
+.textButtons
+{
+  color: var(--base-white, #FFF);
+text-align: center;
+text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25), 0px 0px 30px rgba(4, 4, 21, 0.80);
+font-family: Lato;
+font-size: 12px;
+font-style: normal;
+font-weight: 700;
+line-height: 18px; /* 150% */
+
+-webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
+filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7));
+
+
+}
+
+.noneTextButton
+{
+  color: var(--base-white, #FFF);
+text-align: center;
+text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25), 0px 0px 30px rgba(4, 4, 21, 0.80);
+font-family: Lato;
+font-size: 12px;
+font-style: normal;
+font-weight: 700;
+line-height: 18px; /* 150% */
+
+-webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
+filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7));
+}
+
+.button
+{
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+
+img.button{
+  display:block;
+
+}
+.count{
+  margin-top: 4px;
+}
+
+.text_container {  
+  overflow: hidden;
+  width: 100%;
+  
+  display: flex;
+
+  
+}
+
+.text_content {
+  font-size: 14px;
+  line-height: 18px;
+  transition: max-height 0.3s ease;
+  color: #ffffff;
+  z-index: 10;
+  width: 100%;
+}
+
+.button2 {
+  position: absolute;
+  width: auto;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+  background-color: rgba(254, 44, 85, 0.06);
+  color: #ffffff;
+  border-radius: 4px;  
+  z-index: 10;
+  right: 50px;
+  bottom: 55px;
+}
+
+.profileBox
+{  
+  box-sizing: border-box;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  bottom: 4px;
+  padding-bottom: 19px;
+  /* left: 16px; */
+  padding-left: 16px;
+  gap: 16px;
+  z-index: 10;
+  background: linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5))
+}
+
+.iconArrowDown {
+  /* width: 12px; */
+  /* height: 12px; */
+  /* left: 118px; */
+  /* top: 137px; */
+}
+
+.vector {
+  position: absolute;
+  left: 17.92%;
+  right: 17.5%;
+  top: 33.85%;
+  bottom: 33.85%;
+  border: 1.5px solid #FFFFFF;
+  box-shadow: 0px 0px 30px rgba(4, 4, 21, 0.8);
+}
+
+.volumeButton {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 13;
+  cursor: pointer;
+  width:30px; /* 버튼 크기 */
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* -webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
+  filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7)); */
+}
+
+.volumeCircleIcon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* 검은색 반투명 배경 */
+  border-radius: 50%;
+  z-index: 12;
+}
+
+.volumeIcon {
+  z-index: 13; /* 아이콘이 배경 위에 표시되도록 */
+  width: 20px; /* 아이콘 크기 */
+  height: 20px;
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(238deg) brightness(106%) contrast(101%);
+}
+
+.header {
+  display: flex;  
+  width: var(--full-width);
+  height: 58px;
+  padding-top: 9px;
+  padding-right: auto;
+  padding-bottom : 9px ;
+  padding-left:  0.362px;
+  align-items: center; 
+  flex-shrink: 0;
+  justify-content: space-between;
+
+  background: var(--White, #FFF);
+}
+
+.baseArea {
+  display: flex;
+  flex-direction: row;
+  align-items: center; 
+  gap: 6.6px;
+}
+
+.baseArea > .backButton{
+  display: flex;
+  height: 40px;
+  padding: 14px 0px 14px 16px;
+  align-items: center;
+  gap: 8px;
+}
+
+.backButton > .backIcon {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  filter: brightness(0) saturate(100%);
+}
+
+.baseArea > .navTitle{
+  display: flex; 
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--Black, #000);
+  font-family: Lato;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: -0.4px;
+}

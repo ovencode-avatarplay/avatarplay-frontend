@@ -20,18 +20,17 @@ import {
 } from '@/app/NetWork/CharacterNetwork';
 
 // Link
-import {useRouter, useSearchParams} from 'next/navigation';
+import {useRouter} from 'next/navigation';
 import ModifyCharacterModal from './ModifyCharacterModal';
 import CharacterGalleryModal from './CharacterGalleryModal';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
-import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {LinePlus} from '@ui/Icons';
 import CreateFilterButton from '@/components/create/CreateFilterButton';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-
 const CharacterDashboard: React.FC = () => {
   const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
   const [modifyOpen, setModifyOpen] = useState(false);
@@ -41,7 +40,6 @@ const CharacterDashboard: React.FC = () => {
   const [galleryOpen, setGalleryOpen] = useState(false);
 
   const router = useRouter();
-  const searchParam = useSearchParams();
 
   const [characters, setCharacters] = useState<CharacterInfo[] | undefined>();
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | undefined>();
@@ -192,7 +190,7 @@ const CharacterDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId: id};
       const response = await sendGetCharacterInfo(req);
 
       if (response.data) {
@@ -260,10 +258,15 @@ const CharacterDashboard: React.FC = () => {
 
     // alert('Modify is not working now');
     // Modify 용도의 api 생성 전까지 막아둠
-    await getCharacterInfo(id);
 
-    setIsModifyMode(true);
-    setModifyOpen(true);
+    // Page 이동으로 수정
+    pushLocalizedRoute(`/update/character/${id}`, router);
+
+    // Page 이동으로 수정
+    // await getCharacterInfo(id);
+
+    // setIsModifyMode(true);
+    // setModifyOpen(true);
   };
 
   const handleCloseModify = () => {
@@ -290,7 +293,7 @@ const CharacterDashboard: React.FC = () => {
 
   //#region  Delete
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = async (id: number) => {
     if (selectedCharacterId === null) return;
 
     const characterName = characters?.find(char => char.id === selectedCharacterId)?.name || 'Unknown';
@@ -323,13 +326,11 @@ const CharacterDashboard: React.FC = () => {
 
   //#region  TopMenu
   const handleGoHomeClick = () => {
-    const currentLang = searchParam?.get(':lang') || 'en';
     //router.push(`/${currentLang}/create/character`);
     pushLocalizedRoute('/main/homefeed', router);
   };
 
   const handleCreateClick = () => {
-    const currentLang = searchParam?.get(':lang') || 'en';
     //router.push(`/${currentLang}/create/character`);
     pushLocalizedRoute('/create/character', router);
   };
@@ -377,6 +378,7 @@ const CharacterDashboard: React.FC = () => {
         style={{marginTop: '0px'}}
         canEdit={true}
         onClickEdit={handleModifyClick}
+        onClickDelete={handleConfirmDelete}
         showVisibilityType={true}
       />
 
@@ -399,7 +401,7 @@ const CharacterDashboard: React.FC = () => {
         characterInfo={currentSelectedCharacter}
         refreshCharacterList={getCharacterList}
         onDelete={() => {
-          handleConfirmDelete();
+          // handleConfirmDelete();
           handleCloseModify();
         }}
       />

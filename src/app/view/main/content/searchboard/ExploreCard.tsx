@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import styles from './ExploreCard.module.css'; // CSS 파일 임포트
 
@@ -8,29 +8,51 @@ import {openDrawerCharacterId} from '@/redux-store/slices/DrawerCharacterDescSli
 
 import {ExploreCardProps} from './SearchBoardTypes';
 import {BoldChatRoundDots, BoldEpisodes, BoldFollowers} from '@ui/Icons';
+import Link from 'next/link';
+import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
+import {sendStoryByIdGet} from '@/app/NetWork/StoryNetwork';
+import {useRouter} from 'next/navigation';
 
 const ExploreCard: React.FC<ExploreCardProps> = ({
   exploreItemType,
   updateExplorState,
-  contentId,
-  contentRank,
-  contentName,
+  storyId,
+  storyRank,
+  storyName,
   chatCount,
   episodeCount,
   followerCount,
   thumbnail,
   classType,
+  urlLinkKey,
 }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const RankCount = 3 + 1;
 
-  const handleOpenDrawer = () => {
-    if (exploreItemType === 0) {
-      dispatch(openDrawerContentId(contentId));
-    } else if (exploreItemType === 1) {
-      dispatch(openDrawerCharacterId(contentId));
+  useEffect(() => {
+    console.log(storyId);
+  }, [storyId]);
 
+  const handleOpenDrawer = async () => {
+    if (exploreItemType === 0) {
+      const req = {
+        storyId: storyId,
+        languageType: getCurrentLanguage(),
+      };
+      const response = await sendStoryByIdGet(req);
+      if (response.resultCode == 0) {
+        dispatch(openDrawerContentId(storyId));
+      }
+    } else if (exploreItemType === 1) {
+      if (!urlLinkKey) {
+        alert('프로필이 지원되지 않는 캐릭터입니다.');
+        return;
+      }
+      router.push(getLocalizedLink('/profile/' + urlLinkKey + "?from=''"));
+
+      // dispatch(openDrawerCharacterId(storyId));
       // alert('캐릭터는 프로필로 갈 예정입니다. (프로필 작업 완료후 연결 필요)');
     }
   };
@@ -92,25 +114,39 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
   return (
     <>
       <article className={`${styles.exploreCard} ${classType && getClassType(classType)}`}>
-        <figure
-          className={styles.exploreImage}
-          style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
-              thumbnail || '/images/001.png'
-            })`,
-            backgroundSize: 'cover',
-          }}
-          onClick={handleOpenDrawer}
-        />
+        {exploreItemType === 0 && (
+          <figure
+            className={styles.exploreImage}
+            style={{
+              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
+                thumbnail || '/images/001.png'
+              })`,
+              backgroundSize: 'cover',
+            }}
+            onClick={handleOpenDrawer}
+          />
+        )}
+        {exploreItemType === 1 && (
+          <figure
+            className={styles.exploreImage}
+            style={{
+              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
+                thumbnail || '/images/001.png'
+              })`,
+              backgroundSize: 'cover',
+            }}
+            onClick={handleOpenDrawer}
+          />
+        )}
 
-        {contentRank && contentRank < RankCount && (
+        {storyRank && storyRank < RankCount && (
           <div className={styles.rankArea}>
-            <span className={styles.rankText}>{contentRank}</span>
+            <span className={styles.rankText}>{storyRank}</span>
           </div>
         )}
 
         <div className={styles.exploreOverlay}>
-          <span className={styles.contentName}>{contentName}</span>
+          <span className={styles.contentName}>{storyName}</span>
           {updateExplorState !== 0 && exploreItemType !== 1 && (
             <div className={styles.isNewLabel}>{getUpdateState(updateExplorState)}</div>
           )}

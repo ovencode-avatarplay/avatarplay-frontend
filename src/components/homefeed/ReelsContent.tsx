@@ -4,12 +4,13 @@ import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
-import {FeedInfo, sendFeedBookmark, sendFeedDisLike, sendFeedLike, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
+import {FeedInfo, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
 import {
   BoldArchive,
   BoldComment,
   BoldDislike,
+  BoldImage,
   BoldLike,
   BoldMore,
   BoldPause,
@@ -20,20 +21,28 @@ import {
   BoldVolumeOff,
   BoldVolumeOn,
   LineArchive,
-  LineArrowDown,
-  LineArrowLeft,
-  LineFeatured,
   LineScaleUp,
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
-import ReelsComment from './ReelsComment';
+import Comment from '../layout/shared/Comment';
 import SharePopup from '../layout/shared/SharePopup';
 import ChatMediaDialog from '@/app/view/main/content/Chat/MainChat/ChatMediaDialog';
 import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainChat/ChatTypes';
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
+import DrawerDonation from '@/app/view/main/content/create/common/DrawerDonation';
 import {followProfile} from '@/app/NetWork/ProfileNetwork';
+import {
+  bookmark,
+  BookMarkReq,
+  CommentContentType,
+  InteractionType,
+  sendFeedDisLike,
+  sendFeedLike,
+} from '@/app/NetWork/CommonNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
+import {RecommendState} from './ReelsLayout';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -41,7 +50,7 @@ interface ReelsContentProps {
   isMute: boolean;
   setIsMute: (mute: boolean) => void; // boolean 매개변수 추가
   setIsProfile: (profile: boolean) => void; // boolean 매개변수 추가
-
+  recommendState: RecommendState;
   isShowProfile: boolean;
 }
 
@@ -52,11 +61,13 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   setIsMute,
   setIsProfile,
   isShowProfile = true,
+  recommendState,
 }) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isFollow, setIsFollow] = useState(item.isFollowing);
+  const [isDonation, setDonation] = useState(false);
   const [isLike, setIsLike] = useState(item.isLike);
   const [isDisLike, setIsDisLike] = useState(item.isDisLike);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -64,6 +75,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const [isImageModal, setIsImageModal] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
+
+  const Header = 'Home';
+  const Common = 'Common';
+
   useEffect(() => {
     if (isActive) {
       setIsPlaying(true); // 활성화된 경우 자동 재생
@@ -104,12 +119,21 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const handleVideoProgress = (playedSeconds: number) => {
     setVideoProgress(playedSeconds);
   };
+
+  const handleDonation = () => {
+    setDonation(true);
+  };
+
+  const handleDonationclose = () => {
+    setDonation(false);
+  };
+
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
       // if (isDisLike == true) {
       //   await handleDisLikeFeed(item.id, !isDisLike);
       // }
-      const response = await sendFeedLike(feedId, isLike);
+      const response = await sendFeedLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
@@ -127,7 +151,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       // if (isLike == true) {
       //   await handleLikeFeed(item.id, !isLike);
       // }
-      const response = await sendFeedDisLike(feedId, isLike);
+      const response = await sendFeedDisLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
@@ -177,17 +201,20 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
   const [isBookmarked, setIsBookmarked] = useState(item.isBookmark);
   const bookmarkFeed = async () => {
-    const payload = {
-      feedId: item.id, // 북마크할 피드 ID
-      isSave: !isBookmarked, // 북마크 저장 여부 (true: 저장, false: 해제)
+    const payload: BookMarkReq = {
+      interactionType: InteractionType.Feed,
+      typeValueId: item.id, // 북마크할 피드 ID
+      isBookMark: !isBookmarked,
+      // feedId: item.id, // 북마크할 피드 ID
+      // isSave: !isBookmarked, // 북마크 저장 여부 (true: 저장, false: 해제)
     };
 
-    const response = await sendFeedBookmark(payload);
+    const response = await bookmark(payload);
     setIsBookmarked(!isBookmarked);
-    if (response.resultCode === 0) {
+    if (response && response.resultCode === 0) {
       console.log('Bookmark operation successful:', response);
     } else {
-      console.error('Failed to bookmark feed:', response.resultMessage);
+      console.error('Failed to bookmark feed:', response?.resultMessage || '');
     }
   };
 
@@ -344,29 +371,33 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 src={item.characterProfileUrl || '/images/001.png'}
                 style={{width: '32px', height: '32px'}}
                 onClick={() => {
-                  pushLocalizedRoute('/profile/' + item?.characterProfileId + '?from=""', router);
+                  pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                 }}
               />
 
               <div
                 className={styles.profileDetails}
                 onClick={() => {
-                  pushLocalizedRoute('/profile/' + item?.characterProfileId + '?from=""', router);
+                  pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                 }}
               >
                 <span className={styles.username}>{item.characterProfileName}</span>
-                <span className={styles.sponsored}>Sponsored</span>
+                <span className={styles.sponsored}>{getLocalizedText(Header, 'home001_label_003')}</span>
               </div>
-              <button
-                className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
-                onClick={() => {
-                  setIsFollow(!isFollow);
-                  handleFollow(item.characterProfileId, !isFollow);
-                  console.log('isfollow', isFollow);
-                }}
-              >
-                Following
-              </button>
+              {recommendState == RecommendState.ForYou && (
+                <button
+                  className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
+                  onClick={() => {
+                    setIsFollow(!isFollow);
+                    handleFollow(item.characterProfileId, !isFollow);
+                    console.log('isfollow', isFollow);
+                  }}
+                >
+                  {isFollow
+                    ? getLocalizedText(Common, 'common_button_following')
+                    : getLocalizedText(Common, 'common_button_follow')}
+                </button>
+              )}
             </div>
             {item?.description && (
               <div className={styles.text_container}>
@@ -391,20 +422,31 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             )}
             {/* Video Info */}
             <div className={styles.videoInfo}>
-              {item.mediaState == 1 && <>Image</>}
+              {item.mediaState == 1 && (
+                <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
+                  <img className={styles.iconVideo} src={BoldImage.src}></img>
+                  {getLocalizedText(Common, 'common_filter_photo')}
+                </div>
+              )}
               {item.mediaState == 2 && (
                 <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
                   <img className={styles.iconVideo} src={BoldVideo.src}></img>
-                  Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
+                  {getLocalizedText(Common, 'common_filter_video')} · {currentProgress ? currentProgress : '0:00'}/
+                  {formatDuration(videoDuration)}
                 </div>
               )}
-              <div>{formatTimeAgo(item.createAt.toString())}</div>
+              <div>{formatTimeAgo(item.createAt ? item.createAt.toString() : '0')}</div>
             </div>
           </div>
 
           {/* CTA Buttons */}
           <div className={styles.ctaButtons}>
-            <div className={styles.textButtons} onClick={() => {}}>
+            <div
+              className={styles.textButtons}
+              onClick={() => {
+                handleDonation();
+              }}
+            >
               <img src={BoldReward.src} className={styles.button}></img>
             </div>
             <div
@@ -495,15 +537,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
         </SwiperSlide>
         {isShowProfile && (
           <SwiperSlide style={{overflowY: 'scroll'}}>
-            {activeIndexProfile === 1 && <ProfileBase profileId={item.characterProfileId} maxWidth={'600px'} />}
+            {activeIndexProfile === 1 && <ProfileBase urlLinkKey={item.profileUrlLinkKey} maxWidth={'600px'} />}
           </SwiperSlide>
         )}
       </Swiper>
-      <ReelsComment
-        feedId={item.id}
+      <DrawerDonation isOpen={isDonation} sponsoredName={item.characterProfileName} onClose={handleDonationclose} />
+      <Comment
+        contentId={item.id}
         isOpen={isCommentOpen}
         toggleDrawer={v => setCommentIsOpen(v)}
         onAddTotalCommentCount={() => handleAddCommentCount()}
+        commentType={CommentContentType.Feed}
       />
 
       <SharePopup

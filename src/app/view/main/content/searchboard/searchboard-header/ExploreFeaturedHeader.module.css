@@ -5,7 +5,6 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    gap: 11px;
     align-self: stretch;
 
 }
@@ -17,7 +16,26 @@
     width: var(--second-width);
     height: 100px;    
 }
- 
+
+.swiper-pagination {
+    background-color: #333;
+    padding: 10px;
+  }
+
+.customSwiper {
+    position: relative;
+  }
+
+.customPagination {
+    position: absolute;
+    bottom: 5px !important;
+    left: 50% !important;
+    translate: -50%;
+    width: auto !important;
+    display: inline-flex;  
+    gap: 5px;
+}
+
 
 .backImage
 {
@@ -30,10 +48,19 @@
     background: lightgray 0px -335.272px / 100% 100% no-repeat cover center;
 }
 
- 
+ .paginationBullet
+ {
+    width: 6px;
+    height: 6px;
+    background: #ddd; 
+ }
+
+ .paginationBullet .selected
+ {
+    opacity: 0.8;
+ }
 
 .swiper-pagination {
-  bottom: 16px; /* Swiper 하단에 위치 */
 }
 
 .swiper-pagination-bullet {

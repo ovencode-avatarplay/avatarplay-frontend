@@ -1,20 +1,43 @@
+'use client';
+
 import React, {useEffect, useState} from 'react';
-import ContentDashboardHeader from '../content-main/content-dashboard/ContentDashboardHeader';
+import StoryDashboardHeader from '../story-main/story-dashboard/StoryDashboardHeader';
 import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import styles from './PostMain.module.css';
-import {BoldPlay, CircleClose, LineUpload} from '@ui/Icons';
+import {BoldPlay, CircleClose, LineClose, LineUpload} from '@ui/Icons';
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import TriggerImageGrid from '../content-main/episode/episode-trigger/TriggerImageGrid';
+import TriggerImageGrid from '../story-main/episode/episode-trigger/TriggerImageGrid';
 import ReactPlayer from 'react-player';
 import {stat} from 'fs';
 import PostImageGrid from './PostImageGrid';
-import {FeedInfo, RequestCreateFeed, sendCreateFeed} from '@/app/NetWork/ShortsNetwork';
+import {
+  FeedInfo,
+  CreateFeedInfo,
+  sendCreateFeed,
+  sendGetFeedList,
+  CreateFeedReq,
+  sendGetFeed,
+} from '@/app/NetWork/ShortsNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import CustomInput from '@/components/layout/shared/CustomInput';
+import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
+import CustomDropDownSelectDrawer from '@/components/layout/shared/CustomDropDownSelectDrawer';
+import {VisibilityType} from '@/app/NetWork/ContentNetwork';
+import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
+import DrawerTagSelect from '../common/DrawerTagSelect';
+import {title} from 'process';
+import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
-interface Props {}
+interface Props {
+  id?: string;
+  isUpdate?: boolean;
+}
 const mediaTypeConfig = {
   image: {
     label: 'Write Image File Type',
@@ -27,7 +50,8 @@ const mediaTypeConfig = {
     accept: 'video/*', // 비디오 파일
   },
 };
-const PostMain: React.FC<Props> = () => {
+const PostMain: React.FC<Props> = ({id}) => {
+  console.log('feedid', id);
   const router = useRouter();
   const [text, setText] = useState(''); // 입력된 텍스트 상태
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
@@ -39,6 +63,116 @@ const PostMain: React.FC<Props> = () => {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoDuration, setVideoDuration] = useState<string | null>(null);
+  const [nameValue, setNameValue] = useState<string>('');
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length <= 20) {
+      setNameValue(e.target.value);
+    }
+  };
+
+  const [descValue, setrDescription] = useState<string>('');
+
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [tagOpen, setTagOpen] = useState(false);
+  const [tagList, setTagList] = useState<string[]>([]);
+  const maxTagCount = 5;
+  const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
+  const handleTagRemove = (tag: string) => {
+    setSelectedTags(selectedTags.filter(t => t !== tag));
+  };
+
+  const handleTagSelect = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      handleTagRemove(tag);
+    } else {
+      if (selectedTags.length >= maxTagCount) {
+        setSelectedTagAlertOn(true);
+        return;
+      }
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+  const tagGroups = [
+    {
+      category: 'Genre',
+      tags: [
+        'Romance',
+        'Fantasy',
+        'Action',
+        'Daily Life',
+        'Thriller',
+        'Comedy',
+        'Martial Arts',
+        'Drama',
+        'Historical Drama',
+        'Emotion',
+        'Sports',
+      ],
+    },
+    {
+      category: 'Theme',
+      tags: [
+        'Male',
+        'Female',
+        'Boyfriend',
+        'Girlfriend',
+        'Hero',
+        'Elf',
+        'Romance',
+        'Vanilla',
+        'Contemporary Fantasy',
+        'Isekai',
+        'Flirting',
+        'Dislike',
+        'Comedy',
+        'Noir',
+        'Horror',
+        'Demon',
+        'SF',
+        'Vampire',
+        'Office',
+        'Monster',
+        'Anime',
+        'Books',
+        'Aliens',
+      ],
+    },
+  ];
+
+  const [feedId, setFeedId] = useState(-1);
+
+  useEffect(() => {
+    if (id) {
+      (async () => {
+        try {
+          const payload = {
+            urlLinkKey: id, // 명시적으로 string 타입으로 캐스팅
+            languageType: getCurrentLanguage(),
+          };
+
+          const response = await sendGetFeed(payload);
+
+          if (response.resultCode === 0 && response.data) {
+            const existingFeed = response.data.feedInfo;
+            if (existingFeed) {
+              setFeedId(existingFeed.id);
+              setMediaUrls(existingFeed.mediaUrlList || []);
+              if (existingFeed.mediaState == MediaState.Image) setMediaType('image');
+              else if (existingFeed.mediaState == MediaState.Video) setMediaType('video');
+
+              setNameValue(existingFeed.characterProfileName || '');
+              setrDescription(existingFeed.description || '');
+              setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
+              setSelectedVisibility(existingFeed.isPinFix ? VisibilityType.Public : VisibilityType.Private);
+              setIsNsfw(existingFeed.isBookmark || false);
+            }
+          }
+        } catch (error) {
+          console.error('Failed to fetch existing feed info:', error);
+        }
+      })();
+    }
+  }, [id]);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -197,6 +331,14 @@ const PostMain: React.FC<Props> = () => {
     input.click();
   };
 
+  const [selectedVisibility, setSelectedVisibility] = useState<VisibilityType>(VisibilityType.Private);
+  const [visibilityDrawerOpen, setVisibilityDrawerOpen] = useState<boolean>(false);
+  const publishItemsVisibility: SelectDrawerItem[] = [
+    {name: 'Private', onClick: () => setSelectedVisibility(VisibilityType.Private)},
+    {name: 'Unlisted', onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
+    {name: 'Public', onClick: () => setSelectedVisibility(VisibilityType.Public)},
+  ];
+
   const createFeed = async () => {
     let state = 0;
     if (mediaType == 'image') state = 1;
@@ -206,51 +348,44 @@ const PostMain: React.FC<Props> = () => {
       setWarnPopup(true);
       return;
     }
+    try {
+      const requestPayload: CreateFeedReq = {
+        languageType: getCurrentLanguage(),
+        feedInfo: {
+          id: feedId != -1 ? feedId : 0,
+          mediaState: state, // 예: 이미지 = 1, 비디오 = 2 (서버 문서 참고)
+          mediaUrlList: mediaUrls,
+          title: nameValue,
+          description: descValue,
+          hashTag: selectedTags.join(', '),
+          visibilityType: selectedVisibility, // 예: 공개 = 1, 비공개 = 2
+          nsfw: isNsfw,
+        },
+      };
 
-    const _feedInfo: FeedInfo = {
-      id: 0,
-      urlLinkKey: '',
-      mediaState: state, // 예시 값
-      mediaUrlList: mediaUrls,
-      description: text,
-      hashTag: '',
-      likeCount: 0,
-      commentCount: 0,
-      isLike: false,
-      isDisLike: false,
-      isBookmark: false,
-      playTime: '', // 예시 값
-      characterProfileId: 0,
-      characterProfileName: '',
-      characterProfileUrl: '',
-      createAt: new Date(),
-      isFollowing: false,
-    };
-
-    const createFeedReq: RequestCreateFeed = {
-      languageType: getCurrentLanguage(),
-      feedInfo: _feedInfo,
-    };
-    setLoading(true);
-    const result = await sendCreateFeed(createFeedReq);
-    setLoading(false);
-    if (result.resultCode === 0) {
-      setPublishPopup(true);
-      console.log('Feed created successfully:', result.data);
-    } else {
-      console.error('Failed to create feed:', result.resultMessage);
+      setLoading(true);
+      const response = await sendCreateFeed(requestPayload);
+      setLoading(false);
+      if (response.resultCode === 0) {
+        console.log('✅ Feed created successfully');
+        router.back();
+      } else {
+        console.error('❌ Failed to create feed:', response.resultMessage);
+      }
+    } catch (error) {
+      console.error('🚨 API 호출 중 오류 발생:', error);
     }
   };
 
+  const [isNsfw, setIsNsfw] = useState<boolean>(false);
   return (
     <div className={styles.box}>
-      <ContentDashboardHeader
+      <CustomArrowHeader
         title="Title"
         onClose={() => {
-          pushLocalizedRoute('/main/homefeed', router);
+          router.back();
         }}
-        onCreate={() => {}}
-      ></ContentDashboardHeader>
+      ></CustomArrowHeader>
 
       <div className={styles.container}>
         <div className={styles.label}>Photo / Video</div>
@@ -313,19 +448,91 @@ const PostMain: React.FC<Props> = () => {
             </button>
           </div>
         )}
-        <div className={styles.infoText}>Photo 0/9 or Video 0/1</div>
+        <CustomInput
+          inputType="Basic"
+          textType="Label"
+          value={nameValue}
+          onChange={handleNameChange}
+          label={
+            <span>
+              Name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+            </span>
+          }
+          placeholder="Enter a title for your post"
+          customClassName={[styles.textInput]}
+        />
+        <span className={styles.desclabel}>
+          Description <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+        </span>
+        <MaxTextInput
+          displayDataType={displayType.Hint}
+          labelText="Introduction"
+          promptValue={descValue}
+          handlePromptChange={e => setrDescription(e.target.value)}
+          maxPromptLength={500}
+          style={{minHeight: '190px', width: '100%'}}
+        />
 
-        <div className={styles.label} style={{marginTop: '28px'}}>
-          Description
-        </div>
-
-        <div className={styles.inputArea}>
-          <textarea placeholder="Text..." className={styles.textArea} value={text} onChange={handleTextChange} />
-          <div className={styles.charCount}>
-            {text.length}/{maxLength}
+        <div className={styles.tagContainer}>
+          <CustomDropDownSelectDrawer
+            title="Tag"
+            selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : ''}
+            onClick={() => {
+              setTagList(tagGroups[1].tags);
+              setTagOpen(true);
+            }}
+          ></CustomDropDownSelectDrawer>
+          <div className={styles.blackTagContainer}>
+            {selectedTags.map((tag, index) => (
+              <div key={index} className={styles.blackTag}>
+                {tag}
+                <img
+                  src={LineClose.src}
+                  className={styles.lineClose}
+                  onClick={() => handleTagRemove(tag)} // 클릭하면 해당 태그 삭제
+                />
+              </div>
+            ))}
           </div>
         </div>
+
+        <div style={{boxSizing: 'border-box', width: '100%'}}>
+          <CustomDropDownSelectDrawer
+            title={
+              <span>
+                Visibility <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+              </span>
+            }
+            selectedItem={VisibilityType[selectedVisibility]}
+            onClick={() => setVisibilityDrawerOpen(true)}
+          ></CustomDropDownSelectDrawer>
+        </div>
+        <span className={styles.label}>
+          NSFW <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+        </span>
+
+        <div className={styles.radioButtonGroup}>
+          <CustomRadioButton
+            shapeType="circle"
+            displayType="buttonText"
+            value="On"
+            label="On"
+            onSelect={() => setIsNsfw(true)}
+            selectedValue={isNsfw ? 'On' : 'Off'}
+            containterStyle={{gap: '0'}}
+          />
+          <CustomRadioButton
+            shapeType="circle"
+            displayType="buttonText"
+            value="Off"
+            label="Off"
+            onSelect={() => setIsNsfw(false)}
+            selectedValue={isNsfw ? 'On' : 'Off'}
+            containterStyle={{gap: '0'}}
+          />
+        </div>
       </div>
+
       <div className={styles.contentBottom}>
         <div
           className={styles.setupButtons}
@@ -388,6 +595,24 @@ const PostMain: React.FC<Props> = () => {
           ]}
         />
       )}
+      <SelectDrawer
+        name="Filter"
+        items={publishItemsVisibility}
+        isOpen={visibilityDrawerOpen}
+        onClose={() => setVisibilityDrawerOpen(false)}
+        selectedIndex={selectedVisibility}
+      />
+      <DrawerTagSelect
+        isOpen={tagOpen}
+        onClose={() => setTagOpen(false)}
+        tagList={tagList}
+        selectedTags={selectedTags}
+        onTagSelect={handleTagSelect}
+        onRefreshTags={() => setSelectedTags([])}
+        maxTagCount={maxTagCount}
+        selectedTagAlertOn={selectedTagAlertOn}
+        setSelectedTagAlertOn={setSelectedTagAlertOn}
+      />
     </div>
   );
 };

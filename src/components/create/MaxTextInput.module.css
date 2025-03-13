@@ -17,8 +17,7 @@
   background: var(--background);
   border: 1px solid #E8EAED;
   border-radius: 10px;
-}
- 
+} 
 
 .inputAreaError
 { 
@@ -50,8 +49,7 @@
 {
   flex: 1 0 0;
   align-self: stretch;
-
-  color: var(--Black, #000);
+  color: var(--Neutral-400, #BDC1C6);
   font-family: 'Lato';
   font-size: 15px;
   font-style: normal;
@@ -67,6 +65,11 @@
   vertical-align: top;
 }
 
+.inputArea >.inputPrompt.textExist
+{
+  color: var(--Neutral-900, #040415);
+}
+ 
 
 .inputArea >.inputPrompt:focus {
   outline: none; 
@@ -75,13 +78,14 @@
 .inputArea >.inputPrompt:focus-visible {
   outline: none;  
 }
+
    
 .inputArea >.inputError
 {
   flex: 1 0 0;
   align-self: stretch;
 
-  color: var(--Black, #000);
+  color: var(--Neutral-400, #BDC1C6);
   font-family: 'Lato';
   font-size: 15px;
   font-style: normal;

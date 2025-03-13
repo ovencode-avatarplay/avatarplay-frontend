@@ -6,13 +6,23 @@ export enum UploadMediaState {
   CharacterImage = 1,
   GalleryImage = 2,
   BackgroundImage = 3,
-  ContentImage = 4,
+  StoryImage = 4,
   TtsVoice = 5,
   TriggerImage = 6,
   TriggerVideo = 7,
   TriggerAudio = 8,
   FeedVideo = 9,
   FeedImage = 10,
+  CompressFeedVideo = 11,
+  CompressFeedImage = 12,
+
+  ContentEpisodeVideo = 13,
+  ContentEpisodeSubtitle = 14,
+  ContentEpisodeDubbing = 15,
+  ContentEpisodeWebtoonImage = 16,
+  ContentEpisodeWebtoonSubtitle = 17,
+  ContentImage = 18,
+  ContentVideo = 19,
 }
 
 export interface MediaUploadReq {
@@ -24,6 +34,9 @@ export interface MediaUploadReq {
 export interface MediaUploadRes {
   url: string; // 메인 URL
   imageUrlList: string[]; // 추가 이미지 URL 리스트
+  imageNameList: string[]; // 추가 이미지 URL 리스트
+  playTime: string;
+  fileName: string;
 }
 
 export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<MediaUploadRes>> => {

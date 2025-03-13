@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -6,13 +6,19 @@ import {Pagination} from 'swiper/modules';
 import styles from './ExploreFeaturedHeader.module.css';
 import {BannerUrlList} from '@/app/NetWork/ExploreNetwork';
 import Link from 'next/link';
-import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface ExploreFeaturedHeaderProps {
   items: BannerUrlList[];
 }
 
 const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) => {
+  useEffect(() => {
+    const paginationElement = document.querySelector(`.${styles.customPagination}`);
+    if (paginationElement) {
+      paginationElement.classList.add('swiper-pagination'); // Swiper가 인식하도록 클래스 추가
+    }
+  }, []);
+
   return (
     <div className={styles.swiperContainer}>
       <Swiper
@@ -21,21 +27,22 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
         centeredSlides={true}
         grabCursor={true}
         pagination={{
+          el: `.${styles.customPagination}`,
           clickable: true,
           renderBullet: (index, className) =>
-            `<span class="${className}" style="background-color: ${index > -1 ? 'white' : ''};"></span>`,
+            `<span class="${className} ${styles.paginationBullet} ${index > -1 ? styles.selected : ''}"></span>`,
         }}
         modules={[Pagination]}
       >
         {items.map((item, index) => (
           <SwiperSlide className={styles.swiperItem} key={index}>
-            <Link key={index} href={item.imageLinkUrl}>
+            <Link className={styles.link} key={index} href={item.imageLinkUrl}>
               <div
                 className={styles.backImage}
                 style={{
                   background: `url(${item.imageUrl}) `,
                   backgroundPosition: 'center',
-                  // backgroundSize: '100% auto',
+                  backgroundSize: '100% cover',
                   backgroundRepeat: 'no-repeat',
                   backgroundAttachment: 'fixed',
                 }}
@@ -49,6 +56,8 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
           </SwiperSlide>
         ))}
       </Swiper>
+
+      <div className={`${styles.customPagination} swiper-pagination`}></div>
     </div>
   );
 };

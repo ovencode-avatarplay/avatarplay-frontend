@@ -75,7 +75,7 @@ export const sendMessageStream = async (
 
 // 요청 데이터 타입
 interface RetryStreamRequest {
-  chatContentId: number;
+  chatStoryId: number;
   episodeId: number;
   text: string;
 }
@@ -158,12 +158,12 @@ export interface UrlEnterEpisodeChattingReq {
 // URL 방식이든 아니는 Enter Respons 받는 형식은 같은걸 사용한다.
 // 만약 달라지면 따로 분리해서 만들어주자.
 export interface EnterEpisodeChattingRes {
-  contentId: number;
+  storyId: number;
   episodeId: number;
   streamKey: string;
   nextEpisodeId: number;
   nextEpisodeName: string;
-  contentName: string;
+  storyName: string;
   episodeName: string;
   characterImageUrl: string;
   episodeBgImageUrl: string;

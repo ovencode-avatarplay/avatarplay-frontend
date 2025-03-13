@@ -8,9 +8,9 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {ChattingState} from '@/redux-store/slices/Chatting';
 import {Left, Image, MenuDots} from '@ui/chatting';
 import Link from 'next/link';
-import {getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
-import {getBackUrl} from '@/app/layout';
+import {getBackUrl} from '@/utils/util-1';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 interface ChatTopBarProps {
   onBackClick: () => void;
@@ -54,14 +54,14 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, i
             <div className={styles.chat}>
               <Avatar
                 src={iconUrl || '/images/001.png'}
-                alt={chattingState1.contentName}
+                alt={chattingState1.storyName}
                 className={styles.avatar}
                 style={{width: '40px', height: '40px'}}
               />
 
               <div className={`${styles.textArea}  ${isBlurOn ? styles.blurOn : ''}`}>
                 <span className={`${styles.contentName} ${isBlurOn ? styles.blurOn : ''}`}>
-                  {chattingState1.contentName}
+                  {chattingState1.storyName}
                 </span>
                 <span className={`${styles.episodeName}  ${isBlurOn ? styles.blurOn : ''}`}>
                   {chattingState1.episodeName}

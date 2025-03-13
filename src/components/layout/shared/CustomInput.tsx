@@ -2,17 +2,17 @@ import React, {useState} from 'react';
 import styles from './CustomInput.module.css';
 
 type Type = 'Basic' | 'LeftIcon' | 'RightIcon' | 'TwoIcon';
-type Text = 'InputOnly' | 'Label' | 'Hint' | 'LabelandHint';
+export type InputTextType = 'InputOnly' | 'Label' | 'Hint' | 'LabelandHint';
 type State = 'Default' | 'Focused' | 'Typing' | 'Error' | 'Disable';
 
 interface CustomInputProps {
-  textType: Text;
+  textType: InputTextType;
   inputType: Type;
   state?: State;
-  label?: string;
+  label?: string | React.ReactNode;
   hint?: string;
   iconLeft?: React.ReactNode; // Left Icon component
-  iconRight?: React.ReactNode; // Right Icon component
+  iconRight?: string | React.ReactNode; // Right Icon component
   value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
@@ -91,7 +91,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         {(inputType === 'LeftIcon' || inputType === 'TwoIcon') && <div className={styles.iconLeft}>{iconLeft}</div>}
         <input
           type="text"
-          className={styles.textInput}
+          className={`${styles.textInput} ${value !== '' ? styles.textExist : ''}`}
           value={value}
           onChange={handleChange}
           onFocus={handleFocus}

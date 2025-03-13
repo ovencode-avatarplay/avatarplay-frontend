@@ -1,0 +1,244 @@
+.container {
+  width: 100%;
+  background-color: black;
+  color: white;
+  font-family: 'Lato', sans-serif;
+  
+  position: relative; /* 부모 요소가 relative여야 함 */
+}
+
+/* 헤더 배경 */
+.header {
+  width: 100%;
+  height: 400px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  max-width: 1300px;
+}
+
+.topNav {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  position: fixed;
+  width: 100%;
+
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  filter: brightness(0) invert(1);
+}
+
+.genreShare {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+}
+
+.genres {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.tabs {
+  position: relative;
+  display: flex;
+  width: calc(100% - 32px);
+  border-bottom: 1px solid gray;
+  margin: 0 16px;
+}
+
+.tabContainer {
+  display: flex;
+  position: relative;
+}
+
+.tabButton {
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: gray;
+  margin-right: 27px;
+  position: relative;
+}
+
+.activeTab {
+  color: white;
+  font-weight: 700;
+}
+
+.tabUnderline {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 65px;
+  height: 2px;
+  background-color: white;
+  transition: left 0.3s ease-in-out;
+}
+
+.inactiveTab {
+  margin-left: 20px;
+  color: gray;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  gap: 10px;
+}
+
+.seasonButton, .seasonDropdown {
+  width: 370px;
+  height: 46px;
+  background: #2C3131;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.addEpisode {
+  width: calc(100% - 32px);
+  
+  height: 46px;
+  margin: 0 16px;
+  display: block;
+  background: white;
+  color: black;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.episodeList {
+  padding: 16px;
+  overflow-y: scroll;
+  height: calc(100% - 273px);
+}
+
+.episodeItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.episodeThumbnail {
+  width: 100px;
+  height: 83px;
+  background-size: cover;
+  border-radius: 12px;
+  position: relative;
+}
+
+.lockIcon {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+
+.episodeStats {
+  position: absolute;
+  bottom: 5px;
+  padding: 0 5px 0 5px;
+  display: flex;
+  justify-content: space-between;
+width: 100px;
+}
+
+.statIcon {
+  width: 12px;
+  height: 12px;
+}
+
+.episodeInfo {
+  flex-grow: 1;
+  padding-left: 16px;
+  gap: 8px;
+}
+
+.episodeActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #FD55D3;
+}
+
+.editIcon
+{
+  filter: brightness(0) saturate(100%) invert(54%) sepia(3%) saturate(768%) hue-rotate(165deg) brightness(97%) contrast(89%);
+  width: 22px;
+  height: 22px;
+
+}
+
+.starIcon {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) saturate(100%) invert(48%) sepia(87%) saturate(2005%) hue-rotate(287deg) brightness(101%) contrast(98%);
+}
+.rateText
+{
+  color: var(Primary/1);
+}
+.contentContainer{
+
+  position: sticky;
+  top: 70px;
+  z-index: 1000; /* 다른 요소 위로 올리기 */
+  height: calc(100dvh - 70px);
+  overflow: hidden;
+  
+}
+
+.stats
+{
+ display: flex;
+ color: var(--base-white, #FFF);
+font-family: Lato;
+font-size: 13px;
+font-style: normal;
+font-weight: 500;
+line-height: 12px; /* 92.308% */
+}
+
+.epTitleText
+{
+  color: var(--White, #FFF);
+font-size: 16px;
+font-weight: 500;
+line-height: 24px; /* 150% */
+}
+
+.epDuration
+{
+  color: var(--Neutral-600, #80868B);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px; /* 171.429% */
+}
+.about
+{
+width: 100%;
+height: 100%;
+padding:  14px 16px;
+}

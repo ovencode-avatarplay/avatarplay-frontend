@@ -40,9 +40,9 @@
     z-index: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    align-self: stretch;
+    justify-content: flex-start;  
+    align-items: flex-start;  
+    
     gap: 15px;
     
     border-radius: 12px;
@@ -127,9 +127,10 @@
 
 .dropdownArrow
 {
-    filter: var(--black-icon-filter);
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) saturate(100%) invert(71%) sepia(0%) saturate(3317%) hue-rotate(61deg) brightness(73%) contrast(86%);
 }
-
 .textArea
 {
     display: flex;
@@ -150,6 +151,11 @@
     font-weight: 700;
     line-height: normal;
     letter-spacing: -0.3px;
+}
+
+.normal
+{
+
 }
 
 .label

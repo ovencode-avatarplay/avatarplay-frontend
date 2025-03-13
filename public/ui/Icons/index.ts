@@ -2,6 +2,9 @@ import BoldAI from "./Bold/AI.svg";
 import BoldAlertOn from "./Bold/Alert_on.svg";
 import BoldAlert from "./Bold/Alert.svg";
 import BoldAltArrowDown from "./Bold/Alt_Arrow_Down.svg";
+import BoldAltArrowDownTwo from "./Bold/Alt_Arrow_Down_Two.svg";
+import BoldAltArrowUp from "./Bold/Alt_Arrow_Up.svg";
+import BoldAltArrowUpTwo from "./Bold/Alt_Arrow_Up_Two.svg";
 import BoldArrowDown from "./Bold/Arrow_Down.svg";
 import BoldAudioPause from "./Bold/Audio_Pause.svg";
 import BoldAudioPlay from "./Bold/Audio_Play.svg";
@@ -34,6 +37,7 @@ import BoldPin from "./Bold/Pin.svg";
 import BoldPlay from "./Bold/Play.svg";
 import BoldProfile from "./Bold/Profile.svg";
 import BoldRadioButtonSelected from "./Bold/Radio_Button_Selected.svg";
+import BoldRadioButtonSelectedBlack from "./Bold/Radio_Button_Selected_Black.svg";
 import BoldRadioButtonSubtract from "./Bold/Radio_Button_Subtract.svg";
 import BoldRadioButton from "./Bold/Radio_Button.svg";
 import BoldRuby from "./Bold/Ruby.svg";
@@ -56,6 +60,9 @@ import BoldUnLock from "./Bold/Unlock.svg";
 import BoldQuestion from "./Bold/Question.svg";
 import BoldRadioButtonSquare from "./Bold/Radio_Button_Square.svg";
 import BoldRadioButtonSquareSelected from "./Bold/Radio_Button_Square_selected.svg";
+import BoldLetter from "./Bold/Letter.svg";
+import BoldContentLists from "./Bold/ContentsList.svg";
+import BoldDownloadMini from "./Bold/Arrow_DownloadMini.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -106,6 +113,7 @@ import LinePin from "./Line/Pin.svg";
 import LineCheckBoxFill from "./Line/CheckBoxFill.svg";
 import LineCheckBoxEmpty from "./Line/CheckBoxEmpty.svg";
 import LineSetting from "./Line/Setting.svg";
+import LineWallet from "./Line/Wallet.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -125,8 +133,11 @@ import EmotionAngry from "./Custom/Angry.svg";
 import CircleClose from "./Custom/CircleClose.svg";
 import OrangeCoin from "./Custom/Coin.svg";
 import Add_Button from "./Custom/Add_Button.svg";
+import editCircle from "./Custom/editCircle.svg";
+import VerifiedLabel from "./Custom/VerifiedLabel.svg";
 
 export {
+  editCircle,
   Add_Button,
   OrangeCoin,
   BoldCoin,
@@ -158,6 +169,9 @@ export {
   BoldAlertOn,
   BoldAlert,
   BoldAltArrowDown,
+  BoldAltArrowDownTwo,
+  BoldAltArrowUp,
+  BoldAltArrowUpTwo,
   BoldArrowDown,
   BoldAudioPause,
   BoldAudioPlay,
@@ -190,6 +204,7 @@ export {
   BoldPlay,
   BoldProfile,
   BoldRadioButtonSelected,
+  BoldRadioButtonSelectedBlack,
   BoldRadioButtonSubtract,
   BoldRadioButton,
   BoldRuby,
@@ -208,6 +223,9 @@ export {
   BoldQuestion,
   BoldRadioButtonSquare,
   BoldRadioButtonSquareSelected,
+  BoldLetter,
+  BoldContentLists,
+  BoldDownloadMini,
   LineAddButton,
   LineAIImage,
   LineArchive,
@@ -252,4 +270,6 @@ export {
   LineCheckBoxFill,
   LineCheckBoxEmpty,
   LineSetting,
+  LineWallet,
+  VerifiedLabel,
 };

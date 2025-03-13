@@ -1,0 +1,123 @@
+{
+  "resultCode": 0,
+  "resultMessage": "",
+  "data": {
+    "storyInfo": {
+      "id": 0,
+      "userId": 0,
+      "profileId": 0,
+      "urlLinkKey": "",
+      "chapterInfoList": [
+        {
+          "id": -1,
+          "name": "", 
+          "episodeInfoList": [
+            {
+              "id": -1,
+              "name": "",
+              "backgroundImageUrl": "",
+              "characterInfo": {
+                "id": 0,
+                "languageType": 0,
+                "name": "", 
+                "urlLinkKey": "", 
+                "genderType": 0,
+                
+                "introduction": "",
+                "description": "",
+                "worldScenario": "", 
+                "secret": "",
+                
+                "chatCount": 0,
+                "chatUserCount": 0, 
+
+                "mainImageUrl": "",
+                "portraitGalleryImageUrl": [],
+                "poseGalleryImageUrl": [],
+                "expressionGalleryImageUrl": [],
+                "mediaTemplateList": [],
+                "conversationTemplateList": [],
+
+                "visibilityType": 0,
+                "llmModel" : 0,
+                "customApi": "",
+                "tag": "",
+                "positionCountryList": [],
+                "characterIP": 0,    
+                "connectCharacterInfo": {
+                  "profileTabType": 0,
+                  "operatorAuthorityType": 0,
+                  "profileId": 0,
+                  "profileType": 0,
+                  "name": "string",
+                  "iconImageUrl": "string",
+                  "description" : "string",
+                  "nsfw": false ,
+                  "urlLinkKey" : "string"
+                },
+                "connectCharacterId" : 0,
+                "recruitedProfileId": 0,
+                "operatorProfileIdList": [],
+                
+                "isMonetization": false,
+                "nsfw": false,
+                "membershipSetting": {
+                  "subscription": 0,
+                  "paymentType": 0,
+                  "paymentAmount": 0,
+                  "benefits": ""
+                },
+                "customModulesInfo": { 
+                  "selectPromptId": 0, 
+                  "selectLorebookId": 0
+                },
+                "pdProfileSimpleInfo": {
+                  "profileTabType" : 0,
+                  "operatorAuthorityType": 0,
+                  "profileId": 0,
+                  "profileType": 0,
+                  "name": "string",
+                  "iconImageUrl": "string",
+                  "description" : "string",
+                  "nsfw": false ,
+                  "urlLinkKey" : "string"
+                },
+                "state": 1,
+                
+                "createAt": "2025-02-10T00:00:00.000Z",
+                "updateAt": "2025-02-10T00:00:00.000Z"   ,
+                "creatorComment" : "string"                  
+              },
+              "episodeDescription": {
+                "scenarioDescription": "",
+                "introDescription": "",
+                "secret": "",
+                "greeting": "",
+                "worldScenario": ""
+              },
+              "triggerInfoList": [],
+              "conversationTemplateList": []
+            }
+          ]
+        }
+      ],
+      "publishInfo": {
+        "languageType": 0,
+        "storyName": "",
+        "thumbnail": "",
+        "storyDescription": "",
+        "authorName": "",
+        "authorComment": "",
+        "tagList": [],
+        "selectTagList": [],
+        "visibilityType": 0,
+        "monetization": false,
+        "nsfw": 0,
+        "llmSetupInfo": {
+          "llmModel": 6,
+          "customApi": ""
+        }
+      }
+    }
+  }
+}

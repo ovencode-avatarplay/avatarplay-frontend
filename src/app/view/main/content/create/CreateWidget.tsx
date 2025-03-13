@@ -11,7 +11,13 @@ import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {components, StylesConfig} from 'react-select';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {getProfileList, ProfileSimpleInfo, ProfileType, selectProfile} from '@/app/NetWork/ProfileNetwork';
+import {
+  getProfileList,
+  OperatorAuthorityType,
+  ProfileSimpleInfo,
+  ProfileType,
+  selectProfile,
+} from '@/app/NetWork/ProfileNetwork';
 import {updateProfile} from '@/redux-store/slices/Profile';
 import {usePathname, useRouter} from 'next/navigation';
 
@@ -32,17 +38,24 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
   };
   const [data, setData] = useState<{
     profileList: ProfileSimpleInfo[];
+    indexSharedTab: number;
   }>({
     profileList: [],
+    indexSharedTab: 0,
   });
 
   useEffect(() => {
     if (!open) return;
+
+    const isMyProfile = dataProfile.currentProfile?.operatorAuthorityType == OperatorAuthorityType.None;
+    data.indexSharedTab = Number(!isMyProfile);
+    console.log('isMyProfile : ', isMyProfile);
+    setData({...data});
     refreshProfileList();
   }, [open]);
 
   const refreshProfileList = async () => {
-    const profileList = await getProfileList();
+    const profileList = await getProfileList(data.indexSharedTab);
     if (!profileList) return;
 
     data.profileList = profileList;
@@ -79,44 +92,18 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
     onClose;
   };
 
-  const SelectBoxArrowComponent = useCallback(() => <></>, []);
-  const SelectBoxValueComponent = useCallback((data: any) => {
-    return (
-      <div className={styles.boxValueWrap}>
-        <div className={styles.left}>
-          <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
-          <data value="" className={styles.nameWrap}>
-            <div className={styles.name}>{data.name}</div>
-            <div className={styles.role}>{ProfileType[data.type]}</div>
-          </data>
-        </div>
-        <div className={styles.right}>
-          <img className={styles.iconDropDown} src={'/ui/create/icon_arrow_down.svg'} alt="altArrowDown" />
-        </div>
-      </div>
-    );
-  }, []);
-  const SelectBoxOptionComponent = useCallback(
-    (data: any, isSelected: boolean) => (
-      <>
-        <div className={styles.optionWrap}>
-          <div className={styles.left}>
-            <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
-            <data value="" className={styles.nameWrap}>
-              <div className={styles.name}>{data.name}</div>
-              <div className={styles.role}>{ProfileType[data.type]}</div>
-            </data>
-          </div>
-          <div className={styles.right}>
-            {isSelected && <img className={styles.iconDropDown} src={LineCheck.src} alt="altArrowDown" />}
-            {/* <img className={styles.iconDropDown} src={'/ui/create/icon_arrow_down.svg'} alt="altArrowDown" /> */}
-          </div>
-        </div>
-      </>
-    ),
-    [],
+  const profileType = dataProfile.currentProfile?.profileType || ProfileType.User;
+  const canCreateFeed = [ProfileType.User, ProfileType.PD, ProfileType.Character, ProfileType.Channel].includes(
+    profileType,
   );
-
+  const canCreateCharacter = [ProfileType.User, ProfileType.PD].includes(profileType);
+  const canCreateContent = [ProfileType.Character, ProfileType.Channel].includes(profileType);
+  const canCreateChannel = [ProfileType.User, ProfileType.PD].includes(profileType);
+  /* 프로필 타입별 생성 권한
+   PD: Feed, Character, Channel;
+  Character: Feed, Contents;
+  Channel: Feed, Contents, Play(게임);
+  */
   return (
     <CustomDrawer open={open} onClose={onClose}>
       <div
@@ -128,9 +115,24 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         <div className={styles.drawerArea}>
           <div className={styles.drawerTitle}>Create</div>
           <div className={styles.buttonArea}>
-            <div className={styles.mySharedWrap}>
-              <div className={cx(styles.My, styles.active)}>My</div>
-              <div className={cx(styles.Shared)}>Shared</div>
+            <div
+              className={styles.mySharedWrap}
+              onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                const target = e.target as HTMLElement;
+                const indexTab = target.closest('[data-index]')?.getAttribute('data-index');
+                if (indexTab) {
+                  data.indexSharedTab = parseInt(indexTab);
+                  setData({...data});
+                  refreshProfileList();
+                }
+              }}
+            >
+              <div className={cx(styles.My, data.indexSharedTab == 0 && styles.active)} data-index={0}>
+                My
+              </div>
+              <div className={cx(styles.Shared, data.indexSharedTab == 1 && styles.active)} data-index={1}>
+                Shared
+              </div>
             </div>
             <div className={styles.selectBoxWrap}>
               <SelectBox
@@ -139,7 +141,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                 ArrowComponent={SelectBoxArrowComponent}
                 ValueComponent={SelectBoxValueComponent}
                 OptionComponent={SelectBoxOptionComponent}
-                onChangedCharacter={async id => {
+                onChange={async id => {
                   const resData = await selectProfile(id);
                   if (!resData?.profileSimpleInfo) return;
 
@@ -150,45 +152,76 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                   console.log('pathname : ', pathname);
                   const isProfilePage = /^\/[a-z]{2}\/profile(\/.*)?$/.test(pathname ? pathname : 'empty pathname');
                   if (isProfilePage) {
-                    pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.profileId + "?from=''", router, false);
+                    pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.urlLinkKey + "?from=''", router, false);
                   }
                 }}
                 customStyles={{
-                  menuList: {
+                  menu: {
                     borderRadius: '12px',
                     border: '1px solid var(--Border-1, #EAECF0)',
                     background: 'var(--White, #FFF)',
+                    overflow: 'hidden',
+                  },
+                  menuList: {
+                    maxHeight: '250px',
                   },
                 }}
               />
             </div>
 
-            <Link href={getLocalizedLink('/create/post')} passHref>
-              <button className={`${styles.drawerButton} ${styles.drawerButtonTop}`} onClick={onClose}>
+            <Link href={canCreateFeed ? getLocalizedLink('/create/post') : ''} passHref>
+              <button
+                className={`${styles.drawerButton} ${styles.drawerButtonTop} ${canCreateFeed ? '' : styles.disable}`}
+                onClick={() => {
+                  if (!canCreateFeed) return;
+                  console.log('canCreateFeed : ', canCreateFeed);
+                  onClose();
+                }}
+              >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineEdit.src} />
                   <div className={styles.buttonText}>Feed</div>
                 </div>
               </button>
             </Link>
-            <Link href={getLocalizedLink('/create/character2')} passHref>
-              <button className={`${styles.drawerButton} ${styles.drawerButtonMid}`} onClick={onClose}>
+            <Link href={canCreateCharacter ? getLocalizedLink('/create/character') : ''} passHref>
+              <button
+                className={`${styles.drawerButton} ${styles.drawerButtonMid} ${
+                  canCreateCharacter ? '' : styles.disable
+                }`}
+                onClick={() => {
+                  if (!canCreateCharacter) return;
+                  onClose();
+                }}
+              >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineCharacter.src} />
                   <div className={styles.buttonText}>Character</div>
                 </div>
               </button>
             </Link>
-            <Link href={getLocalizedLink('/create/content')} passHref>
-              <button className={`${styles.drawerButton} ${styles.drawerButtonBot}`} onClick={onClose}>
+            <Link href={canCreateContent ? getLocalizedLink('/create/content') : ''} passHref>
+              <button
+                className={`${styles.drawerButton} ${styles.drawerButtonMid} ${canCreateContent ? '' : styles.disable}`}
+                onClick={() => {
+                  if (!canCreateContent) return;
+                  onClose();
+                }}
+              >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineStory.src} />
                   <div className={styles.buttonText}>Content</div>
                 </div>
               </button>
             </Link>
-            <Link href={getLocalizedLink('/create/channel')} passHref>
-              <button className={`${styles.drawerButton} ${styles.drawerButtonBot}`} onClick={onClose}>
+            <Link href={canCreateChannel ? getLocalizedLink('/create/channel') : ''} passHref>
+              <button
+                className={`${styles.drawerButton} ${styles.drawerButtonBot} ${canCreateChannel ? '' : styles.disable}`}
+                onClick={() => {
+                  if (!canCreateChannel) return;
+                  onClose();
+                }}
+              >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineChannel.src} />
                   <div className={styles.buttonText}>Channel</div>
@@ -203,3 +236,45 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
 };
 
 export default CreateWidget;
+
+const SelectBoxArrowComponent = () => <></>;
+const SelectBoxValueComponent = (data: any) => {
+  console.log('data : ', data);
+  return (
+    <div className={styles.boxValueWrap}>
+      <div className={styles.left}>
+        <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
+        <data value="" className={styles.nameWrap}>
+          <div className={styles.name}>{data.name}</div>
+          <div className={styles.role}>{ProfileType[data.profileType]}</div>
+        </data>
+      </div>
+      <div className={styles.right}>
+        <img className={styles.iconDropDown} src={'/ui/create/icon_arrow_down.svg'} alt="altArrowDown" />
+      </div>
+    </div>
+  );
+};
+const SelectBoxOptionComponent = (data: any, isSelected: boolean) => {
+  const isPD = [ProfileType.PD, ProfileType.User].includes(data.profileType);
+  const isCharacter = [ProfileType.Character].includes(data.profileType);
+  const isChannel = [ProfileType.Channel].includes(data.profileType);
+
+  return (
+    <>
+      <div className={styles.optionWrap}>
+        <div className={styles.left}>
+          <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
+          <data value="" className={styles.nameWrap}>
+            <div className={styles.name}>{data.name}</div>
+            <div className={styles.role}>{ProfileType[data.profileType]}</div>
+          </data>
+        </div>
+        <div className={styles.right}>
+          {isSelected && <img className={styles.iconDropDown} src={LineCheck.src} alt="altArrowDown" />}
+          {/* <img className={styles.iconDropDown} src={'/ui/create/icon_arrow_down.svg'} alt="altArrowDown" /> */}
+        </div>
+      </div>
+    </>
+  );
+};

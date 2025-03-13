@@ -1,7 +1,7 @@
 'use client';
 
-import CreateCharacterMain from '@/app/view/main/content/create/character/CreateCharacterMain';
+import CreateCharacterMain2 from '@/app/view/main/content/create/character/CreateCharacterMain2';
 
 export default function CreateCharacterPage() {
-  return <CreateCharacterMain />;
+  return <CreateCharacterMain2 />;
 }

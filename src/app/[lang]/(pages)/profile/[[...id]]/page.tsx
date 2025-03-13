@@ -7,14 +7,14 @@ import {notFound} from 'next/navigation';
 
 type Props = {
   params: {
-    id?: number[];
+    id?: string[];
   };
 };
 
 export default function PostPage({params}: Props) {
   return (
     <>
-      <ProfileBase profileId={params?.id?.[0] || 0} isPath />
+      <ProfileBase urlLinkKey={params?.id?.[0] || '0'} isPath />
       <BottomNav />
     </>
   );

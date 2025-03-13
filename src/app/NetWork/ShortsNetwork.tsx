@@ -1,6 +1,7 @@
 // src/app/Network/ShortsNetwork.ts
 
 import api, {ResponseAPI} from './ApiInstance';
+import {MediaState} from './ProfileNetwork';
 
 // 쇼츠 정보 타입
 export interface ShortsInfo {
@@ -43,64 +44,58 @@ export const sendGetHomeFeedShorts = async (): Promise<{
 
 export interface FeedInfo {
   id: number;
+  profileId: number;
   urlLinkKey: string;
-  mediaState: number;
+  mediaState: MediaState;
   mediaUrlList: string[];
   description: string;
   hashTag: string;
   commentCount: number;
   likeCount: number;
+  disLikeCount: number;
   isLike: boolean;
   isDisLike: boolean;
   isBookmark: boolean;
+  isPinFix: boolean;
+  isFollowing: boolean;
   playTime: string;
   characterProfileId: number;
   characterProfileName: string;
   characterProfileUrl: string;
-  createAt: Date;
-  isFollowing: boolean;
+  createAt?: string;
+  profileUrlLinkKey: string;
 }
 
-export interface RequestCreateFeed {
+export interface CreateFeedReq {
   languageType: string;
-  feedInfo: FeedInfo;
+  profileId?: number;
+  feedInfo: CreateFeedInfo;
 }
 
-interface ResponseCreateFeed {
-  resultCode: number;
-  resultMessage: string;
-  data: any; // API 응답 데이터 구조에 따라 수정 가능
+export interface CreateFeedInfo {
+  id: number;
+  mediaState: number;
+  mediaUrlList: string[];
+  title: string;
+  description: string;
+  hashTag: string;
+  visibilityType: number;
+  nsfw: boolean;
 }
 
-/**
- * Feed 생성 API 호출 함수
- * @param payload - 생성할 Feed 정보
- * @returns API 응답 결과
- */
-export const sendCreateFeed = async (
-  payload: RequestCreateFeed,
-): Promise<{resultCode: number; resultMessage: string; data: any | null}> => {
+export interface CreateFeedRes {}
+
+export const sendCreateFeed = async (payload: CreateFeedReq): Promise<ResponseAPI<CreateFeedRes>> => {
   try {
-    // POST 요청 전송
-    const response = await api.post<ResponseCreateFeed>('/Feed/create', payload);
-
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0) {
-      return {resultCode, resultMessage, data};
-    } else {
-      console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage, data: null};
-    }
+    const response = await api.post<ResponseAPI<CreateFeedRes>>('/Feed/create', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`CreateFeedRes Error: ${response.data.resultCode}`);
   } catch (error) {
-    console.error('Failed to create feed:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to create feed',
-      data: null,
-    };
+    console.error('Error creating feed:', error);
+    throw new Error('Failed to create feed. Please try again.');
   }
 };
+
 // Recommend Feed API Types
 export interface RecommendFeedReq {
   recommendState: number;
@@ -186,67 +181,6 @@ export const sendFeedView = async (
   }
 };
 
-// Feed Like API 호출 함수
-export const sendFeedLike = async (
-  feedId: number,
-  isLike: boolean,
-): Promise<{
-  resultCode: number;
-  resultMessage: string;
-  data: {feedId: number; isLike: boolean; likeCount: number} | null;
-}> => {
-  try {
-    const response = await api.post('/Feed/like', {feedId, isLike});
-    const {resultCode, resultMessage, data} = response.data;
-
-    if (resultCode === 0) {
-      return {
-        resultCode,
-        resultMessage,
-        data: data || null, // 데이터가 없을 경우 null 반환
-      };
-    } else {
-      console.error(`Error: ${resultMessage}`);
-      return {
-        resultCode,
-        resultMessage,
-        data: null, // 실패 시 data를 null로 반환
-      };
-    }
-  } catch (error) {
-    console.error('Failed to like feed:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to like feed',
-      data: null,
-    };
-  }
-};
-
-// Feed Like API 호출 함수
-export const sendFeedDisLike = async (
-  feedId: number,
-  isDisLike: boolean,
-): Promise<{resultCode: number; resultMessage: string}> => {
-  try {
-    const response = await api.post('/Feed/dislike', {feedId, isDisLike});
-    const {resultCode, resultMessage} = response.data;
-
-    if (resultCode === 0) {
-      return {resultCode, resultMessage};
-    } else {
-      console.error(`Error: ${resultMessage}`);
-      return {resultCode, resultMessage};
-    }
-  } catch (error) {
-    console.error('Failed to like feed:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to like feed',
-    };
-  }
-};
-
 // Feed Share API 호출 함수
 export const sendFeedShare = async (feedId: number): Promise<{resultCode: number; resultMessage: string}> => {
   try {
@@ -265,170 +199,6 @@ export const sendFeedShare = async (feedId: number): Promise<{resultCode: number
       resultCode: -1,
       resultMessage: 'Failed to share feed',
     };
-  }
-};
-
-// 댓글 정보 타입 정의
-export interface CommentInfo {
-  email: string;
-  commentId: number;
-  content: string;
-  parentCommentId: number;
-  userName: string;
-  likeCount: number;
-  isLike: boolean;
-  isDisLike: boolean;
-  isModify: boolean;
-  updatedAt: string;
-  replies: ReplieInfo[];
-  userImage: string;
-}
-
-// 대댓글 정보
-export interface ReplieInfo {
-  commentId: number;
-  content: string;
-  parentCommentId: number;
-  userName: string;
-  likeCount: number;
-  isLike: boolean;
-  isDisLike: boolean;
-  isModify: boolean;
-  updatedAt: string;
-  userImage: string;
-}
-
-// 댓글 추가하기
-export interface AddCommentReq {
-  feedId: number;
-  parentCommentId: number;
-  content: string;
-}
-
-export interface AddCommentRes {
-  feedId: number;
-  parentCommentId: number;
-  userName: string;
-  content: string;
-  createAt: string;
-}
-
-export const sendAddComment = async (payload: AddCommentReq): Promise<ResponseAPI<AddCommentRes>> => {
-  try {
-    const response = await api.post<ResponseAPI<AddCommentRes>>('/Feed/addComment', payload);
-
-    if (response.data.resultCode === 0) {
-      return response.data;
-    } else {
-      throw new Error(`AddComment Error: ${response.data.resultCode}`);
-    }
-  } catch (error) {
-    console.error('Error adding comment:', error);
-    throw new Error('Failed to add comment. Please try again.');
-  }
-};
-
-// 댓글 수정하기
-export interface UpdateCommentReq {
-  commentId: number;
-  content: string;
-}
-
-export interface UpdateCommentRes {
-  commentInfo: CommentInfo;
-}
-
-export const sendUpdateComment = async (payload: UpdateCommentReq): Promise<ResponseAPI<UpdateCommentRes>> => {
-  try {
-    const response = await api.post<ResponseAPI<UpdateCommentRes>>('/Feed/updateComment', payload);
-
-    if (response.data.resultCode === 0) {
-      return response.data;
-    } else {
-      throw new Error(`UpdateComment Error: ${response.data.resultCode}`);
-    }
-  } catch (error) {
-    console.error('Error updating comment:', error);
-    throw new Error('Failed to update comment. Please try again.');
-  }
-};
-
-// 댓글 좋아요
-export interface CommentLikeReq {
-  commentId: number;
-  isLike: boolean;
-}
-
-export interface CommentLikeRes {
-  commentId: number;
-  isLike: boolean;
-  likeCount: number;
-}
-
-export const sendCommentLike = async (payload: CommentLikeReq): Promise<ResponseAPI<CommentLikeRes>> => {
-  try {
-    const response = await api.post<ResponseAPI<CommentLikeRes>>('/Feed/commentLike', payload);
-
-    if (response.data.resultCode === 0) {
-      return response.data;
-    } else {
-      throw new Error(`CommentLike Error: ${response.data.resultCode}`);
-    }
-  } catch (error) {
-    console.error('Error liking comment:', error);
-    throw new Error('Failed to like comment. Please try again.');
-  }
-};
-
-// 댓글 싫어요
-export interface CommentDislikeReq {
-  commentId: number;
-  isDisLike: boolean;
-}
-
-export interface CommentDislikeRes {
-  commentId: number;
-  isDisLike: boolean;
-}
-
-export const sendCommentDislike = async (payload: CommentDislikeReq): Promise<ResponseAPI<CommentDislikeRes>> => {
-  try {
-    const response = await api.post<ResponseAPI<CommentDislikeRes>>('/Feed/commentDislike', payload);
-
-    if (response.data.resultCode === 0) {
-      return response.data;
-    } else {
-      throw new Error(`CommentDislike Error: ${response.data.resultCode}`);
-    }
-  } catch (error) {
-    console.error('Error disliking comment:', error);
-    throw new Error('Failed to dislike comment. Please try again.');
-  }
-};
-
-// 댓글 리스트 가져오기
-export interface GetCommentListReq {
-  feedId: number;
-}
-
-export interface GetCommentListRes {
-  commentInfoList: CommentInfo[];
-}
-
-export const sendGetCommentList = async (payload: GetCommentListReq): Promise<ResponseAPI<GetCommentListRes>> => {
-  try {
-    const response = await api.post<ResponseAPI<GetCommentListRes>>('/Feed/getCommentList', payload);
-
-    console.log('asd', response);
-
-    if (response.data.resultCode === 0) {
-      return response.data;
-    } else {
-      throw new Error(`GetCommentList Error: ${response.data.resultCode}`);
-    }
-  } catch (error) {
-    console.error('Error fetching comment list:', error);
-    throw new Error('Failed to fetch comment list. Please try again.');
   }
 };
 
@@ -473,27 +243,17 @@ export const sendGetFeed = async (
     };
   }
 };
-// Feed Bookmark API 요청 타입
-export interface FeedBookmarkReq {
+
+export interface PinFixFeedReq {
   feedId: number;
-  isSave: boolean;
+  isFix: boolean;
 }
 
-// Feed Bookmark API 응답 타입
-export interface FeedBookmarkRes {
-  resultCode: number;
-  resultMessage: string;
-  data: {}; // 빈 객체
-}
+export interface PinFixFeedRes {}
 
-/**
- * 피드 북마크 API 호출
- * @param payload 요청 본문에 포함할 데이터 (feedId, isSave)
- * @returns API 응답 결과
- */
-export const sendFeedBookmark = async (payload: FeedBookmarkReq): Promise<FeedBookmarkRes> => {
+export const updatePin = async (payload: PinFixFeedReq): Promise<PinFixFeedRes> => {
   try {
-    const response = await api.post('/Feed/bookmark', payload);
+    const response = await api.post('/Feed/pin', payload);
     const {resultCode, resultMessage, data} = response.data;
 
     return {
@@ -502,51 +262,34 @@ export const sendFeedBookmark = async (payload: FeedBookmarkReq): Promise<FeedBo
       data: data || {}, // 데이터가 없을 경우 빈 객체 반환
     };
   } catch (error) {
-    console.error('Failed to bookmark feed:', error);
+    console.error('Failed to pin feed:', error);
     return {
       resultCode: -1,
-      resultMessage: 'Failed to bookmark feed',
+      resultMessage: 'Failed to pin feed',
       data: {},
     };
   }
 };
-// Get Comment API 요청 타입
-export interface GetCommentReq {
-  commentId: number; // 가져올 댓글 ID
+
+export interface DeleteFeedeReq {
+  feedId: number;
 }
 
-// Get Comment API 응답 타입
-export interface GetCommentRes {
-  commentInfo: CommentInfo;
-}
+export interface DeleteFeedRes {}
 
-/**
- * 댓글 가져오기
- * @param payload 요청 본문에 포함할 데이터 (commentId)
- * @returns API 응답 결과
- */
-export const sendGetComment = async (
-  payload: GetCommentReq,
-): Promise<{
-  resultCode: number;
-  resultMessage: string;
-  data: CommentInfo | null;
-}> => {
+export const deleteFeed = async (payload: DeleteFeedeReq) => {
   try {
-    const response = await api.post('/Feed/getComment', payload);
-    const {resultCode, resultMessage, data} = response.data;
+    const res = await api.post<ResponseAPI<DeleteFeedRes>>('feed/delete', payload);
 
-    return {
-      resultCode,
-      resultMessage,
-      data: data || null, // 데이터가 없으면 null 반환
-    };
-  } catch (error) {
-    console.error('Failed to fetch comment:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to fetch comment',
-      data: null,
-    };
+    if (res.status !== 200) {
+      console.error('deleteFeed API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('deleteFeed API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
   }
 };

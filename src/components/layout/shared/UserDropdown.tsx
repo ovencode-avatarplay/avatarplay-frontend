@@ -48,10 +48,14 @@ type UserDropDownType = {
 };
 
 export type UserDropDownAtomType = {
+  drawerOpen: boolean;
+  drawerProfileOpen: boolean;
   onClick: () => void;
   onClickLong: () => void;
 };
 export const userDropDownAtom = atom<UserDropDownAtomType>({
+  drawerOpen: false,
+  drawerProfileOpen: false,
   onClick: () => {},
   onClickLong: () => {},
 });
@@ -63,8 +67,8 @@ const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false);
   const [auth, setAuth] = useState<Session | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerProfileOpen, setDrawerProfileOpen] = useState(false);
+  // const [drawerOpen, setDrawerOpen] = useState(false);
+  // const [drawerProfileOpen, setDrawerProfileOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(0);
 
   // 임시 - UserInfo Modal
@@ -94,16 +98,18 @@ const UserDropdown = () => {
     !open ? setOpen(true) : setOpen(false);
   };
 
-  const handleDrawerOpen = () => {
-    setDrawerOpen(true);
-  };
+  function handleDrawerOpen() {
+    dataUserDropDown.drawerOpen = true;
+    setUserDropDown({...dataUserDropDown});
+  }
 
-  const OpenSelectProfile = async () => {
+  async function OpenSelectProfile() {
     const isLogin = await isLogined();
     if (!isLogin) return;
 
-    setDrawerProfileOpen(true);
-  };
+    dataUserDropDown.drawerProfileOpen = true;
+    setUserDropDown({...dataUserDropDown});
+  }
 
   const routeProfile = async () => {
     const jwtToken = localStorage.getItem('jwt');
@@ -127,7 +133,7 @@ const UserDropdown = () => {
       const profile = res?.data?.profileSimpleInfo;
 
       dispatch(updateProfile(profile));
-      pushLocalizedRoute('/profile/' + profile?.profileId, router);
+      pushLocalizedRoute('/profile/' + profile?.urlLinkKey, router);
     }
   };
 
@@ -138,7 +144,9 @@ const UserDropdown = () => {
     // ) {
     //   return;
     // }
-    setDrawerOpen(open);
+    dataUserDropDown.drawerProfileOpen = open;
+    setUserDropDown({...dataUserDropDown});
+    // setDrawerOpen(open);
   };
 
   const handleLanguageChange = (event: SelectChangeEvent<number>) => {
@@ -239,78 +247,9 @@ const UserDropdown = () => {
     }
   };
 
-  type DndButtonProps = {
-    onClick: () => void;
-    onLongClick: () => void;
-    children: JSX.Element;
-  };
-  const DndButton = (props: DndButtonProps) => {
-    const {attributes, listeners, setNodeRef} = useDraggable({
-      id: 'draggable',
-    });
-
-    const mouseSensor = useSensor(MouseSensor, {
-      activationConstraint: {
-        delay: 2000, // 500ms 동안 누르면 드래그 활성화
-        tolerance: 5, // 살짝 움직여도 롱클릭 인정
-      },
-    });
-
-    const touchSensor = useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 2000, // 500ms 동안 터치 유지 시 드래그 활성화
-        tolerance: 5,
-      },
-    });
-
-    const sensors = useSensors(mouseSensor, touchSensor);
-
-    let longPressTimer: NodeJS.Timeout;
-    let isDragging = false; // 드래그 여부 확인
-
-    const handleMouseDown = () => {
-      longPressTimer = setTimeout(() => {
-        if (!isDragging) {
-          props.onLongClick();
-        }
-      }, 500);
-    };
-
-    const handleMouseUp = () => {
-      clearTimeout(longPressTimer);
-    };
-
-    const handleDragStart = () => {
-      isDragging = true;
-      clearTimeout(longPressTimer);
-    };
-
-    const handleDragEnd = () => {
-      isDragging = false;
-    };
-
-    return (
-      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <button
-          ref={setNodeRef}
-          {...listeners}
-          {...attributes}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onTouchStart={handleMouseDown}
-          onTouchEnd={handleMouseUp}
-          onClick={props.onClick} // 일반 클릭 처리
-          draggable="false"
-        >
-          {props.children}
-        </button>
-      </DndContext>
-    );
-  };
-
   return (
     <>
-      <DndButton onClick={() => routeProfile} onLongClick={() => dataUserDropDown.onClickLong()}>
+      <DndButton onClick={() => routeProfile()} onLongClick={() => dataUserDropDown.onClickLong()}>
         <Badge
           style={{padding: '12px 25px', margin: '12px -25px'}}
           overlap="circular"
@@ -320,14 +259,14 @@ const UserDropdown = () => {
           <Avatar
             alt={auth?.user?.email || ''}
             src={dataProfile.currentProfile?.iconImageUrl || ''}
-            onClick={routeProfile}
+            // onClick={routeProfile}
             className={styles.avatar}
           />
         </Badge>
       </DndButton>
       <Drawer
         anchor="right"
-        open={drawerOpen}
+        open={dataUserDropDown.drawerOpen}
         onClose={() => {
           toggleDrawer(false);
         }}
@@ -444,9 +383,10 @@ const UserDropdown = () => {
       </Drawer>
       <UserInfoModal open={userInfoOpen} onClose={() => setUserInfoOpen(false)} />
       <SelectProfile
-        open={drawerProfileOpen}
+        open={dataUserDropDown.drawerProfileOpen}
         handleCloseDrawer={() => {
-          setDrawerProfileOpen(false);
+          dataUserDropDown.drawerProfileOpen = false;
+          setUserDropDown({...dataUserDropDown});
         }}
       />
     </>
@@ -454,3 +394,73 @@ const UserDropdown = () => {
 };
 
 export default UserDropdown;
+
+type DndButtonProps = {
+  onClick: () => void;
+  onLongClick: () => void;
+  children: JSX.Element;
+};
+const DndButton = (props: DndButtonProps) => {
+  const {attributes, listeners, setNodeRef} = useDraggable({
+    id: 'draggable',
+  });
+
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      delay: 2000, // 500ms 동안 누르면 드래그 활성화
+      tolerance: 5, // 살짝 움직여도 롱클릭 인정
+    },
+  });
+
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 2000, // 500ms 동안 터치 유지 시 드래그 활성화
+      tolerance: 5,
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, touchSensor);
+
+  let longPressTimer: NodeJS.Timeout;
+  let isDragging = false; // 드래그 여부 확인
+
+  const handleMouseDown = () => {
+    longPressTimer = setTimeout(() => {
+      if (!isDragging) {
+        props.onLongClick();
+      }
+    }, 500);
+  };
+
+  const handleMouseUp = () => {
+    clearTimeout(longPressTimer);
+  };
+
+  const handleDragStart = () => {
+    isDragging = true;
+    clearTimeout(longPressTimer);
+  };
+
+  const handleDragEnd = () => {
+    isDragging = false;
+  };
+
+  return (
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <button
+        style={{flex: 1}}
+        ref={setNodeRef}
+        {...listeners}
+        {...attributes}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onTouchStart={handleMouseDown}
+        onTouchEnd={handleMouseUp}
+        onClick={props.onClick} // 일반 클릭 처리
+        draggable="false"
+      >
+        {props.children}
+      </button>
+    </DndContext>
+  );
+};

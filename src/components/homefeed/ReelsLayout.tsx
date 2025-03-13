@@ -23,7 +23,10 @@ import {
 } from '@/app/NetWork/ProfileNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {getCharacterStateText} from '@/app/view/studio/characterDashboard/CharacterGridItem';
-enum RecommendState {
+import formatText from '@/utils/formatText';
+import getLocalizedText from '@/utils/getLocalizedText';
+import CustomPopup from '../layout/shared/CustomPopup';
+export enum RecommendState {
   Following = 1,
   ForYou = 0,
 }
@@ -31,22 +34,22 @@ interface ReelsLayoutProps {
   initialFeed?: FeedInfo; // 특정 URL 키를 통해 전달받은 초기 피드
   recommendState?: RecommendState;
 
-  profileId?: number;
   profileType?: ProfileType;
   feedSortType?: ExploreSortType;
   feedMediaType?: FeedMediaType;
-  indexContent?: number;
+  idContent?: number;
+  profileUrlLinkKey?: string;
 }
 
 const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   initialFeed,
   recommendState = 0,
 
-  profileId = 0,
+  profileUrlLinkKey = '',
   profileType = ProfileType.PD,
   feedSortType = ExploreSortType.MostPopular,
   feedMediaType = FeedMediaType.Total,
-  indexContent = 0,
+  idContent = 0,
 }) => {
   const dataProfile = useSelector((state: RootState) => state.profile);
   const [allFeeds, setAllFeeds] = useState<FeedInfo[]>([]); // 전체 데이터 저장
@@ -59,8 +62,10 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const isSpecificProfile = profileId != 0;
+  const isSpecificProfile = !!profileUrlLinkKey;
 
+  const Header = 'Home';
+  const Common = 'Common';
   const decodeJwt = (token: string): {id?: string; email?: string; [key: string]: any} | null => {
     try {
       const base64Payload = token.split('.')[1]; // payload 부분 추출
@@ -89,27 +94,37 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       let result = null;
 
       if (isPD) {
-        result = await getProfilePdTabInfo(profileId || 0, PdProfileTabType.Feed, feedSortType, feedMediaType);
+        result = await getProfilePdTabInfo(
+          profileUrlLinkKey,
+          PdProfileTabType.Feed,
+          feedSortType,
+          feedMediaType,
+          0,
+          1000,
+        );
       } else {
         result = await getProfileCharacterTabInfo(
-          profileId || 0,
+          profileUrlLinkKey,
           CharacterProfileTabType.Feed,
           feedSortType,
           feedMediaType,
+          0,
+          1000,
         );
-      }
+      } //TODO : 1000개로 임시 처리, oh, feed가 많은 경우 일부만 뿌리고 id를 찾아서 보여주는 처리가 필요해보임, 무한 스크롤
 
       const mergedFeeds = result?.feedInfoList || [];
       setAllFeeds(mergedFeeds); // 전체 데이터 저장
+      const indexContent = mergedFeeds.findIndex(v => v.id == idContent);
       setInfo(mergedFeeds.slice(0, indexContent + 2)); // 초기 렌더링용 첫 2개
       setCurrentSlideIndex(indexContent);
 
       setTimeout(() => {
-        const sectionHeight = window.innerHeight;
+        const sectionHeight = window.innerHeight - 58 - 48; //58 : header , 48 : footer
         const scrollY = sectionHeight * indexContent;
         window.scrollTo(0, scrollY);
         handleScroll();
-      }, 100);
+      }, 1);
     }
 
     if (!isSpecificProfile) {
@@ -127,6 +142,8 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
           setInfo(mergedFeeds.slice(0, 2)); // 초기 렌더링용 첫 2개
         }
       } catch (error) {
+        setAllFeeds([]);
+        setInfo([]);
         console.error('Failed to fetch recommended feed:', error);
       }
     }
@@ -204,8 +221,9 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
     return () => {
       // 💡 cleanup: 기본 상태로 복구
-      document.body.style.overflowY = 'scroll';
-      document.body.style.overflowX = 'hidden';
+      // document.body.style.overflowY = 'scroll';
+      // document.body.style.overflowX = 'hidden';
+      document.body.style.removeProperty('overflow');
     };
   }, [isProfile]);
 
@@ -238,7 +256,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
                 pushLocalizedRoute('/main/homefeed', router, true, true);
               }}
             >
-              Following
+              {getLocalizedText(Header, 'home001_label_002')}
             </button>
             <button
               className={`${styles.tab} ${selectedTab === RecommendState.ForYou ? styles.active : ''}`}
@@ -248,7 +266,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
                 pushLocalizedRoute('/main/homefeed', router, true, true);
               }}
             >
-              For You
+              {getLocalizedText(Header, 'home001_label_001')}
             </button>
           </div>
         </>
@@ -263,10 +281,29 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
               setIsMute={setIsMute}
               setIsProfile={setIsProfile}
               isShowProfile={!isSpecificProfile}
+              recommendState={selectedTab}
             />
           </div>
         ))}
       </div>
+      {selectedTab == RecommendState.Following && info.length == 0 && (
+        <CustomPopup
+          type="alert"
+          title="Sorry"
+          description="팔로우한 프로필이 없거나, 피드가 아직 없습니다."
+          buttons={[
+            {
+              label: 'OK',
+              onClick: () => {
+                setSelectedTab(RecommendState.ForYou);
+                dispatch(setRecommendState(0));
+                pushLocalizedRoute('/main/homefeed', router, true, true);
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
     </div>
   );
 };

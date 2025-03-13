@@ -1,0 +1,304 @@
+
+.aiGenerateArea
+{
+    width: var(--second-width);
+    margin: 0 16px;
+
+    overflow: hidden; 
+
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.aiTagArea{
+    display: flex;
+    width: var(--second-width);
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 6px;
+    flex-wrap: wrap;
+
+}
+
+.buttonGap6
+{
+    gap:6px;
+}
+
+.titleArea
+{
+    display: flex;
+    flex-direction: row;
+    gap : 4px;
+}
+
+.seedArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+}
+
+.seedTitleArea
+{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    align-self: stretch;
+}
+
+.seedInputArea
+{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    align-self: stretch; 
+}
+
+.seedInputBox
+{
+    width: 100%;
+}
+
+.lockButton
+{
+    width: 47px;
+    height: 47px;
+    
+    background-color: var(--Neutral-500, #9AA0A6);
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+.lockIcon
+{
+    width: 25.067px;
+    height: 25.067px;
+    flex-shrink: 0;
+}
+
+
+.imageCountArea
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+}
+
+.imageCountButtons
+{
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.imageCountButton
+{
+    display: flex;
+    width: 36px;
+    height: 36px;
+    padding: 10px 18px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    
+    border-radius: 100px;
+    border: 1px solid var(--Border-1, #EAECF0);
+    background: var(--Neutral-50, #F8F9FA);
+    
+    color: var(--Neutral-800, #2C3131);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 12px; /* 100% */
+    
+    cursor: pointer;
+}
+
+.imageCountButton.selected
+{
+    border: 1px solid var(--Black, #000);
+    background: var(--Neutral-800, #2C3131);
+    
+    color: var(--White, #FFF);
+}
+
+.currencyArea
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    align-self: stretch;
+}
+
+.currencyItem
+{
+    display: flex;
+    padding: 5px 8px 6px 8px;
+    align-items: center;
+    gap: 4px;
+    
+    border-radius: 30px;
+    background: var(--Neutral-800, #2C3131);
+
+}
+
+.currencyIcon
+{
+    width: 12px;
+    height: 12px;
+    filter: brightness(0) saturate(100%) invert(66%) sepia(13%) saturate(152%) hue-rotate(169deg) brightness(95%) contrast(86%);
+}
+
+.currencyText
+{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+
+    overflow: hidden;
+    color: var(--White, #FFF);
+    text-align: center;
+    text-overflow: ellipsis;
+    
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 100%; /* 11px */
+
+} 
+
+.generateButton
+{
+    width: var(--second-width);
+}
+
+.costArea {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 16px;
+} 
+
+.costButton > .costIcon
+{
+    width: 12px;
+    height: 12px;
+}
+
+.costButton > .costText
+{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+
+    overflow: hidden;
+    color: var(--White, #FFF);
+    text-align: center;
+    text-overflow: ellipsis; 
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 100%; /* 11px */
+}
+
+.costArea > .costDesc
+{
+    color: var(--Neutral-600, #80868B); 
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 155%; /* 18.6px */
+}
+
+.generatedImageArea
+{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;    
+}
+
+.generatedImageTitle
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: stretch;
+    
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px; /* 114.286% */
+    letter-spacing: -0.4px;
+
+}
+
+.selectGrid
+{
+  display: flex;
+  width: var(--second-width); 
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  margin-bottom: 24px;
+}
+
+.bottomNavTab
+{
+    display: flex;
+    width: var(--full-width);
+    padding: 0px 6px 17px 6px;
+    flex-direction: column;
+    align-items: center; 
+}
+
+.bottomButtonArea
+{
+    display: flex;
+    padding: 0px 6px;
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+.bottomButton
+{
+    display: flex;
+    margin: 12px auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex: 1 0 0;
+    align-self: stretch;
+}
+
+.bottomButtonIcon
+{
+    width: 24px;
+    height: 24px;
+    filter: var(--black-icon-filter);
+}
+
+.bottomButtonText
+{
+    color: var(--Neutral-900, #040415);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px; /* 114.286% */
+    letter-spacing: -0.4px;
+}

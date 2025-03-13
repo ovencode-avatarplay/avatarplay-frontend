@@ -1,10 +1,10 @@
 // publishInfo.ts
 
-import {LLMSetupInfo, PublishInfo} from './ContentInfo';
+import {LLMSetupInfo, PublishInfo} from './StoryInfo';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import emptyContent from '@/data/create/empty-content-info-data.json';
+import emptyContent from '@/data/create/empty-story-info-data.json';
 
-const initialState: PublishInfo = emptyContent.data.contentInfo.publishInfo;
+const initialState: PublishInfo = emptyContent.data.storyInfo.publishInfo;
 
 export const PublishInfoSlice = createSlice({
   name: 'PublishInfo',
@@ -13,8 +13,8 @@ export const PublishInfoSlice = createSlice({
     setPublishInfo: (state, action: PayloadAction<PublishInfo>) => {
       state.languageType = action.payload.languageType;
       state.thumbnail = action.payload.thumbnail;
-      state.contentName = action.payload.contentName;
-      state.contentDescription = action.payload.contentDescription;
+      state.storyName = action.payload.storyName;
+      state.storyDescription = action.payload.storyDescription;
       state.authorComment = action.payload.authorComment;
       state.selectTagList = action.payload.selectTagList;
       state.visibilityType = action.payload.visibilityType;
@@ -28,11 +28,11 @@ export const PublishInfoSlice = createSlice({
     setThumbnail: (state, action: PayloadAction<string>) => {
       state.thumbnail = action.payload;
     },
-    setContentName: (state, action: PayloadAction<string>) => {
-      state.contentName = action.payload;
+    setStoryName: (state, action: PayloadAction<string>) => {
+      state.storyName = action.payload;
     },
-    setContentDescription: (state, action: PayloadAction<string>) => {
-      state.contentDescription = action.payload;
+    setStoryDescription: (state, action: PayloadAction<string>) => {
+      state.storyDescription = action.payload;
     },
     setAuthorName: (state, action: PayloadAction<string>) => {
       state.authorName = action.payload;
@@ -62,8 +62,8 @@ export const {
   setPublishInfo,
   setLanguageType,
   setThumbnail,
-  setContentName,
-  setContentDescription,
+  setStoryName,
+  setStoryDescription,
   setAuthorName,
   setAuthorComment,
   setSelectedTags,

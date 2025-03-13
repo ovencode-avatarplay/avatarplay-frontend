@@ -1,7 +1,42 @@
 // src/app/Network/CharacterNetwork.tsx
 
+import {LanguageType, LLMModel} from '@/app/NetWork/network-interface/CommonEnums';
 import api, {ResponseAPI} from './ApiInstance';
-import {CharacterInfo, GalleryImageInfo} from '@/redux-store/slices/ContentInfo';
+import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
+import {VisibilityType} from './ContentNetwork';
+import {ProfileSimpleInfo} from './ProfileNetwork';
+
+export interface CharacterMediaInfo {
+  id: number;
+  imageUrl: string;
+  activationCondition: string;
+  isSpoiler: boolean;
+}
+
+export enum GenderType {
+  Female = 0,
+  Male = 1,
+  None = 2,
+}
+
+export enum CharacterIP {
+  Original,
+  Fan,
+}
+
+export enum CharacterState {
+  None = 0,
+  Create = 1,
+  Delete = 2,
+}
+
+export interface GalleryImageInfo {
+  galleryImageId: number;
+  isGenerate: boolean;
+  debugParameter: string;
+  imageUrl: string;
+}
+
 // GetCharacterList
 
 export interface GetCharacterListReq {
@@ -57,8 +92,34 @@ export const sendCreateCharacter = async (payload: CreateCharacterReq): Promise<
 
 export interface CreateCharacter2Req {
   languageType: string;
-  characterInfo: CharacterInfo;
+  payload: CharacterProfilePayload;
   debugParameter: string;
+}
+
+export interface CharacterProfilePayload {
+  id: number;
+  referenceLanguage: LanguageType;
+  name: string;
+  introduction: string;
+  description: string;
+  worldScenario: string;
+  secret: string;
+  mainImageUrl: string;
+  mediaTemplateList: CharacterMediaInfo[];
+  conversationTemplateList: ConversationInfo[];
+  visibilityType: VisibilityType;
+  llmModel: LLMModel;
+  customApi: string;
+  tag: string;
+  positionCountryList: LanguageType[];
+  characterIP: CharacterIP;
+  connectCharacterId: number;
+  operatorProfileIdList: ProfileSimpleInfo[];
+  isMonetization: boolean;
+  nsfw: boolean;
+  selectLorebookId: number;
+  selectPromptId: number;
+  creatorComment: string;
 }
 
 export interface CreateCharacter2Res {
@@ -109,7 +170,7 @@ export const sendDeleteCharacter = async (payload: DeleteCharacterReq): Promise<
 
 export interface GetCharacterInfoReq {
   languageType: string;
-  characterId: number;
+  profileId: number;
 }
 
 export interface GetCharacterInfoRes {

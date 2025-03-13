@@ -45,7 +45,7 @@ import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import ChatFloatingArea from './MainChat/ChatFloatingArea';
 import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
 import {addNewDateMessage, compareDates, NewDateType, refreshNewDateAll, shiftDates} from './MainChat/NewDate';
-import {TriggerActionType} from '@/redux-store/slices/ContentInfo';
+import {TriggerActionType} from '@/redux-store/slices/StoryInfo';
 import useChat from './hooks/useChat';
 import {useStreamMessage} from './hooks/useStreamMessage';
 
@@ -539,7 +539,7 @@ const ChatPage: React.FC = () => {
   const handleRetryStream = () => {
     if (streamKey && chatId !== TempIdforSendQuestion) {
       const retryRequestData = {
-        chatContentId: chatId, // 또는 필요에 따라 다른 ID 사용
+        chatStoryId: chatId, // 또는 필요에 따라 다른 ID 사용
         episodeId: episodeId, // 에피소드 ID
         text: parsedMessages.Messages[parsedMessages.Messages.length - 2].text, // 재전송할 메시지
       };

@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    gap: 8px;
 }
   
 
@@ -23,14 +23,14 @@
 
 .textArea {
     display: flex;
-    height: 50px;
-    padding: 14px 12px;
+    height: 48px;
     justify-content: center;
     align-items: center;
     gap: 6px;
     align-self: stretch;
+    padding: 0 12px;
     
-    border-radius: 14px; 
+    border-radius: 10px; 
 } 
 
 .Basic > .textArea
@@ -41,13 +41,11 @@
 
  
 .textInput {
-    flex: 1 0 0;
-    
+    flex: 1;
     background-color: transparent;
     color: var(--Neutral-400, #BDC1C6);
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: Lato;
-    font-size: 13px;
+    font-feature-settings: 'liga' off, 'clig' off; 
+    font-size: 15px;
     font-style: normal;
     font-weight: 400;
     line-height: 18px; /* 120% */
@@ -98,6 +96,7 @@
 .Default {
     border: 1px solid var(--Neutral-200, #E8EAED);
     background: var(--White, #FFF);
+    height: 48px;
 }
    
 .Focused {
@@ -109,30 +108,18 @@
     border: 1px solid var(--Primary-1, #FD55D3);
     background: var(--background-fill-light-theme-tertiary, #F8F8F9);
 }
-
-.Focused > .textInput
+ 
+.textExist
 {
-    color: var(--Neutral-700, #5F6368);
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: Lato;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px; /* 128.571% */
-    letter-spacing: -0.4px;
+    color: var(--Neutral-900, #040415);
 }
 
-.Typing > .textInput
+.Focused .textExist,
+.Typing .textExist
 {
-    color: var(--Neutral-700, #5F6368);
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: Lato;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px; /* 128.571% */
-    letter-spacing: -0.4px;
+    color: var(--Neutral-700, #5F6368); 
 }
+
   
 .Error {
     border: 1px solid var(--Primary-2, #FEBBEA);

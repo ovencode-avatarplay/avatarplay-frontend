@@ -1,0 +1,212 @@
+
+
+
+.voiceDrawerContainer
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.voiceList
+{
+    display: flex;
+    height: 400px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+
+    overflow-y: scroll;
+}
+
+.voiceList::-webkit-scrollbar {
+    display: none;  
+  }
+  
+  .voiceList {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+  }
+
+
+.voiceItem
+{
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    gap: 7px;
+    align-self: stretch;
+}
+
+.voiceInfoArea
+{
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1 0 0;
+    align-self: stretch; 
+}
+
+.voiceTitle
+{
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px; /* 142.857% */
+}
+
+.voiceDesc
+{
+    color: var(--Neutral-500, #9AA0A6);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
+}
+
+.soundList
+{
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 7px;
+    align-self: stretch;
+    flex-wrap: wrap;
+}
+
+.soundItem
+{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.soundButton
+{
+    display: flex;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    
+    border-radius: 999px;
+    background: var(--Neutral-200, #E8EAED);
+}
+
+.soundIcon
+{
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);
+}
+
+.soundText
+{
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
+}
+
+.pitchArea
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1 0 0;
+}
+
+.sliderContainer
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    align-self: stretch;
+}
+
+.sliderLabel
+{
+    align-self: stretch;
+    color: var(--Black, #000);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
+}
+
+.sliderWrapper
+{
+    width : var(--third-width); 
+}
+
+.slider
+{
+    width : var(--third-width); 
+    
+}
+/* 기본 슬라이더 스타일 */
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: gray; /* 전체 트랙 색상 (Gray) */
+    border-radius: 2px;
+    outline: none;
+    position: relative;
+  }
+  
+  /* 슬라이더 핸들 (Thumb) */
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: black; /* 핸들 색상 (Black) */
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white; /* 핸들 테두리 흰색 */
+    position: relative;
+    z-index: 2;
+  }
+  
+  /* 채워진 부분 (Fill) */
+  .slider::before {
+    content: "";
+    position: absolute;
+    width: var(--fill-width, 0%);
+    height: 4px;
+    background: black; /* 채워진 부분 색상 (Black) */
+    border-radius: 2px;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  
+  /* Firefox 대응 */
+  .slider::-moz-range-progress {
+    background: black; /* 채워진 부분 색상 (Black) */
+    height: 4px;
+    border-radius: 2px;
+  }
+  .slider::-moz-range-track {
+    background: gray; /* 전체 트랙 색상 (Gray) */
+    height: 4px;
+    border-radius: 2px;
+  }

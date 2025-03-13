@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;  
   background: #000000; 
-  height: 100%;
+  height: calc(100% - 10px) ;
 }
 
 .mySwiper

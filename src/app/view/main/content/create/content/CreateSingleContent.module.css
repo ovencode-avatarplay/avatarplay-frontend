@@ -1,0 +1,308 @@
+
+.parent
+{
+  display: flex;
+  flex-direction: column;
+  height: 100dvh; 
+  width: 100%;
+  overflow: hidden;
+}
+.header
+{
+  
+}
+.dashBoard{
+  display: flex;
+  width: 40px;
+  height: 40px;
+  padding: 9px;
+  justify-content: center;
+  align-items: center;
+
+  position:relative;  
+
+}
+.container
+{
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+  padding: 0 16px 0 16px;
+  margin-bottom: 120px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.textInput
+{
+  width: 100%;
+}
+
+.dashBoardIcon{
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  filter: brightness(0) saturate(100%);
+}
+.confirmButton {
+  position: fixed;
+  bottom: 43.25px;
+  left: 50%;    
+  transform: translate(-50%, 0%);
+  width: calc(100% - 28px);
+  height: 50px;
+  background: #2c3131;
+  color: #ffffff;
+  font-family: 'Lato';
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;    
+}
+.label 
+{    
+  align-self: flex-start;
+  color: var(--Neutral-900, #040415);
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 114.286% */
+  letter-spacing: -0.4px;
+}
+
+.radioButtonGroup
+{
+  align-self: flex-start;
+  display: flex;
+  gap: 24px;
+
+}
+
+.blackTag
+{
+display: flex;
+height: 36px;
+padding: 10px 18px;
+justify-content: center;
+align-items: center;
+gap: 8px;
+border-radius: 100px;
+border: 1px solid var(--Border-1, #EAECF0);
+background: var(--Neutral-800, #2C3131);
+color: #ffffff;
+}
+.lineClose
+{
+filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(1%) hue-rotate(157deg) brightness(102%) contrast(101%);
+width: 12px;
+height: 12px;
+}
+
+.blackTagContainer {
+display: flex;
+align-self: flex-start;
+flex-wrap: wrap;
+gap: 8px;
+}
+
+.tagContainer{
+display: flex;
+flex-direction: column;
+width: 100%;
+gap: 8px;
+}
+
+
+.moenetization
+{
+  display: flex;    
+  align-self: flex-start;
+  gap: 4px;
+}
+
+.questionButton
+{
+  width: 20px;
+  height: 20px;
+}
+
+.questionimg
+{
+  width: 18px;
+  height: 18px;
+}
+
+
+.salesStar
+{
+  
+  display: flex;
+  height: 24px;
+  align-self: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.salesStarSetting
+{
+  width: 60px;
+  height: 24px;
+  gap: 10px;
+  padding-right: 7px;
+  padding-left: 7px;
+  border-radius: 999px;
+background-color: var(--Neutral-100);
+color: var(--Neutral-400);
+font-family: Lato;
+font-weight: 500;
+font-size: 14px;
+line-height: 20px;
+letter-spacing: 0px;
+align-content: center;
+justify-content: center;
+justify-self: center;
+justify-items: center;
+
+
+}
+
+
+  
+.setaTitleGroup
+{
+  display: flex;
+flex-direction: column;
+align-items: flex-start;
+gap: 20px;
+align-self: stretch;
+}
+
+.setaEp
+{
+  color: var(--Neutral-700, #5F6368);
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%; /* 18.2px */
+  letter-spacing: -0.4px;
+}
+
+.setaName
+{
+color: var(--Black, #000);
+font-feature-settings: 'liga' off, 'clig' off;
+font-family: Lato;
+font-size: 14px;
+font-style: normal;
+font-weight: 700;
+line-height: 16px; /* 114.286% */
+letter-spacing: -0.4px;
+}
+
+.setaText
+{
+display: flex;
+height: 46px;
+padding: 14px 12px;
+justify-content: space-between;
+align-items: center;
+align-self: stretch;
+}
+
+.setaText > .textArea
+{
+display: flex;
+height: 46px;
+padding: 14px 12px;
+justify-content: space-between;
+align-items: center;
+align-self: stretch;
+}
+
+.inputBox {
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+padding: 14px 12px;
+gap: 6px;
+
+width: 100%;
+height: 46px;
+
+background: #F8F9FA;
+border: 1px solid #E8EAED;
+border-radius: 10px;
+}
+
+.starstar {
+font-size: 18px;
+filter: brightness(0) saturate(100%) invert(70%) sepia(81%) saturate(616%) hue-rotate(358deg) brightness(103%) contrast(108%);
+flex: none;
+}
+
+.inputField {
+flex-grow: 1;
+font-family: 'Lato', sans-serif;
+font-weight: 700;
+font-size: 15px;
+line-height: 160%;
+color: #000000;
+border: none;
+background: transparent;
+outline: none;
+}
+
+.starlabel {
+font-family: 'Lato', sans-serif;
+font-weight: 400;
+font-size: 15px;
+line-height: 160%;
+color: #000000;
+text-align: right;
+flex: none;
+}
+.setaConfirm {
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 14px 20px;
+gap: 12px;
+
+width: 100%;
+height: 46px;
+
+background: #2C3131;
+border-radius: 10px;
+border: none;
+cursor: pointer;
+
+font-family: 'Lato', sans-serif;
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 20px;
+letter-spacing: -0.4px;
+
+color: #FFFFFF;
+}
+
+/* 버튼 클릭/호버 효과 */
+.setaConfirm:hover {
+background: #3A3F3F;
+}
+
+.setaConfirm:active {
+background: #1E2222;
+}

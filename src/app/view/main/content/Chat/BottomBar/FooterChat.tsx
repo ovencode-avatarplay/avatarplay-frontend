@@ -64,7 +64,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
   const [selectedEmoticonIsFavorite, setselectedEmoticonIsFavorite] = useState(false);
 
   const currentEpisodeId: number = useSelector((state: RootState) => state.chatting.episodeId);
-  const currentContentId: number = useSelector((state: RootState) => state.chatting.contentId);
+  const currentStoryId: number = useSelector((state: RootState) => state.chatting.storyId);
   const currentStreamKey: string = useSelector((state: RootState) => state.chatting.streamKey) ?? '';
 
   const [messages, setMessage] = useState(''); // 모든 ChatBar의 입력값을 관리하는 상태
@@ -106,7 +106,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
             return true;
         }
 
-        const chattingCheatRes = await cheatMessage(currentContentId, currentEpisodeId, messages);
+        const chattingCheatRes = await cheatMessage(currentStoryId, currentEpisodeId, messages);
 
         if (chattingCheatRes) {
           const cheatResult = cheatManager(chattingCheatRes, router);

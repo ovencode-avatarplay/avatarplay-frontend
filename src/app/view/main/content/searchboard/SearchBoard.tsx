@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 
 import {
   BannerUrlList,
@@ -24,8 +24,12 @@ import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import ExploreCard from './ExploreCard';
 import {FilterDataItem} from '@/components/search/FilterSelector';
 import {getCurrentLanguage} from '@/utils/UrlMove';
+import useChangeParams from '@/utils/useChangeParams';
 
 const SearchBoard: React.FC = () => {
+  const [data, setData] = useState({
+    indexTab: 0,
+  });
   const [loading, setLoading] = useState(false);
 
   // Featured
@@ -55,6 +59,7 @@ const SearchBoard: React.FC = () => {
 
   // Search Scroll
   const searchLimit = 20;
+  const [hasSearchResult, setHasSearchResult] = useState(true);
   const [searchOffset, setSearchOffset] = useState<number>(0);
   const [contentPage, setContentPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
   const [characterPage, setCharacterPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
@@ -62,6 +67,7 @@ const SearchBoard: React.FC = () => {
 
   const [selectedSort, setSelectedSort] = useState<number>(0);
   const [sortDropDownOpen, setSortDropDownOpen] = useState<boolean>(false);
+  const {changeParams, getParam} = useChangeParams();
   const dropDownMenuItems: DropDownMenuItem[] = [
     {
       name: 'Newest',
@@ -97,28 +103,60 @@ const SearchBoard: React.FC = () => {
     },
   ];
 
+  useLayoutEffect(() => {
+    const search = getParam('search');
+    const indexTab = getParam('indexTab');
+    data.indexTab = Number(indexTab);
+    setData({...data});
+
+    if (search && ['All', 'Story', 'Character'].includes(search)) {
+      handleSearchChange(search as 'All' | 'Story' | 'Character');
+    }
+  }, []);
+  console.log('data : ', data);
   // Handle
 
   const handleSearchChange = (value: 'All' | 'Story' | 'Character') => {
     setSearch(value);
   };
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const target = e.currentTarget;
-    const THRESHOLD = 200; // 데이터 불러오기 전에 남겨둘 여유 공간 (픽셀 단위)
-    const isScrollingDown = target.scrollTop > previousScrollTop;
+  // 25.03.06 tr : 스크롤 대응해서 search 요청 -> observer로 변경
+  // const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+  //   const target = e.currentTarget;
+  //   const THRESHOLD = 200; // 데이터 불러오기 전에 남겨둘 여유 공간 (픽셀 단위)
+  //   const isScrollingDown = target.scrollTop > previousScrollTop;
+  //   setPreviousScrollTop(target.scrollTop);
+  //   // 스크롤 끝에 도달하기 직전인지 확인
+  //   if (isScrollingDown && target.scrollTop + target.clientHeight >= target.scrollHeight - THRESHOLD && !loading) {
+  //     setSearchOffset(prevSearchOffset => {
+  //       const newSearchOffset = prevSearchOffset + 1;
+  //       fetchExploreData(searchValue, adultToggleOn, contentPage, characterPage);
+  //       return newSearchOffset;
+  //     });
+  //   }
+  // };
 
-    setPreviousScrollTop(target.scrollTop);
+  // scroll 조건 외에 마지막 아이템이 보이면 search 호출
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastElementRef = useCallback(
+    (node: HTMLLIElement | null) => {
+      if (loading || !hasSearchResult) return;
+      if (observer.current) observer.current.disconnect();
 
-    // 스크롤 끝에 도달하기 직전인지 확인
-    if (isScrollingDown && target.scrollTop + target.clientHeight >= target.scrollHeight - THRESHOLD && !loading) {
-      setSearchOffset(prevSearchOffset => {
-        const newSearchOffset = prevSearchOffset + 1;
-        fetchExploreData(searchValue, adultToggleOn, contentPage, characterPage);
-        return newSearchOffset;
+      observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          setSearchOffset(prevSearchOffset => {
+            const newSearchOffset = prevSearchOffset + 1;
+            fetchExploreData(searchValue, adultToggleOn, contentPage, characterPage);
+            return newSearchOffset;
+          });
+        }
       });
-    }
-  };
+
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasSearchResult, searchValue, adultToggleOn, contentPage, characterPage],
+  );
 
   // Func
   const generateFilterList = (): {searchFilterType: number; searchFilterState: number}[] => {
@@ -158,22 +196,28 @@ const SearchBoard: React.FC = () => {
         sort: selectedSort,
         filterList: generateFilterList(),
         isOnlyAdults: adultToggleOn,
-        contentPage,
+        storyPage: contentPage,
         characterPage,
       });
 
       if (result.data !== undefined && result.resultCode === 0) {
+        const newList = result.data?.searchExploreList || [];
         setSearchResultList(prevList => {
-          const newList = result.data?.searchExploreList || [];
           return (contentPage.offset > 0 || characterPage.offset > 0) && prevList ? [...prevList, ...newList] : newList;
         });
-        setContentPage(result.data.contentPage);
+        setContentPage(result.data.storyPage);
         setCharacterPage(result.data.characterPage);
+
+        if (newList.length === 0) {
+          setHasSearchResult(false);
+        }
       } else {
         console.error('Failed to fetch explore data:', result.resultMessage);
+        setHasSearchResult(false);
       }
     } catch (error) {
       console.error('Error fetching explore data:', error);
+      setHasSearchResult(false);
     } finally {
       await minLoadingTime;
       setLoading(false);
@@ -246,16 +290,16 @@ const SearchBoard: React.FC = () => {
                   <SearchBoardHorizonScroll title="popularList" data={popularList} />
                 )}
                 {malePopularList && malePopularList.length > 0 && (
-                  <SearchBoardHorizonScroll title="주간 TOP 10 스토리" data={malePopularList} />
+                  <SearchBoardHorizonScroll title="Weekly Top 10 Story" data={malePopularList} />
                 )}
                 {femalePopularList && femalePopularList.length > 0 && (
-                  <SearchBoardHorizonScroll title="추천 토카인 오리지널 스토리" data={femalePopularList} />
+                  <SearchBoardHorizonScroll title="Talkain Original Story" data={femalePopularList} />
                 )}
                 {newContentList && newContentList.length > 0 && (
-                  <SearchBoardHorizonScroll title="따끈따끈 TODAY 신작" data={newContentList} />
+                  <SearchBoardHorizonScroll title="New" data={newContentList} />
                 )}
                 {playingList && playingList.length > 0 && (
-                  <SearchBoardHorizonScroll title="30대 남성 인기" data={playingList} />
+                  <SearchBoardHorizonScroll title="Popular" data={playingList} />
                 )}
                 {recommendationList && recommendationList.length > 0 && (
                   <SearchBoardHorizonScroll title="recommendList" data={recommendationList} />
@@ -271,7 +315,10 @@ const SearchBoard: React.FC = () => {
       label: 'Search',
       content: (
         <section className={styles.searchContainer}>
-          <div className={styles.scrollArea} onScroll={handleScroll}>
+          <div
+            className={styles.scrollArea}
+            // onScroll={handleScroll}
+          >
             <SearchBoardHeader
               setSearchResultList={setSearchResultList}
               adultToggleOn={adultToggleOn}
@@ -292,6 +339,7 @@ const SearchBoard: React.FC = () => {
                   className={`${styles.tag} ${search === 'All' ? styles.selected : ''}`}
                   onClick={() => {
                     handleSearchChange('All');
+                    changeParams('search', 'all');
                   }}
                 >
                   All
@@ -300,6 +348,7 @@ const SearchBoard: React.FC = () => {
                   className={`${styles.tag} ${search === 'Story' ? styles.selected : ''}`}
                   onClick={() => {
                     handleSearchChange('Story');
+                    changeParams('search', 'Story');
                   }}
                 >
                   Story
@@ -308,6 +357,7 @@ const SearchBoard: React.FC = () => {
                   className={`${styles.tag} ${search === 'Character' ? styles.selected : ''}`}
                   onClick={() => {
                     handleSearchChange('Character');
+                    changeParams('search', 'Character');
                   }}
                 >
                   Character
@@ -347,18 +397,23 @@ const SearchBoard: React.FC = () => {
                       }
                       return true;
                     })
-                    .map(item => (
-                      <li key={item.contentId} className={styles.resultItem}>
+                    .map((item, index) => (
+                      <li
+                        key={item.storyId}
+                        className={styles.resultItem}
+                        ref={index === searchResultList.length - 1 ? lastElementRef : null}
+                      >
                         <ExploreCard
                           exploreItemType={item.exploreItemType}
                           updateExplorState={item.updateExplorState}
-                          contentId={item.contentId}
-                          contentName={item.contentName}
+                          storyId={item.storyId}
+                          storyName={item.storyName}
                           chatCount={item.chatCount}
                           episodeCount={item.episodeCount}
                           followerCount={item.followerCount}
                           thumbnail={item.thumbnail}
                           classType="search"
+                          urlLinkKey={item.profileUrlLinkKey}
                         />
                       </li>
                     ))}
@@ -374,10 +429,25 @@ const SearchBoard: React.FC = () => {
   return (
     <>
       <Splitter
+        initialActiveSplitter={data.indexTab}
         splitters={splitterData}
-        splitterStyle={{height: 'var(--header-removed-height)', paddingTop: '58px'}}
-        contentStyle={{padding: '0'}}
+        splitterStyle={{
+          height: 'var(--header-removed-height)',
+          paddingTop: '58px',
+        }}
+        contentStyle={{padding: '10px'}}
+        headerStyle={{
+          paddingLeft: '16px',
+          paddingRight: '16px',
+        }}
+        itemStyle={{width: 'calc(50%)'}}
         isDark={true}
+        onSelectSplitButton={index => {
+          changeParams('indexTab', index);
+          if (index == 0) {
+            changeParams('search', null);
+          }
+        }}
       />
       <LoadingOverlay loading={loading} />
     </>

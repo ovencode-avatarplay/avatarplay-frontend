@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import styles from './DrawerPostCountry.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import ExploreSearchInput from '../../searchboard/searchboard-header/ExploreSearchInput';
-import {LanguageType} from '@/redux-store/slices/ContentInfo';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {LineClose} from '@ui/Icons';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 
 interface DrawerPostCountryProps {
   isOpen: boolean;
@@ -13,6 +13,7 @@ interface DrawerPostCountryProps {
   selectableCountryList: LanguageType[];
   postCountryList: LanguageType[];
   onUpdatePostCountry: (updatedList: LanguageType[]) => void;
+  onRemovePostCountry?: (country: LanguageType) => void;
   isAll: boolean;
   setIsAll: (checked: boolean) => void;
 }
@@ -23,6 +24,7 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
   selectableCountryList,
   postCountryList,
   onUpdatePostCountry,
+  onRemovePostCountry,
   isAll,
   setIsAll,
 }) => {
@@ -37,9 +39,14 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
       onUpdatePostCountry([...postCountryList, country]);
     }
   };
+
   const handleRemovePostCountry = (country: LanguageType) => {
-    const updatedList = postCountryList.filter(item => item !== country);
-    onUpdatePostCountry(updatedList);
+    if (onRemovePostCountry) {
+      onRemovePostCountry(country);
+    } else {
+      const updatedList = postCountryList.filter(item => item !== country);
+      onUpdatePostCountry(updatedList);
+    }
   };
 
   const handleToggleAll = (checked: boolean) => {

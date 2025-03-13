@@ -3,6 +3,7 @@ import styles from './SelectDrawer.module.css';
 import {LineCheck} from '@ui/Icons';
 import {Drawer} from '@mui/material';
 import cx from 'classnames';
+import CustomToolTip from '../layout/shared/CustomToolTip';
 
 export interface SelectDrawerItem {
   name: string;
@@ -15,11 +16,20 @@ interface SelectDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   selectedIndex: number;
+  tooltip?: string;
   children?: ReactNode;
   name?: string;
 }
 
-const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, selectedIndex, children, name}) => {
+const SelectDrawer: React.FC<SelectDrawerProps> = ({
+  items,
+  isOpen,
+  onClose,
+  selectedIndex,
+  children,
+  name,
+  tooltip,
+}) => {
   return (
     <>
       {isOpen && <div className={styles.selectDrawerBack} onClick={onClose}></div>}
@@ -49,7 +59,14 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({items, isOpen, onClose, sele
         <div className={styles.handleArea}>
           <div className={styles.handleBar}></div>
         </div>
-        {name && <div className={styles.nameText}>{name}</div>}
+        <div>
+          {name && <div className={styles.nameText}>{name}</div>}
+          {tooltip && (
+            <div className={styles.infoButton}>
+              <CustomToolTip tooltipText={tooltip} icon="info" tooltipStyle={{transform: 'translate(-100%)'}} />
+            </div>
+          )}
+        </div>
         {children && <div className={styles.customContent}>{children}</div>}
         <div className={cx(styles.drawerBox, styles.maxHeight)}>
           {items.map((item, idx) => (

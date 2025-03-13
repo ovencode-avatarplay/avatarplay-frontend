@@ -1,0 +1,56 @@
+[
+  {
+    "value": 0,
+    "label": "common_aimodel_gpt4o",
+"description": "common_aimodel_gpt4odescription",
+    "disabled": false
+  },
+  {
+    "value": 1,
+    "label": "common_aimodel_gpt4",
+"description": "common_aimodel_gpt4description",
+    "disabled": false
+  },
+  {
+    "value": 2,
+    "label": "common_aimodel_gpt35",
+"description": "common_aimodel_gpt35description",
+    "disabled": false
+  },
+  {
+    "value": 3,
+    "label": "common_aimodel_claude2",
+"description": "common_aimodel_claude2description",
+    "disabled": false
+  },
+  {
+    "value": 4,
+    "label": "common_aimodel_claude3opus",
+"description": "common_aimodel_claude3opusdescription",
+    "disabled": true
+  },
+  {
+    "value": 5,
+    "label": "common_aimodel_claude3sonnet",
+"description": "common_aimodel_claude3sonnetdescription",
+    "disabled": false
+  },
+  {
+    "value": 6,
+    "label": "common_aimodel_claude35sonnet",
+"description": "common_aimodel_claude35sonnetdescription",
+    "disabled": false
+  }, 
+  {
+    "value": 7,
+    "label": "common_aimodel_claude3haiku",
+"description": "common_aimodel_claude3haikudescription",
+    "disabled": false
+  },
+  {
+    "value": 8,
+    "label": "common_aimodel_customapi",
+"description": "",
+    "disabled": false
+  }
+]

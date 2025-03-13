@@ -111,7 +111,7 @@
   display: flex;
   width: var(--second-width);
   margin-left: 16px;
-  margin-right: 16px;
+  margin-right: 16px; 
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;  
@@ -136,6 +136,8 @@
     font-style: normal;
     font-weight: 700;
     line-height: 160%;     
+
+    cursor: pointer;
 }
   
 .uploadButton:hover
@@ -327,4 +329,32 @@
   height: 12px;
 
   filter: sepia(3%) saturate(562%) hue-rotate(169deg) brightness(88%) contrast(92%);
+}
+
+.redAstrisk
+{
+  color: #F00;  
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 155%;
+
+}
+
+.summaryItem
+{
+  display: flex; 
+  flex-direction: column;
+  gap: 5px;
+  flex-shrink: 0;
+
+}
+
+.summaryLabel
+{
+  text-align: center;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 150% */
 }

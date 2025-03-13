@@ -3,34 +3,50 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: var(--background);  
+  background: var(--background); 
 }
 
 /* Splitters Header */
 .splittersHeader {
   display: flex;
   justify-content: space-between;
-  padding: 0 8px;
   border-bottom: 1px solid #eaecf0;
+  
+}
+
+.darkMode
+{
+
 }
 
 .splittersHeader.darkHeader
 {
   background: var(--Black, #000);
+  height: 46p;
 }
+
+.splitterItem { 
+  display: flex;
+  flex-direction: column; 
+}
+
   
 /* Splitter Label */
 .splitterLabel {
   display: flex;
   flex-direction: column;
+  font-family: Lato;
   align-items: center;
-  padding-top: 8px;
   flex-grow: 1;
   text-align: center; 
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.28px;
   color: #bdc1c6;
   cursor: pointer;
+  
+  display: flex;
+  padding: 10px 7px 14px 7px; 
 }
 
 .splitterLabel.darkSplitterLabel
@@ -70,7 +86,6 @@
   width: 100%;
   height: 2px;
   background: #000000;
-  margin-top: 4px;
 }
 .splitterDivider.darkDivider
 {

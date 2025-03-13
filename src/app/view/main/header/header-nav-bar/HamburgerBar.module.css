@@ -2,7 +2,7 @@
 .drawerPaper {
     width: 310px;
     background-color: #ffffff;
-    padding-top: 70px;
+    padding-top: 62px;
     box-sizing: border-box;
   }
   
@@ -19,6 +19,24 @@
     align-items: center;
     gap: 10px;
     padding: 10px 20px;
+
+    cursor: pointer;
+  }
+
+  .profileArea
+  {
+    display: flex;
+    width: 270px;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .profileBox
+  {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 0 0;
   }
   
   .profileImage {
@@ -31,72 +49,167 @@
   .profileInfo {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+    flex: 1 0 0;
   }
   
+.profileNameArea
+{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
   .profileName {
+    color: var(--Black, #000);
     font-size: 14px;
+    font-style: normal;
     font-weight: 600;
-    margin: 0;
-    color: #000;
+    line-height: normal;
+    letter-spacing: -0.21px;
+  }
+
+  .profileVerified
+  {
+    width: 10.474px;
+    height: 10.378px;
   }
   
   .profileEmail {
+    color: var(--Black, #000);
     font-size: 12px;
-    margin: 0;
-    color: #000;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: -0.18px;
+  }
+
+  .arrowIcon
+  {
+    width: 12px;
+    height: 12px;
+    filter: var(--black-icon-filter);
+  }
+
+  .planButtonArea
+  {
+    display: flex;
+    padding: 10px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    align-self: stretch;
+  }
+
+  .planButton
+  {
+    width: 100%;
   }
   
   /* 메뉴 리스트 */
   .menuList {
     list-style: none;
     padding: 0;
-    margin: 10px 0;
+    margin-top: 7px 0;
     width: 100%;
   }
   
   .menuItem {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 13px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #000;
     cursor: pointer;
-    transition: background-color 0.3s;
+    
+    display: flex;
+    padding: 10px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    align-self: stretch;
   }
   
   .menuItem:hover {
     background-color: #f1f3f4;
   }
-  
+
+  .menuRow
+  {
+    display: flex;
+    width: 270px;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .menuContent
+  {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+    flex: 1 0 0;
+  } 
+
+  .menuInfo
+  {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
   .menuIcon {
-    font-size: 16px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .menuText
+  {
+    color: var(--Black, #000);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: -0.21px;
   }
   
   /* 포인트 섹션 */
   .pointsSection {
     display: flex;
-    gap: 10px;
-    padding: 10px 20px;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
   }
   
   .point {
     display: flex;
+    padding: 5px 8px 6px 8px;
     align-items: center;
-    padding: 5px 8px;
-    background: #2c3131;
+    gap: 4px; 
+    
     border-radius: 30px;
-    color: #ffffff;
+    background: var(--Neutral-800, #2C3131);
   }
   
   .pointIcon {
-    font-size: 12px;
-    margin-right: 4px;
+    width: 12px;
+    height: 12px;
+
+    /* filter: ; */
   }
   
   .pointText {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    
+    overflow: hidden;
+    color: var(--White, #FFF);
+    text-align: center;
+    text-overflow: ellipsis; 
     font-size: 11px;
+    font-style: normal;
     font-weight: 600;
+    line-height: 100%; /* 11px */
   }
   

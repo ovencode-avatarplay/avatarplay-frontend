@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './CharacterGridItem.module.css';
-import {CharacterInfo} from '@/redux-store/slices/ContentInfo';
-import {BoldLock, LineCheck, LineEdit} from '@ui/Icons';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
+import {BoldLock, LineCheck, LineDelete, LineEdit} from '@ui/Icons';
 
 interface CharacterGridItemProps {
   character: CharacterInfo;
@@ -10,6 +10,7 @@ interface CharacterGridItemProps {
   showVisibilityType?: boolean;
   canEdit?: boolean;
   onClickEdit?: () => void;
+  onClickDelete?: () => void;
 }
 export enum CharacterVisibility {
   Private = 0,
@@ -36,6 +37,7 @@ const CharacterGridItem: React.FC<CharacterGridItemProps> = ({
   showVisibilityType = false,
   canEdit = false,
   onClickEdit = null,
+  onClickDelete = null,
 }) => {
   const handleSelect = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -46,6 +48,13 @@ const CharacterGridItem: React.FC<CharacterGridItemProps> = ({
     if (onClickEdit) {
       event.stopPropagation();
       onClickEdit();
+    }
+  };
+
+  const handleDelete = (event: React.MouseEvent) => {
+    if (onClickDelete) {
+      event.stopPropagation();
+      onClickDelete();
     }
   };
 
@@ -89,6 +98,11 @@ const CharacterGridItem: React.FC<CharacterGridItemProps> = ({
         {canEdit && onClickEdit && (
           <button className={styles.buttonArea} onClick={handleEdit}>
             <img className={styles.buttonIcon} src={LineEdit.src} />
+          </button>
+        )}
+        {canEdit && onClickDelete && (
+          <button className={styles.buttonArea} onClick={handleDelete}>
+            <img className={styles.buttonIcon} src={LineDelete.src} />
           </button>
         )}
       </div>

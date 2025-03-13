@@ -16,9 +16,17 @@ interface DropDownMenuProps {
   onClose: () => void;
   useSelected?: boolean;
   selectedIndex?: number;
+  dropDownstyle?: React.CSSProperties;
 }
 
-const DropDownMenu: React.FC<DropDownMenuProps> = ({items, className, onClose, useSelected, selectedIndex}) => {
+const DropDownMenu: React.FC<DropDownMenuProps> = ({
+  items,
+  className,
+  onClose,
+  useSelected,
+  selectedIndex,
+  dropDownstyle,
+}) => {
   return (
     <>
       <div
@@ -28,7 +36,7 @@ const DropDownMenu: React.FC<DropDownMenuProps> = ({items, className, onClose, u
           onClose();
         }}
       ></div>
-      <div className={`${styles.dropDownMenu} ${className || ''}`}>
+      <div className={`${styles.dropDownMenu} ${className || ''}`} style={dropDownstyle}>
         {items.map((item, idx) => (
           <>
             {!item.disabled && (
