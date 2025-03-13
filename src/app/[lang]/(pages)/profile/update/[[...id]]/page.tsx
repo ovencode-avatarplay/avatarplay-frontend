@@ -1073,7 +1073,7 @@ export type PortfolioListPopupType = {
   onChange: (data: PdPortfolioInfo[]) => void;
 };
 
-const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListPopupType) => {
+export const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListPopupType) => {
   const [data, setData] = useState<{
     isSettingOpen: boolean;
     idSelected: number;
