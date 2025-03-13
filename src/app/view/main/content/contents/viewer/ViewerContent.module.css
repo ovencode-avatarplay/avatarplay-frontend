@@ -1,3 +1,17 @@
+.body {
+  margin: 0;
+  padding: 0;
+  display:flex;
+  flex-direction:column;
+  height: 100%;
+  /* overflow: hidden; */
+  /* height:100%; */
+  /* overflow-y:auto; */
+  max-width: var(--full-width);
+  margin: 0 auto; /* 수평 중앙 정렬 */
+  /* scrollbar-width: 0px; */
+}
+
 .reelsContainer {
   position: relative;
   width: 100%;  
@@ -29,6 +43,8 @@
   height: 1.66px; /* 프로그레스 바 높이 */
   background-color: rgba(255, 255, 255, 0.3); /* 배경색 */
   overflow: hidden;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  opacity: 1;
 }
 .progressFill {
   position: absolute;
@@ -55,11 +71,17 @@
   justify-content: center;
   align-items: center;
   opacity: 0; /* 기본적으로 숨김 상태 */
-  transition: opacity 0.3s ease, transform 0.3s ease; /* 부드러운 전환 효과 */
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
 
+/* 등장 애니메이션 */
 .fadeAndGrow {
   animation: fadeAndGrow 0.3s ease forwards;
+}
+
+/* 사라질 때 애니메이션 */
+.fadeOutAndShrink {
+  animation: fadeOutAndShrink 0.3s ease forwards;
 }
 
 @keyframes fadeAndGrow {
@@ -73,6 +95,21 @@
   }
   100% {
     transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutAndShrink {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.6);
     opacity: 0;
   }
 }
@@ -185,16 +222,6 @@
   margin-left:2px;
 }
 
-.ctaButtons {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  bottom: 48px;
-  right: 13px;
-  z-index: 12;
-  
-}
 
 .textButtons
 {
@@ -289,7 +316,9 @@ img.button{
   padding-left: 16px;
   gap: 16px;
   z-index: 10;
-  background: linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5))
+  background: linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5))  ;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  opacity: 1;
 }
 
 .iconArrowDown {
@@ -311,7 +340,7 @@ img.button{
 
 .volumeButton {
   position: absolute;
-  top: 15px;
+  top: 75px;
   right: 15px;
   z-index: 13;
   cursor: pointer;
@@ -320,6 +349,9 @@ img.button{
   display: flex;
   align-items: center;
   justify-content: center;
+  
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  opacity: 1;
 
   /* -webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
   filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7)); */
@@ -332,6 +364,7 @@ img.button{
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.6); /* 검은색 반투명 배경 */
+  
   border-radius: 50%;
   z-index: 12;
 }
@@ -355,7 +388,9 @@ img.button{
   flex-shrink: 0;
   justify-content: space-between;
 
-  background: var(--White, #FFF);
+  background: var(--Black #000000);
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  opacity: 1;
 }
 
 .baseArea {
@@ -378,18 +413,46 @@ img.button{
   width: 20px;
   height: 20px;
   align-items: center;
-  filter: brightness(0) saturate(100%);
+  filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(163deg) brightness(105%) contrast(106%);
 }
 
 .baseArea > .navTitle{
   display: flex; 
   justify-content: center;
   flex-shrink: 0;
-  color: var(--Black, #000);
+  color: var(--White, #ffffff);
   font-family: Lato;
   font-size: 20px;
   font-style: normal;
   font-weight: 600;
   line-height: 20px;
   letter-spacing: -0.4px;
+}
+
+.ctaButtons {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  bottom: 48px;
+  right: 13px;
+  z-index: 12;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.fadeOutR {
+  opacity: 0;
+  transform: translateX(10px); /* 약간 아래로 이동하면서 사라지는 효과 */
+  pointer-events: none; /* 사라질 때 클릭 방지 */
+}
+.fadeOutT {
+  opacity: 0;
+  transform: translateY(-10px); /* 약간 아래로 이동하면서 사라지는 효과 */
+  pointer-events: none; /* 사라질 때 클릭 방지 */
+}
+.fadeOutB {
+  opacity: 0;
+  transform: translateY(10px); /* 약간 아래로 이동하면서 사라지는 효과 */
+  pointer-events: none; /* 사라질 때 클릭 방지 */
 }

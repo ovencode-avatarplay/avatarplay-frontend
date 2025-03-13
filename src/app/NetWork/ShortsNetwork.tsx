@@ -44,7 +44,7 @@ export const sendGetHomeFeedShorts = async (): Promise<{
 
 export interface FeedInfo {
   id: number;
-  profileId: number;
+  title: string;
   urlLinkKey: string;
   mediaState: MediaState;
   mediaUrlList: string[];
@@ -59,9 +59,9 @@ export interface FeedInfo {
   isPinFix: boolean;
   isFollowing: boolean;
   playTime: string;
-  characterProfileId: number;
-  characterProfileName: string;
-  characterProfileUrl: string;
+  profileId: number;
+  profileName: string;
+  profileIconUrl: string;
   createAt?: string;
   profileUrlLinkKey: string;
 }

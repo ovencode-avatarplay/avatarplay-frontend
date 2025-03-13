@@ -368,7 +368,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             {/* User Info */}
             <div className={styles.userInfo}>
               <Avatar
-                src={item.characterProfileUrl || '/images/001.png'}
+                src={item.profileIconUrl || '/images/001.png'}
                 style={{width: '32px', height: '32px'}}
                 onClick={() => {
                   pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
@@ -381,7 +381,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                 }}
               >
-                <span className={styles.username}>{item.characterProfileName}</span>
+                <span className={styles.username}>{item.profileName}</span>
                 <span className={styles.sponsored}>{getLocalizedText(Header, 'home001_label_003')}</span>
               </div>
               {recommendState == RecommendState.ForYou && (
@@ -389,7 +389,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
                   onClick={() => {
                     setIsFollow(!isFollow);
-                    handleFollow(item.characterProfileId, !isFollow);
+                    handleFollow(item.profileId, !isFollow);
                     console.log('isfollow', isFollow);
                   }}
                 >
@@ -541,7 +541,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           </SwiperSlide>
         )}
       </Swiper>
-      <DrawerDonation isOpen={isDonation} sponsoredName={item.characterProfileName} onClose={handleDonationclose} />
+      <DrawerDonation isOpen={isDonation} sponsoredName={item.profileName} onClose={handleDonationclose} />
       <Comment
         contentId={item.id}
         isOpen={isCommentOpen}
@@ -552,7 +552,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
       <SharePopup
         open={isShare}
-        title={item.characterProfileName}
+        title={item.profileName}
         url={window.location.href}
         onClose={() => setIsShare(false)}
       ></SharePopup>

@@ -16,6 +16,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {BoldRuby, BoldStar, LineArrowRight, LineSetting, LineWallet, VerifiedLabel} from '@ui/Icons';
 import {Avatar} from '@mui/material';
+import LanguageSelectDropBox from '@/components/layout/shared/LanguageSelectDropBox';
 
 interface HamburgerBarProps {
   open: boolean;
@@ -106,6 +107,18 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
         </div>
       </li>
     );
+  };
+
+  const routeStory = () => {
+    pushLocalizedRoute('/studio/story', router);
+  };
+
+  const routeCharacter = () => {
+    pushLocalizedRoute('/studio/character', router);
+  };
+
+  const routePrompt = () => {
+    pushLocalizedRoute('/studio/prompt', router);
   };
 
   const routeProfile = async () => {
@@ -236,6 +249,10 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
           {renderMenuItem('', 'Language', () => {
             setLanguageOpen(!languageOpen);
           })}
+          {languageOpen && <LanguageSelectDropBox />}
+          {renderMenuItem('', 'Story', routeStory)}
+          {renderMenuItem('', 'Character', routeCharacter)}
+          {renderMenuItem('', 'Prompt', routePrompt)}
           {renderMenuItem('', 'Support & About', () => {
             setSupportOpen(!supportOpen);
           })}

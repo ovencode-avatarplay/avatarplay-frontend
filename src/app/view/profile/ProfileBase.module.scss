@@ -310,6 +310,7 @@
       /* 18.2px */
       letter-spacing: -0.28px;
       white-space: pre-line;
+      word-break: break-word;
 
       &.needShowMore {
         display: -webkit-box;
@@ -567,6 +568,7 @@
           font-style: normal;
           font-weight: 500;
           line-height: 155%;
+          word-break: break-word;
           /* 21.7px */
         }
 
