@@ -136,8 +136,6 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
     const dataUpdatePdInfo: UpdatePdInfoReq = {
       ...data,
       profileId: profileId,
-      iconUrl: '',
-      url: '',
     };
     await updatePdInfo(dataUpdatePdInfo);
     routerBack();
@@ -249,6 +247,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               fileBlob: file,
               file: URL.createObjectURL(file),
             };
+            setValue('iconUrl', data.thumbnail.file);
             setData({...data});
           }
         }
