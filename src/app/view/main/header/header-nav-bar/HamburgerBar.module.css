@@ -132,6 +132,12 @@
     background-color: #f1f3f4;
   }
 
+  .divideItem
+  {
+    border-bottom: 1px solid var(--Neutral-100, #F1F3F4);
+
+  }
+
   .menuRow
   {
     display: flex;
