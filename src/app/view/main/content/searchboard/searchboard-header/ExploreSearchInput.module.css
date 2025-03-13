@@ -55,6 +55,11 @@
     outline: none;  
 }
 
+.searchInput.textExist
+{
+    color : var(--Neutral-900, #040415);
+}
+
 .searchButton
 {
 

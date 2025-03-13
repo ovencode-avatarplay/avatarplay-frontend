@@ -151,7 +151,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setInfo(playResponse.data?.recentlyPlayInfo);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
-      setInfo(dummyContentPlayInfoVideo);
     }
   };
 
@@ -167,7 +166,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setInfo(playData.data?.recentlyPlayInfo);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
-      setInfo(dummyContentPlayInfoVideo);
     }
   };
 
@@ -516,7 +514,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             <div className={`${styles.ctaButtons} ${!isVisible ? styles.fadeOutR : ''}`}>
               <div
                 className={styles.textButtons}
-                onClick={() => {
+                onClick={event => {
+                  event.stopPropagation();
                   let id = contentId;
                   if (episodeId) id = episodeId;
                   handleDisLikeFeed(id, !isDisLike);
@@ -525,7 +524,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 <Avatar
                   src={info?.profileIconUrl || '/images/001.png'}
                   style={{width: '32px', height: '32px'}}
-                  onClick={() => {
+                  onClick={event => {
+                    event.stopPropagation();
                     pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
                   }}
                 />
@@ -536,7 +536,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               </div>
               <div
                 className={styles.textButtons}
-                onClick={() => {
+                onClick={event => {
+                  event.stopPropagation();
                   let id = contentId;
                   if (episodeId) id = episodeId;
                   handleLikeFeed(id, !isLike);
@@ -557,7 +558,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               {/* Dislike Button */}
               <div
                 className={styles.textButtons}
-                onClick={() => {
+                onClick={event => {
+                  event.stopPropagation();
                   let id = contentId;
                   if (episodeId) id = episodeId;
                   handleDisLikeFeed(id, !isDisLike);
@@ -579,7 +581,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               </div>
               <div
                 className={styles.noneTextButton}
-                onClick={async () => {
+                onClick={async event => {
+                  event.stopPropagation();
                   handleShare();
                 }}
               >
@@ -588,7 +591,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
               <div
                 className={styles.noneTextButton}
-                onClick={() => {
+                onClick={event => {
+                  event.stopPropagation();
                   bookmarkFeed();
                 }}
               >
@@ -597,7 +601,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               </div>
               <div
                 className={styles.noneTextButton}
-                onClick={() => {
+                onClick={event => {
+                  event.stopPropagation();
                   alert('추후 신고 기능 추가');
                 }}
               >
@@ -606,7 +611,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             </div>
             <div
               className={`${styles.volumeButton} ${!isVisible ? styles.fadeOutR : ''}`}
-              onClick={() => {
+              onClick={event => {
+                event.stopPropagation();
                 if (info?.categoryType == ContentCategoryType.Video) setIsMute(!isMute);
                 else if (info?.categoryType == ContentCategoryType.Webtoon) setIsImageModal(true);
               }}

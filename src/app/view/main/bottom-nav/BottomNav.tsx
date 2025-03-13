@@ -208,9 +208,7 @@ export default function BottomNav() {
               return (
                 <button
                   key={index}
-                  className={`${styles.navButton} 
-                    ${selectedIndex === index ? styles.selected : ''} 
-                    ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
+                  className={`${styles.navButton}  `}
                   onClick={async () => {
                     const isLogin = await isLogined();
                     if (isLogin) {
