@@ -435,11 +435,11 @@ const SearchBoard: React.FC = () => {
           height: 'var(--header-removed-height)',
           paddingTop: '58px',
         }}
-        contentStyle={{padding: '10px'}}
-        headerStyle={{
-          paddingLeft: '16px',
-          paddingRight: '16px',
-        }}
+        // contentStyle={{padding: '10px'}}
+        // headerStyle={{
+        //   paddingLeft: '0',
+        //   paddingRight: '0',
+        // }}
         itemStyle={{width: 'calc(50%)'}}
         isDark={true}
         onSelectSplitButton={index => {
