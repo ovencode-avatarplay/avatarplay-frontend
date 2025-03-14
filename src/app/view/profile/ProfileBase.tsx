@@ -704,7 +704,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             }}
           >
             <div className={styles.left}>
-              {isCharacter && <div className={cx(styles.originalFan, styles.original)}>Original</div>}
+              {(isCharacter || isChannel) && <div className={cx(styles.originalFan, styles.original)}>Original</div>}
               <div className={styles.profileName}>{data.profileInfo?.profileInfo.name}</div>
             </div>
             {isMine && (
