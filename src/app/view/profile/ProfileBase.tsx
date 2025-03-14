@@ -763,7 +763,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           </div>
           <div className={styles.itemStatistic}>
             <div className={styles.count}>{data.profileInfo?.profileInfo.followingCount}</div>
-            <div className={styles.label}>Following</div>
+            <div className={styles.label}>{isPD ? 'Following' : 'Subscribers'}</div>
           </div>
         </div>
         <div className={styles.profileDetail}>
@@ -846,7 +846,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               </button>
             </div>
           )}
-          {isOtherCharacter && (
+          {(isOtherChannel || isOtherCharacter) && (
             <div className={styles.buttonsOtherCharacter}>
               <button
                 className={styles.subscribe}
