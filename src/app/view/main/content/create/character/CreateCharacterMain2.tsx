@@ -76,6 +76,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
 
   const [essentialPopupOpen, setEssentialPopupOpen] = useState<boolean>(false);
+  const [essentialWarning, setEssentialWarning] = useState<boolean>(false);
   const [successPopupOpen, setSuccessPopupOpen] = useState<boolean>(false);
 
   //#region  Basic
@@ -491,13 +492,26 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
     }
   }, [imgUploadOpen]);
 
+  useEffect(() => {
+    if (essentialWarning) {
+      if (characterName !== '' && description !== '' && mainimageUrl !== '' && positionCountryList.length > 0) {
+        setEssentialWarning(false);
+      } else {
+      }
+    }
+  }, [characterName, description, mainimageUrl, positionCountryList]);
+
   const splitterData = [
     {
       label: getLocalizedText(Header, 'createcharacter001_label_003'),
       preContent: '',
       content: (
         <>
-          <CharacterCreateBasic characterName={characterName} setCharacterName={setCharacterName} />
+          <CharacterCreateBasic
+            characterName={characterName}
+            setCharacterName={setCharacterName}
+            essentialWarning={essentialWarning}
+          />
           <CharacterCreateLLM
             selectedLang={languageType}
             characterDesc={description}
@@ -513,6 +527,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
             onSecretChange={setSecret}
             onSelectedPromptChange={setCustomModulesPromptId}
             onSelectedLorebookChange={setCustomModulesLorebookId}
+            essentialWarning={essentialWarning}
           />
         </>
       ),
@@ -603,6 +618,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           onNsfwChange={setNsfw}
           creatorComment={creatorComment}
           setCharacterDesc={setCreatorComment}
+          essentialWarning={essentialWarning}
         />
       ),
     },
@@ -769,7 +785,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
                   {getLocalizedText(Header, 'createcharacter001_label_002')} <span className={styles.astrisk}>*</span>
                 </h2>
 
-                <div className={styles.thumbnailButtonArea}>
+                <div
+                  className={`${styles.thumbnailButtonArea} ${
+                    essentialWarning && mainimageUrl === '' && styles.isEssential
+                  }`}
+                >
                   <button
                     className={styles.thumbnailButton}
                     onClick={() => {
@@ -828,11 +848,13 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
                       handleCreateCharacter();
                     } else {
                       setEssentialPopupOpen(true);
+                      setEssentialWarning(true);
                     }
                   }}
                 >
                   {getLocalizedText(Common, 'common_button_save')}
                 </CustomButton>
+                <div className={styles.floatButtonBack}></div>
               </div>
             </footer>
           </div>

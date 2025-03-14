@@ -171,6 +171,18 @@
     gap: 14px;
 }
 
+.dropDownContainer
+{
+    width: 100%;
+}
+
+.isEssential
+{
+    border-style: solid;
+    border-width: 2px;
+    border-color: red;
+}
+
 .tagContainer
 {
     width: 100%;

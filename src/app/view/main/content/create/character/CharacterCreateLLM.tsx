@@ -24,6 +24,7 @@ interface Props {
   onSecretChange: (secret: string) => void;
   onSelectedPromptChange: (prompt: number) => void;
   onSelectedLorebookChange: (lorebook: number) => void;
+  essentialWarning: boolean;
 }
 
 const Header = 'CreateCharacter';
@@ -44,6 +45,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
   onSecretChange,
   onSelectedPromptChange,
   onSelectedLorebookChange,
+  essentialWarning,
 }) => {
   const [autoWriteCharacterDesc, setAutoWriteCharacterDesc] = useState<string[]>([]);
   const [autoWriteCharacterWorldScenario, setAutoWriteCharacterWorldScenario] = useState<string[]>([]);
@@ -182,6 +184,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
     handlePromptChange: (newValue: string) => void,
     onClickAI: () => void,
     placeholder?: string,
+    essential?: boolean,
   ) => {
     const handleButtonClick = (text: string) => {
       // 버튼 클릭 시 기존 텍스트에 {{User}} 또는 {{Char}} 추가
@@ -189,7 +192,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
     };
 
     return (
-      <div className={styles.maxTextInputArea}>
+      <div className={`${styles.maxTextInputArea} `}>
         <MaxTextInput
           inputDataType={inputType.None}
           stateDataType={inputState.Normal}
@@ -198,6 +201,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
           placeholder={placeholder}
           handlePromptChange={event => handlePromptChange(event.target.value)}
           inSideHint={formatText(getLocalizedText(Header, 'createcharacter001_label_013'), [value.length.toString()])}
+          style={essential && value === '' ? {borderStyle: 'solid', borderWidth: '2px', borderColor: 'red'} : {}}
         />
         <div className={styles.maxTextButtonArea}>
           <button className={`${styles.maxTextButton} ${styles.aiButton}`}>
@@ -267,7 +271,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
           onSelect={(value: string | number) => handleSelectLang(Number(value))}
         />
       </div>
-      <div className={styles.inputDataBoxArea}>
+      <div className={`${styles.inputDataBoxArea} `}>
         {renderTitle(
           `${getLocalizedText(Header, 'createcharacter001_label_016')}*`,
           `${getLocalizedText(Header, 'createcharacter001_desc_017')}`,
@@ -277,6 +281,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
           onCharacterDescChange,
           handleAutoWriteCharacterDesc,
           getLocalizedText(Common, 'common_sample_082'),
+          essentialWarning,
         )}
       </div>
       <div className={styles.inputDataBoxArea}>

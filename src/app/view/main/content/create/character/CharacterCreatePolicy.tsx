@@ -48,6 +48,7 @@ interface Props {
   onNsfwChange: (value: boolean) => void;
   creatorComment: string;
   setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
+  essentialWarning: boolean;
 }
 
 const Header = 'CreateCharacter';
@@ -80,6 +81,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   onNsfwChange,
   creatorComment,
   setCharacterDesc,
+  essentialWarning,
 }) => {
   let VisibilityData = {items: ['Private', 'UnListed', 'Public']};
 
@@ -275,15 +277,21 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     selectedItem: string,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     essential?: boolean,
+    essentialWarning?: boolean,
   ) => {
     return (
       <div className={styles.dropDownArea}>
-        <h2 className={styles.title2}>
+        <div className={styles.title2}>
           {title}
-          {essential && <h2 className={styles.titleAstrisk}>*</h2>}
-        </h2>
-
-        <CustomSelector value={selectedItem} onClick={() => setIsOpen(prev => !prev)} />
+          {essential && <div className={styles.titleAstrisk}>*</div>}
+        </div>
+        <div
+          className={`${styles.dropDownContainer} ${
+            essentialWarning && selectedItem.length < 1 ? styles.isEssential : ''
+          }`}
+        >
+          <CustomSelector value={selectedItem} onClick={() => setIsOpen(prev => !prev)} />
+        </div>
       </div>
     );
   };
@@ -471,10 +479,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     return (
       <div className={styles.radioButtonContainer}>
         <div className={styles.radioTitleArea}>
-          <h2 className={styles.title2}>
+          <div className={styles.title2}>
             {getLocalizedText(Header, 'createcharacter017_label_011')}
             <span className={styles.titleAstrisk}>*</span>
-          </h2>
+          </div>
           <CustomToolTip tooltipText="NSFW Monetization" />
         </div>
         <div className={styles.verticalRadioButtonArea}>
@@ -624,6 +632,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             positionCountry.map(country => LanguageType[country]).join(', '),
             setIsPositionCountryOpen,
             true,
+            essentialWarning,
           )}
           {renderPositionCountry()}
           <div className={styles.blackTagContainer}>

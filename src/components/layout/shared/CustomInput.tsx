@@ -82,7 +82,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   };
 
   return (
-    <div className={`${styles.inputContainer} ${customClassName} `}>
+    <div className={`${styles.inputContainer}  ${customClassName.join(' ')}`}>
       {(textType === 'Label' || textType === 'LabelandHint') && label && (
         <label className={styles.label}>{label}</label>
       )}

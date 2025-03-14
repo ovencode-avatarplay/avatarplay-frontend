@@ -4,8 +4,8 @@
     { "label": "common_button_guys", "image": "/anime.png", "value": 1 }
   ],
   "styleOptions": [
-    { "label": "common_tagaimodel_realistic", "image": "female_style_realistic.png", "value": 0 },
-    { "label": "common_tagaimodel_anime", "image": "female_style_anime.png", "value": 1 }
+    { "label": "common_tagaimodel_realistic", "image": "male_style_realistic.png", "value": 0 },
+    { "label": "common_tagaimodel_anime", "image": "male_style_anime.png", "value": 1 }
   ],
   "raceOptions": [ 
       {"label": "common_tagethnicity_caucasian", "image": "ethnicity_1_caucasian.png", "value": 1},

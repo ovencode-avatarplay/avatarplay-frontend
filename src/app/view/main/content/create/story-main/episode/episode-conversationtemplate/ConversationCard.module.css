@@ -59,19 +59,19 @@ height: 48px;
   {
     /* input field */
 
-box-sizing: border-box;
-width: 100%;
-display: flex;
-flex-direction: row;
-align-items: flex-start;
-padding: 8px 10px;
-gap: 15px;
-overflow-y: auto;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 8px 10px;
+    gap: 15px;
+    overflow-y: auto;
 
-background: var(--background);
-border-bottom: 1px solid #EAECF0;
-border-radius: 12px;
-  }
+    background: var(--background);
+    border-bottom: 1px solid #EAECF0;
+    border-radius: 12px;
+}
   
   .inputGroup {
     display: flex;
@@ -94,7 +94,7 @@ border-radius: 12px;
 
   .iconButton {
     cursor: pointer;
-    width: 30px;
+    width: 30px  ;
     height: 30px;
     background: #fd55d3;
     border-radius: 50%;
@@ -102,6 +102,10 @@ border-radius: 12px;
     align-items: center;
     justify-content: center;
     
+    box-sizing: border-box;
+    padding: 0;
+    border: none;
+    flex-shrink: 0
   }
   
   .actionIcon {
@@ -112,7 +116,8 @@ border-radius: 12px;
   }
   
   .inputField {
-    flex-grow: 1;
+    /* flex-grow: 1; */
+    width: 100%;
     border: none;
     outline: none;
     background: transparent;
@@ -149,10 +154,10 @@ border-radius: 12px;
   
    .inputBar{
     display: flex;
-flex-direction: row;
-justify-content: center;
-align-items: center;
-width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
    }
 
    .barGroup

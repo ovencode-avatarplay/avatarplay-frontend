@@ -8,6 +8,7 @@ interface CharacterCreateBasicProps {
   setCharacterName: React.Dispatch<React.SetStateAction<string>>;
   // characterDesc: string;
   // setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
+  essentialWarning: boolean;
 }
 
 const Header = 'CreateCharacter';
@@ -18,6 +19,7 @@ const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
   setCharacterName,
   // characterDesc,
   // setCharacterDesc,
+  essentialWarning,
 }) => {
   return (
     <div className={styles.basicContainer}>
@@ -40,7 +42,7 @@ const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
           value={characterName}
           placeholder={getLocalizedText(Common, 'common_sample_084')}
           onChange={e => setCharacterName(e.target.value)}
-          customClassName={[styles.inputBox]}
+          customClassName={[styles.inputBox, essentialWarning && characterName === '' ? styles.isEssential : '']}
         />
       </div>
       {/* <div className={styles.descriptionInputArea}>

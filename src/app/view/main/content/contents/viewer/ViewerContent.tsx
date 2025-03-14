@@ -777,13 +777,15 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               </div>
             </div>
           </CustomDrawer>
-          <DrawerDonation
-            isOpen={isDonation}
-            sponsoredName={'이름도 받아야함'}
-            giveToPDId={0}
-            onClose={() => setDonation(false)}
-            router={router}
-          />
+          {isDonation && (
+            <DrawerDonation
+              isOpen={isDonation}
+              sponsoredName={'이름도 받아야함'}
+              giveToPDId={0}
+              onClose={() => setDonation(false)}
+              router={router}
+            />
+          )}
         </div>
       </Box>
     </Modal>

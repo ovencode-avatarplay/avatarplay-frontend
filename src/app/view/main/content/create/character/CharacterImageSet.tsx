@@ -190,11 +190,23 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
       if (prevSelectedTags.includes(index)) {
         // 태그를 선택 해제하는 경우
         updatedTags = prevSelectedTags.filter(tagIndex => tagIndex !== index);
-        setPositivePrompt(prevPrompt => prevPrompt.replace(' ,' + aiTagOption[index].value, '').trim());
+        setPositivePrompt(prevPrompt => {
+          const tagToRemove = aiTagOption[index].value;
+          let updatedPrompt = prevPrompt;
+
+          updatedPrompt = updatedPrompt
+            .replace(new RegExp(`(^|, )${tagToRemove}(, |$)`, 'g'), ', ') // 태그 삭제
+            .replace(/^, |, $/g, '') // ✅ 앞뒤 남아있는 `,` 제거
+            .trim();
+
+          return updatedPrompt.length === 0 ? '' : updatedPrompt;
+        });
       } else {
         // 태그를 선택하는 경우
         updatedTags = [...prevSelectedTags, index];
-        setPositivePrompt(prevPrompt => prevPrompt + ' ,' + aiTagOption[index].value);
+        setPositivePrompt(prevPrompt =>
+          prevPrompt.length === 0 ? aiTagOption[index].value : prevPrompt + ', ' + aiTagOption[index].value,
+        );
       }
 
       return updatedTags;
