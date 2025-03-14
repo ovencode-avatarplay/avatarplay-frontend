@@ -644,9 +644,9 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         {renderCharacterIP()}
         {renderRecruit()}
         {renderConnect()}
-        {renderOperatorInvite()}
-        {renderMonetization()}
-        {renderMembershipPlan()}
+        {/*renderOperatorInvite()*/}
+        {/*renderMonetization()*/}
+        {/*renderMembershipPlan()*/}
         {renderNSFW()}
         {renderComment()}
       </div>
