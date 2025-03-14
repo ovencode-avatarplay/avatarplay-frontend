@@ -344,13 +344,22 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     setData({...data});
   }, []);
 
+  type FilterType = {
+    feedMediaType: FeedMediaType;
+  };
+
   const getTabInfo = (
     typeProfile: ProfileType,
   ): ((
     profileUrlLinkKey: string,
     tabIndex: number,
     indexSort: ExploreSortType,
-    indexFilterMedia: FeedMediaType,
+    filterType: {
+      feedMediaType: number;
+      channelTabType: number;
+      characterTabType: number;
+      contentTabType: number;
+    },
     offset: number,
     limit: number,
   ) => Promise<any>) => {
@@ -415,6 +424,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
       getUserType(isMine, profileType);
 
+    let indexFilter = 0;
+
     if (profileType == undefined) return;
     let resProfileTabInfo = null;
     if (isCharacter && indexTab == eTabCharacterOtherType.Info) {
@@ -443,25 +454,19 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       }
       resProfileTabInfo = resChannelInfo?.data;
     } else {
-      if (indexTab == eTabPDType.Character) {
-        resProfileTabInfo = await getTabInfo(profileType)(
-          data.urlLinkKey,
-          indexTab,
-          data.filterCluster?.indexSort || 0,
-          data.filterCluster?.indexFilterCharacter || 0,
-          isRefreshAll ? 0 : getTabContentCount(indexTab),
-          isRefreshAll ? getTabContentCount(indexTab) : 10,
-        );
-      } else {
-        resProfileTabInfo = await getTabInfo(profileType)(
-          data.urlLinkKey,
-          indexTab,
-          data?.filterCluster.indexSort || 0,
-          data?.filterCluster.indexFilterMedia || 0,
-          isRefreshAll ? 0 : getTabContentCount(indexTab),
-          isRefreshAll ? getTabContentCount(indexTab) : 10,
-        );
-      }
+      resProfileTabInfo = await getTabInfo(profileType)(
+        data.urlLinkKey,
+        indexTab,
+        data.filterCluster?.indexSort || 0,
+        {
+          channelTabType: data.filterCluster?.indexFilterChannel || 0,
+          characterTabType: data.filterCluster?.indexFilterCharacter || 0,
+          contentTabType: data.filterCluster?.indexFilterContent || 0,
+          feedMediaType: data.filterCluster?.indexFilterMedia || 0,
+        },
+        isRefreshAll ? 0 : getTabContentCount(indexTab),
+        isRefreshAll ? getTabContentCount(indexTab) : 10,
+      );
     }
     if (!resProfileTabInfo) return;
 

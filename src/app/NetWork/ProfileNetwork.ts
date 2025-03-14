@@ -193,6 +193,10 @@ export const getProfileInfo = async (urlLinkKey: string) => {
 };
 export interface GetPdTabInfoeReq {
   feedMediaType: FeedMediaType;
+  contentTabType: ContentTabType;
+  characterTabType: CharacterTabType;
+  channelTabType: ChannelTabType;
+
   feedSortType: ExploreSortType;
   languageType: string;
   profileUrlLinkKey: string;
@@ -223,13 +227,26 @@ export const getProfilePdTabInfo = async (
   profileUrlLinkKey = '',
   tabType: PdProfileTabType,
   feedSortType: ExploreSortType = ExploreSortType.Newest,
-  feedMediaType: FeedMediaType = FeedMediaType.Total,
+  filterType: {
+    feedMediaType: number;
+    channelTabType: number;
+    characterTabType: number;
+    contentTabType: number;
+  } = {
+    feedMediaType: 0,
+    channelTabType: 0,
+    characterTabType: 0,
+    contentTabType: 0,
+  },
   offset: number = 0,
   limit: number = 10,
 ) => {
   const data: GetPdTabInfoeReq = {
     feedSortType: feedSortType,
-    feedMediaType: feedMediaType,
+    channelTabType: filterType.channelTabType,
+    characterTabType: filterType.characterTabType,
+    contentTabType: filterType.contentTabType,
+    feedMediaType: filterType.feedMediaType,
     languageType: getCurrentLanguage(),
     profileUrlLinkKey: profileUrlLinkKey,
     tabType: tabType,
@@ -253,11 +270,37 @@ export const getProfilePdTabInfo = async (
 
 export interface GetCharacterTabInfoeReq {
   feedMediaType: FeedMediaType;
+  contentTabType: ContentTabType;
+  characterTabType: CharacterTabType;
+  channelTabType: ChannelTabType;
   feedSortType: ExploreSortType;
   languageType: string;
   profileUrlLinkKey: string;
   tabType: CharacterProfileTabType;
   page: PaginationRequest;
+}
+
+export enum ContentCategoryType {
+  Webtoon,
+  Video,
+}
+
+export enum CharacterTabType {
+  Total,
+  Original = 1,
+  Fan = 2,
+}
+
+export enum ChannelTabType {
+  Total,
+  Original = 1,
+  Fan = 2,
+}
+
+export enum ContentTabType {
+  Total,
+  Series = 1,
+  Single = 2,
 }
 
 export enum CharacterProfileTabType {
@@ -280,12 +323,25 @@ export const getProfileCharacterTabInfo = async (
   profileUrlLinkKey: string = '',
   tabType: CharacterProfileTabType,
   feedSortType: ExploreSortType = ExploreSortType.Newest,
-  feedMediaType: FeedMediaType = FeedMediaType.Total,
+  filterType: {
+    feedMediaType: number;
+    channelTabType: number;
+    characterTabType: number;
+    contentTabType: number;
+  } = {
+    feedMediaType: 0,
+    channelTabType: 0,
+    characterTabType: 0,
+    contentTabType: 0,
+  },
   offset: number = 0,
   limit: number = 10,
 ) => {
   const data: GetCharacterTabInfoeReq = {
-    feedMediaType: feedMediaType,
+    feedMediaType: filterType.feedMediaType,
+    channelTabType: 0,
+    characterTabType: 0,
+    contentTabType: 0,
     feedSortType: feedSortType,
     languageType: getCurrentLanguage(),
     profileUrlLinkKey: profileUrlLinkKey,
