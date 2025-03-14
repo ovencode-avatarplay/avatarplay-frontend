@@ -8,8 +8,10 @@ import {
   BoldArchive,
   BoldArrowLeft,
   BoldComment,
+  BoldContents,
   BoldDislike,
   BoldLike,
+  BoldLock,
   BoldMore,
   BoldPause,
   BoldPlay,
@@ -19,7 +21,9 @@ import {
   BoldVolumeOff,
   BoldVolumeOn,
   LineArchive,
+  LineCheck,
   LineDashboard,
+  LinePlus,
   LineScaleUp,
 } from '@ui/Icons';
 import {Avatar, Box, Modal} from '@mui/material';
@@ -28,7 +32,7 @@ import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainCha
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
-import {followProfile} from '@/app/NetWork/ProfileNetwork';
+import {followProfile, subscribeProfile} from '@/app/NetWork/ProfileNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import {
   ContentCategoryType,
@@ -51,6 +55,8 @@ import {
   sendFeedDisLike,
   sendFeedLike,
 } from '@/app/NetWork/CommonNetwork';
+import CustomDrawer from '@/components/layout/shared/CustomDrawer';
+import DrawerDonation from '../../create/common/DrawerDonation';
 
 interface Props {
   open: boolean;
@@ -60,85 +66,20 @@ interface Props {
   contentId: number;
   episodeId?: number;
 }
-const dummyContentPlayInfo: ContentPlayInfo = {
-  contentId: 1,
-  episodeId: 101,
-  categoryType: ContentCategoryType.Webtoon,
-  playTimeSecond: 3600,
-  profileIconUrl: 'https://example.com/profile-icon.png',
-  profileUrlLinkKey: 'user123',
-  commonMediaViewInfo: {
-    likeCount: 120,
-    isLike: true,
-    dislikeCount: 5,
-    isDisLike: false,
-    commentCount: 30,
-    isBookmark: true,
-    isReport: false,
-  },
-  episodeWebtoonInfo: {
-    likeCount: 90,
-    webtoonSourceUrlList: [
-      {
-        webtoonLanguageType: 0,
-        webtoonSourceUrls: ['https://example.com/webtoon1.jpg', 'https://example.com/webtoon2.jpg'],
-        webtoonSourceNames: ['Webtoon Page 1', 'Webtoon Page 2'],
-      },
-    ],
-  },
-};
-const dummyContentPlayInfoVideo: ContentPlayInfo = {
-  contentId: 2,
-  episodeId: 102,
-  categoryType: ContentCategoryType.Video,
-  playTimeSecond: 5400,
-  profileIconUrl: '/dummyFile/animeVideo.mp4',
-  profileUrlLinkKey: 'user456',
-  commonMediaViewInfo: {
-    likeCount: 200,
-    isLike: false,
-    dislikeCount: 20,
-    isDisLike: true,
-    commentCount: 50,
-    isBookmark: false,
-    isReport: true,
-  },
-  episodeVideoInfo: {
-    likeCount: 150,
-    videoSourceFileInfo: {
-      videoLanguageType: ContentLanguageType.Korean,
-      videoSourceUrl: '/dummyFile/animeVideo.mp4',
-      videoSourceName: 'Example Korean Video',
-    },
-    subTitleFileInfos: [
-      {
-        videoLanguageType: ContentLanguageType.English,
-        videoSourceUrl: 'https://example.com/subtitle_en.srt',
-        videoSourceName: 'English Subtitle',
-      },
-      {
-        videoLanguageType: ContentLanguageType.Japanese,
-        videoSourceUrl: 'https://example.com/subtitle_jp.srt',
-        videoSourceName: 'Japanese Subtitle',
-      },
-    ],
-    dubbingFileInfos: [
-      {
-        videoLanguageType: ContentLanguageType.French,
-        videoSourceUrl: 'https://example.com/dubbing_fr.mp3',
-        videoSourceName: 'French Dubbing',
-      },
-      {
-        videoLanguageType: ContentLanguageType.Spanish,
-        videoSourceUrl: 'https://example.com/dubbing_es.mp3',
-        videoSourceName: 'Spanish Dubbing',
-      },
-    ],
-  },
-};
 
 const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, episodeId = 0}) => {
   const [info, setInfo] = useState<ContentPlayInfo>();
+  const [onEpisodeListDrawer, setOnEpisodeListDrawer] = useState(false);
+  interface Episode {
+    number: number;
+    isLocked: boolean;
+  }
+
+  const episodes: Episode[] = Array.from({length: 20}, (_, index) => ({
+    number: index,
+    isLocked: [11, 13, 15, 16, 14].includes(index), // 잠금 여부 설정
+  }));
+  const [isDonation, setDonation] = useState(false);
 
   const handlePlayRecent = async () => {
     try {
@@ -224,6 +165,87 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
+
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // 🎯 프로그레스 바 클릭 또는 드래그 시작 시 실행
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log('마우스 다운');
+    setIsDragging(true);
+    updateProgress(e.nativeEvent); // 클릭 위치 반영
+  };
+
+  // 🎯 마우스를 움직일 때 실행
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging) return;
+    updateProgress(e);
+  };
+
+  // 🎯 마우스가 놓일 때 실행
+  const handleMouseUp = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+  useEffect(() => {
+    setTimeout(() => {
+      console.log('🔍 progressBarRef after mount:', progressBarRef.current);
+    }, 1000);
+  }, []);
+  // 📌 진행도를 비디오에 반영하는 함수
+  const updateProgress = (e: MouseEvent | React.MouseEvent<HTMLDivElement>) => {
+    if (!progressBarRef.current || videoDuration === 0) return;
+
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    let newProgress = (offsetX / rect.width) * videoDuration;
+
+    // 진행도 범위 제한 (0 ~ videoDuration)
+    newProgress = Math.max(0, Math.min(videoDuration, newProgress));
+
+    setVideoProgress(newProgress);
+    if (playerRef.current) {
+      playerRef.current.seekTo(newProgress, 'seconds'); // 비디오 위치 변경
+    }
+  };
+
+  // 🎯 드래그 이벤트 `window`에 적용하여 진행 바 놓치지 않도록 유지
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    } else {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    }
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
+
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [animationClass, setAnimationClass] = useState('');
+
+  const handleOnSubscribe = async () => {
+    console.log('Subscribe');
+
+    setIsSubscribed(true);
+    // 클릭하면 애니메이션 시작
+    setAnimationClass(styles.startAnimation);
+
+    // 3프레임 후 크기 100%
+    setTimeout(() => {
+      setAnimationClass(styles.fullSize);
+    }, 75); // 3프레임 (약 50ms)
+
+    // 17프레임 동안 유지
+    setTimeout(() => {
+      setAnimationClass(styles.shrinkAnimation);
+    }, 475); // (3프레임 + 17프레임) 약 350ms 후 축소 시작
+  };
+
   const [commentCount, setCommentCount] = useState(info?.commonMediaViewInfo.commentCount);
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
@@ -414,12 +436,13 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
           <div style={{height: '100%'}} onClick={() => handleTrigger()}>
             <div className={styles.Image}>
               {info?.categoryType === ContentCategoryType.Webtoon && (
-                <img
-                  src={info?.episodeWebtoonInfo?.webtoonSourceUrlList[0].webtoonSourceUrls[0]} //추후 자막 합쳐야함
-                  loading="lazy"
-                  style={{width: '100%', height: '100%'}}
-                />
+                <div className={styles.webtoonContainer}>
+                  {info?.episodeWebtoonInfo?.webtoonSourceUrlList[0].webtoonSourceUrls.map((url, index) => (
+                    <img key={index} src={url} loading="lazy" className={styles.webtoonImage} />
+                  ))}
+                </div>
               )}
+
               {info?.categoryType === ContentCategoryType.Video && (
                 <div style={{position: 'relative', width: '100%', height: '100%'}}>
                   <ReactPlayer
@@ -477,27 +500,28 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             </div>
 
             {/* Progress Bar */}
-            <div className={`${styles.progressBar} ${!isVisible ? styles.fadeOutB : ''}`}>
+            <div
+              ref={progressBarRef}
+              className={`${styles.progressBar} ${!isVisible ? styles.fadeOutB : ''} ${
+                isDragging ? styles.dragging : ''
+              }`}
+              onMouseDown={e => {
+                console.log('✅ ProgressBar 클릭됨');
+                console.log('클릭 좌표:', e.clientX, e.clientY);
+                handleMouseDown(e);
+              }}
+            >
               <div
                 className={styles.progressFill}
                 style={{
-                  width:
-                    info?.categoryType === 0
-                      ? '' // 이미지 슬라이드 진행도
-                      : `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
-                  transition: 'width 0.1s linear', // 부드러운 진행도 애니메이션
+                  width: `${(videoProgress / videoDuration) * 100}%`,
+                  transition: isDragging ? 'none' : 'width 0.1s linear',
                 }}
               ></div>
             </div>
 
             <div className={`${styles.profileBox} ${!isVisible ? styles.fadeOutB : ''}`}>
               <div className={styles.dim}></div>
-              {/* User Info */}
-              <div className={styles.userInfo}>
-                <div className={styles.profileDetails}>
-                  <span className={styles.sponsored}>Sponsored</span>
-                </div>
-              </div>
 
               {/* Video Info */}
               <div className={styles.videoInfo}>
@@ -512,26 +536,55 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             </div>
             {/* CTA Buttons */}
             <div className={`${styles.ctaButtons} ${!isVisible ? styles.fadeOutR : ''}`}>
-              <div
-                className={styles.textButtons}
-                onClick={event => {
-                  event.stopPropagation();
-                  let id = contentId;
-                  if (episodeId) id = episodeId;
-                  handleDisLikeFeed(id, !isDisLike);
-                }}
-              >
+              <div className={styles.textButtons}>
                 <Avatar
                   src={info?.profileIconUrl || '/images/001.png'}
-                  style={{width: '32px', height: '32px'}}
+                  style={{width: '32px', height: '32px', position: 'relative'}}
                   onClick={event => {
                     event.stopPropagation();
                     pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
                   }}
-                />
-              </div>
+                ></Avatar>
 
-              <div className={styles.textButtons} onClick={() => {}}>
+                <div
+                  className={`${isSubscribed ? styles.checkCircle : styles.plusCircle} ${animationClass}`}
+                  onClick={event => {
+                    event.stopPropagation();
+                    handleOnSubscribe();
+                  }}
+                >
+                  {isSubscribed ? (
+                    <img src={LineCheck.src} alt="Check" className={styles.checkImg} />
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M20.4863 12.0005L3.51577 12.0005L20.4863 12.0005Z" fill="white" />
+                      <path
+                        d="M20.4863 12.0005L3.51577 12.0005"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path d="M12 3.51416V20.4847V3.51416Z" fill="white" />
+                      <path
+                        d="M12 3.51416V20.4847"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div></div>
+              <div
+                className={styles.textButtons}
+                onClick={event => {
+                  event.stopPropagation();
+                  setDonation(true);
+                }}
+              >
                 <img src={BoldReward.src} className={styles.button}></img>
               </div>
               <div
@@ -575,7 +628,13 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                   }}
                 />
               </div>
-              <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
+              <div
+                className={styles.textButtons}
+                onClick={event => {
+                  event.stopPropagation();
+                  setCommentIsOpen(true);
+                }}
+              >
                 <img src={BoldComment.src} className={styles.button}></img>
                 <div className={styles.count}>{commentCount}</div>
               </div>
@@ -599,6 +658,17 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 {isBookmarked && <img src={BoldArchive.src} className={styles.button}></img>}
                 {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
               </div>
+
+              <div
+                className={styles.noneTextButton}
+                onClick={event => {
+                  event.stopPropagation();
+                  setOnEpisodeListDrawer(true);
+                }}
+              >
+                <img src={BoldContents.src} className={styles.button}></img>
+              </div>
+
               <div
                 className={styles.noneTextButton}
                 onClick={event => {
@@ -636,13 +706,15 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               )}
             </div>
           </div>
-          <Comment
-            contentId={episodeId ? episodeId : contentId}
-            isOpen={isCommentOpen}
-            toggleDrawer={v => setCommentIsOpen(v)}
-            onAddTotalCommentCount={() => handleAddCommentCount()}
-            commentType={CommentContentType.Episode}
-          />
+          {isCommentOpen && (
+            <Comment
+              contentId={episodeId ? episodeId : contentId}
+              isOpen={isCommentOpen}
+              toggleDrawer={v => setCommentIsOpen(v)}
+              onAddTotalCommentCount={() => handleAddCommentCount()}
+              commentType={episodeId ? CommentContentType.Episode : CommentContentType.Content}
+            />
+          )}
 
           <SharePopup
             open={isShare}
@@ -650,6 +722,68 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             url={window.location.href}
             onClose={() => setIsShare(false)}
           ></SharePopup>
+
+          <CustomDrawer
+            open={onEpisodeListDrawer}
+            onClose={() => {
+              setOnEpisodeListDrawer(false);
+            }}
+            contentStyle={{
+              padding: '0px',
+              zIndex: '1300',
+
+              justifyItems: 'center',
+            }}
+            containerStyle={{paddingBottom: '14px'}}
+          >
+            <div className={styles.episodeListDrawer}>
+              <div className={styles.profileContainer}>
+                {/* 프로필 이미지 */}
+                <div className={styles.profileImageWrapper}>
+                  <img src={info?.profileIconUrl} alt="Profile" className={styles.profileImage} />
+                  <div className={styles.imageOverlay}></div>
+                </div>
+
+                {/* 텍스트 정보 */}
+                <div className={styles.profileInfo}>
+                  <div className={styles.title}>{'타이틀 들어가야함'}</div>
+
+                  <div style={{gap: '8px'}}>
+                    {/* 에피소드 정보 + 완결 배지 */}
+                    <div className={styles.episodeRow}>
+                      <span className={styles.episodeInfo}>{'에피소드 리스트'}</span>
+                      {<span className={styles.completeBadge}>완결여부</span>}
+                    </div>
+
+                    {/* 장르 정보 */}
+                    <div className={styles.genreRow}>{'장르들'}</div>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.episodeContainer}>
+                {episodes.map(episode => (
+                  <div
+                    key={episode.number}
+                    className={`${styles.episodeButton} ${episode.isLocked ? styles.locked : ''}`}
+                  >
+                    {episode.number}
+                    {episode.isLocked && (
+                      <div className={styles.lockIcon}>
+                        <img src={BoldLock.src} alt="Lock" className={styles.lockImg} />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CustomDrawer>
+          <DrawerDonation
+            isOpen={isDonation}
+            sponsoredName={'이름도 받아야함'}
+            giveToPDId={0}
+            onClose={() => setDonation(false)}
+            router={router}
+          />
         </div>
       </Box>
     </Modal>

@@ -174,7 +174,8 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   const onEdit = () => {};
 
   const urlEdit = data.isSingle ? '/update/content/single' : '/create/content/series';
-
+  console.log('contentID : ', playContentId);
+  console.log('onPlay : ', onPlay);
   return (
     <>
       <main className={styles.main}>
@@ -323,7 +324,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                               console.log('data', data, one);
                               setOnPlay(true);
                               setIsPlayButton(false);
-                              if (data.dataMix) setPlayContentId(data.dataMix?.contentId || 0);
+                              setPlayContentId(data.dataMix?.id || 0);
                               setEpisodeId(0);
                               return;
                             }
@@ -361,7 +362,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                               console.log('data', data, one);
                               setOnPlay(true);
                               setIsPlayButton(false);
-                              if (data.dataEpisodes) setPlayContentId(data.dataEpisodes?.contentId);
+                              setPlayContentId(data.dataMix?.contentId || 0);
                               setPlayEpisodeId(one.episodeId);
                               return;
                             }

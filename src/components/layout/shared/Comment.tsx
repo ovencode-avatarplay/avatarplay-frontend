@@ -104,6 +104,7 @@ const Comment: React.FC<Props> = ({
         onRepliesBack();
       }}
       classes={{paper: styles.drawer}}
+      style={{zIndex: '1300'}}
     >
       {/* Header */}
       {!isReplies && (
