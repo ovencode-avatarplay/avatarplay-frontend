@@ -31,6 +31,7 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
+import {LanguageType} from '@/app/NetWork/AuthNetwork';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -169,7 +170,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   const [llmModel, setLlmModel] = useState<number>(character.llmModel);
   const [llmCustomApi, setLlmCustomApi] = useState<string>(character.customApi);
   const [tag, setTag] = useState<string>(character.tag);
-  const [positionCountryList, setPositionCountryList] = useState<number[]>(character.positionCountryList);
+  const [positionCountryList, setPositionCountryList] = useState<number[]>(
+    character.positionCountryList.length > 0
+      ? character.positionCountryList
+      : (Object.values(LanguageType).filter(value => typeof value === 'number') as LanguageType[]),
+  );
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
   const [membershipSetting, setMembershipSetting] = useState<MembershipSetting>(character.membershipSetting);
   const [connectCharacterInfo, setConnectCharacterInfo] = useState<ProfileSimpleInfo>(character.connectCharacterInfo);
@@ -251,7 +256,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   };
 
   const handleOnClickMediaEdit = (index: number) => {
-    setImgUploadOpen(true);
+    // setImgUploadOpen(true);
+    setImgUploadModalOpen(true);
     setImageCreate('MediaEdit');
     setSelectedMediaItemIdx(index);
   };
@@ -263,7 +269,9 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
 
     if (description === '') return false;
 
-    if (positionCountryList.length < 1) return false;
+    // if (positionCountryList.length < 1) {
+    //   return false;
+    // }
 
     return true;
   };
@@ -618,7 +626,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           onNsfwChange={setNsfw}
           creatorComment={creatorComment}
           setCharacterDesc={setCreatorComment}
-          essentialWarning={essentialWarning}
+          // essentialWarning={essentialWarning}
         />
       ),
     },
@@ -852,7 +860,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
                     }
                   }}
                 >
-                  {getLocalizedText(Common, 'common_button_save')}
+                  {getLocalizedText(Common, 'common_button_submit')}
                 </CustomButton>
                 <div className={styles.floatButtonBack}></div>
               </div>

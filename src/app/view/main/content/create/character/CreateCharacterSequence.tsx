@@ -328,10 +328,6 @@ const CharacterCreateSequence: React.FC<Props> = ({
       ...prev,
       [key]: index >= centerThreshold,
     }));
-    setIsCentered(prev => ({
-      ...prev,
-      [key]: index >= centerThreshold,
-    }));
 
     if (autoNextStep) addStep();
   };
