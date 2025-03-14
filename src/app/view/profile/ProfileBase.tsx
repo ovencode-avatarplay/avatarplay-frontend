@@ -444,7 +444,6 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       resProfileTabInfo = resChannelInfo?.data;
     } else {
       if (indexTab == eTabPDType.Character) {
-        console.trace('isRefreshAll : ', isRefreshAll);
         resProfileTabInfo = await getTabInfo(profileType)(
           data.urlLinkKey,
           indexTab,
@@ -540,7 +539,6 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     data.profileId = resProfileInfo.profileInfo.id;
 
     const indexTab = Number(data?.indexTab);
-    console.log('profileId : ', resProfileInfo.profileInfo.id);
     await refreshProfileTab(resProfileInfo.profileInfo.id, indexTab);
 
     setData({...data});
@@ -591,7 +589,6 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList?.length;
       } else if (data.indexTab == eTabPDType.Channel) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
-        console.log('length : ', data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length);
       } else if (data.indexTab == eTabPDOtherType.Info) {
         isEmptyTab = false;
       } else {

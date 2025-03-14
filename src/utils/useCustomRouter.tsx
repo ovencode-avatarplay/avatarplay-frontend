@@ -43,7 +43,6 @@ const useCustomRouter = () => {
     const prevPath = storage.getItem('currentPath');
 
     let prevPathList = JSON.parse(storage.getItem('prevPathList') || '[]');
-    console.log('prevPathList', prevPathList);
     const prevPathname = prevPath ? new URL(prevPath, window.location.origin).pathname : null;
     const currentPathname = globalThis.location.pathname; // 현재 pathname만 가져오기
 
@@ -72,7 +71,6 @@ const useCustomRouter = () => {
       router.replace(getLocalizedLink(defaultPath));
     } else {
       const prevPath = prevPathList.pop(); // 마지막 경로를 꺼냄
-      console.log('prevPath : ', prevPath);
       storage.setItem('prevPathList', JSON.stringify(prevPathList));
 
       // 현재 경로를 이전 경로로 설정
