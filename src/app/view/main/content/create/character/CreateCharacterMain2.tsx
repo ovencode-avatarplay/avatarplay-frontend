@@ -30,6 +30,7 @@ import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -42,6 +43,7 @@ interface CreateCharacterProps {
 }
 
 const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = false, characterInfo, onClose}) => {
+  const {back} = useCustomRouter();
   const router = useRouter();
 
   //#region Data
@@ -744,13 +746,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   };
 
   const routerBack = () => {
-    // you can get the prevPath like this
-    const prevPath = getBackUrl();
-    if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/main/homefeed'));
-    } else {
-      router.replace(prevPath);
-    }
+    back('/main/homefeed');
   };
 
   return (

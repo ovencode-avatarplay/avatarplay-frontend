@@ -67,12 +67,21 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
     profileTabInfo: {
       [key: number]: ProfileTabItemInfo[];
     };
+    filterCluster: FilterClusterType;
   }>({
     indexTab: 0,
     indexFilterMedia: FeedMediaType.Total,
     indexFilterCharacter: 0,
     indexSort: ExploreSortType.MostPopular,
     profileTabInfo: {},
+    filterCluster: {
+      indexFilterChannel: 0,
+      indexFilterCharacter: 0,
+      indexFilterContent: 0,
+      indexFilterMedia: 0,
+      indexFilterShared: 0,
+      indexSort: 0,
+    },
   });
 
   useEffect(() => {
@@ -98,6 +107,10 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
   };
 
   const isEmptyTab = false;
+
+  const onRefreshTab = () => {};
+
+  const onOpenContentMenu = () => {};
   return (
     <>
       <Dialog open={true} onClose={onClose} fullScreen>
@@ -153,7 +166,19 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
                 />
               </div>
 
-              <div className={styles.tabContent}>{/* <TabContentComponent  /> */}</div>
+              <div className={styles.tabContent}>
+                <TabContentComponent
+                  filterCluster={data.filterCluster}
+                  profileType={profileType}
+                  isMine={true}
+                  isEmptyTab={false}
+                  profileId={profileId}
+                  tabIndex={data?.indexTab || 0}
+                  profileTabInfo={data.profileTabInfo}
+                  onRefreshTab={onRefreshTab}
+                  onOpenContentMenu={onOpenContentMenu}
+                />
+              </div>
             </section>
             <button className={styles.btnSubscription}>Subscribe Now</button>
           </main>
@@ -190,8 +215,6 @@ type TabContentProps = {
 };
 
 const TabContentComponent = ({
-  profileId,
-  profileType,
   isMine,
   tabIndex,
   isEmptyTab,

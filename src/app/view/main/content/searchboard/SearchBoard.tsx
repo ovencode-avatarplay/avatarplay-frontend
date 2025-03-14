@@ -24,7 +24,7 @@ import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import ExploreCard from './ExploreCard';
 import {FilterDataItem} from '@/components/search/FilterSelector';
 import {getCurrentLanguage} from '@/utils/UrlMove';
-import useChangeParams from '@/utils/useChangeParams';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 const SearchBoard: React.FC = () => {
   const [data, setData] = useState({
@@ -67,7 +67,7 @@ const SearchBoard: React.FC = () => {
 
   const [selectedSort, setSelectedSort] = useState<number>(0);
   const [sortDropDownOpen, setSortDropDownOpen] = useState<boolean>(false);
-  const {changeParams, getParam} = useChangeParams();
+  const {changeParams, getParam} = useCustomRouter();
   const dropDownMenuItems: DropDownMenuItem[] = [
     {
       name: 'Newest',

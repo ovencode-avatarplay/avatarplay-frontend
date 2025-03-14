@@ -11,6 +11,7 @@ import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {getBackUrl} from '@/utils/util-1';
 import {getLocalizedLink} from '@/utils/UrlMove';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 interface ChatTopBarProps {
   onBackClick: () => void;
@@ -21,6 +22,7 @@ interface ChatTopBarProps {
 }
 
 const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, isHideChat, isBlurOn}) => {
+  const {back} = useCustomRouter();
   const router = useRouter();
   const chattingState1: ChattingState = useSelector((state: RootState) => state.chatting);
   useEffect(() => {
@@ -28,13 +30,7 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, i
   }, [chattingState1]);
 
   const routerBack = () => {
-    // you can get the prevPath like this
-    const prevPath = getBackUrl();
-    if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/main/explore'));
-    } else {
-      router.replace(prevPath);
-    }
+    back('/main/explore');
   };
 
   return (

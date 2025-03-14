@@ -20,6 +20,7 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {getAuth} from '@/app/NetWork/AuthNetwork';
 import {updateProfile} from '@/redux-store/slices/Profile';
 import {useDispatch} from 'react-redux';
+import useCustomRouter from '@/utils/useCustomRouter';
 type Props = {
   params: {
     id?: string[];
@@ -75,6 +76,7 @@ type DataProfileUpdateType = {
 };
 
 const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
+  const {back} = useCustomRouter();
   const profileId = parseInt(id[0]);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -230,13 +232,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
   }, [errors, data.triggerError]);
 
   const routerBack = () => {
-    // you can get the prevPath like this
-    const prevPath = getBackUrl();
-    if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/main/homefeed'));
-    } else {
-      router.replace(prevPath);
-    }
+    back('/main/homefeed');
   };
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {

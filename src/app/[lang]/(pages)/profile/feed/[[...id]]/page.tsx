@@ -9,12 +9,14 @@ import {BoldArrowLeft, BoldMenuDots, LineMenu, LineShare} from '@ui/Icons';
 import {getBackUrl} from '@/utils/util-1';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import BottomNav from '@/app/view/main/bottom-nav/BottomNav';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 type Props = {
   searchParams: {feedMediaType?: string; feedSortType?: string; idContent: string; type: string};
 };
 
 const PageFeedView = ({searchParams}: Props) => {
+  const {back} = useCustomRouter();
   const router = useRouter();
   const query = useParams();
   const id = query?.id?.[0] || '0';
@@ -26,7 +28,7 @@ const PageFeedView = ({searchParams}: Props) => {
   const idContent = parseInt(searchParams?.idContent || '0');
   const profileType = parseInt(searchParams?.type || '0');
   const routerBack = () => {
-    router.replace(getLocalizedLink(`/profile/${id}`));
+    back(`/profile/${id}`);
   };
   return (
     <>

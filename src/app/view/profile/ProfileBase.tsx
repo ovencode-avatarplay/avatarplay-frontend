@@ -91,8 +91,8 @@ import PopupPlaylist from './PopupPlaylist';
 import {ContentType, sendDeleteContent} from '@/app/NetWork/ContentNetwork';
 import {CharacterProfileDetailComponent} from './ProfileDetail';
 import PopupFriends from './PopupFriends';
-import useChangeParams from '@/utils/useChangeParams';
 import {PortfolioListPopup} from '@/app/[lang]/(pages)/profile/update/[[...id]]/page';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 export enum eTabCommonType {
   Feed = 1,
@@ -247,7 +247,8 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
 
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
-  const {changeParams, getParam} = useChangeParams();
+  const {back} = useCustomRouter();
+  const {changeParams, getParam} = useCustomRouter();
   const searchParams = useSearchParams();
   const isNeedBackBtn = searchParams?.get('from'); // "from" 쿼리 파라미터 값 가져오기
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
@@ -578,13 +579,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   };
 
   const routerBack = () => {
-    // you can get the prevPath like this
-    const prevPath = getBackUrl();
-    if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/main/homefeed'));
-    } else {
-      router.replace(prevPath);
-    }
+    back('/main/homefeed');
   };
 
   const getIsEmptyTab = () => {

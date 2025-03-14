@@ -37,7 +37,7 @@ import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostC
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
-import {getBackUrl, getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {
   ChannelInfo,
@@ -53,6 +53,7 @@ import {on} from 'events';
 import DrawerMembershipSetting from '@/app/view/main/content/create/common/DrawerMembershipSetting';
 import CustomSelector from '@/components/layout/shared/CustomSelector';
 import {PaymentType, Subscription, VisibilityType} from '@/app/NetWork/network-interface/CommonEnums';
+import useCustomRouter from '@/utils/useCustomRouter';
 type Props = {
   id: number;
   isUpdate: boolean;
@@ -91,6 +92,7 @@ interface ChannelInfoForm extends Omit<ChannelInfo, 'id' | 'isMonetization' | 'n
 }
 
 const CreateChannel = ({id, isUpdate}: Props) => {
+  const {back} = useCustomRouter();
   const router = useRouter();
   const [data, setData] = useState<DataProfileUpdateType>({
     idChannel: 0,
@@ -332,13 +334,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   };
 
   const routerBack = () => {
-    // you can get the prevPath like this
-    const prevPath = getBackUrl();
-    if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/main/homefeed'));
-    } else {
-      router.replace(prevPath);
-    }
+    back('/main/homefeed');
   };
   const onSubmit = async (dataForm: ChannelInfoForm) => {
     console.log('dataForm : ', dataForm);

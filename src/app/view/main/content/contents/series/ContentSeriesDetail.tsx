@@ -45,6 +45,7 @@ import {TurnedIn} from '@mui/icons-material';
 import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/CommonNetwork';
 import ViewerContent from '../viewer/ViewerContent';
 import {setEpisodeId} from '@/redux-store/slices/Chatting';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 type Props = {
   type: ContentType;
@@ -57,6 +58,7 @@ enum eTabType {
 }
 
 const ContentSeriesDetail = ({id, type}: Props) => {
+  const {back} = useCustomRouter();
   const refThumbnailWrap = useRef<HTMLDivElement | null>(null);
   const [onPlay, setOnPlay] = useState(false);
   const [isPlayButton, setIsPlayButton] = useState(false);
@@ -98,13 +100,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   });
 
   const routerBack = () => {
-    // you can get the prevPath like this
-    const prevPath = getBackUrl();
-    if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/profile/' + data.dataMix?.profileUrlLinkKey));
-    } else {
-      router.replace(prevPath);
-    }
+    back('/profile/' + data.dataMix?.profileUrlLinkKey);
   };
 
   useLayoutEffect(() => {
@@ -326,7 +322,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                               console.log('data', data, one);
                               setOnPlay(true);
                               setIsPlayButton(false);
-                              if (data.dataEpisodes) setPlayContentId(data.dataEpisodes?.contentId);
+                              if (data.dataMix) setPlayContentId(data.dataMix?.contentId || 0);
                               setEpisodeId(0);
                               return;
                             }
