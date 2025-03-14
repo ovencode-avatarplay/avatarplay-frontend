@@ -1265,22 +1265,11 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
             ),
             [],
           ),
-          SingleValue: React.useCallback(
-            (props: any) => {
-              return (
-                <components.SingleValue {...props}>
-                  <div
-                    onMouseDown={() => {
-                      setIsOpen(!isOpen);
-                    }}
-                  >
-                    {ValueComponent(props.data, props.isSelected)}
-                  </div>
-                </components.SingleValue>
-              );
-            },
-            [isOpen],
-          ),
+          SingleValue: React.useCallback((props: any) => {
+            return (
+              <components.SingleValue {...props}>{ValueComponent(props.data, props.isSelected)}</components.SingleValue>
+            );
+          }, []),
         }}
         getOptionValue={option => option.id.toString()}
       />
