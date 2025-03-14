@@ -1457,6 +1457,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.iconWrap,
+                styles.bg,
                 filterCluster.indexFilterContent == eContentFilterType.Total && styles.active,
               )}
               data-filter={eContentFilterType.Total}
@@ -1544,6 +1545,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.iconWrap,
+                styles.bg,
                 filterCluster.indexFilterCharacter == eCharacterFilterType.Total && styles.active,
               )}
               data-filter={eCharacterFilterType.Total}
@@ -1629,6 +1631,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.iconWrap,
+                styles.bg,
                 filterCluster.indexFilterChannel == eCharacterFilterType.Total && styles.active,
               )}
               data-filter={eCharacterFilterType.Total}
@@ -1721,6 +1724,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.iconWrap,
+                styles.bg,
                 filterCluster.indexFilterShared == eSharedFilterType.Total && styles.active,
               )}
               data-filter={eSharedFilterType.Total}
