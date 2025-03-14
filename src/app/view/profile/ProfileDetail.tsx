@@ -115,18 +115,23 @@ export const CharacterProfileDetailComponent = ({
       <section className={styles.tabSection}>
         <div className={styles.tabContent}>
           <div className={styles.textWrap}>
+            <div className={styles.label}>Description</div>
+            <TextArea value={data.characterInfo?.description || ''} />
+          </div>
+          <div className={styles.textWrap}>
             <div className={styles.label}>World Senario</div>
             <TextArea value={data.characterInfo?.worldScenario || ''} />
           </div>
-          <div className={styles.textWrap}>
-            <div className={styles.label}>Greeting</div>
-            <TextArea value={data.characterInfo?.introduction || ''} />
-          </div>
-
-          <div className={styles.textWrap}>
-            <div className={styles.label}>Creator Comment</div>
-            <TextArea value={data.characterInfo?.description || ''} />
-          </div>
+          {data.characterInfo?.creatorComment ? (
+            <>
+              <div className={styles.textWrap}>
+                <div className={styles.label}>Creator Comment</div>
+                <TextArea value={data.characterInfo?.creatorComment || ''} />
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       </section>
 
