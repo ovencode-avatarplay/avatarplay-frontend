@@ -123,7 +123,6 @@ export enum eTabCharacterType {
   Contents = 1,
   Channel,
   Character,
-  Game,
 }
 
 export enum eTabCharacterOtherType {
