@@ -412,6 +412,21 @@ const ContentSeriesDetail = ({id, type}: Props) => {
             data.dataPurchase.isOpenPopupPurchase = false;
             setData({...data});
           }}
+          onPurchaseSuccess={(contentId: number, episodeId: number, contentType: ContentType) => {
+            if (contentType == ContentType.Series) {
+              setOnPlay(true);
+              setIsPlayButton(false);
+              setPlayContentId(contentId || 0);
+              setPlayEpisodeId(episodeId);
+            }
+
+            if (contentType == ContentType.Single) {
+              setOnPlay(true);
+              setIsPlayButton(false);
+              setPlayContentId(contentId || 0);
+              setEpisodeId(0);
+            }
+          }}
         />
       )}
       {onPlay && (
@@ -490,11 +505,20 @@ type PopupPurchaseType = {
   price: number;
   contentType: ContentType;
   onClose: () => void;
+  onPurchaseSuccess: (contentId: number, episodeId: number, contentType: ContentType) => void;
 };
-const PopupPurchase = ({price, contentId, episodeId, contentType, onClose}: PopupPurchaseType) => {
+const PopupPurchase = ({price, contentId, episodeId, contentType, onClose, onPurchaseSuccess}: PopupPurchaseType) => {
+  const refCheckHide = useRef<HTMLInputElement | null>(null);
   const [data, setData] = useState<{isOpenNotEnoughStars: boolean}>({
     isOpenNotEnoughStars: false,
   });
+
+  useEffect(() => {
+    const hidePopup = localStorage.getItem('hidePopupPurchase');
+    if (!!hidePopup) {
+      onPurchase();
+    }
+  }, []);
 
   const openPopupNotEnoughStars = () => {
     data.isOpenNotEnoughStars = true;
@@ -507,12 +531,19 @@ const PopupPurchase = ({price, contentId, episodeId, contentType, onClose}: Popu
       episodeId: episodeId,
     };
     const resBuy = await buyContentEpisode(dataBuyReq);
+    if (resBuy.resultCode != 0) {
+      openPopupNotEnoughStars();
+      return;
+    }
     console.log('resBuy : ', resBuy);
+    localStorage.setItem('hidePopupPurchase', refCheckHide.current?.checked ? 'true' : 'false');
     onClose();
 
     if (contentType == ContentType.Series) {
+      onPurchaseSuccess(contentId, episodeId, contentType);
       alert('구매완료, Play Series 처리예정');
     } else {
+      onPurchaseSuccess(contentId, episodeId, contentType);
       alert('구매완료, Play Single 처리예정');
     }
   };
@@ -535,11 +566,11 @@ const PopupPurchase = ({price, contentId, episodeId, contentType, onClose}: Popu
           <div className={styles.right}>
             <div className={styles.balanceWrap}>
               <img src={BoldRuby.src} alt="" />
-              <div className={styles.amount}>10.5k</div>
+              <div className={styles.amount}>10.5K</div>
             </div>
             <div className={styles.balanceWrap}>
               <img src={BoldStar.src} alt="" />
-              <div className={styles.amount}>10.5k</div>
+              <div className={styles.amount}>10.5K</div>
             </div>
           </div>
         </div>
@@ -549,7 +580,7 @@ const PopupPurchase = ({price, contentId, episodeId, contentType, onClose}: Popu
         <div className={styles.dontshowWrap}>
           <label htmlFor="dontshow">
             <div className={styles.left}>
-              <input type="checkbox" name="dontshow" id="dontshow" onChange={e => {}} />
+              <input ref={refCheckHide} type="checkbox" name="dontshow" id="dontshow" onChange={e => {}} />
               <img src={BoldRadioButtonSquareSelected.src} alt="" className={styles.iconOn} />
               <img src={BoldRadioButtonSquare.src} alt="" className={styles.iconOff} />
             </div>
