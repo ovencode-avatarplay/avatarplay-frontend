@@ -778,11 +778,20 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             </div>
           )}
           {isCharacter && (
-            <div className={cx(styles.verify, styles.line)}>
+            <div className={cx(styles.verify, styles.decoration)}>
               <Link
                 href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileUrlLinkKey + '?from=""')}
               >
                 <span className={styles.label}>Manager: {data.profileInfo?.profileInfo?.pdEmail}</span>
+              </Link>
+            </div>
+          )}
+          {isChannel && (
+            <div className={cx(styles.verify, styles.decoration)}>
+              <Link
+                href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileUrlLinkKey + '?from=""')}
+              >
+                <span className={styles.label}>Owner: {data.profileInfo?.profileInfo?.pdEmail}</span>
               </Link>
             </div>
           )}

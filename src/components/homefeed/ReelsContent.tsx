@@ -536,7 +536,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           </div>
         </SwiperSlide>
         {isShowProfile && (
-          <SwiperSlide style={{overflowY: 'scroll'}}>
+          <SwiperSlide style={{overflowY: 'scroll', background: 'white'}}>
             {activeIndexProfile === 1 && <ProfileBase urlLinkKey={item.profileUrlLinkKey} maxWidth={'600px'} />}
           </SwiperSlide>
         )}
