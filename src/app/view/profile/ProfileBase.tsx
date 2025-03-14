@@ -123,7 +123,6 @@ export enum eTabCharacterType {
   Contents = 1,
   Channel,
   Character,
-  Game,
 }
 
 export enum eTabCharacterOtherType {
@@ -828,11 +827,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               <button className={styles.ad}>AD</button>
               <button className={styles.chat}>
                 {/* <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}> */}
-                <Link
-                  href={getLocalizedLink(`/chat/?v=${data?.profileInfo?.profileInfo?.characterUrlLinkKey}` || `?v=`)}
-                >
-                  Chat
-                </Link>
+                <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>Chat</Link>
               </button>
             </div>
           )}

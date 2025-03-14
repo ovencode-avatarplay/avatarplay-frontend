@@ -187,6 +187,19 @@ const CharacterCreateSequence: React.FC<Props> = ({
     result: 0,
   });
 
+  const [swipers, setSwipers] = useState<{[key: string]: any}>({});
+
+  const optionKeys = ['race', 'bodyType', 'topSize', 'bottomSize', 'clothing'] as const;
+  const [isCentered, setIsCentered] = useState<{[key: string]: boolean}>({
+    race: false,
+    bodyType: false,
+    topSize: false,
+    bottomSize: false,
+    clothing: false,
+  });
+
+  const [centerThreshold, setCenterThreshold] = useState(Math.round(window.innerWidth / 116));
+
   const [clothesInputValue, setClothesInputValue] = useState('');
   const [customClothesActive, setCustomClothesActive] = useState(false);
 
@@ -311,6 +324,14 @@ const CharacterCreateSequence: React.FC<Props> = ({
       ...prev,
       [key]: index,
     }));
+    setIsCentered(prev => ({
+      ...prev,
+      [key]: index >= centerThreshold,
+    }));
+    setIsCentered(prev => ({
+      ...prev,
+      [key]: index >= centerThreshold,
+    }));
 
     if (autoNextStep) addStep();
   };
@@ -338,6 +359,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
       publishFinishAction();
     }
   };
+
   //#endregion
 
   //#region Hook
@@ -396,6 +418,32 @@ const CharacterCreateSequence: React.FC<Props> = ({
     setCharacterOptions(newCharacterOptions);
   }, [selectedOptions.gender, selectedOptions.style]);
 
+  useEffect(() => {
+    const updateThreshold = () => {
+      setCenterThreshold(Math.round(window.innerWidth / 116));
+    };
+
+    updateThreshold();
+
+    window.addEventListener('resize', updateThreshold);
+
+    return () => {
+      window.removeEventListener('resize', updateThreshold);
+    };
+  }, []);
+
+  // selectedOptions 값이 변경되면 해당 Swiper 이동
+  useEffect(() => {
+    optionKeys.forEach(key => {
+      if (swipers[key]) {
+        swipers[key].slideTo(selectedOptions[key], 300);
+      }
+    });
+  }, [selectedOptions, swipers]);
+
+  const handleSwiperInit = (key: string, swiperInstance: any) => {
+    setSwipers(prev => ({...prev, [key]: swiperInstance}));
+  };
   //#endregion
 
   //#region Function
@@ -531,20 +579,28 @@ const CharacterCreateSequence: React.FC<Props> = ({
               <Swiper
                 className={styles.horizonSwiper}
                 initialSlide={selectedOptions.race}
-                centeredSlides={true}
+                centeredSlides={isCentered['race']}
                 slidesPerView="auto"
                 spaceBetween={6}
-                onSlideChange={swiper => handleOptionSelect('race', swiper.activeIndex)}
+                onSlideChange={
+                  () =>
+                    setIsCentered(prev => ({
+                      ...prev,
+                      ['race']: false,
+                    }))
+                  // swiper => handleOptionSelect('race', swiper.activeIndex)
+                }
+                onSwiper={swiper => handleSwiperInit('race', swiper)}
               >
                 {characterOptions.raceOptions.map((race, index) => (
-                  <SwiperSlide className={styles.swiperSmall} style={{width: '100px', height: '100px'}}>
+                  <SwiperSlide key={'race'} className={styles.swiperSmall} style={{width: '100px', height: '100px'}}>
                     <CharacterCreateImageButton
                       key={race.label}
                       sizeType="small"
                       label={race.label}
                       image={getImgLoc(race.image)}
                       selected={selectedOptions.race === index}
-                      onClick={() => {} /*handleOptionSelect('race', index)*/}
+                      onClick={() => handleOptionSelect('race', index)}
                     />
                   </SwiperSlide>
                 ))}
@@ -640,8 +696,16 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 initialSlide={selectedOptions.bodyType}
                 slidesPerView="auto"
                 spaceBetween={6}
-                centeredSlides={true}
-                onSlideChange={swiper => handleOptionSelect('bodyType', swiper.activeIndex)}
+                centeredSlides={isCentered['bodyType']}
+                onSlideChange={
+                  () =>
+                    setIsCentered(prev => ({
+                      ...prev,
+                      ['bodyType']: false,
+                    }))
+                  // swiper => handleOptionSelect('bodyType', swiper.activeIndex)
+                }
+                onSwiper={swiper => handleSwiperInit('bodyType', swiper)}
               >
                 {characterOptions.bodyTypes.map((style, index) => (
                   <SwiperSlide
@@ -654,7 +718,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       label={style.label}
                       image={getImgLoc(style.image)}
                       selected={selectedOptions.bodyType === index}
-                      onClick={() => {}}
+                      onClick={() => handleOptionSelect('bodyType', index)}
                     />
                   </SwiperSlide>
                 ))}
@@ -672,8 +736,16 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     initialSlide={selectedOptions.topSize}
                     slidesPerView="auto"
                     spaceBetween={6}
-                    centeredSlides={true}
-                    onSlideChange={swiper => handleOptionSelect('topSize', swiper.activeIndex)}
+                    centeredSlides={isCentered['topSize']}
+                    onSlideChange={
+                      () =>
+                        setIsCentered(prev => ({
+                          ...prev,
+                          ['topSize']: false,
+                        }))
+                      // swiper => handleOptionSelect('topSize', swiper.activeIndex)
+                    }
+                    onSwiper={swiper => handleSwiperInit('topSize', swiper)}
                   >
                     {characterOptions.topSizes.map((style, index) => (
                       <SwiperSlide
@@ -686,7 +758,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                           label={style.label}
                           image={getImgLoc(style.image)}
                           selected={selectedOptions.topSize === index}
-                          onClick={() => {}}
+                          onClick={() => handleOptionSelect('topSize', index)}
                         />
                       </SwiperSlide>
                     ))}
@@ -703,8 +775,16 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     initialSlide={selectedOptions.bottomSize}
                     slidesPerView="auto"
                     spaceBetween={6}
-                    centeredSlides={true}
-                    onSlideChange={swiper => handleOptionSelect('bottomSize', swiper.activeIndex)}
+                    centeredSlides={isCentered['bottomSize']}
+                    onSlideChange={
+                      () =>
+                        setIsCentered(prev => ({
+                          ...prev,
+                          ['bottomSize']: false,
+                        }))
+                      // swiper => handleOptionSelect('bottomSize', swiper.activeIndex)
+                    }
+                    onSwiper={swiper => handleSwiperInit('bottomSize', swiper)}
                   >
                     {characterOptions.bottomSizes.map((style, index) => (
                       <SwiperSlide
@@ -717,7 +797,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                           label={style.label}
                           image={getImgLoc(style.image)}
                           selected={selectedOptions.bottomSize === index}
-                          onClick={() => {}}
+                          onClick={() => handleOptionSelect('bottomSize', index)}
                         />
                       </SwiperSlide>
                     ))}
@@ -735,14 +815,23 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 {getLocalizedText(Header, 'createcharacter008_label_002')}
                 <span className={styles.redAstrisk}>*</span>
               </h3>
+
               <Swiper
                 className={styles.horizonSwiper}
+                initialSlide={selectedOptions.clothing}
                 slidesPerView="auto"
                 spaceBetween={6}
-                initialSlide={selectedOptions.clothing}
-                centeredSlides={true}
-                onSlideChange={swiper => handleOptionSelect('clothing', swiper.activeIndex)}
-                style={{pointerEvents: customClothesActive ? 'none' : 'auto', opacity: customClothesActive ? 0.5 : 1}}
+                centeredSlides={isCentered['clothing']}
+                onSlideChange={
+                  () =>
+                    setIsCentered(prev => ({
+                      ...prev,
+                      ['clothing']: false,
+                    }))
+                  // swiper => handleOptionSelect('clothing', swiper.activeIndex)
+                }
+                onSwiper={swiper => handleSwiperInit('clothing', swiper)}
+                // style={{pointerEvents: customClothesActive ? 'none' : 'auto', opacity: customClothesActive ? 0.5 : 1}}
               >
                 {characterOptions.clothing.map((style, index) => (
                   <SwiperSlide
@@ -751,14 +840,11 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     key={style.label}
                   >
                     <CharacterCreateImageButton
-                      key={style.label}
                       sizeType="small"
                       label={style.label}
                       image={getImgLoc(style.image)}
                       selected={selectedOptions.clothing === index}
-                      onClick={() => {
-                        handleOptionSelect('clothing', index);
-                      }}
+                      onClick={() => handleOptionSelect('clothing', index)}
                     />
                   </SwiperSlide>
                 ))}
