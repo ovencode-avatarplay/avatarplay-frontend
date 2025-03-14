@@ -121,6 +121,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
 
       if (resGetContent?.data) {
         data.dataMix = resGetContent?.data.contentInfo;
+        data.dataMix.profileUrlLinkKey = resGetContent?.data.profileUrlLinkKey;
         data.dataMix.isSingleContentLock = resGetContent?.data.isSingleContentLock;
       }
     } else {
