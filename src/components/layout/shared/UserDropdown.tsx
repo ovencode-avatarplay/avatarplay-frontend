@@ -251,7 +251,7 @@ const UserDropdown = () => {
     <>
       <DndButton onClick={() => routeProfile()} onLongClick={() => dataUserDropDown.onClickLong()}>
         <Badge
-          style={{padding: '12px 25px', margin: '12px -25px'}}
+          // style={{padding: '12px 25px', margin: '-12px -25px'}}
           overlap="circular"
           badgeContent={<span className={styles.avatarBadge} />}
           anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}

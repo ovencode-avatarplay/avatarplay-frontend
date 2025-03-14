@@ -11,7 +11,7 @@
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #eaecf0;
-  
+
 }
 
 .darkMode
@@ -22,7 +22,7 @@
 .splittersHeader.darkHeader
 {
   background: var(--Black, #000);
-  height: 46p;
+  /* height: 46px; */
 }
 
 .splitterItem { 
@@ -46,7 +46,7 @@
   cursor: pointer;
   
   display: flex;
-  padding: 10px 7px 14px 7px; 
+  padding: 10px 7px 12px 7px; 
 }
 
 .splitterLabel.darkSplitterLabel
@@ -95,7 +95,6 @@
 /* Splitter Content */
 .splitterContent {
   height: calc(100% - 39px);
-  /* padding: 16px; */
   font-family: 'Lato' ;
   font-size: 14px;
   color: #80868b;

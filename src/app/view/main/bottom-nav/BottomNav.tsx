@@ -99,7 +99,7 @@ export default function BottomNav() {
   );
 
   const Add_Button = (
-    <img src={'/ui/Icons/Custom/Add_Button.svg'} />
+    <img src={'/ui/Icons/Line/Add_Button.svg'} />
     // <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
     //   <path
     //     fillRule="evenodd"
@@ -148,7 +148,7 @@ export default function BottomNav() {
   const buttonData = [
     {label: 'Home', icon: homeSvg, link: '/main/homefeed'},
     {label: 'Explore', icon: exploreSvg, link: '/main/explore'},
-    {label: 'Plus', icon: Add_Button, link: ''},
+    {label: 'Plus', icon: Add_Button, link: '/main/plus'},
     {label: 'Content', icon: contentSvg, link: '/main/mycontent'},
     {label: 'My', icon: profileSvg, link: '/profile'},
   ];
@@ -220,7 +220,7 @@ export default function BottomNav() {
                     }
                   }}
                 >
-                  <img className={styles.buttonIconPlus} src={'/ui/Icons/Custom/Add_Button.svg'} />
+                  <img className={styles.buttonIconPlus} src={'ui/Icons/Line/Add_Button.svg'} />
                 </button>
               );
             }

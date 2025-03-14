@@ -19,7 +19,7 @@
     flex-direction: column;
     width: var(--second-width);
     margin:0  16px;
-    gap: 14px;
+    gap: 12px;
     height: 100vh; 
     overflow-x: hidden;
     overflow-y: scroll;
@@ -145,10 +145,13 @@
 {
     cursor: pointer;
     position: absolute;
-    right: 8px;
-    top: 8px;
-    width: 20px;
-    height: 20px;
+
+    background-color: #000;
+    opacity: 0.7;
+    right: 4px;
+    top: 4px;
+    width: 24px;
+    height: 24px;
     flex-shrink: 0;
     border: 1px solid white;
     border-radius: 50%;
@@ -160,9 +163,9 @@
 .editIcon
 {
     display: flex;
-    width: 14px;
-    height: 14px;
-    padding: 1.963px;
+    width: 20px;
+    height: 20px;
+    padding: 2px;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
