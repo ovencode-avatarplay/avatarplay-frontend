@@ -549,6 +549,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           isOpen={isOpenSelectDrawer}
           onClose={() => setIsOpenSelectDrawer(false)}
           selectedIndex={0}
+          isCheck={false}
         />
       </div>
 
@@ -558,6 +559,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           isOpen={isOpenMediaDrawer}
           onClose={() => setIsOpenMediaDrawer(false)}
           selectedIndex={0}
+          isCheck={false}
         />
       </div>
       <LoadingOverlay loading={loading} />
@@ -600,6 +602,7 @@ const PostMain: React.FC<Props> = ({id}) => {
         isOpen={visibilityDrawerOpen}
         onClose={() => setVisibilityDrawerOpen(false)}
         selectedIndex={selectedVisibility}
+        isCheck={false}
       />
       <DrawerTagSelect
         isOpen={tagOpen}
