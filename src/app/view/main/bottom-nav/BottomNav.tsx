@@ -220,7 +220,9 @@ export default function BottomNav() {
                     }
                   }}
                 >
-                  <img className={styles.buttonIconPlus} src={'ui/Icons/Line/Add_Button.svg'} />
+                  <div className={styles.navButtonPlusWrap}>
+                    <img className={styles.buttonIconPlus} src={LinePlus.src} />
+                  </div>
                 </button>
               );
             }
