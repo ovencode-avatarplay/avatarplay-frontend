@@ -298,17 +298,30 @@
 
     .verify {
       height: 24px;
+
       color: var(--Primary-1, #FD55D3);
       font-family: Lato;
       font-size: 14px;
       font-style: normal;
-      font-weight: 700;
+      font-weight: 600;
       line-height: normal;
       letter-spacing: -0.28px;
+
+      &.line {
+        text-decoration-line: underline;
+        text-decoration-style: solid;
+        text-decoration-skip-ink: none;
+        text-decoration-thickness: auto;
+        text-underline-offset: auto;
+        text-underline-position: from-font;
+      }
 
       display: flex;
       align-items: center;
       gap: 2px;
+
+      text-decoration: underline;
+      /* 두꺼운 밑줄 */
 
       .icon {
         padding: 5px;

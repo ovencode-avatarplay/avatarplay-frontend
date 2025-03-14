@@ -778,7 +778,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             </div>
           )}
           {isCharacter && (
-            <div className={styles.verify}>
+            <div className={cx(styles.verify, styles.line)}>
               <Link
                 href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileUrlLinkKey + '?from=""')}
               >
