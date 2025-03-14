@@ -375,7 +375,10 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       };
     }
   };
-  const getTabContentCount = (indexTab: number) => {
+  const getTabContentCount = (indexTab: number, isMine: boolean, profileType: ProfileType) => {
+    const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+      getUserType(isMine, profileType);
+
     let count = 0;
     if (isPD) {
       if (indexTab == eTabPDType.Feed) {
@@ -464,8 +467,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           contentTabType: data.filterCluster?.indexFilterContent || 0,
           feedMediaType: data.filterCluster?.indexFilterMedia || 0,
         },
-        isRefreshAll ? 0 : getTabContentCount(indexTab),
-        isRefreshAll ? getTabContentCount(indexTab) : 10,
+        isRefreshAll ? 0 : getTabContentCount(indexTab, isMine, profileType),
+        isRefreshAll ? getTabContentCount(indexTab, isMine, profileType) : 10,
       );
     }
     if (!resProfileTabInfo) return;
@@ -702,7 +705,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             }}
           >
             <div className={styles.left}>
-              {isCharacter && <div className={styles.originalFan}>Original</div>}
+              {isCharacter && <div className={cx(styles.originalFan, styles.original)}>Original</div>}
               <div className={styles.profileName}>{data.profileInfo?.profileInfo.name}</div>
             </div>
             {isMine && (

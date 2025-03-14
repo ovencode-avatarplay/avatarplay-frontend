@@ -119,12 +119,13 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                   <div className={styles.nameWrap}>
                     {isChannel && (
                       <div className={styles.top}>
+                        <span className={cx(styles.grade, styles.original)}>Original</span>
                         <div className={styles.type}>Channel</div>
                       </div>
                     )}
                     {isCharacter && (
                       <div className={styles.top}>
-                        <span className={styles.grade}>Original</span>
+                        <span className={cx(styles.grade, styles.original)}>Original</span>
                         <div className={styles.type}>Character</div>
                       </div>
                     )}
