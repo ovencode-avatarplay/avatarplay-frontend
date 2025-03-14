@@ -985,19 +985,24 @@
       align-items: center;
       justify-content: center;
 
+      &.bg {
+        background: var(--Neutral-100, #F1F3F4);
+      }
+
       img {
         filter: brightness(0) saturate(100%) invert(70%) sepia(8%) saturate(241%) hue-rotate(169deg) brightness(88%) contrast(93%);
       }
 
       &.active {
-        background: var(--Neutral-100, #F1F3F4);
-
         img {
           filter: brightness(0) saturate(100%);
         }
       }
     }
 
+    .iconWrap+.iconWrap {
+      margin-left: 5px;
+    }
 
 
     img {

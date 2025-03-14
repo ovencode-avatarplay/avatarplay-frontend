@@ -1366,7 +1366,11 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             }}
           >
             <div
-              className={cx(styles.iconWrap, filterCluster.indexFilterMedia == FeedMediaType.Total && styles.active)}
+              className={cx(
+                styles.iconWrap,
+                styles.bg,
+                filterCluster.indexFilterMedia == FeedMediaType.Total && styles.active,
+              )}
               data-filter={FeedMediaType.Total}
             >
               <img src={BoldViewGallery.src} alt="" />
@@ -1509,10 +1513,11 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   }
 
   if (
-    (isPD && [eTabPDType.Channel, eTabPDType.Character].includes(tabIndex)) ||
+    (isPD && [eTabPDType.Character].includes(tabIndex)) ||
     (isCharacter && [eTabCharacterType.Character].includes(tabIndex)) ||
     (isChannel && [eTabChannelType.Character].includes(tabIndex))
   ) {
+    console.log('filterCluster.indexFilterCharacter : ', filterCluster.indexFilterCharacter);
     return (
       <>
         <div className={cx(styles.filter, styles.character)}>
@@ -1523,21 +1528,14 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               const category = target.closest('[data-filter]')?.getAttribute('data-filter');
               if (category) {
                 const indexFilter = parseInt(category);
-                if (tabIndex == eTabPDType.Channel) {
-                  onChange({indexFilterChannel: indexFilter});
-                } else if (tabIndex == eTabPDType.Character) {
-                  onChange({indexFilterCharacter: indexFilter});
-                }
+                onChange({indexFilterCharacter: indexFilter});
               }
             }}
           >
             <div
               className={cx(
                 styles.iconWrap,
-                ((tabIndex == eTabPDType.Channel && filterCluster.indexFilterChannel == eCharacterFilterType.Total) ||
-                  (tabIndex == eTabPDType.Character &&
-                    filterCluster.indexFilterCharacter == eCharacterFilterType.Total)) &&
-                  styles.active,
+                filterCluster.indexFilterCharacter == eCharacterFilterType.Total && styles.active,
               )}
               data-filter={eCharacterFilterType.Total}
             >
@@ -1546,12 +1544,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.textWrap,
-
-                ((tabIndex == eTabPDType.Channel &&
-                  filterCluster.indexFilterChannel == eCharacterFilterType.Original) ||
-                  (tabIndex == eTabPDType.Character &&
-                    filterCluster.indexFilterCharacter == eCharacterFilterType.Original)) &&
-                  styles.active,
+                filterCluster.indexFilterCharacter == eCharacterFilterType.Original && styles.active,
               )}
               data-filter={eCharacterFilterType.Original}
             >
@@ -1560,11 +1553,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.textWrap,
-
-                ((tabIndex == eTabPDType.Channel && filterCluster.indexFilterChannel == eCharacterFilterType.Fan) ||
-                  (tabIndex == eTabPDType.Character &&
-                    filterCluster.indexFilterCharacter == eCharacterFilterType.Fan)) &&
-                  styles.active,
+                filterCluster.indexFilterCharacter == eCharacterFilterType.Fan && styles.active,
               )}
               data-filter={eCharacterFilterType.Fan}
             >
@@ -2285,7 +2274,7 @@ const TabContentComponent = ({
     const pdInfo = profileTabInfo?.[tabIndex]?.dataResPdInfo;
     return (
       <>
-        <section className={styles.pdInfo}>
+        <section className={styles.pdInfoSection}>
           {!!pdInfo?.introduce && <div className={styles.label}>Introduce</div>}
           {!!pdInfo?.introduce && <div className={styles.value}>{pdInfo?.introduce}</div>}
           {pdInfo?.interests.length != 0 && <div className={styles.label}>Interests</div>}
@@ -2369,7 +2358,7 @@ const TabContentComponent = ({
   if (isCharacter && tabIndex == eTabCharacterOtherType.Info) {
     return (
       <>
-        <section className={styles.characterInfo}>
+        <section className={styles.characterInfoSection}>
           <CharacterProfileDetailComponent
             characterInfo={profileTabInfo?.[tabIndex].characterInfo}
             urlLinkKey={profileTabInfo?.[tabIndex].urlLinkKey}
