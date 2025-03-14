@@ -48,7 +48,7 @@ interface Props {
   onNsfwChange: (value: boolean) => void;
   creatorComment: string;
   setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
-  essentialWarning: boolean;
+  // essentialWarning: boolean;
 }
 
 const Header = 'CreateCharacter';
@@ -81,7 +81,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   onNsfwChange,
   creatorComment,
   setCharacterDesc,
-  essentialWarning,
+  // essentialWarning,
 }) => {
   let VisibilityData = {items: ['Private', 'UnListed', 'Public']};
 
@@ -632,7 +632,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             positionCountry.map(country => LanguageType[country]).join(', '),
             setIsPositionCountryOpen,
             true,
-            essentialWarning,
+            // essentialWarning,
           )}
           {renderPositionCountry()}
           <div className={styles.blackTagContainer}>

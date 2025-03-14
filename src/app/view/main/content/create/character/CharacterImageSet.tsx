@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './CharacterImageSet.module.css';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import CharacterCreateImageButton from './CreateCharacterImageButton';
@@ -35,6 +35,11 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [selectedGeneratedItems, setSelectedGeneratedItems] = useState<number[]>([]);
+
+  const [swiper, setSwiper] = useState<any | null>(null);
+  const [isCentered, setIsCentered] = useState<boolean>(false);
+
+  const [centerThreshold, setCenterThreshold] = useState(Math.round(window.innerWidth / 116));
 
   const loraOption = [
     {
@@ -195,8 +200,8 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
           let updatedPrompt = prevPrompt;
 
           updatedPrompt = updatedPrompt
-            .replace(new RegExp(`(^|, )${tagToRemove}(, |$)`, 'g'), ', ') // 태그 삭제
-            .replace(/^, |, $/g, '') // ✅ 앞뒤 남아있는 `,` 제거
+            .replace(new RegExp(`(^|, )${tagToRemove}(, |$)`, 'g'), ', ')
+            .replace(/^, |, $/g, '')
             .trim();
 
           return updatedPrompt.length === 0 ? '' : updatedPrompt;
@@ -226,6 +231,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
   };
   const handleSelectedLora = (index: number) => {
     setSelectedLora(index);
+    setIsCentered(index >= centerThreshold);
   };
 
   // 이미지 생성
@@ -235,12 +241,15 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
       const selectedModel = loRaStyles.hairStyles.find(style => style.value === selectedLora);
       const modelId = selectedModel ? selectedModel.label : 'Animagine XL'; // 선택된 모델 ID 설정
 
+      const tmpSeed = seedLock || seed > 0 ? seed : Math.floor(Math.random() * 4294967295);
+      setSeed(tmpSeed);
+
       const payload: GenerateImageReq2 = {
         modelId: modelId,
         prompt: positivePrompt,
         negativePrompt: '',
         batchSize: selectedImgCount,
-        seed: seed,
+        seed: tmpSeed,
       };
 
       const response = await sendGenerateImageReq2(payload); // API 요청
@@ -272,6 +281,30 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
     }
   };
 
+  useEffect(() => {
+    const updateThreshold = () => {
+      setCenterThreshold(Math.round(window.innerWidth / 116));
+    };
+
+    updateThreshold();
+
+    window.addEventListener('resize', updateThreshold);
+
+    return () => {
+      window.removeEventListener('resize', updateThreshold);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (swiper) {
+      swiper.slideTo(selectedLora, 300);
+    }
+  }, [selectedLora, swiper]);
+
+  const handleSwiperInit = (swiperInstance: any) => {
+    setSwiper(swiperInstance);
+  };
+
   return (
     <div className={styles.aiGenerateArea}>
       <div className={styles.titleArea}>
@@ -285,10 +318,14 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
         <Swiper
           className={styles.horizonSwiper}
           initialSlide={selectedLora}
-          centeredSlides={true}
+          centeredSlides={isCentered}
           slidesPerView="auto"
           spaceBetween={6}
-          onSlideChange={swiper => handleSelectedLora(swiper.activeIndex)}
+          onSlideChange={
+            swiper => setIsCentered(false)
+            // handleSelectedLora(swiper.activeIndex)
+          }
+          onSwiper={handleSwiperInit}
         >
           {loraOption.map((option, index) => (
             <SwiperSlide key={option.label} className={styles.swiperSmall} style={{width: '100px', height: '100px'}}>
