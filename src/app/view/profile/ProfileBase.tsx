@@ -2556,7 +2556,8 @@ export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
                 const isSingle = itemInfo?.contentType == ContentType.Single;
 
                 const dataContextMenu = {
-                  id: itemInfo.urlLinkKey,
+                  id: itemInfo.id,
+                  urlLinkKey: itemInfo.urlLinkKey,
                   isPin: itemInfo?.isPinFix || false,
                   isSettingOpen: true,
                   isSingle: isSingle,
