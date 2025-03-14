@@ -2369,10 +2369,12 @@ const TabContentComponent = ({
   if (isCharacter && tabIndex == eTabCharacterOtherType.Info) {
     return (
       <>
-        <CharacterProfileDetailComponent
-          characterInfo={profileTabInfo?.[tabIndex].characterInfo}
-          urlLinkKey={profileTabInfo?.[tabIndex].urlLinkKey}
-        />
+        <section className={styles.characterInfo}>
+          <CharacterProfileDetailComponent
+            characterInfo={profileTabInfo?.[tabIndex].characterInfo}
+            urlLinkKey={profileTabInfo?.[tabIndex].urlLinkKey}
+          />
+        </section>
       </>
     );
   }
@@ -2380,6 +2382,7 @@ const TabContentComponent = ({
   if (isChannel && tabIndex == eTabChannelOtherType.Info) {
     const channelInfo = profileTabInfo?.[tabIndex]?.channelInfo;
     const tagList = channelInfo?.tags || [];
+
     return (
       <section className={styles.channelInfoTabSection}>
         <section className={styles.characterMainImageWrap}>
@@ -2412,36 +2415,40 @@ const TabContentComponent = ({
             })}
           </ul>
         </section>
-        <section className={styles.memberSection}>
-          <div className={styles.label}>{channelInfo?.memberProfileIdList?.length} Members</div>
-          <Swiper
-            className={styles.recruitList}
-            freeMode={true}
-            slidesPerView={'auto'}
-            onSlideChange={() => {}}
-            onSwiper={swiper => {}}
-            spaceBetween={8}
-          >
-            {channelInfo?.memberProfileIdList?.map((profile, index) => {
-              return (
-                <SwiperSlide>
-                  <li className={styles.item}>
-                    <div className={styles.circle}>
-                      <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
-                      <img className={styles.thumbnail} src={profile.iconImageUrl} alt="" />
-                      {/* <span className={cx(styles.grade, styles.original)}>Original</span> */}
-                    </div>
-                    <div className={styles.label}>{profile.name}</div>
-                  </li>
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        </section>
-        <section className={styles.descriptionSection}>
-          <div className={styles.label}>Description</div>
-          <div className={styles.value}>{channelInfo?.description}</div>
-        </section>
+        {!!channelInfo?.memberProfileIdList?.length && (
+          <section className={styles.memberSection}>
+            <div className={styles.label}>{channelInfo?.memberProfileIdList?.length} Members</div>
+            <Swiper
+              className={styles.recruitList}
+              freeMode={true}
+              slidesPerView={'auto'}
+              onSlideChange={() => {}}
+              onSwiper={swiper => {}}
+              spaceBetween={8}
+            >
+              {channelInfo?.memberProfileIdList?.map((profile, index) => {
+                return (
+                  <SwiperSlide>
+                    <li className={styles.item}>
+                      <div className={styles.circle}>
+                        <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
+                        <img className={styles.thumbnail} src={profile.iconImageUrl} alt="" />
+                        {/* <span className={cx(styles.grade, styles.original)}>Original</span> */}
+                      </div>
+                      <div className={styles.label}>{profile.name}</div>
+                    </li>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          </section>
+        )}
+        {!!channelInfo?.description && (
+          <section className={styles.descriptionSection}>
+            <div className={styles.label}>Description</div>
+            <div className={styles.value}>{channelInfo?.description}</div>
+          </section>
+        )}
       </section>
     );
   }

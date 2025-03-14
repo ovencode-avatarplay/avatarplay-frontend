@@ -561,8 +561,9 @@
         }
       }
 
-      .pdInfo {
-        margin-top: 20px;
+      .pdInfoSection {
+        margin-top: -10px;
+        // margin-top: 20px;
         padding: 0 16px;
 
         .label {
@@ -1056,7 +1057,13 @@
   }
 }
 
+.characterInfoSection {
+  margin-top: -10px;
+}
+
 .channelInfoTabSection {
+  margin-top: -10px;
+
   section.characterMainImageWrap {
     position: relative;
 
@@ -1156,6 +1163,7 @@
 
   .memberSection {
     margin-top: 15px;
+    padding: 0 16px;
 
     .label {
       color: var(--Black, #000);
@@ -1172,7 +1180,7 @@
 
       :global(.swiper-wrapper) {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         overflow: visible;
         /* 필수 */
       }
@@ -1250,9 +1258,6 @@
         }
 
         .label {
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
           max-width: 66px;
 
           color: var(--Color-Tokens-Text, #0C0C0C);
@@ -1264,6 +1269,19 @@
           font-weight: 500;
           line-height: normal;
           letter-spacing: -0.28px;
+
+          /* 줄 제한 적용 */
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          /* 최대 2줄 */
+          -webkit-box-orient: vertical;
+
+          overflow: hidden;
+          text-overflow: ellipsis;
+          line-height: 1.2em;
+          /* 줄 높이 설정 */
+          max-height: calc(1.2em * 2);
+          /* 2줄까지만 표시 */
         }
       }
     }
@@ -1271,15 +1289,16 @@
 
   .descriptionSection {
     margin-top: 20px;
+    padding: 0 16px;
 
     .label {
-      color: var(--Black, #000);
+      color: #000;
+      font-feature-settings: 'liga' off, 'clig' off;
       font-family: Lato;
-      font-size: 14px;
+      font-size: 16px;
       font-style: normal;
       font-weight: 700;
-      line-height: 155%;
-      /* 21.7px */
+      line-height: normal;
     }
 
     .value {
