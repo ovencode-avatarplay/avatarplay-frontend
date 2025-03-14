@@ -255,6 +255,9 @@ body{
 } */
 
 body {  
+  touch-action: manipulation; /* 더블탭 줌 방지*/
+  touch-action: pan-x pan-y;  /* 핀치 줌 방지*/
+  
   user-select: none;
   color: var(--foreground);
   background: var(--background);
