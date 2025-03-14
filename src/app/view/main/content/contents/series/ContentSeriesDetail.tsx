@@ -24,7 +24,7 @@ import styles from './ContentSeriesDetail.module.scss';
 import cx from 'classnames';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {TextArea} from '@/app/view/profile/ProfileDetail';
-import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
+import {getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {
   buyContentEpisode,
