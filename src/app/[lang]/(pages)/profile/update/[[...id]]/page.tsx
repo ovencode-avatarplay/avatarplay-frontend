@@ -422,10 +422,11 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 {...register('introduce', {required: true})}
                 placeholder="Add a description or hashtag"
                 maxLength={500}
+                rows={1}
                 onChange={async e => {
                   const target = e.target as HTMLTextAreaElement;
                   target.style.height = 'auto';
-                  target.style.height = `${target.scrollHeight}px`;
+                  target.style.height = `${target.scrollHeight - 10}px`;
                   setValue('introduce', target.value, {shouldValidate: false}); // 강제 업데이트
                   clearErrors('introduce');
                   checkValid();
@@ -543,6 +544,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               {...register('personalHistory', {required: true})}
               className={cx(styles.inputPersonalHistory, errors.personalHistory && isSubmitted && styles.error)}
               placeholder="Ex) 2024. 10~2025.01 Design (Zero to One CB)"
+              rows={1}
               onChange={e => {
                 const target = e.target as HTMLTextAreaElement;
                 target.style.height = 'auto';
@@ -561,6 +563,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               {...register('honorAwards', {required: true})}
               className={cx(styles.inputHonorawards, errors.honorAwards && isSubmitted && styles.error)}
               placeholder="Ex) 2024.10.00Advertisement contest winner(korea)"
+              rows={1}
               onChange={e => {
                 const target = e.target as HTMLTextAreaElement;
                 target.style.height = 'auto';
@@ -771,6 +774,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
   useEffect(() => {
     if (!open) return;
 
+    clearErrors();
     refresh();
   }, [open]);
 
@@ -874,18 +878,27 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
     }
   };
 
-  const onSubmit = (e: any) => {
-    e.preventDefault(); // 기본 제출 방지
-    const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
+  const onSubmit = (data: any) => {
+    console.log(data);
+    // e.preventDefault(); // 기본 제출 방지
+    // const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
 
-    if (id == -1) {
-      data.id = 0;
-      dataList.push(data);
+    // if (id == -1) {
+    //   data.id = 0;
+    //   dataList.push(data);
+    // } else {
+    //   dataList[id] = data;
+    // }
+    // onChange(dataList);
+    // onClose();
+    if (isCreate) {
+      onClose();
     } else {
-      dataList[id] = data;
+      dataList.splice(id, 1);
+      setData({...data});
+      onChange(dataList);
+      onClose();
     }
-    onChange(dataList);
-    onClose();
   };
 
   const isCreate = id == -1;
@@ -908,7 +921,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
         <div className={styles.handleBar}></div>
       </div>
       <div className={styles.handleContent}>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload2">
               <input {...register('imageUrl', {required: true})} type="hidden" />
@@ -921,7 +934,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
               />
               {!data.iconUrl && (
                 <div
-                  className={styles.uploadWrap}
+                  className={cx(styles.uploadWrap, errors.imageUrl && styles.error)}
                   onDrop={onDrop}
                   onDragOver={onDragOver}
                   onDragStart={onDragStartInner}
@@ -944,7 +957,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             </label>
           </section>
           <div className={styles.label}>
-            Episode Description<span className={styles.highlight}> *</span>
+            Description<span className={styles.highlight}> *</span>
           </div>
           <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
             <textarea
@@ -953,8 +966,8 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
               maxLength={500}
               onChange={async e => {
                 const target = e.target as HTMLTextAreaElement;
-                target.style.height = 'auto';
-                target.style.height = `${target.scrollHeight}px`;
+                // target.style.height = 'auto';
+                // target.style.height = `${target.scrollHeight}px`;
                 setValue('description', target.value, {shouldValidate: false}); // 강제 업데이트
                 clearErrors('description');
               }}
@@ -962,20 +975,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             <div className={styles.textCount}>{`${watch('description', '').length}/500`}</div>
           </div>
           <div className={styles.buttonWrap}>
-            <button
-              type="button"
-              className={styles.cancelBtn}
-              onClick={() => {
-                if (isCreate) {
-                  onClose();
-                } else {
-                  dataList.splice(id, 1);
-                  setData({...data});
-                  onChange(dataList);
-                  onClose();
-                }
-              }}
-            >
+            <button type="submit" className={styles.cancelBtn}>
               {isCreate ? 'Cancel' : 'Delete'}
             </button>
             <button type="submit" className={styles.saveBtn}>

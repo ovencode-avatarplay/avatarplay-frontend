@@ -141,7 +141,7 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                   {isSelected && (
                     <img className={styles.iconChecked} src="/ui/profile/icon_select_proflie_checked.svg" alt="" />
                   )}
-                  {!isSelected && <img className={styles.iconMore} src={BoldMore.src} alt="" />}
+                  {/* {!isSelected && <img className={styles.iconMore} src={BoldMore.src} alt="" />} */}
                 </div>
               </li>
             );

@@ -307,6 +307,7 @@
     flex-wrap: wrap;
 
     .tag {
+      height: 36px;
       padding: 10px 18px;
 
       display: flex;
@@ -608,6 +609,12 @@
         border: 1px dashed var(--Neutral-400, #BDC1C6);
         background: var(--White, #FFF);
 
+
+        &.error {
+          border: 1px solid var(--Primary-2, #FEBBEA);
+          background: var(--Primary-4, #FFF5FD);
+        }
+
         img {
           width: 24px;
           height: 24px;
@@ -635,7 +642,7 @@
         cursor: pointer;
         width: 100px;
         height: 100px;
-        border-radius: 50%;
+        border-radius: 12px;
         overflow: hidden;
         background: black;
 
@@ -647,8 +654,8 @@
 
         .iconEditWrap {
           position: absolute;
-          right: 0;
-          bottom: 0;
+          right: 7px;
+          bottom: 7px;
 
           width: 27px;
           height: 27px;
@@ -696,6 +703,7 @@
       border-radius: 10px;
       border: 1px solid var(--Neutral-200, #E8EAED);
       background: var(--White, #FFF);
+      overflow: hidden;
 
       &:focus-within {
         background: var(--Neutral-50, #F8F9FA);
@@ -709,7 +717,17 @@
       }
 
       textarea {
+        height: 151px;
         padding: 10px 12px 0;
+
+        color: var(--Neutral-900, #121414);
+        font-family: Lato;
+        font-size: 15px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 160%;
+        /* 24px */
+        /* 24px */
       }
 
       input,
