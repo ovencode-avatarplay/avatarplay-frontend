@@ -46,22 +46,6 @@
   letter-spacing: -0.4px;
 }
 
-.donationUserInfoText2 {
-  display: flex;
-  justify-content: center;  /* 가로 중앙 정렬 */
-  align-items: center;      /* 세로 정렬 */
-  height: 50px;            /* 필요시 설정 */
-
-  color: var(--Neutral-700, #5F6368);
-  text-align: center;
-  font-feature-settings: 'liga' off, 'clig' off;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 130%; /* 18.2px */
-  letter-spacing: -0.4px;
-}
-
 .donationHaveStarArea
 {
     display: flex;
@@ -76,8 +60,8 @@
 
 .donationStar
 {
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
 
     display: flex;
     justify-content: center;
@@ -126,6 +110,16 @@
     gap: 10px;                /* 요소 간 여백 */
 }
 
+.itemArea {
+  width: 100%;
+  display: flex;
+  padding: 20px 0px;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+
+}
+ 
 /* ✅ 기본 설정: PC (3열) */
 .gridContainer {
     display: grid;
@@ -141,9 +135,10 @@
     padding: 11px;
     flex-direction: column;
     align-items: center;
+    justify-content: center; /* ✅ 카드 내 요소들을 수직 가운데 정렬 */
     gap: 10px;
     flex: 1 0 0;
-
+    
     border-radius: 12px;
     background: var(--Neutral-50, #F8F9FA);
   }
@@ -151,50 +146,38 @@
   
   /* ⭐ 별 이미지 */
   .star {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 12px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    filter: brightness(0) saturate(100%) invert(72%) sepia(76%) saturate(708%) hue-rotate(358deg) brightness(102%) contrast(107%);
   }
   
   /* 🔘 라디오 버튼 + 텍스트 줄 정렬 */
   .radioRow {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
+    
   }
   
   .radio {
-    display: flex;
-    align-items: center;
-    gap: 7px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
   }
   
   .inputBox {
     display: flex;
-    flex-direction: row;
+    height: 46px;
+    padding: 14px 15px;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 12px;
-    gap: 6px;
-    
-    height: 46px;
-    
-    background: #F8F9FA;
-    border: 1px solid #E8EAED;
-    border-radius: 10px;
+    flex: 1 0 0;
     }
 
-  .inputField {
-    flex-grow: 1;
-    font-family: 'Lato', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    line-height: 160%;
-    min-width: 0;
-    color: #000000;
-    border: none;
-    background: transparent;
-    outline: none;
+  .inputField { 
+    width: 100%;
+    
     }
     
     .starlabel {
@@ -207,22 +190,19 @@
     flex: none;
     }
 
+
+
     .buttonContainer {
-        display: flex;
-        justify-content: center; /* 중앙 정렬 */
-        gap: 10px; /* 버튼 간 간격 */
-        margin-top: 20px; /* 버튼 위쪽 여백 */
-        flex-wrap: nowrap; /* ❗줄바꿈 방지 */
-        width: 100%; /* 부모 컨테이너 크기를 유지 */
+      display: flex;
+      align-items: center;
+      padding: 8px 0px;
+      gap: 8px;
+      align-self: stretch;
     }
     
     .newButton
     {
-        flex: 1;
-        max-width: 50%; /* ❗두 개의 버튼이 균등한 크기를 가지도록 설정 */
-        padding: 40px 20px;
-        text-align: center;
-        white-space: nowrap; /* 버튼 내부 텍스트 줄바꿈 방지 */
+      width: calc(50% - 8px);
     }
     
     .cancelButton {
