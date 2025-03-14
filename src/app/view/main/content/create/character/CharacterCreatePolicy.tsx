@@ -46,7 +46,7 @@ interface Props {
   onIsMonetizationChange: (value: boolean) => void;
   nsfw: boolean;
   onNsfwChange: (value: boolean) => void;
-  characterDesc: string;
+  creatorComment: string;
   setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -78,7 +78,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   onIsMonetizationChange,
   nsfw,
   onNsfwChange,
-  characterDesc,
+  creatorComment,
   setCharacterDesc,
 }) => {
   let VisibilityData = {items: ['Private', 'UnListed', 'Public']};
@@ -555,10 +555,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           stateDataType={inputState.Normal}
           inputDataType={inputType.None}
           displayDataType={displayType.Default}
-          promptValue={characterDesc}
+          promptValue={creatorComment}
           handlePromptChange={e => setCharacterDesc(e.target.value)}
           placeholder={commentPlaceholder}
-          inSideHint={`About ${characterDesc?.length} tokens (임시처리 텍스트 길이)`}
+          inSideHint={`About ${creatorComment?.length} tokens (임시처리 텍스트 길이)`}
         />
       </div>
     );

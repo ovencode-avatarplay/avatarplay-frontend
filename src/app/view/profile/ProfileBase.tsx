@@ -171,7 +171,7 @@ export enum eSharedFilterType {
 type TabContentMenuType = {
   isSettingOpen: boolean;
   isPin: boolean;
-  id: number | string;
+  id: number;
   isSingle?: boolean;
   urlLinkKey?: string;
 };

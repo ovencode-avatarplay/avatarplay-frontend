@@ -601,7 +601,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           onIsMonetizationChange={setIsMonetization}
           nsfw={nsfw}
           onNsfwChange={setNsfw}
-          characterDesc={creatorComment}
+          creatorComment={creatorComment}
           setCharacterDesc={setCreatorComment}
         />
       ),

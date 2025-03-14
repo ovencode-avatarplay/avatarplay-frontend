@@ -51,7 +51,6 @@ const mediaTypeConfig = {
   },
 };
 const PostMain: React.FC<Props> = ({id}) => {
-  console.log('feedid', id);
   const router = useRouter();
   const [text, setText] = useState(''); // 입력된 텍스트 상태
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
@@ -63,10 +62,10 @@ const PostMain: React.FC<Props> = ({id}) => {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoDuration, setVideoDuration] = useState<string | null>(null);
-  const [nameValue, setNameValue] = useState<string>('');
+  const [nameValue, setTitleValue] = useState<string>('');
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length <= 20) {
-      setNameValue(e.target.value);
+      setTitleValue(e.target.value);
     }
   };
 
@@ -161,7 +160,7 @@ const PostMain: React.FC<Props> = ({id}) => {
               if (existingFeed.mediaState == MediaState.Image) setMediaType('image');
               else if (existingFeed.mediaState == MediaState.Video) setMediaType('video');
 
-              setNameValue(existingFeed.title || '');
+              setTitleValue(existingFeed.title || '');
               setrDescription(existingFeed.description || '');
               setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
               setSelectedVisibility(existingFeed.isPinFix ? VisibilityType.Public : VisibilityType.Private);
