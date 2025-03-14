@@ -6,18 +6,21 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import CustomInput from '@/components/layout/shared/CustomInput';
+import {getLocalizedLink, isLogined} from '@/utils/UrlMove';
+import {NextRouter} from 'next/router';
 
 interface DrawerDonationProps {
   isOpen: boolean;
   sponsoredName: string; // 후원받을 사람 이름
+  giveToPDId: number; // 후원받을 PD ID
   onClose: () => void;
+  router?: NextRouter; // 게스트 유저를 로그인 시키기 위한 라우터 ( 로그인할지 판단을 서버에서 판정하지 않고  프론트에서 판단할 때 사용 )
 }
 
-const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, onClose}) => {
+const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, giveToPDId, onClose, router}) => {
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
   const dataProfile = useSelector((state: RootState) => state.profile); // 내 피디 이름
   const [inputValue, setInputValue] = useState('');
-
   const handleRadioClick = (value: number) => {
     setSelectedValue(value);
     setInputValue(value.toString()); // 숫자를 문자열로 변환하여 input 필드에 반영
@@ -32,7 +35,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, o
   // Send 버튼 클릭 시 alert 창에 숫자 출력
   const handleSendClick = () => {
     if (inputValue !== '') {
-      alert(`입력된 후원 금액: ${inputValue} EA`); // 알림창 띄우기
+      alert(`입력된 후원 금액: ${inputValue} EA    pdid : ${giveToPDId}`); // 알림창 띄우기
     } else {
       alert('후원 금액을 입력하세요!'); // 값이 없을 때 경고 메시지
     }
@@ -40,11 +43,22 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, o
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedValue(null); // 라디오 버튼 선택 초기화
-      setInputValue(''); // 입력 필드 초기화
+      setSelectedValue(null);
+      setInputValue('');
+
+      (async () => {
+        const isLoggedIn = await checkLogined();
+        if (!isLoggedIn) {
+          const urlLogin = getLocalizedLink('/auth');
+          router?.push(urlLogin);
+        }
+      })();
     }
   }, [isOpen]);
 
+  async function checkLogined(): Promise<boolean> {
+    return await isLogined();
+  }
   return (
     <>
       <CustomDrawer
