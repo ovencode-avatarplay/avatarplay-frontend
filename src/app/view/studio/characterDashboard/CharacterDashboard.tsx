@@ -15,7 +15,7 @@ import {
   GetCharacterListReq,
   sendCreateCharacter,
   sendDeleteCharacter,
-  sendGetCharacterInfo,
+  sendGetCharacterProfileInfo,
   sendGetCharacterList,
 } from '@/app/NetWork/CharacterNetwork';
 
@@ -190,8 +190,8 @@ const CharacterDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId: id};
-      const response = await sendGetCharacterInfo(req);
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
+      const response = await sendGetCharacterProfileInfo(req);
 
       if (response.data) {
         const characterInfo: CharacterInfo = response.data?.characterInfo;
