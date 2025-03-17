@@ -8,6 +8,7 @@ import profileData from 'data/profile/profile-data.json';
 import ProfileTopViewMenu from './ProfileTopViewMenu';
 import {
   BoldAltArrowDown,
+  BoldArchive,
   BoldArrowLeft,
   BoldCharacter,
   BoldComment,
@@ -22,6 +23,7 @@ import {
   BoldPin,
   BoldVideo,
   BoldViewGallery,
+  LineArchive,
   LineArrowDown,
   LineCheck,
   LineCopy,
@@ -2472,28 +2474,28 @@ const TabContentComponent = ({
       <section className={styles.channelInfoTabSection}>
         <section className={styles.characterMainImageWrap}>
           <img src={channelInfo?.mediaUrl} alt="" className={styles.characterMainImage} />
-          <div className={styles.bgGradient}></div>
-          <div className={styles.infoWrap}>
-            <Link href={getLocalizedLink(`/profile/` + channelInfo?.pdProfileSimpleInfo.urlLinkKey + '?from=""')}>
-              <div className={styles.left}>
-                <img src={channelInfo?.mediaUrl} alt="" className={styles.profileMaker} />
-                <div className={styles.name}>{channelInfo?.pdProfileSimpleInfo.name}</div>
-              </div>
-            </Link>
-            <div className={styles.right}>
-              <div className={styles.statistics}>
-                <div className={styles.commentWrap}>
-                  <img src={BoldComment.src} alt="" className={styles.icon} />
-                  <div className={styles.count}>{99}</div>
-                </div>
-                <div className={styles.viewsWrap}>
-                  <img src={BoldFollowers.src} alt="" className={styles.icon} />
-                  <div className={styles.count}>{99}</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* <div className={styles.bgGradient}></div> */}
         </section>
+
+        <div className={styles.infoWrap}>
+          <div className={styles.left}>
+            <Link href={getLocalizedLink(`/profile/` + channelInfo?.pdProfileSimpleInfo?.urlLinkKey + '?from=""')}>
+              <img src={channelInfo?.pdProfileSimpleInfo?.iconImageUrl} alt="" className={styles.profileMaker} />
+              <div className={styles.name}>{channelInfo?.pdProfileSimpleInfo.name}</div>
+            </Link>
+          </div>
+
+          <div className={styles.right}>
+            <div className={styles.likeWrap}>
+              <img src={BoldLike.src} alt="" className={styles.like} />
+              <div className={styles.count}>55K</div>
+            </div>
+            <img src={BoldDislike.src} alt="" className={styles.dislike} />
+            {!channelInfo?.isBookMark && <img src={LineArchive.src} alt="" className={styles.bookmark} />}
+            {channelInfo?.isBookMark && <img src={BoldArchive.src} alt="" className={styles.bookmark} />}
+          </div>
+        </div>
+
         {tagList?.length != 0 && (
           <section className={styles.tagSection}>
             <ul className={styles.metatags}>
@@ -2554,7 +2556,7 @@ export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
   const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
     <Link href={urlLinkThumbnail}>
-      <li className={styles.item} key={itemInfo?.id}>
+      <li className={styles.itemTab} key={itemInfo?.id}>
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
@@ -2615,7 +2617,7 @@ export type ContentComponentType = {
 export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ContentComponentType) => {
   return (
     <Link href={urlLinkThumbnail}>
-      <li className={styles.item} key={itemInfo?.id}>
+      <li className={styles.itemTab} key={itemInfo?.id}>
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
@@ -2688,7 +2690,7 @@ export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCo
   const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
     <Link href={urlLinkThumbnail}>
-      <li className={styles.item} key={itemInfo?.id}>
+      <li className={styles.itemTab} key={itemInfo?.id}>
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
@@ -2756,7 +2758,7 @@ export type FeedComponentType = {
 export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContentMenu}: FeedComponentType) => {
   return (
     <Link href={urlLinkThumbnail}>
-      <li className={styles.item} key={feedInfo?.id}>
+      <li className={styles.itemTab} key={feedInfo?.id}>
         {feedInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={feedInfo?.mediaUrlList?.[0]} alt="" />
         )}

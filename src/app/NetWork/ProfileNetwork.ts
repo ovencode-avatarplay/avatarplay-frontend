@@ -711,7 +711,7 @@ export interface GetBookMarkListRes {
 
 export const getBookmarkList = async (payload: GetBookMarkListReq) => {
   try {
-    const res = await api.post<ResponseAPI<GetBookMarkListRes>>('Profile/getBookMarkList', payload);
+    const res = await api.post<ResponseAPI<GetBookMarkListRes>>('Common/getBookMarkList', payload);
 
     if (res.status !== 200) {
       console.error('getBookmarkList API 응답 오류:', res);
@@ -737,7 +737,7 @@ export interface GetRecordListRes {
 
 export const getRecordList = async (payload: GetRecordListReq) => {
   try {
-    const res = await api.post<ResponseAPI<GetRecordListRes>>('Profile/getRecordList', payload);
+    const res = await api.post<ResponseAPI<GetRecordListRes>>('Common/getRecordList', payload);
 
     if (res.status !== 200) {
       console.error('getRecordList API 응답 오류:', res);

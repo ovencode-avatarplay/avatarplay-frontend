@@ -4,12 +4,16 @@ import React, {useEffect, useRef, useState} from 'react';
 import styles from './ProfileDetail.module.scss';
 import {
   BoldAI,
+  BoldArchive,
   BoldComment,
+  BoldDislike,
   BoldFollowers,
   BoldHeart,
+  BoldLike,
   BoldMenuDots,
   BoldPin,
   BoldVideo,
+  LineArchive,
   LineArrowDown,
   LineClose,
 } from '@ui/Icons';
@@ -70,29 +74,40 @@ export const CharacterProfileDetailComponent = ({
     <>
       <section className={styles.characterMainImageWrap}>
         <img src={data.characterInfo?.mainImageUrl} alt="" className={styles.characterMainImage} />
-        <div className={styles.bgGradient}></div>
-        <div className={styles.infoWrap}>
-          <Link href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.urlLinkKey + '?from=""')}>
-            <div className={styles.left}>
+        {/* <div className={styles.bgGradient}></div> */}
+      </section>
+      <div className={styles.infoWrap}>
+        <div className={styles.left}>
+          <div className={styles.top}>
+            <Link
+              href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.urlLinkKey + '?from=""')}
+            >
               <img src={data.characterInfo?.pdProfileSimpleInfo.iconImageUrl} alt="" className={styles.profileMaker} />
               <div className={styles.name}>{data.characterInfo?.pdProfileSimpleInfo.name}</div>
+            </Link>
+          </div>
+          <div className={styles.bottom}>
+            <div className={styles.viewsWrap}>
+              <img src={BoldFollowers.src} alt="" className={styles.icon} />
+              <div className={styles.count}>{data.characterInfo?.chatUserCount}</div>
             </div>
-          </Link>
-          <div className={styles.right}>
-            <div className={styles.statistics}>
-              <div className={styles.commentWrap}>
-                <img src={BoldComment.src} alt="" className={styles.icon} />
-                <div className={styles.count}>{data.characterInfo?.chatCount}</div>
-              </div>
-              <div className={styles.viewsWrap}>
-                <img src={BoldFollowers.src} alt="" className={styles.icon} />
-                <div className={styles.count}>{data.characterInfo?.chatUserCount}</div>
-              </div>
+            <div className={styles.commentWrap}>
+              <img src={BoldComment.src} alt="" className={styles.icon} />
+              <div className={styles.count}>{data.characterInfo?.chatCount}</div>
             </div>
           </div>
         </div>
-      </section>
 
+        <div className={styles.right}>
+          <div className={styles.likeWrap}>
+            <img src={BoldLike.src} alt="" className={styles.like} />
+            <div className={styles.count}>55K</div>
+          </div>
+          <img src={BoldDislike.src} alt="" className={styles.dislike} />
+          {!data?.characterInfo?.isBookMark && <img src={LineArchive.src} alt="" className={styles.bookmark} />}
+          {data?.characterInfo?.isBookMark && <img src={BoldArchive.src} alt="" className={styles.bookmark} />}
+        </div>
+      </div>
       {metatags?.length != 0 && (
         <ul className={styles.metatags}>
           {metatags?.map((one, index) => {
