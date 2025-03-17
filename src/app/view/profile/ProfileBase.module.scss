@@ -198,7 +198,7 @@
 
 .main {
   padding-top: 3px;
-  padding-bottom: calc(60px + 12px);
+  padding-bottom: calc(60px + 46px);
   min-height: calc(100% - 58px);
 
 
@@ -1262,12 +1262,12 @@ li.itemTab {
         display: flex;
         align-items: center;
         gap: 3px;
+        cursor: pointer;
 
         img.like {
           width: 28px;
           height: 28px;
-          filter: brightness(0) saturate(100%) invert(69%) sepia(5%) saturate(366%) hue-rotate(169deg) brightness(91%) contrast(89%);
-          cursor: pointer;
+          filter: brightness(0) saturate(100%) invert(94%) sepia(14%) saturate(91%) hue-rotate(174deg) brightness(83%) contrast(86%);
         }
 
         .count {
@@ -1285,14 +1285,14 @@ li.itemTab {
       img.dislike {
         width: 28px;
         height: 28px;
-        filter: brightness(0) saturate(100%) invert(69%) sepia(5%) saturate(366%) hue-rotate(169deg) brightness(91%) contrast(89%);
+        filter: brightness(0) saturate(100%) invert(94%) sepia(14%) saturate(91%) hue-rotate(174deg) brightness(83%) contrast(86%);
         cursor: pointer;
       }
 
       .bookmark {
         width: 28px;
         height: 28px;
-        filter: brightness(0) saturate(100%) invert(69%) sepia(5%) saturate(366%) hue-rotate(169deg) brightness(91%) contrast(89%);
+        filter: brightness(0) saturate(100%) invert(94%) sepia(14%) saturate(91%) hue-rotate(174deg) brightness(83%) contrast(86%);
         cursor: pointer;
       }
     }
@@ -1304,22 +1304,28 @@ li.itemTab {
 
     .metatags {
       padding: 0 16px;
-      margin-top: 15px;
+      margin-top: 8px;
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
 
       .item {
+        box-sizing: border-box;
+        height: 36px;
         padding: 10px 15px;
         border-radius: 100px;
         border: 1px solid var(--Border-1, #EAECF0);
         background: var(--Neutral-50, #F8F9FA);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }
 
   .memberSection {
-    margin-top: 15px;
+    margin-top: 14px;
     padding: 0 16px;
 
     .label {
@@ -1333,7 +1339,7 @@ li.itemTab {
     }
 
     .recruitList {
-      margin-top: 16px;
+      margin-top: 14px;
 
       :global(.swiper-wrapper) {
         display: flex;
@@ -1350,7 +1356,7 @@ li.itemTab {
         cursor: pointer;
         display: flex;
         flex-direction: column;
-        gap: 3px;
+        gap: 4px;
         align-items: center;
 
         .circle {

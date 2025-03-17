@@ -158,12 +158,12 @@ section.characterMainImageWrap {
       display: flex;
       align-items: center;
       gap: 3px;
+      cursor: pointer;
 
       img.like {
         width: 28px;
         height: 28px;
-        filter: brightness(0) saturate(100%) invert(69%) sepia(5%) saturate(366%) hue-rotate(169deg) brightness(91%) contrast(89%);
-        cursor: pointer;
+        filter: brightness(0) saturate(100%) invert(94%) sepia(14%) saturate(91%) hue-rotate(174deg) brightness(83%) contrast(86%);
       }
 
       .count {
@@ -181,14 +181,14 @@ section.characterMainImageWrap {
     img.dislike {
       width: 28px;
       height: 28px;
-      filter: brightness(0) saturate(100%) invert(69%) sepia(5%) saturate(366%) hue-rotate(169deg) brightness(91%) contrast(89%);
+      filter: brightness(0) saturate(100%) invert(94%) sepia(14%) saturate(91%) hue-rotate(174deg) brightness(83%) contrast(86%);
       cursor: pointer;
     }
 
     .bookmark {
       width: 28px;
       height: 28px;
-      filter: brightness(0) saturate(100%) invert(69%) sepia(5%) saturate(366%) hue-rotate(169deg) brightness(91%) contrast(89%);
+      filter: brightness(0) saturate(100%) invert(94%) sepia(14%) saturate(91%) hue-rotate(174deg) brightness(83%) contrast(86%);
       cursor: pointer;
     }
   }
