@@ -65,11 +65,12 @@ export const CharacterProfileDetailComponent = ({
   }, [characterInfo, urlLinkKey]);
 
   const metatags = data.characterInfo?.tag?.split(',') || [];
-  const characterImages = data.characterInfo?.portraitGalleryImageUrl || [];
+  const characterImages = data.characterInfo?.mediaTemplateList || [];
   return (
     <>
       <section className={styles.characterMainImageWrap}>
         <img src={data.characterInfo?.mainImageUrl} alt="" className={styles.characterMainImage} />
+        <div className={styles.bgGradient}></div>
         <div className={styles.infoWrap}>
           <Link href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.urlLinkKey + '?from=""')}>
             <div className={styles.left}>
@@ -102,7 +103,7 @@ export const CharacterProfileDetailComponent = ({
 
       {characterImages?.length != 0 && (
         <ul className={styles.thumbnails}>
-          {data.characterInfo?.portraitGalleryImageUrl.map((one, index) => {
+          {characterImages?.map((one, index) => {
             return (
               <li className={styles.item}>
                 <img src={one.imageUrl} alt="" />
@@ -115,7 +116,7 @@ export const CharacterProfileDetailComponent = ({
       <section className={styles.tabSection}>
         <div className={styles.tabContent}>
           <div className={styles.textWrap}>
-            <div className={styles.label}>Description</div>
+            <div className={cx(styles.label, styles.descriptionLabel)}>Description</div>
             <TextArea value={data.characterInfo?.description || ''} />
           </div>
           <div className={styles.textWrap}>
@@ -135,7 +136,7 @@ export const CharacterProfileDetailComponent = ({
         </div>
       </section>
 
-      <section className={styles.sessionTab}>
+      {/* <section className={styles.sessionTab}>
         <div
           className={styles.tabHeader}
           onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -161,7 +162,7 @@ export const CharacterProfileDetailComponent = ({
           </div>
         </div>
         <div className={styles.line}></div>
-      </section>
+      </section> */}
 
       <section className={styles.myNameSection}>
         <div className={styles.label}>
@@ -256,7 +257,8 @@ export const TextArea = ({value}: TextAreaType) => {
       value={value}
       ref={textareaRef}
       onInput={resizeTextarea}
-      style={{overflow: 'hidden', resize: 'none', minHeight: '40px'}}
+      rows={1}
+      style={{overflow: 'hidden', resize: 'none'}}
     />
   );
 };

@@ -36,6 +36,8 @@
 section.characterMainImageWrap {
   position: relative;
   aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
 
   .characterMainImage {
     // max-height: 516px;
@@ -107,6 +109,15 @@ section.characterMainImageWrap {
       }
     }
   }
+
+  .bgGradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 85.71%, rgba(0, 0, 0, 0.50) 100%);
+  }
 }
 
 .metatags {
@@ -128,9 +139,13 @@ section.characterMainImageWrap {
   margin-top: 15px;
   display: grid;
   gap: 3px;
-  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
 
   .item {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: 100%;
+
     img {
       width: 100%;
       height: 100%;
@@ -145,7 +160,7 @@ section.sessionTab .tabHeader {
 
 .tabSection,
 .sessionTab {
-  margin-top: 30px;
+  margin-top: 15px;
 
   .tabHeader {
     padding: 0px 30px;
@@ -185,10 +200,15 @@ section.sessionTab .tabHeader {
 
     .textWrap {
       .label {
-        margin-top: 16px;
+        &.descriptionLabel {
+          margin-top: 20px;
+        }
+
+        margin-top: 17px;
         color: #000;
 
-        font-feature-settings: 'liga' off, 'clig' off;
+        font-feature-settings: 'liga' off,
+        'clig' off;
         font-family: Lato;
         font-size: 16px;
         font-style: normal;
@@ -198,7 +218,6 @@ section.sessionTab .tabHeader {
 
       textarea {
         height: auto;
-        min-height: 40px;
         resize: none;
 
         width: 100%;
@@ -464,7 +483,7 @@ button.startNewChat {
 
 
   &.embedded {
-    margin: 9px 0;
+    margin-top: 56px;
     position: inherit;
     width: 100%;
     transform: none;

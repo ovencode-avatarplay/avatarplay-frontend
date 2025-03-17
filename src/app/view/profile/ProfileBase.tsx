@@ -2409,6 +2409,7 @@ const TabContentComponent = ({
       <section className={styles.channelInfoTabSection}>
         <section className={styles.characterMainImageWrap}>
           <img src={channelInfo?.mediaUrl} alt="" className={styles.characterMainImage} />
+          <div className={styles.bgGradient}></div>
           <div className={styles.infoWrap}>
             <Link href={getLocalizedLink(`/profile/` + channelInfo?.pdProfileSimpleInfo.urlLinkKey + '?from=""')}>
               <div className={styles.left}>
