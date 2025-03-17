@@ -12,5 +12,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <Main>{children}</Main>;
+  return <div style={{height: '100dvh'}}>{children}</div>;
 }

@@ -135,6 +135,10 @@ import OrangeCoin from "./Custom/Coin.svg";
 import Add_Button from "./Custom/Add_Button.svg";
 import editCircle from "./Custom/editCircle.svg";
 import VerifiedLabel from "./Custom/VerifiedLabel.svg";
+import KakatalkLogo from "./Custom/KakatalkLogo.svg";
+import FacebookLogo from "./Custom/FaceBookLogo.svg";
+import GoogleLogo from "./Custom/GoogleLogo.svg";
+import AppleLogo from "./Custom/AppleLogo.svg";
 
 export {
   editCircle,
@@ -272,4 +276,8 @@ export {
   LineSetting,
   LineWallet,
   VerifiedLabel,
+  KakatalkLogo,
+  FacebookLogo,
+  GoogleLogo,
+  AppleLogo,
 };
