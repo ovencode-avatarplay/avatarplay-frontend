@@ -297,8 +297,17 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
   const isMine = data.profileInfo?.isMyProfile || false;
   const profileType = Number(data.profileInfo?.profileInfo?.type);
-  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
-    getUserType(isMine, profileType);
+  const {
+    isPD,
+    isCharacter,
+    isMyPD,
+    isMyCharacter,
+    isOtherPD,
+    isOtherCharacter,
+    isChannel,
+    isOtherChannel,
+    isMyChannel,
+  } = getUserType(isMine, profileType);
 
   useEffect(() => {
     data.refreshProfileTab = refreshProfileTab;
@@ -827,19 +836,21 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               Show more...
             </div>
           )}
-          {isMyPD && (
+          {(isMyPD || isMyChannel) && (
             <div className={styles.buttons}>
               <button className={styles.ad}>AD</button>
-              <button
-                className={styles.friends}
-                onClick={() => {
-                  alert('6월에 기능 추가 예정');
-                  // data.isOpenPopupFriendsList = true;
-                  // setData({...data});
-                }}
-              >
-                Add Friends
-              </button>
+              {isMyPD && (
+                <button
+                  className={styles.friends}
+                  onClick={() => {
+                    alert('6월에 기능 추가 예정');
+                    // data.isOpenPopupFriendsList = true;
+                    // setData({...data});
+                  }}
+                >
+                  Add Friends
+                </button>
+              )}
             </div>
           )}
           {isMyCharacter && (
@@ -888,9 +899,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               <button className={styles.giftWrap}>
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
               </button>
-              <button className={styles.chat}>
-                <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}>Chat</Link>
-              </button>
+              {isOtherCharacter && (
+                <button className={styles.chat}>
+                  <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>Chat</Link>
+                </button>
+              )}
             </div>
           )}
         </div>
