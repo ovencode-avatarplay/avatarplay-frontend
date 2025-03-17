@@ -1,14 +1,14 @@
 import {sendGetCustomModules} from '@/app/NetWork/CustomModulesNetwork';
 import styles from './CharacterCreateLLM.module.css';
-import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAI, BoldArrowDown, LineDelete} from '@ui/Icons';
-import {ReactNode, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import formatText from '@/utils/formatText';
 import PromptInput from '@/app/view/studio/promptDashboard/PromptInput';
+import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPrompt';
 
 interface Props {
   selectedLang: number;
@@ -62,6 +62,33 @@ const CharacterCreateLLM: React.FC<Props> = ({
 
   const [promptItems, setPromptItems] = useState<{label: string; value: number}[]>([]);
   const [lorebookItems, setLorebookItems] = useState<{label: string; value: number}[]>([]);
+
+  const promptRefs = {
+    desc: useRef<HTMLDivElement>(null),
+    worldScenario: useRef<HTMLDivElement>(null),
+    greeting: useRef<HTMLDivElement>(null),
+    secret: useRef<HTMLDivElement>(null),
+  };
+
+  const [showAutoCompleteState, setShowAutoCompleteState] = useState<Record<keyof typeof promptRefs, boolean>>({
+    desc: false,
+    worldScenario: false,
+    greeting: false,
+    secret: false,
+  });
+  const [dropdownPositionState, setDropdownPositionState] = useState<
+    Record<keyof typeof promptRefs, {top: number; left: number}>
+  >({
+    desc: {top: 0, left: 0},
+    worldScenario: {top: 0, left: 0},
+    greeting: {top: 0, left: 0},
+    secret: {top: 0, left: 0},
+  });
+
+  const KEYWORDS: Record<string, string> = {
+    '{{user}}': 'User',
+    '{{char}}': 'Character',
+  };
 
   const handleGetCustomModules = async () => {
     const response = await sendGetCustomModules();
@@ -122,25 +149,31 @@ const CharacterCreateLLM: React.FC<Props> = ({
     onSelectedLorebookChange(value);
   };
 
-  const handleAutoWriteCharacterDesc = () => {
-    const randomIndex = Math.floor(Math.random() * autoWriteCharacterDesc.length);
-    setCharacterDesc(autoWriteCharacterDesc[randomIndex]);
+  const handleAutoWriteText = (ref: React.RefObject<HTMLDivElement>, textArray: string[]) => {
+    if (!ref.current || textArray.length === 0) return;
+
+    const randomIndex = Math.floor(Math.random() * textArray.length);
+    const newValue = textArray[randomIndex];
+
+    ref.current.focus();
+    ref.current.innerText = newValue;
+
+    const range = document.createRange();
+    const selection = window.getSelection();
+    range.selectNodeContents(ref.current);
+    range.collapse(false);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+
+    const event = new Event('input', {bubbles: true});
+    ref.current.dispatchEvent(event);
   };
 
-  const handleAutoWriteCharacterWorldScenario = () => {
-    const randomIndex = Math.floor(Math.random() * autoWriteCharacterWorldScenario.length);
-    setWorldScenario(autoWriteCharacterWorldScenario[randomIndex]);
-  };
-
-  const handleAutoWriteCharacterGreeting = () => {
-    const randomIndex = Math.floor(Math.random() * autoWriteCharacterGreeting.length);
-    setGreeting(autoWriteCharacterGreeting[randomIndex]);
-  };
-
-  const handleAutoWriteCharacterSecret = () => {
-    const randomIndex = Math.floor(Math.random() * autoWriteCharacterSecret.length);
-    setSecret(autoWriteCharacterSecret[randomIndex]);
-  };
+  const handleAutoWriteCharacterDesc = () => handleAutoWriteText(promptRefs.desc, autoWriteCharacterDesc);
+  const handleAutoWriteCharacterWorldScenario = () =>
+    handleAutoWriteText(promptRefs.worldScenario, autoWriteCharacterWorldScenario);
+  const handleAutoWriteCharacterGreeting = () => handleAutoWriteText(promptRefs.greeting, autoWriteCharacterGreeting);
+  const handleAutoWriteCharacterSecret = () => handleAutoWriteText(promptRefs.secret, autoWriteCharacterSecret);
 
   const renderTitle = (title: string, desc: string) => {
     const highlightText = (text: string) => {
@@ -180,33 +213,6 @@ const CharacterCreateLLM: React.FC<Props> = ({
     );
   };
 
-  const promptRefs = {
-    desc: useRef<HTMLDivElement>(null),
-    worldScenario: useRef<HTMLDivElement>(null),
-    greeting: useRef<HTMLDivElement>(null),
-    secret: useRef<HTMLDivElement>(null),
-  };
-
-  const [showAutoCompleteState, setShowAutoCompleteState] = useState<Record<keyof typeof promptRefs, boolean>>({
-    desc: false,
-    worldScenario: false,
-    greeting: false,
-    secret: false,
-  });
-  const [dropdownPositionState, setDropdownPositionState] = useState<
-    Record<keyof typeof promptRefs, {top: number; left: number}>
-  >({
-    desc: {top: 0, left: 0},
-    worldScenario: {top: 0, left: 0},
-    greeting: {top: 0, left: 0},
-    secret: {top: 0, left: 0},
-  });
-
-  const KEYWORDS: Record<string, string> = {
-    '{{user}}': 'User',
-    '{{char}}': 'Character',
-  };
-
   const renderMaxTextInput = (
     key: keyof typeof promptRefs,
     value: string,
@@ -215,22 +221,68 @@ const CharacterCreateLLM: React.FC<Props> = ({
     placeholder?: string,
     essential?: boolean,
   ) => {
-    const handleButtonClick = (text: string) => {
-      // 버튼 클릭 시 기존 텍스트에 {{User}} 또는 {{Char}} 추가
-      setValue(prevValue => prevValue + `{{${text}}}`);
+    const handleButtonClick = (key: keyof typeof promptRefs, text: string) => {
+      const div = promptRefs[key].current;
+      if (!div) return;
+
+      const selection = window.getSelection();
+      const currentFocusNode = selection?.focusNode;
+
+      div.focus();
+
+      const chip = document.createElement('span');
+      chip.className = `${styles['chip']} ${styles['chipUser']}`;
+      chip.contentEditable = 'false';
+      chip.innerText = `{{${text}}}`;
+
+      const range = selection?.getRangeAt(0);
+
+      if (range && currentFocusNode && div.contains(currentFocusNode)) {
+        range.deleteContents();
+        range.insertNode(chip);
+
+        // Chip 뒤에 공백 추가
+        const space = document.createTextNode(' ');
+        chip.after(space);
+
+        // 커서를 space 뒤로 이동
+        range.setStartAfter(space);
+        range.collapse(true);
+      } else {
+        div.appendChild(chip);
+        div.appendChild(document.createTextNode(' '));
+
+        // 새로운 칩 뒤로 커서 이동
+        const newRange = document.createRange();
+        newRange.setStartAfter(chip);
+        newRange.collapse(true);
+        selection?.removeAllRanges();
+        selection?.addRange(newRange);
+      }
+
+      // `handleInput`을 수동으로 호출하여 상태 업데이트
+      const event = new Event('input', {bubbles: true});
+      div.dispatchEvent(event);
+
+      setTimeout(() => {
+        div.focus();
+        // 커서를 마지막으로 이동
+        selection?.selectAllChildren(div);
+        selection?.collapseToEnd();
+      }, 10);
     };
 
     return (
       <div className={`${styles.maxTextInputArea} `}>
-        {renderPromptInput(key, value, setValue)}
+        {renderPromptInput(key, value, setValue, placeholder)}
         <div className={styles.maxTextButtonArea}>
           <button className={`${styles.maxTextButton} ${styles.aiButton}`}>
             <img className={styles.maxTextButtonIcon} src={BoldAI.src} onClick={onClickAI} />
           </button>
-          <button className={styles.maxTextButton} onClick={() => handleButtonClick('User')}>
+          <button className={styles.maxTextButton} onClick={() => handleButtonClick(key, 'user')}>
             {getLocalizedText(Common, 'common_button_usercommand')}
           </button>
-          <button className={styles.maxTextButton} onClick={() => handleButtonClick('Char')}>
+          <button className={styles.maxTextButton} onClick={() => handleButtonClick(key, 'char')}>
             {getLocalizedText(Common, 'common_button_charcommand')}
           </button>
         </div>
@@ -242,6 +294,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
     key: keyof typeof promptRefs,
     value: string,
     setValue: React.Dispatch<React.SetStateAction<string>>,
+    placeholder?: string,
   ) => {
     return (
       <div className={styles.promptInputContainer}>
@@ -265,44 +318,9 @@ const CharacterCreateLLM: React.FC<Props> = ({
     );
   };
 
-  /* 내부 회의 결과 케이브덕 카피를 하다가 기획 충돌 난 케이스. 사용하지 않음 */
-  const renderGreetingList = () => {
-    return (
-      <>
-        <div className={styles.greetingDescArea}>
-          <div className={styles.desc}>{getLocalizedText(Header, 'createcharacter001_desc_020')}</div>
-          <button className={styles.addGreetingButton} onClick={() => {}}>
-            {getLocalizedText(Common, 'cummon_button_add')}
-          </button>
-        </div>
-        <ul className={styles.greetingListArea}>
-          <div className={styles.greetingItem}>
-            <div className={styles.greetingTitleArea}>
-              <CustomInput inputType="Basic" textType="InputOnly" value={''} onChange={() => {}} />
-              <div className={styles.greetingButtonArea}>
-                <button className={styles.greetingButton}>
-                  <img
-                    className={styles.greetingButtonIcon}
-                    src={BoldArrowDown.src}
-                    style={{transform: 'rotate(180deg)'}}
-                    onClick={() => {}}
-                  />
-                </button>
-                <button className={styles.greetingButton}>
-                  <img className={styles.greetingButtonIcon} src={BoldArrowDown.src} onClick={() => {}} />
-                </button>
-
-                <button className={styles.greetingButton}>
-                  <img className={styles.greetingButtonIcon} src={LineDelete.src} onClick={() => {}} />
-                </button>
-              </div>
-            </div>
-            {renderMaxTextInput('greeting', greeting, setGreeting, handleAutoWriteCharacterGreeting)}
-          </div>
-        </ul>
-      </>
-    );
-  };
+  useEffect(() => {
+    console.log('Updated characterDesc:', characterDesc);
+  }, [characterDesc]);
 
   return (
     <div className={styles.llmContainer}>
@@ -325,7 +343,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         )}
         {renderMaxTextInput(
           'desc',
-          characterDesc,
+          replaceChipsWithKeywords(characterDesc, KEYWORDS),
           setCharacterDesc,
           handleAutoWriteCharacterDesc,
           getLocalizedText(Common, 'common_sample_082'),
@@ -336,7 +354,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         {renderTitle(getLocalizedText(Header, 'createcharacter001_label_018'), '')}
         {renderMaxTextInput(
           'worldScenario',
-          worldScenario,
+          replaceChipsWithKeywords(worldScenario, KEYWORDS),
           setWorldScenario,
           handleAutoWriteCharacterWorldScenario,
           getLocalizedText(Common, 'common_sample_058'),
@@ -346,7 +364,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         {renderTitle(getLocalizedText(Header, 'createcharacter001_label_019'), '')}
         {renderMaxTextInput(
           'greeting',
-          greeting,
+          replaceChipsWithKeywords(greeting, KEYWORDS),
           setGreeting,
           handleAutoWriteCharacterGreeting,
           getLocalizedText(Common, 'common_sample_083'),
@@ -356,7 +374,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         {renderTitle(getLocalizedText(Header, 'createcharacter001_label_021'), '')}
         {renderMaxTextInput(
           'secret',
-          secret,
+          replaceChipsWithKeywords(secret, KEYWORDS),
           setSecret,
           handleAutoWriteCharacterSecret,
           getLocalizedText(Common, 'common_sample_081'),
