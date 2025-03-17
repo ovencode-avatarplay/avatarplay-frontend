@@ -171,6 +171,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       isOpen: false,
       title: parse('Remove from<br/>“Channel name”'),
       description: 'Once removed, this character will no longer be affiliated with the channel. Do you want to Remove?',
+      idProfile: 0,
     },
   });
 
@@ -560,7 +561,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                             <img className={styles.thumbnail} src={one.profileSimpleInfo.iconImageUrl} alt="" />
                             <div className={styles.info}>
                               <div className={styles.name}>{one.profileSimpleInfo.name}</div>
-                              <div className={styles.description}>{one.profileSimpleInfo.name}</div>
+                              <div className={styles.description}>{one.profileSimpleInfo.description}</div>
                             </div>
                             {one.profileSimpleInfo.nsfw && (
                               <div className={styles.nsfwWrap}>
