@@ -1,5 +1,6 @@
 .drawer {
   max-height: 80vh !important;
+  min-height: 80vh !important;
   width: var(--full-width-percent);
   left: 50% !important;
   transform: translateX((-50%)) !important;
@@ -19,6 +20,9 @@
     border-radius: 50px;
     background: #E0E0E0;
 
+    .handleBar {
+      height: 4px;
+    }
   }
 
   .title {
