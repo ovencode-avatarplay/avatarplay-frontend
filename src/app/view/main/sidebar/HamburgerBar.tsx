@@ -17,6 +17,7 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import {BoldRuby, BoldStar, LineArrowRight, LineSetting, LineWallet, VerifiedLabel} from '@ui/Icons';
 import {Avatar} from '@mui/material';
 import LanguageSelectDropBox from '@/components/layout/shared/LanguageSelectDropBox';
+import ModalLanguageSelect from './ModalLanguageSelect';
 
 interface HamburgerBarProps {
   open: boolean;
@@ -170,6 +171,10 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
     }
   };
 
+  const handleCloseLanguage = () => {
+    setLanguageOpen(false);
+  };
+
   return (
     <Drawer open={open} onClose={onClose} anchor={isLeft ? 'left' : 'right'} classes={{paper: styles.drawerPaper}}>
       <div className={styles.drawerContent}>
@@ -249,7 +254,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
           {renderMenuItem('', 'Language', () => {
             setLanguageOpen(!languageOpen);
           })}
-          {languageOpen && <LanguageSelectDropBox />}
+          {/*languageOpen && <LanguageSelectDropBox />*/}
           {renderMenuItem('', 'Story', routeStory)}
           {renderMenuItem('', 'Character', routeCharacter)}
           {renderMenuItem('', 'Prompt', routePrompt)}
@@ -266,7 +271,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
           {renderMenuItem('', 'Logout', handleUserLogout)}
         </ul>
       </div>
-      {languageOpen && <>Language 작업?</>}
+      {languageOpen && <ModalLanguageSelect isOpen={languageOpen} onClose={handleCloseLanguage} />}
     </Drawer>
   );
 };

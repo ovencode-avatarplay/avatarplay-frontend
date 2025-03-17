@@ -1,0 +1,134 @@
+import React, {useEffect, useState} from 'react';
+import {changeLanguage, LanguageType, sendGetLanguage} from '@/app/NetWork/AuthNetwork';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {useRouter} from 'next/navigation';
+import {setLanguage} from '@/redux-store/slices/UserInfo';
+import {changeLanguageAndRoute} from '@/utils/UrlMove';
+import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';
+import {i18n} from 'next-i18next';
+import {Dialog, SelectChangeEvent} from '@mui/material';
+import {createPortal} from 'react-dom';
+import styles from './ModalLanguageSelect.module.css';
+import {BoldArrowLeft, LineCheck, LineSearch} from '@ui/Icons';
+import CustomInput from '@/components/layout/shared/CustomInput';
+//import {Flag} from '@mui/icons-material';
+import Flag from 'react-world-flags';
+import {FlagNation, getFlagCode} from '@/app/NetWork/network-interface/CommonEnums';
+import CustomButton from '@/components/layout/shared/CustomButton';
+
+interface FullScreenModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ModalLanguageSelect: React.FC<FullScreenModalProps> = ({isOpen, onClose}) => {
+  const dispatch = useDispatch();
+  const selectedLanguage = useSelector((state: RootState) => state.user.language);
+  const router = useRouter();
+  const [selectLanguage, setSelect] = useState<LanguageType>(selectedLanguage);
+
+  const [inputValue, setInputValue] = useState('');
+
+  useEffect(() => {
+    fetchLanguage(router);
+  }, []);
+
+  if (!isOpen) return null; // 모달이 닫혀있으면 렌더링 안 함
+
+  // 입력값 변경 시 실행되는 함수
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value); // 입력 필드의 값 업데이트
+  };
+
+  // 언어선택
+  const handleSelectLanguage = (num: number) => {
+    setSelect(num);
+  };
+
+  const handleConformSend = async (lang: LanguageType) => {
+    try {
+      const value = lang;
+
+      if (value === undefined || value === null) {
+        throw new Error('Invalid language value');
+      }
+
+      const newLanguage = parseInt(String(value), 10) as LanguageType;
+
+      const response = await changeLanguage({languageType: newLanguage});
+      const language = response.data?.languageType;
+
+      if (language !== undefined) {
+        dispatch(setLanguage(language));
+        changeLanguageAndRoute(language, router, i18n);
+      } else {
+        throw new Error('Failed to retrieve updated language from server');
+      }
+    } catch (error) {
+      console.error('Failed to change language:', error);
+    }
+    onClose();
+  };
+  return (
+    <Dialog open={isOpen} fullScreen onClose={onClose}>
+      <div className={styles.backgroundArea}>
+        <div className={styles.titleArea}>
+          <div className={styles.leftPrevArea} onClick={() => onClose()}>
+            <img className={styles.leftPrevButton} src={BoldArrowLeft.src} alt="Prev" />
+            <div className={styles.titleText}>Select Language</div>
+          </div>
+        </div>
+
+        <div className={styles.inputBox}>
+          <CustomInput
+            inputType="LeftIcon"
+            textType="InputOnly"
+            state="Default"
+            value={inputValue}
+            placeholder={''}
+            onChange={handleInputChange}
+            customClassName={[styles.inputField]}
+            iconLeftImage={LineSearch.src}
+            iconLeftStyle={{
+              width: '13.794px',
+              height: '15px',
+              padding: '0',
+            }}
+          />
+        </div>
+        <div className={styles.selectArea}>
+          {Object.values(LanguageType)
+            .filter(v => typeof v === 'number') // Enum의 숫자 값만 필터링
+            .map(num => {
+              const flagCode = getFlagCode(num as LanguageType);
+              return (
+                <div className={styles.NationArea} onClick={() => handleSelectLanguage(num)}>
+                  <div className={styles.flagNation}>
+                    <Flag code={flagCode} style={{width: 26, height: 26}} />
+                    <div className={styles.nameNation}>{LanguageType[num]}</div>
+                    {selectLanguage === num && <img className={styles.checkNation} src={LineCheck.src} alt="check" />}
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      </div>
+      <div className={styles.conformArea}>
+        <CustomButton
+          size="Medium"
+          state="Normal"
+          type="Primary"
+          onClick={() => {
+            handleConformSend(selectLanguage);
+          }}
+          customClassName={[styles.conformButton]}
+        >
+          Confrom
+        </CustomButton>
+      </div>
+    </Dialog>
+  );
+};
+
+export default ModalLanguageSelect;

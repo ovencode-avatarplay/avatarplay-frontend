@@ -67,7 +67,7 @@ import {updateProfile} from '@/redux-store/slices/Profile';
 import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {useAtom} from 'jotai';
 import Link from 'next/link';
-import HamburgerBar from '../main/header/header-nav-bar/HamburgerBar';
+import HamburgerBar from '../main/sidebar/HamburgerBar';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import {deleteFeed, FeedInfo, PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
