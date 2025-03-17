@@ -102,7 +102,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     dataVisibility: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: false, value: 'Private'},
+        {isActive: true, value: 'Private'},
         {isActive: false, value: 'Unlisted'},
         {isActive: false, value: 'Public'},
       ],
@@ -484,7 +484,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
             <div className={styles.tabContent}>
               <section className={cx(styles.channelSection, data.indexTab == 0 && styles.active)}>
-                <div className={styles.label}>Channel name</div>
+                <div className={styles.label}>
+                  Channel name <span className={styles.highlight}>*</span>
+                </div>
                 <input
                   {...register('name', {required: true})}
                   className={cx(errors.name && isSubmitted && styles.error)}
@@ -496,7 +498,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 />
 
-                <div className={styles.label}>Channel description</div>
+                <div className={styles.label}>
+                  Channel description <span className={styles.highlight}>*</span>
+                </div>
                 <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
                   <textarea
                     {...register('description', {required: true})}
@@ -568,7 +572,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </ul>
               </section>
               <section className={cx(styles.policySection, data.indexTab == 2 && styles.active)}>
-                <div className={styles.label}>Visibility</div>
+                <div className={styles.label}>
+                  Visibility <span className={styles.highlight}>*</span>
+                </div>
                 <input {...register('visibilityType', {required: true})} className={styles.hide} autoComplete="off" />
                 <CustomSelector
                   value={visibilityTypeStr}
@@ -578,7 +584,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     setData({...data});
                   }}
                 />
-                <div className={styles.label}>Tag</div>
+                <div className={styles.label}>
+                  Tag <span className={styles.highlight}>*</span>
+                </div>
                 <input className={styles.hide} autoComplete="off" {...register('tags')} />
                 <CustomSelector
                   value={''}
@@ -623,7 +631,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   })}
                 </div>
 
-                <div className={styles.label}>Post country</div>
+                <div className={styles.label}>
+                  Post country <span className={styles.highlight}>*</span>
+                </div>
                 <CustomSelector
                   value={''}
                   error={errors.postCountry && isSubmitted}

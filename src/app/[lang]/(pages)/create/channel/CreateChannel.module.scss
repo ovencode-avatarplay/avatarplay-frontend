@@ -276,7 +276,7 @@
       bottom: 0;
 
       width: calc(100%);
-      background: #DDD4D0;
+      background: var(--Border-1, #EAECF0);
       z-index: 1;
     }
 
