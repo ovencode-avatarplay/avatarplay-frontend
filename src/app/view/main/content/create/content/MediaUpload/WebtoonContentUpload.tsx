@@ -24,7 +24,7 @@ import {
   ContentLanguageType,
   WebtoonSourceUrl,
 } from '@/app/NetWork/ContentNetwork';
-import PreviewViewer from './previewViewer';
+import PreviewViewer from './PreviewViewer';
 
 export interface WebtoonUploadField {
   id: number;

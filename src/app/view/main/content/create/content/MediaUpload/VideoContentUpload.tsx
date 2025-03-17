@@ -15,8 +15,7 @@ import {
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {ContentCategoryType, ContentEpisodeVideoInfo, ContentLanguageType} from '@/app/NetWork/ContentNetwork';
-import ViewerContent from '../../../contents/viewer/ViewerContent';
-import PreviewViewer from './previewViewer';
+import PreviewViewer from './PreviewViewer';
 
 export interface VideoUploadField {
   id: number;

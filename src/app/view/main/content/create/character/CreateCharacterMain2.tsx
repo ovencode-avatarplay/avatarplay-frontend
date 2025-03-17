@@ -504,7 +504,6 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
     if (essentialWarning) {
       if (characterName !== '' && description !== '' && mainimageUrl !== '' && positionCountryList.length > 0) {
         setEssentialWarning(false);
-      } else {
       }
     }
   }, [characterName, description, mainimageUrl, positionCountryList]);
