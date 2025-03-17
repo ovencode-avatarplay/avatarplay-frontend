@@ -41,6 +41,7 @@ import {DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSensor
 import {BoldMore, LinePlus} from '@ui/Icons';
 import cx from 'classnames';
 import SelectProfile from '@/app/view/profile/SelectProfile';
+import {setStar} from '@/redux-store/slices/Currency';
 //import {middleware} from '../../../../middleware.js';
 
 type UserDropDownType = {
@@ -156,6 +157,7 @@ const UserDropdown = () => {
   useEffect(() => {
     if (!auth) return;
     const handleAuthStateChange = async (event: any, session: Session | null) => {
+      console.log('왔냐', event);
       if (event === 'SIGNED_IN') {
         if (auth?.access_token == session?.access_token) return;
 
@@ -184,6 +186,7 @@ const UserDropdown = () => {
 
           const data: {data: SignInRes} = await response.json();
           dispatch(updateProfile(data.data.profileInfo));
+          dispatch(setStar(data.data.sessionInfo.star));
           console.log('response login : ', data);
           localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
           setTimeout(() => {
