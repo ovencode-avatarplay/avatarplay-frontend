@@ -60,20 +60,20 @@ const ImageUploadDialog: React.FC<Props> = ({isOpen, onClose, onFileSelect}) => 
   };
 
   const uploadImageItems: SelectDrawerItem[] = [
+    // {
+    //   name: 'Take a photo',
+    //   onClick: () => {
+    //     handleTakePhoto();
+    //   },
+    // },
     {
-      name: 'Take a photo',
-      onClick: () => {
-        handleTakePhoto();
-      },
-    },
-    {
-      name: 'Media library',
+      name: 'Workroom',
       onClick: () => {
         handlePhotoLibrary();
       },
     },
     {
-      name: 'File folder',
+      name: 'My device',
       onClick: () => {
         handleChooseFile();
       },

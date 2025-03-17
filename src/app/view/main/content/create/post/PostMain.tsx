@@ -248,20 +248,20 @@ const PostMain: React.FC<Props> = ({id}) => {
   };
 
   const selectVisibilityItems: SelectDrawerItem[] = [
+    // {
+    //   name: 'Take a photo',
+    //   onClick: () => {
+    //     handleTakePhoto();
+    //   },
+    // },
     {
-      name: 'Take a photo or video',
-      onClick: () => {
-        handleTakeMedia();
-      },
-    },
-    {
-      name: 'Media library',
+      name: 'Workroom',
       onClick: () => {
         handleMediaLibrary();
       },
     },
     {
-      name: 'File folder',
+      name: 'My device',
       onClick: () => {
         handleChooseFile();
       },
