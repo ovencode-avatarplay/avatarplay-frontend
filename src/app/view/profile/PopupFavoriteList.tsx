@@ -301,7 +301,7 @@ const TabContentComponent = ({
                 isMine={isMine}
                 feedInfo={{
                   commentCount: 0,
-                  description: 'description',
+                  description: one.description,
                   disLikeCount: 0,
                   hashTag: '',
                   isBookmark: false,

@@ -163,6 +163,7 @@ export interface ProfileTabItemInfo {
   isPinFix: boolean;
   urlLinkKey: string;
   contentType: ContentType;
+  description: string;
 }
 
 export enum SharedItemType {
