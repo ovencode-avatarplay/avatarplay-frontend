@@ -274,9 +274,9 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
 
     if (description === '') return false;
 
-    // if (positionCountryList.length < 1) {
-    //   return false;
-    // }
+    if (positionCountryList.length < 1) {
+      return false;
+    }
 
     return true;
   };
@@ -630,7 +630,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           onNsfwChange={setNsfw}
           creatorComment={creatorComment}
           setCharacterDesc={setCreatorComment}
-          // essentialWarning={essentialWarning}
+          essentialWarning={essentialWarning}
         />
       ),
     },

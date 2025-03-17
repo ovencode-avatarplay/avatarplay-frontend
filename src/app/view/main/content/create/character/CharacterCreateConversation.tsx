@@ -3,6 +3,7 @@ import styles from './CharacterCreateConversation.module.css';
 import {LinePlus} from '@ui/Icons';
 import ConversationCard, {CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 interface Props {
   cardList: CardData[];
@@ -27,7 +28,9 @@ const CharacterCreateConversation: React.FC<Props> = ({
     <div className={styles.conversationContainer}>
       <div className={styles.titleArea}>
         <h2 className={styles.title2}>{getLocalizedText('CreateCharacter', 'createcharacter016_desc_001')}</h2>
-        <div className={styles.desc}>{getLocalizedText('CreateCharacter', 'createcharacter016_desc_002')}</div>
+        <div className={styles.desc}>
+          {formatText(getLocalizedText('CreateCharacter', 'createcharacter016_desc_002'))}
+        </div>
       </div>
       <CustomButton
         size="Large"

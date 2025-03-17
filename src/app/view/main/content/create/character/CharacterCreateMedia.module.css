@@ -141,6 +141,8 @@
  
 .lockButton
 {
+  cursor: pointer;
+
   position: absolute;
   bottom: 2.5px;
   right: 6px;
@@ -239,21 +241,24 @@
 
  .moveItemIndexButton
  {
-  display: flex;
-  width: 24px;
-  height: 24px;
-  padding: 5px;
-  justify-content: center;
-  align-items: center;
-  aspect-ratio: 1/1;
-  
-  border-radius: 6px;
-  background: var(--Neutral-800, #2C3131);
+    cursor: pointer;
+
+    display: flex;
+    width: 24px;
+    height: 24px;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1/1;
+    
+    border-radius: 6px;
+    background: var(--Neutral-800, #2C3131);
  }
 
  .moveItemIndexIcon
- {width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  aspect-ratio: 1/1;
+ {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
  }
