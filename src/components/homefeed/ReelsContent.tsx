@@ -434,7 +434,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   {formatDuration(videoDuration)}
                 </div>
               )}
-              <div>{formatTimeAgo(item.createAt ? item.createAt.toString() : '0')}</div>
+              {/* <div>{formatTimeAgo(item.createAt ? item.createAt.toString() : '0')}</div> */}
             </div>
           </div>
 

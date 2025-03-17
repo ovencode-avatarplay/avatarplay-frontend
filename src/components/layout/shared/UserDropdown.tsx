@@ -156,7 +156,6 @@ const UserDropdown = () => {
 
   useEffect(() => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
-      console.log('왔냐', event);
       if (event === 'SIGNED_IN') {
         if (auth?.access_token == session?.access_token) return;
 
