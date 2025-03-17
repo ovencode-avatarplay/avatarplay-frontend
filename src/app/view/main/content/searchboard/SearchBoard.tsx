@@ -219,7 +219,7 @@ const SearchBoard: React.FC = () => {
       console.error('Error fetching explore data:', error);
       setHasSearchResult(false);
     } finally {
-      await minLoadingTime;
+      //await minLoadingTime;
       setLoading(false);
     }
   };

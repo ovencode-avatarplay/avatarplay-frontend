@@ -76,7 +76,7 @@ import {
   GetCharacterInfoReq,
   GetCharacterInfoRes,
   sendDeleteCharacter,
-  sendGetCharacterInfo,
+  sendGetCharacterProfileInfo,
 } from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {getBackUrl} from '@/utils/util-1';
@@ -458,7 +458,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         languageType: getCurrentLanguage(),
         profileId: data.profileInfo?.profileInfo?.id || 0,
       };
-      const resGetCharacterInfo = await sendGetCharacterInfo(reqSendGetCharacterInfo);
+      const resGetCharacterInfo = await sendGetCharacterProfileInfo(reqSendGetCharacterInfo);
       if (resGetCharacterInfo.resultCode != 0) {
         console.error('api error : ', resGetCharacterInfo.resultMessage);
         return;
