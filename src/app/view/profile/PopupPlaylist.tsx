@@ -17,7 +17,7 @@ import {
   eTabChannelType,
   eTabCharacterOtherType,
   eTabCharacterType,
-  eTabCommonType,
+  eTabFavoritesType,
   eTabPDOtherType,
   eTabPDType,
   FilterClusterType,
@@ -40,7 +40,7 @@ type Props = {
 
 const PopupPlaylist = ({profileId, profileType, isMine = true, onClose}: Props) => {
   const [data, setData] = useState<{
-    indexTab: eTabCommonType;
+    indexTab: eTabFavoritesType;
     indexFilterMedia: FeedMediaType;
     indexFilterCharacter: number;
     indexSort: ExploreSortType;

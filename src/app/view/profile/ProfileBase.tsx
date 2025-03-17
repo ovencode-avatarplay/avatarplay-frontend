@@ -94,10 +94,17 @@ import PopupFriends from './PopupFriends';
 import {PortfolioListPopup} from '@/app/[lang]/(pages)/profile/update/[[...id]]/page';
 import useCustomRouter from '@/utils/useCustomRouter';
 
-export enum eTabCommonType {
+export enum eTabFavoritesType {
   Feed = 1,
   Character = 3,
   Channel = 4,
+  Contents = 2,
+  Game = 0,
+}
+
+export enum eTabPlayListType {
+  Feed = 1,
+  Character = 3,
   Contents = 2,
   Game = 0,
 }
@@ -167,7 +174,7 @@ export enum eSharedFilterType {
   Character = 2,
 }
 
-type TabContentMenuType = {
+export type TabContentMenuType = {
   isSettingOpen: boolean;
   isPin: boolean;
   id: number;
@@ -231,6 +238,8 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
   const isOtherPD = !isMine && isPD;
   const isOtherCharacter = !isMine && isCharacter;
   const isOtherChannel = !isMine && isChannel;
+  const isFavorites = ProfileType.Favorites;
+  const isPlayList = ProfileType.PlayList;
   return {
     isPD,
     isCharacter,
@@ -241,6 +250,8 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
     isChannel,
     isMyChannel,
     isOtherChannel,
+    isFavorites,
+    isPlayList,
   };
 };
 
@@ -1396,8 +1407,18 @@ export type FilterClusterType = {
 };
 
 export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster, onChange}: TabFilterProps) => {
-  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
-    getUserType(isMine, profileType);
+  const {
+    isPD,
+    isCharacter,
+    isMyPD,
+    isMyCharacter,
+    isOtherPD,
+    isOtherCharacter,
+    isChannel,
+    isOtherChannel,
+    isFavorites,
+    isPlayList,
+  } = getUserType(isMine, profileType);
   const sortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
     {id: ExploreSortType.MostPopular, value: 'Popular'},
@@ -1411,7 +1432,8 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   if (
     (isPD && [eTabPDType.Feed].includes(tabIndex)) ||
     (isCharacter && [eTabCharacterType.Feed].includes(tabIndex)) ||
-    (isChannel && [eTabChannelType.Feed].includes(tabIndex))
+    (isChannel && [eTabChannelType.Feed].includes(tabIndex)) ||
+    (isFavorites && [eTabFavoritesType.Feed].includes(tabIndex))
   ) {
     return (
       <>
@@ -1491,7 +1513,8 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
 
   if (
     (isCharacter && [eTabCharacterType.Contents].includes(tabIndex)) ||
-    (isChannel && [eTabChannelType.Contents].includes(tabIndex))
+    (isChannel && [eTabChannelType.Contents].includes(tabIndex)) ||
+    (isFavorites && [eTabFavoritesType.Contents].includes(tabIndex))
   ) {
     return (
       <>
@@ -1578,7 +1601,8 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   if (
     (isPD && [eTabPDType.Character].includes(tabIndex)) ||
     (isCharacter && [eTabCharacterType.Character].includes(tabIndex)) ||
-    (isChannel && [eTabChannelType.Character].includes(tabIndex))
+    (isChannel && [eTabChannelType.Character].includes(tabIndex)) ||
+    (isFavorites && [eTabFavoritesType.Character].includes(tabIndex))
   ) {
     console.log('filterCluster.indexFilterCharacter : ', filterCluster.indexFilterCharacter);
     return (
@@ -1665,7 +1689,8 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
 
   if (
     (isPD && [eTabPDType.Channel, eTabPDType.Channel].includes(tabIndex)) ||
-    (isCharacter && [eTabCharacterType.Channel].includes(tabIndex))
+    (isCharacter && [eTabCharacterType.Channel].includes(tabIndex)) ||
+    (isFavorites && [eTabFavoritesType.Channel].includes(tabIndex))
   ) {
     return (
       <>
@@ -1853,9 +1878,9 @@ export const TabHeaderWrapAllComponent = ({
   onTabChange,
 }: TabHeaderComponentType) => {
   const getTabHeaderList = () => {
-    return Object.values(eTabCommonType)
+    return Object.values(eTabFavoritesType)
       .filter(value => typeof value === 'number') // 숫자 타입만 필터링
-      .map(type => ({type, label: eTabCommonType[type]}));
+      .map(type => ({type, label: eTabFavoritesType[type]}));
   };
   const tabHeaderList = getTabHeaderList();
   return (
@@ -1935,7 +1960,7 @@ type TabHeaderComponentType = {
     | eTabCharacterOtherType
     | eTabChannelType
     | eTabChannelOtherType
-    | eTabCommonType;
+    | eTabFavoritesType;
   profileId: number;
   profileType: ProfileType;
   isMine: boolean;
@@ -1958,7 +1983,7 @@ export const TabHeaderComponent = ({
       | eTabCharacterOtherType
       | eTabChannelType
       | eTabChannelOtherType
-      | eTabCommonType;
+      | eTabFavoritesType;
   }>({indexTab: indexTab});
   const containerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -2758,7 +2783,7 @@ export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContent
           )}
           <div className={styles.viewWrap}>
             <img src={BoldVideo.src} alt="" />
-            <div className={styles.value}>{feedInfo?.commentCount}</div>
+            <div className={styles.value}>{feedInfo?.mediaUrlList?.length}</div>
           </div>
         </div>
         <div className={styles.titleWrap}>
