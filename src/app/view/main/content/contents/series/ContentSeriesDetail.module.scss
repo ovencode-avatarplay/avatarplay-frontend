@@ -159,7 +159,7 @@
       gap: 22px;
 
       .tab {
-        padding-bottom: 10px;
+        padding-bottom: 12px;
 
         color: var(--Neutral-600, #80868B);
         font-family: Lato;
@@ -307,7 +307,7 @@
   .icon {}
 
   .labelWrap {
-    padding: 15px 10px;
+    padding: 14px 12px;
     border-radius: 10px;
     background: var(--Neutral-800, #2C3131);
 
@@ -315,6 +315,23 @@
     align-items: center;
     justify-content: space-between;
 
+    .label {
+      color: var(--Neutral-600, #80868B);
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: Lato;
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 18px;
+      /* 120% */
+      letter-spacing: -0.4px;
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      filter: brightness(0) saturate(100%) invert(58%) sepia(5%) saturate(404%) hue-rotate(165deg) brightness(89%) contrast(89%);
+    }
   }
 
   .label {
@@ -334,10 +351,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: var(--Neutral-800, #2C3131);
 
     .labelOption {
 
-      color: var(--Black, #000);
+      overflow: hidden;
+      color: var(--White, #FFF);
       font-feature-settings: 'liga' off, 'clig' off;
       text-overflow: ellipsis;
       font-family: Lato;
@@ -350,7 +369,8 @@
     }
 
     .iconCheck {
-      filter: brightness(0) saturate(100%);
+      width: 24px;
+      height: 24px;
     }
   }
 }
