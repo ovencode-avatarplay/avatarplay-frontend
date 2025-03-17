@@ -589,7 +589,20 @@
           font-weight: 700;
           line-height: 155%;
           /* 21.7px */
+
+          &.labelPersonalHistory {
+            margin-top: 30px;
+          }
+
+          &.honorAwards {
+            margin-top: 30px;
+          }
+
+          &.labelPortfolio {
+            margin-top: 25px;
+          }
         }
+
 
         .value {
           margin-top: 5px;

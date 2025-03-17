@@ -2347,13 +2347,17 @@ const TabContentComponent = ({
               })}
             </ul>
           )}
-          {!!pdInfo?.personalHistory && <div className={styles.label}>Personal History</div>}
+          {!!pdInfo?.personalHistory && (
+            <div className={cx(styles.label, styles.labelPersonalHistory)}>Personal History</div>
+          )}
           {!!pdInfo?.personalHistory && <div className={styles.value}>{pdInfo?.personalHistory}</div>}
-          {!!pdInfo?.honorAwards && <div className={styles.label}>Honor & Awards</div>}
+          {!!pdInfo?.honorAwards && <div className={cx(styles.label, styles.honorAwards)}>Honor & Awards</div>}
           {!!pdInfo?.honorAwards && <div className={styles.value}>{pdInfo?.honorAwards}</div>}
           {!!pdInfo?.url && <div className={styles.label}>URL</div>}
           {!!pdInfo?.url && <div className={styles.value}>{pdInfo?.url}</div>}
-          {pdInfo?.pdPortfolioInfoList.length != 0 && <div className={styles.label}>Portfolio</div>}
+          {pdInfo?.pdPortfolioInfoList.length != 0 && (
+            <div className={cx(styles.label, styles.labelPortfolio)}>Portfolio</div>
+          )}
           {pdInfo?.pdPortfolioInfoList.length != 0 && (
             <div className={styles.value}>
               <Swiper
