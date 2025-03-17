@@ -322,7 +322,7 @@ const TabContentComponent = ({
                   urlLinkKey: one.urlLinkKey,
                 }}
                 onOpenContentMenu={onOpenContentMenu}
-                urlLinkThumbnail={getLocalizedLink(`/main/homefeed/`)}
+                urlLinkThumbnail={getLocalizedLink(`/main/homefeed/` + one.urlLinkKey)}
               />
             );
           })}

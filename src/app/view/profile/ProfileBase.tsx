@@ -95,6 +95,7 @@ import {CharacterProfileDetailComponent} from './ProfileDetail';
 import PopupFriends from './PopupFriends';
 import {PortfolioListPopup} from '@/app/[lang]/(pages)/profile/update/[[...id]]/page';
 import useCustomRouter from '@/utils/useCustomRouter';
+import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 
 export enum eTabFavoritesType {
   Feed = 1,
@@ -1457,7 +1458,6 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
     (isFavorites && [eTabFavoritesType.Feed].includes(tabIndex)) ||
     (isPlayList && [eTabPlayListType.Feed].includes(tabIndex))
   ) {
-    console.log('tabIndex : ', tabIndex, isChannel);
     return (
       <>
         <div className={styles.filter}>
@@ -1629,7 +1629,6 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
     (isFavorites && [eTabFavoritesType.Character].includes(tabIndex)) ||
     (isPlayList && [eTabPlayListType.Character].includes(tabIndex))
   ) {
-    console.log('filterCluster.indexFilterCharacter : ', filterCluster.indexFilterCharacter);
     return (
       <>
         <div className={cx(styles.filter, styles.character)}>
@@ -1711,7 +1710,6 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
       </>
     );
   }
-
   if (
     (isPD && [eTabPDType.Channel, eTabPDType.Channel].includes(tabIndex)) ||
     (isCharacter && [eTabCharacterType.Channel].includes(tabIndex)) ||
@@ -2072,6 +2070,7 @@ export const TabHeaderComponent = ({
     }
   };
   const tabGap = calculateGap();
+
   return (
     <>
       <div className={styles.tabHeaderWrap}>
@@ -2506,6 +2505,7 @@ const TabContentComponent = ({
       <>
         <section className={styles.characterInfoSection}>
           <CharacterProfileDetailComponent
+            profileId={profileId}
             characterInfo={profileTabInfo?.[tabIndex].characterInfo}
             urlLinkKey={profileTabInfo?.[tabIndex].urlLinkKey}
           />
@@ -2539,7 +2539,16 @@ const TabContentComponent = ({
               <div className={styles.count}>55K</div>
             </div>
             <img src={BoldDislike.src} alt="" className={styles.dislike} />
-            {!channelInfo?.isBookMark && <img src={LineArchive.src} alt="" className={styles.bookmark} />}
+            {!channelInfo?.isBookMark && (
+              <img
+                src={LineArchive.src}
+                alt=""
+                className={styles.bookmark}
+                onClick={async () => {
+                  await bookmark({interactionType: InteractionType.Channel, isBookMark: true, typeValueId: profileId});
+                }}
+              />
+            )}
             {channelInfo?.isBookMark && <img src={BoldArchive.src} alt="" className={styles.bookmark} />}
           </div>
         </div>
