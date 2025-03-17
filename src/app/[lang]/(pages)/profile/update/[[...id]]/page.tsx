@@ -89,6 +89,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
     watch,
     unregister,
     trigger,
+    setFocus,
     clearErrors,
     formState: {errors, isSubmitted},
   } = useForm<UpdatePdInfoReq>({
@@ -219,8 +220,11 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
 
     setValue('name', res?.data?.name || '', {shouldValidate: false}); // API 데이터로 값 설정
     setValue('introduce', res?.data?.introduce || '', {shouldValidate: false}); // API 데이터로 값 설정
+
     setValue('personalHistory', res?.data?.personalHistory || '', {shouldValidate: false}); // API 데이터로 값 설정
+
     setValue('honorAwards', res?.data?.honorAwards || '', {shouldValidate: false}); // API 데이터로 값 설정
+
     setValue('url', res?.data?.url || '', {shouldValidate: false}); // API 데이터로 값 설정
     data.triggerError = true;
     setData({...data});
@@ -423,6 +427,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 placeholder="Add a description or hashtag"
                 maxLength={500}
                 rows={1}
+                value={watch('introduce')}
                 onChange={async e => {
                   const target = e.target as HTMLTextAreaElement;
                   target.style.height = 'auto';
@@ -548,7 +553,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               onChange={e => {
                 const target = e.target as HTMLTextAreaElement;
                 target.style.height = 'auto';
-                target.style.height = `${target.scrollHeight}px`;
+                target.style.height = `${target.scrollHeight - 20}px`;
 
                 clearErrors('personalHistory');
                 setValue('personalHistory', e.target.value);
@@ -567,7 +572,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               onChange={e => {
                 const target = e.target as HTMLTextAreaElement;
                 target.style.height = 'auto';
-                target.style.height = `${target.scrollHeight}px`;
+                target.style.height = `${target.scrollHeight - 20}px`;
 
                 clearErrors('honorAwards');
                 setValue('honorAwards', e.target.value);
