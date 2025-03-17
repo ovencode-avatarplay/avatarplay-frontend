@@ -25,12 +25,14 @@ import {
   eTabChannelType,
   eTabCharacterOtherType,
   eTabCharacterType,
+  eTabFavoritesType,
   eTabPDOtherType,
   eTabPDType,
   FeedComponent,
   FilterClusterType,
   SelectBox,
   TabContentComponentWrap,
+  TabContentMenuType,
   TabFilterComponent,
   TabHeaderComponent,
   TabHeaderWrapAllComponent,
@@ -44,6 +46,7 @@ import {GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
 import {InteractionType} from '@/app/NetWork/CommonNetwork';
+import {PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
 
 type Props = {
   onClose: () => void;
@@ -54,13 +57,7 @@ type Props = {
 
 const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Props) => {
   const [data, setData] = useState<{
-    indexTab:
-      | eTabPDType
-      | eTabCharacterType
-      | eTabPDOtherType
-      | eTabCharacterOtherType
-      | eTabChannelType
-      | eTabChannelOtherType;
+    indexTab: eTabFavoritesType;
     indexFilterMedia: FeedMediaType;
     indexFilterCharacter: number;
     indexSort: ExploreSortType;
@@ -68,8 +65,9 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
       [key: number]: ProfileTabItemInfo[];
     };
     filterCluster: FilterClusterType;
+    tabContentMenu: TabContentMenuType;
   }>({
-    indexTab: 0,
+    indexTab: eTabFavoritesType.Feed,
     indexFilterMedia: FeedMediaType.Total,
     indexFilterCharacter: 0,
     indexSort: ExploreSortType.MostPopular,
@@ -81,6 +79,11 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
       indexFilterMedia: 0,
       indexFilterShared: 0,
       indexSort: 0,
+    },
+    tabContentMenu: {
+      id: 0,
+      isPin: false,
+      isSettingOpen: false,
     },
   });
 
@@ -97,9 +100,8 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
       interactionType: Number(data.indexTab),
       languageType: getCurrentLanguage(),
     });
-    data.profileTabInfo[InteractionType.Feed] = resBookmarkList?.data?.bookMarkInfoList || [];
-
-    // console.log(bookmarkList?.data.);
+    data.profileTabInfo[data.indexTab] = resBookmarkList?.data?.bookMarkInfoList || [];
+    setData({...data});
   };
 
   const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll?: boolean) => {
@@ -108,9 +110,12 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
 
   const isEmptyTab = false;
 
-  const onRefreshTab = () => {};
+  const onRefreshTab = (isRefreshAll: boolean) => {};
 
-  const onOpenContentMenu = () => {};
+  const onOpenContentMenu = (dataContentMenu: TabContentMenuType) => {
+    data.tabContentMenu = dataContentMenu;
+    setData({...data});
+  };
   return (
     <>
       <Dialog open={true} onClose={onClose} fullScreen>
@@ -144,21 +149,38 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
                   isMine={isMine}
                   profileType={profileType}
                   tabIndex={data.indexTab}
-                  filterCluster={data}
+                  filterCluster={data.filterCluster}
                   onChange={async (filterCluster: FilterClusterType) => {
                     if ((filterCluster?.indexFilterMedia ?? -1) >= 0) {
-                      data.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
+                      data.filterCluster.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
                       await refreshProfileTab(profileId, data.indexTab);
                       setData(v => ({...data}));
                     }
                     if ((filterCluster?.indexFilterCharacter ?? -1) >= 0) {
-                      data.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
+                      data.filterCluster.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
                       await refreshProfileTab(profileId, data.indexTab);
                       setData(v => ({...data}));
                     }
 
                     if ((filterCluster?.indexSort ?? -1) >= 0) {
-                      data.indexSort = filterCluster?.indexSort ?? -1;
+                      data.filterCluster.indexSort = filterCluster?.indexSort ?? -1;
+                      await refreshProfileTab(profileId, data.indexTab);
+                      setData(v => ({...data}));
+                    }
+
+                    if ((filterCluster?.indexFilterChannel ?? -1) >= 0) {
+                      data.filterCluster.indexFilterChannel = filterCluster?.indexFilterChannel ?? -1;
+                      await refreshProfileTab(profileId, data.indexTab);
+                      setData(v => ({...data}));
+                    }
+
+                    if ((filterCluster?.indexFilterShared ?? -1) >= 0) {
+                      data.filterCluster.indexFilterShared = filterCluster?.indexFilterShared ?? -1;
+                      await refreshProfileTab(profileId, data.indexTab);
+                      setData(v => ({...data}));
+                    }
+                    if ((filterCluster?.indexFilterContent ?? -1) >= 0) {
+                      data.filterCluster.indexFilterContent = filterCluster?.indexFilterContent ?? -1;
                       await refreshProfileTab(profileId, data.indexTab);
                       setData(v => ({...data}));
                     }
@@ -171,7 +193,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
                   filterCluster={data.filterCluster}
                   profileType={profileType}
                   isMine={true}
-                  isEmptyTab={false}
+                  isEmptyTab={data.profileTabInfo?.[data.indexTab]?.length == 0}
                   profileId={profileId}
                   tabIndex={data?.indexTab || 0}
                   profileTabInfo={data.profileTabInfo}
@@ -187,17 +209,26 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
           </footer>
         </div>
       </Dialog>
+      <ContentSetting
+        onClose={() => {
+          data.tabContentMenu.isSettingOpen = false;
+          setData({...data});
+        }}
+        isMine={isMine}
+        tabContentMenu={data.tabContentMenu}
+        refreshTabAll={async () => {
+          onRefreshTab(true);
+        }}
+        onDelete={async () => {
+          onRefreshTab(true);
+        }}
+        onReport={async () => {}}
+      />
     </>
   );
 };
 
 export default PopupFavoriteList;
-
-type TabContentMenuType = {
-  isSettingOpen: boolean;
-  isPin: boolean;
-  id: number | string;
-};
 
 type TabContentProps = {
   profileId: number;
@@ -259,9 +290,30 @@ const TabContentComponent = ({
         <ul className={styles.itemWrap}>
           {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
             return (
-              <CharacterComponent
+              <FeedComponent
                 isMine={isMine}
-                itemInfo={one}
+                feedInfo={{
+                  commentCount: 0,
+                  description: 'description',
+                  disLikeCount: 0,
+                  hashTag: '',
+                  isBookmark: false,
+                  isDisLike: false,
+                  isFollowing: false,
+                  isLike: false,
+                  mediaUrlList: [one.mediaUrl].concat(Array(length).fill(one.mediaCount - 1)),
+                  profileIconUrl: '',
+                  profileId: 0,
+                  profileName: '',
+                  profileUrlLinkKey: '',
+                  title: one?.name || ' ',
+                  id: one.id,
+                  isPinFix: false,
+                  likeCount: one.likeCount,
+                  mediaState: one.mediaState,
+                  playTime: '',
+                  urlLinkKey: one.urlLinkKey,
+                }}
                 onOpenContentMenu={onOpenContentMenu}
                 urlLinkThumbnail={getLocalizedLink(`/main/homefeed/`)}
               />
@@ -323,4 +375,71 @@ const TabContentComponent = ({
       </ul>
     );
   }
+};
+
+type ContentSettingType = {
+  isMine: boolean;
+  onClose: () => void;
+  tabContentMenu: TabContentMenuType;
+  refreshTabAll: () => void;
+  onDelete: () => void;
+  onReport: () => void;
+};
+const ContentSetting = ({
+  isMine = false,
+  onClose = () => {},
+  tabContentMenu = {id: 0, isPin: false, isSettingOpen: false},
+  refreshTabAll = () => {},
+  onDelete = () => {},
+  onReport = () => {},
+}: ContentSettingType) => {
+  // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
+  let uploadImageItems: SelectDrawerItem[] = [
+    {
+      name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
+      onClick: async () => {
+        const dataUpdatePin: PinFixFeedReq = {
+          feedId: Number(tabContentMenu.id),
+          isFix: !tabContentMenu.isPin,
+        };
+        await updatePin(dataUpdatePin);
+        refreshTabAll();
+      },
+    },
+    {
+      name: 'Delete',
+      onClick: () => {
+        onDelete();
+      },
+    },
+    {
+      name: 'Report',
+      onClick: () => {
+        onReport();
+      },
+    },
+  ];
+  return (
+    <SelectDrawer isOpen={tabContentMenu.isSettingOpen} onClose={onClose} items={uploadImageItems} selectedIndex={-1} />
+  );
+};
+
+export type SelectBoxProps = {
+  value: {id: number; [key: string]: any} | null;
+  options: {id: number; [key: string]: any}[];
+  OptionComponent: (data: {id: number; [key: string]: any}, isSelected: boolean) => JSX.Element;
+  ValueComponent: (data: any, isOpen?: boolean) => JSX.Element;
+  ArrowComponent: (isOpen?: boolean) => JSX.Element;
+  onChange: (id: number) => void;
+  customStyles?: {
+    control?: object; // 함수 또는 객체 허용
+    singleValue?: object;
+    valueContainer?: object;
+    input?: object;
+    option?: object;
+    menu?: object;
+    menuList?: object;
+    indicatorSeparator?: object;
+    dropdownIndicator?: object;
+  };
 };

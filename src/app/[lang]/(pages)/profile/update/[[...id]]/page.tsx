@@ -430,8 +430,8 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 value={watch('introduce')}
                 onChange={async e => {
                   const target = e.target as HTMLTextAreaElement;
-                  target.style.height = 'auto';
-                  target.style.height = `${target.scrollHeight - 10}px`;
+                  // target.style.height = 'auto';
+                  // target.style.height = `${target.scrollHeight - 10}px`;
                   setValue('introduce', target.value, {shouldValidate: false}); // 강제 업데이트
                   clearErrors('introduce');
                   checkValid();

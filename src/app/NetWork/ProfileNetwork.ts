@@ -34,6 +34,8 @@ export enum ProfileType {
   PD = 1,
   Character = 2,
   Channel = 3,
+  Favorites = 90,
+  PlayList = 91,
 }
 
 export interface GetMyProfileListReq {
@@ -135,6 +137,7 @@ export interface ProfileInfo {
   pdProfileUrlLinkKey: string;
   characterUrlLinkKey: string;
   characterIP: CharacterIP;
+  subscriberCount: number;
 }
 
 export enum FollowState {

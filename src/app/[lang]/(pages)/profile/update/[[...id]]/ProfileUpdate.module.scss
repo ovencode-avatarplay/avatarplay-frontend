@@ -241,7 +241,9 @@
         background: var(--Primary-4, #FFF5FD);
       }
 
-      textarea {}
+      textarea {
+        height: 151px;
+      }
 
       .textCount {
         position: absolute;
