@@ -55,6 +55,8 @@ import CustomSelector from '@/components/layout/shared/CustomSelector';
 import {PaymentType, Subscription, VisibilityType} from '@/app/NetWork/network-interface/CommonEnums';
 import useCustomRouter from '@/utils/useCustomRouter';
 import parse from 'html-react-parser';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 type Props = {
   id: number;
@@ -92,6 +94,11 @@ type DataProfileUpdateType = {
     title: React.ReactNode;
     description: string;
     idProfile: number;
+  };
+
+  dataPopupComplete: {
+    isOpen: boolean;
+    title: string;
   };
 };
 
@@ -172,6 +179,11 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       title: parse('Remove from<br/>“Channel name”'),
       description: 'Once removed, this character will no longer be affiliated with the channel. Do you want to Remove?',
       idProfile: 0,
+    },
+
+    dataPopupComplete: {
+      isOpen: false,
+      title: '채널 생성 완료',
     },
   });
 
@@ -371,7 +383,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     if (res?.resultCode == 0) {
-      routerBack();
+      data.dataPopupComplete.isOpen = true;
+      data.dataPopupComplete.title = isUpdate ? '채널 수정 완료' : '채널 생성 완료';
+      setData({...data});
     }
   };
 
@@ -1018,6 +1032,22 @@ const CreateChannel = ({id, isUpdate}: Props) => {
             data.dataPopupRemove.isOpen = false;
             setData({...data});
           }}
+        />
+      )}
+
+      {data.dataPopupComplete.isOpen && (
+        <CustomPopup
+          type="alert"
+          title={data.dataPopupComplete.title}
+          buttons={[
+            {
+              label: getLocalizedText('Common', 'common_button_confirm'),
+              onClick: () => {
+                routerBack();
+              },
+              isPrimary: true,
+            },
+          ]}
         />
       )}
     </>
