@@ -255,7 +255,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
         <meta property="og:image" content={initialFeed?.characterProfileUrl || '/default-image.png'} />
       </Head> 추후 메타 처리*/}
 
-      {!isProfile && (
+      {!isProfile && !isSpecificProfile && (
         <>
           <div className={styles.tabContainer}>
             <button
