@@ -1303,6 +1303,13 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
               return (
                 <components.SingleValue {...props}>
                   <div
+                    onPointerUp={() => {
+                      if (isOpen) {
+                        setTimeout(() => {
+                          setIsOpen(false);
+                        }, 1);
+                      }
+                    }}
                     onClick={() => {
                       if (isOpen) {
                         setIsOpen(false);
