@@ -32,6 +32,7 @@ import {MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
+import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPrompt';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -99,6 +100,10 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
     character.customModulesInfo.selectLorebookId,
   );
 
+  const KEYWORDS: Record<string, string> = {
+    '{{user}}': 'user',
+    '{{char}}': 'character',
+  };
   //#endregion
 
   //#region Media
@@ -284,10 +289,10 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           id: character.id,
           referenceLanguage: languageType,
           name: characterName,
-          introduction: introduction, // 지정하는 장소 없음
-          description: description,
-          worldScenario: worldScenario,
-          secret: secret,
+          introduction: replaceChipsWithKeywords(introduction, KEYWORDS),
+          description: replaceChipsWithKeywords(description, KEYWORDS),
+          worldScenario: replaceChipsWithKeywords(worldScenario, KEYWORDS),
+          secret: replaceChipsWithKeywords(secret, KEYWORDS),
           mainImageUrl: mainimageUrl,
           mediaTemplateList: mediaTemplateList?.map(item => ({
             id: item.id,
@@ -528,10 +533,6 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
             selectedPromptId={customModulesPromptId}
             selectedLorebookId={customModulesLorebookId}
             onLangChange={setLanguageType}
-            onCharacterDescChange={setDescription}
-            onWorldScenarioChange={setWorldScenario}
-            onGreetingChange={setIntroduction}
-            onSecretChange={setSecret}
             onSelectedPromptChange={setCustomModulesPromptId}
             onSelectedLorebookChange={setCustomModulesLorebookId}
             setCharacterDesc={setDescription}
