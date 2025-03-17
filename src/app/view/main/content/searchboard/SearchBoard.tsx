@@ -46,7 +46,7 @@ const SearchBoard: React.FC = () => {
   const searchOptionList = ['Female', 'Male', 'BL', 'GL', 'LGBT+', 'Romance', 'Villain', 'Gaming', 'Adventure'];
   const [searchResultList, setSearchResultList] = useState<ExploreItem[] | null>(null);
 
-  const [search, setSearch] = useState<'All' | 'Story' | 'Character'>('All');
+  const [search, setSearch] = useState<'All' | 'Story' | 'Character' | 'Content'>('All');
   const [adultToggleOn, setAdultToggleOn] = useState(false);
   const [searchValue, setSearchValue] = useState<string>('');
   const [searchSort, setSearchSort] = useState<'Newest' | 'Most Popular' | 'Weekly Popular' | 'Monthly Popular'>(
@@ -109,14 +109,14 @@ const SearchBoard: React.FC = () => {
     data.indexTab = Number(indexTab);
     setData({...data});
 
-    if (search && ['All', 'Story', 'Character'].includes(search)) {
-      handleSearchChange(search as 'All' | 'Story' | 'Character');
+    if (search && ['All', 'Story', 'Character', 'Content'].includes(search)) {
+      handleSearchChange(search as 'All' | 'Story' | 'Character' | 'Content');
     }
   }, []);
   console.log('data : ', data);
   // Handle
 
-  const handleSearchChange = (value: 'All' | 'Story' | 'Character') => {
+  const handleSearchChange = (value: 'All' | 'Story' | 'Character' | 'Content') => {
     setSearch(value);
   };
 
@@ -286,24 +286,24 @@ const SearchBoard: React.FC = () => {
                 {talkainOperatorList && talkainOperatorList.length > 0 && (
                   <SearchBoardHorizonScroll title="talkainOperatorList" data={talkainOperatorList} />
                 )}
-                {popularList && popularList.length > 0 && (
+                {/* {popularList && popularList.length > 0 && (
                   <SearchBoardHorizonScroll title="popularList" data={popularList} />
-                )}
+                )} */}
                 {malePopularList && malePopularList.length > 0 && (
-                  <SearchBoardHorizonScroll title="Weekly Top 10 Story" data={malePopularList} />
+                  <SearchBoardHorizonScroll title="Character" data={malePopularList} />
                 )}
                 {femalePopularList && femalePopularList.length > 0 && (
-                  <SearchBoardHorizonScroll title="Talkain Original Story" data={femalePopularList} />
+                  <SearchBoardHorizonScroll title="Story" data={femalePopularList} />
                 )}
-                {newContentList && newContentList.length > 0 && (
+                {/* {newContentList && newContentList.length > 0 && (
                   <SearchBoardHorizonScroll title="New" data={newContentList} />
-                )}
+                )} */}
                 {playingList && playingList.length > 0 && (
-                  <SearchBoardHorizonScroll title="Popular" data={playingList} />
+                  <SearchBoardHorizonScroll title="Content" data={playingList} />
                 )}
-                {recommendationList && recommendationList.length > 0 && (
+                {/* {recommendationList && recommendationList.length > 0 && (
                   <SearchBoardHorizonScroll title="recommendList" data={recommendationList} />
-                )}
+                )} */}
                 <br />
               </main>
             </div>
@@ -362,6 +362,15 @@ const SearchBoard: React.FC = () => {
                 >
                   Character
                 </button>
+                <button
+                  className={`${styles.tag} ${search === 'Content' ? styles.selected : ''}`}
+                  onClick={() => {
+                    handleSearchChange('Content');
+                    changeParams('search', 'Content');
+                  }}
+                >
+                  Content
+                </button>
               </div>
               <button className={styles.sortButton} onClick={() => setSortDropDownOpen(true)}>
                 <div>{searchSort}</div>
@@ -394,6 +403,9 @@ const SearchBoard: React.FC = () => {
                       }
                       if (search === 'Character') {
                         return item.exploreItemType === 1;
+                      }
+                      if (search === 'Content') {
+                        return item.exploreItemType === 2;
                       }
                       return true;
                     })

@@ -1,10 +1,9 @@
 import {sendGetCustomModules} from '@/app/NetWork/CustomModulesNetwork';
 import styles from './CharacterCreateLLM.module.css';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
-import CustomInput from '@/components/layout/shared/CustomInput';
 import getLocalizedText from '@/utils/getLocalizedText';
-import {BoldAI, BoldArrowDown, LineDelete} from '@ui/Icons';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {BoldAI} from '@ui/Icons';
+import {useEffect, useRef, useState} from 'react';
 import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import formatText from '@/utils/formatText';
 import PromptInput from '@/app/view/studio/promptDashboard/PromptInput';
@@ -76,6 +75,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
     greeting: false,
     secret: false,
   });
+
   const [dropdownPositionState, setDropdownPositionState] = useState<
     Record<keyof typeof promptRefs, {top: number; left: number}>
   >({
@@ -86,22 +86,17 @@ const CharacterCreateLLM: React.FC<Props> = ({
   });
 
   const KEYWORDS: Record<string, string> = {
-    '{{user}}': 'User',
-    '{{char}}': 'Character',
+    '{{user}}': 'user',
+    '{{char}}': 'character',
   };
 
-  const handleGetCustomModules = async () => {
-    const response = await sendGetCustomModules();
-    if (response.data) {
-      const prompts = response.data?.prompts;
-      const lorebooks = response.data?.lorebooks;
-      setPromptItems(prompts.map(prompt => ({label: prompt.title, value: prompt.promptId})));
-      setLorebookItems(lorebooks.map(lorebook => ({label: lorebook.title, value: lorebook.lorebookId})));
-    }
-  };
+  //#region 초기화
 
   useEffect(() => {
-    handleGetCustomModules();
+    if (promptRefs.desc.current) promptRefs.desc.current.innerHTML = convertTextToHTML(characterDesc);
+    if (promptRefs.worldScenario.current) promptRefs.worldScenario.current.innerHTML = convertTextToHTML(worldScenario);
+    if (promptRefs.greeting.current) promptRefs.greeting.current.innerHTML = convertTextToHTML(greeting);
+    if (promptRefs.secret.current) promptRefs.secret.current.innerHTML = convertTextToHTML(secret);
   }, []);
 
   useEffect(() => {
@@ -137,6 +132,41 @@ const CharacterCreateLLM: React.FC<Props> = ({
     setAutoWriteCharacterSecret(data4);
   }, []);
 
+  const handleGetCustomModules = async () => {
+    const response = await sendGetCustomModules();
+    if (response.data) {
+      const prompts = response.data?.prompts;
+      const lorebooks = response.data?.lorebooks;
+      setPromptItems(prompts.map(prompt => ({label: prompt.title, value: prompt.promptId})));
+      setLorebookItems(lorebooks.map(lorebook => ({label: lorebook.title, value: lorebook.lorebookId})));
+    }
+  };
+
+  useEffect(() => {
+    handleGetCustomModules();
+  }, []);
+  //#endregion
+
+  //#region  함수
+
+  const convertTextToHTML = (text: string): string => {
+    let html = text.trim();
+
+    Object.keys(KEYWORDS).forEach(keyword => {
+      const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
+      html = html.replace(
+        regex,
+        `<span class="${styles['chip']} ${styles['chipUser']}" contenteditable="false">${KEYWORDS[keyword]}</span>`,
+      );
+    });
+
+    return html;
+  };
+
+  //#endregion
+
+  //#region  Handler
+
   const handleSelectLang = (value: number) => {
     onLangChange(value);
   };
@@ -148,7 +178,6 @@ const CharacterCreateLLM: React.FC<Props> = ({
   const handleSelectLoreBook = (value: number) => {
     onSelectedLorebookChange(value);
   };
-
   const handleAutoWriteText = (ref: React.RefObject<HTMLDivElement>, textArray: string[]) => {
     if (!ref.current || textArray.length === 0) return;
 
@@ -156,8 +185,10 @@ const CharacterCreateLLM: React.FC<Props> = ({
     const newValue = textArray[randomIndex];
 
     ref.current.focus();
-    ref.current.innerText = newValue;
 
+    ref.current.innerHTML = convertTextToHTML(newValue);
+
+    // 커서를 마지막으로 이동
     const range = document.createRange();
     const selection = window.getSelection();
     range.selectNodeContents(ref.current);
@@ -165,6 +196,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
     selection?.removeAllRanges();
     selection?.addRange(range);
 
+    // `handleInput`을 수동으로 호출하여 상태 업데이트
     const event = new Event('input', {bubbles: true});
     ref.current.dispatchEvent(event);
   };
@@ -174,6 +206,10 @@ const CharacterCreateLLM: React.FC<Props> = ({
     handleAutoWriteText(promptRefs.worldScenario, autoWriteCharacterWorldScenario);
   const handleAutoWriteCharacterGreeting = () => handleAutoWriteText(promptRefs.greeting, autoWriteCharacterGreeting);
   const handleAutoWriteCharacterSecret = () => handleAutoWriteText(promptRefs.secret, autoWriteCharacterSecret);
+
+  //#endregion
+
+  //#region  Render
 
   const renderTitle = (title: string, desc: string) => {
     const highlightText = (text: string) => {
@@ -226,36 +262,37 @@ const CharacterCreateLLM: React.FC<Props> = ({
       if (!div) return;
 
       const selection = window.getSelection();
-      const currentFocusNode = selection?.focusNode;
+      const range = selection?.getRangeAt(0);
 
       div.focus();
 
-      const chip = document.createElement('span');
-      chip.className = `${styles['chip']} ${styles['chipUser']}`;
-      chip.contentEditable = 'false';
-      chip.innerText = `{{${text}}}`;
+      // 새로운 칩을 변환된 HTML로 생성
+      const chipHTML = convertTextToHTML(`{{${text}}}`);
 
-      const range = selection?.getRangeAt(0);
+      if (range && div.contains(range.commonAncestorContainer)) {
+        // 현재 선택한 위치에 HTML 삽입
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = chipHTML;
+        const chipElement = tempDiv.firstChild;
 
-      if (range && currentFocusNode && div.contains(currentFocusNode)) {
         range.deleteContents();
-        range.insertNode(chip);
+        range.insertNode(chipElement as Node);
 
-        // Chip 뒤에 공백 추가
+        // 칩 뒤에 공백 추가
         const space = document.createTextNode(' ');
-        chip.after(space);
+        chipElement?.after(space);
 
         // 커서를 space 뒤로 이동
         range.setStartAfter(space);
         range.collapse(true);
       } else {
-        div.appendChild(chip);
-        div.appendChild(document.createTextNode(' '));
+        // 기존 HTML 유지 + 칩 추가
+        div.insertAdjacentHTML('beforeend', ` ${chipHTML}`);
 
-        // 새로운 칩 뒤로 커서 이동
+        // 커서를 마지막으로 이동
         const newRange = document.createRange();
-        newRange.setStartAfter(chip);
-        newRange.collapse(true);
+        newRange.selectNodeContents(div);
+        newRange.collapse(false);
         selection?.removeAllRanges();
         selection?.addRange(newRange);
       }
@@ -263,13 +300,6 @@ const CharacterCreateLLM: React.FC<Props> = ({
       // `handleInput`을 수동으로 호출하여 상태 업데이트
       const event = new Event('input', {bubbles: true});
       div.dispatchEvent(event);
-
-      setTimeout(() => {
-        div.focus();
-        // 커서를 마지막으로 이동
-        selection?.selectAllChildren(div);
-        selection?.collapseToEnd();
-      }, 10);
     };
 
     return (
@@ -318,9 +348,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
     );
   };
 
-  useEffect(() => {
-    console.log('Updated characterDesc:', characterDesc);
-  }, [characterDesc]);
+  //#endregion
 
   return (
     <div className={styles.llmContainer}>

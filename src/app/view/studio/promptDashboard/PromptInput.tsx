@@ -43,7 +43,7 @@ const PromptInput: React.FC<Props> = ({
         if (html.includes(keyword)) {
           html = html.replace(
             regex,
-            `<span class="${styles['chip']} ${styles['chipUser']}" contenteditable="false">${Keywords[keyword]}</span>`,
+            `<span class="${styles.chip} ${styles.chipUser}" contenteditable="false">${Keywords[keyword]}</span>`,
           );
           changed = true;
         }
