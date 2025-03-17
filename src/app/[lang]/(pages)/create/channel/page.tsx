@@ -538,8 +538,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     maxLength={500}
                     onChange={async e => {
                       const target = e.target as HTMLTextAreaElement;
-                      target.style.height = 'auto';
-                      target.style.height = `${target.scrollHeight}px`;
+                      // target.style.height = 'auto';
+                      // target.style.height = `${target.scrollHeight}px`;
                       setValue('description', target.value, {shouldValidate: false}); // 강제 업데이트
                       clearErrors('description');
                     }}
