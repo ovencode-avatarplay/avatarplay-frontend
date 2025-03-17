@@ -95,11 +95,11 @@
     max-height: 257px;
     align-items: flex-start;
     align-self: stretch;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 
-/* 
-.promptInputArea::-webkit-scrollbar {
+
+/* .promptInputArea::-webkit-scrollbar {
     display: none;  
   }
    
