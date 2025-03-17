@@ -2512,6 +2512,9 @@ export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
             <img src={BoldPin.src} alt="" />
           </div>
         )}
+        <div className={styles.bgGradientWrap}>
+          <div className={styles.bgGradient}></div>
+        </div>
         <div className={styles.info}>
           <div className={styles.likeWrap}>
             <img src={BoldContentLists.src} alt="" />
@@ -2565,6 +2568,9 @@ export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
         {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        <div className={styles.bgGradientWrap}>
+          <div className={styles.bgGradient}></div>
+        </div>
         {itemInfo?.isFavorite && (
           <div className={styles.pin}>
             <img src={BoldPin.src} alt="" />
@@ -2635,6 +2641,9 @@ export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCo
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
         {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        <div className={styles.bgGradientWrap}>
+          <div className={styles.bgGradient}></div>
+        </div>
         {itemInfo?.isFavorite && (
           <div className={styles.pin}>
             <img src={BoldPin.src} alt="" />
@@ -2702,6 +2711,9 @@ export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContent
         {feedInfo.mediaState == MediaState.Video && (
           <video className={styles.imgThumbnail} src={feedInfo?.mediaUrlList?.[0]} />
         )}
+        <div className={styles.bgGradientWrap}>
+          <div className={styles.bgGradient}></div>
+        </div>
         {feedInfo?.isPinFix && (
           <div className={styles.pin}>
             <img src={BoldPin.src} alt="" />
