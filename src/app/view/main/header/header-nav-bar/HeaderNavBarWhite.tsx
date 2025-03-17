@@ -16,7 +16,7 @@ import {getLocalizedLink} from '@/utils/UrlMove';
 import {BoldAlert, BoldRuby, BoldStar, LineMenu} from '@ui/Icons';
 import {useDispatch, useSelector} from 'react-redux';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
-import HamburgerBar from './HamburgerBar';
+import HamburgerBar from '../../sidebar/HamburgerBar';
 import TestAdModal from './TestAdModal';
 import {RootState} from '@/redux-store/ReduxStore';
 

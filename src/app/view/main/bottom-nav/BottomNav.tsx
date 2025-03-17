@@ -31,7 +31,7 @@ export default function BottomNav() {
   const colorMode = useSelector((state: RootState) => state.mainControl.bottomNavColor);
 
   const toggleDrawer = (open: boolean) => {
-    setDrawerOpen(open);
+    setDrawerOpen(open); //
   };
 
   const handleClick = (index: number) => {
