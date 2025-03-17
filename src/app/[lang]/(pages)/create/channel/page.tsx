@@ -208,9 +208,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       const index = tag.findIndex(v => v == tagValue);
       if (index >= 0) {
         data.dataTag.tagList[index].isActive = true;
-        setValue(`tags.${index}`, tagValue, {shouldValidate: false});
       }
     }
+    const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
+    setValue('tags', tags);
 
     setValue('postCountry', []);
     data.dataCountry.tagList = [];
@@ -220,6 +221,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       data.dataCountry.tagList.push(value);
       setValue(`postCountry.${i}`, value, {shouldValidate: false});
     }
+    setValue(`postCountry`, data.dataCountry.tagList, {shouldValidate: false});
 
     const memberList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[] =
       res.data?.channelInfo.memberProfileIdList?.map(v => ({
@@ -597,19 +599,20 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     return (
                       <div className={styles.tag} key={index}>
                         <div className={styles.value}>
-                          <input
+                          {/* <input
                             value={one.value}
                             className={styles.hide}
                             autoComplete="off"
                             {...register(`tags.${index}`, {required: true})}
-                          />
+                          /> */}
                           {one.value}
                         </div>
                         <div
                           className={styles.btnRemoveWrap}
                           onClick={e => {
-                            unregister(`tags.${index}`);
                             data.dataTag.tagList[index].isActive = false;
+                            const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
+                            setValue('tags', tags);
                             setData({...data});
                           }}
                         >
@@ -641,19 +644,19 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     return (
                       <div className={styles.tag} key={index}>
                         <div className={styles.value}>
-                          <input
+                          {/* <input
                             value={one}
                             className={styles.hide}
                             autoComplete="off"
                             {...register(`postCountry.${index}`, {required: true})}
-                          />
+                          /> */}
                           {countryStr}
                         </div>
                         <div
                           className={styles.btnRemoveWrap}
                           onClick={e => {
-                            unregister(`postCountry.${index}`);
-                            data.dataCountry.tagList = data.dataCountry.tagList.filter(v => v != one);
+                            const postCountryList = data.dataCountry.tagList.filter(v => v != one);
+                            setValue('postCountry', postCountryList);
                             setData({...data});
                           }}
                         >
@@ -889,13 +892,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           clearErrors('tags');
           data.dataTag.tagList = dataChanged;
 
-          for (let i = 0; i < dataChanged.length; i++) {
-            if (!dataChanged[i].isActive) {
-              unregister(`tags.${i}`);
-            } else {
-              setValue(`tags.${i}`, dataChanged[i].value, {shouldValidate: false});
-            }
-          }
+          const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
+          console.log('tags : ', tags);
+          setValue('tags', tags);
           setData({...data});
         }}
       />
@@ -912,10 +911,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           clearErrors('postCountry');
           data.dataCountry.tagList = updatedList.map(v => v.toString());
 
-          unregister(`postCountry`);
-          for (let i = 0; i < updatedList.length; i++) {
-            setValue(`postCountry.${i}`, updatedList[i].toString(), {shouldValidate: false});
-          }
+          setValue(
+            'postCountry',
+            updatedList.map(v => v.toString()),
+          );
           setData({...data});
         }}
         isAll={data.dataCountry.isAll}
@@ -935,7 +934,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         onUpdateOperatorList={(updatedList: ProfileSimpleInfo[]) => {
           data.dataOperatorInvitation.operatorProfileIdList = updatedList;
           if (updatedList.length == 0) {
-            unregister(`operatorInvitationProfileIdList`);
+            setValue(`operatorInvitationProfileIdList`, []);
           } else {
             setValue('operatorInvitationProfileIdList', updatedList);
           }
@@ -959,13 +958,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         onChange={(dataChanged: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => {
           clearErrors('memberProfileIdList');
           data.dataCharacterSearch.profileList = [...dataChanged];
-          unregister(`memberProfileIdList`);
-
-          for (let i = 0; i < data.dataCharacterSearch.profileList.length; i++) {
-            setValue(`memberProfileIdList.${i}`, data.dataCharacterSearch.profileList[i].profileSimpleInfo, {
-              shouldValidate: false,
-            });
-          }
+          const profileList = data.dataCharacterSearch.profileList.map(v => v.profileSimpleInfo);
+          setValue('memberProfileIdList', profileList);
           setData({...data});
         }}
       />
