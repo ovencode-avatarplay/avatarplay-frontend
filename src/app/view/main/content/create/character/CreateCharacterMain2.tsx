@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 
 // publish가 끝나고 다른곳으로 이동하기
 import {useRouter} from 'next/navigation';
-import {getBackUrl, getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 
 import styles from './CreateCharacterMain2.module.css';
 import {BoldMixture, LineAIImage, LineDashboard, LineEdit, LineUpload} from '@ui/Icons';
@@ -535,6 +535,10 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
             onSecretChange={setSecret}
             onSelectedPromptChange={setCustomModulesPromptId}
             onSelectedLorebookChange={setCustomModulesLorebookId}
+            setCharacterDesc={setDescription}
+            setGreeting={setIntroduction}
+            setWorldScenario={setWorldScenario}
+            setSecret={setSecret}
             essentialWarning={essentialWarning}
           />
         </>

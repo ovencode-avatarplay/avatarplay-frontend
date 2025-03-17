@@ -5,9 +5,10 @@ import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAI, BoldArrowDown, LineDelete} from '@ui/Icons';
-import {ReactNode, useEffect, useState} from 'react';
+import {ReactNode, useEffect, useRef, useState} from 'react';
 import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import formatText from '@/utils/formatText';
+import PromptInput from '@/app/view/studio/promptDashboard/PromptInput';
 
 interface Props {
   selectedLang: number;
@@ -18,12 +19,12 @@ interface Props {
   selectedPromptId: number;
   selectedLorebookId: number;
   onLangChange: (lang: number) => void;
-  onCharacterDescChange: (desc: string) => void;
-  onWorldScenarioChange: (scenario: string) => void;
-  onGreetingChange: (greeting: string) => void;
-  onSecretChange: (secret: string) => void;
   onSelectedPromptChange: (prompt: number) => void;
   onSelectedLorebookChange: (lorebook: number) => void;
+  setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
+  setWorldScenario: React.Dispatch<React.SetStateAction<string>>;
+  setGreeting: React.Dispatch<React.SetStateAction<string>>;
+  setSecret: React.Dispatch<React.SetStateAction<string>>;
   essentialWarning: boolean;
 }
 
@@ -39,12 +40,12 @@ const CharacterCreateLLM: React.FC<Props> = ({
   selectedPromptId,
   selectedLorebookId,
   onLangChange,
-  onCharacterDescChange,
-  onWorldScenarioChange,
-  onGreetingChange,
-  onSecretChange,
   onSelectedPromptChange,
   onSelectedLorebookChange,
+  setCharacterDesc,
+  setWorldScenario,
+  setGreeting,
+  setSecret,
   essentialWarning,
 }) => {
   const [autoWriteCharacterDesc, setAutoWriteCharacterDesc] = useState<string[]>([]);
@@ -123,22 +124,22 @@ const CharacterCreateLLM: React.FC<Props> = ({
 
   const handleAutoWriteCharacterDesc = () => {
     const randomIndex = Math.floor(Math.random() * autoWriteCharacterDesc.length);
-    onCharacterDescChange(autoWriteCharacterDesc[randomIndex]);
+    setCharacterDesc(autoWriteCharacterDesc[randomIndex]);
   };
 
   const handleAutoWriteCharacterWorldScenario = () => {
     const randomIndex = Math.floor(Math.random() * autoWriteCharacterWorldScenario.length);
-    onWorldScenarioChange(autoWriteCharacterWorldScenario[randomIndex]);
+    setWorldScenario(autoWriteCharacterWorldScenario[randomIndex]);
   };
 
   const handleAutoWriteCharacterGreeting = () => {
     const randomIndex = Math.floor(Math.random() * autoWriteCharacterGreeting.length);
-    onGreetingChange(autoWriteCharacterGreeting[randomIndex]);
+    setGreeting(autoWriteCharacterGreeting[randomIndex]);
   };
 
   const handleAutoWriteCharacterSecret = () => {
     const randomIndex = Math.floor(Math.random() * autoWriteCharacterSecret.length);
-    onSecretChange(autoWriteCharacterSecret[randomIndex]);
+    setSecret(autoWriteCharacterSecret[randomIndex]);
   };
 
   const renderTitle = (title: string, desc: string) => {
@@ -179,30 +180,49 @@ const CharacterCreateLLM: React.FC<Props> = ({
     );
   };
 
+  const promptRefs = {
+    desc: useRef<HTMLDivElement>(null),
+    worldScenario: useRef<HTMLDivElement>(null),
+    greeting: useRef<HTMLDivElement>(null),
+    secret: useRef<HTMLDivElement>(null),
+  };
+
+  const [showAutoCompleteState, setShowAutoCompleteState] = useState<Record<keyof typeof promptRefs, boolean>>({
+    desc: false,
+    worldScenario: false,
+    greeting: false,
+    secret: false,
+  });
+  const [dropdownPositionState, setDropdownPositionState] = useState<
+    Record<keyof typeof promptRefs, {top: number; left: number}>
+  >({
+    desc: {top: 0, left: 0},
+    worldScenario: {top: 0, left: 0},
+    greeting: {top: 0, left: 0},
+    secret: {top: 0, left: 0},
+  });
+
+  const KEYWORDS: Record<string, string> = {
+    '{{user}}': 'User',
+    '{{char}}': 'Character',
+  };
+
   const renderMaxTextInput = (
+    key: keyof typeof promptRefs,
     value: string,
-    handlePromptChange: (newValue: string) => void,
+    setValue: React.Dispatch<React.SetStateAction<string>>,
     onClickAI: () => void,
     placeholder?: string,
     essential?: boolean,
   ) => {
     const handleButtonClick = (text: string) => {
       // 버튼 클릭 시 기존 텍스트에 {{User}} 또는 {{Char}} 추가
-      handlePromptChange(value + `{{${text}}}`);
+      setValue(prevValue => prevValue + `{{${text}}}`);
     };
 
     return (
       <div className={`${styles.maxTextInputArea} `}>
-        <MaxTextInput
-          inputDataType={inputType.None}
-          stateDataType={inputState.Normal}
-          displayDataType={displayType.Default}
-          promptValue={value}
-          placeholder={placeholder}
-          handlePromptChange={event => handlePromptChange(event.target.value)}
-          inSideHint={formatText(getLocalizedText(Header, 'createcharacter001_label_013'), [value.length.toString()])}
-          style={essential && value === '' ? {borderStyle: 'solid', borderWidth: '2px', borderColor: 'red'} : {}}
-        />
+        {renderPromptInput(key, value, setValue)}
         <div className={styles.maxTextButtonArea}>
           <button className={`${styles.maxTextButton} ${styles.aiButton}`}>
             <img className={styles.maxTextButtonIcon} src={BoldAI.src} onClick={onClickAI} />
@@ -213,6 +233,33 @@ const CharacterCreateLLM: React.FC<Props> = ({
           <button className={styles.maxTextButton} onClick={() => handleButtonClick('Char')}>
             {getLocalizedText(Common, 'common_button_charcommand')}
           </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderPromptInput = (
+    key: keyof typeof promptRefs,
+    value: string,
+    setValue: React.Dispatch<React.SetStateAction<string>>,
+  ) => {
+    return (
+      <div className={styles.promptInputContainer}>
+        <div className={styles.promptInputArea}>
+          <PromptInput
+            prefix={''}
+            suffix={''}
+            promptRef={promptRefs[key]}
+            showAutoComplete={showAutoCompleteState[key]}
+            Keywords={KEYWORDS}
+            dropdownPos={dropdownPositionState[key]}
+            setDropdownPosition={pos => setDropdownPositionState(prev => ({...prev, [key]: pos}))}
+            setShowAutoComplete={show => setShowAutoCompleteState(prev => ({...prev, [key]: show}))}
+            setState={setValue}
+          />
+        </div>
+        <div className={styles.hintTextArea}>
+          {formatText(getLocalizedText(Header, 'createcharacter001_label_013'), [value.length.toString()])}
         </div>
       </div>
     );
@@ -250,7 +297,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
                 </button>
               </div>
             </div>
-            {renderMaxTextInput(greeting, onGreetingChange, handleAutoWriteCharacterGreeting)}
+            {renderMaxTextInput('greeting', greeting, setGreeting, handleAutoWriteCharacterGreeting)}
           </div>
         </ul>
       </>
@@ -277,8 +324,9 @@ const CharacterCreateLLM: React.FC<Props> = ({
           `${getLocalizedText(Header, 'createcharacter001_desc_017')}`,
         )}
         {renderMaxTextInput(
+          'desc',
           characterDesc,
-          onCharacterDescChange,
+          setCharacterDesc,
           handleAutoWriteCharacterDesc,
           getLocalizedText(Common, 'common_sample_082'),
           essentialWarning,
@@ -287,8 +335,9 @@ const CharacterCreateLLM: React.FC<Props> = ({
       <div className={styles.inputDataBoxArea}>
         {renderTitle(getLocalizedText(Header, 'createcharacter001_label_018'), '')}
         {renderMaxTextInput(
+          'worldScenario',
           worldScenario,
-          onWorldScenarioChange,
+          setWorldScenario,
           handleAutoWriteCharacterWorldScenario,
           getLocalizedText(Common, 'common_sample_058'),
         )}
@@ -296,8 +345,9 @@ const CharacterCreateLLM: React.FC<Props> = ({
       <div className={styles.inputDataBoxArea}>
         {renderTitle(getLocalizedText(Header, 'createcharacter001_label_019'), '')}
         {renderMaxTextInput(
+          'greeting',
           greeting,
-          onGreetingChange,
+          setGreeting,
           handleAutoWriteCharacterGreeting,
           getLocalizedText(Common, 'common_sample_083'),
         )}
@@ -305,8 +355,9 @@ const CharacterCreateLLM: React.FC<Props> = ({
       <div className={styles.inputDataBoxArea}>
         {renderTitle(getLocalizedText(Header, 'createcharacter001_label_021'), '')}
         {renderMaxTextInput(
+          'secret',
           secret,
-          onSecretChange,
+          setSecret,
           handleAutoWriteCharacterSecret,
           getLocalizedText(Common, 'common_sample_081'),
         )}
