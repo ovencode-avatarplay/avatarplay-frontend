@@ -36,8 +36,9 @@ import {
   TabContentMenuType,
   TabFilterComponent,
   TabHeaderComponent,
-  TabHeaderWrapAllComponent,
+  TabHeaderWrapFavoritesComponent,
   TabHeaderWrapComponent,
+  TabHeaderWrapPlayListComponent,
 } from './ProfileBase';
 import PopupSubscription, {getUnit} from '../main/content/create/common/PopupSubscription';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -135,7 +136,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
           <main className={styles.main}>
             <section className={styles.tabSection}>
               <div className={styles.tabHeaderContainer}>
-                <TabHeaderWrapAllComponent
+                <TabHeaderWrapPlayListComponent
                   indexTab={data.indexTab}
                   isMine
                   profileId={profileId}

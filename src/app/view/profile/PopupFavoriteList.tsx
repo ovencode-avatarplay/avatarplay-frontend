@@ -35,7 +35,7 @@ import {
   TabContentMenuType,
   TabFilterComponent,
   TabHeaderComponent,
-  TabHeaderWrapAllComponent,
+  TabHeaderWrapFavoritesComponent,
   TabHeaderWrapComponent,
 } from './ProfileBase';
 import PopupSubscription, {getUnit} from '../main/content/create/common/PopupSubscription';
@@ -134,7 +134,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
           <main className={styles.main}>
             <section className={styles.tabSection}>
               <div className={styles.tabHeaderContainer}>
-                <TabHeaderWrapAllComponent
+                <TabHeaderWrapFavoritesComponent
                   indexTab={data.indexTab}
                   isMine
                   profileId={profileId}

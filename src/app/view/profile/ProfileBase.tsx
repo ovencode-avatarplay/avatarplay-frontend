@@ -1038,7 +1038,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         <PopupFavoriteList
           isMine={isMine}
           profileId={data.profileId}
-          profileType={profileType}
+          profileType={ProfileType.Favorites}
           onClose={() => {
             data.isOpenPopupFavoritesList = false;
             setData({...data});
@@ -1050,7 +1050,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         <PopupPlaylist
           isMine={isMine}
           profileId={data.profileId}
-          profileType={profileType}
+          profileType={ProfileType.PlayList}
           onClose={() => {
             data.isOpenPopupPlayList = false;
             setData({...data});
@@ -1454,8 +1454,10 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
     (isPD && [eTabPDType.Feed].includes(tabIndex)) ||
     (isCharacter && [eTabCharacterType.Feed].includes(tabIndex)) ||
     (isChannel && [eTabChannelType.Feed].includes(tabIndex)) ||
-    (isFavorites && [eTabFavoritesType.Feed].includes(tabIndex))
+    (isFavorites && [eTabFavoritesType.Feed].includes(tabIndex)) ||
+    (isPlayList && [eTabPlayListType.Feed].includes(tabIndex))
   ) {
+    console.log('tabIndex : ', tabIndex, isChannel);
     return (
       <>
         <div className={styles.filter}>
@@ -1535,7 +1537,8 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   if (
     (isCharacter && [eTabCharacterType.Contents].includes(tabIndex)) ||
     (isChannel && [eTabChannelType.Contents].includes(tabIndex)) ||
-    (isFavorites && [eTabFavoritesType.Contents].includes(tabIndex))
+    (isFavorites && [eTabFavoritesType.Contents].includes(tabIndex)) ||
+    (isPlayList && [eTabPlayListType.Contents].includes(tabIndex))
   ) {
     return (
       <>
@@ -1623,7 +1626,8 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
     (isPD && [eTabPDType.Character].includes(tabIndex)) ||
     (isCharacter && [eTabCharacterType.Character].includes(tabIndex)) ||
     (isChannel && [eTabChannelType.Character].includes(tabIndex)) ||
-    (isFavorites && [eTabFavoritesType.Character].includes(tabIndex))
+    (isFavorites && [eTabFavoritesType.Character].includes(tabIndex)) ||
+    (isPlayList && [eTabPlayListType.Character].includes(tabIndex))
   ) {
     console.log('filterCluster.indexFilterCharacter : ', filterCluster.indexFilterCharacter);
     return (
@@ -1890,8 +1894,34 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
 
   return <></>;
 };
+export const TabHeaderWrapPlayListComponent = ({
+  indexTab,
+  profileId,
+  profileType,
+  isMine,
+  onTabChange,
+}: TabHeaderComponentType) => {
+  const getTabHeaderList = () => {
+    return Object.values(eTabPlayListType)
+      .filter(value => typeof value === 'number') // 숫자 타입만 필터링
+      .map(type => ({type, label: eTabPlayListType[type]}));
+  };
+  const tabHeaderList = getTabHeaderList();
+  return (
+    <>
+      <TabHeaderComponent
+        indexTab={indexTab}
+        profileId={profileId}
+        profileType={profileType}
+        isMine={isMine}
+        onTabChange={onTabChange}
+        tabHeaderList={tabHeaderList}
+      />
+    </>
+  );
+};
 
-export const TabHeaderWrapAllComponent = ({
+export const TabHeaderWrapFavoritesComponent = ({
   indexTab,
   profileId,
   profileType,
