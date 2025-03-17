@@ -51,7 +51,7 @@
     bottom: 43.25px;
     left: 50%;    
     transform: translate(-50%, 0%);
-    width: calc(100% - 28px);
+    width: var(--second-width);
     height: 50px;
     background: #2c3131;
     color: #ffffff;
