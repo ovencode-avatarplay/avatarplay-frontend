@@ -219,15 +219,10 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
         refreshTabAll={async () => {
           onRefreshTab(true);
         }}
-        onShare={() => {
-          const url =
-            getLocalizedLink(`/profile/feed/` + profileId) +
-            `?type=${profileType}&idContent=${data.tabContentMenu.id}&feedMediaType=${data.filterCluster.indexFilterMedia}&feedSortType=${filterCluster.indexSort}`;
-        }}
         onDelete={async () => {
           onRefreshTab(true);
         }}
-        onEdit={() => {}}
+        onReport={async () => {}}
       />
     </>
   );
