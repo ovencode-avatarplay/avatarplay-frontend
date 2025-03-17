@@ -35,6 +35,8 @@
   display: flex;
   gap: 6px;
   background: white;
+  position: relative;
+  z-index: 3;
 
   button {
     cursor: pointer;

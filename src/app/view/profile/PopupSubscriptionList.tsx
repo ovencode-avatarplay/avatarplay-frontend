@@ -154,8 +154,9 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                     minHeight: '52px',
                   },
                   menuList: {
-                    borderbottomLeftRadius: '10px',
-                    borderbottomRightRadius: '10px',
+                    borderRadius: '10px',
+                    // borderbottomLeftRadius: '10px',
+                    // borderbottomRightRadius: '10px',
                     boxShadow: '0px 0px 30px 0 rgba(0, 0, 0, 0.10)',
                   },
                   option: {
