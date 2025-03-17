@@ -87,6 +87,7 @@ export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<M
 export interface GenerateParameter {
   name: string;
   value: number;
+  prompt : string;
 }
 export interface GenerateImageReq {
   values: GenerateParameter[];

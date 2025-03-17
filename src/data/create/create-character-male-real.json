@@ -54,10 +54,10 @@
   "bottomSizes": [
   ],
   "clothing": [
-    { "label": "common_tagoutfit_uniform", "image": "clothes_1_uniform.png", "value": 1},
-    { "label": "common_tagoutfit_formaldress", "image": "clothes_2_dress.png", "value": 2},
-    { "label": "common_tagoutfit_suit", "image": "clothes_3_suit.png", "value": 3},
-    { "label": "common_tagoutfit_casual", "image": "clothes_4_casual.png", "value": 4 }
+    { "label": "common_tagoutfit_uniform", "image": "clothes_1_uniform.png", "value": 1, "prompts":["uniform"]},
+    { "label": "common_tagoutfit_formaldress", "image": "clothes_2_dress.png", "value": 2, "prompts":["formal dress"]},
+    { "label": "common_tagoutfit_suit", "image": "clothes_3_suit.png", "value": 3, "prompts":["suit"]},
+    { "label": "common_tagoutfit_casual", "image": "clothes_4_casual.png", "value": 4,"prompts":["casual"] }
     ],
     "clothingColor" : [ 
       {"label" : "common_tagcolor_beige", "image" : "#DECC98", "value" : 1},
@@ -66,25 +66,5 @@
       {"label" : "common_tagcolor_red", "image" : "#B82626", "value" : 4},
       {"label" : "common_tagcolor_pink", "image" : "#FF81DF", "value" : 5},
       {"label" : "common_tagcolor_silver", "image" : "linear-gradient(137deg, #B2B2B2 17.4%, #EBEBEB 50.99%, #B2B2B2 83.91%)", "value" : 6}
-    ],
-    "background": [
-      { "label": "common_tagbackground_sakurablossom", "image": "/background_sakura_blossom.png", "value": 0 },
-      { "label": "common_tagbackground_garden", "image": "/background_garden.png", "value": 1 },
-      { "label": "common_tagbackground_flowerfield", "image": "/background_flower_field.png", "value": 2 },
-      { "label": "common_tagbackground_beach", "image": "/background_beach.png", "value": 3 },
-      { "label": "common_tagbackground_farm", "image": "/background_farm.png", "value": 4 },
-      { "label": "common_tagbackground_hotspring", "image": "/background_hot_spring.png", "value": 5 },
-      { "label": "common_tagbackground_classroom", "image": "/background_classroom.png", "value": 6 },
-      { "label": "common_tagbackground_library", "image": "/background_library.png", "value": 7 },
-      { "label": "common_tagbackground_artiststudio", "image": "/background_artist_studio.png", "value": 8 },
-      { "label": "common_tagbackground_supermarket", "image": "/background_supermarket.png", "value": 9 },
-      { "label": "common_tagbackground_clothingstore", "image": "/background_clothing_store.png", "value": 10 },
-      { "label": "common_tagbackground_office", "image": "/background_office.png", "value": 11 },
-      { "label": "common_tagbackground_cocktailbar", "image": "/background_cocktail_bar.png", "value": 12 },
-      { "label": "common_tagbackground_church", "image": "/background_church.png", "value": 13 },
-      { "label": "common_tagbackground_coffeeshop", "image": "/background_coffee_shop.png", "value": 14 },
-      { "label": "common_tagbackground_gym", "image": "/background_gym.png", "value": 15 },
-      { "label": "common_tagbackground_vendingmachine", "image": "/background_vending_machine.png", "value": 16 },
-      { "label": "common_tagbackground_insidecar", "image": "/background_inside_car.png", "value": 17 }
     ]
 }
