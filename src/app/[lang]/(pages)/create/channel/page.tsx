@@ -32,7 +32,7 @@ import {
 import {DragStatusType, TagDrawerType} from '../../profile/update/[[...id]]/page';
 import cx from 'classnames';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {debounce, Drawer} from '@mui/material';
+import {debounce, Dialog, Drawer} from '@mui/material';
 import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostCountry';
 import {LanguageType} from '@/app/NetWork/AuthNetwork';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
@@ -54,6 +54,8 @@ import DrawerMembershipSetting from '@/app/view/main/content/create/common/Drawe
 import CustomSelector from '@/components/layout/shared/CustomSelector';
 import {PaymentType, Subscription, VisibilityType} from '@/app/NetWork/network-interface/CommonEnums';
 import useCustomRouter from '@/utils/useCustomRouter';
+import parse from 'html-react-parser';
+
 type Props = {
   id: number;
   isUpdate: boolean;
@@ -83,6 +85,13 @@ type DataProfileUpdateType = {
     isOpenDrawer: boolean;
     inviteSearchValue: string;
     operatorProfileIdList: ProfileSimpleInfo[];
+  };
+
+  dataPopupRemove: {
+    isOpen: boolean;
+    title: React.ReactNode;
+    description: string;
+    idProfile: number;
   };
 };
 
@@ -156,6 +165,12 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       profileList: [],
       onClose: () => {},
       onChange: (profileList: {isActive: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => {},
+    },
+
+    dataPopupRemove: {
+      isOpen: false,
+      title: parse('Remove from<br/>“Channel name”'),
+      description: 'Once removed, this character will no longer be affiliated with the channel. Do you want to Remove?',
     },
   });
 
@@ -556,10 +571,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                           <div
                             className={styles.right}
                             onClick={() => {
-                              const profileList = data.dataCharacterSearch.profileList.filter(
-                                v => v.profileSimpleInfo.profileId != one.profileSimpleInfo.profileId,
-                              );
-                              data.dataCharacterSearch.profileList = profileList;
+                              data.dataPopupRemove.idProfile = one.profileSimpleInfo.profileId;
+                              data.dataPopupRemove.isOpen = true;
+                              data.dataPopupRemove.title = parse(`Remove from<br/>“${watch('name')}”`);
                               setData({...data});
                             }}
                           >
@@ -973,6 +987,25 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           setData({...data});
         }}
       />
+
+      {data.dataPopupRemove.isOpen && (
+        <PopupConfirm
+          title={data.dataPopupRemove.title}
+          description={data.dataPopupRemove.description}
+          onClose={() => {
+            data.dataPopupRemove.isOpen = false;
+            setData({...data});
+          }}
+          onConfirm={() => {
+            const profileList = data.dataCharacterSearch.profileList.filter(
+              v => v.profileSimpleInfo.profileId != data.dataPopupRemove.idProfile,
+            );
+            data.dataCharacterSearch.profileList = profileList;
+            data.dataPopupRemove.isOpen = false;
+            setData({...data});
+          }}
+        />
+      )}
     </>
   );
 };
@@ -1425,5 +1458,32 @@ export const DrawerCharacterSearch = ({
         </button>
       </div>
     </Drawer>
+  );
+};
+
+type PopupConfirmType = {
+  title: React.ReactNode;
+  description: string;
+  onClose: () => void;
+  onConfirm: () => void;
+};
+const PopupConfirm = ({title, description, onClose, onConfirm}: PopupConfirmType) => {
+  return (
+    <>
+      <Dialog open={true} onClose={onClose}>
+        <div className={styles.popupConfirm}>
+          <div className={styles.title}>{title}</div>
+          <div className={styles.description}>{description}</div>
+          <div className={styles.buttonWrap}>
+            <div className={styles.cancel} onClick={onClose}>
+              Cancel
+            </div>
+            <div className={styles.confirm} onClick={onConfirm}>
+              Confirm
+            </div>
+          </div>
+        </div>
+      </Dialog>
+    </>
   );
 };
