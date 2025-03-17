@@ -13,6 +13,9 @@ import {GenerateImageReq2, sendGenerateImageReq2} from '@/app/NetWork/ImageNetwo
 import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {formatCurrency} from '@/utils/util-1';
 
 interface CharacterImageSetProps {
   createFinishAction?: (imgUrl: string) => void;
@@ -40,6 +43,9 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
   const [isCentered, setIsCentered] = useState<boolean>(false);
 
   const [centerThreshold, setCenterThreshold] = useState(Math.round(window.innerWidth / 116));
+
+  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
+  const starAmount = dataStarInfo.star;
 
   const loraOption = [
     {
@@ -418,7 +424,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
         </div>
         <div className={styles.currencyItem}>
           <img className={styles.currencyIcon} src={BoldStar.src} />
-          <span className={styles.currencyText}>100</span> {/* TODO : Currency */}
+          <span className={styles.currencyText}>{formatCurrency(starAmount)}</span> {/* TODO : Currency */}
         </div>
       </div>
 
