@@ -1085,9 +1085,10 @@
 
   section.characterMainImageWrap {
     position: relative;
+    aspect-ratio: 1 / 1;
 
     .characterMainImage {
-      max-height: 516px;
+      // max-height: 516px;
       height: 100%;
       width: 100%;
       object-fit: contain;
