@@ -675,6 +675,37 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     return getLocalizedLink(``);
   };
 
+  const copyToClipboard = () => {
+    if (typeof window === 'undefined') return; // 서버에서 실행 방지
+
+    const queryString = searchParams?.toString() || ''; // 현재 쿼리 파라미터 가져오기
+    const url = queryString
+      ? `${window.location.origin}${pathname}?${queryString}`
+      : `${window.location.origin}${pathname}`;
+    const success = () => {
+      console.log('URL을 클립보드에 복사했습니다.');
+    };
+    const failure = (err: any) => console.error('클립보드에 URL을 복사하지 못했습니다. : ', err);
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(success).catch(failure);
+      } else {
+        const tempInput = document.createElement('textarea');
+        tempInput.value = url;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+
+        const successful = document.execCommand('copy');
+        document.body.removeChild(tempInput);
+
+        successful ? success() : failure('execCommand를 통한 복사 실패');
+      }
+    } catch (error) {
+      failure(error);
+    }
+  };
+
   return (
     <>
       {isMine && (
@@ -802,9 +833,17 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           </div>
         </div>
         <div className={styles.profileDetail}>
-          <div className={styles.nameWrap}>
+          <div
+            className={styles.nameWrap}
+            onClick={async () => {
+              // const url = window.location.origin + pathname;
+              // await navigator.clipboard.writeText(url);
+
+              copyToClipboard();
+            }}
+          >
             <div className={styles.name}>{data.profileInfo?.profileInfo?.name}</div>
-            {!isMine && <img className={styles.iconCopy} src={LineCopy.src} alt="" />}
+            <img className={styles.iconCopy} src={LineCopy.src} alt="" />
           </div>
           {isPD && (
             <div className={styles.verify}>

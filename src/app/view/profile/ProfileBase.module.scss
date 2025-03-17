@@ -276,7 +276,8 @@
     .nameWrap {
       display: flex;
       align-items: center;
-      gap: 2px;
+      gap: 5px;
+      cursor: pointer;
 
       .name {
         color: var(--Color-Tokens-Text, #0C0C0C);
