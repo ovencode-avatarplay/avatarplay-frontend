@@ -2431,14 +2431,16 @@ const TabContentComponent = ({
             </div>
           </div>
         </section>
-        <section className={styles.tagSection}>
-          <ul className={styles.metatags}>
-            {tagList.map((tag, index) => {
-              return <li className={styles.item}>{tag}</li>;
-            })}
-          </ul>
-        </section>
-        {!!channelInfo?.memberProfileIdList?.length && (
+        {tagList?.length != 0 && (
+          <section className={styles.tagSection}>
+            <ul className={styles.metatags}>
+              {tagList.map((tag, index) => {
+                return <li className={styles.item}>{tag}</li>;
+              })}
+            </ul>
+          </section>
+        )}
+        {channelInfo?.memberProfileIdList?.length != 0 && (
           <section className={styles.memberSection}>
             <div className={styles.label}>{channelInfo?.memberProfileIdList?.length} Members</div>
             <Swiper
