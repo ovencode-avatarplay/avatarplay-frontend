@@ -602,7 +602,16 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 <div className={styles.label}>
                   Tag <span className={styles.highlight}>*</span>
                 </div>
-                <input className={styles.hide} autoComplete="off" {...register('tags')} />
+                <input
+                  className={styles.hide}
+                  autoComplete="off"
+                  {...register(`tags`, {
+                    required: true,
+                    validate: {
+                      array: value => (value?.length || 0) > 0,
+                    },
+                  })}
+                />
                 <CustomSelector
                   value={''}
                   error={errors.tags && isSubmitted}
@@ -612,10 +621,6 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 />
                 <div className={styles.tagWrap}>
-                  {!watch('tags') && (
-                    <input className={styles.hide} autoComplete="off" {...register(`tags`, {required: true})} />
-                  )}
-
                   {data.dataTag.tagList.map((one, index) => {
                     if (!one.isActive) return;
 
@@ -658,9 +663,16 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 />
                 <div className={styles.tagWrap}>
-                  {!watch('postCountry') && (
-                    <input className={styles.hide} autoComplete="off" {...register(`postCountry`, {required: true})} />
-                  )}
+                  <input
+                    className={styles.hide}
+                    autoComplete="off"
+                    {...register(`postCountry`, {
+                      required: true,
+                      validate: {
+                        array: value => (value?.length || 0) > 0,
+                      },
+                    })}
+                  />
 
                   {data.dataCountry.tagList.map((one, index) => {
                     const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
@@ -681,6 +693,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                           className={styles.btnRemoveWrap}
                           onClick={e => {
                             const postCountryList = data.dataCountry.tagList.filter(v => v != one);
+                            data.dataCountry.tagList = postCountryList;
                             setValue('postCountry', postCountryList);
                             setData({...data});
                           }}
