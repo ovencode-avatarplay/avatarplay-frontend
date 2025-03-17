@@ -135,6 +135,7 @@ export interface ProfileInfo {
   pdProfileUrlLinkKey: string;
   characterUrlLinkKey: string;
   characterIP: CharacterIP;
+  subscriberCount: number;
 }
 
 export enum FollowState {
