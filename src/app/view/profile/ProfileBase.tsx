@@ -241,8 +241,8 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
   const isOtherPD = !isMine && isPD;
   const isOtherCharacter = !isMine && isCharacter;
   const isOtherChannel = !isMine && isChannel;
-  const isFavorites = ProfileType.Favorites;
-  const isPlayList = ProfileType.PlayList;
+  const isFavorites = [ProfileType.Favorites].includes(profileType);
+  const isPlayList = [ProfileType.PlayList].includes(profileType);
   return {
     isPD,
     isCharacter,
