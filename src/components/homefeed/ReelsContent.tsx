@@ -382,7 +382,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 }}
               >
                 <span className={styles.username}>{item.title}</span>
-                <span className={styles.sponsored}>{getLocalizedText(Header, 'home001_label_003')}</span>
               </div>
               {recommendState == RecommendState.ForYou && (
                 <button

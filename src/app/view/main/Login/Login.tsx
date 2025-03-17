@@ -4,6 +4,7 @@ import {supabase} from 'utils/supabaseClient';
 import Image from 'next/image';
 import styles from './Login.module.css';
 import {AppleLogo, FacebookLogo, GoogleLogo, KakatalkLogo, LineClose} from '@ui/Icons';
+import {useRouter} from 'next/navigation';
 
 const Login = () => {
   const handleOAuthLogin = async (provider: 'google' | 'kakao' | 'facebook' | 'apple') => {
@@ -14,10 +15,16 @@ const Login = () => {
       },
     });
   };
+  const router = useRouter();
 
   return (
     <div className={styles.loginContainer}>
-      <button className={styles.closeBtn}>
+      <button
+        className={styles.closeBtn}
+        onClick={() => {
+          router.back();
+        }}
+      >
         <img src={LineClose.src} className={styles.closeImg}></img>
       </button>
 
