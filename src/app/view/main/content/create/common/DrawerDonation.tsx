@@ -3,11 +3,13 @@ import styles from './DrawerDonation.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import {BoldRadioButton, BoldRadioButtonSelectedBlack, BoldStar, LineRegenerate} from '@ui/Icons';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import {getLocalizedLink, isLogined} from '@/utils/UrlMove';
 import {AppRouterInstance} from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import {GiftStarReq, sendGiftStar} from '@/app/NetWork/ShopNetwork';
+import {setStar} from '@/redux-store/slices/Currency';
 
 interface DrawerDonationProps {
   isOpen: boolean;
@@ -18,9 +20,20 @@ interface DrawerDonationProps {
 }
 
 const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, giveToPDId, onClose, router}) => {
+  const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
   const dataProfile = useSelector((state: RootState) => state.profile); // 내 피디 이름
   const [inputValue, setInputValue] = useState('');
+
+  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
+  const [starAmount, setStarAmount] = useState<number>(0);
+  const starInfo = dataStarInfo.star;
+
+  useEffect(() => {
+    // starInfo가 숫자라면 그대로 사용, 아니라면 0으로 설정
+    setStarAmount(starInfo);
+  }, [starInfo]); // starInfo가 변경될 때마다 실행
+
   const handleRadioClick = (value: number) => {
     setSelectedValue(value);
     setInputValue(value.toString()); // 숫자를 문자열로 변환하여 input 필드에 반영
@@ -33,9 +46,22 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
   };
 
   // Send 버튼 클릭 시 alert 창에 숫자 출력
-  const handleSendClick = () => {
+  const handleSendClick = async () => {
+    const reqData: GiftStarReq = {
+      giftProfileId: giveToPDId,
+      giftStar: Number(inputValue),
+    };
     if (inputValue !== '') {
       alert(`입력된 후원 금액: ${inputValue} EA    pdid : ${giveToPDId}`); // 알림창 띄우기
+      try {
+        const response = await sendGiftStar(reqData);
+        if (typeof response.data?.myStar === 'number') {
+          dispatch(setStar(response.data?.myStar));
+        }
+      } catch (error) {
+        console.error('Message send failed:', error);
+        throw new Error('Failed to send cheat message'); // Propagate the error
+      }
     } else {
       alert('후원 금액을 입력하세요!'); // 값이 없을 때 경고 메시지
     }
@@ -70,12 +96,12 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
         customTitle={styles.parentTitleArea}
       >
         <div className={styles.donationUserInfoText}>
-          {dataProfile.currentProfile?.name} sponsored {sponsoredName}
+          {dataProfile?.currentProfile?.name} sponsored {sponsoredName}
         </div>
 
         <div className={styles.donationHaveStarArea}>
           <img className={styles.star} src={BoldStar.src}></img>
-          <span className={styles.donationStarAmount}>999.9K</span>
+          <span className={styles.donationStarAmount}>{starAmount}</span>
           <div className={styles.donationCharge}>
             <div className={styles.donationChargeText}>Charge</div>
           </div>

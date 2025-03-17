@@ -19,11 +19,13 @@ import mainControl from './slices/MainControl';
 // redux-persist
 import {persistStore, persistReducer} from 'redux-persist';
 import chattingEnterSlice from './slices/ChattingEnter';
+// slice currency
+import currencySlice from './slices/Currency';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['sample', 'chat', 'chatting', 'chattingEnter', 'content', 'user', 'contentselection'],
+  whitelist: ['sample', 'chat', 'chatting', 'chattingEnter', 'content', 'user', 'contentselection', 'starInfo'],
 };
 
 const reducers = combineReducers({
@@ -52,6 +54,7 @@ const reducers = combineReducers({
   emoticon: emoticonSlice,
   modifyQuestion: modifyQuestionSlice,
   //#endregion
+  starInfo: currencySlice,
 });
 
 // persistReducer로 reducers 감싸기

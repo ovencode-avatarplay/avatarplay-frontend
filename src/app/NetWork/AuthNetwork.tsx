@@ -29,6 +29,7 @@ export interface SignInRes {
 export interface SessionInfo {
   name: string;
   accessToken: string;
+  star: number;
 }
 
 export const sendSignIn = async (payload: SignInReq): Promise<boolean> => {
