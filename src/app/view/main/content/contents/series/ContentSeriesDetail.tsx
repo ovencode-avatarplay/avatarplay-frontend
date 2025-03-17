@@ -541,10 +541,8 @@ const PopupPurchase = ({price, contentId, episodeId, contentType, onClose, onPur
 
     if (contentType == ContentType.Series) {
       onPurchaseSuccess(contentId, episodeId, contentType);
-      alert('구매완료, Play Series 처리예정');
     } else {
       onPurchaseSuccess(contentId, episodeId, contentType);
-      alert('구매완료, Play Single 처리예정');
     }
   };
   return (
