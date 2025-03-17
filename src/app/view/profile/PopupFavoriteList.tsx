@@ -219,10 +219,17 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
         refreshTabAll={async () => {
           onRefreshTab(true);
         }}
-        onDelete={async () => {
+        onUnFavorite={async () => {
+          alert('북마크 해제 예정');
+
           onRefreshTab(true);
         }}
-        onReport={async () => {}}
+        onShare={async () => {
+          alert('공유 추가 예정');
+        }}
+        onReport={async () => {
+          alert('신고 추가 예정');
+        }}
       />
     </>
   );
@@ -382,19 +389,27 @@ type ContentSettingType = {
   onClose: () => void;
   tabContentMenu: TabContentMenuType;
   refreshTabAll: () => void;
-  onDelete: () => void;
   onReport: () => void;
+  onShare: () => void;
+  onUnFavorite: () => void;
 };
 const ContentSetting = ({
   isMine = false,
   onClose = () => {},
   tabContentMenu = {id: 0, isPin: false, isSettingOpen: false},
   refreshTabAll = () => {},
-  onDelete = () => {},
   onReport = () => {},
+  onUnFavorite = () => {},
+  onShare = () => {},
 }: ContentSettingType) => {
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItems: SelectDrawerItem[] = [
+    {
+      name: 'Unfavorite',
+      onClick: () => {
+        onUnFavorite();
+      },
+    },
     {
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
       onClick: async () => {
@@ -407,9 +422,9 @@ const ContentSetting = ({
       },
     },
     {
-      name: 'Delete',
+      name: 'Share',
       onClick: () => {
-        onDelete();
+        onShare();
       },
     },
     {

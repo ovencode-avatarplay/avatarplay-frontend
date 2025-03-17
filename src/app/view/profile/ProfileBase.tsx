@@ -180,6 +180,7 @@ export type TabContentMenuType = {
   id: number;
   isSingle?: boolean;
   urlLinkKey?: string;
+  isFavorite?: boolean;
 };
 
 type DataProfileType = {

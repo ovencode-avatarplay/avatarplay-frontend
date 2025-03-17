@@ -221,9 +221,16 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
           onRefreshTab(true);
         }}
         onDelete={async () => {
+          alert('삭제 추가 예정');
+
           onRefreshTab(true);
         }}
-        onReport={async () => {}}
+        onReport={async () => {
+          alert('신고 추가 예정');
+        }}
+        onShare={async () => {
+          alert('공유 추가 예정');
+        }}
       />
     </>
   );
@@ -383,19 +390,28 @@ type ContentSettingType = {
   onClose: () => void;
   tabContentMenu: TabContentMenuType;
   refreshTabAll: () => void;
-  onDelete: () => void;
   onReport: () => void;
+  onShare: () => void;
+  onDelete: () => void;
 };
 const ContentSetting = ({
   isMine = false,
   onClose = () => {},
   tabContentMenu = {id: 0, isPin: false, isSettingOpen: false},
   refreshTabAll = () => {},
-  onDelete = () => {},
   onReport = () => {},
+  onShare = () => {},
+  onDelete = () => {},
 }: ContentSettingType) => {
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItems: SelectDrawerItem[] = [
+    {
+      name: tabContentMenu.isFavorite ? 'Unfavorite' : 'Favorite',
+      onClick: async () => {
+        // onUnFavorite();
+        alert('북마크 처리 예정');
+      },
+    },
     {
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
       onClick: async () => {
@@ -408,15 +424,21 @@ const ContentSetting = ({
       },
     },
     {
-      name: 'Delete',
+      name: 'Share',
       onClick: () => {
-        onDelete();
+        onShare();
       },
     },
     {
       name: 'Report',
       onClick: () => {
         onReport();
+      },
+    },
+    {
+      name: 'Delete',
+      onClick: () => {
+        onDelete();
       },
     },
   ];
