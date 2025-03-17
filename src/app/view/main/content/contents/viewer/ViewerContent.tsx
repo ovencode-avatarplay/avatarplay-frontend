@@ -39,9 +39,13 @@ import {
   ContentLanguageType,
   ContentPlayInfo,
   ContentType,
+  GetSeasonEpisodesPopupReq,
+  GetSeasonEpisodesPopupRes,
   PlayButtonReq,
   PlayReq,
   RecordPlayReq,
+  SeasonEpisodeInfo,
+  sendGetSeasonEpisodesPopup,
   sendPlay,
   sendPlayButton,
   sendRecordPlay,
@@ -70,19 +74,19 @@ interface Props {
 
 const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, episodeId = 0}) => {
   const [info, setInfo] = useState<ContentPlayInfo>();
+  const [curEpisodeId, setCurEpisodeId] = useState(episodeId);
   const [onEpisodeListDrawer, setOnEpisodeListDrawer] = useState(false);
   interface Episode {
     number: number;
     isLocked: boolean;
   }
 
-  const episodes: Episode[] = Array.from({length: 20}, (_, index) => ({
-    number: index,
-    isLocked: [11, 13, 15, 16, 14].includes(index), // 잠금 여부 설정
-  }));
+  const [episodeListData, setEpisodeListData] = useState<GetSeasonEpisodesPopupRes>();
+
   const [isDonation, setDonation] = useState(false);
 
   const [onPurchasePopup, setOnPurchasePopup] = useState(false);
+  const [purchaseData, setPurchaseData] = useState<SeasonEpisodeInfo>();
 
   const handlePlayRecent = async () => {
     try {
@@ -139,7 +143,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       handlePlayNew();
       console.log('playnew');
     }
-  }, [contentId, episodeId]);
+  }, [contentId, curEpisodeId]);
 
   const [isVisible, setIsVisible] = useState(true);
 
@@ -194,11 +198,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setIsDragging(false);
     }
   };
-  useEffect(() => {
-    setTimeout(() => {
-      console.log('🔍 progressBarRef after mount:', progressBarRef.current);
-    }, 1000);
-  }, []);
+
   // 📌 진행도를 비디오에 반영하는 함수
   const updateProgress = (e: MouseEvent | React.MouseEvent<HTMLDivElement>) => {
     if (!progressBarRef.current || videoDuration === 0) return;
@@ -387,6 +387,20 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     if (diffInMonths < 12) return `${diffInMonths}달 전`;
     const diffInYears = Math.floor(diffInMonths / 12);
     return `${diffInYears}년 전`;
+  };
+  const fetchSeasonEpisodesPopup = async () => {
+    try {
+      const requestPayload: GetSeasonEpisodesPopupReq = {
+        episodeId: episodeId, // 조회할 에피소드 ID
+      };
+
+      const response = await sendGetSeasonEpisodesPopup(requestPayload);
+      setEpisodeListData(response.data);
+      setOnEpisodeListDrawer(true);
+      console.log('✅ 시즌 에피소드 팝업 데이터:', response.data);
+    } catch (error) {
+      console.error('🚨 시즌 에피소드 팝업 API 호출 오류:', error);
+    }
   };
 
   React.useEffect(() => {
@@ -678,7 +692,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 className={styles.noneTextButton}
                 onClick={event => {
                   event.stopPropagation();
-                  setOnEpisodeListDrawer(true);
+                  fetchSeasonEpisodesPopup();
                 }}
               >
                 <img src={BoldContents.src} className={styles.button}></img>
@@ -737,61 +751,71 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             url={window.location.href}
             onClose={() => setIsShare(false)}
           ></SharePopup>
+          {episodeListData?.episodeList && (
+            <CustomDrawer
+              open={onEpisodeListDrawer}
+              onClose={() => {
+                setOnEpisodeListDrawer(false);
+              }}
+              contentStyle={{
+                padding: '0px',
+                zIndex: '1300',
 
-          <CustomDrawer
-            open={onEpisodeListDrawer}
-            onClose={() => {
-              setOnEpisodeListDrawer(false);
-            }}
-            contentStyle={{
-              padding: '0px',
-              zIndex: '1300',
-
-              justifyItems: 'center',
-            }}
-            containerStyle={{paddingBottom: '14px'}}
-          >
-            <div className={styles.episodeListDrawer}>
-              <div className={styles.profileContainer}>
-                {/* 프로필 이미지 */}
-                <div className={styles.profileImageWrapper}>
-                  <img src={info?.profileIconUrl} alt="Profile" className={styles.profileImage} />
-                  <div className={styles.imageOverlay}></div>
-                </div>
-
-                {/* 텍스트 정보 */}
-                <div className={styles.profileInfo}>
-                  <div className={styles.title}>{'타이틀 들어가야함'}</div>
-
-                  <div style={{gap: '8px'}}>
-                    {/* 에피소드 정보 + 완결 배지 */}
-                    <div className={styles.episodeRow}>
-                      <span className={styles.episodeInfo}>{'에피소드 리스트'}</span>
-                      {<span className={styles.completeBadge}>완결여부</span>}
-                    </div>
-
-                    {/* 장르 정보 */}
-                    <div className={styles.genreRow}>{'장르들'}</div>
+                justifyItems: 'center',
+              }}
+              containerStyle={{paddingBottom: '14px'}}
+            >
+              <div className={styles.episodeListDrawer}>
+                <div className={styles.profileContainer}>
+                  {/* 프로필 이미지 */}
+                  <div className={styles.profileImageWrapper}>
+                    <img src={info?.profileIconUrl} alt="Profile" className={styles.profileImage} />
+                    <div className={styles.imageOverlay}></div>
                   </div>
-                </div>
-              </div>
-              <div className={styles.episodeContainer}>
-                {episodes.map(episode => (
-                  <div
-                    key={episode.number}
-                    className={`${styles.episodeButton} ${episode.isLocked ? styles.locked : ''}`}
-                  >
-                    {episode.number}
-                    {episode.isLocked && (
-                      <div className={styles.lockIcon} onClick={() => setOnPurchasePopup(true)}>
-                        <img src={BoldLock.src} alt="Lock" className={styles.lockImg} />
+
+                  {/* 텍스트 정보 */}
+                  <div className={styles.profileInfo}>
+                    <div className={styles.title}>{'타이틀 들어가야함'}</div>
+
+                    <div style={{gap: '8px'}}>
+                      {/* 에피소드 정보 + 완결 배지 */}
+                      <div className={styles.episodeRow}>
+                        <span className={styles.episodeInfo}>{'에피소드 리스트'}</span>
+                        {<span className={styles.completeBadge}>완결여부</span>}
                       </div>
-                    )}
+
+                      {/* 장르 정보 */}
+                      <div className={styles.genreRow}>{'장르들'}</div>
+                    </div>
                   </div>
-                ))}
+                </div>
+                <div className={styles.episodeContainer}>
+                  {episodeListData?.episodeList.map(episode => (
+                    <div
+                      key={episode.episodeId}
+                      className={`${styles.episodeButton} ${episode.isLock ? styles.locked : ''}`}
+                      onClick={() => {
+                        if (episode.isLock) {
+                          setPurchaseData(episode);
+                          setOnPurchasePopup(true);
+                        } else {
+                          setCurEpisodeId(episode.episodeId);
+                        }
+                      }}
+                    >
+                      {episode.episodeId}
+                      {episode.isLock && (
+                        <div className={styles.lockIcon}>
+                          <img src={BoldLock.src} alt="Lock" className={styles.lockImg} />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          </CustomDrawer>
+            </CustomDrawer>
+          )}
+
           {isDonation && (
             <DrawerDonation
               isOpen={isDonation}
@@ -801,11 +825,11 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               router={router}
             />
           )}
-          {onPurchasePopup && (
+          {onPurchasePopup && purchaseData && (
             <PopupPurchase
               contentId={contentId}
-              episodeId={episodeId}
-              price={0}
+              episodeId={purchaseData.episodeId}
+              price={purchaseData.salesStarEa}
               contentType={episodeId ? ContentType.Series : ContentType.Single}
               onClose={() => {
                 setOnPurchasePopup(false);

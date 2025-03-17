@@ -468,3 +468,29 @@ export const sendRecordPlay = async (payload: RecordPlayReq): Promise<ResponseAP
     throw new Error('Failed to record play. Please try again.');
   }
 };
+export interface GetSeasonEpisodesPopupReq {
+  episodeId: number;
+}
+
+export interface GetSeasonEpisodesPopupRes {
+  contentId: number;
+  seasonNo: number;
+  thumbnailUrl: string;
+  contentName: string;
+  genre: string;
+  tags: string[];
+  isComplete: boolean;
+  episodeList: SeasonEpisodeInfo[];
+}
+export const sendGetSeasonEpisodesPopup = async (
+  payload: GetSeasonEpisodesPopupReq,
+): Promise<ResponseAPI<GetSeasonEpisodesPopupRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetSeasonEpisodesPopupRes>>('/Content/getSeasonEpisodesPopup', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`GetSeasonEpisodesPopupRes Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error fetching season episodes popup:', error);
+    throw new Error('Failed to fetch season episodes popup. Please try again.');
+  }
+};
