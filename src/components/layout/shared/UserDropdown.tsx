@@ -154,6 +154,7 @@ const UserDropdown = () => {
   };
 
   useEffect(() => {
+    if (!auth) return;
     const handleAuthStateChange = async (event: any, session: Session | null) => {
       if (event === 'SIGNED_IN') {
         if (auth?.access_token == session?.access_token) return;
@@ -208,7 +209,7 @@ const UserDropdown = () => {
     return () => {
       authListener?.subscription.unsubscribe();
     };
-  }, []);
+  }, [auth]);
 
   const handleDropdownClose = (event?: MouseEvent<HTMLLIElement> | (MouseEvent | TouchEvent), url?: string) => {
     if (anchorRef.current && anchorRef.current.contains(event?.target as HTMLElement)) {
