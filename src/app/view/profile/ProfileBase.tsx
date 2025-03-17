@@ -704,7 +704,16 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             }}
           >
             <div className={styles.left}>
-              {(isCharacter || isChannel) && <div className={cx(styles.originalFan, styles.original)}>Original</div>}
+              {(isCharacter || isChannel) && (
+                <div
+                  className={cx(
+                    styles.originalFan,
+                    data.profileInfo?.profileInfo?.characterIP == CharacterIP.Original ? styles.original : styles.fan,
+                  )}
+                >
+                  {data.profileInfo?.profileInfo?.characterIP == CharacterIP.Original ? 'Original' : 'Fan'}
+                </div>
+              )}
               <div className={styles.profileName}>{data.profileInfo?.profileInfo.name}</div>
             </div>
             {isMine && (
@@ -762,7 +771,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             <div className={styles.label}>Followers</div>
           </div>
           <div className={styles.itemStatistic}>
-            <div className={styles.count}>{data.profileInfo?.profileInfo.followingCount}</div>
+            <div className={styles.count}>
+              {isPD ? data.profileInfo?.profileInfo?.followingCount : data.profileInfo?.profileInfo?.subscriberCount}
+            </div>
             <div className={styles.label}>{isPD ? 'Following' : 'Subscribers'}</div>
           </div>
         </div>

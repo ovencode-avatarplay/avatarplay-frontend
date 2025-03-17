@@ -134,6 +134,7 @@ export interface ProfileInfo {
   urlLinkKey: string;
   pdProfileUrlLinkKey: string;
   characterUrlLinkKey: string;
+  characterIP: CharacterIP;
 }
 
 export enum FollowState {
