@@ -33,7 +33,7 @@ import {
 } from '@ui/Icons';
 import styles from './ProfileBase.module.scss';
 import cx from 'classnames';
-import Select, {components, StylesConfig} from 'react-select';
+import Select, {components, SelectInstance, StylesConfig} from 'react-select';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import {redirect, RedirectType, useParams, usePathname, useRouter, useSearchParams} from 'next/navigation';
@@ -1263,6 +1263,21 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
     setSelectedOption(value);
   }, [value]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(
+        /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) ||
+          window.matchMedia('(pointer: coarse)').matches,
+      );
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div
       onClick={() => {
@@ -1317,20 +1332,23 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
               return (
                 <components.SingleValue {...props}>
                   <div
-                    onPointerDown={() => {
-                      if (isOpen) {
-                        setTimeout(() => {
-                          setIsOpen(false);
-                        }, 10);
-                      }
-                    }}
-                    onClick={() => {
-                      if (isOpen) {
-                        setTimeout(() => {
-                          setIsOpen(false);
-                        }, 10);
-                      }
-                    }}
+                    {...(isMobile
+                      ? {
+                          onTouchEnd: () => {
+                            if (isOpen) {
+                              setTimeout(() => {
+                                setIsOpen(false);
+                              }, 100);
+                            }
+                          },
+                        }
+                      : {
+                          onClick: () => {
+                            if (isOpen) {
+                              setIsOpen(false);
+                            }
+                          },
+                        })}
                   >
                     {ValueComponent(props.data, isOpen)}
                   </div>
