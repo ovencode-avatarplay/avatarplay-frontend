@@ -10,6 +10,23 @@ export enum LanguageType {
   German = 8,
 }
 
+export enum FlagNation {
+  'KR' = 0,
+  'US' = 1,
+  'JP' = 2,
+  'FR' = 3,
+  'ES' = 4,
+  'CN' = 5,
+  'TW' = 6,
+  'PT' = 7,
+  'DE' = 8,
+}
+
+// 국가타입을 받아서 해당 국가코드를 리턴해준다.
+export const getFlagCode = (value: LanguageType): string | undefined => {
+  return FlagNation[value] as string | undefined;
+};
+
 export enum LLMModel {
   GPT_4o = 0,
   GPT_4 = 1,

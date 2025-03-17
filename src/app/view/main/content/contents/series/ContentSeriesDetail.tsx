@@ -299,11 +299,14 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                       customStyles={{
                         menuList: {
                           borderRadius: '10px',
-                          border: '1px solid var(--Border-1, #EAECF0)',
-                          background: 'var(--White, #FFF)',
+                          // border: '1px solid var(--Border-1, #EAECF0)',
+                          // background: 'var(--White, #FFF)',
+                          background: 'var(--Neutral-800, #2C3131)',
+                          overflow: 'hidden',
                         },
                         option: {
                           padding: 0,
+                          borderBottom: '1px solid var(--Neutral-900, #121414)',
                         },
                         menu: {
                           marginTop: '4px',
@@ -475,7 +478,9 @@ const SelectBoxOptionComponent = (data: any, isSelected: boolean) => (
       <div key={data.id} className={styles.labelOption}>
         {data.value}
       </div>
-      {isSelected && <img className={styles.iconCheck} src={LineCheck.src} alt="altArrowDown" />}
+      {isSelected && (
+        <img className={styles.iconCheck} src={'/ui/profile/icon-park-solid_check-one.svg'} alt="altArrowDown" />
+      )}
     </div>
   </>
 );

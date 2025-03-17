@@ -23,6 +23,7 @@ import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterProfileInfo} f
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import Link from 'next/link';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
+import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 
 type Props = {
   profileId: number;
@@ -49,10 +50,12 @@ type ProfileType = {
 };
 
 export const CharacterProfileDetailComponent = ({
+  profileId = 0,
   characterInfo = null,
   urlLinkKey = '',
   isPath = false,
 }: {
+  profileId: number;
   characterInfo: CharacterInfo | null;
   urlLinkKey: string;
   isPath?: boolean;
@@ -104,7 +107,16 @@ export const CharacterProfileDetailComponent = ({
             <div className={styles.count}>55K</div>
           </div>
           <img src={BoldDislike.src} alt="" className={styles.dislike} />
-          {!data?.characterInfo?.isBookMark && <img src={LineArchive.src} alt="" className={styles.bookmark} />}
+          {!data?.characterInfo?.isBookMark && (
+            <img
+              src={LineArchive.src}
+              alt=""
+              className={styles.bookmark}
+              onClick={async () => {
+                await bookmark({interactionType: InteractionType.Character, isBookMark: true, typeValueId: profileId});
+              }}
+            />
+          )}
           {data?.characterInfo?.isBookMark && <img src={BoldArchive.src} alt="" className={styles.bookmark} />}
         </div>
       </div>
