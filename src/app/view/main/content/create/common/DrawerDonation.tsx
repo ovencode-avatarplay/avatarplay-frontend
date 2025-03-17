@@ -52,7 +52,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
       giftStar: Number(inputValue),
     };
     if (inputValue !== '') {
-      alert(`입력된 후원 금액: ${inputValue} EA    pdid : ${giveToPDId}`); // 알림창 띄우기
+      //alert(`입력된 후원 금액: ${inputValue} EA    pdid : ${giveToPDId}`); // 알림창 띄우기
       try {
         const response = await sendGiftStar(reqData);
         if (typeof response.data?.myStar === 'number') {

@@ -14,9 +14,11 @@ import UserDropdown from '@shared/UserDropdown';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {BoldAlert, BoldReward, BoldRuby, BoldStar, LineMenu} from '@ui/Icons';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import HamburgerBar from './HamburgerBar';
+import {RootState} from '@/redux-store/ReduxStore';
+import {formatCurrency} from '@/utils/util-1';
 
 const HeaderNavBar = () => {
   const curRuby = '10.5K';
@@ -25,6 +27,9 @@ const HeaderNavBar = () => {
   const [logo, setLogo] = useState(logoTalkain);
   const dispatch = useDispatch();
   const [isHamOpen, setIsHamOpen] = useState(false);
+
+  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
+  const starAmount = dataStarInfo.star;
 
   return (
     <header className={styles.navbar}>
@@ -50,7 +55,7 @@ const HeaderNavBar = () => {
           </div>
           <div className={styles.currencyItem}>
             <img className={styles.currencyIcon} src={BoldStar.src} />
-            <div className={styles.currencyText}>{curStar}</div>
+            <div className={styles.currencyText}>{formatCurrency(starAmount)}</div>
           </div>
         </div>
 

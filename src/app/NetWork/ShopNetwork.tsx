@@ -13,7 +13,7 @@ export interface GiftStarRes {
 // Sending Cheat Message
 export const sendGiftStar = async (sendGiftStarReq: GiftStarReq): Promise<ResponseAPI<GiftStarRes>> => {
   try {
-    console.log('스타 보냄 : ', sendGiftStarReq.giftStar);
+    //console.log('스타 보냄 : ', sendGiftStarReq.giftStar);
     const response = await api.post<ResponseAPI<GiftStarRes>>('Shop/giftStar', sendGiftStarReq);
     console.log('스타 보내기  결과 : ', response.data.resultCode);
     if (response.data.resultCode === 0) {

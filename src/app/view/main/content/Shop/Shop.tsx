@@ -7,6 +7,9 @@ import {BoldAlert, BoldRuby, BoldStar} from '@ui/Icons';
 import SinglePlanContent from './SinglePlanContent';
 import ShopTabMenu, {ShopTabType} from './ShopTabMenu';
 import SubscriptionPlan from './SubscriptionPlan';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {formatCurrency} from '@/utils/util-1';
 
 export const dummyBannerList: BannerUrlList[] = [
   {
@@ -49,6 +52,9 @@ export const dummyBannerList: BannerUrlList[] = [
 const Shop: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<ShopTabType>(ShopTabType.SinglePlan);
 
+  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
+  const starAmount = dataStarInfo.star;
+
   return (
     <>
       <CustomArrowHeader
@@ -63,7 +69,7 @@ const Shop: React.FC = () => {
               </div>
               <div className={styles.currencyItem}>
                 <img className={styles.currencyIcon} src={BoldStar.src} />
-                <div className={styles.currencyText}>{999}</div>
+                <div className={styles.currencyText}>{formatCurrency(starAmount)}</div>
               </div>
             </div>
             <button className={styles.notification} onClick={() => {}}>
