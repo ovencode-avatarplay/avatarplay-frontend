@@ -1,18 +1,27 @@
 import {Dialog} from '@mui/material';
 import React, {useEffect, useState} from 'react';
-import styles from './PopupPlaylist.module.scss';
+import styles from './PopupFavoriteList.module.scss';
 import {BoldAltArrowDown, BoldArrowLeft, BoldMenuDots, LineCheck} from '@ui/Icons';
 import cx from 'classnames';
 import {
   cancelSubscribe,
   ExploreSortType,
   FeedMediaType,
+  getBookmarkList,
+  GetCharacterTabInfoeRes,
+  GetPdInfoRes,
+  GetPdTabInfoeRes,
+  getRecordList,
   getSubscriptionList,
   GetSubscriptionListRes,
   MembershipSubscribe,
+  ProfileTabItemInfo,
   ProfileType,
 } from '@/app/NetWork/ProfileNetwork';
 import {
+  ChannelComponent,
+  CharacterComponent,
+  ContentComponent,
   eTabChannelOtherType,
   eTabChannelType,
   eTabCharacterOtherType,
@@ -20,8 +29,11 @@ import {
   eTabFavoritesType,
   eTabPDOtherType,
   eTabPDType,
+  FeedComponent,
   FilterClusterType,
   SelectBox,
+  TabContentComponentWrap,
+  TabContentMenuType,
   TabFilterComponent,
   TabHeaderComponent,
   TabHeaderWrapAllComponent,
@@ -30,6 +42,12 @@ import {
 import PopupSubscription, {getUnit} from '../main/content/create/common/PopupSubscription';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import BottomNav from '../main/bottom-nav/BottomNav';
+import {GetCharacterInfoRes} from '@/app/NetWork/CharacterNetwork';
+import {GetChannelRes} from '@/app/NetWork/ChannelNetwork';
+import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
+import {useInView} from 'react-intersection-observer';
+import {InteractionType} from '@/app/NetWork/CommonNetwork';
+import {PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
 
 type Props = {
   onClose: () => void;
@@ -38,17 +56,36 @@ type Props = {
   isMine: boolean;
 };
 
-const PopupPlaylist = ({profileId, profileType, isMine = true, onClose}: Props) => {
+const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) => {
   const [data, setData] = useState<{
     indexTab: eTabFavoritesType;
     indexFilterMedia: FeedMediaType;
     indexFilterCharacter: number;
     indexSort: ExploreSortType;
+    profileTabInfo: {
+      [key: number]: ProfileTabItemInfo[];
+    };
+    filterCluster: FilterClusterType;
+    tabContentMenu: TabContentMenuType;
   }>({
-    indexTab: 0,
+    indexTab: eTabFavoritesType.Feed,
     indexFilterMedia: FeedMediaType.Total,
     indexFilterCharacter: 0,
     indexSort: ExploreSortType.MostPopular,
+    profileTabInfo: {},
+    filterCluster: {
+      indexFilterChannel: 0,
+      indexFilterCharacter: 0,
+      indexFilterContent: 0,
+      indexFilterMedia: 0,
+      indexFilterShared: 0,
+      indexSort: 0,
+    },
+    tabContentMenu: {
+      id: 0,
+      isPin: false,
+      isSettingOpen: false,
+    },
   });
 
   useEffect(() => {
@@ -59,10 +96,27 @@ const PopupPlaylist = ({profileId, profileType, isMine = true, onClose}: Props) 
     await refreshList();
   };
 
-  const refreshList = async () => {};
+  const refreshList = async () => {
+    const resBookmarkList = await getRecordList({
+      interactionType: Number(data.indexTab),
+      languageType: getCurrentLanguage(),
+    });
+    data.profileTabInfo[data.indexTab] = resBookmarkList?.data?.recordInfoList || [];
+    setData({...data});
+  };
 
-  const refreshProfileTab = async (profileId: number, indexTab: number) => {};
+  const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll?: boolean) => {
+    refreshList();
+  };
 
+  const isEmptyTab = false;
+
+  const onRefreshTab = (isRefreshAll: boolean) => {};
+
+  const onOpenContentMenu = (dataContentMenu: TabContentMenuType) => {
+    data.tabContentMenu = dataContentMenu;
+    setData({...data});
+  };
   return (
     <>
       <Dialog open={true} onClose={onClose} fullScreen>
@@ -96,21 +150,38 @@ const PopupPlaylist = ({profileId, profileType, isMine = true, onClose}: Props) 
                   isMine={isMine}
                   profileType={profileType}
                   tabIndex={data.indexTab}
-                  filterCluster={data}
+                  filterCluster={data.filterCluster}
                   onChange={async (filterCluster: FilterClusterType) => {
                     if ((filterCluster?.indexFilterMedia ?? -1) >= 0) {
-                      data.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
+                      data.filterCluster.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
                       await refreshProfileTab(profileId, data.indexTab);
                       setData(v => ({...data}));
                     }
                     if ((filterCluster?.indexFilterCharacter ?? -1) >= 0) {
-                      data.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
+                      data.filterCluster.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
                       await refreshProfileTab(profileId, data.indexTab);
                       setData(v => ({...data}));
                     }
 
                     if ((filterCluster?.indexSort ?? -1) >= 0) {
-                      data.indexSort = filterCluster?.indexSort ?? -1;
+                      data.filterCluster.indexSort = filterCluster?.indexSort ?? -1;
+                      await refreshProfileTab(profileId, data.indexTab);
+                      setData(v => ({...data}));
+                    }
+
+                    if ((filterCluster?.indexFilterChannel ?? -1) >= 0) {
+                      data.filterCluster.indexFilterChannel = filterCluster?.indexFilterChannel ?? -1;
+                      await refreshProfileTab(profileId, data.indexTab);
+                      setData(v => ({...data}));
+                    }
+
+                    if ((filterCluster?.indexFilterShared ?? -1) >= 0) {
+                      data.filterCluster.indexFilterShared = filterCluster?.indexFilterShared ?? -1;
+                      await refreshProfileTab(profileId, data.indexTab);
+                      setData(v => ({...data}));
+                    }
+                    if ((filterCluster?.indexFilterContent ?? -1) >= 0) {
+                      data.filterCluster.indexFilterContent = filterCluster?.indexFilterContent ?? -1;
                       await refreshProfileTab(profileId, data.indexTab);
                       setData(v => ({...data}));
                     }
@@ -118,7 +189,19 @@ const PopupPlaylist = ({profileId, profileType, isMine = true, onClose}: Props) 
                 />
               </div>
 
-              <div className={styles.tabContent}></div>
+              <div className={styles.tabContent}>
+                <TabContentComponent
+                  filterCluster={data.filterCluster}
+                  profileType={profileType}
+                  isMine={true}
+                  isEmptyTab={data.profileTabInfo?.[data.indexTab]?.length == 0}
+                  profileId={profileId}
+                  tabIndex={data?.indexTab || 0}
+                  profileTabInfo={data.profileTabInfo}
+                  onRefreshTab={onRefreshTab}
+                  onOpenContentMenu={onOpenContentMenu}
+                />
+              </div>
             </section>
             <button className={styles.btnSubscription}>Subscribe Now</button>
           </main>
@@ -127,8 +210,237 @@ const PopupPlaylist = ({profileId, profileType, isMine = true, onClose}: Props) 
           </footer>
         </div>
       </Dialog>
+      <ContentSetting
+        onClose={() => {
+          data.tabContentMenu.isSettingOpen = false;
+          setData({...data});
+        }}
+        isMine={isMine}
+        tabContentMenu={data.tabContentMenu}
+        refreshTabAll={async () => {
+          onRefreshTab(true);
+        }}
+        onDelete={async () => {
+          onRefreshTab(true);
+        }}
+        onReport={async () => {}}
+      />
     </>
   );
 };
 
-export default PopupPlaylist;
+export default PopupPlayList;
+
+type TabContentProps = {
+  profileId: number;
+  profileType: ProfileType;
+  isMine: boolean;
+  tabIndex: number;
+  isEmptyTab: boolean;
+  profileTabInfo: {
+    [key: number]: ProfileTabItemInfo[];
+  };
+
+  filterCluster: FilterClusterType;
+  onRefreshTab: (isRefreshAll: boolean) => void;
+  onOpenContentMenu?: (data: TabContentMenuType) => void;
+};
+
+const TabContentComponent = ({
+  isMine,
+  tabIndex,
+  isEmptyTab,
+  profileTabInfo,
+  filterCluster,
+  onRefreshTab,
+  onOpenContentMenu,
+}: TabContentProps) => {
+  const {ref: observerRef, inView} = useInView();
+  // const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+  //   getUserType(isMine, profileType);
+
+  useEffect(() => {
+    if (!inView) return;
+
+    if (isEmptyTab) return;
+
+    refreshTab();
+  }, [inView]);
+
+  const refreshTab = async () => {
+    onRefreshTab(true);
+  };
+
+  if (isEmptyTab) {
+    return (
+      <>
+        <div className={styles.emptyWrap}>
+          <img src="/ui/profile/image_empty.svg" alt="" />
+          <div className={styles.text}>
+            Its pretty lonely out here.
+            <br />
+            Make a Post
+          </div>
+        </div>
+      </>
+    );
+  }
+  if (tabIndex == InteractionType.Feed) {
+    return (
+      <>
+        <ul className={styles.itemWrap}>
+          {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
+            return (
+              <FeedComponent
+                isMine={isMine}
+                feedInfo={{
+                  commentCount: 0,
+                  description: 'description',
+                  disLikeCount: 0,
+                  hashTag: '',
+                  isBookmark: false,
+                  isDisLike: false,
+                  isFollowing: false,
+                  isLike: false,
+                  mediaUrlList: [one.mediaUrl].concat(Array(length).fill(one.mediaCount - 1)),
+                  profileIconUrl: '',
+                  profileId: 0,
+                  profileName: '',
+                  profileUrlLinkKey: '',
+                  title: one?.name || ' ',
+                  id: one.id,
+                  isPinFix: false,
+                  likeCount: one.likeCount,
+                  mediaState: one.mediaState,
+                  playTime: '',
+                  urlLinkKey: one.urlLinkKey,
+                }}
+                onOpenContentMenu={onOpenContentMenu}
+                urlLinkThumbnail={getLocalizedLink(`/main/homefeed/`)}
+              />
+            );
+          })}
+          <div ref={observerRef}></div>
+        </ul>
+      </>
+    );
+  }
+  if (tabIndex == InteractionType.Character) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
+          return (
+            <CharacterComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+  if (tabIndex == InteractionType.Contents) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
+          return (
+            <ContentComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/content/series/` + one?.urlLinkKey + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+  if (tabIndex == InteractionType.Channel) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
+          return (
+            <ChannelComponent
+              isMine={isMine}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+};
+
+type ContentSettingType = {
+  isMine: boolean;
+  onClose: () => void;
+  tabContentMenu: TabContentMenuType;
+  refreshTabAll: () => void;
+  onDelete: () => void;
+  onReport: () => void;
+};
+const ContentSetting = ({
+  isMine = false,
+  onClose = () => {},
+  tabContentMenu = {id: 0, isPin: false, isSettingOpen: false},
+  refreshTabAll = () => {},
+  onDelete = () => {},
+  onReport = () => {},
+}: ContentSettingType) => {
+  // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
+  let uploadImageItems: SelectDrawerItem[] = [
+    {
+      name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
+      onClick: async () => {
+        const dataUpdatePin: PinFixFeedReq = {
+          feedId: Number(tabContentMenu.id),
+          isFix: !tabContentMenu.isPin,
+        };
+        await updatePin(dataUpdatePin);
+        refreshTabAll();
+      },
+    },
+    {
+      name: 'Delete',
+      onClick: () => {
+        onDelete();
+      },
+    },
+    {
+      name: 'Report',
+      onClick: () => {
+        onReport();
+      },
+    },
+  ];
+  return (
+    <SelectDrawer isOpen={tabContentMenu.isSettingOpen} onClose={onClose} items={uploadImageItems} selectedIndex={-1} />
+  );
+};
+
+export type SelectBoxProps = {
+  value: {id: number; [key: string]: any} | null;
+  options: {id: number; [key: string]: any}[];
+  OptionComponent: (data: {id: number; [key: string]: any}, isSelected: boolean) => JSX.Element;
+  ValueComponent: (data: any, isOpen?: boolean) => JSX.Element;
+  ArrowComponent: (isOpen?: boolean) => JSX.Element;
+  onChange: (id: number) => void;
+  customStyles?: {
+    control?: object; // 함수 또는 객체 허용
+    singleValue?: object;
+    valueContainer?: object;
+    input?: object;
+    option?: object;
+    menu?: object;
+    menuList?: object;
+    indicatorSeparator?: object;
+    dropdownIndicator?: object;
+  };
+};
