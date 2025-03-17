@@ -195,7 +195,15 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         <section ref={refThumbnailWrap} className={styles.thumbnailWrap}>
           <img src={data.dataMix?.contentThumbnailUrl || data.dataMix?.thumbnailUrl} alt="" />
         </section>
-        <button className={styles.btnPlayWrap}>
+        <button
+          className={styles.btnPlayWrap}
+          onClick={() => {
+            setOnPlay(true);
+            setIsPlayButton(true);
+            setPlayContentId(data.dataMix?.contentId || 0);
+            setEpisodeId(0);
+          }}
+        >
           <img src={BoldAudioPlay.src} alt="" />
           <div className={styles.label}>Play</div>
         </button>
@@ -510,9 +518,16 @@ type PopupPurchaseType = {
   price: number;
   contentType: ContentType;
   onClose: () => void;
-  onPurchaseSuccess: (contentId: number, episodeId: number, contentType: ContentType) => void;
+  onPurchaseSuccess?: (contentId: number, episodeId: number, contentType: ContentType) => void;
 };
-const PopupPurchase = ({price, contentId, episodeId, contentType, onClose, onPurchaseSuccess}: PopupPurchaseType) => {
+export const PopupPurchase = ({
+  price,
+  contentId,
+  episodeId,
+  contentType,
+  onClose,
+  onPurchaseSuccess,
+}: PopupPurchaseType) => {
   const refCheckHide = useRef<HTMLInputElement | null>(null);
   const [data, setData] = useState<{isOpenNotEnoughStars: boolean}>({
     isOpenNotEnoughStars: false,
@@ -545,9 +560,9 @@ const PopupPurchase = ({price, contentId, episodeId, contentType, onClose, onPur
     onClose();
 
     if (contentType == ContentType.Series) {
-      onPurchaseSuccess(contentId, episodeId, contentType);
+      if (onPurchaseSuccess) onPurchaseSuccess(contentId, episodeId, contentType);
     } else {
-      onPurchaseSuccess(contentId, episodeId, contentType);
+      if (onPurchaseSuccess) onPurchaseSuccess(contentId, episodeId, contentType);
     }
   };
   return (
