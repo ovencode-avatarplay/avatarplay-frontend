@@ -18,7 +18,13 @@ import {
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {ContentEpisodeWebtoonInfo, ContentLanguageType, WebtoonSourceUrl} from '@/app/NetWork/ContentNetwork';
+import {
+  ContentCategoryType,
+  ContentEpisodeWebtoonInfo,
+  ContentLanguageType,
+  WebtoonSourceUrl,
+} from '@/app/NetWork/ContentNetwork';
+import PreviewViewer from './previewViewer';
 
 export interface WebtoonUploadField {
   id: number;
@@ -37,7 +43,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   defaultEpisodeWebtoonInfo,
 }) => {
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle'; index: number} | null>(null);
-
+  const [onPreview, setOnPreview] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // 선택된 파일의 인덱스
   console.log(defaultEpisodeWebtoonInfo);
   const [subtitleFields, setSubtitleFields] = useState<WebtoonUploadField[]>([]);
@@ -380,7 +386,14 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   };
   return (
     <>
-      <span className={styles.previewLabel}>Preview</span>
+      <div
+        className={styles.previewLabel}
+        onClick={() => {
+          if (imageFiles.length > 0) setOnPreview(true);
+        }}
+      >
+        Preview
+      </div>
       <div className={styles.videoUploadContainer}>
         <span className={styles.label}>Webottn</span>
         <div className={styles.uploadGroup}>
@@ -450,6 +463,14 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
         {subtitleFields.map((field, index) => renderUploader('subtitle', field, index))}
       </div>
       <span className={styles.grayLabel}>write media file type</span>
+      <PreviewViewer
+        open={onPreview}
+        onClose={() => {
+          setOnPreview(false);
+        }}
+        mediaUrls={imageFiles ? imageFiles : []}
+        type={ContentCategoryType.Webtoon}
+      ></PreviewViewer>
     </>
   );
 };

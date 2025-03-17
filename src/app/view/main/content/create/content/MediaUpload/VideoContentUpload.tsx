@@ -14,7 +14,9 @@ import {
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {ContentEpisodeVideoInfo, ContentLanguageType} from '@/app/NetWork/ContentNetwork';
+import {ContentCategoryType, ContentEpisodeVideoInfo, ContentLanguageType} from '@/app/NetWork/ContentNetwork';
+import ViewerContent from '../../../contents/viewer/ViewerContent';
+import PreviewViewer from './previewViewer';
 
 export interface VideoUploadField {
   id: number;
@@ -35,6 +37,8 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
   );
   const [videoFile, setVideoFile] = useState<string | null>(null); // 비디오 업로드 상태
   const [videoName, setVideoName] = useState<string | null>(null); // 비디오 업로드 상태
+
+  const [onPreview, setOnPreview] = useState(false);
 
   // ✅ 기존 데이터가 있으면 초기값 설정
   useEffect(() => {
@@ -283,7 +287,14 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
 
   return (
     <>
-      <span className={styles.previewLabel}>Preview</span>
+      <div
+        className={styles.previewLabel}
+        onClick={() => {
+          if (videoFile) setOnPreview(true);
+        }}
+      >
+        Preview
+      </div>
       <div className={styles.videoUploadContainer}>
         <span className={styles.label}>Video</span>
         <div className={styles.uploadGroup}>
@@ -351,6 +362,14 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
         {dubbingFields.map((field, index) => renderUploader('dubbing', field, index))}
       </div>
       <span className={styles.grayLabel}>write media file type</span>
+      <PreviewViewer
+        open={onPreview}
+        onClose={() => {
+          setOnPreview(false);
+        }}
+        mediaUrls={videoFile ? [videoFile] : []}
+        type={ContentCategoryType.Video}
+      ></PreviewViewer>
     </>
   );
 };
