@@ -369,8 +369,7 @@ export const buyContentEpisode = async (payload: BuyContentEpisodeReq): Promise<
   try {
     const response = await api.post<ResponseAPI<BuyContentEpisodeRes>>('/Content/buyEpisode', payload);
     if (response.data.resultCode === 0) return response.data;
-
-    return response.data;
+    throw new Error(`buyContentEpisode Error: ${response.data.resultCode}`);
   } catch (error) {
     console.error('Error buyContentEpisode:', error);
     throw new Error('Failed to buyContentEpisode. Please try again.');
@@ -397,6 +396,8 @@ export interface ContentPlayInfo {
   commonMediaViewInfo: CommonMediaViewInfo;
   episodeVideoInfo?: EpisodeVideoInfo;
   episodeWebtoonInfo?: EpisodeWebtoonInfo;
+  //구독중인지
+  //프로필 아이디 받아야함
 }
 
 export interface CommonMediaViewInfo {
@@ -450,7 +451,7 @@ export const sendPlay = async (payload: PlayButtonReq): Promise<ResponseAPI<Play
 export interface RecordPlayReq {
   episodeRecordPlayInfo: {
     contentId: number;
-    episodeId: number;
+    episodeId: ContentCategoryType;
     categoryType: number;
     playTimeSecond: number;
   };
@@ -459,7 +460,7 @@ export interface RecordPlayReq {
 export interface RecordPlayRes {}
 export const sendRecordPlay = async (payload: RecordPlayReq): Promise<ResponseAPI<RecordPlayRes>> => {
   try {
-    const response = await api.post<ResponseAPI<RecordPlayRes>>('/api/v1/Content/recordPlay', payload);
+    const response = await api.post<ResponseAPI<RecordPlayRes>>('/Content/recordPlay', payload);
     if (response.data.resultCode === 0) return response.data;
     throw new Error(`RecordPlayRes Error: ${response.data.resultCode}`);
   } catch (error) {

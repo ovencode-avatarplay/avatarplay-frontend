@@ -57,6 +57,7 @@ import {
 } from '@/app/NetWork/CommonNetwork';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import DrawerDonation from '../../create/common/DrawerDonation';
+import {PopupPurchase} from '../series/ContentSeriesDetail';
 
 interface Props {
   open: boolean;
@@ -80,6 +81,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     isLocked: [11, 13, 15, 16, 14].includes(index), // 잠금 여부 설정
   }));
   const [isDonation, setDonation] = useState(false);
+
+  const [onPurchasePopup, setOnPurchasePopup] = useState(false);
 
   const handlePlayRecent = async () => {
     try {
@@ -111,13 +114,14 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   };
 
   const handleRecordPlay = async () => {
+    if (!info) return;
     try {
       const recordPlayRequest: RecordPlayReq = {
         episodeRecordPlayInfo: {
-          contentId: 1001,
-          episodeId: 2002,
-          categoryType: 1,
-          playTimeSecond: 120,
+          contentId: info?.contentId,
+          episodeId: info?.episodeId,
+          categoryType: info?.categoryType,
+          playTimeSecond: Math.floor(videoProgress),
         },
       };
 
@@ -130,8 +134,10 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   useEffect(() => {
     if (isPlayButon) {
       handlePlayRecent();
+      console.log('playrecent');
     } else {
       handlePlayNew();
+      console.log('playnew');
     }
   }, [contentId, episodeId]);
 
@@ -258,8 +264,17 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     setIsClicked(true);
     setTimeout(() => setIsClicked(false), 300);
   };
-
+  const [lastExecutedSecond, setLastExecutedSecond] = useState(0);
   const handleVideoProgress = (playedSeconds: number) => {
+    // 10초마다 한 번만 실행하도록 체크
+    const roundedSeconds = Math.floor(playedSeconds);
+    if (roundedSeconds % 1 === 0 && lastExecutedSecond !== roundedSeconds) {
+      console.log(`10초 단위 실행: ${roundedSeconds}초`);
+      setLastExecutedSecond(roundedSeconds); // 마지막 실행 시간 업데이트
+
+      handleRecordPlay();
+      // 실행할 로직 추가
+    }
     setVideoProgress(playedSeconds);
   };
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
@@ -768,7 +783,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                   >
                     {episode.number}
                     {episode.isLocked && (
-                      <div className={styles.lockIcon}>
+                      <div className={styles.lockIcon} onClick={() => setOnPurchasePopup(true)}>
                         <img src={BoldLock.src} alt="Lock" className={styles.lockImg} />
                       </div>
                     )}
@@ -785,6 +800,17 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               onClose={() => setDonation(false)}
               router={router}
             />
+          )}
+          {onPurchasePopup && (
+            <PopupPurchase
+              contentId={contentId}
+              episodeId={episodeId}
+              price={0}
+              contentType={episodeId ? ContentType.Series : ContentType.Single}
+              onClose={() => {
+                setOnPurchasePopup(false);
+              }}
+            ></PopupPurchase>
           )}
         </div>
       </Box>
