@@ -446,13 +446,18 @@ export default ContentSeriesDetail;
 
 const SelectBoxArrowComponent = () => <></>;
 
-const SelectBoxValueComponent = (data: any, isSelected?: boolean) => {
+const SelectBoxValueComponent = (data: any, isOpen?: boolean) => {
   return (
     <div className={styles.labelWrap}>
       <div key={data.id} className={styles.label}>
         {data.value}
       </div>
-      <img className={styles.icon} src={LineArrowDown.src} alt="altArrowDown" />
+      <img
+        className={styles.icon}
+        src={LineArrowDown.src}
+        alt="altArrowDown"
+        style={{transform: `rotate(${isOpen ? 180 : 0}deg)`}}
+      />
     </div>
   );
 };

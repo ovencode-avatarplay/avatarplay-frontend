@@ -238,7 +238,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
 export default CreateWidget;
 
 const SelectBoxArrowComponent = () => <></>;
-const SelectBoxValueComponent = (data: any) => {
+const SelectBoxValueComponent = (data: any, isOpen?: boolean) => {
   console.log('data : ', data);
   return (
     <div className={styles.boxValueWrap}>
@@ -250,7 +250,12 @@ const SelectBoxValueComponent = (data: any) => {
         </data>
       </div>
       <div className={styles.right}>
-        <img className={styles.iconDropDown} src={'/ui/create/icon_arrow_down.svg'} alt="altArrowDown" />
+        <img
+          className={styles.iconDropDown}
+          src={'/ui/create/icon_arrow_down.svg'}
+          alt="altArrowDown"
+          style={{transform: `rotate(${isOpen ? 180 : 0}deg)`}}
+        />
       </div>
     </div>
   );

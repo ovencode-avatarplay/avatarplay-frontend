@@ -1120,8 +1120,8 @@ export type SelectBoxProps = {
   value: {id: number; [key: string]: any} | null;
   options: {id: number; [key: string]: any}[];
   OptionComponent: (data: {id: number; [key: string]: any}, isSelected: boolean) => JSX.Element;
-  ValueComponent: (data: any, isSelected?: boolean) => JSX.Element;
-  ArrowComponent: () => JSX.Element;
+  ValueComponent: (data: any, isOpen?: boolean) => JSX.Element;
+  ArrowComponent: (isOpen?: boolean) => JSX.Element;
   onChange: (id: number) => void;
   customStyles?: {
     control?: object; // 함수 또는 객체 허용
@@ -1266,8 +1266,8 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
         options={options}
         components={{
           DropdownIndicator: React.useCallback(() => {
-            return ArrowComponent();
-          }, []),
+            return ArrowComponent(isOpen);
+          }, [isOpen]),
           Option: React.useCallback(
             (props: any) => (
               <components.Option {...props}>{OptionComponent(props.data, props.isSelected)}</components.Option>
@@ -1285,7 +1285,7 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
                       }
                     }}
                   >
-                    {ValueComponent(props.data, props.isSelected)}
+                    {ValueComponent(props.data, isOpen)}
                   </div>
                 </components.SingleValue>
               );
@@ -1299,7 +1299,14 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
   );
 };
 
-const SelectBoxArrowComponent = () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />;
+const SelectBoxArrowComponent = (isOpen?: boolean) => (
+  <img
+    className={styles.icon}
+    src={BoldAltArrowDown.src}
+    alt="altArrowDown"
+    style={{transform: `rotate(${isOpen ? 180 : 0}deg)`}}
+  />
+);
 
 const SelectBoxValueComponent = (data: any) => {
   return (

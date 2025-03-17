@@ -1185,7 +1185,14 @@ export const DrawerCharacterSearch = ({
   ];
 
   const SelectBoxArrowComponent = useCallback(
-    () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />,
+    (isOpen?: boolean) => (
+      <img
+        className={styles.icon}
+        src={BoldAltArrowDown.src}
+        alt="altArrowDown"
+        style={{transform: `rotate(${isOpen ? 180 : 0}deg)`}}
+      />
+    ),
     [],
   );
   const SelectBoxValueComponent = useCallback((data: any) => {
