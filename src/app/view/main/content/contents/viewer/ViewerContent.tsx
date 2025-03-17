@@ -529,25 +529,27 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             </div>
 
             {/* Progress Bar */}
-            <div
-              ref={progressBarRef}
-              className={`${styles.progressBar} ${!isVisible ? styles.fadeOutB : ''} ${
-                isDragging ? styles.dragging : ''
-              }`}
-              onMouseDown={e => {
-                console.log('✅ ProgressBar 클릭됨');
-                console.log('클릭 좌표:', e.clientX, e.clientY);
-                handleMouseDown(e);
-              }}
-            >
+            {info?.categoryType == ContentCategoryType.Video && (
               <div
-                className={styles.progressFill}
-                style={{
-                  width: `${(videoProgress / videoDuration) * 100}%`,
-                  transition: isDragging ? 'none' : 'width 0.1s linear',
+                ref={progressBarRef}
+                className={`${styles.progressBar} ${!isVisible ? styles.fadeOutB : ''} ${
+                  isDragging ? styles.dragging : ''
+                }`}
+                onMouseDown={e => {
+                  console.log('✅ ProgressBar 클릭됨');
+                  console.log('클릭 좌표:', e.clientX, e.clientY);
+                  handleMouseDown(e);
                 }}
-              ></div>
-            </div>
+              >
+                <div
+                  className={styles.progressFill}
+                  style={{
+                    width: `${(videoProgress / videoDuration) * 100}%`,
+                    transition: isDragging ? 'none' : 'width 0.1s linear',
+                  }}
+                ></div>
+              </div>
+            )}
 
             <div className={`${styles.profileBox} ${!isVisible ? styles.fadeOutB : ''}`}>
               <div className={styles.dim}></div>
