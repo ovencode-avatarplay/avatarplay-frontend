@@ -10,6 +10,7 @@ import {getLocalizedLink, isLogined} from '@/utils/UrlMove';
 import {AppRouterInstance} from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import {GiftStarReq, sendGiftStar} from '@/app/NetWork/ShopNetwork';
 import {setStar} from '@/redux-store/slices/Currency';
+import {formatCurrency} from '@/utils/util-1';
 
 interface DrawerDonationProps {
   isOpen: boolean;
@@ -101,7 +102,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
 
         <div className={styles.donationHaveStarArea}>
           <img className={styles.star} src={BoldStar.src}></img>
-          <span className={styles.donationStarAmount}>{starAmount}</span>
+          <span className={styles.donationStarAmount}>{formatCurrency(starAmount)}</span>
           <div className={styles.donationCharge}>
             <div className={styles.donationChargeText}>Charge</div>
           </div>
