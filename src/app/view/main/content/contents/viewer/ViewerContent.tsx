@@ -56,8 +56,8 @@ import {
   BookMarkReq,
   CommentContentType,
   InteractionType,
-  sendFeedDisLike,
-  sendFeedLike,
+  sendDisLike,
+  sendLike,
 } from '@/app/NetWork/CommonNetwork';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import DrawerDonation from '../../create/common/DrawerDonation';
@@ -282,11 +282,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       // if (isDisLike == true) {
       //   await handleDisLikeFeed(item.id, !isDisLike);
       // }
-      const response = await sendFeedLike(
-        episodeId ? InteractionType.Episode : InteractionType.Contents,
-        feedId,
-        isLike,
-      );
+      const response = await sendLike(episodeId ? InteractionType.Episode : InteractionType.Contents, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`content ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
@@ -304,7 +300,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       // if (isLike == true) {
       //   await handleLikeFeed(item.id, !isLike);
       // }
-      const response = await sendFeedDisLike(
+      const response = await sendDisLike(
         episodeId ? InteractionType.Episode : InteractionType.Contents,
         feedId,
         isLike,

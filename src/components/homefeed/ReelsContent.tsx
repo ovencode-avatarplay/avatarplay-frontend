@@ -38,8 +38,8 @@ import {
   BookMarkReq,
   CommentContentType,
   InteractionType,
-  sendFeedDisLike,
-  sendFeedLike,
+  sendDisLike,
+  sendLike,
 } from '@/app/NetWork/CommonNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {RecommendState} from './ReelsLayout';
@@ -133,7 +133,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       // if (isDisLike == true) {
       //   await handleDisLikeFeed(item.id, !isDisLike);
       // }
-      const response = await sendFeedLike(InteractionType.Feed, feedId, isLike);
+      const response = await sendLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
@@ -151,7 +151,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       // if (isLike == true) {
       //   await handleLikeFeed(item.id, !isLike);
       // }
-      const response = await sendFeedDisLike(InteractionType.Feed, feedId, isLike);
+      const response = await sendDisLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);

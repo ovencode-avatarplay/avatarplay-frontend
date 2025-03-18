@@ -95,7 +95,7 @@ import {CharacterProfileDetailComponent} from './ProfileDetail';
 import PopupFriends from './PopupFriends';
 import {PortfolioListPopup} from '@/app/[lang]/(pages)/profile/update/[[...id]]/page';
 import useCustomRouter from '@/utils/useCustomRouter';
-import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
+import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
 
 export enum eTabFavoritesType {
   Feed = 1,
@@ -2508,11 +2508,23 @@ const TabContentComponent = ({
           </div>
 
           <div className={styles.right}>
-            <div className={styles.likeWrap}>
+            <div
+              className={styles.likeWrap}
+              onClick={async () => {
+                await sendLike(InteractionType.Channel, profileId, true);
+              }}
+            >
               <img src={BoldLike.src} alt="" className={styles.like} />
               <div className={styles.count}>{channelInfo?.likeCount}</div>
             </div>
-            <img src={BoldDislike.src} alt="" className={styles.dislike} />
+            <img
+              src={BoldDislike.src}
+              alt=""
+              className={styles.dislike}
+              onClick={async () => {
+                await sendDisLike(InteractionType.Channel, profileId, true);
+              }}
+            />
             {!channelInfo?.isBookmark && (
               <img
                 src={LineArchive.src}

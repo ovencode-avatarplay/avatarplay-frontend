@@ -259,7 +259,7 @@ export enum InteractionType {
   Episode = 5,
 }
 // Feed Like API 호출 함수
-export const sendFeedLike = async (
+export const sendLike = async (
   interactionType: InteractionType,
   typeValueId: number,
   isLike: boolean,
@@ -297,7 +297,7 @@ export const sendFeedLike = async (
 };
 
 // Feed Like API 호출 함수
-export const sendFeedDisLike = async (
+export const sendDisLike = async (
   interactionType: InteractionType,
   typeValueId: number,
   isDisLike: boolean,
