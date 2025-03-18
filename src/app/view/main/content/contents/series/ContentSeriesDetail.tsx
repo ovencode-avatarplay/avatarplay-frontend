@@ -213,10 +213,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               className={styles.iconWrap}
               onClick={async () => {
                 const dataReq: BookMarkReq = {
-                  interactionType:
-                    data.dataMix?.contentType == ContentType.Series
-                      ? InteractionType.Contents
-                      : InteractionType.Episode,
+                  interactionType: type == ContentType.Series ? InteractionType.Contents : InteractionType.Episode,
                   isBookMark: !data.dataMix?.isBookMark,
                   typeValueId: data.dataMix?.contentId || 0,
                 };
