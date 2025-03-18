@@ -342,7 +342,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
 
                             //TODO 플레이 할수 없으면 구매처리
                             data.dataPurchase.isOpenPopupPurchase = true;
-                            data.dataPurchase.contentId = data.dataMix?.contentId || 0;
+                            data.dataPurchase.contentId = data.dataMix?.id || 0;
                             data.dataPurchase.episodeId = 0;
                             data.dataPurchase.price = price;
                             data.dataPurchase.contentType = ContentType.Single;
