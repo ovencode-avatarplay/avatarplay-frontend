@@ -40,7 +40,7 @@ import {EpisodeCardProps} from './StoryDescType';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {GetCharacterInfoReq, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
+import {GetCharacterInfoReq, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 
 type ContentWholeDesc = {
@@ -184,7 +184,7 @@ const DrawerCharacterDesc = () => {
       // const req: GetContentByIdReq = { contentId: contentId, language: getCurrentLanguage() };
       // const response = await sendContentByIdGet(req);
       const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId: contentId};
-      const response = await sendGetCharacterInfo(req);
+      const response = await sendGetCharacterProfileInfo(req);
       if (response?.data) {
         setContentWholeDesc(response.data);
       } else {

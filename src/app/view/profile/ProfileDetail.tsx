@@ -19,7 +19,7 @@ import {
 } from '@ui/Icons';
 import cx from 'classnames';
 import {useRouter} from 'next/navigation';
-import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
+import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import Link from 'next/link';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
@@ -237,7 +237,7 @@ const ProfileDetail = ({profileId}: Props) => {
       languageType: getCurrentLanguage(),
       profileId: profileId,
     };
-    const resGetcharacterInfo = await sendGetCharacterInfo(reqGetcharacterInfo);
+    const resGetcharacterInfo = await sendGetCharacterProfileInfo(reqGetcharacterInfo);
     data.characterInfo = resGetcharacterInfo.data?.characterInfo || null;
     data.urlLinkKey = resGetcharacterInfo.data?.urlLinkKey || '';
 

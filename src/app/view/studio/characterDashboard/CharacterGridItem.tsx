@@ -95,16 +95,6 @@ const CharacterGridItem: React.FC<CharacterGridItemProps> = ({
             {character.isMonetization ? 'Original' : 'Fan'}
           </div>
         </div>
-        {canEdit && onClickEdit && (
-          <button className={styles.buttonArea} onClick={handleEdit}>
-            <img className={styles.buttonIcon} src={LineEdit.src} />
-          </button>
-        )}
-        {canEdit && onClickDelete && (
-          <button className={styles.buttonArea} onClick={handleDelete}>
-            <img className={styles.buttonIcon} src={LineDelete.src} />
-          </button>
-        )}
       </div>
     </div>
   );

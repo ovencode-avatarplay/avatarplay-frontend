@@ -6,7 +6,7 @@ import styles from './TriggerCreate.module.css';
 import {
   GalleryImageInfo,
   GetCharacterInfoReq,
-  sendGetCharacterInfo,
+  sendGetCharacterProfileInfo,
   sendGetCharacterList,
 } from '@/app/NetWork/CharacterNetwork';
 import {
@@ -280,7 +280,7 @@ const TriggerCreate: React.FC<Props> = ({open, isEditing, onClose, updateInfo}) 
     setLoading(true);
     try {
       const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId: id};
-      const response = await sendGetCharacterInfo(req);
+      const response = await sendGetCharacterProfileInfo(req);
 
       if (response.data) {
         const characterInfo: CharacterInfo = response.data?.characterInfo;

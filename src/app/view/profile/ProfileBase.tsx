@@ -67,7 +67,7 @@ import {updateProfile} from '@/redux-store/slices/Profile';
 import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {useAtom} from 'jotai';
 import Link from 'next/link';
-import HamburgerBar from '../main/header/header-nav-bar/HamburgerBar';
+import HamburgerBar from '../main/sidebar/HamburgerBar';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import {deleteFeed, FeedInfo, PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -76,7 +76,7 @@ import {
   GetCharacterInfoReq,
   GetCharacterInfoRes,
   sendDeleteCharacter,
-  sendGetCharacterInfo,
+  sendGetCharacterProfileInfo,
 } from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {getBackUrl} from '@/utils/util-1';
@@ -459,7 +459,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         languageType: getCurrentLanguage(),
         profileId: data.profileInfo?.profileInfo?.id || 0,
       };
-      const resGetCharacterInfo = await sendGetCharacterInfo(reqSendGetCharacterInfo);
+      const resGetCharacterInfo = await sendGetCharacterProfileInfo(reqSendGetCharacterInfo);
       if (resGetCharacterInfo.resultCode != 0) {
         console.error('api error : ', resGetCharacterInfo.resultMessage);
         return;

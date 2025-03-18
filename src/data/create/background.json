@@ -1,0 +1,502 @@
+[
+  {
+    "label": "common_tagbackground_park",
+    "prompts": [
+      "park"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Park"
+  },
+  {
+    "label": "common_tagbackground_school",
+    "prompts": [
+      "school"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=School"
+  },
+  {
+    "label": "common_tagbackground_classroom",
+    "prompts": [
+      "classroom"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Classroom"
+  },
+  {
+    "label": "common_tagbackground_citylights",
+    "prompts": [
+      "city, city lights"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=City+Lights"
+  },
+  {
+    "label": "common_tagbackground_highway",
+    "prompts": [
+      "highway"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Highway"
+  },
+  {
+    "label": "common_tagbackground_dock",
+    "prompts": [
+      "dock"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Dock"
+  },
+  {
+    "label": "common_tagbackground_boat/ship",
+    "prompts": [
+      "boat, ship"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Boat%2FShip"
+  },
+  {
+    "label": "common_tagbackground_airport",
+    "prompts": [
+      "airport"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Airport"
+  },
+  {
+    "label": "common_tagbackground_airplane",
+    "prompts": [
+      "plane"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Airplane"
+  },
+  {
+    "label": "common_tagbackground_spaceship",
+    "prompts": [
+      "spaceship"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Spaceship"
+  },
+  {
+    "label": "common_tagbackground_heavenlyclouds",
+    "prompts": [
+      "heaven, clouds"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Heavenly+Clouds"
+  },
+  {
+    "label": "common_tagbackground_spacestars",
+    "prompts": [
+      "space, stars"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Space+Stars"
+  },
+  {
+    "label": "common_tagbackground_spaceplanets",
+    "prompts": [
+      "space, planets"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Space+Planets"
+  },
+  {
+    "label": "common_tagbackground_gym",
+    "prompts": [
+      "gym"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Gym"
+  },
+  {
+    "label": "common_tagbackground_lockerroom",
+    "prompts": [
+      "locker room"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Locker+Room"
+  },
+  {
+    "label": "common_tagbackground_library",
+    "prompts": [
+      "library, books"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Library"
+  },
+  {
+    "label": "common_tagbackground_energyplant",
+    "prompts": [
+      "energy plant"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Energy+Plant"
+  },
+  {
+    "label": "common_tagbackground_armory",
+    "prompts": [
+      "armory"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Armory"
+  },
+  {
+    "label": "common_tagbackground_workshop",
+    "prompts": [
+      "workshop"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Workshop"
+  },
+  {
+    "label": "common_tagbackground_busstop",
+    "prompts": [
+      "bus stop"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Bus+Stop"
+  },
+  {
+    "label": "common_tagbackground_hospital",
+    "prompts": [
+      "hospital"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Hospital"
+  },
+  {
+    "label": "common_tagbackground_office",
+    "prompts": [
+      "office, computers"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Office"
+  },
+  {
+    "label": "common_tagbackground_corridor",
+    "prompts": [
+      "corridor"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Corridor"
+  },
+  {
+    "label": "common_tagbackground_bedroom",
+    "prompts": [
+      "bedroom"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Bedroom"
+  },
+  {
+    "label": "common_tagbackground_bedroomsetup",
+    "prompts": [
+      "bedroom, bed, nightstand"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Bedroom+Setup"
+  },
+  {
+    "label": "common_tagbackground_bedroomwithmonitor",
+    "prompts": [
+      "bedroom, computer monitor"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Bedroom+with+Monitor"
+  },
+  {
+    "label": "common_tagbackground_plushbedroom",
+    "prompts": [
+      "bedroom, (plush)"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Plush+Bedroom"
+  },
+  {
+    "label": "common_tagbackground_diningroom",
+    "prompts": [
+      "dining room"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Dining+Room"
+  },
+  {
+    "label": "common_tagbackground_livingroom",
+    "prompts": [
+      "living room, couch",
+      "living room, plant"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Living+Room"
+  },
+  {
+    "label": "common_tagbackground_bathroom",
+    "prompts": [
+      "bathroom"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Bathroom"
+  },
+  {
+    "label": "common_tagbackground_kitchen",
+    "prompts": [
+      "kitchen",
+      "kitchen, cooking"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Kitchen"
+  },
+  {
+    "label": "common_tagbackground_apartment",
+    "prompts": [
+      "apartment"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Apartment"
+  },
+  {
+    "label": "common_tagbackground_conveniencestore",
+    "prompts": [
+      "store, convenience store"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Convenience+Store"
+  },
+  {
+    "label": "common_tagbackground_shoppingmall",
+    "prompts": [
+      "shopping mall, stores, signs"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Shopping+Mall"
+  },
+  {
+    "label": "common_tagbackground_restaurant",
+    "prompts": [
+      "restaurant"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Restaurant"
+  },
+  {
+    "label": "common_tagbackground_plaza",
+    "prompts": [
+      "plaza"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Plaza"
+  },
+  {
+    "label": "common_tagbackground_mountain",
+    "prompts": [
+      "mountain"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Mountain"
+  },
+  {
+    "label": "common_tagbackground_prairie",
+    "prompts": [
+      "prairie"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Prairie"
+  },
+  {
+    "label": "common_tagbackground_grass",
+    "prompts": [
+      "grass"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Grass"
+  },
+  {
+    "label": "common_tagbackground_grassandtree",
+    "prompts": [
+      "grass, tree"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Grass+and+Tree"
+  },
+  {
+    "label": "common_tagbackground_field",
+    "prompts": [
+      "field"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Field"
+  },
+  {
+    "label": "common_tagbackground_farm/plantation",
+    "prompts": [
+      "farm, plantation"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Farm+%2F+Plantation"
+  },
+  {
+    "label": "common_tagbackground_forest",
+    "prompts": [
+      "forest"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Forest"
+  },
+  {
+    "label": "common_tagbackground_jungle",
+    "prompts": [
+      "jungle"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Jungle"
+  },
+  {
+    "label": "common_tagbackground_jungleruins",
+    "prompts": [
+      "jungle, rainforest, ruins"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Jungle+Ruins"
+  },
+  {
+    "label": "common_tagbackground_hill",
+    "prompts": [
+      "hill"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Hill"
+  },
+  {
+    "label": "common_tagbackground_greenhill",
+    "prompts": [
+      "hill, greenery"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Green+Hill"
+  },
+  {
+    "label": "common_tagbackground_autumntrees",
+    "prompts": [
+      "trees, autumn, leaves"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Autumn+Trees"
+  },
+  {
+    "label": "common_tagbackground_flowerfield",
+    "prompts": [
+      "flower field, flowers"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Flower+Field"
+  },
+  {
+    "label": "common_tagbackground_snowyfield",
+    "prompts": [
+      "snowy field"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Snowy+Field"
+  },
+  {
+    "label": "common_tagbackground_snowymountain",
+    "prompts": [
+      "snowy mountain"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Snowy+Mountain"
+  },
+  {
+    "label": "common_tagbackground_snowytown",
+    "prompts": [
+      "snowy town, snow, ice, stalagmite"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Snowy+Town"
+  },
+  {
+    "label": "common_tagbackground_ice",
+    "prompts": [
+      "cold, ice"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Ice"
+  },
+  {
+    "label": "common_tagbackground_river",
+    "prompts": [
+      "river"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=River"
+  },
+  {
+    "label": "common_tagbackground_lake",
+    "prompts": [
+      "lake"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Lake"
+  },
+  {
+    "label": "common_tagbackground_pool",
+    "prompts": [
+      "pool"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Pool"
+  },
+  {
+    "label": "common_tagbackground_beachwithpalm",
+    "prompts": [
+      "beach, palm tree, towel"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Beach+with+Palm"
+  },
+  {
+    "label": "common_tagbackground_oceanbeach",
+    "prompts": [
+      "beach, ocean, waves, island"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Ocean+Beach"
+  },
+  {
+    "label": "common_tagbackground_suburbantown",
+    "prompts": [
+      "town, suburbs"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Suburban+Town"
+  },
+  {
+    "label": "common_tagbackground_japanesetown",
+    "prompts": [
+      "town, japanese architecture"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Japanese+Town"
+  },
+  {
+    "label": "common_tagbackground_japanesepondarch",
+    "prompts": [
+      "pond, arch, japanese architecture"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Japanese+Pond+Arch"
+  },
+  {
+    "label": "common_tagbackground_forestcabin",
+    "prompts": [
+      "cabin, forest, campfire"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Forest+Cabin"
+  },
+  {
+    "label": "common_tagbackground_concert",
+    "prompts": [
+      "concert",
+      "concert, stage, stage lights, idol"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Concert"
+  },
+  {
+    "label": "common_tagbackground_castle",
+    "prompts": [
+      "castle"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Castle"
+  },
+  {
+    "label": "common_tagbackground_palace",
+    "prompts": [
+      "palace"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Palace"
+  },
+  {
+    "label": "common_tagbackground_dojo",
+    "prompts": [
+      "dojo"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Dojo"
+  },
+  {
+    "label": "common_tagbackground_cemetery",
+    "prompts": [
+      "cemetery"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Cemetery"
+  },
+  {
+    "label": "common_tagbackground_fantasyland",
+    "prompts": [
+      "fantasy land"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Fantasy+Land"
+  },
+  {
+    "label": "common_tagbackground_ancientruins",
+    "prompts": [
+      "ancient ruins"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Ancient+Ruins"
+  },
+  {
+    "label": "common_tagbackground_pirateship",
+    "prompts": [
+      "pirate ship"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Pirate+Ship"
+  },
+  {
+    "label": "common_tagbackground_stoneroad",
+    "prompts": [
+      "stone road"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=Stone+Road"
+  }
+]

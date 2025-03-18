@@ -49,28 +49,19 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
 
   const loraOption = [
     {
-      label: 'Anime',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
-    },
-    {
-      label: 'Pixar',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
-    },
-    {
-      label: 'J-Film',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
-    },
-    {
       label: 'Realism',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
-    },
-    {
-      label: 'K-Film',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
+      image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/t3/.jpg',
+      model: 't3',
     },
     {
       label: 'Hollywood',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
+      image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/Junggernaut/.jpg',
+      model: 'XB Pro v1',
+    },
+    {
+      label: 'Anime',
+      image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/Animagine+XL/.jpg',
+      model: 'Animagine XL',
     },
   ];
 
@@ -244,17 +235,15 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
   const handleImageGeneration = async () => {
     try {
       setIsLoading(true);
-      const selectedModel = loRaStyles.hairStyles.find(style => style.value === selectedLora);
-      const modelId = selectedModel ? selectedModel.label : 'Animagine XL'; // 선택된 모델 ID 설정
-
-      const tmpSeed = seedLock || seed > 0 ? seed : Math.floor(Math.random() * 4294967295);
+      const modelId = loraOption[selectedLora]; // 선택된 모델 ID 설정
+      const tmpSeed = seedLock ? seed : Math.floor(Math.random() * 2100000000);
       setSeed(tmpSeed);
 
       const payload: GenerateImageReq2 = {
-        modelId: modelId,
+        modelId: modelId.model,
         prompt: positivePrompt,
-        negativePrompt: '',
-        batchSize: selectedImgCount,
+        negativePrompt: negativePrompt,
+        batchSize: selectedImgCount + 1,
         seed: tmpSeed,
       };
 
@@ -275,7 +264,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
           }
 
           // 빈 자리가 없으면 새로운 이미지를 더해주기
-          return [...images, ...newImages];
+          return [...newImages, ...images];
         };
 
         return replaceEmptyWithNewImages(updatedImages, newImages);
