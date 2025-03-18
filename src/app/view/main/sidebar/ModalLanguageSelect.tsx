@@ -100,6 +100,9 @@ const ModalLanguageSelect: React.FC<FullScreenModalProps> = ({isOpen, onClose}) 
         <div className={styles.selectArea}>
           {Object.values(LanguageType)
             .filter(v => typeof v === 'number') // Enum의 숫자 값만 필터링
+            .filter(num =>
+              LanguageType[num as LanguageType].toString().toLowerCase().includes(inputValue.toLowerCase()),
+            )
             .map(num => {
               const flagCode = getFlagCode(num as LanguageType);
               return (
