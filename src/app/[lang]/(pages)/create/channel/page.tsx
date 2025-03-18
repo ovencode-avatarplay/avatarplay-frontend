@@ -604,7 +604,12 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 <div className={styles.label}>
                   Visibility <span className={styles.highlight}>*</span>
                 </div>
-                <input {...register('visibilityType', {required: true})} className={styles.hide} autoComplete="off" />
+                <input
+                  defaultValue={VisibilityType.Private}
+                  {...register('visibilityType', {required: true})}
+                  className={styles.hide}
+                  autoComplete="off"
+                />
                 <CustomSelector
                   value={visibilityTypeStr}
                   error={errors.visibilityType && isSubmitted}
