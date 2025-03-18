@@ -201,7 +201,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
             setOnPlay(true);
             setIsPlayButton(true);
             console.log('data', data);
-            setPlayContentId(data.dataMix?.id || 0);
+            setPlayContentId(data.isSingle ? data.dataMix?.id || 0 : data.dataMix?.contentId || 0);
             setEpisodeId(0);
           }}
         >

@@ -153,8 +153,8 @@ margin-left: 8px; /* 필요 시 미세 조정 */
 
 .conformButtonText {
     color: var(--White, #FFF);
-    leading-trim: both;
-    text-edge: cap;
+    /*leading-trim: both;
+    text-edge: cap;*/
     font-feature-settings: 'liga' off, 'clig' off;
     font-family: Lato;
     font-size: 14px;

@@ -1,7 +1,8 @@
 import {i18n} from 'next-i18next'; // i18n 객체 가져오기
 import {useRouter} from 'next/navigation';
 import Cookies from 'js-cookie';
-import {getAuth, LanguageType} from '@/app/NetWork/AuthNetwork';
+import {getAuth} from '@/app/NetWork/AuthNetwork';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import {getLangUrlCode} from '@/configs/i18n';
 import {setLanguage} from '@/redux-store/slices/UserInfo';
 import {store} from '@/redux-store/ReduxStore';

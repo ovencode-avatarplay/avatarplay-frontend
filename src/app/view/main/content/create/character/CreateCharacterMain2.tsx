@@ -31,7 +31,7 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
-import {LanguageType} from '@/app/NetWork/AuthNetwork';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPrompt';
 
 const Header = 'CreateCharacter';

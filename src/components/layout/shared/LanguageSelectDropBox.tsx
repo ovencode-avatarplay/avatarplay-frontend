@@ -3,7 +3,8 @@ import React, {useEffect} from 'react';
 import {Select, MenuItem, FormControl, InputLabel, SelectChangeEvent, Box} from '@mui/material';
 import styles from './LanguageSelectDropBox.module.css';
 
-import {changeLanguage, LanguageType, sendGetLanguage} from '@/app/NetWork/AuthNetwork';
+import {changeLanguage, sendGetLanguage} from '@/app/NetWork/AuthNetwork';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
@@ -20,15 +21,15 @@ const LanguageSelectDropBox: React.FC = () => {
   const router = useRouter();
 
   const LanguageDisplay = [
-    {value: LanguageType.Korean, label: 'Korean'},
+    {value: LanguageType.한국어, label: 'Korean'},
     {value: LanguageType.English, label: 'English'},
-    {value: LanguageType.Japanese, label: 'Japanese'},
-    {value: LanguageType.French, label: 'French'},
-    {value: LanguageType.Spanish, label: 'Spanish'},
-    {value: LanguageType.ChineseSimplified, label: 'Chinese Simplified'},
-    {value: LanguageType.ChineseTraditional, label: 'Chinese Traditional'},
-    {value: LanguageType.Portuguese, label: 'Portuguese'},
-    {value: LanguageType.German, label: 'German'},
+    {value: LanguageType.日本語, label: 'Japanese'},
+    {value: LanguageType.Français, label: 'French'},
+    {value: LanguageType.Español, label: 'Spanish'},
+    {value: LanguageType.简体中文, label: 'Chinese Simplified'},
+    {value: LanguageType.繁體中文, label: 'Chinese Traditional'},
+    {value: LanguageType.Português, label: 'Portuguese'},
+    {value: LanguageType.Deutsch, label: 'German'},
   ];
 
   const handleLanguageChange = async (event: SelectChangeEvent<number>) => {
@@ -66,7 +67,7 @@ const LanguageSelectDropBox: React.FC = () => {
       <FormControl fullWidth>
         <Select
           labelId="language-selector-label"
-          value={selectedLanguage ?? LanguageType.Korean}
+          value={selectedLanguage ?? LanguageType.한국어}
           onChange={handleLanguageChange}
           className={styles.languageSelect}
         >

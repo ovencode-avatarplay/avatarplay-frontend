@@ -34,7 +34,7 @@ import cx from 'classnames';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {debounce, Dialog, Drawer} from '@mui/material';
 import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostCountry';
-import {LanguageType} from '@/app/NetWork/AuthNetwork';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';

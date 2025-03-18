@@ -1,13 +1,13 @@
 export enum LanguageType {
-  Korean = 0,
+  한국어 = 0,
   English = 1,
-  Japanese = 2,
-  French = 3,
-  Spanish = 4,
-  ChineseSimplified = 5,
-  ChineseTraditional = 6,
-  Portuguese = 7,
-  German = 8,
+  日本語 = 2,
+  Français = 3,
+  Español = 4,
+  简体中文 = 5,
+  繁體中文 = 6,
+  Português = 7,
+  Deutsch = 8,
 }
 
 export enum FlagNation {
