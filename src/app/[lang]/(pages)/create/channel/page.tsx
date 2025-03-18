@@ -777,8 +777,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     <label>
                       <input
                         type="radio"
-                        value={0}
-                        checked={watch('characterIP', 0) == 0}
+                        value={1}
+                        defaultChecked
+                        checked={watch('characterIP', 0) == 0 || watch('characterIP', 0) == 1}
                         {...register('characterIP')}
                       />
                       <div className={styles.radioWrap}>
@@ -793,8 +794,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     <label>
                       <input
                         type="radio"
-                        value={1}
-                        checked={watch('characterIP', 0) == 1}
+                        value={2}
+                        checked={watch('characterIP', 0) == 2}
                         {...register('characterIP')}
                       />
                       <div className={styles.radioWrap}>
