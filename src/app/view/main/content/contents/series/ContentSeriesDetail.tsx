@@ -571,6 +571,7 @@ export const PopupPurchase = ({
       if (onPurchaseSuccess) onPurchaseSuccess(contentId, episodeId, contentType);
     }
   };
+
   return (
     <Dialog
       open={true}
@@ -581,6 +582,7 @@ export const PopupPurchase = ({
           background: 'white',
         },
       }}
+      style={{zIndex: '3001'}}
     >
       <section className={styles.popupPurchaseSection}>
         <div className={styles.categoryWrap}>

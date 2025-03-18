@@ -853,6 +853,10 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               onClose={() => {
                 setOnPurchasePopup(false);
               }}
+              onPurchaseSuccess={() => {
+                setOnPurchasePopup(false);
+                fetchSeasonEpisodesPopup();
+              }}
             ></PopupPurchase>
           )}
         </div>
