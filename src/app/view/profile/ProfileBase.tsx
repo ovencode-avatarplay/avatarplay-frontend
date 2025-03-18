@@ -107,8 +107,8 @@ export enum eTabFavoritesType {
 
 export enum eTabPlayListType {
   Feed = 1,
-  Character = 3,
-  Contents = 2,
+  Character = 2,
+  Contents = 3,
   Game = 0,
 }
 
