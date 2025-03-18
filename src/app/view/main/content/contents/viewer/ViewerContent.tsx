@@ -130,7 +130,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       };
 
       const recordPlayResponse = await sendRecordPlay(recordPlayRequest);
-      console.log('✅ RecordPlay API 응답:', recordPlayResponse.data);
     } catch (error) {
       console.error('🚨 RecordPlay API 호출 오류:', error);
     }
@@ -269,7 +268,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     // 10초마다 한 번만 실행하도록 체크
     const roundedSeconds = Math.floor(playedSeconds);
     if (roundedSeconds % 1 === 0 && lastExecutedSecond !== roundedSeconds) {
-      console.log(`10초 단위 실행: ${roundedSeconds}초`);
       setLastExecutedSecond(roundedSeconds); // 마지막 실행 시간 업데이트
 
       handleRecordPlay();
@@ -460,7 +458,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
           </div>
           <div style={{height: '100%'}} onClick={() => handleTrigger()}>
             <div className={styles.Image}>
-              {info?.categoryType === ContentCategoryType.Webtoon && (
+              {info && info?.categoryType === ContentCategoryType.Webtoon && (
                 <div className={styles.webtoonContainer}>
                   {info?.episodeWebtoonInfo?.webtoonSourceUrlList[0].webtoonSourceUrls.map((url, index) => (
                     <img key={index} src={url} loading="lazy" className={styles.webtoonImage} />
@@ -468,7 +466,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 </div>
               )}
 
-              {info?.categoryType === ContentCategoryType.Video && (
+              {info && info?.categoryType === ContentCategoryType.Video && (
                 <div style={{position: 'relative', width: '100%', height: '100%'}}>
                   <ReactPlayer
                     ref={playerRef} // ReactPlayer 참조 연결

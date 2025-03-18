@@ -161,7 +161,6 @@ const PreviewViewer: React.FC<Props> = ({open, onClose, mediaUrls, type}) => {
     // 10초마다 한 번만 실행하도록 체크
     const roundedSeconds = Math.floor(playedSeconds);
     if (roundedSeconds % 1 === 0 && lastExecutedSecond !== roundedSeconds) {
-      console.log(`10초 단위 실행: ${roundedSeconds}초`);
       setLastExecutedSecond(roundedSeconds); // 마지막 실행 시간 업데이트
 
       // 실행할 로직 추가
