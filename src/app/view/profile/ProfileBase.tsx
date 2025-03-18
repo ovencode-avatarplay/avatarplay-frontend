@@ -1988,7 +1988,8 @@ type TabHeaderComponentType = {
     | eTabCharacterOtherType
     | eTabChannelType
     | eTabChannelOtherType
-    | eTabFavoritesType;
+    | eTabFavoritesType
+    | eTabPlayListType;
   profileId: number;
   profileType: ProfileType;
   isMine: boolean;
@@ -2011,7 +2012,8 @@ export const TabHeaderComponent = ({
       | eTabCharacterOtherType
       | eTabChannelType
       | eTabChannelOtherType
-      | eTabFavoritesType;
+      | eTabFavoritesType
+      | eTabPlayListType;
   }>({indexTab: indexTab});
   const containerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {

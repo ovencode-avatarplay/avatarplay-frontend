@@ -26,7 +26,6 @@ import {
   eTabChannelType,
   eTabCharacterOtherType,
   eTabCharacterType,
-  eTabFavoritesType,
   eTabPDOtherType,
   eTabPDType,
   FeedComponent,
@@ -39,6 +38,7 @@ import {
   TabHeaderWrapFavoritesComponent,
   TabHeaderWrapComponent,
   TabHeaderWrapPlayListComponent,
+  eTabPlayListType,
 } from './ProfileBase';
 import PopupSubscription, {getUnit} from '../main/content/create/common/PopupSubscription';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -47,7 +47,7 @@ import {GetCharacterInfoRes} from '@/app/NetWork/CharacterNetwork';
 import {GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
-import {InteractionType} from '@/app/NetWork/CommonNetwork';
+import {deleteRecord, InteractionType, RecordType} from '@/app/NetWork/CommonNetwork';
 import {PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
 
 type Props = {
@@ -59,7 +59,7 @@ type Props = {
 
 const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) => {
   const [data, setData] = useState<{
-    indexTab: eTabFavoritesType;
+    indexTab: eTabPlayListType;
     indexFilterMedia: FeedMediaType;
     indexFilterCharacter: number;
     indexSort: ExploreSortType;
@@ -69,7 +69,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
     filterCluster: FilterClusterType;
     tabContentMenu: TabContentMenuType;
   }>({
-    indexTab: eTabFavoritesType.Feed,
+    indexTab: eTabPlayListType.Feed,
     indexFilterMedia: FeedMediaType.Total,
     indexFilterCharacter: 0,
     indexSort: ExploreSortType.MostPopular,
@@ -222,7 +222,14 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
           onRefreshTab(true);
         }}
         onDelete={async () => {
-          alert('삭제 추가 예정');
+          let recordType = Number(data.indexTab);
+          if (data.indexTab == eTabPlayListType.Contents) {
+            recordType = data.tabContentMenu.isSingle ? RecordType.Episode : RecordType.Content;
+          }
+          await deleteRecord({
+            recordType: recordType,
+            typeValueId: data.tabContentMenu.id,
+          });
 
           onRefreshTab(true);
         }}
