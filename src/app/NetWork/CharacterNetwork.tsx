@@ -20,8 +20,9 @@ export enum GenderType {
 }
 
 export enum CharacterIP {
-  Original,
-  Fan,
+  None = 0,
+  Original = 1,
+  Fan = 2,
 }
 
 export enum CharacterState {
@@ -170,7 +171,8 @@ export const sendDeleteCharacter = async (payload: DeleteCharacterReq): Promise<
 
 export interface GetCharacterInfoReq {
   languageType: string;
-  profileId: number;
+  profileId?: number;
+  characterId?: number;
 }
 
 export interface GetCharacterInfoRes {
@@ -178,7 +180,9 @@ export interface GetCharacterInfoRes {
   urlLinkKey: string;
 }
 
-export const sendGetCharacterInfo = async (payload: GetCharacterInfoReq): Promise<ResponseAPI<GetCharacterInfoRes>> => {
+export const sendGetCharacterProfileInfo = async (
+  payload: GetCharacterInfoReq,
+): Promise<ResponseAPI<GetCharacterInfoRes>> => {
   try {
     const response = await api.post<ResponseAPI<GetCharacterInfoRes>>('Character/get', payload);
 
@@ -192,7 +196,6 @@ export const sendGetCharacterInfo = async (payload: GetCharacterInfoReq): Promis
     throw new Error('Failed to send get character. Please try again');
   }
 };
-
 // UpdateGallery
 
 export interface SaveGalleryReq {

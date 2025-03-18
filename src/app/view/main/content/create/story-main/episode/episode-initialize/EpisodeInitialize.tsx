@@ -9,7 +9,7 @@ import styles from './EpisodeInitialize.module.css';
 import {
   GalleryImageInfo,
   GetCharacterInfoReq,
-  sendGetCharacterInfo,
+  sendGetCharacterProfileInfo,
   sendGetCharacterList,
 } from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo, EpisodeInfo} from '@/redux-store/slices/StoryInfo';
@@ -299,7 +299,7 @@ const EpisodeInitialize: React.FC<Props> = ({
     setLoading(true);
     try {
       const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId: id};
-      const response = await sendGetCharacterInfo(req);
+      const response = await sendGetCharacterProfileInfo(req);
 
       if (response.data) {
         const characterInfo: CharacterInfo = response.data?.characterInfo;

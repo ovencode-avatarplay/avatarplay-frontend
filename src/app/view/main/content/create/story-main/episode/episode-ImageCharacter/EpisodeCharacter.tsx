@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Button, Box} from '@mui/material';
 import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
-import {GetCharacterInfoReq, sendGetCharacterInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
+import {GetCharacterInfoReq, sendGetCharacterProfileInfo, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo, setCharacterInfo, TriggerInfo} from '@/redux-store/slices/StoryInfo';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CharacterGrid from '@/app/view/studio/characterDashboard/CharacterGrid';
@@ -59,7 +59,7 @@ const EpisodeCharacter: React.FC<EpisodeCharacterProps> = ({
     setLoading(true);
     try {
       const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId: id};
-      const response = await sendGetCharacterInfo(req);
+      const response = await sendGetCharacterProfileInfo(req);
 
       if (response.data) {
         const characterInfo: CharacterInfo = response.data?.characterInfo;

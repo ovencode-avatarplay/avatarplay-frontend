@@ -98,7 +98,12 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
           profileUrlLinkKey,
           PdProfileTabType.Feed,
           feedSortType,
-          feedMediaType,
+          {
+            feedMediaType: feedMediaType,
+            channelTabType: 0,
+            characterTabType: 0,
+            contentTabType: 0,
+          },
           0,
           1000,
         );
@@ -107,7 +112,12 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
           profileUrlLinkKey,
           CharacterProfileTabType.Feed,
           feedSortType,
-          feedMediaType,
+          {
+            feedMediaType: feedMediaType,
+            channelTabType: 0,
+            characterTabType: 0,
+            contentTabType: 0,
+          },
           0,
           1000,
         );
@@ -245,7 +255,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
         <meta property="og:image" content={initialFeed?.characterProfileUrl || '/default-image.png'} />
       </Head> 추후 메타 처리*/}
 
-      {!isProfile && (
+      {!isProfile && !isSpecificProfile && (
         <>
           <div className={styles.tabContainer}>
             <button

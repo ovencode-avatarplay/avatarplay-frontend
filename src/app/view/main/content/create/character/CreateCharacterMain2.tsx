@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 
 // publish가 끝나고 다른곳으로 이동하기
 import {useRouter} from 'next/navigation';
-import {getBackUrl, getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 
 import styles from './CreateCharacterMain2.module.css';
 import {BoldMixture, LineAIImage, LineDashboard, LineEdit, LineUpload} from '@ui/Icons';
@@ -30,6 +30,9 @@ import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
+import useCustomRouter from '@/utils/useCustomRouter';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
+import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPrompt';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -42,6 +45,7 @@ interface CreateCharacterProps {
 }
 
 const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = false, characterInfo, onClose}) => {
+  const {back} = useCustomRouter();
   const router = useRouter();
 
   //#region Data
@@ -74,6 +78,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
 
   const [essentialPopupOpen, setEssentialPopupOpen] = useState<boolean>(false);
+  const [essentialWarning, setEssentialWarning] = useState<boolean>(false);
   const [successPopupOpen, setSuccessPopupOpen] = useState<boolean>(false);
 
   //#region  Basic
@@ -95,6 +100,10 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
     character.customModulesInfo.selectLorebookId,
   );
 
+  const KEYWORDS: Record<string, string> = {
+    '{{user}}': 'user',
+    '{{char}}': 'character',
+  };
   //#endregion
 
   //#region Media
@@ -166,7 +175,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   const [llmModel, setLlmModel] = useState<number>(character.llmModel);
   const [llmCustomApi, setLlmCustomApi] = useState<string>(character.customApi);
   const [tag, setTag] = useState<string>(character.tag);
-  const [positionCountryList, setPositionCountryList] = useState<number[]>(character.positionCountryList);
+  const [positionCountryList, setPositionCountryList] = useState<number[]>(
+    character.positionCountryList.length > 0
+      ? character.positionCountryList
+      : (Object.values(LanguageType).filter(value => typeof value === 'number') as LanguageType[]),
+  );
   const [characterIP, setCharacterIP] = useState<number>(character.characterIP);
   const [membershipSetting, setMembershipSetting] = useState<MembershipSetting>(character.membershipSetting);
   const [connectCharacterInfo, setConnectCharacterInfo] = useState<ProfileSimpleInfo>(character.connectCharacterInfo);
@@ -248,7 +261,8 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   };
 
   const handleOnClickMediaEdit = (index: number) => {
-    setImgUploadOpen(true);
+    // setImgUploadOpen(true);
+    setImgUploadModalOpen(true);
     setImageCreate('MediaEdit');
     setSelectedMediaItemIdx(index);
   };
@@ -260,7 +274,9 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
 
     if (description === '') return false;
 
-    if (positionCountryList.length < 1) return false;
+    if (positionCountryList.length < 1) {
+      return false;
+    }
 
     return true;
   };
@@ -273,10 +289,10 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           id: character.id,
           referenceLanguage: languageType,
           name: characterName,
-          introduction: introduction, // 지정하는 장소 없음
-          description: description,
-          worldScenario: worldScenario,
-          secret: secret,
+          introduction: replaceChipsWithKeywords(introduction, KEYWORDS),
+          description: replaceChipsWithKeywords(description, KEYWORDS),
+          worldScenario: replaceChipsWithKeywords(worldScenario, KEYWORDS),
+          secret: replaceChipsWithKeywords(secret, KEYWORDS),
           mainImageUrl: mainimageUrl,
           mediaTemplateList: mediaTemplateList?.map(item => ({
             id: item.id,
@@ -489,13 +505,25 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
     }
   }, [imgUploadOpen]);
 
+  useEffect(() => {
+    if (essentialWarning) {
+      if (characterName !== '' && description !== '' && mainimageUrl !== '' && positionCountryList.length > 0) {
+        setEssentialWarning(false);
+      }
+    }
+  }, [characterName, description, mainimageUrl, positionCountryList]);
+
   const splitterData = [
     {
       label: getLocalizedText(Header, 'createcharacter001_label_003'),
       preContent: '',
       content: (
         <>
-          <CharacterCreateBasic characterName={characterName} setCharacterName={setCharacterName} />
+          <CharacterCreateBasic
+            characterName={characterName}
+            setCharacterName={setCharacterName}
+            essentialWarning={essentialWarning}
+          />
           <CharacterCreateLLM
             selectedLang={languageType}
             characterDesc={description}
@@ -505,12 +533,13 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
             selectedPromptId={customModulesPromptId}
             selectedLorebookId={customModulesLorebookId}
             onLangChange={setLanguageType}
-            onCharacterDescChange={setDescription}
-            onWorldScenarioChange={setWorldScenario}
-            onGreetingChange={setIntroduction}
-            onSecretChange={setSecret}
             onSelectedPromptChange={setCustomModulesPromptId}
             onSelectedLorebookChange={setCustomModulesLorebookId}
+            setCharacterDesc={setDescription}
+            setGreeting={setIntroduction}
+            setWorldScenario={setWorldScenario}
+            setSecret={setSecret}
+            essentialWarning={essentialWarning}
           />
         </>
       ),
@@ -599,8 +628,9 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           onIsMonetizationChange={setIsMonetization}
           nsfw={nsfw}
           onNsfwChange={setNsfw}
-          characterDesc={creatorComment}
+          creatorComment={creatorComment}
           setCharacterDesc={setCreatorComment}
+          essentialWarning={essentialWarning}
         />
       ),
     },
@@ -744,13 +774,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   };
 
   const routerBack = () => {
-    // you can get the prevPath like this
-    const prevPath = getBackUrl();
-    if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/main/homefeed'));
-    } else {
-      router.replace(prevPath);
-    }
+    back('/main/homefeed');
   };
 
   return (
@@ -773,7 +797,11 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
                   {getLocalizedText(Header, 'createcharacter001_label_002')} <span className={styles.astrisk}>*</span>
                 </h2>
 
-                <div className={styles.thumbnailButtonArea}>
+                <div
+                  className={`${styles.thumbnailButtonArea} ${
+                    essentialWarning && mainimageUrl === '' && styles.isEssential
+                  }`}
+                >
                   <button
                     className={styles.thumbnailButton}
                     onClick={() => {
@@ -832,11 +860,13 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
                       handleCreateCharacter();
                     } else {
                       setEssentialPopupOpen(true);
+                      setEssentialWarning(true);
                     }
                   }}
                 >
-                  {getLocalizedText(Common, 'common_button_save')}
+                  {getLocalizedText(Common, 'common_button_submit')}
                 </CustomButton>
+                <div className={styles.floatButtonBack}></div>
               </div>
             </footer>
           </div>

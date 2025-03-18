@@ -8,7 +8,7 @@
   }
   
   .contentBox {
-    width: 370px;
+    width: var(--second-width);
     height: 548.75px;
     background: #f8f9fa;
     border: 1px solid #e8eaed;
@@ -57,7 +57,7 @@ text-align: center;
     display: flex;
     align-items: center;
     gap: 10px;
-    width: 370px;
+    width: var(--second-width);
   }
   
   .checkbox {
@@ -76,7 +76,7 @@ text-align: center;
   }
   
   .confirmButton {
-    width: 370px;
+    width: var(--second-width);
     height: 50px;
     background: #2c3131;
     color: #ffffff;

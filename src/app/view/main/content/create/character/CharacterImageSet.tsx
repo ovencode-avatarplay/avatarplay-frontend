@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './CharacterImageSet.module.css';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import CharacterCreateImageButton from './CreateCharacterImageButton';
@@ -13,6 +13,9 @@ import {GenerateImageReq2, sendGenerateImageReq2} from '@/app/NetWork/ImageNetwo
 import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {formatCurrency} from '@/utils/util-1';
 
 interface CharacterImageSetProps {
   createFinishAction?: (imgUrl: string) => void;
@@ -36,30 +39,29 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [selectedGeneratedItems, setSelectedGeneratedItems] = useState<number[]>([]);
 
+  const [swiper, setSwiper] = useState<any | null>(null);
+  const [isCentered, setIsCentered] = useState<boolean>(false);
+
+  const [centerThreshold, setCenterThreshold] = useState(Math.round(window.innerWidth / 116));
+
+  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
+  const starAmount = dataStarInfo.star;
+
   const loraOption = [
     {
-      label: 'Anime',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
-    },
-    {
-      label: 'Pixar',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
-    },
-    {
-      label: 'J-Film',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
-    },
-    {
       label: 'Realism',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
-    },
-    {
-      label: 'K-Film',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
+      image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/t3/.jpg',
+      model: 't3',
     },
     {
       label: 'Hollywood',
-      image: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
+      image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/Junggernaut/.jpg',
+      model: 'XB Pro v1',
+    },
+    {
+      label: 'Anime',
+      image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/Animagine+XL/.jpg',
+      model: 'Animagine XL',
     },
   ];
 
@@ -190,11 +192,23 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
       if (prevSelectedTags.includes(index)) {
         // 태그를 선택 해제하는 경우
         updatedTags = prevSelectedTags.filter(tagIndex => tagIndex !== index);
-        setPositivePrompt(prevPrompt => prevPrompt.replace(' ,' + aiTagOption[index].value, '').trim());
+        setPositivePrompt(prevPrompt => {
+          const tagToRemove = aiTagOption[index].value;
+          let updatedPrompt = prevPrompt;
+
+          updatedPrompt = updatedPrompt
+            .replace(new RegExp(`(^|, )${tagToRemove}(, |$)`, 'g'), ', ')
+            .replace(/^, |, $/g, '')
+            .trim();
+
+          return updatedPrompt.length === 0 ? '' : updatedPrompt;
+        });
       } else {
         // 태그를 선택하는 경우
         updatedTags = [...prevSelectedTags, index];
-        setPositivePrompt(prevPrompt => prevPrompt + ' ,' + aiTagOption[index].value);
+        setPositivePrompt(prevPrompt =>
+          prevPrompt.length === 0 ? aiTagOption[index].value : prevPrompt + ', ' + aiTagOption[index].value,
+        );
       }
 
       return updatedTags;
@@ -214,21 +228,23 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
   };
   const handleSelectedLora = (index: number) => {
     setSelectedLora(index);
+    setIsCentered(index >= centerThreshold);
   };
 
   // 이미지 생성
   const handleImageGeneration = async () => {
     try {
       setIsLoading(true);
-      const selectedModel = loRaStyles.hairStyles.find(style => style.value === selectedLora);
-      const modelId = selectedModel ? selectedModel.label : 'Animagine XL'; // 선택된 모델 ID 설정
+      const modelId = loraOption[selectedLora]; // 선택된 모델 ID 설정
+      const tmpSeed = seedLock ? seed : Math.floor(Math.random() * 2100000000);
+      setSeed(tmpSeed);
 
       const payload: GenerateImageReq2 = {
-        modelId: modelId,
+        modelId: modelId.model,
         prompt: positivePrompt,
-        negativePrompt: '',
-        batchSize: selectedImgCount,
-        seed: seed,
+        negativePrompt: negativePrompt,
+        batchSize: selectedImgCount + 1,
+        seed: tmpSeed,
       };
 
       const response = await sendGenerateImageReq2(payload); // API 요청
@@ -248,7 +264,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
           }
 
           // 빈 자리가 없으면 새로운 이미지를 더해주기
-          return [...images, ...newImages];
+          return [...newImages, ...images];
         };
 
         return replaceEmptyWithNewImages(updatedImages, newImages);
@@ -258,6 +274,30 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
     } finally {
       setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
+    const updateThreshold = () => {
+      setCenterThreshold(Math.round(window.innerWidth / 116));
+    };
+
+    updateThreshold();
+
+    window.addEventListener('resize', updateThreshold);
+
+    return () => {
+      window.removeEventListener('resize', updateThreshold);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (swiper) {
+      swiper.slideTo(selectedLora, 300);
+    }
+  }, [selectedLora, swiper]);
+
+  const handleSwiperInit = (swiperInstance: any) => {
+    setSwiper(swiperInstance);
   };
 
   return (
@@ -273,10 +313,14 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
         <Swiper
           className={styles.horizonSwiper}
           initialSlide={selectedLora}
-          centeredSlides={true}
+          centeredSlides={isCentered}
           slidesPerView="auto"
           spaceBetween={6}
-          onSlideChange={swiper => handleSelectedLora(swiper.activeIndex)}
+          onSlideChange={
+            swiper => setIsCentered(false)
+            // handleSelectedLora(swiper.activeIndex)
+          }
+          onSwiper={handleSwiperInit}
         >
           {loraOption.map((option, index) => (
             <SwiperSlide key={option.label} className={styles.swiperSmall} style={{width: '100px', height: '100px'}}>
@@ -369,7 +413,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
         </div>
         <div className={styles.currencyItem}>
           <img className={styles.currencyIcon} src={BoldStar.src} />
-          <span className={styles.currencyText}>100</span> {/* TODO : Currency */}
+          <span className={styles.currencyText}>{formatCurrency(starAmount)}</span> {/* TODO : Currency */}
         </div>
       </div>
 

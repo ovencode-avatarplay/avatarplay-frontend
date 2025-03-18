@@ -129,6 +129,11 @@ export interface CharacterInfo {
   state: CharacterState;
   createAt: string;
   updateAt: string;
+
+  likeCount: number;
+  isLike: boolean;
+  isDisLike: boolean;
+  isBookmark: boolean;
 }
 
 export interface ConversationInfo {

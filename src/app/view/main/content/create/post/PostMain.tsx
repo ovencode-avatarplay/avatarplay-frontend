@@ -51,7 +51,6 @@ const mediaTypeConfig = {
   },
 };
 const PostMain: React.FC<Props> = ({id}) => {
-  console.log('feedid', id);
   const router = useRouter();
   const [text, setText] = useState(''); // 입력된 텍스트 상태
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
@@ -63,10 +62,10 @@ const PostMain: React.FC<Props> = ({id}) => {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoDuration, setVideoDuration] = useState<string | null>(null);
-  const [nameValue, setNameValue] = useState<string>('');
+  const [nameValue, setTitleValue] = useState<string>('');
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length <= 20) {
-      setNameValue(e.target.value);
+      setTitleValue(e.target.value);
     }
   };
 
@@ -161,7 +160,7 @@ const PostMain: React.FC<Props> = ({id}) => {
               if (existingFeed.mediaState == MediaState.Image) setMediaType('image');
               else if (existingFeed.mediaState == MediaState.Video) setMediaType('video');
 
-              setNameValue(existingFeed.title || '');
+              setTitleValue(existingFeed.title || '');
               setrDescription(existingFeed.description || '');
               setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
               setSelectedVisibility(existingFeed.isPinFix ? VisibilityType.Public : VisibilityType.Private);
@@ -249,20 +248,20 @@ const PostMain: React.FC<Props> = ({id}) => {
   };
 
   const selectVisibilityItems: SelectDrawerItem[] = [
+    // {
+    //   name: 'Take a photo',
+    //   onClick: () => {
+    //     handleTakePhoto();
+    //   },
+    // },
     {
-      name: 'Take a photo or video',
-      onClick: () => {
-        handleTakeMedia();
-      },
-    },
-    {
-      name: 'Media library',
+      name: 'Workroom',
       onClick: () => {
         handleMediaLibrary();
       },
     },
     {
-      name: 'File folder',
+      name: 'My device',
       onClick: () => {
         handleChooseFile();
       },
@@ -550,6 +549,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           isOpen={isOpenSelectDrawer}
           onClose={() => setIsOpenSelectDrawer(false)}
           selectedIndex={0}
+          isCheck={false}
         />
       </div>
 
@@ -559,6 +559,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           isOpen={isOpenMediaDrawer}
           onClose={() => setIsOpenMediaDrawer(false)}
           selectedIndex={0}
+          isCheck={false}
         />
       </div>
       <LoadingOverlay loading={loading} />
@@ -601,6 +602,7 @@ const PostMain: React.FC<Props> = ({id}) => {
         isOpen={visibilityDrawerOpen}
         onClose={() => setVisibilityDrawerOpen(false)}
         selectedIndex={selectedVisibility}
+        isCheck={false}
       />
       <DrawerTagSelect
         isOpen={tagOpen}

@@ -9,6 +9,7 @@ import {ThemeProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {isLogined, refreshLanaguage} from '@/utils/UrlMove';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 // MUI에 전역 css 적용하는 코드
 const theme = createTheme({
@@ -61,9 +62,9 @@ const theme = createTheme({
 });
 
 const Root = ({children}: {children: ReactNode}) => {
+  const {back} = useCustomRouter();
   const [hasRun, setHasRun] = useState(false); // 상태를 관리하여 최초 실행 여부 판단
   const router = useRouter(); // useRouter는 클라이언트에서만 사용
-  const searchParams = useSearchParams();
   const paddingRef = useRef();
   useEffect(() => {
     refreshLanguage();
@@ -90,25 +91,6 @@ const Root = ({children}: {children: ReactNode}) => {
       setHasRun(true); // 상태를 업데이트하여 이후에는 실행되지 않도록 함
     }
   };
-
-  const pathname = usePathname();
-
-  //storing the pathnames when the value changes.
-  useEffect(() => {
-    storePathValues();
-  }, [pathname, searchParams]);
-
-  function storePathValues() {
-    const storage = globalThis?.sessionStorage;
-    if (!storage) return;
-
-    // Set the previous path as the value of the current path.
-    const prevPath = storage.getItem('currentPath');
-
-    storage.setItem('prevPath', prevPath ?? '');
-    // Set the current path value by looking at the browser's location object.
-    storage.setItem('currentPath', globalThis.location.pathname + globalThis.location.search);
-  }
 
   return (
     <Provider store={store}>

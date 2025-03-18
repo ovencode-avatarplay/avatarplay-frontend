@@ -24,7 +24,7 @@ import styles from './ContentSeriesDetail.module.scss';
 import cx from 'classnames';
 import {SelectBox} from '@/app/view/profile/ProfileBase';
 import {TextArea} from '@/app/view/profile/ProfileDetail';
-import {getBackUrl, getLocalizedLink} from '@/utils/UrlMove';
+import {getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {
   buyContentEpisode,
@@ -45,6 +45,7 @@ import {TurnedIn} from '@mui/icons-material';
 import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/CommonNetwork';
 import ViewerContent from '../viewer/ViewerContent';
 import {setEpisodeId} from '@/redux-store/slices/Chatting';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 type Props = {
   type: ContentType;
@@ -57,6 +58,7 @@ enum eTabType {
 }
 
 const ContentSeriesDetail = ({id, type}: Props) => {
+  const {back} = useCustomRouter();
   const refThumbnailWrap = useRef<HTMLDivElement | null>(null);
   const [onPlay, setOnPlay] = useState(false);
   const [isPlayButton, setIsPlayButton] = useState(false);
@@ -98,13 +100,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   });
 
   const routerBack = () => {
-    // you can get the prevPath like this
-    const prevPath = getBackUrl();
-    if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/profile/' + data.dataMix?.profileUrlLinkKey));
-    } else {
-      router.replace(prevPath);
-    }
+    back('/profile/' + data.dataMix?.profileUrlLinkKey);
   };
 
   useLayoutEffect(() => {
@@ -125,6 +121,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
 
       if (resGetContent?.data) {
         data.dataMix = resGetContent?.data.contentInfo;
+        data.dataMix.profileUrlLinkKey = resGetContent?.data.profileUrlLinkKey;
         data.dataMix.isSingleContentLock = resGetContent?.data.isSingleContentLock;
       }
     } else {
@@ -177,7 +174,8 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   const onEdit = () => {};
 
   const urlEdit = data.isSingle ? '/update/content/single' : '/create/content/series';
-
+  console.log('contentID : ', playContentId);
+  console.log('onPlay : ', onPlay);
   return (
     <>
       <main className={styles.main}>
@@ -197,7 +195,16 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         <section ref={refThumbnailWrap} className={styles.thumbnailWrap}>
           <img src={data.dataMix?.contentThumbnailUrl || data.dataMix?.thumbnailUrl} alt="" />
         </section>
-        <button className={styles.btnPlayWrap}>
+        <button
+          className={styles.btnPlayWrap}
+          onClick={() => {
+            setOnPlay(true);
+            setIsPlayButton(true);
+            console.log('data', data);
+            setPlayContentId(data.isSingle ? data.dataMix?.id || 0 : data.dataMix?.contentId || 0);
+            setEpisodeId(0);
+          }}
+        >
           <img src={BoldAudioPlay.src} alt="" />
           <div className={styles.label}>Play</div>
         </button>
@@ -207,7 +214,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               className={styles.iconWrap}
               onClick={async () => {
                 const dataReq: BookMarkReq = {
-                  interactionType: InteractionType.Contents,
+                  interactionType: type == ContentType.Series ? InteractionType.Contents : InteractionType.Episode,
                   isBookMark: !data.dataMix?.isBookMark,
                   typeValueId: data.dataMix?.contentId || 0,
                 };
@@ -293,11 +300,14 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                       customStyles={{
                         menuList: {
                           borderRadius: '10px',
-                          border: '1px solid var(--Border-1, #EAECF0)',
-                          background: 'var(--White, #FFF)',
+                          // border: '1px solid var(--Border-1, #EAECF0)',
+                          // background: 'var(--White, #FFF)',
+                          background: 'var(--Neutral-800, #2C3131)',
+                          overflow: 'hidden',
                         },
                         option: {
                           padding: 0,
+                          borderBottom: '1px solid var(--Neutral-900, #121414)',
                         },
                         menu: {
                           marginTop: '4px',
@@ -326,14 +336,14 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                               console.log('data', data, one);
                               setOnPlay(true);
                               setIsPlayButton(false);
-                              if (data.dataEpisodes) setPlayContentId(data.dataEpisodes?.contentId);
+                              setPlayContentId(data.dataMix?.id || 0);
                               setEpisodeId(0);
                               return;
                             }
 
                             //TODO 플레이 할수 없으면 구매처리
                             data.dataPurchase.isOpenPopupPurchase = true;
-                            data.dataPurchase.contentId = data.dataMix?.contentId || 0;
+                            data.dataPurchase.contentId = data.dataMix?.id || 0;
                             data.dataPurchase.episodeId = 0;
                             data.dataPurchase.price = price;
                             data.dataPurchase.contentType = ContentType.Single;
@@ -364,7 +374,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                               console.log('data', data, one);
                               setOnPlay(true);
                               setIsPlayButton(false);
-                              if (data.dataEpisodes) setPlayContentId(data.dataEpisodes?.contentId);
+                              setPlayContentId(data.dataMix?.contentId || 0);
                               setPlayEpisodeId(one.episodeId);
                               return;
                             }
@@ -414,6 +424,21 @@ const ContentSeriesDetail = ({id, type}: Props) => {
             data.dataPurchase.isOpenPopupPurchase = false;
             setData({...data});
           }}
+          onPurchaseSuccess={(contentId: number, episodeId: number, contentType: ContentType) => {
+            if (contentType == ContentType.Series) {
+              setOnPlay(true);
+              setIsPlayButton(false);
+              setPlayContentId(contentId || 0);
+              setPlayEpisodeId(episodeId);
+            }
+
+            if (contentType == ContentType.Single) {
+              setOnPlay(true);
+              setIsPlayButton(false);
+              setPlayContentId(contentId || 0);
+              setEpisodeId(0);
+            }
+          }}
         />
       )}
       {onPlay && (
@@ -433,13 +458,18 @@ export default ContentSeriesDetail;
 
 const SelectBoxArrowComponent = () => <></>;
 
-const SelectBoxValueComponent = (data: any, isSelected?: boolean) => {
+const SelectBoxValueComponent = (data: any, isOpen?: boolean) => {
   return (
     <div className={styles.labelWrap}>
       <div key={data.id} className={styles.label}>
         {data.value}
       </div>
-      <img className={styles.icon} src={LineArrowDown.src} alt="altArrowDown" />
+      <img
+        className={styles.icon}
+        src={LineArrowDown.src}
+        alt="altArrowDown"
+        style={{transform: `rotate(${isOpen ? 180 : 0}deg)`}}
+      />
     </div>
   );
 };
@@ -449,7 +479,9 @@ const SelectBoxOptionComponent = (data: any, isSelected: boolean) => (
       <div key={data.id} className={styles.labelOption}>
         {data.value}
       </div>
-      {isSelected && <img className={styles.iconCheck} src={LineCheck.src} alt="altArrowDown" />}
+      {isSelected && (
+        <img className={styles.iconCheck} src={'/ui/profile/icon-park-solid_check-one.svg'} alt="altArrowDown" />
+      )}
     </div>
   </>
 );
@@ -492,11 +524,27 @@ type PopupPurchaseType = {
   price: number;
   contentType: ContentType;
   onClose: () => void;
+  onPurchaseSuccess?: (contentId: number, episodeId: number, contentType: ContentType) => void;
 };
-const PopupPurchase = ({price, contentId, episodeId, contentType, onClose}: PopupPurchaseType) => {
+export const PopupPurchase = ({
+  price,
+  contentId,
+  episodeId,
+  contentType,
+  onClose,
+  onPurchaseSuccess,
+}: PopupPurchaseType) => {
+  const refCheckHide = useRef<HTMLInputElement | null>(null);
   const [data, setData] = useState<{isOpenNotEnoughStars: boolean}>({
     isOpenNotEnoughStars: false,
   });
+
+  useEffect(() => {
+    const hidePopup = localStorage.getItem('hidePopupPurchase');
+    if (!!hidePopup) {
+      onPurchase();
+    }
+  }, []);
 
   const openPopupNotEnoughStars = () => {
     data.isOpenNotEnoughStars = true;
@@ -509,13 +557,18 @@ const PopupPurchase = ({price, contentId, episodeId, contentType, onClose}: Popu
       episodeId: episodeId,
     };
     const resBuy = await buyContentEpisode(dataBuyReq);
+    if (resBuy.resultCode != 0) {
+      openPopupNotEnoughStars();
+      return;
+    }
     console.log('resBuy : ', resBuy);
+    localStorage.setItem('hidePopupPurchase', refCheckHide.current?.checked ? 'true' : 'false');
     onClose();
 
     if (contentType == ContentType.Series) {
-      alert('구매완료, Play Series 처리예정');
+      if (onPurchaseSuccess) onPurchaseSuccess(contentId, episodeId, contentType);
     } else {
-      alert('구매완료, Play Single 처리예정');
+      if (onPurchaseSuccess) onPurchaseSuccess(contentId, episodeId, contentType);
     }
   };
   return (
@@ -537,11 +590,11 @@ const PopupPurchase = ({price, contentId, episodeId, contentType, onClose}: Popu
           <div className={styles.right}>
             <div className={styles.balanceWrap}>
               <img src={BoldRuby.src} alt="" />
-              <div className={styles.amount}>10.5k</div>
+              <div className={styles.amount}>10.5K</div>
             </div>
             <div className={styles.balanceWrap}>
               <img src={BoldStar.src} alt="" />
-              <div className={styles.amount}>10.5k</div>
+              <div className={styles.amount}>10.5K</div>
             </div>
           </div>
         </div>
@@ -551,7 +604,7 @@ const PopupPurchase = ({price, contentId, episodeId, contentType, onClose}: Popu
         <div className={styles.dontshowWrap}>
           <label htmlFor="dontshow">
             <div className={styles.left}>
-              <input type="checkbox" name="dontshow" id="dontshow" onChange={e => {}} />
+              <input ref={refCheckHide} type="checkbox" name="dontshow" id="dontshow" onChange={e => {}} />
               <img src={BoldRadioButtonSquareSelected.src} alt="" className={styles.iconOn} />
               <img src={BoldRadioButtonSquare.src} alt="" className={styles.iconOff} />
             </div>

@@ -259,7 +259,7 @@ export enum InteractionType {
   Episode = 5,
 }
 // Feed Like API 호출 함수
-export const sendFeedLike = async (
+export const sendLike = async (
   interactionType: InteractionType,
   typeValueId: number,
   isLike: boolean,
@@ -297,7 +297,7 @@ export const sendFeedLike = async (
 };
 
 // Feed Like API 호출 함수
-export const sendFeedDisLike = async (
+export const sendDisLike = async (
   interactionType: InteractionType,
   typeValueId: number,
   isDisLike: boolean,
@@ -343,6 +343,38 @@ export const bookmark = async (payload: BookMarkReq) => {
     return res.data;
   } catch (e) {
     console.error('bookmark API 요청 실패:', e);
+    alert('API 요청 중 에러 발생: ' + e);
+    return null;
+  }
+};
+
+export enum RecordType {
+  Feed = 1,
+  Character = 2,
+  Content = 3,
+  Episode = 4,
+  Channel = 5,
+}
+
+export interface DeleteRecordReq {
+  recordType: RecordType;
+  typeValueId: number;
+}
+
+export interface DeleteRecordRes {}
+
+export const deleteRecord = async (payload: DeleteRecordReq) => {
+  try {
+    const res = await api.post<ResponseAPI<DeleteRecordRes>>('Common/deleteRecord', payload);
+
+    if (res.status !== 200) {
+      console.error('deleteRecord API 응답 오류:', res);
+      return null;
+    }
+
+    return res.data;
+  } catch (e) {
+    console.error('deleteRecord API 요청 실패:', e);
     alert('API 요청 중 에러 발생: ' + e);
     return null;
   }

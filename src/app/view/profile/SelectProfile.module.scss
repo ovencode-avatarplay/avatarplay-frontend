@@ -1,5 +1,6 @@
 .drawer {
   max-height: 80vh !important;
+  min-height: 80vh !important;
   width: var(--full-width-percent);
   left: 50% !important;
   transform: translateX((-50%)) !important;
@@ -19,6 +20,9 @@
     border-radius: 50px;
     background: #E0E0E0;
 
+    .handleBar {
+      height: 4px;
+    }
   }
 
   .title {
@@ -159,8 +163,7 @@
 
             .grade {
               border-radius: 4px;
-              border: 1px solid var(--Primary-1, #FD55D3);
-              background: var(--Primary-1, #FD55D3);
+
 
               padding: 1px 6px 2px 6px;
 
@@ -171,7 +174,18 @@
               font-weight: 700;
               line-height: normal;
               letter-spacing: -0.2px;
+
+              &.original {
+                border: 1px solid var(--Primary-1, #FD55D3);
+                background: var(--Primary-1, #FD55D3);
+              }
+
+              &.fan {
+                border: 1px solid var(--Neutral-500, #9AA0A6);
+                background: var(--Neutral-500, #9AA0A6);
+              }
             }
+
 
             .type {
               color: var(--Neutral-800, #2C3131);

@@ -8,6 +8,7 @@ interface CustomDrawerProps extends Omit<DrawerProps, 'onClose' | 'open'> {
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
+  containerStyle?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
   customTitle?: string;
 }
@@ -17,6 +18,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({
   onClose,
   children,
   title,
+  containerStyle,
   contentStyle,
   customTitle,
   ...rest
@@ -60,6 +62,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({
           transform: `translateY(${translateY}px)`,
           transition: startY === null ? 'transform 0.3s ease' : 'none',
           maxHeight: 'var(--body-height))',
+          ...containerStyle,
         },
       }}
       {...rest}

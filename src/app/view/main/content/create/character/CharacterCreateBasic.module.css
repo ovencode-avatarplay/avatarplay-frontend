@@ -43,6 +43,14 @@
     align-self: stretch;
 }
 
+.isEssential
+{
+    border-style: solid;
+    border-width: 2px;
+    border-color: red;
+}
+
+
 .inputTextArea
 {
     display: flex;

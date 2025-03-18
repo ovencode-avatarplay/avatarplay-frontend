@@ -11,6 +11,8 @@ interface CustomInputProps {
   state?: State;
   label?: string | React.ReactNode;
   hint?: string;
+  iconLeftImage?: string;
+  iconLeftStyle?: React.CSSProperties;
   iconLeft?: React.ReactNode; // Left Icon component
   iconRight?: string | React.ReactNode; // Right Icon component
   value: string | number;
@@ -29,6 +31,8 @@ const CustomInput: React.FC<CustomInputProps> = ({
   state = 'Default',
   label,
   hint,
+  iconLeftImage,
+  iconLeftStyle: iconLeftClassName,
   iconLeft,
   iconRight,
   value,
@@ -78,7 +82,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   };
 
   return (
-    <div className={`${styles.inputContainer} ${customClassName} `}>
+    <div className={`${styles.inputContainer}  ${customClassName.join(' ')}`}>
       {(textType === 'Label' || textType === 'LabelandHint') && label && (
         <label className={styles.label}>{label}</label>
       )}
@@ -88,7 +92,20 @@ const CustomInput: React.FC<CustomInputProps> = ({
           disabled ? styles.Disabled : ''
         } `}
       >
-        {(inputType === 'LeftIcon' || inputType === 'TwoIcon') && <div className={styles.iconLeft}>{iconLeft}</div>}
+        {(inputType === 'LeftIcon' || inputType === 'TwoIcon') &&
+          (iconLeftImage ? (
+            <img
+              className={styles.iconLeft}
+              src={iconLeftImage}
+              alt="Left Icon"
+              style={iconLeftClassName} // ✅ 스타일 적용
+            />
+          ) : (
+            <div className={styles.iconLeft} style={iconLeftClassName}>
+              {iconLeft}
+            </div>
+          ))}
+
         <input
           type="text"
           className={`${styles.textInput} ${value !== '' ? styles.textExist : ''}`}

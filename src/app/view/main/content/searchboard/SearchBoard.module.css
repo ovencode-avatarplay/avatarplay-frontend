@@ -88,6 +88,7 @@
 {
     border-radius: 30px;
     background: var(--Primary-1, #FD55D3);
+    border: none;
     
     color: var(--White, #FFF);
 }

@@ -46,8 +46,9 @@ interface Props {
   onIsMonetizationChange: (value: boolean) => void;
   nsfw: boolean;
   onNsfwChange: (value: boolean) => void;
-  characterDesc: string;
+  creatorComment: string;
   setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
+  essentialWarning: boolean;
 }
 
 const Header = 'CreateCharacter';
@@ -78,8 +79,9 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   onIsMonetizationChange,
   nsfw,
   onNsfwChange,
-  characterDesc,
+  creatorComment,
   setCharacterDesc,
+  essentialWarning,
 }) => {
   let VisibilityData = {items: ['Private', 'UnListed', 'Public']};
 
@@ -275,15 +277,21 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     selectedItem: string,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     essential?: boolean,
+    essentialWarning?: boolean,
   ) => {
     return (
       <div className={styles.dropDownArea}>
-        <h2 className={styles.title2}>
+        <div className={styles.title2}>
           {title}
-          {essential && <h2 className={styles.titleAstrisk}>*</h2>}
-        </h2>
-
-        <CustomSelector value={selectedItem} onClick={() => setIsOpen(prev => !prev)} />
+          {essential && <div className={styles.titleAstrisk}>*</div>}
+        </div>
+        <div
+          className={`${styles.dropDownContainer} ${
+            essentialWarning && selectedItem.length < 1 ? styles.isEssential : ''
+          }`}
+        >
+          <CustomSelector value={selectedItem} onClick={() => setIsOpen(prev => !prev)} />
+        </div>
       </div>
     );
   };
@@ -338,7 +346,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
                   selectedValue={characterIP}
                   containterStyle={{gap: '0'}}
                 />
-                <div className={styles.ipMonetizationTag}>{item.monetization}</div>
+                {item.data === 0 && <div className={styles.ipMonetizationTag}>{item.monetization}</div>}
               </div>
             ))}
           </div>
@@ -471,10 +479,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     return (
       <div className={styles.radioButtonContainer}>
         <div className={styles.radioTitleArea}>
-          <h2 className={styles.title2}>
+          <div className={styles.title2}>
             {getLocalizedText(Header, 'createcharacter017_label_011')}
             <span className={styles.titleAstrisk}>*</span>
-          </h2>
+          </div>
           <CustomToolTip tooltipText="NSFW Monetization" />
         </div>
         <div className={styles.verticalRadioButtonArea}>
@@ -555,10 +563,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           stateDataType={inputState.Normal}
           inputDataType={inputType.None}
           displayDataType={displayType.Default}
-          promptValue={characterDesc}
+          promptValue={creatorComment}
           handlePromptChange={e => setCharacterDesc(e.target.value)}
           placeholder={commentPlaceholder}
-          inSideHint={`About ${characterDesc?.length} tokens (임시처리 텍스트 길이)`}
+          inSideHint={`About ${creatorComment?.length} tokens (임시처리 텍스트 길이)`}
         />
       </div>
     );
@@ -624,6 +632,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             positionCountry.map(country => LanguageType[country]).join(', '),
             setIsPositionCountryOpen,
             true,
+            essentialWarning,
           )}
           {renderPositionCountry()}
           <div className={styles.blackTagContainer}>
@@ -644,9 +653,9 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         {renderCharacterIP()}
         {renderRecruit()}
         {renderConnect()}
-        {renderOperatorInvite()}
-        {renderMonetization()}
-        {renderMembershipPlan()}
+        {/*renderOperatorInvite()*/}
+        {/*renderMonetization()*/}
+        {/*renderMembershipPlan()*/}
         {renderNSFW()}
         {renderComment()}
       </div>

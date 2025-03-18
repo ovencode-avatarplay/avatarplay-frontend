@@ -25,7 +25,6 @@ import {supabase} from 'utils/supabaseClient';
 import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
 import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
-import LanguageSelectDropBox from './LanguageSelectDropBox';
 import {getCurrentLanguage, getLocalizedLink, isLogined, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
 import {fetchLanguage} from './LanguageSetting';
 import {getLangUrlCode} from '@/configs/i18n';
@@ -41,6 +40,7 @@ import {DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSensor
 import {BoldMore, LinePlus} from '@ui/Icons';
 import cx from 'classnames';
 import SelectProfile from '@/app/view/profile/SelectProfile';
+import {setStar} from '@/redux-store/slices/Currency';
 //import {middleware} from '../../../../middleware.js';
 
 type UserDropDownType = {
@@ -183,6 +183,7 @@ const UserDropdown = () => {
 
           const data: {data: SignInRes} = await response.json();
           dispatch(updateProfile(data.data.profileInfo));
+          dispatch(setStar(data.data.sessionInfo.star));
           console.log('response login : ', data);
           localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
           setTimeout(() => {
@@ -251,7 +252,7 @@ const UserDropdown = () => {
     <>
       <DndButton onClick={() => routeProfile()} onLongClick={() => dataUserDropDown.onClickLong()}>
         <Badge
-          style={{padding: '12px 25px', margin: '12px -25px'}}
+          // style={{padding: '12px 25px', margin: '-12px -25px'}}
           overlap="circular"
           badgeContent={<span className={styles.avatarBadge} />}
           anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
@@ -308,7 +309,6 @@ const UserDropdown = () => {
               <Typography color="text.primary">CustomPrompt</Typography>
             </MenuItem>
           </Link>
-          <LanguageSelectDropBox />
         </MenuList>
         <Popper
           open={open}

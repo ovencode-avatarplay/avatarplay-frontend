@@ -19,6 +19,7 @@ interface SelectDrawerProps {
   tooltip?: string;
   children?: ReactNode;
   name?: string;
+  isCheck?: boolean;
 }
 
 const SelectDrawer: React.FC<SelectDrawerProps> = ({
@@ -29,6 +30,7 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({
   children,
   name,
   tooltip,
+  isCheck = true,
 }) => {
   return (
     <>
@@ -82,7 +84,9 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({
                 {item.icon && <img src={item.icon} alt="" className={styles.drawerIcon} />}
                 <span className={styles.drawerText}>{item.name}</span>
               </div>
-              {idx === selectedIndex && <img className={styles.drawerCheckIcon} src={LineCheck.src} />}
+              {idx === selectedIndex && isCheck == true && (
+                <img className={styles.drawerCheckIcon} src={LineCheck.src} />
+              )}
             </button>
           ))}
         </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import {GetCharacterInfoReq, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
+import {GetCharacterInfoReq, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
 import CreateCharacterMain2 from '@/app/view/main/content/create/character/CreateCharacterMain2';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {getCurrentLanguage} from '@/utils/UrlMove';
@@ -22,7 +22,7 @@ const Page = ({params}: Props) => {
   const getCharacterInfo = async (profileId: number) => {
     try {
       const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId};
-      const response = await sendGetCharacterInfo(req);
+      const response = await sendGetCharacterProfileInfo(req);
 
       if (response.data) {
         const characterInfo: CharacterInfo = response.data.characterInfo;

@@ -4,21 +4,26 @@ import React, {useEffect, useRef, useState} from 'react';
 import styles from './ProfileDetail.module.scss';
 import {
   BoldAI,
+  BoldArchive,
   BoldComment,
+  BoldDislike,
   BoldFollowers,
   BoldHeart,
+  BoldLike,
   BoldMenuDots,
   BoldPin,
   BoldVideo,
+  LineArchive,
   LineArrowDown,
   LineClose,
 } from '@ui/Icons';
 import cx from 'classnames';
 import {useRouter} from 'next/navigation';
-import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterInfo} from '@/app/NetWork/CharacterNetwork';
+import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import Link from 'next/link';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
+import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
 
 type Props = {
   profileId: number;
@@ -45,13 +50,17 @@ type ProfileType = {
 };
 
 export const CharacterProfileDetailComponent = ({
+  profileId = 0,
   characterInfo = null,
   urlLinkKey = '',
   isPath = false,
+  onRefresh = () => {},
 }: {
+  profileId: number;
   characterInfo: CharacterInfo | null;
   urlLinkKey: string;
   isPath?: boolean;
+  onRefresh: () => void;
 }) => {
   const [data, setData] = useState<ProfileType>({
     indexTab: eTabType.Feed,
@@ -65,33 +74,81 @@ export const CharacterProfileDetailComponent = ({
   }, [characterInfo, urlLinkKey]);
 
   const metatags = data.characterInfo?.tag?.split(',') || [];
-  const characterImages = data.characterInfo?.portraitGalleryImageUrl || [];
+  const characterImages = data.characterInfo?.mediaTemplateList || [];
   return (
     <>
       <section className={styles.characterMainImageWrap}>
         <img src={data.characterInfo?.mainImageUrl} alt="" className={styles.characterMainImage} />
-        <div className={styles.infoWrap}>
-          <Link href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.urlLinkKey + '?from=""')}>
-            <div className={styles.left}>
+        {/* <div className={styles.bgGradient}></div> */}
+      </section>
+      <div className={styles.infoWrap}>
+        <div className={styles.left}>
+          <div className={styles.top}>
+            <Link
+              href={getLocalizedLink(`/profile/` + data.characterInfo?.pdProfileSimpleInfo?.urlLinkKey + '?from=""')}
+            >
               <img src={data.characterInfo?.pdProfileSimpleInfo.iconImageUrl} alt="" className={styles.profileMaker} />
               <div className={styles.name}>{data.characterInfo?.pdProfileSimpleInfo.name}</div>
+            </Link>
+          </div>
+          <div className={styles.bottom}>
+            <div className={styles.viewsWrap}>
+              <img src={BoldFollowers.src} alt="" className={styles.icon} />
+              <div className={styles.count}>{data.characterInfo?.chatUserCount}</div>
             </div>
-          </Link>
-          <div className={styles.right}>
-            <div className={styles.statistics}>
-              <div className={styles.commentWrap}>
-                <img src={BoldComment.src} alt="" className={styles.icon} />
-                <div className={styles.count}>{data.characterInfo?.chatCount}</div>
-              </div>
-              <div className={styles.viewsWrap}>
-                <img src={BoldFollowers.src} alt="" className={styles.icon} />
-                <div className={styles.count}>{data.characterInfo?.chatUserCount}</div>
-              </div>
+            <div className={styles.commentWrap}>
+              <img src={BoldComment.src} alt="" className={styles.icon} />
+              <div className={styles.count}>{data.characterInfo?.chatCount}</div>
             </div>
           </div>
         </div>
-      </section>
 
+        <div className={styles.right}>
+          <div className={styles.likeWrap}>
+            <img
+              src={BoldLike.src}
+              alt=""
+              className={cx(styles.like, characterInfo?.isLike && styles.active)}
+              onClick={async () => {
+                await sendLike(InteractionType.Character, profileId, !characterInfo?.isLike);
+                onRefresh();
+              }}
+            />
+            <div className={cx(styles.count, characterInfo?.isLike && styles.active)}>{characterInfo?.likeCount}</div>
+          </div>
+          <img
+            src={BoldDislike.src}
+            alt=""
+            className={cx(styles.dislike, characterInfo?.isDisLike && styles.active)}
+            onClick={async () => {
+              await sendDisLike(InteractionType.Character, profileId, !characterInfo?.isDisLike);
+              onRefresh();
+            }}
+          />
+          {!data?.characterInfo?.isBookmark && (
+            <img
+              src={LineArchive.src}
+              alt=""
+              className={styles.bookmark}
+              onClick={async () => {
+                await bookmark({interactionType: InteractionType.Character, isBookMark: true, typeValueId: profileId});
+                onRefresh();
+              }}
+            />
+          )}
+          {data?.characterInfo?.isBookmark && (
+            <img
+              src={BoldArchive.src}
+              alt=""
+              className={cx(styles.bookmark, styles.active)}
+              onClick={async () => {
+                await bookmark({interactionType: InteractionType.Character, isBookMark: false, typeValueId: profileId});
+                onRefresh();
+              }}
+            />
+          )}
+        </div>
+      </div>
       {metatags?.length != 0 && (
         <ul className={styles.metatags}>
           {metatags?.map((one, index) => {
@@ -102,7 +159,7 @@ export const CharacterProfileDetailComponent = ({
 
       {characterImages?.length != 0 && (
         <ul className={styles.thumbnails}>
-          {data.characterInfo?.portraitGalleryImageUrl.map((one, index) => {
+          {characterImages?.map((one, index) => {
             return (
               <li className={styles.item}>
                 <img src={one.imageUrl} alt="" />
@@ -115,22 +172,27 @@ export const CharacterProfileDetailComponent = ({
       <section className={styles.tabSection}>
         <div className={styles.tabContent}>
           <div className={styles.textWrap}>
+            <div className={cx(styles.label, styles.descriptionLabel)}>Description</div>
+            <TextArea value={data.characterInfo?.description || ''} />
+          </div>
+          <div className={styles.textWrap}>
             <div className={styles.label}>World Senario</div>
             <TextArea value={data.characterInfo?.worldScenario || ''} />
           </div>
-          <div className={styles.textWrap}>
-            <div className={styles.label}>Greeting</div>
-            <TextArea value={data.characterInfo?.introduction || ''} />
-          </div>
-
-          <div className={styles.textWrap}>
-            <div className={styles.label}>Creator Comment</div>
-            <TextArea value={data.characterInfo?.description || ''} />
-          </div>
+          {data.characterInfo?.creatorComment ? (
+            <>
+              <div className={styles.textWrap}>
+                <div className={styles.label}>Creator Comment</div>
+                <TextArea value={data.characterInfo?.creatorComment || ''} />
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       </section>
 
-      <section className={styles.sessionTab}>
+      {/* <section className={styles.sessionTab}>
         <div
           className={styles.tabHeader}
           onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -156,7 +218,7 @@ export const CharacterProfileDetailComponent = ({
           </div>
         </div>
         <div className={styles.line}></div>
-      </section>
+      </section> */}
 
       <section className={styles.myNameSection}>
         <div className={styles.label}>
@@ -204,7 +266,7 @@ const ProfileDetail = ({profileId}: Props) => {
       languageType: getCurrentLanguage(),
       profileId: profileId,
     };
-    const resGetcharacterInfo = await sendGetCharacterInfo(reqGetcharacterInfo);
+    const resGetcharacterInfo = await sendGetCharacterProfileInfo(reqGetcharacterInfo);
     data.characterInfo = resGetcharacterInfo.data?.characterInfo || null;
     data.urlLinkKey = resGetcharacterInfo.data?.urlLinkKey || '';
 
@@ -218,7 +280,13 @@ const ProfileDetail = ({profileId}: Props) => {
         <img className={styles.iconClose} src={LineClose.src} onClick={() => router.back()} />
       </header>
       <main className={styles.main}>
-        <CharacterProfileDetailComponent characterInfo={data?.characterInfo} urlLinkKey={data.urlLinkKey} isPath />
+        <CharacterProfileDetailComponent
+          profileId={profileId}
+          characterInfo={data?.characterInfo}
+          urlLinkKey={data.urlLinkKey}
+          isPath
+          onRefresh={() => {}}
+        />
       </main>
       <footer className={styles.footer}></footer>
     </>
@@ -251,7 +319,8 @@ export const TextArea = ({value}: TextAreaType) => {
       value={value}
       ref={textareaRef}
       onInput={resizeTextarea}
-      style={{overflow: 'hidden', resize: 'none', minHeight: '40px'}}
+      rows={1}
+      style={{overflow: 'hidden', resize: 'none'}}
     />
   );
 };

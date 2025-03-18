@@ -119,12 +119,13 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                   <div className={styles.nameWrap}>
                     {isChannel && (
                       <div className={styles.top}>
+                        <span className={cx(styles.grade, styles.original)}>Original</span>
                         <div className={styles.type}>Channel</div>
                       </div>
                     )}
                     {isCharacter && (
                       <div className={styles.top}>
-                        <span className={styles.grade}>Original</span>
+                        <span className={cx(styles.grade, styles.original)}>Original</span>
                         <div className={styles.type}>Character</div>
                       </div>
                     )}
@@ -140,7 +141,7 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                   {isSelected && (
                     <img className={styles.iconChecked} src="/ui/profile/icon_select_proflie_checked.svg" alt="" />
                   )}
-                  {!isSelected && <img className={styles.iconMore} src={BoldMore.src} alt="" />}
+                  {/* {!isSelected && <img className={styles.iconMore} src={BoldMore.src} alt="" />} */}
                 </div>
               </li>
             );

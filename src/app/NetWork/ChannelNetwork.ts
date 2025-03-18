@@ -31,6 +31,12 @@ export interface ChannelInfo {
   state: ChannelState;
   createAt: string;
   updateAt: string;
+  pdProfileSimpleInfo: ProfileSimpleInfo;
+
+  isBookmark: boolean;
+  isDisLike: boolean;
+  isLike: boolean;
+  likeCount: number;
 }
 
 export enum ChannelState {

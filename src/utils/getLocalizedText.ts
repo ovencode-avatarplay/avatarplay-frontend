@@ -1,4 +1,4 @@
-import {LanguageType} from '@/app/NetWork/AuthNetwork';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import localizationData from '../data/textData/Localization.json';
 import Cookies from 'js-cookie';
 import {getLanguageFromURL} from './browserInfo';

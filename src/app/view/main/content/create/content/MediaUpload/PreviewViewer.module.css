@@ -1,0 +1,669 @@
+.body {
+    margin: 0;
+    padding: 0;
+    display:flex;
+    flex-direction:column;
+    height: 100%;
+    /* overflow: hidden; */
+    /* height:100%; */
+    /* overflow-y:auto; */
+    max-width: var(--full-width);
+    margin: 0 auto; /* 수평 중앙 정렬 */
+    /* scrollbar-width: 0px; */
+  }
+  
+  .reelsContainer {
+    position: relative;
+    width: 100%;  
+    background: #000000; 
+    height: 100%;
+  }
+  
+  .mySwiper
+  {
+  
+  }
+  
+  .mainContent {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .mainContent.limitWidth{
+    max-width:600px;
+    margin: 0 auto;
+  }
+  
+  .progressBar {
+    position: absolute;
+    bottom: 50px;
+    left: 5%;
+    width: 90%;
+    height: 5px; /* 기존보다 살짝 키움 */
+    background-color: rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    cursor: pointer; /* 드래그 가능하도록 커서 변경 */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    opacity: 1;  
+    z-index: 1000; /* 다른 요소가 덮지 않도록 설정 */
+  }
+  
+  .progressFill {
+    height: 100%;
+    background: var(--background);
+    transition: width 0.2s ease;
+  }
+  
+  .progressBar.dragging .progressFill {
+    transition: none; /* 드래그 중에는 애니메이션 제거 */
+  }
+  
+  .playCircleIcon {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0; /* 기본적으로 숨김 상태 */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  }
+  
+  /* 등장 애니메이션 */
+  .fadeAndGrow {
+    animation: fadeAndGrow 0.3s ease forwards;
+  }
+  
+  /* 사라질 때 애니메이션 */
+  .fadeOutAndShrink {
+    animation: fadeOutAndShrink 0.3s ease forwards;
+  }
+  
+  @keyframes fadeAndGrow {
+    0% {
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.2);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeOutAndShrink {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 0.5;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(0.6);
+      opacity: 0;
+    }
+  }
+  
+  .Image {
+    width: 100%;
+    height: 100%;    
+  }
+  .Image img{
+    object-fit: contain; 
+  }
+  
+  .dim {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0.3) 90%);
+  }
+  
+  .pauseButton {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .userInfo {
+    display: flex;
+    align-items: center;
+    /* gap: 10px; */
+  }
+  
+  .profilePicture {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--background);
+  }
+  
+  .profileDetails {
+    margin-left:8px;
+    display: flex;
+    flex-direction: column;
+  }
+  .follow{
+    margin-left:15px;
+  
+    /* width: 40px; */
+    /* height: 17px; */
+    padding: 4px 8px;
+    background: #000000;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.40);
+    background-color: #00000000;
+    color: #FFFFFF;
+    cursor: pointer;
+    z-index: 10;
+    color: var(--White, #FFF);
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: -0.21px;
+  }
+  .username {
+    font-family: 'Lato';
+    font-weight: 600;
+    font-size: 14px;
+    color: #FFFFFF;
+  }
+  
+  .sponsored {
+    font-family: 'Lato';
+    font-weight: 400;
+    font-size: 12px;
+    color: #FFFFFF;
+  }
+  
+  .followButtonOff {
+    
+  }
+  
+  .followButtonOn {
+    background-color: black;
+  }
+  
+  .description {
+    bottom: 60px;
+    left: 16px;
+    font-family: 'Lato';
+    font-size: 14px;
+    color: #FFFFFF;
+  }
+  
+  .videoInfo {
+    display: flex;
+    bottom: 40px;
+    left: 16px;
+    font-family: 'Lato';
+    font-size: 14px;
+    color: #FFFFFF;
+    gap: 10px;
+  }
+  
+  .iconVideo{
+    margin-left:2px;
+  }
+  
+  
+  .textButtons
+  {
+    color: var(--base-white, #FFF);
+  text-align: center;
+  text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25), 0px 0px 30px rgba(4, 4, 21, 0.80);
+  font-family: Lato;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px; /* 150% */
+  
+  -webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
+  filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7));
+  
+  
+  }
+  
+  .noneTextButton
+  {
+    color: var(--base-white, #FFF);
+  text-align: center;
+  text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25), 0px 0px 30px rgba(4, 4, 21, 0.80);
+  font-family: Lato;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px; /* 150% */
+  
+  -webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
+  filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7));
+  }
+  
+  .button
+  {
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+  }
+  
+  img.button{
+    display:block;
+  
+  }
+  .count{
+    margin-top: 4px;
+  }
+  
+  .text_container {  
+    overflow: hidden;
+    width: 100%;
+    
+    display: flex;
+  
+    
+  }
+  
+  .text_content {
+    font-size: 14px;
+    line-height: 18px;
+    transition: max-height 0.3s ease;
+    color: #ffffff;
+    z-index: 10;
+    width: 100%;
+  }
+  
+  .button2 {
+    position: absolute;
+    width: auto;
+    font-size: 12px;
+    cursor: pointer;
+    border: none;
+    background-color: rgba(254, 44, 85, 0.06);
+    color: #ffffff;
+    border-radius: 4px;  
+    z-index: 10;
+    right: 50px;
+    bottom: 55px;
+  }
+  
+  .profileBox
+  {  
+    box-sizing: border-box;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    bottom: 4px;
+    padding-bottom: 19px;
+    /* left: 16px; */
+    
+    gap: 16px;
+    z-index: 10;
+    background: linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5))  ;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    opacity: 1;
+    left: 4%;
+  }
+  
+  .iconArrowDown {
+    /* width: 12px; */
+    /* height: 12px; */
+    /* left: 118px; */
+    /* top: 137px; */
+  }
+  
+  .vector {
+    position: absolute;
+    left: 17.92%;
+    right: 17.5%;
+    top: 33.85%;
+    bottom: 33.85%;
+    border: 1.5px solid #FFFFFF;
+    box-shadow: 0px 0px 30px rgba(4, 4, 21, 0.8);
+  }
+  
+  .volumeButton {
+    position: absolute;
+    top: 75px;
+    right: 15px;
+    z-index: 13;
+    cursor: pointer;
+    width:30px; /* 버튼 크기 */
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    opacity: 1;
+  
+    /* -webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
+    filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7)); */
+  }
+  
+  .volumeCircleIcon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* 검은색 반투명 배경 */
+    
+    border-radius: 50%;
+    z-index: 12;
+  }
+  
+  .volumeIcon {
+    z-index: 13; /* 아이콘이 배경 위에 표시되도록 */
+    width: 20px; /* 아이콘 크기 */
+    height: 20px;
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(238deg) brightness(106%) contrast(101%);
+  }
+  
+  .header {
+    display: flex;  
+    width: var(--full-width);
+    height: 58px;
+    padding-top: 9px;
+    padding-right: auto;
+    padding-bottom : 9px ;
+    padding-left:  0.362px;
+    align-items: center; 
+    flex-shrink: 0;
+    justify-content: space-between;
+  
+    background: var(--Black #000000);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    opacity: 1;
+  }
+  
+  .baseArea {
+    display: flex;
+    flex-direction: row;
+    align-items: center; 
+    gap: 6.6px;
+  }
+  
+  .baseArea > .backButton{
+    display: flex;
+    height: 40px;
+    padding: 14px 0px 14px 16px;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .backButton > .backIcon {
+    display: flex;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(163deg) brightness(105%) contrast(106%);
+  }
+  
+  .baseArea > .navTitle{
+    display: flex; 
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--White, #ffffff);
+    font-family: Lato;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: -0.4px;
+  }
+  
+  .ctaButtons {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    bottom: 70px;
+    right: 13px;
+    z-index: 12;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    opacity: 1;
+    align-items: center;
+  }
+  
+  .fadeOutR {
+    opacity: 0;
+    transform: translateX(10px); /* 약간 아래로 이동하면서 사라지는 효과 */
+    pointer-events: none; /* 사라질 때 클릭 방지 */
+  }
+  .fadeOutT {
+    opacity: 0;
+    transform: translateY(-10px); /* 약간 아래로 이동하면서 사라지는 효과 */
+    pointer-events: none; /* 사라질 때 클릭 방지 */
+  }
+  .fadeOutB {
+    opacity: 0;
+    transform: translateY(10px); /* 약간 아래로 이동하면서 사라지는 효과 */
+    pointer-events: none; /* 사라질 때 클릭 방지 */
+  }
+  
+  @keyframes scaleUp {
+    0% {
+      transform: scale(0.5);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes scaleDown {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0);
+      opacity: 0;
+    }
+  }
+  
+  /* 기본 상태 */
+  .plusCircle,
+  .checkCircle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 999px;
+    width: 18px;
+    height: 18px;
+    padding: 2px;
+    position: absolute;
+    top: 22px;
+    right: 7px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  
+  .plusCircle {
+    background: #FD55D3;
+  }
+  
+  .checkCircle {
+    background: #ffffff;
+  }
+  
+  /* 애니메이션 */
+  .startAnimation {
+    animation: scaleUp 75ms ease-out forwards; /* 3프레임 (50ms) 동안 크기 증가 */
+  }
+  
+  .fullSize {
+    transform: scale(1); /* 17프레임 동안 유지 (기본 크기) */
+  }
+  
+  .shrinkAnimation {
+    animation: scaleDown 150ms ease-in forwards; /* 4프레임 (100ms) 동안 축소 */
+  }
+  
+  .checkImg{
+    filter: brightness(0) saturate(100%) invert(47%) sepia(93%) saturate(1870%) hue-rotate(288deg) brightness(103%) contrast(98%);
+    
+  }
+  
+  .episodeContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    width: 353px;
+    
+  }
+  
+  .episodeButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 65px;
+    height: 39px;
+    background: #323232;
+    color: white;
+    font-family: "Gilroy-Bold", sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    border-radius: 8px;
+    letter-spacing: -0.0025em;
+  }
+  
+  .locked {
+    position: relative;
+  }
+  
+  .lockIcon {
+    position: absolute;
+    top: 3px;
+    right: 2px;
+    font-size: 12px;
+    color: #febbea;
+  }
+  .profileContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    width: 362px;
+    height: 74px;
+  }
+  
+  .profileImageWrapper {
+    position: relative;
+    width: 74px;
+    height: 74px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .profileImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .imageOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0.3) 90%);
+    border-radius: 8px;
+  }
+  
+  .profileInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 226px;
+    
+  }
+  
+  .title {
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #000;
+  }
+  
+  .episodeRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: #000;
+  }
+  
+  .episodeInfo {
+    font-family: 'Lato', sans-serif;
+    font-weight: 500;
+  }
+  
+  .completeBadge {
+    background: #BDC1C6;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 11px;
+    color: white;
+  }
+  
+  .genreRow {
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+  }
+  
+  .episodeListDrawer{
+  
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+  
+  }
+  
+  .lockImg
+  {
+    width: 12px;
+    height: 12px;
+    filter: brightness(0) saturate(100%) invert(87%) sepia(7%) saturate(2103%) hue-rotate(282deg) brightness(93%) contrast(117%);
+  }
+  
+  .webtoonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 중앙 정렬 */
+    gap: 0; /* 이미지 사이 간격 제거 */
+    width: 100%;
+    overflow-y: auto;
+    height: 100%;
+  }
+  
+  .webtoonImage {
+    width: 100%; /* 부모 요소에 맞게 너비 조정 */
+    object-fit: cover; /* 이미지가 꽉 차도록 설정 */
+  }
+  

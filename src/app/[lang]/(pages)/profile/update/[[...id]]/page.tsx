@@ -20,6 +20,7 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {getAuth} from '@/app/NetWork/AuthNetwork';
 import {updateProfile} from '@/redux-store/slices/Profile';
 import {useDispatch} from 'react-redux';
+import useCustomRouter from '@/utils/useCustomRouter';
 type Props = {
   params: {
     id?: string[];
@@ -75,6 +76,7 @@ type DataProfileUpdateType = {
 };
 
 const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
+  const {back} = useCustomRouter();
   const profileId = parseInt(id[0]);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -87,6 +89,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
     watch,
     unregister,
     trigger,
+    setFocus,
     clearErrors,
     formState: {errors, isSubmitted},
   } = useForm<UpdatePdInfoReq>({
@@ -217,8 +220,11 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
 
     setValue('name', res?.data?.name || '', {shouldValidate: false}); // API 데이터로 값 설정
     setValue('introduce', res?.data?.introduce || '', {shouldValidate: false}); // API 데이터로 값 설정
+
     setValue('personalHistory', res?.data?.personalHistory || '', {shouldValidate: false}); // API 데이터로 값 설정
+
     setValue('honorAwards', res?.data?.honorAwards || '', {shouldValidate: false}); // API 데이터로 값 설정
+
     setValue('url', res?.data?.url || '', {shouldValidate: false}); // API 데이터로 값 설정
     data.triggerError = true;
     setData({...data});
@@ -230,13 +236,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
   }, [errors, data.triggerError]);
 
   const routerBack = () => {
-    // you can get the prevPath like this
-    const prevPath = getBackUrl();
-    if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/main/homefeed'));
-    } else {
-      router.replace(prevPath);
-    }
+    back('/main/homefeed');
   };
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -426,10 +426,12 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 {...register('introduce', {required: true})}
                 placeholder="Add a description or hashtag"
                 maxLength={500}
+                rows={1}
+                value={watch('introduce')}
                 onChange={async e => {
                   const target = e.target as HTMLTextAreaElement;
-                  target.style.height = 'auto';
-                  target.style.height = `${target.scrollHeight}px`;
+                  // target.style.height = 'auto';
+                  // target.style.height = `${target.scrollHeight - 10}px`;
                   setValue('introduce', target.value, {shouldValidate: false}); // 강제 업데이트
                   clearErrors('introduce');
                   checkValid();
@@ -547,10 +549,11 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               {...register('personalHistory', {required: true})}
               className={cx(styles.inputPersonalHistory, errors.personalHistory && isSubmitted && styles.error)}
               placeholder="Ex) 2024. 10~2025.01 Design (Zero to One CB)"
+              rows={1}
               onChange={e => {
                 const target = e.target as HTMLTextAreaElement;
                 target.style.height = 'auto';
-                target.style.height = `${target.scrollHeight}px`;
+                target.style.height = `${target.scrollHeight - 20}px`;
 
                 clearErrors('personalHistory');
                 setValue('personalHistory', e.target.value);
@@ -565,10 +568,11 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               {...register('honorAwards', {required: true})}
               className={cx(styles.inputHonorawards, errors.honorAwards && isSubmitted && styles.error)}
               placeholder="Ex) 2024.10.00Advertisement contest winner(korea)"
+              rows={1}
               onChange={e => {
                 const target = e.target as HTMLTextAreaElement;
                 target.style.height = 'auto';
-                target.style.height = `${target.scrollHeight}px`;
+                target.style.height = `${target.scrollHeight - 20}px`;
 
                 clearErrors('honorAwards');
                 setValue('honorAwards', e.target.value);
@@ -631,7 +635,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                     }}
                   >
                     <div className={styles.thumbnailWrap}>
-                      <img src={one.image_url} alt="" />
+                      <img src={one.imageUrl} alt="" />
                     </div>
                   </SwiperSlide>
                 );
@@ -775,6 +779,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
   useEffect(() => {
     if (!open) return;
 
+    clearErrors();
     refresh();
   }, [open]);
 
@@ -783,10 +788,10 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
     let description = '';
     console.log('id : ', id);
     if (id != -1) {
-      iconUrl = dataList[id]?.image_url || '';
+      iconUrl = dataList[id]?.imageUrl || '';
       description = dataList[id]?.description || '';
     }
-    setValue('image_url', iconUrl);
+    setValue('imageUrl', iconUrl);
     setValue('description', description);
     data.iconUrl = iconUrl;
     setData({...data});
@@ -835,7 +840,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             const resUpload = await sendUpload(dataUpload);
             const iconUrl = resUpload.data?.url || '';
             data.iconUrl = iconUrl;
-            setValue('image_url', iconUrl);
+            setValue('imageUrl', iconUrl);
             setData({...data});
           }
         }
@@ -872,25 +877,36 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
         const resUpload = await sendUpload(dataUpload);
         const iconUrl = resUpload.data?.url || '';
         data.iconUrl = iconUrl;
-        setValue('image_url', iconUrl);
+        setValue('imageUrl', iconUrl);
         setData({...data});
       }
     }
   };
 
-  const onSubmit = (e: any) => {
-    e.preventDefault(); // 기본 제출 방지
-    const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
+  const onSubmit = (data: any) => {
+    console.log(data);
+    // e.preventDefault(); // 기본 제출 방지
+    // const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
 
-    if (id == -1) {
-      data.id = 0;
-      dataList.push(data);
+    // if (id == -1) {
+    //   data.id = 0;
+    //   dataList.push(data);
+    // } else {
+    //   dataList[id] = data;
+    // }
+    // onChange(dataList);
+    // onClose();
+    if (isCreate) {
+      onClose();
     } else {
-      dataList[id] = data;
+      dataList.splice(id, 1);
+      setData({...data});
+      onChange(dataList);
+      onClose();
     }
-    onChange(dataList);
-    onClose();
   };
+
+  const isCreate = id == -1;
 
   return (
     <Drawer
@@ -910,10 +926,10 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
         <div className={styles.handleBar}></div>
       </div>
       <div className={styles.handleContent}>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload2">
-              <input {...register('image_url', {required: true})} type="hidden" />
+              <input {...register('imageUrl', {required: true})} type="hidden" />
               <input
                 className={styles.hidden}
                 id="file-upload2"
@@ -923,7 +939,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
               />
               {!data.iconUrl && (
                 <div
-                  className={styles.uploadWrap}
+                  className={cx(styles.uploadWrap, errors.imageUrl && styles.error)}
                   onDrop={onDrop}
                   onDragOver={onDragOver}
                   onDragStart={onDragStartInner}
@@ -946,7 +962,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             </label>
           </section>
           <div className={styles.label}>
-            Episode Description<span className={styles.highlight}> *</span>
+            Description<span className={styles.highlight}> *</span>
           </div>
           <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
             <textarea
@@ -955,8 +971,8 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
               maxLength={500}
               onChange={async e => {
                 const target = e.target as HTMLTextAreaElement;
-                target.style.height = 'auto';
-                target.style.height = `${target.scrollHeight}px`;
+                // target.style.height = 'auto';
+                // target.style.height = `${target.scrollHeight}px`;
                 setValue('description', target.value, {shouldValidate: false}); // 강제 업데이트
                 clearErrors('description');
               }}
@@ -964,18 +980,8 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             <div className={styles.textCount}>{`${watch('description', '').length}/500`}</div>
           </div>
           <div className={styles.buttonWrap}>
-            <button
-              type="button"
-              className={styles.cancelBtn}
-              onClick={() => {
-                // onClose();
-                dataList.splice(id, 1);
-                setData({...data});
-                onChange(dataList);
-                onClose();
-              }}
-            >
-              Delete
+            <button type="submit" className={styles.cancelBtn}>
+              {isCreate ? 'Cancel' : 'Delete'}
             </button>
             <button type="submit" className={styles.saveBtn}>
               Submit
@@ -1068,7 +1074,7 @@ export type PortfolioListPopupType = {
   onChange: (data: PdPortfolioInfo[]) => void;
 };
 
-const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListPopupType) => {
+export const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListPopupType) => {
   const [data, setData] = useState<{
     isSettingOpen: boolean;
     idSelected: number;
@@ -1126,11 +1132,13 @@ const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListPopupTyp
             <div className={styles.countPortfolio}>Portfolio {data.portfolioList.length}</div>
             <ul className={styles.itemList}>
               {data.portfolioList.map((one, index) => {
+                const date = one?.createAt ? new Date(one?.createAt) : new Date();
+                const formattedDate = date.toLocaleDateString('ko-KR').replace(/-/g, '.');
                 return (
                   <li className={styles.item} key={index}>
-                    <img className={styles.thumbnail} src={one.image_url} alt="" />
+                    <img className={styles.thumbnail} src={one.imageUrl} alt="" />
                     <div className={styles.description}>{one.description}</div>
-                    <div className={styles.dateRegistration}>Date Registration 2025.02.10</div>
+                    <div className={styles.dateRegistration}>Date Registration {formattedDate}</div>
                     {/* <div className={styles.settingWrap}>
                       <img
                         src={BoldMenuDots.src}

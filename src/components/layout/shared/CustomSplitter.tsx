@@ -55,7 +55,7 @@ const Splitters: React.FC<SplittersProps> = ({
               style={{width: placeholderWidth, maxWidth: calculateMaxWidth()}}
             ></div>
           ) : (
-            <div className={styles.splitterItem} style={itemStyle}>
+            <div key={index} className={styles.splitterItem} style={itemStyle}>
               <div
                 key={index}
                 className={`${styles.splitterLabel} ${activeSplitter === index ? styles.activeSplitter : ''} ${

@@ -31,9 +31,6 @@ const CustomPromptPreview: React.FC<Props> = ({textValue, keywordData, isOpen, o
     });
 
     setProcessedText(newText);
-
-    console.log(textValue);
-    console.log(newText);
   }, [textValue, keywordData]);
 
   return (

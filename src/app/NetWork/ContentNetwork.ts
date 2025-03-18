@@ -396,6 +396,8 @@ export interface ContentPlayInfo {
   commonMediaViewInfo: CommonMediaViewInfo;
   episodeVideoInfo?: EpisodeVideoInfo;
   episodeWebtoonInfo?: EpisodeWebtoonInfo;
+  //구독중인지
+  //프로필 아이디 받아야함
 }
 
 export interface CommonMediaViewInfo {
@@ -449,7 +451,7 @@ export const sendPlay = async (payload: PlayButtonReq): Promise<ResponseAPI<Play
 export interface RecordPlayReq {
   episodeRecordPlayInfo: {
     contentId: number;
-    episodeId: number;
+    episodeId: ContentCategoryType;
     categoryType: number;
     playTimeSecond: number;
   };
@@ -458,11 +460,37 @@ export interface RecordPlayReq {
 export interface RecordPlayRes {}
 export const sendRecordPlay = async (payload: RecordPlayReq): Promise<ResponseAPI<RecordPlayRes>> => {
   try {
-    const response = await api.post<ResponseAPI<RecordPlayRes>>('/api/v1/Content/recordPlay', payload);
+    const response = await api.post<ResponseAPI<RecordPlayRes>>('/Content/recordPlay', payload);
     if (response.data.resultCode === 0) return response.data;
     throw new Error(`RecordPlayRes Error: ${response.data.resultCode}`);
   } catch (error) {
     console.error('Error calling recordPlay API:', error);
     throw new Error('Failed to record play. Please try again.');
+  }
+};
+export interface GetSeasonEpisodesPopupReq {
+  episodeId: number;
+}
+
+export interface GetSeasonEpisodesPopupRes {
+  contentId: number;
+  seasonNo: number;
+  thumbnailUrl: string;
+  contentName: string;
+  genre: string;
+  tags: string[];
+  isComplete: boolean;
+  episodeList: SeasonEpisodeInfo[];
+}
+export const sendGetSeasonEpisodesPopup = async (
+  payload: GetSeasonEpisodesPopupReq,
+): Promise<ResponseAPI<GetSeasonEpisodesPopupRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetSeasonEpisodesPopupRes>>('/Content/getSeasonEpisodesPopup', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`GetSeasonEpisodesPopupRes Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error fetching season episodes popup:', error);
+    throw new Error('Failed to fetch season episodes popup. Please try again.');
   }
 };

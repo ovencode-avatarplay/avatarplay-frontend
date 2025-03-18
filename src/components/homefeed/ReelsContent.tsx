@@ -38,8 +38,8 @@ import {
   BookMarkReq,
   CommentContentType,
   InteractionType,
-  sendFeedDisLike,
-  sendFeedLike,
+  sendDisLike,
+  sendLike,
 } from '@/app/NetWork/CommonNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {RecommendState} from './ReelsLayout';
@@ -133,7 +133,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       // if (isDisLike == true) {
       //   await handleDisLikeFeed(item.id, !isDisLike);
       // }
-      const response = await sendFeedLike(InteractionType.Feed, feedId, isLike);
+      const response = await sendLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
@@ -151,7 +151,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       // if (isLike == true) {
       //   await handleLikeFeed(item.id, !isLike);
       // }
-      const response = await sendFeedDisLike(InteractionType.Feed, feedId, isLike);
+      const response = await sendDisLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
@@ -381,8 +381,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                 }}
               >
-                <span className={styles.username}>{item.profileName}</span>
-                <span className={styles.sponsored}>{getLocalizedText(Header, 'home001_label_003')}</span>
+                <span className={styles.username}>{item.title}</span>
               </div>
               {recommendState == RecommendState.ForYou && (
                 <button
@@ -435,7 +434,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   {formatDuration(videoDuration)}
                 </div>
               )}
-              <div>{formatTimeAgo(item.createAt ? item.createAt.toString() : '0')}</div>
+              {/* <div>{formatTimeAgo(item.createAt ? item.createAt.toString() : '0')}</div> */}
             </div>
           </div>
 
@@ -536,12 +535,20 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           </div>
         </SwiperSlide>
         {isShowProfile && (
-          <SwiperSlide style={{overflowY: 'scroll'}}>
+          <SwiperSlide style={{overflowY: 'scroll', background: 'white'}}>
             {activeIndexProfile === 1 && <ProfileBase urlLinkKey={item.profileUrlLinkKey} maxWidth={'600px'} />}
           </SwiperSlide>
         )}
       </Swiper>
-      <DrawerDonation isOpen={isDonation} sponsoredName={item.profileName} onClose={handleDonationclose} />
+      {
+        /*isDonation === true && */ <DrawerDonation
+          isOpen={isDonation}
+          sponsoredName={item.profileName}
+          giveToPDId={item.profileId}
+          onClose={handleDonationclose}
+          router={router}
+        />
+      }
       <Comment
         contentId={item.id}
         isOpen={isCommentOpen}
@@ -552,7 +559,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
       <SharePopup
         open={isShare}
-        title={item.profileName}
+        title={item.title}
         url={window.location.href}
         onClose={() => setIsShare(false)}
       ></SharePopup>

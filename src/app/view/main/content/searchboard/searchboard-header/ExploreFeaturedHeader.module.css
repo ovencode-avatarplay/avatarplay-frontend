@@ -13,13 +13,13 @@
 {
     justify-content: center; 
     align-items: center;
-    width: var(--second-width);
+    /* width: var(--second-width); */
     height: 100px;    
 }
 
 .swiper-pagination {
     background-color: #333;
-    padding: 10px;
+    padding: 2px;
   }
 
 .customSwiper {
@@ -33,7 +33,6 @@
     translate: -50%;
     width: auto !important;
     display: inline-flex;  
-    gap: 5px;
 }
 
 

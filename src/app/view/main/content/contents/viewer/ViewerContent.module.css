@@ -37,27 +37,28 @@
 
 .progressBar {
   position: absolute;
-  bottom: 1px;
-  left: 0;
-  width: 100%;
-  height: 1.66px; /* 프로그레스 바 높이 */
-  background-color: rgba(255, 255, 255, 0.3); /* 배경색 */
+  bottom: 50px;
+  left: 5%;
+  width: 90%;
+  height: 5px; /* 기존보다 살짝 키움 */
+  background-color: rgba(255, 255, 255, 0.3);
   overflow: hidden;
+  cursor: pointer; /* 드래그 가능하도록 커서 변경 */
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-  opacity: 1;
-}
-.progressFill {
-  position: absolute;
-  height: 100%;
-  background-color: #ff0000;
-  transition: width 0.1s linear;
+  opacity: 1;  
+  z-index: 1000; /* 다른 요소가 덮지 않도록 설정 */
 }
 
 .progressFill {
   height: 100%;
-  background: var(--background); /* 흰색 진행도 */
-  transition: width 0.2s ease; /* 부드러운 진행 애니메이션 */
+  background: var(--background);
+  transition: width 0.2s ease;
 }
+
+.progressBar.dragging .progressFill {
+  transition: none; /* 드래그 중에는 애니메이션 제거 */
+}
+
 .playCircleIcon {
   position: absolute;
   width: 70px;
@@ -313,12 +314,13 @@ img.button{
   bottom: 4px;
   padding-bottom: 19px;
   /* left: 16px; */
-  padding-left: 16px;
+  
   gap: 16px;
   z-index: 10;
-  background: linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5))  ;
+  
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
   opacity: 1;
+  left: 4%;
 }
 
 .iconArrowDown {
@@ -434,11 +436,12 @@ img.button{
   display: flex;
   flex-direction: column;
   gap: 12px;
-  bottom: 48px;
+  bottom: 70px;
   right: 13px;
   z-index: 12;
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
   opacity: 1;
+  align-items: center;
 }
 
 .fadeOutR {
@@ -455,4 +458,211 @@ img.button{
   opacity: 0;
   transform: translateY(10px); /* 약간 아래로 이동하면서 사라지는 효과 */
   pointer-events: none; /* 사라질 때 클릭 방지 */
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleDown {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* 기본 상태 */
+.plusCircle,
+.checkCircle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 999px;
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+  position: absolute;
+  top: 22px;
+  right: 7px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.plusCircle {
+  background: #FD55D3;
+}
+
+.checkCircle {
+  background: #ffffff;
+}
+
+/* 애니메이션 */
+.startAnimation {
+  animation: scaleUp 75ms ease-out forwards; /* 3프레임 (50ms) 동안 크기 증가 */
+}
+
+.fullSize {
+  transform: scale(1); /* 17프레임 동안 유지 (기본 크기) */
+}
+
+.shrinkAnimation {
+  animation: scaleDown 150ms ease-in forwards; /* 4프레임 (100ms) 동안 축소 */
+}
+
+.checkImg{
+  filter: brightness(0) saturate(100%) invert(47%) sepia(93%) saturate(1870%) hue-rotate(288deg) brightness(103%) contrast(98%);
+  
+}
+
+.episodeContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  width: 353px;
+  
+}
+
+.episodeButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 65px;
+  height: 39px;
+  background: #323232;
+  color: white;
+  font-family: "Gilroy-Bold", sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  border-radius: 8px;
+  letter-spacing: -0.0025em;
+}
+
+.locked {
+  position: relative;
+}
+
+.lockIcon {
+  position: absolute;
+  top: 3px;
+  right: 2px;
+  font-size: 12px;
+  color: #febbea;
+}
+.profileContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 362px;
+  height: 74px;
+}
+
+.profileImageWrapper {
+  position: relative;
+  width: 74px;
+  height: 74px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imageOverlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0.3) 90%);
+  border-radius: 8px;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 226px;
+  
+}
+
+.title {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #000;
+}
+
+.episodeRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #000;
+}
+
+.episodeInfo {
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+}
+
+.completeBadge {
+  background: #BDC1C6;
+  border-radius: 4px;
+  padding: 4px;
+  font-size: 11px;
+  color: white;
+}
+
+.genreRow {
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+}
+
+.episodeListDrawer{
+
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+
+}
+
+.lockImg
+{
+  width: 12px;
+  height: 12px;
+  filter: brightness(0) saturate(100%) invert(87%) sepia(7%) saturate(2103%) hue-rotate(282deg) brightness(93%) contrast(117%);
+}
+
+.webtoonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 중앙 정렬 */
+  gap: 0; /* 이미지 사이 간격 제거 */
+  width: 100%;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.webtoonImage {
+  width: 100%; /* 부모 요소에 맞게 너비 조정 */
+  object-fit: cover; /* 이미지가 꽉 차도록 설정 */
 }

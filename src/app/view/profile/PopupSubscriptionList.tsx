@@ -74,9 +74,16 @@ const PopupSubscriptionList = ({onClose}: Props) => {
     {id: 2, value: 'Channel'},
   ];
 
-  const SelectBoxArrowComponent = () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />;
+  const SelectBoxArrowComponent = (isOpen?: boolean) => (
+    <img
+      className={styles.icon}
+      src={BoldAltArrowDown.src}
+      alt="altArrowDown"
+      style={{transform: `rotate(${isOpen ? 180 : 0}deg)`}}
+    />
+  );
 
-  const SelectBoxValueComponent = (data: any) => {
+  const SelectBoxValueComponent = (data: any, isOpen?: boolean) => {
     return (
       <div key={data.id} className={styles.label}>
         {data.value}
@@ -154,8 +161,9 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                     minHeight: '52px',
                   },
                   menuList: {
-                    borderbottomLeftRadius: '10px',
-                    borderbottomRightRadius: '10px',
+                    borderRadius: '10px',
+                    // borderbottomLeftRadius: '10px',
+                    // borderbottomRightRadius: '10px',
                     boxShadow: '0px 0px 30px 0 rgba(0, 0, 0, 0.10)',
                   },
                   option: {

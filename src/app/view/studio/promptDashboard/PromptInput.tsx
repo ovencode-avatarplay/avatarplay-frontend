@@ -43,7 +43,7 @@ const PromptInput: React.FC<Props> = ({
         if (html.includes(keyword)) {
           html = html.replace(
             regex,
-            `<span class="${styles['chip']} ${styles['chipUser']}" contenteditable="false">${Keywords[keyword]}</span>`,
+            `<span class="${styles.chip} ${styles.chipUser}" contenteditable="false">${Keywords[keyword]}</span>`,
           );
           changed = true;
         }
@@ -175,8 +175,7 @@ const PromptInput: React.FC<Props> = ({
   return (
     <>
       <div className={styles.promptInputList}>
-        <div className={styles.fixedPrompt}>{prefix}</div>
-
+        {prefix != '' && <div className={styles.fixedPrompt}>{prefix}</div>}
         <div
           ref={promptRef}
           className={styles.promptInput}
@@ -185,7 +184,7 @@ const PromptInput: React.FC<Props> = ({
           onInput={handleInput}
           onKeyDown={handleKeyDown}
         />
-        <div className={styles.fixedPrompt}>{suffix}</div>
+        {suffix != '' && <div className={styles.fixedPrompt}>{suffix}</div>}
       </div>
       {showAutoComplete && (
         <AutoCompleteCustomPrompt

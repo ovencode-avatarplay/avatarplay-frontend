@@ -8,6 +8,7 @@ import profileData from 'data/profile/profile-data.json';
 import ProfileTopViewMenu from './ProfileTopViewMenu';
 import {
   BoldAltArrowDown,
+  BoldArchive,
   BoldArrowLeft,
   BoldCharacter,
   BoldComment,
@@ -22,6 +23,7 @@ import {
   BoldPin,
   BoldVideo,
   BoldViewGallery,
+  LineArchive,
   LineArrowDown,
   LineCheck,
   LineCopy,
@@ -31,7 +33,7 @@ import {
 } from '@ui/Icons';
 import styles from './ProfileBase.module.scss';
 import cx from 'classnames';
-import Select, {components, StylesConfig} from 'react-select';
+import Select, {components, SelectInstance, StylesConfig} from 'react-select';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import {redirect, RedirectType, useParams, usePathname, useRouter, useSearchParams} from 'next/navigation';
@@ -65,7 +67,7 @@ import {updateProfile} from '@/redux-store/slices/Profile';
 import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
 import {useAtom} from 'jotai';
 import Link from 'next/link';
-import HamburgerBar from '../main/header/header-nav-bar/HamburgerBar';
+import HamburgerBar from '../main/sidebar/HamburgerBar';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import {deleteFeed, FeedInfo, PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
@@ -74,7 +76,7 @@ import {
   GetCharacterInfoReq,
   GetCharacterInfoRes,
   sendDeleteCharacter,
-  sendGetCharacterInfo,
+  sendGetCharacterProfileInfo,
 } from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {getBackUrl} from '@/utils/util-1';
@@ -91,13 +93,22 @@ import PopupPlaylist from './PopupPlaylist';
 import {ContentType, sendDeleteContent} from '@/app/NetWork/ContentNetwork';
 import {CharacterProfileDetailComponent} from './ProfileDetail';
 import PopupFriends from './PopupFriends';
-import useChangeParams from '@/utils/useChangeParams';
+import {PortfolioListPopup} from '@/app/[lang]/(pages)/profile/update/[[...id]]/page';
+import useCustomRouter from '@/utils/useCustomRouter';
+import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
 
-export enum eTabCommonType {
+export enum eTabFavoritesType {
   Feed = 1,
   Character = 3,
-  Channel = 4,
+  Channel = 5,
   Contents = 2,
+  Game = 0,
+}
+
+export enum eTabPlayListType {
+  Feed = 1,
+  Character = 2,
+  Contents = 3,
   Game = 0,
 }
 
@@ -122,7 +133,6 @@ export enum eTabCharacterType {
   Contents = 1,
   Channel,
   Character,
-  Game,
 }
 
 export enum eTabCharacterOtherType {
@@ -167,11 +177,13 @@ export enum eSharedFilterType {
   Character = 2,
 }
 
-type TabContentMenuType = {
+export type TabContentMenuType = {
   isSettingOpen: boolean;
   isPin: boolean;
-  id: number | string;
+  id: number;
   isSingle?: boolean;
+  urlLinkKey?: string;
+  isFavorite?: boolean;
 };
 
 type DataProfileType = {
@@ -230,6 +242,8 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
   const isOtherPD = !isMine && isPD;
   const isOtherCharacter = !isMine && isCharacter;
   const isOtherChannel = !isMine && isChannel;
+  const isFavorites = [ProfileType.Favorites].includes(profileType);
+  const isPlayList = [ProfileType.PlayList].includes(profileType);
   return {
     isPD,
     isCharacter,
@@ -240,12 +254,15 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
     isChannel,
     isMyChannel,
     isOtherChannel,
+    isFavorites,
+    isPlayList,
   };
 };
 
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
-  const {changeParams, getParam} = useChangeParams();
+  const {back} = useCustomRouter();
+  const {changeParams, getParam} = useCustomRouter();
   const searchParams = useSearchParams();
   const isNeedBackBtn = searchParams?.get('from'); // "from" 쿼리 파라미터 값 가져오기
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
@@ -295,8 +312,17 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
   const isMine = data.profileInfo?.isMyProfile || false;
   const profileType = Number(data.profileInfo?.profileInfo?.type);
-  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
-    getUserType(isMine, profileType);
+  const {
+    isPD,
+    isCharacter,
+    isMyPD,
+    isMyCharacter,
+    isOtherPD,
+    isOtherCharacter,
+    isChannel,
+    isOtherChannel,
+    isMyChannel,
+  } = getUserType(isMine, profileType);
 
   useEffect(() => {
     data.refreshProfileTab = refreshProfileTab;
@@ -317,7 +343,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       setData({...data});
       return;
     }
-  }, [pathname, data.profileId]);
+  }, [pathname]);
 
   useEffect(() => {
     if (!isPath) return;
@@ -341,13 +367,22 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     setData({...data});
   }, []);
 
+  type FilterType = {
+    feedMediaType: FeedMediaType;
+  };
+
   const getTabInfo = (
     typeProfile: ProfileType,
   ): ((
     profileUrlLinkKey: string,
     tabIndex: number,
     indexSort: ExploreSortType,
-    indexFilterMedia: FeedMediaType,
+    filterType: {
+      feedMediaType: number;
+      channelTabType: number;
+      characterTabType: number;
+      contentTabType: number;
+    },
     offset: number,
     limit: number,
   ) => Promise<any>) => {
@@ -363,7 +398,10 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       };
     }
   };
-  const getTabContentCount = (indexTab: number) => {
+  const getTabContentCount = (indexTab: number, isMine: boolean, profileType: ProfileType) => {
+    const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+      getUserType(isMine, profileType);
+
     let count = 0;
     if (isPD) {
       if (indexTab == eTabPDType.Feed) {
@@ -407,7 +445,13 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   };
 
   const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll: boolean = false) => {
-    const profileType = data.profileInfo?.profileInfo?.type;
+    const isMine = data.profileInfo?.isMyProfile || false;
+    const profileType = Number(data.profileInfo?.profileInfo?.type);
+    const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
+      getUserType(isMine, profileType);
+
+    let indexFilter = 0;
+
     if (profileType == undefined) return;
     let resProfileTabInfo = null;
     if (isCharacter && indexTab == eTabCharacterOtherType.Info) {
@@ -415,7 +459,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         languageType: getCurrentLanguage(),
         profileId: data.profileInfo?.profileInfo?.id || 0,
       };
-      const resGetCharacterInfo = await sendGetCharacterInfo(reqSendGetCharacterInfo);
+      const resGetCharacterInfo = await sendGetCharacterProfileInfo(reqSendGetCharacterInfo);
       if (resGetCharacterInfo.resultCode != 0) {
         console.error('api error : ', resGetCharacterInfo.resultMessage);
         return;
@@ -436,26 +480,19 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       }
       resProfileTabInfo = resChannelInfo?.data;
     } else {
-      if (indexTab == eTabPDType.Character) {
-        console.trace('isRefreshAll : ', isRefreshAll);
-        resProfileTabInfo = await getTabInfo(profileType)(
-          data.urlLinkKey,
-          indexTab,
-          data.filterCluster?.indexSort || 0,
-          data.filterCluster?.indexFilterCharacter || 0,
-          isRefreshAll ? 0 : getTabContentCount(indexTab),
-          isRefreshAll ? getTabContentCount(indexTab) : 10,
-        );
-      } else {
-        resProfileTabInfo = await getTabInfo(profileType)(
-          data.urlLinkKey,
-          indexTab,
-          data?.filterCluster.indexSort || 0,
-          data?.filterCluster.indexFilterMedia || 0,
-          isRefreshAll ? 0 : getTabContentCount(indexTab),
-          isRefreshAll ? getTabContentCount(indexTab) : 10,
-        );
-      }
+      resProfileTabInfo = await getTabInfo(profileType)(
+        data.urlLinkKey,
+        indexTab,
+        data.filterCluster?.indexSort || 0,
+        {
+          channelTabType: data.filterCluster?.indexFilterChannel || 0,
+          characterTabType: data.filterCluster?.indexFilterCharacter || 0,
+          contentTabType: data.filterCluster?.indexFilterContent || 0,
+          feedMediaType: data.filterCluster?.indexFilterMedia || 0,
+        },
+        isRefreshAll ? 0 : getTabContentCount(indexTab, isMine, profileType),
+        isRefreshAll ? getTabContentCount(indexTab, isMine, profileType) : 10,
+      );
     }
     if (!resProfileTabInfo) return;
 
@@ -478,11 +515,16 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       storyInfoList,
       dataResPdInfo,
       channelInfo,
+      characterInfo,
       contentInfoList,
     } = resProfileTabInfo;
     if (!data.profileTabInfo[indexTab]) {
       data.profileTabInfo[indexTab] = resProfileTabInfo;
       return;
+    }
+
+    if (!!characterInfo) {
+      data.profileTabInfo[indexTab].characterInfo = characterInfo;
     }
 
     if (!!channelInfo) {
@@ -533,7 +575,6 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     data.profileId = resProfileInfo.profileInfo.id;
 
     const indexTab = Number(data?.indexTab);
-    console.log('profileId : ', resProfileInfo.profileInfo.id);
     await refreshProfileTab(resProfileInfo.profileInfo.id, indexTab);
 
     setData({...data});
@@ -572,13 +613,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   };
 
   const routerBack = () => {
-    // you can get the prevPath like this
-    const prevPath = getBackUrl();
-    if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/main/homefeed'));
-    } else {
-      router.replace(prevPath);
-    }
+    back('/main/homefeed');
   };
 
   const getIsEmptyTab = () => {
@@ -590,7 +625,6 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList?.length;
       } else if (data.indexTab == eTabPDType.Channel) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
-        console.log('length : ', data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length);
       } else if (data.indexTab == eTabPDOtherType.Info) {
         isEmptyTab = false;
       } else {
@@ -646,6 +680,37 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     return getLocalizedLink(``);
   };
 
+  const copyToClipboard = () => {
+    if (typeof window === 'undefined') return; // 서버에서 실행 방지
+
+    const queryString = searchParams?.toString() || ''; // 현재 쿼리 파라미터 가져오기
+    const url = queryString
+      ? `${window.location.origin}${pathname}?${queryString}`
+      : `${window.location.origin}${pathname}`;
+    const success = () => {
+      console.log('URL을 클립보드에 복사했습니다.');
+    };
+    const failure = (err: any) => console.error('클립보드에 URL을 복사하지 못했습니다. : ', err);
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(success).catch(failure);
+      } else {
+        const tempInput = document.createElement('textarea');
+        tempInput.value = url;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+
+        const successful = document.execCommand('copy');
+        document.body.removeChild(tempInput);
+
+        successful ? success() : failure('execCommand를 통한 복사 실패');
+      }
+    } catch (error) {
+      failure(error);
+    }
+  };
+
   return (
     <>
       {isMine && (
@@ -699,7 +764,16 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             }}
           >
             <div className={styles.left}>
-              {isCharacter && <div className={styles.originalFan}>Original</div>}
+              {(isCharacter || isChannel) && (
+                <div
+                  className={cx(
+                    styles.originalFan,
+                    data.profileInfo?.profileInfo?.characterIP == CharacterIP.Original ? styles.original : styles.fan,
+                  )}
+                >
+                  {data.profileInfo?.profileInfo?.characterIP == CharacterIP.Original ? 'Original' : 'Fan'}
+                </div>
+              )}
               <div className={styles.profileName}>{data.profileInfo?.profileInfo.name}</div>
             </div>
             {isMine && (
@@ -757,14 +831,24 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             <div className={styles.label}>Followers</div>
           </div>
           <div className={styles.itemStatistic}>
-            <div className={styles.count}>{data.profileInfo?.profileInfo.followingCount}</div>
-            <div className={styles.label}>Following</div>
+            <div className={styles.count}>
+              {isPD ? data.profileInfo?.profileInfo?.followingCount : data.profileInfo?.profileInfo?.subscriberCount}
+            </div>
+            <div className={styles.label}>{isPD ? 'Following' : 'Subscribers'}</div>
           </div>
         </div>
         <div className={styles.profileDetail}>
-          <div className={styles.nameWrap}>
+          <div
+            className={styles.nameWrap}
+            onClick={async () => {
+              // const url = window.location.origin + pathname;
+              // await navigator.clipboard.writeText(url);
+
+              copyToClipboard();
+            }}
+          >
             <div className={styles.name}>{data.profileInfo?.profileInfo?.name}</div>
-            {!isMine && <img className={styles.iconCopy} src={LineCopy.src} alt="" />}
+            <img className={styles.iconCopy} src={LineCopy.src} alt="" />
           </div>
           {isPD && (
             <div className={styles.verify}>
@@ -773,11 +857,20 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             </div>
           )}
           {isCharacter && (
-            <div className={styles.verify}>
+            <div className={cx(styles.verify, styles.decoration)}>
               <Link
                 href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileUrlLinkKey + '?from=""')}
               >
                 <span className={styles.label}>Manager: {data.profileInfo?.profileInfo?.pdEmail}</span>
+              </Link>
+            </div>
+          )}
+          {isChannel && (
+            <div className={cx(styles.verify, styles.decoration)}>
+              <Link
+                href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileUrlLinkKey + '?from=""')}
+              >
+                <span className={styles.label}>Owner: {data.profileInfo?.profileInfo?.pdEmail}</span>
               </Link>
             </div>
           )}
@@ -802,19 +895,21 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               Show more...
             </div>
           )}
-          {isMyPD && (
+          {(isMyPD || isMyChannel) && (
             <div className={styles.buttons}>
               <button className={styles.ad}>AD</button>
-              <button
-                className={styles.friends}
-                onClick={() => {
-                  alert('6월에 기능 추가 예정');
-                  // data.isOpenPopupFriendsList = true;
-                  // setData({...data});
-                }}
-              >
-                Add Friends
-              </button>
+              {isMyPD && (
+                <button
+                  className={styles.friends}
+                  onClick={() => {
+                    alert('6월에 기능 추가 예정');
+                    // data.isOpenPopupFriendsList = true;
+                    // setData({...data});
+                  }}
+                >
+                  Add Friends
+                </button>
+              )}
             </div>
           )}
           {isMyCharacter && (
@@ -822,11 +917,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               <button className={styles.ad}>AD</button>
               <button className={styles.chat}>
                 {/* <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}> */}
-                <Link
-                  href={getLocalizedLink(`/chat/?v=${data?.profileInfo?.profileInfo?.characterUrlLinkKey}` || `?v=`)}
-                >
-                  Chat
-                </Link>
+                <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>Chat</Link>
               </button>
             </div>
           )}
@@ -845,7 +936,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               </button>
             </div>
           )}
-          {isOtherCharacter && (
+          {(isOtherChannel || isOtherCharacter) && (
             <div className={styles.buttonsOtherCharacter}>
               <button
                 className={styles.subscribe}
@@ -867,9 +958,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               <button className={styles.giftWrap}>
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
               </button>
-              <button className={styles.chat}>
-                <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}>Chat</Link>
-              </button>
+              {isOtherCharacter && (
+                <button className={styles.chat}>
+                  <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>Chat</Link>
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -990,7 +1083,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         <PopupFavoriteList
           isMine={isMine}
           profileId={data.profileId}
-          profileType={profileType}
+          profileType={ProfileType.Favorites}
           onClose={() => {
             data.isOpenPopupFavoritesList = false;
             setData({...data});
@@ -1002,7 +1095,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         <PopupPlaylist
           isMine={isMine}
           profileId={data.profileId}
-          profileType={profileType}
+          profileType={ProfileType.PlayList}
           onClose={() => {
             data.isOpenPopupPlayList = false;
             setData({...data});
@@ -1057,7 +1150,6 @@ const ContentSetting = ({
     {
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
       onClick: async () => {
-        console.log('tabContentMenu : ', tabContentMenu);
         const dataUpdatePin: PinFixFeedReq = {
           feedId: Number(tabContentMenu.id),
           isFix: !tabContentMenu.isPin,
@@ -1107,12 +1199,57 @@ const ContentSetting = ({
   );
 };
 
+const SelectBoxProfileFilter = ({
+  value,
+  options = [],
+  onChange = (id: number) => {},
+}: {
+  value: any;
+  options: any[];
+  onChange: (id: number) => void;
+}) => {
+  return (
+    <SelectBox
+      value={value}
+      options={options}
+      ArrowComponent={SelectBoxArrowComponent}
+      ValueComponent={SelectBoxValueComponent}
+      OptionComponent={SelectBoxOptionComponent}
+      onChange={onChange}
+      customStyles={{
+        control: {
+          width: '90px',
+          display: 'flex',
+          gap: '10px',
+        },
+        menuList: {
+          borderRadius: '10px',
+          boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+        },
+        option: {
+          padding: '11px 14px',
+          boxSizing: 'border-box',
+          '&:first-of-type': {
+            borderTop: 'none', // 첫 번째 옵션에는 border 제거
+          },
+          borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+        },
+        menu: {
+          width: '160px',
+          right: '-5px',
+          marginTop: '-6px',
+        },
+      }}
+    />
+  );
+};
+
 export type SelectBoxProps = {
   value: {id: number; [key: string]: any} | null;
   options: {id: number; [key: string]: any}[];
   OptionComponent: (data: {id: number; [key: string]: any}, isSelected: boolean) => JSX.Element;
-  ValueComponent: (data: any, isSelected?: boolean) => JSX.Element;
-  ArrowComponent: () => JSX.Element;
+  ValueComponent: (data: any, isOpen?: boolean) => JSX.Element;
+  ArrowComponent: (isOpen?: boolean) => JSX.Element;
   onChange: (id: number) => void;
   customStyles?: {
     control?: object; // 함수 또는 객체 허용
@@ -1216,12 +1353,27 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
     setSelectedOption(value);
   }, [value]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(
+        /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) ||
+          window.matchMedia('(pointer: coarse)').matches,
+      );
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div
       onClick={() => {
-        if (!isOpen) {
-          setIsOpen(true);
-        }
+        // if (!isOpen) {
+        //   setIsOpen(true);
+        // }
       }}
     >
       {isOpen && (
@@ -1257,21 +1409,44 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
         options={options}
         components={{
           DropdownIndicator: React.useCallback(() => {
-            return ArrowComponent();
-          }, []),
+            return ArrowComponent(isOpen);
+          }, [isOpen]),
           Option: React.useCallback(
             (props: any) => (
               <components.Option {...props}>{OptionComponent(props.data, props.isSelected)}</components.Option>
             ),
             [],
           ),
-          SingleValue: React.useCallback((props: any) => {
-            return (
-              <components.SingleValue {...props}>
-                {ValueComponent(props.data, props.isSelected)} {/* 선택된 값에서는 isSingleValue = true */}
-              </components.SingleValue>
-            );
-          }, []),
+          SingleValue: React.useCallback(
+            (props: any) => {
+              return (
+                <components.SingleValue {...props}>
+                  <div
+                    {...(isMobile
+                      ? {
+                          onTouchEnd: () => {
+                            if (isOpen) {
+                              setTimeout(() => {
+                                setIsOpen(false);
+                              }, 100);
+                            }
+                          },
+                        }
+                      : {
+                          onClick: () => {
+                            if (isOpen) {
+                              setIsOpen(false);
+                            }
+                          },
+                        })}
+                  >
+                    {ValueComponent(props.data, isOpen)}
+                  </div>
+                </components.SingleValue>
+              );
+            },
+            [isOpen],
+          ),
         }}
         getOptionValue={option => option.id.toString()}
       />
@@ -1279,7 +1454,14 @@ export const SelectBox: React.FC<SelectBoxProps> = ({
   );
 };
 
-const SelectBoxArrowComponent = () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />;
+const SelectBoxArrowComponent = (isOpen?: boolean) => (
+  <img
+    className={styles.icon}
+    src={BoldAltArrowDown.src}
+    alt="altArrowDown"
+    style={{transform: `rotate(${isOpen ? 180 : 0}deg)`}}
+  />
+);
 
 const SelectBoxValueComponent = (data: any) => {
   return (
@@ -1313,6 +1495,7 @@ type TabContentProps = {
 
   filterCluster: FilterClusterType;
   profileUrlLinkKey: string;
+
   onRefreshTab: (isRefreshAll: boolean) => void;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
@@ -1335,8 +1518,18 @@ export type FilterClusterType = {
 };
 
 export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster, onChange}: TabFilterProps) => {
-  const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
-    getUserType(isMine, profileType);
+  const {
+    isPD,
+    isCharacter,
+    isMyPD,
+    isMyCharacter,
+    isOtherPD,
+    isOtherCharacter,
+    isChannel,
+    isOtherChannel,
+    isFavorites,
+    isPlayList,
+  } = getUserType(isMine, profileType);
   const sortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
     {id: ExploreSortType.MostPopular, value: 'Popular'},
@@ -1350,7 +1543,9 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   if (
     (isPD && [eTabPDType.Feed].includes(tabIndex)) ||
     (isCharacter && [eTabCharacterType.Feed].includes(tabIndex)) ||
-    (isChannel && [eTabChannelType.Feed].includes(tabIndex))
+    (isChannel && [eTabChannelType.Feed].includes(tabIndex)) ||
+    (isFavorites && [eTabFavoritesType.Feed].includes(tabIndex)) ||
+    (isPlayList && [eTabPlayListType.Feed].includes(tabIndex))
   ) {
     return (
       <>
@@ -1367,7 +1562,11 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             }}
           >
             <div
-              className={cx(styles.iconWrap, filterCluster.indexFilterMedia == FeedMediaType.Total && styles.active)}
+              className={cx(
+                styles.iconWrap,
+                styles.bg,
+                filterCluster.indexFilterMedia == FeedMediaType.Total && styles.active,
+              )}
               data-filter={FeedMediaType.Total}
             >
               <img src={BoldViewGallery.src} alt="" />
@@ -1387,34 +1586,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
-              <SelectBox
+              <SelectBoxProfileFilter
                 value={feedSortOptionList[filterCluster?.indexSort || 0]}
                 options={feedSortOptionList}
-                ArrowComponent={SelectBoxArrowComponent}
-                ValueComponent={SelectBoxValueComponent}
-                OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
                   const indexSort = id;
                   onChange({indexSort: indexSort});
-                }}
-                customStyles={{
-                  control: {
-                    width: '150px',
-                    display: 'flex',
-                    gap: '10px',
-                  },
-                  menuList: {
-                    borderRadius: '10px',
-                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                  },
-                  option: {
-                    padding: '11px 14px',
-                    boxSizing: 'border-box',
-                    '&:first-of-type': {
-                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                    },
-                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                  },
                 }}
               />
             </div>
@@ -1426,7 +1603,9 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
 
   if (
     (isCharacter && [eTabCharacterType.Contents].includes(tabIndex)) ||
-    (isChannel && [eTabChannelType.Contents].includes(tabIndex))
+    (isChannel && [eTabChannelType.Contents].includes(tabIndex)) ||
+    (isFavorites && [eTabFavoritesType.Contents].includes(tabIndex)) ||
+    (isPlayList && [eTabPlayListType.Contents].includes(tabIndex))
   ) {
     return (
       <>
@@ -1445,6 +1624,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.iconWrap,
+                styles.bg,
                 filterCluster.indexFilterContent == eContentFilterType.Total && styles.active,
               )}
               data-filter={eContentFilterType.Total}
@@ -1472,34 +1652,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
-              <SelectBox
+              <SelectBoxProfileFilter
                 value={sortOptionList[filterCluster?.indexSort || 0]}
                 options={sortOptionList}
-                ArrowComponent={SelectBoxArrowComponent}
-                ValueComponent={SelectBoxValueComponent}
-                OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
                   const indexSort = id;
                   onChange({indexSort: indexSort});
-                }}
-                customStyles={{
-                  control: {
-                    width: '150px',
-                    display: 'flex',
-                    gap: '10px',
-                  },
-                  menuList: {
-                    borderRadius: '10px',
-                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                  },
-                  option: {
-                    padding: '11px 14px',
-                    boxSizing: 'border-box',
-                    '&:first-of-type': {
-                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                    },
-                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                  },
                 }}
               />
             </div>
@@ -1510,9 +1668,11 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   }
 
   if (
-    (isPD && [eTabPDType.Channel, eTabPDType.Character].includes(tabIndex)) ||
+    (isPD && [eTabPDType.Character].includes(tabIndex)) ||
     (isCharacter && [eTabCharacterType.Character].includes(tabIndex)) ||
-    (isChannel && [eTabChannelType.Character].includes(tabIndex))
+    (isChannel && [eTabChannelType.Character].includes(tabIndex)) ||
+    (isFavorites && [eTabFavoritesType.Character].includes(tabIndex)) ||
+    (isPlayList && [eTabPlayListType.Character].includes(tabIndex))
   ) {
     return (
       <>
@@ -1524,21 +1684,15 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               const category = target.closest('[data-filter]')?.getAttribute('data-filter');
               if (category) {
                 const indexFilter = parseInt(category);
-                if (tabIndex == eTabPDType.Channel) {
-                  onChange({indexFilterChannel: indexFilter});
-                } else if (tabIndex == eTabPDType.Character) {
-                  onChange({indexFilterCharacter: indexFilter});
-                }
+                onChange({indexFilterCharacter: indexFilter});
               }
             }}
           >
             <div
               className={cx(
                 styles.iconWrap,
-                ((tabIndex == eTabPDType.Channel && filterCluster.indexFilterChannel == eCharacterFilterType.Total) ||
-                  (tabIndex == eTabPDType.Character &&
-                    filterCluster.indexFilterCharacter == eCharacterFilterType.Total)) &&
-                  styles.active,
+                styles.bg,
+                filterCluster.indexFilterCharacter == eCharacterFilterType.Total && styles.active,
               )}
               data-filter={eCharacterFilterType.Total}
             >
@@ -1547,12 +1701,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.textWrap,
-
-                ((tabIndex == eTabPDType.Channel &&
-                  filterCluster.indexFilterChannel == eCharacterFilterType.Original) ||
-                  (tabIndex == eTabPDType.Character &&
-                    filterCluster.indexFilterCharacter == eCharacterFilterType.Original)) &&
-                  styles.active,
+                filterCluster.indexFilterCharacter == eCharacterFilterType.Original && styles.active,
               )}
               data-filter={eCharacterFilterType.Original}
             >
@@ -1561,11 +1710,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.textWrap,
-
-                ((tabIndex == eTabPDType.Channel && filterCluster.indexFilterChannel == eCharacterFilterType.Fan) ||
-                  (tabIndex == eTabPDType.Character &&
-                    filterCluster.indexFilterCharacter == eCharacterFilterType.Fan)) &&
-                  styles.active,
+                filterCluster.indexFilterCharacter == eCharacterFilterType.Fan && styles.active,
               )}
               data-filter={eCharacterFilterType.Fan}
             >
@@ -1574,34 +1719,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
-              <SelectBox
+              <SelectBoxProfileFilter
                 value={sortOptionList[filterCluster?.indexSort || 0]}
                 options={sortOptionList}
-                ArrowComponent={SelectBoxArrowComponent}
-                ValueComponent={SelectBoxValueComponent}
-                OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
                   const indexSort = id;
                   onChange({indexSort: indexSort});
-                }}
-                customStyles={{
-                  control: {
-                    width: '150px',
-                    display: 'flex',
-                    gap: '10px',
-                  },
-                  menuList: {
-                    borderRadius: '10px',
-                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                  },
-                  option: {
-                    padding: '11px 14px',
-                    boxSizing: 'border-box',
-                    '&:first-of-type': {
-                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                    },
-                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                  },
                 }}
               />
             </div>
@@ -1610,10 +1733,10 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
       </>
     );
   }
-
   if (
     (isPD && [eTabPDType.Channel, eTabPDType.Channel].includes(tabIndex)) ||
-    (isCharacter && [eTabCharacterType.Channel].includes(tabIndex))
+    (isCharacter && [eTabCharacterType.Channel].includes(tabIndex)) ||
+    (isFavorites && [eTabFavoritesType.Channel].includes(tabIndex))
   ) {
     return (
       <>
@@ -1632,6 +1755,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.iconWrap,
+                styles.bg,
                 filterCluster.indexFilterChannel == eCharacterFilterType.Total && styles.active,
               )}
               data-filter={eCharacterFilterType.Total}
@@ -1661,34 +1785,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
-              <SelectBox
+              <SelectBoxProfileFilter
                 value={sortOptionList[filterCluster?.indexSort || 0]}
                 options={sortOptionList}
-                ArrowComponent={SelectBoxArrowComponent}
-                ValueComponent={SelectBoxValueComponent}
-                OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
                   const indexSort = id;
                   onChange({indexSort: indexSort});
-                }}
-                customStyles={{
-                  control: {
-                    width: '150px',
-                    display: 'flex',
-                    gap: '10px',
-                  },
-                  menuList: {
-                    borderRadius: '10px',
-                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                  },
-                  option: {
-                    padding: '11px 14px',
-                    boxSizing: 'border-box',
-                    '&:first-of-type': {
-                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                    },
-                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                  },
                 }}
               />
             </div>
@@ -1724,6 +1826,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.iconWrap,
+                styles.bg,
                 filterCluster.indexFilterShared == eSharedFilterType.Total && styles.active,
               )}
               data-filter={eSharedFilterType.Total}
@@ -1751,34 +1854,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
-              <SelectBox
+              <SelectBoxProfileFilter
                 value={sortOptionList[filterCluster?.indexFilterShared || 0]}
                 options={sortOptionList}
-                ArrowComponent={SelectBoxArrowComponent}
-                ValueComponent={SelectBoxValueComponent}
-                OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
                   const indexSort = id;
                   onChange({indexSort: indexSort});
-                }}
-                customStyles={{
-                  control: {
-                    width: '150px',
-                    display: 'flex',
-                    gap: '10px',
-                  },
-                  menuList: {
-                    borderRadius: '10px',
-                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                  },
-                  option: {
-                    padding: '11px 14px',
-                    boxSizing: 'border-box',
-                    '&:first-of-type': {
-                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                    },
-                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                  },
                 }}
               />
             </div>
@@ -1790,8 +1871,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
 
   return <></>;
 };
-
-export const TabHeaderWrapAllComponent = ({
+export const TabHeaderWrapPlayListComponent = ({
   indexTab,
   profileId,
   profileType,
@@ -1799,9 +1879,36 @@ export const TabHeaderWrapAllComponent = ({
   onTabChange,
 }: TabHeaderComponentType) => {
   const getTabHeaderList = () => {
-    return Object.values(eTabCommonType)
+    return Object.values(eTabPlayListType)
       .filter(value => typeof value === 'number') // 숫자 타입만 필터링
-      .map(type => ({type, label: eTabCommonType[type]}));
+      .map(type => ({type, label: eTabPlayListType[type]}));
+  };
+  const tabHeaderList = getTabHeaderList();
+  return (
+    <>
+      <TabHeaderComponent
+        indexTab={indexTab}
+        profileId={profileId}
+        profileType={profileType}
+        isMine={isMine}
+        onTabChange={onTabChange}
+        tabHeaderList={tabHeaderList}
+      />
+    </>
+  );
+};
+
+export const TabHeaderWrapFavoritesComponent = ({
+  indexTab,
+  profileId,
+  profileType,
+  isMine,
+  onTabChange,
+}: TabHeaderComponentType) => {
+  const getTabHeaderList = () => {
+    return Object.values(eTabFavoritesType)
+      .filter(value => typeof value === 'number') // 숫자 타입만 필터링
+      .map(type => ({type, label: eTabFavoritesType[type]}));
   };
   const tabHeaderList = getTabHeaderList();
   return (
@@ -1881,7 +1988,8 @@ type TabHeaderComponentType = {
     | eTabCharacterOtherType
     | eTabChannelType
     | eTabChannelOtherType
-    | eTabCommonType;
+    | eTabFavoritesType
+    | eTabPlayListType;
   profileId: number;
   profileType: ProfileType;
   isMine: boolean;
@@ -1904,7 +2012,8 @@ export const TabHeaderComponent = ({
       | eTabCharacterOtherType
       | eTabChannelType
       | eTabChannelOtherType
-      | eTabCommonType;
+      | eTabFavoritesType
+      | eTabPlayListType;
   }>({indexTab: indexTab});
   const containerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -1942,6 +2051,7 @@ export const TabHeaderComponent = ({
     }
   };
   const tabGap = calculateGap();
+
   return (
     <>
       <div className={styles.tabHeaderWrap}>
@@ -2009,6 +2119,8 @@ export const TabContentComponentWrap = ({
   const [data, setData] = useState<{
     tabContentMenu: TabContentMenuType;
     isShareOpened: boolean;
+
+    isOpenPreview: boolean;
   }>({
     tabContentMenu: {
       id: 0,
@@ -2017,6 +2129,8 @@ export const TabContentComponentWrap = ({
       isSingle: false,
     },
     isShareOpened: false,
+
+    isOpenPreview: false,
   });
   const handleShare = async (url: string = window.location.href) => {
     const shareData = {
@@ -2117,7 +2231,7 @@ export const TabContentComponentWrap = ({
             (isCharacter && tabIndex == eTabCharacterType.Feed) ||
             (isChannel && tabIndex == eTabChannelType.Feed)
           ) {
-            router.push(getLocalizedLink(`/update/post/` + data.tabContentMenu.id));
+            router.push(getLocalizedLink(`/update/post/` + data.tabContentMenu.urlLinkKey));
           }
 
           if (
@@ -2161,7 +2275,11 @@ const TabContentComponent = ({
   const {ref: observerRef, inView} = useInView();
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
     getUserType(isMine, profileType);
-
+  const [data, setData] = useState<{
+    isOpenPreview: boolean;
+  }>({
+    isOpenPreview: false,
+  });
   useEffect(() => {
     if (!inView) return;
 
@@ -2278,7 +2396,7 @@ const TabContentComponent = ({
     const pdInfo = profileTabInfo?.[tabIndex]?.dataResPdInfo;
     return (
       <>
-        <section className={styles.pdInfo}>
+        <section className={styles.pdInfoSection}>
           {!!pdInfo?.introduce && <div className={styles.label}>Introduce</div>}
           {!!pdInfo?.introduce && <div className={styles.value}>{pdInfo?.introduce}</div>}
           {pdInfo?.interests.length != 0 && <div className={styles.label}>Interests</div>}
@@ -2307,23 +2425,76 @@ const TabContentComponent = ({
               })}
             </ul>
           )}
-          {!!pdInfo?.personalHistory && <div className={styles.label}>Personal History</div>}
+          {!!pdInfo?.personalHistory && (
+            <div className={cx(styles.label, styles.labelPersonalHistory)}>Personal History</div>
+          )}
           {!!pdInfo?.personalHistory && <div className={styles.value}>{pdInfo?.personalHistory}</div>}
-          {!!pdInfo?.honorAwards && <div className={styles.label}>Honor & Awards</div>}
+          {!!pdInfo?.honorAwards && <div className={cx(styles.label, styles.honorAwards)}>Honor & Awards</div>}
           {!!pdInfo?.honorAwards && <div className={styles.value}>{pdInfo?.honorAwards}</div>}
           {!!pdInfo?.url && <div className={styles.label}>URL</div>}
           {!!pdInfo?.url && <div className={styles.value}>{pdInfo?.url}</div>}
+          {pdInfo?.pdPortfolioInfoList.length != 0 && (
+            <div className={cx(styles.label, styles.labelPortfolio)}>Portfolio</div>
+          )}
+          {pdInfo?.pdPortfolioInfoList.length != 0 && (
+            <div className={styles.value}>
+              <Swiper
+                className={styles.uploadArea}
+                freeMode={true}
+                slidesPerView={'auto'}
+                onSlideChange={() => {}}
+                onSwiper={swiper => {}}
+                spaceBetween={8}
+              >
+                {pdInfo?.pdPortfolioInfoList.map((one, index) => {
+                  return (
+                    <SwiperSlide
+                      key={index}
+                      onClick={() => {
+                        data.isOpenPreview = true;
+                        setData({...data});
+                        // data.dataPortfolio.isOpenDrawer = true;
+                        // data.dataPortfolio.idSelected = index;
+                        // setData({...data});
+                      }}
+                    >
+                      <div className={styles.thumbnailWrap}>
+                        <img src={one.imageUrl} alt="" />
+                      </div>
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </div>
+          )}
         </section>
+        {data.isOpenPreview && (
+          <PortfolioListPopup
+            onChange={() => {}}
+            onClose={() => {
+              data.isOpenPreview = false;
+              setData({...data});
+            }}
+            dataList={pdInfo.pdPortfolioInfoList}
+          />
+        )}
       </>
     );
   }
   if (isCharacter && tabIndex == eTabCharacterOtherType.Info) {
+    console.log('profileTabInfo?.[tabIndex].characterInfo : ', profileTabInfo?.[tabIndex].characterInfo);
     return (
       <>
-        <CharacterProfileDetailComponent
-          characterInfo={profileTabInfo?.[tabIndex].characterInfo}
-          urlLinkKey={profileTabInfo?.[tabIndex].urlLinkKey}
-        />
+        <section className={styles.characterInfoSection}>
+          <CharacterProfileDetailComponent
+            profileId={profileId}
+            characterInfo={profileTabInfo?.[tabIndex].characterInfo}
+            urlLinkKey={profileTabInfo?.[tabIndex].urlLinkKey}
+            onRefresh={() => {
+              onRefreshTab(false);
+            }}
+          />
+        </section>
       </>
     );
   }
@@ -2331,68 +2502,110 @@ const TabContentComponent = ({
   if (isChannel && tabIndex == eTabChannelOtherType.Info) {
     const channelInfo = profileTabInfo?.[tabIndex]?.channelInfo;
     const tagList = channelInfo?.tags || [];
+
     return (
       <section className={styles.channelInfoTabSection}>
         <section className={styles.characterMainImageWrap}>
           <img src={channelInfo?.mediaUrl} alt="" className={styles.characterMainImage} />
-          <div className={styles.infoWrap}>
-            <Link href={getLocalizedLink(`/profile/` + channelInfo?.id + '?from=""')}>
-              <div className={styles.left}>
-                <img src={channelInfo?.mediaUrl} alt="" className={styles.profileMaker} />
-                <div className={styles.name}>{channelInfo?.name}</div>
-              </div>
+          {/* <div className={styles.bgGradient}></div> */}
+        </section>
+
+        <div className={styles.infoWrap}>
+          <div className={styles.left}>
+            <Link href={getLocalizedLink(`/profile/` + channelInfo?.pdProfileSimpleInfo?.urlLinkKey + '?from=""')}>
+              <img src={channelInfo?.pdProfileSimpleInfo?.iconImageUrl} alt="" className={styles.profileMaker} />
+              <div className={styles.name}>{channelInfo?.pdProfileSimpleInfo.name}</div>
             </Link>
-            <div className={styles.right}>
-              <div className={styles.statistics}>
-                <div className={styles.commentWrap}>
-                  <img src={BoldComment.src} alt="" className={styles.icon} />
-                  <div className={styles.count}>{99}</div>
-                </div>
-                <div className={styles.viewsWrap}>
-                  <img src={BoldFollowers.src} alt="" className={styles.icon} />
-                  <div className={styles.count}>{99}</div>
-                </div>
-              </div>
-            </div>
           </div>
-        </section>
-        <section className={styles.tagSection}>
-          <ul className={styles.metatags}>
-            {tagList.map((tag, index) => {
-              return <li className={styles.item}>{tag}</li>;
-            })}
-          </ul>
-        </section>
-        <section className={styles.memberSection}>
-          <div className={styles.label}>{channelInfo?.memberProfileIdList?.length} Members</div>
-          <Swiper
-            className={styles.recruitList}
-            freeMode={true}
-            slidesPerView={'auto'}
-            onSlideChange={() => {}}
-            onSwiper={swiper => {}}
-            spaceBetween={8}
-          >
-            {channelInfo?.memberProfileIdList?.map((profile, index) => {
-              return (
-                <SwiperSlide>
-                  <li className={styles.item}>
-                    <div className={styles.circle}>
-                      <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
-                      <img className={styles.thumbnail} src={profile.iconImageUrl} alt="" />
-                      {/* <span className={cx(styles.grade, styles.original)}>Original</span> */}
-                    </div>
-                    <div className={styles.label}>{profile.name}</div>
-                  </li>
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        </section>
-        <section className={styles.descriptionSection}>
-          <div className={styles.label}>Description</div>
-          <div className={styles.value}>{channelInfo?.description}</div>
-        </section>
+
+          <div className={styles.right}>
+            <div
+              className={styles.likeWrap}
+              onClick={async () => {
+                await sendLike(InteractionType.Channel, profileId, !channelInfo?.isLike);
+                onRefreshTab(false);
+              }}
+            >
+              <img src={BoldLike.src} alt="" className={cx(styles.like, channelInfo?.isLike && styles.active)} />
+              <div className={styles.count}>{channelInfo?.likeCount}</div>
+            </div>
+            <img
+              src={BoldDislike.src}
+              alt=""
+              className={cx(styles.dislike, channelInfo?.isDisLike && styles.active)}
+              onClick={async () => {
+                await sendDisLike(InteractionType.Channel, profileId, !channelInfo?.isDisLike);
+                onRefreshTab(false);
+              }}
+            />
+            {!channelInfo?.isBookmark && (
+              <img
+                src={LineArchive.src}
+                alt=""
+                className={styles.bookmark}
+                onClick={async () => {
+                  await bookmark({interactionType: InteractionType.Channel, isBookMark: true, typeValueId: profileId});
+                  onRefreshTab(false);
+                }}
+              />
+            )}
+            {channelInfo?.isBookmark && (
+              <img
+                src={BoldArchive.src}
+                alt=""
+                className={cx(styles.bookmark, styles.active)}
+                onClick={async () => {
+                  await bookmark({interactionType: InteractionType.Channel, isBookMark: false, typeValueId: profileId});
+                  onRefreshTab(false);
+                }}
+              />
+            )}
+          </div>
+        </div>
+
+        {tagList?.length != 0 && (
+          <section className={styles.tagSection}>
+            <ul className={styles.metatags}>
+              {tagList.map((tag, index) => {
+                return <li className={styles.item}>{tag}</li>;
+              })}
+            </ul>
+          </section>
+        )}
+        {channelInfo?.memberProfileIdList?.length != 0 && (
+          <section className={styles.memberSection}>
+            <div className={styles.label}>{channelInfo?.memberProfileIdList?.length} Members</div>
+            <Swiper
+              className={styles.recruitList}
+              freeMode={true}
+              slidesPerView={'auto'}
+              onSlideChange={() => {}}
+              onSwiper={swiper => {}}
+              spaceBetween={8}
+            >
+              {channelInfo?.memberProfileIdList?.map((profile, index) => {
+                return (
+                  <SwiperSlide>
+                    <li className={styles.item}>
+                      <div className={styles.circle}>
+                        <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
+                        <img className={styles.thumbnail} src={profile.iconImageUrl} alt="" />
+                        {/* <span className={cx(styles.grade, styles.original)}>Original</span> */}
+                      </div>
+                      <div className={styles.label}>{profile.name}</div>
+                    </li>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          </section>
+        )}
+        {!!channelInfo?.description && (
+          <section className={styles.descriptionSection}>
+            <div className={styles.label}>Description</div>
+            <div className={styles.value}>{channelInfo?.description}</div>
+          </section>
+        )}
       </section>
     );
   }
@@ -2410,7 +2623,7 @@ export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
   const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
     <Link href={urlLinkThumbnail}>
-      <li className={styles.item} key={itemInfo?.id}>
+      <li className={styles.itemTab} key={itemInfo?.id}>
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
@@ -2420,6 +2633,9 @@ export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
             <img src={BoldPin.src} alt="" />
           </div>
         )}
+        <div className={styles.bgGradientWrap}>
+          <div className={styles.bgGradient}></div>
+        </div>
         <div className={styles.info}>
           <div className={styles.likeWrap}>
             <img src={BoldContentLists.src} alt="" />
@@ -2468,11 +2684,14 @@ export type ContentComponentType = {
 export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ContentComponentType) => {
   return (
     <Link href={urlLinkThumbnail}>
-      <li className={styles.item} key={itemInfo?.id}>
+      <li className={styles.itemTab} key={itemInfo?.id}>
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
         {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        <div className={styles.bgGradientWrap}>
+          <div className={styles.bgGradient}></div>
+        </div>
         {itemInfo?.isFavorite && (
           <div className={styles.pin}>
             <img src={BoldPin.src} alt="" />
@@ -2510,7 +2729,8 @@ export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
                 const isSingle = itemInfo?.contentType == ContentType.Single;
 
                 const dataContextMenu = {
-                  id: itemInfo.urlLinkKey,
+                  id: itemInfo.id,
+                  urlLinkKey: itemInfo.urlLinkKey,
                   isPin: itemInfo?.isPinFix || false,
                   isSettingOpen: true,
                   isSingle: isSingle,
@@ -2537,11 +2757,14 @@ export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCo
   const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
     <Link href={urlLinkThumbnail}>
-      <li className={styles.item} key={itemInfo?.id}>
+      <li className={styles.itemTab} key={itemInfo?.id}>
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
         {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        <div className={styles.bgGradientWrap}>
+          <div className={styles.bgGradient}></div>
+        </div>
         {itemInfo?.isFavorite && (
           <div className={styles.pin}>
             <img src={BoldPin.src} alt="" />
@@ -2602,13 +2825,16 @@ export type FeedComponentType = {
 export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContentMenu}: FeedComponentType) => {
   return (
     <Link href={urlLinkThumbnail}>
-      <li className={styles.item} key={feedInfo?.id}>
+      <li className={styles.itemTab} key={feedInfo?.id}>
         {feedInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={feedInfo?.mediaUrlList?.[0]} alt="" />
         )}
         {feedInfo.mediaState == MediaState.Video && (
           <video className={styles.imgThumbnail} src={feedInfo?.mediaUrlList?.[0]} />
         )}
+        <div className={styles.bgGradientWrap}>
+          <div className={styles.bgGradient}></div>
+        </div>
         {feedInfo?.isPinFix && (
           <div className={styles.pin}>
             <img src={BoldPin.src} alt="" />
@@ -2627,7 +2853,7 @@ export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContent
           )}
           <div className={styles.viewWrap}>
             <img src={BoldVideo.src} alt="" />
-            <div className={styles.value}>{feedInfo?.commentCount}</div>
+            <div className={styles.value}>{feedInfo?.mediaUrlList?.length}</div>
           </div>
         </div>
         <div className={styles.titleWrap}>
@@ -2644,7 +2870,8 @@ export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContent
                 e.preventDefault();
                 e.stopPropagation();
                 const dataContextMenu = {
-                  id: feedInfo.urlLinkKey,
+                  id: feedInfo.id,
+                  urlLinkKey: feedInfo.urlLinkKey,
                   isPin: feedInfo?.isPinFix || false,
                   isSettingOpen: true,
                 };

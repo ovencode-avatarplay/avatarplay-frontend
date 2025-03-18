@@ -31,7 +31,7 @@ export default function BottomNav() {
   const colorMode = useSelector((state: RootState) => state.mainControl.bottomNavColor);
 
   const toggleDrawer = (open: boolean) => {
-    setDrawerOpen(open);
+    setDrawerOpen(open); //
   };
 
   const handleClick = (index: number) => {
@@ -99,7 +99,7 @@ export default function BottomNav() {
   );
 
   const Add_Button = (
-    <img src={'/ui/Icons/Custom/Add_Button.svg'} />
+    <img src={'/ui/Icons/Line/Add_Button.svg'} />
     // <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
     //   <path
     //     fillRule="evenodd"
@@ -148,7 +148,7 @@ export default function BottomNav() {
   const buttonData = [
     {label: 'Home', icon: homeSvg, link: '/main/homefeed'},
     {label: 'Explore', icon: exploreSvg, link: '/main/explore'},
-    {label: 'Plus', icon: Add_Button, link: ''},
+    {label: 'Plus', icon: Add_Button, link: '/main/plus'},
     {label: 'Content', icon: contentSvg, link: '/main/mycontent'},
     {label: 'My', icon: profileSvg, link: '/profile'},
   ];
@@ -208,9 +208,7 @@ export default function BottomNav() {
               return (
                 <button
                   key={index}
-                  className={`${styles.navButton} 
-                    ${selectedIndex === index ? styles.selected : ''} 
-                    ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
+                  className={`${styles.navButton}  `}
                   onClick={async () => {
                     const isLogin = await isLogined();
                     if (isLogin) {
@@ -222,7 +220,9 @@ export default function BottomNav() {
                     }
                   }}
                 >
-                  <img className={styles.buttonIconPlus} src={'/ui/Icons/Custom/Add_Button.svg'} />
+                  <div className={styles.navButtonPlusWrap}>
+                    <img className={styles.buttonIconPlus} src={LinePlus.src} />
+                  </div>
                 </button>
               );
             }

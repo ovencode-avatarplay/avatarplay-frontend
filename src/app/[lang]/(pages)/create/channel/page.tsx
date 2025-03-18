@@ -32,12 +32,12 @@ import {
 import {DragStatusType, TagDrawerType} from '../../profile/update/[[...id]]/page';
 import cx from 'classnames';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {debounce, Drawer} from '@mui/material';
+import {debounce, Dialog, Drawer} from '@mui/material';
 import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostCountry';
-import {LanguageType} from '@/app/NetWork/AuthNetwork';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
-import {getBackUrl, getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {
   ChannelInfo,
@@ -53,6 +53,11 @@ import {on} from 'events';
 import DrawerMembershipSetting from '@/app/view/main/content/create/common/DrawerMembershipSetting';
 import CustomSelector from '@/components/layout/shared/CustomSelector';
 import {PaymentType, Subscription, VisibilityType} from '@/app/NetWork/network-interface/CommonEnums';
+import useCustomRouter from '@/utils/useCustomRouter';
+import parse from 'html-react-parser';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
+import getLocalizedText from '@/utils/getLocalizedText';
+
 type Props = {
   id: number;
   isUpdate: boolean;
@@ -83,6 +88,18 @@ type DataProfileUpdateType = {
     inviteSearchValue: string;
     operatorProfileIdList: ProfileSimpleInfo[];
   };
+
+  dataPopupRemove: {
+    isOpen: boolean;
+    title: React.ReactNode;
+    description: string;
+    idProfile: number;
+  };
+
+  dataPopupComplete: {
+    isOpen: boolean;
+    title: string;
+  };
 };
 
 interface ChannelInfoForm extends Omit<ChannelInfo, 'id' | 'isMonetization' | 'nsfw'> {
@@ -91,6 +108,7 @@ interface ChannelInfoForm extends Omit<ChannelInfo, 'id' | 'isMonetization' | 'n
 }
 
 const CreateChannel = ({id, isUpdate}: Props) => {
+  const {back} = useCustomRouter();
   const router = useRouter();
   const [data, setData] = useState<DataProfileUpdateType>({
     idChannel: 0,
@@ -100,7 +118,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     dataVisibility: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: false, value: 'Private'},
+        {isActive: true, value: 'Private'},
         {isActive: false, value: 'Unlisted'},
         {isActive: false, value: 'Public'},
       ],
@@ -155,6 +173,18 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       onClose: () => {},
       onChange: (profileList: {isActive: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => {},
     },
+
+    dataPopupRemove: {
+      isOpen: false,
+      title: parse('Remove from<br/>“Channel name”'),
+      description: 'Once removed, this character will no longer be affiliated with the channel. Do you want to Remove?',
+      idProfile: 0,
+    },
+
+    dataPopupComplete: {
+      isOpen: false,
+      title: '채널 생성 완료',
+    },
   });
 
   const {
@@ -206,9 +236,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       const index = tag.findIndex(v => v == tagValue);
       if (index >= 0) {
         data.dataTag.tagList[index].isActive = true;
-        setValue(`tags.${index}`, tagValue, {shouldValidate: false});
       }
     }
+    const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
+    setValue('tags', tags);
 
     setValue('postCountry', []);
     data.dataCountry.tagList = [];
@@ -218,6 +249,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       data.dataCountry.tagList.push(value);
       setValue(`postCountry.${i}`, value, {shouldValidate: false});
     }
+    setValue(`postCountry`, data.dataCountry.tagList, {shouldValidate: false});
 
     const memberList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[] =
       res.data?.channelInfo.memberProfileIdList?.map(v => ({
@@ -332,13 +364,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   };
 
   const routerBack = () => {
-    // you can get the prevPath like this
-    const prevPath = getBackUrl();
-    if (!prevPath || prevPath == '') {
-      router.replace(getLocalizedLink('/main/homefeed'));
-    } else {
-      router.replace(prevPath);
-    }
+    back('/main/homefeed');
   };
   const onSubmit = async (dataForm: ChannelInfoForm) => {
     console.log('dataForm : ', dataForm);
@@ -357,7 +383,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     if (res?.resultCode == 0) {
-      routerBack();
+      data.dataPopupComplete.isOpen = true;
+      data.dataPopupComplete.title = isUpdate ? '채널 수정 완료' : '채널 생성 완료';
+      setData({...data});
     }
   };
 
@@ -486,7 +514,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
             <div className={styles.tabContent}>
               <section className={cx(styles.channelSection, data.indexTab == 0 && styles.active)}>
-                <div className={styles.label}>Channel name</div>
+                <div className={styles.label}>
+                  Channel name <span className={styles.highlight}>*</span>
+                </div>
                 <input
                   {...register('name', {required: true})}
                   className={cx(errors.name && isSubmitted && styles.error)}
@@ -498,7 +528,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 />
 
-                <div className={styles.label}>Channel description</div>
+                <div className={styles.label}>
+                  Channel description <span className={styles.highlight}>*</span>
+                </div>
                 <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
                   <textarea
                     {...register('description', {required: true})}
@@ -506,8 +538,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     maxLength={500}
                     onChange={async e => {
                       const target = e.target as HTMLTextAreaElement;
-                      target.style.height = 'auto';
-                      target.style.height = `${target.scrollHeight}px`;
+                      // target.style.height = 'auto';
+                      // target.style.height = `${target.scrollHeight}px`;
                       setValue('description', target.value, {shouldValidate: false}); // 강제 업데이트
                       clearErrors('description');
                     }}
@@ -543,7 +575,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                             <img className={styles.thumbnail} src={one.profileSimpleInfo.iconImageUrl} alt="" />
                             <div className={styles.info}>
                               <div className={styles.name}>{one.profileSimpleInfo.name}</div>
-                              <div className={styles.description}>{one.profileSimpleInfo.name}</div>
+                              <div className={styles.description}>{one.profileSimpleInfo.description}</div>
                             </div>
                             {one.profileSimpleInfo.nsfw && (
                               <div className={styles.nsfwWrap}>
@@ -554,10 +586,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                           <div
                             className={styles.right}
                             onClick={() => {
-                              const profileList = data.dataCharacterSearch.profileList.filter(
-                                v => v.profileSimpleInfo.profileId != one.profileSimpleInfo.profileId,
-                              );
-                              data.dataCharacterSearch.profileList = profileList;
+                              data.dataPopupRemove.idProfile = one.profileSimpleInfo.profileId;
+                              data.dataPopupRemove.isOpen = true;
+                              data.dataPopupRemove.title = parse(`Remove from<br/>“${watch('name')}”`);
                               setData({...data});
                             }}
                           >
@@ -570,7 +601,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </ul>
               </section>
               <section className={cx(styles.policySection, data.indexTab == 2 && styles.active)}>
-                <div className={styles.label}>Visibility</div>
+                <div className={styles.label}>
+                  Visibility <span className={styles.highlight}>*</span>
+                </div>
                 <input {...register('visibilityType', {required: true})} className={styles.hide} autoComplete="off" />
                 <CustomSelector
                   value={visibilityTypeStr}
@@ -580,8 +613,19 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     setData({...data});
                   }}
                 />
-                <div className={styles.label}>Tag</div>
-                <input className={styles.hide} autoComplete="off" {...register('tags')} />
+                <div className={styles.label}>
+                  Tag <span className={styles.highlight}>*</span>
+                </div>
+                <input
+                  className={styles.hide}
+                  autoComplete="off"
+                  {...register(`tags`, {
+                    required: true,
+                    validate: {
+                      array: value => (value?.length || 0) > 0,
+                    },
+                  })}
+                />
                 <CustomSelector
                   value={''}
                   error={errors.tags && isSubmitted}
@@ -591,29 +635,26 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 />
                 <div className={styles.tagWrap}>
-                  {!watch('tags') && (
-                    <input className={styles.hide} autoComplete="off" {...register(`tags`, {required: true})} />
-                  )}
-
                   {data.dataTag.tagList.map((one, index) => {
                     if (!one.isActive) return;
 
                     return (
                       <div className={styles.tag} key={index}>
                         <div className={styles.value}>
-                          <input
+                          {/* <input
                             value={one.value}
                             className={styles.hide}
                             autoComplete="off"
                             {...register(`tags.${index}`, {required: true})}
-                          />
+                          /> */}
                           {one.value}
                         </div>
                         <div
                           className={styles.btnRemoveWrap}
                           onClick={e => {
-                            unregister(`tags.${index}`);
                             data.dataTag.tagList[index].isActive = false;
+                            const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
+                            setValue('tags', tags);
                             setData({...data});
                           }}
                         >
@@ -624,7 +665,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   })}
                 </div>
 
-                <div className={styles.label}>Post country</div>
+                <div className={styles.label}>
+                  Post country <span className={styles.highlight}>*</span>
+                </div>
                 <CustomSelector
                   value={''}
                   error={errors.postCountry && isSubmitted}
@@ -634,9 +677,16 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 />
                 <div className={styles.tagWrap}>
-                  {!watch('postCountry') && (
-                    <input className={styles.hide} autoComplete="off" {...register(`postCountry`, {required: true})} />
-                  )}
+                  <input
+                    className={styles.hide}
+                    autoComplete="off"
+                    {...register(`postCountry`, {
+                      required: true,
+                      validate: {
+                        array: value => (value?.length || 0) > 0,
+                      },
+                    })}
+                  />
 
                   {data.dataCountry.tagList.map((one, index) => {
                     const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
@@ -645,19 +695,20 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     return (
                       <div className={styles.tag} key={index}>
                         <div className={styles.value}>
-                          <input
+                          {/* <input
                             value={one}
                             className={styles.hide}
                             autoComplete="off"
                             {...register(`postCountry.${index}`, {required: true})}
-                          />
+                          /> */}
                           {countryStr}
                         </div>
                         <div
                           className={styles.btnRemoveWrap}
                           onClick={e => {
-                            unregister(`postCountry.${index}`);
-                            data.dataCountry.tagList = data.dataCountry.tagList.filter(v => v != one);
+                            const postCountryList = data.dataCountry.tagList.filter(v => v != one);
+                            data.dataCountry.tagList = postCountryList;
+                            setValue('postCountry', postCountryList);
                             setData({...data});
                           }}
                         >
@@ -893,13 +944,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           clearErrors('tags');
           data.dataTag.tagList = dataChanged;
 
-          for (let i = 0; i < dataChanged.length; i++) {
-            if (!dataChanged[i].isActive) {
-              unregister(`tags.${i}`);
-            } else {
-              setValue(`tags.${i}`, dataChanged[i].value, {shouldValidate: false});
-            }
-          }
+          const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
+          console.log('tags : ', tags);
+          setValue('tags', tags);
           setData({...data});
         }}
       />
@@ -916,10 +963,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           clearErrors('postCountry');
           data.dataCountry.tagList = updatedList.map(v => v.toString());
 
-          unregister(`postCountry`);
-          for (let i = 0; i < updatedList.length; i++) {
-            setValue(`postCountry.${i}`, updatedList[i].toString(), {shouldValidate: false});
-          }
+          setValue(
+            'postCountry',
+            updatedList.map(v => v.toString()),
+          );
           setData({...data});
         }}
         isAll={data.dataCountry.isAll}
@@ -939,7 +986,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         onUpdateOperatorList={(updatedList: ProfileSimpleInfo[]) => {
           data.dataOperatorInvitation.operatorProfileIdList = updatedList;
           if (updatedList.length == 0) {
-            unregister(`operatorInvitationProfileIdList`);
+            setValue(`operatorInvitationProfileIdList`, []);
           } else {
             setValue('operatorInvitationProfileIdList', updatedList);
           }
@@ -963,16 +1010,46 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         onChange={(dataChanged: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[]) => {
           clearErrors('memberProfileIdList');
           data.dataCharacterSearch.profileList = [...dataChanged];
-          unregister(`memberProfileIdList`);
-
-          for (let i = 0; i < data.dataCharacterSearch.profileList.length; i++) {
-            setValue(`memberProfileIdList.${i}`, data.dataCharacterSearch.profileList[i].profileSimpleInfo, {
-              shouldValidate: false,
-            });
-          }
+          const profileList = data.dataCharacterSearch.profileList.map(v => v.profileSimpleInfo);
+          setValue('memberProfileIdList', profileList);
           setData({...data});
         }}
       />
+
+      {data.dataPopupRemove.isOpen && (
+        <PopupConfirm
+          title={data.dataPopupRemove.title}
+          description={data.dataPopupRemove.description}
+          onClose={() => {
+            data.dataPopupRemove.isOpen = false;
+            setData({...data});
+          }}
+          onConfirm={() => {
+            const profileList = data.dataCharacterSearch.profileList.filter(
+              v => v.profileSimpleInfo.profileId != data.dataPopupRemove.idProfile,
+            );
+            data.dataCharacterSearch.profileList = profileList;
+            data.dataPopupRemove.isOpen = false;
+            setData({...data});
+          }}
+        />
+      )}
+
+      {data.dataPopupComplete.isOpen && (
+        <CustomPopup
+          type="alert"
+          title={data.dataPopupComplete.title}
+          buttons={[
+            {
+              label: getLocalizedText('Common', 'common_button_confirm'),
+              onClick: () => {
+                routerBack();
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
     </>
   );
 };
@@ -1189,7 +1266,14 @@ export const DrawerCharacterSearch = ({
   ];
 
   const SelectBoxArrowComponent = useCallback(
-    () => <img className={styles.icon} src={BoldAltArrowDown.src} alt="altArrowDown" />,
+    (isOpen?: boolean) => (
+      <img
+        className={styles.icon}
+        src={BoldAltArrowDown.src}
+        alt="altArrowDown"
+        style={{transform: `rotate(${isOpen ? 180 : 0}deg)`}}
+      />
+    ),
     [],
   );
   const SelectBoxValueComponent = useCallback((data: any) => {
@@ -1418,5 +1502,32 @@ export const DrawerCharacterSearch = ({
         </button>
       </div>
     </Drawer>
+  );
+};
+
+type PopupConfirmType = {
+  title: React.ReactNode;
+  description: string;
+  onClose: () => void;
+  onConfirm: () => void;
+};
+const PopupConfirm = ({title, description, onClose, onConfirm}: PopupConfirmType) => {
+  return (
+    <>
+      <Dialog open={true} onClose={onClose}>
+        <div className={styles.popupConfirm}>
+          <div className={styles.title}>{title}</div>
+          <div className={styles.description}>{description}</div>
+          <div className={styles.buttonWrap}>
+            <div className={styles.cancel} onClick={onClose}>
+              Cancel
+            </div>
+            <div className={styles.confirm} onClick={onConfirm}>
+              Confirm
+            </div>
+          </div>
+        </div>
+      </Dialog>
+    </>
   );
 };
