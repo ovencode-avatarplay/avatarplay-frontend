@@ -90,18 +90,22 @@
   
 
 .promptInput[contenteditable="true"]:empty:before {
-    content: attr(data-placeholder); /* ✅ `data-placeholder` 속성 값 사용 */
+    content: attr(data-placeholder);  
     color: #999;
     /* position: absolute; */
     left: 8px;
     pointer-events: none;
-    white-space: nowrap;
+    word-wrap: break-word;  
+    white-space: normal; 
+    pointer-events: none;
   }
   
   .placeholderVisible:before {
-    content: attr(data-placeholder); /* ✅ Placeholder 표시 */
+    content: attr(data-placeholder); /*  Placeholder 표시 */
     color: #999;
     /* position: absolute; */
-    left: 8px;
+    left: 8px; 
+    word-wrap: break-word; 
+    white-space: normal;  
     pointer-events: none;
   }

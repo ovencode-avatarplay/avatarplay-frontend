@@ -5,6 +5,8 @@ import MaxTextInput, {displayType, inputState, inputType} from '@/components/cre
 import {CharacterMediaInfo} from '@/app/NetWork/CharacterNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
+import ButtonPromptInput from '@/app/view/studio/promptDashboard/ButtonPromptInput';
+import {useRef, useState} from 'react';
 
 interface Props {
   mediaItems: CharacterMediaInfo[];
@@ -43,6 +45,18 @@ const CharacterCreateMedia: React.FC<Props> = ({
     handleEdit: (index: number) => void,
     handleMove: (index: number, direction: 'up' | 'down') => void,
   ) => {
+    const promptRefs = mediaItems.map(() => useRef<HTMLDivElement>(null));
+
+    const [showAutoCompleteState, setShowAutoCompleteState] = useState<boolean[]>(mediaItems.map(() => false));
+    const [dropdownPositionState, setDropdownPositionState] = useState<{top: number; left: number}[]>(
+      mediaItems.map(() => ({top: 0, left: 0})),
+    );
+
+    const KEYWORDS: Record<string, string> = {
+      '{{user}}': 'user',
+      '{{char}}': 'character',
+    };
+
     return (
       <div className={styles.mediaItem}>
         <div className={styles.mediaItemContent}>
@@ -62,6 +76,23 @@ const CharacterCreateMedia: React.FC<Props> = ({
             </button>
           </div>
           <div className={styles.imageExplainArea}>
+            {/* <ButtonPromptInput
+              promptRef={promptRefs[index]}
+              value={item.activationCondition}
+              setValue={value => handlePromptChange(value, index)}
+              onClickAI={() => {}}
+              placeholder={getLocalizedText('Common', 'common_sample_057')}
+              Keywords={KEYWORDS}
+              showAutoComplete={showAutoCompleteState[index]}
+              dropdownPos={dropdownPositionState[index]}
+              setDropdownPosition={pos =>
+                setDropdownPositionState(prev => {
+                  const newState = [...prev];
+                  newState[index] = pos;
+                  return newState;
+                })
+              }
+            /> */}
             <MaxTextInput
               inputDataType={inputType.None}
               stateDataType={inputState.Normal}
