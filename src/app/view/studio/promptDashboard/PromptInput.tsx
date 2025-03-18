@@ -211,7 +211,7 @@ const PromptInput: React.FC<Props> = ({
           dropdownPosition={dropdownPos}
           setState={setState}
         />
-      )}{' '}
+      )}
     </div>
   );
 };

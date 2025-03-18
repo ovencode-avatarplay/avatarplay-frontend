@@ -18,15 +18,24 @@ export const updateDropdownPosition = (
     dummySpan.innerHTML = '&nbsp;';
     range.insertNode(dummySpan);
     rect = dummySpan.getBoundingClientRect();
-    dummySpan.remove(); // 삽입 후 즉시 제거
+    dummySpan.remove();
   }
 
   const parentRect = promptRef.current.getBoundingClientRect();
 
-  setDropdownPosition({
-    top: rect.bottom + window.scrollY - offset.top - parentRect.top, // 아래쪽 여백 조정
-    left: rect.left + window.scrollX - offset.left - parentRect.left, // 왼쪽 기준 조정
-  });
+  let top = rect.bottom + window.scrollY - offset.top - parentRect.top;
+  let left = rect.left + window.scrollX - offset.left - parentRect.left;
+
+  const dropdownWidth = 330;
+
+  const windowWidth = window.innerWidth;
+
+  // **오른쪽 화면 밖으로 나가는 경우 → 왼쪽으로 이동**
+  if (left + dropdownWidth > windowWidth) {
+    left = Math.max(0, windowWidth - dropdownWidth - 16);
+  }
+
+  setDropdownPosition({top, left});
 };
 
 export const decodeHTMLEntities = (html: string): string => {

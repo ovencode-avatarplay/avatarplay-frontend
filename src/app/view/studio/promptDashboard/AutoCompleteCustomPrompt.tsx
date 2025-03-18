@@ -50,27 +50,27 @@ const AutoCompleteCustomPrompt: React.FC<Props> = ({
     return () => inputRef.current?.removeEventListener('input', handleInput);
   }, [inputRef]);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!showDropdown) return;
+  // useEffect(() => {
+  //   const handleKeyDown = (e: KeyboardEvent) => {
+  //     if (!showDropdown) return;
 
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setSelectedIndex(prev => (prev + 1) % matchedKeywords.length);
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setSelectedIndex(prev => (prev - 1 + matchedKeywords.length) % matchedKeywords.length);
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        insertKeyword(matchedKeywords[selectedIndex]);
-      } else if (e.key === 'Escape') {
-        setShowDropdown(false);
-      }
-    };
+  //     e.preventDefault();
+  //     e.stopPropagation();
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [showDropdown, selectedIndex, matchedKeywords]);
+  //     if (e.key === 'ArrowDown') {
+  //       setSelectedIndex(prev => (prev + 1) % matchedKeywords.length);
+  //     } else if (e.key === 'ArrowUp') {
+  //       setSelectedIndex(prev => (prev - 1 + matchedKeywords.length) % matchedKeywords.length);
+  //     } else if (e.key === 'Enter') {
+  //       insertKeyword(matchedKeywords[selectedIndex]);
+  //     } else if (e.key === 'Escape') {
+  //       setShowDropdown(false);
+  //     }
+  //   };
+
+  //   document.addEventListener('keydown', handleKeyDown);
+  //   return () => document.removeEventListener('keydown', handleKeyDown);
+  // }, [showDropdown, selectedIndex, matchedKeywords]);
 
   const insertKeyword = (keyword: string) => {
     if (!inputRef.current || !currentTriggerWord) return;
