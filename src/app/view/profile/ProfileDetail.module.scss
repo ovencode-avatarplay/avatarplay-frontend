@@ -580,9 +580,9 @@ button.startNewChat {
 
 
   &.embedded {
-    margin-top: 56px;
+    margin: 14px 14px 0;
     position: inherit;
-    width: 100%;
+    width: calc(100% - 28px);
     transform: none;
   }
 }

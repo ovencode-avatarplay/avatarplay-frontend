@@ -220,7 +220,7 @@ export const CharacterProfileDetailComponent = ({
         <div className={styles.line}></div>
       </section> */}
 
-      <section className={styles.myNameSection}>
+      {/* <section className={styles.myNameSection}>
         <div className={styles.label}>
           My Name <span className={styles.highlight}>*</span>
         </div>
@@ -231,18 +231,18 @@ export const CharacterProfileDetailComponent = ({
             <img src={'/ui/profile/icon_profiledetail_changename.svg'} alt="" />
           </button>
         </div>
-      </section>
+      </section> */}
 
-      <section className={styles.myRoleSection}>
-        <div className={styles.roleWrap}>
+      {/* <section className={styles.myRoleSection}> */}
+      {/* <div className={styles.roleWrap}>
           <div className={styles.label}>My role (optional)</div>
           <img src={LineArrowDown.src} alt="" />
-        </div>
-        <div className={styles.recentSetting}>Recent Setting</div>
-        <Link href={getLocalizedLink(`/chat/?v=${data?.urlLinkKey}` || `?v=`)}>
-          <button className={cx(styles.startNewChat, !isPath && styles.embedded)}>Start New Chat</button>
-        </Link>
-      </section>
+        </div> */}
+      {/* <div className={styles.recentSetting}>Recent Setting</div> */}
+      <Link href={getLocalizedLink(`/chat/?v=${data?.urlLinkKey}` || `?v=`)}>
+        <button className={cx(styles.startNewChat, !isPath && styles.embedded)}>Start New Chat</button>
+      </Link>
+      {/* </section> */}
     </>
   );
 };
