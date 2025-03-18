@@ -137,7 +137,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-        if (response.data?.likeCount) setLikeCount(response.data?.likeCount);
+
+        if (response.data) setLikeCount(response.data?.likeCount);
+        console.log('likeCount', likeCount);
+        console.log('response.data?.likeCount', response.data?.likeCount);
         setIsLike(isLike);
       } else {
         console.error(`Failed to like/unlike feed: ${response.resultMessage}`);
