@@ -1106,6 +1106,7 @@ li.itemTab {
         filter: brightness(0) saturate(100%) invert(0%) sepia(1%) saturate(7448%) hue-rotate(49deg) brightness(91%) contrast(95%);
         width: 12px;
         height: 12px;
+        box-sizing: content-box;
       }
 
       .iconCheck {

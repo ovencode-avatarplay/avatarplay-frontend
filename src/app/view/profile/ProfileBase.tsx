@@ -1194,6 +1194,51 @@ const ContentSetting = ({
   );
 };
 
+const SelectBoxProfileFilter = ({
+  value,
+  options = [],
+  onChange = (id: number) => {},
+}: {
+  value: any;
+  options: any[];
+  onChange: (id: number) => void;
+}) => {
+  return (
+    <SelectBox
+      value={value}
+      options={options}
+      ArrowComponent={SelectBoxArrowComponent}
+      ValueComponent={SelectBoxValueComponent}
+      OptionComponent={SelectBoxOptionComponent}
+      onChange={onChange}
+      customStyles={{
+        control: {
+          width: '90px',
+          display: 'flex',
+          gap: '10px',
+        },
+        menuList: {
+          borderRadius: '10px',
+          boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+        },
+        option: {
+          padding: '11px 14px',
+          boxSizing: 'border-box',
+          '&:first-of-type': {
+            borderTop: 'none', // 첫 번째 옵션에는 border 제거
+          },
+          borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+        },
+        menu: {
+          width: '160px',
+          right: '-5px',
+          marginTop: '-6px',
+        },
+      }}
+    />
+  );
+};
+
 export type SelectBoxProps = {
   value: {id: number; [key: string]: any} | null;
   options: {id: number; [key: string]: any}[];
@@ -1536,38 +1581,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
-              <SelectBox
+              <SelectBoxProfileFilter
                 value={feedSortOptionList[filterCluster?.indexSort || 0]}
                 options={feedSortOptionList}
-                ArrowComponent={SelectBoxArrowComponent}
-                ValueComponent={SelectBoxValueComponent}
-                OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
                   const indexSort = id;
                   onChange({indexSort: indexSort});
-                }}
-                customStyles={{
-                  control: {
-                    width: '90px',
-                    display: 'flex',
-                    gap: '10px',
-                  },
-                  menuList: {
-                    borderRadius: '10px',
-                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                  },
-                  option: {
-                    padding: '11px 14px',
-                    boxSizing: 'border-box',
-                    '&:first-of-type': {
-                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                    },
-                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                  },
-                  menu: {
-                    width: '150px',
-                    right: 0,
-                  },
                 }}
               />
             </div>
@@ -1628,38 +1647,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
-              <SelectBox
+              <SelectBoxProfileFilter
                 value={sortOptionList[filterCluster?.indexSort || 0]}
                 options={sortOptionList}
-                ArrowComponent={SelectBoxArrowComponent}
-                ValueComponent={SelectBoxValueComponent}
-                OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
                   const indexSort = id;
                   onChange({indexSort: indexSort});
-                }}
-                customStyles={{
-                  control: {
-                    width: '90px',
-                    display: 'flex',
-                    gap: '10px',
-                  },
-                  menuList: {
-                    borderRadius: '10px',
-                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                  },
-                  option: {
-                    padding: '11px 14px',
-                    boxSizing: 'border-box',
-                    '&:first-of-type': {
-                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                    },
-                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                  },
-                  menu: {
-                    width: '150px',
-                    right: 0,
-                  },
                 }}
               />
             </div>
@@ -1721,38 +1714,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
-              <SelectBox
+              <SelectBoxProfileFilter
                 value={sortOptionList[filterCluster?.indexSort || 0]}
                 options={sortOptionList}
-                ArrowComponent={SelectBoxArrowComponent}
-                ValueComponent={SelectBoxValueComponent}
-                OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
                   const indexSort = id;
                   onChange({indexSort: indexSort});
-                }}
-                customStyles={{
-                  control: {
-                    width: '90px',
-                    display: 'flex',
-                    gap: '10px',
-                  },
-                  menuList: {
-                    borderRadius: '10px',
-                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                  },
-                  option: {
-                    padding: '11px 14px',
-                    boxSizing: 'border-box',
-                    '&:first-of-type': {
-                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                    },
-                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                  },
-                  menu: {
-                    width: '150px',
-                    right: 0,
-                  },
                 }}
               />
             </div>
@@ -1813,38 +1780,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
-              <SelectBox
+              <SelectBoxProfileFilter
                 value={sortOptionList[filterCluster?.indexSort || 0]}
                 options={sortOptionList}
-                ArrowComponent={SelectBoxArrowComponent}
-                ValueComponent={SelectBoxValueComponent}
-                OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
                   const indexSort = id;
                   onChange({indexSort: indexSort});
-                }}
-                customStyles={{
-                  control: {
-                    width: '90px',
-                    display: 'flex',
-                    gap: '10px',
-                  },
-                  menuList: {
-                    borderRadius: '10px',
-                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                  },
-                  option: {
-                    padding: '11px 14px',
-                    boxSizing: 'border-box',
-                    '&:first-of-type': {
-                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                    },
-                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                  },
-                  menu: {
-                    width: '150px',
-                    right: 0,
-                  },
                 }}
               />
             </div>
@@ -1908,38 +1849,12 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
-              <SelectBox
+              <SelectBoxProfileFilter
                 value={sortOptionList[filterCluster?.indexFilterShared || 0]}
                 options={sortOptionList}
-                ArrowComponent={SelectBoxArrowComponent}
-                ValueComponent={SelectBoxValueComponent}
-                OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
                   const indexSort = id;
                   onChange({indexSort: indexSort});
-                }}
-                customStyles={{
-                  control: {
-                    width: '90px',
-                    display: 'flex',
-                    gap: '10px',
-                  },
-                  menuList: {
-                    borderRadius: '10px',
-                    boxShadow: '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
-                  },
-                  option: {
-                    padding: '11px 14px',
-                    boxSizing: 'border-box',
-                    '&:first-of-type': {
-                      borderTop: 'none', // 첫 번째 옵션에는 border 제거
-                    },
-                    borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
-                  },
-                  menu: {
-                    width: '150px',
-                    right: 0,
-                  },
                 }}
               />
             </div>
