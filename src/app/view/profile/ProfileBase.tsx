@@ -381,6 +381,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     tabIndex: number,
     indexSort: ExploreSortType,
     filterType: {
+      sharedTabType: number;
       feedMediaType: number;
       channelTabType: number;
       characterTabType: number;
@@ -488,13 +489,14 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         indexTab,
         data.filterCluster?.indexSort || 0,
         {
+          sharedTabType: data.filterCluster?.indexFilterShared || 0,
           channelTabType: data.filterCluster?.indexFilterChannel || 0,
           characterTabType: data.filterCluster?.indexFilterCharacter || 0,
           contentTabType: data.filterCluster?.indexFilterContent || 0,
           feedMediaType: data.filterCluster?.indexFilterMedia || 0,
         },
         isRefreshAll ? 0 : getTabContentCount(indexTab, isMine, profileType),
-        isRefreshAll ? getTabContentCount(indexTab, isMine, profileType) : 10,
+        isRefreshAll ? 10 : 10,
       );
     }
     if (!resProfileTabInfo) return;

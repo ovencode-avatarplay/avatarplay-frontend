@@ -201,8 +201,9 @@ export interface GetPdTabInfoeReq {
   contentTabType: ContentTabType;
   characterTabType: CharacterTabType;
   channelTabType: ChannelTabType;
+  sharedTabType: SharedTabType;
 
-  feedSortType: ExploreSortType;
+  sortType: ExploreSortType;
   languageType: string;
   profileUrlLinkKey: string;
   tabType: PdProfileTabType;
@@ -233,11 +234,13 @@ export const getProfilePdTabInfo = async (
   tabType: PdProfileTabType,
   feedSortType: ExploreSortType = ExploreSortType.Newest,
   filterType: {
+    sharedTabType: number;
     feedMediaType: number;
     channelTabType: number;
     characterTabType: number;
     contentTabType: number;
   } = {
+    sharedTabType: 0,
     feedMediaType: 0,
     channelTabType: 0,
     characterTabType: 0,
@@ -247,11 +250,13 @@ export const getProfilePdTabInfo = async (
   limit: number = 10,
 ) => {
   const data: GetPdTabInfoeReq = {
-    feedSortType: feedSortType,
+    sortType: feedSortType,
     channelTabType: filterType.channelTabType,
     characterTabType: filterType.characterTabType,
     contentTabType: filterType.contentTabType,
     feedMediaType: filterType.feedMediaType,
+    sharedTabType: filterType.sharedTabType,
+
     languageType: getCurrentLanguage(),
     profileUrlLinkKey: profileUrlLinkKey,
     tabType: tabType,
@@ -278,7 +283,8 @@ export interface GetCharacterTabInfoeReq {
   contentTabType: ContentTabType;
   characterTabType: CharacterTabType;
   channelTabType: ChannelTabType;
-  feedSortType: ExploreSortType;
+  sharedTabType: SharedTabType;
+  sortType: ExploreSortType;
   languageType: string;
   profileUrlLinkKey: string;
   tabType: CharacterProfileTabType;
@@ -300,6 +306,12 @@ export enum ChannelTabType {
   Total,
   Original = 1,
   Fan = 2,
+}
+
+export enum SharedTabType {
+  Total,
+  Character = 1,
+  Channel = 2,
 }
 
 export enum ContentTabType {
@@ -333,21 +345,24 @@ export const getProfileCharacterTabInfo = async (
     channelTabType: number;
     characterTabType: number;
     contentTabType: number;
+    sharedTabType: number;
   } = {
     feedMediaType: 0,
     channelTabType: 0,
     characterTabType: 0,
     contentTabType: 0,
+    sharedTabType: 0,
   },
   offset: number = 0,
   limit: number = 10,
 ) => {
   const data: GetCharacterTabInfoeReq = {
+    channelTabType: filterType.channelTabType,
+    characterTabType: filterType.characterTabType,
+    contentTabType: filterType.contentTabType,
     feedMediaType: filterType.feedMediaType,
-    channelTabType: 0,
-    characterTabType: 0,
-    contentTabType: 0,
-    feedSortType: feedSortType,
+    sharedTabType: filterType.sharedTabType,
+    sortType: feedSortType,
     languageType: getCurrentLanguage(),
     profileUrlLinkKey: profileUrlLinkKey,
     tabType: tabType,
