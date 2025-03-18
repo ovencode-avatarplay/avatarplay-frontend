@@ -54,11 +54,13 @@ export const CharacterProfileDetailComponent = ({
   characterInfo = null,
   urlLinkKey = '',
   isPath = false,
+  onRefresh = () => {},
 }: {
   profileId: number;
   characterInfo: CharacterInfo | null;
   urlLinkKey: string;
   isPath?: boolean;
+  onRefresh: () => void;
 }) => {
   const [data, setData] = useState<ProfileType>({
     indexTab: eTabType.Feed,
@@ -106,19 +108,21 @@ export const CharacterProfileDetailComponent = ({
             <img
               src={BoldLike.src}
               alt=""
-              className={styles.like}
+              className={cx(styles.like, styles.active)}
               onClick={async () => {
                 await sendLike(InteractionType.Character, profileId, true);
+                onRefresh();
               }}
             />
-            <div className={styles.count}>55K</div>
+            <div className={cx(styles.count, styles.active)}>55K</div>
           </div>
           <img
             src={BoldDislike.src}
             alt=""
-            className={styles.dislike}
+            className={cx(styles.dislike, styles.active)}
             onClick={async () => {
               await sendDisLike(InteractionType.Character, profileId, true);
+              onRefresh();
             }}
           />
           {!data?.characterInfo?.isBookmark && (
@@ -128,10 +132,21 @@ export const CharacterProfileDetailComponent = ({
               className={styles.bookmark}
               onClick={async () => {
                 await bookmark({interactionType: InteractionType.Character, isBookMark: true, typeValueId: profileId});
+                onRefresh();
               }}
             />
           )}
-          {data?.characterInfo?.isBookmark && <img src={BoldArchive.src} alt="" className={styles.bookmark} />}
+          {data?.characterInfo?.isBookmark && (
+            <img
+              src={BoldArchive.src}
+              alt=""
+              className={cx(styles.bookmark, styles.active)}
+              onClick={async () => {
+                await bookmark({interactionType: InteractionType.Character, isBookMark: false, typeValueId: profileId});
+                onRefresh();
+              }}
+            />
+          )}
         </div>
       </div>
       {metatags?.length != 0 && (

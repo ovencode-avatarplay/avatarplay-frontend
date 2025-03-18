@@ -2482,6 +2482,9 @@ const TabContentComponent = ({
             profileId={profileId}
             characterInfo={profileTabInfo?.[tabIndex].characterInfo}
             urlLinkKey={profileTabInfo?.[tabIndex].urlLinkKey}
+            onRefresh={() => {
+              onRefreshTab(false);
+            }}
           />
         </section>
       </>
@@ -2511,18 +2514,20 @@ const TabContentComponent = ({
             <div
               className={styles.likeWrap}
               onClick={async () => {
-                await sendLike(InteractionType.Channel, profileId, true);
+                await sendLike(InteractionType.Channel, profileId, !channelInfo?.isLike);
+                onRefreshTab(false);
               }}
             >
-              <img src={BoldLike.src} alt="" className={styles.like} />
+              <img src={BoldLike.src} alt="" className={cx(styles.like, channelInfo?.isLike && styles.active)} />
               <div className={styles.count}>{channelInfo?.likeCount}</div>
             </div>
             <img
               src={BoldDislike.src}
               alt=""
-              className={styles.dislike}
+              className={cx(styles.dislike, channelInfo?.isDisLike && styles.active)}
               onClick={async () => {
-                await sendDisLike(InteractionType.Channel, profileId, true);
+                await sendDisLike(InteractionType.Channel, profileId, !channelInfo?.isDisLike);
+                onRefreshTab(false);
               }}
             />
             {!channelInfo?.isBookmark && (
@@ -2536,7 +2541,17 @@ const TabContentComponent = ({
                 }}
               />
             )}
-            {channelInfo?.isBookmark && <img src={BoldArchive.src} alt="" className={styles.bookmark} />}
+            {channelInfo?.isBookmark && (
+              <img
+                src={BoldArchive.src}
+                alt=""
+                className={cx(styles.bookmark, styles.active)}
+                onClick={async () => {
+                  await bookmark({interactionType: InteractionType.Channel, isBookMark: false, typeValueId: profileId});
+                  onRefreshTab(false);
+                }}
+              />
+            )}
           </div>
         </div>
 

@@ -164,6 +164,10 @@ section.characterMainImageWrap {
         width: 28px;
         height: 28px;
         filter: brightness(0) saturate(100%) invert(94%) sepia(14%) saturate(91%) hue-rotate(174deg) brightness(83%) contrast(86%);
+
+        &.active {
+          filter: brightness(0) saturate(100%) invert(14%) sepia(8%) saturate(475%) hue-rotate(131deg) brightness(103%) contrast(88%);
+        }
       }
 
       .count {
@@ -175,6 +179,17 @@ section.characterMainImageWrap {
         font-weight: 700;
         line-height: 18px;
         /* 128.571% */
+
+        &.active {
+          color: var(--Neutral-800, #2C3131);
+          text-align: center;
+          font-family: Lato;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 18px;
+          /* 128.571% */
+        }
       }
     }
 
@@ -183,6 +198,10 @@ section.characterMainImageWrap {
       height: 28px;
       filter: brightness(0) saturate(100%) invert(94%) sepia(14%) saturate(91%) hue-rotate(174deg) brightness(83%) contrast(86%);
       cursor: pointer;
+
+      &.active {
+        filter: brightness(0) saturate(100%) invert(14%) sepia(8%) saturate(475%) hue-rotate(131deg) brightness(103%) contrast(88%);
+      }
     }
 
     .bookmark {
@@ -190,6 +209,10 @@ section.characterMainImageWrap {
       height: 28px;
       filter: brightness(0) saturate(100%) invert(94%) sepia(14%) saturate(91%) hue-rotate(174deg) brightness(83%) contrast(86%);
       cursor: pointer;
+
+      &.active {
+        filter: brightness(0) saturate(100%) invert(14%) sepia(8%) saturate(475%) hue-rotate(131deg) brightness(103%) contrast(88%);
+      }
     }
   }
 }

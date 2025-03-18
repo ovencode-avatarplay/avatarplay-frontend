@@ -34,7 +34,7 @@ export interface ChannelInfo {
   pdProfileSimpleInfo: ProfileSimpleInfo;
 
   isBookmark: boolean;
-  isDislike: boolean;
+  isDisLike: boolean;
   isLike: boolean;
   likeCount: number;
 }
