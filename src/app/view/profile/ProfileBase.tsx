@@ -79,7 +79,7 @@ import {
   sendGetCharacterProfileInfo,
 } from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
-import {getBackUrl} from '@/utils/util-1';
+import {copyCurrentUrlToClipboard, getBackUrl} from '@/utils/util-1';
 import {useInView} from 'react-intersection-observer';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {deleteChannel, getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
@@ -185,6 +185,8 @@ export type TabContentMenuType = {
   urlLinkKey?: string;
   isFavorite?: boolean;
   index?: number;
+  shareUrl?: string;
+  shareTitle?: string;
 };
 
 type DataProfileType = {
@@ -581,9 +583,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     setData({...data});
   };
 
-  const handleShare = async (url: string = window.location.href) => {
+  const handleShare = async (url: string = window.location.href, title: string = '') => {
     const shareData = {
-      title: '공유하기 제목',
+      title: title,
       text: '이 링크를 확인해보세요!',
       url: url, // 현재 페이지 URL
     };
@@ -681,35 +683,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     return getLocalizedLink(``);
   };
 
-  const copyToClipboard = () => {
-    if (typeof window === 'undefined') return; // 서버에서 실행 방지
-
-    const queryString = searchParams?.toString() || ''; // 현재 쿼리 파라미터 가져오기
-    const url = queryString
-      ? `${window.location.origin}${pathname}?${queryString}`
-      : `${window.location.origin}${pathname}`;
-    const success = () => {
-      console.log('URL을 클립보드에 복사했습니다.');
-    };
-    const failure = (err: any) => console.error('클립보드에 URL을 복사하지 못했습니다. : ', err);
-
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(success).catch(failure);
-      } else {
-        const tempInput = document.createElement('textarea');
-        tempInput.value = url;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-
-        const successful = document.execCommand('copy');
-        document.body.removeChild(tempInput);
-
-        successful ? success() : failure('execCommand를 통한 복사 실패');
-      }
-    } catch (error) {
-      failure(error);
-    }
+  const onCopyToClipboard = () => {
+    copyCurrentUrlToClipboard(pathname, searchParams);
   };
 
   return (
@@ -790,7 +765,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             src={LineShare.src}
             alt=""
             onClick={() => {
-              handleShare();
+              handleShare(window.location.href, data.profileInfo?.profileInfo?.name);
             }}
           />
           {isMine && (
@@ -845,7 +820,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               // const url = window.location.origin + pathname;
               // await navigator.clipboard.writeText(url);
 
-              copyToClipboard();
+              onCopyToClipboard();
             }}
           >
             <div className={styles.name}>{data.profileInfo?.profileInfo?.name}</div>
@@ -2148,9 +2123,9 @@ export const TabContentComponentWrap = ({
 
     isOpenPreview: false,
   });
-  const handleShare = async (url: string = window.location.href) => {
+  const handleShare = async (url: string = window.location.href, title: string = '') => {
     const shareData = {
-      title: '공유하기 제목',
+      title: title,
       text: '이 링크를 확인해보세요!',
       url: url, // 현재 페이지 URL
     };
@@ -2199,10 +2174,9 @@ export const TabContentComponentWrap = ({
           onRefreshTab(true);
         }}
         onShare={() => {
-          const url =
-            getLocalizedLink(`/profile/feed/` + profileId) +
-            `?type=${profileType}&idContent=${data.tabContentMenu.id}&feedMediaType=${filterCluster.indexFilterMedia}&feedSortType=${filterCluster.indexSort}`;
-          handleShare(url);
+          const url = data.tabContentMenu.shareUrl;
+          const title = data.tabContentMenu.shareTitle;
+          handleShare(url, title);
         }}
         onDelete={async () => {
           if (
@@ -2691,6 +2665,8 @@ export const ChannelComponent = ({
                   index: index,
                   isPin: itemInfo?.isPinFix || false,
                   isSettingOpen: true,
+                  shareUrl: window.location.origin + urlLinkThumbnail,
+                  shareName: itemInfo?.name,
                 };
                 if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
               }}
@@ -2770,6 +2746,8 @@ export const ContentComponent = ({
                   isPin: itemInfo?.isPinFix || false,
                   isSettingOpen: true,
                   isSingle: isSingle,
+                  shareUrl: window.location.origin + urlLinkThumbnail,
+                  shareName: itemInfo?.name,
                 };
                 if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
               }}
@@ -2848,6 +2826,8 @@ export const CharacterComponent = ({
                   index: index,
                   isPin: itemInfo?.isPinFix || false,
                   isSettingOpen: true,
+                  shareUrl: window.location.origin + urlLinkThumbnail,
+                  shareName: itemInfo?.name,
                 };
                 if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
               }}
@@ -2920,6 +2900,8 @@ export const FeedComponent = ({isMine, index, urlLinkThumbnail, feedInfo, onOpen
                   urlLinkKey: feedInfo.urlLinkKey,
                   isPin: feedInfo?.isPinFix || false,
                   isSettingOpen: true,
+                  shareUrl: window.location.origin + urlLinkThumbnail,
+                  shareName: feedInfo?.title,
                 };
                 if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
               }}

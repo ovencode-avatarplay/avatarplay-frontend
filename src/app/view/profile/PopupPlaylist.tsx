@@ -49,6 +49,7 @@ import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
 import {bookmark, deleteRecord, InteractionType, RecordType} from '@/app/NetWork/CommonNetwork';
 import {PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
+import SharePopup from '@/components/layout/shared/SharePopup';
 
 type Props = {
   onClose: () => void;
@@ -68,6 +69,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
     };
     filterCluster: FilterClusterType;
     tabContentMenu: TabContentMenuType;
+    isShareOpened: boolean;
   }>({
     indexTab: eTabPlayListType.Feed,
     indexFilterMedia: FeedMediaType.Total,
@@ -87,6 +89,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
       isPin: false,
       isSettingOpen: false,
     },
+    isShareOpened: false,
   });
 
   useEffect(() => {
@@ -117,6 +120,25 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
   const onOpenContentMenu = (dataContentMenu: TabContentMenuType) => {
     data.tabContentMenu = dataContentMenu;
     setData({...data});
+  };
+
+  const handleShare = async (url: string = window.location.href, title: string = '') => {
+    const shareData = {
+      title: title,
+      text: '이 링크를 확인해보세요!',
+      url: url, // 현재 페이지 URL
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData); // 네이티브 공유 UI 호출
+      } catch (error) {
+        console.error('공유 실패:', error);
+      }
+    } else {
+      data.isShareOpened = true;
+      setData({...data});
+    }
   };
   return (
     <>
@@ -231,18 +253,31 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
             typeValueId: data.tabContentMenu.id,
           });
 
-          onRefreshTab(true);
+          const indexRemove = data?.tabContentMenu?.index || 0;
+          data.profileTabInfo?.[data.indexTab].splice(indexRemove, 1);
+          setData({...data});
         }}
         onReport={async () => {
           alert('신고 추가 예정');
         }}
         onShare={async () => {
-          alert('공유 추가 예정');
+          const url = data.tabContentMenu.shareUrl;
+          const name = data.tabContentMenu.shareTitle;
+          handleShare(url, name);
         }}
         onFavorite={async isFavorite => {
           alert('좋아요 추가 예정');
         }}
       />
+
+      <SharePopup
+        open={data.isShareOpened}
+        title={'공유하기'}
+        url={window.location.href}
+        onClose={() => {
+          setData(v => ({...v, isShareOpened: false}));
+        }}
+      ></SharePopup>
     </>
   );
 };
