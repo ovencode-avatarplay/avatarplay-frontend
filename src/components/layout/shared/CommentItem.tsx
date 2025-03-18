@@ -68,14 +68,14 @@ const CommentItem: React.FC<CommentItemProps> = ({
   const [isEditOpen, setIsEditOpen] = useState(false);
   const handleLikeComment = async (commentId: number, isLike: boolean) => {
     try {
-      // if (isDisLike == true) {
-      //   await handleDisLikeFeed(item.id, !isDisLike);
-      // }
+      if (isDisLike == true) {
+        await handleDisLikeComment(commentId, !isDisLike);
+      }
       const response = await sendCommentLike({commentId, isLike});
 
       if (response.resultCode === 0) {
         console.log(`Feed ${commentId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-        if (response.data?.likeCount) setLikeCount(response.data?.likeCount);
+        if (response.data) setLikeCount(response.data?.likeCount);
         setIsLike(isLike);
       } else {
         console.error(`Failed to like/unlike feed: ${response.resultMessage}`);
@@ -87,9 +87,9 @@ const CommentItem: React.FC<CommentItemProps> = ({
 
   const handleDisLikeComment = async (commentId: number, isDisLike: boolean) => {
     try {
-      // if (isDisLike == true) {
-      //   await handleDisLikeFeed(item.id, !isDisLike);
-      // }
+      if (isDisLike == true) {
+        await handleLikeComment(commentId, !isDisLike);
+      }
       const response = await sendCommentDislike({commentId, isDisLike: isDisLike});
 
       if (response.resultCode === 0) {

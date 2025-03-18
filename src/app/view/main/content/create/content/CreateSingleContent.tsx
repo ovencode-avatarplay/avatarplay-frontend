@@ -324,7 +324,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         <CustomArrowHeader
           title="Create Series Contents"
           onClose={() => {
-            pushLocalizedRoute(`/create/content/condition/single`, router);
+            router.back();
           }}
           children={
             <div className={styles.rightArea}>

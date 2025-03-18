@@ -287,7 +287,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         <CustomArrowHeader
           title="Create Series Contents"
           onClose={() => {
-            pushLocalizedRoute(`/create/content/condition/series`, router);
+            router.back();
           }}
           children={
             <div className={styles.rightArea}>
