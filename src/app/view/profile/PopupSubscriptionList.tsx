@@ -9,6 +9,7 @@ import {
   GetSubscriptionListReq,
   GetSubscriptionListRes,
   MembershipSubscribe,
+  SubscribeProfileType,
   SubscriptionFilterType,
 } from '@/app/NetWork/ProfileNetwork';
 import {SelectBox} from './ProfileBase';
@@ -91,12 +92,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
     await refreshList(false, data.dataSubscriptionInactive.offset);
   };
 
-  const refreshList = async (
-    isValidSubscription: boolean = true,
-    subscriptionFilterType: SubscriptionFilterType = SubscriptionFilterType.All,
-    offset = 0,
-    limit = 10,
-  ) => {
+  const refreshList = async (isValidSubscription: boolean = true, offset = 0, limit = 10) => {
     const dataGetSubscriptionListReq: GetSubscriptionListReq = {
       isValidSubscription: isValidSubscription,
       page: {
@@ -245,11 +241,13 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                     return `${year}.${month}.${day}`;
                   }
 
+                  const isChannel = one?.subscribeProfileType == SubscribeProfileType.Channel && styles.channel;
+
                   return (
                     <li className={styles.item}>
                       <div className={styles.left}>
                         <Link href={getLocalizedLink(`/profile/` + one.profileUrlLink + '?from=""')}>
-                          <img src={one.iconUrl} alt="" className={styles.thumbnail} />
+                          <img src={one.iconUrl} alt="" className={cx(styles.thumbnail, isChannel && styles.channel)} />
                         </Link>
                         <div className={styles.infoWrap}>
                           <div className={styles.name}>{one.name}</div>
@@ -292,11 +290,14 @@ const PopupSubscriptionList = ({onClose}: Props) => {
 
                     return `${year}.${month}.${day}`;
                   }
+
+                  const isChannel = one?.subscribeProfileType == SubscribeProfileType.Channel && styles.channel;
+
                   return (
                     <li className={styles.item}>
                       <div className={styles.left}>
                         <Link href={getLocalizedLink(`/profile/` + one.profileUrlLink + '?from=""')}>
-                          <img src={one.iconUrl} alt="" className={styles.thumbnail} />
+                          <img src={one.iconUrl} alt="" className={cx(styles.thumbnail, isChannel && styles.channel)} />
                         </Link>
                         <div className={styles.infoWrap}>
                           <div className={styles.name}>{one.name}</div>

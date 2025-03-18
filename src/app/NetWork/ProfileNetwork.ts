@@ -561,6 +561,12 @@ export interface MembershipSubscribe {
   paymentAmount: number;
   expireAt: string;
   profileUrlLink: string;
+  subscribeProfileType: SubscribeProfileType;
+}
+
+export enum SubscribeProfileType {
+  Character = 1,
+  Channel = 2,
 }
 
 export enum PaymentType {
