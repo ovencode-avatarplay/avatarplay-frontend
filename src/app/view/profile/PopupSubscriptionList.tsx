@@ -13,6 +13,8 @@ import {SelectBox} from './ProfileBase';
 import PopupSubscription, {getUnit} from '../main/content/create/common/PopupSubscription';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import BottomNav from '../main/bottom-nav/BottomNav';
+import Link from 'next/link';
+import {getLocalizedLink} from '@/utils/UrlMove';
 
 type Props = {
   onClose: () => void;
@@ -198,7 +200,9 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                   return (
                     <li className={styles.item}>
                       <div className={styles.left}>
-                        <img src={one.iconUrl} alt="" className={styles.thumbnail} />
+                        <Link href={getLocalizedLink(`/profile/` + one.profileUrlLink + '?from=""')}>
+                          <img src={one.iconUrl} alt="" className={styles.thumbnail} />
+                        </Link>
                         <div className={styles.infoWrap}>
                           <div className={styles.name}>{one.name}</div>
                           <div className={styles.price}>{priceStr} </div>
@@ -241,7 +245,9 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                   return (
                     <li className={styles.item}>
                       <div className={styles.left}>
-                        <img src={one.iconUrl} alt="" className={styles.thumbnail} />
+                        <Link href={getLocalizedLink(`/profile/` + one.profileUrlLink + '?from=""')}>
+                          <img src={one.iconUrl} alt="" className={styles.thumbnail} />
+                        </Link>
                         <div className={styles.infoWrap}>
                           <div className={styles.name}>{one.name}</div>
                           <div className={styles.price}>{priceStr} </div>
