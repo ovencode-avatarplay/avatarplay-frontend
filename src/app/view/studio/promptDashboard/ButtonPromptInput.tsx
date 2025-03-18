@@ -6,7 +6,6 @@ import {BoldAI} from '@ui/Icons';
 import formatText from '@/utils/formatText';
 
 interface Props {
-  keyName: RefObject<HTMLDivElement>;
   promptRef: RefObject<HTMLDivElement>;
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
