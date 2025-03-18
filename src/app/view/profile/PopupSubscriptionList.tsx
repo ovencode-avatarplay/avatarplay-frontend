@@ -6,24 +6,31 @@ import cx from 'classnames';
 import {
   cancelSubscribe,
   getSubscriptionList,
+  GetSubscriptionListReq,
   GetSubscriptionListRes,
   MembershipSubscribe,
+  SubscribeProfileType,
+  SubscriptionFilterType,
 } from '@/app/NetWork/ProfileNetwork';
 import {SelectBox} from './ProfileBase';
 import PopupSubscription, {getUnit} from '../main/content/create/common/PopupSubscription';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import BottomNav from '../main/bottom-nav/BottomNav';
+import Link from 'next/link';
+import {getLocalizedLink} from '@/utils/UrlMove';
+import {useInView} from 'react-intersection-observer';
 
 type Props = {
   onClose: () => void;
 };
 
 const PopupSubscriptionList = ({onClose}: Props) => {
+  const {ref: observerRef, inView} = useInView();
   const [data, setData] = useState<{
     indexTab: number;
     indexSort: number;
-    subscriptionList: MembershipSubscribe[];
-    subscriptionInactiveList: MembershipSubscribe[];
+    // subscriptionList: MembershipSubscribe[];
+    // subscriptionInactiveList: MembershipSubscribe[];
 
     dataSubScriptionSetting: {
       id: number;
@@ -32,12 +39,21 @@ const PopupSubscriptionList = ({onClose}: Props) => {
     dataRenewal: {
       id: number;
       isOpen: boolean;
+    };
+
+    dataSubscription: {
+      dataList: MembershipSubscribe[];
+      offset: number;
+    };
+    dataSubscriptionInactive: {
+      dataList: MembershipSubscribe[];
+      offset: number;
     };
   }>({
     indexTab: 0,
     indexSort: 0,
-    subscriptionList: [],
-    subscriptionInactiveList: [],
+    // subscriptionList: [],
+    // subscriptionInactiveList: [],
     dataSubScriptionSetting: {
       id: 0,
       isOpen: false,
@@ -46,24 +62,53 @@ const PopupSubscriptionList = ({onClose}: Props) => {
       id: 0,
       isOpen: false,
     },
+
+    dataSubscription: {
+      dataList: [],
+      offset: 0,
+    },
+    dataSubscriptionInactive: {
+      dataList: [],
+      offset: 0,
+    },
   });
 
   useEffect(() => {
-    refreshAll();
-  }, []);
+    if (!inView) return;
 
-  const refreshAll = async () => {
-    await refreshList(true);
-    await refreshList(false);
+    refreshAll(false);
+  }, [inView]);
+
+  const refreshAll = async (isClearAll = false) => {
+    if (isClearAll) {
+      data.dataSubscription.offset = 0;
+      data.dataSubscriptionInactive.offset = 0;
+
+      data.dataSubscription.dataList = [];
+      data.dataSubscriptionInactive.dataList = [];
+      setData({...data});
+    }
+    await refreshList(true, data.dataSubscription.offset);
+    await refreshList(false, data.dataSubscriptionInactive.offset);
   };
 
-  const refreshList = async (isValidSubscription: boolean = true) => {
-    const resSubscriptionList = await getSubscriptionList({isValidSubscription});
+  const refreshList = async (isValidSubscription: boolean = true, offset = 0, limit = 10) => {
+    const dataGetSubscriptionListReq: GetSubscriptionListReq = {
+      isValidSubscription: isValidSubscription,
+      page: {
+        offset: offset,
+        limit: limit,
+      },
+      subscriptionFilterType: Number(data.indexSort),
+    };
+    const resSubscriptionList = await getSubscriptionList(dataGetSubscriptionListReq);
     console.log('resSubScriptionList : ', resSubscriptionList);
     if (isValidSubscription) {
-      data.subscriptionList = resSubscriptionList?.data?.subscriptionList || [];
+      data.dataSubscription.dataList = resSubscriptionList?.data?.subscriptionList || [];
+      data.dataSubscription.offset += resSubscriptionList?.data?.subscriptionList?.length || 0;
     } else {
-      data.subscriptionInactiveList = resSubscriptionList?.data?.subscriptionList || [];
+      data.dataSubscriptionInactive.dataList = resSubscriptionList?.data?.subscriptionList || [];
+      data.dataSubscriptionInactive.offset += resSubscriptionList?.data?.subscriptionList?.length || 0;
     }
     setData({...data});
   };
@@ -151,6 +196,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                 OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
                   data.indexSort = id;
+                  refreshAll(true);
                   setData({...data});
                 }}
                 customStyles={{
@@ -179,7 +225,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
             </section>
             <section className={styles.contentSection}>
               <ul className={styles.subscriptionList}>
-                {data.subscriptionList.map((one, index) => {
+                {data.dataSubscription?.dataList?.map((one, index) => {
                   const unit = getUnit(one?.paymentType);
                   const amount = one?.paymentAmount;
                   const expireAt = formatDate(one?.expireAt);
@@ -195,10 +241,14 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                     return `${year}.${month}.${day}`;
                   }
 
+                  const isChannel = one?.subscribeProfileType == SubscribeProfileType.Channel && styles.channel;
+
                   return (
                     <li className={styles.item}>
                       <div className={styles.left}>
-                        <img src={one.iconUrl} alt="" className={styles.thumbnail} />
+                        <Link href={getLocalizedLink(`/profile/` + one.profileUrlLink + '?from=""')}>
+                          <img src={one.iconUrl} alt="" className={cx(styles.thumbnail, isChannel && styles.channel)} />
+                        </Link>
                         <div className={styles.infoWrap}>
                           <div className={styles.name}>{one.name}</div>
                           <div className={styles.price}>{priceStr} </div>
@@ -221,9 +271,11 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                 })}
               </ul>
 
-              {data.subscriptionInactiveList.length > 0 && <div className={styles.label}>Inactive Subscription</div>}
+              {data.dataSubscriptionInactive.dataList.length > 0 && (
+                <div className={styles.label}>Inactive Subscription</div>
+              )}
               <ul className={styles.subscriptionList}>
-                {data.subscriptionInactiveList.map((one, index) => {
+                {data?.dataSubscriptionInactive?.dataList?.map((one, index) => {
                   const unit = getUnit(one?.paymentType);
                   const amount = one?.paymentAmount;
                   const expireAt = formatDate(one?.expireAt);
@@ -238,10 +290,15 @@ const PopupSubscriptionList = ({onClose}: Props) => {
 
                     return `${year}.${month}.${day}`;
                   }
+
+                  const isChannel = one?.subscribeProfileType == SubscribeProfileType.Channel && styles.channel;
+
                   return (
                     <li className={styles.item}>
                       <div className={styles.left}>
-                        <img src={one.iconUrl} alt="" className={styles.thumbnail} />
+                        <Link href={getLocalizedLink(`/profile/` + one.profileUrlLink + '?from=""')}>
+                          <img src={one.iconUrl} alt="" className={cx(styles.thumbnail, isChannel && styles.channel)} />
+                        </Link>
                         <div className={styles.infoWrap}>
                           <div className={styles.name}>{one.name}</div>
                           <div className={styles.price}>{priceStr} </div>
@@ -264,6 +321,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                   );
                 })}
               </ul>
+              <div ref={observerRef} />
             </section>
             <button className={styles.btnSubscription}>Subscribe Now</button>
           </main>

@@ -339,6 +339,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
             setDropdownPosition={pos => setDropdownPositionState(prev => ({...prev, [key]: pos}))}
             setShowAutoComplete={show => setShowAutoCompleteState(prev => ({...prev, [key]: show}))}
             setState={setValue}
+            dropdownOffset={{top: 0, left: 0}}
           />
         </div>
         <div className={styles.hintTextArea}>

@@ -83,7 +83,7 @@
 
 .promptInputArea
 {
-    position: relative;
+    /* position: relative; */
     width: var(--second-width);
     display: flex;
     flex-direction: row;

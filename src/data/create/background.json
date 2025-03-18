@@ -1,5 +1,12 @@
 [
   {
+    "label": "common_tagbackground_none",
+    "prompts": [
+      "white background"
+    ],
+    "image": "https://dummyimage.com/600x400/000/fff&text=None"
+  },
+  {
     "label": "common_tagbackground_park",
     "prompts": [
       "park"

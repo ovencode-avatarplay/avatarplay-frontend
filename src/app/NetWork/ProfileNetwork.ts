@@ -538,6 +538,14 @@ export const getPdInfo = async (payload: GetPdInfoReq) => {
 
 export interface GetSubscriptionListReq {
   isValidSubscription: boolean;
+  page: PaginationRequest;
+  subscriptionFilterType: SubscriptionFilterType;
+}
+
+export enum SubscriptionFilterType {
+  All = 0,
+  Character = 1,
+  Channel = 2,
 }
 
 export interface GetSubscriptionListRes {
@@ -552,6 +560,13 @@ export interface MembershipSubscribe {
   paymentType: PaymentType;
   paymentAmount: number;
   expireAt: string;
+  profileUrlLink: string;
+  subscribeProfileType: SubscribeProfileType;
+}
+
+export enum SubscribeProfileType {
+  Character = 1,
+  Channel = 2,
 }
 
 export enum PaymentType {

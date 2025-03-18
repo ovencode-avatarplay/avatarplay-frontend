@@ -318,6 +318,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
             setDropdownPosition={setDropdownPosition}
             setShowAutoComplete={setShowAutoCompleteGpt}
             setState={setGptPrompt}
+            dropdownOffset={{top: 0, left: 0}}
           />
         )}
 
@@ -332,6 +333,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
             setDropdownPosition={setDropdownPosition}
             setShowAutoComplete={setShowAutoCompleteClaude}
             setState={setClaudePrompt}
+            dropdownOffset={{top: 0, left: 0}}
           />
         )}
         {previewOn && (
