@@ -373,13 +373,23 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     let tag = dataForm?.tags;
 
     const idChannel = isUpdate ? data.idChannel : 0;
+    const visibilityType = Number(dataForm.visibilityType);
     let isMonetization = Boolean(Number(dataForm.isMonetization));
     let nsfw = Boolean(Number(dataForm.nsfw));
     let characterIP = Number(dataForm.characterIP);
     const membershipSetting = isMonetization ? dataForm.membershipSetting : undefined;
     const dataUpdatePdInfo: CreateChannelReq = {
       languageType: getCurrentLanguage(),
-      channelInfo: {...dataForm, id: idChannel, tags: tag, isMonetization, nsfw, characterIP, membershipSetting},
+      channelInfo: {
+        ...dataForm,
+        id: idChannel,
+        tags: tag,
+        isMonetization,
+        nsfw,
+        characterIP,
+        membershipSetting,
+        visibilityType,
+      },
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     if (res?.resultCode == 0) {
