@@ -98,9 +98,8 @@ export const selectProfile = async (profileId: number, profileTabType: ProfileTa
 
 export enum ExploreSortType {
   Newest,
-  MostPopular,
-  WeeklyPopular,
-  MonthPopular,
+  Name,
+  Popular,
 }
 
 export enum FeedMediaType {

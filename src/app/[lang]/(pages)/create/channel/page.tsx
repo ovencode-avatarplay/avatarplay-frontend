@@ -1261,8 +1261,8 @@ export const DrawerCharacterSearch = ({
 
   const sortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.MostPopular, value: 'Popular'},
-    {id: ExploreSortType.WeeklyPopular, value: 'Name'},
+    {id: ExploreSortType.Popular, value: 'Popular'},
+    {id: ExploreSortType.Name, value: 'Name'},
   ];
 
   const SelectBoxArrowComponent = useCallback(
@@ -1408,7 +1408,7 @@ export const DrawerCharacterSearch = ({
           </div>
           <div className={styles.right}>
             <SelectBox
-              value={sortOptionList[data.indexSort]}
+              value={sortOptionList?.find(v => v.id == data.indexSort) || sortOptionList[0]}
               options={sortOptionList}
               ArrowComponent={SelectBoxArrowComponent}
               ValueComponent={SelectBoxValueComponent}

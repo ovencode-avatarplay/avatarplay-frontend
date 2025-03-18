@@ -287,7 +287,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       indexFilterShared: 0,
       indexFilterChannel: 0,
       indexFilterContent: 0,
-      indexSort: ExploreSortType.MostPopular,
+      indexSort: ExploreSortType.Name,
     },
     isShowMore: false,
     isNeedShowMore: false,
@@ -1524,13 +1524,13 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   } = getUserType(isMine, profileType);
   const sortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.MostPopular, value: 'Popular'},
-    {id: ExploreSortType.WeeklyPopular, value: 'Name'},
+    {id: ExploreSortType.Popular, value: 'Popular'},
+    {id: ExploreSortType.Name, value: 'Name'},
   ];
   const feedSortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.MostPopular, value: 'Popular'},
-    {id: ExploreSortType.WeeklyPopular, value: 'Name'},
+    {id: ExploreSortType.Popular, value: 'Popular'},
+    {id: ExploreSortType.Name, value: 'Name'},
   ];
 
   if (
@@ -1580,10 +1580,11 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBoxProfileFilter
-                value={feedSortOptionList[filterCluster?.indexSort || 0]}
+                value={feedSortOptionList?.find(v => v.id == filterCluster?.indexSort) || feedSortOptionList[0]}
                 options={feedSortOptionList}
                 onChange={async id => {
                   const indexSort = id;
+                  console.log('indexSort : ', indexSort);
                   onChange({indexSort: indexSort});
                 }}
               />
@@ -1646,7 +1647,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBoxProfileFilter
-                value={sortOptionList[filterCluster?.indexSort || 0]}
+                value={sortOptionList?.find(v => v.id == filterCluster?.indexSort) || sortOptionList[0]}
                 options={sortOptionList}
                 onChange={async id => {
                   const indexSort = id;
@@ -1713,7 +1714,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBoxProfileFilter
-                value={sortOptionList[filterCluster?.indexSort || 0]}
+                value={sortOptionList?.find(v => v.id == filterCluster?.indexSort) || sortOptionList[0]}
                 options={sortOptionList}
                 onChange={async id => {
                   const indexSort = id;
@@ -1779,7 +1780,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBoxProfileFilter
-                value={sortOptionList[filterCluster?.indexSort || 0]}
+                value={sortOptionList?.find(v => v.id == filterCluster?.indexSort) || sortOptionList[0]}
                 options={sortOptionList}
                 onChange={async id => {
                   const indexSort = id;
@@ -1848,7 +1849,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBoxProfileFilter
-                value={sortOptionList[filterCluster?.indexFilterShared || 0]}
+                value={sortOptionList?.find(v => v.id == filterCluster?.indexSort) || sortOptionList[0]}
                 options={sortOptionList}
                 onChange={async id => {
                   const indexSort = id;

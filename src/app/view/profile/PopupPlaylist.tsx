@@ -74,7 +74,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
     indexTab: eTabPlayListType.Feed,
     indexFilterMedia: FeedMediaType.Total,
     indexFilterCharacter: 0,
-    indexSort: ExploreSortType.MostPopular,
+    indexSort: ExploreSortType.Name,
     profileTabInfo: {},
     filterCluster: {
       indexFilterChannel: 0,

@@ -189,7 +189,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
             </div>
             <section className={styles.filtersection}>
               <SelectBox
-                value={sortOptionList[data.indexSort]}
+                value={sortOptionList?.find(v => v.id == data.indexSort) || sortOptionList[0]}
                 options={sortOptionList}
                 ArrowComponent={SelectBoxArrowComponent}
                 ValueComponent={SelectBoxValueComponent}
