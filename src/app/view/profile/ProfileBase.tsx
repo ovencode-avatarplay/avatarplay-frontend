@@ -2510,20 +2510,21 @@ const TabContentComponent = ({
           <div className={styles.right}>
             <div className={styles.likeWrap}>
               <img src={BoldLike.src} alt="" className={styles.like} />
-              <div className={styles.count}>55K</div>
+              <div className={styles.count}>{channelInfo?.likeCount}</div>
             </div>
             <img src={BoldDislike.src} alt="" className={styles.dislike} />
-            {!channelInfo?.isBookMark && (
+            {!channelInfo?.isBookmark && (
               <img
                 src={LineArchive.src}
                 alt=""
                 className={styles.bookmark}
                 onClick={async () => {
                   await bookmark({interactionType: InteractionType.Channel, isBookMark: true, typeValueId: profileId});
+                  onRefreshTab(false);
                 }}
               />
             )}
-            {channelInfo?.isBookMark && <img src={BoldArchive.src} alt="" className={styles.bookmark} />}
+            {channelInfo?.isBookmark && <img src={BoldArchive.src} alt="" className={styles.bookmark} />}
           </div>
         </div>
 
