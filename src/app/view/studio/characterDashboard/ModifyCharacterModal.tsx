@@ -3,7 +3,7 @@ import {Drawer} from '@mui/material';
 import styles from './ModifyCharacterModal.module.css';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-import CreateCharacterMain2 from '../../main/content/create/character/CreateCharacterMain2';
+import CreateCharacterMain from '../../main/content/create/character/CreateCharacterMain';
 
 interface ModifyCharacterProps {
   open: boolean;
@@ -56,7 +56,7 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
       <div className={styles.drawerContent}>
         <CreateDrawerHeader title="Modify Character" onClose={onClose} />
 
-        <CreateCharacterMain2 characterInfo={characterInfo} onClose={handleCloseClick} />
+        <CreateCharacterMain characterInfo={characterInfo} onClose={handleCloseClick} />
       </div>
     </Drawer>
   );

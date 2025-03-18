@@ -337,7 +337,10 @@ const CharacterCreateLLM: React.FC<Props> = ({
             Keywords={KEYWORDS}
             dropdownPos={dropdownPositionState[key]}
             setDropdownPosition={pos => setDropdownPositionState(prev => ({...prev, [key]: pos}))}
-            setShowAutoComplete={show => setShowAutoCompleteState(prev => ({...prev, [key]: show}))}
+            // setShowAutoComplete={show => setShowAutoCompleteState(prev => ({...prev, [key]: show}))}
+            setShowAutoComplete={() => {
+              //empty
+            }}
             setState={setValue}
             dropdownOffset={{top: 0, left: 0}}
           />

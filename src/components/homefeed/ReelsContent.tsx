@@ -130,14 +130,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
-      // if (isDisLike == true) {
-      //   await handleDisLikeFeed(item.id, !isDisLike);
-      // }
+      if (isDisLike == true) {
+        await handleDisLikeFeed(item.id, !isDisLike);
+      }
       const response = await sendLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-        if (response.data?.likeCount) setLikeCount(response.data?.likeCount);
+
+        if (response.data) setLikeCount(response.data?.likeCount);
+        console.log('likeCount', likeCount);
+        console.log('response.data?.likeCount', response.data?.likeCount);
         setIsLike(isLike);
       } else {
         console.error(`Failed to like/unlike feed: ${response.resultMessage}`);
@@ -148,9 +151,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   };
   const handleDisLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
-      // if (isLike == true) {
-      //   await handleLikeFeed(item.id, !isLike);
-      // }
+      if (isLike == true) {
+        await handleLikeFeed(item.id, !isLike);
+      }
       const response = await sendDisLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
