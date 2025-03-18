@@ -1,7 +1,7 @@
 'use client';
 
 import {GetCharacterInfoReq, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
-import CreateCharacterMain2 from '@/app/view/main/content/create/character/CreateCharacterMain2';
+import CreateCharacterMain from '@/app/view/main/content/create/character/CreateCharacterMain';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {useEffect, useState} from 'react';
@@ -44,7 +44,7 @@ const Page = ({params}: Props) => {
   }, [id]);
 
   return (
-    <>{loading ? <p></p> : <CreateCharacterMain2 id={id} isUpdate={true} characterInfo={currentSelectedCharacter} />}</>
+    <>{loading ? <p></p> : <CreateCharacterMain id={id} isUpdate={true} characterInfo={currentSelectedCharacter} />}</>
   );
 };
 

@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
 import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 
-import styles from './CreateCharacterMain2.module.css';
+import styles from './CreateCharacterMain.module.css';
 import {BoldMixture, LineAIImage, LineDashboard, LineEdit, LineUpload} from '@ui/Icons';
 
 import EmptyStoryInfo from '@/data/create/empty-story-info-data.json';
@@ -44,7 +44,7 @@ interface CreateCharacterProps {
   onClose?: () => void;
 }
 
-const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = false, characterInfo, onClose}) => {
+const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = false, characterInfo, onClose}) => {
   const {back} = useCustomRouter();
   const router = useRouter();
 
@@ -915,4 +915,4 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   );
 };
 
-export default CreateCharacterMain2;
+export default CreateCharacterMain;
