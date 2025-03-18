@@ -108,20 +108,20 @@ export const CharacterProfileDetailComponent = ({
             <img
               src={BoldLike.src}
               alt=""
-              className={cx(styles.like, styles.active)}
+              className={cx(styles.like, characterInfo?.isLike && styles.active)}
               onClick={async () => {
-                await sendLike(InteractionType.Character, profileId, true);
+                await sendLike(InteractionType.Character, profileId, !characterInfo?.isLike);
                 onRefresh();
               }}
             />
-            <div className={cx(styles.count, styles.active)}>55K</div>
+            <div className={cx(styles.count, characterInfo?.isLike && styles.active)}>{characterInfo?.likeCount}</div>
           </div>
           <img
             src={BoldDislike.src}
             alt=""
-            className={cx(styles.dislike, styles.active)}
+            className={cx(styles.dislike, characterInfo?.isDisLike && styles.active)}
             onClick={async () => {
-              await sendDisLike(InteractionType.Character, profileId, true);
+              await sendDisLike(InteractionType.Character, profileId, !characterInfo?.isDisLike);
               onRefresh();
             }}
           />
@@ -280,7 +280,13 @@ const ProfileDetail = ({profileId}: Props) => {
         <img className={styles.iconClose} src={LineClose.src} onClick={() => router.back()} />
       </header>
       <main className={styles.main}>
-        <CharacterProfileDetailComponent characterInfo={data?.characterInfo} urlLinkKey={data.urlLinkKey} isPath />
+        <CharacterProfileDetailComponent
+          profileId={profileId}
+          characterInfo={data?.characterInfo}
+          urlLinkKey={data.urlLinkKey}
+          isPath
+          onRefresh={() => {}}
+        />
       </main>
       <footer className={styles.footer}></footer>
     </>

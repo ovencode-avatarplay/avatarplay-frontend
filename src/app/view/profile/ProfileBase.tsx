@@ -515,11 +515,16 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       storyInfoList,
       dataResPdInfo,
       channelInfo,
+      characterInfo,
       contentInfoList,
     } = resProfileTabInfo;
     if (!data.profileTabInfo[indexTab]) {
       data.profileTabInfo[indexTab] = resProfileTabInfo;
       return;
+    }
+
+    if (!!characterInfo) {
+      data.profileTabInfo[indexTab].characterInfo = characterInfo;
     }
 
     if (!!channelInfo) {
@@ -2475,6 +2480,7 @@ const TabContentComponent = ({
     );
   }
   if (isCharacter && tabIndex == eTabCharacterOtherType.Info) {
+    console.log('profileTabInfo?.[tabIndex].characterInfo : ', profileTabInfo?.[tabIndex].characterInfo);
     return (
       <>
         <section className={styles.characterInfoSection}>
