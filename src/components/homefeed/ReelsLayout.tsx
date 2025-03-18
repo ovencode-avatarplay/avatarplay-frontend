@@ -47,7 +47,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
   profileUrlLinkKey = '',
   profileType = ProfileType.PD,
-  feedSortType = ExploreSortType.Name,
+  feedSortType = ExploreSortType.Newest,
   feedMediaType = FeedMediaType.Total,
   idContent = 0,
 }) => {

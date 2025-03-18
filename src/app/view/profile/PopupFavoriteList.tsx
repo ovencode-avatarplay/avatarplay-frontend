@@ -73,7 +73,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
     indexTab: eTabFavoritesType.Feed,
     indexFilterMedia: FeedMediaType.Total,
     indexFilterCharacter: 0,
-    indexSort: ExploreSortType.Name,
+    indexSort: ExploreSortType.Newest,
     profileTabInfo: {},
     filterCluster: {
       indexFilterChannel: 0,
