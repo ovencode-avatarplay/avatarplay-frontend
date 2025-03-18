@@ -160,7 +160,6 @@ const CharacterCreateLLM: React.FC<Props> = ({
           KEYWORDS[keyword]
         }</span>`,
       );
-      console.log(KEYWORDS[keyword]);
     });
 
     return html;

@@ -5,7 +5,8 @@ import ExploreSearchInput from '../../searchboard/searchboard-header/ExploreSear
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {LineClose} from '@ui/Icons';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
-import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
+import {getLangKey, LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface DrawerPostCountryProps {
   isOpen: boolean;
@@ -64,7 +65,7 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
         <CustomRadioButton
           displayType="buttonText"
           shapeType="square"
-          label={LanguageType[item]}
+          label={getLocalizedText('Common', getLangKey(item))}
           value={item}
           onSelect={() => handleAddPostCountry(item)}
           selectedValue={null}
@@ -75,7 +76,7 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
 
   const renderPostCountryItem = (item: LanguageType) => (
     <li key={item} className={styles.postItem}>
-      <span className={styles.postItemName}>{LanguageType[item]}</span>
+      <span className={styles.postItemName}>{getLocalizedText('Common', getLangKey(item))}</span>
       <button className={styles.deleteButton} onClick={() => handleRemovePostCountry(item)}>
         <img className={styles.deleteIcon} src={LineClose.src} />
       </button>
