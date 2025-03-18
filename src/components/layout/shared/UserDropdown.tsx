@@ -25,7 +25,6 @@ import {supabase} from 'utils/supabaseClient';
 import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
 import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
-import LanguageSelectDropBox from './LanguageSelectDropBox';
 import {getCurrentLanguage, getLocalizedLink, isLogined, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
 import {fetchLanguage} from './LanguageSetting';
 import {getLangUrlCode} from '@/configs/i18n';
@@ -310,7 +309,6 @@ const UserDropdown = () => {
               <Typography color="text.primary">CustomPrompt</Typography>
             </MenuItem>
           </Link>
-          <LanguageSelectDropBox />
         </MenuList>
         <Popper
           open={open}
