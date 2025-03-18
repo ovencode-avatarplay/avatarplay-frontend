@@ -106,7 +106,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     try {
       const playRequest: PlayReq = {
         contentId: contentId,
-        episodeId: episodeId,
+        episodeId: curEpisodeId,
       };
 
       const playData = await sendPlay(playRequest);
@@ -795,6 +795,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                           setPurchaseData(episode);
                           setOnPurchasePopup(true);
                         } else {
+                          console.log('episode.episodeId', episode.episodeId);
                           setCurEpisodeId(episode.episodeId);
                         }
                       }}
