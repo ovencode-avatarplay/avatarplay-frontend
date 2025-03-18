@@ -897,7 +897,14 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           )}
           {(isMyPD || isMyChannel) && (
             <div className={styles.buttons}>
-              <button className={styles.ad}>AD</button>
+              <button
+                className={styles.ad}
+                onClick={() => {
+                  alert('6월에 기능 추가 예정');
+                }}
+              >
+                AD
+              </button>
               {isMyPD && (
                 <button
                   className={styles.friends}
