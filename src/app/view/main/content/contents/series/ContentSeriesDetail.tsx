@@ -535,12 +535,16 @@ export const PopupPurchase = ({
   onPurchaseSuccess,
 }: PopupPurchaseType) => {
   const refCheckHide = useRef<HTMLInputElement | null>(null);
-  const [data, setData] = useState<{isOpenNotEnoughStars: boolean}>({
+  const [data, setData] = useState<{isOpenNotEnoughStars: boolean; isOpen: boolean}>({
     isOpenNotEnoughStars: false,
+    isOpen: false,
   });
 
-  useEffect(() => {
-    const hidePopup = localStorage.getItem('hidePopupPurchase');
+  useLayoutEffect(() => {
+    const hidePopup = parseInt(localStorage.getItem('hidePopupPurchase') || '0');
+    data.isOpen = !hidePopup;
+    setData({...data});
+
     if (!!hidePopup) {
       onPurchase();
     }
@@ -562,7 +566,11 @@ export const PopupPurchase = ({
       return;
     }
     console.log('resBuy : ', resBuy);
-    localStorage.setItem('hidePopupPurchase', refCheckHide.current?.checked ? 'true' : 'false');
+
+    const hidePopup = parseInt(localStorage.getItem('hidePopupPurchase') || '0');
+    if (!hidePopup) {
+      localStorage.setItem('hidePopupPurchase', refCheckHide.current?.checked ? '1' : '0');
+    }
     onClose();
 
     if (contentType == ContentType.Series) {
@@ -573,7 +581,7 @@ export const PopupPurchase = ({
   };
   return (
     <Dialog
-      open={true}
+      open={data.isOpen}
       onClose={onClose}
       PaperProps={{
         sx: {
