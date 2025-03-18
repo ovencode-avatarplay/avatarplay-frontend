@@ -921,7 +921,14 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           )}
           {isMyCharacter && (
             <div className={styles.buttons}>
-              <button className={styles.ad}>AD</button>
+              <button
+                className={styles.ad}
+                onClick={() => {
+                  alert('6월에 기능 추가 예정');
+                }}
+              >
+                AD
+              </button>
               <button className={styles.chat}>
                 {/* <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}> */}
                 <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>Chat</Link>
@@ -1545,6 +1552,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   const feedSortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
     {id: ExploreSortType.MostPopular, value: 'Popular'},
+    {id: ExploreSortType.WeeklyPopular, value: 'Name'},
   ];
 
   if (
