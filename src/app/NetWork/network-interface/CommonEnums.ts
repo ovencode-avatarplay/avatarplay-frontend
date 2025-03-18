@@ -1,4 +1,16 @@
 export enum LanguageType {
+  Korean = 0,
+  English = 1,
+  Japanese = 2,
+  French = 3,
+  Spanish = 4,
+  Simplified_Chinese = 5,
+  Traditional_Chinese = 6,
+  Portuguese = 7,
+  German = 8,
+}
+
+export enum LanguageName {
   한국어 = 0,
   English = 1,
   日本語 = 2,
