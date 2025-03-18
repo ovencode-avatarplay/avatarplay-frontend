@@ -4,7 +4,7 @@ import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAI} from '@ui/Icons';
 import {useEffect, useRef, useState} from 'react';
-import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
+import {getLangKey, LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import formatText from '@/utils/formatText';
 import PromptInput from '@/app/view/studio/promptDashboard/PromptInput';
 import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPrompt';
@@ -53,10 +53,10 @@ const CharacterCreateLLM: React.FC<Props> = ({
   const [autoWriteCharacterSecret, setAutoWriteCharacterSecret] = useState<string[]>([]);
 
   const langItems = Object.values(LanguageType)
-    .filter(value => typeof value === 'string')
+    .filter(value => typeof value === 'number')
     .map(value => ({
-      label: value as string,
-      value: LanguageType[value as keyof typeof LanguageType],
+      label: getLocalizedText(Common, getLangKey(value)),
+      value: LanguageType[value],
     }));
 
   const [promptItems, setPromptItems] = useState<{label: string; value: number}[]>([]);
@@ -156,8 +156,11 @@ const CharacterCreateLLM: React.FC<Props> = ({
       const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
       html = html.replace(
         regex,
-        `<span class="${styles['chip']} ${styles['chipUser']}" contenteditable="false">${KEYWORDS[keyword]}</span>`,
+        `<span class="${styles['chip']} ${styles[`chip${KEYWORDS[keyword]}`]}" contenteditable="false">${
+          KEYWORDS[keyword]
+        }</span>`,
       );
+      console.log(KEYWORDS[keyword]);
     });
 
     return html;
