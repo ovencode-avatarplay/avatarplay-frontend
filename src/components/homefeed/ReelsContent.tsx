@@ -130,9 +130,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
-      // if (isDisLike == true) {
-      //   await handleDisLikeFeed(item.id, !isDisLike);
-      // }
+      if (isDisLike == true) {
+        await handleDisLikeFeed(item.id, !isDisLike);
+      }
       const response = await sendLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
@@ -148,9 +148,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   };
   const handleDisLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
-      // if (isLike == true) {
-      //   await handleLikeFeed(item.id, !isLike);
-      // }
+      if (isLike == true) {
+        await handleLikeFeed(item.id, !isLike);
+      }
       const response = await sendDisLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
