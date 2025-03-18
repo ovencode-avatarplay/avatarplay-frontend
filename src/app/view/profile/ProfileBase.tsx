@@ -100,7 +100,7 @@ import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 export enum eTabFavoritesType {
   Feed = 1,
   Character = 3,
-  Channel = 4,
+  Channel = 5,
   Contents = 2,
   Game = 0,
 }
@@ -1548,7 +1548,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                 }}
                 customStyles={{
                   control: {
-                    width: '150px',
+                    width: '90px',
                     display: 'flex',
                     gap: '10px',
                   },
@@ -1563,6 +1563,10 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                       borderTop: 'none', // 첫 번째 옵션에는 border 제거
                     },
                     borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                  menu: {
+                    width: '150px',
+                    right: 0,
                   },
                 }}
               />
@@ -1636,7 +1640,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                 }}
                 customStyles={{
                   control: {
-                    width: '150px',
+                    width: '90px',
                     display: 'flex',
                     gap: '10px',
                   },
@@ -1651,6 +1655,10 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                       borderTop: 'none', // 첫 번째 옵션에는 border 제거
                     },
                     borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                  menu: {
+                    width: '150px',
+                    right: 0,
                   },
                 }}
               />
@@ -1725,7 +1733,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                 }}
                 customStyles={{
                   control: {
-                    width: '150px',
+                    width: '90px',
                     display: 'flex',
                     gap: '10px',
                   },
@@ -1740,6 +1748,10 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                       borderTop: 'none', // 첫 번째 옵션에는 border 제거
                     },
                     borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                  menu: {
+                    width: '150px',
+                    right: 0,
                   },
                 }}
               />
@@ -1813,7 +1825,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                 }}
                 customStyles={{
                   control: {
-                    width: '150px',
+                    width: '90px',
                     display: 'flex',
                     gap: '10px',
                   },
@@ -1828,6 +1840,10 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                       borderTop: 'none', // 첫 번째 옵션에는 border 제거
                     },
                     borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                  menu: {
+                    width: '150px',
+                    right: 0,
                   },
                 }}
               />
@@ -1904,7 +1920,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                 }}
                 customStyles={{
                   control: {
-                    width: '150px',
+                    width: '90px',
                     display: 'flex',
                     gap: '10px',
                   },
@@ -1919,6 +1935,10 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
                       borderTop: 'none', // 첫 번째 옵션에는 border 제거
                     },
                     borderTop: '1px solid #EAECF0', // 옵션 사이에 border 추가
+                  },
+                  menu: {
+                    width: '150px',
+                    right: 0,
                   },
                 }}
               />
