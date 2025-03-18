@@ -2255,6 +2255,14 @@ export const TabContentComponentWrap = ({
           alert('report api 연동 필요');
         }}
       />
+      <SharePopup
+        open={data.isShareOpened}
+        title={data?.tabContentMenu?.shareTitle || '공유하기'}
+        url={data.tabContentMenu?.shareUrl || window.location.href}
+        onClose={() => {
+          setData(v => ({...v, isShareOpened: false}));
+        }}
+      ></SharePopup>
     </>
   );
 };
