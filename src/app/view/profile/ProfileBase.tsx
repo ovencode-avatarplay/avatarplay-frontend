@@ -287,7 +287,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       indexFilterShared: 0,
       indexFilterChannel: 0,
       indexFilterContent: 0,
-      indexSort: ExploreSortType.Name,
+      indexSort: ExploreSortType.Newest,
     },
     isShowMore: false,
     isNeedShowMore: false,
@@ -1139,17 +1139,17 @@ const ContentSetting = ({
         onEdit();
       },
     },
-    {
-      name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
-      onClick: async () => {
-        const dataUpdatePin: PinFixFeedReq = {
-          feedId: Number(tabContentMenu.id),
-          isFix: !tabContentMenu.isPin,
-        };
-        await updatePin(dataUpdatePin);
-        refreshTabAll();
-      },
-    },
+    // {
+    //   name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
+    //   onClick: async () => {
+    //     const dataUpdatePin: PinFixFeedReq = {
+    //       feedId: Number(tabContentMenu.id),
+    //       isFix: !tabContentMenu.isPin,
+    //     };
+    //     await updatePin(dataUpdatePin);
+    //     refreshTabAll();
+    //   },
+    // },
     {
       name: 'Share',
       onClick: () => {
@@ -1164,14 +1164,20 @@ const ContentSetting = ({
     },
   ];
   let uploadImageItems: SelectDrawerItem[] = [
+    // {
+    //   name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
+    //   onClick: () => {},
+    // },
+    // {
+    //   name: 'Hide',
+    //   onClick: () => {
+    //     onHide();
+    //   },
+    // },
     {
-      name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
-      onClick: () => {},
-    },
-    {
-      name: 'Hide',
+      name: 'Share',
       onClick: () => {
-        onHide();
+        onShare();
       },
     },
     {
@@ -2232,9 +2238,9 @@ export const TabContentComponentWrap = ({
             (isChannel && tabIndex == eTabChannelType.Contents)
           ) {
             if (data.tabContentMenu.isSingle) {
-              router.push(getLocalizedLink(`/update/content/single/` + data.tabContentMenu.id));
+              router.push(getLocalizedLink(`/update/content/single/` + data.tabContentMenu.urlLinkKey));
             } else {
-              router.push(getLocalizedLink(`/update/content/series/` + data.tabContentMenu.id));
+              router.push(getLocalizedLink(`/update/content/series/` + data.tabContentMenu.urlLinkKey));
             }
           }
 
