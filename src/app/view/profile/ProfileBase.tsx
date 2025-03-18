@@ -184,6 +184,7 @@ export type TabContentMenuType = {
   isSingle?: boolean;
   urlLinkKey?: string;
   isFavorite?: boolean;
+  index?: number;
 };
 
 type DataProfileType = {
@@ -2333,6 +2334,7 @@ const TabContentComponent = ({
             return (
               <FeedComponent
                 feedInfo={one}
+                index={index}
                 isMine={isMine}
                 onOpenContentMenu={onOpenContentMenu}
                 urlLinkThumbnail={
@@ -2358,6 +2360,7 @@ const TabContentComponent = ({
           return (
             <CharacterComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
@@ -2378,6 +2381,7 @@ const TabContentComponent = ({
           return (
             <ContentComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(urlLink + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
@@ -2395,6 +2399,7 @@ const TabContentComponent = ({
         {profileTabInfo?.[tabIndex]?.channelInfoList?.map((one, index: number) => {
           return (
             <ChannelComponent
+              index={index}
               isMine={isMine}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
@@ -2628,12 +2633,19 @@ const TabContentComponent = ({
 
 export type ChannelComponentType = {
   isMine: boolean;
+  index: number;
   urlLinkThumbnail: string;
   itemInfo: ProfileTabItemInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ChannelComponentType) => {
+export const ChannelComponent = ({
+  isMine,
+  index,
+  urlLinkThumbnail,
+  itemInfo,
+  onOpenContentMenu,
+}: ChannelComponentType) => {
   const isOriginal = itemInfo.characterIP == CharacterIP.Original;
   const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
@@ -2676,6 +2688,7 @@ export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
                 e.stopPropagation();
                 const dataContextMenu = {
                   id: itemInfo.id,
+                  index: index,
                   isPin: itemInfo?.isPinFix || false,
                   isSettingOpen: true,
                 };
@@ -2691,12 +2704,19 @@ export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
 
 export type ContentComponentType = {
   isMine: boolean;
+  index: number;
   urlLinkThumbnail: string;
   itemInfo: ProfileTabItemInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ContentComponentType) => {
+export const ContentComponent = ({
+  isMine,
+  index,
+  urlLinkThumbnail,
+  itemInfo,
+  onOpenContentMenu,
+}: ContentComponentType) => {
   return (
     <Link href={urlLinkThumbnail}>
       <li className={styles.itemTab} key={itemInfo?.id}>
@@ -2745,6 +2765,7 @@ export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
 
                 const dataContextMenu = {
                   id: itemInfo.id,
+                  index: index,
                   urlLinkKey: itemInfo.urlLinkKey,
                   isPin: itemInfo?.isPinFix || false,
                   isSettingOpen: true,
@@ -2762,12 +2783,19 @@ export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
 
 export type CharacterComponentType = {
   isMine: boolean;
+  index: number;
   urlLinkThumbnail: string;
   itemInfo: ProfileTabItemInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: CharacterComponentType) => {
+export const CharacterComponent = ({
+  isMine,
+  index,
+  urlLinkThumbnail,
+  itemInfo,
+  onOpenContentMenu,
+}: CharacterComponentType) => {
   const isOriginal = itemInfo.characterIP == CharacterIP.Original;
   const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
@@ -2817,6 +2845,7 @@ export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCo
 
                 const dataContextMenu = {
                   id: itemInfo.id,
+                  index: index,
                   isPin: itemInfo?.isPinFix || false,
                   isSettingOpen: true,
                 };
@@ -2832,12 +2861,13 @@ export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCo
 
 export type FeedComponentType = {
   isMine: boolean;
+  index: number;
   urlLinkThumbnail: string;
   feedInfo: FeedInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContentMenu}: FeedComponentType) => {
+export const FeedComponent = ({isMine, index, urlLinkThumbnail, feedInfo, onOpenContentMenu}: FeedComponentType) => {
   return (
     <Link href={urlLinkThumbnail}>
       <li className={styles.itemTab} key={feedInfo?.id}>
@@ -2886,6 +2916,7 @@ export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContent
                 e.stopPropagation();
                 const dataContextMenu = {
                   id: feedInfo.id,
+                  index: index,
                   urlLinkKey: feedInfo.urlLinkKey,
                   isPin: feedInfo?.isPinFix || false,
                   isSettingOpen: true,

@@ -45,7 +45,7 @@ import {GetCharacterInfoRes} from '@/app/NetWork/CharacterNetwork';
 import {GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
-import {InteractionType} from '@/app/NetWork/CommonNetwork';
+import {bookmark, InteractionType, RecordType} from '@/app/NetWork/CommonNetwork';
 import {PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
 
 type Props = {
@@ -220,9 +220,21 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
           onRefreshTab(true);
         }}
         onUnFavorite={async () => {
-          alert('북마크 해제 예정');
+          let interactionType = Number(data.indexTab);
+          if (data.indexTab == eTabFavoritesType.Contents) {
+            interactionType = data.tabContentMenu.isSingle ? InteractionType.Episode : InteractionType.Contents;
+          }
+          const resBookmark = await bookmark({
+            interactionType: interactionType,
+            isBookMark: false,
+            typeValueId: data.tabContentMenu.id,
+          });
+          console.log('resBookmark : ', resBookmark);
 
-          onRefreshTab(true);
+          const indexRemove = data?.tabContentMenu?.index || 0;
+          data.profileTabInfo?.[data.indexTab].splice(indexRemove, 1);
+          setData({...data});
+          // onRefreshTab(true);
         }}
         onShare={async () => {
           alert('공유 추가 예정');
@@ -299,6 +311,7 @@ const TabContentComponent = ({
             return (
               <FeedComponent
                 isMine={isMine}
+                index={index}
                 feedInfo={{
                   commentCount: 0,
                   description: one.description,
@@ -338,6 +351,7 @@ const TabContentComponent = ({
           return (
             <CharacterComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
@@ -355,6 +369,7 @@ const TabContentComponent = ({
           return (
             <ContentComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/content/series/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
@@ -372,6 +387,7 @@ const TabContentComponent = ({
           return (
             <ChannelComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}

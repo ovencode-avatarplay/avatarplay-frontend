@@ -47,7 +47,7 @@ import {GetCharacterInfoRes} from '@/app/NetWork/CharacterNetwork';
 import {GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
-import {deleteRecord, InteractionType, RecordType} from '@/app/NetWork/CommonNetwork';
+import {bookmark, deleteRecord, InteractionType, RecordType} from '@/app/NetWork/CommonNetwork';
 import {PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
 
 type Props = {
@@ -239,6 +239,9 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
         onShare={async () => {
           alert('공유 추가 예정');
         }}
+        onFavorite={async isFavorite => {
+          alert('좋아요 추가 예정');
+        }}
       />
     </>
   );
@@ -308,6 +311,7 @@ const TabContentComponent = ({
             return (
               <FeedComponent
                 isMine={isMine}
+                index={index}
                 feedInfo={{
                   commentCount: 0,
                   description: 'description',
@@ -347,6 +351,7 @@ const TabContentComponent = ({
           return (
             <CharacterComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
@@ -364,6 +369,7 @@ const TabContentComponent = ({
           return (
             <ContentComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/content/series/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
@@ -381,6 +387,7 @@ const TabContentComponent = ({
           return (
             <ChannelComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
@@ -401,6 +408,7 @@ type ContentSettingType = {
   onReport: () => void;
   onShare: () => void;
   onDelete: () => void;
+  onFavorite: (isFavorite: boolean) => void;
 };
 const ContentSetting = ({
   isMine = false,
@@ -410,14 +418,14 @@ const ContentSetting = ({
   onReport = () => {},
   onShare = () => {},
   onDelete = () => {},
+  onFavorite = (isFavorite: boolean) => {},
 }: ContentSettingType) => {
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItems: SelectDrawerItem[] = [
     {
       name: tabContentMenu.isFavorite ? 'Unfavorite' : 'Favorite',
       onClick: async () => {
-        // onUnFavorite();
-        alert('북마크 처리 예정');
+        onFavorite(!tabContentMenu.isFavorite);
       },
     },
     {
