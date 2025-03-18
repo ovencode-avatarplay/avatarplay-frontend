@@ -1,4 +1,4 @@
-import {LanguageType} from '@/app/NetWork/AuthNetwork';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 // UserState 인터페이스에 유저 이미지와 설명 추가
@@ -23,7 +23,7 @@ const initialState: UserState = {
   // 사용자 ID 6 : 지현
   // 사용자 ID 7 : 범쑤
   // ---- 추가 아이디는 범수님께 문의 ----`, // 기본 유저 설명
-  language: LanguageType.Korean,
+  language: LanguageType.한국어,
 };
 
 // Redux slice 생성

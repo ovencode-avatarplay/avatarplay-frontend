@@ -1,4 +1,4 @@
-import {LanguageType} from '@/app/NetWork/AuthNetwork';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 
 export const i18n = {
   defaultLocale: 'ko',

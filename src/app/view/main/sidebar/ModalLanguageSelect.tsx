@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {changeLanguage, LanguageType, sendGetLanguage} from '@/app/NetWork/AuthNetwork';
+import {changeLanguage, sendGetLanguage} from '@/app/NetWork/AuthNetwork';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useRouter} from 'next/navigation';
@@ -14,7 +14,7 @@ import {BoldArrowLeft, LineCheck, LineSearch} from '@ui/Icons';
 import CustomInput from '@/components/layout/shared/CustomInput';
 //import {Flag} from '@mui/icons-material';
 import Flag from 'react-world-flags';
-import {FlagNation, getFlagCode} from '@/app/NetWork/network-interface/CommonEnums';
+import {FlagNation, getFlagCode, LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomButton from '@/components/layout/shared/CustomButton';
 
 interface FullScreenModalProps {

@@ -9,7 +9,7 @@ import CustomDropDownSelectDrawer from '@/components/layout/shared/CustomDropDow
 import DrawerTagSelect from '../common/DrawerTagSelect';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import DrawerPostCountry from '../common/DrawerPostCountry';
-import {LanguageType} from '@/app/NetWork/AuthNetwork';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {
   ContentInfo,

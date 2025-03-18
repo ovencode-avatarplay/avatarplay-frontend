@@ -3,18 +3,7 @@ import api, {ResponseAPI} from './ApiInstance';
 import {getLangUrlCode} from '@/configs/i18n';
 import {AxiosResponse} from 'axios';
 import {ProfileSimpleInfo, ProfileType} from './ProfileNetwork';
-
-export enum LanguageType {
-  Korean = 0,
-  English = 1,
-  Japanese = 2,
-  French = 3,
-  Spanish = 4,
-  ChineseSimplified = 5,
-  ChineseTraditional = 6,
-  Portuguese = 7,
-  German = 8,
-}
+import {LanguageType} from './network-interface/CommonEnums';
 
 //##########    sign - 접속시 서버에 나의 브라우저 언어상태를 준다.
 export interface SignInReq {
