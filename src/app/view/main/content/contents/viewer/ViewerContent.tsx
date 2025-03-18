@@ -786,7 +786,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                   </div>
                 </div>
                 <div className={styles.episodeContainer}>
-                  {episodeListData?.episodeList.map(episode => (
+                  {episodeListData?.episodeList.map((episode, index) => (
                     <div
                       key={episode.episodeId}
                       className={`${styles.episodeButton} ${episode.isLock ? styles.locked : ''}`}
@@ -799,7 +799,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                         }
                       }}
                     >
-                      {episode.episodeId}
+                      {index + 1}
                       {episode.isLock && (
                         <div className={styles.lockIcon}>
                           <img src={BoldLock.src} alt="Lock" className={styles.lockImg} />
