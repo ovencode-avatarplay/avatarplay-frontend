@@ -393,6 +393,8 @@ export interface ContentPlayInfo {
   playTimeSecond: number;
   profileIconUrl: string;
   profileUrlLinkKey: string;
+  profileId: number;
+  isProfileFollow: boolean;
   commonMediaViewInfo: CommonMediaViewInfo;
   episodeVideoInfo?: EpisodeVideoInfo;
   episodeWebtoonInfo?: EpisodeWebtoonInfo;

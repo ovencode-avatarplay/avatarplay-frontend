@@ -1,4 +1,5 @@
 import React, {RefObject, useEffect, useState} from 'react';
+import ReactDOM from 'react-dom';
 import styles from './PromptInput.module.css';
 import AutoCompleteCustomPrompt from './AutoCompleteCustomPrompt';
 import {SetStateAction} from 'jotai';
@@ -14,6 +15,8 @@ interface Props {
   setDropdownPosition: React.Dispatch<SetStateAction<{top: number; left: number}>>;
   setShowAutoComplete?: React.Dispatch<React.SetStateAction<boolean>>;
   setState: React.Dispatch<React.SetStateAction<string>>;
+  placeholder?: string;
+  dropdownOffset: {top: number; left: number};
 }
 
 const PromptInput: React.FC<Props> = ({
@@ -26,16 +29,23 @@ const PromptInput: React.FC<Props> = ({
   setDropdownPosition,
   setShowAutoComplete,
   setState,
+  placeholder = 'placeholder',
+  dropdownOffset,
 }) => {
+  const [isEmpty, setIsEmpty] = useState(true);
+
   //#region  입력 관련
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     const div = e.currentTarget;
     let html = div.innerHTML.trim();
 
-    // 모든 내용이 삭제된 경우 기본 공백 추가
-    if (!html || html === '<br>') {
-      div.innerHTML = '&nbsp;';
+    // 모든 내용이 삭제된 경우
+    if (!html || html === '<br>' || html === '&nbsp;' || html.replace(/\u00A0/g, '').trim() === '') {
+      // div.innerHTML = '&nbsp;';
+      setIsEmpty(true);
     } else {
+      setIsEmpty(false);
+
       let changed = false;
       Object.keys(Keywords).forEach(keyword => {
         const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
@@ -63,7 +73,6 @@ const PromptInput: React.FC<Props> = ({
     checkForAutoComplete(e);
   };
 
-  // Handle change in the editor content
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     const selection = window.getSelection();
     if (!selection) return;
@@ -74,11 +83,11 @@ const PromptInput: React.FC<Props> = ({
     if (e.key === 'Backspace' || e.key === 'Delete') {
       const div = e.currentTarget;
 
-      // 모든 내용을 삭제했을 경우 <br> 추가하여 커서 유지
+      // 모든 내용을 삭제했을 경우
       if (div.innerText.trim() === '') {
         e.preventDefault();
-        div.innerHTML = '&nbsp;';
         moveCaretToEnd(div);
+        setIsEmpty(true);
       }
     }
 
@@ -166,23 +175,31 @@ const PromptInput: React.FC<Props> = ({
 
   useEffect(() => {
     if (showAutoComplete) {
-      updateDropdownPosition(promptRef, setDropdownPosition);
+      updateDropdownPosition(promptRef, setDropdownPosition, dropdownOffset);
     }
-  }, [showAutoComplete, promptRef, setDropdownPosition]);
+  }, [showAutoComplete, promptRef]);
 
+  useEffect(() => {
+    if (promptRef.current) {
+      setIsEmpty(promptRef.current.innerText.trim() === '');
+    }
+  }, []);
   //#endregion
 
   return (
-    <>
+    <div className={styles.promptInput}>
       <div className={styles.promptInputList}>
         {prefix != '' && <div className={styles.fixedPrompt}>{prefix}</div>}
         <div
           ref={promptRef}
-          className={styles.promptInput}
+          className={`${styles.promptInput} ${promptRef.current && styles.textExist}`}
           contentEditable
           suppressContentEditableWarning
           onInput={handleInput}
           onKeyDown={handleKeyDown}
+          onFocus={() => setIsEmpty(false)}
+          onBlur={() => setIsEmpty(promptRef.current?.innerText.trim() === '')}
+          data-placeholder={placeholder}
         />
         {suffix != '' && <div className={styles.fixedPrompt}>{suffix}</div>}
       </div>
@@ -195,7 +212,7 @@ const PromptInput: React.FC<Props> = ({
           setState={setState}
         />
       )}{' '}
-    </>
+    </div>
   );
 };
 

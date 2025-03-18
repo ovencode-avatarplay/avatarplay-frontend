@@ -75,6 +75,7 @@ interface Props {
 const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, episodeId = 0}) => {
   const [info, setInfo] = useState<ContentPlayInfo>();
   const [curEpisodeId, setCurEpisodeId] = useState(episodeId);
+
   const [onEpisodeListDrawer, setOnEpisodeListDrawer] = useState(false);
   interface Episode {
     number: number;
@@ -97,6 +98,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       const playResponse = await sendPlayButton(playRequest);
       console.log('✅ PlayButton API 응답:', playResponse.data);
       setInfo(playResponse.data?.recentlyPlayInfo);
+      setCurEpisodeId(playResponse.data?.recentlyPlayInfo.episodeId || 0);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
     }
@@ -134,7 +136,17 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       console.error('🚨 RecordPlay API 호출 오류:', error);
     }
   };
+
   useEffect(() => {
+    if (info?.categoryType == ContentCategoryType.Webtoon) handleRecordPlay();
+  }, [info]);
+
+  useEffect(() => {
+    if (onEpisodeListDrawer) {
+      handlePlayNew();
+      console.log('playnew');
+      return;
+    }
     if (isPlayButon) {
       handlePlayRecent();
       console.log('playrecent');
@@ -230,13 +242,20 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     };
   }, [isDragging]);
 
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [curIsFollow, setCurIsFollow] = useState(info?.isProfileFollow);
+  const [tempFollow, setTempFollow] = useState(true);
   const [animationClass, setAnimationClass] = useState('');
-
+  const handleFollow = async (profileId: number, value: boolean) => {
+    try {
+      const response = await followProfile(profileId, value);
+    } catch (error) {
+      console.error('An error occurred while Following:', error);
+    }
+  };
   const handleOnSubscribe = async () => {
     console.log('Subscribe');
-
-    setIsSubscribed(true);
+    if (info) handleFollow(info?.profileId, !curIsFollow);
+    setCurIsFollow(true);
     // 클릭하면 애니메이션 시작
     setAnimationClass(styles.startAnimation);
 
@@ -385,7 +404,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const fetchSeasonEpisodesPopup = async () => {
     try {
       const requestPayload: GetSeasonEpisodesPopupReq = {
-        episodeId: episodeId, // 조회할 에피소드 ID
+        episodeId: curEpisodeId, // 조회할 에피소드 ID
       };
 
       const response = await sendGetSeasonEpisodesPopup(requestPayload);
@@ -399,6 +418,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
   React.useEffect(() => {
     setCommentCount(info?.commonMediaViewInfo.commentCount);
+    setCurIsFollow(info?.isProfileFollow);
+    if (info) setTempFollow(info?.isProfileFollow);
   }, [info]);
 
   const checkMobileOrTablet = useCallback(() => {
@@ -570,37 +591,38 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                     pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
                   }}
                 ></Avatar>
-
-                <div
-                  className={`${isSubscribed ? styles.checkCircle : styles.plusCircle} ${animationClass}`}
-                  onClick={event => {
-                    event.stopPropagation();
-                    handleOnSubscribe();
-                  }}
-                >
-                  {isSubscribed ? (
-                    <img src={LineCheck.src} alt="Check" className={styles.checkImg} />
-                  ) : (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M20.4863 12.0005L3.51577 12.0005L20.4863 12.0005Z" fill="white" />
-                      <path
-                        d="M20.4863 12.0005L3.51577 12.0005"
-                        stroke="white"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path d="M12 3.51416V20.4847V3.51416Z" fill="white" />
-                      <path
-                        d="M12 3.51416V20.4847"
-                        stroke="white"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  )}
-                </div>
+                {!info?.isProfileFollow && !tempFollow && (
+                  <div
+                    className={`${curIsFollow ? styles.checkCircle : styles.plusCircle} ${animationClass}`}
+                    onClick={event => {
+                      event.stopPropagation();
+                      handleOnSubscribe();
+                    }}
+                  >
+                    {curIsFollow ? (
+                      <img src={LineCheck.src} alt="Check" className={styles.checkImg} />
+                    ) : (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.4863 12.0005L3.51577 12.0005L20.4863 12.0005Z" fill="white" />
+                        <path
+                          d="M20.4863 12.0005L3.51577 12.0005"
+                          stroke="white"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path d="M12 3.51416V20.4847V3.51416Z" fill="white" />
+                        <path
+                          d="M12 3.51416V20.4847"
+                          stroke="white"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                )}
               </div>
               <div></div>
               <div
@@ -830,6 +852,10 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               contentType={episodeId ? ContentType.Series : ContentType.Single}
               onClose={() => {
                 setOnPurchasePopup(false);
+              }}
+              onPurchaseSuccess={() => {
+                setOnPurchasePopup(false);
+                fetchSeasonEpisodesPopup();
               }}
             ></PopupPurchase>
           )}

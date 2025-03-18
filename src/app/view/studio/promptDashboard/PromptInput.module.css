@@ -1,3 +1,9 @@
+.promptInput
+{
+    position: relative;
+
+    overflow: visible;
+}
 
 .promptInputList
 {
@@ -20,6 +26,17 @@
   
 .promptInput:focus-visible {
     outline: none;  
+}
+
+.textExist
+{
+    color: var(--Neutral-900, #121414);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 120% */
+    letter-spacing: -0.4px; 
 }
 
 .fixedPrompt
@@ -58,3 +75,21 @@
 {
     /*empty*/
 }
+
+
+.promptInput[contenteditable="true"]:empty:before {
+    content: attr(data-placeholder); /* ✅ `data-placeholder` 속성 값 사용 */
+    color: #999;
+    /* position: absolute; */
+    left: 8px;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  
+  .placeholderVisible:before {
+    content: attr(data-placeholder); /* ✅ Placeholder 표시 */
+    color: #999;
+    /* position: absolute; */
+    left: 8px;
+    pointer-events: none;
+  }

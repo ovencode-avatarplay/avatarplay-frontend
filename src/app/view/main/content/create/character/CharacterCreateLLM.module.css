@@ -90,6 +90,7 @@
 
 .promptInputArea
 {
+    /* position: relative; */
     display: flex;
     min-height: 110px;
     max-height: 257px;
