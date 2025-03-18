@@ -259,6 +259,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       })) || [];
     data.dataCharacterSearch.profileList = memberList;
 
+    data.dataOperatorInvitation.operatorProfileIdList = channelInfo.operatorInvitationProfileIdList;
+
     reset(channelInfoForm, {}); //한번에 form 값 초기화
     setTimeout(() => {
       setValue('isMonetization', Number(channelInfo.isMonetization));
