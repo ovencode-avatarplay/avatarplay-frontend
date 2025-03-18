@@ -1,5 +1,5 @@
 .searchArea{
-
+    width: 100%;
 }
 
 .positionCountryArea
@@ -24,11 +24,7 @@
     width: 24px;
     height: 24px;
 }
-
-.checkBoxIcon
-{
-
-}
+ 
 
 .allButtonText
 {
@@ -109,6 +105,8 @@
 
 .deleteButton
 {
+    cursor: pointer;
+
     display: flex;
     width: 24px;
     height: 24px;

@@ -286,6 +286,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
     const payload: CreateContentReq = {
       contentInfo: {
         profileId: 0,
+        id: editContentInfo?.id,
         contentType: ContentType.Single, // 시리즈로 고정
         name: nameValue || 'Untitled Series',
         oneLineSummary: summaryValue || '',

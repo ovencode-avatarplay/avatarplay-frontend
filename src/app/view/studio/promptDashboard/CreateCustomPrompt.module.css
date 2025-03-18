@@ -6,10 +6,6 @@
  
 }
 
-.promptArea
-{
-
-}
 
 .promptTitleArea
 {
@@ -168,12 +164,16 @@
     cursor: pointer;
   } 
 
-.chipChar
-{
-    /*empty*/
-}
-
-.chipUser
-{
-    /*empty*/
-}
+  .chipcharacter
+  {
+    border-color: var(--Colors-Orange, #FF9500); 
+    color: var(--Colors-Orange, #FF9500); 
+  }
+  
+  .chipuser
+  {
+    border-color: var(--Primary-1, #FD55D3); 
+    color: var(--Primary-1, #FD55D3); 
+  }
+  
+  

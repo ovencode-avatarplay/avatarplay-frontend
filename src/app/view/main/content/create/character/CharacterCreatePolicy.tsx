@@ -19,7 +19,7 @@ import DrawerConnectCharacter from '../common/DrawerConnectCharacter';
 import DrawerMembershipSetting from '../common/DrawerMembershipSetting';
 import CustomSelector from '@/components/layout/shared/CustomSelector';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
-import {LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
+import {getLangKey, LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 
 interface Props {
   visibility: number;
@@ -629,7 +629,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         <div className={styles.tagContainer}>
           {renderDropDown(
             getLocalizedText(Header, 'createcharacter017_label_004'),
-            positionCountry.map(country => LanguageType[country]).join(', '),
+            positionCountry.map(country => getLocalizedText('Common', getLangKey(country))).join(', '),
             setIsPositionCountryOpen,
             true,
             essentialWarning,
@@ -638,7 +638,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           <div className={styles.blackTagContainer}>
             {positionCountry.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {LanguageType[tag]}
+                {getLocalizedText('Common', getLangKey(tag))}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
