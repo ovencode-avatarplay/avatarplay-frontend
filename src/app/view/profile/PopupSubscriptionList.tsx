@@ -339,7 +339,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
         onCancel={async () => {
           const id = data.dataSubScriptionSetting.id;
           await cancelSubscribe({subscribeId: id});
-          await refreshAll();
+          await refreshAll(true);
         }}
       />
       {data.dataRenewal.isOpen && (
@@ -350,7 +350,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
             setData({...data});
           }}
           onComplete={async () => {
-            await refreshAll();
+            await refreshAll(true);
             data.dataRenewal.isOpen = false;
             setData({...data});
           }}
