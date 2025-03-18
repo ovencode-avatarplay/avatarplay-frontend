@@ -297,7 +297,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
       if (isDisLike == true) {
-        await handleDisLikeFeed(item.id, !isDisLike);
+        await handleDisLikeFeed(feedId, !isDisLike);
       }
       const response = await sendLike(episodeId ? InteractionType.Episode : InteractionType.Contents, feedId, isLike);
 
@@ -315,7 +315,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleDisLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
       if (isLike == true) {
-        await handleLikeFeed(item.id, !isLike);
+        await handleLikeFeed(feedId, !isLike);
       }
       const response = await sendDisLike(
         episodeId ? InteractionType.Episode : InteractionType.Contents,
