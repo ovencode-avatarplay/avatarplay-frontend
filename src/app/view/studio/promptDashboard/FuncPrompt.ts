@@ -3,6 +3,7 @@
 export const updateDropdownPosition = (
   promptRef: React.RefObject<HTMLDivElement>,
   setDropdownPosition: React.Dispatch<React.SetStateAction<{top: number; left: number}>>,
+  offset: {top: number; left: number},
 ) => {
   if (!promptRef.current) return;
 
@@ -10,11 +11,21 @@ export const updateDropdownPosition = (
   if (!selection || selection.rangeCount === 0) return;
 
   const range = selection.getRangeAt(0);
-  const rect = range.getBoundingClientRect();
+  let rect = range.getBoundingClientRect();
+
+  if (rect.width === 0 && rect.height === 0) {
+    const dummySpan = document.createElement('span');
+    dummySpan.innerHTML = '&nbsp;';
+    range.insertNode(dummySpan);
+    rect = dummySpan.getBoundingClientRect();
+    dummySpan.remove(); // 삽입 후 즉시 제거
+  }
+
+  const parentRect = promptRef.current.getBoundingClientRect();
 
   setDropdownPosition({
-    top: rect.bottom + window.scrollY - 285, // 약간 아래 위치
-    left: rect.left + window.scrollX - 20,
+    top: rect.bottom + window.scrollY - offset.top - parentRect.top, // 아래쪽 여백 조정
+    left: rect.left + window.scrollX - offset.left - parentRect.left, // 왼쪽 기준 조정
   });
 };
 
