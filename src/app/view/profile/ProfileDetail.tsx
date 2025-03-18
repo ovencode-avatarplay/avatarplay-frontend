@@ -23,7 +23,7 @@ import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterProfileInfo} f
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import Link from 'next/link';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
-import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
+import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
 
 type Props = {
   profileId: number;
@@ -103,11 +103,25 @@ export const CharacterProfileDetailComponent = ({
 
         <div className={styles.right}>
           <div className={styles.likeWrap}>
-            <img src={BoldLike.src} alt="" className={styles.like} />
+            <img
+              src={BoldLike.src}
+              alt=""
+              className={styles.like}
+              onClick={async () => {
+                await sendLike(InteractionType.Character, profileId, true);
+              }}
+            />
             <div className={styles.count}>55K</div>
           </div>
-          <img src={BoldDislike.src} alt="" className={styles.dislike} />
-          {!data?.characterInfo?.isBookMark && (
+          <img
+            src={BoldDislike.src}
+            alt=""
+            className={styles.dislike}
+            onClick={async () => {
+              await sendDisLike(InteractionType.Character, profileId, true);
+            }}
+          />
+          {!data?.characterInfo?.isBookmark && (
             <img
               src={LineArchive.src}
               alt=""
@@ -117,7 +131,7 @@ export const CharacterProfileDetailComponent = ({
               }}
             />
           )}
-          {data?.characterInfo?.isBookMark && <img src={BoldArchive.src} alt="" className={styles.bookmark} />}
+          {data?.characterInfo?.isBookmark && <img src={BoldArchive.src} alt="" className={styles.bookmark} />}
         </div>
       </div>
       {metatags?.length != 0 && (
