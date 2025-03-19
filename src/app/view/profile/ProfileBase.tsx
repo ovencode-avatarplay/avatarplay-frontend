@@ -100,7 +100,7 @@ import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/Co
 export enum eTabFavoritesType {
   Feed = 1,
   Character = 3,
-  Channel = 5,
+  Channel = 4,
   Contents = 2,
   Game = 0,
 }
