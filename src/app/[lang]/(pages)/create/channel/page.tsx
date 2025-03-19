@@ -158,8 +158,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     },
     dataCountry: {
       isOpenDrawer: false,
-      tagList: [],
-      isAll: false,
+      tagList: ['0', '1', '2', '3', '4', '5', '6', '7', '8'],
+      isAll: true,
     },
     dataOperatorInvitation: {
       isOpenDrawer: false,
@@ -213,6 +213,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         paymentType: PaymentType.Korea,
         subscription: Subscription.Contents,
       },
+      postCountry: ['0', '1', '2', '3', '4', '5', '6', '7', '8'],
     },
   });
 
