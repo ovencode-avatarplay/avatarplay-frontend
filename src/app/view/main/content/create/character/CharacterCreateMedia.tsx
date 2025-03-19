@@ -1,3 +1,4 @@
+'use client';
 import {BoldInfo, BoldLock, BoldUnLock, LineArrowDown, LineDelete, LineEdit} from '@ui/Icons';
 import styles from './CharacterCreateMedia.module.css';
 import CustomButton from '@/components/layout/shared/CustomButton';
@@ -35,6 +36,11 @@ const CharacterCreateMedia: React.FC<Props> = ({
   handleEditMediaItem,
   handleMoveMediaItem,
 }) => {
+  const [showAutoCompleteState, setShowAutoCompleteState] = useState<boolean[]>(mediaItems.map(() => false));
+  const [dropdownPositionState, setDropdownPositionState] = useState<{top: number; left: number}[]>(
+    mediaItems.map(() => ({top: 0, left: 0})),
+  );
+
   const renderMediaItem = (
     item: CharacterMediaInfo,
     index: number,
@@ -45,13 +51,6 @@ const CharacterCreateMedia: React.FC<Props> = ({
     handleEdit: (index: number) => void,
     handleMove: (index: number, direction: 'up' | 'down') => void,
   ) => {
-    const promptRefs = mediaItems.map(() => useRef<HTMLDivElement>(null));
-
-    const [showAutoCompleteState, setShowAutoCompleteState] = useState<boolean[]>(mediaItems.map(() => false));
-    const [dropdownPositionState, setDropdownPositionState] = useState<{top: number; left: number}[]>(
-      mediaItems.map(() => ({top: 0, left: 0})),
-    );
-
     const KEYWORDS: Record<string, string> = {
       '{{user}}': 'user',
       '{{char}}': 'character',
