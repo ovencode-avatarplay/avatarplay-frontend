@@ -1,4 +1,33 @@
 export enum LanguageType {
+  Korean = 0,
+  English = 1,
+  Japanese = 2,
+  French = 3,
+  Spanish = 4,
+  Simplified_Chinese = 5,
+  Traditional_Chinese = 6,
+  Portuguese = 7,
+  German = 8,
+}
+
+export const getLangKey = (langType: number): string => {
+  const langMap: Record<number, string> = {
+    [LanguageType.Korean]: 'korea',
+    [LanguageType.English]: 'us',
+    [LanguageType.Japanese]: 'japan',
+    [LanguageType.French]: 'france',
+    [LanguageType.Spanish]: 'spain',
+    [LanguageType.Simplified_Chinese]: 'china',
+    [LanguageType.Traditional_Chinese]: 'taiwan',
+    [LanguageType.Portuguese]: 'portugal',
+    [LanguageType.German]: 'germany',
+  };
+
+  const langKey = langMap[langType] || 'us';
+  return `common_country_${langKey}`;
+};
+
+export enum LanguageName {
   한국어 = 0,
   English = 1,
   日本語 = 2,
@@ -47,13 +76,17 @@ export enum VisibilityType {
 }
 
 export enum Subscription {
-  IP,
-  Contents,
+  None = 0,
+  Contents = 1,
+  IP = 2,
 }
 
 export enum PaymentType {
-  USA,
-  Korea,
+  USD,
+  KRW,
+  EUR,
+  JPY,
+  GBP,
 }
 
 export interface MembershipSetting {

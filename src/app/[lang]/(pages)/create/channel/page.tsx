@@ -34,7 +34,7 @@ import cx from 'classnames';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {debounce, Dialog, Drawer} from '@mui/material';
 import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostCountry';
-import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
+import {LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
@@ -57,6 +57,7 @@ import useCustomRouter from '@/utils/useCustomRouter';
 import parse from 'html-react-parser';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 
 type Props = {
   id: number;
@@ -157,8 +158,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     },
     dataCountry: {
       isOpenDrawer: false,
-      tagList: [],
-      isAll: false,
+      tagList: ['0', '1', '2', '3', '4', '5', '6', '7', '8'],
+      isAll: true,
     },
     dataOperatorInvitation: {
       isOpenDrawer: false,
@@ -203,8 +204,16 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   } = useForm<ChannelInfoForm>({
     shouldFocusError: true,
     defaultValues: {
+      characterIP: CharacterIP.Original,
       isMonetization: 0,
       mediaUrl: '',
+      membershipSetting: {
+        benefits: '',
+        paymentAmount: 0,
+        paymentType: PaymentType.Korea,
+        subscription: Subscription.Contents,
+      },
+      postCountry: ['0', '1', '2', '3', '4', '5', '6', '7', '8'],
     },
   });
 
@@ -225,7 +234,14 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     tag = tag.filter(v => !!v && v != '');
     let isMonetization = 0;
     let nsfw = 0;
-    const channelInfoForm: ChannelInfoForm = {...channelInfo, tags: tag, isMonetization, nsfw};
+
+    const membershipSetting: MembershipSetting = {
+      benefits: channelInfo.membershipSetting?.benefits || '',
+      paymentAmount: channelInfo.membershipSetting?.paymentAmount || 50000,
+      paymentType: channelInfo.membershipSetting?.paymentType || PaymentType.Korea,
+      subscription: channelInfo.membershipSetting?.subscription || Subscription.Contents,
+    };
+    const channelInfoForm: ChannelInfoForm = {...channelInfo, tags: tag, isMonetization, nsfw, membershipSetting};
 
     data.thumbnail = {file: channelInfo.mediaUrl || ''};
 
@@ -258,6 +274,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         profileSimpleInfo: v,
       })) || [];
     data.dataCharacterSearch.profileList = memberList;
+
+    data.dataOperatorInvitation.operatorProfileIdList = channelInfo.operatorInvitationProfileIdList;
 
     reset(channelInfoForm, {}); //한번에 form 값 초기화
     setTimeout(() => {
@@ -373,13 +391,23 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     let tag = dataForm?.tags;
 
     const idChannel = isUpdate ? data.idChannel : 0;
+    const visibilityType = Number(dataForm.visibilityType);
     let isMonetization = Boolean(Number(dataForm.isMonetization));
     let nsfw = Boolean(Number(dataForm.nsfw));
     let characterIP = Number(dataForm.characterIP);
     const membershipSetting = isMonetization ? dataForm.membershipSetting : undefined;
     const dataUpdatePdInfo: CreateChannelReq = {
       languageType: getCurrentLanguage(),
-      channelInfo: {...dataForm, id: idChannel, tags: tag, isMonetization, nsfw, characterIP, membershipSetting},
+      channelInfo: {
+        ...dataForm,
+        id: idChannel,
+        tags: tag,
+        isMonetization,
+        nsfw,
+        characterIP,
+        membershipSetting,
+        visibilityType,
+      },
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     if (res?.resultCode == 0) {
@@ -604,7 +632,12 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 <div className={styles.label}>
                   Visibility <span className={styles.highlight}>*</span>
                 </div>
-                <input {...register('visibilityType', {required: true})} className={styles.hide} autoComplete="off" />
+                <input
+                  defaultValue={VisibilityType.Private}
+                  {...register('visibilityType', {required: true})}
+                  className={styles.hide}
+                  autoComplete="off"
+                />
                 <CustomSelector
                   value={visibilityTypeStr}
                   error={errors.visibilityType && isSubmitted}
@@ -760,8 +793,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     <label>
                       <input
                         type="radio"
-                        value={0}
-                        checked={watch('characterIP', 0) == 0}
+                        value={1}
+                        defaultChecked
+                        checked={watch('characterIP', 0) == 1}
                         {...register('characterIP')}
                       />
                       <div className={styles.radioWrap}>
@@ -776,8 +810,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     <label>
                       <input
                         type="radio"
-                        value={1}
-                        checked={watch('characterIP', 0) == 1}
+                        value={2}
+                        checked={watch('characterIP', 0) == 2}
                         {...register('characterIP')}
                       />
                       <div className={styles.radioWrap}>
@@ -1261,8 +1295,8 @@ export const DrawerCharacterSearch = ({
 
   const sortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.MostPopular, value: 'Popular'},
-    {id: ExploreSortType.WeeklyPopular, value: 'Name'},
+    {id: ExploreSortType.Popular, value: 'Popular'},
+    {id: ExploreSortType.Name, value: 'Name'},
   ];
 
   const SelectBoxArrowComponent = useCallback(
@@ -1408,7 +1442,7 @@ export const DrawerCharacterSearch = ({
           </div>
           <div className={styles.right}>
             <SelectBox
-              value={sortOptionList[data.indexSort]}
+              value={sortOptionList?.find(v => v.id == data.indexSort) || sortOptionList[0]}
               options={sortOptionList}
               ArrowComponent={SelectBoxArrowComponent}
               ValueComponent={SelectBoxValueComponent}

@@ -1,6 +1,8 @@
 /* ExploreCard.css */
 .exploreCard
 {
+  cursor: pointer;
+
   position: relative;
   width: calc((var(--second-width)) * 0.4);
   max-width: 147.467px;
@@ -115,7 +117,7 @@
   letter-spacing: -0.4px;
  
   display: -webkit-box; /* Flex 컨테이너를 제한 */
-  -webkit-line-clamp: 2;
+  /* -webkit-line-clamp: 2; */
   -webkit-box-orient: vertical;
   overflow: hidden; 
   text-overflow: ellipsis; 

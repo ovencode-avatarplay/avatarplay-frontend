@@ -24,7 +24,9 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 enum FilterTypes {
   All = 0,
-  Publishing = 1,
+  Public = 1,
+  Private = 2,
+  Unlisted = 3,
 }
 
 interface CreateContentIntroductionProps {}
@@ -99,7 +101,9 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
 
   const publishItems: SelectDrawerItem[] = [
     {name: 'All', onClick: () => setSelectedFilter(FilterTypes.All)},
-    {name: 'Publishing', onClick: () => setSelectedFilter(FilterTypes.Publishing)},
+    {name: 'Public', onClick: () => setSelectedFilter(FilterTypes.Public)},
+    {name: 'Private', onClick: () => setSelectedFilter(FilterTypes.Private)},
+    {name: 'Unlisted', onClick: () => setSelectedFilter(FilterTypes.Unlisted)},
   ];
 
   const isActive = false;
@@ -177,9 +181,20 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
 
                 <div className={styles.cardGroup}>
                   {contentList
-                    .filter(
-                      content => selectedFilter === FilterTypes.All || content.visibility === VisibilityType.Public,
-                    )
+                    .filter(content => {
+                      switch (selectedFilter) {
+                        case FilterTypes.All:
+                          return true;
+                        case FilterTypes.Public:
+                          return content.visibility === VisibilityType.Public;
+                        case FilterTypes.Private:
+                          return content.visibility === VisibilityType.Private;
+                        case FilterTypes.Unlisted:
+                          return content.visibility === VisibilityType.Unlisted;
+                        default:
+                          return true;
+                      }
+                    })
                     .map((content, index) => (
                       <ContentCard
                         key={index}

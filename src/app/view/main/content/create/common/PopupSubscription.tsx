@@ -57,6 +57,7 @@ const PopupSubscription = ({id, onClose, onComplete}: Props) => {
     const resInfo = await getPaymentAmountMenu(reqSubscriptionInfo);
     console.log('resInfo : ', resInfo);
     data.subscriptionInfo = resInfo?.data || null;
+    setData({...data});
   };
 
   const onSubscribe = async () => {

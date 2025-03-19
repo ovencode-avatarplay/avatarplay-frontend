@@ -59,6 +59,7 @@ import {
   ProfileTabItemInfo,
   ProfileType,
   selectProfile,
+  SharedItemType,
 } from '@/app/NetWork/ProfileNetwork';
 import {useDispatch, useSelector} from 'react-redux';
 import {setBottomNavColor} from '@/redux-store/slices/MainControl';
@@ -79,7 +80,7 @@ import {
   sendGetCharacterProfileInfo,
 } from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
-import {getBackUrl} from '@/utils/util-1';
+import {copyCurrentUrlToClipboard, getBackUrl} from '@/utils/util-1';
 import {useInView} from 'react-intersection-observer';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {deleteChannel, getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
@@ -96,11 +97,12 @@ import PopupFriends from './PopupFriends';
 import {PortfolioListPopup} from '@/app/[lang]/(pages)/profile/update/[[...id]]/page';
 import useCustomRouter from '@/utils/useCustomRouter';
 import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
+import DrawerDonation from '../main/content/create/common/DrawerDonation';
 
 export enum eTabFavoritesType {
   Feed = 1,
   Character = 3,
-  Channel = 5,
+  Channel = 4,
   Contents = 2,
   Game = 0,
 }
@@ -184,6 +186,9 @@ export type TabContentMenuType = {
   isSingle?: boolean;
   urlLinkKey?: string;
   isFavorite?: boolean;
+  index?: number;
+  shareUrl?: string;
+  shareTitle?: string;
 };
 
 type DataProfileType = {
@@ -219,6 +224,11 @@ type DataProfileType = {
   isOpenPopupFriendsList: boolean;
 
   gap: number;
+
+  dataGift: {
+    isOpen: boolean;
+    idProfileTo: number;
+  };
 
   refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
   getIsEmptyTab: () => boolean;
@@ -284,7 +294,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       indexFilterShared: 0,
       indexFilterChannel: 0,
       indexFilterContent: 0,
-      indexSort: ExploreSortType.MostPopular,
+      indexSort: ExploreSortType.Newest,
     },
     isShowMore: false,
     isNeedShowMore: false,
@@ -304,6 +314,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     isOpenPopupFriendsList: false,
 
     gap: 0,
+
+    dataGift: {
+      isOpen: false,
+      idProfileTo: 0,
+    },
 
     refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
     getIsEmptyTab: () => true,
@@ -378,6 +393,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     tabIndex: number,
     indexSort: ExploreSortType,
     filterType: {
+      sharedTabType: number;
       feedMediaType: number;
       channelTabType: number;
       characterTabType: number;
@@ -485,13 +501,14 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         indexTab,
         data.filterCluster?.indexSort || 0,
         {
+          sharedTabType: data.filterCluster?.indexFilterShared || 0,
           channelTabType: data.filterCluster?.indexFilterChannel || 0,
           characterTabType: data.filterCluster?.indexFilterCharacter || 0,
           contentTabType: data.filterCluster?.indexFilterContent || 0,
           feedMediaType: data.filterCluster?.indexFilterMedia || 0,
         },
         isRefreshAll ? 0 : getTabContentCount(indexTab, isMine, profileType),
-        isRefreshAll ? getTabContentCount(indexTab, isMine, profileType) : 10,
+        isRefreshAll ? 10 : 10,
       );
     }
     if (!resProfileTabInfo) return;
@@ -580,9 +597,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     setData({...data});
   };
 
-  const handleShare = async (url: string = window.location.href) => {
+  const handleShare = async (url: string = window.location.href, title: string = '') => {
     const shareData = {
-      title: '공유하기 제목',
+      title: title,
       text: '이 링크를 확인해보세요!',
       url: url, // 현재 페이지 URL
     };
@@ -627,6 +644,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
       } else if (data.indexTab == eTabPDOtherType.Info) {
         isEmptyTab = false;
+      } else if (data.indexTab == eTabPDType.Shared) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.sharedInfoList?.length;
       } else {
         isEmptyTab = true;
       }
@@ -680,35 +699,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     return getLocalizedLink(``);
   };
 
-  const copyToClipboard = () => {
-    if (typeof window === 'undefined') return; // 서버에서 실행 방지
-
-    const queryString = searchParams?.toString() || ''; // 현재 쿼리 파라미터 가져오기
-    const url = queryString
-      ? `${window.location.origin}${pathname}?${queryString}`
-      : `${window.location.origin}${pathname}`;
-    const success = () => {
-      console.log('URL을 클립보드에 복사했습니다.');
-    };
-    const failure = (err: any) => console.error('클립보드에 URL을 복사하지 못했습니다. : ', err);
-
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(success).catch(failure);
-      } else {
-        const tempInput = document.createElement('textarea');
-        tempInput.value = url;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-
-        const successful = document.execCommand('copy');
-        document.body.removeChild(tempInput);
-
-        successful ? success() : failure('execCommand를 통한 복사 실패');
-      }
-    } catch (error) {
-      failure(error);
-    }
+  const onCopyToClipboard = () => {
+    copyCurrentUrlToClipboard(pathname, searchParams);
   };
 
   return (
@@ -789,7 +781,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             src={LineShare.src}
             alt=""
             onClick={() => {
-              handleShare();
+              handleShare(window.location.href, data.profileInfo?.profileInfo?.name);
             }}
           />
           {isMine && (
@@ -844,7 +836,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               // const url = window.location.origin + pathname;
               // await navigator.clipboard.writeText(url);
 
-              copyToClipboard();
+              onCopyToClipboard();
             }}
           >
             <div className={styles.name}>{data.profileInfo?.profileInfo?.name}</div>
@@ -945,7 +937,13 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               >
                 {isFollow ? 'Following' : 'Follow'}
               </button>
-              <button className={styles.gift}>
+              <button
+                className={styles.gift}
+                onClick={() => {
+                  data.dataGift.isOpen = true;
+                  setData({...data});
+                }}
+              >
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
               </button>
             </div>
@@ -969,7 +967,13 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               >
                 {isFollow ? 'Following' : 'Follow'}
               </button>
-              <button className={styles.giftWrap}>
+              <button
+                className={styles.giftWrap}
+                onClick={() => {
+                  data.dataGift.isOpen = true;
+                  setData({...data});
+                }}
+              >
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
               </button>
               {isOtherCharacter && (
@@ -1125,6 +1129,18 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           }}
         />
       )}
+
+      {data.dataGift.isOpen && (
+        <DrawerDonation
+          giveToPDId={data.profileId}
+          isOpen={data.dataGift.isOpen}
+          onClose={() => {
+            data.dataGift.isOpen = false;
+            setData({...data});
+          }}
+          sponsoredName={data.profileInfo?.profileInfo?.name || ''}
+        />
+      )}
     </>
   );
 });
@@ -1161,17 +1177,17 @@ const ContentSetting = ({
         onEdit();
       },
     },
-    {
-      name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
-      onClick: async () => {
-        const dataUpdatePin: PinFixFeedReq = {
-          feedId: Number(tabContentMenu.id),
-          isFix: !tabContentMenu.isPin,
-        };
-        await updatePin(dataUpdatePin);
-        refreshTabAll();
-      },
-    },
+    // {
+    //   name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
+    //   onClick: async () => {
+    //     const dataUpdatePin: PinFixFeedReq = {
+    //       feedId: Number(tabContentMenu.id),
+    //       isFix: !tabContentMenu.isPin,
+    //     };
+    //     await updatePin(dataUpdatePin);
+    //     refreshTabAll();
+    //   },
+    // },
     {
       name: 'Share',
       onClick: () => {
@@ -1186,14 +1202,20 @@ const ContentSetting = ({
     },
   ];
   let uploadImageItems: SelectDrawerItem[] = [
+    // {
+    //   name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
+    //   onClick: () => {},
+    // },
+    // {
+    //   name: 'Hide',
+    //   onClick: () => {
+    //     onHide();
+    //   },
+    // },
     {
-      name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
-      onClick: () => {},
-    },
-    {
-      name: 'Hide',
+      name: 'Share',
       onClick: () => {
-        onHide();
+        onShare();
       },
     },
     {
@@ -1546,13 +1568,13 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
   } = getUserType(isMine, profileType);
   const sortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.MostPopular, value: 'Popular'},
-    {id: ExploreSortType.WeeklyPopular, value: 'Name'},
+    {id: ExploreSortType.Popular, value: 'Popular'},
+    {id: ExploreSortType.Name, value: 'Name'},
   ];
   const feedSortOptionList = [
     {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.MostPopular, value: 'Popular'},
-    {id: ExploreSortType.WeeklyPopular, value: 'Name'},
+    {id: ExploreSortType.Popular, value: 'Popular'},
+    {id: ExploreSortType.Name, value: 'Name'},
   ];
 
   if (
@@ -1602,10 +1624,11 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBoxProfileFilter
-                value={feedSortOptionList[filterCluster?.indexSort || 0]}
+                value={feedSortOptionList?.find(v => v.id == filterCluster?.indexSort) || feedSortOptionList[0]}
                 options={feedSortOptionList}
                 onChange={async id => {
                   const indexSort = id;
+                  console.log('indexSort : ', indexSort);
                   onChange({indexSort: indexSort});
                 }}
               />
@@ -1668,7 +1691,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBoxProfileFilter
-                value={sortOptionList[filterCluster?.indexSort || 0]}
+                value={sortOptionList?.find(v => v.id == filterCluster?.indexSort) || sortOptionList[0]}
                 options={sortOptionList}
                 onChange={async id => {
                   const indexSort = id;
@@ -1735,7 +1758,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBoxProfileFilter
-                value={sortOptionList[filterCluster?.indexSort || 0]}
+                value={sortOptionList?.find(v => v.id == filterCluster?.indexSort) || sortOptionList[0]}
                 options={sortOptionList}
                 onChange={async id => {
                   const indexSort = id;
@@ -1801,7 +1824,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBoxProfileFilter
-                value={sortOptionList[filterCluster?.indexSort || 0]}
+                value={sortOptionList?.find(v => v.id == filterCluster?.indexSort) || sortOptionList[0]}
                 options={sortOptionList}
                 onChange={async id => {
                   const indexSort = id;
@@ -1870,7 +1893,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
               <SelectBoxProfileFilter
-                value={sortOptionList[filterCluster?.indexFilterShared || 0]}
+                value={sortOptionList?.find(v => v.id == filterCluster?.indexSort) || sortOptionList[0]}
                 options={sortOptionList}
                 onChange={async id => {
                   const indexSort = id;
@@ -2036,15 +2059,17 @@ export const TabHeaderComponent = ({
       setData({...data});
     };
     window.addEventListener('resize', onResize);
+    window.addEventListener('scroll', onResize);
     return () => {
       window.removeEventListener('resize', onResize);
+      window.removeEventListener('scroll', onResize);
     };
   }, [data]);
 
   useEffect(() => {
     data.indexTab = indexTab;
     setData({...data});
-  }, [indexTab]);
+  }, [indexTab, tabHeaderList]);
 
   const calculateGap = () => {
     if (containerRef.current) {
@@ -2147,9 +2172,9 @@ export const TabContentComponentWrap = ({
 
     isOpenPreview: false,
   });
-  const handleShare = async (url: string = window.location.href) => {
+  const handleShare = async (url: string = window.location.href, title: string = '') => {
     const shareData = {
-      title: '공유하기 제목',
+      title: title,
       text: '이 링크를 확인해보세요!',
       url: url, // 현재 페이지 URL
     };
@@ -2198,10 +2223,9 @@ export const TabContentComponentWrap = ({
           onRefreshTab(true);
         }}
         onShare={() => {
-          const url =
-            getLocalizedLink(`/profile/feed/` + profileId) +
-            `?type=${profileType}&idContent=${data.tabContentMenu.id}&feedMediaType=${filterCluster.indexFilterMedia}&feedSortType=${filterCluster.indexSort}`;
-          handleShare(url);
+          const url = data.tabContentMenu.shareUrl;
+          const title = data.tabContentMenu.shareTitle;
+          handleShare(url, title);
         }}
         onDelete={async () => {
           if (
@@ -2254,9 +2278,9 @@ export const TabContentComponentWrap = ({
             (isChannel && tabIndex == eTabChannelType.Contents)
           ) {
             if (data.tabContentMenu.isSingle) {
-              router.push(getLocalizedLink(`/update/content/single/` + data.tabContentMenu.id));
+              router.push(getLocalizedLink(`/update/content/single/` + data.tabContentMenu.urlLinkKey));
             } else {
-              router.push(getLocalizedLink(`/update/content/series/` + data.tabContentMenu.id));
+              router.push(getLocalizedLink(`/update/content/series/` + data.tabContentMenu.urlLinkKey));
             }
           }
 
@@ -2271,6 +2295,14 @@ export const TabContentComponentWrap = ({
           alert('report api 연동 필요');
         }}
       />
+      <SharePopup
+        open={data.isShareOpened}
+        title={data?.tabContentMenu?.shareTitle || '공유하기'}
+        url={data.tabContentMenu?.shareUrl || window.location.href}
+        onClose={() => {
+          setData(v => ({...v, isShareOpened: false}));
+        }}
+      ></SharePopup>
     </>
   );
 };
@@ -2333,6 +2365,7 @@ const TabContentComponent = ({
             return (
               <FeedComponent
                 feedInfo={one}
+                index={index}
                 isMine={isMine}
                 onOpenContentMenu={onOpenContentMenu}
                 urlLinkThumbnail={
@@ -2358,11 +2391,53 @@ const TabContentComponent = ({
           return (
             <CharacterComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
             />
           );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+
+  if (isPD && tabIndex == eTabPDType.Shared) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.sharedInfoList.map((one, index: number) => {
+          if (one.sharedItemType == SharedItemType.Channel) {
+            return (
+              <CharacterComponent
+                isMine={isMine}
+                index={index}
+                itemInfo={one}
+                urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+                onOpenContentMenu={onOpenContentMenu}
+              />
+            );
+          } else if (one.sharedItemType == SharedItemType.Character) {
+            return (
+              <ChannelComponent
+                index={index}
+                isMine={isMine}
+                itemInfo={one}
+                urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+                onOpenContentMenu={onOpenContentMenu}
+              />
+            );
+          } else {
+            return (
+              <CharacterComponent
+                isMine={isMine}
+                index={index}
+                itemInfo={one}
+                urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+                onOpenContentMenu={onOpenContentMenu}
+              />
+            );
+          }
         })}
         <div ref={observerRef}></div>
       </ul>
@@ -2378,6 +2453,7 @@ const TabContentComponent = ({
           return (
             <ContentComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(urlLink + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
@@ -2395,6 +2471,7 @@ const TabContentComponent = ({
         {profileTabInfo?.[tabIndex]?.channelInfoList?.map((one, index: number) => {
           return (
             <ChannelComponent
+              index={index}
               isMine={isMine}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
@@ -2628,12 +2705,20 @@ const TabContentComponent = ({
 
 export type ChannelComponentType = {
   isMine: boolean;
+  index: number;
   urlLinkThumbnail: string;
   itemInfo: ProfileTabItemInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ChannelComponentType) => {
+export const ChannelComponent = ({
+  isMine,
+  index,
+  urlLinkThumbnail,
+  itemInfo,
+  onOpenContentMenu,
+}: ChannelComponentType) => {
+  const isPD = itemInfo.characterIP == CharacterIP.None;
   const isOriginal = itemInfo.characterIP == CharacterIP.Original;
   const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
@@ -2664,7 +2749,9 @@ export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
         <div className={styles.titleWrap}>
           <div className={styles.left}>
             <div className={styles.name}>{itemInfo?.name}</div>
-            <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
+            {!isPD && (
+              <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
+            )}
           </div>
           <div className={styles.right}>
             <img
@@ -2676,8 +2763,11 @@ export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
                 e.stopPropagation();
                 const dataContextMenu = {
                   id: itemInfo.id,
+                  index: index,
                   isPin: itemInfo?.isPinFix || false,
                   isSettingOpen: true,
+                  shareUrl: window.location.origin + urlLinkThumbnail,
+                  shareName: itemInfo?.name,
                 };
                 if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
               }}
@@ -2691,12 +2781,19 @@ export const ChannelComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
 
 export type ContentComponentType = {
   isMine: boolean;
+  index: number;
   urlLinkThumbnail: string;
   itemInfo: ProfileTabItemInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: ContentComponentType) => {
+export const ContentComponent = ({
+  isMine,
+  index,
+  urlLinkThumbnail,
+  itemInfo,
+  onOpenContentMenu,
+}: ContentComponentType) => {
   return (
     <Link href={urlLinkThumbnail}>
       <li className={styles.itemTab} key={itemInfo?.id}>
@@ -2745,10 +2842,13 @@ export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
 
                 const dataContextMenu = {
                   id: itemInfo.id,
+                  index: index,
                   urlLinkKey: itemInfo.urlLinkKey,
                   isPin: itemInfo?.isPinFix || false,
                   isSettingOpen: true,
                   isSingle: isSingle,
+                  shareUrl: window.location.origin + urlLinkThumbnail,
+                  shareName: itemInfo?.name,
                 };
                 if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
               }}
@@ -2762,12 +2862,20 @@ export const ContentComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCont
 
 export type CharacterComponentType = {
   isMine: boolean;
+  index: number;
   urlLinkThumbnail: string;
   itemInfo: ProfileTabItemInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenContentMenu}: CharacterComponentType) => {
+export const CharacterComponent = ({
+  isMine,
+  index,
+  urlLinkThumbnail,
+  itemInfo,
+  onOpenContentMenu,
+}: CharacterComponentType) => {
+  const isPD = itemInfo.characterIP == CharacterIP.None;
   const isOriginal = itemInfo.characterIP == CharacterIP.Original;
   const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
@@ -2804,7 +2912,9 @@ export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCo
         <div className={styles.titleWrap}>
           <div className={styles.left}>
             <div className={styles.name}>{itemInfo?.name}</div>
-            <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
+            {!isPD && (
+              <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
+            )}
           </div>
           <div className={styles.right}>
             <img
@@ -2817,8 +2927,11 @@ export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCo
 
                 const dataContextMenu = {
                   id: itemInfo.id,
+                  index: index,
                   isPin: itemInfo?.isPinFix || false,
                   isSettingOpen: true,
+                  shareUrl: window.location.origin + urlLinkThumbnail,
+                  shareName: itemInfo?.name,
                 };
                 if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
               }}
@@ -2832,12 +2945,13 @@ export const CharacterComponent = ({isMine, urlLinkThumbnail, itemInfo, onOpenCo
 
 export type FeedComponentType = {
   isMine: boolean;
+  index: number;
   urlLinkThumbnail: string;
   feedInfo: FeedInfo;
   onOpenContentMenu?: (data: TabContentMenuType) => void;
 };
 
-export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContentMenu}: FeedComponentType) => {
+export const FeedComponent = ({isMine, index, urlLinkThumbnail, feedInfo, onOpenContentMenu}: FeedComponentType) => {
   return (
     <Link href={urlLinkThumbnail}>
       <li className={styles.itemTab} key={feedInfo?.id}>
@@ -2886,9 +3000,12 @@ export const FeedComponent = ({isMine, urlLinkThumbnail, feedInfo, onOpenContent
                 e.stopPropagation();
                 const dataContextMenu = {
                   id: feedInfo.id,
+                  index: index,
                   urlLinkKey: feedInfo.urlLinkKey,
                   isPin: feedInfo?.isPinFix || false,
                   isSettingOpen: true,
+                  shareUrl: window.location.origin + urlLinkThumbnail,
+                  shareName: feedInfo?.title,
                 };
                 if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
               }}

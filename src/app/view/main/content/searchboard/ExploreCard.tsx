@@ -31,10 +31,6 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
 
   const RankCount = 3 + 1;
 
-  useEffect(() => {
-    console.log(storyId);
-  }, [storyId]);
-
   const handleOpenDrawer = async () => {
     if (exploreItemType === 0) {
       const req = {

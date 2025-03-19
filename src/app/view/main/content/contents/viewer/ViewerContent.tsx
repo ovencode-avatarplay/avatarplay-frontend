@@ -276,6 +276,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleAddCommentCount = () => {
     if (info) setCommentCount(info?.commonMediaViewInfo.commentCount + 1);
   };
+  const handleSubCommentCount = () => {
+    if (info) setCommentCount(info?.commonMediaViewInfo.commentCount - 1);
+  };
   const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
     event.stopPropagation(); // 부모로 이벤트 전파 방지
     setIsPlaying(!isPlaying);
@@ -296,14 +299,14 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   };
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
-      // if (isDisLike == true) {
-      //   await handleDisLikeFeed(item.id, !isDisLike);
-      // }
+      if (isDisLike == true) {
+        await handleDisLikeFeed(feedId, !isDisLike);
+      }
       const response = await sendLike(episodeId ? InteractionType.Episode : InteractionType.Contents, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`content ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-        if (response.data?.likeCount) setLikeCount(response.data?.likeCount);
+        if (response.data) setLikeCount(response.data?.likeCount);
         setIsLike(isLike);
       } else {
         console.error(`Failed to like/unlike content: ${response.resultMessage}`);
@@ -314,9 +317,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   };
   const handleDisLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
-      // if (isLike == true) {
-      //   await handleLikeFeed(item.id, !isLike);
-      // }
+      if (isLike == true) {
+        await handleLikeFeed(feedId, !isLike);
+      }
       const response = await sendDisLike(
         episodeId ? InteractionType.Episode : InteractionType.Contents,
         feedId,
@@ -591,7 +594,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                     pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
                   }}
                 ></Avatar>
-                {!info?.isProfileFollow && !tempFollow && (
+                {!info?.isProfileFollow && !tempFollow && info?.isMyEpisode == false && (
                   <div
                     className={`${curIsFollow ? styles.checkCircle : styles.plusCircle} ${animationClass}`}
                     onClick={event => {
@@ -624,16 +627,19 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                   </div>
                 )}
               </div>
-              <div></div>
-              <div
-                className={styles.textButtons}
-                onClick={event => {
-                  event.stopPropagation();
-                  setDonation(true);
-                }}
-              >
-                <img src={BoldReward.src} className={styles.button}></img>
-              </div>
+              {info?.isMyEpisode == false && !info?.isProfileFollow && <div></div>}
+              {info?.isMyEpisode == false && (
+                <div
+                  className={styles.textButtons}
+                  onClick={event => {
+                    event.stopPropagation();
+                    setDonation(true);
+                  }}
+                >
+                  <img src={BoldReward.src} className={styles.button}></img>
+                </div>
+              )}
+
               <div
                 className={styles.textButtons}
                 onClick={event => {
@@ -759,6 +765,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               isOpen={isCommentOpen}
               toggleDrawer={v => setCommentIsOpen(v)}
               onAddTotalCommentCount={() => handleAddCommentCount()}
+              onSubTotalCommentCount={() => handleSubCommentCount()}
               commentType={episodeId ? CommentContentType.Episode : CommentContentType.Content}
             />
           )}
@@ -841,7 +848,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               sponsoredName={'이름도 받아야함'}
               giveToPDId={0}
               onClose={() => setDonation(false)}
-              router={router}
             />
           )}
           {onPurchasePopup && purchaseData && (

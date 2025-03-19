@@ -3,27 +3,37 @@ import styles from './DrawerConnectCharacter.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {BoldArrowDown, LineCheck} from '@ui/Icons';
-import {getConnectList, getProfileList, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {getConnectList, GetConnectListReq, getProfileList, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 
 interface DrawerConnectCharacterProps {
+  curCharacterId?: number;
   connectOpen: boolean;
   setConnectOpen: (open: boolean) => void;
   connectCharacterInfo: ProfileSimpleInfo | null;
+  onConnectCharacterSelected: (value: number) => void;
   onConnectCharacterInfoChange: (value: ProfileSimpleInfo) => void;
+  // onConnectCharacterIdChange: (value: number) => void;
 }
 
 const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
+  curCharacterId = 0,
   connectOpen,
   setConnectOpen,
   connectCharacterInfo,
+  onConnectCharacterSelected,
   onConnectCharacterInfoChange,
+  // onConnectCharacterIdChange,
 }) => {
   const [connectableCharacterList, setConnectableCharacterList] = useState<ProfileSimpleInfo[]>([]);
 
   const getConnectableCharacterList = async () => {
     try {
-      const response = await getConnectList(); // {languageType: getCurrentLanguage()}
+      const payload: GetConnectListReq = {
+        profileId: curCharacterId,
+      };
+
+      const response = await getConnectList(payload); // {languageType: getCurrentLanguage()}
       if (response) {
         const characterInfoList: ProfileSimpleInfo[] = response;
         setConnectableCharacterList(characterInfoList);
@@ -76,7 +86,9 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
                 key={item.profileId || index}
                 className={styles.dropdownItem}
                 onClick={() => {
+                  onConnectCharacterSelected(item.profileId);
                   onConnectCharacterInfoChange(item);
+                  // onConnectCharacterIdChange(item.profileId);
                   setConnectOpen(false);
                 }}
               >

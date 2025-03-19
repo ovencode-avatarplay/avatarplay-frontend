@@ -4,10 +4,11 @@ import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAI} from '@ui/Icons';
 import {useEffect, useRef, useState} from 'react';
-import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
+import {getLangKey, LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import formatText from '@/utils/formatText';
 import PromptInput from '@/app/view/studio/promptDashboard/PromptInput';
 import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPrompt';
+import ButtonPromptInput from '@/app/view/studio/promptDashboard/ButtonPromptInput';
 
 interface Props {
   selectedLang: number;
@@ -53,10 +54,10 @@ const CharacterCreateLLM: React.FC<Props> = ({
   const [autoWriteCharacterSecret, setAutoWriteCharacterSecret] = useState<string[]>([]);
 
   const langItems = Object.values(LanguageType)
-    .filter(value => typeof value === 'string')
+    .filter(value => typeof value === 'number')
     .map(value => ({
-      label: value as string,
-      value: LanguageType[value as keyof typeof LanguageType],
+      label: getLocalizedText(Common, getLangKey(value)),
+      value: value,
     }));
 
   const [promptItems, setPromptItems] = useState<{label: string; value: number}[]>([]);
@@ -156,7 +157,9 @@ const CharacterCreateLLM: React.FC<Props> = ({
       const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
       html = html.replace(
         regex,
-        `<span class="${styles['chip']} ${styles['chipUser']}" contenteditable="false">${KEYWORDS[keyword]}</span>`,
+        `<span class="${styles['chip']} ${styles[`chip${KEYWORDS[keyword]}`]}" contenteditable="false">${
+          KEYWORDS[keyword]
+        }</span>`,
       );
     });
 
@@ -249,106 +252,6 @@ const CharacterCreateLLM: React.FC<Props> = ({
     );
   };
 
-  const renderMaxTextInput = (
-    key: keyof typeof promptRefs,
-    value: string,
-    setValue: React.Dispatch<React.SetStateAction<string>>,
-    onClickAI: () => void,
-    placeholder?: string,
-    essential?: boolean,
-  ) => {
-    const handleButtonClick = (key: keyof typeof promptRefs, text: string) => {
-      const div = promptRefs[key].current;
-      if (!div) return;
-
-      const selection = window.getSelection();
-      const range = selection?.getRangeAt(0);
-
-      div.focus();
-
-      // 새로운 칩을 변환된 HTML로 생성
-      const chipHTML = convertTextToHTML(`{{${text}}}`);
-
-      if (range && div.contains(range.commonAncestorContainer)) {
-        // 현재 선택한 위치에 HTML 삽입
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = chipHTML;
-        const chipElement = tempDiv.firstChild;
-
-        range.deleteContents();
-        range.insertNode(chipElement as Node);
-
-        // 칩 뒤에 공백 추가
-        const space = document.createTextNode(' ');
-        chipElement?.after(space);
-
-        // 커서를 space 뒤로 이동
-        range.setStartAfter(space);
-        range.collapse(true);
-      } else {
-        // 기존 HTML 유지 + 칩 추가
-        div.insertAdjacentHTML('beforeend', ` ${chipHTML}`);
-
-        // 커서를 마지막으로 이동
-        const newRange = document.createRange();
-        newRange.selectNodeContents(div);
-        newRange.collapse(false);
-        selection?.removeAllRanges();
-        selection?.addRange(newRange);
-      }
-
-      // `handleInput`을 수동으로 호출하여 상태 업데이트
-      const event = new Event('input', {bubbles: true});
-      div.dispatchEvent(event);
-    };
-
-    return (
-      <div className={`${styles.maxTextInputArea} `}>
-        {renderPromptInput(key, value, setValue, placeholder)}
-        <div className={styles.maxTextButtonArea}>
-          <button className={`${styles.maxTextButton} ${styles.aiButton}`}>
-            <img className={styles.maxTextButtonIcon} src={BoldAI.src} onClick={onClickAI} />
-          </button>
-          <button className={styles.maxTextButton} onClick={() => handleButtonClick(key, 'user')}>
-            {getLocalizedText(Common, 'common_button_usercommand')}
-          </button>
-          <button className={styles.maxTextButton} onClick={() => handleButtonClick(key, 'char')}>
-            {getLocalizedText(Common, 'common_button_charcommand')}
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  const renderPromptInput = (
-    key: keyof typeof promptRefs,
-    value: string,
-    setValue: React.Dispatch<React.SetStateAction<string>>,
-    placeholder?: string,
-  ) => {
-    return (
-      <div className={styles.promptInputContainer}>
-        <div className={styles.promptInputArea}>
-          <PromptInput
-            prefix={''}
-            suffix={''}
-            promptRef={promptRefs[key]}
-            showAutoComplete={showAutoCompleteState[key]}
-            Keywords={KEYWORDS}
-            dropdownPos={dropdownPositionState[key]}
-            setDropdownPosition={pos => setDropdownPositionState(prev => ({...prev, [key]: pos}))}
-            setShowAutoComplete={show => setShowAutoCompleteState(prev => ({...prev, [key]: show}))}
-            setState={setValue}
-            dropdownOffset={{top: 0, left: 0}}
-          />
-        </div>
-        <div className={styles.hintTextArea}>
-          {formatText(getLocalizedText(Header, 'createcharacter001_label_013'), [value.length.toString()])}
-        </div>
-      </div>
-    );
-  };
-
   //#endregion
 
   return (
@@ -370,44 +273,60 @@ const CharacterCreateLLM: React.FC<Props> = ({
           `${getLocalizedText(Header, 'createcharacter001_label_016')}*`,
           `${getLocalizedText(Header, 'createcharacter001_desc_017')}`,
         )}
-        {renderMaxTextInput(
-          'desc',
-          replaceChipsWithKeywords(characterDesc, KEYWORDS),
-          setCharacterDesc,
-          handleAutoWriteCharacterDesc,
-          getLocalizedText(Common, 'common_sample_082'),
-          essentialWarning,
-        )}
+        <ButtonPromptInput
+          promptRef={promptRefs.desc}
+          value={replaceChipsWithKeywords(characterDesc, KEYWORDS)}
+          setValue={setCharacterDesc}
+          onClickAI={handleAutoWriteCharacterDesc}
+          placeholder={getLocalizedText(Common, 'common_sample_082')}
+          essential={essentialWarning}
+          Keywords={KEYWORDS}
+          showAutoComplete={showAutoCompleteState.desc}
+          dropdownPos={dropdownPositionState.desc}
+          setDropdownPosition={pos => setDropdownPositionState(prev => ({...prev, desc: pos}))}
+        />
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(getLocalizedText(Header, 'createcharacter001_label_018'), '')}
-        {renderMaxTextInput(
-          'worldScenario',
-          replaceChipsWithKeywords(worldScenario, KEYWORDS),
-          setWorldScenario,
-          handleAutoWriteCharacterWorldScenario,
-          getLocalizedText(Common, 'common_sample_058'),
-        )}
+        <ButtonPromptInput
+          promptRef={promptRefs.worldScenario}
+          value={replaceChipsWithKeywords(worldScenario, KEYWORDS)}
+          setValue={setWorldScenario}
+          onClickAI={handleAutoWriteCharacterWorldScenario}
+          placeholder={getLocalizedText(Common, 'common_sample_058')}
+          Keywords={KEYWORDS}
+          showAutoComplete={showAutoCompleteState.worldScenario}
+          dropdownPos={dropdownPositionState.worldScenario}
+          setDropdownPosition={pos => setDropdownPositionState(prev => ({...prev, worldScenario: pos}))}
+        />
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(getLocalizedText(Header, 'createcharacter001_label_019'), '')}
-        {renderMaxTextInput(
-          'greeting',
-          replaceChipsWithKeywords(greeting, KEYWORDS),
-          setGreeting,
-          handleAutoWriteCharacterGreeting,
-          getLocalizedText(Common, 'common_sample_083'),
-        )}
+        <ButtonPromptInput
+          promptRef={promptRefs.greeting}
+          value={replaceChipsWithKeywords(greeting, KEYWORDS)}
+          setValue={setGreeting}
+          onClickAI={handleAutoWriteCharacterGreeting}
+          placeholder={getLocalizedText(Common, 'common_sample_083')}
+          Keywords={KEYWORDS}
+          showAutoComplete={showAutoCompleteState.greeting}
+          dropdownPos={dropdownPositionState.greeting}
+          setDropdownPosition={pos => setDropdownPositionState(prev => ({...prev, greeting: pos}))}
+        />
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(getLocalizedText(Header, 'createcharacter001_label_021'), '')}
-        {renderMaxTextInput(
-          'secret',
-          replaceChipsWithKeywords(secret, KEYWORDS),
-          setSecret,
-          handleAutoWriteCharacterSecret,
-          getLocalizedText(Common, 'common_sample_081'),
-        )}
+        <ButtonPromptInput
+          promptRef={promptRefs.secret}
+          value={replaceChipsWithKeywords(secret, KEYWORDS)}
+          setValue={setSecret}
+          onClickAI={handleAutoWriteCharacterSecret}
+          placeholder={getLocalizedText(Common, 'common_sample_081')}
+          Keywords={KEYWORDS}
+          showAutoComplete={showAutoCompleteState.secret}
+          dropdownPos={dropdownPositionState.secret}
+          setDropdownPosition={pos => setDropdownPositionState(prev => ({...prev, secret: pos}))}
+        />
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(

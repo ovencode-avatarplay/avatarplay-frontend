@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
 import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 
-import styles from './CreateCharacterMain2.module.css';
+import styles from './CreateCharacterMain.module.css';
 import {BoldMixture, LineAIImage, LineDashboard, LineEdit, LineUpload} from '@ui/Icons';
 
 import EmptyStoryInfo from '@/data/create/empty-story-info-data.json';
@@ -28,7 +28,7 @@ import CharacterCreateViewImage from './CharacterCreateViewImage';
 import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
-import {MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
+import {MembershipSetting, Subscription} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
 import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
@@ -44,7 +44,7 @@ interface CreateCharacterProps {
   onClose?: () => void;
 }
 
-const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = false, characterInfo, onClose}) => {
+const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = false, characterInfo, onClose}) => {
   const {back} = useCustomRouter();
   const router = useRouter();
 
@@ -317,6 +317,10 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           selectLorebookId: customModulesLorebookId,
           selectPromptId: customModulesPromptId,
           creatorComment: creatorComment,
+          membershipSetting: {
+            ...membershipSetting,
+            subscription: Subscription.Contents,
+          },
         },
         debugParameter: 'string',
       };
@@ -631,6 +635,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
           creatorComment={creatorComment}
           setCharacterDesc={setCreatorComment}
           essentialWarning={essentialWarning}
+          curCharacterId={id || 0}
         />
       ),
     },
@@ -894,7 +899,7 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
       {successPopupOpen && (
         <CustomPopup
           type="alert"
-          title={getLocalizedText(Common, 'TmpText (Save Success!)')}
+          title={getLocalizedText(Common, 'createcharacter001_title_026')}
           buttons={[
             {
               label: getLocalizedText(Common, 'common_button_confirm'),
@@ -915,4 +920,4 @@ const CreateCharacterMain2: React.FC<CreateCharacterProps> = ({id, isUpdate = fa
   );
 };
 
-export default CreateCharacterMain2;
+export default CreateCharacterMain;

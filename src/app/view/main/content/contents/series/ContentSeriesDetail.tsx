@@ -46,6 +46,7 @@ import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/CommonNetwor
 import ViewerContent from '../viewer/ViewerContent';
 import {setEpisodeId} from '@/redux-store/slices/Chatting';
 import useCustomRouter from '@/utils/useCustomRouter';
+import DrawerDonation from '../../create/common/DrawerDonation';
 
 type Props = {
   type: ContentType;
@@ -82,6 +83,10 @@ const ContentSeriesDetail = ({id, type}: Props) => {
       price: number;
       contentType: ContentType;
     };
+
+    dataGift: {
+      isOpen: boolean;
+    };
   }>({
     indexTab: eTabType.Episodes,
     // dataContent: null,
@@ -96,6 +101,10 @@ const ContentSeriesDetail = ({id, type}: Props) => {
       episodeId: 0,
       price: 0,
       contentType: ContentType.Series,
+    },
+
+    dataGift: {
+      isOpen: false,
     },
   });
 
@@ -123,6 +132,8 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         data.dataMix = resGetContent?.data.contentInfo;
         data.dataMix.profileUrlLinkKey = resGetContent?.data.profileUrlLinkKey;
         data.dataMix.isSingleContentLock = resGetContent?.data.isSingleContentLock;
+        data.dataMix.isMyContent = resGetContent?.data.isMyContent;
+        data.dataMix.profileId = resGetContent?.data.contentInfo.profileId;
       }
     } else {
       const seasonNo = data.season;
@@ -246,11 +257,21 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               <img src={BoldDownloadMini.src} alt="" />
               <div className={styles.label}>Download</div>
             </div>
-            <div className={styles.lineVertical}></div>
-            <div className={styles.iconWrap}>
-              <img src={BoldReward.src} alt="" />
-              <div className={styles.label}>Gift</div>
-            </div>
+            {!data.dataMix?.isMyContent && (
+              <>
+                <div className={styles.lineVertical}></div>
+                <div
+                  className={styles.iconWrap}
+                  onClick={() => {
+                    data.dataGift.isOpen = true;
+                    setData({...data});
+                  }}
+                >
+                  <img src={BoldReward.src} alt="" />
+                  <div className={styles.label}>Gift</div>
+                </div>
+              </>
+            )}
           </ul>
           <div className={styles.genreWrap}> {parse(genreStr)}</div>
 
@@ -311,6 +332,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                         },
                         menu: {
                           marginTop: '4px',
+                          background: 'transparent',
                         },
                       }}
                     />
@@ -449,6 +471,18 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           contentId={playContentId}
           episodeId={playContentId != 0 ? playEpisodeId : undefined}
         ></ViewerContent>
+      )}
+
+      {data.dataGift.isOpen && (
+        <DrawerDonation
+          giveToPDId={data.dataMix?.profileId || 0}
+          isOpen={data.dataGift.isOpen}
+          onClose={() => {
+            data.dataGift.isOpen = false;
+            setData({...data});
+          }}
+          sponsoredName={data.dataMix?.profileName || ''}
+        />
       )}
     </>
   );

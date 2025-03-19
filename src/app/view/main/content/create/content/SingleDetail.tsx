@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import styles from './SeriesDetail.module.css';
+import styles from './SingleDetail.module.css';
 import {BoldArrowLeft, BoldShare, BoldLock, BoldHeart, BoldVideo, BoldStar, LineEdit, LinePlus} from '@ui/Icons';
 import {
   ContentInfo,
@@ -92,10 +92,37 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
       setIsShare(true);
     }
   };
+  const videoExtensions = ['mp4', 'webm', 'ogg']; // 비디오 확장자 목록
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp']; // 이미지 확장자 목록
+
+  const getFileExtension = (url?: string) => url?.split('.').pop()?.toLowerCase() || '';
+
+  const isVideo = (url?: string) => videoExtensions.includes(getFileExtension(url));
+  const isImage = (url?: string) => imageExtensions.includes(getFileExtension(url));
+
   return (
     <div className={styles.container}>
       {/* 상단 배경 및 네비게이션 */}
-      <div className={styles.header} style={{backgroundImage: `url(${singleInfo?.thumbnailUrl})`}}>
+      <div className={styles.header}>
+        {isVideo(singleInfo?.thumbnailUrl) ? (
+          <video className={styles.videoBackground} src={singleInfo?.thumbnailUrl} autoPlay loop muted playsInline />
+        ) : (
+          <div className={styles.imageBackground} style={{backgroundImage: `url(${singleInfo?.thumbnailUrl})`}} />
+        )}
+
+        {/* 기존 UI 요소들 */}
+        <div className={styles.overlayContent}>
+          <div className={styles.topNav}>
+            <button
+              className={styles.iconButton}
+              onClick={() => {
+                router.back();
+              }}
+            >
+              <img src={BoldArrowLeft.src} alt="Back" />
+            </button>
+          </div>
+        </div>
         <div className={styles.topNav}>
           <button
             className={styles.iconButton}

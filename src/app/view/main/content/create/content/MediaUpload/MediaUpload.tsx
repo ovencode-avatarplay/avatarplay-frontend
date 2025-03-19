@@ -39,15 +39,29 @@ const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)', setC
 
   const [mediaType, setMediaType] = useState<'image' | 'video'>('image'); // State for media type
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+  const [isDefault, setIsDefault] = useState(false);
+
+  const videoExtensions = ['mp4', 'webm', 'ogg']; // 비디오 확장자 목록
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp']; // 이미지 확장자 목록
+
+  const getFileExtension = (url?: string) => url?.split('.').pop()?.toLowerCase() || '';
+
+  const isVideo = (url?: string) => videoExtensions.includes(getFileExtension(url));
+  const isImage = (url?: string) => imageExtensions.includes(getFileExtension(url));
 
   useEffect(() => {
     if (defaultImage == undefined) return;
+    if (isVideo(defaultImage)) setMediaType('video');
     setMediaUrls([defaultImage]); // defaultImage를 0번 인덱스로 설정
+    setIsDefault(true);
   }, [defaultImage]); // defaultImage가 변경될 때만 실행
 
   useEffect(() => {}, [mediaUrls]);
   useEffect(() => {
-    setMediaUrls([]); // 미디어 URL 초기화
+    if (isDefault == false) {
+      setMediaUrls([]); // 미디어 URL 초기화
+      setIsDefault(false);
+    }
   }, [mediaType]);
 
   const [loading, setLoading] = useState(false);

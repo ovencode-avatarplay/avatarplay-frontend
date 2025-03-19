@@ -143,6 +143,12 @@
 
 }
 
+.payAmountInput
+{
+    min-Width: 120px;
+    max-Width: 200px;
+}
+
 .payMonth
 {
     color: var(--Black, #000);

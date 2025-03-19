@@ -27,6 +27,7 @@ import {
   WeiboShareButton,
   WeiboIcon,
 } from 'react-share';
+import {copyStrToClipboard} from '@/utils/util-1';
 
 interface SharePopupProps {
   title: string;
@@ -39,21 +40,9 @@ const SharePopup: React.FC<SharePopupProps> = ({title, url, open, onClose}) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopyToClipboard = () => {
-    const textArea = document.createElement('textarea');
-    textArea.value = url;
-    textArea.style.position = 'fixed';
-    textArea.style.opacity = '0';
-    document.body.appendChild(textArea);
-    textArea.select();
-    try {
-      document.execCommand('copy');
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000); // 2초 후 버튼 상태 초기화
-    } catch (error) {
-      console.error('클립보드 복사 실패:', error);
-    } finally {
-      document.body.removeChild(textArea);
-    }
+    copyStrToClipboard(url);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000); // 2초 후 버튼 상태 초기화
   };
 
   return (

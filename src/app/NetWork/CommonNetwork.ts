@@ -379,3 +379,23 @@ export const deleteRecord = async (payload: DeleteRecordReq) => {
     return null;
   }
 };
+
+export interface DeleteCommentReq {
+  commentId: number;
+}
+
+export interface DeleteCommentRes {
+  commentId: number;
+  isDeleted: boolean;
+}
+
+export const sendDeleteComment = async (payload: DeleteCommentReq): Promise<ResponseAPI<DeleteCommentRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<DeleteCommentRes>>('Common/deleteComment', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`DeleteCommentRes Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    throw new Error('Failed to delete comment. Please try again.');
+  }
+};

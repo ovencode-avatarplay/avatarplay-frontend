@@ -54,3 +54,42 @@ export const formatCurrency = (value: number): string => {
   }
   return value.toString();
 };
+
+export const copyStrToClipboard = (str: string) => {
+  console.log('str : ', str);
+  if (typeof window === 'undefined') return; // 서버에서 실행 방지
+
+  const success = () => {
+    console.log('URL을 클립보드에 복사했습니다.');
+  };
+  const failure = (err: any) => console.error('클립보드에 URL을 복사하지 못했습니다. : ', err);
+
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(str).then(success).catch(failure);
+    } else {
+      const tempInput = document.createElement('textarea');
+      tempInput.value = str;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      tempInput.focus();
+
+      const successful = document.execCommand('copy');
+      document.body.removeChild(tempInput);
+
+      successful ? success() : failure('execCommand를 통한 복사 실패');
+    }
+  } catch (error) {
+    failure(error);
+  }
+};
+
+export const copyCurrentUrlToClipboard = (pathname: any, searchParams: any) => {
+  if (typeof window === 'undefined') return; // 서버에서 실행 방지
+
+  const queryString = searchParams?.toString() || ''; // 현재 쿼리 파라미터 가져오기
+  const url = queryString
+    ? `${window.location.origin}${pathname}?${queryString}`
+    : `${window.location.origin}${pathname}`;
+  copyStrToClipboard(url);
+};

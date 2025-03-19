@@ -47,8 +47,9 @@ import {GetCharacterInfoRes} from '@/app/NetWork/CharacterNetwork';
 import {GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
-import {deleteRecord, InteractionType, RecordType} from '@/app/NetWork/CommonNetwork';
+import {bookmark, deleteRecord, InteractionType, RecordType} from '@/app/NetWork/CommonNetwork';
 import {PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
+import SharePopup from '@/components/layout/shared/SharePopup';
 
 type Props = {
   onClose: () => void;
@@ -68,11 +69,12 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
     };
     filterCluster: FilterClusterType;
     tabContentMenu: TabContentMenuType;
+    isShareOpened: boolean;
   }>({
     indexTab: eTabPlayListType.Feed,
     indexFilterMedia: FeedMediaType.Total,
     indexFilterCharacter: 0,
-    indexSort: ExploreSortType.MostPopular,
+    indexSort: ExploreSortType.Newest,
     profileTabInfo: {},
     filterCluster: {
       indexFilterChannel: 0,
@@ -87,36 +89,71 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
       isPin: false,
       isSettingOpen: false,
     },
+    isShareOpened: false,
   });
 
-  useEffect(() => {
-    refreshAll();
-  }, []);
-
-  const refreshAll = async () => {
-    await refreshList();
+  const refreshAll = async (isRefreshAll: boolean = false) => {
+    await refreshList(isRefreshAll);
   };
 
-  const refreshList = async () => {
-    const resBookmarkList = await getRecordList({
-      interactionType: Number(data.indexTab),
+  const refreshList = async (isRefreshAll: boolean = false) => {
+    if (isRefreshAll) {
+      data.profileTabInfo[data.indexTab] = [];
+    }
+
+    const resRecordList = await getRecordList({
+      recordType: Number(data.indexTab),
       languageType: getCurrentLanguage(),
+      channelTabType: data?.filterCluster?.indexFilterChannel || 0,
+      characterTabType: data?.filterCluster?.indexFilterCharacter || 0,
+      contentTabType: data?.filterCluster?.indexFilterContent || 0,
+      feedMediaType: data?.filterCluster?.indexFilterMedia || 0,
+      sortType: data?.filterCluster?.indexSort || 0,
+      page: {
+        offset: data.profileTabInfo?.[data.indexTab]?.length || 0,
+        limit: 10,
+      },
     });
-    data.profileTabInfo[data.indexTab] = resBookmarkList?.data?.recordInfoList || [];
+
+    if (!data.profileTabInfo[data.indexTab]) {
+      data.profileTabInfo[data.indexTab] = [];
+    }
+    data.profileTabInfo[data.indexTab].push(...(resRecordList?.data?.recordInfoList || []));
     setData({...data});
   };
 
   const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll?: boolean) => {
-    refreshList();
+    refreshList(isRefreshAll);
   };
 
   const isEmptyTab = false;
 
-  const onRefreshTab = (isRefreshAll: boolean) => {};
+  const onRefreshTab = (isRefreshAll: boolean) => {
+    refreshAll(isRefreshAll);
+  };
 
   const onOpenContentMenu = (dataContentMenu: TabContentMenuType) => {
     data.tabContentMenu = dataContentMenu;
     setData({...data});
+  };
+
+  const handleShare = async (url: string = window.location.href, title: string = '') => {
+    const shareData = {
+      title: title,
+      text: '이 링크를 확인해보세요!',
+      url: url, // 현재 페이지 URL
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData); // 네이티브 공유 UI 호출
+      } catch (error) {
+        console.error('공유 실패:', error);
+      }
+    } else {
+      data.isShareOpened = true;
+      setData({...data});
+    }
   };
   return (
     <>
@@ -155,35 +192,35 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
                   onChange={async (filterCluster: FilterClusterType) => {
                     if ((filterCluster?.indexFilterMedia ?? -1) >= 0) {
                       data.filterCluster.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
                     if ((filterCluster?.indexFilterCharacter ?? -1) >= 0) {
                       data.filterCluster.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
 
                     if ((filterCluster?.indexSort ?? -1) >= 0) {
                       data.filterCluster.indexSort = filterCluster?.indexSort ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
 
                     if ((filterCluster?.indexFilterChannel ?? -1) >= 0) {
                       data.filterCluster.indexFilterChannel = filterCluster?.indexFilterChannel ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
 
                     if ((filterCluster?.indexFilterShared ?? -1) >= 0) {
                       data.filterCluster.indexFilterShared = filterCluster?.indexFilterShared ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
                     if ((filterCluster?.indexFilterContent ?? -1) >= 0) {
                       data.filterCluster.indexFilterContent = filterCluster?.indexFilterContent ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
                   }}
@@ -199,7 +236,9 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
                   profileId={profileId}
                   tabIndex={data?.indexTab || 0}
                   profileTabInfo={data.profileTabInfo}
-                  onRefreshTab={onRefreshTab}
+                  onRefreshTab={isRefreshAll => {
+                    onRefreshTab(isRefreshAll);
+                  }}
                   onOpenContentMenu={onOpenContentMenu}
                 />
               </div>
@@ -231,15 +270,31 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
             typeValueId: data.tabContentMenu.id,
           });
 
-          onRefreshTab(true);
+          const indexRemove = data?.tabContentMenu?.index || 0;
+          data.profileTabInfo?.[data.indexTab].splice(indexRemove, 1);
+          setData({...data});
         }}
         onReport={async () => {
           alert('신고 추가 예정');
         }}
         onShare={async () => {
-          alert('공유 추가 예정');
+          const url = data.tabContentMenu.shareUrl;
+          const name = data.tabContentMenu.shareTitle;
+          handleShare(url, name);
+        }}
+        onFavorite={async isFavorite => {
+          alert('좋아요 추가 예정');
         }}
       />
+
+      <SharePopup
+        open={data.isShareOpened}
+        title={'공유하기'}
+        url={window.location.href}
+        onClose={() => {
+          setData(v => ({...v, isShareOpened: false}));
+        }}
+      ></SharePopup>
     </>
   );
 };
@@ -278,12 +333,11 @@ const TabContentComponent = ({
     if (!inView) return;
 
     if (isEmptyTab) return;
-
     refreshTab();
   }, [inView]);
 
   const refreshTab = async () => {
-    onRefreshTab(true);
+    onRefreshTab(false);
   };
 
   if (isEmptyTab) {
@@ -308,6 +362,7 @@ const TabContentComponent = ({
             return (
               <FeedComponent
                 isMine={isMine}
+                index={index}
                 feedInfo={{
                   commentCount: 0,
                   description: 'description',
@@ -329,6 +384,7 @@ const TabContentComponent = ({
                   mediaState: one.mediaState,
                   playTime: '',
                   urlLinkKey: one.urlLinkKey,
+                  isMyFeed: false,
                 }}
                 onOpenContentMenu={onOpenContentMenu}
                 urlLinkThumbnail={getLocalizedLink(`/main/homefeed/` + one.urlLinkKey)}
@@ -347,6 +403,7 @@ const TabContentComponent = ({
           return (
             <CharacterComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
@@ -364,6 +421,7 @@ const TabContentComponent = ({
           return (
             <ContentComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/content/series/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
@@ -381,6 +439,7 @@ const TabContentComponent = ({
           return (
             <ChannelComponent
               isMine={isMine}
+              index={index}
               itemInfo={one}
               urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
               onOpenContentMenu={onOpenContentMenu}
@@ -401,6 +460,7 @@ type ContentSettingType = {
   onReport: () => void;
   onShare: () => void;
   onDelete: () => void;
+  onFavorite: (isFavorite: boolean) => void;
 };
 const ContentSetting = ({
   isMine = false,
@@ -410,14 +470,14 @@ const ContentSetting = ({
   onReport = () => {},
   onShare = () => {},
   onDelete = () => {},
+  onFavorite = (isFavorite: boolean) => {},
 }: ContentSettingType) => {
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItems: SelectDrawerItem[] = [
     {
       name: tabContentMenu.isFavorite ? 'Unfavorite' : 'Favorite',
       onClick: async () => {
-        // onUnFavorite();
-        alert('북마크 처리 예정');
+        onFavorite(!tabContentMenu.isFavorite);
       },
     },
     {

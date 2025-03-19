@@ -47,7 +47,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   ].join(' ');
 
   return (
-    <button className={combinedClassName} onClick={onClick} disabled={isDisabled} style={style}>
+    <button type="button" className={combinedClassName} onClick={onClick} disabled={isDisabled} style={style}>
       {state === 'IconLeft' && <img className={`${styles.buttonIcon} ${iconClass}`} src={icon} />}
       {state !== 'Icon' && children}
       {state === 'IconRight' && <img className={`${styles.buttonIcon} ${iconClass}`} src={icon} />}

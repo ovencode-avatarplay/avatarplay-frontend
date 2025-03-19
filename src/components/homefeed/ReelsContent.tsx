@@ -107,6 +107,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const handleAddCommentCount = () => {
     setCommentCount(commentCount + 1);
   };
+  const handleSubCommentCount = () => {
+    setCommentCount(commentCount - 1);
+  };
   const handleClick = () => {
     setIsPlaying(!isPlaying);
     setIsClicked(true);
@@ -130,14 +133,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
-      // if (isDisLike == true) {
-      //   await handleDisLikeFeed(item.id, !isDisLike);
-      // }
+      if (isDisLike == true) {
+        await handleDisLikeFeed(item.id, !isDisLike);
+      }
       const response = await sendLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
         console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-        if (response.data?.likeCount) setLikeCount(response.data?.likeCount);
+
+        if (response.data) setLikeCount(response.data?.likeCount);
+        console.log('likeCount', likeCount);
+        console.log('response.data?.likeCount', response.data?.likeCount);
         setIsLike(isLike);
       } else {
         console.error(`Failed to like/unlike feed: ${response.resultMessage}`);
@@ -148,9 +154,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   };
   const handleDisLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
-      // if (isLike == true) {
-      //   await handleLikeFeed(item.id, !isLike);
-      // }
+      if (isLike == true) {
+        await handleLikeFeed(item.id, !isLike);
+      }
       const response = await sendDisLike(InteractionType.Feed, feedId, isLike);
 
       if (response.resultCode === 0) {
@@ -383,7 +389,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
               >
                 <span className={styles.username}>{item.title}</span>
               </div>
-              {recommendState == RecommendState.ForYou && (
+              {recommendState == RecommendState.ForYou && item.isMyFeed == false && (
                 <button
                   className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
                   onClick={() => {
@@ -440,14 +446,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
           {/* CTA Buttons */}
           <div className={styles.ctaButtons}>
-            <div
-              className={styles.textButtons}
-              onClick={() => {
-                handleDonation();
-              }}
-            >
-              <img src={BoldReward.src} className={styles.button}></img>
-            </div>
+            {item.isMyFeed == false && (
+              <div
+                className={styles.textButtons}
+                onClick={() => {
+                  handleDonation();
+                }}
+              >
+                <img src={BoldReward.src} className={styles.button}></img>
+              </div>
+            )}
+
             <div
               className={styles.textButtons}
               onClick={() => {
@@ -546,7 +555,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           sponsoredName={item.profileName}
           giveToPDId={item.profileId}
           onClose={handleDonationclose}
-          router={router}
         />
       }
       <Comment
@@ -554,6 +562,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
         isOpen={isCommentOpen}
         toggleDrawer={v => setCommentIsOpen(v)}
         onAddTotalCommentCount={() => handleAddCommentCount()}
+        onSubTotalCommentCount={() => handleSubCommentCount()}
         commentType={CommentContentType.Feed}
       />
 

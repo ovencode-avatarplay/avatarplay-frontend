@@ -40,7 +40,22 @@
   line-height: 16px; /* 114.286% */
   letter-spacing: -0.4px;
 }
-
+.nsfwLabel
+{
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  color: #000000;
+  display: flex;
+  justify-content: center;
+  justify-self: center;
+  justify-items: center;
+  align-items: center;
+  
+  justify-content: center;
+}
 .inputBox {
   display: flex;
   flex-direction: column;
@@ -235,3 +250,17 @@ gap: 6px;
   justify-content: center;
   cursor: pointer;
 }
+
+
+.questionButton
+{
+  width: 20px;
+  height: 20px;
+}
+
+.questionimg
+{
+  width: 18px;
+  height: 18px;
+}
+

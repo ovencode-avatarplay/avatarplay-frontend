@@ -53,9 +53,12 @@ const PromptInput: React.FC<Props> = ({
         if (html.includes(keyword)) {
           html = html.replace(
             regex,
-            `<span class="${styles.chip} ${styles.chipUser}" contenteditable="false">${Keywords[keyword]}</span>`,
+            `<span class="${styles.chip} ${styles[`chip${Keywords[keyword]}`]}" contenteditable="false">${
+              Keywords[keyword]
+            }</span>`,
           );
           changed = true;
+          console.log(Keywords[keyword]);
         }
       });
 
@@ -211,7 +214,7 @@ const PromptInput: React.FC<Props> = ({
           dropdownPosition={dropdownPos}
           setState={setState}
         />
-      )}{' '}
+      )}
     </div>
   );
 };

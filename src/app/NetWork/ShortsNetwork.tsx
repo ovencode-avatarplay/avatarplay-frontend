@@ -64,6 +64,7 @@ export interface FeedInfo {
   profileIconUrl: string;
   createAt?: string;
   profileUrlLinkKey: string;
+  isMyFeed: boolean;
 }
 
 export interface CreateFeedReq {
@@ -253,7 +254,7 @@ export interface PinFixFeedRes {}
 
 export const updatePin = async (payload: PinFixFeedReq): Promise<PinFixFeedRes> => {
   try {
-    const response = await api.post('/Feed/pin', payload);
+    const response = await api.post('/Common/pin', payload);
     const {resultCode, resultMessage, data} = response.data;
 
     return {

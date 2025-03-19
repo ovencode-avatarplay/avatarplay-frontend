@@ -13,6 +13,7 @@ import {
   ReplieInfo,
   sendCommentDislike,
   sendCommentLike,
+  sendDeleteComment,
 } from '@/app/NetWork/CommonNetwork';
 
 export enum CommentType {
@@ -28,6 +29,8 @@ interface CommentItemProps {
   onComplete: () => void;
   onRepliesBack?: () => void;
   onAddTotalCommentCount: () => void;
+  onCloseComment: () => void;
+  onSubTotalCommentCount: () => void;
   commentType: CommentContentType;
 }
 
@@ -38,9 +41,10 @@ const CommentItem: React.FC<CommentItemProps> = ({
   type = CommentType.default,
   onRepliesBack = () => {},
   onAddTotalCommentCount,
+  onSubTotalCommentCount,
+  onCloseComment,
   commentType,
 }) => {
-  console.log('comment.userImage', comment.userImage);
   const [isLike, setIsLike] = useState(comment.isLike);
   const [likeCount, setLikeCount] = useState(comment.likeCount);
   const [isDisLike, setIsDisLike] = useState(comment.isDisLike);
@@ -68,14 +72,14 @@ const CommentItem: React.FC<CommentItemProps> = ({
   const [isEditOpen, setIsEditOpen] = useState(false);
   const handleLikeComment = async (commentId: number, isLike: boolean) => {
     try {
-      // if (isDisLike == true) {
-      //   await handleDisLikeFeed(item.id, !isDisLike);
-      // }
+      if (isDisLike == true) {
+        await handleDisLikeComment(commentId, !isDisLike);
+      }
       const response = await sendCommentLike({commentId, isLike});
 
       if (response.resultCode === 0) {
         console.log(`Feed ${commentId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-        if (response.data?.likeCount) setLikeCount(response.data?.likeCount);
+        if (response.data) setLikeCount(response.data?.likeCount);
         setIsLike(isLike);
       } else {
         console.error(`Failed to like/unlike feed: ${response.resultMessage}`);
@@ -87,9 +91,9 @@ const CommentItem: React.FC<CommentItemProps> = ({
 
   const handleDisLikeComment = async (commentId: number, isDisLike: boolean) => {
     try {
-      // if (isDisLike == true) {
-      //   await handleDisLikeFeed(item.id, !isDisLike);
-      // }
+      if (isDisLike == true) {
+        await handleLikeComment(commentId, !isDisLike);
+      }
       const response = await sendCommentDislike({commentId, isDisLike: isDisLike});
 
       if (response.resultCode === 0) {
@@ -152,6 +156,22 @@ const CommentItem: React.FC<CommentItemProps> = ({
   }, [comment.updatedAt]);
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
+
+  const handleDeleteComment = async (commentId: number) => {
+    try {
+      const response = await sendDeleteComment({commentId});
+      onSubTotalCommentCount();
+      onComplete();
+
+      console.log(type);
+      if (type == CommentType.parent) {
+        onCloseComment();
+      }
+    } catch (error) {
+      console.error('🚨 댓글 삭제 API 호출 오류:', error);
+    }
+  };
+
   return (
     <div
       className={styles.container}
@@ -267,6 +287,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
         parentCommentId={comment.commentId}
         onRepliesBack={() => onRepliesBack()}
         onAddTotalCommentCount={() => onAddTotalCommentCount()}
+        onSubTotalCommentCount={() => onSubTotalCommentCount()}
         commentType={commentType}
       />
       <Menu
@@ -296,8 +317,8 @@ const CommentItem: React.FC<CommentItemProps> = ({
         )}
         <MenuItem
           onClick={() => {
+            handleDeleteComment(comment.commentId);
             handleClose();
-            alert('추후 추가');
           }}
         >
           Delete

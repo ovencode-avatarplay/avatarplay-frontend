@@ -11,16 +11,17 @@ import {AppRouterInstance} from 'next/dist/shared/lib/app-router-context.shared-
 import {GiftStarReq, sendGiftStar} from '@/app/NetWork/ShopNetwork';
 import {setStar} from '@/redux-store/slices/Currency';
 import {formatCurrency} from '@/utils/util-1';
+import {useRouter} from 'next/navigation';
 
 interface DrawerDonationProps {
   isOpen: boolean;
   sponsoredName: string; // 후원받을 사람 이름
   giveToPDId: number; // 후원받을 PD ID
   onClose: () => void;
-  router?: AppRouterInstance; // 게스트 유저를 로그인 시키기 위한 라우터 ( 로그인할지 판단을 서버에서 판정하지 않고  프론트에서 판단할 때 사용 )
 }
 
-const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, giveToPDId, onClose, router}) => {
+const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, giveToPDId, onClose}) => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
   const dataProfile = useSelector((state: RootState) => state.profile); // 내 피디 이름

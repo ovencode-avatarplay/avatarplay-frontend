@@ -14,7 +14,7 @@ import {BoldArrowLeft, LineCheck, LineSearch} from '@ui/Icons';
 import CustomInput from '@/components/layout/shared/CustomInput';
 //import {Flag} from '@mui/icons-material';
 import Flag from 'react-world-flags';
-import {FlagNation, getFlagCode, LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
+import {FlagNation, getFlagCode, LanguageType, LanguageName} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomButton from '@/components/layout/shared/CustomButton';
 
 interface FullScreenModalProps {
@@ -101,7 +101,7 @@ const ModalLanguageSelect: React.FC<FullScreenModalProps> = ({isOpen, onClose}) 
           {Object.values(LanguageType)
             .filter(v => typeof v === 'number') // Enum의 숫자 값만 필터링
             .filter(num =>
-              LanguageType[num as LanguageType].toString().toLowerCase().includes(inputValue.toLowerCase()),
+              LanguageName[num as LanguageType].toString().toLowerCase().includes(inputValue.toLowerCase()),
             )
             .map(num => {
               const flagCode = getFlagCode(num as LanguageType);
@@ -109,7 +109,7 @@ const ModalLanguageSelect: React.FC<FullScreenModalProps> = ({isOpen, onClose}) 
                 <div className={styles.NationArea} onClick={() => handleSelectLanguage(num)}>
                   <div className={styles.flagNation}>
                     <Flag code={flagCode} style={{width: 26, height: 26}} />
-                    <div className={styles.nameNation}>{LanguageType[num]}</div>
+                    <div className={styles.nameNation}>{LanguageName[num]}</div>
                     {selectLanguage === num && <img className={styles.checkNation} src={LineCheck.src} alt="check" />}
                   </div>
                 </div>

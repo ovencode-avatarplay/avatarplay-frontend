@@ -55,6 +55,8 @@ export interface GetContentRes {
   profileUrlLinkKey: string;
   contentInfo: ContentInfo;
   isSingleContentLock: boolean;
+  isMyContent: boolean;
+  profileName: string;
 }
 
 export const sendGetContent = async (payload: GetContentReq): Promise<ResponseAPI<GetContentRes>> => {
@@ -238,6 +240,9 @@ export interface GetSeasonEpisodesRes {
   isBookMark: boolean;
   profileUrlLinkKey: string;
   episodeList: SeasonEpisodeInfo[];
+  isMyContent: boolean;
+  profileId: number;
+  profileName: string;
 }
 
 export const sendGetSeasonEpisodes = async (
@@ -398,8 +403,7 @@ export interface ContentPlayInfo {
   commonMediaViewInfo: CommonMediaViewInfo;
   episodeVideoInfo?: EpisodeVideoInfo;
   episodeWebtoonInfo?: EpisodeWebtoonInfo;
-  //구독중인지
-  //프로필 아이디 받아야함
+  isMyEpisode: boolean;
 }
 
 export interface CommonMediaViewInfo {

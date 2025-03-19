@@ -189,7 +189,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
             </div>
             <section className={styles.filtersection}>
               <SelectBox
-                value={sortOptionList[data.indexSort]}
+                value={sortOptionList?.find(v => v.id == data.indexSort) || sortOptionList[0]}
                 options={sortOptionList}
                 ArrowComponent={SelectBoxArrowComponent}
                 ValueComponent={SelectBoxValueComponent}
@@ -339,7 +339,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
         onCancel={async () => {
           const id = data.dataSubScriptionSetting.id;
           await cancelSubscribe({subscribeId: id});
-          await refreshAll();
+          await refreshAll(true);
         }}
       />
       {data.dataRenewal.isOpen && (
@@ -350,7 +350,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
             setData({...data});
           }}
           onComplete={async () => {
-            await refreshAll();
+            await refreshAll(true);
             data.dataRenewal.isOpen = false;
             setData({...data});
           }}

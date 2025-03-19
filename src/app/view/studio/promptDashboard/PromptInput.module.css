@@ -18,6 +18,16 @@
     min-height: 110px;
     max-height: 257px;
 
+    color: var(--Neutral-900, #121414);
+    font-feature-settings: 'liga' off, 'clig' off; 
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%; /* 24px */
+    letter-spacing: -0.4px;
+}
+.promptInput span {
+    margin-bottom: 4px; /* Enter 입력 시 줄 간격 */
 }
 
 .promptInput:focus {
@@ -66,30 +76,36 @@
     cursor: pointer;
   } 
 
-.chipChar
-{
-    /*empty*/
-}
-
-.chipUser
-{
-    /*empty*/
-}
-
+  .chipcharacter
+  {
+    border-color: var(--Colors-Orange, #FF9500); 
+    color: var(--Colors-Orange, #FF9500); 
+  }
+  
+  .chipuser
+  {
+    border-color: var(--Primary-1, #FD55D3); 
+    color: var(--Primary-1, #FD55D3); 
+  }
+  
 
 .promptInput[contenteditable="true"]:empty:before {
-    content: attr(data-placeholder); /* ✅ `data-placeholder` 속성 값 사용 */
+    content: attr(data-placeholder);  
     color: #999;
     /* position: absolute; */
     left: 8px;
     pointer-events: none;
-    white-space: nowrap;
+    word-wrap: break-word;  
+    white-space: normal; 
+    pointer-events: none;
   }
   
   .placeholderVisible:before {
-    content: attr(data-placeholder); /* ✅ Placeholder 표시 */
+    content: attr(data-placeholder); /*  Placeholder 표시 */
     color: #999;
     /* position: absolute; */
-    left: 8px;
+    left: 8px; 
+    word-wrap: break-word; 
+    white-space: normal;  
     pointer-events: none;
   }

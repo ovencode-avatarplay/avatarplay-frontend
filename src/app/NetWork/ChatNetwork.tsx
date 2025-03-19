@@ -206,6 +206,7 @@ export const sendChattingEnter = async (
 export const sendChattingEnterUrl = async (
   req: UrlEnterEpisodeChattingReq,
 ): Promise<ResponseAPI<EnterEpisodeChattingRes>> => {
+  req.isUrlEnter = true; // 강제로
   try {
     const response = await api.post<ResponseAPI<EnterEpisodeChattingRes>>('/Chatting/urlEnter', req);
 

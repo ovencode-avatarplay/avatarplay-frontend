@@ -7,7 +7,7 @@ import cx from 'classnames';
 import styles from './profileFeed.module.scss';
 import {BoldArrowLeft, BoldMenuDots, LineMenu, LineShare} from '@ui/Icons';
 import {getBackUrl} from '@/utils/util-1';
-import {getLocalizedLink} from '@/utils/UrlMove';
+import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import BottomNav from '@/app/view/main/bottom-nav/BottomNav';
 import useCustomRouter from '@/utils/useCustomRouter';
 
@@ -27,9 +27,9 @@ const PageFeedView = ({searchParams}: Props) => {
   const feedSortType = parseInt(searchParams?.feedSortType || '0');
   const idContent = parseInt(searchParams?.idContent || '0');
   const profileType = parseInt(searchParams?.type || '0');
-  const routerBack = () => {
-    back(`/profile/${id}`);
-  };
+  // const routerBack = () => {
+  //   back(`/profile/${id}`);
+  // };
   return (
     <>
       <section className={cx(styles.header)}>
@@ -37,7 +37,8 @@ const PageFeedView = ({searchParams}: Props) => {
           <div
             className={styles.backBtn}
             onClick={() => {
-              routerBack();
+              router.replace(getLocalizedLink(`/profile/${id}`));
+              // routerBack();
             }}
           >
             <img src={BoldArrowLeft.src} alt="" />
