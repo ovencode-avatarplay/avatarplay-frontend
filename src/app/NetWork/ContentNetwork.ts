@@ -398,8 +398,7 @@ export interface ContentPlayInfo {
   commonMediaViewInfo: CommonMediaViewInfo;
   episodeVideoInfo?: EpisodeVideoInfo;
   episodeWebtoonInfo?: EpisodeWebtoonInfo;
-  //구독중인지
-  //프로필 아이디 받아야함
+  isMyEpisode: boolean;
 }
 
 export interface CommonMediaViewInfo {
