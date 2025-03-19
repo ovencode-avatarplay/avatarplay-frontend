@@ -56,8 +56,8 @@ const getLocalizedText = (head: keyof LocalizationStrings, key: string, language
 
   // Head가 없거나 Key가 없을 경우 빈 문자열 반환
   if (!group || !group[key]) {
-    console.warn(`Localization missing for key: ${key}, head: ${head}`);
-    return `Localization missing for key: ${key}, head: ${head}`;
+    console.warn(`로컬라이징 작업 필요: ${key}, head: ${head}`);
+    return `로컬라이징 작업 필요: ${key}, head: ${head}`;
   }
 
   const localizedItem = group[key];
@@ -66,15 +66,11 @@ const getLocalizedText = (head: keyof LocalizationStrings, key: string, language
 
   // 언어별 데이터가 없으면 영어 기본값 반환
   return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
+
+  // if (effectiveLanguage === null) return '';
+
+  // // 언어별 데이터가 없으면 Key + 언어 반환 ( LQA 용도 )
+  // return localizedItem[effectiveLanguage] || key + '_' + effectiveLanguage;
 };
+
 export default getLocalizedText;
-
-//   const localizedItem = group[key];
-
-//   if (effectiveLanguage === null) return '';
-
-//   // 언어별 데이터가 없으면 Key + 언어 반환 ( LQA 용도 )
-//   return localizedItem[effectiveLanguage] || key + '_' + effectiveLanguage;
-// };
-
-// export default getLocalizedText;

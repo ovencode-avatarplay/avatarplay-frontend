@@ -28,7 +28,7 @@ import CharacterCreateViewImage from './CharacterCreateViewImage';
 import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
-import {MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
+import {MembershipSetting, Subscription} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
 import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
@@ -317,7 +317,10 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           selectLorebookId: customModulesLorebookId,
           selectPromptId: customModulesPromptId,
           creatorComment: creatorComment,
-          membershipSetting: membershipSetting,
+          membershipSetting: {
+            ...membershipSetting,
+            subscription: Subscription.Contents,
+          },
         },
         debugParameter: 'string',
       };
@@ -632,6 +635,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           creatorComment={creatorComment}
           setCharacterDesc={setCreatorComment}
           essentialWarning={essentialWarning}
+          curCharacterId={id || 0}
         />
       ),
     },

@@ -63,7 +63,7 @@
                 "isMonetization": false,
                 "nsfw": false,
                 "membershipSetting": {
-                  "subscription": 0,
+                  "subscription": 1,
                   "paymentType": 0,
                   "paymentAmount": 0,
                   "benefits": ""
