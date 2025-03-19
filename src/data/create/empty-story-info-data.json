@@ -43,7 +43,7 @@
                 "customApi": "",
                 "tag": "",
                 "positionCountryList": [],
-                "characterIP": 0,    
+                "characterIP": 1,    
                 "connectCharacterInfo": {
                   "profileTabType": 0,
                   "operatorAuthorityType": 0,
@@ -53,7 +53,8 @@
                   "iconImageUrl": "string",
                   "description" : "string",
                   "nsfw": false ,
-                  "urlLinkKey" : "string"
+                  "urlLinkKey" : "string",
+                  "characterIP" : 1
                 },
                 "connectCharacterId" : 0,
                 "recruitedProfileId": 0,
@@ -80,7 +81,8 @@
                   "iconImageUrl": "string",
                   "description" : "string",
                   "nsfw": false ,
-                  "urlLinkKey" : "string"
+                  "urlLinkKey" : "string",
+                  "characterIP" : 0
                 },
                 "state": 1,
                 

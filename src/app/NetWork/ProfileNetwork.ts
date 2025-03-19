@@ -20,7 +20,7 @@ export interface ProfileSimpleInfo {
   iconImageUrl: string;
   nsfw: boolean;
   urlLinkKey: string;
-  characterIP: CharacterIP;
+  characterIP?: CharacterIP;
 }
 
 export enum OperatorAuthorityType {

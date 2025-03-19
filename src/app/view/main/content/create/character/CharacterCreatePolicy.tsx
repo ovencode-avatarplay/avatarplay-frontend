@@ -101,12 +101,12 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     items: [
       {
         label: getLocalizedText(Common, 'common_button_original'),
-        data: 0,
+        data: 1,
         monetization: getLocalizedText(Header, 'createcharacter017_label_006'),
       },
       {
         label: getLocalizedText(Common, 'common_button_fan'),
-        data: 1,
+        data: 2,
         monetization: getLocalizedText(Header, 'createcharacter017_label_006'),
       },
     ],
@@ -653,9 +653,9 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         {renderCharacterIP()}
         {renderRecruit()}
         {renderConnect()}
-        {/*renderOperatorInvite()*/}
+        {renderOperatorInvite()}
         {/*renderMonetization()*/}
-        {/*renderMembershipPlan()*/}
+        {renderMembershipPlan()}
         {renderNSFW()}
         {renderComment()}
       </div>

@@ -130,10 +130,10 @@ export interface CharacterInfo {
   createAt: string;
   updateAt: string;
 
-  likeCount: number;
-  isLike: boolean;
-  isDisLike: boolean;
-  isBookmark: boolean;
+  likeCount?: number;
+  isLike?: boolean;
+  isDisLike?: boolean;
+  isBookmark?: boolean;
 }
 
 export interface ConversationInfo {
