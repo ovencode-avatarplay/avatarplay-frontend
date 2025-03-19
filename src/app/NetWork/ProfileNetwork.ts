@@ -155,8 +155,6 @@ export interface ProfileTabItemInfo {
   mediaCount: number;
   contentCount: number;
   memberCount: number;
-  playTime: string;
-  isFavorite: boolean;
   characterIP: CharacterIP;
   sharedItemType: SharedItemType;
   createAt: string;
