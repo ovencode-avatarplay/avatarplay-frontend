@@ -4,11 +4,12 @@ import {BoldInfo, BoldQuestion} from '@ui/Icons';
 
 interface CustomToolTipProps {
   tooltipText: string;
+  titleText?: string;
   tooltipStyle?: React.CSSProperties;
   icon?: '?' | 'info';
 }
 
-const CustomToolTip: React.FC<CustomToolTipProps> = ({tooltipText, tooltipStyle, icon = '?'}) => {
+const CustomToolTip: React.FC<CustomToolTipProps> = ({tooltipText, titleText, tooltipStyle, icon = '?'}) => {
   const [tooltipClicked, setTooltipClicked] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -63,7 +64,14 @@ const CustomToolTip: React.FC<CustomToolTipProps> = ({tooltipText, tooltipStyle,
         />
       </button>
       {(tooltipClicked || (!tooltipClicked && showTooltip)) && (
-        <div ref={tooltipRef} className={`${styles.tooltip} `} style={tooltipStyle}>
+        <div
+          ref={tooltipRef}
+          className={styles.tooltip}
+          style={{
+            ...tooltipStyle,
+            left: titleText ? `-${titleText.length * 5}px` : undefined, // 글자 길이에 따라 left 조정
+          }}
+        >
           <div className={styles.tooltipText}>{tooltipText}</div>
         </div>
       )}
