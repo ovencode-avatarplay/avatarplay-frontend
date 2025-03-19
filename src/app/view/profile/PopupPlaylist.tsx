@@ -123,7 +123,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
   };
 
   const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll?: boolean) => {
-    refreshList(true);
+    refreshList(false);
   };
 
   const isEmptyTab = false;
