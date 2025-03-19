@@ -15,6 +15,7 @@ import {updateProfile} from '@/redux-store/slices/Profile';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import cx from 'classnames';
 import {BoldMore, LinePlus} from '@ui/Icons';
+import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 type Props = {};
 
 type SelectProfileType = {
@@ -98,6 +99,8 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
             const isPD = [ProfileType.PD, ProfileType.User].includes(profile.profileType);
             const isCharacter = [ProfileType.Character].includes(profile.profileType);
             const isChannel = [ProfileType.Channel].includes(profile.profileType);
+
+            const isOriginal = profile?.characterIP == CharacterIP.Original;
             return (
               <li
                 className={styles.item}
@@ -119,13 +122,17 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                   <div className={styles.nameWrap}>
                     {isChannel && (
                       <div className={styles.top}>
-                        <span className={cx(styles.grade, styles.original)}>Original</span>
+                        <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>
+                          {isOriginal ? 'Original' : 'Fan'}
+                        </span>
                         <div className={styles.type}>Channel</div>
                       </div>
                     )}
                     {isCharacter && (
                       <div className={styles.top}>
-                        <span className={cx(styles.grade, styles.original)}>Original</span>
+                        <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>
+                          {isOriginal ? 'Original' : 'Fan'}
+                        </span>
                         <div className={styles.type}>Character</div>
                       </div>
                     )}

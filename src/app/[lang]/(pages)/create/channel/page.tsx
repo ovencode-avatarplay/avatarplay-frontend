@@ -57,6 +57,7 @@ import useCustomRouter from '@/utils/useCustomRouter';
 import parse from 'html-react-parser';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 
 type Props = {
   id: number;
@@ -203,6 +204,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   } = useForm<ChannelInfoForm>({
     shouldFocusError: true,
     defaultValues: {
+      characterIP: CharacterIP.Original,
       isMonetization: 0,
       mediaUrl: '',
     },
@@ -779,7 +781,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                         type="radio"
                         value={1}
                         defaultChecked
-                        checked={watch('characterIP', 0) == 0 || watch('characterIP', 0) == 1}
+                        checked={watch('characterIP', 0) == 1}
                         {...register('characterIP')}
                       />
                       <div className={styles.radioWrap}>
