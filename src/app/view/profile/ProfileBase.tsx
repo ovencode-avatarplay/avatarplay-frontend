@@ -967,7 +967,13 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               >
                 {isFollow ? 'Following' : 'Follow'}
               </button>
-              <button className={styles.giftWrap}>
+              <button
+                className={styles.giftWrap}
+                onClick={() => {
+                  data.dataGift.isOpen = true;
+                  setData({...data});
+                }}
+              >
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
               </button>
               {isOtherCharacter && (
@@ -1133,7 +1139,6 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             setData({...data});
           }}
           sponsoredName={data.profileInfo?.profileInfo?.name || ''}
-          router={router}
         />
       )}
     </>

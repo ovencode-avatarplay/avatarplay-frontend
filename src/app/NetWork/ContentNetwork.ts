@@ -56,6 +56,7 @@ export interface GetContentRes {
   contentInfo: ContentInfo;
   isSingleContentLock: boolean;
   isMyContent: boolean;
+  profileName: string;
 }
 
 export const sendGetContent = async (payload: GetContentReq): Promise<ResponseAPI<GetContentRes>> => {
@@ -240,6 +241,8 @@ export interface GetSeasonEpisodesRes {
   profileUrlLinkKey: string;
   episodeList: SeasonEpisodeInfo[];
   isMyContent: boolean;
+  profileId: number;
+  profileName: string;
 }
 
 export const sendGetSeasonEpisodes = async (
