@@ -107,6 +107,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const handleAddCommentCount = () => {
     setCommentCount(commentCount + 1);
   };
+  const handleSubCommentCount = () => {
+    setCommentCount(commentCount - 1);
+  };
   const handleClick = () => {
     setIsPlaying(!isPlaying);
     setIsClicked(true);
@@ -560,6 +563,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
         isOpen={isCommentOpen}
         toggleDrawer={v => setCommentIsOpen(v)}
         onAddTotalCommentCount={() => handleAddCommentCount()}
+        onSubTotalCommentCount={() => handleSubCommentCount()}
         commentType={CommentContentType.Feed}
       />
 
