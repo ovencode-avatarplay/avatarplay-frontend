@@ -565,7 +565,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           handlePromptChange={e => setCharacterDesc(e.target.value)}
           placeholder={getLocalizedText(Header, 'createcharacter017_label_014')}
           inSideHint={formatText(getLocalizedText(Header, 'createcharacter001_label_013'), [
-            creatorComment.length.toString(),
+            creatorComment?.length.toString(),
           ])}
         />
       </div>
