@@ -64,6 +64,7 @@ export interface FeedInfo {
   profileIconUrl: string;
   createAt?: string;
   profileUrlLinkKey: string;
+  isMyFeed: boolean;
 }
 
 export interface CreateFeedReq {

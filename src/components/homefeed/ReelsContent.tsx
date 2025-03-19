@@ -386,7 +386,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
               >
                 <span className={styles.username}>{item.title}</span>
               </div>
-              {recommendState == RecommendState.ForYou && (
+              {recommendState == RecommendState.ForYou && item.isMyFeed == false && (
                 <button
                   className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
                   onClick={() => {
@@ -443,14 +443,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
           {/* CTA Buttons */}
           <div className={styles.ctaButtons}>
-            <div
-              className={styles.textButtons}
-              onClick={() => {
-                handleDonation();
-              }}
-            >
-              <img src={BoldReward.src} className={styles.button}></img>
-            </div>
+            {item.isMyFeed == false && (
+              <div
+                className={styles.textButtons}
+                onClick={() => {
+                  handleDonation();
+                }}
+              >
+                <img src={BoldReward.src} className={styles.button}></img>
+              </div>
+            )}
+
             <div
               className={styles.textButtons}
               onClick={() => {

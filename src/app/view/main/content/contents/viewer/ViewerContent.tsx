@@ -303,7 +303,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
       if (response.resultCode === 0) {
         console.log(`content ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-        if (response.data?.likeCount) setLikeCount(response.data?.likeCount);
+        if (response.data) setLikeCount(response.data?.likeCount);
         setIsLike(isLike);
       } else {
         console.error(`Failed to like/unlike content: ${response.resultMessage}`);
@@ -591,7 +591,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                     pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
                   }}
                 ></Avatar>
-                {!info?.isProfileFollow && !tempFollow && (
+                {!info?.isProfileFollow && !tempFollow && info?.isMyEpisode == false && (
                   <div
                     className={`${curIsFollow ? styles.checkCircle : styles.plusCircle} ${animationClass}`}
                     onClick={event => {
@@ -624,16 +624,19 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                   </div>
                 )}
               </div>
-              <div></div>
-              <div
-                className={styles.textButtons}
-                onClick={event => {
-                  event.stopPropagation();
-                  setDonation(true);
-                }}
-              >
-                <img src={BoldReward.src} className={styles.button}></img>
-              </div>
+              {info?.isMyEpisode == false && !info?.isProfileFollow && <div></div>}
+              {info?.isMyEpisode == false && (
+                <div
+                  className={styles.textButtons}
+                  onClick={event => {
+                    event.stopPropagation();
+                    setDonation(true);
+                  }}
+                >
+                  <img src={BoldReward.src} className={styles.button}></img>
+                </div>
+              )}
+
               <div
                 className={styles.textButtons}
                 onClick={event => {

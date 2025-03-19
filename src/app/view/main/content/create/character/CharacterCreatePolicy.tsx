@@ -20,6 +20,7 @@ import DrawerMembershipSetting from '../common/DrawerMembershipSetting';
 import CustomSelector from '@/components/layout/shared/CustomSelector';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import {getLangKey, LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
+import formatText from '@/utils/formatText';
 
 interface Props {
   visibility: number;
@@ -127,8 +128,6 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   const [pitchShift, setPitchShift] = useState<number>(0);
   const [pitchVariance, setPitchVariance] = useState<number>(0);
   const [speed, setSpeed] = useState<number>(0);
-
-  let commentPlaceholder = `TODO : Comment PlaceHolder`;
 
   const handleSelectVisibilityItem = (value: number) => {
     onVisibilityChange(value);
@@ -332,7 +331,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         <div className={styles.radioButtonContainer}>
           <div className={styles.radioTitleArea}>
             <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_005')}</h2>
-            <CustomToolTip tooltipText="TODO : character IP ToolTip" />
+            <CustomToolTip tooltipText={getLocalizedText(Header, 'createcharacter017_desc_016')} />
           </div>
           <div className={styles.ipButtonArea}>
             {characterIpData.items.map(item => (
@@ -379,7 +378,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           <div className={styles.operatorTitle}>
             <div className={styles.radioTitleArea}>
               <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_008')}</h2>
-              <CustomToolTip tooltipText="TODO : Tooltip Operator Invitation" />
+              <CustomToolTip tooltipText={getLocalizedText(Header, 'createcharacter017_desc_017')} />
             </div>
             <button className={styles.subButton} onClick={() => setOperatorInviteOpen(true)}>
               {getLocalizedText(Common, 'common_button_invite')}
@@ -483,7 +482,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             {getLocalizedText(Header, 'createcharacter017_label_011')}
             <span className={styles.titleAstrisk}>*</span>
           </div>
-          <CustomToolTip tooltipText="NSFW Monetization" />
+          <CustomToolTip tooltipText={getLocalizedText(Header, 'createcharacter017_desc_018')} />
         </div>
         <div className={styles.verticalRadioButtonArea}>
           <CustomRadioButton
@@ -556,8 +555,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     return (
       <div className={styles.commentInputArea}>
         <div className={styles.commentTitleArea}>
-          <h2 className={styles.title2}> Comment</h2>
-          {/* <h2 className={styles.titleAstrisk}>*</h2> */}
+          <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_014')} </h2>
         </div>
         <MaxTextInput
           stateDataType={inputState.Normal}
@@ -565,8 +563,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           displayDataType={displayType.Default}
           promptValue={creatorComment}
           handlePromptChange={e => setCharacterDesc(e.target.value)}
-          placeholder={commentPlaceholder}
-          inSideHint={`About ${creatorComment?.length} tokens (임시처리 텍스트 길이)`}
+          placeholder={getLocalizedText(Header, 'createcharacter017_label_014')}
+          inSideHint={formatText(getLocalizedText(Header, 'createcharacter001_label_013'), [
+            creatorComment.length.toString(),
+          ])}
         />
       </div>
     );
@@ -589,7 +589,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           isVisibilityOpen,
           setIsVisibilityOpen,
           getLocalizedText(Header, 'createcharacter017_label_001'),
-          'TODO : visibiltiy tooltip',
+          getLocalizedText(Header, 'createcharacter017_label_001'),
         )}
         {renderDropDown(
           getLocalizedText(Header, 'createcharacter017_label_002'),
