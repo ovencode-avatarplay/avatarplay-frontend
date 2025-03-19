@@ -372,7 +372,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         setConnectOpen={setConnectOpen}
         connectCharacterInfo={connectCharacterInfo}
         onConnectCharacterSelected={handleSelectConnectCharacter}
-        // onConnectCharacterInfoChange={onConnectCharacterInfoChange}
+        onConnectCharacterInfoChange={onConnectCharacterInfoChange}
         // onConnectCharacterIdChange={onConnectCharacterIdChange}
       />
     );
