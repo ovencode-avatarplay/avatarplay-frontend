@@ -632,6 +632,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
       } else if (data.indexTab == eTabPDOtherType.Info) {
         isEmptyTab = false;
+      } else if (data.indexTab == eTabPDType.Shared) {
+        isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.sharedInfoList?.length;
       } else {
         isEmptyTab = true;
       }
@@ -2365,6 +2367,25 @@ const TabContentComponent = ({
     );
   }
 
+  if (isPD && tabIndex == eTabPDType.Shared) {
+    return (
+      <ul className={styles.itemWrap}>
+        {profileTabInfo?.[tabIndex]?.sharedInfoList.map((one, index: number) => {
+          return (
+            <CharacterComponent
+              isMine={isMine}
+              index={index}
+              itemInfo={one}
+              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+              onOpenContentMenu={onOpenContentMenu}
+            />
+          );
+        })}
+        <div ref={observerRef}></div>
+      </ul>
+    );
+  }
+
   if ((isCharacter && tabIndex == eTabCharacterType.Contents) || (isChannel && tabIndex == eTabChannelType.Contents)) {
     return (
       <ul className={styles.itemWrap}>
@@ -2639,6 +2660,7 @@ export const ChannelComponent = ({
   itemInfo,
   onOpenContentMenu,
 }: ChannelComponentType) => {
+  const isPD = itemInfo.characterIP == CharacterIP.None;
   const isOriginal = itemInfo.characterIP == CharacterIP.Original;
   const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
@@ -2669,7 +2691,9 @@ export const ChannelComponent = ({
         <div className={styles.titleWrap}>
           <div className={styles.left}>
             <div className={styles.name}>{itemInfo?.name}</div>
-            <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
+            {!isPD && (
+              <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
+            )}
           </div>
           <div className={styles.right}>
             <img
@@ -2793,6 +2817,7 @@ export const CharacterComponent = ({
   itemInfo,
   onOpenContentMenu,
 }: CharacterComponentType) => {
+  const isPD = itemInfo.characterIP == CharacterIP.None;
   const isOriginal = itemInfo.characterIP == CharacterIP.Original;
   const characterIPStr = isOriginal ? 'Original' : 'Fan';
   return (
@@ -2829,7 +2854,9 @@ export const CharacterComponent = ({
         <div className={styles.titleWrap}>
           <div className={styles.left}>
             <div className={styles.name}>{itemInfo?.name}</div>
-            <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
+            {!isPD && (
+              <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
+            )}
           </div>
           <div className={styles.right}>
             <img
