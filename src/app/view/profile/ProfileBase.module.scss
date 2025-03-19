@@ -76,11 +76,13 @@
   z-index: 2;
 
   .left {
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: 6px;
 
     .backBtn {
+      flex-shrink: 0;
       width: 20px;
       height: 20px;
       cursor: pointer;
@@ -93,6 +95,7 @@
     }
 
     .selectProfileNameWrap {
+      min-width: 0;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -134,7 +137,8 @@
       }
 
       .profileName {
-        overflow: hidden;
+        width: 100%;
+
         color: var(--Color-Tokens-Text, #0C0C0C);
         font-family: Lato;
         text-overflow: ellipsis;
@@ -143,9 +147,15 @@
         font-weight: 800;
         line-height: normal;
         letter-spacing: -0.42px;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .iconSelect {
+        flex-shrink: 0;
+
         img {
           box-sizing: content-box;
           width: 14px;

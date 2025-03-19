@@ -2728,7 +2728,7 @@ export const ChannelComponent = ({
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
         {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
-        {itemInfo?.isFavorite && (
+        {itemInfo?.isPinFix && (
           <div className={styles.pin}>
             <img src={BoldPin.src} alt="" />
           </div>
@@ -2804,7 +2804,7 @@ export const ContentComponent = ({
         <div className={styles.bgGradientWrap}>
           <div className={styles.bgGradient}></div>
         </div>
-        {itemInfo?.isFavorite && (
+        {itemInfo?.isPinFix && (
           <div className={styles.pin}>
             <img src={BoldPin.src} alt="" />
           </div>
@@ -2888,7 +2888,7 @@ export const CharacterComponent = ({
         <div className={styles.bgGradientWrap}>
           <div className={styles.bgGradient}></div>
         </div>
-        {itemInfo?.isFavorite && (
+        {itemInfo?.isPinFix && (
           <div className={styles.pin}>
             <img src={BoldPin.src} alt="" />
           </div>

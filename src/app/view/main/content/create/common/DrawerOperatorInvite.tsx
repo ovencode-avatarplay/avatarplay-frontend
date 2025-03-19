@@ -16,6 +16,8 @@ import {
 } from '@/app/NetWork/ProfileNetwork';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import {copyCurrentUrlToClipboard} from '@/utils/util-1';
+import {usePathname, useSearchParams} from 'next/navigation';
 
 interface Props {
   isOpen: boolean;
@@ -36,6 +38,9 @@ const OperatorInviteDrawer: React.FC<Props> = ({
   onUpdateOperatorList,
   urlLink,
 }) => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [selectedSearchAuthType, setSelectedSearchAuthType] = useState<OperatorAuthorityType>(0);
   const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
 
@@ -180,23 +185,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
   };
 
   const handleCopyToClipboard = () => {
-    if (urlLink && urlLink !== '0' && urlLink !== '') return;
-
-    if (!navigator.clipboard) {
-      const currentUrl = `${window.location}`;
-      alert(`TODO Localize - 현재 브라우저에서 클립보드 복사가 지원되지 않습니다. ${currentUrl}`);
-      return;
-    }
-
-    const currentUrl = `${window.location}`;
-
-    navigator.clipboard
-      .writeText(currentUrl)
-      .then(() => alert('TODO Localize - 링크가 복사되었습니다!'))
-      .catch(err => {
-        console.error('TODO Localize - 클립보드 복사 실패:', err);
-        alert('TODO Localize - 클립보드 복사에 실패했습니다. 브라우저 설정을 확인해주세요.');
-      });
+    copyCurrentUrlToClipboard(pathname, searchParams);
   };
 
   const renderOperatorList = (
@@ -449,7 +438,11 @@ const OperatorInviteDrawer: React.FC<Props> = ({
             <CustomInput
               inputType="Basic"
               textType="InputOnly"
-              value={urlLink && urlLink !== '0' && urlLink !== '' ? urlLink : ''}
+              value={
+                urlLink && urlLink !== '0' && urlLink !== ''
+                  ? `${window.location.origin}${pathname}/${searchParams}`
+                  : ''
+              }
               placeholder="TODO Localize - 생성작업중에는 링크불가"
               disabled={true}
               onChange={() => {}}
