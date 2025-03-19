@@ -123,6 +123,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         data.dataMix = resGetContent?.data.contentInfo;
         data.dataMix.profileUrlLinkKey = resGetContent?.data.profileUrlLinkKey;
         data.dataMix.isSingleContentLock = resGetContent?.data.isSingleContentLock;
+        data.dataMix.isMyContent = resGetContent?.data.isMyContent;
       }
     } else {
       const seasonNo = data.season;
@@ -246,11 +247,15 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               <img src={BoldDownloadMini.src} alt="" />
               <div className={styles.label}>Download</div>
             </div>
-            <div className={styles.lineVertical}></div>
-            <div className={styles.iconWrap}>
-              <img src={BoldReward.src} alt="" />
-              <div className={styles.label}>Gift</div>
-            </div>
+            {!data.dataMix?.isMyContent && (
+              <>
+                <div className={styles.lineVertical}></div>
+                <div className={styles.iconWrap}>
+                  <img src={BoldReward.src} alt="" />
+                  <div className={styles.label}>Gift</div>
+                </div>
+              </>
+            )}
           </ul>
           <div className={styles.genreWrap}> {parse(genreStr)}</div>
 
