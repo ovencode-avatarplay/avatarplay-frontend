@@ -116,7 +116,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
             <button
               className={styles.iconButton}
               onClick={() => {
-                pushLocalizedRoute(`/create/content`, router);
+                router.back();
               }}
             >
               <img src={BoldArrowLeft.src} alt="Back" />

@@ -257,7 +257,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
             <button
               className={styles.iconButton}
               onClick={() => {
-                pushLocalizedRoute(`/create/content`, router);
+                router.back();
               }}
             >
               <img src={BoldArrowLeft.src} alt="Back" />
