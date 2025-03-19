@@ -286,7 +286,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
         onReport={async () => {
           alert('신고 추가 예정');
         }}
-        onPin={async (isPin: boolean, id: number) => {
+        onPin={async (isPin: boolean, id: number, index: number) => {
           let pinTabType: PinTabType = PinTabType.None;
 
           if (data.indexTab == eTabFavoritesType.Feed) {
@@ -307,7 +307,26 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
             isFix: isPin,
           };
           await pinFix(dataUpdatePin);
-          onRefreshTab(true);
+
+          const itemPined = data.profileTabInfo?.[data.indexTab][index];
+          itemPined.isPinFix = isPin;
+
+          data.profileTabInfo?.[data.indexTab].sort((a, b) => {
+            if (a.isPinFix === b.isPinFix) {
+              if (data.indexSort == ExploreSortType.Newest) {
+                return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
+              } else if (data.indexSort == ExploreSortType.Name) {
+                return a.name.localeCompare(b.name);
+              } else if (data.indexSort == ExploreSortType.Popular) {
+                return b.likeCount - a.likeCount;
+              } else {
+                return b.id - a.id;
+              }
+            }
+            return Number(b.isPinFix) - Number(a.isPinFix); // true가 먼저 오도록 정렬
+          });
+          setData({...data});
+          // onRefreshTab(true);
         }}
       />
 
@@ -404,7 +423,7 @@ const TabContentComponent = ({
                   profileUrlLinkKey: '',
                   title: one?.name || ' ',
                   id: one.id,
-                  isPinFix: false,
+                  isPinFix: one.isPinFix,
                   likeCount: one.likeCount,
                   mediaState: one.mediaState,
                   playTime: '',
@@ -485,7 +504,7 @@ type ContentSettingType = {
   onReport: () => void;
   onShare: () => void;
   onUnFavorite: () => void;
-  onPin: (isPin: boolean, id: number) => void;
+  onPin: (isPin: boolean, id: number, index: number) => void;
 };
 const ContentSetting = ({
   isMine = false,
@@ -495,7 +514,7 @@ const ContentSetting = ({
   onReport = () => {},
   onUnFavorite = () => {},
   onShare = () => {},
-  onPin = (isPin: boolean, id: number) => {},
+  onPin = (isPin: boolean, id: number, index: number) => {},
 }: ContentSettingType) => {
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItems: SelectDrawerItem[] = [
@@ -509,7 +528,7 @@ const ContentSetting = ({
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
       onClick: async () => {
         const isPin = !tabContentMenu.isPin;
-        onPin(isPin, tabContentMenu.id);
+        onPin(isPin, tabContentMenu.id, tabContentMenu?.index || 0);
       },
     },
     {
