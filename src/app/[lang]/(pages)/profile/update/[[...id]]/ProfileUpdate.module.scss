@@ -176,23 +176,23 @@
 
   .honorAwardsSection,
   .personalHistorySection {
-    textarea {
-      border-radius: 10px;
-      padding: 10px 12px;
-      border: 1px solid var(--Neutral-200, #E8EAED);
-      background: var(--White, #FFF);
+    // textarea {
+    //   border-radius: 10px;
+    //   padding: 10px 12px;
+    //   border: 1px solid var(--Neutral-200, #E8EAED);
+    //   background: var(--White, #FFF);
 
-      &:focus {
-        background: var(--Neutral-50, #F8F9FA);
-        border: 1px solid var(--Primary-1, #FD55D3);
-      }
+    //   &:focus {
+    //     background: var(--Neutral-50, #F8F9FA);
+    //     border: 1px solid var(--Primary-1, #FD55D3);
+    //   }
 
-      &.error {
-        border-radius: 10px;
-        border: 1px solid var(--Primary-2, #FEBBEA);
-        background: var(--Primary-4, #FFF5FD);
-      }
-    }
+    //   &.error {
+    //     border-radius: 10px;
+    //     border: 1px solid var(--Primary-2, #FEBBEA);
+    //     background: var(--Primary-4, #FFF5FD);
+    //   }
+    // }
   }
 
   textarea {
