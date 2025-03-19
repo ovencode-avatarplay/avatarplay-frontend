@@ -37,3 +37,9 @@
 {
   color: var(--Primary-1, #FD55D3);
 }
+
+.filterButton
+{
+  cursor: pointer;
+
+}

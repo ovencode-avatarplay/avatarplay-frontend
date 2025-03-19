@@ -113,7 +113,6 @@ const SearchBoard: React.FC = () => {
       handleSearchChange(search as 'All' | 'Story' | 'Character' | 'Content');
     }
   }, []);
-  console.log('data : ', data);
   // Handle
 
   const handleSearchChange = (value: 'All' | 'Story' | 'Character' | 'Content') => {
@@ -411,7 +410,7 @@ const SearchBoard: React.FC = () => {
                     })
                     .map((item, index) => (
                       <li
-                        key={item.storyId}
+                        key={`explorecard-${index}`}
                         className={styles.resultItem}
                         ref={index === searchResultList.length - 1 ? lastElementRef : null}
                       >
