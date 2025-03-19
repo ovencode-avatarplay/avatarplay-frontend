@@ -311,6 +311,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                         },
                         menu: {
                           marginTop: '4px',
+                          background: 'transparent',
                         },
                       }}
                     />
