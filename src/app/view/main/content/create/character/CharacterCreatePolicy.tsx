@@ -261,7 +261,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
               <div className={styles.drawerTitle}>{drawerTitle}</div>
               {tooltip && (
                 <div className={styles.infoButton}>
-                  <CustomToolTip tooltipText={tooltip} icon="info" tooltipStyle={{transform: 'translate(-100%)'}} />
+                  <CustomToolTip tooltipText={tooltip} titleText={drawerTitle} icon="info" />
                 </div>
               )}
             </div>
@@ -331,7 +331,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         <div className={styles.radioButtonContainer}>
           <div className={styles.radioTitleArea}>
             <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_005')}</h2>
-            <CustomToolTip tooltipText={getLocalizedText(Header, 'createcharacter017_desc_016')} />
+            <CustomToolTip
+              tooltipText={getLocalizedText(Header, 'createcharacter017_desc_016')}
+              titleText={getLocalizedText(Header, 'createcharacter017_label_005')}
+            />
           </div>
           <div className={styles.ipButtonArea}>
             {characterIpData.items.map(item => (
@@ -365,7 +368,9 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         connectOpen={connectOpen}
         setConnectOpen={setConnectOpen}
         connectCharacterInfo={connectCharacterInfo}
-        onConnectCharacterInfoChange={onConnectCharacterInfoChange}
+        onConnectCharacterSelected={handleSelectConnectCharacter}
+        // onConnectCharacterInfoChange={onConnectCharacterInfoChange}
+        // onConnectCharacterIdChange={onConnectCharacterIdChange}
       />
     );
   };
@@ -378,7 +383,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           <div className={styles.operatorTitle}>
             <div className={styles.radioTitleArea}>
               <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_008')}</h2>
-              <CustomToolTip tooltipText={getLocalizedText(Header, 'createcharacter017_desc_017')} />
+              <CustomToolTip
+                tooltipText={getLocalizedText(Header, 'createcharacter017_desc_017')}
+                titleText={getLocalizedText(Header, 'createcharacter017_label_008')}
+              />
             </div>
             <button className={styles.subButton} onClick={() => setOperatorInviteOpen(true)}>
               {getLocalizedText(Common, 'common_button_invite')}
@@ -448,7 +456,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       <div className={styles.radioButtonContainer}>
         <div className={styles.radioTitleArea}>
           <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_009')}</h2>
-          <CustomToolTip tooltipText="ToolTip Monetization" />
+          <CustomToolTip
+            tooltipText="ToolTip Monetization"
+            titleText={getLocalizedText(Header, 'createcharacter017_label_009')}
+          />
         </div>
         <div className={styles.verticalRadioButtonArea}>
           <CustomRadioButton
@@ -482,7 +493,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             {getLocalizedText(Header, 'createcharacter017_label_011')}
             <span className={styles.titleAstrisk}>*</span>
           </div>
-          <CustomToolTip tooltipText={getLocalizedText(Header, 'createcharacter017_desc_018')} />
+          <CustomToolTip
+            tooltipText={getLocalizedText(Header, 'createcharacter017_desc_018')}
+            titleText={getLocalizedText(Header, 'createcharacter017_label_011')}
+          />
         </div>
         <div className={styles.verticalRadioButtonArea}>
           <CustomRadioButton

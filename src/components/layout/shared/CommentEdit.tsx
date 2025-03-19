@@ -54,7 +54,13 @@ const CommentEdit: React.FC<Props> = ({onComplete, prevChat, isOpen, toggleDrawe
   }, [isOpen]);
 
   return (
-    <Drawer anchor="bottom" open={isOpen} onClose={() => toggleDrawer(false)} classes={{paper: styles.drawer}}>
+    <Drawer
+      anchor="bottom"
+      open={isOpen}
+      onClose={() => toggleDrawer(false)}
+      classes={{paper: styles.drawer}}
+      style={{zIndex: '1500'}}
+    >
       {/* Input Section */}
       <div className={styles.inputSection}>
         <div className={styles.inputWrapper}>

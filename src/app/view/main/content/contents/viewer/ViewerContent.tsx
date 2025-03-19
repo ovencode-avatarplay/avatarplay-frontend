@@ -276,6 +276,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleAddCommentCount = () => {
     if (info) setCommentCount(info?.commonMediaViewInfo.commentCount + 1);
   };
+  const handleSubCommentCount = () => {
+    if (info) setCommentCount(info?.commonMediaViewInfo.commentCount - 1);
+  };
   const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
     event.stopPropagation(); // 부모로 이벤트 전파 방지
     setIsPlaying(!isPlaying);
@@ -762,6 +765,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               isOpen={isCommentOpen}
               toggleDrawer={v => setCommentIsOpen(v)}
               onAddTotalCommentCount={() => handleAddCommentCount()}
+              onSubTotalCommentCount={() => handleSubCommentCount()}
               commentType={episodeId ? CommentContentType.Episode : CommentContentType.Content}
             />
           )}

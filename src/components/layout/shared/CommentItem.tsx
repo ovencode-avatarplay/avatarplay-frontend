@@ -13,6 +13,7 @@ import {
   ReplieInfo,
   sendCommentDislike,
   sendCommentLike,
+  sendDeleteComment,
 } from '@/app/NetWork/CommonNetwork';
 
 export enum CommentType {
@@ -28,6 +29,8 @@ interface CommentItemProps {
   onComplete: () => void;
   onRepliesBack?: () => void;
   onAddTotalCommentCount: () => void;
+  onCloseComment: () => void;
+  onSubTotalCommentCount: () => void;
   commentType: CommentContentType;
 }
 
@@ -38,9 +41,10 @@ const CommentItem: React.FC<CommentItemProps> = ({
   type = CommentType.default,
   onRepliesBack = () => {},
   onAddTotalCommentCount,
+  onSubTotalCommentCount,
+  onCloseComment,
   commentType,
 }) => {
-  console.log('comment.userImage', comment.userImage);
   const [isLike, setIsLike] = useState(comment.isLike);
   const [likeCount, setLikeCount] = useState(comment.likeCount);
   const [isDisLike, setIsDisLike] = useState(comment.isDisLike);
@@ -152,6 +156,22 @@ const CommentItem: React.FC<CommentItemProps> = ({
   }, [comment.updatedAt]);
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
+
+  const handleDeleteComment = async (commentId: number) => {
+    try {
+      const response = await sendDeleteComment({commentId});
+      onSubTotalCommentCount();
+      onComplete();
+
+      console.log(type);
+      if (type == CommentType.parent) {
+        onCloseComment();
+      }
+    } catch (error) {
+      console.error('🚨 댓글 삭제 API 호출 오류:', error);
+    }
+  };
+
   return (
     <div
       className={styles.container}
@@ -267,6 +287,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
         parentCommentId={comment.commentId}
         onRepliesBack={() => onRepliesBack()}
         onAddTotalCommentCount={() => onAddTotalCommentCount()}
+        onSubTotalCommentCount={() => onSubTotalCommentCount()}
         commentType={commentType}
       />
       <Menu
@@ -296,8 +317,8 @@ const CommentItem: React.FC<CommentItemProps> = ({
         )}
         <MenuItem
           onClick={() => {
+            handleDeleteComment(comment.commentId);
             handleClose();
-            alert('추후 추가');
           }}
         >
           Delete

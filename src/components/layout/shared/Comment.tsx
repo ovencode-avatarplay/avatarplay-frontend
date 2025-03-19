@@ -16,6 +16,7 @@ interface Props {
   parentCommentId?: number;
   onRepliesBack?: () => void;
   onAddTotalCommentCount: () => void;
+  onSubTotalCommentCount: () => void;
   commentType: CommentContentType;
 }
 
@@ -27,6 +28,7 @@ const Comment: React.FC<Props> = ({
   isReplies = false,
   onRepliesBack = () => {},
   onAddTotalCommentCount,
+  onSubTotalCommentCount,
   commentType,
 }) => {
   const [chat, setChat] = useState<string>('');
@@ -95,13 +97,16 @@ const Comment: React.FC<Props> = ({
       handleSendAddComment(feedId, parentCommentId, chat);
     }
   };
+  const onCloseComment = () => {
+    toggleDrawer(false);
+    onRepliesBack();
+  };
   return (
     <Drawer
       anchor="bottom"
       open={isOpen}
       onClose={() => {
-        toggleDrawer(false);
-        onRepliesBack();
+        onCloseComment();
       }}
       classes={{paper: styles.drawer}}
       style={{zIndex: '1300'}}
@@ -138,7 +143,9 @@ const Comment: React.FC<Props> = ({
               comment={comment}
               onRepliesBack={() => getCommentList()}
               onAddTotalCommentCount={() => onAddTotalCommentCount()}
+              onSubTotalCommentCount={() => onSubTotalCommentCount()}
               commentType={commentType}
+              onCloseComment={() => onCloseComment()}
             />
           ))}
 
@@ -149,7 +156,9 @@ const Comment: React.FC<Props> = ({
             type={CommentType.parent}
             onComplete={() => getCommentList()}
             onAddTotalCommentCount={() => onAddTotalCommentCount()}
+            onSubTotalCommentCount={() => onSubTotalCommentCount()}
             commentType={commentType}
+            onCloseComment={() => onCloseComment()}
           />
         )}
         {isReplies &&
@@ -160,7 +169,9 @@ const Comment: React.FC<Props> = ({
               type={CommentType.replies}
               onComplete={() => getCommentList()}
               onAddTotalCommentCount={() => onAddTotalCommentCount()}
+              onSubTotalCommentCount={() => onSubTotalCommentCount()}
               commentType={commentType}
+              onCloseComment={() => onCloseComment()}
             />
           ))}
       </div>
