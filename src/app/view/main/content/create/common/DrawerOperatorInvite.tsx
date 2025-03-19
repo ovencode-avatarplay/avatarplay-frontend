@@ -24,6 +24,7 @@ interface Props {
   setInviteSearchValue: (value: string) => void;
   operatorList: ProfileSimpleInfo[];
   onUpdateOperatorList: (updatedList: ProfileSimpleInfo[]) => void;
+  urlLink?: string;
 }
 
 const OperatorInviteDrawer: React.FC<Props> = ({
@@ -33,6 +34,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
   setInviteSearchValue,
   operatorList,
   onUpdateOperatorList,
+  urlLink,
 }) => {
   const [selectedSearchAuthType, setSelectedSearchAuthType] = useState<OperatorAuthorityType>(0);
   const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
@@ -175,6 +177,26 @@ const OperatorInviteDrawer: React.FC<Props> = ({
     if (onUpdateAuthType) {
       onUpdateAuthType(profileId, newAuthType);
     }
+  };
+
+  const handleCopyToClipboard = () => {
+    if (urlLink && urlLink !== '0' && urlLink !== '') return;
+
+    if (!navigator.clipboard) {
+      const currentUrl = `${window.location}`;
+      alert(`TODO Localize - 현재 브라우저에서 클립보드 복사가 지원되지 않습니다. ${currentUrl}`);
+      return;
+    }
+
+    const currentUrl = `${window.location}`;
+
+    navigator.clipboard
+      .writeText(currentUrl)
+      .then(() => alert('TODO Localize - 링크가 복사되었습니다!'))
+      .catch(err => {
+        console.error('TODO Localize - 클립보드 복사 실패:', err);
+        alert('TODO Localize - 클립보드 복사에 실패했습니다. 브라우저 설정을 확인해주세요.');
+      });
   };
 
   const renderOperatorList = (
@@ -427,12 +449,13 @@ const OperatorInviteDrawer: React.FC<Props> = ({
             <CustomInput
               inputType="Basic"
               textType="InputOnly"
-              value={'link'}
+              value={urlLink && urlLink !== '0' && urlLink !== '' ? urlLink : ''}
+              placeholder="TODO Localize - 생성작업중에는 링크불가"
               disabled={true}
               onChange={() => {}}
               customClassName={[styles.inviteInput]}
             />
-            <CustomButton size="Medium" state="Normal" type="Primary" onClick={() => {}}>
+            <CustomButton size="Medium" state="Normal" type="Primary" onClick={handleCopyToClipboard}>
               Copy
             </CustomButton>
           </div>

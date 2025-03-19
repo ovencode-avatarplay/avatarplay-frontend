@@ -545,7 +545,28 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
 
           <section className={styles.personalHistorySection}>
             <h2 className={styles.label}>Personal History</h2>
-            <textarea
+
+            <div className={cx(styles.textAreaWrap, errors.personalHistory && isSubmitted && styles.error)}>
+              <textarea
+                {...register('personalHistory', {required: true})}
+                placeholder="Ex) 2024. 10~2025.01 Design (Zero to One CB)"
+                maxLength={500}
+                rows={1}
+                value={watch('personalHistory')}
+                onChange={e => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = `${target.scrollHeight - 20}px`;
+
+                  clearErrors('personalHistory');
+                  setValue('personalHistory', e.target.value);
+                  checkValid();
+                }}
+              />
+              <div className={styles.textCount}>{`${watch('personalHistory', '').length}/500`}</div>
+            </div>
+
+            {/* <textarea
               {...register('personalHistory', {required: true})}
               className={cx(styles.inputPersonalHistory, errors.personalHistory && isSubmitted && styles.error)}
               placeholder="Ex) 2024. 10~2025.01 Design (Zero to One CB)"
@@ -559,12 +580,32 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 setValue('personalHistory', e.target.value);
                 checkValid();
               }}
-            />
+            /> */}
           </section>
 
           <section className={styles.honorAwardsSection}>
             <h2 className={styles.label}>Honor & Awards</h2>
-            <textarea
+
+            <div className={cx(styles.textAreaWrap, errors.honorAwards && isSubmitted && styles.error)}>
+              <textarea
+                {...register('honorAwards', {required: true})}
+                placeholder="Ex) 2024. 10~2025.01 Design (Zero to One CB)"
+                maxLength={500}
+                rows={1}
+                value={watch('honorAwards')}
+                onChange={e => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = `${target.scrollHeight - 20}px`;
+
+                  clearErrors('honorAwards');
+                  setValue('honorAwards', e.target.value);
+                  checkValid();
+                }}
+              />
+              <div className={styles.textCount}>{`${watch('honorAwards', '').length}/500`}</div>
+            </div>
+            {/* <textarea
               {...register('honorAwards', {required: true})}
               className={cx(styles.inputHonorawards, errors.honorAwards && isSubmitted && styles.error)}
               placeholder="Ex) 2024.10.00Advertisement contest winner(korea)"
@@ -578,7 +619,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 setValue('honorAwards', e.target.value);
                 checkValid();
               }}
-            />
+            /> */}
           </section>
 
           <section className={styles.portfolioSection}>
@@ -897,6 +938,8 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
     // onChange(dataList);
     // onClose();
     if (isCreate) {
+      dataList.push(data);
+      onChange(dataList);
       onClose();
     } else {
       dataList.splice(id, 1);
