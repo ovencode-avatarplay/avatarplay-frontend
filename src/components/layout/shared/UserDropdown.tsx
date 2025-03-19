@@ -153,51 +153,72 @@ const UserDropdown = () => {
     setSelectedLanguage(Number(event.target.value));
   };
 
+  const updateAuth = async (session: Session | null) => {
+    try {
+      console.log('로그인 시작');
+      const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
+      const _language = getCurrentLanguage();
+      const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/auth/sign-in`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${jwtToken}`, // JWT를 Authorization 헤더에 포함
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          language: _language,
+        }),
+      });
+      console.log('로그인 완료', response.json);
+
+      if (!response.ok) {
+        console.error('Failed to authenticate:', response.statusText);
+        console.log('SIGNED_IN  리스폰스 ok 실패');
+        return;
+      }
+
+      const data: {data: SignInRes} = await response.json();
+      dispatch(updateProfile(data.data.profileInfo));
+      dispatch(setStar(data.data.sessionInfo.star));
+      console.log('response login : ', data);
+      localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
+      setTimeout(() => {
+        fetchLanguage(router);
+      }, 100);
+      //setSignIn();
+      console.log('서버에 저장된 언어로 가져오자');
+    } catch (error) {
+      console.error('Error occurred during authentication:', error);
+    }
+  }
+
   useEffect(() => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
+      console.log(event);  
       if (event === 'SIGNED_IN') {
-        if (auth?.access_token == session?.access_token) return;
-
         setAuth(session);
-        try {
-          console.log('로그인 시작');
-          const jwtToken = session?.access_token; // 세션에서 JWT 토큰 추출
-          const _language = getCurrentLanguage();
-          const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/auth/sign-in`, {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${jwtToken}`, // JWT를 Authorization 헤더에 포함
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              language: _language,
-            }),
-          });
-          console.log('로그인 완료', response.json);
 
-          if (!response.ok) {
-            console.error('Failed to authenticate:', response.statusText);
-            console.log('SIGNED_IN  리스폰스 ok 실패');
-            return;
-          }
-
-          const data: {data: SignInRes} = await response.json();
-          dispatch(updateProfile(data.data.profileInfo));
-          dispatch(setStar(data.data.sessionInfo.star));
-          console.log('response login : ', data);
-          localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
-          setTimeout(() => {
-            fetchLanguage(router);
-          }, 100);
-          //setSignIn();
-          console.log('서버에 저장된 언어로 가져오자');
-        } catch (error) {
-          console.error('Error occurred during authentication:', error);
+        const jwt = localStorage.getItem('jwt');
+        if(jwt)
+        {
+          console.log('토큰이 같아서 인증 갱신 필요없음. 하지만 expire 추후 처리 필요');
+          return;
         }
+
+        updateAuth(session);
       } else if (event === 'INITIAL_SESSION') {
         setAuth(session);
+        
         const language = getLanguageTypeFromText(getCurrentLanguage());
         refreshLanaguage(language, router);
+
+        const jwt = localStorage.getItem('jwt');
+        if(jwt)
+        {
+          console.log('토큰이 같아서 인증 갱신 필요없음. 하지만 expire 추후 처리 필요');
+          return;
+        }
+
+        updateAuth(session);
         console.log('브라우저에 저장된 언어로 가져오자');
       }
     };
