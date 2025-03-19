@@ -2021,15 +2021,17 @@ export const TabHeaderComponent = ({
       setData({...data});
     };
     window.addEventListener('resize', onResize);
+    window.addEventListener('scroll', onResize);
     return () => {
       window.removeEventListener('resize', onResize);
+      window.removeEventListener('scroll', onResize);
     };
   }, [data]);
 
   useEffect(() => {
     data.indexTab = indexTab;
     setData({...data});
-  }, [indexTab]);
+  }, [indexTab, tabHeaderList]);
 
   const calculateGap = () => {
     if (containerRef.current) {
