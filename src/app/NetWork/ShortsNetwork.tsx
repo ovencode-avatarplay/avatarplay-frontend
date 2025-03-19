@@ -245,32 +245,32 @@ export const sendGetFeed = async (
   }
 };
 
-export interface PinFixFeedReq {
-  feedId: number;
-  isFix: boolean;
-}
+// export interface PinFixFeedReq {
+//   feedId: number;
+//   isFix: boolean;
+// }
 
-export interface PinFixFeedRes {}
+// export interface PinFixFeedRes {}
 
-export const updatePin = async (payload: PinFixFeedReq): Promise<PinFixFeedRes> => {
-  try {
-    const response = await api.post('/Common/pin', payload);
-    const {resultCode, resultMessage, data} = response.data;
+// export const updatePin = async (payload: PinFixFeedReq): Promise<PinFixFeedRes> => {
+//   try {
+//     const response = await api.post('/Common/pin', payload);
+//     const {resultCode, resultMessage, data} = response.data;
 
-    return {
-      resultCode,
-      resultMessage,
-      data: data || {}, // 데이터가 없을 경우 빈 객체 반환
-    };
-  } catch (error) {
-    console.error('Failed to pin feed:', error);
-    return {
-      resultCode: -1,
-      resultMessage: 'Failed to pin feed',
-      data: {},
-    };
-  }
-};
+//     return {
+//       resultCode,
+//       resultMessage,
+//       data: data || {}, // 데이터가 없을 경우 빈 객체 반환
+//     };
+//   } catch (error) {
+//     console.error('Failed to pin feed:', error);
+//     return {
+//       resultCode: -1,
+//       resultMessage: 'Failed to pin feed',
+//       data: {},
+//     };
+//   }
+// };
 
 export interface DeleteFeedeReq {
   feedId: number;

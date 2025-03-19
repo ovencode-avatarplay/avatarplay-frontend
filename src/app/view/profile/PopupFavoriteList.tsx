@@ -45,8 +45,7 @@ import {GetCharacterInfoRes} from '@/app/NetWork/CharacterNetwork';
 import {GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
-import {bookmark, InteractionType, RecordType} from '@/app/NetWork/CommonNetwork';
-import {PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
+import {bookmark, InteractionType, pinFix, PinFixReq, PinTabType, RecordType} from '@/app/NetWork/CommonNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
 
 type Props = {
@@ -287,6 +286,29 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
         onReport={async () => {
           alert('신고 추가 예정');
         }}
+        onPin={async (isPin: boolean, id: number) => {
+          let pinTabType: PinTabType = PinTabType.None;
+
+          if (data.indexTab == eTabFavoritesType.Feed) {
+            pinTabType = PinTabType.FavoritesFeed;
+          } else if (data.indexTab == eTabFavoritesType.Character) {
+            pinTabType = PinTabType.FavoritesCharacter;
+          } else if (data.indexTab == eTabFavoritesType.Contents) {
+            pinTabType = PinTabType.FavoritesContents;
+          } else if (data.indexTab == eTabFavoritesType.Channel) {
+            pinTabType = PinTabType.FavoritesChannel;
+          } else if (data.indexTab == eTabFavoritesType.Game) {
+            pinTabType = PinTabType.FavoritesGame;
+          }
+
+          const dataUpdatePin: PinFixReq = {
+            type: pinTabType,
+            typeValueId: id,
+            isFix: isPin,
+          };
+          await pinFix(dataUpdatePin);
+          onRefreshTab(true);
+        }}
       />
 
       <SharePopup
@@ -463,6 +485,7 @@ type ContentSettingType = {
   onReport: () => void;
   onShare: () => void;
   onUnFavorite: () => void;
+  onPin: (isPin: boolean, id: number) => void;
 };
 const ContentSetting = ({
   isMine = false,
@@ -472,6 +495,7 @@ const ContentSetting = ({
   onReport = () => {},
   onUnFavorite = () => {},
   onShare = () => {},
+  onPin = (isPin: boolean, id: number) => {},
 }: ContentSettingType) => {
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItems: SelectDrawerItem[] = [
@@ -484,12 +508,8 @@ const ContentSetting = ({
     {
       name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
       onClick: async () => {
-        const dataUpdatePin: PinFixFeedReq = {
-          feedId: Number(tabContentMenu.id),
-          isFix: !tabContentMenu.isPin,
-        };
-        await updatePin(dataUpdatePin);
-        refreshTabAll();
+        const isPin = !tabContentMenu.isPin;
+        onPin(isPin, tabContentMenu.id);
       },
     },
     {

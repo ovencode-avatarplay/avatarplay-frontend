@@ -399,3 +399,35 @@ export const sendDeleteComment = async (payload: DeleteCommentReq): Promise<Resp
     throw new Error('Failed to delete comment. Please try again.');
   }
 };
+
+export interface PinFixReq {
+  type: PinTabType;
+  typeValueId: number;
+  isFix: boolean;
+}
+
+export interface PinFixRes {}
+
+export enum PinTabType {
+  None = 0,
+  FavoritesFeed = 1,
+  FavoritesCharacter = 2,
+  FavoritesChannel = 3,
+  FavoritesContents = 4,
+  FavoritesGame = 5,
+  RecordFeed = 6,
+  RecordCharacter = 7,
+  RecordContents = 8,
+  RecordGame = 9,
+}
+
+export const pinFix = async (payload: PinFixReq): Promise<ResponseAPI<PinFixRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<PinFixRes>>('Common/pinfix', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`pinFix Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error pinFix:', error);
+    throw new Error('Failed to pinFix. Please try again.');
+  }
+};

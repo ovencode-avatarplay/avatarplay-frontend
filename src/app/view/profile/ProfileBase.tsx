@@ -70,7 +70,7 @@ import {useAtom} from 'jotai';
 import Link from 'next/link';
 import HamburgerBar from '../main/sidebar/HamburgerBar';
 import SharePopup from '@/components/layout/shared/SharePopup';
-import {deleteFeed, FeedInfo, PinFixFeedReq, updatePin} from '@/app/NetWork/ShortsNetwork';
+import {deleteFeed, FeedInfo} from '@/app/NetWork/ShortsNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {
   CharacterIP,
