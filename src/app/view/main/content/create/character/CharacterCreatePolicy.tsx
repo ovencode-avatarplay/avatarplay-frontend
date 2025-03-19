@@ -404,6 +404,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           operatorList={operatorProfileIdList}
           onUpdateOperatorList={onOperatorProfileIdListChange}
           setInviteSearchValue={setInviteSearchValue}
+          urlLink={curCharacterId.toString()}
         />
       </>
     );
