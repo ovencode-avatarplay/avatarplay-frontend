@@ -691,17 +691,14 @@ export const cancelSubscribe = async (payload: SubscribeCancelReq) => {
 };
 
 export interface GetConnectListReq {
-  // empty
+  profileId: number;
 }
 
-export const getConnectList = async (profileTabType: ProfileTabType = ProfileTabType.My) => {
-  const data: GetConnectListReq = {
-    profileTabType,
-  };
+export const getConnectList = async (payload: GetConnectListReq) => {
   try {
     const resProfileList: AxiosResponse<ResponseAPI<GetProfileListRes>> = await api.post(
       `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/getConnectList`,
-      data,
+      payload,
     );
     if (resProfileList.status != 200) return;
     return resProfileList.data?.data?.profileList;

@@ -50,6 +50,7 @@ interface Props {
   creatorComment: string;
   setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
   essentialWarning: boolean;
+  curCharacterId: number;
 }
 
 const Header = 'CreateCharacter';
@@ -83,6 +84,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   creatorComment,
   setCharacterDesc,
   essentialWarning,
+  curCharacterId,
 }) => {
   let VisibilityData = {items: ['Private', 'UnListed', 'Public']};
 
@@ -365,6 +367,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   const renderConnect = () => {
     return (
       <DrawerConnectCharacter
+        curCharacterId={curCharacterId}
         connectOpen={connectOpen}
         setConnectOpen={setConnectOpen}
         connectCharacterInfo={connectCharacterInfo}
