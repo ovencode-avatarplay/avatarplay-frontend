@@ -49,6 +49,7 @@ const CustomToolTip: React.FC<CustomToolTipProps> = ({tooltipText, tooltipStyle,
   return (
     <div className={styles.tooltipContainer}>
       <button
+        type="button"
         ref={buttonRef}
         className={styles.btnToolTip}
         onMouseEnter={handleMouseEnter}

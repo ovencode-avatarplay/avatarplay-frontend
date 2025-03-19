@@ -97,6 +97,7 @@ const DrawerMembershipSetting: React.FC<Props> = ({
             {/* 나중에 Common에서 Localize 지정되면 거기서 지정된 값으로 바꿔도 됩니다. */}
           </div>
           <button
+            type="button"
             className={styles.settingButton}
             onClick={() => {
               setDrawerOpen(true);
