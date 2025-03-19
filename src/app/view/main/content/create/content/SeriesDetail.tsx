@@ -375,7 +375,20 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
               {episodeList &&
                 episodeList.map((ep, index) => (
                   <div key={ep.id} className={styles.episodeItem}>
-                    <div className={styles.episodeThumbnail} style={{backgroundImage: `url(${ep.thumbnailUrl})`}}></div>
+                    {isVideo(ep.thumbnailUrl) ? (
+                      <video
+                        className={styles.episodeThumbnail}
+                        src={ep.thumbnailUrl}
+                        poster={ep.thumbnailUrl} // 첫 프레임을 표시
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                      />
+                    ) : (
+                      <div className={styles.episodeThumbnail} style={{backgroundImage: `url(${ep.thumbnailUrl})`}} />
+                    )}
+
                     <div className={styles.episodeInfo}>
                       <div className={styles.epTitleText}>
                         {index + 1}. {ep.name}
