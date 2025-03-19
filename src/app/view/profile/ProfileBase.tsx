@@ -97,6 +97,7 @@ import PopupFriends from './PopupFriends';
 import {PortfolioListPopup} from '@/app/[lang]/(pages)/profile/update/[[...id]]/page';
 import useCustomRouter from '@/utils/useCustomRouter';
 import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
+import DrawerDonation from '../main/content/create/common/DrawerDonation';
 
 export enum eTabFavoritesType {
   Feed = 1,
@@ -224,6 +225,11 @@ type DataProfileType = {
 
   gap: number;
 
+  dataGift: {
+    isOpen: boolean;
+    idProfileTo: number;
+  };
+
   refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
   getIsEmptyTab: () => boolean;
 };
@@ -308,6 +314,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     isOpenPopupFriendsList: false,
 
     gap: 0,
+
+    dataGift: {
+      isOpen: false,
+      idProfileTo: 0,
+    },
 
     refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
     getIsEmptyTab: () => true,
@@ -926,7 +937,13 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               >
                 {isFollow ? 'Following' : 'Follow'}
               </button>
-              <button className={styles.gift}>
+              <button
+                className={styles.gift}
+                onClick={() => {
+                  data.dataGift.isOpen = true;
+                  setData({...data});
+                }}
+              >
                 <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
               </button>
             </div>
@@ -1104,6 +1121,19 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             data.isOpenPopupFriendsList = false;
             setData({...data});
           }}
+        />
+      )}
+
+      {data.dataGift.isOpen && (
+        <DrawerDonation
+          giveToPDId={data.profileId}
+          isOpen={data.dataGift.isOpen}
+          onClose={() => {
+            data.dataGift.isOpen = false;
+            setData({...data});
+          }}
+          sponsoredName={data.profileInfo?.profileInfo?.name || ''}
+          router={router}
         />
       )}
     </>
