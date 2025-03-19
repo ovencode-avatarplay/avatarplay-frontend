@@ -5,7 +5,7 @@ import StoryDashboardHeader from '../story-main/story-dashboard/StoryDashboardHe
 import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import styles from './PostMain.module.css';
-import {BoldPlay, CircleClose, LineClose, LineUpload} from '@ui/Icons';
+import {BoldPlay, BoldQuestion, CircleClose, LineClose, LineUpload} from '@ui/Icons';
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import TriggerImageGrid from '../story-main/episode/episode-trigger/TriggerImageGrid';
@@ -506,9 +506,12 @@ const PostMain: React.FC<Props> = ({id}) => {
             onClick={() => setVisibilityDrawerOpen(true)}
           ></CustomDropDownSelectDrawer>
         </div>
-        <span className={styles.label}>
-          NSFW <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
-        </span>
+        <div className={styles.nsfwLabel}>
+          NSFW <div style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</div>
+          <button className={styles.questionButton}>
+            <img src={BoldQuestion.src} className={styles.questionimg}></img>
+          </button>
+        </div>
 
         <div className={styles.radioButtonGroup}>
           <CustomRadioButton
