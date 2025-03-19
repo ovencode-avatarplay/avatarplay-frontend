@@ -43,7 +43,7 @@
                 "customApi": "",
                 "tag": "",
                 "positionCountryList": [],
-                "characterIP": 0,    
+                "characterIP": 1,    
                 "connectCharacterInfo": {
                   "profileTabType": 0,
                   "operatorAuthorityType": 0,
@@ -54,7 +54,7 @@
                   "description" : "string",
                   "nsfw": false ,
                   "urlLinkKey" : "string",
-                  "characterIP" : 0
+                  "characterIP" : 1
                 },
                 "connectCharacterId" : 0,
                 "recruitedProfileId": 0,
