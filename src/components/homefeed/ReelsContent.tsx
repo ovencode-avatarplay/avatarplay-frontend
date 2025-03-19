@@ -555,7 +555,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           sponsoredName={item.profileName}
           giveToPDId={item.profileId}
           onClose={handleDonationclose}
-          router={router}
         />
       }
       <Comment

@@ -848,7 +848,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               sponsoredName={'이름도 받아야함'}
               giveToPDId={0}
               onClose={() => setDonation(false)}
-              router={router}
             />
           )}
           {onPurchasePopup && purchaseData && (
