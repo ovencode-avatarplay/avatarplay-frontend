@@ -76,13 +76,17 @@ export enum VisibilityType {
 }
 
 export enum Subscription {
-  IP,
-  Contents,
+  None = 0,
+  Contents = 1,
+  IP = 2,
 }
 
 export enum PaymentType {
-  USA,
-  Korea,
+  USD,
+  KRW,
+  EUR,
+  JPY,
+  GBP,
 }
 
 export interface MembershipSetting {

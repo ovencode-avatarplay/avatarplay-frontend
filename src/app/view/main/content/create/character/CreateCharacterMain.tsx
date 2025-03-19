@@ -317,6 +317,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           selectLorebookId: customModulesLorebookId,
           selectPromptId: customModulesPromptId,
           creatorComment: creatorComment,
+          membershipSetting: membershipSetting,
         },
         debugParameter: 'string',
       };

@@ -1,6 +1,6 @@
 // src/app/Network/CharacterNetwork.tsx
 
-import {LanguageType, LLMModel} from '@/app/NetWork/network-interface/CommonEnums';
+import {LanguageType, LLMModel, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 import api, {ResponseAPI} from './ApiInstance';
 import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
 import {VisibilityType} from './ContentNetwork';
@@ -121,6 +121,7 @@ export interface CharacterProfilePayload {
   selectLorebookId: number;
   selectPromptId: number;
   creatorComment: string;
+  membershipSetting: MembershipSetting;
 }
 
 export interface CreateCharacter2Res {

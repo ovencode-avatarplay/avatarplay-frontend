@@ -9,6 +9,7 @@ import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import {MembershipSetting, PaymentType} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
+import CustomInput from '@/components/layout/shared/CustomInput';
 
 interface Props {
   onClose: () => void;
@@ -20,11 +21,7 @@ enum MembershipMenuType {
   Ip = 'Ip',
 }
 
-const DrawerMembershipSetting: React.FC<Props> = ({
-  onClose,
-  membershipSetting,
-  onMembershipSettingChange: onMembershipInfoChange,
-}) => {
+const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, onMembershipSettingChange}) => {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [toDoAlertOpen, setToDoAlertOpen] = useState<boolean>(false);
   const [membershipMenuType, setMembershipMenuType] = useState<MembershipMenuType>(MembershipMenuType.Content); // TODO : Content Ip 버튼으로 ui 화면 변경이 있을 경우를 상정하고 작업했음. 기획이 없으니 추후에 기획 사항대로 수정
@@ -36,57 +33,28 @@ const DrawerMembershipSetting: React.FC<Props> = ({
       value: value as number,
     }));
 
-  const payAmountUSA = [
-    {
-      label: 'US $35',
-      value: 35,
-    },
-    {
-      label: 'US $45',
-      value: 45,
-    },
-  ];
-
-  const payAmountKorea = [
-    {
-      label: 'KOR 50000₩',
-      value: 50000,
-    },
-    {
-      label: 'KOR 65000₩',
-      value: 65000,
-    },
-  ];
-
-  const [payAmount, setPayAmount] = useState(payAmountUSA);
-
   const handleOnClose = () => {
     setDrawerOpen(false);
     onClose();
   };
 
   const handleSubscriptionToggle = () => {
-    onMembershipInfoChange({...membershipSetting, subscription: membershipSetting.subscription === 0 ? 1 : 0});
+    onMembershipSettingChange({...membershipSetting, subscription: membershipSetting.subscription === 0 ? 1 : 0});
   };
   const handlePaymentTypeChange = (value: string | number) => {
-    onMembershipInfoChange({...membershipSetting, paymentType: Number(value)});
-  };
-
-  const handlePaymentAmountChange = (value: string | number) => {
-    onMembershipInfoChange({...membershipSetting, paymentAmount: Number(value)});
+    onMembershipSettingChange({...membershipSetting, paymentType: Number(value)});
   };
 
   const handlePromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onMembershipInfoChange({...membershipSetting, benefits: event.target.value});
+    onMembershipSettingChange({...membershipSetting, benefits: event.target.value});
   };
 
-  useEffect(() => {
-    if (membershipSetting.paymentType === PaymentType.USA) {
-      setPayAmount(payAmountUSA);
-    } else if (membershipSetting.paymentType === PaymentType.Korea) {
-      setPayAmount(payAmountKorea);
+  const handleOnChangePayAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const numericValue = Number(e.target.value);
+    if (!isNaN(numericValue)) {
+      onMembershipSettingChange({...membershipSetting, paymentAmount: numericValue});
     }
-  }, [membershipSetting.paymentType]);
+  };
 
   return (
     <div className={styles.membershipSetting}>
@@ -175,12 +143,20 @@ const DrawerMembershipSetting: React.FC<Props> = ({
                 style={{minWidth: '120px', maxWidth: '200px'}}
               />
 
-              <CustomDropDown
+              {/* <CustomDropDown
                 displayType="Text"
                 items={payAmount}
                 initialValue={membershipSetting.paymentAmount}
                 onSelect={handlePaymentAmountChange}
                 style={{minWidth: '120px', maxWidth: '200px'}}
+              /> */}
+              <CustomInput
+                textType="InputOnly"
+                inputType="Basic"
+                onlyNumber={true}
+                value={membershipSetting?.paymentAmount}
+                onChange={handleOnChangePayAmount}
+                customClassName={[styles.payAmountInput]}
               />
               <div className={styles.payMonth}>/Month</div>
             </div>
