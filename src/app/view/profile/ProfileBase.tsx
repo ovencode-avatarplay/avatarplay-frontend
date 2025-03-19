@@ -59,6 +59,7 @@ import {
   ProfileTabItemInfo,
   ProfileType,
   selectProfile,
+  SharedItemType,
 } from '@/app/NetWork/ProfileNetwork';
 import {useDispatch, useSelector} from 'react-redux';
 import {setBottomNavColor} from '@/redux-store/slices/MainControl';
@@ -2371,15 +2372,37 @@ const TabContentComponent = ({
     return (
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.sharedInfoList.map((one, index: number) => {
-          return (
-            <CharacterComponent
-              isMine={isMine}
-              index={index}
-              itemInfo={one}
-              urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
-              onOpenContentMenu={onOpenContentMenu}
-            />
-          );
+          if (one.sharedItemType == SharedItemType.Channel) {
+            return (
+              <CharacterComponent
+                isMine={isMine}
+                index={index}
+                itemInfo={one}
+                urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+                onOpenContentMenu={onOpenContentMenu}
+              />
+            );
+          } else if (one.sharedItemType == SharedItemType.Character) {
+            return (
+              <ChannelComponent
+                index={index}
+                isMine={isMine}
+                itemInfo={one}
+                urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+                onOpenContentMenu={onOpenContentMenu}
+              />
+            );
+          } else {
+            return (
+              <CharacterComponent
+                isMine={isMine}
+                index={index}
+                itemInfo={one}
+                urlLinkThumbnail={getLocalizedLink(`/profile/` + one?.urlLinkKey + '?from=""')}
+                onOpenContentMenu={onOpenContentMenu}
+              />
+            );
+          }
         })}
         <div ref={observerRef}></div>
       </ul>
