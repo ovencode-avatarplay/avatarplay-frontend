@@ -123,7 +123,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
   };
 
   const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll?: boolean) => {
-    refreshList(false);
+    refreshList(isRefreshAll);
   };
 
   const isEmptyTab = false;
@@ -194,35 +194,35 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
                   onChange={async (filterCluster: FilterClusterType) => {
                     if ((filterCluster?.indexFilterMedia ?? -1) >= 0) {
                       data.filterCluster.indexFilterMedia = filterCluster?.indexFilterMedia ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
                     if ((filterCluster?.indexFilterCharacter ?? -1) >= 0) {
                       data.filterCluster.indexFilterCharacter = filterCluster?.indexFilterCharacter ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
 
                     if ((filterCluster?.indexSort ?? -1) >= 0) {
                       data.filterCluster.indexSort = filterCluster?.indexSort ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
 
                     if ((filterCluster?.indexFilterChannel ?? -1) >= 0) {
                       data.filterCluster.indexFilterChannel = filterCluster?.indexFilterChannel ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
 
                     if ((filterCluster?.indexFilterShared ?? -1) >= 0) {
                       data.filterCluster.indexFilterShared = filterCluster?.indexFilterShared ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
                     if ((filterCluster?.indexFilterContent ?? -1) >= 0) {
                       data.filterCluster.indexFilterContent = filterCluster?.indexFilterContent ?? -1;
-                      await refreshProfileTab(profileId, data.indexTab);
+                      await refreshProfileTab(profileId, data.indexTab, true);
                       setData(v => ({...data}));
                     }
                   }}
