@@ -555,8 +555,8 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 value={watch('personalHistory')}
                 onChange={e => {
                   const target = e.target as HTMLTextAreaElement;
-                  target.style.height = 'auto';
-                  target.style.height = `${target.scrollHeight - 20}px`;
+                  // target.style.height = 'auto';
+                  // target.style.height = `${target.scrollHeight - 20}px`;
 
                   clearErrors('personalHistory');
                   setValue('personalHistory', e.target.value);
@@ -595,8 +595,8 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 value={watch('honorAwards')}
                 onChange={e => {
                   const target = e.target as HTMLTextAreaElement;
-                  target.style.height = 'auto';
-                  target.style.height = `${target.scrollHeight - 20}px`;
+                  // target.style.height = 'auto';
+                  // target.style.height = `${target.scrollHeight - 20}px`;
 
                   clearErrors('honorAwards');
                   setValue('honorAwards', e.target.value);
