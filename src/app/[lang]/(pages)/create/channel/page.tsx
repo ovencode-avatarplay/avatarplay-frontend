@@ -34,7 +34,7 @@ import cx from 'classnames';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {debounce, Dialog, Drawer} from '@mui/material';
 import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostCountry';
-import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
+import {LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
@@ -207,6 +207,12 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       characterIP: CharacterIP.Original,
       isMonetization: 0,
       mediaUrl: '',
+      membershipSetting: {
+        benefits: '',
+        paymentAmount: 0,
+        paymentType: PaymentType.Korea,
+        subscription: Subscription.Contents,
+      },
     },
   });
 
@@ -227,7 +233,14 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     tag = tag.filter(v => !!v && v != '');
     let isMonetization = 0;
     let nsfw = 0;
-    const channelInfoForm: ChannelInfoForm = {...channelInfo, tags: tag, isMonetization, nsfw};
+
+    const membershipSetting: MembershipSetting = {
+      benefits: channelInfo.membershipSetting?.benefits || '',
+      paymentAmount: channelInfo.membershipSetting?.paymentAmount || 50000,
+      paymentType: channelInfo.membershipSetting?.paymentType || PaymentType.Korea,
+      subscription: channelInfo.membershipSetting?.subscription || Subscription.Contents,
+    };
+    const channelInfoForm: ChannelInfoForm = {...channelInfo, tags: tag, isMonetization, nsfw, membershipSetting};
 
     data.thumbnail = {file: channelInfo.mediaUrl || ''};
 
