@@ -250,8 +250,9 @@ export const sendGetSeasonEpisodes = async (
 ): Promise<ResponseAPI<GetSeasonEpisodesRes>> => {
   try {
     const response = await api.post<ResponseAPI<GetSeasonEpisodesRes>>('/Content/getSeasonEpisodes', payload);
-    if (response.data.resultCode === 0) return response.data;
-    throw new Error(`GetSeasonEpisodesRes Error: ${response.data.resultCode}`);
+    // if (response.data.resultCode === 0)
+    return response.data;
+    // throw new Error(`GetSeasonEpisodesRes Error: ${response.data.resultCode}`);
   } catch (error) {
     console.error('Error fetching season episodes:', error);
     throw new Error('Failed to fetch season episodes. Please try again.');

@@ -143,6 +143,11 @@ const ContentSeriesDetail = ({id, type}: Props) => {
       };
       console.log('data : ', data);
       const resGetSeasonEpisodes = await sendGetSeasonEpisodes(dataGetSeasonEpisodesReq);
+      if (resGetSeasonEpisodes.resultCode != 0) {
+        alert(resGetSeasonEpisodes.resultMessage);
+        return;
+      }
+
       console.log('resGetSeasonEpisodes : ', resGetSeasonEpisodes.data);
       if (resGetSeasonEpisodes.data) {
         data.dataEpisodes = resGetSeasonEpisodes.data;

@@ -104,6 +104,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
   };
 
   const refreshList = async (isRefreshAll: boolean = false) => {
+    console.trace('ㅎㅇㅎㅇ');
     if (isRefreshAll) {
       data.profileTabInfo[data.indexTab] = [];
     }
@@ -126,11 +127,12 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
       data.profileTabInfo[data.indexTab] = [];
     }
     data.profileTabInfo[data.indexTab].push(...(resRecordList?.data?.recordInfoList || []));
+    sortData();
     setData({...data});
   };
 
   const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll?: boolean) => {
-    refreshList(isRefreshAll);
+    await refreshList(isRefreshAll);
   };
 
   const isEmptyTab = false;
@@ -161,6 +163,24 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
       data.isShareOpened = true;
       setData({...data});
     }
+  };
+
+  const sortData = () => {
+    data.profileTabInfo?.[data.indexTab].sort((a, b) => {
+      if (a.isPinFix === b.isPinFix) {
+        if (data.indexSort == ExploreSortType.Newest) {
+          return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
+        } else if (data.indexSort == ExploreSortType.Name) {
+          return a.name.localeCompare(b.name);
+        } else if (data.indexSort == ExploreSortType.Popular) {
+          return b.likeCount - a.likeCount;
+        } else {
+          return b.id - a.id;
+        }
+      }
+      return Number(b.isPinFix) - Number(a.isPinFix); // true가 먼저 오도록 정렬
+    });
+    setData({...data});
   };
   return (
     <>
@@ -314,22 +334,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
 
           const itemPined = data.profileTabInfo?.[data.indexTab][index];
           itemPined.isPinFix = isPin;
-
-          data.profileTabInfo?.[data.indexTab].sort((a, b) => {
-            if (a.isPinFix === b.isPinFix) {
-              if (data.indexSort == ExploreSortType.Newest) {
-                return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
-              } else if (data.indexSort == ExploreSortType.Name) {
-                return a.name.localeCompare(b.name);
-              } else if (data.indexSort == ExploreSortType.Popular) {
-                return b.likeCount - a.likeCount;
-              } else {
-                return b.id - a.id;
-              }
-            }
-            return Number(b.isPinFix) - Number(a.isPinFix); // true가 먼저 오도록 정렬
-          });
-          setData({...data});
+          sortData();
           // onRefreshTab(true);
         }}
       />
@@ -401,7 +406,7 @@ const TabContentComponent = ({
       </>
     );
   }
-  if (tabIndex == InteractionType.Feed) {
+  if (tabIndex == eTabPlayListType.Feed) {
     return (
       <>
         <ul className={styles.itemWrap}>
@@ -443,7 +448,7 @@ const TabContentComponent = ({
       </>
     );
   }
-  if (tabIndex == InteractionType.Character) {
+  if (tabIndex == eTabPlayListType.Character) {
     return (
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
@@ -461,7 +466,7 @@ const TabContentComponent = ({
       </ul>
     );
   }
-  if (tabIndex == InteractionType.Contents) {
+  if (tabIndex == eTabPlayListType.Contents) {
     return (
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.map((one, index: number) => {

@@ -192,6 +192,10 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
 
     try {
       const response = await sendGetSeasonEpisodes(payload);
+      if (response.resultCode != 0) {
+        alert(response.resultMessage);
+        return;
+      }
       setContentInfo(response.data);
       if (response.data?.episodeList) {
         const transformedEpisodes: ContentEpisodeInfo[] = response.data.episodeList.map(episode => ({

@@ -118,6 +118,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
       data.profileTabInfo[data.indexTab] = [];
     }
     data.profileTabInfo[data.indexTab].push(...(resBookmarkList?.data?.bookMarkInfoList || []));
+    sortData();
     setData({...data});
   };
 
@@ -154,6 +155,24 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
       data.isShareOpened = true;
       setData({...data});
     }
+  };
+
+  const sortData = () => {
+    data.profileTabInfo?.[data.indexTab].sort((a, b) => {
+      if (a.isPinFix === b.isPinFix) {
+        if (data.indexSort == ExploreSortType.Newest) {
+          return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
+        } else if (data.indexSort == ExploreSortType.Name) {
+          return a.name.localeCompare(b.name);
+        } else if (data.indexSort == ExploreSortType.Popular) {
+          return b.likeCount - a.likeCount;
+        } else {
+          return b.id - a.id;
+        }
+      }
+      return Number(b.isPinFix) - Number(a.isPinFix); // true가 먼저 오도록 정렬
+    });
+    setData({...data});
   };
 
   return (
@@ -311,21 +330,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
           const itemPined = data.profileTabInfo?.[data.indexTab][index];
           itemPined.isPinFix = isPin;
 
-          data.profileTabInfo?.[data.indexTab].sort((a, b) => {
-            if (a.isPinFix === b.isPinFix) {
-              if (data.indexSort == ExploreSortType.Newest) {
-                return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
-              } else if (data.indexSort == ExploreSortType.Name) {
-                return a.name.localeCompare(b.name);
-              } else if (data.indexSort == ExploreSortType.Popular) {
-                return b.likeCount - a.likeCount;
-              } else {
-                return b.id - a.id;
-              }
-            }
-            return Number(b.isPinFix) - Number(a.isPinFix); // true가 먼저 오도록 정렬
-          });
-          setData({...data});
+          sortData();
           // onRefreshTab(true);
         }}
       />
@@ -398,7 +403,7 @@ const TabContentComponent = ({
       </>
     );
   }
-  if (tabIndex == InteractionType.Feed) {
+  if (tabIndex == eTabFavoritesType.Feed) {
     return (
       <>
         <ul className={styles.itemWrap}>
@@ -440,7 +445,7 @@ const TabContentComponent = ({
       </>
     );
   }
-  if (tabIndex == InteractionType.Character) {
+  if (tabIndex == eTabFavoritesType.Character) {
     return (
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
@@ -458,7 +463,7 @@ const TabContentComponent = ({
       </ul>
     );
   }
-  if (tabIndex == InteractionType.Contents) {
+  if (tabIndex == eTabFavoritesType.Contents) {
     return (
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
@@ -476,7 +481,7 @@ const TabContentComponent = ({
       </ul>
     );
   }
-  if (tabIndex == InteractionType.Channel) {
+  if (tabIndex == eTabFavoritesType.Channel) {
     return (
       <ul className={styles.itemWrap}>
         {profileTabInfo?.[tabIndex]?.map((one, index: number) => {
