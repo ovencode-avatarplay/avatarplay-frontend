@@ -897,6 +897,8 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
     // onChange(dataList);
     // onClose();
     if (isCreate) {
+      dataList.push(data);
+      onChange(dataList);
       onClose();
     } else {
       dataList.splice(id, 1);
