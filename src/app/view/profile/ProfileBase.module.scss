@@ -297,6 +297,10 @@
         font-weight: 700;
         line-height: normal;
         letter-spacing: -0.28px;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .iconCopy {
