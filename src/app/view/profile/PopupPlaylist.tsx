@@ -102,7 +102,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
 
   const refreshList = async () => {
     const resBookmarkList = await getRecordList({
-      interactionType: Number(data.indexTab),
+      recordType: Number(data.indexTab),
       languageType: getCurrentLanguage(),
     });
     data.profileTabInfo[data.indexTab] = resBookmarkList?.data?.recordInfoList || [];

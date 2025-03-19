@@ -758,7 +758,7 @@ export const getBookmarkList = async (payload: GetBookMarkListReq) => {
 };
 
 export interface GetRecordListReq {
-  interactionType: InteractionType;
+  recordType: InteractionType;
   languageType: string;
 }
 
