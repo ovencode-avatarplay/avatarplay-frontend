@@ -12,7 +12,7 @@ interface DrawerConnectCharacterProps {
   setConnectOpen: (open: boolean) => void;
   connectCharacterInfo: ProfileSimpleInfo | null;
   onConnectCharacterSelected: (value: number) => void;
-  // onConnectCharacterInfoChange: (value: ProfileSimpleInfo) => void;
+  onConnectCharacterInfoChange: (value: ProfileSimpleInfo) => void;
   // onConnectCharacterIdChange: (value: number) => void;
 }
 
@@ -22,7 +22,7 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
   setConnectOpen,
   connectCharacterInfo,
   onConnectCharacterSelected,
-  // onConnectCharacterInfoChange,
+  onConnectCharacterInfoChange,
   // onConnectCharacterIdChange,
 }) => {
   const [connectableCharacterList, setConnectableCharacterList] = useState<ProfileSimpleInfo[]>([]);
@@ -87,7 +87,7 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
                 className={styles.dropdownItem}
                 onClick={() => {
                   onConnectCharacterSelected(item.profileId);
-                  // onConnectCharacterInfoChange(item);
+                  onConnectCharacterInfoChange(item);
                   // onConnectCharacterIdChange(item.profileId);
                   setConnectOpen(false);
                 }}
