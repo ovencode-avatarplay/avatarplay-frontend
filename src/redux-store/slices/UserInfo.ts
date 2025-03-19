@@ -23,7 +23,7 @@ const initialState: UserState = {
   // 사용자 ID 6 : 지현
   // 사용자 ID 7 : 범쑤
   // ---- 추가 아이디는 범수님께 문의 ----`, // 기본 유저 설명
-  language: LanguageType.한국어,
+  language: LanguageType.Korean,
 };
 
 // Redux slice 생성

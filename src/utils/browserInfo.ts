@@ -33,24 +33,24 @@ export const getLanguageFromURL = (): string | null => {
 export const getBrowserLanguage = (): LanguageType => {
   const browserLang = getCurrentLanguage(); // 기본값으로 안전 처리
 
-  if (browserLang.startsWith('ko')) return LanguageType.한국어;
+  if (browserLang.startsWith('ko')) return LanguageType.Korean;
   if (browserLang.startsWith('en')) return LanguageType.English;
-  if (browserLang.startsWith('ja')) return LanguageType.日本語;
-  if (browserLang.startsWith('fr')) return LanguageType.Français;
-  if (browserLang.startsWith('es')) return LanguageType.Español;
+  if (browserLang.startsWith('ja')) return LanguageType.Japanese;
+  if (browserLang.startsWith('fr')) return LanguageType.French;
+  if (browserLang.startsWith('es')) return LanguageType.Spanish;
 
   // 중국어 코드 처리
   if (browserLang.startsWith('zh')) {
     if (browserLang === 'zh-CN' || browserLang.includes('Hans')) {
-      return LanguageType.简体中文; // 간체
+      return LanguageType.Simplified_Chinese; // 간체
     }
     if (browserLang === 'zh-TW' || browserLang.includes('Hant')) {
-      return LanguageType.繁體中文; // 번체
+      return LanguageType.Traditional_Chinese; // 번체
     }
   }
 
-  if (browserLang.startsWith('pt')) return LanguageType.Português;
-  if (browserLang.startsWith('de')) return LanguageType.Deutsch;
+  if (browserLang.startsWith('pt')) return LanguageType.Portuguese;
+  if (browserLang.startsWith('de')) return LanguageType.German;
 
   return LanguageType.English; // 기본값
 };
@@ -59,16 +59,16 @@ export const getBrowserLanguage = (): LanguageType => {
 export const getCookiesLanguageType = (): LanguageType => {
   const langType = Cookies.get('language') || 'ko';
 
-  if (langType.startsWith('ko')) return LanguageType.한국어;
+  if (langType.startsWith('ko')) return LanguageType.Korean;
   if (langType.startsWith('en')) return LanguageType.English;
-  if (langType.startsWith('ja')) return LanguageType.日本語;
-  if (langType.startsWith('fr')) return LanguageType.Français;
-  if (langType.startsWith('es')) return LanguageType.Español;
+  if (langType.startsWith('ja')) return LanguageType.Japanese;
+  if (langType.startsWith('fr')) return LanguageType.French;
+  if (langType.startsWith('es')) return LanguageType.Spanish;
   if (langType.startsWith('zh')) {
-    return langType.includes('Hans') ? LanguageType.简体中文 : LanguageType.繁體中文;
+    return langType.includes('Hans') ? LanguageType.Simplified_Chinese : LanguageType.Traditional_Chinese;
   }
-  if (langType.startsWith('pt')) return LanguageType.Português;
-  if (langType.startsWith('de')) return LanguageType.Deutsch;
+  if (langType.startsWith('pt')) return LanguageType.Portuguese;
+  if (langType.startsWith('de')) return LanguageType.German;
 
   return LanguageType.English; // 기본값
 };
@@ -77,16 +77,16 @@ export const getCookiesLanguageType = (): LanguageType => {
 export const getLanguageTypeFromText = (language: string | null): LanguageType | undefined => {
   if (language === null) return undefined;
 
-  if (language.startsWith('ko')) return LanguageType.한국어;
+  if (language.startsWith('ko')) return LanguageType.Korean;
   if (language.startsWith('en')) return LanguageType.English;
-  if (language.startsWith('ja')) return LanguageType.日本語;
-  if (language.startsWith('fr')) return LanguageType.Français;
-  if (language.startsWith('es')) return LanguageType.Español;
+  if (language.startsWith('ja')) return LanguageType.Japanese;
+  if (language.startsWith('fr')) return LanguageType.French;
+  if (language.startsWith('es')) return LanguageType.Spanish;
   if (language.startsWith('zh')) {
-    return language.includes('Hans') ? LanguageType.简体中文 : LanguageType.繁體中文;
+    return language.includes('Hans') ? LanguageType.Simplified_Chinese : LanguageType.Traditional_Chinese;
   }
-  if (language.startsWith('pt')) return LanguageType.Português;
-  if (language.startsWith('de')) return LanguageType.Deutsch;
+  if (language.startsWith('pt')) return LanguageType.Portuguese;
+  if (language.startsWith('de')) return LanguageType.German;
 
   return LanguageType.English; // 기본값은 영어
 };
