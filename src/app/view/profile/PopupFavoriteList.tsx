@@ -92,30 +92,45 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
     isShareOpened: false,
   });
 
-  useEffect(() => {
-    refreshAll();
-  }, []);
-
-  const refreshAll = async () => {
-    await refreshList();
+  const refreshAll = async (isRefreshAll: boolean = false) => {
+    await refreshList(isRefreshAll);
   };
 
-  const refreshList = async () => {
+  const refreshList = async (isRefreshAll: boolean = false) => {
+    if (isRefreshAll) {
+      data.profileTabInfo[data.indexTab] = [];
+    }
+
     const resBookmarkList = await getBookmarkList({
       interactionType: Number(data.indexTab),
       languageType: getCurrentLanguage(),
+      channelTabType: data?.filterCluster?.indexFilterChannel || 0,
+      characterTabType: data?.filterCluster?.indexFilterCharacter || 0,
+      contentTabType: data?.filterCluster?.indexFilterContent || 0,
+      feedMediaType: data?.filterCluster?.indexFilterMedia || 0,
+      sortType: data?.filterCluster?.indexSort || 0,
+      page: {
+        offset: data.profileTabInfo?.[data.indexTab]?.length || 0,
+        limit: 10,
+      },
     });
-    data.profileTabInfo[data.indexTab] = resBookmarkList?.data?.bookMarkInfoList || [];
+
+    if (!data.profileTabInfo[data.indexTab]) {
+      data.profileTabInfo[data.indexTab] = [];
+    }
+    data.profileTabInfo[data.indexTab].push(...(resBookmarkList?.data?.bookMarkInfoList || []));
     setData({...data});
   };
 
   const refreshProfileTab = async (profileId: number, indexTab: number, isRefreshAll?: boolean) => {
-    refreshList();
+    refreshList(true);
   };
 
   const isEmptyTab = false;
 
-  const onRefreshTab = (isRefreshAll: boolean) => {};
+  const onRefreshTab = (isRefreshAll: boolean) => {
+    refreshAll(isRefreshAll);
+  };
 
   const onOpenContentMenu = (dataContentMenu: TabContentMenuType) => {
     console.log('dataContentMenu : ', dataContentMenu);
@@ -223,7 +238,9 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
                   profileId={profileId}
                   tabIndex={data?.indexTab || 0}
                   profileTabInfo={data.profileTabInfo}
-                  onRefreshTab={onRefreshTab}
+                  onRefreshTab={isRefreshAll => {
+                    onRefreshTab(isRefreshAll);
+                  }}
                   onOpenContentMenu={onOpenContentMenu}
                 />
               </div>
@@ -323,7 +340,7 @@ const TabContentComponent = ({
   }, [inView]);
 
   const refreshTab = async () => {
-    onRefreshTab(true);
+    onRefreshTab(false);
   };
 
   if (isEmptyTab) {
@@ -370,6 +387,7 @@ const TabContentComponent = ({
                   mediaState: one.mediaState,
                   playTime: '',
                   urlLinkKey: one.urlLinkKey,
+                  isMyFeed: false,
                 }}
                 onOpenContentMenu={onOpenContentMenu}
                 urlLinkThumbnail={getLocalizedLink(`/main/homefeed/` + one.urlLinkKey)}

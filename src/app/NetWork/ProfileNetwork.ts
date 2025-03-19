@@ -733,6 +733,12 @@ export const deleteProfile = async (payload: DeleteProfileReq) => {
 
 export interface GetBookMarkListReq {
   interactionType: InteractionType;
+  feedMediaType: FeedMediaType;
+  characterTabType: CharacterTabType;
+  channelTabType: ChannelTabType;
+  contentTabType: ContentTabType;
+  sortType: ExploreSortType;
+  page: PaginationRequest;
   languageType: string;
 }
 
@@ -759,6 +765,12 @@ export const getBookmarkList = async (payload: GetBookMarkListReq) => {
 
 export interface GetRecordListReq {
   recordType: InteractionType;
+  feedMediaType: FeedMediaType;
+  characterTabType: CharacterTabType;
+  channelTabType: ChannelTabType;
+  contentTabType: ContentTabType;
+  sortType: ExploreSortType;
+  page: PaginationRequest;
   languageType: string;
 }
 
