@@ -78,7 +78,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
     }
   };
   const {back} = useCustomRouter();
-  // const router = useRouter();
+  const router = useRouter();
   const navigateToCreateContentEpisode = ({
     contentId,
     curSeason,
