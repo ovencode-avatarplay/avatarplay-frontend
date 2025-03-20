@@ -160,13 +160,10 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       }
     }
   };
-  useEffect(() => {
-    fetchRecommendFeed();
-  }, [selectedTab]);
 
   useEffect(() => {
     fetchRecommendFeed();
-  }, [initialFeed, getEmailFromJwt()]);
+  }, [initialFeed, getEmailFromJwt(),selectedTab]);
 
   useEffect(() => {
     console.log('info', info);
