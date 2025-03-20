@@ -35,6 +35,7 @@ import {useRouter} from 'next/navigation';
 import {CreateContentEpisodeProps} from './CreateContentEpisode';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 interface SeriesDetailProps {
   urlLinkKey: string;
@@ -76,8 +77,8 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
       setIsShare(true);
     }
   };
-
-  const router = useRouter();
+  const {back} = useCustomRouter();
+  // const router = useRouter();
   const navigateToCreateContentEpisode = ({
     contentId,
     curSeason,
@@ -261,7 +262,8 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
             <button
               className={styles.iconButton}
               onClick={() => {
-                router.back();
+                back();
+                // router.back();
               }}
             >
               <img src={BoldArrowLeft.src} alt="Back" />

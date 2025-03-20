@@ -24,6 +24,7 @@ import {useSelector} from 'react-redux';
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import getLocalizedText from '@/utils/getLocalizedText';
+import useCustomRouter from '@/utils/useCustomRouter';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -61,7 +62,7 @@ interface CreateSeriesContentProps {
 
 const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) => {
   const router = useRouter();
-
+  const {back} = useCustomRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [tagOpen, setTagOpen] = useState(false);
@@ -310,7 +311,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         <CustomArrowHeader
           title={urlLinkKey ? getLocalizedText('common_title_edit') : getLocalizedText('createcontent001_title_001')}
           onClose={() => {
-            router.back();
+            back();
           }}
           children={
             <div className={styles.rightArea}>
