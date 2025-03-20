@@ -47,6 +47,7 @@ import ViewerContent from '../viewer/ViewerContent';
 import {setEpisodeId} from '@/redux-store/slices/Chatting';
 import useCustomRouter from '@/utils/useCustomRouter';
 import DrawerDonation from '../../create/common/DrawerDonation';
+import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
 type Props = {
   type: ContentType;
@@ -133,7 +134,8 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         data.dataMix.profileUrlLinkKey = resGetContent?.data.profileUrlLinkKey;
         data.dataMix.isSingleContentLock = resGetContent?.data.isSingleContentLock;
         data.dataMix.isMyContent = resGetContent?.data.isMyContent;
-        data.dataMix.profileId = resGetContent?.data.contentInfo.profileId;
+        // data.dataMix.profileId = resGetContent?.data.contentInfo.profileId;
+        // data.dataMix.thumbnailMediaState =
       }
     } else {
       const seasonNo = data.season;
@@ -209,7 +211,22 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           </Link>
         </header>
         <section ref={refThumbnailWrap} className={styles.thumbnailWrap}>
-          <img src={data.dataMix?.contentThumbnailUrl || data.dataMix?.thumbnailUrl} alt="" />
+          {data.dataMix?.thumbnailMediaState == MediaState.Image && (
+            <img
+              className={styles.thumbnail}
+              src={data.dataMix?.contentThumbnailUrl || data.dataMix?.thumbnailUrl}
+              alt=""
+            />
+          )}
+          {data.dataMix?.thumbnailMediaState == MediaState.Video && (
+            <video
+              className={styles.thumbnail}
+              loop={true}
+              muted={true}
+              autoPlay={true}
+              src={data.dataMix?.contentThumbnailUrl || data.dataMix?.thumbnailUrl}
+            />
+          )}
         </section>
         <button
           className={styles.btnPlayWrap}
@@ -357,6 +374,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           price={data.dataMix?.salesStarEa || 0}
                           thumbnailUrl={data.dataMix?.thumbnailUrl || ''}
                           isLock={data.dataMix?.isSingleContentLock || false}
+                          thumbnailMediaState={data.dataMix?.thumbnailMediaState || MediaState.Image}
                           onClick={() => {
                             if (isFree || !isLock) {
                               //TODO : play처리
@@ -395,6 +413,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           price={one.salesStarEa}
                           thumbnailUrl={one.thumbnailUrl}
                           isLock={one.isLock}
+                          thumbnailMediaState={one?.thumbnailMediaState || MediaState.Image}
                           onClick={() => {
                             if (isFree || !isLock) {
                               //TODO : play처리
@@ -528,18 +547,30 @@ const SelectBoxOptionComponent = (data: any, isSelected: boolean) => (
 type EpisodeComponentType = {
   key: string;
   thumbnailUrl: string;
+  thumbnailMediaState: MediaState;
   name: string;
   price: number;
   isLock: boolean;
   onClick: () => void;
 };
-const EpisodeComponent = ({key, thumbnailUrl, name, price, isLock, onClick}: EpisodeComponentType) => {
+const EpisodeComponent = ({
+  key,
+  thumbnailUrl,
+  name,
+  price,
+  isLock,
+  thumbnailMediaState,
+  onClick,
+}: EpisodeComponentType) => {
   const isFree = price == 0;
   return (
     <li className={styles.item} key={key} onClick={onClick}>
       <div className={styles.left}>
         <div className={styles.imgWrap}>
-          <img className={styles.thumbnail} src={thumbnailUrl} alt="" />
+          {thumbnailMediaState == MediaState.Image && <img className={styles.thumbnail} src={thumbnailUrl} alt="" />}
+          {thumbnailMediaState == MediaState.Video && (
+            <video loop={true} muted={true} autoPlay={true} className={styles.thumbnail} src={thumbnailUrl} />
+          )}
           {isLock && <img src={BoldLock.src} alt="" className={styles.iconLock} />}
         </div>
 
