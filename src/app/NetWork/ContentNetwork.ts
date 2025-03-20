@@ -3,6 +3,7 @@
 import {en} from '@supabase/auth-ui-shared';
 import api, {ResponseAPI} from './ApiInstance';
 import {AxiosError} from 'axios';
+import {MediaState} from './ProfileNetwork';
 
 // 📌 Content 생성 요청
 export interface CreateContentReq {
@@ -29,6 +30,7 @@ export interface ContentInfo {
   contentWebtoonInfo?: ContentEpisodeWebtoonInfo;
   contentVideoInfo?: ContentEpisodeVideoInfo;
   urlLinkKey?: string;
+  thumbnailMediaState?: MediaState;
 }
 
 export interface CreateContentRes {
@@ -227,6 +229,7 @@ export interface SeasonEpisodeInfo {
   thumbnailUrl: string;
   salesStarEa: number;
   isLock: boolean;
+  thumbnailMediaState?: MediaState;
 }
 
 export interface GetSeasonEpisodesRes {
@@ -244,6 +247,7 @@ export interface GetSeasonEpisodesRes {
   isMyContent: boolean;
   profileId: number;
   profileName: string;
+  thumbnailMediaState: MediaState;
 }
 
 export const sendGetSeasonEpisodes = async (

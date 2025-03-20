@@ -162,6 +162,7 @@ export interface ProfileTabItemInfo {
   urlLinkKey: string;
   contentType: ContentType;
   description: string;
+  isContentFree: boolean;
 }
 
 export enum SharedItemType {
