@@ -38,8 +38,8 @@ const SearchBoard: React.FC = () => {
   // Featured
   const [bannerList, setBannerList] = useState<BannerUrlList[] | null>(null);
   const [characterExploreList, setCharacterExploreList] = useState<ExploreItem[] | null>(null);
+  const [storyExploreList, setStoryExploreList] = useState<ExploreItem[] | null>(null);
   const [contentExploreList, setContentExploreList] = useState<ExploreItem[] | null>(null);
-  const [stoyrExploreList, setStoryExploreList] = useState<ExploreItem[] | null>(null);
 
   // Search
   const searchOptionList = ['Female', 'Male', 'BL', 'GL', 'LGBT+', 'Romance', 'Villain', 'Gaming', 'Adventure'];
@@ -62,6 +62,7 @@ const SearchBoard: React.FC = () => {
   const [searchOffset, setSearchOffset] = useState<number>(0);
   const [contentPage, setContentPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
   const [characterPage, setCharacterPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
+  const [storyPage, setStoryPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
 
   const [selectedSort, setSelectedSort] = useState<number>(0);
   const [sortDropDownOpen, setSortDropDownOpen] = useState<boolean>(false);
@@ -128,7 +129,7 @@ const SearchBoard: React.FC = () => {
         if (entries[0].isIntersecting) {
           setSearchOffset(prevSearchOffset => {
             const newSearchOffset = prevSearchOffset + 1;
-            fetchExploreData(search, searchValue, adultToggleOn, contentPage, characterPage);
+            fetchExploreData(search, searchValue, adultToggleOn, contentPage, characterPage, storyPage);
             return newSearchOffset;
           });
         }
@@ -164,6 +165,7 @@ const SearchBoard: React.FC = () => {
     adultToggleOn: boolean,
     contentPage: PaginationRequest,
     characterPage: PaginationRequest,
+    storyPage: PaginationRequest,
   ) => {
     if (loading) return;
 
@@ -185,19 +187,26 @@ const SearchBoard: React.FC = () => {
             ? 3
             : 0,
         sort: selectedSort,
-        filterList: generateFilterList(),
-        isOnlyAdults: adultToggleOn,
-        storyPage: contentPage,
-        characterPage,
+        // filterList: generateFilterList(),
+        // isOnlyAdults: adultToggleOn,
+        // storyPage: contentPage,
+        // characterPage,
+        storyOffset: storyPage.offset,
+        characterOffset: characterPage.offset,
+        contentOffset: contentPage.offset,
+        limit: searchLimit,
       });
 
       if (result.data !== undefined && result.resultCode === 0) {
         const newList = result.data?.searchExploreList || [];
         setSearchResultList(prevList => {
-          return (contentPage.offset > 0 || characterPage.offset > 0) && prevList ? [...prevList, ...newList] : newList;
+          return (contentPage.offset > 0 || characterPage.offset > 0 || storyPage.offset) && prevList
+            ? [...prevList, ...newList]
+            : newList;
         });
-        setContentPage(result.data.storyPage);
-        setCharacterPage(result.data.characterPage);
+        setContentPage({offset: result.data.contentOffset, limit: searchLimit});
+        setCharacterPage({offset: result.data.characterOffset, limit: searchLimit});
+        setStoryPage({offset: result.data.storyOffset, limit: searchLimit});
 
         if (newList.length === 0) {
           setHasSearchResult(false);
@@ -255,6 +264,7 @@ const SearchBoard: React.FC = () => {
       adultToggleOn,
       {offset: 0, limit: searchLimit},
       {offset: 0, limit: searchLimit},
+      {offset: 0, limit: searchLimit},
     );
   }, [search]);
 
@@ -274,14 +284,14 @@ const SearchBoard: React.FC = () => {
                     data={characterExploreList}
                   />
                 )}
+                {storyExploreList && storyExploreList.length > 0 && (
+                  <SearchBoardHorizonScroll title={getLocalizedText('explore001_label_002')} data={storyExploreList} />
+                )}
                 {contentExploreList && contentExploreList.length > 0 && (
                   <SearchBoardHorizonScroll
-                    title={getLocalizedText('explore001_label_002')}
+                    title={getLocalizedText('explore001_label_003')}
                     data={contentExploreList}
                   />
-                )}
-                {stoyrExploreList && stoyrExploreList.length > 0 && (
-                  <SearchBoardHorizonScroll title={getLocalizedText('explore001_label_003')} data={stoyrExploreList} />
                 )}
                 <br />
               </main>
@@ -405,7 +415,7 @@ const SearchBoard: React.FC = () => {
                         className={styles.resultItem}
                         ref={index === searchResultList.length - 1 ? lastElementRef : null}
                       >
-                        <ExploreCard explore={item} index={index} classType="search" />
+                        <ExploreCard explore={item} classType="search" />
                       </li>
                     ))}
                 </ul>

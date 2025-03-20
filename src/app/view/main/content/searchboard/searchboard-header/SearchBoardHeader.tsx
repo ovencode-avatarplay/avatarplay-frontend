@@ -29,6 +29,7 @@ interface Props {
     adultToggleOn: boolean,
     contentPage: PaginationRequest,
     characterPage: PaginationRequest,
+    storyPage: PaginationRequest,
   ) => void;
   setSearchOffset: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -61,7 +62,14 @@ const SearchBoardHeader: React.FC<Props> = ({
 
   const handleSearch = () => {
     setSearchOffset(0);
-    fetchExploreData(search, searchValue, adultToggleOn, {offset: 0, limit: 20}, {offset: 0, limit: 20});
+    fetchExploreData(
+      search,
+      searchValue,
+      adultToggleOn,
+      {offset: 0, limit: 20},
+      {offset: 0, limit: 20},
+      {offset: 0, limit: 20},
+    );
   };
 
   const handleSave = (filters: {positive: FilterDataItem[]; negative: FilterDataItem[]}) => {

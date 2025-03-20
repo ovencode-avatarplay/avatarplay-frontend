@@ -10,6 +10,7 @@ import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {sendStoryByIdGet} from '@/app/NetWork/StoryNetwork';
 import {useRouter} from 'next/navigation';
 import {ExploreItem} from '@/app/NetWork/ExploreNetwork';
+import {ContentType} from '@/app/NetWork/ContentNetwork';
 
 interface Props {
   explore: ExploreItem;
@@ -27,12 +28,12 @@ const ExploreCard: React.FC<Props> = ({explore, index, classType}) => {
     if (explore.exploreItemType === 0) {
       // Story는 기존 Drawer 열기
       const req = {
-        storyId: explore.profileId,
+        storyId: explore.typeValueId,
         languageType: getCurrentLanguage(),
       };
       const response = await sendStoryByIdGet(req);
       if (response.resultCode == 0) {
-        dispatch(openDrawerContentId(explore.profileId));
+        dispatch(openDrawerContentId(explore.typeValueId));
       }
     } else if (explore.exploreItemType === 1) {
       // Character는 프로필로 이동
@@ -42,7 +43,16 @@ const ExploreCard: React.FC<Props> = ({explore, index, classType}) => {
       }
       router.push(getLocalizedLink('/profile/' + explore.profileUrlLinkKey + "?from=''"));
     } else if (explore.exploreItemType === 2) {
-      // Content는 득천님 컨텐츠 화면으로 이동
+      // Content는 컨텐츠 화면으로 이동
+
+      if (explore.contentType === ContentType.Single) {
+        router.push(getLocalizedLink('/content/single/' + explore.contentUrlLinkKey + "?from=''"));
+      } else if (explore.contentType === ContentType.Series) {
+        router.push(getLocalizedLink('/content/series/' + explore.contentUrlLinkKey + "?from=''"));
+      } else {
+        alert('컨텐츠가 지원되지 않는 상태입니다.');
+        return;
+      }
     }
   };
 
@@ -141,7 +151,6 @@ const ExploreCard: React.FC<Props> = ({explore, index, classType}) => {
           // Content
           <div className={styles.exploreMedia} onClick={handleOpenDrawer}>
             {explore.thumbnailMediaState === 2 ? (
-              // 🔹 동영상이 있는 경우 (thumbnailMediaState === 2)
               <video
                 className={styles.exploreVideo}
                 src={explore.thumbnail} // 동영상 URL
@@ -151,7 +160,6 @@ const ExploreCard: React.FC<Props> = ({explore, index, classType}) => {
                 playsInline
               />
             ) : (
-              // 🔹 기본 이미지 배경 처리
               <figure
                 className={styles.exploreImage}
                 style={{

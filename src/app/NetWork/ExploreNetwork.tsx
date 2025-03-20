@@ -3,6 +3,7 @@
 import api, {ResponseAPI} from './ApiInstance';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {MediaState} from './ProfileNetwork';
+import {ContentType} from './ContentNetwork';
 
 export interface BannerUrlList {
   id: number;
@@ -96,17 +97,6 @@ interface filterList {
   searchFilterState: number; // 0 : Positive,  1 : Negative
 }
 
-interface ReqSearchExplore {
-  languageType: string;
-  search: string;
-  category: number;
-  sort: number;
-  filterList: filterList[];
-  isOnlyAdults: boolean;
-  storyPage: PaginationRequest;
-  characterPage: PaginationRequest;
-}
-
 export enum ExploreItemType {
   Story = 0,
   Character = 1,
@@ -125,19 +115,35 @@ export interface ExploreItem {
   chatCount: number;
   likeCount: number;
   episodeCount: number;
+  contentType: ContentType;
+  contentUrlLinkKey: string;
   createAt: string;
 }
 
-interface ResSearchExplore {
+interface SearchRes {
+  storyOffset: number;
+  characterOffset: number;
+  contentOffset: number;
   searchExploreList: ExploreItem[];
-  storyPage: PaginationRequest;
-  characterPage: PaginationRequest;
 }
 
-export const sendSearchExplore = async (payload: ReqSearchExplore): Promise<ResponseAPI<ResSearchExplore>> => {
+interface SearchReq {
+  languageType: string;
+  search: string;
+  category: number;
+  sort: number;
+  // filterList: filterList[];
+  // isOnlyAdults: boolean;
+  storyOffset: number;
+  characterOffset: number;
+  contentOffset: number;
+  limit: number;
+}
+
+export const sendSearchExplore = async (payload: SearchReq): Promise<ResponseAPI<SearchRes>> => {
   try {
     // POST 요청을 통해 Explore/search API 호출
-    const response = await api.post<ResponseAPI<ResSearchExplore>>('/Explore/search', payload);
+    const response = await api.post<ResponseAPI<SearchRes>>('/Explore/search', payload);
 
     return response.data;
   } catch (error) {
@@ -148,8 +154,9 @@ export const sendSearchExplore = async (payload: ReqSearchExplore): Promise<Resp
       resultMessage: 'Failed to fetch explore search info',
       data: {
         searchExploreList: [],
-        storyPage: {offset: 0, limit: 0},
-        characterPage: {offset: 0, limit: 0},
+        storyOffset: 0,
+        characterOffset: 0,
+        contentOffset: 0,
       },
     };
   }
