@@ -1,8 +1,8 @@
 // src/app/Network/ExploreNetwork.tsx
 
 import api, {ResponseAPI} from './ApiInstance';
-import {ExploreCardProps} from '../view/main/content/searchboard/SearchBoardTypes';
 import {getCurrentLanguage} from '@/utils/UrlMove';
+import {MediaState} from './ProfileNetwork';
 
 export interface BannerUrlList {
   id: number;
@@ -23,14 +23,9 @@ interface ResponseExplore {
   resultMessage: string;
   data: {
     bannerUrlList: BannerUrlList[];
-    searchOptionList: string[];
-    talkainOperatorList: ExploreCardProps[];
-    popularList: ExploreCardProps[];
-    malePopularList: ExploreCardProps[];
-    femalePopularList: ExploreCardProps[];
-    newContentList: ExploreCardProps[];
-    recommendationList: ExploreCardProps[];
-    playingList: ExploreCardProps[];
+    characterExploreList: ExploreItem[];
+    storyExploreList: ExploreItem[];
+    contentExploreList: ExploreItem[];
   };
 }
 
@@ -40,15 +35,10 @@ export const sendGetExplore = async (
 ): Promise<{
   resultCode: number;
   resultMessage: string;
-  bannerUrlList: BannerUrlList[] | null;
-  searchOptionList: string[] | null;
-  talkainOperatorList: ExploreCardProps[] | null;
-  popularList: ExploreCardProps[] | null;
-  malePopularList: ExploreCardProps[] | null;
-  femalePopularList: ExploreCardProps[] | null;
-  newContentList: ExploreCardProps[] | null;
-  recommendationList: ExploreCardProps[] | null;
-  playingList: ExploreCardProps[] | null;
+  bannerUrlList: BannerUrlList[];
+  characterExploreList: ExploreItem[];
+  storyExploreList: ExploreItem[];
+  contentExploreList: ExploreItem[];
 }> => {
   try {
     const reqData: ReqExploreSearch = {
@@ -68,29 +58,19 @@ export const sendGetExplore = async (
         resultCode,
         resultMessage,
         bannerUrlList: data.bannerUrlList || [],
-        searchOptionList: data.searchOptionList || [],
-        talkainOperatorList: data.talkainOperatorList || [],
-        popularList: data.popularList || [],
-        malePopularList: data.malePopularList || [],
-        femalePopularList: data.femalePopularList || [],
-        newContentList: data.newContentList || [],
-        recommendationList: data.recommendationList || [],
-        playingList: data.playingList || [],
+        characterExploreList: data.characterExploreList || [],
+        storyExploreList: data.storyExploreList || [],
+        contentExploreList: data.contentExploreList || [],
       };
     } else {
       console.error(`Error: ${resultMessage}`);
       return {
         resultCode,
         resultMessage,
-        bannerUrlList: null,
-        searchOptionList: null,
-        talkainOperatorList: null,
-        popularList: null,
-        malePopularList: null,
-        femalePopularList: null,
-        newContentList: null,
-        recommendationList: null,
-        playingList: null,
+        bannerUrlList: [],
+        characterExploreList: [],
+        storyExploreList: [],
+        contentExploreList: [],
       };
     }
   } catch (error: unknown) {
@@ -98,15 +78,10 @@ export const sendGetExplore = async (
     return {
       resultCode: -1,
       resultMessage: 'Failed to fetch explore info',
-      bannerUrlList: null,
-      searchOptionList: null,
-      talkainOperatorList: null,
-      popularList: null,
-      malePopularList: null,
-      femalePopularList: null,
-      newContentList: null,
-      recommendationList: null,
-      playingList: null,
+      bannerUrlList: [],
+      characterExploreList: [],
+      storyExploreList: [],
+      contentExploreList: [],
     };
   }
 };
@@ -132,18 +107,25 @@ interface ReqSearchExplore {
   characterPage: PaginationRequest;
 }
 
+export enum ExploreItemType {
+  Story = 0,
+  Character = 1,
+  Content = 2,
+}
+
 export interface ExploreItem {
-  exploreItemType: number;
-  updateExplorState: number;
-  storyId: number;
-  storyName: string;
-  chatCount: number;
-  followerCount: number;
-  episodeCount: number;
-  thumbnail: string;
-  sortCount: number;
-  sortCreateAt: string;
+  exploreItemType: ExploreItemType;
+  profileId: number;
   profileUrlLinkKey: string;
+  typeValueId: number;
+  name: number;
+  thumbnailMediaState: MediaState;
+  thumbnail: string;
+  chatUserCount: number;
+  chatCount: number;
+  likeCount: number;
+  episodeCount: number;
+  createAt: string;
 }
 
 interface ResSearchExplore {

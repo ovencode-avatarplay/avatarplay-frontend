@@ -8,8 +8,11 @@ import {BoldFilter, BoldFilterOn} from '@ui/Icons';
 import ExploreSearchInput from './ExploreSearchInput';
 import {ExploreItem, PaginationRequest, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
 import FilterSelector, {FilterDataItem} from '@/components/search/FilterSelector';
+import {searchType} from '../SearchBoard';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface Props {
+  search: searchType;
   setSearchResultList: React.Dispatch<React.SetStateAction<ExploreItem[] | null>>;
   adultToggleOn: boolean;
   setAdultToggleOn: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,6 +24,7 @@ interface Props {
   negativeFilter: FilterDataItem[];
   setNegativeFilter: React.Dispatch<React.SetStateAction<FilterDataItem[]>>;
   fetchExploreData: (
+    search: searchType,
     searchValue: string,
     adultToggleOn: boolean,
     contentPage: PaginationRequest,
@@ -30,6 +34,7 @@ interface Props {
 }
 
 const SearchBoardHeader: React.FC<Props> = ({
+  search,
   setSearchResultList,
   adultToggleOn,
   setAdultToggleOn,
@@ -56,7 +61,7 @@ const SearchBoardHeader: React.FC<Props> = ({
 
   const handleSearch = () => {
     setSearchOffset(0);
-    fetchExploreData(searchValue, adultToggleOn, {offset: 0, limit: 20}, {offset: 0, limit: 20});
+    fetchExploreData(search, searchValue, adultToggleOn, {offset: 0, limit: 20}, {offset: 0, limit: 20});
   };
 
   const handleSave = (filters: {positive: FilterDataItem[]; negative: FilterDataItem[]}) => {
@@ -97,12 +102,15 @@ const SearchBoardHeader: React.FC<Props> = ({
             state="default"
             theme="dark"
           />
-          <div className={`${styles.rateText} ${adultToggleOn ? styles.toggleOn : ''}`}>Adult</div>
+          <div className={`${styles.rateText} ${adultToggleOn ? styles.toggleOn : ''}`}>
+            {getLocalizedText('common_filterinterest_adults')}
+          </div>
         </div>
         <ExploreSearchInput
           value={searchValue}
           onChange={e => setSearchValue(e.target.value)}
           onSearch={handleSearch}
+          placeholder={getLocalizedText('common_sample_078')}
         />
         <button className={styles.filterButton} onClick={handleFilterButtonClicked}>
           <img

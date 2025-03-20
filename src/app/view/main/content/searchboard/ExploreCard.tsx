@@ -4,52 +4,45 @@ import styles from './ExploreCard.module.css'; // CSS 파일 임포트
 
 import {useDispatch} from 'react-redux';
 import {openDrawerContentId} from '@/redux-store/slices/DrawerContentDescSlice';
-import {openDrawerCharacterId} from '@/redux-store/slices/DrawerCharacterDescSlice';
 
-import {ExploreCardProps} from './SearchBoardTypes';
-import {BoldChatRoundDots, BoldEpisodes, BoldFollowers} from '@ui/Icons';
-import Link from 'next/link';
+import {BoldChatRoundDots, BoldEpisodes, BoldFollowers, BoldLike} from '@ui/Icons';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {sendStoryByIdGet} from '@/app/NetWork/StoryNetwork';
 import {useRouter} from 'next/navigation';
+import {ExploreItem} from '@/app/NetWork/ExploreNetwork';
 
-const ExploreCard: React.FC<ExploreCardProps> = ({
-  exploreItemType,
-  updateExplorState,
-  storyId,
-  storyRank,
-  storyName,
-  chatCount,
-  episodeCount,
-  followerCount,
-  thumbnail,
-  classType,
-  urlLinkKey,
-}) => {
+interface Props {
+  explore: ExploreItem;
+  index?: number;
+  classType?: string;
+}
+
+const ExploreCard: React.FC<Props> = ({explore, index, classType}) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const RankCount = 3 + 1;
+  const RankCounter = 3;
 
   const handleOpenDrawer = async () => {
-    if (exploreItemType === 0) {
+    if (explore.exploreItemType === 0) {
+      // Story는 기존 Drawer 열기
       const req = {
-        storyId: storyId,
+        storyId: explore.profileId,
         languageType: getCurrentLanguage(),
       };
       const response = await sendStoryByIdGet(req);
       if (response.resultCode == 0) {
-        dispatch(openDrawerContentId(storyId));
+        dispatch(openDrawerContentId(explore.profileId));
       }
-    } else if (exploreItemType === 1) {
-      if (!urlLinkKey) {
+    } else if (explore.exploreItemType === 1) {
+      // Character는 프로필로 이동
+      if (!explore.profileUrlLinkKey) {
         alert('프로필이 지원되지 않는 캐릭터입니다.');
         return;
       }
-      router.push(getLocalizedLink('/profile/' + urlLinkKey + "?from=''"));
-
-      // dispatch(openDrawerCharacterId(storyId));
-      // alert('캐릭터는 프로필로 갈 예정입니다. (프로필 작업 완료후 연결 필요)');
+      router.push(getLocalizedLink('/profile/' + explore.profileUrlLinkKey + "?from=''"));
+    } else if (explore.exploreItemType === 2) {
+      // Content는 득천님 컨텐츠 화면으로 이동
     }
   };
 
@@ -58,7 +51,15 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
       <div className={styles.dataItem}>
         <img
           className={styles.dataIcon}
-          src={icon === 0 ? BoldChatRoundDots.src : icon === 1 ? BoldEpisodes.src : BoldFollowers.src}
+          src={
+            icon === 0
+              ? BoldChatRoundDots.src
+              : icon === 1
+              ? BoldFollowers.src
+              : icon === 2
+              ? BoldLike.src
+              : BoldEpisodes.src
+          }
         />
         <div className={styles.dataText}>{text}</div>
       </div>
@@ -110,50 +111,82 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
   return (
     <>
       <article className={`${styles.exploreCard} ${classType && getClassType(classType)}`}>
-        {exploreItemType === 0 && (
+        {explore.exploreItemType === 0 && (
+          // Story
           <figure
             className={styles.exploreImage}
             style={{
               backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
-                thumbnail || '/images/001.png'
+                explore.thumbnail || '/images/001.png'
               })`,
               backgroundSize: 'cover',
             }}
             onClick={handleOpenDrawer}
           />
         )}
-        {exploreItemType === 1 && (
+        {explore.exploreItemType === 1 && (
+          // Character
           <figure
             className={styles.exploreImage}
             style={{
               backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
-                thumbnail || '/images/001.png'
+                explore.thumbnail || '/images/001.png'
               })`,
               backgroundSize: 'cover',
             }}
             onClick={handleOpenDrawer}
           />
+        )}
+        {explore.exploreItemType === 2 && (
+          // Content
+          <div className={styles.exploreMedia} onClick={handleOpenDrawer}>
+            {explore.thumbnailMediaState === 2 ? (
+              // 🔹 동영상이 있는 경우 (thumbnailMediaState === 2)
+              <video
+                className={styles.exploreVideo}
+                src={explore.thumbnail} // 동영상 URL
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            ) : (
+              // 🔹 기본 이미지 배경 처리
+              <figure
+                className={styles.exploreImage}
+                style={{
+                  backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
+                    explore.thumbnail || '/images/001.png'
+                  })`,
+                  backgroundSize: 'cover',
+                }}
+              />
+            )}
+          </div>
         )}
 
-        {storyRank && storyRank < RankCount && (
+        {index !== undefined && index < RankCounter && (
           <div className={styles.rankArea}>
-            <span className={styles.rankText}>{storyRank}</span>
+            <span className={styles.rankText}>{index + 1}</span>
           </div>
         )}
 
         <div className={styles.exploreOverlay}>
-          <span className={styles.contentName}>{storyName}</span>
-          {updateExplorState !== 0 && exploreItemType !== 1 && (
+          <span className={styles.contentName}>{explore.name}</span>
+          {/* {updateExplorState !== 0 && explore.exploreItemType !== 1 && (
             <div className={styles.isNewLabel}>{getUpdateState(updateExplorState)}</div>
-          )}
+          )} */}
           <div className={styles.dataArea}>
-            {exploreItemType === 0 ? (
+            {explore.exploreItemType === 0 || explore.exploreItemType === 1 ? (
               <>
-                {getDataItem(0, formatNumber(chatCount))}
-                {getDataItem(1, formatNumber(episodeCount))}
+                {getDataItem(0, formatNumber(explore.chatCount))}
+                {getDataItem(1, formatNumber(explore.chatUserCount))}
               </>
             ) : (
-              <>{getDataItem(2, formatNumber(followerCount))}</>
+              <>
+                {getDataItem(2, formatNumber(explore.likeCount))}
+                {getDataItem(3, formatNumber(explore.episodeCount))}
+              </>
             )}
           </div>
         </div>
