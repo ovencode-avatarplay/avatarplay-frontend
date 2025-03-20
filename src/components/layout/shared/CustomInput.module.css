@@ -33,6 +33,11 @@
     border-radius: 10px; 
 } 
 
+.textArea.roundBorder
+{
+    border-radius: 999px;
+}
+
 .Basic > .textArea
 {
     height: 47px; 

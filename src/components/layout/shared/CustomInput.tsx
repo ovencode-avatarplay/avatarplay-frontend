@@ -4,10 +4,12 @@ import styles from './CustomInput.module.css';
 type Type = 'Basic' | 'LeftIcon' | 'RightIcon' | 'TwoIcon';
 export type InputTextType = 'InputOnly' | 'Label' | 'Hint' | 'LabelandHint';
 type State = 'Default' | 'Focused' | 'Typing' | 'Error' | 'Disable';
+type Border = 'Normal' | 'Round';
 
 interface CustomInputProps {
   textType: InputTextType;
   inputType: Type;
+  border?: Border;
   state?: State;
   label?: string | React.ReactNode;
   hint?: string;
@@ -28,6 +30,7 @@ interface CustomInputProps {
 const CustomInput: React.FC<CustomInputProps> = ({
   textType,
   inputType,
+  border = 'Normal',
   state = 'Default',
   label,
   hint,
@@ -90,7 +93,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
       <div
         className={`${styles.textArea} ${styles[currentState]} ${error ? styles.Error : ''} ${
           disabled ? styles.Disabled : ''
-        } `}
+        } ${border === 'Round' ? styles.roundBorder : ''}`}
       >
         {(inputType === 'LeftIcon' || inputType === 'TwoIcon') &&
           (iconLeftImage ? (

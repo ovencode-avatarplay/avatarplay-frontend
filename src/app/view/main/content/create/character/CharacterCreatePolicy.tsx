@@ -263,7 +263,12 @@ const CharacterCreatePolicy: React.FC<Props> = ({
               <div className={styles.drawerTitle}>{drawerTitle}</div>
               {tooltip && (
                 <div className={styles.infoButton}>
-                  <CustomToolTip tooltipText={tooltip} titleText={drawerTitle} icon="info" />
+                  <CustomToolTip
+                    tooltipText={tooltip}
+                    titleText={drawerTitle}
+                    icon="info"
+                    tooltipStyle={{right: '10px', left: 'auto'}}
+                  />
                 </div>
               )}
             </div>
@@ -404,7 +409,6 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           operatorList={operatorProfileIdList}
           onUpdateOperatorList={onOperatorProfileIdListChange}
           setInviteSearchValue={setInviteSearchValue}
-          urlLink={curCharacterId.toString()}
         />
       </>
     );
