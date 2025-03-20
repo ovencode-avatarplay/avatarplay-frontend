@@ -62,6 +62,7 @@ export const createUpdateChannel = async (payload: CreateChannelReq) => {
 };
 
 export interface SearchChannelMemberReq {
+  sortType: ExploreSortType;
   search: string;
 }
 

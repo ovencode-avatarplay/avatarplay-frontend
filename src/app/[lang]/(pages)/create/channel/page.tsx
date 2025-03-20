@@ -44,6 +44,7 @@ import {
   CreateChannelReq,
   createUpdateChannel,
   getChannelInfo,
+  SearchChannelMemberReq,
   sendSearchChannel,
 } from '@/app/NetWork/ChannelNetwork';
 import {profile} from 'console';
@@ -1318,7 +1319,7 @@ export const DrawerCharacterSearch = ({
   }, [open]);
 
   const refresh = async () => {
-    const searchProfileList = await searchMember('');
+    const searchProfileList = await searchMember('', data.indexSort);
     data.profileListAll = searchProfileList;
     data.profileList = searchProfileList;
 
@@ -1376,8 +1377,9 @@ export const DrawerCharacterSearch = ({
     [],
   );
 
-  const searchMember = async (search: string = '') => {
-    const payload: SearchProfileReq = {
+  const searchMember = async (search: string = '', sortType: ExploreSortType = ExploreSortType.Newest) => {
+    const payload: SearchChannelMemberReq = {
+      sortType: sortType,
       search: search,
     };
 
@@ -1438,7 +1440,7 @@ export const DrawerCharacterSearch = ({
       console.log('data.profileListSaved : ', data.profileListSaved);
 
       try {
-        const searchProfileList = await searchMember(searchValue);
+        const searchProfileList = await searchMember(searchValue, data.indexSort);
 
         // console.log('data.profileListSaved : ', data.profileListSaved);
         // console.log('data.profileList : ', data.profileList);
@@ -1542,6 +1544,7 @@ export const DrawerCharacterSearch = ({
               OptionComponent={SelectBoxOptionComponent}
               onChange={async id => {
                 data.indexSort = id;
+                refresh();
                 setData({...data});
               }}
               customStyles={{
