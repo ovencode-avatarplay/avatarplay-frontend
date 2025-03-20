@@ -442,6 +442,7 @@
               line-height: normal;
               letter-spacing: -0.24px;
 
+              word-wrap: break-word;
               word-break: break-all;
               white-space: pre-line;
               -webkit-line-clamp: 3;
@@ -1405,6 +1406,8 @@
         }
 
         .thumbnail {
+          flex: 0;
+
           width: 55px;
           height: 55px;
           object-fit: cover;
@@ -1432,6 +1435,12 @@
             letter-spacing: -0.24px;
 
             word-wrap: break-word;
+            word-break: break-all;
+            white-space: pre-line;
+            -webkit-line-clamp: 3;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
           }
 
 
@@ -1445,6 +1454,9 @@
         display: flex;
         align-items: center;
         height: 100%;
+        flex-shrink: 0;
+        flex-basis: 42px;
+        justify-content: flex-end;
 
         .nsfw {
           margin-left: 10px;
