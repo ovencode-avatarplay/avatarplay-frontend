@@ -600,7 +600,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <div className={styles.circle}>
                     <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
                   </div>
-                  <div className={styles.labelAdd}>{getLocalizedText('CreateChannel_label_006')}</div>
+                  {/* <div className={styles.labelAdd}>{getLocalizedText('CreateChannel_label_006')}</div> */}
                 </div>
                 <div className={styles.label}>
                   {countMembers} {getLocalizedText('CreateChannel', 'CreateChannel002_label_001')}
