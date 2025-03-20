@@ -32,9 +32,9 @@ const Login = () => {
         <img src={LineClose.src} className={styles.closeImg}></img>
       </button>
 
-      <button className={styles.buttonGuest}>Guest Account</button>
+      <button style={{display:'none'}} className={styles.buttonGuest}>Guest Account</button>
 
-      <div className={styles.divider}>
+      <div style={{display:'none'}} className={styles.divider}>
         <span>or</span>
       </div>
 
@@ -48,7 +48,7 @@ const Login = () => {
           Continue with Kakaotalk
         </button>
 
-        <button className={styles.buttonSocial} onClick={() => handleOAuthLogin('facebook')}>
+        <button style={{display:'none'}} className={styles.buttonSocial} onClick={() => handleOAuthLogin('facebook')}>
           <Image src={FacebookLogo} width={24} height={24} alt="Facebook" />
           Continue with Facebook
         </button>
