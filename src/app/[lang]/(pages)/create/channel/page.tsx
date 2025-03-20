@@ -600,7 +600,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <div className={styles.circle}>
                     <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
                   </div>
-                  {/* <div className={styles.labelAdd}>{getLocalizedText('CreateChannel_label_006')}</div> */}
+                  <div className={styles.labelAdd}>{getLocalizedText('common_label_addmembers')}</div>
                 </div>
                 <div className={styles.label}>
                   {countMembers} {getLocalizedText('CreateChannel', 'CreateChannel002_label_001')}
@@ -1286,6 +1286,8 @@ export const DrawerCharacterSearch = ({
 }: DrawerCharacterSearchType) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [data, setData] = useState<{
+    //profileList : 보이는 부분, 검색시 리스트 없어지는영역
+    //profileListSaved : 검색전 가지고 있는 부분
     profileListSaved: {
       isActive: boolean;
       isOriginal: boolean;
@@ -1296,24 +1298,45 @@ export const DrawerCharacterSearch = ({
       isOriginal: boolean;
       profileSimpleInfo: ProfileSimpleInfo;
     }[];
+    profileListAll: {
+      isActive: boolean;
+      isOriginal: boolean;
+      profileSimpleInfo: ProfileSimpleInfo;
+    }[];
     indexSort: number;
   }>({
     profileListSaved: [],
     profileList: [],
+    profileListAll: [],
     indexSort: 0,
   });
-  console.log('data profileListSaved : ', data.profileListSaved);
-  console.log('data profileList : ', data.profileList);
+
   useEffect(() => {
     if (!open) return;
 
-    data.profileList = profileList;
-    for (let i = 0; i < data.profileList.length; i++) {
-      data.profileList[i].isOriginal = true;
-    }
-    data.profileListSaved = JSON.parse(JSON.stringify(data.profileList));
-    setData({...data});
+    refresh();
   }, [open]);
+
+  const refresh = async () => {
+    const searchProfileList = await searchMember('');
+    data.profileListAll = searchProfileList;
+    data.profileList = searchProfileList;
+
+    for (let j = 0; j < profileList.length; j++) {
+      const id = profileList[j].profileSimpleInfo.profileId;
+      for (let i = 0; i < data.profileList.length; i++) {
+        if (data.profileList[i].profileSimpleInfo.profileId == id) {
+          data.profileList[i].isOriginal = true;
+          data.profileList[i].isActive = true;
+          break;
+        }
+      }
+    }
+
+    data.profileListSaved = JSON.parse(JSON.stringify(data.profileList));
+
+    setData({...data});
+  };
 
   const sortOptionList = [
     {id: ExploreSortType.Newest, value: getLocalizedText('common_sort_newest')},
@@ -1352,6 +1375,41 @@ export const DrawerCharacterSearch = ({
     ),
     [],
   );
+
+  const searchMember = async (search: string = '') => {
+    const payload: SearchProfileReq = {
+      search: search,
+    };
+
+    try {
+      const response = await sendSearchChannel(payload);
+      const searchProfileList =
+        response?.data?.memberProfileList?.map(v => ({
+          isActive: false,
+          isOriginal: false,
+          profileSimpleInfo: v,
+        })) || [];
+      return searchProfileList;
+    } catch {
+      return [];
+    }
+  };
+
+  const saveProfileAfterSearch = () => {
+    const searchProfileListActived = data.profileList.filter(v => v.isActive && !v.isOriginal);
+    const profileListSaved = data.profileListSaved;
+    const mergedList = [...searchProfileListActived, ...profileListSaved];
+
+    // console.log('mergedList : ', mergedList);
+    let uniqueList = Array.from(new Map(mergedList.map(item => [item.profileSimpleInfo.profileId, item])).values());
+    // uniqueList = uniqueList.map(v => ({...v, isActive: true}));
+
+    console.log('uniqueList : ', uniqueList);
+    data.profileList = uniqueList;
+    data.profileListSaved = uniqueList;
+    setData({...data});
+  };
+
   const saveProfileList = () => {
     // console.log('data.profileListSaved : ', data.profileListSaved);
     const searchProfileListActived = data.profileList.filter(v => v.isActive && !v.isOriginal);
@@ -1361,6 +1419,7 @@ export const DrawerCharacterSearch = ({
     // console.log('mergedList : ', mergedList);
     let uniqueList = Array.from(new Map(mergedList.map(item => [item.profileSimpleInfo.profileId, item])).values());
     uniqueList = uniqueList.map(v => ({...v, isActive: true}));
+
     // console.log('uniqueList : ', uniqueList);
     data.profileList = uniqueList;
     data.profileListSaved = uniqueList;
@@ -1370,26 +1429,16 @@ export const DrawerCharacterSearch = ({
   const fetchResults = useCallback(
     debounce(async searchValue => {
       if (searchValue == '') {
-        saveProfileList();
+        saveProfileAfterSearch();
         return;
       }
 
       // console.log('data.profileListSaved : ', JSON.stringify(data.profileListSaved));
-      data.profileListSaved = data.profileListSaved.filter(v => v.isActive);
-
-      // 여기에서 API 호출하면 됨
-      const payload: SearchProfileReq = {
-        search: searchValue,
-      };
+      // data.profileListSaved = data.profileListSaved.filter(v => v.isActive);
+      console.log('data.profileListSaved : ', data.profileListSaved);
 
       try {
-        const response = await sendSearchChannel(payload);
-        const searchProfileList =
-          response?.data?.memberProfileList?.map(v => ({
-            isActive: false,
-            isOriginal: false,
-            profileSimpleInfo: v,
-          })) || [];
+        const searchProfileList = await searchMember(searchValue);
 
         // console.log('data.profileListSaved : ', data.profileListSaved);
         // console.log('data.profileList : ', data.profileList);
@@ -1397,7 +1446,7 @@ export const DrawerCharacterSearch = ({
           const matchedProfile = data.profileListSaved.find(
             profile => profile.profileSimpleInfo.profileId === searchProfile.profileSimpleInfo.profileId,
           );
-          // console.log('matchedProfile ', matchedProfile);
+          console.log('matchedProfile ', matchedProfile);
           return matchedProfile
             ? {...searchProfile, isActive: matchedProfile.isActive, isOriginal: matchedProfile.isOriginal}
             : searchProfile;
@@ -1410,6 +1459,27 @@ export const DrawerCharacterSearch = ({
     }, 400),
     [data],
   );
+
+  const updateProfileSaved = (
+    profileList: {
+      isActive: boolean;
+      isOriginal: boolean;
+      profileSimpleInfo: ProfileSimpleInfo;
+    }[],
+  ) => {
+    for (let j = 0; j < profileList.length; j++) {
+      const profile = profileList[j];
+      for (let i = 0; i < data.profileListSaved.length; i++) {
+        const profileSaved = data.profileListSaved[i];
+        if (profile.profileSimpleInfo.profileId == profileSaved.profileSimpleInfo.profileId) {
+          profileSaved.isActive = profile.isActive;
+          break;
+        }
+      }
+    }
+    console.log('profileListSaved : ', data.profileListSaved);
+    setData({...data});
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // setQuery(e.target.value);
@@ -1454,6 +1524,7 @@ export const DrawerCharacterSearch = ({
                     profileList = data.profileList.map(v => (v.isOriginal ? v : {...v, isActive: false}));
                   }
                   data.profileList = profileList;
+                  updateProfileSaved(data.profileList);
                   setData({...data});
                 }}
               />
@@ -1517,6 +1588,7 @@ export const DrawerCharacterSearch = ({
                             return;
                           }
                           profile.isActive = target.checked;
+                          updateProfileSaved(data.profileList);
                           setData({...data});
                         }}
                       />

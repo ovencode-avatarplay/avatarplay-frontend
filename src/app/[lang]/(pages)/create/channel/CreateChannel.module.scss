@@ -851,132 +851,10 @@
   margin-top: 6px;
 }
 
-.drawer {
-  padding: 8px 20px;
-  padding-bottom: 74px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 
-  position: relative;
-
-  .handleArea {
-    margin-top: 8px;
-
-    .handleBar {
-
-      width: 39px;
-      height: 4px;
-
-      border-radius: 50px;
-      background: #E0E0E0;
-    }
-  }
-
-  .title {
-    width: 100%;
-    margin-top: 22px;
-
-    color: var(--Black, #000);
-    text-align: center;
-    font-family: Lato;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-  }
-
-  .handleContent {
-    width: 100%;
-
-    .description {
-      width: 100%;
-      margin-top: 20px;
-      text-align: center;
-
-      color: var(--Neutral-500, #9AA0A6);
-      text-align: center;
-      font-family: Lato;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 22px;
-      /* 157.143% */
-    }
-
-    .tagWrap {
-      width: 100%;
-
-      margin-top: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      gap: 6px;
-
-      .tag {
-        height: 36px;
-        padding: 10px 18px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 100px;
-        border: 1px solid var(--Border-1, #EAECF0);
-        background: var(--Neutral-50, #F8F9FA);
-        cursor: pointer;
-
-
-        .value {
-          color: var(--Neutral-800, #2C3131);
-          font-family: Lato;
-          font-size: 12px;
-          font-style: normal;
-          font-weight: 700;
-          line-height: 12px;
-          white-space: nowrap;
-          /* 100% */
-        }
-
-        &.active {
-          background: var(--Neutral-800, #2C3131);
-
-          .value {
-            color: var(--White, #FFF);
-
-          }
-        }
-      }
-    }
-  }
-
-  .submitBtn {
-    position: fixed;
-    bottom: 8px;
-
-    width: calc(100% - 20px * 2);
-    height: 46px;
-    padding: 14px 20px;
-
-    border-radius: 10px;
-    background: var(--Neutral-800, #2C3131);
-
-    color: var(--White, #FFF);
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: Lato;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 20px;
-    /* 142.857% */
-    letter-spacing: -0.4px;
-
-    cursor: pointer;
-  }
-}
 
 .drawer {
-  padding: 8px 20px;
+  padding-top: 8px;
   padding-bottom: 74px;
   display: flex;
   flex-direction: column;
@@ -1197,6 +1075,7 @@
     width: 100%;
 
     .searchWrap {
+      margin: 0 20px;
       padding: 12px 12px;
       display: flex;
       align-items: center;
@@ -1237,7 +1116,8 @@
   }
 
   .filterWrap {
-    margin-top: 12px;
+    // margin-top: 12px;
+    margin: 12px 20px 0;
 
     display: flex;
     align-items: center;
@@ -1332,7 +1212,8 @@
   }
 
   .countSelected {
-    margin-top: 12px;
+    margin: 12px 20px 0;
+
     color: var(--Black, #000);
     font-feature-settings: 'liga' off, 'clig' off;
     font-family: Lato;
@@ -1347,7 +1228,7 @@
 
   .memberList {
     margin-top: 12px;
-
+    padding: 0 20px;
     display: flex;
     align-items: center;
     flex-direction: column;
