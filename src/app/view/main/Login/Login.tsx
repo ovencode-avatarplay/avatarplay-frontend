@@ -36,9 +36,9 @@ const Login = () => {
         <img src={LineClose.src} className={styles.closeImg}></img>
       </button>
 
-      <button className={styles.buttonGuest}>{getLocalizedText('login001_btn_006')}</button>
+      <button style={{display:'none'}} className={styles.buttonGuest}>{getLocalizedText('login001_btn_006')}</button>
 
-      <div className={styles.divider}>
+      <div style={{display:'none'}} className={styles.divider}>
         <span>{getLocalizedText(Header, 'login001_label_001')}</span>
       </div>
 
@@ -55,7 +55,7 @@ const Login = () => {
           <Image src={KakatalkLogo} width={24} height={24} alt="Kakao" />
           {getLocalizedText('common_button_continuewithkakaotalk')}
         </button>
-        <button className={styles.buttonSocial} onClick={() => handleOAuthLogin('facebook')}>
+        <button style={{display:'none'}} className={styles.buttonSocial} onClick={() => handleOAuthLogin('facebook')}>
           <Image src={FacebookLogo} width={24} height={24} alt="Facebook" />
           {getLocalizedText('common_button_continuewithfacebook')}{' '}
         </button>
