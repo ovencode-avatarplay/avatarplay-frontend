@@ -278,7 +278,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
                 pushLocalizedRoute('/main/homefeed', router, true, true);
               }}
             >
-              {getLocalizedText(Header, 'home001_label_001')}
+              <span style={{whiteSpace: 'nowrap'}}> {getLocalizedText(Header, 'home001_label_001')}</span>
             </button>
           </div>
         </>

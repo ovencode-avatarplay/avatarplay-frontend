@@ -199,7 +199,6 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
       const response = await sendCreateEpisode(payload);
       if (response.data) {
         console.log('에피소드 생성 성공:', response.data.episodeId);
-        alert(`에피소드가 성공적으로 생성되었습니다! (ID: ${response.data.episodeId})`);
 
         pushLocalizedRoute(`/create/content/series/${contentId}`, router);
       }

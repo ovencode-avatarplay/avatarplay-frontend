@@ -21,6 +21,8 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 enum FilterTypes {
   All = 0,
@@ -30,7 +32,20 @@ enum FilterTypes {
 }
 
 interface CreateContentIntroductionProps {}
-
+export const getFilterKey = (key: number): string => {
+  switch (key) {
+    case FilterTypes.All:
+      return getLocalizedText('common_filter_all');
+    case FilterTypes.Public:
+      return getLocalizedText('common_filter_public');
+    case FilterTypes.Private:
+      return getLocalizedText('common_filter_private');
+    case FilterTypes.Unlisted:
+      return getLocalizedText('common_filter_unlisted');
+    default:
+      return '';
+  }
+};
 const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () => {
   const [activeTab, setActiveTab] = useState<ContentType>(ContentType.Series);
   const [selectedFilter, setSelectedFilter] = useState<FilterTypes>(FilterTypes.All);
@@ -71,6 +86,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
     if (type == ContentType.Series) pushLocalizedRoute(`/update/content/series/${id}`, router);
     else if (type == ContentType.Single) pushLocalizedRoute(`/update/content/single/${id}`, router);
   };
+
   const fetchContentList = async () => {
     try {
       setLoading(true);
@@ -112,7 +128,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
       <div className={styles.header}>
         {/* 상단 네비게이션 */}
         <CustomArrowHeader
-          title="Create Series Contents"
+          title={getLocalizedText('createcontent001_title_001')}
           backLink="/"
           children={
             <div className={styles.rightArea}>
@@ -132,7 +148,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
                 setActiveTab(ContentType.Series);
               }}
             >
-              Series Contents
+              {getLocalizedText('createcontent001_label_002')}{' '}
             </button>
             <button
               className={`${styles.tab} ${activeTab === ContentType.Single ? styles.active : ''}`}
@@ -140,7 +156,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
                 setActiveTab(ContentType.Single);
               }}
             >
-              Single Contents
+              {getLocalizedText('createcontent001_label_003')}{' '}
             </button>
           </div>
 
@@ -156,7 +172,9 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
                 else pushLocalizedRoute(`/create/content/condition/single`, router);
               }}
             >
-              {activeTab == ContentType.Series ? '+ New Series' : '+ New Single'}
+              {activeTab == ContentType.Series
+                ? '+ ' + getLocalizedText('createcontent001_button_004')
+                : '+ New Single'}
             </CustomButton>
           </div>
           {/* {isActive ||
@@ -175,8 +193,11 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
             {contentList.length > 0 ? (
               <>
                 <button className={styles.filterButton} onClick={() => setFilterDrawerOpen(true)}>
-                  {FilterTypes[selectedFilter]}
-                  <img src={BoldAltArrowDown.src} className={styles.filtterArrow} />
+                  {formatText(getLocalizedText('createcontent001_label_005'), [contentList.length.toString()])}{' '}
+                  <span>
+                    {getFilterKey(selectedFilter)}
+                    <img src={BoldAltArrowDown.src} className={styles.filtterArrow} />
+                  </span>
                 </button>
 
                 <div className={styles.cardGroup}>
@@ -252,7 +273,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
                 </div>
               </>
             ) : (
-              <EmptyState stateText="It will be displayed when a new episode is registered" />
+              <EmptyState stateText={getLocalizedText('createcontent001_desc_008')} />
             )}
           </>
         )}
@@ -269,16 +290,16 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
       {isDeletePopup && (
         <CustomPopup
           type="alert"
-          title="Are you sure you want to delete this series?"
-          description="All episodes within the series will also be deleted and cannot be recovered."
+          title={getLocalizedText('common_alert_087')}
+          description={getLocalizedText('common_alert_088')}
           buttons={[
             {
-              label: 'Cancel',
+              label: getLocalizedText('common_button_cancel'),
               onClick: () => setIsDeletePopup(false),
               isPrimary: false,
             },
             {
-              label: 'Confirm',
+              label: getLocalizedText('common_button_confirm'),
               onClick: () => {
                 deleteContente(isDeleteNum);
                 setIsDeletePopup(false);

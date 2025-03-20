@@ -93,7 +93,7 @@
   .filterButton {
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: space-between;
     width: 100%;
     padding: 0 12px 0 12px;
     font-size: 14px;

@@ -237,7 +237,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
                     onClick={() => handleLikeComment(comment.commentId, !isLike)}
                   />
                 )}
-                <div className={styles.actionText}>{likeCount}</div>
+                <div className={styles.actionText}>{likeCount && likeCount >= 0 ? likeCount : 0}</div>
               </div>
               <div className={styles.actionItem}>
                 {!isDisLike && (

@@ -25,6 +25,7 @@ import {
   WebtoonSourceUrl,
 } from '@/app/NetWork/ContentNetwork';
 import PreviewViewer from './PreviewViewer';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 export interface WebtoonUploadField {
   id: number;
@@ -362,12 +363,12 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
             }}
           >
             <img src={LineUpload.src} alt="Upload" className={styles.icon} />
-            Upload
+            {getLocalizedText('common_button_upload')}
           </button>
 
           <button className={styles.uploadButton} style={{width: '100%'}} onClick={() => handleRemoveField(fieldIndex)}>
             <img src={LineDelete.src} alt="Delete" className={styles.icon} />
-            Delete
+            {getLocalizedText('common_button_delete')}
           </button>
         </div>
 
@@ -392,10 +393,10 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
           if (imageFiles.length > 0) setOnPreview(true);
         }}
       >
-        Preview
+        {getLocalizedText('common_button_preview')}
       </div>
       <div className={styles.videoUploadContainer}>
-        <span className={styles.label}>Webottn</span>
+        <span className={styles.label}>{getLocalizedText('common_filter_webtoon')}</span>
         <div className={styles.uploadGroup}>
           <div className={styles.videoUploadBox}>
             {imageFiles.length > 0 ? (
@@ -450,19 +451,19 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
               }}
             >
               <img src={LineUpload.src} alt="Upload" className={styles.icon} />
-              Upload
+              {getLocalizedText('common_button_upload')}
             </button>
           </div>
         </div>
         <div className={styles.subtitleContainer}>
-          <span className={styles.label}>Subtitle</span>
+          <span className={styles.label}>{getLocalizedText('createcontent008_label_001')}</span>
           <button className={styles.addButton} onClick={() => handleAddField()}>
-            + Add
+            + {getLocalizedText('common_button_add')}
           </button>
         </div>{' '}
         {subtitleFields.map((field, index) => renderUploader('subtitle', field, index))}
       </div>
-      <span className={styles.grayLabel}>write media file type</span>
+      <span className={styles.grayLabel}>{getLocalizedText('createcontent007_desc_007')}</span>
       <PreviewViewer
         open={onPreview}
         onClose={() => {

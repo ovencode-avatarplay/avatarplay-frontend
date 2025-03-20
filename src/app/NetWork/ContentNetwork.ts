@@ -232,6 +232,7 @@ export interface SeasonEpisodeInfo {
 export interface GetSeasonEpisodesRes {
   contentId: number;
   contentThumbnailUrl: string;
+  contentName: string;
   seasonNo: number;
   genre: string;
   tags: string[];

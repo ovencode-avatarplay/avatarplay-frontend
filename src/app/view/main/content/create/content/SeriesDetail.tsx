@@ -266,20 +266,9 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
             >
               <img src={BoldArrowLeft.src} alt="Back" />
             </button>
+
+            <div>{contentInfo?.contentName}</div>
           </div>
-        </div>
-        <div className={styles.topNav}>
-          <button
-            className={styles.iconButton}
-            onClick={() => {
-              pushLocalizedRoute(`/create/content`, router);
-            }}
-          >
-            <img src={BoldArrowLeft.src} alt="Back" />
-          </button>
-          {/* <button className={styles.iconButton}>
-            <img src={LineEdit.src} alt="Edit" />
-          </button> */}
         </div>
       </div>
 

@@ -472,7 +472,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                     : 'none', // 기본 상태는 필터 없음
                 }}
               />
-              <div className={styles.count}>{likeCount}</div>
+              <div className={styles.count}>{likeCount && likeCount >= 0 ? likeCount : 0}</div>
             </div>
 
             {/* Dislike Button */}

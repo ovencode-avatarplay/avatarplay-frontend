@@ -16,6 +16,7 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {ContentCategoryType, ContentEpisodeVideoInfo, ContentLanguageType} from '@/app/NetWork/ContentNetwork';
 import PreviewViewer from './PreviewViewer';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 export interface VideoUploadField {
   id: number;
@@ -262,11 +263,11 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
             }}
           >
             <img src={LineUpload.src} alt="Upload" className={styles.icon} />
-            Upload
+            {getLocalizedText('common_button_upload')}
           </button>
           <button className={styles.deleteButton} onClick={() => handleRemoveSpecificField(type, index)}>
             <img src={LineDelete.src} alt="Delete" className={styles.icon} />
-            Delete
+            {getLocalizedText('common_button_delete')}
           </button>
         </div>
 
@@ -292,10 +293,10 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
           if (videoFile) setOnPreview(true);
         }}
       >
-        Preview
+        {getLocalizedText('common_button_preview')}
       </div>
       <div className={styles.videoUploadContainer}>
-        <span className={styles.label}>Video</span>
+        <span className={styles.label}>{getLocalizedText('common_filter_video')}</span>
         <div className={styles.uploadGroup}>
           <div className={styles.videoUploadBox}>
             {videoFile ? (
@@ -341,26 +342,26 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
               }}
             >
               <img src={LineUpload.src} alt="Upload" className={styles.icon} />
-              Upload
+              {getLocalizedText('common_button_upload')}
             </button>
           </div>
         </div>
         <div className={styles.subtitleContainer}>
           <span className={styles.label}>Subtitle</span>
           <button className={styles.addButton} onClick={() => handleAddUploader('subtitle')}>
-            + Add
+            + {getLocalizedText('common_button_add')}{' '}
           </button>
         </div>{' '}
         {subtitleFields.map((field, index) => renderUploader('subtitle', field, index))}
         <div className={styles.dubbingContainer}>
-          <span className={styles.label}>Dubbing</span>
+          <span className={styles.label}>{getLocalizedText('createcontent007_label_006')}</span>
           <button className={styles.addButton} onClick={() => handleAddUploader('dubbing')}>
-            + Add
+            + {getLocalizedText('common_button_add')}{' '}
           </button>
         </div>
         {dubbingFields.map((field, index) => renderUploader('dubbing', field, index))}
       </div>
-      <span className={styles.grayLabel}>write media file type</span>
+      <span className={styles.grayLabel}>{getLocalizedText('createcontent007_desc_007')}</span>
       <PreviewViewer
         open={onPreview}
         onClose={() => {

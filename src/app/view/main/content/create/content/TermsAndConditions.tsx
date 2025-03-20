@@ -4,6 +4,7 @@ import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {LineDashboard} from '@ui/Icons';
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface TermsAndConditionsProps {
   isSingle: boolean;
@@ -26,7 +27,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({isSingle}) => {
   return (
     <div className={styles.container}>
       <CustomArrowHeader
-        title="Terms and conditions"
+        title={getLocalizedText('createcontent002_label_001')}
         onClose={() => {
           pushLocalizedRoute(`/create/content`, router);
         }}
@@ -38,7 +39,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({isSingle}) => {
           </div>
         }
       />
-      <div className={styles.titleText}>Terms of Use</div>
+      <div className={styles.titleText}>{getLocalizedText('createcontent002_label_002')}</div>
 
       <div className={styles.contentBox}>
         <p className={styles.termsText}>
@@ -55,11 +56,11 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({isSingle}) => {
           onChange={() => setIsChecked(!isChecked)}
           className={styles.checkbox}
         />
-        <span className={styles.agreeText}>I agree</span>
+        <span className={styles.agreeText}>{getLocalizedText('createcontent002_label_003')}</span>
       </div>
 
       <button className={styles.confirmButton} onClick={handleConfirm}>
-        Confirm
+        {getLocalizedText('common_button_confirm')}
       </button>
     </div>
   );
