@@ -343,15 +343,17 @@
 
 .summaryItem
 {
+  width: 116px;
   display: flex; 
   flex-direction: column;
   gap: 5px;
   flex-shrink: 0;
 
+  overflow: hidden;
 }
 
 .summaryLabel
-{
+{ 
   text-align: center;
   font-size: 16px;
   font-style: normal;

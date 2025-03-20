@@ -130,6 +130,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
             inputType="TwoIcon"
             textType="InputOnly"
             state="Default"
+            border="Round"
             value={inputValue}
             placeholder={''}
             onChange={handleInputChange}

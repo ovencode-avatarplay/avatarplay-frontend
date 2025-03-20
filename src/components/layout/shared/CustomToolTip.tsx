@@ -68,8 +68,8 @@ const CustomToolTip: React.FC<CustomToolTipProps> = ({tooltipText, titleText, to
           ref={tooltipRef}
           className={styles.tooltip}
           style={{
-            ...tooltipStyle,
             left: titleText ? `-${titleText.length * 5}px` : undefined, // 글자 길이에 따라 left 조정
+            ...tooltipStyle,
           }}
         >
           <div className={styles.tooltipText}>{tooltipText}</div>

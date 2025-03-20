@@ -8,13 +8,13 @@
   width: 100%;
 
   &.error {
-    outline: 1px solid var(--Primary-2, #FEBBEA);
+    border: 1px solid var(--Primary-2, #FEBBEA);
     background: var(--Primary-4, #FFF5FD);
   }
 
   cursor: pointer;
   border-radius: 10px;
-  outline: 1px solid var(--Neutral-200, #E8EAED);
+  border: 1px solid var(--Neutral-200, #E8EAED);
   background: var(--Neutral-50, #F8F9FA);
 
   .placeholder {
