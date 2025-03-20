@@ -18,6 +18,7 @@ import {
   BoldHeart,
   BoldImage,
   BoldLike,
+  BoldLock,
   BoldMenuDots,
   BoldMore,
   BoldPin,
@@ -288,8 +289,7 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
 
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
-  const {back} = useCustomRouter();
-  const {changeParams, getParam} = useCustomRouter();
+  const {back, changeParams, getParam} = useCustomRouter();
   const searchParams = useSearchParams();
   const isNeedBackBtn = searchParams?.get('from'); // "from" 쿼리 파라미터 값 가져오기
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
@@ -841,11 +841,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
           <div className={styles.itemStatistic}>
             <div className={styles.count}>{data.profileInfo?.profileInfo.postCount}</div>
-            <div className={styles.label}>{getLocalizedText('Common', 'profile001_label_001')}</div>
+            <div className={styles.label}>{getLocalizedText('Common', 'common_label_contents')}</div>
           </div>
           <div className={styles.itemStatistic}>
             <div className={styles.count}>{data.profileInfo?.profileInfo.followerCount}</div>
-            <div className={styles.label}>{getLocalizedText('Common', 'Followers')}</div>
+            <div className={styles.label}>{getLocalizedText('Common', 'common_label_followers')}</div>
           </div>
           <div className={styles.itemStatistic}>
             <div className={styles.count}>
@@ -854,7 +854,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             <div className={styles.label}>
               {isPD
                 ? getLocalizedText('Common', 'home001_label_002')
-                : getLocalizedText('Common', 'common_button_subscribers')}
+                : getLocalizedText('Common', 'common_label_subscribers')}
             </div>
           </div>
         </div>
@@ -998,7 +998,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   handleFollow(data.profileId, !isFollow, data.urlLinkKey);
                 }}
               >
-                {isFollow ? 'Following' : 'Follow'}
+                {isFollow ? getLocalizedText('common_button_following') : getLocalizedText('common_button_follow')}
               </button>
               <button
                 className={styles.giftWrap}
@@ -1759,7 +1759,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eContentFilterType.Series}
             >
-              <div className={styles.text}>Series</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_series')}</div>
             </div>
             <div
               className={cx(
@@ -1768,7 +1768,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eContentFilterType.Single}
             >
-              <div className={styles.text}>Single</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_single')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -1826,7 +1826,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Original}
             >
-              <div className={styles.text}>Original</div>
+              <div className={styles.text}>{getLocalizedText('common_button_original')}</div>
             </div>
             <div
               className={cx(
@@ -1835,7 +1835,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Fan}
             >
-              <div className={styles.text}>Fan</div>
+              <div className={styles.text}>{getLocalizedText('Fan')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -1891,7 +1891,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Original}
             >
-              <div className={styles.text}>Original</div>
+              <div className={styles.text}>{getLocalizedText('common_button_original')}</div>
             </div>
             <div
               className={cx(
@@ -1901,7 +1901,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Fan}
             >
-              <div className={styles.text}>Fan</div>
+              <div className={styles.text}>{getLocalizedText('common_button_fan')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -1961,7 +1961,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eSharedFilterType.Channel}
             >
-              <div className={styles.text}>Channel</div>
+              <div className={styles.text}>{getLocalizedText('common_button_channel')}</div>
             </div>
             <div
               className={cx(
@@ -1970,7 +1970,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eSharedFilterType.Character}
             >
-              <div className={styles.text}>Character</div>
+              <div className={styles.text}>{getLocalizedText('common_button_character')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -2570,9 +2570,11 @@ const TabContentComponent = ({
     return (
       <>
         <section className={styles.pdInfoSection}>
-          {!!pdInfo?.introduce && <div className={styles.label}>Introduce</div>}
+          {!!pdInfo?.introduce && <div className={styles.label}>{getLocalizedText('profile007_label_001')}</div>}
           {!!pdInfo?.introduce && <div className={styles.value}>{pdInfo?.introduce}</div>}
-          {pdInfo?.interests.length != 0 && <div className={styles.label}>Interests</div>}
+          {pdInfo?.interests.length != 0 && (
+            <div className={styles.label}>{getLocalizedText('profile007_label_002')}</div>
+          )}
           {pdInfo?.interests.length != 0 && (
             <ul className={styles.tags}>
               {pdInfo?.interests.map((one, index) => {
@@ -2586,7 +2588,7 @@ const TabContentComponent = ({
             </ul>
           )}
 
-          {pdInfo?.skills.length != 0 && <div className={styles.label}>Skill</div>}
+          {pdInfo?.skills.length != 0 && <div className={styles.label}>{getLocalizedText('common_alert_056')}</div>}
           {pdInfo?.skills.length != 0 && (
             <ul className={styles.tags}>
               {pdInfo?.skills.map((one, index) => {
@@ -2599,15 +2601,19 @@ const TabContentComponent = ({
             </ul>
           )}
           {!!pdInfo?.personalHistory && (
-            <div className={cx(styles.label, styles.labelPersonalHistory)}>Personal History</div>
+            <div className={cx(styles.label, styles.labelPersonalHistory)}>
+              {getLocalizedText('profile007_label_003')}
+            </div>
           )}
           {!!pdInfo?.personalHistory && <div className={styles.value}>{pdInfo?.personalHistory}</div>}
-          {!!pdInfo?.honorAwards && <div className={cx(styles.label, styles.honorAwards)}>Honor & Awards</div>}
+          {!!pdInfo?.honorAwards && (
+            <div className={cx(styles.label, styles.honorAwards)}>{getLocalizedText('profile007_label_004')}</div>
+          )}
           {!!pdInfo?.honorAwards && <div className={styles.value}>{pdInfo?.honorAwards}</div>}
           {!!pdInfo?.url && <div className={styles.label}>URL</div>}
           {!!pdInfo?.url && <div className={styles.value}>{pdInfo?.url}</div>}
           {pdInfo?.pdPortfolioInfoList.length != 0 && (
-            <div className={cx(styles.label, styles.labelPortfolio)}>Portfolio</div>
+            <div className={cx(styles.label, styles.labelPortfolio)}>{getLocalizedText('profile007_label_005')}</div>
           )}
           {pdInfo?.pdPortfolioInfoList.length != 0 && (
             <div className={styles.value}>
@@ -2747,7 +2753,9 @@ const TabContentComponent = ({
         )}
         {channelInfo?.memberProfileIdList?.length != 0 && (
           <section className={styles.memberSection}>
-            <div className={styles.label}>{channelInfo?.memberProfileIdList?.length} Members</div>
+            <div className={styles.label}>
+              {channelInfo?.memberProfileIdList?.length} {getLocalizedText('CreateChannel002_label_001')}
+            </div>
             <Swiper
               className={styles.recruitList}
               freeMode={true}
@@ -2775,7 +2783,7 @@ const TabContentComponent = ({
         )}
         {!!channelInfo?.description && (
           <section className={styles.descriptionSection}>
-            <div className={styles.label}>Description</div>
+            <div className={styles.label}>{getLocalizedText('CreateChannel001_label_007')}</div>
             <div className={styles.value}>{channelInfo?.description}</div>
           </section>
         )}
@@ -2885,11 +2893,19 @@ export const ContentComponent = ({
         <div className={styles.bgGradientWrap}>
           <div className={styles.bgGradient}></div>
         </div>
-        {itemInfo?.isPinFix && (
-          <div className={styles.pin}>
-            <img src={BoldPin.src} alt="" />
-          </div>
-        )}
+        <div className={styles.leftTop}>
+          {itemInfo?.isPinFix && (
+            <div className={styles.pin}>
+              <img src={BoldPin.src} alt="" />
+            </div>
+          )}
+          {!itemInfo?.isContentFree && (
+            <div className={styles.pin}>
+              <img src={BoldLock.src} alt="" />
+            </div>
+          )}
+        </div>
+
         <div className={styles.info}>
           <div className={styles.likeWrap}>
             <img src={BoldLike.src} alt="" />

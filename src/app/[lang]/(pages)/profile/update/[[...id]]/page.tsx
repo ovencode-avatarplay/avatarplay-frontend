@@ -21,6 +21,7 @@ import {getAuth} from '@/app/NetWork/AuthNetwork';
 import {updateProfile} from '@/redux-store/slices/Profile';
 import {useDispatch} from 'react-redux';
 import useCustomRouter from '@/utils/useCustomRouter';
+import getLocalizedText from '@/utils/getLocalizedText';
 type Props = {
   params: {
     id?: string[];
@@ -388,7 +389,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                   onDragStart={onDragStartInner}
                 >
                   <img src={LineUpload.src} alt="" />
-                  <div className={styles.text}>Upload</div>
+                  <div className={styles.text}>{getLocalizedText('common_button_upload')}</div>
                 </div>
               )}
 
@@ -405,12 +406,12 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
             </label>
           </section>
           <section className={styles.nicknameSection}>
-            <h2 className={styles.label}>Nickname</h2>
+            <h2 className={styles.label}>{getLocalizedText('common_alert_043')}</h2>
             <input
               className={cx(errors.name && isSubmitted && styles.error)}
               {...register('name', {required: true})}
               type="text"
-              placeholder="Please enter a nickname"
+              placeholder={getLocalizedText('common_sample_072')}
               maxLength={30}
               onChange={async e => {
                 setValue('name', e.target.value);
@@ -420,11 +421,11 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
             />
           </section>
           <section className={styles.introductionSection}>
-            <h2 className={styles.label}>Introduction</h2>
+            <h2 className={styles.label}>{getLocalizedText('profile007_label_001')}</h2>
             <div className={cx(styles.textAreaWrap, errors.introduce && isSubmitted && styles.error)}>
               <textarea
                 {...register('introduce', {required: true})}
-                placeholder="Add a description or hashtag"
+                placeholder={getLocalizedText('common_sample_047')}
                 maxLength={500}
                 rows={1}
                 value={watch('introduce')}
@@ -441,7 +442,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
             </div>
           </section>
           <section className={styles.interestSection}>
-            <h2 className={styles.label}>Interests</h2>
+            <h2 className={styles.label}>{getLocalizedText('profile007_label_002')}</h2>
             <div
               className={cx(styles.selectWrap, errors.interests && isSubmitted && styles.error)}
               onClick={() => {
@@ -449,7 +450,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 setData({...data});
               }}
             >
-              <div className={styles.placeholder}>Select</div>
+              <div className={styles.placeholder}>{getLocalizedText('common_sample_079')}</div>
               <img src={'/ui/profile/update/icon_select.svg'} alt="" />
             </div>
             <div className={styles.tagWrap}>
@@ -491,7 +492,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
             </div>
           </section>
           <section className={styles.skillSection}>
-            <h2 className={styles.label}>Skill</h2>
+            <h2 className={styles.label}>{getLocalizedText('common_alert_056')}</h2>
             <div
               className={cx(styles.selectWrap, errors.skills && isSubmitted && styles.error)}
               onClick={() => {
@@ -499,7 +500,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                 setData({...data});
               }}
             >
-              <div className={styles.placeholder}>Select</div>
+              <div className={styles.placeholder}>{getLocalizedText('common_sample_079')}</div>
               <img src={'/ui/profile/update/icon_select.svg'} alt="" />
             </div>
             <div className={cx(styles.tagWrap)}>
@@ -544,12 +545,12 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
           <section className={styles.urlSection}></section>
 
           <section className={styles.personalHistorySection}>
-            <h2 className={styles.label}>Personal History</h2>
+            <h2 className={styles.label}>{getLocalizedText('profile007_label_003')}</h2>
 
             <div className={cx(styles.textAreaWrap, errors.personalHistory && isSubmitted && styles.error)}>
               <textarea
                 {...register('personalHistory', {required: true})}
-                placeholder="Ex) 2024. 10~2025.01 Design (Zero to One CB)"
+                placeholder={getLocalizedText('common_sample_063')}
                 maxLength={500}
                 rows={1}
                 value={watch('personalHistory')}
@@ -584,12 +585,12 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
           </section>
 
           <section className={styles.honorAwardsSection}>
-            <h2 className={styles.label}>Honor & Awards</h2>
+            <h2 className={styles.label}>{getLocalizedText('profile007_label_004')}</h2>
 
             <div className={cx(styles.textAreaWrap, errors.honorAwards && isSubmitted && styles.error)}>
               <textarea
                 {...register('honorAwards', {required: true})}
-                placeholder="Ex) 2024. 10~2025.01 Design (Zero to One CB)"
+                placeholder={getLocalizedText('common_sample_064')}
                 maxLength={500}
                 rows={1}
                 value={watch('honorAwards')}
@@ -624,7 +625,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
 
           <section className={styles.portfolioSection}>
             <div className={styles.labelWrap}>
-              <h2 className={styles.label}>Portfolio</h2>
+              <h2 className={styles.label}>{getLocalizedText('profile007_label_005')}</h2>
               <div
                 className={styles.btnPreview}
                 onClick={() => {
@@ -632,7 +633,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                   setData({...data});
                 }}
               >
-                Preview
+                {getLocalizedText('common_button_preview')}
               </div>
             </div>
             <input
@@ -662,7 +663,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
                   }}
                 >
                   <img src={LineUpload.src} alt="" />
-                  <div className={styles.text}>Upload</div>
+                  <div className={styles.text}>{getLocalizedText('common_button_upload')}</div>
                 </div>
               </SwiperSlide>
               {data.dataPortfolio.dataList.map((one, index) => {
@@ -686,12 +687,12 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
           </section>
 
           <section className={styles.urlSection}>
-            <h2 className={styles.label}>URL</h2>
+            <h2 className={styles.label}>{getLocalizedText('profile007_label_006')}</h2>
             <input
               {...register('url', {required: true})}
               className={cx(errors.url && isSubmitted && styles.error)}
               type="text"
-              placeholder="https://"
+              placeholder={getLocalizedText('common_sample_065')}
               onChange={e => {
                 clearErrors('url');
                 setValue('url', e.target.value);
@@ -701,7 +702,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
           </section>
 
           <button type="submit" className={styles.submitBtn}>
-            Submit
+            {getLocalizedText('common_button_submit')}
           </button>
         </form>
         <DrawerSelectTags
