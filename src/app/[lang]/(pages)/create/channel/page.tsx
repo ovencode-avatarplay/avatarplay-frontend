@@ -576,7 +576,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
                   <textarea
                     {...register('description', {required: true})}
-                    placeholder={getLocalizedText('CreateChannel', 'CreateChannel001_label_009')}
+                    placeholder={getLocalizedText('CreateChannel', 'common_sample_047')}
                     maxLength={500}
                     onChange={async e => {
                       const target = e.target as HTMLTextAreaElement;
@@ -929,7 +929,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
                 <div className={cx(styles.labelWrap, styles.nsfw)}>
                   <div className={styles.label}>
-                    {getLocalizedText('CreateChannel', 'common_label_008')} <span className={styles.highlight}>*</span>
+                    {getLocalizedText('CreateChannel', 'common_sample_086')} <span className={styles.highlight}>*</span>
                   </div>
                   <CustomToolTip tooltipText="NSFW" />
                 </div>
