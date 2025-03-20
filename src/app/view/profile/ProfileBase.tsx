@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {Box, Button, Drawer} from '@mui/material';
+import {Backdrop, Box, Button, ClickAwayListener, Drawer, Snackbar} from '@mui/material';
 import ProfileTopEditMenu from './ProfileTopEditMenu';
 import ProfileInfo from './ProfileInfo';
 import profileData from 'data/profile/profile-data.json';
@@ -98,6 +98,18 @@ import {PortfolioListPopup} from '@/app/[lang]/(pages)/profile/update/[[...id]]/
 import useCustomRouter from '@/utils/useCustomRouter';
 import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
 import DrawerDonation from '../main/content/create/common/DrawerDonation';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
+
+const mappingStrToGlobalTextKey = {
+  Feed: 'common_label_feed',
+  Character: 'common_label_character',
+  Info: 'common_label_info',
+  Channel: 'common_label_channel',
+  Shared: 'common_label_shared',
+  Contents: 'common_label_contents',
+  Game: 'common_label_game',
+};
 
 export enum eTabFavoritesType {
   Feed = 1,
@@ -230,6 +242,11 @@ type DataProfileType = {
     idProfileTo: number;
   };
 
+  dataToast: {
+    isOpen: boolean;
+    message: string;
+  };
+
   refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
   getIsEmptyTab: () => boolean;
 };
@@ -318,6 +335,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     dataGift: {
       isOpen: false,
       idProfileTo: 0,
+    },
+
+    dataToast: {
+      isOpen: false,
+      message: '',
     },
 
     refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
@@ -701,6 +723,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
   const onCopyToClipboard = () => {
     copyCurrentUrlToClipboard(pathname, searchParams);
+    data.dataToast.isOpen = true;
+    data.dataToast.message = 'The link has been successfully copied';
+    setData({...data});
   };
 
   return (
@@ -714,7 +739,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               setData({...data});
             }}
           >
-            Subscribe
+            {getLocalizedText('Common', 'common_button_subscribe')}
           </button>
           <button
             className={styles.favorite}
@@ -723,7 +748,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               setData({...data});
             }}
           >
-            Favorites
+            {getLocalizedText('Common', 'common_button_favorites')}
           </button>
           <button
             className={styles.playlist}
@@ -732,7 +757,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               setData({...data});
             }}
           >
-            Playlist
+            {getLocalizedText('Common', 'common_button_playlist')}
           </button>
         </div>
       )}
@@ -816,17 +841,21 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
           <div className={styles.itemStatistic}>
             <div className={styles.count}>{data.profileInfo?.profileInfo.postCount}</div>
-            <div className={styles.label}>Posts</div>
+            <div className={styles.label}>{getLocalizedText('Common', 'profile001_label_001')}</div>
           </div>
           <div className={styles.itemStatistic}>
             <div className={styles.count}>{data.profileInfo?.profileInfo.followerCount}</div>
-            <div className={styles.label}>Followers</div>
+            <div className={styles.label}>{getLocalizedText('Common', 'Followers')}</div>
           </div>
           <div className={styles.itemStatistic}>
             <div className={styles.count}>
               {isPD ? data.profileInfo?.profileInfo?.followingCount : data.profileInfo?.profileInfo?.subscriberCount}
             </div>
-            <div className={styles.label}>{isPD ? 'Following' : 'Subscribers'}</div>
+            <div className={styles.label}>
+              {isPD
+                ? getLocalizedText('Common', 'home001_label_002')
+                : getLocalizedText('Common', 'common_button_subscribers')}
+            </div>
           </div>
         </div>
         <div className={styles.profileDetail}>
@@ -884,7 +913,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                 setData({...data});
               }}
             >
-              Show more...
+              {getLocalizedText('Common', 'common_label_showmore')}
             </div>
           )}
           {(isMyPD || isMyChannel) && (
@@ -895,7 +924,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   alert('6월에 기능 추가 예정');
                 }}
               >
-                AD
+                {getLocalizedText('Common', 'common_button_ad')}
               </button>
               {isMyPD && (
                 <button
@@ -906,7 +935,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                     // setData({...data});
                   }}
                 >
-                  Add Friends
+                  {getLocalizedText('Common', 'common_button_addfriends')}
                 </button>
               )}
             </div>
@@ -919,11 +948,13 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   alert('6월에 기능 추가 예정');
                 }}
               >
-                AD
+                {getLocalizedText('Common', 'common_button_ad')}
               </button>
               <button className={styles.chat}>
                 {/* <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}> */}
-                <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>Chat</Link>
+                <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>
+                  {getLocalizedText('Common', 'common_button_chat')}
+                </Link>
               </button>
             </div>
           )}
@@ -935,7 +966,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   handleFollow(data.profileId, !isFollow, data.urlLinkKey);
                 }}
               >
-                {isFollow ? 'Following' : 'Follow'}
+                {isFollow
+                  ? getLocalizedText('Common', 'common_button_following')
+                  : getLocalizedText('Common', 'common_button_follow')}
               </button>
               <button
                 className={styles.gift}
@@ -957,7 +990,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   setData({...data});
                 }}
               >
-                Subscribe
+                {getLocalizedText('Common', 'common_button_subscribe')}
               </button>
               <button
                 className={styles.follow}
@@ -1141,6 +1174,56 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           sponsoredName={data.profileInfo?.profileInfo?.name || ''}
         />
       )}
+
+      <>
+        <Backdrop
+          open={data.dataToast.isOpen}
+          onClick={() => {
+            data.dataToast.isOpen = false;
+            setData({...data});
+          }}
+          sx={{
+            zIndex: 999,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)', // 살짝 어두운 흐림 효과
+            // backdropFilter: 'blur(5px)', // 흐림 효과
+          }}
+        />
+        <Snackbar
+          open={data.dataToast.isOpen}
+          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+          autoHideDuration={1000}
+          message={data.dataToast.message}
+          onClose={() => {
+            data.dataToast.isOpen = false;
+            setData({...data});
+          }}
+          sx={{
+            bottom: '20px',
+            width: 'calc(100% - 32px)', // 전체 너비
+            zIndex: 999,
+            '& .MuiPaper-root': {
+              height: '47px',
+              width: '100%', // 전체 너비
+
+              background: 'rgba(255, 255, 255, 1)', // 배경색
+              borderRadius: '12px', // 둥근 모서리
+
+              whiteSpace: 'nowrap', // 한 줄 처리
+              overflow: 'hidden', // 넘치는 텍스트 숨김
+              textOverflow: 'ellipsis', // 말줄임표 처리
+            },
+            '& .MuiSnackbarContent-message': {
+              width: '100%',
+              textAlign: 'center', // 텍스트 중앙 정렬
+              fontFamily: 'Lato, sans-serif', // Lato 폰트 적용
+              fontSize: '14px',
+              fontWeight: 600,
+              lineHeight: '20px',
+              color: '#000', // 글자 색상
+            },
+          }}
+        />
+      </>
     </>
   );
 });
@@ -1567,14 +1650,14 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
     isPlayList,
   } = getUserType(isMine, profileType);
   const sortOptionList = [
-    {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.Popular, value: 'Popular'},
-    {id: ExploreSortType.Name, value: 'Name'},
+    {id: ExploreSortType.Newest, value: getLocalizedText('Common', 'common_sort_newest')},
+    {id: ExploreSortType.Popular, value: getLocalizedText('Common', 'common_sort_popular')},
+    {id: ExploreSortType.Name, value: getLocalizedText('Common', 'common_sort_Name')},
   ];
   const feedSortOptionList = [
-    {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.Popular, value: 'Popular'},
-    {id: ExploreSortType.Name, value: 'Name'},
+    {id: ExploreSortType.Newest, value: getLocalizedText('Common', 'common_sort_newest')},
+    {id: ExploreSortType.Popular, value: getLocalizedText('Common', 'common_sort_popular')},
+    {id: ExploreSortType.Name, value: getLocalizedText('Common', 'common_sort_Name')},
   ];
 
   if (
@@ -2119,6 +2202,8 @@ export const TabHeaderComponent = ({
             if (index == 0) {
               paddingLeft = 0;
             }
+
+            const textHeader = tab?.label as keyof typeof mappingStrToGlobalTextKey;
             return (
               <div
                 key={tab.type}
@@ -2130,7 +2215,7 @@ export const TabHeaderComponent = ({
                   className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
                   data-tablabel={tab?.type}
                 >
-                  {tab.label}
+                  {getLocalizedText(mappingStrToGlobalTextKey[textHeader])}
                 </div>
               </div>
             );
@@ -2344,11 +2429,7 @@ const TabContentComponent = ({
       <>
         <div className={styles.emptyWrap}>
           <img src="/ui/profile/image_empty.svg" alt="" />
-          <div className={styles.text}>
-            Its pretty lonely out here.
-            <br />
-            Make a Post
-          </div>
+          <div className={styles.text}>{formatText(getLocalizedText('Common', 'common_sample_091'))}</div>
         </div>
       </>
     );

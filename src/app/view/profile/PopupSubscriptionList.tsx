@@ -19,6 +19,7 @@ import BottomNav from '../main/bottom-nav/BottomNav';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 type Props = {
   onClose: () => void;
@@ -376,7 +377,7 @@ const ContentSetting = ({
 }: SubscriptionSettingType) => {
   let itemList: SelectDrawerItem[] = [
     {
-      name: 'Subscription Cancel',
+      name: getLocalizedText('Common', 'common_dropdown_subscriptioncancel'),
       onClick: () => {
         onCancel();
       },
