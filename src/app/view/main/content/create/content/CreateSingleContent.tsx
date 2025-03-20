@@ -25,6 +25,7 @@ import {
 } from '@/app/NetWork/ContentNetwork';
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
+import useCustomRouter from '@/utils/useCustomRouter';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -42,6 +43,7 @@ interface CreateSingleContentProps {
 
 const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) => {
   const router = useRouter();
+  const {back} = useCustomRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [tagOpen, setTagOpen] = useState(false);
@@ -324,7 +326,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         <CustomArrowHeader
           title="Create Series Contents"
           onClose={() => {
-            router.back();
+            back();
           }}
           children={
             <div className={styles.rightArea}>

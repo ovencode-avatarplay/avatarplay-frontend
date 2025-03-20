@@ -3,7 +3,7 @@ import React, {useCallback, useEffect} from 'react';
 import {getLocalizedLink} from './UrlMove';
 import {atom, useAtom} from 'jotai';
 
-const MAX_HISTORY = 3; // 저장할 최대 경로 개수
+const MAX_HISTORY = 50; // 저장할 최대 경로 개수
 
 export const getBackUrl = () => {
   const storage = globalThis?.sessionStorage;
