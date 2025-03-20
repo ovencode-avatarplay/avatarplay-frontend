@@ -237,8 +237,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
     const membershipSetting: MembershipSetting = {
       benefits: channelInfo.membershipSetting?.benefits || '',
-      paymentAmount: channelInfo.membershipSetting?.paymentAmount || 50000,
-      paymentType: channelInfo.membershipSetting?.paymentType || PaymentType.Korea,
+      paymentAmount: channelInfo.membershipSetting?.paymentAmount || 0,
+      paymentType: channelInfo.membershipSetting?.paymentType || PaymentType.KRW,
       subscription: channelInfo.membershipSetting?.subscription || Subscription.Contents,
     };
     const channelInfoForm: ChannelInfoForm = {...channelInfo, tags: tag, isMonetization, nsfw, membershipSetting};
