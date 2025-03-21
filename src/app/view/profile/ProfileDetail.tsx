@@ -24,6 +24,7 @@ import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import Link from 'next/link';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 type Props = {
   profileId: number;
@@ -110,7 +111,12 @@ export const CharacterProfileDetailComponent = ({
               alt=""
               className={cx(styles.like, characterInfo?.isLike && styles.active)}
               onClick={async () => {
-                await sendLike(InteractionType.Character, profileId, !characterInfo?.isLike);
+                const isLike = !characterInfo?.isLike;
+                await sendLike(InteractionType.Character, profileId, isLike);
+                if (isLike && characterInfo?.isDisLike) {
+                  await sendDisLike(InteractionType.Character, profileId, false);
+                }
+
                 onRefresh();
               }}
             />
@@ -121,7 +127,12 @@ export const CharacterProfileDetailComponent = ({
             alt=""
             className={cx(styles.dislike, characterInfo?.isDisLike && styles.active)}
             onClick={async () => {
-              await sendDisLike(InteractionType.Character, profileId, !characterInfo?.isDisLike);
+              const isDisLike = !characterInfo?.isDisLike;
+              await sendDisLike(InteractionType.Character, profileId, isDisLike);
+              if (isDisLike && characterInfo?.isLike) {
+                await sendLike(InteractionType.Character, profileId, false);
+              }
+
               onRefresh();
             }}
           />
@@ -172,18 +183,20 @@ export const CharacterProfileDetailComponent = ({
       <section className={styles.tabSection}>
         <div className={styles.tabContent}>
           <div className={styles.textWrap}>
-            <div className={cx(styles.label, styles.descriptionLabel)}>Description</div>
+            <div className={cx(styles.label, styles.descriptionLabel)}>
+              {getLocalizedText('createcharacter001_label_012')}
+            </div>
             <TextArea value={data.characterInfo?.description || ''} />
           </div>
           <div className={styles.textWrap}>
-            <div className={styles.label}>World Senario</div>
+            <div className={styles.label}>{getLocalizedText('createcharacter001_label_017')}</div>
             <TextArea value={data.characterInfo?.worldScenario || ''} />
           </div>
-          {data.characterInfo?.creatorComment ? (
+          {data.characterInfo?.introduction ? (
             <>
               <div className={styles.textWrap}>
-                <div className={styles.label}>Creator Comment</div>
-                <TextArea value={data.characterInfo?.creatorComment || ''} />
+                <div className={styles.label}>{getLocalizedText('createcharacter001_label_018')}</div>
+                <TextArea value={data.characterInfo?.introduction || ''} />
               </div>
             </>
           ) : (
@@ -240,7 +253,9 @@ export const CharacterProfileDetailComponent = ({
         </div> */}
       {/* <div className={styles.recentSetting}>Recent Setting</div> */}
       <Link href={getLocalizedLink(`/chat/?v=${data?.urlLinkKey}` || `?v=`)}>
-        <button className={cx(styles.startNewChat, !isPath && styles.embedded)}>Start New Chat</button>
+        <button className={cx(styles.startNewChat, !isPath && styles.embedded)}>
+          {getLocalizedText('common_button_startnewchat')}
+        </button>
       </Link>
       {/* </section> */}
     </>

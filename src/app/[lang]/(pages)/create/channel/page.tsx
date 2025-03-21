@@ -19,6 +19,7 @@ import {FieldErrors, useForm} from 'react-hook-form';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {
   ExploreSortType,
+  mapOperatorAuthorityType,
   MediaState,
   OperatorAuthorityType,
   ProfileInfo,
@@ -34,7 +35,12 @@ import cx from 'classnames';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {debounce, Dialog, Drawer} from '@mui/material';
 import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostCountry';
-import {getLangKey, LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
+import {
+  getLangKey,
+  LanguageType,
+  mapVisibilityType,
+  MembershipSetting,
+} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
@@ -59,6 +65,7 @@ import parse from 'html-react-parser';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
+import formatText from '@/utils/formatText';
 
 type Props = {
   id: number;
@@ -120,9 +127,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     dataVisibility: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: true, value: getLocalizedText('common_dropdown_private')},
-        {isActive: false, value: getLocalizedText('common_dropdown_unlisted')},
-        {isActive: false, value: getLocalizedText('common_dropdown_public')},
+        {isActive: true, value: getLocalizedText('common_filter_private')},
+        {isActive: false, value: getLocalizedText('common_filter_unlisted')},
+        {isActive: false, value: getLocalizedText('common_filter_public')},
       ],
       drawerTitle: getLocalizedText('common_label_001'),
       drawerDescription: '',
@@ -130,29 +137,29 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     dataTag: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: false, value: 'Male'},
-        {isActive: false, value: 'Female'},
-        {isActive: false, value: 'Boyfriend'},
-        {isActive: false, value: 'Girlfriend'},
-        {isActive: false, value: 'Hero'},
-        {isActive: false, value: 'Elf'},
-        {isActive: false, value: 'Romance'},
-        {isActive: false, value: 'Vanilla'},
-        {isActive: false, value: 'Contemporary Fantasy'},
-        {isActive: false, value: 'Isekai'},
-        {isActive: false, value: 'Flirting'},
-        {isActive: false, value: 'Dislike'},
-        {isActive: false, value: 'Comedy'},
-        {isActive: false, value: 'Noir'},
-        {isActive: false, value: 'Horror'},
-        {isActive: false, value: 'Demon'},
-        {isActive: false, value: 'SF'},
-        {isActive: false, value: 'Vampire'},
-        {isActive: false, value: 'Office'},
-        {isActive: false, value: 'Monster'},
-        {isActive: false, value: 'Anime'},
-        {isActive: false, value: 'Books'},
-        {isActive: false, value: 'Aliens'},
+        {isActive: false, value: getLocalizedText('common_tag_male')},
+        {isActive: false, value: getLocalizedText('common_tag_female')},
+        {isActive: false, value: getLocalizedText('common_tag_boyfriend')},
+        {isActive: false, value: getLocalizedText('common_tag_girlfriend')},
+        {isActive: false, value: getLocalizedText('common_tag_hero')},
+        {isActive: false, value: getLocalizedText('common_tag_elf')},
+        {isActive: false, value: getLocalizedText('common_tag_romance')},
+        {isActive: false, value: getLocalizedText('common_tag_vanilla')},
+        {isActive: false, value: getLocalizedText('common_tag_contemporaryFantasy')},
+        {isActive: false, value: getLocalizedText('common_tag_Isekai')},
+        {isActive: false, value: getLocalizedText('common_tag_Flirting')},
+        {isActive: false, value: getLocalizedText('common_tag_Dislike')},
+        {isActive: false, value: getLocalizedText('common_tag_Comedy')},
+        {isActive: false, value: getLocalizedText('common_tag_Noir')},
+        {isActive: false, value: getLocalizedText('common_tag_Horror')},
+        {isActive: false, value: getLocalizedText('common_tag_Demon')},
+        {isActive: false, value: getLocalizedText('common_tag_SF')},
+        {isActive: false, value: getLocalizedText('common_tag_Vampire')},
+        {isActive: false, value: getLocalizedText('common_tag_Office')},
+        {isActive: false, value: getLocalizedText('common_tag_Monster')},
+        {isActive: false, value: getLocalizedText('common_tag_Anime')},
+        {isActive: false, value: getLocalizedText('common_tag_Books')},
+        {isActive: false, value: getLocalizedText('common_tag_Aliens')},
       ],
       drawerTitle: getLocalizedText('common_label_002'),
       drawerDescription: '',
@@ -178,7 +185,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
     dataPopupRemove: {
       isOpen: false,
-      title: parse(getLocalizedText('common_alert_083')),
+      title: parse(getLocalizedText('common_alert_052')),
       description: getLocalizedText('common_alert_084'),
       idProfile: 0,
     },
@@ -414,8 +421,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     if (res?.resultCode == 0) {
       data.dataPopupComplete.isOpen = true;
       data.dataPopupComplete.title = isUpdate
-        ? getLocalizedText('CreateChannel001_label_updateComplete')
-        : getLocalizedText('CreateChannel001_label_createComplete');
+        ? getLocalizedText('common_alert_099')
+        : getLocalizedText('common_alert_098');
       setData({...data});
     }
   };
@@ -426,8 +433,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
   const keys = Object.keys(VisibilityType).filter(key => isNaN(Number(key)));
   const visibilityType = getValues('visibilityType');
-  const visibilityTypeStr = keys[visibilityType];
-
+  const visibilityTypeStr = VisibilityType[visibilityType] as keyof typeof mapVisibilityType;
+  const visibilityTypeMapStr = mapVisibilityType[visibilityTypeStr];
   const countMembers = data.dataCharacterSearch.profileList.length;
 
   const onError = (errors: FieldErrors<ChannelInfoForm>) => {
@@ -483,7 +490,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       </header>
       <main className={styles.main}>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
-          <div className={styles.label}>{getLocalizedText('CreateChannel', 'CreateChannel001_label_002')}</div>
+          <div className={styles.label}>{getLocalizedText('CreateChannel', 'common_label_Thumbnail')}</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
               <input className={styles.hide} autoComplete="off" {...register('mediaUrl', {required: true})} />
@@ -535,17 +542,17 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 >
                   <div className={styles.tabItem} data-tab={0}>
                     <div className={cx(styles.labelTab, data.indexTab == 0 && styles.active)}>
-                      {getLocalizedText('CreateChannel', 'CreateChannel001_label_003')}
+                      {getLocalizedText('CreateChannel', 'createchannel001_label_003')}
                     </div>
                   </div>
                   <div className={styles.tabItem} data-tab={1}>
                     <div className={cx(styles.labelTab, data.indexTab == 1 && styles.active)}>
-                      {getLocalizedText('CreateChannel', 'CreateChannel001_label_004')}
+                      {getLocalizedText('CreateChannel', 'createchannel001_label_004')}
                     </div>
                   </div>
                   <div className={styles.tabItem} data-tab={2}>
                     <div className={cx(styles.labelTab, data.indexTab == 2 && styles.active)}>
-                      {getLocalizedText('CreateChannel', 'CreateChannel001_label_005')}
+                      {getLocalizedText('CreateChannel', 'createchannel001_label_005')}
                     </div>
                   </div>
                 </div>
@@ -556,14 +563,14 @@ const CreateChannel = ({id, isUpdate}: Props) => {
             <div className={styles.tabContent}>
               <section className={cx(styles.channelSection, data.indexTab == 0 && styles.active)}>
                 <div className={styles.label}>
-                  {getLocalizedText('CreateChannel', 'CreateChannel001_label_006')}{' '}
+                  {getLocalizedText('CreateChannel', 'createchannel001_label_006')}{' '}
                   <span className={styles.highlight}>*</span>
                 </div>
                 <input
                   {...register('name', {required: true})}
                   className={cx(errors.name && isSubmitted && styles.error)}
                   type="text"
-                  placeholder={getLocalizedText('CreateChannel', 'CreateChannel001_label_008')}
+                  placeholder={getLocalizedText('CreateChannel', 'common_sample_086')}
                   onChange={e => {
                     clearErrors('name');
                     setValue('name', e.target.value);
@@ -571,7 +578,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 />
 
                 <div className={styles.label}>
-                  {getLocalizedText('CreateChannel', 'CreateChannel001_label_007')}{' '}
+                  {getLocalizedText('CreateChannel', 'createchannel001_label_007')}{' '}
                   <span className={styles.highlight}>*</span>
                 </div>
                 <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
@@ -604,7 +611,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <div className={styles.labelAdd}>{getLocalizedText('common_label_addmembers')}</div>
                 </div>
                 <div className={styles.label}>
-                  {countMembers} {getLocalizedText('CreateChannel', 'CreateChannel002_label_001')}
+                  {countMembers} {getLocalizedText('CreateChannel', 'createchannel002_label_001')}
                 </div>
 
                 <ul className={styles.memberList}>
@@ -629,7 +636,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                             onClick={() => {
                               data.dataPopupRemove.idProfile = one.profileSimpleInfo.profileId;
                               data.dataPopupRemove.isOpen = true;
-                              data.dataPopupRemove.title = parse(`Remove from<br/>“${watch('name')}”`);
+                              data.dataPopupRemove.title = formatText(getLocalizedText('common_alert_052'), [
+                                watch('name'),
+                              ]);
+                              // data.dataPopupRemove.title = parse(`Remove from<br/>“${watch('name')}”`);
                               setData({...data});
                             }}
                           >
@@ -652,7 +662,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   autoComplete="off"
                 />
                 <CustomSelector
-                  value={visibilityTypeStr}
+                  value={getLocalizedText(visibilityTypeMapStr)}
                   error={errors.visibilityType && isSubmitted}
                   onClick={() => {
                     data.dataVisibility.isOpenTagsDrawer = true;
@@ -748,7 +758,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                             autoComplete="off"
                             {...register(`postCountry.${index}`, {required: true})}
                           /> */}
-                          {countryStr}
+                          {getLocalizedText(countryStr)}
                         </div>
                         <div
                           className={styles.btnRemoveWrap}
@@ -769,7 +779,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 <div className={styles.operatorInvitationHeader}>
                   <div className={styles.left}>
                     <div className={styles.label}>{getLocalizedText('CreateChannel', 'common_label_005')}</div>
-                    <CustomToolTip tooltipText="NSFW Monetization" />
+                    <CustomToolTip tooltipText="Operator Invitation" />
                   </div>
                   <div
                     className={styles.right}
@@ -784,6 +794,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 <ul className={styles.operatorInvitationList}>
                   {data.dataOperatorInvitation.operatorProfileIdList.map((one, index) => {
                     const keys = Object.keys(OperatorAuthorityType).filter(key => isNaN(Number(key)));
+                    const operatorAuthorityTypeStr = keys[
+                      one.operatorAuthorityType
+                    ] as keyof typeof mapOperatorAuthorityType;
+                    const operatorAuthorityTypeStrMapping = mapOperatorAuthorityType[operatorAuthorityTypeStr];
                     return (
                       <li key={one.profileId} className={styles.operatorInviation}>
                         <div className={styles.left}>
@@ -791,7 +805,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                           <div className={styles.name}>{one.name}</div>
                         </div>
                         <div className={styles.right}>
-                          <div className={styles.authority}>{keys[one.operatorAuthorityType]}</div>
+                          <div className={styles.authority}>{getLocalizedText(operatorAuthorityTypeStrMapping)}</div>
                         </div>
                       </li>
                     );
@@ -820,9 +834,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                         </div>
                       </div>
                     </label>
-                    <div className={styles.right}>
-                      {getLocalizedText('CreateChannel', 'common_button_monetization')}
-                    </div>
+                    <div className={styles.right}>{getLocalizedText('CreateChannel', 'common_label_004')}</div>
                   </div>
                   <div className={styles.item}>
                     <label>
@@ -930,7 +942,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
                 <div className={cx(styles.labelWrap, styles.nsfw)}>
                   <div className={styles.label}>
-                    {getLocalizedText('CreateChannel', 'common_sample_086')} <span className={styles.highlight}>*</span>
+                    {getLocalizedText('CreateChannel', 'common_label_008')} <span className={styles.highlight}>*</span>
                   </div>
                   <CustomToolTip tooltipText="NSFW" />
                 </div>
@@ -1233,7 +1245,7 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
             // onChange(dataReset);
           }}
         >
-          <div className={styles.labelRefresh}>Refresh</div>
+          <div className={styles.labelRefresh}>{getLocalizedText('common_button_refresh')}</div>
           <img src={LineRegenerate.src} alt="" />
         </div>
         <div

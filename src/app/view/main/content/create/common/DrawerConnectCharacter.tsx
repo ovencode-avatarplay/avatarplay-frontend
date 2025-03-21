@@ -47,7 +47,7 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
 
   return (
     <div className={styles.dropDownArea}>
-      <h2 className={styles.title2}>{getLocalizedText('CreateCharacter', 'createcharacter017_label_007')}</h2>
+      <h2 className={styles.title2}>{getLocalizedText('CreateCharacter', 'createcharacter017_label_003')}</h2>
       <div
         className={styles.connectItem}
         onClick={e => {

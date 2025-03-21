@@ -5,7 +5,9 @@ import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from '
 import {
   BannerUrlList,
   ExploreItem,
-  PaginationRequest,
+  ExploreItemType,
+  FeaturedReq,
+  sendExploreFeatured,
   sendGetExplore,
   sendSearchExplore,
 } from '@/app/NetWork/ExploreNetwork';
@@ -26,6 +28,7 @@ import {getCurrentLanguage} from '@/utils/UrlMove';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import {PaginationRequest} from '@/app/NetWork/ProfileNetwork';
 
 export type searchType = 'All' | 'Story' | 'Character' | 'Content';
 
@@ -33,7 +36,8 @@ const SearchBoard: React.FC = () => {
   const [data, setData] = useState({
     indexTab: 0,
   });
-  const [loading, setLoading] = useState(false);
+  const [exploreLoading, setExploreLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   // Featured
   const [bannerList, setBannerList] = useState<BannerUrlList[] | null>(null);
@@ -42,7 +46,102 @@ const SearchBoard: React.FC = () => {
   const [contentExploreList, setContentExploreList] = useState<ExploreItem[] | null>(null);
 
   // Search
-  const searchOptionList = ['Female', 'Male', 'BL', 'GL', 'LGBT+', 'Romance', 'Villain', 'Gaming', 'Adventure'];
+  const searchOptionList = [
+    'common_tag_male',
+    'common_tag_female',
+    'common_tag_boyfriend',
+    'common_tag_girlfriend',
+    'common_tag_firstlove',
+    'common_tag_flirting',
+    'common_tag_friends',
+    'common_tag_livingtogether',
+    'common_tag_lovers',
+    'common_tag_romance',
+    'common_tag_middle-aged',
+    'common_tag_older',
+    'common_tag_younger',
+    'common_tag_academy',
+    'common_tag_bully',
+    'common_tag_childhoodfriend',
+    'common_tag_love-hate',
+    'common_tag_schoollife',
+    'common_tag_unrequitedlove',
+    'common_tag_vanilla',
+    'common_tag_kuudere',
+    'common_tag_tsundere',
+    'common_tag_yandere',
+    'common_tag_gentlemale',
+    'common_tag_puremale',
+    'common_tag_slymale',
+    'common_tag_muscular',
+    'common_tag_tomboy',
+    'common_tag_adventure',
+    'common_tag_castaway',
+    'common_tag_contemporaryfantasy',
+    'common_tag_disaster',
+    'common_tag_dungeon',
+    'common_tag_emperor',
+    'common_tag_escaperoom',
+    'common_tag_fairy',
+    'common_tag_fantasy',
+    'common_tag_ghost',
+    'common_tag_isekai',
+    'common_tag_knight',
+    'common_tag_noble',
+    'common_tag_noir',
+    'common_tag_oriental',
+    'common_tag_training',
+    'common_tag_western',
+    'common_tag_wizard',
+    'common_tag_wuxia',
+    'common_tag_possession',
+    'common_tag_possessiveness',
+    'common_tag_punishment',
+    'common_tag_redemption',
+    'common_tag_regret',
+    'common_tag_revenge',
+    'common_tag_secrets',
+    'common_tag_action',
+    'common_tag_alien',
+    'common_tag_anime',
+    'common_tag_books',
+    'common_tag_comedy',
+    'common_tag_cosplay',
+    'common_tag_fairytale',
+    'common_tag_famouspeople',
+    'common_tag_games',
+    'common_tag_healing',
+    'common_tag_heroheroine',
+    'common_tag_history',
+    'common_tag_horror',
+    'common_tag_moviestv',
+    'common_tag_mythology',
+    'common_tag_oc',
+    'common_tag_robot',
+    'common_tag_sf',
+    'common_tag_simulator',
+    'common_tag_sports',
+    'common_tag_vampire',
+    'common_tag_vtuber',
+    'common_tag_orc',
+    'common_tag_monmusu',
+    'common_tag_demon',
+    'common_tag_angel',
+    'common_tag_elf',
+    'common_tag_villain',
+    'common_tag_military',
+    'common_tag_transsexual',
+    'common_tag_bl',
+    'common_tag_gl',
+    'common_tag_lgbtq',
+    'common_tag_animal',
+    'common_tag_maid',
+    'common_tag_butler',
+    'common_tag_furry',
+    'common_tag_detective',
+    'common_tag_monster',
+    'common_tag_office',
+  ];
   const [searchResultList, setSearchResultList] = useState<ExploreItem[] | null>(null);
 
   const [search, setSearch] = useState<searchType>('All');
@@ -60,16 +159,24 @@ const SearchBoard: React.FC = () => {
   const searchLimit = 20;
   const [hasSearchResult, setHasSearchResult] = useState(true);
   const [searchOffset, setSearchOffset] = useState<number>(0);
-  const [contentPage, setContentPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
-  const [characterPage, setCharacterPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
-  const [storyPage, setStoryPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
+  const [contentOffset, setContentOffset] = useState<number>(0);
+  const [characterOffset, setCharacterOffset] = useState<number>(0);
+  const [storyOffset, setStoryOffset] = useState<number>(0);
 
   const [selectedSort, setSelectedSort] = useState<number>(0);
   const [sortDropDownOpen, setSortDropDownOpen] = useState<boolean>(false);
   const {changeParams, getParam} = useCustomRouter();
+
+  const [requestFetch, setRequestFetch] = useState<boolean>(false);
+
+  // scroll 조건 외에 마지막 아이템이 보이면 search 호출
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastElement = useRef<HTMLLIElement | null>(null);
+
   const dropDownMenuItems: DropDownMenuItem[] = [
     {
-      name: 'Newest',
+      name: getLocalizedText('common_sort_newest'),
       onClick: () => {
         setSearchSort('Newest');
         setSortDropDownOpen(false);
@@ -77,7 +184,7 @@ const SearchBoard: React.FC = () => {
       },
     },
     {
-      name: 'Most Popular',
+      name: getLocalizedText('common_sort_mostpopular'),
       onClick: () => {
         setSearchSort('Most Popular');
         setSortDropDownOpen(false);
@@ -85,7 +192,7 @@ const SearchBoard: React.FC = () => {
       },
     },
     {
-      name: 'Weekly Popular',
+      name: getLocalizedText('common_sort_weeklypopular'),
       onClick: () => {
         setSearchSort('Weekly Popular');
         setSortDropDownOpen(false);
@@ -93,7 +200,7 @@ const SearchBoard: React.FC = () => {
       },
     },
     {
-      name: 'Monthly Popular',
+      name: getLocalizedText('common_sort_monthlypopular'),
       onClick: () => {
         setSearchSort('Monthly Popular');
         setSortDropDownOpen(false);
@@ -102,43 +209,18 @@ const SearchBoard: React.FC = () => {
     },
   ];
 
-  useLayoutEffect(() => {
-    const search = getParam('search');
-    const indexTab = getParam('indexTab');
-    data.indexTab = Number(indexTab);
-    setData({...data});
-
-    if (search && ['All', 'Story', 'Character', 'Content'].includes(search)) {
-      handleSearchChange(search as 'All' | 'Story' | 'Character' | 'Content');
-    }
-  }, []);
-  // Handle
-
   const handleSearchChange = (value: searchType) => {
     setSearch(value);
   };
 
-  // scroll 조건 외에 마지막 아이템이 보이면 search 호출
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastElementRef = useCallback(
-    (node: HTMLLIElement | null) => {
-      if (loading || !hasSearchResult) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) {
-          setSearchOffset(prevSearchOffset => {
-            const newSearchOffset = prevSearchOffset + 1;
-            fetchExploreData(search, searchValue, adultToggleOn, contentPage, characterPage, storyPage);
-            return newSearchOffset;
-          });
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [loading, hasSearchResult, search, searchValue, adultToggleOn, contentPage, characterPage],
-  );
+  const handleSearch = () => {
+    setHasSearchResult(true);
+    setSearchResultList(null);
+    setStoryOffset(0);
+    setCharacterOffset(0);
+    setContentOffset(0);
+    setRequestFetch(true);
+  };
 
   // Func
   const generateFilterList = (): {searchFilterType: number; searchFilterState: number}[] => {
@@ -159,17 +241,17 @@ const SearchBoard: React.FC = () => {
     return [...positiveFilterList, ...negativeFilterList];
   };
 
-  const fetchExploreData = async (
+  const fetchSearchData = async (
     searchType: searchType,
     searchValue: string,
     adultToggleOn: boolean,
-    contentPage: PaginationRequest,
-    characterPage: PaginationRequest,
-    storyPage: PaginationRequest,
+    contentOffset: number,
+    characterOffset: number,
+    storyOffset: number,
   ) => {
-    if (loading) return;
+    if (searchLoading) return;
 
-    setLoading(true);
+    setSearchLoading(true);
 
     const minLoadingTime = new Promise<void>(resolve => setTimeout(resolve, 1000));
     try {
@@ -191,22 +273,39 @@ const SearchBoard: React.FC = () => {
         // isOnlyAdults: adultToggleOn,
         // storyPage: contentPage,
         // characterPage,
-        storyOffset: storyPage.offset,
-        characterOffset: characterPage.offset,
-        contentOffset: contentPage.offset,
+        storyOffset: storyOffset,
+        characterOffset: characterOffset,
+        contentOffset: contentOffset,
         limit: searchLimit,
       });
 
       if (result.data !== undefined && result.resultCode === 0) {
         const newList = result.data?.searchExploreList || [];
         setSearchResultList(prevList => {
-          return (contentPage.offset > 0 || characterPage.offset > 0 || storyPage.offset) && prevList
-            ? [...prevList, ...newList]
-            : newList;
+          if (!newList.length) return prevList ?? [];
+
+          const existingItems = prevList ?? [];
+
+          const filteredNewList = newList.filter(newItem => {
+            return !existingItems.some(existingItem => {
+              const sameProfile = existingItem.profileId === newItem.profileId;
+              const sameType = existingItem.typeValueId === newItem.typeValueId;
+
+              return sameProfile && (sameType || !newItem.typeValueId || !existingItem.typeValueId);
+            });
+          });
+
+          return [...existingItems, ...filteredNewList];
         });
-        setContentPage({offset: result.data.contentOffset, limit: searchLimit});
-        setCharacterPage({offset: result.data.characterOffset, limit: searchLimit});
-        setStoryPage({offset: result.data.storyOffset, limit: searchLimit});
+        setContentOffset(
+          search === 'All' ? result.data.contentOffset : search === 'Content' ? searchResultList?.length || 0 : 0,
+        );
+        setCharacterOffset(
+          search === 'All' ? result.data.characterOffset : search === 'Character' ? searchResultList?.length || 0 : 0,
+        );
+        setStoryOffset(
+          search === 'All' ? result.data.storyOffset : search === 'Story' ? searchResultList?.length || 0 : 0,
+        );
 
         if (newList.length === 0) {
           setHasSearchResult(false);
@@ -220,53 +319,127 @@ const SearchBoard: React.FC = () => {
       setHasSearchResult(false);
     } finally {
       //await minLoadingTime;
-      setLoading(false);
+      setSearchLoading(false);
+    }
+  };
+
+  const fetchExploreData = async () => {
+    if (exploreLoading) return;
+
+    setExploreLoading(true);
+    try {
+      const response = await sendGetExplore(search, adultToggleOn);
+
+      if (response.resultCode === 0) {
+        if (response.bannerUrlList) {
+          setBannerList(response.bannerUrlList);
+        }
+        if (response.characterExploreList) {
+          setCharacterExploreList(response.characterExploreList);
+        }
+        if (response.contentExploreList) {
+          setContentExploreList(response.contentExploreList);
+        }
+        if (response.storyExploreList) {
+          setStoryExploreList(response.storyExploreList);
+        }
+      } else {
+        console.error(`Error: ${response.resultMessage}`);
+      }
+    } catch (error) {
+      console.error('Error fetching shorts data:', error);
+    } finally {
+      setExploreLoading(false);
+    }
+  };
+
+  const fetchFeaturedData = async (exploreItemType: ExploreItemType, page: PaginationRequest) => {
+    if (exploreLoading) return;
+
+    setExploreLoading(true);
+    try {
+      let req: FeaturedReq = {
+        languageType: getCurrentLanguage(),
+        exploreItemType: exploreItemType,
+        page: page,
+      };
+
+      const response = await sendExploreFeatured(req);
+
+      if (response.resultCode === 0) {
+        const newList = response.data?.exploreList || [];
+        switch (exploreItemType) {
+          case ExploreItemType.Content:
+            setContentExploreList(prev => (prev ? [...prev, ...newList] : newList));
+            break;
+          case ExploreItemType.Character:
+            setCharacterExploreList(prev => (prev ? [...prev, ...newList] : newList));
+            break;
+          case ExploreItemType.Story:
+            setStoryExploreList(prev => (prev ? [...prev, ...newList] : newList));
+            break;
+        }
+      } else {
+        console.error(`Error: ${response.resultMessage}`);
+      }
+    } catch (error) {
+      console.error('Error fetching shorts data:', error);
+    } finally {
+      setExploreLoading(false);
     }
   };
 
   // Hooks
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await sendGetExplore(search, adultToggleOn);
+  useLayoutEffect(() => {
+    const search = getParam('search');
+    const indexTab = getParam('indexTab');
+    data.indexTab = Number(indexTab);
+    setData({...data});
 
-        if (response.resultCode === 0) {
-          if (response.bannerUrlList) {
-            setBannerList(response.bannerUrlList);
-          }
-          if (response.characterExploreList) {
-            setCharacterExploreList(response.characterExploreList);
-          }
-          if (response.contentExploreList) {
-            setContentExploreList(response.contentExploreList);
-          }
-          if (response.storyExploreList) {
-            setStoryExploreList(response.storyExploreList);
-          }
-        } else {
-          console.error(`Error: ${response.resultMessage}`);
-        }
-      } catch (error) {
-        console.error('Error fetching shorts data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    if (search && ['All', 'Story', 'Character', 'Content'].includes(search)) {
+      handleSearchChange(search as 'All' | 'Story' | 'Character' | 'Content');
+    }
   }, []);
 
   useEffect(() => {
-    fetchExploreData(
-      search,
-      searchValue,
-      adultToggleOn,
-      {offset: 0, limit: searchLimit},
-      {offset: 0, limit: searchLimit},
-      {offset: 0, limit: searchLimit},
-    );
+    console.log('asdfasdfa');
+    fetchExploreData();
+
+    setSearchResultList([]);
+  }, []);
+
+  useEffect(() => {
+    if (searchLoading || !hasSearchResult) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        fetchSearchData(search, searchValue, adultToggleOn, contentOffset, characterOffset, storyOffset);
+        setSearchOffset(prev => {
+          const newOffset = prev + searchLimit;
+          return newOffset;
+        });
+      }
+    });
+
+    if (lastElement.current) observer.current.observe(lastElement.current);
+
+    return () => {
+      observer.current?.disconnect();
+    };
+  }, [searchResultList]);
+
+  useEffect(() => {
+    handleSearch();
   }, [search]);
+
+  useEffect(() => {
+    if (requestFetch) {
+      fetchSearchData(search, searchValue, adultToggleOn, 0, 0, 0);
+      setRequestFetch(false);
+    }
+  }, [requestFetch]);
 
   const splitterData = [
     {
@@ -282,15 +455,30 @@ const SearchBoard: React.FC = () => {
                   <SearchBoardHorizonScroll
                     title={getLocalizedText('explore001_label_001')}
                     data={characterExploreList}
+                    requestMoreData={() => {
+                      fetchFeaturedData(ExploreItemType.Character, {
+                        offset: characterExploreList.length || 0,
+                        limit: 10,
+                      });
+                    }}
                   />
                 )}
                 {storyExploreList && storyExploreList.length > 0 && (
-                  <SearchBoardHorizonScroll title={getLocalizedText('explore001_label_002')} data={storyExploreList} />
+                  <SearchBoardHorizonScroll
+                    title={getLocalizedText('explore001_label_002')}
+                    data={storyExploreList}
+                    requestMoreData={() => {
+                      fetchFeaturedData(ExploreItemType.Story, {offset: storyExploreList.length || 0, limit: 10});
+                    }}
+                  />
                 )}
                 {contentExploreList && contentExploreList.length > 0 && (
                   <SearchBoardHorizonScroll
                     title={getLocalizedText('explore001_label_003')}
                     data={contentExploreList}
+                    requestMoreData={() => {
+                      fetchFeaturedData(ExploreItemType.Content, {offset: contentExploreList.length || 0, limit: 10});
+                    }}
                   />
                 )}
                 <br />
@@ -320,8 +508,11 @@ const SearchBoard: React.FC = () => {
               setPositiveFilter={setPositiveFilters}
               negativeFilter={negativeFilters}
               setNegativeFilter={setNegativeFilters}
-              fetchExploreData={fetchExploreData}
+              fetchExploreData={fetchSearchData}
               setSearchOffset={setSearchOffset}
+              setContentOffset={setContentOffset}
+              setCharacterOffset={setCharacterOffset}
+              setStoryOffset={setStoryOffset}
             />
             <header className={styles.filterArea}>
               <div className={styles.tagArea}>
@@ -413,7 +604,7 @@ const SearchBoard: React.FC = () => {
                       <li
                         key={`explorecard-${index}`}
                         className={styles.resultItem}
-                        ref={index === searchResultList.length - 1 ? lastElementRef : null}
+                        ref={index === searchResultList.length - 1 ? lastElement : null}
                       >
                         <ExploreCard explore={item} classType="search" />
                       </li>
@@ -448,9 +639,10 @@ const SearchBoard: React.FC = () => {
           if (index == 0) {
             changeParams('search', null);
           }
+          handleSearch();
         }}
       />
-      <LoadingOverlay loading={loading} />
+      <LoadingOverlay loading={searchLoading} />
     </>
   );
 };

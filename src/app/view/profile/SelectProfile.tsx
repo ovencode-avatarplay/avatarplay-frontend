@@ -124,7 +124,9 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                     {isChannel && (
                       <div className={styles.top}>
                         <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>
-                          {isOriginal ? 'Original' : 'Fan'}
+                          {isOriginal
+                            ? getLocalizedText('common_button_original')
+                            : getLocalizedText('common_button_fan')}
                         </span>
                         <div className={styles.type}>{getLocalizedText('common_label_channel')}</div>
                       </div>
@@ -132,14 +134,16 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                     {isCharacter && (
                       <div className={styles.top}>
                         <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>
-                          {isOriginal ? 'Original' : 'Fan'}
+                          {isOriginal
+                            ? getLocalizedText('common_button_original')
+                            : getLocalizedText('common_button_fan')}
                         </span>
                         <div className={styles.type}>{getLocalizedText('common_label_character')}</div>
                       </div>
                     )}
                     {isPD && (
                       <div className={styles.top}>
-                        <div className={cx(styles.type, styles.pd)}>{getLocalizedText('common_label_my')}</div>
+                        <div className={cx(styles.type, styles.pd)}>{getLocalizedText('common_button_my')}</div>
                       </div>
                     )}
                     <div className={styles.name}>{profile.name}</div>

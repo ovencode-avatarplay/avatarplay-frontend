@@ -1,14 +1,31 @@
 import React, {useEffect} from 'react';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
+import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
 interface Props {
   isOpen: boolean; // 다이얼로그 오픈 여부
   onClose: () => void; // 다이얼로그 닫기 콜백
   onFileSelect: (file: File) => void; // 선택된 파일을 부모로 전달
+  mediaType?: MediaState;
 }
 
-const ImageUploadDialog: React.FC<Props> = ({isOpen, onClose, onFileSelect}) => {
+const ImageUploadDialog: React.FC<Props> = ({isOpen, onClose, onFileSelect, mediaType}) => {
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  const getAcceptType = (): string => {
+    switch (mediaType) {
+      case MediaState.Image:
+        return 'image/*';
+      case MediaState.Video:
+        return 'video/*';
+      case MediaState.Audio:
+        return 'audio/*';
+      default:
+        return '*/*';
+    }
+  };
+
+  const acceptType = getAcceptType();
 
   useEffect(() => {
     if (!isMobile && isOpen) {
@@ -49,6 +66,7 @@ const ImageUploadDialog: React.FC<Props> = ({isOpen, onClose, onFileSelect}) => 
   const handleChooseFile = () => {
     const input = document.createElement('input');
     input.type = 'file';
+    input.accept = acceptType;
     input.onchange = event => {
       const file = (event.target as HTMLInputElement).files?.[0];
       if (file) {

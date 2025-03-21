@@ -1,5 +1,4 @@
 import React, {RefObject, useEffect, useState} from 'react';
-import ReactDOM from 'react-dom';
 import styles from './PromptInput.module.css';
 import AutoCompleteCustomPrompt from './AutoCompleteCustomPrompt';
 import {SetStateAction} from 'jotai';
@@ -35,6 +34,7 @@ const PromptInput: React.FC<Props> = ({
   const [isEmpty, setIsEmpty] = useState(true);
 
   //#region  입력 관련
+
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     const div = e.currentTarget;
     let html = div.innerHTML.trim();
@@ -95,14 +95,8 @@ const PromptInput: React.FC<Props> = ({
     }
 
     if (e.key === 'Enter') {
-      e.preventDefault(); // 기본 엔터 동작 방지
-
-      const newLine = document.createElement('div');
-      newLine.innerHTML = '<br>';
-
-      range.insertNode(newLine);
-
-      moveCaretToEnd(newLine);
+      e.preventDefault();
+      document.execCommand('insertHTML', false, '<br><br>');
     }
 
     if (e.key === 'Backspace' && node.classList.contains('chip')) {
@@ -156,7 +150,9 @@ const PromptInput: React.FC<Props> = ({
     let html = div.innerHTML.trim();
 
     //  키워드를 바로 `chip`으로 변환
-    html += ` <span class="${styles['chip']} ${styles['chipUser']}" contenteditable="false">${Keywords[keyword]}</span> `;
+    html += ` <span class="${styles['chip']} ${styles[`chip${Keywords[keyword]}`]}" contenteditable="false">${
+      Keywords[keyword]
+    }</span> `;
 
     div.innerHTML = html;
     setstate(html);

@@ -10,8 +10,10 @@ import {getBrowserLanguage} from '@/utils/browserInfo';
 import {getLangUrlCode} from '@/configs/i18n';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 const Login = () => {
+  const {back} = useCustomRouter();
   const Header = 'Login';
   const Common = 'Common';
   const handleOAuthLogin = async (provider: 'google' | 'kakao' | 'facebook' | 'apple') => {
@@ -30,22 +32,24 @@ const Login = () => {
       <button
         className={styles.closeBtn}
         onClick={() => {
-          router.back();
+          back();
         }}
       >
         <img src={LineClose.src} className={styles.closeImg}></img>
       </button>
 
-      <button style={{display:'none'}} className={styles.buttonGuest}>{getLocalizedText('login001_btn_006')}</button>
+      <button style={{display: 'none'}} className={styles.buttonGuest}>
+        {getLocalizedText('login001_btn_006')}
+      </button>
 
-      <div style={{display:'none'}} className={styles.divider}>
+      <div style={{display: 'none'}} className={styles.divider}>
         <span>{getLocalizedText(Header, 'login001_label_001')}</span>
       </div>
 
       <div className={styles.benefitText}>
-        {getLocalizedText(Header, 'login001_desc_002')}
+        {formatText(getLocalizedText(Header, 'login001_desc_002'))}
 
-        <span className={styles.highlight}>{formatText(getLocalizedText(Header, 'login001_desc_003'), ['300'])}</span>
+        <span className={styles.highlight}>{formatText(getLocalizedText(Header, 'login001_label_003'), ['300'])}</span>
 
         {/* Join us and enjoy daily <span className={styles.highlight}>free 300 rubies</span> */}
       </div>
@@ -55,7 +59,7 @@ const Login = () => {
           <Image src={KakatalkLogo} width={24} height={24} alt="Kakao" />
           {getLocalizedText('common_button_continuewithkakaotalk')}
         </button>
-        <button style={{display:'none'}} className={styles.buttonSocial} onClick={() => handleOAuthLogin('facebook')}>
+        <button style={{display: 'none'}} className={styles.buttonSocial} onClick={() => handleOAuthLogin('facebook')}>
           <Image src={FacebookLogo} width={24} height={24} alt="Facebook" />
           {getLocalizedText('common_button_continuewithfacebook')}{' '}
         </button>

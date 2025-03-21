@@ -86,7 +86,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   essentialWarning,
   curCharacterId,
 }) => {
-  let VisibilityData = {items: ['Private', 'UnListed', 'Public']};
+  let VisibilityData = {items: ['common_dropdown_private', 'common_dropdown_unlisted', 'common_dropdown_public']};
 
   const [llmOpen, setLlmOpen] = useState(false);
 
@@ -103,14 +103,14 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   let characterIpData = {
     items: [
       {
-        label: getLocalizedText(Common, 'common_button_original'),
+        label: getLocalizedText('common_button_original'),
         data: 1,
-        monetization: getLocalizedText(Header, 'createcharacter017_label_006'),
+        monetization: getLocalizedText('common_label_004'),
       },
       {
-        label: getLocalizedText(Common, 'common_button_fan'),
+        label: getLocalizedText('common_button_fan'),
         data: 2,
-        monetization: getLocalizedText(Header, 'createcharacter017_label_006'),
+        monetization: '',
       },
     ],
   };
@@ -242,14 +242,14 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     tooltip?: string,
   ) => {
     const drawerItems: SelectDrawerItem[] = items.map((item, index) => ({
-      name: item.toString(),
+      name: getLocalizedText(item.toString()),
       onClick: () => handler(index),
     }));
 
     return (
       <div className={styles.dropDownArea}>
         <h2 className={styles.title2}>{title}</h2>
-        <CustomSelector value={items[selectedItem]} onClick={() => setIsOpen(!isOpen)} />
+        <CustomSelector value={getLocalizedText(items[selectedItem])} onClick={() => setIsOpen(!isOpen)} />
         <SelectDrawer
           isOpen={isOpen}
           items={drawerItems}
@@ -337,7 +337,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       <>
         <div className={styles.radioButtonContainer}>
           <div className={styles.radioTitleArea}>
-            <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_005')}</h2>
+            <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_002')}</h2>
             <CustomToolTip
               tooltipText={getLocalizedText(Header, 'createcharacter017_desc_016')}
               titleText={getLocalizedText(Header, 'createcharacter017_label_005')}
@@ -390,7 +390,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         <div className={styles.radioButtonContainer}>
           <div className={styles.operatorTitle}>
             <div className={styles.radioTitleArea}>
-              <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_008')}</h2>
+              <h2 className={styles.title2}>{getLocalizedText('common_label_005')}</h2>
               <CustomToolTip
                 tooltipText={getLocalizedText(Header, 'createcharacter017_desc_017')}
                 titleText={getLocalizedText(Header, 'createcharacter017_label_008')}
@@ -498,12 +498,12 @@ const CharacterCreatePolicy: React.FC<Props> = ({
       <div className={styles.radioButtonContainer}>
         <div className={styles.radioTitleArea}>
           <div className={styles.title2}>
-            {getLocalizedText(Header, 'createcharacter017_label_011')}
-            <span className={styles.titleAstrisk}>*</span>
+            {getLocalizedText('common_label_008')}
+            {/* <span className={styles.titleAstrisk}>*</span> */}
           </div>
           <CustomToolTip
-            tooltipText={getLocalizedText(Header, 'createcharacter017_desc_018')}
-            titleText={getLocalizedText(Header, 'createcharacter017_label_011')}
+            tooltipText={getLocalizedText('createcharacter017_desc_018')}
+            titleText={getLocalizedText('createcharacter017_label_011')}
           />
         </div>
         <div className={styles.verticalRadioButtonArea}>
@@ -511,7 +511,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             shapeType="circle"
             displayType="buttonText"
             value="On"
-            label={getLocalizedText(Common, 'common_button_on')}
+            label={getLocalizedText('common_button_on')}
             onSelect={() => handleSelectNSWF(true)}
             selectedValue={nsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -520,7 +520,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
             shapeType="circle"
             displayType="buttonText"
             value="Off"
-            label={getLocalizedText(Common, 'common_button_off')}
+            label={getLocalizedText('common_button_off')}
             onSelect={() => handleSelectNSWF(false)}
             selectedValue={nsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -585,10 +585,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           displayDataType={displayType.Default}
           promptValue={creatorComment}
           handlePromptChange={e => setCharacterDesc(e.target.value)}
-          placeholder={getLocalizedText(Header, 'createcharacter017_label_014')}
-          inSideHint={formatText(getLocalizedText(Header, 'createcharacter001_label_013'), [
-            creatorComment?.length.toString(),
-          ])}
+          placeholder={getLocalizedText('common_sample_094')}
+          inSideHint={formatText(getLocalizedText('createcharacter001_label_013'), [creatorComment?.length.toString()])}
         />
       </div>
     );
@@ -604,17 +602,17 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     <div className={styles.policyContainer}>
       <div className={styles.selectItemsArea1}>
         {renderDropDownSelectDrawer(
-          getLocalizedText(Header, 'createcharacter017_label_001'),
+          getLocalizedText('common_label_001'),
           VisibilityData.items,
           visibility,
           (value: string | number) => handleSelectVisibilityItem(Number(value)),
           isVisibilityOpen,
           setIsVisibilityOpen,
-          getLocalizedText(Header, 'createcharacter017_label_001'),
-          getLocalizedText(Header, 'createcharacter017_label_001'),
+          getLocalizedText('common_label_001'),
+          getLocalizedText('common_label_001'),
         )}
         {renderDropDown(
-          getLocalizedText(Header, 'createcharacter017_label_002'),
+          getLocalizedText('createcharacter017_label_001'),
           getLocalizedText(Common, llmModelData[llmModel].label),
           setLlmOpen,
         )}
@@ -629,15 +627,15 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
         <div className={styles.tagContainer}>
           {renderDropDown(
-            getLocalizedText(Header, 'createcharacter017_label_003'),
-            selectedTags.join(', '),
+            getLocalizedText(Header, 'common_label_002'),
+            selectedTags.map(tag => getLocalizedText(`common_tag_${tag}`)).join(', '),
             setTagOpen,
           )}
           {renderTag()}
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {tag}
+                {getLocalizedText(`common_tag_${tag}`)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -650,7 +648,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
         <div className={styles.tagContainer}>
           {renderDropDown(
-            getLocalizedText(Header, 'createcharacter017_label_004'),
+            getLocalizedText(Header, 'common_label_003'),
             positionCountry.map(country => getLocalizedText('Common', getLangKey(country))).join(', '),
             setIsPositionCountryOpen,
             true,

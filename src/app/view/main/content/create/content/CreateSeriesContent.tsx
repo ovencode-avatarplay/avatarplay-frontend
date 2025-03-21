@@ -400,7 +400,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
 
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
-            title="Tag"
+            title={getLocalizedText('common_label_002')}
             selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : ''}
             onClick={() => {
               setTagList(tagGroups[1].tags);
@@ -410,7 +410,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {tag}
+                {getLocalizedText(`common_tag_${tag.replace(/ /gi, '').toLowerCase()}`)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -423,11 +423,11 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
 
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
-            title="Post Country"
+            title={getLocalizedText('common_label_003')}
             selectedItem={
               positionCountryList.map(country => LanguageType[country]).length > 0
                 ? positionCountryList.map(country => LanguageType[country]).join(', ')
-                : 'Select'
+                : getLocalizedText('common_sample_079')
             }
             onClick={() => setIsPositionCountryOpen(true)}
           ></CustomDropDownSelectDrawer>
@@ -445,12 +445,12 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           </div>
         </div>
         <CustomDropDownSelectDrawer
-          title="Visibility"
+          title={getLocalizedText('common_label_001')}
           selectedItem={getVisibilityTypeKey(selectedVisibility)}
           onClick={() => setVisibilityDrawerOpen(true)}
         ></CustomDropDownSelectDrawer>
         <span className={styles.label}>
-          NSFW <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+          {getLocalizedText('common_label_008')} <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
         </span>
 
         <div className={styles.radioButtonGroup}>
@@ -458,7 +458,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
             shapeType="circle"
             displayType="buttonText"
             value="On"
-            label="On"
+            label={getLocalizedText('common_button_on')}
             onSelect={() => setIsNsfw(true)}
             selectedValue={isNsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -467,7 +467,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
             shapeType="circle"
             displayType="buttonText"
             value="Off"
-            label="Off"
+            label={getLocalizedText('common_button_off')}
             onSelect={() => setIsNsfw(false)}
             selectedValue={isNsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -475,7 +475,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         </div>
 
         <button className={styles.confirmButton} onClick={handleConfirm}>
-          Confirm
+          {getLocalizedText('common_button_submit')}
         </button>
       </div>
       <DrawerTagSelect
@@ -501,14 +501,14 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         setSelectedTagAlertOn={setSelectedGenreAlertOn}
       />
       <SelectDrawer
-        name="Filter"
+        name={getLocalizedText('createcontent001_label_007')}
         items={publishItemsCategory}
         isOpen={CategoryDrawerOpen}
         onClose={() => setCategoryDrawerOpen(false)}
         selectedIndex={selectedCategory}
       />
       <SelectDrawer
-        name="Filter"
+        name={getLocalizedText('createcontent001_label_007')}
         items={publishItemsVisibility}
         isOpen={visibilityDrawerOpen}
         onClose={() => setVisibilityDrawerOpen(false)}

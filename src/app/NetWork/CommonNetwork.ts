@@ -414,11 +414,12 @@ export enum PinTabType {
   FavoritesCharacter = 2,
   FavoritesChannel = 3,
   FavoritesContents = 4,
-  FavoritesGame = 5,
-  RecordFeed = 6,
-  RecordCharacter = 7,
-  RecordContents = 8,
-  RecordGame = 9,
+  FavoritesEpisode = 5,
+  FavoritesGame = 6,
+  RecordFeed = 7,
+  RecordCharacter = 8,
+  RecordContents = 9,
+  RecordGame = 10,
 }
 
 export const pinFix = async (payload: PinFixReq): Promise<ResponseAPI<PinFixRes>> => {
@@ -429,5 +430,25 @@ export const pinFix = async (payload: PinFixReq): Promise<ResponseAPI<PinFixRes>
   } catch (error) {
     console.error('Error pinFix:', error);
     throw new Error('Failed to pinFix. Please try again.');
+  }
+};
+
+export interface ReportReq {
+  interactionType: number; // 예: 댓글, 피드, 에피소드 등
+  typeValueId: number; // 신고 대상 ID
+  isReport: boolean; // true: 신고, false: 신고 취소
+}
+
+export interface ReportRes {
+  isReport: boolean;
+}
+export const sendReport = async (payload: ReportReq): Promise<ResponseAPI<ReportRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<ReportRes>>('/Common/report', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`ReportRes Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error reporting content:', error);
+    throw new Error('Failed to report. Please try again.');
   }
 };

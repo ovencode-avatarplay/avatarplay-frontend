@@ -28,9 +28,19 @@ interface PopupProps {
   textButton?: PopupButton;
   inputField?: InputField;
   onClose?: () => void;
+  children?: React.ReactNode;
 }
 
-const CustomPopup: React.FC<PopupProps> = ({type, title, description, buttons, textButton, inputField, onClose}) => {
+const CustomPopup: React.FC<PopupProps> = ({
+  type,
+  title,
+  description,
+  buttons,
+  textButton,
+  inputField,
+  onClose,
+  children,
+}) => {
   return (
     <div className={styles.popupOverlay} onClick={onClose}>
       <div className={styles.popupContainer} onClick={e => e.stopPropagation()}>
@@ -77,6 +87,7 @@ const CustomPopup: React.FC<PopupProps> = ({type, title, description, buttons, t
           </div>
         )}
 
+        {children && <div className={styles.childrenArea}>{children}</div>}
         {/* Buttons */}
         <div className={styles.popupButtons}>
           {buttons.map((button, idx) => (

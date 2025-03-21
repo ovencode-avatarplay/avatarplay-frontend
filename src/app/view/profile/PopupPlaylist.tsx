@@ -168,18 +168,24 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
   const sortData = () => {
     data.profileTabInfo?.[data.indexTab].sort((a, b) => {
       if (a.isPinFix === b.isPinFix) {
-        if (data.indexSort == ExploreSortType.Newest) {
+        if (data.filterCluster.indexSort == ExploreSortType.Newest) {
           return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
-        } else if (data.indexSort == ExploreSortType.Name) {
-          return a.name.localeCompare(b.name);
-        } else if (data.indexSort == ExploreSortType.Popular) {
+        } else if (data.filterCluster.indexSort == ExploreSortType.Name) {
+          const nameA = a?.name || '';
+          const nameB = b?.name || '';
+          return nameA.localeCompare(nameB);
+        } else if (data.filterCluster.indexSort == ExploreSortType.Popular) {
           return b.likeCount - a.likeCount;
         } else {
           return b.id - a.id;
         }
       }
+
+      console.log('data.filterCluster.indexSort : ', data.filterCluster.indexSort);
       return Number(b.isPinFix) - Number(a.isPinFix); // true가 먼저 오도록 정렬
     });
+
+    console.log('data.profileTabInfo : ', data.profileTabInfo);
     setData({...data});
   };
   return (
@@ -357,7 +363,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
 
       <SharePopup
         open={data.isShareOpened}
-        title={'공유하기'}
+        title={getLocalizedText('shared002_title_001')}
         url={window.location.href}
         onClose={() => {
           setData(v => ({...v, isShareOpened: false}));
@@ -415,11 +421,7 @@ const TabContentComponent = ({
       <>
         <div className={styles.emptyWrap}>
           <img src="/ui/profile/image_empty.svg" alt="" />
-          <div className={styles.text}>
-            Its pretty lonely out here.
-            <br />
-            Make a Post
-          </div>
+          <div className={styles.text}>{getLocalizedText('common_sample_091')}</div>
         </div>
       </>
     );
@@ -435,7 +437,7 @@ const TabContentComponent = ({
                 index={index}
                 feedInfo={{
                   commentCount: 0,
-                  description: 'description',
+                  description: one?.description || '',
                   disLikeCount: 0,
                   hashTag: '',
                   isBookmark: false,
@@ -555,7 +557,9 @@ const ContentSetting = ({
       },
     },
     {
-      name: tabContentMenu.isPin ? getLocalizedText('common_dropdown_unpin') : getLocalizedText('common_dropdown_pin'),
+      name: tabContentMenu.isPin
+        ? getLocalizedText('common_dropdown_unpin')
+        : getLocalizedText('common_dropdown_pintotop'),
       onClick: async () => {
         const isPin = !tabContentMenu.isPin;
         onPin(isPin, tabContentMenu.id, tabContentMenu?.index || 0);

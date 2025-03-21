@@ -23,6 +23,13 @@ export interface ProfileSimpleInfo {
   characterIP?: CharacterIP;
 }
 
+export const mapOperatorAuthorityType = {
+  None: '',
+  Owner: 'common_dropown_owner',
+  CanEdit: 'common_dropdown_canedit',
+  OnlyComments: 'common_dropdown_onlycomments',
+};
+
 export enum OperatorAuthorityType {
   None = 0,
   Owner = 1,
@@ -138,6 +145,7 @@ export interface ProfileInfo {
   characterUrlLinkKey: string;
   characterIP: CharacterIP;
   subscriberCount: number;
+  contentsCount: number;
 }
 
 export enum FollowState {
@@ -317,6 +325,7 @@ export enum ContentTabType {
   Total,
   Series = 1,
   Single = 2,
+  Episode = 3,
 }
 
 export enum CharacterProfileTabType {

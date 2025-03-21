@@ -103,28 +103,28 @@ const CharacterCreateLLM: React.FC<Props> = ({
   useEffect(() => {
     //  TODO : Localize 테이블에서 가져올 키값과 헤드 이름 변경필요
     const data1: string[] = [
-      getLocalizedText('EpisodeDescription', 'episodeDescription_label_001'),
-      getLocalizedText('EpisodeDescription', 'episodeDescription_label_002'),
-      getLocalizedText('EpisodeDescription', 'episodeDescription_label_003'),
-      getLocalizedText('EpisodeDescription', 'episodeDescription_label_004'),
+      getLocalizedText('EpisodeDescription', 'common_sample_023'),
+      getLocalizedText('EpisodeDescription', 'common_sample_024'),
+      getLocalizedText('EpisodeDescription', 'common_sample_025'),
+      getLocalizedText('EpisodeDescription', 'common_sample_026'),
     ];
     const data2: string[] = [
-      getLocalizedText('EpisodeDescription', 'scenarioIntroduction_desc_001'),
-      getLocalizedText('EpisodeDescription', 'scenarioIntroduction_desc_002'),
-      getLocalizedText('EpisodeDescription', 'scenarioIntroduction_desc_003'),
-      getLocalizedText('EpisodeDescription', 'scenarioIntroduction_desc_004'),
+      getLocalizedText('EpisodeDescription', 'common_sample_043'),
+      getLocalizedText('EpisodeDescription', 'common_sample_044'),
+      getLocalizedText('EpisodeDescription', 'common_sample_045'),
+      getLocalizedText('EpisodeDescription', 'common_sample_046'),
     ];
     const data3: string[] = [
-      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_001'),
-      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_002'),
-      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_003'),
-      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_004'),
+      getLocalizedText('EpisodeDescription', 'common_sample_031'),
+      getLocalizedText('EpisodeDescription', 'common_sample_032'),
+      getLocalizedText('EpisodeDescription', 'common_sample_033'),
+      getLocalizedText('EpisodeDescription', 'common_sample_034'),
     ];
     const data4: string[] = [
-      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_001'),
-      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_002'),
-      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_003'),
-      getLocalizedText('EpisodeDescription', 'scenarioGuide_desc_004'),
+      getLocalizedText('EpisodeDescription', 'common_sample_039'),
+      getLocalizedText('EpisodeDescription', 'common_sample_040'),
+      getLocalizedText('EpisodeDescription', 'common_sample_041'),
+      getLocalizedText('EpisodeDescription', 'common_sample_042'),
     ];
 
     setAutoWriteCharacterDesc(data1);
@@ -152,6 +152,8 @@ const CharacterCreateLLM: React.FC<Props> = ({
 
   const convertTextToHTML = (text: string): string => {
     let html = text.trim();
+
+    html = html.replace(/\n/g, '<br>');
 
     Object.keys(KEYWORDS).forEach(keyword => {
       const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
@@ -270,8 +272,8 @@ const CharacterCreateLLM: React.FC<Props> = ({
       </div>
       <div className={`${styles.inputDataBoxArea} `}>
         {renderTitle(
-          `${getLocalizedText(Header, 'createcharacter001_label_016')}*`,
-          `${getLocalizedText(Header, 'createcharacter001_desc_017')}`,
+          `${getLocalizedText(Header, 'createcharacter001_label_012')}*`,
+          `${getLocalizedText(Header, 'createcharacter001_desc_016')}`,
         )}
         <ButtonPromptInput
           promptRef={promptRefs.desc}
@@ -287,7 +289,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         />
       </div>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_018'), '')}
+        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_017'), '')}
         <ButtonPromptInput
           promptRef={promptRefs.worldScenario}
           value={replaceChipsWithKeywords(worldScenario, KEYWORDS)}
@@ -301,7 +303,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         />
       </div>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_019'), '')}
+        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_018'), '')}
         <ButtonPromptInput
           promptRef={promptRefs.greeting}
           value={replaceChipsWithKeywords(greeting, KEYWORDS)}
@@ -315,7 +317,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         />
       </div>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_021'), '')}
+        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_020'), '')}
         <ButtonPromptInput
           promptRef={promptRefs.secret}
           value={replaceChipsWithKeywords(secret, KEYWORDS)}
@@ -330,8 +332,8 @@ const CharacterCreateLLM: React.FC<Props> = ({
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(
+          getLocalizedText(Header, 'createcharacter001_label_021'),
           getLocalizedText(Header, 'createcharacter001_label_022'),
-          getLocalizedText(Header, 'createcharacter001_label_023'),
         )}
         <CustomDropDown
           items={promptItems}
@@ -350,8 +352,8 @@ const CharacterCreateLLM: React.FC<Props> = ({
       </div>
 
       {renderTitle(
+        getLocalizedText(Header, 'createcharacter001_desc_023'),
         getLocalizedText(Header, 'createcharacter001_desc_024'),
-        getLocalizedText(Header, 'createcharacter001_desc_025'),
       )}
     </div>
   );

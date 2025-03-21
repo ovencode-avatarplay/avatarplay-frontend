@@ -7,6 +7,7 @@ import CommentItem, {CommentType} from './CommentItem';
 import {BoldSend, LeftArrow} from '@ui/Icons';
 import {InputAdornment, TextField} from '@mui/material';
 import {CommentContentType, CommentInfo, sendAddComment, sendGetCommentList} from '@/app/NetWork/CommonNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface Props {
   contentId: number;
@@ -116,7 +117,7 @@ const Comment: React.FC<Props> = ({
         <div className={styles.header}>
           <div className={styles.tab}></div>
 
-          <div className={styles.title}>댓글</div>
+          <div className={styles.title}>{getLocalizedText('shared011_title_001')}</div>
         </div>
       )}
       {isReplies && (
@@ -126,7 +127,7 @@ const Comment: React.FC<Props> = ({
             <div className={styles.closeButton}>
               <img src={LeftArrow.src} onClick={() => toggleDrawer(false)} />
             </div>
-            <div className={styles.title}>답글</div>
+            <div className={styles.title}>{getLocalizedText('shared011_label_002')}</div>
             <span style={{width: '21px'}}></span>
           </div>
         </div>
@@ -179,7 +180,7 @@ const Comment: React.FC<Props> = ({
       <div className={styles.inputSection}>
         <div className={styles.inputWrapper}>
           <TextField
-            placeholder="Type your message..."
+            placeholder={getLocalizedText('common_sample_092')}
             onFocus={() => {}}
             value={chat}
             onChange={e => handleInputChange(e.target.value)}

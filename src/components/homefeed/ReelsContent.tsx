@@ -40,9 +40,11 @@ import {
   InteractionType,
   sendDisLike,
   sendLike,
+  sendReport,
 } from '@/app/NetWork/CommonNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {RecommendState} from './ReelsLayout';
+import SelectDrawer, {SelectDrawerItem} from '../create/SelectDrawer';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -73,6 +75,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isShare, setIsShare] = useState(false);
   const [isImageModal, setIsImageModal] = useState(false);
+  const [isReportModal, setIsRefortModal] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
 
@@ -130,6 +133,25 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const handleDonationclose = () => {
     setDonation(false);
   };
+  const selectReportItem: SelectDrawerItem[] = [
+    {
+      name: 'Report',
+      onClick: () => {
+        handleReport();
+      },
+    },
+  ];
+  const handleReport = async () => {
+    try {
+      const response = await sendReport({
+        interactionType: InteractionType.Feed, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
+        typeValueId: item.id, // 신고 대상 ID
+        isReport: true, // true = 신고, false = 취소
+      });
+    } catch (error) {
+      console.error('🚨 신고 API 호출 오류:', error);
+    }
+  };
 
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
@@ -152,16 +174,16 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       console.error('An error occurred while liking/unliking the feed:', error);
     }
   };
-  const handleDisLikeFeed = async (feedId: number, isLike: boolean) => {
+  const handleDisLikeFeed = async (feedId: number, isDisLike: boolean) => {
     try {
       if (isLike == true) {
         await handleLikeFeed(item.id, !isLike);
       }
-      const response = await sendDisLike(InteractionType.Feed, feedId, isLike);
+      const response = await sendDisLike(InteractionType.Feed, feedId, isDisLike);
 
       if (response.resultCode === 0) {
-        console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-        setIsDisLike(isLike);
+        console.log(`Feed ${feedId} has been ${isDisLike ? 'liked' : 'unliked'} successfully!`);
+        setIsDisLike(isDisLike);
       } else {
         console.error(`Failed to like/unlike feed: ${response.resultMessage}`);
       }
@@ -387,7 +409,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                 }}
               >
-                <span className={styles.username}>{item.title}</span>
+                <span className={styles.username}>{item.profileName}</span>
               </div>
               {recommendState == RecommendState.ForYou && item.isMyFeed == false && (
                 <button
@@ -517,7 +539,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             <div
               className={styles.noneTextButton}
               onClick={() => {
-                alert('추후 신고 기능 추가');
+                setIsRefortModal(true);
               }}
             >
               <img src={BoldMore.src} className={styles.button}></img>
@@ -579,6 +601,15 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
         type={TriggerMediaState.TriggerImage}
         mediaData={imageMediaData}
       ></ChatMediaDialog>
+      <SelectDrawer
+        isOpen={isReportModal}
+        items={selectReportItem}
+        onClose={() => {
+          setIsRefortModal(false);
+        }}
+        isCheck={false}
+        selectedIndex={0}
+      ></SelectDrawer>
     </div>
   );
 };

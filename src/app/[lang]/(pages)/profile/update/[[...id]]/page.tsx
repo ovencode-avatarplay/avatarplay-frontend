@@ -107,15 +107,15 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
     dataInterests: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: false, value: 'Dating'},
-        {isActive: false, value: 'Love'},
-        {isActive: false, value: 'Man'},
-        {isActive: false, value: 'Friends'},
-        {isActive: false, value: 'Relationships'},
-        {isActive: false, value: 'Adults'},
+        {isActive: false, value: 'common_filterinterest_dating'},
+        {isActive: false, value: 'common_filterinterest_love'},
+        {isActive: false, value: 'common_filterinterest_man'},
+        {isActive: false, value: 'common_filterinterest_friends'},
+        {isActive: false, value: 'common_filterinterest_relationships'},
+        {isActive: false, value: 'common_filterinterest_adults'},
       ],
-      drawerTitle: 'Interests',
-      drawerDescription: 'Please select your area of interests',
+      drawerTitle: getLocalizedText('profile007_label_002'),
+      drawerDescription: getLocalizedText('common_alert_050'),
     },
     dataSkills: {
       isOpenTagsDrawer: false,
@@ -127,8 +127,8 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
         {isActive: false, value: 'Create Music'},
         {isActive: false, value: 'Create Webtoon'},
       ],
-      drawerTitle: 'Skills',
-      drawerDescription: 'Please add the skills you have',
+      drawerTitle: getLocalizedText('common_alert_056'),
+      drawerDescription: getLocalizedText('common_alert_049'),
     },
 
     countValid: {
@@ -989,7 +989,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
                   onDragStart={onDragStartInner}
                 >
                   <img src={LineUpload.src} alt="" />
-                  <div className={styles.text}>Upload</div>
+                  <div className={styles.text}>{getLocalizedText('common_button_upload')}</div>
                 </div>
               )}
 
@@ -1006,7 +1006,8 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             </label>
           </section>
           <div className={styles.label}>
-            Description<span className={styles.highlight}> *</span>
+            {getLocalizedText('createcontent007_label_004')}
+            <span className={styles.highlight}> *</span>
           </div>
           <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
             <textarea
@@ -1025,10 +1026,10 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
           </div>
           <div className={styles.buttonWrap}>
             <button type="submit" className={styles.cancelBtn}>
-              {isCreate ? 'Cancel' : 'Delete'}
+              {isCreate ? getLocalizedText('common_button_cancel') : 'Delete'}
             </button>
             <button type="submit" className={styles.saveBtn}>
-              Submit
+              {getLocalizedText('common_button_submit')}
             </button>
           </div>
         </form>
@@ -1104,7 +1105,7 @@ export const DrawerSelectTags = ({title, description, tags, open, onClose, onCha
           onClose();
         }}
       >
-        Submit
+        {getLocalizedText('common_button_submit')}
       </button>
     </Drawer>
   );
@@ -1170,10 +1171,12 @@ export const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListP
                 onClose();
               }}
             />
-            <div className={styles.title}>Portfolio</div>
+            <div className={styles.title}>{getLocalizedText('profile045_title_001')}</div>
           </header>
           <main>
-            <div className={styles.countPortfolio}>Portfolio {data.portfolioList.length}</div>
+            <div className={styles.countPortfolio}>
+              {getLocalizedText('profile045_label_002')} {data.portfolioList.length}
+            </div>
             <ul className={styles.itemList}>
               {data.portfolioList.map((one, index) => {
                 const date = one?.createAt ? new Date(one?.createAt) : new Date();
@@ -1182,7 +1185,9 @@ export const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListP
                   <li className={styles.item} key={index}>
                     <img className={styles.thumbnail} src={one.imageUrl} alt="" />
                     <div className={styles.description}>{one.description}</div>
-                    <div className={styles.dateRegistration}>Date Registration {formattedDate}</div>
+                    <div className={styles.dateRegistration}>
+                      {getLocalizedText('profile034_label_003')} {formattedDate}
+                    </div>
                     {/* <div className={styles.settingWrap}>
                       <img
                         src={BoldMenuDots.src}

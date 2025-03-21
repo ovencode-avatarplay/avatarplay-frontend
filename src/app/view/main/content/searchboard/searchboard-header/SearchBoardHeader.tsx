@@ -6,7 +6,7 @@ import styles from './SearchBoardHeader.module.css';
 import CustomToggleButton from '@/components/layout/shared/CustomToggleButton';
 import {BoldFilter, BoldFilterOn} from '@ui/Icons';
 import ExploreSearchInput from './ExploreSearchInput';
-import {ExploreItem, PaginationRequest, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
+import {ExploreItem} from '@/app/NetWork/ExploreNetwork';
 import FilterSelector, {FilterDataItem} from '@/components/search/FilterSelector';
 import {searchType} from '../SearchBoard';
 import getLocalizedText from '@/utils/getLocalizedText';
@@ -27,11 +27,14 @@ interface Props {
     search: searchType,
     searchValue: string,
     adultToggleOn: boolean,
-    contentPage: PaginationRequest,
-    characterPage: PaginationRequest,
-    storyPage: PaginationRequest,
+    contentOffset: number,
+    characterOffset: number,
+    storyOffset: number,
   ) => void;
   setSearchOffset: React.Dispatch<React.SetStateAction<number>>;
+  setContentOffset: React.Dispatch<React.SetStateAction<number>>;
+  setCharacterOffset: React.Dispatch<React.SetStateAction<number>>;
+  setStoryOffset: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const SearchBoardHeader: React.FC<Props> = ({
@@ -48,6 +51,9 @@ const SearchBoardHeader: React.FC<Props> = ({
   setNegativeFilter,
   fetchExploreData,
   setSearchOffset,
+  setContentOffset,
+  setCharacterOffset,
+  setStoryOffset,
 }) => {
   const [filterDialogOn, setFilterDialogOn] = useState(false);
   const [filterItem, setFilterItem] = useState<FilterDataItem[]>([]);
@@ -62,14 +68,11 @@ const SearchBoardHeader: React.FC<Props> = ({
 
   const handleSearch = () => {
     setSearchOffset(0);
-    fetchExploreData(
-      search,
-      searchValue,
-      adultToggleOn,
-      {offset: 0, limit: 20},
-      {offset: 0, limit: 20},
-      {offset: 0, limit: 20},
-    );
+    setContentOffset(0);
+    setCharacterOffset(0);
+    setStoryOffset(0);
+
+    fetchExploreData(search, searchValue, adultToggleOn, 0, 0, 0);
   };
 
   const handleSave = (filters: {positive: FilterDataItem[]; negative: FilterDataItem[]}) => {
@@ -92,7 +95,7 @@ const SearchBoardHeader: React.FC<Props> = ({
   useEffect(() => {
     if (filterData) {
       const items = filterData.map(name => ({
-        name,
+        name: getLocalizedText(name),
         state: 'empty', // 초기 상태 설정
       }));
       setFilterItem(items);

@@ -58,12 +58,14 @@ import {
   InteractionType,
   sendDisLike,
   sendLike,
+  sendReport,
 } from '@/app/NetWork/CommonNetwork';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import DrawerDonation from '../../create/common/DrawerDonation';
 import {PopupPurchase} from '../series/ContentSeriesDetail';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
+import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 
 interface Props {
   open: boolean;
@@ -162,6 +164,28 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
   const handleTrigger = () => {
     setIsVisible(!isVisible); // 트리거 발생 시 서서히 사라짐
+  };
+
+  const [isReportModal, setIsRefortModal] = useState(false);
+  const selectReportItem: SelectDrawerItem[] = [
+    {
+      name: 'Report',
+      onClick: () => {
+        handleReport();
+      },
+    },
+  ];
+  const handleReport = async () => {
+    try {
+      if (!info) return;
+      const response = await sendReport({
+        interactionType: InteractionType.Contents, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
+        typeValueId: info?.contentId, // 신고 대상 ID
+        isReport: true, // true = 신고, false = 취소
+      });
+    } catch (error) {
+      console.error('🚨 신고 API 호출 오류:', error);
+    }
   };
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(true);
@@ -317,7 +341,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       console.error('An error occurred while liking/unliking the content:', error);
     }
   };
-  const handleDisLikeFeed = async (feedId: number, isLike: boolean) => {
+  const handleDisLikeFeed = async (feedId: number, isDisLike: boolean) => {
     try {
       if (isLike == true) {
         await handleLikeFeed(feedId, !isLike);
@@ -325,12 +349,12 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       const response = await sendDisLike(
         episodeId ? InteractionType.Episode : InteractionType.Contents,
         feedId,
-        isLike,
+        isDisLike,
       );
 
       if (response.resultCode === 0) {
-        console.log(`content ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-        setIsDisLike(isLike);
+        console.log(`content ${feedId} has been ${isDisLike ? 'liked' : 'unliked'} successfully!`);
+        setIsDisLike(isDisLike);
       } else {
         console.error(`Failed to like/unlike content: ${response.resultMessage}`);
       }
@@ -479,7 +503,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 </button>
 
                 <h1 className={styles.navTitle}>
-                  {formatText(getLocalizedText('contenthome001_label_001'), ['info?.contentId'])}
+                  {formatText(getLocalizedText('contenthome001_label_001'), ['타이틀 필요'])}
                 </h1>
               </div>
             </header>
@@ -731,7 +755,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 className={styles.noneTextButton}
                 onClick={event => {
                   event.stopPropagation();
-                  alert('추후 신고 기능 추가');
+                  setIsRefortModal(true);
                 }}
               >
                 <img src={BoldMore.src} className={styles.button}></img>
@@ -882,6 +906,15 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               }}
             ></PopupPurchase>
           )}
+          <SelectDrawer
+            isOpen={isReportModal}
+            items={selectReportItem}
+            onClose={() => {
+              setIsRefortModal(false);
+            }}
+            isCheck={false}
+            selectedIndex={1}
+          ></SelectDrawer>
         </div>
       </Box>
     </Modal>

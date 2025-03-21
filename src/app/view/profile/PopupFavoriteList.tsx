@@ -48,6 +48,7 @@ import {useInView} from 'react-intersection-observer';
 import {bookmark, InteractionType, pinFix, PinFixReq, PinTabType, RecordType} from '@/app/NetWork/CommonNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {ContentType} from '@/app/NetWork/ContentNetwork';
 
 type Props = {
   onClose: () => void;
@@ -306,7 +307,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
         onReport={async () => {
           alert('신고 추가 예정');
         }}
-        onPin={async (isPin: boolean, id: number, index: number) => {
+        onPin={async (isPin: boolean, id: number, index: number, contentType: ContentType) => {
           let pinTabType: PinTabType = PinTabType.None;
 
           if (data.indexTab == eTabFavoritesType.Feed) {
@@ -314,7 +315,11 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
           } else if (data.indexTab == eTabFavoritesType.Character) {
             pinTabType = PinTabType.FavoritesCharacter;
           } else if (data.indexTab == eTabFavoritesType.Contents) {
-            pinTabType = PinTabType.FavoritesContents;
+            if (contentType == ContentType.Episode) {
+              pinTabType = PinTabType.FavoritesEpisode;
+            } else {
+              pinTabType = PinTabType.FavoritesContents;
+            }
           } else if (data.indexTab == eTabFavoritesType.Channel) {
             pinTabType = PinTabType.FavoritesChannel;
           } else if (data.indexTab == eTabFavoritesType.Game) {
@@ -338,7 +343,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
 
       <SharePopup
         open={data.isShareOpened}
-        title={data?.tabContentMenu?.shareTitle || '공유하기'}
+        title={data?.tabContentMenu?.shareTitle || getLocalizedText('shared002_title_001')}
         url={data?.tabContentMenu?.shareUrl || window.location.href}
         onClose={() => {
           setData(v => ({...v, isShareOpened: false}));
@@ -395,11 +400,7 @@ const TabContentComponent = ({
       <>
         <div className={styles.emptyWrap}>
           <img src="/ui/profile/image_empty.svg" alt="" />
-          <div className={styles.text}>
-            Its pretty lonely out here.
-            <br />
-            Make a Post
-          </div>
+          <div className={styles.text}>{getLocalizedText('common_sample_091')}</div>
         </div>
       </>
     );
@@ -415,7 +416,7 @@ const TabContentComponent = ({
                 index={index}
                 feedInfo={{
                   commentCount: 0,
-                  description: one.description,
+                  description: one?.description || '',
                   disLikeCount: 0,
                   hashTag: '',
                   isBookmark: false,
@@ -510,17 +511,17 @@ type ContentSettingType = {
   onReport: () => void;
   onShare: () => void;
   onUnFavorite: () => void;
-  onPin: (isPin: boolean, id: number, index: number) => void;
+  onPin: (isPin: boolean, id: number, index: number, contentType: ContentType) => void;
 };
 const ContentSetting = ({
   isMine = false,
   onClose = () => {},
-  tabContentMenu = {id: 0, isPin: false, isSettingOpen: false},
+  tabContentMenu = {id: 0, isPin: false, isSettingOpen: false, contentType: ContentType.Episode},
   refreshTabAll = () => {},
   onReport = () => {},
   onUnFavorite = () => {},
   onShare = () => {},
-  onPin = (isPin: boolean, id: number, index: number) => {},
+  onPin = (isPin: boolean, id: number, index: number, contentType: ContentType) => {},
 }: ContentSettingType) => {
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItems: SelectDrawerItem[] = [
@@ -531,10 +532,12 @@ const ContentSetting = ({
       },
     },
     {
-      name: tabContentMenu.isPin ? getLocalizedText('common_dropdown_unpin') : getLocalizedText('common_dropdown_pin'),
+      name: tabContentMenu.isPin
+        ? getLocalizedText('common_dropdown_unpin')
+        : getLocalizedText('common_dropdown_pintotop'),
       onClick: async () => {
         const isPin = !tabContentMenu.isPin;
-        onPin(isPin, tabContentMenu.id, tabContentMenu?.index || 0);
+        onPin(isPin, tabContentMenu.id, tabContentMenu?.index || 0, tabContentMenu?.contentType || ContentType.Episode);
       },
     },
     {

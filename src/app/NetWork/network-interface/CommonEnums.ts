@@ -68,6 +68,12 @@ export enum LLMModel {
   Claude_3_Haiku = 8,
 }
 
+export const mapVisibilityType = {
+  Private: 'common_dropdown_private',
+  Unlisted: 'common_dropdown_unlisted',
+  Public: 'common_dropdown_public',
+};
+
 export enum VisibilityType {
   Private = 0,
   Unlisted = 1,

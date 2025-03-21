@@ -184,6 +184,7 @@ export enum eContentFilterType {
   Total,
   Series = 1,
   Single = 2,
+  Episode = 3,
 }
 
 export enum eSharedFilterType {
@@ -202,6 +203,7 @@ export type TabContentMenuType = {
   index?: number;
   shareUrl?: string;
   shareTitle?: string;
+  contentType?: ContentType;
 };
 
 type DataProfileType = {
@@ -246,6 +248,10 @@ type DataProfileType = {
   dataToast: {
     isOpen: boolean;
     message: string;
+  };
+
+  dataOtherProfileMenu: {
+    isOpen: boolean;
   };
 
   refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
@@ -340,6 +346,10 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     dataToast: {
       isOpen: false,
       message: '',
+    },
+
+    dataOtherProfileMenu: {
+      isOpen: false,
     },
 
     refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
@@ -724,7 +734,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   const onCopyToClipboard = () => {
     copyCurrentUrlToClipboard(pathname, searchParams);
     data.dataToast.isOpen = true;
-    data.dataToast.message = 'The link has been successfully copied';
+    data.dataToast.message = getLocalizedText('common_alert_091');
     setData({...data});
   };
 
@@ -788,7 +798,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                     data.profileInfo?.profileInfo?.characterIP == CharacterIP.Original ? styles.original : styles.fan,
                   )}
                 >
-                  {data.profileInfo?.profileInfo?.characterIP == CharacterIP.Original ? 'Original' : 'Fan'}
+                  {data.profileInfo?.profileInfo?.characterIP == CharacterIP.Original
+                    ? getLocalizedText('common_button_original')
+                    : getLocalizedText('common_button_fan')}
                 </div>
               )}
               <div className={styles.profileName}>{data.profileInfo?.profileInfo.name}</div>
@@ -821,9 +833,26 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           )}
 
           {!isMine && (
-            <img className={cx(styles.icon, styles.iconNotification)} src="/ui/profile/icon_notification.svg" alt="" />
+            <img
+              className={cx(styles.icon, styles.iconNotification)}
+              src="/ui/profile/icon_notification.svg"
+              alt=""
+              onClick={() => {
+                alert('DM기능 6월 추가 예정');
+              }}
+            />
           )}
-          {!isMine && <img className={cx(styles.icon, styles.iconSetting)} src={BoldMenuDots.src} alt="" />}
+          {!isMine && (
+            <img
+              className={cx(styles.icon, styles.iconSetting)}
+              src={BoldMenuDots.src}
+              alt=""
+              onClick={() => {
+                data.dataOtherProfileMenu.isOpen = true;
+                setData({...data});
+              }}
+            />
+          )}
         </div>
       </section>
       <section className={cx(styles.main, !isPath && styles.mainNoPath)}>
@@ -840,12 +869,12 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           </div>
 
           <div className={styles.itemStatistic}>
-            <div className={styles.count}>{data.profileInfo?.profileInfo.postCount}</div>
-            <div className={styles.label}>{getLocalizedText('Common', 'common_label_contents')}</div>
+            <div className={styles.count}>{data.profileInfo?.profileInfo.contentsCount}</div>
+            <div className={styles.label}>{getLocalizedText('Common', 'profile001_label_001')}</div>
           </div>
           <div className={styles.itemStatistic}>
             <div className={styles.count}>{data.profileInfo?.profileInfo.followerCount}</div>
-            <div className={styles.label}>{getLocalizedText('Common', 'common_label_followers')}</div>
+            <div className={styles.label}>{getLocalizedText('Common', 'profile001_label_002')}</div>
           </div>
           <div className={styles.itemStatistic}>
             <div className={styles.count}>
@@ -853,8 +882,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             </div>
             <div className={styles.label}>
               {isPD
-                ? getLocalizedText('Common', 'home001_label_002')
-                : getLocalizedText('Common', 'common_label_subscribers')}
+                ? getLocalizedText('Common', 'profile001_label_003')
+                : getLocalizedText('Common', 'profile034_label_001')}
             </div>
           </div>
         </div>
@@ -882,7 +911,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               <Link
                 href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileUrlLinkKey + '?from=""')}
               >
-                <span className={styles.label}>Manager: {data.profileInfo?.profileInfo?.pdEmail}</span>
+                <span className={styles.label}>
+                  {getLocalizedText('shared015_label_001')}: {data.profileInfo?.profileInfo?.pdEmail}
+                </span>
               </Link>
             </div>
           )}
@@ -891,7 +922,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               <Link
                 href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileUrlLinkKey + '?from=""')}
               >
-                <span className={styles.label}>Owner: {data.profileInfo?.profileInfo?.pdEmail}</span>
+                <span className={styles.label}>
+                  {getLocalizedText('shared015_label_001')}: {data.profileInfo?.profileInfo?.pdEmail}
+                </span>
               </Link>
             </div>
           )}
@@ -1011,7 +1044,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               </button>
               {isOtherCharacter && (
                 <button className={styles.chat}>
-                  <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>Chat</Link>
+                  <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>
+                    {getLocalizedText('common_button_chat')}
+                  </Link>
                 </button>
               )}
             </div>
@@ -1174,6 +1209,22 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           sponsoredName={data.profileInfo?.profileInfo?.name || ''}
         />
       )}
+      <SelectDrawer
+        isOpen={data.dataOtherProfileMenu.isOpen}
+        onClose={() => {
+          data.dataOtherProfileMenu.isOpen = false;
+          setData({...data});
+        }}
+        items={[
+          {
+            name: getLocalizedText('common_dropdown_report'),
+            onClick: () => {
+              alert('신고하기 추가 예정');
+            },
+          },
+        ]}
+        selectedIndex={-1}
+      />
 
       <>
         <Backdrop
@@ -1199,7 +1250,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           }}
           sx={{
             bottom: '20px',
-            width: 'calc(100% - 32px)', // 전체 너비
+            width: 'calc(var(--full-width-percent) - 32px)', // 전체 너비
             zIndex: 999,
             '& .MuiPaper-root': {
               height: '47px',
@@ -1770,6 +1821,17 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             >
               <div className={styles.text}>{getLocalizedText('common_filter_single')}</div>
             </div>
+            {isFavorites && (
+              <div
+                className={cx(
+                  styles.textWrap,
+                  filterCluster.indexFilterContent == eContentFilterType.Episode && styles.active,
+                )}
+                data-filter={eContentFilterType.Episode}
+              >
+                <div className={styles.text}>{getLocalizedText('common_filter_episode')}</div>
+              </div>
+            )}
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
@@ -1826,7 +1888,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Original}
             >
-              <div className={styles.text}>{getLocalizedText('common_button_original')}</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_original')}</div>
             </div>
             <div
               className={cx(
@@ -1835,7 +1897,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Fan}
             >
-              <div className={styles.text}>{getLocalizedText('common_button_fan')}</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_fan')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -1891,7 +1953,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Original}
             >
-              <div className={styles.text}>{getLocalizedText('common_button_original')}</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_original')}</div>
             </div>
             <div
               className={cx(
@@ -1901,7 +1963,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Fan}
             >
-              <div className={styles.text}>{getLocalizedText('common_button_fan')}</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_fan')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -2382,7 +2444,7 @@ export const TabContentComponentWrap = ({
       />
       <SharePopup
         open={data.isShareOpened}
-        title={data?.tabContentMenu?.shareTitle || '공유하기'}
+        title={data?.tabContentMenu?.shareTitle || getLocalizedText('shared002_title_001')}
         url={data.tabContentMenu?.shareUrl || window.location.href}
         onClose={() => {
           setData(v => ({...v, isShareOpened: false}));
@@ -2701,7 +2763,12 @@ const TabContentComponent = ({
             <div
               className={styles.likeWrap}
               onClick={async () => {
+                const isLike = !channelInfo?.isLike;
                 await sendLike(InteractionType.Channel, profileId, !channelInfo?.isLike);
+                if (isLike && channelInfo?.isDisLike) {
+                  await sendDisLike(InteractionType.Channel, profileId, false);
+                }
+
                 onRefreshTab(false);
               }}
             >
@@ -2713,7 +2780,12 @@ const TabContentComponent = ({
               alt=""
               className={cx(styles.dislike, channelInfo?.isDisLike && styles.active)}
               onClick={async () => {
-                await sendDisLike(InteractionType.Channel, profileId, !channelInfo?.isDisLike);
+                const isDisLike = !channelInfo?.isDisLike;
+                await sendDisLike(InteractionType.Channel, profileId, isDisLike);
+                if (isDisLike && channelInfo?.isLike) {
+                  await sendLike(InteractionType.Channel, profileId, false);
+                }
+
                 onRefreshTab(false);
               }}
             />
@@ -2754,7 +2826,7 @@ const TabContentComponent = ({
         {channelInfo?.memberProfileIdList?.length != 0 && (
           <section className={styles.memberSection}>
             <div className={styles.label}>
-              {channelInfo?.memberProfileIdList?.length} {getLocalizedText('CreateChannel002_label_001')}
+              {channelInfo?.memberProfileIdList?.length} {getLocalizedText('createchannel002_label_001')}
             </div>
             <Swiper
               className={styles.recruitList}
@@ -2783,7 +2855,7 @@ const TabContentComponent = ({
         )}
         {!!channelInfo?.description && (
           <section className={styles.descriptionSection}>
-            <div className={styles.label}>{getLocalizedText('CreateChannel001_label_007')}</div>
+            <div className={styles.label}>{getLocalizedText('createchannel001_label_007')}</div>
             <div className={styles.value}>{channelInfo?.description}</div>
           </section>
         )}
@@ -2844,25 +2916,23 @@ export const ChannelComponent = ({
               <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
             )}
           </div>
-          <div className={styles.right}>
-            <img
-              src={BoldMenuDots.src}
-              alt=""
-              className={styles.iconSetting}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                const dataContextMenu = {
-                  id: itemInfo.id,
-                  index: index,
-                  isPin: itemInfo?.isPinFix || false,
-                  isSettingOpen: true,
-                  shareUrl: window.location.origin + urlLinkThumbnail,
-                  shareName: itemInfo?.name,
-                };
-                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-              }}
-            />
+          <div
+            className={styles.right}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              const dataContextMenu = {
+                id: itemInfo.id,
+                index: index,
+                isPin: itemInfo?.isPinFix || false,
+                isSettingOpen: true,
+                shareUrl: window.location.origin + urlLinkThumbnail,
+                shareName: itemInfo?.name,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          >
+            <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
           </div>
         </div>
       </li>
@@ -2930,30 +3000,29 @@ export const ContentComponent = ({
           <div className={styles.left}>
             <div className={styles.title}>{itemInfo?.name}</div>
           </div>
-          <div className={styles.right}>
-            <img
-              src={BoldMenuDots.src}
-              alt=""
-              className={styles.iconSetting}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
+          <div
+            className={styles.right}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
 
-                const isSingle = itemInfo?.contentType == ContentType.Single;
+              const isSingle = itemInfo?.contentType == ContentType.Single;
 
-                const dataContextMenu = {
-                  id: itemInfo.id,
-                  index: index,
-                  urlLinkKey: itemInfo.urlLinkKey,
-                  isPin: itemInfo?.isPinFix || false,
-                  isSettingOpen: true,
-                  isSingle: isSingle,
-                  shareUrl: window.location.origin + urlLinkThumbnail,
-                  shareName: itemInfo?.name,
-                };
-                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-              }}
-            />
+              const dataContextMenu = {
+                id: itemInfo.id,
+                index: index,
+                urlLinkKey: itemInfo.urlLinkKey,
+                isPin: itemInfo?.isPinFix || false,
+                isSettingOpen: true,
+                isSingle: isSingle,
+                shareUrl: window.location.origin + urlLinkThumbnail,
+                shareName: itemInfo?.name,
+                contentType: itemInfo?.contentType,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          >
+            <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
           </div>
         </div>
       </li>
@@ -3019,26 +3088,24 @@ export const CharacterComponent = ({
               <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
             )}
           </div>
-          <div className={styles.right}>
-            <img
-              src={BoldMenuDots.src}
-              alt=""
-              className={styles.iconSetting}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
+          <div
+            className={styles.right}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
 
-                const dataContextMenu = {
-                  id: itemInfo.id,
-                  index: index,
-                  isPin: itemInfo?.isPinFix || false,
-                  isSettingOpen: true,
-                  shareUrl: window.location.origin + urlLinkThumbnail,
-                  shareName: itemInfo?.name,
-                };
-                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-              }}
-            />
+              const dataContextMenu = {
+                id: itemInfo.id,
+                index: index,
+                isPin: itemInfo?.isPinFix || false,
+                isSettingOpen: true,
+                shareUrl: window.location.origin + urlLinkThumbnail,
+                shareName: itemInfo?.name,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          >
+            <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
           </div>
         </div>
       </li>
@@ -3099,26 +3166,24 @@ export const FeedComponent = ({isMine, index, urlLinkThumbnail, feedInfo, onOpen
             <div className={styles.name}>{feedInfo?.title}</div>
             <div className={(!!feedInfo?.title || '') && styles.name}>{feedInfo?.description}</div>
           </div>
-          <div className={styles.right}>
-            <img
-              src={BoldMenuDots.src}
-              alt=""
-              className={styles.iconSetting}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                const dataContextMenu = {
-                  id: feedInfo.id,
-                  index: index,
-                  urlLinkKey: feedInfo.urlLinkKey,
-                  isPin: feedInfo?.isPinFix || false,
-                  isSettingOpen: true,
-                  shareUrl: window.location.origin + urlLinkThumbnail,
-                  shareName: feedInfo?.title,
-                };
-                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-              }}
-            />
+          <div
+            className={styles.right}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              const dataContextMenu = {
+                id: feedInfo.id,
+                index: index,
+                urlLinkKey: feedInfo.urlLinkKey,
+                isPin: feedInfo?.isPinFix || false,
+                isSettingOpen: true,
+                shareUrl: window.location.origin + urlLinkThumbnail,
+                shareName: feedInfo?.title,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          >
+            <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
           </div>
         </div>
       </li>

@@ -11,6 +11,7 @@ import {
   subscribeProfile,
   SubscriptionType,
 } from '@/app/NetWork/ProfileNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 type Props = {
   id: number;
@@ -69,7 +70,9 @@ const PopupSubscription = ({id, onClose, onComplete}: Props) => {
   const amount = data.subscriptionInfo?.paymentAmount;
   const benefit = data.subscriptionInfo?.benefit;
   const isFree = amount == 0;
-  const priceStr = isFree ? 'free' : `${unit}${amount} / month`;
+  const priceStr = isFree
+    ? getLocalizedText('common_label_free')
+    : `${unit}${amount} ` + getLocalizedText('shared013_label_003');
 
   return (
     <Dialog open={true} onClose={onClose} fullScreen>
@@ -83,7 +86,7 @@ const PopupSubscription = ({id, onClose, onComplete}: Props) => {
               onClose();
             }}
           />
-          <h1 className={styles.title}>Subscription</h1>
+          <h1 className={styles.title}>{getLocalizedText('profile011_title_001')}</h1>
         </header>
         <main className={styles.main}>
           <div
@@ -102,12 +105,12 @@ const PopupSubscription = ({id, onClose, onComplete}: Props) => {
             }}
           >
             <div className={cx(styles.tab, data.indexTab == 0 && styles.active)} data-tab={0}>
-              Charactder Contents
+              {getLocalizedText('shared013_label_001')}
             </div>
             <div className={cx(styles.tab, data.indexTab == 1 && styles.active)} data-tab={1}>
-              Character IP
+              {getLocalizedText('shared013_label_002')}
             </div>
-            <div className={styles.shop}>Shop</div>
+            <div className={styles.shop}>{getLocalizedText('common_button_shop')}</div>
           </div>
 
           <section className={styles.contentSection}>
@@ -115,7 +118,7 @@ const PopupSubscription = ({id, onClose, onComplete}: Props) => {
             {benefit != '' && <div className={styles.description}>{benefit}</div>}
           </section>
           <button className={styles.btnSubscription} onClick={onSubscribe}>
-            Subscribe Now
+            {getLocalizedText('common_button_subscribenow')}
           </button>
         </main>
       </div>

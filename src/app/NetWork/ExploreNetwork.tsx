@@ -2,7 +2,7 @@
 
 import api, {ResponseAPI} from './ApiInstance';
 import {getCurrentLanguage} from '@/utils/UrlMove';
-import {MediaState} from './ProfileNetwork';
+import {MediaState, PaginationRequest} from './ProfileNetwork';
 import {ContentType} from './ContentNetwork';
 
 export interface BannerUrlList {
@@ -87,11 +87,6 @@ export const sendGetExplore = async (
   }
 };
 
-export interface PaginationRequest {
-  offset: number;
-  limit: number;
-}
-
 interface filterList {
   searchFilterType: number;
   searchFilterState: number; // 0 : Positive,  1 : Negative
@@ -145,7 +140,19 @@ export const sendSearchExplore = async (payload: SearchReq): Promise<ResponseAPI
     // POST 요청을 통해 Explore/search API 호출
     const response = await api.post<ResponseAPI<SearchRes>>('/Explore/search', payload);
 
-    return response.data;
+    if (response && response.data.resultCode === 0) return response.data;
+    else {
+      return {
+        resultCode: response.data.resultCode,
+        resultMessage: response.data.resultMessage,
+        data: {
+          searchExploreList: [],
+          storyOffset: 0,
+          characterOffset: 0,
+          contentOffset: 0,
+        },
+      };
+    }
   } catch (error) {
     console.error('Failed to fetch explore search info:', error);
 
@@ -157,6 +164,44 @@ export const sendSearchExplore = async (payload: SearchReq): Promise<ResponseAPI
         storyOffset: 0,
         characterOffset: 0,
         contentOffset: 0,
+      },
+    };
+  }
+};
+
+interface FeaturedRes {
+  exploreList: ExploreItem[];
+}
+
+export interface FeaturedReq {
+  languageType: string;
+  exploreItemType: ExploreItemType;
+  page: PaginationRequest;
+}
+
+export const sendExploreFeatured = async (payload: FeaturedReq): Promise<ResponseAPI<FeaturedRes>> => {
+  try {
+    // POST 요청을 통해 Explore/search API 호출
+    const response = await api.post<ResponseAPI<FeaturedRes>>('/Explore/featured', payload);
+
+    if (response && response.data.resultCode === 0) return response.data;
+    else {
+      return {
+        resultCode: response.data.resultCode,
+        resultMessage: response.data.resultMessage,
+        data: {
+          exploreList: [],
+        },
+      };
+    }
+  } catch (error) {
+    console.error('Failed to fetch explore search info:', error);
+
+    return {
+      resultCode: -1,
+      resultMessage: 'Failed to fetch explore search info',
+      data: {
+        exploreList: [],
       },
     };
   }

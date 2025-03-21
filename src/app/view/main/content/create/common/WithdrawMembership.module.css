@@ -1,0 +1,79 @@
+.modalBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 402px;
+    
+    background: #FFFFFF;
+    border-radius: 24px;
+    box-shadow: 0px 4px 24px rgba(0,0,0,0.1);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    outline: none;
+  }
+  
+  .title {
+    font-family: 'Lato', sans-serif;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin: 0;
+    color: #000000;
+  }
+  
+  .content {
+    width: 100%;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    color: #80868B;
+  }
+  
+  .subtitle {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    gap: 8px;
+    color: #121414;
+    margin-bottom: 16px;
+  }
+  
+  .infoIcon {
+    filter: brightness(0) saturate(100%) invert(41%) sepia(28%) saturate(1338%) hue-rotate(314deg) brightness(111%) contrast(95%);
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .list {
+    padding-left: 20px;
+    line-height: 1.4;
+    margin: 0;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+  }
+  
+  .reconsiderBtn {
+    flex: 1;
+    background: #F1F3F4 !important;
+    color: #80868B !important;
+    text-transform: none !important;
+    border-radius: 10px !important;
+  }
+  
+  .withdrawBtn {
+    flex: 1;
+    background: #2C3131 !important;
+    color: #FFFFFF !important;
+    text-transform: none !important;
+    border-radius: 10px !important;
+  }
+  

@@ -11,6 +11,8 @@ import {
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import SharePopup from '@/components/layout/shared/SharePopup';
+import useCustomRouter from '@/utils/useCustomRouter';
+import getLocalizedText from '@/utils/getLocalizedText';
 export const mockSingle = {
   title: 'The White King',
   genres: ['Comedy', 'Love', 'Drama'],
@@ -51,6 +53,7 @@ interface SingleDetailProps {
   id: string;
 }
 const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
+  const {back} = useCustomRouter();
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedTab, setSelectedTab] = useState<'About'>('About');
   const [singleInfo, setSingleInfo] = useState<ContentInfo>();
@@ -116,7 +119,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
             <button
               className={styles.iconButton}
               onClick={() => {
-                router.back();
+                back();
               }}
             >
               <img src={BoldArrowLeft.src} alt="Back" />
@@ -146,7 +149,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
               className={`${styles.tabButton} ${selectedTab === 'About' ? styles.activeTab : ''}`}
               onClick={() => setSelectedTab('About')}
             >
-              About
+              {getLocalizedText('createcontent005_label_002')}
             </button>
             {/* 이동하는 밑줄 */}
             <div className={styles.tabUnderline} style={{left: '0px'}} />

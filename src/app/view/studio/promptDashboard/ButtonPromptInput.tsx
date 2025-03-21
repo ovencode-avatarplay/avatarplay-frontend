@@ -34,6 +34,9 @@ const ButtonPromptInput: React.FC<Props> = ({
 }) => {
   const convertTextToHTML = (text: string): string => {
     let html = text.trim();
+
+    html = html.replace(/\n/g, '<br>');
+
     Object.keys(Keywords).forEach(keyword => {
       const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
       html = html.replace(
