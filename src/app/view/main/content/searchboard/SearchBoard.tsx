@@ -120,25 +120,30 @@ const SearchBoard: React.FC = () => {
 
   // scroll 조건 외에 마지막 아이템이 보이면 search 호출
   const observer = useRef<IntersectionObserver | null>(null);
-  const lastElementRef = useCallback(
-    (node: HTMLLIElement | null) => {
-      if (loading || !hasSearchResult) return;
-      if (observer.current) observer.current.disconnect();
 
-      observer.current = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) {
-          setSearchOffset(prevSearchOffset => {
-            const newSearchOffset = prevSearchOffset + 1;
-            fetchExploreData(search, searchValue, adultToggleOn, contentPage, characterPage, storyPage);
-            return newSearchOffset;
-          });
-        }
-      });
+  const lastElement = useRef<HTMLLIElement | null>(null);
 
-      if (node) observer.current.observe(node);
-    },
-    [loading, hasSearchResult, search, searchValue, adultToggleOn, contentPage, characterPage],
-  );
+  useEffect(() => {
+    if (loading || !hasSearchResult) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        setSearchOffset(prev => {
+          const newOffset = prev + 1;
+          fetchExploreData(search, searchValue, adultToggleOn, contentPage, characterPage, storyPage);
+          return newOffset;
+        });
+      }
+    });
+
+    if (lastElement.current) observer.current.observe(lastElement.current);
+
+    return () => {
+      observer.current?.disconnect();
+    };
+  }, [searchResultList, search]);
 
   // Func
   const generateFilterList = (): {searchFilterType: number; searchFilterState: number}[] => {
@@ -200,13 +205,24 @@ const SearchBoard: React.FC = () => {
       if (result.data !== undefined && result.resultCode === 0) {
         const newList = result.data?.searchExploreList || [];
         setSearchResultList(prevList => {
-          return (contentPage.offset > 0 || characterPage.offset > 0 || storyPage.offset) && prevList
+          return (contentPage.offset > 0 || characterPage.offset > 0 || storyPage.offset > 0) && prevList
             ? [...prevList, ...newList]
             : newList;
         });
-        setContentPage({offset: result.data.contentOffset, limit: searchLimit});
-        setCharacterPage({offset: result.data.characterOffset, limit: searchLimit});
-        setStoryPage({offset: result.data.storyOffset, limit: searchLimit});
+        setContentPage({
+          offset:
+            search === 'All' ? result.data.contentOffset : search === 'Content' ? searchResultList?.length || 0 : 0,
+          limit: searchLimit,
+        });
+        setCharacterPage({
+          offset:
+            search === 'All' ? result.data.characterOffset : search === 'Character' ? searchResultList?.length || 0 : 0,
+          limit: searchLimit,
+        });
+        setStoryPage({
+          offset: search === 'All' ? result.data.storyOffset : search === 'Story' ? searchResultList?.length || 0 : 0,
+          limit: searchLimit,
+        });
 
         if (newList.length === 0) {
           setHasSearchResult(false);
@@ -258,6 +274,7 @@ const SearchBoard: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    setHasSearchResult(true);
     fetchExploreData(
       search,
       searchValue,
@@ -413,7 +430,7 @@ const SearchBoard: React.FC = () => {
                       <li
                         key={`explorecard-${index}`}
                         className={styles.resultItem}
-                        ref={index === searchResultList.length - 1 ? lastElementRef : null}
+                        ref={index === searchResultList.length - 1 ? lastElement : null}
                       >
                         <ExploreCard explore={item} classType="search" />
                       </li>
