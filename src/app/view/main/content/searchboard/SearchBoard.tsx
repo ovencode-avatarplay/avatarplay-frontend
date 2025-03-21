@@ -2,7 +2,15 @@
 
 import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 
-import {BannerUrlList, ExploreItem, sendGetExplore, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
+import {
+  BannerUrlList,
+  ExploreItem,
+  ExploreItemType,
+  FeaturedReq,
+  sendExploreFeatured,
+  sendGetExplore,
+  sendSearchExplore,
+} from '@/app/NetWork/ExploreNetwork';
 
 import styles from './SearchBoard.module.css';
 
@@ -20,6 +28,7 @@ import {getCurrentLanguage} from '@/utils/UrlMove';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import {PaginationRequest} from '@/app/NetWork/ProfileNetwork';
 
 export type searchType = 'All' | 'Story' | 'Character' | 'Content';
 
@@ -107,6 +116,15 @@ const SearchBoard: React.FC = () => {
 
   const handleSearchChange = (value: searchType) => {
     setSearch(value);
+  };
+
+  const handleSearch = () => {
+    setHasSearchResult(true);
+    setSearchResultList(null);
+    setStoryOffset(0);
+    setCharacterOffset(0);
+    setContentOffset(0);
+    setRequestFetch(true);
   };
 
   // Func
@@ -240,6 +258,42 @@ const SearchBoard: React.FC = () => {
     }
   };
 
+  const fetchFeaturedData = async (exploreItemType: ExploreItemType, page: PaginationRequest) => {
+    if (exploreLoading) return;
+
+    setExploreLoading(true);
+    try {
+      let req: FeaturedReq = {
+        languageType: getCurrentLanguage(),
+        exploreItemType: exploreItemType,
+        page: page,
+      };
+
+      const response = await sendExploreFeatured(req);
+
+      if (response.resultCode === 0) {
+        const newList = response.data?.exploreList || [];
+        switch (exploreItemType) {
+          case ExploreItemType.Content:
+            setContentExploreList(prev => (prev ? [...prev, ...newList] : newList));
+            break;
+          case ExploreItemType.Character:
+            setCharacterExploreList(prev => (prev ? [...prev, ...newList] : newList));
+            break;
+          case ExploreItemType.Story:
+            setStoryExploreList(prev => (prev ? [...prev, ...newList] : newList));
+            break;
+        }
+      } else {
+        console.error(`Error: ${response.resultMessage}`);
+      }
+    } catch (error) {
+      console.error('Error fetching shorts data:', error);
+    } finally {
+      setExploreLoading(false);
+    }
+  };
+
   // Hooks
   useLayoutEffect(() => {
     const search = getParam('search');
@@ -282,12 +336,7 @@ const SearchBoard: React.FC = () => {
   }, [searchResultList]);
 
   useEffect(() => {
-    setHasSearchResult(true);
-    setSearchResultList(null);
-    setStoryOffset(0);
-    setCharacterOffset(0);
-    setContentOffset(0);
-    setRequestFetch(true);
+    handleSearch();
   }, [search]);
 
   useEffect(() => {
@@ -311,15 +360,30 @@ const SearchBoard: React.FC = () => {
                   <SearchBoardHorizonScroll
                     title={getLocalizedText('explore001_label_001')}
                     data={characterExploreList}
+                    requestMoreData={() => {
+                      fetchFeaturedData(ExploreItemType.Character, {
+                        offset: characterExploreList.length || 0,
+                        limit: 10,
+                      });
+                    }}
                   />
                 )}
                 {storyExploreList && storyExploreList.length > 0 && (
-                  <SearchBoardHorizonScroll title={getLocalizedText('explore001_label_002')} data={storyExploreList} />
+                  <SearchBoardHorizonScroll
+                    title={getLocalizedText('explore001_label_002')}
+                    data={storyExploreList}
+                    requestMoreData={() => {
+                      fetchFeaturedData(ExploreItemType.Story, {offset: storyExploreList.length || 0, limit: 10});
+                    }}
+                  />
                 )}
                 {contentExploreList && contentExploreList.length > 0 && (
                   <SearchBoardHorizonScroll
                     title={getLocalizedText('explore001_label_003')}
                     data={contentExploreList}
+                    requestMoreData={() => {
+                      fetchFeaturedData(ExploreItemType.Content, {offset: contentExploreList.length || 0, limit: 10});
+                    }}
                   />
                 )}
                 <br />
@@ -480,6 +544,7 @@ const SearchBoard: React.FC = () => {
           if (index == 0) {
             changeParams('search', null);
           }
+          handleSearch();
         }}
       />
       <LoadingOverlay loading={searchLoading} />
