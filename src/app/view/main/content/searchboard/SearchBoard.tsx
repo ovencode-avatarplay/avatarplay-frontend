@@ -27,7 +27,8 @@ const SearchBoard: React.FC = () => {
   const [data, setData] = useState({
     indexTab: 0,
   });
-  const [loading, setLoading] = useState(false);
+  const [exploreLoading, setExploreLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   // Featured
   const [bannerList, setBannerList] = useState<BannerUrlList[] | null>(null);
@@ -64,6 +65,11 @@ const SearchBoard: React.FC = () => {
 
   const [requestFetch, setRequestFetch] = useState<boolean>(false);
 
+  // scroll 조건 외에 마지막 아이템이 보이면 search 호출
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastElement = useRef<HTMLLIElement | null>(null);
+
   const dropDownMenuItems: DropDownMenuItem[] = [
     {
       name: 'Newest',
@@ -99,48 +105,9 @@ const SearchBoard: React.FC = () => {
     },
   ];
 
-  useLayoutEffect(() => {
-    const search = getParam('search');
-    const indexTab = getParam('indexTab');
-    data.indexTab = Number(indexTab);
-    setData({...data});
-
-    if (search && ['All', 'Story', 'Character', 'Content'].includes(search)) {
-      handleSearchChange(search as 'All' | 'Story' | 'Character' | 'Content');
-    }
-  }, []);
-  // Handle
-
   const handleSearchChange = (value: searchType) => {
     setSearch(value);
   };
-
-  // scroll 조건 외에 마지막 아이템이 보이면 search 호출
-  const observer = useRef<IntersectionObserver | null>(null);
-
-  const lastElement = useRef<HTMLLIElement | null>(null);
-
-  useEffect(() => {
-    if (loading || !hasSearchResult) return;
-
-    if (observer.current) observer.current.disconnect();
-
-    observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        fetchExploreData(search, searchValue, adultToggleOn, contentOffset, characterOffset, storyOffset);
-        setSearchOffset(prev => {
-          const newOffset = prev + searchLimit;
-          return newOffset;
-        });
-      }
-    });
-
-    if (lastElement.current) observer.current.observe(lastElement.current);
-
-    return () => {
-      observer.current?.disconnect();
-    };
-  }, [searchResultList]);
 
   // Func
   const generateFilterList = (): {searchFilterType: number; searchFilterState: number}[] => {
@@ -161,7 +128,7 @@ const SearchBoard: React.FC = () => {
     return [...positiveFilterList, ...negativeFilterList];
   };
 
-  const fetchExploreData = async (
+  const fetchSearchData = async (
     searchType: searchType,
     searchValue: string,
     adultToggleOn: boolean,
@@ -169,9 +136,9 @@ const SearchBoard: React.FC = () => {
     characterOffset: number,
     storyOffset: number,
   ) => {
-    if (loading) return;
+    if (searchLoading) return;
 
-    setLoading(true);
+    setSearchLoading(true);
 
     const minLoadingTime = new Promise<void>(resolve => setTimeout(resolve, 1000));
     try {
@@ -239,42 +206,80 @@ const SearchBoard: React.FC = () => {
       setHasSearchResult(false);
     } finally {
       //await minLoadingTime;
-      setLoading(false);
+      setSearchLoading(false);
+    }
+  };
+
+  const fetchExploreData = async () => {
+    if (exploreLoading) return;
+
+    setExploreLoading(true);
+    try {
+      const response = await sendGetExplore(search, adultToggleOn);
+
+      if (response.resultCode === 0) {
+        if (response.bannerUrlList) {
+          setBannerList(response.bannerUrlList);
+        }
+        if (response.characterExploreList) {
+          setCharacterExploreList(response.characterExploreList);
+        }
+        if (response.contentExploreList) {
+          setContentExploreList(response.contentExploreList);
+        }
+        if (response.storyExploreList) {
+          setStoryExploreList(response.storyExploreList);
+        }
+      } else {
+        console.error(`Error: ${response.resultMessage}`);
+      }
+    } catch (error) {
+      console.error('Error fetching shorts data:', error);
+    } finally {
+      setExploreLoading(false);
     }
   };
 
   // Hooks
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await sendGetExplore(search, adultToggleOn);
+  useLayoutEffect(() => {
+    const search = getParam('search');
+    const indexTab = getParam('indexTab');
+    data.indexTab = Number(indexTab);
+    setData({...data});
 
-        if (response.resultCode === 0) {
-          if (response.bannerUrlList) {
-            setBannerList(response.bannerUrlList);
-          }
-          if (response.characterExploreList) {
-            setCharacterExploreList(response.characterExploreList);
-          }
-          if (response.contentExploreList) {
-            setContentExploreList(response.contentExploreList);
-          }
-          if (response.storyExploreList) {
-            setStoryExploreList(response.storyExploreList);
-          }
-        } else {
-          console.error(`Error: ${response.resultMessage}`);
-        }
-      } catch (error) {
-        console.error('Error fetching shorts data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    if (search && ['All', 'Story', 'Character', 'Content'].includes(search)) {
+      handleSearchChange(search as 'All' | 'Story' | 'Character' | 'Content');
+    }
   }, []);
+
+  useEffect(() => {
+    console.log('asdfasdfa');
+    fetchExploreData();
+
+    setSearchResultList([]);
+  }, []);
+
+  useEffect(() => {
+    if (searchLoading || !hasSearchResult) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        fetchSearchData(search, searchValue, adultToggleOn, contentOffset, characterOffset, storyOffset);
+        setSearchOffset(prev => {
+          const newOffset = prev + searchLimit;
+          return newOffset;
+        });
+      }
+    });
+
+    if (lastElement.current) observer.current.observe(lastElement.current);
+
+    return () => {
+      observer.current?.disconnect();
+    };
+  }, [searchResultList]);
 
   useEffect(() => {
     setHasSearchResult(true);
@@ -287,7 +292,7 @@ const SearchBoard: React.FC = () => {
 
   useEffect(() => {
     if (requestFetch) {
-      fetchExploreData(search, searchValue, adultToggleOn, 0, 0, 0);
+      fetchSearchData(search, searchValue, adultToggleOn, 0, 0, 0);
       setRequestFetch(false);
     }
   }, [requestFetch]);
@@ -344,7 +349,7 @@ const SearchBoard: React.FC = () => {
               setPositiveFilter={setPositiveFilters}
               negativeFilter={negativeFilters}
               setNegativeFilter={setNegativeFilters}
-              fetchExploreData={fetchExploreData}
+              fetchExploreData={fetchSearchData}
               setSearchOffset={setSearchOffset}
               setContentOffset={setContentOffset}
               setCharacterOffset={setCharacterOffset}
@@ -477,7 +482,7 @@ const SearchBoard: React.FC = () => {
           }
         }}
       />
-      <LoadingOverlay loading={loading} />
+      <LoadingOverlay loading={searchLoading} />
     </>
   );
 };
