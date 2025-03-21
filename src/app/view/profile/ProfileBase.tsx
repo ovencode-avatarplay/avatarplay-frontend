@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {Box, Button, Drawer} from '@mui/material';
+import {Backdrop, Box, Button, ClickAwayListener, Drawer, Snackbar} from '@mui/material';
 import ProfileTopEditMenu from './ProfileTopEditMenu';
 import ProfileInfo from './ProfileInfo';
 import profileData from 'data/profile/profile-data.json';
@@ -18,6 +18,7 @@ import {
   BoldHeart,
   BoldImage,
   BoldLike,
+  BoldLock,
   BoldMenuDots,
   BoldMore,
   BoldPin,
@@ -98,6 +99,18 @@ import {PortfolioListPopup} from '@/app/[lang]/(pages)/profile/update/[[...id]]/
 import useCustomRouter from '@/utils/useCustomRouter';
 import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
 import DrawerDonation from '../main/content/create/common/DrawerDonation';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
+
+const mappingStrToGlobalTextKey = {
+  Feed: 'common_label_feed',
+  Character: 'common_label_character',
+  Info: 'common_label_info',
+  Channel: 'common_label_channel',
+  Shared: 'common_label_shared',
+  Contents: 'common_label_contents',
+  Game: 'common_label_game',
+};
 
 export enum eTabFavoritesType {
   Feed = 1,
@@ -230,6 +243,11 @@ type DataProfileType = {
     idProfileTo: number;
   };
 
+  dataToast: {
+    isOpen: boolean;
+    message: string;
+  };
+
   refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
   getIsEmptyTab: () => boolean;
 };
@@ -271,8 +289,7 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
 
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
-  const {back} = useCustomRouter();
-  const {changeParams, getParam} = useCustomRouter();
+  const {back, changeParams, getParam} = useCustomRouter();
   const searchParams = useSearchParams();
   const isNeedBackBtn = searchParams?.get('from'); // "from" 쿼리 파라미터 값 가져오기
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
@@ -318,6 +335,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     dataGift: {
       isOpen: false,
       idProfileTo: 0,
+    },
+
+    dataToast: {
+      isOpen: false,
+      message: '',
     },
 
     refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
@@ -701,6 +723,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
   const onCopyToClipboard = () => {
     copyCurrentUrlToClipboard(pathname, searchParams);
+    data.dataToast.isOpen = true;
+    data.dataToast.message = 'The link has been successfully copied';
+    setData({...data});
   };
 
   return (
@@ -714,7 +739,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               setData({...data});
             }}
           >
-            Subscribe
+            {getLocalizedText('Common', 'common_button_subscribe')}
           </button>
           <button
             className={styles.favorite}
@@ -723,7 +748,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               setData({...data});
             }}
           >
-            Favorites
+            {getLocalizedText('Common', 'common_button_favorites')}
           </button>
           <button
             className={styles.playlist}
@@ -732,7 +757,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               setData({...data});
             }}
           >
-            Playlist
+            {getLocalizedText('Common', 'common_button_playlist')}
           </button>
         </div>
       )}
@@ -816,17 +841,21 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
           <div className={styles.itemStatistic}>
             <div className={styles.count}>{data.profileInfo?.profileInfo.postCount}</div>
-            <div className={styles.label}>Posts</div>
+            <div className={styles.label}>{getLocalizedText('Common', 'common_label_contents')}</div>
           </div>
           <div className={styles.itemStatistic}>
             <div className={styles.count}>{data.profileInfo?.profileInfo.followerCount}</div>
-            <div className={styles.label}>Followers</div>
+            <div className={styles.label}>{getLocalizedText('Common', 'common_label_followers')}</div>
           </div>
           <div className={styles.itemStatistic}>
             <div className={styles.count}>
               {isPD ? data.profileInfo?.profileInfo?.followingCount : data.profileInfo?.profileInfo?.subscriberCount}
             </div>
-            <div className={styles.label}>{isPD ? 'Following' : 'Subscribers'}</div>
+            <div className={styles.label}>
+              {isPD
+                ? getLocalizedText('Common', 'home001_label_002')
+                : getLocalizedText('Common', 'common_label_subscribers')}
+            </div>
           </div>
         </div>
         <div className={styles.profileDetail}>
@@ -884,7 +913,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                 setData({...data});
               }}
             >
-              Show more...
+              {getLocalizedText('Common', 'common_label_showmore')}
             </div>
           )}
           {(isMyPD || isMyChannel) && (
@@ -895,7 +924,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   alert('6월에 기능 추가 예정');
                 }}
               >
-                AD
+                {getLocalizedText('Common', 'common_button_ad')}
               </button>
               {isMyPD && (
                 <button
@@ -906,7 +935,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                     // setData({...data});
                   }}
                 >
-                  Add Friends
+                  {getLocalizedText('Common', 'common_button_addfriends')}
                 </button>
               )}
             </div>
@@ -919,11 +948,13 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   alert('6월에 기능 추가 예정');
                 }}
               >
-                AD
+                {getLocalizedText('Common', 'common_button_ad')}
               </button>
               <button className={styles.chat}>
                 {/* <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}> */}
-                <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>Chat</Link>
+                <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>
+                  {getLocalizedText('Common', 'common_button_chat')}
+                </Link>
               </button>
             </div>
           )}
@@ -935,7 +966,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   handleFollow(data.profileId, !isFollow, data.urlLinkKey);
                 }}
               >
-                {isFollow ? 'Following' : 'Follow'}
+                {isFollow
+                  ? getLocalizedText('Common', 'common_button_following')
+                  : getLocalizedText('Common', 'common_button_follow')}
               </button>
               <button
                 className={styles.gift}
@@ -957,7 +990,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   setData({...data});
                 }}
               >
-                Subscribe
+                {getLocalizedText('Common', 'common_button_subscribe')}
               </button>
               <button
                 className={styles.follow}
@@ -965,7 +998,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   handleFollow(data.profileId, !isFollow, data.urlLinkKey);
                 }}
               >
-                {isFollow ? 'Following' : 'Follow'}
+                {isFollow ? getLocalizedText('common_button_following') : getLocalizedText('common_button_follow')}
               </button>
               <button
                 className={styles.giftWrap}
@@ -1141,6 +1174,56 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           sponsoredName={data.profileInfo?.profileInfo?.name || ''}
         />
       )}
+
+      <>
+        <Backdrop
+          open={data.dataToast.isOpen}
+          onClick={() => {
+            data.dataToast.isOpen = false;
+            setData({...data});
+          }}
+          sx={{
+            zIndex: 999,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)', // 살짝 어두운 흐림 효과
+            // backdropFilter: 'blur(5px)', // 흐림 효과
+          }}
+        />
+        <Snackbar
+          open={data.dataToast.isOpen}
+          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+          autoHideDuration={1000}
+          message={data.dataToast.message}
+          onClose={() => {
+            data.dataToast.isOpen = false;
+            setData({...data});
+          }}
+          sx={{
+            bottom: '20px',
+            width: 'calc(100% - 32px)', // 전체 너비
+            zIndex: 999,
+            '& .MuiPaper-root': {
+              height: '47px',
+              width: '100%', // 전체 너비
+
+              background: 'rgba(255, 255, 255, 1)', // 배경색
+              borderRadius: '12px', // 둥근 모서리
+
+              whiteSpace: 'nowrap', // 한 줄 처리
+              overflow: 'hidden', // 넘치는 텍스트 숨김
+              textOverflow: 'ellipsis', // 말줄임표 처리
+            },
+            '& .MuiSnackbarContent-message': {
+              width: '100%',
+              textAlign: 'center', // 텍스트 중앙 정렬
+              fontFamily: 'Lato, sans-serif', // Lato 폰트 적용
+              fontSize: '14px',
+              fontWeight: 600,
+              lineHeight: '20px',
+              color: '#000', // 글자 색상
+            },
+          }}
+        />
+      </>
     </>
   );
 });
@@ -1172,7 +1255,7 @@ const ContentSetting = ({
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItemsMine: SelectDrawerItem[] = [
     {
-      name: 'Edit',
+      name: getLocalizedText('common_dropdown_edit'),
       onClick: () => {
         onEdit();
       },
@@ -1189,13 +1272,13 @@ const ContentSetting = ({
     //   },
     // },
     {
-      name: 'Share',
+      name: getLocalizedText('common_dropdown_share'),
       onClick: () => {
         onShare();
       },
     },
     {
-      name: 'Delete',
+      name: getLocalizedText('common_dropdown_delete'),
       onClick: () => {
         onDelete();
       },
@@ -1213,13 +1296,13 @@ const ContentSetting = ({
     //   },
     // },
     {
-      name: 'Share',
+      name: getLocalizedText('common_dropdown_share'),
       onClick: () => {
         onShare();
       },
     },
     {
-      name: 'Report',
+      name: getLocalizedText('common_dropdown_report'),
       onClick: () => {
         onReport();
       },
@@ -1567,14 +1650,14 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
     isPlayList,
   } = getUserType(isMine, profileType);
   const sortOptionList = [
-    {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.Popular, value: 'Popular'},
-    {id: ExploreSortType.Name, value: 'Name'},
+    {id: ExploreSortType.Newest, value: getLocalizedText('Common', 'common_sort_newest')},
+    {id: ExploreSortType.Popular, value: getLocalizedText('Common', 'common_sort_popular')},
+    {id: ExploreSortType.Name, value: getLocalizedText('Common', 'common_sort_Name')},
   ];
   const feedSortOptionList = [
-    {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.Popular, value: 'Popular'},
-    {id: ExploreSortType.Name, value: 'Name'},
+    {id: ExploreSortType.Newest, value: getLocalizedText('Common', 'common_sort_newest')},
+    {id: ExploreSortType.Popular, value: getLocalizedText('Common', 'common_sort_popular')},
+    {id: ExploreSortType.Name, value: getLocalizedText('Common', 'common_sort_Name')},
   ];
 
   if (
@@ -1676,7 +1759,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eContentFilterType.Series}
             >
-              <div className={styles.text}>Series</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_series')}</div>
             </div>
             <div
               className={cx(
@@ -1685,7 +1768,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eContentFilterType.Single}
             >
-              <div className={styles.text}>Single</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_single')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -1743,7 +1826,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Original}
             >
-              <div className={styles.text}>Original</div>
+              <div className={styles.text}>{getLocalizedText('common_button_original')}</div>
             </div>
             <div
               className={cx(
@@ -1752,7 +1835,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Fan}
             >
-              <div className={styles.text}>Fan</div>
+              <div className={styles.text}>{getLocalizedText('common_button_fan')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -1808,7 +1891,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Original}
             >
-              <div className={styles.text}>Original</div>
+              <div className={styles.text}>{getLocalizedText('common_button_original')}</div>
             </div>
             <div
               className={cx(
@@ -1818,7 +1901,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Fan}
             >
-              <div className={styles.text}>Fan</div>
+              <div className={styles.text}>{getLocalizedText('common_button_fan')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -1878,7 +1961,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eSharedFilterType.Channel}
             >
-              <div className={styles.text}>Channel</div>
+              <div className={styles.text}>{getLocalizedText('common_button_channel')}</div>
             </div>
             <div
               className={cx(
@@ -1887,7 +1970,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eSharedFilterType.Character}
             >
-              <div className={styles.text}>Character</div>
+              <div className={styles.text}>{getLocalizedText('common_button_character')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -2119,6 +2202,8 @@ export const TabHeaderComponent = ({
             if (index == 0) {
               paddingLeft = 0;
             }
+
+            const textHeader = tab?.label as keyof typeof mappingStrToGlobalTextKey;
             return (
               <div
                 key={tab.type}
@@ -2130,7 +2215,7 @@ export const TabHeaderComponent = ({
                   className={cx(styles.label, data.indexTab == tab?.type && styles.active)}
                   data-tablabel={tab?.type}
                 >
-                  {tab.label}
+                  {getLocalizedText(mappingStrToGlobalTextKey[textHeader])}
                 </div>
               </div>
             );
@@ -2344,11 +2429,7 @@ const TabContentComponent = ({
       <>
         <div className={styles.emptyWrap}>
           <img src="/ui/profile/image_empty.svg" alt="" />
-          <div className={styles.text}>
-            Its pretty lonely out here.
-            <br />
-            Make a Post
-          </div>
+          <div className={styles.text}>{formatText(getLocalizedText('Common', 'common_sample_091'))}</div>
         </div>
       </>
     );
@@ -2489,9 +2570,11 @@ const TabContentComponent = ({
     return (
       <>
         <section className={styles.pdInfoSection}>
-          {!!pdInfo?.introduce && <div className={styles.label}>Introduce</div>}
+          {!!pdInfo?.introduce && <div className={styles.label}>{getLocalizedText('profile007_label_001')}</div>}
           {!!pdInfo?.introduce && <div className={styles.value}>{pdInfo?.introduce}</div>}
-          {pdInfo?.interests.length != 0 && <div className={styles.label}>Interests</div>}
+          {pdInfo?.interests.length != 0 && (
+            <div className={styles.label}>{getLocalizedText('profile007_label_002')}</div>
+          )}
           {pdInfo?.interests.length != 0 && (
             <ul className={styles.tags}>
               {pdInfo?.interests.map((one, index) => {
@@ -2505,7 +2588,7 @@ const TabContentComponent = ({
             </ul>
           )}
 
-          {pdInfo?.skills.length != 0 && <div className={styles.label}>Skill</div>}
+          {pdInfo?.skills.length != 0 && <div className={styles.label}>{getLocalizedText('common_alert_056')}</div>}
           {pdInfo?.skills.length != 0 && (
             <ul className={styles.tags}>
               {pdInfo?.skills.map((one, index) => {
@@ -2518,15 +2601,19 @@ const TabContentComponent = ({
             </ul>
           )}
           {!!pdInfo?.personalHistory && (
-            <div className={cx(styles.label, styles.labelPersonalHistory)}>Personal History</div>
+            <div className={cx(styles.label, styles.labelPersonalHistory)}>
+              {getLocalizedText('profile007_label_003')}
+            </div>
           )}
           {!!pdInfo?.personalHistory && <div className={styles.value}>{pdInfo?.personalHistory}</div>}
-          {!!pdInfo?.honorAwards && <div className={cx(styles.label, styles.honorAwards)}>Honor & Awards</div>}
+          {!!pdInfo?.honorAwards && (
+            <div className={cx(styles.label, styles.honorAwards)}>{getLocalizedText('profile007_label_004')}</div>
+          )}
           {!!pdInfo?.honorAwards && <div className={styles.value}>{pdInfo?.honorAwards}</div>}
           {!!pdInfo?.url && <div className={styles.label}>URL</div>}
           {!!pdInfo?.url && <div className={styles.value}>{pdInfo?.url}</div>}
           {pdInfo?.pdPortfolioInfoList.length != 0 && (
-            <div className={cx(styles.label, styles.labelPortfolio)}>Portfolio</div>
+            <div className={cx(styles.label, styles.labelPortfolio)}>{getLocalizedText('profile007_label_005')}</div>
           )}
           {pdInfo?.pdPortfolioInfoList.length != 0 && (
             <div className={styles.value}>
@@ -2666,7 +2753,9 @@ const TabContentComponent = ({
         )}
         {channelInfo?.memberProfileIdList?.length != 0 && (
           <section className={styles.memberSection}>
-            <div className={styles.label}>{channelInfo?.memberProfileIdList?.length} Members</div>
+            <div className={styles.label}>
+              {channelInfo?.memberProfileIdList?.length} {getLocalizedText('CreateChannel002_label_001')}
+            </div>
             <Swiper
               className={styles.recruitList}
               freeMode={true}
@@ -2694,7 +2783,7 @@ const TabContentComponent = ({
         )}
         {!!channelInfo?.description && (
           <section className={styles.descriptionSection}>
-            <div className={styles.label}>Description</div>
+            <div className={styles.label}>{getLocalizedText('CreateChannel001_label_007')}</div>
             <div className={styles.value}>{channelInfo?.description}</div>
           </section>
         )}
@@ -2727,7 +2816,9 @@ export const ChannelComponent = ({
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
-        {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        {itemInfo.mediaState == MediaState.Video && (
+          <video autoPlay={true} muted={true} loop={true} className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />
+        )}
         {itemInfo?.isPinFix && (
           <div className={styles.pin}>
             <img src={BoldPin.src} alt="" />
@@ -2800,15 +2891,25 @@ export const ContentComponent = ({
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
-        {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        {itemInfo.mediaState == MediaState.Video && (
+          <video autoPlay={true} muted={true} loop={true} className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />
+        )}
         <div className={styles.bgGradientWrap}>
           <div className={styles.bgGradient}></div>
         </div>
-        {itemInfo?.isPinFix && (
-          <div className={styles.pin}>
-            <img src={BoldPin.src} alt="" />
-          </div>
-        )}
+        <div className={styles.leftTop}>
+          {itemInfo?.isPinFix && (
+            <div className={styles.pin}>
+              <img src={BoldPin.src} alt="" />
+            </div>
+          )}
+          {!itemInfo?.isContentFree && (
+            <div className={styles.pin}>
+              <img src={BoldLock.src} alt="" />
+            </div>
+          )}
+        </div>
+
         <div className={styles.info}>
           <div className={styles.likeWrap}>
             <img src={BoldLike.src} alt="" />
@@ -2884,7 +2985,9 @@ export const CharacterComponent = ({
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
-        {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        {itemInfo.mediaState == MediaState.Video && (
+          <video autoPlay={true} muted={true} loop={true} className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />
+        )}
         <div className={styles.bgGradientWrap}>
           <div className={styles.bgGradient}></div>
         </div>
@@ -2959,7 +3062,13 @@ export const FeedComponent = ({isMine, index, urlLinkThumbnail, feedInfo, onOpen
           <img className={styles.imgThumbnail} src={feedInfo?.mediaUrlList?.[0]} alt="" />
         )}
         {feedInfo.mediaState == MediaState.Video && (
-          <video className={styles.imgThumbnail} src={feedInfo?.mediaUrlList?.[0]} />
+          <video
+            autoPlay={true}
+            muted={true}
+            loop={true}
+            className={styles.imgThumbnail}
+            src={feedInfo?.mediaUrlList?.[0]}
+          />
         )}
         <div className={styles.bgGradientWrap}>
           <div className={styles.bgGradient}></div>

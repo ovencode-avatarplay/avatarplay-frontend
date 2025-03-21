@@ -10,6 +10,9 @@
     left: 0;
     right: 0;
 
+
+    align-content: space-between;
+
     display: flex;
     flex-direction: column;
 }
@@ -164,7 +167,11 @@
 
 .confirmButton
 {
+    position:fixed;
+    bottom: 0;
+
     display: flex;
+    width: var(--second-width);
     height: 50px;
     padding: 14px 20px;
 

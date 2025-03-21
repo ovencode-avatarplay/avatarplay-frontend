@@ -21,6 +21,7 @@
 }
 
 .baseArea > .backButton{
+    cursor: pointer;
     display: flex;
     height: 40px;
     padding: 14px 0px 14px 16px;
@@ -48,8 +49,4 @@
     line-height: 20px;
     letter-spacing: -0.4px;
 }
-
-
-.childrenArea {
-    
-}
+ 

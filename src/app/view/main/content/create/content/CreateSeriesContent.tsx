@@ -23,24 +23,46 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {useSelector} from 'react-redux';
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
+import getLocalizedText from '@/utils/getLocalizedText';
+import useCustomRouter from '@/utils/useCustomRouter';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
 }
-
+export const getCategoryTypesKey = (key: number): string => {
+  switch (key) {
+    case CategoryTypes.Webtoon:
+      return getLocalizedText('common_filter_video');
+    case CategoryTypes.Drama:
+      return getLocalizedText('common_filter_webtoon');
+    default:
+      return '';
+  }
+};
 enum VisibilityType {
   Private = 0,
   Unlisted = 1,
   Public = 2,
 }
-
+export const getVisibilityTypeKey = (key: number): string => {
+  switch (key) {
+    case VisibilityType.Public:
+      return getLocalizedText('common_filter_public');
+    case VisibilityType.Private:
+      return getLocalizedText('common_filter_private');
+    case VisibilityType.Unlisted:
+      return getLocalizedText('common_filter_unlisted');
+    default:
+      return '';
+  }
+};
 interface CreateSeriesContentProps {
   urlLinkKey?: string;
 }
 
 const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) => {
   const router = useRouter();
-
+  const {back} = useCustomRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [tagOpen, setTagOpen] = useState(false);
@@ -90,14 +112,16 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         'Romance',
         'Fantasy',
         'Action',
-        'Daily Life',
+        'Comedy',
+        'Sliceoflife',
         'Thriller',
         'Comedy',
-        'Martial Arts',
+        'BL/GL',
         'Drama',
         'Historical Drama',
-        'Emotion',
+        'Emotional',
         'Sports',
+        'Wuxia',
       ],
     },
     {
@@ -285,9 +309,9 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
     <div className={styles.parent}>
       <div className={styles.header}>
         <CustomArrowHeader
-          title="Create Series Contents"
+          title={urlLinkKey ? getLocalizedText('common_title_edit') : getLocalizedText('createcontent001_title_001')}
           onClose={() => {
-            router.back();
+            back();
           }}
           children={
             <div className={styles.rightArea}>
@@ -310,10 +334,11 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           onChange={handleNameChange}
           label={
             <span>
-              Name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+              {getLocalizedText('createcontent003_label_001')}{' '}
+              <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
             </span>
           }
-          placeholder="Enter a title for your post"
+          placeholder={getLocalizedText('common_sample_087')}
           customClassName={[styles.textInput]}
         />
         <CustomInput
@@ -323,15 +348,17 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           onChange={handleSummaryChange}
           label={
             <span>
-              One Line Summary <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+              {getLocalizedText('createcontent003_label_002')}{' '}
+              <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
             </span>
           }
-          placeholder="Enter one line summary"
+          placeholder={getLocalizedText('common_sample_089')}
           customClassName={[styles.textInput]}
         />
 
         <span className={styles.label}>
-          Description <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+          {getLocalizedText('createcontent003_label_003')}{' '}
+          <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
         </span>
         <MaxTextInput
           displayDataType={displayType.Hint}
@@ -340,16 +367,17 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           handlePromptChange={e => setrDescription(e.target.value)}
           maxPromptLength={500}
           style={{minHeight: '190px', width: '100%'}}
+          placeholder={getLocalizedText('common_sample_047')}
         />
         <CustomDropDownSelectDrawer
-          title="Category"
-          selectedItem={CategoryTypes[selectedCategory]}
+          title={getLocalizedText('createcontent003_label_004')}
+          selectedItem={getCategoryTypesKey(selectedCategory)}
           onClick={() => setCategoryDrawerOpen(true)}
         ></CustomDropDownSelectDrawer>
 
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
-            title="Genre"
+            title={getLocalizedText('createcontent003_label_005')}
             selectedItem={selectedGenres.length > 0 ? selectedGenres.join(', ') : ''}
             onClick={() => {
               setGenreList(tagGroups[0].tags);
@@ -359,7 +387,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           <div className={styles.blackTagContainer}>
             {selectedGenres.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {tag}
+                {getLocalizedText(`common_genre_${tag.replace(/ /gi, '').toLowerCase()}`)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -418,7 +446,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         </div>
         <CustomDropDownSelectDrawer
           title="Visibility"
-          selectedItem={VisibilityType[selectedVisibility]}
+          selectedItem={getVisibilityTypeKey(selectedVisibility)}
           onClick={() => setVisibilityDrawerOpen(true)}
         ></CustomDropDownSelectDrawer>
         <span className={styles.label}>

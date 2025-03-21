@@ -6,6 +6,7 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import ReactPlayer from 'react-player';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface Props {
   title?: string;
@@ -24,7 +25,11 @@ const mediaTypeConfig = {
     accept: 'video/*', // 비디오 파일
   },
 };
-const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)', setContentMediaUrls, defaultImage}) => {
+const MediaUpload: React.FC<Props> = ({
+  title = getLocalizedText('createchannel001_label_002'),
+  setContentMediaUrls,
+  defaultImage,
+}) => {
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
   const [publishPopup, setPublishPopup] = useState<boolean>(false); // 입력된 텍스트 상태
   const [isOpenSelectDrawer, setIsOpenSelectDrawer] = useState<boolean>(false);
@@ -218,7 +223,7 @@ const MediaUpload: React.FC<Props> = ({title = 'Thumbnail (Photo / Video)', setC
             <div className={styles.uploadIcon}>
               <img src={LineUpload.src} alt="upload-icon" />
             </div>
-            <div className={styles.hintText}>Upload</div>
+            <div className={styles.hintText}>{getLocalizedText('common_button_upload')}</div>
           </div>
         )}
         {mediaType === 'image' && mediaUrls.length > 0 && (

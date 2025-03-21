@@ -239,7 +239,7 @@ const PreviewViewer: React.FC<Props> = ({open, onClose, mediaUrls, type}) => {
                   <img src={BoldArrowLeft.src} className={styles.backIcon} />
                 </button>
 
-                <h1 className={styles.navTitle}>adads</h1>
+                <h1 className={styles.navTitle}></h1>
               </div>
             </header>
           </div>

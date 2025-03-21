@@ -16,6 +16,7 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import cx from 'classnames';
 import {BoldMore, LinePlus} from '@ui/Icons';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
 type Props = {};
 
 type SelectProfileType = {
@@ -72,7 +73,7 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
       <div className={styles.handleArea}>
         <div className={styles.handleBar}></div>
       </div>
-      <div className={styles.title}>Select Profile</div>
+      <div className={styles.title}>{getLocalizedText('common_alert_054')}</div>
       <div
         className={styles.mySharedWrap}
         onClick={async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -86,10 +87,10 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
         }}
       >
         <div className={cx(styles.My, data.indexSharedTab == 0 && styles.active)} data-index={0}>
-          My
+          {getLocalizedText('common_button_my')}
         </div>
         <div className={cx(styles.Shared, data.indexSharedTab == 1 && styles.active)} data-index={1}>
-          Shared
+          {getLocalizedText('common_button_shared')}
         </div>
       </div>
       <div className={styles.content}>
@@ -125,7 +126,7 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                         <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>
                           {isOriginal ? 'Original' : 'Fan'}
                         </span>
-                        <div className={styles.type}>Channel</div>
+                        <div className={styles.type}>{getLocalizedText('common_label_channel')}</div>
                       </div>
                     )}
                     {isCharacter && (
@@ -133,12 +134,12 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                         <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>
                           {isOriginal ? 'Original' : 'Fan'}
                         </span>
-                        <div className={styles.type}>Character</div>
+                        <div className={styles.type}>{getLocalizedText('common_label_character')}</div>
                       </div>
                     )}
                     {isPD && (
                       <div className={styles.top}>
-                        <div className={cx(styles.type, styles.pd)}>My</div>
+                        <div className={cx(styles.type, styles.pd)}>{getLocalizedText('common_label_my')}</div>
                       </div>
                     )}
                     <div className={styles.name}>{profile.name}</div>

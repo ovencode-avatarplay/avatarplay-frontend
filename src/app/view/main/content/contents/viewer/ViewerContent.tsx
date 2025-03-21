@@ -62,6 +62,8 @@ import {
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import DrawerDonation from '../../create/common/DrawerDonation';
 import {PopupPurchase} from '../series/ContentSeriesDetail';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 interface Props {
   open: boolean;
@@ -476,7 +478,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                   <img src={BoldArrowLeft.src} className={styles.backIcon} />
                 </button>
 
-                <h1 className={styles.navTitle}>adads</h1>
+                <h1 className={styles.navTitle}>
+                  {formatText(getLocalizedText('contenthome001_label_001'), ['info?.contentId'])}
+                </h1>
               </div>
             </header>
           </div>
@@ -574,11 +578,12 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
               {/* Video Info */}
               <div className={styles.videoInfo}>
-                {info?.categoryType == ContentCategoryType.Webtoon && <>Image</>}
+                {info?.categoryType == ContentCategoryType.Webtoon && <>{getLocalizedText('common_filter_photo')}</>}
                 {info?.categoryType == ContentCategoryType.Video && (
                   <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
                     <img className={styles.iconVideo} src={BoldVideo.src}></img>
-                    Video · {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
+                    {getLocalizedText('common_filter_video')}· {currentProgress ? currentProgress : '0:00'}/
+                    {formatDuration(videoDuration)}
                   </div>
                 )}
               </div>
@@ -658,7 +663,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                       : 'none', // 기본 상태는 필터 없음
                   }}
                 />
-                <div className={styles.count}>{likeCount}</div>
+                <div className={styles.count}>{likeCount && likeCount >= 0 ? likeCount : 0}</div>
               </div>
 
               {/* Dislike Button */}
@@ -800,17 +805,29 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
                   {/* 텍스트 정보 */}
                   <div className={styles.profileInfo}>
-                    <div className={styles.title}>{'타이틀 들어가야함'}</div>
+                    <div className={styles.title}>
+                      {formatText(getLocalizedText('contenthome001_label_001'), [episodeListData.contentName])}
+                    </div>
 
                     <div style={{gap: '8px'}}>
                       {/* 에피소드 정보 + 완결 배지 */}
                       <div className={styles.episodeRow}>
-                        <span className={styles.episodeInfo}>{'에피소드 리스트'}</span>
-                        {<span className={styles.completeBadge}>완결여부</span>}
+                        <span className={styles.episodeInfo}>
+                          {formatText(getLocalizedText('contenthome003_label_001'), [
+                            '1',
+                            episodeListData.episodeList.length.toString(),
+                          ])}
+                        </span>
+                        {/* {<span className={styles.completeBadge}>완결여부</span>} */}
                       </div>
 
                       {/* 장르 정보 */}
-                      <div className={styles.genreRow}>{'장르들'}</div>
+                      <div className={styles.genreRow}>
+                        {' '}
+                        <span className={styles.genres}>
+                          {[episodeListData?.genre, ...(episodeListData?.tags ?? [])].filter(Boolean).join(' / ')}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

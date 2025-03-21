@@ -19,6 +19,7 @@ import BottomNav from '../main/bottom-nav/BottomNav';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 type Props = {
   onClose: () => void;
@@ -114,9 +115,9 @@ const PopupSubscriptionList = ({onClose}: Props) => {
   };
 
   const sortOptionList = [
-    {id: 0, value: 'All'},
-    {id: 1, value: 'Character'},
-    {id: 2, value: 'Channel'},
+    {id: 0, value: getLocalizedText('common_filter_all')},
+    {id: 1, value: getLocalizedText('common_filter_character')},
+    {id: 2, value: getLocalizedText('common_filter_channel')},
   ];
 
   const SelectBoxArrowComponent = (isOpen?: boolean) => (
@@ -159,7 +160,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                 onClose();
               }}
             />
-            <h1 className={styles.title}>Subscription</h1>
+            <h1 className={styles.title}>{getLocalizedText('profile011_title_001')}</h1>
           </header>
           <main className={styles.main}>
             <div className={styles.tabHeaderWrap}>
@@ -180,10 +181,10 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                 }}
               >
                 <div className={cx(styles.tab, data.indexTab == 0 && styles.active)} data-tab={0}>
-                  Contents
+                  {getLocalizedText('common_label_contents')}
                 </div>
                 <div className={cx(styles.tab, data.indexTab == 1 && styles.active)} data-tab={1}>
-                  IP
+                  {getLocalizedText('profile011_label_002')}
                 </div>
               </div>
             </div>
@@ -272,7 +273,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
               </ul>
 
               {data.dataSubscriptionInactive.dataList.length > 0 && (
-                <div className={styles.label}>Inactive Subscription</div>
+                <div className={styles.label}>{getLocalizedText('profile011_label_003')}</div>
               )}
               <ul className={styles.subscriptionList}>
                 {data?.dataSubscriptionInactive?.dataList?.map((one, index) => {
@@ -314,7 +315,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                             setData({...data});
                           }}
                         >
-                          Renewal
+                          {getLocalizedText('common_button_renewal')}
                         </div>
                       </div>
                     </li>
@@ -376,7 +377,7 @@ const ContentSetting = ({
 }: SubscriptionSettingType) => {
   let itemList: SelectDrawerItem[] = [
     {
-      name: 'Subscription Cancel',
+      name: getLocalizedText('Common', 'common_dropdown_subscriptioncancel'),
       onClick: () => {
         onCancel();
       },

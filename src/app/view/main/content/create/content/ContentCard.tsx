@@ -3,6 +3,7 @@ import styles from './ContentCard.module.css';
 import {BoldChatRoundDots, BoldFollowers, BoldMenuDots, BoldStar, LineDelete, LineEdit, LineMenu} from '@ui/Icons';
 import {ContentListInfo, VisibilityType} from '@/app/NetWork/ContentNetwork';
 import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface ContentCardProps {
   content: ContentListInfo;
@@ -17,14 +18,14 @@ const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit,
   const [dropBoxOpen, setDropBoxOpen] = useState<boolean>(false);
   const dropDownMenuItems: DropDownMenuItem[] = [
     {
-      name: 'Edit',
+      name: getLocalizedText('common_button_edit'),
       icon: LineEdit.src,
       onClick: () => {
         onEdit();
       },
     },
     {
-      name: 'Delete',
+      name: getLocalizedText('common_button_delete'),
       icon: LineDelete.src,
       onClick: () => {
         onDelete();
@@ -71,7 +72,11 @@ const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit,
 
           {/* 에피소드 정보 */}
           <div className={styles.episodeInfo}>
-            {isSingle != true && <strong>Episode {content.episodeCount}</strong>}
+            {isSingle != true && (
+              <strong>
+                {getLocalizedText('createcontent001_label_010')} {content.episodeCount}
+              </strong>
+            )}
             <div className={styles.stats}>
               <div className={styles.stat}>
                 <img src={BoldFollowers.src} className={styles.icon} alt="views" />
@@ -84,7 +89,7 @@ const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit,
 
       {/* 하단 버튼 */}
       <button className={styles.addButton} onClick={onAddEpisode}>
-        Detail
+        {getLocalizedText('createcontent001_button_006')}
       </button>
 
       {dropBoxOpen && (

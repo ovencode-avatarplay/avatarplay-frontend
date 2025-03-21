@@ -8,8 +8,12 @@ import {useRouter} from 'next/navigation';
 import {sendSignIn} from '@/app/NetWork/AuthNetwork';
 import {getBrowserLanguage} from '@/utils/browserInfo';
 import {getLangUrlCode} from '@/configs/i18n';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 const Login = () => {
+  const Header = 'Login';
+  const Common = 'Common';
   const handleOAuthLogin = async (provider: 'google' | 'kakao' | 'facebook' | 'apple') => {
     await supabase.auth.signInWithOAuth({
       provider,
@@ -32,41 +36,42 @@ const Login = () => {
         <img src={LineClose.src} className={styles.closeImg}></img>
       </button>
 
-      <button className={styles.buttonGuest}>Guest Account</button>
+      <button style={{display:'none'}} className={styles.buttonGuest}>{getLocalizedText('login001_btn_006')}</button>
 
-      <div className={styles.divider}>
-        <span>or</span>
+      <div style={{display:'none'}} className={styles.divider}>
+        <span>{getLocalizedText(Header, 'login001_label_001')}</span>
       </div>
 
       <div className={styles.benefitText}>
-        Join us and enjoy daily <span className={styles.highlight}>free 300 rubies</span>
+        {getLocalizedText(Header, 'login001_desc_002')}
+
+        <span className={styles.highlight}>{formatText(getLocalizedText(Header, 'login001_desc_003'), ['300'])}</span>
+
+        {/* Join us and enjoy daily <span className={styles.highlight}>free 300 rubies</span> */}
       </div>
 
       <div className={styles.buttonContainer}>
         <button className={styles.buttonKakao} onClick={() => handleOAuthLogin('kakao')}>
           <Image src={KakatalkLogo} width={24} height={24} alt="Kakao" />
-          Continue with Kakaotalk
+          {getLocalizedText('common_button_continuewithkakaotalk')}
         </button>
-
-        <button className={styles.buttonSocial} onClick={() => handleOAuthLogin('facebook')}>
+        <button style={{display:'none'}} className={styles.buttonSocial} onClick={() => handleOAuthLogin('facebook')}>
           <Image src={FacebookLogo} width={24} height={24} alt="Facebook" />
-          Continue with Facebook
+          {getLocalizedText('common_button_continuewithfacebook')}{' '}
         </button>
-
         <button className={styles.buttonSocial} onClick={() => handleOAuthLogin('google')}>
           <Image src={GoogleLogo} width={24} height={24} alt="Google" />
-          Continue with Google
+          {getLocalizedText('common_button_continuewithgoogle')}{' '}
         </button>
-
         <button className={styles.buttonSocial} onClick={() => handleOAuthLogin('apple')}>
           <Image src={AppleLogo} width={24} height={24} alt="Apple" />
-          Continue with Apple
+          {getLocalizedText('common_button_continuewithapple')}{' '}
         </button>
       </div>
 
       <div className={styles.policy}>
-        <span>Privacy Policy</span>
-        <span>Terms of Service</span>
+        <span>{getLocalizedText('login001_label_004')}</span>
+        <span>{getLocalizedText('login001_label_005')}</span>
       </div>
     </div>
   );

@@ -14,17 +14,20 @@ import styles from './SearchBoard.module.css';
 
 import SearchBoardHeader from './searchboard-header/SearchBoardHeader';
 import SearchBoardHorizonScroll from './SearchBoardHorizonScroll';
-import {ExploreCardProps} from './SearchBoardTypes';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import Splitter from '@/components/layout/shared/CustomSplitter';
 import ExploreFeaturedHeader from './searchboard-header/ExploreFeaturedHeader';
 import EmptyState from '@/components/search/EmptyState';
-import {BoldArrowDown} from '@ui/Icons';
+import {BoldArrowDown, LineArrowRight} from '@ui/Icons';
 import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import ExploreCard from './ExploreCard';
 import {FilterDataItem} from '@/components/search/FilterSelector';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import useCustomRouter from '@/utils/useCustomRouter';
+import getLocalizedText from '@/utils/getLocalizedText';
+import CustomButton from '@/components/layout/shared/CustomButton';
+
+export type searchType = 'All' | 'Story' | 'Character' | 'Content';
 
 const SearchBoard: React.FC = () => {
   const [data, setData] = useState({
@@ -34,19 +37,15 @@ const SearchBoard: React.FC = () => {
 
   // Featured
   const [bannerList, setBannerList] = useState<BannerUrlList[] | null>(null);
-  const [talkainOperatorList, setTalkainOperatorList] = useState<ExploreCardProps[] | null>(null);
-  const [popularList, setPopularList] = useState<ExploreCardProps[] | null>(null);
-  const [malePopularList, setMalePopularList] = useState<ExploreCardProps[] | null>(null);
-  const [femalePopularList, setFemalePopularList] = useState<ExploreCardProps[] | null>(null);
-  const [newContentList, setNewContentList] = useState<ExploreCardProps[] | null>(null);
-  const [playingList, setPlayingList] = useState<ExploreCardProps[] | null>(null);
-  const [recommendationList, setRecommendationList] = useState<ExploreCardProps[] | null>(null);
+  const [characterExploreList, setCharacterExploreList] = useState<ExploreItem[] | null>(null);
+  const [storyExploreList, setStoryExploreList] = useState<ExploreItem[] | null>(null);
+  const [contentExploreList, setContentExploreList] = useState<ExploreItem[] | null>(null);
 
   // Search
   const searchOptionList = ['Female', 'Male', 'BL', 'GL', 'LGBT+', 'Romance', 'Villain', 'Gaming', 'Adventure'];
   const [searchResultList, setSearchResultList] = useState<ExploreItem[] | null>(null);
 
-  const [search, setSearch] = useState<'All' | 'Story' | 'Character' | 'Content'>('All');
+  const [search, setSearch] = useState<searchType>('All');
   const [adultToggleOn, setAdultToggleOn] = useState(false);
   const [searchValue, setSearchValue] = useState<string>('');
   const [searchSort, setSearchSort] = useState<'Newest' | 'Most Popular' | 'Weekly Popular' | 'Monthly Popular'>(
@@ -63,7 +62,7 @@ const SearchBoard: React.FC = () => {
   const [searchOffset, setSearchOffset] = useState<number>(0);
   const [contentPage, setContentPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
   const [characterPage, setCharacterPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
-  const [previousScrollTop, setPreviousScrollTop] = useState(0);
+  const [storyPage, setStoryPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
 
   const [selectedSort, setSelectedSort] = useState<number>(0);
   const [sortDropDownOpen, setSortDropDownOpen] = useState<boolean>(false);
@@ -115,25 +114,9 @@ const SearchBoard: React.FC = () => {
   }, []);
   // Handle
 
-  const handleSearchChange = (value: 'All' | 'Story' | 'Character' | 'Content') => {
+  const handleSearchChange = (value: searchType) => {
     setSearch(value);
   };
-
-  // 25.03.06 tr : 스크롤 대응해서 search 요청 -> observer로 변경
-  // const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-  //   const target = e.currentTarget;
-  //   const THRESHOLD = 200; // 데이터 불러오기 전에 남겨둘 여유 공간 (픽셀 단위)
-  //   const isScrollingDown = target.scrollTop > previousScrollTop;
-  //   setPreviousScrollTop(target.scrollTop);
-  //   // 스크롤 끝에 도달하기 직전인지 확인
-  //   if (isScrollingDown && target.scrollTop + target.clientHeight >= target.scrollHeight - THRESHOLD && !loading) {
-  //     setSearchOffset(prevSearchOffset => {
-  //       const newSearchOffset = prevSearchOffset + 1;
-  //       fetchExploreData(searchValue, adultToggleOn, contentPage, characterPage);
-  //       return newSearchOffset;
-  //     });
-  //   }
-  // };
 
   // scroll 조건 외에 마지막 아이템이 보이면 search 호출
   const observer = useRef<IntersectionObserver | null>(null);
@@ -146,7 +129,7 @@ const SearchBoard: React.FC = () => {
         if (entries[0].isIntersecting) {
           setSearchOffset(prevSearchOffset => {
             const newSearchOffset = prevSearchOffset + 1;
-            fetchExploreData(searchValue, adultToggleOn, contentPage, characterPage);
+            fetchExploreData(search, searchValue, adultToggleOn, contentPage, characterPage, storyPage);
             return newSearchOffset;
           });
         }
@@ -154,7 +137,7 @@ const SearchBoard: React.FC = () => {
 
       if (node) observer.current.observe(node);
     },
-    [loading, hasSearchResult, searchValue, adultToggleOn, contentPage, characterPage],
+    [loading, hasSearchResult, search, searchValue, adultToggleOn, contentPage, characterPage],
   );
 
   // Func
@@ -177,10 +160,12 @@ const SearchBoard: React.FC = () => {
   };
 
   const fetchExploreData = async (
+    searchType: searchType,
     searchValue: string,
     adultToggleOn: boolean,
     contentPage: PaginationRequest,
     characterPage: PaginationRequest,
+    storyPage: PaginationRequest,
   ) => {
     if (loading) return;
 
@@ -191,21 +176,37 @@ const SearchBoard: React.FC = () => {
       const result = await sendSearchExplore({
         languageType: getCurrentLanguage(),
         search: searchValue,
-        category: search === 'All' ? 0 : search === 'Story' ? 1 : 2,
+        category:
+          searchType === 'All'
+            ? 0
+            : searchType === 'Story'
+            ? 1
+            : searchType === 'Character'
+            ? 2
+            : searchType === 'Content'
+            ? 3
+            : 0,
         sort: selectedSort,
-        filterList: generateFilterList(),
-        isOnlyAdults: adultToggleOn,
-        storyPage: contentPage,
-        characterPage,
+        // filterList: generateFilterList(),
+        // isOnlyAdults: adultToggleOn,
+        // storyPage: contentPage,
+        // characterPage,
+        storyOffset: storyPage.offset,
+        characterOffset: characterPage.offset,
+        contentOffset: contentPage.offset,
+        limit: searchLimit,
       });
 
       if (result.data !== undefined && result.resultCode === 0) {
         const newList = result.data?.searchExploreList || [];
         setSearchResultList(prevList => {
-          return (contentPage.offset > 0 || characterPage.offset > 0) && prevList ? [...prevList, ...newList] : newList;
+          return (contentPage.offset > 0 || characterPage.offset > 0 || storyPage.offset) && prevList
+            ? [...prevList, ...newList]
+            : newList;
         });
-        setContentPage(result.data.storyPage);
-        setCharacterPage(result.data.characterPage);
+        setContentPage({offset: result.data.contentOffset, limit: searchLimit});
+        setCharacterPage({offset: result.data.characterOffset, limit: searchLimit});
+        setStoryPage({offset: result.data.storyOffset, limit: searchLimit});
 
         if (newList.length === 0) {
           setHasSearchResult(false);
@@ -234,26 +235,14 @@ const SearchBoard: React.FC = () => {
           if (response.bannerUrlList) {
             setBannerList(response.bannerUrlList);
           }
-          if (response.talkainOperatorList) {
-            setTalkainOperatorList(response.talkainOperatorList);
+          if (response.characterExploreList) {
+            setCharacterExploreList(response.characterExploreList);
           }
-          if (response.popularList) {
-            setPopularList(response.popularList);
+          if (response.contentExploreList) {
+            setContentExploreList(response.contentExploreList);
           }
-          if (response.malePopularList) {
-            setMalePopularList(response.malePopularList);
-          }
-          if (response.femalePopularList) {
-            setFemalePopularList(response.femalePopularList);
-          }
-          if (response.newContentList) {
-            setNewContentList(response.newContentList);
-          }
-          if (response.playingList) {
-            setPlayingList(response.playingList);
-          }
-          if (response.recommendationList) {
-            setRecommendationList(response.recommendationList);
+          if (response.storyExploreList) {
+            setStoryExploreList(response.storyExploreList);
           }
         } else {
           console.error(`Error: ${response.resultMessage}`);
@@ -269,12 +258,19 @@ const SearchBoard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchExploreData(searchValue, adultToggleOn, {offset: 0, limit: searchLimit}, {offset: 0, limit: searchLimit});
+    fetchExploreData(
+      search,
+      searchValue,
+      adultToggleOn,
+      {offset: 0, limit: searchLimit},
+      {offset: 0, limit: searchLimit},
+      {offset: 0, limit: searchLimit},
+    );
   }, [search]);
 
   const splitterData = [
     {
-      label: 'Featured',
+      label: getLocalizedText('common_button_featured'),
       preContent: '',
       content: (
         <section className={styles.featuredContainer}>
@@ -282,27 +278,21 @@ const SearchBoard: React.FC = () => {
             {bannerList && <ExploreFeaturedHeader items={bannerList} />}
             <div className={styles.content}>
               <main className={styles.listContainer}>
-                {talkainOperatorList && talkainOperatorList.length > 0 && (
-                  <SearchBoardHorizonScroll title="talkainOperatorList" data={talkainOperatorList} />
+                {characterExploreList && characterExploreList.length > 0 && (
+                  <SearchBoardHorizonScroll
+                    title={getLocalizedText('explore001_label_001')}
+                    data={characterExploreList}
+                  />
                 )}
-                {/* {popularList && popularList.length > 0 && (
-                  <SearchBoardHorizonScroll title="popularList" data={popularList} />
-                )} */}
-                {malePopularList && malePopularList.length > 0 && (
-                  <SearchBoardHorizonScroll title="Character" data={malePopularList} />
+                {storyExploreList && storyExploreList.length > 0 && (
+                  <SearchBoardHorizonScroll title={getLocalizedText('explore001_label_002')} data={storyExploreList} />
                 )}
-                {femalePopularList && femalePopularList.length > 0 && (
-                  <SearchBoardHorizonScroll title="Story" data={femalePopularList} />
+                {contentExploreList && contentExploreList.length > 0 && (
+                  <SearchBoardHorizonScroll
+                    title={getLocalizedText('explore001_label_003')}
+                    data={contentExploreList}
+                  />
                 )}
-                {/* {newContentList && newContentList.length > 0 && (
-                  <SearchBoardHorizonScroll title="New" data={newContentList} />
-                )} */}
-                {playingList && playingList.length > 0 && (
-                  <SearchBoardHorizonScroll title="Content" data={playingList} />
-                )}
-                {/* {recommendationList && recommendationList.length > 0 && (
-                  <SearchBoardHorizonScroll title="recommendList" data={recommendationList} />
-                )} */}
                 <br />
               </main>
             </div>
@@ -311,7 +301,7 @@ const SearchBoard: React.FC = () => {
       ),
     },
     {
-      label: 'Search',
+      label: getLocalizedText('common_button_search'),
       content: (
         <section className={styles.searchContainer}>
           <div
@@ -319,6 +309,7 @@ const SearchBoard: React.FC = () => {
             // onScroll={handleScroll}
           >
             <SearchBoardHeader
+              search={search}
               setSearchResultList={setSearchResultList}
               adultToggleOn={adultToggleOn}
               setAdultToggleOn={setAdultToggleOn}
@@ -341,7 +332,7 @@ const SearchBoard: React.FC = () => {
                     changeParams('search', 'all');
                   }}
                 >
-                  All
+                  {getLocalizedText('common_filter_all')}
                 </button>
                 <button
                   className={`${styles.tag} ${search === 'Story' ? styles.selected : ''}`}
@@ -350,7 +341,7 @@ const SearchBoard: React.FC = () => {
                     changeParams('search', 'Story');
                   }}
                 >
-                  Story
+                  {getLocalizedText('common_filter_story')}
                 </button>
                 <button
                   className={`${styles.tag} ${search === 'Character' ? styles.selected : ''}`}
@@ -359,7 +350,7 @@ const SearchBoard: React.FC = () => {
                     changeParams('search', 'Character');
                   }}
                 >
-                  Character
+                  {getLocalizedText('common_filter_character')}
                 </button>
                 <button
                   className={`${styles.tag} ${search === 'Content' ? styles.selected : ''}`}
@@ -368,7 +359,7 @@ const SearchBoard: React.FC = () => {
                     changeParams('search', 'Content');
                   }}
                 >
-                  Content
+                  {getLocalizedText('common_filter_content')}
                 </button>
               </div>
               <button className={styles.sortButton} onClick={() => setSortDropDownOpen(true)}>
@@ -387,9 +378,19 @@ const SearchBoard: React.FC = () => {
             </header>
             {searchResultList === null || searchResultList.length < 1 ? (
               <>
-                <h2 className={styles.emptyResult}> Result : 0</h2>
+                {/* <h2 className={styles.emptyResult}> Result : 0</h2> */}
                 <section className={styles.emptyContainer}>
-                  <EmptyState stateText={'No search data'} />
+                  <EmptyState stateText={getLocalizedText('explore006_desc_002')} />
+                  <div className={styles.emptyCreateAlert}>{getLocalizedText('explore006_desc_003')}</div>
+                  <CustomButton
+                    size="Medium"
+                    state="IconRight"
+                    type="Primary"
+                    icon={LineArrowRight.src}
+                    customClassName={[styles.emptyCreateButton]}
+                  >
+                    {getLocalizedText('common_button_createacharacter')}
+                  </CustomButton>
                 </section>
               </>
             ) : (
@@ -414,18 +415,7 @@ const SearchBoard: React.FC = () => {
                         className={styles.resultItem}
                         ref={index === searchResultList.length - 1 ? lastElementRef : null}
                       >
-                        <ExploreCard
-                          exploreItemType={item.exploreItemType}
-                          updateExplorState={item.updateExplorState}
-                          storyId={item.storyId}
-                          storyName={item.storyName}
-                          chatCount={item.chatCount}
-                          episodeCount={item.episodeCount}
-                          followerCount={item.followerCount}
-                          thumbnail={item.thumbnail}
-                          classType="search"
-                          urlLinkKey={item.profileUrlLinkKey}
-                        />
+                        <ExploreCard explore={item} classType="search" />
                       </li>
                     ))}
                 </ul>

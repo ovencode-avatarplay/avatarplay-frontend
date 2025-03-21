@@ -95,11 +95,25 @@
 
 
   .tabSection {
+    padding-bottom: 50px;
+
     .tabHeaderContainer {
       position: sticky;
       top: 0;
       background: white;
       z-index: 2;
+    }
+
+    .tabContent {
+      margin-top: 14px;
+
+      &>section {
+        display: none;
+
+        &.active {
+          display: block;
+        }
+      }
     }
   }
 
@@ -116,5 +130,40 @@
     line-height: 21px;
     /* 150% */
     letter-spacing: -0.4px;
+  }
+}
+
+ul.itemWrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px 2px;
+
+  @media (max-width: 600px) {
+
+    /* 최소 2개 */
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+.emptyWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-top: 30px;
+
+  .text {
+    text-align: center;
+
+    color: var(--Neutral-400, #BDC1C6);
+    text-align: center;
+    font-family: Lato;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.3px;
   }
 }

@@ -18,11 +18,13 @@
   
   .topNav {
     display: flex;
-    justify-content: space-between;
+    
     padding: 20px;
     position: fixed;
     width: 100%;
     max-width: 1300px;
+    
+    align-items: center;
 
   }
   
@@ -31,8 +33,10 @@
     border: none;
     cursor: pointer;
     filter: brightness(0) invert(1);
+    height: 20px;
   }
-  
+
+
   .genreShare {
     display: flex;
     justify-content: space-between;

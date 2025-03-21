@@ -147,7 +147,7 @@
     @media (max-width: 600px) {
 
         /* 최소 2개 */
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -177,5 +177,31 @@
 
 .emptyContainer
 {
+    display: flex;
+    flex-direction: column;
     margin-top: 95.5px;
+    justify-content: center;
+    align-content: center;
+}
+
+
+.emptyCreateAlert
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--Spacing-spacing-sm, 8px);
+    margin-top: 8px;
+    margin-bottom: 30px;
+}
+
+.emptyCreateButton
+{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    box-sizing: border-box;
+    width: 163px;
+    margin: 0 auto;
 }

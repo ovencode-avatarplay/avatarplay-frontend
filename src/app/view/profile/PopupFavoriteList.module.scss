@@ -95,11 +95,25 @@
 
 
   .tabSection {
+    padding-bottom: 50px;
+
     .tabHeaderContainer {
       position: sticky;
       top: 0px;
       background: white;
       z-index: 2;
+    }
+
+    .tabContent {
+      margin-top: 14px;
+
+      &>section {
+        display: none;
+
+        &.active {
+          display: block;
+        }
+      }
     }
   }
 

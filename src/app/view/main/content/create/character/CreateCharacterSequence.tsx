@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styles from './CreateCharacterSequence.module.css';
 
 // redux
-import { CharacterInfo } from '@/redux-store/slices/StoryInfo';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 
 // Json Data
 import characterOptionsMaleReal from '@/data/create/create-character-male-real.json';
@@ -12,23 +12,23 @@ import characterOptionsFemaleAnime from '@/data/create/create-character-female-a
 import backgroundData from '@/data/create/background.json';
 
 // Network
-import { GenerateImageReq, GenerateImageRes, GenerateParameter, sendGenerateImageReq } from '@/app/NetWork/ImageNetwork';
+import {GenerateImageReq, GenerateImageRes, GenerateParameter, sendGenerateImageReq} from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 // Swiper
-import { Swiper, SwiperSlide } from 'swiper/react';
+import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
 // Components
 import CharacterCreateImageButton from './CreateCharacterImageButton';
-import FullScreenImage, { FullViewImageData } from '@/components/layout/shared/FullViewImage';
+import FullScreenImage, {FullViewImageData} from '@/components/layout/shared/FullViewImage';
 import PublishCharacterBottom from './PublishCharacterBottom';
 import CustomStepper from '@/components/layout/shared/CustomStepper';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import { BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineUpload } from '@ui/Icons';
+import {BoldRuby, LineArrowLeft, LineArrowRight, LineCharacter, LineUpload} from '@ui/Icons';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
-import MaxTextInput, { displayType } from '@/components/create/MaxTextInput';
+import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
 import getLocalizedText from '@/utils/getLocalizedText';
 
 export type CreateType = 'create' | 'modify' | 'create2';
@@ -72,7 +72,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
     clothing: [],
     clothingColor: [],
     personality: [],
-    background: []
+    background: [],
   };
 
   enum CreateCharacterStep {
@@ -185,9 +185,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
     result: 0,
   });
 
-  const [swipers, setSwipers] = useState<{ [key: string]: any }>({});
+  const [swipers, setSwipers] = useState<{[key: string]: any}>({});
   const optionKeys = ['race', 'bodyType', 'topSize', 'bottomSize', 'clothing'] as const;
-  const [isCentered, setIsCentered] = useState<{ [key: string]: boolean }>({
+  const [isCentered, setIsCentered] = useState<{[key: string]: boolean}>({
     race: false,
     bodyType: false,
     topSize: false,
@@ -202,18 +202,62 @@ const CharacterCreateSequence: React.FC<Props> = ({
 
   //#region Summary Options
   const summaryOptions = [
-    { key: 'style', label: getLocalizedText(Header, 'createcharacter010_label_001'), options: characterOptions.styleOptions },
-    { key: 'race', label: getLocalizedText(Header, 'createcharacter005_label_002'), options: characterOptions.raceOptions },
-    { key: 'age', label: getLocalizedText(Header, 'createcharacter005_label_003'), options: characterOptions.ageOptions },
-    { key: 'eyeColor', label: getLocalizedText(Header, 'createcharacter005_label_004'), options: characterOptions.eyeColorOptions },
-    { key: 'hairStyle', label: getLocalizedText(Header, 'createcharacter006_label_002'), options: characterOptions.hairStyles },
-    { key: 'hairColor', label: getLocalizedText(Header, 'createcharacter006_label_003'), options: characterOptions.hairColors },
-    { key: 'bodyType', label: getLocalizedText(Header, 'createcharacter007_label_002'), options: characterOptions.bodyTypes },
-    { key: 'topSize', label: getLocalizedText(Header, 'createcharacter007_label_003'), options: characterOptions.topSizes },
-    { key: 'bottomSize', label: getLocalizedText(Header, 'createcharacter007_label_004'), options: characterOptions.bottomSizes },
-    { key: 'clothing', label: getLocalizedText(Header, 'createcharacter008_label_002'), options: characterOptions.clothing },
-    { key: 'clothingColor', label: getLocalizedText(Header, 'createcharacter008_label_003'), options: characterOptions.clothingColor },
-    { key: 'background', label: getLocalizedText(Header, 'createcharacter009_label_002'), options: characterOptions.background },
+    {
+      key: 'style',
+      label: getLocalizedText(Header, 'createcharacter010_label_001'),
+      options: characterOptions.styleOptions,
+    },
+    {
+      key: 'race',
+      label: getLocalizedText(Header, 'createcharacter005_label_002'),
+      options: characterOptions.raceOptions,
+    },
+    {key: 'age', label: getLocalizedText(Header, 'createcharacter005_label_003'), options: characterOptions.ageOptions},
+    {
+      key: 'eyeColor',
+      label: getLocalizedText(Header, 'createcharacter005_label_004'),
+      options: characterOptions.eyeColorOptions,
+    },
+    {
+      key: 'hairStyle',
+      label: getLocalizedText(Header, 'createcharacter006_label_002'),
+      options: characterOptions.hairStyles,
+    },
+    {
+      key: 'hairColor',
+      label: getLocalizedText(Header, 'createcharacter006_label_003'),
+      options: characterOptions.hairColors,
+    },
+    {
+      key: 'bodyType',
+      label: getLocalizedText(Header, 'createcharacter007_label_002'),
+      options: characterOptions.bodyTypes,
+    },
+    {
+      key: 'topSize',
+      label: getLocalizedText(Header, 'createcharacter007_label_003'),
+      options: characterOptions.topSizes,
+    },
+    {
+      key: 'bottomSize',
+      label: getLocalizedText(Header, 'createcharacter007_label_004'),
+      options: characterOptions.bottomSizes,
+    },
+    {
+      key: 'clothing',
+      label: getLocalizedText(Header, 'createcharacter008_label_002'),
+      options: characterOptions.clothing,
+    },
+    {
+      key: 'clothingColor',
+      label: getLocalizedText(Header, 'createcharacter008_label_003'),
+      options: characterOptions.clothingColor,
+    },
+    {
+      key: 'background',
+      label: getLocalizedText(Header, 'createcharacter009_label_002'),
+      options: characterOptions.background,
+    },
   ];
   //#endregion
 
@@ -246,19 +290,19 @@ const CharacterCreateSequence: React.FC<Props> = ({
 
   const handleGenerate = () => {
     const prompts: GenerateParameter[] = generatePrompts(summaryOptions, selectedOptions);
-    const req: GenerateImageReq = { values: prompts };
+    const req: GenerateImageReq = {values: prompts};
     GetImageGenerateImage(req);
   };
 
   const handleOptionSelect = (key: keyof typeof selectedOptions, index: number, autoNextStep?: boolean) => {
-    setSelectedOptions(prev => ({ ...prev, [key]: index }));
-    setIsCentered(prev => ({ ...prev, [key]: index >= centerThreshold }));
+    setSelectedOptions(prev => ({...prev, [key]: index}));
+    setIsCentered(prev => ({...prev, [key]: index >= centerThreshold}));
     if (autoNextStep) addStep();
   };
 
   const handleImageToggle = (image: string, parameter: string) => {
     if (!image) return;
-    setFullscreenImage({ url: image, parameter });
+    setFullscreenImage({url: image, parameter});
   };
 
   const handleClothesInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -292,7 +336,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
     }
     if (stepperRef.current) {
       const currentStepElement = stepperRef.current.querySelector(`.MuiStep-horizontal:nth-child(${curStep + 1})`);
-      currentStepElement?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      currentStepElement?.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'center'});
     }
   }, [curStep]);
 
@@ -309,7 +353,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
           : characterOptionsMaleAnime
         : characterOptionsFemaleReal;
 
-    const updatedOptions = { ...newOptions, background: backgroundData };
+    const updatedOptions = {...newOptions, background: backgroundData};
     setCharacterOptions(updatedOptions);
   }, [selectedOptions.gender, selectedOptions.style]);
 
@@ -329,7 +373,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
   }, [selectedOptions, swipers]);
 
   const handleSwiperInit = (key: string, swiperInstance: any) => {
-    setSwipers(prev => ({ ...prev, [key]: swiperInstance }));
+    setSwipers(prev => ({...prev, [key]: swiperInstance}));
   };
   //#endregion
 
@@ -337,19 +381,31 @@ const CharacterCreateSequence: React.FC<Props> = ({
   const getStyleImgLoc = (imgName: string) => `${imageLoc}${imgName}`;
 
   const getImgLoc = (imgName: string) => {
-    const { gender, style } = selectedOptions;
+    const {gender, style} = selectedOptions;
     const genderStylePath =
-      gender === 0 ? (style === 0 ? 'female_real' : 'female_anime')
-      : gender === 1 ? (style === 0 ? 'male_real' : 'male_anime')
-      : (style === 0 ? 'nonbinary_real' : 'nonbinary_anime');
+      gender === 0
+        ? style === 0
+          ? 'female_real'
+          : 'female_anime'
+        : gender === 1
+        ? style === 0
+          ? 'male_real'
+          : 'male_anime'
+        : style === 0
+        ? 'nonbinary_real'
+        : 'nonbinary_anime';
     return `${imageLoc}${genderStylePath}/${imgName}`;
   };
 
-  const getStepText = () => (curStep >= maxStep ? finalStepText : 
-    createType === 'modify' ? modifyStepTexts[curStep]
-    : createType === 'create2' ? create2StepTexts[curStep]
-    : createStepTexts[curStep] || '');
-  
+  const getStepText = () =>
+    curStep >= maxStep
+      ? finalStepText
+      : createType === 'modify'
+      ? modifyStepTexts[curStep]
+      : createType === 'create2'
+      ? create2StepTexts[curStep]
+      : createStepTexts[curStep] || '';
+
   const getSplitedPersonalityButton = (label: string, index: number, isSelected: boolean) => {
     const [line1, line2] = label.split('\n');
     return (
@@ -365,8 +421,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
   };
 
   const generatePrompts = (
-    summaryOptions: { key: string; options: CreateCharacterOption[] }[],
-    selectedOptions: Record<string, number>
+    summaryOptions: {key: string; options: CreateCharacterOption[]}[],
+    selectedOptions: Record<string, number>,
   ): GenerateParameter[] => {
     return summaryOptions.map(option => {
       const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
@@ -378,11 +434,11 @@ const CharacterCreateSequence: React.FC<Props> = ({
             const randomIndex = Math.floor(Math.random() * selectedOption.prompts.length);
             promptText = selectedOption.prompts[randomIndex];
           }
-          return { name: option.key, value: 0, prompt: promptText };
+          return {name: option.key, value: 0, prompt: promptText};
         }
-        return { name: option.key, value: selectedOption?.value ?? 0, prompt: '' };
+        return {name: option.key, value: selectedOption?.value ?? 0, prompt: ''};
       }
-      return { name: option.key, value: 0, prompt: '' };
+      return {name: option.key, value: 0, prompt: ''};
     });
   };
 
@@ -392,7 +448,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
       const response = await sendGenerateImageReq(req);
       if (response?.data) {
         const newImages = (response.data.imageUrl || []).filter((url: string) => url.startsWith('https://'));
-        setGeneratedOptions({ ...response.data, imageUrl: newImages });
+        setGeneratedOptions({...response.data, imageUrl: newImages});
       } else {
         throw new Error('No response for file');
       }
@@ -412,7 +468,11 @@ const CharacterCreateSequence: React.FC<Props> = ({
         return (
           <div className={styles.verticalButtonGroup}>
             {characterOptions.genderOptions.map((option, index) => (
-              <button key={option.label} className={styles.uploadButton} onClick={() => handleOptionSelect('gender', index, true)}>
+              <button
+                key={option.label}
+                className={styles.uploadButton}
+                onClick={() => handleOptionSelect('gender', index, true)}
+              >
                 <div className={styles.buttonIconBack}>
                   <img className={styles.buttonIcon} src={index === 0 ? LineCharacter.src : LineUpload.src} />
                 </div>
@@ -452,11 +512,15 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 centeredSlides={isCentered['race']}
                 slidesPerView="auto"
                 spaceBetween={6}
-                onSlideChange={() => setIsCentered(prev => ({ ...prev, race: false }))}
+                onSlideChange={() => setIsCentered(prev => ({...prev, race: false}))}
                 onSwiper={swiper => handleSwiperInit('race', swiper)}
               >
                 {characterOptions.raceOptions.map((race, index) => (
-                  <SwiperSlide key={race.label} className={styles.swiperSmall} style={{ width: '100px', height: '100px' }}>
+                  <SwiperSlide
+                    key={race.label}
+                    className={styles.swiperSmall}
+                    style={{width: '100px', height: '100px'}}
+                  >
                     <CharacterCreateImageButton
                       key={race.label}
                       sizeType="small"
@@ -559,11 +623,15 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 slidesPerView="auto"
                 spaceBetween={6}
                 centeredSlides={isCentered['bodyType']}
-                onSlideChange={() => setIsCentered(prev => ({ ...prev, bodyType: false }))}
+                onSlideChange={() => setIsCentered(prev => ({...prev, bodyType: false}))}
                 onSwiper={swiper => handleSwiperInit('bodyType', swiper)}
               >
                 {characterOptions.bodyTypes.map((style, index) => (
-                  <SwiperSlide key={style.label} className={styles.swiperSmall} style={{ width: '100px', height: '100px' }}>
+                  <SwiperSlide
+                    key={style.label}
+                    className={styles.swiperSmall}
+                    style={{width: '100px', height: '100px'}}
+                  >
                     <CharacterCreateImageButton
                       sizeType="small"
                       label={style.label}
@@ -588,11 +656,15 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     slidesPerView="auto"
                     spaceBetween={6}
                     centeredSlides={isCentered['topSize']}
-                    onSlideChange={() => setIsCentered(prev => ({ ...prev, topSize: false }))}
+                    onSlideChange={() => setIsCentered(prev => ({...prev, topSize: false}))}
                     onSwiper={swiper => handleSwiperInit('topSize', swiper)}
                   >
                     {characterOptions.topSizes.map((style, index) => (
-                      <SwiperSlide key={style.label} className={styles.swiperSmall} style={{ width: '100px', height: '100px' }}>
+                      <SwiperSlide
+                        key={style.label}
+                        className={styles.swiperSmall}
+                        style={{width: '100px', height: '100px'}}
+                      >
                         <CharacterCreateImageButton
                           sizeType="small"
                           label={style.label}
@@ -615,11 +687,15 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     slidesPerView="auto"
                     spaceBetween={6}
                     centeredSlides={isCentered['bottomSize']}
-                    onSlideChange={() => setIsCentered(prev => ({ ...prev, bottomSize: false }))}
+                    onSlideChange={() => setIsCentered(prev => ({...prev, bottomSize: false}))}
                     onSwiper={swiper => handleSwiperInit('bottomSize', swiper)}
                   >
                     {characterOptions.bottomSizes.map((style, index) => (
-                      <SwiperSlide key={style.label} className={styles.swiperSmall} style={{ width: '100px', height: '100px' }}>
+                      <SwiperSlide
+                        key={style.label}
+                        className={styles.swiperSmall}
+                        style={{width: '100px', height: '100px'}}
+                      >
                         <CharacterCreateImageButton
                           sizeType="small"
                           label={style.label}
@@ -649,11 +725,15 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 slidesPerView="auto"
                 spaceBetween={6}
                 centeredSlides={isCentered['clothing']}
-                onSlideChange={() => setIsCentered(prev => ({ ...prev, clothing: false }))}
+                onSlideChange={() => setIsCentered(prev => ({...prev, clothing: false}))}
                 onSwiper={swiper => handleSwiperInit('clothing', swiper)}
               >
                 {characterOptions.clothing.map((style, index) => (
-                  <SwiperSlide key={style.label} className={styles.swiperSmall} style={{ width: '100px', height: '100px' }}>
+                  <SwiperSlide
+                    key={style.label}
+                    className={styles.swiperSmall}
+                    style={{width: '100px', height: '100px'}}
+                  >
                     <CharacterCreateImageButton
                       sizeType="small"
                       label={style.label}
@@ -672,7 +752,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
               </h3>
               <div
                 className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}
-                style={{ pointerEvents: customClothesActive ? 'none' : 'auto', opacity: customClothesActive ? 0.5 : 1 }}
+                style={{pointerEvents: customClothesActive ? 'none' : 'auto', opacity: customClothesActive ? 0.5 : 1}}
               >
                 {characterOptions.clothingColor.map((style, index) => (
                   <CustomHashtag
@@ -730,21 +810,28 @@ const CharacterCreateSequence: React.FC<Props> = ({
           <div className={styles.createContentBox}>
             <div className={`${styles.gridButtonGroup3x3} ${styles.buttonGap6}`}>
               {summaryOptions
-                .filter(option => !(selectedOptions.gender === 1 && (option.key === 'topSize' || option.key === 'bottomSize')))
-                .map((option) => (
+                .filter(
+                  option =>
+                    !(selectedOptions.gender === 1 && (option.key === 'topSize' || option.key === 'bottomSize')),
+                )
+                .map(option => (
                   <div key={option.key} className={styles.summaryItem}>
                     <div className={styles.summaryLabel}>{option.label}</div>
                     <CharacterCreateImageButton
                       key={option.key}
                       label={
                         option.key === 'personality'
-                          ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label.split('\n')[0]
+                          ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label.split(
+                              '\n',
+                            )[0]
                           : option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label || ''
                       }
                       onClick={() => {}}
                       image={
                         option.key !== 'hairColor' && option.key !== 'clothingColor'
-                          ? getImgLoc(option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image)
+                          ? getImgLoc(
+                              option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image,
+                            )
                           : ''
                       }
                       color={
@@ -815,22 +902,26 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 type="Primary"
                 state="IconRight"
                 onClick={addStep}
-                icon={steps[curStep] === CreateCharacterStep.Summary && generatedOptions === null ? '' : LineArrowRight.src}
+                icon={
+                  steps[curStep] === CreateCharacterStep.Summary && generatedOptions === null ? '' : LineArrowRight.src
+                }
                 customClassName={[styles.stepButton]}
               >
-                {steps[curStep] === CreateCharacterStep.Summary
-                  ? generatedOptions === null
-                    ? (
-                      <>
-                        {getLocalizedText(Common, 'common_button_generate')}
-                        <img className={styles.rubyIcon} src={BoldRuby.src} />
-                        50
-                      </>
-                    )
-                    : getLocalizedText(Common, 'common_button_next')
-                  : steps[curStep] === CreateCharacterStep.Result
-                  ? getLocalizedText(Common, 'common_button_confirm')
-                  : getLocalizedText(Common, 'common_button_next')}
+                {steps[curStep] === CreateCharacterStep.Summary ? (
+                  generatedOptions === null ? (
+                    <>
+                      {getLocalizedText(Common, 'common_button_generate')}
+                      <img className={styles.rubyIcon} src={BoldRuby.src} />
+                      50
+                    </>
+                  ) : (
+                    getLocalizedText(Common, 'common_button_next')
+                  )
+                ) : steps[curStep] === CreateCharacterStep.Result ? (
+                  getLocalizedText(Common, 'common_button_confirm')
+                ) : (
+                  getLocalizedText(Common, 'common_button_next')
+                )}
               </CustomButton>
             </>
           ) : (
@@ -849,7 +940,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
         <div className={styles.createBox}>
           <h2 className={getStepText() !== '' ? styles.createTitle : ''}>{getStepText()}</h2>
           {getStepContent(steps[curStep])}
-          <h1 onClick={handleGenerate}>ReGenerate</h1>
+          {/* <h1 onClick={handleGenerate}>ReGenerate</h1> */}
         </div>
       </article>
       <footer className={styles.buttonContainer}>{renderBottom()}</footer>

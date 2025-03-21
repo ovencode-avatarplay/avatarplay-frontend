@@ -34,7 +34,7 @@ import cx from 'classnames';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {debounce, Dialog, Drawer} from '@mui/material';
 import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostCountry';
-import {LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
+import {getLangKey, LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
@@ -44,6 +44,7 @@ import {
   CreateChannelReq,
   createUpdateChannel,
   getChannelInfo,
+  SearchChannelMemberReq,
   sendSearchChannel,
 } from '@/app/NetWork/ChannelNetwork';
 import {profile} from 'console';
@@ -119,11 +120,11 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     dataVisibility: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: true, value: 'Private'},
-        {isActive: false, value: 'Unlisted'},
-        {isActive: false, value: 'Public'},
+        {isActive: true, value: getLocalizedText('common_dropdown_private')},
+        {isActive: false, value: getLocalizedText('common_dropdown_unlisted')},
+        {isActive: false, value: getLocalizedText('common_dropdown_public')},
       ],
-      drawerTitle: 'Visibility',
+      drawerTitle: getLocalizedText('common_label_001'),
       drawerDescription: '',
     },
     dataTag: {
@@ -153,7 +154,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         {isActive: false, value: 'Books'},
         {isActive: false, value: 'Aliens'},
       ],
-      drawerTitle: 'Tag',
+      drawerTitle: getLocalizedText('common_label_002'),
       drawerDescription: '',
     },
     dataCountry: {
@@ -168,7 +169,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     },
     dataCharacterSearch: {
       open: false,
-      title: 'Character',
+      title: getLocalizedText('common_alert_013'),
       description: '',
       profileList: [],
       onClose: () => {},
@@ -177,8 +178,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
     dataPopupRemove: {
       isOpen: false,
-      title: parse('Remove from<br/>“Channel name”'),
-      description: 'Once removed, this character will no longer be affiliated with the channel. Do you want to Remove?',
+      title: parse(getLocalizedText('common_alert_083')),
+      description: getLocalizedText('common_alert_084'),
       idProfile: 0,
     },
 
@@ -237,8 +238,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
     const membershipSetting: MembershipSetting = {
       benefits: channelInfo.membershipSetting?.benefits || '',
-      paymentAmount: channelInfo.membershipSetting?.paymentAmount || 50000,
-      paymentType: channelInfo.membershipSetting?.paymentType || PaymentType.Korea,
+      paymentAmount: channelInfo.membershipSetting?.paymentAmount || 0,
+      paymentType: channelInfo.membershipSetting?.paymentType || PaymentType.KRW,
       subscription: channelInfo.membershipSetting?.subscription || Subscription.Contents,
     };
     const channelInfoForm: ChannelInfoForm = {...channelInfo, tags: tag, isMonetization, nsfw, membershipSetting};
@@ -412,7 +413,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     const res = await createUpdateChannel(dataUpdatePdInfo);
     if (res?.resultCode == 0) {
       data.dataPopupComplete.isOpen = true;
-      data.dataPopupComplete.title = isUpdate ? '채널 수정 완료' : '채널 생성 완료';
+      data.dataPopupComplete.title = isUpdate
+        ? getLocalizedText('CreateChannel001_label_updateComplete')
+        : getLocalizedText('CreateChannel001_label_createComplete');
       setData({...data});
     }
   };
@@ -472,11 +475,15 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     <>
       <header className={styles.header}>
         <img className={styles.btnBack} src={BoldArrowLeft.src} alt="" onClick={routerBack} />
-        <div className={styles.title}>{isUpdate ? 'Edit' : 'Create Channel'}</div>
+        <div className={styles.title}>
+          {isUpdate
+            ? getLocalizedText('CreateChannel', 'common_title_Edit')
+            : getLocalizedText('CreateChannel', 'CreateChannel001_title_001')}
+        </div>
       </header>
       <main className={styles.main}>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
-          <div className={styles.label}>Thumbnail (Photo/Video)</div>
+          <div className={styles.label}>{getLocalizedText('CreateChannel', 'CreateChannel001_label_002')}</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
               <input className={styles.hide} autoComplete="off" {...register('mediaUrl', {required: true})} />
@@ -495,7 +502,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   onDragStart={onDragStartInner}
                 >
                   <img src={LineUpload.src} alt="" />
-                  <div className={styles.text}>Upload</div>
+                  <div className={styles.text}>{getLocalizedText('CreateChannel', 'common_button_upload')}</div>
                 </div>
               )}
 
@@ -527,13 +534,19 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 >
                   <div className={styles.tabItem} data-tab={0}>
-                    <div className={cx(styles.labelTab, data.indexTab == 0 && styles.active)}>Basic</div>
+                    <div className={cx(styles.labelTab, data.indexTab == 0 && styles.active)}>
+                      {getLocalizedText('CreateChannel', 'CreateChannel001_label_003')}
+                    </div>
                   </div>
                   <div className={styles.tabItem} data-tab={1}>
-                    <div className={cx(styles.labelTab, data.indexTab == 1 && styles.active)}>Members</div>
+                    <div className={cx(styles.labelTab, data.indexTab == 1 && styles.active)}>
+                      {getLocalizedText('CreateChannel', 'CreateChannel001_label_004')}
+                    </div>
                   </div>
                   <div className={styles.tabItem} data-tab={2}>
-                    <div className={cx(styles.labelTab, data.indexTab == 2 && styles.active)}>Policy</div>
+                    <div className={cx(styles.labelTab, data.indexTab == 2 && styles.active)}>
+                      {getLocalizedText('CreateChannel', 'CreateChannel001_label_005')}
+                    </div>
                   </div>
                 </div>
                 <div className={styles.line}></div>
@@ -543,13 +556,14 @@ const CreateChannel = ({id, isUpdate}: Props) => {
             <div className={styles.tabContent}>
               <section className={cx(styles.channelSection, data.indexTab == 0 && styles.active)}>
                 <div className={styles.label}>
-                  Channel name <span className={styles.highlight}>*</span>
+                  {getLocalizedText('CreateChannel', 'CreateChannel001_label_006')}{' '}
+                  <span className={styles.highlight}>*</span>
                 </div>
                 <input
                   {...register('name', {required: true})}
                   className={cx(errors.name && isSubmitted && styles.error)}
                   type="text"
-                  placeholder="Please enter a title for your post"
+                  placeholder={getLocalizedText('CreateChannel', 'CreateChannel001_label_008')}
                   onChange={e => {
                     clearErrors('name');
                     setValue('name', e.target.value);
@@ -557,12 +571,13 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 />
 
                 <div className={styles.label}>
-                  Channel description <span className={styles.highlight}>*</span>
+                  {getLocalizedText('CreateChannel', 'CreateChannel001_label_007')}{' '}
+                  <span className={styles.highlight}>*</span>
                 </div>
                 <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
                   <textarea
                     {...register('description', {required: true})}
-                    placeholder="Add a description or hashtag"
+                    placeholder={getLocalizedText('CreateChannel', 'common_sample_047')}
                     maxLength={500}
                     onChange={async e => {
                       const target = e.target as HTMLTextAreaElement;
@@ -586,13 +601,11 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <div className={styles.circle}>
                     <img className={styles.bg} src="/ui/profile/icon_add_recruit.svg" alt="" />
                   </div>
-                  <div className={styles.labelAdd}>
-                    Character
-                    <br />
-                    name
-                  </div>
+                  <div className={styles.labelAdd}>{getLocalizedText('common_label_addmembers')}</div>
                 </div>
-                <div className={styles.label}>{countMembers} Members</div>
+                <div className={styles.label}>
+                  {countMembers} {getLocalizedText('CreateChannel', 'CreateChannel002_label_001')}
+                </div>
 
                 <ul className={styles.memberList}>
                   {data.dataCharacterSearch.profileList.map((one, index) => {
@@ -630,7 +643,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
               </section>
               <section className={cx(styles.policySection, data.indexTab == 2 && styles.active)}>
                 <div className={styles.label}>
-                  Visibility <span className={styles.highlight}>*</span>
+                  {getLocalizedText('CreateChannel', 'common_label_001')} <span className={styles.highlight}>*</span>
                 </div>
                 <input
                   defaultValue={VisibilityType.Private}
@@ -647,7 +660,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 />
                 <div className={styles.label}>
-                  Tag <span className={styles.highlight}>*</span>
+                  {getLocalizedText('CreateChannel', 'common_label_002')} <span className={styles.highlight}>*</span>
                 </div>
                 <input
                   className={styles.hide}
@@ -699,7 +712,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </div>
 
                 <div className={styles.label}>
-                  Post country <span className={styles.highlight}>*</span>
+                  {getLocalizedText('CreateChannel', 'common_label_003')} <span className={styles.highlight}>*</span>
                 </div>
                 <CustomSelector
                   value={''}
@@ -723,7 +736,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
                   {data.dataCountry.tagList.map((one, index) => {
                     const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
-                    const countryStr = keys[Number(one)];
+                    // const countryStr = keys[Number(one)];
+                    const countryStr = getLangKey(Number(one));
 
                     return (
                       <div className={styles.tag} key={index}>
@@ -754,7 +768,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
                 <div className={styles.operatorInvitationHeader}>
                   <div className={styles.left}>
-                    <div className={styles.label}>Operator Invitation</div>
+                    <div className={styles.label}>{getLocalizedText('CreateChannel', 'common_label_005')}</div>
                     <CustomToolTip tooltipText="NSFW Monetization" />
                   </div>
                   <div
@@ -764,7 +778,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       setData({...data});
                     }}
                   >
-                    Invite
+                    {getLocalizedText('CreateChannel', 'common_button_invite')}
                   </div>
                 </div>
                 <ul className={styles.operatorInvitationList}>
@@ -785,7 +799,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </ul>
 
                 <div className={styles.labelWrap}>
-                  <div className={styles.label}>Channel IP</div>
+                  <div className={styles.label}>{getLocalizedText('CreateChannel', 'CreateChannel003_label_001')}</div>
                   <CustomToolTip tooltipText="Channel IP" />
                 </div>
                 <div className={cx(styles.channelIP, styles.radioContainer)}>
@@ -801,10 +815,14 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>Original</div>
+                        <div className={styles.labelRadio}>
+                          {getLocalizedText('CreateChannel', 'common_button_Original')}
+                        </div>
                       </div>
                     </label>
-                    <div className={styles.right}>Monetization possible</div>
+                    <div className={styles.right}>
+                      {getLocalizedText('CreateChannel', 'common_button_monetization')}
+                    </div>
                   </div>
                   <div className={styles.item}>
                     <label>
@@ -817,7 +835,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>Fan</div>
+                        <div className={styles.labelRadio}>
+                          {getLocalizedText('CreateChannel', 'common_button_Fan')}
+                        </div>
                       </div>
                     </label>
                     {/* <div className={styles.right}>Monetization possible</div> */}
@@ -825,7 +845,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </div>
 
                 <div className={styles.labelWrap}>
-                  <div className={styles.label}>Monetization</div>
+                  <div className={styles.label}>{getLocalizedText('CreateChannel', 'common_label_006')}</div>
                   <CustomToolTip tooltipText="Channel IP" />
                 </div>
                 <div className={cx(styles.monetization, styles.radioContainer)}>
@@ -844,7 +864,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>On</div>
+                        <div className={styles.labelRadio}>{getLocalizedText('CreateChannel', 'common_button_on')}</div>
                       </div>
                     </label>
                   </div>
@@ -863,7 +883,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>Off</div>
+                        <div className={styles.labelRadio}>
+                          {getLocalizedText('CreateChannel', 'common_button_off')}
+                        </div>
                       </div>
                     </label>
                   </div>
@@ -908,7 +930,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
                 <div className={cx(styles.labelWrap, styles.nsfw)}>
                   <div className={styles.label}>
-                    NSFW <span className={styles.highlight}>*</span>
+                    {getLocalizedText('CreateChannel', 'common_sample_086')} <span className={styles.highlight}>*</span>
                   </div>
                   <CustomToolTip tooltipText="NSFW" />
                 </div>
@@ -919,7 +941,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>On</div>
+                        <div className={styles.labelRadio}>{getLocalizedText('CreateChannel', 'common_button_on')}</div>
                       </div>
                     </label>
                   </div>
@@ -929,7 +951,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>Off</div>
+                        <div className={styles.labelRadio}>{getLocalizedText('common', 'common_button_off')}</div>
                       </div>
                     </label>
                   </div>
@@ -939,7 +961,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           </section>
 
           <button type="submit" className={styles.submitBtn}>
-            {isUpdate ? 'Submit' : 'Publish'}
+            {getLocalizedText('CreateChannel', 'common_button_submit')}
+            {/* {isUpdate ? 'Submit' : 'Publish'} */}
           </button>
         </form>
       </main>
@@ -1264,6 +1287,8 @@ export const DrawerCharacterSearch = ({
 }: DrawerCharacterSearchType) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [data, setData] = useState<{
+    //profileList : 보이는 부분, 검색시 리스트 없어지는영역
+    //profileListSaved : 검색전 가지고 있는 부분
     profileListSaved: {
       isActive: boolean;
       isOriginal: boolean;
@@ -1274,29 +1299,50 @@ export const DrawerCharacterSearch = ({
       isOriginal: boolean;
       profileSimpleInfo: ProfileSimpleInfo;
     }[];
+    profileListAll: {
+      isActive: boolean;
+      isOriginal: boolean;
+      profileSimpleInfo: ProfileSimpleInfo;
+    }[];
     indexSort: number;
   }>({
     profileListSaved: [],
     profileList: [],
+    profileListAll: [],
     indexSort: 0,
   });
-  console.log('data profileListSaved : ', data.profileListSaved);
-  console.log('data profileList : ', data.profileList);
+
   useEffect(() => {
     if (!open) return;
 
-    data.profileList = profileList;
-    for (let i = 0; i < data.profileList.length; i++) {
-      data.profileList[i].isOriginal = true;
-    }
-    data.profileListSaved = JSON.parse(JSON.stringify(data.profileList));
-    setData({...data});
+    refresh();
   }, [open]);
 
+  const refresh = async () => {
+    const searchProfileList = await searchMember('', data.indexSort);
+    data.profileListAll = searchProfileList;
+    data.profileList = searchProfileList;
+
+    for (let j = 0; j < profileList.length; j++) {
+      const id = profileList[j].profileSimpleInfo.profileId;
+      for (let i = 0; i < data.profileList.length; i++) {
+        if (data.profileList[i].profileSimpleInfo.profileId == id) {
+          data.profileList[i].isOriginal = true;
+          data.profileList[i].isActive = true;
+          break;
+        }
+      }
+    }
+
+    data.profileListSaved = JSON.parse(JSON.stringify(data.profileList));
+
+    setData({...data});
+  };
+
   const sortOptionList = [
-    {id: ExploreSortType.Newest, value: 'Newest'},
-    {id: ExploreSortType.Popular, value: 'Popular'},
-    {id: ExploreSortType.Name, value: 'Name'},
+    {id: ExploreSortType.Newest, value: getLocalizedText('common_sort_newest')},
+    {id: ExploreSortType.Popular, value: getLocalizedText('common_sort_popular')},
+    {id: ExploreSortType.Name, value: getLocalizedText('common_sort_Name')},
   ];
 
   const SelectBoxArrowComponent = useCallback(
@@ -1330,6 +1376,42 @@ export const DrawerCharacterSearch = ({
     ),
     [],
   );
+
+  const searchMember = async (search: string = '', sortType: ExploreSortType = ExploreSortType.Newest) => {
+    const payload: SearchChannelMemberReq = {
+      sortType: sortType,
+      search: search,
+    };
+
+    try {
+      const response = await sendSearchChannel(payload);
+      const searchProfileList =
+        response?.data?.memberProfileList?.map(v => ({
+          isActive: false,
+          isOriginal: false,
+          profileSimpleInfo: v,
+        })) || [];
+      return searchProfileList;
+    } catch {
+      return [];
+    }
+  };
+
+  const saveProfileAfterSearch = () => {
+    const searchProfileListActived = data.profileList.filter(v => v.isActive && !v.isOriginal);
+    const profileListSaved = data.profileListSaved;
+    const mergedList = [...searchProfileListActived, ...profileListSaved];
+
+    // console.log('mergedList : ', mergedList);
+    let uniqueList = Array.from(new Map(mergedList.map(item => [item.profileSimpleInfo.profileId, item])).values());
+    // uniqueList = uniqueList.map(v => ({...v, isActive: true}));
+
+    console.log('uniqueList : ', uniqueList);
+    data.profileList = uniqueList;
+    data.profileListSaved = uniqueList;
+    setData({...data});
+  };
+
   const saveProfileList = () => {
     // console.log('data.profileListSaved : ', data.profileListSaved);
     const searchProfileListActived = data.profileList.filter(v => v.isActive && !v.isOriginal);
@@ -1339,6 +1421,7 @@ export const DrawerCharacterSearch = ({
     // console.log('mergedList : ', mergedList);
     let uniqueList = Array.from(new Map(mergedList.map(item => [item.profileSimpleInfo.profileId, item])).values());
     uniqueList = uniqueList.map(v => ({...v, isActive: true}));
+
     // console.log('uniqueList : ', uniqueList);
     data.profileList = uniqueList;
     data.profileListSaved = uniqueList;
@@ -1348,26 +1431,16 @@ export const DrawerCharacterSearch = ({
   const fetchResults = useCallback(
     debounce(async searchValue => {
       if (searchValue == '') {
-        saveProfileList();
+        saveProfileAfterSearch();
         return;
       }
 
       // console.log('data.profileListSaved : ', JSON.stringify(data.profileListSaved));
-      data.profileListSaved = data.profileListSaved.filter(v => v.isActive);
-
-      // 여기에서 API 호출하면 됨
-      const payload: SearchProfileReq = {
-        search: searchValue,
-      };
+      // data.profileListSaved = data.profileListSaved.filter(v => v.isActive);
+      console.log('data.profileListSaved : ', data.profileListSaved);
 
       try {
-        const response = await sendSearchChannel(payload);
-        const searchProfileList =
-          response?.data?.memberProfileList?.map(v => ({
-            isActive: false,
-            isOriginal: false,
-            profileSimpleInfo: v,
-          })) || [];
+        const searchProfileList = await searchMember(searchValue, data.indexSort);
 
         // console.log('data.profileListSaved : ', data.profileListSaved);
         // console.log('data.profileList : ', data.profileList);
@@ -1375,7 +1448,7 @@ export const DrawerCharacterSearch = ({
           const matchedProfile = data.profileListSaved.find(
             profile => profile.profileSimpleInfo.profileId === searchProfile.profileSimpleInfo.profileId,
           );
-          // console.log('matchedProfile ', matchedProfile);
+          console.log('matchedProfile ', matchedProfile);
           return matchedProfile
             ? {...searchProfile, isActive: matchedProfile.isActive, isOriginal: matchedProfile.isOriginal}
             : searchProfile;
@@ -1388,6 +1461,27 @@ export const DrawerCharacterSearch = ({
     }, 400),
     [data],
   );
+
+  const updateProfileSaved = (
+    profileList: {
+      isActive: boolean;
+      isOriginal: boolean;
+      profileSimpleInfo: ProfileSimpleInfo;
+    }[],
+  ) => {
+    for (let j = 0; j < profileList.length; j++) {
+      const profile = profileList[j];
+      for (let i = 0; i < data.profileListSaved.length; i++) {
+        const profileSaved = data.profileListSaved[i];
+        if (profile.profileSimpleInfo.profileId == profileSaved.profileSimpleInfo.profileId) {
+          profileSaved.isActive = profile.isActive;
+          break;
+        }
+      }
+    }
+    console.log('profileListSaved : ', data.profileListSaved);
+    setData({...data});
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // setQuery(e.target.value);
@@ -1415,7 +1509,7 @@ export const DrawerCharacterSearch = ({
       <div className={cx(styles.content)}>
         <div className={styles.searchWrap}>
           <img className={styles.iconSearch} src={LineSearch.src} alt="" />
-          <input ref={inputRef} placeholder="Search" onChange={handleChange} />
+          <input ref={inputRef} placeholder={getLocalizedText('common_sample_078')} onChange={handleChange} />
         </div>
         <div className={styles.filterWrap}>
           <div className={styles.left}>
@@ -1432,12 +1526,13 @@ export const DrawerCharacterSearch = ({
                     profileList = data.profileList.map(v => (v.isOriginal ? v : {...v, isActive: false}));
                   }
                   data.profileList = profileList;
+                  updateProfileSaved(data.profileList);
                   setData({...data});
                 }}
               />
               <img src={BoldRadioButtonSquareSelected.src} alt="" className={styles.iconOn} />
               <img src={BoldRadioButtonSquare.src} alt="" className={styles.iconOff} />
-              <div className={styles.labelAll}>All</div>
+              <div className={styles.labelAll}>{getLocalizedText('CreateChannel', 'common_filter_all')}</div>
             </label>
           </div>
           <div className={styles.right}>
@@ -1449,6 +1544,7 @@ export const DrawerCharacterSearch = ({
               OptionComponent={SelectBoxOptionComponent}
               onChange={async id => {
                 data.indexSort = id;
+                refresh();
                 setData({...data});
               }}
               customStyles={{
@@ -1473,7 +1569,9 @@ export const DrawerCharacterSearch = ({
             />
           </div>
         </div>
-        <div className={styles.countSelected}>Selected {countSelected}</div>
+        <div className={styles.countSelected}>
+          {getLocalizedText('CreateChannel', 'common_filter_all')} {countSelected}
+        </div>
         <ul className={styles.memberList}>
           {data.profileList.map((profile, index) => {
             return (
@@ -1493,6 +1591,7 @@ export const DrawerCharacterSearch = ({
                             return;
                           }
                           profile.isActive = target.checked;
+                          updateProfileSaved(data.profileList);
                           setData({...data});
                         }}
                       />
@@ -1522,7 +1621,7 @@ export const DrawerCharacterSearch = ({
             onClose();
           }}
         >
-          Cancel
+          {getLocalizedText('common_button_Cancel')}
         </button>
         <button
           className={styles.confirmBtn}
@@ -1532,7 +1631,7 @@ export const DrawerCharacterSearch = ({
             onClose();
           }}
         >
-          Confirm
+          {getLocalizedText('common_button_Confirm')}
         </button>
       </div>
     </Drawer>
@@ -1554,10 +1653,10 @@ const PopupConfirm = ({title, description, onClose, onConfirm}: PopupConfirmType
           <div className={styles.description}>{description}</div>
           <div className={styles.buttonWrap}>
             <div className={styles.cancel} onClick={onClose}>
-              Cancel
+              {getLocalizedText('common_button_Cancel')}
             </div>
             <div className={styles.confirm} onClick={onConfirm}>
-              Confirm
+              {getLocalizedText('common_button_Confirm')}
             </div>
           </div>
         </div>

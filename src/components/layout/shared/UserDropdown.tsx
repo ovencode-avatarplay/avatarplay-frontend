@@ -198,7 +198,7 @@ const UserDropdown = () => {
         setAuth(session);
 
         const jwt = localStorage.getItem('jwt');
-        if(jwt)
+        if(jwt === session?.access_token)
         {
           console.log('토큰이 같아서 인증 갱신 필요없음. 하지만 expire 추후 처리 필요');
           return;
@@ -210,9 +210,9 @@ const UserDropdown = () => {
         
         const language = getLanguageTypeFromText(getCurrentLanguage());
         refreshLanaguage(language, router);
-
+        
         const jwt = localStorage.getItem('jwt');
-        if(jwt)
+        if(jwt === session?.access_token)
         {
           console.log('토큰이 같아서 인증 갱신 필요없음. 하지만 expire 추후 처리 필요');
           return;
