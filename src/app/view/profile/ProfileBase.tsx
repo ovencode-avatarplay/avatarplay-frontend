@@ -1255,7 +1255,7 @@ const ContentSetting = ({
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItemsMine: SelectDrawerItem[] = [
     {
-      name: 'Edit',
+      name: getLocalizedText('common_dropdown_edit'),
       onClick: () => {
         onEdit();
       },
@@ -1272,13 +1272,13 @@ const ContentSetting = ({
     //   },
     // },
     {
-      name: 'Share',
+      name: getLocalizedText('common_dropdown_share'),
       onClick: () => {
         onShare();
       },
     },
     {
-      name: 'Delete',
+      name: getLocalizedText('common_dropdown_delete'),
       onClick: () => {
         onDelete();
       },
@@ -1296,13 +1296,13 @@ const ContentSetting = ({
     //   },
     // },
     {
-      name: 'Share',
+      name: getLocalizedText('common_dropdown_share'),
       onClick: () => {
         onShare();
       },
     },
     {
-      name: 'Report',
+      name: getLocalizedText('common_dropdown_report'),
       onClick: () => {
         onReport();
       },
@@ -2816,7 +2816,9 @@ export const ChannelComponent = ({
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
-        {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        {itemInfo.mediaState == MediaState.Video && (
+          <video autoPlay={true} muted={true} loop={true} className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />
+        )}
         {itemInfo?.isPinFix && (
           <div className={styles.pin}>
             <img src={BoldPin.src} alt="" />
@@ -2889,7 +2891,9 @@ export const ContentComponent = ({
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
-        {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        {itemInfo.mediaState == MediaState.Video && (
+          <video autoPlay={true} muted={true} loop={true} className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />
+        )}
         <div className={styles.bgGradientWrap}>
           <div className={styles.bgGradient}></div>
         </div>
@@ -2981,7 +2985,9 @@ export const CharacterComponent = ({
         {itemInfo.mediaState == MediaState.Image && (
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
-        {itemInfo.mediaState == MediaState.Video && <video className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />}
+        {itemInfo.mediaState == MediaState.Video && (
+          <video autoPlay={true} muted={true} loop={true} className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />
+        )}
         <div className={styles.bgGradientWrap}>
           <div className={styles.bgGradient}></div>
         </div>
@@ -3056,7 +3062,13 @@ export const FeedComponent = ({isMine, index, urlLinkThumbnail, feedInfo, onOpen
           <img className={styles.imgThumbnail} src={feedInfo?.mediaUrlList?.[0]} alt="" />
         )}
         {feedInfo.mediaState == MediaState.Video && (
-          <video className={styles.imgThumbnail} src={feedInfo?.mediaUrlList?.[0]} />
+          <video
+            autoPlay={true}
+            muted={true}
+            loop={true}
+            className={styles.imgThumbnail}
+            src={feedInfo?.mediaUrlList?.[0]}
+          />
         )}
         <div className={styles.bgGradientWrap}>
           <div className={styles.bgGradient}></div>

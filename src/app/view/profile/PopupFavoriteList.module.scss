@@ -103,6 +103,18 @@
       background: white;
       z-index: 2;
     }
+
+    .tabContent {
+      margin-top: 14px;
+
+      &>section {
+        display: none;
+
+        &.active {
+          display: block;
+        }
+      }
+    }
   }
 
   .btnSubscription {

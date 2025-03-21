@@ -47,6 +47,7 @@ import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
 import {bookmark, InteractionType, pinFix, PinFixReq, PinTabType, RecordType} from '@/app/NetWork/CommonNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 type Props = {
   onClose: () => void;
@@ -524,26 +525,26 @@ const ContentSetting = ({
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItems: SelectDrawerItem[] = [
     {
-      name: 'Unfavorite',
+      name: getLocalizedText('common_dropdown_unfavorites'),
       onClick: () => {
         onUnFavorite();
       },
     },
     {
-      name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
+      name: tabContentMenu.isPin ? getLocalizedText('common_dropdown_unpin') : getLocalizedText('common_dropdown_pin'),
       onClick: async () => {
         const isPin = !tabContentMenu.isPin;
         onPin(isPin, tabContentMenu.id, tabContentMenu?.index || 0);
       },
     },
     {
-      name: 'Share',
+      name: getLocalizedText('common_dropdown_share'),
       onClick: () => {
         onShare();
       },
     },
     {
-      name: 'Report',
+      name: getLocalizedText('common_dropdown_report'),
       onClick: () => {
         onReport();
       },

@@ -57,6 +57,7 @@ import {
   RecordType,
 } from '@/app/NetWork/CommonNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 type Props = {
   onClose: () => void;
@@ -104,7 +105,6 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
   };
 
   const refreshList = async (isRefreshAll: boolean = false) => {
-    console.trace('ㅎㅇㅎㅇ');
     if (isRefreshAll) {
       data.profileTabInfo[data.indexTab] = [];
     }
@@ -309,8 +309,24 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
           const name = data.tabContentMenu.shareTitle;
           handleShare(url, name);
         }}
-        onFavorite={async isFavorite => {
-          alert('좋아요 추가 예정');
+        onFavorite={async (isFavorite: boolean, id: number) => {
+          let interactionType: InteractionType = InteractionType.Channel;
+
+          if (data.indexTab == eTabPlayListType.Feed) {
+            interactionType = InteractionType.Feed;
+          } else if (data.indexTab == eTabPlayListType.Character) {
+            interactionType = InteractionType.Character;
+          } else if (data.indexTab == eTabPlayListType.Contents) {
+            interactionType = InteractionType.Contents;
+          } else if (data.indexTab == eTabPlayListType.Game) {
+            interactionType = InteractionType.Story;
+          }
+
+          await bookmark({
+            interactionType: interactionType,
+            isBookMark: isFavorite,
+            typeValueId: id,
+          });
         }}
         onPin={async (isPin: boolean, id: number, index: number) => {
           let pinTabType: PinTabType = PinTabType.None;
@@ -514,7 +530,7 @@ type ContentSettingType = {
   onReport: () => void;
   onShare: () => void;
   onDelete: () => void;
-  onFavorite: (isFavorite: boolean) => void;
+  onFavorite: (isFavorite: boolean, id: number) => void;
   onPin: (isPin: boolean, id: number, index: number) => void;
 };
 const ContentSetting = ({
@@ -525,38 +541,40 @@ const ContentSetting = ({
   onReport = () => {},
   onShare = () => {},
   onDelete = () => {},
-  onFavorite = (isFavorite: boolean) => {},
+  onFavorite = (isFavorite: boolean, id: number) => {},
   onPin = (isPin: boolean, id: number, index: number) => {},
 }: ContentSettingType) => {
   // const {isCharacter, isMyCharacter, isMyPD, isOtherCharacter, isOtherPD, isPD} = getUserType(isMine, profileType);
   let uploadImageItems: SelectDrawerItem[] = [
     {
-      name: tabContentMenu.isFavorite ? 'Unfavorite' : 'Favorite',
+      name: tabContentMenu.isFavorite
+        ? getLocalizedText('common_dropdown_unfavorites')
+        : getLocalizedText('common_dropdown_favorites'),
       onClick: async () => {
-        onFavorite(!tabContentMenu.isFavorite);
+        onFavorite(!tabContentMenu.isFavorite, tabContentMenu.id);
       },
     },
     {
-      name: tabContentMenu.isPin ? 'Unpin' : 'Pin to Top',
+      name: tabContentMenu.isPin ? getLocalizedText('common_dropdown_unpin') : getLocalizedText('common_dropdown_pin'),
       onClick: async () => {
         const isPin = !tabContentMenu.isPin;
         onPin(isPin, tabContentMenu.id, tabContentMenu?.index || 0);
       },
     },
     {
-      name: 'Share',
+      name: getLocalizedText('common_dropdown_share'),
       onClick: () => {
         onShare();
       },
     },
     {
-      name: 'Report',
+      name: getLocalizedText('common_dropdown_report'),
       onClick: () => {
         onReport();
       },
     },
     {
-      name: 'Delete',
+      name: getLocalizedText('common_dropdown_delete'),
       onClick: () => {
         onDelete();
       },

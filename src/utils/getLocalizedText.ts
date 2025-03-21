@@ -69,7 +69,7 @@ const getLocalizedText = (...args: [string] | [string, string] | [string, string
 
   // Key가 없을 경우 빈 문자열 반환
   if (!localizedItem) {
-    console.warn(`로컬라이징 작업 필요: ${key}`);
+    // console.warn(`로컬라이징 작업 필요: ${key}`);
     return `로컬라이징 작업 필요: ${key}`;
   }
 
