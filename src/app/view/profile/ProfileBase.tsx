@@ -840,7 +840,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           </div>
 
           <div className={styles.itemStatistic}>
-            <div className={styles.count}>{data.profileInfo?.profileInfo.postCount}</div>
+            <div className={styles.count}>{data.profileInfo?.profileInfo.contentsCount}</div>
             <div className={styles.label}>{getLocalizedText('Common', 'common_label_contents')}</div>
           </div>
           <div className={styles.itemStatistic}>

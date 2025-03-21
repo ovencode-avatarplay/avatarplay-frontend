@@ -138,6 +138,7 @@ export interface ProfileInfo {
   characterUrlLinkKey: string;
   characterIP: CharacterIP;
   subscriberCount: number;
+  contentsCount: number;
 }
 
 export enum FollowState {
