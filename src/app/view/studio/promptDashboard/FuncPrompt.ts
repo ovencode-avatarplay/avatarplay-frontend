@@ -55,17 +55,17 @@ export const replaceChipsWithKeywords = (html: string, KEYWORDS: Record<string, 
     html = html.replace(regex, keyword);
   });
 
-  // Step 3: <, >를 안전하게 변환 (HTML 해석 방지)
-  html = html.replace(/</g, '〈').replace(/>/g, '〉');
-
-  // Step 4: <div>, <br> 태그를 개행 문자로 변환
+  // Step 3: <div>, <br> 태그를 개행 문자로 변환
   html = html.replace(/<div><br><\/div>/g, '\n');
   html = html.replace(/<div>/g, '\n');
   html = html.replace(/<\/div>/g, '');
   html = html.replace(/<br>/g, '\n');
 
-  // Step 5: 모든 HTML 태그 제거
+  // Step 4: 모든 HTML 태그 제거
   html = html.replace(/<[^>]*>/g, '');
+
+  // Step 5: 그외 <, >를 안전하게 변환 (HTML 해석 방지)
+  html = html.replace(/</g, '〈').replace(/>/g, '〉');
 
   return html === '〈br〉' || html.trim() === '' ? '' : html;
 };

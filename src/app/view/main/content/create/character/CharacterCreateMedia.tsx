@@ -6,8 +6,7 @@ import MaxTextInput, {displayType, inputState, inputType} from '@/components/cre
 import {CharacterMediaInfo} from '@/app/NetWork/CharacterNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
-import ButtonPromptInput from '@/app/view/studio/promptDashboard/ButtonPromptInput';
-import {useRef, useState} from 'react';
+import {useState} from 'react';
 
 interface Props {
   mediaItems: CharacterMediaInfo[];
@@ -36,11 +35,6 @@ const CharacterCreateMedia: React.FC<Props> = ({
   handleEditMediaItem,
   handleMoveMediaItem,
 }) => {
-  const [showAutoCompleteState, setShowAutoCompleteState] = useState<boolean[]>(mediaItems.map(() => false));
-  const [dropdownPositionState, setDropdownPositionState] = useState<{top: number; left: number}[]>(
-    mediaItems.map(() => ({top: 0, left: 0})),
-  );
-
   const renderMediaItem = (
     item: CharacterMediaInfo,
     index: number,

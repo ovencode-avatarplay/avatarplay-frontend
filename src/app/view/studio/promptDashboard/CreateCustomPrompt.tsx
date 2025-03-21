@@ -173,11 +173,15 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
   const convertTextToHTML = (text: string): string => {
     let html = text.trim();
 
+    html = html.replace(/\n/g, '<br>');
+
     Object.keys(KEYWORDS).forEach(keyword => {
       const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
       html = html.replace(
         regex,
-        `<span class="${styles['chip']} ${styles['chipUser']}" contenteditable="false">${KEYWORDS[keyword]}</span>`,
+        `<span class="${styles['chip']} ${styles[`chip${KEYWORDS[keyword]}`]}" contenteditable="false">${
+          KEYWORDS[keyword]
+        }</span>`,
       );
     });
 
