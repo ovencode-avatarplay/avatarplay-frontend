@@ -46,6 +46,7 @@ export type TagDrawerType = {
   tagList: {
     isActive: boolean;
     value: string;
+    langKey?: string;
   }[];
   drawerTitle: string;
   drawerDescription: string;
@@ -107,12 +108,12 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
     dataInterests: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: false, value: 'common_filterinterest_dating'},
-        {isActive: false, value: 'common_filterinterest_love'},
-        {isActive: false, value: 'common_filterinterest_man'},
-        {isActive: false, value: 'common_filterinterest_friends'},
-        {isActive: false, value: 'common_filterinterest_relationships'},
-        {isActive: false, value: 'common_filterinterest_adults'},
+        {isActive: false, value: 'Dating', langKey: 'common_filterinterest_dating'},
+        {isActive: false, value: 'Love', langKey: 'common_filterinterest_love'},
+        {isActive: false, value: 'Man', langKey: 'common_filterinterest_man'},
+        {isActive: false, value: 'Friends', langKey: 'common_filterinterest_friends'},
+        {isActive: false, value: 'Relationships', langKey: 'common_filterinterest_relationships'},
+        {isActive: false, value: 'Adults', langKey: 'common_filterinterest_adults'},
       ],
       drawerTitle: getLocalizedText('profile007_label_002'),
       drawerDescription: getLocalizedText('common_alert_050'),
@@ -467,11 +468,12 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               {data.dataInterests.tagList.map((one, index) => {
                 if (!one.isActive) return;
 
+                const translateValue = getLocalizedText(one?.langKey || '');
                 return (
                   <div className={styles.tag} key={index}>
                     <div className={styles.value}>
                       {/* <input value={one.value} type="hidden" {...register(`interests.${index}`, {required: true})} /> */}
-                      {one.value}
+                      {translateValue}
                     </div>
                     <div
                       className={styles.btnRemoveWrap}
