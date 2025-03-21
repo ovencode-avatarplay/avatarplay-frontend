@@ -724,7 +724,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   const onCopyToClipboard = () => {
     copyCurrentUrlToClipboard(pathname, searchParams);
     data.dataToast.isOpen = true;
-    data.dataToast.message = 'The link has been successfully copied';
+    data.dataToast.message = getLocalizedText('common_alert_091');
     setData({...data});
   };
 
