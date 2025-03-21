@@ -512,7 +512,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             <div className={styles.Image}>
               {info && info?.categoryType === ContentCategoryType.Webtoon && (
                 <div className={styles.webtoonContainer}>
-                  {info?.episodeWebtoonInfo?.webtoonSourceUrlList[0].webtoonSourceUrls.map((url, index) => (
+                  {info?.episodeWebtoonInfo?.webtoonSourceUrlList?.[0]?.webtoonSourceUrls?.map((url, index) => (
                     <img key={index} src={url} loading="lazy" className={styles.webtoonImage} />
                   ))}
                 </div>
