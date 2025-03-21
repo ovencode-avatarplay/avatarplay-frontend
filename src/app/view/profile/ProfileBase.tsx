@@ -1199,7 +1199,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           }}
           sx={{
             bottom: '20px',
-            width: 'calc(100% - 32px)', // 전체 너비
+            width: 'calc(var(--full-width-percent) - 32px)', // 전체 너비
             zIndex: 999,
             '& .MuiPaper-root': {
               height: '47px',
@@ -2844,25 +2844,23 @@ export const ChannelComponent = ({
               <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
             )}
           </div>
-          <div className={styles.right}>
-            <img
-              src={BoldMenuDots.src}
-              alt=""
-              className={styles.iconSetting}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                const dataContextMenu = {
-                  id: itemInfo.id,
-                  index: index,
-                  isPin: itemInfo?.isPinFix || false,
-                  isSettingOpen: true,
-                  shareUrl: window.location.origin + urlLinkThumbnail,
-                  shareName: itemInfo?.name,
-                };
-                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-              }}
-            />
+          <div
+            className={styles.right}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              const dataContextMenu = {
+                id: itemInfo.id,
+                index: index,
+                isPin: itemInfo?.isPinFix || false,
+                isSettingOpen: true,
+                shareUrl: window.location.origin + urlLinkThumbnail,
+                shareName: itemInfo?.name,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          >
+            <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
           </div>
         </div>
       </li>
@@ -2930,30 +2928,28 @@ export const ContentComponent = ({
           <div className={styles.left}>
             <div className={styles.title}>{itemInfo?.name}</div>
           </div>
-          <div className={styles.right}>
-            <img
-              src={BoldMenuDots.src}
-              alt=""
-              className={styles.iconSetting}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
+          <div
+            className={styles.right}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
 
-                const isSingle = itemInfo?.contentType == ContentType.Single;
+              const isSingle = itemInfo?.contentType == ContentType.Single;
 
-                const dataContextMenu = {
-                  id: itemInfo.id,
-                  index: index,
-                  urlLinkKey: itemInfo.urlLinkKey,
-                  isPin: itemInfo?.isPinFix || false,
-                  isSettingOpen: true,
-                  isSingle: isSingle,
-                  shareUrl: window.location.origin + urlLinkThumbnail,
-                  shareName: itemInfo?.name,
-                };
-                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-              }}
-            />
+              const dataContextMenu = {
+                id: itemInfo.id,
+                index: index,
+                urlLinkKey: itemInfo.urlLinkKey,
+                isPin: itemInfo?.isPinFix || false,
+                isSettingOpen: true,
+                isSingle: isSingle,
+                shareUrl: window.location.origin + urlLinkThumbnail,
+                shareName: itemInfo?.name,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          >
+            <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
           </div>
         </div>
       </li>
@@ -3019,26 +3015,24 @@ export const CharacterComponent = ({
               <span className={cx(styles.grade, isOriginal ? styles.original : styles.fan)}>{characterIPStr}</span>
             )}
           </div>
-          <div className={styles.right}>
-            <img
-              src={BoldMenuDots.src}
-              alt=""
-              className={styles.iconSetting}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
+          <div
+            className={styles.right}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
 
-                const dataContextMenu = {
-                  id: itemInfo.id,
-                  index: index,
-                  isPin: itemInfo?.isPinFix || false,
-                  isSettingOpen: true,
-                  shareUrl: window.location.origin + urlLinkThumbnail,
-                  shareName: itemInfo?.name,
-                };
-                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-              }}
-            />
+              const dataContextMenu = {
+                id: itemInfo.id,
+                index: index,
+                isPin: itemInfo?.isPinFix || false,
+                isSettingOpen: true,
+                shareUrl: window.location.origin + urlLinkThumbnail,
+                shareName: itemInfo?.name,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          >
+            <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
           </div>
         </div>
       </li>
@@ -3099,26 +3093,24 @@ export const FeedComponent = ({isMine, index, urlLinkThumbnail, feedInfo, onOpen
             <div className={styles.name}>{feedInfo?.title}</div>
             <div className={(!!feedInfo?.title || '') && styles.name}>{feedInfo?.description}</div>
           </div>
-          <div className={styles.right}>
-            <img
-              src={BoldMenuDots.src}
-              alt=""
-              className={styles.iconSetting}
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                const dataContextMenu = {
-                  id: feedInfo.id,
-                  index: index,
-                  urlLinkKey: feedInfo.urlLinkKey,
-                  isPin: feedInfo?.isPinFix || false,
-                  isSettingOpen: true,
-                  shareUrl: window.location.origin + urlLinkThumbnail,
-                  shareName: feedInfo?.title,
-                };
-                if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
-              }}
-            />
+          <div
+            className={styles.right}
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              const dataContextMenu = {
+                id: feedInfo.id,
+                index: index,
+                urlLinkKey: feedInfo.urlLinkKey,
+                isPin: feedInfo?.isPinFix || false,
+                isSettingOpen: true,
+                shareUrl: window.location.origin + urlLinkThumbnail,
+                shareName: feedInfo?.title,
+              };
+              if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
+            }}
+          >
+            <img src={BoldMenuDots.src} alt="" className={styles.iconSetting} />
           </div>
         </div>
       </li>
