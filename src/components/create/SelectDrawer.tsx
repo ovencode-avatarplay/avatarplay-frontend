@@ -76,7 +76,6 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({
               key={idx}
               className={styles.drawerItem}
               onClick={() => {
-                console.log('asd');
                 item.onClick();
                 onClose(); // 항목 클릭 시 드로어 닫기
               }}

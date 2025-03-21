@@ -86,7 +86,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   essentialWarning,
   curCharacterId,
 }) => {
-  let VisibilityData = {items: ['Private', 'UnListed', 'Public']};
+  let VisibilityData = {items: ['common_dropdown_private', 'common_dropdown_unlisted', 'common_dropdown_public']};
 
   const [llmOpen, setLlmOpen] = useState(false);
 
@@ -242,14 +242,14 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     tooltip?: string,
   ) => {
     const drawerItems: SelectDrawerItem[] = items.map((item, index) => ({
-      name: item.toString(),
+      name: getLocalizedText(item.toString()),
       onClick: () => handler(index),
     }));
 
     return (
       <div className={styles.dropDownArea}>
         <h2 className={styles.title2}>{title}</h2>
-        <CustomSelector value={items[selectedItem]} onClick={() => setIsOpen(!isOpen)} />
+        <CustomSelector value={getLocalizedText(items[selectedItem])} onClick={() => setIsOpen(!isOpen)} />
         <SelectDrawer
           isOpen={isOpen}
           items={drawerItems}
@@ -626,12 +626,16 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         />
 
         <div className={styles.tagContainer}>
-          {renderDropDown(getLocalizedText(Header, 'common_label_002'), selectedTags.join(', '), setTagOpen)}
+          {renderDropDown(
+            getLocalizedText(Header, 'common_label_002'),
+            selectedTags.map(tag => getLocalizedText(`common_tag_${tag}`)).join(', '),
+            setTagOpen,
+          )}
           {renderTag()}
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {tag}
+                {getLocalizedText(`common_tag_${tag}`)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}

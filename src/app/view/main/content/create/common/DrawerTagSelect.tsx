@@ -4,6 +4,7 @@ import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import {LineRegenerate} from '@ui/Icons';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface TagDrawerProps {
   isOpen: boolean;
@@ -30,10 +31,15 @@ const DrawerTagSelect: React.FC<TagDrawerProps> = ({
 }) => {
   return (
     <>
-      <CustomDrawer open={isOpen} onClose={onClose} title="Tag" contentStyle={{padding: '0px', marginTop: '20px'}}>
+      <CustomDrawer
+        open={isOpen}
+        onClose={onClose}
+        title={getLocalizedText('common_label_002')}
+        contentStyle={{padding: '0px', marginTop: '20px'}}
+      >
         <div className={styles.tagArea}>
           <button className={styles.tagRefreshButton} onClick={onRefreshTags}>
-            <div className={styles.tagRefreshText}>Refresh</div>
+            <div className={styles.tagRefreshText}>{getLocalizedText('common_button_refresh')}</div>
             <img className={styles.tagRefreshIcon} src={LineRegenerate.src} />
           </button>
           {/* 태그 선택 부분 */}
@@ -41,7 +47,7 @@ const DrawerTagSelect: React.FC<TagDrawerProps> = ({
             {tagList?.map(tag => (
               <CustomHashtag
                 key={tag}
-                text={tag}
+                text={getLocalizedText(`common_tag_${tag.toLowerCase()}`)}
                 onClickAction={() => onTagSelect(tag)}
                 isSelected={selectedTags.includes(tag)}
               />
