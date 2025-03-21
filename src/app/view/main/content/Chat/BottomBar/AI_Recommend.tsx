@@ -5,6 +5,7 @@ import {recommendQuestion, RequestAiQuestionReq} from '@/app/NetWork/ChatNetwork
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {Variant1, Variant2, Variant3, Variant4, Variant5, Variant6} from '@ui/chatting';
+import { setStreamKey } from '@/redux-store/slices/Chatting';
 
 const LOADING_MESSAGE = '검색중...'; // 로딩 상태를 나타내는 상수
 
@@ -22,6 +23,7 @@ const AI_Recommend: React.FC<AIRecommendProps> = ({open, onClose, onSelectMessag
   const [loadingIndex, setLoadingIndex] = useState(0);
 
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
+  const streamKey = useSelector((state: RootState) => state.chatting.streamKey);
   const containerRef = useRef<HTMLDivElement | null>(null); // 모달 컨테이너 Ref
   useEffect(() => {
     if (containerRef.current) {
@@ -63,6 +65,7 @@ const AI_Recommend: React.FC<AIRecommendProps> = ({open, onClose, onSelectMessag
   const reqRecommendQuestion = async () => {
     const data: RequestAiQuestionReq = {
       episodeId: episodeId,
+      streamKey: streamKey
     };
 
     try {
