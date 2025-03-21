@@ -2759,7 +2759,12 @@ const TabContentComponent = ({
             <div
               className={styles.likeWrap}
               onClick={async () => {
+                const isLike = !channelInfo?.isLike;
                 await sendLike(InteractionType.Channel, profileId, !channelInfo?.isLike);
+                if (isLike && channelInfo?.isDisLike) {
+                  await sendDisLike(InteractionType.Channel, profileId, false);
+                }
+
                 onRefreshTab(false);
               }}
             >
@@ -2771,7 +2776,12 @@ const TabContentComponent = ({
               alt=""
               className={cx(styles.dislike, channelInfo?.isDisLike && styles.active)}
               onClick={async () => {
-                await sendDisLike(InteractionType.Channel, profileId, !channelInfo?.isDisLike);
+                const isDisLike = !channelInfo?.isDisLike;
+                await sendDisLike(InteractionType.Channel, profileId, isDisLike);
+                if (isDisLike && channelInfo?.isLike) {
+                  await sendLike(InteractionType.Channel, profileId, false);
+                }
+
                 onRefreshTab(false);
               }}
             />
