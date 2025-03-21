@@ -25,7 +25,7 @@ import ImageUploadDialog from '../story-main/episode/episode-ImageCharacter/Imag
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
-import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {MediaState, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {MembershipSetting, Subscription} from '@/app/NetWork/network-interface/CommonEnums';
@@ -709,6 +709,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
               isOpen={true}
               onClose={() => setImgUploadType(null)}
               onFileSelect={handleFileSelection}
+              mediaType={MediaState.Image}
             />
           )}
         </div>
@@ -770,6 +771,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                   setImgUploadModalOpen(false);
                 }}
                 onFileSelect={handleFileSelection}
+                mediaType={MediaState.Image}
               />
             )}
           </div>
