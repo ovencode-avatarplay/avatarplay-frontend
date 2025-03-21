@@ -6610,6 +6610,17 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_label_free": {
+    "en-US": "Free",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_sort_dependingonthesituation": {
     "en-US": "Depending on the situation",
     "ko": "",
@@ -11209,7 +11220,7 @@
     "de": ""
   },
   "shared013_label_003": {
-    "en-US": "${0} / month",
+    "en-US": "/ month",
     "ko": "",
     "ja": "",
     "fr": "",
