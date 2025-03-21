@@ -8018,7 +8018,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tag_Aliens": {
+  "common_tag_aliens": {
     "en-US": "Aliens",
     "ko": "",
     "ja": "",
@@ -10154,7 +10154,7 @@
   },
   "createcontent001_button_006": {
     "en-US": "Detail",
-    "ko": "",
+    "ko": " ",
     "ja": "",
     "fr": "",
     "es": "",
@@ -11010,6 +11010,17 @@
     "pt-PT": "",
     "de": ""
   },
+  "profile034_label_003": {
+    "en-US": "Date Registration",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "profile045_title_001": {
     "en-US": "Portfolio",
     "ko": "",
@@ -11022,7 +11033,7 @@
     "de": ""
   },
   "profile045_label_002": {
-    "en-US": "Portfolio{0}",
+    "en-US": "Portfolio",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -11033,7 +11044,7 @@
     "de": ""
   },
   "profile034_label_004": {
-    "en-US": "Date Registration{0.0.0}",
+    "en-US": "Date Registration",
     "ko": "",
     "ja": "",
     "fr": "",
