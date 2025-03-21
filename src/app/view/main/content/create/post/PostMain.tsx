@@ -33,6 +33,7 @@ import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 interface Props {
   id?: string;
@@ -51,6 +52,7 @@ const mediaTypeConfig = {
   },
 };
 const PostMain: React.FC<Props> = ({id}) => {
+  const {back} = useCustomRouter();
   const router = useRouter();
   const [text, setText] = useState(''); // 입력된 텍스트 상태
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
@@ -367,7 +369,7 @@ const PostMain: React.FC<Props> = ({id}) => {
       setLoading(false);
       if (response.resultCode === 0) {
         console.log('✅ Feed created successfully');
-        router.back();
+        back();
       } else {
         console.error('❌ Failed to create feed:', response.resultMessage);
       }
@@ -382,7 +384,7 @@ const PostMain: React.FC<Props> = ({id}) => {
       <CustomArrowHeader
         title="Title"
         onClose={() => {
-          router.back();
+          back();
         }}
       ></CustomArrowHeader>
 
