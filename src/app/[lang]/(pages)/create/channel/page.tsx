@@ -541,7 +541,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 >
                   <div className={styles.tabItem} data-tab={0}>
                     <div className={cx(styles.labelTab, data.indexTab == 0 && styles.active)}>
-                      {getLocalizedText('CreateChannel', 'CreateChannel001_label_003')}
+                      {getLocalizedText('CreateChannel', 'createChannel001_label_003')}
                     </div>
                   </div>
                   <div className={styles.tabItem} data-tab={1}>
