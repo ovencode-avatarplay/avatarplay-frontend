@@ -107,15 +107,15 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
     dataInterests: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: false, value: 'Dating'},
-        {isActive: false, value: 'Love'},
-        {isActive: false, value: 'Man'},
-        {isActive: false, value: 'Friends'},
-        {isActive: false, value: 'Relationships'},
-        {isActive: false, value: 'Adults'},
+        {isActive: false, value: 'common_filterinterest_dating'},
+        {isActive: false, value: 'common_filterinterest_love'},
+        {isActive: false, value: 'common_filterinterest_man'},
+        {isActive: false, value: 'common_filterinterest_friends'},
+        {isActive: false, value: 'common_filterinterest_relationships'},
+        {isActive: false, value: 'common_filterinterest_adults'},
       ],
-      drawerTitle: 'Interests',
-      drawerDescription: 'Please select your area of interests',
+      drawerTitle: getLocalizedText('profile007_label_002'),
+      drawerDescription: getLocalizedText('common_alert_050'),
     },
     dataSkills: {
       isOpenTagsDrawer: false,
@@ -127,8 +127,8 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
         {isActive: false, value: 'Create Music'},
         {isActive: false, value: 'Create Webtoon'},
       ],
-      drawerTitle: 'Skills',
-      drawerDescription: 'Please add the skills you have',
+      drawerTitle: getLocalizedText('common_alert_056'),
+      drawerDescription: getLocalizedText('common_alert_049'),
     },
 
     countValid: {
@@ -1105,7 +1105,7 @@ export const DrawerSelectTags = ({title, description, tags, open, onClose, onCha
           onClose();
         }}
       >
-        Submit
+        {getLocalizedText('common_button_submit')}
       </button>
     </Drawer>
   );

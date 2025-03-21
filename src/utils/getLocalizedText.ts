@@ -66,10 +66,10 @@ const getLocalizedText = (...args: [string] | [string, string] | [string, string
 
   const effectiveLanguage = language || getLanguageFromURL();
   const localizedItem = localizationSources[key];
-
+  console.log('localizedItem: ', localizedItem);
   // Key가 없을 경우 빈 문자열 반환
   if (!localizedItem) {
-    // console.warn(`로컬라이징 작업 필요: ${key}`);
+    console.warn(`로컬라이징 작업 필요: ${key}`);
     return `로컬라이징 작업 필요: ${key}`;
   }
 

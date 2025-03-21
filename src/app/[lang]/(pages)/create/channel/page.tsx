@@ -34,7 +34,12 @@ import cx from 'classnames';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {debounce, Dialog, Drawer} from '@mui/material';
 import DrawerPostCountry from '@/app/view/main/content/create/common/DrawerPostCountry';
-import {getLangKey, LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
+import {
+  getLangKey,
+  LanguageType,
+  mapVisibilityType,
+  MembershipSetting,
+} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import OperatorInviteDrawer from '@/app/view/main/content/create/common/DrawerOperatorInvite';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
@@ -130,29 +135,29 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     dataTag: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: false, value: 'Male'},
-        {isActive: false, value: 'Female'},
-        {isActive: false, value: 'Boyfriend'},
-        {isActive: false, value: 'Girlfriend'},
-        {isActive: false, value: 'Hero'},
-        {isActive: false, value: 'Elf'},
-        {isActive: false, value: 'Romance'},
-        {isActive: false, value: 'Vanilla'},
-        {isActive: false, value: 'Contemporary Fantasy'},
-        {isActive: false, value: 'Isekai'},
-        {isActive: false, value: 'Flirting'},
-        {isActive: false, value: 'Dislike'},
-        {isActive: false, value: 'Comedy'},
-        {isActive: false, value: 'Noir'},
-        {isActive: false, value: 'Horror'},
-        {isActive: false, value: 'Demon'},
-        {isActive: false, value: 'SF'},
-        {isActive: false, value: 'Vampire'},
-        {isActive: false, value: 'Office'},
-        {isActive: false, value: 'Monster'},
-        {isActive: false, value: 'Anime'},
-        {isActive: false, value: 'Books'},
-        {isActive: false, value: 'Aliens'},
+        {isActive: false, value: getLocalizedText('common_tag_male')},
+        {isActive: false, value: getLocalizedText('common_tag_female')},
+        {isActive: false, value: getLocalizedText('common_tag_boyfriend')},
+        {isActive: false, value: getLocalizedText('common_tag_girlfriend')},
+        {isActive: false, value: getLocalizedText('common_tag_hero')},
+        {isActive: false, value: getLocalizedText('common_tag_elf')},
+        {isActive: false, value: getLocalizedText('common_tag_romance')},
+        {isActive: false, value: getLocalizedText('common_tag_vanilla')},
+        {isActive: false, value: getLocalizedText('common_tag_contemporary Fantasy')},
+        {isActive: false, value: getLocalizedText('common_tag_Isekai')},
+        {isActive: false, value: getLocalizedText('common_tag_Flirting')},
+        {isActive: false, value: getLocalizedText('common_tag_Dislike')},
+        {isActive: false, value: getLocalizedText('common_tag_Comedy')},
+        {isActive: false, value: getLocalizedText('common_tag_Noir')},
+        {isActive: false, value: getLocalizedText('common_tag_Horror')},
+        {isActive: false, value: getLocalizedText('common_tag_Demon')},
+        {isActive: false, value: getLocalizedText('common_tag_SF')},
+        {isActive: false, value: getLocalizedText('common_tag_Vampire')},
+        {isActive: false, value: getLocalizedText('common_tag_Office')},
+        {isActive: false, value: getLocalizedText('common_tag_Monster')},
+        {isActive: false, value: getLocalizedText('common_tag_Anime')},
+        {isActive: false, value: getLocalizedText('common_tag_Books')},
+        {isActive: false, value: getLocalizedText('common_tag_Aliens')},
       ],
       drawerTitle: getLocalizedText('common_label_002'),
       drawerDescription: '',
@@ -426,8 +431,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
   const keys = Object.keys(VisibilityType).filter(key => isNaN(Number(key)));
   const visibilityType = getValues('visibilityType');
-  const visibilityTypeStr = keys[visibilityType];
-
+  const visibilityTypeStr = VisibilityType[visibilityType] as keyof typeof mapVisibilityType;
+  const visibilityTypeMapStr = mapVisibilityType[visibilityTypeStr];
   const countMembers = data.dataCharacterSearch.profileList.length;
 
   const onError = (errors: FieldErrors<ChannelInfoForm>) => {
@@ -652,7 +657,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   autoComplete="off"
                 />
                 <CustomSelector
-                  value={visibilityTypeStr}
+                  value={getLocalizedText(visibilityTypeMapStr)}
                   error={errors.visibilityType && isSubmitted}
                   onClick={() => {
                     data.dataVisibility.isOpenTagsDrawer = true;
@@ -748,7 +753,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                             autoComplete="off"
                             {...register(`postCountry.${index}`, {required: true})}
                           /> */}
-                          {countryStr}
+                          {getLocalizedText(countryStr)}
                         </div>
                         <div
                           className={styles.btnRemoveWrap}
@@ -1233,7 +1238,7 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
             // onChange(dataReset);
           }}
         >
-          <div className={styles.labelRefresh}>Refresh</div>
+          <div className={styles.labelRefresh}>{getLocalizedText('common_button_refresh')}</div>
           <img src={LineRegenerate.src} alt="" />
         </div>
         <div
