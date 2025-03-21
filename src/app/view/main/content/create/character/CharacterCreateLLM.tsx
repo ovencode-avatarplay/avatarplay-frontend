@@ -272,8 +272,8 @@ const CharacterCreateLLM: React.FC<Props> = ({
       </div>
       <div className={`${styles.inputDataBoxArea} `}>
         {renderTitle(
-          `${getLocalizedText(Header, 'createcharacter001_label_016')}*`,
-          `${getLocalizedText(Header, 'createcharacter001_desc_017')}`,
+          `${getLocalizedText(Header, 'createcharacter001_label_012')}*`,
+          `${getLocalizedText(Header, 'createcharacter001_desc_016')}`,
         )}
         <ButtonPromptInput
           promptRef={promptRefs.desc}
@@ -289,7 +289,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         />
       </div>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_018'), '')}
+        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_017'), '')}
         <ButtonPromptInput
           promptRef={promptRefs.worldScenario}
           value={replaceChipsWithKeywords(worldScenario, KEYWORDS)}
@@ -303,7 +303,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         />
       </div>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_019'), '')}
+        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_018'), '')}
         <ButtonPromptInput
           promptRef={promptRefs.greeting}
           value={replaceChipsWithKeywords(greeting, KEYWORDS)}
@@ -317,7 +317,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         />
       </div>
       <div className={styles.inputDataBoxArea}>
-        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_021'), '')}
+        {renderTitle(getLocalizedText(Header, 'createcharacter001_label_020'), '')}
         <ButtonPromptInput
           promptRef={promptRefs.secret}
           value={replaceChipsWithKeywords(secret, KEYWORDS)}
@@ -332,8 +332,8 @@ const CharacterCreateLLM: React.FC<Props> = ({
       </div>
       <div className={styles.inputDataBoxArea}>
         {renderTitle(
+          getLocalizedText(Header, 'createcharacter001_label_021'),
           getLocalizedText(Header, 'createcharacter001_label_022'),
-          getLocalizedText(Header, 'createcharacter001_label_023'),
         )}
         <CustomDropDown
           items={promptItems}
@@ -352,8 +352,8 @@ const CharacterCreateLLM: React.FC<Props> = ({
       </div>
 
       {renderTitle(
+        getLocalizedText(Header, 'createcharacter001_desc_023'),
         getLocalizedText(Header, 'createcharacter001_desc_024'),
-        getLocalizedText(Header, 'createcharacter001_desc_025'),
       )}
     </div>
   );

@@ -61,7 +61,7 @@ const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, o
       <div className={styles.membershipArea}>
         <div className={styles.settingArea}>
           <div className={styles.settingTitle}>
-            {getLocalizedText('CreateCharacter', 'createcharacter017_label_010')}
+            {getLocalizedText('common_label_007')}
             {/* 나중에 Common에서 Localize 지정되면 거기서 지정된 값으로 바꿔도 됩니다. */}
           </div>
           <button

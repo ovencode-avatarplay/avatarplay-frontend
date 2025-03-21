@@ -901,7 +901,11 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       {successPopupOpen && (
         <CustomPopup
           type="alert"
-          title={getLocalizedText(Common, 'createcharacter001_title_026')}
+          title={
+            character.id === 0
+              ? getLocalizedText(Common, 'common_alert_100')
+              : getLocalizedText(Common, 'common_alert_101')
+          }
           buttons={[
             {
               label: getLocalizedText(Common, 'common_button_confirm'),

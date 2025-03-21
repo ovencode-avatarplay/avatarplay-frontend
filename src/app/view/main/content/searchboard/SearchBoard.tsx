@@ -81,7 +81,7 @@ const SearchBoard: React.FC = () => {
 
   const dropDownMenuItems: DropDownMenuItem[] = [
     {
-      name: 'Newest',
+      name: getLocalizedText('common_sort_newest'),
       onClick: () => {
         setSearchSort('Newest');
         setSortDropDownOpen(false);
@@ -89,7 +89,7 @@ const SearchBoard: React.FC = () => {
       },
     },
     {
-      name: 'Most Popular',
+      name: getLocalizedText('common_sort_mostpopular'),
       onClick: () => {
         setSearchSort('Most Popular');
         setSortDropDownOpen(false);
@@ -97,7 +97,7 @@ const SearchBoard: React.FC = () => {
       },
     },
     {
-      name: 'Weekly Popular',
+      name: getLocalizedText('common_sort_weeklypopular'),
       onClick: () => {
         setSearchSort('Weekly Popular');
         setSortDropDownOpen(false);
@@ -105,7 +105,7 @@ const SearchBoard: React.FC = () => {
       },
     },
     {
-      name: 'Monthly Popular',
+      name: getLocalizedText('common_sort_monthlypopular'),
       onClick: () => {
         setSearchSort('Monthly Popular');
         setSortDropDownOpen(false);

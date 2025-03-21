@@ -798,7 +798,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 promptValue={backgroundInputValue}
                 handlePromptChange={handleBackgroundInputChange}
                 maxPromptLength={maxLength}
-                labelText={getLocalizedText(Header, 'createcharacter009_label_003')}
+                labelText={getLocalizedText(Header, 'createcharacter008_label_004')}
               />
             </article>
           </div>
