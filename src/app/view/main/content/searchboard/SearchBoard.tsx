@@ -2,13 +2,7 @@
 
 import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 
-import {
-  BannerUrlList,
-  ExploreItem,
-  PaginationRequest,
-  sendGetExplore,
-  sendSearchExplore,
-} from '@/app/NetWork/ExploreNetwork';
+import {BannerUrlList, ExploreItem, sendGetExplore, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
 
 import styles from './SearchBoard.module.css';
 
@@ -60,13 +54,16 @@ const SearchBoard: React.FC = () => {
   const searchLimit = 20;
   const [hasSearchResult, setHasSearchResult] = useState(true);
   const [searchOffset, setSearchOffset] = useState<number>(0);
-  const [contentPage, setContentPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
-  const [characterPage, setCharacterPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
-  const [storyPage, setStoryPage] = useState<PaginationRequest>({offset: 0, limit: searchLimit});
+  const [contentOffset, setContentOffset] = useState<number>(0);
+  const [characterOffset, setCharacterOffset] = useState<number>(0);
+  const [storyOffset, setStoryOffset] = useState<number>(0);
 
   const [selectedSort, setSelectedSort] = useState<number>(0);
   const [sortDropDownOpen, setSortDropDownOpen] = useState<boolean>(false);
   const {changeParams, getParam} = useCustomRouter();
+
+  const [requestFetch, setRequestFetch] = useState<boolean>(false);
+
   const dropDownMenuItems: DropDownMenuItem[] = [
     {
       name: 'Newest',
@@ -130,9 +127,9 @@ const SearchBoard: React.FC = () => {
 
     observer.current = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
+        fetchExploreData(search, searchValue, adultToggleOn, contentOffset, characterOffset, storyOffset);
         setSearchOffset(prev => {
-          const newOffset = prev + 1;
-          fetchExploreData(search, searchValue, adultToggleOn, contentPage, characterPage, storyPage);
+          const newOffset = prev + searchLimit;
           return newOffset;
         });
       }
@@ -143,7 +140,7 @@ const SearchBoard: React.FC = () => {
     return () => {
       observer.current?.disconnect();
     };
-  }, [searchResultList, search]);
+  }, [searchResultList]);
 
   // Func
   const generateFilterList = (): {searchFilterType: number; searchFilterState: number}[] => {
@@ -168,9 +165,9 @@ const SearchBoard: React.FC = () => {
     searchType: searchType,
     searchValue: string,
     adultToggleOn: boolean,
-    contentPage: PaginationRequest,
-    characterPage: PaginationRequest,
-    storyPage: PaginationRequest,
+    contentOffset: number,
+    characterOffset: number,
+    storyOffset: number,
   ) => {
     if (loading) return;
 
@@ -196,33 +193,39 @@ const SearchBoard: React.FC = () => {
         // isOnlyAdults: adultToggleOn,
         // storyPage: contentPage,
         // characterPage,
-        storyOffset: storyPage.offset,
-        characterOffset: characterPage.offset,
-        contentOffset: contentPage.offset,
+        storyOffset: storyOffset,
+        characterOffset: characterOffset,
+        contentOffset: contentOffset,
         limit: searchLimit,
       });
 
       if (result.data !== undefined && result.resultCode === 0) {
         const newList = result.data?.searchExploreList || [];
         setSearchResultList(prevList => {
-          return (contentPage.offset > 0 || characterPage.offset > 0 || storyPage.offset > 0) && prevList
-            ? [...prevList, ...newList]
-            : newList;
+          if (!newList.length) return prevList ?? [];
+
+          const existingItems = prevList ?? [];
+
+          const filteredNewList = newList.filter(newItem => {
+            return !existingItems.some(existingItem => {
+              const sameProfile = existingItem.profileId === newItem.profileId;
+              const sameType = existingItem.typeValueId === newItem.typeValueId;
+
+              return sameProfile && (sameType || !newItem.typeValueId || !existingItem.typeValueId);
+            });
+          });
+
+          return [...existingItems, ...filteredNewList];
         });
-        setContentPage({
-          offset:
-            search === 'All' ? result.data.contentOffset : search === 'Content' ? searchResultList?.length || 0 : 0,
-          limit: searchLimit,
-        });
-        setCharacterPage({
-          offset:
-            search === 'All' ? result.data.characterOffset : search === 'Character' ? searchResultList?.length || 0 : 0,
-          limit: searchLimit,
-        });
-        setStoryPage({
-          offset: search === 'All' ? result.data.storyOffset : search === 'Story' ? searchResultList?.length || 0 : 0,
-          limit: searchLimit,
-        });
+        setContentOffset(
+          search === 'All' ? result.data.contentOffset : search === 'Content' ? searchResultList?.length || 0 : 0,
+        );
+        setCharacterOffset(
+          search === 'All' ? result.data.characterOffset : search === 'Character' ? searchResultList?.length || 0 : 0,
+        );
+        setStoryOffset(
+          search === 'All' ? result.data.storyOffset : search === 'Story' ? searchResultList?.length || 0 : 0,
+        );
 
         if (newList.length === 0) {
           setHasSearchResult(false);
@@ -275,15 +278,19 @@ const SearchBoard: React.FC = () => {
 
   useEffect(() => {
     setHasSearchResult(true);
-    fetchExploreData(
-      search,
-      searchValue,
-      adultToggleOn,
-      {offset: 0, limit: searchLimit},
-      {offset: 0, limit: searchLimit},
-      {offset: 0, limit: searchLimit},
-    );
+    setSearchResultList(null);
+    setStoryOffset(0);
+    setCharacterOffset(0);
+    setContentOffset(0);
+    setRequestFetch(true);
   }, [search]);
+
+  useEffect(() => {
+    if (requestFetch) {
+      fetchExploreData(search, searchValue, adultToggleOn, 0, 0, 0);
+      setRequestFetch(false);
+    }
+  }, [requestFetch]);
 
   const splitterData = [
     {
@@ -339,6 +346,9 @@ const SearchBoard: React.FC = () => {
               setNegativeFilter={setNegativeFilters}
               fetchExploreData={fetchExploreData}
               setSearchOffset={setSearchOffset}
+              setContentOffset={setContentOffset}
+              setCharacterOffset={setCharacterOffset}
+              setStoryOffset={setStoryOffset}
             />
             <header className={styles.filterArea}>
               <div className={styles.tagArea}>

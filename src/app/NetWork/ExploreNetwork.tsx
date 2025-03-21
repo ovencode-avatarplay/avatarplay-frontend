@@ -87,11 +87,6 @@ export const sendGetExplore = async (
   }
 };
 
-export interface PaginationRequest {
-  offset: number;
-  limit: number;
-}
-
 interface filterList {
   searchFilterType: number;
   searchFilterState: number; // 0 : Positive,  1 : Negative
