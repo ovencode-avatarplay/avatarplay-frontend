@@ -145,7 +145,19 @@ export const sendSearchExplore = async (payload: SearchReq): Promise<ResponseAPI
     // POST 요청을 통해 Explore/search API 호출
     const response = await api.post<ResponseAPI<SearchRes>>('/Explore/search', payload);
 
-    return response.data;
+    if (response && response.data.resultCode === 0) return response.data;
+    else {
+      return {
+        resultCode: response.data.resultCode,
+        resultMessage: response.data.resultMessage,
+        data: {
+          searchExploreList: [],
+          storyOffset: 0,
+          characterOffset: 0,
+          contentOffset: 0,
+        },
+      };
+    }
   } catch (error) {
     console.error('Failed to fetch explore search info:', error);
 

@@ -6,7 +6,7 @@ import styles from './SearchBoardHeader.module.css';
 import CustomToggleButton from '@/components/layout/shared/CustomToggleButton';
 import {BoldFilter, BoldFilterOn} from '@ui/Icons';
 import ExploreSearchInput from './ExploreSearchInput';
-import {ExploreItem, PaginationRequest, sendSearchExplore} from '@/app/NetWork/ExploreNetwork';
+import {ExploreItem, PaginationRequest} from '@/app/NetWork/ExploreNetwork';
 import FilterSelector, {FilterDataItem} from '@/components/search/FilterSelector';
 import {searchType} from '../SearchBoard';
 import getLocalizedText from '@/utils/getLocalizedText';
