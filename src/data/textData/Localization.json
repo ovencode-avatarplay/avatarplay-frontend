@@ -2409,7 +2409,7 @@
     "de": ""
   },
   "common_alert_052": {
-    "en-US": "Remove from<br>\"(0}\"",
+    "en-US": "Remove from<br>\"{0}\"",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -4278,6 +4278,17 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_language_chinese": {
+    "en-US": "chinese",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_language_japanese": {
     "en-US": "Japanese",
     "ko": "",
@@ -4289,8 +4300,41 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_language_french": {
-    "en-US": "French",
+  "common_language_hind": {
+    "en-US": "Hind",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_portuguese": {
+    "en-US": "Portuguese",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_indonesian": {
+    "en-US": "Indonesian",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_thai": {
+    "en-US": "thai",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -4311,30 +4355,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_language_simplifiedchinese": {
-    "en-US": "Simplified Chinese",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_language_Traditionalchinese": {
-    "en-US": "Traditional Chinese",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_language_portuguese": {
-    "en-US": "Portuguese",
+  "common_language_french": {
+    "en-US": "French",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -4456,6 +4478,39 @@
   },
   "common_country_france": {
     "en-US": "France",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_country_taiwan": {
+    "en-US": "Taiwan",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_country_portugal": {
+    "en-US": "Portugal",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_country_germany": {
+    "en-US": "Germany",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -5105,6 +5160,17 @@
   },
   "common_filter_episode": {
     "en-US": "Episode",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_filter_content": {
+    "en-US": "contents",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -6271,6 +6337,17 @@
   },
   "common_sample_093": {
     "en-US": "https://",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_sample_094": {
+    "en-US": "This is description of the character {Character description is also public to other users)",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -7907,6 +7984,39 @@
     "zh-TW": "辦公室",
     "pt-PT": "Escritório",
     "de": "Büro"
+  },
+  "common_tag_hero": {
+    "en-US": "Hero",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_dislike": {
+    "en-US": "Dislike",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_Aliens": {
+    "en-US": "Aliens",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
   },
   "common_tagage_teen": {
     "en-US": "Teen (18+)",
@@ -9932,6 +10042,17 @@
     "pt-PT": "",
     "de": ""
   },
+  "createcharacter017_label_019": {
+    "en-US": "Comment",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "createcharacter018_title_001": {
     "en-US": "AI Model Setup",
     "ko": "",
@@ -10681,7 +10802,7 @@
     "de": ""
   },
   "createchannel002_label_001": {
-    "en-US": "Members {0}",
+    "en-US": "Members",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -11109,6 +11230,17 @@
     "pt-PT": "",
     "de": ""
   },
+  "shared015_label_002": {
+    "en-US": "Owner",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "shared016_label_001": {
     "en-US": "If Selected, Individual sales are not possible ",
     "ko": "",
@@ -11287,17 +11419,6 @@
   },
   "shared032_title_001": {
     "en-US": "Language",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  " ": {
-    "en-US": "",
     "ko": "",
     "ja": "",
     "fr": "",

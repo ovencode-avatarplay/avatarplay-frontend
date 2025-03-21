@@ -59,8 +59,8 @@ const getLocalizedText = (...args: [string] | [string, string] | [string, string
 
   if (effectiveLanguage === null) return localizedItem['en-US'] || '';
 
-  // return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
-  return localizedItem[effectiveLanguage] || `LQA: ${key} + ${getCurrentLanguage()}`;
+  return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
+  // return localizedItem[effectiveLanguage] || `LQA: ${key} + ${getCurrentLanguage()}`;
 };
 
 export default getLocalizedText;
