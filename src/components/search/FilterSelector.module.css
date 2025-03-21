@@ -130,11 +130,45 @@
     box-shadow: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset, 0px -4px 4px 0px rgba(255, 255, 255, 0.20) inset;
     
     color: var(--Grays-White, #FFF);
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: Lato;
+    font-feature-settings: 'liga' off, 'clig' off; 
     font-size: 14px;
     font-style: normal;
     font-weight: 600;
     line-height: 20px; /* 142.857% */
     letter-spacing: -0.4px;
+}
+
+.refreshButton
+{
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    justify-self: flex-end;
+    align-items: flex-end;
+    align-self: flex-end;
+    gap: 5px;
+}
+
+.refreshText
+{
+    color: var(--Neutral-500, #9AA0A6);
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 160%; /* 22.4px */
+    letter-spacing: 0.2px;
+
+}
+
+.refreshIcon
+{
+    display: flex;
+    width: 20px;
+    height: 20px;
+    padding: 1.068px 1.761px 1.068px 1.76px;
+    justify-content: center;
+    align-items: center;
+
 }

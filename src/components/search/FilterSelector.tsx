@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Modal, Box} from '@mui/material';
 import styles from './FilterSelector.module.css';
-import {BoldRadioButton, BoldRadioButtonSelected, BoldRadioButtonSubtract} from '@ui/Icons';
+import {BoldRadioButton, BoldRadioButtonSelected, BoldRadioButtonSubtract, LineRefresh} from '@ui/Icons';
 import CustomButton from '../layout/shared/CustomButton';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 export interface FilterDataItem {
   name: string;
@@ -65,8 +66,12 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
               </li>
             ))}
           </ul>
+          <button className={styles.refreshButton} onClick={() => {}}>
+            <div className={styles.refreshText}>{getLocalizedText('common_button_refresh')}</div>
+            <img className={styles.refreshIcon} src={LineRefresh.src} />
+          </button>
           <CustomButton size="Large" state="Normal" type="ColorPrimary" onClick={handleSave} style={{width: '100%'}}>
-            Save
+            {getLocalizedText('common_button_save')}
           </CustomButton>
         </div>
       </Box>

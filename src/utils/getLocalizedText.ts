@@ -2,6 +2,7 @@ import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import localizationData from '../data/textData/Localization.json';
 import Cookies from 'js-cookie';
 import {getLanguageFromURL} from './browserInfo';
+import {getCurrentLanguage} from './UrlMove';
 
 /**
  * 각 텍스트 항목의 언어별 텍스트 구조를 정의
@@ -58,7 +59,8 @@ const getLocalizedText = (...args: [string] | [string, string] | [string, string
 
   if (effectiveLanguage === null) return localizedItem['en-US'] || '';
 
-  return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
+  // return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
+  return localizedItem[effectiveLanguage] || `LQA: ${key} + ${getCurrentLanguage()}`;
 };
 
 export default getLocalizedText;
