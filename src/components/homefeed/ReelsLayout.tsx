@@ -162,37 +162,12 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   };
 
   const [hasMore, setHasMore] = useState(false); // 현재 슬라이드 인덱스
-  const loadMoreFeeds = async () => {
-    try {
-      const lang = getCurrentLanguage();
-
-      const result = await sendGetRecommendFeed({
-        recommendState: recommendState,
-        languageType: lang,
-      });
-
-      if (result.resultCode === 0 && result.data) {
-        const feeds = result.data.feedInfoList;
-        console.log(feeds);
-        setAllFeeds(prevFeeds => [...prevFeeds, ...feeds]);
-
-        // 화면 렌더링용 info 배열에도 추가
-        setInfo(prevInfo => [...prevInfo, ...feeds.slice(0, 2)]);
-      } else {
-        setHasMore(false); // 실패 또는 데이터 없을 경우 중지
-      }
-    } catch (error) {
-      console.error('Failed to load more feeds:', error);
-      setHasMore(false);
-    }
-  };
 
   useEffect(() => {
     fetchRecommendFeed();
   }, [initialFeed, getEmailFromJwt(), selectedTab]);
 
   useEffect(() => {
-    console.log('info', info);
     if (typeof window !== 'undefined') {
       const currentPath = window.location.pathname; // 현재 경로
       const basePath = '/ko/main/homefeed'; // 동적 라우팅이 없는 기본 경로
@@ -214,41 +189,85 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       console.error('Error while viewing feed:', error);
     }
   };
-
   const handleScroll = () => {
-    if (info.length == allFeeds.length - 2) {
+    const slides = document.querySelectorAll(`.${styles.reelSlide}`);
+    const scrollPosition = window.scrollY;
+    let cumulativeHeight = 0;
+    let calculatedIndex = 0;
+
+    for (let i = 0; i < slides.length; i++) {
+      const slide = slides[i] as HTMLElement; // 👈 명시적 캐스팅 추가
+      cumulativeHeight += slide.offsetHeight;
+
+      if (scrollPosition + window.innerHeight / 2 < cumulativeHeight) {
+        calculatedIndex = i;
+        break;
+      }
+    }
+
+    console.log('index', calculatedIndex, slides.length);
+    // 인덱스 급격한 점프 방지 로직
+    setCurrentSlideIndex(prevIndex => {
+      if (calculatedIndex > prevIndex + 1) {
+        return prevIndex + 1;
+      } else if (calculatedIndex < prevIndex - 1) {
+        return prevIndex - 1;
+      } else {
+        return calculatedIndex;
+      }
+    });
+  };
+
+  useEffect(() => {
+    const currentItem = allFeeds[currentSlideIndex];
+
+    if (currentItem && currentItem.urlLinkKey) {
+      const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
+      if (window.location.pathname !== newUrl) {
+        window.history.pushState(null, '', newUrl);
+      }
+      viewFeed(currentItem.id);
+    }
+
+    // 데이터 미리 로딩
+    if (info.length <= currentSlideIndex + 2 && info.length < allFeeds.length) {
+      const nextItems = allFeeds.slice(info.length, info.length + 5);
+      setInfo(prev => [...prev, ...nextItems]);
+    }
+
+    if (currentSlideIndex >= allFeeds.length - 2 && info.length === allFeeds.length) {
       loadMoreFeeds();
     }
+  }, [currentSlideIndex]); // currentSlideIndex가 변경될 때만 실행
 
-    const sectionHeight = window.innerHeight;
-    const scrollPosition = window.scrollY;
-    const newIndex = Math.round(scrollPosition / sectionHeight);
+  const loadMoreFeeds = async () => {
+    try {
+      const lang = getCurrentLanguage();
 
-    if (newIndex < 0 || newIndex >= allFeeds.length) return;
+      const result = await sendGetRecommendFeed({
+        recommendState: recommendState,
+        languageType: lang,
+      });
 
-    if (newIndex !== currentSlideIndex) {
-      console.log('newIndex', newIndex);
-      setCurrentSlideIndex(newIndex);
-      const currentItem = allFeeds[newIndex];
+      if (result.resultCode === 0 && result.data) {
+        const feeds = result.data.feedInfoList;
+        console.log(feeds);
+        console.log(allFeeds);
+        setAllFeeds(prevFeeds => [...prevFeeds, ...feeds]);
 
-      if (currentItem && currentItem.urlLinkKey) {
-        // ✅ 현재 URL과 다를 때만 변경하여 불필요한 pushState 방지
-        const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
-        if (window.location.pathname !== newUrl) {
-          window.history.pushState(null, '', newUrl);
-        }
-
-        // ✅ API 호출도 꼭 필요할 때만 실행
-        viewFeed(currentItem.id);
+        console.log(allFeeds);
+        // 화면 렌더링용 info 배열에도 추가
+        setInfo(prevInfo => [...prevInfo, ...feeds.slice(0, 2)]);
+      } else {
+        setHasMore(false); // 실패 또는 데이터 없을 경우 중지
       }
-
-      // ✅ 다음 데이터를 미리 로드하는 로직 유지
-      if (newIndex >= info.length - 1 && info.length < allFeeds.length) {
-        const nextItems = allFeeds.slice(info.length, info.length + 2);
-        setInfo(prev => [...prev, ...nextItems]);
-      }
+    } catch (error) {
+      console.error('Failed to load more feeds:', error);
     }
   };
+  useEffect(() => {
+    console.log('Updated allFeeds:', allFeeds);
+  }, [allFeeds]);
 
   useEffect(() => {
     if (isProfile) {

@@ -11,7 +11,6 @@ import {getCurrentLanguage} from '@/utils/UrlMove';
 const HomeFeedWithUrlKey: React.FC = () => {
   const params = useParams();
   const urlLinkKey = Array.isArray(params?.urlLinkKey) ? params?.urlLinkKey[0] : params?.urlLinkKey; // string으로 변환
-  console.log('urlkey:', urlLinkKey);
 
   const [feedData, setFeedData] = useState<FeedInfo>();
 

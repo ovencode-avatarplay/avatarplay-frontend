@@ -200,7 +200,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     if (onClose) {
       onClose();
     } else {
-      router.back();
+      back();
     }
   };
 
