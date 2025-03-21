@@ -153,6 +153,8 @@ const CharacterCreateLLM: React.FC<Props> = ({
   const convertTextToHTML = (text: string): string => {
     let html = text.trim();
 
+    html = html.replace(/\n/g, '<br>');
+
     Object.keys(KEYWORDS).forEach(keyword => {
       const regex = new RegExp(keyword.replace(/[{}]/g, '\\$&'), 'g');
       html = html.replace(
