@@ -415,7 +415,7 @@ const TabContentComponent = ({
                 index={index}
                 feedInfo={{
                   commentCount: 0,
-                  description: one.description,
+                  description: one?.description || '',
                   disLikeCount: 0,
                   hashTag: '',
                   isBookmark: false,
