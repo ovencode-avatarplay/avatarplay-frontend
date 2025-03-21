@@ -1,6 +1,6 @@
 {
   "Auth_SignIn_DBError_01": {
-    "en-US": "",
+    "en-US": "프로필 정보를 생성하지 못 했습니다.",
     "ko": "프로필 정보를 생성하지 못 했습니다.",
     "ja": "",
     "fr": "",
@@ -11,7 +11,7 @@
     "de": ""
   },
   "Auth_SignIn_Invalid_01": {
-    "en-US": "",
+    "en-US": "로그인 정보가 일치 하지 않습니다.",
     "ko": "로그인 정보가 일치 하지 않습니다.",
     "ja": "",
     "fr": "",
@@ -22,7 +22,7 @@
     "de": ""
   },
   "Auth_GetProfileInfo_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -33,7 +33,7 @@
     "de": ""
   },
   "Auth_GetProfileInfo_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -44,7 +44,7 @@
     "de": ""
   },
   "Auth_GetLanguage_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -55,8 +55,8 @@
     "de": ""
   },
   "Auth_ChangeLanguage_Unauthorized_01": {
-    "en-US": "",
-    "ko": "유저 정보가 잘못되었습니다.",
+    "en-US": " ",
+    "ko": " ",
     "ja": "",
     "fr": "",
     "es": "",
@@ -66,7 +66,7 @@
     "de": ""
   },
   "Character_CreateCharacter_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -77,7 +77,7 @@
     "de": ""
   },
   "Character_CreateCharacter_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -88,7 +88,7 @@
     "de": ""
   },
   "Character_CreateCharacter_Invalid_01": {
-    "en-US": "",
+    "en-US": "캐릭터 정보 번역이 불가능합니다.",
     "ko": "캐릭터 정보 번역이 불가능합니다.",
     "ja": "",
     "fr": "",
@@ -99,7 +99,7 @@
     "de": ""
   },
   "Character_CreateCharacter_DBError_01": {
-    "en-US": "",
+    "en-US": "프로필 정보를 생성하지 못 했습니다.",
     "ko": "프로필 정보를 생성하지 못 했습니다.",
     "ja": "",
     "fr": "",
@@ -110,7 +110,7 @@
     "de": ""
   },
   "Character_GetCharacter_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -121,7 +121,7 @@
     "de": ""
   },
   "Character_GetCharacter_NotFound_01": {
-    "en-US": "",
+    "en-US": "캐릭터 정보를 찾을 수 없습니다.",
     "ko": "캐릭터 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -132,7 +132,7 @@
     "de": ""
   },
   "Character_GetCharacter_Invalid_01": {
-    "en-US": "",
+    "en-US": "캐릭터 정보 번역이 불가능합니다.",
     "ko": "캐릭터 정보 번역이 불가능합니다.",
     "ja": "",
     "fr": "",
@@ -143,7 +143,7 @@
     "de": ""
   },
   "Character_GetCharacterList_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -154,7 +154,7 @@
     "de": ""
   },
   "Character_GetCharacterList_NotFound_01": {
-    "en-US": " ",
+    "en-US": "캐릭터 정보를 찾을 수 없습니다.",
     "ko": "캐릭터 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -165,7 +165,7 @@
     "de": ""
   },
   "Character_GetCharacterList_Invalid_01": {
-    "en-US": "",
+    "en-US": "캐릭터 정보 번역이 불가능합니다.",
     "ko": "캐릭터 정보 번역이 불가능합니다.",
     "ja": "",
     "fr": "",
@@ -176,7 +176,7 @@
     "de": ""
   },
   "Character_DeleteCharacter_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -187,7 +187,7 @@
     "de": ""
   },
   "Character_DeleteCharacter_NotFound_01": {
-    "en-US": "",
+    "en-US": "삭제할 캐릭터를 찾을 수 없습니다.",
     "ko": "삭제할 캐릭터를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -198,7 +198,7 @@
     "de": ""
   },
   "Character_DeleteCharacter_Invalid_01": {
-    "en-US": "",
+    "en-US": "캐릭터가 에피소드에 포함되어 삭제할 수 없습니다.",
     "ko": "캐릭터가 에피소드에 포함되어 삭제할 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -209,7 +209,7 @@
     "de": ""
   },
   "Character_SaveGalleryImages_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -220,7 +220,7 @@
     "de": ""
   },
   "Character_SaveGalleryImages_NotFound_01": {
-    "en-US": "",
+    "en-US": "캐릭터를 찾을 수 없습니다.",
     "ko": "캐릭터를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -231,7 +231,7 @@
     "de": ""
   },
   "Character_DeleteGalleryImages_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -242,7 +242,7 @@
     "de": ""
   },
   "Character_DeleteGalleryImages_NotFound_01": {
-    "en-US": "",
+    "en-US": "삭제할 캐릭터 이미지를 찾을 수 없습니다.",
     "ko": "삭제할 캐릭터 이미지를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -253,7 +253,7 @@
     "de": ""
   },
   "Character_DeleteGalleryImages_NotFound_02": {
-    "en-US": "",
+    "en-US": "캐릭터를 찾을 수 없습니다.",
     "ko": "캐릭터를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -264,7 +264,7 @@
     "de": ""
   },
   "Character_DeleteGalleryImages_Invalid_01": {
-    "en-US": "",
+    "en-US": "캐릭터에 메인 이미지는 삭제 할 수 없습니다.",
     "ko": "캐릭터에 메인 이미지는 삭제 할 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -275,7 +275,7 @@
     "de": ""
   },
   "Character_SelectImageCharacter_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -286,7 +286,7 @@
     "de": ""
   },
   "Character_SelectImageCharacter_NotFound_01": {
-    "en-US": "",
+    "en-US": "삭제할 캐릭터 이미지를 찾을 수 없습니다.",
     "ko": "삭제할 캐릭터 이미지를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -297,7 +297,7 @@
     "de": ""
   },
   "Character_SelectImageCharacter_NotFound_02": {
-    "en-US": "",
+    "en-US": "캐릭터를 찾을 수 없습니다.",
     "ko": "캐릭터를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -308,7 +308,7 @@
     "de": ""
   },
   "Chatting_UrlEnterEpisodeChatting_NotFound_01": {
-    "en-US": "",
+    "en-US": "스토리 정보를 찾을 수 없습니다.",
     "ko": "스토리 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -319,7 +319,7 @@
     "de": ""
   },
   "Chatting_UrlEnterEpisodeChatting_NotFound_02": {
-    "en-US": "",
+    "en-US": "캐릭터를 찾을 수 없습니다.",
     "ko": "캐릭터를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -330,7 +330,7 @@
     "de": ""
   },
   "Chatting_UrlEnterEpisodeChatting_NotFound_03": {
-    "en-US": "",
+    "en-US": "에피소드에 적용된 트리거 정보를 찾을 수 없습니다.",
     "ko": "에피소드에 적용된 트리거 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -341,7 +341,7 @@
     "de": ""
   },
   "Chatting_UrlEnterEpisodeChatting_Invalid_01": {
-    "en-US": "",
+    "en-US": "스토리 생성자만 입장 가능한 채팅방 입니다.",
     "ko": "스토리 생성자만 입장 가능한 채팅방 입니다.",
     "ja": "",
     "fr": "",
@@ -352,7 +352,7 @@
     "de": ""
   },
   "Chatting_UrlEnterEpisodeChatting_Invalid_02": {
-    "en-US": "",
+    "en-US": "링크 주소로만 입장 가능한 채팅방 입니다.",
     "ko": "링크 주소로만 입장 가능한 채팅방 입니다.",
     "ja": "",
     "fr": "",
@@ -363,7 +363,7 @@
     "de": ""
   },
   "Chatting_UrlEnterEpisodeChatting_Invalid_03": {
-    "en-US": "",
+    "en-US": "에피소드 정보 번역이 불가능합니다.",
     "ko": "에피소드 정보 번역이 불가능합니다.",
     "ja": "",
     "fr": "",
@@ -374,7 +374,7 @@
     "de": ""
   },
   "Chatting_SendChatMessage_NotFound_01": {
-    "en-US": "",
+    "en-US": "ssid 정보를 찾을 수 없습니다.",
     "ko": "ssid 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -385,7 +385,7 @@
     "de": ""
   },
   "Chatting_SendChatMessage_NotFound_02": {
-    "en-US": "",
+    "en-US": "에피소드 정보를 찾을 수 없습니다.",
     "ko": "에피소드 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -396,7 +396,7 @@
     "de": ""
   },
   "Chatting_SendChatMessage_NotFound_03": {
-    "en-US": "",
+    "en-US": "캐릭터를 찾을 수 없습니다.",
     "ko": "캐릭터를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -407,7 +407,7 @@
     "de": ""
   },
   "Chatting_GetChatResult_Invalid_01": {
-    "en-US": "",
+    "en-US": "AI 채팅 메세지 정보가 없습니다.",
     "ko": "AI 채팅 메세지 정보가 없습니다.",
     "ja": "",
     "fr": "",
@@ -418,7 +418,7 @@
     "de": ""
   },
   "Chatting_GetChatResult_NotFound_01": {
-    "en-US": "",
+    "en-US": "전체 정보를 찾을 수 없습니다.",
     "ko": "전체 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -429,7 +429,7 @@
     "de": ""
   },
   "Chatting_GetChatResult_NotFound_02": {
-    "en-US": "",
+    "en-US": "에피소드 유저 정보를 찾을 수 없습니다.",
     "ko": "에피소드 유저 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -440,7 +440,7 @@
     "de": ""
   },
   "Chatting_GetChatResult_NotFound_03": {
-    "en-US": "",
+    "en-US": "에피소드 정보를 찾을 수 없습니다.",
     "ko": "에피소드 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -451,7 +451,7 @@
     "de": ""
   },
   "Chatting_GetChatResult_NotFound_04": {
-    "en-US": "",
+    "en-US": "캐릭터 정보를 찾을 수 없습니다.",
     "ko": "캐릭터 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -462,7 +462,7 @@
     "de": ""
   },
   "Chatting_GetChatResult_NotFound_05": {
-    "en-US": "",
+    "en-US": "이전 채팅 정보를 찾을 수 없습니다.",
     "ko": "이전 채팅 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -473,7 +473,7 @@
     "de": ""
   },
   "Chatting_RequestAiQuestion_NotFound_01": {
-    "en-US": "",
+    "en-US": "전체 정보를 찾을 수 없습니다.",
     "ko": "전체 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -484,7 +484,7 @@
     "de": ""
   },
   "Chatting_RequestAiQuestion_NotFound_02": {
-    "en-US": "",
+    "en-US": "에피소드 유저 정보를 찾을 수 없습니다.",
     "ko": "에피소드 유저 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -495,7 +495,7 @@
     "de": ""
   },
   "Chatting_RequestAiQuestion_NotFound_03": {
-    "en-US": "",
+    "en-US": "에피소드 정보를 찾을 수 없습니다.",
     "ko": "에피소드 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -506,7 +506,7 @@
     "de": ""
   },
   "Chatting_RequestAiQuestion_NotFound_04": {
-    "en-US": "",
+    "en-US": "스토리 정보를 찾을 수 없습니다.",
     "ko": "스토리 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -517,7 +517,7 @@
     "de": ""
   },
   "Chatting_RequestAiQuestion_NotFound_05": {
-    "en-US": "",
+    "en-US": "캐릭터 정보를 찾을 수 없습니다.",
     "ko": "캐릭터 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -528,7 +528,7 @@
     "de": ""
   },
   "Chatting_RequestAiQuestion_NotFound_06": {
-    "en-US": "",
+    "en-US": "유저 컨텐츠 정보를 찾을 수 없습니다.",
     "ko": "유저 컨텐츠 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -539,7 +539,7 @@
     "de": ""
   },
   "Chatting_RequestAiQuestion_NotFound_07": {
-    "en-US": "",
+    "en-US": "지난 채팅 정보를 찾을 수 없습니다.",
     "ko": "지난 채팅 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -550,7 +550,7 @@
     "de": ""
   },
   "Chatting_RequestAiQuestion_Invalid_01": {
-    "en-US": "",
+    "en-US": "LLM 정보를 가져올 수 없습니다.",
     "ko": "LLM 정보를 가져올 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -561,7 +561,7 @@
     "de": ""
   },
   "Chatting_RetryChatMessage_NotFound_01": {
-    "en-US": "",
+    "en-US": "채팅 정보를 가져올 수 없습니다.",
     "ko": "채팅 정보를 가져올 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -572,7 +572,7 @@
     "de": ""
   },
   "Chatting_RetryChatMessage_Invalid_01": {
-    "en-US": "",
+    "en-US": "질문, 대답 정보가 없습니다.",
     "ko": "질문, 대답 정보가 없습니다.",
     "ja": "",
     "fr": "",
@@ -583,7 +583,7 @@
     "de": ""
   },
   "Chatting_RegistFavoriteEmoticon_NotFound_01": {
-    "en-US": "",
+    "en-US": "전체 정보를 찾을 수 없습니다.",
     "ko": "전체 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -594,7 +594,7 @@
     "de": ""
   },
   "Chatting_RegistFavoriteEmoticon_NotFound_02": {
-    "en-US": "",
+    "en-US": "유저 정보를 가져 올 수 없습니다.",
     "ko": "유저 정보를 가져 올 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -605,7 +605,7 @@
     "de": ""
   },
   "Chatting_RegistFavoriteEmoticon_NotFound_03": {
-    "en-US": "",
+    "en-US": "이모티콘 정보를 가져 올 수 없습니다.",
     "ko": "이모티콘 정보를 가져 올 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -616,7 +616,7 @@
     "de": ""
   },
   "Chatting_RegistFavoriteEmoticon_NotFound_04": {
-    "en-US": "",
+    "en-US": "유저 이모티콘 정보를 가져 올 수 없습니다.",
     "ko": "유저 이모티콘 정보를 가져 올 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -627,7 +627,7 @@
     "de": ""
   },
   "Content_GetContent_NotFound_01": {
-    "en-US": "",
+    "en-US": "스토리 정보를 찾을 수 없습니다.",
     "ko": "스토리 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -638,7 +638,7 @@
     "de": ""
   },
   "Content_GetTotalContentInfo_NotFound_01": {
-    "en-US": "",
+    "en-US": "스토리 정보를 찾을 수 없습니다.",
     "ko": "스토리 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -649,7 +649,7 @@
     "de": ""
   },
   "Content_SaveContent_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -660,7 +660,7 @@
     "de": ""
   },
   "Content_SaveContent_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -671,7 +671,7 @@
     "de": ""
   },
   "Content_SaveContent_NotFound_01": {
-    "en-US": "",
+    "en-US": "스토리 정보를 찾을 수 없습니다.",
     "ko": "스토리 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -682,7 +682,7 @@
     "de": ""
   },
   "Content_SaveContent_Invalid_01": {
-    "en-US": "",
+    "en-US": "스토리 수정 권한이 없습니다.",
     "ko": "스토리 수정 권한이 없습니다.",
     "ja": "",
     "fr": "",
@@ -693,7 +693,7 @@
     "de": ""
   },
   "Content_GetContentDashBoard_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보를 가져 올 수 없습니다.",
     "ko": "유저 정보를 가져 올 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -704,7 +704,7 @@
     "de": ""
   },
   "Content_GetContentDashBoard_NotFound_01": {
-    "en-US": "",
+    "en-US": "전체 정보를 찾을 수 없습니다.",
     "ko": "전체 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -715,7 +715,7 @@
     "de": ""
   },
   "Content_GetContentDashBoard_NotFound_02": {
-    "en-US": "",
+    "en-US": "스토리 정보를 찾을 수 없습니다.",
     "ko": "스토리 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -726,7 +726,7 @@
     "de": ""
   },
   "Content_DeleteContent_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -737,7 +737,7 @@
     "de": ""
   },
   "Content_DeleteContent_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -748,7 +748,7 @@
     "de": ""
   },
   "Content_DeleteContent_Invalid_01": {
-    "en-US": "",
+    "en-US": "스토리 삭제 권한이 없습니다.",
     "ko": "스토리 삭제 권한이 없습니다.",
     "ja": "",
     "fr": "",
@@ -759,7 +759,7 @@
     "de": ""
   },
   "Content_LikeContent_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -770,7 +770,7 @@
     "de": ""
   },
   "Content_LikeContent_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -781,7 +781,7 @@
     "de": ""
   },
   "Content_LikeContent_NotFound_01": {
-    "en-US": "",
+    "en-US": "스토리 정보를 찾을 수 없습니다.",
     "ko": "스토리 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -792,7 +792,7 @@
     "de": ""
   },
   "Explore_GetSearchList_NotFound_01": {
-    "en-US": "",
+    "en-US": "검색한 스토리 정보를 찾을 수 없습니다.",
     "ko": "검색한 스토리 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -803,7 +803,7 @@
     "de": ""
   },
   "Explore_GetSearchList_NotFound_02": {
-    "en-US": "",
+    "en-US": "검색한 캐릭터  정보를 찾을 수 없습니다.",
     "ko": "검색한 캐릭터  정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -814,7 +814,7 @@
     "de": ""
   },
   "Explore_GetSearchList_NotFound_03": {
-    "en-US": "",
+    "en-US": "검색한 스토리 정보를 찾을 수 없습니다.",
     "ko": "검색한 스토리 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -825,7 +825,7 @@
     "de": ""
   },
   "Explore_GetSearchList_NotFound_04": {
-    "en-US": "",
+    "en-US": "검색한 캐릭터  정보를 찾을 수 없습니다.",
     "ko": "검색한 캐릭터  정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -836,7 +836,7 @@
     "de": ""
   },
   "Feed_CreateFeed_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -847,7 +847,7 @@
     "de": ""
   },
   "Feed_CreateFeed_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -858,7 +858,7 @@
     "de": ""
   },
   "Feed_CreateFeed_Invalid_01": {
-    "en-US": "",
+    "en-US": "해시태그 정보를 추출 할 수 없습니다.",
     "ko": "해시태그 정보를 추출 할 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -869,7 +869,7 @@
     "de": ""
   },
   "Feed_CreateFeed_NotFound_01": {
-    "en-US": "",
+    "en-US": "피드를 찾을 수 없습니다.",
     "ko": "피드를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -880,7 +880,7 @@
     "de": ""
   },
   "Feed_GetFeed_NotFound_01": {
-    "en-US": "",
+    "en-US": "피드를 찾을 수 없습니다.",
     "ko": "피드를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -891,7 +891,7 @@
     "de": ""
   },
   "Feed_GetFeedList_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -902,7 +902,7 @@
     "de": ""
   },
   "Feed_GetFeedList_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -913,7 +913,7 @@
     "de": ""
   },
   "Feed_GetFeedList_Invalid_01": {
-    "en-US": "",
+    "en-US": "피드 정보 번역이 불가능합니다.",
     "ko": "피드 정보 번역이 불가능합니다.",
     "ja": "",
     "fr": "",
@@ -924,7 +924,7 @@
     "de": ""
   },
   "Feed_BookMarkFeed_NotFound_01": {
-    "en-US": "",
+    "en-US": "피드를 찾을 수 없습니다.",
     "ko": "피드를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -935,7 +935,7 @@
     "de": ""
   },
   "Feed_GetBookMarkFeddList_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -946,7 +946,7 @@
     "de": ""
   },
   "Feed_GetBookMarkFeddList_NotFound_01": {
-    "en-US": "",
+    "en-US": "북마크 정보를 찾을 수 없습니다.",
     "ko": "북마크 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -957,7 +957,7 @@
     "de": ""
   },
   "Feed_GetBookMarkFeddList_Invalid_01": {
-    "en-US": "",
+    "en-US": "피드 정보 번역이 불가능합니다.",
     "ko": "피드 정보 번역이 불가능합니다.",
     "ja": "",
     "fr": "",
@@ -968,7 +968,7 @@
     "de": ""
   },
   "Feed_ViewFeed_NotFound_01": {
-    "en-US": "",
+    "en-US": "피드를 찾을 수 없습니다.",
     "ko": "피드를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -979,7 +979,7 @@
     "de": ""
   },
   "Feed_LikeFeed_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -990,7 +990,7 @@
     "de": ""
   },
   "Feed_LikeFeed_NotFound_01": {
-    "en-US": "",
+    "en-US": "피드를 찾을 수 없습니다.",
     "ko": "피드를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1001,7 +1001,7 @@
     "de": ""
   },
   "Feed_DislikeFeed_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1012,7 +1012,7 @@
     "de": ""
   },
   "Feed_DislikeFeed_NotFound_01": {
-    "en-US": "",
+    "en-US": "피드를 찾을 수 없습니다.",
     "ko": "피드를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1023,7 +1023,7 @@
     "de": ""
   },
   "Feed_ShareFeed_NotFound_01": {
-    "en-US": "",
+    "en-US": "피드를 찾을 수 없습니다.",
     "ko": "피드를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1034,7 +1034,7 @@
     "de": ""
   },
   "Feed_AddComment_Invalid_01": {
-    "en-US": "",
+    "en-US": "댓글 내용이 없습니다.",
     "ko": "댓글 내용이 없습니다.",
     "ja": "",
     "fr": "",
@@ -1045,7 +1045,7 @@
     "de": ""
   },
   "Feed_AddComment_Invalid_02": {
-    "en-US": "",
+    "en-US": "피드가 삭제되었습니다.",
     "ko": "피드가 삭제되었습니다.",
     "ja": "",
     "fr": "",
@@ -1056,7 +1056,7 @@
     "de": ""
   },
   "Feed_AddComment_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1067,7 +1067,7 @@
     "de": ""
   },
   "Feed_AddComment_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1078,7 +1078,7 @@
     "de": ""
   },
   "Feed_AddComment_NotFound_01": {
-    "en-US": "",
+    "en-US": "댓글이 삭제되어 대댓글을 생성 할 수 없습니다.",
     "ko": "댓글이 삭제되어 대댓글을 생성 할 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1089,7 +1089,7 @@
     "de": ""
   },
   "Feed_UpdateComment_Invalid_01": {
-    "en-US": "",
+    "en-US": "댓글 내용이 없습니다.",
     "ko": "댓글 내용이 없습니다.",
     "ja": "",
     "fr": "",
@@ -1100,7 +1100,7 @@
     "de": ""
   },
   "Feed_UpdateComment_Invalid_02": {
-    "en-US": "",
+    "en-US": "댓글 정보가 없습니다.",
     "ko": "댓글 정보가 없습니다.",
     "ja": "",
     "fr": "",
@@ -1111,7 +1111,7 @@
     "de": ""
   },
   "Feed_UpdateComment_Invalid_03": {
-    "en-US": "",
+    "en-US": "댓글 수정 권한이 없습니다.",
     "ko": "댓글 수정 권한이 없습니다.",
     "ja": "",
     "fr": "",
@@ -1122,7 +1122,7 @@
     "de": ""
   },
   "Feed_UpdateComment_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1133,7 +1133,7 @@
     "de": ""
   },
   "Feed_UpdateComment_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1144,7 +1144,7 @@
     "de": ""
   },
   "Feed_UpdateComment_NotFound_01": {
-    "en-US": "",
+    "en-US": "수정할 댓글을 찾을 수 없습니다.",
     "ko": "수정할 댓글을 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1155,7 +1155,7 @@
     "de": ""
   },
   "Feed_LikeComment_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1166,7 +1166,7 @@
     "de": ""
   },
   "Feed_LikeComment_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1177,7 +1177,7 @@
     "de": ""
   },
   "Feed_LikeComment_NotFound_01": {
-    "en-US": "",
+    "en-US": "좋아요 누를 댓글을 찾을 수 없습니다.",
     "ko": "좋아요 누를 댓글을 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1188,7 +1188,7 @@
     "de": ""
   },
   "Feed_DislikeComment_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1199,7 +1199,7 @@
     "de": ""
   },
   "Feed_DislikeComment_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1210,7 +1210,7 @@
     "de": ""
   },
   "Feed_DislikeComment_NotFound_01": {
-    "en-US": "",
+    "en-US": "싫어요 누를 댓글을 찾을 수 없습니다.",
     "ko": "싫어요 누를 댓글을 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1221,7 +1221,7 @@
     "de": ""
   },
   "Feed_GetComment_Invalid_01": {
-    "en-US": "",
+    "en-US": "잘못된 댓글 정보입니다.",
     "ko": "잘못된 댓글 정보입니다.",
     "ja": "",
     "fr": "",
@@ -1232,7 +1232,7 @@
     "de": ""
   },
   "Feed_GetComment_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1243,7 +1243,7 @@
     "de": ""
   },
   "Feed_GetComment_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1254,7 +1254,7 @@
     "de": ""
   },
   "Feed_GetComment_NotFound_01": {
-    "en-US": "",
+    "en-US": "선택한 댓글을 찾을 수 없습니다.",
     "ko": "선택한 댓글을 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1265,7 +1265,7 @@
     "de": ""
   },
   "Feed_GetCommentList_Invalid_01": {
-    "en-US": "",
+    "en-US": "댓글 정보를 가져올 피드가 잘 못되었습니다.",
     "ko": "댓글 정보를 가져올 피드가 잘 못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1276,7 +1276,7 @@
     "de": ""
   },
   "Preview_PreviewEnterEpisodeChatting_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1287,7 +1287,7 @@
     "de": ""
   },
   "Preview_PreviewEnterEpisodeChatting_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1298,7 +1298,7 @@
     "de": ""
   },
   "Preview_PreviewEnterEpisodeChatting_NotFound_01": {
-    "en-US": "",
+    "en-US": "전체 정보를 찾을 수 없습니다.",
     "ko": "전체 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1309,7 +1309,7 @@
     "de": ""
   },
   "Preview_PreviewEnterEpisodeChatting_NotFound_02": {
-    "en-US": "",
+    "en-US": "에피소드 정보를 찾을 수 없습니다.",
     "ko": "에피소드 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1320,7 +1320,7 @@
     "de": ""
   },
   "Preview_PreviewEnterEpisodeChatting_Invalid_01": {
-    "en-US": "",
+    "en-US": "스토리 생성자만 입장 가능한 채팅방 입니다.",
     "ko": "스토리 생성자만 입장 가능한 채팅방 입니다.",
     "ja": "",
     "fr": "",
@@ -1331,7 +1331,7 @@
     "de": ""
   },
   "Preview_SendPreviewChatMessage_NotFound_01": {
-    "en-US": "",
+    "en-US": "ssid 정보를 찾을 수 없습니다.",
     "ko": "ssid 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1342,7 +1342,7 @@
     "de": ""
   },
   "Preview_SendPreviewChatMessage_NotFound_02": {
-    "en-US": "",
+    "en-US": "에피소드 정보를 찾을 수 없습니다.",
     "ko": "에피소드 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1353,7 +1353,7 @@
     "de": ""
   },
   "Preview_SendPreviewChatMessage_NotFound_03": {
-    "en-US": "",
+    "en-US": "캐릭터를 찾을 수 없습니다.",
     "ko": "캐릭터를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1364,7 +1364,7 @@
     "de": ""
   },
   "Preview_GetPreviewChatResult_NotFound_01": {
-    "en-US": "",
+    "en-US": "전체 정보를 찾을 수 없습니다.",
     "ko": "전체 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1375,7 +1375,7 @@
     "de": ""
   },
   "Preview_GetPreviewChatResult_NotFound_02": {
-    "en-US": "",
+    "en-US": "에피소드 유저 정보를 찾을 수 없습니다.",
     "ko": "에피소드 유저 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1386,7 +1386,7 @@
     "de": ""
   },
   "Preview_GetPreviewChatResult_NotFound_03": {
-    "en-US": "",
+    "en-US": "에피소드 정보를 찾을 수 없습니다.",
     "ko": "에피소드 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1397,7 +1397,7 @@
     "de": ""
   },
   "Preview_GetPreviewChatResult_NotFound_04": {
-    "en-US": "",
+    "en-US": "캐릭터 정보를 찾을 수 없습니다.",
     "ko": "캐릭터 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1408,7 +1408,7 @@
     "de": ""
   },
   "Profile_GetMyProfileList_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1419,7 +1419,7 @@
     "de": ""
   },
   "Profile_GetMyProfileList_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1430,7 +1430,7 @@
     "de": ""
   },
   "Profile_GetProfileList_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1441,7 +1441,7 @@
     "de": ""
   },
   "Profile_GetProfileList_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프리필 리스트를 가져 올 수 없습니다.",
     "ko": "프리필 리스트를 가져 올 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1452,7 +1452,7 @@
     "de": ""
   },
   "Profile_SelectProfile_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1463,7 +1463,7 @@
     "de": ""
   },
   "Profile_SelectProfile_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1474,7 +1474,7 @@
     "de": ""
   },
   "Profile_GetProfileInfo_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1485,7 +1485,7 @@
     "de": ""
   },
   "Profile_GetProfileInfo_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1496,7 +1496,7 @@
     "de": ""
   },
   "Profile_GetPdTabInfo_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1507,7 +1507,7 @@
     "de": ""
   },
   "Profile_GetPdTabInfo_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1518,7 +1518,7 @@
     "de": ""
   },
   "Profile_GetCharacterTabInfo_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1529,7 +1529,7 @@
     "de": ""
   },
   "Profile_GetCharacterTabInfo_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1540,7 +1540,7 @@
     "de": ""
   },
   "Profile_FollowProfile_Unauthorized_01": {
-    "en-US": "",
+    "en-US": "유저 정보가 잘못되었습니다.",
     "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1551,7 +1551,7 @@
     "de": ""
   },
   "Profile_FollowProfile_Unauthorized_02": {
-    "en-US": "",
+    "en-US": "프로필 정보가 잘못되었습니다.",
     "ko": "프로필 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
@@ -1562,7 +1562,7 @@
     "de": ""
   },
   "Profile_FollowProfile_NotFound_01": {
-    "en-US": "",
+    "en-US": "팔로우한 프로필 정보를 찾을 수 없습니다.",
     "ko": "팔로우한 프로필 정보를 찾을 수 없습니다.",
     "ja": "",
     "fr": "",
@@ -1573,7 +1573,7 @@
     "de": ""
   },
   "Resource_GenerateImage_Invalid_01": {
-    "en-US": "",
+    "en-US": "이미지를 생성할 수 없습니다",
     "ko": "이미지를 생성할 수 없습니다",
     "ja": "",
     "fr": "",
@@ -1584,7 +1584,7 @@
     "de": ""
   },
   "Resource_GenerateExpression_NotFound_01": {
-    "en-US": "",
+    "en-US": "URL에 이미지 정보를 찾을 수 없습니다",
     "ko": "URL에 이미지 정보를 찾을 수 없습니다",
     "ja": "",
     "fr": "",
@@ -1595,7 +1595,7 @@
     "de": ""
   },
   "Resource_GenerateExpression_Invalid_01": {
-    "en-US": "",
+    "en-US": "이미지를 생성할 수 없습니다",
     "ko": "이미지를 생성할 수 없습니다",
     "ja": "",
     "fr": "",
@@ -1606,7 +1606,7 @@
     "de": ""
   },
   "Resource_GeneratePose_NotFound_01": {
-    "en-US": "",
+    "en-US": "URL에 이미지 정보를 찾을 수 없습니다",
     "ko": "URL에 이미지 정보를 찾을 수 없습니다",
     "ja": "",
     "fr": "",
@@ -1617,7 +1617,7 @@
     "de": ""
   },
   "Resource_GeneratePose_Invalid_01": {
-    "en-US": "",
+    "en-US": "이미지를 생성할 수 없습니다",
     "ko": "이미지를 생성할 수 없습니다",
     "ja": "",
     "fr": "",
@@ -1628,7 +1628,7 @@
     "de": ""
   },
   "Resource_GenerateImage2_Invalid_01": {
-    "en-US": "",
+    "en-US": "이미지를 생성할 수 없습니다",
     "ko": "이미지를 생성할 수 없습니다",
     "ja": "",
     "fr": "",
@@ -1639,7 +1639,7 @@
     "de": ""
   },
   "Game_PlaceEnter_NotFound_01": {
-    "en-US": "",
+    "en-US": "캐릭터 정보를 찾을 수 없습니다",
     "ko": "캐릭터 정보를 찾을 수 없습니다",
     "ja": "",
     "fr": "",
@@ -1652,7 +1652,7 @@
   "common_aimodel_gpt4o": {
     "en-US": "GPT-4o",
     "ko": "",
-    "ja": "0518",
+    "ja": "",
     "fr": "",
     "es": "",
     "zh-CN": "",
@@ -2059,7 +2059,7 @@
   "common_alert_020": {
     "en-US": "Deleting your trigger is irreversible",
     "ko": "",
-    "ja": "",
+    "ja": " ",
     "fr": "",
     "es": "",
     "zh-CN": "",
@@ -2307,7 +2307,7 @@
     "zh-CN": "",
     "zh-TW": "",
     "pt-PT": "",
-    "de": "        "
+    "de": ""
   },
   "common_alert_043": {
     "en-US": "Nickname",
@@ -2497,7 +2497,7 @@
     "de": ""
   },
   "common_alert_060": {
-    "en-US": "Tag",
+    "en-US": " Tag",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -2530,7 +2530,7 @@
     "de": ""
   },
   "common_alert_063": {
-    "en-US": "This is used as the default in conversations and can be changed in Edit Profile. If you do not set a nickname, your name will be displayed.",
+    "en-US": "Nickname used as the default in conversations and can be changed in Edit Profile. If you do not set a nickname, your name will be displayed.",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -2749,6 +2749,171 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_alert_083": {
+    "en-US": " Remove from<br>“Channel name”",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_084": {
+    "en-US": "Once removed, this character will no<br>longer be affiliated with the channel.<br>Do you want to Remove?",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_085": {
+    "en-US": "\"Fan characters cannot belong to paid<br>channels. Only original characters can be<br>added.\" To add a fan character, please<br>change the channel to a fan channel.",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_086": {
+    "en-US": "This channel is for minors. To add an <br>adult character as a member, <br>please change the channel settings<br> (policy) to an adult channel (NFSW:on) ",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_087": {
+    "en-US": "Are you sure you want to delete this series?",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_088": {
+    "en-US": "All episodes within the series will also be deleted and cannot be recovered.",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_089": {
+    "en-US": "Saved to Favorites!",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_090": {
+    "en-US": "Download Image Completed",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_091": {
+    "en-US": "The link has been successfully copied.",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_092": {
+    "en-US": "”Planned for a future update!”",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_093": {
+    "en-US": "Some required information is missing. <br>Please check and try again.",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_094": {
+    "en-US": " star {0}EA +{1}",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_095": {
+    "en-US": "If you proceed, \"Kim Kyung-ah\" will lose their channel management privileges.",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_096": {
+    "en-US": "Balance",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_097": {
+    "en-US": "Ep.{0} ~{1}",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_button_original": {
     "en-US": "Original",
     "ko": "",
@@ -2773,7 +2938,7 @@
   },
   "common_button_on": {
     "en-US": "On",
-    "ko": "",
+    "ko": " ",
     "ja": "",
     "fr": "",
     "es": "",
@@ -2827,7 +2992,7 @@
     "de": ""
   },
   "common_button_addexamplenewaltn": {
-    "en-US": "Add example dialogue",
+    "en-US": "Add example new (Alt + N)",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -2991,8 +3156,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_button_contentssubscription": {
-    "en-US": "Contents Subscription",
+  "common_button_contentsubscription": {
+    "en-US": "Content Subscription",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -3114,17 +3279,6 @@
   },
   "common_button_duplicate": {
     "en-US": "Duplicate",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_button_edit": {
-    "en-US": "Edit",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -3355,7 +3509,7 @@
     "de": ""
   },
   "common_button_newseries": {
-    "en-US": "New Series",
+    "en-US": "createcontent001__bu009",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -3442,7 +3596,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_button_preview": {
+  "common_button_Preview": {
     "en-US": "Preview",
     "ko": "",
     "ja": "",
@@ -3596,7 +3750,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_button_shareaddfriend": {
+  "common_button_share Add Friend": {
     "en-US": "Share Add Friend",
     "ko": "",
     "ja": "",
@@ -3882,6 +4036,237 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_button_continue": {
+    "en-US": "Continue",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_favorite": {
+    "en-US": "Favorite",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_share": {
+    "en-US": "Share",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_download": {
+    "en-US": "Download",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_accountconter": {
+    "en-US": "Account Center",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_mywallet": {
+    "en-US": "My Wallet",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_language": {
+    "en-US": "Language",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_support&about": {
+    "en-US": "Support & About",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_reportaproblem": {
+    "en-US": "Report a Problem",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_support": {
+    "en-US": "Support",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_termsand policies": {
+    "en-US": "Terms and Policies",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_logout": {
+    "en-US": "Logout",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_korean": {
+    "en-US": "Korean",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_english": {
+    "en-US": "English",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_japanese": {
+    "en-US": "Japanese",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_french": {
+    "en-US": "French",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_spanish": {
+    "en-US": "Spanish",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_simplifiedchinese": {
+    "en-US": "Simplified Chinese",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_Traditionalchinese": {
+    "en-US": "Traditional Chinese",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_portuguese": {
+    "en-US": "Portuguese",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_language_german": {
+    "en-US": "German",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_country_korea": {
     "en-US": "Korea",
     "ko": "",
@@ -3904,17 +4289,6 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_country_japan": {
-    "en-US": "Japan",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
   "common_country_china": {
     "en-US": "China",
     "ko": "",
@@ -3926,8 +4300,52 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_country_france": {
-    "en-US": "France",
+  "common_country_japan": {
+    "en-US": "Japan",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_country_india": {
+    "en-US": "India",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_country_brazil": {
+    "en-US": "Brazil",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_country_indonesia": {
+    "en-US": "Indonesia",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_country_thailand": {
+    "en-US": "Thailand",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -3948,8 +4366,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_country_taiwan": {
-    "en-US": "Taiwan",
+  "common_country_france": {
+    "en-US": "France",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -3959,8 +4377,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_country_portugal": {
-    "en-US": "Portugal",
+  "common_Currency_krw": {
+    "en-US": "KRW",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -3970,8 +4388,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_country_germany": {
-    "en-US": "Germany",
+  "common_Currency_usd": {
+    "en-US": "USD",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -3981,7 +4399,84 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_original": {
+  "common_Currency_cny": {
+    "en-US": "CNY",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_Currency_jpy": {
+    "en-US": "JPY",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_Currency_inr": {
+    "en-US": "INR",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_Currency_brl": {
+    "en-US": "BRL",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_Currencyi_idr": {
+    "en-US": "IDR",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": "  "
+  },
+  "common_Currency_thb": {
+    "en-US": "THB",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_Currency_eur": {
+    "en-US": "EUR",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_dropdown_original": {
     "en-US": "Original",
     "ko": "",
     "ja": "",
@@ -3992,18 +4487,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_fan": {
-    "en-US": "Fan",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_dropown_owner": {
+  "common_dropdown_owner": {
     "en-US": "Owner",
     "ko": "",
     "ja": "",
@@ -4014,7 +4498,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_canedit": {
+  "common_dropdown_canedit": {
     "en-US": "Can Edit",
     "ko": "",
     "ja": "",
@@ -4025,7 +4509,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_onlycomments": {
+  "common_dropdown_onlycomments": {
     "en-US": "Only Comments",
     "ko": "",
     "ja": "",
@@ -4036,7 +4520,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_remove": {
+  "common_dropdown_remove": {
     "en-US": "Remove",
     "ko": "",
     "ja": "",
@@ -4047,7 +4531,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_changeorder": {
+  "common_dropdown_changeorder": {
     "en-US": "Change Order",
     "ko": "",
     "ja": "",
@@ -4058,7 +4542,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_filefolder": {
+  "common_dropdown_filefolder": {
     "en-US": "File folder",
     "ko": "",
     "ja": "",
@@ -4069,7 +4553,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_hide": {
+  "common_dropdown_hide": {
     "en-US": "Hide",
     "ko": "",
     "ja": "",
@@ -4080,7 +4564,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_onlyinvitedpeople": {
+  "common_dropdown_onlyinvitedpeople": {
     "en-US": "Only Invited People",
     "ko": "",
     "ja": "",
@@ -4091,7 +4575,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_photolibrary": {
+  "common_dropdown_photolibrary": {
     "en-US": "Photo library",
     "ko": "",
     "ja": "",
@@ -4102,7 +4586,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_pintotop": {
+  "common_dropdown_pintotop": {
     "en-US": "Pin to Top",
     "ko": "",
     "ja": "",
@@ -4113,7 +4597,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_previewthisepisode": {
+  "common_dropdown_previewthisepisode": {
     "en-US": "Preview this Episode",
     "ko": "",
     "ja": "",
@@ -4124,7 +4608,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_private": {
+  "common_dropdown_private": {
     "en-US": "Private",
     "ko": "",
     "ja": "",
@@ -4135,7 +4619,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_reply": {
+  "common_dropdown_reply": {
     "en-US": "Reply",
     "ko": "",
     "ja": "",
@@ -4146,7 +4630,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_report": {
+  "common_dropdown_report": {
     "en-US": "Report",
     "ko": "",
     "ja": "",
@@ -4157,7 +4641,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_saved": {
+  "common_dropdown_saved": {
     "en-US": "Saved",
     "ko": "",
     "ja": "",
@@ -4168,7 +4652,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_subscriptioncancel": {
+  "common_dropdown_subscriptioncancel": {
     "en-US": "Subscription Cancel",
     "ko": "",
     "ja": "",
@@ -4179,7 +4663,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_takeaphoto": {
+  "common_dropdown_takeaphoto": {
     "en-US": "Take a photo",
     "ko": "",
     "ja": "",
@@ -4190,7 +4674,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_unpin": {
+  "common_dropdown_unpin": {
     "en-US": "Unpin",
     "ko": "",
     "ja": "",
@@ -4201,7 +4685,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_voice": {
+  "common_dropdown_voice": {
     "en-US": "Voice",
     "ko": "",
     "ja": "",
@@ -4212,7 +4696,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_copy": {
+  "common_dropdown_copy": {
     "en-US": "Copy",
     "ko": "",
     "ja": "",
@@ -4223,7 +4707,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_delete": {
+  "common_dropdown_delete": {
     "en-US": "Delete",
     "ko": "",
     "ja": "",
@@ -4234,7 +4718,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_regenerate": {
+  "common_dropdown_regenerate": {
     "en-US": "Regenerate",
     "ko": "",
     "ja": "",
@@ -4245,7 +4729,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_unlisted": {
+  "common_dropdown_unlisted": {
     "en-US": "Unlisted",
     "ko": "",
     "ja": "",
@@ -4256,8 +4740,52 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_dropown_select": {
+  "common_dropdown_select": {
     "en-US": "Select",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_dropdown_edit": {
+    "en-US": "Edit",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_dropdown_share": {
+    "en-US": "Share",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_dropdown_favorites": {
+    "en-US": "Favorites",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_dropdown_copylink": {
+    "en-US": "Copy link",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -4278,6 +4806,39 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_filter_public": {
+    "en-US": "Public",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_filter_private": {
+    "en-US": "Private",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_filter_unlisted": {
+    "en-US": "Unlisted",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "   ",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_filter_story": {
     "en-US": "Story",
     "ko": "",
@@ -4287,7 +4848,7 @@
     "zh-CN": "",
     "zh-TW": "",
     "pt-PT": "",
-    "de": ""
+    "de": " "
   },
   "common_filter_character": {
     "en-US": "Character",
@@ -4325,17 +4886,6 @@
   "common_filter_webtoon": {
     "en-US": "Webtoon",
     "ko": "",
-    "ja": "0603",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_filter_drama": {
-    "en-US": "Drama",
-    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -4356,7 +4906,7 @@
     "de": ""
   },
   "common_filter_photo": {
-    "en-US": "Photo",
+    "en-US": "Image",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -4424,7 +4974,7 @@
   "common_filter_pd": {
     "en-US": "PD",
     "ko": "",
-    "ja": "1101",
+    "ja": "",
     "fr": "",
     "es": "",
     "zh-CN": "",
@@ -4434,6 +4984,39 @@
   },
   "common_filter_etc": {
     "en-US": "etc",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_filter_original": {
+    "en-US": "Original",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_filter_fan": {
+    "en-US": "Fan",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_filter_episode": {
+    "en-US": "Episode",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -4566,6 +5149,17 @@
   },
   "common_filterskill_createwebtoon": {
     "en-US": "Create Webtoon",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_title_edit": {
+    "en-US": "Edit",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -4742,7 +5336,7 @@
   },
   "common_sample_016": {
     "en-US": "#add an annotation",
-    "ko": "김경아",
+    "ko": "닉네임 안내 텍스트",
     "ja": "",
     "fr": "",
     "es": "",
@@ -4826,7 +5420,7 @@
     "zh-CN": "",
     "zh-TW": "",
     "pt-PT": "",
-    "de": ""
+    "de": "   "
   },
   "common_sample_024": {
     "en-US": "#add an annotation",
@@ -4907,7 +5501,7 @@
   },
   "common_sample_031": {
     "en-US": "#add an annotation",
-    "ko": "Scenario Introduction AI 생성 누를 시 출력되는 텍스트 1",
+    "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 1",
     "ja": "",
     "fr": "",
     "es": "",
@@ -4918,7 +5512,7 @@
   },
   "common_sample_032": {
     "en-US": "#add an annotation",
-    "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 1",
+    "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 2",
     "ja": "",
     "fr": "",
     "es": "",
@@ -4929,7 +5523,7 @@
   },
   "common_sample_033": {
     "en-US": "#add an annotation",
-    "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 2",
+    "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 3",
     "ja": "",
     "fr": "",
     "es": "",
@@ -4940,7 +5534,7 @@
   },
   "common_sample_034": {
     "en-US": "#add an annotation",
-    "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 3",
+    "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 4",
     "ja": "",
     "fr": "",
     "es": "",
@@ -4951,7 +5545,7 @@
   },
   "common_sample_035": {
     "en-US": "#add an annotation",
-    "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 4",
+    "ko": "Scenario Introduction AI 생성 누를 시 출력되는 텍스트 1",
     "ja": "",
     "fr": "",
     "es": "",
@@ -5153,7 +5747,7 @@
     "ja": "",
     "fr": "",
     "es": "",
-    "zh-CN": "",
+    "zh-CN": "   ",
     "zh-TW": "",
     "pt-PT": "",
     "de": ""
@@ -5284,7 +5878,7 @@
     "ko": "",
     "ja": "",
     "fr": "",
-    "es": "",
+    "es": "  ",
     "zh-CN": "",
     "zh-TW": "",
     "pt-PT": "",
@@ -5357,7 +5951,7 @@
     "de": ""
   },
   "common_sample_072": {
-    "en-US": "Please enter a nickname",
+    "en-US": "Please enter the nickname",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -5489,7 +6083,359 @@
     "de": ""
   },
   "common_sample_084": {
-    "en-US": "Enter the character name",
+    "en-US": "Please enter the character name",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_sample_085": {
+    "en-US": "Please enter the feed name",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_sample_086": {
+    "en-US": "Please enter the channel name",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_sample_087": {
+    "en-US": "Please enter the series name",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_sample_088": {
+    "en-US": "Please enter the episode name",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_sample_089": {
+    "en-US": "Please enter one line summary",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_sample_090": {
+    "en-US": "Enter Text",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_sample_091": {
+    "en-US": "It's pretty lonely out here.<br>Make a Post ",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_sample_092": {
+    "en-US": "Write a comment",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_sample_093": {
+    "en-US": "https://",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_001": {
+    "en-US": "Visibility",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_002": {
+    "en-US": "Tag",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_003": {
+    "en-US": "Post  Country",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_004": {
+    "en-US": "Monetization possible",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_005": {
+    "en-US": "Operator Invitation",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_006": {
+    "en-US": "Moenetization",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_007": {
+    "en-US": "Membership Plan",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_008": {
+    "en-US": "NSFW",
+    "ko": " ",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_feed": {
+    "en-US": "Feed",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_character": {
+    "en-US": "Character",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_channel": {
+    "en-US": "Channel",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_shared": {
+    "en-US": "Shared",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_contents": {
+    "en-US": "Contents",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_followers": {
+    "en-US": "Followers",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_following": {
+    "en-US": "Fllowing",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_button_subscribers": {
+    "en-US": "Subscribers",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_game": {
+    "en-US": "Game",
+    "ko": "       ",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_showmore": {
+    "en-US": "Show more",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_Thumbnail": {
+    "en-US": "Thumbnail",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_media": {
+    "en-US": "Media",
+    "ko": "     ",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_addmembers": {
+    "en-US": "Add Members",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_info": {
+    "en-US": "Info",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_copy": {
+    "en-US": "Copy",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -5532,9 +6478,20 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_sort_Most Popular": {
-    "en-US": "Most Popular",
+  "common_sort_Name": {
+    "en-US": "Name",
     "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_sort_mostpopular": {
+    "en-US": "Most Popular",
+    "ko": "  ",
     "ja": "",
     "fr": "",
     "es": "",
@@ -5601,6 +6558,226 @@
   "common_sort_mandatory": {
     "en-US": "Mandatory",
     "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_time_ just now": {
+    "en-US": "Just now",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_time_minago": {
+    "en-US": "{0} min ago",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_time_hourago": {
+    "en-US": "{0} hour ago",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_time_yesterday": {
+    "en-US": "Yesterday",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_time_days ago": {
+    "en-US": "{0} day ago",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_time_week ago": {
+    "en-US": "{0} week ago",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_time_month ago": {
+    "en-US": "{0} month ago",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_time_year ago": {
+    "en-US": "{0} year ago",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_romance": {
+    "en-US": "Romance",
+    "ko": "로맨스",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_fantasy": {
+    "en-US": "Fantasy",
+    "ko": "판타지",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_action": {
+    "en-US": "Action",
+    "ko": "액션",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_comedy": {
+    "en-US": "Comedy",
+    "ko": "코미디",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_sliceoflife": {
+    "en-US": "Slice of Life",
+    "ko": "일상",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_thriller": {
+    "en-US": "Thriller",
+    "ko": "스릴러",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_bl/gl": {
+    "en-US": "BL/GL",
+    "ko": "BL/GL",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_drama": {
+    "en-US": "Drama",
+    "ko": "드라마",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_emotional": {
+    "en-US": "Emotional",
+    "ko": "감성",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_historicaldrama": {
+    "en-US": "Historical Drama",
+    "ko": "사극",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_wuxia": {
+    "en-US": "Wuxia",
+    "ko": "무협",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_genre_sports": {
+    "en-US": "Sports",
+    "ko": "스포츠",
     "ja": "",
     "fr": "",
     "es": "",
@@ -6146,7 +7323,7 @@
     "zh-CN": "占有欲",
     "zh-TW": "佔有慾",
     "pt-PT": "Possessividade",
-    "de": "Besitzgier"
+    "de": "  "
   },
   "common_tag_punishment": {
     "en-US": "Punishment",
@@ -6157,7 +7334,7 @@
     "zh-CN": "惩罚",
     "zh-TW": "懲罰",
     "pt-PT": "Punição",
-    "de": "Bestrafung"
+    "de": " "
   },
   "common_tag_redemption": {
     "en-US": "Redemption",
@@ -6546,7 +7723,7 @@
   },
   "common_tag_gl": {
     "en-US": "GL",
-    "ko": "백합",
+    "ko": "GL",
     "ja": "百合",
     "fr": "Yuri(GL)",
     "es": "GL",
@@ -6678,7 +7855,7 @@
   },
   "common_tagage_forties": {
     "en-US": "40s",
-    "ko": "40-55",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -6733,6 +7910,215 @@
   },
   "common_tagaimodel_anime": {
     "en-US": "Anime",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_sakurablossom": {
+    "en-US": "Sakura blossom",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_garden": {
+    "en-US": "Garden",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_flowerfield": {
+    "en-US": "Flower Field",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_beach": {
+    "en-US": "Beach",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_farm": {
+    "en-US": "Farm",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_hotspring": {
+    "en-US": "Hot Spring",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_classroom": {
+    "en-US": "Classroom",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_library": {
+    "en-US": "Library",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_artiststudio": {
+    "en-US": "Artist Studio",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_supermarket": {
+    "en-US": "Supermarket",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_clothingstore": {
+    "en-US": "Clothing Store",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_office": {
+    "en-US": "Office",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_cocktailbar": {
+    "en-US": "Cocktail Bar",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_church": {
+    "en-US": "Church",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_coffeeshop": {
+    "en-US": "Coffee Shop",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_gym": {
+    "en-US": "Gym",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_vendingmachine": {
+    "en-US": "Vending Machine",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_insidecar": {
+    "en-US": "Inside Car",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbackground_none": {
+    "en-US": "None",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -7019,7 +8405,7 @@
   },
   "common_tagemotion_happy": {
     "en-US": "Happy",
-    "ko": "1130",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -7437,7 +8823,7 @@
   },
   "common_triggercondition_checkchatcount": {
     "en-US": "Check Chat Count",
-    "ko": "1130",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -7503,7 +8889,7 @@
   },
   "common_triggeroutput_changeepisode": {
     "en-US": "Change Episode",
-    "ko": "1130",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -7590,7 +8976,7 @@
     "de": ""
   },
   "login001_desc_002": {
-    "en-US": "Join us and enjoy<br>daily free {0} rubies",
+    "en-US": "Join us and enjoy<br>daily ",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -7601,6 +8987,17 @@
     "de": ""
   },
   "login001_label_003": {
+    "en-US": "Free 300 rubies",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "login001_button_004": {
     "en-US": "Privacy Policy",
     "ko": "",
     "ja": "",
@@ -7611,8 +9008,19 @@
     "pt-PT": "",
     "de": ""
   },
-  "login001_label_004": {
+  "login001_label_005": {
     "en-US": "Terms of Service",
+    "ko": "",
+    "ja": " ",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "login001_button_006": {
+    "en-US": "Guest Account",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -7634,7 +9042,7 @@
     "de": ""
   },
   "home001_label_002": {
-    "en-US": "Following",
+    "en-US": "fill",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -7644,8 +9052,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "home001_label_003": {
-    "en-US": "Sponsored",
+  "contenthome001_label_001": {
+    "en-US": "Ep.{0} ",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -7655,9 +9063,42 @@
     "pt-PT": "",
     "de": ""
   },
-  "contenthome003_label_001": {
-    "en-US": "Complete",
-    "ko": "완결",
+  "explore001_label_001": {
+    "en-US": "Episode Ranking",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "explore001_label_002": {
+    "en-US": "Webtoon Ranking",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "explore001_label_003": {
+    "en-US": "Video Ranking",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "explore001_label_004": {
+    "en-US": "Game Ranking",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -7744,7 +9185,7 @@
     "de": ""
   },
   "createcharacter001_label_005": {
-    "en-US": "Media",
+    "en-US": "common_label_thumbnail",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -7810,7 +9251,7 @@
     "de": ""
   },
   "createcharacter001_desc_011": {
-    "en-US": "2. Use a name that is clearly recognized as a name. Use a short name. Long names ard difficult to enter during the chat.",
+    "en-US": "2. Use a name that is clearly recognized as a name. Use a short name. Long names ard difficult to enter during the chat",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -7864,18 +9305,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter001_label_016": {
-    "en-US": "Character Description",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter001_desc_017": {
+  "createcharacter001_desc_016": {
     "en-US": "Use{{User}}to replace with the name of the user in the conversation. Use{{char}}to replace with the charater’s name.",
     "ko": "",
     "ja": "",
@@ -7886,7 +9316,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter001_label_018": {
+  "createcharacter001_label_017": {
     "en-US": "World Scenario",
     "ko": "",
     "ja": "",
@@ -7897,7 +9327,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter001_label_019": {
+  "createcharacter001_label_018": {
     "en-US": "Greeting",
     "ko": "",
     "ja": "",
@@ -7908,7 +9338,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter001_desc_020": {
+  "createcharacter001_desc_019": {
     "en-US": "The total token count is calulated based on the introduction with the highest number of tokens",
     "ko": "",
     "ja": "",
@@ -7919,7 +9349,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter001_label_021": {
+  "createcharacter001_label_020": {
     "en-US": "Secret",
     "ko": "",
     "ja": "",
@@ -7930,7 +9360,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter001_label_022": {
+  "createcharacter001_label_021": {
     "en-US": "Custom Modules",
     "ko": "",
     "ja": "",
@@ -7941,7 +9371,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter001_label_023": {
+  "createcharacter001_label_022": {
     "en-US": "text descipriton",
     "ko": "",
     "ja": "",
@@ -7952,7 +9382,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter001_desc_024": {
+  "createcharacter001_desc_023": {
     "en-US": "Use translated version when constructing prompts",
     "ko": "",
     "ja": "",
@@ -7963,19 +9393,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter001_desc_025": {
+  "createcharacter001_desc_024": {
     "en-US": "Selects the translated version to write prompts based on the language of the user in conversation. if this option is turned off, the original text will always be used to create the prompt instead of the translation.",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter001_title_026": {
-    "en-US": "Save Success!",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -7997,7 +9416,7 @@
     "de": ""
   },
   "createcharacter003_desc_002": {
-    "en-US": "Step 1. Select gender",
+    "en-US": "Step 1. Choose gender",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8008,7 +9427,7 @@
     "de": ""
   },
   "createcharacter004_desc_001": {
-    "en-US": "Step 2. Choose Style",
+    "en-US": "Step 2. Choose style",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8107,7 +9526,7 @@
     "de": ""
   },
   "createcharacter007_label_002": {
-    "en-US": "Choose Body Type",
+    "en-US": "Body Shape",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8118,7 +9537,7 @@
     "de": ""
   },
   "createcharacter007_label_003": {
-    "en-US": "Choose Breast Size",
+    "en-US": "Breast Size",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8129,7 +9548,7 @@
     "de": ""
   },
   "createcharacter007_label_004": {
-    "en-US": "Choose Butt Size",
+    "en-US": "The Butt Size",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8140,7 +9559,7 @@
     "de": ""
   },
   "createcharacter008_desc_001": {
-    "en-US": "Step 6. Outfit of clothes",
+    "en-US": "Step 6. Choose Outfit of clothes",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8151,7 +9570,7 @@
     "de": ""
   },
   "createcharacter008_label_002": {
-    "en-US": "Choose Outfit Style",
+    "en-US": "Outfit Style",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8162,7 +9581,7 @@
     "de": ""
   },
   "createcharacter008_label_003": {
-    "en-US": "Choose Theme Color",
+    "en-US": "Theme Color",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8184,7 +9603,7 @@
     "de": ""
   },
   "createcharacter009_desc_001": {
-    "en-US": "Step 7. Thumbnail Background",
+    "en-US": "Step 7. Choose Thumbnail Background",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8195,18 +9614,7 @@
     "de": ""
   },
   "createcharacter009_label_002": {
-    "en-US": "Choose Background",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter009_label_003": {
-    "en-US": "Custom Setup",
+    "en-US": "Background",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8250,7 +9658,7 @@
     "de": ""
   },
   "createcharacter011_desc_003": {
-    "en-US": "Please enter a description of the image you want to create.",
+    "en-US": "Please enter a describe the image you want to create.",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8327,7 +9735,7 @@
     "de": ""
   },
   "createcharacter016_desc_002": {
-    "en-US": "Appropriate dialogue examples help to show the character's dialogue style.",
+    "en-US": "Appropriate dialogue examples help to show the character's dialogue style.<br>Shortcut [alt+n:add] [alt+up:prev] [alt+down:next]",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8338,17 +9746,6 @@
     "de": ""
   },
   "createcharacter017_label_001": {
-    "en-US": "Visibility",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter017_label_002": {
     "en-US": "LLM",
     "ko": "",
     "ja": "",
@@ -8359,29 +9756,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter017_label_003": {
-    "en-US": "Tag",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter017_label_004": {
-    "en-US": "Position Country",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter017_label_005": {
+  "createcharacter017_label_002": {
     "en-US": "Character IP",
     "ko": "",
     "ja": "",
@@ -8392,18 +9767,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter017_label_006": {
-    "en-US": "Monetization possible",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter017_label_007": {
+  "createcharacter017_label_003": {
     "en-US": "Connect",
     "ko": "",
     "ja": "",
@@ -8414,51 +9778,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter017_label_008": {
-    "en-US": "Operator Invitation",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter017_label_009": {
-    "en-US": "Moenetization",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter017_label_010": {
-    "en-US": "Membership Plan",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter017_label_011": {
-    "en-US": "NSFW",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter017_label_012": {
+  "createcharacter017_label_004": {
     "en-US": "Super Voice Seetings",
     "ko": "",
     "ja": "",
@@ -8469,19 +9789,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "createcharacter017_desc_013": {
+  "createcharacter017_desc_005": {
     "en-US": "Each AI voice actor has a variety of speaking styles. Select the style that best suits each sentence and print it.",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "createcharacter017_label_014": {
-    "en-US": "Comment",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8559,6 +9868,413 @@
   },
   "createcharacter018_desc_003": {
     "en-US": "You can validate your API Key on OpenAI API",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent001_title_001": {
+    "en-US": "Create Series ",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent001_label_002": {
+    "en-US": "Series Content",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent001_label_003": {
+    "en-US": "Single Contents",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent001_button_004": {
+    "en-US": "New Series",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent001_label_005": {
+    "en-US": "Series {0}",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent001_button_006": {
+    "en-US": "Detail",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent001_label_007": {
+    "en-US": "Filter",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent001_desc_008": {
+    "en-US": "It will be displayed when a new episode is registered",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent001_button_009": {
+    "en-US": "Add Single",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent001_label_010": {
+    "en-US": "Episode{0}",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent002_title_001": {
+    "en-US": "Terms and conditions",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "    ": {
+    "en-US": "Terms of Use",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent002_desc_003": {
+    "en-US": "I agree",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent003_label_001": {
+    "en-US": "Series Name",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent003_label_002": {
+    "en-US": "One line summary",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent003_label_003": {
+    "en-US": "Series Description",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent003_label_004": {
+    "en-US": "Category",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent003_label_005": {
+    "en-US": "Genre",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent005_label_001": {
+    "en-US": "Episodes",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent005_label_002": {
+    "en-US": "About",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent005_dropdown_003": {
+    "en-US": "Season{0}",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent006_label_001": {
+    "en-US": "Content",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent007_title_001": {
+    "en-US": "Create Episode",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent007_desc_002": {
+    "en-US": "Episode numbers are automatically assigned sequentially and cannot be set arbitrarily.",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent007_label_003": {
+    "en-US": "Episode Name",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent007_label_004": {
+    "en-US": "Episode Description",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent007_label_005": {
+    "en-US": "Subtitle",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent007_label_006": {
+    "en-US": "Dubbing",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent007_desc_007": {
+    "en-US": "Video: MP4/MOV/WEBM, 500MB, 1080x1920, 5-60s, 30fps. Image: JPG/PNG/WEBP, 10MB, 1080x1920, GIF 20MB.",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent007_label_008": {
+    "en-US": "Sales star EA",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent007_label_009": {
+    "en-US": "Free Episode",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent007_label_010": {
+    "en-US": "EA",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent008_label_001": {
+    "en-US": "Language Pack",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent012_title_001": {
+    "en-US": "Create Single content",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent012_label_002": {
+    "en-US": "Single content Name",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent012_label_003": {
+    "en-US": "Please enter a single contents name",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent012_label_004": {
+    "en-US": "Single content Description",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8700,6 +10416,17 @@
     "pt-PT": "",
     "de": ""
   },
+  "createmodules004_title_001": {
+    "en-US": "Single Content",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "createmodules004_label_002": {
     "en-US": "Prompt",
     "ko": "",
@@ -8734,7 +10461,7 @@
     "de": ""
   },
   "createmodules007_label_002": {
-    "en-US": "Lorebook Name",
+    "en-US": "Lore Book Name ",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8755,8 +10482,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_greatwallofchina": {
-    "en-US": "Great Wall of China",
+  "createfeed001_title001": {
+    "en-US": "Create Feed",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8766,8 +10493,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_grandcanyon": {
-    "en-US": "Grand Canyon",
+  "createfeed001_label002": {
+    "en-US": "Feed Name",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8777,8 +10504,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_niagarafalls": {
-    "en-US": "Niagara Falls",
+  "createfeed001_label003": {
+    "en-US": "Feed Discription",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8788,8 +10515,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_fujimountain": {
-    "en-US": "Fuji Mountain",
+  "createchannel001_title_001": {
+    "en-US": "Create Channel",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8799,8 +10526,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_venicegondolaride": {
-    "en-US": "Venice Gondola Ride",
+  "createchannel001_label_002": {
+    "en-US": "Thumbnail (Photo / Video) ",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8810,8 +10537,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_machupicchu": {
-    "en-US": "Machu Picchu",
+  "createchannel001_label_003": {
+    "en-US": "Basic",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8821,8 +10548,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_stonehenge": {
-    "en-US": "Stonehenge",
+  "createchannel001_label_004": {
+    "en-US": "Members",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8832,8 +10559,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_ayersrock": {
-    "en-US": "Ayers Rock",
+  "createchannel001_label_005": {
+    "en-US": "Policy",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8843,8 +10570,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_pyramid": {
-    "en-US": "Pyramid",
+  "createchannel001_label_006": {
+    "en-US": "Channel Name",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8854,8 +10581,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_saharadesert": {
-    "en-US": "Sahara Desert",
+  "createchannel001_label_007": {
+    "en-US": "Channel Description",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8865,8 +10592,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_deathvalley": {
-    "en-US": "Death Valley",
+  "createchannel002_label_001": {
+    "en-US": "Members {0}",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8876,8 +10603,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_montsaintmichel": {
-    "en-US": "Mont Saint Michel",
+  "createchannel002_label_002": {
+    "en-US": "Selected {0}",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8887,8 +10614,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_tokyorooftopskyscraper": {
-    "en-US": "Tokyo Rooftop Skyscraper",
+  "createchannel003_label_001": {
+    "en-US": "Channel IP",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8898,8 +10625,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_amusementparkride": {
-    "en-US": "Amusement Park Ride",
+  "profile001_label_001": {
+    "en-US": "Contents",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8909,8 +10636,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_hongkongneon": {
-    "en-US": "Hong Kong Neon",
+  "profile001_label_002": {
+    "en-US": "Followers",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8920,8 +10647,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_lasvegascasino": {
-    "en-US": "Las Vegas Casino",
+  "profile001_label_003": {
+    "en-US": "Following",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8931,8 +10658,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_timessquare": {
-    "en-US": "Times Square",
+  "profile007_label_001": {
+    "en-US": "Introduction",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8942,8 +10669,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_disneyland": {
-    "en-US": "Disneyland",
+  "profile007_label_002": {
+    "en-US": "Interests",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8953,8 +10680,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_tokyotower": {
-    "en-US": "Tokyo Tower",
+  "profile007_label_003": {
+    "en-US": "Personal History",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8964,8 +10691,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_tokyoskytree": {
-    "en-US": "Tokyo Skytree",
+  "profile007_label_004": {
+    "en-US": "Honor & Awards",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8975,8 +10702,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_atlantis": {
-    "en-US": "Atlantis",
+  "profile007_label_005": {
+    "en-US": "Portfolio",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8986,8 +10713,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_floatingisland": {
-    "en-US": "Floating Island",
+  "profile007_label_006": {
+    "en-US": "URL",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8997,8 +10724,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_treetopscity": {
-    "en-US": "Treetops City",
+  "profile011_title_001": {
+    "en-US": "Subscription",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9008,8 +10735,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_mountaintopcity": {
-    "en-US": "Mountaintop City",
+  "profile011_label_002": {
+    "en-US": "IP",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9019,8 +10746,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_lakecity": {
-    "en-US": "Lake City",
+  "profile011_label_003": {
+    "en-US": "Inactive Subscription",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9030,8 +10757,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_eastasianarchitecture": {
-    "en-US": "East Asian Architecture",
+  "profile021_title_001": {
+    "en-US": "Subscribders",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9041,8 +10768,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_park": {
-    "en-US": "Park",
+  "profile021_label_002": {
+    "en-US": "Subscribders {0}",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9052,8 +10779,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_school": {
-    "en-US": "School",
+  "profile034_label_001": {
+    "en-US": "subscripbers",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9063,8 +10790,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_classroom": {
-    "en-US": "Classroom",
+  "shared002_title_001": {
+    "en-US": "Share",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9074,8 +10801,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_citylights": {
-    "en-US": "City Lights",
+  "shared002_label_002": {
+    "en-US": "Recent people",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9085,8 +10812,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_highway": {
-    "en-US": "Highway",
+  "shared002_label_003": {
+    "en-US": "Social media",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9096,8 +10823,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_dock": {
-    "en-US": "Dock",
+  "shared003_title_001": {
+    "en-US": "Friends",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9107,8 +10834,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_boat/ship": {
-    "en-US": "Boat/Ship",
+  "shared003_label_002": {
+    "en-US": "Follower",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9118,8 +10845,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_airport": {
-    "en-US": "Airport",
+  "shared003_label_003": {
+    "en-US": "Following",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9129,8 +10856,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_airplane": {
-    "en-US": "Airplane",
+  "shared003_label_004": {
+    "en-US": "All {0}",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9140,8 +10867,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_spaceship": {
-    "en-US": "Spaceship",
+  "shared005_title_001": {
+    "en-US": "Suggestion for you",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9151,8 +10878,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_heavenlyclouds": {
-    "en-US": "Heavenly Clouds",
+  "shared005_button_002": {
+    "en-US": "Share Add Friend",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9162,8 +10889,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_spacestars": {
-    "en-US": "Space Stars",
+  "shared010_title_001": {
+    "en-US": "Donation",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9173,8 +10900,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_spaceplanets": {
-    "en-US": "Space Planets",
+  "shared010_desc_002": {
+    "en-US": "[ ] sponsors [ ]",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9184,8 +10911,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_gym": {
-    "en-US": "Gym",
+  "shared011_title_001": {
+    "en-US": "Comment",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9195,8 +10922,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_lockerroom": {
-    "en-US": "Locker Room",
+  "shared011_label_002": {
+    "en-US": "Reply {0}",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9206,8 +10933,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_library": {
-    "en-US": "Library",
+  "shared011_label_003": {
+    "en-US": "Typing a comment.",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9217,8 +10944,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_energyplant": {
-    "en-US": "Energy Plant",
+  "shared013_label_001": {
+    "en-US": "Character Content",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9228,8 +10955,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_armory": {
-    "en-US": "Armory",
+  "shared013_label_002": {
+    "en-US": "Character IP",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9239,8 +10966,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_workshop": {
-    "en-US": "Workshop",
+  "shared013_label_003": {
+    "en-US": "${0} / month",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9250,8 +10977,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_busstop": {
-    "en-US": "Bus Stop",
+  "shared015_label_001": {
+    "en-US": "Owner",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9261,8 +10988,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_hospital": {
-    "en-US": "Hospital",
+  "shared016_label_001": {
+    "en-US": "If Selected, Individual sales are not possible ",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9272,8 +10999,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_office": {
-    "en-US": "Office",
+  "shared016_label_002": {
+    "en-US": "Payment Amount",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9283,8 +11010,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_corridor": {
-    "en-US": "Corridor",
+  "shared016_label_003": {
+    "en-US": "Month",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9294,8 +11021,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_bedroom": {
-    "en-US": "Bedroom",
+  "shared016_label_004": {
+    "en-US": "Benefits",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9305,8 +11032,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_bedroomsetup": {
-    "en-US": "Bedroom Setup",
+  "shared017_label_001": {
+    "en-US": "Posting Country",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9316,8 +11043,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_bedroomwithmonitor": {
-    "en-US": "Bedroom with Monitor",
+  "shared017_label_002": {
+    "en-US": "All",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9327,8 +11054,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_plushbedroom": {
-    "en-US": "Plush Bedroom",
+  "shared017_label_003": {
+    "en-US": "Recently",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9338,8 +11065,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_diningroom": {
-    "en-US": "Dining Room",
+  "shared028_title_001": {
+    "en-US": "Account",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9349,8 +11076,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_livingroom": {
-    "en-US": "Living Room",
+  "shared028_label_002": {
+    "en-US": "Slug ",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9360,8 +11087,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_bathroom": {
-    "en-US": "Bathroom",
+  "shared028_label_003": {
+    "en-US": "Website",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9371,8 +11098,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_kitchen": {
-    "en-US": "Kitchen",
+  "shared028_label_004": {
+    "en-US": "Introduction",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9382,8 +11109,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_apartment": {
-    "en-US": "Apartment",
+  "shared028_label_005": {
+    "en-US": "Contact Email",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9393,8 +11120,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_conveniencestore": {
-    "en-US": "Convenience Store",
+  "shared028_label_006": {
+    "en-US": "Register Date",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9404,8 +11131,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_shoppingmall": {
-    "en-US": "Shopping Mall",
+  "shared030_title_001": {
+    "en-US": "Shop",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9415,8 +11142,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_restaurant": {
-    "en-US": "Restaurant",
+  "shared030_label_002": {
+    "en-US": "Ruby",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9426,8 +11153,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_plaza": {
-    "en-US": "Plaza",
+  "shared030_label_003": {
+    "en-US": "Star",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9437,8 +11164,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_mountain": {
-    "en-US": "Mountain",
+  "shared032_title_001": {
+    "en-US": "Language",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9448,371 +11175,8 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tagbackground_prairie": {
-    "en-US": "Prairie",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_grass": {
-    "en-US": "Grass",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_grassandtree": {
-    "en-US": "Grass and Tree",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_field": {
-    "en-US": "Field",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_farm/plantation": {
-    "en-US": "Farm/Plantation",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_forest": {
-    "en-US": "Forest",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_jungle": {
-    "en-US": "Jungle",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_jungleruins": {
-    "en-US": "Jungle Ruins",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_hill": {
-    "en-US": "Hill",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_greenhill": {
-    "en-US": "Green Hill",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_autumntrees": {
-    "en-US": "Autumn Trees",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_flowerfield": {
-    "en-US": "Flower Field",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_snowyfield": {
-    "en-US": "Snowy Field",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_snowymountain": {
-    "en-US": "Snowy Mountain",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_snowytown": {
-    "en-US": "Snowy Town",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_ice": {
-    "en-US": "Ice",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_river": {
-    "en-US": "River",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_lake": {
-    "en-US": "Lake",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_pool": {
-    "en-US": "Pool",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_beachwithpalm": {
-    "en-US": "Beach with Palm",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_oceanbeach": {
-    "en-US": "Ocean Beach",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_suburbantown": {
-    "en-US": "Suburban Town",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_japanesetown": {
-    "en-US": "Japanese Town",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_japanesepondarch": {
-    "en-US": "Japanese Pond Arch",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_forestcabin": {
-    "en-US": "Forest Cabin",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_concert": {
-    "en-US": "Concert",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_castle": {
-    "en-US": "Castle",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_palace": {
-    "en-US": "Palace",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_dojo": {
-    "en-US": "Dojo",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_cemetery": {
-    "en-US": "Cemetery",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_fantasyland": {
-    "en-US": "Fantasy Land",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_ancientruins": {
-    "en-US": "Ancient Ruins",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_pirateship": {
-    "en-US": "Pirate Ship",
-    "ko": "",
-    "ja": "",
-    "fr": "",
-    "es": "",
-    "zh-CN": "",
-    "zh-TW": "",
-    "pt-PT": "",
-    "de": ""
-  },
-  "common_tagbackground_stoneroad": {
-    "en-US": "Stone Road",
+  " ": {
+    "en-US": "",
     "ko": "",
     "ja": "",
     "fr": "",
