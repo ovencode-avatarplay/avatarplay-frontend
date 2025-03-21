@@ -248,6 +248,10 @@ type DataProfileType = {
     message: string;
   };
 
+  dataOtherProfileMenu: {
+    isOpen: boolean;
+  };
+
   refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
   getIsEmptyTab: () => boolean;
 };
@@ -340,6 +344,10 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     dataToast: {
       isOpen: false,
       message: '',
+    },
+
+    dataOtherProfileMenu: {
+      isOpen: false,
     },
 
     refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
@@ -823,9 +831,26 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           )}
 
           {!isMine && (
-            <img className={cx(styles.icon, styles.iconNotification)} src="/ui/profile/icon_notification.svg" alt="" />
+            <img
+              className={cx(styles.icon, styles.iconNotification)}
+              src="/ui/profile/icon_notification.svg"
+              alt=""
+              onClick={() => {
+                alert('DM기능 6월 추가 예정');
+              }}
+            />
           )}
-          {!isMine && <img className={cx(styles.icon, styles.iconSetting)} src={BoldMenuDots.src} alt="" />}
+          {!isMine && (
+            <img
+              className={cx(styles.icon, styles.iconSetting)}
+              src={BoldMenuDots.src}
+              alt=""
+              onClick={() => {
+                data.dataOtherProfileMenu.isOpen = true;
+                setData({...data});
+              }}
+            />
+          )}
         </div>
       </section>
       <section className={cx(styles.main, !isPath && styles.mainNoPath)}>
@@ -1178,6 +1203,22 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           sponsoredName={data.profileInfo?.profileInfo?.name || ''}
         />
       )}
+      <SelectDrawer
+        isOpen={data.dataOtherProfileMenu.isOpen}
+        onClose={() => {
+          data.dataOtherProfileMenu.isOpen = false;
+          setData({...data});
+        }}
+        items={[
+          {
+            name: getLocalizedText('common_dropdown_report'),
+            onClick: () => {
+              alert('신고하기 추가 예정');
+            },
+          },
+        ]}
+        selectedIndex={-1}
+      />
 
       <>
         <Backdrop
