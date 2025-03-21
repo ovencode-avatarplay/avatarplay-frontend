@@ -65,6 +65,7 @@ import parse from 'html-react-parser';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
+import formatText from '@/utils/formatText';
 
 type Props = {
   id: number;
@@ -144,7 +145,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         {isActive: false, value: getLocalizedText('common_tag_elf')},
         {isActive: false, value: getLocalizedText('common_tag_romance')},
         {isActive: false, value: getLocalizedText('common_tag_vanilla')},
-        {isActive: false, value: getLocalizedText('common_tag_contemporary Fantasy')},
+        {isActive: false, value: getLocalizedText('common_tag_contemporaryFantasy')},
         {isActive: false, value: getLocalizedText('common_tag_Isekai')},
         {isActive: false, value: getLocalizedText('common_tag_Flirting')},
         {isActive: false, value: getLocalizedText('common_tag_Dislike')},
@@ -184,7 +185,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
     dataPopupRemove: {
       isOpen: false,
-      title: parse(getLocalizedText('common_alert_083')),
+      title: parse(getLocalizedText('common_alert_052')),
       description: getLocalizedText('common_alert_084'),
       idProfile: 0,
     },
@@ -635,7 +636,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                             onClick={() => {
                               data.dataPopupRemove.idProfile = one.profileSimpleInfo.profileId;
                               data.dataPopupRemove.isOpen = true;
-                              data.dataPopupRemove.title = parse(`Remove from<br/>“${watch('name')}”`);
+                              data.dataPopupRemove.title = formatText(getLocalizedText('common_alert_052'), [
+                                watch('name'),
+                              ]);
+                              // data.dataPopupRemove.title = parse(`Remove from<br/>“${watch('name')}”`);
                               setData({...data});
                             }}
                           >
