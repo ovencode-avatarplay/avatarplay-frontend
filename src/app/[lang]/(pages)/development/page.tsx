@@ -349,14 +349,14 @@ export default function ApiTestTool() {
           <Box display="flex" gap={2} alignItems="center">
             <TextField
               multiline
-              rows={1}
+              rows={4}
               fullWidth
               label="Question"
               name="question"
               value={formData.question}
               onChange={handleChange}
               onKeyDown={e => {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
                   handleSubmit();
                 }
