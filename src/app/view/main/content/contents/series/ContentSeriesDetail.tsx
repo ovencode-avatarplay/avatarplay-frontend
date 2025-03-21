@@ -670,7 +670,7 @@ export const PopupPurchase = ({
       <section className={styles.popupPurchaseSection}>
         <div className={styles.categoryWrap}>
           <div className={styles.left}>
-            <div className={styles.category}>{getLocalizedText('profile041_label_001')}</div>
+            <div className={styles.category}>{getLocalizedText('common_alert_096')}</div>
           </div>
           <div className={styles.right}>
             <div className={styles.balanceWrap}>
@@ -684,9 +684,9 @@ export const PopupPurchase = ({
           </div>
         </div>
         <div className={styles.title}>
-          {price} {getLocalizedText('profile042_desc_002')}
+          {price} {getLocalizedText('common_alert_001')}
         </div>
-        <div className={styles.description}>{getLocalizedText('profile042_desc_003')}</div>
+        <div className={styles.description}>{getLocalizedText('common_alert_022')}</div>
 
         <div className={styles.dontshowWrap}>
           <label htmlFor="dontshow">
@@ -696,7 +696,7 @@ export const PopupPurchase = ({
               <img src={BoldRadioButtonSquare.src} alt="" className={styles.iconOff} />
             </div>
             <div className={styles.right}>
-              <div className={styles.dontshow}>{getLocalizedText('profile042_desc_004')}</div>
+              <div className={styles.dontshow}>{getLocalizedText('common_alert_024')}</div>
             </div>
           </label>
         </div>
@@ -741,8 +741,8 @@ const PopupNotEnoughStars = ({onClose, onCharge}: PopupNotEnoughStarsType) => {
       }}
     >
       <section className={styles.popupNotEnoughStars}>
-        <div className={styles.title}>{getLocalizedText('profile043_label_001')}</div>
-        <div className={styles.description}>{getLocalizedText('profile043_desc_002')}</div>
+        <div className={styles.title}>{getLocalizedText('common_alert_046')}</div>
+        <div className={styles.description}>{getLocalizedText('common_alert_074')}</div>
         <div className={styles.buttonWrap}>
           <button className={styles.cancel} onClick={onClose}>
             {getLocalizedText('common_button_cancel')}
