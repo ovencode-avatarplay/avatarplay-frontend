@@ -414,11 +414,12 @@ export enum PinTabType {
   FavoritesCharacter = 2,
   FavoritesChannel = 3,
   FavoritesContents = 4,
-  FavoritesGame = 5,
-  RecordFeed = 6,
-  RecordCharacter = 7,
-  RecordContents = 8,
-  RecordGame = 9,
+  FavoritesEpisode = 5,
+  FavoritesGame = 6,
+  RecordFeed = 7,
+  RecordCharacter = 8,
+  RecordContents = 9,
+  RecordGame = 10,
 }
 
 export const pinFix = async (payload: PinFixReq): Promise<ResponseAPI<PinFixRes>> => {

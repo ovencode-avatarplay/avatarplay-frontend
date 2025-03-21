@@ -184,6 +184,7 @@ export enum eContentFilterType {
   Total,
   Series = 1,
   Single = 2,
+  Episode = 3,
 }
 
 export enum eSharedFilterType {
@@ -202,6 +203,7 @@ export type TabContentMenuType = {
   index?: number;
   shareUrl?: string;
   shareTitle?: string;
+  contentType?: ContentType;
 };
 
 type DataProfileType = {
@@ -1815,6 +1817,17 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             >
               <div className={styles.text}>{getLocalizedText('common_filter_single')}</div>
             </div>
+            {isFavorites && (
+              <div
+                className={cx(
+                  styles.textWrap,
+                  filterCluster.indexFilterContent == eContentFilterType.Episode && styles.active,
+                )}
+                data-filter={eContentFilterType.Episode}
+              >
+                <div className={styles.text}>{getLocalizedText('common_filter_episode')}</div>
+              </div>
+            )}
           </div>
           <div className={styles.right}>
             <div className={styles.filterTypeWrap}>
@@ -2990,6 +3003,7 @@ export const ContentComponent = ({
                 isSingle: isSingle,
                 shareUrl: window.location.origin + urlLinkThumbnail,
                 shareName: itemInfo?.name,
+                contentType: itemInfo?.contentType,
               };
               if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
             }}

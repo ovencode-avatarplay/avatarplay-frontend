@@ -293,6 +293,7 @@ export enum ContentCategoryType {
 export enum ContentType {
   Single = 0,
   Series = 1,
+  Episode = 2,
 }
 
 export enum VisibilityType {

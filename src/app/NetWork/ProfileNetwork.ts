@@ -318,6 +318,7 @@ export enum ContentTabType {
   Total,
   Series = 1,
   Single = 2,
+  Episode = 3,
 }
 
 export enum CharacterProfileTabType {
