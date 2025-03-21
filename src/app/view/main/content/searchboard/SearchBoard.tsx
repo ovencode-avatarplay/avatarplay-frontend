@@ -64,6 +64,11 @@ const SearchBoard: React.FC = () => {
 
   const [requestFetch, setRequestFetch] = useState<boolean>(false);
 
+  // scroll 조건 외에 마지막 아이템이 보이면 search 호출
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastElement = useRef<HTMLLIElement | null>(null);
+
   const dropDownMenuItems: DropDownMenuItem[] = [
     {
       name: 'Newest',
@@ -99,48 +104,9 @@ const SearchBoard: React.FC = () => {
     },
   ];
 
-  useLayoutEffect(() => {
-    const search = getParam('search');
-    const indexTab = getParam('indexTab');
-    data.indexTab = Number(indexTab);
-    setData({...data});
-
-    if (search && ['All', 'Story', 'Character', 'Content'].includes(search)) {
-      handleSearchChange(search as 'All' | 'Story' | 'Character' | 'Content');
-    }
-  }, []);
-  // Handle
-
   const handleSearchChange = (value: searchType) => {
     setSearch(value);
   };
-
-  // scroll 조건 외에 마지막 아이템이 보이면 search 호출
-  const observer = useRef<IntersectionObserver | null>(null);
-
-  const lastElement = useRef<HTMLLIElement | null>(null);
-
-  useEffect(() => {
-    if (loading || !hasSearchResult) return;
-
-    if (observer.current) observer.current.disconnect();
-
-    observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        fetchExploreData(search, searchValue, adultToggleOn, contentOffset, characterOffset, storyOffset);
-        setSearchOffset(prev => {
-          const newOffset = prev + searchLimit;
-          return newOffset;
-        });
-      }
-    });
-
-    if (lastElement.current) observer.current.observe(lastElement.current);
-
-    return () => {
-      observer.current?.disconnect();
-    };
-  }, [searchResultList]);
 
   // Func
   const generateFilterList = (): {searchFilterType: number; searchFilterState: number}[] => {
@@ -244,6 +210,17 @@ const SearchBoard: React.FC = () => {
   };
 
   // Hooks
+  useLayoutEffect(() => {
+    const search = getParam('search');
+    const indexTab = getParam('indexTab');
+    data.indexTab = Number(indexTab);
+    setData({...data});
+
+    if (search && ['All', 'Story', 'Character', 'Content'].includes(search)) {
+      handleSearchChange(search as 'All' | 'Story' | 'Character' | 'Content');
+    }
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -272,9 +249,31 @@ const SearchBoard: React.FC = () => {
         setLoading(false);
       }
     };
-
-    fetchData();
+    setSearchResultList([]);
+    // fetchExploreData(search, searchValue, adultToggleOn, contentOffset, characterOffset, storyOffset);
   }, []);
+
+  useEffect(() => {
+    if (loading || !hasSearchResult) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        fetchExploreData(search, searchValue, adultToggleOn, contentOffset, characterOffset, storyOffset);
+        setSearchOffset(prev => {
+          const newOffset = prev + searchLimit;
+          return newOffset;
+        });
+      }
+    });
+
+    if (lastElement.current) observer.current.observe(lastElement.current);
+
+    return () => {
+      observer.current?.disconnect();
+    };
+  }, [searchResultList]);
 
   useEffect(() => {
     setHasSearchResult(true);
