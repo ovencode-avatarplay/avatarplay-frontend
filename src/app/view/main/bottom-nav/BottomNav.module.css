@@ -8,7 +8,7 @@
   
  
   width: var(--full-width);
-  height: 60px;
+  height: 64px;
   padding: 0px 6px 0px 6px;
   flex-direction: column;
   align-items: center;
@@ -74,8 +74,8 @@
 }
 
 .navButtonPlusWrap{
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   background-color: #FD55D3;
   display: flex;
   align-items: center;
