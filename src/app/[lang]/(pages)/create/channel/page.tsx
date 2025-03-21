@@ -127,9 +127,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     dataVisibility: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: true, value: getLocalizedText('common_dropdown_private')},
-        {isActive: false, value: getLocalizedText('common_dropdown_unlisted')},
-        {isActive: false, value: getLocalizedText('common_dropdown_public')},
+        {isActive: true, value: getLocalizedText('common_filter_private')},
+        {isActive: false, value: getLocalizedText('common_filter_unlisted')},
+        {isActive: false, value: getLocalizedText('common_filter_public')},
       ],
       drawerTitle: getLocalizedText('common_label_001'),
       drawerDescription: '',
