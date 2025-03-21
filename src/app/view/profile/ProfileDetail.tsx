@@ -25,6 +25,7 @@ import Link from 'next/link';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 type Props = {
   profileId: number;
@@ -267,6 +268,7 @@ export const CharacterProfileDetailComponent = ({
 };
 
 const ProfileDetail = ({profileId}: Props) => {
+  const {back} = useCustomRouter();
   const router = useRouter();
   const [data, setData] = useState<ProfileType>({
     indexTab: eTabType.Feed,
@@ -296,7 +298,7 @@ const ProfileDetail = ({profileId}: Props) => {
     <>
       <header className={styles.header}>
         <div className={styles.title}>{data.characterInfo?.name}</div>
-        <img className={styles.iconClose} src={LineClose.src} onClick={() => router.back()} />
+        <img className={styles.iconClose} src={LineClose.src} onClick={() => back()} />
       </header>
       <main className={styles.main}>
         <CharacterProfileDetailComponent

@@ -47,6 +47,7 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import {getCurrentLanguage} from '@/utils/UrlMove';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 interface Props {
   open: boolean;
@@ -79,6 +80,7 @@ const EpisodeInitialize: React.FC<Props> = ({
 }) => {
   //#region 선언
   // 공통
+  const {back} = useCustomRouter();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
@@ -455,7 +457,8 @@ const EpisodeInitialize: React.FC<Props> = ({
       onClose();
       initData();
     } else {
-      router.back();
+      back();
+      // router.back();
     }
   };
 
