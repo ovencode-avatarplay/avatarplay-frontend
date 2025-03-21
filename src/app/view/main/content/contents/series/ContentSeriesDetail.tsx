@@ -210,9 +210,11 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               routerBack();
             }}
           />
-          <Link href={getLocalizedLink(`${urlEdit}/${id}`)}>
-            <img className={styles.btnEdit} src={LineEdit.src} alt="" />
-          </Link>
+          {data?.dataMix?.isMyContent && (
+            <Link href={getLocalizedLink(`${urlEdit}/${id}`)}>
+              <img className={styles.btnEdit} src={LineEdit.src} alt="" />
+            </Link>
+          )}
         </header>
         <section ref={refThumbnailWrap} className={styles.thumbnailWrap}>
           {data.dataMix?.thumbnailMediaState == MediaState.Image && (

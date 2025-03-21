@@ -3806,7 +3806,7 @@
     "de": ""
   },
   "common_button_search": {
-    "en-US": "Search",
+    "en-US": "search",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -6621,6 +6621,17 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_label_favorite": {
+    "en-US": "Favorite",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_sort_dependingonthesituation": {
     "en-US": "Depending on the situation",
     "ko": "",
@@ -9251,7 +9262,7 @@
     "de": ""
   },
   "home001_label_002": {
-    "en-US": "Follow",
+    "en-US": "fill",
     "ko": "",
     "ja": "",
     "fr": "",
