@@ -5,6 +5,8 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import styles from './WithdrawMembership.module.css';
+import getLocalizedText from '@/utils/getLocalizedText';
+import {BoldInfo} from '@ui/Icons';
 
 interface WithdrawalModalProps {
   open: boolean;
@@ -26,11 +28,11 @@ const WithdrawMembership: React.FC<WithdrawalModalProps> = ({open, onClose, onWi
   return (
     <Modal open={open} onClose={onClose}>
       <Box className={styles.modalBox}>
-        <h2 className={styles.title}>Withdraw Membership</h2>
+        <h2 className={styles.title}>{getLocalizedText('common_alert_068')}</h2>
         <div className={styles.content}>
           <p className={styles.subtitle}>
-            <span className={styles.infoIcon}>ⓘ</span>
-            Withdraw Membership Data Destruction and Privacy Protection Measures
+            <img src={BoldInfo.src} className={styles.infoIcon}></img>
+            {getLocalizedText('common_alert_069')}
           </p>
           <ul className={styles.list}>
             <li>Once your member information is deleted, it cannot be recovered by any means.</li>
@@ -50,7 +52,7 @@ const WithdrawMembership: React.FC<WithdrawalModalProps> = ({open, onClose, onWi
               sx={{color: '#2C3131', '&.Mui-checked': {color: '#2C3131'}}}
             />
           }
-          label="I have reviewed all of the above."
+          label={getLocalizedText('common_alert_030')}
         />
 
         <div className={styles.buttonContainer}>

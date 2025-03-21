@@ -159,13 +159,13 @@ const PopupAccountChange: React.FC<Props> = ({open, onClose}) => {
           </div>
         </div>
 
-        {/* <WithdrawMembership
+        <WithdrawMembership
           open={onWithdrawMembershipPopup}
           onClose={() => setOnWithdrawMembershipPopup(false)}
           onWithdraw={() => {
             setIsAgree(true);
           }}
-        /> */}
+        />
       </Box>
     </Modal>
   );

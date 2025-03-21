@@ -3,7 +3,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 320px;
+    width: 402px;
+    
     background: #FFFFFF;
     border-radius: 24px;
     box-shadow: 0px 4px 24px rgba(0,0,0,0.1);
@@ -42,7 +43,7 @@
   }
   
   .infoIcon {
-    color: #F75555;
+    filter: brightness(0) saturate(100%) invert(41%) sepia(28%) saturate(1338%) hue-rotate(314deg) brightness(111%) contrast(95%);
     font-weight: bold;
     font-size: 18px;
   }
