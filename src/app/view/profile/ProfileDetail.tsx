@@ -183,18 +183,20 @@ export const CharacterProfileDetailComponent = ({
       <section className={styles.tabSection}>
         <div className={styles.tabContent}>
           <div className={styles.textWrap}>
-            <div className={cx(styles.label, styles.descriptionLabel)}>Description</div>
+            <div className={cx(styles.label, styles.descriptionLabel)}>
+              {getLocalizedText('createcharacter001_label_012')}
+            </div>
             <TextArea value={data.characterInfo?.description || ''} />
           </div>
           <div className={styles.textWrap}>
-            <div className={styles.label}>World Senario</div>
+            <div className={styles.label}>{getLocalizedText('createcharacter001_label_017')}</div>
             <TextArea value={data.characterInfo?.worldScenario || ''} />
           </div>
-          {data.characterInfo?.creatorComment ? (
+          {data.characterInfo?.introduction ? (
             <>
               <div className={styles.textWrap}>
-                <div className={styles.label}>Creator Comment</div>
-                <TextArea value={data.characterInfo?.creatorComment || ''} />
+                <div className={styles.label}>{getLocalizedText('createcharacter001_label_018')}</div>
+                <TextArea value={data.characterInfo?.introduction || ''} />
               </div>
             </>
           ) : (

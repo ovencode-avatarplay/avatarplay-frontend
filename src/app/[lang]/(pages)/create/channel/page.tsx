@@ -19,6 +19,7 @@ import {FieldErrors, useForm} from 'react-hook-form';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {
   ExploreSortType,
+  mapOperatorAuthorityType,
   MediaState,
   OperatorAuthorityType,
   ProfileInfo,
@@ -419,8 +420,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     if (res?.resultCode == 0) {
       data.dataPopupComplete.isOpen = true;
       data.dataPopupComplete.title = isUpdate
-        ? getLocalizedText('CreateChannel001_label_updateComplete')
-        : getLocalizedText('CreateChannel001_label_createComplete');
+        ? getLocalizedText('common_alert_099')
+        : getLocalizedText('common_alert_098');
       setData({...data});
     }
   };
@@ -488,7 +489,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       </header>
       <main className={styles.main}>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
-          <div className={styles.label}>{getLocalizedText('CreateChannel', 'CreateChannel001_label_002')}</div>
+          <div className={styles.label}>{getLocalizedText('CreateChannel', 'common_label_thumbnail')}</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
               <input className={styles.hide} autoComplete="off" {...register('mediaUrl', {required: true})} />
@@ -568,7 +569,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   {...register('name', {required: true})}
                   className={cx(errors.name && isSubmitted && styles.error)}
                   type="text"
-                  placeholder={getLocalizedText('CreateChannel', 'CreateChannel001_label_008')}
+                  placeholder={getLocalizedText('CreateChannel', 'common_sample_086')}
                   onChange={e => {
                     clearErrors('name');
                     setValue('name', e.target.value);
@@ -774,7 +775,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 <div className={styles.operatorInvitationHeader}>
                   <div className={styles.left}>
                     <div className={styles.label}>{getLocalizedText('CreateChannel', 'common_label_005')}</div>
-                    <CustomToolTip tooltipText="NSFW Monetization" />
+                    <CustomToolTip tooltipText="Operator Invitation" />
                   </div>
                   <div
                     className={styles.right}
@@ -789,6 +790,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 <ul className={styles.operatorInvitationList}>
                   {data.dataOperatorInvitation.operatorProfileIdList.map((one, index) => {
                     const keys = Object.keys(OperatorAuthorityType).filter(key => isNaN(Number(key)));
+                    const operatorAuthorityTypeStr = keys[
+                      one.operatorAuthorityType
+                    ] as keyof typeof mapOperatorAuthorityType;
+                    const operatorAuthorityTypeStrMapping = mapOperatorAuthorityType[operatorAuthorityTypeStr];
                     return (
                       <li key={one.profileId} className={styles.operatorInviation}>
                         <div className={styles.left}>
@@ -796,7 +801,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                           <div className={styles.name}>{one.name}</div>
                         </div>
                         <div className={styles.right}>
-                          <div className={styles.authority}>{keys[one.operatorAuthorityType]}</div>
+                          <div className={styles.authority}>{getLocalizedText(operatorAuthorityTypeStrMapping)}</div>
                         </div>
                       </li>
                     );
@@ -825,9 +830,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                         </div>
                       </div>
                     </label>
-                    <div className={styles.right}>
-                      {getLocalizedText('CreateChannel', 'createcharacter017_label_006')}
-                    </div>
+                    <div className={styles.right}>{getLocalizedText('CreateChannel', 'common_label_004')}</div>
                   </div>
                   <div className={styles.item}>
                     <label>
@@ -935,7 +938,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
                 <div className={cx(styles.labelWrap, styles.nsfw)}>
                   <div className={styles.label}>
-                    {getLocalizedText('CreateChannel', 'common_sample_086')} <span className={styles.highlight}>*</span>
+                    {getLocalizedText('CreateChannel', 'common_label_008')} <span className={styles.highlight}>*</span>
                   </div>
                   <CustomToolTip tooltipText="NSFW" />
                 </div>

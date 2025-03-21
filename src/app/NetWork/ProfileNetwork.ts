@@ -23,6 +23,13 @@ export interface ProfileSimpleInfo {
   characterIP?: CharacterIP;
 }
 
+export const mapOperatorAuthorityType = {
+  None: '',
+  Owner: 'common_dropown_owner',
+  CanEdit: 'common_dropdown_canedit',
+  OnlyComments: 'common_dropdown_onlycomments',
+};
+
 export enum OperatorAuthorityType {
   None = 0,
   Owner = 1,

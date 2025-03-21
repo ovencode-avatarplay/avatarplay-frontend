@@ -28,6 +28,7 @@ import {
   WeiboIcon,
 } from 'react-share';
 import {copyStrToClipboard} from '@/utils/util-1';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface SharePopupProps {
   title: string;
@@ -63,7 +64,7 @@ const SharePopup: React.FC<SharePopupProps> = ({title, url, open, onClose}) => {
       >
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6" component="h2">
-            공유하기
+            {getLocalizedText('shared002_title_001')}
           </Typography>
           <IconButton onClick={onClose}>
             <CloseIcon />

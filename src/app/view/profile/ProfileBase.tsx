@@ -870,11 +870,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
           <div className={styles.itemStatistic}>
             <div className={styles.count}>{data.profileInfo?.profileInfo.contentsCount}</div>
-            <div className={styles.label}>{getLocalizedText('Common', 'common_label_contents')}</div>
+            <div className={styles.label}>{getLocalizedText('Common', 'profile001_label_001')}</div>
           </div>
           <div className={styles.itemStatistic}>
             <div className={styles.count}>{data.profileInfo?.profileInfo.followerCount}</div>
-            <div className={styles.label}>{getLocalizedText('Common', 'common_label_followers')}</div>
+            <div className={styles.label}>{getLocalizedText('Common', 'profile001_label_002')}</div>
           </div>
           <div className={styles.itemStatistic}>
             <div className={styles.count}>
@@ -882,8 +882,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             </div>
             <div className={styles.label}>
               {isPD
-                ? getLocalizedText('Common', 'home001_label_002')
-                : getLocalizedText('Common', 'common_label_subscribers')}
+                ? getLocalizedText('Common', 'profile001_label_003')
+                : getLocalizedText('Common', 'profile034_label_001')}
             </div>
           </div>
         </div>
@@ -911,7 +911,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               <Link
                 href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileUrlLinkKey + '?from=""')}
               >
-                <span className={styles.label}>Manager: {data.profileInfo?.profileInfo?.pdEmail}</span>
+                <span className={styles.label}>
+                  {getLocalizedText('shared015_label_001')}: {data.profileInfo?.profileInfo?.pdEmail}
+                </span>
               </Link>
             </div>
           )}
@@ -920,7 +922,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               <Link
                 href={getLocalizedLink(`/profile/` + data.profileInfo?.profileInfo.pdProfileUrlLinkKey + '?from=""')}
               >
-                <span className={styles.label}>Owner: {data.profileInfo?.profileInfo?.pdEmail}</span>
+                <span className={styles.label}>
+                  {getLocalizedText('shared015_label_001')}: {data.profileInfo?.profileInfo?.pdEmail}
+                </span>
               </Link>
             </div>
           )}
@@ -1884,7 +1888,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Original}
             >
-              <div className={styles.text}>{getLocalizedText('common_button_original')}</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_original')}</div>
             </div>
             <div
               className={cx(
@@ -1893,7 +1897,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Fan}
             >
-              <div className={styles.text}>{getLocalizedText('common_button_fan')}</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_fan')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -1949,7 +1953,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Original}
             >
-              <div className={styles.text}>{getLocalizedText('common_button_original')}</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_original')}</div>
             </div>
             <div
               className={cx(
@@ -1959,7 +1963,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Fan}
             >
-              <div className={styles.text}>{getLocalizedText('common_button_fan')}</div>
+              <div className={styles.text}>{getLocalizedText('common_filter_fan')}</div>
             </div>
           </div>
           <div className={styles.right}>
@@ -2440,7 +2444,7 @@ export const TabContentComponentWrap = ({
       />
       <SharePopup
         open={data.isShareOpened}
-        title={data?.tabContentMenu?.shareTitle || '공유하기'}
+        title={data?.tabContentMenu?.shareTitle || getLocalizedText('shared002_title_001')}
         url={data.tabContentMenu?.shareUrl || window.location.href}
         onClose={() => {
           setData(v => ({...v, isShareOpened: false}));

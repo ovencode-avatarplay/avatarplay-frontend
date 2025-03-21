@@ -66,7 +66,6 @@ const getLocalizedText = (...args: [string] | [string, string] | [string, string
 
   const effectiveLanguage = language || getLanguageFromURL();
   const localizedItem = localizationSources[key];
-  console.log('localizedItem: ', localizedItem);
   // Key가 없을 경우 빈 문자열 반환
   if (!localizedItem) {
     console.warn(`로컬라이징 작업 필요: ${key}`);
@@ -76,7 +75,7 @@ const getLocalizedText = (...args: [string] | [string, string] | [string, string
   if (effectiveLanguage === null) return localizedItem['en-US'] || '';
 
   // 언어별 데이터가 없으면 영어 기본값 반환
-  return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
+  return localizedItem[effectiveLanguage] || `로컬라이징 작업 필요: ${key}`;
 };
 
 export default getLocalizedText;

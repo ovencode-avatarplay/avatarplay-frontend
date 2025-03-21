@@ -363,7 +363,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
 
       <SharePopup
         open={data.isShareOpened}
-        title={'공유하기'}
+        title={getLocalizedText('shared002_title_001')}
         url={window.location.href}
         onClose={() => {
           setData(v => ({...v, isShareOpened: false}));
@@ -421,11 +421,7 @@ const TabContentComponent = ({
       <>
         <div className={styles.emptyWrap}>
           <img src="/ui/profile/image_empty.svg" alt="" />
-          <div className={styles.text}>
-            Its pretty lonely out here.
-            <br />
-            Make a Post
-          </div>
+          <div className={styles.text}>{getLocalizedText('common_sample_091')}</div>
         </div>
       </>
     );

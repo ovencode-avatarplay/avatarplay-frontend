@@ -1171,10 +1171,12 @@ export const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListP
                 onClose();
               }}
             />
-            <div className={styles.title}>Portfolio</div>
+            <div className={styles.title}>{getLocalizedText('profile045_title_001')}</div>
           </header>
           <main>
-            <div className={styles.countPortfolio}>Portfolio {data.portfolioList.length}</div>
+            <div className={styles.countPortfolio}>
+              {getLocalizedText('profile045_label_002')} {data.portfolioList.length}
+            </div>
             <ul className={styles.itemList}>
               {data.portfolioList.map((one, index) => {
                 const date = one?.createAt ? new Date(one?.createAt) : new Date();
@@ -1183,7 +1185,9 @@ export const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListP
                   <li className={styles.item} key={index}>
                     <img className={styles.thumbnail} src={one.imageUrl} alt="" />
                     <div className={styles.description}>{one.description}</div>
-                    <div className={styles.dateRegistration}>Date Registration {formattedDate}</div>
+                    <div className={styles.dateRegistration}>
+                      {getLocalizedText('profile034_label_003')} {formattedDate}
+                    </div>
                     {/* <div className={styles.settingWrap}>
                       <img
                         src={BoldMenuDots.src}

@@ -343,7 +343,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
 
       <SharePopup
         open={data.isShareOpened}
-        title={data?.tabContentMenu?.shareTitle || '공유하기'}
+        title={data?.tabContentMenu?.shareTitle || getLocalizedText('shared002_title_001')}
         url={data?.tabContentMenu?.shareUrl || window.location.href}
         onClose={() => {
           setData(v => ({...v, isShareOpened: false}));
@@ -400,11 +400,7 @@ const TabContentComponent = ({
       <>
         <div className={styles.emptyWrap}>
           <img src="/ui/profile/image_empty.svg" alt="" />
-          <div className={styles.text}>
-            Its pretty lonely out here.
-            <br />
-            Make a Post
-          </div>
+          <div className={styles.text}>{getLocalizedText('common_sample_091')}</div>
         </div>
       </>
     );
