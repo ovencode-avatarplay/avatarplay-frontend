@@ -503,7 +503,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 </button>
 
                 <h1 className={styles.navTitle}>
-                  {formatText(getLocalizedText('contenthome001_label_001'), ['info?.contentId'])}
+                  {formatText(getLocalizedText('contenthome001_label_001'), ['타이틀 필요'])}
                 </h1>
               </div>
             </header>

@@ -18,7 +18,7 @@ const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit,
   const [dropBoxOpen, setDropBoxOpen] = useState<boolean>(false);
   const dropDownMenuItems: DropDownMenuItem[] = [
     {
-      name: getLocalizedText('common_button_edit'),
+      name: getLocalizedText('common_dropdown_edit'),
       icon: LineEdit.src,
       onClick: () => {
         onEdit();

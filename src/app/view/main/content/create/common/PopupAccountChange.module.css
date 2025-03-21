@@ -1,0 +1,165 @@
+.modalBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  outline: none;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+}
+.body {
+  margin: 0;
+  padding: 0;
+  display:flex;
+  flex-direction:column;
+  height: 100%;
+  /* overflow: hidden; */
+  /* height:100%; */
+  /* overflow-y:auto; */
+  max-width: var(--full-width);
+  margin: 0 auto; /* 수평 중앙 정렬 */
+  /* scrollbar-width: 0px; */
+}
+.parent
+{
+  display: flex;
+  flex-direction: column;
+  height: 100dvh; 
+  width: 100%;
+  overflow: hidden;
+}
+
+
+.container
+{
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+  padding: 0 16px 0 16px;
+  
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.textInput
+{
+  width: 100%;
+}
+
+.dashBoardIcon{
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  filter: brightness(0) saturate(100%);
+}
+.confirmButton {
+  position: fixed;
+  bottom: 43.25px;
+  left: 50%;    
+  transform: translate(-50%, 0%);
+  width: var(--second-width);
+  height: 50px;
+  background: #2c3131;
+  color: #ffffff;
+  font-family: 'Lato';
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;    
+}
+.label 
+{    
+  align-self: flex-start;
+  color: var(--Neutral-900, #040415);
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 114.286% */
+  letter-spacing: -0.4px;
+}
+
+
+
+.lineClose
+{
+filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(1%) hue-rotate(157deg) brightness(102%) contrast(101%);
+width: 12px;
+height: 12px;
+}
+
+.withDraw
+{
+  color: var(--Black, #000);
+text-align: center;
+font-feature-settings: 'liga' off, 'clig' off;
+font-family: Lato;
+font-size: 14px;
+font-style: normal;
+font-weight: 700;
+line-height: 16px; /* 114.286% */
+letter-spacing: -0.4px;
+text-decoration-line: underline;
+text-decoration-style: solid;
+text-decoration-skip-ink: none;
+text-decoration-thickness: auto;
+text-underline-offset: auto;
+text-underline-position: from-font;
+}
+
+/* 컨테이너 */
+.redcontainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 아이콘 스타일 */
+.infoIcon {
+  filter: brightness(0) saturate(100%) invert(58%) sepia(45%) saturate(3130%) hue-rotate(324deg) brightness(95%) contrast(104%);
+}
+
+/* 텍스트 스타일 */
+.text {
+  width: 226px;
+  font-family: 'Lato', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%;
+  color: #121414;
+}
+/* 리스트 전체 컨테이너 */
+.graycontainer {
+  width: 256px;
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 리스트 아이템 스타일 */
+.listItem {
+  font-family: 'Lato', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%; /* 20px */
+  color: #80868B;
+}

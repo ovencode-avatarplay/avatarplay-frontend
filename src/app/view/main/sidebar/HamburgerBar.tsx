@@ -17,6 +17,7 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import {BoldRuby, BoldStar, LineArrowRight, LineSetting, LineWallet, VerifiedLabel} from '@ui/Icons';
 import {Avatar} from '@mui/material';
 import ModalLanguageSelect from './ModalLanguageSelect';
+import PopupAccountChange from '../content/create/common/PopupAccountChange';
 
 interface HamburgerBarProps {
   open: boolean;
@@ -34,6 +35,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
 
   const [languageOpen, setLanguageOpen] = useState<boolean>(false);
   const [supportOpen, setSupportOpen] = useState<boolean>(false);
+  const [accountOpen, setAccountOpen] = useState<boolean>(false);
 
   const renderMenuItem = (icon: string, text: string, onClick: () => void, depth?: number) => {
     return (
@@ -162,7 +164,9 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
 
         {/* 메뉴 섹션 */}
         <ul className={styles.menuList}>
-          {renderMenuItem(LineSetting.src, 'Account Center', () => {})}
+          {renderMenuItem(LineSetting.src, 'Account Center', () => {
+            setAccountOpen(true);
+          })}
           <li
             className={`${styles.menuItem} ${styles.divideItem}`}
             onClick={() => {
@@ -213,6 +217,12 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
         </ul>
       </div>
       {languageOpen && <ModalLanguageSelect isOpen={languageOpen} onClose={handleCloseLanguage} />}
+      <PopupAccountChange
+        open={accountOpen}
+        onClose={() => {
+          setAccountOpen(false);
+        }}
+      ></PopupAccountChange>
     </Drawer>
   );
 };

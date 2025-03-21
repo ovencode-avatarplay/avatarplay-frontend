@@ -409,7 +409,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                 }}
               >
-                <span className={styles.username}>{item.title}</span>
+                <span className={styles.username}>{item.profileName}</span>
               </div>
               {recommendState == RecommendState.ForYou && item.isMyFeed == false && (
                 <button

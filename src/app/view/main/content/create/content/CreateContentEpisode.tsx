@@ -35,6 +35,8 @@ import {
 } from '@/app/NetWork/ContentNetwork';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 export interface CreateContentEpisodeProps {
   contentId?: string;
@@ -207,13 +209,13 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
       alert('에피소드 생성에 실패했습니다. 다시 시도해주세요.');
     }
   };
-
+  const epNum = curEpisodeCount + 1;
   const router = useRouter();
   return (
     <div className={styles.parent}>
       <div className={styles.header}>
         <CustomArrowHeader
-          title="Create Series Contents"
+          title={episodeId ? getLocalizedText('common_title_edit') : getLocalizedText('createcontent007_title_001')}
           onClose={() => {
             pushLocalizedRoute(`/create/content/series/${contentId}`, router);
           }}
@@ -227,7 +229,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
         />
       </div>
       <div className={styles.container}>
-        <span className={styles.label}>Series name</span>
+        <span className={styles.label}>{getLocalizedText('createcontent003_label_001')}</span>
         <div className={styles.dropdown}>
           <span className={styles.text}>{contentInfo?.name}</span>
         </div>
@@ -239,9 +241,10 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
         </div>
         <div className={styles.infoGroup}>
           <span className={styles.seasonLabel}>Season {curSeason}</span>
-          <span className={styles.epLabel}>Episode No.{curEpisodeCount + 1}</span>
-          <span className={styles.tokenLabel}>The total token count is calulated based on the</span>
-          <span className={styles.tokenLabel}>introduction with the highest number of tokens</span>
+          <span className={styles.epLabel}>
+            {formatText(getLocalizedText('contenthome001_label_001'), [epNum.toString()])}
+          </span>
+          {getLocalizedText('createcontent007_desc_002')}
 
           <MediaUpload
             setContentMediaUrls={setMediaUrls}
@@ -255,14 +258,16 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
           onChange={handleNameChange}
           label={
             <span>
-              Episode Name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+              {getLocalizedText('createcontent007_label_003')}{' '}
+              <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
             </span>
           }
-          placeholder="Please enter a title for your post"
+          placeholder={getLocalizedText('common_sample_087')}
           customClassName={[styles.textInput]}
         />
         <span className={styles.label}>
-          Episode Description <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+          {getLocalizedText('createcontent007_label_004')}{' '}
+          <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
         </span>
         <MaxTextInput
           displayDataType={displayType.Hint}
@@ -271,7 +276,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
           handlePromptChange={e => setrDescription(e.target.value)}
           maxPromptLength={500}
           style={{minHeight: '190px', width: '100%'}}
-          placeholder="Add a description or hastag"
+          placeholder={getLocalizedText('common_sample_047')}
         />
 
         {contentInfo?.categoryType == ContentCategoryType.Video && (
@@ -288,7 +293,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
         )}
 
         <div className={styles.moenetization}>
-          <span className={styles.label}>Moenetization</span>
+          <span className={styles.label}>{getLocalizedText('common_label_006')}</span>
           <button className={styles.questionButton}>
             <img src={BoldQuestion.src} className={styles.questionimg}></img>
           </button>
@@ -298,7 +303,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
             shapeType="circle"
             displayType="buttonText"
             value="On"
-            label="On"
+            label={getLocalizedText('common_button_on')}
             onSelect={() => setIsMonetization(true)}
             selectedValue={isMonetization ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -307,7 +312,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
             shapeType="circle"
             displayType="buttonText"
             value="Off"
-            label="Off"
+            label={getLocalizedText('common_button_off')}
             onSelect={() => setIsMonetization(false)}
             selectedValue={isMonetization ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -315,15 +320,15 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
         </div>
         <div className={styles.salesStar}>
           <span className={styles.label} style={{lineHeight: '24px'}}>
-            Sales Star EA
+            {getLocalizedText('createcontent007_label_008')}
           </span>
           <div className={styles.salesStarSetting} onClick={() => setOnSeta(true)}>
             {' '}
-            Setting
+            {getLocalizedText('common_button_setting')}
           </div>
         </div>
         <button className={styles.confirmButton} onClick={handleConfirm}>
-          Confirm
+          {getLocalizedText('common_button_submit')}
         </button>
       </div>
 
@@ -345,7 +350,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
             shapeType="square"
             displayType="buttonText"
             value={0}
-            label="Free Episode"
+            label={getLocalizedText('createcontent007_label_009')}
             onSelect={() => setIsFree(!isFree)}
             selectedValue={isFree == false ? 0 : 1}
             containterStyle={{gap: '0'}}
@@ -361,7 +366,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
                   value={priceValue}
                   onChange={handlePriceChange}
                 />
-                <span className={styles.starlabel}>EA</span>
+                <span className={styles.starlabel}>{getLocalizedText('createcontent007_label_010')}</span>
               </div>
             )}
             <button
@@ -370,7 +375,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
                 setOnSeta(false);
               }}
             >
-              Confirm
+              {getLocalizedText('common_button_confirm')}
             </button>
           </div>
         </div>
