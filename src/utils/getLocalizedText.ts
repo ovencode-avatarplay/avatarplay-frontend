@@ -75,7 +75,8 @@ const getLocalizedText = (...args: [string] | [string, string] | [string, string
   if (effectiveLanguage === null) return localizedItem['en-US'] || '';
 
   // 언어별 데이터가 없으면 영어 기본값 반환
-  return localizedItem[effectiveLanguage] || `로컬라이징 작업 필요: ${key}`;
+  return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
+  // return localizedItem[effectiveLanguage] || `로컬라이징 작업 필요: ${key}`;
 };
 
 export default getLocalizedText;
