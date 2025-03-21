@@ -95,7 +95,7 @@ const SearchBoardHeader: React.FC<Props> = ({
   useEffect(() => {
     if (filterData) {
       const items = filterData.map(name => ({
-        name,
+        name: getLocalizedText(name),
         state: 'empty', // 초기 상태 설정
       }));
       setFilterItem(items);

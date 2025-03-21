@@ -41,7 +41,7 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
     <Modal open={open} onClose={onClose}>
       <Box className={styles.modalBox}>
         <div className={styles.filterSelectorContainer}>
-          <h1 className={styles.filterTitle}>Filter</h1>
+          <h1 className={styles.filterTitle}>{getLocalizedText('common_alert_029')}</h1>
           <ul className={styles.filterList}>
             {filterData.map(item => (
               <li key={item.name} className={styles.filterItem}>
@@ -66,7 +66,16 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
               </li>
             ))}
           </ul>
-          <button className={styles.refreshButton} onClick={() => {}}>
+          <button
+            className={styles.refreshButton}
+            onClick={() => {
+              const resetState: {[key: string]: 'empty'} = {};
+              filterData.forEach(item => {
+                resetState[item.name] = 'empty';
+              });
+              setSelectedFilters(resetState);
+            }}
+          >
             <div className={styles.refreshText}>{getLocalizedText('common_button_refresh')}</div>
             <img className={styles.refreshIcon} src={LineRefresh.src} />
           </button>
