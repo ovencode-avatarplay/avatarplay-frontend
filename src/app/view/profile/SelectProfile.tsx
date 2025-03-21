@@ -143,7 +143,7 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                     )}
                     {isPD && (
                       <div className={styles.top}>
-                        <div className={cx(styles.type, styles.pd)}>{getLocalizedText('common_label_my')}</div>
+                        <div className={cx(styles.type, styles.pd)}>{getLocalizedText('common_button_my')}</div>
                       </div>
                     )}
                     <div className={styles.name}>{profile.name}</div>

@@ -211,7 +211,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineStory.src} />
-                  <div className={styles.buttonText}>{getLocalizedText('common_button_content')}</div>
+                  <div className={styles.buttonText}>{getLocalizedText('common_label_contents')}</div>
                 </div>
               </button>
             </Link>

@@ -489,7 +489,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       </header>
       <main className={styles.main}>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
-          <div className={styles.label}>{getLocalizedText('CreateChannel', 'common_label_thumbnail')}</div>
+          <div className={styles.label}>{getLocalizedText('CreateChannel', 'common_label_Thumbnail')}</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
               <input className={styles.hide} autoComplete="off" {...register('mediaUrl', {required: true})} />
@@ -541,17 +541,17 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 >
                   <div className={styles.tabItem} data-tab={0}>
                     <div className={cx(styles.labelTab, data.indexTab == 0 && styles.active)}>
-                      {getLocalizedText('CreateChannel', 'CreateChannel001_label_003')}
+                      {getLocalizedText('CreateChannel', 'createchannel001_label_003')}
                     </div>
                   </div>
                   <div className={styles.tabItem} data-tab={1}>
                     <div className={cx(styles.labelTab, data.indexTab == 1 && styles.active)}>
-                      {getLocalizedText('CreateChannel', 'CreateChannel001_label_004')}
+                      {getLocalizedText('CreateChannel', 'createchannel001_label_004')}
                     </div>
                   </div>
                   <div className={styles.tabItem} data-tab={2}>
                     <div className={cx(styles.labelTab, data.indexTab == 2 && styles.active)}>
-                      {getLocalizedText('CreateChannel', 'CreateChannel001_label_005')}
+                      {getLocalizedText('CreateChannel', 'createchannel001_label_005')}
                     </div>
                   </div>
                 </div>
@@ -562,7 +562,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
             <div className={styles.tabContent}>
               <section className={cx(styles.channelSection, data.indexTab == 0 && styles.active)}>
                 <div className={styles.label}>
-                  {getLocalizedText('CreateChannel', 'CreateChannel001_label_006')}{' '}
+                  {getLocalizedText('CreateChannel', 'createchannel001_label_006')}{' '}
                   <span className={styles.highlight}>*</span>
                 </div>
                 <input
@@ -577,7 +577,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 />
 
                 <div className={styles.label}>
-                  {getLocalizedText('CreateChannel', 'CreateChannel001_label_007')}{' '}
+                  {getLocalizedText('CreateChannel', 'createchannel001_label_007')}{' '}
                   <span className={styles.highlight}>*</span>
                 </div>
                 <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
@@ -610,7 +610,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <div className={styles.labelAdd}>{getLocalizedText('common_label_addmembers')}</div>
                 </div>
                 <div className={styles.label}>
-                  {countMembers} {getLocalizedText('CreateChannel', 'CreateChannel002_label_001')}
+                  {countMembers} {getLocalizedText('CreateChannel', 'createchannel002_label_001')}
                 </div>
 
                 <ul className={styles.memberList}>

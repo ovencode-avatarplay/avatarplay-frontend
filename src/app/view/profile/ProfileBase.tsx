@@ -2826,7 +2826,7 @@ const TabContentComponent = ({
         {channelInfo?.memberProfileIdList?.length != 0 && (
           <section className={styles.memberSection}>
             <div className={styles.label}>
-              {channelInfo?.memberProfileIdList?.length} {getLocalizedText('CreateChannel002_label_001')}
+              {channelInfo?.memberProfileIdList?.length} {getLocalizedText('createchannel002_label_001')}
             </div>
             <Swiper
               className={styles.recruitList}
@@ -2855,7 +2855,7 @@ const TabContentComponent = ({
         )}
         {!!channelInfo?.description && (
           <section className={styles.descriptionSection}>
-            <div className={styles.label}>{getLocalizedText('CreateChannel001_label_007')}</div>
+            <div className={styles.label}>{getLocalizedText('createchannel001_label_007')}</div>
             <div className={styles.value}>{channelInfo?.description}</div>
           </section>
         )}
