@@ -137,29 +137,29 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     dataTag: {
       isOpenTagsDrawer: false,
       tagList: [
-        {isActive: false, value: getLocalizedText('common_tag_male')},
-        {isActive: false, value: getLocalizedText('common_tag_female')},
-        {isActive: false, value: getLocalizedText('common_tag_boyfriend')},
-        {isActive: false, value: getLocalizedText('common_tag_girlfriend')},
-        {isActive: false, value: getLocalizedText('common_tag_hero')},
-        {isActive: false, value: getLocalizedText('common_tag_elf')},
-        {isActive: false, value: getLocalizedText('common_tag_romance')},
-        {isActive: false, value: getLocalizedText('common_tag_vanilla')},
-        {isActive: false, value: getLocalizedText('common_tag_contemporaryFantasy')},
-        {isActive: false, value: getLocalizedText('common_tag_Isekai')},
-        {isActive: false, value: getLocalizedText('common_tag_Flirting')},
-        {isActive: false, value: getLocalizedText('common_tag_Dislike')},
-        {isActive: false, value: getLocalizedText('common_tag_Comedy')},
-        {isActive: false, value: getLocalizedText('common_tag_Noir')},
-        {isActive: false, value: getLocalizedText('common_tag_Horror')},
-        {isActive: false, value: getLocalizedText('common_tag_Demon')},
-        {isActive: false, value: getLocalizedText('common_tag_SF')},
-        {isActive: false, value: getLocalizedText('common_tag_Vampire')},
-        {isActive: false, value: getLocalizedText('common_tag_Office')},
-        {isActive: false, value: getLocalizedText('common_tag_Monster')},
-        {isActive: false, value: getLocalizedText('common_tag_Anime')},
-        {isActive: false, value: getLocalizedText('common_tag_Books')},
-        {isActive: false, value: getLocalizedText('common_tag_Aliens')},
+        {isActive: false, value: 'Male', langKey: 'common_tag_male'},
+        {isActive: false, value: 'Female', langKey: 'common_tag_female'},
+        {isActive: false, value: 'Boyfriend', langKey: 'common_tag_boyfriend'},
+        {isActive: false, value: 'Girlfriend', langKey: 'common_tag_girlfriend'},
+        {isActive: false, value: 'Hero', langKey: 'common_tag_hero'},
+        {isActive: false, value: 'Elf', langKey: 'common_tag_elf'},
+        {isActive: false, value: 'Romance', langKey: 'common_tag_romance'},
+        {isActive: false, value: 'Vanilla', langKey: 'common_tag_vanilla'},
+        {isActive: false, value: 'ContemporaryFantasy', langKey: 'common_tag_contemporaryFantasy'},
+        {isActive: false, value: 'Isekai', langKey: 'common_tag_Isekai'},
+        {isActive: false, value: 'Flirting', langKey: 'common_tag_Flirting'},
+        {isActive: false, value: 'Dislike', langKey: 'common_tag_Dislike'},
+        {isActive: false, value: 'Comedy', langKey: 'common_tag_Comedy'},
+        {isActive: false, value: 'Noir', langKey: 'common_tag_Noir'},
+        {isActive: false, value: 'Horror', langKey: 'common_tag_Horror'},
+        {isActive: false, value: 'Demon', langKey: 'common_tag_Demon'},
+        {isActive: false, value: 'SF', langKey: 'common_tag_SF'},
+        {isActive: false, value: 'Vampire', langKey: 'common_tag_Vampire'},
+        {isActive: false, value: 'Office', langKey: 'common_tag_Office'},
+        {isActive: false, value: 'Monster', langKey: 'common_tag_Monster'},
+        {isActive: false, value: 'Anime', langKey: 'common_tag_Anime'},
+        {isActive: false, value: 'Books', langKey: 'common_tag_Books'},
+        {isActive: false, value: 'Aliens', langKey: 'common_tag_Aliens'},
       ],
       drawerTitle: getLocalizedText('common_label_002'),
       drawerDescription: '',
@@ -693,6 +693,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 <div className={styles.tagWrap}>
                   {data.dataTag.tagList.map((one, index) => {
                     if (!one.isActive) return;
+                    const translateValue = getLocalizedText(one?.langKey || '');
 
                     return (
                       <div className={styles.tag} key={index}>
@@ -703,7 +704,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                             autoComplete="off"
                             {...register(`tags.${index}`, {required: true})}
                           /> */}
-                          {one.value}
+                          {translateValue}
                         </div>
                         <div
                           className={styles.btnRemoveWrap}
