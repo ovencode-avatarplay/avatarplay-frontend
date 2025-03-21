@@ -788,7 +788,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                     data.profileInfo?.profileInfo?.characterIP == CharacterIP.Original ? styles.original : styles.fan,
                   )}
                 >
-                  {data.profileInfo?.profileInfo?.characterIP == CharacterIP.Original ? 'Original' : 'Fan'}
+                  {data.profileInfo?.profileInfo?.characterIP == CharacterIP.Original
+                    ? getLocalizedText('common_button_original')
+                    : getLocalizedText('common_button_fan')}
                 </div>
               )}
               <div className={styles.profileName}>{data.profileInfo?.profileInfo.name}</div>
@@ -1011,7 +1013,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               </button>
               {isOtherCharacter && (
                 <button className={styles.chat}>
-                  <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>Chat</Link>
+                  <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>
+                    {getLocalizedText('common_button_chat')}
+                  </Link>
                 </button>
               )}
             </div>

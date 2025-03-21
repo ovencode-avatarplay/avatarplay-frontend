@@ -531,7 +531,9 @@ const ContentSetting = ({
       },
     },
     {
-      name: tabContentMenu.isPin ? getLocalizedText('common_dropdown_unpin') : getLocalizedText('common_dropdown_pin'),
+      name: tabContentMenu.isPin
+        ? getLocalizedText('common_dropdown_unpin')
+        : getLocalizedText('common_dropdown_pintotop'),
       onClick: async () => {
         const isPin = !tabContentMenu.isPin;
         onPin(isPin, tabContentMenu.id, tabContentMenu?.index || 0);

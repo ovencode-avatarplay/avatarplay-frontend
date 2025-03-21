@@ -20,6 +20,7 @@ import {
 } from '@/app/NetWork/ProfileNetwork';
 import {updateProfile} from '@/redux-store/slices/Profile';
 import {usePathname, useRouter} from 'next/navigation';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface Props {
   open: boolean;
@@ -113,7 +114,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
         onTouchEnd={handleTouchEnd}
       >
         <div className={styles.drawerArea}>
-          <div className={styles.drawerTitle}>Create</div>
+          <div className={styles.drawerTitle}>{getLocalizedText('common_alert_016')}</div>
           <div className={styles.buttonArea}>
             <div
               className={styles.mySharedWrap}
@@ -128,10 +129,10 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               }}
             >
               <div className={cx(styles.My, data.indexSharedTab == 0 && styles.active)} data-index={0}>
-                My
+                {getLocalizedText('common_button_my')}
               </div>
               <div className={cx(styles.Shared, data.indexSharedTab == 1 && styles.active)} data-index={1}>
-                Shared
+                {getLocalizedText('common_button_shared')}
               </div>
             </div>
             <div className={styles.selectBoxWrap}>
@@ -180,7 +181,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineEdit.src} />
-                  <div className={styles.buttonText}>Feed</div>
+                  <div className={styles.buttonText}>{getLocalizedText('common_label_feed')}</div>
                 </div>
               </button>
             </Link>
@@ -196,7 +197,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineCharacter.src} />
-                  <div className={styles.buttonText}>Character</div>
+                  <div className={styles.buttonText}>{getLocalizedText('common_button_character')}</div>
                 </div>
               </button>
             </Link>
@@ -210,7 +211,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineStory.src} />
-                  <div className={styles.buttonText}>Content</div>
+                  <div className={styles.buttonText}>{getLocalizedText('common_button_content')}</div>
                 </div>
               </button>
             </Link>
@@ -224,7 +225,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineChannel.src} />
-                  <div className={styles.buttonText}>Channel</div>
+                  <div className={styles.buttonText}>{getLocalizedText('common_button_channel')}</div>
                 </div>
               </button>
             </Link>
@@ -240,13 +241,22 @@ export default CreateWidget;
 const SelectBoxArrowComponent = () => <></>;
 const SelectBoxValueComponent = (data: any, isOpen?: boolean) => {
   console.log('data : ', data);
+  const mappingStrToGlobalTextKey = {
+    User: 'common_button_user',
+    PD: 'common_filter_pd',
+    Character: 'common_filter_character',
+    Channel: 'common_button_channel',
+  };
+
+  const strRole = ProfileType?.[data.profileType] as keyof typeof mappingStrToGlobalTextKey;
+
   return (
     <div className={styles.boxValueWrap}>
       <div className={styles.left}>
         <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
         <data value="" className={styles.nameWrap}>
           <div className={styles.name}>{data.name}</div>
-          <div className={styles.role}>{ProfileType[data.profileType]}</div>
+          <div className={styles.role}>{getLocalizedText(mappingStrToGlobalTextKey[strRole])}</div>
         </data>
       </div>
       <div className={styles.right}>
@@ -265,6 +275,14 @@ const SelectBoxOptionComponent = (data: any, isSelected: boolean) => {
   const isCharacter = [ProfileType.Character].includes(data.profileType);
   const isChannel = [ProfileType.Channel].includes(data.profileType);
 
+  const mappingStrToGlobalTextKey = {
+    User: 'common_button_user',
+    PD: 'common_filter_pd',
+    Character: 'common_filter_character',
+    Channel: 'common_button_channel',
+  };
+
+  const strRole = ProfileType?.[data.profileType] as keyof typeof mappingStrToGlobalTextKey;
   return (
     <>
       <div className={styles.optionWrap}>
@@ -272,7 +290,7 @@ const SelectBoxOptionComponent = (data: any, isSelected: boolean) => {
           <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
           <data value="" className={styles.nameWrap}>
             <div className={styles.name}>{data.name}</div>
-            <div className={styles.role}>{ProfileType[data.profileType]}</div>
+            <div className={styles.role}>{getLocalizedText(mappingStrToGlobalTextKey[strRole])}</div>
           </data>
         </div>
         <div className={styles.right}>

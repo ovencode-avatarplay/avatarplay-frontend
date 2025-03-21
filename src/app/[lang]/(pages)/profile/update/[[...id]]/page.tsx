@@ -989,7 +989,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
                   onDragStart={onDragStartInner}
                 >
                   <img src={LineUpload.src} alt="" />
-                  <div className={styles.text}>Upload</div>
+                  <div className={styles.text}>{getLocalizedText('common_button_upload')}</div>
                 </div>
               )}
 
@@ -1006,7 +1006,8 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             </label>
           </section>
           <div className={styles.label}>
-            Description<span className={styles.highlight}> *</span>
+            {getLocalizedText('createcontent007_label_004')}
+            <span className={styles.highlight}> *</span>
           </div>
           <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
             <textarea
@@ -1025,10 +1026,10 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
           </div>
           <div className={styles.buttonWrap}>
             <button type="submit" className={styles.cancelBtn}>
-              {isCreate ? 'Cancel' : 'Delete'}
+              {isCreate ? getLocalizedText('common_button_cancel') : 'Delete'}
             </button>
             <button type="submit" className={styles.saveBtn}>
-              Submit
+              {getLocalizedText('common_button_submit')}
             </button>
           </div>
         </form>

@@ -821,7 +821,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       </div>
                     </label>
                     <div className={styles.right}>
-                      {getLocalizedText('CreateChannel', 'common_button_monetization')}
+                      {getLocalizedText('CreateChannel', 'createcharacter017_label_006')}
                     </div>
                   </div>
                   <div className={styles.item}>
