@@ -1,6 +1,6 @@
 import {Dialog} from '@mui/material';
 import React, {useEffect, useState} from 'react';
-import styles from './PopupFavoriteList.module.scss';
+import styles from './PopupPlaylist.module.scss';
 import {BoldAltArrowDown, BoldArrowLeft, BoldMenuDots, LineCheck} from '@ui/Icons';
 import cx from 'classnames';
 import {
@@ -119,7 +119,7 @@ const PopupPlayList = ({profileId, profileType, isMine = true, onClose}: Props) 
       sortType: data?.filterCluster?.indexSort || 0,
       page: {
         offset: data.profileTabInfo?.[data.indexTab]?.length || 0,
-        limit: 10,
+        limit: 30,
       },
     });
 
@@ -377,14 +377,16 @@ const TabContentComponent = ({
   onRefreshTab,
   onOpenContentMenu,
 }: TabContentProps) => {
-  const {ref: observerRef, inView} = useInView();
+  const {ref: observerRef, inView, entry} = useInView();
   // const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
   //   getUserType(isMine, profileType);
 
   useEffect(() => {
+    console.log('ㅎㅇㅇ', inView);
     if (!inView) return;
 
     if (isEmptyTab) return;
+
     refreshTab();
   }, [inView]);
 

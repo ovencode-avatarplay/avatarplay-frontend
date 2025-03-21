@@ -110,7 +110,7 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
       sortType: data?.filterCluster?.indexSort || 0,
       page: {
         offset: data.profileTabInfo?.[data.indexTab]?.length || 0,
-        limit: 10,
+        limit: 30,
       },
     });
 
