@@ -161,9 +161,35 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     }
   };
 
+  const [hasMore, setHasMore] = useState(false); // 현재 슬라이드 인덱스
+  const loadMoreFeeds = async () => {
+    try {
+      const lang = getCurrentLanguage();
+
+      const result = await sendGetRecommendFeed({
+        recommendState: recommendState,
+        languageType: lang,
+      });
+
+      if (result.resultCode === 0 && result.data) {
+        const feeds = result.data.feedInfoList;
+        console.log(feeds);
+        setAllFeeds(prevFeeds => [...prevFeeds, ...feeds]);
+
+        // 화면 렌더링용 info 배열에도 추가
+        setInfo(prevInfo => [...prevInfo, ...feeds.slice(0, 2)]);
+      } else {
+        setHasMore(false); // 실패 또는 데이터 없을 경우 중지
+      }
+    } catch (error) {
+      console.error('Failed to load more feeds:', error);
+      setHasMore(false);
+    }
+  };
+
   useEffect(() => {
     fetchRecommendFeed();
-  }, [initialFeed, getEmailFromJwt(),selectedTab]);
+  }, [initialFeed, getEmailFromJwt(), selectedTab]);
 
   useEffect(() => {
     console.log('info', info);
@@ -190,6 +216,10 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   };
 
   const handleScroll = () => {
+    if (info.length == allFeeds.length - 2) {
+      loadMoreFeeds();
+    }
+
     const sectionHeight = window.innerHeight;
     const scrollPosition = window.scrollY;
     const newIndex = Math.round(scrollPosition / sectionHeight);
@@ -197,6 +227,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     if (newIndex < 0 || newIndex >= allFeeds.length) return;
 
     if (newIndex !== currentSlideIndex) {
+      console.log('newIndex', newIndex);
       setCurrentSlideIndex(newIndex);
       const currentItem = allFeeds[newIndex];
 

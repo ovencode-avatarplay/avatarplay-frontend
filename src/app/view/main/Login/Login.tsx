@@ -47,9 +47,9 @@ const Login = () => {
       </div>
 
       <div className={styles.benefitText}>
-        {getLocalizedText(Header, 'login001_desc_002')}
+        {formatText(getLocalizedText(Header, 'login001_desc_002'))}
 
-        <span className={styles.highlight}>{formatText(getLocalizedText(Header, 'login001_desc_003'), ['300'])}</span>
+        <span className={styles.highlight}>{formatText(getLocalizedText(Header, 'login001_label_003'), ['300'])}</span>
 
         {/* Join us and enjoy daily <span className={styles.highlight}>free 300 rubies</span> */}
       </div>

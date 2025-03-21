@@ -36,6 +36,7 @@ import {CreateContentEpisodeProps} from './CreateContentEpisode';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import useCustomRouter from '@/utils/useCustomRouter';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface SeriesDetailProps {
   urlLinkKey: string;
@@ -292,13 +293,13 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
               className={`${styles.tabButton} ${selectedTab === 'Episodes' ? styles.activeTab : ''}`}
               onClick={() => setSelectedTab('Episodes')}
             >
-              Episodes
+              {getLocalizedText('createcontent005_label_001')}
             </button>
             <button
               className={`${styles.tabButton} ${selectedTab === 'About' ? styles.activeTab : ''}`}
               onClick={() => setSelectedTab('About')}
             >
-              About
+              {getLocalizedText('createcontent005_label_002')}
             </button>
             {/* 이동하는 밑줄 */}
             <div className={styles.tabUnderline} style={{left: selectedTab === 'Episodes' ? '0px' : '80px'}} />
@@ -363,7 +364,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
                 });
               }}
             >
-              + New Episode
+              + {getLocalizedText('common_button_newepisode')}
             </button>
             {/* 에피소드 리스트 */}
             <div className={styles.episodeList}>

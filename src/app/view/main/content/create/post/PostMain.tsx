@@ -34,6 +34,8 @@ import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import useCustomRouter from '@/utils/useCustomRouter';
+import getLocalizedText from '@/utils/getLocalizedText';
+import {getVisibilityTypeKey} from '../content/CreateSeriesContent';
 
 interface Props {
   id?: string;
@@ -382,14 +384,14 @@ const PostMain: React.FC<Props> = ({id}) => {
   return (
     <div className={styles.box}>
       <CustomArrowHeader
-        title="Title"
+        title={id ? getLocalizedText('common_title_edit') : getLocalizedText('createfeed001_title001')}
         onClose={() => {
           back();
         }}
       ></CustomArrowHeader>
 
       <div className={styles.container}>
-        <div className={styles.label}>Photo / Video</div>
+        <div className={styles.label}>{getLocalizedText('common_label_media')}</div>
         <div
           className={styles.inputBox}
           onClick={() => {
@@ -399,7 +401,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           <div className={styles.uploadIcon}>
             <img src={LineUpload.src} alt="upload-icon" />
           </div>
-          <div className={styles.hintText}>Upload</div>
+          <div className={styles.hintText}>{getLocalizedText('common_button_upload')}</div>
         </div>
         {/* 이미지 그리드 */}
         {mediaType === 'image' && (
@@ -456,14 +458,15 @@ const PostMain: React.FC<Props> = ({id}) => {
           onChange={handleNameChange}
           label={
             <span>
-              Name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+              {getLocalizedText('createfeed001_label002')}{' '}
+              <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
             </span>
           }
-          placeholder="Enter a title for your post"
+          placeholder={getLocalizedText('common_sample_085')}
           customClassName={[styles.textInput]}
         />
         <span className={styles.desclabel}>
-          Description <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+          {getLocalizedText('CreateFeed001_label003')} <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
         </span>
         <MaxTextInput
           displayDataType={displayType.Hint}
@@ -472,11 +475,12 @@ const PostMain: React.FC<Props> = ({id}) => {
           handlePromptChange={e => setrDescription(e.target.value)}
           maxPromptLength={500}
           style={{minHeight: '190px', width: '100%'}}
+          placeholder={getLocalizedText('common_sample_047')}
         />
 
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
-            title="Tag"
+            title={getLocalizedText('common_label_002')}
             selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : ''}
             onClick={() => {
               setTagList(tagGroups[1].tags);
@@ -486,7 +490,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {tag}
+                {getLocalizedText(`common_tag_${tag.replace(/ /gi, '').toLowerCase()}`)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -501,15 +505,15 @@ const PostMain: React.FC<Props> = ({id}) => {
           <CustomDropDownSelectDrawer
             title={
               <span>
-                Visibility <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+                {getLocalizedText('common_label_001')} <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
               </span>
             }
-            selectedItem={VisibilityType[selectedVisibility]}
+            selectedItem={getVisibilityTypeKey(selectedVisibility)}
             onClick={() => setVisibilityDrawerOpen(true)}
           ></CustomDropDownSelectDrawer>
         </div>
         <div className={styles.nsfwLabel}>
-          NSFW <div style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</div>
+          {getLocalizedText('common_label_008')} <div style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</div>
           <button className={styles.questionButton}>
             <img src={BoldQuestion.src} className={styles.questionimg}></img>
           </button>
@@ -520,7 +524,7 @@ const PostMain: React.FC<Props> = ({id}) => {
             shapeType="circle"
             displayType="buttonText"
             value="On"
-            label="On"
+            label={getLocalizedText('common_button_on')}
             onSelect={() => setIsNsfw(true)}
             selectedValue={isNsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -529,7 +533,7 @@ const PostMain: React.FC<Props> = ({id}) => {
             shapeType="circle"
             displayType="buttonText"
             value="Off"
-            label="Off"
+            label={getLocalizedText('common_button_off')}
             onSelect={() => setIsNsfw(false)}
             selectedValue={isNsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -544,7 +548,7 @@ const PostMain: React.FC<Props> = ({id}) => {
             createFeed();
           }}
         >
-          Publish
+          {getLocalizedText('common_button_submit')}
         </div>
       </div>
 
