@@ -174,16 +174,16 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       console.error('An error occurred while liking/unliking the feed:', error);
     }
   };
-  const handleDisLikeFeed = async (feedId: number, isLike: boolean) => {
+  const handleDisLikeFeed = async (feedId: number, isDisLike: boolean) => {
     try {
       if (isLike == true) {
         await handleLikeFeed(item.id, !isLike);
       }
-      const response = await sendDisLike(InteractionType.Feed, feedId, isLike);
+      const response = await sendDisLike(InteractionType.Feed, feedId, isDisLike);
 
       if (response.resultCode === 0) {
-        console.log(`Feed ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-        setIsDisLike(isLike);
+        console.log(`Feed ${feedId} has been ${isDisLike ? 'liked' : 'unliked'} successfully!`);
+        setIsDisLike(isDisLike);
       } else {
         console.error(`Failed to like/unlike feed: ${response.resultMessage}`);
       }

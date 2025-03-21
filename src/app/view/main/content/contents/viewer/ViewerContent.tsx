@@ -341,7 +341,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       console.error('An error occurred while liking/unliking the content:', error);
     }
   };
-  const handleDisLikeFeed = async (feedId: number, isLike: boolean) => {
+  const handleDisLikeFeed = async (feedId: number, isDisLike: boolean) => {
     try {
       if (isLike == true) {
         await handleLikeFeed(feedId, !isLike);
@@ -349,12 +349,12 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       const response = await sendDisLike(
         episodeId ? InteractionType.Episode : InteractionType.Contents,
         feedId,
-        isLike,
+        isDisLike,
       );
 
       if (response.resultCode === 0) {
-        console.log(`content ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
-        setIsDisLike(isLike);
+        console.log(`content ${feedId} has been ${isDisLike ? 'liked' : 'unliked'} successfully!`);
+        setIsDisLike(isDisLike);
       } else {
         console.error(`Failed to like/unlike content: ${response.resultMessage}`);
       }
