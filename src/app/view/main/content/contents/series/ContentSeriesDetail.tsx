@@ -48,6 +48,10 @@ import {setEpisodeId} from '@/redux-store/slices/Chatting';
 import useCustomRouter from '@/utils/useCustomRouter';
 import DrawerDonation from '../../create/common/DrawerDonation';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {formatCurrency} from '@/utils/util-1';
 
 type Props = {
   type: ContentType;
@@ -239,7 +243,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           }}
         >
           <img src={BoldAudioPlay.src} alt="" />
-          <div className={styles.label}>Play</div>
+          <div className={styles.label}>{getLocalizedText('common_button_play')}</div>
         </button>
         <section className={styles.infoHeaderSection}>
           <ul className={styles.iconsWrap}>
@@ -261,7 +265,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                 {data.dataMix?.isBookMark && <img src={BoldArchive.src} alt="" />}
                 {!data.dataMix?.isBookMark && <img src={LineArchive.src} alt="" />}
               </div>
-              <div className={styles.label}>Favorite</div>
+              <div className={styles.label}>{getLocalizedText('common_label_favorite')}</div>
             </div>
             <div className={styles.lineVertical}></div>
             <div
@@ -271,13 +275,13 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               }}
             >
               <img src={BoldShare.src} alt="" />
-              <div className={styles.label}>Share</div>
+              <div className={styles.label}>{getLocalizedText('common_button_share')}</div>
             </div>
             <div className={styles.lineVertical}></div>
 
             <div className={styles.iconWrap}>
               <img src={BoldDownloadMini.src} alt="" />
-              <div className={styles.label}>Download</div>
+              <div className={styles.label}>{getLocalizedText('common_button_download')}</div>
             </div>
             {!data.dataMix?.isMyContent && (
               <>
@@ -290,7 +294,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                   }}
                 >
                   <img src={BoldReward.src} alt="" />
-                  <div className={styles.label}>Gift</div>
+                  <div className={styles.label}>{getLocalizedText('common_button_gift')}</div>
                 </div>
               </>
             )}
@@ -316,10 +320,10 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               className={cx(styles.tab, data.indexTab == eTabType.Episodes && styles.active)}
               data-tab={eTabType.Episodes}
             >
-              Episodes
+              {getLocalizedText('createcontent005_label_001')}
             </li>
             <li className={cx(styles.tab, data.indexTab == eTabType.About && styles.active)} data-tab={eTabType.About}>
-              About
+              {getLocalizedText('createcontent005_label_002')}
             </li>
           </ul>
         </section>
@@ -604,6 +608,7 @@ export const PopupPurchase = ({
   onClose,
   onPurchaseSuccess,
 }: PopupPurchaseType) => {
+  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
   const refCheckHide = useRef<HTMLInputElement | null>(null);
   const [data, setData] = useState<{isOpenNotEnoughStars: boolean; isOpen: boolean}>({
     isOpenNotEnoughStars: false,
@@ -665,21 +670,23 @@ export const PopupPurchase = ({
       <section className={styles.popupPurchaseSection}>
         <div className={styles.categoryWrap}>
           <div className={styles.left}>
-            <div className={styles.category}>Balance</div>
+            <div className={styles.category}>{getLocalizedText('profile041_label_001')}</div>
           </div>
           <div className={styles.right}>
             <div className={styles.balanceWrap}>
               <img src={BoldRuby.src} alt="" />
-              <div className={styles.amount}>10.5K</div>
+              <div className={styles.amount}>{formatCurrency(dataStarInfo.star)}</div>
             </div>
             <div className={styles.balanceWrap}>
               <img src={BoldStar.src} alt="" />
-              <div className={styles.amount}>10.5K</div>
+              <div className={styles.amount}>{formatCurrency(dataStarInfo.star)}</div>
             </div>
           </div>
         </div>
-        <div className={styles.title}>{price} stars will be deducted</div>
-        <div className={styles.description}>Do you want to proceed?</div>
+        <div className={styles.title}>
+          {price} {getLocalizedText('profile042_desc_002')}
+        </div>
+        <div className={styles.description}>{getLocalizedText('profile042_desc_003')}</div>
 
         <div className={styles.dontshowWrap}>
           <label htmlFor="dontshow">
@@ -689,16 +696,16 @@ export const PopupPurchase = ({
               <img src={BoldRadioButtonSquare.src} alt="" className={styles.iconOff} />
             </div>
             <div className={styles.right}>
-              <div className={styles.dontshow}>Don’t show this pop-up anymore</div>
+              <div className={styles.dontshow}>{getLocalizedText('profile042_desc_004')}</div>
             </div>
           </label>
         </div>
         <div className={styles.buttonWrap}>
           <button className={styles.cancel} onClick={onClose}>
-            Cancel
+            {getLocalizedText('common_button_cancel')}
           </button>
           <button className={styles.watch} onClick={onPurchase}>
-            Watch
+            {getLocalizedText('common_button_watch')}
           </button>
         </div>
       </section>
@@ -734,17 +741,14 @@ const PopupNotEnoughStars = ({onClose, onCharge}: PopupNotEnoughStarsType) => {
       }}
     >
       <section className={styles.popupNotEnoughStars}>
-        <div className={styles.title}>Not Enough Stars</div>
-        <div className={styles.description}>
-          You do not have enough stars. <br />
-          Please rechange your stars
-        </div>
+        <div className={styles.title}>{getLocalizedText('profile043_label_001')}</div>
+        <div className={styles.description}>{getLocalizedText('profile043_desc_002')}</div>
         <div className={styles.buttonWrap}>
           <button className={styles.cancel} onClick={onClose}>
-            Cancel
+            {getLocalizedText('common_button_cancel')}
           </button>
           <button className={styles.watch} onClick={onCharge}>
-            Charge
+            {getLocalizedText('common_button_charge')}
           </button>
         </div>
       </section>

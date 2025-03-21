@@ -1835,7 +1835,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               )}
               data-filter={eCharacterFilterType.Fan}
             >
-              <div className={styles.text}>{getLocalizedText('Fan')}</div>
+              <div className={styles.text}>{getLocalizedText('common_button_fan')}</div>
             </div>
           </div>
           <div className={styles.right}>

@@ -363,11 +363,11 @@
     .addBtnWrap {
       margin-top: 14px;
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      // flex-direction: column;
+      align-items: center;
       justify-content: center;
       width: 66px;
-      gap: 4px;
+      gap: 10px;
 
       cursor: pointer;
 
@@ -375,7 +375,6 @@
 
       .labelAdd {
         width: 100%;
-        overflow: hidden;
         color: var(--Black, #000);
         text-align: center;
         text-overflow: ellipsis;
