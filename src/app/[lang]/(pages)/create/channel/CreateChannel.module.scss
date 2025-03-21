@@ -362,16 +362,17 @@
   .membersSection {
     .addBtnWrap {
       margin-top: 14px;
-      display: flex;
+      display: inline-flex;
       // flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 66px;
       gap: 10px;
 
       cursor: pointer;
 
-      .circle {}
+      .circle {
+        width: 66px;
+      }
 
       .labelAdd {
         width: 100%;
