@@ -15,6 +15,8 @@ import {
   sendCommentLike,
   sendDeleteComment,
 } from '@/app/NetWork/CommonNetwork';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 export enum CommentType {
   default = 0,
@@ -132,19 +134,19 @@ const CommentItem: React.FC<CommentItemProps> = ({
     const commentTime = new Date(time);
     const diffInSeconds = Math.floor((now.getTime() - commentTime.getTime()) / 1000);
 
-    if (diffInSeconds < 60) return `${diffInSeconds}초 전`;
+    if (diffInSeconds < 60) return getLocalizedText('common_time_ just now');
     const diffInMinutes = Math.floor(diffInSeconds / 60);
-    if (diffInMinutes < 60) return `${diffInMinutes}분 전`;
+    if (diffInMinutes < 60) return `${diffInMinutes}${getLocalizedText('common_time_minago')}`;
     const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `${diffInHours}시간 전`;
+    if (diffInHours < 24) return `${diffInHours}${getLocalizedText('common_time_hourago')}`;
     const diffInDays = Math.floor(diffInHours / 24);
-    if (diffInDays < 7) return `${diffInDays}일 전`;
+    if (diffInDays < 7) return `${diffInDays}${getLocalizedText('common_time_days ago')}`;
     const diffInWeeks = Math.floor(diffInDays / 7);
-    if (diffInWeeks < 4) return `${diffInWeeks}주 전`;
+    if (diffInWeeks < 4) return `${diffInWeeks}${getLocalizedText('common_time_week ago')}`;
     const diffInMonths = Math.floor(diffInWeeks / 4);
-    if (diffInMonths < 12) return `${diffInMonths}달 전`;
+    if (diffInMonths < 12) return `${diffInMonths}${getLocalizedText('common_time_month ago')}`;
     const diffInYears = Math.floor(diffInMonths / 12);
-    return `${diffInYears}년 전`;
+    return `${diffInYears}${getLocalizedText('common_time_year ago')}`;
   };
   useEffect(() => {
     if ('replies' in comment) {
@@ -269,7 +271,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
                   setCommentIsOpen(true);
                 }}
               >
-                답글 {repleCount}
+                {formatText(getLocalizedText('shared011_label_002'), [repleCount.toString()])}
               </div>
             )}
           </div>

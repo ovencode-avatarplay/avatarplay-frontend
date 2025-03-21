@@ -26,17 +26,38 @@ import {
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import useCustomRouter from '@/utils/useCustomRouter';
+import getLocalizedText from '@/utils/getLocalizedText';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
 }
-
+export const getCategoryTypesKey = (key: number): string => {
+  switch (key) {
+    case CategoryTypes.Webtoon:
+      return getLocalizedText('common_filter_video');
+    case CategoryTypes.Drama:
+      return getLocalizedText('common_filter_webtoon');
+    default:
+      return '';
+  }
+};
 enum VisibilityType {
   Private = 0,
   Unlisted = 1,
   Public = 2,
 }
-
+export const getVisibilityTypeKey = (key: number): string => {
+  switch (key) {
+    case VisibilityType.Public:
+      return getLocalizedText('common_filter_public');
+    case VisibilityType.Private:
+      return getLocalizedText('common_filter_private');
+    case VisibilityType.Unlisted:
+      return getLocalizedText('common_filter_unlisted');
+    default:
+      return '';
+  }
+};
 interface CreateSingleContentProps {
   urlLinkKey?: string;
 }
@@ -324,7 +345,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
     <div className={styles.parent}>
       <div className={styles.header}>
         <CustomArrowHeader
-          title="Create Series Contents"
+          title={urlLinkKey ? getLocalizedText('common_title_edit') : getLocalizedText('createcontent012_title_001')}
           onClose={() => {
             back();
           }}
@@ -349,10 +370,11 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           onChange={handleNameChange}
           label={
             <span>
-              Name <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+              {getLocalizedText('createcontent012_label_002')}{' '}
+              <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
             </span>
           }
-          placeholder="Enter a title for your post"
+          placeholder={getLocalizedText('createcontent012_label_003')}
           customClassName={[styles.textInput]}
         />
         <CustomInput
@@ -362,15 +384,17 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           onChange={handleSummaryChange}
           label={
             <span>
-              One Line Summary <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+              {getLocalizedText('createcontent012_label_004')}{' '}
+              <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
             </span>
           }
-          placeholder="Enter one line summary"
+          placeholder={getLocalizedText('common_sample_047')}
           customClassName={[styles.textInput]}
         />
 
         <span className={styles.label}>
-          Description <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+          {getLocalizedText('createcontent012_label_004')}{' '}
+          <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
         </span>
         <MaxTextInput
           displayDataType={displayType.Hint}
@@ -379,16 +403,17 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           handlePromptChange={e => setrDescription(e.target.value)}
           maxPromptLength={500}
           style={{minHeight: '190px', width: '100%'}}
+          placeholder={getLocalizedText('common_sample_047')}
         />
         <CustomDropDownSelectDrawer
-          title="Category"
-          selectedItem={CategoryTypes[selectedCategory]}
+          title={getLocalizedText('createcontent003_label_004')}
+          selectedItem={getCategoryTypesKey(selectedCategory)}
           onClick={() => setCategoryDrawerOpen(true)}
         ></CustomDropDownSelectDrawer>
 
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
-            title="Genre"
+            title={getLocalizedText('createcontent003_label_005')}
             selectedItem={selectedGenres.length > 0 ? selectedGenres.join(', ') : ''}
             onClick={() => {
               setGenreList(tagGroups[0].tags);
@@ -398,7 +423,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           <div className={styles.blackTagContainer}>
             {selectedGenres.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {tag}
+                {getLocalizedText(`common_genre_${tag.replace(/ /gi, '').toLowerCase()}`)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -411,7 +436,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
 
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
-            title="Tag"
+            title={getLocalizedText('common_label_002')}
             selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : ''}
             onClick={() => {
               setTagList(tagGroups[1].tags);
@@ -421,7 +446,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {tag}
+                {getLocalizedText(`common_tag_${tag.replace(/ /gi, '').toLowerCase()}`)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -434,11 +459,11 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
 
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
-            title="Post Country"
+            title={getLocalizedText('common_label_003')}
             selectedItem={
               positionCountryList.map(country => LanguageType[country]).length > 0
                 ? positionCountryList.map(country => LanguageType[country]).join(', ')
-                : 'Select'
+                : getLocalizedText('common_sample_079')
             }
             onClick={() => setIsPositionCountryOpen(true)}
           ></CustomDropDownSelectDrawer>
@@ -456,8 +481,8 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           </div>
         </div>
         <CustomDropDownSelectDrawer
-          title="Visibility"
-          selectedItem={VisibilityType[selectedVisibility]}
+          title={getLocalizedText('common_label_001')}
+          selectedItem={getVisibilityTypeKey(selectedVisibility)}
           onClick={() => setVisibilityDrawerOpen(true)}
         ></CustomDropDownSelectDrawer>
 
@@ -476,7 +501,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         )}
 
         <div className={styles.moenetization}>
-          <span className={styles.label}>Moenetization</span>
+          <span className={styles.label}>{getLocalizedText('common_label_006')}</span>
           <button className={styles.questionButton}>
             <img src={BoldQuestion.src} className={styles.questionimg}></img>
           </button>
@@ -486,7 +511,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
             shapeType="circle"
             displayType="buttonText"
             value="On"
-            label="On"
+            label={getLocalizedText('common_button_on')}
             onSelect={() => setIsMonetization(true)}
             selectedValue={isMonetization ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -495,7 +520,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
             shapeType="circle"
             displayType="buttonText"
             value="Off"
-            label="Off"
+            label={getLocalizedText('common_button_off')}
             onSelect={() => setIsMonetization(false)}
             selectedValue={isMonetization ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -503,15 +528,15 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         </div>
         <div className={styles.salesStar}>
           <span className={styles.label} style={{lineHeight: '24px'}}>
-            Sales Star EA
+            {getLocalizedText('createcontent007_label_008')}
           </span>
           <div className={styles.salesStarSetting} onClick={() => setOnSeta(true)}>
             {' '}
-            Setting
+            {getLocalizedText('common_button_setting')}
           </div>
         </div>
         <span className={styles.label}>
-          NSFW <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
+          {getLocalizedText('common_label_008')} <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
         </span>
 
         <div className={styles.radioButtonGroup}>
@@ -519,7 +544,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
             shapeType="circle"
             displayType="buttonText"
             value="On"
-            label="On"
+            label={getLocalizedText('common_button_on')}
             onSelect={() => setIsNsfw(true)}
             selectedValue={isNsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -528,7 +553,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
             shapeType="circle"
             displayType="buttonText"
             value="Off"
-            label="Off"
+            label={getLocalizedText('common_button_off')}
             onSelect={() => setIsNsfw(false)}
             selectedValue={isNsfw ? 'On' : 'Off'}
             containterStyle={{gap: '0'}}
@@ -536,7 +561,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         </div>
 
         <button className={styles.confirmButton} onClick={handleConfirm}>
-          Confirm
+          {getLocalizedText('common_button_submit')}
         </button>
       </div>
       <DrawerTagSelect
@@ -562,14 +587,14 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         setSelectedTagAlertOn={setSelectedGenreAlertOn}
       />
       <SelectDrawer
-        name="Filter"
+        name={getLocalizedText('createcontent001_label_007')}
         items={publishItemsCategory}
         isOpen={CategoryDrawerOpen}
         onClose={() => setCategoryDrawerOpen(false)}
         selectedIndex={selectedCategory}
       />
       <SelectDrawer
-        name="Filter"
+        name={getLocalizedText('createcontent001_label_007')}
         items={publishItemsVisibility}
         isOpen={visibilityDrawerOpen}
         onClose={() => setVisibilityDrawerOpen(false)}
@@ -590,7 +615,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         items={[]}
         selectedIndex={0}
         tooltip=""
-        name="Individual Episode Amount"
+        name={getLocalizedText('common_alert_034')}
       >
         {' '}
         <div className={styles.setaTitleGroup}>
@@ -601,7 +626,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
             shapeType="square"
             displayType="buttonText"
             value={0}
-            label="Free Episode"
+            label={getLocalizedText('createcontent007_label_009')}
             onSelect={() => setIsFree(!isFree)}
             selectedValue={isFree == false ? 0 : 1}
             containterStyle={{gap: '0'}}
@@ -617,7 +642,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
                   value={priceValue}
                   onChange={handlePriceChange}
                 />
-                <span className={styles.starlabel}>EA</span>
+                <span className={styles.starlabel}>{getLocalizedText('createcontent007_label_010')}</span>
               </div>
             )}
             <button
@@ -626,7 +651,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
                 setOnSeta(false);
               }}
             >
-              Confirm
+              {getLocalizedText('common_button_confirm')}
             </button>
           </div>
         </div>

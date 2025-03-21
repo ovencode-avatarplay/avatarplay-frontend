@@ -27,7 +27,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({isSingle}) => {
   return (
     <div className={styles.container}>
       <CustomArrowHeader
-        title={getLocalizedText('createcontent002_label_001')}
+        title={getLocalizedText('createcontent002_title_001')}
         onClose={() => {
           pushLocalizedRoute(`/create/content`, router);
         }}
@@ -56,7 +56,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({isSingle}) => {
           onChange={() => setIsChecked(!isChecked)}
           className={styles.checkbox}
         />
-        <span className={styles.agreeText}>{getLocalizedText('createcontent002_label_003')}</span>
+        <span className={styles.agreeText}>{getLocalizedText('createcontent002_desc_003')}</span>
       </div>
 
       <button className={styles.confirmButton} onClick={handleConfirm}>
