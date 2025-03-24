@@ -761,12 +761,13 @@ ul.itemWrap {
 li.itemTab {
   box-sizing: content-box;
   width: 100%;
-  height: calc(100% - 52px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  min-height: calc(100% - 52px);
   padding-bottom: 52px;
 
   cursor: pointer;
   position: relative;
-  aspect-ratio: 1 / 1;
 
   .bgGradientWrap {
     position: absolute;
