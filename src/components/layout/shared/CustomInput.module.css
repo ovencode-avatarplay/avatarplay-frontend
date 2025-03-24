@@ -51,7 +51,7 @@
     background-color: transparent;
     color: var(--Neutral-400, #BDC1C6);
     font-feature-settings: 'liga' off, 'clig' off; 
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: 18px; /* 120% */
@@ -68,7 +68,7 @@
 
 .Basic > .textInput
 {
-    font-size: 15px;
+    font-size: 16px;
 }
   
   
