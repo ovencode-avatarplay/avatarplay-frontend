@@ -79,8 +79,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
 
-  useResponsiveBodyHeight();
-
   const Header = 'Home';
   const Common = 'Common';
 
@@ -617,50 +615,3 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 };
 
 export default ReelsContent;
-
-function useResponsiveBodyHeight(debounceDelay = 0, snapDelay = 200) {
-  useEffect(() => {
-    const setVH = (value: 'vh' | 'dvh') => {
-      document.documentElement.style.height = `100${value}`;
-    };
-
-    const setScrollSnap = (value: 'y mandatory' | 'none') => {
-      document.documentElement.style.scrollSnapType = value;
-    };
-
-    // 초기 세팅
-    setVH('dvh');
-    setScrollSnap('y mandatory');
-
-    let debounceTimeout: NodeJS.Timeout;
-    let snapTimeout: NodeJS.Timeout;
-
-    const handleInteraction = () => {
-      setVH('vh');
-      setScrollSnap('none');
-
-      clearTimeout(debounceTimeout);
-      clearTimeout(snapTimeout);
-
-      debounceTimeout = setTimeout(() => {
-        // 1. dvh로 바꾸고
-        setVH('dvh');
-
-        // 2. snapDelay 만큼 기다린 후 scroll-snap-type 복원
-        snapTimeout = setTimeout(() => {
-          setScrollSnap('y mandatory');
-        }, snapDelay);
-      }, debounceDelay);
-    };
-
-    window.addEventListener('scroll', handleInteraction, {passive: true});
-    // window.addEventListener('resize', handleInteraction);
-
-    return () => {
-      window.removeEventListener('scroll', handleInteraction);
-      // window.removeEventListener('resize', handleInteraction);
-      clearTimeout(debounceTimeout);
-      clearTimeout(snapTimeout);
-    };
-  }, [debounceDelay, snapDelay]);
-}

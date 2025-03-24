@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useLayoutEffect} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/scrollbar';
@@ -61,8 +61,14 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const [selectedTab, setSelectedTab] = useState<RecommendState>(recommendState);
   const router = useRouter();
   const dispatch = useDispatch();
+  const [data, setData] = useState({
+    isUp: true,
+    scrollY: 0,
+    isTouch: false,
+  });
 
   const isSpecificProfile = !!profileUrlLinkKey;
+  const maxHeightContent = useRef<number>(9999);
 
   const Header = 'Home';
   const Common = 'Common';
@@ -76,7 +82,6 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       return null;
     }
   };
-
   const getEmailFromJwt = (): string | null => {
     const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
     if (jwt) {
@@ -167,6 +172,10 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     fetchRecommendFeed();
   }, [initialFeed, getEmailFromJwt(), selectedTab]);
 
+  useLayoutEffect(() => {
+    maxHeightContent.current = Math.min(maxHeightContent.current, containerRef.current?.clientHeight || 9999);
+  }, [containerRef]);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const currentPath = window.location.pathname; // 현재 경로
@@ -190,6 +199,17 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     }
   };
   const handleScroll = () => {
+    const scrollY = window.scrollY || window.pageYOffset;
+    if (data.isTouch) {
+      if (data.scrollY - scrollY < 0) {
+        data.isUp = false;
+      } else {
+        data.isUp = true;
+      }
+      console.log('isUp : ', data.isUp);
+    }
+    data.scrollY = scrollY;
+
     const slides = document.querySelectorAll(`.${styles.reelSlide}`);
     const scrollPosition = window.scrollY;
     let cumulativeHeight = 0;
@@ -351,13 +371,25 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     };
   }, [isProfile]);
 
+  const handleTouchStart = () => {
+    data.isTouch = true;
+  };
+
+  const handleTouchEnd = () => {
+    data.isTouch = false;
+  };
+
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchend', handleTouchEnd);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [allFeeds, currentSlideIndex]);
   React.useEffect(() => {
     console.log(isMute);
   }, [isMute]);
+
+  // const {isInteracting, scrollDirection} = useResponsiveBodyHeight();
 
   return (
     <div ref={containerRef} className={styles.reelsContainer}>
@@ -396,19 +428,37 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
         </>
       )}
       <div className={styles.reelsWrapper}>
-        {info.map((item, index) => (
-          <div key={index} className={styles.reelSlide}>
-            <ReelsContent
-              item={item}
-              isActive={index === currentSlideIndex}
-              isMute={isMute}
-              setIsMute={setIsMute}
-              setIsProfile={setIsProfile}
-              isShowProfile={!isSpecificProfile}
-              recommendState={selectedTab}
-            />
-          </div>
-        ))}
+        {info.map((item, index) => {
+          const gapHeight = (containerRef.current?.clientHeight || 0) - maxHeightContent.current;
+          let paddingTop = gapHeight > 0 ? gapHeight : 0;
+
+          // const isDown = !data.isUp;
+          // paddingTop = isAddPadding ? paddingTop : 0;
+
+          paddingTop = !data.isUp ? paddingTop : 0;
+          // paddingTop = isTouchDown ? downPadding : paddingTop;
+
+          return (
+            <div
+              key={index}
+              className={styles.reelSlide}
+              style={{
+                maxHeight: maxHeightContent.current + 'px',
+                paddingTop: paddingTop + 'px',
+              }}
+            >
+              <ReelsContent
+                item={item}
+                isActive={index === currentSlideIndex}
+                isMute={isMute}
+                setIsMute={setIsMute}
+                setIsProfile={setIsProfile}
+                isShowProfile={!isSpecificProfile}
+                recommendState={selectedTab}
+              />
+            </div>
+          );
+        })}
       </div>
       {selectedTab == RecommendState.Following && info.length == 0 && (
         <CustomPopup
@@ -433,3 +483,100 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 };
 
 export default ReelsLayout;
+
+// function useResponsiveBodyHeight(debounceDelay = 0, snapDelay = 200) {
+//   const isInteracting = useRef(false);
+//   const prevScrollY = useRef(0);
+//   const scrollDirection = useRef<'up' | 'down' | null>(null);
+
+//   useEffect(() => {
+//     const html = document.documentElement;
+
+//     let debounceTimeout: NodeJS.Timeout;
+//     let snapTimeout: NodeJS.Timeout;
+
+//     const setVH = (value: 'vh' | 'dvh') => {
+//       // html.style.height = `100${value}`;
+//     };
+
+//     const setScrollSnap = (value: 'y mandatory' | 'none') => {
+//       // html.style.scrollSnapType = value;
+//     };
+
+//     const onPressStart = () => {
+//       isInteracting.current = true;
+//       clearTimeout(debounceTimeout);
+//       clearTimeout(snapTimeout);
+
+//       setVH('vh');
+//       setScrollSnap('none');
+//     };
+
+//     const onPressEnd = () => {
+//       isInteracting.current = false;
+//       clearTimeout(debounceTimeout);
+//       clearTimeout(snapTimeout);
+
+//       setVH('dvh');
+//       snapTimeout = setTimeout(() => {
+//         setScrollSnap('y mandatory');
+//       }, snapDelay);
+//     };
+
+//     const onInteraction = () => {
+//       const currentScrollY = window.scrollY;
+
+//       if (currentScrollY > prevScrollY.current) {
+//         scrollDirection.current = 'down';
+//       } else if (currentScrollY < prevScrollY.current) {
+//         scrollDirection.current = 'up';
+//       } else {
+//         scrollDirection.current = null;
+//       }
+
+//       prevScrollY.current = currentScrollY;
+
+//       if (!isInteracting.current) {
+//         setVH('vh');
+//         setScrollSnap('none');
+//         resetDebounce();
+//       }
+//     };
+
+//     const resetDebounce = () => {
+//       clearTimeout(debounceTimeout);
+//       clearTimeout(snapTimeout);
+
+//       debounceTimeout = setTimeout(() => {
+//         setVH('dvh');
+//         snapTimeout = setTimeout(() => {
+//           setScrollSnap('y mandatory');
+//         }, snapDelay);
+//       }, debounceDelay);
+//     };
+
+//     // ✅ 이벤트 등록
+//     window.addEventListener('mousedown', onPressStart);
+//     window.addEventListener('touchstart', onPressStart, {passive: true});
+//     window.addEventListener('mouseup', onPressEnd);
+//     window.addEventListener('touchend', onPressEnd, {passive: true});
+//     window.addEventListener('scroll', onInteraction, {passive: true});
+//     // window.addEventListener('resize', onInteraction);
+
+//     return () => {
+//       window.removeEventListener('mousedown', onPressStart);
+//       window.removeEventListener('touchstart', onPressStart);
+//       window.removeEventListener('mouseup', onPressEnd);
+//       window.removeEventListener('touchend', onPressEnd);
+//       window.removeEventListener('scroll', onInteraction);
+//       // window.removeEventListener('resize', onInteraction);
+//       clearTimeout(debounceTimeout);
+//       clearTimeout(snapTimeout);
+//     };
+//   }, [debounceDelay, snapDelay]);
+
+//   return {
+//     isInteracting,
+//     scrollDirection, // ⬅️ 현재 스크롤 방향: 'up' | 'down' | null
+//   };
+// }
