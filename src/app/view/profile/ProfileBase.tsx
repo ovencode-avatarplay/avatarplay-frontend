@@ -391,7 +391,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       setData({...data});
       return;
     }
-  }, [pathname]);
+  }, [pathname, isPath]);
 
   useEffect(() => {
     if (!isPath) return;
