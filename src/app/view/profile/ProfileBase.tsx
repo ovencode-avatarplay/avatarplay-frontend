@@ -204,6 +204,7 @@ export type TabContentMenuType = {
   shareUrl?: string;
   shareTitle?: string;
   contentType?: ContentType;
+  profileType?: ProfileType;
 };
 
 type DataProfileType = {
@@ -459,7 +460,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       } else if (indexTab == eTabPDType.Channel) {
         count = data.profileTabInfo[indexTab]?.channelInfoList?.length;
       } else if (indexTab == eTabPDType.Shared) {
-        count = 0;
+        count = data.profileTabInfo[indexTab]?.sharedInfoList?.length;
       } else {
         count = 0;
       }
@@ -566,6 +567,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       channelInfo,
       characterInfo,
       contentInfoList,
+      sharedInfoList,
     } = resProfileTabInfo;
     if (!data.profileTabInfo[indexTab]) {
       data.profileTabInfo[indexTab] = resProfileTabInfo;
@@ -613,6 +615,14 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         data.profileTabInfo[indexTab].storyInfoList = storyInfoList;
       } else {
         data.profileTabInfo[indexTab].storyInfoList.push(...storyInfoList);
+      }
+    }
+    if (!!sharedInfoList) {
+      console.log('sharedInfoList : ', sharedInfoList);
+      if (isRefreshAll) {
+        data.profileTabInfo[indexTab].sharedInfoList = sharedInfoList;
+      } else {
+        data.profileTabInfo[indexTab]?.sharedInfoList.push(...sharedInfoList);
       }
     }
   };
@@ -2434,6 +2444,14 @@ export const TabContentComponentWrap = ({
           if ((isPD && tabIndex == eTabPDOtherType.Channel) || (isCharacter && tabIndex == eTabCharacterType.Channel)) {
             router.push(getLocalizedLink(`/update/channel/` + data.tabContentMenu.id));
           }
+
+          if (isPD && tabIndex == eTabPDType.Shared) {
+            if (data.tabContentMenu.profileType == ProfileType.Character) {
+              router.push(getLocalizedLink(`/update/character/` + data.tabContentMenu.id));
+            } else if (data.tabContentMenu.profileType == ProfileType.Channel) {
+              router.push(getLocalizedLink(`/update/channel/` + data.tabContentMenu.id));
+            }
+          }
         }}
         onHide={() => {
           alert('hide api 연동 필요');
@@ -2928,6 +2946,7 @@ export const ChannelComponent = ({
                 isSettingOpen: true,
                 shareUrl: window.location.origin + urlLinkThumbnail,
                 shareName: itemInfo?.name,
+                profileType: ProfileType.Channel,
               };
               if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
             }}
@@ -3101,6 +3120,7 @@ export const CharacterComponent = ({
                 isSettingOpen: true,
                 shareUrl: window.location.origin + urlLinkThumbnail,
                 shareName: itemInfo?.name,
+                profileType: ProfileType.Character,
               };
               if (onOpenContentMenu) onOpenContentMenu(dataContextMenu);
             }}
