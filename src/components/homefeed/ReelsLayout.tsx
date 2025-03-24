@@ -230,10 +230,10 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       }
 
       urlUpdateTimeoutRef.current = setTimeout(() => {
-        // const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
-        // if (window.location.pathname !== newUrl) {
-        //   window.history.pushState(null, '', newUrl);
-        // }
+        const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
+        if (window.location.pathname !== newUrl) {
+          window.history.pushState(null, '', newUrl);
+        }
 
         viewFeed(currentItem.id);
       }, 300); // ✅ 스크롤 멈춘 뒤 300ms 후에 URL 변경
