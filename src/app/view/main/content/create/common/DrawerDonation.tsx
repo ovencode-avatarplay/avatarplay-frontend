@@ -12,6 +12,8 @@ import {GiftStarReq, sendGiftStar} from '@/app/NetWork/ShopNetwork';
 import {setStar} from '@/redux-store/slices/Currency';
 import {formatCurrency} from '@/utils/util-1';
 import {useRouter} from 'next/navigation';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 interface DrawerDonationProps {
   isOpen: boolean;
@@ -29,6 +31,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
 
   const dataStarInfo = useSelector((state: RootState) => state.starInfo);
   const [starAmount, setStarAmount] = useState<number>(0);
+
   const starInfo = dataStarInfo.star;
 
   useEffect(() => {
@@ -47,6 +50,14 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
     setInputValue(value); // 입력 필드의 값 업데이트
   };
 
+  // 입력창을 클릭했다.
+  const handleClickInput = () => {
+    if (selectedValue !== null) {
+      setSelectedValue(null);
+      setInputValue(''); // 입력 필드의 값 업데이트
+    }
+  };
+
   // Send 버튼 클릭 시 alert 창에 숫자 출력
   const handleSendClick = async () => {
     const reqData: GiftStarReq = {
@@ -59,6 +70,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
         const response = await sendGiftStar(reqData);
         if (typeof response.data?.myStar === 'number') {
           dispatch(setStar(response.data?.myStar));
+          onClose();
         }
       } catch (error) {
         console.error('Message send failed:', error);
@@ -93,19 +105,19 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
         className={styles.titleText}
         open={isOpen}
         onClose={onClose}
-        title="Donation"
+        title={getLocalizedText('shared010_title_001')}
         contentStyle={{padding: '0'}}
         customTitle={styles.parentTitleArea}
       >
         <div className={styles.donationUserInfoText}>
-          {dataProfile?.currentProfile?.name} sponsored {sponsoredName}
+          {formatText(getLocalizedText('shared010_desc_002'), [dataProfile?.currentProfile?.name || '', sponsoredName])}
         </div>
 
         <div className={styles.donationHaveStarArea}>
           <img className={styles.star} src={BoldStar.src}></img>
           <span className={styles.donationStarAmount}>{formatCurrency(starAmount)}</span>
           <div className={styles.donationCharge}>
-            <div className={styles.donationChargeText}>Charge</div>
+            <div className={styles.donationChargeText}>{getLocalizedText('common_button_charge')}</div>
           </div>
         </div>
         <div className={styles.gridContainer}>
@@ -125,7 +137,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
           ))}
         </div>
 
-        <div className={styles.itemArea}>
+        <div className={styles.itemArea} onClick={() => handleClickInput()}>
           <CustomInput
             inputType="TwoIcon"
             textType="InputOnly"
@@ -143,7 +155,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
               filter:
                 'brightness(0) saturate(100%) invert(72%) sepia(76%) saturate(708%) hue-rotate(358deg) brightness(102%) contrast(107%)',
             }}
-            iconRight="EA"
+            iconRight={getLocalizedText('createcontent007_label_010')}
           />
         </div>
         <div className={styles.buttonContainer}>
@@ -154,7 +166,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
             onClick={onClose}
             customClassName={[styles.newButton]}
           >
-            Cancel
+            {getLocalizedText('common_button_cancel')}
           </CustomButton>
           <CustomButton
             size="Medium"
@@ -163,7 +175,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
             onClick={handleSendClick}
             customClassName={[styles.newButton]}
           >
-            Send
+            {getLocalizedText('common_button_send')}
           </CustomButton>
         </div>
       </CustomDrawer>

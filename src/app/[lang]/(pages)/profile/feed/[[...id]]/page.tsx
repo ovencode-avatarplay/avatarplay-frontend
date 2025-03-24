@@ -16,7 +16,7 @@ type Props = {
 };
 
 const PageFeedView = ({searchParams}: Props) => {
-  const {back} = useCustomRouter();
+  const {back, replace} = useCustomRouter();
   const router = useRouter();
   const query = useParams();
   const id = query?.id?.[0] || '0';
@@ -37,21 +37,23 @@ const PageFeedView = ({searchParams}: Props) => {
           <div
             className={styles.backBtn}
             onClick={() => {
-              router.replace(getLocalizedLink(`/profile/${id}`));
-              // routerBack();
+              // router.replace(getLocalizedLink(`/profile/${id}`));
+              replace(`/profile/${id}`);
             }}
           >
             <img src={BoldArrowLeft.src} alt="" />
           </div>
         </div>
       </section>
-      <ReelsLayout
-        profileUrlLinkKey={id}
-        profileType={profileType}
-        feedMediaType={feedMediaType}
-        feedSortType={feedSortType}
-        idContent={idContent}
-      />
+      <div style={{height: '100dvh'}}>
+        <ReelsLayout
+          profileUrlLinkKey={id}
+          profileType={profileType}
+          feedMediaType={feedMediaType}
+          feedSortType={feedSortType}
+          idContent={idContent}
+        />
+      </div>
       <BottomNav />
     </>
   );

@@ -759,13 +759,14 @@ ul.itemWrap {
 }
 
 li.itemTab {
+  position: relative;
   box-sizing: content-box;
   width: 100%;
   height: calc(100% - 52px);
+  min-height: calc(100% - 52px);
   padding-bottom: 52px;
 
   cursor: pointer;
-  position: relative;
   aspect-ratio: 1 / 1;
 
   .bgGradientWrap {
@@ -1534,6 +1535,9 @@ li.itemTab {
       line-height: 130%;
       /* 16.9px */
       letter-spacing: -0.26px;
+
+      white-space: pre-line;
+      word-break: break-word;
     }
   }
 }

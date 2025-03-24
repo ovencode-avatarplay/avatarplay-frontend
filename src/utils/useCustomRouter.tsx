@@ -63,6 +63,32 @@ const useCustomRouter = () => {
     setData({...data});
   }
 
+  const replace = (path: string) => {
+    const storage = globalThis?.sessionStorage;
+    if (!storage) return;
+
+    // 현재 경로를 가져옴
+    const currentPath = storage.getItem('currentPath');
+
+    // prevPathList를 불러와서 현재 경로가 있다면 마지막 요소로 추가되어 있을 수 있음
+    let prevPathList = JSON.parse(storage.getItem('prevPathList') || '[]');
+
+    // currentPath와 prevPathList의 마지막이 같으면 pop
+    if (prevPathList.length > 0 && prevPathList[prevPathList.length - 1] === currentPath) {
+      prevPathList.pop();
+      storage.setItem('prevPathList', JSON.stringify(prevPathList));
+    }
+
+    // 새 경로로 replace
+    router.replace(getLocalizedLink(path));
+
+    // 현재 경로 업데이트
+    storage.setItem('currentPath', getLocalizedLink(path));
+
+    // 이전 경로 저장하지 않도록 설정
+    setData({...data, isNotSavePrevPath: true});
+  };
+
   const back = (defaultPath = '/main/homefeed') => {
     const storage = globalThis?.sessionStorage;
     let prevPathList = JSON.parse(storage.getItem('prevPathList') || '[]');
@@ -112,7 +138,7 @@ const useCustomRouter = () => {
     [searchParams],
   );
 
-  return {back, changeParams, getParam};
+  return {back, changeParams, getParam, replace};
 };
 
 export default useCustomRouter;

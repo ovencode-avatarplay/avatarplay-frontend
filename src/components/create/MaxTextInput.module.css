@@ -49,9 +49,8 @@
 {
   flex: 1 0 0;
   align-self: stretch;
-  color: var(--Neutral-400, #BDC1C6);
-  font-family: 'Lato';
-  font-size: 15px;
+  color: var(--Neutral-400, #BDC1C6); 
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 160%;  
@@ -85,9 +84,8 @@
   flex: 1 0 0;
   align-self: stretch;
 
-  color: var(--Neutral-400, #BDC1C6);
-  font-family: 'Lato';
-  font-size: 15px;
+  color: var(--Neutral-400, #BDC1C6); 
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 160%;  
