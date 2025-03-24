@@ -136,7 +136,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
         const scrollY = sectionHeight * indexContent;
         window.scrollTo(0, scrollY);
         handleScroll();
-      }, 1);
+      }, 100);
     }
 
     if (!isSpecificProfile) {
