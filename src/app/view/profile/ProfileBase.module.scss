@@ -348,7 +348,7 @@
       margin-top: 5px;
       color: var(--Black, #000);
       font-family: Lato;
-      font-size: 14px;
+      font-size: 16px;
       font-style: normal;
       font-weight: 400;
       line-height: 130%;
@@ -630,7 +630,7 @@
           margin-top: 5px;
           color: var(--Black, #000);
           font-family: Lato;
-          font-size: 14px;
+          font-size: 16px;
           font-style: normal;
           font-weight: 500;
           line-height: 155%;
@@ -834,7 +834,7 @@ li.itemTab {
 
     color: var(--base-white, #FFF);
     font-family: Lato;
-    font-size: 13px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 500;
     line-height: 12px;
@@ -1175,7 +1175,7 @@ li.itemTab {
       // max-height: 516px;
       height: 100%;
       width: 100%;
-      object-fit: contain;
+      object-fit: cover;
       background: white;
     }
 
@@ -1528,7 +1528,7 @@ li.itemTab {
       margin-top: 10px;
       color: var(--Black, #000);
       font-family: Lato;
-      font-size: 13px;
+      font-size: 16px;
       font-style: normal;
       font-weight: 400;
       line-height: 130%;
