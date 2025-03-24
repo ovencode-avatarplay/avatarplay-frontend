@@ -1,5 +1,4 @@
 .Home-Feed {
-    height: var(--body-height);
     height: 100%;
     position:relative;
     background-color: black;
