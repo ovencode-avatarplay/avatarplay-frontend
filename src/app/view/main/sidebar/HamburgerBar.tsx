@@ -1,16 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import Drawer from '@mui/material/Drawer';
 import styles from './HamburgerBar.module.css';
-import {useAtom} from 'jotai';
-import {userDropDownAtom} from '@/components/layout/shared/UserDropdown';
-import {Session} from '@supabase/supabase-js';
-import {getCurrentLanguage, isLogined, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
+import {Session, UserMetadata} from '@supabase/supabase-js';
+import {isLogined, pushLocalizedRoute} from '@/utils/UrlMove';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateProfile} from '@/redux-store/slices/Profile';
-import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';
-import {getAuth, SignInRes} from '@/app/NetWork/AuthNetwork';
+import {getAuth} from '@/app/NetWork/AuthNetwork';
 import {useRouter} from 'next/navigation';
-import {getLanguageTypeFromText} from '@/utils/browserInfo';
 import {supabase} from '@/utils/supabaseClient';
 import {RootState} from '@/redux-store/ReduxStore';
 import CustomButton from '@/components/layout/shared/CustomButton';
@@ -18,6 +14,7 @@ import {BoldRuby, BoldStar, LineArrowRight, LineSetting, LineWallet, VerifiedLab
 import {Avatar} from '@mui/material';
 import ModalLanguageSelect from './ModalLanguageSelect';
 import PopupAccountChange from '../content/create/common/PopupAccountChange';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface HamburgerBarProps {
   open: boolean;
@@ -26,7 +23,6 @@ interface HamburgerBarProps {
 }
 
 const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true}) => {
-  // const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const dispatch = useDispatch();
   const router = useRouter();
   const [auth, setAuth] = useState<Session | null>(null);
@@ -36,6 +32,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
   const [languageOpen, setLanguageOpen] = useState<boolean>(false);
   const [supportOpen, setSupportOpen] = useState<boolean>(false);
   const [accountOpen, setAccountOpen] = useState<boolean>(false);
+  const [userMetaData, setUserMetaData] = useState<UserMetadata | null>();
 
   const renderMenuItem = (icon: string, text: string, onClick: () => void, depth?: number) => {
     return (
@@ -91,13 +88,6 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
       pushLocalizedRoute('/profile/' + profile?.urlLinkKey, router);
     }
   };
-  async function OpenSelectProfile() {
-    const isLogin = await isLogined();
-    if (!isLogin) return;
-
-    // dataUserDropDown.drawerProfileOpen = true;
-    // setUserDropDown({...dataUserDropDown});
-  }
 
   const handleUserLogout = async () => {
     try {
@@ -107,17 +97,24 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
       setAuth(null);
       localStorage.removeItem('jwt');
       dispatch(updateProfile(null));
+      setUserMetaData(null);
     } catch (error) {
       console.error(error);
-
-      // Show above error in a toast like following
-      // toastService.error((err as Error).message)
     }
   };
 
   const handleCloseLanguage = () => {
     setLanguageOpen(false);
   };
+
+  const getSessionData = async () => {
+    const session = await supabase.auth.getSession();
+    setUserMetaData(session.data.session?.user.user_metadata || null);
+  };
+
+  useEffect(() => {
+    getSessionData();
+  }, [auth]);
 
   return (
     <Drawer open={open} onClose={onClose} anchor={isLeft ? 'left' : 'right'} classes={{paper: styles.drawerPaper}}>
@@ -126,25 +123,25 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
         <div className={styles.profileSection} onClick={routeProfile}>
           <div className={styles.profileArea}>
             <Avatar
-              alt={auth?.user?.email || ''}
+              // alt={auth?.user?.email || ''}
+              alt={userMetaData?.email || ''}
               src={dataProfile.currentProfile?.iconImageUrl || ''}
               // onClick={routeProfile}
               className={styles.profileImage}
             />
-            {/* <img
-              src={dataProfile.currentProfile?.iconImageUrl || ''}
-              alt={auth?.user?.email || ''}
-              className={styles.profileImage}
-            /> */}
             <div className={styles.profileBox}>
               <div className={styles.profileInfo}>
                 <div className={styles.profileNameArea}>
                   <p className={styles.profileName}>
-                    {auth?.user.user_metadata?.name || auth?.user.user_metadata?.full_name || '이름 없음'}
+                    {/* {auth?.user.user_metadata.name} */}
+                    {userMetaData ? userMetaData.name : getLocalizedText('TODO:Key필요 로그인필요')}
                   </p>
                   <img className={styles.profileVerified} src={auth ? VerifiedLabel.src : ''} />
                 </div>
-                <p className={styles.profileEmail}>{auth?.user.email}</p>
+                <p className={styles.profileEmail}>
+                  {/* {auth?.user.user_metadata.email} */}
+                  {userMetaData ? userMetaData.email : ''}
+                </p>
               </div>
               <img className={styles.arrowIcon} src={LineArrowRight.src} />
             </div>
@@ -158,13 +155,13 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
             onClick={() => {}}
             customClassName={[styles.planButton]}
           >
-            Upgrade your plan
+            {getLocalizedText('common_button_upgradeyourplan')}
           </CustomButton>
         </ul>
 
         {/* 메뉴 섹션 */}
         <ul className={styles.menuList}>
-          {renderMenuItem(LineSetting.src, 'Account Center', () => {
+          {renderMenuItem(LineSetting.src, getLocalizedText('common_button_accountconter'), () => {
             setAccountOpen(true);
           })}
           <li
@@ -178,7 +175,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
               <div className={styles.menuContent}>
                 <div className={styles.menuInfo}>
                   <img className={styles.menuIcon} src={LineWallet.src} />
-                  <div className={styles.menuText}>My Wallet</div>
+                  <div className={styles.menuText}>{getLocalizedText('common_button_mywallet')}</div>
                 </div>
               </div>
               <img className={styles.arrowIcon} src={LineArrowRight.src} />
@@ -197,23 +194,23 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
         </ul>
         {/* 기타 메뉴 */}
         <ul className={styles.menuList}>
-          {renderMenuItem('', 'Language', () => {
+          {renderMenuItem('', getLocalizedText('common_button_language'), () => {
             setLanguageOpen(!languageOpen);
           })}
-          {renderMenuItem('', 'Story', routeStory)}
-          {renderMenuItem('', 'Character', routeCharacter)}
-          {renderMenuItem('', 'Prompt', routePrompt)}
-          {renderMenuItem('', 'Support & About', () => {
+          {renderMenuItem('', 'Story (tmp)', routeStory)}
+          {renderMenuItem('', 'Character (tmp)', routeCharacter)}
+          {renderMenuItem('', 'Prompt (tmp)', routePrompt)}
+          {renderMenuItem('', getLocalizedText('common_button_supportandabout'), () => {
             setSupportOpen(!supportOpen);
           })}
           {supportOpen && (
             <>
-              {renderMenuItem('', 'Report a Problem', () => {}, 1)}
-              {renderMenuItem('', 'Support', () => {}, 1)}
-              {renderMenuItem('', 'Terms and Policies', () => {}, 1)}
+              {renderMenuItem('', getLocalizedText('common_button_reportaproblem'), () => {}, 1)}
+              {renderMenuItem('', getLocalizedText('common_button_support'), () => {}, 1)}
+              {renderMenuItem('', getLocalizedText('common_button_termsandpolicies'), () => {}, 1)}
             </>
           )}
-          {renderMenuItem('', 'Logout', handleUserLogout)}
+          {renderMenuItem('', getLocalizedText('common_button_logout'), handleUserLogout)}
         </ul>
       </div>
       {languageOpen && <ModalLanguageSelect isOpen={languageOpen} onClose={handleCloseLanguage} />}
