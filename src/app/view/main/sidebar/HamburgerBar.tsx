@@ -15,6 +15,7 @@ import {Avatar} from '@mui/material';
 import ModalLanguageSelect from './ModalLanguageSelect';
 import PopupAccountChange from '../content/create/common/PopupAccountChange';
 import getLocalizedText from '@/utils/getLocalizedText';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface HamburgerBarProps {
   open: boolean;
@@ -33,6 +34,8 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
   const [supportOpen, setSupportOpen] = useState<boolean>(false);
   const [accountOpen, setAccountOpen] = useState<boolean>(false);
   const [userMetaData, setUserMetaData] = useState<UserMetadata | null>();
+
+  const [isAlertOn, setIsAlertOn] = useState<boolean>(false);
 
   const renderMenuItem = (icon: string, text: string, onClick: () => void, depth?: number) => {
     return (
@@ -134,7 +137,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
                 <div className={styles.profileNameArea}>
                   <p className={styles.profileName}>
                     {/* {auth?.user.user_metadata.name} */}
-                    {userMetaData ? userMetaData.name : getLocalizedText('TODO:Key필요 로그인필요')}
+                    {userMetaData ? userMetaData.name : getLocalizedText('TODO:Key필요 GuestMode')}
                   </p>
                   <img className={styles.profileVerified} src={auth ? VerifiedLabel.src : ''} />
                 </div>
@@ -152,10 +155,18 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
             size="Small"
             state="Normal"
             type="Primary"
-            onClick={() => {}}
+            onClick={() => {
+              if (userMetaData) {
+                setIsAlertOn(true);
+              } else {
+                routeProfile();
+              }
+            }}
             customClassName={[styles.planButton]}
           >
-            {getLocalizedText('common_button_upgradeyourplan')}
+            {userMetaData
+              ? getLocalizedText('common_button_upgradeyourplan')
+              : getLocalizedText('TODO Key값필요 Login/Signup')}
           </CustomButton>
         </ul>
 
@@ -167,7 +178,11 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
           <li
             className={`${styles.menuItem} ${styles.divideItem}`}
             onClick={() => {
-              pushLocalizedRoute('/main/game/shop', router);
+              if (userMetaData) {
+                pushLocalizedRoute('/main/game/shop', router);
+              } else {
+                routeProfile();
+              }
               onClose();
             }}
           >
@@ -200,6 +215,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
           {renderMenuItem('', 'Story (tmp)', routeStory)}
           {renderMenuItem('', 'Character (tmp)', routeCharacter)}
           {renderMenuItem('', 'Prompt (tmp)', routePrompt)}
+          {/*
           {renderMenuItem('', getLocalizedText('common_button_supportandabout'), () => {
             setSupportOpen(!supportOpen);
           })}
@@ -210,7 +226,8 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
               {renderMenuItem('', getLocalizedText('common_button_termsandpolicies'), () => {}, 1)}
             </>
           )}
-          {renderMenuItem('', getLocalizedText('common_button_logout'), handleUserLogout)}
+            */}
+          {userMetaData ? renderMenuItem('', getLocalizedText('common_button_logout'), handleUserLogout) : ''}
         </ul>
       </div>
       {languageOpen && <ModalLanguageSelect isOpen={languageOpen} onClose={handleCloseLanguage} />}
@@ -220,6 +237,21 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
           setAccountOpen(false);
         }}
       ></PopupAccountChange>
+      {isAlertOn && (
+        <CustomPopup
+          type="alert"
+          title="6월에 기능 추가 예정"
+          buttons={[
+            {
+              label: 'OK',
+              onClick: () => {
+                setIsAlertOn(false);
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
     </Drawer>
   );
 };
