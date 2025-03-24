@@ -218,18 +218,28 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     });
   };
 
+  const urlUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     const currentItem = allFeeds[currentSlideIndex];
 
+    // ✅ URL 변경 (딜레이 적용)
     if (currentItem && currentItem.urlLinkKey) {
-      const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
-      if (window.location.pathname !== newUrl) {
-        window.history.pushState(null, '', newUrl);
+      if (urlUpdateTimeoutRef.current) {
+        clearTimeout(urlUpdateTimeoutRef.current);
       }
-      viewFeed(currentItem.id);
+
+      urlUpdateTimeoutRef.current = setTimeout(() => {
+        // const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
+        // if (window.location.pathname !== newUrl) {
+        //   window.history.pushState(null, '', newUrl);
+        // }
+
+        viewFeed(currentItem.id);
+      }, 300); // ✅ 스크롤 멈춘 뒤 300ms 후에 URL 변경
     }
 
-    // 데이터 미리 로딩
+    // ✅ 데이터 미리 로딩
     if (info.length <= currentSlideIndex + 2 && info.length < allFeeds.length) {
       const nextItems = allFeeds.slice(info.length, info.length + 5);
       setInfo(prev => [...prev, ...nextItems]);
@@ -242,7 +252,14 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
         loadMoreFeeds();
       }
     }
-  }, [currentSlideIndex]); // currentSlideIndex가 변경될 때만 실행
+
+    // ✅ 컴포넌트 unmount 시 타이머 정리
+    return () => {
+      if (urlUpdateTimeoutRef.current) {
+        clearTimeout(urlUpdateTimeoutRef.current);
+      }
+    };
+  }, [currentSlideIndex]);
 
   const loadMoreFeedsMine = async () => {
     // const isPD = [ProfileType.PD, ProfileType.User].includes(profileType);
