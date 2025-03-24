@@ -226,6 +226,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           )}
           {data.dataMix?.thumbnailMediaState == MediaState.Video && (
             <video
+              playsInline
               className={styles.thumbnail}
               loop={true}
               muted={true}
@@ -575,7 +576,14 @@ const EpisodeComponent = ({
         <div className={styles.imgWrap}>
           {thumbnailMediaState == MediaState.Image && <img className={styles.thumbnail} src={thumbnailUrl} alt="" />}
           {thumbnailMediaState == MediaState.Video && (
-            <video loop={true} muted={true} autoPlay={true} className={styles.thumbnail} src={thumbnailUrl} />
+            <video
+              playsInline
+              loop={true}
+              muted={true}
+              autoPlay={true}
+              className={styles.thumbnail}
+              src={thumbnailUrl}
+            />
           )}
           {isLock && <img src={BoldLock.src} alt="" className={styles.iconLock} />}
         </div>

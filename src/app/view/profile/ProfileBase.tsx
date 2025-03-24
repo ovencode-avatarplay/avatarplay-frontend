@@ -2907,7 +2907,14 @@ export const ChannelComponent = ({
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
         {itemInfo.mediaState == MediaState.Video && (
-          <video autoPlay={true} muted={true} loop={true} className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />
+          <video
+            playsInline
+            autoPlay={true}
+            muted={true}
+            loop={true}
+            className={styles.imgThumbnail}
+            src={itemInfo?.mediaUrl}
+          />
         )}
         {itemInfo?.isPinFix && (
           <div className={styles.pin}>
@@ -2981,7 +2988,14 @@ export const ContentComponent = ({
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
         {itemInfo.mediaState == MediaState.Video && (
-          <video autoPlay={true} muted={true} loop={true} className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />
+          <video
+            playsInline
+            autoPlay={true}
+            muted={true}
+            loop={true}
+            className={styles.imgThumbnail}
+            src={itemInfo?.mediaUrl}
+          />
         )}
         <div className={styles.bgGradientWrap}>
           <div className={styles.bgGradient}></div>
@@ -3074,7 +3088,14 @@ export const CharacterComponent = ({
           <img className={styles.imgThumbnail} src={itemInfo?.mediaUrl} alt="" />
         )}
         {itemInfo.mediaState == MediaState.Video && (
-          <video autoPlay={true} muted={true} loop={true} className={styles.imgThumbnail} src={itemInfo?.mediaUrl} />
+          <video
+            playsInline
+            autoPlay={true}
+            muted={true}
+            loop={true}
+            className={styles.imgThumbnail}
+            src={itemInfo?.mediaUrl}
+          />
         )}
         <div className={styles.bgGradientWrap}>
           <div className={styles.bgGradient}></div>
@@ -3150,6 +3171,7 @@ export const FeedComponent = ({isMine, index, urlLinkThumbnail, feedInfo, onOpen
         )}
         {feedInfo.mediaState == MediaState.Video && (
           <video
+            playsInline
             autoPlay={true}
             muted={true}
             loop={true}

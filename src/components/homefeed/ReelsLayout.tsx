@@ -245,51 +245,47 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   }, [currentSlideIndex]); // currentSlideIndex가 변경될 때만 실행
 
   const loadMoreFeedsMine = async () => {
-    const isPD = [ProfileType.PD, ProfileType.User].includes(profileType);
-    let result = null;
-
-    if (isPD) {
-      result = await getProfilePdTabInfo(
-        profileUrlLinkKey,
-        PdProfileTabType.Feed,
-        feedSortType,
-        {
-          feedMediaType: feedMediaType,
-          channelTabType: 0,
-          characterTabType: 0,
-          contentTabType: 0,
-          sharedTabType: 0,
-        },
-        info?.length || 0,
-        10,
-      );
-    } else {
-      result = await getProfileCharacterTabInfo(
-        profileUrlLinkKey,
-        CharacterProfileTabType.Feed,
-        feedSortType,
-        {
-          feedMediaType: feedMediaType,
-          channelTabType: 0,
-          characterTabType: 0,
-          contentTabType: 0,
-          sharedTabType: 0,
-        },
-        info?.length || 0,
-        10,
-      );
-    } //TODO : 1000개로 임시 처리, oh, feed가 많은 경우 일부만 뿌리고 id를 찾아서 보여주는 처리가 필요해보임, 무한 스크롤
-
-    if (result?.feedInfoList.length == 0) {
-      setHasMore(false); // 실패 또는 데이터 없을 경우 중지
-      return;
-    }
-
-    const mergedFeeds = result?.feedInfoList || [];
-    setAllFeeds(prevFeeds => [...prevFeeds, ...mergedFeeds]);
-
-    const feeds = result?.feedInfoList || [];
-    setInfo(prevInfo => [...prevInfo, ...feeds.slice(0, 2)]);
+    // const isPD = [ProfileType.PD, ProfileType.User].includes(profileType);
+    // let result = null;
+    // if (isPD) {
+    //   result = await getProfilePdTabInfo(
+    //     profileUrlLinkKey,
+    //     PdProfileTabType.Feed,
+    //     feedSortType,
+    //     {
+    //       feedMediaType: feedMediaType,
+    //       channelTabType: 0,
+    //       characterTabType: 0,
+    //       contentTabType: 0,
+    //       sharedTabType: 0,
+    //     },
+    //     info?.length || 0,
+    //     10,
+    //   );
+    // } else {
+    //   result = await getProfileCharacterTabInfo(
+    //     profileUrlLinkKey,
+    //     CharacterProfileTabType.Feed,
+    //     feedSortType,
+    //     {
+    //       feedMediaType: feedMediaType,
+    //       channelTabType: 0,
+    //       characterTabType: 0,
+    //       contentTabType: 0,
+    //       sharedTabType: 0,
+    //     },
+    //     info?.length || 0,
+    //     10,
+    //   );
+    // } //TODO : 1000개로 임시 처리, oh, feed가 많은 경우 일부만 뿌리고 id를 찾아서 보여주는 처리가 필요해보임, 무한 스크롤
+    // if (result?.feedInfoList.length == 0) {
+    //   setHasMore(false); // 실패 또는 데이터 없을 경우 중지
+    //   return;
+    // }
+    // const mergedFeeds = result?.feedInfoList || [];
+    // setAllFeeds(prevFeeds => [...prevFeeds, ...mergedFeeds]);
+    // const feeds = result?.feedInfoList || [];
+    // setInfo(prevInfo => [...prevInfo, ...feeds.slice(0, 2)]);
   };
 
   const loadMoreFeeds = async () => {
