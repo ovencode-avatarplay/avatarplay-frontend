@@ -337,13 +337,15 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   style={{
                     borderRadius: '8px',
                     objectFit: 'contain',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}
                   config={{
                     file: {
                       attributes: {
                         style: {
                           width: '100%',
-                          height: '100%',
                           objectFit: 'contain',
                         },
                       },

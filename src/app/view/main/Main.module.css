@@ -1,11 +1,15 @@
 /* styles.css or another CSS file */
 
 .body {
+  
     margin: 0;
     padding: 0;
     display:flex;
     flex-direction:column;
     height: 100%;
+  
+    /* height: 100dvh;
+    padding: env(safe-area-inset); */
     /* overflow: hidden; */
     /* height:100%; */
     /* overflow-y:auto; */
