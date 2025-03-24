@@ -1535,6 +1535,9 @@ li.itemTab {
       line-height: 130%;
       /* 16.9px */
       letter-spacing: -0.26px;
+
+      white-space: pre-line;
+      word-break: break-word;
     }
   }
 }
