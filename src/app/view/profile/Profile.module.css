@@ -1,6 +1,6 @@
 
 .body {
-    height:100%;
+    min-height:100%;
     width:100%;
     max-width: var(--full-width);
     margin: 0 auto; /* 수평 중앙 정렬 */

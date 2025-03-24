@@ -45,13 +45,15 @@ const PageFeedView = ({searchParams}: Props) => {
           </div>
         </div>
       </section>
-      <ReelsLayout
-        profileUrlLinkKey={id}
-        profileType={profileType}
-        feedMediaType={feedMediaType}
-        feedSortType={feedSortType}
-        idContent={idContent}
-      />
+      <div style={{height: '100dvh'}}>
+        <ReelsLayout
+          profileUrlLinkKey={id}
+          profileType={profileType}
+          feedMediaType={feedMediaType}
+          feedSortType={feedSortType}
+          idContent={idContent}
+        />
+      </div>
       <BottomNav />
     </>
   );
