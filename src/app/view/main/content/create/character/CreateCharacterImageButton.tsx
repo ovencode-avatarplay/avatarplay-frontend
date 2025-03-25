@@ -63,7 +63,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({
       </div>
       {label !== null && (
         <div className={`${styles.label} ${selected ? styles.selected : ''}`}>
-          <span>{getLocalizedText('Common', label)}</span>
+          <span>{label}</span>
         </div>
       )}
       {selected && selectType !== 'multiple' && (
