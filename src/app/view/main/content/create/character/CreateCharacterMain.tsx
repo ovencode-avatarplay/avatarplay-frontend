@@ -340,6 +340,12 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       // 빈블럭
     }
   };
+
+  const handlePreviewSelected = (imageUrl: string) => {
+    setImageViewUrl(imageUrl);
+    setImageViewOpen(true);
+  };
+
   //#endregion
 
   //#region Media
@@ -701,9 +707,12 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
               createType="create2"
               publishFinishAction={handlerPublishFinish}
               createFinishAction={handlerSetImage}
+              onClickPreview={handlePreviewSelected}
             />
           )}
-          {imgUploadType === 'AIGenerate' && <CharacterImageSet createFinishAction={handlerSetImage} />}
+          {imgUploadType === 'AIGenerate' && (
+            <CharacterImageSet createFinishAction={handlerSetImage} onClickPreview={handlePreviewSelected} />
+          )}
           {imgUploadType === 'Upload' && (
             <ImageUploadDialog
               isOpen={true}

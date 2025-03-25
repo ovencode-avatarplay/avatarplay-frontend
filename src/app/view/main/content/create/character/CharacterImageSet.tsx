@@ -5,27 +5,26 @@ import CharacterCreateImageButton from './CreateCharacterImageButton';
 import CustomToolTip from '@/components/layout/shared/CustomToolTip';
 import MaxTextInput from '@/components/create/MaxTextInput';
 import {inputType, inputState, displayType} from '@/components/create/MaxTextInput';
-import {BoldLock, BoldMenuDots, BoldRuby, BoldStar, BoldUnLock, LineAIImage, LineScaleUp, LineUpload} from '@ui/Icons';
+import {BoldLock, BoldRuby, BoldStar, BoldUnLock} from '@ui/Icons';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import {GenerateImageReq2, sendGenerateImageReq2} from '@/app/NetWork/ImageNetwork';
-import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {formatCurrency} from '@/utils/util-1';
-import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface CharacterImageSetProps {
   createFinishAction?: (imgUrl: string) => void;
+  onClickPreview: (imgUrl: string) => void;
 }
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
 
-const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction}) => {
+const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction, onClickPreview}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedLora, setSelectedLora] = useState<number>(0);
 
@@ -213,16 +212,24 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
     });
   };
 
+  const handleViewImage = (imgUrl: string) => {
+    onClickPreview(imgUrl);
+  };
+
   const handleSelectGeneratedItem = (index: number) => {
-    setSelectedGeneratedItems(prevSelectedGeneratedItems => {
-      if (prevSelectedGeneratedItems.includes(index)) {
-        // 이미 선택된 아이템이면 배열에서 제거
-        return prevSelectedGeneratedItems.filter(item => item !== index);
-      } else {
-        // 선택되지 않은 아이템이면 배열에 추가
-        return [...prevSelectedGeneratedItems, index];
-      }
-    });
+    // 실장님 요청으로 하나만 선택하도록 변경 0325
+    const tmpItem = [index];
+    setSelectedGeneratedItems(tmpItem);
+
+    // setSelectedGeneratedItems(prevSelectedGeneratedItems => {
+    //   if (prevSelectedGeneratedItems.includes(index)) {
+    //     // 이미 선택된 아이템이면 배열에서 제거
+    //     return prevSelectedGeneratedItems.filter(item => item !== index);
+    //   } else {
+    //     // 선택되지 않은 아이템이면 배열에 추가
+    //     return [...prevSelectedGeneratedItems, index];
+    //   }
+    // });
   };
   const handleSelectedLora = (index: number) => {
     setSelectedLora(index);
@@ -328,7 +335,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
                 label={option.label}
                 image={option.image}
                 selected={selectedLora === index}
-                onClick={() => handleSelectedLora(index)}
+                onSelectClick={() => handleSelectedLora(index)}
               />
             </SwiperSlide>
           ))}
@@ -439,11 +446,13 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
               <CharacterCreateImageButton
                 key={index}
                 sizeType="large"
-                selectType="multiple"
+                selectType="one"
+                selectButtonType="button"
                 image={image}
                 label={null}
                 selected={selectedGeneratedItems.includes(index)}
-                onClick={() => handleSelectGeneratedItem(index)}
+                onSelectClick={() => handleSelectGeneratedItem(index)}
+                onImageClick={() => handleViewImage(generatedImages[index])}
                 isImageLoading={false}
               />
             ))}

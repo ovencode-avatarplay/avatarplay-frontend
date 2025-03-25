@@ -38,14 +38,20 @@ const PageFeedView = ({searchParams}: Props) => {
             className={styles.backBtn}
             onClick={() => {
               // router.replace(getLocalizedLink(`/profile/${id}`));
-              replace(`/profile/${id}`);
+              back(`/profile/${id}?from=""`);
+              // replace(`/profile/${id}?from=""`);
             }}
           >
             <img src={BoldArrowLeft.src} alt="" />
           </div>
         </div>
       </section>
-      <div style={{height: '100dvh'}}>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
         <ReelsLayout
           profileUrlLinkKey={id}
           profileType={profileType}
@@ -54,6 +60,7 @@ const PageFeedView = ({searchParams}: Props) => {
           idContent={idContent}
         />
       </div>
+
       <BottomNav />
     </>
   );

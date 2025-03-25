@@ -263,7 +263,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
                   image={image}
                   label={null}
                   selected={selectedGeneratedItems.includes(index)}
-                  onClick={() => {
+                  onSelectClick={() => {
                     handleSelectGeneratedItem(index);
                   }}
                   isImageLoading={loading}

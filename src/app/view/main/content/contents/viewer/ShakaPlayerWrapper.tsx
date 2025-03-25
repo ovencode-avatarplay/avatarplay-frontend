@@ -33,13 +33,22 @@ const ShakaPlayerWrapper: React.FC<Props> = ({
 
     const player = new shaka.Player(video);
     playerRef.current = player;
-    const allTracks = player.getVariantTracks(); // 모든 트랙
-    const audioTracks = allTracks.filter((t: any) => t.language); // 언어 정보가 있는 트랙 = 오디오
-    console.log('🎧 Audio Tracks:', audioTracks);
 
-    player.load(src).then(() => {
-      onDuration(video.duration);
-    });
+    player
+      .load(src)
+      .then(() => {
+        const allTracks = player.getVariantTracks();
+        const audioTracks = allTracks.filter((t: any) => t.type === 'audio');
+
+        console.log('🔊 All Tracks:', allTracks);
+        console.log('🔉 Audio Tracks:', audioTracks);
+
+        // Duration 얻기
+        onDuration(video.duration);
+      })
+      .catch((err: any) => {
+        console.error('Error loading video:', err);
+      });
 
     return () => {
       player.destroy();

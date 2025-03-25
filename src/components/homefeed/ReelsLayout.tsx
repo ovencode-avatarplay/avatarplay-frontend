@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useLayoutEffect} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/scrollbar';
@@ -57,6 +57,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 슬라이드 인덱스
   const [isMute, setIsMute] = useState(true); // 현재 슬라이드 인덱스
   const containerRef = useRef<HTMLDivElement>(null);
+  const reelsWrapperRef = useRef<HTMLDivElement>(null);
   const [isProfile, setIsProfile] = useState(false); // 현재 슬라이드 인덱스
   const [selectedTab, setSelectedTab] = useState<RecommendState>(recommendState);
   const router = useRouter();
@@ -76,7 +77,6 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       return null;
     }
   };
-
   const getEmailFromJwt = (): string | null => {
     const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
     if (jwt) {
@@ -131,12 +131,17 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       setInfo(mergedFeeds.slice(0, indexContent + 2)); // 초기 렌더링용 첫 2개
       setCurrentSlideIndex(indexContent);
 
+      const wrapper = reelsWrapperRef.current;
+      if (!wrapper) {
+        return;
+      }
+
       setTimeout(() => {
-        const sectionHeight = window.innerHeight - 58 - 64; //58 : header , 48 : footer
+        const sectionHeight = wrapper.clientHeight; //58 : header , 48 : footer
         const scrollY = sectionHeight * indexContent;
-        window.scrollTo(0, scrollY);
+        wrapper.scrollTo(0, scrollY);
         handleScroll();
-      }, 1);
+      }, 100);
     }
 
     if (!isSpecificProfile) {
@@ -180,23 +185,28 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     }
   };
   const handleScroll = () => {
-    const slides = document.querySelectorAll(`.${styles.reelSlide}`);
-    const scrollPosition = window.scrollY;
+    const container = containerRef.current;
+    const wrapper = reelsWrapperRef.current;
+
+    if (!container || !wrapper) return;
+
+    const scrollY = wrapper.scrollTop;
+    const slides = Array.from(wrapper.children || []);
     let cumulativeHeight = 0;
     let calculatedIndex = 0;
 
     for (let i = 0; i < slides.length; i++) {
-      const slide = slides[i] as HTMLElement; // 👈 명시적 캐스팅 추가
+      const slide = slides[i] as HTMLElement;
       cumulativeHeight += slide.offsetHeight;
 
-      if (scrollPosition + window.innerHeight / 2 < cumulativeHeight) {
+      if (scrollY + wrapper.clientHeight / 2 < cumulativeHeight) {
         calculatedIndex = i;
         break;
       }
     }
 
     console.log('index', calculatedIndex, slides.length);
-    // 인덱스 급격한 점프 방지 로직
+
     setCurrentSlideIndex(prevIndex => {
       if (calculatedIndex > prevIndex + 1) {
         return prevIndex + 1;
@@ -319,30 +329,37 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     console.log('Updated allFeeds:', allFeeds);
   }, [allFeeds]);
 
-  useEffect(() => {
-    if (isProfile) {
-      document.body.style.overflowY = 'hidden'; // 스냅 비활성화
-      document.body.style.overflowX = 'hidden';
-    } else {
-      document.body.style.overflowY = 'scroll'; // 스냅 활성화
-      document.body.style.overflowX = 'hidden';
-    }
+  // useEffect(() => {
+  //   if (isProfile) {
+  //     document.body.style.overflowY = 'hidden'; // 스냅 비활성화
+  //     document.body.style.overflowX = 'hidden';
+  //   } else {
+  //     document.body.style.overflowY = 'scroll'; // 스냅 활성화
+  //     document.body.style.overflowX = 'hidden';
+  //   }
 
+  //   return () => {
+  //     // 💡 cleanup: 기본 상태로 복구
+  //     // document.body.style.overflowY = 'scroll';
+  //     // document.body.style.overflowX = 'hidden';
+  //     document.body.style.removeProperty('overflow');
+  //   };
+  // }, [isProfile]);
+
+  useEffect(() => {
+    if (!reelsWrapperRef.current) return;
+    reelsWrapperRef.current.addEventListener('scroll', handleScroll);
     return () => {
-      // 💡 cleanup: 기본 상태로 복구
-      // document.body.style.overflowY = 'scroll';
-      // document.body.style.overflowX = 'hidden';
-      document.body.style.removeProperty('overflow');
-    };
-  }, [isProfile]);
+      if (!reelsWrapperRef.current) return;
 
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+      reelsWrapperRef.current.removeEventListener('scroll', handleScroll);
+    };
   }, [allFeeds, currentSlideIndex]);
   React.useEffect(() => {
     console.log(isMute);
   }, [isMute]);
+
+  // const {isInteracting, scrollDirection} = useResponsiveBodyHeight();
 
   return (
     <div ref={containerRef} className={styles.reelsContainer}>
@@ -380,20 +397,22 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
           </div>
         </>
       )}
-      <div className={styles.reelsWrapper}>
-        {info.map((item, index) => (
-          <div key={index} className={styles.reelSlide}>
-            <ReelsContent
-              item={item}
-              isActive={index === currentSlideIndex}
-              isMute={isMute}
-              setIsMute={setIsMute}
-              setIsProfile={setIsProfile}
-              isShowProfile={!isSpecificProfile}
-              recommendState={selectedTab}
-            />
-          </div>
-        ))}
+      <div ref={reelsWrapperRef} className={styles.reelsWrapper}>
+        {info.map((item, index) => {
+          return (
+            <div key={index} className={styles.reelSlide}>
+              <ReelsContent
+                item={item}
+                isActive={index === currentSlideIndex}
+                isMute={isMute}
+                setIsMute={setIsMute}
+                setIsProfile={setIsProfile}
+                isShowProfile={!isSpecificProfile}
+                recommendState={selectedTab}
+              />
+            </div>
+          );
+        })}
       </div>
       {selectedTab == RecommendState.Following && info.length == 0 && (
         <CustomPopup

@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 // style, mui
-import styles from './BottomNav.module.css';
+import styles from './BottomNav.module.scss';
 
 import profileData from 'data/profile/profile-data.json';
 

@@ -115,7 +115,7 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
 
                   const accessToken: string = resData?.sessionInfo?.accessToken || '';
                   localStorage.setItem('jwt', accessToken);
-                  pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.urlLinkKey + "?from=''", router, false);
+                  pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.urlLinkKey, router, false);
                 }}
               >
                 <div className={styles.left}>

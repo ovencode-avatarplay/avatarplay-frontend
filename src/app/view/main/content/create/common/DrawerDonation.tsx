@@ -66,15 +66,10 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
     };
     if (inputValue !== '') {
       //alert(`입력된 후원 금액: ${inputValue} EA    pdid : ${giveToPDId}`); // 알림창 띄우기
-      try {
-        const response = await sendGiftStar(reqData);
-        if (typeof response.data?.myStar === 'number') {
-          dispatch(setStar(response.data?.myStar));
-          onClose();
-        }
-      } catch (error) {
-        console.error('Message send failed:', error);
-        throw new Error('Failed to send cheat message'); // Propagate the error
+      const response = await sendGiftStar(reqData);
+      if (typeof response.data?.myStar === 'number') {
+        dispatch(setStar(response.data?.myStar));
+        onClose();
       }
     } else {
       alert('후원 금액을 입력하세요!'); // 값이 없을 때 경고 메시지

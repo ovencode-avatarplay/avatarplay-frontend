@@ -34,7 +34,6 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
 import {followProfile, subscribeProfile} from '@/app/NetWork/ProfileNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
-import shaka from 'shaka-player/dist/shaka-player.compiled';
 import {
   ContentCategoryType,
   ContentLanguageType,
@@ -67,7 +66,7 @@ import {PopupPurchase} from '../series/ContentSeriesDetail';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import ShakaPlayerWrapper from './ShakaPlayerWrapper';
+import shaka from 'shaka-player/dist/shaka-player.compiled';
 
 interface Props {
   open: boolean;
@@ -125,24 +124,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     }
   };
 
-  const handleRecordPlay = async () => {
-    if (!info) return;
-    try {
-      const recordPlayRequest: RecordPlayReq = {
-        episodeRecordPlayInfo: {
-          contentId: info?.contentId,
-          episodeId: info?.episodeId,
-          categoryType: info?.categoryType,
-          playTimeSecond: Math.floor(videoProgress),
-        },
-      };
-
-      const recordPlayResponse = await sendRecordPlay(recordPlayRequest);
-    } catch (error) {
-      console.error('🚨 RecordPlay API 호출 오류:', error);
-    }
-  };
-
   useEffect(() => {
     if (info?.categoryType == ContentCategoryType.Webtoon) handleRecordPlay();
   }, [info]);
@@ -167,7 +148,34 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleTrigger = () => {
     setIsVisible(!isVisible); // 트리거 발생 시 서서히 사라짐
   };
+  const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (!playerRef) return;
+    if (!info?.episodeVideoInfo) return;
+    const video = videoRef.current;
+    if (!video) return;
+    const player = new shaka.Player(video);
+    playerRef.current = player;
+
+    player
+      .load(info.episodeVideoInfo.videoSourceFileInfo.videoSourceUrl)
+      .then(() => {
+        const allTracks = player.getVariantTracks();
+        const audioTracks = allTracks.filter((t: any) => t.type === 'audio');
+
+        console.log('🔊 All Tracks:', allTracks);
+        console.log('🔉 Audio Tracks:', audioTracks);
+      })
+      .catch((err: any) => {
+        console.error('Error loading video:', err);
+      });
+
+    return () => {
+      player.destroy();
+    };
+  }, [info]);
 
   const [isReportModal, setIsRefortModal] = useState(false);
   const selectReportItem: SelectDrawerItem[] = [
@@ -180,16 +188,16 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     {
       name: 'Track0',
       onClick: () => {
-        const track = playerRef.current?.getVariantTracks().find((t: any) => t.language === 'ko');
-        console.log(playerRef.current);
+        const track = playerRef.current?.getVariantTracks()[0];
+        console.log(track);
         if (track) playerRef.current?.selectVariantTrack(track, true);
       },
     },
     {
       name: 'Track1',
       onClick: () => {
-        const track = playerRef.current?.getVariantTracks().find((t: any) => t.language === 'en');
-        console.log(playerRef.current);
+        const track = playerRef.current?.getVariantTracks()[1];
+        console.log(track);
         if (track) playerRef.current?.selectVariantTrack(track, true);
       },
     },
@@ -253,8 +261,52 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setIsDragging(false);
     }
   };
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl) return;
 
-  // 📌 진행도를 비디오에 반영하는 함수
+    const player = new shaka.Player(video);
+    playerRef.current = player;
+
+    const handleTimeUpdate = () => {
+      const currentTime = video.currentTime;
+      handleVideoProgress(currentTime);
+      setCurrentProgress(formatDuration(currentTime));
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+    };
+
+    player.load(info.episodeVideoInfo.videoSourceFileInfo.videoSourceUrl).then(() => {
+      console.log('✅ Shaka Player video loaded');
+
+      setVideoDuration(video.duration);
+      video.addEventListener('timeupdate', handleTimeUpdate);
+      video.addEventListener('ended', handleEnded);
+    });
+
+    return () => {
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('ended', handleEnded);
+      player.destroy();
+    };
+  }, [info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isPlaying) {
+      video.play().catch(error => console.error('🚨 Play Error:', error));
+    } else {
+      video.pause();
+    }
+  }, [isPlaying]);
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) video.muted = isMute;
+  }, [isMute]);
   const updateProgress = (e: MouseEvent | React.MouseEvent<HTMLDivElement>) => {
     if (!progressBarRef.current || videoDuration === 0) return;
 
@@ -262,12 +314,12 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     const offsetX = e.clientX - rect.left;
     let newProgress = (offsetX / rect.width) * videoDuration;
 
-    // 진행도 범위 제한 (0 ~ videoDuration)
     newProgress = Math.max(0, Math.min(videoDuration, newProgress));
 
     setVideoProgress(newProgress);
-    if (playerRef.current) {
-      playerRef.current.seekTo(newProgress, 'seconds'); // 비디오 위치 변경
+
+    if (videoRef.current) {
+      videoRef.current.currentTime = newProgress;
     }
   };
 
@@ -329,16 +381,34 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     setIsClicked(true);
     setTimeout(() => setIsClicked(false), 300);
   };
-  const [lastExecutedSecond, setLastExecutedSecond] = useState(0);
-  const handleVideoProgress = (playedSeconds: number) => {
-    // 10초마다 한 번만 실행하도록 체크
-    const roundedSeconds = Math.floor(playedSeconds);
-    if (roundedSeconds % 1 === 0 && lastExecutedSecond !== roundedSeconds) {
-      setLastExecutedSecond(roundedSeconds); // 마지막 실행 시간 업데이트
+  const lastExecutedSecondRef = useRef<number>(-1);
+  const handleRecordPlay = async () => {
+    if (!info) return;
+    try {
+      const recordPlayRequest: RecordPlayReq = {
+        episodeRecordPlayInfo: {
+          contentId: info.contentId,
+          episodeId: info.episodeId,
+          categoryType: info.categoryType,
+          playTimeSecond: Math.floor(videoProgress),
+        },
+      };
 
-      handleRecordPlay();
-      // 실행할 로직 추가
+      await sendRecordPlay(recordPlayRequest);
+      console.log('✅ RecordPlay 호출됨:', recordPlayRequest);
+    } catch (error) {
+      console.error('🚨 RecordPlay API 호출 오류:', error);
     }
+  };
+
+  const handleVideoProgress = (playedSeconds: number) => {
+    const roundedSeconds = Math.floor(playedSeconds);
+
+    if (lastExecutedSecondRef.current !== roundedSeconds) {
+      lastExecutedSecondRef.current = roundedSeconds; // 정확히 초마다 실행
+      handleRecordPlay();
+    }
+
     setVideoProgress(playedSeconds);
   };
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
@@ -381,16 +451,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     }
   };
 
-  // const sendShare = async () => {
-  //   const response = await sendFeedShare(info.id);
-  //   const {resultCode, resultMessage} = response;
-
-  //   if (resultCode === 0) {
-  //     console.log('공유 성공!');
-  //   } else {
-  //     console.log(`공유 실패: ${resultMessage}`);
-  //   }
-  // };
   const handleShare = async () => {
     //sendShare();
     const shareData = {
@@ -429,25 +489,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     }
   };
 
-  const formatTimeAgo = (time: string): string => {
-    const now = new Date();
-    const commentTime = new Date(time);
-    const diffInSeconds = Math.floor((now.getTime() - commentTime.getTime()) / 1000);
-
-    if (diffInSeconds < 60) return `${diffInSeconds}초 전`;
-    const diffInMinutes = Math.floor(diffInSeconds / 60);
-    if (diffInMinutes < 60) return `${diffInMinutes}분 전`;
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `${diffInHours}시간 전`;
-    const diffInDays = Math.floor(diffInHours / 24);
-    if (diffInDays < 7) return `${diffInDays}일 전`;
-    const diffInWeeks = Math.floor(diffInDays / 7);
-    if (diffInWeeks < 4) return `${diffInWeeks}주 전`;
-    const diffInMonths = Math.floor(diffInWeeks / 4);
-    if (diffInMonths < 12) return `${diffInMonths}달 전`;
-    const diffInYears = Math.floor(diffInMonths / 12);
-    return `${diffInYears}년 전`;
-  };
   const fetchSeasonEpisodesPopup = async () => {
     try {
       const requestPayload: GetSeasonEpisodesPopupReq = {
@@ -521,7 +562,14 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 </button>
 
                 <h1 className={styles.navTitle}>
-                  {formatText(getLocalizedText('contenthome001_label_001'), ['타이틀 필요'])}
+                  {info && episodeId ? (
+                    <>
+                      {formatText(getLocalizedText('contenthome001_label_001'), [info.episodeNo.toString()])}{' '}
+                      {info.title}
+                    </>
+                  ) : (
+                    <>{info?.title}</>
+                  )}
                 </h1>
               </div>
             </header>
@@ -537,17 +585,38 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               )}
 
               {info && info?.categoryType === ContentCategoryType.Video && (
-                <ShakaPlayerWrapper
-                  src={info.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl || ''}
-                  isMute={isMute}
-                  isPlaying={isPlaying}
-                  onClickPlayPause={handleClick}
-                  isVisible={isVisible}
-                  onProgress={handleVideoProgress}
-                  onDuration={setVideoDuration}
-                  playIcon={BoldPlay.src}
-                  pauseIcon={BoldPause.src}
-                />
+                <div style={{position: 'relative', width: '100%', height: '100%'}}>
+                  <video
+                    ref={videoRef}
+                    muted={isMute}
+                    loop={true}
+                    playsInline
+                    style={{
+                      width: '100%',
+                      height: 'calc(100% - 4px)',
+                      borderRadius: '8px',
+                      objectFit: 'contain',
+                    }}
+                    onClick={event => {}}
+                    autoPlay
+                  />
+
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      zIndex: 13,
+                    }}
+                  >
+                    <div
+                      className={`${styles.playCircleIcon} ${isVisible ? styles.fadeAndGrow : styles.fadeOutAndShrink}`}
+                    >
+                      <img src={isPlaying ? BoldPause.src : BoldPlay.src} onClick={event => handleClick(event)} />
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
 
