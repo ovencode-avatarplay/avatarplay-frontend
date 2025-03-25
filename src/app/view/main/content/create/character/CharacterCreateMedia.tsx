@@ -93,16 +93,22 @@ const CharacterCreateMedia: React.FC<Props> = ({
               promptValue={item.activationCondition}
               handlePromptChange={event => handlerPromptChange(event, index)}
               placeholder={getLocalizedText('Common', 'common_sample_057')}
-              style={{width: '100%'}}
+              style={{
+                boxSizing: 'content-box',
+                width: 'calc(100% - 24px)',
+                height: '73px',
+              }}
             />
             <div className={styles.mediaItemButtonArea}>
               <div className={styles.leftButtonGroup}>
                 <button className={styles.mediaItemButton} onClick={() => handleDelete(index)}>
                   <img className={styles.mediaButtonIcon} src={LineDelete.src} />
                 </button>
+                {/* 
+                0325 실장님 요청으로 Edit 버튼 삭제
                 <button className={styles.mediaItemButton} onClick={() => handleEdit(index)}>
                   <img className={styles.mediaButtonIcon} src={LineEdit.src} />
-                </button>
+                </button> */}
               </div>
 
               <div className={styles.rightButtonGroup}>

@@ -16,6 +16,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {formatCurrency} from '@/utils/util-1';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface CharacterImageSetProps {
   createFinishAction?: (imgUrl: string) => void;
@@ -43,6 +44,8 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
   const [isCentered, setIsCentered] = useState<boolean>(false);
 
   const [centerThreshold, setCenterThreshold] = useState(Math.round(window.innerWidth / 116));
+
+  const [selectAlertOpen, setSelectAlertOpen] = useState<boolean>(false);
 
   const dataStarInfo = useSelector((state: RootState) => state.starInfo);
   const starAmount = dataStarInfo.star;
@@ -124,39 +127,39 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
     },
   ];
 
-  const bottomButtons = [
-    {
-      label: 'Upscale',
-      icon: LineUpload.src,
-      clickEvent: () => {
-        console.log('Upscale');
-      },
-    },
-    {
-      label: 'Regenerate',
-      icon: LineScaleUp.src,
-      clickEvent: () => {
-        console.log('Regenerate');
-      },
-    },
-    {
-      label: 'Use',
-      icon: LineAIImage.src,
-      clickEvent: () => {
-        if (createFinishAction) {
-          createFinishAction(generatedImages[selectedGeneratedItems[0]]);
-        }
-        console.log('Use');
-      },
-    },
-    {
-      label: 'More',
-      icon: BoldMenuDots.src,
-      clickEvent: () => {
-        console.log('More');
-      },
-    },
-  ];
+  // const bottomButtons = [
+  //   {
+  //     label: 'Upscale',
+  //     icon: LineUpload.src,
+  //     clickEvent: () => {
+  //       console.log('Upscale');
+  //     },
+  //   },
+  //   {
+  //     label: 'Regenerate',
+  //     icon: LineScaleUp.src,
+  //     clickEvent: () => {
+  //       console.log('Regenerate');
+  //     },
+  //   },
+  //   {
+  //     label: 'Use',
+  //     icon: LineAIImage.src,
+  //     clickEvent: () => {
+  //       if (createFinishAction) {
+  //         createFinishAction(generatedImages[selectedGeneratedItems[0]]);
+  //       }
+  //       console.log('Use');
+  //     },
+  //   },
+  //   {
+  //     label: 'More',
+  //     icon: BoldMenuDots.src,
+  //     clickEvent: () => {
+  //       console.log('More');
+  //     },
+  //   },
+  // ];
 
   const handlePositivePromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newPrompt = event.target.value;
@@ -456,6 +459,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
               type="Primary"
               size="Medium"
               state="Normal"
+              isDisabled={selectedGeneratedItems.length == 0}
               onClick={() => {
                 if (createFinishAction) {
                   createFinishAction(generatedImages[selectedGeneratedItems[0]]);
