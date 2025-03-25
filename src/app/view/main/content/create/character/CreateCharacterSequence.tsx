@@ -39,6 +39,7 @@ interface Props {
   publishFinishAction?: () => void;
   createType?: CreateType;
   createFinishAction?: (imgUrl: string) => void;
+  onClickPreview?: (imgUrl: string) => void;
 }
 
 const Header = 'CreateCharacter';
@@ -51,6 +52,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
   publishFinishAction,
   createType = 'create',
   createFinishAction,
+  onClickPreview,
 }) => {
   //#region Types & Default Options
   interface CreateCharacterOption {
@@ -493,7 +495,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   label={option.label}
                   image={getStyleImgLoc(option.image)}
                   selected={selectedOptions.style === index}
-                  onClick={() => handleOptionSelect('style', index)}
+                  onSelectClick={() => handleOptionSelect('style', index)}
                 />
               ))}
             </div>
@@ -528,7 +530,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       label={race.label}
                       image={getImgLoc(race.image)}
                       selected={selectedOptions.race === index}
-                      onClick={() => handleOptionSelect('race', index)}
+                      onSelectClick={() => handleOptionSelect('race', index)}
                     />
                   </SwiperSlide>
                 ))}
@@ -563,7 +565,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     label={eyeColor.label}
                     image={getImgLoc(eyeColor.image)}
                     selected={selectedOptions.eyeColor === index}
-                    onClick={() => handleOptionSelect('eyeColor', index)}
+                    onSelectClick={() => handleOptionSelect('eyeColor', index)}
                   />
                 ))}
               </div>
@@ -611,7 +613,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       label={hairStyle.label}
                       image={getImgLoc(hairStyle.image)}
                       selected={selectedOptions.hairStyle === index}
-                      onClick={() => handleOptionSelect('hairStyle', index)}
+                      onSelectClick={() => handleOptionSelect('hairStyle', index)}
                     />
                   </SwiperSlide>
                 ))}
@@ -664,7 +666,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       label={style.label}
                       image={getImgLoc(style.image)}
                       selected={selectedOptions.bodyType === index}
-                      onClick={() => handleOptionSelect('bodyType', index)}
+                      onSelectClick={() => handleOptionSelect('bodyType', index)}
                     />
                   </SwiperSlide>
                 ))}
@@ -697,7 +699,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                           label={style.label}
                           image={getImgLoc(style.image)}
                           selected={selectedOptions.topSize === index}
-                          onClick={() => handleOptionSelect('topSize', index)}
+                          onSelectClick={() => handleOptionSelect('topSize', index)}
                         />
                       </SwiperSlide>
                     ))}
@@ -728,7 +730,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                           label={style.label}
                           image={getImgLoc(style.image)}
                           selected={selectedOptions.bottomSize === index}
-                          onClick={() => handleOptionSelect('bottomSize', index)}
+                          onSelectClick={() => handleOptionSelect('bottomSize', index)}
                         />
                       </SwiperSlide>
                     ))}
@@ -766,7 +768,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       label={style.label}
                       image={getImgLoc(style.image)}
                       selected={selectedOptions.clothing === index}
-                      onClick={() => handleOptionSelect('clothing', index)}
+                      onSelectClick={() => handleOptionSelect('clothing', index)}
                     />
                   </SwiperSlide>
                 ))}
@@ -857,7 +859,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                             )[0]
                           : option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label || ''
                       }
-                      onClick={() => {}}
+                      onSelectClick={() => {}}
                       image={
                         option.key !== 'hairColor' && option.key !== 'clothingColor'
                           ? option.key === 'style'
@@ -897,7 +899,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       label={null}
                       image={imgUrl}
                       selected={selectedOptions.result === index}
-                      onClick={() =>
+                      onSelectClick={() =>
                         selectedOptions.result === index
                           ? handleImageToggle(imgUrl, generatedOptions?.debugParameter ?? '')
                           : handleOptionSelect('result', index)

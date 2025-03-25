@@ -7,22 +7,26 @@ import getLocalizedText from '@/utils/getLocalizedText';
 interface ImageButtonProps {
   sizeType: 'small' | 'middle' | 'large' | 'summary';
   selectType?: 'one' | 'multiple';
+  selectButtonType?: 'image' | 'button';
   label: string | null;
   image: string;
   color?: string;
   selected: boolean;
-  onClick: () => void;
+  onSelectClick: () => void;
+  onImageClick?: () => void;
   isImageLoading?: boolean;
 }
 
 const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({
   sizeType,
   selectType = 'one',
+  selectButtonType = 'image',
   label,
   image,
   color,
   selected,
-  onClick,
+  onSelectClick,
+  onImageClick,
   isImageLoading = false,
 }) => {
   const [localImageLoading, setLocalImageLoading] = useState<boolean>(isImageLoading); // 로컬 이미지 로딩 상태 관리
@@ -40,7 +44,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({
   };
   return (
     <button
-      onClick={onClick}
+      onClick={selectButtonType === 'image' ? onSelectClick : onImageClick}
       className={`${styles.imageButton} ${selected ? styles.selected : ''}`} // sizeType에 맞는 클래스를 동적으로 추가
     >
       <div
@@ -62,16 +66,47 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({
         )}
       </div>
       {label !== null && (
-        <div className={`${styles.label} ${selected ? styles.selected : ''}`}>
-          <span>{label}</span>
+        <div
+          className={`${styles.label} ${selected ? styles.selected : ''}`}
+          onClick={e => {
+            e.stopPropagation();
+            onSelectClick();
+          }}
+        >
+          <span>{getLocalizedText('Common', label)}</span>
         </div>
       )}
-      {selected && selectType !== 'multiple' && (
-        <img className={`${styles.selectedIcon} ${styles[sizeType]}`} src={LineCheck.src} />
+      {selected && selectType !== 'multiple' && selectButtonType === 'image' ? (
+        <img
+          className={`${styles.selectedIcon} ${styles[sizeType]}`}
+          src={LineCheck.src}
+          onClick={e => {
+            e.stopPropagation();
+            onSelectClick();
+          }}
+        />
+      ) : selectButtonType === 'button' ? (
+        <img
+          className={`${styles.multiSelIcon}`}
+          src={selected ? BoldRadioButtonSelected.src : BoldRadioButton.src}
+          onClick={e => {
+            e.stopPropagation();
+            onSelectClick();
+          }}
+        />
+      ) : (
+        ''
       )}
 
       {selectType === 'multiple' && !isImageLoading && (
-        <img className={`${styles.multiSelIcon}`} src={selected ? BoldRadioButtonSelected.src : BoldRadioButton.src} />
+        <img
+          className={`${styles.multiSelIcon}`}
+          src={selected ? BoldRadioButtonSelected.src : BoldRadioButton.src}
+          onClick={e => {
+            e.stopPropagation();
+            onSelectClick();
+          }}
+        />
       )}
 
       {/* 이미지 로딩 확인을 위한 숨겨진 이미지 */}

@@ -149,9 +149,6 @@ const SearchBoard: React.FC = () => {
   const [search, setSearch] = useState<searchType>('All');
   const [adultToggleOn, setAdultToggleOn] = useState(false);
   const [searchValue, setSearchValue] = useState<string>('');
-  const [searchSort, setSearchSort] = useState<'Newest' | 'Most Popular' | 'Weekly Popular' | 'Monthly Popular'>(
-    'Newest',
-  );
 
   // Filter State
   const [positiveFilters, setPositiveFilters] = useState<FilterDataItem[]>([]);
@@ -180,7 +177,7 @@ const SearchBoard: React.FC = () => {
     {
       name: getLocalizedText('common_sort_newest'),
       onClick: () => {
-        setSearchSort('Newest');
+        1;
         setSortDropDownOpen(false);
         setSelectedSort(0);
       },
@@ -188,7 +185,7 @@ const SearchBoard: React.FC = () => {
     {
       name: getLocalizedText('common_sort_mostpopular'),
       onClick: () => {
-        setSearchSort('Most Popular');
+        1;
         setSortDropDownOpen(false);
         setSelectedSort(1);
       },
@@ -196,7 +193,7 @@ const SearchBoard: React.FC = () => {
     {
       name: getLocalizedText('common_sort_weeklypopular'),
       onClick: () => {
-        setSearchSort('Weekly Popular');
+        1;
         setSortDropDownOpen(false);
         setSelectedSort(2);
       },
@@ -204,7 +201,6 @@ const SearchBoard: React.FC = () => {
     {
       name: getLocalizedText('common_sort_monthlypopular'),
       onClick: () => {
-        setSearchSort('Monthly Popular');
         setSortDropDownOpen(false);
         setSelectedSort(3);
       },
@@ -560,7 +556,7 @@ const SearchBoard: React.FC = () => {
                 </button>
               </div>
               <button className={styles.sortButton} onClick={() => setSortDropDownOpen(true)}>
-                <div>{searchSort}</div>
+                <div>{getLocalizedText(dropDownMenuItems[selectedSort].name)}</div>
                 <img className={styles.buttonIcon} src={BoldArrowDown.src} />
                 {sortDropDownOpen && (
                   <DropDownMenu
