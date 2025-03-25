@@ -411,6 +411,8 @@ export interface ContentPlayInfo {
   episodeVideoInfo?: EpisodeVideoInfo;
   episodeWebtoonInfo?: EpisodeWebtoonInfo;
   isMyEpisode: boolean;
+  episodeNo: number;
+  title: string;
 }
 
 export interface CommonMediaViewInfo {
