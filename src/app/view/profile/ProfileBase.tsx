@@ -2514,6 +2514,7 @@ const TabContentComponent = ({
       </>
     );
   }
+
   if (
     (isPD && tabIndex == eTabPDType.Feed) ||
     (isCharacter && tabIndex == eTabCharacterType.Feed) ||
@@ -2647,6 +2648,25 @@ const TabContentComponent = ({
 
   if ((isPD && tabIndex == eTabPDType.Info) || (isOtherPD && tabIndex == eTabPDOtherType.Info)) {
     const pdInfo = profileTabInfo?.[tabIndex]?.dataResPdInfo;
+
+    const isAllEmpty =
+      !pdInfo?.introduce &&
+      pdInfo?.interests.length == 0 &&
+      pdInfo?.skills.length == 0 &&
+      !pdInfo?.personalHistory &&
+      !pdInfo?.honorAwards &&
+      !pdInfo?.url &&
+      pdInfo?.pdPortfolioInfoList.length == 0;
+
+    if (isAllEmpty) {
+      return (
+        <div className={styles.emptyWrap}>
+          <img src="/ui/profile/image_empty.svg" alt="" />
+          <div className={styles.text}>{formatText(getLocalizedText('Common', 'common_sample_095'))}</div>
+        </div>
+      );
+    }
+
     return (
       <>
         <section className={styles.pdInfoSection}>
