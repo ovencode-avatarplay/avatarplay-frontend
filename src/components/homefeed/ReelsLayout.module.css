@@ -34,9 +34,9 @@
 .reelsContainer {
   width: 100%;
   height: calc(100% - 58px - 64px); /* ✅ 자동 높이 */
-  margin-top: 58px;
-  margin-bottom: 64px;
-  
+  padding-top: 58px;
+  padding-bottom: 64px;
+  box-sizing: content-box;
   background-color: black;
 }
 
