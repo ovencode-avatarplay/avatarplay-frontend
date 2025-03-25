@@ -34,6 +34,21 @@
   max-height: 116px;
 }
 
+.imageBackGround.summary
+{
+  width: calc(var(--second-width) * 0.27 - 3.2px - 10px);
+  min-width: 116px;
+  height: calc(var(--second-width) * 0.27 - 3.2px - 10px);
+  min-height: 116px;
+}
+
+@media screen and (max-width: 431px) {
+  .imageBackGround.summary {
+    width: 116px;
+    height: 116px;
+  }
+}
+
 .imageBackGround.small
 {
   width: 100px;

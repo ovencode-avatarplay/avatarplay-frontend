@@ -325,7 +325,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
               <CharacterCreateImageButton
                 key={option.label}
                 sizeType="small"
-                label={getLocalizedText(Common, option.label)}
+                label={option.label}
                 image={option.image}
                 selected={selectedLora === index}
                 onClick={() => handleSelectedLora(index)}
