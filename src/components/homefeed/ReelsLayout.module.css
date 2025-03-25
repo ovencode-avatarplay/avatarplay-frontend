@@ -33,24 +33,27 @@
 
 .reelsContainer {
   width: 100%;
-  height: auto; /* ✅ 자동 높이 */
+  height: calc(100% - 58px - 64px); /* ✅ 자동 높이 */
   margin-top: 58px;
+  margin-bottom: 64px;
   
-  padding-bottom: 48px;
   background-color: black;
 }
 
 .reelsWrapper {
-  display: flex;
   flex-direction: column;
   width: 100%;
-  height: auto;
+  height: 100%;
+  -webkit-overflow-scrolling: touch; /* ✅ iOS에서 스크롤을 부드럽게 */
 }
 
 .reelSlide {
   width: 100%;
-  height: calc(100vh - 58px - 48px);
+  height: 100%;
+  -webkit-overflow-scrolling: touch; /* ✅ iOS에서 스크롤을 부드럽게 */
   scroll-snap-align: start; /* ✅ 스냅 정렬 유지 */
+  width: 100%;  
+  flex-shrink: 0;  
   display: flex;
   justify-content: center;
   align-items: center;

@@ -155,7 +155,7 @@
         color: var(--Black, #000);
         text-align: center;
         font-family: Lato;
-        font-size: 13px;
+        font-size: 14px;
         font-style: normal;
         font-weight: 400;
         line-height: 155%;
@@ -979,11 +979,14 @@
 
 .drawerMultipleTags {
   .refreshWrap {
-    padding: 0 20px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 5px;
+    .btnWrap {
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+    }
+
 
     cursor: pointer;
 

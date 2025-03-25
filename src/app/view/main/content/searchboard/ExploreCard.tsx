@@ -22,7 +22,7 @@ const ExploreCard: React.FC<Props> = ({explore, index, classType}) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const RankCounter = 3;
+  const RankCounter = 10;
 
   const handleOpenDrawer = async () => {
     if (explore.exploreItemType === 0) {

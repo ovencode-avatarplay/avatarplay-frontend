@@ -16,6 +16,7 @@ import CustomInput from '@/components/layout/shared/CustomInput';
 import Flag from 'react-world-flags';
 import {FlagNation, getFlagCode, LanguageType, LanguageName} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface FullScreenModalProps {
   isOpen: boolean;
@@ -76,7 +77,7 @@ const ModalLanguageSelect: React.FC<FullScreenModalProps> = ({isOpen, onClose}) 
         <div className={styles.titleArea}>
           <div className={styles.leftPrevArea} onClick={() => onClose()}>
             <img className={styles.leftPrevButton} src={BoldArrowLeft.src} alt="Prev" />
-            <div className={styles.titleText}>Select Language</div>
+            <div className={styles.titleText}>{getLocalizedText('shared032_title_001')}</div>
           </div>
         </div>
 
@@ -86,7 +87,7 @@ const ModalLanguageSelect: React.FC<FullScreenModalProps> = ({isOpen, onClose}) 
             textType="InputOnly"
             state="Default"
             value={inputValue}
-            placeholder={''}
+            placeholder={getLocalizedText('common_sample_078')}
             onChange={handleInputChange}
             customClassName={[styles.inputField]}
             iconLeftImage={LineSearch.src}
@@ -127,7 +128,7 @@ const ModalLanguageSelect: React.FC<FullScreenModalProps> = ({isOpen, onClose}) 
           }}
           customClassName={[styles.conformButton]}
         >
-          Confrom
+          {getLocalizedText('common_button_confirm')}
         </CustomButton>
       </div>
     </Dialog>

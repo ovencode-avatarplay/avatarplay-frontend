@@ -274,6 +274,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       setValue(`postCountry.${i}`, value, {shouldValidate: false});
     }
     setValue(`postCountry`, data.dataCountry.tagList, {shouldValidate: false});
+    const NUMBER_COUNTRY = 9; //TODO 국가 변경시 갯수 변경 필요, oh
+    data.dataCountry.isAll = data.dataCountry.tagList.length == NUMBER_COUNTRY; // 9개국어 선택시 isAll;
 
     const memberList: {isActive: boolean; isOriginal: boolean; profileSimpleInfo: ProfileSimpleInfo}[] =
       res.data?.channelInfo.memberProfileIdList?.map(v => ({
@@ -1246,8 +1248,10 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
             // onChange(dataReset);
           }}
         >
-          <div className={styles.labelRefresh}>{getLocalizedText('common_button_refresh')}</div>
-          <img src={LineRegenerate.src} alt="" />
+          <div className={styles.btnWrap}>
+            <div className={styles.labelRefresh}>{getLocalizedText('common_button_refresh')}</div>
+            <img src={LineRegenerate.src} alt="" />
+          </div>
         </div>
         <div
           className={styles.tagWrap}

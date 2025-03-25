@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;  
   background: #000000; 
-  height: calc(100% - 10px) ;
+  height: 100%;
 }
 
 .mySwiper
@@ -80,9 +80,14 @@
 .Image {
   width: 100%;
   height: 100%;    
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .Image img{
   object-fit: contain; 
+  width:100%;
 }
 
 .dim {

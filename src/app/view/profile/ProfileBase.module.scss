@@ -348,7 +348,7 @@
       margin-top: 5px;
       color: var(--Black, #000);
       font-family: Lato;
-      font-size: 14px;
+      font-size: 16px;
       font-style: normal;
       font-weight: 400;
       line-height: 130%;
@@ -630,7 +630,7 @@
           margin-top: 5px;
           color: var(--Black, #000);
           font-family: Lato;
-          font-size: 14px;
+          font-size: 16px;
           font-style: normal;
           font-weight: 500;
           line-height: 155%;
@@ -759,13 +759,14 @@ ul.itemWrap {
 }
 
 li.itemTab {
+  position: relative;
   box-sizing: content-box;
   width: 100%;
   height: calc(100% - 52px);
+  min-height: calc(100% - 52px);
   padding-bottom: 52px;
 
   cursor: pointer;
-  position: relative;
   aspect-ratio: 1 / 1;
 
   .bgGradientWrap {
@@ -834,7 +835,7 @@ li.itemTab {
 
     color: var(--base-white, #FFF);
     font-family: Lato;
-    font-size: 13px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 500;
     line-height: 12px;
@@ -1175,7 +1176,7 @@ li.itemTab {
       // max-height: 516px;
       height: 100%;
       width: 100%;
-      object-fit: contain;
+      object-fit: cover;
       background: white;
     }
 
@@ -1528,12 +1529,15 @@ li.itemTab {
       margin-top: 10px;
       color: var(--Black, #000);
       font-family: Lato;
-      font-size: 13px;
+      font-size: 16px;
       font-style: normal;
       font-weight: 400;
       line-height: 130%;
       /* 16.9px */
       letter-spacing: -0.26px;
+
+      white-space: pre-line;
+      word-break: break-word;
     }
   }
 }
