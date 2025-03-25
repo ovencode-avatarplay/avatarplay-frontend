@@ -24,11 +24,12 @@ import {BoldArrowDown, LineArrowRight} from '@ui/Icons';
 import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import ExploreCard from './ExploreCard';
 import {FilterDataItem} from '@/components/search/FilterSelector';
-import {getCurrentLanguage} from '@/utils/UrlMove';
+import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {PaginationRequest} from '@/app/NetWork/ProfileNetwork';
+import {useRouter} from 'next/navigation';
 
 export type searchType = 'All' | 'Story' | 'Character' | 'Content';
 
@@ -38,6 +39,7 @@ const SearchBoard: React.FC = () => {
   });
   const [exploreLoading, setExploreLoading] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
+  const router = useRouter();
 
   // Featured
   const [bannerList, setBannerList] = useState<BannerUrlList[] | null>(null);
@@ -220,6 +222,10 @@ const SearchBoard: React.FC = () => {
     setCharacterOffset(0);
     setContentOffset(0);
     setRequestFetch(true);
+  };
+
+  const handleCreateClick = () => {
+    pushLocalizedRoute('/create/character', router);
   };
 
   // Func
@@ -572,16 +578,21 @@ const SearchBoard: React.FC = () => {
                 {/* <h2 className={styles.emptyResult}> Result : 0</h2> */}
                 <section className={styles.emptyContainer}>
                   <EmptyState stateText={getLocalizedText('explore006_desc_002')} />
-                  <div className={styles.emptyCreateAlert}>{getLocalizedText('explore006_desc_003')}</div>
-                  <CustomButton
-                    size="Medium"
-                    state="IconRight"
-                    type="Primary"
-                    icon={LineArrowRight.src}
-                    customClassName={[styles.emptyCreateButton]}
-                  >
-                    {getLocalizedText('common_button_createacharacter')}
-                  </CustomButton>
+                  {search === 'Character' && (
+                    <>
+                      <div className={styles.emptyCreateAlert}>{getLocalizedText('explore006_desc_003')}</div>
+                      <CustomButton
+                        size="Medium"
+                        state="IconRight"
+                        type="Primary"
+                        icon={LineArrowRight.src}
+                        customClassName={[styles.emptyCreateButton]}
+                        onClick={handleCreateClick}
+                      >
+                        {getLocalizedText('common_button_createacharacter')}
+                      </CustomButton>
+                    </>
+                  )}
                 </section>
               </>
             ) : (
