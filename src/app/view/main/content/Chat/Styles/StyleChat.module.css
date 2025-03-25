@@ -151,7 +151,7 @@
   z-index: 5; 
 }
 .messageBubbleArea.blur{
-  overflow-y: unset;
+  /* overflow-y: unset; */
 }
 
 .messageBubbleArea::-webkit-scrollbar {

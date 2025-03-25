@@ -57,7 +57,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
       model: 'XB Pro v1',
     },
     {
-      label: 'Anime',
+      label: 'Anime XL',
       image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/Animagine+XL/.jpg',
       model: 'AAM XL',
     },
