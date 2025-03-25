@@ -62,14 +62,8 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const [selectedTab, setSelectedTab] = useState<RecommendState>(recommendState);
   const router = useRouter();
   const dispatch = useDispatch();
-  const [data, setData] = useState({
-    isUp: true,
-    scrollY: 0,
-    isTouch: false,
-  });
 
   const isSpecificProfile = !!profileUrlLinkKey;
-  const maxHeightContent = useRef<number>(9999);
 
   const Header = 'Home';
   const Common = 'Common';
@@ -137,10 +131,15 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       setInfo(mergedFeeds.slice(0, indexContent + 2)); // 초기 렌더링용 첫 2개
       setCurrentSlideIndex(indexContent);
 
+      const wrapper = reelsWrapperRef.current;
+      if (!wrapper) {
+        return;
+      }
+
       setTimeout(() => {
-        const sectionHeight = window.innerHeight - 58 - 64; //58 : header , 48 : footer
+        const sectionHeight = wrapper.clientHeight; //58 : header , 48 : footer
         const scrollY = sectionHeight * indexContent;
-        window.scrollTo(0, scrollY);
+        wrapper.scrollTo(0, scrollY);
         handleScroll();
       }, 100);
     }
@@ -173,14 +172,6 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     fetchRecommendFeed();
   }, [initialFeed, getEmailFromJwt(), selectedTab]);
 
-  useLayoutEffect(() => {
-    maxHeightContent.current = Math.min(maxHeightContent.current, containerRef.current?.clientHeight || 9999);
-    const gapHeight = (containerRef.current?.clientHeight || 0) - maxHeightContent.current;
-    let paddingTop = gapHeight > 0 ? gapHeight : 0;
-    // document.documentElement.style.scrollPaddingBottom = Math.max(-gapHeight).toString() + 'px';
-    // document.documentElement.style.scrollPaddingBottom = (-gapHeight).toString() + 'px';
-  }, [containerRef.current?.clientHeight]);
-
   useEffect(() => {
     console.log('info', info);
   }, [info]);
@@ -199,26 +190,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
     if (!container || !wrapper) return;
 
-    maxHeightContent.current = Math.min(maxHeightContent.current, container.clientHeight);
-    const gapHeight = container.clientHeight - maxHeightContent.current;
-    const paddingTop = gapHeight > 0 ? gapHeight : 0;
-    // document.documentElement.style.scrollPaddingBottom = (-gapHeight).toString() + 'px';
-    console.log('gapHeight', gapHeight);
-
-    setData({...data});
-
     const scrollY = wrapper.scrollTop;
-
-    if (data.isTouch) {
-      if (data.scrollY - scrollY < 0) {
-        data.isUp = false;
-      } else {
-        data.isUp = true;
-      }
-      console.log('isUp : ', data.isUp);
-    }
-    data.scrollY = scrollY;
-
     const slides = Array.from(wrapper.children || []);
     let cumulativeHeight = 0;
     let calculatedIndex = 0;
@@ -374,25 +346,13 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   //   };
   // }, [isProfile]);
 
-  const handleTouchStart = () => {
-    data.isTouch = true;
-  };
-
-  const handleTouchEnd = () => {
-    data.isTouch = false;
-  };
-
   useEffect(() => {
     if (!reelsWrapperRef.current) return;
     reelsWrapperRef.current.addEventListener('scroll', handleScroll);
-    reelsWrapperRef.current.addEventListener('touchstart', handleTouchStart);
-    reelsWrapperRef.current.addEventListener('touchend', handleTouchEnd);
     return () => {
       if (!reelsWrapperRef.current) return;
 
       reelsWrapperRef.current.removeEventListener('scroll', handleScroll);
-      reelsWrapperRef.current.removeEventListener('touchstart', handleTouchStart);
-      reelsWrapperRef.current.removeEventListener('touchend', handleTouchEnd);
     };
   }, [allFeeds, currentSlideIndex]);
   React.useEffect(() => {
@@ -439,27 +399,8 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       )}
       <div ref={reelsWrapperRef} className={styles.reelsWrapper}>
         {info.map((item, index) => {
-          const gapHeight = (containerRef.current?.clientHeight || 0) - maxHeightContent.current;
-          let paddingTop = gapHeight > 0 ? gapHeight : 0;
-          console.log('paddingTop : ', paddingTop);
-          // const isDown = !data.isUp;
-          // paddingTop = isAddPadding ? paddingTop : 0;
-
-          // paddingTop = !data.isUp ? paddingTop : 0;
-          // paddingTop = isTouchDown ? downPadding : paddingTop;
-          const maxHeight = index >= currentSlideIndex ? 9999 : maxHeightContent.current;
-          paddingTop = index >= currentSlideIndex ? 0 : paddingTop;
           return (
-            <div
-              key={index}
-              className={styles.reelSlide}
-              style={
-                {
-                  // maxHeight: maxHeight + 'px',
-                  // paddingTop: paddingTop.toString() + 'px',
-                }
-              }
-            >
+            <div key={index} className={styles.reelSlide}>
               <ReelsContent
                 item={item}
                 isActive={index === currentSlideIndex}
@@ -496,100 +437,3 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 };
 
 export default ReelsLayout;
-
-// function useResponsiveBodyHeight(debounceDelay = 0, snapDelay = 200) {
-//   const isInteracting = useRef(false);
-//   const prevScrollY = useRef(0);
-//   const scrollDirection = useRef<'up' | 'down' | null>(null);
-
-//   useEffect(() => {
-//     const html = document.documentElement;
-
-//     let debounceTimeout: NodeJS.Timeout;
-//     let snapTimeout: NodeJS.Timeout;
-
-//     const setVH = (value: 'vh' | 'dvh') => {
-//       // html.style.height = `100${value}`;
-//     };
-
-//     const setScrollSnap = (value: 'y mandatory' | 'none') => {
-//       // html.style.scrollSnapType = value;
-//     };
-
-//     const onPressStart = () => {
-//       isInteracting.current = true;
-//       clearTimeout(debounceTimeout);
-//       clearTimeout(snapTimeout);
-
-//       setVH('vh');
-//       setScrollSnap('none');
-//     };
-
-//     const onPressEnd = () => {
-//       isInteracting.current = false;
-//       clearTimeout(debounceTimeout);
-//       clearTimeout(snapTimeout);
-
-//       setVH('dvh');
-//       snapTimeout = setTimeout(() => {
-//         setScrollSnap('y mandatory');
-//       }, snapDelay);
-//     };
-
-//     const onInteraction = () => {
-//       const currentScrollY = window.scrollY;
-
-//       if (currentScrollY > prevScrollY.current) {
-//         scrollDirection.current = 'down';
-//       } else if (currentScrollY < prevScrollY.current) {
-//         scrollDirection.current = 'up';
-//       } else {
-//         scrollDirection.current = null;
-//       }
-
-//       prevScrollY.current = currentScrollY;
-
-//       if (!isInteracting.current) {
-//         setVH('vh');
-//         setScrollSnap('none');
-//         resetDebounce();
-//       }
-//     };
-
-//     const resetDebounce = () => {
-//       clearTimeout(debounceTimeout);
-//       clearTimeout(snapTimeout);
-
-//       debounceTimeout = setTimeout(() => {
-//         setVH('dvh');
-//         snapTimeout = setTimeout(() => {
-//           setScrollSnap('y mandatory');
-//         }, snapDelay);
-//       }, debounceDelay);
-//     };
-
-//     // ✅ 이벤트 등록
-//     window.addEventListener('mousedown', onPressStart);
-//     window.addEventListener('touchstart', onPressStart, {passive: true});
-//     window.addEventListener('mouseup', onPressEnd);
-//     window.addEventListener('touchend', onPressEnd, {passive: true});
-//     window.addEventListener('scroll', onInteraction, {passive: true});
-//     // window.addEventListener('resize', onInteraction);
-
-//     return () => {
-//       window.removeEventListener('mousedown', onPressStart);
-//       window.removeEventListener('touchstart', onPressStart);
-//       window.removeEventListener('mouseup', onPressEnd);
-//       window.removeEventListener('touchend', onPressEnd);
-//       window.removeEventListener('scroll', onInteraction);
-//       // window.removeEventListener('resize', onInteraction);
-//       clearTimeout(debounceTimeout);
-//       clearTimeout(snapTimeout);
-//     };
-//   }, [debounceDelay, snapDelay]);
-
-//   return {
-//     isInteracting,
-//     scrollDirection, // ⬅️ 현재 스크롤 방향: 'up' | 'down' | null
-//   };
-// }
