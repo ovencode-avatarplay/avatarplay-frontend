@@ -57,6 +57,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 슬라이드 인덱스
   const [isMute, setIsMute] = useState(true); // 현재 슬라이드 인덱스
   const containerRef = useRef<HTMLDivElement>(null);
+  const reelsWrapperRef = useRef<HTMLDivElement>(null);
   const [isProfile, setIsProfile] = useState(false); // 현재 슬라이드 인덱스
   const [selectedTab, setSelectedTab] = useState<RecommendState>(recommendState);
   const router = useRouter();
@@ -189,7 +190,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       if (currentPath === basePath && info.length > 0) {
         const firstFeed = info[0];
         const newUrl = `${basePath}/${firstFeed.urlLinkKey}`;
-        // window.history.replaceState(null, '', newUrl); // 주소창만 변경 (새로고침 없음)
+        window.history.replaceState(null, '', newUrl); // 주소창만 변경 (새로고침 없음)
       }
     }
   }, [info]);
@@ -203,15 +204,21 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     }
   };
   const handleScroll = () => {
-    maxHeightContent.current = Math.min(maxHeightContent.current, containerRef.current?.clientHeight || 9999);
-    const gapHeight = (containerRef.current?.clientHeight || 0) - maxHeightContent.current;
-    let paddingTop = gapHeight > 0 ? gapHeight : 0;
+    const container = containerRef.current;
+    const wrapper = reelsWrapperRef.current;
+
+    if (!container || !wrapper) return;
+
+    maxHeightContent.current = Math.min(maxHeightContent.current, container.clientHeight);
+    const gapHeight = container.clientHeight - maxHeightContent.current;
+    const paddingTop = gapHeight > 0 ? gapHeight : 0;
     // document.documentElement.style.scrollPaddingBottom = (-gapHeight).toString() + 'px';
     console.log('gapHeight', gapHeight);
 
     setData({...data});
 
-    const scrollY = window.scrollY || window.pageYOffset;
+    const scrollY = wrapper.scrollTop;
+
     if (data.isTouch) {
       if (data.scrollY - scrollY < 0) {
         data.isUp = false;
@@ -222,23 +229,22 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     }
     data.scrollY = scrollY;
 
-    const slides = document.querySelectorAll(`.${styles.reelSlide}`);
-    const scrollPosition = window.scrollY;
+    const slides = Array.from(wrapper.children || []);
     let cumulativeHeight = 0;
     let calculatedIndex = 0;
 
     for (let i = 0; i < slides.length; i++) {
-      const slide = slides[i] as HTMLElement; // 👈 명시적 캐스팅 추가
+      const slide = slides[i] as HTMLElement;
       cumulativeHeight += slide.offsetHeight;
 
-      if (scrollPosition + window.innerHeight / 2 < cumulativeHeight) {
+      if (scrollY + wrapper.clientHeight / 2 < cumulativeHeight) {
         calculatedIndex = i;
         break;
       }
     }
 
     console.log('index', calculatedIndex, slides.length);
-    // 인덱스 급격한 점프 방지 로직
+
     setCurrentSlideIndex(prevIndex => {
       if (calculatedIndex > prevIndex + 1) {
         return prevIndex + 1;
@@ -264,7 +270,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       urlUpdateTimeoutRef.current = setTimeout(() => {
         const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
         if (window.location.pathname !== newUrl) {
-          // window.history.pushState(null, '', newUrl);
+          window.history.pushState(null, '', newUrl);
         }
 
         viewFeed(currentItem.id);
@@ -366,22 +372,22 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     console.log('Updated allFeeds:', allFeeds);
   }, [allFeeds]);
 
-  useEffect(() => {
-    if (isProfile) {
-      document.body.style.overflowY = 'hidden'; // 스냅 비활성화
-      document.body.style.overflowX = 'hidden';
-    } else {
-      document.body.style.overflowY = 'scroll'; // 스냅 활성화
-      document.body.style.overflowX = 'hidden';
-    }
+  // useEffect(() => {
+  //   if (isProfile) {
+  //     document.body.style.overflowY = 'hidden'; // 스냅 비활성화
+  //     document.body.style.overflowX = 'hidden';
+  //   } else {
+  //     document.body.style.overflowY = 'scroll'; // 스냅 활성화
+  //     document.body.style.overflowX = 'hidden';
+  //   }
 
-    return () => {
-      // 💡 cleanup: 기본 상태로 복구
-      // document.body.style.overflowY = 'scroll';
-      // document.body.style.overflowX = 'hidden';
-      document.body.style.removeProperty('overflow');
-    };
-  }, [isProfile]);
+  //   return () => {
+  //     // 💡 cleanup: 기본 상태로 복구
+  //     // document.body.style.overflowY = 'scroll';
+  //     // document.body.style.overflowX = 'hidden';
+  //     document.body.style.removeProperty('overflow');
+  //   };
+  // }, [isProfile]);
 
   const handleTouchStart = () => {
     data.isTouch = true;
@@ -392,10 +398,17 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchend', handleTouchEnd);
-    return () => window.removeEventListener('scroll', handleScroll);
+    if (!reelsWrapperRef.current) return;
+    reelsWrapperRef.current.addEventListener('scroll', handleScroll);
+    reelsWrapperRef.current.addEventListener('touchstart', handleTouchStart);
+    reelsWrapperRef.current.addEventListener('touchend', handleTouchEnd);
+    return () => {
+      if (!reelsWrapperRef.current) return;
+
+      reelsWrapperRef.current.removeEventListener('scroll', handleScroll);
+      reelsWrapperRef.current.removeEventListener('touchstart', handleTouchStart);
+      reelsWrapperRef.current.removeEventListener('touchend', handleTouchEnd);
+    };
   }, [allFeeds, currentSlideIndex]);
   React.useEffect(() => {
     console.log(isMute);
@@ -439,7 +452,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
           </div>
         </>
       )}
-      <div className={styles.reelsWrapper}>
+      <div ref={reelsWrapperRef} className={styles.reelsWrapper}>
         {info.map((item, index) => {
           const gapHeight = (containerRef.current?.clientHeight || 0) - maxHeightContent.current;
           let paddingTop = gapHeight > 0 ? gapHeight : 0;
@@ -449,15 +462,18 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
           // paddingTop = !data.isUp ? paddingTop : 0;
           // paddingTop = isTouchDown ? downPadding : paddingTop;
-
+          const maxHeight = index >= currentSlideIndex ? 9999 : maxHeightContent.current;
+          paddingTop = index >= currentSlideIndex ? 0 : paddingTop;
           return (
             <div
               key={index}
               className={styles.reelSlide}
-              style={{
-                maxHeight: maxHeightContent.current + 'px',
-                paddingTop: paddingTop.toString() + 'px',
-              }}
+              style={
+                {
+                  // maxHeight: maxHeight + 'px',
+                  // paddingTop: paddingTop.toString() + 'px',
+                }
+              }
             >
               <ReelsContent
                 item={item}

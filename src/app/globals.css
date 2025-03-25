@@ -190,12 +190,11 @@ html{
   /* scroll-padding-bottom: 64px;   */
 
   /* scroll-behavior: smooth; */
-  scroll-snap-type: y mandatory;
+  /* scroll-snap-type: y mandatory;
   scroll-snap-stop: always;
-  /* scroll-padding-top: 58px; */
   scroll-padding-bottom: 64px;
 
-  -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch; */
 }
 
 body.hidescroll{

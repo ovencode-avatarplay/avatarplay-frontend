@@ -41,11 +41,15 @@
 }
 
 .reelsWrapper {
+  overflow-y:auto;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  -webkit-overflow-scrolling: touch; /* ✅ iOS에서 스크롤을 부드럽게 */
 
+  /* scroll-behavior: smooth; */
+  scroll-snap-type: y mandatory;
+  scroll-snap-stop: always;
+  /* scroll-padding-bottom: 64px; */
 
 }
 
