@@ -1248,8 +1248,10 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
             // onChange(dataReset);
           }}
         >
-          <div className={styles.labelRefresh}>{getLocalizedText('common_button_refresh')}</div>
-          <img src={LineRegenerate.src} alt="" />
+          <div className={styles.btnWrap}>
+            <div className={styles.labelRefresh}>{getLocalizedText('common_button_refresh')}</div>
+            <img src={LineRegenerate.src} alt="" />
+          </div>
         </div>
         <div
           className={styles.tagWrap}
