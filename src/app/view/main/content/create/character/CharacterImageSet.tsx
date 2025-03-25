@@ -52,11 +52,6 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
 
   const loraOption = [
     {
-      label: 't3',
-      image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/t3/.jpg',
-      model: 't3',
-    },
-    {
       label: 'XBrush Pro',
       image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/Junggernaut/.jpg',
       model: 'XB Pro v1',
