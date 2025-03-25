@@ -87,7 +87,7 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
     <CustomDrawer
       open={isOpen}
       onClose={onClose}
-      title="Post Country"
+      title={getLocalizedText('common_button_submit')}
       contentStyle={{padding: '0px', marginTop: '20px'}}
     >
       <div className={styles.searchArea}>
@@ -100,24 +100,24 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
             shapeType="square"
             checked={isAll}
             onToggle={handleToggleAll}
-            label="All"
+            label={getLocalizedText('shared017_label_002')}
             containerStyle={{marginTop: '12px'}}
           />
         </div>
         <div className={styles.settingArea}>
           <div className={styles.selectableCountryArea}>
             <ul className={styles.selectableCountryList}>
-              <span className={styles.listTitle}>Select country</span>
+              <span className={styles.listTitle}>{getLocalizedText('shared017_label_003')}</span>
               {filteredSelectableCountries.length > 0 ? (
                 filteredSelectableCountries.map(item => renderSelectCountryItem(item))
               ) : (
-                <li className={styles.noResult}>No matching results</li>
+                <li className={styles.noResult}>{getLocalizedText('TODO Localize : No matching results')}</li>
               )}
             </ul>
           </div>
           <div className={styles.postCountryArea}>
             <ul className={styles.postCountryList}>
-              <span className={styles.listTitle}>Post country</span>
+              <span className={styles.listTitle}>{getLocalizedText('shared017_label_004')}</span>
               {postCountryList.map(item => renderPostCountryItem(item))}
             </ul>
           </div>

@@ -5,7 +5,7 @@
     margin: 0 'auto';
     height: 100%;
     max-height: 100%;
-    overflow-x: auto; 
+    overflow-x: hidden; 
     background-color: white;
     display: flex;
     flex-direction: column;
@@ -74,9 +74,12 @@
     margin-bottom: 8px;
   }
   
-  .stepButton {
-    width: 120px;
-  }
+.stepButton {
+  width: auto;
+  min-width: 120px;
+
+
+}
  
 .createBox {
   width: 100%;
@@ -184,7 +187,7 @@
 
 .gridButtonGroup3x3 {
   width: var(--second-width); 
-  max-width: 370px;
+  
   display: flex;
   flex-direction: row;
   overflow-x: auto;
@@ -220,6 +223,11 @@
 {
   width: calc(var(--full-width) - 16px);
 
+}
+
+.disabledByPrompt {
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .createContentArea
@@ -342,14 +350,23 @@
 }
 
 .summaryItem
-{
-  width: 116px;
+{ 
+  width: calc(var(--second-width) * 0.27 - 3.2px - 10px);
+  min-width: 116px;
+  min-height: calc(var(--second-width) * 0.27 - 3.2px - 10px + 24px);
   display: flex; 
   flex-direction: column;
   gap: 5px;
   flex-shrink: 0;
 
   overflow: hidden;
+}
+
+@media screen and (max-width: 431px) {
+  .summaryItem {
+    width: 116px;
+    height: calc(116px + 24px);
+  }
 }
 
 .summaryLabel

@@ -5,7 +5,7 @@ import {NextEpisodeWait} from '@ui/chatting';
 import getLocalizedText from '@/utils/getLocalizedText';
 
 interface ImageButtonProps {
-  sizeType: 'small' | 'middle' | 'large';
+  sizeType: 'small' | 'middle' | 'large' | 'summary';
   selectType?: 'one' | 'multiple';
   label: string | null;
   image: string;
@@ -63,7 +63,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({
       </div>
       {label !== null && (
         <div className={`${styles.label} ${selected ? styles.selected : ''}`}>
-          <span>{getLocalizedText('Common', label)}</span>
+          <span>{label}</span>
         </div>
       )}
       {selected && selectType !== 'multiple' && (

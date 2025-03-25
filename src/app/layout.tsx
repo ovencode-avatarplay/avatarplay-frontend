@@ -2,6 +2,7 @@ import Root from './Root';
 import '@/app/globals.css';
 import '@/app/reset.css';
 import {Suspense} from 'react';
+import GlobalPopupRenderer from './NetWork/networkPopup/GlobalPopupRenderer';
 
 export default async function Layout({children}: {children: React.ReactNode}) {
   return (
@@ -15,7 +16,11 @@ export default async function Layout({children}: {children: React.ReactNode}) {
       </head>
       <body>
         <Suspense>
-          <Root>{children} </Root> {/* 설정 정보를 Provider를 통해 자식 컴포넌트에 전달 */}
+          <Root>
+            {children}
+            <GlobalPopupRenderer /> {/* ✅ 전역 팝업 위치 여기! */}
+          </Root>{' '}
+          {/* 설정 정보를 Provider를 통해 자식 컴포넌트에 전달 */}
         </Suspense>
         {/* <div ref={paddingRef} style={{height: '0px', width: '100%'}}></div> */}
       </body>

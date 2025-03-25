@@ -52,17 +52,12 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
 
   const loraOption = [
     {
-      label: 't3',
-      image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/t3/.jpg',
-      model: 't3',
-    },
-    {
       label: 'XBrush Pro',
       image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/Junggernaut/.jpg',
       model: 'XB Pro v1',
     },
     {
-      label: 'Anime',
+      label: 'Anime XL',
       image: 'https://simplegen-model-image.s3.ap-northeast-2.amazonaws.com/Animagine+XL/.jpg',
       model: 'AAM XL',
     },
@@ -330,7 +325,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
               <CharacterCreateImageButton
                 key={option.label}
                 sizeType="small"
-                label={getLocalizedText(Common, option.label)}
+                label={option.label}
                 image={option.image}
                 selected={selectedLora === index}
                 onClick={() => handleSelectedLora(index)}

@@ -6,7 +6,7 @@ type ExploreSearchInputProps = {
   placeholder?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearch?: () => void;
+  onSearch?: (value: string) => void;
   disabled?: boolean;
   maxLength?: number;
 };
@@ -21,7 +21,7 @@ const ExploreSearchInput: React.FC<ExploreSearchInputProps> = ({
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && onSearch) {
-      onSearch();
+      onSearch(e.currentTarget.value);
     }
   };
 
@@ -40,7 +40,9 @@ const ExploreSearchInput: React.FC<ExploreSearchInputProps> = ({
         disabled={disabled}
         maxLength={maxLength}
       />
-      {onSearch && <button className={styles.searchButton} onClick={onSearch} disabled={disabled}></button>}
+      {onSearch && (
+        <button className={styles.searchButton} onClick={() => onSearch(value)} disabled={disabled}></button>
+      )}
     </div>
   );
 };

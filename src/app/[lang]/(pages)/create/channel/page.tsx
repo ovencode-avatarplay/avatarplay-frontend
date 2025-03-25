@@ -485,14 +485,12 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       <header className={styles.header}>
         <img className={styles.btnBack} src={BoldArrowLeft.src} alt="" onClick={routerBack} />
         <div className={styles.title}>
-          {isUpdate
-            ? getLocalizedText('CreateChannel', 'common_title_Edit')
-            : getLocalizedText('CreateChannel', 'CreateChannel001_title_001')}
+          {isUpdate ? getLocalizedText('common_title_Edit') : getLocalizedText('CreateChannel001_title_001')}
         </div>
       </header>
       <main className={styles.main}>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
-          <div className={styles.label}>{getLocalizedText('CreateChannel', 'common_label_Thumbnail')}</div>
+          <div className={styles.label}>{getLocalizedText('common_label_Thumbnail')}</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
               <input className={styles.hide} autoComplete="off" {...register('mediaUrl', {required: true})} />
@@ -511,7 +509,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   onDragStart={onDragStartInner}
                 >
                   <img src={LineUpload.src} alt="" />
-                  <div className={styles.text}>{getLocalizedText('CreateChannel', 'common_button_upload')}</div>
+                  <div className={styles.text}>{getLocalizedText('common_button_upload')}</div>
                 </div>
               )}
 
@@ -544,17 +542,17 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 >
                   <div className={styles.tabItem} data-tab={0}>
                     <div className={cx(styles.labelTab, data.indexTab == 0 && styles.active)}>
-                      {getLocalizedText('CreateChannel', 'createchannel001_label_003')}
+                      {getLocalizedText('createchannel001_label_003')}
                     </div>
                   </div>
                   <div className={styles.tabItem} data-tab={1}>
                     <div className={cx(styles.labelTab, data.indexTab == 1 && styles.active)}>
-                      {getLocalizedText('CreateChannel', 'createchannel001_label_004')}
+                      {getLocalizedText('createchannel001_label_004')}
                     </div>
                   </div>
                   <div className={styles.tabItem} data-tab={2}>
                     <div className={cx(styles.labelTab, data.indexTab == 2 && styles.active)}>
-                      {getLocalizedText('CreateChannel', 'createchannel001_label_005')}
+                      {getLocalizedText('createchannel001_label_005')}
                     </div>
                   </div>
                 </div>
@@ -565,14 +563,13 @@ const CreateChannel = ({id, isUpdate}: Props) => {
             <div className={styles.tabContent}>
               <section className={cx(styles.channelSection, data.indexTab == 0 && styles.active)}>
                 <div className={styles.label}>
-                  {getLocalizedText('CreateChannel', 'createchannel001_label_006')}{' '}
-                  <span className={styles.highlight}>*</span>
+                  {getLocalizedText('createchannel001_label_006')} <span className={styles.highlight}>*</span>
                 </div>
                 <input
                   {...register('name', {required: true})}
                   className={cx(errors.name && isSubmitted && styles.error)}
                   type="text"
-                  placeholder={getLocalizedText('CreateChannel', 'common_sample_086')}
+                  placeholder={getLocalizedText('common_sample_086')}
                   onChange={e => {
                     clearErrors('name');
                     setValue('name', e.target.value);
@@ -580,13 +577,12 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 />
 
                 <div className={styles.label}>
-                  {getLocalizedText('CreateChannel', 'createchannel001_label_007')}{' '}
-                  <span className={styles.highlight}>*</span>
+                  {getLocalizedText('createchannel001_label_007')} <span className={styles.highlight}>*</span>
                 </div>
                 <div className={cx(styles.textAreaWrap, errors.description && isSubmitted && styles.error)}>
                   <textarea
                     {...register('description', {required: true})}
-                    placeholder={getLocalizedText('CreateChannel', 'common_sample_047')}
+                    placeholder={getLocalizedText('common_sample_047')}
                     maxLength={500}
                     onChange={async e => {
                       const target = e.target as HTMLTextAreaElement;
@@ -613,7 +609,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   <div className={styles.labelAdd}>{getLocalizedText('common_label_addmembers')}</div>
                 </div>
                 <div className={styles.label}>
-                  {countMembers} {getLocalizedText('CreateChannel', 'createchannel002_label_001')}
+                  {countMembers} {getLocalizedText('createchannel002_label_001')}
                 </div>
 
                 <ul className={styles.memberList}>
@@ -655,7 +651,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
               </section>
               <section className={cx(styles.policySection, data.indexTab == 2 && styles.active)}>
                 <div className={styles.label}>
-                  {getLocalizedText('CreateChannel', 'common_label_001')} <span className={styles.highlight}>*</span>
+                  {getLocalizedText('common_label_001')} <span className={styles.highlight}>*</span>
                 </div>
                 <input
                   defaultValue={VisibilityType.Private}
@@ -672,7 +668,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 />
                 <div className={styles.label}>
-                  {getLocalizedText('CreateChannel', 'common_label_002')} <span className={styles.highlight}>*</span>
+                  {getLocalizedText('common_label_002')} <span className={styles.highlight}>*</span>
                 </div>
                 <input
                   className={styles.hide}
@@ -725,7 +721,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </div>
 
                 <div className={styles.label}>
-                  {getLocalizedText('CreateChannel', 'common_label_003')} <span className={styles.highlight}>*</span>
+                  {getLocalizedText('common_label_003')} <span className={styles.highlight}>*</span>
                 </div>
                 <CustomSelector
                   value={''}
@@ -781,8 +777,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
                 <div className={styles.operatorInvitationHeader}>
                   <div className={styles.left}>
-                    <div className={styles.label}>{getLocalizedText('CreateChannel', 'common_label_005')}</div>
-                    <CustomToolTip tooltipText="Operator Invitation" />
+                    <div className={styles.label}>{getLocalizedText('common_label_005')}</div>
+                    <CustomToolTip tooltipText={getLocalizedText('TODO : Operator Invitation Tool Tip')} />
                   </div>
                   <div
                     className={styles.right}
@@ -791,7 +787,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       setData({...data});
                     }}
                   >
-                    {getLocalizedText('CreateChannel', 'common_button_invite')}
+                    {getLocalizedText('common_button_invite')}
                   </div>
                 </div>
                 <ul className={styles.operatorInvitationList}>
@@ -816,8 +812,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </ul>
 
                 <div className={styles.labelWrap}>
-                  <div className={styles.label}>{getLocalizedText('CreateChannel', 'CreateChannel003_label_001')}</div>
-                  <CustomToolTip tooltipText="Channel IP" />
+                  <div className={styles.label}>{getLocalizedText('CreateChannel003_label_001')}</div>
+                  <CustomToolTip tooltipText={getLocalizedText('TODO : Channel IP')} />
                 </div>
                 <div className={cx(styles.channelIP, styles.radioContainer)}>
                   <div className={styles.item}>
@@ -832,12 +828,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>
-                          {getLocalizedText('CreateChannel', 'common_button_Original')}
-                        </div>
+                        <div className={styles.labelRadio}>{getLocalizedText('common_button_Original')}</div>
                       </div>
                     </label>
-                    <div className={styles.right}>{getLocalizedText('CreateChannel', 'common_label_004')}</div>
+                    <div className={styles.right}>{getLocalizedText('common_label_004')}</div>
                   </div>
                   <div className={styles.item}>
                     <label>
@@ -850,9 +844,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>
-                          {getLocalizedText('CreateChannel', 'common_button_Fan')}
-                        </div>
+                        <div className={styles.labelRadio}>{getLocalizedText('common_button_Fan')}</div>
                       </div>
                     </label>
                     {/* <div className={styles.right}>Monetization possible</div> */}
@@ -860,8 +852,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </div>
 
                 <div className={styles.labelWrap}>
-                  <div className={styles.label}>{getLocalizedText('CreateChannel', 'common_label_006')}</div>
-                  <CustomToolTip tooltipText="Channel IP" />
+                  <div className={styles.label}>{getLocalizedText('common_label_006')}</div>
+                  <CustomToolTip tooltipText={getLocalizedText('TODO : hannel IP')} />
                 </div>
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
@@ -872,14 +864,13 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                         checked={watch('isMonetization', 0) == 1}
                         {...register('isMonetization')}
                         onChange={e => {
-                          // alert('ㅇㅎㅇㅎㅇ');
                           setValue('isMonetization', 1);
                         }}
                       />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>{getLocalizedText('CreateChannel', 'common_button_on')}</div>
+                        <div className={styles.labelRadio}>{getLocalizedText('common_button_on')}</div>
                       </div>
                     </label>
                   </div>
@@ -891,16 +882,13 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                         checked={watch('isMonetization', 0) == 0}
                         {...register('isMonetization')}
                         onChange={e => {
-                          // alert('ㅇㅎㅇㅎㅇ2');
                           setValue('isMonetization', 0);
                         }}
                       />
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>
-                          {getLocalizedText('CreateChannel', 'common_button_off')}
-                        </div>
+                        <div className={styles.labelRadio}>{getLocalizedText('common_button_off')}</div>
                       </div>
                     </label>
                   </div>
@@ -945,9 +933,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
                 <div className={cx(styles.labelWrap, styles.nsfw)}>
                   <div className={styles.label}>
-                    {getLocalizedText('CreateChannel', 'common_label_008')} <span className={styles.highlight}>*</span>
+                    {getLocalizedText('common_label_008')} <span className={styles.highlight}>*</span>
                   </div>
-                  <CustomToolTip tooltipText="NSFW" />
+                  <CustomToolTip tooltipText={getLocalizedText('TODO : NSFW Tool Tip')} />
                 </div>
                 <div className={cx(styles.monetization, styles.radioContainer)}>
                   <div className={styles.item}>
@@ -956,7 +944,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>{getLocalizedText('CreateChannel', 'common_button_on')}</div>
+                        <div className={styles.labelRadio}>{getLocalizedText('common_button_on')}</div>
                       </div>
                     </label>
                   </div>
@@ -966,7 +954,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.radioWrap}>
                         <img src={BoldRadioButtonSelected.src} alt="" className={styles.iconOn} />
                         <img src={BoldRadioButton.src} alt="" className={styles.iconOff} />
-                        <div className={styles.labelRadio}>{getLocalizedText('common', 'common_button_off')}</div>
+                        <div className={styles.labelRadio}>{getLocalizedText('common_button_off')}</div>
                       </div>
                     </label>
                   </div>
@@ -976,7 +964,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           </section>
 
           <button type="submit" className={styles.submitBtn}>
-            {getLocalizedText('CreateChannel', 'common_button_submit')}
+            {getLocalizedText('common_button_submit')}
             {/* {isUpdate ? 'Submit' : 'Publish'} */}
           </button>
         </form>
@@ -1549,7 +1537,7 @@ export const DrawerCharacterSearch = ({
               />
               <img src={BoldRadioButtonSquareSelected.src} alt="" className={styles.iconOn} />
               <img src={BoldRadioButtonSquare.src} alt="" className={styles.iconOff} />
-              <div className={styles.labelAll}>{getLocalizedText('CreateChannel', 'common_filter_all')}</div>
+              <div className={styles.labelAll}>{getLocalizedText('common_filter_all')}</div>
             </label>
           </div>
           <div className={styles.right}>
@@ -1587,7 +1575,7 @@ export const DrawerCharacterSearch = ({
           </div>
         </div>
         <div className={styles.countSelected}>
-          {getLocalizedText('CreateChannel', 'common_filter_all')} {countSelected}
+          {getLocalizedText('common_filter_all')} {countSelected}
         </div>
         <ul className={styles.memberList}>
           {data.profileList.map((profile, index) => {

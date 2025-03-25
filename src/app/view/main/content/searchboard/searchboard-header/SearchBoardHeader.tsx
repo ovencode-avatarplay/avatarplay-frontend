@@ -120,7 +120,11 @@ const SearchBoardHeader: React.FC<Props> = ({
         <ExploreSearchInput
           value={searchValue}
           onChange={e => setSearchValue(e.target.value)}
-          onSearch={handleSearch}
+          onSearch={val => {
+            setSearchResultList([]);
+            setSearchValue(val);
+            handleSearch();
+          }}
           placeholder={getLocalizedText('common_sample_078')}
         />
         <button className={styles.filterButton} onClick={handleFilterButtonClicked}>
