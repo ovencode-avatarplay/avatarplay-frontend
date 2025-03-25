@@ -174,7 +174,11 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
   useLayoutEffect(() => {
     maxHeightContent.current = Math.min(maxHeightContent.current, containerRef.current?.clientHeight || 9999);
-  }, [containerRef]);
+    const gapHeight = (containerRef.current?.clientHeight || 0) - maxHeightContent.current;
+    let paddingTop = gapHeight > 0 ? gapHeight : 0;
+    // document.documentElement.style.scrollPaddingBottom = Math.max(-gapHeight).toString() + 'px';
+    // document.documentElement.style.scrollPaddingBottom = (-gapHeight).toString() + 'px';
+  }, [containerRef.current?.clientHeight]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -185,7 +189,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       if (currentPath === basePath && info.length > 0) {
         const firstFeed = info[0];
         const newUrl = `${basePath}/${firstFeed.urlLinkKey}`;
-        window.history.replaceState(null, '', newUrl); // 주소창만 변경 (새로고침 없음)
+        // window.history.replaceState(null, '', newUrl); // 주소창만 변경 (새로고침 없음)
       }
     }
   }, [info]);
@@ -199,6 +203,14 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     }
   };
   const handleScroll = () => {
+    maxHeightContent.current = Math.min(maxHeightContent.current, containerRef.current?.clientHeight || 9999);
+    const gapHeight = (containerRef.current?.clientHeight || 0) - maxHeightContent.current;
+    let paddingTop = gapHeight > 0 ? gapHeight : 0;
+    // document.documentElement.style.scrollPaddingBottom = (-gapHeight).toString() + 'px';
+    console.log('gapHeight', gapHeight);
+
+    setData({...data});
+
     const scrollY = window.scrollY || window.pageYOffset;
     if (data.isTouch) {
       if (data.scrollY - scrollY < 0) {
@@ -252,7 +264,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       urlUpdateTimeoutRef.current = setTimeout(() => {
         const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
         if (window.location.pathname !== newUrl) {
-          window.history.pushState(null, '', newUrl);
+          // window.history.pushState(null, '', newUrl);
         }
 
         viewFeed(currentItem.id);
@@ -431,11 +443,11 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
         {info.map((item, index) => {
           const gapHeight = (containerRef.current?.clientHeight || 0) - maxHeightContent.current;
           let paddingTop = gapHeight > 0 ? gapHeight : 0;
-
+          console.log('paddingTop : ', paddingTop);
           // const isDown = !data.isUp;
           // paddingTop = isAddPadding ? paddingTop : 0;
 
-          paddingTop = !data.isUp ? paddingTop : 0;
+          // paddingTop = !data.isUp ? paddingTop : 0;
           // paddingTop = isTouchDown ? downPadding : paddingTop;
 
           return (
@@ -444,7 +456,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
               className={styles.reelSlide}
               style={{
                 maxHeight: maxHeightContent.current + 'px',
-                paddingTop: paddingTop + 'px',
+                paddingTop: paddingTop.toString() + 'px',
               }}
             >
               <ReelsContent
