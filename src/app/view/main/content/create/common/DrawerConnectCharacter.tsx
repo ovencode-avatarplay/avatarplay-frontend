@@ -70,14 +70,18 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
         </button>
       </div>
 
-      <CustomDrawer open={connectOpen} onClose={() => setConnectOpen(false)} title="Connect">
+      <CustomDrawer
+        open={connectOpen}
+        onClose={() => setConnectOpen(false)}
+        title={getLocalizedText('common_alert_016')}
+      >
         <div className={styles.connectDrawerContainer}>
           <div className={styles.connectButtonArea}>
             <CustomButton size="Small" state="Normal" type="Primary" onClick={() => {}}>
-              My Character
+              {getLocalizedText('common_button_mycharacter')}
             </CustomButton>
             <CustomButton size="Small" state="Normal" type="Tertiary" onClick={() => {}}>
-              IP Subscribe
+              {getLocalizedText('common_button_ipsubscribe')}
             </CustomButton>
           </div>
           <ul className={styles.connectableListArea}>

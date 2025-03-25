@@ -92,7 +92,43 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tagOpen, setTagOpen] = useState(false);
-  const [tagList, setTagList] = useState<string[]>([]);
+
+  const tagGroups = [
+    {
+      category: 'Theme',
+      tags: [
+        'Male',
+        'Female',
+        'Boyfriend',
+        'Girlfriend',
+        'Hero',
+        'Elf',
+        'Romance',
+        'Vanilla',
+        'Contemporary Fantasy',
+        'Isekai',
+        'Flirting',
+        'Dislike',
+        'Comedy',
+        'Noir',
+        'Horror',
+        'Demon',
+        'SF',
+        'Vampire',
+        'Office',
+        'Monster',
+        'Anime',
+        'Books',
+        'Aliens',
+      ],
+    },
+  ];
+
+  const [tagList, setTagList] = useState<string[]>(() => {
+    const themeGroup = tagGroups.find(group => group.category === 'Theme');
+    return themeGroup ? themeGroup.tags : [];
+  });
+
   const maxTagCount = 10;
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
 
@@ -594,7 +630,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   useEffect(() => {
     if (tagOpen) {
-      handleGetTagList();
+      // handleGetTagList();
     }
   }, [tagOpen]);
 
