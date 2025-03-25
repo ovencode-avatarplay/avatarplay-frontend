@@ -1,0 +1,143 @@
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left:50%;
+  transform: translateX(-50%);
+    
+  display: flex;
+  
+ 
+  width: var(--full-width);
+  height: 64px;
+  padding: 0px 6px 0px 6px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-shrink: 0;
+        
+  z-index: 500;
+
+  background: linear-gradient(0deg, var(--White, #FFF) 0%, var(--White, #FFF) 100%), var(--Black, #000);
+  box-shadow: 0px -5px 40px 5px rgba(0, 0, 0, 0.03);    
+  
+  -webkit-touch-callout: none; /* iOS Safari에서 컨텍스트 메뉴 차단 */
+  -webkit-user-select: none;  /* 텍스트 선택 방지 */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none; /* 터치 이벤트 비활성화 (필요시 사용) */
+
+  -webkit-user-drag: none;
+  pointer-events: auto; /* 버튼 이벤트 정상적으로 동작하게 유지 */
+}
+
+.bottomNav.light-mode 
+{
+  background: linear-gradient(0deg, var(--White, #FFF) 0%, var(--White, #FFF) 100%), var(--Black, #000);
+}
+
+.bottomNav.dark-mode 
+{
+  background: var(--neutral900, #121414);
+}
+ 
+ 
+.bottomNavBox 
+{
+  display: flex;
+  height: 100%;
+  padding: 6px 6px 12px 6px;
+  align-items: flex-start;
+  flex-shrink: 0;
+  align-self: stretch;  
+  width:100%;
+  justify-content: space-between;
+}
+.bottomNavBox > *{
+  flex:1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width:100%;
+  height:100%;
+}
+.navButton
+{
+  cursor:pointer;
+  display: flex;
+  /* width: calc(100vw / 5 - 1vw); */
+  /*width: 76.58px;*/
+  justify-content: center;
+  align-items: center;
+  /* align-self: stretch; */
+}
+
+.navButtonPlusWrap{
+  width: 36px;
+  height: 36px;
+  background-color: #FD55D3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.buttonIconPlus
+{
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #FD55D3;
+} 
+ 
+
+
+.buttonIcon
+{
+  width: 24px;
+  height: 24px;
+  
+  filter: sepia(3%) saturate(5269%) hue-rotate(147deg) brightness(79%) contrast(92%);
+}
+
+.navButton.selected > .buttonIcon
+{
+  filter: invert(0%) sepia(3%) saturate(3306%) hue-rotate(146deg) brightness(98%) contrast(101%);
+}
+.navButton.selected.dark-mode 
+{
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(55deg) brightness(105%) contrast(102%);
+}
+
+.createSpeedDial
+{
+  display: flex;
+  width: 52px;
+  height: 52px;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm, 6px);
+  flex-shrink: 0;
+
+  position: fixed; 
+  bottom: 96px;
+  right: 9px;
+
+  flex-shrink: 0;border-radius: 50px;
+  background: var(--White, #FFF);
+  box-shadow: 0px 0px 24px 0px rgba(4, 4, 21, 0.20);
+}
+
+.speedDialIcon
+{
+  display: flex;
+  width: 28px;
+  height: 28px;
+  padding: 4.1px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+
+  filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(42%) hue-rotate(163deg) brightness(88%) contrast(99%);
+} 

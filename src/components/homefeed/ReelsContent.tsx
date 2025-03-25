@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import styles from './ReelsContent.module.css';
+import styles from './ReelsContent.module.scss';
 import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -311,7 +311,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
         direction="horizontal"
         slidesPerView={1}
         centeredSlides={true}
-        scrollbar={{draggable: true}}
+        // scrollbar={{draggable: true}}
         onSlideChange={handleSlideChangeProfile}
         className={`${styles.mainContent}  ${!isMobile && styles.limitWidth}`}
         resistanceRatio={0}
@@ -320,9 +320,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       >
         <SwiperSlide style={{height: '100%'}}>
           <div className={styles.Image}>
-            {item.mediaState === 1 && (
-              <img src={item?.mediaUrlList[0]} loading="lazy" style={{width: '100%', height: '100%'}} />
-            )}
+            {item.mediaState === 1 && <img src={item?.mediaUrlList[0]} loading="lazy" style={{width: '100%'}} />}
             {item.mediaState === 2 && (
               <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
                 <ReactPlayer
@@ -333,7 +331,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   loop={true}
                   width="100%"
                   playsinline={true}
-                  height="calc(100% - 4px)"
+                  height="calc(100%)"
                   style={{
                     borderRadius: '8px',
                     objectFit: 'contain',

@@ -1,14 +1,15 @@
 .reelsContainer {
   position: relative;
-  width: 100%;  
-  background: #000000; 
+  width: 100%;
+  background: #000000;
   height: 100%;
+
+  :global(.swiper-scrollbar) {
+    display: none !important;
+  }
 }
 
-.mySwiper
-{
-
-}
+.mySwiper {}
 
 .mainContent {
   position: relative;
@@ -16,20 +17,23 @@
   height: 100%;
 }
 
-.mainContent.limitWidth{
-  max-width:600px;
+.mainContent.limitWidth {
+  max-width: 600px;
   margin: 0 auto;
 }
 
 .progressBar {
   position: absolute;
-  bottom: 1px;
+  bottom: 0px;
   left: 0;
   width: 100%;
-  height: 1.66px; /* 프로그레스 바 높이 */
-  background-color: rgba(255, 255, 255, 0.3); /* 배경색 */
+  height: 2px;
+  /* 프로그레스 바 높이 */
+  background-color: rgba(255, 255, 255, 0.3);
+  /* 배경색 */
   overflow: hidden;
 }
+
 .progressFill {
   position: absolute;
   height: 100%;
@@ -39,9 +43,12 @@
 
 .progressFill {
   height: 100%;
-  background: var(--background); /* 흰색 진행도 */
-  transition: width 0.2s ease; /* 부드러운 진행 애니메이션 */
+  background: var(--background);
+  /* 흰색 진행도 */
+  transition: width 0.2s ease;
+  /* 부드러운 진행 애니메이션 */
 }
+
 .playCircleIcon {
   position: absolute;
   width: 70px;
@@ -54,8 +61,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  opacity: 0; /* 기본적으로 숨김 상태 */
-  transition: opacity 0.3s ease, transform 0.3s ease; /* 부드러운 전환 효과 */
+  opacity: 0;
+  /* 기본적으로 숨김 상태 */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  /* 부드러운 전환 효과 */
 }
 
 .fadeAndGrow {
@@ -67,10 +76,12 @@
     transform: translate(-50%, -50%) scale(0.8);
     opacity: 0;
   }
+
   50% {
     transform: translate(-50%, -50%) scale(1.2);
     opacity: 1;
   }
+
   100% {
     transform: translate(-50%, -50%) scale(1);
     opacity: 0;
@@ -79,15 +90,15 @@
 
 .Image {
   width: 100%;
-  height: 100%;    
-
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.Image img{
-  object-fit: contain; 
-  width:100%;
+
+.Image img {
+  object-fit: contain;
+  width: 100%;
 }
 
 .dim {
@@ -121,12 +132,13 @@
 }
 
 .profileDetails {
-  margin-left:8px;
+  margin-left: 8px;
   display: flex;
   flex-direction: column;
 }
-.follow{
-  margin-left:15px;
+
+.follow {
+  margin-left: 15px;
 
   /* width: 40px; */
   /* height: 17px; */
@@ -146,6 +158,7 @@
   line-height: normal;
   letter-spacing: -0.21px;
 }
+
 .username {
   font-family: 'Lato';
   font-weight: 600;
@@ -160,9 +173,7 @@
   color: #FFFFFF;
 }
 
-.followButtonOff {
-  
-}
+.followButtonOff {}
 
 .followButtonOn {
   background-color: black;
@@ -186,8 +197,8 @@
   gap: 10px;
 }
 
-.iconVideo{
-  margin-left:2px;
+.iconVideo {
+  margin-left: 2px;
 }
 
 .ctaButtons {
@@ -196,65 +207,65 @@
   flex-direction: column;
   gap: 12px;
   bottom: 48px;
-  right: 13px;
+  right: 15px;
   z-index: 12;
-  
+
 }
 
-.textButtons
-{
+.textButtons {
   color: var(--base-white, #FFF);
-text-align: center;
-text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25), 0px 0px 30px rgba(4, 4, 21, 0.80);
-font-family: Lato;
-font-size: 12px;
-font-style: normal;
-font-weight: 700;
-line-height: 18px; /* 150% */
+  text-align: center;
+  text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25), 0px 0px 30px rgba(4, 4, 21, 0.80);
+  font-family: Lato;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px;
+  /* 150% */
 
--webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
-filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7));
+  -webkit-filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, .7));
+  filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, .7));
 
 
 }
 
-.noneTextButton
-{
+.noneTextButton {
   color: var(--base-white, #FFF);
-text-align: center;
-text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25), 0px 0px 30px rgba(4, 4, 21, 0.80);
-font-family: Lato;
-font-size: 12px;
-font-style: normal;
-font-weight: 700;
-line-height: 18px; /* 150% */
+  text-align: center;
+  text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25), 0px 0px 30px rgba(4, 4, 21, 0.80);
+  font-family: Lato;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px;
+  /* 150% */
 
--webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
-filter: drop-shadow( 3px 3px 10px rgba(0, 0, 0, .7));
+  -webkit-filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, .7));
+  filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, .7));
 }
 
-.button
-{
+.button {
   width: 28px;
   height: 28px;
   cursor: pointer;
 }
 
-img.button{
-  display:block;
+img.button {
+  display: block;
 
 }
-.count{
+
+.count {
   margin-top: 4px;
 }
 
-.text_container {  
+.text_container {
   overflow: hidden;
   width: 100%;
-  
+
   display: flex;
 
-  
+
 }
 
 .text_content {
@@ -274,21 +285,20 @@ img.button{
   border: none;
   background-color: rgba(254, 44, 85, 0.06);
   color: #ffffff;
-  border-radius: 4px;  
+  border-radius: 4px;
   z-index: 10;
   right: 50px;
   bottom: 55px;
 }
 
-.profileBox
-{  
+.profileBox {
   box-sizing: border-box;
   position: absolute;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  bottom: 4px;
+  bottom: 2px;
   padding-bottom: 19px;
   /* left: 16px; */
   padding-left: 16px;
@@ -320,7 +330,8 @@ img.button{
   right: 0px;
   z-index: 13;
   cursor: pointer;
-  width:24px; /* 버튼 크기 */
+  width: 24px;
+  /* 버튼 크기 */
   height: 24px;
   display: flex;
   align-items: center;
@@ -336,14 +347,17 @@ img.button{
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6); /* 검은색 반투명 배경 */
+  background: rgba(0, 0, 0, 0.6);
+  /* 검은색 반투명 배경 */
   border-radius: 50%;
   z-index: 12;
 }
 
 .volumeIcon {
-  z-index: 13; /* 아이콘이 배경 위에 표시되도록 */
-  width: 24px; /* 아이콘 크기 */
+  z-index: 13;
+  /* 아이콘이 배경 위에 표시되도록 */
+  width: 24px;
+  /* 아이콘 크기 */
   height: 24px;
   filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(238deg) brightness(106%) contrast(101%);
 }
