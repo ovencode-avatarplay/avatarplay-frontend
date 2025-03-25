@@ -186,13 +186,14 @@ const CharacterCreateSequence: React.FC<Props> = ({
   });
 
   const [swipers, setSwipers] = useState<{[key: string]: any}>({});
-  const optionKeys = ['race', 'bodyType', 'topSize', 'bottomSize', 'clothing'] as const;
+  const optionKeys = ['race', 'bodyType', 'topSize', 'bottomSize', 'clothing', 'hairStyle'] as const;
   const [isCentered, setIsCentered] = useState<{[key: string]: boolean}>({
     race: false,
     bodyType: false,
     topSize: false,
     bottomSize: false,
     clothing: false,
+    hairStyle: false,
   });
   const [centerThreshold, setCenterThreshold] = useState(Math.round(window.innerWidth / 116));
   const [clothesInputValue, setClothesInputValue] = useState('');
@@ -577,7 +578,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 {getLocalizedText(Header, 'createcharacter006_label_002')}
                 <span className={styles.redAstrisk}>*</span>
               </h3>
-              <div className={`${styles.gridButtonGroup3x3} ${styles.buttonGap6}`}>
+              {/* <div className={`${styles.gridButtonGroup3x3} ${styles.buttonGap6}`}>
                 {characterOptions.hairStyles.map((style, index) => (
                   <CharacterCreateImageButton
                     key={style.label}
@@ -588,7 +589,33 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     onClick={() => handleOptionSelect('hairStyle', index)}
                   />
                 ))}
-              </div>
+              </div> */}
+              <Swiper
+                className={styles.horizonSwiper}
+                initialSlide={selectedOptions.hairStyle}
+                centeredSlides={isCentered['hairStyle']}
+                slidesPerView="auto"
+                spaceBetween={6}
+                onSlideChange={() => setIsCentered(prev => ({...prev, hairStyle: false}))}
+                onSwiper={swiper => handleSwiperInit('hairStyle', swiper)}
+              >
+                {characterOptions.hairStyles.map((hairStyle, index) => (
+                  <SwiperSlide
+                    key={hairStyle.label}
+                    className={styles.swiperSmall}
+                    style={{width: '100px', height: '100px'}}
+                  >
+                    <CharacterCreateImageButton
+                      key={hairStyle.label}
+                      sizeType="small"
+                      label={hairStyle.label}
+                      image={getImgLoc(hairStyle.image)}
+                      selected={selectedOptions.hairStyle === index}
+                      onClick={() => handleOptionSelect('hairStyle', index)}
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </article>
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>
@@ -720,7 +747,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                 <span className={styles.redAstrisk}>*</span>
               </h3>
               <Swiper
-                className={styles.horizonSwiper}
+                className={`${styles.horizonSwiper} ${clothesInputValue !== '' ? styles.disabledByPrompt : ''}`}
                 initialSlide={selectedOptions.clothing}
                 slidesPerView="auto"
                 spaceBetween={6}
@@ -781,7 +808,11 @@ const CharacterCreateSequence: React.FC<Props> = ({
           <div className={styles.createContentBox}>
             <article className={styles.createContentArea}>
               <h3 className={styles.createSubTitle}>{getLocalizedText(Header, 'createcharacter009_label_002')}</h3>
-              <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap6}`}>
+              <div
+                className={`${styles.horizontalButtonGroup} ${styles.buttonGap6} ${
+                  backgroundInputValue !== '' ? styles.disabledByPrompt : ''
+                }`}
+              >
                 {backgroundData.slice(0, 20).map((style, index) => (
                   <CustomHashtag
                     key={style.label}
@@ -829,9 +860,13 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       onClick={() => {}}
                       image={
                         option.key !== 'hairColor' && option.key !== 'clothingColor'
-                          ? getImgLoc(
-                              option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image,
-                            )
+                          ? option.key === 'style'
+                            ? getStyleImgLoc(
+                                option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image,
+                              )
+                            : getImgLoc(
+                                option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.image,
+                              )
                           : ''
                       }
                       color={
@@ -840,7 +875,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                           : undefined
                       }
                       selected={false}
-                      sizeType="middle"
+                      sizeType="summary"
                     />
                   </div>
                 ))}
@@ -858,7 +893,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   {(generatedOptions?.imageUrl ?? []).map((imgUrl, index) => (
                     <CharacterCreateImageButton
                       key={index}
-                      sizeType="large"
+                      sizeType="summary"
                       label={null}
                       image={imgUrl}
                       selected={selectedOptions.result === index}
@@ -900,7 +935,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
               <CustomButton
                 size="Medium"
                 type="Primary"
-                state="IconRight"
+                state={steps[curStep] === CreateCharacterStep.Summary ? 'Normal' : 'IconRight'}
                 onClick={addStep}
                 icon={
                   steps[curStep] === CreateCharacterStep.Summary && generatedOptions === null ? '' : LineArrowRight.src
@@ -912,7 +947,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     <>
                       {getLocalizedText(Common, 'common_button_generate')}
                       <img className={styles.rubyIcon} src={BoldRuby.src} />
-                      50
+                      50 {/* TODO 재화 연결 */}
                     </>
                   ) : (
                     getLocalizedText(Common, 'common_button_next')
