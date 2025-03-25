@@ -101,6 +101,7 @@ import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/Co
 import DrawerDonation from '../main/content/create/common/DrawerDonation';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
+import {ToastMessageAtom} from '@/app/Root';
 
 const mappingStrToGlobalTextKey = {
   Feed: 'common_label_feed',
@@ -246,11 +247,6 @@ type DataProfileType = {
     idProfileTo: number;
   };
 
-  dataToast: {
-    isOpen: boolean;
-    message: string;
-  };
-
   dataOtherProfileMenu: {
     isOpen: boolean;
   };
@@ -296,6 +292,7 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
 
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const {back, changeParams, getParam} = useCustomRouter();
   const searchParams = useSearchParams();
   const isNeedBackBtn = searchParams?.get('from'); // "from" 쿼리 파라미터 값 가져오기
@@ -342,11 +339,6 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     dataGift: {
       isOpen: false,
       idProfileTo: 0,
-    },
-
-    dataToast: {
-      isOpen: false,
-      message: '',
     },
 
     dataOtherProfileMenu: {
@@ -743,9 +735,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
   const onCopyToClipboard = () => {
     copyCurrentUrlToClipboard(pathname, searchParams);
-    data.dataToast.isOpen = true;
-    data.dataToast.message = getLocalizedText('common_alert_091');
-    setData({...data});
+    dataToast.open(getLocalizedText('common_alert_091'));
   };
 
   return (
@@ -1235,56 +1225,6 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         ]}
         selectedIndex={-1}
       />
-
-      <>
-        <Backdrop
-          open={data.dataToast.isOpen}
-          onClick={() => {
-            data.dataToast.isOpen = false;
-            setData({...data});
-          }}
-          sx={{
-            zIndex: 999,
-            backgroundColor: 'rgba(0, 0, 0, 0.7)', // 살짝 어두운 흐림 효과
-            // backdropFilter: 'blur(5px)', // 흐림 효과
-          }}
-        />
-        <Snackbar
-          open={data.dataToast.isOpen}
-          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-          autoHideDuration={1000}
-          message={data.dataToast.message}
-          onClose={() => {
-            data.dataToast.isOpen = false;
-            setData({...data});
-          }}
-          sx={{
-            bottom: '20px',
-            width: 'calc(var(--full-width-percent) - 32px)', // 전체 너비
-            zIndex: 999,
-            '& .MuiPaper-root': {
-              height: '47px',
-              width: '100%', // 전체 너비
-
-              background: 'rgba(255, 255, 255, 1)', // 배경색
-              borderRadius: '12px', // 둥근 모서리
-
-              whiteSpace: 'nowrap', // 한 줄 처리
-              overflow: 'hidden', // 넘치는 텍스트 숨김
-              textOverflow: 'ellipsis', // 말줄임표 처리
-            },
-            '& .MuiSnackbarContent-message': {
-              width: '100%',
-              textAlign: 'center', // 텍스트 중앙 정렬
-              fontFamily: 'Lato, sans-serif', // Lato 폰트 적용
-              fontSize: '14px',
-              fontWeight: 600,
-              lineHeight: '20px',
-              color: '#000', // 글자 색상
-            },
-          }}
-        />
-      </>
     </>
   );
 });

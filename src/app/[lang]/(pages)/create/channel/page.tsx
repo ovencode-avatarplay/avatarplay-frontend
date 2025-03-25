@@ -66,6 +66,8 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import formatText from '@/utils/formatText';
+import {ToastMessageAtom} from '@/app/Root';
+import {useAtom} from 'jotai';
 
 type Props = {
   id: number;
@@ -117,6 +119,7 @@ interface ChannelInfoForm extends Omit<ChannelInfo, 'id' | 'isMonetization' | 'n
 }
 
 const CreateChannel = ({id, isUpdate}: Props) => {
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const {back} = useCustomRouter();
   const router = useRouter();
   const [data, setData] = useState<DataProfileUpdateType>({
@@ -421,11 +424,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     if (res?.resultCode == 0) {
-      data.dataPopupComplete.isOpen = true;
-      data.dataPopupComplete.title = isUpdate
-        ? getLocalizedText('common_alert_099')
-        : getLocalizedText('common_alert_098');
-      setData({...data});
+      dataToast.open(
+        getLocalizedText(isUpdate ? getLocalizedText('common_alert_099') : getLocalizedText('common_alert_098')),
+      );
+      routerBack();
     }
   };
 

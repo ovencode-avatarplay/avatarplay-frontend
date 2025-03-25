@@ -10,6 +10,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {isLogined, refreshLanaguage} from '@/utils/UrlMove';
 import useCustomRouter from '@/utils/useCustomRouter';
+import {Backdrop, Snackbar} from '@mui/material';
+import {atom, useAtom} from 'jotai';
 
 // MUI에 전역 css 적용하는 코드
 const theme = createTheme({
@@ -61,11 +63,34 @@ const theme = createTheme({
   },
 });
 
+export type ToastMessageAtomType = {
+  isOpen: boolean;
+  message: string;
+  open: (message: string) => void;
+};
+export const ToastMessageAtom = atom<ToastMessageAtomType>({
+  isOpen: false,
+  message: '',
+  open: (message: string) => {},
+});
+
 const Root = ({children}: {children: ReactNode}) => {
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const {back} = useCustomRouter();
   const [hasRun, setHasRun] = useState(false); // 상태를 관리하여 최초 실행 여부 판단
   const router = useRouter(); // useRouter는 클라이언트에서만 사용
   const paddingRef = useRef();
+
+  useEffect(() => {
+    dataToast.open = openToastMessage;
+  }, [dataToast]);
+
+  const openToastMessage = (message: string) => {
+    dataToast.message = message;
+    dataToast.isOpen = true;
+    setDataToast({...dataToast});
+  };
+
   useEffect(() => {
     refreshLanguage();
     // useRouter를 useEffect 안에서 호출하여 클라이언트 측에서만 실행되도록 설정
@@ -96,7 +121,17 @@ const Root = ({children}: {children: ReactNode}) => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
-          <CssBaseline>{children}</CssBaseline>
+          <CssBaseline>
+            {children}
+            <ToastMessage
+              isOpen={dataToast.isOpen}
+              message={dataToast.message}
+              onClose={() => {
+                dataToast.isOpen = false;
+                setDataToast({...dataToast});
+              }}
+            />
+          </CssBaseline>
         </ThemeProvider>
       </PersistGate>
     </Provider>
@@ -104,3 +139,61 @@ const Root = ({children}: {children: ReactNode}) => {
 };
 
 export default Root;
+
+type ToastMessageType = {
+  isOpen: boolean;
+  message: string;
+  onClose: () => void;
+};
+
+export const ToastMessage = ({isOpen, message, onClose}: ToastMessageType) => {
+  return (
+    <>
+      <Backdrop
+        open={isOpen}
+        onClick={() => {
+          onClose();
+        }}
+        sx={{
+          zIndex: 999,
+          backgroundColor: 'rgba(0, 0, 0, 0.7)', // 살짝 어두운 흐림 효과
+          // backdropFilter: 'blur(5px)', // 흐림 효과
+        }}
+      />
+      <Snackbar
+        open={isOpen}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+        autoHideDuration={2000}
+        message={message}
+        onClose={() => {
+          onClose();
+        }}
+        sx={{
+          bottom: '20px',
+          width: 'calc(var(--full-width-percent) - 32px)', // 전체 너비
+          zIndex: 999,
+          '& .MuiPaper-root': {
+            height: '47px',
+            width: '100%', // 전체 너비
+
+            background: 'rgba(255, 255, 255, 1)', // 배경색
+            borderRadius: '12px', // 둥근 모서리
+
+            whiteSpace: 'nowrap', // 한 줄 처리
+            overflow: 'hidden', // 넘치는 텍스트 숨김
+            textOverflow: 'ellipsis', // 말줄임표 처리
+          },
+          '& .MuiSnackbarContent-message': {
+            width: '100%',
+            textAlign: 'center', // 텍스트 중앙 정렬
+            fontFamily: 'Lato, sans-serif', // Lato 폰트 적용
+            fontSize: '14px',
+            fontWeight: 600,
+            lineHeight: '20px',
+            color: '#000', // 글자 색상
+          },
+        }}
+      />
+    </>
+  );
+};
