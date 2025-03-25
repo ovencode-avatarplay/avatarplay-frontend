@@ -2,6 +2,8 @@
 
 import {getLocalizedLink} from '@/utils/UrlMove';
 import axios, {AxiosInstance} from 'axios';
+import {showPopup} from './networkPopup/popupManager';
+import getLocalizedText from '@/utils/getLocalizedText';
 // Axios 인스턴스 생성
 const api: AxiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/`, // 새로운 베이스 URL
@@ -34,8 +36,15 @@ api.interceptors.request.use(
 );
 
 api.interceptors.response.use(
-  response => {
+  async response => {
     // 정상 응답인 경우 그대로 반환
+    if (response.data.errorCode !== null) {
+      const errorDescription = getLocalizedText(response.data.errorCode) || response.data.errorCode;
+      await showPopup({
+        title: 'Error',
+        description: errorDescription,
+      });
+    }
     return response;
   },
   error => {
