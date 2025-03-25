@@ -71,7 +71,7 @@ const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, o
               setDrawerOpen(true);
             }}
           >
-            <div className={styles.settingButtonText}>{getLocalizedText('Common', 'common_button_setting')}</div>
+            <div className={styles.settingButtonText}>{getLocalizedText('common_button_setting')}</div>
           </button>
         </div>
       </div>
@@ -92,7 +92,7 @@ const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, o
           />,
           document.body,
         )}
-      <CustomDrawer open={drawerOpen} onClose={handleOnClose} title="Membership Setting">
+      <CustomDrawer open={drawerOpen} onClose={handleOnClose} title={getLocalizedText('common_alert_040')}>
         <div className={styles.membershipDrawerContainer}>
           <div className={styles.membershipButtonArea}>
             <CustomButton
@@ -104,7 +104,7 @@ const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, o
               }}
               customClassName={[styles.membershipButton]}
             >
-              Content Subscription
+              {getLocalizedText('common_button_contentssubscription')}
             </CustomButton>
             <CustomButton
               size="Small"
@@ -116,7 +116,7 @@ const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, o
               }}
               customClassName={[styles.membershipButton]}
             >
-              IP Subscription
+              {getLocalizedText('common_button_ipsubscription')}
             </CustomButton>
           </div>
           <div className={styles.subsToggleArea}>
@@ -128,12 +128,12 @@ const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, o
               onSelect={handleSubscriptionToggle}
             />
             <div className={styles.subsDescArea}>
-              <div className={styles.subsTitle}>Subscription Only</div>
-              <div className={styles.subsDesc}>If Selected, Individual sales are not possible</div>
+              <div className={styles.subsTitle}>{getLocalizedText('common_alert_059')}</div>
+              <div className={styles.subsDesc}>{getLocalizedText('shared016_label_001')}</div>
             </div>
           </div>
           <div className={styles.paySettingArea}>
-            <div className={styles.payTitle}>Payment Amount</div>
+            <div className={styles.payTitle}>{getLocalizedText('shared016_label_002')}</div>
             <div className={styles.paySetting}>
               <CustomDropDown
                 displayType="Text"
@@ -158,7 +158,7 @@ const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, o
                 onChange={handleOnChangePayAmount}
                 customClassName={[styles.payAmountInput]}
               />
-              <div className={styles.payMonth}>/Month</div>
+              <div className={styles.payMonth}>{getLocalizedText('TODO Localize : /Month')}</div>
             </div>
           </div>
           <MaxTextInput
@@ -166,9 +166,9 @@ const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, o
             stateDataType={inputState.Normal}
             inputDataType={inputType.None}
             promptValue={membershipSetting?.benefits || ''}
-            labelText="Benefits"
+            labelText={getLocalizedText('shared016_label_004')}
             handlePromptChange={handlePromptChange}
-            placeholder="Add a description or hashtag"
+            placeholder={getLocalizedText('common_sample_047')}
             maxPromptLength={500}
             style={{width: '100%', marginTop: '8px', marginBottom: '10px'}}
           />
@@ -182,7 +182,7 @@ const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, o
                 handleOnClose();
               }}
             >
-              Complete
+              {getLocalizedText('common_button_submit')}
             </CustomButton>
           </div>
         </div>

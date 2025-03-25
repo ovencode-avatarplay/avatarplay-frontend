@@ -27,7 +27,7 @@
     justify-content: flex-end;
     align-items: flex-end;
     gap: 5px;
-    align-self: stretch;
+    align-self: stretch; 
 
     width: auto;
     align-self: flex-end;

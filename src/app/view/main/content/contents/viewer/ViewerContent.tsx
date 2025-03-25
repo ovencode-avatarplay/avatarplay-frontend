@@ -34,6 +34,7 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
 import {followProfile, subscribeProfile} from '@/app/NetWork/ProfileNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
+import shaka from 'shaka-player/dist/shaka-player.compiled';
 import {
   ContentCategoryType,
   ContentLanguageType,
@@ -66,6 +67,7 @@ import {PopupPurchase} from '../series/ContentSeriesDetail';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
+import ShakaPlayerWrapper from './ShakaPlayerWrapper';
 
 interface Props {
   open: boolean;
@@ -165,6 +167,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleTrigger = () => {
     setIsVisible(!isVisible); // 트리거 발생 시 서서히 사라짐
   };
+  const playerRef = useRef<any>(null);
 
   const [isReportModal, setIsRefortModal] = useState(false);
   const selectReportItem: SelectDrawerItem[] = [
@@ -172,6 +175,22 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       name: 'Report',
       onClick: () => {
         handleReport();
+      },
+    },
+    {
+      name: 'Track0',
+      onClick: () => {
+        const track = playerRef.current?.getVariantTracks().find((t: any) => t.language === 'ko');
+        console.log(playerRef.current);
+        if (track) playerRef.current?.selectVariantTrack(track, true);
+      },
+    },
+    {
+      name: 'Track1',
+      onClick: () => {
+        const track = playerRef.current?.getVariantTracks().find((t: any) => t.language === 'en');
+        console.log(playerRef.current);
+        if (track) playerRef.current?.selectVariantTrack(track, true);
       },
     },
   ];
@@ -197,7 +216,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const [isImageModal, setIsImageModal] = useState(false);
   const [isMute, setIsMute] = useState(true);
   const [likeCount, setLikeCount] = useState(info?.commonMediaViewInfo.likeCount);
-  const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -519,58 +537,17 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               )}
 
               {info && info?.categoryType === ContentCategoryType.Video && (
-                <div style={{position: 'relative', width: '100%', height: '100%'}}>
-                  <ReactPlayer
-                    ref={playerRef} // ReactPlayer 참조 연결
-                    muted={isMute}
-                    url={info.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl} //추후 더빙 자막 합쳐야함
-                    playing={isPlaying} // 재생 상태
-                    loop={true}
-                    width="100%"
-                    playsinline={true}
-                    height="calc(100% - 4px)"
-                    style={{
-                      borderRadius: '8px',
-                      objectFit: 'contain',
-                    }}
-                    config={{
-                      file: {
-                        attributes: {
-                          style: {
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'contain',
-                          },
-                        },
-                      },
-                    }}
-                    progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
-                    onProgress={({playedSeconds}) => {
-                      handleVideoProgress(playedSeconds);
-
-                      setCurrentProgress(formatDuration(playedSeconds));
-                    }} // 비디오 진행도 업데이트
-                    onDuration={(duration: number) => {
-                      setVideoDuration(duration);
-                    }} // 영상 길이 설정
-                  />
-
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      zIndex: 13,
-                    }}
-                  >
-                    <div
-                      className={`${styles.playCircleIcon} ${isVisible ? styles.fadeAndGrow : styles.fadeOutAndShrink}`}
-                    >
-                      <img src={isPlaying ? BoldPause.src : BoldPlay.src} onClick={event => handleClick(event)} />
-                    </div>
-                  </div>
-                </div>
+                <ShakaPlayerWrapper
+                  src={info.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl || ''}
+                  isMute={isMute}
+                  isPlaying={isPlaying}
+                  onClickPlayPause={handleClick}
+                  isVisible={isVisible}
+                  onProgress={handleVideoProgress}
+                  onDuration={setVideoDuration}
+                  playIcon={BoldPlay.src}
+                  pauseIcon={BoldPause.src}
+                />
               )}
             </div>
 

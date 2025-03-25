@@ -1,10 +1,12 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import styles from './DrawerTagSelect.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import {LineRegenerate} from '@ui/Icons';
 import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 interface TagDrawerProps {
   isOpen: boolean;
@@ -56,19 +58,21 @@ const DrawerTagSelect: React.FC<TagDrawerProps> = ({
         </div>
       </CustomDrawer>
 
-      {selectedTagAlertOn && (
-        <CustomPopup
-          type="alert"
-          title="Max Tag Count Alert"
-          description={`maxTagCount : ${maxTagCount}`}
-          buttons={[
-            {
-              label: 'Close',
-              onClick: () => setSelectedTagAlertOn(false),
-            },
-          ]}
-        />
-      )}
+      {selectedTagAlertOn &&
+        ReactDOM.createPortal(
+          <CustomPopup
+            type="alert"
+            title={getLocalizedText('TODO : Max Tag Count Alert')}
+            description={formatText(getLocalizedText(`TODO : maxTagCount : `), [maxTagCount.toString()])}
+            buttons={[
+              {
+                label: getLocalizedText('Close'),
+                onClick: () => setSelectedTagAlertOn(false),
+              },
+            ]}
+          />,
+          document.body,
+        )}
     </>
   );
 };

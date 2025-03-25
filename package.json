@@ -51,6 +51,7 @@
     "react-world-flags": "^1.6.0",
     "redux-persist": "^6.0.0",
     "sass": "^1.81.0",
+    "shaka-player": "^4.7.7",
     "sharp": "^0.33.5",
     "swiper": "^11.1.14",
     "valibot": "^0.42.0"

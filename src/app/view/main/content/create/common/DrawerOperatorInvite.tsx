@@ -18,6 +18,8 @@ import {getCurrentLanguage} from '@/utils/UrlMove';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {copyCurrentUrlToClipboard} from '@/utils/util-1';
 import {usePathname, useSearchParams} from 'next/navigation';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 interface Props {
   isOpen: boolean;
@@ -281,7 +283,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
                 onClick={() => onClickAction(authType)}
                 style={!isItem && tmpList.length - 1 === idx ? {borderBottom: 'none'} : {}}
               >
-                {authType}
+                {getLocalizedText(`common_dropdown_${authType}`)}
                 <img className={styles.authIcon} src={idx === 0 ? LineEdit.src : idx === 1 ? LineComment.src : ''} />
               </li>
             ))}
@@ -292,7 +294,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
                 onClick={() => handleDeleteOperator(index)}
                 style={{borderBottom: 'none'}}
               >
-                Delete
+                {getLocalizedText('common_dropdown_remove')}
                 <img className={styles.authIcon} src={LineDelete.src} />
               </li>
             )}
@@ -359,7 +361,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
 
   return (
     <CustomDrawer
-      title="Operator Invitation"
+      title={getLocalizedText('common_label_005')}
       open={isOpen}
       onClose={onClose}
       contentStyle={{padding: '0', paddingTop: '16px'}}
@@ -370,7 +372,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
             <input
               className={styles.inviteInputText}
               type="text"
-              placeholder="Enter email or username"
+              placeholder={getLocalizedText('common_sample_070')}
               value={inviteSearchValue}
               onChange={e => {
                 setInviteSearchValue(e.target.value);
@@ -407,7 +409,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
 
                         {isIncluded && (
                           <div className={styles.tailArea}>
-                            <div className={styles.tailText}>Already Added</div>
+                            <div className={styles.tailText}>{getLocalizedText('TODO " Already Added')}</div>
                           </div>
                         )}
                       </li>
@@ -433,7 +435,7 @@ const OperatorInviteDrawer: React.FC<Props> = ({
         </div>
         {renderOperatorList(operatorList, true, handleSearchAuthTypeChange)}
         <div className={styles.inviteLinkArea}>
-          <h2 className={styles.title2}>Invitation link</h2>
+          <h2 className={styles.title2}>{getLocalizedText('TODO Localize - Invitation link')}</h2>
           <div className={styles.inviteLinkInputArea}>
             <CustomInput
               inputType="Basic"
@@ -443,13 +445,13 @@ const OperatorInviteDrawer: React.FC<Props> = ({
                   ? `${window.location.origin}${pathname}/${searchParams}`
                   : ''
               }
-              placeholder="TODO Localize - 생성작업중에는 링크불가"
+              placeholder={getLocalizedText('TODO Localize - 생성작업중에는 링크불가')}
               disabled={true}
               onChange={() => {}}
               customClassName={[styles.inviteInput]}
             />
             <CustomButton size="Medium" state="Normal" type="Primary" onClick={handleCopyToClipboard}>
-              Copy
+              {getLocalizedText('common_button_copy')}
             </CustomButton>
           </div>
         </div>
@@ -457,10 +459,10 @@ const OperatorInviteDrawer: React.FC<Props> = ({
       {deleteConfirmIndex !== null && (
         <CustomPopup
           type="alert"
-          title={`If you proceed, "${operatorList[deleteConfirmIndex].name}" will lose their channel management privileges.`}
+          title={formatText(getLocalizedText('common_alert_095'), [operatorList[deleteConfirmIndex].name])}
           buttons={[
-            {label: 'Cancel', onClick: cancelDeleteOperator},
-            {label: 'Delete', onClick: confirmDeleteOperator, isPrimary: true},
+            {label: getLocalizedText('common_button_cancel'), onClick: cancelDeleteOperator},
+            {label: getLocalizedText('common_button_confirm'), onClick: confirmDeleteOperator, isPrimary: true},
           ]}
           onClose={cancelDeleteOperator}
         />
