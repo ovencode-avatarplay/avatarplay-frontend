@@ -2,8 +2,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styles from './ViewerContent.module.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import {FeedInfo, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
-import ReactPlayer from 'react-player';
 import {
   BoldArchive,
   BoldArrowLeft,
@@ -22,22 +20,16 @@ import {
   BoldVolumeOn,
   LineArchive,
   LineCheck,
-  LineDashboard,
-  LinePlus,
   LineScaleUp,
 } from '@ui/Icons';
 import {Avatar, Box, Modal} from '@mui/material';
-import ChatMediaDialog from '@/app/view/main/content/Chat/MainChat/ChatMediaDialog';
-import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainChat/ChatTypes';
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
-import ProfileBase from '@/app/view/profile/ProfileBase';
 import {followProfile, subscribeProfile} from '@/app/NetWork/ProfileNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
 
 import {
   ContentCategoryType,
-  ContentLanguageType,
   ContentPlayInfo,
   ContentType,
   GetSeasonEpisodesPopupReq,
@@ -144,7 +136,37 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     }
   }, [contentId, curEpisodeId]);
 
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 5초 후에 isVisible을 false로 만드는 타이머 설정
+  const startAutoHideTimer = () => {
+    timerRef.current = setTimeout(() => {
+      setIsVisible(false);
+    }, 3000);
+  };
+
+  // isVisible 상태가 바뀔 때마다 감지
+  useEffect(() => {
+    if (isVisible) {
+      // true가 되면 타이머 시작
+      if (timerRef.current) clearTimeout(timerRef.current);
+      startAutoHideTimer();
+    } else {
+      // false가 되면 타이머 취소
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+  }, [isVisible]);
+
+  // 컴포넌트 언마운트 시 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const handleTrigger = () => {
     setIsVisible(!isVisible); // 트리거 발생 시 서서히 사라짐
@@ -222,6 +244,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     console.log('마우스 다운');
     setIsDragging(true);
     updateProgress(e.nativeEvent); // 클릭 위치 반영
+    setIsPlaying(false);
   };
 
   // 🎯 마우스를 움직일 때 실행
@@ -234,6 +257,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleMouseUp = () => {
     if (isDragging) {
       setIsDragging(false);
+      setIsPlaying(false);
     }
   };
   useEffect(() => {
@@ -536,11 +560,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       aria-describedby="viwer-content-modal-description"
       className={styles.body}
       hideBackdrop
-      // componentsProps={{
-      //   backdrop: {
-      //     style: {backgroundColor: 'rgba(0, 0, 0, 0.8)'}, // 원하는 색상 설정
-      //   },
-      // }}
     >
       <Box
         sx={{
@@ -634,8 +653,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                   isDragging ? styles.dragging : ''
                 }`}
                 onMouseDown={e => {
-                  console.log('✅ ProgressBar 클릭됨');
-                  console.log('클릭 좌표:', e.clientX, e.clientY);
+                  e.stopPropagation();
                   handleMouseDown(e);
                 }}
               >
