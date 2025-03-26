@@ -63,15 +63,22 @@ const theme = createTheme({
   },
 });
 
+export enum ToastType {
+  Normal,
+  Error,
+}
+
 export type ToastMessageAtomType = {
   isOpen: boolean;
   message: string;
-  open: (message: string) => void;
+  type: ToastType;
+  open: (message: string, type: ToastType) => void;
 };
 export const ToastMessageAtom = atom<ToastMessageAtomType>({
   isOpen: false,
+  type: ToastType.Normal,
   message: '',
-  open: (message: string) => {},
+  open: (message: string, type: ToastType) => {},
 });
 
 const Root = ({children}: {children: ReactNode}) => {
@@ -85,7 +92,7 @@ const Root = ({children}: {children: ReactNode}) => {
     dataToast.open = openToastMessage;
   }, [dataToast]);
 
-  const openToastMessage = (message: string) => {
+  const openToastMessage = (message: string, type: ToastType = ToastType.Error) => {
     dataToast.message = message;
     dataToast.isOpen = true;
     setDataToast({...dataToast});
@@ -126,6 +133,7 @@ const Root = ({children}: {children: ReactNode}) => {
             <ToastMessage
               isOpen={dataToast.isOpen}
               message={dataToast.message}
+              type={dataToast.type}
               onClose={() => {
                 dataToast.isOpen = false;
                 setDataToast({...dataToast});
@@ -143,10 +151,11 @@ export default Root;
 type ToastMessageType = {
   isOpen: boolean;
   message: string;
+  type: ToastType;
   onClose: () => void;
 };
 
-export const ToastMessage = ({isOpen, message, onClose}: ToastMessageType) => {
+export const ToastMessage = ({isOpen, message, onClose, type}: ToastMessageType) => {
   return (
     <>
       <Backdrop
@@ -190,7 +199,7 @@ export const ToastMessage = ({isOpen, message, onClose}: ToastMessageType) => {
             fontSize: '14px',
             fontWeight: 600,
             lineHeight: '20px',
-            color: '#000', // 글자 색상
+            color: type == ToastType.Normal ? '#000' : '#F75555', // 글자 색상
           },
         }}
       />
