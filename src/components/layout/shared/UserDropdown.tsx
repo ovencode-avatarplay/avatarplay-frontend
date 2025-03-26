@@ -273,7 +273,7 @@ const UserDropdown = () => {
             src={dataProfile.currentProfile?.iconImageUrl || ''}
             // onClick={routeProfile}
             className={styles.avatar}
-            style={{width: '36px', height: '36px'}}
+            style={{width: '32px', height: '32px'}}
           />
         </Badge>
       </DndButton>
