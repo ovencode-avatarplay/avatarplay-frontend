@@ -3026,7 +3026,7 @@
   },
   "common_button_on": {
     "en-US": "On",
-    "ko": " ",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -3806,7 +3806,7 @@
     "de": ""
   },
   "common_button_search": {
-    "en-US": "search",
+    "en-US": "Search",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -4201,7 +4201,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_button_support&about": {
+  "common_button_supportabout": {
     "en-US": "Support & About",
     "ko": "",
     "ja": "",
@@ -4234,7 +4234,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_button_termsand policies": {
+  "common_button_termsandpolicies": {
     "en-US": "Terms and Policies",
     "ko": "",
     "ja": "",
@@ -4279,7 +4279,7 @@
     "de": ""
   },
   "common_language_chinese": {
-    "en-US": "chinese",
+    "en-US": "Chinese",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -4917,7 +4917,18 @@
     "de": ""
   },
   "common_dropdown_favorites": {
-    "en-US": "Favorites",
+    "en-US": "Favorite",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_dropdown_unfavorite": {
+    "en-US": "Unfavorite",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -6357,6 +6368,17 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_sample_095": {
+    "en-US": "Let others get to know you <br>Fill out your profile.",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_label_001": {
     "en-US": "Visibility",
     "ko": "",
@@ -6436,7 +6458,7 @@
   },
   "common_label_008": {
     "en-US": "NSFW",
-    "ko": " ",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -6623,6 +6645,17 @@
   },
   "common_label_favorite": {
     "en-US": "Favorite",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_guestmode": {
+    "en-US": "Guest Mode",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8093,7 +8126,7 @@
     "zh-CN": "",
     "zh-TW": "",
     "pt-PT": "",
-    "de": ""
+    "de": " "
   },
   "common_tagaimodel_pixar": {
     "en-US": "Pixar",
@@ -9262,7 +9295,7 @@
     "de": ""
   },
   "home001_label_002": {
-    "en-US": "fill",
+    "en-US": "Following",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9284,7 +9317,7 @@
     "de": ""
   },
   "explore001_label_001": {
-    "en-US": "Episode Ranking",
+    "en-US": "Character Ranking",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9295,7 +9328,7 @@
     "de": ""
   },
   "explore001_label_002": {
-    "en-US": "Webtoon Ranking",
+    "en-US": "Story Ranking",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -9306,7 +9339,7 @@
     "de": ""
   },
   "explore001_label_003": {
-    "en-US": "Video Ranking",
+    "en-US": "Content Ranking",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -11176,7 +11209,7 @@
     "de": ""
   },
   "shared010_desc_002": {
-    "en-US": "[ ] sponsors [ ]",
+    "en-US": "[{0}] sponsors [{1}]",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -11342,6 +11375,39 @@
   },
   "shared017_label_003": {
     "en-US": "Recently",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "shared026_label_001": {
+    "en-US": "No Subtitles",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "shared026_label_002": {
+    "en-US": "No Dubbing",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "shared026_label_003": {
+    "en-US": "Subtitles",
     "ko": "",
     "ja": "",
     "fr": "",
