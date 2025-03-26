@@ -1201,7 +1201,7 @@ export const DrawerSelect = ({title, description, tags, open, onClose, onChange}
           {data.tagList.map((tag, index) => {
             return (
               <div className={cx(styles.tag, tag.isActive && styles.active)} data-tag={index}>
-                <div className={styles.value}>{getLocalizedText(tag?.value)}</div>
+                <div className={styles.value}>{tag?.value}</div>
                 <div className={styles.iconCheckWrap}>{tag.isActive && <img src={LineCheck.src} alt="" />}</div>
               </div>
             );
