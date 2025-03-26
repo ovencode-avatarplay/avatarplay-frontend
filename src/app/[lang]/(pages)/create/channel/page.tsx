@@ -66,7 +66,7 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import formatText from '@/utils/formatText';
-import {ToastMessageAtom} from '@/app/Root';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
 
 type Props = {
@@ -446,6 +446,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     if (!errors) {
       return;
     }
+
+    dataToast.open(getLocalizedText('common_alert_093'), ToastType.Error);
 
     if (errors.mediaUrl) {
       setFocus('mediaUrl');

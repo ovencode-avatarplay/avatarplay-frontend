@@ -1,5 +1,6 @@
 'use client';
 
+import parse from 'html-react-parser';
 import {store, persistor} from '@/redux-store/ReduxStore';
 import {ReactNode, useEffect, useRef, useState} from 'react';
 import {Provider} from 'react-redux';
@@ -92,9 +93,10 @@ const Root = ({children}: {children: ReactNode}) => {
     dataToast.open = openToastMessage;
   }, [dataToast]);
 
-  const openToastMessage = (message: string, type: ToastType = ToastType.Error) => {
+  const openToastMessage = (message: string, type: ToastType = ToastType.Normal) => {
     dataToast.message = message;
     dataToast.isOpen = true;
+    dataToast.type = type;
     setDataToast({...dataToast});
   };
 
@@ -173,7 +175,7 @@ export const ToastMessage = ({isOpen, message, onClose, type}: ToastMessageType)
         open={isOpen}
         anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
         autoHideDuration={2000}
-        message={message}
+        message={parse(message)}
         onClose={() => {
           onClose();
         }}
@@ -182,7 +184,7 @@ export const ToastMessage = ({isOpen, message, onClose, type}: ToastMessageType)
           width: 'calc(var(--full-width-percent) - 32px)', // 전체 너비
           zIndex: 999,
           '& .MuiPaper-root': {
-            height: '47px',
+            minHeight: '47px',
             width: '100%', // 전체 너비
 
             background: 'rgba(255, 255, 255, 1)', // 배경색
