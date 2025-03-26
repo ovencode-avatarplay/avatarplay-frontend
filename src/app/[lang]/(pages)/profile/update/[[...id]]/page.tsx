@@ -3,7 +3,7 @@ import {BoldArrowLeft, BoldMenuDots, LineArrowDown, LineArrowLeft, LineClose, Li
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import styles from './ProfileUpdate.module.scss';
 import {useFieldArray, useForm} from 'react-hook-form';
-import {SelectBox} from '@/app/view/profile/ProfileBase';
+import {COMMON_TAG_HEAD_INTEREST, SelectBox} from '@/app/view/profile/ProfileBase';
 import {Dialog, Drawer} from '@mui/material';
 import cx from 'classnames';
 
@@ -77,7 +77,6 @@ type DataProfileUpdateType = {
   dataPortfolio: PortfolioDrawerType;
 };
 
-const COMMON_TAG_HEAD_SKILLS = 'common_filterinterest';
 const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
   const {back} = useCustomRouter();
   const profileId = parseInt(id[0]);
@@ -199,7 +198,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
         }
       }
     }
-    const interests = data.dataInterests.tagList.filter(v => v.isActive).map(v => v.value);
+    const interests = data.dataInterests.tagList.filter(v => v.isActive).map(v => v?.langKey || '');
     setValue('interests', interests);
 
     setValue(`skills`, []);
@@ -470,7 +469,9 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
               {data.dataInterests.tagList.map((one, index) => {
                 if (!one.isActive) return;
                 console.log('one?.value : ', one?.value);
-                const value = one?.value?.includes(COMMON_TAG_HEAD_SKILLS) ? getLocalizedText(one?.value) : one?.value;
+                const value = one?.value?.includes(COMMON_TAG_HEAD_INTEREST)
+                  ? getLocalizedText(one?.value)
+                  : one?.value;
                 return (
                   <div className={styles.tag} key={index}>
                     <div className={styles.value}>
@@ -1094,7 +1095,7 @@ export const DrawerSelectTags = ({title, description, tags, open, onClose, onCha
           }}
         >
           {data.tagList.map((tag, index) => {
-            const value = tag?.value?.includes(COMMON_TAG_HEAD_SKILLS) ? getLocalizedText(tag?.value) : tag?.value;
+            const value = tag?.value?.includes(COMMON_TAG_HEAD_INTEREST) ? getLocalizedText(tag?.value) : tag?.value;
 
             return (
               <div key={tag.value} className={cx(styles.tag, tag.isActive && styles.active)} data-tag={index}>

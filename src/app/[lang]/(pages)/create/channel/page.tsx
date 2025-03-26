@@ -54,7 +54,7 @@ import {
   sendSearchChannel,
 } from '@/app/NetWork/ChannelNetwork';
 import {profile} from 'console';
-import {SelectBox} from '@/app/view/profile/ProfileBase';
+import {COMMON_TAG_HEAD_TAG, SelectBox} from '@/app/view/profile/ProfileBase';
 
 import {on} from 'events';
 import DrawerMembershipSetting from '@/app/view/main/content/create/common/DrawerMembershipSetting';
@@ -243,8 +243,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
     data.idChannel = res?.data?.channelInfo?.id || 0;
 
-    let tag = channelInfo?.tags || [];
-    tag = tag.filter(v => !!v && v != '');
+    let tags = channelInfo?.tags || [];
+    tags = tags.filter(v => !!v && v != '');
     let isMonetization = 0;
     let nsfw = 0;
 
@@ -254,21 +254,22 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       paymentType: channelInfo.membershipSetting?.paymentType || PaymentType.KRW,
       subscription: channelInfo.membershipSetting?.subscription || Subscription.Contents,
     };
-    const channelInfoForm: ChannelInfoForm = {...channelInfo, tags: tag, isMonetization, nsfw, membershipSetting};
+    const channelInfoForm: ChannelInfoForm = {...channelInfo, tags: tags, isMonetization, nsfw, membershipSetting};
 
     data.thumbnail = {file: channelInfo.mediaUrl || ''};
 
     setValue('tags', []);
     for (let i = 0; i < data.dataTag.tagList.length; i++) {
       // const interest = res?.data?.interests[i]
-      const tagValue = data.dataTag.tagList[i].value;
-      const index = tag.findIndex(v => v == tagValue);
+      const tag = data.dataTag.tagList[i];
+      // const index = tag.findIndex(v => v == tagValue);
+      const index = tags.findIndex(v => v == tag.value || v == tag.langKey);
       if (index >= 0) {
         data.dataTag.tagList[index].isActive = true;
       }
     }
-    const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
-    setValue('tags', tags);
+    const tagsActive = data.dataTag.tagList.filter(v => v.isActive).map(v => v?.langKey || '');
+    setValue('tags', tagsActive);
 
     setValue('postCountry', []);
     data.dataCountry.tagList = [];
@@ -444,7 +445,6 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   const countMembers = data.dataCharacterSearch.profileList.length;
 
   const onError = (errors: FieldErrors<ChannelInfoForm>) => {
-    console.log('errors : ', errors);
     if (!errors) {
       return;
     }
@@ -485,6 +485,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       return;
     }
   };
+
+  console.log('errros : ', errors);
 
   return (
     <>
@@ -681,7 +683,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       </>
                     }
                     tagType="node"
-                    error={!!errors.tags}
+                    error={errors.tags && isSubmitted}
                     onClick={() => {
                       data.dataTag.isOpenTagsDrawer = true;
                       setData({...data});
@@ -690,7 +692,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.tagWrap}>
                         {data.dataTag.tagList.map((one, index) => {
                           if (!one.isActive) return;
-                          const translateValue = getLocalizedText(one?.langKey || '');
+                          const value = one?.value?.includes(COMMON_TAG_HEAD_TAG)
+                            ? getLocalizedText(one?.value || '')
+                            : one?.value;
 
                           return (
                             <div className={styles.tag} key={index}>
@@ -701,13 +705,13 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                               autoComplete="off"
                               {...register(`tags.${index}`, {required: true})}
                             /> */}
-                                {translateValue}
+                                {value}
                               </div>
                               <div
                                 className={styles.btnRemoveWrap}
                                 onClick={e => {
                                   data.dataTag.tagList[index].isActive = false;
-                                  const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
+                                  const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v?.langKey || '');
                                   setValue('tags', tags);
                                   setData({...data});
                                 }}
@@ -791,6 +795,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       </div>
                     }
                     containerStyle={{width: '100%'}}
+                    error={errors.postCountry && isSubmitted}
                   />
                 </div>
 
@@ -1023,7 +1028,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           clearErrors('tags');
           data.dataTag.tagList = dataChanged;
 
-          const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
+          const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v?.langKey || '');
           console.log('tags : ', tags);
           setValue('tags', tags);
           setData({...data});
@@ -1196,7 +1201,7 @@ export const DrawerSelect = ({title, description, tags, open, onClose, onChange}
           {data.tagList.map((tag, index) => {
             return (
               <div className={cx(styles.tag, tag.isActive && styles.active)} data-tag={index}>
-                <div className={styles.value}>{tag.value}</div>
+                <div className={styles.value}>{getLocalizedText(tag?.value)}</div>
                 <div className={styles.iconCheckWrap}>{tag.isActive && <img src={LineCheck.src} alt="" />}</div>
               </div>
             );
@@ -1272,9 +1277,11 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
           }}
         >
           {data.tagList.map((tag, index) => {
+            const value = tag?.value?.includes(COMMON_TAG_HEAD_TAG) ? getLocalizedText(tag?.value) : tag?.value;
+
             return (
               <div className={cx(styles.tag, tag.isActive && styles.active)} data-tag={index}>
-                <div className={styles.value}>{tag.value}</div>
+                <div className={styles.value}>{value}</div>
               </div>
             );
           })}
