@@ -77,6 +77,7 @@ type DataProfileUpdateType = {
   dataPortfolio: PortfolioDrawerType;
 };
 
+const COMMON_TAG_HEAD_SKILLS = 'common_filterinterest';
 const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
   const {back} = useCustomRouter();
   const profileId = parseInt(id[0]);
@@ -190,9 +191,10 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
     if (res?.data?.interests) {
       for (let i = 0; i < data.dataInterests.tagList.length; i++) {
         // const interest = res?.data?.interests[i]
-        const tag = data.dataInterests.tagList[i].value;
-        const index = res?.data?.interests.findIndex(v => v == tag);
+        const tag = data.dataInterests.tagList[i];
+        const index = res?.data?.interests.findIndex(v => v == tag.value || v == tag.langKey);
         if (index >= 0) {
+          data.dataInterests.tagList[index].value = res?.data?.interests[i];
           data.dataInterests.tagList[index].isActive = true;
         }
       }
@@ -467,13 +469,13 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
 
               {data.dataInterests.tagList.map((one, index) => {
                 if (!one.isActive) return;
-
-                const translateValue = getLocalizedText(one?.langKey || '');
+                console.log('one?.value : ', one?.value);
+                const value = one?.value?.includes(COMMON_TAG_HEAD_SKILLS) ? getLocalizedText(one?.value) : one?.value;
                 return (
                   <div className={styles.tag} key={index}>
                     <div className={styles.value}>
                       {/* <input value={one.value} type="hidden" {...register(`interests.${index}`, {required: true})} /> */}
-                      {translateValue}
+                      {value}
                     </div>
                     <div
                       className={styles.btnRemoveWrap}
@@ -720,7 +722,7 @@ const PageProfileUpdate = ({params: {id = ['0']}}: Props) => {
             clearErrors('interests');
             data.dataInterests.tagList = dataChanged;
 
-            const interests = data.dataInterests.tagList.filter(v => v.isActive).map(v => v.value);
+            const interests = data.dataInterests.tagList.filter(v => v.isActive).map(v => v?.langKey || '');
             setValue('interests', interests);
             checkValid();
             setData({...data});
@@ -1092,9 +1094,11 @@ export const DrawerSelectTags = ({title, description, tags, open, onClose, onCha
           }}
         >
           {data.tagList.map((tag, index) => {
+            const value = tag?.value?.includes(COMMON_TAG_HEAD_SKILLS) ? getLocalizedText(tag?.value) : tag?.value;
+
             return (
-              <div className={cx(styles.tag, tag.isActive && styles.active)} data-tag={index}>
-                <div className={styles.value}>{tag.value}</div>
+              <div key={tag.value} className={cx(styles.tag, tag.isActive && styles.active)} data-tag={index}>
+                <div className={styles.value}>{value}</div>
               </div>
             );
           })}
