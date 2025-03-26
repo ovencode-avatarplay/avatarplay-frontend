@@ -381,14 +381,12 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           </div>
 
           {/* Progress Bar */}
+
           <div className={styles.progressBar}>
             <div
               className={styles.progressFill}
               style={{
-                width:
-                  item.mediaState === 1
-                    ? `${((activeIndex + 1) / item.mediaUrlList.length) * 100}%` // 이미지 슬라이드 진행도
-                    : `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
+                width: `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
                 transition: 'width 0.1s linear', // 부드러운 진행도 애니메이션
               }}
             ></div>
