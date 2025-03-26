@@ -80,7 +80,6 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   //#endregion
   const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
 
-  const [essentialPopupOpen, setEssentialPopupOpen] = useState<boolean>(false);
   const [essentialWarning, setEssentialWarning] = useState<boolean>(false);
   const [successPopupOpen, setSuccessPopupOpen] = useState<boolean>(false);
 
@@ -335,11 +334,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
         console.log('Character created successfully:', response.data);
         setSuccessPopupOpen(true);
       } else {
-        dataToast.open(getLocalizedText('common_alert_093'), ToastType.Error);
         throw new Error('Character creation failed.');
       }
     } catch (error) {
-      dataToast.open(getLocalizedText('common_alert_093'), ToastType.Error);
       console.error('Error creating character:', error);
     } finally {
       // 빈블럭
@@ -878,7 +875,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                     if (CheckEssential()) {
                       handleCreateCharacter();
                     } else {
-                      setEssentialPopupOpen(true);
+                      dataToast.open(getLocalizedText('common_alert_093'), ToastType.Error);
                       setEssentialWarning(true);
                     }
                   }}
