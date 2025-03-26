@@ -4,12 +4,10 @@
   min-height: calc(100% - 48px);
   min-width: calc(var(--full-width-percent));
   min-height: calc(100% - 48px);
-  overflow-y: auto; // 내부 콘텐츠가 길면 스크롤 가능
 
   background: white;
   z-index: 10;
 
-  overflow-y: auto;
   /* 내부 스크롤 허용 */
   overscroll-behavior: contain;
 }
