@@ -290,7 +290,7 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
   };
 };
 
-const COMMON_TAG_HEAD_INTEREST = 'common_filterinterest';
+export const COMMON_TAG_HEAD_INTEREST = 'common_filterinterest';
 export const COMMON_TAG_HEAD_TAG = 'common_tag';
 
 // /profile?type=pd?id=123123
