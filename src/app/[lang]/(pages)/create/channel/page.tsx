@@ -68,6 +68,7 @@ import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import formatText from '@/utils/formatText';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
+import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
 
 type Props = {
   id: number;
@@ -148,7 +149,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         {isActive: false, value: 'Elf', langKey: 'common_tag_elf'},
         {isActive: false, value: 'Romance', langKey: 'common_tag_romance'},
         {isActive: false, value: 'Vanilla', langKey: 'common_tag_vanilla'},
-        {isActive: false, value: 'ContemporaryFantasy', langKey: 'common_tag_contemporaryFantasy'},
+        {isActive: false, value: 'Contemporary Fantasy', langKey: 'common_tag_contemporaryFantasy'},
         {isActive: false, value: 'Isekai', langKey: 'common_tag_Isekai'},
         {isActive: false, value: 'Flirting', langKey: 'common_tag_Flirting'},
         {isActive: false, value: 'Dislike', langKey: 'common_tag_Dislike'},
@@ -164,6 +165,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         {isActive: false, value: 'Books', langKey: 'common_tag_Books'},
         {isActive: false, value: 'Aliens', langKey: 'common_tag_Aliens'},
       ],
+
       drawerTitle: getLocalizedText('common_label_002'),
       drawerDescription: '',
     },
@@ -672,7 +674,51 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 />
                 <div className={styles.label}>
-                  {getLocalizedText('common_label_002')} <span className={styles.highlight}>*</span>
+                  <CustomChipSelector
+                    label={
+                      <>
+                        {getLocalizedText('common_label_002')} <span className={styles.highlight}>*</span>
+                      </>
+                    }
+                    tagType="node"
+                    onClick={() => {
+                      data.dataTag.isOpenTagsDrawer = true;
+                      setData({...data});
+                    }}
+                    reactNode={
+                      <div className={styles.tagWrap}>
+                        {data.dataTag.tagList.map((one, index) => {
+                          if (!one.isActive) return;
+                          const translateValue = getLocalizedText(one?.langKey || '');
+
+                          return (
+                            <div className={styles.tag} key={index}>
+                              <div className={styles.value}>
+                                {/* <input
+                              value={one.value}
+                              className={styles.hide}
+                              autoComplete="off"
+                              {...register(`tags.${index}`, {required: true})}
+                            /> */}
+                                {translateValue}
+                              </div>
+                              <div
+                                className={styles.btnRemoveWrap}
+                                onClick={e => {
+                                  data.dataTag.tagList[index].isActive = false;
+                                  const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
+                                  setValue('tags', tags);
+                                  setData({...data});
+                                }}
+                              >
+                                <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    }
+                  />
                 </div>
                 <input
                   className={styles.hide}
@@ -684,99 +730,65 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     },
                   })}
                 />
-                <CustomSelector
-                  value={''}
-                  error={errors.tags && isSubmitted}
-                  onClick={() => {
-                    data.dataTag.isOpenTagsDrawer = true;
-                    setData({...data});
-                  }}
-                />
-                <div className={styles.tagWrap}>
-                  {data.dataTag.tagList.map((one, index) => {
-                    if (!one.isActive) return;
-                    const translateValue = getLocalizedText(one?.langKey || '');
-
-                    return (
-                      <div className={styles.tag} key={index}>
-                        <div className={styles.value}>
-                          {/* <input
-                            value={one.value}
-                            className={styles.hide}
-                            autoComplete="off"
-                            {...register(`tags.${index}`, {required: true})}
-                          /> */}
-                          {translateValue}
-                        </div>
-                        <div
-                          className={styles.btnRemoveWrap}
-                          onClick={e => {
-                            data.dataTag.tagList[index].isActive = false;
-                            const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
-                            setValue('tags', tags);
-                            setData({...data});
-                          }}
-                        >
-                          <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
 
                 <div className={styles.label}>
-                  {getLocalizedText('common_label_003')} <span className={styles.highlight}>*</span>
-                </div>
-                <CustomSelector
-                  value={''}
-                  error={errors.postCountry && isSubmitted}
-                  onClick={() => {
-                    data.dataCountry.isOpenDrawer = true;
-                    setData({...data});
-                  }}
-                />
-                <div className={styles.tagWrap}>
-                  <input
-                    className={styles.hide}
-                    autoComplete="off"
-                    {...register(`postCountry`, {
-                      required: true,
-                      validate: {
-                        array: value => (value?.length || 0) > 0,
-                      },
-                    })}
-                  />
+                  <CustomChipSelector
+                    label={
+                      <>
+                        {getLocalizedText('common_label_003')} <span className={styles.highlight}>*</span>
+                      </>
+                    }
+                    tagType="node"
+                    onClick={() => {
+                      data.dataCountry.isOpenDrawer = true;
+                      setData({...data});
+                    }}
+                    reactNode={
+                      <div className={styles.tagWrap}>
+                        <input
+                          className={styles.hide}
+                          autoComplete="off"
+                          {...register(`postCountry`, {
+                            required: true,
+                            validate: {
+                              array: value => (value?.length || 0) > 0,
+                            },
+                          })}
+                        />
 
-                  {data.dataCountry.tagList.map((one, index) => {
-                    const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
-                    // const countryStr = keys[Number(one)];
-                    const countryStr = getLangKey(Number(one));
+                        {data.dataCountry.tagList.map((one, index) => {
+                          const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
+                          // const countryStr = keys[Number(one)];
+                          const countryStr = getLangKey(Number(one));
 
-                    return (
-                      <div className={styles.tag} key={index}>
-                        <div className={styles.value}>
-                          {/* <input
+                          return (
+                            <div className={styles.tag} key={index}>
+                              <div className={styles.value}>
+                                {/* <input
                             value={one}
                             className={styles.hide}
                             autoComplete="off"
                             {...register(`postCountry.${index}`, {required: true})}
                           /> */}
-                          {getLocalizedText(countryStr)}
-                        </div>
-                        <div
-                          className={styles.btnRemoveWrap}
-                          onClick={e => {
-                            const postCountryList = data.dataCountry.tagList.filter(v => v != one);
-                            data.dataCountry.tagList = postCountryList;
-                            setValue('postCountry', postCountryList);
-                            setData({...data});
-                          }}
-                        >
-                          <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
-                        </div>
+                                {getLocalizedText(countryStr)}
+                              </div>
+                              <div
+                                className={styles.btnRemoveWrap}
+                                onClick={e => {
+                                  const postCountryList = data.dataCountry.tagList.filter(v => v != one);
+                                  data.dataCountry.tagList = postCountryList;
+                                  setValue('postCountry', postCountryList);
+                                  setData({...data});
+                                }}
+                              >
+                                <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
-                    );
-                  })}
+                    }
+                  />
                 </div>
 
                 <div className={styles.operatorInvitationHeader}>

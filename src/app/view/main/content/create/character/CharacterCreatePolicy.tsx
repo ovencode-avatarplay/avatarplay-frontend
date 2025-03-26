@@ -21,6 +21,7 @@ import CustomSelector from '@/components/layout/shared/CustomSelector';
 import MaxTextInput, {displayType, inputState, inputType} from '@/components/create/MaxTextInput';
 import {getLangKey, LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 import formatText from '@/utils/formatText';
+import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
 
 interface Props {
   visibility: number;
@@ -97,29 +98,29 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     {
       category: 'Theme',
       tags: [
-        'Male',
-        'Female',
-        'Boyfriend',
-        'Girlfriend',
-        'Hero',
-        'Elf',
-        'Romance',
-        'Vanilla',
-        'Contemporary Fantasy',
-        'Isekai',
-        'Flirting',
-        'Dislike',
-        'Comedy',
-        'Noir',
-        'Horror',
-        'Demon',
-        'SF',
-        'Vampire',
-        'Office',
-        'Monster',
-        'Anime',
-        'Books',
-        'Aliens',
+        'common_tag_male',
+        'common_tag_female',
+        'common_tag_boyfriend',
+        'common_tag_girlfriend',
+        'common_tag_hero',
+        'common_tag_elf',
+        'common_tag_romance',
+        'common_tag_vanilla',
+        'common_tag_contemporaryFantasy',
+        'common_tag_isekai',
+        'common_tag_flirting',
+        'common_tag_dislike',
+        'common_tag_comedy',
+        'common_tag_noir',
+        'common_tag_horror',
+        'common_tag_demon',
+        'common_tag_sf',
+        'common_tag_vampire',
+        'common_tag_office',
+        'common_tag_monster',
+        'common_tag_anime',
+        'common_tag_books',
+        'common_tag_aliens',
       ],
     },
   ];
@@ -661,49 +662,44 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           onCustomAPIKeyChange={onLlmCustomAPIKeyChange}
         />
 
-        <div className={styles.tagContainer}>
-          {renderDropDown(
-            getLocalizedText(Header, 'common_label_002'),
-            selectedTags.map(tag => getLocalizedText(`common_tag_${tag}`)).join(', '),
-            setTagOpen,
-          )}
-          {renderTag()}
-          <div className={styles.blackTagContainer}>
-            {selectedTags.map((tag, index) => (
-              <div key={index} className={styles.blackTag}>
-                {getLocalizedText(`common_tag_${tag}`)}
-                <img
-                  src={LineClose.src}
-                  className={styles.lineClose}
-                  onClick={() => handleTagSelect(tag)} // 클릭하면 해당 태그 삭제
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+        <CustomChipSelector
+          label={getLocalizedText('common_label_002')}
+          onClick={() => {
+            setTagOpen(true);
+          }}
+          tagType="tags"
+          tags={selectedTags}
+          handleTagSelect={handleTagSelect}
+        />
+        {renderTag()}
 
-        <div className={styles.tagContainer}>
-          {renderDropDown(
-            getLocalizedText(Header, 'common_label_003'),
-            positionCountry.map(country => getLocalizedText('Common', getLangKey(country))).join(', '),
-            setIsPositionCountryOpen,
-            true,
-            essentialWarning,
-          )}
-          {renderPositionCountry()}
-          <div className={styles.blackTagContainer}>
-            {positionCountry.map((tag, index) => (
-              <div key={index} className={styles.blackTag}>
-                {getLocalizedText('Common', getLangKey(tag))}
-                <img
-                  src={LineClose.src}
-                  className={styles.lineClose}
-                  onClick={() => onPositionCountryChange(positionCountry.filter((_, i) => i !== index))}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+        <CustomChipSelector
+          label={
+            <div className={styles.title2}>
+              {getLocalizedText('common_label_003')}
+              <div className={styles.titleAstrisk}>*</div>
+            </div>
+          }
+          onClick={() => {
+            setIsPositionCountryOpen(true);
+          }}
+          tagType="node"
+          reactNode={
+            <div className={styles.blackTagContainer}>
+              {positionCountry.map((tag, index) => (
+                <div key={index} className={styles.blackTag}>
+                  {getLocalizedText(getLangKey(tag))}
+                  <img
+                    src={LineClose.src}
+                    className={styles.lineClose}
+                    onClick={() => onPositionCountryChange(positionCountry.filter((_, i) => i !== index))}
+                  />
+                </div>
+              ))}
+            </div>
+          }
+        />
+        {renderPositionCountry()}
       </div>
       <div className={styles.selectItemsArea2}>
         {renderCharacterIP()}
