@@ -216,9 +216,11 @@
 
 .blackTagContainer {
     display: flex;
-    align-self: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 3px;
+    align-self: stretch;
     flex-wrap: wrap;
-    gap: 8px;
 }
 
 

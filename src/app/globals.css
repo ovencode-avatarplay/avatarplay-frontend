@@ -284,3 +284,16 @@ h1, h2, h3, h4, h5, h6
   font-family: 'Lato', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC';
 }
 
+/* globals.css 또는 app/globals.css */
+
+
+.shaka-text-container {
+  position: absolute;
+  bottom: 30% !important;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 24px;
+  color: white;
+  pointer-events: none;
+}

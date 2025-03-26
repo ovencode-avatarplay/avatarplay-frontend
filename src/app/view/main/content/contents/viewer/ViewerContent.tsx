@@ -34,6 +34,7 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
 import {followProfile, subscribeProfile} from '@/app/NetWork/ProfileNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
+
 import {
   ContentCategoryType,
   ContentLanguageType,
@@ -151,32 +152,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
 
-  useEffect(() => {
-    if (!playerRef) return;
-    if (!info?.episodeVideoInfo) return;
-    const video = videoRef.current;
-    if (!video) return;
-    const player = new shaka.Player(video);
-    playerRef.current = player;
-
-    player
-      .load(info.episodeVideoInfo.videoSourceFileInfo.videoSourceUrl)
-      .then(() => {
-        const allTracks = player.getVariantTracks();
-        const audioTracks = allTracks.filter((t: any) => t.type === 'audio');
-
-        console.log('🔊 All Tracks:', allTracks);
-        console.log('🔉 Audio Tracks:', audioTracks);
-      })
-      .catch((err: any) => {
-        console.error('Error loading video:', err);
-      });
-
-    return () => {
-      player.destroy();
-    };
-  }, [info]);
-
   const [isReportModal, setIsRefortModal] = useState(false);
   const selectReportItem: SelectDrawerItem[] = [
     {
@@ -266,6 +241,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     if (!video || !info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl) return;
 
     const player = new shaka.Player(video);
+    player.configure({
+      textDisplayFactory: () => new shaka.text.UITextDisplayer(video, video.parentElement),
+    });
     playerRef.current = player;
 
     const handleTimeUpdate = () => {
@@ -278,12 +256,23 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setIsPlaying(false);
     };
 
-    player.load(info.episodeVideoInfo.videoSourceFileInfo.videoSourceUrl).then(() => {
+    player.load(info.episodeVideoInfo.videoSourceFileInfo.videoSourceUrl).then(async () => {
       console.log('✅ Shaka Player video loaded');
 
       setVideoDuration(video.duration);
       video.addEventListener('timeupdate', handleTimeUpdate);
       video.addEventListener('ended', handleEnded);
+
+      if (info?.episodeVideoInfo?.subTitleFileInfos) {
+        console.log('🔎 자막 URL:', info.episodeVideoInfo.subTitleFileInfos);
+        const subtitleUrl = info.episodeVideoInfo.subTitleFileInfos[0].videoSourceUrl;
+        await player.addTextTrackAsync(subtitleUrl, 'kor', 'subtitles', 'text/vtt');
+
+        player.setTextTrackVisibility(true);
+        console.log('✅ 자막 추가 완료!');
+      } else {
+        console.warn('🚨 자막 URL이 없습니다.');
+      }
     });
 
     return () => {
@@ -292,6 +281,20 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       player.destroy();
     };
   }, [info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl]);
+
+  useEffect(() => {
+    const checkShakaSubtitle = setInterval(() => {
+      const el = document.querySelector('.shaka-text-container');
+      if (el) {
+        console.log('✅ 자막 DOM 발견됨:', el);
+        clearInterval(checkShakaSubtitle);
+      } else {
+        console.log('❌ 아직 자막 DOM 없음');
+      }
+    }, 500);
+
+    return () => clearInterval(checkShakaSubtitle);
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -375,8 +378,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleSubCommentCount = () => {
     if (info) setCommentCount(info?.commonMediaViewInfo.commentCount - 1);
   };
-  const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
-    event.stopPropagation(); // 부모로 이벤트 전파 방지
+  const handleClick = () => {
     setIsPlaying(!isPlaying);
     setIsClicked(true);
     setTimeout(() => setIsClicked(false), 300);
@@ -395,7 +397,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       };
 
       await sendRecordPlay(recordPlayRequest);
-      console.log('✅ RecordPlay 호출됨:', recordPlayRequest);
     } catch (error) {
       console.error('🚨 RecordPlay API 호출 오류:', error);
     }
@@ -598,6 +599,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                       objectFit: 'contain',
                     }}
                     onClick={event => {}}
+                    controls={false} // Shaka Player가 컨트롤합니다.
                     autoPlay
                   />
 
@@ -612,8 +614,12 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                   >
                     <div
                       className={`${styles.playCircleIcon} ${isVisible ? styles.fadeAndGrow : styles.fadeOutAndShrink}`}
+                      onClick={event => {
+                        event.stopPropagation(); // 부모로 이벤트 전파 방지
+                        handleClick();
+                      }}
                     >
-                      <img src={isPlaying ? BoldPause.src : BoldPlay.src} onClick={event => handleClick(event)} />
+                      <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
                     </div>
                   </div>
                 </div>

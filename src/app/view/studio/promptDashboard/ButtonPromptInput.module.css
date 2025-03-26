@@ -61,11 +61,10 @@
     
 }
 
-.isEssential
+.isError
 {
-    border-style: solid;
-    border-width: 2px;
-    border-color: red;
+    border: 1px dashed var(--Primary-2, #FEBBEA);
+    background: var(--Primary-4, #FFF5FD);
 }
 
 .maxTextButtonArea
