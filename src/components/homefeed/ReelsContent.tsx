@@ -375,6 +375,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 </div>
               </div>
             )}
+
+            <div className={styles.gradientTop}></div>
+            <div className={styles.gradientBottom}></div>
           </div>
 
           {/* Progress Bar */}
