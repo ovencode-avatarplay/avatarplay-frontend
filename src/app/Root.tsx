@@ -72,13 +72,13 @@ export type ToastMessageAtomType = {
   isOpen: boolean;
   message: string;
   type: ToastType;
-  open: (message: string, type: ToastType) => void;
+  open: (message: string, type?: ToastType) => void;
 };
 export const ToastMessageAtom = atom<ToastMessageAtomType>({
   isOpen: false,
   type: ToastType.Normal,
   message: '',
-  open: (message: string, type: ToastType) => {},
+  open: (message: string, type?: ToastType) => {},
 });
 
 const Root = ({children}: {children: ReactNode}) => {
