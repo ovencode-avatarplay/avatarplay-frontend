@@ -681,6 +681,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       </>
                     }
                     tagType="node"
+                    error={!!errors.tags}
                     onClick={() => {
                       data.dataTag.isOpenTagsDrawer = true;
                       setData({...data});
