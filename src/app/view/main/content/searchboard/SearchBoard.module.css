@@ -2,25 +2,22 @@
 {
     height: 100%;
     top: 12px;
-    gap: 15px;
-    overflow-y: hidden;
+    gap: 15px; 
 }
 
 .scrollArea
 { 
-    height: 100%;
-    overflow-y: scroll;
-    scroll-snap-type: y mandatory; /* 세로 스냅 스크롤 */ 
+    height: 100%; 
 }
 
-.scrollArea::-webkit-scrollbar {
+/* .scrollArea::-webkit-scrollbar {
     display: none;  
   }
   
 .scrollArea {
    scrollbar-width: none;  
    -ms-overflow-style: none;  
-}
+} */
 
 
 .content {
