@@ -202,13 +202,15 @@ const UserDropdown = () => {
           return;
         }
 
-        updateAuth(session);
+        const isLogin = await isLogined();
+        if (!isLogin) {
+          updateAuth(session);
+        }
       } else if (event === 'INITIAL_SESSION') {
         setAuth(session);
 
         const language = getLanguageTypeFromText(getCurrentLanguage());
         refreshLanaguage(language, router);
-        updateAuth(session);
         console.log('브라우저에 저장된 언어로 가져오자');
       }
     };
