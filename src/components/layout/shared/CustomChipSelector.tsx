@@ -20,11 +20,11 @@ const CustomChipSelector = ({label, onClick, tagType, tags, handleTagSelect, rea
     <div className={styles.customChipSelectorContainer}>
       <CustomButton
         size="Medium"
-        type="Tertiary"
+        type={'Tertiary'}
         state="IconRight"
         icon={LinePlus.src}
         onClick={() => onClick()}
-        customClassName={[styles.selectorOpenButton]}
+        customClassName={[styles.selectorOpenButton, error ? styles.isError : '']}
       >
         {label}
       </CustomButton>

@@ -698,6 +698,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
               ))}
             </div>
           }
+          error={positionCountry.length === 0 && essentialWarning}
         />
         {renderPositionCountry()}
       </div>
