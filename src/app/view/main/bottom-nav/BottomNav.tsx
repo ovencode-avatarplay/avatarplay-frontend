@@ -73,7 +73,7 @@ export default function BottomNav() {
   };
 
   const homeSvg = (
-    <img style={{filter: checkColor(0)}} src={'/ui/Icons/Bold/Home.svg'} />
+    <img className={styles.buttonIcon} style={{filter: checkColor(0)}} src={'/ui/Icons/Bold/Home.svg'} />
     // <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
     //   <path
     //     fillRule="evenodd"
@@ -84,7 +84,7 @@ export default function BottomNav() {
     // </svg>
   );
   const exploreSvg = (
-    <img style={{filter: checkColor(1)}} src={'/ui/Icons/Bold/Explore.svg'} />
+    <img className={styles.buttonIcon} style={{filter: checkColor(1)}} src={'/ui/Icons/Bold/Explore.svg'} />
 
     // <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
     //   <circle cx="12.5667" cy="11.7666" r="8.98856" fill={checkColor(1)} />
@@ -99,7 +99,7 @@ export default function BottomNav() {
   );
 
   const Add_Button = (
-    <img src={'/ui/Icons/Line/Add_Button.svg'} />
+    <img className={styles.buttonIcon} src={'/ui/Icons/Line/Add_Button.svg'} />
     // <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
     //   <path
     //     fillRule="evenodd"
@@ -111,7 +111,7 @@ export default function BottomNav() {
   );
 
   const contentSvg = (
-    <img style={{filter: checkColor(3)}} src={'/ui/Icons/Bold/Chat_Round_Dots.svg'} />
+    <img className={styles.buttonIcon} style={{filter: checkColor(3)}} src={'/ui/Icons/Bold/Chat_Round_Dots.svg'} />
 
     // <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     //   <path
@@ -126,7 +126,7 @@ export default function BottomNav() {
   );
 
   const profileSvg = (
-    <img style={{filter: checkColor(4)}} src={'/ui/Icons/Bold/Profile.svg'} />
+    <img className={styles.buttonIcon} style={{filter: checkColor(4)}} src={'/ui/Icons/Bold/Profile.svg'} />
 
     // <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
     //   <path
