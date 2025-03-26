@@ -173,6 +173,20 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   }, [initialFeed, getEmailFromJwt(), selectedTab]);
 
   useEffect(() => {
+    if (isSpecificProfile) {
+      return;
+    }
+    if (typeof window !== 'undefined') {
+      const currentPath = window.location.pathname; // 현재 경로
+      const basePath = '/ko/main/homefeed'; // 동적 라우팅이 없는 기본 경로
+
+      // 현재 경로가 basePath와 같다면 URL에 첫 번째 피드의 urlLinkKey 추가
+      if (currentPath === basePath && info.length > 0) {
+        const firstFeed = info[0];
+        const newUrl = `${basePath}/${firstFeed.urlLinkKey}`;
+        window.history.replaceState(null, '', newUrl); // 주소창만 변경 (새로고침 없음)
+      }
+    }
     console.log('info', info);
   }, [info]);
 
@@ -231,6 +245,14 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
       urlUpdateTimeoutRef.current = setTimeout(() => {
         viewFeed(currentItem.id);
+
+        if (isSpecificProfile) {
+          return;
+        }
+        const newUrl = `/ko/main/homefeed/${currentItem.urlLinkKey}`;
+        if (window.location.pathname !== newUrl) {
+          window.history.pushState(null, '', newUrl);
+        }
       }, 300); // ✅ 스크롤 멈춘 뒤 300ms 후에 URL 변경
     }
 

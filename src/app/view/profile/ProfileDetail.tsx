@@ -26,6 +26,7 @@ import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
+import {COMMON_TAG_HEAD_TAG} from './ProfileBase';
 
 type Props = {
   profileId: number;
@@ -164,7 +165,9 @@ export const CharacterProfileDetailComponent = ({
       {metatags?.length != 0 && (
         <ul className={styles.metatags}>
           {metatags?.map((one, index) => {
-            return <li className={styles.item}>{one}</li>;
+            const value = one.includes(COMMON_TAG_HEAD_TAG) ? getLocalizedText(one) : one;
+
+            return <li className={styles.item}>{value}</li>;
           })}
         </ul>
       )}

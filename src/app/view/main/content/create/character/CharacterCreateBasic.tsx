@@ -42,7 +42,8 @@ const CharacterCreateBasic: React.FC<CharacterCreateBasicProps> = ({
           value={characterName}
           placeholder={getLocalizedText(Common, 'common_sample_084')}
           onChange={e => setCharacterName(e.target.value)}
-          customClassName={[styles.inputBox, essentialWarning && characterName === '' ? styles.isEssential : '']}
+          error={essentialWarning && characterName === ''}
+          customClassName={[styles.inputBox]}
         />
       </div>
       {/* <div className={styles.descriptionInputArea}>

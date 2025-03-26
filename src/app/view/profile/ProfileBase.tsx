@@ -290,6 +290,9 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
   };
 };
 
+export const COMMON_TAG_HEAD_INTEREST = 'common_filterinterest';
+export const COMMON_TAG_HEAD_TAG = 'common_tag';
+
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
@@ -2619,9 +2622,11 @@ const TabContentComponent = ({
             <ul className={styles.tags}>
               {pdInfo?.interests.map((one, index) => {
                 if (one == '') return;
+
+                const value = one.includes(COMMON_TAG_HEAD_INTEREST) ? getLocalizedText(one) : one;
                 return (
                   <li key={index} className={styles.tag}>
-                    {one}
+                    {value}
                   </li>
                 );
               })}
@@ -2796,7 +2801,9 @@ const TabContentComponent = ({
           <section className={styles.tagSection}>
             <ul className={styles.metatags}>
               {tagList.map((tag, index) => {
-                return <li className={styles.item}>{tag}</li>;
+                const value = tag.includes(COMMON_TAG_HEAD_TAG) ? getLocalizedText(tag) : tag;
+
+                return <li className={styles.item}>{value}</li>;
               })}
             </ul>
           </section>

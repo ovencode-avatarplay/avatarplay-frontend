@@ -40,10 +40,12 @@ api.interceptors.response.use(
     // 정상 응답인 경우 그대로 반환
     if (response.data.errorCode !== null) {
       const errorDescription = getLocalizedText(response.data.errorCode) || response.data.errorCode;
-      await showPopup({
-        title: 'Error',
-        description: errorDescription,
-      });
+      console.error('네트워크 애러:   ' + errorDescription);
+
+      // await showPopup({
+      //   title: 'Error',
+      //   description: errorDescription,
+      // });
     }
     return response;
   },

@@ -63,6 +63,8 @@ enum eTabType {
   About,
 }
 
+const COMMON_GENRE_HEAD = 'common_genre';
+
 const ContentSeriesDetail = ({id, type}: Props) => {
   const {back} = useCustomRouter();
   const refThumbnailWrap = useRef<HTMLDivElement | null>(null);
@@ -164,7 +166,13 @@ const ContentSeriesDetail = ({id, type}: Props) => {
     setData({...data});
   };
 
-  const genreList = data.dataMix?.genre?.split(',').map(v => v.trim());
+  const genreList = data.dataMix?.genre
+    ?.split(',')
+    .map(v => v.trim())
+    .map(v => {
+      const value = v.includes(COMMON_GENRE_HEAD) ? getLocalizedText(v) : v;
+      return value;
+    });
   const genreStr = genreList?.join('&nbsp;&nbsp;/&nbsp;&nbsp;') || '';
 
   const seasonCount = data.dataMix?.maxSeasonNo || 0;

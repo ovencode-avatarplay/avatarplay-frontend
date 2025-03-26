@@ -33,6 +33,8 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
 import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPrompt';
+import {useAtom} from 'jotai';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -48,6 +50,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   const {back} = useCustomRouter();
   const router = useRouter();
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   //#region Data
   const character: CharacterInfo = characterInfo
     ? characterInfo
@@ -77,7 +80,6 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   //#endregion
   const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
 
-  const [essentialPopupOpen, setEssentialPopupOpen] = useState<boolean>(false);
   const [essentialWarning, setEssentialWarning] = useState<boolean>(false);
   const [successPopupOpen, setSuccessPopupOpen] = useState<boolean>(false);
 
@@ -813,11 +815,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                   {getLocalizedText(Header, 'createcharacter001_label_002')} <span className={styles.astrisk}>*</span>
                 </h2>
 
-                <div
-                  className={`${styles.thumbnailButtonArea} ${
-                    essentialWarning && mainimageUrl === '' && styles.isEssential
-                  }`}
-                >
+                <div className={`${styles.thumbnailButtonArea} `}>
                   <button
                     className={styles.thumbnailButton}
                     onClick={() => {
@@ -830,7 +828,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                     }}
                   >
                     <div
-                      className={`${styles.thumbnailImage} ${mainimageUrl === '' && styles.emptyImage}`}
+                      className={`${styles.thumbnailImage} ${mainimageUrl === '' && styles.emptyImage} ${
+                        essentialWarning && mainimageUrl === '' && styles.isEssential
+                      }`}
                       style={{backgroundImage: mainimageUrl ? `url(${mainimageUrl})` : 'none'}}
                     >
                       {mainimageUrl !== '' && (
@@ -875,7 +875,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                     if (CheckEssential()) {
                       handleCreateCharacter();
                     } else {
-                      setEssentialPopupOpen(true);
+                      dataToast.open(getLocalizedText('common_alert_093'), ToastType.Error);
                       setEssentialWarning(true);
                     }
                   }}
@@ -891,22 +891,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       </div>
       {imgUploadModalOpen && <>{renderUploadSelectModal()}</>}
       {imageViewOpen && <CharacterCreateViewImage imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
-      {essentialPopupOpen && (
-        <CustomPopup
-          type="alert"
-          title={getLocalizedText(Common, 'common_alert_077')}
-          // description=''
-          buttons={[
-            {
-              label: getLocalizedText(Common, 'common_button_confirm'),
-              onClick: () => {
-                setEssentialPopupOpen(false);
-              },
-              isPrimary: true,
-            },
-          ]}
-        />
-      )}
+
       {successPopupOpen && (
         <CustomPopup
           type="alert"

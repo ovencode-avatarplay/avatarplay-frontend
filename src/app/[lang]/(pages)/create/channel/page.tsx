@@ -54,7 +54,7 @@ import {
   sendSearchChannel,
 } from '@/app/NetWork/ChannelNetwork';
 import {profile} from 'console';
-import {SelectBox} from '@/app/view/profile/ProfileBase';
+import {COMMON_TAG_HEAD_TAG, SelectBox} from '@/app/view/profile/ProfileBase';
 
 import {on} from 'events';
 import DrawerMembershipSetting from '@/app/view/main/content/create/common/DrawerMembershipSetting';
@@ -66,8 +66,9 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import formatText from '@/utils/formatText';
-import {ToastMessageAtom} from '@/app/Root';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
+import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
 
 type Props = {
   id: number;
@@ -148,7 +149,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         {isActive: false, value: 'Elf', langKey: 'common_tag_elf'},
         {isActive: false, value: 'Romance', langKey: 'common_tag_romance'},
         {isActive: false, value: 'Vanilla', langKey: 'common_tag_vanilla'},
-        {isActive: false, value: 'ContemporaryFantasy', langKey: 'common_tag_contemporaryFantasy'},
+        {isActive: false, value: 'Contemporary Fantasy', langKey: 'common_tag_contemporaryFantasy'},
         {isActive: false, value: 'Isekai', langKey: 'common_tag_Isekai'},
         {isActive: false, value: 'Flirting', langKey: 'common_tag_Flirting'},
         {isActive: false, value: 'Dislike', langKey: 'common_tag_Dislike'},
@@ -164,6 +165,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         {isActive: false, value: 'Books', langKey: 'common_tag_Books'},
         {isActive: false, value: 'Aliens', langKey: 'common_tag_Aliens'},
       ],
+
       drawerTitle: getLocalizedText('common_label_002'),
       drawerDescription: '',
     },
@@ -241,8 +243,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
     data.idChannel = res?.data?.channelInfo?.id || 0;
 
-    let tag = channelInfo?.tags || [];
-    tag = tag.filter(v => !!v && v != '');
+    let tags = channelInfo?.tags || [];
+    tags = tags.filter(v => !!v && v != '');
     let isMonetization = 0;
     let nsfw = 0;
 
@@ -252,21 +254,22 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       paymentType: channelInfo.membershipSetting?.paymentType || PaymentType.KRW,
       subscription: channelInfo.membershipSetting?.subscription || Subscription.Contents,
     };
-    const channelInfoForm: ChannelInfoForm = {...channelInfo, tags: tag, isMonetization, nsfw, membershipSetting};
+    const channelInfoForm: ChannelInfoForm = {...channelInfo, tags: tags, isMonetization, nsfw, membershipSetting};
 
     data.thumbnail = {file: channelInfo.mediaUrl || ''};
 
     setValue('tags', []);
     for (let i = 0; i < data.dataTag.tagList.length; i++) {
       // const interest = res?.data?.interests[i]
-      const tagValue = data.dataTag.tagList[i].value;
-      const index = tag.findIndex(v => v == tagValue);
+      const tag = data.dataTag.tagList[i];
+      // const index = tag.findIndex(v => v == tagValue);
+      const index = tags.findIndex(v => v == tag.value || v == tag.langKey);
       if (index >= 0) {
         data.dataTag.tagList[index].isActive = true;
       }
     }
-    const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
-    setValue('tags', tags);
+    const tagsActive = data.dataTag.tagList.filter(v => v.isActive).map(v => v?.langKey || '');
+    setValue('tags', tagsActive);
 
     setValue('postCountry', []);
     data.dataCountry.tagList = [];
@@ -442,10 +445,11 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   const countMembers = data.dataCharacterSearch.profileList.length;
 
   const onError = (errors: FieldErrors<ChannelInfoForm>) => {
-    console.log('errors : ', errors);
     if (!errors) {
       return;
     }
+
+    dataToast.open(getLocalizedText('common_alert_093'), ToastType.Error);
 
     if (errors.mediaUrl) {
       setFocus('mediaUrl');
@@ -481,6 +485,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       return;
     }
   };
+
+  console.log('errros : ', errors);
 
   return (
     <>
@@ -670,7 +676,55 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   }}
                 />
                 <div className={styles.label}>
-                  {getLocalizedText('common_label_002')} <span className={styles.highlight}>*</span>
+                  <CustomChipSelector
+                    label={
+                      <>
+                        {getLocalizedText('common_label_002')} <span className={styles.highlight}>*</span>
+                      </>
+                    }
+                    tagType="node"
+                    error={errors.tags && isSubmitted}
+                    onClick={() => {
+                      data.dataTag.isOpenTagsDrawer = true;
+                      setData({...data});
+                    }}
+                    reactNode={
+                      <div className={styles.tagWrap}>
+                        {data.dataTag.tagList.map((one, index) => {
+                          if (!one.isActive) return;
+                          const value = one?.value?.includes(COMMON_TAG_HEAD_TAG)
+                            ? getLocalizedText(one?.value || '')
+                            : one?.value;
+
+                          return (
+                            <div className={styles.tag} key={index}>
+                              <div className={styles.value}>
+                                {/* <input
+                              value={one.value}
+                              className={styles.hide}
+                              autoComplete="off"
+                              {...register(`tags.${index}`, {required: true})}
+                            /> */}
+                                {value}
+                              </div>
+                              <div
+                                className={styles.btnRemoveWrap}
+                                onClick={e => {
+                                  data.dataTag.tagList[index].isActive = false;
+                                  const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v?.langKey || '');
+                                  setValue('tags', tags);
+                                  setData({...data});
+                                }}
+                              >
+                                <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    }
+                    containerStyle={{width: '100%'}}
+                  />
                 </div>
                 <input
                   className={styles.hide}
@@ -682,99 +736,67 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     },
                   })}
                 />
-                <CustomSelector
-                  value={''}
-                  error={errors.tags && isSubmitted}
-                  onClick={() => {
-                    data.dataTag.isOpenTagsDrawer = true;
-                    setData({...data});
-                  }}
-                />
-                <div className={styles.tagWrap}>
-                  {data.dataTag.tagList.map((one, index) => {
-                    if (!one.isActive) return;
-                    const translateValue = getLocalizedText(one?.langKey || '');
-
-                    return (
-                      <div className={styles.tag} key={index}>
-                        <div className={styles.value}>
-                          {/* <input
-                            value={one.value}
-                            className={styles.hide}
-                            autoComplete="off"
-                            {...register(`tags.${index}`, {required: true})}
-                          /> */}
-                          {translateValue}
-                        </div>
-                        <div
-                          className={styles.btnRemoveWrap}
-                          onClick={e => {
-                            data.dataTag.tagList[index].isActive = false;
-                            const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
-                            setValue('tags', tags);
-                            setData({...data});
-                          }}
-                        >
-                          <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
 
                 <div className={styles.label}>
-                  {getLocalizedText('common_label_003')} <span className={styles.highlight}>*</span>
-                </div>
-                <CustomSelector
-                  value={''}
-                  error={errors.postCountry && isSubmitted}
-                  onClick={() => {
-                    data.dataCountry.isOpenDrawer = true;
-                    setData({...data});
-                  }}
-                />
-                <div className={styles.tagWrap}>
-                  <input
-                    className={styles.hide}
-                    autoComplete="off"
-                    {...register(`postCountry`, {
-                      required: true,
-                      validate: {
-                        array: value => (value?.length || 0) > 0,
-                      },
-                    })}
-                  />
+                  <CustomChipSelector
+                    label={
+                      <>
+                        {getLocalizedText('common_label_003')} <span className={styles.highlight}>*</span>
+                      </>
+                    }
+                    tagType="node"
+                    onClick={() => {
+                      data.dataCountry.isOpenDrawer = true;
+                      setData({...data});
+                    }}
+                    reactNode={
+                      <div className={styles.tagWrap}>
+                        <input
+                          className={styles.hide}
+                          autoComplete="off"
+                          {...register(`postCountry`, {
+                            required: true,
+                            validate: {
+                              array: value => (value?.length || 0) > 0,
+                            },
+                          })}
+                        />
 
-                  {data.dataCountry.tagList.map((one, index) => {
-                    const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
-                    // const countryStr = keys[Number(one)];
-                    const countryStr = getLangKey(Number(one));
+                        {data.dataCountry.tagList.map((one, index) => {
+                          const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
+                          // const countryStr = keys[Number(one)];
+                          const countryStr = getLangKey(Number(one));
 
-                    return (
-                      <div className={styles.tag} key={index}>
-                        <div className={styles.value}>
-                          {/* <input
+                          return (
+                            <div className={styles.tag} key={index}>
+                              <div className={styles.value}>
+                                {/* <input
                             value={one}
                             className={styles.hide}
                             autoComplete="off"
                             {...register(`postCountry.${index}`, {required: true})}
                           /> */}
-                          {getLocalizedText(countryStr)}
-                        </div>
-                        <div
-                          className={styles.btnRemoveWrap}
-                          onClick={e => {
-                            const postCountryList = data.dataCountry.tagList.filter(v => v != one);
-                            data.dataCountry.tagList = postCountryList;
-                            setValue('postCountry', postCountryList);
-                            setData({...data});
-                          }}
-                        >
-                          <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
-                        </div>
+                                {getLocalizedText(countryStr)}
+                              </div>
+                              <div
+                                className={styles.btnRemoveWrap}
+                                onClick={e => {
+                                  const postCountryList = data.dataCountry.tagList.filter(v => v != one);
+                                  data.dataCountry.tagList = postCountryList;
+                                  setValue('postCountry', postCountryList);
+                                  setData({...data});
+                                }}
+                              >
+                                <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
-                    );
-                  })}
+                    }
+                    containerStyle={{width: '100%'}}
+                    error={errors.postCountry && isSubmitted}
+                  />
                 </div>
 
                 <div className={styles.operatorInvitationHeader}>
@@ -1006,7 +1028,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           clearErrors('tags');
           data.dataTag.tagList = dataChanged;
 
-          const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v.value);
+          const tags = data.dataTag.tagList.filter(v => v.isActive).map(v => v?.langKey || '');
           console.log('tags : ', tags);
           setValue('tags', tags);
           setData({...data});
@@ -1179,7 +1201,7 @@ export const DrawerSelect = ({title, description, tags, open, onClose, onChange}
           {data.tagList.map((tag, index) => {
             return (
               <div className={cx(styles.tag, tag.isActive && styles.active)} data-tag={index}>
-                <div className={styles.value}>{tag.value}</div>
+                <div className={styles.value}>{getLocalizedText(tag?.value)}</div>
                 <div className={styles.iconCheckWrap}>{tag.isActive && <img src={LineCheck.src} alt="" />}</div>
               </div>
             );
@@ -1255,9 +1277,11 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
           }}
         >
           {data.tagList.map((tag, index) => {
+            const value = tag?.value?.includes(COMMON_TAG_HEAD_TAG) ? getLocalizedText(tag?.value) : tag?.value;
+
             return (
               <div className={cx(styles.tag, tag.isActive && styles.active)} data-tag={index}>
-                <div className={styles.value}>{tag.value}</div>
+                <div className={styles.value}>{value}</div>
               </div>
             );
           })}

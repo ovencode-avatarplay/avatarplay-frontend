@@ -189,7 +189,7 @@ const UserDropdown = () => {
     } catch (error) {
       console.error('Error occurred during authentication:', error);
     }
-  }
+  };
 
   useEffect(() => {
     const handleAuthStateChange = async (event: any, session: Session | null) => {
@@ -197,19 +197,20 @@ const UserDropdown = () => {
         setAuth(session);
 
         const jwt = localStorage.getItem('jwt');
-        if(jwt)
-        {
+        if (jwt) {
           console.log('토큰이 같아서 인증 갱신 필요없음. 하지만 expire 추후 처리 필요');
           return;
         }
 
-        updateAuth(session);
+        const isLogin = await isLogined();
+        if (!isLogin) {
+          updateAuth(session);
+        }
       } else if (event === 'INITIAL_SESSION') {
         setAuth(session);
-        
+
         const language = getLanguageTypeFromText(getCurrentLanguage());
         refreshLanaguage(language, router);
-        updateAuth(session);
         console.log('브라우저에 저장된 언어로 가져오자');
       }
     };
@@ -274,6 +275,7 @@ const UserDropdown = () => {
             src={dataProfile.currentProfile?.iconImageUrl || ''}
             // onClick={routeProfile}
             className={styles.avatar}
+            style={{width: '32px', height: '32px'}}
           />
         </Badge>
       </DndButton>

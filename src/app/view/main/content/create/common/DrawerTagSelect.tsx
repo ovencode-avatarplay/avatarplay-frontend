@@ -49,7 +49,7 @@ const DrawerTagSelect: React.FC<TagDrawerProps> = ({
             {tagList?.map(tag => (
               <CustomHashtag
                 key={tag}
-                text={getLocalizedText(`common_tag_${tag.toLowerCase()}`)}
+                text={getLocalizedText(`${tag.toLowerCase()}`)}
                 onClickAction={() => onTagSelect(tag)}
                 isSelected={selectedTags.includes(tag)}
               />

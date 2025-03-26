@@ -89,7 +89,7 @@ const ButtonPromptInput: React.FC<Props> = ({
 
   return (
     <div className={styles.maxTextInputArea}>
-      <div className={styles.promptInputContainer}>
+      <div className={`${styles.promptInputContainer} ${essential && value.length === 0 ? styles.isError : ''}`}>
         <div className={styles.promptInputArea}>
           <PromptInput
             prefix={''}

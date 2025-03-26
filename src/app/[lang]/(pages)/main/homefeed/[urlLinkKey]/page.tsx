@@ -1,18 +1,20 @@
 'use client';
 
 import React, {useState, useEffect} from 'react';
-import {useParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import ReelsLayout from '@/components/homefeed/ReelsLayout';
 import {FeedInfo, sendGetFeed} from '@/app/NetWork/ShortsNetwork';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {getCurrentLanguage} from '@/utils/UrlMove';
+import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 
 const HomeFeedWithUrlKey: React.FC = () => {
   const params = useParams();
   const urlLinkKey = Array.isArray(params?.urlLinkKey) ? params?.urlLinkKey[0] : params?.urlLinkKey; // string으로 변환
 
   const [feedData, setFeedData] = useState<FeedInfo>();
+
+  const router = useRouter();
 
   const recommendState = useSelector((state: RootState) => state.mainControl.homeFeedRecommendState);
   useEffect(() => {
@@ -28,7 +30,9 @@ const HomeFeedWithUrlKey: React.FC = () => {
         console.log('Feed fetched successfully:', response.data.feedInfo);
         setFeedData(response.data.feedInfo);
       } else {
+        pushLocalizedRoute('/main/homefeed', router);
         console.error('Failed to fetch feed:', response.resultMessage);
+        return;
       }
     };
 
