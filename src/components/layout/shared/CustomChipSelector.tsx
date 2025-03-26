@@ -13,11 +13,21 @@ type Props = {
   handleTagSelect?: (tag: string) => void;
   reactNode?: React.ReactNode;
   error?: boolean;
+  containerStyle?: React.CSSProperties;
 };
 
-const CustomChipSelector = ({label, onClick, tagType, tags, handleTagSelect, reactNode, error}: Props) => {
+const CustomChipSelector = ({
+  label,
+  onClick,
+  tagType,
+  tags,
+  handleTagSelect,
+  reactNode,
+  error,
+  containerStyle,
+}: Props) => {
   return (
-    <div className={styles.customChipSelectorContainer}>
+    <div className={`${styles.customChipSelectorContainer}`} style={containerStyle}>
       <CustomButton
         size="Medium"
         type={'Tertiary'}

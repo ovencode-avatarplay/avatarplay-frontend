@@ -719,6 +719,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                         })}
                       </div>
                     }
+                    containerStyle={{width: '100%'}}
                   />
                 </div>
                 <input
@@ -789,6 +790,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                         })}
                       </div>
                     }
+                    containerStyle={{width: '100%'}}
                   />
                 </div>
 
