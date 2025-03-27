@@ -336,6 +336,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
                 image={option.image}
                 selected={selectedLora === index}
                 onSelectClick={() => handleSelectedLora(index)}
+                skipLocalize={true}
               />
             </SwiperSlide>
           ))}

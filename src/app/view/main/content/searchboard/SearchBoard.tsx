@@ -180,31 +180,34 @@ const SearchBoard: React.FC = () => {
         1;
         setSortDropDownOpen(false);
         setSelectedSort(0);
+        setRequestFetch(true);
       },
     },
     {
-      name: getLocalizedText('common_sort_mostpopular'),
+      name: getLocalizedText('common_sort_popular'),
       onClick: () => {
         1;
         setSortDropDownOpen(false);
         setSelectedSort(1);
+        setRequestFetch(true);
       },
     },
     {
-      name: getLocalizedText('common_sort_weeklypopular'),
+      name: getLocalizedText('common_sort_Name'),
       onClick: () => {
         1;
         setSortDropDownOpen(false);
         setSelectedSort(2);
+        setRequestFetch(true);
       },
     },
-    {
-      name: getLocalizedText('common_sort_monthlypopular'),
-      onClick: () => {
-        setSortDropDownOpen(false);
-        setSelectedSort(3);
-      },
-    },
+    // {
+    //   name: getLocalizedText('common_sort_monthlypopular'),
+    //   onClick: () => {
+    //     setSortDropDownOpen(false);
+    //     setSelectedSort(3);
+    //   },
+    // },
   ];
 
   const handleSearchChange = (value: searchType) => {
@@ -556,7 +559,7 @@ const SearchBoard: React.FC = () => {
                 </button>
               </div>
               <button className={styles.sortButton} onClick={() => setSortDropDownOpen(true)}>
-                <div>{getLocalizedText(dropDownMenuItems[selectedSort].name)}</div>
+                <div>{dropDownMenuItems[selectedSort].name}</div>
                 <img className={styles.buttonIcon} src={BoldArrowDown.src} />
                 {sortDropDownOpen && (
                   <DropDownMenu

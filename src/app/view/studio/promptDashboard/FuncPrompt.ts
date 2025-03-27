@@ -61,6 +61,10 @@ export const replaceChipsWithKeywords = (html: string, KEYWORDS: Record<string, 
   html = html.replace(/<\/div>/g, '');
   html = html.replace(/<br>/g, '\n');
 
+  // Step 3.5: &nbsp; 또는 \u00A0 제거
+  html = html.replace(/\u00A0/g, ' ');
+  html = html.replace(/&nbsp;/g, ' ');
+
   // Step 4: 모든 HTML 태그 제거
   html = html.replace(/<[^>]*>/g, '');
 

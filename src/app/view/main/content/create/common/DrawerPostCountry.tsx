@@ -87,7 +87,7 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
     <CustomDrawer
       open={isOpen}
       onClose={onClose}
-      title={getLocalizedText('common_button_submit')}
+      title={getLocalizedText('shared017_label_001')}
       contentStyle={{padding: '0px', marginTop: '20px'}}
     >
       <div className={styles.searchArea}>
@@ -111,7 +111,8 @@ const DrawerPostCountry: React.FC<DrawerPostCountryProps> = ({
               {filteredSelectableCountries.length > 0 ? (
                 filteredSelectableCountries.map(item => renderSelectCountryItem(item))
               ) : (
-                <li className={styles.noResult}>{getLocalizedText('TODO Localize : No matching results')}</li>
+                // <li className={styles.noResult}>{getLocalizedText('TODO Localize : No matching results')}</li>
+                <div />
               )}
             </ul>
           </div>

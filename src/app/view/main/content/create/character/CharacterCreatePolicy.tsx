@@ -87,7 +87,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   essentialWarning,
   curCharacterId,
 }) => {
-  let VisibilityData = {items: ['common_dropdown_private', 'common_dropdown_unlisted', 'common_dropdown_public']};
+  let VisibilityData = {items: ['common_dropdown_private', 'common_dropdown_unlisted', 'common_filter_public']};
 
   const [llmOpen, setLlmOpen] = useState(false);
 
@@ -497,37 +497,37 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   );
 
   const renderMonetization = () => {
-    return (
-      <div className={styles.radioButtonContainer}>
-        <div className={styles.radioTitleArea}>
-          <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_009')}</h2>
-          <CustomToolTip
-            tooltipText="ToolTip Monetization"
-            titleText={getLocalizedText(Header, 'createcharacter017_label_009')}
-          />
-        </div>
-        <div className={styles.verticalRadioButtonArea}>
-          <CustomRadioButton
-            shapeType="circle"
-            displayType="buttonText"
-            value="On"
-            label={getLocalizedText(Common, 'common_button_on')}
-            onSelect={() => handleSelectMonetization(true)}
-            selectedValue={isMonetization ? 'On' : 'Off'}
-            containterStyle={{gap: '0'}}
-          />
-          <CustomRadioButton
-            shapeType="circle"
-            displayType="buttonText"
-            value="Off"
-            label={getLocalizedText(Common, 'common_button_off')}
-            onSelect={() => handleSelectMonetization(false)}
-            selectedValue={isMonetization ? 'On' : 'Off'}
-            containterStyle={{gap: '0'}}
-          />
-        </div>
-      </div>
-    );
+    // return (
+    //   <div className={styles.radioButtonContainer}>
+    //     <div className={styles.radioTitleArea}>
+    //       <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_009')}</h2>
+    //       <CustomToolTip
+    //         tooltipText="ToolTip Monetization"
+    //         titleText={getLocalizedText(Header, 'createcharacter017_label_009')}
+    //       />
+    //     </div>
+    //     <div className={styles.verticalRadioButtonArea}>
+    //       <CustomRadioButton
+    //         shapeType="circle"
+    //         displayType="buttonText"
+    //         value="On"
+    //         label={getLocalizedText(Common, 'common_button_on')}
+    //         onSelect={() => handleSelectMonetization(true)}
+    //         selectedValue={isMonetization ? 'On' : 'Off'}
+    //         containterStyle={{gap: '0'}}
+    //       />
+    //       <CustomRadioButton
+    //         shapeType="circle"
+    //         displayType="buttonText"
+    //         value="Off"
+    //         label={getLocalizedText(Common, 'common_button_off')}
+    //         onSelect={() => handleSelectMonetization(false)}
+    //         selectedValue={isMonetization ? 'On' : 'Off'}
+    //         containterStyle={{gap: '0'}}
+    //       />
+    //     </div>
+    //   </div>
+    // );
   };
 
   const renderNSFW = () => {
@@ -578,36 +578,36 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   };
 
   const renderSuperVoiceSetting = () => {
-    return (
-      <>
-        <div className={styles.voiceSettingArea}>
-          <div className={styles.voiceSettingTitleArea}>
-            <h2 className={styles.titleVoice}>{getLocalizedText(Header, 'createcharacter017_label_012')}</h2>
-            <button className={styles.subButton} onClick={() => setVoiceOpen(true)}>
-              {getLocalizedText(Common, 'common_button_setting')}
-            </button>
-          </div>
-          <div className={styles.voiceSettingDescArea}>
-            <CustomToolTip tooltipText="Voice Setting" />
-            <div className={styles.voiceSettingText}>{getLocalizedText(Header, 'createcharacter017_desc_013')}</div>
-          </div>
-        </div>
-        <CharacterCreateVoiceSetting
-          voiceOpen={voiceOpen}
-          setVoiceOpen={setVoiceOpen}
-          notSetVoice={notSetVoice}
-          setNotSetVoice={setNotSetVoice}
-          selectedVoiceId={selectedVoiceId}
-          setSelectedVoiceId={setSelectedVoiceId}
-          pitchShift={pitchShift}
-          setPitchShift={setPitchShift}
-          pitchVariance={pitchVariance}
-          setPitchVariance={setPitchVariance}
-          speed={speed}
-          setSpeed={setSpeed}
-        />
-      </>
-    );
+    // return (
+    // <>
+    //   <div className={styles.voiceSettingArea}>
+    //     <div className={styles.voiceSettingTitleArea}>
+    //       <h2 className={styles.titleVoice}>{getLocalizedText(Header, 'createcharacter017_label_012')}</h2>
+    //       <button className={styles.subButton} onClick={() => setVoiceOpen(true)}>
+    //         {getLocalizedText(Common, 'common_button_setting')}
+    //       </button>
+    //     </div>
+    //     <div className={styles.voiceSettingDescArea}>
+    //       <CustomToolTip tooltipText="Voice Setting" />
+    //       <div className={styles.voiceSettingText}>{getLocalizedText(Header, 'createcharacter017_desc_013')}</div>
+    //     </div>
+    //   </div>
+    //   <CharacterCreateVoiceSetting
+    //     voiceOpen={voiceOpen}
+    //     setVoiceOpen={setVoiceOpen}
+    //     notSetVoice={notSetVoice}
+    //     setNotSetVoice={setNotSetVoice}
+    //     selectedVoiceId={selectedVoiceId}
+    //     setSelectedVoiceId={setSelectedVoiceId}
+    //     pitchShift={pitchShift}
+    //     setPitchShift={setPitchShift}
+    //     pitchVariance={pitchVariance}
+    //     setPitchVariance={setPitchVariance}
+    //     speed={speed}
+    //     setSpeed={setSpeed}
+    //   />
+    // </>
+    // );
   };
 
   const renderComment = () => {

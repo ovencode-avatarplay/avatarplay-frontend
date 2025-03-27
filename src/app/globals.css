@@ -297,3 +297,15 @@ h1, h2, h3, h4, h5, h6
   color: white;
   pointer-events: none;
 }
+
+/*브라우저에서 설정된 다크모드 무시*/
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    background: var(--background-fill-light-theme) !important;
+    color: var(--foreground) !important;
+  }
+}

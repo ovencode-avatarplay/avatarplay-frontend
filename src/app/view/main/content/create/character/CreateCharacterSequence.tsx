@@ -853,7 +853,11 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     <CharacterCreateImageButton
                       key={option.key}
                       label={
-                        option.key === 'personality'
+                        option.key === 'background' && backgroundInputValue.length > 0
+                          ? 'common_label_prompt'
+                          : option.key === 'clothing' && backgroundInputValue.length > 0
+                          ? 'common_label_prompt'
+                          : option.key === 'personality'
                           ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label.split(
                               '\n',
                             )[0]
@@ -878,6 +882,13 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       }
                       selected={false}
                       sizeType="summary"
+                      // skipLocalize={
+                      //   option.key === 'background' && backgroundInputValue.length > 0
+                      //     ? true
+                      //     : option.key === 'clothing' && backgroundInputValue.length > 0
+                      //     ? true
+                      //     : false
+                      // }
                     />
                   </div>
                 ))}
