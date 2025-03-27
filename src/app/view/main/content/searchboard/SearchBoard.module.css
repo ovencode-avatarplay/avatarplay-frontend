@@ -45,8 +45,11 @@
 
 .searchContainer
 {
+    position: fixed;
     height: 100%;
     margin: 0 15px;  
+    overflow-y: scroll;
+    overscroll-behavior: contain;
 }
 
 .filterArea
