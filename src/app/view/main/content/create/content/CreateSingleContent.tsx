@@ -34,9 +34,9 @@ enum CategoryTypes {
 export const getCategoryTypesKey = (key: number): string => {
   switch (key) {
     case CategoryTypes.Webtoon:
-      return getLocalizedText('common_filter_video');
-    case CategoryTypes.Drama:
       return getLocalizedText('common_filter_webtoon');
+    case CategoryTypes.Drama:
+      return getLocalizedText('common_filter_video');
     default:
       return '';
   }
@@ -122,45 +122,46 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
     {
       category: 'Genre',
       tags: [
-        'Romance',
-        'Fantasy',
-        'Action',
-        'Daily Life',
-        'Thriller',
-        'Comedy',
-        'Martial Arts',
-        'Drama',
-        'Historical Drama',
-        'Emotion',
-        'Sports',
+        'common_genre_romance',
+        'common_genre_fantasy',
+        'common_genre_action',
+        'common_genre_comedy',
+        'common_genre_sliceoflife',
+        'common_genre_thriller',
+        'common_genre_bl/gl',
+        'common_genre_drama',
+        'common_genre_emotional',
+        'common_genre_historicaldrama',
+        'common_genre_wuxia',
+        'common_genre_sports',
       ],
     },
     {
       category: 'Theme',
       tags: [
-        'Male',
-        'Female',
-        'Boyfriend',
-        'Girlfriend',
-        'Hero',
-        'Elf',
-        'Romance',
-        'Vanilla',
-        'Contemporary Fantasy',
-        'Isekai',
-        'Flirting',
-        'Dislike',
-        'Comedy',
-        'Noir',
-        'Horror',
-        'Demon',
-        'SF',
-        'Vampire',
-        'Office',
-        'Monster',
-        'Anime',
-        'Books',
-        'Aliens',
+        'common_tag_male',
+        'common_tag_female',
+        'common_tag_boyfriend',
+        'common_tag_girlfriend',
+        'common_tag_hero',
+        'common_tag_elf',
+        'common_tag_romance',
+        'common_tag_vanilla',
+        'common_tag_contemporaryfantasy',
+        'common_tag_isekai',
+        'common_tag_flirting',
+        'common_tag_dislike',
+        'common_tag_comedy',
+        'common_tag_noir',
+        'common_tag_horror',
+        'common_tag_demon',
+        'common_tag_sf',
+        'common_tag_vampire',
+        'common_tag_office',
+        'common_tag_monster',
+        'common_tag_anime',
+        'common_tag_books',
+        'common_tag_aliens',
       ],
     },
   ];
@@ -169,8 +170,8 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
   const [CategoryDrawerOpen, setCategoryDrawerOpen] = useState<boolean>(false);
 
   const publishItemsCategory: SelectDrawerItem[] = [
-    {name: 'Webtoon', onClick: () => setSelectedCategory(CategoryTypes.Webtoon)},
-    {name: 'Drama', onClick: () => setSelectedCategory(CategoryTypes.Drama)},
+    {name: getLocalizedText('common_filter_webtoon'), onClick: () => setSelectedCategory(CategoryTypes.Webtoon)},
+    {name: getLocalizedText('common_filter_video'), onClick: () => setSelectedCategory(CategoryTypes.Drama)},
   ];
 
   const [selectedVisibility, setSelectedVisibility] = useState<VisibilityType>(VisibilityType.Private);
@@ -414,20 +415,20 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title={getLocalizedText('createcontent003_label_005')}
-            selectedItem={selectedGenres.length > 0 ? selectedGenres.join(', ') : ''}
+            selectedItem={selectedGenres.length > 0 ? selectedGenres.map(v => getLocalizedText(v)).join(', ') : ''}
             onClick={() => {
               setGenreList(tagGroups[0].tags);
               setGenreOpen(true);
             }}
           ></CustomDropDownSelectDrawer>
           <div className={styles.blackTagContainer}>
-            {selectedGenres.map((tag, index) => (
+            {selectedGenres.map((value, index) => (
               <div key={index} className={styles.blackTag}>
-                {getLocalizedText(`common_genre_${tag.replace(/ /gi, '').toLowerCase()}`)}
+                {getLocalizedText(value)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
-                  onClick={() => handleGenreRemove(tag)} // 클릭하면 해당 태그 삭제
+                  onClick={() => handleGenreRemove(value)} // 클릭하면 해당 태그 삭제
                 />
               </div>
             ))}
@@ -437,7 +438,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title={getLocalizedText('common_label_002')}
-            selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : ''}
+            selectedItem={selectedTags.length > 0 ? selectedTags.map(v => getLocalizedText(v)).join(', ') : ''}
             onClick={() => {
               setTagList(tagGroups[1].tags);
               setTagOpen(true);
@@ -446,7 +447,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {getLocalizedText(`common_tag_${tag.replace(/ /gi, '').toLowerCase()}`)}
+                {getLocalizedText(tag)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -565,6 +566,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         </button>
       </div>
       <DrawerTagSelect
+        title={getLocalizedText('common_label_002')}
         isOpen={tagOpen}
         onClose={() => setTagOpen(false)}
         tagList={tagList}
@@ -576,6 +578,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         setSelectedTagAlertOn={setSelectedTagAlertOn}
       />
       <DrawerTagSelect
+        title={getLocalizedText('createcontent003_label_005')}
         isOpen={genreOpen}
         onClose={() => setGenreOpen(false)}
         tagList={genreList}
@@ -598,7 +601,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         items={publishItemsVisibility}
         isOpen={visibilityDrawerOpen}
         onClose={() => setVisibilityDrawerOpen(false)}
-        selectedIndex={selectedCategory}
+        selectedIndex={selectedVisibility}
       />
       <DrawerPostCountry
         isOpen={isPositionCountryOpen}

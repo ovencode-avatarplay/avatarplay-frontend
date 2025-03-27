@@ -47,16 +47,34 @@
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
   opacity: 1;  
   z-index: 1000; /* 다른 요소가 덮지 않도록 설정 */
+  overflow: visible; /* ✅ 자식 요소가 바깥으로 나가도 보이게 */
 }
 
 .progressFill {
   height: 100%;
-  background: var(--background);
-  transition: width 0.2s ease;
+  background-color: #fff;
+  position: relative;
+  overflow: visible; /* ✅ 자식 요소가 바깥으로 나가도 보이게 */
+}
+
+.progressDot {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(50%, -50%); /* 가운데 정렬 + 끝에서 약간 넘어가도록 */
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  border-radius: 50%;
+  pointer-events: none; /* 클릭 이벤트는 통과 */
+  z-index: 5000;
+  color: #FFF;
+  background-color: #FFF;
 }
 
 .progressBar.dragging .progressFill {
   transition: none; /* 드래그 중에는 애니메이션 제거 */
+  
 }
 
 .playCircleIcon {

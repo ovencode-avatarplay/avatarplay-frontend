@@ -73,11 +73,11 @@
     { "label": "common_tagoutfit_casual", "image": "clothes_4_casual.png", "value": 4,"prompts":["casual"] }
     ],
   "clothingColor" : [ 
-    {"label" : "common_tagcolor_beige", "image" : "#DECC98", "value" : 1},
-    {"label" : "common_tagcolor_brown", "image" : "#A37B5E", "value" : 2},
-    {"label" : "common_tagcolor_black", "image" : "#000", "value" : 3},
-    {"label" : "common_tagcolor_red", "image" : "#B82626", "value" : 4},
-    {"label" : "common_tagcolor_pink", "image" : "#FF81DF", "value" : 5},
-    {"label" : "common_tagcolor_silver", "image" : "linear-gradient(137deg, #B2B2B2 17.4%, #EBEBEB 50.99%, #B2B2B2 83.91%)", "value" : 6}
+    {"label" : "common_tagcolor_beige", "image" : "#DECC98", "value" : 1, "prompts":["warm sand"]},
+    {"label" : "common_tagcolor_brown", "image" : "#A37B5E", "value" : 2, "prompts":["mocha brown"]},
+    {"label" : "common_tagcolor_black", "image" : "#000", "value" : 3, "prompts":["black"]},
+    {"label" : "common_tagcolor_red", "image" : "#B82626", "value" : 4, "prompts":["crimson passion"]},
+    {"label" : "common_tagcolor_pink", "image" : "#FF81DF", "value" : 5, "prompts":["vibrant pink"]},
+    {"label" : "common_tagcolor_silver", "image" : "linear-gradient(137deg, #B2B2B2 17.4%, #EBEBEB 50.99%, #B2B2B2 83.91%)", "value" : 6, "prompts":["silver"]}
   ]
 }
