@@ -104,7 +104,7 @@ const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, o
               }}
               customClassName={[styles.membershipButton]}
             >
-              {getLocalizedText('common_button_contentssubscription')}
+              {getLocalizedText('common_button_contentsubscription')}
             </CustomButton>
             <CustomButton
               size="Small"
@@ -158,7 +158,7 @@ const DrawerMembershipSetting: React.FC<Props> = ({onClose, membershipSetting, o
                 onChange={handleOnChangePayAmount}
                 customClassName={[styles.payAmountInput]}
               />
-              <div className={styles.payMonth}>{getLocalizedText('TODO Localize : /Month')}</div>
+              <div className={styles.payMonth}>{getLocalizedText('shared013_label_003')}</div>
             </div>
           </div>
           <MaxTextInput

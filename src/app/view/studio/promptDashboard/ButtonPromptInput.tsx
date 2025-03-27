@@ -71,8 +71,14 @@ const ButtonPromptInput: React.FC<Props> = ({
       const space = document.createTextNode(' ');
       chipElement?.after(space);
 
-      range.setStartAfter(space);
-      range.collapse(true);
+      setTimeout(() => {
+        const newRange = document.createRange();
+        newRange.setStartAfter(space);
+        newRange.collapse(true);
+
+        selection?.removeAllRanges();
+        selection?.addRange(newRange);
+      }, 0);
     } else {
       div.insertAdjacentHTML('beforeend', ` ${chipHTML}`);
 

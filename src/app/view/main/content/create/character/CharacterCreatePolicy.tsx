@@ -614,7 +614,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
     return (
       <div className={styles.commentInputArea}>
         <div className={styles.commentTitleArea}>
-          <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_014')} </h2>
+          <h2 className={styles.title2}>{getLocalizedText(Header, 'createcharacter017_label_020')} </h2>
         </div>
         <MaxTextInput
           stateDataType={inputState.Normal}
@@ -622,7 +622,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           displayDataType={displayType.Default}
           promptValue={creatorComment}
           handlePromptChange={e => setCharacterDesc(e.target.value)}
-          placeholder={getLocalizedText('common_sample_094')}
+          placeholder={getLocalizedText('createcharacter017_desc_021')}
           inSideHint={formatText(getLocalizedText('createcharacter001_label_013'), [creatorComment?.length.toString()])}
         />
       </div>
