@@ -860,8 +860,12 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       </section>
       <section className={cx(styles.main, !isPath && styles.mainNoPath)}>
         <div className={styles.profileStatisticsWrap}>
-          <div className={styles.imgProfileWrap}>
-            <img className={styles.imgProfile} src={data.profileInfo?.profileInfo.iconImageUrl} alt="" />
+          <div className={cx(styles.imgProfileWrap)}>
+            <img
+              className={cx(styles.imgProfile, profileType == ProfileType.Channel && styles.channelProfile)}
+              src={data.profileInfo?.profileInfo.iconImageUrl}
+              alt=""
+            />
             {isMine && (
               <Link href={getEditUrl(profileType)}>
                 <div className={styles.iconProfileEditWrap}>

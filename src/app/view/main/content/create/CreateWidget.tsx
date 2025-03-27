@@ -253,7 +253,11 @@ const SelectBoxValueComponent = (data: any, isOpen?: boolean) => {
   return (
     <div className={styles.boxValueWrap}>
       <div className={styles.left}>
-        <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
+        <img
+          className={cx(styles.imgProfile, strRole == 'Channel' && styles.channelProfile)}
+          src={data.iconImageUrl}
+          alt=""
+        />
         <data value="" className={styles.nameWrap}>
           <div className={styles.name}>{data.name}</div>
           <div className={styles.role}>{getLocalizedText(mappingStrToGlobalTextKey[strRole])}</div>
@@ -283,11 +287,17 @@ const SelectBoxOptionComponent = (data: any, isSelected: boolean) => {
   };
 
   const strRole = ProfileType?.[data.profileType] as keyof typeof mappingStrToGlobalTextKey;
+
+  console.log('strRole : ', strRole);
   return (
     <>
       <div className={styles.optionWrap}>
         <div className={styles.left}>
-          <img className={styles.imgProfile} src={data.iconImageUrl} alt="" />
+          <img
+            className={cx(styles.imgProfile, strRole == 'Channel' && styles.channelProfile)}
+            src={data.iconImageUrl}
+            alt=""
+          />
           <data value="" className={styles.nameWrap}>
             <div className={styles.name}>{data.name}</div>
             <div className={styles.role}>{getLocalizedText(mappingStrToGlobalTextKey[strRole])}</div>
