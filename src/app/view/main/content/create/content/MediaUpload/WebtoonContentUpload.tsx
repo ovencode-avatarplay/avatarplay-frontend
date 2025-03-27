@@ -462,7 +462,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
               <img src={LineUpload.src} alt="Upload" className={styles.icon} />
               {getLocalizedText('common_button_upload')}
             </button>
-            <button className={styles.uploadButton} style={{width: '100%'}} onClick={() => handleClearAllImages}>
+            <button className={styles.uploadButton} style={{width: '100%'}} onClick={() => handleClearAllImages()}>
               <img src={LineDelete.src} alt="Clear" className={styles.icon} />
               {getLocalizedText('createcontent008_button_002')}
             </button>
