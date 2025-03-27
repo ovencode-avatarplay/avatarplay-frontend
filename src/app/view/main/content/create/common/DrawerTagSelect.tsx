@@ -9,6 +9,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 
 interface TagDrawerProps {
+  title: string;
   isOpen: boolean;
   onClose: () => void;
   tagList: string[];
@@ -21,6 +22,7 @@ interface TagDrawerProps {
 }
 
 const DrawerTagSelect: React.FC<TagDrawerProps> = ({
+  title,
   isOpen,
   onClose,
   tagList,
@@ -36,7 +38,7 @@ const DrawerTagSelect: React.FC<TagDrawerProps> = ({
       <CustomDrawer
         open={isOpen}
         onClose={onClose}
-        title={getLocalizedText('common_label_002')}
+        title={title}
         contentStyle={{padding: '0px', marginTop: '20px'}}
       >
         <div className={styles.tagArea}>
