@@ -1,8 +1,12 @@
 .featuredContainer
 {
+    /* position: fixed; */
+    width: 100%;
     height: 100%;
     top: 12px;
     gap: 15px; 
+    overflow-y: scroll;
+    overscroll-behavior: contain;
 }
 .scrollContainer {
     position: fixed;
@@ -46,6 +50,7 @@
 .searchContainer
 {
     position: fixed;
+    width: calc(100% - 32px);
     height: 100%;
     margin: 0 15px;  
     overflow-y: scroll;
