@@ -253,6 +253,8 @@ type DataProfileType = {
 
   refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
   getIsEmptyTab: () => boolean;
+
+  isRefresh: boolean;
 };
 
 type ProfileBaseProps = {
@@ -350,6 +352,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
     refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
     getIsEmptyTab: () => true,
+
+    isRefresh: false,
   });
   const dispatch = useDispatch();
 
@@ -627,6 +631,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     if (!resProfileInfo) return;
     data.profileInfo = resProfileInfo;
     data.profileId = resProfileInfo.profileInfo.id;
+    data.isRefresh = true;
 
     const indexTab = Number(data?.indexTab);
     await refreshProfileTab(resProfileInfo.profileInfo.id, indexTab);
@@ -740,6 +745,10 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     copyCurrentUrlToClipboard(pathname, searchParams);
     dataToast.open(getLocalizedText('common_alert_091'));
   };
+
+  if (!data.isRefresh) {
+    return;
+  }
 
   return (
     <>
