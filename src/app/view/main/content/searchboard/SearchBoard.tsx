@@ -627,9 +627,16 @@ const SearchBoard: React.FC = () => {
       ),
     },
   ];
+  const isIOS = () => {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
 
+    return (
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document)
+    );
+  };
   return (
-    <>
+    <div className={isIOS() === true ? styles.scrollContainer : ''}>
       <Splitter
         initialActiveSplitter={data.indexTab}
         splitters={splitterData}
@@ -653,7 +660,7 @@ const SearchBoard: React.FC = () => {
         }}
       />
       <LoadingOverlay loading={searchLoading} />
-    </>
+    </div>
   );
 };
 

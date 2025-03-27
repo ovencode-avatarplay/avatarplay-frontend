@@ -4,7 +4,13 @@
     top: 12px;
     gap: 15px; 
 }
-
+.scrollContainer {
+    position: fixed;
+    width: 100%;
+    height: calc(100vh - 58px);  
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;  
+  }
 .scrollArea
 { 
     height: 100%; 

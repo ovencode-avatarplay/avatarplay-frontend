@@ -27,7 +27,6 @@ import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
 import {MediaState, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
-import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {MembershipSetting, Subscription} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
@@ -81,7 +80,6 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
 
   const [essentialWarning, setEssentialWarning] = useState<boolean>(false);
-  const [successPopupOpen, setSuccessPopupOpen] = useState<boolean>(false);
 
   //#region  Basic
   const [characterName, setCharacterName] = useState<string>(character.name);
@@ -331,8 +329,12 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       const response = await sendCreateCharacter2(req);
 
       if (response.data || response.resultCode === 0) {
-        console.log('Character created successfully:', response.data);
-        setSuccessPopupOpen(true);
+        if (character.id === 0) {
+          dataToast.open(getLocalizedText('common_alert_100'));
+        } else {
+          dataToast.open(getLocalizedText('common_alert_101'));
+        }
+        routerBack(response.data?.characterProfileUrlLinkKey || '');
       } else {
         throw new Error('Character creation failed.');
       }
@@ -791,8 +793,12 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     );
   };
 
-  const routerBack = () => {
-    back('/main/homefeed');
+  const routerBack = (urlLinkKey?: string) => {
+    if (urlLinkKey && urlLinkKey !== '') {
+      router.replace(getLocalizedLink('/profile/' + urlLinkKey + "?from=''&tab=Character"));
+    } else {
+      back('/main/homefeed');
+    }
   };
 
   return (
@@ -891,31 +897,6 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       </div>
       {imgUploadModalOpen && <>{renderUploadSelectModal()}</>}
       {imageViewOpen && <CharacterCreateViewImage imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
-
-      {successPopupOpen && (
-        <CustomPopup
-          type="alert"
-          title={
-            character.id === 0
-              ? getLocalizedText(Common, 'common_alert_100')
-              : getLocalizedText(Common, 'common_alert_101')
-          }
-          buttons={[
-            {
-              label: getLocalizedText(Common, 'common_button_confirm'),
-              onClick: () => {
-                setSuccessPopupOpen(false);
-                const urlLinkKey = '';
-                routerBack();
-                // router.replace(getLocalizedLink('/profile/' + urlLinkKey + "?from=''&tab=Character"));
-
-                // pushLocalizedRoute('/studio/character', router);
-              },
-              isPrimary: true,
-            },
-          ]}
-        />
-      )}
     </>
   );
 };
