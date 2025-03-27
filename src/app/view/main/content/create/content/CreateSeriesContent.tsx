@@ -115,7 +115,6 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         'common_genre_comedy',
         'common_genre_sliceoflife',
         'common_genre_thriller',
-        'common_genre_comedy', // 중복 있음
         'common_genre_bl/gl',
         'common_genre_drama',
         'common_genre_historicaldrama',
@@ -387,7 +386,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           <div className={styles.blackTagContainer}>
             {selectedGenres.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {getLocalizedText(`common_genre_${tag.replace(/ /gi, '').toLowerCase()}`)}
+                {getLocalizedText(tag)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
