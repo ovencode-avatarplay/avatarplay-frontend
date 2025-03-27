@@ -320,7 +320,14 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       >
         <SwiperSlide style={{height: '100%'}}>
           <div className={styles.Image}>
-            {item.mediaState === 1 && <img src={item?.mediaUrlList[0]} loading="lazy" style={{width: '100%'}} />}
+            {item.mediaState === 1 && (
+              <img
+                src={item?.mediaUrlList[0]}
+                loading="lazy"
+                style={{width: '100%'}}
+                onClick={() => setIsImageModal(true)}
+              />
+            )}
             {item.mediaState === 2 && (
               <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
                 <ReactPlayer
@@ -563,7 +570,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             {item.mediaState == 2 && !isMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
 
             {/* 이미지 확대 아이콘 */}
-            {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />}
+            {/* {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />} */}
           </div>
         </SwiperSlide>
         {isShowProfile && (
