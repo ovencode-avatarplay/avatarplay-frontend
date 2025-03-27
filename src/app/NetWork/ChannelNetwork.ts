@@ -11,7 +11,7 @@ export interface CreateChannelReq {
 }
 
 export interface CreateChannelRes {
-  channelInfo: ChannelInfo;
+  channelProfileUrlLinkKey: string;
 }
 
 export interface ChannelInfo {

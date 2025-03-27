@@ -217,6 +217,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   } = useForm<ChannelInfoForm>({
     shouldFocusError: true,
     defaultValues: {
+      tags: [],
       characterIP: CharacterIP.Original,
       isMonetization: 0,
       mediaUrl: '',
@@ -405,6 +406,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     // e.preventDefault(); // 기본 제출 방지
     // const data = getValues(); // 현재 입력값 가져오기 (검증 없음)
     let tag = dataForm?.tags;
+    tag = typeof tag === 'string' ? [] : tag;
 
     const idChannel = isUpdate ? data.idChannel : 0;
     const visibilityType = Number(dataForm.visibilityType);
@@ -427,10 +429,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     };
     const res = await createUpdateChannel(dataUpdatePdInfo);
     if (res?.resultCode == 0) {
-      dataToast.open(
-        getLocalizedText(isUpdate ? getLocalizedText('common_alert_099') : getLocalizedText('common_alert_098')),
-      );
-      routerBack();
+      const urlLinkKey = res?.data?.channelProfileUrlLinkKey || '';
+      router.replace(getLocalizedLink(`/profile/` + urlLinkKey));
+      dataToast.open(isUpdate ? getLocalizedText('common_alert_099') : getLocalizedText('common_alert_098'));
     }
   };
 
@@ -476,10 +477,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
       setFocus('visibilityType');
       return;
     }
-    if (errors.tags) {
-      setFocus('tags');
-      return;
-    }
+    // if (errors.tags) {
+    //   setFocus('tags');
+    //   return;
+    // }
     if (errors.postCountry) {
       setFocus('postCountry');
       return;
@@ -501,7 +502,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           <div className={styles.label}>{getLocalizedText('common_label_Thumbnail')}</div>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
-              <input className={styles.hide} autoComplete="off" {...register('mediaUrl', {required: true})} />
+              <input className={styles.hide} readOnly autoComplete="off" {...register('mediaUrl', {required: true})} />
               <input
                 className={styles.hidden}
                 id="file-upload"
@@ -666,6 +667,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                   {...register('visibilityType', {required: true})}
                   className={styles.hide}
                   autoComplete="off"
+                  readOnly
                 />
                 <CustomSelector
                   value={getLocalizedText(visibilityTypeMapStr)}
@@ -677,11 +679,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 />
                 <div className={styles.label}>
                   <CustomChipSelector
-                    label={
-                      <>
-                        {getLocalizedText('common_label_002')} <span className={styles.highlight}>*</span>
-                      </>
-                    }
+                    label={<>{getLocalizedText('common_label_002')}</>}
                     tagType="node"
                     error={errors.tags && isSubmitted}
                     onClick={() => {
@@ -728,12 +726,13 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 </div>
                 <input
                   className={styles.hide}
+                  readOnly
                   autoComplete="off"
-                  {...register(`tags`, {
-                    required: true,
-                    validate: {
-                      array: value => (value?.length || 0) > 0,
-                    },
+                  {...register('tags', {
+                    required: false,
+                    // validate: {
+                    //   array: value => (value?.length || 0) > 0,
+                    // },
                   })}
                 />
 
@@ -753,6 +752,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                       <div className={styles.tagWrap}>
                         <input
                           className={styles.hide}
+                          readOnly
                           autoComplete="off"
                           {...register(`postCountry`, {
                             required: true,
@@ -921,6 +921,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 <div className={styles.membershipPlan}>
                   <input
                     className={styles.hide}
+                    readOnly
                     autoComplete="off"
                     {...register('membershipSetting', {required: false})}
                   />
