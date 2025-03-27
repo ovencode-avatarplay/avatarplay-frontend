@@ -230,14 +230,17 @@ const ChatBar: React.FC<ChatBarProps> = ({
     const parts = _message.split(/\*(.*?)\*/g); // *로 감싸진 텍스트 기준으로 나누기
 
     let count = 0;
-    parts.forEach(part => {
-      count++;
-      const trimmedPart = part.trim();
-      if (trimmedPart) {
-        const isToggled = !_message.includes(`*${trimmedPart}*`); // *로 감싸지 않았으면 true
-        addChatBarIndata(trimmedPart, isToggled, count); // addChatBar 호출로 추가
-      }
-    });
+    parts
+      .slice()
+      .reverse()
+      .forEach(part => {
+        count++;
+        const trimmedPart = part.trim();
+        if (trimmedPart) {
+          const isToggled = _message.includes(`*${trimmedPart}*`); // *로 감싸면 않았으면 true
+          addChatBarIndata(trimmedPart, isToggled, count); // addChatBar 호출로 추가
+        }
+      });
 
     // main 초기화
     setInputValues(prevValues => ({

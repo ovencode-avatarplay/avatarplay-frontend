@@ -5,7 +5,7 @@ import {recommendQuestion, RequestAiQuestionReq} from '@/app/NetWork/ChatNetwork
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {Variant1, Variant2, Variant3, Variant4, Variant5, Variant6} from '@ui/chatting';
-import { setStreamKey } from '@/redux-store/slices/Chatting';
+import {setStreamKey} from '@/redux-store/slices/Chatting';
 
 const LOADING_MESSAGE = '검색중...'; // 로딩 상태를 나타내는 상수
 
@@ -65,7 +65,7 @@ const AI_Recommend: React.FC<AIRecommendProps> = ({open, onClose, onSelectMessag
   const reqRecommendQuestion = async () => {
     const data: RequestAiQuestionReq = {
       episodeId: episodeId,
-      streamKey: streamKey
+      streamKey: streamKey,
     };
 
     try {
@@ -84,6 +84,7 @@ const AI_Recommend: React.FC<AIRecommendProps> = ({open, onClose, onSelectMessag
   };
 
   const handleClickMessage = (message: string) => {
+    // message = '잘있2었어? *잘있었어?* 잘있었어? 잘있었어3?'; 피싱 테스트용
     onSelectMessage(message, true);
     onClose();
   };
