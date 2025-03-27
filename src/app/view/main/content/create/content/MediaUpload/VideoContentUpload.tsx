@@ -235,8 +235,14 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
           {field.fileUrl ? (
             <>
               <div className={styles.textInBoxGroup}>
-                <span className={styles.textInBox}>{field.fileName}</span> // 파일명 표시
-                <img src={CircleClose.src} className={styles.circleClose}></img>
+                <span className={styles.textInBox}>{field.fileName}</span>
+                <img
+                  src={CircleClose.src}
+                  className={styles.circleClose}
+                  onClick={() => {
+                    handleRemoveFile(type, index);
+                  }}
+                ></img>
               </div>
             </>
           ) : (

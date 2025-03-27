@@ -118,6 +118,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
       setSelectedGenres([...selectedGenres, tag]);
     }
   };
+
   const tagGroups = [
     {
       category: 'Genre',
@@ -128,12 +129,13 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         'common_genre_comedy',
         'common_genre_sliceoflife',
         'common_genre_thriller',
+        'common_genre_comedy', // 중복 있음
         'common_genre_bl/gl',
         'common_genre_drama',
-        'common_genre_emotional',
         'common_genre_historicaldrama',
-        'common_genre_wuxia',
+        'common_genre_emotional',
         'common_genre_sports',
+        'common_genre_wuxia',
       ],
     },
     {
@@ -165,7 +167,6 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
       ],
     },
   ];
-
   const [selectedCategory, setSelectedCategory] = useState<CategoryTypes>(CategoryTypes.Webtoon);
   const [CategoryDrawerOpen, setCategoryDrawerOpen] = useState<boolean>(false);
 
