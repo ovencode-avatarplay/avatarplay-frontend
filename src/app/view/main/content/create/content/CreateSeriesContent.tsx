@@ -32,9 +32,9 @@ enum CategoryTypes {
 export const getCategoryTypesKey = (key: number): string => {
   switch (key) {
     case CategoryTypes.Webtoon:
-      return getLocalizedText('common_filter_video');
-    case CategoryTypes.Drama:
       return getLocalizedText('common_filter_webtoon');
+    case CategoryTypes.Drama:
+      return getLocalizedText('common_filter_video');
     default:
       return '';
   }
@@ -157,17 +157,17 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
   const [CategoryDrawerOpen, setCategoryDrawerOpen] = useState<boolean>(false);
 
   const publishItemsCategory: SelectDrawerItem[] = [
-    {name: 'Webtoon', onClick: () => setSelectedCategory(CategoryTypes.Webtoon)},
-    {name: 'Drama', onClick: () => setSelectedCategory(CategoryTypes.Drama)},
+    {name: getLocalizedText('common_filter_webtoon'), onClick: () => setSelectedCategory(CategoryTypes.Webtoon)},
+    {name: getLocalizedText('common_filter_video'), onClick: () => setSelectedCategory(CategoryTypes.Drama)},
   ];
 
   const [selectedVisibility, setSelectedVisibility] = useState<VisibilityType>(VisibilityType.Private);
   const [visibilityDrawerOpen, setVisibilityDrawerOpen] = useState<boolean>(false);
 
   const publishItemsVisibility: SelectDrawerItem[] = [
-    {name: 'Private', onClick: () => setSelectedVisibility(VisibilityType.Private)},
-    {name: 'Unlisted', onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
-    {name: 'Public', onClick: () => setSelectedVisibility(VisibilityType.Public)},
+    {name: getLocalizedText('common_filter_private'), onClick: () => setSelectedVisibility(VisibilityType.Private)},
+    {name: getLocalizedText('common_filter_unlisted'), onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
+    {name: getLocalizedText('common_filter_public'), onClick: () => setSelectedVisibility(VisibilityType.Public)},
   ];
 
   const [isPositionCountryOpen, setIsPositionCountryOpen] = useState(false);
