@@ -263,7 +263,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
             <button
               className={styles.iconButton}
               onClick={() => {
-                back();
+                pushLocalizedRoute('/create/content', router);
                 // router.back();
               }}
             >

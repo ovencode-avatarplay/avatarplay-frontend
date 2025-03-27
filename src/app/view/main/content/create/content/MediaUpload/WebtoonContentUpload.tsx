@@ -156,9 +156,13 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   // 파일 삭제 처리 (개별 삭제)
   const handleRemoveImage = (index: number) => {
     setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setImageNames(prev => prev.filter((_, i) => i !== index)); // 이 줄 추가
     setSelectedIndex(null);
   };
 
+  useEffect(() => {
+    console.log('imageFiles', imageFiles);
+  }, [imageFiles]);
   const handleMoveImage = (direction: 'top' | 'up' | 'down' | 'bottom') => {
     if (selectedIndex === null) return;
 
@@ -297,7 +301,6 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
           <img src={LineArrowDown.src} className={styles.lineArrowDown} />
         </div>
 
-        {/* 이미지 업로드 리스트 */}
         {/* 이미지 업로드 리스트 */}
         <div className={styles.videoUploadBox}>
           {field.fileUrl.length > 0 ? (

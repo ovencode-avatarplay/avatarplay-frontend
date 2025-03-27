@@ -479,6 +479,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         </button>
       </div>
       <DrawerTagSelect
+        title={''}
         isOpen={tagOpen}
         onClose={() => setTagOpen(false)}
         tagList={tagList}
@@ -490,6 +491,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         setSelectedTagAlertOn={setSelectedTagAlertOn}
       />
       <DrawerTagSelect
+        title={''}
         isOpen={genreOpen}
         onClose={() => setGenreOpen(false)}
         tagList={genreList}
