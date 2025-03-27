@@ -109,47 +109,46 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
     {
       category: 'Genre',
       tags: [
-        'Romance',
-        'Fantasy',
-        'Action',
-        'Comedy',
-        'Sliceoflife',
-        'Thriller',
-        'Comedy',
-        'BL/GL',
-        'Drama',
-        'Historical Drama',
-        'Emotional',
-        'Sports',
-        'Wuxia',
+        'common_genre_romance',
+        'common_genre_fantasy',
+        'common_genre_action',
+        'common_genre_comedy',
+        'common_genre_sliceoflife',
+        'common_genre_thriller',
+        'common_genre_bl/gl',
+        'common_genre_drama',
+        'common_genre_historicaldrama',
+        'common_genre_emotional',
+        'common_genre_sports',
+        'common_genre_wuxia',
       ],
     },
     {
       category: 'Theme',
       tags: [
-        'Male',
-        'Female',
-        'Boyfriend',
-        'Girlfriend',
-        'Hero',
-        'Elf',
-        'Romance',
-        'Vanilla',
-        'Contemporary Fantasy',
-        'Isekai',
-        'Flirting',
-        'Dislike',
-        'Comedy',
-        'Noir',
-        'Horror',
-        'Demon',
-        'SF',
-        'Vampire',
-        'Office',
-        'Monster',
-        'Anime',
-        'Books',
-        'Aliens',
+        'common_tag_male',
+        'common_tag_female',
+        'common_tag_boyfriend',
+        'common_tag_girlfriend',
+        'common_tag_hero',
+        'common_tag_elf',
+        'common_tag_romance',
+        'common_tag_vanilla',
+        'common_tag_contemporaryfantasy',
+        'common_tag_isekai',
+        'common_tag_flirting',
+        'common_tag_dislike',
+        'common_tag_comedy',
+        'common_tag_noir',
+        'common_tag_horror',
+        'common_tag_demon',
+        'common_tag_sf',
+        'common_tag_vampire',
+        'common_tag_office',
+        'common_tag_monster',
+        'common_tag_anime',
+        'common_tag_books',
+        'common_tag_aliens',
       ],
     },
   ];
@@ -387,7 +386,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           <div className={styles.blackTagContainer}>
             {selectedGenres.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {getLocalizedText(`common_genre_${tag.replace(/ /gi, '').toLowerCase()}`)}
+                {getLocalizedText(tag)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -479,6 +478,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         </button>
       </div>
       <DrawerTagSelect
+        title={''}
         isOpen={tagOpen}
         onClose={() => setTagOpen(false)}
         tagList={tagList}
@@ -490,6 +490,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         setSelectedTagAlertOn={setSelectedTagAlertOn}
       />
       <DrawerTagSelect
+        title={''}
         isOpen={genreOpen}
         onClose={() => setGenreOpen(false)}
         tagList={genreList}
