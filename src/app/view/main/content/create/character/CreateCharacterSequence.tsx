@@ -309,7 +309,11 @@ const CharacterCreateSequence: React.FC<Props> = ({
   };
 
   const handleClothesInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length <= maxLength) setClothesInputValue(e.target.value);
+    if (e.target.value.length <= maxLength) 
+      {
+        setClothesInputValue(e.target.value);
+      }
+
   };
 
   const handleBackgroundInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -431,11 +435,21 @@ const CharacterCreateSequence: React.FC<Props> = ({
       const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
       if (option.options.length > 0) {
         const selectedOption = option.options[selectedIndex];
-        if (option.key === 'background' || option.key == 'clothing') {
+        if (option.key === 'background' || option.key == 'clothing' || option.key == 'clothingColor') {
           let promptText = '';
-          if (selectedOption && Array.isArray(selectedOption.prompts) && selectedOption.prompts.length > 0) {
-            const randomIndex = Math.floor(Math.random() * selectedOption.prompts.length);
-            promptText = selectedOption.prompts[randomIndex];
+
+          if(option.key == 'clothing' && clothesInputValue)
+          {
+            promptText = clothesInputValue;
+          } else if(option.key =='background' && backgroundInputValue)
+          {
+            promptText = backgroundInputValue;
+          }  else
+          {
+            if (selectedOption && Array.isArray(selectedOption.prompts) && selectedOption.prompts.length > 0) {
+              const randomIndex = Math.floor(Math.random() * selectedOption.prompts.length);
+              promptText = selectedOption.prompts[randomIndex];
+            }
           }
           return {name: option.key, value: 0, prompt: promptText};
         }
