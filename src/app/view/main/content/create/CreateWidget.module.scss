@@ -215,9 +215,10 @@
       border-radius: 50%;
       object-fit: cover;
 
-      &.channelProfile {}
+      &.channelProfile {
+        border-radius: 10px;
+      }
 
-      border-radius:10px;
     }
 
     .nameWrap {
