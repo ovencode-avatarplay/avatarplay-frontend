@@ -1,7 +1,3 @@
-.header {
-  height: 58px;
-}
-
 .header,
 .main {
   box-sizing: content-box;
@@ -62,6 +58,7 @@
   padding: 0 6px 0 16px;
   box-sizing: border-box;
   position: sticky;
+  height: 58px;
   width: 100%;
   max-width: var(--full-width-percent); //js 변경요소
   top: 0;
