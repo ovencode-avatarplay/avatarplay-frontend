@@ -126,6 +126,7 @@ export interface CharacterProfilePayload {
 
 export interface CreateCharacter2Res {
   characterInfo: CharacterInfo;
+  characterProfileUrlLinkKey: string;
 }
 
 export const sendCreateCharacter2 = async (payload: CreateCharacter2Req): Promise<ResponseAPI<CreateCharacter2Res>> => {
