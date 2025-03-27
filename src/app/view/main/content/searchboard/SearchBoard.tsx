@@ -177,7 +177,7 @@ const SearchBoard: React.FC = () => {
     {
       name: getLocalizedText('common_sort_newest'),
       onClick: () => {
-        1;
+        setSearchResultList(null);
         setSortDropDownOpen(false);
         setSelectedSort(0);
         setRequestFetch(true);
@@ -186,7 +186,7 @@ const SearchBoard: React.FC = () => {
     {
       name: getLocalizedText('common_sort_popular'),
       onClick: () => {
-        1;
+        setSearchResultList(null);
         setSortDropDownOpen(false);
         setSelectedSort(1);
         setRequestFetch(true);
@@ -195,7 +195,7 @@ const SearchBoard: React.FC = () => {
     {
       name: getLocalizedText('common_sort_Name'),
       onClick: () => {
-        1;
+        setSearchResultList(null);
         setSortDropDownOpen(false);
         setSelectedSort(2);
         setRequestFetch(true);
