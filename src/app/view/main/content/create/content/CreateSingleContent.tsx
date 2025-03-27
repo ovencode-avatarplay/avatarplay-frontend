@@ -577,6 +577,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         maxTagCount={maxTagCount}
         selectedTagAlertOn={selectedTagAlertOn}
         setSelectedTagAlertOn={setSelectedTagAlertOn}
+        descValue={getLocalizedText('common_label_002')}
       />
       <DrawerTagSelect
         title={getLocalizedText('createcontent003_label_005')}
@@ -589,6 +590,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         maxTagCount={maxGenreCount}
         selectedTagAlertOn={selectedGenreAlertOn}
         setSelectedTagAlertOn={setSelectedGenreAlertOn}
+        descValue={getLocalizedText('createcontent003_label_005')}
       />
       <SelectDrawer
         name={getLocalizedText('createcontent001_label_007')}

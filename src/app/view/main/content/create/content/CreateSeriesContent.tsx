@@ -478,7 +478,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         </button>
       </div>
       <DrawerTagSelect
-        title={''}
+        title={getLocalizedText('common_label_002')}
         isOpen={tagOpen}
         onClose={() => setTagOpen(false)}
         tagList={tagList}
@@ -488,9 +488,10 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         maxTagCount={maxTagCount}
         selectedTagAlertOn={selectedTagAlertOn}
         setSelectedTagAlertOn={setSelectedTagAlertOn}
+        descValue={getLocalizedText('common_label_002')}
       />
       <DrawerTagSelect
-        title={''}
+        title={getLocalizedText('createcontent003_label_005')}
         isOpen={genreOpen}
         onClose={() => setGenreOpen(false)}
         tagList={genreList}
@@ -500,6 +501,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         maxTagCount={maxGenreCount}
         selectedTagAlertOn={selectedGenreAlertOn}
         setSelectedTagAlertOn={setSelectedGenreAlertOn}
+        descValue={getLocalizedText('createcontent003_label_005')}
       />
       <SelectDrawer
         name={getLocalizedText('createcontent001_label_007')}
