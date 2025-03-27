@@ -211,6 +211,10 @@ const UserDropdown = () => {
 
         const language = getLanguageTypeFromText(getCurrentLanguage());
         refreshLanaguage(language, router);
+        const isLogin = await isLogined();
+        if (!isLogin) {
+          updateAuth(session);
+        }
         console.log('브라우저에 저장된 언어로 가져오자');
       }
     };
