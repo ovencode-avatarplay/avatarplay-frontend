@@ -43,7 +43,7 @@ const ButtonPromptInput: React.FC<Props> = ({
         regex,
         `<span class="${styles['chip']} ${styles[`chip${Keywords[keyword]}`]}" contenteditable="false">${
           Keywords[keyword]
-        }</span>`,
+        }</span>\u00A0`,
       );
     });
     return html;
@@ -68,7 +68,7 @@ const ButtonPromptInput: React.FC<Props> = ({
       range.deleteContents();
       range.insertNode(chipElement as Node);
 
-      const space = document.createTextNode(' ');
+      const space = document.createTextNode('\u00A0'); // non-breaking space
       chipElement?.after(space);
 
       setTimeout(() => {
