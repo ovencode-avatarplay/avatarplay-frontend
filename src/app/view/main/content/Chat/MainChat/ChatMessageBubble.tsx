@@ -112,6 +112,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
     <>
       {text !== '' && (
         <Box
+          data-bubble
           className={
             selectedIndex === null ? styles.blurNone : index === selectedIndex ? styles.blurSelected : styles.blurBox
           }

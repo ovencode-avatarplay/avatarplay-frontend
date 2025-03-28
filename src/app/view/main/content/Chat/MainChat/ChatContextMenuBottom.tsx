@@ -38,17 +38,38 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
 
   const handleCopy = (text: string, event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        setSnackbarMessage('Copied!');
-        setSnackbarOpen(true);
-      })
-      .catch(err => {
-        console.error('Failed to copy text: ', err);
-      });
+
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          setSnackbarMessage('Copied!');
+          setSnackbarOpen(true);
+        })
+        .catch(err => {
+          fallbackCopyTextToClipboard(text);
+        });
+    } else {
+      fallbackCopyTextToClipboard(text);
+    }
   };
 
+  const fallbackCopyTextToClipboard = (text: string) => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed'; // iOS 지원용
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      setSnackbarMessage('Copied!');
+      setSnackbarOpen(true);
+    } catch (err) {
+      console.error('Fallback: Copying failed', err);
+    }
+    document.body.removeChild(textarea);
+  };
   useEffect(() => {
     if (menuRef.current) {
       const rect = menuRef.current.getBoundingClientRect();

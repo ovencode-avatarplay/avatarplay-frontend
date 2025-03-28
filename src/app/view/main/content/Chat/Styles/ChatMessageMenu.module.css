@@ -111,6 +111,8 @@
   }
 
   .iconButton {
+    cursor: pointer;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -118,6 +120,8 @@
   }
   
   .actionButton {
+    cursor: pointer;
+
     box-sizing: border-box;
 
     display: flex;
@@ -144,6 +148,8 @@
   }
   
   .actionButtonDelete {
+    cursor: pointer;
+
     box-sizing: border-box;
     
     /* Auto layout */
@@ -170,6 +176,8 @@
       
 
   .actionButtonLast {
+    cursor: pointer;
+
     box-sizing: border-box;
     
     /* Auto layout */

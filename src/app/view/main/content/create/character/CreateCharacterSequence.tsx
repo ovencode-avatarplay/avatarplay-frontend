@@ -309,11 +309,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
   };
 
   const handleClothesInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length <= maxLength) 
-      {
-        setClothesInputValue(e.target.value);
-      }
-
+    if (e.target.value.length <= maxLength) {
+      setClothesInputValue(e.target.value);
+    }
   };
 
   const handleBackgroundInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -438,14 +436,11 @@ const CharacterCreateSequence: React.FC<Props> = ({
         if (option.key === 'background' || option.key == 'clothing' || option.key == 'clothingColor') {
           let promptText = '';
 
-          if(option.key == 'clothing' && clothesInputValue)
-          {
+          if (option.key == 'clothing' && clothesInputValue) {
             promptText = clothesInputValue;
-          } else if(option.key =='background' && backgroundInputValue)
-          {
+          } else if (option.key == 'background' && backgroundInputValue) {
             promptText = backgroundInputValue;
-          }  else
-          {
+          } else {
             if (selectedOption && Array.isArray(selectedOption.prompts) && selectedOption.prompts.length > 0) {
               const randomIndex = Math.floor(Math.random() * selectedOption.prompts.length);
               promptText = selectedOption.prompts[randomIndex];
@@ -850,8 +845,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
             </article>
           </div>
         );
-      case CreateCharacterStep.Personality:
-        return <div>not use</div>;
+      // case CreateCharacterStep.Personality:
+      //   return <div>not use</div>;
       case CreateCharacterStep.Summary:
         return (
           <div className={styles.createContentBox}>
@@ -869,7 +864,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       label={
                         option.key === 'background' && backgroundInputValue.length > 0
                           ? 'common_label_prompt'
-                          : option.key === 'clothing' && backgroundInputValue.length > 0
+                          : option.key === 'clothing' && clothesInputValue.length > 0
                           ? 'common_label_prompt'
                           : option.key === 'personality'
                           ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label.split(
