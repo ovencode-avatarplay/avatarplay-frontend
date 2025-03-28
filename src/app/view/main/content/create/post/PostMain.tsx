@@ -614,6 +614,7 @@ const PostMain: React.FC<Props> = ({id}) => {
         isCheck={false}
       />
       <DrawerTagSelect
+        title={getLocalizedText('common_label_002')}
         isOpen={tagOpen}
         onClose={() => setTagOpen(false)}
         tagList={tagList}
