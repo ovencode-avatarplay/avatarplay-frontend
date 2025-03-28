@@ -1,7 +1,7 @@
 // src/app/Network/ShortsNetwork.ts
 
 import api, {ResponseAPI} from './ApiInstance';
-import {MediaState} from './ProfileNetwork';
+import {MediaState, ProfileType} from './ProfileNetwork';
 
 // 쇼츠 정보 타입
 export interface ShortsInfo {
@@ -65,6 +65,7 @@ export interface FeedInfo {
   createAt?: string;
   profileUrlLinkKey: string;
   isMyFeed: boolean;
+  profileType: ProfileType;
 }
 
 export interface CreateFeedReq {

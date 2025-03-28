@@ -27,9 +27,14 @@ export interface VideoUploadField {
 interface VideoContentUploadProps {
   setEpisodeVideoInfo: (value: (prev: ContentEpisodeVideoInfo) => ContentEpisodeVideoInfo) => void;
   defaultEpisodeVideoInfo?: ContentEpisodeVideoInfo; // 기존 데이터가 있으면 전달받음
+  hasError?: boolean;
 }
 
-const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoInfo, defaultEpisodeVideoInfo}) => {
+const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
+  setEpisodeVideoInfo,
+  defaultEpisodeVideoInfo,
+  hasError,
+}) => {
   const [subtitleFields, setSubtitleFields] = useState<VideoUploadField[]>([]);
   const [dubbingFields, setDubbingFields] = useState<VideoUploadField[]>([]);
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle' | 'dubbing'; index: number} | null>(
@@ -306,7 +311,7 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
       <div className={styles.videoUploadContainer}>
         <span className={styles.label}>{getLocalizedText('common_filter_video')}</span>
         <div className={styles.uploadGroup}>
-          <div className={styles.videoUploadBox}>
+          <div className={`${styles.videoUploadBox} ${hasError && !videoFile ? styles.videoUploadBoxError : ''}`}>
             {videoFile ? (
               <>
                 <div className={styles.textInBoxGroup}>

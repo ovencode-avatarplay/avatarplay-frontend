@@ -25,6 +25,8 @@ import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useAtom} from 'jotai';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -74,6 +76,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
   const [selectedGenreAlertOn, setSelectedGenreAlertOn] = useState(false);
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+  const [triggerWarning, setTriggerWarning] = useState<boolean>();
   const handleTagRemove = (tag: string) => {
     setSelectedTags(selectedTags.filter(t => t !== tag));
   };
@@ -224,35 +227,26 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
     fetchData();
   }, [urlLinkKey]);
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const handleConfirm = async () => {
-    if (!nameValue.trim()) {
-      alert('Name을 입력해주세요.');
-      return;
+    const validations = [
+      {condition: !nameValue.trim(), message: 'Name을 입력해주세요.'},
+      {condition: !summaryValue.trim(), message: 'One Line Summary를 입력해주세요.'},
+      {condition: !descValue.trim(), message: 'Description을 입력해주세요.'},
+      {condition: !mediaUrls[0], message: 'Thumbnail을 업로드해주세요.'},
+      {condition: selectedGenres.length === 0, message: '최소 하나의 Genre를 선택해주세요.'},
+      {condition: selectedTags.length === 0, message: '최소 하나의 Tag를 선택해주세요.'},
+      {condition: positionCountryList.length === 0, message: 'Post Country를 선택해주세요.'},
+    ];
+
+    for (const v of validations) {
+      if (v.condition) {
+        setTriggerWarning(true);
+        dataToast.open(getLocalizedText('common_alert_093'), ToastType.Error);
+        return;
+      }
     }
-    if (!summaryValue.trim()) {
-      alert('One Line Summary를 입력해주세요.');
-      return;
-    }
-    if (!descValue.trim()) {
-      alert('Description을 입력해주세요.');
-      return;
-    }
-    if (!mediaUrls[0]) {
-      alert('Thumbnail을 업로드해주세요.');
-      return;
-    }
-    if (selectedGenres.length === 0) {
-      alert('최소 하나의 Genre를 선택해주세요.');
-      return;
-    }
-    if (selectedTags.length === 0) {
-      alert('최소 하나의 Tag를 선택해주세요.');
-      return;
-    }
-    if (positionCountryList.length === 0) {
-      alert('Post Country를 선택해주세요.');
-      return;
-    }
+
     const payload: CreateContentReq = {
       contentInfo: {
         id: editContentInfo?.id,
@@ -325,6 +319,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         <MediaUpload
           setContentMediaUrls={setMediaUrls}
           defaultImage={defaultImage ? defaultImage : undefined}
+          triggerWarning={triggerWarning}
         ></MediaUpload>
         <CustomInput
           inputType="Basic"
@@ -339,6 +334,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           }
           placeholder={getLocalizedText('common_sample_087')}
           customClassName={[styles.textInput]}
+          error={triggerWarning}
         />
         <CustomInput
           inputType="Basic"
@@ -353,6 +349,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           }
           placeholder={getLocalizedText('common_sample_089')}
           customClassName={[styles.textInput]}
+          error={triggerWarning}
         />
 
         <span className={styles.label}>
@@ -367,6 +364,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           maxPromptLength={500}
           style={{minHeight: '190px', width: '100%'}}
           placeholder={getLocalizedText('common_sample_047')}
+          isError={triggerWarning}
         />
         <CustomDropDownSelectDrawer
           title={getLocalizedText('createcontent003_label_004')}
@@ -382,6 +380,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
               setGenreList(tagGroups[0].tags);
               setGenreOpen(true);
             }}
+            error={triggerWarning}
           ></CustomDropDownSelectDrawer>
           <div className={styles.blackTagContainer}>
             {selectedGenres.map((tag, index) => (
@@ -405,6 +404,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
               setTagList(tagGroups[1].tags);
               setTagOpen(true);
             }}
+            error={triggerWarning}
           ></CustomDropDownSelectDrawer>
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
@@ -426,9 +426,10 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
             selectedItem={
               positionCountryList.map(country => LanguageType[country]).length > 0
                 ? positionCountryList.map(country => LanguageType[country]).join(', ')
-                : getLocalizedText('common_sample_079')
+                : ''
             }
             onClick={() => setIsPositionCountryOpen(true)}
+            error={triggerWarning}
           ></CustomDropDownSelectDrawer>
           <div className={styles.blackTagContainer}>
             {positionCountryList.map((tag, index) => (

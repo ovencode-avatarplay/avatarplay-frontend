@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import styles from './CreateContentEpisode.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useAtom} from 'jotai';
 import {
   BoldArrowDown,
   BoldQuestion,
@@ -53,7 +55,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
 }) => {
   const [contentInfo, setContentInfo] = useState<ContentInfo>();
 
-  console.log('alert(episodeId);', contentId, curSeason, curEpisodeCount, episodeId);
+  const [triggerWarning, setTriggerWarning] = useState<boolean>();
   const fetchContent = async (urlLinkKey: string) => {
     try {
       const response = await sendGetContent({urlLinkKey});
@@ -153,36 +155,46 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
     console.log('episodeWebtoonInfo', episodeWebtoonInfo);
   }, [episodeVideoInfo, episodeWebtoonInfo]);
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const createNewEpisode = async () => {
-    if (!contentInfo?.id || curSeason === 0 || curEpisodeCount + 1 === 0) {
-      alert('필수 요소 (콘텐츠 ID, 시즌 번호, 에피소드 번호) 누락');
-      return;
-    }
-    if (!mediaUrls[0]) {
-      alert('썸네일이 설정되지 않았습니다.');
-      return;
-    }
-    if (!nameValue.trim()) {
-      alert('에피소드 이름을 입력해주세요.');
-      return;
-    }
-    if (!descValue.trim()) {
-      alert('에피소드 설명을 입력해주세요.');
-      return;
-    }
-    if (contentInfo.categoryType == 1 && !episodeVideoInfo.videoSourceFileInfo.videoSourceUrl) {
-      alert('비디오 파일이 업로드되지 않았습니다.');
-      return;
-    }
+    const validations = [
+      {
+        condition: !contentInfo?.id || curSeason === 0 || curEpisodeCount + 1 === 0,
+        message: '필수 요소 (콘텐츠 ID, 시즌 번호, 에피소드 번호) 누락',
+      },
+      {
+        condition: !mediaUrls[0],
+        message: '썸네일이 설정되지 않았습니다.',
+      },
+      {
+        condition: !nameValue.trim(),
+        message: '에피소드 이름을 입력해주세요.',
+      },
+      {
+        condition: !descValue.trim(),
+        message: '에피소드 설명을 입력해주세요.',
+      },
+      {
+        condition: contentInfo?.categoryType === 1 && !episodeVideoInfo?.videoSourceFileInfo?.videoSourceUrl,
+        message: '비디오 파일이 업로드되지 않았습니다.',
+      },
+      {
+        condition: contentInfo?.categoryType === 0 && episodeWebtoonInfo?.webtoonSourceUrlList?.length === 0,
+        message: '이미지 파일이 업로드되지 않았습니다.',
+      },
+    ];
 
-    if (contentInfo.categoryType == 0 && episodeWebtoonInfo.webtoonSourceUrlList.length == 0) {
-      alert('이미지 파일이 업로드되지 않았습니다.');
-      return;
+    for (const {condition, message} of validations) {
+      if (condition) {
+        dataToast.open(getLocalizedText('common_alert_093'), ToastType.Error);
+        setTriggerWarning(true);
+        return;
+      }
     }
 
     const newEpisode: ContentEpisodeInfo = {
-      id: editContentInfo?.id,
-      contentId: contentInfo ? contentInfo?.id : 0, // 필수: 콘텐츠 ID
+      id: editContentInfo?.id ?? 0,
+      contentId: contentInfo?.id ?? 0, // 이 부분도 동일하게 처리
       seasonNo: curSeason, // 필수: 시즌 번호
       episodeNo: curEpisodeCount + 1, // 필수: 에피소드 번호
       thumbnailUrl: mediaUrls[0], // 필수: 썸네일
@@ -249,6 +261,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
           <MediaUpload
             setContentMediaUrls={setMediaUrls}
             defaultImage={defaultImage ? defaultImage : undefined}
+            triggerWarning={triggerWarning}
           ></MediaUpload>
         </div>
         <CustomInput
@@ -264,6 +277,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
           }
           placeholder={getLocalizedText('common_sample_088')}
           customClassName={[styles.textInput]}
+          error={triggerWarning}
         />
         <span className={styles.label}>
           {getLocalizedText('createcontent007_label_004')}{' '}
@@ -277,18 +291,21 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
           maxPromptLength={500}
           style={{minHeight: '190px', width: '100%'}}
           placeholder={getLocalizedText('common_sample_047')}
+          isError={triggerWarning}
         />
 
         {contentInfo?.categoryType == ContentCategoryType.Video && (
           <VideoContentUpload
             setEpisodeVideoInfo={setEpisodeVideoInfo}
             defaultEpisodeVideoInfo={editContentInfo?.episodeVideoInfo} // 기존 데이터 전달
+            hasError={triggerWarning}
           />
         )}
         {contentInfo?.categoryType == ContentCategoryType.Webtoon && (
           <WebtoonContentUpload
             setEpisodeWebtoonInfo={setEpisodeWebtoonInfo}
             defaultEpisodeWebtoonInfo={editContentInfo?.episodeWebtoonInfo} // 기존 데이터 전달
+            hasError={triggerWarning}
           />
         )}
 

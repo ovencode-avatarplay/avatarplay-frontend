@@ -190,3 +190,8 @@ line-height: 155%; /* 18.6px */
   width: 100%;
   height: 100%;
 }
+/* styles.module.css */
+.isEssentialWarning {
+  border: 1px dashed var(--Primary-2, #FEBBEA);
+  background: var(--Primary-4, #FFF5FD);
+}

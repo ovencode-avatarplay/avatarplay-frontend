@@ -13,7 +13,7 @@ type Props = {
 const CustomSelector = ({onClick, error, value}: Props) => {
   return (
     <>
-      <div className={cx(styles.selectWrap, error && styles.error)} onClick={onClick}>
+      <div className={cx(styles.selectWrap, error && !value && styles.error)} onClick={onClick}>
         {!value && <div className={styles.placeholder}>{getLocalizedText('Common', 'common_sample_079')}</div>}
         {value && <div className={styles.value}>{value}</div>}
         <img className={styles.arrowDown} src={'/ui/shared/icon_select.svg'} alt="" />
