@@ -235,6 +235,14 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const urlUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    // 👇 Mute 우회용 타이머 추가
+    if (isMute) {
+      setTimeout(() => {
+        setIsMute(false); // 잠깐 해제
+        setTimeout(() => setIsMute(true), 10); // 다시 mute
+      }, 10); // 짧게 delay
+    }
+
     const currentItem = allFeeds[currentSlideIndex];
 
     // ✅ URL 변경 (딜레이 적용)
@@ -269,6 +277,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
         loadMoreFeeds();
       }
     }
+    console.log(currentSlideIndex);
 
     // ✅ 컴포넌트 unmount 시 타이머 정리
     return () => {
