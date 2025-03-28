@@ -32,7 +32,7 @@ import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
 import DrawerDonation from '@/app/view/main/content/create/common/DrawerDonation';
-import {followProfile} from '@/app/NetWork/ProfileNetwork';
+import {followProfile, ProfileType} from '@/app/NetWork/ProfileNetwork';
 import {
   bookmark,
   BookMarkReq,
@@ -415,7 +415,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             <div className={styles.userInfo}>
               <Avatar
                 src={item.profileIconUrl || '/images/001.png'}
-                style={{width: '32px', height: '32px'}}
+                sx={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: item.profileType === ProfileType.Channel ? '10px' : '50%',
+                }}
                 onClick={() => {
                   pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                 }}

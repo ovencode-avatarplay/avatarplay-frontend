@@ -20,6 +20,7 @@ interface Props {
   inSideHint?: string | ReactNode;
   onErrorChange?: (hasError: boolean) => void;
   style?: React.CSSProperties;
+  isError?: boolean;
 }
 
 export enum inputType {
@@ -61,10 +62,15 @@ const MaxTextInput: React.FC<Props> = ({
   inSideHint,
   onErrorChange,
   style,
+  isError = false,
 }) => {
-  const [hasError, setHasError] = useState(false);
+  const [hasError, setHasError] = useState(isError);
   const [isComposing, setIsComposing] = useState(false); // 한글 입력 상태
   const [currentState, setCurrentState] = useState<inputState>(stateDataType);
+
+  useEffect(() => {
+    setHasError(isError);
+  }, [isError]);
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     let value = event.target.value.replace(/^\s+/, ''); // 첫글자 앞의 공백 제거
@@ -203,7 +209,9 @@ const MaxTextInput: React.FC<Props> = ({
         <div className={styles.hintText}>{hint}</div>
       )}
       {/* 경고 메시지 */}
-      {hasError && <ErrorMessage message="Character limit exceeded. Please shorten your input"></ErrorMessage>}
+      {hasError && isError != true && (
+        <ErrorMessage message="Character limit exceeded. Please shorten your input"></ErrorMessage>
+      )}
     </>
   );
 };

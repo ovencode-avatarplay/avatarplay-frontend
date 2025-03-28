@@ -91,7 +91,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
       )}
 
       <div
-        className={`${styles.textArea} ${styles[currentState]} ${error ? styles.Error : ''} ${
+        className={`${styles.textArea} ${styles[currentState]} ${error && value == '' ? styles.Error : ''} ${
           disabled ? styles.Disabled : ''
         } ${border === 'Round' ? styles.roundBorder : ''}`}
       >

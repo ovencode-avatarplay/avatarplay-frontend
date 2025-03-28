@@ -392,3 +392,7 @@ background: var(--White, #FFF);
     width: 18px;
     height: 18px;
   }
+  .videoUploadBoxError {
+    border: 1px solid var(--Primary-2, #FEBBEA);
+    background: var(--Primary-4, #FFF5FD);
+  }

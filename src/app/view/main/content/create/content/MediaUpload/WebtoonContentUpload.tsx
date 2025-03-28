@@ -37,11 +37,13 @@ export interface WebtoonUploadField {
 interface WebtoonContentUploadProps {
   setEpisodeWebtoonInfo: (value: ContentEpisodeWebtoonInfo) => void;
   defaultEpisodeWebtoonInfo?: ContentEpisodeWebtoonInfo; // 기존 데이터가 있으면 전달받음
+  hasError?: boolean;
 }
 
 const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   setEpisodeWebtoonInfo,
   defaultEpisodeWebtoonInfo,
+  hasError,
 }) => {
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle'; index: number} | null>(null);
   const [onPreview, setOnPreview] = useState(false);
@@ -394,6 +396,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
       </div>
     );
   };
+
   return (
     <>
       <div
@@ -407,7 +410,11 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
       <div className={styles.videoUploadContainer}>
         <span className={styles.label}>{getLocalizedText('common_filter_webtoon')}</span>
         <div className={styles.uploadGroup}>
-          <div className={styles.videoUploadBox}>
+          <div
+            className={`${styles.videoUploadBox} ${
+              hasError && imageFiles.length == 0 ? styles.videoUploadBoxError : ''
+            }`}
+          >
             {imageFiles.length > 0 ? (
               <ul className={styles.fileList}>
                 {imageNames.map((name, index) => (
