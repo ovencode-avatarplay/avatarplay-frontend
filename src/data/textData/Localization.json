@@ -6874,7 +6874,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_time_days ago": {
+  "common_time_days_ago": {
     "en-US": "{0} day ago",
     "ko": "",
     "ja": "",
@@ -6885,7 +6885,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_time_week ago": {
+  "common_time_week_ago": {
     "en-US": "{0} week ago",
     "ko": "",
     "ja": "",
@@ -6896,7 +6896,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_time_month ago": {
+  "common_time_month_ago": {
     "en-US": "{0} month ago",
     "ko": "",
     "ja": "",
@@ -6907,7 +6907,7 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_time_year ago": {
+  "common_time_year_ago": {
     "en-US": "{0} year ago",
     "ko": "",
     "ja": "",
