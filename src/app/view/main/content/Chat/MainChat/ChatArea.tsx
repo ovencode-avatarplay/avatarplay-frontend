@@ -63,9 +63,32 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     if (selectedBubbleIndex === null) {
       setSelectedBubbleIndex(index);
       if (scrollRef.current) {
-        setTimeout(() => {
-          scrollRef.current?.scrollBy({top: 120, behavior: 'smooth'});
-        }, 0);
+        let scrollOffset = 200;
+        const el = scrollRef.current;
+        const bubbleElement = el.querySelectorAll('[data-bubble]')[index] as HTMLElement;
+        const scrollBottomGap = el.scrollHeight - el.scrollTop - el.clientHeight;
+
+        // 아래 여백이 적을 때만 스크롤
+        if (scrollBottomGap < scrollOffset) {
+          console.log('scroll needed, gap:', scrollBottomGap);
+          setTimeout(() => {
+            el.scrollBy({top: scrollOffset, behavior: 'smooth'});
+          }, 0);
+        }
+
+        // Context가 스크롤 밖으로 나갔을 때 스크롤
+        if (bubbleElement) {
+          const bubbleRect = bubbleElement.getBoundingClientRect();
+          const containerRect = el.getBoundingClientRect();
+
+          const scrollBottomGap = el.scrollHeight - el.scrollTop - el.clientHeight;
+          const bubbleOutOfView = bubbleRect.bottom > containerRect.bottom - 20;
+
+          if (bubbleOutOfView || scrollBottomGap < scrollOffset) {
+            const scrollAmount = bubbleRect.bottom - containerRect.bottom + scrollOffset;
+            el.scrollBy({top: scrollAmount, behavior: 'smooth'});
+          }
+        }
       }
     } else {
       setSelectedBubbleIndex(null);
