@@ -489,7 +489,7 @@ const PostMain: React.FC<Props> = ({id}) => {
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title={getLocalizedText('common_label_002')}
-            selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : ''}
+            selectedItem={selectedTags.length > 0 ? selectedTags.map(v => getLocalizedText(v)).join(', ') : ''}
             onClick={() => {
               setTagList(tagGroups[1].tags);
               setTagOpen(true);
@@ -499,7 +499,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {getLocalizedText(`common_tag_${tag.replace(/ /gi, '').toLowerCase()}`)}
+                {getLocalizedText(tag)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
