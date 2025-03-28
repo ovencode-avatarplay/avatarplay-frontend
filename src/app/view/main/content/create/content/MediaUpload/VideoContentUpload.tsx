@@ -258,7 +258,9 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
               const input = document.createElement('input');
               input.type = 'file';
               // input.accept = type === 'subtitle' ? '.srt,.txt' : 'audio/*';
-              input.accept = type === 'subtitle' ? '' : '';
+              input.accept = input.accept =
+                type === 'subtitle' ? '.srt,.vtt' : type === 'dubbing' ? '.mp3,.mp4' : 'video/mp4';
+
               input.onchange = e => {
                 const files = (e.target as HTMLInputElement).files;
                 if (files) {
