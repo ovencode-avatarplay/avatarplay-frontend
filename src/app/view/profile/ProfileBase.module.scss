@@ -64,6 +64,7 @@
   padding: 0 6px 0 16px;
   box-sizing: border-box;
   position: sticky;
+  -webkit-transform: translateZ(0);
   height: 58px;
   width: 100%;
   max-width: var(--full-width-percent); //js 변경요소
@@ -571,10 +572,12 @@
   .tabSection {
     margin-top: 10px;
     position: sticky;
+    -webkit-transform: translateZ(0);
     top: 57px;
 
     .tabHeaderContainer {
       position: sticky;
+      -webkit-transform: translateZ(0);
       background: white;
       z-index: 2;
     }

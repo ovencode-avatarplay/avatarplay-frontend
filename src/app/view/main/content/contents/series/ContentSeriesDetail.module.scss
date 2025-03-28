@@ -89,6 +89,7 @@
 
   .infoHeaderSection {
     position: sticky;
+    -webkit-transform: translateZ(0);
     top: 0px;
     // top: -130px;
     z-index: 10;

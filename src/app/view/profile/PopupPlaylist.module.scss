@@ -97,6 +97,7 @@
 
     .tabHeaderContainer {
       position: sticky;
+      -webkit-transform: translateZ(0);
       top: 0;
       background: white;
       z-index: 2;
