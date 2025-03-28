@@ -453,7 +453,7 @@ const SearchBoard: React.FC = () => {
       content: (
         <section className={styles.featuredContainer}>
           <div className={styles.scrollArea}>
-            {bannerList && <ExploreFeaturedHeader items={bannerList} />}
+            {bannerList && <ExploreFeaturedHeader items={[...bannerList]} />}
             <div className={styles.content}>
               <main className={styles.listContainer}>
                 {characterExploreList && characterExploreList.length > 0 && (
@@ -653,9 +653,6 @@ const SearchBoard: React.FC = () => {
         isDark={true}
         onSelectSplitButton={index => {
           changeParams('indexTab', index);
-          if (index == 0) {
-            changeParams('search', null);
-          }
           handleSearch();
         }}
       />
