@@ -454,7 +454,6 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
     if (errors.mediaUrl) {
       setFocus('mediaUrl');
-      return;
     }
 
     if (errors.name || errors.description) {
