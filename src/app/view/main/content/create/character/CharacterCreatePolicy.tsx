@@ -342,6 +342,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   const renderTag = () => {
     return (
       <DrawerTagSelect
+        title={getLocalizedText('common_label_002')}
         isOpen={tagOpen}
         onClose={() => setTagOpen(false)}
         tagList={tagList}
