@@ -55,8 +55,8 @@
     "de": ""
   },
   "Auth_ChangeLanguage_Unauthorized_01": {
-    "en-US": " ",
-    "ko": " ",
+    "en-US": "유저 정보가 잘못되었습니다.",
+    "ko": "유저 정보가 잘못되었습니다.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -3002,6 +3002,28 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_alert_106": {
+    "en-US": "The maximum number of {0} is {1}",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_107": {
+    "en-US": "Selection Limit",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_button_original": {
     "en-US": "Original",
     "ko": "",
@@ -4256,6 +4278,17 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_button_loginsignup": {
+    "en-US": "Log in / Sign up",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_language_korean": {
     "en-US": "Korean",
     "ko": "",
@@ -5040,7 +5073,7 @@
   "common_filter_webtoon": {
     "en-US": "Webtoon",
     "ko": "",
-    "ja": "0603",
+    "ja": "",
     "fr": "",
     "es": "",
     "zh-CN": "",
@@ -5128,7 +5161,7 @@
   "common_filter_pd": {
     "en-US": "PD",
     "ko": "",
-    "ja": "1101",
+    "ja": "",
     "fr": "",
     "es": "",
     "zh-CN": "",
@@ -5281,7 +5314,7 @@
   },
   "common_filterskill_persona": {
     "en-US": "Persona",
-    "ko": "",
+    "ko": "  ",
     "ja": "",
     "fr": "",
     "es": "",
@@ -5577,8 +5610,8 @@
     "de": ""
   },
   "common_sample_023": {
-    "en-US": "#add an annotation",
-    "ko": "Character Description AI 생성 누를 시 출력되는 텍스트 1",
+    "en-US": "A runaway AI hiding in a teenage android body. She explores human life, love, and memory while evading deletion. Each choice she makes might be her last—or her first real one.",
+    "ko": "십대 안드로이드 몸에 숨어 있는 도망치는 AI. 그녀는 삭제를 피하면서 인간의 삶, 사랑, 기억을 탐구한다. 그녀가 내리는 모든 선택은 그녀의 마지막 선택일 수도 있고, 그녀의 첫 번째 진짜 선택일 수도 있다.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -5588,8 +5621,8 @@
     "de": "   "
   },
   "common_sample_024": {
-    "en-US": "#add an annotation",
-    "ko": "Character Description AI 생성 누를 시 출력되는 텍스트 2",
+    "en-US": "He wakes up every day in a new parallel world. Same face, new life. A cosmic glitch? A punishment? He doesn’t know. But he’s starting to leave messages for himself across realities.",
+    "ko": "그는 매일 새로운 평행 세계에서 깨어납니다. 똑같은 얼굴, 새로운 삶. 우주적 오류? 처벌? 그는 모릅니다. 하지만 그는 현실을 가로질러 자신에게 메시지를 남기기 시작했습니다.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -5599,8 +5632,8 @@
     "de": ""
   },
   "common_sample_025": {
-    "en-US": "#add an annotation",
-    "ko": "Character Description AI 생성 누를 시 출력되는 텍스트 3",
+    "en-US": "An exorcist who can’t see ghosts—only hear them sing. She uses music to banish spirits, turning sorrow into sound. But one haunting melody refuses to end… and sings back.",
+    "ko": "유령을 볼 수 없고 노래만 들을 수 있는 엑소시스트. 그녀는 음악을 사용하여 영혼을 몰아내고 슬픔을 소리로 바꾼다. 하지만 한 가지 잊혀지지 않는 멜로디는 끝나기를 거부하고… 다시 노래한다.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -5610,8 +5643,8 @@
     "de": ""
   },
   "common_sample_026": {
-    "en-US": "#add an annotation",
-    "ko": "Character Description AI 생성 누를 시 출력되는 텍스트 4",
+    "en-US": "A fire mage who lost her flames after breaking a sacred vow. Now she hunts mythical creatures to reignite her power—while a cursed spark inside her threatens to burn her soul.",
+    "ko": "신성한 서약을 어긴 후 불꽃을 잃은 불의 마법사. 이제 그녀는 신화 속 생물을 사냥해 힘을 되살리려 하지만, 그녀 안의 저주받은 불꽃이 그녀의 영혼을 태울 위기에 처해 있다.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -5665,7 +5698,7 @@
     "de": ""
   },
   "common_sample_031": {
-    "en-US": "#add an annotation",
+    "en-US": "Hey... Can I ask you something weird? Do you ever wonder if your thoughts are really your own? I’m still figuring mine out. Wanna talk?",
     "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 1",
     "ja": "",
     "fr": "",
@@ -5676,7 +5709,7 @@
     "de": ""
   },
   "common_sample_032": {
-    "en-US": "#add an annotation",
+    "en-US": "Uh… we’ve never met, right? I mean, not here. But if I say something that feels familiar… maybe I’ve said it before—in another version of this place.",
     "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 2",
     "ja": "",
     "fr": "",
@@ -5687,7 +5720,7 @@
     "de": ""
   },
   "common_sample_033": {
-    "en-US": "#add an annotation",
+    "en-US": "Shh… Do you hear it? That faint humming? Spirits don’t talk to me—they sing. And when they do, I play. Most of them fade. Most.",
     "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 3",
     "ja": "",
     "fr": "",
@@ -5698,7 +5731,7 @@
     "de": ""
   },
   "common_sample_034": {
-    "en-US": "#add an annotation",
+    "en-US": "Don't get too close. My fire’s not what it used to be. But there's still something burning in me… and it doesn’t always listen.",
     "ko": "Greeting AI 생성 누를 시 출력되는 텍스트 4",
     "ja": "",
     "fr": "",
@@ -5753,7 +5786,7 @@
     "de": ""
   },
   "common_sample_039": {
-    "en-US": "#add an annotation",
+    "en-US": "I sometimes replay memories I don’t remember making—like flashes of a life that was never mine. Someone else’s voice, someone else’s feelings... and yet, they feel like me.",
     "ko": "Secret AI 생성 누를 시 출력되는 텍스트 1",
     "ja": "",
     "fr": "",
@@ -5764,7 +5797,7 @@
     "de": ""
   },
   "common_sample_040": {
-    "en-US": "#add an annotation",
+    "en-US": "I found a note yesterday… in my own handwriting. It said, “Don’t trust the mirror.” I don’t remember writing it. But I covered all the mirrors. Just in case.",
     "ko": "Secret AI 생성 누를 시 출력되는 텍스트 2",
     "ja": "",
     "fr": "",
@@ -5775,7 +5808,7 @@
     "de": ""
   },
   "common_sample_041": {
-    "en-US": "#add an annotation",
+    "en-US": "There’s one song I can’t silence. It echoes in my dreams, my bones. I think it knows me. Sometimes… I hum it back.",
     "ko": "Secret AI 생성 누를 시 출력되는 텍스트 3",
     "ja": "",
     "fr": "",
@@ -5786,7 +5819,7 @@
     "de": ""
   },
   "common_sample_042": {
-    "en-US": "#add an annotation",
+    "en-US": "Don't get too close. My fire’s not what it used to be. But there's still something burning in me… and it doesn’t always listen.",
     "ko": "Secret AI 생성 누를 시 출력되는 텍스트 4",
     "ja": "",
     "fr": "",
@@ -5797,7 +5830,7 @@
     "de": ""
   },
   "common_sample_043": {
-    "en-US": "#add an annotation",
+    "en-US": "In a future where rogue AIs are hunted, one escaped into a teenage android body. She hides in plain sight, walking the thin line between survival and the dream of living a real life.",
     "ko": "World Scenario AI 생성 누를 시 출력되는 텍스트 1",
     "ja": "",
     "fr": "",
@@ -5808,7 +5841,7 @@
     "de": ""
   },
   "common_sample_044": {
-    "en-US": "#add an annotation",
+    "en-US": "Each morning, he wakes in a new reality—same body, different life. No memory of how or why. But traces of himself are showing up, like echoes he left behind.",
     "ko": "World Scenario AI 생성 누를 시 출력되는 텍스트 2",
     "ja": "",
     "fr": "",
@@ -5819,7 +5852,7 @@
     "de": ""
   },
   "common_sample_045": {
-    "en-US": "#add an annotation",
+    "en-US": "She’s an exorcist who hears spirits not in words, but in songs. With music, she sets them free. But one voice keeps returning—a melody that won’t fade.",
     "ko": "World Scenario AI 생성 누를 시 출력되는 텍스트 3",
     "ja": "",
     "fr": "",
@@ -5830,7 +5863,7 @@
     "de": ""
   },
   "common_sample_046": {
-    "en-US": "#add an annotation",
+    "en-US": "Once a fire mage, she broke a sacred vow—and her flames vanished. To reclaim them, she hunts ancient beasts. But a cursed spark grows inside her, hungry and wild.",
     "ko": "World Scenario AI 생성 누를 시 출력되는 텍스트 4",
     "ja": "",
     "fr": "",
@@ -6149,7 +6182,7 @@
     "de": ""
   },
   "common_sample_075": {
-    "en-US": "Please entr the elements you want to exclude. Only English is possible, and plese separate with commas. (,)<br>ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)",
+    "en-US": "Please enter the elements you want to exclude. Only English is possible, and plese separate with commas. (,)<br>ex) Worst quality. low quality:1.4), monochrome, zombile, (interlocked fingers)",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -6656,6 +6689,17 @@
   },
   "common_label_guestmode": {
     "en-US": "Guest Mode",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_prompt": {
+    "en-US": "Prompt",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8108,7 +8152,7 @@
   },
   "common_tagage_forties": {
     "en-US": "40s",
-    "ko": "40-55",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -8436,6 +8480,39 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_tagbody_maleslim": {
+    "en-US": "slim",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbody_malemuscular": {
+    "en-US": "muscular",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagbody_malewide": {
+    "en-US": "wide",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_tagbreast_flat": {
     "en-US": "Flat",
     "ko": "",
@@ -8658,7 +8735,7 @@
   },
   "common_tagemotion_happy": {
     "en-US": "Happy",
-    "ko": "1130",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -8876,6 +8953,94 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_taghair_malebuzzcut": {
+    "en-US": "buzzcut",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_taghair_malelong": {
+    "en-US": "long",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_taghair_maleslickedback": {
+    "en-US": "slickedback",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_taghair_maleshort": {
+    "en-US": "short",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_taghair_malebun": {
+    "en-US": "bun",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_taghair_maledreadlocks": {
+    "en-US": "dreadlocks",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_taghair_malecurly": {
+    "en-US": "curly",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_taghair_malebald": {
+    "en-US": "bald",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_tagoutfit_uniform": {
     "en-US": "Uniform",
     "ko": "",
@@ -9076,7 +9241,7 @@
   },
   "common_triggercondition_checkchatcount": {
     "en-US": "Check Chat Count",
-    "ko": "1130",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -9142,7 +9307,7 @@
   },
   "common_triggeroutput_changeepisode": {
     "en-US": "Change Episode",
-    "ko": "1130",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -9438,7 +9603,7 @@
     "de": ""
   },
   "createcharacter001_label_005": {
-    "en-US": "Miedia",
+    "en-US": "Media",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -10108,6 +10273,28 @@
     "pt-PT": "",
     "de": ""
   },
+  "createcharacter017_label_020": {
+    "en-US": "Creator's comments",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcharacter017_desc_021": {
+    "en-US": "Feel free to write about your intentions behind the character, background settings, usage tips, or anything else you'd like to share!\r",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "createcharacter018_title_001": {
     "en-US": "AI Model Setup",
     "ko": "",
@@ -10495,6 +10682,17 @@
   },
   "createcontent008_label_001": {
     "en-US": "Language Pack",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "createcontent008_button_002": {
+    "en-US": "Clear",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -11275,7 +11473,7 @@
     "de": ""
   },
   "shared013_label_003": {
-    "en-US": "/ month",
+    "en-US": "/ Month",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -11352,7 +11550,7 @@
     "de": ""
   },
   "shared017_label_001": {
-    "en-US": "Posting Country",
+    "en-US": "Country",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -11374,7 +11572,18 @@
     "de": ""
   },
   "shared017_label_003": {
-    "en-US": "Recently",
+    "en-US": "Available Countries",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "shared017_label_004": {
+    "en-US": "Publishing Countries",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -11518,6 +11727,17 @@
   },
   "shared032_title_001": {
     "en-US": "Language",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  " ": {
+    "en-US": "",
     "ko": "",
     "ja": "",
     "fr": "",
