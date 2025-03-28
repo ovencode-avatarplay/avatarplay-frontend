@@ -219,8 +219,6 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       }
     }
 
-    console.log('index', calculatedIndex, slides.length);
-
     setCurrentSlideIndex(prevIndex => {
       if (calculatedIndex > prevIndex + 1) {
         return prevIndex + 1;
@@ -233,16 +231,25 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   };
 
   const urlUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const muteRef = useRef(isMute); // 현재 mute 상태 저장용 ref
+
+  useEffect(() => {
+    muteRef.current = isMute; // isMute가 바뀔 때마다 ref도 동기화
+    console.log('isMute', isMute);
+  }, [isMute]);
 
   useEffect(() => {
     // 👇 Mute 우회용 타이머 추가
-    if (isMute) {
-      setTimeout(() => {
-        setIsMute(false); // 잠깐 해제
-        setTimeout(() => setIsMute(true), 10); // 다시 mute
-      }, 10); // 짧게 delay
-    }
+    if (!muteRef.current) {
+      setIsMute(true); // 잠깐 unmute
 
+      setTimeout(() => {
+        // 최신 muteRef 상태가 여전히 true였던 경우만 다시 mute로 되돌림
+        if (muteRef.current) {
+          setIsMute(false);
+        }
+      }, 10); // 10ms 딜레이 (테스트 후 조절 가능)
+    }
     const currentItem = allFeeds[currentSlideIndex];
 
     // ✅ URL 변경 (딜레이 적용)
@@ -277,7 +284,6 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
         loadMoreFeeds();
       }
     }
-    console.log(currentSlideIndex);
 
     // ✅ 컴포넌트 unmount 시 타이머 정리
     return () => {
@@ -386,9 +392,6 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       reelsWrapperRef.current.removeEventListener('scroll', handleScroll);
     };
   }, [allFeeds, currentSlideIndex]);
-  React.useEffect(() => {
-    console.log(isMute);
-  }, [isMute]);
 
   // const {isInteracting, scrollDirection} = useResponsiveBodyHeight();
 
