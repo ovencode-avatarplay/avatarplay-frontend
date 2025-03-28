@@ -18,6 +18,12 @@
 .main.mainNoPath {
   padding-top: 1px;
 
+  .tabSection {
+    position: relative !important;
+    top: inherit !important;
+  }
+
+
   .tabHeaderContainer {
     position: relative !important;
     top: inherit !important;
