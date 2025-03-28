@@ -84,7 +84,7 @@ export default function BottomNav() {
     // </svg>
   );
   const exploreSvg = (
-    <img className={styles.buttonIcon} style={{filter: checkColor(1)}} src={'/ui/Icons/Bold/Explore.svg'} />
+    <img className={styles.buttonIcon} style={{filter: checkColor(1)}} src={'/ui/Icons/Bold/Search.svg'} />
 
     // <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
     //   <circle cx="12.5667" cy="11.7666" r="8.98856" fill={checkColor(1)} />
@@ -165,7 +165,7 @@ export default function BottomNav() {
 
   return (
     <footer>
-      <div className={` ${styles.bottomNav} ${colorMode === 1 ? styles['light-mode'] : styles['dark-mode']}`}>
+      <div className={` ${styles.bottomNav} ${colorMode === 1 ? styles['light-mode'] : styles['light-mode']}`}>
         <div className={styles.bottomNavBox}>
           {buttonData.map((button, index) => {
             const isMy = button.label == 'My';
@@ -187,7 +187,7 @@ export default function BottomNav() {
                   <button
                     className={`${styles.navButton} 
                     ${selectedIndex === index ? styles.selected : ''} 
-                    ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
+                    ${selectedIndex === index && colorMode === 0 ? styles['light-mode'] : ''}`}
                   >
                     {button.icon}
                   </button>

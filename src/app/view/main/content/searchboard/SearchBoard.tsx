@@ -640,7 +640,7 @@ const SearchBoard: React.FC = () => {
         }}
         // contentStyle={{padding: '10px'}}
         itemStyle={{width: 'calc(50%)'}}
-        isDark={true}
+        isDark={false}
         onSelectSplitButton={index => {
           changeParams('indexTab', index);
           if (index == 0) {
