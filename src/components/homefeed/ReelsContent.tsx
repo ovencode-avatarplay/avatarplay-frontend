@@ -78,6 +78,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const [isReportModal, setIsRefortModal] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
+  const swiperRef = useRef<SwiperClass | null>(null);
 
   const Header = 'Home';
   const Common = 'Common';
@@ -308,6 +309,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   return (
     <div className={styles.reelsContainer}>
       <Swiper
+        onSwiper={(swiper: SwiperClass) => {
+          swiperRef.current = swiper;
+        }}
         direction="horizontal"
         slidesPerView={1}
         centeredSlides={true}
@@ -575,7 +579,15 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
         </SwiperSlide>
         {isShowProfile && (
           <SwiperSlide style={{overflowY: 'scroll', background: 'white'}}>
-            {activeIndexProfile === 1 && <ProfileBase urlLinkKey={item.profileUrlLinkKey} maxWidth={'600px'} />}
+            {activeIndexProfile === 1 && (
+              <ProfileBase
+                urlLinkKey={item.profileUrlLinkKey}
+                maxWidth={'600px'}
+                onClickBack={() => {
+                  swiperRef.current?.slidePrev();
+                }}
+              />
+            )}
           </SwiperSlide>
         )}
       </Swiper>
