@@ -32,9 +32,9 @@ enum CategoryTypes {
 export const getCategoryTypesKey = (key: number): string => {
   switch (key) {
     case CategoryTypes.Webtoon:
-      return getLocalizedText('common_filter_video');
-    case CategoryTypes.Drama:
       return getLocalizedText('common_filter_webtoon');
+    case CategoryTypes.Drama:
+      return getLocalizedText('common_filter_video');
     default:
       return '';
   }
@@ -157,17 +157,17 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
   const [CategoryDrawerOpen, setCategoryDrawerOpen] = useState<boolean>(false);
 
   const publishItemsCategory: SelectDrawerItem[] = [
-    {name: 'Webtoon', onClick: () => setSelectedCategory(CategoryTypes.Webtoon)},
-    {name: 'Drama', onClick: () => setSelectedCategory(CategoryTypes.Drama)},
+    {name: getLocalizedText('common_filter_webtoon'), onClick: () => setSelectedCategory(CategoryTypes.Webtoon)},
+    {name: getLocalizedText('common_filter_video'), onClick: () => setSelectedCategory(CategoryTypes.Drama)},
   ];
 
   const [selectedVisibility, setSelectedVisibility] = useState<VisibilityType>(VisibilityType.Private);
   const [visibilityDrawerOpen, setVisibilityDrawerOpen] = useState<boolean>(false);
 
   const publishItemsVisibility: SelectDrawerItem[] = [
-    {name: 'Private', onClick: () => setSelectedVisibility(VisibilityType.Private)},
-    {name: 'Unlisted', onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
-    {name: 'Public', onClick: () => setSelectedVisibility(VisibilityType.Public)},
+    {name: getLocalizedText('common_filter_private'), onClick: () => setSelectedVisibility(VisibilityType.Private)},
+    {name: getLocalizedText('common_filter_unlisted'), onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
+    {name: getLocalizedText('common_filter_public'), onClick: () => setSelectedVisibility(VisibilityType.Public)},
   ];
 
   const [isPositionCountryOpen, setIsPositionCountryOpen] = useState(false);
@@ -377,7 +377,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title={getLocalizedText('createcontent003_label_005')}
-            selectedItem={selectedGenres.length > 0 ? selectedGenres.join(', ') : ''}
+            selectedItem={selectedGenres.length > 0 ? selectedGenres.map(v => getLocalizedText(v)).join(', ') : ''}
             onClick={() => {
               setGenreList(tagGroups[0].tags);
               setGenreOpen(true);
@@ -400,7 +400,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title={getLocalizedText('common_label_002')}
-            selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : ''}
+            selectedItem={selectedTags.length > 0 ? selectedTags.map(v => getLocalizedText(v)).join(', ') : ''}
             onClick={() => {
               setTagList(tagGroups[1].tags);
               setTagOpen(true);
@@ -409,7 +409,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {getLocalizedText(`common_tag_${tag.replace(/ /gi, '').toLowerCase()}`)}
+                {getLocalizedText(tag)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -478,7 +478,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         </button>
       </div>
       <DrawerTagSelect
-        title={''}
+        title={getLocalizedText('common_label_002')}
         isOpen={tagOpen}
         onClose={() => setTagOpen(false)}
         tagList={tagList}
@@ -488,9 +488,10 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         maxTagCount={maxTagCount}
         selectedTagAlertOn={selectedTagAlertOn}
         setSelectedTagAlertOn={setSelectedTagAlertOn}
+        descValue={getLocalizedText('common_label_002')}
       />
       <DrawerTagSelect
-        title={''}
+        title={getLocalizedText('createcontent003_label_005')}
         isOpen={genreOpen}
         onClose={() => setGenreOpen(false)}
         tagList={genreList}
@@ -500,6 +501,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         maxTagCount={maxGenreCount}
         selectedTagAlertOn={selectedGenreAlertOn}
         setSelectedTagAlertOn={setSelectedGenreAlertOn}
+        descValue={getLocalizedText('createcontent003_label_005')}
       />
       <SelectDrawer
         name={getLocalizedText('createcontent001_label_007')}

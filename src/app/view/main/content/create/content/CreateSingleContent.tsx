@@ -179,9 +179,9 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
   const [visibilityDrawerOpen, setVisibilityDrawerOpen] = useState<boolean>(false);
 
   const publishItemsVisibility: SelectDrawerItem[] = [
-    {name: 'Private', onClick: () => setSelectedVisibility(VisibilityType.Private)},
-    {name: 'Unlisted', onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
-    {name: 'Public', onClick: () => setSelectedVisibility(VisibilityType.Public)},
+    {name: getLocalizedText('common_filter_private'), onClick: () => setSelectedVisibility(VisibilityType.Private)},
+    {name: getLocalizedText('common_filter_unlisted'), onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
+    {name: getLocalizedText('common_filter_public'), onClick: () => setSelectedVisibility(VisibilityType.Public)},
   ];
 
   const [isPositionCountryOpen, setIsPositionCountryOpen] = useState(false);
@@ -577,6 +577,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         maxTagCount={maxTagCount}
         selectedTagAlertOn={selectedTagAlertOn}
         setSelectedTagAlertOn={setSelectedTagAlertOn}
+        descValue={getLocalizedText('common_label_002')}
       />
       <DrawerTagSelect
         title={getLocalizedText('createcontent003_label_005')}
@@ -589,6 +590,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         maxTagCount={maxGenreCount}
         selectedTagAlertOn={selectedGenreAlertOn}
         setSelectedTagAlertOn={setSelectedGenreAlertOn}
+        descValue={getLocalizedText('createcontent003_label_005')}
       />
       <SelectDrawer
         name={getLocalizedText('createcontent001_label_007')}

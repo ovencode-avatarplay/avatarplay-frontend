@@ -300,7 +300,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const {back, changeParams, getParam} = useCustomRouter();
   const searchParams = useSearchParams();
-  const isNeedBackBtn = searchParams?.get('from'); // "from" 쿼리 파라미터 값 가져오기
+  const isNeedBackBtn = searchParams?.get('from') || !isPath; // "from" 쿼리 파라미터 값 가져오기
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const router = useRouter();
   const pathname = usePathname();
@@ -789,7 +789,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             <div
               className={styles.backBtn}
               onClick={() => {
-                routerBack();
+                if (isPath) {
+                  routerBack();
+                } else {
+                  onClickBack();
+                }
               }}
             >
               <img src={BoldArrowLeft.src} alt="" />

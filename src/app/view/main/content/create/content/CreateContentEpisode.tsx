@@ -262,7 +262,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
               <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
             </span>
           }
-          placeholder={getLocalizedText('common_sample_087')}
+          placeholder={getLocalizedText('common_sample_088')}
           customClassName={[styles.textInput]}
         />
         <span className={styles.label}>
