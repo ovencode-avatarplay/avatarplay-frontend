@@ -324,7 +324,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
           horizontal: 'left',
         }}
       >
-        {'email' in comment && getEmailFromJwt() && getEmailFromJwt() == comment.email && (
+        {/* {'email' in comment && getEmailFromJwt() && getEmailFromJwt() == comment.email && (
           <MenuItem
             onClick={() => {
               handleClose();
@@ -333,7 +333,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
           >
             Edit
           </MenuItem>
-        )}
+        )} */}
         <MenuItem
           onClick={() => {
             handleDeleteComment(comment.commentId);
