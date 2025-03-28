@@ -61,7 +61,7 @@ const DrawerTagSelect: React.FC<TagDrawerProps> = ({
         ReactDOM.createPortal(
           <CustomPopup
             type="alert"
-            title={getLocalizedText('common_alert_106')}
+            title={getLocalizedText('common_alert_107')}
             description={formatText(getLocalizedText('common_alert_106'), [descValue, maxTagCount.toString()])}
             buttons={[
               {
