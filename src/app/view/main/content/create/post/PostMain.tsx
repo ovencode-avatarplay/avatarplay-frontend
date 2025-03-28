@@ -36,6 +36,8 @@ import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {getVisibilityTypeKey} from '../content/CreateSeriesContent';
+import {useAtom} from 'jotai';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
 
 interface Props {
   id?: string;
@@ -99,45 +101,47 @@ const PostMain: React.FC<Props> = ({id}) => {
     {
       category: 'Genre',
       tags: [
-        'Romance',
-        'Fantasy',
-        'Action',
-        'Daily Life',
-        'Thriller',
-        'Comedy',
-        'Martial Arts',
-        'Drama',
-        'Historical Drama',
-        'Emotion',
-        'Sports',
+        'common_genre_romance',
+        'common_genre_fantasy',
+        'common_genre_action',
+        'common_genre_comedy',
+        'common_genre_sliceoflife',
+        'common_genre_thriller',
+        'common_genre_comedy', // 중복 있음
+        'common_genre_bl/gl',
+        'common_genre_drama',
+        'common_genre_historicaldrama',
+        'common_genre_emotional',
+        'common_genre_sports',
+        'common_genre_wuxia',
       ],
     },
     {
       category: 'Theme',
       tags: [
-        'Male',
-        'Female',
-        'Boyfriend',
-        'Girlfriend',
-        'Hero',
-        'Elf',
-        'Romance',
-        'Vanilla',
-        'Contemporary Fantasy',
-        'Isekai',
-        'Flirting',
-        'Dislike',
-        'Comedy',
-        'Noir',
-        'Horror',
-        'Demon',
-        'SF',
-        'Vampire',
-        'Office',
-        'Monster',
-        'Anime',
-        'Books',
-        'Aliens',
+        'common_tag_male',
+        'common_tag_female',
+        'common_tag_boyfriend',
+        'common_tag_girlfriend',
+        'common_tag_hero',
+        'common_tag_elf',
+        'common_tag_romance',
+        'common_tag_vanilla',
+        'common_tag_contemporaryfantasy',
+        'common_tag_isekai',
+        'common_tag_flirting',
+        'common_tag_dislike',
+        'common_tag_comedy',
+        'common_tag_noir',
+        'common_tag_horror',
+        'common_tag_demon',
+        'common_tag_sf',
+        'common_tag_vampire',
+        'common_tag_office',
+        'common_tag_monster',
+        'common_tag_anime',
+        'common_tag_books',
+        'common_tag_aliens',
       ],
     },
   ];
@@ -342,12 +346,14 @@ const PostMain: React.FC<Props> = ({id}) => {
     {name: 'Public', onClick: () => setSelectedVisibility(VisibilityType.Public)},
   ];
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const createFeed = async () => {
     let state = 0;
     if (mediaType == 'image') state = 1;
     if (mediaType == 'video') state = 2;
 
-    if (mediaUrls.length == 0) {
+    if (mediaUrls.length == 0 || nameValue == '' || descValue == '' || selectedTags.length == 0) {
+      dataToast.open(getLocalizedText('common_alert_093'), ToastType.Error);
       setWarnPopup(true);
       return;
     }
@@ -393,7 +399,7 @@ const PostMain: React.FC<Props> = ({id}) => {
       <div className={styles.container}>
         <div className={styles.label}>{getLocalizedText('common_label_media')}</div>
         <div
-          className={styles.inputBox}
+          className={`${styles.inputBox} ${warnPopup && mediaUrls.length == 0 ? styles.isEssentialWarning : ''}`}
           onClick={() => {
             setIsOpenMediaDrawer(true);
           }}
@@ -464,6 +470,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           }
           placeholder={getLocalizedText('common_sample_085')}
           customClassName={[styles.textInput]}
+          error={warnPopup}
         />
         <span className={styles.desclabel}>
           {getLocalizedText('CreateFeed001_label003')} <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
@@ -476,6 +483,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           maxPromptLength={500}
           style={{minHeight: '190px', width: '100%'}}
           placeholder={getLocalizedText('common_sample_047')}
+          isError={warnPopup}
         />
 
         <div className={styles.tagContainer}>
@@ -486,6 +494,7 @@ const PostMain: React.FC<Props> = ({id}) => {
               setTagList(tagGroups[1].tags);
               setTagOpen(true);
             }}
+            error={warnPopup}
           ></CustomDropDownSelectDrawer>
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
@@ -510,6 +519,7 @@ const PostMain: React.FC<Props> = ({id}) => {
             }
             selectedItem={getVisibilityTypeKey(selectedVisibility)}
             onClick={() => setVisibilityDrawerOpen(true)}
+            error={warnPopup}
           ></CustomDropDownSelectDrawer>
         </div>
         <div className={styles.nsfwLabel}>
@@ -572,22 +582,7 @@ const PostMain: React.FC<Props> = ({id}) => {
         />
       </div>
       <LoadingOverlay loading={loading} />
-      {warnPopup && (
-        <CustomPopup
-          type="alert"
-          title="Alert"
-          description="No media added"
-          buttons={[
-            {
-              label: 'Ok',
-              onClick: () => {
-                setWarnPopup(false);
-              },
-              isPrimary: true,
-            },
-          ]}
-        />
-      )}
+
       {publishPopup && (
         <CustomPopup
           type="alert"
