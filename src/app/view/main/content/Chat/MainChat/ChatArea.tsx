@@ -62,6 +62,11 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   const handleBubbleClick = (index: number) => {
     if (selectedBubbleIndex === null) {
       setSelectedBubbleIndex(index);
+      if (scrollRef.current) {
+        setTimeout(() => {
+          scrollRef.current?.scrollBy({top: 120, behavior: 'smooth'});
+        }, 0);
+      }
     } else {
       setSelectedBubbleIndex(null);
     }
