@@ -381,7 +381,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   }}
                 >
                   <div className={`${styles.playCircleIcon} ${isClicked ? styles.fadeAndGrow : ''}`}>
-                    <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
+                    <img src={isPlaying ? BoldPause.src : BoldPlay.src} style={{width: '50%', height: '50%'}} />
                   </div>
                 </div>
               </div>
