@@ -348,6 +348,9 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   useEffect(() => {
     console.log('Updated allFeeds:', allFeeds);
   }, [allFeeds]);
+  useEffect(() => {
+    console.log('info:', info);
+  }, [info]);
 
   // useEffect(() => {
   //   if (isProfile) {
@@ -377,6 +380,17 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   }, [allFeeds, currentSlideIndex]);
 
   // const {isInteracting, scrollDirection} = useResponsiveBodyHeight();
+  const handleFollow = (profileId: number, isFollow: boolean) => {
+    const updatedInfo = info.map(feed => (feed.profileId === profileId ? {...feed, isFollowing: isFollow} : feed));
+
+    const updatedAllFeeds = allFeeds.map(feed =>
+      feed.profileId === profileId ? {...feed, isFollowing: isFollow} : feed,
+    );
+
+    // 상태 업데이트
+    setInfo(updatedInfo);
+    setAllFeeds(updatedAllFeeds);
+  };
 
   return (
     <div ref={containerRef} className={styles.reelsContainer}>
@@ -426,6 +440,8 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
                 setIsProfile={setIsProfile}
                 isShowProfile={!isSpecificProfile}
                 recommendState={selectedTab}
+                setSyncFollow={handleFollow}
+                isFollow={item.isFollowing}
               />
             </div>
           );

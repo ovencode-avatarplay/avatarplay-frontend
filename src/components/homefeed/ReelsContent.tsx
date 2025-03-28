@@ -54,6 +54,8 @@ interface ReelsContentProps {
   setIsProfile: (profile: boolean) => void; // boolean 매개변수 추가
   recommendState: RecommendState;
   isShowProfile: boolean;
+  setSyncFollow: (id: number, value: boolean) => void;
+  isFollow: boolean;
 }
 
 const ReelsContent: React.FC<ReelsContentProps> = ({
@@ -64,11 +66,12 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   setIsProfile,
   isShowProfile = true,
   recommendState,
+  setSyncFollow,
+  isFollow,
 }) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-  const [isFollow, setIsFollow] = useState(item.isFollowing);
   const [isDonation, setDonation] = useState(false);
   const [isLike, setIsLike] = useState(item.isLike);
   const [isDisLike, setIsDisLike] = useState(item.isDisLike);
@@ -82,7 +85,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
   const Header = 'Home';
   const Common = 'Common';
-
+  useEffect(() => {
+    console.log('setSyncFollow', item);
+  }, [item]);
   useEffect(() => {
     if (isActive) {
       setIsPlaying(true); // 활성화된 경우 자동 재생
@@ -195,6 +200,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const handleFollow = async (profileId: number, value: boolean) => {
     try {
       const response = await followProfile(profileId, value);
+      setSyncFollow(profileId, value);
     } catch (error) {
       console.error('An error occurred while Following:', error);
     }
@@ -427,7 +433,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 <button
                   className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
                   onClick={() => {
-                    setIsFollow(!isFollow);
                     handleFollow(item.profileId, !isFollow);
                     console.log('isfollow', isFollow);
                   }}
