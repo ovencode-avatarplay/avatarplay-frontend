@@ -149,6 +149,7 @@ const SearchBoard: React.FC = () => {
   const [search, setSearch] = useState<searchType>('All');
   const [adultToggleOn, setAdultToggleOn] = useState(false);
   const [searchValue, setSearchValue] = useState<string>('');
+  const prevSearchValueRef = useRef(searchValue);
 
   // Filter State
   const [positiveFilters, setPositiveFilters] = useState<FilterDataItem[]>([]);
@@ -407,11 +408,18 @@ const SearchBoard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log('asdfasdfa');
     fetchExploreData();
 
     setSearchResultList([]);
   }, []);
+
+  useEffect(() => {
+    if (prevSearchValueRef.current !== '' && searchValue === '') {
+      handleSearch();
+    }
+
+    prevSearchValueRef.current = searchValue;
+  }, [searchValue]);
 
   useEffect(() => {
     if (searchLoading || !hasSearchResult) return;
