@@ -916,6 +916,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     <CharacterCreateImageButton
                       key={index}
                       sizeType="summary"
+                      selectType="one"
+                      selectButtonType="button"
                       label={null}
                       image={imgUrl}
                       selected={selectedOptions.result === index}
@@ -924,6 +926,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
                           ? handleImageToggle(imgUrl, generatedOptions?.debugParameter ?? '')
                           : handleOptionSelect('result', index)
                       }
+                      onImageClick={() => {
+                        if (onClickPreview) onClickPreview(imgUrl);
+                      }}
                     />
                   ))}
                 </div>
