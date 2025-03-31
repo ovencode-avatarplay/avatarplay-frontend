@@ -13,7 +13,16 @@ import logoTalkain from '@ui/logo_talkain.png';
 import UserDropdown from '@shared/UserDropdown';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
-import {BoldAlert, BoldReward, BoldRuby, BoldStar, LineMenu} from '@ui/Icons';
+import {
+  BoldAlert,
+  BoldNotification,
+  BoldReward,
+  BoldRuby,
+  BoldStar,
+  LineMenu,
+  LineNotification,
+  LineReward,
+} from '@ui/Icons';
 import {useDispatch, useSelector} from 'react-redux';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import HamburgerBar from '../../sidebar/HamburgerBar';
@@ -33,7 +42,7 @@ const HeaderNavBar = () => {
 
   return (
     <header className={styles.navbar}>
-      <div className={styles.logoArea}>
+      {/* <div className={styles.logoArea}>
         <Image src={LineMenu.src} alt="Logo" width={24} height={24} priority onClick={() => setIsHamOpen(true)} />
         <Link href={getLocalizedLink('/main/homefeed')}>
           <div
@@ -46,41 +55,66 @@ const HeaderNavBar = () => {
             <Image className={styles.logoImage} src={logo} alt="Logo" priority />
           </div>
         </Link>
+      </div> */}
+      <div className={styles.logoArea}>
+        <Link href={getLocalizedLink('/main/homefeed')}>
+          <div
+            className={styles.logoArea}
+            onClick={() => {
+              dispatch(setBottomNavColor(0));
+              dispatch(setSelectedIndex(0));
+            }}
+          >
+            <Image src={logo} alt="Logo" width={85} height={17} priority className={styles.logo} />
+          </div>
+        </Link>
       </div>
       <div className={styles.rightArea}>
-        <div className={styles.currencyArea}>
-          <div className={styles.currencyItem}>
-            <img className={styles.currencyIcon} src={BoldRuby.src} />
-            <div className={styles.currencyText}>{curRuby}</div>
+        <div className={styles.rightinfo}>
+          <div className={styles.currencyArea}>
+            <div className={styles.currencyItem}>
+              <img className={styles.currencyIcon} src={BoldRuby.src} />
+              <div className={styles.currencyText}>{curRuby}</div>
+            </div>
+            <div className={styles.currencyItem}>
+              <img className={styles.currencyIcon} src={BoldStar.src} />
+              <div className={styles.currencyText}>{formatCurrency(starAmount)}</div>
+            </div>
           </div>
-          <div className={styles.currencyItem}>
-            <img className={styles.currencyIcon} src={BoldStar.src} />
-            <div className={styles.currencyText}>{formatCurrency(starAmount)}</div>
-          </div>
-        </div>
 
-        <div className={styles.buttons}>
-          <Link href={getLocalizedLink('/main/game')}>
-            <button
-              onClick={() => {
-                dispatch(setSelectedIndex(2));
-                dispatch(setBottomNavColor(1));
-              }}
-            >
-              <img className={styles.rewardIcon} src={BoldReward.src} />
+          <div className={styles.buttons}>
+            <Link href={getLocalizedLink('/main/game')}>
+              <button
+                onClick={() => {
+                  dispatch(setSelectedIndex(2));
+                  dispatch(setBottomNavColor(1));
+                }}
+              >
+                <img className={styles.rewardIcon} src={BoldReward.src} />
+              </button>
+            </Link>
+            <button className={styles.notification} onClick={() => {}}>
+              <img className={styles.notificationIcon} src={BoldNotification.src} />
+              <div className={styles.redDot}></div>
             </button>
-          </Link>
-          <button className={styles.notification} onClick={() => {}}>
-            <img className={styles.notificationIcon} src={BoldAlert.src} />
-            <div className={styles.redDot}></div>
-          </button>
+          </div>
         </div>
+        <Image
+          src={LineMenu.src}
+          alt="Ham"
+          width={24}
+          height={24}
+          priority
+          onClick={() => setIsHamOpen(true)}
+          className={styles.ham}
+        />
         {/* <UserDropdown /> */}
       </div>
       <HamburgerBar
         onClose={() => {
           setIsHamOpen(false);
         }}
+        isLeft={false}
         open={isHamOpen}
       ></HamburgerBar>
     </header>
