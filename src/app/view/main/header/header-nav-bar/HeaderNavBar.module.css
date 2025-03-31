@@ -24,16 +24,12 @@
   
 }
 
-.logo{
-  filter: brightness(0) saturate(100%)
-} */
-
-
-.logoArea {
-  flex-shrink: 0;
-  display: flex;
-  gap: 8px;
-  cursor: pointer
+.logoImage
+{
+  justify-self: center;
+  align-self: center;
+  width: 100%;
+  height: 17px;
 }
   
 .logo{
