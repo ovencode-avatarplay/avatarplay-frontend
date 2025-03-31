@@ -32,7 +32,6 @@
 .logoArea {
   flex-shrink: 0;
   display: flex;
-  padding-top: 2px;
   gap: 8px;
   cursor: pointer
 }
