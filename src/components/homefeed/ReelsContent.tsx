@@ -339,7 +339,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
               />
             )}
             {item.mediaState === 2 && (
-              <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
+              <div
+                onClick={handleClick}
+                style={{position: 'relative', width: '100%', height: '100%', background: '#000'}}
+              >
                 <ReactPlayer
                   ref={playerRef} // ReactPlayer 참조 연결
                   muted={isMute}

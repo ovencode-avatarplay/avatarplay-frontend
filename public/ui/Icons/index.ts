@@ -1,6 +1,4 @@
 import BoldAI from "./Bold/AI.svg";
-import BoldAlertOn from "./Bold/Alert_on.svg";
-import BoldAlert from "./Bold/Alert.svg";
 import BoldAltArrowDown from "./Bold/Alt_Arrow_Down.svg";
 import BoldAltArrowDownTwo from "./Bold/Alt_Arrow_Down_Two.svg";
 import BoldAltArrowUp from "./Bold/Alt_Arrow_Up.svg";
@@ -18,7 +16,7 @@ import BoldContents from "./Bold/Contents.svg";
 import BoldDescription from "./Bold/Description.svg";
 import BoldDislike from "./Bold/Dislike.svg";
 import BoldEpisodes from "./Bold/Episodes.svg";
-import BoldExplore from "./Bold/Explore.svg";
+import BoldSearch from "./Bold/Search.svg";
 import BoldFilterOn from "./Bold/Filter_on.svg";
 import BoldFilter from "./Bold/Filter.svg";
 import BoldFolderPlus from "./Bold/Folder_Plus.svg";
@@ -63,6 +61,8 @@ import BoldRadioButtonSquareSelected from "./Bold/Radio_Button_Square_selected.s
 import BoldLetter from "./Bold/Letter.svg";
 import BoldContentLists from "./Bold/ContentsList.svg";
 import BoldDownloadMini from "./Bold/Arrow_DownloadMini.svg";
+import BoldNotification from "./Bold/Notification.svg";
+import BoldNotification_on from "./Bold/Notification_on.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -114,6 +114,9 @@ import LineCheckBoxFill from "./Line/CheckBoxFill.svg";
 import LineCheckBoxEmpty from "./Line/CheckBoxEmpty.svg";
 import LineSetting from "./Line/Setting.svg";
 import LineWallet from "./Line/Wallet.svg";
+import LineNotification from "./Line/Notification.svg";
+import LineReward from "./Line/Reward.svg";
+import LineHome from "./Line/Home.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -170,8 +173,6 @@ export {
   editPlusOpacity,
   plusRound,
   BoldAI,
-  BoldAlertOn,
-  BoldAlert,
   BoldAltArrowDown,
   BoldAltArrowDownTwo,
   BoldAltArrowUp,
@@ -189,7 +190,6 @@ export {
   BoldDescription,
   BoldDislike,
   BoldEpisodes,
-  BoldExplore,
   BoldFilterOn,
   BoldFilter,
   BoldFolderPlus,
@@ -223,6 +223,8 @@ export {
   BoldArrowLeft,
   BoldReward,
   BoldMixture,
+  BoldNotification,
+  BoldNotification_on,
   BoldUnLock,
   BoldQuestion,
   BoldRadioButtonSquare,
@@ -230,6 +232,7 @@ export {
   BoldLetter,
   BoldContentLists,
   BoldDownloadMini,
+  BoldSearch,
   LineAddButton,
   LineAIImage,
   LineArchive,
@@ -275,6 +278,9 @@ export {
   LineCheckBoxEmpty,
   LineSetting,
   LineWallet,
+  LineNotification,
+  LineReward,
+  LineHome,
   VerifiedLabel,
   KakatalkLogo,
   FacebookLogo,

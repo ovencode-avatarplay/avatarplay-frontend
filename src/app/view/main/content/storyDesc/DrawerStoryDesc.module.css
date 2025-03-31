@@ -216,7 +216,6 @@
   justify-content: center;
   align-items: center;
   gap: 8px;
-  
   border-radius: 100px;
   border: 1px solid var(--Border-1, #EAECF0);
   background: var(--Neutral-50, #F8F9FA);
@@ -227,7 +226,8 @@
   width: 18px;
   height: 18px;
   flex-shrink: 0; 
-  filter: invert(14%) sepia(2%) saturate(2033%) hue-rotate(131deg) brightness(90%) contrast(84%);
+  
+  filter: invert(81%) sepia(12%) saturate(101%) hue-rotate(173deg) brightness(97%) contrast(84%);
 }
 
 .countText
