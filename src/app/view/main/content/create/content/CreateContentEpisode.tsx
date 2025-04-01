@@ -344,6 +344,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
             {getLocalizedText('common_button_setting')}
           </div>
         </div>
+        <div className={styles.confirmButtonBackground}></div>
         <button className={styles.confirmButton} onClick={handleConfirm}>
           {getLocalizedText('common_button_submit')}
         </button>

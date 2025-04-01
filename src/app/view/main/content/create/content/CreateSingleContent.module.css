@@ -51,7 +51,7 @@
 }
 .confirmButton {
   position: fixed;
-  bottom: 43.25px;
+  bottom: 8px;
   left: 50%;    
   transform: translate(-50%, 0%);
   width: var(--second-width);
@@ -64,6 +64,16 @@
   border: none;
   border-radius: 12px;
   cursor: pointer;    
+}
+.confirmButtonBackground {
+  position: fixed;
+  bottom: 0px;
+  left: 50%;    
+  transform: translate(-50%, 0%);
+  width: var(--second-width);
+  height: 50px;
+  background: #ffffff;
+  color: #ffffff;
 }
 .label 
 {    
