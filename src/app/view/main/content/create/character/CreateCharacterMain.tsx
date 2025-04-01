@@ -46,7 +46,7 @@ interface CreateCharacterProps {
 }
 
 const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = false, characterInfo, onClose}) => {
-  const {back} = useCustomRouter();
+  const {back, replace} = useCustomRouter();
   const router = useRouter();
 
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
@@ -795,7 +795,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
 
   const routerBack = (urlLinkKey?: string) => {
     if (urlLinkKey && urlLinkKey !== '') {
-      router.replace(getLocalizedLink('/profile/' + urlLinkKey + "?from=''&tab=Character"));
+      replace('/profile/' + urlLinkKey + "?from=''&tab=Character");
     } else {
       back('/main/homefeed');
     }

@@ -121,7 +121,7 @@ interface ChannelInfoForm extends Omit<ChannelInfo, 'id' | 'isMonetization' | 'n
 
 const CreateChannel = ({id, isUpdate}: Props) => {
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
-  const {back} = useCustomRouter();
+  const {back, replace} = useCustomRouter();
   const router = useRouter();
   const [data, setData] = useState<DataProfileUpdateType>({
     idChannel: 0,
@@ -430,7 +430,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     const res = await createUpdateChannel(dataUpdatePdInfo);
     if (res?.resultCode == 0) {
       const urlLinkKey = res?.data?.channelProfileUrlLinkKey || '';
-      router.replace(getLocalizedLink(`/profile/` + urlLinkKey));
+      replace(`/profile/` + urlLinkKey + "?from=''");
       dataToast.open(isUpdate ? getLocalizedText('common_alert_099') : getLocalizedText('common_alert_098'));
     }
   };
