@@ -125,11 +125,15 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({
                     {displayType === 'Logo' && selected.logoImage && (
                       <img src={selected.logoImage} alt="logo" className={styles.logoImage} />
                     )}
-                    {textType === 'Label' && <span className={styles.label}>{selected.label}</span>}
+                    {textType === 'Label' && (
+                      <span className={`${styles.label} ${isOpen ? styles.labelFocused : ''}`}>{selected.label}</span>
+                    )}
                     {textType === 'TitleLabel' && (
                       <div className={styles.textArea}>
                         <span className={styles.title}>{selected.title}</span>
-                        <span className={styles.label}>{selected.label ? selected.label : selected.value}</span>
+                        <span className={`${styles.label} ${isOpen ? styles.labelFocused : ''}`}>
+                          {selected.label ? selected.label : selected.value}
+                        </span>
                       </div>
                     )}
                   </>
