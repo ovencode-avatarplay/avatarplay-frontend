@@ -8,8 +8,6 @@ import RewardContent from './RewardContent';
 import HeaderNavBarWhite from '../../header/header-nav-bar/HeaderNavBarWhite';
 import {setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {useDispatch} from 'react-redux';
-import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
-import useCustomRouter from '@/utils/useCustomRouter';
 
 export const dummyBannerList: BannerUrlList[] = [
   {
@@ -52,7 +50,6 @@ export const dummyBannerList: BannerUrlList[] = [
 const Gamification: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<'Reward' | 'Event'>('Reward');
 
-  const {back} = useCustomRouter();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setSelectedIndex(2));
@@ -60,7 +57,7 @@ const Gamification: React.FC = () => {
   return (
     <>
       {' '}
-      <CustomArrowHeader title="Reward" onClose={() => back()} />
+      <CustomArrowHeader title="Reward" backLink="/main" />
       <RewardTabMenu onTabChange={setSelectedTab} />
       <div className={styles.scrollArea}>
         {selectedTab == 'Reward' && (
