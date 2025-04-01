@@ -129,7 +129,7 @@
     padding: 10px 20px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 5px;
     align-self: stretch;
   }
   
@@ -140,7 +140,6 @@
   .divideItem
   {
     border-bottom: 1px solid var(--Neutral-100, #F1F3F4);
-
   }
 
   .menuRow
