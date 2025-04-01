@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import styles from './MessageTagList.module.css';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
+import {Swiper, SwiperSlide} from 'swiper/react';
 
 export enum MessageTagType {
   All = 'All',
@@ -8,6 +9,9 @@ export enum MessageTagType {
   Story = 'Story',
   Music = 'Music',
   Gravure = 'Gravure',
+  aa = 'aa',
+  ss = 'ss',
+  dd = 'dd',
 }
 
 interface Props {
@@ -16,6 +20,7 @@ interface Props {
 
 const MessageTagList: React.FC<Props> = ({onTagChange: onTagChange}) => {
   const [activeTag, setActiveTag] = useState<MessageTagType>(MessageTagType.All);
+  const [isCentered, setIsCentered] = useState<boolean>(false);
 
   const handleTagClick = (tab: MessageTagType) => {
     setActiveTag(tab);
@@ -28,13 +33,24 @@ const MessageTagList: React.FC<Props> = ({onTagChange: onTagChange}) => {
     <div className={styles.container}>
       {/* 탭 메뉴 */}
       <div className={styles.tags}>
-        {Object.values(MessageTagType).map(tag => (
-          <CustomHashtag
-            isSelected={activeTag == tag ? true : false}
-            onClickAction={() => handleTagClick(tag)}
-            text={tag}
-          />
-        ))}
+        <Swiper
+          className={styles.horizonSwiper}
+          // initialSlide={}
+          centeredSlides={isCentered}
+          slidesPerView="auto"
+          spaceBetween={6}
+          onSlideChange={
+            swiper => setIsCentered(false)
+            // handleSelectedLora(swiper.activeIndex)
+          }
+          onSwiper={() => {}}
+        >
+          {Object.values(MessageTagType).map(tag => (
+            <SwiperSlide key={tag} className={styles.swiperSlide} style={{width: 'auto'}}>
+              <CustomHashtag isSelected={activeTag === tag} onClickAction={() => handleTagClick(tag)} text={tag} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </div>
   );

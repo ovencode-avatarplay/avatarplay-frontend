@@ -149,7 +149,7 @@ export default function BottomNav() {
     {label: 'Home', icon: homeSvg, link: '/main/homefeed'},
     {label: 'Explore', icon: exploreSvg, link: '/main/explore'},
     {label: 'Plus', icon: Add_Button, link: '/main/plus'},
-    {label: 'Content', icon: contentSvg, link: '/main/mycontent'},
+    {label: 'Content', icon: contentSvg, link: '/main/message'},
     {label: 'My', icon: profileSvg, link: '/profile'},
   ];
 
