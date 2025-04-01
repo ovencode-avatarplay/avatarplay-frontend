@@ -119,6 +119,7 @@
     display: inline-flex;
     height: 24px;
     padding: 10px 12px;
+    margin-left: 6px;
     justify-content: center;
     align-items: center;
     gap: 8px;
