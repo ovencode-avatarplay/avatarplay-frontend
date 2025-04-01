@@ -4,6 +4,8 @@
     background-color: #ffffff;
     padding-top: 62px;
     box-sizing: border-box;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
   
   /* Drawer 내부 콘텐츠 */
@@ -11,6 +13,8 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
   
   /* 프로필 섹션 */
@@ -40,8 +44,9 @@
   }
   
   .profileImage {
-    width: 45px;
-    height: 45px;
+    flex-shrink: unset;
+    width: 45px !important;
+    height: 45px !important;
     border-radius: 50%;
     border: 0.5px solid rgba(0, 0, 0, 0.4);
   }

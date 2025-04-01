@@ -9,6 +9,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 
 interface TagDrawerProps {
+  title: string;
   isOpen: boolean;
   onClose: () => void;
   tagList: string[];
@@ -18,9 +19,11 @@ interface TagDrawerProps {
   maxTagCount: number;
   selectedTagAlertOn: boolean;
   setSelectedTagAlertOn: (state: boolean) => void;
+  descValue?: string;
 }
 
 const DrawerTagSelect: React.FC<TagDrawerProps> = ({
+  title,
   isOpen,
   onClose,
   tagList,
@@ -30,15 +33,11 @@ const DrawerTagSelect: React.FC<TagDrawerProps> = ({
   maxTagCount,
   selectedTagAlertOn,
   setSelectedTagAlertOn,
+  descValue = '',
 }) => {
   return (
     <>
-      <CustomDrawer
-        open={isOpen}
-        onClose={onClose}
-        title={getLocalizedText('common_label_002')}
-        contentStyle={{padding: '0px', marginTop: '20px'}}
-      >
+      <CustomDrawer open={isOpen} onClose={onClose} title={title} contentStyle={{padding: '0px', marginTop: '20px'}}>
         <div className={styles.tagArea}>
           <button className={styles.tagRefreshButton} onClick={onRefreshTags}>
             <div className={styles.tagRefreshText}>{getLocalizedText('common_button_refresh')}</div>
@@ -62,11 +61,11 @@ const DrawerTagSelect: React.FC<TagDrawerProps> = ({
         ReactDOM.createPortal(
           <CustomPopup
             type="alert"
-            title={getLocalizedText('TODO : Max Tag Count Alert')}
-            description={formatText(getLocalizedText(`TODO : maxTagCount : `), [maxTagCount.toString()])}
+            title={getLocalizedText('common_alert_107')}
+            description={formatText(getLocalizedText('common_alert_106'), [descValue, maxTagCount.toString()])}
             buttons={[
               {
-                label: getLocalizedText('Close'),
+                label: getLocalizedText('common_button_cancel'),
                 onClick: () => setSelectedTagAlertOn(false),
               },
             ]}

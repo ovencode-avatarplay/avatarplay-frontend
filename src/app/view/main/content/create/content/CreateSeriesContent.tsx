@@ -25,6 +25,8 @@ import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useAtom} from 'jotai';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -32,9 +34,9 @@ enum CategoryTypes {
 export const getCategoryTypesKey = (key: number): string => {
   switch (key) {
     case CategoryTypes.Webtoon:
-      return getLocalizedText('common_filter_video');
-    case CategoryTypes.Drama:
       return getLocalizedText('common_filter_webtoon');
+    case CategoryTypes.Drama:
+      return getLocalizedText('common_filter_video');
     default:
       return '';
   }
@@ -74,6 +76,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
   const [selectedTagAlertOn, setSelectedTagAlertOn] = useState(false);
   const [selectedGenreAlertOn, setSelectedGenreAlertOn] = useState(false);
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+  const [triggerWarning, setTriggerWarning] = useState<boolean>();
   const handleTagRemove = (tag: string) => {
     setSelectedTags(selectedTags.filter(t => t !== tag));
   };
@@ -109,47 +112,46 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
     {
       category: 'Genre',
       tags: [
-        'Romance',
-        'Fantasy',
-        'Action',
-        'Comedy',
-        'Sliceoflife',
-        'Thriller',
-        'Comedy',
-        'BL/GL',
-        'Drama',
-        'Historical Drama',
-        'Emotional',
-        'Sports',
-        'Wuxia',
+        'common_genre_romance',
+        'common_genre_fantasy',
+        'common_genre_action',
+        'common_genre_comedy',
+        'common_genre_sliceoflife',
+        'common_genre_thriller',
+        'common_genre_bl/gl',
+        'common_genre_drama',
+        'common_genre_historicaldrama',
+        'common_genre_emotional',
+        'common_genre_sports',
+        'common_genre_wuxia',
       ],
     },
     {
       category: 'Theme',
       tags: [
-        'Male',
-        'Female',
-        'Boyfriend',
-        'Girlfriend',
-        'Hero',
-        'Elf',
-        'Romance',
-        'Vanilla',
-        'Contemporary Fantasy',
-        'Isekai',
-        'Flirting',
-        'Dislike',
-        'Comedy',
-        'Noir',
-        'Horror',
-        'Demon',
-        'SF',
-        'Vampire',
-        'Office',
-        'Monster',
-        'Anime',
-        'Books',
-        'Aliens',
+        'common_tag_male',
+        'common_tag_female',
+        'common_tag_boyfriend',
+        'common_tag_girlfriend',
+        'common_tag_hero',
+        'common_tag_elf',
+        'common_tag_romance',
+        'common_tag_vanilla',
+        'common_tag_contemporaryfantasy',
+        'common_tag_isekai',
+        'common_tag_flirting',
+        'common_tag_dislike',
+        'common_tag_comedy',
+        'common_tag_noir',
+        'common_tag_horror',
+        'common_tag_demon',
+        'common_tag_sf',
+        'common_tag_vampire',
+        'common_tag_office',
+        'common_tag_monster',
+        'common_tag_anime',
+        'common_tag_books',
+        'common_tag_aliens',
       ],
     },
   ];
@@ -158,17 +160,17 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
   const [CategoryDrawerOpen, setCategoryDrawerOpen] = useState<boolean>(false);
 
   const publishItemsCategory: SelectDrawerItem[] = [
-    {name: 'Webtoon', onClick: () => setSelectedCategory(CategoryTypes.Webtoon)},
-    {name: 'Drama', onClick: () => setSelectedCategory(CategoryTypes.Drama)},
+    {name: getLocalizedText('common_filter_webtoon'), onClick: () => setSelectedCategory(CategoryTypes.Webtoon)},
+    {name: getLocalizedText('common_filter_video'), onClick: () => setSelectedCategory(CategoryTypes.Drama)},
   ];
 
   const [selectedVisibility, setSelectedVisibility] = useState<VisibilityType>(VisibilityType.Private);
   const [visibilityDrawerOpen, setVisibilityDrawerOpen] = useState<boolean>(false);
 
   const publishItemsVisibility: SelectDrawerItem[] = [
-    {name: 'Private', onClick: () => setSelectedVisibility(VisibilityType.Private)},
-    {name: 'Unlisted', onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
-    {name: 'Public', onClick: () => setSelectedVisibility(VisibilityType.Public)},
+    {name: getLocalizedText('common_filter_private'), onClick: () => setSelectedVisibility(VisibilityType.Private)},
+    {name: getLocalizedText('common_filter_unlisted'), onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
+    {name: getLocalizedText('common_filter_public'), onClick: () => setSelectedVisibility(VisibilityType.Public)},
   ];
 
   const [isPositionCountryOpen, setIsPositionCountryOpen] = useState(false);
@@ -225,35 +227,26 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
     fetchData();
   }, [urlLinkKey]);
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const handleConfirm = async () => {
-    if (!nameValue.trim()) {
-      alert('Name을 입력해주세요.');
-      return;
+    const validations = [
+      {condition: !nameValue.trim(), message: 'Name을 입력해주세요.'},
+      {condition: !summaryValue.trim(), message: 'One Line Summary를 입력해주세요.'},
+      {condition: !descValue.trim(), message: 'Description을 입력해주세요.'},
+      {condition: !mediaUrls[0], message: 'Thumbnail을 업로드해주세요.'},
+      {condition: selectedGenres.length === 0, message: '최소 하나의 Genre를 선택해주세요.'},
+      {condition: selectedTags.length === 0, message: '최소 하나의 Tag를 선택해주세요.'},
+      {condition: positionCountryList.length === 0, message: 'Post Country를 선택해주세요.'},
+    ];
+
+    for (const v of validations) {
+      if (v.condition) {
+        setTriggerWarning(true);
+        dataToast.open(getLocalizedText('common_alert_093'), ToastType.Error);
+        return;
+      }
     }
-    if (!summaryValue.trim()) {
-      alert('One Line Summary를 입력해주세요.');
-      return;
-    }
-    if (!descValue.trim()) {
-      alert('Description을 입력해주세요.');
-      return;
-    }
-    if (!mediaUrls[0]) {
-      alert('Thumbnail을 업로드해주세요.');
-      return;
-    }
-    if (selectedGenres.length === 0) {
-      alert('최소 하나의 Genre를 선택해주세요.');
-      return;
-    }
-    if (selectedTags.length === 0) {
-      alert('최소 하나의 Tag를 선택해주세요.');
-      return;
-    }
-    if (positionCountryList.length === 0) {
-      alert('Post Country를 선택해주세요.');
-      return;
-    }
+
     const payload: CreateContentReq = {
       contentInfo: {
         id: editContentInfo?.id,
@@ -326,6 +319,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         <MediaUpload
           setContentMediaUrls={setMediaUrls}
           defaultImage={defaultImage ? defaultImage : undefined}
+          triggerWarning={triggerWarning}
         ></MediaUpload>
         <CustomInput
           inputType="Basic"
@@ -340,6 +334,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           }
           placeholder={getLocalizedText('common_sample_087')}
           customClassName={[styles.textInput]}
+          error={triggerWarning}
         />
         <CustomInput
           inputType="Basic"
@@ -354,6 +349,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           }
           placeholder={getLocalizedText('common_sample_089')}
           customClassName={[styles.textInput]}
+          error={triggerWarning}
         />
 
         <span className={styles.label}>
@@ -368,6 +364,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           maxPromptLength={500}
           style={{minHeight: '190px', width: '100%'}}
           placeholder={getLocalizedText('common_sample_047')}
+          isError={triggerWarning}
         />
         <CustomDropDownSelectDrawer
           title={getLocalizedText('createcontent003_label_004')}
@@ -378,16 +375,17 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title={getLocalizedText('createcontent003_label_005')}
-            selectedItem={selectedGenres.length > 0 ? selectedGenres.join(', ') : ''}
+            selectedItem={selectedGenres.length > 0 ? selectedGenres.map(v => getLocalizedText(v)).join(', ') : ''}
             onClick={() => {
               setGenreList(tagGroups[0].tags);
               setGenreOpen(true);
             }}
+            error={triggerWarning}
           ></CustomDropDownSelectDrawer>
           <div className={styles.blackTagContainer}>
             {selectedGenres.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {getLocalizedText(`common_genre_${tag.replace(/ /gi, '').toLowerCase()}`)}
+                {getLocalizedText(tag)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -401,16 +399,17 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title={getLocalizedText('common_label_002')}
-            selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : ''}
+            selectedItem={selectedTags.length > 0 ? selectedTags.map(v => getLocalizedText(v)).join(', ') : ''}
             onClick={() => {
               setTagList(tagGroups[1].tags);
               setTagOpen(true);
             }}
+            error={triggerWarning}
           ></CustomDropDownSelectDrawer>
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {getLocalizedText(`common_tag_${tag.replace(/ /gi, '').toLowerCase()}`)}
+                {getLocalizedText(tag)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -427,9 +426,10 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
             selectedItem={
               positionCountryList.map(country => LanguageType[country]).length > 0
                 ? positionCountryList.map(country => LanguageType[country]).join(', ')
-                : getLocalizedText('common_sample_079')
+                : ''
             }
             onClick={() => setIsPositionCountryOpen(true)}
+            error={triggerWarning}
           ></CustomDropDownSelectDrawer>
           <div className={styles.blackTagContainer}>
             {positionCountryList.map((tag, index) => (
@@ -474,11 +474,13 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           />
         </div>
 
+        <div className={styles.confirmButtonBackground}></div>
         <button className={styles.confirmButton} onClick={handleConfirm}>
           {getLocalizedText('common_button_submit')}
         </button>
       </div>
       <DrawerTagSelect
+        title={getLocalizedText('common_label_002')}
         isOpen={tagOpen}
         onClose={() => setTagOpen(false)}
         tagList={tagList}
@@ -488,8 +490,10 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         maxTagCount={maxTagCount}
         selectedTagAlertOn={selectedTagAlertOn}
         setSelectedTagAlertOn={setSelectedTagAlertOn}
+        descValue={getLocalizedText('common_label_002')}
       />
       <DrawerTagSelect
+        title={getLocalizedText('createcontent003_label_005')}
         isOpen={genreOpen}
         onClose={() => setGenreOpen(false)}
         tagList={genreList}
@@ -499,6 +503,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         maxTagCount={maxGenreCount}
         selectedTagAlertOn={selectedGenreAlertOn}
         setSelectedTagAlertOn={setSelectedGenreAlertOn}
+        descValue={getLocalizedText('createcontent003_label_005')}
       />
       <SelectDrawer
         name={getLocalizedText('createcontent001_label_007')}

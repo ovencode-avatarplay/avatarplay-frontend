@@ -33,18 +33,16 @@ const HeaderNavBar = () => {
 
   return (
     <header className={styles.navbar}>
-      <div className={styles.logoArea}>
-        <Image src={LineMenu.src} alt="Logo" width={24} height={24} priority onClick={() => setIsHamOpen(true)} />
+      <div
+        className={styles.logoArea}
+        onClick={() => {
+          dispatch(setBottomNavColor(0));
+          dispatch(setSelectedIndex(0));
+        }}
+      >
+        <img className={styles.hamIcon} src={LineMenu.src} alt="Logo" onClick={() => setIsHamOpen(true)} />
         <Link href={getLocalizedLink('/main/homefeed')}>
-          <div
-            className={styles.logoArea}
-            onClick={() => {
-              dispatch(setBottomNavColor(0));
-              dispatch(setSelectedIndex(0));
-            }}
-          >
-            <Image src={logo} alt="Logo" width={85} height={17} priority />
-          </div>
+          <Image className={styles.logoImage} src={logo} alt="Logo" priority />
         </Link>
       </div>
       <div className={styles.rightArea}>

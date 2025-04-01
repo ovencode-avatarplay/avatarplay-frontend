@@ -12,6 +12,7 @@ interface Props {
   title?: string;
   setContentMediaUrls: (urls: string[]) => void;
   defaultImage?: string;
+  triggerWarning?: boolean;
 }
 const mediaTypeConfig = {
   image: {
@@ -29,6 +30,7 @@ const MediaUpload: React.FC<Props> = ({
   title = getLocalizedText('createchannel001_label_002'),
   setContentMediaUrls,
   defaultImage,
+  triggerWarning = false,
 }) => {
   const [warnPopup, setWarnPopup] = useState<boolean>(false); // 입력된 텍스트 상태
   const [publishPopup, setPublishPopup] = useState<boolean>(false); // 입력된 텍스트 상태
@@ -213,9 +215,9 @@ const MediaUpload: React.FC<Props> = ({
       <div className={styles.container}>
         <div className={styles.label}>{thumbnailText}</div>
 
-        {mediaUrls.length == 0 && (
+        {mediaUrls.length === 0 && (
           <div
-            className={styles.inputBox}
+            className={`${styles.inputBox} ${triggerWarning ? styles.isEssentialWarning : ''}`}
             onClick={() => {
               setIsOpenMediaDrawer(true);
             }}

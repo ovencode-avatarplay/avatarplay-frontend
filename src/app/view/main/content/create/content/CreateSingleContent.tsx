@@ -12,6 +12,7 @@ import DrawerPostCountry from '../common/DrawerPostCountry';
 import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import VideoContentUpload from './MediaUpload/VideoContentUpload';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
 import WebtoonContentUpload from './MediaUpload/WebtoonContentUpload';
 import {
   ContentType,
@@ -27,6 +28,7 @@ import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {useAtom} from 'jotai';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -34,9 +36,9 @@ enum CategoryTypes {
 export const getCategoryTypesKey = (key: number): string => {
   switch (key) {
     case CategoryTypes.Webtoon:
-      return getLocalizedText('common_filter_video');
-    case CategoryTypes.Drama:
       return getLocalizedText('common_filter_webtoon');
+    case CategoryTypes.Drama:
+      return getLocalizedText('common_filter_video');
     default:
       return '';
   }
@@ -81,6 +83,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
   const [isNsfw, setIsNsfw] = useState<boolean>(false);
   const [isFree, setIsFree] = useState<boolean>(false);
   const [priceValue, setPriceValue] = useState<number>(0);
+  const [triggerWarning, setTriggerWarning] = useState<boolean>();
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10); // 정수 변환
@@ -118,68 +121,70 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
       setSelectedGenres([...selectedGenres, tag]);
     }
   };
+
   const tagGroups = [
     {
       category: 'Genre',
       tags: [
-        'Romance',
-        'Fantasy',
-        'Action',
-        'Daily Life',
-        'Thriller',
-        'Comedy',
-        'Martial Arts',
-        'Drama',
-        'Historical Drama',
-        'Emotion',
-        'Sports',
+        'common_genre_romance',
+        'common_genre_fantasy',
+        'common_genre_action',
+        'common_genre_comedy',
+        'common_genre_sliceoflife',
+        'common_genre_thriller',
+        'common_genre_comedy', // 중복 있음
+        'common_genre_bl/gl',
+        'common_genre_drama',
+        'common_genre_historicaldrama',
+        'common_genre_emotional',
+        'common_genre_sports',
+        'common_genre_wuxia',
       ],
     },
     {
       category: 'Theme',
       tags: [
-        'Male',
-        'Female',
-        'Boyfriend',
-        'Girlfriend',
-        'Hero',
-        'Elf',
-        'Romance',
-        'Vanilla',
-        'Contemporary Fantasy',
-        'Isekai',
-        'Flirting',
-        'Dislike',
-        'Comedy',
-        'Noir',
-        'Horror',
-        'Demon',
-        'SF',
-        'Vampire',
-        'Office',
-        'Monster',
-        'Anime',
-        'Books',
-        'Aliens',
+        'common_tag_male',
+        'common_tag_female',
+        'common_tag_boyfriend',
+        'common_tag_girlfriend',
+        'common_tag_hero',
+        'common_tag_elf',
+        'common_tag_romance',
+        'common_tag_vanilla',
+        'common_tag_contemporaryfantasy',
+        'common_tag_isekai',
+        'common_tag_flirting',
+        'common_tag_dislike',
+        'common_tag_comedy',
+        'common_tag_noir',
+        'common_tag_horror',
+        'common_tag_demon',
+        'common_tag_sf',
+        'common_tag_vampire',
+        'common_tag_office',
+        'common_tag_monster',
+        'common_tag_anime',
+        'common_tag_books',
+        'common_tag_aliens',
       ],
     },
   ];
-
   const [selectedCategory, setSelectedCategory] = useState<CategoryTypes>(CategoryTypes.Webtoon);
   const [CategoryDrawerOpen, setCategoryDrawerOpen] = useState<boolean>(false);
 
   const publishItemsCategory: SelectDrawerItem[] = [
-    {name: 'Webtoon', onClick: () => setSelectedCategory(CategoryTypes.Webtoon)},
-    {name: 'Drama', onClick: () => setSelectedCategory(CategoryTypes.Drama)},
+    {name: getLocalizedText('common_filter_webtoon'), onClick: () => setSelectedCategory(CategoryTypes.Webtoon)},
+    {name: getLocalizedText('common_filter_video'), onClick: () => setSelectedCategory(CategoryTypes.Drama)},
   ];
 
   const [selectedVisibility, setSelectedVisibility] = useState<VisibilityType>(VisibilityType.Private);
   const [visibilityDrawerOpen, setVisibilityDrawerOpen] = useState<boolean>(false);
 
   const publishItemsVisibility: SelectDrawerItem[] = [
-    {name: 'Private', onClick: () => setSelectedVisibility(VisibilityType.Private)},
-    {name: 'Unlisted', onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
-    {name: 'Public', onClick: () => setSelectedVisibility(VisibilityType.Public)},
+    {name: getLocalizedText('common_filter_private'), onClick: () => setSelectedVisibility(VisibilityType.Private)},
+    {name: getLocalizedText('common_filter_unlisted'), onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
+    {name: getLocalizedText('common_filter_public'), onClick: () => setSelectedVisibility(VisibilityType.Public)},
   ];
 
   const [isPositionCountryOpen, setIsPositionCountryOpen] = useState(false);
@@ -277,35 +282,26 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
     fetchData();
   }, [urlLinkKey]);
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const handleConfirm = async () => {
-    if (!nameValue.trim()) {
-      alert('Name을 입력해주세요.');
-      return;
+    const validations = [
+      {condition: !nameValue.trim(), message: 'Name을 입력해주세요.'},
+      {condition: !summaryValue.trim(), message: 'One Line Summary를 입력해주세요.'},
+      {condition: !descValue.trim(), message: 'Description을 입력해주세요.'},
+      {condition: !mediaUrls[0], message: 'Thumbnail을 업로드해주세요.'},
+      {condition: selectedGenres.length === 0, message: '최소 하나의 Genre를 선택해주세요.'},
+      {condition: selectedTags.length === 0, message: '최소 하나의 Tag를 선택해주세요.'},
+      {condition: positionCountryList.length === 0, message: 'Post Country를 선택해주세요.'},
+    ];
+
+    for (const {condition, message} of validations) {
+      if (condition) {
+        setTriggerWarning(true);
+        dataToast.open(getLocalizedText('common_alert_093'), ToastType.Error);
+        return;
+      }
     }
-    if (!summaryValue.trim()) {
-      alert('One Line Summary를 입력해주세요.');
-      return;
-    }
-    if (!descValue.trim()) {
-      alert('Description을 입력해주세요.');
-      return;
-    }
-    if (!mediaUrls[0]) {
-      alert('Thumbnail을 업로드해주세요.');
-      return;
-    }
-    if (selectedGenres.length === 0) {
-      alert('최소 하나의 Genre를 선택해주세요.');
-      return;
-    }
-    if (selectedTags.length === 0) {
-      alert('최소 하나의 Tag를 선택해주세요.');
-      return;
-    }
-    if (positionCountryList.length === 0) {
-      alert('Post Country를 선택해주세요.');
-      return;
-    }
+
     const payload: CreateContentReq = {
       contentInfo: {
         profileId: 0,
@@ -362,6 +358,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         <MediaUpload
           setContentMediaUrls={setMediaUrls}
           defaultImage={defaultImage ? defaultImage : undefined}
+          triggerWarning={triggerWarning}
         ></MediaUpload>
         <CustomInput
           inputType="Basic"
@@ -376,6 +373,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           }
           placeholder={getLocalizedText('createcontent012_label_003')}
           customClassName={[styles.textInput]}
+          error={triggerWarning}
         />
         <CustomInput
           inputType="Basic"
@@ -390,6 +388,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           }
           placeholder={getLocalizedText('common_sample_047')}
           customClassName={[styles.textInput]}
+          error={triggerWarning}
         />
 
         <span className={styles.label}>
@@ -404,6 +403,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           maxPromptLength={500}
           style={{minHeight: '190px', width: '100%'}}
           placeholder={getLocalizedText('common_sample_047')}
+          isError={triggerWarning}
         />
         <CustomDropDownSelectDrawer
           title={getLocalizedText('createcontent003_label_004')}
@@ -414,20 +414,21 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title={getLocalizedText('createcontent003_label_005')}
-            selectedItem={selectedGenres.length > 0 ? selectedGenres.join(', ') : ''}
+            selectedItem={selectedGenres.length > 0 ? selectedGenres.map(v => getLocalizedText(v)).join(', ') : ''}
             onClick={() => {
               setGenreList(tagGroups[0].tags);
               setGenreOpen(true);
             }}
+            error={triggerWarning}
           ></CustomDropDownSelectDrawer>
           <div className={styles.blackTagContainer}>
-            {selectedGenres.map((tag, index) => (
+            {selectedGenres.map((value, index) => (
               <div key={index} className={styles.blackTag}>
-                {getLocalizedText(`common_genre_${tag.replace(/ /gi, '').toLowerCase()}`)}
+                {getLocalizedText(value)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
-                  onClick={() => handleGenreRemove(tag)} // 클릭하면 해당 태그 삭제
+                  onClick={() => handleGenreRemove(value)} // 클릭하면 해당 태그 삭제
                 />
               </div>
             ))}
@@ -437,16 +438,17 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title={getLocalizedText('common_label_002')}
-            selectedItem={selectedTags.length > 0 ? selectedTags.join(', ') : ''}
+            selectedItem={selectedTags.length > 0 ? selectedTags.map(v => getLocalizedText(v)).join(', ') : ''}
             onClick={() => {
               setTagList(tagGroups[1].tags);
               setTagOpen(true);
             }}
+            error={triggerWarning}
           ></CustomDropDownSelectDrawer>
           <div className={styles.blackTagContainer}>
             {selectedTags.map((tag, index) => (
               <div key={index} className={styles.blackTag}>
-                {getLocalizedText(`common_tag_${tag.replace(/ /gi, '').toLowerCase()}`)}
+                {getLocalizedText(tag)}
                 <img
                   src={LineClose.src}
                   className={styles.lineClose}
@@ -463,9 +465,10 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
             selectedItem={
               positionCountryList.map(country => LanguageType[country]).length > 0
                 ? positionCountryList.map(country => LanguageType[country]).join(', ')
-                : getLocalizedText('common_sample_079')
+                : ''
             }
             onClick={() => setIsPositionCountryOpen(true)}
+            error={triggerWarning}
           ></CustomDropDownSelectDrawer>
           <div className={styles.blackTagContainer}>
             {positionCountryList.map((tag, index) => (
@@ -484,12 +487,14 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           title={getLocalizedText('common_label_001')}
           selectedItem={getVisibilityTypeKey(selectedVisibility)}
           onClick={() => setVisibilityDrawerOpen(true)}
+          error={triggerWarning}
         ></CustomDropDownSelectDrawer>
 
         {selectedCategory === CategoryTypes.Drama && (
           <VideoContentUpload
             setEpisodeVideoInfo={setEpisodeVideoInfo}
             defaultEpisodeVideoInfo={editContentInfo?.contentVideoInfo} // 기존 데이터 전달
+            hasError={triggerWarning}
           />
         )}
 
@@ -497,6 +502,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           <WebtoonContentUpload
             setEpisodeWebtoonInfo={setEpisodeWebtoonInfo}
             defaultEpisodeWebtoonInfo={editContentInfo?.contentWebtoonInfo} // 기존 데이터 전달
+            hasError={triggerWarning}
           />
         )}
 
@@ -560,11 +566,13 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           />
         </div>
 
+        <div className={styles.confirmButtonBackground}></div>
         <button className={styles.confirmButton} onClick={handleConfirm}>
           {getLocalizedText('common_button_submit')}
         </button>
       </div>
       <DrawerTagSelect
+        title={getLocalizedText('common_label_002')}
         isOpen={tagOpen}
         onClose={() => setTagOpen(false)}
         tagList={tagList}
@@ -574,8 +582,10 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         maxTagCount={maxTagCount}
         selectedTagAlertOn={selectedTagAlertOn}
         setSelectedTagAlertOn={setSelectedTagAlertOn}
+        descValue={getLocalizedText('common_label_002')}
       />
       <DrawerTagSelect
+        title={getLocalizedText('createcontent003_label_005')}
         isOpen={genreOpen}
         onClose={() => setGenreOpen(false)}
         tagList={genreList}
@@ -585,6 +595,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         maxTagCount={maxGenreCount}
         selectedTagAlertOn={selectedGenreAlertOn}
         setSelectedTagAlertOn={setSelectedGenreAlertOn}
+        descValue={getLocalizedText('createcontent003_label_005')}
       />
       <SelectDrawer
         name={getLocalizedText('createcontent001_label_007')}
@@ -598,7 +609,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         items={publishItemsVisibility}
         isOpen={visibilityDrawerOpen}
         onClose={() => setVisibilityDrawerOpen(false)}
-        selectedIndex={selectedCategory}
+        selectedIndex={selectedVisibility}
       />
       <DrawerPostCountry
         isOpen={isPositionCountryOpen}

@@ -432,4 +432,7 @@ background: var(--White, #FFF);
     cursor: pointer;
     margin-left: 8px;
   }
-  
+  .videoUploadBoxError {
+    border: 1px solid var(--Primary-2, #FEBBEA);
+    background: var(--Primary-4, #FFF5FD);
+  }

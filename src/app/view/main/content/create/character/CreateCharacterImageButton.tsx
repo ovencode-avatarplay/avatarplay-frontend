@@ -15,6 +15,7 @@ interface ImageButtonProps {
   onSelectClick: () => void;
   onImageClick?: () => void;
   isImageLoading?: boolean;
+  skipLocalize?: boolean;
 }
 
 const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({
@@ -28,6 +29,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({
   onSelectClick,
   onImageClick,
   isImageLoading = false,
+  skipLocalize = false,
 }) => {
   const [localImageLoading, setLocalImageLoading] = useState<boolean>(isImageLoading); // 로컬 이미지 로딩 상태 관리
 
@@ -61,7 +63,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({
         {localImageLoading && (
           <div className={styles.processingArea}>
             <img className={styles.loading} src={NextEpisodeWait.src} />
-            <span className={styles.processingText}>Processing</span>
+            <span className={styles.processingText}>{getLocalizedText('TODO : Localize 필요 : 생성중')}</span>
           </div>
         )}
       </div>
@@ -73,7 +75,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({
             onSelectClick();
           }}
         >
-          <span>{getLocalizedText('Common', label)}</span>
+          <span>{skipLocalize ? label : getLocalizedText(label)}</span>
         </div>
       )}
       {selected && selectType !== 'multiple' && selectButtonType === 'image' ? (

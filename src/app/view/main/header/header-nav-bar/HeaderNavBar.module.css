@@ -20,7 +20,26 @@
   display: flex;
   padding-top: 2px;
   gap: 8px;
-  cursor: pointer
+  cursor: pointer;
+  /*로고 영역 사이즈 지정*/
+  width: 150px;
+  height: 30px;
+  align-items: center;
+  justify-items: center;
+}
+
+.hamIcon
+{
+  width: 24px;
+  height: 24px;
+}
+
+.logoImage
+{
+  justify-self: center;
+  align-self: center;
+  width: 100%;
+  height: 100%;
 }
   
   .rightArea {

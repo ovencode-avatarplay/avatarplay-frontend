@@ -309,7 +309,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
   };
 
   const handleClothesInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length <= maxLength) setClothesInputValue(e.target.value);
+    if (e.target.value.length <= maxLength) {
+      setClothesInputValue(e.target.value);
+    }
   };
 
   const handleBackgroundInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -431,11 +433,18 @@ const CharacterCreateSequence: React.FC<Props> = ({
       const selectedIndex = selectedOptions[option.key as keyof typeof selectedOptions];
       if (option.options.length > 0) {
         const selectedOption = option.options[selectedIndex];
-        if (option.key === 'background' || option.key == 'clothing') {
+        if (option.key === 'background' || option.key == 'clothing' || option.key == 'clothingColor') {
           let promptText = '';
-          if (selectedOption && Array.isArray(selectedOption.prompts) && selectedOption.prompts.length > 0) {
-            const randomIndex = Math.floor(Math.random() * selectedOption.prompts.length);
-            promptText = selectedOption.prompts[randomIndex];
+
+          if (option.key == 'clothing' && clothesInputValue) {
+            promptText = clothesInputValue;
+          } else if (option.key == 'background' && backgroundInputValue) {
+            promptText = backgroundInputValue;
+          } else {
+            if (selectedOption && Array.isArray(selectedOption.prompts) && selectedOption.prompts.length > 0) {
+              const randomIndex = Math.floor(Math.random() * selectedOption.prompts.length);
+              promptText = selectedOption.prompts[randomIndex];
+            }
           }
           return {name: option.key, value: 0, prompt: promptText};
         }
@@ -836,8 +845,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
             </article>
           </div>
         );
-      case CreateCharacterStep.Personality:
-        return <div>not use</div>;
+      // case CreateCharacterStep.Personality:
+      //   return <div>not use</div>;
       case CreateCharacterStep.Summary:
         return (
           <div className={styles.createContentBox}>
@@ -853,7 +862,11 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     <CharacterCreateImageButton
                       key={option.key}
                       label={
-                        option.key === 'personality'
+                        option.key === 'background' && backgroundInputValue.length > 0
+                          ? 'common_label_prompt'
+                          : option.key === 'clothing' && clothesInputValue.length > 0
+                          ? 'common_label_prompt'
+                          : option.key === 'personality'
                           ? option.options[selectedOptions[option.key as keyof typeof selectedOptions]]?.label.split(
                               '\n',
                             )[0]
@@ -878,6 +891,13 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       }
                       selected={false}
                       sizeType="summary"
+                      // skipLocalize={
+                      //   option.key === 'background' && backgroundInputValue.length > 0
+                      //     ? true
+                      //     : option.key === 'clothing' && backgroundInputValue.length > 0
+                      //     ? true
+                      //     : false
+                      // }
                     />
                   </div>
                 ))}
@@ -896,6 +916,8 @@ const CharacterCreateSequence: React.FC<Props> = ({
                     <CharacterCreateImageButton
                       key={index}
                       sizeType="summary"
+                      selectType="one"
+                      selectButtonType="button"
                       label={null}
                       image={imgUrl}
                       selected={selectedOptions.result === index}
@@ -904,6 +926,9 @@ const CharacterCreateSequence: React.FC<Props> = ({
                           ? handleImageToggle(imgUrl, generatedOptions?.debugParameter ?? '')
                           : handleOptionSelect('result', index)
                       }
+                      onImageClick={() => {
+                        if (onClickPreview) onClickPreview(imgUrl);
+                      }}
                     />
                   ))}
                 </div>

@@ -264,3 +264,8 @@ gap: 6px;
   height: 18px;
 }
 
+
+.isEssentialWarning {
+  border: 1px dashed var(--Primary-2, #FEBBEA);
+  background: var(--Primary-4, #FFF5FD);
+}

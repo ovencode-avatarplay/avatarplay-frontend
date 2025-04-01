@@ -149,6 +149,7 @@ const SearchBoard: React.FC = () => {
   const [search, setSearch] = useState<searchType>('All');
   const [adultToggleOn, setAdultToggleOn] = useState(false);
   const [searchValue, setSearchValue] = useState<string>('');
+  const prevSearchValueRef = useRef(searchValue);
 
   // Filter State
   const [positiveFilters, setPositiveFilters] = useState<FilterDataItem[]>([]);
@@ -177,34 +178,37 @@ const SearchBoard: React.FC = () => {
     {
       name: getLocalizedText('common_sort_newest'),
       onClick: () => {
-        1;
+        setSearchResultList(null);
         setSortDropDownOpen(false);
         setSelectedSort(0);
+        setRequestFetch(true);
       },
     },
     {
-      name: getLocalizedText('common_sort_mostpopular'),
+      name: getLocalizedText('common_sort_popular'),
       onClick: () => {
-        1;
+        setSearchResultList(null);
         setSortDropDownOpen(false);
         setSelectedSort(1);
+        setRequestFetch(true);
       },
     },
     {
-      name: getLocalizedText('common_sort_weeklypopular'),
+      name: getLocalizedText('common_sort_Name'),
       onClick: () => {
-        1;
+        setSearchResultList(null);
         setSortDropDownOpen(false);
         setSelectedSort(2);
+        setRequestFetch(true);
       },
     },
-    {
-      name: getLocalizedText('common_sort_monthlypopular'),
-      onClick: () => {
-        setSortDropDownOpen(false);
-        setSelectedSort(3);
-      },
-    },
+    // {
+    //   name: getLocalizedText('common_sort_monthlypopular'),
+    //   onClick: () => {
+    //     setSortDropDownOpen(false);
+    //     setSelectedSort(3);
+    //   },
+    // },
   ];
 
   const handleSearchChange = (value: searchType) => {
@@ -404,11 +408,18 @@ const SearchBoard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log('asdfasdfa');
     fetchExploreData();
 
     setSearchResultList([]);
   }, []);
+
+  useEffect(() => {
+    if (prevSearchValueRef.current !== '' && searchValue === '') {
+      handleSearch();
+    }
+
+    prevSearchValueRef.current = searchValue;
+  }, [searchValue]);
 
   useEffect(() => {
     if (searchLoading || !hasSearchResult) return;
@@ -450,7 +461,7 @@ const SearchBoard: React.FC = () => {
       content: (
         <section className={styles.featuredContainer}>
           <div className={styles.scrollArea}>
-            {bannerList && <ExploreFeaturedHeader items={bannerList} />}
+            {bannerList && <ExploreFeaturedHeader items={[...bannerList]} />}
             <div className={styles.content}>
               <main className={styles.listContainer}>
                 {characterExploreList && characterExploreList.length > 0 && (
@@ -556,7 +567,7 @@ const SearchBoard: React.FC = () => {
                 </button>
               </div>
               <button className={styles.sortButton} onClick={() => setSortDropDownOpen(true)}>
-                <div>{getLocalizedText(dropDownMenuItems[selectedSort].name)}</div>
+                <div>{dropDownMenuItems[selectedSort].name}</div>
                 <img className={styles.buttonIcon} src={BoldArrowDown.src} />
                 {sortDropDownOpen && (
                   <DropDownMenu
@@ -624,9 +635,16 @@ const SearchBoard: React.FC = () => {
       ),
     },
   ];
+  const isIOS = () => {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
 
+    return (
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document)
+    );
+  };
   return (
-    <>
+    <div className={isIOS() === true ? styles.scrollContainer : ''}>
       <Splitter
         initialActiveSplitter={data.indexTab}
         splitters={splitterData}
@@ -643,14 +661,11 @@ const SearchBoard: React.FC = () => {
         isDark={true}
         onSelectSplitButton={index => {
           changeParams('indexTab', index);
-          if (index == 0) {
-            changeParams('search', null);
-          }
           handleSearch();
         }}
       />
       <LoadingOverlay loading={searchLoading} />
-    </>
+    </div>
   );
 };
 

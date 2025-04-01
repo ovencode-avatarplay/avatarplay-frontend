@@ -119,7 +119,14 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                 }}
               >
                 <div className={styles.left}>
-                  <img className={styles.imgProfile} src={profile.iconImageUrl} alt="" />
+                  <img
+                    className={cx(
+                      styles.imgProfile,
+                      profile.profileType == ProfileType.Channel && styles.channelProfile,
+                    )}
+                    src={profile.iconImageUrl}
+                    alt=""
+                  />
                   <div className={styles.nameWrap}>
                     {isChannel && (
                       <div className={styles.top}>

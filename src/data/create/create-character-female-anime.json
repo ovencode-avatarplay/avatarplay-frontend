@@ -62,7 +62,7 @@
   "bottomSizes": [ 
     {"label": "common_tagbutt_skinny", "image": "butt_4_skinny.png", "value": 4},
       {"label": "common_tagbutt_small", "image": "butt_1_small.png", "value": 1},
-      {"label": "common_tagbutt_medium", "image": "butt_2_medium.png", "value": 2},
+      
       {"label": "common_tagbutt_large", "image": "butt_3_large.png", "value": 3},
       {"label": "common_tagbutt_athletic", "image": "butt_5_athletic.png", "value": 5}
   ],

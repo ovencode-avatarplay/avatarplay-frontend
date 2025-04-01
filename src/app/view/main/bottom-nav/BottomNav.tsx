@@ -165,7 +165,8 @@ export default function BottomNav() {
 
   return (
     <footer>
-      <div className={` ${styles.bottomNav} ${colorMode === 1 ? styles['light-mode'] : styles['dark-mode']}`}>
+      <div className={` ${styles.bottomNav} ${colorMode === 1 ? styles['light-mode'] : styles['light-mode']}`}>
+        {/* 다크모드 화이트 모드로 변경 */}
         <div className={styles.bottomNavBox}>
           {buttonData.map((button, index) => {
             const isMy = button.label == 'My';
@@ -187,8 +188,9 @@ export default function BottomNav() {
                   <button
                     className={`${styles.navButton} 
                     ${selectedIndex === index ? styles.selected : ''} 
-                    ${selectedIndex === index && colorMode === 0 ? styles['dark-mode'] : ''}`}
+                    ${selectedIndex === index && colorMode === 0 ? styles['light-mode'] : ''}`}
                   >
+                    {/* 다크모드 화이트 모드로 변경 */}
                     {button.icon}
                   </button>
                 </Link>
@@ -228,7 +230,6 @@ export default function BottomNav() {
             }
           })}
         </div>
-
         <CreateWidget open={drawerOpen} onClose={() => toggleDrawer(false)} />
         <SelectProfileWidget
           open={profileDrawerOpen}

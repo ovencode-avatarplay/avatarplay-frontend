@@ -253,6 +253,8 @@ type DataProfileType = {
 
   refreshProfileTab: (profileId: number, indexTab: number, isRefreshAll?: boolean) => void;
   getIsEmptyTab: () => boolean;
+
+  isRefresh: boolean;
 };
 
 type ProfileBaseProps = {
@@ -290,12 +292,15 @@ const getUserType = (isMine: boolean, profileType: ProfileType) => {
   };
 };
 
+export const COMMON_TAG_HEAD_INTEREST = 'common_filterinterest';
+export const COMMON_TAG_HEAD_TAG = 'common_tag';
+
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const {back, changeParams, getParam} = useCustomRouter();
   const searchParams = useSearchParams();
-  const isNeedBackBtn = searchParams?.get('from'); // "from" 쿼리 파라미터 값 가져오기
+  const isNeedBackBtn = searchParams?.get('from') || !isPath; // "from" 쿼리 파라미터 값 가져오기
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
   const router = useRouter();
   const pathname = usePathname();
@@ -347,6 +352,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
     refreshProfileTab: (profileId, indexTab, isRefreshAll = false) => {},
     getIsEmptyTab: () => true,
+
+    isRefresh: false,
   });
   const dispatch = useDispatch();
 
@@ -624,6 +631,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     if (!resProfileInfo) return;
     data.profileInfo = resProfileInfo;
     data.profileId = resProfileInfo.profileInfo.id;
+    data.isRefresh = true;
 
     const indexTab = Number(data?.indexTab);
     await refreshProfileTab(resProfileInfo.profileInfo.id, indexTab);
@@ -738,6 +746,10 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     dataToast.open(getLocalizedText('common_alert_091'));
   };
 
+  if (!data.isRefresh) {
+    return;
+  }
+
   return (
     <>
       {isMine && (
@@ -777,7 +789,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             <div
               className={styles.backBtn}
               onClick={() => {
-                routerBack();
+                if (isPath) {
+                  routerBack();
+                } else {
+                  onClickBack();
+                }
               }}
             >
               <img src={BoldArrowLeft.src} alt="" />
@@ -857,8 +873,12 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       </section>
       <section className={cx(styles.main, !isPath && styles.mainNoPath)}>
         <div className={styles.profileStatisticsWrap}>
-          <div className={styles.imgProfileWrap}>
-            <img className={styles.imgProfile} src={data.profileInfo?.profileInfo.iconImageUrl} alt="" />
+          <div className={cx(styles.imgProfileWrap)}>
+            <img
+              className={cx(styles.imgProfile, profileType == ProfileType.Channel && styles.channelProfile)}
+              src={data.profileInfo?.profileInfo.iconImageUrl}
+              alt=""
+            />
             {isMine && (
               <Link href={getEditUrl(profileType)}>
                 <div className={styles.iconProfileEditWrap}>
@@ -1052,7 +1072,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             </div>
           )}
         </div>
-        <section className={styles.tabSection}>
+        <section className={styles.tabSection} style={{top: (refHeader?.current?.clientHeight || 0) - 1}}>
           <div className={styles.tabHeaderContainer} style={{top: (refHeader?.current?.clientHeight || 0) - 1}}>
             <TabHeaderWrapComponent
               indexTab={data.indexTab}
@@ -2619,9 +2639,11 @@ const TabContentComponent = ({
             <ul className={styles.tags}>
               {pdInfo?.interests.map((one, index) => {
                 if (one == '') return;
+
+                const value = one.includes(COMMON_TAG_HEAD_INTEREST) ? getLocalizedText(one) : one;
                 return (
                   <li key={index} className={styles.tag}>
-                    {one}
+                    {value}
                   </li>
                 );
               })}
@@ -2796,7 +2818,9 @@ const TabContentComponent = ({
           <section className={styles.tagSection}>
             <ul className={styles.metatags}>
               {tagList.map((tag, index) => {
-                return <li className={styles.item}>{tag}</li>;
+                const value = tag.includes(COMMON_TAG_HEAD_TAG) ? getLocalizedText(tag) : tag;
+
+                return <li className={styles.item}>{value}</li>;
               })}
             </ul>
           </section>

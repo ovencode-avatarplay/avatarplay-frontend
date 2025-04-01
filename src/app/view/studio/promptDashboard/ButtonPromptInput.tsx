@@ -43,7 +43,7 @@ const ButtonPromptInput: React.FC<Props> = ({
         regex,
         `<span class="${styles['chip']} ${styles[`chip${Keywords[keyword]}`]}" contenteditable="false">${
           Keywords[keyword]
-        }</span>`,
+        }</span>\u00A0`,
       );
     });
     return html;
@@ -68,11 +68,17 @@ const ButtonPromptInput: React.FC<Props> = ({
       range.deleteContents();
       range.insertNode(chipElement as Node);
 
-      const space = document.createTextNode(' ');
+      const space = document.createTextNode('\u00A0'); // non-breaking space
       chipElement?.after(space);
 
-      range.setStartAfter(space);
-      range.collapse(true);
+      setTimeout(() => {
+        const newRange = document.createRange();
+        newRange.setStartAfter(space);
+        newRange.collapse(true);
+
+        selection?.removeAllRanges();
+        selection?.addRange(newRange);
+      }, 0);
     } else {
       div.insertAdjacentHTML('beforeend', ` ${chipHTML}`);
 
@@ -89,7 +95,7 @@ const ButtonPromptInput: React.FC<Props> = ({
 
   return (
     <div className={styles.maxTextInputArea}>
-      <div className={styles.promptInputContainer}>
+      <div className={`${styles.promptInputContainer} ${essential && value.length === 0 ? styles.isError : ''}`}>
         <div className={styles.promptInputArea}>
           <PromptInput
             prefix={''}

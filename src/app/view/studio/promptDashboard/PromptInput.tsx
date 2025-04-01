@@ -55,7 +55,7 @@ const PromptInput: React.FC<Props> = ({
             regex,
             `<span class="${styles.chip} ${styles[`chip${Keywords[keyword]}`]}" contenteditable="false">${
               Keywords[keyword]
-            }</span>`,
+            }</span>\u00A0`,
           );
           changed = true;
           console.log(Keywords[keyword]);

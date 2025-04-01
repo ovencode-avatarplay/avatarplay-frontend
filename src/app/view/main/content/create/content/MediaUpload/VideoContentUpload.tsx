@@ -27,9 +27,14 @@ export interface VideoUploadField {
 interface VideoContentUploadProps {
   setEpisodeVideoInfo: (value: (prev: ContentEpisodeVideoInfo) => ContentEpisodeVideoInfo) => void;
   defaultEpisodeVideoInfo?: ContentEpisodeVideoInfo; // 기존 데이터가 있으면 전달받음
+  hasError?: boolean;
 }
 
-const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoInfo, defaultEpisodeVideoInfo}) => {
+const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
+  setEpisodeVideoInfo,
+  defaultEpisodeVideoInfo,
+  hasError,
+}) => {
   const [subtitleFields, setSubtitleFields] = useState<VideoUploadField[]>([]);
   const [dubbingFields, setDubbingFields] = useState<VideoUploadField[]>([]);
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle' | 'dubbing'; index: number} | null>(
@@ -235,8 +240,14 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
           {field.fileUrl ? (
             <>
               <div className={styles.textInBoxGroup}>
-                <span className={styles.textInBox}>{field.fileName}</span> // 파일명 표시
-                <img src={CircleClose.src} className={styles.circleClose}></img>
+                <span className={styles.textInBox}>{field.fileName}</span>
+                <img
+                  src={CircleClose.src}
+                  className={styles.circleClose}
+                  onClick={() => {
+                    handleRemoveFile(type, index);
+                  }}
+                ></img>
               </div>
             </>
           ) : (
@@ -252,7 +263,9 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
               const input = document.createElement('input');
               input.type = 'file';
               // input.accept = type === 'subtitle' ? '.srt,.txt' : 'audio/*';
-              input.accept = type === 'subtitle' ? '' : '';
+              input.accept = input.accept =
+                type === 'subtitle' ? '.srt,.vtt' : type === 'dubbing' ? '.mp3,.mp4' : 'video/mp4';
+
               input.onchange = e => {
                 const files = (e.target as HTMLInputElement).files;
                 if (files) {
@@ -298,7 +311,7 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({setEpisodeVideoI
       <div className={styles.videoUploadContainer}>
         <span className={styles.label}>{getLocalizedText('common_filter_video')}</span>
         <div className={styles.uploadGroup}>
-          <div className={styles.videoUploadBox}>
+          <div className={`${styles.videoUploadBox} ${hasError && !videoFile ? styles.videoUploadBoxError : ''}`}>
             {videoFile ? (
               <>
                 <div className={styles.textInBoxGroup}>

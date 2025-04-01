@@ -214,6 +214,11 @@
       height: 40px;
       border-radius: 50%;
       object-fit: cover;
+
+      &.channelProfile {
+        border-radius: 10px;
+      }
+
     }
 
     .nameWrap {
@@ -263,6 +268,11 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
+      object-fit: cover;
+
+      &.channelProfile {
+        border-radius: 10px;
+      }
     }
 
     .nameWrap {

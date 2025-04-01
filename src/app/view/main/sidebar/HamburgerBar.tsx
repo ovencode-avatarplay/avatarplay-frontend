@@ -137,9 +137,9 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
                 <div className={styles.profileNameArea}>
                   <p className={styles.profileName}>
                     {/* {auth?.user.user_metadata.name} */}
-                    {userMetaData ? userMetaData.name : getLocalizedText('TODO:Key필요 GuestMode')}
+                    {userMetaData ? userMetaData.name : getLocalizedText('common_label_guestmode')}
                   </p>
-                  <img className={styles.profileVerified} src={auth ? VerifiedLabel.src : ''} />
+                  <img className={styles.profileVerified} src={userMetaData ? VerifiedLabel.src : ''} />
                 </div>
                 <p className={styles.profileEmail}>
                   {/* {auth?.user.user_metadata.email} */}
@@ -166,7 +166,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
           >
             {userMetaData
               ? getLocalizedText('common_button_upgradeyourplan')
-              : getLocalizedText('TODO Key값필요 Login/Signup')}
+              : getLocalizedText('common_button_loginsignup')}
           </CustomButton>
         </ul>
 

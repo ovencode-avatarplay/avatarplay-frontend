@@ -1,7 +1,3 @@
-.header {
-  height: 58px;
-}
-
 .header,
 .main {
   box-sizing: content-box;
@@ -15,12 +11,18 @@
 
 .header.headerNoPath {
   position: inherit;
-  transform: inherit;
-  left: 0;
+  // transform: inherit;
+  // left: 0;
 }
 
 .main.mainNoPath {
   padding-top: 1px;
+
+  .tabSection {
+    position: relative !important;
+    top: inherit !important;
+  }
+
 
   .tabHeaderContainer {
     position: relative !important;
@@ -62,6 +64,8 @@
   padding: 0 6px 0 16px;
   box-sizing: border-box;
   position: sticky;
+  -webkit-transform: translateZ(0);
+  height: 58px;
   width: 100%;
   max-width: var(--full-width-percent); //js 변경요소
   top: 0;
@@ -228,13 +232,17 @@
       flex: 0;
       position: relative;
 
-
       .imgProfile {
         width: 90px;
         height: 90px;
         border-radius: 50%;
         // border: 1px solid var(--Border-1, #EAECF0);
         object-fit: cover;
+        background: gray;
+
+        &.channelProfile {
+          border-radius: 10px;
+        }
       }
 
       .iconProfileEditWrap {
@@ -563,9 +571,13 @@
 
   .tabSection {
     margin-top: 10px;
+    position: sticky;
+    -webkit-transform: translateZ(0);
+    top: 57px;
 
     .tabHeaderContainer {
       position: sticky;
+      -webkit-transform: translateZ(0);
       background: white;
       z-index: 2;
     }

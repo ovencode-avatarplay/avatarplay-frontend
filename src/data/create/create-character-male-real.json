@@ -27,14 +27,14 @@
       {"label": "common_tagcolor_green", "image": "eye_3_green.png", "value": 3}
   ],
   "hairStyles": [ 
-    { "label": "Buzz cut", "image": "/hair_1_buzzcut.png", "value": 1 },
-    { "label": "Long", "image": "/hair_2_long.png", "value": 2 },
-    { "label": "Slicked Back", "image": "/hair_3_slickedback.png", "value": 3 },
-    { "label": "Short", "image": "/hair_4_short.png", "value": 4 },
-    { "label": "Bun", "image": "/hair_5_bun.png", "value": 5 },
-    { "label": "Dreadlocks", "image": "/hair_6_dreadlocks.png", "value": 6 },
-    { "label": "Curly", "image": "/hair_7_curly.png", "value": 7 },
-    { "label": "Bald", "image": "/hair_8_bald.png", "value": 8 }
+    { "label": "common_taghair_malebuzzcut", "image": "/hair_1_buzzcut.png", "value": 1 },
+    { "label": "common_taghair_malelong", "image": "/hair_2_long.png", "value": 2 },
+    { "label": "common_taghair_maleslickedback", "image": "/hair_3_slickedback.png", "value": 3 },
+    { "label": "common_taghair_maleshort", "image": "/hair_4_short.png", "value": 4 },
+    { "label": "common_taghair_malebun", "image": "/hair_5_bun.png", "value": 5 },
+    { "label": "common_taghair_maledreadlocks", "image": "/hair_6_dreadlocks.png", "value": 6 },
+    { "label": "common_taghair_malecurly", "image": "/hair_7_curly.png", "value": 7 },
+    { "label": "common_taghair_malebald", "image": "/hair_8_bald.png", "value": 8 }
   ],
   "hairColors": [ 
       {"label": "common_tagcolor_blonde", "image": "linear-gradient(144deg, #CA9B11 15.81%, #FFF1C3 53.69%, #CA9B11 86.62%)", "value": 1},
@@ -45,9 +45,9 @@
       {"label": "common_tagcolor_silver", "image": "linear-gradient(137deg, #B2B2B2 17.4%, #EBEBEB 50.99%, #B2B2B2 83.91%)", "value": 6}
   ],
   "bodyTypes": [ 
-    { "label": "Slim", "image": "/body_1_slim.png", "value": 1 },
-    { "label": "Muscular", "image": "/body_2_muscular.png", "value": 2 },
-    { "label": "Wide", "image": "/body_3_wide.png", "value": 3 }
+    { "label": "common_tagbody_maleslim", "image": "/body_1_slim.png", "value": 1 },
+    { "label": "common_tagbody_malemuscular", "image": "/body_2_muscular.png", "value": 2 },
+    { "label": "common_tagbody_malewide", "image": "/body_3_wide.png", "value": 3 }
   ],
   "topSizes": [
   ],
@@ -60,11 +60,11 @@
     { "label": "common_tagoutfit_casual", "image": "clothes_4_casual.png", "value": 4,"prompts":["casual"] }
     ],
     "clothingColor" : [ 
-      {"label" : "common_tagcolor_beige", "image" : "#DECC98", "value" : 1},
-      {"label" : "common_tagcolor_brown", "image" : "#A37B5E", "value" : 2},
-      {"label" : "common_tagcolor_black", "image" : "#000", "value" : 3},
-      {"label" : "common_tagcolor_red", "image" : "#B82626", "value" : 4},
-      {"label" : "common_tagcolor_pink", "image" : "#FF81DF", "value" : 5},
-      {"label" : "common_tagcolor_silver", "image" : "linear-gradient(137deg, #B2B2B2 17.4%, #EBEBEB 50.99%, #B2B2B2 83.91%)", "value" : 6}
-    ]
+    {"label" : "common_tagcolor_beige", "image" : "#DECC98", "value" : 1, "prompts":["warm sand"]},
+    {"label" : "common_tagcolor_brown", "image" : "#A37B5E", "value" : 2, "prompts":["mocha brown"]},
+    {"label" : "common_tagcolor_black", "image" : "#000", "value" : 3, "prompts":["black"]},
+    {"label" : "common_tagcolor_red", "image" : "#B82626", "value" : 4, "prompts":["crimson passion"]},
+    {"label" : "common_tagcolor_pink", "image" : "#FF81DF", "value" : 5, "prompts":["vibrant pink"]},
+    {"label" : "common_tagcolor_silver", "image" : "linear-gradient(137deg, #B2B2B2 17.4%, #EBEBEB 50.99%, #B2B2B2 83.91%)", "value" : 6, "prompts":["silver"]}
+  ]
 }

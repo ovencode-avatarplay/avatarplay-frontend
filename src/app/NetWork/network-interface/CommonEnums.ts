@@ -69,9 +69,9 @@ export enum LLMModel {
 }
 
 export const mapVisibilityType = {
-  Private: 'common_dropdown_private',
-  Unlisted: 'common_dropdown_unlisted',
-  Public: 'common_dropdown_public',
+  Private: 'common_filter_private',
+  Unlisted: 'common_filter_unlisted',
+  Public: 'common_filter_public',
 };
 
 export enum VisibilityType {

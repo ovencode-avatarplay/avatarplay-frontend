@@ -112,6 +112,7 @@ const ChatMediaDialog: React.FC<ChatMediaDialogProps> = ({
             className={styles.mySwiper}
             initialSlide={initNum || 0}
             onSlideChange={handleSlideChange} // 슬라이드 변경 이벤트 핸들러
+            direction="vertical"
           >
             {mediaData?.mediaUrlList.map((url, idx) => (
               <SwiperSlide key={idx}>

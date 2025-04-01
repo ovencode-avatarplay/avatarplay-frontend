@@ -32,7 +32,7 @@ import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import ProfileBase from '@/app/view/profile/ProfileBase';
 import DrawerDonation from '@/app/view/main/content/create/common/DrawerDonation';
-import {followProfile} from '@/app/NetWork/ProfileNetwork';
+import {followProfile, ProfileType} from '@/app/NetWork/ProfileNetwork';
 import {
   bookmark,
   BookMarkReq,
@@ -54,6 +54,8 @@ interface ReelsContentProps {
   setIsProfile: (profile: boolean) => void; // boolean 매개변수 추가
   recommendState: RecommendState;
   isShowProfile: boolean;
+  setSyncFollow: (id: number, value: boolean) => void;
+  isFollow: boolean;
 }
 
 const ReelsContent: React.FC<ReelsContentProps> = ({
@@ -64,11 +66,12 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   setIsProfile,
   isShowProfile = true,
   recommendState,
+  setSyncFollow,
+  isFollow,
 }) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-  const [isFollow, setIsFollow] = useState(item.isFollowing);
   const [isDonation, setDonation] = useState(false);
   const [isLike, setIsLike] = useState(item.isLike);
   const [isDisLike, setIsDisLike] = useState(item.isDisLike);
@@ -78,10 +81,13 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const [isReportModal, setIsRefortModal] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
+  const swiperRef = useRef<SwiperClass | null>(null);
 
   const Header = 'Home';
   const Common = 'Common';
-
+  useEffect(() => {
+    console.log('setSyncFollow', item);
+  }, [item]);
   useEffect(() => {
     if (isActive) {
       setIsPlaying(true); // 활성화된 경우 자동 재생
@@ -194,6 +200,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const handleFollow = async (profileId: number, value: boolean) => {
     try {
       const response = await followProfile(profileId, value);
+      setSyncFollow(profileId, value);
     } catch (error) {
       console.error('An error occurred while Following:', error);
     }
@@ -308,6 +315,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   return (
     <div className={styles.reelsContainer}>
       <Swiper
+        onSwiper={(swiper: SwiperClass) => {
+          swiperRef.current = swiper;
+        }}
         direction="horizontal"
         slidesPerView={1}
         centeredSlides={true}
@@ -320,7 +330,14 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       >
         <SwiperSlide style={{height: '100%'}}>
           <div className={styles.Image}>
-            {item.mediaState === 1 && <img src={item?.mediaUrlList[0]} loading="lazy" style={{width: '100%'}} />}
+            {item.mediaState === 1 && (
+              <img
+                src={item?.mediaUrlList[0]}
+                loading="lazy"
+                style={{width: '100%'}}
+                onClick={() => setIsImageModal(true)}
+              />
+            )}
             {item.mediaState === 2 && (
               <div onClick={handleClick} style={{position: 'relative', width: '100%', height: '100%'}}>
                 <ReactPlayer
@@ -370,7 +387,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   }}
                 >
                   <div className={`${styles.playCircleIcon} ${isClicked ? styles.fadeAndGrow : ''}`}>
-                    <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
+                    <img src={isPlaying ? BoldPause.src : BoldPlay.src} style={{width: '50%', height: '50%'}} />
                   </div>
                 </div>
               </div>
@@ -398,7 +415,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             <div className={styles.userInfo}>
               <Avatar
                 src={item.profileIconUrl || '/images/001.png'}
-                style={{width: '32px', height: '32px'}}
+                sx={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: item.profileType === ProfileType.Channel ? '10px' : '50%',
+                }}
                 onClick={() => {
                   pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                 }}
@@ -416,7 +437,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 <button
                   className={`${styles.follow} ${isFollow ? styles.followButtonOn : styles.followButtonOff}`}
                   onClick={() => {
-                    setIsFollow(!isFollow);
                     handleFollow(item.profileId, !isFollow);
                     console.log('isfollow', isFollow);
                   }}
@@ -563,12 +583,20 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             {item.mediaState == 2 && !isMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
 
             {/* 이미지 확대 아이콘 */}
-            {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />}
+            {/* {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />} */}
           </div>
         </SwiperSlide>
         {isShowProfile && (
           <SwiperSlide style={{overflowY: 'scroll', background: 'white'}}>
-            {activeIndexProfile === 1 && <ProfileBase urlLinkKey={item.profileUrlLinkKey} maxWidth={'600px'} />}
+            {activeIndexProfile === 1 && (
+              <ProfileBase
+                urlLinkKey={item.profileUrlLinkKey}
+                maxWidth={'600px'}
+                onClickBack={() => {
+                  swiperRef.current?.slidePrev();
+                }}
+              />
+            )}
           </SwiperSlide>
         )}
       </Swiper>

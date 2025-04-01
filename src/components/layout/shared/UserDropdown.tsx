@@ -202,13 +202,19 @@ const UserDropdown = () => {
           return;
         }
 
-        updateAuth(session);
+        const isLogin = await isLogined();
+        if (!isLogin) {
+          updateAuth(session);
+        }
       } else if (event === 'INITIAL_SESSION') {
         setAuth(session);
 
         const language = getLanguageTypeFromText(getCurrentLanguage());
         refreshLanaguage(language, router);
-        updateAuth(session);
+        const isLogin = await isLogined();
+        if (!isLogin) {
+          updateAuth(session);
+        }
         console.log('브라우저에 저장된 언어로 가져오자');
       }
     };
@@ -273,7 +279,11 @@ const UserDropdown = () => {
             src={dataProfile.currentProfile?.iconImageUrl || ''}
             // onClick={routeProfile}
             className={styles.avatar}
-            style={{width: '80px', height: '80px'}}
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: dataProfile.currentProfile?.profileType == ProfileType.Channel ? '10px' : '50%',
+            }}
           />
         </Badge>
       </DndButton>

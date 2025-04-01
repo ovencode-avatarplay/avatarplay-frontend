@@ -150,6 +150,19 @@
     gap: 5px;
 }
 
+@keyframes rotateOnce {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+}
+  
+.rotateOnce {
+    animation: rotateOnce 0.6s ease-in-out;
+}
+
 .refreshText
 {
     color: var(--Neutral-500, #9AA0A6);

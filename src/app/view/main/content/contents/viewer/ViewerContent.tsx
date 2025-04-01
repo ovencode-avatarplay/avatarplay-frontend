@@ -2,8 +2,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styles from './ViewerContent.module.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import {FeedInfo, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
-import ReactPlayer from 'react-player';
 import {
   BoldArchive,
   BoldArrowLeft,
@@ -22,22 +20,16 @@ import {
   BoldVolumeOn,
   LineArchive,
   LineCheck,
-  LineDashboard,
-  LinePlus,
   LineScaleUp,
 } from '@ui/Icons';
 import {Avatar, Box, Modal} from '@mui/material';
-import ChatMediaDialog from '@/app/view/main/content/Chat/MainChat/ChatMediaDialog';
-import {MediaData, TriggerMediaState} from '@/app/view/main/content/Chat/MainChat/ChatTypes';
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
-import ProfileBase from '@/app/view/profile/ProfileBase';
 import {followProfile, subscribeProfile} from '@/app/NetWork/ProfileNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
 
 import {
   ContentCategoryType,
-  ContentLanguageType,
   ContentPlayInfo,
   ContentType,
   GetSeasonEpisodesPopupReq,
@@ -144,10 +136,51 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     }
   }, [contentId, curEpisodeId]);
 
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [isDragging, setIsDragging] = useState(false);
+  // 5초 후에 isVisible을 false로 만드는 타이머 설정
+  // 5초 후 자동 숨김 함수
+  const startAutoHideTimer = () => {
+    if (timerRef.current) clearTimeout(timerRef.current); // 이전 타이머 제거
+    timerRef.current = setTimeout(() => {
+      setIsVisible(false);
+    }, 3000);
+  };
+
+  // 상태 감지: visible && 드래그 중이 아닐 때만 타이머 시작
+  useEffect(() => {
+    if (isVisible) {
+      if (isDragging) {
+        // 드래그 중이면 타이머 보류
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+          timerRef.current = null;
+        }
+      } else {
+        // 드래그가 끝나면 타이머 새로 시작
+        startAutoHideTimer();
+      }
+    } else {
+      // visible이 false면 타이머 제거
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+  }, [isVisible, isDragging]);
+
+  // 컴포넌트 언마운트 시 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const handleTrigger = () => {
     setIsVisible(!isVisible); // 트리거 발생 시 서서히 사라짐
+    console.log('emfdwada');
   };
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
@@ -215,17 +248,18 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
 
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
 
   // 🎯 프로그레스 바 클릭 또는 드래그 시작 시 실행
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     console.log('마우스 다운');
     setIsDragging(true);
     updateProgress(e.nativeEvent); // 클릭 위치 반영
+    setIsPlaying(false);
   };
 
   // 🎯 마우스를 움직일 때 실행
   const handleMouseMove = (e: MouseEvent) => {
+    e.stopPropagation();
     if (!isDragging) return;
     updateProgress(e);
   };
@@ -234,8 +268,32 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleMouseUp = () => {
     if (isDragging) {
       setIsDragging(false);
+      setIsPlaying(false);
     }
   };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (e.touches.length > 0) {
+      setIsDragging(true);
+      updateProgress(e.touches[0] as Touch); // ✅ 수정된 부분
+      setIsPlaying(false);
+    }
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (!isDragging) return;
+    updateProgress(e.touches[0]);
+    setIsPlaying(false);
+  };
+
+  const handleTouchEnd = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      setIsPlaying(true);
+    }
+  };
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl) return;
@@ -310,15 +368,18 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     const video = videoRef.current;
     if (video) video.muted = isMute;
   }, [isMute]);
-  const updateProgress = (e: MouseEvent | React.MouseEvent<HTMLDivElement>) => {
+  const updateProgress = (e: MouseEvent | Touch) => {
     if (!progressBarRef.current || videoDuration === 0) return;
 
     const rect = progressBarRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
+
+    // 공통으로 clientX를 뽑아오기
+    const clientX = 'clientX' in e ? e.clientX : 0;
+
+    const offsetX = clientX - rect.left;
     let newProgress = (offsetX / rect.width) * videoDuration;
 
     newProgress = Math.max(0, Math.min(videoDuration, newProgress));
-
     setVideoProgress(newProgress);
 
     if (videoRef.current) {
@@ -328,16 +389,20 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
   // 🎯 드래그 이벤트 `window`에 적용하여 진행 바 놓치지 않도록 유지
   useEffect(() => {
-    if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-    } else {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    }
+    // PC용
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    // 모바일용
+    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchend', handleTouchEnd);
+
+    if (isDragging) setIsPlaying(false);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
     };
   }, [isDragging]);
 
@@ -536,11 +601,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       aria-describedby="viwer-content-modal-description"
       className={styles.body}
       hideBackdrop
-      // componentsProps={{
-      //   backdrop: {
-      //     style: {backgroundColor: 'rgba(0, 0, 0, 0.8)'}, // 원하는 색상 설정
-      //   },
-      // }}
     >
       <Box
         sx={{
@@ -616,7 +676,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                       className={`${styles.playCircleIcon} ${isVisible ? styles.fadeAndGrow : styles.fadeOutAndShrink}`}
                       onClick={event => {
                         event.stopPropagation(); // 부모로 이벤트 전파 방지
-                        handleClick();
+                        if (isVisible) handleClick();
+                        else setIsVisible(true);
                       }}
                     >
                       <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
@@ -633,11 +694,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 className={`${styles.progressBar} ${!isVisible ? styles.fadeOutB : ''} ${
                   isDragging ? styles.dragging : ''
                 }`}
-                onMouseDown={e => {
-                  console.log('✅ ProgressBar 클릭됨');
-                  console.log('클릭 좌표:', e.clientX, e.clientY);
-                  handleMouseDown(e);
-                }}
+                onMouseDown={handleMouseDown}
+                onTouchStart={handleTouchStart}
               >
                 <div
                   className={styles.progressFill}
@@ -645,7 +703,25 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                     width: `${(videoProgress / videoDuration) * 100}%`,
                     transition: isDragging ? 'none' : 'width 0.1s linear',
                   }}
-                ></div>
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '50%',
+                      right: 0,
+                      transform: 'translate(50%, -50%)',
+                      width: '20px',
+                      height: '20px',
+                      backgroundColor: '#fff',
+                      borderRadius: '50%',
+                      boxShadow: '0 0 4px rgba(0, 0, 0, 0.3)',
+                      zIndex: 10,
+                      cursor: 'pointer',
+                    }}
+                    onMouseDown={handleMouseDown}
+                    onTouchStart={handleTouchStart}
+                  />
+                </div>
               </div>
             )}
 

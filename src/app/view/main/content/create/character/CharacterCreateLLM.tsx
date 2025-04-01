@@ -161,7 +161,7 @@ const CharacterCreateLLM: React.FC<Props> = ({
         regex,
         `<span class="${styles['chip']} ${styles[`chip${KEYWORDS[keyword]}`]}" contenteditable="false">${
           KEYWORDS[keyword]
-        }</span>`,
+        }</span>\u00A0`,
       );
     });
 
