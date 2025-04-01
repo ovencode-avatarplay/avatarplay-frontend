@@ -1,14 +1,13 @@
 .characterContainer
 {
-    position: absolute;
+    /* position: absolute;
     left: 50%;
-    transform: translate(-50%, 0);
+    transform: translate(-50%, 0); */
     display: flex;
     flex-direction: column;
-    height: 100vh; 
-    width: var(--full-width);
-    margin: 0 auto;
-    overflow: hidden;
+    /* height: 100vh; 
+    width: var(--full-width); */
+    /* margin: 0 auto;  */
 }
 
 
@@ -17,22 +16,22 @@
 {
     display: flex;
     flex-direction: column;
-    width: var(--second-width);
-    margin:0  16px;
+    width: 100%;
+    padding:0  16px;
     gap: 12px;
     height: 100vh; 
-    overflow-x: hidden;
-    overflow-y: scroll;
+    /* overflow-x: hidden;
+    overflow-y: scroll; */
 }
 
-.createCharacterArea::-webkit-scrollbar {
+/* .createCharacterArea::-webkit-scrollbar {
     display: none;  
 }
   
 .createCharacterArea {
     scrollbar-width: none;  
     -ms-overflow-style: none;  
-}
+} */
 
 .thumbnailArea
 {
@@ -187,13 +186,14 @@
     position: fixed;
     display: flex;
     flex-direction: column;
+    /* width: 100%; */
     width: var(--full-width);
     justify-content: space-between;
-    align-items: center;
-    padding-left: 16px;
-    padding-right: 16px;  
+    align-items: center; 
     overflow: hidden; 
     padding-bottom: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
 } 
 
 .floatButtonBack
@@ -210,19 +210,19 @@
 .floatButton
 {
     overflow: hidden;
-    width: var(--second-width);
+    width: 100%;
     border-radius: 10px; 
 }
 
 .verticalButtonGroup {
     display: flex;
-    width: var(--second-width);
+    /* width: 100%; */
     margin-left: 16px;
     margin-right: 16px;
     margin-top: 30px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;  
+    gap: 20px;  box-sizing: border-box;
 }
   
 .uploadButton
@@ -280,7 +280,7 @@
 }
 
 .horizontalButtonGroup {
-    width: var(--second-width); 
+    width: 100%; 
     display: flex;
     flex-direction: row;
     overflow-x: auto;
@@ -295,23 +295,23 @@
 
 .imageTypeArea
 {
-    width: var(--full-width);
+    width: 100%;
     height: calc(100% - 58px);
     margin: 0;
     margin-bottom: 20px;
 
-    overflow-x: hidden;
-    overflow-y: scroll;
+    /* overflow-x: hidden;
+    overflow-y: scroll;box-sizing: border-box; */
 }
 
-.imageTypeArea::-webkit-scrollbar {
+/* .imageTypeArea::-webkit-scrollbar {
     display: none;  
 }
   
 .imageTypeArea {
     scrollbar-width: none;  
     -ms-overflow-style: none;  
-}
+} */
 
 
 .backdrop {
@@ -350,6 +350,7 @@
     align-items: center; 
     gap: 18px;
     align-self: stretch; 
+    
 }
 
 .imageUploadTitle

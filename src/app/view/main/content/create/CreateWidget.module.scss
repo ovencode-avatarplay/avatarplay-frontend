@@ -18,6 +18,7 @@
 }
 
 .buttonArea {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -25,9 +26,14 @@
   border-radius: 12px;
 }
 
+.drawerLink
+{
+  width: 100%;
+}
+
 .drawerButton {
-  display: flex;
-  width: var(--second-width);
+  display: flex; 
+  width: 100%;
   height: 60px;
   padding: 13px 20px;
   align-items: center;
@@ -43,6 +49,8 @@
       color: var(--Neutral-400, #BDC1C6);
     }
   }
+  
+  border: 1px solid var(--Border-1, #EAECF0);
 }
 
 
@@ -50,7 +58,6 @@
 
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  border: 1px solid var(--Border-1, #EAECF0);
 }
 
 .drawerButtonMid {

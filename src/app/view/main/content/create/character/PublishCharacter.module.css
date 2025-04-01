@@ -1,7 +1,7 @@
 .publishContainer
 {
   display: flex;
-  width: var(--second-width);
+  width: 100%;
   margin-left: 16px;
   margin-right: 16px;
   flex-direction: column;

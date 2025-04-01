@@ -47,7 +47,7 @@
 
 .newButton
 {
-    width: var(--second-width);
+    width: 100%;
 }
 
 .buttonIcon
@@ -61,5 +61,5 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    width : var(--second-width);
+    width : 100%;
 }

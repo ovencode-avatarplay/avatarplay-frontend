@@ -24,7 +24,7 @@
 
 .basicGuide
 {
-    width: var(--second-width);
+    width: 100%;
     color: #000;
     font-size: 14px;
     font-style: normal;
