@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './Shop.module.css';
 import ExploreFeaturedHeader from '../searchboard/searchboard-header/ExploreFeaturedHeader';
 import {BannerUrlList} from '@/app/NetWork/ExploreNetwork';
@@ -7,9 +7,10 @@ import {BoldAlert, BoldRuby, BoldStar} from '@ui/Icons';
 import SinglePlanContent from './SinglePlanContent';
 import ShopTabMenu, {ShopTabType} from './ShopTabMenu';
 import SubscriptionPlan from './SubscriptionPlan';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {formatCurrency} from '@/utils/util-1';
+import {setSelectedIndex} from '@/redux-store/slices/MainControl';
 
 export const dummyBannerList: BannerUrlList[] = [
   {
@@ -55,6 +56,10 @@ const Shop: React.FC = () => {
   const dataStarInfo = useSelector((state: RootState) => state.starInfo);
   const starAmount = dataStarInfo.star;
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setSelectedIndex(2));
+  }, []);
   return (
     <>
       <CustomArrowHeader
@@ -102,3 +107,6 @@ const Shop: React.FC = () => {
 };
 
 export default Shop;
+function dispatch(arg0: any) {
+  throw new Error('Function not implemented.');
+}
