@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import MessageTabMenu, {MessageTabType} from './MessageTabMenu';
 import MessageTagList, {MessageTagType} from './MessageTagList';
-import styles from './ChatMessages.module.css';
+import styles from './MessageMain.module.css';
 import MessageProfile from './MessageProfile';
 import Splitters, {Splitter} from '@/components/layout/shared/CustomSplitter';
 import {LineSearch} from '@ui/Icons';
 
-const MyContents: React.FC = () => {
+const MessageMain: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<MessageTabType>(MessageTabType.Chat);
   const [selectedTag, setSelectedTag] = useState<MessageTagType>(MessageTagType.All);
   const [selectedFilter, setSelectedFilter] = useState<'OnChat' | 'Favorite'>('OnChat');
@@ -67,4 +67,4 @@ const MyContents: React.FC = () => {
   );
 };
 
-export default MyContents;
+export default MessageMain;

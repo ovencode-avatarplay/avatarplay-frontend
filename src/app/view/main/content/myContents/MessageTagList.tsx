@@ -20,6 +20,7 @@ interface Props {
 
 const MessageTagList: React.FC<Props> = ({onTagChange: onTagChange}) => {
   const [activeTag, setActiveTag] = useState<MessageTagType>(MessageTagType.All);
+  const [isCentered, setIsCentered] = useState<boolean>(false);
 
   const handleTagClick = (tab: MessageTagType) => {
     setActiveTag(tab);
@@ -35,10 +36,13 @@ const MessageTagList: React.FC<Props> = ({onTagChange: onTagChange}) => {
         <Swiper
           className={styles.horizonSwiper}
           // initialSlide={}
-          centeredSlides={true}
+          centeredSlides={isCentered}
           slidesPerView="auto"
           spaceBetween={6}
-          onSlideChange={() => {}}
+          onSlideChange={
+            swiper => setIsCentered(false)
+            // handleSelectedLora(swiper.activeIndex)
+          }
           onSwiper={() => {}}
         >
           {Object.values(MessageTagType).map(tag => (
