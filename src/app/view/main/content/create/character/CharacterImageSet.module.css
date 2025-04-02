@@ -1,19 +1,20 @@
 
 .aiGenerateArea
 {
-    width: var(--second-width);
-    margin: 0 16px;
+    width: 100%;
+    padding: 0 16px;
 
     overflow: hidden; 
 
     display: flex;
     flex-direction: column;
     gap: 14px;
+ 
 }
 
 .aiTagArea{
     display: flex;
-    width: var(--second-width);
+    width: 100%;
     align-items: flex-start;
     align-content: flex-start;
     gap: 6px;
@@ -178,7 +179,7 @@
 
 .generateButton
 {
-    width: var(--second-width);
+    width: 100%;
 }
 
 .costArea {
@@ -244,21 +245,28 @@
 }
 
 .selectGrid
-{
-  display: flex;
-  width: var(--second-width); 
-  align-items: flex-start;
-  align-content: flex-start;
-  gap: 10px;
-  flex-wrap: wrap;
+{ 
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
 
-  margin-bottom: 24px;
+    margin-bottom: 24px;
+    
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    width: 100%; 
+    @media (max-width: 600px) {
+  
+      /* 최소 2개 */
+      grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .bottomNavTab
 {
     display: flex;
-    width: var(--full-width);
+    width: 100%;
     padding: 0px 6px 17px 6px;
     flex-direction: column;
     align-items: center; 

@@ -348,7 +348,8 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
         placeholder={getLocalizedText(Common, 'common_sample_071')}
         inputDataType={inputType.None}
         stateDataType={inputState.Normal}
-        displayDataType={displayType.Label}
+        displayDataType={displayType.LabelAndHint}
+        hint="asdf"
         promptValue={positivePrompt}
         handlePromptChange={handlePositivePromptChange}
       />

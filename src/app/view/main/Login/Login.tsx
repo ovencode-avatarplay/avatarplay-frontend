@@ -39,7 +39,7 @@ const Login = () => {
       </button>
 
       <button style={{display: 'none'}} className={styles.buttonGuest}>
-        {getLocalizedText('login001_btn_006')}
+        {getLocalizedText('login001_button_006')}
       </button>
 
       <div style={{display: 'none'}} className={styles.divider}>

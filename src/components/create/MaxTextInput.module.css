@@ -1,3 +1,12 @@
+.container
+{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
 .inputArea
 { 
   box-sizing: border-box;
@@ -11,7 +20,7 @@
 
   padding: 10px 12px;
 
-  width: var(--second-width);
+  width: 100%;
   height: 190px;
 
   background: var(--background);
@@ -124,12 +133,13 @@
 {
   color: var(--Primary-1, #FD55D3);
 }
+
  
 .hintText
 {
   display: -webkit-box;
-  width: calc(var(--second-width) - 27px);
-  max-width: 343px;;
+  width: calc(100% - 27px);
+  
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   
