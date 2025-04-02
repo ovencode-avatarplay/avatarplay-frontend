@@ -180,7 +180,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
   const handleTrigger = () => {
     setIsVisible(!isVisible); // 트리거 발생 시 서서히 사라짐
-    console.log('emfdwada');
   };
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
@@ -313,8 +312,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     const handleEnded = () => {
       setIsPlaying(false);
     };
-
-    player.load(info.episodeVideoInfo.videoSourceFileInfo.videoSourceUrl).then(async () => {
+    player.load(`${process.env.NEXT_PUBLIC_CHAT_API_URL}${info.episodeVideoInfo.mpdTempUrl}`).then(async () => {
       console.log('✅ Shaka Player video loaded');
 
       setVideoDuration(video.duration);

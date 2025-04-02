@@ -105,6 +105,7 @@ export enum ContentLanguageType {
 }
 // 📌 에피소드 비디오 정보
 export interface ContentEpisodeVideoInfo {
+  mpdTempUrl: string;
   videoSourceFileInfo: {
     videoLanguageType: ContentLanguageType;
     tempFileName: string; // ✅ 새 필드
@@ -436,6 +437,7 @@ export interface CommonMediaViewInfo {
 
 export interface EpisodeVideoInfo {
   likeCount: number;
+  mpdTempUrl: string;
   videoSourceFileInfo: VideoFileInfo;
   subTitleFileInfos: VideoFileInfo[];
   dubbingFileInfos: VideoFileInfo[];
