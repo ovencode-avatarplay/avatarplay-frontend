@@ -172,7 +172,7 @@ const MaxTextInput: React.FC<Props> = ({
   }, [placeholder]);
 
   return (
-    <>
+    <div className={styles.container}>
       {(displayDataType === displayType.Label || displayDataType === displayType.LabelAndHint) && labelText && (
         <div className={styles.label}>{labelText}</div>
       )}
@@ -212,7 +212,7 @@ const MaxTextInput: React.FC<Props> = ({
       {hasError && isError != true && (
         <ErrorMessage message="Character limit exceeded. Please shorten your input"></ErrorMessage>
       )}
-    </>
+    </div>
   );
 };
 

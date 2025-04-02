@@ -164,8 +164,7 @@
 
   --full-width-percent: clamp(0px, 100%, 1300px);
   --full-width: clamp(0px, 100vw, 1300px);
-  --second-width : clamp(0px, calc(100vw - 32px) , calc(var(--full-width) - 32px));  /* 370px */
-  --third-width : clamp(0px, calc(100vw - 32px - 32px) , calc(var(--full-width) - 32px - 32px));  /* 338px */
+  --second-width : clamp(0px, calc(100vw - 32px) , calc(var(--full-width) - 32px));  /* 370px position : fixed 인 경우를 제외하고는 사용하지 않게 변경했습니다. */
   --header-removed-height : calc(100% - 58px);
 
   --bottom-nav-height : 64px;
@@ -224,13 +223,7 @@ body{
   margin-left: 16px;
   margin-right: 16px;
 }
-
-.third-width-size {
-  width: var(--third-width);
-  margin-left: 16px;
-  margin-right: 16px;
-}
-
+ 
 /* @media (max-width: 1366px) {
   :root {
     --full-width: 100%;

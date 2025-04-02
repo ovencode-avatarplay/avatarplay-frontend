@@ -170,7 +170,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               />
             </div>
 
-            <Link href={canCreateFeed ? getLocalizedLink('/create/post') : ''} passHref>
+            <Link className={styles.drawerLink} href={canCreateFeed ? getLocalizedLink('/create/post') : ''} passHref>
               <button
                 className={`${styles.drawerButton} ${styles.drawerButtonTop} ${canCreateFeed ? '' : styles.disable}`}
                 onClick={() => {
@@ -185,7 +185,11 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                 </div>
               </button>
             </Link>
-            <Link href={canCreateCharacter ? getLocalizedLink('/create/character') : ''} passHref>
+            <Link
+              className={styles.drawerLink}
+              href={canCreateCharacter ? getLocalizedLink('/create/character') : ''}
+              passHref
+            >
               <button
                 className={`${styles.drawerButton} ${styles.drawerButtonMid} ${
                   canCreateCharacter ? '' : styles.disable
@@ -201,7 +205,11 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                 </div>
               </button>
             </Link>
-            <Link href={canCreateContent ? getLocalizedLink('/create/content') : ''} passHref>
+            <Link
+              className={styles.drawerLink}
+              href={canCreateContent ? getLocalizedLink('/create/content') : ''}
+              passHref
+            >
               <button
                 className={`${styles.drawerButton} ${styles.drawerButtonMid} ${canCreateContent ? '' : styles.disable}`}
                 onClick={() => {
@@ -215,7 +223,11 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                 </div>
               </button>
             </Link>
-            <Link href={canCreateChannel ? getLocalizedLink('/create/channel') : ''} passHref>
+            <Link
+              className={styles.drawerLink}
+              href={canCreateChannel ? getLocalizedLink('/create/channel') : ''}
+              passHref
+            >
               <button
                 className={`${styles.drawerButton} ${styles.drawerButtonBot} ${canCreateChannel ? '' : styles.disable}`}
                 onClick={() => {

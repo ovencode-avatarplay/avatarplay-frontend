@@ -16,6 +16,17 @@
     overflow-y: scroll;
     overflow-x: hidden;
   }
+
+
+  .drawerContent::-webkit-scrollbar {
+    display: none;  
+  }
+  
+  .drawerContent {
+    scrollbar-width: none;  
+    -ms-overflow-style: none;  
+  }
+ 
   
   /* 프로필 섹션 */
   .profileSection {

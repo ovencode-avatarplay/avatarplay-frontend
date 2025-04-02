@@ -152,12 +152,12 @@
 
 .sliderWrapper
 {
-    width : var(--third-width); 
+    width : 338px;
 }
 
 .slider
 {
-    width : var(--third-width); 
+    width : 338px;
     
 }
 /* 기본 슬라이더 스타일 */

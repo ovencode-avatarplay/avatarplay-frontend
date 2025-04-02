@@ -17,7 +17,7 @@
     font-size: 12px;
     font-style: normal;
     font-weight: 700;
-    line-height: 12px; /* 100% */
+    line-height: 12px; /* 100% */;
   }
   
   .default {
@@ -48,4 +48,6 @@
     
     border-radius: 100px;
     border: 1px solid var(--Border-1, #EAECF0); 
+
+    box-sizing: border-box
   }

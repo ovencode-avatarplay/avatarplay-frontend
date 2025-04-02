@@ -5,8 +5,7 @@
 
 .searchHeader
 {
-  display: flex;
-  /* width: var(--second-width); */
+  display: flex; 
   width:100%;
   align-items: center;
   gap: 8px; 

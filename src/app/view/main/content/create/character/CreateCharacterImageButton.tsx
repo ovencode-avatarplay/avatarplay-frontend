@@ -5,7 +5,7 @@ import {NextEpisodeWait} from '@ui/chatting';
 import getLocalizedText from '@/utils/getLocalizedText';
 
 interface ImageButtonProps {
-  sizeType: 'small' | 'middle' | 'large' | 'summary';
+  sizeType: 'small' | 'middle' | 'large' | 'summary' | 'result';
   selectType?: 'one' | 'multiple';
   selectButtonType?: 'image' | 'button';
   label: string | null;
@@ -47,7 +47,7 @@ const CharacterCreateImageButton: React.FC<ImageButtonProps> = ({
   return (
     <button
       onClick={selectButtonType === 'image' ? onSelectClick : onImageClick}
-      className={`${styles.imageButton} ${selected ? styles.selected : ''}`} // sizeType에 맞는 클래스를 동적으로 추가
+      className={`${styles.imageButton} ${styles[sizeType]} ${selected ? styles.selected : ''}`} // sizeType에 맞는 클래스를 동적으로 추가
     >
       <div
         className={`${styles.imageBackGround} ${styles[sizeType]} ${selected ? styles.selected : ''} `}

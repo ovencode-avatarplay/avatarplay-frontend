@@ -39,29 +39,33 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({isSingle}) => {
           </div>
         }
       />
-      <div className={styles.titleText}>{getLocalizedText('createcontent002_label_002')}</div>
+      <div className={styles.articleList}>
+        <div className={styles.titleText}>{getLocalizedText('createcontent002_label_002')}</div>
 
-      <div className={styles.contentBox}>
-        <p className={styles.termsText}>
-          Register
-          <br />
-          New Series
-        </p>
+        <div className={styles.termsArea}>
+          <div className={styles.contentBox}>
+            <p className={styles.termsText}>
+              Register
+              <br />
+              New Series
+            </p>
+          </div>
+
+          <div className={styles.checkboxContainer}>
+            <input
+              type="checkbox"
+              checked={isChecked}
+              onChange={() => setIsChecked(!isChecked)}
+              className={styles.checkbox}
+            />
+            <span className={styles.agreeText}>{getLocalizedText('createcontent002_desc_003')}</span>
+          </div>
+        </div>
+
+        <button className={styles.confirmButton} onClick={handleConfirm}>
+          {getLocalizedText('common_button_confirm')}
+        </button>
       </div>
-
-      <div className={styles.checkboxContainer}>
-        <input
-          type="checkbox"
-          checked={isChecked}
-          onChange={() => setIsChecked(!isChecked)}
-          className={styles.checkbox}
-        />
-        <span className={styles.agreeText}>{getLocalizedText('createcontent002_desc_003')}</span>
-      </div>
-
-      <button className={styles.confirmButton} onClick={handleConfirm}>
-        {getLocalizedText('common_button_confirm')}
-      </button>
     </div>
   );
 };

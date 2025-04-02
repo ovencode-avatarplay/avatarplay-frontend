@@ -7,8 +7,51 @@
   cursor: pointer;
 }
 
+.imageButton.large
+{ 
+  width: calc(100% * 0.5 - 5.5px);
+  max-width: 180px;
+  height: 260px; 
+}
+
+.imageButton.middle
+{
+  width: calc(100% * 0.33 - 3.2px);
+  max-width: 116px;
+  height: calc(100% * 0.33 - 3.2px);
+  max-height: 116px;
+}
+
+.imageButton.small
+{
+  width: 100px;
+  height: 100px;
+}
+
+
+.imageButton.summary
+{
+  width: 100%; 
+  aspect-ratio: 1 / 1;
+} 
+
+.imageButton.result
+{
+  width: calc(100% / 3 - 8px); 
+  max-width: calc(1300px / 4 - 17px);
+  aspect-ratio: 13 / 19;
+}
+
+@media screen and (max-width: 431px) {
+  .imageButton.result {
+    width: calc(100% / 2 - 6px); 
+  }
+}
+
 .imageBackGround {
   flex-shrink: 0;
+  width: 100%;
+  height: 100%;
   
   background-position: center;
   background:  lightgray 50% / cover no-repeat;
@@ -18,43 +61,7 @@
 {
   background-color: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), 
 }
-
-.imageBackGround.large
-{
-  width: calc(var(--second-width) * 0.5 - 5.5px);
-  max-width: 180px;
-  height: 260px;
-}
-
-.imageBackGround.middle
-{
-  width: calc(var(--second-width) * 0.33 - 3.2px);
-  max-width: 116px;
-  height: calc(var(--second-width) * 0.33 - 3.2px);
-  max-height: 116px;
-}
-
-.imageBackGround.summary
-{
-  width: calc(var(--second-width) * 0.27 - 3.2px - 10px);
-  min-width: 116px;
-  height: calc(var(--second-width) * 0.27 - 3.2px - 10px);
-  min-height: 116px;
-}
-
-@media screen and (max-width: 431px) {
-  .imageBackGround.summary {
-    width: 116px;
-    height: 116px;
-  }
-}
-
-.imageBackGround.small
-{
-  width: 100px;
-  height: 100px;
-}
-
+ 
 .label {
   max-width: 100%;
   position: absolute;
@@ -86,8 +93,6 @@
 
   color: var(--White, #FFF);
   text-align: center;
-  leading-trim: both;
-  text-edge: cap;
   font-size: 12px;
   font-style: normal;
   font-weight: 500;
