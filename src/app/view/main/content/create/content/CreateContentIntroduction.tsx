@@ -23,6 +23,7 @@ import {useRouter} from 'next/navigation';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
+import {ProfileState} from '@/redux-store/slices/Profile';
 
 enum FilterTypes {
   All = 0,
@@ -56,6 +57,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const dataProfile = useSelector((state: RootState) => state.profile);
+
   const [isDeletePopup, setIsDeletePopup] = useState<boolean>(false);
   const [isDeleteNum, setIsDeleteNum] = useState<number>(0);
   const deleteContente = (id: number) => {
@@ -86,18 +88,22 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
     if (type == ContentType.Series) pushLocalizedRoute(`/update/content/series/${id}`, router);
     else if (type == ContentType.Single) pushLocalizedRoute(`/update/content/single/${id}`, router);
   };
+  useEffect(() => {
+    if (dataProfile?.currentProfile) {
+      fetchContentList();
+    }
+  }, [dataProfile?.currentProfile]);
 
   const fetchContentList = async () => {
     try {
       setLoading(true);
       setError(null);
-
       // 요청할 데이터
       const payload: GetContentListReq = {
-        profileId: dataProfile.currentProfile ? dataProfile.currentProfile?.profileId : -1, // 예제 Profile ID
+        profileId: dataProfile && dataProfile.currentProfile ? dataProfile.currentProfile?.profileId : -1, // 예제 Profile ID
         contentType: activeTab, // 예제 Content Type
       };
-
+      if (payload.profileId == -1) return;
       // API 호출
       const response = await sendGetContentList(payload);
       console.log('response.data', response.data?.contentList);
