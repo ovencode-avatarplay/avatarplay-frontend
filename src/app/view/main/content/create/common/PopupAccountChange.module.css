@@ -78,6 +78,7 @@
   border: none;
   border-radius: 12px;
   cursor: pointer;    
+  box-sizing: content-box;
 }
 .label 
 {    

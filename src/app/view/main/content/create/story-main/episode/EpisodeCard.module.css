@@ -54,7 +54,7 @@
   align-items: flex-start;
   padding: 0px;
   gap: 10px;
-  width: var(--third-width);
+  width: 338px;
   height: 128px;
 }
  
@@ -238,7 +238,7 @@
   justify-content: center;
   align-items: flex-start;
   padding: 0px;
-  width: var(--third-width);
+  width: 338px;
   border-radius: 8px;
   overflow: hidden;
 }

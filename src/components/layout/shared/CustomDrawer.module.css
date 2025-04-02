@@ -1,7 +1,7 @@
 .drawerContainer { 
   display: flex;  
   width: var(--full-width);
-  padding: 8px 16px 45px 16px;
+  padding: 8px 20px  ;
   flex-direction: column;
   align-items: flex-start;
   gap: 15px;
@@ -11,6 +11,10 @@
   
   border-radius: 24px 24px 0px 0px;
   background: var(--White, #FFF); 
+}
+
+.touchArea {
+  width: 100%;
 }
     
 .handleArea { 
@@ -50,8 +54,8 @@
   flex-grow: 1;  
   overflow-x: hidden;
   overflow-y: scroll;  
-  padding: 16px;
-  width: var(--second-width);
+  /* padding: 16px; */
+  width: 100%;
 }
 
   
