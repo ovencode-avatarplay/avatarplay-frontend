@@ -73,7 +73,7 @@ const Shop: React.FC = () => {
               </div>
             </div>
             <button className={styles.notification} onClick={() => {}}>
-              <img className={styles.notificationIcon} src={BoldAlert.src} />
+              <img className={styles.notificationIcon} src={BoldNotification.src} />
               <div className={styles.redDot}></div>
             </button>
             {/* <UserDropdown /> */}
