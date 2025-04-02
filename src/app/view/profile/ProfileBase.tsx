@@ -14,6 +14,7 @@ import {
   BoldComment,
   BoldContentLists,
   BoldDislike,
+  BoldEdit,
   BoldFollowers,
   BoldHeart,
   BoldImage,
@@ -882,7 +883,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             {isMine && (
               <Link href={getEditUrl(profileType)}>
                 <div className={styles.iconProfileEditWrap}>
-                  <img className={styles.icon} src="/ui/profile/icon_edit.svg" alt="" />
+                  <img src={BoldEdit.src} className={styles.Edit} />
                 </div>
               </Link>
             )}
