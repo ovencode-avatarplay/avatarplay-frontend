@@ -281,7 +281,9 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
   }, [urlLinkKey]);
 
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
+
   const handleConfirm = async () => {
+    console.log(episodeVideoInfo);
     const validations = [
       {condition: !nameValue.trim(), message: 'Name을 입력해주세요.'},
       {condition: !summaryValue.trim(), message: 'One Line Summary를 입력해주세요.'},
