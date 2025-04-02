@@ -5,7 +5,7 @@
   flex-direction: row;
   align-items: center;
   gap: 36px;
-  width: 162px;
+  /* width: 162px; */
   height: 26px;
   left: 50%;  
   top: calc(58px + 15px);
