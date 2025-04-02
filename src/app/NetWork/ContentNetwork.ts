@@ -105,11 +105,19 @@ export enum ContentLanguageType {
 }
 // 📌 에피소드 비디오 정보
 export interface ContentEpisodeVideoInfo {
-  likeCount: number;
-  videoSourcePlayTime: string;
-  videoSourceFileInfo: VideoFileInfo;
+  videoSourceFileInfo: {
+    videoLanguageType: ContentLanguageType;
+    tempFileName: string; // ✅ 새 필드
+    videoFileName: string; // ✅ 새 필드
+  };
   subTitleFileInfos: VideoFileInfo[];
-  dubbingFileInfos: VideoFileInfo[];
+  dubbingFileInfos: DubbingFileInfo[];
+}
+
+export interface DubbingFileInfo {
+  videoLanguageType: ContentLanguageType;
+  tempFileName: string; // ✅ 새 필드
+  videoFileName: string; // ✅ 새 필드
 }
 
 export interface VideoFileInfo {
@@ -117,6 +125,7 @@ export interface VideoFileInfo {
   videoSourceUrl: string;
   videoSourceName: string;
 }
+
 // 📌 새로운 에피소드 웹툰 정보 (변경됨)
 export interface ContentEpisodeWebtoonInfo {
   likeCount: number;

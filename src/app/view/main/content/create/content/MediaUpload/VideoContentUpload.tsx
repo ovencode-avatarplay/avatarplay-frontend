@@ -13,7 +13,7 @@ import {
   LineUpload,
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
+import {MediaUploadReq, sendUpload, sendUploadTempFile, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {ContentCategoryType, ContentEpisodeVideoInfo, ContentLanguageType} from '@/app/NetWork/ContentNetwork';
 import PreviewViewer from './PreviewViewer';
 import getLocalizedText from '@/utils/getLocalizedText';
@@ -48,9 +48,11 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
   // ✅ 기존 데이터가 있으면 초기값 설정
   useEffect(() => {
     if (defaultEpisodeVideoInfo) {
-      setVideoFile(defaultEpisodeVideoInfo.videoSourceFileInfo.videoSourceUrl || null);
-      setVideoName(defaultEpisodeVideoInfo.videoSourceFileInfo.videoSourceName || null);
+      // ✅ videoFile / videoName은 UI 미리보기용으로 여전히 필요하다면 유지
+      setVideoFile(defaultEpisodeVideoInfo.videoSourceFileInfo.videoFileName || null);
+      setVideoName(defaultEpisodeVideoInfo.videoSourceFileInfo.videoFileName || null);
 
+      // ✅ subtitle은 구조 그대로 유지 (API 구조 안 바뀜)
       setSubtitleFields(
         defaultEpisodeVideoInfo.subTitleFileInfos.map((info, index) => ({
           id: index,
@@ -60,12 +62,13 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
         })),
       );
 
+      // ✅ dubbing은 tempFileName과 videoFileName으로 세팅 (fileUrl은 미리보기용)
       setDubbingFields(
         defaultEpisodeVideoInfo.dubbingFileInfos.map((info, index) => ({
           id: index,
           selectedCountry: info.videoLanguageType,
-          fileUrl: info.videoSourceUrl,
-          fileName: info.videoSourceName,
+          fileUrl: info.videoFileName, // UI상 썸네일용이므로 임시로 fileName 사용
+          fileName: info.videoFileName,
         })),
       );
     }
@@ -137,52 +140,68 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
 
   const handleFileUpload = async (type: 'video' | 'subtitle' | 'dubbing', files: File[], index?: number) => {
     try {
-      let mediaState: UploadMediaState;
-      if (type === 'video') mediaState = UploadMediaState.ContentEpisodeVideo;
-      else if (type === 'subtitle') mediaState = UploadMediaState.ContentEpisodeSubtitle;
-      else mediaState = UploadMediaState.ContentEpisodeDubbing;
+      if (type === 'subtitle') {
+        // 기존 자막 업로드 방식
+        const req: MediaUploadReq = {
+          mediaState: UploadMediaState.ContentEpisodeSubtitle,
+          file: files[0],
+        };
+        const response = await sendUpload(req);
 
-      const req: MediaUploadReq = {mediaState, file: files[0]};
-      const response = await sendUpload(req);
-
-      if (response?.data) {
-        const fileUrl = response.data.url;
-        const fileName = response.data.fileName;
-        const playTime = response.data.playTime;
-        console.log(`${type} uploaded:`, fileUrl, fileName);
-
-        if (type === 'video') {
-          setVideoFile(fileUrl);
-          setVideoName(fileName);
-          setEpisodeVideoInfo(prev => ({
-            ...prev,
-            videoSourcePlayTime: playTime || '00:00', // 플레이 타임 업데이트
-            videoSourceFileInfo: {
-              ...prev.videoSourceFileInfo,
-              videoSourceUrl: fileUrl,
-              videoSourceName: fileName,
-            },
-          }));
-        } else if (type === 'subtitle' && index !== undefined) {
-          setSubtitleFields(prevFields =>
-            prevFields.map((field, i) => (i === index ? {...field, fileUrl, fileName} : field)),
-          );
+        if (response?.data) {
+          const {url, fileName} = response.data;
+          setSubtitleFields(prev => prev.map((field, i) => (i === index ? {...field, fileUrl: url, fileName} : field)));
           setEpisodeVideoInfo(prev => ({
             ...prev,
             subTitleFileInfos: prev.subTitleFileInfos.map((info, i) =>
-              i === index ? {...info, videoSourceUrl: fileUrl, videoSourceName: fileName} : info,
+              i === index
+                ? {
+                    ...info,
+                    videoSourceUrl: url,
+                    videoSourceName: fileName,
+                    videoLanguageType: subtitleFields[i].selectedCountry,
+                  }
+                : info,
             ),
           }));
-        } else if (type === 'dubbing' && index !== undefined) {
-          setDubbingFields(prevFields =>
-            prevFields.map((field, i) => (i === index ? {...field, fileUrl, fileName} : field)),
-          );
-          setEpisodeVideoInfo(prev => ({
-            ...prev,
-            dubbingFileInfos: prev.dubbingFileInfos.map((info, i) =>
-              i === index ? {...info, videoSourceUrl: fileUrl, videoSourceName: fileName} : info,
-            ),
-          }));
+        }
+      } else {
+        // video 또는 dubbing은 temp 업로드 API 사용
+        const response = await sendUploadTempFile(files[0]);
+
+        if (response?.data) {
+          const {tempFileName, uploadFileName} = response.data;
+
+          if (type === 'video') {
+            setVideoFile(tempFileName);
+            setVideoName(uploadFileName);
+            setEpisodeVideoInfo(prev => ({
+              ...prev,
+              videoSourceFileInfo: {
+                tempFileName,
+                videoFileName: uploadFileName,
+                videoLanguageType: ContentLanguageType.Korean,
+              },
+            }));
+          } else if (type === 'dubbing' && index !== undefined) {
+            setDubbingFields(prev =>
+              prev.map((field, i) =>
+                i === index ? {...field, fileUrl: tempFileName, fileName: uploadFileName} : field,
+              ),
+            );
+            setEpisodeVideoInfo(prev => ({
+              ...prev,
+              dubbingFileInfos: prev.dubbingFileInfos.map((info, i) =>
+                i === index
+                  ? {
+                      tempFileName,
+                      videoFileName: uploadFileName,
+                      videoLanguageType: dubbingFields[i].selectedCountry,
+                    }
+                  : info,
+              ),
+            }));
+          }
         }
       }
     } catch (error) {
