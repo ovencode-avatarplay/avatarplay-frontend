@@ -9,11 +9,12 @@
   
 .articleList
 {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 16px;
-  padding: 30px 0;
+  
+  padding: 30px 16px;
   gap : 30px;
 }
   .titleText
@@ -30,6 +31,7 @@
 
   .termsArea
   {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -59,7 +61,7 @@
     align-items: center;
     padding: 12px 0px;
     gap: 10px;
-    width: var(--second-width);
+    width: 100%;
   }
   
   .checkbox {
@@ -78,7 +80,7 @@
   }
   
   .confirmButton {
-    width: var(--second-width);
+    width: 100%;
     height: 50px;
     background: #2c3131;
     color: #ffffff;

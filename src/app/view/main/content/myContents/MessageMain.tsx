@@ -38,7 +38,7 @@ const MessageMain: React.FC = () => {
         <></>
         // <iframe
         //   src="https://react-webgame2.s3.ap-northeast-2.amazonaws.com/index.html"
-        //   width="var(--second-width)"
+        //   width="100%"
         //   height="80%"
         //   title="game"
         // ></iframe>
