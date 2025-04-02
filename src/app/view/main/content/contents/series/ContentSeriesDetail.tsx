@@ -3,10 +3,10 @@ import parse from 'html-react-parser';
 import {
   BoldAltArrowDown,
   BoldArchive,
-  BoldArrowLeft,
+  LineArrowLeft,
   BoldAudioPause,
   BoldAudioPlay,
-  BoldDownloadMini,
+  LineDownloadMini,
   BoldLock,
   BoldRadioButtonSquare,
   BoldRadioButtonSquareSelected,
@@ -212,7 +212,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         <header className={styles.header}>
           <img
             className={styles.btnBack}
-            src={BoldArrowLeft.src}
+            src={LineArrowLeft.src}
             alt=""
             onClick={() => {
               routerBack();
@@ -291,7 +291,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
             <div className={styles.lineVertical}></div>
 
             <div className={styles.iconWrap}>
-              <img src={BoldDownloadMini.src} alt="" />
+              <img src={LineDownloadMini.src} alt="" />
               <div className={styles.label}>{getLocalizedText('common_button_download')}</div>
             </div>
             {!data.dataMix?.isMyContent && (

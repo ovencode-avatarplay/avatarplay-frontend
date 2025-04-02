@@ -9,7 +9,7 @@ import ProfileTopViewMenu from './ProfileTopViewMenu';
 import {
   BoldAltArrowDown,
   BoldArchive,
-  BoldArrowLeft,
+  LineArrowLeft,
   BoldCharacter,
   BoldComment,
   BoldContentLists,
@@ -796,7 +796,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                 }
               }}
             >
-              <img src={BoldArrowLeft.src} alt="" />
+              <img src={LineArrowLeft.src} alt="" />
             </div>
           )}
           <div

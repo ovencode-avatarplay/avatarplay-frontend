@@ -4,7 +4,6 @@ import React, {ChangeEvent, useCallback, useEffect, useRef, useState} from 'reac
 import styles from './CreateChannel.module.scss';
 import {
   BoldAltArrowDown,
-  BoldArrowLeft,
   BoldRadioButton,
   BoldRadioButtonSelected,
   BoldRadioButtonSquare,
@@ -14,6 +13,7 @@ import {
   LineRegenerate,
   LineSearch,
   LineUpload,
+  LineArrowLeft,
 } from '@ui/Icons';
 import {FieldErrors, useForm} from 'react-hook-form';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
@@ -491,7 +491,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   return (
     <>
       <header className={styles.header}>
-        <img className={styles.btnBack} src={BoldArrowLeft.src} alt="" onClick={routerBack} />
+        <img className={styles.btnBack} src={LineArrowLeft.src} alt="" onClick={routerBack} />
         <div className={styles.title}>
           {isUpdate ? getLocalizedText('common_title_Edit') : getLocalizedText('CreateChannel001_title_001')}
         </div>

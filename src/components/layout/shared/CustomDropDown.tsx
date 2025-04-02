@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import styles from './CustomDropDown.module.css'; // 드롭다운 스타일
 
 // 아이콘들
-import {BoldArrowDown, LineArrowDown, LineCheck} from '@ui/Icons';
+import {LineArrowDown, LineCheck} from '@ui/Icons';
 
 interface CustomDropDownProps {
   items: Array<{
@@ -135,7 +135,7 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({
             </div>
             <img
               className={styles.dropdownArrow}
-              src={BoldArrowDown.src}
+              src={LineArrowDown.src}
               style={isOpen ? {transform: 'rotate(180deg)'} : {}}
             />
           </>

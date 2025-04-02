@@ -1,5 +1,5 @@
 'use client';
-import {BoldArrowLeft, BoldMenuDots, LineArrowDown, LineArrowLeft, LineClose, LineUpload} from '@ui/Icons';
+import {LineArrowLeft, BoldMenuDots, LineArrowDown, LineClose, LineUpload} from '@ui/Icons';
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import styles from './ProfileUpdate.module.scss';
 import {useFieldArray, useForm} from 'react-hook-form';
@@ -1170,7 +1170,7 @@ export const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListP
         <section className={styles.portfolioPreviewSection}>
           <header>
             <img
-              src={BoldArrowLeft.src}
+              src={LineArrowLeft.src}
               alt="back"
               className={styles.back}
               onClick={() => {

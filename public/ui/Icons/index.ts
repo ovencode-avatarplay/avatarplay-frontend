@@ -1,22 +1,25 @@
 import BoldAI from "./Bold/AI.svg";
 import BoldAltArrowDown from "./Bold/Alt_Arrow_Down.svg";
 import BoldAltArrowDownTwo from "./Bold/Alt_Arrow_Down_Two.svg";
-import BoldAltArrowUp from "./Bold/Alt_Arrow_Up.svg";
 import BoldAltArrowUpTwo from "./Bold/Alt_Arrow_Up_Two.svg";
-import BoldArrowDown from "./Bold/Arrow_Down.svg";
+import BoldAltArrowUp from "./Bold/Alt_Arrow_Up.svg";
+import BoldArchive from "./Bold/Archive.svg";
 import BoldAudioPause from "./Bold/Audio_Pause.svg";
 import BoldAudioPlay from "./Bold/Audio_Play.svg";
 import BoldCharacter from "./Bold/Character.svg";
 import BoldChatRoundDots from "./Bold/Chat_Round_Dots.svg";
+import BoldCheckedCircle from "./Bold/Checked-circle.svg";
 import BoldCirclePlus from "./Bold/Circle_Plus.svg";
 import BoldCircleSubtract from "./Bold/Circle_Subtract.svg";
 import BoldCircleX from "./Bold/Circle_X.svg";
+import BoldCoin from "./Bold/Coin.svg";
 import BoldComment from "./Bold/Comment.svg";
 import BoldContents from "./Bold/Contents.svg";
+import BoldContentLists from "./Bold/ContentsList.svg";
 import BoldDescription from "./Bold/Description.svg";
 import BoldDislike from "./Bold/Dislike.svg";
+import BoldEdit from "./Bold/Edit.svg";
 import BoldEpisodes from "./Bold/Episodes.svg";
-import BoldSearch from "./Bold/Search.svg";
 import BoldFilterOn from "./Bold/Filter_on.svg";
 import BoldFilter from "./Bold/Filter.svg";
 import BoldFolderPlus from "./Bold/Folder_Plus.svg";
@@ -26,49 +29,46 @@ import BoldHeart from "./Bold/Heart.svg";
 import BoldHome from "./Bold/Home.svg";
 import BoldImage from "./Bold/Image.svg";
 import BoldInfo from "./Bold/Info.svg";
+import BoldLetter from "./Bold/Letter.svg";
 import BoldLike from "./Bold/Like.svg";
 import BoldLock from "./Bold/Lock.svg";
 import BoldMenuDots from "./Bold/Menu_Dots.svg";
+import BoldMixture from "./Bold/Mixture.svg";
 import BoldMore from "./Bold/More.svg";
+import BoldNotification from "./Bold/Notification.svg";
+import BoldNotification_on from "./Bold/Notification_on.svg";
 import BoldPause from "./Bold/Pause.svg";
 import BoldPin from "./Bold/Pin.svg";
 import BoldPlay from "./Bold/Play.svg";
 import BoldProfile from "./Bold/Profile.svg";
-import BoldRadioButtonSelected from "./Bold/Radio_Button_Selected.svg";
+import BoldQuestion from "./Bold/Question.svg";
 import BoldRadioButtonSelectedBlack from "./Bold/Radio_Button_Selected_Black.svg";
+import BoldRadioButtonSelected from "./Bold/Radio_Button_Selected.svg";
+import BoldRadioButtonSquareSelected from "./Bold/Radio_Button_Square_selected.svg";
+import BoldRadioButtonSquare from "./Bold/Radio_Button_Square.svg";
 import BoldRadioButtonSubtract from "./Bold/Radio_Button_Subtract.svg";
 import BoldRadioButton from "./Bold/Radio_Button.svg";
+import BoldReward from "./Bold/Reward.svg";
 import BoldRuby from "./Bold/Ruby.svg";
+import BoldSearch from "./Bold/Search.svg";
 import BoldSend from "./Bold/Send.svg";
 import BoldShare from "./Bold/Share.svg";
 import BoldSliderVertical from "./Bold/Slider_Vertical.svg";
 import BoldStar from "./Bold/Star.svg";
 import BoldStory from "./Bold/Story.svg";
+import BoldUnLock from "./Bold/Unlock.svg";
+import BoldVerifiedLabel from "./Bold/VerifiedLabel.svg";
 import BoldVerticalGrid from "./Bold/Vertical_Grid.svg";
 import BoldVideo from "./Bold/Video.svg";
 import BoldViewGallery from "./Bold/View_Gallery.svg";
-import BoldArrowLeft from "./Bold/Arrow/Left.svg";
-import BoldReward from "./Bold/Reward.svg";
-import BoldArchive from "./Bold/Archive.svg";
-import BoldVolumeOn from "./Bold/volume-high.svg";
-import BoldVolumeOff from "./Bold/volume-slash.svg";
-import BoldCoin from "./Bold/Coin.svg";
-import BoldMixture from "./Bold/Mixture.svg";
-import BoldUnLock from "./Bold/Unlock.svg";
-import BoldQuestion from "./Bold/Question.svg";
-import BoldRadioButtonSquare from "./Bold/Radio_Button_Square.svg";
-import BoldRadioButtonSquareSelected from "./Bold/Radio_Button_Square_selected.svg";
-import BoldLetter from "./Bold/Letter.svg";
-import BoldContentLists from "./Bold/ContentsList.svg";
-import BoldDownloadMini from "./Bold/Arrow_DownloadMini.svg";
-import BoldNotification from "./Bold/Notification.svg";
-import BoldNotification_on from "./Bold/Notification_on.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
 import LineArchive from "./Line/Archive.svg";
-import LineArrowLeft from "./Line/Arrow_Left.svg";
+import LineCorner from "./Line/Arrow_Corner.svg";
 import LineArrowDown from "./Line/Arrow_Down.svg";
+import LineDownloadMini from "./Line/DownloadMini.svg";
+import LineArrowLeft from "./Line/Arrow_Left.svg";
 import LineArrowRight from "./Line/Arrow_Right.svg";
 import LineArrowSwap from "./Line/Arrow_swap.svg";
 import LineCharacter from "./Line/Character.svg";
@@ -101,7 +101,8 @@ import LineStory from "./Line/Story.svg";
 import LineChannel from "./Line/Channel.svg";
 import LineUpload from "./Line/Upload.svg";
 import LineVoicePlay from "./Line/Voice_Play.svg";
-import LineCorner from "./Line/Arrow_Corner.svg";
+import LineVolumeOn from "./Line/volume-on.svg";
+import LineVolumeOff from "./Line/volume-off.svg";
 import LineTrigger from "./Line/Trigger.svg";
 import LineRefresh from "./Line/refresh.svg";
 import LineSearch from "./Line/Search.svg";
@@ -137,7 +138,6 @@ import CircleClose from "./Custom/CircleClose.svg";
 import OrangeCoin from "./Custom/Coin.svg";
 import Add_Button from "./Custom/Add_Button.svg";
 import editCircle from "./Custom/editCircle.svg";
-import VerifiedLabel from "../profile/icon_verify.svg";
 import KakatalkLogo from "./Custom/KakatalkLogo.svg";
 import FacebookLogo from "./Custom/FaceBookLogo.svg";
 import GoogleLogo from "./Custom/GoogleLogo.svg";
@@ -149,8 +149,6 @@ export {
   OrangeCoin,
   BoldCoin,
   LineScaleUp,
-  BoldVolumeOn,
-  BoldVolumeOff,
   BoldArchive,
   LineComment,
   LineDisLike,
@@ -177,11 +175,11 @@ export {
   BoldAltArrowDownTwo,
   BoldAltArrowUp,
   BoldAltArrowUpTwo,
-  BoldArrowDown,
   BoldAudioPause,
   BoldAudioPlay,
   BoldCharacter,
   BoldChatRoundDots,
+  BoldCheckedCircle,
   BoldCirclePlus,
   BoldCircleSubtract,
   BoldCircleX,
@@ -189,6 +187,7 @@ export {
   BoldContents,
   BoldDescription,
   BoldDislike,
+  BoldEdit,
   BoldEpisodes,
   BoldFilterOn,
   BoldFilter,
@@ -220,24 +219,24 @@ export {
   BoldVerticalGrid,
   BoldVideo,
   BoldViewGallery,
-  BoldArrowLeft,
   BoldReward,
   BoldMixture,
   BoldNotification,
   BoldNotification_on,
   BoldUnLock,
+  BoldVerifiedLabel,
   BoldQuestion,
   BoldRadioButtonSquare,
   BoldRadioButtonSquareSelected,
   BoldLetter,
   BoldContentLists,
-  BoldDownloadMini,
   BoldSearch,
   LineAddButton,
   LineAIImage,
   LineArchive,
   LineArrowLeft,
   LineArrowDown,
+  LineDownloadMini,
   LineArrowRight,
   LineArrowSwap,
   LineCharacter,
@@ -281,7 +280,8 @@ export {
   LineNotification,
   LineReward,
   LineHome,
-  VerifiedLabel,
+  LineVolumeOn,
+  LineVolumeOff,
   KakatalkLogo,
   FacebookLogo,
   GoogleLogo,

@@ -1,4 +1,4 @@
-import {BoldArrowLeft, BoldCircleX, LineUpload} from '@ui/Icons';
+import {LineArrowLeft, BoldCircleX, LineUpload} from '@ui/Icons';
 import React from 'react';
 import styles from './ProfileCreate.module.scss';
 
@@ -8,7 +8,7 @@ const ProfileCreate = (props: Props) => {
   return (
     <>
       <header className={styles.header}>
-        <img className={styles.iconBack} src={BoldArrowLeft.src} alt="" />
+        <img className={styles.iconBack} src={LineArrowLeft.src} alt="" />
         <div className={styles.title}>Title</div>
       </header>
       <main className={styles.main}>
