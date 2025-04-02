@@ -3,16 +3,7 @@ import styles from './CreateContentEpisode.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
-import {
-  BoldArrowDown,
-  BoldQuestion,
-  BoldStar,
-  LineArrowDown,
-  LineClose,
-  LineDashboard,
-  LineDelete,
-  LineUpload,
-} from '@ui/Icons';
+import {LineArrowDown, BoldQuestion, BoldStar, LineClose, LineDashboard, LineDelete, LineUpload} from '@ui/Icons';
 import MediaUpload from './MediaUpload/MediaUpload';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
@@ -39,6 +30,7 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 export interface CreateContentEpisodeProps {
   contentId?: string;
@@ -345,9 +337,17 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
           </div>
         </div>
         <div className={styles.confirmButtonBackground}></div>
-        <button className={styles.confirmButton} onClick={handleConfirm}>
-          {getLocalizedText('common_button_submit')}
-        </button>
+        <div className={styles.confirmButtonContainer}>
+          <CustomButton
+            size="Medium"
+            state="Normal"
+            type="Primary"
+            customClassName={[styles.confirmButton]}
+            onClick={handleConfirm}
+          >
+            {getLocalizedText('common_button_submit')}
+          </CustomButton>
+        </div>
       </div>
 
       <SelectDrawer

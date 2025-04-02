@@ -9,11 +9,12 @@ import ProfileTopViewMenu from './ProfileTopViewMenu';
 import {
   BoldAltArrowDown,
   BoldArchive,
-  BoldArrowLeft,
+  LineArrowLeft,
   BoldCharacter,
   BoldComment,
   BoldContentLists,
   BoldDislike,
+  BoldEdit,
   BoldFollowers,
   BoldHeart,
   BoldImage,
@@ -31,7 +32,7 @@ import {
   LineMenu,
   LinePlus,
   LineShare,
-  VerifiedLabel,
+  BoldVerifiedLabel,
 } from '@ui/Icons';
 import styles from './ProfileBase.module.scss';
 import cx from 'classnames';
@@ -797,7 +798,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                 }
               }}
             >
-              <img src={BoldArrowLeft.src} alt="" />
+              <img src={LineArrowLeft.src} alt="" />
             </div>
           )}
           <div
@@ -883,7 +884,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             {isMine && (
               <Link href={getEditUrl(profileType)}>
                 <div className={styles.iconProfileEditWrap}>
-                  <img className={styles.icon} src="/ui/profile/icon_edit.svg" alt="" />
+                  <img src={BoldEdit.src} className={styles.Edit} />
                 </div>
               </Link>
             )}
@@ -924,7 +925,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           {isPD && (
             <div className={styles.verify}>
               <span className={styles.label}>Creator</span>
-              <img className={styles.icon} src={VerifiedLabel.src} alt="" />
+              <img className={styles.icon} src={BoldVerifiedLabel.src} alt="" />
             </div>
           )}
           {isCharacter && (

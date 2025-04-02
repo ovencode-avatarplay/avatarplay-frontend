@@ -21,7 +21,7 @@ import {GetStoryByIdReq, GetStoryByIdRes, sendStoryByIdGet, recommendStoryInfo} 
 // Css
 import styles from './DrawerStoryDesc.module.css';
 import {
-  BoldArrowDown,
+  LineArrowDown,
   BoldChatRoundDots,
   BoldFolderPlus,
   BoldFollowers,
@@ -216,7 +216,7 @@ const DrawerContentDesc = () => {
               {chapters && chapters[selectedChapterIdx] && (
                 <button className={styles.chapterSelectArea} onClick={() => setChapterSelectDrawerOpen(true)}>
                   <div className={styles.chapterSelected}>{chapters[selectedChapterIdx].name}</div>
-                  <img className={styles.dropDownIcon} src={BoldArrowDown.src} />
+                  <img className={styles.dropDownIcon} src={LineArrowDown.src} />
                 </button>
               )}
 

@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 
 import {Drawer} from '@mui/material';
 import styles from './StoryDashboardDrawer.module.css';
-import {BoldArrowDown} from '@ui/Icons';
+import {LineArrowDown} from '@ui/Icons';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';

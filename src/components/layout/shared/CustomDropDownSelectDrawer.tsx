@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styles from './CustomDropDownSelectDrawer.module.css';
-import {BoldArrowDown} from '@ui/Icons';
+import {LineArrowDown} from '@ui/Icons';
 import CustomSelector from './CustomSelector';
 
 interface CustomDropDownSelectDrawerProps {

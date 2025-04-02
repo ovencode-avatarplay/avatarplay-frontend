@@ -10,7 +10,7 @@ import {i18n} from 'next-i18next';
 import {Dialog, SelectChangeEvent} from '@mui/material';
 import {createPortal} from 'react-dom';
 import styles from './ModalLanguageSelect.module.css';
-import {BoldArrowLeft, LineCheck, LineSearch} from '@ui/Icons';
+import {LineArrowLeft, LineCheck, LineSearch} from '@ui/Icons';
 import CustomInput from '@/components/layout/shared/CustomInput';
 //import {Flag} from '@mui/icons-material';
 import Flag from 'react-world-flags';
@@ -76,7 +76,7 @@ const ModalLanguageSelect: React.FC<FullScreenModalProps> = ({isOpen, onClose}) 
       <div className={styles.backgroundArea}>
         <div className={styles.titleArea}>
           <div className={styles.leftPrevArea} onClick={() => onClose()}>
-            <img className={styles.leftPrevButton} src={BoldArrowLeft.src} alt="Prev" />
+            <img className={styles.leftPrevButton} src={LineArrowLeft.src} alt="Prev" />
             <div className={styles.titleText}>{getLocalizedText('shared032_title_001')}</div>
           </div>
         </div>

@@ -5,7 +5,7 @@ import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import cx from 'classnames';
 import styles from './profileFeed.module.scss';
-import {BoldArrowLeft, BoldMenuDots, LineMenu, LineShare} from '@ui/Icons';
+import {LineArrowLeft, BoldMenuDots, LineMenu, LineShare} from '@ui/Icons';
 import {getBackUrl} from '@/utils/util-1';
 import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import BottomNav from '@/app/view/main/bottom-nav/BottomNav';
@@ -42,7 +42,7 @@ const PageFeedView = ({searchParams}: Props) => {
               // replace(`/profile/${id}?from=""`);
             }}
           >
-            <img src={BoldArrowLeft.src} alt="" />
+            <img src={LineArrowLeft.src} alt="" />
           </div>
         </div>
       </section>

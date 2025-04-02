@@ -3,9 +3,6 @@
   flex-wrap: wrap; /* 줄바꿈 가능하게 설정 */
   gap: 8px; /* 이미지 간격 조절 */
   width: 100%; /* 부모 컨테이너 크기 */
- 
-
-  /* width: var(--second-width); */
 }
 
 .imageWrapper {

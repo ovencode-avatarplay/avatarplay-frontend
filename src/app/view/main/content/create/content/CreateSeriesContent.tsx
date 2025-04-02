@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import styles from './CreateSeriesContent.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
-import {BoldArrowDown, LineClose, LineDashboard} from '@ui/Icons';
+import {LineArrowDown, LineClose, LineDashboard} from '@ui/Icons';
 import MediaUpload from './MediaUpload/MediaUpload';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
@@ -27,6 +27,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
+import CustomButton from '@/components/layout/shared/CustomButton';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -475,9 +476,17 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         </div>
 
         <div className={styles.confirmButtonBackground}></div>
-        <button className={styles.confirmButton} onClick={handleConfirm}>
-          {getLocalizedText('common_button_submit')}
-        </button>
+        <div className={styles.confirmButtonContainer}>
+          <CustomButton
+            customClassName={[styles.confirmButton]}
+            size="Medium"
+            state="Normal"
+            type="Primary"
+            onClick={handleConfirm}
+          >
+            {getLocalizedText('common_button_submit')}
+          </CustomButton>
+        </div>
       </div>
       <DrawerTagSelect
         title={getLocalizedText('common_label_002')}

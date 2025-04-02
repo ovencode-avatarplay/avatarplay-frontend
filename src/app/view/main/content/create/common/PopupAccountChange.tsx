@@ -9,6 +9,7 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {BoldInfo} from '@ui/Icons';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import WithdrawMembership from './WithdrawMembership';
+import CustomButton from '@/components/layout/shared/CustomButton';
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -153,9 +154,17 @@ const PopupAccountChange: React.FC<Props> = ({open, onClose}) => {
               {getLocalizedText('common_button_withdrawmembership')}
             </button>
 
-            <button className={styles.confirmButton} onClick={handleConfirm}>
-              {getLocalizedText('common_button_submit')}
-            </button>
+            <div className={styles.confirmButtonContainer}>
+              <CustomButton
+                size="Large"
+                state="Normal"
+                type="Primary"
+                onClick={handleConfirm}
+                customClassName={[styles.confirmButton]}
+              >
+                {getLocalizedText('common_button_submit')}
+              </CustomButton>
+            </div>
           </div>
         </div>
 

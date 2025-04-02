@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import styles from './CreateSingleContent.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
-import {BoldArrowDown, BoldQuestion, BoldStar, LineClose, LineDashboard} from '@ui/Icons';
+import {LineArrowDown, BoldQuestion, BoldStar, LineClose, LineDashboard} from '@ui/Icons';
 import MediaUpload from './MediaUpload/MediaUpload';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
@@ -29,6 +29,7 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {useAtom} from 'jotai';
+import CustomButton from '@/components/layout/shared/CustomButton';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -567,9 +568,17 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         </div>
 
         <div className={styles.confirmButtonBackground}></div>
-        <button className={styles.confirmButton} onClick={handleConfirm}>
-          {getLocalizedText('common_button_submit')}
-        </button>
+        <div className={styles.confirmButtonContainer}>
+          <CustomButton
+            customClassName={[styles.confirmButton]}
+            size="Medium"
+            state="Normal"
+            type="Primary"
+            onClick={handleConfirm}
+          >
+            {getLocalizedText('common_button_submit')}
+          </CustomButton>
+        </div>
       </div>
       <DrawerTagSelect
         title={getLocalizedText('common_label_002')}
@@ -656,6 +665,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
                 <span className={styles.starlabel}>{getLocalizedText('createcontent007_label_010')}</span>
               </div>
             )}
+
             <button
               className={styles.setaConfirm}
               onClick={() => {

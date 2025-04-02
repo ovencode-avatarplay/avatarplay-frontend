@@ -67,15 +67,22 @@
   
   
 .buttonContainer {
-  position: fixed;
-  width: var(--second-width);
+  position: fixed; 
 
   display: flex;
+  
   bottom: 8px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 1300px;
+
   justify-content: space-between; 
-  margin: 0 16px; 
-  /* margin-bottom: 8px; */
+  padding: 0 16px; 
+  margin-left: auto;
+  margin-right: auto; 
 }
+
   
 .stepButton {
   width: auto;
