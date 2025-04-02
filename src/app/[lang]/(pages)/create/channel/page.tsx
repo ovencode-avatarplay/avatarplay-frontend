@@ -30,7 +30,6 @@ import {
   SearchProfileType,
   sendSearchProfileReq,
 } from '@/app/NetWork/ProfileNetwork';
-import {DragStatusType, TagDrawerType} from '../../profile/update/[[...id]]/page';
 import cx from 'classnames';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {debounce, Dialog, Drawer} from '@mui/material';
@@ -69,6 +68,7 @@ import formatText from '@/utils/formatText';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
 import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
+import {DragStatusType, TagDrawerType} from '@/app/view/profile/ProfileUpdate';
 
 type Props = {
   id: number;

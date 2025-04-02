@@ -65,7 +65,7 @@ export interface FeedInfo {
   createAt?: string;
   profileUrlLinkKey: string;
   isMyFeed: boolean;
-  profileType: ProfileType;
+  profileType?: ProfileType;
 }
 
 export interface CreateFeedReq {
