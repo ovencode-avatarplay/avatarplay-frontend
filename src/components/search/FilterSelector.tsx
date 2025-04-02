@@ -20,6 +20,7 @@ interface FilterSelectorProps {
 
 const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open, onClose}) => {
   const [selectedFilters, setSelectedFilters] = useState<{[key: string]: 'empty' | 'selected' | 'remove'}>({});
+  const [isRotating, setIsRotating] = useState(false);
 
   const handleToggleFilter = (name: string) => {
     setSelectedFilters(prevState => {
@@ -35,6 +36,18 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
     const negative = filterData.filter(item => selectedFilters[item.name] === 'remove');
     onSave({positive, negative});
     onClose();
+  };
+
+  const handleReset = () => {
+    const resetState: {[key: string]: 'empty'} = {};
+    filterData.forEach(item => {
+      resetState[item.name] = 'empty';
+    });
+    setSelectedFilters(resetState);
+
+    // 회전 효과 트리거
+    setIsRotating(true);
+    setTimeout(() => setIsRotating(false), 600); // 애니메이션 길이와 맞춰야 함
   };
 
   return (
@@ -67,17 +80,18 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
             ))}
           </ul>
           <button
-            className={styles.refreshButton}
+            className={`${styles.refreshButton} `}
             onClick={() => {
               const resetState: {[key: string]: 'empty'} = {};
               filterData.forEach(item => {
                 resetState[item.name] = 'empty';
+                handleReset();
               });
               setSelectedFilters(resetState);
             }}
           >
             <div className={styles.refreshText}>{getLocalizedText('common_button_refresh')}</div>
-            <img className={styles.refreshIcon} src={LineRefresh.src} />
+            <img className={`${styles.refreshIcon} ${isRotating ? styles.rotateOnce : ''}`} src={LineRefresh.src} />
           </button>
           <CustomButton size="Large" state="Normal" type="ColorPrimary" onClick={handleSave} style={{width: '100%'}}>
             {getLocalizedText('common_button_save')}

@@ -474,6 +474,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           />
         </div>
 
+        <div className={styles.confirmButtonBackground}></div>
         <button className={styles.confirmButton} onClick={handleConfirm}>
           {getLocalizedText('common_button_submit')}
         </button>

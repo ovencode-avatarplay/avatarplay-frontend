@@ -46,7 +46,7 @@ const useCustomRouter = () => {
     const prevPathname = prevPath ? new URL(prevPath, window.location.origin).pathname : null;
     const currentPathname = globalThis.location.pathname; // 현재 pathname만 가져오기
 
-    if (prevPathname && prevPathname !== currentPathname) {
+    if (prevPathname && prevPathname !== currentPathname && !data.isNotSavePrevPath) {
       prevPathList.push(prevPath);
     }
 
@@ -59,34 +59,16 @@ const useCustomRouter = () => {
 
     // 현재 경로 저장 (query params 포함)
     storage.setItem('currentPath', globalThis.location.pathname + globalThis.location.search);
-
+    data.isNotSavePrevPath = false;
     setData({...data});
   }
 
   const replace = (path: string) => {
-    const storage = globalThis?.sessionStorage;
-    if (!storage) return;
-
-    // 현재 경로를 가져옴
-    const currentPath = storage.getItem('currentPath');
-
-    // prevPathList를 불러와서 현재 경로가 있다면 마지막 요소로 추가되어 있을 수 있음
-    let prevPathList = JSON.parse(storage.getItem('prevPathList') || '[]');
-
-    // currentPath와 prevPathList의 마지막이 같으면 pop
-    if (prevPathList.length > 0 && prevPathList[prevPathList.length - 1] === currentPath) {
-      prevPathList.pop();
-      storage.setItem('prevPathList', JSON.stringify(prevPathList));
-    }
-
     // 새 경로로 replace
     router.replace(getLocalizedLink(path));
-
-    // 현재 경로 업데이트
-    storage.setItem('currentPath', getLocalizedLink(path));
-
+    data.isNotSavePrevPath = true;
     // 이전 경로 저장하지 않도록 설정
-    setData({...data, isNotSavePrevPath: true});
+    setData({...data});
   };
 
   const back = (defaultPath = '/main/homefeed') => {

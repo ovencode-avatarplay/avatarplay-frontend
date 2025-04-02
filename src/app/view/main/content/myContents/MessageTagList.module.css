@@ -8,6 +8,13 @@
   margin: 7px 16px 1px;
 }
 
+.horizonSwiper
+{
+    width: calc(var(--full-width) - 16px);
+  
+}
+
+
 .tags {
   display: flex;
   flex-direction: row;

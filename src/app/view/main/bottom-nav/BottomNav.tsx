@@ -84,7 +84,7 @@ export default function BottomNav() {
     // </svg>
   );
   const exploreSvg = (
-    <img className={styles.buttonIcon} style={{filter: checkColor(1)}} src={'/ui/Icons/Bold/Explore.svg'} />
+    <img className={styles.buttonIcon} style={{filter: checkColor(1)}} src={'/ui/Icons/Bold/Search.svg'} />
 
     // <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
     //   <circle cx="12.5667" cy="11.7666" r="8.98856" fill={checkColor(1)} />
@@ -149,7 +149,7 @@ export default function BottomNav() {
     {label: 'Home', icon: homeSvg, link: '/main/homefeed'},
     {label: 'Explore', icon: exploreSvg, link: '/main/explore'},
     {label: 'Plus', icon: Add_Button, link: '/main/plus'},
-    {label: 'Content', icon: contentSvg, link: '/main/mycontent'},
+    {label: 'Content', icon: contentSvg, link: '/main/message'},
     {label: 'My', icon: profileSvg, link: '/profile'},
   ];
 

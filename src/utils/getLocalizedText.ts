@@ -54,13 +54,13 @@ const getLocalizedText = (...args: [string] | [string, string] | [string, string
 
   if (!localizedItem) {
     console.warn(`로컬라이징 작업 필요: ${key}`);
-    return `로컬라이징 작업 필요: ${key}`;
+    return `${key}`;
   }
 
   if (effectiveLanguage === null) return localizedItem['en-US'] || '';
 
-  return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
-  // return localizedItem[effectiveLanguage] || `LQA: ${key} + ${getCurrentLanguage()}`;
+  // return localizedItem[effectiveLanguage] || localizedItem['en-US'] || '';
+  return localizedItem[effectiveLanguage] || `LQA: ${key} + ${getCurrentLanguage()}`;
 };
 
 export default getLocalizedText;

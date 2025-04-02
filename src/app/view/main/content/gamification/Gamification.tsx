@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './Gamification.module.css';
 import RewardTabMenu from './RewardTabMenu';
 import ExploreFeaturedHeader from '../searchboard/searchboard-header/ExploreFeaturedHeader';
@@ -6,6 +6,8 @@ import RewardGoods from './RewardGoods'; // 새로 만든 컴포넌트 불러오
 import {BannerUrlList} from '@/app/NetWork/ExploreNetwork';
 import RewardContent from './RewardContent';
 import HeaderNavBarWhite from '../../header/header-nav-bar/HeaderNavBarWhite';
+import {setSelectedIndex} from '@/redux-store/slices/MainControl';
+import {useDispatch} from 'react-redux';
 
 export const dummyBannerList: BannerUrlList[] = [
   {
@@ -48,10 +50,14 @@ export const dummyBannerList: BannerUrlList[] = [
 const Gamification: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<'Reward' | 'Event'>('Reward');
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setSelectedIndex(2));
+  }, []);
   return (
     <>
       {' '}
-      <HeaderNavBarWhite />
+      <CustomArrowHeader title="Reward" backLink="/main" />
       <RewardTabMenu onTabChange={setSelectedTab} />
       <div className={styles.scrollArea}>
         {selectedTab == 'Reward' && (

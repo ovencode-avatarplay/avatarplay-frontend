@@ -26,6 +26,7 @@ import {getCharacterStateText} from '@/app/view/studio/characterDashboard/Charac
 import formatText from '@/utils/formatText';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomPopup from '../layout/shared/CustomPopup';
+import useCustomRouter from '@/utils/useCustomRouter';
 export enum RecommendState {
   Following = 1,
   ForYou = 0,
@@ -51,6 +52,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   feedMediaType = FeedMediaType.Total,
   idContent = 0,
 }) => {
+  const {replace} = useCustomRouter();
   const dataProfile = useSelector((state: RootState) => state.profile);
   const [allFeeds, setAllFeeds] = useState<FeedInfo[]>([]); // 전체 데이터 저장
   const [info, setInfo] = useState<FeedInfo[]>([]); // 현재 렌더링된 데이터
@@ -410,7 +412,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
               onClick={() => {
                 setSelectedTab(RecommendState.Following);
                 dispatch(setRecommendState(1));
-                pushLocalizedRoute('/main/homefeed', router, true, true);
+                replace('/main/homefeed');
               }}
             >
               {getLocalizedText(Header, 'home001_label_002')}
@@ -420,7 +422,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
               onClick={() => {
                 setSelectedTab(RecommendState.ForYou);
                 dispatch(setRecommendState(0));
-                pushLocalizedRoute('/main/homefeed', router, true, true);
+                replace('/main/homefeed');
               }}
             >
               <span style={{whiteSpace: 'nowrap'}}> {getLocalizedText(Header, 'home001_label_001')}</span>
@@ -458,7 +460,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
               onClick: () => {
                 setSelectedTab(RecommendState.ForYou);
                 dispatch(setRecommendState(0));
-                pushLocalizedRoute('/main/homefeed', router, true, true);
+                replace('/main/homefeed');
               },
               isPrimary: true,
             },

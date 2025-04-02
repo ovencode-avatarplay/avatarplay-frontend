@@ -566,6 +566,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           />
         </div>
 
+        <div className={styles.confirmButtonBackground}></div>
         <button className={styles.confirmButton} onClick={handleConfirm}>
           {getLocalizedText('common_button_submit')}
         </button>

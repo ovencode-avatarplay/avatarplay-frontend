@@ -1,8 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import styles from './CustomSplitter.module.css';
 
-interface Splitter {
+export type SplitterLabelType = 'OnlyLabel' | 'OnlyIcon';
+
+export interface Splitter {
   label: string;
+  labelType?: SplitterLabelType;
+  labelIconSrc?: string;
   preContent?: React.ReactNode;
   content: React.ReactNode;
   isPlaceholder?: boolean;
@@ -56,20 +60,37 @@ const Splitters: React.FC<SplittersProps> = ({
             ></div>
           ) : (
             <div key={index} className={styles.splitterItem} style={itemStyle}>
-              <div
-                key={index}
-                className={`${styles.splitterLabel} ${activeSplitter === index ? styles.activeSplitter : ''} ${
-                  isDark ? styles.darkSplitterLabel : ''
-                } ${splitter.isDisabled ? styles.disabledSplitter : ''}`}
-                onClick={() => {
-                  if (!splitter.isDisabled) {
-                    setActiveSplitter(index);
-                    if (onSelectSplitButton) onSelectSplitButton(index);
-                  }
-                }}
-              >
-                {splitter.label}
-              </div>
+              {splitter.labelType && splitter.labelType === 'OnlyIcon' ? (
+                <div
+                  key={index}
+                  className={`${styles.splitterLabel} ${activeSplitter === index ? styles.activeSplitter : ''} ${
+                    isDark ? styles.darkSplitterLabel : ''
+                  } ${splitter.isDisabled ? styles.disabledSplitter : ''}`}
+                  onClick={() => {
+                    if (!splitter.isDisabled) {
+                      setActiveSplitter(index);
+                      if (onSelectSplitButton) onSelectSplitButton(index);
+                    }
+                  }}
+                >
+                  <img className={styles.labelIcon} src={splitter.labelIconSrc} />
+                </div>
+              ) : (
+                <div
+                  key={index}
+                  className={`${styles.splitterLabel} ${activeSplitter === index ? styles.activeSplitter : ''} ${
+                    isDark ? styles.darkSplitterLabel : ''
+                  } ${splitter.isDisabled ? styles.disabledSplitter : ''}`}
+                  onClick={() => {
+                    if (!splitter.isDisabled) {
+                      setActiveSplitter(index);
+                      if (onSelectSplitButton) onSelectSplitButton(index);
+                    }
+                  }}
+                >
+                  {splitter.label}
+                </div>
+              )}
               {activeSplitter === index && (
                 <div className={`${styles.splitterDivider} ${isDark ? styles.darkDivider : ''}`}></div>
               )}
