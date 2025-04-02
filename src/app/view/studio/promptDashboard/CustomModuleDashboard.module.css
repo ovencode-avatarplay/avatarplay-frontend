@@ -1,12 +1,10 @@
 .customModuleContainer
 {
-    width: var(--second-width);
-    margin: auto 16px;
+    width: var(--full-width);
+    padding: 0 16px;
 
 }
-
-
-
+ 
 .addButton
 {
     cursor: pointer;
