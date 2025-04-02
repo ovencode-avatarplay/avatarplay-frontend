@@ -56,7 +56,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: 8px;
+    gap: 4px;
     flex: 1 0 0;
   }
   
@@ -65,27 +65,27 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
   .profileName {
     color: var(--Black, #000);
-    font-size: 14px;
+    font-size: 16px;
     font-style: normal;
-    font-weight: 600;
+    font-weight: 700;
     line-height: normal;
     letter-spacing: -0.21px;
   }
 
   .profileVerified
   {
-    width: 10.474px;
-    height: 10.378px;
+    width: 16px;
+    height: 16px;
   }
   
   .profileEmail {
-    color: var(--Black, #000);
-    font-size: 12px;
+    color: var(--Neutral-600, #80868b);
+    font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -94,8 +94,8 @@
 
   .arrowIcon
   {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     filter: var(--black-icon-filter);
   }
 
