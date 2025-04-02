@@ -39,7 +39,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
 
   const renderMenuItem = (icon: string, text: string, onClick: () => void, depth?: number) => {
     return (
-      <li className={styles.menuItem} onClick={onClick}>
+      <li className={styles.subMenuItem} onClick={onClick}>
         <div className={styles.menuRow}>
           {' '}
           <div className={styles.menuContent} style={{marginLeft: `calc(20px * ${depth ?? 0})`}}>
@@ -176,7 +176,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
             setAccountOpen(true);
           })}
           <li
-            className={`${styles.menuItem} ${styles.divideItem}`}
+            className={`${styles.menuItem} ${styles.divideItem} ${styles.lastItem}`}
             onClick={() => {
               if (userMetaData) {
                 pushLocalizedRoute('/main/game/shop', router);

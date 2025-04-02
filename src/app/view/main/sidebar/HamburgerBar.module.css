@@ -129,7 +129,7 @@
   .menuList {
     list-style: none;
     padding: 0;
-    margin-top: 7px 0;
+    margin-top: 7px;
     width: 100%;
   }
   
@@ -140,18 +140,37 @@
     padding: 10px 20px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 5px;
+    gap: 10px;
     align-self: stretch;
   }
   
   .menuItem:hover {
     background-color: #f1f3f4;
   }
+  
+
+  .lastItem
+  {
+    padding-bottom: 20px;
+  }
 
   .divideItem
   {
     border-bottom: 1px solid var(--Neutral-100, #F1F3F4);
   }
+
+  .subMenuItem {
+    cursor: pointer;
+    
+    display: flex;
+    padding: 13px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    align-self: stretch;
+  }
+
+
 
   .menuRow
   {
